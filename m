@@ -2,106 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14CB6044B8
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 14:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C149960463C
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 15:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbiJSMMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 08:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S229879AbiJSNDK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 09:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232769AbiJSMLl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 08:11:41 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC23C1633BF
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 04:46:39 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MspPM4nPJzl7bs
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 19:27:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXCzKu309jwb9lAA--.56298S6;
-        Wed, 19 Oct 2022 19:29:53 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Subject: [PATCH bpf 2/2] bpf: Use __llist_del_all() whenever possbile during memory draining
-Date:   Wed, 19 Oct 2022 19:55:39 +0800
-Message-Id: <20221019115539.983394-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221019115539.983394-1-houtao@huaweicloud.com>
-References: <20221019115539.983394-1-houtao@huaweicloud.com>
+        with ESMTP id S229753AbiJSNCt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 09:02:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435D427DC8
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 05:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666183501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q8LPpnYpysqGSiJUPWry3p0iYpcsy7FD/788/f3PsSg=;
+        b=Qf8MOAN0dm4EBewezJ84Y9Q2bN8zUdMLOPTjIghsb2gtUjaC6ycbVO53DMP5THNibY0W9z
+        WHfPh2gJbjaTITne25g0fsi1sCgTl25KBRGeOk/k2pnEDyNI9KCF1yHXg8bMiKXEz8xx7Z
+        sg0UJLf7ZyXb3K9RnWruo1+7jjXv8xc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-148-5EO_4TfcOPmwIFGowP_BHQ-1; Wed, 19 Oct 2022 08:41:31 -0400
+X-MC-Unique: 5EO_4TfcOPmwIFGowP_BHQ-1
+Received: by mail-ed1-f71.google.com with SMTP id b13-20020a056402350d00b0045d0fe2004eso12163548edd.18
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 05:41:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q8LPpnYpysqGSiJUPWry3p0iYpcsy7FD/788/f3PsSg=;
+        b=2RCCDqSaxHfAwJ7gKK/Hc2d6v1OweCDsn9U8gKKjR1d0sgLltu17w0N93rLCS9RX4V
+         mLVxSwOGQzgx/HRdGy5U9kfQ0Bs8BCxONFAQlIKo1H1GCaAu/nmYnXRLAbCjR9i2DlOy
+         aWXKFEwlURfU+OwRXyGjM7ebR9M9MxJ3q5eeMxtV39hi7fzIVqoyNOA1/116K2sdarPc
+         xeB6grig8qrHYdA2qyE4ZxhwD7Z8Giji3A78XsTX0DIViWPW4haYaVXxXiaNr39oEXWu
+         acyktxIh1h7ifyYMUhoBWNVXcFuQnlzX+s/aDgvnyVghHcMUvMK5+zuejfa59d2lWqoQ
+         oc/A==
+X-Gm-Message-State: ACrzQf3x28YidwSmBUBWv2VjzKCpt/UW5UAKloKgvs9bNbXIP6TYnNmZ
+        Ax69KKoHHahi/0YAglqe6fTDcp2Pf4TweiKKYrxalZBtTS7qeUE637/omPUgKSfca1So3GuESsJ
+        Vw8guwQnqo1nj
+X-Received: by 2002:a17:906:5a4b:b0:78d:8790:d4a1 with SMTP id my11-20020a1709065a4b00b0078d8790d4a1mr6561278ejc.329.1666183287303;
+        Wed, 19 Oct 2022 05:41:27 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6sWe0zylQfRJULRKTF9A5wU7VQf2KsdTVq4NOZsdUmfUsJ4OCFQfVUDSsqaTfCq+dVr7yOIg==
+X-Received: by 2002:a17:906:5a4b:b0:78d:8790:d4a1 with SMTP id my11-20020a1709065a4b00b0078d8790d4a1mr6561225ejc.329.1666183286337;
+        Wed, 19 Oct 2022 05:41:26 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k15-20020a17090632cf00b0078d38cda2b1sm8818709ejk.202.2022.10.19.05.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Oct 2022 05:41:25 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9D7306C25B2; Wed, 19 Oct 2022 14:41:24 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org
+Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>
+Subject: Re: netfilter+bpf road ahead
+In-Reply-To: <20221018182637.GA4631@breakpoint.cc>
+References: <20221018182637.GA4631@breakpoint.cc>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 19 Oct 2022 14:41:24 +0200
+Message-ID: <87a65shtor.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXCzKu309jwb9lAA--.56298S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw1ruF1kAw13Wry3tr1fJFb_yoW8WF1rpF
-        W3Cry8Jr48AF929a1Utwn3ur95Xw4rGay3G3yUua4akr1rXwsrtrWxCw1jgFy3urW0q343
-        CryvgF1xWF4UXa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Florian Westphal <fw@strlen.de> writes:
 
-Except for waiting_for_gp list, there are no concurrent operations on
-free_by_rcu, free_llist and free_llist_extra lists, so use
-__llist_del_all() instead of llist_del_all(). waiting_for_gp list can be
-deleted by RCU callback concurrently, so still use llist_del_all().
+> - lots of details to be figured out, but if netfilter core folks
+> agree to this plan it will be one of the most exciting
+> projects in the linux networking. iptables will see significant
+> performance boost and major feature addition.
+> Blending bpf and netfilter worlds would be fantastic.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
++1 on this; sounds like great news, and I look forward to seeing this
+effort come to fruition. Thank you both for taking time to hash this
+out! :)
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 48e606aaacf0..7f45744a09f7 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -422,14 +422,17 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
- 	/* No progs are using this bpf_mem_cache, but htab_map_free() called
- 	 * bpf_mem_cache_free() for all remaining elements and they can be in
- 	 * free_by_rcu or in waiting_for_gp lists, so drain those lists now.
-+	 *
-+	 * Except for waiting_for_gp list, there are no concurrent operations
-+	 * on these lists, so it is safe to use __llist_del_all().
- 	 */
- 	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
- 		free_one(c, llnode);
- 	llist_for_each_safe(llnode, t, llist_del_all(&c->waiting_for_gp))
- 		free_one(c, llnode);
--	llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist))
-+	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist))
- 		free_one(c, llnode);
--	llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra))
-+	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist_extra))
- 		free_one(c, llnode);
- }
- 
--- 
-2.29.2
+-Toke
 
