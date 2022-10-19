@@ -2,66 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D624C605137
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 22:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129E16051A1
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 22:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbiJSUXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 16:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
+        id S229452AbiJSUyb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 16:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbiJSUXK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 16:23:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5496E1946D8;
-        Wed, 19 Oct 2022 13:23:07 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id r14so26948225edc.7;
-        Wed, 19 Oct 2022 13:23:07 -0700 (PDT)
+        with ESMTP id S231311AbiJSUya (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 16:54:30 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2965F5B
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:54:28 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id s13-20020a170902ea0d00b00183243c7a0fso12448719plg.3
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+VYBjQB7Yx50yVwU1MMoGB+C5Q6N6YATcengMcXkS4=;
-        b=maJ4ID2tVxHZZAoMKoeqJXCydTsVNuP8MO2Qc/tCXj56BC6pY6vC+GKk1+h/4mCSeF
-         a7CceTwNp526d3puJTN2HR+8C1835bDZTxdwwA/uGYiF6+fcFVX/ANzqifmYSXpYgr4+
-         LQon0C74Dx+jOE8LinzEmpeWEItNTKSzFIM00th0qfatmlEcMF8ivI/CuOH9yX5Ygkth
-         IoGuXKuNk0fEWPiNEcs818MgQ/ZS777piseOfdhkwKbOjczM6JrTQ+FWfm9z0M9HSwU9
-         lNtnpBWeTNxPBj8LODgUXzIcc2UZwztFcGmiK/G61CuwPphy+kc1ogwyf4BuamUDmb1l
-         MtSw==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4ynRFpLFlxGT+Jd1X6xYZMiF+FFqxtqnzj3gqz2w9c=;
+        b=inbhOLWlz5PqQsCFHw31NPPwVDYZwzCJaTAzjODLUB4et1j8QPFq915WbRiMLUjftO
+         7BYEx50DD2t6KcDOIXgNAHoTjw/VyUdeOv7kVHLvoLscV4uqkB+vI7zP82Pl8xN5cgoY
+         NGJ10jwZb5gBItZa12HZt1ooQRxngpw1xHBAf0TahxwQH9cqURxzQvOU5wzvGFkSuNzr
+         odyEKonsd567yF0JH45t6CKz/0Iy66KYol1YCMXdG1Ep7UGF6WS4VoA0xunnqrm9mhuK
+         y9mymrrY/GIMIsSf35ZUc/gNY45wuzAEbI76zqeLSkB8eXVTZKKi2AiZBh6Pr0vjGC+p
+         1mvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o+VYBjQB7Yx50yVwU1MMoGB+C5Q6N6YATcengMcXkS4=;
-        b=Do0nSj4IfH62a0C+hwsrL8CIyxxwDA7NfsQVQUXhTq+qVAzv7/Yyv3w8OjVWf6tq/m
-         NUiEpeOogRev5S9XueoCifj9stKc4M6A78XTvrOTCrMOdgrd6n3x7y3Y6avpGSHK2qWI
-         CgaX831jfB0trkCszW7j2kMe0G1rBIuqaO/76Y7CwRUjMp6IgAN72ZGibvzG2nHyJ5ll
-         9ikTFZltikaH/e31C7Bsox5zK81vFXIzgYbdNaDu7syOZ5QXe41NbaWaaOy0TnSUfJT1
-         ABLu7PSo4o3PAxiRQqYtjBVEI5e0UkvamMwzWBYkNl4IXnLuOayJNp2NVwCOp/PQZj4s
-         f7Pg==
-X-Gm-Message-State: ACrzQf3VNS7NjvYl4aEocUu45QZZP8ZvnIaik088YF7Jl6OMCHRIDEKC
-        NkFUeZ5vyqfulK6bzaw6du6nI4Lx5hfV3OxCNmI=
-X-Google-Smtp-Source: AMsMyM7QHLOnjUcuw+YPbwf9zp3UxH7nNT3H0S3AbAefvgiEyD9Omi4cxsf0AeHwB9ag6ycMbPgoeANwqxaeXLd6xp0=
-X-Received: by 2002:a05:6402:3546:b0:45d:a52f:2d38 with SMTP id
- f6-20020a056402354600b0045da52f2d38mr8912353edd.403.1666210985810; Wed, 19
- Oct 2022 13:23:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220907183129.745846-1-joannelkoong@gmail.com>
- <20220907183129.745846-2-joannelkoong@gmail.com> <cd8d201b-74f7-4045-ad2f-6d26ed608d1e@linux.dev>
-In-Reply-To: <cd8d201b-74f7-4045-ad2f-6d26ed608d1e@linux.dev>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Wed, 19 Oct 2022 13:22:54 -0700
-Message-ID: <CAJnrk1ZTbHcFsQPKWnZ+Au8BsiFc++Ud7y=24mAhNXNbYQaXhA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 1/3] bpf: Add skb dynptrs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        martin.lau@kernel.org, kuba@kernel.org, memxor@gmail.com,
-        toke@redhat.com, netdev@vger.kernel.org, kernel-team@fb.com,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4ynRFpLFlxGT+Jd1X6xYZMiF+FFqxtqnzj3gqz2w9c=;
+        b=DoCP+eGEo3PMW/DSM+9P5oaN5CLiZxH6a9kiH3DXPlUDlCJO4JlaoBg2sOKx2IdkHb
+         uQMjVqhpcigSL0GcP//KgLQCm/9LRD2B8ezL0GwpVGDk/hptRZO1DF6tIXPzFyHO+/7w
+         /79svD55iTrlMO4+ouK10D7e1N5D8sp6I6/x+AaFxOPpBYIh6FWrLTnpXvTa1N0DvTRZ
+         wNHqjqDuirn6c1AKEit8lX3oFZ5g1EPVhbJJZyzbYVD/7s82lHxllVe3aGV0nPL6gxiP
+         TmFTzSUfYlPF2ewA0xnTtUF6uNuxITqzjZdCoVhhwVMHQhUUllOmFmObxjc4uPXB+wve
+         0Ewg==
+X-Gm-Message-State: ACrzQf3KJUedpKvJ1FZ+l1Cb1z/Q3+M/v0dXK+AORBBY2F5MR6J0My+i
+        OuTCRcvyWqoLud7yaX8qgkQpERc=
+X-Google-Smtp-Source: AMsMyM44g0DDTycm9y4Is6geQZ/TkdA/zUrWT7wmOTc9qX4Wpai0FV6OU3cwKRmiSzQXljOf9LUMvTY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:7081:b0:178:6154:9d79 with SMTP id
+ z1-20020a170902708100b0017861549d79mr10519061plk.79.1666212867688; Wed, 19
+ Oct 2022 13:54:27 -0700 (PDT)
+Date:   Wed, 19 Oct 2022 13:54:26 -0700
+In-Reply-To: <20221019183845.905-4-dthaler1968@googlemail.com>
+Mime-Version: 1.0
+References: <20221019183845.905-1-dthaler1968@googlemail.com> <20221019183845.905-4-dthaler1968@googlemail.com>
+Message-ID: <Y1BkAjUts2WQdeTm@google.com>
+Subject: Re: [PATCH 4/4] bpf, docs: Explain helper functions
+From:   sdf@google.com
+To:     dthaler1968@googlemail.com
+Cc:     bpf@vger.kernel.org, Dave Thaler <dthaler@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,69 +65,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 4:12 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 9/7/22 11:31 AM, Joanne Koong wrote:
-> > For bpf prog types that don't support writes on skb data, the dynptr is
-> > read-only (bpf_dynptr_write() will return an error and bpf_dynptr_data()
-> > will return NULL; for a read-only data slice, there will be a separate
-> > API bpf_dynptr_data_rdonly(), which will be added in the near future).
-> >
-> I just caught up on the v4 discussion about loadtime-vs-runtime error on
-> write.  From a user perspective, I am not concerned on which error.
-> Either way, I will quickly find out the packet header is not changed.
->
-> For the dynptr init helper bpf_dynptr_from_skb(), the user does not need
-> to know its skb is read-only or not and uses the same helper.  The
-> verifier in this case uses its knowledge on the skb context and uses
-> bpf_dynptr_from_skb_rdonly_proto or bpf_dynptr_from_skb_rdwr_proto
-> accordingly.
->
-> Now for the slice helper, the user needs to remember its skb is read
-> only (or not) and uses bpf_dynptr_data() vs bpf_dynptr_data_rdonly()
-> accordingly.  Yes, if it only needs to read, the user can always stay
-> with bpf_dynptr_data_rdonly (which is not the initially supported one
-> though).  However, it is still unnecessary burden and surprise to user.
-> It is likely it will silently turn everything into bpf_dynptr_read()
-> against the user intention. eg:
->
-> if (bpf_dynptr_from_skb(skb, 0, &dynptr))
->         return 0;
-> ip6h = bpf_dynptr_data(&dynptr, 0, sizeof(*ip6h));
-> if (!ip6h) {
->         /* Unlikely case, in non-linear section, just bpf_dynptr_read()
->          * Oops...actually bpf_dynptr_data_rdonly() should be used.
->          */
->         bpf_dynptr_read(buf, sizeof(*ip6h), &dynptr, 0, 0);
->         ip6h = buf;
-> }
->
+On 10/19, dthaler1968@googlemail.com wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
 
-I see your point. I agree that it'd be best if we could prevent this
-burden on the user, but I think the trade-off would be that if we have
-bpf_dynptr_data return data slices that are read-only and data slices
-that are writable (where rd-only vs. writable is tracked by verifier),
-then in the future we won't be able to support dynptrs that are
-dynamically read-only (since to reject at load time, the verifier must
-know statically whether the dynptr is read-only or not). I'm not sure
-how likely it is that we'd run into a case where we'll need dynamic
-read-only dynptrs though. What are your thoughts on this?
+> Explain helper functions.
 
->
-> > +     case BPF_DYNPTR_TYPE_SKB:
-> > +     {
-> > +             struct sk_buff *skb = ptr->data;
-> > +
-> > +             /* if the data is paged, the caller needs to pull it first */
-> > +             if (ptr->offset + offset + len > skb->len - skb->data_len)
->
-> nit. skb_headlen(skb)
->
-> The patches can't be applied cleanly also. Please remember to rebase.
-> eg. commit afef88e65554 ("selftests/bpf: Store BPF object files with
-> .bpf.o extension") has landed on Sep 2.
+> Kernel functions and bpf to bpf calls are covered in
+> a later commit in this set ("Add extended call instructions").
 
-I will use skb_headlen(skb) and rebase for the next iteration :)
-Thanks for reviewing this!
->
->
+> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+> ---
+>   Documentation/bpf/instruction-set.rst | 18 +++++++++++++++++-
+>   1 file changed, 17 insertions(+), 1 deletion(-)
+
+> diff --git a/Documentation/bpf/instruction-set.rst  
+> b/Documentation/bpf/instruction-set.rst
+> index 29b599c70..f9e56d9d5 100644
+> --- a/Documentation/bpf/instruction-set.rst
+> +++ b/Documentation/bpf/instruction-set.rst
+> @@ -242,7 +242,7 @@ BPF_JSET  0x40   PC += off if dst & src
+>   BPF_JNE   0x50   PC += off if dst != src
+>   BPF_JSGT  0x60   PC += off if dst > src     signed
+>   BPF_JSGE  0x70   PC += off if dst >= src    signed
+> -BPF_CALL  0x80   function call
+> +BPF_CALL  0x80   function call              see `Helper functions`_
+>   BPF_EXIT  0x90   function / program return  BPF_JMP only
+>   BPF_JLT   0xa0   PC += off if dst < src     unsigned
+>   BPF_JLE   0xb0   PC += off if dst <= src    unsigned
+> @@ -253,6 +253,22 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
+>   The eBPF program needs to store the return value into register R0 before  
+> doing a
+>   BPF_EXIT.
+
+> +Helper functions
+> +~~~~~~~~~~~~~~~~
+> +Helper functions are a concept whereby BPF programs can call into a
+> +set of function calls exposed by the eBPF runtime.  Each helper
+
+(the series looks good to me, but I'm assuming Alexei will take a look at
+these anywey because he did for the previous submissions)
+
+Not really related to the patch, but in general, quoting from the above:
+"BPF programs can call ... by the eBPF runtime". I know we do it all the  
+time
+and use BPF/eBPF interchangeably, but should we try to be consistent at  
+least
+within the same page?
+
+$ grep -r 'eBPF program' Documentation/bpf/ | wc -l
+34
+$ grep -r ' BPF program' Documentation/bpf/ | wc -l
+97
+
+> +function is identified by an integer used in a ``BPF_CALL`` instruction.
+> +The available helper functions may differ for each eBPF program type.
+> +
+> +Conceptually, each helper function is implemented with a commonly shared  
+> function
+> +signature defined as:
+> +
+> +  u64 function(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
+> +
+> +In actuality, each helper function is defined as taking between 0 and 5  
+> arguments,
+> +with the remaining registers being ignored.  The definition of a helper  
+> function
+> +is responsible for specifying the type (e.g., integer, pointer, etc.) of  
+> the value returned,
+> +the number of arguments, and the type of each argument.
+
+>   Load and store instructions
+>   ===========================
+> --
+> 2.33.4
+
