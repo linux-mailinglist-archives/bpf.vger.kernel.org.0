@@ -2,99 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF92603B6D
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 10:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B665603D8D
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 11:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiJSIZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 04:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
+        id S232142AbiJSJFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 05:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbiJSIZv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 04:25:51 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729E77CAB1
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 01:25:50 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id cl1so16339648pjb.1
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 01:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j8nZEJ2Bqb84pBFypIyWOkeayr4KRwaoXcYe7DKAf4s=;
-        b=Z4WSc6yd+rB++Y6ONx5tPRKbHiQ/QFrMDzMq+dOVMxXPEm0oPUGeNkwXNeF+Z1ui7R
-         NI2WZMS31CRqIIsxmhCtuf0Y4cIoTaHxQgHjuZhLS4oKjXQrR0LA+OeCmrB0zkW50VSY
-         WrV4qoVT3g7Ersnaxm3blu6qwL/ZYH0KQxCq/6piG1jcyMhWpEb1I3ZR6os5WliOTdFd
-         n/UclON7ocOeVb4PwDiJh1074fsl3o68NA7XClDNJDKG8YPFBDpkEKXrM6WDlopFW8n5
-         w7VeE03N5e6EpRUhPt+fBpG5IOFogbgtFdLs4eq9jrhfULnheKwnp5gPvCQMv9qb585o
-         lVKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j8nZEJ2Bqb84pBFypIyWOkeayr4KRwaoXcYe7DKAf4s=;
-        b=fONU2geEmXdCbfI4lW6lxrUS6VyXKAPx/y4ZobKUmdXxT492T0vqEIXUYqLC5wD/9u
-         UAZm9XfuFGlsS1UcFPjuxV1dCnwhK9NetL34apl5hWwUgVDR1tokGSsAVOEW2WmI61nb
-         ythGDZ3Hk1fDk8MPsi3j0o1b8Atu5dj0iEugIDrm9WVuV1nHveUTRZrDk7au8YMuix1x
-         3WAyWmViqP89jkMng2TH5gS7JPxT/Eejby7KKymacHyTpE2cgC2Ll18969gukEy/fUVL
-         aRMh41aR455TYT8IX4KklS76m8ckHKviH7NDRC5q41rUFl706tj7/yWpW2XfJxopdo+V
-         kn3Q==
-X-Gm-Message-State: ACrzQf3N5XnhOSP/gE3yWniZ7S+ZZi+RpMDRWVA0RNNzAKegbMbZt0yb
-        L0IAsRFVllKAq/6CaNe5VQg=
-X-Google-Smtp-Source: AMsMyM57dqsUvzRTMZqOIMNcHYv3rSotIfYCivMJkaZEe0ElwxzcGV4ScRAwewzQOTSarfRxJFzdKA==
-X-Received: by 2002:a17:90b:384e:b0:20d:4b52:ddf0 with SMTP id nl14-20020a17090b384e00b0020d4b52ddf0mr8499959pjb.113.1666167949856;
-        Wed, 19 Oct 2022 01:25:49 -0700 (PDT)
-Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id y5-20020a636405000000b0042bf6034b3fsm9406240pgb.55.2022.10.19.01.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 01:25:49 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 13:55:31 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 0/3] libbpf: support non-mmap()'able data
- sections
-Message-ID: <20221019082531.v7fsp7hlnbni5mfr@apollo>
-References: <20221019002816.359650-1-andrii@kernel.org>
+        with ESMTP id S232517AbiJSJE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 05:04:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CCDAF1BC;
+        Wed, 19 Oct 2022 01:57:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E9646182C;
+        Wed, 19 Oct 2022 08:56:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD034C43470;
+        Wed, 19 Oct 2022 08:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666169793;
+        bh=scqpA+ha7SzlbjXpyjkq6PnxKVFNnwZoNtO5fqgmj+I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UEo3G+RClphBrxr72vNpX2vPrejo35VbzycOkLHYEL23oO57LelB9Vr+wXn3tkL9A
+         /gWvmcTiGhe6XYhUwdUow55Q/WxMT5g0zTdGDLz5WWiD4UbYbcyXpBn/T4hQquEeqr
+         LGmTeBBmEqGS1pMve40cbjxbM0wY5//DSaGKjnNi9pAScR0lHCJj+7yUM3NjL7Ao/L
+         6o35DE7EONjiPhE1XFn17bP8LR64JcQy8UhdL5+v3CzPp9YNXjBxPCMJI8DbNxRcTC
+         FzjOJB/Ls1CEqCaiDaaaYWYGrgvK6QJQuRLZ3025WJruBMBGToVj74xSh9Hywis7be
+         TvI2SCTrbGiMA==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?q?Philip=20M=C3=BCller?= <philm@manjaro.org>
+Subject: [PATCH stable 5.10 2/5] kbuild: Quote OBJCOPY var to avoid a pahole call break the build
+Date:   Wed, 19 Oct 2022 10:56:01 +0200
+Message-Id: <20221019085604.1017583-3-jolsa@kernel.org>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221019085604.1017583-1-jolsa@kernel.org>
+References: <20221019085604.1017583-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221019002816.359650-1-andrii@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 05:58:13AM IST, Andrii Nakryiko wrote:
-> Make libbpf more conservative in using BPF_F_MMAPABLE flag with internal BPF
-> array maps that are backing global data sections. See patch #2 for full
-> description and justification.
->
-> Changes in this dataset support having bpf_spinlock, kptr, rb_tree nodes and
-> other "special" variables as global variables. Combining this with libbpf's
-> existing support for multiple custom .data.* sections allows BPF programs to
-> utilize multiple spinlock/rbtree_node/kptr variables in a pretty natural way
-> by just putting all such variables into separate data sections (and thus ARRAY
-> maps).
->
-> v1->v2:
->   - address Stanislav's feedback, adds acks.
->
+From: Javier Martinez Canillas <javierm@redhat.com>
 
-Thanks a lot for working on this!
+commit ff2e6efda0d5c51b33e2bcc0b0b981ac0a0ef214 upstream.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+[backported for dependency, skipped Makefile.modfinal change,
+because module BTF is not supported in 5.10]
 
-I like that __hidden also works for static variables, that allows hiding this
-whole thing in a macro, like so:
+The ccache tool can be used to speed up cross-compilation, by calling the
+compiler and binutils through ccache. For example, following should work:
 
-#define private(name) SEC(".data." #name) __hidden
+    $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
 
-private(A) struct bpf_spin_lock lock;
-private(A) struct bpf_list_head head __contains(foo, node);
+    $ make M=drivers/gpu/drm/rockchip/
+
+but pahole fails to extract the BTF info from DWARF, breaking the build:
+
+      CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+      LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+      BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+    aarch64-linux-gnu-objcopy: invalid option -- 'J'
+    Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+     Copies a binary file, possibly transforming it in the process
+    ...
+    make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+    make: *** [Makefile:1866: modules] Error 2
+
+this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+later pahole is executed with the following command line:
+
+    LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
+
+which gets expanded to:
+
+    LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
+
+instead of:
+
+    LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+
+Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Link: https://lore.kernel.org/bpf/20210526215228.3729875-1-javierm@redhat.com
+---
+ scripts/link-vmlinux.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index cdfccbfed452..72bf14df6903 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -162,7 +162,7 @@ gen_btf()
+ 	vmlinux_link ${1}
+ 
+ 	info "BTF" ${2}
+-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
++	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
+ 
+ 	# Create ${2} which contains just .BTF section but no symbols. Add
+ 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+-- 
+2.37.3
+
