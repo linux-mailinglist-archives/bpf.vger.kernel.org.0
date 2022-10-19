@@ -2,206 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282D2603720
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 02:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A34603785
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 03:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbiJSAc0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 18 Oct 2022 20:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
+        id S229905AbiJSBaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 21:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbiJSAcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 20:32:25 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66417DCACC
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:24 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29J03xBK024389
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:23 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3k92jvwvd1-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:23 -0700
-Received: from twshared58694.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 18 Oct 2022 17:32:22 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 3D59420512885; Tue, 18 Oct 2022 17:32:10 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 3/3] libbpf: add non-mmapable data section selftest
-Date:   Tue, 18 Oct 2022 17:28:16 -0700
-Message-ID: <20221019002816.359650-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221019002816.359650-1-andrii@kernel.org>
-References: <20221019002816.359650-1-andrii@kernel.org>
+        with ESMTP id S229606AbiJSBaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 21:30:17 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB7F7C75D;
+        Tue, 18 Oct 2022 18:30:14 -0700 (PDT)
+Message-ID: <f3dd8b70-f44b-128a-42a5-98135d457ffd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1666143012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TcinjzPPUyIAAtvVKfgwiEVJHGd6fl9qqGsnp+ptdxg=;
+        b=da+LKlvPEMnOdDjF7ORfNbFqGAN32/ZnZi/jsoe/fMBtiqe7s38cyOeU2DwrORfQWy1a3Z
+        vCKcPxqL8VAync4uIxiRkoE9MP7qvVDrAeJwrK/EY3N8i/Yqa80MGGZmbgeFJt/F8xdZhE
+        IyDdrE7S9NQ5cbVS5AkHii9MXgHNKHE=
+Date:   Tue, 18 Oct 2022 18:30:07 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: rvwnSHZ9ASiBYT7eq7DBX6eLi-NMiDHI
-X-Proofpoint-GUID: rvwnSHZ9ASiBYT7eq7DBX6eLi-NMiDHI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-18_09,2022-10-18_01,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [net 1/2] selftests/net: fix opening object file failed
+Content-Language: en-US
+To:     wangyufen <wangyufen@huawei.com>
+Cc:     Lina Wang <lina.wang@mediatek.com>, bpf@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        deso@posteo.net, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+References: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
+ <1665482267-30706-2-git-send-email-wangyufen@huawei.com>
+ <469d28c0-8156-37ad-d0d9-c11608ca7e07@linux.dev>
+ <b38c7c5e-bd88-0257-42f4-773d8791330a@huawei.com>
+ <793d2d69-cf52-defc-6964-8b7c95bb45c4@huawei.com>
+ <20221018110031.299ecb23@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221018110031.299ecb23@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add non-mmapable data section to test_skeleton selftest and make sure it
-really isn't mmapable by trying to mmap() it anyways.
+On 10/18/22 11:00 AM, Jakub Kicinski wrote:
+> On Tue, 18 Oct 2022 17:50:19 +0800 wangyufen wrote:
+>> So, there are two possible approaches:  the first moving nat6to4.c and
+>> the actual test programs to selftests/bpf;
+>>
+>> second add make dependency on libbpf for the nat6to4.c.
+>>
+>> Which one is better?
+> 
+> Can we move the programs and create a dependency from them back
+> to networking? Perhaps shared components like udpgso_* need to live
+> under tools/net so they can be easily "depended on"?
+> 
+> Either that or they need to switch to a different traffic generator for
+> the BPF test, cause there's more networking selftests using the UDP
+> generators :(
 
-Also make sure that libbpf doesn't report BPF_F_MMAPABLE flag to users.
-
-Additional, some more manual testing was performed that this feature
-works as intended.
-
-Looking at created map through bpftool shows that flags passed to kernel are
-indeed zero:
-
-  $ bpftool map show
-  ...
-  1782: array  name .data.non_mmapa  flags 0x0
-          key 4B  value 16B  max_entries 1  memlock 4096B
-          btf_id 1169
-          pids test_progs(8311)
-  ...
-
-Checking BTF uploaded to kernel for this map shows that zero_key and
-zero_value are indeed marked as static, even though zero_key is actually
-original global (but STV_HIDDEN) variable:
-
-  $ bpftool btf dump id 1169
-  ...
-  [51] VAR 'zero_key' type_id=2, linkage=static
-  [52] VAR 'zero_value' type_id=7, linkage=static
-  ...
-  [62] DATASEC '.data.non_mmapable' size=16 vlen=2
-          type_id=51 offset=0 size=4 (VAR 'zero_key')
-          type_id=52 offset=4 size=12 (VAR 'zero_value')
-  ...
-
-And original BTF does have zero_key marked as linkage=global:
-
-  $ bpftool btf dump file test_skeleton.bpf.linked3.o
-  ...
-  [51] VAR 'zero_key' type_id=2, linkage=global
-  [52] VAR 'zero_value' type_id=7, linkage=static
-  ...
-  [62] DATASEC '.data.non_mmapable' size=16 vlen=2
-          type_id=51 offset=0 size=4 (VAR 'zero_key')
-          type_id=52 offset=4 size=12 (VAR 'zero_value')
-
-Bpftool didn't require any changes at all because it checks whether internal
-map is mmapable already, but just to double-check generated skeleton, we
-see that .data.non_mmapable neither sets mmaped pointer nor has
-a corresponding field in the skeleton:
-
-  $ grep non_mmapable test_skeleton.skel.h
-                  struct bpf_map *data_non_mmapable;
-          s->maps[7].name = ".data.non_mmapable";
-          s->maps[7].map = &obj->maps.data_non_mmapable;
-
-But .data.read_mostly has all of those things:
-
-  $ grep read_mostly test_skeleton.skel.h
-                  struct bpf_map *data_read_mostly;
-          struct test_skeleton__data_read_mostly {
-                  int read_mostly_var;
-          } *data_read_mostly;
-          s->maps[6].name = ".data.read_mostly";
-          s->maps[6].map = &obj->maps.data_read_mostly;
-          s->maps[6].mmaped = (void **)&obj->data_read_mostly;
-          _Static_assert(sizeof(s->data_read_mostly->read_mostly_var) == 4, "unexpected size of 'read_mostly_var'");
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/skeleton.c | 11 ++++++++++-
- .../testing/selftests/bpf/progs/test_skeleton.c | 17 +++++++++++++++++
- 2 files changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-index 99dac5292b41..bc6817aee9aa 100644
---- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2019 Facebook */
- 
- #include <test_progs.h>
-+#include <sys/mman.h>
- 
- struct s {
- 	int a;
-@@ -22,7 +23,8 @@ void test_skeleton(void)
- 	struct test_skeleton__kconfig *kcfg;
- 	const void *elf_bytes;
- 	size_t elf_bytes_sz = 0;
--	int i;
-+	void *m;
-+	int i, fd;
- 
- 	skel = test_skeleton__open();
- 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-@@ -124,6 +126,13 @@ void test_skeleton(void)
- 
- 	ASSERT_EQ(bss->huge_arr[ARRAY_SIZE(bss->huge_arr) - 1], 123, "huge_arr");
- 
-+	fd = bpf_map__fd(skel->maps.data_non_mmapable);
-+	m = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, 0);
-+	if (!ASSERT_EQ(m, MAP_FAILED, "unexpected_mmap_success"))
-+		munmap(m, getpagesize());
-+
-+	ASSERT_EQ(bpf_map__map_flags(skel->maps.data_non_mmapable), 0, "non_mmap_flags");
-+
- 	elf_bytes = test_skeleton__elf_bytes(&elf_bytes_sz);
- 	ASSERT_OK_PTR(elf_bytes, "elf_bytes");
- 	ASSERT_GE(elf_bytes_sz, 0, "elf_bytes_sz");
-diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
-index 1a4e93f6d9df..adece9f91f58 100644
---- a/tools/testing/selftests/bpf/progs/test_skeleton.c
-+++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
-@@ -53,6 +53,20 @@ int out_mostly_var;
- 
- char huge_arr[16 * 1024 * 1024];
- 
-+/* non-mmapable custom .data section */
-+
-+struct my_value { int x, y, z; };
-+
-+__hidden int zero_key SEC(".data.non_mmapable");
-+static struct my_value zero_value SEC(".data.non_mmapable");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct my_value);
-+	__uint(max_entries, 1);
-+} my_map SEC(".maps");
-+
- SEC("raw_tp/sys_enter")
- int handler(const void *ctx)
- {
-@@ -75,6 +89,9 @@ int handler(const void *ctx)
- 
- 	huge_arr[sizeof(huge_arr) - 1] = 123;
- 
-+	/* make sure zero_key and zero_value are not optimized out */
-+	bpf_map_update_elem(&my_map, &zero_key, &zero_value, BPF_ANY);
-+
- 	return 0;
- }
- 
--- 
-2.30.2
-
+All (at least most) of the selftests/bpf/test_prog's tests generate its own 
+traffic for unit test purpose such that each test is self contained.  The 
+udpgro_frglist test should do the same in selftests/bpf/test_prog (meaning the 
+test itself should generate its own testing traffic).  Also, it does not look 
+like it is actually using udpgso_bench_* to do benchmarking.
