@@ -2,70 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0830604FC7
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 20:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54A0604FCA
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 20:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiJSSir (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 14:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S229885AbiJSSi4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 14:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiJSSir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 14:38:47 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EF0F53D6
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:46 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id g3-20020a056a000b8300b00563772d1021so9891332pfj.18
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:46 -0700 (PDT)
+        with ESMTP id S229803AbiJSSiz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 14:38:55 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C77189C30
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:54 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id e129so17023157pgc.9
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqBmPGloF9dC48Xg8Un3Ing+FzCSYiBV6K66Y9k5YCo=;
-        b=KHRRxhGj2+R4ZEEx1Q0/OMhKkgj6/pzIbwYhk9Z+xDVzcfF1lJWERR20UiRJxPsfMd
-         tj/MAP4LZYyTCfVtaswxsqvHRDfwsIGFOV/uvtdMNb8ljQFHbHpFaFdoyenwPIoD8d/w
-         adTorG++/dZa7548axq6r/01mxms24MrUdAoal67qkO/7miOXLlUvfaZmeasM1EgBjVS
-         L1LWfC+3c0Z/KbpsidVbhK0YUT/xJejmCAtui+u3vBToxVeCdoAoFc+OLJacoChJH3r6
-         GNlaGof2SAFAd+UFn/ViRKle2RXT262ik5GjiTqTnuriPZdvwEu3cgzj2kmKEWZaSyDy
-         krIg==
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M0k3UitIuZs8QbREBS2h3Pc+EVFq/RHeV38kSddPEQQ=;
+        b=cJIdnYGrlFLTQ/pmsfdG6vB3y/ot1C7WuTo0EQv85ateL6+L/hYQRtD3QLoXxIkxBf
+         fhWG6SYs0aMulhAFsj7xr2OGF5Suk387VXzIVH5PPRqPTuogyp5PS9E5XkjaPzdMtYRR
+         vVd0HVJH3l/vk/MhCco3mS48Lk7AzVPursUfIcvFCH8zkFEcV4PFqzZu8Hcs71axxyK0
+         9stR6kfTPKJRD1v2io1cZL4HClTEY+OLIdLpPxKxrTfLzXJrVzTIFn/6orfaRZKdOPIf
+         GqQxKZS7OnrTWqpAb6ADFzdjmZBYwZU5VNVsM3lOCgBCofH6Gzm5F1hBEKo1iNpZsGYo
+         3nTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqBmPGloF9dC48Xg8Un3Ing+FzCSYiBV6K66Y9k5YCo=;
-        b=ypCQRvq88fJfA4O+Hkdl5HMl6cZrFeqrOxD9/WRWTAJD5vJ93Xlz6W9Qco4RWqwDvd
-         kzppDS06a11pdKDnY+EVuWhCuza001myCjfVA8cA0LJA88m15umLbzPG2guZ+eFIWZn+
-         hjHsVOxbJIRCeSH4g9zH9a+uLElcYGJNcPHDUFsaueQeNZPp4M1/ZXrqUbgk6V4rpq97
-         uzc44P8Z2cjTLZenjBCCj7gL8bDErhVZ/9vc4jR2hmen8X+YJ6oL0oWRZ8II9uokNX4u
-         Nk2PDck8pHc/HnKQiHj5GY1BUd6jfpN+wJYw37WSUx1JGo3vv5zQNtuRxNk8DC2BZQNn
-         E8nA==
-X-Gm-Message-State: ACrzQf00d7gpChVIAcHEFEro0mXUirYQxwyt/FnNuL9cwU/pihKlWGbh
-        xZIBv/2VYzt/yJORr8ywsqaGd8I=
-X-Google-Smtp-Source: AMsMyM50NO8/ojq7mA3v9DfZ3QjisUeEFquR7XFIeu3nJ0We6Eo4CtQUo1xI04EyAnu8ZtybCbTnu4c=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:5e81:0:b0:563:1f18:62ab with SMTP id
- s123-20020a625e81000000b005631f1862abmr9710310pfb.76.1666204725935; Wed, 19
- Oct 2022 11:38:45 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 11:38:44 -0700
-In-Reply-To: <20221019115539.983394-2-houtao@huaweicloud.com>
-Mime-Version: 1.0
-References: <20221019115539.983394-1-houtao@huaweicloud.com> <20221019115539.983394-2-houtao@huaweicloud.com>
-Message-ID: <Y1BENCpam1I+anXF@google.com>
-Subject: Re: [PATCH bpf 1/2] bpf: Wait for busy refill_work when destorying
- bpf memory allocator
-From:   sdf@google.com
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M0k3UitIuZs8QbREBS2h3Pc+EVFq/RHeV38kSddPEQQ=;
+        b=xd78yLEABrmh4GCNNLW30Krq3EhU38OH0zyWN7NnGIXW2NPoeY1mCK6vtfOyuvF7cw
+         MJdGwh9aq46E8UL9JXAEzTRzcUwAe9/OUF6PqUaB2uu7SBDnCqJ+As/zcK2cI3grSEB+
+         xBe7G+9KXFzUkgmnWYgZjaN/AZ7t/+/dbInESEE4vbPbJqOTUmkcCs9jW0CrQPcy7YNB
+         xoRlyca9pJhE3OOT/407Fy+3hLGfcQ+CP1ldj3ioQVfuukqNXqKY4Zth20RLeI8Jtxcs
+         T1enJJVage31kKhdOY4swv0PgI7JnBUzBHedJp7nwnBdsZSP52zBp3JrXv+TpE0z5UKy
+         K8TQ==
+X-Gm-Message-State: ACrzQf1BIX51e3vCQjcHWVbRyEb2S4ALZcWp7Sc4u3kbPhZ8fG/yJMA2
+        +ll93i3IbPJ4nYXMBocevgEka7JXB4Edqw==
+X-Google-Smtp-Source: AMsMyM647pe54sjfn91KpZTfSIEArldRGfeq3X3oQcbXBYMNs8zSTUJE/WoXxq2JvPGn2qpwNpq2/A==
+X-Received: by 2002:a63:5519:0:b0:457:dced:8ba1 with SMTP id j25-20020a635519000000b00457dced8ba1mr8161929pgb.163.1666204733726;
+        Wed, 19 Oct 2022 11:38:53 -0700 (PDT)
+Received: from mariner-vm.. (c-67-185-99-176.hsd1.wa.comcast.net. [67.185.99.176])
+        by smtp.gmail.com with ESMTPSA id x2-20020a170902a38200b00177ff4019d9sm11104510pla.274.2022.10.19.11.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Oct 2022 11:38:53 -0700 (PDT)
+From:   dthaler1968@googlemail.com
+To:     bpf@vger.kernel.org
+Cc:     Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH 4/4] bpf, docs: Explain helper functions
+Date:   Wed, 19 Oct 2022 18:38:45 +0000
+Message-Id: <20221019183845.905-4-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
+In-Reply-To: <20221019183845.905-1-dthaler1968@googlemail.com>
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,105 +70,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/19, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+From: Dave Thaler <dthaler@microsoft.com>
 
-> A busy irq work is an unfinished irq work and it can be either in the
-> pending state or in the running state. When destroying bpf memory
-> allocator, refill_work may be busy for PREEMPT_RT kernel in which irq
-> work is invoked in a per-CPU RT-kthread. It is also possible for kernel
-> with arch_irq_work_has_interrupt() being false (e.g. 1-cpu arm32 host)
-> and irq work is inovked in timer interrupt.
+Explain helper functions.
 
-> The busy refill_work leads to various issues. The obvious one is that
-> there will be concurrent operations on free_by_rcu and free_list between
-> irq work and memory draining. Another one is call_rcu_in_progress will
-> not be reliable for the checking of pending RCU callback because
-> do_call_rcu() may has not been invoked by irq work. The other is there
-> will be use-after-free if irq work is freed before the callback of
-> irq work is invoked as shown below:
+Kernel functions and bpf to bpf calls are covered in
+a later commit in this set ("Add extended call instructions").
 
->   BUG: kernel NULL pointer dereference, address: 0000000000000000
->   #PF: supervisor instruction fetch in kernel mode
->   #PF: error_code(0x0010) - not-present page
->   PGD 12ab94067 P4D 12ab94067 PUD 1796b4067 PMD 0
->   Oops: 0010 [#1] PREEMPT_RT SMP
->   CPU: 5 PID: 64 Comm: irq_work/5 Not tainted 6.0.0-rt11+ #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
->   RIP: 0010:0x0
->   Code: Unable to access opcode bytes at 0xffffffffffffffd6.
->   RSP: 0018:ffffadc080293e78 EFLAGS: 00010286
->   RAX: 0000000000000000 RBX: ffffcdc07fb6a388 RCX: ffffa05000a2e000
->   RDX: ffffa05000a2e000 RSI: ffffffff96cc9827 RDI: ffffcdc07fb6a388
->   ......
->   Call Trace:
->    <TASK>
->    irq_work_single+0x24/0x60
->    irq_work_run_list+0x24/0x30
->    run_irq_workd+0x23/0x30
->    smpboot_thread_fn+0x203/0x300
->    kthread+0x126/0x150
->    ret_from_fork+0x1f/0x30
->    </TASK>
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-> Considering the ease of concurrency handling and the short wait time
-> used for irq_work_sync() under PREEMPT_RT (When running two test_maps on
-> PREEMPT_RT kernel and 72-cpus host, the max wait time is about 8ms and
-> the 99th percentile is 10us), just waiting for busy refill_work to
-> complete before memory draining and memory freeing.
-
-> Fixes: 7c8199e24fa0 ("bpf: Introduce any context BPF specific memory  
-> allocator.")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->   kernel/bpf/memalloc.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
-
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 94f0f63443a6..48e606aaacf0 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -497,6 +497,16 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->   		rcu_in_progress = 0;
->   		for_each_possible_cpu(cpu) {
->   			c = per_cpu_ptr(ma->cache, cpu);
-> +			/*
-> +			 * refill_work may be unfinished for PREEMPT_RT kernel
-> +			 * in which irq work is invoked in a per-CPU RT thread.
-> +			 * It is also possible for kernel with
-> +			 * arch_irq_work_has_interrupt() being false and irq
-> +			 * work is inovked in timer interrupt. So wait for the
-> +			 * completion of irq work to ease the handling of
-> +			 * concurrency.
-> +			 */
-> +			irq_work_sync(&c->refill_work);
-
-Does it make sense to guard these with "IS_ENABLED(CONFIG_PREEMPT_RT)" ?
-We do have a bunch of them sprinkled already to run alloc/free with
-irqs disabled.
-
-I was also trying to see if adding local_irq_save inside drain_mem_cache
-to pair with the ones from refill might work, but waiting for irq to
-finish seems easier...
-
-Maybe also move both of these in some new "static void irq_work_wait"
-to make it clear that the PREEMT_RT comment applies to both of them?
-
-Or maybe that helper should do 'for_each_possible_cpu(cpu)  
-irq_work_sync(&c->refill_work);'
-in the PREEMPT_RT case so we don't have to call it twice?
-
->   			drain_mem_cache(c);
->   			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
->   		}
-> @@ -511,6 +521,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->   			cc = per_cpu_ptr(ma->caches, cpu);
->   			for (i = 0; i < NUM_CACHES; i++) {
->   				c = &cc->cache[i];
-> +				irq_work_sync(&c->refill_work);
->   				drain_mem_cache(c);
->   				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
->   			}
-> --
-> 2.29.2
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index 29b599c70..f9e56d9d5 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -242,7 +242,7 @@ BPF_JSET  0x40   PC += off if dst & src
+ BPF_JNE   0x50   PC += off if dst != src
+ BPF_JSGT  0x60   PC += off if dst > src     signed
+ BPF_JSGE  0x70   PC += off if dst >= src    signed
+-BPF_CALL  0x80   function call
++BPF_CALL  0x80   function call              see `Helper functions`_
+ BPF_EXIT  0x90   function / program return  BPF_JMP only
+ BPF_JLT   0xa0   PC += off if dst < src     unsigned
+ BPF_JLE   0xb0   PC += off if dst <= src    unsigned
+@@ -253,6 +253,22 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
+ The eBPF program needs to store the return value into register R0 before doing a
+ BPF_EXIT.
+ 
++Helper functions
++~~~~~~~~~~~~~~~~
++Helper functions are a concept whereby BPF programs can call into a
++set of function calls exposed by the eBPF runtime.  Each helper
++function is identified by an integer used in a ``BPF_CALL`` instruction.
++The available helper functions may differ for each eBPF program type.
++
++Conceptually, each helper function is implemented with a commonly shared function
++signature defined as:
++
++  u64 function(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
++
++In actuality, each helper function is defined as taking between 0 and 5 arguments,
++with the remaining registers being ignored.  The definition of a helper function
++is responsible for specifying the type (e.g., integer, pointer, etc.) of the value returned,
++the number of arguments, and the type of each argument.
+ 
+ Load and store instructions
+ ===========================
+-- 
+2.33.4
 
