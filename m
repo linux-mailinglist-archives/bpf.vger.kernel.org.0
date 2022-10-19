@@ -2,65 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4089C60370A
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 02:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE8F603712
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 02:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbiJSAR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 20:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
+        id S229783AbiJSAXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 20:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbiJSARI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 20:17:08 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EACDED35
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:16:15 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id e15so13211805iof.2
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:16:15 -0700 (PDT)
+        with ESMTP id S229832AbiJSAXg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 20:23:36 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DF8DAC4E
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:23:33 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id d26so36213654eje.10
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=37bdsyQHCRTXJLfG9pay7ecUUBRUHONlsC+UzXv6Ay0=;
-        b=KR2BoPcB+A6xHoXnCHGW98IJjEn7C7e5MkcQltx1+9n69xreByGpLIEUe9YAsTlYKf
-         BEzEcSx+ha3bqgTcEEbWtTNHLA50+iAhh+mvrY0MB+25Dl0cZ9Vpdb2jfT3FRABEYyq8
-         /4ZPCKvWWupp3a1KWr2SJ2HNG0YtO0VRUK8hOMHxZj0MptitP3y3KhDBRuwA4l5iTPIU
-         W0JTq0OXKpoFMfNhsQK2R1dAXT0gksG+g6b1kjnbB8YEYye0B50908pKdTqkLxgUjx7K
-         jBrtHmsCHbnJiJn1T1uKcQ4tw2LGKgjaWn3kY8GOt2Z380evcJyqmcBr9FqgE8VSVj2Y
-         9oSA==
+        bh=TV5B6hRLohgqoZZ33aceSX7uyQKt4JbC1XADWgLvU1k=;
+        b=N4ju341+90/yMrpVbFILxBo755VRGHoFoMRzQrqsb1vyTpX9cq5oLmKBMqVXCmlZ3R
+         kXE+l0bt9aJW3ixsKU8iGPZB9Z0NxxiBlNYROHvq/OgH5jXpcZnvbMPNYiA4ZFwxdhM7
+         OCt0AwNMdeX5slWGzt2TEaldV4aQy2gAKWuxeF0bxvStfBPOIGtKP3A3wWKMwpQ/Nx7Z
+         qqfq+jODleUfgFFQourSykMCz/4qwbME1t9L1PuGYn4pQXa5ZogFTV8bqpHHry7S+8Mq
+         DhU6GbR2lCr58a/YZoGl6IO9GkpvI4gkazEBb6nKGWOPDmUGZNy2F1TXdFD1wgR3annR
+         MN0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=37bdsyQHCRTXJLfG9pay7ecUUBRUHONlsC+UzXv6Ay0=;
-        b=hZqy0t4JUhv5V6geb5y4JRyqwXesMTvTjyUGMCQRTFBFy1+rd3JtX5sizDvfQCOms1
-         65M0J9+rEoZJm/wEGP3oCSOObM0hW+oV4Kp6X72PtUWrUMGIDo2gvt1i6uxL4z+x/rB8
-         0BfKym681S/TtcLvOjnw5XTzpYli7N1ufqysKCjqzLSOm3PyKBxUF4crzHEDRnuxsJJz
-         3V5FgLNwLN8gc8C+YNeBJPm9zFtyx9GyfDJ6uJgNQNdjpykgCEO2dM3bmq+1jhplNhrr
-         29Lf5hDzKvoQYyv3IlAHY5VwCHzd7HbjlR/UiQVwmCUwMUbij6hoQWa+DwKefxk1paBI
-         m2hg==
-X-Gm-Message-State: ACrzQf3uCG58ld1AlndEZYNib7t8OQZ/9sAQ5yFMHIsGPrUlNU8lVr0X
-        zlGQlm9pHPfn76ZlszaC35XSoHDuubtJAwGE8QeHHQ==
-X-Google-Smtp-Source: AMsMyM43Ai3nNYY/sHxohCYBzifXEnyc6eOwojr2TPqWt71wVdkbptfalplF6i+TjTXYaiKu7H879qEHimRNia8LJ+Q=
-X-Received: by 2002:a05:6638:3c49:b0:363:c8dc:fb2f with SMTP id
- bg9-20020a0566383c4900b00363c8dcfb2fmr3850770jab.119.1666138547398; Tue, 18
- Oct 2022 17:15:47 -0700 (PDT)
+        bh=TV5B6hRLohgqoZZ33aceSX7uyQKt4JbC1XADWgLvU1k=;
+        b=ccC48v6IjnixRUQf+e3s2Mo9VVrWHi91RiAcK65SqXjgPKdXFlWh+QvDKOQmDnNNCf
+         qhOVrPBuhF4xPCy+FziLRRn/8lc7Z+1YJMaJ8wEiEnlOz9I4pOw/z+yDWhVo4/SPwirS
+         LciiZAOKbDWb0C7ayUAMCcci83K76+gEzkhzO6/idiy/Ou0WmPycQXrdVf9Jm3Eu9wQ2
+         UgHcI6dyxVN3/l2qusu49CX1aQy97wJ85A31ooB/JMBfnfYEx5QlX22WxhMUstVlmZNe
+         4+QnTD1JsHg7/yk1xD2yMbr3UmbN17Ke19pOc47q5G5rZw6q2001iS6YQo6eJ6wPIiBj
+         ZptA==
+X-Gm-Message-State: ACrzQf0MX+FM2htgtjy5vWTmpUEt5yhAFXMX83lVAIzYft7RNVesnvv6
+        PB1aQ8BMdBCKqj3Ix7I5/L7G95Ui/aCOX73c6QM=
+X-Google-Smtp-Source: AMsMyM6wkyASBuI/Uf3Cl149V16Rd54tC2KWi6AM0ACvEPgfN7A3N3vNaijNgVmSRw8jiz+Ut/kqLLZHH/E6xShvAwE=
+X-Received: by 2002:a17:906:dc8f:b0:78d:f675:226 with SMTP id
+ cs15-20020a170906dc8f00b0078df6750226mr4521238ejc.745.1666139011535; Tue, 18
+ Oct 2022 17:23:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221018035646.1294873-1-andrii@kernel.org> <20221018035646.1294873-2-andrii@kernel.org>
- <Y0700LilBVP2D39B@google.com> <CAEf4BzbFNpy3Ksp9ez_xvG7_C8uD=72d6gZeZj7xWsaODuOpNg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbFNpy3Ksp9ez_xvG7_C8uD=72d6gZeZj7xWsaODuOpNg@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 18 Oct 2022 17:15:36 -0700
-Message-ID: <CAKH8qBvibWBL3okWMQTe_SZ=a94a4FkR8RM884YRfsTRxtQKaA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: clean up and refactor BTF fixup step
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
+References: <f7ee957a031f746400b97b6fc7730fda21bdb742.camel@fb.com>
+In-Reply-To: <f7ee957a031f746400b97b6fc7730fda21bdb742.camel@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 18 Oct 2022 17:23:19 -0700
+Message-ID: <CAEf4BzbMC_J+YUsO8YpcWGpWK9k2=EMM_bfdq6ZxCPZEWwzf6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix task_local_storage/exit_creds
+ rcu usage
+To:     Delyan Kratunov <delyank@meta.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Song Liu <songliubraving@meta.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,107 +70,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 18, 2022 at 4:19 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Oct 18, 2022 at 4:25 PM Delyan Kratunov <delyank@meta.com> wrote:
 >
-> On Tue, Oct 18, 2022 at 11:47 AM <sdf@google.com> wrote:
-> >
-> > On 10/17, Andrii Nakryiko wrote:
-> > > Refactor libbpf's BTF fixup step during BPF object open phase. The only
-> > > functional change is that we now ignore BTF_VAR_GLOBAL_EXTERN variables
-> > > during fix up, not just BTF_VAR_STATIC ones, which shouldn't cause any
-> > > change in behavior as there shouldn't be any extern variable in data
-> > > sections for valid BPF object anyways.
-> >
-> > > Otherwise it's just collapsing two functions that have no reason to be
-> > > separate, and switching find_elf_var_offset() helper to return entire
-> > > symbol pointer, not just its offset. This will be used by next patch to
-> > > get ELF symbol visibility.
-> >
-> > > While refactoring, also "normalize" debug messages inside
-> > > btf_fixup_datasec() to follow general libbpf style and print out data
-> > > section name consistently, where it's available.
-> >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > Acked-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > Left a couple of questions below.
-> >
-> > > ---
-> > >   tools/lib/bpf/libbpf.c | 95 ++++++++++++++++++------------------------
-> > >   1 file changed, 41 insertions(+), 54 deletions(-)
-> >
+> BPF CI has revealed flakiness in the task_local_storage/exit_creds test.
+> The failure point in CI [1] is that null_ptr_count is equal to 0,
+> which indicates that the program hasn't run yet. This points to the
+> kern_sync_rcu (sys_membarrier -> synchronize_rcu underneath) not
+> waiting sufficiently.
 >
-> [...]
+> Indeed, synchronize_rcu only waits for read-side sections that started
+> before the call. If the program execution starts *during* the
+> synchronize_rcu invocation (due to, say, preemption), the test won't
+> wait long enough.
 >
-> > > -     /* .extern datasec size and var offsets were set correctly during
-> > > -      * extern collection step, so just skip straight to sorting variables
-> > > +     /* extern-backing datasecs (.ksyms, .kconfig) have their size and
-> > > +      * variable offsets set at the previous step, so we skip any fixups
-> > > +      * for such sections
-> > >        */
-> > >       if (t->size)
-> > >               goto sort_vars;
-> >
-> > > -     ret = find_elf_sec_sz(obj, name, &size);
-> > > -     if (ret || !size) {
-> > > -             pr_debug("Invalid size for section %s: %u bytes\n", name, size);
-> > > +     err = find_elf_sec_sz(obj, sec_name, &size);
-> > > +     if (err || !size) {
-> > > +             pr_debug("sec '%s': invalid size %u bytes\n", sec_name, size);
-> >
-> > nit: do we want to log err instead here? it seems like the size will be
-> > zero on error anyway, so probably not worth logging it?
+> As a speculative fix, make the synchornize_rcu calls in a loop until
+> an explicit run counter has gone up.
 >
-> hmm.. I mostly just preserved the original message content. Error can
-> be zero, and size can be zero, so don't know, we can log both or none?
-> Section name will probably be more important in practice.
+>   [1]: https://github.com/kernel-patches/bpf/actions/runs/3268263235/jobs/5374940791
+>
+> Signed-off-by: Delyan Kratunov <delyank@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/task_local_storage.c     | 11 +++++++++--
+>  .../bpf/progs/task_local_storage_exit_creds.c         |  3 +++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> index 035c263aab1b..4e2e3293c914 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> @@ -53,8 +53,15 @@ static void test_exit_creds(void)
+>         if (CHECK_FAIL(system("ls > /dev/null")))
+>                 goto out;
+>
+> -       /* sync rcu to make sure exit_creds() is called for "ls" */
+> -       kern_sync_rcu();
+> +       /* kern_sync_rcu is not enough on its own as the read section we want
+> +        * to wait for may start after we enter synchronize_rcu, so our call
+> +        * won't wait for the section to finish. Loop on the run counter
+> +        * as well to ensure the program has run.
+> +        */
+> +       do {
+> +               kern_sync_rcu();
+> +       } while (__atomic_load_n(&skel->bss->run_count, __ATOMIC_SEQ_CST) == 0);
 
-Logging both is probably the easiest? Let's have them just in case,
-shouldn't hurt; I'm not sure how relevant that really is..
+let's also add some big enough max counter here to avoid being stuck
+if something about test breaks and we actually never trigger the
+program?
 
-> >
-> > >               return -ENOENT;
-> > >       }
-> >
-> > >       t->size = size;
-> >
-> > >       for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
-> > > +             const struct btf_type *t_var;
-> > > +             struct btf_var *var;
-> > > +             const char *var_name;
-> > > +             Elf64_Sym *sym;
-> > > +
+> +
+>         ASSERT_EQ(skel->bss->valid_ptr_count, 0, "valid_ptr_count");
+>         ASSERT_NEQ(skel->bss->null_ptr_count, 0, "null_ptr_count");
+>  out:
+> diff --git a/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
+> index 81758c0aef99..41d88ed222ff 100644
+> --- a/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
+> +++ b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
+> @@ -14,6 +14,7 @@ struct {
+>         __type(value, __u64);
+>  } task_storage SEC(".maps");
 >
-> [...]
+> +int run_count = 0;
+>  int valid_ptr_count = 0;
+>  int null_ptr_count = 0;
 >
-> > > -static int btf_finalize_data(struct bpf_object *obj, struct btf *btf)
-> > > +static int bpf_object_fixup_btf(struct bpf_object *obj)
-> > >   {
-> > > -     int err = 0;
-> > > -     __u32 i, n = btf__type_cnt(btf);
-> > > +     int i, n, err = 0;
-> >
-> > > +     if (!obj->btf)
-> > > +             return 0;
-> > > +
-> > > +     n = btf__type_cnt(obj->btf);
-> >
-> > qq: why do s/__u32/int/ here? btf__type_cnt seems to be returning u32?
->
-> mostly to consolidate all the variables above into single short line.
-> BTF IDs can't be so big to not fit into int, so it's safe to use
-> signed int everywhere.
-
-SG, thanks!
-
-> >
-> > >       for (i = 1; i < n; i++) {
-> > > -             struct btf_type *t = btf_type_by_id(btf, i);
-> > > +             struct btf_type *t = btf_type_by_id(obj->btf, i);
-> >
-> > >               /* Loader needs to fix up some of the things compiler
-> > >                * couldn't get its hands on while emitting BTF. This
->
-> [...]
+> @@ -28,5 +29,7 @@ int BPF_PROG(trace_exit_creds, struct task_struct *task)
+>                 __sync_fetch_and_add(&valid_ptr_count, 1);
+>         else
+>                 __sync_fetch_and_add(&null_ptr_count, 1);
+> +
+> +       __sync_fetch_and_add(&run_count, 1);
+>         return 0;
+>  }
+> --
+> 2.37.3
