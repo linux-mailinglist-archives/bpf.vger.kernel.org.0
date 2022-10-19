@@ -2,268 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF29D604CBE
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 18:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49938604D73
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 18:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbiJSQGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 12:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        id S229597AbiJSQbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 12:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbiJSQGW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 12:06:22 -0400
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0936713FDE7
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:05:02 -0700 (PDT)
-Received: by mail-qv1-f42.google.com with SMTP id o67so11646977qvo.13
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:05:02 -0700 (PDT)
+        with ESMTP id S229491AbiJSQbh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 12:31:37 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB54615F335
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:31:34 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id k2so41296796ejr.2
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QzwrkDuFpARPQBLHkeuxXMN2tnLqTO3Q+KR9a8q5n9M=;
+        b=Guy676hx6L0iOTXjPp76xayeQSblWF2F1oB+2mmKXUpOr7+ZAklasQiSMTomEMAVMv
+         g2ECUvPX54m09Vapg3puiq/zfvuhoz7hq8AO7YMFfR8o2aWpdqe+b1U9/lDQz5ycXq2v
+         JirWdj+YNnwdRDSmwTN+ti+nKsl6Rq98il+kY29VwEzDvkgizbhtrjrp0ROI4bIqAL9i
+         sU0rutfU4v97DYUWgEQAL6c7eU4OFTuv7EfpY2Us0DH2Kcg4vditfehIb65XDiHF6XrH
+         +LZIrY3FgqbMB+doO2GkR0wNCHxwiimnzj4KcISa6+OwHKnBKV3cqWqKrBEDEPccUEAI
+         PZig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4+W+//J/FAdmasYlQ6TgAiMPF7T2fVTWT7D4tt3tCo0=;
-        b=Fa6oC5QMRvMW/jVoNrM+LQX44WYRjDEzfURFdaD0uO7QqJDygTgVRrFKmHOrn7YeVS
-         3ZsaT0IcqInS3L2vF6NIlhP6xvjhqeob497CGG6oQqwA6ySMdrJuJIcI3j8Zn29kDnpj
-         jN/JO5LozSKXwK4kbt807KBJwOztic7Mz4ElbX1zH7Jmk0q4Vzvc6wNE9+XEhk5OKlGO
-         +O48sdezTa5v+u2Z9KbxFFoXByAaT9nRAq91D5mhTVX9P55Kb+5TqvMKp6EC+t5fvJjq
-         W3S0jFuf5S6YlHErGz68le4YvG/2Jq8sa4SA35sAwmPg+/aQ7Di4gN6jH8YVnJHnOm3h
-         FQgg==
-X-Gm-Message-State: ACrzQf1X3fhq6Kz3WFCuewz31L1FYhbHGDcZHn4/Pczec/azcbiHvDD3
-        s4+uhF+/VrX0FrnJaBPDnxAjh0zh144=
-X-Google-Smtp-Source: AMsMyM4xKTujwTjDyz5F0tPFtcPBuHkFk768eCYlteqlA4zmpqZxvyyDa7Rkz0Ln9RFCfP3Zy4MoLA==
-X-Received: by 2002:a0c:e1c6:0:b0:4af:aa3c:987c with SMTP id v6-20020a0ce1c6000000b004afaa3c987cmr7510918qvl.60.1666195501178;
-        Wed, 19 Oct 2022 09:05:01 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::e12b])
-        by smtp.gmail.com with ESMTPSA id x5-20020a05620a258500b006bb366779a4sm4995420qko.6.2022.10.19.09.04.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 09:05:00 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 11:05:02 -0500
-From:   David Vernet <void@manifault.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzwrkDuFpARPQBLHkeuxXMN2tnLqTO3Q+KR9a8q5n9M=;
+        b=U4Qzn0be/Lh9A6AOoIOidBCfidweOIRvXXV4QLplkSqx54EBl8MtU7nMnBA8X2AxEe
+         vcrO/owpK+rbH07WWVzraeroeJWVKUPiWpQi1gocm0gOqfV/AX6OYkqI0AayFbRZayNu
+         bcFvwJ1MX2JY7O+2FvZeDmXllLYCmrDTql+fNeNXhfk6qW7LUNPRmUSIJaqIMs+Jjn7t
+         Fb09FzrCqGvpcQHOlJETLANNVvrXe6VwKEuOpUzgZ/Frufg3OjZxVUjTz596Xgdb5WJs
+         HCaO1CVqyYqzO1OQxek+eZt0Zbs7pvJ4Gn1/eMqKzppzH6xfWIza+RsKrFsw+G7eKHFt
+         pH2g==
+X-Gm-Message-State: ACrzQf37HtC5qgbzQ/l39pG5HtEfzy0RBwGtFX1jElOM7AoXgvQGm3QD
+        Cbrgmg0m6LISSMAe9Jb9Jegk5FrW2UJDc+rSrNk=
+X-Google-Smtp-Source: AMsMyM5FKLwmg4NoJUGusC0cd1g/FLHyfzeRzqP3Zt8ElWDkP8nkvk8el7Ny3miEAUT6cB4cnnC4xW42bSlAUNPGyz4=
+X-Received: by 2002:a17:907:2cd8:b0:78d:9c3c:d788 with SMTP id
+ hg24-20020a1709072cd800b0078d9c3cd788mr7654698ejc.327.1666197093236; Wed, 19
+ Oct 2022 09:31:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221013062303.896469-1-memxor@gmail.com> <20221013062303.896469-20-memxor@gmail.com>
+ <20221019023124.47zzi3gs2zcdvxca@macbook-pro-4.dhcp.thefacebook.com> <20221019055834.ux5dfoot7hyuf4jk@apollo>
+In-Reply-To: <20221019055834.ux5dfoot7hyuf4jk@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 19 Oct 2022 09:31:21 -0700
+Message-ID: <CAADnVQ+Q9LO1dkz-Q7jHRjgf5cFFk1go=gwYDfVrTtanjMCoHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 19/25] bpf: Introduce bpf_kptr_new
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v1 02/13] bpf: Rework process_dynptr_func
-Message-ID: <Y1AgLhWygv1yCRQ8@maniforge.dhcp.thefacebook.com>
-References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-3-memxor@gmail.com>
- <Y08z6U1iAcv4IwDY@maniforge.DHCP.thefacebook.com>
- <20221019061821.4cpls2alap74uppu@apollo>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221019061821.4cpls2alap74uppu@apollo>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Delyan Kratunov <delyank@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 11:48:21AM +0530, Kumar Kartikeya Dwivedi wrote:
-
-[...]
-
-> > > In all of these cases, PTR_TO_DYNPTR shouldn't be allowed to be passed
-> > > to such helpers, however the current code simply returns 0.
-> > >
-> > > The rejection for helpers that release the dynptr is already handled.
-> > >
-> > > For fixing this, we take a step back and rework existing code in a way
-> > > that will allow fitting in all classes of helpers and have a coherent
-> > > model for dealing with the variety of use cases in which dynptr is used.
-> > >
-> > > First, for ARG_PTR_TO_DYNPTR, it can either be set alone or together
-> > > with a DYNPTR_TYPE_* constant that denotes the only type it accepts.
-> > >
-> > > Next, helpers which initialize a dynptr use MEM_UNINIT to indicate this
-> > > fact. To make the distinction clear, use MEM_RDONLY flag to indicate
-> > > that the helper only operates on the memory pointed to by the dynptr,
-> >
-> > Hmmm, it feels a bit confusing to overload MEM_RDONLY like this. I
-> > understand the intention (which is logical) to imply that the pointer to
-> > the dynptr is read only, but the fact that the memory contained in the
-> > dynptr may not be read only will doubtless confuse people.
-> >
-> > I don't really have a better suggestion. This is the proper use of
-> > MEM_RDONLY, but it really feels super confusing. I guess this is
-> > somewhat mitigated by the fact that the read-only nature of the dynptr
-> > is something that will be validated at runtime?
-> >
-> 
-> Nope, both dynptr's const-ness and const-ness of the memory it points to are
-> supposed to be tracked statically. It's part of the type of the dynptr.
-
-Could you please clarify what you're "noping" here? The dynptr being
-read-only is tracked statically, but based on the discussion in the
-thread at [0] I thought the plan was to enforce this property at
-runtime. Am I wrong about that?
-
-[0]: https://lore.kernel.org/bpf/CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com/
-
-My point was just that it might be less difficult to confuse
-CONST_PTR_TO_DYNPTR | MEM_RDONLY with the memory contained in the dynptr
-region if there's a separate field inside the dynptr itself which tracks
-whether that region is R/O. I'm mostly just thinking out loud -- as I
-said in the last email I think using MEM_RDONLY as you are is logical.
-
-> The second case doesn't exist yet, but will soon (with skb dynptrs abstracting
-> over read only __sk_buff ctx).
-> 
-> So what MEM_RDONLY in argument type really means is that I take a pointer to
-> const struct bpf_dynptr, which means I can't modify the struct bpf_dynptr itself
-> (so it's size, offset, ptr, etc.), but that is independent of r/w state of what
-> it points to.
+On Tue, Oct 18, 2022 at 10:58 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> const T *p vs T *const p
-
-Right, I understand the intention of the patch (which was why I said it
-was a logical choice) and the distinction between the two variants of
-const. My point was that at first glance, someone who's not a verifier
-expert who's trying to understand all of this to enable their writing of
-a BPF program may be thrown off by seeing "PTR_TO_DYNPTR | RDONLY".
-Hopefully that's something we can address with adequately documenting
-helpers, and in any case, it's certainly not an argument against your
-overall approach.
-
-Also, I think it will end up being more clear if and when we have e.g.
-a helper that takes a CONST_PTR_TO_DYNPTR | MEM_RDONLY dynptr, and
-returns e.g. an R/O PTR_TO_MEM | MEM_RDONLY pointer to its backing
-memory.
-
-Anyways, at the end of the day this is really all implementation details
-of the verifier and BPF internals, so I digress...
-
-> In this case it's the latter. Soon we will also support const T *const p.
-> 
-> Hence, MEM_RDONLY is at the argument type level, translating to reg->type, and
-> the read only status for the dynptr's memory slice will be part of dynptr
-> specific register state (dynptr.type).
-> 
-> But I am open to more suggestions on how to write this stuff, if it makes the
-> code easier to read.
-
-I think what you have makes sense and IMO is the cleanest way to express
-all of this.
-
-The only thing that I'm now wondering after sleeping on this is whether
-it's really necessary to rename the register type to CONST_PTR_TO_DYNPTR.
-We're already restricting that it always be called with MEM_RDONLY. Are
-we _100%_ sure that it will always be fully static whether a dynptr is
-R/O? I know that Joanne said probably yes in [1], but it feels perhaps
-unnecessarily restrictive to codify that by making the register type
-CONST_PTR_TO_DYNPTR. Why not just make it PTR_TO_DYNPTR and keep the
-verifications you added in this patch that it's always specified with
-MEM_RDONLY, and then if we ever change our minds and later decide to add
-helpers that can change the access permissions on the dynptr, it will
-just be a matter of changing our expectations around the presence of
-that MEM_RDONLY modifier?
-
-[1]: https://lore.kernel.org/bpf/CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com/
-
-[...]
-
-> > >  	/* ARG_PTR_TO_DYNPTR takes any type of dynptr */
-> > >  	if (arg_type == ARG_PTR_TO_DYNPTR)
-> > >  		return true;
-> > >
-> > >  	dynptr_type = arg_to_dynptr_type(arg_type);
-> > > -
-> > > -	return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
-> > > +	if (reg->type == CONST_PTR_TO_DYNPTR) {
-> > > +		return reg->dynptr.type == dynptr_type;
-> > > +	} else {
-> > > +		spi = get_spi(reg->off);
-> > > +		return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
-> > > +	}
-> > >  }
-> > >
-> > >  /* The reg state of a pointer or a bounded scalar was saved when
-> > > @@ -1317,9 +1346,6 @@ static const int caller_saved[CALLER_SAVED_REGS] = {
-> > >  	BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5
-> > >  };
-> > >
-> > > -static void __mark_reg_not_init(const struct bpf_verifier_env *env,
-> > > -				struct bpf_reg_state *reg);
-> > > -
-> > >  /* This helper doesn't clear reg->id */
-> > >  static void ___mark_reg_known(struct bpf_reg_state *reg, u64 imm)
-> > >  {
-> > > @@ -1382,6 +1408,25 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
-> > >  	__mark_reg_known_zero(regs + regno);
-> > >  }
-> > >
-> > > +static void __mark_dynptr_regs(struct bpf_reg_state *reg1,
-> > > +			       struct bpf_reg_state *reg2,
-> > > +			       enum bpf_dynptr_type type)
+> On Wed, Oct 19, 2022 at 08:01:24AM IST, Alexei Starovoitov wrote:
+> > On Thu, Oct 13, 2022 at 11:52:57AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > +void *bpf_kptr_new_impl(u64 local_type_id__k, u64 flags, void *meta__ign)
 > > > +{
-> > > +	/* reg->type has no meaning for STACK_DYNPTR, but when we set reg for
-> > > +	 * callback arguments, it does need to be CONST_PTR_TO_DYNPTR.
-> > > +	 */
+> > > +   struct btf_struct_meta *meta = meta__ign;
+> > > +   u64 size = local_type_id__k;
+> > > +   void *p;
+> > > +
+> > > +   if (unlikely(flags || !bpf_global_ma_set))
+> > > +           return NULL;
 > >
-> > Meh, this is mildly confusing. Please correct me if my understanding is wrong,
-> > but the reason this is the case is that we only set the struct bpf_reg_state
-> > from the stack, whereas the actual reg itself of course has PTR_TO_STACK. If
-> > that's the case, can we go into just a bit more detail here in this comment
-> > about what's going on? It's kind of confusing that we have an actual register
-> > of type PTR_TO_STACK, which points to stack register state of (inconsequential)
-> > type CONST_PTR_TO_DYNPTR. It's also kind of weird (but also inconsequential)
-> > that we have dynptr.first_slot for CONST_PTR_TO_DYNPTR.
+> > Unused 'flags' looks weird in unstable api. Just drop it?
+> > And keep it as:
+> > void *bpf_kptr_new(u64 local_type_id__k, struct btf_struct_meta *meta__ign);
 > >
-> 
-> There are two cases which this function is called for, one is for the
-> spilled registers for dynptr on the stack. In that case it *is* the dynptr, so
-> reg->type as CONST_PTR_TO_DYNPTR is meaningless/wrong, and not checked. The type
-> is already part of slot_type == STACK_DYNPTR.
+> > and in bpf_experimental.h:
+> >
+> > extern void *bpf_kptr_new(__u64 local_type_id) __ksym;
+> >
+> > since __ign args are ignored during kfunc type match
+> > the bpf progs can use it without #define.
+> >
+>
+> It's ignored during check_kfunc_call, but libbpf doesn't ignore that. The
+> prototypes will not be the same. I guess I'll have to teach it do that during
+> type match, but IDK how you feel about that.
 
-Ok, thanks for confirming my understanding.
+libbpf does the full type match, really?
+Could you point me to the code?
 
-> We reuse spilled_reg part of stack state to store info about the dynptr. We need
-> two spilled_regs to fully track it.
-> 
-> Later, we will have more owned objects on the stack (bpf_list_head, bpf_rb_root)
-> where you splice it out. Their handling will have to be similar.
-> 
-> PTR_TO_STACK points to the slots whose spilled registers we will call this
-> function for. That is different from the second case, i.e. for callback R1,
-> where it will be CONST_PTR_TO_DYNPTR. For consistency, I marked it as first_slot
-> because we always work using the first dynptr slot.
-> 
-> So to summarize:
-> 
-> PTR_TO_STACK points to bpf_dynptr on stack. So we store this info as 2 spilled
-> registers on the stack. In that case both of them are the first and second slot
-> of the dynptr (8-bytes each). They are the actual dynptr object.
-> 
-> In second case we set dynptr state on the reg itself, which points to actual
-> dynptr object. The reference now records the information we need about the
-> object.
-> 
-> Yes, it is a bit confusing, and again, I'm open to better ideas. The
-> difference/confusion is mainly because of different places where state is
-> tracked. For the stack we track it in stack state precisely, for
-> CONST_PTR_TO_DYNPTR it is recorded in the pointer to dynptr object.
+> Otherwise unless you want people to manually pass something to the ignored
+> argument, we have to hide it behind a macro.
+>
+> I actually like the macro on top, then I don't even pass the type ID but the
+> type. But that's a personal preference, and I don't feel strongly about it.
+>
+> So in C one does malloc(sizeof(*p)), here we'll just write
+> bpf_kptr_new(typeof(*p)). YMMV.
 
-Thanks for clarifying, then my initial understanding was correct. If
-that's the case, what do you think about this suggestion to make the
-code a bit more consistent:
+bpf_kptr_new(typeof(*p)) is cleaner.
 
-> > Just my two cents as well, but even if the field isn't really used for
-> > anything, I would still add an additional enum bpf_reg_type parameter that sets
-> > this to STACK_DYNPTR, with a comment that says it's currently only used by
-> > CONST_PTR_TO_DYNPTR registers.
+> > > +   p = bpf_mem_alloc(&bpf_global_ma, size);
+> > > +   if (!p)
+> > > +           return NULL;
+> > > +   if (meta)
+> > > +           bpf_obj_init(meta->off_arr, p);
+> >
+> > I'm starting to dislike all that _arr and _tab suffixes in the verifier code base.
+> > It reminds me of programming style where people tried to add types into
+> > variable names. imo dropping _arr wouldn't be just fine.
+>
+> Ack, I'll do it in v3.
+>
+> Also, I'd like to invite people to please bikeshed a bit over the naming of the
+> APIs, e.g. whether it should be bpf_kptr_drop vs bpf_kptr_delete.
 
-I would rather reg->type be _unused_ for the dynptr in the spilled
-registers on the stack, then be both unused and meaningless/wrong (as
-you put it).
+bpf_kptr_drop is more precise.
+delete assumes instant free which is not the case here.
 
-[...]
+How about
+extern void *__bpf_obj_new(__u64 local_type_id) __ksym;
+extern void bpf_obj_drop(void *obj) __ksym;
+#define bpf_obj_new(t) \
+ (t *)__bpf_obj_new(bpf_core_type_id_local(t));
 
-Thanks,
-David
+kptr means 'kernel pointer'.
+Here we have program supplied object.
+It feels 'obj' is better than 'kptr' in this context.
+
+> In the BPF list API, it's named bpf_list_del but it's actually distinct from how
+> list_del in the kernel works. So it does make sense to give them a different
+> name (like pop_front/pop_back and push_front/push_back)?
+>
+> Because even bpf_list_add takes bpf_list_head, in the kernel there's no
+> distinction between node and head, so you can do list_add on a node as well, but
+> it won't be possible with the kfunc (unless we overload the head argument to
+> also work with nodes).
+>
+> Later we'll probably have to add bpf_list_node_add etc. that add before or after
+> a node to make that work.
+>
+> The main question is whether it should closely resembly the linked list API in
+> the kernel, or can it steer away considerably from that?
+
+If we do doubly linked list we should allow delete in
+the middle with
+bpf_list_del_any(head, node)
+
+and
+bpf_list_pop_front/pop_back(head)
+
+bpf_list_add(node, head) would match kernel style,
+but I think it's cleaner to have head as 1st arg.
+In that sense new pop/push/_front/_back are cleaner.
+And similar for rbtree.
+
+If we keep (node, head) and (rb_node, rb_root) order
+we should keep kernel names.
