@@ -2,38 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8AB60371E
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 02:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282D2603720
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 02:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiJSAcQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 18 Oct 2022 20:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        id S229535AbiJSAc0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 18 Oct 2022 20:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiJSAcQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 20:32:16 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3DDDBE41
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:14 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29J048JG021928
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:14 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k9d1jyrps-2
+        with ESMTP id S229670AbiJSAcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 20:32:25 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66417DCACC
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:24 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29J03xBK024389
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:23 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3k92jvwvd1-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:14 -0700
-Received: from twshared1458.22.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 17:32:23 -0700
+Received: from twshared58694.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 18 Oct 2022 17:32:13 -0700
+ 15.1.2375.31; Tue, 18 Oct 2022 17:32:22 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 30F822051287E; Tue, 18 Oct 2022 17:32:08 -0700 (PDT)
+        id 3D59420512885; Tue, 18 Oct 2022 17:32:10 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH v2 bpf-next 2/3] libbpf: only add BPF_F_MMAPABLE flag for data maps with global vars
-Date:   Tue, 18 Oct 2022 17:28:15 -0700
-Message-ID: <20221019002816.359650-3-andrii@kernel.org>
+        Stanislav Fomichev <sdf@google.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next 3/3] libbpf: add non-mmapable data section selftest
+Date:   Tue, 18 Oct 2022 17:28:16 -0700
+Message-ID: <20221019002816.359650-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221019002816.359650-1-andrii@kernel.org>
 References: <20221019002816.359650-1-andrii@kernel.org>
@@ -41,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: g5tn8eCMvudar25sssUzjLZVKjdWxMUP
-X-Proofpoint-GUID: g5tn8eCMvudar25sssUzjLZVKjdWxMUP
+X-Proofpoint-ORIG-GUID: rvwnSHZ9ASiBYT7eq7DBX6eLi-NMiDHI
+X-Proofpoint-GUID: rvwnSHZ9ASiBYT7eq7DBX6eLi-NMiDHI
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-18_09,2022-10-18_01,2022-06-22_01
@@ -56,213 +57,150 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Teach libbpf to not add BPF_F_MMAPABLE flag unnecessarily for ARRAY maps
-that are backing data sections, if such data sections don't expose any
-variables to user-space. Exposed variables are those that have
-STB_GLOBAL or STB_WEAK ELF binding and correspond to BTF VAR's
-BTF_VAR_GLOBAL_ALLOCATED linkage.
+Add non-mmapable data section to test_skeleton selftest and make sure it
+really isn't mmapable by trying to mmap() it anyways.
 
-The overall idea is that if some data section doesn't have any variable that
-is exposed through BPF skeleton, then there is no reason to make such
-BPF array mmapable. Making BPF array mmapable is not a free no-op
-action, because BPF verifier doesn't allow users to put special objects
-(such as BPF spin locks, RB tree nodes, linked list nodes, kptrs, etc;
-anything that has a sensitive internal state that should not be modified
-arbitrarily from user space) into mmapable arrays, as there is no way to
-prevent user space from corrupting such sensitive state through direct
-memory access through memory-mapped region.
+Also make sure that libbpf doesn't report BPF_F_MMAPABLE flag to users.
 
-By making sure that libbpf doesn't add BPF_F_MMAPABLE flag to BPF array
-maps corresponding to data sections that only have static variables
-(which are not supposed to be visible to user space according to libbpf
-and BPF skeleton rules), users now can have spinlocks, kptrs, etc in
-either default .bss/.data sections or custom .data.* sections (assuming
-there are no global variables in such sections).
+Additional, some more manual testing was performed that this feature
+works as intended.
 
-The only possible hiccup with this approach is the need to use global
-variables during BPF static linking, even if it's not intended to be
-shared with user space through BPF skeleton. To allow such scenarios,
-extend libbpf's STV_HIDDEN ELF visibility attribute handling to
-variables. Libbpf is already treating global hidden BPF subprograms as
-static subprograms and adjusts BTF accordingly to make BPF verifier
-verify such subprograms as static subprograms with preserving entire BPF
-verifier state between subprog calls. This patch teaches libbpf to treat
-global hidden variables as static ones and adjust BTF information
-accordingly as well. This allows to share variables between multiple
-object files during static linking, but still keep them internal to BPF
-program and not get them exposed through BPF skeleton.
+Looking at created map through bpftool shows that flags passed to kernel are
+indeed zero:
 
-Note, that if the user has some advanced scenario where they absolutely
-need BPF_F_MMAPABLE flag on .data/.bss/.rodata BPF array map despite
-only having static variables, they still can achieve this by forcing it
-through explicit bpf_map__set_map_flags() API.
+  $ bpftool map show
+  ...
+  1782: array  name .data.non_mmapa  flags 0x0
+          key 4B  value 16B  max_entries 1  memlock 4096B
+          btf_id 1169
+          pids test_progs(8311)
+  ...
+
+Checking BTF uploaded to kernel for this map shows that zero_key and
+zero_value are indeed marked as static, even though zero_key is actually
+original global (but STV_HIDDEN) variable:
+
+  $ bpftool btf dump id 1169
+  ...
+  [51] VAR 'zero_key' type_id=2, linkage=static
+  [52] VAR 'zero_value' type_id=7, linkage=static
+  ...
+  [62] DATASEC '.data.non_mmapable' size=16 vlen=2
+          type_id=51 offset=0 size=4 (VAR 'zero_key')
+          type_id=52 offset=4 size=12 (VAR 'zero_value')
+  ...
+
+And original BTF does have zero_key marked as linkage=global:
+
+  $ bpftool btf dump file test_skeleton.bpf.linked3.o
+  ...
+  [51] VAR 'zero_key' type_id=2, linkage=global
+  [52] VAR 'zero_value' type_id=7, linkage=static
+  ...
+  [62] DATASEC '.data.non_mmapable' size=16 vlen=2
+          type_id=51 offset=0 size=4 (VAR 'zero_key')
+          type_id=52 offset=4 size=12 (VAR 'zero_value')
+
+Bpftool didn't require any changes at all because it checks whether internal
+map is mmapable already, but just to double-check generated skeleton, we
+see that .data.non_mmapable neither sets mmaped pointer nor has
+a corresponding field in the skeleton:
+
+  $ grep non_mmapable test_skeleton.skel.h
+                  struct bpf_map *data_non_mmapable;
+          s->maps[7].name = ".data.non_mmapable";
+          s->maps[7].map = &obj->maps.data_non_mmapable;
+
+But .data.read_mostly has all of those things:
+
+  $ grep read_mostly test_skeleton.skel.h
+                  struct bpf_map *data_read_mostly;
+          struct test_skeleton__data_read_mostly {
+                  int read_mostly_var;
+          } *data_read_mostly;
+          s->maps[6].name = ".data.read_mostly";
+          s->maps[6].map = &obj->maps.data_read_mostly;
+          s->maps[6].mmaped = (void **)&obj->data_read_mostly;
+          _Static_assert(sizeof(s->data_read_mostly->read_mostly_var) == 4, "unexpected size of 'read_mostly_var'");
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 97 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 78 insertions(+), 19 deletions(-)
+ .../testing/selftests/bpf/prog_tests/skeleton.c | 11 ++++++++++-
+ .../testing/selftests/bpf/progs/test_skeleton.c | 17 +++++++++++++++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8802e06c5569..027fd9565c16 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1577,7 +1577,38 @@ static char *internal_map_name(struct bpf_object *obj, const char *real_name)
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+index 99dac5292b41..bc6817aee9aa 100644
+--- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
++++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2019 Facebook */
  
- static int
--bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map);
-+map_fill_btf_type_info(struct bpf_object *obj, struct bpf_map *map);
+ #include <test_progs.h>
++#include <sys/mman.h>
+ 
+ struct s {
+ 	int a;
+@@ -22,7 +23,8 @@ void test_skeleton(void)
+ 	struct test_skeleton__kconfig *kcfg;
+ 	const void *elf_bytes;
+ 	size_t elf_bytes_sz = 0;
+-	int i;
++	void *m;
++	int i, fd;
+ 
+ 	skel = test_skeleton__open();
+ 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+@@ -124,6 +126,13 @@ void test_skeleton(void)
+ 
+ 	ASSERT_EQ(bss->huge_arr[ARRAY_SIZE(bss->huge_arr) - 1], 123, "huge_arr");
+ 
++	fd = bpf_map__fd(skel->maps.data_non_mmapable);
++	m = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, 0);
++	if (!ASSERT_EQ(m, MAP_FAILED, "unexpected_mmap_success"))
++		munmap(m, getpagesize());
 +
-+/* Internal BPF map is mmap()'able only if at least one of corresponding
-+ * DATASEC's VARs are to be exposed through BPF skeleton. I.e., it's a GLOBAL
-+ * variable and it's not marked as __hidden (which turns it into, effectively,
-+ * a STATIC variable).
-+ */
-+static bool map_is_mmapable(struct bpf_object *obj, struct bpf_map *map)
-+{
-+	const struct btf_type *t, *vt;
-+	struct btf_var_secinfo *vsi;
-+	int i, n;
++	ASSERT_EQ(bpf_map__map_flags(skel->maps.data_non_mmapable), 0, "non_mmap_flags");
 +
-+	if (!map->btf_value_type_id)
-+		return false;
+ 	elf_bytes = test_skeleton__elf_bytes(&elf_bytes_sz);
+ 	ASSERT_OK_PTR(elf_bytes, "elf_bytes");
+ 	ASSERT_GE(elf_bytes_sz, 0, "elf_bytes_sz");
+diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
+index 1a4e93f6d9df..adece9f91f58 100644
+--- a/tools/testing/selftests/bpf/progs/test_skeleton.c
++++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
+@@ -53,6 +53,20 @@ int out_mostly_var;
+ 
+ char huge_arr[16 * 1024 * 1024];
+ 
++/* non-mmapable custom .data section */
 +
-+	t = btf__type_by_id(obj->btf, map->btf_value_type_id);
-+	if (!btf_is_datasec(t))
-+		return false;
++struct my_value { int x, y, z; };
 +
-+	vsi = btf_var_secinfos(t);
-+	for (i = 0, n = btf_vlen(t); i < n; i++, vsi++) {
-+		vt = btf__type_by_id(obj->btf, vsi->type);
-+		if (!btf_is_var(vt))
-+			continue;
++__hidden int zero_key SEC(".data.non_mmapable");
++static struct my_value zero_value SEC(".data.non_mmapable");
 +
-+		if (btf_var(vt)->linkage != BTF_VAR_STATIC)
-+			return true;
-+	}
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct my_value);
++	__uint(max_entries, 1);
++} my_map SEC(".maps");
 +
-+	return false;
-+}
+ SEC("raw_tp/sys_enter")
+ int handler(const void *ctx)
+ {
+@@ -75,6 +89,9 @@ int handler(const void *ctx)
  
- static int
- bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
-@@ -1609,7 +1640,12 @@ bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
- 	def->max_entries = 1;
- 	def->map_flags = type == LIBBPF_MAP_RODATA || type == LIBBPF_MAP_KCONFIG
- 			 ? BPF_F_RDONLY_PROG : 0;
--	def->map_flags |= BPF_F_MMAPABLE;
+ 	huge_arr[sizeof(huge_arr) - 1] = 123;
+ 
++	/* make sure zero_key and zero_value are not optimized out */
++	bpf_map_update_elem(&my_map, &zero_key, &zero_value, BPF_ANY);
 +
-+	/* failures are fine because of maps like .rodata.str1.1 */
-+	(void) map_fill_btf_type_info(obj, map);
-+
-+	if (map_is_mmapable(obj, map))
-+		def->map_flags |= BPF_F_MMAPABLE;
- 
- 	pr_debug("map '%s' (global data): at sec_idx %d, offset %zu, flags %x.\n",
- 		 map->name, map->sec_idx, map->sec_offset, def->map_flags);
-@@ -1626,9 +1662,6 @@ bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
- 		return err;
- 	}
- 
--	/* failures are fine because of maps like .rodata.str1.1 */
--	(void) bpf_map_find_btf_info(obj, map);
--
- 	if (data)
- 		memcpy(map->mmaped, data, data_sz);
- 
-@@ -2540,7 +2573,7 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 		fill_map_from_def(map->inner_map, &inner_def);
- 	}
- 
--	err = bpf_map_find_btf_info(obj, map);
-+	err = map_fill_btf_type_info(obj, map);
- 	if (err)
- 		return err;
- 
-@@ -2848,6 +2881,7 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
- 	__u32 size = 0, i, vars = btf_vlen(t);
- 	const char *sec_name = btf__name_by_offset(btf, t->name_off);
- 	struct btf_var_secinfo *vsi;
-+	bool fixup_offsets = false;
- 	int err;
- 
- 	if (!sec_name) {
-@@ -2855,21 +2889,34 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
- 		return -ENOENT;
- 	}
- 
--	/* extern-backing datasecs (.ksyms, .kconfig) have their size and
--	 * variable offsets set at the previous step, so we skip any fixups
--	 * for such sections
-+	/* Extern-backing datasecs (.ksyms, .kconfig) have their size and
-+	 * variable offsets set at the previous step. Further, not every
-+	 * extern BTF VAR has corresponding ELF symbol preserved, so we skip
-+	 * all fixups altogether for such sections and go straight to sorting
-+	 * VARs within their DATASEC.
- 	 */
--	if (t->size)
-+	if (strcmp(sec_name, KCONFIG_SEC) == 0 || strcmp(sec_name, KSYMS_SEC) == 0)
- 		goto sort_vars;
- 
--	err = find_elf_sec_sz(obj, sec_name, &size);
--	if (err || !size) {
--		pr_debug("sec '%s': failed to determine size from ELF: size %u, err %d\n",
--			 sec_name, size, err);
--		return -ENOENT;
--	}
-+	/* Clang leaves DATASEC size and VAR offsets as zeroes, so we need to
-+	 * fix this up. But BPF static linker already fixes this up and fills
-+	 * all the sizes and offsets during static linking. So this step has
-+	 * to be optional. But the STV_HIDDEN handling is non-optional for any
-+	 * non-extern DATASEC, so the variable fixup loop below handles both
-+	 * functions at the same time, paying the cost of BTF VAR <-> ELF
-+	 * symbol matching just once.
-+	 */
-+	if (t->size == 0) {
-+		err = find_elf_sec_sz(obj, sec_name, &size);
-+		if (err || !size) {
-+			pr_debug("sec '%s': failed to determine size from ELF: size %u, err %d\n",
-+				 sec_name, size, err);
-+			return -ENOENT;
-+		}
- 
--	t->size = size;
-+		t->size = size;
-+		fixup_offsets = true;
-+	}
- 
- 	for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
- 		const struct btf_type *t_var;
-@@ -2901,7 +2948,19 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
- 			return -ENOENT;
- 		}
- 
--		vsi->offset = sym->st_value;
-+		if (fixup_offsets)
-+			vsi->offset = sym->st_value;
-+
-+		/* if variable is a global/weak symbol, but has restricted
-+		 * (STV_HIDDEN or STV_INTERNAL) visibility, mark its BTF VAR
-+		 * as static. This follows similar logic for functions (BPF
-+		 * subprogs) and influences libbpf's further decisions about
-+		 * whether to make global data BPF array maps as
-+		 * BPF_F_MMAPABLE.
-+		 */
-+		if (ELF64_ST_VISIBILITY(sym->st_other) == STV_HIDDEN
-+		    || ELF64_ST_VISIBILITY(sym->st_other) == STV_INTERNAL)
-+			var->linkage = BTF_VAR_STATIC;
- 	}
- 
- sort_vars:
-@@ -4223,7 +4282,7 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
  	return 0;
  }
- 
--static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
-+static int map_fill_btf_type_info(struct bpf_object *obj, struct bpf_map *map)
- {
- 	int id;
  
 -- 
 2.30.2
