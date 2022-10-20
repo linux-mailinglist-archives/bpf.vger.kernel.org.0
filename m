@@ -2,74 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E2C605491
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 02:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422C8605493
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 02:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbiJTApD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 20:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        id S229731AbiJTAsv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 20:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbiJTApB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 20:45:01 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB95140E68
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:44:57 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k9so18390464pll.11
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:44:57 -0700 (PDT)
+        with ESMTP id S229736AbiJTAsv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 20:48:51 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47291C39C4
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:48:49 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 20so680031pgc.5
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPUUBhLAtaVS1RzfECTuosYpZGmg2E5OwbHWuXVh0BQ=;
-        b=q0ogZExmhAPMxlyQhy4FG3Ddr7H+PQw3t9NlDCORQsz9CwQHGgYNvqxiPQNgljmHfL
-         Zh6QKRCmxu64Npz1gn8oJqgK3EYJ1mEnoWD6A5KMPqqfWa8zdqqGdWON1PER0AGpMt7f
-         cjUf2hcg7zV2yTkoilPSd4GsjEx/JvjkyqQc9p8B+m+chiuM66MovwbTht5uro9mZdkA
-         mJHPdrEH4BTPYtVRfnqde94L98JrOMi7A8+hZ1OXy1O7NladveCSuwyzjXEu2O3/vdS3
-         eIVaoQHjIcRdgVLAbhG+4NOFKyU7FL72egboio1byfRU5wFP3RglAsdyNabCS0iE2DTd
-         /iWg==
+        bh=zyci/PZUAqG09KMGSdKtD4vsTrvNmov9kKxJ5X3wLlc=;
+        b=f8QL9yYYr/oRNbttsch8BCf/5skXSeS2CmpRyCXyKtLHVHG0MncX/IXUQdOvCVc9yW
+         BhtKGXvaSoaqugFI2psJrKXbfgAG3WGrzUAKeetgcr0b0D9IADi201WKZwqqCK4k5a9B
+         2SJAVmf1YFxp7Ebc6FnT/mmKbk5uFdWhda0VW8pHCo7dvTHLQP0voVKDjjp3naBDhPGa
+         iHMnELpySEFg+PTE48nU2tIPmYu+Jh6XygkHZNdWfWK8nD90Gmrm+mfDModslvBVTrhg
+         e79frAArvWLjWQrFPwRzXRXJSd78aak1VaZGAWENnXOmVk/R/i8cJiHewsyInf7J30n4
+         muYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zPUUBhLAtaVS1RzfECTuosYpZGmg2E5OwbHWuXVh0BQ=;
-        b=dhUL5Mzur2Vf+EwUcItKITROnycc9tjozQBREJboxrmPJeR8073G4lo3vySLq6EEVo
-         CS6fWSXh7p1NC0PFwYF2cxJOYSWfut3z6EDIVT0baMlrgJzDsByaVenaaZ5Fvplep3P0
-         xSLNi23HMC1ngNyLkUqiTJh/IQbciG6TM5h13014PjegGsao9IZ5iqHq0Ae0G54bxYL4
-         k3S1T4Tw7wRIyuB2jOO10Mn9X80I0w1BocOxtVYvTYrFZGZKECF+ukt3w3y8sxzWRXfe
-         yOFhI8bGYBnoNqEoLvld1bt4EVKbz/Wi/ikOykixVPQukzPpswLItLUPsKAShzXuCqv2
-         0cgg==
-X-Gm-Message-State: ACrzQf2PYXBo2Rn1WvzXN8miUNHK4SXefS7eCsXIbHTKOYKUk6zMzlHT
-        eptF1I4rDWFWyiFxk5zAKLE=
-X-Google-Smtp-Source: AMsMyM7r5D3jb2KmeCGFSWjXpGxrMpesN1nysOUxZM3YzTRI6gStoOzfhNz4cq8uSwIbd5cZtOdnog==
-X-Received: by 2002:a17:902:cec8:b0:185:505b:95da with SMTP id d8-20020a170902cec800b00185505b95damr11202125plg.83.1666226696889;
-        Wed, 19 Oct 2022 17:44:56 -0700 (PDT)
+        bh=zyci/PZUAqG09KMGSdKtD4vsTrvNmov9kKxJ5X3wLlc=;
+        b=hpRm0xJUrB647EaOjdWQ0YaTX4iNYOcmHLXdGNzTDPhpclHDTlKX52IstxrBuxFJQE
+         2Z7USzQCWwy33da/QnZbOTZYH/QtO2tpVOgi90RNvqCoVzaRVFZ/leCq+uWDDpbqpAjz
+         HA1icqjLCCj1vK3KYTnIvGF5Kyw36lbMHOIpRlV5q9jY/NnxbvUUq9UQgod65b5uZd8V
+         EsqVtVtFf/7Qv8vqdjzb0WCcMjFckpXfJPWFbLM5Ma6xumIpP6xP+wNsW6olfKQp3Hef
+         xv9Y2p64fYesebKgclx2KRm8gnUS2NT4Rt4e4fWLsejBkjjqgZLAhoegldHrv525CqbJ
+         /JMA==
+X-Gm-Message-State: ACrzQf0jesVld9yG3YgdcNoaowL/8qTZtnnXkweB0E4Oh+2XLcesyCpa
+        GosgONqL0DdRzmFP6OZWGGY=
+X-Google-Smtp-Source: AMsMyM4PKIE19C7C372ke0kQNKREpJ9DmwTjOlhiISXZDPmUXuRgafqHMNsm1ihTgr+PRbKpLzdbdg==
+X-Received: by 2002:aa7:88d6:0:b0:563:9fe9:5da8 with SMTP id k22-20020aa788d6000000b005639fe95da8mr11390521pff.74.1666226929082;
+        Wed, 19 Oct 2022 17:48:49 -0700 (PDT)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id b15-20020a17090a6e0f00b001ef81574355sm521914pjk.12.2022.10.19.17.44.56
+        by smtp.gmail.com with ESMTPSA id w15-20020a63c10f000000b0042988a04bfdsm10758513pgf.9.2022.10.19.17.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 17:44:56 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 06:14:45 +0530
+        Wed, 19 Oct 2022 17:48:48 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 06:18:37 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v2 19/25] bpf: Introduce bpf_kptr_new
-Message-ID: <20221020004445.zuwwtqe2qdk6ccfj@apollo>
+Subject: Re: [PATCH bpf-next v2 10/25] bpf: Introduce local kptrs
+Message-ID: <20221020004837.qclzg6pgrqamcn7e@apollo>
 References: <20221013062303.896469-1-memxor@gmail.com>
- <20221013062303.896469-20-memxor@gmail.com>
- <20221019023124.47zzi3gs2zcdvxca@macbook-pro-4.dhcp.thefacebook.com>
- <20221019055834.ux5dfoot7hyuf4jk@apollo>
- <CAADnVQ+Q9LO1dkz-Q7jHRjgf5cFFk1go=gwYDfVrTtanjMCoHw@mail.gmail.com>
+ <20221013062303.896469-11-memxor@gmail.com>
+ <582912fa-3d32-7c5a-cf24-fc79899a2e31@meta.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQ+Q9LO1dkz-Q7jHRjgf5cFFk1go=gwYDfVrTtanjMCoHw@mail.gmail.com>
+In-Reply-To: <582912fa-3d32-7c5a-cf24-fc79899a2e31@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,156 +74,201 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 10:01:21PM IST, Alexei Starovoitov wrote:
-> On Tue, Oct 18, 2022 at 10:58 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
+On Wed, Oct 19, 2022 at 10:45:22PM IST, Dave Marchevsky wrote:
+> On 10/13/22 2:22 AM, Kumar Kartikeya Dwivedi wrote:
+> > Introduce the idea of local kptrs, i.e. PTR_TO_BTF_ID that point to a
+> > type in program BTF. This is indicated by the presence of MEM_TYPE_LOCAL
+> > type tag in reg->type to avoid having to check btf_is_kernel when trying
+> > to match argument types in helpers.
 > >
-> > On Wed, Oct 19, 2022 at 08:01:24AM IST, Alexei Starovoitov wrote:
-> > > On Thu, Oct 13, 2022 at 11:52:57AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > +void *bpf_kptr_new_impl(u64 local_type_id__k, u64 flags, void *meta__ign)
-> > > > +{
-> > > > +   struct btf_struct_meta *meta = meta__ign;
-> > > > +   u64 size = local_type_id__k;
-> > > > +   void *p;
-> > > > +
-> > > > +   if (unlikely(flags || !bpf_global_ma_set))
-> > > > +           return NULL;
-> > >
-> > > Unused 'flags' looks weird in unstable api. Just drop it?
-> > > And keep it as:
-> > > void *bpf_kptr_new(u64 local_type_id__k, struct btf_struct_meta *meta__ign);
-> > >
-> > > and in bpf_experimental.h:
-> > >
-> > > extern void *bpf_kptr_new(__u64 local_type_id) __ksym;
-> > >
-> > > since __ign args are ignored during kfunc type match
-> > > the bpf progs can use it without #define.
-> > >
+> > For now, these local kptrs will always be referenced in verifier
+> > context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+> > to such objects, as long fields that are special are not touched
+> > (support for which will be added in subsequent patches).
 > >
-> > It's ignored during check_kfunc_call, but libbpf doesn't ignore that. The
-> > prototypes will not be the same. I guess I'll have to teach it do that during
-> > type match, but IDK how you feel about that.
->
-> libbpf does the full type match, really?
-> Could you point me to the code?
->
-
-Not full type match, but the number of arguments must be same, so it won't allow
-having kfunc as:
-
-void *bpf_kptr_new(u64 local_type_id__k, struct btf_struct_meta *meta__ign);
-
-in the kernel and ksym declaration in the program as:
-
-extern void *bpf_kptr_new(__u64 local_type_id) __ksym;
-
-I get:
-
-libbpf: extern (func ksym) 'bpf_kptr_new_impl': func_proto [25] incompatible with kernel [60043]
-
-vlen of func_proto in kernel type is 2, for us it will be 1.
-
-> > Otherwise unless you want people to manually pass something to the ignored
-> > argument, we have to hide it behind a macro.
+> > No PROBE_MEM handling is hence done since they can never be in an
+> > undefined state, and their lifetime will always be valid.
 > >
-> > I actually like the macro on top, then I don't even pass the type ID but the
-> > type. But that's a personal preference, and I don't feel strongly about it.
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h              | 14 +++++++++++---
+> >  include/linux/filter.h           |  4 +++-
+> >  kernel/bpf/btf.c                 |  9 ++++++++-
+> >  kernel/bpf/verifier.c            | 15 ++++++++++-----
+> >  net/bpf/bpf_dummy_struct_ops.c   |  3 ++-
+> >  net/core/filter.c                | 13 ++++++++-----
+> >  net/ipv4/bpf_tcp_ca.c            |  3 ++-
+> >  net/netfilter/nf_conntrack_bpf.c |  1 +
+> >  8 files changed, 45 insertions(+), 17 deletions(-)
 > >
-> > So in C one does malloc(sizeof(*p)), here we'll just write
-> > bpf_kptr_new(typeof(*p)). YMMV.
->
-> bpf_kptr_new(typeof(*p)) is cleaner.
->
-
-So if we're having a macro anyway, the thing above can be hidden behind it.
-
-> > > > +   p = bpf_mem_alloc(&bpf_global_ma, size);
-> > > > +   if (!p)
-> > > > +           return NULL;
-> > > > +   if (meta)
-> > > > +           bpf_obj_init(meta->off_arr, p);
-> > >
-> > > I'm starting to dislike all that _arr and _tab suffixes in the verifier code base.
-> > > It reminds me of programming style where people tried to add types into
-> > > variable names. imo dropping _arr wouldn't be just fine.
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 46330d871d4e..a2f4d3356cc8 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -526,6 +526,11 @@ enum bpf_type_flag {
+> >  	/* Size is known at compile time. */
+> >  	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
 > >
-> > Ack, I'll do it in v3.
+> > +	/* MEM is of a type from program BTF, not kernel BTF. This is used to
+> > +	 * tag PTR_TO_BTF_ID allocated using bpf_kptr_alloc.
+> > +	 */
+> > +	MEM_TYPE_LOCAL		= BIT(11 + BPF_BASE_TYPE_BITS),
+> > +
+> >  	__BPF_TYPE_FLAG_MAX,
+> >  	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+> >  };
+> > @@ -774,6 +779,7 @@ struct bpf_prog_ops {
+> >  			union bpf_attr __user *uattr);
+> >  };
 > >
-> > Also, I'd like to invite people to please bikeshed a bit over the naming of the
-> > APIs, e.g. whether it should be bpf_kptr_drop vs bpf_kptr_delete.
+> > +struct bpf_reg_state;
+> >  struct bpf_verifier_ops {
+> >  	/* return eBPF function prototype for verification */
+> >  	const struct bpf_func_proto *
+> > @@ -795,6 +801,7 @@ struct bpf_verifier_ops {
+> >  				  struct bpf_insn *dst,
+> >  				  struct bpf_prog *prog, u32 *target_size);
+> >  	int (*btf_struct_access)(struct bpf_verifier_log *log,
+> > +				 const struct bpf_reg_state *reg,
 >
-> bpf_kptr_drop is more precise.
-> delete assumes instant free which is not the case here.
->
-> How about
-> extern void *__bpf_obj_new(__u64 local_type_id) __ksym;
-> extern void bpf_obj_drop(void *obj) __ksym;
-> #define bpf_obj_new(t) \
->  (t *)__bpf_obj_new(bpf_core_type_id_local(t));
->
-> kptr means 'kernel pointer'.
-> Here we have program supplied object.
-> It feels 'obj' is better than 'kptr' in this context.
+> Not that struct_ops API is meant to be stable, but would be good to note that
+> this changes that API in the summary.
 >
 
-I agree, I'll rename it to bpf_obj_*.
+Ack, will do.
 
-Also, that __bpf_obj_new doesn't work yet in clang [0] but I think we can rename
-it to that once clang is fixed.
+> On that note, maybe passing whole bpf_reg_state *reg can be avoided for now
+> by making this a 'bool disallow_ptr_walk' or similar, since that's the only
+> thing this patch is using it for.
+>
 
- [0]: https://reviews.llvm.org/D136041
+I did this in the RFC version, with bool local_type, but Alexei asked me to drop
+it and just pass the register in. But more on that below...
 
-> > In the BPF list API, it's named bpf_list_del but it's actually distinct from how
-> > list_del in the kernel works. So it does make sense to give them a different
-> > name (like pop_front/pop_back and push_front/push_back)?
+> >  				 const struct btf *btf,
+> >  				 const struct btf_type *t, int off, int size,
+> >  				 enum bpf_access_type atype,
+> > @@ -2076,10 +2083,11 @@ static inline bool bpf_tracing_btf_ctx_access(int off, int size,
+> >  	return btf_ctx_access(off, size, type, prog, info);
+> >  }
 > >
-> > Because even bpf_list_add takes bpf_list_head, in the kernel there's no
-> > distinction between node and head, so you can do list_add on a node as well, but
-> > it won't be possible with the kfunc (unless we overload the head argument to
-> > also work with nodes).
+> > -int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> > +int btf_struct_access(struct bpf_verifier_log *log,
+> > +		      const struct bpf_reg_state *reg, const struct btf *btf,
+> >  		      const struct btf_type *t, int off, int size,
+> > -		      enum bpf_access_type atype,
+> > -		      u32 *next_btf_id, enum bpf_type_flag *flag);
+> > +		      enum bpf_access_type atype, u32 *next_btf_id,
+> > +		      enum bpf_type_flag *flag);
+> >  bool btf_struct_ids_match(struct bpf_verifier_log *log,
+> >  			  const struct btf *btf, u32 id, int off,
+> >  			  const struct btf *need_btf, u32 need_type_id,
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index efc42a6e3aed..9b94e24f90b9 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -568,7 +568,9 @@ struct sk_filter {
+> >  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
 > >
-> > Later we'll probably have to add bpf_list_node_add etc. that add before or after
-> > a node to make that work.
+> >  extern struct mutex nf_conn_btf_access_lock;
+> > -extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log, const struct btf *btf,
+> > +extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log,
+> > +				     const struct bpf_reg_state *reg,
+> > +				     const struct btf *btf,
+> >  				     const struct btf_type *t, int off, int size,
+> >  				     enum bpf_access_type atype, u32 *next_btf_id,
+> >  				     enum bpf_type_flag *flag);
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 066984d73a8b..65f444405d9c 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6019,11 +6019,13 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+> >  	return -EINVAL;
+> >  }
 > >
-> > The main question is whether it should closely resembly the linked list API in
-> > the kernel, or can it steer away considerably from that?
+> > -int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> > +int btf_struct_access(struct bpf_verifier_log *log,
+> > +		      const struct bpf_reg_state *reg, const struct btf *btf,
+> >  		      const struct btf_type *t, int off, int size,
+> >  		      enum bpf_access_type atype __maybe_unused,
+> >  		      u32 *next_btf_id, enum bpf_type_flag *flag)
+> >  {
+> > +	bool local_type = reg && (type_flag(reg->type) & MEM_TYPE_LOCAL);
+> >  	enum bpf_type_flag tmp_flag = 0;
+> >  	int err;
+> >  	u32 id;
+> > @@ -6033,6 +6035,11 @@ int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> >
+> >  		switch (err) {
+> >  		case WALK_PTR:
+> > +			/* For local types, the destination register cannot
+> > +			 * become a pointer again.
+> > +			 */
+> > +			if (local_type)
+> > +				return SCALAR_VALUE;
+> >  			/* If we found the pointer or scalar on t+off,
+> >  			 * we're done.
+> >  			 */
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 3c47cecda302..6ee8c06c2080 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4522,16 +4522,20 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+> >  		return -EACCES;
+> >  	}
+> >
+> > -	if (env->ops->btf_struct_access) {
+> > -		ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
+> > +	if (env->ops->btf_struct_access && !(type_flag(reg->type) & MEM_TYPE_LOCAL)) {
+> > +		WARN_ON_ONCE(!btf_is_kernel(reg->btf));
+> > +		ret = env->ops->btf_struct_access(&env->log, reg, reg->btf, t,
+> >  						  off, size, atype, &btf_id, &flag);
+> >  	} else {
+> > -		if (atype != BPF_READ) {
+> > +		if (atype != BPF_READ && !(type_flag(reg->type) & MEM_TYPE_LOCAL)) {
+> >  			verbose(env, "only read is supported\n");
+> >  			return -EACCES;
+> >  		}
+> >
+> > -		ret = btf_struct_access(&env->log, reg->btf, t, off, size,
+> > +		if (reg->type & MEM_TYPE_LOCAL)
+> > +			WARN_ON_ONCE(!reg->ref_obj_id);
 >
-> If we do doubly linked list we should allow delete in
-> the middle with
-> bpf_list_del_any(head, node)
+> Can we instead verbose(env, ...) and return error? Then when someone tries to
+> add local kptrs that don't set ref_obj_id in the future, it'll be more obvious
+> that this wasn't explicitly supported and they need to check verifier logic
+> carefully. Also rest of check_ptr_to_btf_access checks do verbose + err.
 >
-> and
-> bpf_list_pop_front/pop_back(head)
+> Similar for btf_is_kernel WARN above.
 >
-> bpf_list_add(node, head) would match kernel style,
-> but I think it's cleaner to have head as 1st arg.
-> In that sense new pop/push/_front/_back are cleaner.
-> And similar for rbtree.
+
+Ack.
+
+> > +
+> > +		ret = btf_struct_access(&env->log, reg, reg->btf, t, off, size,
 >
-> If we keep (node, head) and (rb_node, rb_root) order
-> we should keep kernel names.
+>
+> more re: passing entire reg state to btf_struct access:
+>
+> In the next patch in the series ("bpf: Recognize bpf_{spin_lock,list_head,list_node} in local kptrs")
+> you do btf_find_struct_meta(btf, reg->btf_id). I see why you couldn't use 't'
+> that's passed in here / elsewhere since you need the btf_id for meta lookup.
+> Perhaps 'btf_type *t' param can be changed to btf_id, eliminating the need
+> to pass 'reg'.
+>
+> Alternatively, since we're already passing reg->btf and result of
+> btf_type_by_id(reg->btf, reg->btf_id), seems like btf_struct_access
+> maybe is tied closely enough to reg state that passing reg state
+> directly and getting rid of extraneous args is cleaner.
+>
 
-There's also tradeoffs in how various operations are done.
+So Alexei actually suggested dropping both btf and type arguments and simply
+pass in the register and get it from there.
 
-Right now we have bpf_list_del and bpf_list_del_tail doing pop_front and
-pop_back.
+But one call site threw a wrench in the plan:
 
-To replicate the same in kernel style API, you would do:
+check_ptr_to_map_access -> btf_struct_access
 
-struct foo *f = bpf_list_first_entry_or_null(head);
-if (!f) {}
-bpf_list_del(&f->node);
-
-Between those two calls, you might do bpf_list_last_entry -> bpf_list_del, the
-verifier is going to have a hard time proving the aliasing of the two nodes, so
-it will have to invalidate all pointers peeking into the list whenever something
-modifies it. You would still be able to access memory but cannot pass it to list
-ops anymore.
-
-But I think we will pay this cost eventually anyway, people will add a peek
-operation and such analysis would have to be done then. So I think it's unlikely
-we can avoid this, and it might be better to make things more consistent and end
-up mirroring the kernel list APIs.
-
-WDYT?
+Here, it passes it's own btf and type to simulate access to a map. Maybe I
+should be creating a dummy register on stack and make it work like that for this
+particular case? Otherwise all other callers pass in what they have from reg.
