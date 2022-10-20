@@ -2,75 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B266055EA
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 05:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCCD60570F
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 07:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiJTDYB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 23:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S229621AbiJTF6G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 01:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbiJTDX7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 23:23:59 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52FD1D3443
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 20:23:57 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id n7so19119756plp.1
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 20:23:57 -0700 (PDT)
+        with ESMTP id S229506AbiJTF6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 01:58:04 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912C05755E;
+        Wed, 19 Oct 2022 22:58:02 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h185so18287719pgc.10;
+        Wed, 19 Oct 2022 22:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r5Q19XNhhWp0peDdNmDrQa8GV6FeJXlJtpBevFNjxNA=;
-        b=dxceP9HO9OGrdb95qjy8gClH/FYEQjYYw4qgdGJG9ovjO5TYkKn4J6JXNx2YP6Ivas
-         DR/T2mum4En39QdBgEpNQlbVrKt3f7XoYx3b6FEQaUMCOmfkp0SpkMIirzxMRqgD6ItV
-         EcCgJp0rrB/HSpj1TlQfP8YEJ9kyDPYsGLBO0aKdFfJwVXj4UosPim8Nkky3ijZw6l1d
-         b2v+42EfTVzhnA5R8rLzyVq4hkFVtBHQ0FoAyvIyj+CXW/fNHaxvwxMLQXItcLZkBJTM
-         HsuTtArGKhMg8je1+Ac9Cwop8Xb6vDBM9MWWIJ6rQtRtOH9rhF+ZWeaF6wDGZHQ56/Lt
-         oP7g==
+        bh=09vKTRnIQaw8/sHmELeReqMFWmzDaItF+VGRYaKT20w=;
+        b=Ccn+GD2iWtjOgyuDvCzR+sq57yEJJAPy3rRA9bT1CbeN/chxKFx5lgM9L5DkCvumf2
+         RnEVA5Qt7bL2S01wwBuF6VzBgWqLA7srUaF7W8jvyIQCoV9/FTF/9ZAdwjHlxAydXu6c
+         NRDURNf17OtO056+7PQkP3QcLt6MVmJMQKzC31H12bldUt/b/CuffPTfRL/RkZny8jK5
+         xRentK62TprwuyR/+BxEKmPUdsHloxP5UemZRivlCpxkVCXu0m+CcSf4tCW/MQhoFshV
+         qvlJdGPDCD7Dzyz1vXc3cR4EGy7ek5N4UPxx83MYchCWqjKQyKAckS+/l6sEXVfkemk5
+         zp1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r5Q19XNhhWp0peDdNmDrQa8GV6FeJXlJtpBevFNjxNA=;
-        b=RaxVOs3KkRZqncGZEjlfBh65gMHEB3CeuyiuiVADYciSnVTNSve3A9C8HfkKCYxrMB
-         T5usfnPjhwOVbrAozzGvse9OPjeuJjGlPx6/Wmi7EsJrFAAksHXfs2ygOjuZqakDFCzX
-         yKx0Vb86BWDqwwG6Mf+kLrbFDqtcuMQLBjF74cdbTdcA/Qve89eipEktWLmuLdyO21B3
-         J86DhqK5MKI+ZcLYak35d5Nc7Tyqc1SoEGxkg1H632BSO8w5IDAyhjAuqLcNTX7ob0Lj
-         P7fTxd0ADTe0UPLX6cOZc/bTnoLnrugQZAfCNiSpOs6bPrN0h+J+Lm/RtheLev3+fYvk
-         YcUg==
-X-Gm-Message-State: ACrzQf0v4Pc3pSmsCOUlXH1f9fy66+JgLXmAteiUyoS7neV9s1N9z8Kw
-        lpoZ4w7UEO2+AZPSOs2QbJg=
-X-Google-Smtp-Source: AMsMyM5esE7I0WiXtSs6lng2NJzFIgsN6zeRRPP8qNjrlIdPcHuZAgjHNhLd1MVu0BgvTyl7sLRDGA==
-X-Received: by 2002:a17:90b:4fcc:b0:20f:81ca:ec18 with SMTP id qa12-20020a17090b4fcc00b0020f81caec18mr13245026pjb.176.1666236237285;
-        Wed, 19 Oct 2022 20:23:57 -0700 (PDT)
+        bh=09vKTRnIQaw8/sHmELeReqMFWmzDaItF+VGRYaKT20w=;
+        b=gtngMfEhMJjkNph9yfc1JkE7WpxfBh31JhfBK4VLKap/cowEX97LFMpmsAlheGYQVG
+         erJv5WAValfpDETR/9LIpVjmRTiB4mYDC8xVFOGeJDVguGbW9eI6B4vAtmPcLTZXokAO
+         rujCIbk17dzP4sBEs6KaKnOKqF/6lb4PMWJKLpkztWs7hqfm7Jqu28uee8upb0nkYW12
+         DU4Ye45UOyet2Rii6ftoZy54HbrpVrmNOrD4ZIwByrjxY8X9IvQeHIshpFAA/uUHsiY7
+         fnIn31HZ/8hzooaqjDe02+a8xk0SjpN9YElBEQInU+1KV+h66VqRJSuGblZt1ISDxjl2
+         6xtA==
+X-Gm-Message-State: ACrzQf0nPEu2LIByAc0zv+GiSV9amRUiWY9iXOfgC+4ddB3Zv6/1yGOi
+        s9KhU84uKAcCNG7hTAFeCgk=
+X-Google-Smtp-Source: AMsMyM5WQ/ssBKM+2ov8XqL4/P6ReCNGUqcXYwDHTfL/7KSDkH9zq4VElC1Hw4keDjyFUNiVfR6NPA==
+X-Received: by 2002:aa7:8dd5:0:b0:565:d35c:4a5d with SMTP id j21-20020aa78dd5000000b00565d35c4a5dmr12634373pfr.7.1666245481582;
+        Wed, 19 Oct 2022 22:58:01 -0700 (PDT)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id u5-20020a170902e5c500b001866049ddb1sm230167plf.161.2022.10.19.20.23.56
+        by smtp.gmail.com with ESMTPSA id w206-20020a627bd7000000b00553d5920a29sm12231786pfc.101.2022.10.19.22.58.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 20:23:56 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 08:53:45 +0530
+        Wed, 19 Oct 2022 22:58:00 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 11:27:49 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for
- ARG_PTR_TO_DYNPTR
-Message-ID: <20221020032345.yz6cvprlx2q37zcy@apollo>
-References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-7-memxor@gmail.com>
- <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
- <20221020010417.eqerzqjimnzwwhhd@apollo>
- <CAADnVQK+wRP1EwTcokN00_eJ+piTmJsTCj9L1uZCY9bC+Ftf=g@mail.gmail.com>
- <20221020024042.z5y47jfv3faupecx@apollo>
- <CAADnVQJ4maocpC_5PNJWM10_UkuZeHiXU9o_z3Xa685Q68Yw7g@mail.gmail.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, tj@kernel.org
+Subject: Re: [PATCH v5 1/3] bpf: Allow trusted pointers to be passed to
+ KF_TRUSTED_ARGS kfuncs
+Message-ID: <20221020055749.33lfipxtaubhnqbv@apollo>
+References: <20221014212133.2520531-1-void@manifault.com>
+ <20221014212133.2520531-2-void@manifault.com>
+ <CAP01T75FGW7F=Ho+oqoC6WgxK5uUir2=CUgiW_HwqNxmzmthBg@mail.gmail.com>
+ <Y1BR5c6W4tgljA8q@maniforge.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJ4maocpC_5PNJWM10_UkuZeHiXU9o_z3Xa685Q68Yw7g@mail.gmail.com>
+In-Reply-To: <Y1BR5c6W4tgljA8q@maniforge.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,205 +77,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 08:26:44AM IST, Alexei Starovoitov wrote:
-> On Wed, Oct 19, 2022 at 7:40 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Thu, Oct 20, 2022 at 07:43:16AM IST, Alexei Starovoitov wrote:
-> > > On Wed, Oct 19, 2022 at 6:04 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
-> > > > > On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
-> > > > > <memxor@gmail.com> wrote:
-> > > > > >
-> > > > > > Currently, the dynptr function is not checking the variable offset part
-> > > > > > of PTR_TO_STACK that it needs to check. The fixed offset is considered
-> > > > > > when computing the stack pointer index, but if the variable offset was
-> > > > > > not a constant (such that it could not be accumulated in reg->off), we
-> > > > > > will end up a discrepency where runtime pointer does not point to the
-> > > > > > actual stack slot we mark as STACK_DYNPTR.
-> > > > > >
-> > > > > > It is impossible to precisely track dynptr state when variable offset is
-> > > > > > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-> > > > > > simply reject the case where reg->var_off is not constant. Then,
-> > > > > > consider both reg->off and reg->var_off.value when computing the stack
-> > > > > > pointer index.
-> > > > > >
-> > > > > > A new helper dynptr_get_spi is introduced to hide over these details
-> > > > > > since the dynptr needs to be located in multiple places outside the
-> > > > > > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-> > > > > > need to enforce these checks in all places.
-> > > > > >
-> > > > > > Note that it is disallowed for unprivileged users to have a non-constant
-> > > > > > var_off, so this problem should only be possible to trigger from
-> > > > > > programs having CAP_PERFMON. However, its effects can vary.
-> > > > > >
-> > > > > > Without the fix, it is possible to replace the contents of the dynptr
-> > > > > > arbitrarily by making verifier mark different stack slots than actual
-> > > > > > location and then doing writes to the actual stack address of dynptr at
-> > > > > > runtime.
-> > > > > >
-> > > > > > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> > > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > ---
-> > > > > >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
-> > > > > >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
-> > > > > >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
-> > > > > >  3 files changed, 67 insertions(+), 21 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > > index 8f667180f70f..0fd73f96c5e2 100644
-> > > > > > --- a/kernel/bpf/verifier.c
-> > > > > > +++ b/kernel/bpf/verifier.c
-> > > > > > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
-> > > > > >                 verbose(env, "D");
-> > > > > >  }
-> > > > > >
-> > > > > > -static int get_spi(s32 off)
-> > > > > > +static int __get_spi(s32 off)
-> > > > > >  {
-> > > > > >         return (-off - 1) / BPF_REG_SIZE;
-> > > > > >  }
-> > > > > >
-> > > > > > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> > > > > > +{
-> > > > > > +       int spi;
-> > > > > > +
-> > > > > > +       if (reg->off % BPF_REG_SIZE) {
-> > > > > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
-> > > > > > +               return -EINVAL;
-> > > > > > +       }
-> > > > >
-> > > > > I think this cannot happen.
-> > > > >
-> > > >
-> > > > There are existing selftests that trigger this.
+On Thu, Oct 20, 2022 at 01:07:09AM IST, David Vernet wrote:
+> On Tue, Oct 18, 2022 at 07:02:15AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > Please tag the patches with [ PATCH bpf-next ... ] subject prefix.
+>
+> Sure, will do.
+>
+> > >  include/linux/bpf.h                          |  6 ++++++
+> > >  kernel/bpf/btf.c                             | 11 ++++++++++-
+> > >  kernel/bpf/verifier.c                        | 12 +++++++++++-
+> > >  tools/testing/selftests/bpf/verifier/calls.c |  4 ++--
+> > >  4 files changed, 29 insertions(+), 4 deletions(-)
 > > >
-> > > Really. Which one is that?
-> > > Those that you've modified in this patch are hitting
-> > > "cannot pass in dynptr..." message from the check below, no?
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 9e7d46d16032..b624024edb4e 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -457,6 +457,12 @@ enum bpf_type_flag {
+> > >         /* Size is known at compile time. */
+> > >         MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
+> > >
+> > > +       /* PTR was obtained from walking a struct. This is used with
+> > > +        * PTR_TO_BTF_ID to determine whether the pointer is safe to pass to a
+> > > +        * kfunc with KF_TRUSTED_ARGS.
+> > > +        */
+> > > +       PTR_NESTED              = BIT(11 + BPF_BASE_TYPE_BITS),
+> > > +
+> > >         __BPF_TYPE_FLAG_MAX,
+> > >         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+> > >  };
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index eba603cec2c5..3d7bad11b10b 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -6333,8 +6333,17 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                 /* Check if argument must be a referenced pointer, args + i has
+> > >                  * been verified to be a pointer (after skipping modifiers).
+> > >                  * PTR_TO_CTX is ok without having non-zero ref_obj_id.
+> > > +                *
+> > > +                * All object pointers must be refcounted, other than:
+> > > +                * - PTR_TO_CTX
+> > > +                * - Trusted pointers (i.e. pointers with no type modifiers)
+> > >                  */
+> > > -               if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
+> > > +               if (is_kfunc &&
+> > > +                   trusted_args &&
+> > > +                   obj_ptr &&
+> > > +                   base_type(reg->type) != PTR_TO_CTX &&
+> > > +                   type_flag(reg->type) &&
+> > > +                   !reg->ref_obj_id) {
+> > >                         bpf_log(log, "R%d must be referenced\n", regno);
+> > >                         return -EINVAL;
+> > >                 }
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 6f6d2d511c06..d16a08ca507b 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -581,6 +581,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+> > >                 strncpy(prefix, "user_", 32);
+> > >         if (type & MEM_PERCPU)
+> > >                 strncpy(prefix, "percpu_", 32);
+> > > +       if (type & PTR_NESTED)
+> > > +               strncpy(prefix, "nested_", 32);
+> > >         if (type & PTR_UNTRUSTED)
+> > >                 strncpy(prefix, "untrusted_", 32);
 > > >
 > >
-> > Just taking one example, invalid_read2 which does:
-> >
-> > bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0, 0);
-> >
-> > does hit this one, it passes fp-15, no var_off.
-> >
-> > Same with invalid_helper2 that was updated.
-> > Same with invalid_offset that was updated.
-> > invalid_write3 gained coverage from this patch, earlier it was probably just
-> > being rejected because of arg_type_is_release checking spilled_ptr.id.
-> > not_valid_dynptr is also hitting this one, not the one below.
-> >
-> > The others now started hitting this error as the order of checks was changed in
-> > the verifier. Since arg_type_is_release checking happens before
-> > process_dynptr_func, it uses dynptr_get_spi to check ref_obj_id of spilled_ptr.
-> > At that point no checks have been made of the dynptr argument, so dynptr_get_spi
-> > is required to ensure spi is in bounds.
-> >
-> > The reg->off % BPF_REG_SIZE was earlier in check_func_arg_reg_off but that alone
-> > is not sufficient. This is why I wrapped everything into dynptr_get_spi.
+> > Since these are no longer exclusive, the code needs to be updated to
+> > append strings to the prefix buffer.
+> > Maybe just using snprintf with %s%s%s.. would be better, passing ""
+> > when !(type & flag).
 >
-> I see. That was not obvious at all that some other patch
-> is removing that check from check_func_arg_reg_off.
+> Sure, I can make that change. We'll have to increase the size of the
+> prefix string on the stack, but that's hardly problematic as these
+> strings are not terribly large.
 >
-
-It is done in patch 4. There I move that check from the check_func_arg_reg_off
-to process_dynptr_func.
-
-> Why is the check there not sufficient?
->
-
-I wanted to keep check_func_arg_reg_off free of assumptions for helper specific
-checks. It just ensures a few rules:
-
-When OBJ_RELEASE, offsets (fixed and var are 0)
-Otherwise, for some specific register types, allow fixed and var_off.
-For PTR_TO_BTF_ID, allow fixed but not var_off.
-Reject any fixed or var_off for all other cases.
-
-Everything else is handled on top of that.
-
-> > > > Or do you mean it cannot happen anymore? If so, why?
+> > > @@ -4558,6 +4560,9 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+> > >         if (type_flag(reg->type) & PTR_UNTRUSTED)
+> > >                 flag |= PTR_UNTRUSTED;
 > > >
-> > > Why would it? There is an alignment check earlier.
-> > >
+> > > +       /* All pointers obtained by walking a struct are nested. */
+> > > +       flag |= PTR_NESTED;
+> > > +
 > >
-> > I removed the one in check_func_arg_reg_off. So this is the only place now where
-> > this alignment check happens.
-> >
-> > > > > > +       if (!tnum_is_const(reg->var_off)) {
-> > > > > > +               verbose(env, "dynptr has to be at the constant offset\n");
-> > > > > > +               return -EINVAL;
-> > > > > > +       }
-> > > > >
-> > > > > This part can.
-> > > > >
-> > > > > > +       spi = __get_spi(reg->off + reg->var_off.value);
-> > > > > > +       if (spi < 1) {
-> > > > > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n",
-> > > > > > +                       (int)(reg->off + reg->var_off.value));
-> > > > > > +               return -EINVAL;
-> > > > > > +       }
-> > > > > > +       return spi;
-> > > > > > +}
-> > > > >
-> > > > > This one is a more conservative (read: redundant) check.
-> > > > > The is_spi_bounds_valid() is doing it better.
-> > > >
-> > > > The problem is, is_spi_bounds_valid returning an error is not always a problem.
-> > > > See how in is_dynptr_reg_valid_uninit we just return true on invalid bounds,
-> > > > then later simulate two 8-byte accesses for uninit_dynptr_regno and rely on it
-> > > > to grow the stack depth and do MAX_BPF_STACK check.
-> > >
-> > > It's a weird one. I'm not sure it's actually correct to do it this way.
-> > >
-> >
-> > Yeah, when looking at this I was actually surprised by that return true,
-> > thinking that was by accident and the stack depth was not being updated, but it
-> > later happens using check_mem_access in that if block.
-> >
-> > I'm open to other ideas, like separating out code in
-> > check_stack_write_fixed_off, but the only issue is code divergence and we miss
-> > checks we need to in both places due to duplication. Let me know what you think.
+> > Instead of PTR_NESTED, how about PTR_WALK?
 >
-> Not following. Why check_stack_write_fixed_off has to do with any of that?
+> I don't have a strong preference between either, though I would prefer
+> PTR_WALKED if we go with the latter. Does that work for you?
 >
 
-Well, I thought you didn't consider check_mem_access based simulation of writes
-to grow stack bounds to be clean, so I was soliciting opinions on how it could
-be done otherwise. It ends up calling check_stack_write_fixed_off internally.
+Yes, I just think PTR_NESTED is a bit misleading, it's not nested within the old
+object, we loaded a pointer from it, it should just indicate that the pointer
+came from a walk of a trusted PTR_TO_BTF_ID.
 
-per
-> > > It's a weird one. I'm not sure it's actually correct to do it this way.
+> > > [...]
+> > > @@ -5694,7 +5699,12 @@ static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
+> > >  static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
+> > >  static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | MEM_ALLOC } };
+> > >  static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
+> > > -static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
+> > > +static const struct bpf_reg_types btf_ptr_types = {
+> > > +       .types = {
+> > > +               PTR_TO_BTF_ID,
+> > > +               PTR_TO_BTF_ID | PTR_NESTED
+> > > +       },
+> > > +};
+> >
+> > CI fails, two of those failures are from not updating
+> > check_func_arg_reg_off for PTR_TO_BTF_ID | PTR_WALK, and the other one
+>
+> Gah, I didn't think it was necessary for this case as it's not required
+> for btf_check_func_arg_match(), which will eventually just fail in the
+> following check:
+>
+> 	if (!btf_type_is_struct(ref_t)) {
+> 		bpf_log(log, "kernel function %s args#%d pointer type %s %s is not support
+> 			func_name, i, btf_type_str(ref_t),
+> 			ref_tname);
+> 		return -EINVAL;
+> 	}
 
-but maybe I misunderstood and you meant it for is_spi_bounds_valid only.
+Why would it fail there? It will still be a struct type.
+I think you misunderstand this a bit.
 
-> The bug you're fixing is missing tnum_is_const(reg->var_off), right?
-> All other changes make it hard to understand what is going on.
+When you have task from tracing ctx arg:
+r1 = ctx;
+r1 = *(r1 + ...); // PTR_TO_BTF_ID, task_struct, off=0
+// r1 = task->next
+r1 = *(r1 + offsetof(task_struct, next)); // PTR_TO_BTF_ID | PTR_WALKED, task_struct, off = 0
+
+We loaded a pointer from task_struct into r1.
+Now r1 still points to a task_struct, so that check above won't fail for r1.
+
+>
+> Note that we also don't include PTR_TO_BTF_ID | PTR_UNTRUSTED here. The
+> difference for PTR_TO_BTF_ID | PTR_WALK(ED) is of course that we also need to
+> allow it to work properly for normal helper calls, so I'll make that change.
+> Thanks for pointing it out. In general, the whole dance between register base
+> types + modifiers sometimes feels like a mine field...
 >
 
-In this patch, there is no other change. Every site that used get_spi(reg->off)
-now uses get_spi(reg->off + reg->var_off.value) essentially.
-
-For dynptr, only spi 1 and above are valid values.
-
-The main ugliness comes because it needs to get ref_obj_id earlier before
-argument processing begins in arg_type_is_release block. Maybe that step should
-be moved later below, I don't see anything using meta->ref_obj_id inside
-functions called by the switch case.
-
-Also, going back to what you said earlier:
-> If we only have get_spi_and_check() we'd have to add
-> WARN_ON_ONCE in a few places and that bothers me...
-> due to defensive programming...
-> If code is so complex that we cannot think it through
-> we have to refactor it. Sprinkling WARN_ON_ONCE (just to be sure)
-> doesn't inspire confidence.
->
-
-Once we are done with process_dynptr_func, the rest of code can assume it points
-to a valid stack location where dynptr needs to be marked/unmarked, so the rest
-of the code doesn't do any checking of the spi etc.
+Yes, I don't like how it's growing and being mixed either. Eventually I think we
+should document what combinations are allowed and reject everything else when
+initializing reg->type to prevent bugs, but IDK whether something like this
+would be accepted.
