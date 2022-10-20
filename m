@@ -2,68 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460606068E0
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 21:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C46A6069D2
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 22:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbiJTTae (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 15:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S229996AbiJTUsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 16:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbiJTTae (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 15:30:34 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CD11A5B1C;
-        Thu, 20 Oct 2022 12:30:32 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id w18so1889147ejq.11;
-        Thu, 20 Oct 2022 12:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bb8tUZkUDdEfCtbj9v9BtSlOnFqvAoDEAD0yrPFqVao=;
-        b=RkgZgoAGFYQuM4tjiPOGCTBZJSZA908D7jM1AoLLBWm2VVMPlAWzOzIIU4Er+vwsQi
-         i5/zoREWaEi8sVHRW4gDzCS10puiFGmcZqhGECuJKuEqYSZpLvy+qyFFLVQtGe2U1cuG
-         VS0Fhqgjq/iOgT/3k0zDb+V25p5gmqaIzJ4RnXB1ZXE/XHDrB3BWeZ1FRIyEEvedKkSK
-         JD2CctoPwIf94swm/zF1jZ1Y7XJhoywP5RWGOI9gq9VCCOqUNuO14NzzPxlz3/SH3/Ju
-         kbYl6FEmdT+7mcYLhvUxeHVSoFCPgCM/1vep69dv5twb4jGe3+PNk0se9Ctj3yHX8tLJ
-         C85A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bb8tUZkUDdEfCtbj9v9BtSlOnFqvAoDEAD0yrPFqVao=;
-        b=McmlG50oIX0yb1Jo3laA7fHxxaDL+gBwEyiDAvoPWFhYLNEr7CjiaC9AYyIkntX6ru
-         UI1S7OVLQLYE4XxtdSqOA6E5y52CaKuthATsacnSYTAq5e5qIegBnshJNMrLm/6CCcg4
-         BImnA2KnSjqbmUQ2vcmclVE7ayRYM9Nl69JPX3sFzSdWIqgdzLcnNA2Shfrm/MIoF/n9
-         zzZ9H9DjdkvDGSac3UHzjk6nydkF6L6oCXzhO+QM4/Kf7xL55rOXUK0/ds3w8rxqSQov
-         kA9xqK00AsMR1JyN2NdL7AZofLlewlHxArB/d+miLv1dEuu79L4/7UpzzBfnuvYxTxbm
-         NCxw==
-X-Gm-Message-State: ACrzQf1ls3tddcmKM2SrhCi/RbFfD9hetbxfOY+gL3DscR3quh2pGZS6
-        5ZRM0IhrLKyi7EXGYR6AUotGX4asoQLfDZYE2EQ=
-X-Google-Smtp-Source: AMsMyM7rx+/3Di2dVksUzUjLlaIThVXf0csRoYO8+j/ReOYbCaEOpLjmAeXEjPpVD0euLhrYmlf1bk2eX706CpU1U3o=
-X-Received: by 2002:a17:907:1dd8:b0:78d:cbdc:ff1f with SMTP id
- og24-20020a1709071dd800b0078dcbdcff1fmr12123904ejc.412.1666294230824; Thu, 20
- Oct 2022 12:30:30 -0700 (PDT)
+        with ESMTP id S229949AbiJTUr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 16:47:58 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E009A21552E;
+        Thu, 20 Oct 2022 13:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1666298858; x=1697834858;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9I88ZVRaZf8uIrCpHeEkFE8y8YswgC2AXMbuz25GRu4=;
+  b=zO/dzdFWwrBXKoALQxgY4O0Qqd1jkUbeiQaYR6hkAUVWc1xCktoHigwz
+   GteVDHk72/LJrPqMJbSf7vUJ9IJCgWavdyaNY2MjJnrbOJtWdDPwqRWuL
+   srARxDdxXSn0pXoRkUVAH5UcunseycTzMB3Sz5KuIFOgKN7ImWnI2xPKn
+   ykvs6OPpRIR0zcYgoCj1l9cEKZdqRh72+Vw6diqlAniBj3Q/bFathDEu+
+   l4cQOEZy6iB1ZL589RAnNfWzCWVBqTWGm1PxGR50VYQkfa3qc6hdO5WQk
+   w/ZCqtEAE9n9J8cOk4NqTphWI+R8FSHuLY1TKwhFzJuuMo3XrvmQavoLF
+   w==;
+X-IronPort-AV: E=Sophos;i="5.95,199,1661842800"; 
+   d="scan'208";a="185760420"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Oct 2022 13:47:17 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Thu, 20 Oct 2022 13:47:16 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Thu, 20 Oct 2022 13:47:16 -0700
+Date:   Thu, 20 Oct 2022 22:51:54 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <linux@armlinux.org.uk>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next 0/5] net: lan966x: Add xdp support
+Message-ID: <20221020205154.rkmr2lvk7436vftt@soft-dev3-1>
+References: <20221019135008.3281743-1-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-References: <20220907183129.745846-1-joannelkoong@gmail.com>
- <20220907183129.745846-2-joannelkoong@gmail.com> <cd8d201b-74f7-4045-ad2f-6d26ed608d1e@linux.dev>
- <CAJnrk1ZTbHcFsQPKWnZ+Au8BsiFc++Ud7y=24mAhNXNbYQaXhA@mail.gmail.com>
- <8f900712-8dcc-5f39-7a66-b6b2e4162f94@linux.dev> <de696460-ab5c-0770-017a-2af06eab5187@linux.dev>
-In-Reply-To: <de696460-ab5c-0770-017a-2af06eab5187@linux.dev>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 20 Oct 2022 12:30:19 -0700
-Message-ID: <CAJnrk1YXr5R679Usko8V8b3dDO5eUcL=mTp14yPHbPXnkfk7Ew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 1/3] bpf: Add skb dynptrs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        martin.lau@kernel.org, kuba@kernel.org, memxor@gmail.com,
-        toke@redhat.com, netdev@vger.kernel.org, kernel-team@fb.com,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20221019135008.3281743-1-horatiu.vultur@microchip.com>
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,75 +63,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 11:40 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 10/19/22 11:34 PM, Martin KaFai Lau wrote:
-> > On 10/19/22 1:22 PM, Joanne Koong wrote:
-> >> On Fri, Sep 9, 2022 at 4:12 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >>>
-> >>> On 9/7/22 11:31 AM, Joanne Koong wrote:
-> >>>> For bpf prog types that don't support writes on skb data, the dynptr is
-> >>>> read-only (bpf_dynptr_write() will return an error and bpf_dynptr_data()
-> >>>> will return NULL; for a read-only data slice, there will be a separate
-> >>>> API bpf_dynptr_data_rdonly(), which will be added in the near future).
-> >>>>
-> >>> I just caught up on the v4 discussion about loadtime-vs-runtime error on
-> >>> write.  From a user perspective, I am not concerned on which error.
-> >>> Either way, I will quickly find out the packet header is not changed.
-> >>>
-> >>> For the dynptr init helper bpf_dynptr_from_skb(), the user does not need
-> >>> to know its skb is read-only or not and uses the same helper.  The
-> >>> verifier in this case uses its knowledge on the skb context and uses
-> >>> bpf_dynptr_from_skb_rdonly_proto or bpf_dynptr_from_skb_rdwr_proto
-> >>> accordingly.
-> >>>
-> >>> Now for the slice helper, the user needs to remember its skb is read
-> >>> only (or not) and uses bpf_dynptr_data() vs bpf_dynptr_data_rdonly()
-> >>> accordingly.  Yes, if it only needs to read, the user can always stay
-> >>> with bpf_dynptr_data_rdonly (which is not the initially supported one
-> >>> though).  However, it is still unnecessary burden and surprise to user.
-> >>> It is likely it will silently turn everything into bpf_dynptr_read()
-> >>> against the user intention. eg:
-> >>>
-> >>> if (bpf_dynptr_from_skb(skb, 0, &dynptr))
-> >>>          return 0;
-> >>> ip6h = bpf_dynptr_data(&dynptr, 0, sizeof(*ip6h));
-> >>> if (!ip6h) {
-> >>>          /* Unlikely case, in non-linear section, just bpf_dynptr_read()
-> >>>           * Oops...actually bpf_dynptr_data_rdonly() should be used.
-> >>>           */
-> >>>          bpf_dynptr_read(buf, sizeof(*ip6h), &dynptr, 0, 0);
-> >>>          ip6h = buf;
-> >>> }
-> >>>
-> >>
-> >> I see your point. I agree that it'd be best if we could prevent this
-> >> burden on the user, but I think the trade-off would be that if we have
-> >> bpf_dynptr_data return data slices that are read-only and data slices
-> >> that are writable (where rd-only vs. writable is tracked by verifier),
-> >> then in the future we won't be able to support dynptrs that are
-> >> dynamically read-only (since to reject at load time, the verifier must
-> >> know statically whether the dynptr is read-only or not). I'm not sure
-> >> how likely it is that we'd run into a case where we'll need dynamic
-> >> read-only dynptrs though. What are your thoughts on this?
-> >
-> > Out of all dynptr helpers, bpf_dynptr_data() is pretty much the only important
-> > function for header parsing because of the runtime offset.  This offset is good
-> > to be tracked in runtime to avoid smart compiler getting in the way.  imo,
-> > making this helper less usage surprise is important.  If the verifier can help,
-> > then static checking is useful here.
-> >
-> > It is hard to comment without a real use case on when we want to flip a dynptr
-> > to rdonly in a dynamic/runtime way.  Thus, comparing with the example like the
-> > skb here, my preference is pretty obvious :)
-> > Beside, a quick thought is doing this static checking now should now stop the
->
-> typo: should *not* stop the... :(
->
-> > dynamic rdonly flip later.  I imagine it will be a helper call like
-> > bpf_dynptr_set_rdonly().  The verifier should be able to track this helper call.'
->
+The 10/19/2022 15:50, Horatiu Vultur wrote:
+> Add support for xdp in lan966x driver. Currently on XDP_PASS and
+> XDP_DROP are supported.
+> 
+> The first 3 patches are just moving things around just to simplify
+> the code for when the xdp is added.
+> Patch 4 actually adds the xdp. Currently the only supported actions
+> are XDP_PASS and XDP_DROP. In the future this will be extended with
+> XDP_TX and XDP_REDIRECT.
+> Patch 5 changes to use page pool API, because the handling of the
+> pages is similar with what already lan966x driver is doing. In this
+> way is possible to remove some of the code.
+> 
+> All these changes give a small improvement on the RX side:
+> Before:
+> iperf3 -c 10.96.10.1 -R
+> [  5]   0.00-10.01  sec   514 MBytes   430 Mbits/sec    0         sender
+> [  5]   0.00-10.00  sec   509 MBytes   427 Mbits/sec              receiver
+> 
+> After:
+> iperf3 -c 10.96.10.1 -R
+> [  5]   0.00-10.02  sec   540 MBytes   452 Mbits/sec    0         sender
+> [  5]   0.00-10.01  sec   537 MBytes   450 Mbits/sec              receiver
 
-Great! I'll change this in v7 to have bpf_dynptr_data() be able to
-return both read-writable and read-only data slices, where the rd-only
-property is enforced by the verifier.
+If it is possible I would like to withdraw the submission for this patch
+series.
+The reason is that patch 2 touches some code that has some issues. The
+issues were not introduced in this patch series. So I prefer to send first
+the patches to fix those issues which need to go in net and only when those
+fixes reaches net-next to resend this patch series. Otherwise will be some
+pretty ugly merge conflicts.
+So just to make the life easier for everyone, please ignore for now
+this patch series.
+
+> 
+> 
+> Horatiu Vultur (5):
+>   net: lan966x: Add define IFH_LEN_BYTES
+>   net: lan966x: Rename lan966x_fdma_get_max_mtu
+>   net: lan966x: Split function lan966x_fdma_rx_get_frame
+>   net: lan966x: Add basic XDP support
+>   net: lan96x: Use page_pool API
+> 
+>  .../net/ethernet/microchip/lan966x/Kconfig    |   1 +
+>  .../net/ethernet/microchip/lan966x/Makefile   |   3 +-
+>  .../ethernet/microchip/lan966x/lan966x_fdma.c | 194 +++++++++++-------
+>  .../ethernet/microchip/lan966x/lan966x_ifh.h  |   1 +
+>  .../ethernet/microchip/lan966x/lan966x_main.c |  26 ++-
+>  .../ethernet/microchip/lan966x/lan966x_main.h |  28 +++
+>  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 100 +++++++++
+>  7 files changed, 275 insertions(+), 78 deletions(-)
+>  create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> 
+> -- 
+> 2.38.0
+> 
+
+-- 
+/Horatiu
