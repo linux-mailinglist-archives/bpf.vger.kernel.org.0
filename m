@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3502606560
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 18:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C37606562
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 18:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbiJTQHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 12:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        id S230190AbiJTQHi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 12:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbiJTQHd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 12:07:33 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EE65B12F
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:32 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29KFchYQ021094
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:32 -0700
+        with ESMTP id S230141AbiJTQHh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 12:07:37 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD1652805
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:36 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29K94FYT027213
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=FIa3Yq6n+zpZVVx7wdnOb8Y0bW8rXKBDQLxFsBYeCqg=;
- b=n5kJSBPqiidiQUMSvlJc4BSMFX6U6oC4hv+HgftYk5GixftIM1j5FhFlVs12InBQTNC0
- 18Z3c9COi2z10x2IzGRxw62rvsg/S7tHpRV3oFYmGNHViH5XeNwr3kqqg4Ehvf5nABRP
- zndKrjdCfbpEhSyJjV+J2E2TCl5lSQcYHZ4= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=1+bpa4WnGEBpq7c/NdxZohc7+q6jghBxXdoc0Pp+EkI=;
+ b=C/uxuVnFiBbbH7CAJpDGCfIlRBej1Kbl+olqtElamse+a6yijuYqmCQcGWfIf+VR3P2A
+ YoB4jsSWZ+NOpuopXHDp8tQfcm3sVD9HWJE77y+cKS2pPFAFvpXhF4dsnF67Q9AqwMCg
+ VFkW7CzpPDZFcrUo86XD5MJsdx3gdL9Y5QE= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kawj0722j-12
+        by m0089730.ppops.net (PPS) with ESMTPS id 3kb3cd42nr-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:32 -0700
-Received: from twshared9269.07.ash9.facebook.com (2620:10d:c085:108::4) by
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:07:35 -0700
+Received: from twshared9269.07.ash9.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 09:07:28 -0700
+ 15.1.2375.31; Thu, 20 Oct 2022 09:07:33 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id A306FF43AED7; Thu, 20 Oct 2022 09:07:22 -0700 (PDT)
+        id 88BDBF43AEDB; Thu, 20 Oct 2022 09:07:23 -0700 (PDT)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -41,16 +42,18 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v5 bpf-next 1/4] bpf: Allow ringbuf memory to be used as map key
-Date:   Thu, 20 Oct 2022 09:07:18 -0700
-Message-ID: <20221020160721.4030492-1-davemarchevsky@fb.com>
+Subject: [PATCH v5 bpf-next 2/4] bpf: Consider all mem_types compatible for map_{key,value} args
+Date:   Thu, 20 Oct 2022 09:07:19 -0700
+Message-ID: <20221020160721.4030492-2-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221020160721.4030492-1-davemarchevsky@fb.com>
+References: <20221020160721.4030492-1-davemarchevsky@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: FhsVLOpw7Xz82aSwG3-taynK2cn0fgvd
-X-Proofpoint-ORIG-GUID: FhsVLOpw7Xz82aSwG3-taynK2cn0fgvd
+X-Proofpoint-ORIG-GUID: MVM2WGc_qXlWlHuDY1viF3hXDnbotzso
+X-Proofpoint-GUID: MVM2WGc_qXlWlHuDY1viF3hXDnbotzso
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-20_07,2022-10-20_01,2022-06-22_01
@@ -64,59 +67,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds support for the following pattern:
+After the previous patch, which added PTR_TO_MEM | MEM_ALLOC type
+map_key_value_types, the only difference between map_key_value_types and
+mem_types sets is PTR_TO_BUF and PTR_TO_MEM, which are in the latter set
+but not the former.
 
-  struct some_data *data =3D bpf_ringbuf_reserve(&ringbuf, sizeof(struct =
-some_data, 0));
-  if (!data)
-    return;
-  bpf_map_lookup_elem(&another_map, &data->some_field);
-  bpf_ringbuf_submit(data);
+Helpers which expect ARG_PTR_TO_MAP_KEY or ARG_PTR_TO_MAP_VALUE
+already effectively expect a valid blob of arbitrary memory that isn't
+necessarily explicitly associated with a map. When validating a
+PTR_TO_MAP_{KEY,VALUE} arg, the verifier expects meta->map_ptr to have
+already been set, either by an earlier ARG_CONST_MAP_PTR arg, or custom
+logic like that in process_timer_func or process_kptr_func.
 
-Currently the verifier does not consider bpf_ringbuf_reserve's
-PTR_TO_MEM | MEM_ALLOC ret type a valid key input to bpf_map_lookup_elem.
-Since PTR_TO_MEM is by definition a valid region of memory, it is safe
-to use it as a key for lookups.
+So let's get rid of map_key_value_types and just use mem_types for those
+args.
+
+This has the effect of adding PTR_TO_BUF and PTR_TO_MEM to the set of
+compatible types for ARG_PTR_TO_MAP_KEY and ARG_PTR_TO_MAP_VALUE.
+
+PTR_TO_BUF is used by various bpf_iter implementations to represent a
+chunk of valid r/w memory in ctx args for iter prog.
+
+PTR_TO_MEM is used by networking, tracing, and ringbuf helpers to
+represent a chunk of valid memory. The PTR_TO_MEM | MEM_ALLOC
+type added in previous commmit is specific to ringbuf helpers.
+Presence or absence of MEM_ALLOC doesn't change the validity of using
+PTR_TO_MEM as a map_{key,val} input.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
 ---
-v2->v3: lore.kernel.org/bpf/20220914123600.927632-1-davemarchevsky@fb.com
+v1 -> v5: lore.kernel.org/bpf/20220912101106.2765921-2-davemarchevsky@fb.=
+com
 
-  * Add Yonghong ack, rebase
+  * This patch was dropped in v2 as I had no concrete usecase for
+    PTR_TO_BUF and PTR_TO_MEM w/o MEM_ALLOC. Andrii encouraged me to
+    re-add the patch as we both share desire to eventually cleanup all
+    these separate "valid chunk of memory" types. Starting to treat them
+    similarly is a good step in that direction.
+    * A usecase for PTR_TO_BUF is now demonstrated in patch 4 of this
+      series.
+    * PTR_TO_MEM w/o MEM_ALLOC is returned by bpf_{this,per}_cpu_ptr
+      helpers via RET_PTR_TO_MEM_OR_BTF_ID, but in both cases the return
+      type is also tagged MEM_RDONLY, which map helpers don't currently
+      accept (see patch 4 summary). So no selftest for this specific
+      case is added in the series, but by logic in this patch summary
+      there's no reason to treat it differently.
 
-v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.co=
-m
-
-  * Move test changes into separate patch - patch 2 in this series.
-    (Kumar, Yonghong). That patch's changelog enumerates specific
-    changes from v1
-  * Remove PTR_TO_MEM addition from this patch - patch 1 (Yonghong)
-    * I don't have a usecase for PTR_TO_MEM w/o MEM_ALLOC
-  * Add "if (!data)" error check to example pattern in this patch
-    (Yonghong)
-  * Remove patch 2 from v1's series, which removed map_key_value_types
-    as it was more-or-less duplicate of mem_types
-    * Now that PTR_TO_MEM isn't added here, more differences between
-      map_key_value_types and mem_types, and no usecase for PTR_TO_BUF,
-      so drop for now.
-
- kernel/bpf/verifier.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/verifier.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6f6d2d511c06..97351ae3e7a7 100644
+index 97351ae3e7a7..ddc1452cf023 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -5641,6 +5641,7 @@ static const struct bpf_reg_types map_key_value_typ=
-es =3D {
- 		PTR_TO_PACKET_META,
- 		PTR_TO_MAP_KEY,
- 		PTR_TO_MAP_VALUE,
-+		PTR_TO_MEM | MEM_ALLOC,
- 	},
+@@ -5634,17 +5634,6 @@ struct bpf_reg_types {
+ 	u32 *btf_id;
  };
 =20
+-static const struct bpf_reg_types map_key_value_types =3D {
+-	.types =3D {
+-		PTR_TO_STACK,
+-		PTR_TO_PACKET,
+-		PTR_TO_PACKET_META,
+-		PTR_TO_MAP_KEY,
+-		PTR_TO_MAP_VALUE,
+-		PTR_TO_MEM | MEM_ALLOC,
+-	},
+-};
+-
+ static const struct bpf_reg_types sock_types =3D {
+ 	.types =3D {
+ 		PTR_TO_SOCK_COMMON,
+@@ -5711,8 +5700,8 @@ static const struct bpf_reg_types dynptr_types =3D =
+{
+ };
+=20
+ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_M=
+AX] =3D {
+-	[ARG_PTR_TO_MAP_KEY]		=3D &map_key_value_types,
+-	[ARG_PTR_TO_MAP_VALUE]		=3D &map_key_value_types,
++	[ARG_PTR_TO_MAP_KEY]		=3D &mem_types,
++	[ARG_PTR_TO_MAP_VALUE]		=3D &mem_types,
+ 	[ARG_CONST_SIZE]		=3D &scalar_types,
+ 	[ARG_CONST_SIZE_OR_ZERO]	=3D &scalar_types,
+ 	[ARG_CONST_ALLOC_SIZE_OR_ZERO]	=3D &scalar_types,
 --=20
 2.30.2
 
