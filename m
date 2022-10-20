@@ -2,70 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E25F60545A
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 02:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9638A60545C
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 02:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbiJTAFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 20:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S229896AbiJTAFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 20:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbiJTAFm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 20:05:42 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8A31217E1
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:05:38 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id e15so15937090iof.2
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:05:38 -0700 (PDT)
+        with ESMTP id S230037AbiJTAFr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 20:05:47 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876DB13C3CE;
+        Wed, 19 Oct 2022 17:05:45 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id z97so27543171ede.8;
+        Wed, 19 Oct 2022 17:05:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8sI3cDV3OlVSuewZJ5vfcTrNNHXckGA/9W5F/7p9ec=;
-        b=jWv4MMstNCa7lIxAISoL7aTa1gtAYT0Iq0j68knPSt3Khg1PjH/crb2gh42pE2xW9a
-         f+pZejV02jqc8Ag2xeny7wvcamVv4eJ+mOCxbV9KGnbSZbVCvSdDYu80oHEfyWChjrvp
-         ZxZyW8hyEEhhj7kHQbElZx1j7B2Vbm58sOZFSbKTHWENUmpQPr+O2G5+xuhOsrQNySnM
-         zslpLcorsGT6bNS1xFkKfPpeiNZfkTpjlyzNn/4Cg9Y64xTWKgqFPb5oDKZUwy+gR40s
-         1KG4MCqDlYbOgXRUy8moDjAn6a0EaCrR+YH89g/bYzUFZ5m0qfocjtbjDUsYlvNb88Ub
-         GEEA==
+        bh=nlmH6A9hbUfA0KfFR+KYfz6FaVJkXOfdGc8fbB3clvA=;
+        b=l0e0ITI9UyTMbwZAqbCLt4D0XC4FyexnHLscnSWKO2BVF4hiflqFQ2eRuhLGSSBtKb
+         1wLU8bTCQ0No4saQXAhO9rgB7S57oLPwHZyVZPOGhpRYqfOvokm3n/kPF+iTSqDzqc/r
+         hhul+cJzk+Ih4oJIBQdE9aZkKXmNfSqB/AxQxdqGc92Beo6rDwmNodf3d66MB7o8+1Ni
+         SmzqoR78XgwWeNPLyatiL32h1p5BEER2IslM9diQ8bM9U/rMnTbb7NDM8iYhoopdTjks
+         +C+rfpjNpGoSfuru931U+lQs05tpjjj6TTPvQVKt/+eaSQ4zyRCy+wvbutcDQ3rOqfGS
+         tOVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=o8sI3cDV3OlVSuewZJ5vfcTrNNHXckGA/9W5F/7p9ec=;
-        b=yEDh681oE5ZHChgu0epF5QGkXxzj6CR9gJzKpaF+CpHivyulBCTr3DEIBH45g+A3XA
-         zDi8f681OW+y2ILkWEIpY2NJFvqLEio2VVY8skiGVMG1ueD/QPW0NwqErQGz/M2UX+Sc
-         Y3Sx8pAAlf1hNH4nOB262c0/aF6TQc3L3gBhXiBL1M2GpRPDpDGjlf4QzMKclhX8WFLX
-         rH4s/hmTiCYrlpWMJsg8kLjkNQ/D5oBDCAv+6PfBWUDn2/VlQIE/rfhnUsBPEKdGFHsI
-         aCDfMBMUfQbbgPltPn6xEZIygBsIXe178wZlMWILXSwL8uqicIBrGsq/mV2ktJx4i+ZE
-         kubg==
-X-Gm-Message-State: ACrzQf3Ej1tDCTmVBcg66vj5auAzd7OjQD7ft/3aKnNRIDT/czydpyEf
-        MHTkROhEsYZ55oB0CT5zeWZN6EgE4vTXk6yfcxS9hA==
-X-Google-Smtp-Source: AMsMyM6fV8v/YwUGv+f7ZNJyId52sin4U1L+/7fazMQA+XcANBDOOXe/dcuqkVLIh9wiO5jmnpPkuZNhDdl9Coz/aeg=
-X-Received: by 2002:a05:6602:3145:b0:6b3:d28a:2f4d with SMTP id
- m5-20020a056602314500b006b3d28a2f4dmr7875664ioy.49.1666224337694; Wed, 19 Oct
- 2022 17:05:37 -0700 (PDT)
+        bh=nlmH6A9hbUfA0KfFR+KYfz6FaVJkXOfdGc8fbB3clvA=;
+        b=nRjWyLMx4ElkFndWF0via5sri5sIlKuBVqAkLEP+mWkwysGBdU9uXCNI4LrDrP74Xg
+         YYalalqs9p+EC2dEO0A4hzj54w0yQankB+70zbzah4a0mq9oPPS4AmXxyDNZqXf5sWo8
+         wnkZEmkm3FVUna3bJ1oadU4iDFAkLNtuDC2BWqptXO6PwA0rXVk5zSg7jruv4YPvPEk0
+         m2R0A6YuXnJVJqd3u0H0guj0ZBHr0kOklb2AqLa20xjGhf1mhS+S3ddCF1Q5F7W7JH8k
+         NBstL4qujek0euOQsTUJqBf1VqqL3nd7l2f1wXpsCK0NfcSDvy9Akb0qE0aPkw1WQBNc
+         uoGA==
+X-Gm-Message-State: ACrzQf3A2vCg4te4X7RslJfOz/+yfkBinP0eH7NnMW/cmcNuCboD1dzd
+        FFX1yHJ8cnA+QW7MqEp899I+dixIMiZ/oRxJXt+pR7LE
+X-Google-Smtp-Source: AMsMyM4yU/RDBlVdKI0XIEucbN+ZrqEble57eMVNEzDB3yeByrj0cGv6PDyzP93Z4coqFitkQYJKdignicyBWRCta7w=
+X-Received: by 2002:a05:6402:22ef:b0:458:bfe5:31a3 with SMTP id
+ dn15-20020a05640222ef00b00458bfe531a3mr9655696edb.6.1666224343740; Wed, 19
+ Oct 2022 17:05:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <f04cf27b05047cfb2c90db160383e2e9c2c40b93.camel@fb.com>
- <Y1BWvNdHHwHbPXDk@google.com> <CAADnVQLU3boKnMs4Su13pQ2P0w8qntoNZxRywT6_=LvAAVYtdA@mail.gmail.com>
-In-Reply-To: <CAADnVQLU3boKnMs4Su13pQ2P0w8qntoNZxRywT6_=LvAAVYtdA@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 19 Oct 2022 17:05:26 -0700
-Message-ID: <CAKH8qBs1MaQhwr8PxQoh2TcfDW_N2HGqABtp3vB+Udn-Fr0yeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix task_local_storage/exit_creds
- rcu usage
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Delyan Kratunov <delyank@meta.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Song Liu <songliubraving@meta.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20221007162755.36677-1-donald.hunter@gmail.com> <20221007162755.36677-2-donald.hunter@gmail.com>
+In-Reply-To: <20221007162755.36677-2-donald.hunter@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 19 Oct 2022 17:05:32 -0700
+Message-ID: <CAADnVQLRyP2hgvmLubnCdZuPHofQ8CGRiGq_a2FQy_ZzRimiEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        dave@dtucker.co.uk
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,85 +67,284 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 4:52 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Oct 7, 2022 at 9:39 AM Donald Hunter <donald.hunter@gmail.com> wrote:
 >
-> On Wed, Oct 19, 2022 at 12:57 PM <sdf@google.com> wrote:
-> >
-> > On 10/19, Delyan Kratunov wrote:
-> > > BPF CI has revealed flakiness in the task_local_storage/exit_creds test.
-> > > The failure point in CI [1] is that null_ptr_count is equal to 0,
-> > > which indicates that the program hasn't run yet. This points to the
-> > > kern_sync_rcu (sys_membarrier -> synchronize_rcu underneath) not
-> > > waiting sufficiently.
-> >
-> > > Indeed, synchronize_rcu only waits for read-side sections that started
-> > > before the call. If the program execution starts *during* the
-> > > synchronize_rcu invocation (due to, say, preemption), the test won't
-> > > wait long enough.
-> >
-> > > As a speculative fix, make the synchornize_rcu calls in a loop until
-> > > an explicit run counter has gone up.
-> >
-> > >    [1]:
-> > > https://github.com/kernel-patches/bpf/actions/runs/3268263235/jobs/5374940791
-> >
-> > > Signed-off-by: Delyan Kratunov <delyank@fb.com>
-> > > ---
-> > > v1 -> v2:
-> > > Explicit loop counter and MAX_SYNC_RCU_CALLS guard.
-> >
-> > >   .../bpf/prog_tests/task_local_storage.c        | 18 +++++++++++++++---
-> > >   .../bpf/progs/task_local_storage_exit_creds.c  |  3 +++
-> > >   2 files changed, 18 insertions(+), 3 deletions(-)
-> >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-> > > b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-> > > index 035c263aab1b..99a42a2b6e14 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-> > > @@ -39,7 +39,8 @@ static void test_sys_enter_exit(void)
-> > >   static void test_exit_creds(void)
-> > >   {
-> > >       struct task_local_storage_exit_creds *skel;
-> > > -     int err;
-> > > +     int err, run_count, sync_rcu_calls = 0;
-> > > +     const int MAX_SYNC_RCU_CALLS = 1000;
-> >
-> > >       skel = task_local_storage_exit_creds__open_and_load();
-> > >       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> > > @@ -53,8 +54,19 @@ static void test_exit_creds(void)
-> > >       if (CHECK_FAIL(system("ls > /dev/null")))
-> > >               goto out;
-> >
-> > > -     /* sync rcu to make sure exit_creds() is called for "ls" */
-> > > -     kern_sync_rcu();
-> > > +     /* kern_sync_rcu is not enough on its own as the read section we want
-> > > +      * to wait for may start after we enter synchronize_rcu, so our call
-> > > +      * won't wait for the section to finish. Loop on the run counter
-> > > +      * as well to ensure the program has run.
-> > > +      */
-> > > +     do {
-> > > +             kern_sync_rcu();
-> > > +             run_count = __atomic_load_n(&skel->bss->run_count, __ATOMIC_SEQ_CST);
-> > > +     } while (run_count == 0 && ++sync_rcu_calls < MAX_SYNC_RCU_CALLS);
-> >
-> > Acked-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > Might have been easier to do the following instead?
-> >
-> > int sync_rcu_calls = 1000;
-> > do {
-> > } while (run_count == 0 && --sync_rcu_calls);
+> From: Dave Tucker <dave@dtucker.co.uk>
 >
+> Add documentation for the BPF_MAP_TYPE_ARRAY including kernel version
+> introduced, usage and examples. Also document BPF_MAP_TYPE_PERCPU_ARRAY
+> which is similar.
 >
-> I think it's a preference of the author.
-> Both are fine. imo.
+> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+>  Documentation/bpf/map_array.rst | 232 ++++++++++++++++++++++++++++++++
+>  1 file changed, 232 insertions(+)
+>  create mode 100644 Documentation/bpf/map_array.rst
+>
+> diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+> new file mode 100644
+> index 000000000000..c3c56ffe5334
+> --- /dev/null
+> +++ b/Documentation/bpf/map_array.rst
+> @@ -0,0 +1,232 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +================================================
+> +BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+> +================================================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_ARRAY`` was introduced in kernel version 3.19
+> +   - ``BPF_MAP_TYPE_PERCPU_ARRAY`` was introduced in version 4.6
+> +
+> +``BPF_MAP_TYPE_ARRAY`` and ``BPF_MAP_TYPE_PERCPU_ARRAY`` provide generic array
+> +storage. The key type is an unsigned 32-bit integer (4 bytes) and the map is
+> +of constant size. The size of the array is defined in ``max_entries`` at
+> +creation time. All array elements are pre-allocated and zero initialized when
+> +created. ``BPF_MAP_TYPE_PERCPU_ARRAY`` uses a different memory region for each
+> +CPU whereas ``BPF_MAP_TYPE_ARRAY`` uses the same memory region. The value
+> +stored can be of any size, however, small values will be rounded up to 8
+> +bytes.
 
-Agreed, that's why I acked it, shouldn't really matter.
+Actually all values are rounded up to 8.
+Maybe we should say that all array elements are aligned to 8
+instead of values are rounded?
+Because values_size=4 stays as 4 from bpf prog pov.
+The progs cannot access bytes 5,6,7,8 though that memory is consumed.
 
-> I was about to apply, but then noticed Delyan's author line
-> and SOB are different. @meta vs @fb :(
-> Delyan, please fix.
+> +
+> +Since kernel 5.5, memory mapping may be enabled for ``BPF_MAP_TYPE_ARRAY`` by
+> +setting the flag ``BPF_F_MMAPABLE``. The map definition is page-aligned and
+> +starts on the first page. Sufficient page-sized and page-aligned blocks of
+> +memory are allocated to store all array values, starting on the second page,
+> +which in some cases will result in over-allocation of memory. The benefit of
+> +using this is increased performance and ease of use since userspace programs
+> +would not be required to use helper functions to access and mutate data.
+> +
+> +Usage
+> +=====
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +Array elements can be retrieved using the ``bpf_map_lookup_elem()`` helper.
+> +This helper returns a pointer into the array element, so to avoid data races
+> +with userspace reading the value, the user must use primitives like
+> +``__sync_fetch_and_add()`` when updating the value in-place. Access from
+> +userspace uses the libbpf API of the same name.
+> +
+> +.. c:function::
+> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+> +
+> +Array elements can also be added using the ``bpf_map_update_elem()`` helper or
+> +libbpf API.
+> +
+> +``bpf_map_update_elem()`` returns 0 on success, or negative error in case of
+> +failure.
+> +
+> +Since the array is of constant size, ``bpf_map_delete_elem()`` is not supported.
+> +To clear an array element, you may use ``bpf_map_update_elem()`` to insert a
+> +zero value to that index.
+> +
+> +Per CPU Array
+> +-------------
+> +
+> +Values stored in ``BPF_MAP_TYPE_ARRAY`` can be accessed by multiple programs
+> +across different CPUs. To restrict storage to a single CPU, you may use a
+> +``BPF_MAP_TYPE_PERCPU_ARRAY``.
+> +
+> +When using a ``BPF_MAP_TYPE_PERCPU_ARRAY`` the ``bpf_map_update_elem()`` and
+> +``bpf_map_lookup_elem()`` helpers automatically access the hash slot for the
+> +current CPU.
+
+hash slot?
+the copy paste went wrong? :)
+
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_percpu_elem(struct bpf_map *map, const void *key, u32 cpu)
+> +
+> +The ``bpf_map_lookup_percpu_elem()`` helper can be used to lookup the array
+> +value for a specific CPU. Returns value on success , or ``NULL`` if no entry was
+> +found or ``cpu`` is invalid.
+> +
+> +Concurrency
+> +-----------
+> +
+> +Since kernel version 5.1, the BPF infrastructure provides ``struct bpf_spin_lock``
+> +to synchronize access.
+> +
+> +Examples
+> +========
+> +
+> +Please see the ``tools/testing/selftests/bpf`` directory for functional
+> +examples. The code samples below demonstrate API usage.
+> +
+> +Kernel BPF
+> +----------
+> +
+> +This snippet shows how to declare an array in a BPF program.
+> +
+> +.. code-block:: c
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_ARRAY);
+> +            __type(key, u32);
+> +            __type(value, long);
+> +            __uint(max_entries, 256);
+> +    } my_map SEC(".maps");
+> +
+> +
+> +This example BPF program shows how to access an array element.
+> +
+> +.. code-block:: c
+> +
+> +    int bpf_prog(struct __sk_buff *skb)
+> +    {
+> +            int index = load_byte(skb,
+> +                                  ETH_HLEN + offsetof(struct iphdr, protocol));
+> +            long *value;
+
+Please avoid using deprecated instructions like load_byte in examples.
+
+> +
+> +            if (skb->pkt_type != PACKET_OUTGOING)
+> +                    return 0;
+> +
+> +            value = bpf_map_lookup_elem(&my_map, &index);
+> +            if (value)
+> +                    __sync_fetch_and_add(value, skb->len);
+> +
+> +            return 0;
+> +    }
+> +
+> +Userspace
+> +---------
+> +
+> +BPF_MAP_TYPE_ARRAY
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +This snippet shows how to create an array, using ``bpf_map_create_opts`` to
+> +set flags.
+> +
+> +.. code-block:: c
+> +
+> +    #include <bpf/libbpf.h>
+> +    #include <bpf/bpf.h>
+> +
+> +    int create_array() {
+> +            int fd;
+> +            LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
+
+Add empty line pls.
+
+> +            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY,
+> +                                "example_array",       /* name */
+> +                                sizeof(__u32),         /* key size */
+> +                                sizeof(long),          /* value size */
+> +                                256,                   /* max entries */
+> +                                &opts);                /* create opts */
+> +            return fd;
+> +    }
+> +
+> +This snippet shows how to initialize the elements of an array.
+> +
+> +.. code-block:: c
+> +
+> +    int initialize_array(int fd) {
+> +            __u32 i;
+> +            long value;
+> +            int ret;
+> +
+> +            for (i = 0; i < 256; i++) {
+> +                    value = i;
+> +                    ret = bpf_map_update_elem(fd, &i, &value, BPF_ANY);
+> +                    if (ret < 0)
+> +                            return ret;
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +This snippet shows how to retrieve an element value from an array.
+> +
+> +.. code-block:: c
+> +
+> +    int lookup(int fd) {
+> +            __u32 index = 42;
+> +            long value;
+> +            int ret = bpf_map_lookup_elem(fd, &index, &value);
+
+Empty line pls.
+Or better yet do 'int ret;'
+and ret = bpf_map... on a separate line.
+
+> +            if (ret < 0)
+> +                    return ret;
+> +
+> +            /* use value here */
+> +            assert(value == 42);
+> +
+> +            return ret;
+> +    }
+> +
+> +BPF_MAP_TYPE_PERCPU_ARRAY
+> +~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +This snippet shows how to initialize the elements of a per CPU array.
+> +
+> +.. code-block:: c
+> +
+> +    int initialize_array(int fd) {
+> +            int ncpus = libbpf_num_possible_cpus();
+> +            long values[ncpus];
+> +            __u32 i, j;
+> +            int ret;
+> +
+> +            for (i = 0; i < 256 ; i++) {
+> +                    for (j = 0; j < ncpus; j++)
+> +                            values[j] = i;
+> +                    ret = bpf_map_update_elem(fd, &i, &values, BPF_ANY);
+> +                    if (ret < 0)
+> +                            return ret;
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +This snippet shows how to access the per CPU elements of an array value.
+> +
+> +.. code-block:: c
+> +
+> +    int lookup(int fd) {
+> +            int ncpus = libbpf_num_possible_cpus();
+> +            __u32 index = 42, j;
+> +            long values[ncpus];
+> +            int ret = bpf_map_lookup_elem(fd, &index, &values);
+
+same here.
+
+> +            if (ret < 0)
+> +                    return ret;
+> +
+> +            for (j = 0; j < ncpus; j++) {
+> +                    /* Use per CPU value here */
+> +                    assert(values[j] == 42);
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +Semantics
+> +=========
+> +
+> +As shown in the example above, when accessing a ``BPF_MAP_TYPE_PERCPU_ARRAY``
+> +in userspace, each value is an array with ``ncpus`` elements.
+> +
+> +When calling ``bpf_map_update_elem()`` the flag ``BPF_NOEXIST`` can not be used
+> +for these maps.
+> --
+> 2.35.1
 >
-> Fixing SOB is not something maintainers can do while applying.
