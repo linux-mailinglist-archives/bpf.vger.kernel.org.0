@@ -2,215 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2FE606B14
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 00:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39E9606B39
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 00:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiJTWNi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 18:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        id S229541AbiJTWYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 18:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbiJTWNi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 18:13:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2102112B9
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 15:13:37 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29KHaCSp009412
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 15:13:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=vTr6RbKSp5SXWBQZQ7WTsQB9FAwJtccH55Rr7CWZNCw=;
- b=GxUpzrKyYzB4OQvNdz2tLnuB+YrvfzqvhPozdjMbCtA0dW43t9cO+zqmMz+lALJOfiFX
- C1uYUvrMEszUVSfq4EmM73+BUVNLEtfC02d86LokCD9arqW1ir9UFbqlwUJo4x71LxLJ
- EGoYaW/oXE2FOQcLP7JB/C55zGbVvDUp0JI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kb799db4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 15:13:36 -0700
-Received: from twshared17038.18.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 15:13:35 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id B6D2C10F4ECA8; Thu, 20 Oct 2022 15:13:27 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v2 6/6] docs/bpf: Add documentation for map type BPF_MAP_TYPE_CGRP_STROAGE
-Date:   Thu, 20 Oct 2022 15:13:27 -0700
-Message-ID: <20221020221327.3557258-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221020221255.3553649-1-yhs@fb.com>
-References: <20221020221255.3553649-1-yhs@fb.com>
+        with ESMTP id S229535AbiJTWYb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 18:24:31 -0400
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC2860E1;
+        Thu, 20 Oct 2022 15:24:28 -0700 (PDT)
+Received: by mail-qt1-f173.google.com with SMTP id g11so591236qts.1;
+        Thu, 20 Oct 2022 15:24:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lXl6NMHcb+y+51/1Cf2ZJ8INvRZOWm3tGnvyAd9NO5M=;
+        b=g1nkXKODyhUa4YRbi54gUGOPBVpb0kgxcT3nAo7HkIvd4eXIeMcq/8f9XGweY/MX5i
+         WGe8P9QHKwaqMZEWg6d8XEu5K38fo96zF+jnxZEdN3nbdFRX7Nclx4PLui6i3zuBnimc
+         6GK+jYD2c6e9w/Ndt/gKpLChRtQq8Bls8bjKbNyPei14YclTCblTCx1PBwLYyxOy/RkI
+         xDe1Bjj7KpwUAsDmqX9VO53mwPSYgwl35ku8eRWNXacKqI9QcrkHOMMlE3qNGCS/+y34
+         UNsVVBogd6ej+I7q6egjBOc0kn5iV//TDSFR6mNhnRcLpk6SrOmadxTbdgmbnZzhAJJk
+         hTzQ==
+X-Gm-Message-State: ACrzQf3eiX30RZBRS5ewVDreDl+BehIXDK0XVCJmJIueSEwCiS2hk4iZ
+        onE1JNRnBVyFdM2N8wtaERI6sDdSR7w7mQ==
+X-Google-Smtp-Source: AMsMyM7cbmnmPcUL6eDoPHikS8f54NYtvXAbh82OZUeEebkHKX+JLNXM8oCiaI+0FjydxlUAMRAxmQ==
+X-Received: by 2002:ac8:5955:0:b0:39c:c040:a866 with SMTP id 21-20020ac85955000000b0039cc040a866mr13187960qtz.25.1666304667508;
+        Thu, 20 Oct 2022 15:24:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::80b7])
+        by smtp.gmail.com with ESMTPSA id d12-20020a05622a15cc00b003995f6513b9sm7023930qty.95.2022.10.20.15.24.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Oct 2022 15:24:26 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, tj@kernel.org, memxor@gmail.com
+Subject: [PATCH bpf-next v6 0/3] Support storing struct task_struct objects as kptrs
+Date:   Thu, 20 Oct 2022 17:24:13 -0500
+Message-Id: <20221020222416.3415511-1-void@manifault.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: o-RuAa5u4arVZMvWqw6DYvsqpvVAdc5Q
-X-Proofpoint-ORIG-GUID: o-RuAa5u4arVZMvWqw6DYvsqpvVAdc5Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-20_11,2022-10-20_01,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,TVD_PH_BODY_ACCOUNTS_PRE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add some descriptions and examples for BPF_MAP_TYPE_CGRP_STROAGE.
-Also illustate the major difference between BPF_MAP_TYPE_CGRP_STROAGE
-and BPF_MAP_TYPE_CGROUP_STORAGE and recommend to use
-BPF_MAP_TYPE_CGRP_STROAGE instead of BPF_MAP_TYPE_CGROUP_STORAGE
-in the end.
+Now that BPF supports adding new kernel functions with kfuncs, and
+storing kernel objects in maps with kptrs, we can add a set of kfuncs
+which allow struct task_struct objects to be stored in maps as
+referenced kptrs.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/map_cgrp_storage.rst | 104 +++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
- create mode 100644 Documentation/bpf/map_cgrp_storage.rst
+The possible use cases for doing this are plentiful.  During tracing,
+for example, it would be useful to be able to collect some tasks that
+performed a certain operation, and then periodically summarize who they
+are, which cgroup they're in, how much CPU time they've utilized, etc.
+Doing this now would require storing the tasks' pids along with some
+relevant data to be exported to user space, and later associating the
+pids to tasks in other event handlers where the data is recorded.
+Another useful by-product of this is that it allows a program to pin a
+task in a BPF program, and by proxy therefore also e.g. pin its task
+local storage.
 
-diff --git a/Documentation/bpf/map_cgrp_storage.rst b/Documentation/bpf/m=
-ap_cgrp_storage.rst
-new file mode 100644
-index 000000000000..15691aab7fc7
---- /dev/null
-+++ b/Documentation/bpf/map_cgrp_storage.rst
-@@ -0,0 +1,104 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2022 Meta Platforms, Inc. and affiliates.
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+BPF_MAP_TYPE_CGRP_STORAGE
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+
-+The ``BPF_MAP_TYPE_CGRP_STORAGE`` map type represents a local fix-sized
-+storage for cgroups. It is only available with ``CONFIG_CGROUP_BPF``.
-+The programs are made available by the same Kconfig. The
-+data for a particular cgroup can be retrieved by looking up the map
-+with that cgroup.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGRP_STORAGE`` map type.
-+
-+Usage
-+=3D=3D=3D=3D=3D
-+
-+The map key must be ``sizeof(int)`` representing a cgroup fd.
-+To access the storage in a program, use ``bpf_cgrp_storage_get``::
-+
-+    void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgrou=
-p, void *value, u64 flags)
-+
-+``flags`` could be 0 or ``BPF_LOCAL_STORAGE_GET_F_CREATE`` which indicat=
-es that
-+a new local storage will be created if one does not exist.
-+
-+The local storage can be removed with ``bpf_cgrp_storage_delete``::
-+
-+    long bpf_cgrp_storage_delete(struct bpf_map *map, struct cgruop *cgr=
-oup)
-+
-+The map is available to all program types.
-+
-+Examples
-+=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+An bpf-program example with BPF_MAP_TYPE_CGRP_STORAGE::
-+
-+    #include <vmlinux.h>
-+    #include <bpf/bpf_helpers.h>
-+    #include <bpf/bpf_tracing.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
-+            __uint(map_flags, BPF_F_NO_PREALLOC);
-+            __type(key, int);
-+            __type(value, long);
-+    } cgrp_storage SEC(".maps");
-+
-+    SEC("tp_btf/sys_enter")
-+    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+    {
-+            struct task_struct *task =3D bpf_get_current_task_btf();
-+            long *ptr;
-+
-+            ptr =3D bpf_cgrp_storage_get(&cgrp_storage, task->cgroups->d=
-fl_cgrp, 0,
-+                                       BPF_LOCAL_STORAGE_GET_F_CREATE);
-+            if (ptr)
-+                __sync_fetch_and_add(ptr, 1);
-+
-+            return 0;
-+    }
-+
-+Userspace accessing map declared above::
-+
-+    #include <linux/bpf.h>
-+    #include <linux/libbpf.h>
-+
-+    __u32 map_lookup(struct bpf_map *map, int cgrp_fd)
-+    {
-+            __u32 *value;
-+            value =3D bpf_map_lookup_elem(bpf_map__fd(map), &cgrp_fd);
-+            if (value)
-+                return *value;
-+            return 0;
-+    }
-+
-+Difference Between BPF_MAP_TYPE_CGRP_STORAGE and BPF_MAP_TYPE_CGROUP_STO=
-RAGE
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+
-+The main difference between ``BPF_MAP_TYPE_CGRP_STORAGE`` and ``BPF_MAP_=
-TYPE_CGROUP_STORAGE``
-+is that ``BPF_MAP_TYPE_CGRP_STORAGE`` can be used by all program types w=
-hile
-+``BPF_MAP_TYPE_CGROUP_STORAGE`` is available only to cgroup program type=
-s.
-+
-+There are some other differences as well.
-+
-+(1). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports local storage for more than =
-one
-+     cgroups while ``BPF_MAP_TYPE_CGROUP_STORAGE`` only support one, the=
- one attached
-+     by the bpf program.
-+
-+(2). ``BPF_MAP_TYPE_CGROUP_STORAGE`` allocates local storage at attach t=
-ime so
-+     ``bpf_get_local_storage()`` always returns non-null local storage.
-+     ``BPF_MAP_TYPE_CGRP_STORAGE`` allocates local storage at runtime so
-+     it is possible that ``bpf_cgrp_storage_get()`` may return null loca=
-l storage.
-+     To avoid such null local storage issue, user space can do
-+     ``bpf_map_update_elem()`` to pre-allocate local storage.
-+
-+(3). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports de-allocating local storage =
-by bpf program
-+     while ``BPF_MAP_TYPE_CGROUP_STORAGE`` only de-allocates storage dur=
-ing
-+     prog detach time.
-+
-+So overall, ``BPF_MAP_TYPE_CGRP_STORAGE`` supports all ``BPF_MAP_TYPE_CG=
-ROUP_STORAGE``
-+functionality and beyond. It is recommended to use ``BPF_MAP_TYPE_CGRP_S=
-TORAGE``
-+instead of ``BPF_MAP_TYPE_CGROUP_STORAGE``.
---=20
-2.30.2
+In order to support this, we'll need to expand KF_TRUSTED_ARGS to
+support receiving trusted, non-refcounted pointers. It currently only
+supports either PTR_TO_CTX pointers, or refcounted pointers. What this
+means in terms of the implementation is that btf_check_func_arg_match()
+would have to add another condition to its logic for checking if
+a ptr needs a refcount to also require that the pointer has at least one
+type modifier, such as a new modifier we're adding called PTR_WALKED
+(described below). Note that PTR_UNTRUSTED is insufficient for this
+purpose, as it does not cover all of the possible pointers we need to
+watch out for, though. For example, a pointer obtained from walking a
+struct is considered "trusted" (or at least, not PTR_UNTRUSTED). To
+account for this and enable us to expand KF_TRUSTED_ARGS, this patch set
+also introduces a new PTR_WALKED type flag modifier which records if a
+pointer was obtained from walking a struct.
+
+Additionally, while loosening the restrictions of KF_TRUSTED_ARGS does
+expand the availability of the flag to more possible kfunc variants, it
+also removes some restrictions that are required by some existing
+kfuncs. For example, kfuncs like bpf_ct_{g,s}et_status() expect a struct
+nf_conn___init * argument that was allocated on behalf of the program by
+bpf_skb_ct_alloc(), rather than which was allocated and passed by the
+kernel in a tracepoint handler. We do not want to allow other struct
+nf_conn___init pointers that are not "owned" by the BPF program to be
+passed to these kfuncs.  To address this, we also add a KF_OWNED_ARGS
+kfunc flag which is identical to KF_TRUSTED_ARGS, but is more
+restrictive in that it also requires the BPF program to own a reference
+to an object.
+
+Authors please note, in my opinion it's not 100% clear whether
+KF_OWNED_ARGS is really the right abstraction. Consider, for example, if
+two KF_ACQUIRE kfuncs are exposed which return a reference to the same
+type of object, with one of them actually allocating the object, and the
+other just taking a reference on an object that was acquired by the main
+kernel. This flag would not sufficiently express that only the object
+that was returned by the kfunc that _allocated_ the object should be
+allowed to be passed to KF_OWNED_ARGS. On the other hand, it seems like
+a reasonable flag for providing the equvialent semantics to the existing
+version of KF_TRUSTED_ARGS. Much of how all this works will likely
+change over time as well. For example, eventually it would be nice if we
+could specify constraints per-arg, rather than on the whole kfunc, using
+something like type tagging (not yet available in gcc).
+
+In closing, this patch set:
+
+1. Adds the new PTR_WALKED register type modifier flag, and updates the
+   verifier and existing selftests accordingly.
+2. Expands KF_TRUSTED_ARGS to also include trusted pointers that were
+   not obtained from walking structs. 
+3. Adds the new KF_OWNED_ARGS kfunc flag to specify kfuncs that can only
+   accept trusted, refcounted objects. Updates the existing kfuncs that
+   require these semantics to use this new kfunc flag.
+4. Adds a new set of kfuncs that allows struct task_struct* objects to be
+   used as kptrs.
+5. Adds a new selftest suite to validate these new task kfuncs.
+
+--
+Changelog:
+
+v5 -> v6:
+- Add a new KF_OWNED_ARGS kfunc flag which may be used by kfuncs to
+  express that they require trusted, refcounted args (Kumar)
+- Rename PTR_NESTED -> PTR_WALKED in the verifier (Kumar)
+- Convert reg_type_str() prefixes to use snprintf() instead of strncpy()
+  (Kumar)
+- Add PTR_TO_BTF_ID | PTR_WALKED to missing struct btf_reg_type
+  instances -- specifically btf_id_sock_common_types, and
+  percpu_btf_ptr_types.
+- Add a missing PTR_TO_BTF_ID | PTR_WALKED switch case entry in
+  check_func_arg_reg_off(), which is required when validating helper
+  calls (Kumar)
+- Update reg_type_mismatch_ok() to check base types for the registers
+  (i.e. to accommodate type modifiers). Additionally, add a lengthy
+  comment that explains why this is being done (Kumar)
+- Update convert_ctx_accesses() to also issue probe reads for
+  PTR_TO_BTF_ID | PTR_WALKED (Kumar)
+- Update selftests to expect new prefix reg type strings.
+- Rename task_kfunc_acquire_trusted_nested testcase to
+  task_kfunc_acquire_trusted_walked, and fix a comment (Kumar)
+- Remove KF_TRUSTED_ARGS from bpf_task_release(), which already includes
+  KF_RELEASE (Kumar)
+- Add bpf-next in patch subject lines (Kumar)
+
+v4 -> v5:
+- Fix an improperly formatted patch title.
+
+v3 -> v4:
+- Remove an unnecessary check from my repository that I forgot to remove
+  after debugging something.
+
+v2 -> v3:
+- Make bpf_task_acquire() check for NULL, and include KF_RET_NULL
+  (Martin)
+- Include new PTR_NESTED register modifier type flag which specifies
+  whether a pointer was obtained from walking a struct. Use this to
+  expand the meaning of KF_TRUSTED_ARGS to include trusted pointers that
+  were passed from the kernel (Kumar)
+- Add more selftests to the task_kfunc selftest suite which verify that
+  you cannot pass a walked pointer to bpf_task_acquire().
+- Update bpf_task_acquire() to also specify KF_TRUSTED_ARGS.
+
+v1 -> v2:
+- Rename tracing_btf_ids to generic_kfunc_btf_ids, and add the new
+  kfuncs to that list instead of making a separate btf id list (Alexei).
+- Don't run the new selftest suite on s390x, which doesn't appear to
+  support invoking kfuncs.
+- Add a missing __diag_ignore block for -Wmissing-prototypes
+  (lkp@intel.com).
+- Fix formatting on some of the SPDX-License-Identifier tags.
+- Clarified the function header comment a bit on bpf_task_kptr_get().
+
+David Vernet (3):
+  bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
+  bpf: Add kfuncs for storing struct task_struct * as a kptr
+  bpf/selftests: Add selftests for new task kfuncs
+
+ Documentation/bpf/kfuncs.rst                  |  49 ++-
+ include/linux/bpf.h                           |   6 +
+ include/linux/btf.h                           |  60 +++-
+ kernel/bpf/btf.c                              |  18 +-
+ kernel/bpf/helpers.c                          |  86 ++++-
+ kernel/bpf/verifier.c                         |  66 +++-
+ net/bpf/test_run.c                            |   2 +-
+ net/netfilter/nf_conntrack_bpf.c              |   8 +-
+ net/netfilter/nf_nat_bpf.c                    |   2 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/map_kptr.c       |   2 +-
+ .../selftests/bpf/prog_tests/task_kfunc.c     | 160 +++++++++
+ .../selftests/bpf/progs/task_kfunc_common.h   |  83 +++++
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 315 ++++++++++++++++++
+ .../selftests/bpf/progs/task_kfunc_success.c  | 132 ++++++++
+ tools/testing/selftests/bpf/verifier/calls.c  |   4 +-
+ .../testing/selftests/bpf/verifier/map_kptr.c |   2 +-
+ 17 files changed, 943 insertions(+), 53 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_success.c
+
+-- 
+2.38.0
 
