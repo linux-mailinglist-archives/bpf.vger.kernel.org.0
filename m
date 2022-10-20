@@ -2,200 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30A16054AB
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E30F6054AC
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbiJTBEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 21:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        id S229760AbiJTBHy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 21:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbiJTBEe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 21:04:34 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABAA24979
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id c24so18885952plo.3
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xN0kV51CWcybAistt3Ae1nkzLAwzdA+RplZD0qAc7SY=;
-        b=OUj9+1s1yO7cJ2qT5Ti6RjixAGDTaTRvc/uumzzDarB2Rh8c+m/JLKz0djXBPQyJmt
-         X9QDuurNNR1L8uaqt6Rr9l6zb27c6pm9hdxYVRU8+vPgNZvrCRy9Yw3Ap3IuTBi0DNQW
-         X+P1c8/W7zzU105SI9urCnZoA7xKBgOcdf/wmisMGWVnNrmFV8wytq+gCw3yuaRKCL89
-         HjrqLIocG+HIKblEz74qt166Na+ii4yAIxelgT2yBOGeTyVYirrvv835FoyLk/f+G1xI
-         LCjhdzvD5NzqwBrk/IZ79H67g2/ar4549DB9n7csSm0+HrXMINIzlYhc9b3kDpm8VbBA
-         Gxbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xN0kV51CWcybAistt3Ae1nkzLAwzdA+RplZD0qAc7SY=;
-        b=IQGRRyFkT4EPHzqJoTWAqSXehGlLur63E+yPuOFMB01eDOsv0fnf0IiCOvV7nzq7S4
-         X7yOiQVYToL75cPVg5Hvn+oiwKtwsGZDijytKWMtNq38uU7Wc63Usn1TZ6fNX5EBIjk4
-         /BTBKgmFdB4rXW86J9jr8gf+Z3DUpBY7/OGsruznOCz/wbrmlsm1t8xrxph0oPWXhOg9
-         sGsGe5RmVoYUYsbUbh5+JRbUmwvPTxl6nTVQHpe/iy2TcZRWEWyUKwofYLN1MUJNU7Xw
-         6jap1LGduCQoyVRUdrGEzPF1OYvDuUeLDFVIRq2FlvjATpmVvfHOLLBsBcx2Zy6RJKxY
-         6SYg==
-X-Gm-Message-State: ACrzQf09A402jP6CxpXdz2vDNEMMGzoN8WQpDN6j7ew+xIW7EL1qX7LZ
-        tshhaO4SEfmUk0951UwVzirHr1Usz4JdKA==
-X-Google-Smtp-Source: AMsMyM77a9I8DhHLuvQTlIxUfBrt/epzUgz+5i17Df7qF0qMiQ1E0X5z3Hm2YKJVnsh7v7ko3lG3fQ==
-X-Received: by 2002:a17:90b:1d04:b0:20b:cb40:4b3 with SMTP id on4-20020a17090b1d0400b0020bcb4004b3mr12543716pjb.215.1666227869002;
-        Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
-Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id 64-20020a620543000000b005632c49693asm11840382pff.202.2022.10.19.18.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 18:04:28 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 06:34:17 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229746AbiJTBHx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 21:07:53 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B6A1757AE
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:07:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mt8Y60dgLzl0vM
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:05:46 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgCnqzFgn1Bj2MqBAA--.40555S2;
+        Thu, 20 Oct 2022 09:07:47 +0800 (CST)
+Subject: Re: [PATCH bpf 1/2] bpf: Wait for busy refill_work when destorying
+ bpf memory allocator
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for
- ARG_PTR_TO_DYNPTR
-Message-ID: <20221020010417.eqerzqjimnzwwhhd@apollo>
-References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-7-memxor@gmail.com>
- <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+References: <20221019115539.983394-1-houtao@huaweicloud.com>
+ <20221019115539.983394-2-houtao@huaweicloud.com>
+ <Y1BENCpam1I+anXF@google.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <381c1d2e-a87a-c143-dc4a-4e3210d5d3f0@huaweicloud.com>
+Date:   Thu, 20 Oct 2022 09:07:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y1BENCpam1I+anXF@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgCnqzFgn1Bj2MqBAA--.40555S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKr47Gw17CFykWF4fGFyrCrg_yoWxJryxpr
+        s5tryUJrWrZFn3Xw18Gw17Jryvyr18J3WUJw18JFyxZr45Gr1jqr17Wr1jgF1UXr4xJw17
+        Jr1qqrW0vr15Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
-> On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Currently, the dynptr function is not checking the variable offset part
-> > of PTR_TO_STACK that it needs to check. The fixed offset is considered
-> > when computing the stack pointer index, but if the variable offset was
-> > not a constant (such that it could not be accumulated in reg->off), we
-> > will end up a discrepency where runtime pointer does not point to the
-> > actual stack slot we mark as STACK_DYNPTR.
-> >
-> > It is impossible to precisely track dynptr state when variable offset is
-> > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-> > simply reject the case where reg->var_off is not constant. Then,
-> > consider both reg->off and reg->var_off.value when computing the stack
-> > pointer index.
-> >
-> > A new helper dynptr_get_spi is introduced to hide over these details
-> > since the dynptr needs to be located in multiple places outside the
-> > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-> > need to enforce these checks in all places.
-> >
-> > Note that it is disallowed for unprivileged users to have a non-constant
-> > var_off, so this problem should only be possible to trigger from
-> > programs having CAP_PERFMON. However, its effects can vary.
-> >
-> > Without the fix, it is possible to replace the contents of the dynptr
-> > arbitrarily by making verifier mark different stack slots than actual
-> > location and then doing writes to the actual stack address of dynptr at
-> > runtime.
-> >
-> > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
-> >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
-> >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
-> >  3 files changed, 67 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 8f667180f70f..0fd73f96c5e2 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
-> >                 verbose(env, "D");
-> >  }
-> >
-> > -static int get_spi(s32 off)
-> > +static int __get_spi(s32 off)
-> >  {
-> >         return (-off - 1) / BPF_REG_SIZE;
-> >  }
-> >
-> > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> > +{
-> > +       int spi;
-> > +
-> > +       if (reg->off % BPF_REG_SIZE) {
-> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
-> > +               return -EINVAL;
-> > +       }
->
-> I think this cannot happen.
->
+Hi,
 
-There are existing selftests that trigger this.
-Or do you mean it cannot happen anymore? If so, why?
+On 10/20/2022 2:38 AM, sdf@google.com wrote:
+> On 10/19, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>
+>> A busy irq work is an unfinished irq work and it can be either in the
+>> pending state or in the running state. When destroying bpf memory
+>> allocator, refill_work may be busy for PREEMPT_RT kernel in which irq
+>> work is invoked in a per-CPU RT-kthread. It is also possible for kernel
+>> with arch_irq_work_has_interrupt() being false (e.g. 1-cpu arm32 host)
+>> and irq work is inovked in timer interrupt.
+>
+>> The busy refill_work leads to various issues. The obvious one is that
+>> there will be concurrent operations on free_by_rcu and free_list between
+>> irq work and memory draining. Another one is call_rcu_in_progress will
+>> not be reliable for the checking of pending RCU callback because
+>> do_call_rcu() may has not been invoked by irq work. The other is there
+>> will be use-after-free if irq work is freed before the callback of
+>> irq work is invoked as shown below:
+>
+>>   BUG: kernel NULL pointer dereference, address: 0000000000000000
+>>   #PF: supervisor instruction fetch in kernel mode
+>>   #PF: error_code(0x0010) - not-present page
+>>   PGD 12ab94067 P4D 12ab94067 PUD 1796b4067 PMD 0
+>>   Oops: 0010 [#1] PREEMPT_RT SMP
+>>   CPU: 5 PID: 64 Comm: irq_work/5 Not tainted 6.0.0-rt11+ #1
+>>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+>>   RIP: 0010:0x0
+>>   Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+>>   RSP: 0018:ffffadc080293e78 EFLAGS: 00010286
+>>   RAX: 0000000000000000 RBX: ffffcdc07fb6a388 RCX: ffffa05000a2e000
+>>   RDX: ffffa05000a2e000 RSI: ffffffff96cc9827 RDI: ffffcdc07fb6a388
+>>   ......
+>>   Call Trace:
+>>    <TASK>
+>>    irq_work_single+0x24/0x60
+>>    irq_work_run_list+0x24/0x30
+>>    run_irq_workd+0x23/0x30
+>>    smpboot_thread_fn+0x203/0x300
+>>    kthread+0x126/0x150
+>>    ret_from_fork+0x1f/0x30
+>>    </TASK>
+>
+>> Considering the ease of concurrency handling and the short wait time
+>> used for irq_work_sync() under PREEMPT_RT (When running two test_maps on
+>> PREEMPT_RT kernel and 72-cpus host, the max wait time is about 8ms and
+>> the 99th percentile is 10us), just waiting for busy refill_work to
+>> complete before memory draining and memory freeing.
+>
+>> Fixes: 7c8199e24fa0 ("bpf: Introduce any context BPF specific memory
+>> allocator.")
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   kernel/bpf/memalloc.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index 94f0f63443a6..48e606aaacf0 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -497,6 +497,16 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>>           rcu_in_progress = 0;
+>>           for_each_possible_cpu(cpu) {
+>>               c = per_cpu_ptr(ma->cache, cpu);
+>> +            /*
+>> +             * refill_work may be unfinished for PREEMPT_RT kernel
+>> +             * in which irq work is invoked in a per-CPU RT thread.
+>> +             * It is also possible for kernel with
+>> +             * arch_irq_work_has_interrupt() being false and irq
+>> +             * work is inovked in timer interrupt. So wait for the
+>> +             * completion of irq work to ease the handling of
+>> +             * concurrency.
+>> +             */
+>> +            irq_work_sync(&c->refill_work);
+>
+> Does it make sense to guard these with "IS_ENABLED(CONFIG_PREEMPT_RT)" ?
+> We do have a bunch of them sprinkled already to run alloc/free with
+> irqs disabled.
+No. As said in the commit message and the comments, irq_work_sync() is needed
+for both PREEMPT_RT kernel and kernel with arch_irq_work_has_interrupt() being
+false. And for other kernels, irq_work_sync() doesn't incur any overhead,
+because it is  just a simple memory read through irq_work_is_busy() and nothing
+else. The reason is the irq work must have been completed when invoking
+bpf_mem_alloc_destroy() for these kernels.
 
-> > +       if (!tnum_is_const(reg->var_off)) {
-> > +               verbose(env, "dynptr has to be at the constant offset\n");
-> > +               return -EINVAL;
-> > +       }
->
-> This part can.
->
-> > +       spi = __get_spi(reg->off + reg->var_off.value);
-> > +       if (spi < 1) {
-> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n",
-> > +                       (int)(reg->off + reg->var_off.value));
-> > +               return -EINVAL;
-> > +       }
-> > +       return spi;
-> > +}
->
-> This one is a more conservative (read: redundant) check.
-> The is_spi_bounds_valid() is doing it better.
+void irq_work_sync(struct irq_work *work)
+{
+       /* Remove code snippet for PREEMPT_RT and arch_irq_work_has_interrupt() */
+        /* irq wor*/
+        while (irq_work_is_busy(work))
+                cpu_relax();
+}
 
-The problem is, is_spi_bounds_valid returning an error is not always a problem.
-See how in is_dynptr_reg_valid_uninit we just return true on invalid bounds,
-then later simulate two 8-byte accesses for uninit_dynptr_regno and rely on it
-to grow the stack depth and do MAX_BPF_STACK check.
+>
+> I was also trying to see if adding local_irq_save inside drain_mem_cache
+> to pair with the ones from refill might work, but waiting for irq to
+> finish seems easier...
+Disabling hard irq works, but irq_work_sync() is still needed to ensure it is
+completed before freeing its memory.
+>
+> Maybe also move both of these in some new "static void irq_work_wait"
+> to make it clear that the PREEMT_RT comment applies to both of them?
+>
+> Or maybe that helper should do 'for_each_possible_cpu(cpu)
+> irq_work_sync(&c->refill_work);'
+> in the PREEMPT_RT case so we don't have to call it twice?
+drain_mem_cache() is also time consuming somethings, so I think it is better to
+interleave irq_work_sync() and drain_mem_cache() to reduce waiting time.
 
-> How about keeping get_spi(reg) as error free and use it
-> directly in places where it cannot fail without
-> defensive WARN_ON_ONCE.
-> int get_spi(reg)
-> { return (-reg->off - reg->var_off.value - 1) / BPF_REG_SIZE; }
 >
-> While moving tnum_is_const() check into is_spi_bounds_valid() ?
+>>               drain_mem_cache(c);
+>>               rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+>>           }
+>> @@ -511,6 +521,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>>               cc = per_cpu_ptr(ma->caches, cpu);
+>>               for (i = 0; i < NUM_CACHES; i++) {
+>>                   c = &cc->cache[i];
+>> +                irq_work_sync(&c->refill_work);
+>>                   drain_mem_cache(c);
+>>                   rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+>>               }
+>> -- 
+>> 2.29.2
 >
-> Like is_spi_bounds_valid(state, reg, spi) ?
->
-> We should probably remove BPF_DYNPTR_NR_SLOTS since
-> there are so many other places where dynptr is assumed
-> to be 16-bytes. That macro doesn't help at all.
-> It only causes confusion.
->
-> I guess we can replace is_spi_bounds_valid() with a differnet
-> helper that checks and computes spi.
-> Like get_spi_and_check(state, reg, &spi)
-> and use it in places where we have get_spi + is_spi_bounds_valid
-> while using unchecked get_spi where it cannot fail?
->
-> If we only have get_spi_and_check() we'd have to add
-> WARN_ON_ONCE in a few places and that bothers me...
-> due to defensive programming...
-> If code is so complex that we cannot think it through
-> we have to refactor it. Sprinkling WARN_ON_ONCE (just to be sure)
-> doesn't inspire confidence.
->
+> .
 
-I will think about this and reply later today.
