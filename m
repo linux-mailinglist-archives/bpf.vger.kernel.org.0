@@ -2,52 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3B605525
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38191605557
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 04:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbiJTBre (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 21:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S231128AbiJTCNg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 22:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiJTBrd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 21:47:33 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B91958CC;
-        Wed, 19 Oct 2022 18:47:32 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Mt9Mn5JfJz1P71t;
-        Thu, 20 Oct 2022 09:42:45 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 09:46:55 +0800
-Message-ID: <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com>
-Date:   Thu, 20 Oct 2022 09:46:54 +0800
+        with ESMTP id S230341AbiJTCNf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 22:13:35 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDAD165CA1
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 19:13:29 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a26so43740632ejc.4
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 19:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=krp2DgiXV7oTaPodHOaJ27Wv204pDqhQacd6WHIvjGQ=;
+        b=lwR4WgPlsQtPi8dSPd6hNHCe1fX6EtYVzcza/tAOl1d/XjZExjN8mSaYJP94lqGVlc
+         nDxKawjLcfWOvwED028CaCCWKztEF0FT608nqmlJ8ul4XZkK+Ob1/L/wkJ+6XMfCqYRq
+         4zMANYf0d8L59EfGWRmmKxc3oaOucONjurZluCUIMSeBK76lO1mdaRQKsWsFfr4D5JLB
+         1FkSfMvGW7Wl4XiK0zF+XiQOw5v7pp6B436jlbZ6nGjEiYp0Nqe62FZjQ6G0YBeYQMn+
+         4Fj2zqct3JjSmWuc8LXF88uLyGsS+Cajp5iEvYGPpeGQSDD2VINsP1AAZ30K3OaFEZ3o
+         VgXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=krp2DgiXV7oTaPodHOaJ27Wv204pDqhQacd6WHIvjGQ=;
+        b=U52M8Cu+DFsdzQ0gfVhuWI+baIx3OV2g1jNlSGLpMxoo+dqBjaO+pplXdg6wCFFUvv
+         6yVu1hUVhy1J+4JcA604Ap0XOxMbR3J8g0gxmddTF8SNdZe+JzEdp2MU1Yt4VOLPe3wZ
+         0DFvmure1Ca9aSW4S5jb5IE5GxJ5Stck3buEncU4B88u3wX2/sXbVVfhbuLUYTXVRSZj
+         2TKn+47HB7VR4vQc8aKsfRv/mto8ClYOA1jjsILJp9vz0YNru/zGyKgei73yo78GwC+f
+         pdA0+aaB3//ucFBqLm9s1aFTkjqdko2jbZh7r1bZ5Z1LUNrXNXFLRYbj7G01Q+oA99p4
+         AZcw==
+X-Gm-Message-State: ACrzQf1VvXWcTE+gYDojVtD7jIo4FAL7ZZVocLFOzAIEs3RfNMf7MtEm
+        PfuLcxJgJXzI6MBQF++oKz2o+c52plEUHyxfe3SkHIX8
+X-Google-Smtp-Source: AMsMyM5CabZgPgYGq+AoQyW8hylit0j+6O8+lIZ3iYx99x7UoZ1GKLc4ETe2kO9Abr/6XqIgHj+RKNeqy2b/pfVkZUE=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr9218442ejb.633.1666232007987; Wed, 19
+ Oct 2022 19:13:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is
- dropped
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <oss@lmb.io>,
-        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
-References: <20221015092448.117563-1-shaozhengchao@huawei.com>
- <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20221018135920.726360-1-memxor@gmail.com> <20221018135920.726360-7-memxor@gmail.com>
+ <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com> <20221020010417.eqerzqjimnzwwhhd@apollo>
+In-Reply-To: <20221020010417.eqerzqjimnzwwhhd@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 19 Oct 2022 19:13:16 -0700
+Message-ID: <CAADnVQK+wRP1EwTcokN00_eJ+piTmJsTCj9L1uZCY9bC+Ftf=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,64 +71,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Oct 19, 2022 at 6:04 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
+> > On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > Currently, the dynptr function is not checking the variable offset part
+> > > of PTR_TO_STACK that it needs to check. The fixed offset is considered
+> > > when computing the stack pointer index, but if the variable offset was
+> > > not a constant (such that it could not be accumulated in reg->off), we
+> > > will end up a discrepency where runtime pointer does not point to the
+> > > actual stack slot we mark as STACK_DYNPTR.
+> > >
+> > > It is impossible to precisely track dynptr state when variable offset is
+> > > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
+> > > simply reject the case where reg->var_off is not constant. Then,
+> > > consider both reg->off and reg->var_off.value when computing the stack
+> > > pointer index.
+> > >
+> > > A new helper dynptr_get_spi is introduced to hide over these details
+> > > since the dynptr needs to be located in multiple places outside the
+> > > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
+> > > need to enforce these checks in all places.
+> > >
+> > > Note that it is disallowed for unprivileged users to have a non-constant
+> > > var_off, so this problem should only be possible to trigger from
+> > > programs having CAP_PERFMON. However, its effects can vary.
+> > >
+> > > Without the fix, it is possible to replace the contents of the dynptr
+> > > arbitrarily by making verifier mark different stack slots than actual
+> > > location and then doing writes to the actual stack address of dynptr at
+> > > runtime.
+> > >
+> > > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
+> > >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
+> > >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
+> > >  3 files changed, 67 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 8f667180f70f..0fd73f96c5e2 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
+> > >                 verbose(env, "D");
+> > >  }
+> > >
+> > > -static int get_spi(s32 off)
+> > > +static int __get_spi(s32 off)
+> > >  {
+> > >         return (-off - 1) / BPF_REG_SIZE;
+> > >  }
+> > >
+> > > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > > +{
+> > > +       int spi;
+> > > +
+> > > +       if (reg->off % BPF_REG_SIZE) {
+> > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
+> > > +               return -EINVAL;
+> > > +       }
+> >
+> > I think this cannot happen.
+> >
+>
+> There are existing selftests that trigger this.
 
+Really. Which one is that?
+Those that you've modified in this patch are hitting
+"cannot pass in dynptr..." message from the check below, no?
 
-On 2022/10/18 0:36, Stanislav Fomichev wrote:
-> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
->>
->> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
->> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
->> So fix it.
->>
->> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
->>
->> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
->> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
->> ---
->>   net/bpf/test_run.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index 13d578ce2a09..aa1b49f19ca3 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
->>   {
->>          struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
->>
->> -       if (!skb->len)
->> -               return -EINVAL;
->> -
->>          if (!__skb)
->>                  return 0;
->>
->> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>          if (IS_ERR(data))
->>                  return PTR_ERR(data);
->>
->> +       if (size == ETH_HLEN)
->> +               is_l2 = true;
->> +
-> 
-> Don't think this will work? That is_l2 is there to expose proper l2/l3
-> skb for specific hooks; we can't suddenly start exposing l2 headers to
-> the hooks that don't expect it.
-> Does it make sense to start with a small reproducer that triggers the
-> issue first? We can have a couple of cases for
-> len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
-> redirects to different devices (to trigger dev_is_mac_header_xmit).
-> 
-> 
-Hi Stanislav:
-	Thank you for your review. Is_l2 is the flag of a specific
-hook. Therefore, do you mean that if skb->len is equal to 0, just
-add the length back?
-> 
-> 
-> 
->>          ctx = bpf_ctx_init(kattr, sizeof(struct __sk_buff));
->>          if (IS_ERR(ctx)) {
->>                  kfree(data);
->> --
->> 2.17.1
->>
+> Or do you mean it cannot happen anymore? If so, why?
+
+Why would it? There is an alignment check earlier.
+
+> > > +       if (!tnum_is_const(reg->var_off)) {
+> > > +               verbose(env, "dynptr has to be at the constant offset\n");
+> > > +               return -EINVAL;
+> > > +       }
+> >
+> > This part can.
+> >
+> > > +       spi = __get_spi(reg->off + reg->var_off.value);
+> > > +       if (spi < 1) {
+> > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n",
+> > > +                       (int)(reg->off + reg->var_off.value));
+> > > +               return -EINVAL;
+> > > +       }
+> > > +       return spi;
+> > > +}
+> >
+> > This one is a more conservative (read: redundant) check.
+> > The is_spi_bounds_valid() is doing it better.
+>
+> The problem is, is_spi_bounds_valid returning an error is not always a problem.
+> See how in is_dynptr_reg_valid_uninit we just return true on invalid bounds,
+> then later simulate two 8-byte accesses for uninit_dynptr_regno and rely on it
+> to grow the stack depth and do MAX_BPF_STACK check.
+
+It's a weird one. I'm not sure it's actually correct to do it this way.
+
+> > How about keeping get_spi(reg) as error free and use it
+> > directly in places where it cannot fail without
+> > defensive WARN_ON_ONCE.
+> > int get_spi(reg)
+> > { return (-reg->off - reg->var_off.value - 1) / BPF_REG_SIZE; }
+> >
+> > While moving tnum_is_const() check into is_spi_bounds_valid() ?
+> >
+> > Like is_spi_bounds_valid(state, reg, spi) ?
+> >
+> > We should probably remove BPF_DYNPTR_NR_SLOTS since
+> > there are so many other places where dynptr is assumed
+> > to be 16-bytes. That macro doesn't help at all.
+> > It only causes confusion.
+> >
+> > I guess we can replace is_spi_bounds_valid() with a differnet
+> > helper that checks and computes spi.
+> > Like get_spi_and_check(state, reg, &spi)
+> > and use it in places where we have get_spi + is_spi_bounds_valid
+> > while using unchecked get_spi where it cannot fail?
+> >
+> > If we only have get_spi_and_check() we'd have to add
+> > WARN_ON_ONCE in a few places and that bothers me...
+> > due to defensive programming...
+> > If code is so complex that we cannot think it through
+> > we have to refactor it. Sprinkling WARN_ON_ONCE (just to be sure)
+> > doesn't inspire confidence.
+> >
+>
+> I will think about this and reply later today.
