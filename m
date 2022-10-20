@@ -2,83 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAA260607A
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 14:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBAC6060DB
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 15:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiJTMoF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 08:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
+        id S230134AbiJTNCd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 09:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbiJTMoD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 08:44:03 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989E2180ACA;
-        Thu, 20 Oct 2022 05:44:00 -0700 (PDT)
+        with ESMTP id S230300AbiJTNCY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 09:02:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0690D58065;
+        Thu, 20 Oct 2022 06:02:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 6409ACE2592;
-        Thu, 20 Oct 2022 12:43:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3047CC433C1;
-        Thu, 20 Oct 2022 12:43:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1666269835;
-        bh=EMeRt+MoM9VnLhCCrJJOGBgjdGTe/y/YDLyePQFA6Jo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kkYJFidxNMuZ70jUpI70l6YBOAn3OjZEBQ+1fsbrGRoE8w3US2wgRgq5Y4uLdZXvt
-         xFm1hYFfRsiWT5oRCJgxzwg7upqaxxPq6zgNKFzHvhG4UF1AF/1AKgBUAHywUfg+mN
-         aujcUGMgL6GLGX0uEPVdL/y4QiEUHlYzEpdBw4eo=
-Date:   Thu, 20 Oct 2022 14:43:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     jinpeng Cui <cuijinpeng666@gmail.com>
-Cc:     Zeal Robot <zealci@zte.com.cn>, alan.maguire@oracle.com,
-        ast@kernel.org, bpf@vger.kernel.org, cui.jinpeng2@zte.com.cn,
-        jolsa@kernel.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        stephen.s.brennan@oracle.com
-Subject: Re: [PATCH linux-next] kallsyms: Use strscpy() instead of strlcpy()
-Message-ID: <Y1FCiH16RIetS0hZ@kroah.com>
-References: <20221020090547.398680-1-cui.jinpeng2@zte.com.cn>
- <Y1EVnZS9BalesrC1@kroah.com>
- <CANhqVYZ+trZzPdB=Vd9YV53DAJt0p5LZQH-u94+VRrDQ5+w2MA@mail.gmail.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 91DD5B82648;
+        Thu, 20 Oct 2022 13:02:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E80C433D7;
+        Thu, 20 Oct 2022 13:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666270937;
+        bh=1K64PX9tOX5Ca6uSwNh6+1ofi0n1sdorPEhGraCm6jc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=mZInMfiakP+mLe5zPuRzkdHu8xnd5E7QHLtNLSm4Tjwsrm4p+ShzW4G/9LK8pfg5E
+         rPIVu4vpygnZFXAPrdT1ni2TGbafIsS0+JLlU0w6Ro8HEhVkSUzKjho6cBSd4tzPSG
+         EJQPAv4tilFBP0R7AyIaPWvPp2Ke92STNeuBGBD6D0F/t4ph3ZoZ5OLdwp60wKMfRq
+         SbzVyb0ToLHuOjFYENHl5J/Dmsf4uaTsOyn/RcyD14QSMycckFQoH3WwvFVWKX/nUQ
+         UsWdWl+zR1cybV8RKRFjVLhaCrw190Xhk5Tgs+gVRuhQu7gIkRI4LSH/+7I5M80yiH
+         P0oKbZA5iJwDA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>, netdev@vger.kernel.org,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 00/12] net: dpaa2-eth: AF_XDP zero-copy support
+In-Reply-To: <20221019155405.5d570b98@kernel.org>
+References: <20221018141901.147965-1-ioana.ciornei@nxp.com>
+ <20221019155405.5d570b98@kernel.org>
+Date:   Thu, 20 Oct 2022 15:02:13 +0200
+Message-ID: <87fsfi8x7u.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANhqVYZ+trZzPdB=Vd9YV53DAJt0p5LZQH-u94+VRrDQ5+w2MA@mail.gmail.com>
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 08:27:39PM +0800, jinpeng Cui wrote:
-> Hello,Please do not ban my private account cuijinpeng666@gmail.com
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Sorry, that has already happened.
+> On Tue, 18 Oct 2022 17:18:49 +0300 Ioana Ciornei wrote:
+>> This patch set adds support for AF_XDP zero-copy in the dpaa2-eth
+>> driver. The support is available on the LX2160A SoC and its variants and
+>> only on interfaces (DPNIs) with a maximum of 8 queues (HW limitations
+>> are the root cause).
+>
+> AF_XDP folks, could you take a look?=20
 
-> I am very sorry if the patches from zte.com.cn
-> in the past few months have made you angry,
-> we have decided to fix the problem you pointed out
-> as soon as possible.
-> Our company's mailbox name@zte.com.cn
-> cannot send emails to the external network,
-> so we use name@gmail.com to send patches;
+Sorry for the delay, Ioana and Jakub! We'll make sure it's reviewed, but
+it might take a few more days!
 
-You all have been warned numerous times over many weeks and months and
-never responded to our emails.
 
-We have no proof that using gmail accounts is actually coming from a ZTE
-employee, so until that happens, we can not take your changes (not to
-mention the basic fact that you all keep ignoring our review comments,
-which is a good enough reason to ignore them.)
-
-Please fix your email systems.
-
-Also, do not attempt to send html emails (like this one), as the lists
-by default, reject them as you know.
-
-greg k-h
+Bj=C3=B6rn
