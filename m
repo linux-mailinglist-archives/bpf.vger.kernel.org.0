@@ -2,141 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F75605745
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 08:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C84605756
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 08:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbiJTGWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 02:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        id S229638AbiJTGdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 02:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiJTGWn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 02:22:43 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199D02339F;
-        Wed, 19 Oct 2022 23:22:43 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y4so546892plb.2;
-        Wed, 19 Oct 2022 23:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J71kKCMX3J6hO10lMUh4yzRJjU280w3xxRAPcIYzIg0=;
-        b=NZ84MRpYvdW9dnw92EeSkt5sJtkQJinkgSaFTWHPkxCMmhpdiYcD3WHbJLTtk6x/h/
-         4g0ksM6Mf8Owu30YQRS7SJF8eSY/3AEQR9bgZbAdAA2G063d04NWoEsBK6AyQD+xqC1/
-         RR3WcX9inDJ+bionV60oWq0OGwJU03WODH1061szFThWiJWOooQa8+Yz5yzQyAD0ou1W
-         jbgeCXI0GHtFdIr+ZjPl/gGl8DG9bc8HLnI4vgpfLsIUbgIwGt5FVbjK0VVFNLtMToPe
-         9muUpX7a1yq+MaLF2onfHgk/yGCwmFEg1c4QwVNab7qRrgMYmv7ryFE2zmARHhE62+Kb
-         XqbQ==
+        with ESMTP id S229615AbiJTGdQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 02:33:16 -0400
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40AF159971;
+        Wed, 19 Oct 2022 23:33:15 -0700 (PDT)
+Received: by mail-qv1-f41.google.com with SMTP id u7so1036060qvn.13;
+        Wed, 19 Oct 2022 23:33:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J71kKCMX3J6hO10lMUh4yzRJjU280w3xxRAPcIYzIg0=;
-        b=yZVGWnA2/KHH5qCV3+agXW5UzYj4Gi3hbCAvuj0Izg9yF8na+y6uGEVKPVIxGcD5li
-         P9X7QDoe1FYcgv5pt1iJ/VC5Zz4jS4i+djArhWhUDGXUQvwdyNY1rgKmy7yp4K9/qHIQ
-         BvDBk8PbS90alpGcLT2cyo0RLIXzzAO+V1JLrxQV2TmSYsEoayJetXdHxiHO/QqoOc72
-         SjemRn7KEMgS4KayIi5wUUJBuL4Q0WklDpjWMJU2FiGcbLPeWvcJ5sNpTAVSV+Rpmf3u
-         PBjiw8wrxj7XCDpb3s1jox2LR0/wU4n+OWFToZfTIak9tt/YR4ybTI3TmgBV4sjYVvrG
-         gC0w==
-X-Gm-Message-State: ACrzQf3RxWn2qUIruk1RTzTEehgIVgD8PQIasFyzWRxkIb/PAnKVW9pw
-        IEtWwBcDhUz6o7kz5n2D5Ck=
-X-Google-Smtp-Source: AMsMyM6XJXaEF98htIkUy/k8RBRQ8JjxHgXAMROaJ/rDWaq1oMfE/TuwD/EcT9VrD/gZ4Q5BON1BWw==
-X-Received: by 2002:a17:90a:6484:b0:210:f17b:f465 with SMTP id h4-20020a17090a648400b00210f17bf465mr4402823pjj.241.1666246962494;
-        Wed, 19 Oct 2022 23:22:42 -0700 (PDT)
-Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id ij4-20020a170902ab4400b0017f8edd3d8asm11848589plb.177.2022.10.19.23.22.41
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ID6ULUicIzzzJTDZRhlwX73uCvo0CI37TULGJDLP9tc=;
+        b=lldxepna6TuHKW+MeT/x7Cu1bhRlPlamg1i0dGpZp6jfUcRGbfEG6sVUy9jPcp+rUs
+         8NquQME6f40pjkzlzdj7IfSTM6elwVrus/upTuYZIrHHxDL3YTBgkyDKWrc35D9oX6Ps
+         KAOQwQw9z89d6P+naSLx71tjGpHapT4ExEKJfw0Knp5VdPMzkpvzCysmaGqKizAWxUbL
+         +p7KwC8dh5xWsBTfEcyr4hVFGJXoNvWo9rMlQ3GRd7kyaMEYd7sLwT4rKchSlBsKNrSu
+         cUhfOPu3VDo0gtXbHms3cAkUqz50CFwixyFnwH+6sgHmWz15xqEt1QGEIeftLo7kT1mf
+         1/mg==
+X-Gm-Message-State: ACrzQf14so3HFahBMuYTwtla4jfO/8/kNF6zEfn1VBIT5tkNEfwp3blL
+        ITXZJjP9qgcGocp92unF7Hk=
+X-Google-Smtp-Source: AMsMyM6XeZTaDTUWvPvBJ1A9Y5y5bir5mrP2uJspsvQaw+k+qWLKswa9elhwRaZgYy55wfEDQOWiRw==
+X-Received: by 2002:a05:6214:4101:b0:4af:8cdc:20c4 with SMTP id kc1-20020a056214410100b004af8cdc20c4mr9856806qvb.6.1666247594645;
+        Wed, 19 Oct 2022 23:33:14 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::9f20])
+        by smtp.gmail.com with ESMTPSA id w22-20020a05620a445600b006bbc09af9f5sm628988qkp.101.2022.10.19.23.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 23:22:42 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 11:52:29 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     David Vernet <void@manifault.com>
+        Wed, 19 Oct 2022 23:33:13 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 01:33:16 -0500
+From:   David Vernet <void@manifault.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         sdf@google.com, haoluo@google.com, jolsa@kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, tj@kernel.org
-Subject: Re: [PATCH v5 1/3] bpf: Allow trusted pointers to be passed to
- KF_TRUSTED_ARGS kfuncs
-Message-ID: <20221020062229.b7e7r7lrnkszjoiy@apollo>
+Subject: Re: [PATCH v5 3/3] bpf/selftests: Add selftests for new task kfuncs
+Message-ID: <Y1DrrAfXA3rTq5us@maniforge.dhcp.thefacebook.com>
 References: <20221014212133.2520531-1-void@manifault.com>
- <20221014212133.2520531-2-void@manifault.com>
- <CAP01T75FGW7F=Ho+oqoC6WgxK5uUir2=CUgiW_HwqNxmzmthBg@mail.gmail.com>
- <Y1BR5c6W4tgljA8q@maniforge.dhcp.thefacebook.com>
- <20221020055749.33lfipxtaubhnqbv@apollo>
- <Y1DmnQE0xuj1RDp7@maniforge.dhcp.thefacebook.com>
+ <20221014212133.2520531-4-void@manifault.com>
+ <Y1A2OUuUn4z/Du+j@maniforge.dhcp.thefacebook.com>
+ <20221020061903.brfxt7ktxfajreer@apollo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y1DmnQE0xuj1RDp7@maniforge.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221020061903.brfxt7ktxfajreer@apollo>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 11:41:41AM IST, David Vernet wrote:
-> [...]
-> Apologies, as mentioned below I pasted the wrong if-check on accident.
-> If I had actually meant to paste that one, then saying I "misunderstand
-> this a bit" would have been a very generous understatment :-)
->
-> > When you have task from tracing ctx arg:
-> > r1 = ctx;
-> > r1 = *(r1 + ...); // PTR_TO_BTF_ID, task_struct, off=0
-> > // r1 = task->next
-> > r1 = *(r1 + offsetof(task_struct, next)); // PTR_TO_BTF_ID | PTR_WALKED, task_struct, off = 0
+On Thu, Oct 20, 2022 at 11:49:03AM +0530, Kumar Kartikeya Dwivedi wrote:
+> On Wed, Oct 19, 2022 at 11:09:05PM IST, David Vernet wrote:
+> > > On Sat, 15 Oct 2022 at 01:45, David Vernet <void@manifault.com> wrote:
+> > > >
+> > > > A previous change added a series of kfuncs for storing struct
+> > > > task_struct objects as referenced kptrs. This patch adds a new
+> > > > task_kfunc test suite for validating their expected behavior.
+> > > >
+> > > > Signed-off-by: David Vernet <void@manifault.com>
+> > > > ---
+> > > > [...]
+> > > > +
+> > > > +SEC("tp_btf/task_newtask")
+> > > > +int BPF_PROG(task_kfunc_acquire_trusted_nested, struct task_struct *task, u64 clone_flags)
+> > > > +{
+> > > > +       struct task_struct *acquired;
+> > > > +
+> > > > +       if (!is_test_kfunc_task())
+> > > > +               return 0;
+> > > > +
+> > > > +       /* Can't invoke bpf_task_acquire() on a trusted pointer at a nonzero offset. */
+> > > > +       acquired = bpf_task_acquire(task->last_wakee);
+> > >
+> > > The comment is incorrect, that would be &task->last_wakee instead,
+> > > this is PTR_TO_BTF_ID | PTR_NESTED.
 > >
-> > We loaded a pointer from task_struct into r1.
-> > Now r1 still points to a task_struct, so that check above won't fail for r1.
->
-> I meant to paste the if-condition _above_ that one. This is the if-check
-> we'll fail due to the presence of a type modifier (PTR_WALKED):
->
-> 	} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
-> 		   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
-> 		const struct btf_type *reg_ref_t;
-> 		const struct btf *reg_btf;
-> 		const char *reg_ref_tname;
-> 		u32 reg_ref_id;
->
-> So we'll never even get to the if check I originally pasted because
-> reg->type == PTR_TO_BTF_ID will fail for a PTR_WALKED reg. And then
-> below we'll eventually fail later on here:
->
-> 	/* Permit pointer to mem, but only when argument
-> 	 * type is pointer to scalar, or struct composed
-> 	 * (recursively) of scalars.
-> 	 * When arg_mem_size is true, the pointer can be
-> 	 * void *.
-> 	 * Also permit initialized local dynamic pointers.
-> 	 */
-> 	if (!btf_type_is_scalar(ref_t) &&
-> 	    !__btf_type_is_scalar_struct(log, btf, ref_t, 0) &&
-> 	    !arg_dynptr &&
-> 	    (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
-> 		bpf_log(log,
-> 			"arg#%d pointer type %s %s must point to %sscalar, or struct with scalar\n",
-> 			i, btf_type_str(ref_t), ref_tname, arg_mem_size ? "void, " : "");
-> 		return -EINVAL;
-> 	}
->
-> Appreciate the explanation, sorry to have made you type it.
->
+> > Well, it's a nonzero offset from task. But yes, to your point, it's a
+> > misleading comment because the offset is 0 in the verifier. I'll
+> 
+> The load insn has a non-zero offset, but not the destination reg.
 
-Ah, I see. Your analysis is right, but the error in CI comes from
-check_func_arg_reg_off invocation in check_helper_call, this code is for kfuncs.
+Yeah, this is what I meant by hand-wavily saying "0 in the verifier". I
+agree that the comment is incorrect as stated, I'll fix it in the next
+revision per your suggestion.
 
-Since you have this to preserve backwards compat:
-+static const struct bpf_reg_types btf_ptr_types = {
-+	.types = {
-+		PTR_TO_BTF_ID,
-+		PTR_TO_BTF_ID | PTR_NESTED
-+	},
-+};
+> What you did was:
+> r1 = rX + offsetof(task_struct, last_wakee); // r1 == rX + off
+> r1 = *(r1); // r1 == PTR_TO_BTF_ID of task_struct, off = 0
+> 
+> Embedded structs are different,
+> &file->f_path means non-zero offset into PTR_TO_BTF_ID of struct file
+> 
+> > rephrase this to reflect that it's a nested pointer (or a walked
+> > pointer, whatever nomenclature we end up going with).
+> >
+> > > > +       if (!acquired)
+> > > > +               return 0;
+> > > > +       bpf_task_release(acquired);
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > > [...]
+> > > > +
+> > > > +static int test_acquire_release(struct task_struct *task)
+> > > > +{
+> > > > +       struct task_struct *acquired;
+> > > > +
+> > > > +       acquired = bpf_task_acquire(task);
+> > >
+> > > Unfortunately a side effect of this change is that now since
+> > > PTR_TO_BTF_ID without ref_obj_id is considered trusted, the bpf_ct_*
+> > > functions would begin working with tp_btf args. That probably needs
+> > > be fixed so that they reject them (ideally with a failing test case to
+> > > make sure it doesn't resurface), probably with a new suffix __ref/or
+> > > __owned as added here [0].
+> > >
+> > > Alexei, since you've suggested avoiding adding that suffix, do you see
+> > > any other way out here?
+> > > It's questionable whether bpf_ct_set_timeout/status should work for CT
+> > > not owned by the BPF program.
+> > >
+> > >   [0]: https://lore.kernel.org/bpf/dfb859a6b76a9234baa194e795ae89cb7ca5694b.1662383493.git.lorenzo@kerne
+> >
+> > Ah, yeah, it makes sense that some kfuncs really should only ever be
+> > passed an object if the program owns a reference on it. Specifically for
+> > e.g. bpf_ct_set_timeout/status() as you point out, which should only be
+> > passed a struct nf_conn__init that was allocated by bpf_skb_ct_alloc().
+> >
+> > It'd be nice if we could just add another flag like KF_REFERENCED_ARGS
+> > or KF_OWNED_ARGS, which would allow a subset of arguments affored by
+> > KF_TRUSTED_ARGS, only those with ref_obj_id > 0. That approach wouldn't
+> > allow the flexibility of having per-argument specifications as your
+> > proposal to use __ref or __owned suffixes on the names, but that already
+> > applies to KF_TRUSTED_ARGS as well.
+> >
+> > Personally I'm in agreement with Alexei that it's not a user friendly
+> > API to use suffixes in the name like this. If we want to allow kfunc
+> > authors to have per-argument specifiers, using compiler attributes
+> > and/or some kind of tagging is probably the way to do it?
+> 
+> Sadly GCC doesn't support BTF tags. So this is the next best tagging approach.
+> 
+> There was also another horrendous proposal from me to add flags to each argument:
+> https://gist.github.com/kkdwivedi/7839cc9e4f002acc3e15350b1b86c88c#file-kfunc-arg-patch-L137
 
-It allows passing those with PTR_NESTED to stable helpers.
+I feel like I must be missing something given that you said this was
+horrendous, but I actually don't hate this. This is pretty similar to
+what we do for helpers anyways, no? I certainly prefer it over the
+suffix naming approach. IMO the problem with that is it kind of requires
+users to dive into the verifier to understand how to implement kfuncs.
+That also reminds me that in the next revision, I'll also update the
+documentation for KF_TRUSTED_ARGS (and KF_OWNED_ARGS) to reflect the new
+state of things.
+
+> > My proposal for now is to add a new KF_OWNED_ARGS flag, and to very
+> > clearly document exactly what that and KF_TRUSTED_ARGS implies for
+> > kfuncs. Later on, we could explore solutions for having per-arg
+> > specifiers. What do you and Alexei think?
+> 
+> Based on your proposal above:
+> 
+> For KF_OWNED_ARGS, any PTR_TO_BTF_ID should have non-zero ref_obj_id, for
+> KF_TRUSTED_ARGS there will be no such condition. Otherwise they will be the
+> same. Then switch all CT helpers to KF_OWNED_ARGS.
+
+Exactly
+
+> This should work fine.
+
+Great, I'll get to work on this. Unless Alexei or anyone else objects?
