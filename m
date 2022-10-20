@@ -2,71 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF71605BCE
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 12:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9E2605FE6
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 14:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbiJTKDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 06:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
+        id S230016AbiJTMPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 08:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiJTKDm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 06:03:42 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CC6FAA65
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 03:03:40 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id e18so14570292wmq.3
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 03:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HEDXAbcixc8o+P0bYiuI3arcPHGvX72uBEpjUzldvk8=;
-        b=SbCW+ZS7/gXggBgGnNeS7aUtOXGuLu/pUk3apaibNoOrTLmCtbY5bcMGarVzFdBgSl
-         DElC3FJDosMOJ91gPvq2oMViTwZRx6T31Ka2XjtHOwvzwpPl0hzjaCPOAnViVUuDqSgU
-         Nk4eLLgTXAWPdEBK1ZG7Oi8jJOhPFPKUVql7iDDTlGqeX49wRRgeufXX4jyTzJIWL6FW
-         hxajpCyDZe2rfuJxW2eQsxPH0HzhVsLkWNBJOfqeElXl9hj5FhqDgCcvv7R86shqx4VY
-         awLjIr8IYhWzl5MYLcYEB3cnXeYpmspTuiPlGZ1Mo//iNMGePDWObNEtrh7mtZjUxBFE
-         jG6Q==
+        with ESMTP id S229494AbiJTMPn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 08:15:43 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8770E161FD0
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:15:41 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id d24-20020a05660225d800b006a466ec7746so16315876iop.3
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:15:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HEDXAbcixc8o+P0bYiuI3arcPHGvX72uBEpjUzldvk8=;
-        b=QHbW6iM6tIwz+ikjLRQJE6DYC4rc/F+wruAQ0Omr9GTRbyBHlq+N2qN2nY5rIXX4Hp
-         eJWrCaGnI5qzONtiZ+XtuRdU9aDh9vkyY8ma28/HlJ6seSBBsr3MnT+vpL1/qx+kzsgl
-         FHWDz3pBJYW4PZJ2PZuCgjvKWgHBof61OukAqK3NaLBlsKxVf7lciFS7cClGMfUxvfmn
-         zI+fOcPB/5SeS+IN9qSuggyPazxea9aeIVGAvYIwbuOv4UPYhH6imDB1PcL9NqVMqUcX
-         OgDA3Hj6dauSWc9yQjUGx3GnLGJfKOlCr1zaENvbMeAv5NHpRFGny5eUwL162Rc2uUfY
-         mo+Q==
-X-Gm-Message-State: ACrzQf3hTfi8Xu7iAYv/IzajTxGtP5HRsiGG06VkC2xowNBrT+GPSCYB
-        legVdw1wm77TY+vnqimRyEEKug==
-X-Google-Smtp-Source: AMsMyM74jgQ++LgOlrkliq4ZyV06jK9uqWw/HL7zC+tWTXIS0IV39nxvQOSusaFA8M07MW8TEHfoPg==
-X-Received: by 2002:a05:600c:4e94:b0:3c6:f648:9a29 with SMTP id f20-20020a05600c4e9400b003c6f6489a29mr14852609wmq.59.1666260219335;
-        Thu, 20 Oct 2022 03:03:39 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id g12-20020a05600c4ecc00b003b4ac05a8a4sm3274465wmq.27.2022.10.20.03.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Oct 2022 03:03:38 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next] bpftool: Add "bootstrap" feature to version output
-Date:   Thu, 20 Oct 2022 11:03:32 +0100
-Message-Id: <20221020100332.69563-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6e9ZO5SOsYzlwVYG1Clmk+zxKnqFrS6VDsFqsHX5Zi0=;
+        b=MNJxXMra9zj/mK8DHM/A3sVy1UANn+ONVXveNrGLNCrF9EkVKgE/FPW4MekRYCEcUl
+         9unkdZ3k39D0E537nXR14Jy6+N0hEQnDey3EShCAIe3b+ocadmsGBQQAPiL0KxclCHa7
+         jXnrWrLnARvIffj2W6FBqnlYmRrthSYziRTVhbTBHgXlEw0/Ib3EnSRV5EV1tcqI7up/
+         r6I7Mj3Io//85epQAkzT70CJRRHzVpTf1Y7geOg1CdU/TS/QI1vmPHvjGM2/3ntGwt2T
+         ZBAil2XR+gMUzUmTJveyxIpKE0JOHxPDU+kx2/2ywKzccQO79w8/5Otk6m5Zr/HyuCRS
+         oaKQ==
+X-Gm-Message-State: ACrzQf02AzFJc+TDzwkvqPqCTY/UEK+tbpQZQEzEj/VSf3Ie6Wzh3wMS
+        WHX3G0Tu/3bpED+VRgorjULtRCdixruBIumb6sF/gnk8+xvU
+X-Google-Smtp-Source: AMsMyM7eitf9zHTov5cWQfhDpPO/mCD1WxZFGeso1nNVhmqJoAp5tKf+cmzlpvuHMIJWSrCYOwqWP9K7jfxYG2Wbn3tHSKP99wR5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a92:c514:0:b0:2f9:2b06:6283 with SMTP id
+ r20-20020a92c514000000b002f92b066283mr9691757ilg.287.1666268140641; Thu, 20
+ Oct 2022 05:15:40 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 05:15:40 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009fa63105eb7648d8@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in vm_area_dup
+From:   syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bigeasy@linutronix.de,
+        bpf@vger.kernel.org, brauner@kernel.org, ebiederm@xmission.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,166 +55,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Along with the version number, "bpftool version" displays a list of
-features that were selected at compilation time for bpftool. It would be
-useful to indicate in that list whether a binary is a bootstrap version
-of bpftool. Given that an increasing number of components rely on
-bootstrap versions for generating skeletons, this could help understand
-what a binary is capable of if it has been copied outside of the usual
-"bootstrap" directory.
+Hello,
 
-To detect a bootstrap version, we simply rely on the absence of
-implementation for the do_prog() function. To do this, we must move the
-(unchanged) list of commands before do_version(), which in turn requires
-renaming this "cmds" array to avoid shadowing it with the "cmds"
-argument in cmd_select().
+syzbot found the following issue on:
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+HEAD commit:    acee3e83b493 Add linux-next specific files for 20221020
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13cdacba880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c82245cfb913f766
+dashboard link: https://syzkaller.appspot.com/bug?extid=b910411d3d253dab25d8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/98cc5896cded/disk-acee3e83.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b3d3eb3aa10a/vmlinux-acee3e83.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8806, name: syz-executor.0
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 8806 Comm: syz-executor.0 Not tainted 6.1.0-rc1-next-20221020-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __might_resched.cold+0x222/0x26b kernel/sched/core.c:9890
+ might_alloc include/linux/sched/mm.h:274 [inline]
+ slab_pre_alloc_hook mm/slab.h:727 [inline]
+ slab_alloc_node mm/slub.c:3323 [inline]
+ slab_alloc mm/slub.c:3411 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3418 [inline]
+ kmem_cache_alloc+0x2e6/0x3c0 mm/slub.c:3427
+ vm_area_dup+0x81/0x380 kernel/fork.c:466
+ copy_vma+0x376/0x8d0 mm/mmap.c:3216
+ move_vma+0x449/0xf60 mm/mremap.c:626
+ __do_sys_mremap+0x487/0x16b0 mm/mremap.c:1075
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fe5a1e8b5a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe5a30a7168 EFLAGS: 00000246 ORIG_RAX: 0000000000000019
+RAX: ffffffffffffffda RBX: 00007fe5a1fabf80 RCX: 00007fe5a1e8b5a9
+RDX: 0000000000001000 RSI: 0000000000004000 RDI: 00000000201c4000
+RBP: 00007fe5a1ee6580 R08: 00000000202ef000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffee646383f R14: 00007fe5a30a7300 R15: 0000000000022000
+ </TASK>
+
+
 ---
- tools/bpf/bpftool/main.c | 81 ++++++++++++++++++++++++----------------
- 1 file changed, 49 insertions(+), 32 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 8bf3615f684f..b22223df4431 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -71,6 +71,27 @@ static int do_help(int argc, char **argv)
- 	return 0;
- }
- 
-+static int do_batch(int argc, char **argv);
-+static int do_version(int argc, char **argv);
-+
-+static const struct cmd commands[] = {
-+	{ "help",	do_help },
-+	{ "batch",	do_batch },
-+	{ "prog",	do_prog },
-+	{ "map",	do_map },
-+	{ "link",	do_link },
-+	{ "cgroup",	do_cgroup },
-+	{ "perf",	do_perf },
-+	{ "net",	do_net },
-+	{ "feature",	do_feature },
-+	{ "btf",	do_btf },
-+	{ "gen",	do_gen },
-+	{ "struct_ops",	do_struct_ops },
-+	{ "iter",	do_iter },
-+	{ "version",	do_version },
-+	{ 0 }
-+};
-+
- #ifndef BPFTOOL_VERSION
- /* bpftool's major and minor version numbers are aligned on libbpf's. There is
-  * an offset of 6 for the version number, because bpftool's version was higher
-@@ -82,6 +103,15 @@ static int do_help(int argc, char **argv)
- #define BPFTOOL_PATCH_VERSION 0
- #endif
- 
-+static void
-+print_feature(const char *feature, bool state, unsigned int *nb_features)
-+{
-+	if (state) {
-+		printf("%s %s", *nb_features ? "," : "", feature);
-+		*nb_features = *nb_features + 1;
-+	}
-+}
-+
- static int do_version(int argc, char **argv)
- {
- #ifdef HAVE_LIBBFD_SUPPORT
-@@ -94,6 +124,18 @@ static int do_version(int argc, char **argv)
- #else
- 	const bool has_skeletons = true;
- #endif
-+	bool bootstrap = false;
-+	int i;
-+
-+	for (i = 0; commands[i].cmd; i++) {
-+		if (!strcmp(commands[i].cmd, "prog")) {
-+			/* Assume we run a bootstrap version if "bpftool prog"
-+			 * is not available.
-+			 */
-+			bootstrap = !commands[i].func;
-+			break;
-+		}
-+	}
- 
- 	if (json_output) {
- 		jsonw_start_object(json_wtr);	/* root object */
-@@ -114,6 +156,7 @@ static int do_version(int argc, char **argv)
- 		jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
- 		jsonw_bool_field(json_wtr, "libbpf_strict", !legacy_libbpf);
- 		jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
-+		jsonw_bool_field(json_wtr, "bootstrap", bootstrap);
- 		jsonw_end_object(json_wtr);	/* features */
- 
- 		jsonw_end_object(json_wtr);	/* root object */
-@@ -128,16 +171,10 @@ static int do_version(int argc, char **argv)
- #endif
- 		printf("using libbpf %s\n", libbpf_version_string());
- 		printf("features:");
--		if (has_libbfd) {
--			printf(" libbfd");
--			nb_features++;
--		}
--		if (!legacy_libbpf) {
--			printf("%s libbpf_strict", nb_features++ ? "," : "");
--			nb_features++;
--		}
--		if (has_skeletons)
--			printf("%s skeletons", nb_features++ ? "," : "");
-+		print_feature("libbfd", has_libbfd, &nb_features);
-+		print_feature("libbpf_strict", !legacy_libbpf, &nb_features);
-+		print_feature("skeletons", has_skeletons, &nb_features);
-+		print_feature("bootstrap", bootstrap, &nb_features);
- 		printf("\n");
- 	}
- 	return 0;
-@@ -279,26 +316,6 @@ static int make_args(char *line, char *n_argv[], int maxargs, int cmd_nb)
- 	return n_argc;
- }
- 
--static int do_batch(int argc, char **argv);
--
--static const struct cmd cmds[] = {
--	{ "help",	do_help },
--	{ "batch",	do_batch },
--	{ "prog",	do_prog },
--	{ "map",	do_map },
--	{ "link",	do_link },
--	{ "cgroup",	do_cgroup },
--	{ "perf",	do_perf },
--	{ "net",	do_net },
--	{ "feature",	do_feature },
--	{ "btf",	do_btf },
--	{ "gen",	do_gen },
--	{ "struct_ops",	do_struct_ops },
--	{ "iter",	do_iter },
--	{ "version",	do_version },
--	{ 0 }
--};
--
- static int do_batch(int argc, char **argv)
- {
- 	char buf[BATCH_LINE_LEN_MAX], contline[BATCH_LINE_LEN_MAX];
-@@ -386,7 +403,7 @@ static int do_batch(int argc, char **argv)
- 			jsonw_name(json_wtr, "output");
- 		}
- 
--		err = cmd_select(cmds, n_argc, n_argv, do_help);
-+		err = cmd_select(commands, n_argc, n_argv, do_help);
- 
- 		if (json_output)
- 			jsonw_end_object(json_wtr);
-@@ -528,7 +545,7 @@ int main(int argc, char **argv)
- 	if (version_requested)
- 		return do_version(argc, argv);
- 
--	ret = cmd_select(cmds, argc, argv, do_help);
-+	ret = cmd_select(commands, argc, argv, do_help);
- 
- 	if (json_output)
- 		jsonw_destroy(&json_wtr);
--- 
-2.34.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
