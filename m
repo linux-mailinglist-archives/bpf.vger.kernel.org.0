@@ -2,130 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 814E1605519
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F3B605525
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbiJTBiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 21:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        id S229893AbiJTBre (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 21:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbiJTBiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 21:38:16 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA56176BB1
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:38:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mt8mk25K4zl6y3
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 09:15:50 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgDnEDG8oVBjKCaCAA--.40093S2;
-        Thu, 20 Oct 2022 09:17:52 +0800 (CST)
-Subject: Re: [PATCH bpf 2/2] bpf: Use __llist_del_all() whenever possbile
- during memory draining
-To:     sdf@google.com
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-References: <20221019115539.983394-1-houtao@huaweicloud.com>
- <20221019115539.983394-3-houtao@huaweicloud.com>
- <Y1BJXRgchDcxwKIJ@google.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <2f968cf9-d90c-3b8c-2dcf-21719ab46e69@huaweicloud.com>
-Date:   Thu, 20 Oct 2022 09:17:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229683AbiJTBrd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 21:47:33 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B91958CC;
+        Wed, 19 Oct 2022 18:47:32 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Mt9Mn5JfJz1P71t;
+        Thu, 20 Oct 2022 09:42:45 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 20 Oct 2022 09:46:55 +0800
+Message-ID: <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com>
+Date:   Thu, 20 Oct 2022 09:46:54 +0800
 MIME-Version: 1.0
-In-Reply-To: <Y1BJXRgchDcxwKIJ@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgDnEDG8oVBjKCaCAA--.40093S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw47Cr1xtw45XFy3tFyfXrb_yoW5Xr4fpr
-        93Gry5JrWUAFyvvw4UtwnrCr95Xr48Jay3G3yUuFy2yr13Xw4qqryxXw1jgw13ZrW8Xr13
-        Jr1DWFn7uF45XFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is
+ dropped
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <oss@lmb.io>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
+References: <20221015092448.117563-1-shaozhengchao@huawei.com>
+ <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-On 10/20/2022 3:00 AM, sdf@google.com wrote:
-> On 10/19, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->
->> Except for waiting_for_gp list, there are no concurrent operations on
->> free_by_rcu, free_llist and free_llist_extra lists, so use
->> __llist_del_all() instead of llist_del_all(). waiting_for_gp list can be
->> deleted by RCU callback concurrently, so still use llist_del_all().
->
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
+
+On 2022/10/18 0:36, Stanislav Fomichev wrote:
+> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
+>>
+>> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
+>> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
+>> So fix it.
+>>
+>> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
+>>
+>> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
 >> ---
->>   kernel/bpf/memalloc.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->
->> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
->> index 48e606aaacf0..7f45744a09f7 100644
->> --- a/kernel/bpf/memalloc.c
->> +++ b/kernel/bpf/memalloc.c
->> @@ -422,14 +422,17 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
->>       /* No progs are using this bpf_mem_cache, but htab_map_free() called
->>        * bpf_mem_cache_free() for all remaining elements and they can be in
->>        * free_by_rcu or in waiting_for_gp lists, so drain those lists now.
->> +     *
->> +     * Except for waiting_for_gp list, there are no concurrent operations
->> +     * on these lists, so it is safe to use __llist_del_all().
->>        */
->>       llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
->>           free_one(c, llnode);
->>       llist_for_each_safe(llnode, t, llist_del_all(&c->waiting_for_gp))
->>           free_one(c, llnode);
->> -    llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist))
->> +    llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist))
->>           free_one(c, llnode);
->> -    llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra))
->> +    llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist_extra))
->>           free_one(c, llnode);
->
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-Thanks for the Acked-by.
->
-> Seems safe even without the previous patch? OTOH, do we really care
-> about __lllist vs llist in the cleanup path? Might be safer to always
-> do llist_del_all everywhere?
-No. free_llist is manipulated by both irq work and memory draining concurrently
-before patch #1. Using llist_del_all(&c->free_llist) also doesn't help because
-irq work uses __llist_add/__llist_del helpers. Basically there is no difference
-between __llist and list helper for cleanup patch, but I think it is better to 
-clarity the possible concurrent accesses and codify these assumption.
->
->>   }
->
->> -- 
->> 2.29.2
->
-> .
-
+>>   net/bpf/test_run.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>> index 13d578ce2a09..aa1b49f19ca3 100644
+>> --- a/net/bpf/test_run.c
+>> +++ b/net/bpf/test_run.c
+>> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>>   {
+>>          struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+>>
+>> -       if (!skb->len)
+>> -               return -EINVAL;
+>> -
+>>          if (!__skb)
+>>                  return 0;
+>>
+>> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>>          if (IS_ERR(data))
+>>                  return PTR_ERR(data);
+>>
+>> +       if (size == ETH_HLEN)
+>> +               is_l2 = true;
+>> +
+> 
+> Don't think this will work? That is_l2 is there to expose proper l2/l3
+> skb for specific hooks; we can't suddenly start exposing l2 headers to
+> the hooks that don't expect it.
+> Does it make sense to start with a small reproducer that triggers the
+> issue first? We can have a couple of cases for
+> len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
+> redirects to different devices (to trigger dev_is_mac_header_xmit).
+> 
+> 
+Hi Stanislav:
+	Thank you for your review. Is_l2 is the flag of a specific
+hook. Therefore, do you mean that if skb->len is equal to 0, just
+add the length back?
+> 
+> 
+> 
+>>          ctx = bpf_ctx_init(kattr, sizeof(struct __sk_buff));
+>>          if (IS_ERR(ctx)) {
+>>                  kfree(data);
+>> --
+>> 2.17.1
+>>
