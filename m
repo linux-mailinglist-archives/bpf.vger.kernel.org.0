@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065F9606059
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 14:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC9360605B
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 14:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbiJTMhY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 08:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        id S229552AbiJTMh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 08:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbiJTMhW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 08:37:22 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E776F13D19
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:37:20 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id v11so4812129wmd.1
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:37:20 -0700 (PDT)
+        with ESMTP id S230137AbiJTMhY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 08:37:24 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FBD275DE
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:37:21 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id t4so14785282wmj.5
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 05:37:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DJc2WTeQ79aN7lw9j3ViprJPP9RDB1+5PaPrZJopgzo=;
-        b=jchz0dVKbvRcD+RevPINYGXa69CHh5VGIHdmd+IHrWx/dxqHNVTAFQgvMSO2X82i7o
-         qCa6RqnAbWXAcnR16P1HtZDsYruPrF5QFzbuz3R+NHpLpD7LUUdnNc5OMdkgTq+BZBof
-         LmyxRCfPRhcdceD8tr/4LA0OnAnl4QjtjngfMghEmi7UbLG6CW3zFdr2rLrYyG8Yjsq8
-         3d3rxqp3gUZetLscfWZo401bRBbyot2C68AIx6GjvJ/3lUiseXmMkHFQLEJMmlENAKj8
-         WikoXkVPuHmF05EyRhgKwXkSWhxeIEgMsMxZv1QSCR2sUfWKft7i7OpVLkDfCQJfcxuq
-         OEDw==
+        bh=ztgNoAY9JwrDyrrl7KRIcTiS50vpaEWtiAVvSexKhbQ=;
+        b=wgGF22Qvm5v2glnTw6D1VaBgWTsz6jCW2W5WMS9yEuNViadbWgeJ8yrPx8xXr8+Sv9
+         eTJwHBkkNb/dSzeAsfODo85hXqjskduTCEUedwOU+ttmOHEnnJen6kxOdWYLn4IHo21E
+         aSwYsiCU804zFhHvGjG4ImW0vTWMrE6O4hX/pKLkKGlj2ec8cvms89uoSDLUTj8HiSpZ
+         J3bOf69L8b7YkFaE9730r3t/iwswXMG9GfR8n7zIHNPsTNPy68/9kvNEQB/vRbg165bo
+         48We4qnzz81zsfh3PiOvZau0SarwySIcGA/d2P7Zk7fpZdlgPGH476GJre5YX/U3SJQ6
+         GGWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DJc2WTeQ79aN7lw9j3ViprJPP9RDB1+5PaPrZJopgzo=;
-        b=WWgPTb9cY2omF3YsIy2fl/FnhQGXzvfPukmB/rT1jWJN5ZS+ECsDqCGVcvWzFdu8pR
-         KX/FKNAmO1p0iRvfRftvjMmHRBQgs/rfO8U1VWl5anOYM0snKImmEpuRZ0DcXEioiIfB
-         TBGsmqU31AW9OjzNBl7F4tItvevjgl3W1euUEmWtcywWJQZFIpI4ZEqfltfpEPiagRnX
-         fFr+DlJhmfM8Ob9QWo8PDM7/yjqZjZkVTqg8DbEjKjeYGZ8Cm2gW87VFCWc78oreGZfE
-         wlZYH2ApbISet+9FUxbHnbRjiwFQIZVSN8KydacRICz09onW++G6OzEFYtFvUArjifjl
-         2qMQ==
-X-Gm-Message-State: ACrzQf2X5cJ2kIaCewbBJGrmAhtWOYQg5a6cx8QV7coTGKNVQx/XXi+r
-        bhyu2h54OO93oEztTlGAXQPmaUA6tE7naFLq
-X-Google-Smtp-Source: AMsMyM5miSJidwxoHhTghzhHpYYBtis7zszr6XqNG4KQ8DYXk1Crs4FZ6MEJgU8KxH4gbJyZ9NwFmg==
-X-Received: by 2002:a05:600c:6885:b0:3bd:d782:623c with SMTP id fn5-20020a05600c688500b003bdd782623cmr9091693wmb.102.1666269439485;
-        Thu, 20 Oct 2022 05:37:19 -0700 (PDT)
+        bh=ztgNoAY9JwrDyrrl7KRIcTiS50vpaEWtiAVvSexKhbQ=;
+        b=ToRHUTuDyU8eTgBVLvUgabHEsryHnJsIJxYgd8sPXyvibrXmJXhZbAoReS0yUsoF2e
+         RVgD7jnD5hzXEGMW0/+9cULISS3quH8EETjJLuTzGpE2NPZb7aeyFuqCZMfpUVz+S1xm
+         HwnmWJKUOIlPUs3n92W1daISApwRKvenk1prf48Qs7MhaBRE3d41WVRebdsWAinFRa/B
+         3Neec7MWYv5QTj5aJju68rYvzMGu9CehiNj0nTOrvN+/4ZOg90YoJGTiUIqc+8Lzf3Hv
+         VPu5ZQtvuAAIXrcxsBkp+mWhEBPkJ/CGiQlCp6yHcu6VuOnFhMY8TUjG/71xL0O4dDs5
+         dyhw==
+X-Gm-Message-State: ACrzQf2d+cfc3+kWdUyzdXYG0GZyLxArCjaYuYb3QVShuSOZORRovXa1
+        UfDckxKnUhAUQEySMUXBUb9xIQ==
+X-Google-Smtp-Source: AMsMyM7RlNXEK4iHileA1BsODjtfwZgZDbtoF33aMRODQIGDtgj9t5tTod7jI3CVvXTDHQyDa44gKQ==
+X-Received: by 2002:a05:600c:1e8b:b0:3c6:f6e5:c41d with SMTP id be11-20020a05600c1e8b00b003c6f6e5c41dmr14929732wmb.12.1666269440468;
+        Thu, 20 Oct 2022 05:37:20 -0700 (PDT)
 Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id h10-20020a5d504a000000b0022a9246c853sm16329581wrt.41.2022.10.20.05.37.18
+        by smtp.gmail.com with ESMTPSA id h10-20020a5d504a000000b0022a9246c853sm16329581wrt.41.2022.10.20.05.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Oct 2022 05:37:18 -0700 (PDT)
+        Thu, 20 Oct 2022 05:37:20 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,9 +64,9 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         Simon Horman <simon.horman@corigine.com>,
         Quentin Monnet <quentin@isovalent.com>,
         Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next v3 1/8] bpftool: Define _GNU_SOURCE only once
-Date:   Thu, 20 Oct 2022 13:36:57 +0100
-Message-Id: <20221020123704.91203-2-quentin@isovalent.com>
+Subject: [PATCH bpf-next v3 2/8] bpftool: Remove asserts from JIT disassembler
+Date:   Thu, 20 Oct 2022 13:36:58 +0100
+Message-Id: <20221020123704.91203-3-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221020123704.91203-1-quentin@isovalent.com>
 References: <20221020123704.91203-1-quentin@isovalent.com>
@@ -82,125 +82,229 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-_GNU_SOURCE is defined in several source files for bpftool, but only one
-of them takes the precaution of checking whether the value is already
-defined. Add #ifndef for other occurrences too.
+The JIT disassembler in bpftool is the only components (with the JSON
+writer) using asserts to check the return values of functions. But it
+does not do so in a consistent way, and diasm_print_insn() returns no
+value, although sometimes the operation failed.
 
-This is in preparation for the support of disassembling JIT-ed programs
-with LLVM, with $(llvm-config --cflags) passing -D_GNU_SOURCE as a
-compilation argument.
+Remove the asserts, and instead check the return values, print messages
+on errors, and propagate the error to the caller from prog.c.
+
+Remove the inclusion of assert.h from jit_disasm.c, and also from map.c
+where it is unused.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 Tested-by: Niklas Söderlund <niklas.soderlund@corigine.com>
 Acked-by: Song Liu <song@kernel.org>
 ---
- tools/bpf/bpftool/common.c        | 2 ++
- tools/bpf/bpftool/iter.c          | 2 ++
- tools/bpf/bpftool/jit_disasm.c    | 2 ++
- tools/bpf/bpftool/net.c           | 2 ++
- tools/bpf/bpftool/perf.c          | 2 ++
- tools/bpf/bpftool/prog.c          | 2 ++
- tools/bpf/bpftool/xlated_dumper.c | 2 ++
- 7 files changed, 14 insertions(+)
+ tools/bpf/bpftool/jit_disasm.c | 51 +++++++++++++++++++++++-----------
+ tools/bpf/bpftool/main.h       | 25 +++++++++--------
+ tools/bpf/bpftool/map.c        |  1 -
+ tools/bpf/bpftool/prog.c       | 15 ++++++----
+ 4 files changed, 57 insertions(+), 35 deletions(-)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 8727765add88..4c2e909a2d67 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -1,7 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
- 
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
-diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
-index f88fdc820d23..a3e6b167153d 100644
---- a/tools/bpf/bpftool/iter.c
-+++ b/tools/bpf/bpftool/iter.c
-@@ -1,7 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- // Copyright (C) 2020 Facebook
- 
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <unistd.h>
- #include <linux/err.h>
- #include <bpf/libbpf.h>
 diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index aaf99a0168c9..71cb258ab0ee 100644
+index 71cb258ab0ee..723a9b799a0c 100644
 --- a/tools/bpf/bpftool/jit_disasm.c
 +++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -11,7 +11,9 @@
-  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
-  */
- 
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <stdio.h>
+@@ -18,7 +18,6 @@
  #include <stdarg.h>
  #include <stdint.h>
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 526a332c48e6..c40e44c938ae 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -1,7 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- // Copyright (C) 2018 Facebook
- 
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <errno.h>
- #include <fcntl.h>
  #include <stdlib.h>
-diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
-index 226ec2c39052..91743445e4c7 100644
---- a/tools/bpf/bpftool/perf.c
-+++ b/tools/bpf/bpftool/perf.c
-@@ -2,7 +2,9 @@
- // Copyright (C) 2018 Facebook
- // Author: Yonghong Song <yhs@fb.com>
+-#include <assert.h>
+ #include <unistd.h>
+ #include <string.h>
+ #include <bfd.h>
+@@ -31,14 +30,18 @@
+ #include "json_writer.h"
+ #include "main.h"
  
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index c81362a001ba..a31ae9f0c307 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1,7 +1,9 @@
+-static void get_exec_path(char *tpath, size_t size)
++static int get_exec_path(char *tpath, size_t size)
+ {
+ 	const char *path = "/proc/self/exe";
+ 	ssize_t len;
+ 
+ 	len = readlink(path, tpath, size - 1);
+-	assert(len > 0);
++	if (len <= 0)
++		return -1;
++
+ 	tpath[len] = 0;
++
++	return 0;
+ }
+ 
+ static int oper_count;
+@@ -99,30 +102,39 @@ static int fprintf_json_styled(void *out,
+ 	return r;
+ }
+ 
+-void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+-		       const char *arch, const char *disassembler_options,
+-		       const struct btf *btf,
+-		       const struct bpf_prog_linfo *prog_linfo,
+-		       __u64 func_ksym, unsigned int func_idx,
+-		       bool linum)
++int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
++		      const char *arch, const char *disassembler_options,
++		      const struct btf *btf,
++		      const struct bpf_prog_linfo *prog_linfo,
++		      __u64 func_ksym, unsigned int func_idx,
++		      bool linum)
+ {
+ 	const struct bpf_line_info *linfo = NULL;
+ 	disassembler_ftype disassemble;
++	int count, i, pc = 0, err = -1;
+ 	struct disassemble_info info;
+ 	unsigned int nr_skip = 0;
+-	int count, i, pc = 0;
+ 	char tpath[PATH_MAX];
+ 	bfd *bfdf;
+ 
+ 	if (!len)
+-		return;
++		return -1;
+ 
+ 	memset(tpath, 0, sizeof(tpath));
+-	get_exec_path(tpath, sizeof(tpath));
++	if (get_exec_path(tpath, sizeof(tpath))) {
++		p_err("failed to create disasembler (get_exec_path)");
++		return -1;
++	}
+ 
+ 	bfdf = bfd_openr(tpath, NULL);
+-	assert(bfdf);
+-	assert(bfd_check_format(bfdf, bfd_object));
++	if (!bfdf) {
++		p_err("failed to create disassembler (bfd_openr)");
++		return -1;
++	}
++	if (!bfd_check_format(bfdf, bfd_object)) {
++		p_err("failed to create disassembler (bfd_check_format)");
++		goto exit_close;
++	}
+ 
+ 	if (json_output)
+ 		init_disassemble_info_compat(&info, stdout,
+@@ -141,7 +153,7 @@ void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+ 			bfdf->arch_info = inf;
+ 		} else {
+ 			p_err("No libbfd support for %s", arch);
+-			return;
++			goto exit_close;
+ 		}
+ 	}
+ 
+@@ -162,7 +174,10 @@ void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+ #else
+ 	disassemble = disassembler(bfdf);
+ #endif
+-	assert(disassemble);
++	if (!disassemble) {
++		p_err("failed to create disassembler");
++		goto exit_close;
++	}
+ 
+ 	if (json_output)
+ 		jsonw_start_array(json_wtr);
+@@ -226,7 +241,11 @@ void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+ 	if (json_output)
+ 		jsonw_end_array(json_wtr);
+ 
++	err = 0;
++
++exit_close:
+ 	bfd_close(bfdf);
++	return err;
+ }
+ 
+ int disasm_init(void)
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 5e5060c2ac04..c9e171082cf6 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -173,22 +173,23 @@ int map_parse_fd_and_info(int *argc, char ***argv, void *info, __u32 *info_len);
+ 
+ struct bpf_prog_linfo;
+ #ifdef HAVE_LIBBFD_SUPPORT
+-void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+-		       const char *arch, const char *disassembler_options,
+-		       const struct btf *btf,
+-		       const struct bpf_prog_linfo *prog_linfo,
+-		       __u64 func_ksym, unsigned int func_idx,
+-		       bool linum);
++int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
++		      const char *arch, const char *disassembler_options,
++		      const struct btf *btf,
++		      const struct bpf_prog_linfo *prog_linfo,
++		      __u64 func_ksym, unsigned int func_idx,
++		      bool linum);
+ int disasm_init(void);
+ #else
+ static inline
+-void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+-		       const char *arch, const char *disassembler_options,
+-		       const struct btf *btf,
+-		       const struct bpf_prog_linfo *prog_linfo,
+-		       __u64 func_ksym, unsigned int func_idx,
+-		       bool linum)
++int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
++		      const char *arch, const char *disassembler_options,
++		      const struct btf *btf,
++		      const struct bpf_prog_linfo *prog_linfo,
++		      __u64 func_ksym, unsigned int func_idx,
++		      bool linum)
+ {
++	return 0;
+ }
+ static inline int disasm_init(void)
+ {
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 9a6ca9f31133..3087ced658ad 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -1,7 +1,6 @@
  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
  /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
  
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
+-#include <assert.h>
  #include <errno.h>
  #include <fcntl.h>
- #include <signal.h>
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 2d9cd6a7b3c8..6fe3134ae45d 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -1,7 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- /* Copyright (C) 2018 Netronome Systems, Inc. */
+ #include <linux/err.h>
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index a31ae9f0c307..345dca656a34 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -822,10 +822,11 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+ 					printf("%s:\n", sym_name);
+ 				}
  
-+#ifndef _GNU_SOURCE
- #define _GNU_SOURCE
-+#endif
- #include <stdarg.h>
- #include <stdio.h>
- #include <stdlib.h>
+-				disasm_print_insn(img, lens[i], opcodes,
+-						  name, disasm_opt, btf,
+-						  prog_linfo, ksyms[i], i,
+-						  linum);
++				if (disasm_print_insn(img, lens[i], opcodes,
++						      name, disasm_opt, btf,
++						      prog_linfo, ksyms[i], i,
++						      linum))
++					goto exit_free;
+ 
+ 				img += lens[i];
+ 
+@@ -838,8 +839,10 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+ 			if (json_output)
+ 				jsonw_end_array(json_wtr);
+ 		} else {
+-			disasm_print_insn(buf, member_len, opcodes, name,
+-					  disasm_opt, btf, NULL, 0, 0, false);
++			if (disasm_print_insn(buf, member_len, opcodes, name,
++					      disasm_opt, btf, NULL, 0, 0,
++					      false))
++				goto exit_free;
+ 		}
+ 	} else if (visual) {
+ 		if (json_output)
 -- 
 2.34.1
 
