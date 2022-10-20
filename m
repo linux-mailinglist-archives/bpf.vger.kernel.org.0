@@ -2,70 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D904660549E
-	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 02:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30A16054AB
+	for <lists+bpf@lfdr.de>; Thu, 20 Oct 2022 03:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbiJTA4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 20:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        id S229800AbiJTBEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 21:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbiJTA4E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 20:56:04 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC82162528
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:56:03 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id g28so18814142pfk.8
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 17:56:03 -0700 (PDT)
+        with ESMTP id S229755AbiJTBEe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 21:04:34 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABAA24979
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id c24so18885952plo.3
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FmgFon34ewyLdT0h9flWMOd5YRCL8ZnIfPzObrUeTQE=;
-        b=Wzw8LY1zfwoh/8+vyQAZzb5xzmfLG0g4WsMYTYY8rwuvQ+98yyza4sLjaS0mpJR2bA
-         FXfCKQALv9s2ys/vZ09yc7aXC9YnUte2UGNtsHrnXMulSRtwKOF8N13hUgXWNKWWqc2i
-         Q8LmBt74LFFgQYqg7r740Cn56hgdAD+24Kw2jhMeUk1rfordY6kqEcLApHUZ/1hveKWE
-         Ju7G4CSmjn7QwX0BZhN4El2gJCyNi7AODW2h056ebWMo3tKuzDKh8hZX89Sb7orLDxCj
-         9BYtRDuSzWVfuIYWIe1LQoyfZiRxBacEkn30oyRcvmLIsCJsrp/rf0EqpsJe4Cg1gnDE
-         owSg==
+        bh=xN0kV51CWcybAistt3Ae1nkzLAwzdA+RplZD0qAc7SY=;
+        b=OUj9+1s1yO7cJ2qT5Ti6RjixAGDTaTRvc/uumzzDarB2Rh8c+m/JLKz0djXBPQyJmt
+         X9QDuurNNR1L8uaqt6Rr9l6zb27c6pm9hdxYVRU8+vPgNZvrCRy9Yw3Ap3IuTBi0DNQW
+         X+P1c8/W7zzU105SI9urCnZoA7xKBgOcdf/wmisMGWVnNrmFV8wytq+gCw3yuaRKCL89
+         HjrqLIocG+HIKblEz74qt166Na+ii4yAIxelgT2yBOGeTyVYirrvv835FoyLk/f+G1xI
+         LCjhdzvD5NzqwBrk/IZ79H67g2/ar4549DB9n7csSm0+HrXMINIzlYhc9b3kDpm8VbBA
+         Gxbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FmgFon34ewyLdT0h9flWMOd5YRCL8ZnIfPzObrUeTQE=;
-        b=O0t6GI30J36fVAluqh6oKajBBwucWQkobLtS7QAu45WnVFjyor7cr35Sv35iZg5/eO
-         Ula3LSOrdbifhj8gF9CaSlAs1nOlTvG0fKJweGzKolpECI7vazxKKzCQWL73YoV3AmUf
-         Nn1TziwsbRKvSSpHw7RvkujuKHmnzJJxkbcTommwDpqBACPOntzlXiT5P77tlTNQRkcJ
-         tud1sKnGUBBBLt8yPxmm8+SkgY02TMR2fyfHvn+TA6PpYe4Mm22XM+0rZF5tyr2PCcHY
-         8Z5FnOOPJGAvky/9r6rIBIGVGvf3IjDX5DL8km9NnsOycdDlKbMnT3NmHlLQlFHVPLmU
-         OHlQ==
-X-Gm-Message-State: ACrzQf0xbrSYZHCZlvKydRHyTr6XXmbnL8SyHa7xw2fXodxFHSLRaw4S
-        eJYvnkOZorDSMu6GnkD5aitp6+0Cl/l8fA==
-X-Google-Smtp-Source: AMsMyM7cZB+z3hc3L8eqmtHC0HKgElynS6HMFSxQQvk/4Ioqxyjj5xOduh/r7mXXs4zglhMc4QHZyg==
-X-Received: by 2002:a05:6a00:1749:b0:563:8346:12e9 with SMTP id j9-20020a056a00174900b00563834612e9mr11459815pfc.68.1666227362448;
-        Wed, 19 Oct 2022 17:56:02 -0700 (PDT)
+        bh=xN0kV51CWcybAistt3Ae1nkzLAwzdA+RplZD0qAc7SY=;
+        b=IQGRRyFkT4EPHzqJoTWAqSXehGlLur63E+yPuOFMB01eDOsv0fnf0IiCOvV7nzq7S4
+         X7yOiQVYToL75cPVg5Hvn+oiwKtwsGZDijytKWMtNq38uU7Wc63Usn1TZ6fNX5EBIjk4
+         /BTBKgmFdB4rXW86J9jr8gf+Z3DUpBY7/OGsruznOCz/wbrmlsm1t8xrxph0oPWXhOg9
+         sGsGe5RmVoYUYsbUbh5+JRbUmwvPTxl6nTVQHpe/iy2TcZRWEWyUKwofYLN1MUJNU7Xw
+         6jap1LGduCQoyVRUdrGEzPF1OYvDuUeLDFVIRq2FlvjATpmVvfHOLLBsBcx2Zy6RJKxY
+         6SYg==
+X-Gm-Message-State: ACrzQf09A402jP6CxpXdz2vDNEMMGzoN8WQpDN6j7ew+xIW7EL1qX7LZ
+        tshhaO4SEfmUk0951UwVzirHr1Usz4JdKA==
+X-Google-Smtp-Source: AMsMyM77a9I8DhHLuvQTlIxUfBrt/epzUgz+5i17Df7qF0qMiQ1E0X5z3Hm2YKJVnsh7v7ko3lG3fQ==
+X-Received: by 2002:a17:90b:1d04:b0:20b:cb40:4b3 with SMTP id on4-20020a17090b1d0400b0020bcb4004b3mr12543716pjb.215.1666227869002;
+        Wed, 19 Oct 2022 18:04:29 -0700 (PDT)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id u21-20020a62d455000000b0053b2681b0e0sm11971383pfl.39.2022.10.19.17.56.01
+        by smtp.gmail.com with ESMTPSA id 64-20020a620543000000b005632c49693asm11840382pff.202.2022.10.19.18.04.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 17:56:02 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 06:25:50 +0530
+        Wed, 19 Oct 2022 18:04:28 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 06:34:17 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 01/13] bpf: Refactor ARG_PTR_TO_DYNPTR checks
- into process_dynptr_func
-Message-ID: <20221020005550.fhty2mhdpua7ogpf@apollo>
+Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for
+ ARG_PTR_TO_DYNPTR
+Message-ID: <20221020010417.eqerzqjimnzwwhhd@apollo>
 References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-2-memxor@gmail.com>
- <CAJnrk1b+cBapTLcgLk41AQFMsSFOwB6HR4Nu-Wsi3=pzkN+nfQ@mail.gmail.com>
+ <20221018135920.726360-7-memxor@gmail.com>
+ <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJnrk1b+cBapTLcgLk41AQFMsSFOwB6HR4Nu-Wsi3=pzkN+nfQ@mail.gmail.com>
+In-Reply-To: <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,256 +77,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 04:29:57AM IST, Joanne Koong wrote:
+On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
 > On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
 > <memxor@gmail.com> wrote:
 > >
-> > ARG_PTR_TO_DYNPTR is akin to ARG_PTR_TO_TIMER, ARG_PTR_TO_KPTR, where
-> > the underlying register type is subjected to more special checks to
-> > determine the type of object represented by the pointer and its state
-> > consistency.
+> > Currently, the dynptr function is not checking the variable offset part
+> > of PTR_TO_STACK that it needs to check. The fixed offset is considered
+> > when computing the stack pointer index, but if the variable offset was
+> > not a constant (such that it could not be accumulated in reg->off), we
+> > will end up a discrepency where runtime pointer does not point to the
+> > actual stack slot we mark as STACK_DYNPTR.
 > >
-> > Move dynptr checks to their own 'process_dynptr_func' function so that
-> > is consistent and in-line with existing code. This also makes it easier
-> > to reuse this code for kfunc handling.
+> > It is impossible to precisely track dynptr state when variable offset is
+> > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
+> > simply reject the case where reg->var_off is not constant. Then,
+> > consider both reg->off and reg->var_off.value when computing the stack
+> > pointer index.
 > >
-> > To this end, remove the dependency on bpf_call_arg_meta parameter by
-> > instead taking the uninit_dynptr_regno by pointer. This is only needed
-> > to be set to a valid pointer when arg_type has MEM_UNINIT.
+> > A new helper dynptr_get_spi is introduced to hide over these details
+> > since the dynptr needs to be located in multiple places outside the
+> > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
+> > need to enforce these checks in all places.
 > >
-> > Then, reuse this consolidated function in kfunc dynptr handling too.
-> > Note that for kfuncs, the arg_type constraint of DYNPTR_TYPE_LOCAL has
-> > been lifted.
+> > Note that it is disallowed for unprivileged users to have a non-constant
+> > var_off, so this problem should only be possible to trigger from
+> > programs having CAP_PERFMON. However, its effects can vary.
 > >
+> > Without the fix, it is possible to replace the contents of the dynptr
+> > arbitrarily by making verifier mark different stack slots than actual
+> > location and then doing writes to the actual stack address of dynptr at
+> > runtime.
+> >
+> > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
 > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > > ---
-> >  include/linux/bpf_verifier.h                  |   8 +-
-> >  kernel/bpf/btf.c                              |  17 +--
-> >  kernel/bpf/verifier.c                         | 115 ++++++++++--------
-> >  .../bpf/prog_tests/kfunc_dynptr_param.c       |   5 +-
-> >  .../bpf/progs/test_kfunc_dynptr_param.c       |  12 --
-> >  5 files changed, 69 insertions(+), 88 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > index 9e1e6965f407..a33683e0618b 100644
-> > --- a/include/linux/bpf_verifier.h
-> > +++ b/include/linux/bpf_verifier.h
-> > @@ -593,11 +593,9 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
-> >                              u32 regno);
-> >  int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> >                    u32 regno, u32 mem_size);
-> > -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> > -                             struct bpf_reg_state *reg);
-> > -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> > -                            struct bpf_reg_state *reg,
-> > -                            enum bpf_arg_type arg_type);
-> > +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> > +                       enum bpf_arg_type arg_type, int argno,
-> > +                       u8 *uninit_dynptr_regno);
-> >
-> >  /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
-> >  static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index eba603cec2c5..1827d889e08a 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6486,23 +6486,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> >                                                 return -EINVAL;
-> >                                         }
-> >
-> > -                                       if (!is_dynptr_reg_valid_init(env, reg)) {
-> > -                                               bpf_log(log,
-> > -                                                       "arg#%d pointer type %s %s must be valid and initialized\n",
-> > -                                                       i, btf_type_str(ref_t),
-> > -                                                       ref_tname);
-> > +                                       if (process_dynptr_func(env, regno, ARG_PTR_TO_DYNPTR, i, NULL))
->
-> I think it'd be helpful to add a bpf_log statement here that this failed
->
-
-I left it out because process_dynptr_func itself will do the logging we were
-doing here before.
-
-> >                                                 return -EINVAL;
-> > -                                       }
-> > -
-> > -                                       if (!is_dynptr_type_expected(env, reg,
-> > -                                                       ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL)) {
-> > -                                               bpf_log(log,
-> > -                                                       "arg#%d pointer type %s %s points to unsupported dynamic pointer type\n",
-> > -                                                       i, btf_type_str(ref_t),
-> > -                                                       ref_tname);
-> > -                                               return -EINVAL;
-> > -                                       }
-> > -
-> >                                         continue;
-> >                                 }
+> >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
+> >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
+> >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
+> >  3 files changed, 67 insertions(+), 21 deletions(-)
 > >
 > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 6f6d2d511c06..31c0c999448e 100644
+> > index 8f667180f70f..0fd73f96c5e2 100644
 > > --- a/kernel/bpf/verifier.c
 > > +++ b/kernel/bpf/verifier.c
-> > @@ -782,8 +782,7 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
-> >         return true;
+> > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
+> >                 verbose(env, "D");
 > >  }
 > >
-> > -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> > -                             struct bpf_reg_state *reg)
-> > +static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > -static int get_spi(s32 off)
+> > +static int __get_spi(s32 off)
 > >  {
-> >         struct bpf_func_state *state = func(env, reg);
-> >         int spi = get_spi(reg->off);
-> > @@ -802,9 +801,8 @@ bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> >         return true;
+> >         return (-off - 1) / BPF_REG_SIZE;
 > >  }
 > >
-> > -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> > -                            struct bpf_reg_state *reg,
-> > -                            enum bpf_arg_type arg_type)
-> > +static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> > +                                   enum bpf_arg_type arg_type)
-> >  {
-> >         struct bpf_func_state *state = func(env, reg);
-> >         enum bpf_dynptr_type dynptr_type;
-> > @@ -5573,6 +5571,65 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
-> >         return 0;
-> >  }
-> >
-> > +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> > +                       enum bpf_arg_type arg_type, int argno,
->
-> Do we need both regno and argno given that regno is always argno +
-> BPF_REG_1 and in this function we only use the argno param for "argno
-> + 1"? I think we could just pass in regno.
->
-
-Hmm, not really. I can drop it.
-
-> > +                       u8 *uninit_dynptr_regno)
->
-> nit: this is personal preference, but I think it looks cleaner passing
-> "struct bpf_call_arg_meta *meta" here instead of "u8
-> *uninit_dynptr_regno".
->
-
-Right, the thinking was that kfuncs could also handle MEM_UNINIT case, in both
-cases the meta type is different but this could be same, but let's think about
-that when/if dynptr API function is added as a kfunc.
-
+> > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
 > > +{
-> > +       struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> > +       int spi;
 > > +
-> > +       /* We only need to check for initialized / uninitialized helper
-> > +        * dynptr args if the dynptr is not PTR_TO_DYNPTR, as the
-> > +        * assumption is that if it is, that a helper function
-> > +        * initialized the dynptr on behalf of the BPF program.
-> > +        */
-> > +       if (base_type(reg->type) == PTR_TO_DYNPTR)
-> > +               return 0;
-> > +       if (arg_type & MEM_UNINIT) {
-> > +               if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> > +                       verbose(env, "Dynptr has to be an uninitialized dynptr\n");
-> > +                       return -EINVAL;
-> > +               }
-> > +
-> > +               /* We only support one dynptr being uninitialized at the moment,
-> > +                * which is sufficient for the helper functions we have right now.
-> > +                */
-> > +               if (*uninit_dynptr_regno) {
-> > +                       verbose(env, "verifier internal error: multiple uninitialized dynptr args\n");
-> > +                       return -EFAULT;
-> > +               }
-> > +
-> > +               *uninit_dynptr_regno = regno;
-> > +       } else {
-> > +               if (!is_dynptr_reg_valid_init(env, reg)) {
-> > +                       verbose(env,
-> > +                               "Expected an initialized dynptr as arg #%d\n",
-> > +                               argno + 1);
-> > +                       return -EINVAL;
-> > +               }
-> > +
-> > +               if (!is_dynptr_type_expected(env, reg, arg_type)) {
-> > +                       const char *err_extra = "";
-> > +
-> > +                       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> > +                       case DYNPTR_TYPE_LOCAL:
-> > +                               err_extra = "local";
-> > +                               break;
-> > +                       case DYNPTR_TYPE_RINGBUF:
-> > +                               err_extra = "ringbuf";
-> > +                               break;
-> > +                       default:
-> > +                               err_extra = "<unknown>";
-> > +                               break;
-> > +                       }
-> > +                       verbose(env,
-> > +                               "Expected a dynptr of type %s as arg #%d\n",
-> > +                               err_extra, argno + 1);
-> > +                       return -EINVAL;
-> > +               }
+> > +       if (reg->off % BPF_REG_SIZE) {
+> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
+> > +               return -EINVAL;
 > > +       }
-> > +       return 0;
-> > +}
-> > +
-> >  static bool arg_type_is_mem_size(enum bpf_arg_type type)
-> >  {
-> >         return type == ARG_CONST_SIZE ||
-> > @@ -6086,52 +6143,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> >                 err = check_mem_size_reg(env, reg, regno, true, meta);
-> >                 break;
-> >         case ARG_PTR_TO_DYNPTR:
-> > -               /* We only need to check for initialized / uninitialized helper
-> > -                * dynptr args if the dynptr is not PTR_TO_DYNPTR, as the
-> > -                * assumption is that if it is, that a helper function
-> > -                * initialized the dynptr on behalf of the BPF program.
-> > -                */
-> > -               if (base_type(reg->type) == PTR_TO_DYNPTR)
-> > -                       break;
-> > -               if (arg_type & MEM_UNINIT) {
-> > -                       if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> > -                               verbose(env, "Dynptr has to be an uninitialized dynptr\n");
-> > -                               return -EINVAL;
-> > -                       }
-> > -
-> > -                       /* We only support one dynptr being uninitialized at the moment,
-> > -                        * which is sufficient for the helper functions we have right now.
-> > -                        */
-> > -                       if (meta->uninit_dynptr_regno) {
-> > -                               verbose(env, "verifier internal error: multiple uninitialized dynptr args\n");
-> > -                               return -EFAULT;
-> > -                       }
-> > -
-> > -                       meta->uninit_dynptr_regno = regno;
-> > -               } else if (!is_dynptr_reg_valid_init(env, reg)) {
-> > -                       verbose(env,
-> > -                               "Expected an initialized dynptr as arg #%d\n",
-> > -                               arg + 1);
-> > -                       return -EINVAL;
-> > -               } else if (!is_dynptr_type_expected(env, reg, arg_type)) {
-> > -                       const char *err_extra = "";
-> > -
-> > -                       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> > -                       case DYNPTR_TYPE_LOCAL:
-> > -                               err_extra = "local";
-> > -                               break;
-> > -                       case DYNPTR_TYPE_RINGBUF:
-> > -                               err_extra = "ringbuf";
-> > -                               break;
-> > -                       default:
-> > -                               err_extra = "<unknown>";
-> > -                               break;
-> > -                       }
-> > -                       verbose(env,
-> > -                               "Expected a dynptr of type %s as arg #%d\n",
-> > -                               err_extra, arg + 1);
-> > -                       return -EINVAL;
-> > -               }
-> > +               if (process_dynptr_func(env, regno, arg_type, arg, &meta->uninit_dynptr_regno))
-> > +                       return -EACCES;
 >
-> process_dynptr_func could return -EFAULT so I think we should do "err
-> = process_dynptr_func(...)" here instead.
+> I think this cannot happen.
 >
 
-Agreed, I'll also propagate errors from other similar named functions.
+There are existing selftests that trigger this.
+Or do you mean it cannot happen anymore? If so, why?
+
+> > +       if (!tnum_is_const(reg->var_off)) {
+> > +               verbose(env, "dynptr has to be at the constant offset\n");
+> > +               return -EINVAL;
+> > +       }
+>
+> This part can.
+>
+> > +       spi = __get_spi(reg->off + reg->var_off.value);
+> > +       if (spi < 1) {
+> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n",
+> > +                       (int)(reg->off + reg->var_off.value));
+> > +               return -EINVAL;
+> > +       }
+> > +       return spi;
+> > +}
+>
+> This one is a more conservative (read: redundant) check.
+> The is_spi_bounds_valid() is doing it better.
+
+The problem is, is_spi_bounds_valid returning an error is not always a problem.
+See how in is_dynptr_reg_valid_uninit we just return true on invalid bounds,
+then later simulate two 8-byte accesses for uninit_dynptr_regno and rely on it
+to grow the stack depth and do MAX_BPF_STACK check.
+
+> How about keeping get_spi(reg) as error free and use it
+> directly in places where it cannot fail without
+> defensive WARN_ON_ONCE.
+> int get_spi(reg)
+> { return (-reg->off - reg->var_off.value - 1) / BPF_REG_SIZE; }
+>
+> While moving tnum_is_const() check into is_spi_bounds_valid() ?
+>
+> Like is_spi_bounds_valid(state, reg, spi) ?
+>
+> We should probably remove BPF_DYNPTR_NR_SLOTS since
+> there are so many other places where dynptr is assumed
+> to be 16-bytes. That macro doesn't help at all.
+> It only causes confusion.
+>
+> I guess we can replace is_spi_bounds_valid() with a differnet
+> helper that checks and computes spi.
+> Like get_spi_and_check(state, reg, &spi)
+> and use it in places where we have get_spi + is_spi_bounds_valid
+> while using unchecked get_spi where it cannot fail?
+>
+> If we only have get_spi_and_check() we'd have to add
+> WARN_ON_ONCE in a few places and that bothers me...
+> due to defensive programming...
+> If code is so complex that we cannot think it through
+> we have to refactor it. Sprinkling WARN_ON_ONCE (just to be sure)
+> doesn't inspire confidence.
+>
+
+I will think about this and reply later today.
