@@ -2,64 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E3C607E8E
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58281607EFC
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbiJUTCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 15:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
+        id S229542AbiJUTVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 15:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbiJUTBj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 15:01:39 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B49DDE9C
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:01:37 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id a13so9432287edj.0
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:01:37 -0700 (PDT)
+        with ESMTP id S229998AbiJUTVO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 15:21:14 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6B5247E02;
+        Fri, 21 Oct 2022 12:21:11 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r14so9522156edc.7;
+        Fri, 21 Oct 2022 12:21:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3F/McVfOlwytbkRfD439XMP1gYSBJcVx+Mw1G7aSRcw=;
-        b=LCBkS6arpvaSpQauzB04JDOe/GAMxHNukdwUxezZtBUDS62Mh8rpWEquKQMnP/CdaU
-         9x05e9jbhhXhQGf0F4mFcDGRYydGrH087kYVMvtFzb3CwwVSiuamSo/F/wT1etht7+s5
-         Sq6ObWNYI1LJBc1ZB01NhOFY082j5fTgLSFDNmJytq8D7n7f40SNG3YsfoCNqNJNUNP2
-         EnQcaFjjXqZxnokp+ca3+zjASxwNBVmRClBASgwbqLCmmfuldhCD/1SkDfQOnAXFpiHF
-         OURehtYFjO+lYeoRvNSmTfU6PTr84+E8m6XlMAT1FhpSjixmLbrO0kmHKIFdtZYMXYa6
-         KuCg==
+        bh=KWM5F1vVJ0wm0XrFWc2n70srm8Q/oNAebcvhOdKpHfs=;
+        b=NQUL0+rEf8W4xI4rVnA69qrwi1NIlhlbBOFtnB8NJIJPUwDJ30/WzRJf/hhlAFd2L1
+         iI08cMxyjpcG2pk+ME/gYoQdCiFr0wmLKxsQbMq5FIMLBeg8DjcWBEMyhtE+Pj/iic0v
+         3KRzdJPcAQ/y//OBP2fh90SC3wsmt3jvxmFleqvuSDohrwap7SGitQbsHIc64pXV1QKP
+         Y1qA4WcistOQKzdBRq5Ze/RoKTIok1t4mlojUfA5ebhcIt7Zn6KIzitOeTer+PFju37H
+         wIupt9Aj3g9oBz6RjyfE13pvHHbb3qg+Va0jU+OEJWazaFZ0jobpcyuia5Nvcm+8cVnJ
+         bUtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3F/McVfOlwytbkRfD439XMP1gYSBJcVx+Mw1G7aSRcw=;
-        b=fOip32If8ezaUAZBmV1rBsaeOBgWh2MLpFrFPGbCpPokXAdn2X/XibngokadO/NIKb
-         bKYfQfseVhKCOE4ydTAomozFWusH/9uvkg0Stu/61/8CLr46WO6dG/P42eSdD8yzSDW0
-         UgcBa8BBtKj9HRFnewJ9lc5EFgyBi/qBvb8He1ixI3wJV7PM6Rdcq07RKjIS97SyMEQI
-         EsDOtRjG3xJWMUEUDPrVGPNSbCQJU8IfCANQOjzpkxNMDl7IGJrfiwF1eMTsOtYZDjn/
-         MHHOFqfW4GhXiQAexSuvMwDvj7wTLY8d1/n43jkWBmQBycKW4I8RTLj4DMY2ZipZl992
-         WBbw==
-X-Gm-Message-State: ACrzQf2+4jfSMhhnZWh7F8+CTMO2lxEHMWkB48F62otSapU2lk2E80UV
-        QiwLsl36c4AC3ZbGjgh4LsauJO745Y2b5H/2l3U=
-X-Google-Smtp-Source: AMsMyM7VrfnkXE7Emrlmj03B4EPFs3qgApi4JiqfWdLjYDc/o5r2o99LEDMPY2W3390jmZrxo3TBFXCjOwKZ8q4Z69Q=
-X-Received: by 2002:a17:907:1c98:b0:78d:3b06:dc8f with SMTP id
- nb24-20020a1709071c9800b0078d3b06dc8fmr16318025ejc.58.1666378895618; Fri, 21
- Oct 2022 12:01:35 -0700 (PDT)
+        bh=KWM5F1vVJ0wm0XrFWc2n70srm8Q/oNAebcvhOdKpHfs=;
+        b=pVnIQnGT1959aAnWVPRFVU3C5YCJr7S21r9N8D1pYoWg+e9jG+Ni8Gw4DN8Ak8EVer
+         9LYgKaZDKqgHVvV+Z6rH8fExXLOAoqJHeIk77ve8KRnYsf2qm1FzhzoRzl0VjtuE7WUH
+         gDmtAR+Bq57+8hpr1x4y4DLhyz2ke4EugVZlmLrf8gt+6Flfy84E+hRsJZbS2VfIkF2L
+         BsB9mKPbK3fBhFLIoJ1pqJRRg6T13WzB3BRtILow/u/Gv+kftZgS4qxJ6HbIcEPobbBe
+         /iim0NsE6wz9QAQ/OGLh3IjIQ+UQ22Ib4JpdazV2JNWQ3+9Lj7YpMDwBMxsgGjvBdewn
+         NlFQ==
+X-Gm-Message-State: ACrzQf14GoO4GeC8atC/Ev0si41CPajziY520MLbzs8b5FGgvZZ2kt/V
+        T5e5AMzjRZOhIv9HghBn88tUUMZid+UT6uuFX7XhkPvh
+X-Google-Smtp-Source: AMsMyM6AjzdRvAH+mxinH+VCM/KD/03K76NyOoSqDzyXP9uienth4TBN+/TU4BY8fX1PnEHsV7sU6ThDO+1Cs28zBbU=
+X-Received: by 2002:a05:6402:428d:b0:460:b26c:82a5 with SMTP id
+ g13-20020a056402428d00b00460b26c82a5mr9001044edc.66.1666380069825; Fri, 21
+ Oct 2022 12:21:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221019183845.905-1-dthaler1968@googlemail.com>
- <20221019183845.905-3-dthaler1968@googlemail.com> <Y1BkuZKW7nCUrbx/@google.com>
- <DM4PR21MB3440ED1A4A026F13F73358C3A32B9@DM4PR21MB3440.namprd21.prod.outlook.com>
- <CAKH8qBterhU-FM52t8ZukUUD3WkUhhNLSFq1y2zD7geq4TYO6g@mail.gmail.com>
- <CAADnVQ+8AtZWAOeeWG5REvW2nW7bw20aZpfHxUjERnqMSHGRiw@mail.gmail.com> <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
-In-Reply-To: <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+References: <20221021165919.509652-1-mtahhan@redhat.com> <20221021165919.509652-2-mtahhan@redhat.com>
+In-Reply-To: <20221021165919.509652-2-mtahhan@redhat.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Oct 2022 12:01:24 -0700
-Message-ID: <CAADnVQL4-aNJ8gZziNC7n7_mchK+Te1+HDBg2sG2YvS3K+2kFQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same field
-To:     Dave Thaler <dthaler@microsoft.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Date:   Fri, 21 Oct 2022 12:20:58 -0700
+Message-ID: <CAADnVQL0CQoLKZMhDFdnmSXXH2e9Kj-mV_xTTxdLSAjp+agg=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/1] doc: DEVMAPs and XDP_REDIRECT
+To:     mtahhan@redhat.com, Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,94 +66,302 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 10:56 AM Dave Thaler <dthaler@microsoft.com> wrote:
->
-> > On Wed, Oct 19, 2022 at 4:35 PM Stanislav Fomichev <sdf@google.com>
-> > wrote:
-> > > On Wed, Oct 19, 2022 at 2:06 PM Dave Thaler <dthaler@microsoft.com>
-> > wrote:
-> > > >
-> > > > sdf@google.com wrote:
-> > > > > >   ``BPF_ADD | BPF_X | BPF_ALU`` means::
-> > > > >
-> > > > > > -  dst_reg = (u32) dst_reg + (u32) src_reg;
-> > > > > > +  dst = (u32) (dst + src)
-> > > > >
-> > > > > IIUC, by going from (u32) + (u32) to (u32)(), we want to signal
-> > > > > that the value will just wrap around?
-> > > >
-> > > > Right.  In particular the old line could be confusing if one
-> > > > misinterpreted it as saying that the addition could overflow into a
-> > > > higher bit.  The new line is intended to be unambiguous that the upper 32
-> > bits are 0.
-> > > >
-> > > > > But isn't it more confusing now because it's unclear what the sign
-> > > > > of the dst/src is (s32 vs u32)?
-> > > >
-> > > > As stated the upper 32 bits have to be 0, just as any other u32 assignment.
-> > >
-> > > Do we mention somewhere above/below that the operands are unsigned?
-> > > IOW, what prevents me from reading this new format as follows?
-> > >
-> > > dst = (u32) ((s32)dst + (s32)src)
-> >
-> > The doc mentions it, but I completely agree with you.
-> > The original line was better.
-> > Dave, please undo this part.
->
-> Nothing prevents you from reading the new format as
->     dst = (u32) ((s32)dst + (s32)src)
-> because that implementation wouldn't be wrong.
->
-> Below is why, please point out any logic errors if you see any.
->
-> Mathematically, all of the following have identical results:
->     dst = (u32) ((s32)dst + (s32)src)
->     dst = (u32) ((u32)dst + (u32)src)
->     dst = (u32) ((s32)dst + (u32)src)
->     dst = (u32) ((u32)dst + (s32)src)
->
-> u32 and s32, once you allow overflow/underflow to wrap within 32 bits, are
-> mathematical rings (see https://en.wikipedia.org/wiki/Ring_(mathematics) )
-> meaning they're a circular space where X, X + 2^32, and X - 2^32 are equal.
-> So (s32)src == (u32)src when the most significant bit is clear, and
-> (s32)src == (u32)src - 2^32 when the most significant bit is set.
->
-> So the sign of the addition operands does not matter here.
-> What matters is whether you do addition where the result can be
-> more than 32 bits or not, which is what the new line makes unambiguous
-> and the old line did not.
->
-> Specifically, nothing prevented mis-interpreting the old line as
->
-> u64 temp = (u32)dst;
-> temp += (u32)src;
-> dst = temp;
+Jesper and Toke,
+please review.
 
-Well dst_reg = (u32) dst_reg + (u32) src_reg
-implies C semantics, so it cannot be misinterpreted that way.
-
-> which would give the wrong answer since the upper 32-bits might be non-zero.
+On Fri, Oct 21, 2022 at 9:10 AM <mtahhan@redhat.com> wrote:
 >
-> u64 temp = (s32)dst;
-> temp += (s32)src;
-> dst = (u32)temp;
+> From: Maryam Tahhan <mtahhan@redhat.com>
 >
-> Would however give the correct answer, same as
+> Add documentation for BPF_MAP_TYPE_DEVMAP and
+> BPF_MAP_TYPE_DEVMAP_HASH including kernel version
+> introduced, usage and examples.
 >
-> u64 temp = (u32)dst;
-> temp += (u32)src;
-> dst = (u32)temp;
+> Add documentation that describes XDP_REDIRECT.
 >
-> As such, I maintain the old line was bad and the new line is still good.
-
-dst_reg = (u32) (dst_reg + src_reg)
-implies that the operation is performed in 64-bit and then
-the result is truncated to 32-bit which is not correct.
-
-If we had traditional carry, sign, overflow flags in bpf ISA
-the bit-ness of operation would be significant.
-Thankfully we don't, so it's not a big deal.
-
-but let's do full verbose to avoid describing C semantics:
-dst = (u32) ((u32)dst + (u32)src)
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+> ---
+>  Documentation/bpf/index.rst      |   1 +
+>  Documentation/bpf/map_devmap.rst | 205 +++++++++++++++++++++++++++++++
+>  Documentation/bpf/redirect.rst   |  45 +++++++
+>  3 files changed, 251 insertions(+)
+>  create mode 100644 Documentation/bpf/map_devmap.rst
+>  create mode 100644 Documentation/bpf/redirect.rst
+>
+> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> index 1b50de1983ee..1088d44634d6 100644
+> --- a/Documentation/bpf/index.rst
+> +++ b/Documentation/bpf/index.rst
+> @@ -29,6 +29,7 @@ that goes into great technical depth about the BPF Architecture.
+>     clang-notes
+>     linux-notes
+>     other
+> +   redirect
+>
+>  .. only::  subproject and html
+>
+> diff --git a/Documentation/bpf/map_devmap.rst b/Documentation/bpf/map_devmap.rst
+> new file mode 100644
+> index 000000000000..5072ea6086e4
+> --- /dev/null
+> +++ b/Documentation/bpf/map_devmap.rst
+> @@ -0,0 +1,205 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +=================================================
+> +BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_DEVMAP_HASH
+> +=================================================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_DEVMAP`` was introduced in kernel version 4.14
+> +   - ``BPF_MAP_TYPE_DEVMAP_HASH`` was introduced in kernel version 5.4
+> +
+> +``BPF_MAP_TYPE_DEVMAP`` and ``BPF_MAP_TYPE_DEVMAP_HASH`` are BPF maps primarily
+> +used as backend maps for the XDP BPF helper call ``bpf_redirect_map()``.
+> +``BPF_MAP_TYPE_DEVMAP`` is backed by an array that uses the key as
+> +the index to lookup a reference to a net device. While ``BPF_MAP_TYPE_DEVMAP_HASH``
+> +is backed by a hash table that uses a key to lookup a reference to a net device.
+> +The user provides either <``key``/ ``ifindex``> or <``key``/ ``struct bpf_devmap_val``>
+> +pairs to update the maps with new net devices.
+> +
+> +.. note::
+> +    - The key to a hash map doesn't have to be an ``ifindex``.
+> +    - While ``BPF_MAP_TYPE_DEVMAP_HASH`` allows for densely packing the net devices
+> +      it comes at the cost of a hash of the key when performing a look up.
+> +
+> +The setup and packet enqueue/send code is shared between the two types of
+> +devmap; only the lookup and insertion is different.
+> +
+> +Usage
+> +=====
+> +
+> +.. c:function::
+> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+> +
+> + Net device entries can be added or updated using the ``bpf_map_update_elem()``
+> + helper. This helper replaces existing elements atomically. The ``value`` parameter
+> + can be ``struct bpf_devmap_val`` or a simple ``int ifindex`` for backwards
+> + compatibility.
+> +
+> +.. note::
+> +    The maps can only be updated from user space and not from a BPF program.
+> +
+> +.. code-block:: c
+> +
+> +    struct bpf_devmap_val {
+> +        __u32 ifindex;   /* device index */
+> +        union {
+> +            int   fd;  /* prog fd on map write */
+> +            __u32 id;  /* prog id on map read */
+> +        } bpf_prog;
+> +    };
+> +
+> +DEVMAPs can associate a program with a device entry by adding a ``bpf_prog.fd``
+> +to ``struct bpf_devmap_val``. Programs are run after ``XDP_REDIRECT`` and have
+> +access to both Rx device and Tx device. The  program associated with the ``fd``
+> +must have type XDP with expected attach type ``xdp_devmap``.
+> +When a program is associated with a device index, the program is run on an
+> +``XDP_REDIRECT`` and before the buffer is added to the per-cpu queue. Examples
+> +of how to attach/use xdp_devmap progs can be found in the kernel selftests:
+> +
+> +- ``tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c``
+> +- ``tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c``
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +net device entries can be retrieved using the ``bpf_map_lookup_elem()``
+> +helper.
+> +
+> +.. c:function::
+> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
+> +
+> +net device entries can be deleted using the ``bpf_map_delete_elem()``
+> +helper. This helper will return 0 on success, or negative error in case of
+> +failure.
+> +
+> +.. c:function::
+> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
+> +
+> +Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
+> +For ``BPF_MAP_TYPE_DEVMAP`` and ``BPF_MAP_TYPE_DEVMAP_HASH`` this map contains
+> +references to net devices (for forwarding packets through other ports).
+> +
+> +The lower two bits of *flags* are used as the return code if the map lookup
+> +fails. This is so that the return value can be one of the XDP program return
+> +codes up to ``XDP_TX``, as chosen by the caller. The higher bits of ``flags``
+> +can be set to ``BPF_F_BROADCAST`` or ``BPF_F_EXCLUDE_INGRESS`` as defined
+> +below.
+> +
+> +With ``BPF_F_BROADCAST`` the packet will be broadcast to all the interfaces
+> +in the map, with ``BPF_F_EXCLUDE_INGRESS`` the ingress interface will be excluded
+> +from the broadcast.
+> +
+> +.. note::
+> +    The key is ignored if BPF_F_BROADCAST is set.
+> +
+> +This helper will return ``XDP_REDIRECT`` on success, or the value of the two
+> +lower bits of the *flags* argument if the map lookup fails.
+> +
+> +More information about redirection can be found :doc:`redirect`
+> +
+> +Examples
+> +========
+> +
+> +Kernel BPF
+> +----------
+> +
+> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_DEVMAP``
+> +called tx_port.
+> +
+> +.. code-block:: c
+> +
+> +    struct {
+> +        __uint(type, BPF_MAP_TYPE_DEVMAP);
+> +        __type(key, __u32);
+> +        __type(value, __u32);
+> +        __uint(max_entries, 256);
+> +    } tx_port SEC(".maps");
+> +
+> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_DEVMAP_HASH``
+> +called forward_map.
+> +
+> +.. code-block:: c
+> +
+> +    struct {
+> +        __uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
+> +        __type(key, __u32);
+> +        __type(value, struct bpf_devmap_val);
+> +        __uint(max_entries, 32);
+> +    } forward_map SEC(".maps");
+> +
+> +.. note::
+> +
+> +    The value type in the DEVMAP above is a ``struct bpf_devmap_val``
+> +
+> +The following code snippet shows a simple xdp_redirect_map program. This program
+> +would work with a user space program that populates the devmap ``forward_map`` based
+> +on ingress ifindexes. The BPF program (below) is redirecting packets using the
+> +ingress ``ifindex`` as the ``key``.
+> +
+> +.. code-block:: c
+> +
+> +    SEC("xdp")
+> +    int xdp_redirect_map_func(struct xdp_md *ctx)
+> +    {
+> +        int index = ctx->ingress_ifindex;
+> +
+> +        return bpf_redirect_map(&forward_map, index, 0);
+> +    }
+> +
+> +The following code snippet shows a BPF program that is broadcasting packets to
+> +all the interfaces in the ``tx_port`` devmap.
+> +
+> +.. code-block:: c
+> +
+> +    SEC("xdp")
+> +    int xdp_redirect_map_func(struct xdp_md *ctx)
+> +    {
+> +        int index = ctx->ingress_ifindex;
+> +
+> +        return bpf_redirect_map(&tx_port, 0, BPF_F_BROADCAST | BPF_F_EXCLUDE_INGRESS);
+> +    }
+> +
+> +User space
+> +----------
+> +
+> +The following code snippet shows how to update a devmap called ``tx_port``.
+> +
+> +.. code-block:: c
+> +
+> +    int update_devmap(int ifindex, int redirect_ifindex)
+> +    {
+> +        int ret = -1;
+> +
+> +        ret = bpf_map_update_elem(bpf_map__fd(tx_port), &ifindex, &redirect_ifindex, 0);
+> +        if (ret < 0) {
+> +            fprintf(stderr, "Failed to update devmap_ value: %s\n",
+> +                strerror(errno));
+> +        }
+> +
+> +        return ret;
+> +    }
+> +
+> +The following code snippet shows how to update a hash_devmap called ``forward_map``.
+> +
+> +.. code-block:: c
+> +
+> +    int update_devmap(int ifindex, int redirect_ifindex)
+> +    {
+> +        struct bpf_devmap_val devmap_val = { .ifindex = redirect_ifindex };
+> +        int ret = -1;
+> +
+> +        ret = bpf_map_update_elem(bpf_map__fd(forward_map), &ifindex, &devmap_val, 0);
+> +        if (ret < 0) {
+> +            fprintf(stderr, "Failed to update devmap_ value: %s\n",
+> +                strerror(errno));
+> +        }
+> +        return ret;
+> +    }
+> +
+> +References
+> +===========
+> +
+> +- https://lwn.net/Articles/728146/
+> +- https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=6f9d451ab1a33728adb72d7ff66a7b374d665176
+> +- https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4106
+> diff --git a/Documentation/bpf/redirect.rst b/Documentation/bpf/redirect.rst
+> new file mode 100644
+> index 000000000000..ff49a0698707
+> --- /dev/null
+> +++ b/Documentation/bpf/redirect.rst
+> @@ -0,0 +1,45 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +============
+> +XDP_REDIRECT
+> +============
+> +Supported maps
+> +--------------
+> +
+> +XDP_REDIRECT works with the following map types:
+> +
+> +- ``BPF_MAP_TYPE_DEVMAP``
+> +- ``BPF_MAP_TYPE_DEVMAP_HASH``
+> +- ``BPF_MAP_TYPE_CPUMAP``
+> +- ``BPF_MAP_TYPE_XSKMAP``
+> +
+> +For more information on these maps, please see the specific map documentation.
+> +
+> +Process
+> +-------
+> +
+> +XDP_REDIRECT is a three-step process, implemented as follows:
+> +
+> +1. The ``bpf_redirect()`` and ``bpf_redirect_map()`` helpers will lookup the
+> +   target of the redirect (from the supported map types) and store it (along with
+> +   some other metadata) in a per-CPU ``struct bpf_redirect_info``.
+> +
+> +2. When the program returns the ``XDP_REDIRECT`` return code, the driver will
+> +   call ``xdp_do_redirect()`` which will use the information in ``struct
+> +   bpf_redirect_info`` to actually enqueue the frame into a map type-specific
+> +   bulk queue structure.
+> +
+> +3. Before exiting its NAPI poll loop, the driver will call ``xdp_do_flush()``,
+> +   which will flush all the different bulk queues, thus completing the
+> +   redirect.
+> +
+> +.. note::
+> +    Not all drivers support transmitting frames after a redirect, and for
+> +    those that do, not all of them support non-linear frames. Non-linear xdp
+> +    bufs/frames are bufs/frames that contain more than one fragment.
+> +
+> +References
+> +===========
+> +
+> +- https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4106
+> --
+> 2.35.3
+>
