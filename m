@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DB56081F8
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB4E6081F9
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiJUXEl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 19:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42340 "EHLO
+        id S229484AbiJUXEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 19:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiJUXEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 19:04:40 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8204B3B453
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:37 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g27so11167606edf.11
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:37 -0700 (PDT)
+        with ESMTP id S229685AbiJUXEr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 19:04:47 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC465B042
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:43 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id b12so11210327edd.6
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BNeYBdiKc8rrr5BT7yXK8Yancac/6zd3DXsTbmGntiM=;
-        b=hOh1vVBzjgtXfhgAXcKuju2Cs0wMRbHwSknlljHU4qiXUQkkfOmOve1Mv0ZIHzjTgS
-         8G3XB7fATEvF9Nlh7M6+DXf6pbGbNulOO/3rxf9vwwccIfI1UUxMArGgNd6xXzg3dMtq
-         NYKaKUN44aFQgycPfoAe3B/dT4CBazBZHGmR2AMV+rymuFWA8I0isZ62Awn6vZgWzk53
-         9dIHOJNjt9NQmW0jGjpGj61UZpnaASTq5suJg0gqOPe7Z1mNCC5CdYbG4cNHWUIxOfTo
-         PXPhSsXyX1tizMSHdh37lykCtOCuuUJD3VGrbPar0TyLzjpq+nQP5sdA237gJpKHoqdl
-         +ayA==
+        bh=nrK11QsFv4jF+kKh0yzfLM0ktUqBXlmXYGjrdz3tWTo=;
+        b=PqgMFKsy8dluhgFsntGCI6T3ehXx5zvNk50CZ7U84YM5sMFMrvSNCqA/JXGhxX9v5l
+         VeMkgui+vTfdkalBjUZi6vShSNILoNYpSDUy142EebpREsMaokVwTHUzFxmTXkXsNqyS
+         ABrI5fBPPso1ay1RxyRvaEQZ4AXyOtcS6rhdGEUGBIV+6Zo6UcosCN4tTSh7tNveqroA
+         n29Par6bYSw4RfRrqX6dhyagf6JT03ijjTi/kITdejMmbEpDjXvfuq0zcA7ZXA0rWkVD
+         W8iz400ThV/uHQkNyfu2uwWh/oH3Z7aGwp1iPX/OuSvm3fidQl2riAP+Qz1t6NdYHsIi
+         m5fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BNeYBdiKc8rrr5BT7yXK8Yancac/6zd3DXsTbmGntiM=;
-        b=BAhAiXIn8y6dSX64EMt5gUcPBfWUpEAzsnoFvaLgkUk2SYInA7/pfDT2TkbLheRuQU
-         GVh91ndnlHPKLA0LyWq9hy2dyZGXByfZ9sXykODego3K6+95ntFv/HnLF228JiGj4AlD
-         Dzy/Pc37DRYxeZzMyIqVRt3/xxoQ4bdHRoOTQWSi7Kzaw92NnHheXhzkaC0L3j6x1DiS
-         ZxNl0QWbUTLVa5d5O7vQzZiLKnHEuI/RpAb/McNE4WSlObgHPZpAaVu+CZb7Pc44xnjn
-         /S+iBwZ22QqikMHikRVBrDmC4V5KzgUnpE11SQL3k69XhzCW6WJl+GL6dAh9z36nwlHw
-         QStw==
-X-Gm-Message-State: ACrzQf0yj5c3j/y50O18iR01ulj1Th+1MPdLQ89FfzdqizPbjnDx6BDT
-        pNxGATu1i+qfHUXMLNIUXkqNgIDdQpdstxys93E=
-X-Google-Smtp-Source: AMsMyM47W07OFiRffgoE0JZ1FARoWVr/QyIs81v4w+zIJe4Fr7un06J8wCxF5wPLPq/1ydt9Oz7P/ZE8xBfuLkIKkZo=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr19877588edb.333.1666393475963; Fri, 21
- Oct 2022 16:04:35 -0700 (PDT)
+        bh=nrK11QsFv4jF+kKh0yzfLM0ktUqBXlmXYGjrdz3tWTo=;
+        b=lcaV6yMFyFuaCGb2kC+QpNd19FpaUGqpYtl7lkz0X42nY2Jdq0cM5ULjLvRyKGyQp8
+         bckNDGK9qjIciqcc7Hfkml3+s/SKZy/QNqlvqCKjLiIOvRJ9JXLj6dQa0yUwSnguCwQ1
+         EMTntm0JnHYdDQUMQohGkRCfVBE8jcYsQJe0CmceOpIwMpxU+Sx1E7tXmaFYOAxNg7AE
+         jXsOsyIq4KwIsTb3YskowWUhdCHAgl0A4gN8dBE0I/kr6IblLi+sA1jrFCQGXYiyBP1O
+         xV5KrIqV7A4uNVz80zU0lxZZf3ESkavEtZyIg4pjPR8nc/5Lc892dZB5KyLPtac+w93W
+         LOoA==
+X-Gm-Message-State: ACrzQf1wSfwIILY0tmeMSFYFcXowudXmI39nVYV3f1Uygkl8PktsE6/Z
+        IcNkMg2gtJjnnWmG7XgHc/tKEMqWSbd84gyjf9w=
+X-Google-Smtp-Source: AMsMyM73wcD1jyhlgH8eDLChgXYdeTwRhcnu/RMyyn9siK9rIZt7VmGlfo+jNhFXB2RwNrJ5EEjNrJPwkDH+KFIP3yo=
+X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
+ sc36-20020a1709078a2400b00795bb7d643bmr11874811ejc.115.1666393481798; Fri, 21
+ Oct 2022 16:04:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221020160721.4030492-1-davemarchevsky@fb.com> <20221020160721.4030492-2-davemarchevsky@fb.com>
-In-Reply-To: <20221020160721.4030492-2-davemarchevsky@fb.com>
+References: <20221020160721.4030492-1-davemarchevsky@fb.com> <20221020160721.4030492-3-davemarchevsky@fb.com>
+In-Reply-To: <20221020160721.4030492-3-davemarchevsky@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Oct 2022 16:04:23 -0700
-Message-ID: <CAEf4BzYK939fgyc3LwNvoz3vPk2avyskP_3wRZO344irubXPtg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/4] bpf: Consider all mem_types compatible
- for map_{key,value} args
+Date:   Fri, 21 Oct 2022 16:04:28 -0700
+Message-ID: <CAEf4BzZTdDTaiDYCy6KtkF4D-W8-JNmZZzLOrZYAVrst9GrWiw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 3/4] selftests/bpf: Add test verifying
+ bpf_ringbuf_reserve retval use in map ops
 To:     Dave Marchevsky <davemarchevsky@fb.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,111 +72,159 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Oct 20, 2022 at 9:07 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> After the previous patch, which added PTR_TO_MEM | MEM_ALLOC type
-> map_key_value_types, the only difference between map_key_value_types and
-> mem_types sets is PTR_TO_BUF and PTR_TO_MEM, which are in the latter set
-> but not the former.
+> Add a test_ringbuf_map_key test prog, borrowing heavily from extant
+> test_ringbuf.c. The program tries to use the result of
+> bpf_ringbuf_reserve as map_key, which was not possible before previouis
+> commits in this series. The test runner added to prog_tests/ringbuf.c
+> verifies that the program loads and does basic sanity checks to confirm
+> that it runs as expected.
 >
-> Helpers which expect ARG_PTR_TO_MAP_KEY or ARG_PTR_TO_MAP_VALUE
-> already effectively expect a valid blob of arbitrary memory that isn't
-> necessarily explicitly associated with a map. When validating a
-> PTR_TO_MAP_{KEY,VALUE} arg, the verifier expects meta->map_ptr to have
-> already been set, either by an earlier ARG_CONST_MAP_PTR arg, or custom
-> logic like that in process_timer_func or process_kptr_func.
->
-> So let's get rid of map_key_value_types and just use mem_types for those
-> args.
->
-> This has the effect of adding PTR_TO_BUF and PTR_TO_MEM to the set of
-> compatible types for ARG_PTR_TO_MAP_KEY and ARG_PTR_TO_MAP_VALUE.
->
-> PTR_TO_BUF is used by various bpf_iter implementations to represent a
-> chunk of valid r/w memory in ctx args for iter prog.
->
-> PTR_TO_MEM is used by networking, tracing, and ringbuf helpers to
-> represent a chunk of valid memory. The PTR_TO_MEM | MEM_ALLOC
-> type added in previous commmit is specific to ringbuf helpers.
-
-typo: s/commmit/commit/ (but not worth reposting just to fix this)
-
-btw, I have a strong desire to change PTR_TO_MEM | MEM_ALLOC into its
-own PTR_TO_RINGBUF_RECORD (or something less verbose), it's very
-confusing that "MEM_ALLOC" is very crucially *a ringbuf record*
-pointer. Can't be anything else, but name won't suggest this, we'll
-trip ourselves over this in the future.
-
-> Presence or absence of MEM_ALLOC doesn't change the validity of using
-> PTR_TO_MEM as a map_{key,val} input.
+> Also, refactor test_ringbuf such that runners for existing test_ringbuf
+> and newly-added test_ringbuf_map_key are subtests of 'ringbuf' top-level
+> test.
 >
 > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
-> v1 -> v5: lore.kernel.org/bpf/20220912101106.2765921-2-davemarchevsky@fb.com
->
->   * This patch was dropped in v2 as I had no concrete usecase for
->     PTR_TO_BUF and PTR_TO_MEM w/o MEM_ALLOC. Andrii encouraged me to
->     re-add the patch as we both share desire to eventually cleanup all
->     these separate "valid chunk of memory" types. Starting to treat them
->     similarly is a good step in that direction.
 
-Yep, 100% agree. We should try to generalize code and types for
-conceptually similar things to make things a bit more manageable. As
-another example, seems like ARG_PTR_TO_MAP_KEY and
-ARG_PTR_TO_MAP_VALUE handling inside check_func_arg() is basically
-identical, we just need to pass meta->raw_mode = false for
-ARG_PTR_TO_MAP_KEY case to mark "read-only" operation. Something for
-future clean ups, though.
-
-This patch looks great, thanks!
+LGTM.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+> v4->v5: lore.kernel.org/bpf/20220923060614.4025371-2-davemarchevsky@fb.com
+>
+> * Fix some nits (Andrii)
+>   * migrating prog from fentry -> ksyscall wasn't done as lskel doesn't
+>     support the latter. Talked to Andrii about it offlist, he's fine with it.
+>
+> v3->v4: lore.kernel.org/bpf/20220922142208.3009672-2-davemarchevsky@fb.com
+>
+> * Fix some nits (Yonghong)
+>   * make subtest runner functions static
+>   * don't goto cleanup if -EDONE check fails
+>   * add 'workaround' to comment in test to ease future grepping
+> * Add Yonghong ack
+>
+> v2->v3: lore.kernel.org/bpf/20220914123600.927632-2-davemarchevsky@fb.com
+>
+> * Test that ring_buffer__poll returns -EDONE (Alexei)
+>
+> v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
+>
+> * Actually run the program instead of just loading (Yonghong)
+> * Add a bpf_map_update_elem call to the test (Yonghong)
+> * Refactor runner such that existing test and newly-added test are
+>   subtests of 'ringbuf' top-level test (Yonghong)
+> * Remove unused globals in test prog (Yonghong)
+>
+>  tools/testing/selftests/bpf/Makefile          |  8 ++-
+>  .../selftests/bpf/prog_tests/ringbuf.c        | 66 ++++++++++++++++-
+>  .../bpf/progs/test_ringbuf_map_key.c          | 70 +++++++++++++++++++
+>  3 files changed, 140 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index e6cf21fad69f..79edef1dbda4 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -359,9 +359,11 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h              \
+>                 test_subskeleton.skel.h test_subskeleton_lib.skel.h     \
+>                 test_usdt.skel.h
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> new file mode 100644
+> index 000000000000..2760bf60d05a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> @@ -0,0 +1,70 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct sample {
+> +       int pid;
+> +       int seq;
+> +       long value;
+> +       char comm[16];
+> +};
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_RINGBUF);
+
+btw, libbpf is smart enough now to auto-fix ringbuf size, so you could
+have used __uint(max_entries, 4096) and that would work even on
+architectures that have 64KB pages. Just FYI.
+
+> +} ringbuf SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_HASH);
+> +       __uint(max_entries, 1000);
+> +       __type(key, struct sample);
+> +       __type(value, int);
+> +} hash_map SEC(".maps");
+> +
+> +/* inputs */
+> +int pid = 0;
+> +
+> +/* inner state */
+> +long seq = 0;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+
+it's fine as is, my suggestion to use ksyscall was to 1) avoid using
+BPF trampoline (and so have these tests work on s390x) and 2) no have
+to use ugly SYS_PREFIX. SEC("kprobe/" SYS_PREFIX "sys_getpgid") would
+solve 1), which is more important in practical terms. 2) is a wishlist
+:)
+
+I'm not insisting or asking to change this, just pointing out the
+rationale for ksyscall suggestion in the first place.
 
 
->     * A usecase for PTR_TO_BUF is now demonstrated in patch 4 of this
->       series.
->     * PTR_TO_MEM w/o MEM_ALLOC is returned by bpf_{this,per}_cpu_ptr
->       helpers via RET_PTR_TO_MEM_OR_BTF_ID, but in both cases the return
->       type is also tagged MEM_RDONLY, which map helpers don't currently
->       accept (see patch 4 summary). So no selftest for this specific
->       case is added in the series, but by logic in this patch summary
->       there's no reason to treat it differently.
->
->  kernel/bpf/verifier.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 97351ae3e7a7..ddc1452cf023 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5634,17 +5634,6 @@ struct bpf_reg_types {
->         u32 *btf_id;
->  };
->
-> -static const struct bpf_reg_types map_key_value_types = {
-> -       .types = {
-> -               PTR_TO_STACK,
-> -               PTR_TO_PACKET,
-> -               PTR_TO_PACKET_META,
-> -               PTR_TO_MAP_KEY,
-> -               PTR_TO_MAP_VALUE,
-> -               PTR_TO_MEM | MEM_ALLOC,
-> -       },
-> -};
-> -
->  static const struct bpf_reg_types sock_types = {
->         .types = {
->                 PTR_TO_SOCK_COMMON,
-> @@ -5711,8 +5700,8 @@ static const struct bpf_reg_types dynptr_types = {
->  };
->
->  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> -       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> -       [ARG_PTR_TO_MAP_VALUE]          = &map_key_value_types,
-> +       [ARG_PTR_TO_MAP_KEY]            = &mem_types,
-> +       [ARG_PTR_TO_MAP_VALUE]          = &mem_types,
->         [ARG_CONST_SIZE]                = &scalar_types,
->         [ARG_CONST_SIZE_OR_ZERO]        = &scalar_types,
->         [ARG_CONST_ALLOC_SIZE_OR_ZERO]  = &scalar_types,
+> +int test_ringbuf_mem_map_key(void *ctx)
+> +{
+> +       int cur_pid = bpf_get_current_pid_tgid() >> 32;
+> +       struct sample *sample, sample_copy;
+> +       int *lookup_val;
+> +
+> +       if (cur_pid != pid)
+> +               return 0;
+> +
+> +       sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+> +       if (!sample)
+> +               return 0;
+> +
+> +       sample->pid = pid;
+> +       bpf_get_current_comm(sample->comm, sizeof(sample->comm));
+> +       sample->seq = ++seq;
+> +       sample->value = 42;
+> +
+> +       /* test using 'sample' (PTR_TO_MEM | MEM_ALLOC) as map key arg
+> +        */
+> +       lookup_val = (int *)bpf_map_lookup_elem(&hash_map, sample);
+> +
+> +       /* workaround - memcpy is necessary so that verifier doesn't
+> +        * complain with:
+> +        *   verifier internal error: more than one arg with ref_obj_id R3
+> +        * when trying to do bpf_map_update_elem(&hash_map, sample, &sample->seq, BPF_ANY);
+> +        *
+> +        * Since bpf_map_lookup_elem above uses 'sample' as key, test using
+> +        * sample field as value below
+> +        */
+> +       __builtin_memcpy(&sample_copy, sample, sizeof(struct sample));
+> +       bpf_map_update_elem(&hash_map, &sample_copy, &sample->seq, BPF_ANY);
+> +
+> +       bpf_ringbuf_submit(sample, 0);
+> +       return 0;
+> +}
 > --
 > 2.30.2
 >
