@@ -2,107 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE02B60820C
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452D160820F
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbiJUX2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 19:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        id S229746AbiJUXaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 19:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiJUX2A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 19:28:00 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1CD2A2EBF
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:27:59 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id q19so11310489edd.10
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:27:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=M+2D2T3q7d26g3ep3B3VQRceoRcfQJcAid5n3RJg91A=;
-        b=i0DF/SwBR0FDxMW2RJ3VLIZZHt0XIq45k6j+5eH3rznkT8VNMfAOMbLU96a04qIp+U
-         TXkRZnJFlK2ocBfon30/DRTUF4VOZnWraci34q+oAoch4j9hXnFIjH+zMyUJAqlNDGIE
-         xeZgLiLE87hH3EHZjCvKvCpz+0WlCq86H3wjcw/E0UmZqo7A+nnz6+cWfiLzXeJgIe62
-         LFHxNxm3T+i78UaaDK17pObq6VMaVKpiwrB7kzXjM9o5Wg6nQxLytFSOcZiFPICBEDxU
-         tzbytV8uuyE+6qwjcJkjwLz+wGpphneOz4O2nu2icB0xekQ02QnhtvUrQYrnQtWFcZB/
-         pleA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M+2D2T3q7d26g3ep3B3VQRceoRcfQJcAid5n3RJg91A=;
-        b=eWlRH92WWOIHo7IegGphh2UKzdKoAKrQV3xOPDwVJmfv0ARooDM/aO8Co/c0wqpX+q
-         C5MinXLckZY6XjpxdW7yuS0LVBkdFn+j9cUELWbWJydTrVIdfm00V0QGr4XIyPlqL02w
-         +ZZZL7WSerbcArA+jecrG4+dhWX1KrKuOgiy99qeENlP2Z2QHgkJM9yw2gQy8oMeP5oK
-         bNYHU6sviwXQriJ1RbeQBfWBwZm8ivEHhlBleN4Y7xl0o7en9/JTlP9C1mVEOIBodZol
-         06waGkToRzppzqq2pZDr7uUEiK0rpKvCfRte8zRyu/QXiwya/HVTlpWTkDTpZzLWU6q8
-         y3eQ==
-X-Gm-Message-State: ACrzQf318zyv89RPOr6gkv87VEkJvE1vhUO8aCJp3Ao5nhfGt8rEacKa
-        4c12K0gxPFPgW7LXY2LMhB/i32tN53es87II9Pg=
-X-Google-Smtp-Source: AMsMyM5YtlWfgI1IPqsi/Td07RvZMWd7cBX70wf75tnNITz/zYY1k6U52GYMD7lsnJ1IlpAAFhLtkb2N9QdKOPLWa5I=
-X-Received: by 2002:a17:907:2cca:b0:78d:ec48:ac29 with SMTP id
- hg10-20020a1709072cca00b0078dec48ac29mr17582336ejc.114.1666394877582; Fri, 21
- Oct 2022 16:27:57 -0700 (PDT)
+        with ESMTP id S229741AbiJUXa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 19:30:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458E8A99E0
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:30:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7A6B2B80D59
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 23:30:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A420C433B5;
+        Fri, 21 Oct 2022 23:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666395022;
+        bh=9YjBqzO7yaAyBOQboTqKJCBaT1EVl9HybY2S5a+66pw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Qe1wPyexfa7AmT3ePkloRpzIS9t7RE5QfXBUm0szVFAGd9hdX5NCFKwxfBqCfvUES
+         Ik938zxg4NSU6oIvPteIn0459nc9xK6bfPLIBYCTuB3WGZXglsx06KkA15T9De8f2X
+         rX0w6e/Quicj6/L5DWmSp4DQevMgCtD34Ua+rVhqRBxtSVM5YuLqOuN2WZSWNd+edJ
+         WKKPCGitsSad6zCDekqYyuc3jT/LttAB/gXF1picLSjEYeZ2jBPQCyzmVKzkxXDO+7
+         QAG3oT7lU4H0cUCoXG+aNIZAl/sdYUuJjy/qLQNt0YLeINpfUy2vLRlWtk1qGO5Z0I
+         q7WKOYsWssx4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A1DEE270E2;
+        Fri, 21 Oct 2022 23:30:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221021210701.728135-1-chantr4@gmail.com> <20221021210701.728135-5-chantr4@gmail.com>
-In-Reply-To: <20221021210701.728135-5-chantr4@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Oct 2022 16:27:44 -0700
-Message-ID: <CAEf4BzZ3wJr7cEQkN+dvxe+Ph5byEWrhiJoSUwF_qZ6nbBpb3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Initial DENYLIST for aarch64
-To:     Manu Bretelle <chantr4@gmail.com>,
-        David Vernet <void@manifault.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/4] Add support for aarch64 to
+ selftests/bpf/vmtest.sh
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166639502210.16988.4357978055876799242.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Oct 2022 23:30:22 +0000
+References: <20221021210701.728135-1-chantr4@gmail.com>
+In-Reply-To: <20221021210701.728135-1-chantr4@gmail.com>
+To:     Manu Bretelle <chantr4@gmail.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
         daniel@iogearbox.net, martin.lau@linux.dev, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 2:07 PM Manu Bretelle <chantr4@gmail.com> wrote:
->
-> Those tests are currently failing on aarch64, ignore them until they are
-> individually addressed.
->
-> Using this deny list, vmtest.sh ran successfully using
->
-> LLVM_STRIP=llvm-strip-16 CLANG=clang-16 \
->     tools/testing/selftests/bpf/vmtest.sh  -- \
->         ./test_progs -d \
->             \"$(cat tools/testing/selftests/bpf/DENYLIST{,.aarch64} \
->                 | cut -d'#' -f1 \
->                 | sed -e 's/^[[:space:]]*//' \
->                       -e 's/[[:space:]]*$//' \
->                 | tr -s '\n' ','\
->             )\"
->
+Hello:
 
-Ugh :) As a follow up, let's:
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-1) teach test_progs to accept a denylists as:
+On Fri, 21 Oct 2022 14:06:57 -0700 you wrote:
+> This patchset adds initial support for running BPF's vmtest on aarch64
+> architecture.
+> It includes a `config.aarch64` heavily based on `config.s390x`
+> Makes vmtest.sh handle aarch64 and set QEMU variables to values that
+> works on that arch.
+> Finally, it provides a DENYLIST.aarch64 that takes care of currently
+> broken tests on aarch64 so the vmtest run passes.
+> 
+> [...]
 
-sudo ./test_progs -d @DENYLIST -d @DENYLIST.aarch64
+Here is the summary with links:
+  - [bpf-next,1/4] selftests/bpf: Remove entries from config.s390x already present in config
+    https://git.kernel.org/bpf/bpf-next/c/7a42af4b94f1
+  - [bpf-next,2/4] selftests/bpf: Add config.aarch64
+    https://git.kernel.org/bpf/bpf-next/c/ec99451f0a48
+  - [bpf-next,3/4] selftests/bpf: Update vmtests.sh to support aarch64
+    https://git.kernel.org/bpf/bpf-next/c/20776b72ae2a
+  - [bpf-next,4/4] selftests/bpf: Initial DENYLIST for aarch64
+    https://git.kernel.org/bpf/bpf-next/c/94d52a191807
 
-2) we can also teach test_progs to load any DENYLIST{,<arch>} if it's
-present in CWD
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Though we'd need some way to disable this (maybe allowing just empty
--d to mean "no denylist"?), of course.
 
-
-> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
-> ---
->  tools/testing/selftests/bpf/DENYLIST.aarch64 | 81 ++++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/DENYLIST.aarch64
->
-
-[...]
