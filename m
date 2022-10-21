@@ -2,303 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A320D607F8C
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 22:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30B3608080
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 23:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiJUUNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 16:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S230063AbiJUVGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 17:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbiJUUNL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 16:13:11 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF39E2958DC;
-        Fri, 21 Oct 2022 13:13:09 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29LK3nHT010027;
-        Fri, 21 Oct 2022 20:12:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=Rpl8L0YWXfzTV7CHUJieWO5XQXaf6Dz4Fz6cN5b8iPA=;
- b=sEAJeIOUZF8cI9fvuH/PmOfY9YGLJZCeI0AsJVIVXQnb6+O5tmPsMwoJm9MP5pBabBqG
- G8oQ4z7vreLYX9RSJyq+f/VbzI5KxOUaH+Xj2lc1BQ5cUMoocdVg2YtTcAdI8wsyCWDe
- MQCjZ6szcThB7IvJQXoJ6A00helVXttP/UDPEZ5peMQIL9v/L5ZF7EuqJozCO7/Dmz9Q
- rV/XR+mTrDufVh88njxFBwwE6fCCdUFwZ/j7jdoktHlcSnxWG1u7qgasa0s+RwwGw5s7
- aupNmN1S+zgJkKxQFs2dfR+wBGDSO4vJg5DFBhemsi3ZXZmGcH1pQTZ/AvyBDXXg5zNr 8A== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k99ntp24r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 20:12:58 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29LJ0HuT027370;
-        Fri, 21 Oct 2022 20:12:57 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3k8htkw71s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 20:12:57 +0000
+        with ESMTP id S229741AbiJUVGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 17:06:12 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66D12565EB
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 14:06:10 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29LJTE7k012826;
+        Fri, 21 Oct 2022 14:05:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=S3f6/4N8P3p0OcWnmqcFbd+q3ELRyMPlUW4KAXWiAz0=;
+ b=hV1kQ9gItAsd2HFbKgsZgYfSP7ujYaPFfihhor7MAy5wICO5Sy8+5kjDkxGMh0YZm8Rr
+ hjJFJbyeqwm8KmKe0RQbDbsktSxLHA1yOx/muWMk4OvnIV3rzEHVkpEVSF/JmF5Kiz4E
+ I4PxPXMRBXo96nBAlWcV/NOwbFy/4rBFNpPXu3pNVtf4abVrBeyJVbSyc6kkKLAOKjUX
+ z5S1eKUuyLDraQ86BkbBdPMMMvH4kB0jjvtxgoEY/6V2roUmOsfsYHe+pKlsPV4olmpn
+ 6fRubCEwEyqPMGfk0LgtrdQrNGq/wo3my/y3hez8rxNcD8uUgt7+UYJq9NoyTkawvB2A 8g== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kbvcymbx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Oct 2022 14:05:51 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bGwKC88lPinYY6ql2GiELn86fg/z4959snrkQcL9jWHPcpA1xR7emj82io5t0Pg50Od4EcCpz81g8dVh653Wz7RO0t1R60sQ0+WvgbmYzVhzc7bQtGNBh2aup20xQn7tuFeGBAEME921K/FeBiOdkkTuXsmVpzB4Bi1g8o+xi53+QlwjS0ueeQnvyNOxCoJ0APE5PV53+e4rxdTawvLESozXQhPFkm35txRsw8EE/cOH2PEz/2DCi4LQe03gyq17psnw2OZQoMwh0Q1CTW4RWWMMeKN77iBsywI/Bkd5k1XU+U6KN0w1qAWx6W94hcLd899cd7R8d17rVn6Xd+1xXg==
+ b=MU0gc9peBJBq2Zb1gogUJDojnJpda0cj7eocC7nxumQ6X4To/5YLbdGMlADZnLsjaCT1X1kg8KzTbZiyjorLFxCmvS9gYUdtFMg4aCb0avVq3zEAWvFpkioBIK6+9tXLIcbQ2UoXvjVX67jimj1x7yeFOGpRKMdCoTzblpjmiEtl4QP7s1nrUw3joTBuuMM+ujkrU+cQh2mI0tO/wH/sHBSwxbuU+q54kMYkjeefM9wYcT2bJMN4YBxlTckjf87DC6m8+1M98sxnnfY2jjog8Gl6nlSRBzQQ192Ys65UGCVaHJiq0yVTfg+4W4WAGOP0BBx9sQfG8ppzkEn9h+Tydw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rpl8L0YWXfzTV7CHUJieWO5XQXaf6Dz4Fz6cN5b8iPA=;
- b=mRKx2RR0uGw1LBdLm5Wmlg6yvP744Qkbd/dKFSMy7V6NJ9DdHQ8MGEE4oydeHwhZUocqmO93f8dfDPq2VWKd1YUBhX7QhEsCOABpszaoLH+n0+bELQtMsukun7JWhZYZ5pvdSzYiHkS2XuhEoKTt6hI/plnwyWlnrArzi7P0WRUAWbAwWBz4giS6gZB24iES9E4aFvRYWeh7MHEstWs6U2IGsoa14Rn0f9s+Yc7TNK2/SfjoIZ8SaCFT/rxYq1WL04lSXr3XKpJqxsQ6+WA+hqOkRAjFuF0p/M4BqiHpVsAA7Z5ph7vmqkE5xjhQjgBBc9+2oLShCIjHGL21oUwiSQ==
+ bh=S3f6/4N8P3p0OcWnmqcFbd+q3ELRyMPlUW4KAXWiAz0=;
+ b=CLbEYDCToXPQLwCcGc0yrPf5Y3D/zP7gq1oOygZECL5WD4dahRsmXn1HDYhNBBRsaY497619FeZUaGTKIWh2r6HaCH2Ni61JFI8vPcItp1uk1ZtGyBujl+ya1OxQGmWtjER3PzeLNo5vICe4huOOgy8UevW2kiojAvOhB52SKlE0yxvHY+BNlJjUUIBx+slZYs5k06cROaTwvR+2vIlBNZarYtNVvkQbKBK65fd1w4jaZPnPke/y1NSDwyvBixfmOBEZ9fRRxsoRHva4JuXcAAglTBaCSJGWVFsMxN/l11chautn6C3UTpSIBuAAgqvR7RuLTOvBulAhkmdDDuJhRg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rpl8L0YWXfzTV7CHUJieWO5XQXaf6Dz4Fz6cN5b8iPA=;
- b=G0NOQQnYbqtAjpN4NvkShDnTNGngT68YxGRtM3ALyxmrywr/bPqVi6wYerXHONVTlnV+QPQ7Lrkz4tfM6rgEhdS8/ShdhsMhP4eaQZ9gB3SHFc5zkCbXcCYf/PiWaKOUKwpO5fDZkkrn6PN0PmVbuv7JzjUADkAXEqivI+xsIpE=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by BY5PR10MB4337.namprd10.prod.outlook.com (2603:10b6:a03:201::17) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM6PR15MB3674.namprd15.prod.outlook.com (2603:10b6:5:1fe::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.21; Fri, 21 Oct
- 2022 20:12:50 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::8e3c:584c:3f1a:7825]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::8e3c:584c:3f1a:7825%5]) with mapi id 15.20.5723.034; Fri, 21 Oct 2022
- 20:12:50 +0000
-Subject: Re: [PATCH dwarves] dwarves: zero-initialize struct cu in cu__new()
- to prevent incorrect BTF types
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, dwarves@vger.kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org
-References: <1666364523-9648-1-git-send-email-alan.maguire@oracle.com>
- <Y1LJlPBQauNS/xkX@krava>
- <CAEf4BzbtRqkcx8CHBqdXXWmWLeX-zsrEYMy_CgL7i48PTYjCNg@mail.gmail.com>
- <Y1Lm1al9YEGbjd7i@kernel.org>
-From:   Alan Maguire <alan.maguire@oracle.com>
-Message-ID: <7115a52b-5dda-614a-7285-0023ab22f95b@oracle.com>
-Date:   Fri, 21 Oct 2022 21:12:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-In-Reply-To: <Y1Lm1al9YEGbjd7i@kernel.org>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.30; Fri, 21 Oct
+ 2022 21:05:33 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::6e08:a405:4130:f36e]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::6e08:a405:4130:f36e%6]) with mapi id 15.20.5723.036; Fri, 21 Oct 2022
+ 21:05:33 +0000
+Message-ID: <9abed364-39a3-b8c0-78ba-9d9ec45277ee@meta.com>
+Date:   Fri, 21 Oct 2022 14:05:29 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [PATCH bpf-next v2 2/6] bpf: Implement cgroup storage available
+ to non-cgroup-attached bpf progs
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO4P123CA0616.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:314::16) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+To:     Yosry Ahmed <yosryahmed@google.com>, Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+References: <20221020221255.3553649-1-yhs@fb.com>
+ <20221020221306.3554250-1-yhs@fb.com>
+ <CAJD7tkZb8vRWbBn5Z75MXf_g8tYTThYgkLXYKPUT0zzcRaK7+w@mail.gmail.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <CAJD7tkZb8vRWbBn5Z75MXf_g8tYTThYgkLXYKPUT0zzcRaK7+w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::7) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|BY5PR10MB4337:EE_
-X-MS-Office365-Filtering-Correlation-Id: 164bf015-9171-4632-eae8-08dab3a0a0e3
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB3674:EE_
+X-MS-Office365-Filtering-Correlation-Id: 691269ea-de65-4c3f-f073-08dab3a7fe16
+X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U2jpHLYN36j5CwaX6uOLAoxivFZxgKVBNclyYDIKOARe6vlzRdhAA51L+WK7F4KlLDVuNSgFvmncmBYjurC4v5zZ6VV6hS2vVrrkoX6MCf+g8X6bwqbbW7DeWhbeKGVJnWQ3lfdVPAzhM+xRvIhXopDypq0nysbjTSmj9ddhqWeOzI4GHeBcZjioyQNvXAnI5DmlZqBuWDtuapQ4y3YkXR/IFyDMmETJH0so8Eqhxqo+tkDE/h3fATUnKS/tGI2omERJRaXmNlcH3no0p/v2sfSv6XUpfW26JRUYUW56GLCgboM/DVqqOra7LIW5gCWYJ+26mI9pRMt/PG/Iq3DBCflizM9OHOgX8S85UTkBc3zJXpd1+VzOIuMf6pI7JoSQAWLx1zoEiLEhCIdw9Yh1jPQ4J7kuBBY9gfn3kragGqdNt2JSpmAs8qaHAlah+E0Rjfk7e+u/h3K4i+l8LzKtbPgMR7R3WW2OBbppC4LwhsK3V7TpZQ6EMU1uuxTxbu9e4Opn99MwnCR0Z6L6MqqtnQ5A36V4OX9jjevuTAinm2ndAmWTP0fR6/OVR0cJVvA+F9fYOC13tc/3f4hraEqlCH6rveM9y61k/a2myIyWyNVDBPXAqNabrUgBODroGCFbdVrK41PQ+5HvhmagsbgAC3EWeM3a8kwVxFdpq56XnfstNlllAGTfnw5qcNu3AhnqXkrr9fzsx9GXstq0A5ck5A/+KrO3NvV33KgUEUvezQinTEuqIdLT1No3kkrqclPUcoJfgWnxavqmnl82g9EdYIpjOW35JVMqJXFGSZUsxMiu9qCBps3cYmMUpurWVhea25kfwdR7Y6CzGnbBNOCxlA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(346002)(376002)(396003)(136003)(39860400002)(451199015)(66946007)(31686004)(8676002)(110136005)(478600001)(316002)(53546011)(6506007)(6486002)(6666004)(4326008)(66476007)(66556008)(6512007)(8936002)(186003)(86362001)(5660300002)(44832011)(2616005)(2906002)(31696002)(36756003)(41300700001)(83380400001)(38100700002)(101420200003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: v6Wp5Newc5x7mVy6+yIyD97BOINWHcK7/eFphTjxqJfHGq8GAQVecRrlk4yTcGjNYoD6EzC2QrnyIp/ioZK5l6W9Uv4VV2u9KfQyn+RqGT+PAJ7q26vTqGgi1yuzYUaEtiuDUhzUuIY5R4MDlcYv32fC7KGQhG+IswwUxFqv99y5TLla9b18/srSKYEjJG+QXRIE/8ouowKPDY7/7q7xm26roR33ml2Z6b8yR88m6TYxaaHZym2hpBGy/XTIayvdgkUdxGuRaiiVSXDLwUTDlP10a/QUsQqJHC/2egQDSDgQxOClASo3LqwHD6OEryxPS/PctFVjTtIYqLOegJ2RcgnVzIfR3U0LHwtBq/oDPgz5ljOGWQWN8HOFcdQgzcbiVKqZ9UHs6GUzbHApjvqW64Mpy4U6lcwks0FB4fHJFFgPOZumsDX3+7KFjH5+mfpblm3hzGttzxaB3/BpdgMPhcmB1MrrQ602tgv+665M5mgX2Oq+gmqmCeFTHeKIEB979m71Wb+mdITsXXynQ2eEixR4lXONcUrbgu+UADdABJ0jd0+yCKQ9JXtorQjBGFCLeEPPDpbOsMrJGCN/omjdgY617heKp8uCflKTIKWIPzylWqZxUhKlNVpKrk0MBaYkF7tTHATW3q5WesmWKdUQDq+wfBFHvfu+QoC47MKc4UrjKekp9JrhDplVDOBcwKy0RLH19L+MRW2mBcDXFnkZrgGRysaZkHh6WXJqGhtMkTW1DUZEKuXWGwSHqWf+R7NFpVqgO2WFp5iuJ5mC51HP0Ca1BDfz6Es8kHp4r94lz5A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(451199015)(6486002)(66476007)(31686004)(31696002)(38100700002)(36756003)(6506007)(53546011)(2906002)(8936002)(86362001)(316002)(66946007)(8676002)(83380400001)(4326008)(2616005)(186003)(6666004)(5660300002)(6512007)(478600001)(41300700001)(110136005)(54906003)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXNyNXVXVW5tM1M2UHZXdTVLM3RHNXZhaWFSV3dHeWkwL1d2K0hTRlhQQy8z?=
- =?utf-8?B?ZnJ4b0xhbEF3N1hlNERwcmVaUEN1TFBiTDNMcjN1WElkbXNxZ0U5b3BWWjd6?=
- =?utf-8?B?WVVXMnhlS28vOWVZM1FqN3hxR3N4WE5hWG54TWhEeHA3V2d0Ulh3RTRiT0Vy?=
- =?utf-8?B?VnpaTFhnaVVPMlEyekpkR2pmdkpSWlN0RERSdGhwa1pvNnhCdk1lYXQ3NHoz?=
- =?utf-8?B?ejBPK2QwcWJsK21XK0p0VXhmNEdZdm9lTzN6b1VMWlpHNXMxWUViRSsyMlFC?=
- =?utf-8?B?aHNQSDRnQS9XZVV6UGtSeGhvK1NPVnM2dXBjRjBQVUdtTHNCN28zMFhwUjAr?=
- =?utf-8?B?WVN1dGVKSndhbVBFTjhCZ0FtSGJuTWNjV3VCSjJUbjJlRnZpSUtUNHE1Q2NP?=
- =?utf-8?B?aHlmUDlxcG0rMllrcVBQNHFzdUF4KzI3MW8zbzdKRHZvemdJT21WUnUyWVRP?=
- =?utf-8?B?T2pNb2ZvaGRhVG5CWDRZaUdJQU5HUWl4UWVncjRwSHdwaXorT1YyNk02T284?=
- =?utf-8?B?STNnemJTemw3a2Qwc20zTjRyeHplMy9xd3lna2FEZmpLZS9vcCs1QkJtVkcy?=
- =?utf-8?B?ckJyL2EvenlOV29wbVJXSE0xY0RPRGdGWi8yN1FicXRreVQyK0xOazNnK1hR?=
- =?utf-8?B?MzhVRzN2NnJYOFJqSHQ1eWVGYjZGQVl5R1lnVUJMMWd1clA1ZGthZnBQVC9x?=
- =?utf-8?B?L1lkQWVwWnZHQmZ4bTRhL1JwUjFhVHg1UHQwSUMzVkpBR0dUQmNEOXZZRlVK?=
- =?utf-8?B?R1FIL2gwOFhKdkJQOEs1bC9jNmFNd0g0VkxnN2VmUzZDd2NTS1FxZkZMNllR?=
- =?utf-8?B?eVpjS01RcHpmVDdRUG8vUnlibHB6UHZ1SDhyTTJqaDhyQVNwcjVvdjhGT0tj?=
- =?utf-8?B?YityS1BmaldYazZEVjd6OUJPYVZKRldyMEp0NCtsUnFJQUZiOWRMWXJUK2pD?=
- =?utf-8?B?dzMxcm1CMHkxNVN4VFdOcm5vV29lRUp4elZKeWtJc0V1Q1c2dHFzUkEyNnRY?=
- =?utf-8?B?QTZwRXh4anhKM05RbmdRVktpWnhrR1Zqbnk5amVXc1Q0eGxFWXZoUS8zYy9T?=
- =?utf-8?B?cTVCTU9kOExibGxPUVdUcVhUbGxMcTIyZHZLUTdBM3U3V08wbjlOa2pXZmFG?=
- =?utf-8?B?aTlzQnBVSnlrL1IzZSt5dEg5MCtPVS9WbjgyWW9FTXdjTkZIMVdkT05sVVpn?=
- =?utf-8?B?MHpaUCtxTDg5ODBlK0FQZmUxVDFuRHVOZHZxRmFtM3k1NWhaNUNEa3pyd0xj?=
- =?utf-8?B?S0I4cEhZalNwS1VMYlpkdzRFTW1FZEppTGtsMHA0U2FybG1kdlZmSzZ4Slp0?=
- =?utf-8?B?NVZ2ZW92TWJxbk93eW95eUZHbHplOFBmSXN4ZVdmd1dlN1BHcng4Q0xJYlFy?=
- =?utf-8?B?cDgzNVg4aHlsSVlncEhhZkRkYUlCUG9sUzMvVk1WOWN2aWtES254WVVpMXZ6?=
- =?utf-8?B?cnhrSzNQS2FrUGdsNkR1QjEwTTJ0OWdvY1BhUTJwb0oxN0YvTjZQYVlHb21k?=
- =?utf-8?B?VGxjb3BjU2kzZU4zTUE1KytISno5VUhHcjRrOW5wQ2Z3MmwyMzFmK0hCMUx4?=
- =?utf-8?B?bEdHbFJzZUFBenc3dkF3V3c3bkEvQUhmT0R1VzZVSFA2Y0ZUWVlKVlpmTHdN?=
- =?utf-8?B?elQ4SUxhV1MwTDlCY3hEeGZ5OEVxeXhwUGRNcUQyam9YQitkTWx4cUxoalA5?=
- =?utf-8?B?ODV4cTExaDc1K2VrazBIcStvOEc5UkFMUmFRQ012MVVTa3FNSzVEM1VPL3dL?=
- =?utf-8?B?b0hIdEprZTNPbHRkUTVpSld3allGMktGSmQxUmlWQXRNNWFHdjBJcEJRVDB2?=
- =?utf-8?B?dG9GU2ZwOHFFTEdvV1ovZlRPVHJWYlM1cEZVTXhDWW5HV21NMCs3NHc1dmR5?=
- =?utf-8?B?eTcxVzZuTWFuR3VzbXpQclNaUWdtTWREbW9YUk5PblVRNlV3eEhhTmV1SmtS?=
- =?utf-8?B?NnJOWlhkazdVYlhuY3FIQlpLY3V3YlBKNjRLb2FSOFJ5YzJWbE1GRHg2M1hO?=
- =?utf-8?B?Yk9HV3dXOHpyMklXVHZzVCtVSXFFSFpqVFNKajRJMXhqQ1JHL2lFSzlncko5?=
- =?utf-8?B?anhuMmYvZTUyWWp3YkNRV3dsSWVqa0ROTW1Gajl6cU8xM09BRDQ0VkwrRWRp?=
- =?utf-8?B?VGhyVjRSbGF4R25NcUFya3JSTDFKeFcyd0Zud3JlbitiVC9lMG9mVEpCOFhk?=
- =?utf-8?Q?grizQ4Q9LcW5BY5ZWZ1EE1w=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 164bf015-9171-4632-eae8-08dab3a0a0e3
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dWlpbE41Nk5WdGZFU1hDSXE4eVRXV3VuV29oQWJwVlk1UWduTGllbGVqajFi?=
+ =?utf-8?B?aktTay9HS0FjS0xzbVZkQVU3aU45R1BpQUR6TFZTWHlHL1ZPaFlMWUdYVitw?=
+ =?utf-8?B?eGt1VlRWb2JSR1BmczhjeXF4T3VSZm0zak92ZXE5TGJyNjB2K3dkbkJyb0wz?=
+ =?utf-8?B?Zy9KU0VneUlwYlVnV2h4VTczcTAyU25hWXNLWEp4L2hlZE5UZEhsVStvMG02?=
+ =?utf-8?B?eFBGS1ZXdndmNlZnNjVTaXlmU0dtUDErdUJ0dTYvM2M1S2JLdWM5T3M4dGlG?=
+ =?utf-8?B?M28vZmMrSS9WMks4cUJLV1E0Q2NzTHVKdkk5djVNQWFaeGNFWFZhSEp6TDVo?=
+ =?utf-8?B?Yi9SQ1FFazdibDJVNzF2OWtPd3UvV1Z2NDd2Z3d5dDEvU0hQNjg4Q1Q2Mmd4?=
+ =?utf-8?B?OVA5bVFXMm1rVWN5SzdJYW9GbURvQ2ZIMDhUalNmNkJDa2NPZWhhUnVnUHJy?=
+ =?utf-8?B?cE9veEdYOHk1blc5QmdIRjM4Rkg5Q0tsQmhyaDFUdmEwRnl6V1hPYXg0T1E2?=
+ =?utf-8?B?UURKUkxvMFUwYVBkSGFCVUpOZzFjZFhzSFBmcU5tdzdLQW1TalQ4Wi9teWh0?=
+ =?utf-8?B?RVF1YVhEbjZsbWRPcVp6MlNhWUVMLzl3RVExaVhYbDVSSlJkTEg5aVViSWNR?=
+ =?utf-8?B?a3BnenZIK3FpYmFoY2F1Y0JuSHdiV3hPeFAxbGNXWFYrTzlVOHV0UlRGY3JO?=
+ =?utf-8?B?YlJzSkc5aWxuMlBBclN3MUJQaWRac2tQM2p3MGd1RTZyalpGUVBjWEhYT1g3?=
+ =?utf-8?B?ZUdxYTB4SjNsNlhxRXFxNlE4RHUwRUpEZzltUDhjYkQwRXlDU2JudUxyWWFY?=
+ =?utf-8?B?eEc1L1lmdytrTXp0MXFTL0tXKzJlSXhvTzUxZ25JSm1CTHkrSHRCdTNvdlNI?=
+ =?utf-8?B?NlZMcDVwMVZYWXBGY1YwU0liUkphOW8rWVdEbUVWNVE2Rk5md1luR0g0ODlK?=
+ =?utf-8?B?akxLN0xhKzVuSWFYUTlQdk9mSEx6cStHeVZYaDdoREFMUk5mMHk3TzlMZFBX?=
+ =?utf-8?B?LzBsbVQ0aWhmRm92K0h1MGI4YWVpZnA3eG1hRURvSWNWdE55TjlpN2FpeUNK?=
+ =?utf-8?B?VDZrczVxcWVsdnVHNzlyRHJycWV6S3hvek96NVMzK0ZYYVFuWTRoZXVKK2hk?=
+ =?utf-8?B?cHlDWUN5bGNSanYrKzF0U083Z3FJQTVvcmN4dUROZWlQQit2dVh2WWN1T1dm?=
+ =?utf-8?B?ejNRYTdpbGttRjQyQ0tNOUhrM3JJRERMcWZkMWNGOTF6MUJOMzhtRENHa0ZJ?=
+ =?utf-8?B?SlZ3TFhwNW9TZGgzUVZzQTVZeHBZc3haaTM5dFVkOGZDTUs0R0dLTTh5RHpN?=
+ =?utf-8?B?U21pUml6MUNTVm1GU3ZKUkJ1cGsrNi9OQzNnVmJvcERFRHpDSHM4YUpYd3Fa?=
+ =?utf-8?B?ZDVtM1RzbU9td29wcXl6cXZjNXBIWVVNam55aUczK1hJeHJVQWFKbUN4VFUx?=
+ =?utf-8?B?Y3BsUXRsTHprU24xdzB3WkJhZHNSQ0dadkgwZy8rdzJRQUZKOVgybDVHdHBl?=
+ =?utf-8?B?SUdJK2I4MlA2Y1Y3Q1Zmcm1NdGtkdzNWVDl0Y1h3NjhYS0FIcVZRSzM1bGZV?=
+ =?utf-8?B?SzZDMGJqeHFoUTg0Zmh4ZGM2YUdndnBSa00rVkJzQU0vaHlieEVUY0NucDlB?=
+ =?utf-8?B?ZUFDYTY4amhCc1pJM3ZMVnV5Q2hCMkF1cW5KSlBzTVA2MnFjcUpjU2tUaHRx?=
+ =?utf-8?B?SDgydWJQSEsvODVaVG9DMFA4eFF6R0RubHNTVnR6djlGT1daYzZYbDBPMU5Y?=
+ =?utf-8?B?UmVSZy9lZHBXS0xQdzVGTGkyQ0VHeXByUHNSNSt5VXI0UzFrWGNtTWxWYkpa?=
+ =?utf-8?B?WngyRmtVWVpGTit6ZkFrTGFpZlEvZFo3NTJWQjZMbEE4SS9DN0lsL3Z1aXR1?=
+ =?utf-8?B?QmRvUzRCY3h1ZTRISmtpOTE1VjhCRGhpUThHQ0h4TEt0cVRWYk9HdzZOQ3RQ?=
+ =?utf-8?B?UERlc1lDTy9seGtIdFcrb2t2bnRxUDc5YmFVeHQrcXpLU1JpRHN3ak8remxm?=
+ =?utf-8?B?cGd4UGhudEFjbEQxcnhxR1QzdVpGMTVrU2Y0SDRkcjJzbWk2Tmx6M3JHdnMw?=
+ =?utf-8?B?MHRFUExzcThrbXVPOUgySzczejA1KzRkZ2xUVU1JMitrN2tBamdQMVkxK2gr?=
+ =?utf-8?Q?Tg/c0jh4OA+2WtCH+jJ5daiEu?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 691269ea-de65-4c3f-f073-08dab3a7fe16
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2022 20:12:50.3808
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2022 21:05:33.1422
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: anhykVq5ec+MgV8MbTGCxm7poPdaQCAcMsvVmlwm1QGKYPTFwJQbh6NKVP6R9J+hH2/o75Bh0NChF2CFwgwLVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4337
+X-MS-Exchange-CrossTenant-UserPrincipalName: lDJ1zpa91T60zV4TmyWJ1Igz/iY3kdBY3u0mYK1h2FkmeNHbbszb2kZKMPtpJwQ3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3674
+X-Proofpoint-GUID: apf-JlbOsFxMVIRonWJIBW4EeLEInJcF
+X-Proofpoint-ORIG-GUID: apf-JlbOsFxMVIRonWJIBW4EeLEInJcF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210210118
-X-Proofpoint-ORIG-GUID: UPvQsvW5PVpKIFG3sAyTWgFDDpi9cY3E
-X-Proofpoint-GUID: UPvQsvW5PVpKIFG3sAyTWgFDDpi9cY3E
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 21/10/2022 19:37, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Oct 21, 2022 at 09:35:50AM -0700, Andrii Nakryiko escreveu:
->> On Fri, Oct 21, 2022 at 9:32 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>> On Fri, Oct 21, 2022 at 04:02:03PM +0100, Alan Maguire wrote:
->>>> BTF deduplication was throwing some strange results, where core kernel
->>>> data types were failing to deduplicate due to the return values
->>>> of function type members being void (0) instead of the actual type
->>>> (unsigned int).  An example of this can be seen below, where
->>>> "struct dst_ops" was failing to deduplicate between kernel and
->>>> module:
->>>>
->>>> struct dst_ops {
->>>>         short unsigned int family;
->>>>         unsigned int gc_thresh;
->>>>         int (*gc)(struct dst_ops *);
->>>>         struct dst_entry * (*check)(struct dst_entry *, __u32);
->>>>         unsigned int (*default_advmss)(const struct dst_entry *);
->>>>         unsigned int (*mtu)(const struct dst_entry *);
->>>> ...
->>>>
->>>> struct dst_ops___2 {
->>>>         short unsigned int family;
->>>>         unsigned int gc_thresh;
->>>>         int (*gc)(struct dst_ops___2 *);
->>>>         struct dst_entry___2 * (*check)(struct dst_entry___2 *, __u32);
->>>>         void (*default_advmss)(const struct dst_entry___2 *);
->>>>         void (*mtu)(const struct dst_entry___2 *);
->>>> ...
->>>>
->>>> This was seen with
->>>>
->>>> bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
->>>>
->>>> ...which rewrites the return value as 0 (void) when it is marked
->>>> as matching DW_TAG_unspecified_type:
->>>>
->>>> static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t type_id_off, uint32_t tag_type)
->>>> {
->>>>        if (tag_type == 0)
->>>>                return 0;
->>>>
->>>>        if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
->>>>                // No provision for encoding this, turn it into void.
->>>>                return 0;
->>>>        }
->>>>
->>>>        return type_id_off + tag_type;
->>>> }
->>>>
->>>> However the odd thing was that on further examination, the unspecified type
->>>> was not being set, so why was this logic being tripped?  Futher debugging
->>>> showed that the encoder->cu->unspecified_type.tag value was garbage, and
->>>> the type id happened to collide with "unsigned int"; as a result we
->>>> were replacing unsigned ints with void return values, and since this
->>>> was being done to function type members in structs, it triggered a
->>>> type mismatch which failed deduplication between kernel and module.
->>>>
->>>> The fix is simply to calloc() the cu in cu__new() instead.
->>>>
->>>> Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
->>>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->>>
->>> awesome, this fixes the missing dedup I was seeing
->>> with current pahole:
->>>
->>>         $ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
->>>         69
->>>
->>> with this patch:
->>>
->>>         $ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
->>>         1
->>>
+
+
+On 10/21/22 12:29 PM, Yosry Ahmed wrote:
+> On Thu, Oct 20, 2022 at 3:13 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> Nice and a great catch! I generally try to stick to calloc() in libbpf
->> exactly so I don't have to worry about stuff like this.
+>> Similar to sk/inode/task storage, implement similar cgroup local storage.
 >>
->> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->  
->>> Acked-by: Jiri Olsa <jolsa@kernel.org>
+>> There already exists a local storage implementation for cgroup-attached
+>> bpf programs.  See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+>> bpf_get_local_storage(). But there are use cases such that non-cgroup
+>> attached bpf progs wants to access cgroup local storage data. For example,
+>> tc egress prog has access to sk and cgroup. It is possible to use
+>> sk local storage to emulate cgroup local storage by storing data in socket.
+>> But this is a waste as it could be lots of sockets belonging to a particular
+>> cgroup. Alternatively, a separate map can be created with cgroup id as the key.
+>> But this will introduce additional overhead to manipulate the new map.
+>> A cgroup local storage, similar to existing sk/inode/task storage,
+>> should help for this use case.
+>>
+>> The life-cycle of storage is managed with the life-cycle of the
+>> cgroup struct.  i.e. the storage is destroyed along with the owning cgroup
+>> with a callback to the bpf_cgrp_storage_free when cgroup itself
+>> is deleted.
+>>
+>> The userspace map operations can be done by using a cgroup fd as a key
+>> passed to the lookup, update and delete operations.
+>>
+>> Typically, the following code is used to get the current cgroup:
+>>      struct task_struct *task = bpf_get_current_task_btf();
+>>      ... task->cgroups->dfl_cgrp ...
+>> and in structure task_struct definition:
+>>      struct task_struct {
+>>          ....
+>>          struct css_set __rcu            *cgroups;
+>>          ....
+>>      }
+>> With sleepable program, accessing task->cgroups is not protected by rcu_read_lock.
+>> So the current implementation only supports non-sleepable program and supporting
+>> sleepable program will be the next step together with adding rcu_read_lock
+>> protection for rcu tagged structures.
+>>
+>> Since map name BPF_MAP_TYPE_CGROUP_STORAGE has been used for old cgroup local
+>> storage support, the new map name BPF_MAP_TYPE_CGRP_STORAGE is used
+>> for cgroup storage available to non-cgroup-attached bpf programs. The old
+>> cgroup storage supports bpf_get_local_storage() helper to get the cgroup data.
+>> The new cgroup storage helper bpf_cgrp_storage_get() can provide similar
+>> functionality. While old cgroup storage pre-allocates storage memory, the new
+>> mechanism can also pre-allocate with a user space bpf_map_update_elem() call
+>> to avoid potential run-time memory allocaiton failure.
+>> Therefore, the new cgroup storage can provide all functionality w.r.t.
+>> the old one. So in uapi bpf.h, the old BPF_MAP_TYPE_CGROUP_STORAGE is alias to
+>> BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED to indicate the old cgroup storage can
+>> be deprecated since the new one can provide the same functionality.
+>>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   include/linux/bpf.h            |   3 +
+>>   include/linux/bpf_types.h      |   1 +
+>>   include/linux/cgroup-defs.h    |   4 +
+>>   include/uapi/linux/bpf.h       |  48 +++++-
+>>   kernel/bpf/Makefile            |   2 +-
+>>   kernel/bpf/bpf_cgrp_storage.c  | 276 +++++++++++++++++++++++++++++++++
+>>   kernel/bpf/helpers.c           |   6 +
+>>   kernel/bpf/syscall.c           |   3 +-
+>>   kernel/bpf/verifier.c          |  13 +-
+>>   kernel/cgroup/cgroup.c         |   4 +
+>>   kernel/trace/bpf_trace.c       |   4 +
+>>   scripts/bpf_doc.py             |   2 +
+>>   tools/include/uapi/linux/bpf.h |  48 +++++-
+>>   13 files changed, 409 insertions(+), 5 deletions(-)
+>>   create mode 100644 kernel/bpf/bpf_cgrp_storage.c
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 9e7d46d16032..674da3129248 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -2045,6 +2045,7 @@ struct bpf_link *bpf_link_by_id(u32 id);
+>>
+>>   const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id func_id);
+>>   void bpf_task_storage_free(struct task_struct *task);
+>> +void bpf_cgrp_storage_free(struct cgroup *cgroup);
+>>   bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+>>   const struct btf_func_model *
+>>   bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+>> @@ -2537,6 +2538,8 @@ extern const struct bpf_func_proto bpf_copy_from_user_task_proto;
+>>   extern const struct bpf_func_proto bpf_set_retval_proto;
+>>   extern const struct bpf_func_proto bpf_get_retval_proto;
+>>   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+>> +extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
+>> +extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
+>>
+>>   const struct bpf_func_proto *tracing_prog_func_proto(
+>>     enum bpf_func_id func_id, const struct bpf_prog *prog);
+>> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+>> index 2c6a4f2562a7..f9d5aa62fed0 100644
+>> --- a/include/linux/bpf_types.h
+>> +++ b/include/linux/bpf_types.h
+>> @@ -90,6 +90,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY, cgroup_array_map_ops)
+>>   #ifdef CONFIG_CGROUP_BPF
+>>   BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, cgroup_storage_map_ops)
+>>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE, cgroup_storage_map_ops)
+>> +BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops)
+>>   #endif
+>>   BPF_MAP_TYPE(BPF_MAP_TYPE_HASH, htab_map_ops)
+>>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_HASH, htab_percpu_map_ops)
+>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+>> index 8f481d1b159a..4a72bc3a0a4e 100644
+>> --- a/include/linux/cgroup-defs.h
+>> +++ b/include/linux/cgroup-defs.h
+>> @@ -504,6 +504,10 @@ struct cgroup {
+>>          /* Used to store internal freezer state */
+>>          struct cgroup_freezer_state freezer;
+>>
+>> +#ifdef CONFIG_CGROUP_BPF
+>> +       struct bpf_local_storage __rcu  *bpf_cgrp_storage;
+>> +#endif
 > 
-> Thanks, applied, my bad, I just changed it to zalloc():
+> Why is this protected by CONFIG_CGROUP_BPF as opposed to
+> CONFIG_CGROUPS && CONFIG_BPF_SYSCALL?
 > 
-> ⬢[acme@toolbox pahole]$ grep -A3 'zalloc(size_t' dutil.c
-> void *zalloc(size_t size)
-> {
->         return calloc(1, size);
-> }
-> ⬢[acme@toolbox pahole]$
-> 
-> That is used in many places, but unfortunately not on this specific case
-> :-\
->
+> It seems to me (and you also point this out in a different reply) that
+> CONFIG_CGROUP_BPF is mostly used for bpf programs that attach to
+> cgroups, right?
 
-Thanks for the quick turnaround Arnaldo, and thanks Jiri and Andrii 
-for taking a look!
+Right. It should be CONFIG_BPF_SYSCALL. My v1 actually used
+CONFIG_BPF_SYSCALL and changed to CONFIG_CGROUP_BPF in v2 thinking
+it should work, but kernel test bot complains. Will change back
+to CONFIG_BPF_SYSCALL in v3.
 
-For me, this fix alone didn't sort out all the dedup issues; when
-testing with gcc9/11 I also saw dedup failures which resulted
-in core kernel data structure duplication in modules that wasn't
-a result of this issue (or fwd resolution issues).  It turned out to 
-be due to identical struct definitions that weren't quite handled
-by the existing identical struct matching logic. I'm on final approach
-with a libbpf patch for that that works for me, but if it works for 
-others too it might be worth resyncing the libbf version in dwarves
-to pull it in once it lands, as it seems to make a big difference in 
-dedup. 
-Thanks!
-
-Alan
-
-> - Arnaldo
 > 
-> ⬢[acme@toolbox pahole]$ grep 'zalloc(' *.c
-> btf_encoder.c:	struct btf_encoder *encoder = zalloc(sizeof(*encoder));
-> btf_loader.c:	struct tag *tag = zalloc(size);
-> btf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-> btf_loader.c:	struct tag *tag = zalloc(sizeof(*tag));
-> ctf_loader.c:	struct tag *tag = zalloc(size);
-> ctf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-> ctf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-> ctf_loader.c:	struct tag *tag = zalloc(sizeof(*tag));
-> dutil.c:void *zalloc(size_t size)
-> dwarf_loader.c:	struct dwarf_cu *dwarf_cu = cu__zalloc(cu, sizeof(*dwarf_cu));
-> dwarf_loader.c:	struct dwarf_tag *dtag = cu__zalloc(dcu->cu, (sizeof(*dtag) + (spec ? sizeof(dwarf_off_ref) : 0)));
-> dwarf_loader.c:	struct tag *tag = cu__zalloc(dcu->cu, size);
-> dwarf_loader.c:		struct type *new_typedef = cu__zalloc(cu, sizeof(*new_typedef));
-> dwarf_loader.c:		recoded = cu__zalloc(cu, sizeof(*recoded));
-> dwarf_loader.c:		struct base_type *new_bt = cu__zalloc(cu, sizeof(*new_bt));
-> dwarf_loader.c:		struct type *new_enum = cu__zalloc(cu, sizeof(*new_enum));
-> dwarf_loader.c:	annot = zalloc(sizeof(*annot));
-> dwarf_loader.c:			dcu = zalloc(sizeof(*dcu));
-> dwarves.c:static void *obstack_zalloc(struct obstack *obstack, size_t size)
-> dwarves.c:void *cu__zalloc(struct cu *cu, size_t size)
-> dwarves.c:		return obstack_zalloc(&cu->obstack, size);
-> dwarves.c:	return zalloc(size);
-> dwarves.c:	struct cu *cu = zalloc(sizeof(*cu) + build_id_len);
-> elf_symtab.c:	struct elf_symtab *symtab = zalloc(sizeof(*symtab));
-> libctf.c:	struct ctf *ctf = zalloc(sizeof(*ctf));
-> pahole.c:	struct prototype *prototype = zalloc(sizeof(*prototype) + strlen(expression) + 1);
-> ⬢[acme@toolbox pahole]$
+> (same for the freeing site)
 > 
+>> +
+>>          /* All ancestors including self */
+>>          struct cgroup *ancestors[];
+>>   };
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 17f61338f8f8..2d7f79bf3500 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -922,7 +922,14 @@ enum bpf_map_type {
+>>          BPF_MAP_TYPE_CPUMAP,
+>>          BPF_MAP_TYPE_XSKMAP,
+>>          BPF_MAP_TYPE_SOCKHASH,
+>> -       BPF_MAP_TYPE_CGROUP_STORAGE,
+>> +       BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
+>> +       /* BPF_MAP_TYPE_CGROUP_STORAGE is available to bpf programs attaching
+>> +        * to a cgroup. The newer BPF_MAP_TYPE_CGRP_STORAGE is available to
+>> +        * both cgroup-attached and other progs and supports all functionality
+>> +        * provided by BPF_MAP_TYPE_CGROUP_STORAGE. So mark
+>> +        * BPF_MAP_TYPE_CGROUP_STORAGE deprecated.
+>> +        */
+>> +       BPF_MAP_TYPE_CGROUP_STORAGE = BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
+>>          BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
+>>          BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
+>>          BPF_MAP_TYPE_QUEUE,
+>> @@ -935,6 +942,7 @@ enum bpf_map_type {
+>>          BPF_MAP_TYPE_TASK_STORAGE,
+>>          BPF_MAP_TYPE_BLOOM_FILTER,
+>>          BPF_MAP_TYPE_USER_RINGBUF,
+>> +       BPF_MAP_TYPE_CGRP_STORAGE,
+>>   };
+>>
+[...]
