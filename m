@@ -2,64 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442F3608187
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 00:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85B46081C1
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 00:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbiJUW3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 18:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        id S229476AbiJUWif (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 18:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbiJUW3v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 18:29:51 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7D931EC8
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:29:47 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id u21so10966544edi.9
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:29:47 -0700 (PDT)
+        with ESMTP id S229876AbiJUWie (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 18:38:34 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03172AD33A
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:38:33 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id m15so10982719edb.13
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MsyPtgx7zZvXEMDoZAmrImxhxViF2jHtOTZdnE143eE=;
-        b=bD6gWUFoorc6nSYI2YYxH1D9ddNkbO6ktGboW2RTqFH8KBy4WcFf7+Jkq63LeQCXYo
-         XR5KZQLVSB2Ql5RmKmiE+qhCRCELnz7sc4ocYuRJsHkAv2iL+/1Z4PZ/MjJhV24iEWBt
-         7wPPxtbISecs7DfvslG/d2q0eelcyM69/sHxqSxnwnggiBaQFaruS0YJbLt0Pb1z1TkI
-         AP+jslrEZuEPE/UC/o6QLIs+Y/6CHPmkhhGlTzB4yfLTQac4FhVZeb//bl2TkwPWnAhH
-         /HZXo2/m3T3r+o+IM+XNsoXlUkW+EhC7qvyEpvthXBkGGAclgIGrCCmZXliO+R3p5S9P
-         XlyA==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Ij/ckQotpqlQbT9zoXwvDWVVGTexTV0eAQxuV4TghE=;
+        b=Qc08bpdhwlN4Ko3ja+3wlA3H3KqG+fFFX7Ttx4zWIG7PfHGSWjRcVomKH9XyOBJPT3
+         /fz2pMMftnn9ZtJQPXqe4LpBW2TuQhR02qsQ08cydQR12bZJP3pM1AZEtX5L6Y78Edbw
+         C0yVkZ2pB9qCJfSQU7VxmVcX5NWrZ8X/TOf4n3R1OiK88U54pdTFRoQ4P0Qv9vSC5RVx
+         kSQfJM+YWHKb2fvDYcPQsCwHtvMHAggZ2AfAvopv/kSnGg+iPceaFQ9RWOI23gg40AsO
+         qZ0WNwwMEYoAq9xLSomg6yi1ikAWOgYBbV9Od6x1XYk9zC9P0RbgSNZjSoCFgWUSu2hP
+         F2gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MsyPtgx7zZvXEMDoZAmrImxhxViF2jHtOTZdnE143eE=;
-        b=UBIigeySxhsI7/CH6EmWrtYU+dt7XeFA/BxZVx9WKTtYlRHrNOiBYXUW8SwzuTq5lV
-         g3pvuXUgbKTxA3g5R02gAyXXPgdo40bH5y9TyZ9BBUbtcD6dRrckntnC8D/u4kOgwCRa
-         sHRAj9eaSoJzsOFG3DVAS/K4l8D4hp7kIry8CNw/uSxpADQniwevOX75es2z65Oo5gsf
-         b8jfU5iowZ5rARB2bK1kpF1b5qgWvK0M8I1CJ4r86AVsWtmUbLeOQQUWx44c5uzYaLvM
-         W2zPuQjJ6Xzvkp/qHXPN+kfOb0ICR6I/GTfNSIZCZmTIS2Sj8KBEub7ihGLjkT9Q4hva
-         iGbw==
-X-Gm-Message-State: ACrzQf1cNdn5K2aOWpqoa9ki+hEa0gQg9TUD+Zu35GqARaP0MOxD2mCt
-        ejEZ5b0xntZ0lX1rufrdB6gWx0DzCFlKOR4rvso=
-X-Google-Smtp-Source: AMsMyM5IioBTdh+w1a6poGvPGbni6dR5WSEygmC4wc1mawG5KgyT8Yqq2l4ZVM1z5B7Wpvs5TcktJ27q8Xk4y3MsDQQ=
-X-Received: by 2002:a17:907:75e6:b0:7a1:848:20cb with SMTP id
- jz6-20020a17090775e600b007a1084820cbmr26753ejc.745.1666391385707; Fri, 21 Oct
- 2022 15:29:45 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Ij/ckQotpqlQbT9zoXwvDWVVGTexTV0eAQxuV4TghE=;
+        b=H+ptQ7E70RHdstxtynaluyNbd3XpVi/DsKqkmFoFyfEeROa1jkWZkHYPD5cnmxq0L1
+         G75onUakpcJaLHrvzNLBSYIP+ubTZMZWNaIuR+/n3BIf9fzrC9TSvHs37207qwQdCqZf
+         CaarQuwpn8rCt6KAubbtH0UqIRaAb/eBVAl521POdU7pYADMfzuUzb8l84jSNCWq5zFr
+         ZPOj93t45ER4siWPMz1CEALQ8HynF2pGBM7DLMHceG7JbKA+JqS7jJaGmlcL1q0mdPCt
+         CbXUD5PO2ZCx4AYZvimqUm2/JewRxP0NFWOxRyYxfRUBkQjkQths8mVSPB6ShdJSmXfg
+         Su+w==
+X-Gm-Message-State: ACrzQf2V0JB0j2BzauVmGKtdalEITZgkNRVknzdaPBbfT0jC+2q8a5ma
+        aYz1v11t7251dOnTzdxSgS8cBWfefTptFPEeToQ=
+X-Google-Smtp-Source: AMsMyM4UudiRRkBR/vqrpcCtMh+PL9zAXROHsw5opqLtgKb9aWb6fIXc5tJYFeCRqCD7nAQpUWEFRqmob/fS6QCrqYI=
+X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
+ o4-20020aa7c504000000b00461122b882bmr8409838edq.14.1666391912147; Fri, 21 Oct
+ 2022 15:38:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <1666389364-27963-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1666389364-27963-1-git-send-email-alan.maguire@oracle.com>
+References: <20221020123704.91203-1-quentin@isovalent.com> <20221020123704.91203-9-quentin@isovalent.com>
+In-Reply-To: <20221020123704.91203-9-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Oct 2022 15:29:33 -0700
-Message-ID: <CAEf4BzZuK+9T3wYcxJVOhYSTwghzGDEEU9SZDvVo3J2u4xXaGA@mail.gmail.com>
-Subject: Re: [RFC bpf-next] libbpf: btf dedup identical struct test needs
- check for nested structs/arrays
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     andrii@kernel.org, jolsa@kernel.org, acme@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        bpf@vger.kernel.org
+Date:   Fri, 21 Oct 2022 15:38:20 -0700
+Message-ID: <CAEf4BzYc5iw62Ga+9jDMJc9g9xv85SyarJxxX6nbwSz977zr5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 8/8] bpftool: Add llvm feature to "bpftool version"
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,92 +78,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 2:56 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Thu, Oct 20, 2022 at 5:37 AM Quentin Monnet <quentin@isovalent.com> wrot=
+e:
 >
-> When examining module BTF, we often see core kernel structures
-> such as sk_buff, net_device duplicated in the module.  After adding
-> debug messaging to BTF it turned out that much of the problem
-> was down to the identical struct test failing during deduplication;
-> sometimes compilation units contain identical structs.  However
-> it turns out sometimes that type ids of identical struct members
-> can also differ, even when the containing structs are still identical.
+> Similarly to "libbfd", add a "llvm" feature to the output of command
+> "bpftool version" to indicate that LLVM is used for disassembling JIT-ed
+> programs. This feature is mutually exclusive with "libbfd".
 >
-> To take an example, for struct sk_buff, debug messaging revealed
-> that the identical struct matching was failing for the anon
-> struct "headers"; specifically for the first field:
->
->         __u8       __pkt_type_offset[0]; /*   128     0 */
->
-> Looking at the code in BTF deduplication, we have code that guards
-> against the possibility of identical struct definitions, down to
-> type ids, and identical array definitions.  However in this case
-> we have a struct which is being defined twice but does not have
-> identical type ids since each duplicate struct has separate type
-> ids for the above array member.  A similar problem (though not
-> observed) could potentially occur for a struct-in-a-struct.
->
-> The solution is to make the "identical struct" test check members
-> not just for matching ids, but to also check if they in turn are
-> identical structs or arrays.
->
-> The results of doing this are quite dramatic (for some modules
-> at least); I see the number of type ids drop from around 10000
-> to just over 1000 in one module for example, and kernel
-> module types are no longer duplicated.
->
-> For testing with latest pahole, applying [1] is required,
-> otherwise dedups can fail for the reasons described there.
->
-> All BTF-related selftests passed with this change.
->
-> RFC for bpf-next rather than patch for bpf tree because while
-> this resolves dedup issues for me using gcc 9 and 11,
-> these things seem to be quite compiler-sensitive, so would
-> be good to ensure it works for others too.  Presuming it
-> does, should probably specify:
->
-> Fixes: efdd3eb8015e ("libbpf: Accommodate DWARF/compiler bug with duplicated structs")
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->
-> [1] https://lore.kernel.org/bpf/1666364523-9648-1-git-send-email-alan.maguire@oracle.com/
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Tested-by: Niklas S=C3=B6derlund <niklas.soderlund@corigine.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/lib/bpf/btf.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> Note: There's a conflict on this change with the patch at
+> https://lore.kernel.org/bpf/20221020100332.69563-1-quentin@isovalent.com/
+> Supposiing both are accepted, I will of course rebase one or the other,
+> accordingly.
+> ---
+>  tools/bpf/bpftool/Documentation/common_options.rst |  8 ++++----
+>  tools/bpf/bpftool/main.c                           | 10 ++++++++++
+>  2 files changed, 14 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index d88647d..b7d7f19 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -3918,8 +3918,11 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
->         m1 = btf_members(t1);
->         m2 = btf_members(t2);
->         for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
-> -               if (m1->type != m2->type)
-> -                       return false;
-> +               if (m1->type == m2->type ||
-> +                   btf_dedup_identical_structs(d, m1->type, m2->type) ||
-> +                   btf_dedup_identical_arrays(d, m1->type, m2->type))
-> +                       continue;
-> +               return false;
+> diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/b=
+pf/bpftool/Documentation/common_options.rst
+> index 4107a586b68b..05350a1aadf9 100644
+> --- a/tools/bpf/bpftool/Documentation/common_options.rst
+> +++ b/tools/bpf/bpftool/Documentation/common_options.rst
+> @@ -7,10 +7,10 @@
+>           Print bpftool's version number (similar to **bpftool version**)=
+, the
+>           number of the libbpf version in use, and optional features that=
+ were
+>           included when bpftool was compiled. Optional features include l=
+inking
+> -         against libbfd to provide the disassembler for JIT-ted programs
+> -         (**bpftool prog dump jited**) and usage of BPF skeletons (some
+> -         features like **bpftool prog profile** or showing pids associat=
+ed to
+> -         BPF objects may rely on it).
+> +         against LLVM or libbfd to provide the disassembler for JIT-ted
+> +         programs (**bpftool prog dump jited**) and usage of BPF skeleto=
+ns
+> +         (some features like **bpftool prog profile** or showing pids
+> +         associated to BPF objects may rely on it).
+>
+>  -j, --json
+>           Generate JSON output. For commands that cannot produce JSON, th=
+is
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index ccd7457f92bf..7e06ca2c5d42 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -89,6 +89,11 @@ static int do_version(int argc, char **argv)
+>  #else
+>         const bool has_libbfd =3D false;
+>  #endif
+> +#ifdef HAVE_LLVM_SUPPORT
+> +       const bool has_llvm =3D true;
+> +#else
+> +       const bool has_llvm =3D false;
+> +#endif
+>  #ifdef BPFTOOL_WITHOUT_SKELETONS
+>         const bool has_skeletons =3D false;
+>  #else
+> @@ -112,6 +117,7 @@ static int do_version(int argc, char **argv)
+>                 jsonw_name(json_wtr, "features");
+>                 jsonw_start_object(json_wtr);   /* features */
+>                 jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
+> +               jsonw_bool_field(json_wtr, "llvm", has_llvm);
+>                 jsonw_bool_field(json_wtr, "libbpf_strict", !legacy_libbp=
+f);
+>                 jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
+>                 jsonw_end_object(json_wtr);     /* features */
+> @@ -132,6 +138,10 @@ static int do_version(int argc, char **argv)
+>                         printf(" libbfd");
+>                         nb_features++;
+>                 }
+> +               if (has_llvm) {
+> +                       printf(" llvm");
+> +                       nb_features++;
+> +               }
+>                 if (!legacy_libbpf) {
 
-this makes a lot of sense and I don't see why this would be incorrect.
-Please submit this as non-RFC patch. I'd just keep the overall "return
-false on mismatch" approach:
-
-if (m1->type != m2->type &&
-    !btf_dedup_identical_arrays(d, m1->type, m2->type) &&
-    !btf_dedup_identical_structs(d, m1->type, m2->type))
-    return;
+completely unrelated to your patch set, but we don't have legacy
+libbpf anymore, right? let's clean this part up (separately from this
+patch set, of course)?
 
 
-oh, can you please also change btf_dedup_identical_arrays() signature
-to return bool, no idea why it returns int (0 or 1).
-
-
->         }
->         return true;
->  }
+>                         printf("%s libbpf_strict", nb_features++ ? "," : =
+"");
+>                         nb_features++;
 > --
-> 1.8.3.1
+> 2.34.1
 >
