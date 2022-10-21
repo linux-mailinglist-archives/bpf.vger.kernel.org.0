@@ -2,225 +2,334 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F16FB607F1C
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A6E607F58
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbiJUTgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 15:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S230096AbiJUT50 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 15:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiJUTgo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 15:36:44 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2D8262069
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:36:42 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29LJSLb6005486
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:36:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=s2048-2021-q4;
- bh=PV3qPWlbwtYzG9YAD8PfhqogXGoFRI0rScJZVK/vC80=;
- b=hSkEN3Oo9881GsEndBjfdvmgD3atIQDU+yuyqlZzMcWQJnwh4sCnyrIaUbW20nPTX3TR
- eGlNtDk6MVZBINkmLt+gV4wnh0D4mf5V9VvoCs3kgwz2/1SUZYSnh7W0lTfrrvTAhyhV
- Y7cGr6IpOSfKVirAH3sGa3CLFCd+Cgk6lYXVbJJUwtXetvVm0H5Ch1TOEtNfras8tbw0
- mtlhz8z7IiIIzq6FcdyQjKGmFrhy0+hAKMVdysXzcqpvyuG+UsPD5wMjfEHNcy3HhDfy
- +9GdWUD/GuPY9L/kqWXs2EmxoRGgKRKToYxPT78t/VFn8EQwqTeWpSCSuQbbXSSDOVka /g== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3kb2qpsny2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:36:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DM+HDJPnOqytpiI0jMRGqjLXw73teGQnOWUJgtKjAYgWrgxt7Gg8q/CGKm9C56yP+Fw0Fk+k3laCOg6gQUxvdrFXIxkKULchqrjbXl+ffMrmirYHH9pnT4Rs1mCFWX3mRauttLVpE2QWEIaYJpcAT6fsYiuvZ7wE1rYSlyurqRykeivube7YdmgxLW6P1rSHo1TlhMnsISzo/km0CtRIOmLKzLfKRuOeh4q6L28M+DoVvE80N1z8G6dLVB57syBqsrE/E5HzLPsyAA7pQfG/7eD3kNq3qw/6eVLfmcPFHkCZJ0g59QBcOJoCAUOt3XmvkSctHxBBSEEYWRe41uQO0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PV3qPWlbwtYzG9YAD8PfhqogXGoFRI0rScJZVK/vC80=;
- b=l025iLmuvXKgD3ZQUuNyv6RZUbD3HzTaOuf5D2ge0fniTMiePlSE/ejuWP3zxj0Xd0EEHRVh0xowSvFjjuMQZ67UlJp2zsXZuUDVB6l1G0LyMi65hXSg5bB941bb4LfJYApaufo5nOTSVs36ufoX0g00VICwCy4aDA7llyDAblKhRWRTZJpj3J5TY6t5s67TOIIFZPjCwPT+uTGvBreWLwT9mnRFb/yUpwPTVmt75M765HOxFtt8JqCw9Mn+rDHQOo+yHMU0frS7eqm4KSABDCcuXkF95hmHqglQ7uKaIpNignQ2pTqh54QEy6EI9inBUaS+RxkfcUB5jvU5jE4lMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
- by PH0PR15MB4382.namprd15.prod.outlook.com (2603:10b6:510:9f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.30; Fri, 21 Oct
- 2022 19:36:39 +0000
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::dc6e:8db4:b01e:4e0a]) by SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::dc6e:8db4:b01e:4e0a%8]) with mapi id 15.20.5723.033; Fri, 21 Oct 2022
- 19:36:38 +0000
-From:   Delyan Kratunov <delyank@meta.com>
-To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Song Liu <songliubraving@meta.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v3] selftests/bpf: fix task_local_storage/exit_creds
- rcu usage
-Thread-Topic: [PATCH bpf-next v3] selftests/bpf: fix
- task_local_storage/exit_creds rcu usage
-Thread-Index: AQHY5YRwT4PgrkqU5Uq+9nL41GYcmA==
-Date:   Fri, 21 Oct 2022 19:36:38 +0000
-Message-ID: <156d4ef82275a074e8da8f4cffbd01b0c1466493.camel@meta.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR15MB5154:EE_|PH0PR15MB4382:EE_
-x-ms-office365-filtering-correlation-id: 7c0500b3-98ad-4e65-71cd-08dab39b92ba
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zKA0DOTxVVtaigy8AWfqUYY/mcZZka7jQ3UffF1pQrGjZ7/W1MnV9rZ4u5P+P5afP4TD+mm1IvV4qEJbGZR5vlSzstRW/4WuD/LnPU9FhBIG+9D8DB1nrVJJIsxZQWFevgt2mrvurEOGO6RXrgm2BFyhW5c227jw8HsRUZKN+R0er8p/395qkyoOlZzHOEcJP7bYw49gwW+17Y/f1WjZViwcSsI50rnkNVcP+LNx06cYup44fBcMfi4goHaMaRmKxw4b6m3NOER6u1a57el/1eiuZ1BF+u4Ixme3zWB7Je/I7t14h3+V2jAn+g2ZMa7PBwLpttWNK5K9POeAg6Rdn1cjUItzKg30rtf3Hz99GQR+JNhQ/bQPJZZ3DmecREOtVwYSGoe91mmdWabSHQBuXxbhWu9Kkt/62ZTxoYPULIVY74SrhouZYIU0zg/RQBohLeV8APtjMxSlIjutCqJRw7NA2bpZFIZ1YR29nPLDa8Y2rWXjkb1LriYUCDRZ+4JAFXQdgySQjyWhJv22OK8/oFdXEVd499hExbFbYlvG2WUMR32zpUeyeyncdJUuzfEbWAGtfNOJRuGtHQlDzKmjNA3mDEBM0aZDtD1gYtkYk4q7I/ZDBPUwQKuY9YJnA8mfprjNto2GtQBsq7KF6lctLhruI98uOdte0dUm0qMepb69qRR13AIieVtQ3uNWRwnK9a6lA3HjuZBCXyRBEYEgxD8MBPaumu5g46X2XQaaT9d5hr1sxueDLgCAnz9mVTif9dRW4gOke1sxh9MX1Xr2q9LcjcrITvFwe2ndV+1SG8A=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(451199015)(966005)(110136005)(38070700005)(83380400001)(2616005)(86362001)(122000001)(2906002)(38100700002)(186003)(41300700001)(5660300002)(8936002)(6506007)(71200400001)(6512007)(478600001)(8676002)(64756008)(76116006)(66946007)(6486002)(66556008)(66476007)(66446008)(316002)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?aejylLbLtDYPFlENglTF0/3uq9ga3Wu9AiTEsjBJejdDC95F/0j83UKEYL?=
- =?iso-8859-1?Q?jVcfAhhH5fb8N6sNV5/8WQM0fnggTcUn+9IJOYt6n8dwGKxdOmyQb+l9fD?=
- =?iso-8859-1?Q?HOEPg0HVs3Ifvh8bBn0hQGux54oAfMzN4pUhXg60KKZ6zyiGeagKOZUFRk?=
- =?iso-8859-1?Q?PfHRKnWdo2nhPzfOPmcFvnve7XhJAnTpVuNUAtgo0AGJ7ajFvKgprawgi7?=
- =?iso-8859-1?Q?6/HBnXDSJwgK3Ups+nnf/RljPi4a17MprsaGXdsF1AWTyq9jBxyl45fSkQ?=
- =?iso-8859-1?Q?WYp2PsGUS9g+Zo0sqv70Q262AxBWHJuZJtb/g5CgVbjK5twlxkhOjRESqm?=
- =?iso-8859-1?Q?8CV5xIeRr/jKjc+eu0B5k2szXTj8iflnvo1EKlZ83jqPKL9g83B3+ABGUo?=
- =?iso-8859-1?Q?nzBmDv1bigGsmixBsz8HOgb1tfA8oHIUri9WumJu4IVyg3+oYQIOQUyWSn?=
- =?iso-8859-1?Q?PVCDUAHsfmjofCWGG5TLKH7uThWH53JrGbtHe/CQIFMYTP3kGihBbf9EW3?=
- =?iso-8859-1?Q?rHIbZFE7zmytUjFC4O+OaGDrVcf8XrolM8zL88BlD21DrCP0QTtD5wsNz/?=
- =?iso-8859-1?Q?g76i8rRckNCDd6ZZPMN5M7hIomWYKJ7WjOgQHdaK3ZBYHW04tZr7Xz+ijm?=
- =?iso-8859-1?Q?0fCdP/b/I7ckTiwjiBErkYPbSTwswwitNo4Jo+G8DGJAdyfQlMEY28jzB9?=
- =?iso-8859-1?Q?UG51HfNh0GXyzow6BskMC9+o+6GnTKwzW7p1tNxmSHR1i34OhwGT0aGVrb?=
- =?iso-8859-1?Q?dJ6SS3XDXCSPpfPKEEn4HttzJu4lWkaVJjvtxCffoyOTvEXNid+neiGDBb?=
- =?iso-8859-1?Q?0O91npIO5MA1B4JOCX3o27pFrYMBws9Yr4WCYQqObdjOwQd1j/xKs0PxAh?=
- =?iso-8859-1?Q?NzZ1h5wmLlCo70Cn7XPUXPH1c0j7jSRNYd1vfrGHmRAq6bGWelVz9cx50y?=
- =?iso-8859-1?Q?9Pe877BVGr0AAlA5dk/tHj4kLPOM9ahOjLWswmZp2xHdsUdQ/DK+mSMqtg?=
- =?iso-8859-1?Q?+ssnDXWmZ64bK04M5vMPfcM+3A0rNxown13l+Sdc+lkJJ7vhPSraV3CNyq?=
- =?iso-8859-1?Q?Sh+LnEIXB1VY5oC7n2KHoRrq4KWj0xbcEWiWxB0fcof6IjZkLBruicZDHZ?=
- =?iso-8859-1?Q?V77B11eo99xeRgDMd0wdtkpuCda/0Z4Li8zS+cjvOdKw3Aw2IcqsQCR0B7?=
- =?iso-8859-1?Q?2+8j/BAtEUEXGSN9gqIlM60LJs6kJpKFfCxi/WPJtJvowY5tbHFS9unx48?=
- =?iso-8859-1?Q?Qq2JwRLZGpajjZ3oy5Z9REiVj7INHICh+cyH4x+3g8olFJ/aguvb65ySdK?=
- =?iso-8859-1?Q?khCnhYfAeLBDl8VRrgW0Tfx9PExW5Hw6vEDJUYd41d+qR+jFmqbS6jgmcN?=
- =?iso-8859-1?Q?BZbuiArSlSY0DjuJ3xQ1ttvoxBNXrs/Pr48tFZ0TTATpikrcfyaLB0oD56?=
- =?iso-8859-1?Q?AFPAS0dZ33hkrfs1T0X4lbHiebCIRERlzbtb6mOT9YhbezhNEzrPaQO+nX?=
- =?iso-8859-1?Q?KN7K4rQh/97ObZCR1z7maR0arsicGV4SHZWuBNhzpzwbD45tdc5LgyFr5+?=
- =?iso-8859-1?Q?lP2v5Rwp+vkooQFgnJLr0wdMSDGqnbPCha6SwWk29YGzPiriWBHPdrxsz1?=
- =?iso-8859-1?Q?QAfYVl8TkKRskbGdLsnI7h7utsu0ksCLfrqmEQLaLUJu8tKzxLajftB0JW?=
- =?iso-8859-1?Q?A6XO6GrpXHLXRMIc6uk=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c0500b3-98ad-4e65-71cd-08dab39b92ba
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2022 19:36:38.9029
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CPwJFvWhZiBVFhf9l/C7gThmilF8ntMODyUMZaJL/Z976/dNAgxSvnJhjnPZK7LTAAzz8N7oiVSBkCZeu/y7IA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4382
-X-Proofpoint-GUID: GnR8-loj4pWr6qOAB3UYdjlovWVP0kSL
-X-Proofpoint-ORIG-GUID: GnR8-loj4pWr6qOAB3UYdjlovWVP0kSL
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S230040AbiJUT5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 15:57:25 -0400
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BFB29CB85
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:57:21 -0700 (PDT)
+Received: by mail-qt1-f181.google.com with SMTP id hh9so2332288qtb.13
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:57:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XtzzI8rnFavIqszM0QAldCjh1ANkwfRiM3IzcBeISQw=;
+        b=mRV8RJ+AsuwLDhSkSlgHJDl/T8AQBhZxAJGsMuoGXjSRTT1n67qiuIQu599W0a8zlL
+         FwQgakxFsy0Sv7YplgNMQgGdhIMSYdPAgiaQsH052NbT6Dck9mkm60/lL/KMJrnBPeN7
+         P3UtFvaimEifAtP6HEyUJtAhcwLLSSKpwVsixOwuDkfpa+ku8gZVjLznnukPOZj4VIit
+         k2BhjSuljYu3nuuZRdkT3xHSZ9Jt376sHZ+joWAphsDx8fBhVqFS3ea/34hdF9h8iJn7
+         zSn+GQ0YXaE7W03OPgudj/7J7qUzsbEwJaedpO/9APJZlauKwxGaF15OB48GVS4qSt9E
+         3UmA==
+X-Gm-Message-State: ACrzQf370uiNqzKr/oKevJWkNV/+S2M6S/gpgKcsy4WOdRnikscl9ODR
+        6hcLvi+n2RFx8OJDnoWGwo7uuvssmrNBGA==
+X-Google-Smtp-Source: AMsMyM7JmU8s130/q8UPTgX3TZ4aGPncVP3SURYCFkiPK0CqcM0+vOc3isizcMIvJ0tqAswdtskpYQ==
+X-Received: by 2002:a05:622a:1316:b0:39c:e8e6:7038 with SMTP id v22-20020a05622a131600b0039ce8e67038mr18119605qtk.262.1666382239607;
+        Fri, 21 Oct 2022 12:57:19 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::80b7])
+        by smtp.gmail.com with ESMTPSA id n12-20020a05620a294c00b006ced5d3f921sm10453756qkp.52.2022.10.21.12.57.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Oct 2022 12:57:18 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 14:57:21 -0500
+From:   David Vernet <void@manifault.com>
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next v2 2/6] bpf: Implement cgroup storage available
+ to non-cgroup-attached bpf progs
+Message-ID: <Y1L5oZdzn3kxZL+G@maniforge.dhcp.thefacebook.com>
+References: <20221020221255.3553649-1-yhs@fb.com>
+ <20221020221306.3554250-1-yhs@fb.com>
+ <Y1IsqVB2H7kksOh8@maniforge.dhcp.thefacebook.com>
+ <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF CI has revealed flakiness in the task_local_storage/exit_creds test.
-The failure point in CI [1] is that null_ptr_count is equal to 0,
-which indicates that the program hasn't run yet. This points to the
-kern_sync_rcu (sys_membarrier -> synchronize_rcu underneath) not
-waiting sufficiently.
+On Fri, Oct 21, 2022 at 10:33:41AM -0700, Yonghong Song wrote:
 
-Indeed, synchronize_rcu only waits for read-side sections that started
-before the call. If the program execution starts *during* the
-synchronize_rcu invocation (due to, say, preemption), the test won't
-wait long enough.
+[...]
 
-As a speculative fix, make the synchornize_rcu calls in a loop until
-an explicit run counter has gone up.
+> > >   /* Note that tracing related programs such as
+> > > @@ -5435,6 +5443,42 @@ union bpf_attr {
+> > >    *		**-E2BIG** if user-space has tried to publish a sample which is
+> > >    *		larger than the size of the ring buffer, or which cannot fit
+> > >    *		within a struct bpf_dynptr.
+> > > + *
+> > > + * void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgroup, void *value, u64 flags)
+> > > + *	Description
+> > > + *		Get a bpf_local_storage from the *cgroup*.
+> > > + *
+> > > + *		Logically, it could be thought of as getting the value from
+> > > + *		a *map* with *cgroup* as the **key**.  From this
+> > > + *		perspective,  the usage is not much different from
+> > > + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
+> > > + *		helper enforces the key must be a cgroup struct and the map must also
+> > > + *		be a **BPF_MAP_TYPE_CGRP_STORAGE**.
+> > > + *
+> > > + *		Underneath, the value is stored locally at *cgroup* instead of
+> > > + *		the *map*.  The *map* is used as the bpf-local-storage
+> > > + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+> > > + *		searched against all bpf_local_storage residing at *cgroup*.
+> > 
+> > IMO this paragraph is a bit hard to parse. Please correct me if I'm
+> > wrong, but I think what it's trying to convey is that when an instance
+> > of cgroup bpf-local-storage is accessed by a program in e.g.
+> > bpf_cgrp_storage_get(), all of the cgroup bpf_local_storage entries are
+> > iterated over in the struct cgroup object until this program's local
+> > storage instance is found. Is that right? If so, perhaps something like
+> > this would be more clear:
+> 
+> yes. your above interpretation is correct.
+> 
+> > 
+> > In reality, the local-storage value is embedded directly inside of the
+> > *cgroup* object itself, rather than being located in the
+> > **BPF_MAP_TYPE_CGRP_STORAGE** map. When the local-storage value is
+> > queried for some *map* on a *cgroup* object, the kernel will perform an
+> > O(n) iteration over all of the live local-storage values for that
+> > *cgroup* object until the local-storage value for the *map* is found.
+> 
+> Sounds okay. I can change the explanation like the above.
 
-  [1]: https://github.com/kernel-patches/bpf/actions/runs/3268263235/jobs/5=
-374940791
+Thanks!
 
-Signed-off-by: Delyan Kratunov <delyank@meta.com>
----
-v2 -> v3:
-Fix Signed-off-by line. Love when my email gets silently rewritten.
+> > > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> > > index 341c94f208f4..3a12e6b400a2 100644
+> > > --- a/kernel/bpf/Makefile
+> > > +++ b/kernel/bpf/Makefile
+> > > @@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
+> > >   obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+> > >   endif
+> > >   ifeq ($(CONFIG_CGROUPS),y)
+> > 
+> > I assume that you double checked that it's valid to compile the helper
+> > with CONFIG_CGROUPS && !CONFIG_CGROUP_BPF, but I must admit that even if
+> > that's the case, I'm not following why we would want the map to be
+> > compiled with a different kconfig option than the helper that provides
+> > access to it. If theres's a precedent for doing this then I suppose it's
+> > fine, but it does seem wrong and/or at least wasteful to compile these
+> > helpers in if CONFIG_CGROUPS is defined but CONFIG_CGROUP_BPF is not.
+> 
+> The following is my understanding.
+> CONFIG_CGROUP_BPF guards kernel/bpf/cgroup.c which contains implementation
+> mostly for cgroup-attached program types, helpers, etc.
 
-v1 -> v2:
-Explicit loop counter and MAX_SYNC_RCU_CALLS guard.
+Then why are we using it to guard
+BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops)?
 
- .../bpf/prog_tests/task_local_storage.c        | 18 +++++++++++++++---
- .../bpf/progs/task_local_storage_exit_creds.c  |  3 +++
- 2 files changed, 18 insertions(+), 3 deletions(-)
+> A lot of other cgroup-related implementation like cgroup_iter, some
+> cgroup related helper (not related to cgroup-attached program types), etc.
+> are guarded with CONFIG_CGROUPS and CONFIG_BPF_SYSCALL.
+> 
+> Note that it is totally possible CONFIG_CGROUP_BPF is 'n' while
+> CONFIG_CGROUPS and CONFIG_BPF_SYSCALL are 'y'.
+> 
+> So for cgroup local storage implemented in this patch set,
+> using CONFIG_CGROUPS and CONFIG_BPF_SYSCALL seems okay.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/=
-tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-index 035c263aab1b..99a42a2b6e14 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -39,7 +39,8 @@ static void test_sys_enter_exit(void)
- static void test_exit_creds(void)
- {
- 	struct task_local_storage_exit_creds *skel;
--	int err;
-+	int err, run_count, sync_rcu_calls =3D 0;
-+	const int MAX_SYNC_RCU_CALLS =3D 1000;
-=20
- 	skel =3D task_local_storage_exit_creds__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-@@ -53,8 +54,19 @@ static void test_exit_creds(void)
- 	if (CHECK_FAIL(system("ls > /dev/null")))
- 		goto out;
-=20
--	/* sync rcu to make sure exit_creds() is called for "ls" */
--	kern_sync_rcu();
-+	/* kern_sync_rcu is not enough on its own as the read section we want
-+	 * to wait for may start after we enter synchronize_rcu, so our call
-+	 * won't wait for the section to finish. Loop on the run counter
-+	 * as well to ensure the program has run.
-+	 */
-+	do {
-+		kern_sync_rcu();
-+		run_count =3D __atomic_load_n(&skel->bss->run_count, __ATOMIC_SEQ_CST);
-+	} while (run_count =3D=3D 0 && ++sync_rcu_calls < MAX_SYNC_RCU_CALLS);
-+
-+	ASSERT_NEQ(sync_rcu_calls, MAX_SYNC_RCU_CALLS,
-+		   "sync_rcu count too high");
-+	ASSERT_NEQ(run_count, 0, "run_count");
- 	ASSERT_EQ(skel->bss->valid_ptr_count, 0, "valid_ptr_count");
- 	ASSERT_NEQ(skel->bss->null_ptr_count, 0, "null_ptr_count");
- out:
-diff --git a/tools/testing/selftests/bpf/progs/task_local_storage_exit_cred=
-s.c b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
-index 81758c0aef99..41d88ed222ff 100644
---- a/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
-+++ b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
-@@ -14,6 +14,7 @@ struct {
- 	__type(value, __u64);
- } task_storage SEC(".maps");
-=20
-+int run_count =3D 0;
- int valid_ptr_count =3D 0;
- int null_ptr_count =3D 0;
-=20
-@@ -28,5 +29,7 @@ int BPF_PROG(trace_exit_creds, struct task_struct *task)
- 		__sync_fetch_and_add(&valid_ptr_count, 1);
- 	else
- 		__sync_fetch_and_add(&null_ptr_count, 1);
-+
-+	__sync_fetch_and_add(&run_count, 1);
- 	return 0;
- }
---=20
-2.37.3
+I agree that it's fine to use CONFIG_CGROUPS here. What I'm not
+understanding is why we're using CONFIG_CGROUP_BPF to guard defining
+BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops), and then
+in the Makefile we're using CONFIG_CGROUPS to add bpf_cgrp_storage.o.
+
+In other words, I think there's a mismatch between:
+
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -90,6 +90,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY, cgroup_array_map_ops)
+ #ifdef CONFIG_CGROUP_BPF
+
+^^ why this instead of CONFIG_CGROUPS for BPF_MAP_TYPE_CGRP_STORAGE?
+
+ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, cgroup_storage_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE, cgroup_storage_map_ops)
++BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops)
+ #endif
+ BPF_MAP_TYPE(BPF_MAP_TYPE_HASH, htab_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_HASH, htab_percpu_map_ops)
+
+and
+
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 341c94f208f4..3a12e6b400a2 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
+ obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+ endif
+ ifeq ($(CONFIG_CGROUPS),y)
+-obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
++obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgrp_storage.o
+ endif
+ obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+ ifeq ($(CONFIG_INET),y)
+
+> > > -obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
+> > > +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgrp_storage.o
+> > >   endif
+> > >   obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+> > >   ifeq ($(CONFIG_INET),y)
+
+[...]
+
+> > > +	 * could be modifying the local_storage->list now.
+> > > +	 * Thus, no elem can be added-to or deleted-from the
+> > > +	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> > > +	 *
+> > > +	 * It is racing with bpf_local_storage_map_free() alone
+> > > +	 * when unlinking elem from the local_storage->list and
+> > > +	 * the map's bucket->list.
+> > > +	 */
+> > > +	bpf_cgrp_storage_lock();
+> > > +	raw_spin_lock_irqsave(&local_storage->lock, flags);
+> > > +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> > > +		bpf_selem_unlink_map(selem);
+> > > +		free_cgroup_storage =
+> > > +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
+> > 
+> > This still requires a comment explaining why it's OK to overwrite
+> > free_cgroup_storage with a previous value from calling
+> > bpf_selem_unlink_storage_nolock(). Even if that is safe, this looks like
+> > a pretty weird programming pattern, and IMO doing this feels more
+> > intentional and future-proof:
+> > 
+> > if (bpf_selem_unlink_storage_nolock(local_storage, selem, false, false))
+> > 	free_cgroup_storage = true;
+> 
+> We have a comment a few lines below.
+>   /* free_cgroup_storage should always be true as long as
+>    * local_storage->list was non-empty.
+>    */
+>   if (free_cgroup_storage)
+> 	kfree_rcu(local_storage, rcu);
+
+IMO that comment doesn't provide much useful information -- it states an
+assumption, but doesn't give a reason for it.
+
+> I will add more explanation in the above code like
+> 
+> 	bpf_selem_unlink_map(selem);
+> 	/* If local_storage list only have one element, the
+> 	 * bpf_selem_unlink_storage_nolock() will return true.
+> 	 * Otherwise, it will return false. The current loop iteration
+> 	 * intends to remove all local storage. So the last iteration
+> 	 * of the loop will set the free_cgroup_storage to true.
+> 	 */
+> 	free_cgroup_storage =
+> 		bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
+
+Thanks, this is the type of comment I was looking for.
+
+Also, I realize this was copy-pasted from a number of other possible
+locations in the codebase which are doing the same thing, but I still
+think this pattern is an odd and brittle way to do this. We're relying
+on an abstracted implementation detail of
+bpf_selem_unlink_storage_nolock() for correctness, which IMO is a signal
+that bpf_selem_unlink_storage_nolock() should probably be the one
+invoking kfree_rcu() on behalf of callers in the first place.  It looks
+like all of the callers end up calling kfree_rcu() on the struct
+bpf_local_storage * if bpf_selem_unlink_storage_nolock() returns true,
+so can we just move the responsibility of freeing the local storage
+object down into bpf_selem_unlink_storage_nolock() where it's unlinked?
+
+IMO this can be done in a separate patch set, if we decide it's worth
+doing at all.
+
+> > 
+> > > +	}
+> > > +	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+> > > +	bpf_cgrp_storage_unlock();
+> > > +	rcu_read_unlock();
+> > > +
+> > > +	/* free_cgroup_storage should always be true as long as
+> > > +	 * local_storage->list was non-empty.
+> > > +	 */
+> > > +	if (free_cgroup_storage)
+> > > +		kfree_rcu(local_storage, rcu);
+> > > +}
+> > > +
+> > > +static struct bpf_local_storage_data *
+> > > +cgroup_storage_lookup(struct cgroup *cgroup, struct bpf_map *map, bool cacheit_lockit)
+> > > +{
+> > > +	struct bpf_local_storage *cgroup_storage;
+> > > +	struct bpf_local_storage_map *smap;
+> > > +
+> > > +	cgroup_storage = rcu_dereference_check(cgroup->bpf_cgrp_storage,
+> > > +					       bpf_rcu_lock_held());
+> > > +	if (!cgroup_storage)
+> > > +		return NULL;
+> > > +
+> > > +	smap = (struct bpf_local_storage_map *)map;
+> > > +	return bpf_local_storage_lookup(cgroup_storage, smap, cacheit_lockit);
+> > > +}
+> > > +
+> > > +static void *bpf_cgrp_storage_lookup_elem(struct bpf_map *map, void *key)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +	struct cgroup *cgroup;
+> > > +	int fd;
+> > > +
+> > > +	fd = *(int *)key;
+> > > +	cgroup = cgroup_get_from_fd(fd);
+> > > +	if (IS_ERR(cgroup))
+> > > +		return ERR_CAST(cgroup);
+> > > +
+> > > +	bpf_cgrp_storage_lock();
+> > > +	sdata = cgroup_storage_lookup(cgroup, map, true);
+> > > +	bpf_cgrp_storage_unlock();
+> > > +	cgroup_put(cgroup);
+> > > +	return sdata ? sdata->data : NULL;
+> > > +}
+> > 
+> > Stanislav pointed out in the v1 revision that there's a lot of very
+> > similar logic in task storage, and I think you'd mentioned that you were
+> > going to think about generalizing some of that. Have you had a chance to
+> > consider?
+> 
+> It is hard to have a common function for
+> lookup_elem/update_elem/delete_elem(). They are quite different as each
+> heavily involves
+> task/cgroup-specific functions.
+
+Yes agreed, each implementation is acquiring their own references, and
+finding the backing element in whatever way it was implemented, etc.
+
+> but map_alloc and map_free could have common helpers.
+
+Agreed, and many of the static functions that are invoked on those paths
+such as bpf_cgrp_storage_free(), bpf_cgrp_storage_lock(), etc possibly
+as well. In general this feels like something we could pretty easily
+simplify using something like a structure with callbacks to implement
+the pieces of logic that are specific to each local storage type, such
+as getting the struct bpf_local_storage __rcu
+* pointer from some context (e.g.  cgroup_storage_ptr()). It doesn't
+necessarily need to block this change, but IMO we should clean this up
+soon because a lot of this is nearly a 100% copy-paste of other local
+storage implementations.
+
+Thanks,
+David
