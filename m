@@ -2,51 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DE060808E
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 23:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A00B6080C5
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 23:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiJUVKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 17:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
+        id S229448AbiJUVai (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 17:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiJUVKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 17:10:33 -0400
+        with ESMTP id S229629AbiJUVah (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 17:30:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F31A11DA8C
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 14:10:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9107224CC32;
+        Fri, 21 Oct 2022 14:30:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F93461F87
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 21:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8BFDEC433D7;
-        Fri, 21 Oct 2022 21:10:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D0C661F93;
+        Fri, 21 Oct 2022 21:30:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C136BC433B5;
+        Fri, 21 Oct 2022 21:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666386616;
-        bh=/upXijRVagdbAhL94bvWnx9s1RPyDOUPLC4ZxkAAqU4=;
+        s=k20201202; t=1666387832;
+        bh=odl3zYkOMPgjkzgtfo2vZKSQF7mnCwR7KAENKw8l/Uo=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dBtLbY5SgD37qdRjk7VuWehFLVHyQOfsTZzYIWmjl9pc81Y0zbCLU1BrBgPsirgG6
-         5C0VJX1Xd+twGfugkZPGD28X0OpJlIlNGTIaJDmsZXlbPivbCkkO07eWaX2BoXoW4B
-         4aP6CuUiP4QAK1gklnnRwWcZUllZEBIR3uUquwTPH36I12b8/7FTfLwvsYIoDzILDG
-         1DLrkWT5JBXZw+jS9DLDQO28aiSoBgijiqLi/J5NUf941JmsGaTHuxjf9PkHrLKboi
-         t1m/vwq+ZlGG8jbpufZAi79+jHUjWherh7VuqGo6sGgyq3iVU5jzqKSp01YXdhO6b8
-         d79usZmWCIFJw==
+        b=QQ7aYppSFi5NZGqmO4ICuXjsT8DEkkTzXoKvjHZPdmbAJcdEOEu/HksnLyFZaIOQ8
+         C0HUBbziOp0uw9nAf6OynZKy6JKEwPLHCjP5pS7lYElc0jTjmIOJWVf7eWhpa73t+r
+         ATWSr+7Zf/D2tJ9swlfKtA/c18c2ZU0QPisTF/h25dufDOQp79gh9pYESMSmdWhuME
+         Il6fmzo684Ii20+3gBfEfJ0qrN7SCyr84jsGDQbQWpVnVmHNOf9AmrFXdbMG0ODpwv
+         UiK+cjqC9bWyJbvDFblvuQdPKX86XV4h73HP+8yO7QCKb9xm3JjHl2hnPaM7vuSUEX
+         M6pyhOXXZ0hUA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6C624E270E1;
-        Fri, 21 Oct 2022 21:10:16 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9EF16E270E1;
+        Fri, 21 Oct 2022 21:30:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: fix task_local_storage/exit_creds
- rcu usage
+Subject: Re: [PATCH] libbpf: Avoid allocating reg_name with sscanf in
+ parse_usdt_arg()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166638661643.2639.16814405561858562162.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Oct 2022 21:10:16 +0000
-References: <156d4ef82275a074e8da8f4cffbd01b0c1466493.camel@meta.com>
-In-Reply-To: <156d4ef82275a074e8da8f4cffbd01b0c1466493.camel@meta.com>
-To:     Delyan Kratunov <delyank@meta.com>
-Cc:     daniel@iogearbox.net, songliubraving@meta.com, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org
+Message-Id: <166638783264.15541.17720155984505413324.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Oct 2022 21:30:32 +0000
+References: <20221018145538.2046842-1-xukuohai@huaweicloud.com>
+In-Reply-To: <20221018145538.2046842-1-xukuohai@huaweicloud.com>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org
 X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -59,25 +62,21 @@ X-Mailing-List: bpf@vger.kernel.org
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+by Andrii Nakryiko <andrii@kernel.org>:
 
-On Fri, 21 Oct 2022 19:36:38 +0000 you wrote:
-> BPF CI has revealed flakiness in the task_local_storage/exit_creds test.
-> The failure point in CI [1] is that null_ptr_count is equal to 0,
-> which indicates that the program hasn't run yet. This points to the
-> kern_sync_rcu (sys_membarrier -> synchronize_rcu underneath) not
-> waiting sufficiently.
+On Tue, 18 Oct 2022 10:55:38 -0400 you wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
 > 
-> Indeed, synchronize_rcu only waits for read-side sections that started
-> before the call. If the program execution starts *during* the
-> synchronize_rcu invocation (due to, say, preemption), the test won't
-> wait long enough.
+> The reg_name in parse_usdt_arg() is used to hold register name, which
+> is short enough to be held in a 16-byte array, so we could define
+> reg_name as char reg_name[16] to avoid dynamically allocating reg_name
+> with sscanf.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v3] selftests/bpf: fix task_local_storage/exit_creds rcu usage
-    https://git.kernel.org/bpf/bpf-next/c/eb814cf1adea
+  - libbpf: Avoid allocating reg_name with sscanf in parse_usdt_arg()
+    https://git.kernel.org/bpf/bpf-next/c/d9740535b857
 
 You are awesome, thank you!
 -- 
