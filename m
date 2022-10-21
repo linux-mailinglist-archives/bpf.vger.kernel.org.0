@@ -2,55 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF3B607E59
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 20:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147FA607E66
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 20:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbiJUShR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 14:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
+        id S229695AbiJUSuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 14:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbiJUShQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 14:37:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B591EEA0A;
-        Fri, 21 Oct 2022 11:37:14 -0700 (PDT)
+        with ESMTP id S229506AbiJUSuG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 14:50:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5481A5723C;
+        Fri, 21 Oct 2022 11:50:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0D8ECB82CF5;
-        Fri, 21 Oct 2022 18:37:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB48C433C1;
-        Fri, 21 Oct 2022 18:37:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E598061E60;
+        Fri, 21 Oct 2022 18:50:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 372D9C433D6;
+        Fri, 21 Oct 2022 18:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666377431;
-        bh=LUPV3WFGe0VFeT0xn0tDwdGYmTwNgllfk2nwY2G2Cvk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KDRt3YykB+rsUHZvJw2KedzwDm/vn/MB9IKsfKXWxJ69az5yFyg4BWQ6jfXmiaOup
-         pXjwKKoktv4sha/53zdfD0j8NZ/QFxz4eWZTRJn/D9OlOoksMvqkcymTeUT+Ci1j6w
-         20m5aAfI5N1U/nFxs3Ogrs3wzapOgGGOLZnMHTAZRBFDEeKhWNHmWt7iSg1p0gLBYZ
-         7NaFXcxoj1LgN8AkRPQRRSlRelPm4Rikil46MaO2O/08LGx2nG2x5uTLiMQBnkcea9
-         oFdWBs8V+X71t2F8G7A58OrfOIPoF1pTplgALpFpoMzOF/DrpFZQusAKJUg+AwfRPt
-         IN9xL3PaBir0Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2780C40468; Fri, 21 Oct 2022 15:37:09 -0300 (-03)
-Date:   Fri, 21 Oct 2022 15:37:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        dwarves@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves] dwarves: zero-initialize struct cu in cu__new()
- to prevent incorrect BTF types
-Message-ID: <Y1Lm1al9YEGbjd7i@kernel.org>
-References: <1666364523-9648-1-git-send-email-alan.maguire@oracle.com>
- <Y1LJlPBQauNS/xkX@krava>
- <CAEf4BzbtRqkcx8CHBqdXXWmWLeX-zsrEYMy_CgL7i48PTYjCNg@mail.gmail.com>
+        s=k20201202; t=1666378203;
+        bh=MIMk8SykGtHu+JTAbFVSE1Qacg13FwxfgiTIJ0aoahs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WGZc+y5LARC/x5z6wooSAa9pmaYMba9XUckBwbtotub0Nnen6fZoTmjE52CTegJye
+         777gCJq0VsQKIHXzsriNrhHFYGU/8xDrirP3ZElVxxN4yYPu9pjiTn2+LWaL4FdXFN
+         IjEqJkCL/we7LCE3NuDLzfMFcvP32UB4exBVtyOC64d1goKsWSP4lCKjigNqU0CfXc
+         oXcwbV/iJvQfBioFaSOp5agohTWoFwEh0d4krGL6lizyfIzXEuMXSY4FiXKUdXOmkd
+         hkHI7NtWuy9RcLEncUYSkD08faYcaAcH8AKuayMjHcbigrTtJ9LeYY4nN/+JO6Dqcw
+         kgpumB9cLDplw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CA29B5C0543; Fri, 21 Oct 2022 11:50:02 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 11:50:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
+ chaining
+Message-ID: <20221021185002.GP5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221014113946.965131-1-houtao@huaweicloud.com>
+ <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
+ <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
+ <20221018150824.GP5600@paulmck-ThinkPad-P17-Gen-1>
+ <da44591b-71d3-1cf4-fb68-1218d7a531b7@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbtRqkcx8CHBqdXXWmWLeX-zsrEYMy_CgL7i48PTYjCNg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <da44591b-71d3-1cf4-fb68-1218d7a531b7@huaweicloud.com>
 X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,125 +72,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Oct 21, 2022 at 09:35:50AM -0700, Andrii Nakryiko escreveu:
-> On Fri, Oct 21, 2022 at 9:32 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > On Fri, Oct 21, 2022 at 04:02:03PM +0100, Alan Maguire wrote:
-> > > BTF deduplication was throwing some strange results, where core kernel
-> > > data types were failing to deduplicate due to the return values
-> > > of function type members being void (0) instead of the actual type
-> > > (unsigned int).  An example of this can be seen below, where
-> > > "struct dst_ops" was failing to deduplicate between kernel and
-> > > module:
-> > >
-> > > struct dst_ops {
-> > >         short unsigned int family;
-> > >         unsigned int gc_thresh;
-> > >         int (*gc)(struct dst_ops *);
-> > >         struct dst_entry * (*check)(struct dst_entry *, __u32);
-> > >         unsigned int (*default_advmss)(const struct dst_entry *);
-> > >         unsigned int (*mtu)(const struct dst_entry *);
-> > > ...
-> > >
-> > > struct dst_ops___2 {
-> > >         short unsigned int family;
-> > >         unsigned int gc_thresh;
-> > >         int (*gc)(struct dst_ops___2 *);
-> > >         struct dst_entry___2 * (*check)(struct dst_entry___2 *, __u32);
-> > >         void (*default_advmss)(const struct dst_entry___2 *);
-> > >         void (*mtu)(const struct dst_entry___2 *);
-> > > ...
-> > >
-> > > This was seen with
-> > >
-> > > bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-> > >
-> > > ...which rewrites the return value as 0 (void) when it is marked
-> > > as matching DW_TAG_unspecified_type:
-> > >
-> > > static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t type_id_off, uint32_t tag_type)
-> > > {
-> > >        if (tag_type == 0)
-> > >                return 0;
-> > >
-> > >        if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
-> > >                // No provision for encoding this, turn it into void.
-> > >                return 0;
-> > >        }
-> > >
-> > >        return type_id_off + tag_type;
-> > > }
-> > >
-> > > However the odd thing was that on further examination, the unspecified type
-> > > was not being set, so why was this logic being tripped?  Futher debugging
-> > > showed that the encoder->cu->unspecified_type.tag value was garbage, and
-> > > the type id happened to collide with "unsigned int"; as a result we
-> > > were replacing unsigned ints with void return values, and since this
-> > > was being done to function type members in structs, it triggered a
-> > > type mismatch which failed deduplication between kernel and module.
-> > >
-> > > The fix is simply to calloc() the cu in cu__new() instead.
-> > >
-> > > Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >
-> > awesome, this fixes the missing dedup I was seeing
-> > with current pahole:
-> >
-> >         $ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
-> >         69
-> >
-> > with this patch:
-> >
-> >         $ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
-> >         1
-> >
+On Fri, Oct 21, 2022 at 03:08:21PM +0800, Hou Tao wrote:
+> Hi,
 > 
-> Nice and a great catch! I generally try to stick to calloc() in libbpf
-> exactly so I don't have to worry about stuff like this.
+> On 10/18/2022 11:08 PM, Paul E. McKenney wrote:
+> > On Tue, Oct 18, 2022 at 03:31:20PM +0800, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> On 10/17/2022 9:39 PM, Paul E. McKenney wrote:
+> >>> On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
+> SNIP
+> >>>
+> >> Thanks for the review. But it seems I missed another possible use case for
+> >> rcu_trace_implies_rcu_gp() in bpf memory allocator. The code snippet for
+> >> free_mem_alloc() is as following:
+> >>
+> >> static void free_mem_alloc(struct bpf_mem_alloc *ma)
+> >> {
+> >>         /* waiting_for_gp lists was drained, but __free_rcu might
+> >>          * still execute. Wait for it now before we freeing percpu caches.
+> >>          */
+> >>         rcu_barrier_tasks_trace();
+> >>         rcu_barrier();
+> >>         free_mem_alloc_no_barrier(ma);
+> >> }
+> >>
+> >> It uses rcu_barrier_tasks_trace() and rcu_barrier() to wait for the completion
+> >> of pending call_rcu_tasks_trace()s and call_rcu()s. I think it is also safe to
+> >> check rcu_trace_implies_rcu_gp() in free_mem_alloc() and if it is true, there is
+> >> no need to call rcu_barrier().
+> >>
+> >> static void free_mem_alloc(struct bpf_mem_alloc *ma)
+> >> {
+> >>         /* waiting_for_gp lists was drained, but __free_rcu_tasks_trace()
+> >>          * or __free_rcu() might still execute. Wait for it now before we
+> >>          * freeing percpu caches.
+> >>          */
+> >>         rcu_barrier_tasks_trace();
+> >>         if (!rcu_trace_implies_rcu_gp())
+> >>                 rcu_barrier();
+> >>         free_mem_alloc_no_barrier(ma);
+> >> }
+> >>
+> >> Does the above change look good to you ? If it is, I will post v3 to include the
+> >> above change and add your Reviewed-by tag.
+> > Unfortunately, although synchronize_rcu_tasks_trace() implies
+> > that synchronize_rcu(), there is no relationship between the
+> > callbacks.  Furthermore, rcu_barrier_tasks_trace() does not imply
+> > synchronize_rcu_tasks_trace().
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
- 
-> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Yes. I see. And according to the code, if there is not pending cb,
+> rcu_barrier_tasks_trace() will returned immediately. It is also possible
+> rcu_tasks_trace kthread is in the middle of grace period waiting when invoking
+> rcu_barrier_task_trace(), so rcu_barrier_task_trace() does not imply
+> synchronize_rcu_tasks_trace().
 
-Thanks, applied, my bad, I just changed it to zalloc():
+Very good!
 
-â¬¢[acme@toolbox pahole]$ grep -A3 'zalloc(size_t' dutil.c
-void *zalloc(size_t size)
-{
-        return calloc(1, size);
-}
-â¬¢[acme@toolbox pahole]$
+> > So the above change really would break things.  Please do not do it.
+> 
+> However I am a little confused about the conclusion. If only considering the
+> invocations of call_rcu() and call_rcu_tasks_trace() in kernel/bpf/memalloc.c, I
+> think it is safe to do so, right ? Because if  rcu_trace_implies_rcu_gp() is
+> true, there will be no invocation of call_rcu() and rcu_barrier_tasks_trace()
+> will wait for the completion of pending call_rcu_tasks_trace(). If
+> rcu_trace_implies_rcu_gp(), rcu_barrier_tasks_trace() and rcu_barrier() will do
+> the job. If considering the invocations of call_rcu() in other places, I think
+> it is definitely unsafe to do that, right ?
 
-That is used in many places, but unfortunately not on this specific case
-:-\
+Agreed, I am being cautious and pessimistic in assuming that there are
+other call_rcu() invocations.  On the other hand, my caution and pessimism
+is based on their having been other call_rcu() invocations in the past.
+So please verify that there are none before making this sort of change.
 
-- Arnaldo
+							Thanx, Paul
 
-â¬¢[acme@toolbox pahole]$ grep 'zalloc(' *.c
-btf_encoder.c:	struct btf_encoder *encoder = zalloc(sizeof(*encoder));
-btf_loader.c:	struct tag *tag = zalloc(size);
-btf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-btf_loader.c:	struct tag *tag = zalloc(sizeof(*tag));
-ctf_loader.c:	struct tag *tag = zalloc(size);
-ctf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-ctf_loader.c:		struct class_member *member = zalloc(sizeof(*member));
-ctf_loader.c:	struct tag *tag = zalloc(sizeof(*tag));
-dutil.c:void *zalloc(size_t size)
-dwarf_loader.c:	struct dwarf_cu *dwarf_cu = cu__zalloc(cu, sizeof(*dwarf_cu));
-dwarf_loader.c:	struct dwarf_tag *dtag = cu__zalloc(dcu->cu, (sizeof(*dtag) + (spec ? sizeof(dwarf_off_ref) : 0)));
-dwarf_loader.c:	struct tag *tag = cu__zalloc(dcu->cu, size);
-dwarf_loader.c:		struct type *new_typedef = cu__zalloc(cu, sizeof(*new_typedef));
-dwarf_loader.c:		recoded = cu__zalloc(cu, sizeof(*recoded));
-dwarf_loader.c:		struct base_type *new_bt = cu__zalloc(cu, sizeof(*new_bt));
-dwarf_loader.c:		struct type *new_enum = cu__zalloc(cu, sizeof(*new_enum));
-dwarf_loader.c:	annot = zalloc(sizeof(*annot));
-dwarf_loader.c:			dcu = zalloc(sizeof(*dcu));
-dwarves.c:static void *obstack_zalloc(struct obstack *obstack, size_t size)
-dwarves.c:void *cu__zalloc(struct cu *cu, size_t size)
-dwarves.c:		return obstack_zalloc(&cu->obstack, size);
-dwarves.c:	return zalloc(size);
-dwarves.c:	struct cu *cu = zalloc(sizeof(*cu) + build_id_len);
-elf_symtab.c:	struct elf_symtab *symtab = zalloc(sizeof(*symtab));
-libctf.c:	struct ctf *ctf = zalloc(sizeof(*ctf));
-pahole.c:	struct prototype *prototype = zalloc(sizeof(*prototype) + strlen(expression) + 1);
-â¬¢[acme@toolbox pahole]$
+> > You could use workqueues or similar to make the rcu_barrier_tasks_trace()
+> > and the rcu_barrier() wait concurrently, though.  This would of course
+> > require some synchronization.
+> Thanks for the suggestion. Will check it later.
+> >
+> > 							Thanx, Paul
+> >
+> >>>> Change Log:
+> >>>>
+> >>>> v2:
+> >>>>  * codify the implication of RCU Tasks Trace grace period instead of
+> >>>>    assuming for it
+> >>>>
+> >>>> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
+> >>>>
+> >>>> Hou Tao (3):
+> >>>>   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
+> >>>>   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
+> >>>>   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
+> >>>>
+> >>>> Paul E. McKenney (1):
+> >>>>   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
+> >>>>
+> >>>>  include/linux/rcupdate.h       | 12 ++++++++++++
+> >>>>  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
+> >>>>  kernel/bpf/core.c              |  8 +++++++-
+> >>>>  kernel/bpf/memalloc.c          | 15 ++++++++++-----
+> >>>>  kernel/rcu/tasks.h             |  2 ++
+> >>>>  5 files changed, 42 insertions(+), 8 deletions(-)
+> >>>>
+> >>>> -- 
+> >>>> 2.29.2
+> >>>>
+> >>> .
+> 
