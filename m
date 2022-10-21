@@ -2,221 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC742608227
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54687608242
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiJUXpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 19:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S229921AbiJUXu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 19:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiJUXpI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 19:45:08 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21B6EA376
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:45:03 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29LMHjKb019604
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:45:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=ILRD4lSc6n7tsHtW9I8dWkqGURU3vIrbM4fbXEppcYg=;
- b=eBmIcn1eIzpF45sBWyocvZjjPM7YHAE41xFrUNRhocYkjGbcfm0IaJY4vW8GCXfo0zpR
- TmArdqdBCsDRzUt0UAhib2EbuTrQWT8LlqLFlBT8z48AL4/lus3KOFzb+/c0Dp68gQeD
- YbCpXmhNgAybW1ZDVa6Z7fwX8bytcEEMHr4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kbx02cs7t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:45:02 -0700
-Received: from twshared3704.02.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 16:45:01 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id A049E1101137D; Fri, 21 Oct 2022 16:44:53 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v3 7/7] docs/bpf: Add documentation for map type BPF_MAP_TYPE_CGRP_STROAGE
-Date:   Fri, 21 Oct 2022 16:44:53 -0700
-Message-ID: <20221021234453.2334731-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221021234416.2328241-1-yhs@fb.com>
-References: <20221021234416.2328241-1-yhs@fb.com>
+        with ESMTP id S229928AbiJUXuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 19:50:21 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C90D10EA17
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:50:05 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id l145so5115373ybl.0
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4czg/qu66NqXwzG9dGIHux0nNP2u6mY7jwy4TsVK5Qo=;
+        b=PAqL0RrRpzks/1kCgPwxA0aauRVXAAvI50NOPlDnErX6FN8JJsKbfuEP5unQWM5Wz+
+         AqfMOd9PGj71bXMvEiuVMXz584XiiOihZoVLqjgbE14BAKiWSsG4IVRR2sR2k0SenUzH
+         bMgu71YXtxO/KphcLDkw+UDRaNu+nZAHyU3ialrllbJBR4HX2jAtm7gbGgRH28VEuDqM
+         UGwIJ4yFtMPndZJSoD2IMdOcLTQMmtq+snDNn9nnNwQBHy+IGifZTU8c8b1zbMzkqEXB
+         Wje8DNaUaogKGaDIVxEpcEe0UNmwY482X4Djpr6XcK1Fq3aPfD/RsEQjHQsAgBQF+qvl
+         QenA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4czg/qu66NqXwzG9dGIHux0nNP2u6mY7jwy4TsVK5Qo=;
+        b=EyRikdaPg+G5TC7RtoVH/nESJlyna1iZR44pr/Cts66/ory8RqW4Ie/dFp6eYCCE9O
+         ALXYeDMyC45oRWA8Zsx+scy4/I/tXS+u/ANqw5QIesIrNcyJr0+meeL75AIf4mydNdbv
+         WKVft3OxLnRxMJP5VPQAUmx2rK8MFYlGd91bLGgVoRjs58EbZSMbb88aDq2tp6+s3ZVH
+         EwFBJucfw8y01MUb6FbDNtbEqKwv/sL6VcgqXk3+eDag0kAAM0ZO0nqMhPnqkRp40bt5
+         USnbaasOmSveOk5YGZjmY5izPRwW38IJNL9MTqSWUJYKw7DbGX2MimiHM8ObEkDuQCHw
+         ifaw==
+X-Gm-Message-State: ACrzQf2TIltYc0aeXnrYqbXBEA1nupxqG8vxiHuW4sl+9+MAL21mnS7Q
+        3JQ3GdO7py8d75UaE+y1wN0Swey+AqM5exNcCxKgKQ==
+X-Google-Smtp-Source: AMsMyM5E7jZo6BTmud2RI2C8DSRQNm54+96yeahdYhyXq4B18Z+mie34vjzYsulAtGe34Wo33RiLxnhSWgITDDSFXJI=
+X-Received: by 2002:a05:6902:1244:b0:6bd:6409:9591 with SMTP id
+ t4-20020a056902124400b006bd64099591mr19158433ybu.431.1666396204051; Fri, 21
+ Oct 2022 16:50:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ARaFEZjEl8lkdNRhyy7gFa9HfBxiyLNX
-X-Proofpoint-ORIG-GUID: ARaFEZjEl8lkdNRhyy7gFa9HfBxiyLNX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <0000000000009fa63105eb7648d8@google.com> <00000000000031aec805eb76a2d4@google.com>
+ <20221020182155.ecd44ee984b1aeb2e5a2e8ed@linux-foundation.org>
+ <CAJuCfpEh0byROe58H_FtL+NMLKAvSrQW0f0wd3QiVTBdRg5CTA@mail.gmail.com>
+ <CAJuCfpF7xsZJevfj6ERsJi5tPFj0o6FATAm4k=CMsONFG86EmQ@mail.gmail.com> <CANp29Y7aNP+0hd01feB24XrCUPVa0+7kf7NiDAV_FdhPx2VkOQ@mail.gmail.com>
+In-Reply-To: <CANp29Y7aNP+0hd01feB24XrCUPVa0+7kf7NiDAV_FdhPx2VkOQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 21 Oct 2022 16:49:52 -0700
+Message-ID: <CAJuCfpF0eYsNZjQO4OcT8Pnaj9+H8UK_o4bwtLzD=n53-48hJw@mail.gmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in vm_area_dup
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com>,
+        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add some descriptions and examples for BPF_MAP_TYPE_CGRP_STROAGE.
-Also illustate the major difference between BPF_MAP_TYPE_CGRP_STROAGE
-and BPF_MAP_TYPE_CGROUP_STORAGE and recommend to use
-BPF_MAP_TYPE_CGRP_STROAGE instead of BPF_MAP_TYPE_CGROUP_STORAGE
-in the end.
+On Fri, Oct 21, 2022 at 4:12 PM Aleksandr Nogikh <nogikh@google.com> wrote:
+>
+> On Fri, Oct 21, 2022 at 2:52 PM 'Suren Baghdasaryan' via
+> syzkaller-bugs <syzkaller-bugs@googlegroups.com> wrote:
+> >
+> > On Thu, Oct 20, 2022 at 6:58 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Thu, Oct 20, 2022 at 6:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > >
+> > > > On Thu, 20 Oct 2022 05:40:43 -0700 syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com> wrote:
+> > > >
+> > > > > syzbot has found a reproducer for the following issue on:
+> > > >
+> > > > Thanks.
+> > > >
+> > > >
+> > > > > HEAD commit:    acee3e83b493 Add linux-next specific files for 20221020
+> > > > > git tree:       linux-next
+> > > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=170a8016880000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c82245cfb913f766
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=b910411d3d253dab25d8
+> > > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109e0372880000
+> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1770d752880000
+> > > > >
+> > > > > Downloadable assets:
+> > > > > disk image: https://storage.googleapis.com/syzbot-assets/98cc5896cded/disk-acee3e83.raw.xz
+> > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/b3d3eb3aa10a/vmlinux-acee3e83.xz
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com
+> > > > >
+> > > > > BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
+> > > >
+> > > > This is happening under dup_anon_vma_name().
+> > > >
+> > > > I can't spot preemption being disabled on that call path, and I assume
+> > > > this code has been exercised for some time.
+> > >
+> > > Indeed, it is unclear why copy_vma() would be called in atomic
+> > > context. I'll try to reproduce tomorrow. Maybe with lockdep enabled we
+> > > can get something interesting.
+> >
+> > Sorry for the delay. Having trouble booting the image built with the
+> > attached config. My qemu crashes with a "sched: CPU #1's llc-sibling
+> > CPU #0 is not on the same node! [node: 1 != 0]." warning before the
+> > crash. Trying to figure out why.
+>
+> qemu 6.2 changed the core-to-socket assignment and it looks like we
+> get such errors when a kernel with "numa=fake=" is run under qemu on a
+> system with multiple CPUs.
+>
+> You can try removing numa=fake=... from the CMDLINE config or just
+> manually setting the smp argument of the qemu process (e.g. -smp
+> 2,sockets=2,cores=1)
+>
+> See https://gitlab.com/qemu-project/qemu/-/issues/877
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/map_cgrp_storage.rst | 109 +++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/bpf/map_cgrp_storage.rst
+That was it. Thank you, Aleksandr!
+I can boot with the image built using the attached config but still
+can't reproduce the issue using the C reproducer... Will keep it
+running for some time to see if it eventually shows up.
+Thanks,
+Suren.
 
-diff --git a/Documentation/bpf/map_cgrp_storage.rst b/Documentation/bpf/m=
-ap_cgrp_storage.rst
-new file mode 100644
-index 000000000000..ebccc96564f7
---- /dev/null
-+++ b/Documentation/bpf/map_cgrp_storage.rst
-@@ -0,0 +1,109 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2022 Meta Platforms, Inc. and affiliates.
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+BPF_MAP_TYPE_CGRP_STORAGE
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+
-+The ``BPF_MAP_TYPE_CGRP_STORAGE`` map type represents a local fix-sized
-+storage for cgroups. It is only available with ``CONFIG_CGROUP_BPF``.
-+The programs are made available by the same Kconfig. The
-+data for a particular cgroup can be retrieved by looking up the map
-+with that cgroup.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGRP_STORAGE`` map type.
-+
-+Usage
-+=3D=3D=3D=3D=3D
-+
-+The map key must be ``sizeof(int)`` representing a cgroup fd.
-+To access the storage in a program, use ``bpf_cgrp_storage_get``::
-+
-+    void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgrou=
-p, void *value, u64 flags)
-+
-+``flags`` could be 0 or ``BPF_LOCAL_STORAGE_GET_F_CREATE`` which indicat=
-es that
-+a new local storage will be created if one does not exist.
-+
-+The local storage can be removed with ``bpf_cgrp_storage_delete``::
-+
-+    long bpf_cgrp_storage_delete(struct bpf_map *map, struct cgroup *cgr=
-oup)
-+
-+The map is available to all program types.
-+
-+Examples
-+=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+A bpf program example with BPF_MAP_TYPE_CGRP_STORAGE::
-+
-+    #include <vmlinux.h>
-+    #include <bpf/bpf_helpers.h>
-+    #include <bpf/bpf_tracing.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
-+            __uint(map_flags, BPF_F_NO_PREALLOC);
-+            __type(key, int);
-+            __type(value, long);
-+    } cgrp_storage SEC(".maps");
-+
-+    SEC("tp_btf/sys_enter")
-+    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+    {
-+            struct task_struct *task =3D bpf_get_current_task_btf();
-+            long *ptr;
-+
-+            ptr =3D bpf_cgrp_storage_get(&cgrp_storage, task->cgroups->d=
-fl_cgrp, 0,
-+                                       BPF_LOCAL_STORAGE_GET_F_CREATE);
-+            if (ptr)
-+                __sync_fetch_and_add(ptr, 1);
-+
-+            return 0;
-+    }
-+
-+Userspace accessing map declared above::
-+
-+    #include <linux/bpf.h>
-+    #include <linux/libbpf.h>
-+
-+    __u32 map_lookup(struct bpf_map *map, int cgrp_fd)
-+    {
-+            __u32 *value;
-+            value =3D bpf_map_lookup_elem(bpf_map__fd(map), &cgrp_fd);
-+            if (value)
-+                return *value;
-+            return 0;
-+    }
-+
-+Difference Between BPF_MAP_TYPE_CGRP_STORAGE and BPF_MAP_TYPE_CGROUP_STO=
-RAGE
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+
-+The old cgroup storage map ``BPF_MAP_TYPE_CGROUP_STORAGE`` has been mark=
-ed as
-+deprecated (renamed to ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``). The =
-new
-+``BPF_MAP_TYPE_CGRP_STORAGE`` map should be used instead. The following
-+illusates the main difference between ``BPF_MAP_TYPE_CGRP_STORAGE`` and
-+``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``.
-+
-+(1). ``BPF_MAP_TYPE_CGRP_STORAGE`` can be used by all program types whil=
-e
-+     ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` is available only to cgr=
-oup program types
-+     like BPF_CGROUP_INET_INGRESS or BPF_CGROUP_SOCK_OPS, etc.
-+
-+(2). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports local storage for more than =
-one
-+     cgroup while ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` only suppor=
-t one cgroup
-+     which is attached by a bpf program.
-+
-+(3). ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` allocates local storage =
-at attach time so
-+     ``bpf_get_local_storage()`` always returns non-NULL local storage.
-+     ``BPF_MAP_TYPE_CGRP_STORAGE`` allocates local storage at runtime so
-+     it is possible that ``bpf_cgrp_storage_get()`` may return null loca=
-l storage.
-+     To avoid such null local storage issue, user space can do
-+     ``bpf_map_update_elem()`` to pre-allocate local storage before a bp=
-f program
-+     is attached.
-+
-+(4). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports deleting local storage by a =
-bpf program
-+     while ``BPF_MAP_TYPE_CGROUP_STORAGE`` only deletes storage during
-+     prog detach time.
-+
-+So overall, ``BPF_MAP_TYPE_CGRP_STORAGE`` supports all ``BPF_MAP_TYPE_CG=
-ROUP_STORAGE``
-+functionality and beyond. It is recommended to use ``BPF_MAP_TYPE_CGRP_S=
-TORAGE``
-+instead of ``BPF_MAP_TYPE_CGROUP_STORAGE``.
---=20
-2.30.2
-
+>
+> > defconfig with CONFIG_ANON_VMA_NAME=y boots fine but does not
+> > reproduce the issue.
+> >
+> > >
+> > > >
+> > > > I wonder if this could be fallout from the KSM locking error which
+> > > > https://lkml.kernel.org/r/8c86678a-3bfb-3854-b1a9-ae5969e730b8@redhat.com
+> > > > addresses.  Seems quite unlikely.
+> > > >
+> > > > > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3602, name: syz-executor107
+> > > > > preempt_count: 1, expected: 0
+> > > > > RCU nest depth: 0, expected: 0
+> > > > > INFO: lockdep is turned off.
+> > > > > Preemption disabled at:
+> > > > > [<0000000000000000>] 0x0
+> > > > > CPU: 0 PID: 3602 Comm: syz-executor107 Not tainted 6.1.0-rc1-next-20221020-syzkaller #0
+> > > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+> > > > > Call Trace:
+> > > > >  <TASK>
+> > > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > > >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> > > > >  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9890
+> > > > >  might_alloc include/linux/sched/mm.h:274 [inline]
+> > > > >  slab_pre_alloc_hook mm/slab.h:727 [inline]
+> > > > >  slab_alloc_node mm/slub.c:3323 [inline]
+> > > > >  slab_alloc mm/slub.c:3411 [inline]
+> > > > >  __kmem_cache_alloc_lru mm/slub.c:3418 [inline]
+> > > > >  kmem_cache_alloc+0x2e6/0x3c0 mm/slub.c:3427
+> > > > >  vm_area_dup+0x81/0x380 kernel/fork.c:466
+> > > > >  copy_vma+0x376/0x8d0 mm/mmap.c:3216
+> > > > >  move_vma+0x449/0xf60 mm/mremap.c:626
+> > > > >  __do_sys_mremap+0x487/0x16b0 mm/mremap.c:1075
+> > > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > > > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> > > > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > > > RIP: 0033:0x7fd090fa5b29
+> > > > > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > > > > RSP: 002b:00007ffc2e90bd38 EFLAGS: 00000246 ORIG_RAX: 0000000000000019
+> > > > > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd090fa5b29
+> > > > > RDX: 0000000000001000 RSI: 0000000000004000 RDI: 00000000201c4000
+> > > > > RBP: 00007fd090f69cd0 R08: 00000000202ef000 R09: 0000000000000000
+> > > > > R10: 0000000000000003 R11: 0000000000000246 R12: 00007fd090f69d60
+> > > > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > > >  </TASK>
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/CAJuCfpF7xsZJevfj6ERsJi5tPFj0o6FATAm4k%3DCMsONFG86EmQ%40mail.gmail.com.
