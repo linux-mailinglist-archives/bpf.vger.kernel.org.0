@@ -2,71 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95F2607899
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 15:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8446078A6
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 15:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbiJUNiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 09:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S229596AbiJUNjw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 09:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbiJUNiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 09:38:00 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8342565F8;
-        Fri, 21 Oct 2022 06:37:59 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id m29-20020a05600c3b1d00b003c6bf423c71so5054623wms.0;
-        Fri, 21 Oct 2022 06:37:58 -0700 (PDT)
+        with ESMTP id S229685AbiJUNjv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 09:39:51 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4D93742A;
+        Fri, 21 Oct 2022 06:39:47 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id bk15so4822623wrb.13;
+        Fri, 21 Oct 2022 06:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PgF3erMvkQ/nPTqAM5KhZUMocLuItW+UzQkK48NYCD8=;
-        b=K8jPLGL63Olt1F7lCbQ3UoyvbJzrlSn0DT9M2HXdMxJfG00nf8CL5piElNVBAHol7X
-         YGMjKMIViUxW0He6lJvEdMwcGa8rLsAcetT4E21ee5j3VxcYhozjamFO0L9agSwHlDvy
-         ExsENlfCbL6KJYMQVTAVCYKu96teeQCwipCiImB9eLYzK1WJY4ksSTOqkFggAzzN94i6
-         QL4pfNqxOM04Szhc5Q4QGTEagdCRYCj2HmBr0NhRfnHF33VV3D78WIuLHJ8kusMD5QMU
-         rPxHmbm7paK/rv/VoJo6qOaEKfhW9jxgLPuVJTs5puzOdvs4NsuK5/QEMBigWH2r7B1e
-         16cA==
+        h=mime-version:user-agent:references:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wk3DFh2aXt0pn/EmnsKS4Q5onFCF2pDUj7gYrd6sEz8=;
+        b=eZ3WncTtALXBUfa3mu+i/dmTh0pMCd9GmnAtULYRHlkBXppmIclk8MO242aYbIFUNn
+         V7BZiUZFmxuzRsnqsczrNeTj1DTgdL0dvnKaKcXGTJDNPdr399D2K/YpU9I92ZoIBUHV
+         ixmqoaZsLCl0+jITVCsdjOXX+VR20bQNzh/gae3Wp3N5bPB6u0lbvzW6C7YNZu4zC88x
+         xqZSXfU7X2o1sHf+mJtmTcxh/hKjtnbldRQY9Jx9kwBGEKio1uyuElEBF2ld2N+f674o
+         +v7UEhtk9uZeVuUclK8UCqC/bFrBBWHFhfu+5pcO3HoJ0+jjk3rqmsV796bcc6EbtS1e
+         9lPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PgF3erMvkQ/nPTqAM5KhZUMocLuItW+UzQkK48NYCD8=;
-        b=f6NketbLltXSUXhXw0KwN9kPDvIIdNhPLLIcb2e+V08uGpVnLtJx2aFzZ5zydOmOQx
-         cdv4WLogHgHcDgjy2G4sb+kTFNI64vNp8AzmX5IkHzZriWpqh9z02Ho6E0J/7kJVG+bl
-         CthHP3dpIEFzzeBK84MK0kkD/K5W+daXv/CB83FTqK7aNf9ws47xyPdT0/Gn+2fToaoy
-         L7Frikr+NPlQ42h9V5GWvQGFJP9+EAcJcHkmtQslUeftvo/Ird9pqJWOm7aLQYJLMN4o
-         OT0SnU1GgR7krmmz4/90n22O1DR8TjlqkXHXR5hZhaBDKOCLcqEPImGV5h/gOpTBB/sT
-         AMiQ==
-X-Gm-Message-State: ACrzQf0qc0IglFg+CQQWD46FIE6NdrxslmdJg51lJnEzn5Qkp1D1lSf8
-        YCMBFaIZ7pZcD1Bksc312LU=
-X-Google-Smtp-Source: AMsMyM6FTDgQU5Wss7fI1bkRxVh0HeeWO6FzGMbf4dgxE5NXB2hH7qmsm0xZwT//hruLWB525wnBDw==
-X-Received: by 2002:a7b:cc0c:0:b0:3c5:a58f:afbc with SMTP id f12-20020a7bcc0c000000b003c5a58fafbcmr13323181wmh.169.1666359477416;
-        Fri, 21 Oct 2022 06:37:57 -0700 (PDT)
+        h=mime-version:user-agent:references:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wk3DFh2aXt0pn/EmnsKS4Q5onFCF2pDUj7gYrd6sEz8=;
+        b=hnhqLmGTqv3SX8pTv62SJToX39bSEeeKlAUVw4USrc2/HXKilRVkTE2SgoQ7fSNM0W
+         2csDi2dSyaVuaZn+51ZkIxLXtgYF7F8o+DL/rbehR/UI5s15XvzWCelG3bA6OYH76rli
+         ef7BhLsIMmz/qD5F9tq2pMBnyOngPtbvVQEexTasjuoHxiXytlvQnBlJDdv1ZP6QRjrw
+         4b77G9PXMSyjJquZ0XupKV1bhGHNWwH31Y+LA76lKEdB+gpnX65umamV+WTYqXDHSzGO
+         wh5M7DoOg+wwTD9B99R8xKuD+iGuAAfz+Xt5PR41ZXVsvRkTeTrirCpiRFEE8WdPYjIj
+         MnLw==
+X-Gm-Message-State: ACrzQf1+fdkHfSowCaJwFooSATv9EpQDcg7J+ogOMkXaR55AxvQ2eyhV
+        g5+aOnuRKoThq0ZSXIv6EfXaWA9X51Q76g==
+X-Google-Smtp-Source: AMsMyM6YR6yXeWJkNp489hmHbntM/G4gxSfif/6uF2QsH9qoG0KrKZ2A4NHQ39dul1Pi0C/ekyH2TQ==
+X-Received: by 2002:a05:6000:1cf:b0:22e:3ef1:a268 with SMTP id t15-20020a05600001cf00b0022e3ef1a268mr12329492wrx.43.1666359584935;
+        Fri, 21 Oct 2022 06:39:44 -0700 (PDT)
 Received: from imac ([2a02:8010:60a0:0:cc4f:5367:93c1:b0d5])
-        by smtp.gmail.com with ESMTPSA id 1-20020a1c1901000000b003bf3fe1d0c4sm2520459wmz.22.2022.10.21.06.37.55
+        by smtp.gmail.com with ESMTPSA id f18-20020a05600c155200b003b3365b38f9sm3104820wmg.10.2022.10.21.06.39.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 06:37:56 -0700 (PDT)
+        Fri, 21 Oct 2022 06:39:44 -0700 (PDT)
 From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        dave@dtucker.co.uk
-Subject: Re: [PATCH bpf-next v7 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
-In-Reply-To: <CAADnVQLRyP2hgvmLubnCdZuPHofQ8CGRiGq_a2FQy_ZzRimiEw@mail.gmail.com>
-        (Alexei Starovoitov's message of "Wed, 19 Oct 2022 17:05:32 -0700")
-Date:   Fri, 21 Oct 2022 14:37:38 +0100
-Message-ID: <m2fsfhuwkd.fsf@gmail.com>
-References: <20221007162755.36677-1-donald.hunter@gmail.com>
-        <20221007162755.36677-2-donald.hunter@gmail.com>
-        <CAADnVQLRyP2hgvmLubnCdZuPHofQ8CGRiGq_a2FQy_ZzRimiEw@mail.gmail.com>
+To:     mtahhan@redhat.com
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/1] doc: DEVMAPs and XDP_REDIRECT
+Date:   Fri, 21 Oct 2022 14:39:33 +0100
+Message-ID: <m24jvxuwh6.fsf@gmail.com>
+References: <20221017094753.1564273-1-mtahhan@redhat.com>
+        <20221017094753.1564273-2-mtahhan@redhat.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,62 +68,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+mtahhan@redhat.com writes:
 
-> On Fri, Oct 7, 2022 at 9:39 AM Donald Hunter <donald.hunter@gmail.com> wrote:
->
-> Actually all values are rounded up to 8.
-> Maybe we should say that all array elements are aligned to 8
-> instead of values are rounded?
-> Because values_size=4 stays as 4 from bpf prog pov.
-> The progs cannot access bytes 5,6,7,8 though that memory is consumed.
+> diff --git a/Documentation/bpf/redirect.rst b/Documentation/bpf/redirect.rst
+> new file mode 100644
+> index 000000000000..5a0377a67ff0
+> --- /dev/null
+> +++ b/Documentation/bpf/redirect.rst
+> @@ -0,0 +1,46 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +============
+> +XDP_REDIRECT
+> +============
+> +
+> +XDP_REDIRECT works by a three-step process, implemented as follows:
+> +
+> +1. The ``bpf_redirect()`` and ``bpf_redirect_map()`` helpers will lookup the
+> +   target of the redirect and store it (along with some other metadata) in a
+> +   per-CPU ``struct bpf_redirect_info``. This is where the maps above come into
+> +   play.
 
-Agreed, I will reword to mention alignment instead of rounding.
+Can you remove the last sentence above. Instead, maybe mention that the lookup
+happens in the provided map which has to be one of the supported map types.
 
->> +When using a ``BPF_MAP_TYPE_PERCPU_ARRAY`` the ``bpf_map_update_elem()`` and
->> +``bpf_map_lookup_elem()`` helpers automatically access the hash slot for the
->> +current CPU.
->
-> hash slot?
-> the copy paste went wrong? :)
-
-Good catch.
-
->> +    int bpf_prog(struct __sk_buff *skb)
->> +    {
->> +            int index = load_byte(skb,
->> +                                  ETH_HLEN + offsetof(struct iphdr, protocol));
->> +            long *value;
->
-> Please avoid using deprecated instructions like load_byte in examples.
-
-Will rewrite to use bpf_skb_load_bytes.
-
->> +    int create_array() {
->> +            int fd;
->> +            LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
->
-> Add empty line pls.
-
-Ack.
-
->> +    int lookup(int fd) {
->> +            __u32 index = 42;
->> +            long value;
->> +            int ret = bpf_map_lookup_elem(fd, &index, &value);
->
-> Empty line pls.
-> Or better yet do 'int ret;'
-> and ret = bpf_map... on a separate line.
-
-Ack.
-
->> +    int lookup(int fd) {
->> +            int ncpus = libbpf_num_possible_cpus();
->> +            __u32 index = 42, j;
->> +            long values[ncpus];
->> +            int ret = bpf_map_lookup_elem(fd, &index, &values);
->
-> same here.
-
-Ack. Thansk for the review!
+> +2. When the program returns the ``XDP_REDIRECT`` return code, the driver will
+> +   call ``xdp_do_redirect()`` which will use the information in ``struct
+> +   bpf_redirect_info`` to actually enqueue the frame into a map type-specific
+> +   bulk queue structure.
+> +
+> +3. Before exiting its NAPI poll loop, the driver will call ``xdp_do_flush()``,
+> +   which will flush all the different bulk queues, thus completing the
+> +   redirect.
+> +
+> +Pointers to the map entries will be kept around for this whole sequence of
+> +steps, protected by RCU. However, there is no top-level ``rcu_read_lock()`` in
+> +the core code; instead, the RCU protection relies on everything happening
+> +inside a single NAPI poll sequence.
+> +
+> +.. note::
+> +    Not all drivers support transmitting frames after a redirect, and for
+> +    those that do, not all of them support non-linear frames. Non-linear xdp
+> +    bufs/frames are bufs/frames that contain more than one fragment.
+> +
+> +XDP_REDIRECT works with the following map types:
+> +
+> +- BPF_MAP_TYPE_DEVMAP
+> +- BPF_MAP_TYPE_DEVMAP_HASH
+> +- BPF_MAP_TYPE_CPUMAP
+> +- BPF_MAP_TYPE_XSKMAP
+> +
+> +For more information on these maps, please see the specific map documentation.
+> +
+> +References
+> +===========
+> +
+> +- https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4106
