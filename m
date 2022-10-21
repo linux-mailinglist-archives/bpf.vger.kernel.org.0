@@ -2,77 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1326E606D2A
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 03:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFCA606D42
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 03:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbiJUBsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 21:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        id S229838AbiJUByP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 21:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbiJUBsN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 21:48:13 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384F7EE09B
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:48:12 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id a5-20020a17090aa50500b002008eeb040eso4088451pjq.1
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:48:12 -0700 (PDT)
+        with ESMTP id S229747AbiJUByO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 21:54:14 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5AD158180
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 3so1230525pfw.4
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hzevcuLXzTXCT7UXEELLCht+dXtxadN3s17XMthFybo=;
-        b=A3gM98fRa3LlyVyadT6Mq5sFX8shNkFcZGX/LMLBikqiDLO9VGQ6PBQCaSjnQz0qKF
-         Z01mKFrcVFnMUN0Pq85ymWcCamq1x5tMsjtFTvFFPDyKz6jOgjnwncvdZ3ZwN/QHdSWo
-         wJRsHCQRbCr9n+u1lz2AQeqQcm14rCxXdL3+ztf9qRjBlizqbB3Zb7k2fnwjgQhKKd6V
-         2W0zQP3llDmCvlEhnlpn/4EeS+0XOfZx82XOTJOOoQt5e03w8HJgSY39JDX0cq3RLAYo
-         QA1wHAZSC8+4WZMtUIeb9vcRLXl4Glt8I2/Qo1qMC9LwTEASpdNNx9Jpwe3beNy9S7G7
-         1csw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OaFmk9uKiWcRGJhsbfMXJYmOSEPGwWNHINoz9quSM5k=;
+        b=QbnxZmvx/o1wWMFqmRsdSo7ANwskaXmCmFyvzBTmxCykeX1s6Iv9CvTMHXsnmBu0jX
+         UVOkQqVQbckQ+sW6dman5oSadEPxeMTbmKoePQnTX0aiB9JTxNpvr9hJ5oHAMS4alcpU
+         9oa9W2JSF/iqH4ZMQrk5fk6jL0BP/GM2omLqUeYHP1hOmOaSR75hWqEbvjusav20yBB7
+         kHzg5x38Ufir2/IGsoLuhyOAw6vUiRw7MmIOoukn6WrTmyw9WsMQHoSShPgMaghiKNbh
+         2HImBoREw5q5AlP/ULTPo9wZM2G7JD4oF6nyd9psyFxsrqY7xSwI0bJc4EtVQ+wfggmA
+         CHIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hzevcuLXzTXCT7UXEELLCht+dXtxadN3s17XMthFybo=;
-        b=RYqiBfmgGnCuw15Ojs+fCd8bfcYB+Rd5wUZswvHOtjn4J7RzVymimPtJSM9oRNOJXw
-         P88ySQ0kPxDqiDHwkU7gMC+T51zwjeOmfEKs0bMT+WfthjfN8QzFoK1YUvvUoHQqbGR9
-         GVKLT+/8YTpmfNa3chRBPTrY8qwQQexAtso8LfB0xO8g5nq73PEv0cqvf1nUXukI7GJc
-         2b109N5jZXEsUaAwMVSzG99Y7ZR8wCyqAMAUl2yi/vAfpTgrgJ2G7B2KQKjvAGmukTQb
-         S8Ud8LoddIUAYITWmG3GhJ2GYl2XQI/AojMKZjcO8p21/psWkSWQ3Ck7kD+I968dC5aP
-         0aJA==
-X-Gm-Message-State: ACrzQf10ruEdWo/oSpjynoL9z/8kpD3P73uutMdf0img2KG7/guZ5ecu
-        zgpNKwwzUKXaJ0V4B8c0/Wo=
-X-Google-Smtp-Source: AMsMyM6M4m+6wrq3HpeSFneP5dVvheoabz7TxpmCwJ89XTEexnM8D3dYy5d9GfUw87unWhn0N2IK4w==
-X-Received: by 2002:a17:902:f78c:b0:185:3d6a:7576 with SMTP id q12-20020a170902f78c00b001853d6a7576mr16604805pln.86.1666316891554;
-        Thu, 20 Oct 2022 18:48:11 -0700 (PDT)
-Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:2848])
-        by smtp.gmail.com with ESMTPSA id i7-20020a1709026ac700b00172fad607b3sm13382230plt.207.2022.10.20.18.48.09
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OaFmk9uKiWcRGJhsbfMXJYmOSEPGwWNHINoz9quSM5k=;
+        b=ZS8P61nmGwhlY/8Mcz5BOmslRpfRhos93sPtdckY3i/H6AG0v1zm1pxwM77eDGBRW6
+         LvliFDQnGPuankbozzr/a/poCkjF4DozspoBSlqlO0/VQOZfqsDD8wct9gSlN3DweWJA
+         L4TBmAWWj7/5ociEPdxvquseEsPVUCse2NnaHY5Tv6nAg+4I3i19inPzMVal+dAQ15FV
+         lQop3oqsGNcGI7nkYZOC99PwVm4zPx86Y6ziHHo+tFe5XF1RGbDnZ9cK+6UCwSR5ulpD
+         WB540w0vTvmsyq0R4S/gqbBjAnJmz7V/jMrZSgabK3K/w1BrEq0t9+wlWyB0zoAGAXar
+         BlnA==
+X-Gm-Message-State: ACrzQf2vTJ8TPQnZ9B/11nwZrEX1QwAdnISEj2WqgiRImiBkR7H9BpXe
+        A+HHYLeqDVpOkkONdPb0NrFrelOvkyg6eA==
+X-Google-Smtp-Source: AMsMyM5F8vPr6ZhylSatkF2La0PNCmJztJQfJqt6MendT37ATvo1JGX3wqhJUhj+f6jRwCd300FhUQ==
+X-Received: by 2002:a63:2bd4:0:b0:451:5df1:4b15 with SMTP id r203-20020a632bd4000000b004515df14b15mr14496310pgr.518.1666317252200;
+        Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
+Received: from localhost ([103.4.222.252])
+        by smtp.gmail.com with ESMTPSA id o2-20020a170902d4c200b0017dd8c8009esm11281708plg.4.2022.10.20.18.54.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Oct 2022 18:48:10 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 18:48:07 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Hao Luo <haoluo@google.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        Thu, 20 Oct 2022 18:54:11 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 07:23:57 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Subject: Re: [PATCH bpf] bpf: Support for setting numa node in bpf memory
- allocator
-Message-ID: <20221021014807.pvjppg433lucybui@macbook-pro-4.dhcp.thefacebook.com>
-References: <20221020142247.1682009-1-houtao@huaweicloud.com>
- <CA+khW7jE_inL9-66Cb_WAPey6YkY+yf1H+q2uASTQujNXbRF=Q@mail.gmail.com>
- <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for
+ ARG_PTR_TO_DYNPTR
+Message-ID: <20221021015357.vs5zsyqwjigtbz7n@apollo>
+References: <20221018135920.726360-1-memxor@gmail.com>
+ <20221018135920.726360-7-memxor@gmail.com>
+ <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
+ <20221020010417.eqerzqjimnzwwhhd@apollo>
+ <CAADnVQK+wRP1EwTcokN00_eJ+piTmJsTCj9L1uZCY9bC+Ftf=g@mail.gmail.com>
+ <20221020024042.z5y47jfv3faupecx@apollo>
+ <CAADnVQJ4maocpC_5PNJWM10_UkuZeHiXU9o_z3Xa685Q68Yw7g@mail.gmail.com>
+ <20221020032345.yz6cvprlx2q37zcy@apollo>
+ <20221021004627.3cvwrvlsxyqzk5yg@MacBook-Pro-4.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com>
+In-Reply-To: <20221021004627.3cvwrvlsxyqzk5yg@MacBook-Pro-4.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -83,94 +83,142 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 09:43:08AM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 10/21/2022 2:01 AM, Hao Luo wrote:
-> > On Thu, Oct 20, 2022 at 6:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> Since commit fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc."),
-> >> numa node setting for non-preallocated hash table is ignored. The reason
-> >> is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
-> >> is trivial to support numa node setting for bpf memory allocator.
-> >>
-> >> So adding support for setting numa node in bpf memory allocator and
-> >> updating hash map accordingly.
-> >>
-> >> Fixes: fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc.")
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> > Looks good to me with a few nits.
+On Fri, Oct 21, 2022 at 06:16:27AM IST, Alexei Starovoitov wrote:
+> On Thu, Oct 20, 2022 at 08:53:45AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > On Thu, Oct 20, 2022 at 08:26:44AM IST, Alexei Starovoitov wrote:
+> > > On Wed, Oct 19, 2022 at 7:40 PM Kumar Kartikeya Dwivedi
+> > > <memxor@gmail.com> wrote:
+> > > >
+> > > > On Thu, Oct 20, 2022 at 07:43:16AM IST, Alexei Starovoitov wrote:
+> > > > > On Wed, Oct 19, 2022 at 6:04 PM Kumar Kartikeya Dwivedi
+> > > > > <memxor@gmail.com> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
+> > > > > > > On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
+> > > > > > > <memxor@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > Currently, the dynptr function is not checking the variable offset part
+> > > > > > > > of PTR_TO_STACK that it needs to check. The fixed offset is considered
+> > > > > > > > when computing the stack pointer index, but if the variable offset was
+> > > > > > > > not a constant (such that it could not be accumulated in reg->off), we
+> > > > > > > > will end up a discrepency where runtime pointer does not point to the
+> > > > > > > > actual stack slot we mark as STACK_DYNPTR.
+> > > > > > > >
+> > > > > > > > It is impossible to precisely track dynptr state when variable offset is
+> > > > > > > > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
+> > > > > > > > simply reject the case where reg->var_off is not constant. Then,
+> > > > > > > > consider both reg->off and reg->var_off.value when computing the stack
+> > > > > > > > pointer index.
+> > > > > > > >
+> > > > > > > > A new helper dynptr_get_spi is introduced to hide over these details
+> > > > > > > > since the dynptr needs to be located in multiple places outside the
+> > > > > > > > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
+> > > > > > > > need to enforce these checks in all places.
+> > > > > > > >
+> > > > > > > > Note that it is disallowed for unprivileged users to have a non-constant
+> > > > > > > > var_off, so this problem should only be possible to trigger from
+> > > > > > > > programs having CAP_PERFMON. However, its effects can vary.
+> > > > > > > >
+> > > > > > > > Without the fix, it is possible to replace the contents of the dynptr
+> > > > > > > > arbitrarily by making verifier mark different stack slots than actual
+> > > > > > > > location and then doing writes to the actual stack address of dynptr at
+> > > > > > > > runtime.
+> > > > > > > >
+> > > > > > > > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
+> > > > > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > > > > > ---
+> > > > > > > >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
+> > > > > > > >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
+> > > > > > > >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
+> > > > > > > >  3 files changed, 67 insertions(+), 21 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > > > > > index 8f667180f70f..0fd73f96c5e2 100644
+> > > > > > > > --- a/kernel/bpf/verifier.c
+> > > > > > > > +++ b/kernel/bpf/verifier.c
+> > > > > > > > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
+> > > > > > > >                 verbose(env, "D");
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > -static int get_spi(s32 off)
+> > > > > > > > +static int __get_spi(s32 off)
+> > > > > > > >  {
+> > > > > > > >         return (-off - 1) / BPF_REG_SIZE;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > > > > > > > +{
+> > > > > > > > +       int spi;
+> > > > > > > > +
+> > > > > > > > +       if (reg->off % BPF_REG_SIZE) {
+> > > > > > > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
+> > > > > > > > +               return -EINVAL;
+> > > > > > > > +       }
+> > > > > > >
+> > > > > > > I think this cannot happen.
+> > > > > > >
+> > > > > >
+> > > > > > There are existing selftests that trigger this.
+> > > > >
+> > > > > Really. Which one is that?
+> > > > > Those that you've modified in this patch are hitting
+> > > > > "cannot pass in dynptr..." message from the check below, no?
+> > > > >
+> > > >
+> > > > Just taking one example, invalid_read2 which does:
+> > > >
+> > > > bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0, 0);
+> > > >
+> > > > does hit this one, it passes fp-15, no var_off.
+> > > >
+> > > > Same with invalid_helper2 that was updated.
+> > > > Same with invalid_offset that was updated.
+> > > > invalid_write3 gained coverage from this patch, earlier it was probably just
+> > > > being rejected because of arg_type_is_release checking spilled_ptr.id.
+> > > > not_valid_dynptr is also hitting this one, not the one below.
+> > > >
+> > > > The others now started hitting this error as the order of checks was changed in
+> > > > the verifier. Since arg_type_is_release checking happens before
+> > > > process_dynptr_func, it uses dynptr_get_spi to check ref_obj_id of spilled_ptr.
+> > > > At that point no checks have been made of the dynptr argument, so dynptr_get_spi
+> > > > is required to ensure spi is in bounds.
+> > > >
+> > > > The reg->off % BPF_REG_SIZE was earlier in check_func_arg_reg_off but that alone
+> > > > is not sufficient. This is why I wrapped everything into dynptr_get_spi.
+> > >
+> > > I see. That was not obvious at all that some other patch
+> > > is removing that check from check_func_arg_reg_off.
+> > >
 > >
-> > <...>
-> >> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >> index fc116cf47d24..44c531ba9534 100644
-> >> --- a/kernel/bpf/memalloc.c
-> >> +++ b/kernel/bpf/memalloc.c
-> > <...>
-> >> +static inline bool is_valid_numa_node(int numa_node, bool percpu)
-> >> +{
-> >> +       return numa_node == NUMA_NO_NODE ||
-> >> +              (!percpu && (unsigned int)numa_node < nr_node_ids);
-> > Maybe also check node_online? There is a similar helper function in
-> > kernel/bpf/syscall.c.
-> Will factor out as a helper function and use it in bpf memory allocator in v2.
+> > It is done in patch 4. There I move that check from the check_func_arg_reg_off
+> > to process_dynptr_func.
+>
+> "Finally, since check_func_arg_reg_off is meant to be generic, move
+> dynptr specific check into process_dynptr_func."
+>
+> It's a sign that patch 4 is doing too much. It should be at least two patches.
+>
 > >
-> > It may help debugging if we could log the reason here, for example,
-> > PERCPU map but with numa_node specified.
-> Not sure about it, because the validity check must have been done in map related
-> code.
-> 
+> > > Why is the check there not sufficient?
+> > >
 > >
-> >> +}
-> >> +
-> >> +/* The initial prefill is running in the context of map creation process, so
-> >> + * if the preferred numa node is NUMA_NO_NODE, needs to use numa node of the
-> >> + * specific cpu instead.
-> >> + */
-> >> +static inline int get_prefill_numa_node(int numa_node, int cpu)
-> >> +{
-> >> +       int prefill_numa_node;
-> >> +
-> >> +       if (numa_node == NUMA_NO_NODE)
-> >> +               prefill_numa_node = cpu_to_node(cpu);
-> >> +       else
-> >> +               prefill_numa_node = numa_node;
-> >> +       return prefill_numa_node;
-> >>  }
-> > nit: an alternative implementation is
-> >
-> >  return numa_node == NUMA_NO_NODE ? cpu_to_node(cpu) : numa_node;
-> It is shorter and better. Will do it in v2.
-> >
-> >>  /* When size != 0 bpf_mem_cache for each cpu.
-> >> @@ -359,13 +383,17 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
-> >>   * kmalloc/kfree. Max allocation size is 4096 in this case.
-> >>   * This is bpf_dynptr and bpf_kptr use case.
-> >>   */
-> > We added a parameter to this function, I think it is worth mentioning
-> > the 'numa_node' argument's behavior under different values of
-> > 'percpu'.
-> How about the following comments ?
-> 
->  * For per-cpu allocator (percpu=true), the only valid value of numa_node is
->  * NUMA_NO_NODE. For non-per-cpu allocator, if numa_node is NUMA_NO_NODE, the
->  * preferred memory allocation node is the numa node where the allocating CPU
->  * is located, else the preferred node is the specified numa_node.
+> > I wanted to keep check_func_arg_reg_off free of assumptions for helper specific
+> > checks. It just ensures a few rules:
+>
+> Currently it's
+>         case PTR_TO_STACK:
+>                 if (arg_type_is_dynptr(arg_type) && reg->off % BPF_REG_SIZE) {
+> it's not really helper specific.
+>
+> process_dynptr_func may be the right palce to check for alignment,
+> but imo the patch set is doing way too much.
+> Instead of fixing dynptr specific issues it goes into massive refactoring.
+> Please do one or the other.
+> One patch set for refactoring only with no functional changes.
+> Another patch set with fixes.
+> Either order is fine.
 
-No. This patch doesn't make sense to me.
-As far as I can see it can only make things worse.
-Why would you want a cpu to use non local memory?
+Ok, I will split it into two. First send the refactorings (and incorporate
+feedback based on the discussion), and then the fixes on top of that.
 
-The commit log:
-" is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
-  is trivial to support numa node setting for bpf memory allocator."
-got it wrong.
-
-See the existing comment:
-                /* irq_work runs on this cpu and kmalloc will allocate
-                 * from the current numa node which is what we want here.
-                 */
-                alloc_bulk(c, c->batch, NUMA_NO_NODE);
-
+Thanks.
