@@ -2,90 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452D160820F
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88741608220
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbiJUXaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 19:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S229845AbiJUXoa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 19:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiJUXa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 19:30:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458E8A99E0
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:30:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7A6B2B80D59
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 23:30:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A420C433B5;
-        Fri, 21 Oct 2022 23:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666395022;
-        bh=9YjBqzO7yaAyBOQboTqKJCBaT1EVl9HybY2S5a+66pw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Qe1wPyexfa7AmT3ePkloRpzIS9t7RE5QfXBUm0szVFAGd9hdX5NCFKwxfBqCfvUES
-         Ik938zxg4NSU6oIvPteIn0459nc9xK6bfPLIBYCTuB3WGZXglsx06KkA15T9De8f2X
-         rX0w6e/Quicj6/L5DWmSp4DQevMgCtD34Ua+rVhqRBxtSVM5YuLqOuN2WZSWNd+edJ
-         WKKPCGitsSad6zCDekqYyuc3jT/LttAB/gXF1picLSjEYeZ2jBPQCyzmVKzkxXDO+7
-         QAG3oT7lU4H0cUCoXG+aNIZAl/sdYUuJjy/qLQNt0YLeINpfUy2vLRlWtk1qGO5Z0I
-         q7WKOYsWssx4Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A1DEE270E2;
-        Fri, 21 Oct 2022 23:30:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229800AbiJUXoZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 19:44:25 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4514315A15
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:44:24 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29LMHkk7025357
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:44:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Z/14a5fxwJccRpjVyx4fNON2da/BhBjE8DVG/4Q5Nl0=;
+ b=J2WKvECo5TOcOc76+K0mcXMy4G8LqManOihGCGUDp5SLJ5aXt6H9Y7sO/yocFvLEFvfA
+ YpcENGtaGkya+3DyqCm+PT1BE3mpJMOLo0ge3wQxVcp+jlQExz4PxNVZ7MoWLt18m1/z
+ OHjNQrdhD8Oy0UHPZEXE1Ay6M/yVSoj6mAY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3kbs51792j-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:44:23 -0700
+Received: from twshared19720.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 21 Oct 2022 16:44:22 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id A310111011289; Fri, 21 Oct 2022 16:44:16 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next v3 0/7] bpf: Implement cgroup local storage available to non-cgroup-attached bpf progs
+Date:   Fri, 21 Oct 2022 16:44:16 -0700
+Message-ID: <20221021234416.2328241-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/4] Add support for aarch64 to
- selftests/bpf/vmtest.sh
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166639502210.16988.4357978055876799242.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Oct 2022 23:30:22 +0000
-References: <20221021210701.728135-1-chantr4@gmail.com>
-In-Reply-To: <20221021210701.728135-1-chantr4@gmail.com>
-To:     Manu Bretelle <chantr4@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
-        daniel@iogearbox.net, martin.lau@linux.dev, yhs@fb.com
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 98tfNQ7pSYnV4TQDdBjaFySQT0D5jnY7
+X-Proofpoint-ORIG-GUID: 98tfNQ7pSYnV4TQDdBjaFySQT0D5jnY7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+There already exists a local storage implementation for cgroup-attached
+bpf programs. See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+bpf_get_local_storage(). But there are use cases such that non-cgroup
+attached bpf progs wants to access cgroup local storage data. For example=
+,
+tc egress prog has access to sk and cgroup. It is possible to use
+sk local storage to emulate cgroup local storage by storing data in socke=
+t.
+But this is a waste as it could be lots of sockets belonging to a particu=
+lar
+cgroup. Alternatively, a separate map can be created with cgroup id as th=
+e key.
+But this will introduce additional overhead to manipulate the new map.
+A cgroup local storage, similar to existing sk/inode/task storage,
+should help for this use case. =20
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+This patch implemented new cgroup local storage available to
+non-cgroup-attached bpf programs. In the patch series, Patches 1 and 2
+are preparation patches. Patch 3 implemented new cgroup local storage
+kernel support. Patches 4 and 5 implemented libbpf and bpftool support.
+Patch 6 added two tests to validate kernel/libbpf implementations.
+Patch 7 added documentation for new BPF_MAP_TYPE_CGRP_STORAGE map type
+and comparison of the old and new cgroup local storage maps.
 
-On Fri, 21 Oct 2022 14:06:57 -0700 you wrote:
-> This patchset adds initial support for running BPF's vmtest on aarch64
-> architecture.
-> It includes a `config.aarch64` heavily based on `config.s390x`
-> Makes vmtest.sh handle aarch64 and set QEMU variables to values that
-> works on that arch.
-> Finally, it provides a DENYLIST.aarch64 that takes care of currently
-> broken tests on aarch64 so the vmtest run passes.
-> 
-> [...]
+Changelogs:
+  v2 -> v3:
+    . fix a config caused kernel test complaint.
+    . better description/comments in uapi bpf.h and bpf_cgrp_storage.c.
+    . factor code for better resue for map_alloc/map_free.
+    . improved explanation in map documentation.
+  v1 -> v2:
+    . change map name from BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE to
+      BPF_MAP_TYPE_CGRP_STORAGE.
+    . removed support of sleepable programs.
+    . changed the place of freeing cgrp local storage from put_css_set_lo=
+cked()
+      to css_free_rwork_fn().
+    . added map documentation.
 
-Here is the summary with links:
-  - [bpf-next,1/4] selftests/bpf: Remove entries from config.s390x already present in config
-    https://git.kernel.org/bpf/bpf-next/c/7a42af4b94f1
-  - [bpf-next,2/4] selftests/bpf: Add config.aarch64
-    https://git.kernel.org/bpf/bpf-next/c/ec99451f0a48
-  - [bpf-next,3/4] selftests/bpf: Update vmtests.sh to support aarch64
-    https://git.kernel.org/bpf/bpf-next/c/20776b72ae2a
-  - [bpf-next,4/4] selftests/bpf: Initial DENYLIST for aarch64
-    https://git.kernel.org/bpf/bpf-next/c/94d52a191807
+Yonghong Song (7):
+  bpf: Make struct cgroup btf id global
+  bpf: Refactor inode/task/sk storage map_{alloc,free}() for reuse
+  bpf: Implement cgroup storage available to non-cgroup-attached bpf
+    progs
+  libbpf: Support new cgroup local storage
+  bpftool: Support new cgroup local storage
+  selftests/bpf: Add selftests for cgroup local storage
+  docs/bpf: Add documentation for map type BPF_MAP_TYPE_CGRP_STROAGE
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ Documentation/bpf/map_cgrp_storage.rst        | 109 +++++++
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_local_storage.h             |  11 +-
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/btf_ids.h                       |   1 +
+ include/linux/cgroup-defs.h                   |   4 +
+ include/uapi/linux/bpf.h                      |  50 +++-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_cgrp_storage.c                 | 268 ++++++++++++++++++
+ kernel/bpf/bpf_inode_storage.c                |  15 +-
+ kernel/bpf/bpf_local_storage.c                |  39 ++-
+ kernel/bpf/bpf_task_storage.c                 |  15 +-
+ kernel/bpf/cgroup_iter.c                      |   2 +-
+ kernel/bpf/helpers.c                          |   6 +
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/cgroup/cgroup.c                        |   4 +
+ kernel/trace/bpf_trace.c                      |   4 +
+ net/core/bpf_sk_storage.c                     |  15 +-
+ scripts/bpf_doc.py                            |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/map.c                       |   2 +-
+ tools/include/uapi/linux/bpf.h                |  50 +++-
+ tools/lib/bpf/libbpf.c                        |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/cgroup_local_storage.c     |  92 ++++++
+ .../bpf/progs/cgroup_local_storage.c          |  88 ++++++
+ .../selftests/bpf/progs/cgroup_ls_recursion.c |  70 +++++
+ 28 files changed, 813 insertions(+), 60 deletions(-)
+ create mode 100644 Documentation/bpf/map_cgrp_storage.rst
+ create mode 100644 kernel/bpf/bpf_cgrp_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_local_s=
+torage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_local_storag=
+e.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_ls_recursion=
+.c
 
+--=20
+2.30.2
 
