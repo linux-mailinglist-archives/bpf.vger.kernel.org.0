@@ -2,52 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB91606D6D
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 04:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1C7606DBB
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 04:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiJUCKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 22:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
+        id S229770AbiJUC0i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 22:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbiJUCKW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 22:10:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680A910F8AA
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 19:10:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E079CB82A2F
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 02:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C005C43142;
-        Fri, 21 Oct 2022 02:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666318217;
-        bh=bayBvAf9e/M2S04n+FrZtdXKeetIdwLi4NKZZqTKnpY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hpBOY7Z7/LfdZnGHJrqqfOuYHl4DkxUhiAyThUgHrkdJJk5Ix5kDWcEwN6rUIxY/W
-         ISdYDoYAsM/eI+NPK1GiY9v5190BxmRUVRUwu5udRkMs4dMGjlWcCjCSax65ar6gwH
-         vgEuTENAHzAxoQkxPjEYU5piNZ9jWZtb01aHV0+JGoGBeNLqgyK2xqf2sfPxaPGOxb
-         DPscwQ9yiLEeZAYiUlcD7hHuUEajThsnD7XXaw7mmq77zULEZsofuudbFiNQXqQxy0
-         4OljMACa8q87B+ZDgGxOpxrYXoOrZDTOPdRSW3bmZ6rTqaNhFriIwwoPygieVLPI3r
-         YF21hpZyodGmA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8A581E270E5;
-        Fri, 21 Oct 2022 02:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229552AbiJUC0h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 22:26:37 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CF2187DE8
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 19:26:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MtpF31vjFzKFv9
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 10:24:07 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgCHizFTA1JjOLy2AA--.53195S2;
+        Fri, 21 Oct 2022 10:26:31 +0800 (CST)
+Subject: Re: [PATCH bpf] bpf: Support for setting numa node in bpf memory
+ allocator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hou Tao <houtao1@huawei.com>
+References: <20221020142247.1682009-1-houtao@huaweicloud.com>
+ <CA+khW7jE_inL9-66Cb_WAPey6YkY+yf1H+q2uASTQujNXbRF=Q@mail.gmail.com>
+ <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com>
+ <20221021014807.pvjppg433lucybui@macbook-pro-4.dhcp.thefacebook.com>
+ <b20aa49f-61ee-6275-3f8b-aa2b5e950874@huaweicloud.com>
+ <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <de1173bb-3adf-a04c-7999-44e7e7103ff9@huaweicloud.com>
+Date:   Fri, 21 Oct 2022 10:26:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [bpf-next] selftests/bpf: fix missing BPF object files
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166631821756.26286.5120355181761714410.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Oct 2022 02:10:17 +0000
-References: <1666235134-562-1-git-send-email-wangyufen@huawei.com>
-In-Reply-To: <1666235134-562-1-git-send-email-wangyufen@huawei.com>
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
-        martin.lau@linux.dev, ast@kernel.org, deso@posteo.net
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgCHizFTA1JjOLy2AA--.53195S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw1rCr43tw15Gr15ur15Jwb_yoW5AFykpF
+        WxK3WUCr1DtF1xGwn2vw17ua4Yyw4UGr12gw4Y9r1j9F9Iqr93Kr4kJF1ruF95Cr48A3Wr
+        tFWjqFy3Z3yrZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,30 +77,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On 10/21/2022 10:09 AM, Alexei Starovoitov wrote:
+> On Thu, Oct 20, 2022 at 7:06 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 10/21/2022 9:48 AM, Alexei Starovoitov wrote:
+>>> On Fri, Oct 21, 2022 at 09:43:08AM +0800, Hou Tao wrote:
+>>>> Hi,
+>>>>
+>>>> On 10/21/2022 2:01 AM, Hao Luo wrote:
+>>>>> On Thu, Oct 20, 2022 at 6:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>>>
+>>>>>> Since commit fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc."),
+>>>>>> numa node setting for non-preallocated hash table is ignored. The reason
+>>>>>> is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
+>>>>>> is trivial to support numa node setting for bpf memory allocator.
+>>>>>>
+>>>>>> So adding support for setting numa node in bpf memory allocator and
+>>>>>> updating hash map accordingly.
+>>>>>>
+>>>>>> Fixes: fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc.")
+>>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>>>> ---
+>> SNIP
+>>>> How about the following comments ?
+>>>>
+>>>>  * For per-cpu allocator (percpu=true), the only valid value of numa_node is
+>>>>  * NUMA_NO_NODE. For non-per-cpu allocator, if numa_node is NUMA_NO_NODE, the
+>>>>  * preferred memory allocation node is the numa node where the allocating CPU
+>>>>  * is located, else the preferred node is the specified numa_node.
+>>> No. This patch doesn't make sense to me.
+>>> As far as I can see it can only make things worse.
+>>> Why would you want a cpu to use non local memory?
+>> For pre-allocated hash table, the numa node setting is honored. And I think the
+>> reason is that there are bpf progs which are pinned on specific CPUs or numa
+>> nodes and accessing local memory will be good for performance.
+> prealloc happens at map creation time while
+> bpf prog might be running on completely different cpu,
+> so numa is necessary for prealloc.
+I see. So for non-preallocated hash map, the memory will allocated from the
+current NUMA node if possible and there will be no memory affinity problems if
+these programs are on the same NUMA node.
+>
+>> And in my
+>> understanding, the bpf memory allocator is trying to replace pre-allocated hash
+>> table to save memory, if the numa node setting is ignored, the above use cases
+>> may be work badly. Also I am trying to test whether or not there is visible
+>> performance improvement for the above assumed use case.
+> numa should be ignored, because we don't want users to accidently
+> pick wrong numa id.
+How about reject the NUMA node setting for non-preallocated hash table in
+hashtab.c ?
 
-On Thu, 20 Oct 2022 11:05:34 +0800 you wrote:
-> After commit afef88e65554 ("selftests/bpf: Store BPF object files with
-> .bpf.o extension"), we should use *.bpf.o instead of *.o.
-> 
-> In addition, use the BPF_FILE variable to save the BPF object file name,
-> which can be better identified and modified.
-> 
-> Fixes: afef88e65554 ("selftests/bpf: Store BPF object files with .bpf.o extension")
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix missing BPF object files
-    https://git.kernel.org/bpf/bpf-next/c/98af3746026c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>
+>>> The commit log:
+>>> " is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
+>>>   is trivial to support numa node setting for bpf memory allocator."
+>>> got it wrong.
+>>>
+>>> See the existing comment:
+>>>                 /* irq_work runs on this cpu and kmalloc will allocate
+>>>                  * from the current numa node which is what we want here.
+>>>                  */
+>>>                 alloc_bulk(c, c->batch, NUMA_NO_NODE);
 
