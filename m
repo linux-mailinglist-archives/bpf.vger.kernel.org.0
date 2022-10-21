@@ -2,80 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFCA606D42
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 03:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5526606D4B
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 03:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbiJUByP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 21:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
+        id S229795AbiJUB65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Oct 2022 21:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiJUByO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 21:54:14 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5AD158180
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 3so1230525pfw.4
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
+        with ESMTP id S229833AbiJUB64 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Oct 2022 21:58:56 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA8A158D56
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:58:55 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 63so1720258ybq.4
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 18:58:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OaFmk9uKiWcRGJhsbfMXJYmOSEPGwWNHINoz9quSM5k=;
-        b=QbnxZmvx/o1wWMFqmRsdSo7ANwskaXmCmFyvzBTmxCykeX1s6Iv9CvTMHXsnmBu0jX
-         UVOkQqVQbckQ+sW6dman5oSadEPxeMTbmKoePQnTX0aiB9JTxNpvr9hJ5oHAMS4alcpU
-         9oa9W2JSF/iqH4ZMQrk5fk6jL0BP/GM2omLqUeYHP1hOmOaSR75hWqEbvjusav20yBB7
-         kHzg5x38Ufir2/IGsoLuhyOAw6vUiRw7MmIOoukn6WrTmyw9WsMQHoSShPgMaghiKNbh
-         2HImBoREw5q5AlP/ULTPo9wZM2G7JD4oF6nyd9psyFxsrqY7xSwI0bJc4EtVQ+wfggmA
-         CHIA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZncWdL3mM95UrAjtlnMYK6cfS00d+HEAMrkP+Zaf3vA=;
+        b=ETCDQ1V0Rav1JUKf7JrFXd/bCduUcFQSGNKFTEgHoxSvIBzuBRYzSFf5jfF8MfgzNS
+         655pcJShWcEHHLby6HitiQxsf2tdeTpbHml6ZpXhrXN0hec/Tq6PbCOMdN2WUdVGrp99
+         I/oMpE8qoZwo+YYe6hG9kY2kjw1eo0qnDlEBHd2kfm7+T71jN4FH0P+AxEt2ZJ2Yz2Ne
+         U1iEAgwV2/K0iBNG0n6pgDll8zJMPZEGjUXkDJM2B78l3mR9XaKGv+cXh9jXerF2Ed+n
+         LN+BMVqANeeZ++6dvFeFgZ4bI511bPfP45wQko6FQgvJRz7QeGzO9IEWDVQ+QXQAYNYU
+         O1Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OaFmk9uKiWcRGJhsbfMXJYmOSEPGwWNHINoz9quSM5k=;
-        b=ZS8P61nmGwhlY/8Mcz5BOmslRpfRhos93sPtdckY3i/H6AG0v1zm1pxwM77eDGBRW6
-         LvliFDQnGPuankbozzr/a/poCkjF4DozspoBSlqlO0/VQOZfqsDD8wct9gSlN3DweWJA
-         L4TBmAWWj7/5ociEPdxvquseEsPVUCse2NnaHY5Tv6nAg+4I3i19inPzMVal+dAQ15FV
-         lQop3oqsGNcGI7nkYZOC99PwVm4zPx86Y6ziHHo+tFe5XF1RGbDnZ9cK+6UCwSR5ulpD
-         WB540w0vTvmsyq0R4S/gqbBjAnJmz7V/jMrZSgabK3K/w1BrEq0t9+wlWyB0zoAGAXar
-         BlnA==
-X-Gm-Message-State: ACrzQf2vTJ8TPQnZ9B/11nwZrEX1QwAdnISEj2WqgiRImiBkR7H9BpXe
-        A+HHYLeqDVpOkkONdPb0NrFrelOvkyg6eA==
-X-Google-Smtp-Source: AMsMyM5F8vPr6ZhylSatkF2La0PNCmJztJQfJqt6MendT37ATvo1JGX3wqhJUhj+f6jRwCd300FhUQ==
-X-Received: by 2002:a63:2bd4:0:b0:451:5df1:4b15 with SMTP id r203-20020a632bd4000000b004515df14b15mr14496310pgr.518.1666317252200;
-        Thu, 20 Oct 2022 18:54:12 -0700 (PDT)
-Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id o2-20020a170902d4c200b0017dd8c8009esm11281708plg.4.2022.10.20.18.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Oct 2022 18:54:11 -0700 (PDT)
-Date:   Fri, 21 Oct 2022 07:23:57 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 06/13] bpf: Fix missing var_off check for
- ARG_PTR_TO_DYNPTR
-Message-ID: <20221021015357.vs5zsyqwjigtbz7n@apollo>
-References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-7-memxor@gmail.com>
- <CAADnVQL_CWV7auFJFnkTy6wzo28JSN2e8-H7J6AnG79ov9Zjyw@mail.gmail.com>
- <20221020010417.eqerzqjimnzwwhhd@apollo>
- <CAADnVQK+wRP1EwTcokN00_eJ+piTmJsTCj9L1uZCY9bC+Ftf=g@mail.gmail.com>
- <20221020024042.z5y47jfv3faupecx@apollo>
- <CAADnVQJ4maocpC_5PNJWM10_UkuZeHiXU9o_z3Xa685Q68Yw7g@mail.gmail.com>
- <20221020032345.yz6cvprlx2q37zcy@apollo>
- <20221021004627.3cvwrvlsxyqzk5yg@MacBook-Pro-4.local>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZncWdL3mM95UrAjtlnMYK6cfS00d+HEAMrkP+Zaf3vA=;
+        b=C75CMy/3k2DbDjkENMjuEZWtjnZSRNlpe+Bw/PbdeX+CJ8sPzdtgDMAlfsBzZUccpI
+         c7RKsRkE9zdHXarZKhCYtPZkoH2RTQrGuCMAyOTCANYivewRZYLfBxAPVH9JTw8+h3JX
+         XkBd7QV4US5WuPI7EM4YkiA4FRzBxF/YkKRK/4vkA8Qb21mpfM7HzYtlV8Z9hTRnACA3
+         mhYcZ5bA9OKdZe6h9Gxbm93ysablVD/hlv22lbJ5O917QfsD4JQTQYM3gNB0D5RE88hv
+         uctHSk8CBYLZCfJ3jJr22IWx6NMCo5rYgWw5GxkWkVBbflSu22JlKXEqZjqF4QdCu0vv
+         K8VQ==
+X-Gm-Message-State: ACrzQf307ShinTztm0ydWg2RCa1jMzoek3rAXwEBEqqjCzrd2P6d4sYN
+        67stiDKyxMCg7QCSq96ssvdcfN7E09LJbjS1yZy95YUdQ7eenQ==
+X-Google-Smtp-Source: AMsMyM7jN901gwP4uzMwLACtoi7zo6/ph3pmTGVePx+cdgkV2tfQtbyhDzKyhFUYYlMwepHes801wEytwuvP3P4sVUI=
+X-Received: by 2002:a05:6902:1244:b0:6bd:6409:9591 with SMTP id
+ t4-20020a056902124400b006bd64099591mr14512504ybu.431.1666317534121; Thu, 20
+ Oct 2022 18:58:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221021004627.3cvwrvlsxyqzk5yg@MacBook-Pro-4.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <0000000000009fa63105eb7648d8@google.com> <00000000000031aec805eb76a2d4@google.com>
+ <20221020182155.ecd44ee984b1aeb2e5a2e8ed@linux-foundation.org>
+In-Reply-To: <20221020182155.ecd44ee984b1aeb2e5a2e8ed@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 20 Oct 2022 18:58:42 -0700
+Message-ID: <CAJuCfpEh0byROe58H_FtL+NMLKAvSrQW0f0wd3QiVTBdRg5CTA@mail.gmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in vm_area_dup
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com>,
+        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,142 +71,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 06:16:27AM IST, Alexei Starovoitov wrote:
-> On Thu, Oct 20, 2022 at 08:53:45AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, Oct 20, 2022 at 08:26:44AM IST, Alexei Starovoitov wrote:
-> > > On Wed, Oct 19, 2022 at 7:40 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > On Thu, Oct 20, 2022 at 07:43:16AM IST, Alexei Starovoitov wrote:
-> > > > > On Wed, Oct 19, 2022 at 6:04 PM Kumar Kartikeya Dwivedi
-> > > > > <memxor@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Oct 20, 2022 at 12:22:56AM IST, Alexei Starovoitov wrote:
-> > > > > > > On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
-> > > > > > > <memxor@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Currently, the dynptr function is not checking the variable offset part
-> > > > > > > > of PTR_TO_STACK that it needs to check. The fixed offset is considered
-> > > > > > > > when computing the stack pointer index, but if the variable offset was
-> > > > > > > > not a constant (such that it could not be accumulated in reg->off), we
-> > > > > > > > will end up a discrepency where runtime pointer does not point to the
-> > > > > > > > actual stack slot we mark as STACK_DYNPTR.
-> > > > > > > >
-> > > > > > > > It is impossible to precisely track dynptr state when variable offset is
-> > > > > > > > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-> > > > > > > > simply reject the case where reg->var_off is not constant. Then,
-> > > > > > > > consider both reg->off and reg->var_off.value when computing the stack
-> > > > > > > > pointer index.
-> > > > > > > >
-> > > > > > > > A new helper dynptr_get_spi is introduced to hide over these details
-> > > > > > > > since the dynptr needs to be located in multiple places outside the
-> > > > > > > > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-> > > > > > > > need to enforce these checks in all places.
-> > > > > > > >
-> > > > > > > > Note that it is disallowed for unprivileged users to have a non-constant
-> > > > > > > > var_off, so this problem should only be possible to trigger from
-> > > > > > > > programs having CAP_PERFMON. However, its effects can vary.
-> > > > > > > >
-> > > > > > > > Without the fix, it is possible to replace the contents of the dynptr
-> > > > > > > > arbitrarily by making verifier mark different stack slots than actual
-> > > > > > > > location and then doing writes to the actual stack address of dynptr at
-> > > > > > > > runtime.
-> > > > > > > >
-> > > > > > > > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> > > > > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > > > ---
-> > > > > > > >  kernel/bpf/verifier.c                         | 80 +++++++++++++++----
-> > > > > > > >  .../testing/selftests/bpf/prog_tests/dynptr.c |  6 +-
-> > > > > > > >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
-> > > > > > > >  3 files changed, 67 insertions(+), 21 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > > > > index 8f667180f70f..0fd73f96c5e2 100644
-> > > > > > > > --- a/kernel/bpf/verifier.c
-> > > > > > > > +++ b/kernel/bpf/verifier.c
-> > > > > > > > @@ -610,11 +610,34 @@ static void print_liveness(struct bpf_verifier_env *env,
-> > > > > > > >                 verbose(env, "D");
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > -static int get_spi(s32 off)
-> > > > > > > > +static int __get_spi(s32 off)
-> > > > > > > >  {
-> > > > > > > >         return (-off - 1) / BPF_REG_SIZE;
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> > > > > > > > +{
-> > > > > > > > +       int spi;
-> > > > > > > > +
-> > > > > > > > +       if (reg->off % BPF_REG_SIZE) {
-> > > > > > > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
-> > > > > > > > +               return -EINVAL;
-> > > > > > > > +       }
-> > > > > > >
-> > > > > > > I think this cannot happen.
-> > > > > > >
-> > > > > >
-> > > > > > There are existing selftests that trigger this.
-> > > > >
-> > > > > Really. Which one is that?
-> > > > > Those that you've modified in this patch are hitting
-> > > > > "cannot pass in dynptr..." message from the check below, no?
-> > > > >
-> > > >
-> > > > Just taking one example, invalid_read2 which does:
-> > > >
-> > > > bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0, 0);
-> > > >
-> > > > does hit this one, it passes fp-15, no var_off.
-> > > >
-> > > > Same with invalid_helper2 that was updated.
-> > > > Same with invalid_offset that was updated.
-> > > > invalid_write3 gained coverage from this patch, earlier it was probably just
-> > > > being rejected because of arg_type_is_release checking spilled_ptr.id.
-> > > > not_valid_dynptr is also hitting this one, not the one below.
-> > > >
-> > > > The others now started hitting this error as the order of checks was changed in
-> > > > the verifier. Since arg_type_is_release checking happens before
-> > > > process_dynptr_func, it uses dynptr_get_spi to check ref_obj_id of spilled_ptr.
-> > > > At that point no checks have been made of the dynptr argument, so dynptr_get_spi
-> > > > is required to ensure spi is in bounds.
-> > > >
-> > > > The reg->off % BPF_REG_SIZE was earlier in check_func_arg_reg_off but that alone
-> > > > is not sufficient. This is why I wrapped everything into dynptr_get_spi.
-> > >
-> > > I see. That was not obvious at all that some other patch
-> > > is removing that check from check_func_arg_reg_off.
-> > >
+On Thu, Oct 20, 2022 at 6:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Thu, 20 Oct 2022 05:40:43 -0700 syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com> wrote:
+>
+> > syzbot has found a reproducer for the following issue on:
+>
+> Thanks.
+>
+>
+> > HEAD commit:    acee3e83b493 Add linux-next specific files for 20221020
+> > git tree:       linux-next
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=170a8016880000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c82245cfb913f766
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=b910411d3d253dab25d8
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109e0372880000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1770d752880000
 > >
-> > It is done in patch 4. There I move that check from the check_func_arg_reg_off
-> > to process_dynptr_func.
->
-> "Finally, since check_func_arg_reg_off is meant to be generic, move
-> dynptr specific check into process_dynptr_func."
->
-> It's a sign that patch 4 is doing too much. It should be at least two patches.
->
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/98cc5896cded/disk-acee3e83.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/b3d3eb3aa10a/vmlinux-acee3e83.xz
 > >
-> > > Why is the check there not sufficient?
-> > >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com
 > >
-> > I wanted to keep check_func_arg_reg_off free of assumptions for helper specific
-> > checks. It just ensures a few rules:
+> > BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
 >
-> Currently it's
->         case PTR_TO_STACK:
->                 if (arg_type_is_dynptr(arg_type) && reg->off % BPF_REG_SIZE) {
-> it's not really helper specific.
+> This is happening under dup_anon_vma_name().
 >
-> process_dynptr_func may be the right palce to check for alignment,
-> but imo the patch set is doing way too much.
-> Instead of fixing dynptr specific issues it goes into massive refactoring.
-> Please do one or the other.
-> One patch set for refactoring only with no functional changes.
-> Another patch set with fixes.
-> Either order is fine.
+> I can't spot preemption being disabled on that call path, and I assume
+> this code has been exercised for some time.
 
-Ok, I will split it into two. First send the refactorings (and incorporate
-feedback based on the discussion), and then the fixes on top of that.
+Indeed, it is unclear why copy_vma() would be called in atomic
+context. I'll try to reproduce tomorrow. Maybe with lockdep enabled we
+can get something interesting.
 
-Thanks.
+>
+> I wonder if this could be fallout from the KSM locking error which
+> https://lkml.kernel.org/r/8c86678a-3bfb-3854-b1a9-ae5969e730b8@redhat.com
+> addresses.  Seems quite unlikely.
+>
+> > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3602, name: syz-executor107
+> > preempt_count: 1, expected: 0
+> > RCU nest depth: 0, expected: 0
+> > INFO: lockdep is turned off.
+> > Preemption disabled at:
+> > [<0000000000000000>] 0x0
+> > CPU: 0 PID: 3602 Comm: syz-executor107 Not tainted 6.1.0-rc1-next-20221020-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> >  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9890
+> >  might_alloc include/linux/sched/mm.h:274 [inline]
+> >  slab_pre_alloc_hook mm/slab.h:727 [inline]
+> >  slab_alloc_node mm/slub.c:3323 [inline]
+> >  slab_alloc mm/slub.c:3411 [inline]
+> >  __kmem_cache_alloc_lru mm/slub.c:3418 [inline]
+> >  kmem_cache_alloc+0x2e6/0x3c0 mm/slub.c:3427
+> >  vm_area_dup+0x81/0x380 kernel/fork.c:466
+> >  copy_vma+0x376/0x8d0 mm/mmap.c:3216
+> >  move_vma+0x449/0xf60 mm/mremap.c:626
+> >  __do_sys_mremap+0x487/0x16b0 mm/mremap.c:1075
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7fd090fa5b29
+> > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007ffc2e90bd38 EFLAGS: 00000246 ORIG_RAX: 0000000000000019
+> > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd090fa5b29
+> > RDX: 0000000000001000 RSI: 0000000000004000 RDI: 00000000201c4000
+> > RBP: 00007fd090f69cd0 R08: 00000000202ef000 R09: 0000000000000000
+> > R10: 0000000000000003 R11: 0000000000000246 R12: 00007fd090f69d60
+> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> >  </TASK>
