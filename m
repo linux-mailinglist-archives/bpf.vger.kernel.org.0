@@ -2,70 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E48F607E31
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 20:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F629607E58
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 20:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbiJUSSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 14:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
+        id S229633AbiJUSfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 14:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbiJUSSy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 14:18:54 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFD95FC2;
-        Fri, 21 Oct 2022 11:18:52 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id u21so8941609edi.9;
-        Fri, 21 Oct 2022 11:18:52 -0700 (PDT)
+        with ESMTP id S230220AbiJUSfO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 14:35:14 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACF17FF91
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 11:35:12 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id 8so2104915ilj.4
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 11:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HBy852p/eFXTHVwkFlaYMzpbGvpT4Vnv3Ued5+TSdT0=;
-        b=gmJLVnkwL3+648iF7oobHbK+Rl5eRiwbOP/+YztPxkWicIqLQTvyrjgzSiy9HTd7M4
-         2seQ2DnnNHOCBNtXZ5rINSLl9OXcgKKZENY8LBu9QEBNfh8pwaJNzmYdRdzzfiOGi1v7
-         d/B+cFbD85GD4/nwfR1KmVoP2s/G0iuipUu4esi32tTz3o3RzLgSphJFZ77c3EuFAXRd
-         rwIYPT7Mfv1trYAd0c6Fkaiqh+2V3UYx4DPa3JGr26tjC7AKqPeBHuskUYumlcQfZR+b
-         7dVkeEm6hizboBTBaTJYR9+aVREzhcxHyoIZnXdpfhVuG0Sj2J6XNZBLgZAx7HXbeG9e
-         CfBg==
+        bh=drMaaZBaH3perzkVOc+AoOVzAG7r0aPEsm8TlYzOdqw=;
+        b=qi1+OHpReZkjfwtu+I/ETADeeHBMN9rqLKoF683NKWv5QU5F2NGMCBFajBQQcAV1D9
+         fBXg0N7/gBpiK+GfjgOpgyHqW95gykowFaaWo5EEKP2+WJ2csMdr5ebwUSB9vRKpFFdE
+         VBpPNtI/aqioazRdejoccPob4inkz7PtckFuq7MWV4BgD8XwJKd13IWW9lKQwddLJPVZ
+         Q9oZT625OfCf65vcgzVtHa2hyXGAsMCUvkccT4634vXeeosM1fLrB3ZWoZcigC28eGno
+         6dWJR3XlfWbY0YSBuVMElf0Do57rTGDyPdOkibZC2lKZN+V6kZFwIrUJX7IgLccnN8gl
+         F4/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HBy852p/eFXTHVwkFlaYMzpbGvpT4Vnv3Ued5+TSdT0=;
-        b=Vp2lvqEa1XAioiKHcCyOr840y1ExIsMv4bFRbYGEWfL3k1ebNtzsks1MqWKW8d6ptO
-         O83dgOwsPuMfj6IZEzcijqoDCQCXxtP6/IgTD3cBlXdRd/W1HIfMJfI2olU4pqwGuAcZ
-         rve6gACbCo8yz8acTFsDpMUdRx9YRXHcf9KT3ib6V87ZJ8cl/Qsk/kPM1PCqgavX6BOK
-         Z1iiAG9TxR0IcoEieujeZM2+AqQAglyo8Y71zx52IFiG2pnnd0iuRsibE7SFNJ6X4Mtk
-         aWmmVv3QgtSMB5mQ5mZ1SPPkvLQPBXlQQXb9eykkvfQ79AG+cXh8XsKwh9ZKcNUKZ4PY
-         u5wg==
-X-Gm-Message-State: ACrzQf28egm5S5N2IcSKM9DEssA7qkMRp7ldLquK1hzlMJSf6cnbkX5L
-        hXkK9rU8KOwPiA0721keZRCevlVkApH1MzY1Ee9aYE2MCFo=
-X-Google-Smtp-Source: AMsMyM5tP9EcZoBMgjdZMwEr67Y+wX0+oOJLb6VbWoOSvQbk9JuKQ//RzTpAqxWNhMrPap0yP7GvET0EfnRokuzhjbo=
-X-Received: by 2002:a17:907:2cca:b0:78d:ec48:ac29 with SMTP id
- hg10-20020a1709072cca00b0078dec48ac29mr16544045ejc.114.1666376331530; Fri, 21
- Oct 2022 11:18:51 -0700 (PDT)
+        bh=drMaaZBaH3perzkVOc+AoOVzAG7r0aPEsm8TlYzOdqw=;
+        b=5alrSMIV5OV8vqlCJqGWFN9eA/8U48REb6Csi0eagUbzCD2QB+e0qYRtIlCpVpS7jm
+         L1+q00yypUQhYKStiv1JhL6V3RIYYIgKbXLL9KirlLWr5WimYRLbjxxRuNOWK5x3IXEN
+         Nu6Eu6P6ry3QajCbsXByTSaJVVdSFQ+tNZjIj0tj7u3SoLx/zR7+KKz/41ev32IfULiw
+         zkxUlxIM10CKOtgyDcfmlPcOuu1LRiqR4RoKyO4N2NhhuYJhlyIN6vLvzYqUsnNw+XF7
+         Xgy3mA9mRA1yDg+jqBAD4zxY2M5oXkDz7QDhmpCXBP3hXmUFzqGXQlekoFIpWQvC4p4e
+         IP/w==
+X-Gm-Message-State: ACrzQf34etHQ3caRV+1idcTFTNUdER3Wu36ptTiY0XnE5AlaN+0N9Zcu
+        I/Ptyr1yySbxsSQzDusNkev1vxesxPau9Nco5qdApw==
+X-Google-Smtp-Source: AMsMyM6rB2Qt6/La/wxTXL0xTYrZDtoP407BolK9pQqTqw3BkArwJ9Q7jUm1exi0kvVYocy2ErEOy9vok3UmeTOoFxY=
+X-Received: by 2002:a05:6e02:1bc4:b0:2fc:2d47:9abf with SMTP id
+ x4-20020a056e021bc400b002fc2d479abfmr14504413ilv.246.1666377311854; Fri, 21
+ Oct 2022 11:35:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221003214941.6f6ea10d@kernel.org> <YzvV0CFSi9KvXVlG@krava>
- <20221004072522.319cd826@kernel.org> <Yz1SSlzZQhVtl1oS@krava>
- <20221005084442.48cb27f1@kernel.org> <20221005091801.38cc8732@kernel.org>
- <Yz3kHX4hh8soRjGE@krava> <20221013080517.621b8d83@kernel.org>
- <Y0iNVwxTJmrddRuv@krava> <CAEf4Bzbow+8-f4rg2LRRRUD+=1wbv1MjpAh-P4=smUPtrzfZ3Q@mail.gmail.com>
- <Y0kF/radV0cg4JYk@krava>
-In-Reply-To: <Y0kF/radV0cg4JYk@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Oct 2022 11:18:39 -0700
-Message-ID: <CAEf4BzZm2ViaHKiR+4pmWj6yzcPy23q-g_e+cJ90sXuDzkLmSw@mail.gmail.com>
-Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
+ <20221019183845.905-3-dthaler1968@googlemail.com> <Y1BkuZKW7nCUrbx/@google.com>
+ <DM4PR21MB3440ED1A4A026F13F73358C3A32B9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAKH8qBterhU-FM52t8ZukUUD3WkUhhNLSFq1y2zD7geq4TYO6g@mail.gmail.com>
+ <CAADnVQ+8AtZWAOeeWG5REvW2nW7bw20aZpfHxUjERnqMSHGRiw@mail.gmail.com> <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+In-Reply-To: <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 21 Oct 2022 11:35:00 -0700
+Message-ID: <CAKH8qBsLqw=AbU=xHv1zFtcf-nrLUrPyrDj4rtnHJEc2B_c82Q@mail.gmail.com>
+Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+To:     Dave Thaler <dthaler@microsoft.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,128 +72,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 11:47 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Fri, Oct 21, 2022 at 10:56 AM Dave Thaler <dthaler@microsoft.com> wrote:
 >
-> On Thu, Oct 13, 2022 at 03:24:59PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Oct 13, 2022 at 3:12 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Thu, Oct 13, 2022 at 08:05:17AM -0700, Jakub Kicinski wrote:
-> > > > On Wed, 5 Oct 2022 22:07:57 +0200 Jiri Olsa wrote:
-> > > > > > Yeah, it's there on linux-next, too.
-> > > > > >
-> > > > > > Let me grab a fresh VM and try there. Maybe it's my system. Somehow.
-> > > > >
-> > > > > ok, I will look around what's the way to install that centos 8 thing
+> > On Wed, Oct 19, 2022 at 4:35 PM Stanislav Fomichev <sdf@google.com>
+> > wrote:
+> > > On Wed, Oct 19, 2022 at 2:06 PM Dave Thaler <dthaler@microsoft.com>
+> > wrote:
 > > > >
-> > > > Any luck?
+> > > > sdf@google.com wrote:
+> > > > > >   ``BPF_ADD | BPF_X | BPF_ALU`` means::
+> > > > >
+> > > > > > -  dst_reg = (u32) dst_reg + (u32) src_reg;
+> > > > > > +  dst = (u32) (dst + src)
+> > > > >
+> > > > > IIUC, by going from (u32) + (u32) to (u32)(), we want to signal
+> > > > > that the value will just wrap around?
+> > > >
+> > > > Right.  In particular the old line could be confusing if one
+> > > > misinterpreted it as saying that the addition could overflow into a
+> > > > higher bit.  The new line is intended to be unambiguous that the upper 32
+> > bits are 0.
+> > > >
+> > > > > But isn't it more confusing now because it's unclear what the sign
+> > > > > of the dst/src is (s32 vs u32)?
+> > > >
+> > > > As stated the upper 32 bits have to be 0, just as any other u32 assignment.
 > > >
-> > > now BTFIDS warnings..
+> > > Do we mention somewhere above/below that the operands are unsigned?
+> > > IOW, what prevents me from reading this new format as follows?
 > > >
-> > > I can see following on centos8 with gcc 8.5:
-> > >
-> > >           BTFIDS  vmlinux
-> > >         WARN: multiple IDs found for 'task_struct': 300, 56614 - using 300
-> > >         WARN: multiple IDs found for 'file': 540, 56649 - using 540
-> > >         WARN: multiple IDs found for 'vm_area_struct': 549, 56652 - using 549
-> > >         WARN: multiple IDs found for 'seq_file': 953, 56690 - using 953
-> > >         WARN: multiple IDs found for 'inode': 1132, 56966 - using 1132
-> > >         WARN: multiple IDs found for 'path': 1164, 56995 - using 1164
-> > >         WARN: multiple IDs found for 'task_struct': 300, 61905 - using 300
-> > >         WARN: multiple IDs found for 'file': 540, 61943 - using 540
-> > >         WARN: multiple IDs found for 'vm_area_struct': 549, 61946 - using 549
-> > >         WARN: multiple IDs found for 'inode': 1132, 62029 - using 1132
-> > >         WARN: multiple IDs found for 'path': 1164, 62058 - using 1164
-> > >         WARN: multiple IDs found for 'cgroup': 1190, 62067 - using 1190
-> > >         WARN: multiple IDs found for 'seq_file': 953, 62253 - using 953
-> > >         WARN: multiple IDs found for 'sock': 7960, 62374 - using 7960
-> > >         WARN: multiple IDs found for 'sk_buff': 1876, 62485 - using 1876
-> > >         WARN: multiple IDs found for 'bpf_prog': 6094, 62542 - using 6094
-> > >         WARN: multiple IDs found for 'socket': 7993, 62545 - using 7993
-> > >         WARN: multiple IDs found for 'xdp_buff': 6191, 62836 - using 6191
-> > >         WARN: multiple IDs found for 'sock_common': 8164, 63152 - using 8164
-> > >         WARN: multiple IDs found for 'request_sock': 17296, 63204 - using 17296
-> > >         WARN: multiple IDs found for 'inet_request_sock': 36292, 63222 - using 36292
-> > >         WARN: multiple IDs found for 'inet_sock': 32700, 63225 - using 32700
-> > >         WARN: multiple IDs found for 'inet_connection_sock': 33944, 63240 - using 33944
-> > >         WARN: multiple IDs found for 'tcp_request_sock': 36299, 63260 - using 36299
-> > >         WARN: multiple IDs found for 'tcp_sock': 33969, 63264 - using 33969
-> > >         WARN: multiple IDs found for 'bpf_map': 6623, 63343 - using 6623
-> > >
-> > > I'll need to check on that..
-> > >
-> > > and I just actually saw the 'nf_conn' warning on linux-next/master with
-> > > latest fedora/gcc-12:
-> > >
-> > >           BTF [M] net/netfilter/nf_nat.ko
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 120156 - using 106518
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 121853 - using 106518
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 123126 - using 106518
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 124537 - using 106518
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 126442 - using 106518
-> > >         WARN: multiple IDs found for 'nf_conn': 106518, 128256 - using 106518
-> > >           LD [M]  net/netfilter/nf_nat_tftp.ko
-> > >
-> > > looks like maybe dedup missed this struct for some reason
-> > >
-> > > nf_conn dump from module:
-> > >
-> > >         [120155] PTR '(anon)' type_id=120156
-> > >         [120156] STRUCT 'nf_conn' size=320 vlen=14
-> > >                 'ct_general' type_id=105882 bits_offset=0
-> > >                 'lock' type_id=180 bits_offset=64
-> > >                 'timeout' type_id=113 bits_offset=640
-> > >                 'zone' type_id=106520 bits_offset=672
-> > >                 'tuplehash' type_id=106533 bits_offset=704
-> > >                 'status' type_id=1 bits_offset=1600
-> > >                 'ct_net' type_id=3215 bits_offset=1664
-> > >                 'nat_bysource' type_id=139 bits_offset=1728
-> > >                 '__nfct_init_offset' type_id=949 bits_offset=1856
-> > >                 'master' type_id=120155 bits_offset=1856
-> > >                 'mark' type_id=106351 bits_offset=1920
-> > >                 'secmark' type_id=106351 bits_offset=1952
-> > >                 'ext' type_id=106536 bits_offset=1984
-> > >                 'proto' type_id=106532 bits_offset=2048
-> > >
-> > > nf_conn dump from vmlinux:
-> > >
-> > >         [106517] PTR '(anon)' type_id=106518
-> > >         [106518] STRUCT 'nf_conn' size=320 vlen=14
-> > >                 'ct_general' type_id=105882 bits_offset=0
-> > >                 'lock' type_id=180 bits_offset=64
-> > >                 'timeout' type_id=113 bits_offset=640
-> > >                 'zone' type_id=106520 bits_offset=672
-> > >                 'tuplehash' type_id=106533 bits_offset=704
-> > >                 'status' type_id=1 bits_offset=1600
-> > >                 'ct_net' type_id=3215 bits_offset=1664
-> > >                 'nat_bysource' type_id=139 bits_offset=1728
-> > >                 '__nfct_init_offset' type_id=949 bits_offset=1856
-> > >                 'master' type_id=106517 bits_offset=1856
-> > >                 'mark' type_id=106351 bits_offset=1920
-> > >                 'secmark' type_id=106351 bits_offset=1952
-> > >                 'ext' type_id=106536 bits_offset=1984
-> > >                 'proto' type_id=106532 bits_offset=2048
-> > >
-> > > look identical.. Andrii, any idea?
+> > > dst = (u32) ((s32)dst + (s32)src)
 > >
-> > I'm pretty sure they are not identical. There is somewhere a STRUCT vs
-> > FWD difference. We had a similar discussion recently with Alan
-> > Maguire.
-> >
-> > >                 'master' type_id=120155 bits_offset=1856
-> >
-> > vs
-> >
-> > >                 'master' type_id=106517 bits_offset=1856
+> > The doc mentions it, but I completely agree with you.
+> > The original line was better.
+> > Dave, please undo this part.
 >
-> master is pointer to same 'nf_conn' object, and rest of the ids are same
+> Nothing prevents you from reading the new format as
+>     dst = (u32) ((s32)dst + (s32)src)
+> because that implementation wouldn't be wrong.
+
+Assuming the underlying cpu architecture is using 2s complement to
+represent negative numbers, right? (which is probably a safe one
+nowadays)
+I don't know whether that's something that's spelled out in a generic
+BPF architecture doc.
+
+> Below is why, please point out any logic errors if you see any.
 >
+> Mathematically, all of the following have identical results:
+>     dst = (u32) ((s32)dst + (s32)src)
+>     dst = (u32) ((u32)dst + (u32)src)
+>     dst = (u32) ((s32)dst + (u32)src)
+>     dst = (u32) ((u32)dst + (s32)src)
+>
+> u32 and s32, once you allow overflow/underflow to wrap within 32 bits, are
+> mathematical rings (see https://en.wikipedia.org/wiki/Ring_(mathematics) )
+> meaning they're a circular space where X, X + 2^32, and X - 2^32 are equal.
+> So (s32)src == (u32)src when the most significant bit is clear, and
+> (s32)src == (u32)src - 2^32 when the most significant bit is set.
+>
+> So the sign of the addition operands does not matter here.
+> What matters is whether you do addition where the result can be
+> more than 32 bits or not, which is what the new line makes unambiguous
+> and the old line did not.
+>
+> Specifically, nothing prevented mis-interpreting the old line as
+>
+> u64 temp = (u32)dst;
+> temp += (u32)src;
+> dst = temp;
+>
+> which would give the wrong answer since the upper 32-bits might be non-zero.
+>
+> u64 temp = (s32)dst;
+> temp += (s32)src;
+> dst = (u32)temp;
+>
+> Would however give the correct answer, same as
+>
+> u64 temp = (u32)dst;
+> temp += (u32)src;
+> dst = (u32)temp;
+>
+> As such, I maintain the old line was bad and the new line is still good.
 
-You are right, they should be identical once PTR is deduplicated
-properly. Sorry, was too quick to jump to conclusions. I was thinking
-about situations explained by Alan.
+[..]
 
-So, is this still an issue or this was fixed by [0]?
+> If you like I can explicitly say
+>     dst = (u32) ((u32)dst + (u32)src)
+> but as noted above the operand sign is irrelevant once you cast the result.
 
-  [0] https://lore.kernel.org/bpf/1666364523-9648-1-git-send-email-alan.maguire@oracle.com/
-
-> jirka
+That might be a good compromise. A bit verbose, but solves both "what
+happens to the overflow" and "what's the operand sign" questions.
