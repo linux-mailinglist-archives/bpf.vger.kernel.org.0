@@ -2,176 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484A86070B2
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 09:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68296070BB
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 09:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbiJUHIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 03:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S229994AbiJUHMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 03:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbiJUHIa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 03:08:30 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC5416D56C;
-        Fri, 21 Oct 2022 00:08:28 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MtwVL0qQHzKFf2;
-        Fri, 21 Oct 2022 15:06:02 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgA35S1lRVJjg4rAAA--.1991S2;
-        Fri, 21 Oct 2022 15:08:25 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
- chaining
-To:     paulmck@kernel.org
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        with ESMTP id S230070AbiJUHMX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 03:12:23 -0400
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C2D1DEC3F
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 00:12:20 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id h24so1123452qta.7
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 00:12:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VfyPabQkDyMp1JmYyIhlX0/xsjb9WQjxRrWjFaYd/ss=;
+        b=FvSWtDeES5x+zTJKy3SrTgt11LmpP84bY/qwQO2/IlMNnfgx77FzbKXw8C1QTMIU/t
+         0lbMUf52eMYuDAmZQYCscU/IoqLrHr7+4XUQHv/CVyJnN2ystq20NyJ1g3xu4u157pIN
+         l/gYjbA7e1cR8bdFpZfK8yObe8RKCvool5UWIkGxN93Kh2bWbDQRmta+vRUZOIlwO8pd
+         0uV0lzoc6kKOrgx5fSH4uDR5clefN8o3evXNsMwiCF0AqQp9nLnblETvMRDoF5UpaQnM
+         em7LorheoJH3+fWVrHKdrv3WkXW7TQyN1/hQUaYJNvPWfwGZOtYuavtywUeNHlnnacbm
+         0wdg==
+X-Gm-Message-State: ACrzQf2lhOj3aHWHtIvwRoJp6/rjSedLSQBZAR5IZ22VQUonI3SzkH71
+        zNlAPMfir7yiMFh+H3FiKpzyAfWJD2UEBQ==
+X-Google-Smtp-Source: AMsMyM6GjiIV5v3RAwSzQViHXjtIRe30s1BjqPCDC06l9IKG404tWNhKUPK/vg99FNgHTzccx168tQ==
+X-Received: by 2002:a05:622a:138b:b0:39c:eb5a:5c33 with SMTP id o11-20020a05622a138b00b0039ceb5a5c33mr15189435qtk.412.1666336339321;
+        Fri, 21 Oct 2022 00:12:19 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::80b7])
+        by smtp.gmail.com with ESMTPSA id h24-20020ac85158000000b00304fe5247bfsm7519281qtn.36.2022.10.21.00.12.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Oct 2022 00:12:18 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 02:12:21 -0500
+From:   David Vernet <void@manifault.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
-References: <20221014113946.965131-1-houtao@huaweicloud.com>
- <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
- <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
- <20221018150824.GP5600@paulmck-ThinkPad-P17-Gen-1>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <da44591b-71d3-1cf4-fb68-1218d7a531b7@huaweicloud.com>
-Date:   Fri, 21 Oct 2022 15:08:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next v2 6/6] docs/bpf: Add documentation for map type
+ BPF_MAP_TYPE_CGRP_STROAGE
+Message-ID: <Y1JGVW9joJd9wipN@maniforge.dhcp.thefacebook.com>
+References: <20221020221255.3553649-1-yhs@fb.com>
+ <20221020221327.3557258-1-yhs@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20221018150824.GP5600@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgA35S1lRVJjg4rAAA--.1991S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF1kZFykZw4DGr4rCr4DJwb_yoWrAF4UpF
-        s2kF1DAr98Crs5Kw1Sqr17u3yjy3s5Ww12q34kXa4j9rn0yryjvrsFqryYgF1YvrZ3Aa42
-        yrn0yw13u3WUZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221020221327.3557258-1-yhs@fb.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Thu, Oct 20, 2022 at 03:13:27PM -0700, Yonghong Song wrote:
+> Add some descriptions and examples for BPF_MAP_TYPE_CGRP_STROAGE.
+> Also illustate the major difference between BPF_MAP_TYPE_CGRP_STROAGE
+> and BPF_MAP_TYPE_CGROUP_STORAGE and recommend to use
+> BPF_MAP_TYPE_CGRP_STROAGE instead of BPF_MAP_TYPE_CGROUP_STORAGE
+> in the end.
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  Documentation/bpf/map_cgrp_storage.rst | 104 +++++++++++++++++++++++++
+>  1 file changed, 104 insertions(+)
+>  create mode 100644 Documentation/bpf/map_cgrp_storage.rst
+> 
+> diff --git a/Documentation/bpf/map_cgrp_storage.rst b/Documentation/bpf/map_cgrp_storage.rst
+> new file mode 100644
+> index 000000000000..15691aab7fc7
+> --- /dev/null
+> +++ b/Documentation/bpf/map_cgrp_storage.rst
+> @@ -0,0 +1,104 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Meta Platforms, Inc. and affiliates.
+> +
+> +===========================
+> +BPF_MAP_TYPE_CGRP_STORAGE
+> +===========================
+> +
+> +The ``BPF_MAP_TYPE_CGRP_STORAGE`` map type represents a local fix-sized
+> +storage for cgroups. It is only available with ``CONFIG_CGROUP_BPF``.
+> +The programs are made available by the same Kconfig. The
+> +data for a particular cgroup can be retrieved by looking up the map
+> +with that cgroup.
+> +
+> +This document describes the usage and semantics of the
+> +``BPF_MAP_TYPE_CGRP_STORAGE`` map type.
+> +
+> +Usage
+> +=====
+> +
+> +The map key must be ``sizeof(int)`` representing a cgroup fd.
+> +To access the storage in a program, use ``bpf_cgrp_storage_get``::
+> +
+> +    void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgroup, void *value, u64 flags)
+> +
+> +``flags`` could be 0 or ``BPF_LOCAL_STORAGE_GET_F_CREATE`` which indicates that
+> +a new local storage will be created if one does not exist.
+> +
+> +The local storage can be removed with ``bpf_cgrp_storage_delete``::
+> +
+> +    long bpf_cgrp_storage_delete(struct bpf_map *map, struct cgruop *cgroup)
 
-On 10/18/2022 11:08 PM, Paul E. McKenney wrote:
-> On Tue, Oct 18, 2022 at 03:31:20PM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 10/17/2022 9:39 PM, Paul E. McKenney wrote:
->>> On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
-SNIP
->>>
->> Thanks for the review. But it seems I missed another possible use case for
->> rcu_trace_implies_rcu_gp() in bpf memory allocator. The code snippet for
->> free_mem_alloc() is as following:
->>
->> static void free_mem_alloc(struct bpf_mem_alloc *ma)
->> {
->>         /* waiting_for_gp lists was drained, but __free_rcu might
->>          * still execute. Wait for it now before we freeing percpu caches.
->>          */
->>         rcu_barrier_tasks_trace();
->>         rcu_barrier();
->>         free_mem_alloc_no_barrier(ma);
->> }
->>
->> It uses rcu_barrier_tasks_trace() and rcu_barrier() to wait for the completion
->> of pending call_rcu_tasks_trace()s and call_rcu()s. I think it is also safe to
->> check rcu_trace_implies_rcu_gp() in free_mem_alloc() and if it is true, there is
->> no need to call rcu_barrier().
->>
->> static void free_mem_alloc(struct bpf_mem_alloc *ma)
->> {
->>         /* waiting_for_gp lists was drained, but __free_rcu_tasks_trace()
->>          * or __free_rcu() might still execute. Wait for it now before we
->>          * freeing percpu caches.
->>          */
->>         rcu_barrier_tasks_trace();
->>         if (!rcu_trace_implies_rcu_gp())
->>                 rcu_barrier();
->>         free_mem_alloc_no_barrier(ma);
->> }
->>
->> Does the above change look good to you ? If it is, I will post v3 to include the
->> above change and add your Reviewed-by tag.
-> Unfortunately, although synchronize_rcu_tasks_trace() implies
-> that synchronize_rcu(), there is no relationship between the
-> callbacks.  Furthermore, rcu_barrier_tasks_trace() does not imply
-> synchronize_rcu_tasks_trace().
-Yes. I see. And according to the code, if there is not pending cb,
-rcu_barrier_tasks_trace() will returned immediately. It is also possible
-rcu_tasks_trace kthread is in the middle of grace period waiting when invoking
-rcu_barrier_task_trace(), so rcu_barrier_task_trace() does not imply
-synchronize_rcu_tasks_trace().
->
-> So the above change really would break things.  Please do not do it.
-However I am a little confused about the conclusion. If only considering the
-invocations of call_rcu() and call_rcu_tasks_trace() in kernel/bpf/memalloc.c, I
-think it is safe to do so, right ? Because if  rcu_trace_implies_rcu_gp() is
-true, there will be no invocation of call_rcu() and rcu_barrier_tasks_trace()
-will wait for the completion of pending call_rcu_tasks_trace(). If
-rcu_trace_implies_rcu_gp(), rcu_barrier_tasks_trace() and rcu_barrier() will do
-the job. If considering the invocations of call_rcu() in other places, I think
-it is definitely unsafe to do that, right ?
->
-> You could use workqueues or similar to make the rcu_barrier_tasks_trace()
-> and the rcu_barrier() wait concurrently, though.  This would of course
-> require some synchronization.
-Thanks for the suggestion. Will check it later.
->
-> 							Thanx, Paul
->
->>>> Change Log:
->>>>
->>>> v2:
->>>>  * codify the implication of RCU Tasks Trace grace period instead of
->>>>    assuming for it
->>>>
->>>> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
->>>>
->>>> Hou Tao (3):
->>>>   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
->>>>   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
->>>>   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
->>>>
->>>> Paul E. McKenney (1):
->>>>   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
->>>>
->>>>  include/linux/rcupdate.h       | 12 ++++++++++++
->>>>  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
->>>>  kernel/bpf/core.c              |  8 +++++++-
->>>>  kernel/bpf/memalloc.c          | 15 ++++++++++-----
->>>>  kernel/rcu/tasks.h             |  2 ++
->>>>  5 files changed, 42 insertions(+), 8 deletions(-)
->>>>
->>>> -- 
->>>> 2.29.2
->>>>
->>> .
+s/cgruop/cgroup
 
+> +
+> +The map is available to all program types.
+> +
+> +Examples
+> +========
+> +
+> +An bpf-program example with BPF_MAP_TYPE_CGRP_STORAGE::
+
+s/An bpf-program/A bpf program
+
+> +
+> +    #include <vmlinux.h>
+> +    #include <bpf/bpf_helpers.h>
+> +    #include <bpf/bpf_tracing.h>
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
+> +            __uint(map_flags, BPF_F_NO_PREALLOC);
+> +            __type(key, int);
+> +            __type(value, long);
+> +    } cgrp_storage SEC(".maps");
+> +
+> +    SEC("tp_btf/sys_enter")
+> +    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
+> +    {
+> +            struct task_struct *task = bpf_get_current_task_btf();
+> +            long *ptr;
+> +
+> +            ptr = bpf_cgrp_storage_get(&cgrp_storage, task->cgroups->dfl_cgrp, 0,
+> +                                       BPF_LOCAL_STORAGE_GET_F_CREATE);
+> +            if (ptr)
+> +                __sync_fetch_and_add(ptr, 1);
+> +
+> +            return 0;
+> +    }
+> +
+> +Userspace accessing map declared above::
+> +
+> +    #include <linux/bpf.h>
+> +    #include <linux/libbpf.h>
+> +
+> +    __u32 map_lookup(struct bpf_map *map, int cgrp_fd)
+> +    {
+> +            __u32 *value;
+> +            value = bpf_map_lookup_elem(bpf_map__fd(map), &cgrp_fd);
+> +            if (value)
+> +                return *value;
+> +            return 0;
+> +    }
+> +
+> +Difference Between BPF_MAP_TYPE_CGRP_STORAGE and BPF_MAP_TYPE_CGROUP_STORAGE
+> +============================================================================
+> +
+> +The main difference between ``BPF_MAP_TYPE_CGRP_STORAGE`` and ``BPF_MAP_TYPE_CGROUP_STORAGE``
+> +is that ``BPF_MAP_TYPE_CGRP_STORAGE`` can be used by all program types while
+> +``BPF_MAP_TYPE_CGROUP_STORAGE`` is available only to cgroup program types.
+
+Suggestion: I'd consider going into just a bit more detail about what's
+meant by "cgroup program types" here. Maybe just 1-2 sentences
+describing the types of programs where the deprecated cgroup storage map
+type is available, and why. A program that's using the
+BPF_MAP_TYPE_CGRP_STORAGE map is conceptually also a "cgroup program
+type" in that it's querying, analyzing, etc cgroups, so being explicit
+may help get ahead of any confusion.
+
+Also, given that BPF_MAP_TYPE_CGROUP_STORAGE is deprecated, and is
+extremely close in name to BPF_MAP_TYPE_CGRP_STORAGE, perhaps we should
+start this section out by explaining that BPF_MAP_TYPE_CGROUP_STORAGE is
+a deprecated map type that's now aliased to
+BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED, and then reference it as
+BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED for the rest of the page. I think
+it's important to highlight that the map type is deprecated, and give
+some historical context here so that users understand why they should
+use BPF_MAP_TYPE_CGRP_STORAGE, and why we have two such confusingly-
+similarly named maps. What do you think?
+
+> +There are some other differences as well.
+> +
+> +(1). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports local storage for more than one
+> +     cgroups while ``BPF_MAP_TYPE_CGROUP_STORAGE`` only support one, the one attached
+
+s/cgroups/cgroup
+
+> +     by the bpf program.
+> +
+> +(2). ``BPF_MAP_TYPE_CGROUP_STORAGE`` allocates local storage at attach time so
+> +     ``bpf_get_local_storage()`` always returns non-null local storage.
+
+Suggestion: s/non-null/non-NULL. In general, I'd suggest changing null
+to NULL throughout the page, but I don't feel strongly about it.
+
+> +     ``BPF_MAP_TYPE_CGRP_STORAGE`` allocates local storage at runtime so
+> +     it is possible that ``bpf_cgrp_storage_get()`` may return null local storage.
+> +     To avoid such null local storage issue, user space can do
+> +     ``bpf_map_update_elem()`` to pre-allocate local storage.
+
+Should we specify that user space can preallocate by doing
+bpf_map_update_elem() _before_ the program is attached? Also, another
+small nit, but I think pre-allocate and de-allocate should just be
+preallocate and deallocate respectively.
+
+> +(3). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports de-allocating local storage by bpf program
+
+s/by bpf program/by a bpf program
+
+> +     while ``BPF_MAP_TYPE_CGROUP_STORAGE`` only de-allocates storage during
+> +     prog detach time.
+> +
+> +So overall, ``BPF_MAP_TYPE_CGRP_STORAGE`` supports all ``BPF_MAP_TYPE_CGROUP_STORAGE``
+> +functionality and beyond. It is recommended to use ``BPF_MAP_TYPE_CGRP_STORAGE``
+> +instead of ``BPF_MAP_TYPE_CGROUP_STORAGE``.
+
+As mentioned above, I think we need to go beyond stating that using
+BPF_MAP_TYPE_CGRP_STORAGE is recommended, and also explicitly and loudly
+call out that BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED is deprecated and
+will not be supported indefinitely.
+
+Overall though, this looks great. Thank you for writing it up.
+
+Thanks,
+David
