@@ -2,69 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F8B6080FE
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 23:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB32260814C
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 00:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbiJUV4n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 17:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        id S229913AbiJUWCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 18:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbiJUV4m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 17:56:42 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B542A935E
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 14:56:38 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29LLDnp0004052;
-        Fri, 21 Oct 2022 21:56:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2022-7-12;
- bh=tZQENge+IkjysD8G1y9LQ2uYiI+i16z5vYDWSrdHE2w=;
- b=Yw92WV4nNwxBFX+Bwk6FDUyaP47TdwlNQ3RCEuGs7uvqWs+0r+N7iSoydaMeNA6u1hkl
- Tpe06C3GRS4aa4TlIvuS8POjbvQ+Qa1nmKq5rlZTxZpn9+xEXQ6bzlNnrbmI8nfXwtbW
- NAsEzVL9pK54bYtKJV8xzxpYaYR/EpgTtBfN4eN3VINdqgcKhfh/wwomoFeukgElNzuY
- KsxGflXG/hQ2UcZwGMnqeNKOc4JtVzfzNEm5Md8QFn2HwsiDY3X6sSb+9UnsREj1x1MN
- 3yBwrdHP8XTZBVQi97iLW4icE8/ORyG4ZmfuJ7KBR2MGMV9HHatolMZllBCK35TW1R+A Ng== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k7mu0aetb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 21:56:10 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29LKs6aA007178;
-        Fri, 21 Oct 2022 21:56:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3k8hre7m3j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 21:56:09 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29LLu8pZ039284;
-        Fri, 21 Oct 2022 21:56:09 GMT
-Received: from myrouter.uk.oracle.com (dhcp-10-175-208-221.vpn.oracle.com [10.175.208.221])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3k8hre7m2e-1;
-        Fri, 21 Oct 2022 21:56:08 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     andrii@kernel.org, jolsa@kernel.org
-Cc:     acme@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC bpf-next] libbpf: btf dedup identical struct test needs check for nested structs/arrays
-Date:   Fri, 21 Oct 2022 22:56:04 +0100
-Message-Id: <1666389364-27963-1-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
- mlxscore=0 phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
- definitions=main-2210210127
-X-Proofpoint-ORIG-GUID: hp8A2-8KLJ3ngCNU7W8e3e2Ggg7gl1He
-X-Proofpoint-GUID: hp8A2-8KLJ3ngCNU7W8e3e2Ggg7gl1He
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S229478AbiJUWCq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 18:02:46 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995A02A9371
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:02:44 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g27so10774962edf.11
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 15:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xn/80B2vpOI2VOZoSz6cl+J1RGV5/vgkL3CUwbKlXi8=;
+        b=YoHqN4L0giPiBVCtOupl4D68lUE8brbUQDy9giXsIyl7b/QlqDVkvmTieQpfKlA54/
+         L+onjyp84jC214H9rx79V6sjTsXsiV0XUBpdX+swA6bV7KTE6Q4ggfDTm/8URmWSGnmr
+         6a1YR4i6bwshNH8A7woTOynwVaYPnVDhX4CCGm+o4akXc0nH0jdZ70PMPTG+GEtwF5XD
+         1FsDmOmyQwFClUaUI56JLZCOO6HYBEcWBZBvz1UgBWhYNC2NYeBzeJF/tWuJZUpImG8t
+         eW2BP2hdsSZQShWQOrBO9/AwAcl+KeM1D8/UZzX2lWaSC9uangI5NKYSkq5+M8fL8GKX
+         7QIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xn/80B2vpOI2VOZoSz6cl+J1RGV5/vgkL3CUwbKlXi8=;
+        b=ASrW5ZP+r+JNULzvvyirzNNxMsWOLEkRRAN25wdnvIsZ48Lfpg1x+NwtJU2iZq/7OT
+         6UoJOx2z43F1SuuHIHxkHxBG7fj7fbIy8XTk3m+MgoJdQzlvXDWTVmeji+Et5IxVSvgC
+         c2PmM8Pla0QCBF2sUn1WK6uIXXlVH6QnyOTm+f4eF6DmeI6QdvzvTmrullhJaZlhPcQJ
+         mOVvNWR1WqU85N8wZM9ZE/uxilcGV50A4LQxnzjImfcaHV955qYTp4VzjXckFgOWKxE0
+         P5vRH6B48WaZUzqLxDxm1iZMJCcr/boKH2IKQPP+8fRI4PPydWweBSkmAIlRiSd1D3ZJ
+         9Gww==
+X-Gm-Message-State: ACrzQf1+2NL+19+zJwltIKc8wYp416jN2hahx9UQmOCP4XzpI1O2Lxqj
+        QNhG2sDBB9/On6PBCev2OLR6drXua4gLampxju0=
+X-Google-Smtp-Source: AMsMyM6Bh3wEJDm2vaBvaR+VZC9fHYElvWGZPfBcqFr0pLTuovoRiGN5ot/RmB3zpFEJ72dcwqkYGnQ7R+I/oduLTYI=
+X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
+ bf4-20020a170907098400b0077f4d959e2fmr17721724ejc.176.1666389762997; Fri, 21
+ Oct 2022 15:02:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221019135621.1480923-1-jolsa@kernel.org> <20221019135621.1480923-5-jolsa@kernel.org>
+In-Reply-To: <20221019135621.1480923-5-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Oct 2022 15:02:30 -0700
+Message-ID: <CAEf4Bza1p-HZtng4AdAPiV5jbBEstKckWbtAj2aJd2fNqoziZQ@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 4/8] bpf: Take module reference on kprobe_multi link
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,75 +76,175 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When examining module BTF, we often see core kernel structures
-such as sk_buff, net_device duplicated in the module.  After adding
-debug messaging to BTF it turned out that much of the problem
-was down to the identical struct test failing during deduplication;
-sometimes compilation units contain identical structs.  However
-it turns out sometimes that type ids of identical struct members
-can also differ, even when the containing structs are still identical.
+On Wed, Oct 19, 2022 at 6:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Currently we allow to create kprobe multi link on function from kernel
+> module, but we don't take the module reference to ensure it's not
+> unloaded while we are tracing it.
+>
+> The multi kprobe link is based on fprobe/ftrace layer which takes
+> different approach and releases ftrace hooks when module is unloaded
+> even if there's tracer registered on top of it.
+>
+> Adding code that gathers all the related modules for the link and takes
+> their references before it's attached. All kernel module references are
+> released after link is unregistered.
+>
+> Note that we do it the same way already for trampoline probes
+> (but for single address).
+>
+> Acked-by: Song Liu <song@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 92 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 17ae9e8336db..9a4a2388dff2 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2452,6 +2452,8 @@ struct bpf_kprobe_multi_link {
+>         unsigned long *addrs;
+>         u64 *cookies;
+>         u32 cnt;
+> +       struct module **mods;
+> +       u32 mods_cnt;
+>  };
+>
+>  struct bpf_kprobe_multi_run_ctx {
+> @@ -2507,6 +2509,14 @@ static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32
+>         return err;
+>  }
+>
+> +static void kprobe_multi_put_modules(struct module **mods, u32 cnt)
+> +{
+> +       u32 i;
+> +
+> +       for (i = 0; i < cnt; i++)
+> +               module_put(mods[i]);
+> +}
+> +
+>  static void free_user_syms(struct user_syms *us)
+>  {
+>         kvfree(us->syms);
+> @@ -2519,6 +2529,7 @@ static void bpf_kprobe_multi_link_release(struct bpf_link *link)
+>
+>         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>         unregister_fprobe(&kmulti_link->fp);
+> +       kprobe_multi_put_modules(kmulti_link->mods, kmulti_link->mods_cnt);
+>  }
+>
+>  static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+> @@ -2528,6 +2539,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+>         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>         kvfree(kmulti_link->addrs);
+>         kvfree(kmulti_link->cookies);
+> +       kfree(kmulti_link->mods);
+>         kfree(kmulti_link);
+>  }
+>
+> @@ -2663,6 +2675,71 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+>         }
+>  }
+>
+> +struct module_addr_args {
+> +       unsigned long *addrs;
+> +       u32 addrs_cnt;
+> +       struct module **mods;
+> +       int mods_cnt;
+> +       int mods_cap;
+> +};
+> +
+> +static int module_callback(void *data, const char *name,
+> +                          struct module *mod, unsigned long addr)
+> +{
+> +       struct module_addr_args *args = data;
+> +       struct module **mods;
+> +
+> +       /* We iterate all modules symbols and for each we:
+> +        * - search for it in provided addresses array
+> +        * - if found we check if we already have the module pointer stored
+> +        *   (we iterate modules sequentially, so we can check just the last
+> +        *   module pointer)
+> +        * - take module reference and store it
+> +        */
+> +       if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+> +                      bpf_kprobe_multi_addrs_cmp))
+> +               return 0;
+> +
+> +       if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+> +               return 0;
+> +
+> +       if (args->mods_cnt == args->mods_cap) {
+> +               args->mods_cap = max(16, args->mods_cap * 3 / 2);
+> +               mods = krealloc_array(args->mods, args->mods_cap, sizeof(*mods), GFP_KERNEL);
+> +               if (!mods)
+> +                       return -ENOMEM;
+> +               args->mods = mods;
+> +       }
+> +
+> +       if (!try_module_get(mod))
+> +               return -EINVAL;
+> +
+> +       args->mods[args->mods_cnt] = mod;
+> +       args->mods_cnt++;
+> +       return 0;
+> +}
+> +
+> +static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u32 addrs_cnt)
+> +{
+> +       struct module_addr_args args = {
+> +               .addrs     = addrs,
+> +               .addrs_cnt = addrs_cnt,
+> +       };
+> +       int err;
+> +
+> +       /* We return either err < 0 in case of error, ... */
+> +       err = module_kallsyms_on_each_symbol(module_callback, &args);
+> +       if (err) {
+> +               kprobe_multi_put_modules(args.mods, args.mods_cnt);
+> +               kfree(args.mods);
+> +               return err;
+> +       }
+> +
+> +       /* or number of modules found if everything is ok. */
+> +       *mods = args.mods;
+> +       return args.mods_cnt;
+> +}
+> +
+>  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>  {
+>         struct bpf_kprobe_multi_link *link = NULL;
+> @@ -2773,10 +2850,25 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>                        bpf_kprobe_multi_cookie_cmp,
+>                        bpf_kprobe_multi_cookie_swap,
+>                        link);
+> +       } else {
+> +               /*
+> +                * We need to sort addrs array even if there are no cookies
+> +                * provided, to allow bsearch in get_modules_for_addrs.
+> +                */
+> +               sort(addrs, cnt, sizeof(*addrs),
+> +                      bpf_kprobe_multi_addrs_cmp, NULL);
+> +       }
+> +
+> +       err = get_modules_for_addrs(&link->mods, addrs, cnt);
+> +       if (err < 0) {
+> +               bpf_link_cleanup(&link_primer);
+> +               return err;
+>         }
+> +       link->mods_cnt = err;
+>
+>         err = register_fprobe_ips(&link->fp, addrs, cnt);
+>         if (err) {
+> +               kprobe_multi_put_modules(link->mods, link->mods_cnt);
 
-To take an example, for struct sk_buff, debug messaging revealed
-that the identical struct matching was failing for the anon
-struct "headers"; specifically for the first field:
+I don't think bpf_link_cleanup() will free link->mods, you have to do
+it explicitly here
 
-	__u8       __pkt_type_offset[0]; /*   128     0 */
-
-Looking at the code in BTF deduplication, we have code that guards
-against the possibility of identical struct definitions, down to
-type ids, and identical array definitions.  However in this case
-we have a struct which is being defined twice but does not have
-identical type ids since each duplicate struct has separate type
-ids for the above array member.  A similar problem (though not
-observed) could potentially occur for a struct-in-a-struct.
-
-The solution is to make the "identical struct" test check members
-not just for matching ids, but to also check if they in turn are
-identical structs or arrays.
-
-The results of doing this are quite dramatic (for some modules
-at least); I see the number of type ids drop from around 10000
-to just over 1000 in one module for example, and kernel
-module types are no longer duplicated.
-
-For testing with latest pahole, applying [1] is required,
-otherwise dedups can fail for the reasons described there.
-
-All BTF-related selftests passed with this change.
-
-RFC for bpf-next rather than patch for bpf tree because while
-this resolves dedup issues for me using gcc 9 and 11,
-these things seem to be quite compiler-sensitive, so would
-be good to ensure it works for others too.  Presuming it
-does, should probably specify:
-
-Fixes: efdd3eb8015e ("libbpf: Accommodate DWARF/compiler bug with duplicated structs")
-
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-
-[1] https://lore.kernel.org/bpf/1666364523-9648-1-git-send-email-alan.maguire@oracle.com/
----
- tools/lib/bpf/btf.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index d88647d..b7d7f19 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -3918,8 +3918,11 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
- 	m1 = btf_members(t1);
- 	m2 = btf_members(t2);
- 	for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
--		if (m1->type != m2->type)
--			return false;
-+		if (m1->type == m2->type ||
-+		    btf_dedup_identical_structs(d, m1->type, m2->type) ||
-+		    btf_dedup_identical_arrays(d, m1->type, m2->type))
-+			continue;
-+		return false;
- 	}
- 	return true;
- }
--- 
-1.8.3.1
-
+>                 bpf_link_cleanup(&link_primer);
+>                 return err;
+>         }
+> --
+> 2.37.3
+>
