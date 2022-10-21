@@ -2,334 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A6E607F58
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AAD607F82
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 22:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbiJUT50 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 15:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        id S229484AbiJUUIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 16:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbiJUT5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 15:57:25 -0400
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BFB29CB85
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:57:21 -0700 (PDT)
-Received: by mail-qt1-f181.google.com with SMTP id hh9so2332288qtb.13
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:57:21 -0700 (PDT)
+        with ESMTP id S229697AbiJUUII (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 16:08:08 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A2C2670E3
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 13:08:07 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id q19so9909723edd.10
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 13:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8NsbTJ174T4GKndNpIEScx40KnHeyFwx+PDQJ8NXLaM=;
+        b=FT388DCtHbeAbABcXzKxmVJKpqWJjL1IaOwRZ59NR0fByyizuP4YO4AFBy2xdhvmKE
+         n3aS/8rf1M7Q2GuLkzFJ0HOcCf0uW0D8l6jjCoNLcgDhXN3JfmuJvm8ACjZ3uN8PFo+C
+         jRBuFGCk31h7193+QDaXj9CQXxtfIonOS7aZ0H5OlsZysJkbhRenkyL7bfZomStHzW4E
+         euah0iZ7y6CT+UQjLcsgrXEmm6SNx+vlIxhEu5RixpriTN5juI6B32XleLOBuUk+6d6H
+         iljA9oZGEs6NhBcEi8pS3Tna3M9HwzWLRbbAxTR/ivE7em4oRX6+noIzjypUmYfDYqse
+         Wy1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XtzzI8rnFavIqszM0QAldCjh1ANkwfRiM3IzcBeISQw=;
-        b=mRV8RJ+AsuwLDhSkSlgHJDl/T8AQBhZxAJGsMuoGXjSRTT1n67qiuIQu599W0a8zlL
-         FwQgakxFsy0Sv7YplgNMQgGdhIMSYdPAgiaQsH052NbT6Dck9mkm60/lL/KMJrnBPeN7
-         P3UtFvaimEifAtP6HEyUJtAhcwLLSSKpwVsixOwuDkfpa+ku8gZVjLznnukPOZj4VIit
-         k2BhjSuljYu3nuuZRdkT3xHSZ9Jt376sHZ+joWAphsDx8fBhVqFS3ea/34hdF9h8iJn7
-         zSn+GQ0YXaE7W03OPgudj/7J7qUzsbEwJaedpO/9APJZlauKwxGaF15OB48GVS4qSt9E
-         3UmA==
-X-Gm-Message-State: ACrzQf370uiNqzKr/oKevJWkNV/+S2M6S/gpgKcsy4WOdRnikscl9ODR
-        6hcLvi+n2RFx8OJDnoWGwo7uuvssmrNBGA==
-X-Google-Smtp-Source: AMsMyM7JmU8s130/q8UPTgX3TZ4aGPncVP3SURYCFkiPK0CqcM0+vOc3isizcMIvJ0tqAswdtskpYQ==
-X-Received: by 2002:a05:622a:1316:b0:39c:e8e6:7038 with SMTP id v22-20020a05622a131600b0039ce8e67038mr18119605qtk.262.1666382239607;
-        Fri, 21 Oct 2022 12:57:19 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::80b7])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05620a294c00b006ced5d3f921sm10453756qkp.52.2022.10.21.12.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 12:57:18 -0700 (PDT)
-Date:   Fri, 21 Oct 2022 14:57:21 -0500
-From:   David Vernet <void@manifault.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Implement cgroup storage available
- to non-cgroup-attached bpf progs
-Message-ID: <Y1L5oZdzn3kxZL+G@maniforge.dhcp.thefacebook.com>
-References: <20221020221255.3553649-1-yhs@fb.com>
- <20221020221306.3554250-1-yhs@fb.com>
- <Y1IsqVB2H7kksOh8@maniforge.dhcp.thefacebook.com>
- <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8NsbTJ174T4GKndNpIEScx40KnHeyFwx+PDQJ8NXLaM=;
+        b=pe5HS+ptFKpd3zs8W5BDLdzBKe2zuqdTjSRczKq6zMlqcbkRbSHVspb35Rw2MDmnfS
+         WAi82FU+2iHe9EbCDhBYMSKiXKlZqfjxUEkFsmaGTdfTqag4+wCcxmG0o389AySY1CFm
+         RCw60jPMcEKVoz603wdGlpahrONXRSKMYbfYjflTp4pG36JvVzSxbha3nLWi/esjSNxy
+         pHQ5eL4ksXV57cr5TWnG1tFiLtD95aZ0y578eYptibmFVkF1qE19uaMHa2QAVyZVJHYI
+         EeTgr/dXufz0TLuNoYC3qNGDSOSM1lVA5ZYL6d4cUfdjpglr98ju1z90ojUaWSP9/p/k
+         RC6g==
+X-Gm-Message-State: ACrzQf3ng+Hj5BEJoieieh2nieaQpClb7xgPbA6iAKCz6Zsg35lb8oH3
+        TUfKD6XCQ4hSP3udl1UfQT0qrKzSKWXTER0QEWyxiXmG
+X-Google-Smtp-Source: AMsMyM5+Nxjt6oG/Gid3hJaijx613SDlbTPRXDKtArR749bReSS5RacWk36ptY59AE2+JCqsoO41eaEuF+lPtSZyVYI=
+X-Received: by 2002:a05:6402:168c:b0:458:5b8b:afd2 with SMTP id
+ a12-20020a056402168c00b004585b8bafd2mr18798557edv.357.1666382885812; Fri, 21
+ Oct 2022 13:08:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
+ <20221019183845.905-3-dthaler1968@googlemail.com> <Y1BkuZKW7nCUrbx/@google.com>
+ <DM4PR21MB3440ED1A4A026F13F73358C3A32B9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAKH8qBterhU-FM52t8ZukUUD3WkUhhNLSFq1y2zD7geq4TYO6g@mail.gmail.com>
+ <CAADnVQ+8AtZWAOeeWG5REvW2nW7bw20aZpfHxUjERnqMSHGRiw@mail.gmail.com>
+ <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQL4-aNJ8gZziNC7n7_mchK+Te1+HDBg2sG2YvS3K+2kFQ@mail.gmail.com> <DM4PR21MB344020F909D07E5DEE316818A32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+In-Reply-To: <DM4PR21MB344020F909D07E5DEE316818A32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 21 Oct 2022 13:07:54 -0700
+Message-ID: <CAADnVQJ36HyoP9ZDUZuz-uWT8BCvYbosyWeZfS-e4pAGgubpLg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+To:     Dave Thaler <dthaler@microsoft.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 10:33:41AM -0700, Yonghong Song wrote:
+On Fri, Oct 21, 2022 at 12:24 PM Dave Thaler <dthaler@microsoft.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Sent: Friday, October 21, 2022 12:01 PM
+> > To: Dave Thaler <dthaler@microsoft.com>
+> > Cc: Stanislav Fomichev <sdf@google.com>; dthaler1968@googlemail.com;
+> > bpf@vger.kernel.org
+> > Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+> >
+> > On Fri, Oct 21, 2022 at 10:56 AM Dave Thaler <dthaler@microsoft.com> wrote:
+> > >
+> > > > On Wed, Oct 19, 2022 at 4:35 PM Stanislav Fomichev <sdf@google.com>
+> > > > wrote:
+> > > > > On Wed, Oct 19, 2022 at 2:06 PM Dave Thaler
+> > > > > <dthaler@microsoft.com>
+> > > > wrote:
+> > > > > >
+> > > > > > sdf@google.com wrote:
+> > > > > > > >   ``BPF_ADD | BPF_X | BPF_ALU`` means::
+> > > > > > >
+> > > > > > > > -  dst_reg = (u32) dst_reg + (u32) src_reg;
+> > > > > > > > +  dst = (u32) (dst + src)
+> > > > > > >
+> > > > > > > IIUC, by going from (u32) + (u32) to (u32)(), we want to
+> > > > > > > signal that the value will just wrap around?
+> > > > > >
+> > > > > > Right.  In particular the old line could be confusing if one
+> > > > > > misinterpreted it as saying that the addition could overflow
+> > > > > > into a higher bit.  The new line is intended to be unambiguous
+> > > > > > that the upper 32
+> > > > bits are 0.
+> > > > > >
+> > > > > > > But isn't it more confusing now because it's unclear what the
+> > > > > > > sign of the dst/src is (s32 vs u32)?
+> > > > > >
+> > > > > > As stated the upper 32 bits have to be 0, just as any other u32
+> > assignment.
+> > > > >
+> > > > > Do we mention somewhere above/below that the operands are
+> > unsigned?
+> > > > > IOW, what prevents me from reading this new format as follows?
+> > > > >
+> > > > > dst = (u32) ((s32)dst + (s32)src)
+> > > >
+> > > > The doc mentions it, but I completely agree with you.
+> > > > The original line was better.
+> > > > Dave, please undo this part.
+> > >
+> > > Nothing prevents you from reading the new format as
+> > >     dst = (u32) ((s32)dst + (s32)src)
+> > > because that implementation wouldn't be wrong.
+> > >
+> > > Below is why, please point out any logic errors if you see any.
+> > >
+> > > Mathematically, all of the following have identical results:
+> > >     dst = (u32) ((s32)dst + (s32)src)
+> > >     dst = (u32) ((u32)dst + (u32)src)
+> > >     dst = (u32) ((s32)dst + (u32)src)
+> > >     dst = (u32) ((u32)dst + (s32)src)
+> > >
+> > > u32 and s32, once you allow overflow/underflow to wrap within 32 bits,
+> > > are mathematical rings (see
+> > >
+> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fen.wik
+> > ipedia.org%2Fwiki%2FRing_&amp;data=05%7C01%7Cdthaler%40microsoft.co
+> > m%7C44c24e3f67aa4a5c846f08dab396adb0%7C72f988bf86f141af91ab2d7cd01
+> > 1db47%7C1%7C0%7C638019756992501432%7CUnknown%7CTWFpbGZsb3d8e
+> > yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
+> > 7C3000%7C%7C%7C&amp;sdata=1rLsMSKUn0sNiZcN2RjDMH9jWIKCuf%2Fc3qZ
+> > d2QOanW8%3D&amp;reserved=0(mathematics) ) meaning they're a circular
+> > space where X, X + 2^32, and X - 2^32 are equal.
+> > > So (s32)src == (u32)src when the most significant bit is clear, and
+> > > (s32)src == (u32)src - 2^32 when the most significant bit is set.
+> > >
+> > > So the sign of the addition operands does not matter here.
+> > > What matters is whether you do addition where the result can be more
+> > > than 32 bits or not, which is what the new line makes unambiguous and
+> > > the old line did not.
+> > >
+> > > Specifically, nothing prevented mis-interpreting the old line as
+> > >
+> > > u64 temp = (u32)dst;
+> > > temp += (u32)src;
+> > > dst = temp;
+> >
+> > Well dst_reg = (u32) dst_reg + (u32) src_reg implies C semantics, so it cannot
+> > be misinterpreted that way.
+> >
+> > > which would give the wrong answer since the upper 32-bits might be non-
+> > zero.
+> > >
+> > > u64 temp = (s32)dst;
+> > > temp += (s32)src;
+> > > dst = (u32)temp;
+> > >
+> > > Would however give the correct answer, same as
+> > >
+> > > u64 temp = (u32)dst;
+> > > temp += (u32)src;
+> > > dst = (u32)temp;
+> > >
+> > > As such, I maintain the old line was bad and the new line is still good.
+> >
+> > dst_reg = (u32) (dst_reg + src_reg)
+> > implies that the operation is performed in 64-bit and then the result is
+> > truncated to 32-bit which is not correct.
+>
+> It is mathematically correct as noted in my email above, you always get the correct result if you do the addition in 64-bit and then truncate.  You get the same
+> result as if you do the addition in 32-bit and then zero-extend.
 
-[...]
+No. It's not about the result in 32-bits. The flags will be different.
 
-> > >   /* Note that tracing related programs such as
-> > > @@ -5435,6 +5443,42 @@ union bpf_attr {
-> > >    *		**-E2BIG** if user-space has tried to publish a sample which is
-> > >    *		larger than the size of the ring buffer, or which cannot fit
-> > >    *		within a struct bpf_dynptr.
-> > > + *
-> > > + * void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgroup, void *value, u64 flags)
-> > > + *	Description
-> > > + *		Get a bpf_local_storage from the *cgroup*.
-> > > + *
-> > > + *		Logically, it could be thought of as getting the value from
-> > > + *		a *map* with *cgroup* as the **key**.  From this
-> > > + *		perspective,  the usage is not much different from
-> > > + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
-> > > + *		helper enforces the key must be a cgroup struct and the map must also
-> > > + *		be a **BPF_MAP_TYPE_CGRP_STORAGE**.
-> > > + *
-> > > + *		Underneath, the value is stored locally at *cgroup* instead of
-> > > + *		the *map*.  The *map* is used as the bpf-local-storage
-> > > + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
-> > > + *		searched against all bpf_local_storage residing at *cgroup*.
-> > 
-> > IMO this paragraph is a bit hard to parse. Please correct me if I'm
-> > wrong, but I think what it's trying to convey is that when an instance
-> > of cgroup bpf-local-storage is accessed by a program in e.g.
-> > bpf_cgrp_storage_get(), all of the cgroup bpf_local_storage entries are
-> > iterated over in the struct cgroup object until this program's local
-> > storage instance is found. Is that right? If so, perhaps something like
-> > this would be more clear:
-> 
-> yes. your above interpretation is correct.
-> 
-> > 
-> > In reality, the local-storage value is embedded directly inside of the
-> > *cgroup* object itself, rather than being located in the
-> > **BPF_MAP_TYPE_CGRP_STORAGE** map. When the local-storage value is
-> > queried for some *map* on a *cgroup* object, the kernel will perform an
-> > O(n) iteration over all of the live local-storage values for that
-> > *cgroup* object until the local-storage value for the *map* is found.
-> 
-> Sounds okay. I can change the explanation like the above.
-
-Thanks!
-
-> > > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > > index 341c94f208f4..3a12e6b400a2 100644
-> > > --- a/kernel/bpf/Makefile
-> > > +++ b/kernel/bpf/Makefile
-> > > @@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
-> > >   obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
-> > >   endif
-> > >   ifeq ($(CONFIG_CGROUPS),y)
-> > 
-> > I assume that you double checked that it's valid to compile the helper
-> > with CONFIG_CGROUPS && !CONFIG_CGROUP_BPF, but I must admit that even if
-> > that's the case, I'm not following why we would want the map to be
-> > compiled with a different kconfig option than the helper that provides
-> > access to it. If theres's a precedent for doing this then I suppose it's
-> > fine, but it does seem wrong and/or at least wasteful to compile these
-> > helpers in if CONFIG_CGROUPS is defined but CONFIG_CGROUP_BPF is not.
-> 
-> The following is my understanding.
-> CONFIG_CGROUP_BPF guards kernel/bpf/cgroup.c which contains implementation
-> mostly for cgroup-attached program types, helpers, etc.
-
-Then why are we using it to guard
-BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops)?
-
-> A lot of other cgroup-related implementation like cgroup_iter, some
-> cgroup related helper (not related to cgroup-attached program types), etc.
-> are guarded with CONFIG_CGROUPS and CONFIG_BPF_SYSCALL.
-> 
-> Note that it is totally possible CONFIG_CGROUP_BPF is 'n' while
-> CONFIG_CGROUPS and CONFIG_BPF_SYSCALL are 'y'.
-> 
-> So for cgroup local storage implemented in this patch set,
-> using CONFIG_CGROUPS and CONFIG_BPF_SYSCALL seems okay.
-
-I agree that it's fine to use CONFIG_CGROUPS here. What I'm not
-understanding is why we're using CONFIG_CGROUP_BPF to guard defining
-BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops), and then
-in the Makefile we're using CONFIG_CGROUPS to add bpf_cgrp_storage.o.
-
-In other words, I think there's a mismatch between:
-
---- a/include/linux/bpf_types.h
-+++ b/include/linux/bpf_types.h
-@@ -90,6 +90,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY, cgroup_array_map_ops)
- #ifdef CONFIG_CGROUP_BPF
-
-^^ why this instead of CONFIG_CGROUPS for BPF_MAP_TYPE_CGRP_STORAGE?
-
- BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, cgroup_storage_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE, cgroup_storage_map_ops)
-+BPF_MAP_TYPE(BPF_MAP_TYPE_CGRP_STORAGE, cgrp_storage_map_ops)
- #endif
- BPF_MAP_TYPE(BPF_MAP_TYPE_HASH, htab_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_HASH, htab_percpu_map_ops)
-
-and
-
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 341c94f208f4..3a12e6b400a2 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
- obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
- endif
- ifeq ($(CONFIG_CGROUPS),y)
--obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
-+obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgrp_storage.o
- endif
- obj-$(CONFIG_CGROUP_BPF) += cgroup.o
- ifeq ($(CONFIG_INET),y)
-
-> > > -obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
-> > > +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgrp_storage.o
-> > >   endif
-> > >   obj-$(CONFIG_CGROUP_BPF) += cgroup.o
-> > >   ifeq ($(CONFIG_INET),y)
-
-[...]
-
-> > > +	 * could be modifying the local_storage->list now.
-> > > +	 * Thus, no elem can be added-to or deleted-from the
-> > > +	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
-> > > +	 *
-> > > +	 * It is racing with bpf_local_storage_map_free() alone
-> > > +	 * when unlinking elem from the local_storage->list and
-> > > +	 * the map's bucket->list.
-> > > +	 */
-> > > +	bpf_cgrp_storage_lock();
-> > > +	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> > > +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > > +		bpf_selem_unlink_map(selem);
-> > > +		free_cgroup_storage =
-> > > +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
-> > 
-> > This still requires a comment explaining why it's OK to overwrite
-> > free_cgroup_storage with a previous value from calling
-> > bpf_selem_unlink_storage_nolock(). Even if that is safe, this looks like
-> > a pretty weird programming pattern, and IMO doing this feels more
-> > intentional and future-proof:
-> > 
-> > if (bpf_selem_unlink_storage_nolock(local_storage, selem, false, false))
-> > 	free_cgroup_storage = true;
-> 
-> We have a comment a few lines below.
->   /* free_cgroup_storage should always be true as long as
->    * local_storage->list was non-empty.
->    */
->   if (free_cgroup_storage)
-> 	kfree_rcu(local_storage, rcu);
-
-IMO that comment doesn't provide much useful information -- it states an
-assumption, but doesn't give a reason for it.
-
-> I will add more explanation in the above code like
-> 
-> 	bpf_selem_unlink_map(selem);
-> 	/* If local_storage list only have one element, the
-> 	 * bpf_selem_unlink_storage_nolock() will return true.
-> 	 * Otherwise, it will return false. The current loop iteration
-> 	 * intends to remove all local storage. So the last iteration
-> 	 * of the loop will set the free_cgroup_storage to true.
-> 	 */
-> 	free_cgroup_storage =
-> 		bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
-
-Thanks, this is the type of comment I was looking for.
-
-Also, I realize this was copy-pasted from a number of other possible
-locations in the codebase which are doing the same thing, but I still
-think this pattern is an odd and brittle way to do this. We're relying
-on an abstracted implementation detail of
-bpf_selem_unlink_storage_nolock() for correctness, which IMO is a signal
-that bpf_selem_unlink_storage_nolock() should probably be the one
-invoking kfree_rcu() on behalf of callers in the first place.  It looks
-like all of the callers end up calling kfree_rcu() on the struct
-bpf_local_storage * if bpf_selem_unlink_storage_nolock() returns true,
-so can we just move the responsibility of freeing the local storage
-object down into bpf_selem_unlink_storage_nolock() where it's unlinked?
-
-IMO this can be done in a separate patch set, if we decide it's worth
-doing at all.
-
-> > 
-> > > +	}
-> > > +	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> > > +	bpf_cgrp_storage_unlock();
-> > > +	rcu_read_unlock();
-> > > +
-> > > +	/* free_cgroup_storage should always be true as long as
-> > > +	 * local_storage->list was non-empty.
-> > > +	 */
-> > > +	if (free_cgroup_storage)
-> > > +		kfree_rcu(local_storage, rcu);
-> > > +}
-> > > +
-> > > +static struct bpf_local_storage_data *
-> > > +cgroup_storage_lookup(struct cgroup *cgroup, struct bpf_map *map, bool cacheit_lockit)
-> > > +{
-> > > +	struct bpf_local_storage *cgroup_storage;
-> > > +	struct bpf_local_storage_map *smap;
-> > > +
-> > > +	cgroup_storage = rcu_dereference_check(cgroup->bpf_cgrp_storage,
-> > > +					       bpf_rcu_lock_held());
-> > > +	if (!cgroup_storage)
-> > > +		return NULL;
-> > > +
-> > > +	smap = (struct bpf_local_storage_map *)map;
-> > > +	return bpf_local_storage_lookup(cgroup_storage, smap, cacheit_lockit);
-> > > +}
-> > > +
-> > > +static void *bpf_cgrp_storage_lookup_elem(struct bpf_map *map, void *key)
-> > > +{
-> > > +	struct bpf_local_storage_data *sdata;
-> > > +	struct cgroup *cgroup;
-> > > +	int fd;
-> > > +
-> > > +	fd = *(int *)key;
-> > > +	cgroup = cgroup_get_from_fd(fd);
-> > > +	if (IS_ERR(cgroup))
-> > > +		return ERR_CAST(cgroup);
-> > > +
-> > > +	bpf_cgrp_storage_lock();
-> > > +	sdata = cgroup_storage_lookup(cgroup, map, true);
-> > > +	bpf_cgrp_storage_unlock();
-> > > +	cgroup_put(cgroup);
-> > > +	return sdata ? sdata->data : NULL;
-> > > +}
-> > 
-> > Stanislav pointed out in the v1 revision that there's a lot of very
-> > similar logic in task storage, and I think you'd mentioned that you were
-> > going to think about generalizing some of that. Have you had a chance to
-> > consider?
-> 
-> It is hard to have a common function for
-> lookup_elem/update_elem/delete_elem(). They are quite different as each
-> heavily involves
-> task/cgroup-specific functions.
-
-Yes agreed, each implementation is acquiring their own references, and
-finding the backing element in whatever way it was implemented, etc.
-
-> but map_alloc and map_free could have common helpers.
-
-Agreed, and many of the static functions that are invoked on those paths
-such as bpf_cgrp_storage_free(), bpf_cgrp_storage_lock(), etc possibly
-as well. In general this feels like something we could pretty easily
-simplify using something like a structure with callbacks to implement
-the pieces of logic that are specific to each local storage type, such
-as getting the struct bpf_local_storage __rcu
-* pointer from some context (e.g.  cgroup_storage_ptr()). It doesn't
-necessarily need to block this change, but IMO we should clean this up
-soon because a lot of this is nearly a 100% copy-paste of other local
-storage implementations.
-
-Thanks,
-David
+> > If we had traditional carry, sign, overflow flags in bpf ISA the bit-ness of
+> > operation would be significant.
+> > Thankfully we don't, so it's not a big deal.
+> >
+> > but let's do full verbose to avoid describing C semantics:
+> > dst = (u32) ((u32)dst + (u32)src)
+>
+> Ok, will do.
+>
+> Dave
