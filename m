@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4D66081FA
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9CF608200
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 01:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiJUXFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 19:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
+        id S229692AbiJUXLL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 19:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiJUXFA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 19:05:00 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB303BECF7
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:58 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id a13so11294184edj.0
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:04:58 -0700 (PDT)
+        with ESMTP id S229520AbiJUXLK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 19:11:10 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553B02441A1
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:11:09 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g27so11208220edf.11
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 16:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AXNJWmFgQy+uNF/VdgFS7jI55kvZA5AsixPnNUZmVFA=;
-        b=bHU5ctopE2Up00G6e6F9A+UHTCiVFNbZxTlNAe17P1oIct5jZiBbM42nvtm/s5Ie/j
-         8+yBGsZZ5H7Bvw1tVeH7aq9pzRrwZm8+logzREBdbvlR8F8IIW35GxMTcoWP7ewh9gKX
-         jb3sMVGPPOq28Hm89leFxlH6217AiSQK+Z2RN17+6LU9dgiOPNGehSxKFMloZyhu8v3H
-         zaovfCGGVn1DzIHOZfpQJ2bRP7qhMKdBwuLZq3YVqTQBu1iMpb14xIDsc8lGtA9EhnbM
-         p9eaSMtrw2wJNOUC2aU9SzGU0ZWYTiNaeEmC0iCr9ySXsuJVGsFGXKTdoV/0ShNKRYri
-         XvSw==
+        bh=LQcbgdjZ0sgAWDaTVdiThALnefoKcmp34Ciys60S2w4=;
+        b=NEe8/qy7LcWE0dAOOtNSED7e3qYGwJcQ1Dr0qjgh8lOi7Zfas3Tfb8614XX4aTm8e6
+         D8DhkF9bLNYLEZJo9h8H9fFMZaQRsti6iTU0zHP7dyoB86y9wkxa+RHXtVWOrGitz4Uo
+         Le93Po800p8YKdHItYWssUdJ14OKzmGAwyvw2Wahr/OATb7N/z1cL+K3DL7XkxbGvT1k
+         m3nbYGmV6w/gWSRoh0zfmgN/zV7E1pm6b1KHqEZygYzFS74CWvH7DwKvPsFwWAx04/gx
+         dpFZ9XFR7x+j10sx/PJ+qfoWOHKF63A4CpbzmAwu72XtUi5OxsN7ZMteEA6ZNBqSh4m9
+         3Crw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AXNJWmFgQy+uNF/VdgFS7jI55kvZA5AsixPnNUZmVFA=;
-        b=kgjXAe/GkF5J2ywrByypHZ57AHe9g/ggyZ6s32MI5cyldE+HKmkqxmEAA1HxDpSg5Y
-         pgXnoc1mKg0gHpMNpL/p+JoVC8Cxhwhrwx9hiIKxTCg2regSl5J3W03l/FoPdvzqiZRO
-         gGFRsQ1G80uKNx5K49uGS+wN7U68edlbma0MgYfxzVHZIOXQ28JvylmsXuMESVLHXsEa
-         4ESw/b8HCK6mw3frPuENNS+JyuUwH+H9lQpEAJP71W4ZisZCMSZgqlLMSGFE9yLERl20
-         LxkKxYZ8WTRGPKBB2j6mNpifg6I3fTGSglV8dqkhenPNRdUQq6gvD9Ah7Xldc7u0xAHH
-         LX5A==
-X-Gm-Message-State: ACrzQf0Dsw8D3BgwW6LptZHhFF6jBX+D5D12w8MwnzyOynzsOgMia7xC
-        IvImC3AnYG8t/jsqlWGlQT6FYJMUQ7YcNWibdWM=
-X-Google-Smtp-Source: AMsMyM7YDQpcA9uq92qfpxUktfU2wo5B4HpUwpJlyNZualAfxU1VPdC8/KXrffBc5GMkC4/3fs4c6mNI7KOdgfQX9tQ=
-X-Received: by 2002:a17:907:2cca:b0:78d:ec48:ac29 with SMTP id
- hg10-20020a1709072cca00b0078dec48ac29mr17507404ejc.114.1666393497294; Fri, 21
- Oct 2022 16:04:57 -0700 (PDT)
+        bh=LQcbgdjZ0sgAWDaTVdiThALnefoKcmp34Ciys60S2w4=;
+        b=bBalmchgw/nGtq1rviCc0PhQ0GFgB+gJipXNMC+dHErJ6iR2+UZZTYn1jZSe7m0TQ2
+         oYNgaWfghclSBlmPHHAKQmd+1bqyklJMDNruvpSnhPba7Vdfwv3SkeDjEStTrORDk7DH
+         B2anKCk21k2N/EpGOAsrTDJUKpy7FNJI1LUTAPpCLmU0Gc82VtdsDsgM4Py/w7JcAwnx
+         BWcJmi7iVYE8c3UqopUB+vfNcaYJYSZMU8X/L1DBaI9tFYuPwdUPOoX1+iobDkdCBzEm
+         sSZDcL+/uvewOe0sZwnjV0GbsbDx6P7rUZElbRFj3ydLnLIqVmlEv1FaHTVk5ojUOHyS
+         PJ1w==
+X-Gm-Message-State: ACrzQf3aQsLp6taxhDD4capjbuL6WAajZqW3/xUoYoyIKLehGAGa1ot/
+        9D9E4kQ5xzM+RrrzQ7BHLwjKK2IghxR8Irs3+gs=
+X-Google-Smtp-Source: AMsMyM4CgtUmBpX5zUhWM27E3279nFUK8nEkBHrk7oVwteKbf7pPrgOYCr4Lwtr8kohbzRTcmU7y2ZopxB3x6fQoh8I=
+X-Received: by 2002:a17:907:2d91:b0:78d:8747:71b4 with SMTP id
+ gt17-20020a1709072d9100b0078d874771b4mr17560032ejc.545.1666393867938; Fri, 21
+ Oct 2022 16:11:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221020160721.4030492-1-davemarchevsky@fb.com> <20221020160721.4030492-4-davemarchevsky@fb.com>
-In-Reply-To: <20221020160721.4030492-4-davemarchevsky@fb.com>
+References: <20221020221255.3553649-1-yhs@fb.com> <20221020221311.3554642-1-yhs@fb.com>
+In-Reply-To: <20221020221311.3554642-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Oct 2022 16:04:45 -0700
-Message-ID: <CAEf4Bzb+Sb7s8NwDHJ3DGhzRMFaNYi-HbKYSnhSvSk7AUjEAAQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 4/4] selftests/bpf: Add write to hashmap to
- array_map iter test
-To:     Dave Marchevsky <davemarchevsky@fb.com>
+Date:   Fri, 21 Oct 2022 16:10:54 -0700
+Message-ID: <CAEf4Bzbi1UwGwnekjpWNZwF2G1_M-64EqH5BaKCf712nR1PUPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/6] libbpf: Support new cgroup local storage
+To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,51 +70,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 9:07 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Thu, Oct 20, 2022 at 3:13 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Modify iter prog in existing bpf_iter_bpf_array_map.c, which currently
-> dumps arraymap key/val, to also do a write of (val, key) into a
-> newly-added hashmap. Confirm that the write succeeds as expected by
-> modifying the userspace runner program.
+> Add support for new cgroup local storage.
 >
-> Before a change added in an earlier commit - considering PTR_TO_BUF reg
-> a valid input to helpers which expect MAP_{KEY,VAL} - the verifier
-> would've rejected this prog change due to type mismatch. Since using
-> current iter's key/val to access a separate map is a reasonable usecase,
-> let's add support for it.
->
-> Note that the test prog cannot directly write (val, key) into hashmap
-> via bpf_map_update_elem when both come from iter context because key is
-> marked MEM_RDONLY. This is due to bpf_map_update_elem - and other basic
-> map helpers - taking ARG_PTR_TO_MAP_{KEY,VALUE} w/o MEM_RDONLY type
-> flag. bpf_map_{lookup,update,delete}_elem don't modify their
-> input key/val so it should be possible to tag their args READONLY, but
-> due to the ubiquitous use of these helpers and verifier checks for
-> type == MAP_VALUE, such a change is nontrivial and seems better to
-> address in a followup series.
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Agree about addressing it separately, but I'm not sure what's
-non-trivial or dangerous? If I remember correctly, MEM_RDONLY on
-helper input arg just means that it accepts both read-only and
-read-write views. While the input argument doesn't have MEM_RDONLY we
-accept *only* read/write memory views. So basically adding MEM_RDONLY
-in BPF helper proto makes it more general and permissive in what can
-be passed into it. I think that's a good change, we added tons of
-MEM_RDONLY to helpers that were accepting PTR_TO_MEM already.
 
-But anyways, patch looks good:
+LGTM, but I do think that BPF_MAP_TYPE_CG_STORAGE and "cg_storage" is
+easier to read and talk about. But that's minor.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-
+>  tools/lib/bpf/libbpf.c        | 1 +
+>  tools/lib/bpf/libbpf_probes.c | 1 +
+>  2 files changed, 2 insertions(+)
 >
-> Also fixup some 'goto's in test runner's map checking loop.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 027fd9565c16..5d7819edf074 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -164,6 +164,7 @@ static const char * const map_type_name[] = {
+>         [BPF_MAP_TYPE_TASK_STORAGE]             = "task_storage",
+>         [BPF_MAP_TYPE_BLOOM_FILTER]             = "bloom_filter",
+>         [BPF_MAP_TYPE_USER_RINGBUF]             = "user_ringbuf",
+> +       [BPF_MAP_TYPE_CGRP_STORAGE]             = "cgrp_storage",
+>  };
 >
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 20 ++++++++++++------
->  .../bpf/progs/bpf_iter_bpf_array_map.c        | 21 ++++++++++++++++++-
->  2 files changed, 34 insertions(+), 7 deletions(-)
+>  static const char * const prog_type_name[] = {
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index f3a8e8e74eb8..bdb83d467f9a 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -221,6 +221,7 @@ static int probe_map_create(enum bpf_map_type map_type)
+>         case BPF_MAP_TYPE_SK_STORAGE:
+>         case BPF_MAP_TYPE_INODE_STORAGE:
+>         case BPF_MAP_TYPE_TASK_STORAGE:
+> +       case BPF_MAP_TYPE_CGRP_STORAGE:
+>                 btf_key_type_id = 1;
+>                 btf_value_type_id = 3;
+>                 value_size = 8;
+> --
+> 2.30.2
 >
-
-[...]
