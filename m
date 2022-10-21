@@ -2,147 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E3F607A0E
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A287F607BD0
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 18:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbiJUPCZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 11:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S230219AbiJUQKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 12:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbiJUPCZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 11:02:25 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592772250D;
-        Fri, 21 Oct 2022 08:02:22 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29LD4qJ6016588;
-        Fri, 21 Oct 2022 15:02:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2022-7-12;
- bh=cbzQlmdyn+pS1z6URGMPjcCqsBu3TL5vN/BBm8MMhEU=;
- b=1wRsrGjUYCj356II2xMnhBsIeBDn/IFcf5R+OCkxIvkvjrf0XQEz/ZGV4E5/7V56SbDy
- vDl8xbHCdnza6Qw04LVk53L3PIUwgztmaPwu0OoAtuhhS7nmB96mypADLZJAV84DY5pZ
- KSrc8tsljFV3BcjgSRjptzPLpeJhv+Sii6ZW2Uc4WhZscxijf7ynezxhCMjgl3ytl8i0
- 0ZjY3ucUhy2OTnzHQd9BelPU0hhE2ftS/iYvTRFD1yM7yKmm9X/9K0ruUk7zZirC1Pal
- GoaCE5TsJ8zdGdzyym99saLQVHO7p18sSKuAkztjKNbNCgMRXWz22rKVdnS7z38uSSib +A== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k99ntmv98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 15:02:18 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29LCrDVx014834;
-        Fri, 21 Oct 2022 15:02:07 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3k8hu9tup0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Oct 2022 15:02:07 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29LF26EI032219;
-        Fri, 21 Oct 2022 15:02:06 GMT
-Received: from myrouter.uk.oracle.com (dhcp-10-175-208-221.vpn.oracle.com [10.175.208.221])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3k8hu9tukx-1;
-        Fri, 21 Oct 2022 15:02:06 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     acme@kernel.org, dwarves@vger.kernel.org
-Cc:     jolsa@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH dwarves] dwarves: zero-initialize struct cu in cu__new() to prevent incorrect BTF types
-Date:   Fri, 21 Oct 2022 16:02:03 +0100
-Message-Id: <1666364523-9648-1-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210210090
-X-Proofpoint-ORIG-GUID: LyK3FFLvQ3YYda-ixajuYUacGDeTv4yb
-X-Proofpoint-GUID: LyK3FFLvQ3YYda-ixajuYUacGDeTv4yb
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230091AbiJUQKY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 12:10:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960AA182C74;
+        Fri, 21 Oct 2022 09:10:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 71DD5B82C9C;
+        Fri, 21 Oct 2022 16:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A55DC433D7;
+        Fri, 21 Oct 2022 16:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666368618;
+        bh=nYztXilJidiwuNQXGMBogrDzoLmO1qqdokwpRA9JrZg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=d64BIImt8+RKbGieSA+k1Gi1Pe350xYcc8exflCocjhoixI24Pc9dzHuguQp8i8LM
+         DOUo3NBzrZiNqoqKxTWo9QE1tRR4/wiv/3fo0kgOPxCusTxvxnK962FGycrLYCl2Gf
+         XzPlcNIK9bmG0nnJwa2nKviHpcIl5JQasDj0fPODqYp6tTfrn6VYe1H+ziEqOsM++i
+         SJmsbM2Mq0x9PRNPE8BYEDS8RbzcjbUZQ6ZJrtxvqrlUpiaa7dmuqIyQAMjhWnK9mU
+         cIlM/kkObg1fADlWGIExYMWWeqTSujpSER2fm6s1Ce66zNsho8J/Nj/2VHtib8tp+c
+         4394N+5bNS02w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 08CF5E270DF;
+        Fri, 21 Oct 2022 16:10:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [bpf-next v9 0/3] bpftool: Add autoattach for bpf prog load|loadall
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166636861803.30010.17887941246508343977.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Oct 2022 16:10:18 +0000
+References: <1665736275-28143-1-git-send-email-wangyufen@huawei.com>
+In-Reply-To: <1665736275-28143-1-git-send-email-wangyufen@huawei.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BTF deduplication was throwing some strange results, where core kernel
-data types were failing to deduplicate due to the return values
-of function type members being void (0) instead of the actual type
-(unsigned int).  An example of this can be seen below, where
-"struct dst_ops" was failing to deduplicate between kernel and
-module:
+Hello:
 
-struct dst_ops {
-        short unsigned int family;
-        unsigned int gc_thresh;
-        int (*gc)(struct dst_ops *);
-        struct dst_entry * (*check)(struct dst_entry *, __u32);
-        unsigned int (*default_advmss)(const struct dst_entry *);
-        unsigned int (*mtu)(const struct dst_entry *);
-...
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-struct dst_ops___2 {
-        short unsigned int family;
-        unsigned int gc_thresh;
-        int (*gc)(struct dst_ops___2 *);
-        struct dst_entry___2 * (*check)(struct dst_entry___2 *, __u32);
-        void (*default_advmss)(const struct dst_entry___2 *);
-        void (*mtu)(const struct dst_entry___2 *);
-...
+On Fri, 14 Oct 2022 16:31:12 +0800 you wrote:
+> This patchset add "autoattach" optional for "bpftool prog load(_all)" to support
+> one-step load-attach-pin_link.
+> 
+> v8 -> v9: fix link leak, and change pathname_concat(specify not just buffer
+> 	  pointer, but also it's size)
+> v7 -> v8: for the programs not supporting autoattach, fall back to reguler pinning
+> 	  instead of skipping
+> v6 -> v7: add info msg print and update doc for the skip program
+> v5 -> v6: skip the programs not supporting auto-attach,
+> 	  and change optional name from "auto_attach" to "autoattach"
+> v4 -> v5: some formatting nits of doc
+> v3 -> v4: rename functions, update doc, bash and do_help()
+> v2 -> v3: switch to extend prog load command instead of extend perf
+> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+> 
+> [...]
 
-This was seen with
+Here is the summary with links:
+  - [bpf-next,v9,1/3] bpftool: Add autoattach for bpf prog load|loadall
+    https://git.kernel.org/bpf/bpf-next/c/19526e701ea0
+  - [bpf-next,v9,2/3] bpftool: Update doc (add autoattach to prog load)
+    https://git.kernel.org/bpf/bpf-next/c/ff0e9a579ec9
+  - [bpf-next,v9,3/3] bpftool: Update the bash completion(add autoattach to prog load)
+    https://git.kernel.org/bpf/bpf-next/c/b81a67740075
 
-bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-
-...which rewrites the return value as 0 (void) when it is marked
-as matching DW_TAG_unspecified_type:
-
-static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t type_id_off, uint32_t tag_type)
-{
-       if (tag_type == 0)
-               return 0;
-
-       if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
-               // No provision for encoding this, turn it into void.
-               return 0;
-       }
-
-       return type_id_off + tag_type;
-}
-
-However the odd thing was that on further examination, the unspecified type
-was not being set, so why was this logic being tripped?  Futher debugging
-showed that the encoder->cu->unspecified_type.tag value was garbage, and
-the type id happened to collide with "unsigned int"; as a result we
-were replacing unsigned ints with void return values, and since this
-was being done to function type members in structs, it triggered a
-type mismatch which failed deduplication between kernel and module.
-
-The fix is simply to calloc() the cu in cu__new() instead.
-
-Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- dwarves.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/dwarves.c b/dwarves.c
-index fbebc1d..424381d 100644
---- a/dwarves.c
-+++ b/dwarves.c
-@@ -626,7 +626,7 @@ struct cu *cu__new(const char *name, uint8_t addr_size,
- 		   const unsigned char *build_id, int build_id_len,
- 		   const char *filename, bool use_obstack)
- {
--	struct cu *cu = malloc(sizeof(*cu) + build_id_len);
-+	struct cu *cu = calloc(1, sizeof(*cu) + build_id_len);
- 
- 	if (cu != NULL) {
- 		uint32_t void_id;
+You are awesome, thank you!
 -- 
-2.31.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
