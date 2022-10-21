@@ -2,27 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1C7606DBB
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 04:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3FF606EDC
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 06:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiJUC0i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Oct 2022 22:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        id S229846AbiJUEWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 00:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiJUC0h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Oct 2022 22:26:37 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CF2187DE8
-        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 19:26:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MtpF31vjFzKFv9
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 10:24:07 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgCHizFTA1JjOLy2AA--.53195S2;
-        Fri, 21 Oct 2022 10:26:31 +0800 (CST)
-Subject: Re: [PATCH bpf] bpf: Support for setting numa node in bpf memory
- allocator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        with ESMTP id S229802AbiJUEW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 00:22:27 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EAC15D0BF
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 21:22:24 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id q9so4433075ejd.0
+        for <bpf@vger.kernel.org>; Thu, 20 Oct 2022 21:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hbHe6pNmaqQ1j8F+cmbrHLPFEr+xT5Vc7xGC6wVC7VM=;
+        b=WLgQhjtwSbxluw9HzpE5ypLh/NuzbmCltDAqqk+bRpJBu69hosVXmfW6LMEf9wiW49
+         Zjp9S7pGfFm4rfQp77pFKkG8WOrR0Fv1BDxKQHkfGmKyDPZW/7uonBBZcWB+ujcqbwTP
+         6+EbjrKL44SPXDkp1Sz4x/N+FSjoEOSF8Y+K+4DHuCcv9ChnqTjihIrQHbDZ1FnOTWvE
+         YcSfSYVWdM7MiFpEWtEvJ6X9aef4ypUC/+CLnPII8TcxgAJx9JN+npyhuv4TbdT/lJBC
+         FYa9slwNaOLCHcjIu1CPPlMDiy+68kOpHbYcNK67SUirlP2ZLL8w4nzuZ6ZxR4pTbGxL
+         ok8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hbHe6pNmaqQ1j8F+cmbrHLPFEr+xT5Vc7xGC6wVC7VM=;
+        b=w3XZsUwflni5DFby48VGHeJKnoTIcAtrom5KtnBRa7iitUB+OiwDFBcwNGZtzmpANM
+         VvHkz5JIXohOM3gvR9620iFX0k0TTRBgY8R3pS5LNX6ahhRn8n0WuBujpQvIoieomyG9
+         tAPpDCbklYvmuu+pPPFaLpPUX8EcS1TSj34Gufzqll2YYabmcEZmUgvjQsF+CzinopnJ
+         VYSYWWzCp2X/QJaPIygv2Tvq5hvQAsGQ/zhEhuNLbNEDYnD5OsPsLTuCfmrNF1Oh+hCX
+         LFLUTnLCXc1n9nSGAf3E1eLXi4RX0L/GYtmL5XloytBBT6UUInzg2ACiuUEF5qPv1B2q
+         2dng==
+X-Gm-Message-State: ACrzQf0EruS6CU95D0MnP+O/lyqkwlpyvcjErbD585LxilWsFE+thuB8
+        GMF5uBY49T8FIQpHfOO1VtKYBPjhoqjxelAkYOw=
+X-Google-Smtp-Source: AMsMyM5QZlvQMfwsLzOrnBB3oCro+QPZagseN2ijy9CJAW+SWRgbf4L/wrn9kmMYDokmlT89tq8SjvKIuA/dLsO/5Pk=
+X-Received: by 2002:a17:907:7f93:b0:791:91a6:5615 with SMTP id
+ qk19-20020a1709077f9300b0079191a65615mr14323378ejc.708.1666326143159; Thu, 20
+ Oct 2022 21:22:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221020142247.1682009-1-houtao@huaweicloud.com>
+ <CA+khW7jE_inL9-66Cb_WAPey6YkY+yf1H+q2uASTQujNXbRF=Q@mail.gmail.com>
+ <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com> <20221021014807.pvjppg433lucybui@macbook-pro-4.dhcp.thefacebook.com>
+ <b20aa49f-61ee-6275-3f8b-aa2b5e950874@huaweicloud.com> <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
+ <de1173bb-3adf-a04c-7999-44e7e7103ff9@huaweicloud.com>
+In-Reply-To: <de1173bb-3adf-a04c-7999-44e7e7103ff9@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 20 Oct 2022 21:22:11 -0700
+Message-ID: <CAADnVQ+_xJzdLpJMucRA7wXRBUr7msDktEjYfcinfzrRGLfVTg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Support for setting numa node in bpf memory allocator
+To:     Hou Tao <houtao@huaweicloud.com>
 Cc:     Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -34,113 +68,22 @@ Cc:     Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Hou Tao <houtao1@huawei.com>
-References: <20221020142247.1682009-1-houtao@huaweicloud.com>
- <CA+khW7jE_inL9-66Cb_WAPey6YkY+yf1H+q2uASTQujNXbRF=Q@mail.gmail.com>
- <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com>
- <20221021014807.pvjppg433lucybui@macbook-pro-4.dhcp.thefacebook.com>
- <b20aa49f-61ee-6275-3f8b-aa2b5e950874@huaweicloud.com>
- <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <de1173bb-3adf-a04c-7999-44e7e7103ff9@huaweicloud.com>
-Date:   Fri, 21 Oct 2022 10:26:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgCHizFTA1JjOLy2AA--.53195S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1rCr43tw15Gr15ur15Jwb_yoW5AFykpF
-        WxK3WUCr1DtF1xGwn2vw17ua4Yyw4UGr12gw4Y9r1j9F9Iqr93Kr4kJF1ruF95Cr48A3Wr
-        tFWjqFy3Z3yrZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 10/21/2022 10:09 AM, Alexei Starovoitov wrote:
-> On Thu, Oct 20, 2022 at 7:06 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 10/21/2022 9:48 AM, Alexei Starovoitov wrote:
->>> On Fri, Oct 21, 2022 at 09:43:08AM +0800, Hou Tao wrote:
->>>> Hi,
->>>>
->>>> On 10/21/2022 2:01 AM, Hao Luo wrote:
->>>>> On Thu, Oct 20, 2022 at 6:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>
->>>>>> Since commit fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc."),
->>>>>> numa node setting for non-preallocated hash table is ignored. The reason
->>>>>> is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
->>>>>> is trivial to support numa node setting for bpf memory allocator.
->>>>>>
->>>>>> So adding support for setting numa node in bpf memory allocator and
->>>>>> updating hash map accordingly.
->>>>>>
->>>>>> Fixes: fba1a1c6c912 ("bpf: Convert hash map to bpf_mem_alloc.")
->>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>>>> ---
->> SNIP
->>>> How about the following comments ?
->>>>
->>>>  * For per-cpu allocator (percpu=true), the only valid value of numa_node is
->>>>  * NUMA_NO_NODE. For non-per-cpu allocator, if numa_node is NUMA_NO_NODE, the
->>>>  * preferred memory allocation node is the numa node where the allocating CPU
->>>>  * is located, else the preferred node is the specified numa_node.
->>> No. This patch doesn't make sense to me.
->>> As far as I can see it can only make things worse.
->>> Why would you want a cpu to use non local memory?
->> For pre-allocated hash table, the numa node setting is honored. And I think the
->> reason is that there are bpf progs which are pinned on specific CPUs or numa
->> nodes and accessing local memory will be good for performance.
-> prealloc happens at map creation time while
-> bpf prog might be running on completely different cpu,
-> so numa is necessary for prealloc.
-I see. So for non-preallocated hash map, the memory will allocated from the
-current NUMA node if possible and there will be no memory affinity problems if
-these programs are on the same NUMA node.
+On Thu, Oct 20, 2022 at 7:26 PM Hou Tao <houtao@huaweicloud.com> wrote:
 >
->> And in my
->> understanding, the bpf memory allocator is trying to replace pre-allocated hash
->> table to save memory, if the numa node setting is ignored, the above use cases
->> may be work badly. Also I am trying to test whether or not there is visible
->> performance improvement for the above assumed use case.
-> numa should be ignored, because we don't want users to accidently
-> pick wrong numa id.
-How about reject the NUMA node setting for non-preallocated hash table in
-hashtab.c ?
+> How about reject the NUMA node setting for non-preallocated hash table in
+> hashtab.c ?
 
->
->>> The commit log:
->>> " is that bpf memory allocator only supports NUMA_NO_NODE, but it seems it
->>>   is trivial to support numa node setting for bpf memory allocator."
->>> got it wrong.
->>>
->>> See the existing comment:
->>>                 /* irq_work runs on this cpu and kmalloc will allocate
->>>                  * from the current numa node which is what we want here.
->>>                  */
->>>                 alloc_bulk(c, c->batch, NUMA_NO_NODE);
-
+It's easy to ask the question, but please answer it yourself.
+Analyze the code and describe what you think is happening now
+and what should or should not be the behavior.
