@@ -2,63 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58281607EFC
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEFA607F03
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 21:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbiJUTVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 15:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        id S229757AbiJUTZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 15:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbiJUTVO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 15:21:14 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6B5247E02;
-        Fri, 21 Oct 2022 12:21:11 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r14so9522156edc.7;
-        Fri, 21 Oct 2022 12:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KWM5F1vVJ0wm0XrFWc2n70srm8Q/oNAebcvhOdKpHfs=;
-        b=NQUL0+rEf8W4xI4rVnA69qrwi1NIlhlbBOFtnB8NJIJPUwDJ30/WzRJf/hhlAFd2L1
-         iI08cMxyjpcG2pk+ME/gYoQdCiFr0wmLKxsQbMq5FIMLBeg8DjcWBEMyhtE+Pj/iic0v
-         3KRzdJPcAQ/y//OBP2fh90SC3wsmt3jvxmFleqvuSDohrwap7SGitQbsHIc64pXV1QKP
-         Y1qA4WcistOQKzdBRq5Ze/RoKTIok1t4mlojUfA5ebhcIt7Zn6KIzitOeTer+PFju37H
-         wIupt9Aj3g9oBz6RjyfE13pvHHbb3qg+Va0jU+OEJWazaFZ0jobpcyuia5Nvcm+8cVnJ
-         bUtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KWM5F1vVJ0wm0XrFWc2n70srm8Q/oNAebcvhOdKpHfs=;
-        b=pVnIQnGT1959aAnWVPRFVU3C5YCJr7S21r9N8D1pYoWg+e9jG+Ni8Gw4DN8Ak8EVer
-         9LYgKaZDKqgHVvV+Z6rH8fExXLOAoqJHeIk77ve8KRnYsf2qm1FzhzoRzl0VjtuE7WUH
-         gDmtAR+Bq57+8hpr1x4y4DLhyz2ke4EugVZlmLrf8gt+6Flfy84E+hRsJZbS2VfIkF2L
-         BsB9mKPbK3fBhFLIoJ1pqJRRg6T13WzB3BRtILow/u/Gv+kftZgS4qxJ6HbIcEPobbBe
-         /iim0NsE6wz9QAQ/OGLh3IjIQ+UQ22Ib4JpdazV2JNWQ3+9Lj7YpMDwBMxsgGjvBdewn
-         NlFQ==
-X-Gm-Message-State: ACrzQf14GoO4GeC8atC/Ev0si41CPajziY520MLbzs8b5FGgvZZ2kt/V
-        T5e5AMzjRZOhIv9HghBn88tUUMZid+UT6uuFX7XhkPvh
-X-Google-Smtp-Source: AMsMyM6AjzdRvAH+mxinH+VCM/KD/03K76NyOoSqDzyXP9uienth4TBN+/TU4BY8fX1PnEHsV7sU6ThDO+1Cs28zBbU=
-X-Received: by 2002:a05:6402:428d:b0:460:b26c:82a5 with SMTP id
- g13-20020a056402428d00b00460b26c82a5mr9001044edc.66.1666380069825; Fri, 21
- Oct 2022 12:21:09 -0700 (PDT)
+        with ESMTP id S229596AbiJUTZA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 15:25:00 -0400
+Received: from na01-obe.outbound.protection.outlook.com (mail-westcentralusazon11020023.outbound.protection.outlook.com [40.93.198.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CE365566
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 12:24:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K+bmsmsUfq8Aw6cGndAQgC8n/c1JEc//PVMeT9hxEzG+5EvwbqKbp5Q0aQukj4aNFV8BEtBxN54Ia9EtR4tfiJ9K1zUpwAzj8ndFKUbLotqzW8juXGfsjc0irlJVrBsK0lt7mkVqKiQu/AUoaRjCLUuDDp12NJV+H8LHjbfOLj0Lx3SaCrBp99jLFvZY7ckD7bCj8rxEgpjkqod9RQOScednc1amb2PnnZBkGMraTXYf5CpKcPAhXaK/QFDMp8R1iu1rn0OeMWTdwz5V3iqJPHpN5KsD0IBeh91EnY6r+mJKPJdMSXgqdXIhwa2MOiCf4IXDK6OynGNJO2OcKPFkqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ro8bqKlzlIS4oluL0E1YgGrlHTHYfD9w/wCxLHKPc2Q=;
+ b=XbLWkg8FQRPnh0r46iFb25DlTN29ngr6XY7/zcDSD02QJeUM3dR7VRYC7y/TxcvQbS0q8+8hFzcORxpQpuSc8LcOYpE2jSoB5KTIUdMjR8nKN/jvZbLiHNXPy3g3ci7tQobT5v0uTQjo3MjMUa0eCkrZYi2BbvruRU/sYXfEOraXtuNiu8uCi/FNRcaCJQAHEXO7tC2/UunQB90ZTrfGWDiFnigPtKZVkxfJcVNcIUT/lRRa3YjxBCwvD42dsG9JR24OYLMFoVLdfXyL5HWUPSzWXdAeUVMedWSULbKEzM/zzLuUsHSXrRsWUvRyiIpN660aXBxVB1uPNr+RTGjvPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ro8bqKlzlIS4oluL0E1YgGrlHTHYfD9w/wCxLHKPc2Q=;
+ b=S5UKnVcqG79LEr7k/8F5oprGhfk4ZfiBWtH3fe2btGw5W6iMeIoZcw8wp1WKvek0JwUsJ3+9M+8D6UP7bjfdad2jMIT91nkhe/TRqm7YtiECRqSKzRNwuNnIyBXSbtmHtssuKd99dSYMmSrp76lzhRftc0lW6PIQ0xznXCtiHR8=
+Received: from DM4PR21MB3440.namprd21.prod.outlook.com (2603:10b6:8:ad::14) by
+ DS7PR21MB3669.namprd21.prod.outlook.com (2603:10b6:8:92::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5746.6; Fri, 21 Oct 2022 19:24:55 +0000
+Received: from DM4PR21MB3440.namprd21.prod.outlook.com
+ ([fe80::5a88:f55c:9d88:4ac2]) by DM4PR21MB3440.namprd21.prod.outlook.com
+ ([fe80::5a88:f55c:9d88:4ac2%2]) with mapi id 15.20.5746.006; Fri, 21 Oct 2022
+ 19:24:55 +0000
+From:   Dave Thaler <dthaler@microsoft.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Stanislav Fomichev <sdf@google.com>,
+        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+Thread-Topic: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+Thread-Index: AQHY4+oRxc9QaZzI/0a6dc/gqciqz64WMviAgAABliCAACodgIAAARoAgAK7gVCAABvtAIAABhoA
+Date:   Fri, 21 Oct 2022 19:24:55 +0000
+Message-ID: <DM4PR21MB344020F909D07E5DEE316818A32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
+ <20221019183845.905-3-dthaler1968@googlemail.com>
+ <Y1BkuZKW7nCUrbx/@google.com>
+ <DM4PR21MB3440ED1A4A026F13F73358C3A32B9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAKH8qBterhU-FM52t8ZukUUD3WkUhhNLSFq1y2zD7geq4TYO6g@mail.gmail.com>
+ <CAADnVQ+8AtZWAOeeWG5REvW2nW7bw20aZpfHxUjERnqMSHGRiw@mail.gmail.com>
+ <DM4PR21MB344040829C9EAD2B159CAF3BA32D9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQL4-aNJ8gZziNC7n7_mchK+Te1+HDBg2sG2YvS3K+2kFQ@mail.gmail.com>
+In-Reply-To: <CAADnVQL4-aNJ8gZziNC7n7_mchK+Te1+HDBg2sG2YvS3K+2kFQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c9c43cf0-0789-416f-910a-5ad5797d9406;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-10-21T19:23:14Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR21MB3440:EE_|DS7PR21MB3669:EE_
+x-ms-office365-filtering-correlation-id: 69fc4db1-b409-4153-e023-08dab399ef47
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4S8O7dGxav8KdoYiJW8FhoIhAVRiJZot064WOsRetqXKQtNB8OOnOMUOB1b8fpypC6XpYUolKJRrAwjK1NTVDR8Jy6BTxRXQBd7TnpE/Ep7WkHYw21QpiovraFAENA2U4vEnHgI9D9quwgdngEqiI/yrSyMDvZRueE/iHYN8DmtIFT08a1cr82/Cr8wGI62UngnL9YEathAlD6aqiwsGWsX65VR95QwRCl7/HiTOXT92LQyKXyL4toqvHT8ZWS5KjZGOoMJ7UqP5htBLVNXrxyfdfuMvyTjYarxCV1nyIl8hYrius04tWKt70YnidQF5inVmTyD/tuqyPFAR3gIPX/2OJjMD+zMyydwbXkcMQs/wKd5iLzcbb1eJn9TQGuAqtbT+otm4tVADUJhYlAbOsgCyuUZ3qPAUS6Afx1Pf1NxWC016QxIs1+Eu1AXF5QcmzurWH7E1yeTzSJKpCjbNtOjPzNfhqDYNbR2LyjB0dRKRh877vqrDYOa+F0frfLeF3klY8Zan037K89+gzBZImiWh1sdL8IzUrbFKVWBbKxJCB0RGmmGq+3di153FOvTzDKoCgsusRxXGHREnrh9pBnh8rTQB2QbpuGP3IJCu9M511V47zoQCUmcMJv+bSqDuyFlcO7iF4iM4fL28kZja7A94jKZbABZu5K/R52FLQZ627Hj9bkgMTCqKsNAb5NgwG1MWOzm3hnVM1lwDgP/ileyWqJGeLrsNE1hqER0CoBGky34BdAQGFCggy+z0IacO6pqo/cCIJI8vGdIWuycclFtyr26tFnImu5w5VEFZejqHfEeuhr87vUhQZVQfoBQGRHxmHfUJ2FGrW+D5vtlmWiai4sdgwKBRHM9rmaGNrLs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR21MB3440.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(451199015)(122000001)(82960400001)(316002)(54906003)(38070700005)(76116006)(4326008)(66476007)(66446008)(82950400001)(8676002)(38100700002)(86362001)(64756008)(66556008)(10290500003)(8990500004)(41300700001)(52536014)(66946007)(8936002)(53546011)(966005)(186003)(83380400001)(71200400001)(6506007)(478600001)(7696005)(2906002)(9686003)(26005)(5660300002)(6916009)(55016003)(66899015)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BPglHa+PD4uN8YgBY+/doBoQy/4le81djK0jgfygUk6eHPZF1By23htiIabv?=
+ =?us-ascii?Q?NGVQG+2hmUU2x8C4/gUiqEoQO1Dg7P9pMK+Fkb+dI5/amm9ZJsWR+CgokB6J?=
+ =?us-ascii?Q?fVg4df0vKggsPdJ7SbfZuU6PPLe4w8JJa0daM2mQjWN/oO9sTqQ73a6quMHk?=
+ =?us-ascii?Q?ybJC5mKrDnUV/siDcuKrWkuBvIfI+//o1OTnvtdp4cOqjzXNTnbUAyvcaVoV?=
+ =?us-ascii?Q?cA/bk3peQLG2U4xQda3voeniNRZ2Max/APhu10sEKxI54gF9lw3iHPigy/6J?=
+ =?us-ascii?Q?XE9AcoyNKRPWCj4wxBE1gZ76qZgXAuYVbiNuz5yD5PohLzKj7U/g6UW74R36?=
+ =?us-ascii?Q?ewb5t+M60kW02m65rN1upypZZkb7RYKuguLcEzUT4LTox3m3MdSStU9+AQmt?=
+ =?us-ascii?Q?jAk6bzBW09FHF+mQ5WmshnQfdzjgDH9jvlVHTonFTIXt4rqH3d30+ks/nIcZ?=
+ =?us-ascii?Q?U/ejIK98SZEqyrEzhgxXpq9SnP6VUxb6idV9NPRAdUZX4xZ9VBqAzAwRkfCJ?=
+ =?us-ascii?Q?7XIJVz5EkvotCJXtO7kPuOOMO52wkhV5cw1bQkgC+zHNgBkCdVdl01+ZMGlw?=
+ =?us-ascii?Q?UoM/xdHArLuWcJM0tVw3fgIwlzrmQVe4bhehFTs4Y/9RF4oxMQEGp8uWYdYm?=
+ =?us-ascii?Q?usP/FcEbXhLN9+F5gOwQ3wGK5gHoCFmea7OB8e2IZNEIeVuszawCUYJh4ZQ0?=
+ =?us-ascii?Q?lYlaJzEf/hiTSmarW3AVSN9aB3lxaA4IJkyzgLX3flI5BKq6hMs0ZU5MWl6q?=
+ =?us-ascii?Q?bk8+PVaXWJiNBz5BwZgXwKlrxLI2tiic80pSpfhdqpxqtfHytlPbzW/SYwDt?=
+ =?us-ascii?Q?2COvH0duI5h9P2wt5OtjAL5n+ykp79hf29FeYwlDe8UHdAkikOvJHDIPmf83?=
+ =?us-ascii?Q?8BHjmXZfN04ECrDNgt0T5VKIiEOzKFsQ00pPPmsTQNi6Mxbc/1t1cFmZq+4s?=
+ =?us-ascii?Q?uq0QBetnRoyF/AkbddMaFN9qaEC8Xf4MCnledw++sjBtgw7ybKKkxanpJJNR?=
+ =?us-ascii?Q?pzHDOS6cMJXDkKpqSbzvPR1cWp4bwomMJ/uklDpyY1p31CYEE9tbeJ6u5EVw?=
+ =?us-ascii?Q?TMVTciVKevAbb85WouXySP3UO7sIovllj7aj2cIOJWLGbO4XVhdoJnF5WOZb?=
+ =?us-ascii?Q?23NyTELkjHhgo8wAPY8e04Ysx/ayhnyR0OXeSikh/kD6NoVp5FqyTAOM2c7Y?=
+ =?us-ascii?Q?sgRv25RxHznyUBrg8ykrgSkXpEDjOnO3incMxS4AVeWNzJq8DUNf1Hr7as1Z?=
+ =?us-ascii?Q?lIiPnqXhFAT7OsnCFEKtj0jFVML0Re5DgCoXdKI/lEQiQBqZKa6BNu2Dsb4T?=
+ =?us-ascii?Q?rpQFUT8boXGbEoyJ1DOU4bdmkPZDotgX0Vmn7FQapLOzfJ+ca5IjFZXuD45c?=
+ =?us-ascii?Q?oF3x/XyFz1jtDzCEZ3sJCw9ZKCgi78LVSU9B6Vhif+DhgMhs4PjO+SfugfxC?=
+ =?us-ascii?Q?LnVk1g/3gtfAy/MOQO+f2bWcCi1WBIAQRYmstVDFoQgO7wJDu6IcUJQ8QiFZ?=
+ =?us-ascii?Q?FR3yp5C8Q7BJ6U48cpHa8TPvplpMaxDTCpb5LU3p/IQ9h/J4qPSaRuCg4j6q?=
+ =?us-ascii?Q?Mb3Aa2/TNwyudVGSjaxKxMeJOu4eqgC71APut9KxK7u+gZ8FVxOyBy80r74q?=
+ =?us-ascii?Q?Qg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20221021165919.509652-1-mtahhan@redhat.com> <20221021165919.509652-2-mtahhan@redhat.com>
-In-Reply-To: <20221021165919.509652-2-mtahhan@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Oct 2022 12:20:58 -0700
-Message-ID: <CAADnVQL0CQoLKZMhDFdnmSXXH2e9Kj-mV_xTTxdLSAjp+agg=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/1] doc: DEVMAPs and XDP_REDIRECT
-To:     mtahhan@redhat.com, Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR21MB3440.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69fc4db1-b409-4153-e023-08dab399ef47
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2022 19:24:55.1554
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g20SNE/IT0e9NQMr7QKTKJmIwrgCzoUhYF1bb3Xy/fGQtNtR1XoFLkE0f7k23OxDfPYzmYBlJY7x8Mtr1LHMrgBb7d/NjXlnvFtUZRmb+3Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3669
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,302 +124,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper and Toke,
-please review.
 
-On Fri, Oct 21, 2022 at 9:10 AM <mtahhan@redhat.com> wrote:
->
-> From: Maryam Tahhan <mtahhan@redhat.com>
->
-> Add documentation for BPF_MAP_TYPE_DEVMAP and
-> BPF_MAP_TYPE_DEVMAP_HASH including kernel version
-> introduced, usage and examples.
->
-> Add documentation that describes XDP_REDIRECT.
->
-> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-> ---
->  Documentation/bpf/index.rst      |   1 +
->  Documentation/bpf/map_devmap.rst | 205 +++++++++++++++++++++++++++++++
->  Documentation/bpf/redirect.rst   |  45 +++++++
->  3 files changed, 251 insertions(+)
->  create mode 100644 Documentation/bpf/map_devmap.rst
->  create mode 100644 Documentation/bpf/redirect.rst
->
-> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-> index 1b50de1983ee..1088d44634d6 100644
-> --- a/Documentation/bpf/index.rst
-> +++ b/Documentation/bpf/index.rst
-> @@ -29,6 +29,7 @@ that goes into great technical depth about the BPF Architecture.
->     clang-notes
->     linux-notes
->     other
-> +   redirect
->
->  .. only::  subproject and html
->
-> diff --git a/Documentation/bpf/map_devmap.rst b/Documentation/bpf/map_devmap.rst
-> new file mode 100644
-> index 000000000000..5072ea6086e4
-> --- /dev/null
-> +++ b/Documentation/bpf/map_devmap.rst
-> @@ -0,0 +1,205 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +=================================================
-> +BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_DEVMAP_HASH
-> +=================================================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_DEVMAP`` was introduced in kernel version 4.14
-> +   - ``BPF_MAP_TYPE_DEVMAP_HASH`` was introduced in kernel version 5.4
-> +
-> +``BPF_MAP_TYPE_DEVMAP`` and ``BPF_MAP_TYPE_DEVMAP_HASH`` are BPF maps primarily
-> +used as backend maps for the XDP BPF helper call ``bpf_redirect_map()``.
-> +``BPF_MAP_TYPE_DEVMAP`` is backed by an array that uses the key as
-> +the index to lookup a reference to a net device. While ``BPF_MAP_TYPE_DEVMAP_HASH``
-> +is backed by a hash table that uses a key to lookup a reference to a net device.
-> +The user provides either <``key``/ ``ifindex``> or <``key``/ ``struct bpf_devmap_val``>
-> +pairs to update the maps with new net devices.
-> +
-> +.. note::
-> +    - The key to a hash map doesn't have to be an ``ifindex``.
-> +    - While ``BPF_MAP_TYPE_DEVMAP_HASH`` allows for densely packing the net devices
-> +      it comes at the cost of a hash of the key when performing a look up.
-> +
-> +The setup and packet enqueue/send code is shared between the two types of
-> +devmap; only the lookup and insertion is different.
-> +
-> +Usage
-> +=====
-> +
-> +.. c:function::
-> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
-> +
-> + Net device entries can be added or updated using the ``bpf_map_update_elem()``
-> + helper. This helper replaces existing elements atomically. The ``value`` parameter
-> + can be ``struct bpf_devmap_val`` or a simple ``int ifindex`` for backwards
-> + compatibility.
-> +
-> +.. note::
-> +    The maps can only be updated from user space and not from a BPF program.
-> +
-> +.. code-block:: c
-> +
-> +    struct bpf_devmap_val {
-> +        __u32 ifindex;   /* device index */
-> +        union {
-> +            int   fd;  /* prog fd on map write */
-> +            __u32 id;  /* prog id on map read */
-> +        } bpf_prog;
-> +    };
-> +
-> +DEVMAPs can associate a program with a device entry by adding a ``bpf_prog.fd``
-> +to ``struct bpf_devmap_val``. Programs are run after ``XDP_REDIRECT`` and have
-> +access to both Rx device and Tx device. The  program associated with the ``fd``
-> +must have type XDP with expected attach type ``xdp_devmap``.
-> +When a program is associated with a device index, the program is run on an
-> +``XDP_REDIRECT`` and before the buffer is added to the per-cpu queue. Examples
-> +of how to attach/use xdp_devmap progs can be found in the kernel selftests:
-> +
-> +- ``tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c``
-> +- ``tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c``
-> +
-> +.. c:function::
-> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +net device entries can be retrieved using the ``bpf_map_lookup_elem()``
-> +helper.
-> +
-> +.. c:function::
-> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
-> +
-> +net device entries can be deleted using the ``bpf_map_delete_elem()``
-> +helper. This helper will return 0 on success, or negative error in case of
-> +failure.
-> +
-> +.. c:function::
-> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
-> +
-> +Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
-> +For ``BPF_MAP_TYPE_DEVMAP`` and ``BPF_MAP_TYPE_DEVMAP_HASH`` this map contains
-> +references to net devices (for forwarding packets through other ports).
-> +
-> +The lower two bits of *flags* are used as the return code if the map lookup
-> +fails. This is so that the return value can be one of the XDP program return
-> +codes up to ``XDP_TX``, as chosen by the caller. The higher bits of ``flags``
-> +can be set to ``BPF_F_BROADCAST`` or ``BPF_F_EXCLUDE_INGRESS`` as defined
-> +below.
-> +
-> +With ``BPF_F_BROADCAST`` the packet will be broadcast to all the interfaces
-> +in the map, with ``BPF_F_EXCLUDE_INGRESS`` the ingress interface will be excluded
-> +from the broadcast.
-> +
-> +.. note::
-> +    The key is ignored if BPF_F_BROADCAST is set.
-> +
-> +This helper will return ``XDP_REDIRECT`` on success, or the value of the two
-> +lower bits of the *flags* argument if the map lookup fails.
-> +
-> +More information about redirection can be found :doc:`redirect`
-> +
-> +Examples
-> +========
-> +
-> +Kernel BPF
-> +----------
-> +
-> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_DEVMAP``
-> +called tx_port.
-> +
-> +.. code-block:: c
-> +
-> +    struct {
-> +        __uint(type, BPF_MAP_TYPE_DEVMAP);
-> +        __type(key, __u32);
-> +        __type(value, __u32);
-> +        __uint(max_entries, 256);
-> +    } tx_port SEC(".maps");
-> +
-> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_DEVMAP_HASH``
-> +called forward_map.
-> +
-> +.. code-block:: c
-> +
-> +    struct {
-> +        __uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
-> +        __type(key, __u32);
-> +        __type(value, struct bpf_devmap_val);
-> +        __uint(max_entries, 32);
-> +    } forward_map SEC(".maps");
-> +
-> +.. note::
-> +
-> +    The value type in the DEVMAP above is a ``struct bpf_devmap_val``
-> +
-> +The following code snippet shows a simple xdp_redirect_map program. This program
-> +would work with a user space program that populates the devmap ``forward_map`` based
-> +on ingress ifindexes. The BPF program (below) is redirecting packets using the
-> +ingress ``ifindex`` as the ``key``.
-> +
-> +.. code-block:: c
-> +
-> +    SEC("xdp")
-> +    int xdp_redirect_map_func(struct xdp_md *ctx)
-> +    {
-> +        int index = ctx->ingress_ifindex;
-> +
-> +        return bpf_redirect_map(&forward_map, index, 0);
-> +    }
-> +
-> +The following code snippet shows a BPF program that is broadcasting packets to
-> +all the interfaces in the ``tx_port`` devmap.
-> +
-> +.. code-block:: c
-> +
-> +    SEC("xdp")
-> +    int xdp_redirect_map_func(struct xdp_md *ctx)
-> +    {
-> +        int index = ctx->ingress_ifindex;
-> +
-> +        return bpf_redirect_map(&tx_port, 0, BPF_F_BROADCAST | BPF_F_EXCLUDE_INGRESS);
-> +    }
-> +
-> +User space
-> +----------
-> +
-> +The following code snippet shows how to update a devmap called ``tx_port``.
-> +
-> +.. code-block:: c
-> +
-> +    int update_devmap(int ifindex, int redirect_ifindex)
-> +    {
-> +        int ret = -1;
-> +
-> +        ret = bpf_map_update_elem(bpf_map__fd(tx_port), &ifindex, &redirect_ifindex, 0);
-> +        if (ret < 0) {
-> +            fprintf(stderr, "Failed to update devmap_ value: %s\n",
-> +                strerror(errno));
-> +        }
-> +
-> +        return ret;
-> +    }
-> +
-> +The following code snippet shows how to update a hash_devmap called ``forward_map``.
-> +
-> +.. code-block:: c
-> +
-> +    int update_devmap(int ifindex, int redirect_ifindex)
-> +    {
-> +        struct bpf_devmap_val devmap_val = { .ifindex = redirect_ifindex };
-> +        int ret = -1;
-> +
-> +        ret = bpf_map_update_elem(bpf_map__fd(forward_map), &ifindex, &devmap_val, 0);
-> +        if (ret < 0) {
-> +            fprintf(stderr, "Failed to update devmap_ value: %s\n",
-> +                strerror(errno));
-> +        }
-> +        return ret;
-> +    }
-> +
-> +References
-> +===========
-> +
-> +- https://lwn.net/Articles/728146/
-> +- https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=6f9d451ab1a33728adb72d7ff66a7b374d665176
-> +- https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4106
-> diff --git a/Documentation/bpf/redirect.rst b/Documentation/bpf/redirect.rst
-> new file mode 100644
-> index 000000000000..ff49a0698707
-> --- /dev/null
-> +++ b/Documentation/bpf/redirect.rst
-> @@ -0,0 +1,45 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +============
-> +XDP_REDIRECT
-> +============
-> +Supported maps
-> +--------------
-> +
-> +XDP_REDIRECT works with the following map types:
-> +
-> +- ``BPF_MAP_TYPE_DEVMAP``
-> +- ``BPF_MAP_TYPE_DEVMAP_HASH``
-> +- ``BPF_MAP_TYPE_CPUMAP``
-> +- ``BPF_MAP_TYPE_XSKMAP``
-> +
-> +For more information on these maps, please see the specific map documentation.
-> +
-> +Process
-> +-------
-> +
-> +XDP_REDIRECT is a three-step process, implemented as follows:
-> +
-> +1. The ``bpf_redirect()`` and ``bpf_redirect_map()`` helpers will lookup the
-> +   target of the redirect (from the supported map types) and store it (along with
-> +   some other metadata) in a per-CPU ``struct bpf_redirect_info``.
-> +
-> +2. When the program returns the ``XDP_REDIRECT`` return code, the driver will
-> +   call ``xdp_do_redirect()`` which will use the information in ``struct
-> +   bpf_redirect_info`` to actually enqueue the frame into a map type-specific
-> +   bulk queue structure.
-> +
-> +3. Before exiting its NAPI poll loop, the driver will call ``xdp_do_flush()``,
-> +   which will flush all the different bulk queues, thus completing the
-> +   redirect.
-> +
-> +.. note::
-> +    Not all drivers support transmitting frames after a redirect, and for
-> +    those that do, not all of them support non-linear frames. Non-linear xdp
-> +    bufs/frames are bufs/frames that contain more than one fragment.
-> +
-> +References
-> +===========
-> +
-> +- https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4106
-> --
-> 2.35.3
->
+
+> -----Original Message-----
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Sent: Friday, October 21, 2022 12:01 PM
+> To: Dave Thaler <dthaler@microsoft.com>
+> Cc: Stanislav Fomichev <sdf@google.com>; dthaler1968@googlemail.com;
+> bpf@vger.kernel.org
+> Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same fie=
+ld
+>=20
+> On Fri, Oct 21, 2022 at 10:56 AM Dave Thaler <dthaler@microsoft.com> wrot=
+e:
+> >
+> > > On Wed, Oct 19, 2022 at 4:35 PM Stanislav Fomichev <sdf@google.com>
+> > > wrote:
+> > > > On Wed, Oct 19, 2022 at 2:06 PM Dave Thaler
+> > > > <dthaler@microsoft.com>
+> > > wrote:
+> > > > >
+> > > > > sdf@google.com wrote:
+> > > > > > >   ``BPF_ADD | BPF_X | BPF_ALU`` means::
+> > > > > >
+> > > > > > > -  dst_reg =3D (u32) dst_reg + (u32) src_reg;
+> > > > > > > +  dst =3D (u32) (dst + src)
+> > > > > >
+> > > > > > IIUC, by going from (u32) + (u32) to (u32)(), we want to
+> > > > > > signal that the value will just wrap around?
+> > > > >
+> > > > > Right.  In particular the old line could be confusing if one
+> > > > > misinterpreted it as saying that the addition could overflow
+> > > > > into a higher bit.  The new line is intended to be unambiguous
+> > > > > that the upper 32
+> > > bits are 0.
+> > > > >
+> > > > > > But isn't it more confusing now because it's unclear what the
+> > > > > > sign of the dst/src is (s32 vs u32)?
+> > > > >
+> > > > > As stated the upper 32 bits have to be 0, just as any other u32
+> assignment.
+> > > >
+> > > > Do we mention somewhere above/below that the operands are
+> unsigned?
+> > > > IOW, what prevents me from reading this new format as follows?
+> > > >
+> > > > dst =3D (u32) ((s32)dst + (s32)src)
+> > >
+> > > The doc mentions it, but I completely agree with you.
+> > > The original line was better.
+> > > Dave, please undo this part.
+> >
+> > Nothing prevents you from reading the new format as
+> >     dst =3D (u32) ((s32)dst + (s32)src)
+> > because that implementation wouldn't be wrong.
+> >
+> > Below is why, please point out any logic errors if you see any.
+> >
+> > Mathematically, all of the following have identical results:
+> >     dst =3D (u32) ((s32)dst + (s32)src)
+> >     dst =3D (u32) ((u32)dst + (u32)src)
+> >     dst =3D (u32) ((s32)dst + (u32)src)
+> >     dst =3D (u32) ((u32)dst + (s32)src)
+> >
+> > u32 and s32, once you allow overflow/underflow to wrap within 32 bits,
+> > are mathematical rings (see
+> >
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fen.wi=
+k
+> ipedia.org%2Fwiki%2FRing_&amp;data=3D05%7C01%7Cdthaler%40microsoft.co
+> m%7C44c24e3f67aa4a5c846f08dab396adb0%7C72f988bf86f141af91ab2d7cd01
+> 1db47%7C1%7C0%7C638019756992501432%7CUnknown%7CTWFpbGZsb3d8e
+> yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
+> 7C3000%7C%7C%7C&amp;sdata=3D1rLsMSKUn0sNiZcN2RjDMH9jWIKCuf%2Fc3qZ
+> d2QOanW8%3D&amp;reserved=3D0(mathematics) ) meaning they're a circular
+> space where X, X + 2^32, and X - 2^32 are equal.
+> > So (s32)src =3D=3D (u32)src when the most significant bit is clear, and
+> > (s32)src =3D=3D (u32)src - 2^32 when the most significant bit is set.
+> >
+> > So the sign of the addition operands does not matter here.
+> > What matters is whether you do addition where the result can be more
+> > than 32 bits or not, which is what the new line makes unambiguous and
+> > the old line did not.
+> >
+> > Specifically, nothing prevented mis-interpreting the old line as
+> >
+> > u64 temp =3D (u32)dst;
+> > temp +=3D (u32)src;
+> > dst =3D temp;
+>=20
+> Well dst_reg =3D (u32) dst_reg + (u32) src_reg implies C semantics, so it=
+ cannot
+> be misinterpreted that way.
+>=20
+> > which would give the wrong answer since the upper 32-bits might be non-
+> zero.
+> >
+> > u64 temp =3D (s32)dst;
+> > temp +=3D (s32)src;
+> > dst =3D (u32)temp;
+> >
+> > Would however give the correct answer, same as
+> >
+> > u64 temp =3D (u32)dst;
+> > temp +=3D (u32)src;
+> > dst =3D (u32)temp;
+> >
+> > As such, I maintain the old line was bad and the new line is still good=
+.
+>=20
+> dst_reg =3D (u32) (dst_reg + src_reg)
+> implies that the operation is performed in 64-bit and then the result is
+> truncated to 32-bit which is not correct.
+
+It is mathematically correct as noted in my email above, you always get the=
+ correct result if you do the addition in 64-bit and then truncate.  You ge=
+t the same
+result as if you do the addition in 32-bit and then zero-extend.
+
+> If we had traditional carry, sign, overflow flags in bpf ISA the bit-ness=
+ of
+> operation would be significant.
+> Thankfully we don't, so it's not a big deal.
+>=20
+> but let's do full verbose to avoid describing C semantics:
+> dst =3D (u32) ((u32)dst + (u32)src)
+
+Ok, will do.
+
+Dave
