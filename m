@@ -2,99 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EBA607BF0
-	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 18:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F83B607C48
+	for <lists+bpf@lfdr.de>; Fri, 21 Oct 2022 18:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbiJUQRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 12:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
+        id S229674AbiJUQcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 12:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbiJUQRO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 12:17:14 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63E826ADA
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 09:17:12 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id i3so2978651pfc.11
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 09:17:12 -0700 (PDT)
+        with ESMTP id S229949AbiJUQck (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 12:32:40 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D67270821;
+        Fri, 21 Oct 2022 09:32:24 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id e18so7933057edj.3;
+        Fri, 21 Oct 2022 09:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a5HwjrEsbZ06mtwjRmKc4OTOM9VDMQ8gzVbnsFrHZGA=;
-        b=kyBgeRNVpPf/+eXjNWn65VlUrSqNsGqjPFtMYOaqRVFLwdPydK/8yWXIZzuDfhzfU5
-         LC4RwAymTmM9iT1vywnM2HLhDMbzxKM66c/hOsP+f9KVoy0wvICCh7b9Tt0HJKVi7Eos
-         qkZ0AXkOg3UND2knqk7S46zKAxzGzsYdrAMm8=
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VvGNa8Oxr8KN8bOtj0Kp3l3FSaKDTc45adRz03MofDE=;
+        b=JQZamgAXuZ5yvyLJwS/oKN0zgFpRMLAHnD7o4WLop/l+E7vir1lefMexXlndqyuqCj
+         +oTbHcCpts573QPDAtWwne8CqCK/JR4e1pEHdXNOE6GgNn66Km7cLwuDKZShTC6MpDaV
+         cp/Dt9kK4CIr/mlai9vlBG0YERRlXh1/6QQHv3nnoB3/IGCL/oK7LgNjsbovL1DTvoHJ
+         vIGCBXwKAT8ql1eezRebrmN3BnkxyJqNaeM9Q7H3FH/ntHZsbRWRd8nmZvao1bolMVyp
+         98VAsD98JWYaImcA/SY66axTH0Nive+TjvKZE/4jtsYWYsJjhvU7021UXDX3quETvGCX
+         aetg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a5HwjrEsbZ06mtwjRmKc4OTOM9VDMQ8gzVbnsFrHZGA=;
-        b=3abDx35JxPY6+7rx69LiSWVFjrUvp5mmARmvIOCUPh/CmsFuhHCww6lm4P5ttw7x6V
-         sM/YjMgxJUE7s2AYGba3nKkoUIIcMjVDzx69X+I6EgeKJkHi7Itx8ECootqNQzt0du13
-         42VqtQmNrSBPwKlUNQd7JDddLdE7uSZkrgc2qZGqCimpov3F1TvUGgF17BT+og7cvrj/
-         /jADXznnZXTLYRt2z8TDWH3igC/EWBLnLLplbERbS1ReGV6wjl8Xlh08F/7oIcfIEPGf
-         DGD4jSG9u0nkjDM3MLvhBRGXdcmuDTNVhGmFKRxqFWeEQG9oPv8qkwnATaLhjTtWx+tm
-         wQgg==
-X-Gm-Message-State: ACrzQf1atJnLHt9KRjCXw/m675RFMn6FSHsFb8uvIcjYdth/asN04H++
-        aPeogRP3T1War9GHYbejbPZ2Rl4tQF4kVQ==
-X-Google-Smtp-Source: AMsMyM64Or+Td8E+kV3nCHTUjyveWm5i1vbiel8OqdocW5woDhFBuqDDrj7pqamKaSO8jyNxwlC9Pw==
-X-Received: by 2002:a05:6a00:be8:b0:56b:2c80:31e0 with SMTP id x40-20020a056a000be800b0056b2c8031e0mr2146538pfu.44.1666369032312;
-        Fri, 21 Oct 2022 09:17:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l1-20020a170902f68100b0017d12d86901sm15260123plg.187.2022.10.21.09.17.11
+        bh=VvGNa8Oxr8KN8bOtj0Kp3l3FSaKDTc45adRz03MofDE=;
+        b=JFl5PLaTSyeD68IpZSWZW9/iG5WxAc50IiamcZ5k2M6wFZhcD9FQMUO7Y9NXyjymL8
+         W34VE/WmYS15j1ijpDsvQED0QLLSXqAbGjkPPR2NBJZmyZXJNtLOAEq04Q0Lh/0QNVIq
+         iwfkbV76/cKvzBVLt0iqTbMI7Yt5MZXydjQy3MpJhFs4tJSayiZ3nerTJ2y0IfVUd83r
+         J8rspmEoEpU3idFkYIq2ulzUb5VFJ845JwiKlu1TTBtqwg6ekzCEHryv62zL6LBNOCUQ
+         bxBHwDEV5kGdACppOmnDCVOx2ZUhcXNVEjT3K9xuwx5r6PjudmPyHEWQ3sfdP1IL9nqa
+         UO0g==
+X-Gm-Message-State: ACrzQf2Q9h+AuDAFcf+vH6vQU8F4XSw5Z0KxBnO0gIR95+9iJec196da
+        RZ++cbWATtqcfd7ka1TdZtw=
+X-Google-Smtp-Source: AMsMyM7r38QCf3+w9CTEjXDaw6GUBuRGHwn5cG55npWLGh0JNw/DDleENGPeE6v5mc9X/HVE1Xvbgw==
+X-Received: by 2002:a17:906:fe49:b0:73d:70c5:1a52 with SMTP id wz9-20020a170906fe4900b0073d70c51a52mr16385885ejb.469.1666369943053;
+        Fri, 21 Oct 2022 09:32:23 -0700 (PDT)
+Received: from krava ([83.240.63.167])
+        by smtp.gmail.com with ESMTPSA id c9-20020a17090618a900b0078d85934cf8sm11730873ejf.111.2022.10.21.09.32.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 09:17:11 -0700 (PDT)
-Date:   Fri, 21 Oct 2022 09:17:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jinpeng Cui <cuijinpeng666@gmail.com>,
-        Zeal Robot <zealci@zte.com.cn>, alan.maguire@oracle.com,
-        ast@kernel.org, bpf@vger.kernel.org, cui.jinpeng2@zte.com.cn,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, stephen.s.brennan@oracle.com
-Subject: Re: [PATCH linux-next] kallsyms: Use strscpy() instead of strlcpy()
-Message-ID: <202210210915.B177280DA8@keescook>
-References: <20221020090547.398680-1-cui.jinpeng2@zte.com.cn>
- <Y1EVnZS9BalesrC1@kroah.com>
- <CANhqVYZ+trZzPdB=Vd9YV53DAJt0p5LZQH-u94+VRrDQ5+w2MA@mail.gmail.com>
- <Y1FCiH16RIetS0hZ@kroah.com>
+        Fri, 21 Oct 2022 09:32:22 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 21 Oct 2022 18:32:20 +0200
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     acme@kernel.org, dwarves@vger.kernel.org, andrii@kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] dwarves: zero-initialize struct cu in cu__new()
+ to prevent incorrect BTF types
+Message-ID: <Y1LJlPBQauNS/xkX@krava>
+References: <1666364523-9648-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y1FCiH16RIetS0hZ@kroah.com>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1666364523-9648-1-git-send-email-alan.maguire@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 02:43:52PM +0200, Greg KH wrote:
-> > I am very sorry if the patches from zte.com.cn
-> > in the past few months have made you angry,
-> > we have decided to fix the problem you pointed out
-> > as soon as possible.
-> > Our company's mailbox name@zte.com.cn
-> > cannot send emails to the external network,
-> > so we use name@gmail.com to send patches;
+On Fri, Oct 21, 2022 at 04:02:03PM +0100, Alan Maguire wrote:
+> BTF deduplication was throwing some strange results, where core kernel
+> data types were failing to deduplicate due to the return values
+> of function type members being void (0) instead of the actual type
+> (unsigned int).  An example of this can be seen below, where
+> "struct dst_ops" was failing to deduplicate between kernel and
+> module:
 > 
-> You all have been warned numerous times over many weeks and months and
-> never responded to our emails.
+> struct dst_ops {
+>         short unsigned int family;
+>         unsigned int gc_thresh;
+>         int (*gc)(struct dst_ops *);
+>         struct dst_entry * (*check)(struct dst_entry *, __u32);
+>         unsigned int (*default_advmss)(const struct dst_entry *);
+>         unsigned int (*mtu)(const struct dst_entry *);
+> ...
 > 
-> We have no proof that using gmail accounts is actually coming from a ZTE
-> employee, so until that happens, we can not take your changes (not to
-> mention the basic fact that you all keep ignoring our review comments,
-> which is a good enough reason to ignore them.)
+> struct dst_ops___2 {
+>         short unsigned int family;
+>         unsigned int gc_thresh;
+>         int (*gc)(struct dst_ops___2 *);
+>         struct dst_entry___2 * (*check)(struct dst_entry___2 *, __u32);
+>         void (*default_advmss)(const struct dst_entry___2 *);
+>         void (*mtu)(const struct dst_entry___2 *);
+> ...
+> 
+> This was seen with
+> 
+> bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
+> 
+> ...which rewrites the return value as 0 (void) when it is marked
+> as matching DW_TAG_unspecified_type:
+> 
+> static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t type_id_off, uint32_t tag_type)
+> {
+>        if (tag_type == 0)
+>                return 0;
+> 
+>        if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
+>                // No provision for encoding this, turn it into void.
+>                return 0;
+>        }
+> 
+>        return type_id_off + tag_type;
+> }
+> 
+> However the odd thing was that on further examination, the unspecified type
+> was not being set, so why was this logic being tripped?  Futher debugging
+> showed that the encoder->cu->unspecified_type.tag value was garbage, and
+> the type id happened to collide with "unsigned int"; as a result we
+> were replacing unsigned ints with void return values, and since this
+> was being done to function type members in structs, it triggered a
+> type mismatch which failed deduplication between kernel and module.
+> 
+> The fix is simply to calloc() the cu in cu__new() instead.
+> 
+> Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-Aren't there a few solutions here?
+awesome, this fixes the missing dedup I was seeing
+with current pahole:
 
-1) Just send the emails from @gmail with matching S-o-b.
-2) Send an @zte.com.cn to lkml to confirm their @gmail/@zte.com.cn mapping.
-3) Fix the email systems.
+	$ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
+	69
 
--- 
-Kees Cook
+with this patch:
+
+	$ bpftool btf dump file ./vmlinux.test | grep "STRUCT 'task_struct'" | wc -l
+	1
+
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+
+> ---
+>  dwarves.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/dwarves.c b/dwarves.c
+> index fbebc1d..424381d 100644
+> --- a/dwarves.c
+> +++ b/dwarves.c
+> @@ -626,7 +626,7 @@ struct cu *cu__new(const char *name, uint8_t addr_size,
+>  		   const unsigned char *build_id, int build_id_len,
+>  		   const char *filename, bool use_obstack)
+>  {
+> -	struct cu *cu = malloc(sizeof(*cu) + build_id_len);
+> +	struct cu *cu = calloc(1, sizeof(*cu) + build_id_len);
+>  
+>  	if (cu != NULL) {
+>  		uint32_t void_id;
+> -- 
+> 2.31.1
+> 
