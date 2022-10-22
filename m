@@ -2,155 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A4A6082C4
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 02:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347236082C7
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 02:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbiJVANY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Oct 2022 20:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
+        id S229736AbiJVARa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Oct 2022 20:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbiJVANY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Oct 2022 20:13:24 -0400
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356E22A8A44;
-        Fri, 21 Oct 2022 17:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1666397603; x=1697933603;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SKZR79US94FEM5350Cpj/SexIBQ2tsnbmcsu8rA37B8=;
-  b=YSANRW7nH1l3NxA/raVYprFyc9JWEw8eoPfBRpenuHaWtZFKFaykTwoC
-   QX+bbEmukoPCd2JY8l4X11N07pLKbizWRuSpAQCR29mrK7ItONl2QC1Gi
-   J8k86xpYZH0KZIAFybUw6Uz1YhtW+QsdH1m789amneP65P716pcoKw4FL
-   0=;
-X-IronPort-AV: E=Sophos;i="5.95,203,1661817600"; 
-   d="scan'208";a="143206135"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2022 00:13:21 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id F165481038;
-        Sat, 22 Oct 2022 00:13:20 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.42; Sat, 22 Oct 2022 00:13:20 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.43.162.134) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.15;
- Sat, 22 Oct 2022 00:13:16 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <shaozhengchao@huawei.com>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <jhs@mojatatu.com>,
-        <jiri@resnulli.us>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <weiyongjun1@huawei.com>,
-        <xiyou.wangcong@gmail.com>, <yuehaibing@huawei.com>,
-        <kuniyu@amazon.com>, <sdf@google.com>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH net] net: sched: fq_codel: fix null-ptr-deref issue in fq_codel_enqueue()
-Date:   Fri, 21 Oct 2022 17:13:08 -0700
-Message-ID: <20221022001308.17778-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221021084058.223823-1-shaozhengchao@huawei.com>
-References: <20221021084058.223823-1-shaozhengchao@huawei.com>
+        with ESMTP id S229615AbiJVAR3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Oct 2022 20:17:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6033D48A0D
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 17:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666397847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ffLPQLNndW2qNqcG85lW2feB+QGegvpDWXA/1PXL/o8=;
+        b=WR1X9Vj0MxZft0qVNWf2mDA+Ili+XUzJUevdUOs8kV2uCnOoJu4DrFHouMUYG27dDTVDe0
+        k7t2un6ogUuOApjq706mraKei5/Xlqs8lDxrE4gvpjDsXzbpixwi9zcMF5MQGvmuXQYHly
+        gZ99rHsteA9USEAKr0TWyi8uouENGuA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-632-oFZoF8H4OGu82VUTIkF8BA-1; Fri, 21 Oct 2022 20:17:25 -0400
+X-MC-Unique: oFZoF8H4OGu82VUTIkF8BA-1
+Received: by mail-ed1-f69.google.com with SMTP id e16-20020a056402191000b0045d9775d0f4so4155295edz.16
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 17:17:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ffLPQLNndW2qNqcG85lW2feB+QGegvpDWXA/1PXL/o8=;
+        b=sbrEyVIly1R3FhJsH+IYJ2+iZdeZyOkxdhM19AVyYKRNiqzX3tMRxQKUAa6HE8ImpI
+         vn/vn16ubKnv44QmuW3Ui3AViIu6QZHU5jznEHm6JIwN3a2Qsq7UzqM7vJo+/6AQjLfM
+         twCgVkSXK3f39idqVivh+WDSLpE35D5InzRfoSz1FOFTESVlz2zvTPsg6hnqeAMT13aS
+         DkTze7yUqsEkVskexCKpVE6OmgJjnzONuYGmWn/T+f6Q3zg6hQ6TwrSYq8oq5v12CaWf
+         JDhiXv4GhucbkzXHJ9Er15+OIOdJFBgiVrudKFPO3qSnTHNCNT25v5flhd8KVNxxYGgR
+         lWeQ==
+X-Gm-Message-State: ACrzQf2N+jp055bgLX8vCm7r5pTDxfzWs+AbEYWNLHOqQ1j173KBtOXf
+        7WugHYxCn8l098ZGrbqogNHOeO9HG08h/5I+Guie52OqzaDkYGopegLswtrWGoO1vlbeZHD29hG
+        b0eIvORIfF4wk
+X-Received: by 2002:a05:6402:280a:b0:45d:19e8:c7ad with SMTP id h10-20020a056402280a00b0045d19e8c7admr19320284ede.44.1666397844055;
+        Fri, 21 Oct 2022 17:17:24 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7RkKTesKjUts48gOVA6eAd7VenRhjjBJPu5k58JMgOB9rIwxtj/GLog2O5gHtldiRolHFfBA==
+X-Received: by 2002:a05:6402:280a:b0:45d:19e8:c7ad with SMTP id h10-20020a056402280a00b0045d19e8c7admr19320251ede.44.1666397843182;
+        Fri, 21 Oct 2022 17:17:23 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 1-20020a170906200100b007a03313a78esm329655ejo.20.2022.10.21.17.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Oct 2022 17:17:22 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1F72B6EE715; Sat, 22 Oct 2022 02:17:22 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     mtahhan@redhat.com, bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Maryam Tahhan <mtahhan@redhat.com>
+Subject: Re: [PATCH bpf-next v4 1/1] doc: DEVMAPs and XDP_REDIRECT
+In-Reply-To: <20221021165919.509652-2-mtahhan@redhat.com>
+References: <20221021165919.509652-1-mtahhan@redhat.com>
+ <20221021165919.509652-2-mtahhan@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 22 Oct 2022 02:17:22 +0200
+Message-ID: <877d0su2y5.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.134]
-X-ClientProxiedBy: EX13D44UWC002.ant.amazon.com (10.43.162.169) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-+Stanislav, bpf
+mtahhan@redhat.com writes:
 
-From:   Zhengchao Shao <shaozhengchao@huawei.com>
-Date:   Fri, 21 Oct 2022 16:40:58 +0800
-> As [0] see, it will cause null-ptr-deref issue.
-> The following is the process of triggering the problem:
-> fq_codel_enqueue()
-> 	...
-> 	idx = fq_codel_classify()        --->if idx != 0
-> 	flow = &q->flows[idx];
-> 	flow_queue_add(flow, skb);       --->add skb to flow[idex]
-> 	q->backlogs[idx] += qdisc_pkt_len(skb); --->backlogs = 0
-> 	...
-> 	fq_codel_drop()          --->set sch->limit = 0, always
-> 				     drop packets
-> 		...
-> 		idx = i          --->because backlogs in every
-> 				     flows is 0, so idx = 0
-> 		...
-> 		flow = &q->flows[idx];   --->get idx=0 flow
-> 		...
-> 		dequeue_head()
-> 			skb = flow->head; --->flow->head = NULL
-> 			flow->head = skb->next; --->cause null-ptr-deref
-> 
-> So, only need to discard the packets whose len is 0 on dropping path of
-> enqueue. Then, the correct flow id can be obtained by fq_codel_drop() on
-> next enqueuing.
-> 
-> [0]: https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
+> From: Maryam Tahhan <mtahhan@redhat.com>
+>
+> Add documentation for BPF_MAP_TYPE_DEVMAP and
+> BPF_MAP_TYPE_DEVMAP_HASH including kernel version
+> introduced, usage and examples.
+>
+> Add documentation that describes XDP_REDIRECT.
+>
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
 
-This can be caused by BPF, but there seems to be no consensus yet.
-https://lore.kernel.org/netdev/CAKH8qBsOMxVaemF0Oy=vE1V0vKO8ORUcVGB5YANS3HdKOhVjjw@mail.gmail.com/
+With one small nit below:
 
-"""
-I think the consensus here is that the stack, in general, doesn't
-expect the packets like this. So there are probably more broken things
-besides fq_codel. Thus, it's better if we remove the ability to
-generate them from the bpf side instead of fixing the individual users
-like fq_codel.
-"""
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
+[...]
 
-> 
-> Fixes: 4b549a2ef4be ("fq_codel: Fair Queue Codel AQM")
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
->  net/sched/sch_fq_codel.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
-> index 99d318b60568..3bbe7f69dfb5 100644
-> --- a/net/sched/sch_fq_codel.c
-> +++ b/net/sched/sch_fq_codel.c
-> @@ -187,6 +187,7 @@ static int fq_codel_enqueue(struct sk_buff *skb, struct Qdisc *sch,
->  	struct fq_codel_sched_data *q = qdisc_priv(sch);
->  	unsigned int idx, prev_backlog, prev_qlen;
->  	struct fq_codel_flow *flow;
-> +	struct sk_buff *drop_skb;
-
-We can move this into the if-block below or remove.
-
-
->  	int ret;
->  	unsigned int pkt_len;
->  	bool memory_limited;
-> @@ -222,6 +223,13 @@ static int fq_codel_enqueue(struct sk_buff *skb, struct Qdisc *sch,
->  
->  	/* save this packet length as it might be dropped by fq_codel_drop() */
->  	pkt_len = qdisc_pkt_len(skb);
+> +The following code snippet shows a BPF program that is broadcasting pack=
+ets to
+> +all the interfaces in the ``tx_port`` devmap.
 > +
-> +	/* drop skb if len = 0, so fq_codel_drop could get the right flow idx*/
-> +	if (unlikely(!pkt_len)) {
-> +		drop_skb = dequeue_head(flow);
-> +		__qdisc_drop(drop_skb, to_free);
+> +.. code-block:: c
+> +
+> +    SEC("xdp")
+> +    int xdp_redirect_map_func(struct xdp_md *ctx)
+> +    {
+> +        int index =3D ctx->ingress_ifindex;
 
-just            __qdisc_drop(dequeue_head(flow), to_free);
+Let's get rid of this index variable (it's not used).
+
+> +        return bpf_redirect_map(&tx_port, 0, BPF_F_BROADCAST | BPF_F_EXC=
+LUDE_INGRESS);
+> +    }
 
 
-> +		return NET_XMIT_SUCCESS;
-> +	}
->  	/* fq_codel_drop() is quite expensive, as it performs a linear search
->  	 * in q->backlogs[] to find a fat flow.
->  	 * So instead of dropping a single packet, drop half of its backlog
-> -- 
-> 2.17.1
+-Toke
 
