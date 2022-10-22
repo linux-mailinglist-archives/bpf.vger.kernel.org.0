@@ -2,73 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F257A60842B
-	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 06:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44423608463
+	for <lists+bpf@lfdr.de>; Sat, 22 Oct 2022 06:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbiJVEIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Oct 2022 00:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
+        id S229752AbiJVEz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Oct 2022 00:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbiJVEIf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Oct 2022 00:08:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605A02AD9C9
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 21:08:33 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 67so4351937pfz.12
-        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 21:08:33 -0700 (PDT)
+        with ESMTP id S229597AbiJVEz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Oct 2022 00:55:56 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A223B29F646
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 21:55:54 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id k67so3149284vsk.2
+        for <bpf@vger.kernel.org>; Fri, 21 Oct 2022 21:55:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bP2nrfoR91mKVNBuN7xlc/hXLHP/9zCMhBs+EV3ArQ=;
-        b=Yspg+7b3oZothg7+vggmri+izjGEEJNGnBkS3PIIfstmvdOw/Cy+sjMHg3y9D4Gq+Z
-         jIz1eHte2XALIQ9XML5nJUtrHAGivYOHk2cjCs/ysHo9llHFI641v+YZnc1d3tkqNFIb
-         dqSoTiWrxwXCOryGBMy6K/vDlyn8isg1aDWwVVzNGG5qcNMNy/OjEquqC+ifyZPMTVfn
-         TTT5ARb+glC2K394Nk6H1+FWDLCrV/DCnSXHxFiohyEYA7PKQBEXQnrTuW4LA7G5t0mn
-         u01Jb/FgXK8+P8kPUvlZF79MVslTWPoDTOt88U4W740p0YwfhfWNine7lRaLLmGKUavU
-         2jBA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GmDKkX99BrnTWUvlSKD9xZPNdkxbm+FI9fVEMC2RhYc=;
+        b=OR8dFlvwaDknyKVkEmZMJLPXZVsdO7IA7NeHhLC8C6kq2QzB3/H0vqv34j+NICkga6
+         JSR3iMzZO14zfmHcNIRXWhkqJ/LhDFJRfY6nMjWXW6o7Amn5NocG4EK7kgiG7PIqMlQQ
+         q+CTq2ktFOQnwQL6CRNueYRHNIljNyqyyMEhB0INa3pWobVAR7/quFqu/6wJ74pSKS0b
+         jBcr7ZKV5CxLBsEeQprRAYw7vIbaIjBCWotbAMuDVTNufxzFrueXVKbPWfrHUK1Rds4F
+         IvRjMjdu5JMHPeuMgL/WwtwLnf0JyZ2Ug/HF4+vh0eXqyXh8iH/uNK07UqTLNBv7ktgg
+         Q0xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2bP2nrfoR91mKVNBuN7xlc/hXLHP/9zCMhBs+EV3ArQ=;
-        b=28VUwoe5tB6sVWElsBEP/BTfQoR3aP+oiMoHx4+9CaZXfw3ln8ipWfFl5mnv5zcvQL
-         LWuCIfZkH1CohmbHSkaqRy/WUX8He0T3NZzv407C9d1uGGz/CBiqNaPWO6k6yMzep9qa
-         Lzl+hiYp6t4Lh/GH14ZlPlfVKxRkPdXuGPnADpoGEGKZDyyAekr83OKPRG2/J4OIU1SJ
-         YzMaMv0tzyTmvx+DNxlPGoYZpwBraBvWjKw10Bus4HHp+64xVB2r+VQ+l9V/r9Z+zV0c
-         1Y4riVmMR82ngVrkGO78au28csa9GknXYiPfPRCzGK1/MfqkKATmP9rUYbhetpyS5ABG
-         nV0g==
-X-Gm-Message-State: ACrzQf3qZi9QHoTg3Oh3ZKREaJXpmou5f9oTZYv8VerS3SS/t0QpklbS
-        VJBYhxh/kJc0sTsImPyIuZGk+fqwV7LO/w==
-X-Google-Smtp-Source: AMsMyM5N/NmEQJOB6Efme2cQR4lwVS6Q0XGBf7T6Ywv/WJU6IF8PZqsdsHaUaxBhP/vGb6CD3AyVEA==
-X-Received: by 2002:a65:5504:0:b0:42a:352d:c79c with SMTP id f4-20020a655504000000b0042a352dc79cmr19840662pgr.58.1666411712614;
-        Fri, 21 Oct 2022 21:08:32 -0700 (PDT)
-Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id g4-20020a17090a4b0400b001f2ef3c7956sm559004pjh.25.2022.10.21.21.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 21:08:32 -0700 (PDT)
-Date:   Sat, 22 Oct 2022 09:38:30 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 07/13] bpf: Fix partial dynptr stack slot
- reads/writes
-Message-ID: <20221022040830.usuuoeq35mj7vnxe@apollo>
-References: <20221018135920.726360-1-memxor@gmail.com>
- <20221018135920.726360-8-memxor@gmail.com>
- <CAJnrk1Y_zn+oR3pN8bd3tHV2VubFxBc00XhcNzaWzHkSn1-UMw@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GmDKkX99BrnTWUvlSKD9xZPNdkxbm+FI9fVEMC2RhYc=;
+        b=62ly+C+LzubvIotMeTX7hpLN5t7xIabra4cV2Qswr3m4XXPFMFlQOsBG7wiLeKHzVl
+         8kNyYJeaqyskfnbexlV2GpS1R3KcTsf/Qlg/CwZSU0taOzEpVOeN7Fq4zjCFDsAV7XMd
+         an26y7X3rHyVPHm+Li6qaPKxTS5qPovIXDRt5YUAKe34RQkSDpGANW3TH6/dYWlA1BjN
+         d2/VRR5YHGDf+7WmF6aRziQvyB8NGG/FK5PMus2Nb5EQSXk1pWjFf6FP8GZkgzd++7BC
+         3l88rk5Amkoj71KmMSoC+D4saPLkRGCNw7ArKhZRIryc+1qV52M24D1ECtKyFGhwHvRx
+         jVKg==
+X-Gm-Message-State: ACrzQf1DDpOw4X72F8/j9LeIFxXmziae74x5JY3SfL3a5xMpGejOauLK
+        1eR0et2vxV3RkI8f3uYpOpzgGSG9MPhOgi3gHowrlwXekCmqbIa2
+X-Google-Smtp-Source: AMsMyM5ox7vrEOGAOpqIr6RCTt86P0HVU3mqJcnUA4ACcPVrsPWM1zKj6P64ipaEvV4FH1Yz4GD70o2NlLSmO/KSxCo=
+X-Received: by 2002:a67:f510:0:b0:3a7:7afe:53c0 with SMTP id
+ u16-20020a67f510000000b003a77afe53c0mr14335789vsn.53.1666414553666; Fri, 21
+ Oct 2022 21:55:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJnrk1Y_zn+oR3pN8bd3tHV2VubFxBc00XhcNzaWzHkSn1-UMw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <0000000000009fa63105eb7648d8@google.com> <00000000000031aec805eb76a2d4@google.com>
+ <20221020182155.ecd44ee984b1aeb2e5a2e8ed@linux-foundation.org>
+ <CAJuCfpEh0byROe58H_FtL+NMLKAvSrQW0f0wd3QiVTBdRg5CTA@mail.gmail.com>
+ <CAJuCfpF7xsZJevfj6ERsJi5tPFj0o6FATAm4k=CMsONFG86EmQ@mail.gmail.com>
+ <CANp29Y7aNP+0hd01feB24XrCUPVa0+7kf7NiDAV_FdhPx2VkOQ@mail.gmail.com>
+ <CAJuCfpF0eYsNZjQO4OcT8Pnaj9+H8UK_o4bwtLzD=n53-48hJw@mail.gmail.com>
+ <CANp29Y4Q3X_KqxjajigGHXHFaY54vEdYkPf+5tcg3k2YyRh+jw@mail.gmail.com> <CAJuCfpGOF7fvMH671rBJyGQiEPXVs7E3SnoNeEJBAwV6jBH07A@mail.gmail.com>
+In-Reply-To: <CAJuCfpGOF7fvMH671rBJyGQiEPXVs7E3SnoNeEJBAwV6jBH07A@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 21 Oct 2022 21:55:41 -0700
+Message-ID: <CANp29Y4yM0W+SJ7tDkENJHBr-pfKyNgzML_W3EZib+-jbnCXWQ@mail.gmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in vm_area_dup
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com>,
+        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,329 +77,144 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 22, 2022 at 04:20:28AM IST, Joanne Koong wrote:
-> On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Currently, while reads are disallowed for dynptr stack slots, writes are
-> > not. Reads don't work from both direct access and helpers, while writes
-> > do work in both cases, but have the effect of overwriting the slot_type.
-> >
-> > While this is fine, handling for a few edge cases is missing. Firstly,
-> > a user can overwrite the stack slots of dynptr partially.
-> >
-> > Consider the following layout:
-> > spi: [d][d][?]
-> >       2  1  0
-> >
-> > First slot is at spi 2, second at spi 1.
-> > Now, do a write of 1 to 8 bytes for spi 1.
-> >
-> > This will essentially either write STACK_MISC for all slot_types or
-> > STACK_MISC and STACK_ZERO (in case of size < BPF_REG_SIZE partial write
-> > of zeroes). The end result is that slot is scrubbed.
-> >
-> > Now, the layout is:
-> > spi: [d][m][?]
-> >       2  1  0
-> >
-> > Suppose if user initializes spi = 1 as dynptr.
-> > We get:
-> > spi: [d][d][d]
-> >       2  1  0
-> >
-> > But this time, both spi 2 and spi 1 have first_slot = true.
-> >
-> > Now, when passing spi 2 to dynptr helper, it will consider it as
-> > initialized as it does not check whether second slot has first_slot ==
-> > false. And spi 1 should already work as normal.
-> >
-> > This effectively replaced size + offset of first dynptr, hence allowing
-> > invalid OOB reads and writes.
-> >
-> > Make a few changes to protect against this:
-> > When writing to PTR_TO_STACK using BPF insns, when we touch spi of a
-> > STACK_DYNPTR type, mark both first and second slot (regardless of which
-> > slot we touch) as STACK_INVALID. Reads are already prevented.
-> >
-> > Second, prevent writing to stack memory from helpers if the range may
-> > contain any STACK_DYNPTR slots. Reads are already prevented.
-> >
-> > For helpers, we cannot allow it to destroy dynptrs from the writes as
-> > depending on arguments, helper may take uninit_mem and dynptr both at
-> > the same time. This would mean that helper may write to uninit_mem
-> > before it reads the dynptr, which would be bad.
-> >
-> > PTR_TO_MEM: [?????dd]
-> >
-> > Depending on the code inside the helper, it may end up overwriting the
-> > dynptr contents first and then read those as the dynptr argument.
-> >
-> > Verifier would only simulate destruction when it does byte by byte
-> > access simulation in check_helper_call for meta.access_size, and
-> > fail to catch this case, as it happens after argument checks.
-> >
-> > The same would need to be done for any other non-trivial objects created
-> > on the stack in the future, such as bpf_list_head on stack, or
-> > bpf_rb_root on stack.
-> >
-> > A common misunderstanding in the current code is that MEM_UNINIT means
-> > writes, but note that writes may also be performed even without
-> > MEM_UNINIT in case of helpers, in that case the code after handling meta
-> > && meta->raw_mode will complain when it sees STACK_DYNPTR. So that
-> > invalid read case also covers writes to potential STACK_DYNPTR slots.
-> > The only loophole was in case of meta->raw_mode which simulated writes
-> > through instructions which could overwrite them.
-> >
-> > A future series sequenced after this will focus on the clean up of
-> > helper access checks and bugs around that.
+On Fri, Oct 21, 2022 at 5:39 PM Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> thanks for your work on this (and on the rest of the stack, which I'm
-> still working on reviewing)
+> On Fri, Oct 21, 2022 at 5:22 PM Aleksandr Nogikh <nogikh@google.com> wrote:
+> >
+> > On Fri, Oct 21, 2022 at 4:50 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Fri, Oct 21, 2022 at 4:12 PM Aleksandr Nogikh <nogikh@google.com> wrote:
+> > > >
+> > > > On Fri, Oct 21, 2022 at 2:52 PM 'Suren Baghdasaryan' via
+> > > > syzkaller-bugs <syzkaller-bugs@googlegroups.com> wrote:
+> > > > >
+> > > > > On Thu, Oct 20, 2022 at 6:58 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 20, 2022 at 6:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > > > > >
+> > > > > > > On Thu, 20 Oct 2022 05:40:43 -0700 syzbot <syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com> wrote:
+> > > > > > >
+> > > > > > > > syzbot has found a reproducer for the following issue on:
+> > > > > > >
+> > > > > > > Thanks.
+> > > > > > >
+> > > > > > >
+> > > > > > > > HEAD commit:    acee3e83b493 Add linux-next specific files for 20221020
+> > > > > > > > git tree:       linux-next
+> > > > > > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=170a8016880000
+> > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c82245cfb913f766
+> > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=b910411d3d253dab25d8
+> > > > > > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109e0372880000
+> > > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1770d752880000
+> > > > > > > >
+> > > > > > > > Downloadable assets:
+> > > > > > > > disk image: https://storage.googleapis.com/syzbot-assets/98cc5896cded/disk-acee3e83.raw.xz
+> > > > > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/b3d3eb3aa10a/vmlinux-acee3e83.xz
+> > > > > > > >
+> > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > > Reported-by: syzbot+b910411d3d253dab25d8@syzkaller.appspotmail.com
+> > > > > > > >
+> > > > > > > > BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
+> > > > > > >
+> > > > > > > This is happening under dup_anon_vma_name().
+> > > > > > >
+> > > > > > > I can't spot preemption being disabled on that call path, and I assume
+> > > > > > > this code has been exercised for some time.
+> > > > > >
+> > > > > > Indeed, it is unclear why copy_vma() would be called in atomic
+> > > > > > context. I'll try to reproduce tomorrow. Maybe with lockdep enabled we
+> > > > > > can get something interesting.
+> > > > >
+> > > > > Sorry for the delay. Having trouble booting the image built with the
+> > > > > attached config. My qemu crashes with a "sched: CPU #1's llc-sibling
+> > > > > CPU #0 is not on the same node! [node: 1 != 0]." warning before the
+> > > > > crash. Trying to figure out why.
+> > > >
+> > > > qemu 6.2 changed the core-to-socket assignment and it looks like we
+> > > > get such errors when a kernel with "numa=fake=" is run under qemu on a
+> > > > system with multiple CPUs.
+> > > >
+> > > > You can try removing numa=fake=... from the CMDLINE config or just
+> > > > manually setting the smp argument of the qemu process (e.g. -smp
+> > > > 2,sockets=2,cores=1)
+> > > >
+> > > > See https://gitlab.com/qemu-project/qemu/-/issues/877
+> > >
+> > > That was it. Thank you, Aleksandr!
+> > > I can boot with the image built using the attached config but still
+> > > can't reproduce the issue using the C reproducer... Will keep it
+> > > running for some time to see if it eventually shows up.
+> >
+> > Just in case -- did you also try executing the reproducer against the
+> > attached bootable disk image? Syzbot attaches the exact images on
+> > which it managed to find the bug. The image should work for both GCE
+> > and qemu.
 >
-> Regarding writes leading to partial dynptr stack slots, I'm regretting
-> not having the verifier flat-out reject this in the first place
-> (instead of it being allowed but internally the stack slot gets marked
-> as invalid) - I think it overall ends up being more confusing to end
-> users, where there it's not obvious at all that writing to the dynptr
-> on the stack automatically invalidates it. I'm not sure whether it's
-> too late from a public API behavior perspective to change this or not.
+> I just tried replacing stretch.img in my qemu command line with the
+> attached disk-acee3e83.raw and that didn't work ("VFS: Unable to mount
+> root fs on unknown-block(8,0)"), so I'm obviously doing something
+> stupid. Any instructions on how to use the attached raw image?
 
-It would be incorrect to reject writes into dynptrs whose reference is not
-tracked by the verifier (so bpf_dynptr_from_mem), because the compiler would be
-free to reuse the stack space for some other variable when the local dynptr
-variable's lifetime ends, and the verifier would have no way to know when the
-variable went out of scope.
+It worked for me:
 
-I feel it is also incorrect to refuse bpf_dynptr_from_mem where unref dynptr
-already exists as well. Right now it sees STACK_DYNPTR in the slot_type and
-fails. But consider something like this:
+wget 'https://storage.googleapis.com/syzbot-assets/98cc5896cded/disk-acee3e83.raw.xz'
+unxz disk-acee3e83.raw.xz
+qemu-system-x86_64 -smp 2,sockets=2,cores=1 -m 4G -drive
+file=disk-acee3e83.raw,format=raw -snapshot -nographic -enable-kvm
 
-void prog(void)
-{
-	{
-		struct bpf_dynptr ptr;
-		bpf_dynptr_from_mem(...);
-		...
-	}
-
-	...
-
-	{
-		struct bpf_dynptr ptr;
-		bpf_dynptr_from_mem(...);
-	}
-}
-
-The program is valid, but if ptr in both scopes share the same stack slots, the
-call in the second scope would fail because verifier would see STACK_DYNPTR in
-slot_type.
-
-It is fine though to simply reject writes in case of dynptrs obtained from
-bpf_ringbuf_reserve_dynptr, because if they are overwritten before being
-released, it will end up being an error later due to unreleased reference state.
-The lifetime of the object in this case is being controlled using BPF helpers
-explicitly.
-
-So I think it is ok to do in the second case, and it is unaffected by backward
-compatibility constraints. It wouldn't have been possible for the unref case
-even when you started out with this.
-
-> ANyways, assuming it is too late, I left a few comments below.
 >
 > >
-> > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 76 +++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 76 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 0fd73f96c5e2..89ae384ea6a7 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -740,6 +740,8 @@ static void mark_dynptr_cb_reg(struct bpf_reg_state *reg1,
-> >         __mark_dynptr_regs(reg1, NULL, type);
-> >  }
-> >
-> > +static void destroy_stack_slots_dynptr(struct bpf_verifier_env *env,
-> > +                                      struct bpf_func_state *state, int spi);
-> >
-> >  static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> >                                    enum bpf_arg_type arg_type, int insn_idx)
-> > @@ -755,6 +757,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
-> >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
-> >                 return -EINVAL;
-> >
-> > +       destroy_stack_slots_dynptr(env, state, spi);
-> > +       destroy_stack_slots_dynptr(env, state, spi - 1);
->
-> I don't think we need these two lines. mark_stack_slots_dynptr() is
-> called only in the case where an uninitialized dynptr is getting
-> initialized; is_dynptr_reg_valid_uninit() will have already been
-> called prior to this (in check_func_arg()), where
-> is_dynptr_reg_valid_uninit() will have checked that for any
-> uninitialized dynptr, the stack slot has not already been marked as
-> STACK_DYNTPR. Maybe I'm missing something in this analysis? What are
-> your thoughts?
->
-
-You're right, it shouldn't be needed here now.
-In case of insn writes we already destroy both slots of a pair.
-
-If we decide to allow mark_stack_slots_dynptr on STACK_DYNPTR that is
-unreferenced, per the discussion above, I will keep it, because it would be
-needed then, otherwise I will drop it.
-
-> > +
-> >         for (i = 0; i < BPF_REG_SIZE; i++) {
-> >                 state->stack[spi].slot_type[i] = STACK_DYNPTR;
-> >                 state->stack[spi - 1].slot_type[i] = STACK_DYNPTR;
-> > @@ -829,6 +834,44 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
-> >         return 0;
-> >  }
-> >
-> > +static void destroy_stack_slots_dynptr(struct bpf_verifier_env *env,
-> > +                                      struct bpf_func_state *state, int spi)
-> > +{
-> > +       int i;
-> > +
-> > +       /* We always ensure that STACK_DYNPTR is never set partially,
-> > +        * hence just checking for slot_type[0] is enough. This is
-> > +        * different for STACK_SPILL, where it may be only set for
-> > +        * 1 byte, so code has to use is_spilled_reg.
-> > +        */
-> > +       if (state->stack[spi].slot_type[0] != STACK_DYNPTR)
-> > +               return;
-> > +       /* Reposition spi to first slot */
-> > +       if (!state->stack[spi].spilled_ptr.dynptr.first_slot)
-> > +               spi = spi + 1;
-> > +
-> > +       mark_stack_slot_scratched(env, spi);
-> > +       mark_stack_slot_scratched(env, spi - 1);
-> > +
-> > +       /* Writing partially to one dynptr stack slot destroys both. */
-> > +       for (i = 0; i < BPF_REG_SIZE; i++) {
-> > +               state->stack[spi].slot_type[i] = STACK_INVALID;
-> > +               state->stack[spi - 1].slot_type[i] = STACK_INVALID;
-> > +       }
-> > +
-> > +       /* Do not release reference state, we are destroying dynptr on stack,
-> > +        * not using some helper to release it. Just reset register.
-> > +        */
-> > +       __mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
-> > +       __mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
-> > +
-> > +       /* Same reason as unmark_stack_slots_dynptr above */
-> > +       state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
-> > +       state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
-> > +
-> > +       return;
-> > +}
->
-> I think it'd be cleaner if we combined this and
-> unmark_stack_slots_dynptr() into one function. The logic is pretty
-> much the same except for if the reference state should be released.
->
-
-Ack, will do. I can put this logic in a common function and both could be
-callers of that, passing true/false, so it remains readable while avoiding the
-duplication.
-
-> > +
-> >  static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> >  {
-> >         struct bpf_func_state *state = func(env, reg);
-> > @@ -3183,6 +3226,8 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
-> >                         env->insn_aux_data[insn_idx].sanitize_stack_spill = true;
-> >         }
-> >
-> > +       destroy_stack_slots_dynptr(env, state, spi);
->
-> If the stack slot is a dynptr, I think we can just return after this
-> call, else we do extra work and mark the stack slots as STACK_MISC
-> (3rd case in the if statement).
->
-
-That is the intention here. The destroy_stack_slots_dynptr overwrites two slots,
-while we still simulate the write to the slot being written to.
-
-[?][d][d]
- 2  1  0
-
-If I wrote to spi = 1, it would now be [?][m][?].
-Earlier it would have been [?][m][d].
-
-Any stray write (either fixed or variable offset) to a dynptr slot ends the
-lifetime of the dynptr object, so both slots representing the dynptr object need
-to be invalidated.
-
-But the write itself needs to happen, and its state has to be reflected in the
-stack state for those particular slot(s).
-
-The main point here is to prevent partial destruction, which allows manifesting
-the case described in the commit log. Writing to one slot of the two
-representing a dynptr invalidates both.
-
-> > +
-> >         mark_stack_slot_scratched(env, spi);
-> >         if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
-> >             !register_is_null(reg) && env->bpf_capable) {
-> > @@ -3296,6 +3341,13 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
-> >         if (err)
-> >                 return err;
-> >
-> > +       for (i = min_off; i < max_off; i++) {
-> > +               int slot, spi;
-> > +
-> > +               slot = -i - 1;
-> > +               spi = slot / BPF_REG_SIZE;
-> > +               destroy_stack_slots_dynptr(env, state, spi);
-> > +       }
-> >
->
-> Instead of calling destroy_stack_slots_dynptr() in
-> check_stack_write_fixed_off() and check_stack_write_var_off(), I think
-> calling it from check_stack_write() would be a better place. I think
-> that'd be more efficient as well where if it is a write to a dynptr,
-> we can directly return after invalidating the stack slot.
->
-
-We cannot directly return, as explained above.
-
-> >         /* Variable offset writes destroy any spilled pointers in range. */
-> >         for (i = min_off; i < max_off; i++) {
-> > @@ -5257,6 +5309,30 @@ static int check_stack_range_initialized(
-> >         }
-> >
-> >         if (meta && meta->raw_mode) {
-> > +               /* Ensure we won't be overwriting dynptrs when simulating byte
-> > +                * by byte access in check_helper_call using meta.access_size.
-> > +                * This would be a problem if we have a helper in the future
-> > +                * which takes:
-> > +                *
-> > +                *      helper(uninit_mem, len, dynptr)
-> > +                *
-> > +                * Now, uninint_mem may overlap with dynptr pointer. Hence, it
-> > +                * may end up writing to dynptr itself when touching memory from
-> > +                * arg 1. This can be relaxed on a case by case basis for known
-> > +                * safe cases, but reject due to the possibilitiy of aliasing by
-> > +                * default.
-> > +                */
-> > +               for (i = min_off; i < max_off + access_size; i++) {
-> > +                       slot = -i - 1;
-> > +                       spi = slot / BPF_REG_SIZE;
->
-> I think we can just use get_spi(i) here
->
-
-Ack.
-
-> > +                       /* raw_mode may write past allocated_stack */
-> > +                       if (state->allocated_stack <= slot)
-> > +                               continue;
->
-> break?
->
-
-I think you realised why it's continue in your other reply :).
+> > > Thanks,
+> > > Suren.
+> > >
+> > > >
+> > > > > defconfig with CONFIG_ANON_VMA_NAME=y boots fine but does not
+> > > > > reproduce the issue.
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > I wonder if this could be fallout from the KSM locking error which
+> > > > > > > https://lkml.kernel.org/r/8c86678a-3bfb-3854-b1a9-ae5969e730b8@redhat.com
+> > > > > > > addresses.  Seems quite unlikely.
+> > > > > > >
+> > > > > > > > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3602, name: syz-executor107
+> > > > > > > > preempt_count: 1, expected: 0
+> > > > > > > > RCU nest depth: 0, expected: 0
+> > > > > > > > INFO: lockdep is turned off.
+> > > > > > > > Preemption disabled at:
+> > > > > > > > [<0000000000000000>] 0x0
+> > > > > > > > CPU: 0 PID: 3602 Comm: syz-executor107 Not tainted 6.1.0-rc1-next-20221020-syzkaller #0
+> > > > > > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+> > > > > > > > Call Trace:
+> > > > > > > >  <TASK>
+> > > > > > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > > > > > >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> > > > > > > >  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9890
+> > > > > > > >  might_alloc include/linux/sched/mm.h:274 [inline]
+> > > > > > > >  slab_pre_alloc_hook mm/slab.h:727 [inline]
+> > > > > > > >  slab_alloc_node mm/slub.c:3323 [inline]
+> > > > > > > >  slab_alloc mm/slub.c:3411 [inline]
+> > > > > > > >  __kmem_cache_alloc_lru mm/slub.c:3418 [inline]
+> > > > > > > >  kmem_cache_alloc+0x2e6/0x3c0 mm/slub.c:3427
+> > > > > > > >  vm_area_dup+0x81/0x380 kernel/fork.c:466
+> > > > > > > >  copy_vma+0x376/0x8d0 mm/mmap.c:3216
+> > > > > > > >  move_vma+0x449/0xf60 mm/mremap.c:626
+> > > > > > > >  __do_sys_mremap+0x487/0x16b0 mm/mremap.c:1075
+> > > > > > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > > > > > > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> > > > > > > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > > > > > > RIP: 0033:0x7fd090fa5b29
+> > > > > > > > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > > > > > > > RSP: 002b:00007ffc2e90bd38 EFLAGS: 00000246 ORIG_RAX: 0000000000000019
+> > > > > > > > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd090fa5b29
+> > > > > > > > RDX: 0000000000001000 RSI: 0000000000004000 RDI: 00000000201c4000
+> > > > > > > > RBP: 00007fd090f69cd0 R08: 00000000202ef000 R09: 0000000000000000
+> > > > > > > > R10: 0000000000000003 R11: 0000000000000246 R12: 00007fd090f69d60
+> > > > > > > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > > > > > >  </TASK>
+> > > > >
+> > > > > --
+> > > > > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > > > > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > > > > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/CAJuCfpF7xsZJevfj6ERsJi5tPFj0o6FATAm4k%3DCMsONFG86EmQ%40mail.gmail.com.
