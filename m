@@ -2,114 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087666095B4
-	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 20:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA16A6095CC
+	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 21:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbiJWSw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Oct 2022 14:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S229882AbiJWTWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Oct 2022 15:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbiJWSwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Oct 2022 14:52:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4CC5A2F7;
-        Sun, 23 Oct 2022 11:52:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BBFC60F3A;
-        Sun, 23 Oct 2022 18:52:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF3CC433C1;
-        Sun, 23 Oct 2022 18:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666551142;
-        bh=HNwcqER76u92VjnWqSlerVcCGjVrALqwLw5X+szcw8k=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=M5PNJf4C74L472H9YDvVkkubU7NczmOc6Eqfgroo3ASHEhHJUJ7jY96CZx1xWmITR
-         B/GfR72xzNy1Zob3FDhufWgjrHG8bf1n8gkGaoUyzdX5t9Izlwbhvh6t/Uqv1XYimA
-         0WvdmyG9EIWZYsX68Toe0G+mZkXeJJDNborQKlmLC+Cqc9h3G5Vs9aiizr9+wqifzy
-         gfl6p/SUbK8U4qeVS094olPQhd7IdKlOf56EEG84tm3wsFKLyPXig33aJkjF9Z/T/0
-         NAsEIZ+omwjaoBUqfMNH/M6ntEUSlp7+L6gthjyzBSq8mIzI3wdPAScMRLm53GQuP0
-         YDPWtAwWdySLA==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v3 00/12] net: dpaa2-eth: AF_XDP zero-copy support
-In-Reply-To: <20221018141901.147965-1-ioana.ciornei@nxp.com>
-References: <20221018141901.147965-1-ioana.ciornei@nxp.com>
-Date:   Sun, 23 Oct 2022 20:52:19 +0200
-Message-ID: <87r0yy2x0c.fsf@all.your.base.are.belong.to.us>
+        with ESMTP id S229497AbiJWTWw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Oct 2022 15:22:52 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24C567171;
+        Sun, 23 Oct 2022 12:22:50 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id jo13so3205436plb.13;
+        Sun, 23 Oct 2022 12:22:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NjXLsW45XIKhsmmKtd6rJwffqnWIuYRgp9eF1wVUbyo=;
+        b=TxY/RLHEGdSbDBvNQJuZ27WyOQ74wl2rlTbNQ6RjUfW7gpCR7RUhnla8SpsEyJGi7d
+         7xkucRQn7v/TwZCmy5aifSNG1fmtkmb9fK7c+nQ7r0KwWvZmWKADY7vnd1hOrV/DQIt8
+         zjexggJhPOCrWvhflEOYCg19DpaLU5nRWsjtN5M39UQ6B41CLQjA5NIUYpXM9Ky2YZS1
+         qOi4Fev/8XeAtwy72hYMeQL9Vk9gr/ubSvyRND81NMrExv83EgkECf9udlmyVnFa/ert
+         pXuSY/lckUxki9PFVG1zgXb0HFDdrWhsF1vV2k/vZIPHuCWYHx0hvxQCmUlVzsndMz4z
+         7zSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NjXLsW45XIKhsmmKtd6rJwffqnWIuYRgp9eF1wVUbyo=;
+        b=iQHDcP2XlxEmk//ucwt0q50LojP1iNgs1ZACV6Yjw2YMfsUcFqIvctGT/vmjWW9051
+         SnaL/1MqpJsGH9gLg0SpZOPirAzIfOmwyrk7nDQgxMIp/+JnsdNJqr/orWkm9hRZeroF
+         pE75rE362xUGzBRxa5HTCl+0K5sRxDCxCI0BkkFSM7ZZ6Z0b9vm895scXUhg0RbYnclY
+         bfrLXRApqq61LYy6DrlbTslFet2AFe4hEQhhtYcUOcgvoq8WT24wm6Hq0oI0YtUqKciz
+         Wu3NAEgrPrtT/qMeOHlqEelDphHAb/0hiImILtxDNRrEZ+ENY7xxoJMDQB5cr/tClcGM
+         9cWQ==
+X-Gm-Message-State: ACrzQf0sx5RESEZdsmMD7/l86te6EgdSew8+jaND42h1UBDdloZ/ZUWZ
+        2YJiVLTG8BBHflUv0dFZrFg=
+X-Google-Smtp-Source: AMsMyM6qbsKIVYbXfGCN5UI+lH19SsoNIlJ2EDLb0dRk2+Hm7MrV/ezcFFf1A1UcGCph7fXbWfF2Xg==
+X-Received: by 2002:a17:902:f681:b0:186:aab2:2168 with SMTP id l1-20020a170902f68100b00186aab22168mr1490104plg.62.1666552970046;
+        Sun, 23 Oct 2022 12:22:50 -0700 (PDT)
+Received: from macbook-pro-4.dhcp.thefacebook.com.com ([2620:10d:c090:400::5:2848])
+        by smtp.gmail.com with ESMTPSA id r4-20020a170902be0400b00176ca089a7csm18299876pls.165.2022.10.23.12.22.48
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sun, 23 Oct 2022 12:22:49 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, kuba@kernel.org, andrii@kernel.org,
+        pabeni@redhat.com, edumazet@google.com, kafai@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: pull-request: bpf 2022-10-23
+Date:   Sun, 23 Oct 2022 12:22:44 -0700
+Message-Id: <20221023192244.81137-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ioana Ciornei <ioana.ciornei@nxp.com> writes:
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-> This patch set adds support for AF_XDP zero-copy in the dpaa2-eth
-> driver. The support is available on the LX2160A SoC and its variants and
-> only on interfaces (DPNIs) with a maximum of 8 queues (HW limitations
-> are the root cause).
->
-> We are first implementing the .get_channels() callback since this a
-> dependency for further work.
->
-> Patches 2-3 are working on making the necessary changes for multiple
-> buffer pools on a single interface. By default, without an AF_XDP socket
-> attached, only a single buffer pool will be used and shared between all
-> the queues. The changes in the functions are made in this patch, but the
-> actual allocation and setup of a new BP is done in patch#10.
->
-> Patches 4-5 are improving the information exposed in debugfs. We are
-> exposing a new file to show which buffer pool is used by what channels
-> and how many buffers it currently has.
->
-> The 6th patch updates the dpni_set_pools() firmware API so that we are
-> capable of setting up a different buffer per queue in later patches.
->
-> In the 7th patch the generic dev_open/close APIs are used instead of the
-> dpaa2-eth internal ones.
->
-> Patches 8-9 are rearranging the existing code in dpaa2-eth.c in order to
-> create new functions which will be used in the XSK implementation in
-> dpaa2-xsk.c
->
-> Finally, the last 3 patches are adding the actual support for both the
-> Rx and Tx path of AF_XDP zero-copy and some associated tracepoints.
-> Details on the implementation can be found in the actual patch.
->
-> Changes in v2:
->  - 3/12:  Export dpaa2_eth_allocate_dpbp/dpaa2_eth_free_dpbp in this
->    patch to avoid a build warning. The functions will be used in next
->    patches.
->  - 6/12:  Use __le16 instead of u16 for the dpbp_id field.
->  - 12/12: Use xdp_buff->data_hard_start when tracing the BP seeding.
->
-> Changes in v3:
->  - 3/12: fix leaking of bp on error path
->
+The following pull-request contains BPF updates for your *net* tree.
 
-Again, sorry about the feedback delay.
+We've added 7 non-merge commits during the last 18 day(s) which contain
+a total of 8 files changed, 69 insertions(+), 5 deletions(-).
 
-I don't have access to the hardware, so I mostly glossed over the
-patches that didn't touch AF_XDP directly.
+The main changes are:
 
-The series looks clean, and is easy to follow. The XSK pool usage looks
-correct. Awesome to see yet another AF_XDP capable driver!
+1) Wait for busy refill_work when destroying bpf memory allocator, from Hou.
 
-Feel free to add:
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+2) Allow bpf_user_ringbuf_drain() callbacks to return 1, from David.
+
+3) Fix dispatcher patchable function entry to 5 bytes nop, from Jiri.
+
+4) Prevent decl_tag from being referenced in func_proto, from Stanislav.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Peter Zijlstra (Intel), Stanislav Fomichev, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 0326074ff4652329f2a1a9c8685104576bd8d131:
+
+  Merge tag 'net-next-6.1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2022-10-04 13:38:03 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git for-netdev
+
+for you to fetch changes up to bed54aeb6ac1ced7e0ea27a82ee52af856610ff0:
+
+  Merge branch 'Wait for busy refill_work when destroying bpf memory allocator' (2022-10-21 19:17:38 -0700)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'Wait for busy refill_work when destroying bpf memory allocator'
+
+Andrii Nakryiko (1):
+      Merge branch 'Allow bpf_user_ringbuf_drain() callbacks to return 1'
+
+David Vernet (2):
+      bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
+      selftests/bpf: Make bpf_user_ringbuf_drain() selftest callback return 1
+
+Hou Tao (2):
+      bpf: Wait for busy refill_work when destroying bpf memory allocator
+      bpf: Use __llist_del_all() whenever possbile during memory draining
+
+Jiri Olsa (1):
+      bpf: Fix dispatcher patchable function entry to 5 bytes nop
+
+Stanislav Fomichev (2):
+      selftests/bpf: Add reproducer for decl_tag in func_proto return type
+      bpf: prevent decl_tag from being referenced in func_proto
+
+ arch/x86/net/bpf_jit_comp.c                            | 13 +++++++++++++
+ include/linux/bpf.h                                    | 14 +++++++++++++-
+ kernel/bpf/btf.c                                       |  5 +++++
+ kernel/bpf/dispatcher.c                                |  6 ++++++
+ kernel/bpf/memalloc.c                                  | 18 ++++++++++++++++--
+ kernel/bpf/verifier.c                                  |  1 +
+ tools/testing/selftests/bpf/prog_tests/btf.c           | 13 +++++++++++++
+ .../testing/selftests/bpf/progs/user_ringbuf_success.c |  4 ++--
+ 8 files changed, 69 insertions(+), 5 deletions(-)
