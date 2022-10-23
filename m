@@ -2,224 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA7860961C
-	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 22:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E9760966F
+	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 23:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiJWU05 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Oct 2022 16:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S229476AbiJWVPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Oct 2022 17:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbiJWU04 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Oct 2022 16:26:56 -0400
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C5B65833
-        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 13:26:55 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id cr19so4742716qtb.0
-        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 13:26:55 -0700 (PDT)
+        with ESMTP id S229514AbiJWVPE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Oct 2022 17:15:04 -0400
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489182D749
+        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 14:15:01 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id z30so5126673qkz.13
+        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 14:15:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P7NF/JTBVvhYG97Hu9R/Oakvp86/brX9k5Ls8pxwqbk=;
-        b=smM/Fsy0MlJfji3mjzVQlGunQaOM9SVVOWP0cszqS8nbNMPzp13taNaMuZZvt3ZLdO
-         JBRCXjfntn6OqhS88klNTt5e9LR1COXtu3xc7WSAFeI24ve1SsKlQOekSa/cSYuDQwe3
-         gzHHeOQmr6is5l6IaS16cz9nNqLJtu6Nu3wYe5LUNF9nsEq9u7mZv5PzOAWYM4JGF6Mx
-         C+pGywIhgAdIfHDnQgj769ey7OpG4pZ0EGg6UwYXHv5Wv3+33RArXEirLHvfoZ97gWlY
-         A3Lfl+zrpvkyQmBS9HUF6P7R8gjH6y91Rg7kPEiY95Wxd/GhPsy0INW+TIdO0eKPJxRt
-         O3ww==
-X-Gm-Message-State: ACrzQf2M1alAY/tm9jHrnLuzmrexunmxZBTZcjKxT/RGhkteDKOfbJzx
-        qjBGL4QOxLfzaj7Rl2B1Ejk=
-X-Google-Smtp-Source: AMsMyM6+24vx61NeQfgClBmLTeaPoSZbJhq3rgdK3nPJuRbTnQiEm7CE/koex+kyd4GmHhJzKhkxTQ==
-X-Received: by 2002:a05:622a:13ce:b0:39c:c82a:4584 with SMTP id p14-20020a05622a13ce00b0039cc82a4584mr24888367qtk.150.1666556814464;
-        Sun, 23 Oct 2022 13:26:54 -0700 (PDT)
+        bh=ZtCyNe5+veWJWOQdiEqGla+wTM8Rc0m2Kv1/n778etM=;
+        b=LagJvmX0ot46lfyHbDQLNciAOKxv3R1AN+7D8jS7FoFYGNbpo2/LGjUlGN0gJMhmM/
+         ljevSYQ3IuuqS6B3EkptgKGucti/Spl6qPP42TDxviF3KOERIZM86wRk8vZCG+VlL77w
+         6q9zLpWUDLADF5a0vuy2YakOcuzSt/ZPj+EbbqB6gb8uq5WbyMZFTRnCHYSsWa7iKCGT
+         HGe/30ILTuNbv6Z+jzoaECSNUbv31mb/Dqp0SJPpKh1IHTEeJ8WegF+tvHyRh2t0h65U
+         eeHm0uGIB1ZfIkGSkvTSvpfRMDFeoWnrduitQ6fkH4kJ3RYpPhlpfN+1lwEDOMKEngLQ
+         ZTxA==
+X-Gm-Message-State: ACrzQf3sDlRenEgJU12JXiRcPThh9WTIxwuPJSvjdv7k+7+C2oUQ2trc
+        YUSQUTLMH1WYPdCtFZdlavo=
+X-Google-Smtp-Source: AMsMyM6VwdLn3RrrThPeYZ3kWs4hLa8/Jw2q87R5+vgqdCDYos6xmHiKjB/3rRYGJr9avejzKF1frQ==
+X-Received: by 2002:a05:620a:16d5:b0:6ec:52ab:e8bd with SMTP id a21-20020a05620a16d500b006ec52abe8bdmr20324302qkn.424.1666559700050;
+        Sun, 23 Oct 2022 14:15:00 -0700 (PDT)
 Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::3f58])
-        by smtp.gmail.com with ESMTPSA id cg15-20020a05622a408f00b0039c37a7914csm11552331qtb.23.2022.10.23.13.26.52
+        by smtp.gmail.com with ESMTPSA id i8-20020a05620a248800b006bb0f9b89cfsm14331181qkn.87.2022.10.23.14.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Oct 2022 13:26:53 -0700 (PDT)
-Date:   Sun, 23 Oct 2022 15:26:48 -0500
+        Sun, 23 Oct 2022 14:14:58 -0700 (PDT)
+Date:   Sun, 23 Oct 2022 16:14:53 -0500
 From:   David Vernet <void@manifault.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         KP Singh <kpsingh@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v4 7/7] docs/bpf: Add documentation for new
- cgroup local storage
-Message-ID: <Y1WjiCg9dZmPs+J2@maniforge.dhcp.thefacebook.com>
-References: <20221023180514.2857498-1-yhs@fb.com>
- <20221023180552.2864330-1-yhs@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/6] bpf: Implement cgroup storage available
+ to non-cgroup-attached bpf progs
+Message-ID: <Y1WuzQxNExrOX8Xv@maniforge.dhcp.thefacebook.com>
+References: <20221020221255.3553649-1-yhs@fb.com>
+ <20221020221306.3554250-1-yhs@fb.com>
+ <Y1IsqVB2H7kksOh8@maniforge.dhcp.thefacebook.com>
+ <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
+ <Y1L5oZdzn3kxZL+G@maniforge.dhcp.thefacebook.com>
+ <c815edb6-b008-07f4-2377-17b53ccdc289@meta.com>
+ <Y1NdLah/c38isGT+@maniforge.dhcp.thefacebook.com>
+ <95ff1fa3-124b-6886-64e0-adcf40085e55@meta.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221023180552.2864330-1-yhs@fb.com>
+In-Reply-To: <95ff1fa3-124b-6886-64e0-adcf40085e55@meta.com>
 User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 23, 2022 at 11:05:52AM -0700, Yonghong Song wrote:
-> Add some descriptions and examples for BPF_MAP_TYPE_CGRP_STROAGE.
-
-s/STROAGE/STORAGE here and elsewhere
-
-> Also illustate the major difference between BPF_MAP_TYPE_CGRP_STROAGE
-> and BPF_MAP_TYPE_CGROUP_STORAGE and recommend to use
-> BPF_MAP_TYPE_CGRP_STROAGE instead of BPF_MAP_TYPE_CGROUP_STORAGE
-> in the end.
+On Sun, Oct 23, 2022 at 09:45:35AM -0700, Yonghong Song wrote:
+> > > > > > > +	 * could be modifying the local_storage->list now.
+> > > > > > > +	 * Thus, no elem can be added-to or deleted-from the
+> > > > > > > +	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> > > > > > > +	 *
+> > > > > > > +	 * It is racing with bpf_local_storage_map_free() alone
+> > > > > > > +	 * when unlinking elem from the local_storage->list and
+> > > > > > > +	 * the map's bucket->list.
+> > > > > > > +	 */
+> > > > > > > +	bpf_cgrp_storage_lock();
+> > > > > > > +	raw_spin_lock_irqsave(&local_storage->lock, flags);
+> > > > > > > +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> > > > > > > +		bpf_selem_unlink_map(selem);
+> > > > > > > +		free_cgroup_storage =
+> > > > > > > +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
+> > > > > > 
+> > > > > > This still requires a comment explaining why it's OK to overwrite
+> > > > > > free_cgroup_storage with a previous value from calling
+> > > > > > bpf_selem_unlink_storage_nolock(). Even if that is safe, this looks like
+> > > > > > a pretty weird programming pattern, and IMO doing this feels more
+> > > > > > intentional and future-proof:
+> > > > > > 
+> > > > > > if (bpf_selem_unlink_storage_nolock(local_storage, selem, false, false))
+> > > > > > 	free_cgroup_storage = true;
+> > > > > 
+> > > > > We have a comment a few lines below.
+> > > > >     /* free_cgroup_storage should always be true as long as
+> > > > >      * local_storage->list was non-empty.
+> > > > >      */
+> > > > >     if (free_cgroup_storage)
+> > > > > 	kfree_rcu(local_storage, rcu);
+> > > > 
+> > > > IMO that comment doesn't provide much useful information -- it states an
+> > > > assumption, but doesn't give a reason for it.
+> > > > 
+> > > > > I will add more explanation in the above code like
+> > > > > 
+> > > > > 	bpf_selem_unlink_map(selem);
+> > > > > 	/* If local_storage list only have one element, the
+> > > > > 	 * bpf_selem_unlink_storage_nolock() will return true.
+> > > > > 	 * Otherwise, it will return false. The current loop iteration
+> > > > > 	 * intends to remove all local storage. So the last iteration
+> > > > > 	 * of the loop will set the free_cgroup_storage to true.
+> > > > > 	 */
+> > > > > 	free_cgroup_storage =
+> > > > > 		bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
+> > > > 
+> > > > Thanks, this is the type of comment I was looking for.
+> > > > 
+> > > > Also, I realize this was copy-pasted from a number of other possible
+> > > > locations in the codebase which are doing the same thing, but I still
+> > > > think this pattern is an odd and brittle way to do this. We're relying
+> > > > on an abstracted implementation detail of
+> > > > bpf_selem_unlink_storage_nolock() for correctness, which IMO is a signal
+> > > > that bpf_selem_unlink_storage_nolock() should probably be the one
+> > > > invoking kfree_rcu() on behalf of callers in the first place.  It looks
+> > > > like all of the callers end up calling kfree_rcu() on the struct
+> > > > bpf_local_storage * if bpf_selem_unlink_storage_nolock() returns true,
+> > > > so can we just move the responsibility of freeing the local storage
+> > > > object down into bpf_selem_unlink_storage_nolock() where it's unlinked?
+> > > 
+> > > We probably cannot do this. bpf_selem_unlink_storage_nolock()
+> > > is inside the rcu_read_lock() region. We do kfree_rcu() outside
+> > > the rcu_read_lock() region.
+> > 
+> > kfree_rcu() is non-blocking and is safe to invoke from within an RCU
+> > read region. If you invoke it within an RCU read region, the object will
+> > not be kfree'd until (at least) you exit the current read region, so I
+> > believe that the net effect here should be the same whether it's done in
+> > bpf_selem_unlink_storage_nolock(), or in the caller after the RCU read
+> > region is exited.
 > 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  Documentation/bpf/map_cgrp_storage.rst | 109 +++++++++++++++++++++++++
->  1 file changed, 109 insertions(+)
->  create mode 100644 Documentation/bpf/map_cgrp_storage.rst
-> 
-> diff --git a/Documentation/bpf/map_cgrp_storage.rst b/Documentation/bpf/map_cgrp_storage.rst
-> new file mode 100644
-> index 000000000000..4dfc7770da7e
-> --- /dev/null
-> +++ b/Documentation/bpf/map_cgrp_storage.rst
-> @@ -0,0 +1,109 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Meta Platforms, Inc. and affiliates.
-> +
-> +===========================
-> +BPF_MAP_TYPE_CGRP_STORAGE
-> +===========================
+> Okay. we probably still want to do kfree_rcu outside
+> bpf_selem_unlink_storage_nolock() as the function is to unlink storage
+> for a particular selem.
 
-Small nit, can you trim the == border so it matches the width of
-BPF_MAP_TYPE_CGRP_STORAGE?
+Meaning, it's for unlinking a specific element rather than the whole
+list, so it's not the right place to free the larger struct
+bpf_local_storage * container? If that's your point (and please clarify
+if it's not and I'm misunderstanding) then I agree that's true, but
+unfortunately whether the API likes it or not, it's tied itself to the
+lifetime of the larger struct bpf_local_storage * by returning a bool
+that says whether the caller needs to free that local storage pointer.
+AFAICT, with the current API / implementation, if the caller drops this
+value on the floor, the struct bpf_local_storage * is leaked, which
+means that it's a leaky API.
 
-> +
-> +The ``BPF_MAP_TYPE_CGRP_STORAGE`` map type represents a local fix-sized
-> +storage for cgroups. It is only available with ``CONFIG_CGROUP_BPF``.
+That being said, I think I agree with you that just moving kfree_rcu()
+into bpf_selem_unlink_storage_nolock() may not be appropriate, but
+overall it feels like this pattern / API has room for improvement.
+The fact that the (now) only three callers of this function have
+copy-pasted code that's doing the exact same thing to free the is local
+storage object is in my opinion a testament to that.
 
-This is no longer accurate and should say, "It is only available with
-``CONFIG_CGROUPS``."
+Anyways, none of that needs to block this patch set. I acked this in
+your latest version, but I think this should be cleaned up by someone in
+the near future; certainly before we add another local storage variant.
 
-> +The programs are made available by the same Kconfig. The
-> +data for a particular cgroup can be retrieved by looking up the map
-> +with that cgroup.
-> +
-> +This document describes the usage and semantics of the
-> +``BPF_MAP_TYPE_CGRP_STORAGE`` map type.
-> +
-> +Usage
-> +=====
-> +
-> +The map key must be ``sizeof(int)`` representing a cgroup fd.
-> +To access the storage in a program, use ``bpf_cgrp_storage_get``::
-> +
-> +    void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgroup, void *value, u64 flags)
-> +
-> +``flags`` could be 0 or ``BPF_LOCAL_STORAGE_GET_F_CREATE`` which indicates that
-> +a new local storage will be created if one does not exist.
-> +
-> +The local storage can be removed with ``bpf_cgrp_storage_delete``::
-> +
-> +    long bpf_cgrp_storage_delete(struct bpf_map *map, struct cgroup *cgroup)
-> +
-> +The map is available to all program types.
-> +
-> +Examples
-> +========
-> +
-> +A bpf program example with BPF_MAP_TYPE_CGRP_STORAGE::
-> +
-> +    #include <vmlinux.h>
-> +    #include <bpf/bpf_helpers.h>
-> +    #include <bpf/bpf_tracing.h>
-> +
-> +    struct {
-> +            __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
-> +            __uint(map_flags, BPF_F_NO_PREALLOC);
-> +            __type(key, int);
-> +            __type(value, long);
-> +    } cgrp_storage SEC(".maps");
-> +
-> +    SEC("tp_btf/sys_enter")
-> +    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-> +    {
-> +            struct task_struct *task = bpf_get_current_task_btf();
-> +            long *ptr;
-> +
-> +            ptr = bpf_cgrp_storage_get(&cgrp_storage, task->cgroups->dfl_cgrp, 0,
-> +                                       BPF_LOCAL_STORAGE_GET_F_CREATE);
-> +            if (ptr)
-> +                __sync_fetch_and_add(ptr, 1);
-> +
-> +            return 0;
-> +    }
-> +
-> +Userspace accessing map declared above::
-> +
-> +    #include <linux/bpf.h>
-> +    #include <linux/libbpf.h>
-> +
-> +    __u32 map_lookup(struct bpf_map *map, int cgrp_fd)
-> +    {
-> +            __u32 *value;
-> +            value = bpf_map_lookup_elem(bpf_map__fd(map), &cgrp_fd);
-> +            if (value)
-> +                return *value;
-> +            return 0;
-> +    }
-> +
-> +Difference Between BPF_MAP_TYPE_CGRP_STORAGE and BPF_MAP_TYPE_CGROUP_STORAGE
-> +============================================================================
-> +
-> +The old cgroup storage map ``BPF_MAP_TYPE_CGROUP_STORAGE`` has been marked as
-> +deprecated (renamed to ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``). The new
-> +``BPF_MAP_TYPE_CGRP_STORAGE`` map should be used instead. The following
-> +illusates the main difference between ``BPF_MAP_TYPE_CGRP_STORAGE`` and
-> +``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``.
-> +
-> +(1). ``BPF_MAP_TYPE_CGRP_STORAGE`` can be used by all program types while
-> +     ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` is available only to cgroup program types
-> +     like BPF_CGROUP_INET_INGRESS or BPF_CGROUP_SOCK_OPS, etc.
-> +
-> +(2). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports local storage for more than one
-> +     cgroup while ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` only support one cgroup
+> We could move
+> 	if (free_cgroup_storage)
+> 		kfree_rcu(local_storage, rcu);
+> immediately after hlist_for_each_entry_safe() loop.
+> But I think putting that 'if' statement after rcu_read_unlock() is
+> slightly better as it will not increase the code inside the lock region.
 
-s/only support/only supports
+Yeah, if it's not abstracted by the bpf_local_storage APIs, it might as
+well just be freed outside of the critical section.
 
-> +     which is attached by a bpf program.
-> +
-> +(3). ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` allocates local storage at attach time so
-> +     ``bpf_get_local_storage()`` always returns non-NULL local storage.
-> +     ``BPF_MAP_TYPE_CGRP_STORAGE`` allocates local storage at runtime so
-> +     it is possible that ``bpf_cgrp_storage_get()`` may return null local storage.
-> +     To avoid such null local storage issue, user space can do
-> +     ``bpf_map_update_elem()`` to pre-allocate local storage before a bpf program
-> +     is attached.
-> +
-> +(4). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports deleting local storage by a bpf program
-> +     while ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` only deletes storage during
-> +     prog detach time.
-> +
-> +So overall, ``BPF_MAP_TYPE_CGRP_STORAGE`` supports all ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``
-> +functionality and beyond. It is recommended to use ``BPF_MAP_TYPE_CGRP_STORAGE``
-> +instead of ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``.
-> -- 
-> 2.30.2
-> 
-
-One more thought / consideration which you can of course feel free to
-ignore. If we're using the acronym "bpf" in documentation (acronym
-meaning it's used on its own rather than e.g. in a variable name), IMO
-we should capitalize it to "BPF". Very minor thing, but I think it makes
-the docs look a bit more polished. Up to you, and not a big deal either
-way.
-
-Anyways, this looks great, thanks again for writing it up! Everything I
-pointed out was a minor typo / fix so:
-
-Acked-by: David Vernet <void@manifault.com>
+Thanks,
+David
