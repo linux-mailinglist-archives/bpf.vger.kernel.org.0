@@ -2,74 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6116090A6
-	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 03:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09E36090A9
+	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 03:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiJWBQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Oct 2022 21:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        id S229761AbiJWBTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Oct 2022 21:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiJWBQo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Oct 2022 21:16:44 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D551DFAD;
-        Sat, 22 Oct 2022 18:16:43 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r14so19194910edc.7;
-        Sat, 22 Oct 2022 18:16:43 -0700 (PDT)
+        with ESMTP id S229588AbiJWBTD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Oct 2022 21:19:03 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4077C1F8;
+        Sat, 22 Oct 2022 18:19:02 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id a67so19163199edf.12;
+        Sat, 22 Oct 2022 18:19:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LTUZ9ZfhQbY7Sl8R6nldBu8JmbFhh7EdT+zCO2E+5ps=;
-        b=bdSs8MvSxoUmwaOBI4QxUSfvezkQc71r4WZp6UV/ufhwfqzuKmfDjF18HEe9DZ4u4e
-         9+4wt8LSaJbtDHyIlLHGJxWO2j4r8HMf8O5fglTTdsWsHNYvLTv84z7WehCjbc4OTjlF
-         DBZ8WSBc3AYVpEx3G0YfSylDOC3sMqPj46wzlA+dS0j30wxqpUbkTPsaszVsqr5yy1ph
-         BwW+H7gKOMhxM+TLzKyYAr0TBmXEsKTAGVretmRHu18/f0ZAIlv5P1JFT8+H/8DHB6OV
-         Aipm2fK0VofY7GtiwF1Ffb+NCKd1kvyrTyZDIn1sjqPt7StKuKdnYKFknuK8b88EP/sF
-         QnkQ==
+        bh=RoTU0umGQVEZvhAClaxNh7Mk1tT8X/VlHXj38H74iSI=;
+        b=VC9et0qMuGTPQ4IflUlCn5HUN9nPdCTCy01doLtRhBpN3C6lTOZDKFMemaH2jLGyqd
+         w4emN5KnPePivXoymosyP41Oc+MtGPR1Fwlx0EHkCPGfITG0KSvq39F5maKYJKVdVA/R
+         zd0vfjIyks8k7B7ECVQOirM+8xyYymgs8YzruoJ7LHKE8FDJCsxKq3Elk5/oN43xrvNP
+         cCR6K/aggDvSnORrIa7sFvWNrauQR9Y+hglhUo8X5VGC8qxzFmavQIecY/2zxZWKxh4v
+         0bNhJyOvn2OVsxuRllNpJTs3FjI86nPPMccdM3JjPDM2iIQLXc7A5QOcQ6OWwI+knCdD
+         8jCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LTUZ9ZfhQbY7Sl8R6nldBu8JmbFhh7EdT+zCO2E+5ps=;
-        b=UoQjId5Br/xUzENQp3+YysambMHCLpGMtZWbrXMx7xDPnO9ShAIglAJry4gqovZJr+
-         T80ybJKuoIdbioFT5saPSrFnFAtmuXahfZA5Mz8kA34EGXyECOP4gm7MRScf8L71IOWb
-         OY2N351Z7bOFtcJbM475JGe91+akzmdwNOPtF9aFCTK3Fwd+cFT94kRJox8bc63JzDnP
-         Rir+HEQhiGsAJfJ6GNcM23AZSB56RcU3gK5cKGW2dJfpOdVXPsAWng3TVjLtVMH83+wZ
-         yBlG94aOR8mN8GiL162ChpM9EaxQZcKhS8WcNl3Gpu8kZH4fbldMnDjX8VbQqax9w8ci
-         YsBA==
-X-Gm-Message-State: ACrzQf3lhd56DonkgDs5NlHLg7s6GSGN6PcWnROHJ7xlvjb0RzAFohjr
-        8TiRPgy9C5WBEg9FHxUMvipwuZuYyRzfFi/wRgU=
-X-Google-Smtp-Source: AMsMyM7W9mwyxrQBNyBxmxqcWF5O05K7nSV5ti/ZFgJfecgA/RE3ZudX5sg7pwkHJR8gvWHZmhCaqdFGvJO8UT40tRU=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr24624897edb.333.1666487801784; Sat, 22
- Oct 2022 18:16:41 -0700 (PDT)
+        bh=RoTU0umGQVEZvhAClaxNh7Mk1tT8X/VlHXj38H74iSI=;
+        b=2HLsxOkHXIzfe6l9U7qnrJzx8YHcpRDS06g16STfD9pT/3SSJZ1i6xPuY0Bcz+ilNn
+         k3WLuY/PCIh5oIqvh78t3o20tFgVAfW06B7uICXLDSiwBzo+cYaPYxxQcVqNGfH7XCbg
+         3Ic1tqjDnStcAmt8d0NQP6X55GU9ggC5W9R83MLMHD8JPZTf/F8gQiXB3pCjW4H0NVa+
+         N+v4sIL5en1MHo6Q1wj7B5CGZpGVAdyRgnwFW3Vn1cd34LoZ05ZpUh7Cud3hdbXOpdO7
+         uEyMOJiZH2a0di1tLqEQHpShNc4aLG5Z3+MaFmpsK6/XEpbWqWoTqbZd6P8J46t6xdV6
+         Jvlg==
+X-Gm-Message-State: ACrzQf3qathhJabLChU2O8wh5cFzyTZZE/YIJBHJeCcMnBmOOGxTp0bU
+        nOpkOfHkBA/E+Vs29zhVdGECEVr3/L3snOWQxHM=
+X-Google-Smtp-Source: AMsMyM6LJKt5F9wxw/SiSYElodduNKYvIxrmHZ05o2BoMzJiOhAbDl+8j7cnTgVLRf6q7h9BXlub/MOIeEzG/3kM64M=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr22119631ejb.633.1666487940665; Sat, 22
+ Oct 2022 18:19:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <Yz8lbkx3HYQpnvIB@krava> <20221007081327.1047552-1-sumanthk@linux.ibm.com>
- <Yz/1QNGfO39Y7dOJ@krava> <Y0BDWK7cl83Fkwqz@hirez.programming.kicks-ass.net>
- <CAADnVQJ0ur6Pox9aTjoSkXs43strqN__e1h4JWya46WOER9V4w@mail.gmail.com> <CAADnVQ+gquOKjo68ryUhpw4nQYoQzpUYJhdA2e6Wfqs=_oHV8g@mail.gmail.com>
-In-Reply-To: <CAADnVQ+gquOKjo68ryUhpw4nQYoQzpUYJhdA2e6Wfqs=_oHV8g@mail.gmail.com>
+References: <20221004072522.319cd826@kernel.org> <Yz1SSlzZQhVtl1oS@krava>
+ <20221005084442.48cb27f1@kernel.org> <20221005091801.38cc8732@kernel.org>
+ <Yz3kHX4hh8soRjGE@krava> <20221013080517.621b8d83@kernel.org>
+ <Y0iNVwxTJmrddRuv@krava> <CAEf4Bzbow+8-f4rg2LRRRUD+=1wbv1MjpAh-P4=smUPtrzfZ3Q@mail.gmail.com>
+ <Y0kF/radV0cg4JYk@krava> <CAEf4BzZm2ViaHKiR+4pmWj6yzcPy23q-g_e+cJ90sXuDzkLmSw@mail.gmail.com>
+ <Y1MQVbq2rjH/zPi2@krava> <20221021223612.42ba3122@kernel.org>
+In-Reply-To: <20221021223612.42ba3122@kernel.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 22 Oct 2022 18:16:30 -0700
-Message-ID: <CAADnVQKj5B1nfkQTSTrSCPq+TQU_SD22F7uG7Carks8oVi8=aQ@mail.gmail.com>
-Subject: bpf+perf is still broken. Was: [PATCH] bpf: fix sample_flags for bpf_perf_event_output
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 22 Oct 2022 18:18:49 -0700
+Message-ID: <CAADnVQKUSfGUM5WBsbAN00rDO9hKHnMFdEin7MbW4an03W3jGg@mail.gmail.com>
+Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        bpf <bpf@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        X86 ML <x86@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,74 +74,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Another 2 days have passed and the fix is still not in the Linus's tree.
-
-Peter,
-whatever your excuse is for not sending tip:perf/urgent
-this is not acceptable.
-
-Linus,
-
-please apply this fix directly:
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=perf/urgent&id=21da7472a040420f2dc624ffec70291a72c5d6a6
-
-or suggest the course of action.
-
-It sucked to have such a breakage in rc1 and we don't want rc2
-to stay broken.
-
-Thanks
-
-On Thu, Oct 20, 2022 at 6:36 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Oct 21, 2022 at 10:38 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> Peter,
->
-> Another 2 days have passed and bpf side is still broken
-> due to the change that went during the merge window without
-> corresponding fix from the bpf side.
-> Looks like the patch is sitting in tip:perf/urgent.
-> Please send it to Linus asap.
->
-> We're not sending bpf fixes to avoid breaking bpf tree too.
-> We've worked around the issue in bpf CI for bpf-next tree only.
-> Developers still see failures when they run tests locally.
->
-> On Tue, Oct 18, 2022 at 9:57 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Oct 7, 2022 at 8:31 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> On Fri, 21 Oct 2022 23:34:13 +0200 Jiri Olsa wrote:
+> > > You are right, they should be identical once PTR is deduplicated
+> > > properly. Sorry, was too quick to jump to conclusions. I was thinking
+> > > about situations explained by Alan.
 > > >
-> > > On Fri, Oct 07, 2022 at 11:45:36AM +0200, Jiri Olsa wrote:
-> > > > On Fri, Oct 07, 2022 at 10:13:27AM +0200, Sumanth Korikkar wrote:
-> > > > > * Raw data is also filled by bpf_perf_event_output.
-> > > > > * Add sample_flags to indicate raw data.
-> > > > > * This eliminates the segfaults as shown below:
-> > > > >   Run ./samples/bpf/trace_output
-> > > > >   BUG pid 9 cookie 1001000000004 sized 4
-> > > > >   BUG pid 9 cookie 1001000000004 sized 4
-> > > > >   BUG pid 9 cookie 1001000000004 sized 4
-> > > > >   Segmentation fault (core dumped)
-> > > > >
-> > > > > Fixes: 838d9bb62d13 ("perf: Use sample_flags for raw_data")
-> > > > > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > > > > Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> > > >
-> > > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > >
-> > > > Peter,
-> > > > I think this should go through your tree again?
-> > > > bpf-next/master does not have sample_flags merged yet
+> > > So, is this still an issue or this was fixed by [0]?
 > > >
-> > > Yep can do. I'll line it up in perf/urgent (Ingo just send out
-> > > perf/core).
+> > >   [0] https://lore.kernel.org/bpf/1666364523-9648-1-git-send-email-alan.maguire@oracle.com/
 > >
-> > Peter,
+> > yes, it seems to be fixed by that
 > >
-> > Could you please hurry up. 11 days have passed.
-> >
-> > This issue affects everyone the hard way now after merging
-> > all the trees: tip -> linus -> net-next -> bpf-next.
-> > The BPF CI is red right now with 5 tests failing because
-> > this fix is still missing.
-> > It's causing a headache to maintainers and developers.
+> > Jakub,
+> > could you check with pahole fix [1]?
+>
+> If you mean the warning from the subject then those do seem to be gone.
+> But if I'm completely honest I don't remember how I triggered them in
+> the first place :S There weren't there on every build for me.
+>
+> The objtool warning is still here:
+>
+> $ make PAHOLE=~/pahole O=build_allmodconfig/ -j 60 >/tmp/stdout 2>/tmp/stderr; \
+>     cat /tmp/stderr
+>
+> vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
+> vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0xa0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
+
+The effect of the compiler bug was addressed by this fix:
+https://lore.kernel.org/all/20221018075934.574415-1-jolsa@kernel.org/
+
+It's in the bpf tree, but the warning will stay.
+While the compiler is broken the objtool should keep complaining.
