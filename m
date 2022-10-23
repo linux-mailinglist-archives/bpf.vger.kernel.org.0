@@ -2,184 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E9760966F
-	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 23:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F6260974F
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 01:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiJWVPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Oct 2022 17:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        id S229619AbiJWXgh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Oct 2022 19:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiJWVPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Oct 2022 17:15:04 -0400
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489182D749
-        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 14:15:01 -0700 (PDT)
-Received: by mail-qk1-f182.google.com with SMTP id z30so5126673qkz.13
-        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 14:15:01 -0700 (PDT)
+        with ESMTP id S229608AbiJWXgg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Oct 2022 19:36:36 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7C65C9C9;
+        Sun, 23 Oct 2022 16:36:35 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y12so5131369edc.9;
+        Sun, 23 Oct 2022 16:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pUumQOe9bJsMEPG18mOM6dqw1ZwD1MCcqdns6DdBtO8=;
+        b=HMACr+fvuZCReaF06SqU2f4GapjMr3hfNCibM02+aUHWYvkEJbulK2g64NoHN2lAbA
+         g0Okm/inJ88ut5H4fsqjKHQN0QCb6VhfQbzhJIbTPBIBmdCWunGb1ZSxISnMVkydseWq
+         IMRKBDiYAFJlf9CMgAe6kVpnTw7qqvmg1uN33pVdlRvtg9YOTHWUNV7Iyx4xQrWuayJA
+         XobixWm1Bi/XdZ8x3jvM9yZmEEwC5ePZmlSNlvl03BZbBJfDpE80ZqNGoZgocot76cdI
+         soGf6kEEPP6PIPfdLk4v0NU4uaU5EjYdmU0eqywtDkmirAS/GFcjxcUqVAf5Q7Bc87WW
+         ZQxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZtCyNe5+veWJWOQdiEqGla+wTM8Rc0m2Kv1/n778etM=;
-        b=LagJvmX0ot46lfyHbDQLNciAOKxv3R1AN+7D8jS7FoFYGNbpo2/LGjUlGN0gJMhmM/
-         ljevSYQ3IuuqS6B3EkptgKGucti/Spl6qPP42TDxviF3KOERIZM86wRk8vZCG+VlL77w
-         6q9zLpWUDLADF5a0vuy2YakOcuzSt/ZPj+EbbqB6gb8uq5WbyMZFTRnCHYSsWa7iKCGT
-         HGe/30ILTuNbv6Z+jzoaECSNUbv31mb/Dqp0SJPpKh1IHTEeJ8WegF+tvHyRh2t0h65U
-         eeHm0uGIB1ZfIkGSkvTSvpfRMDFeoWnrduitQ6fkH4kJ3RYpPhlpfN+1lwEDOMKEngLQ
-         ZTxA==
-X-Gm-Message-State: ACrzQf3sDlRenEgJU12JXiRcPThh9WTIxwuPJSvjdv7k+7+C2oUQ2trc
-        YUSQUTLMH1WYPdCtFZdlavo=
-X-Google-Smtp-Source: AMsMyM6VwdLn3RrrThPeYZ3kWs4hLa8/Jw2q87R5+vgqdCDYos6xmHiKjB/3rRYGJr9avejzKF1frQ==
-X-Received: by 2002:a05:620a:16d5:b0:6ec:52ab:e8bd with SMTP id a21-20020a05620a16d500b006ec52abe8bdmr20324302qkn.424.1666559700050;
-        Sun, 23 Oct 2022 14:15:00 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::3f58])
-        by smtp.gmail.com with ESMTPSA id i8-20020a05620a248800b006bb0f9b89cfsm14331181qkn.87.2022.10.23.14.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Oct 2022 14:14:58 -0700 (PDT)
-Date:   Sun, 23 Oct 2022 16:14:53 -0500
-From:   David Vernet <void@manifault.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Implement cgroup storage available
- to non-cgroup-attached bpf progs
-Message-ID: <Y1WuzQxNExrOX8Xv@maniforge.dhcp.thefacebook.com>
-References: <20221020221255.3553649-1-yhs@fb.com>
- <20221020221306.3554250-1-yhs@fb.com>
- <Y1IsqVB2H7kksOh8@maniforge.dhcp.thefacebook.com>
- <a9f1be39-4f8e-3f33-f3e0-368f3beec1a8@meta.com>
- <Y1L5oZdzn3kxZL+G@maniforge.dhcp.thefacebook.com>
- <c815edb6-b008-07f4-2377-17b53ccdc289@meta.com>
- <Y1NdLah/c38isGT+@maniforge.dhcp.thefacebook.com>
- <95ff1fa3-124b-6886-64e0-adcf40085e55@meta.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pUumQOe9bJsMEPG18mOM6dqw1ZwD1MCcqdns6DdBtO8=;
+        b=fA5ixp8BmtyYCkw/EgycbGs/Ahl8lpjsjG5leOgp6GhIgvUnA/85iPvLBpwLtaWwBL
+         7nJ/F+OqeVwk6IQZ85ZZxTXk7GkuuvTdAjMt43xnIrHuVHyxRbKdHZUvjTd0Teq628GV
+         hSfOc2cnY3XzYtVJdl0N/guM+p4tTu6ClISqQY8cC/sX9t8w+mTYqa5XGi29oFYk3k0s
+         QBTWMyivzYsGu9SVagRhrVr7te92cSZNco3Y8ftlLcPWBEQBDfxea0ATYmw8YU3j8cqf
+         fbO4bXJ9P4fh5hMVuIWNiB3aKt/3hNPwuddPxsVc7kZoQ5ZXLOyAPAeK5GGFnJrvImoy
+         t6PQ==
+X-Gm-Message-State: ACrzQf1QMlu1NVjoqhuxqH/Az5O0C1ne4y/BCGh5ynH5hnUHEstwsETt
+        qublHEn2GOfRLEDwk9N1sN15LkAvo01WQ8FtVTk=
+X-Google-Smtp-Source: AMsMyM5nQLkNgE5RCfp+uYGuEJRhE6OfnHkWFNph6cLrHR3UPibU2wiAiX/3/U5tt+x+rLDrcEOULsaPjV2tozbTki8=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr25463636ejb.633.1666568194070; Sun, 23
+ Oct 2022 16:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95ff1fa3-124b-6886-64e0-adcf40085e55@meta.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 23 Oct 2022 16:36:22 -0700
+Message-ID: <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from bpf_lsm_inode_init_security()
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nicolas.bouchinet@clip-os.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 23, 2022 at 09:45:35AM -0700, Yonghong Song wrote:
-> > > > > > > +	 * could be modifying the local_storage->list now.
-> > > > > > > +	 * Thus, no elem can be added-to or deleted-from the
-> > > > > > > +	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
-> > > > > > > +	 *
-> > > > > > > +	 * It is racing with bpf_local_storage_map_free() alone
-> > > > > > > +	 * when unlinking elem from the local_storage->list and
-> > > > > > > +	 * the map's bucket->list.
-> > > > > > > +	 */
-> > > > > > > +	bpf_cgrp_storage_lock();
-> > > > > > > +	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> > > > > > > +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > > > > > > +		bpf_selem_unlink_map(selem);
-> > > > > > > +		free_cgroup_storage =
-> > > > > > > +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
-> > > > > > 
-> > > > > > This still requires a comment explaining why it's OK to overwrite
-> > > > > > free_cgroup_storage with a previous value from calling
-> > > > > > bpf_selem_unlink_storage_nolock(). Even if that is safe, this looks like
-> > > > > > a pretty weird programming pattern, and IMO doing this feels more
-> > > > > > intentional and future-proof:
-> > > > > > 
-> > > > > > if (bpf_selem_unlink_storage_nolock(local_storage, selem, false, false))
-> > > > > > 	free_cgroup_storage = true;
-> > > > > 
-> > > > > We have a comment a few lines below.
-> > > > >     /* free_cgroup_storage should always be true as long as
-> > > > >      * local_storage->list was non-empty.
-> > > > >      */
-> > > > >     if (free_cgroup_storage)
-> > > > > 	kfree_rcu(local_storage, rcu);
-> > > > 
-> > > > IMO that comment doesn't provide much useful information -- it states an
-> > > > assumption, but doesn't give a reason for it.
-> > > > 
-> > > > > I will add more explanation in the above code like
-> > > > > 
-> > > > > 	bpf_selem_unlink_map(selem);
-> > > > > 	/* If local_storage list only have one element, the
-> > > > > 	 * bpf_selem_unlink_storage_nolock() will return true.
-> > > > > 	 * Otherwise, it will return false. The current loop iteration
-> > > > > 	 * intends to remove all local storage. So the last iteration
-> > > > > 	 * of the loop will set the free_cgroup_storage to true.
-> > > > > 	 */
-> > > > > 	free_cgroup_storage =
-> > > > > 		bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
-> > > > 
-> > > > Thanks, this is the type of comment I was looking for.
-> > > > 
-> > > > Also, I realize this was copy-pasted from a number of other possible
-> > > > locations in the codebase which are doing the same thing, but I still
-> > > > think this pattern is an odd and brittle way to do this. We're relying
-> > > > on an abstracted implementation detail of
-> > > > bpf_selem_unlink_storage_nolock() for correctness, which IMO is a signal
-> > > > that bpf_selem_unlink_storage_nolock() should probably be the one
-> > > > invoking kfree_rcu() on behalf of callers in the first place.  It looks
-> > > > like all of the callers end up calling kfree_rcu() on the struct
-> > > > bpf_local_storage * if bpf_selem_unlink_storage_nolock() returns true,
-> > > > so can we just move the responsibility of freeing the local storage
-> > > > object down into bpf_selem_unlink_storage_nolock() where it's unlinked?
-> > > 
-> > > We probably cannot do this. bpf_selem_unlink_storage_nolock()
-> > > is inside the rcu_read_lock() region. We do kfree_rcu() outside
-> > > the rcu_read_lock() region.
-> > 
-> > kfree_rcu() is non-blocking and is safe to invoke from within an RCU
-> > read region. If you invoke it within an RCU read region, the object will
-> > not be kfree'd until (at least) you exit the current read region, so I
-> > believe that the net effect here should be the same whether it's done in
-> > bpf_selem_unlink_storage_nolock(), or in the caller after the RCU read
-> > region is exited.
-> 
-> Okay. we probably still want to do kfree_rcu outside
-> bpf_selem_unlink_storage_nolock() as the function is to unlink storage
-> for a particular selem.
+On Fri, Oct 21, 2022 at 9:57 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> BPF LSM allows security modules to directly attach to the security hooks,
+> with the potential of not meeting the kernel expectation.
+>
+> This is the case for the inode_init_security hook, for which the kernel
+> expects that name and value are set if the hook implementation returns
+> zero.
+>
+> Consequently, not meeting the kernel expectation can cause the kernel to
+> crash. One example is evm_protected_xattr_common() which expects the
+> req_xattr_name parameter to be always not NULL.
 
-Meaning, it's for unlinking a specific element rather than the whole
-list, so it's not the right place to free the larger struct
-bpf_local_storage * container? If that's your point (and please clarify
-if it's not and I'm misunderstanding) then I agree that's true, but
-unfortunately whether the API likes it or not, it's tied itself to the
-lifetime of the larger struct bpf_local_storage * by returning a bool
-that says whether the caller needs to free that local storage pointer.
-AFAICT, with the current API / implementation, if the caller drops this
-value on the floor, the struct bpf_local_storage * is leaked, which
-means that it's a leaky API.
+Sounds like a bug in evm_protected_xattr_common.
 
-That being said, I think I agree with you that just moving kfree_rcu()
-into bpf_selem_unlink_storage_nolock() may not be appropriate, but
-overall it feels like this pattern / API has room for improvement.
-The fact that the (now) only three callers of this function have
-copy-pasted code that's doing the exact same thing to free the is local
-storage object is in my opinion a testament to that.
+> Introduce a level of indirection in BPF LSM, for the inode_init_security
+> hook, to check the validity of the name and value set by security modules.
 
-Anyways, none of that needs to block this patch set. I acked this in
-your latest version, but I think this should be cleaned up by someone in
-the near future; certainly before we add another local storage variant.
+Doesn't make sense.
+You probably meant security_old_inode_init_security,
+because the hook without _old_ doesn't have such args:
+int security_inode_init_security(struct inode *inode, struct inode *dir,
+                                 const struct qstr *qstr,
+                                 initxattrs initxattrs, void *fs_data);
 
-> We could move
-> 	if (free_cgroup_storage)
-> 		kfree_rcu(local_storage, rcu);
-> immediately after hlist_for_each_entry_safe() loop.
-> But I think putting that 'if' statement after rcu_read_unlock() is
-> slightly better as it will not increase the code inside the lock region.
+> Encapsulate bpf_lsm_inode_init_security(), the existing attachment point,
+> with bpf_inode_init_security(), the new function. After the attachment
+> point is called, return -EOPNOTSUPP if the xattr name is not set, -ENOMEM
+> if the xattr value is not set.
+>
+> As the name still cannot be set, rely on future patches to the eBPF
+> verifier or introducing new kfuncs/helpers to ensure its correctness.
+>
+> Finally, as proposed by Nicolas, update the LSM hook documentation for the
+> inode_init_security hook, to reflect the current behavior (only the xattr
+> value is allocated).
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 520b7aa00d8cd ("bpf: lsm: Initialize the BPF LSM hooks")
+> Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  include/linux/lsm_hooks.h |  4 ++--
+>  security/bpf/hooks.c      | 25 +++++++++++++++++++++++++
+>  2 files changed, 27 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index 4ec80b96c22e..f44d45f4737f 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -229,8 +229,8 @@
+>   *     This hook is called by the fs code as part of the inode creation
+>   *     transaction and provides for atomic labeling of the inode, unlike
+>   *     the post_create/mkdir/... hooks called by the VFS.  The hook function
+> - *     is expected to allocate the name and value via kmalloc, with the caller
+> - *     being responsible for calling kfree after using them.
+> + *     is expected to allocate the value via kmalloc, with the caller
+> + *     being responsible for calling kfree after using it.
 
-Yeah, if it's not abstracted by the bpf_local_storage APIs, it might as
-well just be freed outside of the critical section.
+must be an obsolete comment.
 
-Thanks,
-David
+>   *     If the security module does not use security attributes or does
+>   *     not wish to put a security attribute on this particular inode,
+>   *     then it should return -EOPNOTSUPP to skip this processing.
+> diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+> index e5971fa74fd7..492c07ba6722 100644
+> --- a/security/bpf/hooks.c
+> +++ b/security/bpf/hooks.c
+> @@ -6,11 +6,36 @@
+>  #include <linux/lsm_hooks.h>
+>  #include <linux/bpf_lsm.h>
+>
+> +static int bpf_inode_init_security(struct inode *inode, struct inode *dir,
+> +                                  const struct qstr *qstr, const char **name,
+> +                                  void **value, size_t *len)
+> +{
+> +       int ret;
+> +
+> +       ret = bpf_lsm_inode_init_security(inode, dir, qstr, name, value, len);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * As the name cannot be set by the eBPF programs directly, eBPF will
+> +        * be responsible for its correctness through the verifier or
+> +        * appropriate kfuncs/helpers.
+> +        */
+> +       if (name && !*name)
+> +               return -EOPNOTSUPP;
+
+bpf cannot write into such pointers.
+It won't be able to use kfuncs to kmalloc and write into them either.
+None of it makes sense to me.
+
+> +
+> +       if (value && !*value)
+> +               return -ENOMEM;
+> +
+> +       return 0;
+> +}
+> +
+>  static struct security_hook_list bpf_lsm_hooks[] __lsm_ro_after_init = {
+>         #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+>         LSM_HOOK_INIT(NAME, bpf_lsm_##NAME),
+>         #include <linux/lsm_hook_defs.h>
+>         #undef LSM_HOOK
+> +       LSM_HOOK_INIT(inode_init_security, bpf_inode_init_security),
+>         LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
+>         LSM_HOOK_INIT(task_free, bpf_task_storage_free),
+>  };
+> --
+> 2.25.1
+>
