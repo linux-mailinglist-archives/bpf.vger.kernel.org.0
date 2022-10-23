@@ -2,97 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF61609529
-	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 19:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D9E60954D
+	for <lists+bpf@lfdr.de>; Sun, 23 Oct 2022 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbiJWR2V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Oct 2022 13:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        id S230261AbiJWSF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Oct 2022 14:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiJWR2U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Oct 2022 13:28:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1156475CFC;
-        Sun, 23 Oct 2022 10:28:20 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id z97so23467385ede.8;
-        Sun, 23 Oct 2022 10:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVWc790angtkQLF3fvax2L6R8j2vNS1XJ9vbYZVbDv4=;
-        b=peGjirtDcnlNcdDuScg2tol+8JiSx9kdtJ1+e33/080oTqd7ZdPebtPGucjeGL8wkl
-         wz5SvUde/y8DWSxc2IssQIsGK9eDEQZ9+CygfnCe78Mf1aRR0lawn9RGH6utnMazyEQ8
-         er5gbgmdofGaTGMj03Qt/oa2SnOX+E/zfBGlgJlG208eBFWjY+XevAHNjCuhRtb27nj4
-         ebuo2GDcJC2kLLWl+uw/F8MC04qzm7g90RMn+h0TXAYmXbGHpe4p6wFowxNAOXxGjgO0
-         GxK6T+2KBvorDgVvAfqoNCfUUkltSoLEPOxoz1zNPmJefuG3VekhtODUsnQH2IDptQRZ
-         Hjzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QVWc790angtkQLF3fvax2L6R8j2vNS1XJ9vbYZVbDv4=;
-        b=qExfQiK1YkdR/wp1+QMJAo4MvfBJKzrnTLL6q/RB7VikOC61V3MosC2hlvSE9Ey6a4
-         //q5VKYCfWgu/BcwA+Y/TMTAEDC8KTHlW4hKbyNey0FtlZsLdVmJSt84ACPKywVaOwmA
-         25xS4JMRudi0PVVaRrfRzCK0FgAtmbrn50bCTnmSCTLB8AOEkW9wcXTXzzU6YJiXZPUC
-         TknreDjGBMNvqBAu5Ni/X+ti/c1AWfgPkE6DE1HYX2mEDSmRWirXQhyn73o37aAeHXkM
-         KzXrTDYnjeovxjqtpPf2oDBTOdz3aXAmqrVut+NdRvsCMQbSY8bkQoI1khNL9o4XBfWm
-         KuZA==
-X-Gm-Message-State: ACrzQf2ma8IEFzzbc8HOfRGFaNFC13ZYdMvHtRC5p5/+STvzbZwT5l6D
-        DLRcOORyo30fanPNytCKSPeLEj2Gv94k/RZTSXHhWtpT
-X-Google-Smtp-Source: AMsMyM4oJJ7cEV2AawxeGzXMam6ZePJlu8jev37tQywnD3fQnX72pVBzTeVJkXFR1gXmz+1YlHDe4y5wCGQSbvcumAg=
-X-Received: by 2002:aa7:c6c1:0:b0:460:f684:901a with SMTP id
- b1-20020aa7c6c1000000b00460f684901amr16492125eds.6.1666546098448; Sun, 23 Oct
- 2022 10:28:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <Yz8lbkx3HYQpnvIB@krava> <20221007081327.1047552-1-sumanthk@linux.ibm.com>
- <Yz/1QNGfO39Y7dOJ@krava> <Y0BDWK7cl83Fkwqz@hirez.programming.kicks-ass.net>
- <CAADnVQJ0ur6Pox9aTjoSkXs43strqN__e1h4JWya46WOER9V4w@mail.gmail.com>
- <CAADnVQ+gquOKjo68ryUhpw4nQYoQzpUYJhdA2e6Wfqs=_oHV8g@mail.gmail.com>
- <CAADnVQKj5B1nfkQTSTrSCPq+TQU_SD22F7uG7Carks8oVi8=aQ@mail.gmail.com>
- <CAHk-=wh5bT2GPy4EYiPd3Vu+wm9QHmsP38XApFp8qLaup=exfA@mail.gmail.com> <CAHk-=whtjPiiz-wtjAO2AXHNtUwWa6CXk6r0OfPrVTt6KQmYmw@mail.gmail.com>
-In-Reply-To: <CAHk-=whtjPiiz-wtjAO2AXHNtUwWa6CXk6r0OfPrVTt6KQmYmw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 23 Oct 2022 10:28:07 -0700
-Message-ID: <CAADnVQJ9SVHAPGbS+W_0yH0m6r6t5Ropa+WH64g-3tqLphW5WA@mail.gmail.com>
-Subject: Re: bpf+perf is still broken. Was: [PATCH] bpf: fix sample_flags for bpf_perf_event_output
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        bpf <bpf@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        X86 ML <x86@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S230007AbiJWSF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Oct 2022 14:05:26 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3451C104
+        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 11:05:19 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29NFI5T8023220
+        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 11:05:19 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=M+jbRnZiTqBLsXA0J5ETfs1ZNztiCdI1qS1wcWp2fG4=;
+ b=mCT3rRazXmYhh8FrFF7mo/PLTQDtSk6++smA0ijxtgMtNN3dzS2JkIVOwsEEvXbQ+CzZ
+ 8G6FFEvfW630EQOvaPntGSJqZsJJuNDHJYtpEQP6Z0iwMhI8dO+Q1sgZAlyaUMQfMrBr
+ qlxEyT0GnJKgYqT30WX7dQFfVTs6FjLBjUE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3kcc1bb290-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 23 Oct 2022 11:05:18 -0700
+Received: from twshared13931.24.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sun, 23 Oct 2022 11:05:18 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 2E769111596D6; Sun, 23 Oct 2022 11:05:14 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next v4 0/7] bpf: Implement cgroup local storage available to non-cgroup-attached bpf progs
+Date:   Sun, 23 Oct 2022 11:05:14 -0700
+Message-ID: <20221023180514.2857498-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: GlTq_GVkpFMaH7624A1_AwvSPRBKWQik
+X-Proofpoint-ORIG-GUID: GlTq_GVkpFMaH7624A1_AwvSPRBKWQik
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-21_04,2022-10-21_01,2022-06-22_01
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 23, 2022 at 10:20 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Oct 23, 2022 at 9:55 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I have a pull request from Borislav with the fix that came in
-> > overnight, so this should be all fixed in rc2.
->
-> .. and now it has moved from my inbox to my -git tree.
+There already exists a local storage implementation for cgroup-attached
+bpf programs. See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+bpf_get_local_storage(). But there are use cases such that non-cgroup
+attached bpf progs wants to access cgroup local storage data. For example=
+,
+tc egress prog has access to sk and cgroup. It is possible to use
+sk local storage to emulate cgroup local storage by storing data in socke=
+t.
+But this is a waste as it could be lots of sockets belonging to a particu=
+lar
+cgroup. Alternatively, a separate map can be created with cgroup id as th=
+e key.
+But this will introduce additional overhead to manipulate the new map.
+A cgroup local storage, similar to existing sk/inode/task storage,
+should help for this use case.
 
-Great. Thank you.
+This patch implemented new cgroup local storage available to
+non-cgroup-attached bpf programs. In the patch series, Patches 1 and 2
+are preparation patches. Patch 3 implemented new cgroup local storage
+kernel support. Patches 4 and 5 implemented libbpf and bpftool support.
+Patch 6 added two tests to validate kernel/libbpf implementations.
+Patch 7 added documentation for new BPF_MAP_TYPE_CGRP_STORAGE map type
+and comparison of the old and new cgroup local storage maps.
+
+Changelogs:
+  v3 -> v4:
+    . fix a config guarding problem in kernel/cgroup/cgroup.c when
+      cgrp_storage is deleted (CONFIG_CGROUP_BPF =3D> CONFIG_BPF_SYSCALL)=
+.=20
+    . rename selftest from cgroup_local_storage.c to cgrp_local_storage.c
+      so the name can better align with map name.
+    . fix a few misspellings.
+  v2 -> v3:
+    . fix a config caused kernel test complaint.
+    . better description/comments in uapi bpf.h and bpf_cgrp_storage.c.
+    . factor code for better resue for map_alloc/map_free.
+    . improved explanation in map documentation.
+  v1 -> v2:
+    . change map name from BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE to
+      BPF_MAP_TYPE_CGRP_STORAGE.
+    . removed support of sleepable programs.
+    . changed the place of freeing cgrp local storage from put_css_set_lo=
+cked()
+      to css_free_rwork_fn().
+    . added map documentation.
+
+Yonghong Song (7):
+  bpf: Make struct cgroup btf id global
+  bpf: Refactor inode/task/sk storage map_{alloc,free}() for reuse
+  bpf: Implement cgroup storage available to non-cgroup-attached bpf
+    progs
+  libbpf: Support new cgroup local storage
+  bpftool: Support new cgroup local storage
+  selftests/bpf: Add selftests for new cgroup local storage
+  docs/bpf: Add documentation for new cgroup local storage
+
+ Documentation/bpf/map_cgrp_storage.rst        | 109 +++++++
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_local_storage.h             |  11 +-
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/btf_ids.h                       |   1 +
+ include/linux/cgroup-defs.h                   |   4 +
+ include/uapi/linux/bpf.h                      |  50 +++-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_cgrp_storage.c                 | 268 ++++++++++++++++++
+ kernel/bpf/bpf_inode_storage.c                |  15 +-
+ kernel/bpf/bpf_local_storage.c                |  39 ++-
+ kernel/bpf/bpf_task_storage.c                 |  15 +-
+ kernel/bpf/cgroup_iter.c                      |   2 +-
+ kernel/bpf/helpers.c                          |   6 +
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/cgroup/cgroup.c                        |   4 +
+ kernel/trace/bpf_trace.c                      |   4 +
+ net/core/bpf_sk_storage.c                     |  15 +-
+ scripts/bpf_doc.py                            |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/map.c                       |   2 +-
+ tools/include/uapi/linux/bpf.h                |  50 +++-
+ tools/lib/bpf/libbpf.c                        |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/cgrp_local_storage.c       |  92 ++++++
+ .../selftests/bpf/progs/cgrp_local_storage.c  |  88 ++++++
+ .../selftests/bpf/progs/cgrp_ls_recursion.c   |  70 +++++
+ 28 files changed, 813 insertions(+), 60 deletions(-)
+ create mode 100644 Documentation/bpf/map_cgrp_storage.rst
+ create mode 100644 kernel/bpf/bpf_cgrp_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgrp_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgrp_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+
+--=20
+2.30.2
+
