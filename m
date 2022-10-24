@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B667609C4C
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 10:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D065B609C52
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 10:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbiJXISN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 04:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
+        id S229519AbiJXIVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 04:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbiJXIRo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 04:17:44 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAACC645E2
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 01:16:10 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v1so14851263wrt.11
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 01:16:10 -0700 (PDT)
+        with ESMTP id S230389AbiJXIUh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 04:20:37 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C43365016
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 01:18:39 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l14-20020a05600c1d0e00b003c6ecc94285so6408383wms.1
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 01:18:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnwIb7jnvQ/s2Hn8YUmo7wA7qn6+D9ZqE00olLG1oZI=;
-        b=gxmnRgdJOaWIclhqXONAObIgozhrJ5TySwG3wbVApuHm/1ut8V5W7FamnB0t4IWNl7
-         q5plq8dIjvZ0+41mnkxVArmXIW1e5eX8gLVj7AM6LKyjNqwp/s1lzgsSw795+g4iReLk
-         2EEeQ4p68YP7PXJjU5vPehm1loPpP0yxfR16Xvw9WuQjdg81Sz4bk9Cs9icbm6PhCSuY
-         iBg/xKRC3MzTSPokLi/9q98KV9fOfVkFwfyfuDRa4wkqhDtbeVinzaCbkbIcReuFaCqQ
-         lYuaKGlmaaxBEM1rbSFyZ1RJic+B06WTHDD60gJJes0q3v1OXG7WuA2S8k+WdGaUrAnE
-         eoWg==
+        bh=ymsrZRGM/ZJLo4W+q5MQzcab1lYbKfAcdkUqsBlIor0=;
+        b=RAM/Jdhbj7tbCkEVU8+V0q8Tb3FZDr89ylaixBAdGDUVqAx0lk9qeMS0er1gwMI//u
+         MMNiIcoQAaLfGlUU0Z2Wwh8G5zyaYbCMMi32MWguqE6P2T5t3Bc2lUTsp3iAa7unZU3t
+         fqBuLm+UBj3J3vEBJjoswfctDGupg8t3nq+oJN4bdbD0Njg0ytrkNvitifJO2YpExpz2
+         YUFgrRIcSD0q22pQAkLe/5FHaokhnt6bRx0h+9BkYCUc/r5BpnV3AC394L/e3sXo1p7L
+         gdFWDSIZb3XTIsGJhhkOU4KILQFSTmu3wW4AhJ1KAbyNQ8YWL4RSsR9h0zH0wf00D6cI
+         GndA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DnwIb7jnvQ/s2Hn8YUmo7wA7qn6+D9ZqE00olLG1oZI=;
-        b=joQauN9ThQh77wRdEtKZd/i5TqISCQAC8UX75Rk0wB9O8PqhNVW/j/DmiLwGDkZaAV
-         MgOv8FoUi5nq3AJ5mGQXbauIssbpZbbD1s+58Zr+vcUk3V96WdLRUbuwxfjJc8QG6UFe
-         Z02EocV4+DoO1k2apo6s9SXA+zeVaJZZLXW4botPgPZWh3UlZtgXggSrK7H5R0TnSjol
-         dstVbloQjDY+aGyyz69rDRasqBTzGnWfySJ0eQOMLtZl8+STVpGctAMrYpCjrNhdRapm
-         eNdteQaJjdD3lRV6N5jrMH3k+dxWb0eCL4rV945UR1vc/RQTCSK9X0+oi01JJCB6tnHS
-         wNQA==
-X-Gm-Message-State: ACrzQf2glvIq/EqLFvpGVwzOxSQO1FSfs6TH990qotBDx+ccAR6ThtE1
-        52TnvGuKsGQFMV+RABS7EQ814r2B9VnKcQ==
-X-Google-Smtp-Source: AMsMyM7mWMWWqJs+H0s1TYFo1BfM9qMYr0PoqIal1Em4srpgUByuEL8+i+b+yP9V6WpcwrCizhdJKA==
-X-Received: by 2002:a5d:6d07:0:b0:22f:81f9:9c73 with SMTP id e7-20020a5d6d07000000b0022f81f99c73mr22283179wrq.76.1666599362757;
-        Mon, 24 Oct 2022 01:16:02 -0700 (PDT)
+        bh=ymsrZRGM/ZJLo4W+q5MQzcab1lYbKfAcdkUqsBlIor0=;
+        b=qvh8Qf0mgyNzv0XK6by2ED4XMfy9P/aStjiq9nIi5ZqnwN/oS/vy9D+czg3wfLgViH
+         X5Qg3dq2Vj2Nsvko8ia101UjGh/w3y45bzeDN5NI3c/HoPniCVU4q4aUu6QPC987hf35
+         xNhaO3PL6mNlba3aoU9tOhLb2Jwzc4Mj/GGbJAljt50PF+f39fORa8DTpmeo3Yf7sKeL
+         t6GFlYvnV3/1dFjrapEf+3EQblGf0kMEmitZiEI2z30ZeXKdwhgy9Q4DmBTE5qustwaW
+         XcQXp7h44i9GGM74AbSBdzyBGhHGkv9ouPsjZZsOgpFjzkGK1HeMPzRe5k/dUlISfprk
+         bldQ==
+X-Gm-Message-State: ACrzQf2GQNQMfwVamynNu2qE5F9ttOs6Ivcv+kTOD0FEEHz0jcwBN8QS
+        gKiQycw/O6MwMZCJo0dWQdo=
+X-Google-Smtp-Source: AMsMyM7mnByysCDVAXPmf+WEfz+mPGn4ORDbdJAslofLaC+1b1fgbhZro7XwA/3iLus0uh3LGmkPtQ==
+X-Received: by 2002:a05:600c:5024:b0:3c6:e25f:64be with SMTP id n36-20020a05600c502400b003c6e25f64bemr37840615wmr.55.1666599442406;
+        Mon, 24 Oct 2022 01:17:22 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
-        by smtp.gmail.com with ESMTPSA id e16-20020a5d5950000000b0023677e1157fsm650820wri.56.2022.10.24.01.16.01
+        by smtp.gmail.com with ESMTPSA id k12-20020a5d66cc000000b002366a624bd4sm3751676wrw.28.2022.10.24.01.17.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Oct 2022 01:16:02 -0700 (PDT)
+        Mon, 24 Oct 2022 01:17:22 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 24 Oct 2022 10:16:00 +0200
+Date:   Mon, 24 Oct 2022 10:17:20 +0200
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,14 +66,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martynas Pumputis <m@lambda.lt>
 Subject: Re: [PATCHv2 bpf-next 4/8] bpf: Take module reference on
  kprobe_multi link
-Message-ID: <Y1ZJwOR0rLIkGzVa@krava>
+Message-ID: <Y1ZKEAAXkfc+NoKp@krava>
 References: <20221019135621.1480923-1-jolsa@kernel.org>
  <20221019135621.1480923-5-jolsa@kernel.org>
- <CAEf4Bza1p-HZtng4AdAPiV5jbBEstKckWbtAj2aJd2fNqoziZQ@mail.gmail.com>
+ <CAEf4BzY_u=jZ11+qZd0d-4DTzybQV7uFsov2F5+TSnxEsU2Wsw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bza1p-HZtng4AdAPiV5jbBEstKckWbtAj2aJd2fNqoziZQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY_u=jZ11+qZd0d-4DTzybQV7uFsov2F5+TSnxEsU2Wsw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,61 +84,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 03:02:30PM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
-> > +       if (err) {
-> > +               kprobe_multi_put_modules(args.mods, args.mods_cnt);
-> > +               kfree(args.mods);
-> > +               return err;
-> > +       }
-> > +
-> > +       /* or number of modules found if everything is ok. */
-> > +       *mods = args.mods;
-> > +       return args.mods_cnt;
-> > +}
-> > +
-> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> >  {
-> >         struct bpf_kprobe_multi_link *link = NULL;
-> > @@ -2773,10 +2850,25 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
-> >                        bpf_kprobe_multi_cookie_cmp,
-> >                        bpf_kprobe_multi_cookie_swap,
-> >                        link);
-> > +       } else {
-> > +               /*
-> > +                * We need to sort addrs array even if there are no cookies
-> > +                * provided, to allow bsearch in get_modules_for_addrs.
-> > +                */
-> > +               sort(addrs, cnt, sizeof(*addrs),
-> > +                      bpf_kprobe_multi_addrs_cmp, NULL);
-> > +       }
-> > +
-> > +       err = get_modules_for_addrs(&link->mods, addrs, cnt);
-> > +       if (err < 0) {
-> > +               bpf_link_cleanup(&link_primer);
-> > +               return err;
-> >         }
-> > +       link->mods_cnt = err;
+On Fri, Oct 21, 2022 at 03:07:36PM -0700, Andrii Nakryiko wrote:
+> On Wed, Oct 19, 2022 at 6:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> >         err = register_fprobe_ips(&link->fp, addrs, cnt);
-> >         if (err) {
-> > +               kprobe_multi_put_modules(link->mods, link->mods_cnt);
+> > Currently we allow to create kprobe multi link on function from kernel
+> > module, but we don't take the module reference to ensure it's not
+> > unloaded while we are tracing it.
+> >
+> > The multi kprobe link is based on fprobe/ftrace layer which takes
+> > different approach and releases ftrace hooks when module is unloaded
+> > even if there's tracer registered on top of it.
+> >
+> > Adding code that gathers all the related modules for the link and takes
+> > their references before it's attached. All kernel module references are
+> > released after link is unregistered.
+> >
+> > Note that we do it the same way already for trampoline probes
+> > (but for single address).
+> >
+> > Acked-by: Song Liu <song@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c | 92 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 92 insertions(+)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 17ae9e8336db..9a4a2388dff2 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2452,6 +2452,8 @@ struct bpf_kprobe_multi_link {
+> >         unsigned long *addrs;
+> >         u64 *cookies;
+> >         u32 cnt;
+> > +       struct module **mods;
+> > +       u32 mods_cnt;
 > 
-> I don't think bpf_link_cleanup() will free link->mods, you have to do
-> it explicitly here
+> oh, and while we are at it, swap the order so two u32s are tightly packed?
 
-hum, so bpf_link_cleanup sets link->prog to NULL so bpf_link_free
-won't call link->ops->release, but will call link->ops->dealloc,
-so it should be fine AFAICS
+will change
 
+thanks,
 jirka
 
 > 
-> >                 bpf_link_cleanup(&link_primer);
-> >                 return err;
-> >         }
-> > --
-> > 2.37.3
+> >  };
 > >
+> >  struct bpf_kprobe_multi_run_ctx {
+> > @@ -2507,6 +2509,14 @@ static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32
+> >         return err;
+> >  }
+> 
+> [...]
