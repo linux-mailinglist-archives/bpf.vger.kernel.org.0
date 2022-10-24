@@ -2,148 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED3660B8CE
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 21:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C15260B8EF
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 22:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbiJXTyr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 15:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S233740AbiJXT7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 15:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbiJXTyE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 15:54:04 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197D526C1AA
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:18:11 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id a5so19884095edb.11
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZUDyc84xU6t7EyAZemTNQlHNQx48lvkAA1zCdMYbFo=;
-        b=A2VslYbC1GV4AU5OnVSMoBOaJhVBsV1Fr5/3HOYQf7FklZg1RK5cjU5IkUbT7IMexe
-         mxWuV4+0XjvS8JK97GDKYBVKENk6GW164NbzS6nlVe8kXOLlePqj6Odyt9gmZlm3dIgP
-         BXlTUDOopgtPyOSoaPUAT4zpPmO0rLd5jOchPgJr0aOO1CuiXSgIbb+dwNqdbzoVk42W
-         Alzvdpu2oJ3+Q+K9Q1uI/PUuwmdRMP1X1ofGAjzBLI2/9yyyp1y6Jn1fFxgx2VhW4V04
-         t8Rn6Iz5fMJHRI1qPbMHb4qNeSGj/ECUpyBT3lrvlXpqVOnUJls2hZZlKAh6WcbGzaso
-         GaPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mZUDyc84xU6t7EyAZemTNQlHNQx48lvkAA1zCdMYbFo=;
-        b=V0Jlm2wXOaslvv/iwKqlasGfHY/TnKzZ9xLoNugqoWt4nESgL933IndwKZgum3MX90
-         Hqw9qkZbUPfeo87GrGKuaIF4hJYPjTbzmNIg/oeiplXeNDtPzoaYH+vyHrX9d0K/5KIT
-         COAFOxb42zK/qVNPTlf0BJZdjdgBsPH1gCXQj9w4986p49Ln0b1RlmxCgaPyFC9cC3kQ
-         JhHR6RluKOlUZ6RveTC2xuaAOKWEHJu4KcnSBlM/9e3M6+sEUeYUrdnRAW5/HZy63NZM
-         gRVcX1q54+lHdpOjRGWGxUG0NSNzaVwT8hbLI2ppLxo1i5UnnRM8526iJfspFNoQDCD5
-         yFLg==
-X-Gm-Message-State: ACrzQf1VjXEB+tyU5OxLhOSSB5LVnc6wofVHUzoqPpoZhptnQWneHS21
-        ZLTiFPXVHekbHRm0e4pRV6LuD4Y9DXN6fyh0pFk=
-X-Google-Smtp-Source: AMsMyM4OoNFOkMJLK61Dz2R6JPHqrpuVRqBB2AnFeLQoDRehI7O8YsCjgPuIuQn46NZx5//M7fUvQGHrx02FDLtL36Q=
-X-Received: by 2002:a50:eb05:0:b0:457:c6f5:5f65 with SMTP id
- y5-20020a50eb05000000b00457c6f55f65mr31228878edp.311.1666635442960; Mon, 24
- Oct 2022 11:17:22 -0700 (PDT)
+        with ESMTP id S234125AbiJXT7I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 15:59:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279AA1A39B;
+        Mon, 24 Oct 2022 11:22:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 82619B811B1;
+        Mon, 24 Oct 2022 18:21:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CC00C433C1;
+        Mon, 24 Oct 2022 18:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666635672;
+        bh=Sm3Otxq+YEJ8aZhxWt0m0arM/JhdPmMSj+3nytYHJPg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XMQN1c1X9aQsv7zPPFiwCfUdRS+ReNyCJNH65bDglHa1ChMUK2NsdLVnef1opyJqp
+         F0HIR01kOpsK6ipb7wzZ2cxeaFUeIyWQo1Lgn/8/u0SJba+SzqdVOPOK+2UwIFdIRK
+         MPxrW1/zqkspUvvHt52N7LfCAsJSLItB3GtL+266XpQSLlh6y2AZ82sAle/kyuLTDq
+         IN+BpZhooTGioB1fi8MqB0M8MWqFDfj7S0XBkL41DEgZfh6MCIQtowJ46VvG/O6h5y
+         /2cJrI9juzr44zVDDQW2TuMz3qU6wqfxDwgO3SogjbP96vhwElUakGQs6YEuJYhCSV
+         jWoyHMbWpOEJg==
+Date:   Mon, 24 Oct 2022 11:21:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using
+ 92168
+Message-ID: <20221024112111.6d8b9c40@kernel.org>
+In-Reply-To: <CAADnVQKUSfGUM5WBsbAN00rDO9hKHnMFdEin7MbW4an03W3jGg@mail.gmail.com>
+References: <20221004072522.319cd826@kernel.org>
+        <Yz1SSlzZQhVtl1oS@krava>
+        <20221005084442.48cb27f1@kernel.org>
+        <20221005091801.38cc8732@kernel.org>
+        <Yz3kHX4hh8soRjGE@krava>
+        <20221013080517.621b8d83@kernel.org>
+        <Y0iNVwxTJmrddRuv@krava>
+        <CAEf4Bzbow+8-f4rg2LRRRUD+=1wbv1MjpAh-P4=smUPtrzfZ3Q@mail.gmail.com>
+        <Y0kF/radV0cg4JYk@krava>
+        <CAEf4BzZm2ViaHKiR+4pmWj6yzcPy23q-g_e+cJ90sXuDzkLmSw@mail.gmail.com>
+        <Y1MQVbq2rjH/zPi2@krava>
+        <20221021223612.42ba3122@kernel.org>
+        <CAADnVQKUSfGUM5WBsbAN00rDO9hKHnMFdEin7MbW4an03W3jGg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20221019135621.1480923-1-jolsa@kernel.org> <20221019135621.1480923-5-jolsa@kernel.org>
- <CAEf4Bza1p-HZtng4AdAPiV5jbBEstKckWbtAj2aJd2fNqoziZQ@mail.gmail.com> <Y1ZJwOR0rLIkGzVa@krava>
-In-Reply-To: <Y1ZJwOR0rLIkGzVa@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 Oct 2022 11:17:10 -0700
-Message-ID: <CAEf4Bza0UXUgsbVvyuK60kkEWjKPOtqnG6OLUXvNsS6nbD=56w@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 4/8] bpf: Take module reference on kprobe_multi link
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 1:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Fri, Oct 21, 2022 at 03:02:30PM -0700, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > > +       if (err) {
-> > > +               kprobe_multi_put_modules(args.mods, args.mods_cnt);
-> > > +               kfree(args.mods);
-> > > +               return err;
-> > > +       }
-> > > +
-> > > +       /* or number of modules found if everything is ok. */
-> > > +       *mods = args.mods;
-> > > +       return args.mods_cnt;
-> > > +}
-> > > +
-> > >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > >  {
-> > >         struct bpf_kprobe_multi_link *link = NULL;
-> > > @@ -2773,10 +2850,25 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
-> > >                        bpf_kprobe_multi_cookie_cmp,
-> > >                        bpf_kprobe_multi_cookie_swap,
-> > >                        link);
-> > > +       } else {
-> > > +               /*
-> > > +                * We need to sort addrs array even if there are no cookies
-> > > +                * provided, to allow bsearch in get_modules_for_addrs.
-> > > +                */
-> > > +               sort(addrs, cnt, sizeof(*addrs),
-> > > +                      bpf_kprobe_multi_addrs_cmp, NULL);
-> > > +       }
-> > > +
-> > > +       err = get_modules_for_addrs(&link->mods, addrs, cnt);
-> > > +       if (err < 0) {
-> > > +               bpf_link_cleanup(&link_primer);
-> > > +               return err;
-> > >         }
-> > > +       link->mods_cnt = err;
-> > >
-> > >         err = register_fprobe_ips(&link->fp, addrs, cnt);
-> > >         if (err) {
-> > > +               kprobe_multi_put_modules(link->mods, link->mods_cnt);
+On Sat, 22 Oct 2022 18:18:49 -0700 Alexei Starovoitov wrote:
+> > If you mean the warning from the subject then those do seem to be gone.
+> > But if I'm completely honest I don't remember how I triggered them in
+> > the first place :S There weren't there on every build for me.
 > >
-> > I don't think bpf_link_cleanup() will free link->mods, you have to do
-> > it explicitly here
->
-> hum, so bpf_link_cleanup sets link->prog to NULL so bpf_link_free
-> won't call link->ops->release, but will call link->ops->dealloc,
-> so it should be fine AFAICS
-
-oh, I completely forgot that bpf_link_free() will be called eventually
-due to fput(primer->file);
-
-so yes, you are right!
-
-Please add my ack for next version, this was the only (non-)issue I found.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->
-> jirka
->
+> > The objtool warning is still here:
 > >
-> > >                 bpf_link_cleanup(&link_primer);
-> > >                 return err;
-> > >         }
-> > > --
-> > > 2.37.3
-> > >
+> > $ make PAHOLE=~/pahole O=build_allmodconfig/ -j 60 >/tmp/stdout 2>/tmp/stderr; \
+> >     cat /tmp/stderr
+> >
+> > vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
+> > vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0xa0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0  
+> 
+> The effect of the compiler bug was addressed by this fix:
+> https://lore.kernel.org/all/20221018075934.574415-1-jolsa@kernel.org/
+> 
+> It's in the bpf tree, but the warning will stay.
+> While the compiler is broken the objtool should keep complaining.
+
+Thanks! I'll stop tracking it
