@@ -2,165 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E304260BBD4
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 23:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7742C60BE67
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 01:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbiJXVPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 17:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
+        id S230435AbiJXXR4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 19:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbiJXVPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 17:15:02 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3011AE286
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 12:20:34 -0700 (PDT)
-Message-ID: <dba4c448-ae08-f665-8723-c83c4d2fb98f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1666639151;
+        with ESMTP id S230486AbiJXXRh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 19:17:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51102E16D5
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 14:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666647481;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/yJV29KX24qrAO/LArfIVxhCLoYYUOUuWbD5557Fipc=;
-        b=Wf2s3j3boPTDISjs/WDdTOMrAXWT4SKEAFKOMiCiKvEyevpcoJQ00zkzC7rVtx4IfI7qPV
-        BalP4SFVVg5vuWpWqbNGAE6XyBM/tC0KVoHCYAYiloHpyC0bObSya11iMkvNxPz9xvnsEb
-        7zIe80wiz9AopfaB1Isw3Rhoebm2A2A=
-Date:   Mon, 24 Oct 2022 12:19:04 -0700
+        bh=S479Dg5sGBB/fotobSx8FUYeDMB6rzD4KGpjRiYIypU=;
+        b=PGHRlIM3cKv7Lw+xP14/jmNPAZpm/FOPMpsVqVPdlbvEx/vltCKDs4Jo2v/bsavFXae+L1
+        nNaJioo0me/i594WTJnPhSL5gE0FyuQmFtyxz+b/ejiNcG8F92uf/4eaDE/a0xZeuPIe/s
+        960sBZWkoJ9JywnzR4OC0vEjzjiiRtM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-631-MzdgXj4bN16idrTrtdChOw-1; Mon, 24 Oct 2022 08:01:21 -0400
+X-MC-Unique: MzdgXj4bN16idrTrtdChOw-1
+Received: by mail-qv1-f70.google.com with SMTP id mi12-20020a056214558c00b004bb63393567so1707124qvb.21
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 05:01:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S479Dg5sGBB/fotobSx8FUYeDMB6rzD4KGpjRiYIypU=;
+        b=tvjYl3ps9jubAJknERTM/Kx0zRZaDQ8YKX/1zaSE8nuWcCLYNezsO0gQ9UZrcrSs2t
+         3fevT2OqOza/TyLWccarxjSbF013slx3wx7f42x/EWlL7FUVG0WzmRQp09jLFpd4m664
+         RZh/4c4JuOJme2HFlXT4+3kZJRN7HNs+6NmeQPD0oh67AbWMDWpod2GPHoGi8CNiNXfq
+         cdiSdNpsLuBfDdOj+udb8Bl5NcklADmxRHLNsVy2txQ2CVs6LRwgkLNvxMURkFj7qCPa
+         YxFu7Nm77T+lBu8L5BrDPuy3PfIMWvlaZV+kQ4hxU5biRgD26Pbu6sJ42clge3awhN3U
+         RvUg==
+X-Gm-Message-State: ACrzQf0Pn2Kj5IpBz+CiYpe/LV1HiI+FhK5vWhvQ2xiXVd4HdbSrD6Go
+        O2JQ7ypt4jcHb47gqD+Pimwtpsf9ofBhq8WQGnxCpFSJXmIKaRbIGgZpnN7UF5sOLeV7oCE6md9
+        1gTMvxspSh3+B
+X-Received: by 2002:a05:620a:e8c:b0:6ee:7820:fa2a with SMTP id w12-20020a05620a0e8c00b006ee7820fa2amr22489997qkm.624.1666612877734;
+        Mon, 24 Oct 2022 05:01:17 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7KE6ew29KXR0Yrcpgq8GHmp20ZfeVaOu2QH8p9svifokSCKl53ptU3FYBwzp+lDhOeLp64IQ==
+X-Received: by 2002:a05:620a:e8c:b0:6ee:7820:fa2a with SMTP id w12-20020a05620a0e8c00b006ee7820fa2amr22489966qkm.624.1666612877404;
+        Mon, 24 Oct 2022 05:01:17 -0700 (PDT)
+Received: from [192.168.0.4] ([78.19.70.238])
+        by smtp.gmail.com with ESMTPSA id fz24-20020a05622a5a9800b0039cc0fbdb61sm12708997qtb.53.2022.10.24.05.01.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Oct 2022 05:01:16 -0700 (PDT)
+Message-ID: <aa5f3e2e-10d2-ac78-187e-9aed94b11c0c@redhat.com>
+Date:   Mon, 24 Oct 2022 13:01:15 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Implement cgroup storage available
- to non-cgroup-attached bpf progs
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [PATCH bpf-next v8 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     dave@dtucker.co.uk
+References: <20221021142259.18093-1-donald.hunter@gmail.com>
+ <20221021142259.18093-2-donald.hunter@gmail.com>
 Content-Language: en-US
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org
-References: <20221023180514.2857498-1-yhs@fb.com>
- <20221023180530.2860453-1-yhs@fb.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221023180530.2860453-1-yhs@fb.com>
+From:   Maryam Tahhan <mtahhan@redhat.com>
+In-Reply-To: <20221021142259.18093-2-donald.hunter@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/23/22 11:05 AM, Yonghong Song wrote:
-> +void bpf_cgrp_storage_free(struct cgroup *cgroup)
-> +{
-> +	struct bpf_local_storage *local_storage;
-> +	struct bpf_local_storage_elem *selem;
-> +	bool free_cgroup_storage = false;
-> +	struct hlist_node *n;
-> +	unsigned long flags;
-> +
-> +	rcu_read_lock();
-> +	local_storage = rcu_dereference(cgroup->bpf_cgrp_storage);
-> +	if (!local_storage) {
-> +		rcu_read_unlock();
-> +		return;
-> +	}
-> +
-> +	/* Neither the bpf_prog nor the bpf_map's syscall
-> +	 * could be modifying the local_storage->list now.
-> +	 * Thus, no elem can be added to or deleted from the
-> +	 * local_storage->list by the bpf_prog or by the bpf_map's syscall.
-> +	 *
-> +	 * It is racing with __bpf_local_storage_map_free() alone
-> +	 * when unlinking elem from the local_storage->list and
-> +	 * the map's bucket->list.
-> +	 */
-> +	bpf_cgrp_storage_lock();
-> +	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> +		bpf_selem_unlink_map(selem);
-> +		/* If local_storage list has only one element, the
-> +		 * bpf_selem_unlink_storage_nolock() will return true.
-> +		 * Otherwise, it will return false. The current loop iteration
-> +		 * intends to remove all local storage. So the last iteration
-> +		 * of the loop will set the free_cgroup_storage to true.
-> +		 */
-> +		free_cgroup_storage =
-> +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
-> +	}
-> +	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> +	bpf_cgrp_storage_unlock();
-> +	rcu_read_unlock();
-> +
-> +	if (free_cgroup_storage)
-> +		kfree_rcu(local_storage, rcu);
-> +}
+On 21/10/2022 15:22, Donald Hunter wrote:
+> |+.. code-block:: c + + int initialize_array(int fd) + { + int ncpus = 
+> libbpf_num_possible_cpus(); + long values[ncpus]; + __u32 i, j; + int 
+> ret; + + for (i = 0; i < 256 ; i++) { + for (j = 0; j < ncpus; j++) + 
+> values[j] = i; + ret = bpf_map_update_elem(fd, &i, &values, BPF_ANY); + 
+> if (ret < 0) + return ret; + } + + return ret;|
 
-[ ... ]
-
-> +/* *gfp_flags* is a hidden argument provided by the verifier */
-> +BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
-> +	   void *, value, u64, flags, gfp_t, gfp_flags)
-> +{
-> +	struct bpf_local_storage_data *sdata;
-> +
-> +	WARN_ON_ONCE(!bpf_rcu_lock_held());
-> +	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
-> +		return (unsigned long)NULL;
-> +
-> +	if (!cgroup)
-> +		return (unsigned long)NULL;
-> +
-> +	if (!bpf_cgrp_storage_trylock())
-> +		return (unsigned long)NULL;
-> +
-> +	sdata = cgroup_storage_lookup(cgroup, map, true);
-> +	if (sdata)
-> +		goto unlock;
-> +
-> +	/* only allocate new storage, when the cgroup is refcounted */
-> +	if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
-> +	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
-> +		sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map *)map,
-> +						 value, BPF_NOEXIST, gfp_flags);
-> +
-> +unlock:
-> +	bpf_cgrp_storage_unlock();
-> +	return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned long)sdata->data;
-> +}
-
-[ ... ]
-
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 764bdd5fd8d1..32145d066a09 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -5227,6 +5227,10 @@ static void css_free_rwork_fn(struct work_struct *work)
->   	struct cgroup_subsys *ss = css->ss;
->   	struct cgroup *cgrp = css->cgroup;
->   
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	bpf_cgrp_storage_free(cgrp);
-> +#endif
-
-
-After revisiting comment 4bfc0bb2c60e, some of the commit message came to my mind:
-
-" ...... it blocks a possibility to implement
-   the memcg-based memory accounting for bpf objects, because a circular
-   reference dependency will occur. Charged memory pages are pinning the
-   corresponding memory cgroup, and if the memory cgroup is pinning
-   the attached bpf program, nothing will be ever released."
-
-Considering the bpf_map_kzalloc() is used in bpf_local_storage_map.c and it can 
-charge the memcg, I wonder if the cgrp_local_storage will have similar refcnt 
-loop issue here.
-
-If here is the right place to free the cgrp_local_storage() and enough to break 
-this refcnt loop, it will be useful to add some explanation and its 
-consideration in the commit message.
+Reviewed-by: Maryam Tahhan <mtahhan@redhat.com>
 
