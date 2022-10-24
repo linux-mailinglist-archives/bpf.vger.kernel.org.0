@@ -2,89 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C15260B8EF
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 22:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DD260BC23
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 23:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233740AbiJXT7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 15:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
+        id S233502AbiJXV1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 17:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbiJXT7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 15:59:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279AA1A39B;
-        Mon, 24 Oct 2022 11:22:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82619B811B1;
-        Mon, 24 Oct 2022 18:21:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CC00C433C1;
-        Mon, 24 Oct 2022 18:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666635672;
-        bh=Sm3Otxq+YEJ8aZhxWt0m0arM/JhdPmMSj+3nytYHJPg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XMQN1c1X9aQsv7zPPFiwCfUdRS+ReNyCJNH65bDglHa1ChMUK2NsdLVnef1opyJqp
-         F0HIR01kOpsK6ipb7wzZ2cxeaFUeIyWQo1Lgn/8/u0SJba+SzqdVOPOK+2UwIFdIRK
-         MPxrW1/zqkspUvvHt52N7LfCAsJSLItB3GtL+266XpQSLlh6y2AZ82sAle/kyuLTDq
-         IN+BpZhooTGioB1fi8MqB0M8MWqFDfj7S0XBkL41DEgZfh6MCIQtowJ46VvG/O6h5y
-         /2cJrI9juzr44zVDDQW2TuMz3qU6wqfxDwgO3SogjbP96vhwElUakGQs6YEuJYhCSV
-         jWoyHMbWpOEJg==
-Date:   Mon, 24 Oct 2022 11:21:11 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using
- 92168
-Message-ID: <20221024112111.6d8b9c40@kernel.org>
-In-Reply-To: <CAADnVQKUSfGUM5WBsbAN00rDO9hKHnMFdEin7MbW4an03W3jGg@mail.gmail.com>
-References: <20221004072522.319cd826@kernel.org>
-        <Yz1SSlzZQhVtl1oS@krava>
-        <20221005084442.48cb27f1@kernel.org>
-        <20221005091801.38cc8732@kernel.org>
-        <Yz3kHX4hh8soRjGE@krava>
-        <20221013080517.621b8d83@kernel.org>
-        <Y0iNVwxTJmrddRuv@krava>
-        <CAEf4Bzbow+8-f4rg2LRRRUD+=1wbv1MjpAh-P4=smUPtrzfZ3Q@mail.gmail.com>
-        <Y0kF/radV0cg4JYk@krava>
-        <CAEf4BzZm2ViaHKiR+4pmWj6yzcPy23q-g_e+cJ90sXuDzkLmSw@mail.gmail.com>
-        <Y1MQVbq2rjH/zPi2@krava>
-        <20221021223612.42ba3122@kernel.org>
-        <CAADnVQKUSfGUM5WBsbAN00rDO9hKHnMFdEin7MbW4an03W3jGg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234018AbiJXV1E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 17:27:04 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7373FD5C
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 12:33:52 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29OD4Hrr005853;
+        Mon, 24 Oct 2022 14:38:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2022-7-12;
+ bh=9cpMH1m71ldzuy2BaEQjqqU6L77oI7b+JOdZo24w2Dc=;
+ b=IYWi67phW+cF/qyHCo1DSj+RazrFJvoJuthR899STDv1WDRK1U+QJ01vmJzOgUDQ3THW
+ Q3RuaY+qw1sD699X7wkHdcmImC+7khVc2WbSJ+UZnhCIIeuXWr9qRsspSlYPa/h8Z4fr
+ fDJt+zlBznaGMIvwR78i22bUlBEGY7zJJIVxOsm5V2mo6ocWDOS+ZscAGW65xS0qjqLU
+ IXs7z8M/JMe+idfh66Q/QN+yh3euTTsYpgZggwJDoAqzBAMxSfh8U0fNgOL8DbQKDvRR
+ qlHRAoYc6qYyNCXvbavrWhVFHX2NUGndlXIPUUEoXu4fLaOSCJlkp9fI6jkTP3HwnkRY oQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kc6xdurt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Oct 2022 14:38:35 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29OE6EBn017396;
+        Mon, 24 Oct 2022 14:38:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kc6y3wp9k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Oct 2022 14:38:34 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29OEcXb1025436;
+        Mon, 24 Oct 2022 14:38:33 GMT
+Received: from myrouter.uk.oracle.com (dhcp-10-175-174-236.vpn.oracle.com [10.175.174.236])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3kc6y3wp8n-1;
+        Mon, 24 Oct 2022 14:38:33 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     andrii@kernel.org, ast@kernel.org, jolsa@kernel.org
+Cc:     acme@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf] libbpf: btf dedup identical struct test needs check for nested structs/arrays
+Date:   Mon, 24 Oct 2022 15:38:29 +0100
+Message-Id: <1666622309-22289-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-24_04,2022-10-21_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210240089
+X-Proofpoint-GUID: 8KfYJZiY3NtOnvpv54_tQUXP16-jspRO
+X-Proofpoint-ORIG-GUID: 8KfYJZiY3NtOnvpv54_tQUXP16-jspRO
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 22 Oct 2022 18:18:49 -0700 Alexei Starovoitov wrote:
-> > If you mean the warning from the subject then those do seem to be gone.
-> > But if I'm completely honest I don't remember how I triggered them in
-> > the first place :S There weren't there on every build for me.
-> >
-> > The objtool warning is still here:
-> >
-> > $ make PAHOLE=~/pahole O=build_allmodconfig/ -j 60 >/tmp/stdout 2>/tmp/stderr; \
-> >     cat /tmp/stderr
-> >
-> > vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
-> > vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0xa0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0  
-> 
-> The effect of the compiler bug was addressed by this fix:
-> https://lore.kernel.org/all/20221018075934.574415-1-jolsa@kernel.org/
-> 
-> It's in the bpf tree, but the warning will stay.
-> While the compiler is broken the objtool should keep complaining.
+When examining module BTF, it is common to see core kernel structures
+such as sk_buff, net_device duplicated in the module.  After adding
+debug messaging to BTF it turned out that much of the problem
+was down to the identical struct test failing during deduplication;
+sometimes the compiler adds identical structs.  However
+it turns out sometimes that type ids of identical struct members
+can also differ, even when the containing structs are still identical.
 
-Thanks! I'll stop tracking it
+To take an example, for struct sk_buff, debug messaging revealed
+that the identical struct matching was failing for the anon
+struct "headers"; specifically for the first field:
+
+__u8       __pkt_type_offset[0]; /*   128     0 */
+
+Looking at the code in BTF deduplication, we have code that guards
+against the possibility of identical struct definitions, down to
+type ids, and identical array definitions.  However in this case
+we have a struct which is being defined twice but does not have
+identical type ids since each duplicate struct has separate type
+ids for the above array member.   A similar problem (though not
+observed) could occur for struct-in-struct.
+
+The solution is to make the "identical struct" test check members
+not just for matching ids, but to also check if they in turn are
+identical structs or arrays.
+
+The results of doing this are quite dramatic (for some modules
+at least); I see the number of type ids drop from around 10000
+to just over 1000 in one module for example.
+
+For testing use latest pahole or apply [1], otherwise dedups
+can fail for the reasons described there.
+
+Also fix return type of btf_dedup_identical_arrays() as
+suggested by Andrii to match boolean return type used
+elsewhere.
+
+Fixes: efdd3eb8015e ("libbpf: Accommodate DWARF/compiler bug with duplicated structs")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+
+[1] https://lore.kernel.org/bpf/1666364523-9648-1-git-send-email-alan.maguire
+---
+ tools/lib/bpf/btf.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index d88647d..675a0df 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3887,14 +3887,14 @@ static inline __u16 btf_fwd_kind(struct btf_type *t)
+ }
+ 
+ /* Check if given two types are identical ARRAY definitions */
+-static int btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
++static bool btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
+ {
+ 	struct btf_type *t1, *t2;
+ 
+ 	t1 = btf_type_by_id(d->btf, id1);
+ 	t2 = btf_type_by_id(d->btf, id2);
+ 	if (!btf_is_array(t1) || !btf_is_array(t2))
+-		return 0;
++		return false;
+ 
+ 	return btf_equal_array(t1, t2);
+ }
+@@ -3918,7 +3918,9 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
+ 	m1 = btf_members(t1);
+ 	m2 = btf_members(t2);
+ 	for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
+-		if (m1->type != m2->type)
++		if (m1->type != m2->type &&
++		    !btf_dedup_identical_arrays(d, m1->type, m2->type) &&
++		    !btf_dedup_identical_structs(d, m1->type, m2->type))
+ 			return false;
+ 	}
+ 	return true;
+-- 
+1.8.3.1
+
