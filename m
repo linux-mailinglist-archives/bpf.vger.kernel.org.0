@@ -2,75 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C2560B59B
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 20:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B4360B7CC
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 21:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbiJXSd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 14:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S233287AbiJXTde (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 15:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbiJXSdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 14:33:14 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541B710D687
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 10:14:39 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id d142so8252057iof.7
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 10:14:38 -0700 (PDT)
+        with ESMTP id S233332AbiJXTdM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 15:33:12 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82372476C5
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:03:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-360a7ff46c3so97538247b3.12
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W2Q1uYN8Rm6FcSy3035Mz7Vh+RosplwMYx7sBjd+ess=;
-        b=NFv2jWkhdB9WHBOGYKX/JSJYIwoNNJGvxlFNij0Zvmuf4W4mBUB05VWXNrjWsF47nJ
-         y0Kzq+TBhthE7lFCKiJcvrd+T2U5lqYOhf+Dz6RC8nGwiwcrr1uoeDyMuKp62KMrYMag
-         vxN2HmZAbFAICbNvh4D9NRlkk6SBx1nKLfwWy/1d1m2vmeZW9uk65M+Aa209epBVBsw9
-         34ajffHIyLlwF/+cP4vmy2qGc5Ir3+Lu4nOk1VKBv9RmJtVnzbOD8sULIfN/6nKYHHet
-         nBdMliDNG1hLYhci8tvuaay4ZgMyRW65hHmu+G4Z+v+F9A1AarfnforTJN6A1Y8fcbp3
-         OaJA==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1W4COW227y1aljclFVB4DMM0UVXXW3Ga8dwPdHFh004=;
+        b=Ai4e64uWR6Fn6sf8KZrJVl7N1QJ4SSOruj07zkal+UJJ+/elp6Rztzzh7VBceGOiX0
+         4z6CzCpcMAY+ytKlb9nl8wvRjlWrzHZgtgRYTZcp7y89f5KZuY6tlSDKY2wUiraKQVXs
+         sRtk+nkAkcSnD6KsoCcXl7hu03w1uNnSYDIXrrCWOx5pf8W6v4mVV0TYqju37cmYcVhB
+         3hiJa2YPH+dUFLiGfjdFNnkXm2ckCghqJMV/U8lwSVe7UgAkyXDzblFU8l5wg4MUe5wr
+         QxHJB3CwIHTVWPMgu6ky7VoPuD08RPAT0r1aDIUHXDGkfaetfcXtTHRUoFywPXs2M/Uf
+         Xpug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W2Q1uYN8Rm6FcSy3035Mz7Vh+RosplwMYx7sBjd+ess=;
-        b=CB/psl1YsHhnj6DnKYED+l0ju7sOLl6Thd1sGTzRefsPi4Va7fQuFEdTWebMPmQrxC
-         ifw5HymofsrKuChZD5Mfvd+0pBYPXKFY9dhPHvtD7SlGKLJaJ9ziztdz6USc4LhJJr0e
-         3tFHepx/BOhJyvxhx8JyUJPCuNmWaNCl02JG2lMbzfs435EA2NPfszdKM6p2sKk518UK
-         QajxRpKLtPOcTTSEJFffGdw5oMOCwGA9eJ5n25RQFn/0OJ/BAwTotN5QOebo/RFpkDnE
-         Cu5BVKe6PMqtiAOUcU/075ypLualHYU+i3smqaH9ZKxed/qZbPjNpe2GPFqEcb0B7NC5
-         QTog==
-X-Gm-Message-State: ACrzQf2y/Pk8XhMx/P2SfbOzbuV0+qPlwn3dZACZViPafb9V194UoqID
-        2/kNxlIGmj/98PQwPl0ElAHAOrSA0iEeibjXWd9CnA==
-X-Google-Smtp-Source: AMsMyM6C4qQwoOnS4EyFff0ghQtd8QN5RyFBxdENAh838VoZrn/MM/Wx9/MGBG6Mm+Sxt6ioCgbR+lewPuxl24Gcv6M=
-X-Received: by 2002:a05:6602:2a48:b0:6bc:e1c7:797b with SMTP id
- k8-20020a0566022a4800b006bce1c7797bmr21180555iov.131.1666631597614; Mon, 24
- Oct 2022 10:13:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221015092448.117563-1-shaozhengchao@huawei.com>
- <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
- <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com> <CAKH8qBtyfS0Otpugn7_ZiG5APA_WTKOVAe1wsFfyaxF-03X=5w@mail.gmail.com>
- <87f67a8c-2fb2-9478-adbb-f55c7a7c94f9@huawei.com> <CAKH8qBsOMxVaemF0Oy=vE1V0vKO8ORUcVGB5YANS3HdKOhVjjw@mail.gmail.com>
- <7ddbf8f4-2b03-223f-4601-add0f7208855@huawei.com>
-In-Reply-To: <7ddbf8f4-2b03-223f-4601-add0f7208855@huawei.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 24 Oct 2022 10:13:06 -0700
-Message-ID: <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is dropped
-To:     shaozhengchao <shaozhengchao@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, oss@lmb.io, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1W4COW227y1aljclFVB4DMM0UVXXW3Ga8dwPdHFh004=;
+        b=oVqBFV15bgyMsGn8dka9tkM9X8eNQzCtQGM0F4X26Y2oYiiB5FsYHk/QIcJ4wJEYP0
+         qd9KG4P2my5Ugh2iH1JJibugfah6Cd60BNaGDOvjPPV4mNUoixMoc0SCWUpzjXBloQjK
+         fVxMXw+eHY6x+Rx35rVcbcb9JEU2mkMXbXxbKxrLUg9hGyqUInUkUs5tvjppLCustd4v
+         2s5g1hp6m7PxHuthOAkTijSwppqRB82NJIKxXXXvCYesXeSdMdBfLNQRk8A1Ppf5gaYU
+         E1O8lRw2A9weHiLKjLoJgDFFo3wRTxD3TUnTFyACB0A5RyBKi72XVWudQgy9tm+PNJ9G
+         o7jQ==
+X-Gm-Message-State: ACrzQf1Kpl03xI4tlPUPV9yakpC/DqeIZ02uTGQQnrq7zaVszplCvZmk
+        6mHPg5bFk9KLpkddRrRt5KdmGBA=
+X-Google-Smtp-Source: AMsMyM5+edUCkiqlB86Nctg+Hv2aZNAeB20G0xodkvYJSik5eECA+ZdKywcqWybGmB6B0UPhQdpNXis=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:c713:0:b0:6ca:203:504f with SMTP id
+ w19-20020a25c713000000b006ca0203504fmr23725194ybe.574.1666634544720; Mon, 24
+ Oct 2022 11:02:24 -0700 (PDT)
+Date:   Mon, 24 Oct 2022 11:02:23 -0700
+In-Reply-To: <20221023180524.2859994-1-yhs@fb.com>
+Mime-Version: 1.0
+References: <20221023180514.2857498-1-yhs@fb.com> <20221023180524.2859994-1-yhs@fb.com>
+Message-ID: <Y1bTL/v1UjyPDWVA@google.com>
+Subject: Re: [PATCH bpf-next v4 2/7] bpf: Refactor inode/task/sk storage
+ map_{alloc,free}() for reuse
+From:   sdf@google.com
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,166 +71,170 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 22, 2022 at 4:36 AM shaozhengchao <shaozhengchao@huawei.com> wr=
-ote:
->
->
->
-> On 2022/10/22 2:16, Stanislav Fomichev wrote:
-> > On Fri, Oct 21, 2022 at 12:25 AM shaozhengchao <shaozhengchao@huawei.co=
-m> wrote:
-> >>
-> >>
-> >>
-> >> On 2022/10/21 1:45, Stanislav Fomichev wrote:
-> >>> On Wed, Oct 19, 2022 at 6:47 PM shaozhengchao <shaozhengchao@huawei.c=
-om> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2022/10/18 0:36, Stanislav Fomichev wrote:
-> >>>>> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawe=
-i.com> wrote:
-> >>>>>>
-> >>>>>> As [0] see, bpf_prog_test_run_skb() should allow user space to for=
-ward
-> >>>>>> 14-bytes packet via BPF_PROG_RUN instead of dropping packet direct=
-ly.
-> >>>>>> So fix it.
-> >>>>>>
-> >>>>>> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d42=
-1232a10013596c0
-> >>>>>>
-> >>>>>> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt=
-_len")
-> >>>>>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> >>>>>> ---
-> >>>>>>     net/bpf/test_run.c | 6 +++---
-> >>>>>>     1 file changed, 3 insertions(+), 3 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> >>>>>> index 13d578ce2a09..aa1b49f19ca3 100644
-> >>>>>> --- a/net/bpf/test_run.c
-> >>>>>> +++ b/net/bpf/test_run.c
-> >>>>>> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff=
- *skb, struct __sk_buff *__skb)
-> >>>>>>     {
-> >>>>>>            struct qdisc_skb_cb *cb =3D (struct qdisc_skb_cb *)skb-=
->cb;
-> >>>>>>
-> >>>>>> -       if (!skb->len)
-> >>>>>> -               return -EINVAL;
-> >>>>>> -
-> >>>>>>            if (!__skb)
-> >>>>>>                    return 0;
-> >>>>>>
-> >>>>>> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *p=
-rog, const union bpf_attr *kattr,
-> >>>>>>            if (IS_ERR(data))
-> >>>>>>                    return PTR_ERR(data);
-> >>>>>>
-> >>>>>> +       if (size =3D=3D ETH_HLEN)
-> >>>>>> +               is_l2 =3D true;
-> >>>>>> +
-> >>>>>
-> >>>>> Don't think this will work? That is_l2 is there to expose proper l2=
-/l3
-> >>>>> skb for specific hooks; we can't suddenly start exposing l2 headers=
- to
-> >>>>> the hooks that don't expect it.
-> >>>>> Does it make sense to start with a small reproducer that triggers t=
-he
-> >>>>> issue first? We can have a couple of cases for
-> >>>>> len=3D0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program=
- that
-> >>>>> redirects to different devices (to trigger dev_is_mac_header_xmit).
-> >>>>>
-> >>>>>
-> >>>> Hi Stanislav:
-> >>>>           Thank you for your review. Is_l2 is the flag of a specific
-> >>>> hook. Therefore, do you mean that if skb->len is equal to 0, just
-> >>>> add the length back?
-> >>>
-> >>> Not sure I understand your question. All I'm saying is - you can't
-> >>> flip that flag arbitrarily. This flag depends on the attach point tha=
-t
-> >>> you're running the prog against. Some attach points expect packets
-> >>> with l2, some expect packets without l2.
-> >>>
-> >>> What about starting with a small reproducer? Does it make sense to
-> >>> create a small selftest that adds net namespace + fq_codel +
-> >>> bpf_prog_test run and do redirect ingress/egress with len
-> >>> 0/1...tcphdr? Because I'm not sure I 100% understand whether it's onl=
-y
-> >>> len=3D0 that's problematic or some other combination as well?
-> >>>
-> >> yes, only skb->len =3D 0 will cause null-ptr-deref issue.
-> >> The following is the process of triggering the problem:
-> >> enqueue a skb:
-> >> fq_codel_enqueue()
-> >>          ...
-> >>          idx =3D fq_codel_classify()        --->if idx !=3D 0
-> >>          flow =3D &q->flows[idx];
-> >>          flow_queue_add(flow, skb);       --->add skb to flow[idex]
-> >>          q->backlogs[idx] +=3D qdisc_pkt_len(skb); --->backlogs =3D 0
-> >>          ...
-> >>          fq_codel_drop()                  --->set sch->limit =3D 0, al=
-ways
-> >> drop packets
-> >>                  ...
-> >>                  idx =3D i                  --->becuase backlogs in ev=
-ery
-> >> flows is 0, so idx =3D 0
-> >>                  ...
-> >>                  flow =3D &q->flows[idx];   --->get idx=3D0 flow
-> >>                  ...
-> >>                  dequeue_head()
-> >>                          skb =3D flow->head; --->flow->head =3D NULL
-> >>                          flow->head =3D skb->next; --->cause null-ptr-=
-deref
-> >> So, if skb->len !=3D0=EF=BC=8Cfq_codel_drop() could get the correct id=
-x, and
-> >> then skb!=3DNULL, it will be OK.
-> >> Maybe, I will fix it in fq_codel.
-> >
-> > I think the consensus here is that the stack, in general, doesn't
-> > expect the packets like this. So there are probably more broken things
-> > besides fq_codel. Thus, it's better if we remove the ability to
-> > generate them from the bpf side instead of fixing the individual users
-> > like fq_codel.
-> >
-> >> But, as I know, skb->len =3D 0 is just invalid packet. I prefer to add=
- the
-> >> length back, like bellow:
-> >>          if (is_l2 || !skb->len)
-> >>                  __skb_push(skb, hh_len);
-> >> is it OK?
-> >
-> > Probably not?
-> >
-> > Looking at the original syzkaller report, prog_type is
-> > BPF_PROG_TYPE_LWT_XMIT which does expect a packet without l2 header.
-> > Can we do something like:
-> >
-> > if (!is_l2 && !skb->len) {
-> >    // append some dummy byte to the skb ?
-> > }
-> >
-> >
-> I pad one byte, and test OK.
-> if (!is_l2 && !skb->len)
->      __skb_push(skb, 1);
->
-> Does it look OK to you?
+On 10/23, Yonghong Song wrote:
+> Refactor codes so that inode/task/sk storage map_{alloc,free}
+> can maximally share the same code. There is no functionality change.
 
-Nope, this will eat a byte out of the l2 header. We need to skb_put
-and make sure we allocate enough to make that skb_put succeed.
+Does it make sense to also do following? (see below, untested)
+We aren't saving much code-wise here, but at least we won't have three  
+copies
+of the same long comment.
 
-But stepping back a bit: it feels like it's all unnecessary? The only
-valid use-case of this is probing for the BPF_PROG_TEST_RUN as cilium
-does. This is mostly about testing, so fixing it in the users seems
-fair? No real production code is expected to generate these zero-len
-packets. Or are we concerned that this will leak into stable kernels?
 
-I feel like we are trying to add more complexity here for no apparent reaso=
-n.
+diff --git a/include/linux/bpf_local_storage.h  
+b/include/linux/bpf_local_storage.h
+index 7ea18d4da84b..e4b0b04d081b 100644
+--- a/include/linux/bpf_local_storage.h
++++ b/include/linux/bpf_local_storage.h
+@@ -138,6 +138,8 @@ int bpf_local_storage_map_check_btf(const struct  
+bpf_map *map,
+  				    const struct btf_type *key_type,
+  				    const struct btf_type *value_type);
+
++bool bpf_local_storage_unlink_nolock(struct bpf_local_storage  
+*local_storage);
++
+  void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
+  				   struct bpf_local_storage_elem *selem);
+
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index 5f7683b19199..5313cb0b7181 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -56,11 +56,9 @@ static struct bpf_local_storage_data  
+*inode_storage_lookup(struct inode *inode,
+
+  void bpf_inode_storage_free(struct inode *inode)
+  {
+-	struct bpf_local_storage_elem *selem;
+  	struct bpf_local_storage *local_storage;
+  	bool free_inode_storage = false;
+  	struct bpf_storage_blob *bsb;
+-	struct hlist_node *n;
+
+  	bsb = bpf_inode(inode);
+  	if (!bsb)
+@@ -74,30 +72,11 @@ void bpf_inode_storage_free(struct inode *inode)
+  		return;
+  	}
+
+-	/* Neither the bpf_prog nor the bpf-map's syscall
+-	 * could be modifying the local_storage->list now.
+-	 * Thus, no elem can be added-to or deleted-from the
+-	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+-	 *
+-	 * It is racing with bpf_local_storage_map_free() alone
+-	 * when unlinking elem from the local_storage->list and
+-	 * the map's bucket->list.
+-	 */
+  	raw_spin_lock_bh(&local_storage->lock);
+-	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+-		/* Always unlink from map before unlinking from
+-		 * local_storage.
+-		 */
+-		bpf_selem_unlink_map(selem);
+-		free_inode_storage = bpf_selem_unlink_storage_nolock(
+-			local_storage, selem, false, false);
+-	}
++	free_inode_storage = bpf_local_storage_unlink_nolock(local_storage);
+  	raw_spin_unlock_bh(&local_storage->lock);
+  	rcu_read_unlock();
+
+-	/* free_inoode_storage should always be true as long as
+-	 * local_storage->list was non-empty.
+-	 */
+  	if (free_inode_storage)
+  		kfree_rcu(local_storage, rcu);
+  }
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 9dc6de1cf185..0ea754953242 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -98,6 +98,36 @@ void bpf_local_storage_free_rcu(struct rcu_head *rcu)
+  		kfree_rcu(local_storage, rcu);
+  }
+
++bool bpf_local_storage_unlink_nolock(struct bpf_local_storage  
+*local_storage)
++{
++	struct bpf_local_storage_elem *selem;
++	bool free_storage = false;
++	struct hlist_node *n;
++
++	/* Neither the bpf_prog nor the bpf-map's syscall
++	 * could be modifying the local_storage->list now.
++	 * Thus, no elem can be added-to or deleted-from the
++	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
++	 *
++	 * It is racing with bpf_local_storage_map_free() alone
++	 * when unlinking elem from the local_storage->list and
++	 * the map's bucket->list.
++	 */
++	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
++		/* Always unlink from map before unlinking from
++		 * local_storage.
++		 */
++		bpf_selem_unlink_map(selem);
++		free_storage = bpf_selem_unlink_storage_nolock(
++			local_storage, selem, false, false);
++	}
++
++	/* free_storage should always be true as long as
++	 * local_storage->list was non-empty.
++	 */
++	return free_storage;
++}
++
+  static void bpf_selem_free_rcu(struct rcu_head *rcu)
+  {
+  	struct bpf_local_storage_elem *selem;
+diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+index 6f290623347e..60887c25504b 100644
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -71,10 +71,8 @@ task_storage_lookup(struct task_struct *task, struct  
+bpf_map *map,
+
+  void bpf_task_storage_free(struct task_struct *task)
+  {
+-	struct bpf_local_storage_elem *selem;
+  	struct bpf_local_storage *local_storage;
+  	bool free_task_storage = false;
+-	struct hlist_node *n;
+  	unsigned long flags;
+
+  	rcu_read_lock();
+@@ -85,32 +83,13 @@ void bpf_task_storage_free(struct task_struct *task)
+  		return;
+  	}
+
+-	/* Neither the bpf_prog nor the bpf-map's syscall
+-	 * could be modifying the local_storage->list now.
+-	 * Thus, no elem can be added-to or deleted-from the
+-	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+-	 *
+-	 * It is racing with bpf_local_storage_map_free() alone
+-	 * when unlinking elem from the local_storage->list and
+-	 * the map's bucket->list.
+-	 */
+  	bpf_task_storage_lock();
+  	raw_spin_lock_irqsave(&local_storage->lock, flags);
+-	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+-		/* Always unlink from map before unlinking from
+-		 * local_storage.
+-		 */
+-		bpf_selem_unlink_map(selem);
+-		free_task_storage = bpf_selem_unlink_storage_nolock(
+-			local_storage, selem, false, false);
+-	}
++	free_task_storage = bpf_local_storage_unlink_nolock(local_storage);
+  	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+  	bpf_task_storage_unlock();
+  	rcu_read_unlock();
+
+-	/* free_task_storage should always be true as long as
+-	 * local_storage->list was non-empty.
+-	 */
+  	if (free_task_storage)
+  		kfree_rcu(local_storage, rcu);
+  }
