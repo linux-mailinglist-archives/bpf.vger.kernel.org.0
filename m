@@ -2,169 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 454DB609E27
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 11:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0225F609EC0
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 12:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbiJXJjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 05:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
+        id S231253AbiJXKL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 06:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbiJXJjt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 05:39:49 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B94B167F7
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 02:39:47 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id y12so8689052edc.9
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 02:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSob/wpwRuqflqb3iLshpo2hBXzsESt/go/728dGgK8=;
-        b=qC6F21rcHdEqikV+5dB0ENzstAf8RWJcg3DkPHk4jDZhsZREqaTHs7j7vJ3cTetnPF
-         9vpPY74n99On3nfNnlfFloFrH7BgXmJ/Y2kIwQT9ejEgn1Kxh7UgUEYymiYctvufPua1
-         zrpvaIpqgYSXEug4sqlEuqmos0hyuzQjZAE5I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vSob/wpwRuqflqb3iLshpo2hBXzsESt/go/728dGgK8=;
-        b=jsPClcFMEplQw4+sdoIZ7pK3Vcuhl+I1kLf55UlexgLw7z6kW34Db0EcbMloj9WIO8
-         etfXXOgouk3fPQXPvbXifa6P0asmigdCwnKhCpdpsWt7RdpWGpyXNPxQMWvtxN4kvbX1
-         CeuRzTT8wgLlC6lO4fQQca40hk+zAt/4klq6HnOYWWcn7bibiT8+uwau26Tq9ngOp720
-         grMxfljBO2UMvov1WsRccOwDXhFbBkPeUokVuIRaU47iqofYlv7EDOqate1aKR6z46YQ
-         qe1gSnrt+TEc7YVMhTJ6S9blrJuu64x/ogjxD0u1S7QpnKREk5kxPaQ/GZjgVTdvTaW6
-         cA+g==
-X-Gm-Message-State: ACrzQf3prGCY67gTMeGRzVS9jUDR+THANpQWldMlemiWNMbWqhEApqzF
-        QUKuD78e0YCO2wbEV+s5f2sDow==
-X-Google-Smtp-Source: AMsMyM48KNepC0k/zdSk/Byr9J2IG1zVWhcrFtRJGG4n8Hl6UNJ+pHXmaCW1BFVoJHekkA1++onVyQ==
-X-Received: by 2002:a05:6402:5296:b0:461:b6e5:ea63 with SMTP id en22-20020a056402529600b00461b6e5ea63mr5291974edb.248.1666604385626;
-        Mon, 24 Oct 2022 02:39:45 -0700 (PDT)
-Received: from cloudflare.com (79.191.56.44.ipv4.supernova.orange.pl. [79.191.56.44])
-        by smtp.gmail.com with ESMTPSA id kv2-20020a17090778c200b0077e6be40e4asm15516502ejc.175.2022.10.24.02.39.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Oct 2022 02:39:44 -0700 (PDT)
-References: <Y0csu2SwegJ8Tab+@google.com> <87bkqfigzv.fsf@cloudflare.com>
- <Y0xJUc/LRu8K/Af8@pop-os.localdomain>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     sdf@google.com, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: Lockdep warning after c0feea594e058223973db94c1c32a830c9807c86
-Date:   Mon, 24 Oct 2022 11:36:47 +0200
-In-reply-to: <Y0xJUc/LRu8K/Af8@pop-os.localdomain>
-Message-ID: <87ilk9ftls.fsf@cloudflare.com>
+        with ESMTP id S231287AbiJXKLR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 06:11:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB74548E82;
+        Mon, 24 Oct 2022 03:11:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 62637B810CC;
+        Mon, 24 Oct 2022 10:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F307EC433C1;
+        Mon, 24 Oct 2022 10:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666606216;
+        bh=Wj5xGNUHkLkjRz+Sks+fImmtlPHNGd9XD5LspGPBhOE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=V3MMfCYl1LgYxbKUs55A/7LZjeo6WtpYZJc8ILK/3cG0y8Ru82eKQwuKB/tFPifqc
+         p0ueGRH6CLU612TgaspHvXdevvcrCMqMx1/DsOM3URT5DI7yTujKCQj/7Di0iYuCtn
+         271JfvW6X3wR9HozMIsl9TrwqvE66RLfH+Us8kM8oExEVmQFmWJ61YotyroSjdJ1+c
+         nHsEF7NAwLd1Pu0abI6tN+MWBe0JeuMh9vlGfKTpr2mGpxXFyBhKI3AAd8BLg+Pp73
+         nFMr3vevuFyGhOURga6D2kEHuG52iCAecEP7KCXhGd2OhcWe4Md2KdateJm+q6rxm4
+         eEisR4fGwez5Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D69A8C4166D;
+        Mon, 24 Oct 2022 10:10:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] docs: netdev: offer performance feedback to contributors
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166660621587.6109.10588903646372875602.git-patchwork-notify@kernel.org>
+Date:   Mon, 24 Oct 2022 10:10:15 +0000
+References: <20221020183031.1245964-1-kuba@kernel.org>
+In-Reply-To: <20221020183031.1245964-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, bpf@vger.kernel.org, jesse.brandeburg@intel.com,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 16, 2022 at 11:11 AM -07, Cong Wang wrote:
-> On Thu, Oct 13, 2022 at 10:39:08PM +0200, Jakub Sitnicki wrote:
->> Hi Stan,
->> 
->> On Wed, Oct 12, 2022 at 02:08 PM -07, sdf@google.com wrote:
->> > Hi John & Jakub,
->> >
->> > Upstream commit c0feea594e05 ("workqueue: don't skip lockdep work
->> > dependency in cancel_work_sync()") seems to trigger the following
->> > lockdep warning during test_prog's sockmap_listen:
->> >
->> > [  +0.003631] WARNING: possible circular locking dependency detected
->> 
->> [...]
->> 
->> > Are you ware? Any idea what's wrong?
->> > Is there some stable fix I'm missing in bpf-next?
->> 
->> Thanks for bringing it up. I didn't know.
->> 
->> The mentioned commit doesn't look that fresh
->> 
->> commit c0feea594e058223973db94c1c32a830c9807c86
->> Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
->> Date:   Fri Jul 29 13:30:23 2022 +0900
->> 
->>     workqueue: don't skip lockdep work dependency in cancel_work_sync()
->> 
->> ... but then it just landed not so long ago, which explains things:
->> 
->> $ git describe --contains c0feea594e058223973db94c1c32a830c9807c86 --match 'v*'
->> v6.0-rc7~10^2
->> 
->> I've untangled the call chains leading to the potential dead-lock a
->> bit. There does seem to be a window of opportunity there.
->> 
->> psock->work.func = sk_psock_backlog()
->>   ACQUIRE psock->work_mutex
->>     sk_psock_handle_skb()
->>       skb_send_sock()
->>         __skb_send_sock()
->>           sendpage_unlocked()
->>             kernel_sendpage()
->>               sock->ops->sendpage = inet_sendpage()
->>                 sk->sk_prot->sendpage = tcp_sendpage()
->>                   ACQUIRE sk->sk_lock
->>                     tcp_sendpage_locked()
->>                   RELEASE sk->sk_lock
->>   RELEASE psock->work_mutex
->> 
->> sock_map_close()
->>   ACQUIRE sk->sk_lock
->>   sk_psock_stop()
->>     sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED)
->>     cancel_work_sync()
->>       __cancel_work_timer()
->>         __flush_work()
->>           // wait for psock->work to finish
->>   RELEASE sk->sk_lock
->> 
->> There is no fix I know of. Need to think. Ideas welcome.
->> 
->
-> Thanks for the analysis.
->
-> I wonder if we can simply move this cancel_work_sync() out of sock
-> lock... Something like this:
+Hello:
 
-[...]
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index a660baedd9e7..81beb16ab1eb 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -1596,7 +1596,7 @@ void sock_map_destroy(struct sock *sk)
->  	saved_destroy = psock->saved_destroy;
->  	sock_map_remove_links(sk, psock);
->  	rcu_read_unlock();
-> -	sk_psock_stop(psock, false);
-> +	sk_psock_stop(psock);
->  	sk_psock_put(sk, psock);
->  	saved_destroy(sk);
->  }
-> @@ -1619,9 +1619,10 @@ void sock_map_close(struct sock *sk, long timeout)
->  	saved_close = psock->saved_close;
->  	sock_map_remove_links(sk, psock);
->  	rcu_read_unlock();
-> -	sk_psock_stop(psock, true);
-> -	sk_psock_put(sk, psock);
-> +	sk_psock_stop(psock);
->  	release_sock(sk);
-> +	cancel_work_sync(&psock->work);
-> +	sk_psock_put(sk, psock);
->  	saved_close(sk, timeout);
->  }
->  EXPORT_SYMBOL_GPL(sock_map_close);
+On Thu, 20 Oct 2022 11:30:31 -0700 you wrote:
+> Some of us gotten used to producing large quantities of peer feedback
+> at work, every 3 or 6 months. Extending the same courtesy to community
+> members seems like a logical step. It may be hard for some folks to
+> get validation of how important their work is internally, especially
+> at smaller companies which don't employ many kernel experts.
+> 
+> The concept of "peer feedback" may be a hyperscaler / silicon valley
+> thing so YMMV. Hopefully we can build more context as we go.
+> 
+> [...]
 
-Sorry for the delay. I've been out.
+Here is the summary with links:
+  - [net] docs: netdev: offer performance feedback to contributors
+    https://git.kernel.org/netdev/net/c/c5884ef477b4
 
-Great idea. I don't see why not.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
