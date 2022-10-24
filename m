@@ -2,114 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33FA60BA3F
-	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 22:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8982260BB15
+	for <lists+bpf@lfdr.de>; Mon, 24 Oct 2022 22:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbiJXUaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 16:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        id S235048AbiJXUq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 16:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234691AbiJXU3m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 16:29:42 -0400
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F19310B7BC;
-        Mon, 24 Oct 2022 11:42:29 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id v27so10753927eda.1;
-        Mon, 24 Oct 2022 11:42:28 -0700 (PDT)
+        with ESMTP id S234987AbiJXUpc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 16:45:32 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD211DF95
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:53:57 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id bn35so5247577ljb.5
+        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 11:53:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cB2FYQ6zz4yJrapqJDJTE5DptWCfldmXwjxtDOt/B0s=;
-        b=JN7uxoITIaVl18LJEZQ0ufGu4PrZM3yonCdBdmDjIjeRttqLXldyazzyxeWnrSn5ql
-         RywZjtQ1k/Psr56DQf50jQ4Tv+k3koil8KMUizZtO9ZA8sHX+hyrLHky/M3cWW6MvWbB
-         7C25I7hB8OmkzdYvEVOj2qlgyLDyrCZXMiI6GkQMG/hB6k2Y2YYvhLzlBt6iSJtkAvKj
-         9p11+6+OG6VqO8tfk+di6COkBQIsDtPZAW8cAMhf6tV+Z1fHXkyowQWMi7N3v25BegqT
-         TLohY7NCKyR/R+j1lzxI3N58giI9sjf6Yycyc3Rxz9BB2oNL5bioL4jWGI3RENL/icWL
-         lJXA==
+        bh=FZAjU0BHDBuQVUlJTVUiE7p9D8v+ywK9rNj9aC9B5bY=;
+        b=Kjcq1YwYPIFxh8VWlKw4WwpSwhL0xwjtRmuldifLKkXGYx35+1/i+cAeUBlL2SbXyd
+         64YC8sGtwr2Ldxl/us7ek/p5jEDknpq8MTl+E6u/oZ/VuQ7f5IyJywUZGzFT6FXqlVoG
+         y4JFXFGTcPg3u/95Z+9eeDJqKqB9IUpxJFN7aacsqmWJvvOeDgDAGCZhvxLYQT7kjSia
+         gT57uku22Bmbgf5F0Eos/UdSMoxTlVxBBGDCuv2JoXyog/yb68Z780ciHrIPCGw3tVcs
+         dUGug3ixqAj4nv23yC3nTFJEHAF/psPA2Mx2i/cqbW3lojyKP8TbC50s/cmtUJeDtM+l
+         Tujg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cB2FYQ6zz4yJrapqJDJTE5DptWCfldmXwjxtDOt/B0s=;
-        b=B+LUFbzvGkq0dyeFDcKBqXbrIMMH4Y+iy3N+G01e8PFKJOIUS0XVoW5wdjcsOgVa2e
-         GQ9kVWO3MZDq0eAxRYsRwDdbCONKq+VNHG4L7DA9s+VKc+tq1M+winVODTRsiH48X1X8
-         ysADIU6QmDwoRpHq0JzAcLW8+xZqKuhnjKwvFL2YThCy+NA6SS7sEkO6/QLYK/E4LyAi
-         kiHAf7BOSigdhDV9B6Y/L1OTn6OT64junDQAvBrqHBZZtSyDA0JZjkGAu+hETsJjA9QN
-         NfkgbdeeLFsjrQm/yAZqx5mAFl0CSv9uzvinN0c3P9S4wdH8ZXypMXLP1a+1S6DuPE8r
-         mpmA==
-X-Gm-Message-State: ACrzQf1bQmvZahEVv9Mi/UAAYzw0HDxQ9/LS57XnJ2qsZfH5etixt3Oz
-        JxAthx5xJ0fWijelD4j0ixmq3jQgcNP/396EKrQz0Yhp
-X-Google-Smtp-Source: AMsMyM75RA19jCY4FY6bMQuqjKdIyJBP2VW+qVB6WUTfI9OfCrlw3k8Y27szZCYA0BCsUzUe2wY3pE6zfHB/ytHRURY=
-X-Received: by 2002:a17:907:75e6:b0:7a1:848:20cb with SMTP id
- jz6-20020a17090775e600b007a1084820cbmr11452017ejc.745.1666636083384; Mon, 24
- Oct 2022 11:28:03 -0700 (PDT)
+        bh=FZAjU0BHDBuQVUlJTVUiE7p9D8v+ywK9rNj9aC9B5bY=;
+        b=RXS5Axh6SkD4cWPXM3HBurary9lMyYEY137j1jot2hABbMfY8Vwx5SBAG8UO7yExSC
+         O5G3pXrHn8aq3iimyJ+v4/+QSRsoEVVGxGpXr/hOBpAzPRjlVOSZs2+ldPZgJ/GI8BKV
+         Ur7/iW2PjiK5NA1rTf38NjjG7jIClPkeSsC1e1ds33SPyhPh+L7d4wACV2sfLlkTw90Q
+         sc5wBikDXOAGWt0ziNYeuotdItqnCVA2ZEm3puRh0L/rmF+dtKUII5eI8LJdA4mi/CCn
+         fB3jXHRJ42+nHt/u0rPtkmNLCnSD80Mc/HTDMTA/V10/wndVmESIOaRlcwfOviS2NnDn
+         2TnQ==
+X-Gm-Message-State: ACrzQf27sxCl6wtKEGvRcpA/fsDBldaULESSVWpGo5uC6FJ8IPhf/e3s
+        LjAbFIsTwwrTmMaiX+VrS5dohBFD7nzjqt2NM3vO1SP1
+X-Google-Smtp-Source: AMsMyM5guVEvCRtkIY8OtEWPDq1GN6/UihGBUi/84RI0agb9qXJ6WrJv2LsNP2k6oWddAlBB2ps+K4wMgUdVDnNjgLs=
+X-Received: by 2002:a17:907:1c98:b0:78d:3b06:dc8f with SMTP id
+ nb24-20020a1709071c9800b0078d3b06dc8fmr28134295ejc.58.1666636871444; Mon, 24
+ Oct 2022 11:41:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221022110529.51857-1-liuxin350@huawei.com>
-In-Reply-To: <20221022110529.51857-1-liuxin350@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 Oct 2022 11:27:51 -0700
-Message-ID: <CAEf4BzbhhcvAn4yCdHUZZSLCLotywRM5e_-12sYSjg7h8nbdmQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: glob_sym may be a NULL pointer and cause the
- program crash
-To:     Xin Liu <liuxin350@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com, zhudi2@huawei.com,
-        kongweibin2@huawei.com
+References: <20221020123704.91203-1-quentin@isovalent.com> <20221020123704.91203-7-quentin@isovalent.com>
+ <CAADnVQKHk88YFcTE55GXu7HwQkTb0TGNpnrB8Ec7PVZy9uVhOw@mail.gmail.com> <1dc2c77a-2dea-25a4-fa64-b65460c7f1cb@isovalent.com>
+In-Reply-To: <1dc2c77a-2dea-25a4-fa64-b65460c7f1cb@isovalent.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 24 Oct 2022 11:40:59 -0700
+Message-ID: <CAADnVQ+4ErnQCZSz=hVqv_FJ9UHTV5LqsTWwP2ve_ujqabwOgw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/8] bpftool: Add LLVM as default library for
+ disassembling JIT-ed programs
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 22, 2022 at 4:05 AM Xin Liu <liuxin350@huawei.com> wrote:
+On Mon, Oct 24, 2022 at 4:05 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> I found that `glob_sym` does not check whether it is NULL when reading the
-> code. `glob_sym` obtains the pointer of btf information in the linker from
-> `find_glob_sym`, which may be return NULL pointer. However, the code then
-> references `glob_sym->sec_id`. This may cause program to crash.
+> 2022-10-20 10:49 UTC-0700 ~ Alexei Starovoitov
+> <alexei.starovoitov@gmail.com>
+> > On Thu, Oct 20, 2022 at 5:37 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> +
+> >> +/* This callback to set the ref_type is necessary to have the LLVM disassembler
+> >> + * print PC-relative addresses instead of byte offsets for branch instruction
+> >> + * targets.
+> >> + */
+> >> +static const char *
+> >> +symbol_lookup_callback(__maybe_unused void *disasm_info,
+> >> +                      __maybe_unused uint64_t ref_value,
+> >> +                      uint64_t *ref_type, __maybe_unused uint64_t ref_PC,
+> >> +                      __maybe_unused const char **ref_name)
+> >> +{
+> >> +       *ref_type = LLVMDisassembler_ReferenceType_InOut_None;
+> >> +       return NULL;
+> >> +}
+> >
+> > Could you give an example before/after for asm
+> > that contains 'call foo' instructions?
+> > I'm not sure that above InOut_None will not break
+> > symbolization.
 >
+> Hi Alexei, I ran a quick test and it doesn't seem we lose any
+> information. Building from:
 
-May cause a crash or did you actually see an example of such a crash?
-
-As far as I can see from the code, such global_sym is guaranteed to
-exist, see how btf_type_map is filled in linker_append_btf(), slightly
-above the code you are trying to fix
-
-
-> Fixes: a46349227cd8 ("libbpf: Add linker extern resolution support for functions and global variables")
-> Signed-off-by: Xin Liu <liuxin350@huawei.com>
-> Signed-off-by: Weibin Kong <kongweibin2@huawei.com>
-> ---
->  tools/lib/bpf/linker.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> index 4ac02c28e152..d02d2754910f 100644
-> --- a/tools/lib/bpf/linker.c
-> +++ b/tools/lib/bpf/linker.c
-> @@ -2355,6 +2355,11 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
->                         if (btf_is_non_static(t)) {
->                                 name = btf__str_by_offset(linker->btf, t->name_off);
->                                 glob_sym = find_glob_sym(linker, name);
-> +                               if (!glob_sym) {
-> +                                       pr_warn("global '%s': section mismatch %d\n", name,
-> +                                               dst_sec->id);
-> +                                       return -EINVAL;
-> +                               }
->                                 if (glob_sym->sec_id != dst_sec->id) {
->                                         pr_warn("global '%s': section mismatch %d vs %d\n",
->                                                 name, glob_sym->sec_id, dst_sec->id);
-> --
-> 2.33.0
->
+Thanks for checking. The output looks good.
