@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA1360CFDD
-	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 17:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E7960CFDE
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 17:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbiJYPDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 11:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S232439AbiJYPDp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 11:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbiJYPDl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 11:03:41 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEA11B2BBD
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 08:03:40 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o4so13350452wrq.6
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 08:03:40 -0700 (PDT)
+        with ESMTP id S232209AbiJYPDm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 11:03:42 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC581B2BBD
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 08:03:41 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j15so11051230wrq.3
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 08:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eBbYbX9sHKUfIMrpnZaL6KkPE/xXyNGMbm/Q+qNbw/0=;
-        b=AQsZdynBJycLXcQFN/uiFmTA9TyPBOOrMp8Pn4k+o43hjc8tIpwOtcsdy3tJlhQksU
-         ZLkXs1x/j6dVzi0inaWopBaWyb1DHQttwFsyNGJRRJRwNd/xw/ecCGKWPXfzKIe7FuMb
-         sWkmNd1dBQnaIpFAPXVZft5DK5D0QUF5xI1vJ6CH7Fl2e76Ofq0HOIOE4Zurk6Gs8Z7M
-         ZKUtJo9keuK5ZgVroV4grxi/qyQ0xYV2Z2r0rzPhqJ17su3DTyg9DEURzwTbGvpuKLVd
-         +9JqCJyTrcjFzVv8CafOHA4F4fFP4JW/hia9hCmR2IfvhOupKW5bAiO6oGJVnI25mYNU
-         zVLQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UM6m8ABDHy9/yDjET8mC473qdbIttwuMCtSmPhs3VzM=;
+        b=0OodaKVssFUxxQQTJWxrIB1mfo1iaGuCAnIZU53ibrmEO7luzo/RYwlC3ueCwEP0Qs
+         OuJ1y7nxVJE1cXQ8992JsZNsQ24ESK+MvwIZhpjtJOdbm/rQHHZZkUTQk/1kqFoGliGw
+         fuuEumnx3XJb4Q2I764PDzEd/mdQw4vi6phpbodNbqQjjuQC8ab0LE6kiXrVj/2BRBSa
+         4Y0PDG0gIPXKUvBk+je9mH7Ts6EPtitY75lPOy0uIj8Y+4jqF4DbJF4TP0UtpPxqsxfo
+         SuGbE4XtSp8SF5IvAhkNWzNrefR/rZc6xkZMpuD3nGg3pd4+9OoEBByxoHdVn99BKORh
+         e8Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eBbYbX9sHKUfIMrpnZaL6KkPE/xXyNGMbm/Q+qNbw/0=;
-        b=UOtJJZCMX0ZekM0J2c89VQ3ee97Cw4iOdtTrLreBVnUmGP2GN+CU+NsLFISASycxi5
-         8O0DAmE5+XVCt6Sm7P12zBcoCg4Z6kAe3FK+5sp5xlrvTEBq5cKElRxNxpQt4Kmlvkiv
-         LVBYKbfvelVugukd1UCHPIghU7MFx4Vwt2W6fDRgzKHG8m0dP1pbM1euC+2BdGLE+JPX
-         5ZTJ2HCOvMcdIUZOMxf1Aqj5248Zd2EhdqXzwY57YnuetCZKx0dqjU4QlVnJbRs8TVsA
-         mebfV0llKSxVvj+vV0kxP+lupddIjVceG0nl7BjOEdh0mCzpSnK1VsxjEBPIuy8ihs78
-         hS6A==
-X-Gm-Message-State: ACrzQf1+cTZft05LisuVlm05DLiZhKM0euIqTeKjc4WCvDOK1aIJXq0W
-        yo+I+HlBlZUkKm8bWNa4deNxEQ==
-X-Google-Smtp-Source: AMsMyM4S5DzWOTqk9/JrqYZOzVr147r+/Ixh5cbRuet+x5/DfeWTij3k3O0g3T9TtNEIQrlK4rnFGg==
-X-Received: by 2002:a5d:5c13:0:b0:236:5575:a3fd with SMTP id cc19-20020a5d5c13000000b002365575a3fdmr15253202wrb.475.1666710218593;
-        Tue, 25 Oct 2022 08:03:38 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UM6m8ABDHy9/yDjET8mC473qdbIttwuMCtSmPhs3VzM=;
+        b=X2kiKwz4YG1SFP30dQWdIMAxebwBrgp97g5qrZQWiEP1aFkoZEJWYLie5vQ3HJQpb3
+         oxLMQyJVPxAQb4Siex8TTfJ9a3+q4oyR3YrdU+UU462zLuicTyRoQAt7lQQV+QfifaYP
+         xsy4BeBuYkwXXDdS3JyDx+J3RPdwSr7zPNMnU3yjatxtNtLPTLhxzm0e+HFYerX9o7c4
+         egMCTvuCUtGZ8N4yo5chqjdmOikyEr3EzzPTvdtxEd75BoEW4/am2vG+vUWr+VM+9JTx
+         IBqup4zatYTXb1jcjrmihBl17Wd4NOzzwM5OqPZRB6o+abUU8oi8+T8flVJElZDF9SDW
+         IR0Q==
+X-Gm-Message-State: ACrzQf0Fmu8K4GmV9VwWvG8joJ04Y+XGum39VvazQkObVFi8nBWTRndB
+        eu02cNixVCNaber6dpFUFdISDw==
+X-Google-Smtp-Source: AMsMyM6BSnj8J0VN8ymMU0fvo1NJ5OyOpcdx8TKPctiZIMw+i7UgouiIj+rEh/eeOc55+K2wFDYl3w==
+X-Received: by 2002:a05:6000:178e:b0:22e:6d9f:1592 with SMTP id e14-20020a056000178e00b0022e6d9f1592mr26137626wrg.6.1666710219688;
+        Tue, 25 Oct 2022 08:03:39 -0700 (PDT)
 Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id i7-20020adff307000000b0023659925b2asm2724182wro.51.2022.10.25.08.03.37
+        by smtp.gmail.com with ESMTPSA id i7-20020adff307000000b0023659925b2asm2724182wro.51.2022.10.25.08.03.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Oct 2022 08:03:37 -0700 (PDT)
+        Tue, 25 Oct 2022 08:03:39 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,11 +62,14 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org,
         =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
         Simon Horman <simon.horman@corigine.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v4 0/8] bpftool: Add LLVM as default library for disassembling JIT-ed programs
-Date:   Tue, 25 Oct 2022 16:03:21 +0100
-Message-Id: <20221025150329.97371-1-quentin@isovalent.com>
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next v4 1/8] bpftool: Define _GNU_SOURCE only once
+Date:   Tue, 25 Oct 2022 16:03:22 +0100
+Message-Id: <20221025150329.97371-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221025150329.97371-1-quentin@isovalent.com>
+References: <20221025150329.97371-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -78,71 +82,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To disassemble instructions for JIT-ed programs, bpftool has relied on the
-libbfd library. This has been problematic in the past: libbfd's interface
-is not meant to be stable and has changed several times, hence the
-detection of the two related features from the Makefile
-(disassembler-four-args and disassembler-init-styled). When it comes to
-shipping bpftool, this has also caused issues with several distribution
-maintainers unwilling to support the feature (for example, Debian's page
-for binutils-dev, libbfd's package, says: "Note that building Debian
-packages which depend on the shared libbfd is Not Allowed.").
+_GNU_SOURCE is defined in several source files for bpftool, but only one
+of them takes the precaution of checking whether the value is already
+defined. Add #ifndef for other occurrences too.
 
-This patchset adds support for LLVM as the primary library for
-disassembling instructions for JIT-ed programs.
+This is in preparation for the support of disassembling JIT-ed programs
+with LLVM, with $(llvm-config --cflags) passing -D_GNU_SOURCE as a
+compilation argument.
 
-We keep libbfd as a fallback. One reason for this is that currently it
-works well, we have all we need in terms of features detection in the
-Makefile, so it provides a fallback for disassembling JIT-ed programs if
-libbfd is installed but LLVM is not. The other reason is that libbfd
-supports nfp instruction for Netronome's SmartNICs and can be used to
-disassemble offloaded programs, something that LLVM cannot do (Niklas
-confirmed that the feature is still in use). However, if libbfd's interface
-breaks again in the future, we might reconsider keeping support for it.
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Tested-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+Acked-by: Song Liu <song@kernel.org>
+---
+ tools/bpf/bpftool/common.c        | 2 ++
+ tools/bpf/bpftool/iter.c          | 2 ++
+ tools/bpf/bpftool/jit_disasm.c    | 2 ++
+ tools/bpf/bpftool/net.c           | 2 ++
+ tools/bpf/bpftool/perf.c          | 2 ++
+ tools/bpf/bpftool/prog.c          | 2 ++
+ tools/bpf/bpftool/xlated_dumper.c | 2 ++
+ 7 files changed, 14 insertions(+)
 
-v4:
-  - Rebase to address a conflict with commit 2c76238eaddd ("bpftool: Add
-    "bootstrap" feature to version output").
-
-v3:
-  - Extend commit description (patch 6) with notes on llvm-dev and LLVM's
-    disassembler stability.
-
-v2:
-  - Pass callback when creating the LLVM disassembler, so that the
-    branch targets are printed as addresses (instead of byte offsets).
-  - Add last commit to "support" other arch with LLVM, although we don't
-    know any supported triple yet.
-  - Use $(LLVM_CONFIG) instead of llvm-config in Makefile.
-  - Pass components to llvm-config --libs to limit the number of
-    libraries to pass on the command line, in Makefile.
-  - Rebase split of FEATURE_TESTS and FEATURE_DISPLAY in Makefile.
-
-Quentin Monnet (8):
-  bpftool: Define _GNU_SOURCE only once
-  bpftool: Remove asserts from JIT disassembler
-  bpftool: Split FEATURE_TESTS/FEATURE_DISPLAY definitions in Makefile
-  bpftool: Group libbfd defs in Makefile, only pass them if we use
-    libbfd
-  bpftool: Refactor disassembler for JIT-ed programs
-  bpftool: Add LLVM as default library for disassembling JIT-ed programs
-  bpftool: Support setting alternative arch for JIT disasm with LLVM
-  bpftool: Add llvm feature to "bpftool version"
-
- .../bpftool/Documentation/common_options.rst  |   8 +-
- tools/bpf/bpftool/Makefile                    |  72 +++--
- tools/bpf/bpftool/common.c                    |  12 +-
- tools/bpf/bpftool/iter.c                      |   2 +
- tools/bpf/bpftool/jit_disasm.c                | 261 +++++++++++++++---
- tools/bpf/bpftool/main.c                      |   7 +
- tools/bpf/bpftool/main.h                      |  32 +--
- tools/bpf/bpftool/map.c                       |   1 -
- tools/bpf/bpftool/net.c                       |   2 +
- tools/bpf/bpftool/perf.c                      |   2 +
- tools/bpf/bpftool/prog.c                      |  23 +-
- tools/bpf/bpftool/xlated_dumper.c             |   2 +
- 12 files changed, 319 insertions(+), 105 deletions(-)
-
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 8727765add88..4c2e909a2d67 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+index f88fdc820d23..a3e6b167153d 100644
+--- a/tools/bpf/bpftool/iter.c
++++ b/tools/bpf/bpftool/iter.c
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ // Copyright (C) 2020 Facebook
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <unistd.h>
+ #include <linux/err.h>
+ #include <bpf/libbpf.h>
+diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+index aaf99a0168c9..71cb258ab0ee 100644
+--- a/tools/bpf/bpftool/jit_disasm.c
++++ b/tools/bpf/bpftool/jit_disasm.c
+@@ -11,7 +11,9 @@
+  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
+  */
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <stdint.h>
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 526a332c48e6..c40e44c938ae 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ // Copyright (C) 2018 Facebook
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdlib.h>
+diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
+index 226ec2c39052..91743445e4c7 100644
+--- a/tools/bpf/bpftool/perf.c
++++ b/tools/bpf/bpftool/perf.c
+@@ -2,7 +2,9 @@
+ // Copyright (C) 2018 Facebook
+ // Author: Yonghong Song <yhs@fb.com>
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 10ec29cb4598..dbf5489b8fde 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <signal.h>
+diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+index 2d9cd6a7b3c8..6fe3134ae45d 100644
+--- a/tools/bpf/bpftool/xlated_dumper.c
++++ b/tools/bpf/bpftool/xlated_dumper.c
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ /* Copyright (C) 2018 Netronome Systems, Inc. */
+ 
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <stdlib.h>
 -- 
 2.34.1
 
