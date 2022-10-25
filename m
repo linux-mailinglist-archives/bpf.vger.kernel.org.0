@@ -2,50 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F59E60CDBF
-	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 15:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBDD60CDC0
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 15:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbiJYNmS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 09:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
+        id S232213AbiJYNm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 09:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbiJYNmR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 09:42:17 -0400
+        with ESMTP id S229995AbiJYNm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 09:42:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4847183D83
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 06:42:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BD4183D83
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 06:42:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 66F1761962
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 13:42:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60F75C433D6;
-        Tue, 25 Oct 2022 13:42:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49AA361939
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 13:42:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5717CC433D6;
+        Tue, 25 Oct 2022 13:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666705335;
-        bh=ckVkdGEwuo+uocub2igAcV430UhqmBM22t//R6dPL94=;
+        s=k20201202; t=1666705346;
+        bh=BLrWSK2y6Ic1QFL/lOXOKAwcJZalvL2PzPAMR6ELH6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bCc6EseWxOGDdi0etZ6ze+69pFNcvUXp8x2gKbXRof4kcUEdifmYg6DLZJnM4SQJ1
-         rN/4W4huJlOYSM5XmUDgH9Z0aCRxQSS13a3r0UlvG8ti9WTErs36a4wcJzTa5JwnYN
-         EG33kr/u3jySjEUawN+JanO2wLbS1vybn4gcyqeSKJRL/2bY6k6rbRV+4xgyJmwnKn
-         jNo9XLWHTzp2MysiwVPOHIaSLuXpKv4rHdQbb2wNY0twjHnnjBXspcgR0zkhvrKtHt
-         +6CNJ+4KyheEDFeNZOP0UbgqoAexMR1chFptCWWG0ME0lteh+a49SpOGl90wMGBSdk
-         CJLzcIMxWZ2yw==
+        b=R3pUqrLo8wXYaAyE4Lty8UnMNUB4WcrxjxYvnKqA7iqoTNFNFTBd9MGyI5sjVDVSp
+         /9EgcTAK61n2bfeIiTkS01bjO1BLGdIo5ix0UreOVPtAzJKKHXJKMXWzpf7b4LO67H
+         5k4t0f/j5dDVDM6Iy2CrStt5XT2wIOsShdIDxOo63qahTiRdu+rIy0UnhSQ/Kmdfo1
+         0SiZ6yosS+e9VjaY2St1krr/J6cgsqC8vySTIjDqajmhOZV/qdMQHFmQD5h6bWj3Cj
+         VZcK8mwPNZrfQ+RUfbjK5fiS0wJ+PZmQQv6igheEkKm3pZ56R4Yxi7LQhCeDityCrO
+         yAsChfCtVZINg==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martynas Pumputis <m@lambda.lt>, Song Liu <song@kernel.org>,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCHv3 bpf-next 2/8] ftrace: Add support to resolve module symbols in ftrace_lookup_symbols
-Date:   Tue, 25 Oct 2022 15:41:42 +0200
-Message-Id: <20221025134148.3300700-3-jolsa@kernel.org>
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: [PATCHv3 bpf-next 3/8] bpf: Rename __bpf_kprobe_multi_cookie_cmp to bpf_kprobe_multi_addrs_cmp
+Date:   Tue, 25 Oct 2022 15:41:43 +0200
+Message-Id: <20221025134148.3300700-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221025134148.3300700-1-jolsa@kernel.org>
 References: <20221025134148.3300700-1-jolsa@kernel.org>
@@ -60,63 +61,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently ftrace_lookup_symbols iterates only over core symbols,
-adding module_kallsyms_on_each_symbol call to check on modules
-symbols as well.
+Renaming __bpf_kprobe_multi_cookie_cmp to bpf_kprobe_multi_addrs_cmp,
+because it's more suitable to current and upcoming code.
 
-Also removing 'args.found == args.cnt' condition, because it's
-already checked in kallsyms_callback function.
-
-Also removing 'err < 0' check, because both *kallsyms_on_each_symbol
-functions do not return error.
-
-Reported-by: Martynas Pumputis <m@lambda.lt>
 Acked-by: Song Liu <song@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/ftrace.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ kernel/trace/bpf_trace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index fbf2543111c0..72de9009a6a0 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -8267,6 +8267,10 @@ struct kallsyms_data {
- 	size_t found;
- };
- 
-+/* This function gets called for all kernel and module symbols
-+ * and returns 1 in case we resolved all the requested symbols,
-+ * 0 otherwise.
-+ */
- static int kallsyms_callback(void *data, const char *name,
- 			     struct module *mod, unsigned long addr)
- {
-@@ -8309,17 +8313,19 @@ static int kallsyms_callback(void *data, const char *name,
- int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
- {
- 	struct kallsyms_data args;
--	int err;
-+	int found_all;
- 
- 	memset(addrs, 0, sizeof(*addrs) * cnt);
- 	args.addrs = addrs;
- 	args.syms = sorted_syms;
- 	args.cnt = cnt;
- 	args.found = 0;
--	err = kallsyms_on_each_symbol(kallsyms_callback, &args);
--	if (err < 0)
--		return err;
--	return args.found == args.cnt ? 0 : -ESRCH;
-+
-+	found_all = kallsyms_on_each_symbol(kallsyms_callback, &args);
-+	if (found_all)
-+		return 0;
-+	found_all = module_kallsyms_on_each_symbol(kallsyms_callback, &args);
-+	return found_all ? 0 : -ESRCH;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 1ed08967fb97..17ae9e8336db 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2550,7 +2550,7 @@ static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void
+ 	swap(*cookie_a, *cookie_b);
  }
  
- #ifdef CONFIG_SYSCTL
+-static int __bpf_kprobe_multi_cookie_cmp(const void *a, const void *b)
++static int bpf_kprobe_multi_addrs_cmp(const void *a, const void *b)
+ {
+ 	const unsigned long *addr_a = a, *addr_b = b;
+ 
+@@ -2561,7 +2561,7 @@ static int __bpf_kprobe_multi_cookie_cmp(const void *a, const void *b)
+ 
+ static int bpf_kprobe_multi_cookie_cmp(const void *a, const void *b, const void *priv)
+ {
+-	return __bpf_kprobe_multi_cookie_cmp(a, b);
++	return bpf_kprobe_multi_addrs_cmp(a, b);
+ }
+ 
+ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
+@@ -2579,7 +2579,7 @@ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
+ 		return 0;
+ 	entry_ip = run_ctx->entry_ip;
+ 	addr = bsearch(&entry_ip, link->addrs, link->cnt, sizeof(entry_ip),
+-		       __bpf_kprobe_multi_cookie_cmp);
++		       bpf_kprobe_multi_addrs_cmp);
+ 	if (!addr)
+ 		return 0;
+ 	cookie = link->cookies + (addr - link->addrs);
 -- 
 2.37.3
 
