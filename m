@@ -2,440 +2,337 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F240B60D712
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 00:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DCE60D713
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 00:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbiJYW2m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 18:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S231602AbiJYW2p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 18:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiJYW2l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 18:28:41 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31A75F215
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:39 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id t25so11004949ejb.8
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:39 -0700 (PDT)
+        with ESMTP id S230327AbiJYW2m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 18:28:42 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017D36CD1C
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:41 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id sc25so16461758ejc.12
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=66A+Y7HU+TmPLaAfL5A4rwDREQXI5HPqyd73x4w8n8c=;
-        b=OWsvWW0eB/PlOvznb5OjDr93O3RRPYRYJ1+ax4rah108rWyu966QnyqyXy4A3VoYj1
-         QcED2uPSEojdJcWIdBo8r4h9UhOlLWix1rUsl5tjFQJYu9V1rsWJxC8iYSFDbQT0m6ca
-         fyNnTpB7DNghmDYwf9dLDeSNvzcQq3nenJ73SwYWvx6Lw5al9juIxf9jcVmKyIKrnOul
-         CDtqu2Dc7OvctKO5e43lilobSQS8v6Cv5pKrvp91zCixcL9p7bHdsYAOVhXOnQkBKWVJ
-         4ezeVb2WHRpQkFa4voF9Q8XBfdeyT9A8uTgA4nf8OxF4j5PjQZqBRg+AMa95FV1irFVy
-         hIAA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d4uISy0p6MDMzgs1vbawW1AEByrQTOVsdIc9n7bmQ58=;
+        b=Mc/WJoaSNQGhqSkm5lsv0Af0hBWppy26GXv2IfXVk99UwXM8mIA4nBmSiiNEsclaHo
+         zBXtvqwbEY8yTdZIjLxF0/lpEx+Fb831uwg7JwpE5LCrBbyghurPWx7aS8+J1qCweQ4y
+         HFmO5aZIg8z4434Y3DgesK911L/xdjC1bqVtKXNJVcrCxbRKXUbOCcfyVlnFThhQqxZh
+         F210kNt1STmorJAA+k+IaPl0bCBZC0iuOKBzno98yPQ+mvWx7nXHN64e20RONtgUllTr
+         /vsQkhcWJBqh3c8zEa+gXsMjFfgEM3lnmnQKszNFm4cOkxmAT2B4DGymMRhsJJXrbcdh
+         23WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=66A+Y7HU+TmPLaAfL5A4rwDREQXI5HPqyd73x4w8n8c=;
-        b=Qqx4IY0fzcI4E7uHtf6K4nVUNx1+0sjAfp9tnXlYM6f8wMhjGtYldFy53XaIoYY7tk
-         yn63SFGkKoUsAIMYt3UvTGYecjJuitETWfgFadysOCIssmsdBy+dDG6i8EUZvY7M6XPF
-         qQ7TWVEPRSSlROGKQodSHJ3Wg2pTdT1tnke4CXkZXCkNtmNFhjv+br2GwbNfyxj9kQTe
-         XxIJrSLyGZMZzh5+imoUrDcDGE43RSHMBmeoccd0HFwejXE4hTyplHJkza0Rnx1HtAHW
-         a9sYUHL5N3YjOxx7lHEzA8AFeUvsS09p6E91Hj8maeRV2FRF30b8yMxquZhgwowPsmvY
-         io9A==
-X-Gm-Message-State: ACrzQf1yjkzmTWeHjXD41FLQOHYAnwH1hx9AEKSPmvfwoQUCfkSimK6l
-        nq+3wHThU/9LfDyVsx8Jy0LUA/fVfzcaUq3E
-X-Google-Smtp-Source: AMsMyM7LOQcdhqYaE0vmSlX9n0bEOR97ggFdIAHmwtqYKUE1Uri8BYdJRjNTYfICtA8iszIiHM+WOg==
-X-Received: by 2002:a17:906:cc0b:b0:78e:1d51:36ea with SMTP id ml11-20020a170906cc0b00b0078e1d5136eamr35076447ejb.408.1666736918056;
-        Tue, 25 Oct 2022 15:28:38 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d4uISy0p6MDMzgs1vbawW1AEByrQTOVsdIc9n7bmQ58=;
+        b=5Uw1UTinAWq7dBWZK4fJ0BCPJxX9bCkWJXcfi4QvEGaSfPg+7W4PV1eP0Ta374supV
+         01K0iKqWmwFWp+Hqr8CWN1EWnh/seXFXY6mzfvW24s+TruZQw0TeWFt8h4yMCkAZPYgf
+         aNDvfARWy639MOuTNTs2CrCBiP7Vh9AxUaAM0JTNYcPyfGclinjqouvfYyLeYQp+32Jl
+         diF0aY/YDoACzZAZ33G+tQUwl7jMNgrjSviHH1SPa/Wh+BbHOYB39KMirAujnrgAJM/d
+         3jM8/f1iVpEibv2xCZiwnwKbCh5zPxcsu5boLiWj8sbPUWD8ult9jyGJqJ/UwhACRlWQ
+         zBkQ==
+X-Gm-Message-State: ACrzQf15e/AWrtZPjpfE6h4KogNhrn62XTBTTp3GNm53TtxVzVZBwIoI
+        eJMdpYa40lje4kEmDWrbndiIoUc6EGovgGHY
+X-Google-Smtp-Source: AMsMyM5s4eZXorDwLtY9lXz7QLMKI+N61ylAfCfqWAUQ92laAey/s/48wc4K+sEGrGdSr5iG/PUe4Q==
+X-Received: by 2002:a17:906:9c82:b0:781:5752:4f2b with SMTP id fj2-20020a1709069c8200b0078157524f2bmr33400243ejc.561.1666736919301;
+        Tue, 25 Oct 2022 15:28:39 -0700 (PDT)
 Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id ks23-20020a170906f85700b0078d175d6dc5sm1993119ejb.201.2022.10.25.15.28.37
+        by smtp.gmail.com with ESMTPSA id ks23-20020a170906f85700b0078d175d6dc5sm1993119ejb.201.2022.10.25.15.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Oct 2022 15:28:37 -0700 (PDT)
+        Tue, 25 Oct 2022 15:28:38 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, arnaldo.melo@gmail.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-Date:   Wed, 26 Oct 2022 01:27:49 +0300
-Message-Id: <20221025222802.2295103-1-eddyz87@gmail.com>
+Subject: [RFC bpf-next 01/12] libbpf: Deduplicate unambigous standalone forward declarations
+Date:   Wed, 26 Oct 2022 01:27:50 +0300
+Message-Id: <20221025222802.2295103-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221025222802.2295103-1-eddyz87@gmail.com>
+References: <20221025222802.2295103-1-eddyz87@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi BPF community,
+Deduplicate forward declarations that don't take part in type graphs
+comparisons if declaration name is unambiguous. Example:
 
-AFAIK there is a long standing feature request to use kernel headers
-alongside `vmlinux.h` generated by `bpftool`. For example significant
-effort was put to add an attribute `bpf_dominating_decl` (see [1]) to
-clang, unfortunately this effort was stuck due to concerns regarding C
-language semantics.
+CU #1:
 
-After some discussion with Alexei and Yonghong I'd like to request
-your comments regarding a somewhat brittle and partial solution to
-this issue that relies on adding `#ifndef FOO_H ... #endif` guards in
-the generated `vmlinux.h`.
+struct foo;              // standalone forward declaration
+struct foo *some_global;
 
-The basic idea
+CU #2:
+
+struct foo { int x; };
+struct foo *another_global;
+
+The `struct foo` from CU #1 is not a part of any definition that is
+compared against another definition while `btf_dedup_struct_types`
+processes structural types. The the BTF after `btf_dedup_struct_types`
+the BTF looks as follows:
+
+[1] STRUCT 'foo' size=4 vlen=1 ...
+[2] INT 'int' size=4 ...
+[3] PTR '(anon)' type_id=1
+[4] FWD 'foo' fwd_kind=struct
+[5] PTR '(anon)' type_id=4
+
+This commit adds a new pass `btf_dedup_standalone_fwds`, that maps
+such forward declarations to structs or unions with identical name in
+case if the name is not ambiguous.
+
+The pass is positioned before `btf_dedup_ref_types` so that types
+[3] and [5] could be merged as a same type after [1] and [4] are merged.
+The final result for the example above looks as follows:
+
+[1] STRUCT 'foo' size=4 vlen=1
+	'x' type_id=2 bits_offset=0
+[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+[3] PTR '(anon)' type_id=1
+
+For defconfig kernel with BTF enabled this removes 63 forward
+declarations. Examples of removed declarations: `pt_regs`, `in6_addr`.
+The running time of `btf__dedup` function is increased by about 3%.
+
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
-
-The goal of the patch set is to allow usage of header files from
-`include/uapi` alongside `vmlinux.h` as follows:
-
-  #include <uapi/linux/tcp.h>
-  #include "vmlinux.h"
-
-This goal is achieved by adding `#ifndef ... #endif` guards in
-`vmlinux.h` around definitions that originate from the `include/uapi`
-headers. The guards emitted match the guards used in the original
-headers. E.g. as follows:
-
-include/uapi/linux/tcp.h:
-
-  #ifndef _UAPI_LINUX_TCP_H
-  #define _UAPI_LINUX_TCP_H
-  ...
-  union tcp_word_hdr {
-	struct tcphdr hdr;
-	__be32        words[5];
-  };
-  ...
-  #endif /* _UAPI_LINUX_TCP_H */
-
-vmlinux.h:
-
-  ...
-  #ifndef _UAPI_LINUX_TCP_H
-
-  union tcp_word_hdr {
-	struct tcphdr hdr;
-	__be32 words[5];
-  };
-
-  #endif /* _UAPI_LINUX_TCP_H */
-  ...
-
-To get to this state the following steps are necessary:
-- "header guard" name should be identified for each header file;
-- the correspondence between data type and it's header guard has to be
-  encoded in BTF;
-- `bpftool` should be adjusted to emit `#ifndef FOO_H ... #endif`
-  brackets.
-
-It is not possible to identify header guard names for all uapi headers
-basing only on the file name. However a simple script could devised to
-identify the guards basing on the file name and it's content. Thus it
-is possible to obtain the list of header names with corresponding
-header guards.
-
-The correspondence between type and it's declaration file (header) is
-available in DWARF as `DW_AT_decl_file` attribute. The
-`DW_AT_decl_file` can be matched with the list of header guards
-described above to obtain the header guard name for a specific type.
-
-The `pahole` generates BTF using DWARF. It is possible to modify
-`pahole` to accept the header guards list as an additional parameter
-and to encode the header guard names in BTF.
-
-Implementation details
----
-
-Present patch-set implements these ideas as follows:
-- A parameter `--header_guards_db` is added to `pahole`. If present it
-  points to a file with a list of `<header> <guard>` records.
-- `pahole` uses DWARF `DW_AT_decl_file` value to lookup the header
-  guard for each type emitted to BTF. If header guard is present it is
-  encoded alongside the type.
-- Header guards are encoded in BTF as `BTF_DECL_TAG` records with a
-  special prefix. The prefix "header_guard:" is added to a value of
-  such tags. (Here `BTF_DECL_TAG` is used to avoid BTF binary format
-  changes).
-- A special script `infer_header_guards.pl` is added as a part of
-  kbuild, it can infer header guard names for each UAPI header basing
-  on the header content.
-- This script is invoked from `link-vmlinux.sh` prior to BTF
-  generation during kernel build. The output of the script is saved to
-  a file, the file is passed to `pahole` as `--header_guards_db`
-  parameter.
-- `libbpf` is modified to aggregate `BTF_DECL_TAG` records for each
-  type and to emit `#ifndef FOO_H ... #endif` brackets when
-  "header_guard:" tag is present for a type.
-
-Details for each patch in a set:
-- libbpf: Deduplicate unambigous standalone forward declarations
-- selftests/bpf: Tests for standalone forward BTF declarations deduplication
-
-  There is a small number (63 for defconfig) of forward declarations
-  that are not de-duplicated with the main type declaration under
-  certain conditions. This hinders the header guard brackets
-  generation. This patch addresses this de-duplication issue.
-
-- libbpf: Support for BTF_DECL_TAG dump in C format
-- selftests/bpf: Tests for BTF_DECL_TAG dump in C format
-
-  Currently libbpf does not process BTF_DECL_TAG when btf is dumped in
-  C format. This patch adds a hash table matching btf type ids with a
-  list of decl tags to the struct btf_dump.
-  The `btf_dump_emit_decl_tags` is not necessary for the overall
-  patch-set to function but simplifies testing a bit.
-
-- libbpf: Header guards for selected data structures in vmlinux.h
-- selftests/bpf: Tests for header guards printing in BTF dump
-
-  Adds option `emit_header_guards` to `struct btf_dump_opts`.
-  When enabled the `btf_dump__dump_type` prints `#ifndef ... #endif`
-  brackets around types for which header guard information is present
-  in BTF.
-
-- bpftool: Enable header guards generation
-
-  Unconditionally enables `emit_header_guards` for BTF dump in C format.
-
-- kbuild: Script to infer header guard values for uapi headers
-- kbuild: Header guards for types from include/uapi/*.h in kernel BTF
-
-  Adds `scripts/infer_header_guards.pl` and integrates it with
-  `link-vmlinux.sh`.
-
-- selftests/bpf: Script to verify uapi headers usage with vmlinux.h
-
-  Adds a script `test_uapi_headers.py` that tests header guards with
-  vmlinux.h by compiling a simple C snippet. The snippet looks as
-  follows:
-  
-    #include <some_uapi_header.h>
-    #include "vmlinux.h"
-  
-    __attribute__((section("tc"), used))
-    int syncookie_tc(struct __sk_buff *skb) { return 0; }
-  
-  The list of headers to test comes from
-  `tools/testing/selftests/bpf/good_uapi_headers.txt`.
-
-- selftests/bpf: Known good uapi headers for test_uapi_headers.py
-
-  The list of uapi headers that could be included alongside vmlinux.h.
-  The headers are peeked from the following locations:
-  - <headers-export-dir>/linux/*.h
-  - <headers-export-dir>/linux/**/*.h
-  This choice of locations is somewhat arbitrary.
-
-- selftests/bpf: script for infer_header_guards.pl testing
-
-  The test case for `scripts/infer_header_guards.pl`, verifies that
-  header guards can be inferred for all uapi headers.
-
-- There is also a patch for dwarves that adds `--header_guards_db`
-  option (see [2]).
-
-The `test_uapi_headers.py` is important as it demonstrates the
-the necessary compiler flags:
-
-clang ...                                  \
-      -D__x86_64__                         \
-      -Xclang -fwchar-type=short           \
-      -Xclang -fno-signed-wchar            \
-      -I{exported_kernel_headers}/include/ \
-      ...
-
-- `-fwchar-type=short` and `-fno-signed-wchar` had to be added because
-  BPF target uses `int` for `wchar_t` by default and this differs from
-  `vmlinux.h` definition of the type (at least for x86_64).
-- `__x86_64__` had to be added for uapi headers that include
-  `stddef.h` (the one that is supplied my CLANG itself), in order to
-  define correct sizes for `size_t` and `ptrdiff_t`.
-- The `{exported_kernel_headers}` stands for exported kernel headers
-  directory (the headers obtained by `make headers_install` or via
-  distribution package).
-
-When it works
----
-
-The mechanics described above works for a significant number of UAPI
-headers. For example, for the test case above I chose the headers from
-the following locations:
-- linux/*.h
-- linux/**/*.h
-There are 759 such headers and for 677 of them the test described
-above passes.
-
-I excluded the headers from the following sub-directories as
-potentially not interesting:
-
-  asm          rdma   video xen
-  asm-generic  misc   scsi
-  drm          mtd    sound
-
-Thus saving some time for both discussion and CI but the choice is
-somewhat arbitrary. If I run `test_uapi_headers.py --test '*'` (all
-headers) test passes for 834 out of 972 headers.
-
-When it breaks
----
-
-There several scenarios when this mechanics breaks.
-Specifically I found the following cases:
-- When uapi header includes some system header that conflicts with
-  vmlinux.h.
-- When uapi header itself conflicts with vmlinux.h.
-
-Below are examples for both cases.
-
-Conflict with system headers
-----
-
-The following uapi headers:
-- linux/atmbr2684.h
-- linux/bpfilter.h
-- linux/gsmmux.h
-- linux/icmp.h
-- linux/if.h
-- linux/if_arp.h
-- linux/if_bonding.h
-- linux/if_pppox.h
-- linux/if_tunnel.h
-- linux/ip6_tunnel.h
-- linux/llc.h
-- linux/mctp.h
-- linux/mptcp.h
-- linux/netdevice.h
-- linux/netfilter/xt_RATEEST.h
-- linux/netfilter/xt_hashlimit.h
-- linux/netfilter/xt_physdev.h
-- linux/netfilter/xt_rateest.h
-- linux/netfilter_arp/arp_tables.h
-- linux/netfilter_arp/arpt_mangle.h
-- linux/netfilter_bridge.h
-- linux/netfilter_bridge/ebtables.h
-- linux/netfilter_ipv4/ip_tables.h
-- linux/netfilter_ipv6/ip6_tables.h
-- linux/route.h
-- linux/wireless.h
-
-Include the following system header:
-- /usr/include/sys/socket.h (all via linux/if.h)
-
-The sys/socket.h conflicts with vmlinux.h in:
-- types: struct iovec, struct sockaddr, struct msghdr, ...
-- constants: SOCK_STREAM, SOCK_DGRAM, ...
-
-However, only two types are actually used:
-- struct sockaddr
-- struct sockaddr_storage (used only in linux/mptcp.h)
-
-In 'vmlinux.h' this type originates from 'kernel/include/socket.h'
-(non UAPI header), thus does not have a header guard.
-
-The only workaround that I see is to:
-- define a stub sys/socket.h as follows:
-
-    #ifndef __BPF_SOCKADDR__
-    #define __BPF_SOCKADDR__
-    
-    /* For __kernel_sa_family_t */
-    #include <linux/socket.h>
-    
-    struct sockaddr {
-        __kernel_sa_family_t sa_family;
-        char sa_data[14];
-    };
-    
-    #endif
-
-- hardcode generation of __BPF_SOCKADDR__ bracket for
-  'struct sockaddr' in vmlinux.h.
-
-Another possibility is to move the definition of 'struct sockaddr'
-from 'kernel/include/socket.h' to 'kernel/include/uapi/linux/socket.h',
-but I expect that this won't fly with the mainline as it might break
-the programs that include both 'linux/socket.h' and 'sys/socket.h'.
-
-Conflict with vmlinux.h
-----
-
-Uapi header:
-- linux/signal.h
-
-Conflict with vmlinux.h in definition of 'struct sigaction'.
-Defined in:
-- vmlinux.h: kernel/include/linux/signal_types.h
-- uapi:      kernel/arch/x86/include/asm/signal.h
-
-Uapi headers:
-- linux/tipc_sockets_diag.h
-- linux/sock_diag.h
-
-Conflict with vmlinux.h in definition of 'SOCK_DESTROY'.
-Defined in:
-- vmlinux.h: kernel/include/net/sock.h
-- uapi:      kernel/include/uapi/linux/sock_diag.h
-Constants seem to be unrelated.
-
-And so on... I have details for many other headers but omit those for
-brevity.
-
-In conclusion
----
-
-Except from the general feasibility I have a few questions:
-- What UAPI headers are the candidates for such use? If there are some
-  interesting headers currently not working with this patch-set some
-  hacks have to be added (e.g. like with `linux/if.h`).
-- Is it ok to encode header guards as special `BTF_DECL_TAG` or should
-  I change the BTF format a bit to save some bytes.
-
-Thanks,
-Eduard
-
-
-[1] https://reviews.llvm.org/D111307
-    [clang] __attribute__ bpf_dominating_decl
-[2] https://lore.kernel.org/dwarves/20221025220729.2293891-1-eddyz87@gmail.com/T/
-    [RFC dwarves] pahole: Save header guard names when
-                  --header_guards_db is passed
-
-Eduard Zingerman (12):
-  libbpf: Deduplicate unambigous standalone forward declarations
-  selftests/bpf: Tests for standalone forward BTF declarations
-    deduplication
-  libbpf: Support for BTF_DECL_TAG dump in C format
-  selftests/bpf: Tests for BTF_DECL_TAG dump in C format
-  libbpf: Header guards for selected data structures in vmlinux.h
-  selftests/bpf: Tests for header guards printing in BTF dump
-  bpftool: Enable header guards generation
-  kbuild: Script to infer header guard values for uapi headers
-  kbuild: Header guards for types from include/uapi/*.h in kernel BTF
-  selftests/bpf: Script to verify uapi headers usage with vmlinux.h
-  selftests/bpf: Known good uapi headers for test_uapi_headers.py
-  selftests/bpf: script for infer_header_guards.pl testing
-
- scripts/infer_header_guards.pl                | 191 +++++
- scripts/link-vmlinux.sh                       |  13 +-
- tools/bpf/bpftool/btf.c                       |   4 +-
- tools/lib/bpf/btf.c                           | 178 ++++-
- tools/lib/bpf/btf.h                           |   7 +-
- tools/lib/bpf/btf_dump.c                      | 232 +++++-
- .../selftests/bpf/good_uapi_headers.txt       | 677 ++++++++++++++++++
- tools/testing/selftests/bpf/prog_tests/btf.c  | 152 ++++
- .../selftests/bpf/prog_tests/btf_dump.c       |  11 +-
- .../bpf/progs/btf_dump_test_case_decl_tag.c   |  39 +
- .../progs/btf_dump_test_case_header_guards.c  |  94 +++
- .../bpf/test_uapi_header_guards_infer.sh      |  33 +
- .../selftests/bpf/test_uapi_headers.py        | 197 +++++
- 13 files changed, 1816 insertions(+), 12 deletions(-)
- create mode 100755 scripts/infer_header_guards.pl
- create mode 100644 tools/testing/selftests/bpf/good_uapi_headers.txt
- create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
- create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_header_guards.c
- create mode 100755 tools/testing/selftests/bpf/test_uapi_header_guards_infer.sh
- create mode 100755 tools/testing/selftests/bpf/test_uapi_headers.py
-
+ tools/lib/bpf/btf.c | 178 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 174 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index d88647da2c7f..c34c68d8e8a0 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -2881,6 +2881,7 @@ static int btf_dedup_strings(struct btf_dedup *d);
+ static int btf_dedup_prim_types(struct btf_dedup *d);
+ static int btf_dedup_struct_types(struct btf_dedup *d);
+ static int btf_dedup_ref_types(struct btf_dedup *d);
++static int btf_dedup_standalone_fwds(struct btf_dedup *d);
+ static int btf_dedup_compact_types(struct btf_dedup *d);
+ static int btf_dedup_remap_types(struct btf_dedup *d);
+ 
+@@ -2988,15 +2989,16 @@ static int btf_dedup_remap_types(struct btf_dedup *d);
+  * Algorithm summary
+  * =================
+  *
+- * Algorithm completes its work in 6 separate passes:
++ * Algorithm completes its work in 7 separate passes:
+  *
+  * 1. Strings deduplication.
+  * 2. Primitive types deduplication (int, enum, fwd).
+  * 3. Struct/union types deduplication.
+- * 4. Reference types deduplication (pointers, typedefs, arrays, funcs, func
++ * 4. Standalone fwd declarations deduplication.
++ * 5. Reference types deduplication (pointers, typedefs, arrays, funcs, func
+  *    protos, and const/volatile/restrict modifiers).
+- * 5. Types compaction.
+- * 6. Types remapping.
++ * 6. Types compaction.
++ * 7. Types remapping.
+  *
+  * Algorithm determines canonical type descriptor, which is a single
+  * representative type for each truly unique type. This canonical type is the
+@@ -3060,6 +3062,11 @@ int btf__dedup(struct btf *btf, const struct btf_dedup_opts *opts)
+ 		pr_debug("btf_dedup_struct_types failed:%d\n", err);
+ 		goto done;
+ 	}
++	err = btf_dedup_standalone_fwds(d);
++	if (err < 0) {
++		pr_debug("btf_dedup_standalone_fwd failed:%d\n", err);
++		goto done;
++	}
+ 	err = btf_dedup_ref_types(d);
+ 	if (err < 0) {
+ 		pr_debug("btf_dedup_ref_types failed:%d\n", err);
+@@ -4525,6 +4532,169 @@ static int btf_dedup_ref_types(struct btf_dedup *d)
+ 	return 0;
+ }
+ 
++/*
++ * `name_off_map` maps name offsets to type ids (essentially __u32 -> __u32).
++ *
++ * The __u32 key/value representations are cast to `void *` before passing
++ * to `hashmap__*` functions. These pseudo-pointers are never dereferenced.
++ *
++ */
++static struct hashmap *name_off_map__new(void)
++{
++	return hashmap__new(btf_dedup_identity_hash_fn,
++			    btf_dedup_equal_fn,
++			    NULL);
++}
++
++static int name_off_map__find(struct hashmap *map, __u32 name_off, __u32 *type_id)
++{
++	/* This has to be sizeof(void *) in order to be passed to hashmap__find */
++	void *tmp;
++	int found = hashmap__find(map, (void *)(ptrdiff_t)name_off, &tmp);
++	/*
++	 * __u64 cast is necessary to avoid pointer to integer conversion size warning.
++	 * It is fine to get rid of this warning as `void *` is used as an integer value.
++	 */
++	if (found)
++		*type_id = (__u64)tmp;
++	return found;
++}
++
++static int name_off_map__set(struct hashmap *map, __u32 name_off, __u32 type_id)
++{
++	return hashmap__set(map, (void *)(size_t)name_off, (void *)(size_t)type_id,
++			    NULL, NULL);
++}
++
++/*
++ * Collect a `name_off_map` that maps type names to type ids for all
++ * canonical structs and unions. If the same name is shared by several
++ * canonical types use a special value 0 to indicate this fact.
++ */
++static int btf_dedup_fill_unique_names_map(struct btf_dedup *d, struct hashmap *names_map)
++{
++	int i, err = 0;
++	__u32 type_id, collision_id;
++	__u16 kind;
++	struct btf_type *t;
++
++	for (i = 0; i < d->btf->nr_types; i++) {
++		type_id = d->btf->start_id + i;
++		t = btf_type_by_id(d->btf, type_id);
++		kind = btf_kind(t);
++
++		if (kind != BTF_KIND_STRUCT && kind != BTF_KIND_UNION)
++			continue;
++
++		/* Skip non-canonical types */
++		if (type_id != d->map[type_id])
++			continue;
++
++		err = 0;
++		if (name_off_map__find(names_map, t->name_off, &collision_id)) {
++			/* Mark non-unique names with 0 */
++			if (collision_id != 0 && collision_id != type_id)
++				err = name_off_map__set(names_map, t->name_off, 0);
++		} else {
++			err = name_off_map__set(names_map, t->name_off, type_id);
++		}
++
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static int btf_dedup_standalone_fwd(struct btf_dedup *d,
++				    struct hashmap *names_map,
++				    __u32 type_id)
++{
++	struct btf_type *t = btf_type_by_id(d->btf, type_id);
++	__u16 kind = btf_kind(t);
++	enum btf_fwd_kind fwd_kind = BTF_INFO_KFLAG(t->info);
++
++	struct btf_type *cand_t;
++	__u16 cand_kind;
++	__u32 cand_id = 0;
++
++	if (kind != BTF_KIND_FWD)
++		return 0;
++
++	/* Skip if this FWD already has a mapping */
++	if (type_id != d->map[type_id])
++		return 0;
++
++	name_off_map__find(names_map, t->name_off, &cand_id);
++	if (!cand_id)
++		return 0;
++
++	cand_t = btf_type_by_id(d->btf, cand_id);
++	cand_kind = btf_kind(cand_t);
++	if (!(cand_kind == BTF_KIND_STRUCT && fwd_kind == BTF_FWD_STRUCT) &&
++	    !(cand_kind == BTF_KIND_UNION && fwd_kind == BTF_FWD_UNION))
++		return 0;
++
++	d->map[type_id] = cand_id;
++
++	return 0;
++}
++
++/*
++ * Standalone fwd declarations deduplication.
++ *
++ * The lion's share of all FWD declarations is resolved during
++ * `btf_dedup_struct_types` phase when different type graphs are
++ * compared against each other. However, if in some compilation unit a
++ * FWD declaration is not a part of a type graph compared against
++ * another type graph that declaration's canonical type would not be
++ * changed. Example:
++ *
++ * CU #1:
++ *
++ * struct foo;
++ * struct foo *some_global;
++ *
++ * CU #2:
++ *
++ * struct foo { int u; };
++ * struct foo *another_global;
++ *
++ * After `btf_dedup_struct_types` the BTF looks as follows:
++ *
++ * [1] STRUCT 'foo' size=4 vlen=1 ...
++ * [2] INT 'int' size=4 ...
++ * [3] PTR '(anon)' type_id=1
++ * [4] FWD 'foo' fwd_kind=struct
++ * [5] PTR '(anon)' type_id=4
++ *
++ * This pass assumes that such FWD declarations should be mapped to
++ * structs or unions with identical name in case if the name is not
++ * ambiguous.
++ */
++static int btf_dedup_standalone_fwds(struct btf_dedup *d)
++{
++	int i, err;
++	struct hashmap *names_map = name_off_map__new();
++
++	if (!names_map)
++		return -ENOMEM;
++
++	err = btf_dedup_fill_unique_names_map(d, names_map);
++	if (err < 0)
++		goto exit;
++
++	for (i = 0; i < d->btf->nr_types; i++) {
++		err = btf_dedup_standalone_fwd(d, names_map, d->btf->start_id + i);
++		if (err < 0)
++			goto exit;
++	}
++
++exit:
++	hashmap__free(names_map);
++	return err;
++}
++
+ /*
+  * Compact types.
+  *
 -- 
 2.34.1
 
