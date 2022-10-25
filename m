@@ -2,211 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996C060C158
-	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 03:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528EB60C189
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 04:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbiJYBqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Oct 2022 21:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S231193AbiJYCNZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Oct 2022 22:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbiJYBqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Oct 2022 21:46:17 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D145FC748
-        for <bpf@vger.kernel.org>; Mon, 24 Oct 2022 18:36:16 -0700 (PDT)
-Message-ID: <f136c13e-5386-ea21-69af-d48127c75752@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1666661774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lg8YDGU3TCaN61a5wt+p+smOnSoigX/7i0zLKzo4Zmw=;
-        b=lHYTfOYw552JvfUdqMjEMal+MQh7GQh1KLzpSm8CgAa/oWacbLNaqzK33yjwXBTTipkNiN
-        mfjK1BnFM1NXO4A0vlthWhxI3s5dRzr3Jh2VS0+x5IsA+20E4IP+EbQmD3TTKQN/yBYRn/
-        y09T42ut0iSjmgFdhDG1KEyuTzvqezQ=
-Date:   Mon, 24 Oct 2022 18:36:10 -0700
+        with ESMTP id S229850AbiJYCNV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Oct 2022 22:13:21 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EFF51416;
+        Mon, 24 Oct 2022 19:13:20 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id ud5so5614759ejc.4;
+        Mon, 24 Oct 2022 19:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DhmNNU25vUDrVdGMUPCXBDFCjt+i+lb2YqFT/E7mIog=;
+        b=hhoX2dhup/uyiCzeOct6XyH3wcp1TiAsuL3mdLbOOSD3Bi+PzOwS+eaHlEmMS7Xg0P
+         8RJZuCqf0YtPdgp7QT0iq7674VeNDLKwQFVwxGbr1pvxhAESWMjiJR/ds4hgqAohgDWP
+         1ZQPNM44DZ6+oYLPL6oJMW3Vv9vj11hcD66R91wwO+86rGbHx+9alJV5Y+3DWNSrL6ia
+         TtQV2Kj473CHV3uxDYCiczvVnokDx3xwkFzM1dImWJrAY0msoH2Eo4wS4+he3twrIEg+
+         Idjh4/I3OEPprCtgIo0yTEI2cYB5354WSHmgO7sHCHHojMB+yjlBazMJSabyjHgnNR6Y
+         HJFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DhmNNU25vUDrVdGMUPCXBDFCjt+i+lb2YqFT/E7mIog=;
+        b=vzi89B5Bhjbb3r5BsuYbOBgfM6ycFu8YI10j6hMwfYenF6eXr6a5I2snB8eVdojq+X
+         XIoKci3ezR8Mjb+6adimOkCmJm8SVPZUYUKrg0TnpQ6/7rkpq+06LB2dj9dG4aaGjsvt
+         rnft/pDSR8QAW8GhgDzfKq5FV+uP49eijUiiKGJLV8xh98SbnrH3RK3k99ckLkAFaG1h
+         QH6boO+OS6vTtAxBijSn0MvT2rtXmWtmUovftsMPdnB1kpPhBJSz6w3SisLPDBYDBg6v
+         OG+qEHmTjDJj1IFASWQXs2ThnWpgXgt4EDG4S1aPWdVORq/I55D1nLHlkq7rRFAqIXtH
+         R2zA==
+X-Gm-Message-State: ACrzQf1IU+Om+OYW7Yo6mfkgeYBL+RbQDplEnKxgfTMYnyEktXtQd8YE
+        UpCzVlwyAbLySL1BzWbkBbvb+gsU9DxekUQ22kU=
+X-Google-Smtp-Source: AMsMyM6OcW/2DIpUb/Ldne5zRiYi0PJUWpM2NUOpGzkgd9Ssk/OYRILQF6z1gXkJjVxrNj3Qr0ROISI31dfT9kEV8KA=
+X-Received: by 2002:a17:906:6a1a:b0:7a1:a9e5:7869 with SMTP id
+ qw26-20020a1709066a1a00b007a1a9e57869mr12439939ejc.708.1666663999208; Mon, 24
+ Oct 2022 19:13:19 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Implement cgroup storage available
- to non-cgroup-attached bpf progs
-Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org
-References: <20221023180514.2857498-1-yhs@fb.com>
- <20221023180530.2860453-1-yhs@fb.com>
- <dba4c448-ae08-f665-8723-c83c4d2fb98f@linux.dev>
- <CAJD7tkafC5BPqUxUWc3UUrphe0wKaRe=HfLvkyPk09+EV8ndCw@mail.gmail.com>
- <5dd7b50f-3179-75c2-4125-ee872f225129@linux.dev>
- <CAJD7tkY_HgX_Lr9j-OfPRWkg0hSGooATLCs589k5UiX9t5k97Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAJD7tkY_HgX_Lr9j-OfPRWkg0hSGooATLCs589k5UiX9t5k97Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
+ <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
+ <d7a17e482b7bbf945c92443b45de73f56afea08a.camel@huaweicloud.com> <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
+In-Reply-To: <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 24 Oct 2022 19:13:07 -0700
+Message-ID: <CAADnVQL1a2pPAJqzj6oUwupxxfaW38KQswzppAZeZPzmTFhjMg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from bpf_lsm_inode_init_security()
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nicolas.bouchinet@clip-os.org, Mimi Zohar <zohar@linux.ibm.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/24/22 5:48 PM, Yosry Ahmed wrote:
-> On Mon, Oct 24, 2022 at 5:32 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 10/24/22 5:21 PM, Yosry Ahmed wrote:
->>> On Mon, Oct 24, 2022 at 2:15 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>>
->>>> On 10/23/22 11:05 AM, Yonghong Song wrote:
->>>>> +void bpf_cgrp_storage_free(struct cgroup *cgroup)
->>>>> +{
->>>>> +     struct bpf_local_storage *local_storage;
->>>>> +     struct bpf_local_storage_elem *selem;
->>>>> +     bool free_cgroup_storage = false;
->>>>> +     struct hlist_node *n;
->>>>> +     unsigned long flags;
->>>>> +
->>>>> +     rcu_read_lock();
->>>>> +     local_storage = rcu_dereference(cgroup->bpf_cgrp_storage);
->>>>> +     if (!local_storage) {
->>>>> +             rcu_read_unlock();
->>>>> +             return;
->>>>> +     }
->>>>> +
->>>>> +     /* Neither the bpf_prog nor the bpf_map's syscall
->>>>> +      * could be modifying the local_storage->list now.
->>>>> +      * Thus, no elem can be added to or deleted from the
->>>>> +      * local_storage->list by the bpf_prog or by the bpf_map's syscall.
->>>>> +      *
->>>>> +      * It is racing with __bpf_local_storage_map_free() alone
->>>>> +      * when unlinking elem from the local_storage->list and
->>>>> +      * the map's bucket->list.
->>>>> +      */
->>>>> +     bpf_cgrp_storage_lock();
->>>>> +     raw_spin_lock_irqsave(&local_storage->lock, flags);
->>>>> +     hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
->>>>> +             bpf_selem_unlink_map(selem);
->>>>> +             /* If local_storage list has only one element, the
->>>>> +              * bpf_selem_unlink_storage_nolock() will return true.
->>>>> +              * Otherwise, it will return false. The current loop iteration
->>>>> +              * intends to remove all local storage. So the last iteration
->>>>> +              * of the loop will set the free_cgroup_storage to true.
->>>>> +              */
->>>>> +             free_cgroup_storage =
->>>>> +                     bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
->>>>> +     }
->>>>> +     raw_spin_unlock_irqrestore(&local_storage->lock, flags);
->>>>> +     bpf_cgrp_storage_unlock();
->>>>> +     rcu_read_unlock();
->>>>> +
->>>>> +     if (free_cgroup_storage)
->>>>> +             kfree_rcu(local_storage, rcu);
->>>>> +}
->>>>
->>>> [ ... ]
->>>>
->>>>> +/* *gfp_flags* is a hidden argument provided by the verifier */
->>>>> +BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
->>>>> +        void *, value, u64, flags, gfp_t, gfp_flags)
->>>>> +{
->>>>> +     struct bpf_local_storage_data *sdata;
->>>>> +
->>>>> +     WARN_ON_ONCE(!bpf_rcu_lock_held());
->>>>> +     if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
->>>>> +             return (unsigned long)NULL;
->>>>> +
->>>>> +     if (!cgroup)
->>>>> +             return (unsigned long)NULL;
->>>>> +
->>>>> +     if (!bpf_cgrp_storage_trylock())
->>>>> +             return (unsigned long)NULL;
->>>>> +
->>>>> +     sdata = cgroup_storage_lookup(cgroup, map, true);
->>>>> +     if (sdata)
->>>>> +             goto unlock;
->>>>> +
->>>>> +     /* only allocate new storage, when the cgroup is refcounted */
->>>>> +     if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
->>>>> +         (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
->>>>> +             sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map *)map,
->>>>> +                                              value, BPF_NOEXIST, gfp_flags);
->>>>> +
->>>>> +unlock:
->>>>> +     bpf_cgrp_storage_unlock();
->>>>> +     return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned long)sdata->data;
->>>>> +}
->>>>
->>>> [ ... ]
->>>>
->>>>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->>>>> index 764bdd5fd8d1..32145d066a09 100644
->>>>> --- a/kernel/cgroup/cgroup.c
->>>>> +++ b/kernel/cgroup/cgroup.c
->>>>> @@ -5227,6 +5227,10 @@ static void css_free_rwork_fn(struct work_struct *work)
->>>>>         struct cgroup_subsys *ss = css->ss;
->>>>>         struct cgroup *cgrp = css->cgroup;
->>>>>
->>>>> +#ifdef CONFIG_BPF_SYSCALL
->>>>> +     bpf_cgrp_storage_free(cgrp);
->>>>> +#endif
->>>>
->>>>
->>>> After revisiting comment 4bfc0bb2c60e, some of the commit message came to my mind:
->>>>
->>>> " ...... it blocks a possibility to implement
->>>>      the memcg-based memory accounting for bpf objects, because a circular
->>>>      reference dependency will occur. Charged memory pages are pinning the
->>>>      corresponding memory cgroup, and if the memory cgroup is pinning
->>>>      the attached bpf program, nothing will be ever released."
->>>>
->>>> Considering the bpf_map_kzalloc() is used in bpf_local_storage_map.c and it can
->>>> charge the memcg, I wonder if the cgrp_local_storage will have similar refcnt
->>>> loop issue here.
->>>>
->>>> If here is the right place to free the cgrp_local_storage() and enough to break
->>>> this refcnt loop, it will be useful to add some explanation and its
->>>> consideration in the commit message.
->>>>
->>>
->>> I think a similar refcount loop issue can happen here as well. IIUC,
->>> this function will only be run when the css is released after all
->>> references are dropped. So if memcg charging is enabled the cgroup
->>> will never be removed. This one might be trickier to handle though..
->>
->> How about removing all storage from cgrp->bpf_cgrp_storage in
->> cgroup_destroy_locked()?
-> 
-> The problem here is that you lose information for cgroups that went
-> offline but still exist in the kernel (i.e offline cgroups). The
-> commit log 4bfc0bb2c60e mentions that such cgroups can have live
-> sockets attached, so this might be a problem?
+On Mon, Oct 24, 2022 at 8:28 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> On Mon, 2022-10-24 at 11:25 +0200, Roberto Sassu wrote:
+> > On Sun, 2022-10-23 at 16:36 -0700, Alexei Starovoitov wrote:
+> >
+> > Sorry, forgot to CC Mimi and linux-integrity.
+> >
+> > > On Fri, Oct 21, 2022 at 9:57 AM Roberto Sassu
+> > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > >
+> > > > BPF LSM allows security modules to directly attach to the security
+> > > > hooks,
+> > > > with the potential of not meeting the kernel expectation.
+> > > >
+> > > > This is the case for the inode_init_security hook, for which the
+> > > > kernel
+> > > > expects that name and value are set if the hook implementation
+> > > > returns
+> > > > zero.
+> > > >
+> > > > Consequently, not meeting the kernel expectation can cause the
+> > > > kernel to
+> > > > crash. One example is evm_protected_xattr_common() which expects
+> > > > the
+> > > > req_xattr_name parameter to be always not NULL.
+> > >
+> > > Sounds like a bug in evm_protected_xattr_common.
+> >
+> > If an LSM implementing the inode_init_security hook returns -EOPNOTSUPP
+> > or -ENOMEM, evm_protected_xattr_common() is not going to be executed.
+> >
+> > This is documented in include/linux/lsm_hooks.h
+> >
+> > Why it would be a bug in evm_protected_xattr_common()?
+> >
+> > > > Introduce a level of indirection in BPF LSM, for the
+> > > > inode_init_security
+> > > > hook, to check the validity of the name and value set by security
+> > > > modules.
+> > >
+> > > Doesn't make sense.
+> >
+> > Look at this example. The LSM infrastructure has a convention on return
+> > values for the hooks (maybe there is something similar for other
+> > hooks). The code calling the hooks relies on such conventions. If
+> > conventions are not followed a panic occurs.
+> >
+> > If LSMs go to the kernel, their code is checked for compliance with the
+> > conventions. However, this does not happen for security modules
+> > attached to the BPF LSM, because BPF LSM directly executes the eBPF
+> > programs without further checks.
+> >
+> > I was able to trigger the panic with this simple eBPF program:
+> >
+> > SEC("lsm/inode_init_security")
+> > int BPF_PROG(test_int_hook, struct inode *inode,
+> >        struct inode *dir, const struct qstr *qstr, const char **name,
+> >        void **value, size_t *len)
+> > {
+> >       return 0;
+> > }
+> >
+> > In my opinion, the level of indirection is necessary to ensure that
+> > kernel expectations are met.
+>
+> I investigated further. Instead of returning zero, I return one. This
+> causes a crash even with the most recent kernel (lsm=bpf):
+>
+> [   27.685704] BUG: kernel NULL pointer dereference, address: 00000000000000e1
+> [   27.686445] #PF: supervisor read access in kernel mode
+> [   27.686964] #PF: error_code(0x0000) - not-present page
+> [   27.687465] PGD 0 P4D 0
+> [   27.687724] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [   27.688155] CPU: 9 PID: 897 Comm: in:imjournal Not tainted 6.1.0-rc2 #255
+> [   27.688807] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> [   27.689652] RIP: 0010:fsnotify+0x71a/0x780
+> [   27.690056] Code: ff 48 85 db 74 54 48 83 bb 68 04 00 00 00 74 4a 41 8b 92 98 06 00 00 4d 85 ed
+> 0f 85 a6 f9 ff ff e9 ad f9 ff ff 48 8b 44 24 08 <4c> 8b 90 e0 00 00 00 e9 00 fa ff ff 48 c7 c2 b8 12
+> 78 82 be 81 01
+> [   27.691809] RSP: 0018:ffffc90001307ca0 EFLAGS: 00010246
+> [   27.692313] RAX: 0000000000000001 RBX: 0000000000000000 RCX: ffff88811d73b4a8
+> [   27.692998] RDX: 0000000000000003 RSI: 0000000000000001 RDI: 0000000000000100
+> [   27.693682] RBP: ffff888100441c08 R08: 0000000000000059 R09: 0000000000000000
+> [   27.694371] R10: 0000000000000000 R11: ffff88846fc72d30 R12: 0000000000000100
+> [   27.695073] R13: ffff88811a2a5200 R14: ffffc90001307dc0 R15: 0000000000000001
+> [   27.695738] FS:  00007ff791000640(0000) GS:ffff88846fc40000(0000) knlGS:0000000000000000
+> [   27.696137] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   27.696430] CR2: 00000000000000e1 CR3: 0000000112aa6000 CR4: 0000000000350ee0
+> [   27.696782] Call Trace:
+> [   27.696909]  <TASK>
+> [   27.697026]  path_openat+0x484/0xa00
+> [   27.697218]  ? rcu_read_lock_held_common+0xe/0x50
+> [   27.697461]  do_filp_open+0x9f/0xf0
+> [   27.697643]  ? rcu_read_lock_sched_held+0x13/0x70
+> [   27.697888]  ? lock_release+0x1e1/0x2a0
+> [   27.698085]  ? _raw_spin_unlock+0x29/0x50
+> [   27.698291]  do_sys_openat2+0x226/0x300
+> [   27.698491]  do_sys_open+0x34/0x60
+> [   27.698667]  do_syscall_64+0x3b/0x90
+> [   27.698861]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> Beeing positive, instead of negative, the return code is converted
+> to a legitimate pointer instead of an error pointer, causing a crash
+> in fsnotify().
 
-Keeping the cgrp_storage around is useful for the cgroup-bpf prog that will be 
-called upon some sk events (eg ingress/egress).  The cgrp_storage cleanup could 
-be done in cgroup_bpf_release_fn() also such that it will wait till all sk is done.
+Could you point to the code that does that?
 
-> From a memory perspective, offline memcgs can still undergo memory operations like
-> reclaim. If we are using BPF to collect cgroup statistics for memory
-> reclaim, we can't do so for offline memcgs, which is not the end of
-> the world, but the cgroup storages become slightly less powerful. We
-> might also lose some data that we have already stored for such offline
-> memcgs. Also BPF programs now need to handle the case where they have
-> a valid cgroup pointer but they cannot retrieve a cgroup storage for
-> it because it went offline.
+I'm looking at security_inode_init_security() and it is indeed messy.
+Per file system initxattrs callback that processes kmalloc-ed strings.
+Yikes.
 
-iiuc, the use case is to be able to use the cgrp_storage at some earlier stage 
-of the cgroup destruction.  A noob question, I wonder if there is a cgroup that 
-it will never go away, the root cgrp?  Then the cgrp_storage cleanup could be 
-more selective and avoid cleaning up the cgrp storage charged to the root cgroup.
-
-> We ideally want to be able to charge the memory to the cgroup without
-> holding a ref to it, which is against the cgroup memory charging
-> model.
-
+In the short term we should denylist inode_init_security hook to
+disallow attaching bpf-lsm there. set/getxattr should be done
+through kfuncs instead of such kmalloc-a-string hack.
