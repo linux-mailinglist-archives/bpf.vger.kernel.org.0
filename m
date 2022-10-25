@@ -2,524 +2,440 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0638C60D6C8
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 00:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F240B60D712
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 00:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbiJYWIJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 18:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        id S231191AbiJYW2m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 18:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbiJYWII (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 18:08:08 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A2928E18;
-        Tue, 25 Oct 2022 15:08:06 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id t4so8982497wmj.5;
-        Tue, 25 Oct 2022 15:08:06 -0700 (PDT)
+        with ESMTP id S229544AbiJYW2l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 18:28:41 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31A75F215
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:39 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id t25so11004949ejb.8
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 15:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kTmRXzwW0CCkHy3orngV9NTlnfKAMCpHr0hoJjGuZSA=;
-        b=d6f3CQtuPksY23YC/O+Wb0oxKOmgmOzwHYjuzQpMQmuZL70YDm2vwXbvrSTkqXR0b5
-         AB+mqMwqW1NvdNX0lYc+jhSKyU7B5cL55eJOxM/I+6M8+pqwmEAqFI6KXu6XVRqn4AZ7
-         UWbxKYq+Y2cEh093kl+eXIECHyj21EAgkHURlrUGgujb9kzAVljD1JX7Nc2CAmQhi1tF
-         NPTzwK80ci6YBIju2GfWaAa13h6M31U3YNU4t2yTrLh18A2j8xflPhvNdfwd9TIB85Lp
-         hWrI/X9OPYn7eMMYmxBZuopT26KHiQuyft8TQl/cQ0hvVN2/FVaWxXDQcX5pT6Kc9QzL
-         lTyg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=66A+Y7HU+TmPLaAfL5A4rwDREQXI5HPqyd73x4w8n8c=;
+        b=OWsvWW0eB/PlOvznb5OjDr93O3RRPYRYJ1+ax4rah108rWyu966QnyqyXy4A3VoYj1
+         QcED2uPSEojdJcWIdBo8r4h9UhOlLWix1rUsl5tjFQJYu9V1rsWJxC8iYSFDbQT0m6ca
+         fyNnTpB7DNghmDYwf9dLDeSNvzcQq3nenJ73SwYWvx6Lw5al9juIxf9jcVmKyIKrnOul
+         CDtqu2Dc7OvctKO5e43lilobSQS8v6Cv5pKrvp91zCixcL9p7bHdsYAOVhXOnQkBKWVJ
+         4ezeVb2WHRpQkFa4voF9Q8XBfdeyT9A8uTgA4nf8OxF4j5PjQZqBRg+AMa95FV1irFVy
+         hIAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kTmRXzwW0CCkHy3orngV9NTlnfKAMCpHr0hoJjGuZSA=;
-        b=IAk9QMIyk365W8Wa+4wjxEXHCV5rb+gSpOoVvKxBTFA73eudhPhSdjvyphnWvytXIZ
-         DMuQRIy2M7Jb5ZmXyQ9K7/Xa1q5Z2xObBm4ZgcyS559gkjbJOBceGRfmSytGQVQTDbk8
-         xDpc76pDtCj/hZB1+2Rw6nB4/8o9CEJ5SO4INtFvgRo3UYJO9wjBBEz97draraDii7Is
-         3DCTb+u+4PojKnTh0HuWwFZHREogG18+WxCH2zyS89hyauMuCbM55H/6AFUNkq2K9QZe
-         51qm+q5uk3fbTxjifgm7uqjCyRMnvMmehiIuBS5C+6QoRosQ0lrxR/ECKLEbk7ZUegiR
-         BFtA==
-X-Gm-Message-State: ACrzQf3DgQ71N7Mke3JyjpexCP031U7bTAD/w6IblZq15KiFLCFwdXHP
-        vZHMdo6H7evktUELBjgaWjaQBmlnicj8s0wn
-X-Google-Smtp-Source: AMsMyM7zrxiG0K95N9Ep82Tf9vzI2r0smLHsA0+bu8zAbWRobiUNcE8e1ve1AST/J565LShZDXOWhQ==
-X-Received: by 2002:a05:600c:a4c:b0:3b4:fc1b:81 with SMTP id c12-20020a05600c0a4c00b003b4fc1b0081mr234967wmq.125.1666735684922;
-        Tue, 25 Oct 2022 15:08:04 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=66A+Y7HU+TmPLaAfL5A4rwDREQXI5HPqyd73x4w8n8c=;
+        b=Qqx4IY0fzcI4E7uHtf6K4nVUNx1+0sjAfp9tnXlYM6f8wMhjGtYldFy53XaIoYY7tk
+         yn63SFGkKoUsAIMYt3UvTGYecjJuitETWfgFadysOCIssmsdBy+dDG6i8EUZvY7M6XPF
+         qQ7TWVEPRSSlROGKQodSHJ3Wg2pTdT1tnke4CXkZXCkNtmNFhjv+br2GwbNfyxj9kQTe
+         XxIJrSLyGZMZzh5+imoUrDcDGE43RSHMBmeoccd0HFwejXE4hTyplHJkza0Rnx1HtAHW
+         a9sYUHL5N3YjOxx7lHEzA8AFeUvsS09p6E91Hj8maeRV2FRF30b8yMxquZhgwowPsmvY
+         io9A==
+X-Gm-Message-State: ACrzQf1yjkzmTWeHjXD41FLQOHYAnwH1hx9AEKSPmvfwoQUCfkSimK6l
+        nq+3wHThU/9LfDyVsx8Jy0LUA/fVfzcaUq3E
+X-Google-Smtp-Source: AMsMyM7LOQcdhqYaE0vmSlX9n0bEOR97ggFdIAHmwtqYKUE1Uri8BYdJRjNTYfICtA8iszIiHM+WOg==
+X-Received: by 2002:a17:906:cc0b:b0:78e:1d51:36ea with SMTP id ml11-20020a170906cc0b00b0078e1d5136eamr35076447ejb.408.1666736918056;
+        Tue, 25 Oct 2022 15:28:38 -0700 (PDT)
 Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id x2-20020adff642000000b0022a3a887ceasm3657046wrp.49.2022.10.25.15.08.03
+        by smtp.gmail.com with ESMTPSA id ks23-20020a170906f85700b0078d175d6dc5sm1993119ejb.201.2022.10.25.15.28.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Oct 2022 15:08:04 -0700 (PDT)
+        Tue, 25 Oct 2022 15:28:37 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     dwarves@vger.kernel.org, arnaldo.melo@gmail.com
-Cc:     bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, arnaldo.melo@gmail.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC dwarves 1/1] pahole: Save header guard names when --header_guards_db is passed
-Date:   Wed, 26 Oct 2022 01:07:29 +0300
-Message-Id: <20221025220729.2293891-2-eddyz87@gmail.com>
+Subject: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
+Date:   Wed, 26 Oct 2022 01:27:49 +0300
+Message-Id: <20221025222802.2295103-1-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221025220729.2293891-1-eddyz87@gmail.com>
-References: <20221025220729.2293891-1-eddyz87@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds a parameter --header_guards_db. The parameter should point to a
-file that associates header file names with names of a C pre-processor
-variables used as a double include guards (dubbed as "header guard"s).
+Hi BPF community,
 
-For each emitted type the DWARF attribute DW_AT_decl_file is checked,
-when the file name is present in the header guards DB a fake
-BTF_KIND_DECL_TAG record of the following form is emitted:
-- type: the id of the emitted type;
-- name_off: a string "header_guard:<guard>".
+AFAIK there is a long standing feature request to use kernel headers
+alongside `vmlinux.h` generated by `bpftool`. For example significant
+effort was put to add an attribute `bpf_dominating_decl` (see [1]) to
+clang, unfortunately this effort was stuck due to concerns regarding C
+language semantics.
 
-For example if DB record is present for 'tcphdr' the emitted BTF would
-look as follows:
+After some discussion with Alexei and Yonghong I'd like to request
+your comments regarding a somewhat brittle and partial solution to
+this issue that relies on adding `#ifndef FOO_H ... #endif` guards in
+the generated `vmlinux.h`.
 
-$ bpftool btf dump file vmlinux
-...
-[24139] STRUCT 'tcphdr' size=20 vlen=17
-  ...
-[24296] DECL_TAG 'header_guard:_UAPI_LINUX_TCP_H' type_id=24139 ...
-
-The DB file format:
-- one record per line;
-- record format: <file-name> <guard>;
-- spaces are not allowed in neither <file-name> nor <guard>.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+The basic idea
 ---
- btf_encoder.c | 103 ++++++++++++++++++++++++++++++++++++++++++++++----
- btf_encoder.h |   3 +-
- dutil.c       |  20 +++++++---
- dutil.h       |   1 +
- dwarves.h     |   1 +
- pahole.c      |  99 +++++++++++++++++++++++++++++++++++++++++++++++-
- 6 files changed, 210 insertions(+), 17 deletions(-)
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index a5fa04a..de96a7e 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -22,6 +22,7 @@
- #include <inttypes.h>
- #include <limits.h>
- 
-+#include <string.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-@@ -75,6 +76,7 @@ struct btf_encoder {
- 		int		    allocated;
- 		int		    cnt;
- 	} functions;
-+	struct strlist *header_guards_db;
- };
- 
- void btf_encoders__add(struct list_head *encoders, struct btf_encoder *encoder)
-@@ -1408,7 +1410,8 @@ out:
- 	return err;
- }
- 
--struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose)
-+struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose,
-+				     struct strlist *header_guards_db)
- {
- 	struct btf_encoder *encoder = zalloc(sizeof(*encoder));
- 
-@@ -1429,6 +1432,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->has_index_type  = false;
- 		encoder->need_index_type = false;
- 		encoder->array_index_id  = 0;
-+		encoder->header_guards_db = header_guards_db;
- 
- 		GElf_Ehdr ehdr;
- 
-@@ -1505,6 +1509,68 @@ void btf_encoder__delete(struct btf_encoder *encoder)
- 	free(encoder);
- }
- 
-+#define DECL_FILE_HEADER_GUARD_TAG "header_guard:"
-+
-+/*
-+ * For a given tag check if file name associated with it is present in
-+ * header_guards_db. If present, emit a fake BTF_KIND_DECL_TAG record
-+ * associated with this tag with a value of form "header_guard:<guard-name>".
-+ */
-+int btf_encoder__maybe_add_header_guard_tag(struct btf_encoder *encoder,
-+					    struct tag *tag,
-+					    struct cu *cu,
-+					    int btf_type_id)
-+{
-+	const char *decl_file;
-+	char *guard = NULL;
-+	size_t guard_len;
-+	char buf[256];
-+
-+	if (tag__type(tag)->declaration)
-+		return 0;
-+
-+	decl_file = tag__decl_file(tag, cu);
-+
-+	if (!decl_file)
-+		return 0;
-+
-+	if (strstarts(decl_file, "./"))
-+		decl_file = &decl_file[2];
-+
-+	/* Ignore a possibility of an absolute path in the file name for now */
-+
-+	__strlist__has_entry(encoder->header_guards_db, decl_file, (void **)&guard);
-+	if (!guard)
-+		return 0;
-+
-+	guard_len = strlen(decl_file);
-+	if (guard_len + strlen(DECL_FILE_HEADER_GUARD_TAG) + 1 > sizeof(buf)) {
-+		fprintf(stderr, "error: uapi decl file name '%s' is too long (%lu)\n",
-+			decl_file, guard_len);
-+		return -1;
-+	}
-+	strcpy(buf, DECL_FILE_HEADER_GUARD_TAG);
-+	strcpy(&buf[sizeof(DECL_FILE_HEADER_GUARD_TAG) - 1], guard);
-+
-+	return btf_encoder__add_decl_tag(encoder, buf, btf_type_id, -1);
-+}
-+
-+static const char *dw_tag_printable_name(uint16_t tag)
-+{
-+	switch (tag) {
-+	case DW_TAG_structure_type:
-+		return "struct";
-+	case DW_TAG_union_type:
-+		return "union";
-+	case DW_TAG_typedef:
-+		return "typedef";
-+	case DW_TAG_enumeration_type:
-+		return "enum";
-+	default:
-+		return "<no_tag_name>";
-+	}
-+}
-+
- int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
- {
- 	uint32_t type_id_off = btf__type_cnt(encoder->btf) - 1;
-@@ -1556,17 +1622,11 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 
- 	cu__for_each_type(cu, core_id, pos) {
- 		struct namespace *ns;
--		const char *tag_name;
- 
- 		switch (pos->tag) {
- 		case DW_TAG_structure_type:
--			tag_name = "struct";
--			break;
- 		case DW_TAG_union_type:
--			tag_name = "union";
--			break;
- 		case DW_TAG_typedef:
--			tag_name = "typedef";
- 			break;
- 		default:
- 			continue;
-@@ -1578,12 +1638,39 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 			tag_type_id = btf_encoder__add_decl_tag(encoder, annot->value, btf_type_id, annot->component_idx);
- 			if (tag_type_id < 0) {
- 				fprintf(stderr, "error: failed to encode tag '%s' to %s '%s' with component_idx %d\n",
--					annot->value, tag_name, namespace__name(ns), annot->component_idx);
-+					annot->value, dw_tag_printable_name(pos->tag),
-+					namespace__name(ns), annot->component_idx);
- 				goto out;
- 			}
- 		}
- 	}
- 
-+	cu__for_each_type(cu, core_id, pos) {
-+		struct namespace *ns;
-+
-+		switch (pos->tag) {
-+		case DW_TAG_structure_type:
-+		case DW_TAG_union_type:
-+		case DW_TAG_typedef:
-+		case DW_TAG_enumeration_type:
-+			break;
-+		default:
-+			continue;
-+		}
-+
-+		btf_type_id = type_id_off + core_id;
-+		tag_type_id = btf_encoder__maybe_add_header_guard_tag(encoder, pos,
-+								      cu, btf_type_id);
-+		if (tag_type_id < 0) {
-+			ns = tag__namespace(pos);
-+			fprintf(stderr,
-+				"error: failed to encode uapi header info for %s tag '%s'\n",
-+				dw_tag_printable_name(pos->tag),
-+				namespace__name(ns));
-+			goto out;
-+		}
-+	}
-+
- 	cu__for_each_function(cu, core_id, fn) {
- 		int btf_fnproto_id, btf_fn_id;
- 		const char *name;
-diff --git a/btf_encoder.h b/btf_encoder.h
-index a65120c..06b0c6b 100644
---- a/btf_encoder.h
-+++ b/btf_encoder.h
-@@ -16,7 +16,8 @@ struct btf;
- struct cu;
- struct list_head;
- 
--struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose);
-+struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose,
-+				     struct strlist *header_guards_db);
- void btf_encoder__delete(struct btf_encoder *encoder);
- 
- int btf_encoder__encode(struct btf_encoder *encoder);
-diff --git a/dutil.c b/dutil.c
-index 97c4474..28ff6ab 100644
---- a/dutil.c
-+++ b/dutil.c
-@@ -156,7 +156,7 @@ void strlist__remove(struct strlist *slist, struct str_node *sn)
- 	str_node__delete(sn, slist->dupstr);
- }
- 
--bool strlist__has_entry(struct strlist *slist, const char *entry)
-+bool __strlist__has_entry(struct strlist *slist, const char *entry, void **priv)
- {
-         struct rb_node **p = &slist->entries.rb_node;
-         struct rb_node *parent = NULL;
-@@ -169,17 +169,25 @@ bool strlist__has_entry(struct strlist *slist, const char *entry)
-                 sn = rb_entry(parent, struct str_node, rb_node);
- 		rc = strcmp(sn->s, entry);
- 
--		if (rc > 0)
--                        p = &(*p)->rb_left;
--                else if (rc < 0)
--                        p = &(*p)->rb_right;
--		else
-+		if (rc > 0) {
-+			p = &(*p)->rb_left;
-+		} else if (rc < 0) {
-+			p = &(*p)->rb_right;
-+		} else {
-+			if (priv)
-+				*priv = sn->priv;
- 			return true;
-+		}
-         }
- 
- 	return false;
- }
- 
-+bool strlist__has_entry(struct strlist *slist, const char *entry)
-+{
-+	return __strlist__has_entry(slist, entry, NULL);
-+}
-+
- Elf_Scn *elf_section_by_name(Elf *elf, GElf_Shdr *shp, const char *name, size_t *index)
- {
- 	Elf_Scn *sec = NULL;
-diff --git a/dutil.h b/dutil.h
-index 335a17c..e784284 100644
---- a/dutil.h
-+++ b/dutil.h
-@@ -299,6 +299,7 @@ int strlist__add(struct strlist *slist, const char *str);
- int __strlist__add(struct strlist *slist, const char *str, void *priv);
- 
- bool strlist__has_entry(struct strlist *slist, const char *entry);
-+bool __strlist__has_entry(struct strlist *slist, const char *entry, void **priv);
- 
- static inline bool strlist__empty(const struct strlist *slist)
- {
-diff --git a/dwarves.h b/dwarves.h
-index 589588e..2a24e09 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -70,6 +70,7 @@ struct conf_load {
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
- 	const char		*kabi_prefix;
-+	const char		*header_guards_db_file;
- 	struct btf		*base_btf;
- 	struct conf_fprintf	*conf_fprintf;
- 	int			(*threads_prepare)(struct conf_load *conf, int nr_threads, void **thr_data);
-diff --git a/pahole.c b/pahole.c
-index 4ddf21f..fbd78d2 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -80,6 +80,7 @@ static int show_reorg_steps;
- static const char *class_name;
- static LIST_HEAD(class_names);
- static char separator = '\t';
-+static struct strlist *header_guards_db;
- 
- static bool compilable;
- static struct type_emissions emissions;
-@@ -1222,6 +1223,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARGP_languages_exclude	   336
- #define ARGP_skip_encoding_btf_enum64 337
- #define ARGP_skip_emitting_atomic_typedefs 338
-+#define ARGP_header_guards_db	   339
- 
- static const struct argp_option pahole__options[] = {
- 	{
-@@ -1634,6 +1636,12 @@ static const struct argp_option pahole__options[] = {
- 		.key  = ARGP_skip_emitting_atomic_typedefs,
- 		.doc  = "Do not emit 'typedef _Atomic int atomic_int' & friends."
- 	},
-+	{
-+		.name = "header_guards_db",
-+		.key  = ARGP_header_guards_db,
-+		.arg  = "FILE",
-+		.doc  = "Mapping between header file names and header guard strings."
-+	},
- 	{
- 		.name = NULL,
- 	}
-@@ -1803,6 +1811,9 @@ static error_t pahole__options_parser(int key, char *arg,
- 		conf_load.skip_encoding_btf_enum64 = true;	break;
- 	case ARGP_skip_emitting_atomic_typedefs:
- 		conf.skip_emitting_atomic_typedefs = true;	break;
-+	case ARGP_header_guards_db:
-+		conf_load.extra_dbg_info = true;
-+		conf_load.header_guards_db_file = arg;	break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -3038,7 +3049,8 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 			 * create it.
- 			 */
- 			btf_encoder = btf_encoder__new(cu, detached_btf_filename, conf_load->base_btf, skip_encoding_btf_vars,
--						       btf_encode_force, btf_gen_floats, global_verbose);
-+						       btf_encode_force, btf_gen_floats, global_verbose,
-+						       header_guards_db);
- 			if (btf_encoder && thr_data) {
- 				struct thread_data *thread = thr_data;
- 
-@@ -3070,7 +3082,8 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 							 skip_encoding_btf_vars,
- 							 btf_encode_force,
- 							 btf_gen_floats,
--							 global_verbose);
-+							 global_verbose,
-+							 header_guards_db);
- 				thread->btf = btf_encoder__btf(thread->encoder);
- 			}
- 			encoder = thread->encoder;
-@@ -3382,6 +3395,74 @@ out_free:
- 	return ret;
- }
- 
-+struct strlist *header_guards_db__new(void)
-+{
-+	return strlist__new(true);
-+}
-+
-+/*
-+ * Header guards db is a text file with one entry per line, each entry
-+ * has the following form:
-+ *   <header-file-name> <guard-name>
-+ * It is assumed that neither <header-file-name> nor <guard-name> contain spaces.
-+ * It is assumed that <header-file-name> is relative to kernel compilation tree.
-+ */
-+static int header_guards_db__load(struct strlist *header_guards_db, const char *filename)
-+{
-+	char entry[1024];
-+	char header[1024];
-+	char guard[1024];
-+	char *true_header;
-+	char *heap_guard;
-+	int num_fields;
-+	int err = -1;
-+	int lineno = 1;
-+	FILE *fp = fopen(filename, "r");
-+
-+	if (!fp)
-+		return -1;
-+
-+	while (fgets(entry, sizeof(entry), fp)) {
-+		size_t len = strlen(entry);
-+
-+		if (len == 0)
-+			continue;
-+		entry[len - 1] = '\0';
-+		num_fields = sscanf(entry, "%s %s", header, guard);
-+		if (num_fields != 2) {
-+			fprintf(stderr, "Error while reading header guards db:\n");
-+			fprintf(stderr, "  can't match fields at line %d: %s\n", lineno, entry);
-+			goto out;
-+		}
-+
-+		heap_guard = strdup(guard);
-+		if (!heap_guard)
-+			goto out;
-+
-+		true_header = strstarts(header, "./") ? &header[2] : header;
-+		if (__strlist__add(header_guards_db, true_header, heap_guard))
-+			goto out;
-+
-+		++lineno;
-+	}
-+
-+	err = 0;
-+out:
-+	fclose(fp);
-+	return err;
-+}
-+
-+#ifdef DEBUG_CHECK_LEAKS
-+static void header_guards_db__free(struct strlist *header_guards_db)
-+{
-+	struct str_node *pos, *tmp;
-+
-+	strlist__for_each_entry_safe(header_guards_db, pos, tmp)
-+		__zfree(&pos->priv);
-+	strlist__delete(header_guards_db);
-+}
-+#endif
-+
- int main(int argc, char *argv[])
- {
- 	int err, remaining, rc = EXIT_FAILURE;
-@@ -3409,6 +3490,18 @@ int main(int argc, char *argv[])
- 		goto out;
- 	}
- 
-+	if (conf_load.header_guards_db_file) {
-+		header_guards_db = header_guards_db__new();
-+		if (!header_guards_db) {
-+			fprintf(stderr, "pahole: insufficient memory\n");
-+			goto out;
-+		}
-+		if (header_guards_db__load(header_guards_db, conf_load.header_guards_db_file)) {
-+			fprintf(stderr, "Error while reading header guards db\n");
-+			goto out;
-+		}
-+	}
-+
- 	if (dwarves__init()) {
- 		fputs("pahole: insufficient memory\n", stderr);
- 		goto out;
-@@ -3570,6 +3663,8 @@ out_dwarves_exit:
- out:
- #ifdef DEBUG_CHECK_LEAKS
- 	prototypes__delete(&class_names);
-+	if (header_guards_db)
-+		header_guards_db__free(header_guards_db);
- #endif
- 	return rc;
- }
+The goal of the patch set is to allow usage of header files from
+`include/uapi` alongside `vmlinux.h` as follows:
+
+  #include <uapi/linux/tcp.h>
+  #include "vmlinux.h"
+
+This goal is achieved by adding `#ifndef ... #endif` guards in
+`vmlinux.h` around definitions that originate from the `include/uapi`
+headers. The guards emitted match the guards used in the original
+headers. E.g. as follows:
+
+include/uapi/linux/tcp.h:
+
+  #ifndef _UAPI_LINUX_TCP_H
+  #define _UAPI_LINUX_TCP_H
+  ...
+  union tcp_word_hdr {
+	struct tcphdr hdr;
+	__be32        words[5];
+  };
+  ...
+  #endif /* _UAPI_LINUX_TCP_H */
+
+vmlinux.h:
+
+  ...
+  #ifndef _UAPI_LINUX_TCP_H
+
+  union tcp_word_hdr {
+	struct tcphdr hdr;
+	__be32 words[5];
+  };
+
+  #endif /* _UAPI_LINUX_TCP_H */
+  ...
+
+To get to this state the following steps are necessary:
+- "header guard" name should be identified for each header file;
+- the correspondence between data type and it's header guard has to be
+  encoded in BTF;
+- `bpftool` should be adjusted to emit `#ifndef FOO_H ... #endif`
+  brackets.
+
+It is not possible to identify header guard names for all uapi headers
+basing only on the file name. However a simple script could devised to
+identify the guards basing on the file name and it's content. Thus it
+is possible to obtain the list of header names with corresponding
+header guards.
+
+The correspondence between type and it's declaration file (header) is
+available in DWARF as `DW_AT_decl_file` attribute. The
+`DW_AT_decl_file` can be matched with the list of header guards
+described above to obtain the header guard name for a specific type.
+
+The `pahole` generates BTF using DWARF. It is possible to modify
+`pahole` to accept the header guards list as an additional parameter
+and to encode the header guard names in BTF.
+
+Implementation details
+---
+
+Present patch-set implements these ideas as follows:
+- A parameter `--header_guards_db` is added to `pahole`. If present it
+  points to a file with a list of `<header> <guard>` records.
+- `pahole` uses DWARF `DW_AT_decl_file` value to lookup the header
+  guard for each type emitted to BTF. If header guard is present it is
+  encoded alongside the type.
+- Header guards are encoded in BTF as `BTF_DECL_TAG` records with a
+  special prefix. The prefix "header_guard:" is added to a value of
+  such tags. (Here `BTF_DECL_TAG` is used to avoid BTF binary format
+  changes).
+- A special script `infer_header_guards.pl` is added as a part of
+  kbuild, it can infer header guard names for each UAPI header basing
+  on the header content.
+- This script is invoked from `link-vmlinux.sh` prior to BTF
+  generation during kernel build. The output of the script is saved to
+  a file, the file is passed to `pahole` as `--header_guards_db`
+  parameter.
+- `libbpf` is modified to aggregate `BTF_DECL_TAG` records for each
+  type and to emit `#ifndef FOO_H ... #endif` brackets when
+  "header_guard:" tag is present for a type.
+
+Details for each patch in a set:
+- libbpf: Deduplicate unambigous standalone forward declarations
+- selftests/bpf: Tests for standalone forward BTF declarations deduplication
+
+  There is a small number (63 for defconfig) of forward declarations
+  that are not de-duplicated with the main type declaration under
+  certain conditions. This hinders the header guard brackets
+  generation. This patch addresses this de-duplication issue.
+
+- libbpf: Support for BTF_DECL_TAG dump in C format
+- selftests/bpf: Tests for BTF_DECL_TAG dump in C format
+
+  Currently libbpf does not process BTF_DECL_TAG when btf is dumped in
+  C format. This patch adds a hash table matching btf type ids with a
+  list of decl tags to the struct btf_dump.
+  The `btf_dump_emit_decl_tags` is not necessary for the overall
+  patch-set to function but simplifies testing a bit.
+
+- libbpf: Header guards for selected data structures in vmlinux.h
+- selftests/bpf: Tests for header guards printing in BTF dump
+
+  Adds option `emit_header_guards` to `struct btf_dump_opts`.
+  When enabled the `btf_dump__dump_type` prints `#ifndef ... #endif`
+  brackets around types for which header guard information is present
+  in BTF.
+
+- bpftool: Enable header guards generation
+
+  Unconditionally enables `emit_header_guards` for BTF dump in C format.
+
+- kbuild: Script to infer header guard values for uapi headers
+- kbuild: Header guards for types from include/uapi/*.h in kernel BTF
+
+  Adds `scripts/infer_header_guards.pl` and integrates it with
+  `link-vmlinux.sh`.
+
+- selftests/bpf: Script to verify uapi headers usage with vmlinux.h
+
+  Adds a script `test_uapi_headers.py` that tests header guards with
+  vmlinux.h by compiling a simple C snippet. The snippet looks as
+  follows:
+  
+    #include <some_uapi_header.h>
+    #include "vmlinux.h"
+  
+    __attribute__((section("tc"), used))
+    int syncookie_tc(struct __sk_buff *skb) { return 0; }
+  
+  The list of headers to test comes from
+  `tools/testing/selftests/bpf/good_uapi_headers.txt`.
+
+- selftests/bpf: Known good uapi headers for test_uapi_headers.py
+
+  The list of uapi headers that could be included alongside vmlinux.h.
+  The headers are peeked from the following locations:
+  - <headers-export-dir>/linux/*.h
+  - <headers-export-dir>/linux/**/*.h
+  This choice of locations is somewhat arbitrary.
+
+- selftests/bpf: script for infer_header_guards.pl testing
+
+  The test case for `scripts/infer_header_guards.pl`, verifies that
+  header guards can be inferred for all uapi headers.
+
+- There is also a patch for dwarves that adds `--header_guards_db`
+  option (see [2]).
+
+The `test_uapi_headers.py` is important as it demonstrates the
+the necessary compiler flags:
+
+clang ...                                  \
+      -D__x86_64__                         \
+      -Xclang -fwchar-type=short           \
+      -Xclang -fno-signed-wchar            \
+      -I{exported_kernel_headers}/include/ \
+      ...
+
+- `-fwchar-type=short` and `-fno-signed-wchar` had to be added because
+  BPF target uses `int` for `wchar_t` by default and this differs from
+  `vmlinux.h` definition of the type (at least for x86_64).
+- `__x86_64__` had to be added for uapi headers that include
+  `stddef.h` (the one that is supplied my CLANG itself), in order to
+  define correct sizes for `size_t` and `ptrdiff_t`.
+- The `{exported_kernel_headers}` stands for exported kernel headers
+  directory (the headers obtained by `make headers_install` or via
+  distribution package).
+
+When it works
+---
+
+The mechanics described above works for a significant number of UAPI
+headers. For example, for the test case above I chose the headers from
+the following locations:
+- linux/*.h
+- linux/**/*.h
+There are 759 such headers and for 677 of them the test described
+above passes.
+
+I excluded the headers from the following sub-directories as
+potentially not interesting:
+
+  asm          rdma   video xen
+  asm-generic  misc   scsi
+  drm          mtd    sound
+
+Thus saving some time for both discussion and CI but the choice is
+somewhat arbitrary. If I run `test_uapi_headers.py --test '*'` (all
+headers) test passes for 834 out of 972 headers.
+
+When it breaks
+---
+
+There several scenarios when this mechanics breaks.
+Specifically I found the following cases:
+- When uapi header includes some system header that conflicts with
+  vmlinux.h.
+- When uapi header itself conflicts with vmlinux.h.
+
+Below are examples for both cases.
+
+Conflict with system headers
+----
+
+The following uapi headers:
+- linux/atmbr2684.h
+- linux/bpfilter.h
+- linux/gsmmux.h
+- linux/icmp.h
+- linux/if.h
+- linux/if_arp.h
+- linux/if_bonding.h
+- linux/if_pppox.h
+- linux/if_tunnel.h
+- linux/ip6_tunnel.h
+- linux/llc.h
+- linux/mctp.h
+- linux/mptcp.h
+- linux/netdevice.h
+- linux/netfilter/xt_RATEEST.h
+- linux/netfilter/xt_hashlimit.h
+- linux/netfilter/xt_physdev.h
+- linux/netfilter/xt_rateest.h
+- linux/netfilter_arp/arp_tables.h
+- linux/netfilter_arp/arpt_mangle.h
+- linux/netfilter_bridge.h
+- linux/netfilter_bridge/ebtables.h
+- linux/netfilter_ipv4/ip_tables.h
+- linux/netfilter_ipv6/ip6_tables.h
+- linux/route.h
+- linux/wireless.h
+
+Include the following system header:
+- /usr/include/sys/socket.h (all via linux/if.h)
+
+The sys/socket.h conflicts with vmlinux.h in:
+- types: struct iovec, struct sockaddr, struct msghdr, ...
+- constants: SOCK_STREAM, SOCK_DGRAM, ...
+
+However, only two types are actually used:
+- struct sockaddr
+- struct sockaddr_storage (used only in linux/mptcp.h)
+
+In 'vmlinux.h' this type originates from 'kernel/include/socket.h'
+(non UAPI header), thus does not have a header guard.
+
+The only workaround that I see is to:
+- define a stub sys/socket.h as follows:
+
+    #ifndef __BPF_SOCKADDR__
+    #define __BPF_SOCKADDR__
+    
+    /* For __kernel_sa_family_t */
+    #include <linux/socket.h>
+    
+    struct sockaddr {
+        __kernel_sa_family_t sa_family;
+        char sa_data[14];
+    };
+    
+    #endif
+
+- hardcode generation of __BPF_SOCKADDR__ bracket for
+  'struct sockaddr' in vmlinux.h.
+
+Another possibility is to move the definition of 'struct sockaddr'
+from 'kernel/include/socket.h' to 'kernel/include/uapi/linux/socket.h',
+but I expect that this won't fly with the mainline as it might break
+the programs that include both 'linux/socket.h' and 'sys/socket.h'.
+
+Conflict with vmlinux.h
+----
+
+Uapi header:
+- linux/signal.h
+
+Conflict with vmlinux.h in definition of 'struct sigaction'.
+Defined in:
+- vmlinux.h: kernel/include/linux/signal_types.h
+- uapi:      kernel/arch/x86/include/asm/signal.h
+
+Uapi headers:
+- linux/tipc_sockets_diag.h
+- linux/sock_diag.h
+
+Conflict with vmlinux.h in definition of 'SOCK_DESTROY'.
+Defined in:
+- vmlinux.h: kernel/include/net/sock.h
+- uapi:      kernel/include/uapi/linux/sock_diag.h
+Constants seem to be unrelated.
+
+And so on... I have details for many other headers but omit those for
+brevity.
+
+In conclusion
+---
+
+Except from the general feasibility I have a few questions:
+- What UAPI headers are the candidates for such use? If there are some
+  interesting headers currently not working with this patch-set some
+  hacks have to be added (e.g. like with `linux/if.h`).
+- Is it ok to encode header guards as special `BTF_DECL_TAG` or should
+  I change the BTF format a bit to save some bytes.
+
+Thanks,
+Eduard
+
+
+[1] https://reviews.llvm.org/D111307
+    [clang] __attribute__ bpf_dominating_decl
+[2] https://lore.kernel.org/dwarves/20221025220729.2293891-1-eddyz87@gmail.com/T/
+    [RFC dwarves] pahole: Save header guard names when
+                  --header_guards_db is passed
+
+Eduard Zingerman (12):
+  libbpf: Deduplicate unambigous standalone forward declarations
+  selftests/bpf: Tests for standalone forward BTF declarations
+    deduplication
+  libbpf: Support for BTF_DECL_TAG dump in C format
+  selftests/bpf: Tests for BTF_DECL_TAG dump in C format
+  libbpf: Header guards for selected data structures in vmlinux.h
+  selftests/bpf: Tests for header guards printing in BTF dump
+  bpftool: Enable header guards generation
+  kbuild: Script to infer header guard values for uapi headers
+  kbuild: Header guards for types from include/uapi/*.h in kernel BTF
+  selftests/bpf: Script to verify uapi headers usage with vmlinux.h
+  selftests/bpf: Known good uapi headers for test_uapi_headers.py
+  selftests/bpf: script for infer_header_guards.pl testing
+
+ scripts/infer_header_guards.pl                | 191 +++++
+ scripts/link-vmlinux.sh                       |  13 +-
+ tools/bpf/bpftool/btf.c                       |   4 +-
+ tools/lib/bpf/btf.c                           | 178 ++++-
+ tools/lib/bpf/btf.h                           |   7 +-
+ tools/lib/bpf/btf_dump.c                      | 232 +++++-
+ .../selftests/bpf/good_uapi_headers.txt       | 677 ++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 152 ++++
+ .../selftests/bpf/prog_tests/btf_dump.c       |  11 +-
+ .../bpf/progs/btf_dump_test_case_decl_tag.c   |  39 +
+ .../progs/btf_dump_test_case_header_guards.c  |  94 +++
+ .../bpf/test_uapi_header_guards_infer.sh      |  33 +
+ .../selftests/bpf/test_uapi_headers.py        | 197 +++++
+ 13 files changed, 1816 insertions(+), 12 deletions(-)
+ create mode 100755 scripts/infer_header_guards.pl
+ create mode 100644 tools/testing/selftests/bpf/good_uapi_headers.txt
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_header_guards.c
+ create mode 100755 tools/testing/selftests/bpf/test_uapi_header_guards_infer.sh
+ create mode 100755 tools/testing/selftests/bpf/test_uapi_headers.py
+
 -- 
 2.34.1
 
