@@ -2,96 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E4460D7C3
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 01:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0B860D7E9
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 01:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbiJYXPx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 19:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
+        id S232619AbiJYXaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 19:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbiJYXPx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 19:15:53 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F7B437FA
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 16:15:50 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 4546B240028
-        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 01:15:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1666739749; bh=Sg/epzfd+AblsaaJvJUtjO097YRLxPgeswe42DGS2wE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l0r/nEb0MHXNM12an74QhrehXrAeifa81arbZnrrcZO0G9qvHEgxVQVp5YV9erGpJ
-         BW0yJKGMBHgTsDTahr/ZeFz2RMRBey8g0UJX3b22gkIhbeUZIATlAxaCOqn/Ormzdy
-         tvF2Q9LhfqBIokNl2y7piPamo29CDu5WTXeptbrPgvxI0+BK6HaUJUMs+Ov238wSJl
-         Q0R4fMo7w0h2X5WUF1Hp28UWDOKqGhTlsm862AAh6OxH22o0jQPiwCa47Kr1DIMYvo
-         ZlakRFTvtpRFSYG7pmlLJGmDPDd2uCOBbARXQaHe4Nrqp5rkA3mMlhFqCvKekTzDCy
-         Q1foBxkUF1BYA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4MxnqS2JFbz6tmK;
-        Wed, 26 Oct 2022 01:15:48 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
-Cc:     deso@posteo.net
-Subject: [PATCH bpf-next] selftests/bpf: Panic on hard/soft lockup
-Date:   Tue, 25 Oct 2022 23:15:46 +0000
-Message-Id: <20221025231546.811766-1-deso@posteo.net>
+        with ESMTP id S232641AbiJYXaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 19:30:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAF924091
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 16:30:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74D5261C0A
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 23:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C4AA7C433C1;
+        Tue, 25 Oct 2022 23:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666740617;
+        bh=bl9iO/UMuXylwTMumi5HgSShBBLXFnqos9bc04kWl54=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MIYH/zzdklVy9QY30iWnsHmmqFc2wUGvUc4vXTuOA8j9OpLmGBi2gBKlxDVDFMp2X
+         B1IDL8y9ucqcyHcmcC7IGkxGorHFuBrj7rtTImkGCrpjrVTj4e+8weV0vt0kkyaF1W
+         emr429Z6Oo56fubfQ7PRW9ZCQ/7R/a/UE34XEdDKZMcbeO3oxy9SYPOKgmRVmKYXae
+         wpyf1r52XckbDyjsCz307Jkx5YYqYjUy2kYDmUaVwTYNUjTlQOfgj5Pq0SpV4cctXl
+         Oc7Tgm9kYOg+rmROki18y9yJi74DuRK4SCLMf5dR5Mp9c16T9O5BDxNk8oVWz4eT/t
+         yH5OiS7Bm1qfg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A515BE45192;
+        Tue, 25 Oct 2022 23:30:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf] libbpf: btf dedup identical struct test needs check for
+ nested structs/arrays
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166674061767.7170.11544796321523992153.git-patchwork-notify@kernel.org>
+Date:   Tue, 25 Oct 2022 23:30:17 +0000
+References: <1666622309-22289-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1666622309-22289-1-git-send-email-alan.maguire@oracle.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     andrii@kernel.org, ast@kernel.org, jolsa@kernel.org,
+        acme@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When running tests, we should probably accept any help we can get when
-it comes to detecting issues early or making them more debuggable. We
-have seen a few cases where a test_progs_noalu32 run, for example,
-encountered a soft lockup and stopped making progress. It was only
-interrupted once we hit the overall test timeout [0]. We can not and do
-not want to necessarily rely on test timeouts, because those rely on
-infrastructure provided by the environment we run in (and which is not
-present in tools/testing/selftests/bpf/vmtest.sh, for example).
-To that end, let's enable panics on soft as well as hard lockups to fail
-fast should we encounter one. That's happening in the configuration
-indented to be used for selftests (including when using vmtest.sh or
-when running in BPF CI).
+Hello:
 
-[0] https://github.com/kernel-patches/bpf/runs/7844499997
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/testing/selftests/bpf/config        | 2 ++
- tools/testing/selftests/bpf/config.x86_64 | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
+On Mon, 24 Oct 2022 15:38:29 +0100 you wrote:
+> When examining module BTF, it is common to see core kernel structures
+> such as sk_buff, net_device duplicated in the module.  After adding
+> debug messaging to BTF it turned out that much of the problem
+> was down to the identical struct test failing during deduplication;
+> sometimes the compiler adds identical structs.  However
+> it turns out sometimes that type ids of identical struct members
+> can also differ, even when the containing structs are still identical.
+> 
+> [...]
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 921356..7a99a6 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -1,4 +1,6 @@
- CONFIG_BLK_DEV_LOOP=y
-+CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
-+CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
- CONFIG_BPF=y
- CONFIG_BPF_EVENTS=y
- CONFIG_BPF_JIT=y
-diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
-index 21ce5e..dd97d6 100644
---- a/tools/testing/selftests/bpf/config.x86_64
-+++ b/tools/testing/selftests/bpf/config.x86_64
-@@ -18,7 +18,6 @@ CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=16384
- CONFIG_BLK_DEV_THROTTLING=y
- CONFIG_BONDING=y
--CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
- CONFIG_BOOTTIME_TRACING=y
- CONFIG_BPF_JIT_ALWAYS_ON=y
- CONFIG_BPF_KPROBE_OVERRIDE=y
+Here is the summary with links:
+  - [bpf] libbpf: btf dedup identical struct test needs check for nested structs/arrays
+    https://git.kernel.org/bpf/bpf-next/c/f3c51fe02c55
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
