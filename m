@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E3A60D3DC
-	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 20:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9759660D3DD
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbiJYSqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 14:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47154 "EHLO
+        id S232915AbiJYSqT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 14:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbiJYSqL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232919AbiJYSqL (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 25 Oct 2022 14:46:11 -0400
 Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7E66D85E
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 11:45:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F4373328
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 11:45:49 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1666723545;
+        t=1666723548;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mYqDFUp3qEFv/Og4QdrUPNe1D2znr6G+dC04OZPmTB8=;
-        b=Cr33Je17hB4Gm+r9Ged+Fa9Unx7UWLuhNQmnQJhKTXO8/jIZXkS61Gx2XJXlfbOlIAiBMY
-        7wqXPVu9oX/JwtcdSMn9DfvOp9dgUhw5P6/gomZtJjEMJ84yI4XOEfxnKNPHDtY0DW3BaJ
-        5GVwNj8b6R+E95NACC+C+VZOoD9RhT0=
+        bh=w6PZ4VUfWyonNk0AZVq2qxMIyaU3cM8VoD81Jl31FMQ=;
+        b=kfYnpeAg3s6DsHX82swSxH1kKSxYrD7gK+f+eixB4ihOsLX6iCg7qe9kupKIcBbKeBSr+Y
+        Du2TnM/8CwP1KLNV0zfET033nNvqaVXcMG5ynb+OFrveV2tFnNmJt/byInxIg1e87MI6Rn
+        AJNiTEh0AYHywQVBWfFtw2DP5lO/29o=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
         'Andrii Nakryiko ' <andrii@kernel.org>,
         'Daniel Borkmann ' <daniel@iogearbox.net>,
         'Song Liu ' <songliubraving@meta.com>, kernel-team@meta.com
-Subject: [PATCH bpf-next 4/9] bpf: Avoid taking spinlock in bpf_task_storage_get if potential deadlock is detected
-Date:   Tue, 25 Oct 2022 11:45:19 -0700
-Message-Id: <20221025184524.3526117-5-martin.lau@linux.dev>
+Subject: [PATCH bpf-next 5/9] bpf: Add new bpf_task_storage_get proto with no deadlock detection
+Date:   Tue, 25 Oct 2022 11:45:20 -0700
+Message-Id: <20221025184524.3526117-6-martin.lau@linux.dev>
 In-Reply-To: <20221025184524.3526117-1-martin.lau@linux.dev>
 References: <20221025184524.3526117-1-martin.lau@linux.dev>
 MIME-Version: 1.0
@@ -50,88 +50,103 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-bpf_task_storage_get() does a lookup and optionally inserts
-new data if BPF_LOCAL_STORAGE_GET_F_CREATE is present.
+The bpf_lsm and bpf_iter do not recur that will cause a deadlock.
+The situation is similar to the bpf_pid_task_storage_lookup_elem()
+which is called from the syscall map_lookup_elem.  It does not need
+deadlock detection.  Otherwise, it will cause unnecessary failure
+when calling the bpf_task_storage_get() helper.
 
-During lookup, it will cache the lookup result and caching requires to
-acquire a spinlock.  When potential deadlock is detected (by the
-bpf_task_storage_busy pcpu-counter added in
-commit bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")),
-the current behavior is returning NULL immediately to avoid deadlock.  It is
-too pessimistic.  This patch will go ahead to do a lookup (which is a
-lockless operation) but it will avoid caching it in order to avoid
-acquiring the spinlock.
-
-When lookup fails to find the data and BPF_LOCAL_STORAGE_GET_F_CREATE
-is set, an insertion is needed and this requires acquiring a spinlock.
-This patch will still return NULL when a potential deadlock is detected.
+This patch adds bpf_task_storage_get proto that does not do deadlock
+detection.  It will be used by bpf_lsm and bpf_iter programs.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- kernel/bpf/bpf_local_storage.c |  1 +
- kernel/bpf/bpf_task_storage.c  | 15 ++++++++-------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ include/linux/bpf.h           |  1 +
+ kernel/bpf/bpf_task_storage.c | 28 ++++++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c      |  5 ++++-
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 9dc6de1cf185..781d14167140 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -242,6 +242,7 @@ void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu)
- 	__bpf_selem_unlink_storage(selem, use_trace_rcu);
- }
- 
-+/* If cacheit_lockit is false, this lookup function is lockless */
- struct bpf_local_storage_data *
- bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
- 			 struct bpf_local_storage_map *smap,
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b04fe3f4342e..ef3f98afa45d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2520,6 +2520,7 @@ extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+ extern const struct bpf_func_proto bpf_sock_from_file_proto;
+ extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+ extern const struct bpf_func_proto bpf_task_storage_get_recur_proto;
++extern const struct bpf_func_proto bpf_task_storage_get_proto;
+ extern const struct bpf_func_proto bpf_task_storage_delete_recur_proto;
+ extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
+ extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
 diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-index 2726435e3eda..bc52bc8b59f7 100644
+index bc52bc8b59f7..c3a841be438f 100644
 --- a/kernel/bpf/bpf_task_storage.c
 +++ b/kernel/bpf/bpf_task_storage.c
-@@ -230,17 +230,17 @@ static int bpf_pid_task_storage_delete_elem(struct bpf_map *map, void *key)
- /* Called by bpf_task_storage_get*() helpers */
- static void *__bpf_task_storage_get(struct bpf_map *map,
- 				    struct task_struct *task, void *value,
--				    u64 flags, gfp_t gfp_flags)
-+				    u64 flags, gfp_t gfp_flags, bool nobusy)
- {
- 	struct bpf_local_storage_data *sdata;
- 
--	sdata = task_storage_lookup(task, map, true);
-+	sdata = task_storage_lookup(task, map, nobusy);
- 	if (sdata)
- 		return sdata->data;
- 
- 	/* only allocate new storage, when the task is refcounted */
- 	if (refcount_read(&task->usage) &&
--	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE)) {
-+	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy) {
- 		sdata = bpf_local_storage_update(
- 			task, (struct bpf_local_storage_map *)map, value,
- 			BPF_NOEXIST, gfp_flags);
-@@ -254,17 +254,18 @@ static void *__bpf_task_storage_get(struct bpf_map *map,
- BPF_CALL_5(bpf_task_storage_get_recur, struct bpf_map *, map, struct task_struct *,
- 	   task, void *, value, u64, flags, gfp_t, gfp_flags)
- {
-+	bool nobusy;
- 	void *data;
- 
- 	WARN_ON_ONCE(!bpf_rcu_lock_held());
- 	if (flags & ~BPF_LOCAL_STORAGE_GET_F_CREATE || !task)
- 		return (unsigned long)NULL;
- 
--	if (!bpf_task_storage_trylock())
--		return (unsigned long)NULL;
-+	nobusy = bpf_task_storage_trylock();
- 	data = __bpf_task_storage_get(map, task, value, flags,
--				      gfp_flags);
--	bpf_task_storage_unlock();
-+				      gfp_flags, nobusy);
-+	if (nobusy)
-+		bpf_task_storage_unlock();
+@@ -269,6 +269,23 @@ BPF_CALL_5(bpf_task_storage_get_recur, struct bpf_map *, map, struct task_struct
  	return (unsigned long)data;
  }
  
++/* *gfp_flags* is a hidden argument provided by the verifier */
++BPF_CALL_5(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
++	   task, void *, value, u64, flags, gfp_t, gfp_flags)
++{
++	void *data;
++
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
++	if (flags & ~BPF_LOCAL_STORAGE_GET_F_CREATE || !task)
++		return (unsigned long)NULL;
++
++	bpf_task_storage_lock();
++	data = __bpf_task_storage_get(map, task, value, flags,
++				      gfp_flags, true);
++	bpf_task_storage_unlock();
++	return (unsigned long)data;
++}
++
+ BPF_CALL_2(bpf_task_storage_delete_recur, struct bpf_map *, map, struct task_struct *,
+ 	   task)
+ {
+@@ -342,6 +359,17 @@ const struct bpf_func_proto bpf_task_storage_get_recur_proto = {
+ 	.arg4_type = ARG_ANYTHING,
+ };
+ 
++const struct bpf_func_proto bpf_task_storage_get_proto = {
++	.func = bpf_task_storage_get,
++	.gpl_only = false,
++	.ret_type = RET_PTR_TO_MAP_VALUE_OR_NULL,
++	.arg1_type = ARG_CONST_MAP_PTR,
++	.arg2_type = ARG_PTR_TO_BTF_ID,
++	.arg2_btf_id = &btf_tracing_ids[BTF_TRACING_TYPE_TASK],
++	.arg3_type = ARG_PTR_TO_MAP_VALUE_OR_NULL,
++	.arg4_type = ARG_ANYTHING,
++};
++
+ const struct bpf_func_proto bpf_task_storage_delete_recur_proto = {
+ 	.func = bpf_task_storage_delete_recur,
+ 	.gpl_only = false,
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 591caf0eb973..0986c1f0b8fc 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ #include <linux/slab.h>
+ #include <linux/bpf.h>
++#include <linux/bpf_verifier.h>
+ #include <linux/bpf_perf_event.h>
+ #include <linux/btf.h>
+ #include <linux/filter.h>
+@@ -1488,7 +1489,9 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_this_cpu_ptr:
+ 		return &bpf_this_cpu_ptr_proto;
+ 	case BPF_FUNC_task_storage_get:
+-		return &bpf_task_storage_get_recur_proto;
++		if (bpf_prog_check_recur(prog))
++			return &bpf_task_storage_get_recur_proto;
++		return &bpf_task_storage_get_proto;
+ 	case BPF_FUNC_task_storage_delete:
+ 		return &bpf_task_storage_delete_recur_proto;
+ 	case BPF_FUNC_for_each_map_elem:
 -- 
 2.30.2
 
