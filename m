@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DE160CDC3
-	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 15:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A3960CDC4
+	for <lists+bpf@lfdr.de>; Tue, 25 Oct 2022 15:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbiJYNmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 09:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S230410AbiJYNnI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 09:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbiJYNmv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 09:42:51 -0400
+        with ESMTP id S232217AbiJYNnG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 09:43:06 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79813183DB3
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 06:42:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58F618B48A
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 06:43:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 26A45B81D17
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 13:42:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7E8C433C1;
-        Tue, 25 Oct 2022 13:42:44 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 61807B81D17
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 13:43:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC48C433D6;
+        Tue, 25 Oct 2022 13:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666705367;
-        bh=ogxU8tjugCvxWzR3aDxxMmZu2zuBgAr+MP53Oi6zSko=;
+        s=k20201202; t=1666705379;
+        bh=GoIjry0gYEBPgzI3NVNn8Mg+UflQtww2M7o6YxuXRvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NssB06FQYf2014kTQJQD5vnV3w22wEqtSjun4XggMAdA+Pgniq/PM2cPHbPFr0bFm
-         aHK8uDE7wOXAi2AzgnT/tSNBjGvh5nRrCVNqmdrHjUm9BZda0gidCCAJuL/vtY0SEK
-         CSeDR1lL87ErrjRlT/MjoqTIrSCRdS+BJLUN1Y+nViErsnXFHlQ3sEFtOHSUfHJJaf
-         D4TRYyifswwibiQYr/IWsSXuPNbU/rqdoOi7jC/eZyF1SVpf26pES2bs5wVb8TeJnO
-         iBbuc6z0AMqNHgmpfQrUmRzbpAyUkKGugZmO3IIsOs7we6NAxBHaOAMSjjPl0lo9Yt
-         1D4j8TioG3Lmg==
+        b=jDDKacB9qaxZ+Ml944Q8mVKSIheNh7NX4Bo3aIEFl9EIii6t3Nk9SUmkcRuERok6i
+         W1d46s2HKpS0st/32jbdjpdTxqQ97HhZtyXwyIQ0RzAYzQwET/3s02muZY5gu4OlTh
+         QmHwOiQlrwkEsmBjSyleyq/eq38X5gOUmpDBCQEsB2jEX7ZqYCDUtLWlLu1xumDPHE
+         eG9rUbH6sTryjMbr/dpfxLADrHKHVjaZbAvMcQyUgpSSSOrbvoW34SCyhRNpdUJ94q
+         +IVzIbREi8rMVYBxnUwt0xu0d3wejGlvs/N3prkfspKyewG516EdSu1h+uRFzbRzRT
+         bwQUSA1hXJ/kg==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
         Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv3 bpf-next 5/8] selftests/bpf: Add load_kallsyms_refresh function
-Date:   Tue, 25 Oct 2022 15:41:45 +0200
-Message-Id: <20221025134148.3300700-6-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 6/8] selftests/bpf: Add bpf_testmod_fentry_* functions
+Date:   Tue, 25 Oct 2022 15:41:46 +0200
+Message-Id: <20221025134148.3300700-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221025134148.3300700-1-jolsa@kernel.org>
 References: <20221025134148.3300700-1-jolsa@kernel.org>
@@ -61,79 +61,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding load_kallsyms_refresh function to re-read symbols from
-/proc/kallsyms file.
+Adding 3 bpf_testmod_fentry_* functions to have a way to test
+kprobe multi link on kernel module. They follow bpf_fentry_test*
+functions prototypes/code.
 
-This will be needed to get proper functions addresses from
-bpf_testmod.ko module, which is loaded/unloaded several times
-during the tests run, so symbols might be already old when
-we need to use them.
+Adding equivalent functions to all bpf_fentry_test* does not
+seems necessary at the moment, could be added later.
 
 Acked-by: Song Liu <song@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/trace_helpers.c | 20 +++++++++++++-------
- tools/testing/selftests/bpf/trace_helpers.h |  2 ++
- 2 files changed, 15 insertions(+), 7 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 9c4be2cdb21a..09a16a77bae4 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -23,7 +23,7 @@ static int ksym_cmp(const void *p1, const void *p2)
- 	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index a6021d6117b5..5085fea3cac5 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -128,6 +128,23 @@ __weak noinline struct file *bpf_testmod_return_ptr(int arg)
+ 	}
  }
  
--int load_kallsyms(void)
-+int load_kallsyms_refresh(void)
- {
- 	FILE *f;
- 	char func[256], buf[256];
-@@ -31,12 +31,7 @@ int load_kallsyms(void)
- 	void *addr;
- 	int i = 0;
- 
--	/*
--	 * This is called/used from multiplace places,
--	 * load symbols just once.
--	 */
--	if (sym_cnt)
--		return 0;
-+	sym_cnt = 0;
- 
- 	f = fopen("/proc/kallsyms", "r");
- 	if (!f)
-@@ -57,6 +52,17 @@ int load_kallsyms(void)
- 	return 0;
- }
- 
-+int load_kallsyms(void)
++noinline int bpf_testmod_fentry_test1(int a)
 +{
-+	/*
-+	 * This is called/used from multiplace places,
-+	 * load symbols just once.
-+	 */
-+	if (sym_cnt)
-+		return 0;
-+	return load_kallsyms_refresh();
++	return a + 1;
 +}
 +
- struct ksym *ksym_search(long key)
- {
- 	int start = 0, end = sym_cnt;
-diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
-index 238a9c98cde2..53efde0e2998 100644
---- a/tools/testing/selftests/bpf/trace_helpers.h
-+++ b/tools/testing/selftests/bpf/trace_helpers.h
-@@ -10,6 +10,8 @@ struct ksym {
- };
- 
- int load_kallsyms(void);
-+int load_kallsyms_refresh(void);
++noinline int bpf_testmod_fentry_test2(int a, u64 b)
++{
++	return a + b;
++}
 +
- struct ksym *ksym_search(long key);
- long ksym_get_addr(const char *name);
++noinline int bpf_testmod_fentry_test3(char a, int b, u64 c)
++{
++	return a + b + c;
++}
++
++int bpf_testmod_fentry_ok;
++
+ noinline ssize_t
+ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 		      struct bin_attribute *bin_attr,
+@@ -167,6 +184,13 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 			return snprintf(buf, len, "%d\n", writable.val);
+ 	}
  
++	if (bpf_testmod_fentry_test1(1) != 2 ||
++	    bpf_testmod_fentry_test2(2, 3) != 5 ||
++	    bpf_testmod_fentry_test3(4, 5, 6) != 15)
++		goto out;
++
++	bpf_testmod_fentry_ok = 1;
++out:
+ 	return -EIO; /* always fail */
+ }
+ EXPORT_SYMBOL(bpf_testmod_test_read);
 -- 
 2.37.3
 
