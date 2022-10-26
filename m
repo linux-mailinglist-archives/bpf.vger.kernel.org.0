@@ -2,68 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB9F60DB56
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CAF60DB6C
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbiJZGda (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 02:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S233209AbiJZGiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 02:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbiJZGdJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 02:33:09 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD9EA99E6;
-        Tue, 25 Oct 2022 23:33:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id kt23so13116646ejc.7;
-        Tue, 25 Oct 2022 23:33:08 -0700 (PDT)
+        with ESMTP id S229995AbiJZGiC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 02:38:02 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B9778BE1;
+        Tue, 25 Oct 2022 23:38:01 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id t25so13164108ejb.8;
+        Tue, 25 Oct 2022 23:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mF6zW9SFm7uxaco2K2CDLfIGBcOnQunLUbLBgwIgUhQ=;
-        b=Mm1POrX6xfBCMRhZT8ReywaZqeVagLYUSYmV51+7FJE1cm8Zx9McyYfiGKFnfn6fUz
-         dfzUlLnVrsB4zqU0NAuFQ8udQ4ALm1QDYbTAm0odL18FxEi/FR028ecb5YKs/PfebjiO
-         8P59bm7H327h6mNW0I9O319E9RIKIT8URtSbQcA8H17PLcP20gIztMvafyPrKx8A1qGE
-         ccj383RGlmumOV2u7xoEH1iNQyjyYcZC5vbVEhI2NLrsyhHRtpDo2EQBl9Fbsqm+KDhe
-         c3Fa8uBIuEEzq+m6O+MMfxRRz8dcQ5X57C4EVQ4Qo/5H7GHsNSQwAE0tF/b/4l3B6xzu
-         fs1g==
+        bh=Mx8fYuOqE4Fz7MoTG2qyzZeL72DVY10BTmV8q9Mc57w=;
+        b=qHrL7FKIzMARVP4gCZGtCYP08mU2Xgs4Znav05N95RRQvkbRXbQF61MJZY96Q7WP/F
+         PWoN3+fpTvoAPWT65Uyqim26UaP8B6LfsZtTfWdCU7iLytxgLzcnb4igksIT7QZ63oZJ
+         Vlrlyxo1RC4LpvygdZyzmKnEkymjdjkwbcBMqF7MX8OOLslunSPukQWeBsGRHL+6QRaP
+         Gl9hoVbkGXIolT8N8QoHjwTe7TKPha9HyqpFdaIaHQ9pqMxaoSxBf3OZxHGXjYO+QKBk
+         8QCxxjRWCmzjerQAe0aH8NBo19nPtyIFLm8/1uhQpLw2ng6P8F0nRHz8I2flGllpOQYf
+         BcVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mF6zW9SFm7uxaco2K2CDLfIGBcOnQunLUbLBgwIgUhQ=;
-        b=IMsHhkAaN9EJWfbHCIyBVejXiWTQVUjS3H7UBp7nImKxnYRli569A9ZMMikYKqYVRk
-         b9J02hM/yVAXkqnPU9QqC8emz01VLxh5J/rWMZkg87Xlt/MHhnZeNA+1KgaC3+Uoktqs
-         eg63B/gmi4jQL6L1DMDvpnvcVX2jMAy1FLVIaFDcfJK1KYiWA7hX3BC0KW1US6l026Vs
-         mJxdEZ3Ixbv+8XhnRyctHCiy4g3vKqd829jgZmdjrHt4oAIlKvrMxcXSa5WZ9RFEzUrG
-         iZpzi7Y0AzOogAlxxptaU9P7/xe1rFhKdcT59hI6vgOf4NwQXKOP2J8jPukla8Z9Ci3h
-         s5hg==
-X-Gm-Message-State: ACrzQf3rknddlG4n+IOeyyevXP5zRas0oldCZ1+38lfFh5HqEu58mM6X
-        R4nk8+gsq+2FcnNwZtOz9wc0m3TVzOZnujrLI9w=
-X-Google-Smtp-Source: AMsMyM4oc5nOTH7XG4W2jHl5OtAiTtPzLROA0gvIMgTLF94IX2MvxdnuX2LQkafB5AySBX6uWode2zjVpZJ3J/qMFww=
-X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
- ne20-20020a1709077b9400b007311b11c241mr36870991ejc.676.1666765986787; Tue, 25
- Oct 2022 23:33:06 -0700 (PDT)
+        bh=Mx8fYuOqE4Fz7MoTG2qyzZeL72DVY10BTmV8q9Mc57w=;
+        b=hXlJ7XzjruRa94wvdR8J9cBkfmRbAKKs+jGTEqpAHPAYFlKKGKWoYjCb2stoUdf8I6
+         t0dRF80n9NVi6pnrXGWiJZgpgjWiFwoJh7eeRX9k24L24istYrmmgkiSsGbDlfSDDL8V
+         6fKDr5MSUtUhjVEeVuNo9XBVHh+YBImVoKK1Ntek+zvXQ8cUwmLvut+IuL0wvs4AH0GC
+         get9FtZQEio2y5NUTWkgiFT5EphSAPARwHn/INTi93lJ5Ls5ElUepael6XDz6Pmbfz/F
+         FhlIl78cvq6JcDVPQTJYVj8VuXSm2akvh3komNtK/Ob9EfZx2HuKcGUSfKSUq+rzT4bP
+         sG1g==
+X-Gm-Message-State: ACrzQf2C3apmnbEgnKOLsRE3m5xLJ8A2BV9vSWvNUUK5/qs2e4XMkXRL
+        8W61TKzexHw+ftPhJt1MtR3F/RM5PiWrpJXbE9Q=
+X-Google-Smtp-Source: AMsMyM4Wnn4932Ytv91Nrg1zHGI8MgLVZC+Ngl65IwrEw5f7VTg8YZr0RLz02wh9lfIB4mbydGN7lFZ10h6BzWe7zMM=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr36566308ejb.633.1666766233858; Tue, 25
+ Oct 2022 23:37:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221026025941.2621795-1-xukuohai@huaweicloud.com>
-In-Reply-To: <20221026025941.2621795-1-xukuohai@huaweicloud.com>
+References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
+ <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
+ <d7a17e482b7bbf945c92443b45de73f56afea08a.camel@huaweicloud.com>
+ <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
+ <CAADnVQL1a2pPAJqzj6oUwupxxfaW38KQswzppAZeZPzmTFhjMg@mail.gmail.com>
+ <98353f6c82d3dabdb0d434d7ecf0bfc5295015ad.camel@huaweicloud.com> <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
+In-Reply-To: <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 Oct 2022 23:32:55 -0700
-Message-ID: <CAADnVQ+Pe73yjys+fjW1TBPscCmv6K9ur5bDPr2056ejwBBdZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix a typo in comment for DFS algorithm
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+Date:   Tue, 25 Oct 2022 23:37:02 -0700
+Message-ID: <CAADnVQLAXsZRNytPHG0KhYKar3K+=7bq2KPQG77VFOKbnTPHmg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from bpf_lsm_inode_init_security()
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nicolas.bouchinet@clip-os.org, Mimi Zohar <zohar@linux.ibm.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,31 +80,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 7:42 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+On Tue, Oct 25, 2022 at 7:58 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
 >
-> From: Xu Kuohai <xukuohai@huawei.com>
+> On 10/25/2022 12:43 AM, Roberto Sassu wrote:
+> > On Mon, 2022-10-24 at 19:13 -0700, Alexei Starovoitov wrote:
+> >> I'm looking at security_inode_init_security() and it is indeed messy.
+> >> Per file system initxattrs callback that processes kmalloc-ed
+> >> strings.
+> >> Yikes.
+> >>
+> >> In the short term we should denylist inode_init_security hook to
+> >> disallow attaching bpf-lsm there. set/getxattr should be done
+> >> through kfuncs instead of such kmalloc-a-string hack.
+> > Inode_init_security is an example. It could be that the other hooks are
+> > affected too. What happens if they get arbitrary positive values too?
 >
-> There is a typo in comment for DFS algorithm in bpf/verifier.c. The top
-> element should not be popped until all its neighbors have been checked.
-> Fix it.
+> TL;DR - Things will go cattywampus.
 >
-> Fixes: 475fb78fbf48 ("bpf: verifier (add branch/goto checks)")
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The LSM infrastructure is an interface that has "grown organically",
+> and isn't necessarily consistent in what it requires of the security
+> module implementations. There are cases where it assumes that the
+> security module hooks are well behaved, as you've discovered. I have
+> no small amount of fear that someone is going to provide an eBPF
+> program for security_secid_to_secctx(). There has been an assumption,
+> oft stated, that all security modules are going to be reviewed as
+> part of the upstream process. The review process ought to catch hooks
+> that return unacceptable values. Alas, we've lost that with BPF.
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b83a8d420520..96ba5ea6d1a6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10662,7 +10662,7 @@ static int check_return_code(struct bpf_verifier_env *env)
->   * 3      let S be a stack
->   * 4      S.push(v)
->   * 5      while S is not empty
-> - * 6            t <- S.pop()
-> + * 6            t <- S.top()
+> It would take a(nother) major overhaul of the LSM infrastructure to
+> make it safe against hooks that are not well behaved. From what I have
+> seen so far it wouldn't be easy/convenient/performant to do it in the
+> BPF security module either. I personally think that BPF needs to
+> ensure that the eBPF implementations don't return inappropriate values,
+> but I understand why that is problematic.
 
-Even with this fix the comment is not quite accurate.
-I wonder whether we should keep it or delete it completely.
-At least please use 'peek' instead of 'top'.
+That's an accurate statement. Thank you.
+
+Going back to the original question...
+We fix bugs when we discover them.
+Regardless of the subsystem they belong to.
+No finger pointing.
