@@ -2,38 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB12860DA4B
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 06:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1EC60DA4C
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 06:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232803AbiJZE3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 00:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        id S232822AbiJZE3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 00:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbiJZE33 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 00:29:29 -0400
+        with ESMTP id S232842AbiJZE3b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 00:29:31 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6209DC0A
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8711732EFF
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:30 -0700 (PDT)
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29PMGw93013391
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:27 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29PMGtnU013304
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:29 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=qGChYlxKI2BtcewqWCZ50PZm6LrXi5cZt2/dwE4n31I=;
- b=ozrQ9LBTogC3/C29aGtjpp+Oe6XCfuR5XbnJocI9McWteRhn2yAXoZfQ8u276rXAeNyT
- nWkS/fYBNbiF2cmybPUXi7Z1XQ6lysDnI1KocYfaDMjjUqSphIpeLTGKhQH+WO++nW+Z
- Pgagb3L9nzMsa6WPZQuo1Ut1Z/5fc9CqlwM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3keb4jumaf-1
+ bh=IXB6xS6e6o1d8rWv+9wrh+lk3HwkMY28zcvytvkHkc4=;
+ b=aKzOH2WpKx4uIs0XMr/0B48D4nje8Sb/l6v/K54ff427BjPtZ3h5/fC+VBs5q3mx561N
+ 8vEuyOEbCqvppQO5Nqjrv7Far9vLIsQBGBA3rPY8G6eOnlQyRo3zSdYfNkOMV3G6D62q
+ 7/H50RRq98FzQnnh0IjM8pIFReJsxp3xwXI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3keb4jumag-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:27 -0700
-Received: from twshared0933.07.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:29:29 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub104.TheFacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 25 Oct 2022 21:29:27 -0700
+Received: from twshared2001.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.31; Tue, 25 Oct 2022 21:29:26 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 354901131B8B5; Tue, 25 Oct 2022 21:29:17 -0700 (PDT)
+        id 812FC1131B8C8; Tue, 25 Oct 2022 21:29:22 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -41,10 +45,10 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v6 8/9] selftests/bpf: Add test cgrp_local_storage to DENYLIST.s390x
-Date:   Tue, 25 Oct 2022 21:29:17 -0700
-Message-ID: <20221026042917.675685-1-yhs@fb.com>
+        Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>
+Subject: [PATCH bpf-next v6 9/9] docs/bpf: Add documentation for new cgroup local storage
+Date:   Tue, 25 Oct 2022 21:29:22 -0700
+Message-ID: <20221026042922.676383-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221026042835.672317-1-yhs@fb.com>
 References: <20221026042835.672317-1-yhs@fb.com>
@@ -52,8 +56,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: hUDcPQalEMUxjytznhbaiO0O2ZtCNeCO
-X-Proofpoint-ORIG-GUID: hUDcPQalEMUxjytznhbaiO0O2ZtCNeCO
+X-Proofpoint-GUID: Fq-UtAaw5Po0edtKsRrZTMhluI6Y5tUe
+X-Proofpoint-ORIG-GUID: Fq-UtAaw5Po0edtKsRrZTMhluI6Y5tUe
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-26_02,2022-10-25_01,2022-06-22_01
@@ -67,36 +71,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test cgrp_local_storage have some programs utilizing trampoline.
-Arch s390x does not support trampoline so add the test to
-the corresponding DENYLIST file.
+Add some descriptions and examples for BPF_MAP_TYPE_CGRP_STORAGE.
+Also illustate the major difference between BPF_MAP_TYPE_CGRP_STORAGE
+and BPF_MAP_TYPE_CGROUP_STORAGE and recommend to use
+BPF_MAP_TYPE_CGRP_STORAGE instead of BPF_MAP_TYPE_CGROUP_STORAGE
+in the end.
 
+Acked-by: David Vernet <void@manifault.com>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/testing/selftests/bpf/DENYLIST.s390x | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/bpf/map_cgrp_storage.rst | 109 +++++++++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+ create mode 100644 Documentation/bpf/map_cgrp_storage.rst
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-index 520f12229b98..be4e3d47ea3e 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -10,6 +10,7 @@ bpf_nf                                   # JIT does not=
- support calling kernel f
- bpf_tcp_ca                               # JIT does not support calling =
-kernel function                                (kfunc)
- cb_refs                                  # expected error message unexpe=
-cted error: -524                               (trampoline)
- cgroup_hierarchical_stats                # JIT does not support calling =
-kernel function                                (kfunc)
-+cgrp_local_storage                       # prog_attach unexpected error:=
- -524                                          (trampoline)
- core_read_macros                         # unknown func bpf_probe_read#4=
-                                               (overlapping)
- d_path                                   # failed to auto-attach program=
- 'prog_stat': -524                             (trampoline)
- deny_namespace                           # failed to attach: ERROR: stre=
-rror_r(-524)=3D22                                (trampoline)
+diff --git a/Documentation/bpf/map_cgrp_storage.rst b/Documentation/bpf/m=
+ap_cgrp_storage.rst
+new file mode 100644
+index 000000000000..5d3f603efffa
+--- /dev/null
++++ b/Documentation/bpf/map_cgrp_storage.rst
+@@ -0,0 +1,109 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++.. Copyright (C) 2022 Meta Platforms, Inc. and affiliates.
++
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
++BPF_MAP_TYPE_CGRP_STORAGE
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
++
++The ``BPF_MAP_TYPE_CGRP_STORAGE`` map type represents a local fix-sized
++storage for cgroups. It is only available with ``CONFIG_CGROUPS``.
++The programs are made available by the same Kconfig. The
++data for a particular cgroup can be retrieved by looking up the map
++with that cgroup.
++
++This document describes the usage and semantics of the
++``BPF_MAP_TYPE_CGRP_STORAGE`` map type.
++
++Usage
++=3D=3D=3D=3D=3D
++
++The map key must be ``sizeof(int)`` representing a cgroup fd.
++To access the storage in a program, use ``bpf_cgrp_storage_get``::
++
++    void *bpf_cgrp_storage_get(struct bpf_map *map, struct cgroup *cgrou=
+p, void *value, u64 flags)
++
++``flags`` could be 0 or ``BPF_LOCAL_STORAGE_GET_F_CREATE`` which indicat=
+es that
++a new local storage will be created if one does not exist.
++
++The local storage can be removed with ``bpf_cgrp_storage_delete``::
++
++    long bpf_cgrp_storage_delete(struct bpf_map *map, struct cgroup *cgr=
+oup)
++
++The map is available to all program types.
++
++Examples
++=3D=3D=3D=3D=3D=3D=3D=3D
++
++A BPF program example with BPF_MAP_TYPE_CGRP_STORAGE::
++
++    #include <vmlinux.h>
++    #include <bpf/bpf_helpers.h>
++    #include <bpf/bpf_tracing.h>
++
++    struct {
++            __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++            __uint(map_flags, BPF_F_NO_PREALLOC);
++            __type(key, int);
++            __type(value, long);
++    } cgrp_storage SEC(".maps");
++
++    SEC("tp_btf/sys_enter")
++    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
++    {
++            struct task_struct *task =3D bpf_get_current_task_btf();
++            long *ptr;
++
++            ptr =3D bpf_cgrp_storage_get(&cgrp_storage, task->cgroups->d=
+fl_cgrp, 0,
++                                       BPF_LOCAL_STORAGE_GET_F_CREATE);
++            if (ptr)
++                __sync_fetch_and_add(ptr, 1);
++
++            return 0;
++    }
++
++Userspace accessing map declared above::
++
++    #include <linux/bpf.h>
++    #include <linux/libbpf.h>
++
++    __u32 map_lookup(struct bpf_map *map, int cgrp_fd)
++    {
++            __u32 *value;
++            value =3D bpf_map_lookup_elem(bpf_map__fd(map), &cgrp_fd);
++            if (value)
++                return *value;
++            return 0;
++    }
++
++Difference Between BPF_MAP_TYPE_CGRP_STORAGE and BPF_MAP_TYPE_CGROUP_STO=
+RAGE
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
++
++The old cgroup storage map ``BPF_MAP_TYPE_CGROUP_STORAGE`` has been mark=
+ed as
++deprecated (renamed to ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``). The =
+new
++``BPF_MAP_TYPE_CGRP_STORAGE`` map should be used instead. The following
++illusates the main difference between ``BPF_MAP_TYPE_CGRP_STORAGE`` and
++``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``.
++
++(1). ``BPF_MAP_TYPE_CGRP_STORAGE`` can be used by all program types whil=
+e
++     ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` is available only to cgr=
+oup program types
++     like BPF_CGROUP_INET_INGRESS or BPF_CGROUP_SOCK_OPS, etc.
++
++(2). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports local storage for more than =
+one
++     cgroup while ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` only suppor=
+ts one cgroup
++     which is attached by a BPF program.
++
++(3). ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` allocates local storage =
+at attach time so
++     ``bpf_get_local_storage()`` always returns non-NULL local storage.
++     ``BPF_MAP_TYPE_CGRP_STORAGE`` allocates local storage at runtime so
++     it is possible that ``bpf_cgrp_storage_get()`` may return null loca=
+l storage.
++     To avoid such null local storage issue, user space can do
++     ``bpf_map_update_elem()`` to pre-allocate local storage before a BP=
+F program
++     is attached.
++
++(4). ``BPF_MAP_TYPE_CGRP_STORAGE`` supports deleting local storage by a =
+BPF program
++     while ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED`` only deletes stora=
+ge during
++     prog detach time.
++
++So overall, ``BPF_MAP_TYPE_CGRP_STORAGE`` supports all ``BPF_MAP_TYPE_CG=
+ROUP_STORAGE_DEPRECATED``
++functionality and beyond. It is recommended to use ``BPF_MAP_TYPE_CGRP_S=
+TORAGE``
++instead of ``BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED``.
 --=20
 2.30.2
 
