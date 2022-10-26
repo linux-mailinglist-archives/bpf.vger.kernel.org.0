@@ -2,93 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB0A60D95F
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 04:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB4D60D9FA
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 05:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiJZCmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Oct 2022 22:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S233077AbiJZDgM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Oct 2022 23:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbiJZCmS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Oct 2022 22:42:18 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA64760CA7;
-        Tue, 25 Oct 2022 19:42:15 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MxtMB4ndFzl7yt;
-        Wed, 26 Oct 2022 10:40:06 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP3 (Coremail) with SMTP id _Ch0CgDn+lyDnlhj1o8qAw--.33518S2;
-        Wed, 26 Oct 2022 10:42:12 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH bpf-next] bpf: Fix a typo in comment for DFS algorithm
-Date:   Tue, 25 Oct 2022 22:59:41 -0400
-Message-Id: <20221026025941.2621795-1-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S233081AbiJZDfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Oct 2022 23:35:46 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092BA8E713
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 20:35:22 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MxvTH6Xk4z15M2g;
+        Wed, 26 Oct 2022 11:30:27 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 26 Oct 2022 11:35:19 +0800
+Subject: Re: [PATCH bpf-next] bpf: Update max_entries for array maps
+To:     Florian Lehner <dev@der-flo.net>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+References: <20221025092843.81572-1-dev@der-flo.net>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <e250349c-cd3c-ac2e-f0fd-da083aa87ceb@huawei.com>
+Date:   Wed, 26 Oct 2022 11:35:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgDn+lyDnlhj1o8qAw--.33518S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyftr1UJF1DXFyfXFykGrg_yoW3KrgEkr
-        s5Z3ZagrsIq3WfCws3Ca47Xw1jkr15tF18WrnxG39rArWYqw18Wrs5GFn0qa4DZFWUtrZr
-        tF93GrZFqw1Y9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+In-Reply-To: <20221025092843.81572-1-dev@der-flo.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+Hi,
 
-There is a typo in comment for DFS algorithm in bpf/verifier.c. The top
-element should not be popped until all its neighbors have been checked.
-Fix it.
-
-Fixes: 475fb78fbf48 ("bpf: verifier (add branch/goto checks)")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b83a8d420520..96ba5ea6d1a6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10662,7 +10662,7 @@ static int check_return_code(struct bpf_verifier_env *env)
-  * 3      let S be a stack
-  * 4      S.push(v)
-  * 5      while S is not empty
-- * 6            t <- S.pop()
-+ * 6            t <- S.top()
-  * 7            if t is what we're looking for:
-  * 8                return t
-  * 9            for all edges e in G.adjacentEdges(t) do
--- 
-2.30.2
+On 10/25/2022 5:28 PM, Florian Lehner wrote:
+> To improve memory handling and alignment max_entries is rounded up
+> before using its value to allocate memory.
+> This can lead to a situation where more memory is allocated than usable
+> if max_entries is no adjusted accordingly. So this change updates
+> max_entries in order to make the allocated memory available.
+>
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+> ---
+>  kernel/bpf/arraymap.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 832b2659e96e..9411fa255ccc 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -145,6 +145,7 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+>  	/* copy mandatory map attributes */
+>  	bpf_map_init_from_attr(&array->map, attr);
+>  	array->elem_size = elem_size;
+> +	array->map.max_entries = max_entries;
+>  
+>  	if (percpu && bpf_array_alloc_percpu(array)) {
+>  		bpf_map_area_free(array);
+The override of max_entries is unnecessary and is also wrong.
+bpf_array_alloc_percpu() will use array->map.max_entries to allocate per-cpu
+value, and if using the rounded-up max_entries, there will be memory waste
+because the extra allocated per-cpu values should not be accessible to bpf
+program or user-space program.
 
