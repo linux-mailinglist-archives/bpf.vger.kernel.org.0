@@ -2,276 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E8960EBD0
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 00:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B9B60EC29
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 01:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbiJZWrn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 18:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S234214AbiJZXSa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 19:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbiJZWrb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 18:47:31 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FC743E6C
-        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 15:46:56 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id bg9-20020a05600c3c8900b003bf249616b0so2812295wmb.3
-        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 15:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Rxp50k6/fdyfIAoGJwO+c4YrHDnFXsq7g7I5FnDONAg=;
-        b=EUPqVzLsep6K79Xzgk36Y/KOsDTqapwNaVZ6DAF/cGLDg55ZN+RsUXNJOApEootWqi
-         xH6lN7j54GrBlmQ+4yMTpNpMuzdk4+oYiOEWXGc8vyvHOilxypuNPu+aWQevTByOhMyW
-         NplO1KELDd2BHkZL5kNPv7cKeOkQ+yiUYjRCQc1TNi5yqoeA7lmlrJ2uwclfvt5guZOX
-         qc4T+LJh/hvffjywxdOJQ0iX/dz6lVIOuHUcMTKBqIfdG6buq9HqO6LmZZ2kYFQDDijd
-         XYgQ3foLLVvBi8PF/YHi5RVUx3DfQLsngHfDO9MFM/e/HvaeSAno2eqTcvjl70uEldL+
-         s/tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rxp50k6/fdyfIAoGJwO+c4YrHDnFXsq7g7I5FnDONAg=;
-        b=DeuHgbFMw9f/DgQO1mxXkTEY3CMci3CGsCMvVALB/15vWBolSNHXlODjwq7Fclzflb
-         mdXTXhLv/DhcnJGMAgohcBjtk0YC/vooNKscTXgZmKOH/LnuyZtoeREpLvFji4LhbAhk
-         kSgPZfFkHhrUVvvulNHyJfLY0WpAstTDGz95tdO5Q9kjXFGMzYsMQDA+ZVpTKhPKH9Mj
-         aLT5RFdWNwGRinD1JhajI0J+O5W0D9TJWYsYA2FIp1b/dUB5wmAyROVXa3QF1th+h5Br
-         XX0QaCeb2Czjbi+g5s9w24zkVzgYY69LfLH1aQ7dn0KG8ravWEMLeegzJ4xZB8tiUEyD
-         PwXA==
-X-Gm-Message-State: ACrzQf2keKo52h4VeQpqIYGfXZ5Sq6za5O3v/N50pFy6Apdqw6KCd9qz
-        +cdFYJg96aAZIIzzZ8BHkNM=
-X-Google-Smtp-Source: AMsMyM5GYQzCRzSjn8O1EuXlQS/IDC6fbu7jqdnveXUR0H385LKe1R/LCiFe2+X3CGKQc+WrFMS8Mg==
-X-Received: by 2002:a7b:cb8d:0:b0:3cf:4969:9bc7 with SMTP id m13-20020a7bcb8d000000b003cf49699bc7mr3978898wmi.71.1666824415248;
-        Wed, 26 Oct 2022 15:46:55 -0700 (PDT)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b003b47e8a5d22sm3366127wmq.23.2022.10.26.15.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 15:46:54 -0700 (PDT)
-Message-ID: <999da51bdf050f155ba299500061b3eb6e0dcd0d.camel@gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        arnaldo.melo@gmail.com
-Date:   Thu, 27 Oct 2022 01:46:53 +0300
-In-Reply-To: <20221025234629.xsjnhobxl2ky35i5@macbook-pro-4.dhcp.thefacebook.com>
-References: <20221025222802.2295103-1-eddyz87@gmail.com>
-         <20221025234629.xsjnhobxl2ky35i5@macbook-pro-4.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S233844AbiJZXSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 19:18:04 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2078.outbound.protection.outlook.com [40.107.95.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72702B8C0F;
+        Wed, 26 Oct 2022 16:17:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j8U1rgEqoBQDM5RGYrZmspJMhXqz3A4SfeQmwwPVkz4zFL9rplxqdqpbtX994ZcbZ11z2tO9YvwtS3UyfnpsO3qaTulOKzXuCbNJYXfraJ+39kCdTmLAG5laIOuyhyEMXtAafZm92O1Uwa/LxqTsHf4VnYI0J0/Qp/MrjSbVoL/6hg7U2X1srQhbkzPK58j6NNHYe/kU2cgZC8Fpo+aT+PR8ruPP7QVrtUUCuJzaKuJGypZREkuZAcV5p5fHQOu4FXMa2cT8Agv+RO7KcuYAi1wMC1a45MIFWIADLehdbKr+fbzlpkQemQc7eHcZ1No/dP2zB90Bg/H1hZpUlZzEWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WGNiizTFcUwCN/L1ZiKc5QLrDNWfMbQatWehMkc23Kc=;
+ b=dnNGS/xXTlwxawfFPdTBX0OE4rpPWukMZ7A9if+6l9vNQqJy9Is3abaK7tCfeSYuRfnNSfHNiSEcLXYf4H7KWzd9LPh1kCjt0T098E6UvVJlV13E49S3owvcPY2LiIasYfhsjtX01w0iVM914uoEKMF/kU1gix7vJfO7cFEP4MnAR0Zld5k2wl41qOgQo9movwKdnTOaagJaca3wSdGkDZ34f4VPNliqhFObNY8uCPCPWj3wxOSUmyprY4z85JjzQ0M72MBC3RNI5w8hXZwDGOEtnlZq5PVS2rL6BukhCy24TGYC3jFfr7OuP+hxfAERDW2M+uYLwYEzftTVbn1xSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WGNiizTFcUwCN/L1ZiKc5QLrDNWfMbQatWehMkc23Kc=;
+ b=eABlgKZAgTC0PGVr8VfgnJ/VNOepNuAYt4a9BALH+fzdcVkRfbZ+DmHaKA77Y30jAbZrVIEMrjDiHWYfkzRHIIt9uczQWqnNjoYQJlOp/oMcHZ7uThiQPOSzcOd1+ZeVvX/DVor/JzqyXe5kLQ680eMy84Mi6dMBpOdgZd73cvQ4eAh8+kt/FVyiDJ6C0DGAwLy6AO/JckA5FVdPkPBkxvZyAC+bLRX8n/tHbLGCLJo5PFMlOOTgAn3QiFBV6HIhPOQldpt+bjx1k+gVGE6Ahm/BC1EHW1E23EWWhCEMVryRYn4rsiRTtO1ARBd5ccrB81WMLIc72fabLvl3VOKA1A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by IA1PR12MB7493.namprd12.prod.outlook.com (2603:10b6:208:41b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.21; Wed, 26 Oct
+ 2022 23:17:38 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5746.021; Wed, 26 Oct 2022
+ 23:17:38 +0000
+Date:   Wed, 26 Oct 2022 20:17:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 10/15] iommufd: IOCTLs for the io_pagetable
+Message-ID: <Y1nAEfNBYMswuqiM@nvidia.com>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+X-ClientProxiedBy: YT1PR01CA0112.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::21) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB7493:EE_
+X-MS-Office365-Filtering-Correlation-Id: 52103476-c604-4e6a-9645-08dab7a845f5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YRIGgkrslRYmykmLkVqpIis9Q5bddhHJ/aajie6Gwu/oD6sPUdFv5qmjWa+eDqmWrYYwasTb2Q1NYf+wYUH7CcbB0yR0PRlHMJH0irtG1il4OChKeLwV4igCXRyzNE7wS4g5pVzHAmF3Rr11o/CgCMfOSbTAt5d3Vhyc47cJQF1C5ujptbMpfOXQU1JE9OMsbJ+zGMKUFvLiNVcKnczj3A4TIGq9lYMFcEEYTNf/aL2NgE8KvUcqprLORIjD54rzsRBc/MkQulYDDTZzSP+0rhJqp/qj9uFdYtYpheKRg18Bobj4knOo7I3UckFM+SHmS8HQfuf9xnBZJKEQjzJqgJn+MB/gMI9m1whcAe5UNIKCW/C4HeEAvtWjLQCVo6hQDFvZ1VuGEGFzGECVvUxAi7FEHSK9M0kpIeM1MwGp2RkTuv6A+m12fDvC5A8b4mNzswqQshmC1OfMbcIEfGmlHh2lrRy0FLuyuzTAlO5K+k0LfjuxgOCXIjoq6ssN7itBtM020q7Cy5HxEFk94Y2LaUzLy1CaSOHbC1F/UkfPgYSUK0aOL3sIF6ThyxG8MkZ9rGui+uKm5QcEmpVJI/EdKK4PIctmQysHj3eussWHPH98joTJLnpj5LVENHOnYsM4cWtVmqCC1MKaOjLDocsPhnsHMg6qtmq2pqVEZAmmp5BC1Kuz9Zjn88zsv3ZtCNKKgl4UKOiQ1el9uRHQ+mPulK95MyUbsRZ3L5bjVRgIMIM5XGNYeHmmlYSB0gRJH0z/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(136003)(366004)(346002)(396003)(451199015)(36756003)(2906002)(54906003)(5660300002)(921005)(110136005)(4326008)(66476007)(66946007)(7416002)(66556008)(41300700001)(8676002)(7406005)(8936002)(316002)(4744005)(2616005)(6512007)(83380400001)(6506007)(38100700002)(86362001)(186003)(26005)(6486002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+VG9NLWHAzftHcCdcBU3VT297rcpkFdFleRh/83AFwecWpEh4s3dDGUbvZUg?=
+ =?us-ascii?Q?zdKja430W+9dhmVHHoq0n1wnwRS4rn18k5mSiEMgAdaR1PLVyB+zDqKF/Q7U?=
+ =?us-ascii?Q?K6X+ZgxvCYsOkO3ODm2/5mordrWUg63bio+ZFrsYtMzf4TtOimzMrb5lIEpM?=
+ =?us-ascii?Q?amk2X4teemGHYzxV+LToqgP0oETjZfUlqvl3KqBPS47GC/jXqDGlbygIfijk?=
+ =?us-ascii?Q?2VhyfilQJVeUiJd3AUst3uWnMCeCvYUc/Q04aLVaSsvsV8+uilmZIEQzIVwN?=
+ =?us-ascii?Q?EwQJldI+F32HubhhqfOzb7Av/XTWXOffSVhedKCc/yH42/gAkcGy1rAPvjtb?=
+ =?us-ascii?Q?QLiEOlJGAARuYeSGVtZwfuHUZKGGJ/bfVPOzymdy7+bf4g+1I7cjEGBPcUxw?=
+ =?us-ascii?Q?o4Id7N2PgEi/z7S3nPQ19YHGXm5CNlwaYq5BAPk4wxiEjdqbBUlJ6JhW7PIg?=
+ =?us-ascii?Q?LQN2oNBlyKh/ZG65bEZpVP4dOxxPpBA/uxRkuU4A/3wL/bFfdLkm2zIZyI2X?=
+ =?us-ascii?Q?0ouFJQE1/cM6RsjANyEI3XXG2dzBr7dgGYrnSC7BewwVOTyQrxTw9mO6YMak?=
+ =?us-ascii?Q?Ub/MJHZQ57/xN6BlgUOLdCgU6QuvWNRe3WHjWpZRmk4Tcl7nRENHpI18Icyh?=
+ =?us-ascii?Q?F/aMTzRIQfO7gpuUX+eSZYAoUj/P3fmynO5+LU8KdMDqNVrKLV/Vq9/aYYTv?=
+ =?us-ascii?Q?zHvM95oLRW/RUy0masVB9Nf+XTG8Tl1q9qHCa/MdscmjUv5WENiTjjUHvt1c?=
+ =?us-ascii?Q?viEnlMJCR6/fRzPaYfcgFmUwJAsexdJtadlaF9keskK94uX6bz0eYiKtzVBj?=
+ =?us-ascii?Q?cBSqiRjGyS+NET+ugHlYaHkiaDt9ThXcYa2tQRdHza8aeCcW6UtQlxtjC8xq?=
+ =?us-ascii?Q?ORcEIG/GPLENg7phS+9WEY/2QdamE23n8d4WKIa2djkpIOqHxQFaFn4ukneh?=
+ =?us-ascii?Q?i+OaEZPgLpq7oEanhNxBTEXqDZM0Wt2zZVcCjYjjrAt6msUj5cF22ZMBfvq4?=
+ =?us-ascii?Q?uIxahLKePbi+xyvELFjFmDKilZuWEk8GAEVrPJGCzSXe1f49A8OV6CAkb59P?=
+ =?us-ascii?Q?Nk0YwPAqYNXgvEYzUUZEINDH/Xqtobbu/OEufW4RRs3GbeTH8wZuZuU120qY?=
+ =?us-ascii?Q?wBtRwNpAoMbZ4SwiXI713MQwERu+XvyPlUGWglJdKrnIgjcT/vjXxhUWp27D?=
+ =?us-ascii?Q?RLI5PnL6MsNUmaBVHtSU1m7WG99KcbSTbycyMrhhjafAM5T6tVHuiLJShOap?=
+ =?us-ascii?Q?U7yUSHUiNzFW5AFhJrmKDvvebESXX5KpfAafTJYYUcYZc2lzJgaIv5RBmind?=
+ =?us-ascii?Q?pUG9Xk23+54Dc+6lbG7ebNwPK5jH7qJNoF22lDITekNuXhFRLb+PscwyzQJZ?=
+ =?us-ascii?Q?ruzrkd39LBEV9ipgd1W2/fuW0u7HeRs6iQqMGtUcoxbpsMtc8qanRLqyWUGp?=
+ =?us-ascii?Q?1e9g8jUqeXlfsF7pFofHSycNrcoZTZF2fq+9Of1vYXrAdjRSUNkck4rCOtZ/?=
+ =?us-ascii?Q?Pz7NgyFfu5B/jSmDfsMmvK9+ygE+aRxRR8iSevIMMEwqUEGJF/ZKVchrStYc?=
+ =?us-ascii?Q?TYMk2lwNzCps7zIomTYQHxORkNd1/Qavdayvs2aI?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52103476-c604-4e6a-9645-08dab7a845f5
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2022 23:17:38.4957
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /LOFoOFWi3WHuIlXKV9yr0iUfVZMGQ12CLwrPS8WoKgfOdY8rOZdoKLXfoHzzWnY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7493
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-10-25 at 16:46 -0700, Alexei Starovoitov wrote:
-> On Wed, Oct 26, 2022 at 01:27:49AM +0300, Eduard Zingerman wrote:
-> >=20
-> > Include the following system header:
-> > - /usr/include/sys/socket.h (all via linux/if.h)
-> >=20
-> > The sys/socket.h conflicts with vmlinux.h in:
-> > - types: struct iovec, struct sockaddr, struct msghdr, ...
-> > - constants: SOCK_STREAM, SOCK_DGRAM, ...
-> >=20
-> > However, only two types are actually used:
-> > - struct sockaddr
-> > - struct sockaddr_storage (used only in linux/mptcp.h)
-> >=20
-> > In 'vmlinux.h' this type originates from 'kernel/include/socket.h'
-> > (non UAPI header), thus does not have a header guard.
-> >=20
-> > The only workaround that I see is to:
-> > - define a stub sys/socket.h as follows:
-> >=20
-> >     #ifndef __BPF_SOCKADDR__
-> >     #define __BPF_SOCKADDR__
-> >    =20
-> >     /* For __kernel_sa_family_t */
-> >     #include <linux/socket.h>
-> >    =20
-> >     struct sockaddr {
-> >         __kernel_sa_family_t sa_family;
-> >         char sa_data[14];
-> >     };
-> >    =20
-> >     #endif
-> >=20
-> > - hardcode generation of __BPF_SOCKADDR__ bracket for
-> >   'struct sockaddr' in vmlinux.h.
->=20
-> we don't need to hack sys/socket.h and can hardcode
-> #ifdef _SYS_SOCKET_H as header guard for sockaddr instead, right?
-> bits/socket.h has this:
-> #ifndef _SYS_SOCKET_H
-> # error "Never include <bits/socket.h> directly; use <sys/socket.h> inste=
-ad."
->=20
-> So that ifdef is kinda stable.
+On Tue, Oct 25, 2022 at 03:12:19PM -0300, Jason Gunthorpe wrote:
+>  static struct iommufd_ioctl_op iommufd_ioctl_ops[] = {
+>  	IOCTL_OP(IOMMU_DESTROY, iommufd_destroy, struct iommu_destroy, id),
+> +	IOCTL_OP(IOMMU_IOAS_ALLOC, iommufd_ioas_alloc_ioctl,
+> +		 struct iommu_ioas_alloc, out_ioas_id),
+> +	IOCTL_OP(IOMMU_IOAS_ALLOW_IOVAS, iommufd_ioas_allow_iovas,
+> +		 struct iommu_ioas_allow_iovas, allowed_iovas),
+> +	IOCTL_OP(IOMMU_IOAS_COPY, iommufd_ioas_copy, struct iommu_ioas_copy,
+> +		 src_iova),
+> +	IOCTL_OP(IOMMU_IOAS_IOVA_RANGES, iommufd_ioas_iova_ranges,
+> +		 struct iommu_ioas_iova_ranges, out_iova_alignment),
+> +	IOCTL_OP(IOMMU_IOAS_MAP, iommufd_ioas_map, struct iommu_ioas_map,
+> +		 __reserved),
 
-The `if.h` only uses two types from `sys/socket.h`, namely:
-- `struct sockaddr`
-- `struct sockaddr_storage`
+Syzkaller indirectly noticed that __reserved is no longer the last
+item in this struct:
 
-However `sys/socket.h` itself defines more types, here is a complete
-list of types from `sys/socket.h` that conflict with `vmlinux.h`
-(generated for my x86_64 laptop):
+        IOCTL_OP(IOMMU_IOAS_MAP, iommufd_ioas_map, struct iommu_ioas_map,
+-                __reserved),
++                iova),
 
-Type name       System header
-iovec           /usr/include/bits/types/struct_iovec.h
-loff_t          /usr/include/sys/types.h
-dev_t           /usr/include/sys/types.h
-nlink_t         /usr/include/sys/types.h
-timer_t         /usr/include/bits/types/timer_t.h
-int16_t         /usr/include/bits/stdint-intn.h
-int32_t         /usr/include/bits/stdint-intn.h
-int64_t         /usr/include/bits/stdint-intn.h
-u_int64_t       /usr/include/sys/types.h
-sigset_t        /usr/include/bits/types/sigset_t.h
-fd_set          /usr/include/sys/select.h
-blkcnt_t        /usr/include/sys/types.h
-SOCK_STREAM     /usr/include/bits/socket_type.h
-SOCK_DGRAM      /usr/include/bits/socket_type.h
-SOCK_RAW        /usr/include/bits/socket_type.h
-SOCK_RDM        /usr/include/bits/socket_type.h
-SOCK_SEQPACKET  /usr/include/bits/socket_type.h
-SOCK_DCCP       /usr/include/bits/socket_type.h
-SOCK_PACKET     /usr/include/bits/socket_type.h
-sockaddr        /usr/include/bits/socket.h
-msghdr          /usr/include/bits/socket.h
-cmsghdr         /usr/include/bits/socket.h
-linger          /usr/include/bits/socket.h
-SHUT_RD         /usr/include/sys/socket.h
-SHUT_WR         /usr/include/sys/socket.h
-SHUT_RDWR       /usr/include/sys/socket.h
+Also added a test to cover basic struct extensibility on all the ioctls.
 
-It would be safe to wrap the corresponding types in the vmlinux.h with
-_SYS_SOCKET_H / _SYS_TYPES guards if the definitions above match
-between libc and kernel. To my surprise not all of them match. Here is
-the list of genuine conflicts (for typedefs I skip the intermediate
-definitions and print the last typedef in the chain):
-
-Type: dev_t
-typedef unsigned int __u32                                vmlinux.h
-typedef unsigned long int __dev_t         /usr/include/bits/types.h
-
-Type: nlink_t
-typedef unsigned int __u32                                vmlinux.h
-typedef unsigned long int __nlink_t       /usr/include/bits/types.h
-
-Type: timer_t
-typedef int __kernel_timer _t                             vmlinux.h
-typedef void *__timer_t                   /usr/include/bits/types.h
-
-Type: sigset_t
-typedef struct                                            vmlinux.h
-{
-  long unsigned int sig[1];
-} sigset_t
-
-typedef struct                 /usr/include/bits/types/__sigset_t.h
-{
-  unsigned long int __val[1024 / (8 * (sizeof(unsigned long int)))];
-} __sigset_t
-
-Type: fd_set
-typedef struct                                            vmlinux.h
-{
-  long unsigned int fds_bits[16];
-} __kernel_fd_set
-
-typedef struct                            /usr/include/sys/select.h
-{
-  __fd_mask __fds_bits[1024 / (8 * ((int) (sizeof(__fd_mask))))];
-} fd_set
-
-Type: sigset_t
-typedef struct                                            vmlinux.h=20
-{
-  long unsigned int sig[1];
-} sigset_t
-
-typedef struct                 /usr/include/bits/types/__sigset_t.h
-{
-  unsigned long int __val[1024 / (8 * (sizeof(unsigned long int)))];
-} __sigset_t
-
-Type: msghdr
-struct msghdr                                             vmlinux.h
-{
-  void *msg_name;
-  int msg_namelen;
-  int msg_inq;
-  struct iov_iter msg_iter;
-  union=20
-  {
-    void *msg_control;
-    void *msg_control_user;
-  };
-  bool msg_control_is_user : 1;
-  bool msg_get_inq : 1;
-  unsigned int msg_flags;
-  __kernel_size_t msg_controllen;
-  struct kiocb *msg_iocb;
-  struct ubuf_info *msg_ubuf;
-  struct sock *, struct sk_buff *, struct iov_iter *, size_tint;
-}
-
-struct msghdr                            /usr/include/bits/socket.h
-{
-  void *msg_name;
-  socklen_t msg_namelen;
-  struct iovec *msg_iov;
-  size_t msg_iovlen;
-  void *msg_control;
-  size_t msg_controllen;
-  int msg_flags;
-}
-
->=20
-> > Another possibility is to move the definition of 'struct sockaddr'
-> > from 'kernel/include/socket.h' to 'kernel/include/uapi/linux/socket.h',
-> > but I expect that this won't fly with the mainline as it might break
-> > the programs that include both 'linux/socket.h' and 'sys/socket.h'.
-> >=20
-> > Conflict with vmlinux.h
-> > ----
-> >=20
-> > Uapi header:
-> > - linux/signal.h
-> >=20
-> > Conflict with vmlinux.h in definition of 'struct sigaction'.
-> > Defined in:
-> > - vmlinux.h: kernel/include/linux/signal_types.h
-> > - uapi:      kernel/arch/x86/include/asm/signal.h
-> >=20
-> > Uapi headers:
-> > - linux/tipc_sockets_diag.h
-> > - linux/sock_diag.h
-> >=20
-> > Conflict with vmlinux.h in definition of 'SOCK_DESTROY'.
->=20
-> Interesting one!
-> I think we can hard code '#undef SOCK_DESTROY' in vmlinux.h
->=20
-> The goal is not to be able to mix arbitrary uapi header with
-> vmlinux.h, but only those that could be useful out of bpf progs.
-> Currently it's tcp.h and few other network related headers
-> because they have #define-s in them that are useful inside bpf progs.
-> As long as the solution covers this small subset we're fine.
-
-Well, tcp.h works :) It would be great if someone could list the
-interesting headers.
-
-Thanks,
-Eduard
+Jason
