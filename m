@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C22D60DB75
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4962E60DB96
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbiJZGkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 02:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S232743AbiJZGuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 02:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbiJZGkW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 02:40:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877EE3C8C3
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 23:40:19 -0700 (PDT)
+        with ESMTP id S232823AbiJZGuU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 02:50:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529ED360A2
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 23:50:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CB4F61D52
-        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 06:40:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8787EC433C1;
-        Wed, 26 Oct 2022 06:40:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0A669B82116
+        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 06:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B06B4C43470;
+        Wed, 26 Oct 2022 06:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666766418;
-        bh=r0MyIDY1JRwAtb4RlcCMTam3l3bVdzU7+VMq7oZfllM=;
+        s=k20201202; t=1666767015;
+        bh=cHwj0h8A1Iw4v4NvOX96aFMK2xpvEVYrcADWsisD9pg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mTA9GfDu02Buj7H6jORd1t81Qt4c/Pdb7lDmi0fY4p2FoS3PoeJ+E34ZjgArwpcQ9
-         BB5G8tr3g7YjJOTBELsF4Pl6EXlG1otqV6Bz5xr5NpJv3Gf+imF7MEZqB4BhjOOxks
-         L7h8HwaseDo5Rcsphdx33+p62cZbkgVot+gLC+rFJpTkY0kBCx/qLDUoW9HWOmuslP
-         a0ko9hW8WPnAoD8jOnZjqJLf0aY4v9ZKo+Y8ylxGiw/wYUYTcjPx5HVLELm9QdMDqh
-         O7gJLnHHrXvoRmvU4boBDf1hEXq3LZx7ZjDAgi0aDZsGBlNklPVRKj6H9T2BxNnpBo
-         aTVK+YSBfVqcw==
+        b=pJF7Yzy+hVn5/VX9tVZ/Gyi6Td/X+Ww95daG4VA0k/x0mOCR9i/+qEOGbFCYeTkMX
+         Yq/bLqr1U3jXd9Wfoii2rtO4BoP4dyB5/UvIod2zMCBqAUBOz5HVmIHSmFw/PoBh+7
+         w3nAUHarxO3qGcc3ojrHtbZ2Ayk6WqSszT5Tv+derXf3ZIa42fVyRalTdGbUzpn16T
+         xSaH5oKkHcG0gvXUZ9dV0uBUD6ayEGxzpfZvXLbtc5bcjETsP/LhaLkaaAoJFo7/7o
+         Q+trendsubhzmJrMH14GcOREvvTeWUWhnDNXElKTpPCtYcZQbesQioJ6YwrBMfFLNm
+         ghLpOjSfwf5oQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7137FE270DC;
-        Wed, 26 Oct 2022 06:40:18 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F7C3E270DB;
+        Wed, 26 Oct 2022 06:50:15 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 0/9] bpf: Implement cgroup local storage available
- to non-cgroup-attached bpf progs
+Subject: Re: [PATCH bpf-next] selftests/bpf: Panic on hard/soft lockup
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166676641845.4978.11078534978845698275.git-patchwork-notify@kernel.org>
-Date:   Wed, 26 Oct 2022 06:40:18 +0000
-References: <20221026042835.672317-1-yhs@fb.com>
-In-Reply-To: <20221026042835.672317-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
+Message-Id: <166676701557.11097.582825976321869971.git-patchwork-notify@kernel.org>
+Date:   Wed, 26 Oct 2022 06:50:15 +0000
+References: <20221025231546.811766-1-deso@posteo.net>
+In-Reply-To: <20221025231546.811766-1-deso@posteo.net>
+To:     =?utf-8?q?Daniel_M=C3=BCller_=3Cdeso=40posteo=2Enet=3E?=@ci.codeaurora.org
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, kpsingh@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org
+        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,43 +58,28 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue, 25 Oct 2022 21:28:35 -0700 you wrote:
-> There already exists a local storage implementation for cgroup-attached
-> bpf programs. See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
-> bpf_get_local_storage(). But there are use cases such that non-cgroup
-> attached bpf progs wants to access cgroup local storage data. For example,
-> tc egress prog has access to sk and cgroup. It is possible to use
-> sk local storage to emulate cgroup local storage by storing data in socket.
-> But this is a waste as it could be lots of sockets belonging to a particular
-> cgroup. Alternatively, a separate map can be created with cgroup id as the key.
-> But this will introduce additional overhead to manipulate the new map.
-> A cgroup local storage, similar to existing sk/inode/task storage,
-> should help for this use case.
+On Tue, 25 Oct 2022 23:15:46 +0000 you wrote:
+> When running tests, we should probably accept any help we can get when
+> it comes to detecting issues early or making them more debuggable. We
+> have seen a few cases where a test_progs_noalu32 run, for example,
+> encountered a soft lockup and stopped making progress. It was only
+> interrupted once we hit the overall test timeout [0]. We can not and do
+> not want to necessarily rely on test timeouts, because those rely on
+> infrastructure provided by the environment we run in (and which is not
+> present in tools/testing/selftests/bpf/vmtest.sh, for example).
+> To that end, let's enable panics on soft as well as hard lockups to fail
+> fast should we encounter one. That's happening in the configuration
+> indented to be used for selftests (including when using vmtest.sh or
+> when running in BPF CI).
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v6,1/9] bpf: Make struct cgroup btf id global
-    https://git.kernel.org/bpf/bpf-next/c/5e67b8ef125b
-  - [bpf-next,v6,2/9] bpf: Refactor some inode/task/sk storage functions for reuse
-    https://git.kernel.org/bpf/bpf-next/c/c83597fa5dc6
-  - [bpf-next,v6,3/9] bpf: Implement cgroup storage available to non-cgroup-attached bpf progs
-    https://git.kernel.org/bpf/bpf-next/c/c4bcfb38a95e
-  - [bpf-next,v6,4/9] libbpf: Support new cgroup local storage
-    https://git.kernel.org/bpf/bpf-next/c/4fe64af23c12
-  - [bpf-next,v6,5/9] bpftool: Support new cgroup local storage
-    https://git.kernel.org/bpf/bpf-next/c/f7f0f1657d95
-  - [bpf-next,v6,6/9] selftests/bpf: Fix test test_libbpf_str/bpf_map_type_str
-    https://git.kernel.org/bpf/bpf-next/c/fd4ca6c1facf
-  - [bpf-next,v6,7/9] selftests/bpf: Add selftests for new cgroup local storage
-    https://git.kernel.org/bpf/bpf-next/c/12bb6ca4e2fa
-  - [bpf-next,v6,8/9] selftests/bpf: Add test cgrp_local_storage to DENYLIST.s390x
-    https://git.kernel.org/bpf/bpf-next/c/0a1b69d1c736
-  - [bpf-next,v6,9/9] docs/bpf: Add documentation for new cgroup local storage
-    https://git.kernel.org/bpf/bpf-next/c/d43198017ea3
+  - [bpf-next] selftests/bpf: Panic on hard/soft lockup
+    https://git.kernel.org/bpf/bpf-next/c/5ed88f81511c
 
 You are awesome, thank you!
 -- 
