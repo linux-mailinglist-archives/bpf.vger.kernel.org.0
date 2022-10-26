@@ -2,112 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECA660E261
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 15:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824A360E358
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 16:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbiJZNog (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 09:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S233689AbiJZOa4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 10:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233552AbiJZNoe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 09:44:34 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD693891;
-        Wed, 26 Oct 2022 06:44:31 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 29457723;
-        Wed, 26 Oct 2022 13:44:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 29457723
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1666791871; bh=FqnFi4P5DBvM5d8tmGPGlXGFwx5FCJWH+bst9DteRAc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=CeNjxMF/ta3zdJ4CUZbmazV5gjDlcKydZf1p91Mx0yq0i77JTdCiG4FDJG61WMszN
-         vYCJz7gBnXbFhtFMSHESN39VbIXQtnS5xe1Q68JidusN9kRryJHHk8YnkzG4E//cGq
-         0C8PlP0sbSDtVWg6vkj1cmm26Fz/Hk9GLUqfZWTBoLgH3pO1UogzBnR+Bz3DZakZhH
-         xlZ4NeoYpbLp3tOUEbLSEOjyaLPdy5d+P2dNirwvamrGIXFi6PU8JaJJ8ZBOVsENNp
-         q0Tjl4z3c7HF/HrRRfTIJDe+oQHezsR1RpwkPFT9QtgofZlBHkje4OubQcWhAz2+WZ
-         zDbIJXTYEghzQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH hid v11 14/14] Documentation: add HID-BPF docs
-In-Reply-To: <Y1k0QUxp38OhKg+1@debian.me>
-References: <20221025093458.457089-1-benjamin.tissoires@redhat.com>
- <20221025093458.457089-15-benjamin.tissoires@redhat.com>
- <Y1k0QUxp38OhKg+1@debian.me>
-Date:   Wed, 26 Oct 2022 07:44:30 -0600
-Message-ID: <87a65id7i9.fsf@meer.lwn.net>
+        with ESMTP id S233816AbiJZOaz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 10:30:55 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D3B85ABF;
+        Wed, 26 Oct 2022 07:30:53 -0700 (PDT)
+Received: (Authenticated sender: nicolas.bouchinet@clip-os.org)
+        by mail.gandi.net (Postfix) with ESMTPSA id CF2EFFF80A;
+        Wed, 26 Oct 2022 14:30:45 +0000 (UTC)
+Date:   Wed, 26 Oct 2022 16:30:44 +0200
+From:   Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+To:     linux-integrity@vger.kernel.org
+Cc:     philippe.trebuchet@ssi.gouv.fr, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, casey@schaufler-ca.com, davem@davemloft.net,
+        lucien.xin@gmail.com, vgoyal@redhat.com, omosnace@redhat.com,
+        mortonm@chromium.org, nicolas.bouchinet@ssi.gouv.fr,
+        mic@digikod.net, cgzones@googlemail.com,
+        linux-security-module@vger.kernel.org, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, bpf@vger.kernel.org,
+        roberto.sassu@huaweicloud.com
+Subject: [PATCH v4] evm: Correct inode_init_security hooks behaviors
+Message-ID: <Y1lElHVQGT/1Pa6O@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
+From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
 
-> The wordings are somewhat confusing, so here's the alternative:
+Fixes a NULL pointer dereference occurring in the
+`evm_protected_xattr_common` function of the EVM LSM. The bug is
+triggered if a `inode_init_security` hook returns 0 without initializing
+the given `struct xattr` fields (which is the case of BPF) and if no
+other LSM overrides thoses fields after. This also leads to memory
+leaks.
 
-I've been kind of ignoring these editorial comments of yours, but this
-bit of bikeshedding kind of exceeded my threshold.
+The `call_int_hook_xattr` macro has been inlined into the
+`security_inode_init_security` hook in order to check hooks return
+values and skip ones who doesn't init `xattrs`.
 
-> diff --git a/Documentation/hid/hid-bpf.rst b/Documentation/hid/hid-bpf.rst
-> index ba35aa2e2ba836..c59bce4b9cf214 100644
-> --- a/Documentation/hid/hid-bpf.rst
-> +++ b/Documentation/hid/hid-bpf.rst
-> @@ -27,88 +27,89 @@ Assuming you have a joystick that is getting older, it is common to see it
->  wobbling around its neutral point. This is usually filtered at the application
->  level by adding a *dead zone* for this specific axis.
->  
-> -With HID-BPF, we can apply this filtering in the kernel directly so userspace
-> -does not get woken up when nothing else is happening on the input controller.
-> +With HID-BPF, the filter can be applied in the kernel directly so that
-> +userspace does not get woken up when nothing else is happening on the input
-> +controller.
+Modify `evm_init_hmac` function to init the EVM hmac using every
+entry of the given xattr array.
 
-How does a shift to the passive voice help here?  What is the problem
-you are trying to solve?
+The `MAX_LSM_EVM_XATTR` value is now based on the security modules
+compiled in, which gives room for SMACK, SELinux, Apparmor, BPF and
+IMA/EVM security attributes.
 
-> -Of course, given that this dead zone is specific to an individual device, we
-> -can not create a generic fix for all of the same joysticks. Adding a custom
-> -kernel API for this (e.g. by adding a sysfs entry) does not guarantee this new
-> -kernel API will be broadly adopted and maintained.
-> +Of course, given that dead zone filter is device-specific, it is not possible
+Changes the default return value of the `inode_init_security` hook
+definition to `-EOPNOTSUPP`.
 
-                       ^
-Missing article -------+
+Changes the hook documentation to match the behavior of the LSMs using
+it (only xattr->value is initialised with kmalloc and thus is the only
+one that should be kfreed by the caller).
 
-> +to create a generic fix for all of the same joysticks. Adding a custom
-> +kernel API for this (e.g. by adding a sysfs entry) does not guarantee that
-> +the API will be broadly adopted and maintained.
->  
-> -HID-BPF allows the userspace program to load the program itself, ensuring we
-> -only load the custom API when we have a user.
-> +HID-BPF allows the userspace program to load the program itself, ensuring that
-> +custom API is only needed for edge cases (like esoteric joysticks)
+Cc: roberto.sassu@huaweicloud.com
+Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+---
+Changes since v3:
+https://lore.kernel.org/linux-integrity/Y1fu4jofqLHVDprT@archlinux/
 
-That (beyond the missing article) changes the meaning of the sentence;
-it no longer really makes sense.
+* Fixes compilation error reported by the kernel test robot.
+---
+ include/linux/lsm_hook_defs.h       |  2 +-
+ include/linux/lsm_hooks.h           |  4 ++--
+ security/integrity/evm/evm.h        |  1 +
+ security/integrity/evm/evm_crypto.c |  9 +++++++--
+ security/integrity/evm/evm_main.c   |  7 ++++---
+ security/security.c                 | 31 ++++++++++++++++++++++-------
+ 6 files changed, 39 insertions(+), 15 deletions(-)
 
-I'll stop here.
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 806448173033..e5dd0c0f6345 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -111,7 +111,7 @@ LSM_HOOK(int, 0, path_notify, const struct path *path, u64 mask,
+ 	 unsigned int obj_type)
+ LSM_HOOK(int, 0, inode_alloc_security, struct inode *inode)
+ LSM_HOOK(void, LSM_RET_VOID, inode_free_security, struct inode *inode)
+-LSM_HOOK(int, 0, inode_init_security, struct inode *inode,
++LSM_HOOK(int, -EOPNOTSUPP, inode_init_security, struct inode *inode,
+ 	 struct inode *dir, const struct qstr *qstr, const char **name,
+ 	 void **value, size_t *len)
+ LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 84a0d7e02176..95aff9383de1 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -229,8 +229,8 @@
+  *	This hook is called by the fs code as part of the inode creation
+  *	transaction and provides for atomic labeling of the inode, unlike
+  *	the post_create/mkdir/... hooks called by the VFS.  The hook function
+- *	is expected to allocate the name and value via kmalloc, with the caller
+- *	being responsible for calling kfree after using them.
++ *	is expected to allocate the value via kmalloc, with the caller
++ *	being responsible for calling kfree after using it.
+  *	If the security module does not use security attributes or does
+  *	not wish to put a security attribute on this particular inode,
+  *	then it should return -EOPNOTSUPP to skip this processing.
+diff --git a/security/integrity/evm/evm.h b/security/integrity/evm/evm.h
+index f8b8c5004fc7..6d9628ca7c24 100644
+--- a/security/integrity/evm/evm.h
++++ b/security/integrity/evm/evm.h
+@@ -61,5 +61,6 @@ int evm_calc_hash(struct dentry *dentry, const char *req_xattr_name,
+ int evm_init_hmac(struct inode *inode, const struct xattr *xattr,
+ 		  char *hmac_val);
+ int evm_init_secfs(void);
++int evm_protected_xattr(const char *req_xattr_name);
+ 
+ #endif
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index 708de9656bbd..06639f3cfb38 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -385,7 +385,7 @@ int evm_update_evmxattr(struct dentry *dentry, const char *xattr_name,
+ 	return rc;
+ }
+ 
+-int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
++int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattrs,
+ 		  char *hmac_val)
+ {
+ 	struct shash_desc *desc;
+@@ -396,7 +396,12 @@ int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
+ 		return PTR_ERR(desc);
+ 	}
+ 
+-	crypto_shash_update(desc, lsm_xattr->value, lsm_xattr->value_len);
++	for (int i = 0; lsm_xattrs[i].value != NULL; i++) {
++		if (evm_protected_xattr(lsm_xattrs[i].name))
++			crypto_shash_update(desc,
++					    lsm_xattrs[i].value,
++					    lsm_xattrs[i].value_len);
++	}
+ 	hmac_add_misc(desc, inode, EVM_XATTR_HMAC, hmac_val);
+ 	kfree(desc);
+ 	return 0;
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 2e6fb6e2ffd2..0420453a80e8 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -284,6 +284,8 @@ static int evm_protected_xattr_common(const char *req_xattr_name,
+ 	int found = 0;
+ 	struct xattr_list *xattr;
+ 
++	if (!req_xattr_name)
++		return found;
+ 	namelen = strlen(req_xattr_name);
+ 	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
+ 		if (!all_xattrs && !xattr->enabled)
+@@ -305,7 +307,7 @@ static int evm_protected_xattr_common(const char *req_xattr_name,
+ 	return found;
+ }
+ 
+-static int evm_protected_xattr(const char *req_xattr_name)
++int evm_protected_xattr(const char *req_xattr_name)
+ {
+ 	return evm_protected_xattr_common(req_xattr_name, false);
+ }
+@@ -841,8 +843,7 @@ int evm_inode_init_security(struct inode *inode,
+ 	struct evm_xattr *xattr_data;
+ 	int rc;
+ 
+-	if (!(evm_initialized & EVM_INIT_HMAC) ||
+-	    !evm_protected_xattr(lsm_xattr->name))
++	if (!(evm_initialized & EVM_INIT_HMAC))
+ 		return 0;
+ 
+ 	xattr_data = kzalloc(sizeof(*xattr_data), GFP_NOFS);
+diff --git a/security/security.c b/security/security.c
+index 14d30fec8a00..79524f8734f1 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -30,7 +30,11 @@
+ #include <linux/msg.h>
+ #include <net/flow.h>
+ 
+-#define MAX_LSM_EVM_XATTR	2
++#define MAX_LSM_EVM_XATTR                                \
++	((IS_ENABLED(CONFIG_EVM) ? 1 : 0) +              \
++	 (IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
++	 (IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) +   \
++	 (IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
+ 
+ /* How many LSMs were built into the kernel? */
+ #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
+@@ -1091,9 +1095,11 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
+ 				 const struct qstr *qstr,
+ 				 const initxattrs initxattrs, void *fs_data)
+ {
++	int i = 0;
++	int ret = -EOPNOTSUPP;
+ 	struct xattr new_xattrs[MAX_LSM_EVM_XATTR + 1];
+ 	struct xattr *lsm_xattr, *evm_xattr, *xattr;
+-	int ret;
++	struct security_hook_list *hook_ptr;
+ 
+ 	if (unlikely(IS_PRIVATE(inode)))
+ 		return 0;
+@@ -1103,15 +1109,26 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
+ 				     dir, qstr, NULL, NULL, NULL);
+ 	memset(new_xattrs, 0, sizeof(new_xattrs));
+ 	lsm_xattr = new_xattrs;
+-	ret = call_int_hook(inode_init_security, -EOPNOTSUPP, inode, dir, qstr,
+-						&lsm_xattr->name,
+-						&lsm_xattr->value,
+-						&lsm_xattr->value_len);
++	hlist_for_each_entry(hook_ptr, &security_hook_heads.inode_init_security,
++			     list) {
++		ret = hook_ptr->hook.inode_init_security(inode, dir, qstr,
++				&lsm_xattr->name,
++				&lsm_xattr->value,
++				&lsm_xattr->value_len);
++		if (ret == -EOPNOTSUPP)
++			continue;
++		if (WARN_ON_ONCE(i >= MAX_LSM_EVM_XATTR))
++			ret = -ENOMEM;
++		if (ret != 0)
++			break;
++		lsm_xattr++;
++		i++;
++	}
+ 	if (ret)
+ 		goto out;
+ 
+ 	evm_xattr = lsm_xattr + 1;
+-	ret = evm_inode_init_security(inode, lsm_xattr, evm_xattr);
++	ret = evm_inode_init_security(inode, new_xattrs, evm_xattr);
+ 	if (ret)
+ 		goto out;
+ 	ret = initxattrs(inode, new_xattrs, fs_data);
+-- 
+2.38.1
 
-Bagas, I've asked this several times: *please* stop trying to tell other
-contributors what to do and, instead, focus on contributing something
-useful yourself.  You seem to have the energy and interest to do
-worthwhile stuff - please do that!
-
-Thanks,
-
-jon
