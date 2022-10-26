@@ -2,101 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFC660E04D
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 14:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C5B60E0AB
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 14:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbiJZMHm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 08:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S233489AbiJZMbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 08:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233778AbiJZMHT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 08:07:19 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28488C895C;
-        Wed, 26 Oct 2022 05:06:56 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4My6sy3zJ4zJnG7;
-        Wed, 26 Oct 2022 20:04:06 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 26 Oct 2022 20:06:52 +0800
-Message-ID: <1d5a490c-b3bd-a029-15b5-77b72e545b20@huawei.com>
-Date:   Wed, 26 Oct 2022 20:06:51 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next] bpf: Fix a typo in comment for DFS algorithm
-Content-Language: en-US
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Xu Kuohai <xukuohai@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        with ESMTP id S233416AbiJZMb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 08:31:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F517AB15
+        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 05:31:25 -0700 (PDT)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1666787484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HOwmFeqA0a/oNdvdHF9irYL7W2HF2WYB7JZql6T3ucA=;
+        b=aaVLo0USjYTlD9swI6s8ELrsWMeBQipEk4D/t0X9ezbpfWLPY9HnpH8UGSXtg3RvIguLcH
+        xQelqyF15XdTNahKCrsX8ZOfbGXTJs9YmIq4KtLsGiItoaRQ6TKaQzSaEc5qC8yGdJVnEy
+        33NYa6agzI0kxxJFAG45QJP3E0QhaWoBQBfFTME15FbwuceSgvOmhh3v30XjBKGEhA/+Q+
+        8VsiSlk4lnxBVfegJ0Pv3vq5gOIWFbIq/5O8LhcKJ+luOef0a0xeGAwqQEawq0S+hCRqpu
+        q6xGe5eDnZDC7pB3qxjshq3MzVvkx9H4RjUeGiJik20ybIvjZhilYdvKDgqveQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1666787484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HOwmFeqA0a/oNdvdHF9irYL7W2HF2WYB7JZql6T3ucA=;
+        b=Yn5fLdc71EuiSs1XGvTxFfxM9UE3IOOx0mYZbcKQ0JXSre6wGER29kE8JO2GzPf9wKl+2+
+        f6gdhbTW/VX+NaAA==
+To:     bpf@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-References: <20221026025941.2621795-1-xukuohai@huaweicloud.com>
- <CAADnVQ+Pe73yjys+fjW1TBPscCmv6K9ur5bDPr2056ejwBBdZg@mail.gmail.com>
- <Y1jnVvcqVF8GanWZ@debian.me>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <Y1jnVvcqVF8GanWZ@debian.me>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] bpf: Remove the obsolte u64_stats_fetch_*_irq() users.
+Date:   Wed, 26 Oct 2022 14:31:10 +0200
+Message-Id: <20221026123110.331690-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/26/2022 3:52 PM, Bagas Sanjaya wrote:
-> On Tue, Oct 25, 2022 at 11:32:55PM -0700, Alexei Starovoitov wrote:
->> On Tue, Oct 25, 2022 at 7:42 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>>
->>> From: Xu Kuohai <xukuohai@huawei.com>
->>>
->>> There is a typo in comment for DFS algorithm in bpf/verifier.c. The top
->>> element should not be popped until all its neighbors have been checked.
->>> Fix it.
->>>
->>> Fixes: 475fb78fbf48 ("bpf: verifier (add branch/goto checks)")
->>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->>> ---
->>>   kernel/bpf/verifier.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index b83a8d420520..96ba5ea6d1a6 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -10662,7 +10662,7 @@ static int check_return_code(struct bpf_verifier_env *env)
->>>    * 3      let S be a stack
->>>    * 4      S.push(v)
->>>    * 5      while S is not empty
->>> - * 6            t <- S.pop()
->>> + * 6            t <- S.top()
->>
->> Even with this fix the comment is not quite accurate.
->> I wonder whether we should keep it or delete it completely.
->> At least please use 'peek' instead of 'top'.
-> 
-> I think the comment should be in words (like other code comments in the
-> kernel) instead.
-> 
+From: Thomas Gleixner <tglx@linutronix.de>
 
-The beginning of the comment already says this is a piece of pseudo code. And
-I don't think it's clearer to describe the algorithm in words than to describe
-it in pseudo code.
+Now that the 32bit UP oddity is gone and 32bit uses always a sequence
+count, there is no need for the fetch_irq() variants anymore.
+
+Convert to the regular interface.
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/bpf/syscall.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 7b373a5e861f4..71d8eb131928d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2117,11 +2117,11 @@ static void bpf_prog_get_stats(const struct bpf_pro=
+g *prog,
+=20
+ 		st =3D per_cpu_ptr(prog->stats, cpu);
+ 		do {
+-			start =3D u64_stats_fetch_begin_irq(&st->syncp);
++			start =3D u64_stats_fetch_begin(&st->syncp);
+ 			tnsecs =3D u64_stats_read(&st->nsecs);
+ 			tcnt =3D u64_stats_read(&st->cnt);
+ 			tmisses =3D u64_stats_read(&st->misses);
+-		} while (u64_stats_fetch_retry_irq(&st->syncp, start));
++		} while (u64_stats_fetch_retry(&st->syncp, start));
+ 		nsecs +=3D tnsecs;
+ 		cnt +=3D tcnt;
+ 		misses +=3D tmisses;
+--=20
+2.37.2
+
