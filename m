@@ -2,165 +2,542 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B9B60EC29
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 01:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577F660ECC4
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 01:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbiJZXSa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 19:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
+        id S229592AbiJZXyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 19:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233844AbiJZXSE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 19:18:04 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2078.outbound.protection.outlook.com [40.107.95.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72702B8C0F;
-        Wed, 26 Oct 2022 16:17:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j8U1rgEqoBQDM5RGYrZmspJMhXqz3A4SfeQmwwPVkz4zFL9rplxqdqpbtX994ZcbZ11z2tO9YvwtS3UyfnpsO3qaTulOKzXuCbNJYXfraJ+39kCdTmLAG5laIOuyhyEMXtAafZm92O1Uwa/LxqTsHf4VnYI0J0/Qp/MrjSbVoL/6hg7U2X1srQhbkzPK58j6NNHYe/kU2cgZC8Fpo+aT+PR8ruPP7QVrtUUCuJzaKuJGypZREkuZAcV5p5fHQOu4FXMa2cT8Agv+RO7KcuYAi1wMC1a45MIFWIADLehdbKr+fbzlpkQemQc7eHcZ1No/dP2zB90Bg/H1hZpUlZzEWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WGNiizTFcUwCN/L1ZiKc5QLrDNWfMbQatWehMkc23Kc=;
- b=dnNGS/xXTlwxawfFPdTBX0OE4rpPWukMZ7A9if+6l9vNQqJy9Is3abaK7tCfeSYuRfnNSfHNiSEcLXYf4H7KWzd9LPh1kCjt0T098E6UvVJlV13E49S3owvcPY2LiIasYfhsjtX01w0iVM914uoEKMF/kU1gix7vJfO7cFEP4MnAR0Zld5k2wl41qOgQo9movwKdnTOaagJaca3wSdGkDZ34f4VPNliqhFObNY8uCPCPWj3wxOSUmyprY4z85JjzQ0M72MBC3RNI5w8hXZwDGOEtnlZq5PVS2rL6BukhCy24TGYC3jFfr7OuP+hxfAERDW2M+uYLwYEzftTVbn1xSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WGNiizTFcUwCN/L1ZiKc5QLrDNWfMbQatWehMkc23Kc=;
- b=eABlgKZAgTC0PGVr8VfgnJ/VNOepNuAYt4a9BALH+fzdcVkRfbZ+DmHaKA77Y30jAbZrVIEMrjDiHWYfkzRHIIt9uczQWqnNjoYQJlOp/oMcHZ7uThiQPOSzcOd1+ZeVvX/DVor/JzqyXe5kLQ680eMy84Mi6dMBpOdgZd73cvQ4eAh8+kt/FVyiDJ6C0DGAwLy6AO/JckA5FVdPkPBkxvZyAC+bLRX8n/tHbLGCLJo5PFMlOOTgAn3QiFBV6HIhPOQldpt+bjx1k+gVGE6Ahm/BC1EHW1E23EWWhCEMVryRYn4rsiRTtO1ARBd5ccrB81WMLIc72fabLvl3VOKA1A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by IA1PR12MB7493.namprd12.prod.outlook.com (2603:10b6:208:41b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.21; Wed, 26 Oct
- 2022 23:17:38 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5746.021; Wed, 26 Oct 2022
- 23:17:38 +0000
-Date:   Wed, 26 Oct 2022 20:17:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 10/15] iommufd: IOCTLs for the io_pagetable
-Message-ID: <Y1nAEfNBYMswuqiM@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-X-ClientProxiedBy: YT1PR01CA0112.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::21) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S234214AbiJZXym (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 19:54:42 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A9911157
+        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 16:54:37 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id i5-20020a1c3b05000000b003cf47dcd316so2848654wma.4
+        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 16:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pjRVxIwCxLd9XTeDniCbDtUTHGbOLFjJ5a58Jmofn8U=;
+        b=ZAL+gX6J0xtVNIlzeMHLVNvrnvR7Rt6Q90cyfZiqAstsgTeiP7SsFVadIwiH2+gGZ3
+         9LWCAktrqhwPSeWXSkTuQAApV4BglFYdPe4igij9wriotV8VFcynFseFUWxoasZ43pHO
+         sqFEqnJh4+oQ6XB6/LeIeZrJBdBRXxGeaNSn5ND8XcGfpuAyfsP8rmcUAlyyOQFcRqHU
+         o0uh3EOuZ+6ziMLUWZqkXFgppeREQLKA3rqJRjI1WazhKrTxq02+RZ6ltRjQXMaw3VJv
+         9vvHm1gVU17mb6hPWTjC59BTb52/2J9cHmYGCQCsbBNX+VIPbzjWZLwfI0M0wdBnpevw
+         vNIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pjRVxIwCxLd9XTeDniCbDtUTHGbOLFjJ5a58Jmofn8U=;
+        b=zkTI0gz+BROcWLToKnGGiVAmu0dVL/3rITmGpE1faOwVJjAifwqrI4RHC2na73We67
+         ybZqnaecCpX09pl2dztHBkPd6vcwW5dKO/aUF8MCDMFOFUaZv4CPl7vu4rnijZnWr19O
+         0d2PE4pJPBGY7U3wl08Iqu09b9aXPdNqWCVcl/xTxMPU167S6gd6vHuX0gPiBzszRZcH
+         9vqfs5AdE5IvucvzXbrS/MB0775Cwmd72qw23uUOWjM4fXaPtZA6tJkBPwmXR8as6iY7
+         DgRy1HrOyau2AK90HakYvJpxjo4HUm/hbzamYnzmb3/fXU3jEqz/7LBDK3562vyaunth
+         U3yw==
+X-Gm-Message-State: ACrzQf22Gzyi0a2tu4NP6VCMRfd0XQQYeebsHLQOGvklAkU4re4Y8rvU
+        7dyYYMpF5UVCbArrLUEm3hE=
+X-Google-Smtp-Source: AMsMyM6ht5m1tBtqZnmkIhUC/fMQNja2e0ijgL9Oq/7LEQHNC3IYtsvPVgV5omUIxYDBcm/SVxwDbw==
+X-Received: by 2002:a05:600c:35cb:b0:3c6:e382:62fb with SMTP id r11-20020a05600c35cb00b003c6e38262fbmr3909787wmq.22.1666828476185;
+        Wed, 26 Oct 2022 16:54:36 -0700 (PDT)
+Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id x12-20020adff0cc000000b00236733f0f98sm6316312wro.107.2022.10.26.16.54.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Oct 2022 16:54:35 -0700 (PDT)
+Message-ID: <eaf0f6a5dd6a8b2665b84770f83b3db577abd72e.camel@gmail.com>
+Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, arnaldo.melo@gmail.com
+Date:   Thu, 27 Oct 2022 02:54:33 +0300
+In-Reply-To: <81a01604-83db-25a2-d8e0-af1607ac30a9@oracle.com>
+References: <20221025222802.2295103-1-eddyz87@gmail.com>
+         <81a01604-83db-25a2-d8e0-af1607ac30a9@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB7493:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52103476-c604-4e6a-9645-08dab7a845f5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YRIGgkrslRYmykmLkVqpIis9Q5bddhHJ/aajie6Gwu/oD6sPUdFv5qmjWa+eDqmWrYYwasTb2Q1NYf+wYUH7CcbB0yR0PRlHMJH0irtG1il4OChKeLwV4igCXRyzNE7wS4g5pVzHAmF3Rr11o/CgCMfOSbTAt5d3Vhyc47cJQF1C5ujptbMpfOXQU1JE9OMsbJ+zGMKUFvLiNVcKnczj3A4TIGq9lYMFcEEYTNf/aL2NgE8KvUcqprLORIjD54rzsRBc/MkQulYDDTZzSP+0rhJqp/qj9uFdYtYpheKRg18Bobj4knOo7I3UckFM+SHmS8HQfuf9xnBZJKEQjzJqgJn+MB/gMI9m1whcAe5UNIKCW/C4HeEAvtWjLQCVo6hQDFvZ1VuGEGFzGECVvUxAi7FEHSK9M0kpIeM1MwGp2RkTuv6A+m12fDvC5A8b4mNzswqQshmC1OfMbcIEfGmlHh2lrRy0FLuyuzTAlO5K+k0LfjuxgOCXIjoq6ssN7itBtM020q7Cy5HxEFk94Y2LaUzLy1CaSOHbC1F/UkfPgYSUK0aOL3sIF6ThyxG8MkZ9rGui+uKm5QcEmpVJI/EdKK4PIctmQysHj3eussWHPH98joTJLnpj5LVENHOnYsM4cWtVmqCC1MKaOjLDocsPhnsHMg6qtmq2pqVEZAmmp5BC1Kuz9Zjn88zsv3ZtCNKKgl4UKOiQ1el9uRHQ+mPulK95MyUbsRZ3L5bjVRgIMIM5XGNYeHmmlYSB0gRJH0z/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(136003)(366004)(346002)(396003)(451199015)(36756003)(2906002)(54906003)(5660300002)(921005)(110136005)(4326008)(66476007)(66946007)(7416002)(66556008)(41300700001)(8676002)(7406005)(8936002)(316002)(4744005)(2616005)(6512007)(83380400001)(6506007)(38100700002)(86362001)(186003)(26005)(6486002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+VG9NLWHAzftHcCdcBU3VT297rcpkFdFleRh/83AFwecWpEh4s3dDGUbvZUg?=
- =?us-ascii?Q?zdKja430W+9dhmVHHoq0n1wnwRS4rn18k5mSiEMgAdaR1PLVyB+zDqKF/Q7U?=
- =?us-ascii?Q?K6X+ZgxvCYsOkO3ODm2/5mordrWUg63bio+ZFrsYtMzf4TtOimzMrb5lIEpM?=
- =?us-ascii?Q?amk2X4teemGHYzxV+LToqgP0oETjZfUlqvl3KqBPS47GC/jXqDGlbygIfijk?=
- =?us-ascii?Q?2VhyfilQJVeUiJd3AUst3uWnMCeCvYUc/Q04aLVaSsvsV8+uilmZIEQzIVwN?=
- =?us-ascii?Q?EwQJldI+F32HubhhqfOzb7Av/XTWXOffSVhedKCc/yH42/gAkcGy1rAPvjtb?=
- =?us-ascii?Q?QLiEOlJGAARuYeSGVtZwfuHUZKGGJ/bfVPOzymdy7+bf4g+1I7cjEGBPcUxw?=
- =?us-ascii?Q?o4Id7N2PgEi/z7S3nPQ19YHGXm5CNlwaYq5BAPk4wxiEjdqbBUlJ6JhW7PIg?=
- =?us-ascii?Q?LQN2oNBlyKh/ZG65bEZpVP4dOxxPpBA/uxRkuU4A/3wL/bFfdLkm2zIZyI2X?=
- =?us-ascii?Q?0ouFJQE1/cM6RsjANyEI3XXG2dzBr7dgGYrnSC7BewwVOTyQrxTw9mO6YMak?=
- =?us-ascii?Q?Ub/MJHZQ57/xN6BlgUOLdCgU6QuvWNRe3WHjWpZRmk4Tcl7nRENHpI18Icyh?=
- =?us-ascii?Q?F/aMTzRIQfO7gpuUX+eSZYAoUj/P3fmynO5+LU8KdMDqNVrKLV/Vq9/aYYTv?=
- =?us-ascii?Q?zHvM95oLRW/RUy0masVB9Nf+XTG8Tl1q9qHCa/MdscmjUv5WENiTjjUHvt1c?=
- =?us-ascii?Q?viEnlMJCR6/fRzPaYfcgFmUwJAsexdJtadlaF9keskK94uX6bz0eYiKtzVBj?=
- =?us-ascii?Q?cBSqiRjGyS+NET+ugHlYaHkiaDt9ThXcYa2tQRdHza8aeCcW6UtQlxtjC8xq?=
- =?us-ascii?Q?ORcEIG/GPLENg7phS+9WEY/2QdamE23n8d4WKIa2djkpIOqHxQFaFn4ukneh?=
- =?us-ascii?Q?i+OaEZPgLpq7oEanhNxBTEXqDZM0Wt2zZVcCjYjjrAt6msUj5cF22ZMBfvq4?=
- =?us-ascii?Q?uIxahLKePbi+xyvELFjFmDKilZuWEk8GAEVrPJGCzSXe1f49A8OV6CAkb59P?=
- =?us-ascii?Q?Nk0YwPAqYNXgvEYzUUZEINDH/Xqtobbu/OEufW4RRs3GbeTH8wZuZuU120qY?=
- =?us-ascii?Q?wBtRwNpAoMbZ4SwiXI713MQwERu+XvyPlUGWglJdKrnIgjcT/vjXxhUWp27D?=
- =?us-ascii?Q?RLI5PnL6MsNUmaBVHtSU1m7WG99KcbSTbycyMrhhjafAM5T6tVHuiLJShOap?=
- =?us-ascii?Q?U7yUSHUiNzFW5AFhJrmKDvvebESXX5KpfAafTJYYUcYZc2lzJgaIv5RBmind?=
- =?us-ascii?Q?pUG9Xk23+54Dc+6lbG7ebNwPK5jH7qJNoF22lDITekNuXhFRLb+PscwyzQJZ?=
- =?us-ascii?Q?ruzrkd39LBEV9ipgd1W2/fuW0u7HeRs6iQqMGtUcoxbpsMtc8qanRLqyWUGp?=
- =?us-ascii?Q?1e9g8jUqeXlfsF7pFofHSycNrcoZTZF2fq+9Of1vYXrAdjRSUNkck4rCOtZ/?=
- =?us-ascii?Q?Pz7NgyFfu5B/jSmDfsMmvK9+ygE+aRxRR8iSevIMMEwqUEGJF/ZKVchrStYc?=
- =?us-ascii?Q?TYMk2lwNzCps7zIomTYQHxORkNd1/Qavdayvs2aI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52103476-c604-4e6a-9645-08dab7a845f5
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2022 23:17:38.4957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /LOFoOFWi3WHuIlXKV9yr0iUfVZMGQ12CLwrPS8WoKgfOdY8rOZdoKLXfoHzzWnY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7493
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 03:12:19PM -0300, Jason Gunthorpe wrote:
->  static struct iommufd_ioctl_op iommufd_ioctl_ops[] = {
->  	IOCTL_OP(IOMMU_DESTROY, iommufd_destroy, struct iommu_destroy, id),
-> +	IOCTL_OP(IOMMU_IOAS_ALLOC, iommufd_ioas_alloc_ioctl,
-> +		 struct iommu_ioas_alloc, out_ioas_id),
-> +	IOCTL_OP(IOMMU_IOAS_ALLOW_IOVAS, iommufd_ioas_allow_iovas,
-> +		 struct iommu_ioas_allow_iovas, allowed_iovas),
-> +	IOCTL_OP(IOMMU_IOAS_COPY, iommufd_ioas_copy, struct iommu_ioas_copy,
-> +		 src_iova),
-> +	IOCTL_OP(IOMMU_IOAS_IOVA_RANGES, iommufd_ioas_iova_ranges,
-> +		 struct iommu_ioas_iova_ranges, out_iova_alignment),
-> +	IOCTL_OP(IOMMU_IOAS_MAP, iommufd_ioas_map, struct iommu_ioas_map,
-> +		 __reserved),
+On Wed, 2022-10-26 at 12:10 +0100, Alan Maguire wrote:
+> On 25/10/2022 23:27, Eduard Zingerman wrote:
+> > Hi BPF community,
+> >=20
+> > AFAIK there is a long standing feature request to use kernel headers
+> > alongside `vmlinux.h` generated by `bpftool`. For example significant
+> > effort was put to add an attribute `bpf_dominating_decl` (see [1]) to
+> > clang, unfortunately this effort was stuck due to concerns regarding C
+> > language semantics.
+> >=20
+>=20
+> Thanks for the details! It's a tricky problem to solve.
+>=20
+> Before diving into this, can I ask if there's another way round this;
+> is there no way we could teach vmlinux.h generation which types to
+> skip via some kind of bootstrapping process?
+>=20
+> For a bpf object foo.bpf.c that wants to include linux/tcp.h and=20
+> vmlinux.h, something like this seems possible;
+>=20
+> 1. run the preprocessor (gcc -E) over the BPF program to generate=20
+> a bootstrap header foo.bpf.exclude_types.h consisting of all the types me=
+ntioned
+> in it and associated includes, but not in vmlinux.h  It would need to -D_=
+_VMLINUX_H__=20
+> to avoid including vmlinux.h definitions and -D__BPF_EXCLUDE_TYPE_BOOTSTR=
+AP__ to=20
+> skip the programs themselves, which would need a guard around them I thin=
+k:
+>=20
+> #include <stddef.h>
+> #include <stdbool.h>
+> #include <vmlinux.h>
+> #include <linux/tcp.h>
+>=20
+> #ifndef __BPF_EXCLUDE_TYPE_BOOTSTRAP__
+> //rest of program here
+> #endif
+>=20
+> So as a result of this, we now have a single header file that contains al=
+l the types
+> that non-vmlinux.h include files define.
+>=20
+> 2. now to generate vmlinux.h, pass foo.bpf.exclude_types.h into "bpftool =
+btf dump" as an
+> exclude header:
+>=20
+> bpftool btf dump --exclude /tmp/foo.bpf.types.h file /sys/kernel/btf/vmli=
+nux format c > vmlinux.h
+>=20
+> bpftool would have to parse the exclude header for actual type definition=
+s, spotting struct,
+> enum and typedef definitions. This is likely made easier by running the p=
+reprocessor
+> at least since formatting is probably quite uniform. vmlinux.h could simp=
+ly emit forward declarations
+> for types described both in vmlinux BTF and in the exclude file.
+>=20
+> So the build process would be
+>=20
+> - start with empty vmlinux.h
+> - bootstrap a header consisting of the set of types to exclude via c prep=
+rocessor
+> - generate new vmlinux.h based on above
+> - build bpf program
+>=20
+> Build processes for BPF objects already has bootstrapping elements like
+> this for generating vmlinux.h and skeletons, so while it's not perfect it=
+ might
+> be a simpler approach. There may be problems with this I'm not seeing tho=
+ugh?
 
-Syzkaller indirectly noticed that __reserved is no longer the last
-item in this struct:
+I like the tool based approach more but I heard there were some
+reservations about separate tool complicating the build process.
+- the tool does not require changes to the kbuild;
+- the tool is not limited to uapi headers;
+- the tool could imitate the dominating declarations attribute and
+  address the issue with definitions miss-match between vmlinux.h and
+  system headers (see my reply to Alexei in the parallel sub-thread).
+  To support this point it would have to work in a somewhat different
+  order:
+  - read/pre-process the input file;
+  - remove from it the definitions that are also present in kernel BTF;
+  - prepend vmlinux.h to the beginning of the file.
 
-        IOCTL_OP(IOMMU_IOAS_MAP, iommufd_ioas_map, struct iommu_ioas_map,
--                __reserved),
-+                iova),
+On the other hand I think that implementation would need a C parser /
+type analysis step. Thus it would be harder to implement it as a part
+of bpftool. But the prototype using something like [1] should be simple.
 
-Also added a test to cover basic struct extensibility on all the ioctls.
+Thanks,
+Eduard
 
-Jason
+
+[1] https://github.com/inducer/pycparserext
+
+>=20
+> Thanks!
+>=20
+> Alan
+>=20
+> > After some discussion with Alexei and Yonghong I'd like to request
+> > your comments regarding a somewhat brittle and partial solution to
+> > this issue that relies on adding `#ifndef FOO_H ... #endif` guards in
+> > the generated `vmlinux.h`.
+> >=20
+> > The basic idea
+> > ---
+> >=20
+> > The goal of the patch set is to allow usage of header files from
+> > `include/uapi` alongside `vmlinux.h` as follows:
+> >=20
+> >   #include <uapi/linux/tcp.h>
+> >   #include "vmlinux.h"
+> >=20
+> > This goal is achieved by adding `#ifndef ... #endif` guards in
+> > `vmlinux.h` around definitions that originate from the `include/uapi`
+> > headers. The guards emitted match the guards used in the original
+> > headers. E.g. as follows:
+> >=20
+> > include/uapi/linux/tcp.h:
+> >=20
+> >   #ifndef _UAPI_LINUX_TCP_H
+> >   #define _UAPI_LINUX_TCP_H
+> >   ...
+> >   union tcp_word_hdr {
+> > 	struct tcphdr hdr;
+> > 	__be32        words[5];
+> >   };
+> >   ...
+> >   #endif /* _UAPI_LINUX_TCP_H */
+> >=20
+> > vmlinux.h:
+> >=20
+> >   ...
+> >   #ifndef _UAPI_LINUX_TCP_H
+> >=20
+> >   union tcp_word_hdr {
+> > 	struct tcphdr hdr;
+> > 	__be32 words[5];
+> >   };
+> >=20
+> >   #endif /* _UAPI_LINUX_TCP_H */
+> >   ...
+> >=20
+> > To get to this state the following steps are necessary:
+> > - "header guard" name should be identified for each header file;
+> > - the correspondence between data type and it's header guard has to be
+> >   encoded in BTF;
+> > - `bpftool` should be adjusted to emit `#ifndef FOO_H ... #endif`
+> >   brackets.
+> >=20
+> > It is not possible to identify header guard names for all uapi headers
+> > basing only on the file name. However a simple script could devised to
+> > identify the guards basing on the file name and it's content. Thus it
+> > is possible to obtain the list of header names with corresponding
+> > header guards.
+> >=20
+> > The correspondence between type and it's declaration file (header) is
+> > available in DWARF as `DW_AT_decl_file` attribute. The
+> > `DW_AT_decl_file` can be matched with the list of header guards
+> > described above to obtain the header guard name for a specific type.
+> >=20
+> > The `pahole` generates BTF using DWARF. It is possible to modify
+> > `pahole` to accept the header guards list as an additional parameter
+> > and to encode the header guard names in BTF.
+> >=20
+> > Implementation details
+> > ---
+> >=20
+> > Present patch-set implements these ideas as follows:
+> > - A parameter `--header_guards_db` is added to `pahole`. If present it
+> >   points to a file with a list of `<header> <guard>` records.
+> > - `pahole` uses DWARF `DW_AT_decl_file` value to lookup the header
+> >   guard for each type emitted to BTF. If header guard is present it is
+> >   encoded alongside the type.
+> > - Header guards are encoded in BTF as `BTF_DECL_TAG` records with a
+> >   special prefix. The prefix "header_guard:" is added to a value of
+> >   such tags. (Here `BTF_DECL_TAG` is used to avoid BTF binary format
+> >   changes).
+> > - A special script `infer_header_guards.pl` is added as a part of
+> >   kbuild, it can infer header guard names for each UAPI header basing
+> >   on the header content.
+> > - This script is invoked from `link-vmlinux.sh` prior to BTF
+> >   generation during kernel build. The output of the script is saved to
+> >   a file, the file is passed to `pahole` as `--header_guards_db`
+> >   parameter.
+> > - `libbpf` is modified to aggregate `BTF_DECL_TAG` records for each
+> >   type and to emit `#ifndef FOO_H ... #endif` brackets when
+> >   "header_guard:" tag is present for a type.
+> >=20
+> > Details for each patch in a set:
+> > - libbpf: Deduplicate unambigous standalone forward declarations
+> > - selftests/bpf: Tests for standalone forward BTF declarations deduplic=
+ation
+> >=20
+> >   There is a small number (63 for defconfig) of forward declarations
+> >   that are not de-duplicated with the main type declaration under
+> >   certain conditions. This hinders the header guard brackets
+> >   generation. This patch addresses this de-duplication issue.
+> >=20
+> > - libbpf: Support for BTF_DECL_TAG dump in C format
+> > - selftests/bpf: Tests for BTF_DECL_TAG dump in C format
+> >=20
+> >   Currently libbpf does not process BTF_DECL_TAG when btf is dumped in
+> >   C format. This patch adds a hash table matching btf type ids with a
+> >   list of decl tags to the struct btf_dump.
+> >   The `btf_dump_emit_decl_tags` is not necessary for the overall
+> >   patch-set to function but simplifies testing a bit.
+> >=20
+> > - libbpf: Header guards for selected data structures in vmlinux.h
+> > - selftests/bpf: Tests for header guards printing in BTF dump
+> >=20
+> >   Adds option `emit_header_guards` to `struct btf_dump_opts`.
+> >   When enabled the `btf_dump__dump_type` prints `#ifndef ... #endif`
+> >   brackets around types for which header guard information is present
+> >   in BTF.
+> >=20
+> > - bpftool: Enable header guards generation
+> >=20
+> >   Unconditionally enables `emit_header_guards` for BTF dump in C format=
+.
+> >=20
+> > - kbuild: Script to infer header guard values for uapi headers
+> > - kbuild: Header guards for types from include/uapi/*.h in kernel BTF
+> >=20
+> >   Adds `scripts/infer_header_guards.pl` and integrates it with
+> >   `link-vmlinux.sh`.
+> >=20
+> > - selftests/bpf: Script to verify uapi headers usage with vmlinux.h
+> >=20
+> >   Adds a script `test_uapi_headers.py` that tests header guards with
+> >   vmlinux.h by compiling a simple C snippet. The snippet looks as
+> >   follows:
+> >  =20
+> >     #include <some_uapi_header.h>
+> >     #include "vmlinux.h"
+> >  =20
+> >     __attribute__((section("tc"), used))
+> >     int syncookie_tc(struct __sk_buff *skb) { return 0; }
+> >  =20
+> >   The list of headers to test comes from
+> >   `tools/testing/selftests/bpf/good_uapi_headers.txt`.
+> >=20
+> > - selftests/bpf: Known good uapi headers for test_uapi_headers.py
+> >=20
+> >   The list of uapi headers that could be included alongside vmlinux.h.
+> >   The headers are peeked from the following locations:
+> >   - <headers-export-dir>/linux/*.h
+> >   - <headers-export-dir>/linux/**/*.h
+> >   This choice of locations is somewhat arbitrary.
+> >=20
+> > - selftests/bpf: script for infer_header_guards.pl testing
+> >=20
+> >   The test case for `scripts/infer_header_guards.pl`, verifies that
+> >   header guards can be inferred for all uapi headers.
+> >=20
+> > - There is also a patch for dwarves that adds `--header_guards_db`
+> >   option (see [2]).
+> >=20
+> > The `test_uapi_headers.py` is important as it demonstrates the
+> > the necessary compiler flags:
+> >=20
+> > clang ...                                  \
+> >       -D__x86_64__                         \
+> >       -Xclang -fwchar-type=3Dshort           \
+> >       -Xclang -fno-signed-wchar            \
+> >       -I{exported_kernel_headers}/include/ \
+> >       ...
+> >=20
+> > - `-fwchar-type=3Dshort` and `-fno-signed-wchar` had to be added becaus=
+e
+> >   BPF target uses `int` for `wchar_t` by default and this differs from
+> >   `vmlinux.h` definition of the type (at least for x86_64).
+> > - `__x86_64__` had to be added for uapi headers that include
+> >   `stddef.h` (the one that is supplied my CLANG itself), in order to
+> >   define correct sizes for `size_t` and `ptrdiff_t`.
+> > - The `{exported_kernel_headers}` stands for exported kernel headers
+> >   directory (the headers obtained by `make headers_install` or via
+> >   distribution package).
+> >=20
+> > When it works
+> > ---
+> >=20
+> > The mechanics described above works for a significant number of UAPI
+> > headers. For example, for the test case above I chose the headers from
+> > the following locations:
+> > - linux/*.h
+> > - linux/**/*.h
+> > There are 759 such headers and for 677 of them the test described
+> > above passes.
+> >=20
+> > I excluded the headers from the following sub-directories as
+> > potentially not interesting:
+> >=20
+> >   asm          rdma   video xen
+> >   asm-generic  misc   scsi
+> >   drm          mtd    sound
+> >=20
+> > Thus saving some time for both discussion and CI but the choice is
+> > somewhat arbitrary. If I run `test_uapi_headers.py --test '*'` (all
+> > headers) test passes for 834 out of 972 headers.
+> >=20
+> > When it breaks
+> > ---
+> >=20
+> > There several scenarios when this mechanics breaks.
+> > Specifically I found the following cases:
+> > - When uapi header includes some system header that conflicts with
+> >   vmlinux.h.
+> > - When uapi header itself conflicts with vmlinux.h.
+> >=20
+> > Below are examples for both cases.
+> >=20
+> > Conflict with system headers
+> > ----
+> >=20
+> > The following uapi headers:
+> > - linux/atmbr2684.h
+> > - linux/bpfilter.h
+> > - linux/gsmmux.h
+> > - linux/icmp.h
+> > - linux/if.h
+> > - linux/if_arp.h
+> > - linux/if_bonding.h
+> > - linux/if_pppox.h
+> > - linux/if_tunnel.h
+> > - linux/ip6_tunnel.h
+> > - linux/llc.h
+> > - linux/mctp.h
+> > - linux/mptcp.h
+> > - linux/netdevice.h
+> > - linux/netfilter/xt_RATEEST.h
+> > - linux/netfilter/xt_hashlimit.h
+> > - linux/netfilter/xt_physdev.h
+> > - linux/netfilter/xt_rateest.h
+> > - linux/netfilter_arp/arp_tables.h
+> > - linux/netfilter_arp/arpt_mangle.h
+> > - linux/netfilter_bridge.h
+> > - linux/netfilter_bridge/ebtables.h
+> > - linux/netfilter_ipv4/ip_tables.h
+> > - linux/netfilter_ipv6/ip6_tables.h
+> > - linux/route.h
+> > - linux/wireless.h
+> >=20
+> > Include the following system header:
+> > - /usr/include/sys/socket.h (all via linux/if.h)
+> >=20
+> > The sys/socket.h conflicts with vmlinux.h in:
+> > - types: struct iovec, struct sockaddr, struct msghdr, ...
+> > - constants: SOCK_STREAM, SOCK_DGRAM, ...
+> >=20
+> > However, only two types are actually used:
+> > - struct sockaddr
+> > - struct sockaddr_storage (used only in linux/mptcp.h)
+> >=20
+> > In 'vmlinux.h' this type originates from 'kernel/include/socket.h'
+> > (non UAPI header), thus does not have a header guard.
+> >=20
+> > The only workaround that I see is to:
+> > - define a stub sys/socket.h as follows:
+> >=20
+> >     #ifndef __BPF_SOCKADDR__
+> >     #define __BPF_SOCKADDR__
+> >    =20
+> >     /* For __kernel_sa_family_t */
+> >     #include <linux/socket.h>
+> >    =20
+> >     struct sockaddr {
+> >         __kernel_sa_family_t sa_family;
+> >         char sa_data[14];
+> >     };
+> >    =20
+> >     #endif
+> >=20
+> > - hardcode generation of __BPF_SOCKADDR__ bracket for
+> >   'struct sockaddr' in vmlinux.h.
+> >=20
+> > Another possibility is to move the definition of 'struct sockaddr'
+> > from 'kernel/include/socket.h' to 'kernel/include/uapi/linux/socket.h',
+> > but I expect that this won't fly with the mainline as it might break
+> > the programs that include both 'linux/socket.h' and 'sys/socket.h'.
+> >=20
+> > Conflict with vmlinux.h
+> > ----
+> >=20
+> > Uapi header:
+> > - linux/signal.h
+> >=20
+> > Conflict with vmlinux.h in definition of 'struct sigaction'.
+> > Defined in:
+> > - vmlinux.h: kernel/include/linux/signal_types.h
+> > - uapi:      kernel/arch/x86/include/asm/signal.h
+> >=20
+> > Uapi headers:
+> > - linux/tipc_sockets_diag.h
+> > - linux/sock_diag.h
+> >=20
+> > Conflict with vmlinux.h in definition of 'SOCK_DESTROY'.
+> > Defined in:
+> > - vmlinux.h: kernel/include/net/sock.h
+> > - uapi:      kernel/include/uapi/linux/sock_diag.h
+> > Constants seem to be unrelated.
+> >=20
+> > And so on... I have details for many other headers but omit those for
+> > brevity.
+> >=20
+> > In conclusion
+> > ---
+> >=20
+> > Except from the general feasibility I have a few questions:
+> > - What UAPI headers are the candidates for such use? If there are some
+> >   interesting headers currently not working with this patch-set some
+> >   hacks have to be added (e.g. like with `linux/if.h`).
+> > - Is it ok to encode header guards as special `BTF_DECL_TAG` or should
+> >   I change the BTF format a bit to save some bytes.
+> >=20
+> > Thanks,
+> > Eduard
+> >=20
+> >=20
+> > [1] https://reviews.llvm.org/D111307
+> >     [clang] __attribute__ bpf_dominating_decl
+> > [2] https://lore.kernel.org/dwarves/20221025220729.2293891-1-eddyz87@gm=
+ail.com/T/
+> >     [RFC dwarves] pahole: Save header guard names when
+> >                   --header_guards_db is passed
+> >=20
+> > Eduard Zingerman (12):
+> >   libbpf: Deduplicate unambigous standalone forward declarations
+> >   selftests/bpf: Tests for standalone forward BTF declarations
+> >     deduplication
+> >   libbpf: Support for BTF_DECL_TAG dump in C format
+> >   selftests/bpf: Tests for BTF_DECL_TAG dump in C format
+> >   libbpf: Header guards for selected data structures in vmlinux.h
+> >   selftests/bpf: Tests for header guards printing in BTF dump
+> >   bpftool: Enable header guards generation
+> >   kbuild: Script to infer header guard values for uapi headers
+> >   kbuild: Header guards for types from include/uapi/*.h in kernel BTF
+> >   selftests/bpf: Script to verify uapi headers usage with vmlinux.h
+> >   selftests/bpf: Known good uapi headers for test_uapi_headers.py
+> >   selftests/bpf: script for infer_header_guards.pl testing
+> >=20
+> >  scripts/infer_header_guards.pl                | 191 +++++
+> >  scripts/link-vmlinux.sh                       |  13 +-
+> >  tools/bpf/bpftool/btf.c                       |   4 +-
+> >  tools/lib/bpf/btf.c                           | 178 ++++-
+> >  tools/lib/bpf/btf.h                           |   7 +-
+> >  tools/lib/bpf/btf_dump.c                      | 232 +++++-
+> >  .../selftests/bpf/good_uapi_headers.txt       | 677 ++++++++++++++++++
+> >  tools/testing/selftests/bpf/prog_tests/btf.c  | 152 ++++
+> >  .../selftests/bpf/prog_tests/btf_dump.c       |  11 +-
+> >  .../bpf/progs/btf_dump_test_case_decl_tag.c   |  39 +
+> >  .../progs/btf_dump_test_case_header_guards.c  |  94 +++
+> >  .../bpf/test_uapi_header_guards_infer.sh      |  33 +
+> >  .../selftests/bpf/test_uapi_headers.py        | 197 +++++
+> >  13 files changed, 1816 insertions(+), 12 deletions(-)
+> >  create mode 100755 scripts/infer_header_guards.pl
+> >  create mode 100644 tools/testing/selftests/bpf/good_uapi_headers.txt
+> >  create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_cas=
+e_decl_tag.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_cas=
+e_header_guards.c
+> >  create mode 100755 tools/testing/selftests/bpf/test_uapi_header_guards=
+_infer.sh
+> >  create mode 100755 tools/testing/selftests/bpf/test_uapi_headers.py
+> >=20
+
