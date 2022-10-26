@@ -2,121 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CAF60DB6C
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C22D60DB75
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 08:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbiJZGiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 02:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S229995AbiJZGkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 02:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbiJZGiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 02:38:02 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B9778BE1;
-        Tue, 25 Oct 2022 23:38:01 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id t25so13164108ejb.8;
-        Tue, 25 Oct 2022 23:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mx8fYuOqE4Fz7MoTG2qyzZeL72DVY10BTmV8q9Mc57w=;
-        b=qHrL7FKIzMARVP4gCZGtCYP08mU2Xgs4Znav05N95RRQvkbRXbQF61MJZY96Q7WP/F
-         PWoN3+fpTvoAPWT65Uyqim26UaP8B6LfsZtTfWdCU7iLytxgLzcnb4igksIT7QZ63oZJ
-         Vlrlyxo1RC4LpvygdZyzmKnEkymjdjkwbcBMqF7MX8OOLslunSPukQWeBsGRHL+6QRaP
-         Gl9hoVbkGXIolT8N8QoHjwTe7TKPha9HyqpFdaIaHQ9pqMxaoSxBf3OZxHGXjYO+QKBk
-         8QCxxjRWCmzjerQAe0aH8NBo19nPtyIFLm8/1uhQpLw2ng6P8F0nRHz8I2flGllpOQYf
-         BcVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Mx8fYuOqE4Fz7MoTG2qyzZeL72DVY10BTmV8q9Mc57w=;
-        b=hXlJ7XzjruRa94wvdR8J9cBkfmRbAKKs+jGTEqpAHPAYFlKKGKWoYjCb2stoUdf8I6
-         t0dRF80n9NVi6pnrXGWiJZgpgjWiFwoJh7eeRX9k24L24istYrmmgkiSsGbDlfSDDL8V
-         6fKDr5MSUtUhjVEeVuNo9XBVHh+YBImVoKK1Ntek+zvXQ8cUwmLvut+IuL0wvs4AH0GC
-         get9FtZQEio2y5NUTWkgiFT5EphSAPARwHn/INTi93lJ5Ls5ElUepael6XDz6Pmbfz/F
-         FhlIl78cvq6JcDVPQTJYVj8VuXSm2akvh3komNtK/Ob9EfZx2HuKcGUSfKSUq+rzT4bP
-         sG1g==
-X-Gm-Message-State: ACrzQf2C3apmnbEgnKOLsRE3m5xLJ8A2BV9vSWvNUUK5/qs2e4XMkXRL
-        8W61TKzexHw+ftPhJt1MtR3F/RM5PiWrpJXbE9Q=
-X-Google-Smtp-Source: AMsMyM4Wnn4932Ytv91Nrg1zHGI8MgLVZC+Ngl65IwrEw5f7VTg8YZr0RLz02wh9lfIB4mbydGN7lFZ10h6BzWe7zMM=
-X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
- wz5-20020a170906fe4500b0078815a57495mr36566308ejb.633.1666766233858; Tue, 25
- Oct 2022 23:37:13 -0700 (PDT)
+        with ESMTP id S232654AbiJZGkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 02:40:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877EE3C8C3
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 23:40:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CB4F61D52
+        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 06:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8787EC433C1;
+        Wed, 26 Oct 2022 06:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666766418;
+        bh=r0MyIDY1JRwAtb4RlcCMTam3l3bVdzU7+VMq7oZfllM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mTA9GfDu02Buj7H6jORd1t81Qt4c/Pdb7lDmi0fY4p2FoS3PoeJ+E34ZjgArwpcQ9
+         BB5G8tr3g7YjJOTBELsF4Pl6EXlG1otqV6Bz5xr5NpJv3Gf+imF7MEZqB4BhjOOxks
+         L7h8HwaseDo5Rcsphdx33+p62cZbkgVot+gLC+rFJpTkY0kBCx/qLDUoW9HWOmuslP
+         a0ko9hW8WPnAoD8jOnZjqJLf0aY4v9ZKo+Y8ylxGiw/wYUYTcjPx5HVLELm9QdMDqh
+         O7gJLnHHrXvoRmvU4boBDf1hEXq3LZx7ZjDAgi0aDZsGBlNklPVRKj6H9T2BxNnpBo
+         aTVK+YSBfVqcw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7137FE270DC;
+        Wed, 26 Oct 2022 06:40:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
- <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
- <d7a17e482b7bbf945c92443b45de73f56afea08a.camel@huaweicloud.com>
- <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
- <CAADnVQL1a2pPAJqzj6oUwupxxfaW38KQswzppAZeZPzmTFhjMg@mail.gmail.com>
- <98353f6c82d3dabdb0d434d7ecf0bfc5295015ad.camel@huaweicloud.com> <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
-In-Reply-To: <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 Oct 2022 23:37:02 -0700
-Message-ID: <CAADnVQLAXsZRNytPHG0KhYKar3K+=7bq2KPQG77VFOKbnTPHmg@mail.gmail.com>
-Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from bpf_lsm_inode_init_security()
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nicolas.bouchinet@clip-os.org, Mimi Zohar <zohar@linux.ibm.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 0/9] bpf: Implement cgroup local storage available
+ to non-cgroup-attached bpf progs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166676641845.4978.11078534978845698275.git-patchwork-notify@kernel.org>
+Date:   Wed, 26 Oct 2022 06:40:18 +0000
+References: <20221026042835.672317-1-yhs@fb.com>
+In-Reply-To: <20221026042835.672317-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, kpsingh@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 7:58 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 10/25/2022 12:43 AM, Roberto Sassu wrote:
-> > On Mon, 2022-10-24 at 19:13 -0700, Alexei Starovoitov wrote:
-> >> I'm looking at security_inode_init_security() and it is indeed messy.
-> >> Per file system initxattrs callback that processes kmalloc-ed
-> >> strings.
-> >> Yikes.
-> >>
-> >> In the short term we should denylist inode_init_security hook to
-> >> disallow attaching bpf-lsm there. set/getxattr should be done
-> >> through kfuncs instead of such kmalloc-a-string hack.
-> > Inode_init_security is an example. It could be that the other hooks are
-> > affected too. What happens if they get arbitrary positive values too?
->
-> TL;DR - Things will go cattywampus.
->
-> The LSM infrastructure is an interface that has "grown organically",
-> and isn't necessarily consistent in what it requires of the security
-> module implementations. There are cases where it assumes that the
-> security module hooks are well behaved, as you've discovered. I have
-> no small amount of fear that someone is going to provide an eBPF
-> program for security_secid_to_secctx(). There has been an assumption,
-> oft stated, that all security modules are going to be reviewed as
-> part of the upstream process. The review process ought to catch hooks
-> that return unacceptable values. Alas, we've lost that with BPF.
->
-> It would take a(nother) major overhaul of the LSM infrastructure to
-> make it safe against hooks that are not well behaved. From what I have
-> seen so far it wouldn't be easy/convenient/performant to do it in the
-> BPF security module either. I personally think that BPF needs to
-> ensure that the eBPF implementations don't return inappropriate values,
-> but I understand why that is problematic.
+Hello:
 
-That's an accurate statement. Thank you.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Going back to the original question...
-We fix bugs when we discover them.
-Regardless of the subsystem they belong to.
-No finger pointing.
+On Tue, 25 Oct 2022 21:28:35 -0700 you wrote:
+> There already exists a local storage implementation for cgroup-attached
+> bpf programs. See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+> bpf_get_local_storage(). But there are use cases such that non-cgroup
+> attached bpf progs wants to access cgroup local storage data. For example,
+> tc egress prog has access to sk and cgroup. It is possible to use
+> sk local storage to emulate cgroup local storage by storing data in socket.
+> But this is a waste as it could be lots of sockets belonging to a particular
+> cgroup. Alternatively, a separate map can be created with cgroup id as the key.
+> But this will introduce additional overhead to manipulate the new map.
+> A cgroup local storage, similar to existing sk/inode/task storage,
+> should help for this use case.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v6,1/9] bpf: Make struct cgroup btf id global
+    https://git.kernel.org/bpf/bpf-next/c/5e67b8ef125b
+  - [bpf-next,v6,2/9] bpf: Refactor some inode/task/sk storage functions for reuse
+    https://git.kernel.org/bpf/bpf-next/c/c83597fa5dc6
+  - [bpf-next,v6,3/9] bpf: Implement cgroup storage available to non-cgroup-attached bpf progs
+    https://git.kernel.org/bpf/bpf-next/c/c4bcfb38a95e
+  - [bpf-next,v6,4/9] libbpf: Support new cgroup local storage
+    https://git.kernel.org/bpf/bpf-next/c/4fe64af23c12
+  - [bpf-next,v6,5/9] bpftool: Support new cgroup local storage
+    https://git.kernel.org/bpf/bpf-next/c/f7f0f1657d95
+  - [bpf-next,v6,6/9] selftests/bpf: Fix test test_libbpf_str/bpf_map_type_str
+    https://git.kernel.org/bpf/bpf-next/c/fd4ca6c1facf
+  - [bpf-next,v6,7/9] selftests/bpf: Add selftests for new cgroup local storage
+    https://git.kernel.org/bpf/bpf-next/c/12bb6ca4e2fa
+  - [bpf-next,v6,8/9] selftests/bpf: Add test cgrp_local_storage to DENYLIST.s390x
+    https://git.kernel.org/bpf/bpf-next/c/0a1b69d1c736
+  - [bpf-next,v6,9/9] docs/bpf: Add documentation for new cgroup local storage
+    https://git.kernel.org/bpf/bpf-next/c/d43198017ea3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
