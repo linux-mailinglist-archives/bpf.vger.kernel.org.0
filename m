@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DD960DA44
-	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 06:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB0460DA51
+	for <lists+bpf@lfdr.de>; Wed, 26 Oct 2022 06:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbiJZE2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Oct 2022 00:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S229995AbiJZEbo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Oct 2022 00:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbiJZE2x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Oct 2022 00:28:53 -0400
+        with ESMTP id S229551AbiJZEbn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Oct 2022 00:31:43 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D007FAA3DB
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:28:51 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29PMGr3K017395
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:28:51 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A4B7C1B7
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:31:42 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29PMH4hw013989
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:31:41 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-transfer-encoding :
  content-type; s=facebook; bh=V2qVPEIlEHxtJ82CjKFYVuWcNlWgAAX1OUpSIyALA/0=;
  b=JBUdfMhqUCGOI8ekNNY3SfDqjPzxJQXiHSNSptZYZtB15OW+IBw+bpERbuo8HILEX3yt
  RSqLY/JgZosgv1NqVIeSy4tsh+cIVSFBEymKyRcDL9Qny/q1RFjTt6Rfvq2kDV6qcnBy
  mlWbkMOb9af+yIVCEWUsfXz3ERlrg1Y3TZM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kebbq3buk-1
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3keb4jumj1-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:28:51 -0700
-Received: from twshared13927.24.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 25 Oct 2022 21:31:41 -0700
+Received: from twshared25017.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 25 Oct 2022 21:28:50 -0700
+ 15.1.2375.31; Tue, 25 Oct 2022 21:31:39 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
         id 28FB21131B824; Tue, 25 Oct 2022 21:28:35 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
@@ -49,15 +49,16 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: S9Btb-KFnKLqwbpxih0ZUBhWqDB6zrwv
-X-Proofpoint-GUID: S9Btb-KFnKLqwbpxih0ZUBhWqDB6zrwv
+X-Proofpoint-GUID: Xs5SkGONVUI6ChXr8Vmea3Dry9kKabPU
+X-Proofpoint-ORIG-GUID: Xs5SkGONVUI6ChXr8Vmea3Dry9kKabPU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-26_01,2022-10-25_01,2022-06-22_01
+ definitions=2022-10-26_02,2022-10-25_01,2022-06-22_01
 X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
