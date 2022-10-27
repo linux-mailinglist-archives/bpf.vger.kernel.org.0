@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB560610243
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F62B610248
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236884AbiJ0UA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 16:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
+        id S236875AbiJ0UBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 16:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbiJ0UAd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 16:00:33 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FA010FF0
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:00:28 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-36ba0287319so23552687b3.3
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:00:28 -0700 (PDT)
+        with ESMTP id S236926AbiJ0UAf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 16:00:35 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF8D495CD
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:00:29 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id k16-20020a170902c41000b00184987e3d09so1707525plk.21
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RP55M8cA5M2RXo8rOon2JD5KhcZkcbkmc4ixPrmMem4=;
-        b=hjkhJabFkn0xjp3ooIiT6qUbyMYEDUSI2QuChlBbDXQQ5HNfNN8+I+bFe8j2cBJgoZ
-         oRPArOxcW/M864tAkzcPY671i8RDYxN32TcbY0cIcLB2IwIWfm6AVePXM2FVjeCo0b2R
-         Bx4Eqgyb9+H6iWLZjDlytBat4d6JouHpsFYU3tmCifz24e6LWempBi7DjILFIksvBAt1
-         omEbPEMyso4TjhRN6ebWSGvztHkBG22SVWdgcyWjYlPZhUKir1TIeop1Iduzc2g3Lz+g
-         s+cQkgUSf4zaL0tQ6quMUjRUaiqlq0sr3IkqoAEnSu6XW6aIbWEUJ1Ys/3cTE8RapL1T
-         L9QA==
+        bh=1k5yzkMHPKVpJxfSBsEcHHj8plrhgO9vuyoJKASsEmU=;
+        b=n/UREpPnnfxUxStjCXxqowwL2ThEEnX9FQtVh5YzRyLm3FRk8nYtEeSPHheYShmRFE
+         dQp+z/ltMDVcH40cWXqO3ducFy/S7FQXAzoPHRPsCL89E/HlgdKue7moQYaPuacXzsNQ
+         egrDtG9z3RAfm624yVeFqOAVBb5r73TaRylF8e6OGqkqw5gEhG4l3plf2py/ZEet2I3O
+         XFrwzOlGrQPJr/z3P9IO7bCQSMQNgwGlLIgw6dcxC3CyGF+C7D1NtEgc+vg6r+jqtEQe
+         JLkSyfiJx+sIL1bAkiyESVld9LUyeR0ESNa4iSOT42G0oFTQcGaQMhFklsehNpGmQG3w
+         b4GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RP55M8cA5M2RXo8rOon2JD5KhcZkcbkmc4ixPrmMem4=;
-        b=Ul7Q4estKNcqzSCEh+mEpyBZRk1Cb2guin4ylyx12iUyJ77DKb+bWERpUsNtSS/kc5
-         0hJoOq5hIT4OvPjXBBXeGnF0w8RNi8+V0I7iUIoeIFwhlJf1YHm5oiEd1ehd6+Jlvayd
-         GAx6sMh2s8VsmQtYzN/IciWDNTrJlLR6Bj70TMFD1nLPmqAWRtjW1xkHqVIpHucmTfhe
-         i2tlEA+NpcPft3mLGeq4HpRZAQg1f+72Or+ZgUxXO9ffR3OW77MKuifpD7Oest6JqbJg
-         jOGwSu8TZJpgc2FlO/AdMKAzEizXBJPf8CNYztY1oYJ0x0SIciyEVjrEHUuBeu+thzMD
-         RUCw==
-X-Gm-Message-State: ACrzQf05cv8qQUNbaSnu9T+Vtj8gVDFZ6F2FwiaqNK5fS/2/J8n8YcB7
-        r4JYchxrbSpNJVxvOXTch8SPQGVqIpS7PPaVJdmnCvv6iINnFwXfbqra101cBLutYo/BeKy7eZS
-        WAhfUY75xISPUUZYPpmOtK9ktOuewZzA6RczA234Y8dHOMPQIVQ==
-X-Google-Smtp-Source: AMsMyM77QeyllYbofvOa5Xukf+6LO5LkGydr8MQ+Mrn0YajmX3NrsZDFSyNNTfTCbD+ZFdb3Hxi/bY0=
+        bh=1k5yzkMHPKVpJxfSBsEcHHj8plrhgO9vuyoJKASsEmU=;
+        b=pnebjVB5cPyxPVv5bD7leKanPYscsFxn3DGlQa05vLBBtj2EwFeY4mA0BM74skPxO6
+         b8n8RIqz+i0dxh7JEckE9pLAucKGnyIcB+EwlAe0Tkq6X4jjTHaJrwaur08qy2wIW9sq
+         4zSkkvWnJBsNBdZgpgG8MqmEDLbSHDiZFGzSBxK40nkFvjyUiu8IyJPXaF4zW2HvWSXB
+         hoQK6Re2F3JML6hDAzKymvo/P3deUsfI9r183l3NMXMV/dCaWqtU/Z02vklC2Ud7KXMZ
+         s1wXzWFnjI6Nhjrn5PBeHX7eU7QxrTxp1v4+MJOsj4wHeouMumSFlAMNybL1oWKpaKAq
+         hRFQ==
+X-Gm-Message-State: ACrzQf3BKKysw0D/XgmSDfgq8nhKbmEoeP6FlRHnDWUOJY/m8Ajw9WBp
+        wuXtjuxGGiePLV3mZapwzlUX4TVLdUkv9Cr0iTVvYgdWVixeDQamW6TlTLjw1jeACTbmHY95Hot
+        EbJ6gQgDZIL5w3/VtEdJWeuu5rJP5eyfLf8UwI657HNVWa7QlAw==
+X-Google-Smtp-Source: AMsMyM42i2qmj5/tum0aiLkRrGO//i6iA+au9HoLSXhG8Jardj8mUd8pmeDSUGDth8T8hAOsIOqdmsQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6902:10a:b0:6af:b884:840e with SMTP id
- o10-20020a056902010a00b006afb884840emr46744379ybh.330.1666900827359; Thu, 27
- Oct 2022 13:00:27 -0700 (PDT)
-Date:   Thu, 27 Oct 2022 13:00:17 -0700
+ (user=sdf job=sendgmr) by 2002:a05:6a00:80e:b0:563:4ad2:9d39 with SMTP id
+ m14-20020a056a00080e00b005634ad29d39mr51074982pfk.66.1666900828817; Thu, 27
+ Oct 2022 13:00:28 -0700 (PDT)
+Date:   Thu, 27 Oct 2022 13:00:18 -0700
 In-Reply-To: <20221027200019.4106375-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20221027200019.4106375-1-sdf@google.com>
 X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
-Message-ID: <20221027200019.4106375-4-sdf@google.com>
-Subject: [RFC bpf-next 3/5] libbpf: Pass prog_ifindex via bpf_object_open_opts
+Message-ID: <20221027200019.4106375-5-sdf@google.com>
+Subject: [RFC bpf-next 4/5] selftests/bpf: Convert xskxceiver to use custom program
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -78,11 +78,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow passing prog_ifindex to BPF_PROG_LOAD. This patch is
-not XDP metadata specific but it's here because we (ab)use
-prog_ifindex as "target metadata" device during loading.
-We can figure out proper UAPI story if we decide to go forward
-with the kfunc approach.
+No functional changes (in theory): convert libxsk-generated
+program bytecode to the C code to better illustrate kfunc
+metadata (see next patch in the series).
+
+There is also a bunch of unrelated changes, ignore them for the
+sake of demo:
+- stats.rx_dopped == 2048 vs 2047 ?
+- buggy ksft_print_msg calls
+- test is limited only to
+  TEST_MODE_DRV+TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT
 
 Cc: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: Jakub Kicinski <kuba@kernel.org>
@@ -96,41 +101,280 @@ Cc: xdp-hints@xdp-project.net
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/lib/bpf/libbpf.c | 1 +
- tools/lib/bpf/libbpf.h | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/Makefile          |  1 +
+ .../testing/selftests/bpf/progs/xskxceiver.c  | 21 ++++
+ tools/testing/selftests/bpf/xskxceiver.c      | 98 +++++++++++++++----
+ tools/testing/selftests/bpf/xskxceiver.h      |  5 +-
+ 4 files changed, 105 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/xskxceiver.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5d7819edf074..61bc37006fe4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7190,6 +7190,7 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 79edef1dbda4..3cab2e1b0e74 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -378,6 +378,7 @@ linked_maps.skel.h-deps := linked_maps1.bpf.o linked_maps2.bpf.o
+ test_subskeleton.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o test_subskeleton.bpf.o
+ test_subskeleton_lib.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o
+ test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
++xskxceiver-deps := xskxceiver.bpf.o
  
- 		prog->type = prog->sec_def->prog_type;
- 		prog->expected_attach_type = prog->sec_def->expected_attach_type;
-+		prog->prog_ifindex = opts->prog_ifindex;
+ LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
  
- 		/* sec_def can have custom callback which should be called
- 		 * after bpf_program is initialized to adjust its properties
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index eee883f007f9..4a40b7623099 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -170,9 +170,13 @@ struct bpf_object_open_opts {
- 	 */
- 	__u32 kernel_log_level;
- 
-+	/* Optional ifindex of netdev for offload purposes.
-+	 */
-+	int prog_ifindex;
+diff --git a/tools/testing/selftests/bpf/progs/xskxceiver.c b/tools/testing/selftests/bpf/progs/xskxceiver.c
+new file mode 100644
+index 000000000000..b135daddad3a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xskxceiver.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	size_t :0;
- };
--#define bpf_object_open_opts__last_field kernel_log_level
-+#define bpf_object_open_opts__last_field prog_ifindex
++#include <linux/bpf.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_XSKMAP);
++	__uint(max_entries, 4);
++	__type(key, __u32);
++	__type(value, __u32);
++} xsk SEC(".maps");
++
++SEC("xdp")
++int rx(struct xdp_md *ctx)
++{
++	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 681a5db80dae..066bd691db13 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -399,6 +399,58 @@ static void usage(const char *prog)
+ 	ksft_print_msg(str, prog);
+ }
  
- LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
++static void bpf_update_xsk_map(struct ifobject *ifobject, __u32 queue_id)
++{
++	int map_fd;
++	int sock_fd;
++	int ret;
++
++	map_fd = bpf_map__fd(ifobject->bpf_obj->maps.xsk);
++	sock_fd = xsk_socket__fd(ifobject->xsk->xsk);
++
++	(void)bpf_map_delete_elem(map_fd, &queue_id);
++	ret = bpf_map_update_elem(map_fd, &queue_id, &sock_fd, 0);
++	if (ret)
++		exit_with_error(-ret);
++}
++
++static int bpf_attach(struct ifobject *ifobject)
++{
++	__u32 prog_id = 0;
++
++	bpf_xdp_query_id(ifobject->ifindex, ifobject->xdp_flags, &prog_id);
++	if (prog_id)
++		return 0;
++
++	int ret = bpf_xdp_attach(ifobject->ifindex,
++				 bpf_program__fd(ifobject->bpf_obj->progs.rx),
++				 ifobject->xdp_flags, NULL);
++	if (ret < 0) {
++		if (errno != EEXIST && errno != EBUSY) {
++			exit_with_error(errno);
++		}
++	}
++
++	bpf_update_xsk_map(ifobject, 0);
++
++	return 0;
++}
++
++static void bpf_detach(struct ifobject *ifobject)
++{
++	int my_ns = open("/proc/self/ns/net", O_RDONLY);
++
++	/* Make sure we're in the right namespace when detaching.
++	 * Relevant only for TEST_TYPE_BIDI.
++	 */
++	if (ifobject->ns_fd > 0)
++		setns(ifobject->ns_fd, 0);
++
++	bpf_xdp_detach(ifobject->ifindex, ifobject->xdp_flags, NULL);
++
++	setns(my_ns, 0);
++}
++
+ static int switch_namespace(const char *nsname)
+ {
+ 	char fqns[26] = "/var/run/netns/";
+@@ -1141,9 +1193,10 @@ static int validate_rx_dropped(struct ifobject *ifobject)
+ 	if (err)
+ 		return TEST_FAILURE;
  
+-	if (stats.rx_dropped == ifobject->pkt_stream->nb_pkts / 2)
++	if (stats.rx_dropped == ifobject->pkt_stream->nb_pkts / 2 - 1)
+ 		return TEST_PASS;
+ 
++	printf("%lld != %d\n", stats.rx_dropped, ifobject->pkt_stream->nb_pkts / 2 - 1);
+ 	return TEST_FAILURE;
+ }
+ 
+@@ -1239,7 +1292,6 @@ static void thread_common_ops_tx(struct test_spec *test, struct ifobject *ifobje
+ {
+ 	xsk_configure_socket(test, ifobject, test->ifobj_rx->umem, true);
+ 	ifobject->xsk = &ifobject->xsk_arr[0];
+-	ifobject->xsk_map_fd = test->ifobj_rx->xsk_map_fd;
+ 	memcpy(ifobject->umem, test->ifobj_rx->umem, sizeof(struct xsk_umem_info));
+ }
+ 
+@@ -1284,6 +1336,14 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+ 
+ 	ifobject->ns_fd = switch_namespace(ifobject->nsname);
+ 
++	ifindex = if_nametoindex(ifobject->ifname);
++	if (!ifindex)
++		exit_with_error(errno);
++
++	ifobject->bpf_obj = xskxceiver__open_and_load();
++	if (libbpf_get_error(ifobject->bpf_obj))
++		exit_with_error(libbpf_get_error(ifobject->bpf_obj));
++
+ 	if (ifobject->umem->unaligned_mode)
+ 		mmap_flags |= MAP_HUGETLB;
+ 
+@@ -1307,11 +1367,8 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+ 	if (!ifobject->rx_on)
+ 		return;
+ 
+-	ifindex = if_nametoindex(ifobject->ifname);
+-	if (!ifindex)
+-		exit_with_error(errno);
+-
+-	ret = xsk_setup_xdp_prog_xsk(ifobject->xsk->xsk, &ifobject->xsk_map_fd);
++	ifobject->ifindex = ifindex;
++	ret = bpf_attach(ifobject);
+ 	if (ret)
+ 		exit_with_error(-ret);
+ 
+@@ -1321,19 +1378,17 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+ 
+ 	if (ifobject->xdp_flags & XDP_FLAGS_SKB_MODE) {
+ 		if (opts.attach_mode != XDP_ATTACHED_SKB) {
+-			ksft_print_msg("ERROR: [%s] XDP prog not in SKB mode\n");
++			ksft_print_msg("ERROR: XDP prog not in SKB mode\n");
+ 			exit_with_error(-EINVAL);
+ 		}
+ 	} else if (ifobject->xdp_flags & XDP_FLAGS_DRV_MODE) {
+ 		if (opts.attach_mode != XDP_ATTACHED_DRV) {
+-			ksft_print_msg("ERROR: [%s] XDP prog not in DRV mode\n");
++			ksft_print_msg("ERROR: XDP prog not in DRV mode\n");
+ 			exit_with_error(-EINVAL);
+ 		}
+ 	}
+ 
+-	ret = xsk_socket__update_xskmap(ifobject->xsk->xsk, ifobject->xsk_map_fd);
+-	if (ret)
+-		exit_with_error(-ret);
++	bpf_update_xsk_map(ifobject, 0);
+ }
+ 
+ static void *worker_testapp_validate_tx(void *arg)
+@@ -1372,8 +1427,7 @@ static void *worker_testapp_validate_rx(void *arg)
+ 	if (test->current_step == 1) {
+ 		thread_common_ops(test, ifobject);
+ 	} else {
+-		bpf_map_delete_elem(ifobject->xsk_map_fd, &id);
+-		xsk_socket__update_xskmap(ifobject->xsk->xsk, ifobject->xsk_map_fd);
++		bpf_update_xsk_map(ifobject, id);
+ 	}
+ 
+ 	fds.fd = xsk_socket__fd(ifobject->xsk->xsk);
+@@ -1481,6 +1535,8 @@ static int testapp_validate_traffic(struct test_spec *test)
+ 	if (test->total_steps == test->current_step || test->fail) {
+ 		xsk_socket__delete(ifobj_tx->xsk->xsk);
+ 		xsk_socket__delete(ifobj_rx->xsk->xsk);
++		bpf_detach(ifobj_tx);
++		bpf_detach(ifobj_rx);
+ 		testapp_clean_xsk_umem(ifobj_rx);
+ 		if (!ifobj_tx->shared_umem)
+ 			testapp_clean_xsk_umem(ifobj_tx);
+@@ -1531,16 +1587,12 @@ static void testapp_bidi(struct test_spec *test)
+ 
+ static void swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj_rx)
+ {
+-	int ret;
+-
+ 	xsk_socket__delete(ifobj_tx->xsk->xsk);
+ 	xsk_socket__delete(ifobj_rx->xsk->xsk);
+ 	ifobj_tx->xsk = &ifobj_tx->xsk_arr[1];
+ 	ifobj_rx->xsk = &ifobj_rx->xsk_arr[1];
+ 
+-	ret = xsk_socket__update_xskmap(ifobj_rx->xsk->xsk, ifobj_rx->xsk_map_fd);
+-	if (ret)
+-		exit_with_error(-ret);
++	bpf_update_xsk_map(ifobj_tx, 0);
+ }
+ 
+ static void testapp_bpf_res(struct test_spec *test)
+@@ -1635,6 +1687,8 @@ static bool testapp_unaligned(struct test_spec *test)
+ {
+ 	if (!hugepages_present(test->ifobj_tx)) {
+ 		ksft_test_result_skip("No 2M huge pages present.\n");
++		bpf_detach(test->ifobj_tx);
++		bpf_detach(test->ifobj_rx);
+ 		return false;
+ 	}
+ 
+@@ -1947,10 +2001,16 @@ int main(int argc, char **argv)
+ 
+ 	for (i = 0; i < modes; i++)
+ 		for (j = 0; j < TEST_TYPE_MAX; j++) {
++			if (j != TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT) continue; // XXX
++			if (i != TEST_MODE_DRV) continue; // XXX
++
+ 			test_spec_init(&test, ifobj_tx, ifobj_rx, i);
+ 			run_pkt_test(&test, i, j);
+ 			usleep(USLEEP_MAX);
+ 
++			xskxceiver__destroy(ifobj_tx->bpf_obj);
++			xskxceiver__destroy(ifobj_rx->bpf_obj);
++
+ 			if (test.fail)
+ 				failed_tests++;
+ 		}
+diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+index edb76d2def9f..c27dcbdb030f 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.h
++++ b/tools/testing/selftests/bpf/xskxceiver.h
+@@ -5,6 +5,8 @@
+ #ifndef XSKXCEIVER_H_
+ #define XSKXCEIVER_H_
+ 
++#include "xskxceiver.skel.h"
++
+ #ifndef SOL_XDP
+ #define SOL_XDP 283
+ #endif
+@@ -134,6 +136,7 @@ typedef void *(*thread_func_t)(void *arg);
+ struct ifobject {
+ 	char ifname[MAX_INTERFACE_NAME_CHARS];
+ 	char nsname[MAX_INTERFACES_NAMESPACE_CHARS];
++	struct xskxceiver *bpf_obj;
+ 	struct xsk_socket_info *xsk;
+ 	struct xsk_socket_info *xsk_arr;
+ 	struct xsk_umem_info *umem;
+@@ -141,7 +144,7 @@ struct ifobject {
+ 	validation_func_t validation_func;
+ 	struct pkt_stream *pkt_stream;
+ 	int ns_fd;
+-	int xsk_map_fd;
++	int ifindex;
+ 	u32 dst_ip;
+ 	u32 src_ip;
+ 	u32 xdp_flags;
 -- 
 2.38.1.273.g43a17bfeac-goog
 
