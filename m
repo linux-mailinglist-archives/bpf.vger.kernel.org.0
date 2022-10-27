@@ -2,213 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C224B60F69E
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 13:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067C860F921
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 15:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbiJ0L62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 07:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
+        id S236004AbiJ0NeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 09:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbiJ0L60 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 07:58:26 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537FC625D5;
-        Thu, 27 Oct 2022 04:58:25 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mykhd2chCzHvKN;
-        Thu, 27 Oct 2022 19:58:09 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 27 Oct 2022 19:58:22 +0800
-Message-ID: <20e9ea01-1261-6d03-34c9-9b842298487a@huawei.com>
-Date:   Thu, 27 Oct 2022 19:58:21 +0800
+        with ESMTP id S234908AbiJ0NeH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 09:34:07 -0400
+X-Greylist: delayed 7198 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Oct 2022 06:34:04 PDT
+Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com [162.62.57.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C0E119BE7;
+        Thu, 27 Oct 2022 06:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1666877639;
+        bh=GjdxY+5+AWezFVXzHMoHNfEQigyrPEi9AWt7c8Do1xI=;
+        h=From:To:Cc:Subject:Date;
+        b=dU1e0lJBoP77e+IOEtKjuNB0afhXZNc75K+MhlMQqaR4RpKLB8866iiw1xj8CHlWc
+         xDOm/IV5UI2Yy8eIjL8LN6JXeD8YxDTFRtmTGYKpuPAO7b3mRSSkaaUU0/JbnIkSK7
+         1zDqCUCirOK3OstXLyFpKM3hIHeSzx14oB/MB41I=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
+        id 8780DAB7; Thu, 27 Oct 2022 21:33:56 +0800
+X-QQ-mid: xmsmtpt1666877636tofyzi5o3
+Message-ID: <tencent_9E1B74096164395DDAAB4CBFE68CE6216E0A@qq.com>
+X-QQ-XMAILINFO: M/oQ2p0eBD4ucPNFPdulFn6XkbjsqBssByBETcbBXgqTmEtzPPTBjvwLRuJ8Nl
+         El1P2/RKMYYULAM1T4qIsISKAhoD4DrYwUvaB1X0mC2o5gR+JWRjQbpShC2nL59KtKYt8/0uqVnc
+         B40cAoKVGNlfoFJpfSB86p49zyYhECnka+AOVzEpj29zVyOpNn4dXNkI2/xCgcfUsmpNjiTQC4T8
+         Unv+CwhBD81G1ylx8yljs141YDfr23VK//9C3zP0OxSgQnTf9BNCwnBQRB7lTVhoYdr9yJwVVLvp
+         AHT/6OGksFj8581GgenOQQ+lhEj+Txj4cJixCpGHdBNkJQK6XurpG41qWo+I8hqk7NGeLoLXsFuF
+         7KzCt3nIj1ip3AzuaauDHEVe4XEL3bTS1HkW+DYOEw6I7TI1yKptxpnL9OFtC0p83CIO6roFyz6E
+         bBXiyrJlXqpgNMZFNgzSB4VRTWaouHvfDB0iSELUtDPhMlf+2ZOPJG1eUYaZuwdl16GdONRVFEQN
+         o6zF4EOxN3xpWEfAJx4w3UVDm8eyCL5lgsrgBKNqBDss7TTDc7Y81RnynAQvDC/C7ZqwDyHa7ak3
+         2ptoaLGxqja20oqnUfmjAuu17LQUHiI5vGUm55FbVTczbP5IkmU5F87gWlYowiBvlA5XW7jKGn/q
+         LPTzMrZN4vW8PdQXJdwLJmJJfZBPD6oVRpl4RJ3k42xpZlz3F06913b8LB9zYIzgOseCEFQsZFEw
+         1+nnUprvG7oZzsbTz5WphvaNeWyv4f1A8ggiyhNXtlNRO2xtm8+gZYd8UJnVi5O4Rhen2ChzA3gr
+         CEn/uUELjs5cEXZm+C6/fPtTnZr5ezBmno6rAJRj7yTe5KZLKyaLzcoY+yh/33yt5xLPsgYQSb24
+         D+6lV8woFfMNqE0WxiXKfSCyfX38hBdswfE6IGLKarpGGQ2EXXyFMCgEDHihv7QhY4uCjfbiMuui
+         u3UtWC3V4XVi1wdGnuCY9A+4qI33n8RF/xb2qpLd2f0rOy46ipyA==
+From:   Rong Tao <rtoax@foxmail.com>
+Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] samples/bpf: Fix sockex3: missing BPF prog type
+Date:   Thu, 27 Oct 2022 21:33:54 +0800
+X-OQ-MSGID: <20221027133354.82451-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is
- dropped
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <oss@lmb.io>,
-        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
-References: <20221015092448.117563-1-shaozhengchao@huawei.com>
- <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
- <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com>
- <CAKH8qBtyfS0Otpugn7_ZiG5APA_WTKOVAe1wsFfyaxF-03X=5w@mail.gmail.com>
- <87f67a8c-2fb2-9478-adbb-f55c7a7c94f9@huawei.com>
- <CAKH8qBsOMxVaemF0Oy=vE1V0vKO8ORUcVGB5YANS3HdKOhVjjw@mail.gmail.com>
- <7ddbf8f4-2b03-223f-4601-add0f7208855@huawei.com>
- <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Rong Tao <rongtao@cestc.cn>
 
+since commit 450b167fb9be("libbpf: clean up SEC() handling"),
+sec_def_matches() does not recognize "socket/xxx" as "socket", therefore,
+the BPF program type is not recognized, we should add a custom program
+type handler for "socket/xxx".
 
-On 2022/10/25 1:13, Stanislav Fomichev wrote:
-> On Sat, Oct 22, 2022 at 4:36 AM shaozhengchao <shaozhengchao@huawei.com> wrote:
->>
->>
->>
->> On 2022/10/22 2:16, Stanislav Fomichev wrote:
->>> On Fri, Oct 21, 2022 at 12:25 AM shaozhengchao <shaozhengchao@huawei.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2022/10/21 1:45, Stanislav Fomichev wrote:
->>>>> On Wed, Oct 19, 2022 at 6:47 PM shaozhengchao <shaozhengchao@huawei.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 2022/10/18 0:36, Stanislav Fomichev wrote:
->>>>>>> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
->>>>>>>>
->>>>>>>> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
->>>>>>>> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
->>>>>>>> So fix it.
->>>>>>>>
->>>>>>>> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
->>>>>>>>
->>>>>>>> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
->>>>>>>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
->>>>>>>> ---
->>>>>>>>      net/bpf/test_run.c | 6 +++---
->>>>>>>>      1 file changed, 3 insertions(+), 3 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->>>>>>>> index 13d578ce2a09..aa1b49f19ca3 100644
->>>>>>>> --- a/net/bpf/test_run.c
->>>>>>>> +++ b/net/bpf/test_run.c
->>>>>>>> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
->>>>>>>>      {
->>>>>>>>             struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
->>>>>>>>
->>>>>>>> -       if (!skb->len)
->>>>>>>> -               return -EINVAL;
->>>>>>>> -
->>>>>>>>             if (!__skb)
->>>>>>>>                     return 0;
->>>>>>>>
->>>>>>>> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>>>>>>>             if (IS_ERR(data))
->>>>>>>>                     return PTR_ERR(data);
->>>>>>>>
->>>>>>>> +       if (size == ETH_HLEN)
->>>>>>>> +               is_l2 = true;
->>>>>>>> +
->>>>>>>
->>>>>>> Don't think this will work? That is_l2 is there to expose proper l2/l3
->>>>>>> skb for specific hooks; we can't suddenly start exposing l2 headers to
->>>>>>> the hooks that don't expect it.
->>>>>>> Does it make sense to start with a small reproducer that triggers the
->>>>>>> issue first? We can have a couple of cases for
->>>>>>> len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
->>>>>>> redirects to different devices (to trigger dev_is_mac_header_xmit).
->>>>>>>
->>>>>>>
->>>>>> Hi Stanislav:
->>>>>>            Thank you for your review. Is_l2 is the flag of a specific
->>>>>> hook. Therefore, do you mean that if skb->len is equal to 0, just
->>>>>> add the length back?
->>>>>
->>>>> Not sure I understand your question. All I'm saying is - you can't
->>>>> flip that flag arbitrarily. This flag depends on the attach point that
->>>>> you're running the prog against. Some attach points expect packets
->>>>> with l2, some expect packets without l2.
->>>>>
->>>>> What about starting with a small reproducer? Does it make sense to
->>>>> create a small selftest that adds net namespace + fq_codel +
->>>>> bpf_prog_test run and do redirect ingress/egress with len
->>>>> 0/1...tcphdr? Because I'm not sure I 100% understand whether it's only
->>>>> len=0 that's problematic or some other combination as well?
->>>>>
->>>> yes, only skb->len = 0 will cause null-ptr-deref issue.
->>>> The following is the process of triggering the problem:
->>>> enqueue a skb:
->>>> fq_codel_enqueue()
->>>>           ...
->>>>           idx = fq_codel_classify()        --->if idx != 0
->>>>           flow = &q->flows[idx];
->>>>           flow_queue_add(flow, skb);       --->add skb to flow[idex]
->>>>           q->backlogs[idx] += qdisc_pkt_len(skb); --->backlogs = 0
->>>>           ...
->>>>           fq_codel_drop()                  --->set sch->limit = 0, always
->>>> drop packets
->>>>                   ...
->>>>                   idx = i                  --->becuase backlogs in every
->>>> flows is 0, so idx = 0
->>>>                   ...
->>>>                   flow = &q->flows[idx];   --->get idx=0 flow
->>>>                   ...
->>>>                   dequeue_head()
->>>>                           skb = flow->head; --->flow->head = NULL
->>>>                           flow->head = skb->next; --->cause null-ptr-deref
->>>> So, if skb->len !=0，fq_codel_drop() could get the correct idx, and
->>>> then skb!=NULL, it will be OK.
->>>> Maybe, I will fix it in fq_codel.
->>>
->>> I think the consensus here is that the stack, in general, doesn't
->>> expect the packets like this. So there are probably more broken things
->>> besides fq_codel. Thus, it's better if we remove the ability to
->>> generate them from the bpf side instead of fixing the individual users
->>> like fq_codel.
->>>
->>>> But, as I know, skb->len = 0 is just invalid packet. I prefer to add the
->>>> length back, like bellow:
->>>>           if (is_l2 || !skb->len)
->>>>                   __skb_push(skb, hh_len);
->>>> is it OK?
->>>
->>> Probably not?
->>>
->>> Looking at the original syzkaller report, prog_type is
->>> BPF_PROG_TYPE_LWT_XMIT which does expect a packet without l2 header.
->>> Can we do something like:
->>>
->>> if (!is_l2 && !skb->len) {
->>>     // append some dummy byte to the skb ?
->>> }
->>>
->>>
->> I pad one byte, and test OK.
->> if (!is_l2 && !skb->len)
->>       __skb_push(skb, 1);
->>
->> Does it look OK to you?
-> 
-> Nope, this will eat a byte out of the l2 header. We need to skb_put
-> and make sure we allocate enough to make that skb_put succeed.
-> 
-> But stepping back a bit: it feels like it's all unnecessary? The only
-> valid use-case of this is probing for the BPF_PROG_TEST_RUN as cilium
-> does. This is mostly about testing, so fixing it in the users seems
-> fair? No real production code is expected to generate these zero-len
-> packets. Or are we concerned that this will leak into stable kernels?
-> 
-> I feel like we are trying to add more complexity here for no apparent reason.
-> 
-I agree with you. users should make sure the correct skb len and
-configurations are passed into kernel. Incorrect configurations should
-be discarded to ensure kernel stability.
+ $ cd samples/bpf
+ $ sudo ./sockex3
+ libbpf: prog 'bpf_func_PARSE_IP': missing BPF prog type, check ELF section name 'socket/3'
+ libbpf: prog 'bpf_func_PARSE_IP': failed to load: -22
+ libbpf: failed to load object './sockex3_kern.o'
+ ERROR: loading BPF object file failed
 
-Lorenz, Can you modify the user-mode test code?
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/bpf/sockex3_user.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Zhengchao Shao
+diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
+index cd6fa79df900..d18d7a3600b0 100644
+--- a/samples/bpf/sockex3_user.c
++++ b/samples/bpf/sockex3_user.c
+@@ -22,6 +22,14 @@ struct pair {
+ 	__u64 bytes;
+ };
+ 
++static int socket_prog_type_id;
++
++__attribute__((destructor))
++static void unregister_socket_sec_handlers(void)
++{
++	libbpf_unregister_prog_handler(socket_prog_type_id);
++}
++
+ int main(int argc, char **argv)
+ {
+ 	int i, sock, key, fd, main_prog_fd, jmp_table_fd, hash_map_fd;
+@@ -31,6 +39,13 @@ int main(int argc, char **argv)
+ 	char filename[256];
+ 	FILE *f;
+ 
++	LIBBPF_OPTS(libbpf_prog_handler_opts, socket_opts,
++		.cookie = 1,
++	);
++
++	socket_prog_type_id = libbpf_register_prog_handler("socket/",
++			BPF_PROG_TYPE_SOCKET_FILTER, 0, &socket_opts);
++
+ 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+ 
+ 	obj = bpf_object__open_file(filename, NULL);
+-- 
+2.31.1
+
