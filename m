@@ -2,174 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DB560F31E
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 11:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04B260F358
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 11:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbiJ0JB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 05:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        id S235265AbiJ0JMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 05:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235003AbiJ0JBj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 05:01:39 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659E31EADC;
-        Thu, 27 Oct 2022 02:01:35 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 5029F320093C;
-        Thu, 27 Oct 2022 05:01:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 27 Oct 2022 05:01:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1666861291; x=1666947691; bh=rMDXDmInnn
-        n3apmcgfz7oqvT7y5En/5bpNpI3tjFcBQ=; b=wXqoMDIaQ1UFf6fGuUd9LAeJDl
-        YpS05zuNqVB6kZVvte3cRjAlzU+gGlXDNS5Fqeds2XThPZE2/oKoQjB3N+1siaz7
-        lMyEGp66RSefYL8f9xbhMXgZIGHjpO3LSemwLdcy2NawTu1mzAowCPj4XDFZehNi
-        lfr6vzT3aUO28BVF3HLtewQ5V3TscQtXpDPoKuieqB+4zsyMycwduF6SYXBytobz
-        GMG6Hk+oN3u0Sp0bHg3ly/HG2U5dhDrFPa4bBdFKJh0sGkE+E/HzOMoeO2oBqVFe
-        ddFYMPi/QsUEmXVB5KSEt4KKUzi8pAOHTd3C5yXLDRdUIWiw8yL1td6BgAng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1666861291; x=1666947691; bh=rMDXDmInnnn3apmcgfz7oqvT7y5E
-        n/5bpNpI3tjFcBQ=; b=M+iQ67tfFjJVqEE2ZgCcG+WgT0a0PFxLRngshfmWffB9
-        0coNPYe+y04ug901LzALqceDsUV0Fo7zBz3py6Ba41844rFdEAHViKcCq6TDFRZZ
-        RpNzm3Vdbb4229tMFl2dYotwpPnB72VmXOxnV6g/K+sK3cGcFrzVqQ/bS5Q28j9x
-        UG8rU1q0NpvnPfEg+CCNDVb8C2V4dx2RrHKWCdJOiW/YrYmRt8bcWb1Yr8LbsYkd
-        BLiyASe0c9JL/itNRuT2+0Go43+yh6TSGWiY+jcQXhjoJTSns7mo8rAp2Cv7I1Mu
-        BiI9E47oGLr69mTzcv6mqE5ucvS+1+CRoQkbcK8J+w==
-X-ME-Sender: <xms:60haY-dDDZ4IZAyaYupe94erqRmxWKsHoNeR2uiX7jENJulqqqMvwQ>
-    <xme:60haY4OPkWlc24CM5OetM6l8jlT-srIdbE7mIUwvMR8_wG0V8MH-Hko__ZnVKEIsM
-    nRoZQye-2EntgMAjg>
-X-ME-Received: <xmr:60haY_gkDpi3AydHTSefzcnMXGU0RgjtYaR1lkj4UbExzHlQwU_-_cn157TZl-GqtLqTmz6hRdaE8BG3aLa7>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrtdeggddtlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
-    ggtffrrghtthgvrhhnpeevuddugeeihfdtffehgffgudeggeegheetgfevhfekkeeileeu
-    ieejleekiedvgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:60haY7_5v9wO0K5Oom2yTqdbZGSh7EgY8a6bFJzhvP1n6GTk6enSlQ>
-    <xmx:60haY6u0dpIVFBqtT2mezalXDVSp5LG3sLEtlvoLulQ83KMX_MmYGA>
-    <xmx:60haYyErZ1s219j6ED6oB14URiYiWewyVmAVNJCr6tHbYf2wWrD0gg>
-    <xmx:60haY_O_wYGakplMWRt2ZzvQ_W1J-UjJnPBu3ER3K5DoV4ygs2yVnA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 27 Oct 2022 05:01:26 -0400 (EDT)
-Date:   Thu, 27 Oct 2022 03:01:32 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
- tc BPF programs
-Message-ID: <20221027090132.s6fsqeo3z4s3vphj@k2>
-References: <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com>
- <87tu4fczyv.fsf@toke.dk>
- <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
- <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net>
- <CAADnVQLpcLWrL-URhRgqCQa6XRZzib4BorZ2QKpPC+Uw_JNW=Q@mail.gmail.com>
- <87sfjysfxt.fsf@toke.dk>
- <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
- <CAEf4BzbFawYvHBWZEh2RN+YMv6r2kEiVNXFVZqXRH1eWK+u_UA@mail.gmail.com>
- <CAADnVQLyff07uCCj6SaA0=DQ1FsKsgpP01+sptWiTYSVoam=ag@mail.gmail.com>
+        with ESMTP id S235350AbiJ0JLF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 05:11:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E0840E1B
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 02:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666861840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ziau/u6EFDYrbkB/0U+jFJAy6/VcVCK6XBP9il5+IKo=;
+        b=DR5zuXHf5QYQzPYnaLGXt8eE8oU7NfyR9QZxMvMVwhJuA7xwH/EZj0ElS7pRNsptcEFkeu
+        e8JSGMnmc/lnJg6iqUJEWGsUMIAVat7/2FcnYJhRcSqpDtDF6bH0JFo9+Mm0LJrSPHvsgb
+        MmUgl5J7hAXmZ1k2btfJ5I15MkVZFPM=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-592-VOomaLEzMTqLjow0gw-JEQ-1; Thu, 27 Oct 2022 05:10:39 -0400
+X-MC-Unique: VOomaLEzMTqLjow0gw-JEQ-1
+Received: by mail-lf1-f71.google.com with SMTP id bp18-20020a056512159200b004a2c88a4e1eso349449lfb.3
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 02:10:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ziau/u6EFDYrbkB/0U+jFJAy6/VcVCK6XBP9il5+IKo=;
+        b=2dEs95Fb+08/iINWKrVuFUW1IgzFWlptwaC7S6MeSKQxHPlGSjBm5q0Ai/p443z7LB
+         eqV0nLVigltiScOCGXSdmUnfe/sT3TDk+Oo8IvHej7n8nu1sLWmmiI3R6gj3mdHUiEGY
+         iuOC05C07q2T3EErQ0ijnS07im7NcGHFGc7FqpNV3s4c5GbMSoNne1hHZr+m/MN2++Hj
+         VtI26htHWi411lVDGPebfFIOB3q0UzgeP/q6Yp03EqWMCgUwvSkDbAlvo+n0ybUMUVql
+         qvo7abgDOB8yD8mXYMoZzocz5I6jmlTfVCVoK+004rJYMF6E15dUw2tjQ2IuIeu4aRt5
+         w4JQ==
+X-Gm-Message-State: ACrzQf0umZVpS/Nbwr5ZIg1Nej9f4pIjDKzdk06GBTUvNQ2vlmCk8k/i
+        bbcP9fNvafypsA2LuJ4p1F7YIYlJm4/XS5m0V3tbDARbJWTW6rCwDAxjxECnjLEOk/GYtExWptg
+        BM1ffQEJhz7fSc8pGOU42ZV9H3aW2
+X-Received: by 2002:ac2:47e1:0:b0:4af:5088:9576 with SMTP id b1-20020ac247e1000000b004af50889576mr2998557lfp.468.1666861837591;
+        Thu, 27 Oct 2022 02:10:37 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4fIV6ydQRgmrMVyIU2r9H0oB18YXsVEUdlFYjrQuSfS2ucEUJhllLqj68fs6nzyLA4Vj6RKPmXnDYesOOZKOo=
+X-Received: by 2002:ac2:47e1:0:b0:4af:5088:9576 with SMTP id
+ b1-20020ac247e1000000b004af50889576mr2998542lfp.468.1666861837363; Thu, 27
+ Oct 2022 02:10:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLyff07uCCj6SaA0=DQ1FsKsgpP01+sptWiTYSVoam=ag@mail.gmail.com>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20221025093458.457089-1-benjamin.tissoires@redhat.com>
+ <20221025093458.457089-3-benjamin.tissoires@redhat.com> <20221025225219.i3pi7ewue6xqeig4@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <20221025225219.i3pi7ewue6xqeig4@macbook-pro-4.dhcp.thefacebook.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Thu, 27 Oct 2022 10:11:31 +0100
+Message-ID: <CAO-hwJ+WWO-GhzX-eaoGtF8+5Mw-QOVREWYmtm-VNBF5NGC22g@mail.gmail.com>
+Subject: Re: [PATCH hid v11 02/14] HID: initial BPF implementation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alexei,
+On Tue, Oct 25, 2022 at 11:52 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Oct 25, 2022 at 11:34:46AM +0200, Benjamin Tissoires wrote:
+> >  include/linux/hid.h                           |   5 +
+> >  include/linux/hid_bpf.h                       | 102 +++
+> >  include/uapi/linux/hid_bpf.h                  |  25 +
+> >  tools/include/uapi/linux/hid.h                |  62 ++
+> >  tools/include/uapi/linux/hid_bpf.h            |  25 +
+>
+> ...
+>
+> > +++ b/include/linux/hid_bpf.h
+> > @@ -0,0 +1,102 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ */
+> > +
+> > +#ifndef __HID_BPF_H
+> > +#define __HID_BPF_H
+> > +
+> > +#include <linux/spinlock.h>
+> > +#include <uapi/linux/hid.h>
+> > +#include <uapi/linux/hid_bpf.h>
+> > +
+> > +struct hid_device;
+> > +
+> > +/*
+> > + * The following is the HID BPF API.
+> > + *
+> > + * It should be treated as UAPI, so extra care is required
+> > + * when making change to this file.
+> > + */
+>
+> I thought at the maintainer summit we discussed that it shouldn't be
+> treated as uapi. There is no need to draw this line right now.
+> If the whole concept turns out to be useful and api is stable
+> then promote it.
 
-On Fri, Oct 14, 2022 at 08:38:52AM -0700, Alexei Starovoitov wrote:
-> On Thu, Oct 13, 2022 at 11:30 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
+I'd still like to keep the kfunc API explicitly marked as "danger
+zone". I want to let contributors know that changing this part has an
+impact on the existing available bpf programs that are out of the tree
+(the HID firewall for instance might be out of the tree).
 
-[...]
+I'll reword it to not mark it as uapi though.
 
-> > No one proposed a slight variation on what Daniel was proposing with
-> > prios that might work just as well. So for completeness, what if
-> > instead of specifying 0 or explicit prio, we allow specifying either:
-> >   - explicit prio, and if that prio is taken -- fail
-> >   - min_prio, and kernel will find smallest untaken prio >= min_prio;
-> > we can also define that min_prio=-1 means append as the very last one.
-> >
-> > So if someone needs to be the very first -- explicitly request prio=1.
-> > If wants to be last: prio=0, min_prio=-1. If we want to observe, we
-> > can do something like min_prio=50 to leave a bunch of slots free for
-> > some other programs for which exact order matters.
-> 
-> Daniel, was suggesting more or less the same thing.
-> My point is that prio is an unnecessary concept and uapi
-> will be stuck with it. Including query interface
-> and bpftool printing it.
+>
+> > +++ b/include/uapi/linux/hid_bpf.h
+> > @@ -0,0 +1,25 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +
+> > +#ifndef _UAPI_HID_BPF_H
+> > +#define _UAPI_HID_BPF_H
+> > +
+> > +#include <linux/const.h>
+> > +#include <linux/hid.h>
+> > +
+> > +/**
+> > + * enum hid_bpf_attach_flags - flags used when attaching a HIF-BPF program
+> > + *
+> > + * @HID_BPF_FLAG_NONE: no specific flag is used, the kernel choses where to
+> > + *                     insert the program
+> > + * @HID_BPF_FLAG_INSERT_HEAD: insert the given program before any other program
+> > + *                            currently attached to the device. This doesn't
+> > + *                            guarantee that this program will always be first
+> > + * @HID_BPF_FLAG_MAX: sentinel value, not to be used by the callers
+> > + */
+> > +enum hid_bpf_attach_flags {
+> > +     HID_BPF_FLAG_NONE = 0,
+> > +     HID_BPF_FLAG_INSERT_HEAD = _BITUL(0),
+> > +     HID_BPF_FLAG_MAX,
+> > +};
+> > +
+> > +#endif /* _UAPI_HID_BPF_H */
+>
+> Not sure what is the purpose of this uapi file.
+> Since it's enum the progs can get it from vmlinux.h.
 
-I apologize if I'm piling onto the bikeshedding, but I've been working a
-lot more with TC bpf lately so I thought I'd offer some thoughts.
+Good point. It can easily go into the non uapi hid_bpf.h
 
-I quite like the intent of this patchset; it'll help simply using TC bpf
-greatly. I also think what Andrii is suggesting makes a lot of sense. My
-biggest gripe with TC priorities is that:
+>
+> > diff --git a/tools/include/uapi/linux/hid.h b/tools/include/uapi/linux/hid.h
+> > new file mode 100644
+> > index 000000000000..3e63bea3b3e2
+> > --- /dev/null
+> > +++ b/tools/include/uapi/linux/hid.h
+> > @@ -0,0 +1,62 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> > +/*
+> > + *  Copyright (c) 1999 Andreas Gal
+> > + *  Copyright (c) 2000-2001 Vojtech Pavlik
+> > + *  Copyright (c) 2006-2007 Jiri Kosina
+> > + */
+> > +#ifndef _UAPI__HID_H
+> > +#define _UAPI__HID_H
+>
+> This is a copy of include/uapi/linux/hid.h ?
 
-1. "Priority" is a rather arbitrary concept and hard to come up with
-values for.
+Yes it is
 
-2. The default replace-on-collision semantic (IIRC) is error prone as
-evidenced by this patch's motivation.
+> Probably should be a separate commit to make it obvious.
+>
 
-My suggestion here is to rename "priority" -> "position". Maybe it's
-just me but I think "priority" is too vague of a concept whereas a
-0-indexed "position" is rather unambiguous.
+I'll need to assess why I needed that. I think it was related to the
+selftests, but now that they are in selftests/hid, I can probably have
+a special include in the Makefile to not have to duplicate the file at
+all.
 
-> 
-> > This whole before/after FD interface seems a bit hypothetical as well,
-> > tbh.
-> 
-> The fd approach is not better. It's not more flexible.
-> That was not the point.
-> The point is that fd does not add stuff to uapi that
-> bpftool has to print and later the user has to somehow interpret.
-> prio is that magic number that users would have to understand,
-> but for them it's meaningless. The users want to see the order
-> of progs on query and select the order on attach.
+Thanks for the review :)
 
-While I appreciate how the FD based approach leaves less confusing
-values for bpftool to dump, I see a small semantic ambiguity with it:
+Cheers,
+Benjamin
 
-For example, say we start with a single prog, A. Then add B as
-"after-A".  Then add C as "before-B". It's unclear what'll happen.
-Either you invalidate B's guarantees or you return an error. If you
-invalidate, that's unfortunate. If you error, how does userspace retry?
-You'd have to express all the existing relationships to the user thru
-through bpftool or something. Whereas with Andrii's proposal it's
-unambiguous.
-
-[...]
-
-Thanks,
-Daniel
