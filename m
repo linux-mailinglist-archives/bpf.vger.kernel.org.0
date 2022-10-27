@@ -2,60 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64C460FCFE
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 18:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1014B60FD3D
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 18:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236187AbiJ0QYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 12:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S235835AbiJ0Qho (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 12:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236617AbiJ0QYa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 12:24:30 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AD8192B8F
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 09:23:19 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id p184so1965320iof.11
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 09:23:19 -0700 (PDT)
+        with ESMTP id S235105AbiJ0Qhn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 12:37:43 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4417D18708A
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 09:37:41 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id d14so1349154ilf.2
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 09:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nc5Y/XzFUKnUSi/b7mjany2KRDS6a+xSXsnXqLv27T8=;
-        b=icUmqWU8qf73kN6g+hN5oPITiQVubfKn8PiYpRhMyeH/wK8vgO+I6VkIV0Yetlkguj
-         RNldjPWaJ7XbK+hNIKyJhuSbCN+DqiYjprJai1m8KKGR0rugIsNQpUTqLdwzrnibxiju
-         p+3fujJ0AQukvBa2khFVSbiSRoWFxaEhjbbOzYz3TEY0pzTm2dvhy56YQXHLUzs0iq+e
-         YtN2vyiU3Ox9DX2sV5tQnUvvTLugBefC8au4skGr06I+8908ue+iwqBIYUNK4V3IkHKr
-         yKdBe00pKg/M2u8c9uLrAeMV5kP0PGOfEGKB5GTVZGrPijAQKms2/0UWR+wm4azEOG4P
-         +AsA==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7LWEASsKgUP64ylwmptUWdmfupY1E/J0Cw3DTfsriXQ=;
+        b=Q3GocbXjSAuAh60TyV0Ub1SyNnW9zTwO9PIPJVBoFQkEOvIF7hXneEM4bLaRL7eXd3
+         P3f/HHObHy30UblpMmel9sUFaILJHBT8SWH3KPknoQnWxffkrxpDrV6rurTiCh+VgHkA
+         OsL47TiPDqu3rry6V1bb5neDuAjVYEkRi8X126nUCYxv/3xHZbrNhadU3JKummzB2UAD
+         j/PRkZpthGogxQxNJ8EKtSann/Dl0PdAlkSp/7JX17flR3aFAA9dSbGAcNo6nQTSE1Q+
+         O3NSy/0Uhp5torvw7/6cE28hYsJuO4L/Kq4nHgAF1uMjq2BX3U46pOl8itmYTUKPceDG
+         FPGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nc5Y/XzFUKnUSi/b7mjany2KRDS6a+xSXsnXqLv27T8=;
-        b=7CRNr7zu+vuP6ztjY1oQtMT2Xbxv5Xee5YPVJ62qU9kgxnuFHSo6Z661dagybOGZmO
-         eCPo2MfHdDSaplN4Z4qNRqcAr0HfqMoZ2z8oa0CVcea4IUnwLtxxQl5V093r2Pkumt0Y
-         phk36r9+tLTI1y3LrAd+9UAZiZFJRftD0TxourrldECWnTRlMHTR3u3kZrO+OW2sbX/B
-         17ot2OiYK9p4/UB0O2iNLPyaLpiCX0M/VPJNv/ndHqcZhmVKXgZjuBsB9icJNwp4q8ya
-         S57RD8vF5AwYR/15HXWxsxJ4c2n6pTKR0zHJmVkX6ByBliRIbXqMgqBKmzIPU1+A4DU2
-         zPUA==
-X-Gm-Message-State: ACrzQf0A0ZrD8Xzur7BvDYes0NC4skGfOz6EAtjKRO4vLQ6EmmZuWPQY
-        dz+XNRHkygHcahGT3v/EfqF/y9RBo15RTGWoPa7sRMut2JL60Q==
-X-Google-Smtp-Source: AMsMyM7Rudle7J1oMt6TpG0P4ouD5T9eakM/tJV3DTCX0F08DFATxrvJJCYaSdzKh1cMdTcjEpXlj5YCsRRRn/qVL0Q=
-X-Received: by 2002:a05:6638:19c4:b0:363:afc3:b403 with SMTP id
- bi4-20020a05663819c400b00363afc3b403mr34140974jab.144.1666887798780; Thu, 27
- Oct 2022 09:23:18 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7LWEASsKgUP64ylwmptUWdmfupY1E/J0Cw3DTfsriXQ=;
+        b=JNAGjtYvNRuqNRa8keRQTsnX8KKTDEPd7lTjcdsZJV2Y3l8Ve0Q/mCBLgGdfbbyfAC
+         xx86sdQHoMNjEQmTulyk5klYPgF+zHlGhiTqeO4ieKcERJIOQ16F6ebQvUagLsaI55v9
+         csaXzC7tl+2mLlravGKQqfxcnNmHPUEPpsik83Bu5bXEDrFSoj+tBuFGc/buExqY8yfN
+         mmJ+vD/x7Q/812kF9X6bZyswi9OBH2wgCNOUmRPQXJ9NMv+n0M1I8d+KfyLSiKZX5lc5
+         BGKfVTa2QKHKEh/uu9QZI53ekYXyGivYoWXcoXRt2K/fIzQNXJdrmzZKE+nRcSYApvig
+         T6kA==
+X-Gm-Message-State: ACrzQf00SMBMS55sTwbFHlux/rg1r8iehG2gPZAYUUlOvzwsYGzLF2xm
+        8pwdM6lvjKnooyL95aoNgoK3mSmkJs9O0tM7LCIe9Q==
+X-Google-Smtp-Source: AMsMyM4MPUzrHFOAqSSCaQJyrhFKA9jCif0uSF89aO/lId8sCn8ZNsltO+/qn3qDp+qqGgM1xCJ7Ae1omZAuR+rWNKw=
+X-Received: by 2002:a05:6e02:1a41:b0:2fa:969d:fcd0 with SMTP id
+ u1-20020a056e021a4100b002fa969dfcd0mr32110522ilv.6.1666888660954; Thu, 27 Oct
+ 2022 09:37:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
- <CAKH8qBu7OXptKF46SQSEfueKXRUkBxix3K0qmucgREP4h_rQJQ@mail.gmail.com> <41284964-123d-704b-2802-24a857a7a989@linux.dev>
-In-Reply-To: <41284964-123d-704b-2802-24a857a7a989@linux.dev>
+References: <20221015092448.117563-1-shaozhengchao@huawei.com>
+ <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
+ <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com> <CAKH8qBtyfS0Otpugn7_ZiG5APA_WTKOVAe1wsFfyaxF-03X=5w@mail.gmail.com>
+ <87f67a8c-2fb2-9478-adbb-f55c7a7c94f9@huawei.com> <CAKH8qBsOMxVaemF0Oy=vE1V0vKO8ORUcVGB5YANS3HdKOhVjjw@mail.gmail.com>
+ <7ddbf8f4-2b03-223f-4601-add0f7208855@huawei.com> <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
+ <20e9ea01-1261-6d03-34c9-9b842298487a@huawei.com>
+In-Reply-To: <20e9ea01-1261-6d03-34c9-9b842298487a@huawei.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 27 Oct 2022 09:23:07 -0700
-Message-ID: <CAKH8qBsNZL0YrML5duNebqjMXtBDnB6L05zsMHCe==-UcRa9JA@mail.gmail.com>
-Subject: Re: [Question]: BPF_CGROUP_{GET,SET}SOCKOPT handling when optlen > PAGE_SIZE
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Thu, 27 Oct 2022 09:37:29 -0700
+Message-ID: <CAKH8qBstDGb3Uf14J5K3VtgZOdHFT1c4u0uUG97NqgA4iZRo+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is dropped
+To:     shaozhengchao <shaozhengchao@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, oss@lmb.io, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -67,61 +79,188 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 26, 2022 at 11:15 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Oct 27, 2022 at 4:58 AM shaozhengchao <shaozhengchao@huawei.com> wr=
+ote:
 >
-> On 10/26/22 7:03 PM, Stanislav Fomichev wrote:
-> > On Wed, Oct 26, 2022 at 6:14 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+>
+> On 2022/10/25 1:13, Stanislav Fomichev wrote:
+> > On Sat, Oct 22, 2022 at 4:36 AM shaozhengchao <shaozhengchao@huawei.com=
+> wrote:
 > >>
-> >> The cgroup-bpf {get,set}sockopt prog is useful to change the optname behavior.
-> >> The bpf prog usually just handles a few specific optnames and ignores most
-> >> others.  For the optnames that it ignores, it usually does not need to change
-> >> the optlen.  The exception is when optlen > PAGE_SIZE (or optval_end - optval).
-> >> The bpf prog needs to set the optlen to 0 for this case or else the kernel will
-> >> return -EFAULT to the userspace.  It is usually not what the bpf prog wants
-> >> because the bpf prog only expects error returning to userspace when it has
-> >> explicitly 'return 0;' or used bpf_set_retval().  If a bpf prog always changes
-> >> optlen for optnames that it does not care to 0,  it may risk if the latter bpf
-> >> prog in the same cgroup may want to change/look-at it.
 > >>
-> >> Would like to explore if there is an easier way for the bpf prog to handle it.
-> >> eg. does it make sense to track if the bpf prog has changed the ctx->optlen
-> >> before returning -EFAULT to the user space when ctx.optlen > max_optlen?
+> >>
+> >> On 2022/10/22 2:16, Stanislav Fomichev wrote:
+> >>> On Fri, Oct 21, 2022 at 12:25 AM shaozhengchao <shaozhengchao@huawei.=
+com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2022/10/21 1:45, Stanislav Fomichev wrote:
+> >>>>> On Wed, Oct 19, 2022 at 6:47 PM shaozhengchao <shaozhengchao@huawei=
+.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2022/10/18 0:36, Stanislav Fomichev wrote:
+> >>>>>>> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@hua=
+wei.com> wrote:
+> >>>>>>>>
+> >>>>>>>> As [0] see, bpf_prog_test_run_skb() should allow user space to f=
+orward
+> >>>>>>>> 14-bytes packet via BPF_PROG_RUN instead of dropping packet dire=
+ctly.
+> >>>>>>>> So fix it.
+> >>>>>>>>
+> >>>>>>>> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d=
+421232a10013596c0
+> >>>>>>>>
+> >>>>>>>> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid p=
+kt_len")
+> >>>>>>>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> >>>>>>>> ---
+> >>>>>>>>      net/bpf/test_run.c | 6 +++---
+> >>>>>>>>      1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>>>>>>
+> >>>>>>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> >>>>>>>> index 13d578ce2a09..aa1b49f19ca3 100644
+> >>>>>>>> --- a/net/bpf/test_run.c
+> >>>>>>>> +++ b/net/bpf/test_run.c
+> >>>>>>>> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_bu=
+ff *skb, struct __sk_buff *__skb)
+> >>>>>>>>      {
+> >>>>>>>>             struct qdisc_skb_cb *cb =3D (struct qdisc_skb_cb *)s=
+kb->cb;
+> >>>>>>>>
+> >>>>>>>> -       if (!skb->len)
+> >>>>>>>> -               return -EINVAL;
+> >>>>>>>> -
+> >>>>>>>>             if (!__skb)
+> >>>>>>>>                     return 0;
+> >>>>>>>>
+> >>>>>>>> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog =
+*prog, const union bpf_attr *kattr,
+> >>>>>>>>             if (IS_ERR(data))
+> >>>>>>>>                     return PTR_ERR(data);
+> >>>>>>>>
+> >>>>>>>> +       if (size =3D=3D ETH_HLEN)
+> >>>>>>>> +               is_l2 =3D true;
+> >>>>>>>> +
+> >>>>>>>
+> >>>>>>> Don't think this will work? That is_l2 is there to expose proper =
+l2/l3
+> >>>>>>> skb for specific hooks; we can't suddenly start exposing l2 heade=
+rs to
+> >>>>>>> the hooks that don't expect it.
+> >>>>>>> Does it make sense to start with a small reproducer that triggers=
+ the
+> >>>>>>> issue first? We can have a couple of cases for
+> >>>>>>> len=3D0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf progr=
+am that
+> >>>>>>> redirects to different devices (to trigger dev_is_mac_header_xmit=
+).
+> >>>>>>>
+> >>>>>>>
+> >>>>>> Hi Stanislav:
+> >>>>>>            Thank you for your review. Is_l2 is the flag of a speci=
+fic
+> >>>>>> hook. Therefore, do you mean that if skb->len is equal to 0, just
+> >>>>>> add the length back?
+> >>>>>
+> >>>>> Not sure I understand your question. All I'm saying is - you can't
+> >>>>> flip that flag arbitrarily. This flag depends on the attach point t=
+hat
+> >>>>> you're running the prog against. Some attach points expect packets
+> >>>>> with l2, some expect packets without l2.
+> >>>>>
+> >>>>> What about starting with a small reproducer? Does it make sense to
+> >>>>> create a small selftest that adds net namespace + fq_codel +
+> >>>>> bpf_prog_test run and do redirect ingress/egress with len
+> >>>>> 0/1...tcphdr? Because I'm not sure I 100% understand whether it's o=
+nly
+> >>>>> len=3D0 that's problematic or some other combination as well?
+> >>>>>
+> >>>> yes, only skb->len =3D 0 will cause null-ptr-deref issue.
+> >>>> The following is the process of triggering the problem:
+> >>>> enqueue a skb:
+> >>>> fq_codel_enqueue()
+> >>>>           ...
+> >>>>           idx =3D fq_codel_classify()        --->if idx !=3D 0
+> >>>>           flow =3D &q->flows[idx];
+> >>>>           flow_queue_add(flow, skb);       --->add skb to flow[idex]
+> >>>>           q->backlogs[idx] +=3D qdisc_pkt_len(skb); --->backlogs =3D=
+ 0
+> >>>>           ...
+> >>>>           fq_codel_drop()                  --->set sch->limit =3D 0,=
+ always
+> >>>> drop packets
+> >>>>                   ...
+> >>>>                   idx =3D i                  --->becuase backlogs in=
+ every
+> >>>> flows is 0, so idx =3D 0
+> >>>>                   ...
+> >>>>                   flow =3D &q->flows[idx];   --->get idx=3D0 flow
+> >>>>                   ...
+> >>>>                   dequeue_head()
+> >>>>                           skb =3D flow->head; --->flow->head =3D NUL=
+L
+> >>>>                           flow->head =3D skb->next; --->cause null-p=
+tr-deref
+> >>>> So, if skb->len !=3D0=EF=BC=8Cfq_codel_drop() could get the correct =
+idx, and
+> >>>> then skb!=3DNULL, it will be OK.
+> >>>> Maybe, I will fix it in fq_codel.
+> >>>
+> >>> I think the consensus here is that the stack, in general, doesn't
+> >>> expect the packets like this. So there are probably more broken thing=
+s
+> >>> besides fq_codel. Thus, it's better if we remove the ability to
+> >>> generate them from the bpf side instead of fixing the individual user=
+s
+> >>> like fq_codel.
+> >>>
+> >>>> But, as I know, skb->len =3D 0 is just invalid packet. I prefer to a=
+dd the
+> >>>> length back, like bellow:
+> >>>>           if (is_l2 || !skb->len)
+> >>>>                   __skb_push(skb, hh_len);
+> >>>> is it OK?
+> >>>
+> >>> Probably not?
+> >>>
+> >>> Looking at the original syzkaller report, prog_type is
+> >>> BPF_PROG_TYPE_LWT_XMIT which does expect a packet without l2 header.
+> >>> Can we do something like:
+> >>>
+> >>> if (!is_l2 && !skb->len) {
+> >>>     // append some dummy byte to the skb ?
+> >>> }
+> >>>
+> >>>
+> >> I pad one byte, and test OK.
+> >> if (!is_l2 && !skb->len)
+> >>       __skb_push(skb, 1);
+> >>
+> >> Does it look OK to you?
 > >
-> > Good point on chaining being broken because of this requirement :-/
+> > Nope, this will eat a byte out of the l2 header. We need to skb_put
+> > and make sure we allocate enough to make that skb_put succeed.
 > >
-> > With tracking, we need to be careful, because the following situation
-> > might be problematic:
-> > Suppose setsockopt is larger than 4k, the program can rewrite some
-> > byte in the first 4k, not touch optlen and expect this to work.
+> > But stepping back a bit: it feels like it's all unnecessary? The only
+> > valid use-case of this is probing for the BPF_PROG_TEST_RUN as cilium
+> > does. This is mostly about testing, so fixing it in the users seems
+> > fair? No real production code is expected to generate these zero-len
+> > packets. Or are we concerned that this will leak into stable kernels?
+> >
+> > I feel like we are trying to add more complexity here for no apparent r=
+eason.
+> >
+> I agree with you. users should make sure the correct skb len and
+> configurations are passed into kernel. Incorrect configurations should
+> be discarded to ensure kernel stability.
 >
-> If the bpf prog rewrites the first 4k, it must change the ctx.optlen to get it
-> work.  Otherwise, the kernel will return -EFAULT because the ctx.optlen is
-> larger than the max_optlen (or optval_end - optval).
->
-> > Currently, optlen=0 explicitly means "ignore whatever is in the bpf
-> > buffer and use the original one" > If we can have a tracking that catches situations like this - we
-> > should be able to drop that optlen=0 requirement.
-> > IIRC, that's the only tricky part.
->
-> Ah, I meant, in __cgroup_bpf_run_filter_setsockopt, use "!ctx.optlen_changed &&
-> ctx.optlen > max_optlen" test to imply "ignore whatever is in the bpf
-> buffer and use the original one".  Add 'bool optlen_changed' to 'struct
-> bpf_sockopt_kern' and set ctx.optlen_changed to true in
-> cg_sockopt_convert_ctx_access() whenever there is BPF_WRITE to ctx.optlen.
-> Would it work or may be I am still missing something in the writing first 4k
-> case above?
+> Lorenz, Can you modify the user-mode test code?
 
-What if the program wants to keep optlen as is? Here is the
-hypothetical case: ctx->optlen is 8k, we allocate/expose only the
-first 4k, the program does ctx->optval[0] = 0xff and doesn't change
-the optlen. It wants the rest of the payload to be passed as is with
-only the first byte changed.
-The condition "!ctx.optlen_changed && ctx.optlen > max_optlen" is
-true, so, if we treat this as explicit optlen=0, we ignore the
-program's changes.
-But this is not what the program has intended, right? It wants to
-amend something and pass the rest as is.
-
-It seems like we need to have both optlen_changed and optval_changed.
-If both are false, we should be able to safely do optlen=0 equivalent.
-Tracking only optlen seems to be problematic?
+Lorenz already fixed it for Cilium. I think the discussion here is
+around other potential users out there.
+Let's wait for them to appear if it is indeed a problem?
