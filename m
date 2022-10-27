@@ -2,63 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D2E61044C
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 23:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A1E61045A
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 23:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236658AbiJ0VW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 17:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
+        id S236450AbiJ0V1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 17:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236007AbiJ0VW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 17:22:57 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E35F5B53C
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:22:56 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id f27so8372360eje.1
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:22:56 -0700 (PDT)
+        with ESMTP id S235349AbiJ0V1W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 17:27:22 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521946337C
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:27:20 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id f27so8400711eje.1
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=hayQeMhzcQ5l1Af/BRe7TIDQOJpDWoQq048LwQR67LY=;
-        b=zITe3Ksn8Wlx8nXpYnJjYgrfcZJNS1g+frLueKe6UKXXsjK447wUwCaSqoGFekWca4
-         ri2vti6mSl9Vu0IavrN+HdycrPD1kWnsUtHG3u8lL0zN+TwlC1iaiS9W1w1xig0OMVgc
-         QQYcYZga5mD2iaBAs+y876MswfnRcqiNvXJ7Y=
+        bh=2GRx8mDr1t67SUlqYPityd9gZJaa/M9GRNi1ubWzhgs=;
+        b=mNKLNpre4s3Fl45+jInkeyaZ8PuIY1O9qpQPeosOMx0PPKrPaPpnHRrgqwoQDmLSq3
+         ZMIrQ2tpBxI/vXUvY+RmP6ZZXr0+JmIaOWMmETuk3J7vxn4boYPp226IwdrF5eE9cE+3
+         I3F2L2bNK39XSkJaUdPLx9p0AA3ADH4sF5v24=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hayQeMhzcQ5l1Af/BRe7TIDQOJpDWoQq048LwQR67LY=;
-        b=GxQSCf7KpawDNQBAIwiY3qQv2FPDkvoJqbENbeOHNlVw/z8Hgc5xCrlVB5QbXC8bZk
-         SH3OjPupHjHJSwnmeGQHxaHn3cWcKejsX51AR5dVEiEPJOunaTF0RzZpGpmYPpEYNrEA
-         VFhDKzD6QpzSGjJj+ou37WKeTaraF85RLSEdIKDeAH7XK42IlnIoQq+SI7CskrZmnZ5I
-         STGr7DX89p403uooOK5GkkVuRP4uZpq1gPLGK7jLkZGfWEhxaq+IJDrZ4//21gHF40/l
-         mIOcpKBxoZML7sa1HfO1EViORskxQGwlaw0UGlRLHvptkgIyXiUyNk0eJURnYtv4R7y9
-         L5Ag==
-X-Gm-Message-State: ACrzQf2LL7CEzgXRwOo3YlwfLtf9shbDYJZpU78C7Duo8My09R93U2L+
-        QbptUlKFHbFSNM6MBp37nWQITw==
-X-Google-Smtp-Source: AMsMyM6gTnJMg2nqOC1cpt+EJT9iJExlQGophocthCQiQRatZG+V8MiJwuKfhsGH64hYEeEMyxXCeQ==
-X-Received: by 2002:a17:906:da85:b0:741:40a7:d08d with SMTP id xh5-20020a170906da8500b0074140a7d08dmr46179050ejb.263.1666905774834;
-        Thu, 27 Oct 2022 14:22:54 -0700 (PDT)
+        bh=2GRx8mDr1t67SUlqYPityd9gZJaa/M9GRNi1ubWzhgs=;
+        b=I+nRMFPeBeliIbkG+WtkxEEuDKpFhFa4CJdVHfP8RlwOl5hpYZ9tPhoS/k1zkeAVnU
+         MUWDr1GbV/MwhFQt4PNbrocmPxNXarOtICrzZRD8xpdl9CIDlwXhWeXe0QGFb1NxQdY0
+         nu1YMBoWb8Tkxk7LTl6k5Fh9cLDuNxPOEWfbaDQxVtTp/Xb+qxlk4vdpAwyTK6oqZiq/
+         00Za5V7vYBa8mgSufBB7TmjSsq9T3Da09VkZa/A0ddg4RMXGKUiF1HGeOeM0aR8D7asb
+         NUTjQSEDEdX+/Ej+Ifx3Op/oR/RfNqxaRf0p1YTPzH37tr3rj6aYa17ADVHp9m3w2NmQ
+         8ynw==
+X-Gm-Message-State: ACrzQf2vEuFJJiwvu62bPAKKX2Rfrc4UmDh8udZWoVYIrMPh4pd8tC1S
+        ylP05u5DQcamt/R8Tp1jN6Eh+Q==
+X-Google-Smtp-Source: AMsMyM5PDZVIgHrLw3RsdU31bNGBvpuKcBhIEtotHHulkNQ/eqyBR0UAfciP9X8CMrEQ/MY0c1QTdg==
+X-Received: by 2002:a17:907:2bda:b0:78d:9144:fb6d with SMTP id gv26-20020a1709072bda00b0078d9144fb6dmr43930179ejc.238.1666906038447;
+        Thu, 27 Oct 2022 14:27:18 -0700 (PDT)
 Received: from cloudflare.com (79.191.56.44.ipv4.supernova.orange.pl. [79.191.56.44])
-        by smtp.gmail.com with ESMTPSA id f30-20020a170906739e00b0078e05db7005sm1227276ejl.214.2022.10.27.14.22.54
+        by smtp.gmail.com with ESMTPSA id k20-20020a1709067ad400b00788c820e630sm1247080ejo.121.2022.10.27.14.27.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Oct 2022 14:22:54 -0700 (PDT)
-References: <20220304081145.2037182-1-wangyufen@huawei.com>
+        Thu, 27 Oct 2022 14:27:18 -0700 (PDT)
+References: <20220823133755.314697-1-liujian56@huawei.com>
+ <874jvpim37.fsf@cloudflare.com> <87zgdhgu0p.fsf@cloudflare.com>
 User-agent: mu4e 1.6.10; emacs 27.2
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Wang Yufen <wangyufen@huawei.com>, john.fastabend@gmail.com
-Cc:     daniel@iogearbox.net, lmb@cloudflare.com, davem@davemloft.net,
-        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/4] bpf, sockmap: Fix memleaks and issues
- of mem charge/uncharge
-Date:   Thu, 27 Oct 2022 23:10:37 +0200
-In-reply-to: <20220304081145.2037182-1-wangyufen@huawei.com>
-Message-ID: <87v8o5gdw2.fsf@cloudflare.com>
+To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com
+Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/2] If the sock is dead, do not access
+ sock's sk_wq in sk_stream_wait_memory
+Date:   Thu, 27 Oct 2022 23:24:29 +0200
+In-reply-to: <87zgdhgu0p.fsf@cloudflare.com>
+Message-ID: <87r0ytgdoq.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -70,220 +72,163 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Wang, John,
-
-On Fri, Mar 04, 2022 at 04:11 PM +08, Wang Yufen wrote:
-> This patchset fixes memleaks and incorrect charge/uncharge memory, these
-> issues cause the following info:
+On Thu, Oct 27, 2022 at 05:30 PM +02, Jakub Sitnicki wrote:
+> On Thu, Oct 27, 2022 at 12:36 PM +02, Jakub Sitnicki wrote:
 >
-> WARNING: CPU: 0 PID: 9202 at net/core/stream.c:205 sk_stream_kill_queues+0xc8/0xe0
-> Call Trace:
->  <IRQ>
->  inet_csk_destroy_sock+0x55/0x110
->  tcp_rcv_state_process+0xe5f/0xe90
->  ? sk_filter_trim_cap+0x10d/0x230
->  ? tcp_v4_do_rcv+0x161/0x250
->  tcp_v4_do_rcv+0x161/0x250
->  tcp_v4_rcv+0xc3a/0xce0
->  ip_protocol_deliver_rcu+0x3d/0x230
->  ip_local_deliver_finish+0x54/0x60
->  ip_local_deliver+0xfd/0x110
->  ? ip_protocol_deliver_rcu+0x230/0x230
->  ip_rcv+0xd6/0x100
->  ? ip_local_deliver+0x110/0x110
->  __netif_receive_skb_one_core+0x85/0xa0
->  process_backlog+0xa4/0x160
->  __napi_poll+0x29/0x1b0
->  net_rx_action+0x287/0x300
->  __do_softirq+0xff/0x2fc
->  do_softirq+0x79/0x90
->  </IRQ>
+> [...]
 >
-> WARNING: CPU: 0 PID: 531 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x175/0x1b0
-> Call Trace:
->  <TASK>
->  __sk_destruct+0x24/0x1f0
->  sk_psock_destroy+0x19b/0x1c0
->  process_one_work+0x1b3/0x3c0
->  ? process_one_work+0x3c0/0x3c0
->  worker_thread+0x30/0x350
->  ? process_one_work+0x3c0/0x3c0
->  kthread+0xe6/0x110
->  ? kthread_complete_and_exit+0x20/0x20
->  ret_from_fork+0x22/0x30
->  </TASK>
+>> While testing Cong's fix for the dead lock in sk_psock_backlog [1], I've
+>> noticed that this change introduces a memory accounting issue. See
+>> warnings below.
+>>
+>> So what I've proposed is not completely sound. We will need to revisit
+>> it.
+>>
+>> [1] https://lore.kernel.org/bpf/Y0xJUc%2FLRu8K%2FAf8@pop-os.localdomain/
+>>
+>> --8<--
+>> bash-5.1# uname -r
+>> 6.0.0-rc3-00892-g3f8ef65af927
+>> bash-5.1# ./test_sockmap
+>> # 1/ 6  sockmap::txmsg test passthrough:OK
+>> # 2/ 6  sockmap::txmsg test redirect:OK
+>> # 3/ 1  sockmap::txmsg test redirect wait send mem:OK
+>> # 4/ 6  sockmap::txmsg test drop:OK
+>> # 5/ 6  sockmap::txmsg test ingress redirect:OK
+>> # 6/ 7  sockmap::txmsg test skb:OK
+>> # 7/ 8  sockmap::txmsg test apply:OK
+>> # 8/12  sockmap::txmsg test cork:OK
+>> [   46.324023] ------------[ cut here ]------------
+>> [ 46.325114] WARNING: CPU: 3 PID: 199 at net/core/stream.c:206
+>> sk_stream_kill_queues+0xd6/0xf0
+>> [   46.326573] Modules linked in:
+>> [ 46.327105] CPU: 3 PID: 199 Comm: test_sockmap Not tainted
+>> 6.0.0-rc3-00892-g3f8ef65af927 #36
+>> [ 46.328406] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>> 1.15.0-1.fc35 04/01/2014
+>> [   46.330000] RIP: 0010:sk_stream_kill_queues+0xd6/0xf0
+>> [ 46.330816] Code: 29 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 48 89 df e8 10 14 ff ff
+>> 8b 83 70 02 00 00 8b b3 28 02 00 00 85 c0 74 d9 0f 0b 85 f6 74 d7 <0f> 0b 5b 5d
+>> 31 c0 89 c2 89 c6 89 c7 c3 0f 0b eb 92 66 0f 1f 84 00
+>> [   46.331889] RSP: 0018:ffffc90000bc7d48 EFLAGS: 00010206
+>> [   46.332186] RAX: 0000000000000000 RBX: ffff88810567dc00 RCX: 0000000000000000
+>> [   46.332583] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff88810567ddb8
+>> [   46.332991] RBP: ffff88810567ddb8 R08: 0000000000000000 R09: 0000000000000000
+>> [   46.333321] R10: 0000000000000000 R11: 0000000000000000 R12: ffff88810567dc00
+>> [   46.333661] R13: ffff888103894500 R14: ffff888101fdf8e0 R15: ffff88810567dd30
+>> [   46.334074] FS:  00007f420a4d8b80(0000) GS:ffff88813bd80000(0000) knlGS:0000000000000000
+>> [   46.334532] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [   46.334881] CR2: 00007f420a4d8af8 CR3: 0000000102e17001 CR4: 0000000000370ee0
+>> [   46.335300] Call Trace:
+>> [   46.335444]  <TASK>
+>> [   46.335573]  inet_csk_destroy_sock+0x4f/0x110
+>> [   46.335832]  tcp_rcv_state_process+0xdcf/0x1140
+>> [   46.336076]  ? tcp_v4_do_rcv+0x77/0x2a0
+>> [   46.336299]  tcp_v4_do_rcv+0x77/0x2a0
+>> [   46.336512]  __release_sock+0x58/0xb0
+>> [   46.336721]  __tcp_close+0x186/0x450
+>> [   46.336883]  tcp_close+0x20/0x70
+>> [   46.337026]  inet_release+0x39/0x80
+>> [   46.337177]  __sock_release+0x37/0xa0
+>> [   46.337341]  sock_close+0x14/0x20
+>> [   46.337486]  __fput+0xa2/0x260
+>> [   46.337622]  task_work_run+0x59/0xa0
+>> [   46.337785]  exit_to_user_mode_prepare+0x185/0x190
+>> [   46.337992]  syscall_exit_to_user_mode+0x19/0x40
+>> [   46.338189]  do_syscall_64+0x42/0x90
+>> [   46.338350]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>> [   46.338565] RIP: 0033:0x7f420a618eb7
+>> [ 46.338741] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3
+>> 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0
+>> ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+>> [   46.339596] RSP: 002b:00007ffd54748df8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+>> [   46.339944] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f420a618eb7
+>> [   46.340349] RDX: 0000000000000018 RSI: 00007ffd54748d50 RDI: 0000000000000019
+>> [   46.340753] RBP: 00007ffd54748e40 R08: 00007ffd54748d50 R09: 00007ffd54748d50
+>> [   46.341162] R10: 00007ffd54748d50 R11: 0000000000000246 R12: 00007ffd54749118
+>> [   46.341574] R13: 000000000040d0ad R14: 0000000000474df8 R15: 00007f420a769000
+>> [   46.341927]  </TASK>
+>> [   46.342025] irq event stamp: 206385
+>> [ 46.342175] hardirqs last enabled at (206393): [<ffffffff810f1f82>]
+>> __up_console_sem+0x52/0x60
+>> [ 46.342546] hardirqs last disabled at (206400): [<ffffffff810f1f67>]
+>> __up_console_sem+0x37/0x60
+>> [ 46.342965] softirqs last enabled at (206414): [<ffffffff8107bcc5>]
+>> __irq_exit_rcu+0xc5/0x120
+>> [ 46.343454] softirqs last disabled at (206409): [<ffffffff8107bcc5>]
+>> __irq_exit_rcu+0xc5/0x120
+>> [   46.343951] ---[ end trace 0000000000000000 ]---
+>> [   46.344199] ------------[ cut here ]------------
+>> [ 46.344421] WARNING: CPU: 3 PID: 199 at net/ipv4/af_inet.c:154
+>> inet_sock_destruct+0x1a0/0x1d0
+>> [   46.344897] Modules linked in:
+>> [ 46.345074] CPU: 3 PID: 199 Comm: test_sockmap Tainted: G W
+>> 6.0.0-rc3-00892-g3f8ef65af927 #36
+>> [ 46.345549] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>> 1.15.0-1.fc35 04/01/2014
+>> [   46.346028] RIP: 0010:inet_sock_destruct+0x1a0/0x1d0
+>> [ 46.346313] Code: ff 49 8b bc 24 60 02 00 00 e8 cc 1e e9 ff 49 8b bc 24 88 00
+>> 00 00 5b 41 5c e9 bc 1e e9 ff 41 8b 84 24 28 02 00 00 85 c0 74 ca <0f> 0b eb c6
+>> 4c 89 e7 e8 a4 2d e6 ff e9 50 ff ff ff 0f 0b 41 8b 84
+>> [   46.347370] RSP: 0018:ffffc90000bc7e40 EFLAGS: 00010206
+>> [   46.347670] RAX: 0000000000000fc0 RBX: ffff88810567dd60 RCX: 0000000000000000
+>> [   46.348090] RDX: 0000000000000303 RSI: 0000000000000fc0 RDI: ffff88810567dd60
+>> [   46.348495] RBP: ffff88810567dc00 R08: 0000000000000000 R09: 0000000000000000
+>> [   46.348921] R10: 0000000000000000 R11: 0000000000000000 R12: ffff88810567dc00
+>> [   46.349306] R13: ffff8881001d48e0 R14: ffff88810257a3a8 R15: 0000000000000000
+>> [   46.349717] FS:  00007f420a4d8b80(0000) GS:ffff88813bd80000(0000) knlGS:0000000000000000
+>> [   46.350191] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [   46.350531] CR2: 00007f420a4d8af8 CR3: 0000000102e17001 CR4: 0000000000370ee0
+>> [   46.350947] Call Trace:
+>> [   46.351098]  <TASK>
+>> [   46.351246]  __sk_destruct+0x23/0x250
+>> [   46.351599]  inet_release+0x39/0x80
+>> [   46.351835]  __sock_release+0x37/0xa0
+>> [   46.352059]  sock_close+0x14/0x20
+>> [   46.352206]  __fput+0xa2/0x260
+>> [   46.352347]  task_work_run+0x59/0xa0
+>> [   46.352515]  exit_to_user_mode_prepare+0x185/0x190
+>> [   46.352728]  syscall_exit_to_user_mode+0x19/0x40
+>> [   46.352954]  do_syscall_64+0x42/0x90
+>> [   46.353119]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>> [   46.353342] RIP: 0033:0x7f420a618eb7
+>> [ 46.353498] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3
+>> 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0
+>> ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+>> [   46.354284] RSP: 002b:00007ffd54748df8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+>> [   46.354601] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f420a618eb7
+>> [   46.354908] RDX: 0000000000000018 RSI: 00007ffd54748d50 RDI: 0000000000000019
+>> [   46.355308] RBP: 00007ffd54748e40 R08: 00007ffd54748d50 R09: 00007ffd54748d50
+>> [   46.355710] R10: 00007ffd54748d50 R11: 0000000000000246 R12: 00007ffd54749118
+>> [   46.356117] R13: 000000000040d0ad R14: 0000000000474df8 R15: 00007f420a769000
+>> [   46.356532]  </TASK>
+>> [   46.356664] irq event stamp: 206837
+>> [ 46.356873] hardirqs last enabled at (206847): [<ffffffff810f1f82>]
+>> __up_console_sem+0x52/0x60
+>> [ 46.357369] hardirqs last disabled at (206854): [<ffffffff810f1f67>]
+>> __up_console_sem+0x37/0x60
+>> [ 46.357864] softirqs last enabled at (206604): [<ffffffff8107bcc5>]
+>> __irq_exit_rcu+0xc5/0x120
+>> [ 46.358358] softirqs last disabled at (206591): [<ffffffff8107bcc5>]
+>> __irq_exit_rcu+0xc5/0x120
+>> [   46.358865] ---[ end trace 0000000000000000 ]---
+>> # 9/ 3  sockmap::txmsg test hanging corks:OK
 >
-> Changes since v2:
-> -Move sk_msg_trim() logic into sk_msg_alloc while -ENOMEM occurs, as
-> Cong Wang suggested.
+> [...]
 >
-> Changes since v1:
-> -Update the commit message of patch #2, the error path is from ENOMEM not
-> the ENOSPC.
-> -Simply returning an error code when psock is null, as John Fastabend
-> suggested.
+> Actually, we had a fix for these warnings in 9c34e38c4a87 ("bpf,
+> sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full") [1].
+>
+> But they reappear for me in v5.18-rc1. Trying to bisect what went
+> wrong...
+>
+> [1] https://lore.kernel.org/bpf/20220304081145.2037182-3-wangyufen@huawei.com
 
-This is going to sound a bit weird, but I'm actually observing the
-mentioned warnings with these patches applied, when running
-`test_sockmap` selftests. Without the patch set - all is well.
+Traced it down to 84472b436e76 ("bpf, sockmap: Fix more uncharged while
+msg has more_data"), which was the next commit after the one I thought
+contained the fix, that is 9c34e38c4a87.
 
-Bisect went like so:
+I started a discussion in the thread for the patch set [1], as the
+warnings look completely unrelated to this change.
 
-broken  [bpf-next] 31af1aa09fb9 ("Merge branch 'bpf: Fixes for kprobe multi on kernel modules'")
-...
-broken  2486ab434b2c ("bpf, sockmap: Fix double uncharge the mem of sk_msg")
-broken  84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
-working 9c34e38c4a87 ("bpf, sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full")
-working 938d3480b92f ("bpf, sockmap: Fix memleak in sk_psock_queue_msg")
-working [base] d3b351f65bf4 ("selftests/bpf: Fix a clang compilation error for send_signal.c")
-
-At 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has
-more_data") I'm seeing:
-
-bash-5.1# uname -r
-5.17.0-rc6-01987-g84472b436e76
-bash-5.1# cd tools/testing/selftests/bpf/
-bash-5.1# ./test_sockmap
-# 1/ 6  sockmap::txmsg test passthrough:OK
-# 2/ 6  sockmap::txmsg test redirect:OK
-# 3/ 6  sockmap::txmsg test drop:OK
-# 4/ 6  sockmap::txmsg test ingress redirect:OK
-# 5/ 7  sockmap::txmsg test skb:OK
-# 6/ 8  sockmap::txmsg test apply:OK
-# 7/12  sockmap::txmsg test cork:OK
-[   16.399282] ------------[ cut here ]------------
-[   16.400465] WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
-[   16.402718] Modules linked in:
-[   16.403504] CPU: 2 PID: 197 Comm: test_sockmap Not tainted 5.17.0-rc6-01987-g84472b436e76 #76
-[   16.404276] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
-[   16.404800] RIP: 0010:sk_stream_kill_queues+0xd3/0xf0
-[   16.405110] Code: 29 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 48 89 df e8 63 db fe ff 8b 83 78 02 00 00 8b b3 30 02 00 00 85 c0 74 d9 0f 0b 85 f6 74 d7 <0f> 0b 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 0f 0b eb 92 66 66 2e 0f 1f
-[   16.406226] RSP: 0018:ffffc90000423d48 EFLAGS: 00010206
-[   16.406545] RAX: 0000000000000000 RBX: ffff888104208000 RCX: 0000000000000000
-[   16.407117] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff8881042081b8
-[   16.407571] RBP: ffff8881042081b8 R08: 0000000000000000 R09: 0000000000000000
-[   16.407995] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
-[   16.408413] R13: ffff888102763000 R14: ffff888101b528e0 R15: ffff888104208130
-[   16.408837] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
-[   16.409318] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   16.409666] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
-[   16.410098] Call Trace:
-[   16.410248]  <TASK>
-[   16.410378]  inet_csk_destroy_sock+0x55/0x110
-[   16.410647]  tcp_rcv_state_process+0xd28/0x1380
-[   16.410934]  ? tcp_v4_do_rcv+0x77/0x2c0
-[   16.411166]  tcp_v4_do_rcv+0x77/0x2c0
-[   16.411388]  __release_sock+0x106/0x130
-[   16.411626]  __tcp_close+0x1a7/0x4e0
-[   16.411844]  tcp_close+0x20/0x70
-[   16.412045]  inet_release+0x3c/0x80
-[   16.412257]  __sock_release+0x3a/0xb0
-[   16.412509]  sock_close+0x14/0x20
-[   16.412770]  __fput+0xa3/0x260
-[   16.413022]  task_work_run+0x59/0xb0
-[   16.413286]  exit_to_user_mode_prepare+0x1b3/0x1c0
-[   16.413665]  syscall_exit_to_user_mode+0x19/0x50
-[   16.414020]  do_syscall_64+0x48/0x90
-[   16.414285]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   16.414659] RIP: 0033:0x7f3728791eb7
-[   16.414916] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
-[   16.416286] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-[   16.416841] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
-[   16.417296] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
-[   16.417723] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
-[   16.418178] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
-[   16.418669] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
-[   16.419148]  </TASK>
-[   16.419283] irq event stamp: 135687
-[   16.419492] hardirqs last  enabled at (135695): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
-[   16.420065] hardirqs last disabled at (135712): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
-[   16.420606] softirqs last  enabled at (135710): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
-[   16.421201] softirqs last disabled at (135703): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
-[   16.421839] ---[ end trace 0000000000000000 ]---
-[   16.422195] ------------[ cut here ]------------
-[   16.422550] WARNING: CPU: 2 PID: 197 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x198/0x1d0
-[   16.423142] Modules linked in:
-[   16.423327] CPU: 2 PID: 197 Comm: test_sockmap Tainted: G        W         5.17.0-rc6-01987-g84472b436e76 #76
-[   16.423908] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
-[   16.424436] RIP: 0010:inet_sock_destruct+0x198/0x1d0
-[   16.424737] Code: ff 49 8b bc 24 68 02 00 00 e8 b4 65 e9 ff 49 8b bc 24 88 00 00 00 5b 41 5c e9 a4 65 e9 ff 41 8b 84 24 30 02 00 00 85 c0 74 ca <0f> 0b eb c6 4c 89 e7 e8 bc 41 e6 ff e9 4d ff ff ff 0f 0b 41 8b 84
-[   16.425858] RSP: 0018:ffffc90000423e40 EFLAGS: 00010206
-[   16.426172] RAX: 0000000000000fc0 RBX: ffff888104208160 RCX: 0000000000000000
-[   16.426593] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff888104208160
-[   16.427024] RBP: ffff888104208000 R08: 0000000000000000 R09: 0000000000000000
-[   16.427485] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
-[   16.428016] R13: ffff8881001ce8e0 R14: ffff888103170c30 R15: 0000000000000000
-[   16.428561] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
-[   16.429207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   16.429638] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
-[   16.430178] Call Trace:
-[   16.430366]  <TASK>
-[   16.430524]  __sk_destruct+0x23/0x220
-[   16.430753]  inet_release+0x3c/0x80
-[   16.430969]  __sock_release+0x3a/0xb0
-[   16.431189]  sock_close+0x14/0x20
-[   16.431388]  __fput+0xa3/0x260
-[   16.431578]  task_work_run+0x59/0xb0
-[   16.431793]  exit_to_user_mode_prepare+0x1b3/0x1c0
-[   16.432085]  syscall_exit_to_user_mode+0x19/0x50
-[   16.432359]  do_syscall_64+0x48/0x90
-[   16.432578]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   16.432877] RIP: 0033:0x7f3728791eb7
-[   16.433099] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
-[   16.434190] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-[   16.434637] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
-[   16.435058] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
-[   16.435476] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
-[   16.435893] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
-[   16.436315] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
-[   16.436741]  </TASK>
-[   16.436876] irq event stamp: 136127
-[   16.437089] hardirqs last  enabled at (136137): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
-[   16.437599] hardirqs last disabled at (136144): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
-[   16.438115] softirqs last  enabled at (135830): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
-[   16.438641] softirqs last disabled at (135817): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
-[   16.439277] ---[ end trace 0000000000000000 ]---
-# 8/ 3  sockmap::txmsg test hanging corks:OK
-# 9/11  sockmap::txmsg test push_data:OK
-#10/17  sockmap::txmsg test pull-data:OK
-#11/ 9  sockmap::txmsg test pop-data:OK
-#12/ 1  sockmap::txmsg test push/pop data:OK
-#13/ 1  sockmap::txmsg test ingress parser:OK
-#14/ 1  sockmap::txmsg test ingress parser2:OK
-#15/ 6 sockhash::txmsg test passthrough:OK
-#16/ 6 sockhash::txmsg test redirect:OK
-#17/ 6 sockhash::txmsg test drop:OK
-#18/ 6 sockhash::txmsg test ingress redirect:OK
-#19/ 7 sockhash::txmsg test skb:OK
-#20/ 8 sockhash::txmsg test apply:OK
-#21/12 sockhash::txmsg test cork:OK
-#22/ 3 sockhash::txmsg test hanging corks:OK
-#23/11 sockhash::txmsg test push_data:OK
-#24/17 sockhash::txmsg test pull-data:OK
-#25/ 9 sockhash::txmsg test pop-data:OK
-#26/ 1 sockhash::txmsg test push/pop data:OK
-#27/ 1 sockhash::txmsg test ingress parser:OK
-#28/ 1 sockhash::txmsg test ingress parser2:OK
-#29/ 6 sockhash:ktls:txmsg test passthrough:OK
-#30/ 6 sockhash:ktls:txmsg test redirect:OK
-#31/ 6 sockhash:ktls:txmsg test drop:OK
-#32/ 6 sockhash:ktls:txmsg test ingress redirect:OK
-#33/ 7 sockhash:ktls:txmsg test skb:OK
-#34/ 8 sockhash:ktls:txmsg test apply:OK
-#35/12 sockhash:ktls:txmsg test cork:OK
-#36/ 3 sockhash:ktls:txmsg test hanging corks:OK
-#37/11 sockhash:ktls:txmsg test push_data:OK
-#38/17 sockhash:ktls:txmsg test pull-data:OK
-#39/ 9 sockhash:ktls:txmsg test pop-data:OK
-#40/ 1 sockhash:ktls:txmsg test push/pop data:OK
-#41/ 1 sockhash:ktls:txmsg test ingress parser:OK
-#42/ 0 sockhash:ktls:txmsg test ingress parser2:OK
-Pass: 42 Fail: 0
-bash-5.1#
-
-No idea why yet. I will need to dig into what is happening.
-
-Wang, can you please take a look as well?
-
-Thanks,
-Jakub
+[1] https://lore.kernel.org/netdev/87v8o5gdw2.fsf@cloudflare.com/
