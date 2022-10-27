@@ -2,191 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04B260F358
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 11:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6ED60F45A
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 12:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbiJ0JMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 05:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        id S234436AbiJ0KDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 06:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235350AbiJ0JLF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 05:11:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E0840E1B
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 02:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1666861840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ziau/u6EFDYrbkB/0U+jFJAy6/VcVCK6XBP9il5+IKo=;
-        b=DR5zuXHf5QYQzPYnaLGXt8eE8oU7NfyR9QZxMvMVwhJuA7xwH/EZj0ElS7pRNsptcEFkeu
-        e8JSGMnmc/lnJg6iqUJEWGsUMIAVat7/2FcnYJhRcSqpDtDF6bH0JFo9+Mm0LJrSPHvsgb
-        MmUgl5J7hAXmZ1k2btfJ5I15MkVZFPM=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-592-VOomaLEzMTqLjow0gw-JEQ-1; Thu, 27 Oct 2022 05:10:39 -0400
-X-MC-Unique: VOomaLEzMTqLjow0gw-JEQ-1
-Received: by mail-lf1-f71.google.com with SMTP id bp18-20020a056512159200b004a2c88a4e1eso349449lfb.3
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 02:10:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ziau/u6EFDYrbkB/0U+jFJAy6/VcVCK6XBP9il5+IKo=;
-        b=2dEs95Fb+08/iINWKrVuFUW1IgzFWlptwaC7S6MeSKQxHPlGSjBm5q0Ai/p443z7LB
-         eqV0nLVigltiScOCGXSdmUnfe/sT3TDk+Oo8IvHej7n8nu1sLWmmiI3R6gj3mdHUiEGY
-         iuOC05C07q2T3EErQ0ijnS07im7NcGHFGc7FqpNV3s4c5GbMSoNne1hHZr+m/MN2++Hj
-         VtI26htHWi411lVDGPebfFIOB3q0UzgeP/q6Yp03EqWMCgUwvSkDbAlvo+n0ybUMUVql
-         qvo7abgDOB8yD8mXYMoZzocz5I6jmlTfVCVoK+004rJYMF6E15dUw2tjQ2IuIeu4aRt5
-         w4JQ==
-X-Gm-Message-State: ACrzQf0umZVpS/Nbwr5ZIg1Nej9f4pIjDKzdk06GBTUvNQ2vlmCk8k/i
-        bbcP9fNvafypsA2LuJ4p1F7YIYlJm4/XS5m0V3tbDARbJWTW6rCwDAxjxECnjLEOk/GYtExWptg
-        BM1ffQEJhz7fSc8pGOU42ZV9H3aW2
-X-Received: by 2002:ac2:47e1:0:b0:4af:5088:9576 with SMTP id b1-20020ac247e1000000b004af50889576mr2998557lfp.468.1666861837591;
-        Thu, 27 Oct 2022 02:10:37 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4fIV6ydQRgmrMVyIU2r9H0oB18YXsVEUdlFYjrQuSfS2ucEUJhllLqj68fs6nzyLA4Vj6RKPmXnDYesOOZKOo=
-X-Received: by 2002:ac2:47e1:0:b0:4af:5088:9576 with SMTP id
- b1-20020ac247e1000000b004af50889576mr2998542lfp.468.1666861837363; Thu, 27
- Oct 2022 02:10:37 -0700 (PDT)
+        with ESMTP id S234997AbiJ0KDO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 06:03:14 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD51D48CAC;
+        Thu, 27 Oct 2022 03:02:59 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Myh3j1T3qzpVxx;
+        Thu, 27 Oct 2022 17:59:29 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 27 Oct 2022 18:02:55 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <yhs@fb.com>, <joe@wand.net.nz>
+Subject: [PATCH net] bpf: Fix memory leaks in __check_func_call
+Date:   Thu, 27 Oct 2022 18:23:33 +0800
+Message-ID: <1666866213-4394-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20221025093458.457089-1-benjamin.tissoires@redhat.com>
- <20221025093458.457089-3-benjamin.tissoires@redhat.com> <20221025225219.i3pi7ewue6xqeig4@macbook-pro-4.dhcp.thefacebook.com>
-In-Reply-To: <20221025225219.i3pi7ewue6xqeig4@macbook-pro-4.dhcp.thefacebook.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 27 Oct 2022 10:11:31 +0100
-Message-ID: <CAO-hwJ+WWO-GhzX-eaoGtF8+5Mw-QOVREWYmtm-VNBF5NGC22g@mail.gmail.com>
-Subject: Re: [PATCH hid v11 02/14] HID: initial BPF implementation
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 11:52 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Oct 25, 2022 at 11:34:46AM +0200, Benjamin Tissoires wrote:
-> >  include/linux/hid.h                           |   5 +
-> >  include/linux/hid_bpf.h                       | 102 +++
-> >  include/uapi/linux/hid_bpf.h                  |  25 +
-> >  tools/include/uapi/linux/hid.h                |  62 ++
-> >  tools/include/uapi/linux/hid_bpf.h            |  25 +
->
-> ...
->
-> > +++ b/include/linux/hid_bpf.h
-> > @@ -0,0 +1,102 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > +
-> > +#ifndef __HID_BPF_H
-> > +#define __HID_BPF_H
-> > +
-> > +#include <linux/spinlock.h>
-> > +#include <uapi/linux/hid.h>
-> > +#include <uapi/linux/hid_bpf.h>
-> > +
-> > +struct hid_device;
-> > +
-> > +/*
-> > + * The following is the HID BPF API.
-> > + *
-> > + * It should be treated as UAPI, so extra care is required
-> > + * when making change to this file.
-> > + */
->
-> I thought at the maintainer summit we discussed that it shouldn't be
-> treated as uapi. There is no need to draw this line right now.
-> If the whole concept turns out to be useful and api is stable
-> then promote it.
+kmemleak reports this issue:
 
-I'd still like to keep the kfunc API explicitly marked as "danger
-zone". I want to let contributors know that changing this part has an
-impact on the existing available bpf programs that are out of the tree
-(the HID firewall for instance might be out of the tree).
+unreferenced object 0xffff88817139d000 (size 2048):
+  comm "test_progs", pid 33246, jiffies 4307381979 (age 45851.820s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000045f075f0>] kmalloc_trace+0x27/0xa0
+    [<0000000098b7c90a>] __check_func_call+0x316/0x1230
+    [<00000000b4c3c403>] check_helper_call+0x172e/0x4700
+    [<00000000aa3875b7>] do_check+0x21d8/0x45e0
+    [<000000001147357b>] do_check_common+0x767/0xaf0
+    [<00000000b5a595b4>] bpf_check+0x43e3/0x5bc0
+    [<0000000011e391b1>] bpf_prog_load+0xf26/0x1940
+    [<0000000007f765c0>] __sys_bpf+0xd2c/0x3650
+    [<00000000839815d6>] __x64_sys_bpf+0x75/0xc0
+    [<00000000946ee250>] do_syscall_64+0x3b/0x90
+    [<0000000000506b7f>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-I'll reword it to not mark it as uapi though.
+The root case here is: In function prepare_func_exit(), the callee is
+not released in the abnormal scenario after "state->curframe--;".
 
->
-> > +++ b/include/uapi/linux/hid_bpf.h
-> > @@ -0,0 +1,25 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +
-> > +#ifndef _UAPI_HID_BPF_H
-> > +#define _UAPI_HID_BPF_H
-> > +
-> > +#include <linux/const.h>
-> > +#include <linux/hid.h>
-> > +
-> > +/**
-> > + * enum hid_bpf_attach_flags - flags used when attaching a HIF-BPF program
-> > + *
-> > + * @HID_BPF_FLAG_NONE: no specific flag is used, the kernel choses where to
-> > + *                     insert the program
-> > + * @HID_BPF_FLAG_INSERT_HEAD: insert the given program before any other program
-> > + *                            currently attached to the device. This doesn't
-> > + *                            guarantee that this program will always be first
-> > + * @HID_BPF_FLAG_MAX: sentinel value, not to be used by the callers
-> > + */
-> > +enum hid_bpf_attach_flags {
-> > +     HID_BPF_FLAG_NONE = 0,
-> > +     HID_BPF_FLAG_INSERT_HEAD = _BITUL(0),
-> > +     HID_BPF_FLAG_MAX,
-> > +};
-> > +
-> > +#endif /* _UAPI_HID_BPF_H */
->
-> Not sure what is the purpose of this uapi file.
-> Since it's enum the progs can get it from vmlinux.h.
+In addition, function __check_func_call() has a similar problem. In
+the abnormal scenario before "state->curframe++;", the callee is alse
+not released.
 
-Good point. It can easily go into the non uapi hid_bpf.h
+Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+Fixes: fd978bf7fd31 ("bpf: Add reference tracking to verifier")
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+---
+ kernel/bpf/verifier.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
->
-> > diff --git a/tools/include/uapi/linux/hid.h b/tools/include/uapi/linux/hid.h
-> > new file mode 100644
-> > index 000000000000..3e63bea3b3e2
-> > --- /dev/null
-> > +++ b/tools/include/uapi/linux/hid.h
-> > @@ -0,0 +1,62 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> > +/*
-> > + *  Copyright (c) 1999 Andreas Gal
-> > + *  Copyright (c) 2000-2001 Vojtech Pavlik
-> > + *  Copyright (c) 2006-2007 Jiri Kosina
-> > + */
-> > +#ifndef _UAPI__HID_H
-> > +#define _UAPI__HID_H
->
-> This is a copy of include/uapi/linux/hid.h ?
-
-Yes it is
-
-> Probably should be a separate commit to make it obvious.
->
-
-I'll need to assess why I needed that. I think it was related to the
-selftests, but now that they are in selftests/hid, I can probably have
-a special include in the Makefile to not have to duplicate the file at
-all.
-
-Thanks for the review :)
-
-Cheers,
-Benjamin
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 014ee09..bff8477 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6736,11 +6736,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 	/* Transfer references to the callee */
+ 	err = copy_reference_state(callee, caller);
+ 	if (err)
+-		return err;
++		goto err;
+ 
+ 	err = set_callee_state_cb(env, caller, callee, *insn_idx);
+ 	if (err)
+-		return err;
++		goto err;
+ 
+ 	clear_caller_saved_regs(env, caller->regs);
+ 
+@@ -6757,6 +6757,10 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		print_verifier_state(env, callee, true);
+ 	}
+ 	return 0;
++
++err:
++	kfree(callee);
++	return err;
+ }
+ 
+ int map_set_for_each_callback_args(struct bpf_verifier_env *env,
+@@ -6954,7 +6958,7 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ 	struct bpf_verifier_state *state = env->cur_state;
+ 	struct bpf_func_state *caller, *callee;
+ 	struct bpf_reg_state *r0;
+-	int err;
++	int ret;
+ 
+ 	callee = state->frame[state->curframe];
+ 	r0 = &callee->regs[BPF_REG_0];
+@@ -6977,11 +6981,13 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ 
+ 		if (r0->type != SCALAR_VALUE) {
+ 			verbose(env, "R0 not a scalar value\n");
+-			return -EACCES;
++			ret = -EACCES;
++			goto out;
+ 		}
+ 		if (!tnum_in(range, r0->var_off)) {
+ 			verbose_invalid_scalar(env, r0, &range, "callback return", "R0");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 	} else {
+ 		/* return to the caller whatever r0 had in the callee */
+@@ -6995,9 +7001,9 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ 	 */
+ 	if (!callee->in_callback_fn) {
+ 		/* Transfer references to the caller */
+-		err = copy_reference_state(caller, callee);
+-		if (err)
+-			return err;
++		ret = copy_reference_state(caller, callee);
++		if (ret)
++			goto out;
+ 	}
+ 
+ 	*insn_idx = callee->callsite + 1;
+@@ -7008,9 +7014,10 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ 		print_verifier_state(env, caller, true);
+ 	}
+ 	/* clear everything in the callee */
++out:
+ 	free_func_state(callee);
+ 	state->frame[state->curframe + 1] = NULL;
+-	return 0;
++	return ret;
+ }
+ 
+ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
+-- 
+1.8.3.1
 
