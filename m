@@ -2,69 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D4360F671
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 13:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C224B60F69E
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 13:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235185AbiJ0Lpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 07:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S235379AbiJ0L62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 07:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234911AbiJ0Lp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 07:45:29 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774C63A162;
-        Thu, 27 Oct 2022 04:45:28 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-36a4b86a0abso11089777b3.7;
-        Thu, 27 Oct 2022 04:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bh53vd22mwF1Y1C5Jt4I2djem762GVNc/l7tAg9eyEM=;
-        b=bv9S8pv9I1H9msl8qSDwehmXqnPXu0X6ihYOMsoWINe+Us3OSqBuJGwKIEWbVx84Gn
-         HmQfTK4wCOUoqDg335RNdDNmBAbmlTC0Fks4Skpy408jiwRh5r4GwT7t5/PXWnmm7Hal
-         OjeEdRGwV4oR36VI9FW04+mb7ZpXafknRt7+aOTcCH1OGiKXbtLO2rC9/u1hCKLiW4I0
-         ZM9PsZXf8+jgo48IhXT0/hh5gOSMT+zsvVspWHypSLS5uQA0bi+PWlO/lrppQmstMIaH
-         0rsICSDec4Fcb/5Z3zz/1iBoI3J8qe3Sf7N+/mgx95dFIlJ2A5Tyl/KtmVFBb1mr/OHT
-         f2BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bh53vd22mwF1Y1C5Jt4I2djem762GVNc/l7tAg9eyEM=;
-        b=NqFlbUe2+g6UuRTEzH8CT4MQpG4MHSj9Qz4UWGHQAeoVFOf5PORhQhrP8DtJDtWKQV
-         EycX73RHtuok11uMNo38uMHWPgh/tdKXT8Q27e7D7atTad2CjdX5hIvZ9WQBfk7lxfrG
-         b4L88m66VXxnAzXFpqEp+8WH5gbxKoi6j3Nf6621bPkhUNqjbi0lvWIWc65ZhvCMr4v6
-         vwEFc4dQdmIEHECt7Fsi5PfuxaWP81UeTTnFBecNaD8IxP+aeYLCs923A1NO79wjcT8X
-         vQP2vMuPr+KzBk00EQxm4L2e7Tjd+sNq/1nY7/BNaAohjyTUO7XcGTrFyBxokRucv/I0
-         tH1Q==
-X-Gm-Message-State: ACrzQf2Awk2k8raMCF+7muJdYpHKaojhn1hqy+QzJFXPkj60wB4XAbLE
-        l9ftaX1cQIqaucycGkXxZQlaWjXj/L5rBNkoOQ==
-X-Google-Smtp-Source: AMsMyM6PRoCD08t/qzrBeZ9nJ4Vu1tfTU1onjr+6nA6hqXDI9oUU/0i8wUwoXBylFGwtGvNAVejztZBoqf4XN2vVdhg=
-X-Received: by 2002:a0d:fa45:0:b0:368:5bc3:8db3 with SMTP id
- k66-20020a0dfa45000000b003685bc38db3mr36207376ywf.104.1666871127627; Thu, 27
- Oct 2022 04:45:27 -0700 (PDT)
+        with ESMTP id S235451AbiJ0L60 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 07:58:26 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537FC625D5;
+        Thu, 27 Oct 2022 04:58:25 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mykhd2chCzHvKN;
+        Thu, 27 Oct 2022 19:58:09 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 27 Oct 2022 19:58:22 +0800
+Message-ID: <20e9ea01-1261-6d03-34c9-9b842298487a@huawei.com>
+Date:   Thu, 27 Oct 2022 19:58:21 +0800
 MIME-Version: 1.0
-References: <CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com>
- <Y1pqWPRmP0M+hcXf@krava>
-In-Reply-To: <Y1pqWPRmP0M+hcXf@krava>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 27 Oct 2022 19:45:16 +0800
-Message-ID: <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
-Subject: Re: WARNING in bpf_bprintf_prepare
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        andrii@kernel.org, ast@kernel.org, bpf <bpf@vger.kernel.org>,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, martin.lau@linux.dev, sdf@google.com,
-        song@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is
+ dropped
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <oss@lmb.io>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
+References: <20221015092448.117563-1-shaozhengchao@huawei.com>
+ <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
+ <d830980c-4a38-5537-b594-bc5fb86b0acd@huawei.com>
+ <CAKH8qBtyfS0Otpugn7_ZiG5APA_WTKOVAe1wsFfyaxF-03X=5w@mail.gmail.com>
+ <87f67a8c-2fb2-9478-adbb-f55c7a7c94f9@huawei.com>
+ <CAKH8qBsOMxVaemF0Oy=vE1V0vKO8ORUcVGB5YANS3HdKOhVjjw@mail.gmail.com>
+ <7ddbf8f4-2b03-223f-4601-add0f7208855@huawei.com>
+ <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <CAKH8qBuKVuRKd+fFiXKTiSpoB8ue4YPw1gM+pkGFKAdgNOcpTg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,109 +61,154 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa <olsajiri@gmail.com> =E4=BA=8E2022=E5=B9=B410=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E5=9B=9B 19:24=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Oct 27, 2022 at 10:27:28AM +0800, Hao Sun wrote:
-> > Hi,
-> >
-> > The following warning can be triggered with the C reproducer in the lin=
-k.
-> > Syzbot also reported this several days ago, Jiri posted a patch that
-> > uses bpf prog `active` field to fix this by 05b24ff9b2cfab (bpf:
-> > Prevent bpf program recursion...) according to syzbot dashboard
-> > (https://syzkaller.appspot.com/bug?id=3D179313fb375161d50a98311a28b8e2f=
-c5f7350f9).
-> > But this warning can still be triggered on 247f34f7b803
-> > (Linux-v6.1-rc2) that already merged the patch, so it seems that this
-> > still is an issue.
-> >
-> > HEAD commit: 247f34f7b803 Linux 6.1-rc2
-> > git tree: upstream
-> > console output: https://pastebin.com/raw/kNw8JCu5
-> > kernel config: https://pastebin.com/raw/sE5QK5HL
-> > C reproducer: https://pastebin.com/raw/X96ASi27
->
-> hi,
-> right, that fix addressed that issue for single bpf program,
-> and it won't prevent if there are multiple programs hook on
-> contention_begin tracepoint and calling bpf_trace_printk,
->
-> I'm not sure we can do something there.. will check
->
-> do you run just the reproducer, or you load the server somehow?
-> I cannot hit the issue so far
->
 
-Hi,
 
-Last email has format issues, resend it here.
+On 2022/10/25 1:13, Stanislav Fomichev wrote:
+> On Sat, Oct 22, 2022 at 4:36 AM shaozhengchao <shaozhengchao@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2022/10/22 2:16, Stanislav Fomichev wrote:
+>>> On Fri, Oct 21, 2022 at 12:25 AM shaozhengchao <shaozhengchao@huawei.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2022/10/21 1:45, Stanislav Fomichev wrote:
+>>>>> On Wed, Oct 19, 2022 at 6:47 PM shaozhengchao <shaozhengchao@huawei.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 2022/10/18 0:36, Stanislav Fomichev wrote:
+>>>>>>> On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
+>>>>>>>>
+>>>>>>>> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
+>>>>>>>> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
+>>>>>>>> So fix it.
+>>>>>>>>
+>>>>>>>> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
+>>>>>>>>
+>>>>>>>> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+>>>>>>>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+>>>>>>>> ---
+>>>>>>>>      net/bpf/test_run.c | 6 +++---
+>>>>>>>>      1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>>>>>>>> index 13d578ce2a09..aa1b49f19ca3 100644
+>>>>>>>> --- a/net/bpf/test_run.c
+>>>>>>>> +++ b/net/bpf/test_run.c
+>>>>>>>> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>>>>>>>>      {
+>>>>>>>>             struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+>>>>>>>>
+>>>>>>>> -       if (!skb->len)
+>>>>>>>> -               return -EINVAL;
+>>>>>>>> -
+>>>>>>>>             if (!__skb)
+>>>>>>>>                     return 0;
+>>>>>>>>
+>>>>>>>> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>>>>>>>>             if (IS_ERR(data))
+>>>>>>>>                     return PTR_ERR(data);
+>>>>>>>>
+>>>>>>>> +       if (size == ETH_HLEN)
+>>>>>>>> +               is_l2 = true;
+>>>>>>>> +
+>>>>>>>
+>>>>>>> Don't think this will work? That is_l2 is there to expose proper l2/l3
+>>>>>>> skb for specific hooks; we can't suddenly start exposing l2 headers to
+>>>>>>> the hooks that don't expect it.
+>>>>>>> Does it make sense to start with a small reproducer that triggers the
+>>>>>>> issue first? We can have a couple of cases for
+>>>>>>> len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
+>>>>>>> redirects to different devices (to trigger dev_is_mac_header_xmit).
+>>>>>>>
+>>>>>>>
+>>>>>> Hi Stanislav:
+>>>>>>            Thank you for your review. Is_l2 is the flag of a specific
+>>>>>> hook. Therefore, do you mean that if skb->len is equal to 0, just
+>>>>>> add the length back?
+>>>>>
+>>>>> Not sure I understand your question. All I'm saying is - you can't
+>>>>> flip that flag arbitrarily. This flag depends on the attach point that
+>>>>> you're running the prog against. Some attach points expect packets
+>>>>> with l2, some expect packets without l2.
+>>>>>
+>>>>> What about starting with a small reproducer? Does it make sense to
+>>>>> create a small selftest that adds net namespace + fq_codel +
+>>>>> bpf_prog_test run and do redirect ingress/egress with len
+>>>>> 0/1...tcphdr? Because I'm not sure I 100% understand whether it's only
+>>>>> len=0 that's problematic or some other combination as well?
+>>>>>
+>>>> yes, only skb->len = 0 will cause null-ptr-deref issue.
+>>>> The following is the process of triggering the problem:
+>>>> enqueue a skb:
+>>>> fq_codel_enqueue()
+>>>>           ...
+>>>>           idx = fq_codel_classify()        --->if idx != 0
+>>>>           flow = &q->flows[idx];
+>>>>           flow_queue_add(flow, skb);       --->add skb to flow[idex]
+>>>>           q->backlogs[idx] += qdisc_pkt_len(skb); --->backlogs = 0
+>>>>           ...
+>>>>           fq_codel_drop()                  --->set sch->limit = 0, always
+>>>> drop packets
+>>>>                   ...
+>>>>                   idx = i                  --->becuase backlogs in every
+>>>> flows is 0, so idx = 0
+>>>>                   ...
+>>>>                   flow = &q->flows[idx];   --->get idx=0 flow
+>>>>                   ...
+>>>>                   dequeue_head()
+>>>>                           skb = flow->head; --->flow->head = NULL
+>>>>                           flow->head = skb->next; --->cause null-ptr-deref
+>>>> So, if skb->len !=0，fq_codel_drop() could get the correct idx, and
+>>>> then skb!=NULL, it will be OK.
+>>>> Maybe, I will fix it in fq_codel.
+>>>
+>>> I think the consensus here is that the stack, in general, doesn't
+>>> expect the packets like this. So there are probably more broken things
+>>> besides fq_codel. Thus, it's better if we remove the ability to
+>>> generate them from the bpf side instead of fixing the individual users
+>>> like fq_codel.
+>>>
+>>>> But, as I know, skb->len = 0 is just invalid packet. I prefer to add the
+>>>> length back, like bellow:
+>>>>           if (is_l2 || !skb->len)
+>>>>                   __skb_push(skb, hh_len);
+>>>> is it OK?
+>>>
+>>> Probably not?
+>>>
+>>> Looking at the original syzkaller report, prog_type is
+>>> BPF_PROG_TYPE_LWT_XMIT which does expect a packet without l2 header.
+>>> Can we do something like:
+>>>
+>>> if (!is_l2 && !skb->len) {
+>>>     // append some dummy byte to the skb ?
+>>> }
+>>>
+>>>
+>> I pad one byte, and test OK.
+>> if (!is_l2 && !skb->len)
+>>       __skb_push(skb, 1);
+>>
+>> Does it look OK to you?
+> 
+> Nope, this will eat a byte out of the l2 header. We need to skb_put
+> and make sure we allocate enough to make that skb_put succeed.
+> 
+> But stepping back a bit: it feels like it's all unnecessary? The only
+> valid use-case of this is probing for the BPF_PROG_TEST_RUN as cilium
+> does. This is mostly about testing, so fixing it in the users seems
+> fair? No real production code is expected to generate these zero-len
+> packets. Or are we concerned that this will leak into stable kernels?
+> 
+> I feel like we are trying to add more complexity here for no apparent reason.
+> 
+I agree with you. users should make sure the correct skb len and
+configurations are passed into kernel. Incorrect configurations should
+be discarded to ensure kernel stability.
 
-I built the kernel with the config in the link, which contains
-=E2=80=9CCONFIG_CMDLINE=3D"earlyprintk=3Dserial net.ifnames=3D0
-sysctl.kernel.hung_task_all_cpu_backtrace=3D1 panic_on_warn=3D1 =E2=80=A6=
-=E2=80=9D, and
-boot the kernel with normal qemu setup and then the warning can be
-triggered by executing the reproducer.
+Lorenz, Can you modify the user-mode test code?
 
-Also, I=E2=80=99m willing to test the proposed patch if any.
-
-Thanks
-Hao
-
-> thanks,
-> jirka
->
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 6 PID: 6850 at kernel/bpf/helpers.c:770
-> > try_get_fmt_tmp_buf kernel/bpf/helpers.c:770 [inline]
-> > WARNING: CPU: 6 PID: 6850 at kernel/bpf/helpers.c:770
-> > bpf_bprintf_prepare+0xf6a/0x1170 kernel/bpf/helpers.c:818
-> > Modules linked in:
-> > CPU: 6 PID: 6850 Comm: a.out Not tainted 6.1.0-rc2-dirty #23
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > 1.13.0-1ubuntu1.1 04/01/2014
-> > RIP: 0010:try_get_fmt_tmp_buf kernel/bpf/helpers.c:770 [inline]
-> > RIP: 0010:bpf_bprintf_prepare+0xf6a/0x1170 kernel/bpf/helpers.c:818
-> > Code: c6 e8 ba 51 00 07 83 c0 01 48 98 48 01 c5 48 89 6c 24 08 e8 b8
-> > 0a eb ff 8d 6b 02 83 44 24 10 01 e9 2d f5 ff ff e8 a6 0a eb ff <0f> 0b
-> > 65 ff 0d 85 bf 7c 7e bf 01 00 00 00 41 bc f0 ff ff ff e8 2d
-> > RSP: 0018:ffffc90015a96c20 EFLAGS: 00010046
-> > RAX: 0000000000000000 RBX: 0000000000000002 RCX: ffff88814f8057c0
-> > RDX: 0000000000000000 RSI: ffff88814f8057c0 RDI: 0000000000000002
-> > RBP: ffffc90015a96d50 R08: ffffffff818681ba R09: 0000000000000003
-> > R10: 0000000000000005 R11: fffffbfff1a25ab2 R12: 0000000000000003
-> > R13: 0000000000000004 R14: ffffc90015a96e08 R15: 0000000000000003
-> > FS:  00007f012f4d2440(0000) GS:ffff8880b9d80000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f012f19ac28 CR3: 0000000148da3000 CR4: 0000000000350ee0
-> > Call Trace:
-> >  <TASK>
-> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
-> >  bpf_trace_printk+0xab/0x420 kernel/trace/bpf_trace.c:376
-> >  bpf_prog_0605f9f479290f07+0x2f/0x33
-> >  bpf_dispatcher_nop_func include/linux/bpf.h:963 [inline]
-> >  __bpf_prog_run include/linux/filter.h:600 [inline]
-> >  bpf_prog_run include/linux/filter.h:607 [inline]
-> >  __bpf_trace_run kernel/trace/bpf_trace.c:2254 [inline]
-> >  bpf_trace_run2+0x14d/0x3d0 kernel/trace/bpf_trace.c:2293
-> >  __bpf_trace_contention_begin+0xb5/0xf0 include/trace/events/lock.h:95
-> >  __traceiter_contention_begin+0x56/0x90 include/trace/events/lock.h:95
-> >  trace_contention_begin include/trace/events/lock.h:95 [inline]
-> >  __pv_queued_spin_lock_slowpath+0x542/0xff0 kernel/locking/qspinlock.c:=
-405
-> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:591 [inli=
-ne]
-> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
-> >  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
-> >  do_raw_spin_lock+0x204/0x2d0 kernel/locking/spinlock_debug.c:115
-> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
-> >  _raw_spin_lock_irqsave+0x41/0x50 kernel/locking/spinlock.c:162
-> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
-> >  bpf_trace_printk+0xcf/0x420 kernel/trace/bpf_trace.c:376
-> >  </TASK>
-> >
-> > Regards
-> > Hao Sun
+Zhengchao Shao
