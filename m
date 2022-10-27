@@ -2,93 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D827160EFF4
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 08:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DB560F31E
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 11:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbiJ0GP4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 02:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S234771AbiJ0JB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 05:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbiJ0GPz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 02:15:55 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD44896A21
-        for <bpf@vger.kernel.org>; Wed, 26 Oct 2022 23:15:52 -0700 (PDT)
-Message-ID: <41284964-123d-704b-2802-24a857a7a989@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1666851350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8A4C5fIQt0T1/cCrCT+ThtlUP69IMrpoZa19Pc5KmfU=;
-        b=S1Mue87iNTyhRClbtu5azl2dkfDeCtqoMoPnxQlHHxxstdBqDHB2qJnN7zwX7jsDBtAr7T
-        uw7j6OoMg0WYsrIirztzaRN3Ep0KuF+ZW/z001w2LVySLoQr80jo1FA3QMatS3y6FwVeXD
-        froHcagpt5JwAn4xMpegpXRlk2jxJCk=
-Date:   Wed, 26 Oct 2022 23:15:48 -0700
+        with ESMTP id S235003AbiJ0JBj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 05:01:39 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659E31EADC;
+        Thu, 27 Oct 2022 02:01:35 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 5029F320093C;
+        Thu, 27 Oct 2022 05:01:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 27 Oct 2022 05:01:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1666861291; x=1666947691; bh=rMDXDmInnn
+        n3apmcgfz7oqvT7y5En/5bpNpI3tjFcBQ=; b=wXqoMDIaQ1UFf6fGuUd9LAeJDl
+        YpS05zuNqVB6kZVvte3cRjAlzU+gGlXDNS5Fqeds2XThPZE2/oKoQjB3N+1siaz7
+        lMyEGp66RSefYL8f9xbhMXgZIGHjpO3LSemwLdcy2NawTu1mzAowCPj4XDFZehNi
+        lfr6vzT3aUO28BVF3HLtewQ5V3TscQtXpDPoKuieqB+4zsyMycwduF6SYXBytobz
+        GMG6Hk+oN3u0Sp0bHg3ly/HG2U5dhDrFPa4bBdFKJh0sGkE+E/HzOMoeO2oBqVFe
+        ddFYMPi/QsUEmXVB5KSEt4KKUzi8pAOHTd3C5yXLDRdUIWiw8yL1td6BgAng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1666861291; x=1666947691; bh=rMDXDmInnnn3apmcgfz7oqvT7y5E
+        n/5bpNpI3tjFcBQ=; b=M+iQ67tfFjJVqEE2ZgCcG+WgT0a0PFxLRngshfmWffB9
+        0coNPYe+y04ug901LzALqceDsUV0Fo7zBz3py6Ba41844rFdEAHViKcCq6TDFRZZ
+        RpNzm3Vdbb4229tMFl2dYotwpPnB72VmXOxnV6g/K+sK3cGcFrzVqQ/bS5Q28j9x
+        UG8rU1q0NpvnPfEg+CCNDVb8C2V4dx2RrHKWCdJOiW/YrYmRt8bcWb1Yr8LbsYkd
+        BLiyASe0c9JL/itNRuT2+0Go43+yh6TSGWiY+jcQXhjoJTSns7mo8rAp2Cv7I1Mu
+        BiI9E47oGLr69mTzcv6mqE5ucvS+1+CRoQkbcK8J+w==
+X-ME-Sender: <xms:60haY-dDDZ4IZAyaYupe94erqRmxWKsHoNeR2uiX7jENJulqqqMvwQ>
+    <xme:60haY4OPkWlc24CM5OetM6l8jlT-srIdbE7mIUwvMR8_wG0V8MH-Hko__ZnVKEIsM
+    nRoZQye-2EntgMAjg>
+X-ME-Received: <xmr:60haY_gkDpi3AydHTSefzcnMXGU0RgjtYaR1lkj4UbExzHlQwU_-_cn157TZl-GqtLqTmz6hRdaE8BG3aLa7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrtdeggddtlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeevuddugeeihfdtffehgffgudeggeegheetgfevhfekkeeileeu
+    ieejleekiedvgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:60haY7_5v9wO0K5Oom2yTqdbZGSh7EgY8a6bFJzhvP1n6GTk6enSlQ>
+    <xmx:60haY6u0dpIVFBqtT2mezalXDVSp5LG3sLEtlvoLulQ83KMX_MmYGA>
+    <xmx:60haYyErZ1s219j6ED6oB14URiYiWewyVmAVNJCr6tHbYf2wWrD0gg>
+    <xmx:60haY_O_wYGakplMWRt2ZzvQ_W1J-UjJnPBu3ER3K5DoV4ygs2yVnA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 27 Oct 2022 05:01:26 -0400 (EDT)
+Date:   Thu, 27 Oct 2022 03:01:32 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joe Stringer <joe@cilium.io>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
+ tc BPF programs
+Message-ID: <20221027090132.s6fsqeo3z4s3vphj@k2>
+References: <875ygvemau.fsf@toke.dk>
+ <Y0BaBUWeTj18V5Xp@google.com>
+ <87tu4fczyv.fsf@toke.dk>
+ <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
+ <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net>
+ <CAADnVQLpcLWrL-URhRgqCQa6XRZzib4BorZ2QKpPC+Uw_JNW=Q@mail.gmail.com>
+ <87sfjysfxt.fsf@toke.dk>
+ <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
+ <CAEf4BzbFawYvHBWZEh2RN+YMv6r2kEiVNXFVZqXRH1eWK+u_UA@mail.gmail.com>
+ <CAADnVQLyff07uCCj6SaA0=DQ1FsKsgpP01+sptWiTYSVoam=ag@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [Question]: BPF_CGROUP_{GET,SET}SOCKOPT handling when optlen >
- PAGE_SIZE
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf <bpf@vger.kernel.org>
-References: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
- <CAKH8qBu7OXptKF46SQSEfueKXRUkBxix3K0qmucgREP4h_rQJQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBu7OXptKF46SQSEfueKXRUkBxix3K0qmucgREP4h_rQJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLyff07uCCj6SaA0=DQ1FsKsgpP01+sptWiTYSVoam=ag@mail.gmail.com>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/26/22 7:03 PM, Stanislav Fomichev wrote:
-> On Wed, Oct 26, 2022 at 6:14 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> The cgroup-bpf {get,set}sockopt prog is useful to change the optname behavior.
->> The bpf prog usually just handles a few specific optnames and ignores most
->> others.  For the optnames that it ignores, it usually does not need to change
->> the optlen.  The exception is when optlen > PAGE_SIZE (or optval_end - optval).
->> The bpf prog needs to set the optlen to 0 for this case or else the kernel will
->> return -EFAULT to the userspace.  It is usually not what the bpf prog wants
->> because the bpf prog only expects error returning to userspace when it has
->> explicitly 'return 0;' or used bpf_set_retval().  If a bpf prog always changes
->> optlen for optnames that it does not care to 0,  it may risk if the latter bpf
->> prog in the same cgroup may want to change/look-at it.
->>
->> Would like to explore if there is an easier way for the bpf prog to handle it.
->> eg. does it make sense to track if the bpf prog has changed the ctx->optlen
->> before returning -EFAULT to the user space when ctx.optlen > max_optlen?
+Hi Alexei,
+
+On Fri, Oct 14, 2022 at 08:38:52AM -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 13, 2022 at 11:30 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+
+[...]
+
+> > No one proposed a slight variation on what Daniel was proposing with
+> > prios that might work just as well. So for completeness, what if
+> > instead of specifying 0 or explicit prio, we allow specifying either:
+> >   - explicit prio, and if that prio is taken -- fail
+> >   - min_prio, and kernel will find smallest untaken prio >= min_prio;
+> > we can also define that min_prio=-1 means append as the very last one.
+> >
+> > So if someone needs to be the very first -- explicitly request prio=1.
+> > If wants to be last: prio=0, min_prio=-1. If we want to observe, we
+> > can do something like min_prio=50 to leave a bunch of slots free for
+> > some other programs for which exact order matters.
 > 
-> Good point on chaining being broken because of this requirement :-/
+> Daniel, was suggesting more or less the same thing.
+> My point is that prio is an unnecessary concept and uapi
+> will be stuck with it. Including query interface
+> and bpftool printing it.
+
+I apologize if I'm piling onto the bikeshedding, but I've been working a
+lot more with TC bpf lately so I thought I'd offer some thoughts.
+
+I quite like the intent of this patchset; it'll help simply using TC bpf
+greatly. I also think what Andrii is suggesting makes a lot of sense. My
+biggest gripe with TC priorities is that:
+
+1. "Priority" is a rather arbitrary concept and hard to come up with
+values for.
+
+2. The default replace-on-collision semantic (IIRC) is error prone as
+evidenced by this patch's motivation.
+
+My suggestion here is to rename "priority" -> "position". Maybe it's
+just me but I think "priority" is too vague of a concept whereas a
+0-indexed "position" is rather unambiguous.
+
 > 
-> With tracking, we need to be careful, because the following situation
-> might be problematic:
-> Suppose setsockopt is larger than 4k, the program can rewrite some
-> byte in the first 4k, not touch optlen and expect this to work.
+> > This whole before/after FD interface seems a bit hypothetical as well,
+> > tbh.
+> 
+> The fd approach is not better. It's not more flexible.
+> That was not the point.
+> The point is that fd does not add stuff to uapi that
+> bpftool has to print and later the user has to somehow interpret.
+> prio is that magic number that users would have to understand,
+> but for them it's meaningless. The users want to see the order
+> of progs on query and select the order on attach.
 
-If the bpf prog rewrites the first 4k, it must change the ctx.optlen to get it 
-work.  Otherwise, the kernel will return -EFAULT because the ctx.optlen is 
-larger than the max_optlen (or optval_end - optval).
+While I appreciate how the FD based approach leaves less confusing
+values for bpftool to dump, I see a small semantic ambiguity with it:
 
-> Currently, optlen=0 explicitly means "ignore whatever is in the bpf
-> buffer and use the original one" > If we can have a tracking that catches situations like this - we
-> should be able to drop that optlen=0 requirement.
-> IIRC, that's the only tricky part.
+For example, say we start with a single prog, A. Then add B as
+"after-A".  Then add C as "before-B". It's unclear what'll happen.
+Either you invalidate B's guarantees or you return an error. If you
+invalidate, that's unfortunate. If you error, how does userspace retry?
+You'd have to express all the existing relationships to the user thru
+through bpftool or something. Whereas with Andrii's proposal it's
+unambiguous.
 
-Ah, I meant, in __cgroup_bpf_run_filter_setsockopt, use "!ctx.optlen_changed && 
-ctx.optlen > max_optlen" test to imply "ignore whatever is in the bpf
-buffer and use the original one".  Add 'bool optlen_changed' to 'struct 
-bpf_sockopt_kern' and set ctx.optlen_changed to true in 
-cg_sockopt_convert_ctx_access() whenever there is BPF_WRITE to ctx.optlen. 
-Would it work or may be I am still missing something in the writing first 4k 
-case above?
+[...]
 
-
+Thanks,
+Daniel
