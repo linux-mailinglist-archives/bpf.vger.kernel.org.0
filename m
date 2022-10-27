@@ -2,70 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D7F610259
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436E7610263
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236551AbiJ0UFy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 16:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
+        id S236851AbiJ0UKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 16:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235578AbiJ0UFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 16:05:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3297495EC;
-        Thu, 27 Oct 2022 13:05:50 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bj12so7726561ejb.13;
-        Thu, 27 Oct 2022 13:05:50 -0700 (PDT)
+        with ESMTP id S236819AbiJ0UKM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 16:10:12 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609132CC9D;
+        Thu, 27 Oct 2022 13:10:11 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id sc25so7796532ejc.12;
+        Thu, 27 Oct 2022 13:10:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/YD2QYJpySAIoPiLoDb5zCS/pnGBeAeTfq4t8+VFNY4=;
-        b=CX/54vzaQ2uX5sLKJoCdzNh13Ky9s+epPtojrrcphlkJZ3VU1xNbZL8Up1Xk4+NzCs
-         APn5kPCCOTwLJ/VDvvKt0bl8Ku7HCQOS4j/K/kWq0V/xDZ6hOzWMUnVWSn1QuzUX1uIW
-         nZ3nTHseZRbxPOaAtIw5sdHLOeCUBGb5VVqZAmcj8zA0Tszz8XPTvT2BhEpOnqs16k+s
-         QXgGs0wEK+47a8rl98sE1p9ZMglOnwp2bKhB2zpYYlR9BL9hK8YofwU6ab+bds0m+M3t
-         oGGCYS0KICAabexHzICBGKyWCJ7g39QcNiPcu8GhJvezdn0tJJ95ldmZAJD3KsfxE+90
-         R5AQ==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q7qkzsPf4Wsy3Ys2sVKTyt+Eo/JlciSvXArZDH9fmiY=;
+        b=l5gaCDVVhGQ8Y5EquY6I9Ojcw/dlIjSsABW1ecEFamptjjW1cnav6ZSYH/ssMqYhWv
+         8U8+rS9UiOElwdoXBq7KsG/SJjl8f+d8dm4xqnMGE/Ynda08atIgTGlQltUIh0oirbN8
+         /XaQkWc6PrcPeSELQyQI3cEOseDU2kR2rPpMM/bKOGeyXVroRwfrNZqJMAtOOHLB5RAd
+         YLZoao0V0CAVDpZVthi/e+udKyu7ABs7AAFQB8lRpefedXFSfA2MxFB9TlweOEQJbYVp
+         Hz7jXwbUzorSi1x9gqoaO/VZieBlWSlsgaWKwdEojYHzY2RCZBqU1hm86+0nj8/j3zbz
+         gS5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/YD2QYJpySAIoPiLoDb5zCS/pnGBeAeTfq4t8+VFNY4=;
-        b=QOLuCY4JR4P1Koi3GJ2Yx+RriN21YbnZly++ZKn8X3HCrnBnWLfO8N5zKlMhtfaPpt
-         f7sATs7m4hL8wMu4acKPeR/iBw7XrZt5JH81SapKenYQqwLdw7LtF2eAQhb/f+HgzOIo
-         zyRLwS/kz3i0DMkk1gVqW0IBG96A70sXamw6QAqsWMj9IID1fFHni+ZQoIt5T4n9XX72
-         VO9X57GLt5f8Pg6orX6BozNagwZhXAeeQHHb6uG3G+Q7j6vcpvSH3cGjHGofkz0m6I76
-         If+8OgmZCWDLxqo+9I6efVqPNj0GD/fs03J2CrpIysVapxbyADFCOXybccrLHdyMgT05
-         V+DA==
-X-Gm-Message-State: ACrzQf1pfGyiZYO0yhx4U4yX42ogVHJeN0imajZv+zeD9lELuhgZi7IS
-        vgnbCShWGMGCqvyYW3Kr/SCmalHwZjNGgBTawgs=
-X-Google-Smtp-Source: AMsMyM6LqaomoQM1pYg81YdxKGY3vyTHwx1Ou1Ga7ygkvHfJg8B1QShrldJhL877qNSyWkHFTRmHzexD+GzuIU5kIdE=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr42209764ejn.302.1666901149421; Thu, 27
- Oct 2022 13:05:49 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q7qkzsPf4Wsy3Ys2sVKTyt+Eo/JlciSvXArZDH9fmiY=;
+        b=qsD8Cd6Uh4tQoO0zfi2AL/MgxCsIqn4C7bFDBHHviKkprczbOMc2NfCQntl66VB1dX
+         1Nw/e6vTAjxTIreW3YkJtlFvrxNBgaonrhvdmo+KqUl+BUeXGBvZOATXX/H6fDyOtDlB
+         XS1cKCW8BjsH4zTn+pnu4auqk6dZHMXs5YUOIz/uXKW/lT5w5OhN3TLvGEx+HpsoAOVd
+         yP2GGMG0qAUiNKbV9nihtXhC1y/sKlfCodUMJ71RJ3qWuJgVLB966Sfwy3tE0EwDTkyy
+         1lb120eUjO31midfyfaL5oz9RmfdgjYXAYt4z1d2hvasBnkscIYQBwb7m3vDVCvB53W2
+         BJCQ==
+X-Gm-Message-State: ACrzQf2ymaKt2B1i8rul0enc0sB2fGwaCRogxC4LSG+sDfHNkSNGiPj7
+        4S2U8IGddyno24PtHwkGOx9VjGeO0F3YiSfQnIs=
+X-Google-Smtp-Source: AMsMyM7TYEM2Cx88wDUSsE2LXMvlu6hNz/jx1bxb/M96kqza4kf5VyNmt9ecjeFZcJqrhMEmBQsLVGf9yf27k2D2RhE=
+X-Received: by 2002:a17:907:2d91:b0:78d:8747:71b4 with SMTP id
+ gt17-20020a1709072d9100b0078d874771b4mr43697599ejc.545.1666901409929; Thu, 27
+ Oct 2022 13:10:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221027200019.4106375-1-sdf@google.com> <20221027200019.4106375-4-sdf@google.com>
-In-Reply-To: <20221027200019.4106375-4-sdf@google.com>
+References: <tencent_EE3E19F80ACD66955D26A878BC768CFA210A@qq.com>
+In-Reply-To: <tencent_EE3E19F80ACD66955D26A878BC768CFA210A@qq.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 13:05:36 -0700
-Message-ID: <CAEf4BzbgjOaxVFAfnrRyPP0_1Rh-gC3er4tKLkfr=OPb_x-ueA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/5] libbpf: Pass prog_ifindex via bpf_object_open_opts
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
+Date:   Thu, 27 Oct 2022 13:09:57 -0700
+Message-ID: <CAEf4Bzbq0PSsc6xCGSF=Af-pcysjt8Lv76-4N65AJMpXOOpOcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,68 +81,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 1:00 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Thu, Oct 27, 2022 at 4:34 AM Rong Tao <rtoax@foxmail.com> wrote:
 >
-> Allow passing prog_ifindex to BPF_PROG_LOAD. This patch is
-> not XDP metadata specific but it's here because we (ab)use
-> prog_ifindex as "target metadata" device during loading.
-> We can figure out proper UAPI story if we decide to go forward
-> with the kfunc approach.
+> From: Rong Tao <rongtao@cestc.cn>
 >
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> Cc: Maryam Tahhan <mtahhan@redhat.com>
-> Cc: xdp-hints@xdp-project.net
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Compile samples/bpf, error:
+> $ cd samples/bpf
+> $ make
+> ...
+> In function =E2=80=98__enable_controllers=E2=80=99:
+> samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:80:17: war=
+ning: =E2=80=98strncpy=E2=80=99 specified bound 4097 equals destination siz=
+e [-Wstringop-truncation]
+>    80 |                 strncpy(enable, controllers, sizeof(enable));
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 > ---
->  tools/lib/bpf/libbpf.c | 1 +
->  tools/lib/bpf/libbpf.h | 6 +++++-
->  2 files changed, 6 insertions(+), 1 deletion(-)
+>  tools/testing/selftests/bpf/cgroup_helpers.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 5d7819edf074..61bc37006fe4 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -7190,6 +7190,7 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
->
->                 prog->type = prog->sec_def->prog_type;
->                 prog->expected_attach_type = prog->sec_def->expected_attach_type;
-> +               prog->prog_ifindex = opts->prog_ifindex;
->
->                 /* sec_def can have custom callback which should be called
->                  * after bpf_program is initialized to adjust its properties
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index eee883f007f9..4a40b7623099 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -170,9 +170,13 @@ struct bpf_object_open_opts {
->          */
->         __u32 kernel_log_level;
->
-> +       /* Optional ifindex of netdev for offload purposes.
-> +        */
-> +       int prog_ifindex;
-> +
+> diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing=
+/selftests/bpf/cgroup_helpers.c
+> index e914cc45b766..a70e873b267e 100644
+> --- a/tools/testing/selftests/bpf/cgroup_helpers.c
+> +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+> @@ -77,7 +77,7 @@ static int __enable_controllers(const char *cgroup_path=
+, const char *controllers
+>                 enable[len] =3D 0;
+>                 close(fd);
+>         } else {
+> -               strncpy(enable, controllers, sizeof(enable));
+> +               strncpy(enable, controllers, sizeof(enable) - 1);
 
-nope, don't do that, open_opts are for entire object, while this is
-per-program thing
+enable is not initialized, so we might end up with non-zero-terminated
+string. Let's enable[0] =3D '\0'; at the beginning and then strncat()
+here?
 
-So bpf_program__set_ifindex() setter would be more appropriate
-
-
->         size_t :0;
->  };
-> -#define bpf_object_open_opts__last_field kernel_log_level
-> +#define bpf_object_open_opts__last_field prog_ifindex
+>         }
 >
->  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
->
+>         snprintf(path, sizeof(path), "%s/cgroup.subtree_control", cgroup_=
+path);
 > --
-> 2.38.1.273.g43a17bfeac-goog
+> 2.31.1
 >
