@@ -2,193 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07146100BC
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD776100C7
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 20:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbiJ0SxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 14:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S235964AbiJ0Sza (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 14:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbiJ0SxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 14:53:09 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3245C959
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 11:53:07 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id sc25so7242993ejc.12
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 11:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gxPWf9T53DPidzg2Zg60KxPnc7jcfJR2RskTbpXHtF4=;
-        b=Bpb4uYAKKqThWWUryK201jZTd4dh1C/jc0DvEy2oOTfcp1Po5Oi2dD6Bl2OpBNFFsy
-         Evpc1OeMbxxQN1DISlx8sRHXHhUGqqm9cjzYeHPFbmH8sJ9liH2wkLLmw8GIhGFSaQgI
-         3N4VXhjJ12A/vFubQmgUv4crdp9pG+Z/qmpeynwPejDF32u2/xOQSnbLCWYxWpmhHON7
-         Bri/panG1mjjDQeXEZPTbjmMC1HDbpbPQbOZ8VqGtSR1tNJ4F8nazH7CFBleCl/RomEc
-         mFFD+n8q5Msz4w3oICn/v958GwYEQRXadUAEtQlGXpRmFnCtaUsm/cj0HaJ4pdXbPXvI
-         hzqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gxPWf9T53DPidzg2Zg60KxPnc7jcfJR2RskTbpXHtF4=;
-        b=DRmJZmgZaFYCZPMNrfnAEFobwm9GPJHWJeaqbkdSrULtG0T3aIODs0i6bsI50JcEIS
-         CKhOO47BvRZRNw7UuwM6Ajovt21oFrizmbWJlt/4BuCcMyvLHxLktkyFllQtdwrEM+OG
-         oq2rFFeAA02Zkb5xcPFTDj2crxMZDzw283M/yiQxZZ+Yt40QafmZBuS6jcugItmLYWsY
-         c/eckr0eRf3Thn4yxTx/aXOOwMsR8CRPFVFC63P/Suy141U+8eNPylJ+Q/rmr+Mz197Q
-         naaCwp0FySDzGvU7JCV9U2KpYDk3UZMV6OTJxyvZ3pc9TEUwq/BZE0su41IN2oxL5TZq
-         CQLA==
-X-Gm-Message-State: ACrzQf0AgIE3djfCjBBl9JbY40uxgyLcZuzNizClnX1nuezgS4n/L3Ld
-        IJLOOk78K/mG9oQzhyfqTw+0rL2AVAKjKDPsQdc=
-X-Google-Smtp-Source: AMsMyM5dclv60eg0FhxlpKc7tQ/HBSyf8hL1b3fH6o9R1DiSyrOlMDzhw/ggfw3QeKUs1ecWHbK2eXxFTAKPcFBTt6M=
-X-Received: by 2002:a17:907:75e6:b0:7a1:848:20cb with SMTP id
- jz6-20020a17090775e600b007a1084820cbmr26278525ejc.745.1666896786306; Thu, 27
- Oct 2022 11:53:06 -0700 (PDT)
+        with ESMTP id S234815AbiJ0Sz2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 14:55:28 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029364317D
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 11:55:25 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29RIKEhO031845;
+        Thu, 27 Oct 2022 11:55:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : from : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=Ow1Me87FGYJgXnJ9t8jvaW9GwffCDNA2IjWe2q0N9Xo=;
+ b=YjxUgF2vkLZUzgRrIHmAfrtRgtl+BT+zadUkRrX3dlifan2j5UHnhEY4ka9xXWjRdquD
+ x+R3cbQtFylhRnQ65uTefQA2hI/6kiHVUyvw2wcRvANsqxJCpBxY1q5Zu1ftVuE/s/Xf
+ xeNafRwgOqvOuyEygC7xksHcujdldgIaWi/oqpgPrOTlRSqmSikg7XxvyyDyDc3Xxn5q
+ 4dbtQqwOztAGxIkl1v/tAlSrWtFu2D+ADXxp28xAZvUsKPdhRUcEPuqyiNiM5Ds8O6X0
+ QSpQArexpngHaqz84fnFOy9aw1Qqn6QaQhQuOccMa1C9m2jdeqiJ+E+YvzW1OkP1gww9 Dw== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kfahwvad6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Oct 2022 11:55:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b3NK3awhi++geGsqIe1pec6DQhlvxE8RmkwNBcybnceZ2Fl3O3ksxhgHjRh79CrCX8jPedlCmEEguP6wQVCZUV4o2xGBU2YtYYRxFkZK5GJZCTknhshBMu9d2hlbbj8m4rm607vSliC/n9mxFPeq0kd2oAJD2xkjNbOi+0TY2t7ra+6xO5jhloEvq8+qaAM3cQpuNt5LL8Xj5WSZCOkL9WOt6+4neTXeawf0XlFnXd70G3Loy5e0ObWaOMbPn+buwhfH7+FI+XsNlZeRkhqk4w1PxD323Xc/AotxWBW5hfS1sE4wh/kQNy6jyjqWD9pXKhrAtkukGQq2b+tx1sex0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ow1Me87FGYJgXnJ9t8jvaW9GwffCDNA2IjWe2q0N9Xo=;
+ b=g70NhmQv/2+h9OhvW8e1SbKPlhwJxjqkeWOvIgoN9mzBa0wg7E97r5UcgzgdG+J6hcTgY+MY7YqSMj4k83H3CHoED3KaftN9Z9NrS+i5odNPj/StSnybYc3Jj68tY90il2G8NOaz9tGqJD/f9n3PHoOBlXj/UXw7q5Q1g3xUSQJdrdcAAjZQpVoYN7XS7rclSG5ooAEtCiZmWRlh5bCrUtneqIdFfIrM4OmQqmoZA37JBGQVhMgQof6SeFluJH5305UHDvMCCegiLdYmVn5avVyluEH68EddZEhQpPLojZ25NdrrZzzV4w73DEsx2yhIixFeqDzFrClGx2XPVSYYGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MW4PR15MB5181.namprd15.prod.outlook.com (2603:10b6:303:185::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.21; Thu, 27 Oct
+ 2022 18:55:05 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e25d:b529:7556:1e26]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e25d:b529:7556:1e26%5]) with mapi id 15.20.5746.028; Thu, 27 Oct 2022
+ 18:55:05 +0000
+Message-ID: <6e57811b-229a-e4f8-ca7e-fe826cde4be4@meta.com>
+Date:   Thu, 27 Oct 2022 11:55:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [RFC bpf-next 09/12] kbuild: Header guards for types from
+ include/uapi/*.h in kernel BTF
+Content-Language: en-US
+From:   Yonghong Song <yhs@meta.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, arnaldo.melo@gmail.com
+References: <20221025222802.2295103-1-eddyz87@gmail.com>
+ <20221025222802.2295103-10-eddyz87@gmail.com>
+ <dacaeb37-c55a-a328-61f2-77324efbc822@meta.com>
+In-Reply-To: <dacaeb37-c55a-a328-61f2-77324efbc822@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0064.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20220924133620.4147153-1-houtao@huaweicloud.com> <a4eaa33b-016e-b880-cfe6-16ccef7d2141@dotat.at>
-In-Reply-To: <a4eaa33b-016e-b880-cfe6-16ccef7d2141@dotat.at>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 11:52:54 -0700
-Message-ID: <CAEf4Bzaj_fUp7z=pERqX5rXrDVSORSXn3m64KKs78MoNy2jNPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
-To:     Tony Finch <dot@dotat.at>
-Cc:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW4PR15MB5181:EE_
+X-MS-Office365-Filtering-Correlation-Id: 956f0202-50b0-467a-b041-08dab84cc2f7
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zo6ZeiCWF8HjzP/wSl10HMhfICSJYO8l+znO1/e2T/WDo4lt8ywAlNvZeyGd6689wTFYzzJFkS4DdcOYVst/OZRThJ6JLH2xVv3hUcRL1KxiQs+Q5Z0cGNqc8l/qrrOHUaVrFiU01IgxR2s+RcippAIVHYYO3Y/JMQdz0DqpZBFV8/sd/AThr4aXIpZ+1qVWTvQLeH/u6OchX43tLZ1My4wVH0zu+8moYjrAyadI0CSEiWPKeRrFJgpo/EaHcHsJUPMVX70RHpQDvIfSUqJ1AP1YlQs+wlsXeS72KYjSD7Jkl0Mj/ySdJECVIeCzflLWPLx3ylV7qYQNIsNxJMQ5AZP05K5mZV6nlsHm3/C88gM6hVh337vAqyDpgjQk2IRV3CKyoT+iVkqTH15yM5lNUgByMUZgR4sx108EJbfVNrGC6imSVQq5Z1+mutbagHNhUVOhXaY0nYcbbvPiLjKX5HvLrBLuBxDeaz6CTJE0Q3BGiRagtkn5kGCDwQrBYYN0bHKx1spaFNm4Je1TFHDyof6V/3mZwGD3s8OZQ9Ytx1Q4fOAeEkT8lg71uT1xeKnTbNAB0sQ0tYmEy8xODG18ajbgLeJzdBwzTXnjl/QLms5ZzEH4/u4ujSVhM2MXruIj2EF7YWYP/HHTcsfz5fznvAt7IjI/1RFnSIYFFaJnRu9rkHWkxST/DCxN4TEMI6Gfs8+mJIP1pJsgPk+egg6QrJXCLL2Pu64XDOI6CUOyQ6EZyul1JNBby8+HK70svLZpqQCXNF4qtZyDSsQxqzcx2vju4Z0hhHl8tuFqTUEMkcg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(346002)(136003)(366004)(396003)(451199015)(31686004)(41300700001)(4326008)(2616005)(316002)(66556008)(5660300002)(186003)(66946007)(2906002)(66476007)(8676002)(6506007)(86362001)(478600001)(53546011)(6486002)(8936002)(31696002)(36756003)(6512007)(83380400001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWN4Lzc3bW5oZlFCbjdyUXN1Q3pjSFd2K3NIdzU5bU92TGVURDcwakdna251?=
+ =?utf-8?B?RXdQdjV4SU5ZbHM4U1JsQWpIeDh2WnR6TjdoYWhxdmNXd3lEd3A5bE9lUno4?=
+ =?utf-8?B?cGYwcHlVZ2FEM1hwQ3JodmtLck9XWEZackhQbVZPcno5K1JsaXpGYU5UMGVo?=
+ =?utf-8?B?eVE4Q3o5NUZWM01pRmgxdjJybGhWb1VhcFJMT0FTOHdBR2kwQy8xU0sycXV0?=
+ =?utf-8?B?TDI2NVQvT3pSWGdNc1lBc0JlVGhreHN0cUw2SGpqSnptT1dJRkxlRjRpdmZI?=
+ =?utf-8?B?WnVxY21Vem9FMDVYZUtXblRyOGw1RG1MZ2ZWNStkVGNkblF0RTRxRUFMVnBz?=
+ =?utf-8?B?WVJvNGVnZlp4bThtQTAyRGZ0N0ZZOGdVTzY4eDR1Uk5DNzJqNDhMZ0NLOGxJ?=
+ =?utf-8?B?MzBPME1JK1ZRVng0M2FkN2pMdkVpdVUrNTVaUGtSZ1pvSWxDOUZUcWJMTy95?=
+ =?utf-8?B?Q0NwejZ4Q2FyR0FoODNHa09tL3p1R0NjbXV1ZGxBdUh1WlFUamdVbzM4eUdS?=
+ =?utf-8?B?SGpXSFJqZ0lQRzR2eG81UWJiRDM0TmJ1dkJyZ0ZTOEFGM1JCWERhcGR6c1Ir?=
+ =?utf-8?B?aVhzS1gxbFVVMWhGOWp6ZVkzQWkxZmIrVDRJRXZZQndIUmROK2JWQWdIS3dB?=
+ =?utf-8?B?d0dWZnpTcERaMk1YQTIyL3hRZWRKY0ZZMWpjTDNRQjE4WFVidndBeC8rUFVa?=
+ =?utf-8?B?NENSbjN2eDdlSllLOFpCd3QwVXA2N3RFWmg5NVV0MGxMRkhGaTVFWGpnclE2?=
+ =?utf-8?B?aC9FbTVybC9BZDBTK0tHc3ptajI5Q1NtWXFMbU93WHhTSGJ4SjV4TzdUQXRx?=
+ =?utf-8?B?TGNyYytEVmFBUDhNOStMRGFxMTZiSmVpMEJUcEZwd2pFaGdZRXBvbE5vaXJM?=
+ =?utf-8?B?TkluNVZ5YXk5b1ArWDJYSjBFSHM3L21OWkRabVF6em1JUklHYUR1N3dUNDBE?=
+ =?utf-8?B?RUI5Wi94a3loUmh0dFF5eHhvdVl6aEUxREtQQ3lCZGFJWTlZbmFCdlV2T0Vi?=
+ =?utf-8?B?dC9Wa21VeXNyOWxJZjlyU3F6OVVweVh6cHZkaTNoS0NkRWJaTjA1VnUzKzBt?=
+ =?utf-8?B?MEt0K3JqREw2K2pHcytEZUpkYVNGcDIvY1RUNkNxL3ZXQWlmcjFiYjIrL2dF?=
+ =?utf-8?B?SXBiazhKaTh4TjJLNk9PQ1ZIS0Y5NnZha3grQVhnQjJGRXpOcVhnYjZYcS9V?=
+ =?utf-8?B?aWZEbk5vUDVIdElqcmdKUlRxM2Q3VWpYdkYxbnhzRU9wT1pDS3ZpYUFJU2Ro?=
+ =?utf-8?B?QzZJZ2M3bFFLUDArTnQ3UDhrZHlpWjczM3B6Ynp1Z1d5TEt1eTFyTFpwL2Jx?=
+ =?utf-8?B?YnJBNVh3NzdBeTNZa2FIY0dPaUFlVmVMQkF4VENrUzB5M1gwZTFzclFKZXha?=
+ =?utf-8?B?TFRpc0RkZEFhYjFad0JraitCWHgvZk5SMHlXTFJuRk0vclRNR3h0QkJzdEE2?=
+ =?utf-8?B?NGNGQmNLNTlRbGZ1b3hHUFNaNFpLamoxeURZZ05XbmY4dEEzS3JUOEJ4bHBW?=
+ =?utf-8?B?bjlrSUtNRmZOdEd4MThnNzRsQzUzTkk3MDVwcS95WWVwZWNLRnVlSEk4QVRC?=
+ =?utf-8?B?VFN5Nys4VGIwWmNwOERwL1ZaVnQwb291QmxXUGpEZk85YUszV0VEKzdCOVo0?=
+ =?utf-8?B?ajZxc3dsSk9GdEVoZjlRZGhjTEw4a2ZnSFdRZktXRVFTZExIT29RSDhCSWhR?=
+ =?utf-8?B?K3pYZDB1WW0rcUVDMy9nRXZMQll3MzdsUlE3QktTZkZmWnNNTWt5WEkrRUtZ?=
+ =?utf-8?B?MzRYbFVTM3lnU2dPcWFsSEJNS0hRLzBweFMrVGFyOEJDUGRrNzc4a3ZCbDdn?=
+ =?utf-8?B?c1J3OWU4L0pKdkRYM3R1STA0dGdGWHFNVXR4bE1Ndm9YNVFLOWJ0Smk0NWVU?=
+ =?utf-8?B?VC9PeWgvdGhwakQzemhrSGxQcWFLeEVOWkJNYUN1UFQ5MGdTTTJRNy9IQi9r?=
+ =?utf-8?B?NUh0amNRc0tnZ2ROTkRFL0JJRXI1RWhLMmlCVk5NN1NuTU14UUpnVlJPbUpY?=
+ =?utf-8?B?MUQxODZMMUdFK251ZVowQTh4WW5CQkhadEtLM3JkTTN4Y2QrZElNdDhSdWV6?=
+ =?utf-8?B?aEIxSjM2TmI5V0FFNFplNktLSmt4ODJsRjg2RmNWT1F4OEFmTEFDWFFWc1pi?=
+ =?utf-8?B?KzdtSjNFaENrRWd5eUlaMlZwRGtYTCtxUHNSSitxS0RiSjlGQkwxZGRnZzN3?=
+ =?utf-8?B?RWc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 956f0202-50b0-467a-b041-08dab84cc2f7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2022 18:55:05.5790
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gCl7Wd58I9a1Jmvg7JiPlnp4X+Pl4qLr8ai8TavKcaKb6SkxAcneFy8OR8qyLnBg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB5181
+X-Proofpoint-GUID: Oe4rt992QbJCk2YYKwAzmeYci_d1rVvv
+X-Proofpoint-ORIG-GUID: Oe4rt992QbJCk2YYKwAzmeYci_d1rVvv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-27_07,2022-10-27_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 10:01 AM Tony Finch <dot@dotat.at> wrote:
->
-> Hello all,
->
-> I have just found out about this qp-trie work, and I'm pleased to hear
-> that it is looking promising for you!
->
 
-This is a very nice data structure, so thank you for doing a great job
-explaining it in your post!
 
-> I have a few very broad observations:
->
-> The "q" in qp-trie doesn't have to stand for "quadbit". There's a tradeoff
-> between branch factor, maximum key length, and size of branch node. The
-> greater the branch factor, the fewer indirections needed to traverse the
-> tree; but if you go too wide then prefetching is less effective and branch
-> nodes get bigger. I found that 5 bits was the sweet spot (32 wide bitmap,
-> 30ish bit key length) - indexing 5 bit mouthfuls out of the key is HORRID
-> but it was measurably faster than 4 bits. 6 bits (64 bits of bitmap) grew
-> nodes from 16 bytes to 24 bytes, and it ended up slower.
->
-> Your interior nodes are much bigger than mine, so you might find the
-> tradeoff is different. I encourage you to try it out.
+On 10/27/22 11:43 AM, Yonghong Song wrote:
+> 
+> 
+> On 10/25/22 3:27 PM, Eduard Zingerman wrote:
+>> Use pahole --header_guards_db flag to enable encoding of header guard
+>> information in kernel BTF. The actual correspondence between header
+>> file and guard string is computed by the scripts/infer_header_guards.pl.
+>>
+>> The encoded header guard information could be used to restore the
+>> original guards in the vmlinux.h, e.g.:
+>>
+>>      include/uapi/linux/tcp.h:
+>>
+>>        #ifndef _UAPI_LINUX_TCP_H
+>>        #define _UAPI_LINUX_TCP_H
+>>        ...
+>>        union tcp_word_hdr {
+>>          struct tcphdr hdr;
+>>          __be32        words[5];
+>>        };
+>>        ...
+>>        #endif /* _UAPI_LINUX_TCP_H */
+>>
+>>      vmlinux.h:
+>>
+>>        ...
+>>        #ifndef _UAPI_LINUX_TCP_H
+>>
+>>        union tcp_word_hdr {
+>>          struct tcphdr hdr;
+>>          __be32 words[5];
+>>        };
+>>
+>>        #endif /* _UAPI_LINUX_TCP_H */
+>>        ...
+>>
+>> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+>> ---
+>>   scripts/link-vmlinux.sh | 13 ++++++++++++-
+>>   1 file changed, 12 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+>> index 918470d768e9..f57f621eda1f 100755
+>> --- a/scripts/link-vmlinux.sh
+>> +++ b/scripts/link-vmlinux.sh
+>> @@ -110,6 +110,7 @@ vmlinux_link()
+>>   gen_btf()
+>>   {
+>>       local pahole_ver
+>> +    local extra_flags
+>>       if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>>           echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+>> @@ -122,10 +123,20 @@ gen_btf()
+>>           return 1
+>>       fi
+>> +    if [ "${pahole_ver}" -ge "124" ]; then
+>> +        scripts/infer_header_guards.pl \
+> 
+> We should have full path like
+>      ${srctree}/scripts/infer_header_guards.pl
+> so it can work if build directory is different from source directory.
 
-True, but I think for (at least initial) simplicity, sticking to
-half-bytes would simplify the code and let us figure out BPF and
-kernel-specific issues without having to worry about the correctness
-of the qp-trie core logic itself.
+handling arguments for infer_header_guards.pl should also take
+care of full file path.
 
->
-> I saw there has been some discussion about locking and RCU. My current
-> project is integrating a qp-trie into BIND, with the aim of replacing its
-> old red-black tree for searching DNS records. It's based on a concurrent
-> qp-trie that I prototyped in NSD (a smaller and simpler DNS server than
-> BIND). My strategy is based on a custom allocator for interior nodes. This
-> has two main effects:
->
->   * Node references are now 32 bit indexes into the allocator's pool,
->     instead of 64 bit pointers; nodes are 12 bytes instead of 16 bytes.
->
->   * The allocator supports copy-on-write and safe memory reclamation with
->     a fairly small overhead, 3 x 32 bit counters per memory chunk (each
->     chunk is roughly page sized).
->
-> I wrote some notes when the design was new, but things have changed since
-> then.
->
-> https://dotat.at/@/2021-06-23-page-based-gc-for-qp-trie-rcu.html
->
-> For memory reclamation the interior nodes get moved / compacted. It's a
-> kind of garbage collector, but easy-mode because the per-chunk counters
-> accurately indicate when compaction is worthwhile. I've written some notes
-> on my several failed GC experiments; the last / current attempt seems (by
-> and large) good enough.
->
-> https://dotat.at/@/2022-06-22-compact-qp.html
->
-> For exterior / leaf nodes, I'm using atomic refcounts to know when they
-> can be reclaimed. The caller is responsible for COWing its leaves when
-> necessary.
->
-> Updates to the tree are transactional in style, and do not block readers:
-> a single writer gets the write mutex, makes whatever changes it needs
-> (copying as required), then commits by flipping the tree's root. After a
-> commit it can free unused chunks. (Compaction can be part of an update
-> transaction or a transaction of its own.)
->
-> I'm currently using a reader-writer lock for the tree root, but I designed
-> it with liburcu in mind, while trying to keep things simple.
->
-> This strategy is very heavily biased in favour of readers, which suits DNS
-> servers. I don't know enough about BPF to have any idea what kind of
-> update traffic you need to support.
++ /home/yhs/work/bpf-next/scripts/infer_header_guards.pl include/uapi 
+include/generated/uapi arch/x86/include/uapi arch/x86/include/generated/uapi
++ return 1
 
-These are some nice ideas, I did a quick read on your latest blog
-posts, missed those updates since last time I checked your blog.
-
-One limitation that we have in the BPF world is that BPF programs can
-be run in extremely restrictive contexts (e.g., NMI), in which things
-that user-space can assume will almost always succeed (like memory
-allocation), are not allowed. We do have BPF-specific memory
-allocator, but even it can fail to allocate memory, depending on
-allocation patterns. So we need to think if this COW approach is
-acceptable. I'd love for Hou Tao to think about this and chime in,
-though, as he spent a lot of time thinking about particulars.
-
-But very basically, ultimate memory and performance savings are
-perhaps less important in trying to fit qp-trie into BPF framework. We
-can iterate after with optimizations and improvements, but first we
-need to get the things correct and well-behaved.
-
->
-> At the moment I am reworking and simplifying my transaction and
-> reclamation code and it's all very broken. I guess this isn't the best
-> possible time to compare notes on qp-trie variants, but I'm happy to hear
-> from others who have code and ideas to share.
-
-It would be great if you can lend your expertise in reviewing at least
-generic qp-trie parts, but also in helping to figure out the overall
-concurrency approach we can take in kernel/BPF land (depending on your
-familiarity with kernel specifics, of course).
-
-Thanks for offering the latest on qp-trie, exciting to see more
-production applications of qp-trie and that you are still actively
-working on this!
-
->
-> --
-> Tony Finch  <dot@dotat.at>  https://dotat.at/
-> Mull of Kintyre to Ardnamurchan Point: East or southeast 4 to 6,
-> increasing 6 to gale 8 for a time. Smooth or slight in eastern
-> shelter, otherwise slight or moderate. Rain or showers. Good,
-> occasionally poor.
+> 
+>> +            include/uapi \
+>> +            include/generated/uapi \
+>> +            arch/${SRCARCH}/include/uapi \
+>> +            arch/${SRCARCH}/include/generated/uapi \
+>> +            > .btf.uapi_header_guards || return 1;
+>> +        extra_flags="--header_guards_db .btf.uapi_header_guards"
+>> +    fi
+>> +
+>>       vmlinux_link ${1}
+>>       info "BTF" ${2}
+>> -    LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+>> +    LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} 
+>> ${extra_flags} ${1}
+>>       # Create ${2} which contains just .BTF section but no symbols. Add
+>>       # SHF_ALLOC because .BTF will be part of the vmlinux image. 
+>> --strip-all
