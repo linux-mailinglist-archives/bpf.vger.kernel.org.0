@@ -2,92 +2,288 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 064DC61037F
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D2E61044C
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 23:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237119AbiJ0UzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 16:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        id S236658AbiJ0VW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 17:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237491AbiJ0Uyd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 16:54:33 -0400
+        with ESMTP id S236007AbiJ0VW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 17:22:57 -0400
 Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB724A2A83
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:46:34 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id kt23so8053878ejc.7
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:46:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E35F5B53C
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:22:56 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id f27so8372360eje.1
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 14:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oLClB1ARpHkTkku/IM30L9kBGVS2xVXx5L98MjyTQSg=;
-        b=U6XqbbRkry+LhrafHU56Fhq8jOBG12GFl+Hf98pzSLSLjvhrBabiDKovl0cVfmfZ0H
-         6OKgXIiFV5w8TWSkz8/ZLJhxMz50OnI9VncW4vikGIXl6YJcc7zeVyGNRgrWPWS0v+ss
-         L0JDKSszYygP3KEda9iQNeQhIqTxAqYBGjDH/jpzET2Q0V/CT3Jr1LUO1UMjlUBQ9Jkj
-         9HLj3N+0YnJGbeMWs+pRaeFnlGj7C1Jm1ODoz4uZn68YzvS59fmZVVWWoW1BATg1rTQz
-         F8qNlImA6rxFZ1bU7f/gE3E8+brLYFRx/O38gz5VmCNgg6TTmBX7feQP3gyePjz/fhmq
-         6ODQ==
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=hayQeMhzcQ5l1Af/BRe7TIDQOJpDWoQq048LwQR67LY=;
+        b=zITe3Ksn8Wlx8nXpYnJjYgrfcZJNS1g+frLueKe6UKXXsjK447wUwCaSqoGFekWca4
+         ri2vti6mSl9Vu0IavrN+HdycrPD1kWnsUtHG3u8lL0zN+TwlC1iaiS9W1w1xig0OMVgc
+         QQYcYZga5mD2iaBAs+y876MswfnRcqiNvXJ7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oLClB1ARpHkTkku/IM30L9kBGVS2xVXx5L98MjyTQSg=;
-        b=e+JcoX4k3BjjpoqTqArj7uYxbsMilcvuOfUSNonhrFDDWXsYqWBHPAlRSvqGLbR4A1
-         Ne4+0izPwnnkOJC+2h9GFU8Vg626bdq8j+7Um9iT/f8tJ+buigjsyzu8YamxOlzyc5XC
-         yg6395oKrmC+vGlYzkPRdcflZTb5TMCLdfe3P8HJwJARwei6xiEUmjNjf8iPNBjcCzqo
-         nM9b6J2Qtba/WNIx6QWgGx233pERaFl6Sx4gQN66Fdu10XLFqaIla3ZtB5L69ggamloS
-         g1rjnj3vHT5IMv1Ew40mOPXWovRAT0MZ3gZa/UcWNdGE5AU/rgMPKs/mvfT/QgpyCBiu
-         YELQ==
-X-Gm-Message-State: ACrzQf38cdCnS199grRCendykXHhQljuk23dlObEmu9fD7lFop+yX0b8
-        e2+XKiC+Eybgcx+oeSkXLf82fp2O8CdGHjwAXkU=
-X-Google-Smtp-Source: AMsMyM6MtERyDRvOU982ZbFM3x2m8GE3/kh4kVKTc0aNmWWx6Z2QytDvyLvJLJcKIB2lyWhtVw+EMi4b+rhyIMVYLJI=
-X-Received: by 2002:a17:907:1c88:b0:7ad:8f76:699e with SMTP id
- nb8-20020a1709071c8800b007ad8f76699emr4323820ejc.114.1666903593450; Thu, 27
- Oct 2022 13:46:33 -0700 (PDT)
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hayQeMhzcQ5l1Af/BRe7TIDQOJpDWoQq048LwQR67LY=;
+        b=GxQSCf7KpawDNQBAIwiY3qQv2FPDkvoJqbENbeOHNlVw/z8Hgc5xCrlVB5QbXC8bZk
+         SH3OjPupHjHJSwnmeGQHxaHn3cWcKejsX51AR5dVEiEPJOunaTF0RzZpGpmYPpEYNrEA
+         VFhDKzD6QpzSGjJj+ou37WKeTaraF85RLSEdIKDeAH7XK42IlnIoQq+SI7CskrZmnZ5I
+         STGr7DX89p403uooOK5GkkVuRP4uZpq1gPLGK7jLkZGfWEhxaq+IJDrZ4//21gHF40/l
+         mIOcpKBxoZML7sa1HfO1EViORskxQGwlaw0UGlRLHvptkgIyXiUyNk0eJURnYtv4R7y9
+         L5Ag==
+X-Gm-Message-State: ACrzQf2LL7CEzgXRwOo3YlwfLtf9shbDYJZpU78C7Duo8My09R93U2L+
+        QbptUlKFHbFSNM6MBp37nWQITw==
+X-Google-Smtp-Source: AMsMyM6gTnJMg2nqOC1cpt+EJT9iJExlQGophocthCQiQRatZG+V8MiJwuKfhsGH64hYEeEMyxXCeQ==
+X-Received: by 2002:a17:906:da85:b0:741:40a7:d08d with SMTP id xh5-20020a170906da8500b0074140a7d08dmr46179050ejb.263.1666905774834;
+        Thu, 27 Oct 2022 14:22:54 -0700 (PDT)
+Received: from cloudflare.com (79.191.56.44.ipv4.supernova.orange.pl. [79.191.56.44])
+        by smtp.gmail.com with ESMTPSA id f30-20020a170906739e00b0078e05db7005sm1227276ejl.214.2022.10.27.14.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Oct 2022 14:22:54 -0700 (PDT)
+References: <20220304081145.2037182-1-wangyufen@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Wang Yufen <wangyufen@huawei.com>, john.fastabend@gmail.com
+Cc:     daniel@iogearbox.net, lmb@cloudflare.com, davem@davemloft.net,
+        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 0/4] bpf, sockmap: Fix memleaks and issues
+ of mem charge/uncharge
+Date:   Thu, 27 Oct 2022 23:10:37 +0200
+In-reply-to: <20220304081145.2037182-1-wangyufen@huawei.com>
+Message-ID: <87v8o5gdw2.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
-In-Reply-To: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 13:46:21 -0700
-Message-ID: <CAEf4BzbsjBfFaf0M8_qLaEYAcUn4J9275tp0GEt5vb8hBg6Z9w@mail.gmail.com>
-Subject: Re: [Question]: BPF_CGROUP_{GET,SET}SOCKOPT handling when optlen > PAGE_SIZE
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 26, 2022 at 6:17 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> The cgroup-bpf {get,set}sockopt prog is useful to change the optname behavior.
-> The bpf prog usually just handles a few specific optnames and ignores most
-> others.  For the optnames that it ignores, it usually does not need to change
-> the optlen.  The exception is when optlen > PAGE_SIZE (or optval_end - optval).
-> The bpf prog needs to set the optlen to 0 for this case or else the kernel will
-> return -EFAULT to the userspace.  It is usually not what the bpf prog wants
-> because the bpf prog only expects error returning to userspace when it has
-> explicitly 'return 0;' or used bpf_set_retval().  If a bpf prog always changes
-> optlen for optnames that it does not care to 0,  it may risk if the latter bpf
-> prog in the same cgroup may want to change/look-at it.
->
-> Would like to explore if there is an easier way for the bpf prog to handle it.
-> eg. does it make sense to track if the bpf prog has changed the ctx->optlen
-> before returning -EFAULT to the user space when ctx.optlen > max_optlen?
+Wang, John,
 
-Maybe optlen + optval/optval_end could be replaced with dynptr? If we
-do a new type of dynptr (DYNPTR_CTXBUF or something like that), we can
-implement tracking of whether it was ever modified through
-bpf_dynptr_write() or if direct memory access was ever used (was
-bpf_dynptr_data() called). Not sure how you'd know if
-bpf_dynptr_data() was used to modify data, though (this is where
-bpf_dynptr_data_rdonly() vs bpf_dynptr_data() would be helpful,
-perhaps). But just a seed of an idea, maybe you guys can somehow fit
-it here?
+On Fri, Mar 04, 2022 at 04:11 PM +08, Wang Yufen wrote:
+> This patchset fixes memleaks and incorrect charge/uncharge memory, these
+> issues cause the following info:
+>
+> WARNING: CPU: 0 PID: 9202 at net/core/stream.c:205 sk_stream_kill_queues+0xc8/0xe0
+> Call Trace:
+>  <IRQ>
+>  inet_csk_destroy_sock+0x55/0x110
+>  tcp_rcv_state_process+0xe5f/0xe90
+>  ? sk_filter_trim_cap+0x10d/0x230
+>  ? tcp_v4_do_rcv+0x161/0x250
+>  tcp_v4_do_rcv+0x161/0x250
+>  tcp_v4_rcv+0xc3a/0xce0
+>  ip_protocol_deliver_rcu+0x3d/0x230
+>  ip_local_deliver_finish+0x54/0x60
+>  ip_local_deliver+0xfd/0x110
+>  ? ip_protocol_deliver_rcu+0x230/0x230
+>  ip_rcv+0xd6/0x100
+>  ? ip_local_deliver+0x110/0x110
+>  __netif_receive_skb_one_core+0x85/0xa0
+>  process_backlog+0xa4/0x160
+>  __napi_poll+0x29/0x1b0
+>  net_rx_action+0x287/0x300
+>  __do_softirq+0xff/0x2fc
+>  do_softirq+0x79/0x90
+>  </IRQ>
+>
+> WARNING: CPU: 0 PID: 531 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x175/0x1b0
+> Call Trace:
+>  <TASK>
+>  __sk_destruct+0x24/0x1f0
+>  sk_psock_destroy+0x19b/0x1c0
+>  process_one_work+0x1b3/0x3c0
+>  ? process_one_work+0x3c0/0x3c0
+>  worker_thread+0x30/0x350
+>  ? process_one_work+0x3c0/0x3c0
+>  kthread+0xe6/0x110
+>  ? kthread_complete_and_exit+0x20/0x20
+>  ret_from_fork+0x22/0x30
+>  </TASK>
+>
+> Changes since v2:
+> -Move sk_msg_trim() logic into sk_msg_alloc while -ENOMEM occurs, as
+> Cong Wang suggested.
+>
+> Changes since v1:
+> -Update the commit message of patch #2, the error path is from ENOMEM not
+> the ENOSPC.
+> -Simply returning an error code when psock is null, as John Fastabend
+> suggested.
+
+This is going to sound a bit weird, but I'm actually observing the
+mentioned warnings with these patches applied, when running
+`test_sockmap` selftests. Without the patch set - all is well.
+
+Bisect went like so:
+
+broken  [bpf-next] 31af1aa09fb9 ("Merge branch 'bpf: Fixes for kprobe multi on kernel modules'")
+...
+broken  2486ab434b2c ("bpf, sockmap: Fix double uncharge the mem of sk_msg")
+broken  84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
+working 9c34e38c4a87 ("bpf, sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full")
+working 938d3480b92f ("bpf, sockmap: Fix memleak in sk_psock_queue_msg")
+working [base] d3b351f65bf4 ("selftests/bpf: Fix a clang compilation error for send_signal.c")
+
+At 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has
+more_data") I'm seeing:
+
+bash-5.1# uname -r
+5.17.0-rc6-01987-g84472b436e76
+bash-5.1# cd tools/testing/selftests/bpf/
+bash-5.1# ./test_sockmap
+# 1/ 6  sockmap::txmsg test passthrough:OK
+# 2/ 6  sockmap::txmsg test redirect:OK
+# 3/ 6  sockmap::txmsg test drop:OK
+# 4/ 6  sockmap::txmsg test ingress redirect:OK
+# 5/ 7  sockmap::txmsg test skb:OK
+# 6/ 8  sockmap::txmsg test apply:OK
+# 7/12  sockmap::txmsg test cork:OK
+[   16.399282] ------------[ cut here ]------------
+[   16.400465] WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
+[   16.402718] Modules linked in:
+[   16.403504] CPU: 2 PID: 197 Comm: test_sockmap Not tainted 5.17.0-rc6-01987-g84472b436e76 #76
+[   16.404276] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
+[   16.404800] RIP: 0010:sk_stream_kill_queues+0xd3/0xf0
+[   16.405110] Code: 29 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 48 89 df e8 63 db fe ff 8b 83 78 02 00 00 8b b3 30 02 00 00 85 c0 74 d9 0f 0b 85 f6 74 d7 <0f> 0b 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 0f 0b eb 92 66 66 2e 0f 1f
+[   16.406226] RSP: 0018:ffffc90000423d48 EFLAGS: 00010206
+[   16.406545] RAX: 0000000000000000 RBX: ffff888104208000 RCX: 0000000000000000
+[   16.407117] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff8881042081b8
+[   16.407571] RBP: ffff8881042081b8 R08: 0000000000000000 R09: 0000000000000000
+[   16.407995] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
+[   16.408413] R13: ffff888102763000 R14: ffff888101b528e0 R15: ffff888104208130
+[   16.408837] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+[   16.409318] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   16.409666] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
+[   16.410098] Call Trace:
+[   16.410248]  <TASK>
+[   16.410378]  inet_csk_destroy_sock+0x55/0x110
+[   16.410647]  tcp_rcv_state_process+0xd28/0x1380
+[   16.410934]  ? tcp_v4_do_rcv+0x77/0x2c0
+[   16.411166]  tcp_v4_do_rcv+0x77/0x2c0
+[   16.411388]  __release_sock+0x106/0x130
+[   16.411626]  __tcp_close+0x1a7/0x4e0
+[   16.411844]  tcp_close+0x20/0x70
+[   16.412045]  inet_release+0x3c/0x80
+[   16.412257]  __sock_release+0x3a/0xb0
+[   16.412509]  sock_close+0x14/0x20
+[   16.412770]  __fput+0xa3/0x260
+[   16.413022]  task_work_run+0x59/0xb0
+[   16.413286]  exit_to_user_mode_prepare+0x1b3/0x1c0
+[   16.413665]  syscall_exit_to_user_mode+0x19/0x50
+[   16.414020]  do_syscall_64+0x48/0x90
+[   16.414285]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   16.414659] RIP: 0033:0x7f3728791eb7
+[   16.414916] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+[   16.416286] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+[   16.416841] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
+[   16.417296] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
+[   16.417723] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
+[   16.418178] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
+[   16.418669] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
+[   16.419148]  </TASK>
+[   16.419283] irq event stamp: 135687
+[   16.419492] hardirqs last  enabled at (135695): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
+[   16.420065] hardirqs last disabled at (135712): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
+[   16.420606] softirqs last  enabled at (135710): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+[   16.421201] softirqs last disabled at (135703): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+[   16.421839] ---[ end trace 0000000000000000 ]---
+[   16.422195] ------------[ cut here ]------------
+[   16.422550] WARNING: CPU: 2 PID: 197 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x198/0x1d0
+[   16.423142] Modules linked in:
+[   16.423327] CPU: 2 PID: 197 Comm: test_sockmap Tainted: G        W         5.17.0-rc6-01987-g84472b436e76 #76
+[   16.423908] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
+[   16.424436] RIP: 0010:inet_sock_destruct+0x198/0x1d0
+[   16.424737] Code: ff 49 8b bc 24 68 02 00 00 e8 b4 65 e9 ff 49 8b bc 24 88 00 00 00 5b 41 5c e9 a4 65 e9 ff 41 8b 84 24 30 02 00 00 85 c0 74 ca <0f> 0b eb c6 4c 89 e7 e8 bc 41 e6 ff e9 4d ff ff ff 0f 0b 41 8b 84
+[   16.425858] RSP: 0018:ffffc90000423e40 EFLAGS: 00010206
+[   16.426172] RAX: 0000000000000fc0 RBX: ffff888104208160 RCX: 0000000000000000
+[   16.426593] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff888104208160
+[   16.427024] RBP: ffff888104208000 R08: 0000000000000000 R09: 0000000000000000
+[   16.427485] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
+[   16.428016] R13: ffff8881001ce8e0 R14: ffff888103170c30 R15: 0000000000000000
+[   16.428561] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+[   16.429207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   16.429638] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
+[   16.430178] Call Trace:
+[   16.430366]  <TASK>
+[   16.430524]  __sk_destruct+0x23/0x220
+[   16.430753]  inet_release+0x3c/0x80
+[   16.430969]  __sock_release+0x3a/0xb0
+[   16.431189]  sock_close+0x14/0x20
+[   16.431388]  __fput+0xa3/0x260
+[   16.431578]  task_work_run+0x59/0xb0
+[   16.431793]  exit_to_user_mode_prepare+0x1b3/0x1c0
+[   16.432085]  syscall_exit_to_user_mode+0x19/0x50
+[   16.432359]  do_syscall_64+0x48/0x90
+[   16.432578]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   16.432877] RIP: 0033:0x7f3728791eb7
+[   16.433099] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+[   16.434190] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+[   16.434637] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
+[   16.435058] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
+[   16.435476] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
+[   16.435893] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
+[   16.436315] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
+[   16.436741]  </TASK>
+[   16.436876] irq event stamp: 136127
+[   16.437089] hardirqs last  enabled at (136137): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
+[   16.437599] hardirqs last disabled at (136144): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
+[   16.438115] softirqs last  enabled at (135830): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+[   16.438641] softirqs last disabled at (135817): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+[   16.439277] ---[ end trace 0000000000000000 ]---
+# 8/ 3  sockmap::txmsg test hanging corks:OK
+# 9/11  sockmap::txmsg test push_data:OK
+#10/17  sockmap::txmsg test pull-data:OK
+#11/ 9  sockmap::txmsg test pop-data:OK
+#12/ 1  sockmap::txmsg test push/pop data:OK
+#13/ 1  sockmap::txmsg test ingress parser:OK
+#14/ 1  sockmap::txmsg test ingress parser2:OK
+#15/ 6 sockhash::txmsg test passthrough:OK
+#16/ 6 sockhash::txmsg test redirect:OK
+#17/ 6 sockhash::txmsg test drop:OK
+#18/ 6 sockhash::txmsg test ingress redirect:OK
+#19/ 7 sockhash::txmsg test skb:OK
+#20/ 8 sockhash::txmsg test apply:OK
+#21/12 sockhash::txmsg test cork:OK
+#22/ 3 sockhash::txmsg test hanging corks:OK
+#23/11 sockhash::txmsg test push_data:OK
+#24/17 sockhash::txmsg test pull-data:OK
+#25/ 9 sockhash::txmsg test pop-data:OK
+#26/ 1 sockhash::txmsg test push/pop data:OK
+#27/ 1 sockhash::txmsg test ingress parser:OK
+#28/ 1 sockhash::txmsg test ingress parser2:OK
+#29/ 6 sockhash:ktls:txmsg test passthrough:OK
+#30/ 6 sockhash:ktls:txmsg test redirect:OK
+#31/ 6 sockhash:ktls:txmsg test drop:OK
+#32/ 6 sockhash:ktls:txmsg test ingress redirect:OK
+#33/ 7 sockhash:ktls:txmsg test skb:OK
+#34/ 8 sockhash:ktls:txmsg test apply:OK
+#35/12 sockhash:ktls:txmsg test cork:OK
+#36/ 3 sockhash:ktls:txmsg test hanging corks:OK
+#37/11 sockhash:ktls:txmsg test push_data:OK
+#38/17 sockhash:ktls:txmsg test pull-data:OK
+#39/ 9 sockhash:ktls:txmsg test pop-data:OK
+#40/ 1 sockhash:ktls:txmsg test push/pop data:OK
+#41/ 1 sockhash:ktls:txmsg test ingress parser:OK
+#42/ 0 sockhash:ktls:txmsg test ingress parser2:OK
+Pass: 42 Fail: 0
+bash-5.1#
+
+No idea why yet. I will need to dig into what is happening.
+
+Wang, can you please take a look as well?
+
+Thanks,
+Jakub
