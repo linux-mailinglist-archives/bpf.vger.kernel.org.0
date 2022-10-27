@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9F96105E3
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 00:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398DA6105F2
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 00:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbiJ0Woo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 18:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        id S229616AbiJ0WvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 18:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbiJ0Wok (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 18:44:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91CD1209B
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:44:38 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 21so5374816edv.3
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:44:38 -0700 (PDT)
+        with ESMTP id S229531AbiJ0WvX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 18:51:23 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BE3814E5
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:51:22 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id b2so8884363eja.6
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9YeiJEgW3NOttOopPAuCZ3TE2/z62dDKOzpGXccTptc=;
-        b=ILAhmUVkvWRQrqACqrH5oWYezOQWs/0Jl43c82JGoR3ItQNALM5yPZ/WuK9Ajk8hUC
-         3mna6Sh5F5wGk62FJPsZUdZ2lwCmm+cg5mFcmieJdlh7/CIG90KyMVIdx5k6lJ9tUvVt
-         Zgxstu7ZfhKKE+T6ApnfLtXoD2QEZCgUkGM+51HzeTcEvxCrtntDSe4q82LFTS4607ot
-         Ztvr+908yf/MTt/7ZWY72PLHYYfNoKtzLaLQwEkF0Fehf4PGJGSbSGWFr/Z7+rjYolpH
-         pQ+J4TcrQEGrMiU7/iQaRASOVryrDiSoLh9AdmSTAO6mKieMO4BY/1Hs19qqrhfJII6V
-         CObQ==
+        bh=FI6EydJ4+QguR5dL1swXn9daBBB3phwCKywO4y4SYPU=;
+        b=U4o4gp5uy/ybLq2lUfZfUTO4wwbgJltnJ8zoYa/sRCkysQfXq11rLvj6sZcdNS73CC
+         DmZxvs1hxRpUMA6iCuOyJaIKe0fu9/Gi8/yj29Gx20kMM4+io8QYpnaKdABj+devQEpW
+         JCbSuIauz1+bFKsHKydPVohk/gBiHl33FiCKw86BZv104zLfh6Cp8bplweToiKp4nSZ9
+         z+E5GHUvbV/A/UZroU2hH84hOEjW1BjWih/sRzr/Fp+HG6DIB2yOqcoizY1HKtdmOzEN
+         gz9Pp3zlYaqvP8m85VyqylSXo46YzsuQcckpUdjXVwOchmqgtjX50ZwAMCA0MnA7M+dD
+         zYzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9YeiJEgW3NOttOopPAuCZ3TE2/z62dDKOzpGXccTptc=;
-        b=idPrmwrHGIBem2KQ0Nct4mjoCQ007qOCb3CqzomwbrzZEbX8kjkJx/XWdPgji6/Rqn
-         4F4igu0ZyAc/dPRSGJH5+EQb9ZGKNCB9wPoZg8XdoJBta6mly1DndgvKFix7JSbblu8l
-         u5R/Yjb7moSpxrW40TGUJjWY6o8QlLZdshAivXbVJDhD0ZV5uypx1x3TOmQjnWt3oe7B
-         WCB+242iIMh+GnoI1nIdzPIOsB9E1GEnZZtbNIQxQosDu0cSCRJ2jRQ/gH8iq0DO4C34
-         0ggc9xGi3sFj1gdNnwPYsaYuC5WWB0OiETtuW+kk+kdGnbXxCInKJX1Be70SkfGQd3ap
-         pNFA==
-X-Gm-Message-State: ACrzQf3encv30L2etS+3GKJ8oUpppQmtVogKONGoh6znHc6WB9A9Mjyd
-        Jf5oDpW8yuzUdbm4CM0BkU//hCOrnDB6XVvSfYA=
-X-Google-Smtp-Source: AMsMyM5BPa4fSXAhQg9EI+Q6yliwEGUVZ86fvT69ScxNJ8El4EcjzprgxTIgo9wPg8IZVn+6OefWyP6zrOqYhTW6AJ4=
-X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
- o4-20020aa7c504000000b00461122b882bmr37033394edq.14.1666910677194; Thu, 27
- Oct 2022 15:44:37 -0700 (PDT)
+        bh=FI6EydJ4+QguR5dL1swXn9daBBB3phwCKywO4y4SYPU=;
+        b=nyvPjqhT9yrCyhfYNqQjLj/pbXeXpwKErpTUrhWkKcA3th/D0DGRsD5zPnmxNzsa+r
+         qx9uLUudDUA0uafVfOOwojaqQwCv3K3JrYgt97fKzOuxit6V+S7pDcGEo/cf46fLxVAl
+         1q7oK12H7sPy9QU658eUTpZx8TigkVLRfdPhcJ70pwrEGZnO1i6odrwXRs8fh3Mcn/os
+         YDnPHpgor/kaZCd423URFJJ/OUQAwxKMzkSeUGojhI9XpFvSPDQDd1pcmjR9MFVvKU/9
+         7S+S+zdZYCslH1xSM2NMZEojfohepviNLhzMvqyj6645e+7C3aFJMJ+B6Xny+BiWGWBC
+         vjUQ==
+X-Gm-Message-State: ACrzQf26wumlQyTawKgpVNBlKVbwZSm/Te3OSIPdvC973oZTyqmFUqtU
+        U7XfhEmh+ldSb4uqMkaCTV8vBPjk/k5OSDsnNaM=
+X-Google-Smtp-Source: AMsMyM59POp33xYZfI9fyZdNrOeQvT5wXkFJjgDuyh7sco+qovQYgtSBFVN3ykKfAfk6l/d3jLnZbz0xMTL91jYh5dU=
+X-Received: by 2002:a17:907:75e6:b0:7a1:848:20cb with SMTP id
+ jz6-20020a17090775e600b007a1084820cbmr27034012ejc.745.1666911080925; Thu, 27
+ Oct 2022 15:51:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <20221025222802.2295103-6-eddyz87@gmail.com>
-In-Reply-To: <20221025222802.2295103-6-eddyz87@gmail.com>
+References: <20221025222802.2295103-1-eddyz87@gmail.com> <20221025222802.2295103-9-eddyz87@gmail.com>
+In-Reply-To: <20221025222802.2295103-9-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 15:44:24 -0700
-Message-ID: <CAEf4BzYdJ+LLZ74+4agO1hrT43xV+wQoadAK1C0iF-fQ3ZY02g@mail.gmail.com>
-Subject: Re: [RFC bpf-next 05/12] libbpf: Header guards for selected data
- structures in vmlinux.h
+Date:   Thu, 27 Oct 2022 15:51:08 -0700
+Message-ID: <CAEf4BzapsvxAjG0BYEG0umU4Hne7p6Hgpz6c04-BpQKwgvS+DQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 08/12] kbuild: Script to infer header guard values
+ for uapi headers
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
@@ -70,69 +70,61 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> The goal of the patch is to allow usage of header files from
-> `include/uapi` alongside with `vmlinux.h`. E.g. as follows:
+> The script infers header guard defines in headers from
+> include/uapi/**/*.h . E.g. header guard for the
+> `include/uapi/linux/tcp.h` is `_UAPI_LINUX_TCP_H`:
 >
->   #include <uapi/linux/tcp.h>
->   #include "vmlinux.h"
+>     include/uapi/linux/tcp.h:
 >
-> This goal is achieved by adding #ifndef / #endif guards in vmlinux.h
-> around definitions that originate from the `include/uapi` headers. The
-> guards emitted match the guards used in the original headers.
-> E.g. as follows:
+>       #ifndef _UAPI_LINUX_TCP_H
+>       #define _UAPI_LINUX_TCP_H
+>       ...
+>       union tcp_word_hdr {
+>             struct tcphdr hdr;
+>             __be32        words[5];
+>       };
+>       ...
+>       #endif /* _UAPI_LINUX_TCP_H */
 >
-> include/uapi/linux/tcp.h:
+> The output of the script could be used as an input to pahole's
+> `--header_guards_db` parameter. This information is necessary to
+> repeat the same header guards in the `vmlinux.h` generated from BTF.
 >
->   #ifndef _UAPI_LINUX_TCP_H
->   #define _UAPI_LINUX_TCP_H
->   ...
->   union tcp_word_hdr {
->         struct tcphdr hdr;
->         __be32        words[5];
->   };
->   ...
->   #endif /* _UAPI_LINUX_TCP_H */
+> It is not possible to infer the guard names from header file names
+> alone, the file content has to be analyzed. The following heuristic is
+> used to infer guard for a specific file:
+> - All pairs `#ifndef <candidate>` / `#define <candidate>` are collected;
+> - If a unique candidate matching regex `${headername}.*_H(EADER)?` it
+>   is selected;
+> - If a unique candidate matching regex `_H(EADER)?_` it is selected;
+> - If a unique candidate matching regex `_H(EADER)?$` it is selected;
 >
-> vmlinux.h:
+> There is also a small list of headers that can't be caught by the
+> rules above, 15 in total. These headers and corresponding guard values
+> are listed in the `%OVERRIDES` hash table.
 >
->   ...
->   #ifndef _UAPI_LINUX_TCP_H
->
->   union tcp_word_hdr {
->         struct tcphdr hdr;
->         __be32 words[5];
->   };
->
->   #endif /* _UAPI_LINUX_TCP_H */
->   ...
->
-> The problem of identifying data structures from uapi and selecting
-> proper guard names is delegated to pahole. When configured pahole
-> generates fake `BTF_DECL_TAG` records with header guards information.
-> The fake tag is distinguished from a real tag by a prefix
-> "header_guard:" in its value. These tags could be present for unions,
-> structures, enums and typedefs, e.g.:
->
-> [24139] STRUCT 'tcphdr' size=20 vlen=17
->   ...
-> [24296] DECL_TAG 'header_guard:_UAPI_LINUX_TCP_H' type_id=24139 ...
->
-> This patch adds An option `emit_header_guards` to `struct btf_dump_opts`.
-> When this option is present the function `btf_dump__dump_type` emits
-> header guards for top-level declarations. The header guards are
-> identified by inspecting fake `BTF_DECL_TAG` records described above.
 
-This looks like a completely arbitrary convention that libbpf has no
-business knowing or caring about. I think bpftool should be emitting
-these guards when generating vmlinux.h. Let's solve this somehow
-differently.
+Instead of expecting naming pattern, why can't we just expect
 
->
+/* some comments here */
+
+#ifndef XXX
+#define XXX
+....
+#endif
+
+and extract XXX from such a pattern?
+
+The harder part is skipping comments (but awk might help do this
+easier), or we can just ignore all the lines before the first #ifndef.
+
+WDYT?
+
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  tools/lib/bpf/btf.h      |  7 +++-
->  tools/lib/bpf/btf_dump.c | 89 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 94 insertions(+), 2 deletions(-)
+>  scripts/infer_header_guards.pl | 191 +++++++++++++++++++++++++++++++++
+>  1 file changed, 191 insertions(+)
+>  create mode 100755 scripts/infer_header_guards.pl
 >
 
 [...]
