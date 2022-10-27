@@ -2,394 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5986B6105D4
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 00:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB886105E2
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 00:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235294AbiJ0WgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 18:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
+        id S232906AbiJ0Wo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 18:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbiJ0WgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 18:36:16 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3553861D94
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:36:14 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id i21so5300304edj.10
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5wRTsYheCqP0zo9Rf+QGFUht1Yu83SwU5XGcnopK8PU=;
-        b=LXD2zW6M1kcQnYIIUrA4IN/sfctG2hqwnNA8lAZjDoRhVLITXOhHZ3N7ShxaqKrruW
-         7FqGWZGXtt+cJXXUocbNPTpb3EV3/rhOF56T7voca5nZPoHy15/U6FQ/zebp6OH4BdQU
-         hnXYbnHG+pVV8oBNM+Bon0SXE8LDeAvohBDZCDNyktp9dcGjxEqTlKRksLM0w3F6ivel
-         DmkhvaeXk45tSrOd+kbwBsmFpCxmWvjlo36jr9R6Jd7fFuvJfOywBloytxCV9mz6pCcb
-         3tzkfCIcpbd2SFY1AN6svINMfNuZJxC0hsQ1yMvxrmzi+69YFhgRJSu4nWcAq0fCFvsn
-         fqiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5wRTsYheCqP0zo9Rf+QGFUht1Yu83SwU5XGcnopK8PU=;
-        b=ybmDwL2XYLvIlP2cm7Wa5M+z0Rajg4zuljG9HOHNFCYs4lq6sBGZMj/6vSeAcSsvLE
-         9o3+jNOhAOyfmWRnVGqCmMjG42NE6RtXt87XMaBczrvQpA41MMYetUEL78Fud1+EVY/x
-         HkiZM+UXH59RnCQKlKCrnH9ZlwEjcH8yPYviJcjCt2Wt1anGSCXQnSO9Ms8mDaIwGQxS
-         I9Mo0PWJxU3wav3Fpglq/AV46skcgFBgDKJUPLChYZxDyy5Zy7mK89E8F3If0TJ/j2xN
-         xlZsxNokMD3cHcdV7fHjbRRplT6v4sYuxOdU8CmPnkJNNUpBoAeu9r0IxWSJ8TttAdnv
-         fFug==
-X-Gm-Message-State: ACrzQf26BgJWIF+DB4UOj4Zf9tmna4aO4oRqqUDBEnlXUHeLwpStlJ9Y
-        zqBHvHauDoq2PlpL8XUZv4rZ5HFDzsY9m+4SKKdf69XOYF8=
-X-Google-Smtp-Source: AMsMyM4TevYskidMPQZIHrZR9Pwj+dgcwd2JjbINqwyOakii1OWd47HZELgtSc8Lzczc1hDWY4nAei4HL8umpboG8Qk=
-X-Received: by 2002:a05:6402:3641:b0:45c:4231:ddcc with SMTP id
- em1-20020a056402364100b0045c4231ddccmr47395893edb.224.1666910172638; Thu, 27
- Oct 2022 15:36:12 -0700 (PDT)
+        with ESMTP id S229670AbiJ0Wo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 18:44:27 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68118B448A
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 15:44:25 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 29RMi5ll013664;
+        Thu, 27 Oct 2022 15:44:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : from : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=GM1OiKsA8bKrPjmL1KoNEonY8z9giT72lzFgH1FfcZI=;
+ b=ZZ+NK32KDtZAdZ7RnkmKqnsLx2rDYquLOk5cnaeCh5brMk2lSfQ1YzINlsp+kOduoarS
+ 0lNkE6iDmlie3RTrURod/enL+DgNBjUQgASIHt/yxalsQM1J9DSvgVwR+di8J8/dhxMV
+ w6/3aLPh3xgujecguGrIlmyRwvlR7RXb3xnEfdi1KlrWTrN+q4YboTLf+DWdnWYhe0RA
+ 3Gacq304sQFvKBHCA3BklPN9jbvDWhvS53yLOobU/RlP99F6ymg9vIfGb7VDl+YI7tM0
+ YmKPUFAxOL0zcph52mqE6UKKuREWwS4ttexF85rACzMF7NASqEVy5/OwfdWk/S/Ovwu2 0g== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3kfvx1m21r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Oct 2022 15:44:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WeSgiud60c8RUZPnf9Eb+PLH/DFwL+p3uPLxYhAkUm8dmjc+W5lEoHkptl/S7CQOVikL5p87/e05CeInmitQlESV5LgGUM30lQjJ3ptHvwWW0Ew+6tAo/HqN7EAz2yQIxAHM8fAelpUHtHqHxTjM7fWWZjKLVvdlPORzJ0YeeTN7oPVODJtEwWRQg8qrHV5UA0+Iu+sHkgKfDU4KdeJHj3eUgQC52iLxnlQDJFROSGFbIYocxufzqF6Bt6QL9gPP4dAu4PhSOXBm4b3HUgy9XySRc286Ox8cnsDMzn7Uql7ZScfoAlwKlxR7Ij84ISnc5/qiCjXmYQKQUZfW7f68JA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GM1OiKsA8bKrPjmL1KoNEonY8z9giT72lzFgH1FfcZI=;
+ b=kBHTr1O0unbjORsniiFlHPGC1aaknnV4V9E6EpKnwJj8Nic3bUBBQE3vY9x5aNyfIwEThyLL5I48gIjcDJhoULnA1D5gr3jzyukNhhPsE51al3vIJaqX8vnbNJUWwRDHnnqZ4wGQ4igZyqHF/ISdFULfUWwR34UkLgZqJbAM6QqXxWUtb5CBrVHy9md+4GYcFYhMFQ8BqdcOaZ04qRrxDrj1y2dBb0r9uhHhnp2/W+naLBIPGwAjebIUxdv/EJl3k5JvRE86lrq5BJsLtVa6mPwW2g7CkN1rbYGF8lrNSNO4U8NZ/ij3FRV3M2j0R9hadBoBHkEjgvWQIZ8cnEn+dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3824.namprd15.prod.outlook.com (2603:10b6:806:91::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.23; Thu, 27 Oct
+ 2022 22:44:06 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e25d:b529:7556:1e26]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e25d:b529:7556:1e26%5]) with mapi id 15.20.5746.028; Thu, 27 Oct 2022
+ 22:44:06 +0000
+Message-ID: <7a3ebc5f-b07f-0336-abb1-627f7a73b2cb@meta.com>
+Date:   Thu, 27 Oct 2022 15:44:04 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [RFC bpf-next 09/12] kbuild: Header guards for types from
+ include/uapi/*.h in kernel BTF
+Content-Language: en-US
+From:   Yonghong Song <yhs@meta.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, arnaldo.melo@gmail.com
+References: <20221025222802.2295103-1-eddyz87@gmail.com>
+ <20221025222802.2295103-10-eddyz87@gmail.com>
+ <dacaeb37-c55a-a328-61f2-77324efbc822@meta.com>
+ <6e57811b-229a-e4f8-ca7e-fe826cde4be4@meta.com>
+In-Reply-To: <6e57811b-229a-e4f8-ca7e-fe826cde4be4@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR11CA0093.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <20221025222802.2295103-4-eddyz87@gmail.com>
-In-Reply-To: <20221025222802.2295103-4-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 15:36:00 -0700
-Message-ID: <CAEf4BzY=r4U7dZdQtkXPhXzLuPkqE5E73Z8owQb8175FB+guVg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 03/12] libbpf: Support for BTF_DECL_TAG dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        arnaldo.melo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA0PR15MB3824:EE_
+X-MS-Office365-Filtering-Correlation-Id: ea333bb9-d6a9-4a69-66e6-08dab86cc12d
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lczrma6HIIuLwDY8yYAHQa9JwebK/cHRry1XC0W6igVRrX7ofEhILIcdXlbxIUAOTElPQI9tAEyY1ap2RXBxetEgOAOzySfOXJJSe3rNyFTl70i9jvrhOIYS1go3Lnozw+xUakqeZYhHVvovwSyE7adJGYYc6/2xZwd5v2WxY8SzAp1jnVj+HPdCMCe9LX5VHzL/cH7j/Wf3QbWLlLH1prGx/WgIEbF44IxpU8cKOEiSQ9o5/OwDdeXke9LIxmJjBh1g1Z1ODM35DZeXkV8huS5rmGlrURPNulTz+n3EfYyPRzgMJ1fvLoj0sRZtr1/tcbtudfBETNlFE+kmJNC8WhMPNj57ZlIkHggUpj/eKFvQgg9g4U5yg4A5N/cAJyBmctomdkFbbN8O+kiU6eE5rmszRlgZWlnbMmzyrz7I2CA8E3owpl4Z//ximN2bv6w66C4PKv1dctfzya95/edLWBsbZOc5xcPZgSjDdrPtC/5rww8TU9I+0iAsj/hJff/GY36LOezgu313mfjGVBUqv+ictRYX6/DwmK0zexpxy65neriXcfnY4P6fpsNdgHS/XYwpaBtedPIT42P+rS3JzYc3oVaa/yze5y+SPnVs+DtzZZv7X735kO0bnUaJL4HEDOFcIiWRR7xtY/LzhorgxHU8RbjVXEiF2C7cVdCMlnZcjHCoNqHXXOqJVwHfqLLpJwCziFTD8ZaD/0H0KGM6D3LA9lLxJcmgTbqCRT/Ws5YToUYSL+rtHbPKyo12QCojN/BP7DhdyIalddFZWKpuXi5ZkjI6QrP/7ENjZqVnXw4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(346002)(39860400002)(136003)(376002)(451199015)(6512007)(31686004)(66946007)(36756003)(31696002)(83380400001)(2906002)(38100700002)(2616005)(4326008)(186003)(66556008)(66476007)(6486002)(53546011)(86362001)(316002)(6506007)(478600001)(8936002)(5660300002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVN4T05LbEJ2L2tsSWQrenU3K0pyK0h5V1BCTE44RFZ4ZS9abE1WbktNcmFG?=
+ =?utf-8?B?Y2pjUXgrSVdYdjhJdmNoVkZYUmFmYlVrTXpwQkZCLzZLbGhWbmJva1M1Vy9O?=
+ =?utf-8?B?N21RVmlzc21nTWJ3WUhVKzFPWGZUY2NCODYyMTlQMzA1YWVDMUFpNmJJdDFJ?=
+ =?utf-8?B?L01iRVJkNmVPWC91WXpQSkxZT1VHeWFnZzRtZ0NOd0RaNkkrQWxLOXljRDZ1?=
+ =?utf-8?B?SHpraHpEcW04K0g4VGh6UUZKZXZ5TjU4aUFEY1pZT3FKTFlEM2IxQVlIL3FF?=
+ =?utf-8?B?MlB2eG9ISzNCRGh0Vld1azNPL2ZaODdBbC9LbFdBb2E4VEovRVFHblAyRERp?=
+ =?utf-8?B?czl3ajRwNjE5b2QwTDQycHpzV3Z2bHgwTTZVRmJVYUxIdkhaejZkTFhWVVF6?=
+ =?utf-8?B?KzVXaEM5RjFzS0FVdlhRQjgxSkJTc28wRXJscXhzMmtZUGhKOFZXU2ROelRX?=
+ =?utf-8?B?K25laDdRaWRtM2hCWnA0QmVLU05xNHdJSklVNmorMzdVQ1cvRGx5cVFJTDJV?=
+ =?utf-8?B?UWFTTjhWbENkR2ZUWE53QTcrc0taQno2OEptVm56WDVOdDRpS0JKbngvWkZ3?=
+ =?utf-8?B?YTZnSklFZlpJMHQrMTVvdEIwcHNmVnJRVWM1WWhmVEp3ZHhCNithSnVoNW83?=
+ =?utf-8?B?dWdnN0FET0dQQ21xczZhLyt4K1VOVGM4VXZZWHdUSit1TTQ2NmVveFlCL09Q?=
+ =?utf-8?B?QmFkTGE2K09NZSs2bzhKN0JYUGRVVkExaFpILy9EOXE4Ly9DaXVhcm96d2ov?=
+ =?utf-8?B?QWpsK2RFK1RuOG1FbmdVUWNrSTc2OWVDRFhJSU5WOFp4WU1QMXEyMTl3enhI?=
+ =?utf-8?B?T25ZY1kyYnYyOC9Sa0Y2STZoV051RGFsUy9FNytTWW1TTzZ5UUxnN0xNVUZZ?=
+ =?utf-8?B?SXJzMWhlekg1b24zUHlRZGFsR1JyTEZqV0paSWdFalZ6aTlFM2tkTDVCbzdN?=
+ =?utf-8?B?WkU5MTZpcGdXYTA4NlVCdVMvOVNTWnBVZ3RMRStmWDNwOGcydTI3bnhXbDlz?=
+ =?utf-8?B?b2s5UXJnK0MxVExkeU5icEtGMFl0OXdFS0lsM05xcEUvWEY1UWUzNTdnaXI1?=
+ =?utf-8?B?K0pUZTZPSW81THhIWGF1aDllbVNOSk1kUlhBYWxPZmhyZEJqcEZ1cVBRNTRa?=
+ =?utf-8?B?MmNUa2pqbFJsV2NNNldSdWsrbUhuaGJMSm90VmdIeFNQdG9kSUlYdU5IQXJv?=
+ =?utf-8?B?RzFML0NCUkYrd055dENGMWs4dnBpQ0Q0VlVTRDF0cHptbjl3RUJsVDlHUi9H?=
+ =?utf-8?B?RWp1ZG51NTlDbzlGSDRDc3Q4b0VWcDgxd0Ftd2NpOWVEQlF6SHFxa21YNXZB?=
+ =?utf-8?B?Y3crQkVEQllhdVJZRnBZSnkrVGluSktnVFJ4U3lVZHdkY1FBK3YwSUVaalNZ?=
+ =?utf-8?B?YnROVlA4OWFTSmRqeXdpLzBzWU1pM0ZMV0M1UVhtTE5vRnpRWkxoVU1Jbytw?=
+ =?utf-8?B?ZzNlVFVxODhqc2xkeTBIRDlPeWZyUnFhOEFxdjhIczRJWXVveUl5M0FJRVNh?=
+ =?utf-8?B?dk1LSGJURmR4TXl6R0FTUmt3YmsyZTJaMWhsU3lEa3FuUXVXZkZ4S01RSXc2?=
+ =?utf-8?B?OWJlTG4yaXpaQTEyRlNEZkJLTDlBeXljNmdLN2l3Y0ZxZjFQQ2tqREpnRE1k?=
+ =?utf-8?B?aDhBdjE3RE5WZXNOd1VaMFFWQ3VJR1Mwc2JYamZjRE1ZbGF0bi9lMFphY0p5?=
+ =?utf-8?B?M2VSM3J0U0QrMWgxbWVlZ0s5MTU4aGhQNzNaRjg2bW5lNmFqbkYxNElHZ1Ba?=
+ =?utf-8?B?NlI1ZHd0dU1FbVRjajU4WjVWVGhJZXY3OTdPK2FKNnNpUWNPdFpYQ2kwNHNX?=
+ =?utf-8?B?K1VITFdyV2R5My96aHhXbWgvcDU3MXIyc28vL2hwTjRXaitsdndVZnlZKzFT?=
+ =?utf-8?B?TDM4NmQrYmZscm5nOWFFV1FLNkJ5dDFnaFdwRWp6dlF0bHNEWGN5Q0tpQTZK?=
+ =?utf-8?B?dTBQY0NLUHIrZExESzNMYXVIUkdLOU8zekZ1NDlKNncxRGNDc1kvY3FrTXg1?=
+ =?utf-8?B?bDdLMHlnTDhKVlB1RFZBZXY3WkZTMFdnWnBmNFZjQzI0VUpVWGZjdkUyVFZz?=
+ =?utf-8?B?Mmg4ckFyUmhtN20vVHZBeVM5ZG5hUmVwR3dRazBqU2RnR29wZmQ1TDZ5SU84?=
+ =?utf-8?B?UzhXMjliTkxSQTR5TEgrZi90T2o1eFRLVXBrWG0vSFJrVno1UGd3dVlwL0Z0?=
+ =?utf-8?B?blE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea333bb9-d6a9-4a69-66e6-08dab86cc12d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2022 22:44:06.4709
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hKkJyugiauxXzMfoJTgKwtwJ3fbEnJEHY0U4obbU2JfEppyIFsfk/B3w97QdljgC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3824
+X-Proofpoint-GUID: 5WhCKFijTVXjgMIkTTZp89QK9fvpc370
+X-Proofpoint-ORIG-GUID: 5WhCKFijTVXjgMIkTTZp89QK9fvpc370
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-27_07,2022-10-27_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> At C level BTF_DECL_TAGs are represented as __attribute__
-> declarations, e.g.:
->
-> struct foo {
->         ...;
-> } __attribute__((btf_decl_tag("bar")));
->
-> This commit covers only decl tags attached to structs and unions.
->
-> BTF doc says that BTF_DECL_TAGs should follow a target type but this
-> is not enforced and tests don't honor this restriction.
-> This commit uses hash table to map types to the list of decl tags.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  tools/lib/bpf/btf_dump.c | 143 ++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 142 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index bf0cc0e986dd..9bfe2a4ae277 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -75,6 +75,15 @@ struct btf_dump_data {
->         bool is_array_char;
->  };
->
-> +/*
-> + * An array of ids of BTF_DECL_TAG objects associated with a specific type.
-> + */
-> +struct decl_tag_array {
-> +       __u16 cnt;
-> +       __u16 cap;
-> +       __u32 tag_ids[0];
-> +};
-> +
->  struct btf_dump {
->         const struct btf *btf;
->         btf_dump_printf_fn_t printf_fn;
-> @@ -111,6 +120,11 @@ struct btf_dump {
->          * name occurrences
->          */
->         struct hashmap *ident_names;
-> +       /*
-> +        * maps type id to decl_tag_array, assume that relatively small
-> +        * fraction of types has btf_decl_tag's attached
-> +        */
-> +       struct hashmap *decl_tags;
->         /*
->          * data for typed display; allocated if needed.
->          */
-> @@ -127,6 +141,26 @@ static bool str_equal_fn(const void *a, const void *b, void *ctx)
->         return strcmp(a, b) == 0;
->  }
->
-> +static size_t int_hash_fn(const void *key, void *ctx)
-> +{
-> +       int i;
-> +       size_t h = 0;
-> +       char *bytes = (char *)key;
-> +
-> +       for (i = 0; i < 4; ++i)
-> +               h = h * 31 + bytes[i];
-> +
-> +       return h;
-> +}
-
-no need, you can just do what btf_dedup_identity_hash_fn() is doing
-and pass int/long/size_t as is, hashmap implementation does additional
-multiplicative hashing on top to find a bucket
-
-> +
-> +static bool int_equal_fn(const void *a, const void *b, void *ctx)
-> +{
-> +       int *ia = (int *)a;
-> +       int *ib = (int *)b;
-> +
-> +       return *ia == *ib;
-> +}
-
-see btf_dedup_equal_fn(), no need for casting, just return a == b;
-
-> +
->  static const char *btf_name_of(const struct btf_dump *d, __u32 name_off)
->  {
->         return btf__name_by_offset(d->btf, name_off);
-> @@ -143,6 +177,7 @@ static void btf_dump_printf(const struct btf_dump *d, const char *fmt, ...)
->
->  static int btf_dump_mark_referenced(struct btf_dump *d);
->  static int btf_dump_resize(struct btf_dump *d);
-> +static int btf_dump_assign_decl_tags(struct btf_dump *d);
->
->  struct btf_dump *btf_dump__new(const struct btf *btf,
->                                btf_dump_printf_fn_t printf_fn,
-> @@ -179,11 +214,24 @@ struct btf_dump *btf_dump__new(const struct btf *btf,
->                 d->ident_names = NULL;
->                 goto err;
->         }
-> +       d->decl_tags = hashmap__new(int_hash_fn, int_equal_fn, NULL);
-> +       if (IS_ERR(d->decl_tags)) {
-> +               err = PTR_ERR(d->decl_tags);
-> +               d->decl_tags = NULL;
-> +               goto err;
-> +       }
->
->         err = btf_dump_resize(d);
->         if (err)
->                 goto err;
->
-> +       err = btf_dump_assign_decl_tags(d);
-> +       if (err)
-> +               goto err;
-> +
-> +       if (err)
-> +               goto err;
-> +
-
-I like the bullet-proof error checking, but checking just once should
-be enough ;)
-
->         return d;
->  err:
->         btf_dump__free(d);
-> @@ -232,7 +280,8 @@ static void btf_dump_free_names(struct hashmap *map)
->
->  void btf_dump__free(struct btf_dump *d)
->  {
-> -       int i;
-> +       int i, bkt;
-> +       struct hashmap_entry *cur;
->
->         if (IS_ERR_OR_NULL(d))
->                 return;
-> @@ -250,6 +299,9 @@ void btf_dump__free(struct btf_dump *d)
->         free(d->decl_stack);
->         btf_dump_free_names(d->type_names);
->         btf_dump_free_names(d->ident_names);
-> +       hashmap__for_each_entry(d->decl_tags, cur, bkt)
-> +               free(cur->value);
-> +       hashmap__free(d->decl_tags);
->
->         free(d);
->  }
-> @@ -373,6 +425,77 @@ static int btf_dump_mark_referenced(struct btf_dump *d)
->         return 0;
->  }
->
-> +static struct decl_tag_array *btf_dump_find_decl_tags(struct btf_dump *d, __u32 id)
-
-do we really need this wrapper?
 
 
-> +{
-> +       struct decl_tag_array *decl_tags = NULL;
-> +
-> +       hashmap__find(d->decl_tags, &id, (void **)&decl_tags);
+On 10/27/22 11:55 AM, Yonghong Song wrote:
+> 
+> 
+> On 10/27/22 11:43 AM, Yonghong Song wrote:
+>>
+>>
+>> On 10/25/22 3:27 PM, Eduard Zingerman wrote:
+>>> Use pahole --header_guards_db flag to enable encoding of header guard
+>>> information in kernel BTF. The actual correspondence between header
+>>> file and guard string is computed by the scripts/infer_header_guards.pl.
+>>>
+>>> The encoded header guard information could be used to restore the
+>>> original guards in the vmlinux.h, e.g.:
+>>>
+>>>      include/uapi/linux/tcp.h:
+>>>
+>>>        #ifndef _UAPI_LINUX_TCP_H
+>>>        #define _UAPI_LINUX_TCP_H
+>>>        ...
+>>>        union tcp_word_hdr {
+>>>          struct tcphdr hdr;
+>>>          __be32        words[5];
+>>>        };
+>>>        ...
+>>>        #endif /* _UAPI_LINUX_TCP_H */
+>>>
+>>>      vmlinux.h:
+>>>
+>>>        ...
+>>>        #ifndef _UAPI_LINUX_TCP_H
+>>>
+>>>        union tcp_word_hdr {
+>>>          struct tcphdr hdr;
+>>>          __be32 words[5];
+>>>        };
+>>>
+>>>        #endif /* _UAPI_LINUX_TCP_H */
+>>>        ...
+>>>
+>>> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+>>> ---
+>>>   scripts/link-vmlinux.sh | 13 ++++++++++++-
+>>>   1 file changed, 12 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+>>> index 918470d768e9..f57f621eda1f 100755
+>>> --- a/scripts/link-vmlinux.sh
+>>> +++ b/scripts/link-vmlinux.sh
+>>> @@ -110,6 +110,7 @@ vmlinux_link()
+>>>   gen_btf()
+>>>   {
+>>>       local pahole_ver
+>>> +    local extra_flags
+>>>       if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>>>           echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+>>> @@ -122,10 +123,20 @@ gen_btf()
+>>>           return 1
+>>>       fi
+>>> +    if [ "${pahole_ver}" -ge "124" ]; then
+>>> +        scripts/infer_header_guards.pl \
+>>
+>> We should have full path like
+>>      ${srctree}/scripts/infer_header_guards.pl
+>> so it can work if build directory is different from source directory.
+> 
+> handling arguments for infer_header_guards.pl should also take
+> care of full file path.
+> 
+> + /home/yhs/work/bpf-next/scripts/infer_header_guards.pl include/uapi 
+> include/generated/uapi arch/x86/include/uapi 
+> arch/x86/include/generated/uapi
+> + return 1
 
-this &id also made me realize that this is all broken, you are
-remembering random pointers in hashmap (they point onto stack, which
-gets reused once this function returns; but hashmap remember it, so on
-next lookup or update we are going to be reading random values in
-int_equal_fn?)
+Also, please pay attention to bpf selftest result. I see quite a
+few selftest failures with this patch set.
 
-you should be passing (void *)(long)id instead (and better yet let's
-refactor hashmap API as I suggested in previous patch)
-
-either I'm missing something, or this works by accident, which
-suggests that tests could be improved maybe?..
-
-> +
-> +       return decl_tags;
-> +}
-> +
-> +static struct decl_tag_array *realloc_decl_tags(struct decl_tag_array *tags, __u16 new_cap)
-> +{
-> +       size_t new_size = sizeof(struct decl_tag_array) + new_cap * sizeof(__u32);
-> +       struct decl_tag_array *new_tags = (tags
-> +                                          ? realloc(tags, new_size)
-> +                                          : calloc(1, new_size));
-
-realloc allocates if passed NULL, so no need for calloc, assuming
-proper initialization
-
-but let's use libbpf_reallocarray(), we'll waste few bytes on size_t,
-but given we expect few tags, it's not a big deal
-
-> +
-> +       if (!new_tags)
-> +               return NULL;
-> +
-> +       new_tags->cap = new_cap;
-> +
-> +       return new_tags;
-> +}
-> +
-> +/*
-> + * Scans all BTF objects looking for BTF_KIND_DECL_TAG entries.
-> + * The id's of the entries are stored in the `btf_dump.decl_tags` table,
-> + * grouped by a target type.
-> + */
-> +static int btf_dump_assign_decl_tags(struct btf_dump *d)
-> +{
-> +       int err;
-> +       __u32 id;
-> +       __u32 n = btf__type_cnt(d->btf);
-> +       __u32 new_capacity;
-> +       const struct btf_type *t;
-> +       struct decl_tag_array *decl_tags;
-
-few nits: generally, for new code try to do reverse Christmas try
-style, where widest line is at the top, shortest at the bottom
-
-but also here you can have id, new_capacity, and n on same line
-
-and s/new_capacity/new_cap/
-
-> +
-> +       for (id = 0; id < n; id++) {
-
-0 is VOID, we never really need to process it, just start with id = 1
-
-> +               t = btf__type_by_id(d->btf, id);
-> +
-> +               if (btf_kind(t) != BTF_KIND_DECL_TAG)
-> +                       continue;
-
-if (!btf_is_decl_tag(t))
-    continue;
-
-> +
-> +               decl_tags = btf_dump_find_decl_tags(d, t->type);
-> +               if (!decl_tags) {
-> +                       decl_tags = realloc_decl_tags(NULL, 1);
-> +                       if (!decl_tags)
-> +                               return -ENOMEM;
-> +                       err = hashmap__insert(d->decl_tags, &t->type, decl_tags,
-> +                                             HASHMAP_SET, NULL, NULL);
-> +                       if (err)
-> +                               return err;
-> +               } else if (decl_tags->cnt == decl_tags->cap) {
-> +                       new_capacity = decl_tags->cap * 2;
-> +                       if (new_capacity > 0xffff)
-> +                               return -ERANGE;
-> +                       decl_tags = realloc_decl_tags(decl_tags, new_capacity);
-> +                       if (!decl_tags)
-> +                               return -ENOMEM;
-> +                       decl_tags->cap = new_capacity;
-> +                       err = hashmap__update(d->decl_tags, &t->type, decl_tags, NULL, NULL);
-> +                       if (err)
-> +                               return err;
-> +               }
-
-really, let's just use libbpf_reallocarray? I was going to suggest
-libbpf_ensure_mem, but it allocates at least 16 elements, which seems
-like an overkill. But also given we don't expect a lot of tags per
-type, realloc()'ing with + 1 (no * 2 strategy) seems reasonable.
-Modern allocators either way use differently sized buckets, so when
-realloc size increment is small, allocator basically will do nothing.
-
-> +               decl_tags->tag_ids[decl_tags->cnt++] = id;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int btf_dump_add_emit_queue_id(struct btf_dump *d, __u32 id)
->  {
->         __u32 *new_queue;
-> @@ -899,6 +1022,23 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->         }
->  }
->
-> +static void btf_dump_emit_decl_tags(struct btf_dump *d, __u32 id)
-> +{
-> +       struct decl_tag_array *decl_tags = btf_dump_find_decl_tags(d, id);
-> +       struct btf_type *decl_tag_t;
-> +       const char *decl_tag_text;
-> +       __u32 i;
-> +
-> +       if (!decl_tags)
-> +               return;
-> +
-> +       for (i = 0; i < decl_tags->cnt; ++i) {
-> +               decl_tag_t = btf_type_by_id(d->btf, decl_tags->tag_ids[i]);
-> +               decl_tag_text = btf__name_by_offset(d->btf, decl_tag_t->name_off);
-> +               btf_dump_printf(d, " __attribute__((btf_decl_tag(\"%s\")))", decl_tag_text);
-> +       }
-> +}
-
-I'm wondering if we should anticipate that some compilers won't know
-about btf_decl_tag attribute? It seems a bit off for btf_dump to worry
-about this, but if we don't do something like:
-
-#if __has_attribute(btf_decl_tag)
-#define __btf_decl_tag(x) __attribute__((btf_decl_tag(#x)))
-#else
-#define __btf_decl_tag(x)
-#endif
-
-.
-.
-.
-
-struct my_struct {
-     ...
-} __btf_decl_tag(awesomeness);
-
-
-it will be hard for users to use resulting vmlinux.h with slightly older Clang?
-
-> +
->  static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
->                                      const struct btf_type *t)
->  {
-> @@ -964,6 +1104,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->         btf_dump_printf(d, "%s}", pfx(lvl));
->         if (packed)
->                 btf_dump_printf(d, " __attribute__((packed))");
-> +       btf_dump_emit_decl_tags(d, id);
->  }
->
->  static const char *missing_base_types[][2] = {
-> --
-> 2.34.1
->
+>>
+>>> +            include/uapi \
+>>> +            include/generated/uapi \
+>>> +            arch/${SRCARCH}/include/uapi \
+>>> +            arch/${SRCARCH}/include/generated/uapi \
+>>> +            > .btf.uapi_header_guards || return 1;
+>>> +        extra_flags="--header_guards_db .btf.uapi_header_guards"
+>>> +    fi
+>>> +
+>>>       vmlinux_link ${1}
+>>>       info "BTF" ${2}
+>>> -    LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+>>> +    LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} 
+>>> ${extra_flags} ${1}
+>>>       # Create ${2} which contains just .BTF section but no symbols. Add
+>>>       # SHF_ALLOC because .BTF will be part of the vmlinux image. 
+>>> --strip-all
