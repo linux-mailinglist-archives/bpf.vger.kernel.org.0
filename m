@@ -2,60 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ACB6102C8
-	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064DC61037F
+	for <lists+bpf@lfdr.de>; Thu, 27 Oct 2022 22:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236191AbiJ0UfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 16:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
+        id S237119AbiJ0UzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Oct 2022 16:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236695AbiJ0UfH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 16:35:07 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F9C71BCF;
-        Thu, 27 Oct 2022 13:35:00 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id n12so7954502eja.11;
-        Thu, 27 Oct 2022 13:35:00 -0700 (PDT)
+        with ESMTP id S237491AbiJ0Uyd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Oct 2022 16:54:33 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB724A2A83
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:46:34 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id kt23so8053878ejc.7
+        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 13:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zGVeDjXeujkiyXIf1q5xCCgm01cdpw69H2d31odE64k=;
-        b=fBJXKvJRp1Ca7iTLp64t9ofi+KwlKv9WLYGl6e2hHiWqlW84Jlo/JaPia3RxLRq0If
-         z6XqLm03FIhNWdEm4hkVmAOWZLI+a2gXkekjMAakB5MtDSB+jgKtogqxVwzFgV9SiJZ2
-         gZgBYc7iA61CMPCyLWk5kFhv/i8NxMtMofzNhnNene/oZApT2jv8KIDCT1OdWaoXsadB
-         t17RNUSQivq/7BfztlQ2p2y/5N074q9Dw/BjgYM9o9d/iniwt9PxX+06LdcGYSt4zm6m
-         PpINNQ/DolX583IKIV4bQBuUNZb/zbPuL1474BJebVmqwJ13O/DsbF72jjt0UUjI0xWq
-         aIFQ==
+        bh=oLClB1ARpHkTkku/IM30L9kBGVS2xVXx5L98MjyTQSg=;
+        b=U6XqbbRkry+LhrafHU56Fhq8jOBG12GFl+Hf98pzSLSLjvhrBabiDKovl0cVfmfZ0H
+         6OKgXIiFV5w8TWSkz8/ZLJhxMz50OnI9VncW4vikGIXl6YJcc7zeVyGNRgrWPWS0v+ss
+         L0JDKSszYygP3KEda9iQNeQhIqTxAqYBGjDH/jpzET2Q0V/CT3Jr1LUO1UMjlUBQ9Jkj
+         9HLj3N+0YnJGbeMWs+pRaeFnlGj7C1Jm1ODoz4uZn68YzvS59fmZVVWWoW1BATg1rTQz
+         F8qNlImA6rxFZ1bU7f/gE3E8+brLYFRx/O38gz5VmCNgg6TTmBX7feQP3gyePjz/fhmq
+         6ODQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zGVeDjXeujkiyXIf1q5xCCgm01cdpw69H2d31odE64k=;
-        b=omJ7sHV5IQWDmuZdqerqHMGZ2DYUB6b5UucYBq6hilAyBOlzk7TenaFgAFV0i4AXqM
-         anXcDOm8f2Efzajol5GioyfCFOnEWF8KeucLHvWKUI5E56Qs798j1GfVswL5p1PxK9T+
-         vVEX1URUlBsv8vMcJAx0ydM6Ffi3NM2q7+pJLqRcj651dSoMPVfQp+dxl6yHuP+i5fuD
-         VXmKkektHrIh16W8Sif3aDiCgysuc0RGRm+QL9Z4KrNhAE/a+tiYwjaq9GpBzZKH6dB3
-         Tyf3hpPn+LYlJhqkJJoEAWss7cdnY6c59hsg/eGeplcJNayh6lZKdeBZUcM1KCXW432+
-         +7zg==
-X-Gm-Message-State: ACrzQf2SNB+rwtWJRYYGPxHHXEUmbC6sDkGok3ByRYAAws9OtKFFhzcb
-        1QUj757EHAATouYD72zHMV5F5o6wfoEgg9nNxbBoNYl79do=
-X-Google-Smtp-Source: AMsMyM4cSjs8StZ1GJtQrsTPgDD/sIubNBaXZhOlmZcMKBk/VXGY6BIQfJfwCEQ9TM2FE0w2GmzBDAfyzjfikdMgAPw=
-X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
- sc36-20020a1709078a2400b00795bb7d643bmr38412590ejc.115.1666902899199; Thu, 27
- Oct 2022 13:34:59 -0700 (PDT)
+        bh=oLClB1ARpHkTkku/IM30L9kBGVS2xVXx5L98MjyTQSg=;
+        b=e+JcoX4k3BjjpoqTqArj7uYxbsMilcvuOfUSNonhrFDDWXsYqWBHPAlRSvqGLbR4A1
+         Ne4+0izPwnnkOJC+2h9GFU8Vg626bdq8j+7Um9iT/f8tJ+buigjsyzu8YamxOlzyc5XC
+         yg6395oKrmC+vGlYzkPRdcflZTb5TMCLdfe3P8HJwJARwei6xiEUmjNjf8iPNBjcCzqo
+         nM9b6J2Qtba/WNIx6QWgGx233pERaFl6Sx4gQN66Fdu10XLFqaIla3ZtB5L69ggamloS
+         g1rjnj3vHT5IMv1Ew40mOPXWovRAT0MZ3gZa/UcWNdGE5AU/rgMPKs/mvfT/QgpyCBiu
+         YELQ==
+X-Gm-Message-State: ACrzQf38cdCnS199grRCendykXHhQljuk23dlObEmu9fD7lFop+yX0b8
+        e2+XKiC+Eybgcx+oeSkXLf82fp2O8CdGHjwAXkU=
+X-Google-Smtp-Source: AMsMyM6MtERyDRvOU982ZbFM3x2m8GE3/kh4kVKTc0aNmWWx6Z2QytDvyLvJLJcKIB2lyWhtVw+EMi4b+rhyIMVYLJI=
+X-Received: by 2002:a17:907:1c88:b0:7ad:8f76:699e with SMTP id
+ nb8-20020a1709071c8800b007ad8f76699emr4323820ejc.114.1666903593450; Thu, 27
+ Oct 2022 13:46:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <1666866213-4394-1-git-send-email-wangyufen@huawei.com>
-In-Reply-To: <1666866213-4394-1-git-send-email-wangyufen@huawei.com>
+References: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
+In-Reply-To: <5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Oct 2022 13:34:47 -0700
-Message-ID: <CAEf4Bza03=MLPJN1fY+93W4=orqt=nHzQuUBw=7cz-qAwFQdvA@mail.gmail.com>
-Subject: Re: [PATCH net] bpf: Fix memory leaks in __check_func_call
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev, yhs@fb.com, joe@wand.net.nz
+Date:   Thu, 27 Oct 2022 13:46:21 -0700
+Message-ID: <CAEf4BzbsjBfFaf0M8_qLaEYAcUn4J9275tp0GEt5vb8hBg6Z9w@mail.gmail.com>
+Subject: Re: [Question]: BPF_CGROUP_{GET,SET}SOCKOPT handling when optlen > PAGE_SIZE
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -67,49 +65,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 3:03 AM Wang Yufen <wangyufen@huawei.com> wrote:
+On Wed, Oct 26, 2022 at 6:17 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >
-> kmemleak reports this issue:
+> The cgroup-bpf {get,set}sockopt prog is useful to change the optname behavior.
+> The bpf prog usually just handles a few specific optnames and ignores most
+> others.  For the optnames that it ignores, it usually does not need to change
+> the optlen.  The exception is when optlen > PAGE_SIZE (or optval_end - optval).
+> The bpf prog needs to set the optlen to 0 for this case or else the kernel will
+> return -EFAULT to the userspace.  It is usually not what the bpf prog wants
+> because the bpf prog only expects error returning to userspace when it has
+> explicitly 'return 0;' or used bpf_set_retval().  If a bpf prog always changes
+> optlen for optnames that it does not care to 0,  it may risk if the latter bpf
+> prog in the same cgroup may want to change/look-at it.
 >
-> unreferenced object 0xffff88817139d000 (size 2048):
->   comm "test_progs", pid 33246, jiffies 4307381979 (age 45851.820s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<0000000045f075f0>] kmalloc_trace+0x27/0xa0
->     [<0000000098b7c90a>] __check_func_call+0x316/0x1230
->     [<00000000b4c3c403>] check_helper_call+0x172e/0x4700
->     [<00000000aa3875b7>] do_check+0x21d8/0x45e0
->     [<000000001147357b>] do_check_common+0x767/0xaf0
->     [<00000000b5a595b4>] bpf_check+0x43e3/0x5bc0
->     [<0000000011e391b1>] bpf_prog_load+0xf26/0x1940
->     [<0000000007f765c0>] __sys_bpf+0xd2c/0x3650
->     [<00000000839815d6>] __x64_sys_bpf+0x75/0xc0
->     [<00000000946ee250>] do_syscall_64+0x3b/0x90
->     [<0000000000506b7f>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> The root case here is: In function prepare_func_exit(), the callee is
-> not released in the abnormal scenario after "state->curframe--;".
->
-> In addition, function __check_func_call() has a similar problem. In
-> the abnormal scenario before "state->curframe++;", the callee is alse
-> not released.
+> Would like to explore if there is an easier way for the bpf prog to handle it.
+> eg. does it make sense to track if the bpf prog has changed the ctx->optlen
+> before returning -EFAULT to the user space when ctx.optlen > max_optlen?
 
-For prepare_func_exit, wouldn't it be correct and cleaner to just move
-state->curframe--; to the very bottom of the function, right when we
-free callee and reset frame[] pointer to NULL?
-
-For __check_func_call, please use err_out label name to disambiguate
-it from the "err" variable.
-
->
-> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-> Fixes: fd978bf7fd31 ("bpf: Add reference tracking to verifier")
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> ---
->  kernel/bpf/verifier.c | 25 ++++++++++++++++---------
->  1 file changed, 16 insertions(+), 9 deletions(-)
->
-
-[...]
+Maybe optlen + optval/optval_end could be replaced with dynptr? If we
+do a new type of dynptr (DYNPTR_CTXBUF or something like that), we can
+implement tracking of whether it was ever modified through
+bpf_dynptr_write() or if direct memory access was ever used (was
+bpf_dynptr_data() called). Not sure how you'd know if
+bpf_dynptr_data() was used to modify data, though (this is where
+bpf_dynptr_data_rdonly() vs bpf_dynptr_data() would be helpful,
+perhaps). But just a seed of an idea, maybe you guys can somehow fit
+it here?
