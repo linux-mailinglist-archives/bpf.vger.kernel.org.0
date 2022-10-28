@@ -2,63 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C874611C76
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 23:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A5A611D55
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 00:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbiJ1VgN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 17:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        id S230150AbiJ1WRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 18:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbiJ1VgK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 17:36:10 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0541CFC6A
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 14:36:05 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id a13so9733404edj.0
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 14:36:05 -0700 (PDT)
+        with ESMTP id S230163AbiJ1WRv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 18:17:51 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99AD24C967;
+        Fri, 28 Oct 2022 15:17:48 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id v17so2976259plo.1;
+        Fri, 28 Oct 2022 15:17:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H6/XYOV7Ku38jt2/qM9e7cMh6gi4qcZRapX4yoew69g=;
-        b=QFfwbcHC/6mOjBnZTucW+NTcjq7qEclPtok3d4mUWPTdPz5tzp30zCYycryMMUSot+
-         dbsrnLfmZv/+c6OtlxJ4GTwpEh7b0wNPQHzYFZ+iKMLOAd7Sw5Ay906+Mjf5Hk7TZtYQ
-         pS4lyf8uXksvHvJzqMdSe7xzjAI/S/z5jJypIdk/NaV9HTOCpgbvZFQNbob1y6tInuT8
-         BxGxb80Th+NMVdlhPaRzV3DtmdZ9Npobj9dge2z6wGB7nmNPCrvdlZ3cd5yMA+GBluml
-         vQTiw0w4r06woy/rDZv+wolbSnVslVWUAeph3EFENqAS0Izh+F7ldCXoBxjcRc8A7VPL
-         bR4A==
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DFO6Rk7Tx4hw0SPw2ANYZShYSilBpAbikYfHtUSUgJ4=;
+        b=Hf6lkoQB117lQRZBQhZ8TavpzliAnVKU4z6Egh7Mj2rRvsRkP3HUz7+M4asMUUm9Qg
+         tbd4W48ncI5tocOxAV1T+M6pFzkFrwRfsNWOA8JdhdT+vwNUhcpAKo14VT23acJ5oT9n
+         w4+N2z39wOqfHnZuptoWHpj84RlSfVHmyvTwIIKkZ7GVFyLKioMLT3RA1bdESVB93amT
+         Aaqg0UCGxo/9IPzTkiA+0ePucVFGJ9P8F5kmkpu4svff97dPXyy/dY+nYkQUS1gzftLv
+         WhvNxedpbjvW9b2GwCGQtVgdxIyn+dk8D/5tr34cRHkwc9wOcpKlwN1OhFi6JBhPw0eM
+         UhnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H6/XYOV7Ku38jt2/qM9e7cMh6gi4qcZRapX4yoew69g=;
-        b=4Zt7pmVq125cQXOr1PjZv+z1tAxjchU0ynh5Xm3H42iE+FSIA6AGAGdM+ie4B4ODQQ
-         o921ZR3usYBzMDDx28w1/R86QGbV5E/gi73fUMyxvwmeylG9NyIUu8HoA1QQK31prJt1
-         LCpVQU7Yd8rpt1BbTnJFyJEYSdggaSmbLU2S1i2r9EX2y1ZPEH4pvGm6PxbPg7Lais4w
-         KKDg72SwJtQExa3wQ+6H6k5teMSg7mROiRITM8lb0VDz2vyxNG9DIz++UsYlE5AyWwER
-         QMgeTUEOMvZfg0rBVWOMqeVXrb7GwlkGfvqLycQ3eFKTmxMqUv3sjgNr6bqiCYMIXtJo
-         Bo5A==
-X-Gm-Message-State: ACrzQf3g2gTDuR00qwo8xDdCkCr1ckg9w4FQits0BvJZE6sVlMs4dntX
-        Sq88/SK9ZwVUBnehDjqMNpLemdlHWeD6RCNITUY=
-X-Google-Smtp-Source: AMsMyM54o/Tn5pmWbUQyob2kQvzVIoUA1DPR+yudXzF+ZnKV7soyvkNXPgOzR1lcz2NQvG2oLrnqOucN4ydhSzk0PEI=
-X-Received: by 2002:aa7:de9a:0:b0:44d:8191:44c5 with SMTP id
- j26-20020aa7de9a000000b0044d819144c5mr1389320edv.232.1666992963589; Fri, 28
- Oct 2022 14:36:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <CAEf4BzbScntAd4Yh5AWw+7bZhooYYaomwLYiuM0+iBtx_7LKoQ@mail.gmail.com>
- <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com> <CAEf4BzYT4pwmw64DaCTxR3_QjO5RRVadqVLO0h-hNa-+xOyLZw@mail.gmail.com>
- <af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com>
-In-Reply-To: <af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Oct 2022 14:35:51 -0700
-Message-ID: <CAEf4BzZE7boex4KBjMmhJ4Nib6BA71-pf5jiAg74FjEdr_2e6A@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, yhs@fb.com, arnaldo.melo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DFO6Rk7Tx4hw0SPw2ANYZShYSilBpAbikYfHtUSUgJ4=;
+        b=VF7VD+GndvQmq94F83K1anvriAzrFkwxqOkT8fwwz37OoPqjRttweQmIwKpa91jQUp
+         YNoWkdox+vJLIIpSyApXEE6BONrDRv9koV/Cv9FDFSDQFebDdYxn/eArJgTZRfdOoLQ4
+         GMe9XJBdy9lXQKGxQ07xnz23kinUPlaYBqaLwO0e4nSopsdKj1eaLIFFPX/ROxdH5rbn
+         VrrsZyTyH4UfaUVb1xyA0MGsNplslszdkp78mz5oUMfzGfVWH8YEHmD7KXBZyZACxhPQ
+         2VAPphuDMQgQIako1oGPTYD71E9vZZQ/gT5afz3yhfuaKE18RSZLHyMIkiqX/cyouj6x
+         x0Sw==
+X-Gm-Message-State: ACrzQf3yX/e+voSiWboUDqewgibdMprtCRO7ts6eVDJfa2Um0Wce7u1g
+        7ajNcLOJJNYG9JVBo1U4r+s=
+X-Google-Smtp-Source: AMsMyM7NLVqJGwqqynmjXRDuTkZXRqz6rlO0IH7hXm03TZpnHGovrwAm0ul3aMMH8d7xb7lpT/un6g==
+X-Received: by 2002:a17:902:778f:b0:17f:8347:ff83 with SMTP id o15-20020a170902778f00b0017f8347ff83mr1218994pll.146.1666995468109;
+        Fri, 28 Oct 2022 15:17:48 -0700 (PDT)
+Received: from localhost ([98.97.41.13])
+        by smtp.gmail.com with ESMTPSA id m2-20020a170902db0200b001868ba9a867sm3541528plx.303.2022.10.28.15.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Oct 2022 15:17:47 -0700 (PDT)
+Date:   Fri, 28 Oct 2022 15:17:46 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Wang Yufen <wangyufen@huawei.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     john.fastabend@gmail.com, jakub@cloudflare.com
+Message-ID: <635c550a430c6_256e2089c@john.notmuch>
+In-Reply-To: <1666941754-10216-1-git-send-email-wangyufen@huawei.com>
+References: <1666941754-10216-1-git-send-email-wangyufen@huawei.com>
+Subject: RE: [PATCH net] bpf, sockmap: fix the sk->sk_forward_alloc warning of
+ sk_stream_kill_queues()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,115 +73,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 28, 2022 at 11:57 AM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 10/28/22 10:13 AM, Andrii Nakryiko wrote:
-> > On Thu, Oct 27, 2022 at 6:33 PM Yonghong Song <yhs@meta.com> wrote:
-> >>
-> >>
-> >>
-> >> On 10/27/22 4:14 PM, Andrii Nakryiko wrote:
-> >>> On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >>>>
-> >>>> Hi BPF community,
-> >>>>
-> >>>> AFAIK there is a long standing feature request to use kernel headers
-> >>>> alongside `vmlinux.h` generated by `bpftool`. For example significant
-> >>>> effort was put to add an attribute `bpf_dominating_decl` (see [1]) to
-> >>>> clang, unfortunately this effort was stuck due to concerns regarding C
-> >>>> language semantics.
-> >>>>
-> >>>
-> >>> Maybe we should make another attempt to implement bpf_dominating_decl?
-> >>> That seems like a more elegant solution than any other implemented or
-> >>> discussed alternative. Yonghong, WDYT?
-> >>
-> >> I would say it would be very difficult for upstream to agree with
-> >> bpf_dominating_decl. We already have lots of discussions and we
-> >> likely won't be able to satisfy Aaron who wants us to emit
-> >> adequate diagnostics which will involve lots of other work
-> >> and he also thinks this is too far away from C standard and he
-> >> wants us to implement in a llvm/clang tool which is not what
-> >> we want.
-> >
-> > Ok, could we change the problem to detecting if some type is defined.
-> > Would it be possible to have something like
-> >
-> > #if !__is_type_defined(struct abc)
-> > struct abc {
-> > };
-> > #endif
-> >
-> > I think we talked about this and there were problems with this
-> > approach, but I don't remember details and how insurmountable the
-> > problem is. Having a way to check whether some type is defined would
-> > be very useful even outside of -target bpf parlance, though, so maybe
-> > it's the problem worth attacking?
->
-> Yes, we discussed this before. This will need to add additional work
-> in preprocessor. I just made a discussion topic in llvm discourse
->
-> https://discourse.llvm.org/t/add-a-type-checking-macro-is-type-defined-type/66268
->
-> Let us see whether we can get some upstream agreement or not.
->
+Wang Yufen wrote:
+> When running `test_sockmap` selftests, got the following warning:
+> 
+> WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
+> Call Trace:
+>   <TASK>
+>   inet_csk_destroy_sock+0x55/0x110
+>   tcp_rcv_state_process+0xd28/0x1380
+>   ? tcp_v4_do_rcv+0x77/0x2c0
+>   tcp_v4_do_rcv+0x77/0x2c0
+>   __release_sock+0x106/0x130
+>   __tcp_close+0x1a7/0x4e0
+>   tcp_close+0x20/0x70
+>   inet_release+0x3c/0x80
+>   __sock_release+0x3a/0xb0
+>   sock_close+0x14/0x20
+>   __fput+0xa3/0x260
+>   task_work_run+0x59/0xb0
+>   exit_to_user_mode_prepare+0x1b3/0x1c0
+>   syscall_exit_to_user_mode+0x19/0x50
+>   do_syscall_64+0x48/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The root case is: In commit 84472b436e76 ("bpf, sockmap: Fix more
+> uncharged while msg has more_data") , I used msg->sg.size replace
+> tosend rudely, which break the
+>    if (msg->apply_bytes && msg->apply_bytes < send)
+> scene.
 
-Thanks for starting the conversation! I'll be following along.
+Ah nice catch. Feel free to add my ACK on a v2 with small typo fixup.
 
-> >
-> >>
-> >>>
-> >>> BTW, I suggest splitting libbpf btf_dedup and btf_dump changes into a
-> >>> separate series and sending them as non-RFC sooner. Those improvements
-> >>> are independent of all the header guards stuff, let's get them landed
-> >>> sooner.
-> >>>
-> >>>> After some discussion with Alexei and Yonghong I'd like to request
-> >>>> your comments regarding a somewhat brittle and partial solution to
-> >>>> this issue that relies on adding `#ifndef FOO_H ... #endif` guards in
-> >>>> the generated `vmlinux.h`.
-> >>>>
-> >>>
-> >>> [...]
-> >>>
-> >>>> Eduard Zingerman (12):
-> >>>>     libbpf: Deduplicate unambigous standalone forward declarations
-> >>>>     selftests/bpf: Tests for standalone forward BTF declarations
-> >>>>       deduplication
-> >>>>     libbpf: Support for BTF_DECL_TAG dump in C format
-> >>>>     selftests/bpf: Tests for BTF_DECL_TAG dump in C format
-> >>>>     libbpf: Header guards for selected data structures in vmlinux.h
-> >>>>     selftests/bpf: Tests for header guards printing in BTF dump
-> >>>>     bpftool: Enable header guards generation
-> >>>>     kbuild: Script to infer header guard values for uapi headers
-> >>>>     kbuild: Header guards for types from include/uapi/*.h in kernel BTF
-> >>>>     selftests/bpf: Script to verify uapi headers usage with vmlinux.h
-> >>>>     selftests/bpf: Known good uapi headers for test_uapi_headers.py
-> >>>>     selftests/bpf: script for infer_header_guards.pl testing
-> >>>>
-> >>>>    scripts/infer_header_guards.pl                | 191 +++++
-> >>>>    scripts/link-vmlinux.sh                       |  13 +-
-> >>>>    tools/bpf/bpftool/btf.c                       |   4 +-
-> >>>>    tools/lib/bpf/btf.c                           | 178 ++++-
-> >>>>    tools/lib/bpf/btf.h                           |   7 +-
-> >>>>    tools/lib/bpf/btf_dump.c                      | 232 +++++-
-> >>>>    .../selftests/bpf/good_uapi_headers.txt       | 677 ++++++++++++++++++
-> >>>>    tools/testing/selftests/bpf/prog_tests/btf.c  | 152 ++++
-> >>>>    .../selftests/bpf/prog_tests/btf_dump.c       |  11 +-
-> >>>>    .../bpf/progs/btf_dump_test_case_decl_tag.c   |  39 +
-> >>>>    .../progs/btf_dump_test_case_header_guards.c  |  94 +++
-> >>>>    .../bpf/test_uapi_header_guards_infer.sh      |  33 +
-> >>>>    .../selftests/bpf/test_uapi_headers.py        | 197 +++++
-> >>>>    13 files changed, 1816 insertions(+), 12 deletions(-)
-> >>>>    create mode 100755 scripts/infer_header_guards.pl
-> >>>>    create mode 100644 tools/testing/selftests/bpf/good_uapi_headers.txt
-> >>>>    create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> >>>>    create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_header_guards.c
-> >>>>    create mode 100755 tools/testing/selftests/bpf/test_uapi_header_guards_infer.sh
-> >>>>    create mode 100755 tools/testing/selftests/bpf/test_uapi_headers.py
-> >>>>
-> >>>> --
-> >>>> 2.34.1
-> >>>>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> 
+> Fixes: 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
+> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+>  net/ipv4/tcp_bpf.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> index a1626af..38d4735 100644
+> --- a/net/ipv4/tcp_bpf.c
+> +++ b/net/ipv4/tcp_bpf.c
+> @@ -278,7 +278,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  {
+>  	bool cork = false, enospc = sk_msg_full(msg);
+>  	struct sock *sk_redir;
+> -	u32 tosend, delta = 0;
+> +	u32 tosend, orgsize, sended, delta = 0;
+>  	u32 eval = __SK_NONE;
+>  	int ret;
+>  
+> @@ -333,10 +333,12 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  			cork = true;
+>  			psock->cork = NULL;
+>  		}
+> -		sk_msg_return(sk, msg, msg->sg.size);
+> +		sk_msg_return(sk, msg, tosend);
+>  		release_sock(sk);
+>  
+> +		orgsize = msg->sg.size;
+>  		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
+> +		sended = orgsize - msg->sg.size;
+
+Small english nitpick. Past tense of send is sent so could we make this,
+
+                sent = orgsize - msg->sg.size;
+
+>  
+>  		if (eval == __SK_REDIRECT)
+>  			sock_put(sk_redir);
+> @@ -374,8 +376,8 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  		if (msg &&
+>  		    msg->sg.data[msg->sg.start].page_link &&
+>  		    msg->sg.data[msg->sg.start].length) {
+> -			if (eval == __SK_REDIRECT)
+> -				sk_mem_charge(sk, msg->sg.size);
+> +			if (eval == __SK_REDIRECT && tosend > sended)
+
+Other nit, you could probably omit the 'tosend > sended' check here. Because
+otherwise tosend == sended and the mem_charge of zer is a nop. But OTOH
+its probably ok to keep the check to avoid some extra work.
+
+> +				sk_mem_charge(sk, tosend - sended);
+>  			goto more_data;
+>  		}
+>  	}
+> -- 
+> 1.8.3.1
