@@ -2,120 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7E06119D0
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 20:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719756119DC
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 20:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbiJ1SBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 14:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        id S229500AbiJ1SFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 14:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbiJ1SBp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 14:01:45 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B16211290;
-        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id e4so5416208pfl.2;
-        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bUx8fY5yV5k6b3NAzZ7ONnYGBUoPPnSRBV9IAdB2IcQ=;
-        b=R5qTkGNPJ2owG22N7vSR56g7SchuiPlUzXI4dNN1k/rvLdTdqG4kadsZfKegVIwN3o
-         TvJ+pVZ2pU3FtvqqRVpQ3m52vnAGIAr95xQetLdYfQ4vq28RiTHw9kdJTuDUysll5xnO
-         3Tos32ojE0o1gtPF2NjT8CPvwK8nzy+JcYOsS6vVJSWpMIbTbdX6T63xKsDjuBi3Kiu1
-         eVING4QaSDU1jdHSCxToNVDMQIros4oZD2YpJHGXTO+mfkDRwiM4NmeqUN5cSUCyrQW7
-         1/kY9mkFENtb2XZzYGnwY+R5EFuLHvnUUHAawQEd0e6id73h9c/3NLyUoYcwZAtB8cSw
-         cPHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=bUx8fY5yV5k6b3NAzZ7ONnYGBUoPPnSRBV9IAdB2IcQ=;
-        b=bscsi6Us4db1wZnhialOlVVYmGLNL28PjeBy+ULBGEDa+nA6hPhf8lLHziaFvl0R6U
-         BMgvYt1X2ocTVAa6vj37pJM4Id/PNUsepAQSzXD8++Ibu9wgwp4Fdxbq9JN5uB3mMtiA
-         R15UCFXLG6sODhBYIWmGJB3Dg9J4PqZF2StFxWXeetGKBkegAXIB+twBNXphPJciUb6a
-         cN5haWj1nSC9dh/y9I+5nmcX26cen/oy+ejxRdsLxGmO43IS4V3V00jYlLfSaCwg2V6F
-         xVgZ3a27pvkuFv1rv/MBkcYxiHc61EqO7GjMtJ7DOxQzxgR7z1LlbtRxRYav9d+9HwMf
-         dD7Q==
-X-Gm-Message-State: ACrzQf3+u7hfy7izE+tmR8BD8wzoZ7hBH/Wi9cm/rRKh/flH/uV5tO0x
-        MoEAPbRo+et/IADdVYTrT8A=
-X-Google-Smtp-Source: AMsMyM4/4142AtL9gDKsW66R2DQwFckkQXdIqI8rIATA3ZjgBGVT7PVXnop8c1DLVI7LR3SYgeTyiQ==
-X-Received: by 2002:a63:1308:0:b0:440:5517:c99d with SMTP id i8-20020a631308000000b004405517c99dmr636154pgl.550.1666980100358;
-        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
-Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:976f:f075:7c14:87a2])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170903110300b00186b86ed450sm3400236plh.156.2022.10.28.11.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 11:01:38 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        bpf@vger.kernel.org
-Subject: [PATCH 4/4] perf lock contention: Increase default stack skip to 4
-Date:   Fri, 28 Oct 2022 11:01:28 -0700
-Message-Id: <20221028180128.3311491-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
-In-Reply-To: <20221028180128.3311491-1-namhyung@kernel.org>
-References: <20221028180128.3311491-1-namhyung@kernel.org>
+        with ESMTP id S229528AbiJ1SFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 14:05:04 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B7E78217;
+        Fri, 28 Oct 2022 11:05:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 719A1B82C0C;
+        Fri, 28 Oct 2022 18:05:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70644C433D6;
+        Fri, 28 Oct 2022 18:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666980299;
+        bh=/LKUWu2e7jT40ZDk4GTWkD659giq+VNMOVEzdHsDBrw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=scjCkeAZeUa5GtTqab773Jlj4mT4u/mMP/SX7Z43SsoGQ0nhSvGAHlK8rZV1VdlAK
+         ZEM1rpB0/JagPZL+ApadDWvp2k8NfOGvfkozA+If70bdVAvDUoRo6BawMxHo5GQktY
+         7U5HX85v7tATm8RK5rXBdoGsW+/NkEpWjFFGwHhPJ+ob+Xj0ARiwXvXl3wRFeQDhaf
+         0hXyyUh7aHC4Mt8s2YjWfkZeY74YWX1R8u5O93CMpo4ryRF/rBD+ulAWeJt9MX0/Mo
+         DHj49EykUP53Gk1X80/7EqpKbwhVeOgxdbFZCEuOzxgs+LsrTSGstHT/ApoJBS6FYR
+         Imfvsh1Md7ppA==
+Date:   Fri, 28 Oct 2022 11:04:57 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
+Message-ID: <20221028110457.0ba53d8b@kernel.org>
+In-Reply-To: <635bfc1a7c351_256e2082f@john.notmuch>
+References: <20221027200019.4106375-1-sdf@google.com>
+        <635bfc1a7c351_256e2082f@john.notmuch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In most configurations, it works well with skipping 4 entries by
-default.  If some systems still have 3 BPF internal stack frames,
-the next frame should be in a lock function which will be skipped
-later when it tries to find a caller.  So increasing to 4 won't
-affect such systems too.
+On Fri, 28 Oct 2022 08:58:18 -0700 John Fastabend wrote:
+> A bit of extra commentary. By exposing the raw kptr to the rx
+> descriptor we don't need driver writers to do anything.
+> And can easily support all the drivers out the gate with simple
+> one or two line changes. This pushes the interesting parts
+> into userspace and then BPF writers get to do the work without
+> bother driver folks and also if its not done today it doesn't
+> matter because user space can come along and make it work
+> later. So no scattered kernel dependencies which I really
+> would like to avoid here. Its actually very painful to have
+> to support clusters with N kernels and M devices if they
+> have different features. Doable but annoying and much nicer
+> if we just say 6.2 has support for kptr rx descriptor reading
+> and all XDP drivers support it. So timestamp, rxhash work
+> across the board.
 
-With --stack-skip=0, I can see something like this:
+IMHO that's a bit of wishful thinking. Driver support is just a small
+piece, you'll have different HW and FW versions, feature conflicts etc.
+In the end kernel version is just one variable and there are many others
+you'll already have to track.
 
-    24     49.84 us      7.41 us      2.08 us        mutex   bpf_prog_e1b85959d520446c_contention_begin+0x12e
-                    0xffffffffc045040e  bpf_prog_e1b85959d520446c_contention_begin+0x12e
-                    0xffffffffc045040e  bpf_prog_e1b85959d520446c_contention_begin+0x12e
-                    0xffffffff82ea2071  bpf_trace_run2+0x51
-                    0xffffffff82de775b  __bpf_trace_contention_begin+0xb
-                    0xffffffff82c02045  __mutex_lock+0x245
-                    0xffffffff82c019e3  __mutex_lock_slowpath+0x13
-                    0xffffffff82c019c0  mutex_lock+0x20
-                    0xffffffff830a083c  kernfs_iop_permission+0x2c
+And it's actually harder to abstract away inter HW generation
+differences if the user space code has to handle all of it.
 
-Cc: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/lock-contention.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> To find the offset of fields (rxhash, timestamp) you can use
+> standard BTF relocations we have all this machinery built up
+> already for all the other structs we read, net_devices, task
+> structs, inodes, ... so its not a big hurdle at all IMO. We
+> can add userspace libs if folks really care, but its just a read so
+> I'm not even sure that is helpful.
+> 
+> I think its nicer than having kfuncs that need to be written
+> everywhere. My $.02 although I'll poke around with below
+> some as well. Feel free to just hang tight until I have some
+> code at the moment I have intel, mellanox drivers that I
+> would want to support.
 
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index b8cb8830b7bc..e3c061b1795b 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -91,7 +91,7 @@ struct thread_stat {
-  * Number of stack trace entries to skip when finding callers.
-  * The first few entries belong to the locking implementation itself.
-  */
--#define CONTENTION_STACK_SKIP  3
-+#define CONTENTION_STACK_SKIP  4
- 
- /*
-  * flags for lock:contention_begin
--- 
-2.38.1.273.g43a17bfeac-goog
-
+I'd prefer if we left the door open for new vendors. Punting descriptor
+parsing to user space will indeed result in what you just said - major
+vendors are supported and that's it.
