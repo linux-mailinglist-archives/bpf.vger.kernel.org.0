@@ -2,61 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4656C611908
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4C5611916
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbiJ1ROJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 13:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S229597AbiJ1RSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 13:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbiJ1RNl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 13:13:41 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A25101D
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:13:33 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id kt23so14397277ejc.7
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:13:32 -0700 (PDT)
+        with ESMTP id S229473AbiJ1RSN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 13:18:13 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE376D9E1
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:18:12 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id m15so8781030edb.13
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:18:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSu+L6BojufpBrDS/V3oR3zJYMtcVUHvsP7LdPeoN10=;
-        b=EVE8DvgJfDihxfIWYVmdSHqkGru81o5PWFH5JwilQ7MWwmgO4C/pgRfEQiF4Kgcpmf
-         sTqc9HKrV2U/SQDOIKnptce0FGcOQsr6XLtXwdMj5zvX9m74+nuQ9/lH7akEF26X0HLI
-         HW5vzmdWEEra+li7rhSKVRLAmSonLN+GX0o981qjel2qUV4VM1EFiGrYqsF9JN6TgsIL
-         9o8E4F+tR2JqpQLqh9YBxuvtbUBc2glItBOvXLW+a4TmNTn4jqi+F2xwnF0WpbqSsNe8
-         WnvNbGv8C/wY8HHy56y7CiUYm+ktO+nlck1mnF7bjpjivEOCMgXILWVmNzQVHi6Tanhe
-         vrcA==
+        bh=YJzE1X5uEpZW2wbMCTv/6vFq/t9SZfBtbWwyFR0IkwE=;
+        b=iWqw/uzej3Wt2brzrA9hMmjaPyYYifLG/i5c52aNV/vQ8l9GCvADK+uFSla+HHtUlt
+         KlhxFPt/NC61bCxoAKrYoMFQUVmWZXAOvpUTVk381PvwPZbJq6qFQIfH4LDVrYOgd3Db
+         4w1iGHwey+uHIk5vje3Oycvm8U2chTo7sa0Psgniu8CAtKAihw4trl3hKL3eSRHqVdWZ
+         Yi+Ei7o8AkqjwBqWl7rsaBcoV5+MpjgLEbQ+X/5MwiOA8vVndTNljfxiry0QGAm9P7Ve
+         z61vvw7XrgU4P50bK9PDckyLfqjz6r2aIDcosd6aG7Q/WDj0XUGflXnuUSSNRqC9uVw3
+         uvqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZSu+L6BojufpBrDS/V3oR3zJYMtcVUHvsP7LdPeoN10=;
-        b=iOMNLB7jTRR8DI+mAEkq+1hZE8E/Efp7433yi3ChmtQUR9/p9Q8Gy8uanX+nOjOgPY
-         5r/1VhoMCktPcsMGr8KgPMpKGW1NBOrxscDMDgE7M70mTcoVGp3AZjjoXB7z2zR7Uhl7
-         xDIUOBRx7zNEAHWjEwZ6KE2V2tVch+5QncM066D55yodoNI/SGOyinHjeWV//L5L9Bbt
-         I/g9hB5KoCEmZfvqdaDT8uCZYdbPyEceW16bT+PmUPYzpARk8h0daMe0Oz46T2TjuZ5V
-         GXVjElEjouDN1F48MrclcMEt+U5Q8C9SJxRpFSeEX402MyLSOzVC7m0Q4V/bkFBAcHAB
-         JdbQ==
-X-Gm-Message-State: ACrzQf0oScAm3WBVT1DZC943ZyIu6OIhlLh+zDRREYtlN/arLI6QWlnO
-        1zd8asJeR79BqCjp3zAYVrfRfMesglvYBvkYL2k=
-X-Google-Smtp-Source: AMsMyM5JBCgEcwpwRCAuoipwGgCjnyrC4F2HLDRcgkXLqtRP0Bo8nA8z4pz3U9VaGEdI/TCc51YEqqmD08dS5jQpmnA=
-X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
- sc36-20020a1709078a2400b00795bb7d643bmr331938ejc.115.1666977211404; Fri, 28
- Oct 2022 10:13:31 -0700 (PDT)
+        bh=YJzE1X5uEpZW2wbMCTv/6vFq/t9SZfBtbWwyFR0IkwE=;
+        b=ljbAD7pikv1dKECXhZHmfOehY8yRtYuOP9nLsjevAtaFnkLidfHW2frIca6IxZL2gB
+         VHKjqUXGJ3U5ElbIZqJsEdk/Oaw1j2epGh2M05Rwgghsgy2ucxlsVbtvNiGmDuibrtLN
+         OsKyYHbtspDHbsKVbAfq6aeFR0CGts+4QiR5L0RqmIfXbJRYhR8p1TfrDRfQv973pj8j
+         rWNxVOa9nfjpc9XBN2OHY9+M1Q1RtDqoIhGtpnbXbT2TYzSmve86FyNTCxi6gwo3OHSD
+         MpU2cbbRAMgImp0AYJptK/mTjP/iG4GPX5JeFYEE+nUlR+Q5sXpbSPjILxAEYQDd7gfc
+         kDJg==
+X-Gm-Message-State: ACrzQf2CpFTbSveRCumH/Za3sVU8i7zFz6+4JJB94b4kMB/3f2vO54Dp
+        CT95JgJ2dHN7iAa46R4YPShABVMg3W8ajzjwHpI=
+X-Google-Smtp-Source: AMsMyM6LIb7G1iw7ov8Ox+F3zxmGcRqroS1AoOWIMiVY8x0sAQxqouyBHbnaSMrRpnqR5MoGHy99DTQO9U6pZtSIS/U=
+X-Received: by 2002:aa7:c2ca:0:b0:461:89a6:2281 with SMTP id
+ m10-20020aa7c2ca000000b0046189a62281mr477359edp.260.1666977490943; Fri, 28
+ Oct 2022 10:18:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <CAEf4BzbScntAd4Yh5AWw+7bZhooYYaomwLYiuM0+iBtx_7LKoQ@mail.gmail.com>
- <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com>
-In-Reply-To: <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+ <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com> <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
+ <Y1t2OxF3o0mtF1Hm@kroah.com>
+In-Reply-To: <Y1t2OxF3o0mtF1Hm@kroah.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Oct 2022 10:13:19 -0700
-Message-ID: <CAEf4BzYT4pwmw64DaCTxR3_QjO5RRVadqVLO0h-hNa-+xOyLZw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, yhs@fb.com, arnaldo.melo@gmail.com
+Date:   Fri, 28 Oct 2022 10:17:58 -0700
+Message-ID: <CAEf4Bzbdkp4CbXpGvCRSm8DK+SzSPMk9Lf2qtZaRCqkZAZEzEQ@mail.gmail.com>
+Subject: Re: Closing the BPF map permission loophole
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,99 +72,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 6:33 PM Yonghong Song <yhs@meta.com> wrote:
+On Thu, Oct 27, 2022 at 11:26 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
->
->
-> On 10/27/22 4:14 PM, Andrii Nakryiko wrote:
-> > On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >>
-> >> Hi BPF community,
-> >>
-> >> AFAIK there is a long standing feature request to use kernel headers
-> >> alongside `vmlinux.h` generated by `bpftool`. For example significant
-> >> effort was put to add an attribute `bpf_dominating_decl` (see [1]) to
-> >> clang, unfortunately this effort was stuck due to concerns regarding C
-> >> language semantics.
-> >>
+> On Thu, Oct 27, 2022 at 09:54:57AM -0700, Andrii Nakryiko wrote:
+> > But first, two notes.
 > >
-> > Maybe we should make another attempt to implement bpf_dominating_decl?
-> > That seems like a more elegant solution than any other implemented or
-> > discussed alternative. Yonghong, WDYT?
+> > 1) Backporting this is going to be hard, and I don't think that should
+> > be the goal, it's going to be too intrusive, probably.
 >
-> I would say it would be very difficult for upstream to agree with
-> bpf_dominating_decl. We already have lots of discussions and we
-> likely won't be able to satisfy Aaron who wants us to emit
-> adequate diagnostics which will involve lots of other work
-> and he also thinks this is too far away from C standard and he
-> wants us to implement in a llvm/clang tool which is not what
-> we want.
+> Don't worry about backporting when doing your work.  Get it correct
+> first, and let others worry about any backporting if it's even needed.
+>
 
-Ok, could we change the problem to detecting if some type is defined.
-Would it be possible to have something like
+Yep, I agree, thanks, Greg!
 
-#if !__is_type_defined(struct abc)
-struct abc {
-};
-#endif
+I was pointing this out here explicitly because during previous
+discussions the "backportability" aspect was a distraction and reason
+for miscommunication issues and I wanted to get that out of the way.
 
-I think we talked about this and there were problems with this
-approach, but I don't remember details and how insurmountable the
-problem is. Having a way to check whether some type is defined would
-be very useful even outside of -target bpf parlance, though, so maybe
-it's the problem worth attacking?
-
+> thanks,
 >
-> >
-> > BTW, I suggest splitting libbpf btf_dedup and btf_dump changes into a
-> > separate series and sending them as non-RFC sooner. Those improvements
-> > are independent of all the header guards stuff, let's get them landed
-> > sooner.
-> >
-> >> After some discussion with Alexei and Yonghong I'd like to request
-> >> your comments regarding a somewhat brittle and partial solution to
-> >> this issue that relies on adding `#ifndef FOO_H ... #endif` guards in
-> >> the generated `vmlinux.h`.
-> >>
-> >
-> > [...]
-> >
-> >> Eduard Zingerman (12):
-> >>    libbpf: Deduplicate unambigous standalone forward declarations
-> >>    selftests/bpf: Tests for standalone forward BTF declarations
-> >>      deduplication
-> >>    libbpf: Support for BTF_DECL_TAG dump in C format
-> >>    selftests/bpf: Tests for BTF_DECL_TAG dump in C format
-> >>    libbpf: Header guards for selected data structures in vmlinux.h
-> >>    selftests/bpf: Tests for header guards printing in BTF dump
-> >>    bpftool: Enable header guards generation
-> >>    kbuild: Script to infer header guard values for uapi headers
-> >>    kbuild: Header guards for types from include/uapi/*.h in kernel BTF
-> >>    selftests/bpf: Script to verify uapi headers usage with vmlinux.h
-> >>    selftests/bpf: Known good uapi headers for test_uapi_headers.py
-> >>    selftests/bpf: script for infer_header_guards.pl testing
-> >>
-> >>   scripts/infer_header_guards.pl                | 191 +++++
-> >>   scripts/link-vmlinux.sh                       |  13 +-
-> >>   tools/bpf/bpftool/btf.c                       |   4 +-
-> >>   tools/lib/bpf/btf.c                           | 178 ++++-
-> >>   tools/lib/bpf/btf.h                           |   7 +-
-> >>   tools/lib/bpf/btf_dump.c                      | 232 +++++-
-> >>   .../selftests/bpf/good_uapi_headers.txt       | 677 ++++++++++++++++++
-> >>   tools/testing/selftests/bpf/prog_tests/btf.c  | 152 ++++
-> >>   .../selftests/bpf/prog_tests/btf_dump.c       |  11 +-
-> >>   .../bpf/progs/btf_dump_test_case_decl_tag.c   |  39 +
-> >>   .../progs/btf_dump_test_case_header_guards.c  |  94 +++
-> >>   .../bpf/test_uapi_header_guards_infer.sh      |  33 +
-> >>   .../selftests/bpf/test_uapi_headers.py        | 197 +++++
-> >>   13 files changed, 1816 insertions(+), 12 deletions(-)
-> >>   create mode 100755 scripts/infer_header_guards.pl
-> >>   create mode 100644 tools/testing/selftests/bpf/good_uapi_headers.txt
-> >>   create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> >>   create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_header_guards.c
-> >>   create mode 100755 tools/testing/selftests/bpf/test_uapi_header_guards_infer.sh
-> >>   create mode 100755 tools/testing/selftests/bpf/test_uapi_headers.py
-> >>
-> >> --
-> >> 2.34.1
-> >>
+> greg k-h
