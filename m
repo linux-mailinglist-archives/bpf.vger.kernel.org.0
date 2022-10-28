@@ -2,67 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DCC6118FE
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81D7611900
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbiJ1RLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 13:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
+        id S231252AbiJ1RLt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 13:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbiJ1RKs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 13:10:48 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39325190E60;
-        Fri, 28 Oct 2022 10:08:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z18so3780564edb.9;
-        Fri, 28 Oct 2022 10:08:39 -0700 (PDT)
+        with ESMTP id S231213AbiJ1RL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 13:11:28 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0334AB2F;
+        Fri, 28 Oct 2022 10:09:29 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id y14so14402936ejd.9;
+        Fri, 28 Oct 2022 10:09:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dvfGQP4rEg3Kw5lEX3ZtIQ80dTIYCeCUaIYb9XGpr/k=;
-        b=cb7GzC2LOMi2HhBTaPvR5AaOzavwMgVz+NZbfwHKwNRcM6fXi1A80WsbFn7ohk6ixh
-         KiBO060pfwirL26Ikmt1dKQKccxlcIiP9n7JiRSByONWP1ZxDKLVJTT8CXKd6a9KxbqE
-         lQh8XOD3G8kfyIv586Kqsf6SzQS3m9Qhisr+MHGDV5DI13m/4U29o44v7dK5HnvLnioN
-         fK15pRyu5AyHYKoLipfjv/+0WDqMCyKwU3xAVX4WAIxHNh7cbyNGJzObNo1oUrCIgL/p
-         fwaaN2n4onbCzWX+qO4vINqOycBfesVQFGRnDnyZiXgvL1Yo3UzskM92p+iMDLvJX73H
-         i+Ew==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DmkRUERi/djKN+dUf3WvsFjA+judctr5yaDrjNmVGio=;
+        b=jJFCoxM3RAvvEja4GZB2/BapzDQxhh3QnIzT/wXZpRjFyOTy+utBzX7fiOvmhwnV0C
+         8x3jVKGfbLsn0UCb8mKpMjvBG2lqI2pTUqS1C365iL1qxpO9VY2Sm9w/bJL4jUYRmSiU
+         0xqnARPXB0H9WNJinmuzp2q3wwGLwSUFxDd4Yv+8Bm+kVvdwyMw84lHsUC0KEKgpzTDg
+         8hQUvAoEg82WjgVq1lI0NjjhLSxzyP+f3qvxAtK/68+pfF+eSiDBj3FQROHdEx8dSKHs
+         7pta2FzaYSzo6UBoub4U7+9ls96o3mQYwGD4Ck2bvXiJKtycWpN0I6Au8SpCtt/HVf2S
+         4mjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dvfGQP4rEg3Kw5lEX3ZtIQ80dTIYCeCUaIYb9XGpr/k=;
-        b=b9RPD+7Pmya7N0OJSpkm/6vLdCXhyy3xDsBTtvT4i38IraTDzMBy6jkRLFddUdEo1Z
-         gVVQjE1mOlqWOtIIiISz22urnrbId0mESSZRfoP5pTykxM3Wk5gzMZjIOKj9rhaoJH2M
-         ruVgN0aubnygC2y/AktzGQjMk7KGFIzOLHX4piB+zu7urxlyRpWhT8nmuxZYVD5Uof2R
-         EBnggmPicqA53bSFKgtNRM7W/biait2q98jYDg6gRv6CcTPmNr8n+Js0rIX1p87WbHdf
-         GtTDi+/cSCZbC49AsIW9uTKx9VRUee/hh7SHVViixxKAvx255YSOn1TX1jWpUggkGoeK
-         z9QA==
-X-Gm-Message-State: ACrzQf3sKoTfRR5R4bwlFkgN2fP3bis0TnmEZ5OrhGwdlzQpIiF6OKVd
-        KD7MZ1PlZ1w7u8bIRltiRTKugryktVTJRTS8RS4=
-X-Google-Smtp-Source: AMsMyM73DDBTb/37IgY8U4uAkjDXpD1SHFZ7Pv5EOMO6OVXaecY+4kd0FuaftXvRtchfac9FwrV7biq8VpNfEyCeSq8=
-X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
- o4-20020aa7c504000000b00461122b882bmr456141edq.14.1666976917671; Fri, 28 Oct
- 2022 10:08:37 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DmkRUERi/djKN+dUf3WvsFjA+judctr5yaDrjNmVGio=;
+        b=MfUyUZEbdIv+JWEJ/sNh9go6FvbQM4rHmlHhM4UNo5t3eb0JRr+UgdKl2bLt4KOUN+
+         VDWN+PhOQidviM7+OBIbEa6BtNY8jRZq4MecU16wgEEOChmyajoNmPd0Y/x44fMd0Fdm
+         ikOKoUy7baL2pJGvJ1+8jwTU9cgJaAq0N96s3Ke5zgCjtdWkLautRnm7S6vvs6g42JSA
+         OMuPeWVlu5pIf3LtbgYDiT7jark9mhXoMN1pqrYCmGYxENxJMa9UVgpShr0inDUXE+uJ
+         QrYngGTEU+OfMbYRKIJWzoS3wyNorsNOrNaFbrfEs7VWHc9Sebr5OVJvehs8/BauQZ5g
+         bwSA==
+X-Gm-Message-State: ACrzQf1dx0kc13ivXDb9l+nh3hf2HFznHYjqKD1T9h0TQI3KvKfmcG0Z
+        0qv/EgepkbxQW3jI2mVCbzYi7ePqOGWQYsuXdbU=
+X-Google-Smtp-Source: AMsMyM5x3xq7JKy8ZurDjYGS7SBsEe8XMnm6tcYj+Aj4zRUp9fKX8RxV/H01DqYiJhujNvTmn65t9bNr6SSovr+NPi0=
+X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
+ s5-20020a17090699c500b0073d70c51a4fmr327011ejn.302.1666976968337; Fri, 28 Oct
+ 2022 10:09:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4Bzbq0PSsc6xCGSF=Af-pcysjt8Lv76-4N65AJMpXOOpOcg@mail.gmail.com>
- <tencent_CD22930180507496CE65B30ACBABC4681506@qq.com>
-In-Reply-To: <tencent_CD22930180507496CE65B30ACBABC4681506@qq.com>
+References: <CAEf4BzZAOm8Q4U2vcDjQ7T2_PdoMb5NTWUcL-vzzbXH5tntdOQ@mail.gmail.com>
+ <tencent_92599297262AE4AF18A39988330606425408@qq.com>
+In-Reply-To: <tencent_92599297262AE4AF18A39988330606425408@qq.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Oct 2022 10:08:25 -0700
-Message-ID: <CAEf4BzazYVkVKrKzPD8a7tRZrcWDvvgoVksJHYk3+46V=8kZhw@mail.gmail.com>
-Subject: Re: Re: [PATCH] selftests/bpf: Fix strncpy() fortify warning
+Date:   Fri, 28 Oct 2022 10:09:16 -0700
+Message-ID: <CAEf4Bza_6qND8iOuiur+xX0cBVkKJfKoJAOjihnVYRjoB3tWqw@mail.gmail.com>
+Subject: Re: [PATCH] samples/bpf: Fix sockex3: missing BPF prog type
 To:     Rong Tao <rtoax@foxmail.com>
 Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
         jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, rongtao@cestc.cn, sdf@google.com, shuah@kernel.org,
+        martin.lau@linux.dev, rongtao@cestc.cn, sdf@google.com,
         song@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,37 +70,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 5:26 PM Rong Tao <rtoax@foxmail.com> wrote:
+On Thu, Oct 27, 2022 at 6:01 PM Rong Tao <rtoax@foxmail.com> wrote:
 >
-> Thanks for your reply, `enable[0] =3D '\0';` at the beginning and then
-> strncat() still has the same compile warning
+> Thanks for your reply, actually, i tried another method, which can solved
+> this error, recognize "socket/xxx" as "socket". However, it maybe influence
+> other BPF prog or not? What do you think the following patch?
+
+Don't fix libbpf, it's not broken. Fix the sample.
+
 >
-> --- a/tools/testing/selftests/bpf/cgroup_helpers.c
-> +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-> @@ -77,7 +77,8 @@ static int __enable_controllers(const char *cgroup_path=
-, const char *controllers
->                 enable[len] =3D 0;
->                 close(fd);
->         } else {
-> -               strncpy(enable, controllers, sizeof(enable));
-> +               enable[0] =3D '\0';
-> +               strncat(enable, controllers, sizeof(enable));
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8659,7 +8659,7 @@ static bool sec_def_matches(const struct bpf_sec_def *sec_def, const char *sec_n
+>                 return false;
 >         }
 >
-> In function =E2=80=98__enable_controllers=E2=80=99:
-> tools/testing/selftests/bpf/cgroup_helpers.c:81:17: warning: =E2=80=98str=
-ncat=E2=80=99 specified bound 4097 equals destination size [-Wstringop-trun=
-cation]
->    81 |                 strncat(enable, controllers, sizeof(enable));
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> tools/testing/selftests/bpf/cgroup_helpers.c:81:17: warning: =E2=80=98str=
-ncat=E2=80=99 specified bound 4097 equals destination size [-Wstringop-over=
-flow=3D]
->
-> So, i think just add '-1' for strncpy() is a good way.
-
-no, it's not, see my previous email about ending up with
-non-zero-terminated C string.
-
-check strncat() API, it leaves the dst string zero terminated, and
-yes, you need -1 for strncat as well, your compiler is right
+> -       return strcmp(sec_name, sec_def->sec) == 0;
+> +       return strncmp(sec_name, sec_def->sec, len) == 0;
+>  }
