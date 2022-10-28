@@ -2,79 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9EF610CFB
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 11:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522C2610EB8
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 12:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbiJ1JXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 05:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S230417AbiJ1KjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 06:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbiJ1JXG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 05:23:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408DD1C6BE2
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 02:22:08 -0700 (PDT)
+        with ESMTP id S231152AbiJ1Ki4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 06:38:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F5C1C77F0
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 03:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1666948927;
+        s=mimecast20190719; t=1666953439;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5P/LL6n+AFbg9otfZiL41bboBVYLpgB4u6EYlg8Zxhc=;
-        b=Fqjb1bcvJCjmw2nhUrw+8NHjTXYGmu0k2dEFyGlN4hKro8TJd5x1lhdeGWr6GG0emHu0cC
-        sL+53Ni8Ok8f5MAwcDWXkexAY9Y7Hy168khx0WqjdvFfkTDy1L10G1tEVQnxUUrTgnwmpq
-        fCs1e/A5trHh+F8VSuYAP1PIaxmGbNk=
+        bh=rQlWIN7d57RONqQ/e3CUzK190bnqtzPjHOTosJNCfJ4=;
+        b=gGFy3yPmeo3lq5o+otvkZ/Wo4l7YMp1aP97qlEXE80B/MEjzULvz3fYuc7euYOiP2v81ya
+        EYf2gb6M79Jn/pyjutAhLQ336KGFZ0o3+T6adw5lKcI6nB9lIcM5quv6I/tp5UO6wqziqL
+        cdCyOwQudU5HkSPP7FdqSAksXQYazVg=
 Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
  [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-654-cWoveRWZPIOcHg5_PCGX4g-1; Fri, 28 Oct 2022 05:22:05 -0400
-X-MC-Unique: cWoveRWZPIOcHg5_PCGX4g-1
-Received: by mail-ed1-f72.google.com with SMTP id z15-20020a05640240cf00b00461b253c220so2919413edb.3
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 02:22:05 -0700 (PDT)
+ us-mta-77-0yQL8SIzMcaDr5n1A7h5zA-1; Fri, 28 Oct 2022 06:37:18 -0400
+X-MC-Unique: 0yQL8SIzMcaDr5n1A7h5zA-1
+Received: by mail-ed1-f72.google.com with SMTP id w17-20020a056402269100b00461e28a75ccso3030628edd.8
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 03:37:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:references:to
          :content-language:subject:cc:user-agent:mime-version:date:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5P/LL6n+AFbg9otfZiL41bboBVYLpgB4u6EYlg8Zxhc=;
-        b=pjwlYYVvpcjkDyFpkzvR5m4aKJDWbVh/eml9XKLDnu2xwV5TfHGTlLnlxjcNqHBbqA
-         02t+Nl2HRHYsX5+Hgay+mlBio//KMFI0jyk7bYyeoGwbADsWKAoiS6TIHcr+twpkbGhp
-         vcR9iTroMFdHNFtQY8GNhyank1LMYMBG4RHjCRnkfHI1GtPFGMRntnYBvvhgLTQ0WzFw
-         b4GcI3JBaY6vBovG85hK6u9Ep5aJCK8ix5JH8Hj/IrEih0Ze2Ow54Y4VASHx/+hiilVh
-         3MBGHn0UfNijDELbdlOYMgyCY8YXHFT+BBckC90/8ibf82zRDU+2pr3XallpqnLk+nxQ
-         /PEw==
-X-Gm-Message-State: ACrzQf1vfACBCxU61X0YAyNyP+Bo+6+p6niF1JgYpS8SdlwWT2pdEmSc
-        HM1zdSvgR3BpD8Jt8BJGHJEpa98L0gnjBqJywXeakkOEs76bRddCHbUNrRexxk910+7RcClzq1s
-        T6AayUNGlR5GB
-X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id oz14-20020a1709077d8e00b0078ded30643bmr45428653ejc.253.1666948924618;
-        Fri, 28 Oct 2022 02:22:04 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4j/2fPa3s0HO+qy5YZC0lCKZmYPkr+Pw/cCwWJMHHSd+ww3jdyGEU+d3BUFhvzeqvKuGu4lg==
-X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id oz14-20020a1709077d8e00b0078ded30643bmr45428634ejc.253.1666948924316;
-        Fri, 28 Oct 2022 02:22:04 -0700 (PDT)
+        bh=rQlWIN7d57RONqQ/e3CUzK190bnqtzPjHOTosJNCfJ4=;
+        b=HAS83DGokNNcuzKJsQXM2+cwOU7vD+EJ7+u0GhCNIH5UHoES3RH5NnBvc7Ta8bzSFC
+         GywivF99bnvc6v7vuzptDHI1OXCaKMQ25X4fcgd8Tk4pksEdv5X/XBT3x7+M1YMEuKH2
+         ckEPR8jomp0BuTfe9uOHn4HdWAilPRzJV+ew9OD0vIK40Hy/GiMUJc7OWDPbyFBksYgH
+         O1W1BNuybOLsc6I2IPI3tbucmpCyImDW7PmqJvTeHhWhkGowukSHwxyjNx09MtZOjeZb
+         INhJXQygesYOXbY1c3375qY9RUwAou0XFdfETpL6NzjINWkZp7Mr2i3wFU2O5yyZyQHw
+         5nrw==
+X-Gm-Message-State: ACrzQf1Dh3X+0TFEbjSCYyogUNQ54qzcYpWpmkaDPijj9jGVn41fSDzo
+        ci+dRy1MJFhbCW8S+oPydRGm1N2e1+9cLgffYMd08yTg/a/CaMQhh0LyyonRhNHAE7sBFj0R0QV
+        A0mVgUBTAdCjb
+X-Received: by 2002:a05:6402:496:b0:443:a5f5:d3b with SMTP id k22-20020a056402049600b00443a5f50d3bmr51671291edv.331.1666953437173;
+        Fri, 28 Oct 2022 03:37:17 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5uTFGVbbkxX7P5NzYfu2FbthkGa0Xbcx4RUw8v8EnATeCMfvmoC6hTxlmMZASEebuYKgB7aw==
+X-Received: by 2002:a05:6402:496:b0:443:a5f5:d3b with SMTP id k22-20020a056402049600b00443a5f50d3bmr51671268edv.331.1666953436969;
+        Fri, 28 Oct 2022 03:37:16 -0700 (PDT)
 Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id ky9-20020a170907778900b00781dbdb292asm1928013ejc.155.2022.10.28.02.22.03
+        by smtp.gmail.com with ESMTPSA id ds12-20020a0564021ccc00b00461aebb2fe2sm2426729edb.54.2022.10.28.03.37.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Oct 2022 02:22:03 -0700 (PDT)
+        Fri, 28 Oct 2022 03:37:16 -0700 (PDT)
 From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
 X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <ea8948ed-a995-68bc-2d6e-57945f0d5249@redhat.com>
-Date:   Fri, 28 Oct 2022 11:22:02 +0200
+Message-ID: <1885bc0c-1929-53ba-b6f8-ace2393a14df@redhat.com>
+Date:   Fri, 28 Oct 2022 12:37:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.3.1
-Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>
-Subject: Re: [PATCH bpf-next v1] Document BPF_MAP_TYPE_LPM_TRIE
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC bpf-next 5/5] selftests/bpf: Test rx_timestamp metadata in
+ xskxceiver
 Content-Language: en-US
-To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20221026100232.49181-1-donald.hunter@gmail.com>
-In-Reply-To: <20221026100232.49181-1-donald.hunter@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+References: <20221027200019.4106375-1-sdf@google.com>
+ <20221027200019.4106375-6-sdf@google.com>
+ <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev>
+In-Reply-To: <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,206 +94,174 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+On 28/10/2022 08.22, Martin KaFai Lau wrote:
+> On 10/27/22 1:00 PM, Stanislav Fomichev wrote:
+>> Example on how the metadata is prepared from the BPF context
+>> and consumed by AF_XDP:
+>>
+>> - bpf_xdp_metadata_have_rx_timestamp to test whether it's supported;
+>>    if not, I'm assuming verifier will remove this "if (0)" branch
+>> - bpf_xdp_metadata_rx_timestamp returns a _copy_ of metadata;
+>>    the program has to bpf_xdp_adjust_meta+memcpy it;
+>>    maybe returning a pointer is better?
+>> - af_xdp consumer grabs it from data-<expected_metadata_offset> and
+>>    makes sure timestamp is not empty
+>> - when loading the program, we pass BPF_F_XDP_HAS_METADATA+prog_ifindex
+>>
+>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Willem de Bruijn <willemb@google.com>
+>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+>> Cc: Maryam Tahhan <mtahhan@redhat.com>
+>> Cc: xdp-hints@xdp-project.net
+>> Cc: netdev@vger.kernel.org
+>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>> ---
+>>   .../testing/selftests/bpf/progs/xskxceiver.c  | 22 ++++++++++++++++++
+>>   tools/testing/selftests/bpf/xskxceiver.c      | 23 ++++++++++++++++++-
+>>   2 files changed, 44 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/xskxceiver.c 
+>> b/tools/testing/selftests/bpf/progs/xskxceiver.c
+>> index b135daddad3a..83c879aa3581 100644
+>> --- a/tools/testing/selftests/bpf/progs/xskxceiver.c
+>> +++ b/tools/testing/selftests/bpf/progs/xskxceiver.c
+>> @@ -12,9 +12,31 @@ struct {
+>>       __type(value, __u32);
+>>   } xsk SEC(".maps");
+>> +extern int bpf_xdp_metadata_have_rx_timestamp(struct xdp_md *ctx) 
+>> __ksym;
+>> +extern __u32 bpf_xdp_metadata_rx_timestamp(struct xdp_md *ctx) __ksym;
+>> +
+>>   SEC("xdp")
+>>   int rx(struct xdp_md *ctx)
+>>   {
+>> +    void *data, *data_meta;
+>> +    __u32 rx_timestamp;
+>> +    int ret;
+>> +
+>> +    if (bpf_xdp_metadata_have_rx_timestamp(ctx)) {
 
-On 26/10/2022 12.02, Donald Hunter wrote:
-> Add documentation for BPF_MAP_TYPE_LPM_TRIE including kernel
-> BPF helper usage, userspace usage and examples.
+In current veth implementation, bpf_xdp_metadata_have_rx_timestamp()
+will always return true here.
+
+In the case of hardware timestamps, not every packet will contain a 
+hardware timestamp.  (See my/Maryam ixgbe patch, where timestamps are 
+read via HW device register, which isn't fast, and HW only support this 
+for timesync protocols like PTP).
+
+How do you imagine we can extend this?
+
+>> +        ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(__u32));
+
+IMHO sizeof() should come from a struct describing data_meta area see:
+ 
+https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L62
+
+
+>> +        if (ret != 0)
+>> +            return XDP_DROP;
+>> +
+>> +        data = (void *)(long)ctx->data;
+>> +        data_meta = (void *)(long)ctx->data_meta;
+>> +
+>> +        if (data_meta + sizeof(__u32) > data)
+>> +            return XDP_DROP;
+>> +
+>> +        rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
+>> +        __builtin_memcpy(data_meta, &rx_timestamp, sizeof(__u32));
+
+So, this approach first stores hints on some other memory location, and 
+then need to copy over information into data_meta area. That isn't good 
+from a performance perspective.
+
+My idea is to store it in the final data_meta destination immediately.
+
+Do notice that in my approach, the existing ethtool config setting and 
+socket options (for timestamps) still apply.  Thus, each individual 
+hardware hint are already configurable. Thus we already have a config 
+interface. I do acknowledge, that in-case a feature is disabled it still 
+takes up space in data_meta areas, but importantly it is NOT stored into 
+the area (for performance reasons).
+
+
+>> +    }
 > 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
->   Documentation/bpf/map_lpm_trie.rst | 179 +++++++++++++++++++++++++++++
->   1 file changed, 179 insertions(+)
->   create mode 100644 Documentation/bpf/map_lpm_trie.rst
+> Thanks for the patches.  I took a quick look at patch 1 and 2 but 
+> haven't had a chance to look at the implementation details (eg. 
+> KF_UNROLL...etc), yet.
+> 
 
-LGTM
+Yes, thanks for the patches, even-though I don't agree with the
+approach, at-least until my concerns/use-case can be resolved.
+IMHO the best way to convince people is through code. So, thank you for
+the effort.  Hopefully we can use some of these ideas and I can also
+change/adjust my XDP-hints ideas to incorporate some of this :-)
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-(no comments below, but kept it for others comment on)
+> Overall (with the example here) looks promising.  There is a lot of 
+> flexibility on whether the xdp prog needs any hint at all, which hint it 
+> needs, and how to store it.
+> 
 
-> diff --git a/Documentation/bpf/map_lpm_trie.rst b/Documentation/bpf/map_lpm_trie.rst
-> new file mode 100644
-> index 000000000000..d57c967d11d0
-> --- /dev/null
-> +++ b/Documentation/bpf/map_lpm_trie.rst
-> @@ -0,0 +1,179 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +=====================
-> +BPF_MAP_TYPE_LPM_TRIE
-> +=====================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_LPM_TRIE`` was introduced in kernel version 4.11
-> +
-> +``BPF_MAP_TYPE_LPM_TRIE`` provides a longest prefix match algorithm that
-> +can be used to match IP addresses to a stored set of prefixes.
-> +Internally, data is stored in an unbalanced trie of nodes that uses
-> +``prefixlen,data`` pairs as its keys. The ``data`` is interpreted in
-> +network byte order, i.e. big endian, so ``data[0]`` stores the most
-> +significant byte.
-> +
-> +LPM tries may be created with a maximum prefix length that is a multiple
-> +of 8, in the range from 8 to 2048. The key used for lookup and update
-> +operations is a ``struct bpf_lpm_trie_key``, extended by
-> +``max_prefixlen/8`` bytes.
-> +
-> +- For IPv4 addresses the data length is 4 bytes
-> +- For IPv6 addresses the data length is 16 bytes
-> +
-> +The value type stored in the LPM trie can be any user defined type.
-> +
-> +.. note::
-> +   When creating a map of type ``BPF_MAP_TYPE_LPM_TRIE`` you must set the
-> +   ``BPF_F_NO_PREALLOC`` flag.
-> +
-> +Usage
-> +=====
-> +
-> +Kernel BPF
-> +----------
-> +
-> +.. c:function::
-> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +The longest prefix entry for a given data value can be found using the
-> +``bpf_map_lookup_elem()`` helper. This helper returns a pointer to the
-> +value associated with the longest matching ``key``, or ``NULL`` if no
-> +entry was found.
-> +
-> +The ``key`` should have ``prefixlen`` set to ``max_prefixlen`` when
-> +performing longest prefix lookups. For example, when searching for the
-> +longest prefix match for an IPv4 address, ``prefixlen`` should be set to
-> +``32``.
-> +
-> +.. c:function::
-> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
-> +
-> +Prefix entries can be added or updated using the ``bpf_map_update_elem()``
-> +helper. This helper replaces existing elements atomically.
-> +
-> +``bpf_map_update_elem()`` returns ``0`` on success, or negative error in
-> +case of failure.
-> +
-> + .. note::
-> +    The flags parameter must be one of BPF_ANY, BPF_NOEXIST or BPF_EXIST,
-> +    but the value is ignored, giving BPF_ANY semantics.
-> +
-> +.. c:function::
-> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
-> +
-> +Prefix entries can be deleted using the ``bpf_map_delete_elem()``
-> +helper. This helper will return 0 on success, or negative error in case
-> +of failure.
-> +
-> +Userspace
-> +---------
-> +
-> +Access from userspace uses libbpf APIs with the same names as above, with
-> +the map identified by ``fd``.
-> +
-> +.. c:function::
-> +   int bpf_map_get_next_key (int fd, const void *cur_key, void *next_key)
-> +
-> +A userspace program can iterate through the entries in an LPM trie using
-> +libbpf's ``bpf_map_get_next_key()`` function. The first key can be
-> +fetched by calling ``bpf_map_get_next_key()`` with ``cur_key`` set to
-> +``NULL``. Subsequent calls will fetch the next key that follows the
-> +current key. ``bpf_map_get_next_key()`` returns ``0`` on success,
-> +``-ENOENT`` if cur_key is the last key in the hash, or negative error in
-> +case of failure.
-> +
-> +``bpf_map_get_next_key()`` will iterate through the LPM trie elements
-> +from leftmost leaf first. This means that iteration will return more
-> +specific keys before less specific ones.
-> +
-> +Examples
-> +========
-> +
-> +Please see ``tools/samples/bpf/xdp_router_ipv4_user.c`` and
-> +``xdp_router_ipv4.bpf.c`` for a functional example. The code snippets
-> +below demonstrates API usage.
-> +
-> +Kernel BPF
-> +----------
-> +
-> +The following BPF code snippet shows how to declare a new LPM trie for IPv4
-> +address prefixes:
-> +
-> +.. code-block:: c
-> +
-> +    #include <linux/bpf.h>
-> +    #include <bpf/bpf_helpers.h>
-> +
-> +    struct ipv4_lpm_key {
-> +            __u32 prefixlen;
-> +            __u32 data;
-> +    };
-> +
-> +    struct {
-> +            __uint(type, BPF_MAP_TYPE_LPM_TRIE);
-> +            __type(key, struct ipv4_lpm_key);
-> +            __type(value, __u32);
-> +            __uint(map_flags, BPF_F_NO_PREALLOC);
-> +            __uint(max_entries, 255);
-> +    } ipv4_lpm_map SEC(".maps");
-> +
-> +The following BPF code snippet shows how to lookup by IPv4 address:
-> +
-> +.. code-block:: c
-> +
-> +    void *lookup(__u32 ipaddr)
-> +    {
-> +            struct ipv4_lpm_key key = {
-> +                    .prefixlen = 32,
-> +                    .data = ipaddr
-> +            };
-> +
-> +            return bpf_map_lookup_elem(&ipv4_lpm_map, &key);
-> +    }
-> +
-> +Userspace
-> +---------
-> +
-> +The following snippet shows how to insert an IPv4 prefix entry into an LPM trie:
-> +
-> +.. code-block:: c
-> +
-> +    int add_prefix_entry(int lpm_fd, __u32 addr, __u32 prefixlen, struct value *value)
-> +    {
-> +            struct ipv4_lpm_key ipv4_key = {
-> +                    .prefixlen = prefixlen,
-> +                    .data = addr
-> +            };
-> +            return bpf_map_update_elem(lpm_fd, &ipv4_key, value, BPF_ANY);
-> +    }
-> +
-> +The following snippet shows a userspace program walking through LPM trie
-> +entries:
-> +
-> +.. code-block:: c
-> +
-> +    #include <bpf/libbpf.h>
-> +    #include <bpf/bpf.h>
-> +
-> +    void iterate_lpm_trie(int map_fd)
-> +    {
-> +            struct ipv4_lpm_key *cur_key = NULL;
-> +            struct ipv4_lpm_key next_key;
-> +            struct value value;
-> +            int err;
-> +
-> +            for (;;) {
-> +                    err = bpf_map_get_next_key(map_fd, cur_key, &next_key);
-> +                    if (err)
-> +                            break;
-> +
-> +                    bpf_map_lookup_elem(map_fd, &next_key, &value);
-> +
-> +                    /* Use key and value here */
-> +
-> +                    cur_key = &next_key;
-> +            }
-> +    }
+I do see the advantage that XDP prog only populates metadata it needs.
+But how can we use/access this in __xdp_build_skb_from_frame() ?
+
+
+>> +
+>>       return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+>>   }
+>> diff --git a/tools/testing/selftests/bpf/xskxceiver.c 
+>> b/tools/testing/selftests/bpf/xskxceiver.c
+>> index 066bd691db13..ce82c89a432e 100644
+>> --- a/tools/testing/selftests/bpf/xskxceiver.c
+>> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+>> @@ -871,7 +871,9 @@ static bool is_offset_correct(struct xsk_umem_info 
+>> *umem, struct pkt_stream *pkt
+>>   static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, 
+>> u32 len)
+>>   {
+>>       void *data = xsk_umem__get_data(buffer, addr);
+>> +    void *data_meta = data - sizeof(__u32);
+>>       struct iphdr *iphdr = (struct iphdr *)(data + sizeof(struct 
+>> ethhdr));
+>> +    __u32 rx_timestamp = 0;
+>>       if (!pkt) {
+>>           ksft_print_msg("[%s] too many packets received\n", __func__);
+>> @@ -907,6 +909,13 @@ static bool is_pkt_valid(struct pkt *pkt, void 
+>> *buffer, u64 addr, u32 len)
+>>           return false;
+>>       }
+>> +    memcpy(&rx_timestamp, data_meta, sizeof(rx_timestamp));
+
+I acknowledge that it is too extensive to add to this patch, but in my 
+AF_XDP-interaction example[1], I'm creating a struct xdp_hints_rx_time 
+that gets BTF exported[1][2] to the userspace application, and userspace 
+decodes the BTF and gets[3] a xsk_btf_member struct for members that 
+simply contains a offset+size to read from.
+
+[1] 
+https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L47-L51
+
+[2] 
+https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L80
+
+[3] 
+https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_user.c#L123-L129
+
+>> +    if (rx_timestamp == 0) {
+>> +        ksft_print_msg("Invalid metadata received: ");
+>> +        ksft_print_msg("got %08x, expected != 0\n", rx_timestamp);
+>> +        return false;
+>> +    }
+>> +
+>>       return true;
+>>   }
+> 
+
+Looking forward to collaborate :-)
+--Jesper
 
