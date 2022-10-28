@@ -2,59 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B58611933
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87126119AF
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbiJ1RWZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 13:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S229458AbiJ1Rz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbiJ1RWY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 13:22:24 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C40822AB4D
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:22:18 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id v27so8876546eda.1
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:22:18 -0700 (PDT)
+        with ESMTP id S229902AbiJ1Rzz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 13:55:55 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D0198C84
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:55:52 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id n12so14644856eja.11
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zL/+Ty6Nr3nn+uPHS8ztTREttDXXP6qvU1YxurIkUQY=;
-        b=UhRnBV2nh2TiraIMvaBv4zAU9bK2ln4qbG/E3WfCi8/v8fXyH8IX2X4Ij6g2JdbsiY
-         4vney7Z/4E6U5VBo6WK180hEPXG6uxTdPjFh4Rj6TK/aVwgSh9lkkUdkII2ScrC6pwlx
-         myON2W5fowHJ1EFL+wJWnOGByKiBjJSaWywMiPw4+aFdFwb/hUmJFUCSQXaqrV8xztQk
-         oVYB5qJfMkUBbtirMFtIR1IPlC9wJlcgUzX/5fE3evbjOLibw2Myb4tlH9/CwdMuEScI
-         krZRa6X3Fyw9/+SGCwMwO9Jq2azudX6bT1rZepjO5PaHUH3VvB4GKskqW3wGfOt4FCqm
-         HQNg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xJLS2ziIJLJudMk9NMKzr0rUFYXOR6bo/iTdjHodBug=;
+        b=qxwOkQ+9a7w380BVkHVDLE/V4QKPCaFg18S4EE6n5ise5sGHF3ziF+n5LJ0dlyLsKe
+         7oV15uW//aKkkops2tqNQ3bqIErHtS96203MGAr06vBfC8xFJyy1Q4DvW2EoZiwB66XS
+         F0sCuUbzOEZ6GgdwK5775IzoATj57nEtTlD8Gmwn8fkpFYYwD8UplfueOyzPAqU7opZN
+         l7Cxch6p+ieHIcG1oSa/hewoMj84cTt8EwEPP6s2T9AdZHynrfoi0tcaND0Dt/rOM7++
+         6LRhLHAipfqgjjGa0rnSVbfLxYR1ixIYUntGXIdvxki2hsiPS6xk9l4SxULzi9LfAgDg
+         8Qxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zL/+Ty6Nr3nn+uPHS8ztTREttDXXP6qvU1YxurIkUQY=;
-        b=ys2yYPYMmGrq1ar20qHqhaUSVb8fYiZeXbSmif7SNWjJ3SHoj1j70nWxTLsdcIbkMO
-         JroANq+bZPz80ywW8HP4MuQBucreNuFI0rXsKzvIPKiyn34J1tKJR2KkF6pwAilL/XAy
-         I9jGAJGFSQSbmVSk7eQfbW8BvAgAfoQ6QZubAApRctmQGWl/t9TxzfaKTfXguk7thpUQ
-         ffdTfzdXAf5DzjLy30sa8z6XxSGt1xsUAngyzzaxSDFvUFeCvfjZxfAQ8o9jjJfkkRhU
-         epmRp1T+OPtRzhKo3HbF5XtYmwTuyivS2BeNdKp9KwezEGLQXtef0owPMkG5SBHrKCVE
-         l5dg==
-X-Gm-Message-State: ACrzQf0YXigtfIx3wxoJtJlC6et1KgLZ2paq5maIJxCTccPdQ5bCRbvx
-        M2egfaGcLSqD4Hxj3cqSno/3pTluEACdouZQsRvJeoyD3MY=
-X-Google-Smtp-Source: AMsMyM7KVSv/BNGyTxtIgKWeqWo7FyRYJDk8GZb7fpGiHihq0RVqA7niKKZsdKJ2Et6/Y+Qf5rlI5fbeIRgUlUTA1x8=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr459792edb.333.1666977736698; Fri, 28
- Oct 2022 10:22:16 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xJLS2ziIJLJudMk9NMKzr0rUFYXOR6bo/iTdjHodBug=;
+        b=v3Ve+OCqmfaXISnSKTuJzbJVCURDRTxD5G1IvyNbp3LyewD6Kzg97oyN2AsZLHIWsh
+         5Jub15/ryZtkatfmtVvmX/ekr//pPAk5jYOq1sqATeuVpiZR+F2rSsJtIvAmqOtn4rZa
+         9+uW4HuG8hq5ymlhanKWuao/W/jHtwwrkPvhAkcYgYmqpX+zAulmWj4LyqqjHoFweIBx
+         6rFTwP5CD++H7OHHDswEf4ZkztnJOJJ5IkbVaeWthYqiS4IJYhAXiMYIAzDV6CdmvAei
+         xQjOOJsD2K603WTrT0H3G3FquVRaitojTqELVR1k06LbPVF14dp3MHLlRpmg1lnRljMN
+         fnyQ==
+X-Gm-Message-State: ACrzQf3X3g5ITu9FTa4VSMTqLdXgRUr9qKjfoQu8bC4WWB6g71ksuS1t
+        soH95zjr1keINJik85kzjmm2CT/hmpButTEn
+X-Google-Smtp-Source: AMsMyM7p3fssbWn3TtXsfuXNVZZM2lI7edFaaFWpOO65hHGwy/q3Y0kix8gPDczWDBnqKCO1VMA7sw==
+X-Received: by 2002:a17:906:eec1:b0:782:6384:76be with SMTP id wu1-20020a170906eec100b00782638476bemr493691ejb.756.1666979750637;
+        Fri, 28 Oct 2022 10:55:50 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z19-20020a05640240d300b004617e880f52sm3135490edb.29.2022.10.28.10.55.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Oct 2022 10:55:50 -0700 (PDT)
+From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
+Subject: [PATCH bpf-next] selftests: fix test group SKIPPED result
+Date:   Fri, 28 Oct 2022 10:55:30 -0700
+Message-Id: <20221028175530.1413351-1-cerasuolodomenico@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAO658oUcnKPHZvFO+-2tDuDny9spYg_9AftkuqLL=cH5S-s4kw@mail.gmail.com>
-In-Reply-To: <CAO658oUcnKPHZvFO+-2tDuDny9spYg_9AftkuqLL=cH5S-s4kw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Oct 2022 10:22:04 -0700
-Message-ID: <CAEf4BzaMNU2UoutOLdX-HbkA0037EV6kwQg3-TJLHV_8tjdzDg@mail.gmail.com>
-Subject: Re: libbpf not properly detecting support for memcg-based memory accounting
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,43 +66,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 28, 2022 at 7:26 AM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> It appears that while using libbpf 1.0.1 on a 5.10 kernel, libbpf is
-> not properly recognizing a lack of support for memcg-based memory
-> accounting. This is happening in Google's default Kubernetes
-> environment (GKE). The error message we receive is:
+From: Domenico Cerasuolo <dceras@meta.com>
 
-Yes, unfortunately the way the switch to memcg accounting is
-implemented makes it hard to detect it easily. So libbpf is detecting
-another feature that went together with memcg switch (see
-probe_memcg_account()). So it's kind of known, though unfortunate,
-state of the things.
+When showing the result of a test group, if one
+of the subtests was skipped, while still having
+passing subtets, the group result was marked as
+SKIPPED.
 
-Do you have some good ideas on how to implement this better? And yes,
-the ability to bump memory limits manually is sort of an intended
-work-around.
+#223/1   usdt/basic:SKIP
+#223/2   usdt/multispec:OK
+#223     usdt:SKIP
 
->
-> ```
-> libbpf: map 'sys_32_to_64_map': failed to create: operation not permitted(-1)
-> libbpf: permission error while running as root; try raising 'ulimit
-> -l'? current value: 64.0 KiB
-> libbpf: failed to load object 'embedded-core'
-> ```
->
-> We were able to fix this issue by manually bumping the memory rlimit,
-> leading to the conclusion that the detection of memcg-based memory is
-> not functioning properly, and therefore libbpf is not handling this
-> manual bump as advertised.
->
-> Environment:
->
-> ```
-> Linux ubuntu 5.10.123+ #1 SMP Sat Jul 9 14:51:14 UTC 2022 x86_64
-> x86_64 x86_64 GNU/Linux
-> ```
->
-> Thanks so much,
-> Grant Seltzer
+With this change only if all of the subtests
+were skipped the group test is marked as SKIPPED.
+
+#223/1   usdt/basic:SKIP
+#223/2   usdt/multispec:OK
+#223     usdt:OK
+
+Signed-off-by: Domenico Cerasuolo <dceras@meta.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 0e9a47f97890..14b70393018b 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -222,6 +222,11 @@ static char *test_result(bool failed, bool skipped)
+ 	return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
+ }
+ 
++static char *test_group_result(int tests_count, bool failed, int skipped)
++{
++	return failed ? "FAIL" : (skipped == tests_count ? "SKIP" : "OK");
++}
++
+ static void print_test_log(char *log_buf, size_t log_cnt)
+ {
+ 	log_buf[log_cnt] = '\0';
+@@ -308,7 +313,8 @@ static void dump_test_log(const struct prog_test_def *test,
+ 	}
+ 
+ 	print_test_name(test->test_num, test->test_name,
+-			test_result(test_failed, test_state->skip_cnt));
++			test_group_result(test_state->subtest_num,
++				test_failed, test_state->skip_cnt));
+ }
+ 
+ static void stdio_restore(void);
+@@ -1071,7 +1077,8 @@ static void run_one_test(int test_num)
+ 
+ 	if (verbose() && env.worker_id == -1)
+ 		print_test_name(test_num + 1, test->test_name,
+-				test_result(state->error_cnt, state->skip_cnt));
++				test_group_result(state->subtest_num,
++					state->error_cnt, state->skip_cnt));
+ 
+ 	reset_affinity();
+ 	restore_netns();
+-- 
+2.30.2
+
