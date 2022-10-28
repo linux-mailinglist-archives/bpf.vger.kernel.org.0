@@ -2,266 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522C2610EB8
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 12:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24C3611111
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 14:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbiJ1KjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 06:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        id S230025AbiJ1MUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 08:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbiJ1Ki4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 06:38:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F5C1C77F0
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 03:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1666953439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rQlWIN7d57RONqQ/e3CUzK190bnqtzPjHOTosJNCfJ4=;
-        b=gGFy3yPmeo3lq5o+otvkZ/Wo4l7YMp1aP97qlEXE80B/MEjzULvz3fYuc7euYOiP2v81ya
-        EYf2gb6M79Jn/pyjutAhLQ336KGFZ0o3+T6adw5lKcI6nB9lIcM5quv6I/tp5UO6wqziqL
-        cdCyOwQudU5HkSPP7FdqSAksXQYazVg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-77-0yQL8SIzMcaDr5n1A7h5zA-1; Fri, 28 Oct 2022 06:37:18 -0400
-X-MC-Unique: 0yQL8SIzMcaDr5n1A7h5zA-1
-Received: by mail-ed1-f72.google.com with SMTP id w17-20020a056402269100b00461e28a75ccso3030628edd.8
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 03:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rQlWIN7d57RONqQ/e3CUzK190bnqtzPjHOTosJNCfJ4=;
-        b=HAS83DGokNNcuzKJsQXM2+cwOU7vD+EJ7+u0GhCNIH5UHoES3RH5NnBvc7Ta8bzSFC
-         GywivF99bnvc6v7vuzptDHI1OXCaKMQ25X4fcgd8Tk4pksEdv5X/XBT3x7+M1YMEuKH2
-         ckEPR8jomp0BuTfe9uOHn4HdWAilPRzJV+ew9OD0vIK40Hy/GiMUJc7OWDPbyFBksYgH
-         O1W1BNuybOLsc6I2IPI3tbucmpCyImDW7PmqJvTeHhWhkGowukSHwxyjNx09MtZOjeZb
-         INhJXQygesYOXbY1c3375qY9RUwAou0XFdfETpL6NzjINWkZp7Mr2i3wFU2O5yyZyQHw
-         5nrw==
-X-Gm-Message-State: ACrzQf1Dh3X+0TFEbjSCYyogUNQ54qzcYpWpmkaDPijj9jGVn41fSDzo
-        ci+dRy1MJFhbCW8S+oPydRGm1N2e1+9cLgffYMd08yTg/a/CaMQhh0LyyonRhNHAE7sBFj0R0QV
-        A0mVgUBTAdCjb
-X-Received: by 2002:a05:6402:496:b0:443:a5f5:d3b with SMTP id k22-20020a056402049600b00443a5f50d3bmr51671291edv.331.1666953437173;
-        Fri, 28 Oct 2022 03:37:17 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5uTFGVbbkxX7P5NzYfu2FbthkGa0Xbcx4RUw8v8EnATeCMfvmoC6hTxlmMZASEebuYKgB7aw==
-X-Received: by 2002:a05:6402:496:b0:443:a5f5:d3b with SMTP id k22-20020a056402049600b00443a5f50d3bmr51671268edv.331.1666953436969;
-        Fri, 28 Oct 2022 03:37:16 -0700 (PDT)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id ds12-20020a0564021ccc00b00461aebb2fe2sm2426729edb.54.2022.10.28.03.37.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Oct 2022 03:37:16 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <1885bc0c-1929-53ba-b6f8-ace2393a14df@redhat.com>
-Date:   Fri, 28 Oct 2022 12:37:14 +0200
+        with ESMTP id S230116AbiJ1MUA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 08:20:00 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861AB2980D;
+        Fri, 28 Oct 2022 05:19:56 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29SBNwoi019014;
+        Fri, 28 Oct 2022 12:18:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2022-7-12; bh=y8kuDvLLMwRb5c/gqskraZ4IPvhZhSqT7gDTORP/oMw=;
+ b=cY4eXBncMTFwxtwfLa1qJsIYOvOTFUMBQ3Gd2TEHKO+XN3a7/g6vns5pfmMbEW9R5cvB
+ 1+FoHFWn39G2/4i//u8vCLfRrt+gyzYubwh47oA6nZ4qel+tQs6wwNGg3G7Bth0zED1i
+ P6d3ShfguAjcsgdP+Yl5JR+bqJ+NZeEelcrBmirmCbh46x3EF/v9wiKMA3SiZNIl+INS
+ yW1yaswQN6zeHPfozoikXizQwEVpcUPsYUhDcoYwGkUaaZjA+zElpXLAowAnRougw0Yh
+ 4ARbK1UjC9SVEQsrK0xWEFK5+1cJWll0jaP9ISqPWzRmr8MYKOe3Q4WypTTHUXdi7gh1 ow== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kfax7vmff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Oct 2022 12:18:11 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29SAhiGW009439;
+        Fri, 28 Oct 2022 12:18:11 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kfagg0y4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Oct 2022 12:18:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AfxZcVXg6pwT4fc1A6JgilGarwvFWQ0GZ7wsf/EK/o0myvKanP10hHvl0hMWHIbYKtDOZkOp9ulGRHBq7EeMXl5WxGUCZkKFCyGgwvT9S7aypmhH//GlQJstP2RiVVh47ENO1mCrIg5LwOp9pfXstNE1XwqlmHYX3nTKAt6S4OwByb2sWlPeoZAEGcTEDh2m8KtccAZXWWQnYrRsbbFSX9FoBlSbZy+tGtxWXmzSsM8wjQ5Sxb0COLp0DZDa8/aW2Vgy2R70KHzA7XsYKzsGbwa05kBvxOB228WCa+EPFCVv8CgkxXM4UF8uItXvYZoo4E0MIROQCNjvHXR5r/+Gow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y8kuDvLLMwRb5c/gqskraZ4IPvhZhSqT7gDTORP/oMw=;
+ b=oabZFXkD6mngiw9gPoFfNj1tKlWQNxCPBbSP/GoOAl6DnXyKffdXYYCGQ2ChwsPb2LXrGXBtIuItGXnMzvEeFcsmpsKOZ5nse0PnLelNe0pQy8S6gmvSeNj2uQYpqnYiGAB4lQkrXUMnQEpE+/wHOx6BhifhOn2zTGtkUF9jmk0wr+3f8R4WSdxohGogpksxeecUoMRThqryhMLsU+zlPC3WBeu1JDpaBLdPE6PLMiA+5a5jUyT8zx4UkpIb+0KjUhnl0vqE0u5WfvKR+Pl+uvw65oUMlJqbd6Wx9+e0TsAhxLSFmDVIqNokGLoTKPXmxYb9udYDwIXh2W9pmSCAnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8kuDvLLMwRb5c/gqskraZ4IPvhZhSqT7gDTORP/oMw=;
+ b=f36ytNRDysfdyINPqoNscbsAMFjvIvfU0+rbV3x0QWcgqIoLdnDWufPYY+MmWOMQDLaPX2JjcG+ccFyj6P0oCqQhITD3aMVaKyzAaMFiC80F1KOog5rLdXzxwyEzykuwldnlLHaf2IteNjXAqwOSTS98JGQhNJCkr53YT88x2kI=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by PH0PR10MB5547.namprd10.prod.outlook.com
+ (2603:10b6:510:da::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5709.15; Fri, 28 Oct
+ 2022 12:18:08 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3809:e335:4589:331e]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3809:e335:4589:331e%7]) with mapi id 15.20.5769.015; Fri, 28 Oct 2022
+ 12:18:08 +0000
+Date:   Fri, 28 Oct 2022 15:17:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     oe-kbuild@lists.linux.dev, Wang Yufen <wangyufen@huawei.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, yhs@fb.com, joe@wand.net.nz
+Subject: Re: [PATCH net] bpf: Fix memory leaks in __check_func_call
+Message-ID: <202210280529.TNxdtFjQ-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1666866213-4394-1-git-send-email-wangyufen@huawei.com>
+X-ClientProxiedBy: JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC bpf-next 5/5] selftests/bpf: Test rx_timestamp metadata in
- xskxceiver
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <20221027200019.4106375-6-sdf@google.com>
- <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev>
-In-Reply-To: <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2365:EE_|PH0PR10MB5547:EE_
+X-MS-Office365-Filtering-Correlation-Id: ffcf22ab-7025-4c18-7863-08dab8de7916
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IX9FpBblFvYW/kqz8NSzBa54gY643nu2y1o7co3LZ2zbLkbM5krindUNarGq+a1CTqusyyXj7Q1P86ytQERKEKxRkCkgIyD7yTCHyI7zx3AH7KOAdw7XRM7TPjDC6IWrGnCxY8P6ik2xNW/+2CniSYGQWB486kSE/JnrON8Nr8NFE3jL5pmpB6KJUY3WogiUpG/u0Asma+JQ2tHmVbDEis0ZLGC/qBAVEGNsNfArEeNSLuUJQhyPoscBiyW3Vtmzn4iwf0qCaPWqfjvPfAJTPjyZboSTKa4QbaxoVguTq6dGDPv+DF70+DJx/BDV0Xn90BXs7T0ClIKMlac6Zr5etV8C2xx8uTl8WJO4iZqZ9N59C809QV2aG+2gQuar9Phc54kUfgEhNi9OGl8lVesFhlVUeAdcC+jq3/rtYU2ea4R/kDDrXjVzcOg/j0va0hayTGlWtPeLjveqJz6dnq3HGQsy0V5w4YNqxo+J5Lk/5VSz3n3TMgOoJkbf3FaPbvlmHuEDD3B0KWf/WjrWXp1+g6Ab1ZdHzcc8HbXksB75+cx3urcoP/yv61fE77CKpCTA7QPc//Pqs/EGjNIwjFjkf832Imbnrl37sceBImE8F3P5IpACZ355KFigYlU/xsMOnxy5pPOffETqC3QZgWzlNLzOiKJEtKkpcNVWjNb/4GqpDcGR3/17I0yr4hjNPbE0sbadOTAb/iWlYVp5AM69zjmfTvt0dKrDibkUFmGFBJEgwzdPbXRSB56CYzlcFqBcNvL6lt6vpsXxJ77NIWqFCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(366004)(376002)(346002)(396003)(39860400002)(451199015)(1076003)(8676002)(478600001)(316002)(2906002)(7416002)(186003)(41300700001)(83380400001)(8936002)(38100700002)(44832011)(26005)(4326008)(5660300002)(66476007)(966005)(4001150100001)(6512007)(9686003)(66556008)(6666004)(86362001)(6506007)(66946007)(36756003)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+8dhtpCzJGq8vFKTa65J/VAykeySH+1Y4SFPK9kRdqFwIGzFxydFpR5+m4ND?=
+ =?us-ascii?Q?MJ83IXAHtBwqqlgtltaQ4bYqdcuY2jWTV5dhOVq48ftmcwpw6wowmNwsX+z7?=
+ =?us-ascii?Q?3cI/nYjJ3fcjY7y5Xi6iknkIIlnMFZM/EzOVzmY/bGizppB3cH1e1h8imMr3?=
+ =?us-ascii?Q?GJAZjv4inpizEldXMsU2m4EnvtX+V9IdS5oRdKjVsUfgDjyNkmJQ5lnDMKyP?=
+ =?us-ascii?Q?3JDdkNSKn3HV8cKaIhTruqmxUooxXsvBgEJ+r2neNHboOUgFZ97EX9+CIuKp?=
+ =?us-ascii?Q?9mbDPOgesbWvNJHXRhzWJLpGZQJb27GGlWFBM4dCgeYz5Z/0qha4UOEpKbgr?=
+ =?us-ascii?Q?FF1vq6X9KC7DpmPzb7nwyW9l73osZXaBhxzXeepecr+cxPkariLxGh/RvAmN?=
+ =?us-ascii?Q?sfdjH1irVnikO6jjDAySPvnq8KEgdWXHrd3kOFAem5VHfgLv/lSYBx+Da57B?=
+ =?us-ascii?Q?lD0hQKrWLUOPgDrMz9P6F7dyXvTJ0tNz3pkrV4JzSuKjMzbLgrpKfhbTNWaR?=
+ =?us-ascii?Q?324XGGUZ/vK6jN/1B/buoCW/Wo2aw5lwcxYw73XROFqhUbeK3Q/Z280eoGOn?=
+ =?us-ascii?Q?8ljw1SM5CMEaAmrbYhj7JCCZZ+/z/tElmdYXKmEomONt7Jh6YpW1iRIchHqk?=
+ =?us-ascii?Q?BTtxVJBrZeWMG+zIe6mJrWnEnz+ykx5b18R8A+9ENbIpzJyYj8ug7mBb8Ve8?=
+ =?us-ascii?Q?l25yMniwyLMddeGsZDX5SuR/Wby7qB5mgW3wQ4D+1GfbClIjogAxB8PcFOWX?=
+ =?us-ascii?Q?qLwrCELrVsATqm6uPrpjr/Dh7a04NJyLWHGBI86GyC5GJSD2JWHkLbbWdQU0?=
+ =?us-ascii?Q?zhkKyPryPO4ucFXdxDJeGRlADMl2Hj8foPhVskn9MdHAebrZv0s3Xhh5CCNJ?=
+ =?us-ascii?Q?tcg4/2EHqi8vrZ6xGHBF/icHO59ARrr+TZVdcCngiNMGJ/80KioArFY50zEi?=
+ =?us-ascii?Q?Yk60Gq9jd/TIGn2d1SJsrHf3ZYi42UqX677NeDrDQ2jXz+svgj9MVf/5xXrY?=
+ =?us-ascii?Q?SkLssTIlCPQSPewpOgV97JKylxQCuAaSONp8Ct5QAFvFJy+LhVKgnd4YH59i?=
+ =?us-ascii?Q?Zb5qSaAuaRROKXziRw3Yvz/33KRwA+yqErltPevN71ruH4feFlL2LZkuvKTj?=
+ =?us-ascii?Q?YqFOf4/FYdNHbO2Vq0VtuFgUJesY3PL/mWnFsc3KXiazHabpzIOkuV23somQ?=
+ =?us-ascii?Q?qn5dW8jnTUR/wvTmveutIux9O1Khjs3BVoGcEGGze0nnmD/XXe+vp6+iZAgj?=
+ =?us-ascii?Q?VS/B2AruTD8J6rcNSMwgxBy/XTtk5RfgnV7B6j4NIVtxQvZPkMlomVTPJ0oL?=
+ =?us-ascii?Q?NvMjNHDsZ26r307SSs+VFhLHCZGPbiQhVZzQNQ8yb14RAWM40Wcn2UGVscQW?=
+ =?us-ascii?Q?y5gL4ZmiOGsWS6KVEWCCUpmBTLxv5sFA5vab9El6/CZmqFbxR7RxDouFooSt?=
+ =?us-ascii?Q?vSYJgXR9D7wxhynROv+qHLi49Y4t95nyJELudYosgXglCa7+kLON/nv1c06k?=
+ =?us-ascii?Q?5ucC/ssdjPhS8bNX3luQlNNUba7In3BA2gjPP4UPUSpJlr6Vn24A7XIR/XTQ?=
+ =?us-ascii?Q?pwFHRWbzpbNMD22T8H/pwlKl86NDlJ0o45LVHWzT2VoNLSd8nN1VwoG91DgR?=
+ =?us-ascii?Q?tA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffcf22ab-7025-4c18-7863-08dab8de7916
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2022 12:18:08.7143
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /Sq+uJdi1HZUQn6YLiiRIns9Zv62Fkw1dOzeEj6SKdkQmaI1SlfdAwNyVk90IHHMjfs/reVYkDja+FY+w7c18SK+2bTBAYl72ZQOIA1uvmA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5547
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-28_06,2022-10-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 spamscore=0 phishscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2210280076
+X-Proofpoint-GUID: vM1uiSlU1okJvVyFyf1aQZrCmgWBCSFC
+X-Proofpoint-ORIG-GUID: vM1uiSlU1okJvVyFyf1aQZrCmgWBCSFC
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Wang,
 
-On 28/10/2022 08.22, Martin KaFai Lau wrote:
-> On 10/27/22 1:00 PM, Stanislav Fomichev wrote:
->> Example on how the metadata is prepared from the BPF context
->> and consumed by AF_XDP:
->>
->> - bpf_xdp_metadata_have_rx_timestamp to test whether it's supported;
->>    if not, I'm assuming verifier will remove this "if (0)" branch
->> - bpf_xdp_metadata_rx_timestamp returns a _copy_ of metadata;
->>    the program has to bpf_xdp_adjust_meta+memcpy it;
->>    maybe returning a pointer is better?
->> - af_xdp consumer grabs it from data-<expected_metadata_offset> and
->>    makes sure timestamp is not empty
->> - when loading the program, we pass BPF_F_XDP_HAS_METADATA+prog_ifindex
->>
->> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: Willem de Bruijn <willemb@google.com>
->> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
->> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
->> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
->> Cc: Maryam Tahhan <mtahhan@redhat.com>
->> Cc: xdp-hints@xdp-project.net
->> Cc: netdev@vger.kernel.org
->> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->> ---
->>   .../testing/selftests/bpf/progs/xskxceiver.c  | 22 ++++++++++++++++++
->>   tools/testing/selftests/bpf/xskxceiver.c      | 23 ++++++++++++++++++-
->>   2 files changed, 44 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/xskxceiver.c 
->> b/tools/testing/selftests/bpf/progs/xskxceiver.c
->> index b135daddad3a..83c879aa3581 100644
->> --- a/tools/testing/selftests/bpf/progs/xskxceiver.c
->> +++ b/tools/testing/selftests/bpf/progs/xskxceiver.c
->> @@ -12,9 +12,31 @@ struct {
->>       __type(value, __u32);
->>   } xsk SEC(".maps");
->> +extern int bpf_xdp_metadata_have_rx_timestamp(struct xdp_md *ctx) 
->> __ksym;
->> +extern __u32 bpf_xdp_metadata_rx_timestamp(struct xdp_md *ctx) __ksym;
->> +
->>   SEC("xdp")
->>   int rx(struct xdp_md *ctx)
->>   {
->> +    void *data, *data_meta;
->> +    __u32 rx_timestamp;
->> +    int ret;
->> +
->> +    if (bpf_xdp_metadata_have_rx_timestamp(ctx)) {
+url:    https://github.com/intel-lab-lkp/linux/commits/Wang-Yufen/bpf-Fix-memory-leaks-in-__check_func_call/20221027-180438
+patch link:    https://lore.kernel.org/r/1666866213-4394-1-git-send-email-wangyufen%40huawei.com
+patch subject: [PATCH net] bpf: Fix memory leaks in __check_func_call
+config: openrisc-randconfig-m031-20221026
+compiler: or1k-linux-gcc (GCC) 12.1.0
 
-In current veth implementation, bpf_xdp_metadata_have_rx_timestamp()
-will always return true here.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-In the case of hardware timestamps, not every packet will contain a 
-hardware timestamp.  (See my/Maryam ixgbe patch, where timestamps are 
-read via HW device register, which isn't fast, and HW only support this 
-for timesync protocols like PTP).
+smatch warnings:
+kernel/bpf/verifier.c:7021 prepare_func_exit() error: uninitialized symbol 'ret'.
 
-How do you imagine we can extend this?
+vim +/ret +7021 kernel/bpf/verifier.c
 
->> +        ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(__u32));
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6957  static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6958  {
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6959  	struct bpf_verifier_state *state = env->cur_state;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6960  	struct bpf_func_state *caller, *callee;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6961  	struct bpf_reg_state *r0;
+7e03dd8c129a0d Wang Yufen              2022-10-27  6962  	int ret;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6963  
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6964  	callee = state->frame[state->curframe];
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6965  	r0 = &callee->regs[BPF_REG_0];
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6966  	if (r0->type == PTR_TO_STACK) {
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6967  		/* technically it's ok to return caller's stack pointer
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6968  		 * (or caller's caller's pointer) back to the caller,
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6969  		 * since these pointers are valid. Only current stack
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6970  		 * pointer will be invalid as soon as function exits,
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6971  		 * but let's be conservative
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6972  		 */
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6973  		verbose(env, "cannot return stack pointer to the caller\n");
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6974  		return -EINVAL;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6975  	}
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6976  
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6977  	state->curframe--;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6978  	caller = state->frame[state->curframe];
+69c087ba6225b5 Yonghong Song           2021-02-26  6979  	if (callee->in_callback_fn) {
+69c087ba6225b5 Yonghong Song           2021-02-26  6980  		/* enforce R0 return value range [0, 1]. */
+1bfe26fb082724 Dave Marchevsky         2022-09-08  6981  		struct tnum range = callee->callback_ret_range;
+69c087ba6225b5 Yonghong Song           2021-02-26  6982  
+69c087ba6225b5 Yonghong Song           2021-02-26  6983  		if (r0->type != SCALAR_VALUE) {
+69c087ba6225b5 Yonghong Song           2021-02-26  6984  			verbose(env, "R0 not a scalar value\n");
+7e03dd8c129a0d Wang Yufen              2022-10-27  6985  			ret = -EACCES;
+7e03dd8c129a0d Wang Yufen              2022-10-27  6986  			goto out;
+69c087ba6225b5 Yonghong Song           2021-02-26  6987  		}
+69c087ba6225b5 Yonghong Song           2021-02-26  6988  		if (!tnum_in(range, r0->var_off)) {
+69c087ba6225b5 Yonghong Song           2021-02-26  6989  			verbose_invalid_scalar(env, r0, &range, "callback return", "R0");
+7e03dd8c129a0d Wang Yufen              2022-10-27  6990  			ret = -EINVAL;
+7e03dd8c129a0d Wang Yufen              2022-10-27  6991  			goto out;
+69c087ba6225b5 Yonghong Song           2021-02-26  6992  		}
+69c087ba6225b5 Yonghong Song           2021-02-26  6993  	} else {
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6994  		/* return to the caller whatever r0 had in the callee */
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6995  		caller->regs[BPF_REG_0] = *r0;
+69c087ba6225b5 Yonghong Song           2021-02-26  6996  	}
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  6997  
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  6998  	/* callback_fn frame should have released its own additions to parent's
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  6999  	 * reference state at this point, or check_reference_leak would
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  7000  	 * complain, hence it must be the same as the caller. There is no need
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  7001  	 * to copy it back.
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  7002  	 */
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  7003  	if (!callee->in_callback_fn) {
+fd978bf7fd3125 Joe Stringer            2018-10-02  7004  		/* Transfer references to the caller */
+7e03dd8c129a0d Wang Yufen              2022-10-27  7005  		ret = copy_reference_state(caller, callee);
+7e03dd8c129a0d Wang Yufen              2022-10-27  7006  		if (ret)
+7e03dd8c129a0d Wang Yufen              2022-10-27  7007  			goto out;
+9d9d00ac29d0ef Kumar Kartikeya Dwivedi 2022-08-23  7008  	}
 
-IMHO sizeof() should come from a struct describing data_meta area see:
- 
-https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L62
+Not initialized on else path.
 
+fd978bf7fd3125 Joe Stringer            2018-10-02  7009  
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7010  	*insn_idx = callee->callsite + 1;
+06ee7115b0d174 Alexei Starovoitov      2019-04-01  7011  	if (env->log.level & BPF_LOG_LEVEL) {
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7012  		verbose(env, "returning from callee:\n");
+0f55f9ed21f966 Christy Lee             2021-12-16  7013  		print_verifier_state(env, callee, true);
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7014  		verbose(env, "to caller at %d:\n", *insn_idx);
+0f55f9ed21f966 Christy Lee             2021-12-16  7015  		print_verifier_state(env, caller, true);
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7016  	}
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7017  	/* clear everything in the callee */
+7e03dd8c129a0d Wang Yufen              2022-10-27  7018  out:
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7019  	free_func_state(callee);
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7020  	state->frame[state->curframe + 1] = NULL;
+7e03dd8c129a0d Wang Yufen              2022-10-27 @7021  	return ret;
+f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7022  }
 
->> +        if (ret != 0)
->> +            return XDP_DROP;
->> +
->> +        data = (void *)(long)ctx->data;
->> +        data_meta = (void *)(long)ctx->data_meta;
->> +
->> +        if (data_meta + sizeof(__u32) > data)
->> +            return XDP_DROP;
->> +
->> +        rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
->> +        __builtin_memcpy(data_meta, &rx_timestamp, sizeof(__u32));
-
-So, this approach first stores hints on some other memory location, and 
-then need to copy over information into data_meta area. That isn't good 
-from a performance perspective.
-
-My idea is to store it in the final data_meta destination immediately.
-
-Do notice that in my approach, the existing ethtool config setting and 
-socket options (for timestamps) still apply.  Thus, each individual 
-hardware hint are already configurable. Thus we already have a config 
-interface. I do acknowledge, that in-case a feature is disabled it still 
-takes up space in data_meta areas, but importantly it is NOT stored into 
-the area (for performance reasons).
-
-
->> +    }
-> 
-> Thanks for the patches.  I took a quick look at patch 1 and 2 but 
-> haven't had a chance to look at the implementation details (eg. 
-> KF_UNROLL...etc), yet.
-> 
-
-Yes, thanks for the patches, even-though I don't agree with the
-approach, at-least until my concerns/use-case can be resolved.
-IMHO the best way to convince people is through code. So, thank you for
-the effort.  Hopefully we can use some of these ideas and I can also
-change/adjust my XDP-hints ideas to incorporate some of this :-)
-
-
-> Overall (with the example here) looks promising.  There is a lot of 
-> flexibility on whether the xdp prog needs any hint at all, which hint it 
-> needs, and how to store it.
-> 
-
-I do see the advantage that XDP prog only populates metadata it needs.
-But how can we use/access this in __xdp_build_skb_from_frame() ?
-
-
->> +
->>       return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->>   }
->> diff --git a/tools/testing/selftests/bpf/xskxceiver.c 
->> b/tools/testing/selftests/bpf/xskxceiver.c
->> index 066bd691db13..ce82c89a432e 100644
->> --- a/tools/testing/selftests/bpf/xskxceiver.c
->> +++ b/tools/testing/selftests/bpf/xskxceiver.c
->> @@ -871,7 +871,9 @@ static bool is_offset_correct(struct xsk_umem_info 
->> *umem, struct pkt_stream *pkt
->>   static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, 
->> u32 len)
->>   {
->>       void *data = xsk_umem__get_data(buffer, addr);
->> +    void *data_meta = data - sizeof(__u32);
->>       struct iphdr *iphdr = (struct iphdr *)(data + sizeof(struct 
->> ethhdr));
->> +    __u32 rx_timestamp = 0;
->>       if (!pkt) {
->>           ksft_print_msg("[%s] too many packets received\n", __func__);
->> @@ -907,6 +909,13 @@ static bool is_pkt_valid(struct pkt *pkt, void 
->> *buffer, u64 addr, u32 len)
->>           return false;
->>       }
->> +    memcpy(&rx_timestamp, data_meta, sizeof(rx_timestamp));
-
-I acknowledge that it is too extensive to add to this patch, but in my 
-AF_XDP-interaction example[1], I'm creating a struct xdp_hints_rx_time 
-that gets BTF exported[1][2] to the userspace application, and userspace 
-decodes the BTF and gets[3] a xsk_btf_member struct for members that 
-simply contains a offset+size to read from.
-
-[1] 
-https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L47-L51
-
-[2] 
-https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L80
-
-[3] 
-https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_user.c#L123-L129
-
->> +    if (rx_timestamp == 0) {
->> +        ksft_print_msg("Invalid metadata received: ");
->> +        ksft_print_msg("got %08x, expected != 0\n", rx_timestamp);
->> +        return false;
->> +    }
->> +
->>       return true;
->>   }
-> 
-
-Looking forward to collaborate :-)
---Jesper
-
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
