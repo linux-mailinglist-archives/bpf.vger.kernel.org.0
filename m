@@ -2,216 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9175610C5F
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 10:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B537A610C7C
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 10:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbiJ1IlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 04:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S230092AbiJ1IuC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 04:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbiJ1IlD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 04:41:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106484D806
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 01:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1666946409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3igmv4m9mJVl18Gxms4pQuE8amjlv6pT1bIcnLF+UeQ=;
-        b=ZOTRP06OUO1pNwZVVhW3U48MyPlM5CpZXT1PdtMcrJhQhcQ4vtQjBg2cB7GmB1h8KTSmN8
-        JYfF8JdE0OllI9AeP2unl6gcHzyECECN+owwts6VD98JhbEu96+iHApazyhO4RfgsBqjOl
-        u9drME3XGvfD1J3SPf/NZhROA9HQ9iY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-349-i_B02AmSNNeRBQ-PAmQmsA-1; Fri, 28 Oct 2022 04:40:08 -0400
-X-MC-Unique: i_B02AmSNNeRBQ-PAmQmsA-1
-Received: by mail-ed1-f72.google.com with SMTP id i17-20020a05640242d100b0044f18a5379aso2871429edc.21
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 01:40:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3igmv4m9mJVl18Gxms4pQuE8amjlv6pT1bIcnLF+UeQ=;
-        b=2BpYGY1W2zjjaAn7KJk61uasXXfD+v1LOiSHdR2qFZYwREQlT0SmHK+/LC0pN+dPY3
-         oRPGaLPrd2ftdfe1jUCuZWhLXY2FKf89SdQM5IHs6tx+JNwBfzax48MPUj8NGQIgAkG1
-         64ZqjA5AzAryDa+B43ny3lI0Uwr8CHtgKkx7X1iqRneaJfBgQ2D+yDz1ts+PkW2wpnq1
-         fcr3rwqT8JL+5F4GNHbcKbUesqOkgyAUStkVzFW+lZv3F3CDy6/7JkxhFw1T7NYYgA7k
-         Na0lAJE00R3ovvTIIxZRIkbYfHWdw89eHbq5oZGsoZHbnBSWZTSNK2MtwFVu4jzRDM+F
-         OZpg==
-X-Gm-Message-State: ACrzQf3o2zZH78Tywm5DSYWxXOIGmSMRXSX/b9Lpv3LDaa9bHkWoSpeu
-        gX8Q4VAJc8uVoVFguS/O3mWk7WO/5m1qk+V3JbF3I6kxx/bxTip5LhZG0rH/3ae6aJGgAz/qeFe
-        YG7F8wPvlaHCK
-X-Received: by 2002:aa7:d650:0:b0:462:d945:3801 with SMTP id v16-20020aa7d650000000b00462d9453801mr1055318edr.117.1666946407068;
-        Fri, 28 Oct 2022 01:40:07 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4fu5XA4I4vklWepx4GGeridV5qwSCB+s3SM2ZNu/K/oyyr+JE1voYDIrBmDLpM0uqUi3BNYQ==
-X-Received: by 2002:aa7:d650:0:b0:462:d945:3801 with SMTP id v16-20020aa7d650000000b00462d9453801mr1055300edr.117.1666946406840;
-        Fri, 28 Oct 2022 01:40:06 -0700 (PDT)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id n30-20020a50935e000000b004575085bf18sm2209753eda.74.2022.10.28.01.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Oct 2022 01:40:06 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <1596dd80-246b-80d0-b482-4248691de68e@redhat.com>
-Date:   Fri, 28 Oct 2022 10:40:04 +0200
+        with ESMTP id S230055AbiJ1Itx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 04:49:53 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26514102F;
+        Fri, 28 Oct 2022 01:49:28 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MzGK11SwTz9xFfs;
+        Fri, 28 Oct 2022 16:43:01 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwC3o3B8l1tjSAUbAA--.18857S2;
+        Fri, 28 Oct 2022 09:49:08 +0100 (CET)
+Message-ID: <edf0ec89c61fbee68fd537981982e14b1674393d.camel@huaweicloud.com>
+Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from
+ bpf_lsm_inode_init_security()
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     KP Singh <kpsingh@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nicolas.bouchinet@clip-os.org, Mimi Zohar <zohar@linux.ibm.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Date:   Fri, 28 Oct 2022 10:48:56 +0200
+In-Reply-To: <CACYkzJ4ak4=qPNQxVckvn3c8CZpXkXSLSyYa_HCU-RJNyuLoZg@mail.gmail.com>
+References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
+         <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
+         <d7a17e482b7bbf945c92443b45de73f56afea08a.camel@huaweicloud.com>
+         <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
+         <CAADnVQL1a2pPAJqzj6oUwupxxfaW38KQswzppAZeZPzmTFhjMg@mail.gmail.com>
+         <98353f6c82d3dabdb0d434d7ecf0bfc5295015ad.camel@huaweicloud.com>
+         <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
+         <CAADnVQLAXsZRNytPHG0KhYKar3K+=7bq2KPQG77VFOKbnTPHmg@mail.gmail.com>
+         <34357c96-fe58-ffe5-e464-4bded8f119d5@huaweicloud.com>
+         <CAADnVQKD5e9vKsSo1TPeBm5hr6j4GzQeHqRURoBJyB++VOwHCw@mail.gmail.com>
+         <CACYkzJ4ak4=qPNQxVckvn3c8CZpXkXSLSyYa_HCU-RJNyuLoZg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [RFC bpf-next 2/5] veth: Support rx timestamp metadata for xdp
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-References: <20221027200019.4106375-1-sdf@google.com>
- <20221027200019.4106375-3-sdf@google.com>
-In-Reply-To: <20221027200019.4106375-3-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwC3o3B8l1tjSAUbAA--.18857S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF1kXFWkuF4ruw4rZw45GFg_yoWrCrWDpF
+        W5tF1jkr4DJFy7Cr1Iqa15XrWIyryfKrsrXwn8Jr1UZFyqvr1ayr17Jr4Y9FWUur4UGw1F
+        vr4jvrW3Zw1DA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4TG5gAAsD
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 27/10/2022 22.00, Stanislav Fomichev wrote:
-> xskxceiver conveniently setups up veth pairs so it seems logical
-> to use veth as an example for some of the metadata handling.
+On Thu, 2022-10-27 at 12:39 +0200, KP Singh wrote:
+> On Wed, Oct 26, 2022 at 7:14 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> > On Wed, Oct 26, 2022 at 1:42 AM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > On 10/26/2022 8:37 AM, Alexei Starovoitov wrote:
+> > > > On Tue, Oct 25, 2022 at 7:58 AM Casey Schaufler <
+> > > > casey@schaufler-ca.com> wrote:
+> > > > > On 10/25/2022 12:43 AM, Roberto Sassu wrote:
+> > > > > > On Mon, 2022-10-24 at 19:13 -0700, Alexei Starovoitov
+> > > > > > wrote:
+> > > > > > > I'm looking at security_inode_init_security() and it is
+> > > > > > > indeed messy.
+> > > > > > > Per file system initxattrs callback that processes
+> > > > > > > kmalloc-ed
+> > > > > > > strings.
+> > > > > > > Yikes.
+> > > > > > > 
+> > > > > > > In the short term we should denylist inode_init_security
+> > > > > > > hook to
+> > > > > > > disallow attaching bpf-lsm there. set/getxattr should be
+> > > > > > > done
+> > > > > > > through kfuncs instead of such kmalloc-a-string hack.
+> > > > > > Inode_init_security is an example. It could be that the
+> > > > > > other hooks are
+> > > > > > affected too. What happens if they get arbitrary positive
+> > > > > > values too?
+> > > > > 
+> > > > > TL;DR - Things will go cattywampus.
+> > > > > 
+> > > > > The LSM infrastructure is an interface that has "grown
+> > > > > organically",
+> > > > > and isn't necessarily consistent in what it requires of the
+> > > > > security
+> > > > > module implementations. There are cases where it assumes that
+> > > > > the
+> > > > > security module hooks are well behaved, as you've discovered.
+> > > > > I have
+> > > > > no small amount of fear that someone is going to provide an
+> > > > > eBPF
+> > > > > program for security_secid_to_secctx(). There has been an
+> > > > > assumption,
+> > > > > oft stated, that all security modules are going to be
+> > > > > reviewed as
+> > > > > part of the upstream process. The review process ought to
+> > > > > catch hooks
+> > > > > that return unacceptable values. Alas, we've lost that with
+> > > > > BPF.
+> > > > > 
+> > > > > It would take a(nother) major overhaul of the LSM
+> > > > > infrastructure to
+> > > > > make it safe against hooks that are not well behaved. From
+> > > > > what I have
+> > > > > seen so far it wouldn't be easy/convenient/performant to do
+> > > > > it in the
+> > > > > BPF security module either. I personally think that BPF needs
+> > > > > to
+> > > > > ensure that the eBPF implementations don't return
+> > > > > inappropriate values,
+> > > > > but I understand why that is problematic.
+> > > > 
+> > > > That's an accurate statement. Thank you.
+> > > > 
+> > > > Going back to the original question...
+> > > > We fix bugs when we discover them.
+> > > > Regardless of the subsystem they belong to.
+> > > > No finger pointing.
+> > > 
+> > > I'm concerned about the following situation:
+> > > 
+> > > struct <something> *function()
+> > > {
+> > > 
+> > >         ret = security_*();
+> > >         if (ret)
+> > >                 return ERR_PTR(ret);
+> > > 
+> > > }
+> > > 
+> > > int caller()
+> > > {
+> > >         ptr = function()
+> > >         if (IS_ERR(ptr)
+> > >                 goto out;
+> > > 
+> > >         <use of invalid pointer>
+> > > }
+> > > 
+> > > I quickly found an occurrence of this:
+> > > 
+> > > static int lookup_one_common()
+> > > {
+> > > 
+> > > [...]
+> > > 
+> > >         return inode_permission();
+> > > }
+> > > 
+> > > struct dentry *try_lookup_one_len()
+> > > {
+> > > 
+> > > [...]
+> > > 
+> > >          err = lookup_one_common(&init_user_ns, name, base, len,
+> > > &this);
+> > >          if (err)
+> > >                  return ERR_PTR(err);
+> > > 
+> > > 
+> > > Unfortunately, attaching to inode_permission causes the kernel
+> > > to crash immediately (it does not happen with negative return
+> > > values).
+> > > 
+> > > So, I think the fix should be broader, and not limited to the
+> > > inode_init_security hook. Will try to see how it can be fixed.
+> > 
+> > I see. Let's restrict bpf-lsm return values to IS_ERR_VALUE.
+> > Trivial verifier change.
 > 
-> We timestamp skb right when we "receive" it, store its
-> pointer in xdp_buff->priv and generate BPF bytecode to
-> reach it from the BPF program.
+> Thanks, yes this indeed is an issue. We need to do a few things:
 > 
-> This largely follows the idea of "store some queue context in
-> the xdp_buff/xdp_frame so the metadata can be reached out
-> from the BPF program".
-> 
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> Cc: Maryam Tahhan <mtahhan@redhat.com>
-> Cc: xdp-hints@xdp-project.net
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
->   1 file changed, 31 insertions(+)
-> 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 09682ea3354e..35396dd73de0 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -597,6 +597,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
->   
->   		xdp_convert_frame_to_buff(frame, &xdp);
->   		xdp.rxq = &rq->xdp_rxq;
-> +		xdp.priv = NULL;
+> 1. Restrict some hooks that we know the BPF LSM will never need.
+> 2. A verifier function that checks return values of LSM
+> hooks.
+> For most LSK hooks IS_ERR_VALUE is fine, however, there are some
+> hooks
+> like *xattr hooks that use a return value of 1 to indicate a
+> capability check is required which might need special handling.
 
-So, why doesn't this supported for normal XDP mode?!?
-e.g. Where veth gets XDP redirected an xdp_frame.
+I looked at security.c:
 
-My main use case (for veth) is to make NIC hardware hints available to
-containers.  Thus, creating a flexible fast-path via XDP-redirect
-directly into containers veth device.  (This is e.g. for replacing the
-inflexible SR-IOV approach with SR-IOV net_devices in the container,
-with a more cloud friendly approach).
+/*
+ * SELinux and Smack integrate the cap call,
+ * so assume that all LSMs supplying this call do so.
+ */
 
-How can we extend this approach to handle xdp_frame's from different 
-net_device's ?
+Other than checking the return value, probably we should also wrap
+bpf_lsm_inode_{set,remove}xattr() to do the capability check, right?
 
-
->   
->   		act = bpf_prog_run_xdp(xdp_prog, &xdp);
->   
-> @@ -820,6 +821,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
->   
->   	orig_data = xdp.data;
->   	orig_data_end = xdp.data_end;
-> +	xdp.priv = skb;
->   
-
-So, enabling SKB based path only.
-
->   	act = bpf_prog_run_xdp(xdp_prog, &xdp);
->   
-> @@ -936,6 +938,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
->   			struct sk_buff *skb = ptr;
->   
->   			stats->xdp_bytes += skb->len;
-> +			__net_timestamp(skb);
->   			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
->   			if (skb) {
->   				if (skb_shared(skb) || skb_unclone(skb, GFP_ATOMIC))
-> @@ -1595,6 +1598,33 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
->   	}
->   }
->   
-> +static int veth_unroll_kfunc(struct bpf_prog *prog, struct bpf_insn *insn)
-> +{
-> +	u32 func_id = insn->imm;
-> +
-> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_HAVE_RX_TIMESTAMP)) {
-> +		/* return true; */
-> +		insn[0] = BPF_MOV64_IMM(BPF_REG_0, 1);
-> +		return 1;
-> +	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-> +		/* r1 = ((struct xdp_buff *)r1)->priv; [skb] */
-> +		insn[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1,
-> +				      offsetof(struct xdp_buff, priv));
-> +		/* if (r1 == NULL) { */
-> +		insn[1] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 1);
-> +		/*	return 0; */
-> +		insn[2] = BPF_MOV64_IMM(BPF_REG_0, 0);
-> +		/* } else { */
-> +		/*	return ((struct sk_buff *)r1)->tstamp; */
-> +		insn[3] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
-> +				      offsetof(struct sk_buff, tstamp));
-
-Just to be clear, this skb->tstamp is a software timestamp, right?
-
-> +		/* } */
-> +		return 4;
-> +	}
-
-I'm slightly concerned with driver developers maintaining BPF-bytecode
-on a per-driver bases, but I can certainly live with this if BPF
-maintainers can.
-
-> +
-> +	return 0;
-> +}
-> +
->   static const struct net_device_ops veth_netdev_ops = {
->   	.ndo_init            = veth_dev_init,
->   	.ndo_open            = veth_open,
-> @@ -1614,6 +1644,7 @@ static const struct net_device_ops veth_netdev_ops = {
->   	.ndo_bpf		= veth_xdp,
->   	.ndo_xdp_xmit		= veth_ndo_xdp_xmit,
->   	.ndo_get_peer_dev	= veth_peer_dev,
-> +	.ndo_unroll_kfunc       = veth_unroll_kfunc,
->   };
->   
->   #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
+Roberto
 
