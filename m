@@ -2,192 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76332610BF7
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 10:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9175610C5F
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 10:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbiJ1INF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 04:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
+        id S229909AbiJ1IlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 04:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiJ1INE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 04:13:04 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4B718DD78;
-        Fri, 28 Oct 2022 01:13:00 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MzFb54yzbzFq4p;
-        Fri, 28 Oct 2022 16:10:09 +0800 (CST)
-Received: from [10.174.178.197] (10.174.178.197) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 28 Oct 2022 16:12:57 +0800
-Message-ID: <41fa7ae0-d09a-659b-82ea-28036c02beee@huawei.com>
-Date:   Fri, 28 Oct 2022 16:12:56 +0800
+        with ESMTP id S229635AbiJ1IlD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 04:41:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106484D806
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 01:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666946409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3igmv4m9mJVl18Gxms4pQuE8amjlv6pT1bIcnLF+UeQ=;
+        b=ZOTRP06OUO1pNwZVVhW3U48MyPlM5CpZXT1PdtMcrJhQhcQ4vtQjBg2cB7GmB1h8KTSmN8
+        JYfF8JdE0OllI9AeP2unl6gcHzyECECN+owwts6VD98JhbEu96+iHApazyhO4RfgsBqjOl
+        u9drME3XGvfD1J3SPf/NZhROA9HQ9iY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-349-i_B02AmSNNeRBQ-PAmQmsA-1; Fri, 28 Oct 2022 04:40:08 -0400
+X-MC-Unique: i_B02AmSNNeRBQ-PAmQmsA-1
+Received: by mail-ed1-f72.google.com with SMTP id i17-20020a05640242d100b0044f18a5379aso2871429edc.21
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 01:40:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3igmv4m9mJVl18Gxms4pQuE8amjlv6pT1bIcnLF+UeQ=;
+        b=2BpYGY1W2zjjaAn7KJk61uasXXfD+v1LOiSHdR2qFZYwREQlT0SmHK+/LC0pN+dPY3
+         oRPGaLPrd2ftdfe1jUCuZWhLXY2FKf89SdQM5IHs6tx+JNwBfzax48MPUj8NGQIgAkG1
+         64ZqjA5AzAryDa+B43ny3lI0Uwr8CHtgKkx7X1iqRneaJfBgQ2D+yDz1ts+PkW2wpnq1
+         fcr3rwqT8JL+5F4GNHbcKbUesqOkgyAUStkVzFW+lZv3F3CDy6/7JkxhFw1T7NYYgA7k
+         Na0lAJE00R3ovvTIIxZRIkbYfHWdw89eHbq5oZGsoZHbnBSWZTSNK2MtwFVu4jzRDM+F
+         OZpg==
+X-Gm-Message-State: ACrzQf3o2zZH78Tywm5DSYWxXOIGmSMRXSX/b9Lpv3LDaa9bHkWoSpeu
+        gX8Q4VAJc8uVoVFguS/O3mWk7WO/5m1qk+V3JbF3I6kxx/bxTip5LhZG0rH/3ae6aJGgAz/qeFe
+        YG7F8wPvlaHCK
+X-Received: by 2002:aa7:d650:0:b0:462:d945:3801 with SMTP id v16-20020aa7d650000000b00462d9453801mr1055318edr.117.1666946407068;
+        Fri, 28 Oct 2022 01:40:07 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4fu5XA4I4vklWepx4GGeridV5qwSCB+s3SM2ZNu/K/oyyr+JE1voYDIrBmDLpM0uqUi3BNYQ==
+X-Received: by 2002:aa7:d650:0:b0:462:d945:3801 with SMTP id v16-20020aa7d650000000b00462d9453801mr1055300edr.117.1666946406840;
+        Fri, 28 Oct 2022 01:40:06 -0700 (PDT)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id n30-20020a50935e000000b004575085bf18sm2209753eda.74.2022.10.28.01.40.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Oct 2022 01:40:06 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <1596dd80-246b-80d0-b482-4248691de68e@redhat.com>
+Date:   Fri, 28 Oct 2022 10:40:04 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: [PATCH -next] selftests/bpf: fix alignment problem in
- bpf_prog_test_run_skb()
-From:   zhongbaisong <zhongbaisong@huawei.com>
-To:     <elver@google.com>, <glider@google.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <wangkefeng.wang@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <davem@davemloft.net>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <dvyukov@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kasan-dev@googlegroups.com>, Linux MM <linux-mm@kvack.org>
-References: <a3552059-89d4-1866-a141-6de9454f8116@huawei.com>
-Organization: huawei
-In-Reply-To: <a3552059-89d4-1866-a141-6de9454f8116@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.197]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [RFC bpf-next 2/5] veth: Support rx timestamp metadata for xdp
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+References: <20221027200019.4106375-1-sdf@google.com>
+ <20221027200019.4106375-3-sdf@google.com>
+In-Reply-To: <20221027200019.4106375-3-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sorry, Pls drop this.
 
-On 2022/10/28 15:01, zhongbaisong wrote:
-> We observed a crash "KFENCE: use-after-free in __skb_clone" during fuzzing.
-> It's a frequent occurrance in aarch64 and the codepath is always the 
-> same,but cannot be reproduced in x86_64.
-> The config and reproducer are in the attachement.
-> Detailed crash information is as follows.
+On 27/10/2022 22.00, Stanislav Fomichev wrote:
+> xskxceiver conveniently setups up veth pairs so it seems logical
+> to use veth as an example for some of the metadata handling.
 > 
-> -----------------------------------------
->   BUG: KFENCE: use-after-free read in __skb_clone+0x214/0x280
+> We timestamp skb right when we "receive" it, store its
+> pointer in xdp_buff->priv and generate BPF bytecode to
+> reach it from the BPF program.
 > 
->   Use-after-free read at 0xffff00022250306f (in kfence-#250):
->    __skb_clone+0x214/0x280
->    skb_clone+0xb4/0x180
->    bpf_clone_redirect+0x60/0x190
->    bpf_prog_207b739f41707f89+0x88/0xb8
->    bpf_test_run+0x2dc/0x4fc
->    bpf_prog_test_run_skb+0x4ac/0x7d0
->    __sys_bpf+0x700/0x1020
->    __arm64_sys_bpf+0x4c/0x60
->    invoke_syscall+0x64/0x190
->    el0_svc_common.constprop.0+0x88/0x200
->    do_el0_svc+0x3c/0x50
->    el0_svc+0x68/0xd0
->    el0t_64_sync_handler+0xb4/0x130
->    el0t_64_sync+0x16c/0x170
+> This largely follows the idea of "store some queue context in
+> the xdp_buff/xdp_frame so the metadata can be reached out
+> from the BPF program".
 > 
->   kfence-#250: 0xffff000222503000-0xffff00022250318e, size=399, 
-> cache=kmalloc-512
-> 
->   allocated by task 2970 on cpu 0 at 65.981345s:
->    bpf_test_init.isra.0+0x68/0x100
->    bpf_prog_test_run_skb+0x114/0x7d0
->    __sys_bpf+0x700/0x1020
->    __arm64_sys_bpf+0x4c/0x60
->    invoke_syscall+0x64/0x190
->    el0_svc_common.constprop.0+0x88/0x200
->    do_el0_svc+0x3c/0x50
->    el0_svc+0x68/0xd0
->    el0t_64_sync_handler+0xb4/0x130
->    el0t_64_sync+0x16c/0x170
-> 
->   CPU: 0 PID: 2970 Comm: syz Tainted: G    B   W 6.1.0-rc2-next-20221025 
-> #140
->   Hardware name: linux,dummy-virt (DT)
->   pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->   pc : __skb_clone+0x214/0x280
->   lr : __skb_clone+0x208/0x280
->   sp : ffff80000fc37630
->   x29: ffff80000fc37630 x28: ffff80000fc37bd0 x27: ffff80000fc37720
->   x26: ffff000222503000 x25: 000000000000028f x24: ffff0000d0898d5c
->   x23: ffff0000d08997c0 x22: ffff0000d089977e x21: ffff00022250304f
->   x20: ffff0000d0899700 x19: ffff0000d0898c80 x18: 0000000000000000
->   x17: ffff800008379bbc x16: ffff800008378ee0 x15: ffff800008379bbc
->   x14: ffff800008378ee0 x13: 0040004effff0008 x12: ffff6000444a060f
->   x11: 1fffe000444a060e x10: ffff6000444a060e x9 : dfff800000000000
->   x8 : ffff000222503072 x7 : 00009fffbbb5f9f3 x6 : 0000000000000002
->   x5 : ffff00022250306f x4 : ffff6000444a060f x3 : ffff8000096fb2a8
->   x2 : 0000000000000001 x1 : ffff00022250306f x0 : 0000000000000001
->   Call trace:
->    __skb_clone+0x214/0x280
->    skb_clone+0xb4/0x180
->    bpf_clone_redirect+0x60/0x190
->    bpf_prog_207b739f41707f89+0x88/0xb8
->    bpf_test_run+0x2dc/0x4fc
->    bpf_prog_test_run_skb+0x4ac/0x7d0
->    __sys_bpf+0x700/0x1020
->    __arm64_sys_bpf+0x4c/0x60
->    invoke_syscall+0x64/0x190
->    el0_svc_common.constprop.0+0x88/0x200
->    do_el0_svc+0x3c/0x50
->    el0_svc+0x68/0xd0
->    el0t_64_sync_handler+0xb4/0x130
->    el0t_64_sync+0x16c/0x170
-> 
-> 
->  From the crash info, I found the problem happend at 
-> atomic_inc(&(skb_shinfo(skb)->dataref)) in __skb_clone().
-> 
->      static struct sk_buff *__skb_clone(struct sk_buff *n, struct 
-> sk_buff *skb)
->      {
->          ...
->          refcount_set(&n->users, 1);
-> 
->  >       atomic_inc(&(skb_shinfo(skb)->dataref));
->          skb->cloned = 1;
-> 
->          return n;
->      #undef C
->      }
-> 
-> 
-> when KENCE UAF happend, the address of skb_shinfo(skb) always end with 
-> 0xf，like
-> 0xffff0002224f104f, 0xffff0002224f304f, etc.
-> 
-> But when KFENCE is not working, the address of skb_shinfo(skb) always 
-> end with 0xc0, like
-> 0xffff0000d7e908c0, 0xffff0000d682f4c0, ect.
-> 
-> So, I guess the problem is related to kfence memory address alignment in 
-> aarch64.
-> In bpf_prog_test_run_skb(), I try to let the 'size' align with 
-> SMP_CACHE_BYTES to fix that.
-> 
-> After that, the KENCE user-after-free disappeared.
-> 
-> Fixes: be3d72a2896c ("bpf: move user_size out of bpf_test_init")
-> Signed-off-by: Baisong Zhong <zhongbaisong@huawei.com>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Cc: Maryam Tahhan <mtahhan@redhat.com>
+> Cc: xdp-hints@xdp-project.net
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->   net/bpf/test_run.c | 2 ++
->   1 file changed, 2 insertions(+)
+>   drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
+>   1 file changed, 31 insertions(+)
 > 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 13d578ce2a09..3414aa2930d4 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -1096,6 +1096,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, 
-> const union bpf_attr *kattr,
->      if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
->          return -EINVAL;
-> 
-> +   size = SKB_DATA_ALIGN(size);
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 09682ea3354e..35396dd73de0 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -597,6 +597,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+>   
+>   		xdp_convert_frame_to_buff(frame, &xdp);
+>   		xdp.rxq = &rq->xdp_rxq;
+> +		xdp.priv = NULL;
+
+So, why doesn't this supported for normal XDP mode?!?
+e.g. Where veth gets XDP redirected an xdp_frame.
+
+My main use case (for veth) is to make NIC hardware hints available to
+containers.  Thus, creating a flexible fast-path via XDP-redirect
+directly into containers veth device.  (This is e.g. for replacing the
+inflexible SR-IOV approach with SR-IOV net_devices in the container,
+with a more cloud friendly approach).
+
+How can we extend this approach to handle xdp_frame's from different 
+net_device's ?
+
+
+>   
+>   		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+>   
+> @@ -820,6 +821,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+>   
+>   	orig_data = xdp.data;
+>   	orig_data_end = xdp.data_end;
+> +	xdp.priv = skb;
+>   
+
+So, enabling SKB based path only.
+
+>   	act = bpf_prog_run_xdp(xdp_prog, &xdp);
+>   
+> @@ -936,6 +938,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+>   			struct sk_buff *skb = ptr;
+>   
+>   			stats->xdp_bytes += skb->len;
+> +			__net_timestamp(skb);
+>   			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
+>   			if (skb) {
+>   				if (skb_shared(skb) || skb_unclone(skb, GFP_ATOMIC))
+> @@ -1595,6 +1598,33 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+>   	}
+>   }
+>   
+> +static int veth_unroll_kfunc(struct bpf_prog *prog, struct bpf_insn *insn)
+> +{
+> +	u32 func_id = insn->imm;
 > +
->      data = bpf_test_init(kattr, kattr->test.data_size_in,
->                   size, NET_SKB_PAD + NET_IP_ALIGN,
->                   SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-> -- 
-> 2.25.1
-> 
-> .
-> 
-> 
-> 
+> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_HAVE_RX_TIMESTAMP)) {
+> +		/* return true; */
+> +		insn[0] = BPF_MOV64_IMM(BPF_REG_0, 1);
+> +		return 1;
+> +	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
+> +		/* r1 = ((struct xdp_buff *)r1)->priv; [skb] */
+> +		insn[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1,
+> +				      offsetof(struct xdp_buff, priv));
+> +		/* if (r1 == NULL) { */
+> +		insn[1] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 1);
+> +		/*	return 0; */
+> +		insn[2] = BPF_MOV64_IMM(BPF_REG_0, 0);
+> +		/* } else { */
+> +		/*	return ((struct sk_buff *)r1)->tstamp; */
+> +		insn[3] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
+> +				      offsetof(struct sk_buff, tstamp));
+
+Just to be clear, this skb->tstamp is a software timestamp, right?
+
+> +		/* } */
+> +		return 4;
+> +	}
+
+I'm slightly concerned with driver developers maintaining BPF-bytecode
+on a per-driver bases, but I can certainly live with this if BPF
+maintainers can.
+
+> +
+> +	return 0;
+> +}
+> +
+>   static const struct net_device_ops veth_netdev_ops = {
+>   	.ndo_init            = veth_dev_init,
+>   	.ndo_open            = veth_open,
+> @@ -1614,6 +1644,7 @@ static const struct net_device_ops veth_netdev_ops = {
+>   	.ndo_bpf		= veth_xdp,
+>   	.ndo_xdp_xmit		= veth_ndo_xdp_xmit,
+>   	.ndo_get_peer_dev	= veth_peer_dev,
+> +	.ndo_unroll_kfunc       = veth_unroll_kfunc,
+>   };
+>   
+>   #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
+
