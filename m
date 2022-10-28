@@ -2,131 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 209C561096B
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 07:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCEE610A46
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 08:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbiJ1FBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 01:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S229652AbiJ1GXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 02:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiJ1FBa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 01:01:30 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657071911FA;
-        Thu, 27 Oct 2022 22:01:24 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mz9P00SPhzHvNH;
-        Fri, 28 Oct 2022 13:01:08 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 28 Oct 2022 13:01:22 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <yhs@fb.com>, <joe@wand.net.nz>
-Subject: [PATCH net v2] bpf: Fix memory leaks in __check_func_call
-Date:   Fri, 28 Oct 2022 13:22:00 +0800
-Message-ID: <1666934520-22509-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S229522AbiJ1GXA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 02:23:00 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38141B8658;
+        Thu, 27 Oct 2022 23:22:58 -0700 (PDT)
+Message-ID: <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1666938177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PjdyWQHBxlFEAVHsy8KHBXasKBH77ZloY2jBob0cGSo=;
+        b=fIzOSJYKqfCNmFAW/5mh3gmrzWOW0oqCM0LOy7QJynO+iAi/by4YiDk60k6tps9S9BET+x
+        YFr5HJYVFCz4QM+52y79KWf8k4FRAY5wD4PzdoNlm49GykrxhtvczSLjAoQHOcR7qQrNH3
+        G6zCM/qR5I9tnG3gJ7y3A2UOIFCZW/g=
+Date:   Thu, 27 Oct 2022 23:22:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [RFC bpf-next 5/5] selftests/bpf: Test rx_timestamp metadata in
+ xskxceiver
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20221027200019.4106375-1-sdf@google.com>
+ <20221027200019.4106375-6-sdf@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221027200019.4106375-6-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kmemleak reports this issue:
+On 10/27/22 1:00 PM, Stanislav Fomichev wrote:
+> Example on how the metadata is prepared from the BPF context
+> and consumed by AF_XDP:
+> 
+> - bpf_xdp_metadata_have_rx_timestamp to test whether it's supported;
+>    if not, I'm assuming verifier will remove this "if (0)" branch
+> - bpf_xdp_metadata_rx_timestamp returns a _copy_ of metadata;
+>    the program has to bpf_xdp_adjust_meta+memcpy it;
+>    maybe returning a pointer is better?
+> - af_xdp consumer grabs it from data-<expected_metadata_offset> and
+>    makes sure timestamp is not empty
+> - when loading the program, we pass BPF_F_XDP_HAS_METADATA+prog_ifindex
+> 
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Cc: Maryam Tahhan <mtahhan@redhat.com>
+> Cc: xdp-hints@xdp-project.net
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   .../testing/selftests/bpf/progs/xskxceiver.c  | 22 ++++++++++++++++++
+>   tools/testing/selftests/bpf/xskxceiver.c      | 23 ++++++++++++++++++-
+>   2 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/xskxceiver.c b/tools/testing/selftests/bpf/progs/xskxceiver.c
+> index b135daddad3a..83c879aa3581 100644
+> --- a/tools/testing/selftests/bpf/progs/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/progs/xskxceiver.c
+> @@ -12,9 +12,31 @@ struct {
+>   	__type(value, __u32);
+>   } xsk SEC(".maps");
+>   
+> +extern int bpf_xdp_metadata_have_rx_timestamp(struct xdp_md *ctx) __ksym;
+> +extern __u32 bpf_xdp_metadata_rx_timestamp(struct xdp_md *ctx) __ksym;
+> +
+>   SEC("xdp")
+>   int rx(struct xdp_md *ctx)
+>   {
+> +	void *data, *data_meta;
+> +	__u32 rx_timestamp;
+> +	int ret;
+> +
+> +	if (bpf_xdp_metadata_have_rx_timestamp(ctx)) {
+> +		ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(__u32));
+> +		if (ret != 0)
+> +			return XDP_DROP;
+> +
+> +		data = (void *)(long)ctx->data;
+> +		data_meta = (void *)(long)ctx->data_meta;
+> +
+> +		if (data_meta + sizeof(__u32) > data)
+> +			return XDP_DROP;
+> +
+> +		rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
+> +		__builtin_memcpy(data_meta, &rx_timestamp, sizeof(__u32));
+> +	}
 
-unreferenced object 0xffff88817139d000 (size 2048):
-  comm "test_progs", pid 33246, jiffies 4307381979 (age 45851.820s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000045f075f0>] kmalloc_trace+0x27/0xa0
-    [<0000000098b7c90a>] __check_func_call+0x316/0x1230
-    [<00000000b4c3c403>] check_helper_call+0x172e/0x4700
-    [<00000000aa3875b7>] do_check+0x21d8/0x45e0
-    [<000000001147357b>] do_check_common+0x767/0xaf0
-    [<00000000b5a595b4>] bpf_check+0x43e3/0x5bc0
-    [<0000000011e391b1>] bpf_prog_load+0xf26/0x1940
-    [<0000000007f765c0>] __sys_bpf+0xd2c/0x3650
-    [<00000000839815d6>] __x64_sys_bpf+0x75/0xc0
-    [<00000000946ee250>] do_syscall_64+0x3b/0x90
-    [<0000000000506b7f>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Thanks for the patches.  I took a quick look at patch 1 and 2 but haven't had a 
+chance to look at the implementation details (eg. KF_UNROLL...etc), yet.
 
-The root case here is: In function prepare_func_exit(), the callee is
-not released in the abnormal scenario after "state->curframe--;". To
-fix, move "state->curframe--;" to the very bottom of the function,
-right when we free callee and reset frame[] pointer to NULL, as Andrii
-suggested.
+Overall (with the example here) looks promising.  There is a lot of flexibility 
+on whether the xdp prog needs any hint at all, which hint it needs, and how to 
+store it.
 
-In addition, function __check_func_call() has a similar problem. In
-the abnormal scenario before "state->curframe++;", the callee is alse
-not released.
+> +
+>   	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+>   }
+>   
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 066bd691db13..ce82c89a432e 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -871,7 +871,9 @@ static bool is_offset_correct(struct xsk_umem_info *umem, struct pkt_stream *pkt
+>   static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
+>   {
+>   	void *data = xsk_umem__get_data(buffer, addr);
+> +	void *data_meta = data - sizeof(__u32);
+>   	struct iphdr *iphdr = (struct iphdr *)(data + sizeof(struct ethhdr));
+> +	__u32 rx_timestamp = 0;
+>   
+>   	if (!pkt) {
+>   		ksft_print_msg("[%s] too many packets received\n", __func__);
+> @@ -907,6 +909,13 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
+>   		return false;
+>   	}
+>   
+> +	memcpy(&rx_timestamp, data_meta, sizeof(rx_timestamp));
+> +	if (rx_timestamp == 0) {
+> +		ksft_print_msg("Invalid metadata received: ");
+> +		ksft_print_msg("got %08x, expected != 0\n", rx_timestamp);
+> +		return false;
+> +	}
+> +
+>   	return true;
+>   }
 
-Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-Fixes: fd978bf7fd31 ("bpf: Add reference tracking to verifier")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- kernel/bpf/verifier.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 014ee09..d28d460 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6736,11 +6736,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 	/* Transfer references to the callee */
- 	err = copy_reference_state(callee, caller);
- 	if (err)
--		return err;
-+		goto err_out;
- 
- 	err = set_callee_state_cb(env, caller, callee, *insn_idx);
- 	if (err)
--		return err;
-+		goto err_out;
- 
- 	clear_caller_saved_regs(env, caller->regs);
- 
-@@ -6757,6 +6757,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		print_verifier_state(env, callee, true);
- 	}
- 	return 0;
-+
-+err_out:
-+	kfree(callee);
-+	state->frame[state->curframe + 1] = NULL;
-+	return err;
- }
- 
- int map_set_for_each_callback_args(struct bpf_verifier_env *env,
-@@ -6969,7 +6974,6 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
- 		return -EINVAL;
- 	}
- 
--	state->curframe--;
- 	caller = state->frame[state->curframe];
- 	if (callee->in_callback_fn) {
- 		/* enforce R0 return value range [0, 1]. */
-@@ -7000,6 +7004,7 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
- 			return err;
- 	}
- 
-+	state->curframe--;
- 	*insn_idx = callee->callsite + 1;
- 	if (env->log.level & BPF_LOG_LEVEL) {
- 		verbose(env, "returning from callee:\n");
--- 
-1.8.3.1
+>   
 
