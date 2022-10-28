@@ -2,129 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87126119AF
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 19:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7E06119D0
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 20:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbiJ1Rz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 13:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S229846AbiJ1SBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 14:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbiJ1Rzz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 13:55:55 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D0198C84
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:55:52 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id n12so14644856eja.11
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 10:55:52 -0700 (PDT)
+        with ESMTP id S230012AbiJ1SBp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 14:01:45 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B16211290;
+        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id e4so5416208pfl.2;
+        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJLS2ziIJLJudMk9NMKzr0rUFYXOR6bo/iTdjHodBug=;
-        b=qxwOkQ+9a7w380BVkHVDLE/V4QKPCaFg18S4EE6n5ise5sGHF3ziF+n5LJ0dlyLsKe
-         7oV15uW//aKkkops2tqNQ3bqIErHtS96203MGAr06vBfC8xFJyy1Q4DvW2EoZiwB66XS
-         F0sCuUbzOEZ6GgdwK5775IzoATj57nEtTlD8Gmwn8fkpFYYwD8UplfueOyzPAqU7opZN
-         l7Cxch6p+ieHIcG1oSa/hewoMj84cTt8EwEPP6s2T9AdZHynrfoi0tcaND0Dt/rOM7++
-         6LRhLHAipfqgjjGa0rnSVbfLxYR1ixIYUntGXIdvxki2hsiPS6xk9l4SxULzi9LfAgDg
-         8Qxw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bUx8fY5yV5k6b3NAzZ7ONnYGBUoPPnSRBV9IAdB2IcQ=;
+        b=R5qTkGNPJ2owG22N7vSR56g7SchuiPlUzXI4dNN1k/rvLdTdqG4kadsZfKegVIwN3o
+         TvJ+pVZ2pU3FtvqqRVpQ3m52vnAGIAr95xQetLdYfQ4vq28RiTHw9kdJTuDUysll5xnO
+         3Tos32ojE0o1gtPF2NjT8CPvwK8nzy+JcYOsS6vVJSWpMIbTbdX6T63xKsDjuBi3Kiu1
+         eVING4QaSDU1jdHSCxToNVDMQIros4oZD2YpJHGXTO+mfkDRwiM4NmeqUN5cSUCyrQW7
+         1/kY9mkFENtb2XZzYGnwY+R5EFuLHvnUUHAawQEd0e6id73h9c/3NLyUoYcwZAtB8cSw
+         cPHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJLS2ziIJLJudMk9NMKzr0rUFYXOR6bo/iTdjHodBug=;
-        b=v3Ve+OCqmfaXISnSKTuJzbJVCURDRTxD5G1IvyNbp3LyewD6Kzg97oyN2AsZLHIWsh
-         5Jub15/ryZtkatfmtVvmX/ekr//pPAk5jYOq1sqATeuVpiZR+F2rSsJtIvAmqOtn4rZa
-         9+uW4HuG8hq5ymlhanKWuao/W/jHtwwrkPvhAkcYgYmqpX+zAulmWj4LyqqjHoFweIBx
-         6rFTwP5CD++H7OHHDswEf4ZkztnJOJJ5IkbVaeWthYqiS4IJYhAXiMYIAzDV6CdmvAei
-         xQjOOJsD2K603WTrT0H3G3FquVRaitojTqELVR1k06LbPVF14dp3MHLlRpmg1lnRljMN
-         fnyQ==
-X-Gm-Message-State: ACrzQf3X3g5ITu9FTa4VSMTqLdXgRUr9qKjfoQu8bC4WWB6g71ksuS1t
-        soH95zjr1keINJik85kzjmm2CT/hmpButTEn
-X-Google-Smtp-Source: AMsMyM7p3fssbWn3TtXsfuXNVZZM2lI7edFaaFWpOO65hHGwy/q3Y0kix8gPDczWDBnqKCO1VMA7sw==
-X-Received: by 2002:a17:906:eec1:b0:782:6384:76be with SMTP id wu1-20020a170906eec100b00782638476bemr493691ejb.756.1666979750637;
-        Fri, 28 Oct 2022 10:55:50 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
-        by smtp.gmail.com with ESMTPSA id z19-20020a05640240d300b004617e880f52sm3135490edb.29.2022.10.28.10.55.49
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=bUx8fY5yV5k6b3NAzZ7ONnYGBUoPPnSRBV9IAdB2IcQ=;
+        b=bscsi6Us4db1wZnhialOlVVYmGLNL28PjeBy+ULBGEDa+nA6hPhf8lLHziaFvl0R6U
+         BMgvYt1X2ocTVAa6vj37pJM4Id/PNUsepAQSzXD8++Ibu9wgwp4Fdxbq9JN5uB3mMtiA
+         R15UCFXLG6sODhBYIWmGJB3Dg9J4PqZF2StFxWXeetGKBkegAXIB+twBNXphPJciUb6a
+         cN5haWj1nSC9dh/y9I+5nmcX26cen/oy+ejxRdsLxGmO43IS4V3V00jYlLfSaCwg2V6F
+         xVgZ3a27pvkuFv1rv/MBkcYxiHc61EqO7GjMtJ7DOxQzxgR7z1LlbtRxRYav9d+9HwMf
+         dD7Q==
+X-Gm-Message-State: ACrzQf3+u7hfy7izE+tmR8BD8wzoZ7hBH/Wi9cm/rRKh/flH/uV5tO0x
+        MoEAPbRo+et/IADdVYTrT8A=
+X-Google-Smtp-Source: AMsMyM4/4142AtL9gDKsW66R2DQwFckkQXdIqI8rIATA3ZjgBGVT7PVXnop8c1DLVI7LR3SYgeTyiQ==
+X-Received: by 2002:a63:1308:0:b0:440:5517:c99d with SMTP id i8-20020a631308000000b004405517c99dmr636154pgl.550.1666980100358;
+        Fri, 28 Oct 2022 11:01:40 -0700 (PDT)
+Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:976f:f075:7c14:87a2])
+        by smtp.gmail.com with ESMTPSA id n3-20020a170903110300b00186b86ed450sm3400236plh.156.2022.10.28.11.01.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 10:55:50 -0700 (PDT)
-From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
-Subject: [PATCH bpf-next] selftests: fix test group SKIPPED result
-Date:   Fri, 28 Oct 2022 10:55:30 -0700
-Message-Id: <20221028175530.1413351-1-cerasuolodomenico@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 28 Oct 2022 11:01:38 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        bpf@vger.kernel.org
+Subject: [PATCH 4/4] perf lock contention: Increase default stack skip to 4
+Date:   Fri, 28 Oct 2022 11:01:28 -0700
+Message-Id: <20221028180128.3311491-5-namhyung@kernel.org>
+X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
+In-Reply-To: <20221028180128.3311491-1-namhyung@kernel.org>
+References: <20221028180128.3311491-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Domenico Cerasuolo <dceras@meta.com>
+In most configurations, it works well with skipping 4 entries by
+default.  If some systems still have 3 BPF internal stack frames,
+the next frame should be in a lock function which will be skipped
+later when it tries to find a caller.  So increasing to 4 won't
+affect such systems too.
 
-When showing the result of a test group, if one
-of the subtests was skipped, while still having
-passing subtets, the group result was marked as
-SKIPPED.
+With --stack-skip=0, I can see something like this:
 
-#223/1   usdt/basic:SKIP
-#223/2   usdt/multispec:OK
-#223     usdt:SKIP
+    24     49.84 us      7.41 us      2.08 us        mutex   bpf_prog_e1b85959d520446c_contention_begin+0x12e
+                    0xffffffffc045040e  bpf_prog_e1b85959d520446c_contention_begin+0x12e
+                    0xffffffffc045040e  bpf_prog_e1b85959d520446c_contention_begin+0x12e
+                    0xffffffff82ea2071  bpf_trace_run2+0x51
+                    0xffffffff82de775b  __bpf_trace_contention_begin+0xb
+                    0xffffffff82c02045  __mutex_lock+0x245
+                    0xffffffff82c019e3  __mutex_lock_slowpath+0x13
+                    0xffffffff82c019c0  mutex_lock+0x20
+                    0xffffffff830a083c  kernfs_iop_permission+0x2c
 
-With this change only if all of the subtests
-were skipped the group test is marked as SKIPPED.
-
-#223/1   usdt/basic:SKIP
-#223/2   usdt/multispec:OK
-#223     usdt:OK
-
-Signed-off-by: Domenico Cerasuolo <dceras@meta.com>
+Cc: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ tools/perf/util/lock-contention.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 0e9a47f97890..14b70393018b 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -222,6 +222,11 @@ static char *test_result(bool failed, bool skipped)
- 	return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
- }
+diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+index b8cb8830b7bc..e3c061b1795b 100644
+--- a/tools/perf/util/lock-contention.h
++++ b/tools/perf/util/lock-contention.h
+@@ -91,7 +91,7 @@ struct thread_stat {
+  * Number of stack trace entries to skip when finding callers.
+  * The first few entries belong to the locking implementation itself.
+  */
+-#define CONTENTION_STACK_SKIP  3
++#define CONTENTION_STACK_SKIP  4
  
-+static char *test_group_result(int tests_count, bool failed, int skipped)
-+{
-+	return failed ? "FAIL" : (skipped == tests_count ? "SKIP" : "OK");
-+}
-+
- static void print_test_log(char *log_buf, size_t log_cnt)
- {
- 	log_buf[log_cnt] = '\0';
-@@ -308,7 +313,8 @@ static void dump_test_log(const struct prog_test_def *test,
- 	}
- 
- 	print_test_name(test->test_num, test->test_name,
--			test_result(test_failed, test_state->skip_cnt));
-+			test_group_result(test_state->subtest_num,
-+				test_failed, test_state->skip_cnt));
- }
- 
- static void stdio_restore(void);
-@@ -1071,7 +1077,8 @@ static void run_one_test(int test_num)
- 
- 	if (verbose() && env.worker_id == -1)
- 		print_test_name(test_num + 1, test->test_name,
--				test_result(state->error_cnt, state->skip_cnt));
-+				test_group_result(state->subtest_num,
-+					state->error_cnt, state->skip_cnt));
- 
- 	reset_affinity();
- 	restore_netns();
+ /*
+  * flags for lock:contention_begin
 -- 
-2.30.2
+2.38.1.273.g43a17bfeac-goog
 
