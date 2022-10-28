@@ -2,246 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 899BC61087C
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 04:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3596109AE
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 07:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbiJ1C4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Oct 2022 22:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
+        id S229576AbiJ1FUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 01:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235771AbiJ1C4n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Oct 2022 22:56:43 -0400
+        with ESMTP id S229615AbiJ1FUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 01:20:10 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8B997EE3
-        for <bpf@vger.kernel.org>; Thu, 27 Oct 2022 19:56:41 -0700 (PDT)
-Received: from canpemm100009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mz6d46grWzHtnk;
-        Fri, 28 Oct 2022 10:56:24 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (7.192.105.118) by
- canpemm100009.china.huawei.com (7.192.105.213) with Microsoft SMTP Server
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EF627155;
+        Thu, 27 Oct 2022 22:20:06 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mz9pY5ZTBzHvXP;
+        Fri, 28 Oct 2022 13:19:49 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 28 Oct 2022 10:56:39 +0800
-Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
- canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2375.031;
- Fri, 28 Oct 2022 10:56:39 +0800
-From:   "liujian (CE)" <liujian56@huawei.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
-CC:     "edumazet@google.com" <edumazet@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "mykolal@fb.com" <mykolal@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIGJwZi1uZXh0IHYyIDAvMl0gSWYgdGhlIHNvY2sgaXMg?=
- =?gb2312?B?ZGVhZCwgZG8gbm90IGFjY2VzcyBzb2NrJ3Mgc2tfd3EgaW4gc2tfc3RyZWFt?=
- =?gb2312?B?X3dhaXRfbWVtb3J5?=
-Thread-Topic: [PATCH bpf-next v2 0/2] If the sock is dead, do not access
- sock's sk_wq in sk_stream_wait_memory
-Thread-Index: AQHYtvUoQm09t7RV/kaoW9E06ge0Va4h6/uAgABSLoCAAGLOgIAA4d5g
-Date:   Fri, 28 Oct 2022 02:56:38 +0000
-Message-ID: <fdde6704226149f6855b7a6fdc180f75@huawei.com>
-References: <20220823133755.314697-1-liujian56@huawei.com>
- <874jvpim37.fsf@cloudflare.com> <87zgdhgu0p.fsf@cloudflare.com>
- <87r0ytgdoq.fsf@cloudflare.com>
-In-Reply-To: <87r0ytgdoq.fsf@cloudflare.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.84.19.254]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ 15.1.2375.31; Fri, 28 Oct 2022 13:20:03 +0800
+Message-ID: <8fbd060e-bf77-9f42-7771-0ea058401827@huawei.com>
+Date:   Fri, 28 Oct 2022 13:20:03 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH bpf-next v3 0/4] bpf, sockmap: Fix memleaks and issues of
+ mem charge/uncharge
+To:     Jakub Sitnicki <jakub@cloudflare.com>, <john.fastabend@gmail.com>
+CC:     <daniel@iogearbox.net>, <lmb@cloudflare.com>,
+        <davem@davemloft.net>, <bpf@vger.kernel.org>,
+        <edumazet@google.com>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <ast@kernel.org>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>
+References: <20220304081145.2037182-1-wangyufen@huawei.com>
+ <87v8o5gdw2.fsf@cloudflare.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <87v8o5gdw2.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS3Tyrz+1K28/i0tLS0tDQo+ILeivP7IyzogSmFrdWIgU2l0bmlja2kgPGpha3Vi
-QGNsb3VkZmxhcmUuY29tPg0KPiC3osvNyrG85DogMjAyMsTqMTDUwjI4yNUgNToyNA0KPiDK1bz+
-yMs6IGxpdWppYW4gKENFKSA8bGl1amlhbjU2QGh1YXdlaS5jb20+OyBqb2huLmZhc3RhYmVuZEBn
-bWFpbC5jb20NCj4gs63LzTogZWR1bWF6ZXRAZ29vZ2xlLmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5l
-dDsNCj4geW9zaGZ1amlAbGludXgtaXB2Ni5vcmc7IGRzYWhlcm5Aa2VybmVsLm9yZzsga3ViYUBr
-ZXJuZWwub3JnOw0KPiBwYWJlbmlAcmVkaGF0LmNvbTsgYW5kcmlpQGtlcm5lbC5vcmc7IG15a29s
-YWxAZmIuY29tOyBhc3RAa2VybmVsLm9yZzsNCj4gZGFuaWVsQGlvZ2VhcmJveC5uZXQ7IG1hcnRp
-bi5sYXVAbGludXguZGV2OyBzb25nQGtlcm5lbC5vcmc7IHloc0BmYi5jb207DQo+IGtwc2luZ2hA
-a2VybmVsLm9yZzsgc2RmQGdvb2dsZS5jb207IGhhb2x1b0Bnb29nbGUuY29tOyBqb2xzYUBrZXJu
-ZWwub3JnOw0KPiBzaHVhaEBrZXJuZWwub3JnOyBicGZAdmdlci5rZXJuZWwub3JnDQo+INb3zOI6
-IFJlOiBbUEFUQ0ggYnBmLW5leHQgdjIgMC8yXSBJZiB0aGUgc29jayBpcyBkZWFkLCBkbyBub3Qg
-YWNjZXNzIHNvY2sncw0KPiBza193cSBpbiBza19zdHJlYW1fd2FpdF9tZW1vcnkNCj4gDQo+IE9u
-IFRodSwgT2N0IDI3LCAyMDIyIGF0IDA1OjMwIFBNICswMiwgSmFrdWIgU2l0bmlja2kgd3JvdGU6
-DQo+ID4gT24gVGh1LCBPY3QgMjcsIDIwMjIgYXQgMTI6MzYgUE0gKzAyLCBKYWt1YiBTaXRuaWNr
-aSB3cm90ZToNCj4gPg0KPiA+IFsuLi5dDQo+ID4NCj4gPj4gV2hpbGUgdGVzdGluZyBDb25nJ3Mg
-Zml4IGZvciB0aGUgZGVhZCBsb2NrIGluIHNrX3Bzb2NrX2JhY2tsb2cgWzFdLA0KPiA+PiBJJ3Zl
-IG5vdGljZWQgdGhhdCB0aGlzIGNoYW5nZSBpbnRyb2R1Y2VzIGEgbWVtb3J5IGFjY291bnRpbmcg
-aXNzdWUuDQo+ID4+IFNlZSB3YXJuaW5ncyBiZWxvdy4NCj4gPj4NCj4gPj4gU28gd2hhdCBJJ3Zl
-IHByb3Bvc2VkIGlzIG5vdCBjb21wbGV0ZWx5IHNvdW5kLiBXZSB3aWxsIG5lZWQgdG8NCj4gPj4g
-cmV2aXNpdCBpdC4NCj4gPj4NCj4gPj4gWzFdDQo+ID4+DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2JwZi9ZMHhKVWMlMkZMUnU4SyUyRkFmOEBwb3Atb3MubG9jYWxkb21haW4vDQo+ID4+DQo+
-ID4+IC0tODwtLQ0KPiA+PiBiYXNoLTUuMSMgdW5hbWUgLXINCj4gPj4gNi4wLjAtcmMzLTAwODky
-LWczZjhlZjY1YWY5MjcNCj4gPj4gYmFzaC01LjEjIC4vdGVzdF9zb2NrbWFwDQo+ID4+ICMgMS8g
-NiAgc29ja21hcDo6dHhtc2cgdGVzdCBwYXNzdGhyb3VnaDpPSyAjIDIvIDYgIHNvY2ttYXA6OnR4
-bXNnDQo+ID4+IHRlc3QgcmVkaXJlY3Q6T0sgIyAzLyAxICBzb2NrbWFwOjp0eG1zZyB0ZXN0IHJl
-ZGlyZWN0IHdhaXQgc2VuZA0KPiA+PiBtZW06T0sgIyA0LyA2ICBzb2NrbWFwOjp0eG1zZyB0ZXN0
-IGRyb3A6T0sgIyA1LyA2ICBzb2NrbWFwOjp0eG1zZw0KPiA+PiB0ZXN0IGluZ3Jlc3MgcmVkaXJl
-Y3Q6T0sgIyA2LyA3ICBzb2NrbWFwOjp0eG1zZyB0ZXN0IHNrYjpPSyAjIDcvIDgNCj4gPj4gc29j
-a21hcDo6dHhtc2cgdGVzdCBhcHBseTpPSyAjIDgvMTIgIHNvY2ttYXA6OnR4bXNnIHRlc3QgY29y
-azpPSw0KPiA+PiBbICAgNDYuMzI0MDIzXSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0t
-LS0tLS0NCj4gPj4gWyA0Ni4zMjUxMTRdIFdBUk5JTkc6IENQVTogMyBQSUQ6IDE5OSBhdCBuZXQv
-Y29yZS9zdHJlYW0uYzoyMDYNCj4gPj4gc2tfc3RyZWFtX2tpbGxfcXVldWVzKzB4ZDYvMHhmMA0K
-PiA+PiBbICAgNDYuMzI2NTczXSBNb2R1bGVzIGxpbmtlZCBpbjoNCj4gPj4gWyA0Ni4zMjcxMDVd
-IENQVTogMyBQSUQ6IDE5OSBDb21tOiB0ZXN0X3NvY2ttYXAgTm90IHRhaW50ZWQNCj4gPj4gNi4w
-LjAtcmMzLTAwODkyLWczZjhlZjY1YWY5MjcgIzM2DQo+ID4+IFsgNDYuMzI4NDA2XSBIYXJkd2Fy
-ZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwNCj4gPj4gQklP
-Uw0KPiA+PiAxLjE1LjAtMS5mYzM1IDA0LzAxLzIwMTQNCj4gPj4gWyAgIDQ2LjMzMDAwMF0gUklQ
-OiAwMDEwOnNrX3N0cmVhbV9raWxsX3F1ZXVlcysweGQ2LzB4ZjANCj4gPj4gWyA0Ni4zMzA4MTZd
-IENvZGU6IDI5IDViIDVkIDMxIGMwIDg5IGMyIDg5IGM2IDg5IGM3IGMzIDQ4IDg5IGRmIGU4IDEw
-DQo+ID4+IDE0IGZmIGZmIDhiIDgzIDcwIDAyIDAwIDAwIDhiIGIzIDI4IDAyIDAwIDAwIDg1IGMw
-IDc0IGQ5IDBmIDBiIDg1IGY2DQo+ID4+IDc0IGQ3IDwwZj4gMGIgNWIgNWQNCj4gPj4gMzEgYzAg
-ODkgYzIgODkgYzYgODkgYzcgYzMgMGYgMGIgZWIgOTIgNjYgMGYgMWYgODQgMDANCj4gPj4gWyAg
-IDQ2LjMzMTg4OV0gUlNQOiAwMDE4OmZmZmZjOTAwMDBiYzdkNDggRUZMQUdTOiAwMDAxMDIwNg0K
-PiA+PiBbICAgNDYuMzMyMTg2XSBSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmODg4MTA1
-NjdkYzAwIFJDWDoNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiA+PiBbICAgNDYuMzMyNTgzXSBSRFg6
-IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiAwMDAwMDAwMDAwMDAwZmMwIFJESToNCj4gZmZmZjg4ODEw
-NTY3ZGRiOA0KPiA+PiBbICAgNDYuMzMyOTkxXSBSQlA6IGZmZmY4ODgxMDU2N2RkYjggUjA4OiAw
-MDAwMDAwMDAwMDAwMDAwIFIwOToNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiA+PiBbICAgNDYuMzMz
-MzIxXSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjoNCj4g
-ZmZmZjg4ODEwNTY3ZGMwMA0KPiA+PiBbICAgNDYuMzMzNjYxXSBSMTM6IGZmZmY4ODgxMDM4OTQ1
-MDAgUjE0OiBmZmZmODg4MTAxZmRmOGUwIFIxNToNCj4gZmZmZjg4ODEwNTY3ZGQzMA0KPiA+PiBb
-ICAgNDYuMzM0MDc0XSBGUzogIDAwMDA3ZjQyMGE0ZDhiODAoMDAwMCkNCj4gR1M6ZmZmZjg4ODEz
-YmQ4MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+ID4+IFsgICA0Ni4zMzQ1MzJd
-IENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gPj4g
-WyAgIDQ2LjMzNDg4MV0gQ1IyOiAwMDAwN2Y0MjBhNGQ4YWY4IENSMzogMDAwMDAwMDEwMmUxNzAw
-MSBDUjQ6DQo+IDAwMDAwMDAwMDAzNzBlZTANCj4gPj4gWyAgIDQ2LjMzNTMwMF0gQ2FsbCBUcmFj
-ZToNCj4gPj4gWyAgIDQ2LjMzNTQ0NF0gIDxUQVNLPg0KPiA+PiBbICAgNDYuMzM1NTczXSAgaW5l
-dF9jc2tfZGVzdHJveV9zb2NrKzB4NGYvMHgxMTANCj4gPj4gWyAgIDQ2LjMzNTgzMl0gIHRjcF9y
-Y3Zfc3RhdGVfcHJvY2VzcysweGRjZi8weDExNDANCj4gPj4gWyAgIDQ2LjMzNjA3Nl0gID8gdGNw
-X3Y0X2RvX3JjdisweDc3LzB4MmEwDQo+ID4+IFsgICA0Ni4zMzYyOTldICB0Y3BfdjRfZG9fcmN2
-KzB4NzcvMHgyYTANCj4gPj4gWyAgIDQ2LjMzNjUxMl0gIF9fcmVsZWFzZV9zb2NrKzB4NTgvMHhi
-MA0KPiA+PiBbICAgNDYuMzM2NzIxXSAgX190Y3BfY2xvc2UrMHgxODYvMHg0NTANCj4gPj4gWyAg
-IDQ2LjMzNjg4M10gIHRjcF9jbG9zZSsweDIwLzB4NzANCj4gPj4gWyAgIDQ2LjMzNzAyNl0gIGlu
-ZXRfcmVsZWFzZSsweDM5LzB4ODANCj4gPj4gWyAgIDQ2LjMzNzE3N10gIF9fc29ja19yZWxlYXNl
-KzB4MzcvMHhhMA0KPiA+PiBbICAgNDYuMzM3MzQxXSAgc29ja19jbG9zZSsweDE0LzB4MjANCj4g
-Pj4gWyAgIDQ2LjMzNzQ4Nl0gIF9fZnB1dCsweGEyLzB4MjYwDQo+ID4+IFsgICA0Ni4zMzc2MjJd
-ICB0YXNrX3dvcmtfcnVuKzB4NTkvMHhhMA0KPiA+PiBbICAgNDYuMzM3Nzg1XSAgZXhpdF90b191
-c2VyX21vZGVfcHJlcGFyZSsweDE4NS8weDE5MA0KPiA+PiBbICAgNDYuMzM3OTkyXSAgc3lzY2Fs
-bF9leGl0X3RvX3VzZXJfbW9kZSsweDE5LzB4NDANCj4gPj4gWyAgIDQ2LjMzODE4OV0gIGRvX3N5
-c2NhbGxfNjQrMHg0Mi8weDkwDQo+ID4+IFsgICA0Ni4zMzgzNTBdICBlbnRyeV9TWVNDQUxMXzY0
-X2FmdGVyX2h3ZnJhbWUrMHg0Ni8weGIwDQo+ID4+IFsgICA0Ni4zMzg1NjVdIFJJUDogMDAzMzow
-eDdmNDIwYTYxOGViNw0KPiA+PiBbIDQ2LjMzODc0MV0gQ29kZTogZmYgZTggN2QgZTIgMDEgMDAg
-NjYgMmUgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgMGYNCj4gPj4gMWYgMDAgZjMgMGYgMWUgZmEg
-NjQgOGIgMDQgMjUgMTggMDAgMDAgMDAgODUgYzAgNzUgMTAgYjggMDMgMDAgMDAgMDANCj4gPj4g
-MGYgMDUgPDQ4PiAzZCAwMCBmMCBmZiBmZiA3NyA0MSBjMyA0OCA4MyBlYyAxOCA4OSA3YyAyNCAw
-YyBlOCA0MyBjZCBmNSBmZg0KPiA+PiBbICAgNDYuMzM5NTk2XSBSU1A6IDAwMmI6MDAwMDdmZmQ1
-NDc0OGRmOCBFRkxBR1M6IDAwMDAwMjQ2DQo+IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDAzDQo+
-ID4+IFsgICA0Ni4zMzk5NDRdIFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDAwMDAw
-MDAwMDAgUkNYOg0KPiAwMDAwN2Y0MjBhNjE4ZWI3DQo+ID4+IFsgICA0Ni4zNDAzNDldIFJEWDog
-MDAwMDAwMDAwMDAwMDAxOCBSU0k6IDAwMDA3ZmZkNTQ3NDhkNTAgUkRJOg0KPiAwMDAwMDAwMDAw
-MDAwMDE5DQo+ID4+IFsgICA0Ni4zNDA3NTNdIFJCUDogMDAwMDdmZmQ1NDc0OGU0MCBSMDg6IDAw
-MDA3ZmZkNTQ3NDhkNTAgUjA5Og0KPiAwMDAwN2ZmZDU0NzQ4ZDUwDQo+ID4+IFsgICA0Ni4zNDEx
-NjJdIFIxMDogMDAwMDdmZmQ1NDc0OGQ1MCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOg0KPiAw
-MDAwN2ZmZDU0NzQ5MTE4DQo+ID4+IFsgICA0Ni4zNDE1NzRdIFIxMzogMDAwMDAwMDAwMDQwZDBh
-ZCBSMTQ6IDAwMDAwMDAwMDA0NzRkZjggUjE1Og0KPiAwMDAwN2Y0MjBhNzY5MDAwDQo+ID4+IFsg
-ICA0Ni4zNDE5MjddICA8L1RBU0s+DQo+ID4+IFsgICA0Ni4zNDIwMjVdIGlycSBldmVudCBzdGFt
-cDogMjA2Mzg1DQo+ID4+IFsgNDYuMzQyMTc1XSBoYXJkaXJxcyBsYXN0IGVuYWJsZWQgYXQgKDIw
-NjM5Myk6IFs8ZmZmZmZmZmY4MTBmMWY4Mj5dDQo+ID4+IF9fdXBfY29uc29sZV9zZW0rMHg1Mi8w
-eDYwDQo+ID4+IFsgNDYuMzQyNTQ2XSBoYXJkaXJxcyBsYXN0IGRpc2FibGVkIGF0ICgyMDY0MDAp
-OiBbPGZmZmZmZmZmODEwZjFmNjc+XQ0KPiA+PiBfX3VwX2NvbnNvbGVfc2VtKzB4MzcvMHg2MA0K
-PiA+PiBbIDQ2LjM0Mjk2NV0gc29mdGlycXMgbGFzdCBlbmFibGVkIGF0ICgyMDY0MTQpOiBbPGZm
-ZmZmZmZmODEwN2JjYzU+XQ0KPiA+PiBfX2lycV9leGl0X3JjdSsweGM1LzB4MTIwDQo+ID4+IFsg
-NDYuMzQzNDU0XSBzb2Z0aXJxcyBsYXN0IGRpc2FibGVkIGF0ICgyMDY0MDkpOiBbPGZmZmZmZmZm
-ODEwN2JjYzU+XQ0KPiA+PiBfX2lycV9leGl0X3JjdSsweGM1LzB4MTIwDQo+ID4+IFsgICA0Ni4z
-NDM5NTFdIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQ0KPiA+PiBbICAgNDYu
-MzQ0MTk5XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NCj4gPj4gWyA0Ni4z
-NDQ0MjFdIFdBUk5JTkc6IENQVTogMyBQSUQ6IDE5OSBhdCBuZXQvaXB2NC9hZl9pbmV0LmM6MTU0
-DQo+ID4+IGluZXRfc29ja19kZXN0cnVjdCsweDFhMC8weDFkMA0KPiA+PiBbICAgNDYuMzQ0ODk3
-XSBNb2R1bGVzIGxpbmtlZCBpbjoNCj4gPj4gWyA0Ni4zNDUwNzRdIENQVTogMyBQSUQ6IDE5OSBD
-b21tOiB0ZXN0X3NvY2ttYXAgVGFpbnRlZDogRyBXDQo+ID4+IDYuMC4wLXJjMy0wMDg5Mi1nM2Y4
-ZWY2NWFmOTI3ICMzNg0KPiA+PiBbIDQ2LjM0NTU0OV0gSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFu
-ZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksDQo+ID4+IEJJT1MNCj4gPj4gMS4xNS4wLTEu
-ZmMzNSAwNC8wMS8yMDE0DQo+ID4+IFsgICA0Ni4zNDYwMjhdIFJJUDogMDAxMDppbmV0X3NvY2tf
-ZGVzdHJ1Y3QrMHgxYTAvMHgxZDANCj4gPj4gWyA0Ni4zNDYzMTNdIENvZGU6IGZmIDQ5IDhiIGJj
-IDI0IDYwIDAyIDAwIDAwIGU4IGNjIDFlIGU5IGZmIDQ5IDhiIGJjDQo+ID4+IDI0IDg4IDAwDQo+
-ID4+IDAwIDAwIDViIDQxIDVjIGU5IGJjIDFlIGU5IGZmIDQxIDhiIDg0IDI0IDI4IDAyIDAwIDAw
-IDg1IGMwIDc0IGNhDQo+ID4+IDwwZj4gMGIgZWIgYzYgNGMgODkgZTcgZTggYTQgMmQgZTYgZmYg
-ZTkgNTAgZmYgZmYgZmYgMGYgMGIgNDEgOGIgODQNCj4gPj4gWyAgIDQ2LjM0NzM3MF0gUlNQOiAw
-MDE4OmZmZmZjOTAwMDBiYzdlNDAgRUZMQUdTOiAwMDAxMDIwNg0KPiA+PiBbICAgNDYuMzQ3Njcw
-XSBSQVg6IDAwMDAwMDAwMDAwMDBmYzAgUkJYOiBmZmZmODg4MTA1NjdkZDYwIFJDWDoNCj4gMDAw
-MDAwMDAwMDAwMDAwMA0KPiA+PiBbICAgNDYuMzQ4MDkwXSBSRFg6IDAwMDAwMDAwMDAwMDAzMDMg
-UlNJOiAwMDAwMDAwMDAwMDAwZmMwIFJESToNCj4gZmZmZjg4ODEwNTY3ZGQ2MA0KPiA+PiBbICAg
-NDYuMzQ4NDk1XSBSQlA6IGZmZmY4ODgxMDU2N2RjMDAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIw
-OToNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiA+PiBbICAgNDYuMzQ4OTIxXSBSMTA6IDAwMDAwMDAw
-MDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjoNCj4gZmZmZjg4ODEwNTY3ZGMwMA0K
-PiA+PiBbICAgNDYuMzQ5MzA2XSBSMTM6IGZmZmY4ODgxMDAxZDQ4ZTAgUjE0OiBmZmZmODg4MTAy
-NTdhM2E4IFIxNToNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiA+PiBbICAgNDYuMzQ5NzE3XSBGUzog
-IDAwMDA3ZjQyMGE0ZDhiODAoMDAwMCkNCj4gR1M6ZmZmZjg4ODEzYmQ4MDAwMCgwMDAwKSBrbmxH
-UzowMDAwMDAwMDAwMDAwMDAwDQo+ID4+IFsgICA0Ni4zNTAxOTFdIENTOiAgMDAxMCBEUzogMDAw
-MCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gPj4gWyAgIDQ2LjM1MDUzMV0gQ1Iy
-OiAwMDAwN2Y0MjBhNGQ4YWY4IENSMzogMDAwMDAwMDEwMmUxNzAwMSBDUjQ6DQo+IDAwMDAwMDAw
-MDAzNzBlZTANCj4gPj4gWyAgIDQ2LjM1MDk0N10gQ2FsbCBUcmFjZToNCj4gPj4gWyAgIDQ2LjM1
-MTA5OF0gIDxUQVNLPg0KPiA+PiBbICAgNDYuMzUxMjQ2XSAgX19za19kZXN0cnVjdCsweDIzLzB4
-MjUwDQo+ID4+IFsgICA0Ni4zNTE1OTldICBpbmV0X3JlbGVhc2UrMHgzOS8weDgwDQo+ID4+IFsg
-ICA0Ni4zNTE4MzVdICBfX3NvY2tfcmVsZWFzZSsweDM3LzB4YTANCj4gPj4gWyAgIDQ2LjM1MjA1
-OV0gIHNvY2tfY2xvc2UrMHgxNC8weDIwDQo+ID4+IFsgICA0Ni4zNTIyMDZdICBfX2ZwdXQrMHhh
-Mi8weDI2MA0KPiA+PiBbICAgNDYuMzUyMzQ3XSAgdGFza193b3JrX3J1bisweDU5LzB4YTANCj4g
-Pj4gWyAgIDQ2LjM1MjUxNV0gIGV4aXRfdG9fdXNlcl9tb2RlX3ByZXBhcmUrMHgxODUvMHgxOTAN
-Cj4gPj4gWyAgIDQ2LjM1MjcyOF0gIHN5c2NhbGxfZXhpdF90b191c2VyX21vZGUrMHgxOS8weDQw
-DQo+ID4+IFsgICA0Ni4zNTI5NTRdICBkb19zeXNjYWxsXzY0KzB4NDIvMHg5MA0KPiA+PiBbICAg
-NDYuMzUzMTE5XSAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDYvMHhiMA0KPiA+
-PiBbICAgNDYuMzUzMzQyXSBSSVA6IDAwMzM6MHg3ZjQyMGE2MThlYjcNCj4gPj4gWyA0Ni4zNTM0
-OThdIENvZGU6IGZmIGU4IDdkIGUyIDAxIDAwIDY2IDJlIDBmIDFmIDg0IDAwIDAwIDAwIDAwIDAw
-IDBmDQo+ID4+IDFmIDAwIGYzIDBmIDFlIGZhIDY0IDhiIDA0IDI1IDE4IDAwIDAwIDAwIDg1IGMw
-IDc1IDEwIGI4IDAzIDAwIDAwIDAwDQo+ID4+IDBmIDA1IDw0OD4gM2QgMDAgZjAgZmYgZmYgNzcg
-NDEgYzMgNDggODMgZWMgMTggODkgN2MgMjQgMGMgZTggNDMgY2QgZjUgZmYNCj4gPj4gWyAgIDQ2
-LjM1NDI4NF0gUlNQOiAwMDJiOjAwMDA3ZmZkNTQ3NDhkZjggRUZMQUdTOiAwMDAwMDI0Ng0KPiBP
-UklHX1JBWDogMDAwMDAwMDAwMDAwMDAwMw0KPiA+PiBbICAgNDYuMzU0NjAxXSBSQVg6IDAwMDAw
-MDAwMDAwMDAwMDAgUkJYOiAwMDAwMDAwMDAwMDAwMDAwIFJDWDoNCj4gMDAwMDdmNDIwYTYxOGVi
-Nw0KPiA+PiBbICAgNDYuMzU0OTA4XSBSRFg6IDAwMDAwMDAwMDAwMDAwMTggUlNJOiAwMDAwN2Zm
-ZDU0NzQ4ZDUwIFJESToNCj4gMDAwMDAwMDAwMDAwMDAxOQ0KPiA+PiBbICAgNDYuMzU1MzA4XSBS
-QlA6IDAwMDA3ZmZkNTQ3NDhlNDAgUjA4OiAwMDAwN2ZmZDU0NzQ4ZDUwIFIwOToNCj4gMDAwMDdm
-ZmQ1NDc0OGQ1MA0KPiA+PiBbICAgNDYuMzU1NzEwXSBSMTA6IDAwMDA3ZmZkNTQ3NDhkNTAgUjEx
-OiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjoNCj4gMDAwMDdmZmQ1NDc0OTExOA0KPiA+PiBbICAgNDYu
-MzU2MTE3XSBSMTM6IDAwMDAwMDAwMDA0MGQwYWQgUjE0OiAwMDAwMDAwMDAwNDc0ZGY4IFIxNToN
-Cj4gMDAwMDdmNDIwYTc2OTAwMA0KPiA+PiBbICAgNDYuMzU2NTMyXSAgPC9UQVNLPg0KPiA+PiBb
-ICAgNDYuMzU2NjY0XSBpcnEgZXZlbnQgc3RhbXA6IDIwNjgzNw0KPiA+PiBbIDQ2LjM1Njg3M10g
-aGFyZGlycXMgbGFzdCBlbmFibGVkIGF0ICgyMDY4NDcpOiBbPGZmZmZmZmZmODEwZjFmODI+XQ0K
-PiA+PiBfX3VwX2NvbnNvbGVfc2VtKzB4NTIvMHg2MA0KPiA+PiBbIDQ2LjM1NzM2OV0gaGFyZGly
-cXMgbGFzdCBkaXNhYmxlZCBhdCAoMjA2ODU0KTogWzxmZmZmZmZmZjgxMGYxZjY3Pl0NCj4gPj4g
-X191cF9jb25zb2xlX3NlbSsweDM3LzB4NjANCj4gPj4gWyA0Ni4zNTc4NjRdIHNvZnRpcnFzIGxh
-c3QgZW5hYmxlZCBhdCAoMjA2NjA0KTogWzxmZmZmZmZmZjgxMDdiY2M1Pl0NCj4gPj4gX19pcnFf
-ZXhpdF9yY3UrMHhjNS8weDEyMA0KPiA+PiBbIDQ2LjM1ODM1OF0gc29mdGlycXMgbGFzdCBkaXNh
-YmxlZCBhdCAoMjA2NTkxKTogWzxmZmZmZmZmZjgxMDdiY2M1Pl0NCj4gPj4gX19pcnFfZXhpdF9y
-Y3UrMHhjNS8weDEyMA0KPiA+PiBbICAgNDYuMzU4ODY1XSAtLS1bIGVuZCB0cmFjZSAwMDAwMDAw
-MDAwMDAwMDAwIF0tLS0NCj4gPj4gIyA5LyAzICBzb2NrbWFwOjp0eG1zZyB0ZXN0IGhhbmdpbmcg
-Y29ya3M6T0sNCj4gPg0KPiA+IFsuLi5dDQo+ID4NCj4gPiBBY3R1YWxseSwgd2UgaGFkIGEgZml4
-IGZvciB0aGVzZSB3YXJuaW5ncyBpbiA5YzM0ZTM4YzRhODcgKCJicGYsDQo+ID4gc29ja21hcDog
-Rml4IG1lbWxlYWsgaW4gdGNwX2JwZl9zZW5kbXNnIHdoaWxlIHNrIG1zZyBpcyBmdWxsIikgWzFd
-Lg0KPiA+DQo+ID4gQnV0IHRoZXkgcmVhcHBlYXIgZm9yIG1lIGluIHY1LjE4LXJjMS4gVHJ5aW5n
-IHRvIGJpc2VjdCB3aGF0IHdlbnQNCj4gPiB3cm9uZy4uLg0KPiA+DQo+ID4gWzFdDQo+ID4NCj4g
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYnBmLzIwMjIwMzA0MDgxMTQ1LjIwMzcxODItMy13YW5n
-eXVmZW5AaHVhd2UNCj4gaS4NCj4gPiBjb20NCj4gDQo+IFRyYWNlZCBpdCBkb3duIHRvIDg0NDcy
-YjQzNmU3NiAoImJwZiwgc29ja21hcDogRml4IG1vcmUgdW5jaGFyZ2VkIHdoaWxlDQo+IG1zZyBo
-YXMgbW9yZV9kYXRhIiksIHdoaWNoIHdhcyB0aGUgbmV4dCBjb21taXQgYWZ0ZXIgdGhlIG9uZSBJ
-IHRob3VnaHQNCj4gY29udGFpbmVkIHRoZSBmaXgsIHRoYXQgaXMgOWMzNGUzOGM0YTg3Lg0KPiAN
-Cj4gSSBzdGFydGVkIGEgZGlzY3Vzc2lvbiBpbiB0aGUgdGhyZWFkIGZvciB0aGUgcGF0Y2ggc2V0
-IFsxXSwgYXMgdGhlIHdhcm5pbmdzIGxvb2sNCj4gY29tcGxldGVseSB1bnJlbGF0ZWQgdG8gdGhp
-cyBjaGFuZ2UuDQo+IA0KT2theSwgdGhhbmsgeW91IGZvciB0aGUgY2xhcmlmaWNhdGlvbi4NCj4g
-WzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25ldGRldi84N3Y4bzVnZHcyLmZzZkBjbG91ZGZs
-YXJlLmNvbS8NCg==
+
+在 2022/10/28 5:10, Jakub Sitnicki 写道:
+> Wang, John,
+>
+> On Fri, Mar 04, 2022 at 04:11 PM +08, Wang Yufen wrote:
+>> This patchset fixes memleaks and incorrect charge/uncharge memory, these
+>> issues cause the following info:
+>>
+>> WARNING: CPU: 0 PID: 9202 at net/core/stream.c:205 sk_stream_kill_queues+0xc8/0xe0
+>> Call Trace:
+>>   <IRQ>
+>>   inet_csk_destroy_sock+0x55/0x110
+>>   tcp_rcv_state_process+0xe5f/0xe90
+>>   ? sk_filter_trim_cap+0x10d/0x230
+>>   ? tcp_v4_do_rcv+0x161/0x250
+>>   tcp_v4_do_rcv+0x161/0x250
+>>   tcp_v4_rcv+0xc3a/0xce0
+>>   ip_protocol_deliver_rcu+0x3d/0x230
+>>   ip_local_deliver_finish+0x54/0x60
+>>   ip_local_deliver+0xfd/0x110
+>>   ? ip_protocol_deliver_rcu+0x230/0x230
+>>   ip_rcv+0xd6/0x100
+>>   ? ip_local_deliver+0x110/0x110
+>>   __netif_receive_skb_one_core+0x85/0xa0
+>>   process_backlog+0xa4/0x160
+>>   __napi_poll+0x29/0x1b0
+>>   net_rx_action+0x287/0x300
+>>   __do_softirq+0xff/0x2fc
+>>   do_softirq+0x79/0x90
+>>   </IRQ>
+>>
+>> WARNING: CPU: 0 PID: 531 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x175/0x1b0
+>> Call Trace:
+>>   <TASK>
+>>   __sk_destruct+0x24/0x1f0
+>>   sk_psock_destroy+0x19b/0x1c0
+>>   process_one_work+0x1b3/0x3c0
+>>   ? process_one_work+0x3c0/0x3c0
+>>   worker_thread+0x30/0x350
+>>   ? process_one_work+0x3c0/0x3c0
+>>   kthread+0xe6/0x110
+>>   ? kthread_complete_and_exit+0x20/0x20
+>>   ret_from_fork+0x22/0x30
+>>   </TASK>
+>>
+>> Changes since v2:
+>> -Move sk_msg_trim() logic into sk_msg_alloc while -ENOMEM occurs, as
+>> Cong Wang suggested.
+>>
+>> Changes since v1:
+>> -Update the commit message of patch #2, the error path is from ENOMEM not
+>> the ENOSPC.
+>> -Simply returning an error code when psock is null, as John Fastabend
+>> suggested.
+> This is going to sound a bit weird, but I'm actually observing the
+> mentioned warnings with these patches applied, when running
+> `test_sockmap` selftests. Without the patch set - all is well.
+>
+> Bisect went like so:
+>
+> broken  [bpf-next] 31af1aa09fb9 ("Merge branch 'bpf: Fixes for kprobe multi on kernel modules'")
+> ...
+> broken  2486ab434b2c ("bpf, sockmap: Fix double uncharge the mem of sk_msg")
+> broken  84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
+> working 9c34e38c4a87 ("bpf, sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full")
+> working 938d3480b92f ("bpf, sockmap: Fix memleak in sk_psock_queue_msg")
+> working [base] d3b351f65bf4 ("selftests/bpf: Fix a clang compilation error for send_signal.c")
+>
+> At 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has
+> more_data") I'm seeing:
+>
+> bash-5.1# uname -r
+> 5.17.0-rc6-01987-g84472b436e76
+> bash-5.1# cd tools/testing/selftests/bpf/
+> bash-5.1# ./test_sockmap
+> # 1/ 6  sockmap::txmsg test passthrough:OK
+> # 2/ 6  sockmap::txmsg test redirect:OK
+> # 3/ 6  sockmap::txmsg test drop:OK
+> # 4/ 6  sockmap::txmsg test ingress redirect:OK
+> # 5/ 7  sockmap::txmsg test skb:OK
+> # 6/ 8  sockmap::txmsg test apply:OK
+> # 7/12  sockmap::txmsg test cork:OK
+> [   16.399282] ------------[ cut here ]------------
+> [   16.400465] WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
+> [   16.402718] Modules linked in:
+> [   16.403504] CPU: 2 PID: 197 Comm: test_sockmap Not tainted 5.17.0-rc6-01987-g84472b436e76 #76
+> [   16.404276] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
+> [   16.404800] RIP: 0010:sk_stream_kill_queues+0xd3/0xf0
+> [   16.405110] Code: 29 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 48 89 df e8 63 db fe ff 8b 83 78 02 00 00 8b b3 30 02 00 00 85 c0 74 d9 0f 0b 85 f6 74 d7 <0f> 0b 5b 5d 31 c0 89 c2 89 c6 89 c7 c3 0f 0b eb 92 66 66 2e 0f 1f
+> [   16.406226] RSP: 0018:ffffc90000423d48 EFLAGS: 00010206
+> [   16.406545] RAX: 0000000000000000 RBX: ffff888104208000 RCX: 0000000000000000
+> [   16.407117] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff8881042081b8
+> [   16.407571] RBP: ffff8881042081b8 R08: 0000000000000000 R09: 0000000000000000
+> [   16.407995] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
+> [   16.408413] R13: ffff888102763000 R14: ffff888101b528e0 R15: ffff888104208130
+> [   16.408837] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+> [   16.409318] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   16.409666] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
+> [   16.410098] Call Trace:
+> [   16.410248]  <TASK>
+> [   16.410378]  inet_csk_destroy_sock+0x55/0x110
+> [   16.410647]  tcp_rcv_state_process+0xd28/0x1380
+> [   16.410934]  ? tcp_v4_do_rcv+0x77/0x2c0
+> [   16.411166]  tcp_v4_do_rcv+0x77/0x2c0
+> [   16.411388]  __release_sock+0x106/0x130
+> [   16.411626]  __tcp_close+0x1a7/0x4e0
+> [   16.411844]  tcp_close+0x20/0x70
+> [   16.412045]  inet_release+0x3c/0x80
+> [   16.412257]  __sock_release+0x3a/0xb0
+> [   16.412509]  sock_close+0x14/0x20
+> [   16.412770]  __fput+0xa3/0x260
+> [   16.413022]  task_work_run+0x59/0xb0
+> [   16.413286]  exit_to_user_mode_prepare+0x1b3/0x1c0
+> [   16.413665]  syscall_exit_to_user_mode+0x19/0x50
+> [   16.414020]  do_syscall_64+0x48/0x90
+> [   16.414285]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   16.414659] RIP: 0033:0x7f3728791eb7
+> [   16.414916] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+> [   16.416286] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> [   16.416841] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
+> [   16.417296] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
+> [   16.417723] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
+> [   16.418178] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
+> [   16.418669] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
+> [   16.419148]  </TASK>
+> [   16.419283] irq event stamp: 135687
+> [   16.419492] hardirqs last  enabled at (135695): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
+> [   16.420065] hardirqs last disabled at (135712): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
+> [   16.420606] softirqs last  enabled at (135710): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+> [   16.421201] softirqs last disabled at (135703): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+> [   16.421839] ---[ end trace 0000000000000000 ]---
+> [   16.422195] ------------[ cut here ]------------
+> [   16.422550] WARNING: CPU: 2 PID: 197 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x198/0x1d0
+> [   16.423142] Modules linked in:
+> [   16.423327] CPU: 2 PID: 197 Comm: test_sockmap Tainted: G        W         5.17.0-rc6-01987-g84472b436e76 #76
+> [   16.423908] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
+> [   16.424436] RIP: 0010:inet_sock_destruct+0x198/0x1d0
+> [   16.424737] Code: ff 49 8b bc 24 68 02 00 00 e8 b4 65 e9 ff 49 8b bc 24 88 00 00 00 5b 41 5c e9 a4 65 e9 ff 41 8b 84 24 30 02 00 00 85 c0 74 ca <0f> 0b eb c6 4c 89 e7 e8 bc 41 e6 ff e9 4d ff ff ff 0f 0b 41 8b 84
+> [   16.425858] RSP: 0018:ffffc90000423e40 EFLAGS: 00010206
+> [   16.426172] RAX: 0000000000000fc0 RBX: ffff888104208160 RCX: 0000000000000000
+> [   16.426593] RDX: 0000000000000000 RSI: 0000000000000fc0 RDI: ffff888104208160
+> [   16.427024] RBP: ffff888104208000 R08: 0000000000000000 R09: 0000000000000000
+> [   16.427485] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888104208000
+> [   16.428016] R13: ffff8881001ce8e0 R14: ffff888103170c30 R15: 0000000000000000
+> [   16.428561] FS:  00007f3728652000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+> [   16.429207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   16.429638] CR2: 00007f3728651f78 CR3: 0000000100872005 CR4: 0000000000370ee0
+> [   16.430178] Call Trace:
+> [   16.430366]  <TASK>
+> [   16.430524]  __sk_destruct+0x23/0x220
+> [   16.430753]  inet_release+0x3c/0x80
+> [   16.430969]  __sock_release+0x3a/0xb0
+> [   16.431189]  sock_close+0x14/0x20
+> [   16.431388]  __fput+0xa3/0x260
+> [   16.431578]  task_work_run+0x59/0xb0
+> [   16.431793]  exit_to_user_mode_prepare+0x1b3/0x1c0
+> [   16.432085]  syscall_exit_to_user_mode+0x19/0x50
+> [   16.432359]  do_syscall_64+0x48/0x90
+> [   16.432578]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   16.432877] RIP: 0033:0x7f3728791eb7
+> [   16.433099] Code: ff e8 7d e2 01 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 43 cd f5 ff
+> [   16.434190] RSP: 002b:00007ffe6c91bb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> [   16.434637] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f3728791eb7
+> [   16.435058] RDX: 0000000000000090 RSI: 00007ffe6c91baf0 RDI: 0000000000000019
+> [   16.435476] RBP: 00007ffe6c91bbe0 R08: 00007ffe6c91baf0 R09: 00007ffe6c91baf0
+> [   16.435893] R10: 00007ffe6c91baf0 R11: 0000000000000246 R12: 00007ffe6c91beb8
+> [   16.436315] R13: 000000000040de7f R14: 0000000000471de8 R15: 00007f37288ec000
+> [   16.436741]  </TASK>
+> [   16.436876] irq event stamp: 136127
+> [   16.437089] hardirqs last  enabled at (136137): [<ffffffff810ee6a2>] __up_console_sem+0x52/0x60
+> [   16.437599] hardirqs last disabled at (136144): [<ffffffff810ee687>] __up_console_sem+0x37/0x60
+> [   16.438115] softirqs last  enabled at (135830): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+> [   16.438641] softirqs last disabled at (135817): [<ffffffff81078fe1>] irq_exit_rcu+0xe1/0x130
+> [   16.439277] ---[ end trace 0000000000000000 ]---
+> # 8/ 3  sockmap::txmsg test hanging corks:OK
+> # 9/11  sockmap::txmsg test push_data:OK
+> #10/17  sockmap::txmsg test pull-data:OK
+> #11/ 9  sockmap::txmsg test pop-data:OK
+> #12/ 1  sockmap::txmsg test push/pop data:OK
+> #13/ 1  sockmap::txmsg test ingress parser:OK
+> #14/ 1  sockmap::txmsg test ingress parser2:OK
+> #15/ 6 sockhash::txmsg test passthrough:OK
+> #16/ 6 sockhash::txmsg test redirect:OK
+> #17/ 6 sockhash::txmsg test drop:OK
+> #18/ 6 sockhash::txmsg test ingress redirect:OK
+> #19/ 7 sockhash::txmsg test skb:OK
+> #20/ 8 sockhash::txmsg test apply:OK
+> #21/12 sockhash::txmsg test cork:OK
+> #22/ 3 sockhash::txmsg test hanging corks:OK
+> #23/11 sockhash::txmsg test push_data:OK
+> #24/17 sockhash::txmsg test pull-data:OK
+> #25/ 9 sockhash::txmsg test pop-data:OK
+> #26/ 1 sockhash::txmsg test push/pop data:OK
+> #27/ 1 sockhash::txmsg test ingress parser:OK
+> #28/ 1 sockhash::txmsg test ingress parser2:OK
+> #29/ 6 sockhash:ktls:txmsg test passthrough:OK
+> #30/ 6 sockhash:ktls:txmsg test redirect:OK
+> #31/ 6 sockhash:ktls:txmsg test drop:OK
+> #32/ 6 sockhash:ktls:txmsg test ingress redirect:OK
+> #33/ 7 sockhash:ktls:txmsg test skb:OK
+> #34/ 8 sockhash:ktls:txmsg test apply:OK
+> #35/12 sockhash:ktls:txmsg test cork:OK
+> #36/ 3 sockhash:ktls:txmsg test hanging corks:OK
+> #37/11 sockhash:ktls:txmsg test push_data:OK
+> #38/17 sockhash:ktls:txmsg test pull-data:OK
+> #39/ 9 sockhash:ktls:txmsg test pop-data:OK
+> #40/ 1 sockhash:ktls:txmsg test push/pop data:OK
+> #41/ 1 sockhash:ktls:txmsg test ingress parser:OK
+> #42/ 0 sockhash:ktls:txmsg test ingress parser2:OK
+> Pass: 42 Fail: 0
+> bash-5.1#
+>
+> No idea why yet. I will need to dig into what is happening.
+>
+> Wang, can you please take a look as well?
+
+Sorry for the breakage. In commit 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has
+more_data") , I used msg->sg.size replace tosend rudely, which break the
+if (msg->apply_bytes && msg->apply_bytes < send) scene.
+
+The following modifications can fix the issue.
+
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index a1626afe87a1..38d47357dd68 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -278,7 +278,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+  {
+         bool cork = false, enospc = sk_msg_full(msg);
+         struct sock *sk_redir;
+-       u32 tosend, delta = 0;
++       u32 tosend, orgsize, sended, delta = 0;
+         u32 eval = __SK_NONE;
+         int ret;
+  
+@@ -333,10 +333,12 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+                         cork = true;
+                         psock->cork = NULL;
+                 }
+-               sk_msg_return(sk, msg, msg->sg.size);
++               sk_msg_return(sk, msg, tosend);
+                 release_sock(sk);
+  
++               orgsize = msg->sg.size;
+                 ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
++               sended = orgsize - msg->sg.size;
+  
+                 if (eval == __SK_REDIRECT)
+                         sock_put(sk_redir);
+@@ -374,8 +376,8 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+                 if (msg &&
+                     msg->sg.data[msg->sg.start].page_link &&
+                     msg->sg.data[msg->sg.start].length) {
+-                       if (eval == __SK_REDIRECT)
+-                               sk_mem_charge(sk, msg->sg.size);
++                       if (eval == __SK_REDIRECT && tosend > sended)
++                               sk_mem_charge(sk, tosend - sended);
+                         goto more_data;
+                 }
+         }
+
+>
+> Thanks,
+> Jakub
+>
