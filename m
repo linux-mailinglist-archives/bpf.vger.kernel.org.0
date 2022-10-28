@@ -2,196 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BE4611E00
-	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 01:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F9D611E08
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 01:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbiJ1XQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 19:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S229692AbiJ1XTn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 19:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbiJ1XQV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 19:16:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2DC247E0A;
-        Fri, 28 Oct 2022 16:16:20 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id q71so6056344pgq.8;
-        Fri, 28 Oct 2022 16:16:20 -0700 (PDT)
+        with ESMTP id S229489AbiJ1XTm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 19:19:42 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780F3DFBD
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 16:19:39 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d24so6101695pls.4
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 16:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IUOiX00m8ejZoyEon6oMk0664H+Bpb1REmC9tKD9Xqk=;
-        b=AtZSbLDYIu7hlp7eJLTdRXfImd9l/A6jyYjkK2jCLbOvSjTyJitPsATA7E45MMiBaD
-         AoRaCLVQloHT3xS0yjrOCT6j57bVheVD6gv8q/fAqwXCdzcOBrambpUem31DWhb8Ai28
-         qK5dlYu5e70AHru52bXKbdfcygMsrrBjCFVqL7jgoQaH5q5S1IpKUnmaCj4EtNgk2Qgy
-         NLQIMFORumAz6HUIUSvYU1TLZ0SvLzGlGYN5eMf4FvqLL1eFAdDCkzJZr2MGytoI56N1
-         49xXia/N8v4cgbjv/XlAh6x9/jI7iP84hJ0ZbVUV4eB2/Rrvz94S8Agf5EnX0NRkbNiC
-         guuA==
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l8si2vf2VR/0A71CmzV1b/E7teUHcCtPVdR2pRp+lY8=;
+        b=clKJ+Eg6+E0kRwaPzQAVWxthIdxES0GjL1p448fD6NVR6gLbX1eczAu4jxN0gWLWhv
+         TSjMCeFG++GL6H7sUQggoD5XRg/tQZvUecnWNMQ4jnwFlmG076w+t58t0sCmUF1V1FdQ
+         HV/3iQFh7fG7WgFOYH4I+amvHPuWEL2JD8UlA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IUOiX00m8ejZoyEon6oMk0664H+Bpb1REmC9tKD9Xqk=;
-        b=OKJO3MlI/lzrYB2M6SdEjXP66Y0u6Jg+7QkZzx4E0VDOflHQau+ZcDmc/q3X1DpXG1
-         YQAHYEfI25LTDkyKZGEgMGb6gkrL6HNBq8imlxi0qoMEK6TC6Kp0z97C2jdpuzD9hje1
-         e0TOT9UO5WXOXxIsD9OE1l5X4W+wSQiuNdfXPRgRlUPrawnY/sO//s4cAggZ6H15eGcj
-         7nshPYeDnNuQNfWN3cWLJDWlQ+GOzwcmnKNdJHLs17jEeI46Td8SfQwQyQnyR0fjoyo/
-         ZzDJ55xftEnfZQTprIErWoDgORZE+r5h7cSsC/mjFHs5HMp9Z4tT+29bwQHlGChsmhZ+
-         JU6A==
-X-Gm-Message-State: ACrzQf1sRgiSGyhUWjxLPLwyQoI0uLZFeLNxv4dEidMsI/pMb2tJuun7
-        fc+q+7cmkFa5sv8XFcyABm8=
-X-Google-Smtp-Source: AMsMyM6SGBG8WOY4bIB66GQyfSQgAkkktEKQX7jIgApBzbaKNG8RAUyhcxe/LB3+TYICIElvO4wIpg==
-X-Received: by 2002:a05:6a00:78c:b0:56d:2:db06 with SMTP id g12-20020a056a00078c00b0056d0002db06mr1661016pfu.42.1666998979659;
-        Fri, 28 Oct 2022 16:16:19 -0700 (PDT)
-Received: from localhost ([98.97.41.13])
-        by smtp.gmail.com with ESMTPSA id im22-20020a170902bb1600b001769e6d4fafsm4857plb.57.2022.10.28.16.16.18
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8si2vf2VR/0A71CmzV1b/E7teUHcCtPVdR2pRp+lY8=;
+        b=Z0/UMvtS3l7Fg00cziakZA6KQRSaZzsnVFnADoLTTtWvfdbcIy+jVKNvd9FsKISmYy
+         yoAXY9BsScC2MqhOuC/LwAk6KWJZenudkDjs54pjZVztr1r59IfZ0kAteTGD2PgHWKhS
+         AO25vkX+kSRQeeHy1gNZ7Wie+fDitEzG3mXM0GtDEaOziYp/U5rzPtXBjGF1LXoSHCQK
+         hpUftDh6e+EZYtzUqu4+PbsJuMMY5TybZZfhL3zDErQZnGJ4e8uebrxGgJs9By4OsKNW
+         Cq/BlKDWMR6d8GOKGED+T8bMx80uWHS3hIny0PkqN7gTuFbhXCYUT+S1qMijePYkQzSM
+         JJ1w==
+X-Gm-Message-State: ACrzQf1V3c+M2UUi+iSxLDLK3RNxZd8mQ2RT0E5/nBSKY0GvwqE/qI7D
+        xTs708vOaB5bQz4ByXbP3WhWjQ==
+X-Google-Smtp-Source: AMsMyM7NKSQxTDDDJ5e8zb24NoUJVrOTK3QcTM+sRWtNVFQsC4i6r85bfjefRevEt5AviWBG66gedw==
+X-Received: by 2002:a17:902:aa02:b0:186:9395:4e82 with SMTP id be2-20020a170902aa0200b0018693954e82mr1488384plb.5.1666999178970;
+        Fri, 28 Oct 2022 16:19:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f22-20020a63e316000000b0046ece12f042sm8119pgh.15.2022.10.28.16.19.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 16:16:19 -0700 (PDT)
-Date:   Fri, 28 Oct 2022 16:16:17 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Message-ID: <635c62c12652d_b1ba208d0@john.notmuch>
-In-Reply-To: <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <635bfc1a7c351_256e2082f@john.notmuch>
- <20221028110457.0ba53d8b@kernel.org>
- <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 28 Oct 2022 16:19:38 -0700 (PDT)
+Date:   Fri, 28 Oct 2022 16:19:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] bpf: Use kmalloc_size_roundup() to match ksize() usage
+Message-ID: <202210281617.F35925A52@keescook>
+References: <20221018090550.never.834-kees@kernel.org>
+ <Y07raim32wOBRGPi@google.com>
+ <202210181110.CD92A00@keescook>
+ <CAKH8qBvwKfhMYjHV=rizA0ZinArHKmBP6U_N63HTcZTmM=QQ+g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKH8qBvwKfhMYjHV=rizA0ZinArHKmBP6U_N63HTcZTmM=QQ+g@mail.gmail.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev wrote:
-> On Fri, Oct 28, 2022 at 11:05 AM Jakub Kicinski <kuba@kernel.org> wrote:
+On Tue, Oct 18, 2022 at 01:07:45PM -0700, Stanislav Fomichev wrote:
+> On Tue, Oct 18, 2022 at 11:19 AM Kees Cook <keescook@chromium.org> wrote:
 > >
-> > On Fri, 28 Oct 2022 08:58:18 -0700 John Fastabend wrote:
-> > > A bit of extra commentary. By exposing the raw kptr to the rx
-> > > descriptor we don't need driver writers to do anything.
-> > > And can easily support all the drivers out the gate with simple
-> > > one or two line changes. This pushes the interesting parts
-> > > into userspace and then BPF writers get to do the work without
-> > > bother driver folks and also if its not done today it doesn't
-> > > matter because user space can come along and make it work
-> > > later. So no scattered kernel dependencies which I really
-> > > would like to avoid here. Its actually very painful to have
-> > > to support clusters with N kernels and M devices if they
-> > > have different features. Doable but annoying and much nicer
-> > > if we just say 6.2 has support for kptr rx descriptor reading
-> > > and all XDP drivers support it. So timestamp, rxhash work
-> > > across the board.
-> >
-> > IMHO that's a bit of wishful thinking. Driver support is just a small
-> > piece, you'll have different HW and FW versions, feature conflicts etc.
-> > In the end kernel version is just one variable and there are many others
-> > you'll already have to track.
-
-Agree.
-
-> >
-> > And it's actually harder to abstract away inter HW generation
-> > differences if the user space code has to handle all of it.
-
-I don't see how its any harder in practice though?
-
-> 
-> I've had the same concern:
-> 
-> Until we have some userspace library that abstracts all these details,
-> it's not really convenient to use. IIUC, with a kptr, I'd get a blob
-> of data and I need to go through the code and see what particular type
-> it represents for my particular device and how the data I need is
-> represented there. There are also these "if this is device v1 -> use
-> v1 descriptor format; if it's a v2->use this another struct; etc"
-> complexities that we'll be pushing onto the users. With kfuncs, we put
-> this burden on the driver developers, but I agree that the drawback
-> here is that we actually have to wait for the implementations to catch
-> up.
-
-I agree with everything there, you will get a blob of data and then
-will need to know what field you want to read using BTF. But, we
-already do this for BPF programs all over the place so its not a big
-lift for us. All other BPF tracing/observability requires the same
-logic. I think users of BPF in general perhaps XDP/tc are the only
-place left to write BPF programs without thinking about BTF and
-kernel data structures.
-
-But, with proposed kptr the complexity lives in userspace and can be
-fixed, added, updated without having to bother with kernel updates, etc.
-From my point of view of supporting Cilium its a win and much preferred
-to having to deal with driver owners on all cloud vendors, distributions,
-and so on.
-
-If vendor updates firmware with new fields I get those immediately.
-
-> 
-> Jakub mentions FW and I haven't even thought about that; so yeah, bpf
-> programs might have to take a lot of other state into consideration
-> when parsing the descriptors; all those details do seem like they
-> belong to the driver code.
-
-I would prefer to avoid being stuck on requiring driver writers to
-be involved. With just a kptr I can support the device and any
-firwmare versions without requiring help.
-
-> 
-> Feel free to send it early with just a handful of drivers implemented;
-> I'm more interested about bpf/af_xdp/user api story; if we have some
-> nice sample/test case that shows how the metadata can be used, that
-> might push us closer to the agreement on the best way to proceed.
-
-I'll try to do a intel and mlx implementation to get a cross section.
-I have a good collection of nics here so should be able to show a
-couple firmware versions. It could be fine I think to have the raw
-kptr access and then also kfuncs for some things perhaps.
-
-
-> 
-> 
-> 
-> > > To find the offset of fields (rxhash, timestamp) you can use
-> > > standard BTF relocations we have all this machinery built up
-> > > already for all the other structs we read, net_devices, task
-> > > structs, inodes, ... so its not a big hurdle at all IMO. We
-> > > can add userspace libs if folks really care, but its just a read so
-> > > I'm not even sure that is helpful.
+> > On Tue, Oct 18, 2022 at 11:07:38AM -0700, sdf@google.com wrote:
+> > > On 10/18, Kees Cook wrote:
+> > > > Round up allocations with kmalloc_size_roundup() so that the verifier's
+> > > > use of ksize() is always accurate and no special handling of the memory
+> > > > is needed by KASAN, UBSAN_BOUNDS, nor FORTIFY_SOURCE. Pass the new size
+> > > > information back up to callers so they can use the space immediately,
+> > > > so array resizing to happen less frequently as well. Explicitly zero
+> > > > any trailing bytes in new allocations.
 > > >
-> > > I think its nicer than having kfuncs that need to be written
-> > > everywhere. My $.02 although I'll poke around with below
-> > > some as well. Feel free to just hang tight until I have some
-> > > code at the moment I have intel, mellanox drivers that I
-> > > would want to support.
+> > > > Additionally fix a memory allocation leak: if krealloc() fails, "arr"
+> > > > wasn't freed, but NULL was return to the caller of realloc_array() would
+> > > > be writing NULL to the lvalue, losing the reference to the original
+> > > > memory.
+> [...]
+> > > > -   arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
+> > > > -   if (!arr)
+> > > > +   alloc_size = kmalloc_size_roundup(size_mul(*new_n, size));
+> > > > +   arr = krealloc(old_arr, alloc_size, GFP_KERNEL);
+> > > > +   if (!arr) {
+> > > > +           kfree(old_arr);
+> > > >             return NULL;
+> > > > +   }
+> > >
+> > > Any reason not do hide this complexity behind krealloc_array? Why can't
+> > > it take care of those roundup details?
 > >
-> > I'd prefer if we left the door open for new vendors. Punting descriptor
-> > parsing to user space will indeed result in what you just said - major
-> > vendors are supported and that's it.
+> > It might be possible to do this with a macro, yes, but then callers
+> > aren't in a position to take advantage of the new size. Maybe we need
+> > something like:
+> >
+> >         arr = krealloc_up(old_arr, alloc_size, &new_size, GFP_KERNEL);
+> 
+> Maybe even krealloc_array_up(arr, &new_n, size, flags) or similar
+> where we return a new size?
+> Though I don't know if there are any other places in the kernel to
+> reuse it and warrant a new function..
 
-I'm not sure about why it would make it harder for new vendors? I think
-the opposite, it would be easier because I don't need vendor support
-at all. Thinking it over seems there could be room for both.
+Yeah, and it explicitly can't be a function, since GCC has broken
+attribute handling[1] for inlines. :(
 
+Regardless, I'll respin this with a macro and see how it looks.
 
-Thanks!
+-Kees
+
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96503
+
+-- 
+Kees Cook
