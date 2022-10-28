@@ -2,221 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B537A610C7C
-	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 10:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9EF610CFB
+	for <lists+bpf@lfdr.de>; Fri, 28 Oct 2022 11:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbiJ1IuC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 04:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        id S229501AbiJ1JXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 05:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbiJ1Itx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 04:49:53 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26514102F;
-        Fri, 28 Oct 2022 01:49:28 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MzGK11SwTz9xFfs;
-        Fri, 28 Oct 2022 16:43:01 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwC3o3B8l1tjSAUbAA--.18857S2;
-        Fri, 28 Oct 2022 09:49:08 +0100 (CET)
-Message-ID: <edf0ec89c61fbee68fd537981982e14b1674393d.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH] bpf: Check xattr name/value pair from
- bpf_lsm_inode_init_security()
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     KP Singh <kpsingh@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nicolas.bouchinet@clip-os.org, Mimi Zohar <zohar@linux.ibm.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Date:   Fri, 28 Oct 2022 10:48:56 +0200
-In-Reply-To: <CACYkzJ4ak4=qPNQxVckvn3c8CZpXkXSLSyYa_HCU-RJNyuLoZg@mail.gmail.com>
-References: <20221021164626.3729012-1-roberto.sassu@huaweicloud.com>
-         <CAADnVQJHDboosqTy5LTHJtJaWJCWn9rv09jmd_sMgeV_OVQjGg@mail.gmail.com>
-         <d7a17e482b7bbf945c92443b45de73f56afea08a.camel@huaweicloud.com>
-         <bb7a5986f3d25706269d0fec9906ea73c174b808.camel@huaweicloud.com>
-         <CAADnVQL1a2pPAJqzj6oUwupxxfaW38KQswzppAZeZPzmTFhjMg@mail.gmail.com>
-         <98353f6c82d3dabdb0d434d7ecf0bfc5295015ad.camel@huaweicloud.com>
-         <ffbdcfbe-0c63-2ced-62e3-a7248b7a24f0@schaufler-ca.com>
-         <CAADnVQLAXsZRNytPHG0KhYKar3K+=7bq2KPQG77VFOKbnTPHmg@mail.gmail.com>
-         <34357c96-fe58-ffe5-e464-4bded8f119d5@huaweicloud.com>
-         <CAADnVQKD5e9vKsSo1TPeBm5hr6j4GzQeHqRURoBJyB++VOwHCw@mail.gmail.com>
-         <CACYkzJ4ak4=qPNQxVckvn3c8CZpXkXSLSyYa_HCU-RJNyuLoZg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S229642AbiJ1JXG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 05:23:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408DD1C6BE2
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 02:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666948927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5P/LL6n+AFbg9otfZiL41bboBVYLpgB4u6EYlg8Zxhc=;
+        b=Fqjb1bcvJCjmw2nhUrw+8NHjTXYGmu0k2dEFyGlN4hKro8TJd5x1lhdeGWr6GG0emHu0cC
+        sL+53Ni8Ok8f5MAwcDWXkexAY9Y7Hy168khx0WqjdvFfkTDy1L10G1tEVQnxUUrTgnwmpq
+        fCs1e/A5trHh+F8VSuYAP1PIaxmGbNk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-654-cWoveRWZPIOcHg5_PCGX4g-1; Fri, 28 Oct 2022 05:22:05 -0400
+X-MC-Unique: cWoveRWZPIOcHg5_PCGX4g-1
+Received: by mail-ed1-f72.google.com with SMTP id z15-20020a05640240cf00b00461b253c220so2919413edb.3
+        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 02:22:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5P/LL6n+AFbg9otfZiL41bboBVYLpgB4u6EYlg8Zxhc=;
+        b=pjwlYYVvpcjkDyFpkzvR5m4aKJDWbVh/eml9XKLDnu2xwV5TfHGTlLnlxjcNqHBbqA
+         02t+Nl2HRHYsX5+Hgay+mlBio//KMFI0jyk7bYyeoGwbADsWKAoiS6TIHcr+twpkbGhp
+         vcR9iTroMFdHNFtQY8GNhyank1LMYMBG4RHjCRnkfHI1GtPFGMRntnYBvvhgLTQ0WzFw
+         b4GcI3JBaY6vBovG85hK6u9Ep5aJCK8ix5JH8Hj/IrEih0Ze2Ow54Y4VASHx/+hiilVh
+         3MBGHn0UfNijDELbdlOYMgyCY8YXHFT+BBckC90/8ibf82zRDU+2pr3XallpqnLk+nxQ
+         /PEw==
+X-Gm-Message-State: ACrzQf1vfACBCxU61X0YAyNyP+Bo+6+p6niF1JgYpS8SdlwWT2pdEmSc
+        HM1zdSvgR3BpD8Jt8BJGHJEpa98L0gnjBqJywXeakkOEs76bRddCHbUNrRexxk910+7RcClzq1s
+        T6AayUNGlR5GB
+X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id oz14-20020a1709077d8e00b0078ded30643bmr45428653ejc.253.1666948924618;
+        Fri, 28 Oct 2022 02:22:04 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4j/2fPa3s0HO+qy5YZC0lCKZmYPkr+Pw/cCwWJMHHSd+ww3jdyGEU+d3BUFhvzeqvKuGu4lg==
+X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id oz14-20020a1709077d8e00b0078ded30643bmr45428634ejc.253.1666948924316;
+        Fri, 28 Oct 2022 02:22:04 -0700 (PDT)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id ky9-20020a170907778900b00781dbdb292asm1928013ejc.155.2022.10.28.02.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Oct 2022 02:22:03 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <ea8948ed-a995-68bc-2d6e-57945f0d5249@redhat.com>
+Date:   Fri, 28 Oct 2022 11:22:02 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>
+Subject: Re: [PATCH bpf-next v1] Document BPF_MAP_TYPE_LPM_TRIE
+Content-Language: en-US
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20221026100232.49181-1-donald.hunter@gmail.com>
+In-Reply-To: <20221026100232.49181-1-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwC3o3B8l1tjSAUbAA--.18857S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1kXFWkuF4ruw4rZw45GFg_yoWrCrWDpF
-        W5tF1jkr4DJFy7Cr1Iqa15XrWIyryfKrsrXwn8Jr1UZFyqvr1ayr17Jr4Y9FWUur4UGw1F
-        vr4jvrW3Zw1DA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4TG5gAAsD
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-10-27 at 12:39 +0200, KP Singh wrote:
-> On Wed, Oct 26, 2022 at 7:14 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > On Wed, Oct 26, 2022 at 1:42 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On 10/26/2022 8:37 AM, Alexei Starovoitov wrote:
-> > > > On Tue, Oct 25, 2022 at 7:58 AM Casey Schaufler <
-> > > > casey@schaufler-ca.com> wrote:
-> > > > > On 10/25/2022 12:43 AM, Roberto Sassu wrote:
-> > > > > > On Mon, 2022-10-24 at 19:13 -0700, Alexei Starovoitov
-> > > > > > wrote:
-> > > > > > > I'm looking at security_inode_init_security() and it is
-> > > > > > > indeed messy.
-> > > > > > > Per file system initxattrs callback that processes
-> > > > > > > kmalloc-ed
-> > > > > > > strings.
-> > > > > > > Yikes.
-> > > > > > > 
-> > > > > > > In the short term we should denylist inode_init_security
-> > > > > > > hook to
-> > > > > > > disallow attaching bpf-lsm there. set/getxattr should be
-> > > > > > > done
-> > > > > > > through kfuncs instead of such kmalloc-a-string hack.
-> > > > > > Inode_init_security is an example. It could be that the
-> > > > > > other hooks are
-> > > > > > affected too. What happens if they get arbitrary positive
-> > > > > > values too?
-> > > > > 
-> > > > > TL;DR - Things will go cattywampus.
-> > > > > 
-> > > > > The LSM infrastructure is an interface that has "grown
-> > > > > organically",
-> > > > > and isn't necessarily consistent in what it requires of the
-> > > > > security
-> > > > > module implementations. There are cases where it assumes that
-> > > > > the
-> > > > > security module hooks are well behaved, as you've discovered.
-> > > > > I have
-> > > > > no small amount of fear that someone is going to provide an
-> > > > > eBPF
-> > > > > program for security_secid_to_secctx(). There has been an
-> > > > > assumption,
-> > > > > oft stated, that all security modules are going to be
-> > > > > reviewed as
-> > > > > part of the upstream process. The review process ought to
-> > > > > catch hooks
-> > > > > that return unacceptable values. Alas, we've lost that with
-> > > > > BPF.
-> > > > > 
-> > > > > It would take a(nother) major overhaul of the LSM
-> > > > > infrastructure to
-> > > > > make it safe against hooks that are not well behaved. From
-> > > > > what I have
-> > > > > seen so far it wouldn't be easy/convenient/performant to do
-> > > > > it in the
-> > > > > BPF security module either. I personally think that BPF needs
-> > > > > to
-> > > > > ensure that the eBPF implementations don't return
-> > > > > inappropriate values,
-> > > > > but I understand why that is problematic.
-> > > > 
-> > > > That's an accurate statement. Thank you.
-> > > > 
-> > > > Going back to the original question...
-> > > > We fix bugs when we discover them.
-> > > > Regardless of the subsystem they belong to.
-> > > > No finger pointing.
-> > > 
-> > > I'm concerned about the following situation:
-> > > 
-> > > struct <something> *function()
-> > > {
-> > > 
-> > >         ret = security_*();
-> > >         if (ret)
-> > >                 return ERR_PTR(ret);
-> > > 
-> > > }
-> > > 
-> > > int caller()
-> > > {
-> > >         ptr = function()
-> > >         if (IS_ERR(ptr)
-> > >                 goto out;
-> > > 
-> > >         <use of invalid pointer>
-> > > }
-> > > 
-> > > I quickly found an occurrence of this:
-> > > 
-> > > static int lookup_one_common()
-> > > {
-> > > 
-> > > [...]
-> > > 
-> > >         return inode_permission();
-> > > }
-> > > 
-> > > struct dentry *try_lookup_one_len()
-> > > {
-> > > 
-> > > [...]
-> > > 
-> > >          err = lookup_one_common(&init_user_ns, name, base, len,
-> > > &this);
-> > >          if (err)
-> > >                  return ERR_PTR(err);
-> > > 
-> > > 
-> > > Unfortunately, attaching to inode_permission causes the kernel
-> > > to crash immediately (it does not happen with negative return
-> > > values).
-> > > 
-> > > So, I think the fix should be broader, and not limited to the
-> > > inode_init_security hook. Will try to see how it can be fixed.
-> > 
-> > I see. Let's restrict bpf-lsm return values to IS_ERR_VALUE.
-> > Trivial verifier change.
+
+
+On 26/10/2022 12.02, Donald Hunter wrote:
+> Add documentation for BPF_MAP_TYPE_LPM_TRIE including kernel
+> BPF helper usage, userspace usage and examples.
 > 
-> Thanks, yes this indeed is an issue. We need to do a few things:
-> 
-> 1. Restrict some hooks that we know the BPF LSM will never need.
-> 2. A verifier function that checks return values of LSM
-> hooks.
-> For most LSK hooks IS_ERR_VALUE is fine, however, there are some
-> hooks
-> like *xattr hooks that use a return value of 1 to indicate a
-> capability check is required which might need special handling.
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+>   Documentation/bpf/map_lpm_trie.rst | 179 +++++++++++++++++++++++++++++
+>   1 file changed, 179 insertions(+)
+>   create mode 100644 Documentation/bpf/map_lpm_trie.rst
 
-I looked at security.c:
+LGTM
 
-/*
- * SELinux and Smack integrate the cap call,
- * so assume that all LSMs supplying this call do so.
- */
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Other than checking the return value, probably we should also wrap
-bpf_lsm_inode_{set,remove}xattr() to do the capability check, right?
+(no comments below, but kept it for others comment on)
 
-Roberto
+> diff --git a/Documentation/bpf/map_lpm_trie.rst b/Documentation/bpf/map_lpm_trie.rst
+> new file mode 100644
+> index 000000000000..d57c967d11d0
+> --- /dev/null
+> +++ b/Documentation/bpf/map_lpm_trie.rst
+> @@ -0,0 +1,179 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +=====================
+> +BPF_MAP_TYPE_LPM_TRIE
+> +=====================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_LPM_TRIE`` was introduced in kernel version 4.11
+> +
+> +``BPF_MAP_TYPE_LPM_TRIE`` provides a longest prefix match algorithm that
+> +can be used to match IP addresses to a stored set of prefixes.
+> +Internally, data is stored in an unbalanced trie of nodes that uses
+> +``prefixlen,data`` pairs as its keys. The ``data`` is interpreted in
+> +network byte order, i.e. big endian, so ``data[0]`` stores the most
+> +significant byte.
+> +
+> +LPM tries may be created with a maximum prefix length that is a multiple
+> +of 8, in the range from 8 to 2048. The key used for lookup and update
+> +operations is a ``struct bpf_lpm_trie_key``, extended by
+> +``max_prefixlen/8`` bytes.
+> +
+> +- For IPv4 addresses the data length is 4 bytes
+> +- For IPv6 addresses the data length is 16 bytes
+> +
+> +The value type stored in the LPM trie can be any user defined type.
+> +
+> +.. note::
+> +   When creating a map of type ``BPF_MAP_TYPE_LPM_TRIE`` you must set the
+> +   ``BPF_F_NO_PREALLOC`` flag.
+> +
+> +Usage
+> +=====
+> +
+> +Kernel BPF
+> +----------
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +The longest prefix entry for a given data value can be found using the
+> +``bpf_map_lookup_elem()`` helper. This helper returns a pointer to the
+> +value associated with the longest matching ``key``, or ``NULL`` if no
+> +entry was found.
+> +
+> +The ``key`` should have ``prefixlen`` set to ``max_prefixlen`` when
+> +performing longest prefix lookups. For example, when searching for the
+> +longest prefix match for an IPv4 address, ``prefixlen`` should be set to
+> +``32``.
+> +
+> +.. c:function::
+> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+> +
+> +Prefix entries can be added or updated using the ``bpf_map_update_elem()``
+> +helper. This helper replaces existing elements atomically.
+> +
+> +``bpf_map_update_elem()`` returns ``0`` on success, or negative error in
+> +case of failure.
+> +
+> + .. note::
+> +    The flags parameter must be one of BPF_ANY, BPF_NOEXIST or BPF_EXIST,
+> +    but the value is ignored, giving BPF_ANY semantics.
+> +
+> +.. c:function::
+> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
+> +
+> +Prefix entries can be deleted using the ``bpf_map_delete_elem()``
+> +helper. This helper will return 0 on success, or negative error in case
+> +of failure.
+> +
+> +Userspace
+> +---------
+> +
+> +Access from userspace uses libbpf APIs with the same names as above, with
+> +the map identified by ``fd``.
+> +
+> +.. c:function::
+> +   int bpf_map_get_next_key (int fd, const void *cur_key, void *next_key)
+> +
+> +A userspace program can iterate through the entries in an LPM trie using
+> +libbpf's ``bpf_map_get_next_key()`` function. The first key can be
+> +fetched by calling ``bpf_map_get_next_key()`` with ``cur_key`` set to
+> +``NULL``. Subsequent calls will fetch the next key that follows the
+> +current key. ``bpf_map_get_next_key()`` returns ``0`` on success,
+> +``-ENOENT`` if cur_key is the last key in the hash, or negative error in
+> +case of failure.
+> +
+> +``bpf_map_get_next_key()`` will iterate through the LPM trie elements
+> +from leftmost leaf first. This means that iteration will return more
+> +specific keys before less specific ones.
+> +
+> +Examples
+> +========
+> +
+> +Please see ``tools/samples/bpf/xdp_router_ipv4_user.c`` and
+> +``xdp_router_ipv4.bpf.c`` for a functional example. The code snippets
+> +below demonstrates API usage.
+> +
+> +Kernel BPF
+> +----------
+> +
+> +The following BPF code snippet shows how to declare a new LPM trie for IPv4
+> +address prefixes:
+> +
+> +.. code-block:: c
+> +
+> +    #include <linux/bpf.h>
+> +    #include <bpf/bpf_helpers.h>
+> +
+> +    struct ipv4_lpm_key {
+> +            __u32 prefixlen;
+> +            __u32 data;
+> +    };
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_LPM_TRIE);
+> +            __type(key, struct ipv4_lpm_key);
+> +            __type(value, __u32);
+> +            __uint(map_flags, BPF_F_NO_PREALLOC);
+> +            __uint(max_entries, 255);
+> +    } ipv4_lpm_map SEC(".maps");
+> +
+> +The following BPF code snippet shows how to lookup by IPv4 address:
+> +
+> +.. code-block:: c
+> +
+> +    void *lookup(__u32 ipaddr)
+> +    {
+> +            struct ipv4_lpm_key key = {
+> +                    .prefixlen = 32,
+> +                    .data = ipaddr
+> +            };
+> +
+> +            return bpf_map_lookup_elem(&ipv4_lpm_map, &key);
+> +    }
+> +
+> +Userspace
+> +---------
+> +
+> +The following snippet shows how to insert an IPv4 prefix entry into an LPM trie:
+> +
+> +.. code-block:: c
+> +
+> +    int add_prefix_entry(int lpm_fd, __u32 addr, __u32 prefixlen, struct value *value)
+> +    {
+> +            struct ipv4_lpm_key ipv4_key = {
+> +                    .prefixlen = prefixlen,
+> +                    .data = addr
+> +            };
+> +            return bpf_map_update_elem(lpm_fd, &ipv4_key, value, BPF_ANY);
+> +    }
+> +
+> +The following snippet shows a userspace program walking through LPM trie
+> +entries:
+> +
+> +.. code-block:: c
+> +
+> +    #include <bpf/libbpf.h>
+> +    #include <bpf/bpf.h>
+> +
+> +    void iterate_lpm_trie(int map_fd)
+> +    {
+> +            struct ipv4_lpm_key *cur_key = NULL;
+> +            struct ipv4_lpm_key next_key;
+> +            struct value value;
+> +            int err;
+> +
+> +            for (;;) {
+> +                    err = bpf_map_get_next_key(map_fd, cur_key, &next_key);
+> +                    if (err)
+> +                            break;
+> +
+> +                    bpf_map_lookup_elem(map_fd, &next_key, &value);
+> +
+> +                    /* Use key and value here */
+> +
+> +                    cur_key = &next_key;
+> +            }
+> +    }
 
