@@ -2,126 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEF96121B0
-	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 11:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841A061224B
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 13:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbiJ2JLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Oct 2022 05:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S229456AbiJ2LTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Oct 2022 07:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiJ2JLW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Oct 2022 05:11:22 -0400
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C021722BA;
-        Sat, 29 Oct 2022 02:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1667034678;
-        bh=fNynhBfsJSrVgxBStXqjE0ZsAFTRZO0C+KgRTcOOYzg=;
-        h=From:To:Cc:Subject:Date;
-        b=jvGea3SPzbqSHnnciehNxChg5qnB1B1mKggpUlsA4aMm0+Y+5r0NbXwRWJM6Q5nsV
-         aWWW7ddau6EGAHCn5fCaM837tjU7Mj4JtH0BBrAlYrnGz1ItCF4ZJaLnbxCsfbcc+3
-         WeNXrudqTsjSNWYtBVR1Elsn5q2Ff695Ai6DM46w=
-Received: from localhost.localdomain ([111.199.189.86])
-        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
-        id 2CF31E82; Sat, 29 Oct 2022 17:11:15 +0800
-X-QQ-mid: xmsmtpt1667034675tchmb4gsx
-Message-ID: <tencent_0F0DAE84C0B3C42E0B550E5E9F47A9114D09@qq.com>
-X-QQ-XMAILINFO: NC/J3CrDtaBb96H+BrL5KREHlHPKeuVYn+vbaEYhifPlYSliv3Bq0HJfjAFmRZ
-         yyNtt4LOCsexUOzTzo18crotok5B7vl1+UR/PW3M+qP0eXvQPgtbBfRFjUEweukDwS0yIW/t6Oa5
-         h9WqnN79EwDrxH653in/HqouOz2gT5nHDVb3Kxsezvitgw+/aB8zCQ9t7WsjAVQ5mv4qclp/Upnf
-         z9SU0avAacg0OZ27cbNB6Gpf+irMx6wKmHbJYLX8y1OCHzU2wDj1J3Yd3JykRr/aOM400zLrtNZ/
-         6zNbBmDHFEnwT3B8p3J1CSZVlG16BXQPcWw5f/jQnPxYunhsMCVjD1RiJw5bcQ1fSvZr0OQEhk5p
-         3Dzo7K7lJV8HdtFNRHYJqD1BEz+/gJ6O+PczhVsTwFLoNP9onBKMhcJUJebdwdTKy8u/YE/uGQ20
-         6C2aSpcwsNcDlJ7nl2OnNfQpS0kV42sv8g1oflJQ/6fzh5s3fbSVLMJnKuDPoqIpJghAVtMA/E0R
-         m4g9vnbIsnxmQsa0WJcpeKHubzL690pPfgHoBksGK8PGpU+pogJhjWgsQ5HZoSRglNMDssdximOD
-         kMPzY6R0DP6AavZxzddnCCgPz3s4IxPvfCXjPJxQdjAfcKANvvLu/wGgVA920P7chys9asB9zS8X
-         h0MtJldGYGBFa+yd/GZLihXGKMUShFKc4kreLMhPvT4F5rsgTan+0e0VEariW38Gwc/xHLzGYyl7
-         nexV/cv5qsAAAMYB5Bfb3YHaL0m4SIp16iyTEviFAfq56I42EN8XROG4j5is/Mh9Uy0zvp25+NWu
-         1nINFdg7NpRKLdQAOCYE81RnnHqtM8taZDC16haP/ohw8hJxb6Q9omW++FKRBs2G5EH3hvEqWY31
-         HG5Y7RELroHj4RHcppUFtgeetIM6rjLptAxzLpgr1GXZaoXVg37rqR080Z4HmEuywm0ulGlHmd91
-         isHBniDi9jH9qZl+KWjQl9Yrf+S07keIW3DxbmCQ3bFr6wDehb6g==
-From:   Rong Tao <rtoax@foxmail.com>
-Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] samples/bpf: Fix tracex2 error: No such file or directory
-Date:   Sat, 29 Oct 2022 17:11:13 +0800
-X-OQ-MSGID: <20221029091113.62518-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229441AbiJ2LTC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Oct 2022 07:19:02 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C2C72FDD
+        for <bpf@vger.kernel.org>; Sat, 29 Oct 2022 04:19:00 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 649725C00E7;
+        Sat, 29 Oct 2022 07:18:58 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute5.internal (MEProxy); Sat, 29 Oct 2022 07:18:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1667042338; x=1667128738; bh=OP5fiDsWx3
+        HBFZc2RFgNY8xt6MJz65zkLO7rn9/e38c=; b=6KazzNrMRHvboyYOvTsVzZfuLw
+        O0Op6IoKKa93eD/CCFISu+Ta1dWw4jCQkGudHB00Dwr07JWyprVjhxF/qW7nqo5P
+        rb9rpK4PgsL5jReFrJYBYUZmLofTwSx7JO/CDlQrszvKu+1+T2GXtufX5K08Avtp
+        oDi9TNOFU+p/a3jmPi07ALNlFWLWTK4RN+Yss7PYb7arLs8hR8cdmQ7DQLWAQT+x
+        kwh2XmhWg5vmqEXE01bu5bNSOgToUe+QnhC6Q9fjMlVK8zv5jXh2stY3IOTDAGrR
+        itQ6niNqW1i52F1lbhRw1HQn4//WU27ulE6bW2/t+jFdc5zGt9o+2+YPWYtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1667042338; x=1667128738; bh=OP5fiDsWx3HBFZc2RFgNY8xt6MJz
+        65zkLO7rn9/e38c=; b=KdPeg7eIzUnWQdHF4fgmTko3uX6243SvcFTBBHYkz3yh
+        CgSk5jbx2Fqrq4oow4WeKAZtZdod60u2hYZgkoUC+JPftkSPJKg7/fxtndZNECLC
+        FzBEG2hmSEfZOhX7leEE+IyeajhRAv1nGVePg86qWFB/qvGQrhH4hPtUWJUW4OT0
+        LubQSvNGI4a4NGv8FpuZHTD2KLOHr+Wpeend8XrpjDPlASP38HeN/z+IE1yH/hV/
+        fGlCWdLgOcOA1HUJB6t1T0zNjvn+J9MUGivFxjNeLYxiaGTEllYhU1FJtPrHHTDU
+        62i6qWYw6T1PssW1Fll799gVmgjORNdYVw5ic+uIqw==
+X-ME-Sender: <xms:IQxdY6ZsiQYqiLHEBl7-6jrZHW3YwtcNlhyRwoeS_09tgxzBhFBTCg>
+    <xme:IQxdY9aCHqUP-xmci3aZeJlaPyDpPKDwj1MqpJUjV4G1_Tx1ViADOPJpaFyK9jnaa
+    VzhUTWB70Qf3sIuFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrtdekgdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfnohhr
+    vghniicuuegruhgvrhdfuceoohhssheslhhmsgdrihhoqeenucggtffrrghtthgvrhhnpe
+    ffteegfffgffffueduiefhffeufffgleehgedtleelgefgfffgveefkeeftdffleenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoshhssehlmh
+    gsrdhioh
+X-ME-Proxy: <xmx:IQxdY09RMuDv69VXYW4iPGazxPhsOrpIndcarVsxpMlwXJ0J9hO1fQ>
+    <xmx:IQxdY8oEMWYJUbsp-ZwasYprjsvMxBeq0W3bYH49Raqv20suoAK7vQ>
+    <xmx:IQxdY1pKqF-fY5Y0mGO1OR4hRp4j91w-6Il1wBdIVB__VbY6v7KP4w>
+    <xmx:IgxdY-B7DZnkD8H8W7cr-bqJSs81sIhwieeJJyhEO9wO5yOQuHGh5w>
+Feedback-ID: icd3146c6:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E6E2E15A0092; Sat, 29 Oct 2022 07:18:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-1087-g968661d8e1-fm-20221021.001-g968661d8
+Mime-Version: 1.0
+Message-Id: <14b9b139-732e-4013-aaa5-562f27fedb8a@app.fastmail.com>
+In-Reply-To: <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+ <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com>
+ <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
+Date:   Sat, 29 Oct 2022 12:18:36 +0100
+From:   "Lorenz Bauer" <oss@lmb.io>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        "KP Singh" <kpsingh@kernel.org>,
+        "Stanislav Fomichev" <sdf@google.com>, bpf@vger.kernel.org
+Subject: Re: Closing the BPF map permission loophole
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Thu, 27 Oct 2022, at 17:54, Andrii Nakryiko wrote:
+>
+> So after the office hours I had an offline whiteboard discussion with
+> Alexei explaining more precisely what I was proposing, and it became
+> apparent that some of the things I was proposing weren't exactly
+> clear, and thus people were left confused about the solution I was
+> talking about. So I'll try to summarize it a bit and add some more
+> specifics. Hopefully that will help, because I still believe we can
+> solve this problem moving forward.
 
-since commit c504e5c2f964("net: skb: introduce kfree_skb_reason()")
-kfree_skb() is replaced by kfree_skb_reason() and kfree_skb() is set to
-the inline function. So, we replace kprobe/kfree_skb with
-kprobe/kfree_skb_reason to solve the tracex2 error.
+Hi Andrii,
 
- $ cd samples/bpf
- $ sudo ./tracex2
- libbpf: prog 'bpf_prog2': failed to create kprobe 'kfree_skb+0x0' perf event: No such file or directory
- ERROR: bpf_program__attach failed
+Thanks for writing down your thoughts, that helps a lot. I have a draft
+email that I wanted to finish this week, but that didn't happen, sorry.
+I'll be traveling next week, so I'll circle back on this issue the week after.
+I hope that is OK.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- samples/bpf/tracex2_kern.c | 4 ++--
- samples/bpf/tracex2_user.c | 3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
-index 5bc696bac27d..93e0b7680b4f 100644
---- a/samples/bpf/tracex2_kern.c
-+++ b/samples/bpf/tracex2_kern.c
-@@ -22,14 +22,14 @@ struct {
- /* kprobe is NOT a stable ABI. If kernel internals change this bpf+kprobe
-  * example will no longer be meaningful
-  */
--SEC("kprobe/kfree_skb")
-+SEC("kprobe/kfree_skb_reason")
- int bpf_prog2(struct pt_regs *ctx)
- {
- 	long loc = 0;
- 	long init_val = 1;
- 	long *value;
- 
--	/* read ip of kfree_skb caller.
-+	/* read ip of kfree_skb_reason caller.
- 	 * non-portable version of __builtin_return_address(0)
- 	 */
- 	BPF_KPROBE_READ_RET_IP(loc, ctx);
-diff --git a/samples/bpf/tracex2_user.c b/samples/bpf/tracex2_user.c
-index dd6205c6b6a7..089e408abd7a 100644
---- a/samples/bpf/tracex2_user.c
-+++ b/samples/bpf/tracex2_user.c
-@@ -146,7 +146,8 @@ int main(int ac, char **argv)
- 	signal(SIGINT, int_exit);
- 	signal(SIGTERM, int_exit);
- 
--	/* start 'ping' in the background to have some kfree_skb events */
-+	/* start 'ping' in the background to have some kfree_skb_reason
-+	 * events */
- 	f = popen("ping -4 -c5 localhost", "r");
- 	(void) f;
- 
--- 
-2.31.1
-
+Lorenz
