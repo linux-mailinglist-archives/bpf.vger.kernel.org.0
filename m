@@ -2,174 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64305611F73
-	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 04:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AA9611F87
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 05:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbiJ2CzL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 22:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
+        id S229874AbiJ2DCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 23:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiJ2CzK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 22:55:10 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2572248D5
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 19:54:37 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c2so6360503plz.11
-        for <bpf@vger.kernel.org>; Fri, 28 Oct 2022 19:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3aOLv5bd0FLV/mnE8/fEeex6Wf+bGxAwiWHAjCPeob8=;
-        b=F1CIddvjILhqwJkQTMNC9hHvJYNArr9ey/ZbzNYqitzzHQZy3r7uM2qGWEgnpwLm8D
-         2kScoECk2psL1KqyxHSF4Rd2eD8r7UkizqsMCsaURAOY8eTeMT9EhLycnkY/5dYIVixg
-         Phcsf1C/VDjddGLVWbrt40HOPyI0z5cfUGem0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3aOLv5bd0FLV/mnE8/fEeex6Wf+bGxAwiWHAjCPeob8=;
-        b=6bQGxe2phyWupwirSsXT9AJVLgen2lUg/YL582GKS0LxvAMqEpMiI2Sbv87vlepIHU
-         oVzuDaqvEDCeu3XMqnS+8qJtJUjj3wNhDWsejXKdYogLU7ZcDBM4CFYZT20HVfYPR8Ic
-         mpbVtIW5q3jyhdjaHIpXWbi1SwOYPGFovNTXFTWJ8YFtwfD7y5F1MN0F6v7H3c98mPeS
-         Pm4G8R0NYqENOEYtkWeqENG+S8pKKML4iiXFP/3aHbefMbMWSBj1VUSzn/oJEFuhxFnL
-         Z4e0As810pGkKSs3CI/CYjnrV/nD1iAuPd7VD1eEE4g58RGAIMrH+LPeG15i8bZBZnQ1
-         3D+Q==
-X-Gm-Message-State: ACrzQf1Qym/GUXSebNzcAkUUGrUeJF1duy3MFeT1yx20FUue7n+bpQwP
-        sAw/1tz+TD/ZvFPRasVs1BUhfA==
-X-Google-Smtp-Source: AMsMyM6HJPQNNHUKo0hqSZ77eYX6lSBHvTuXFvuJmE1nVwBFZI8X4MsvRQFTWCL3yLz9vbqzCuWTBw==
-X-Received: by 2002:a17:902:dad1:b0:183:243c:d0d0 with SMTP id q17-20020a170902dad100b00183243cd0d0mr2229535plx.157.1667012077434;
-        Fri, 28 Oct 2022 19:54:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p15-20020a634f4f000000b00429c5270710sm166610pgl.1.2022.10.28.19.54.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 19:54:34 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpf/verifier: Take advantage of full allocation sizes
-Date:   Fri, 28 Oct 2022 19:54:32 -0700
-Message-Id: <20221029025433.2533810-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221029024444.gonna.633-kees@kernel.org>
-References: <20221029024444.gonna.633-kees@kernel.org>
+        with ESMTP id S229556AbiJ2DCS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 23:02:18 -0400
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C3C391;
+        Fri, 28 Oct 2022 20:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1667012474;
+        bh=yzgljApEq0qdIxlgB5hEgOKNze+VaVoW3rIffIgUM7U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=u8XStJ/mQtG2DbJzqxABEYYRn3RnlpfZl4iB5O2tysvAKpTEzinx5DO6fFT47PnV/
+         t8wNRmmYDdmUkQfLKLL9JT1QwqXIFRfwVBN6mtGRuiBk3lEXbbIlhVYIzRNmM3ii94
+         jjbz40kaf8w6MdmWABToAENaGwbigjC+QEhpkRpk=
+Received: from localhost.localdomain ([111.199.189.86])
+        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
+        id EF589CDA; Sat, 29 Oct 2022 10:59:53 +0800
+X-QQ-mid: xmsmtpt1667012393tuia2uaof
+Message-ID: <tencent_BA460110770C008560B21A2E3555405E9F09@qq.com>
+X-QQ-XMAILINFO: N7h1OCCDntujuAp5mqx8XHGzuesj9Bu6ZPwpAViukBow+hzL2HWcPWqqa7gFMF
+         TjhfQifJ/YvXVwrMpYQyf6ofAAzK/brsjY06p8SpPd5uVP6GMj6aaz6xZL8buLBLWB0RMG3gEo75
+         OkdpKSRIHWtxIwsJdMjY3nZwLOAG/qMXjcIG5L8UJ2+LnsixUYEBogcjXAarsWns8kozvihdQpf0
+         43wJLOgWCZYWekP8pcF26gnMhDIUfbOgQJZiAAcWDaqzwmOa21uXFTrcqgJaMibQo5voqFxdZvPP
+         p6qX+NDPF3iUrZMJ88Zo1RCxgdaw5N81pwZpN+th/V/yr+0I+sGOhQc0JcrF7IdDld/vem2qhUUt
+         +Y6u1SyPmQG2k0Wy0SBpGgv5GE58o+iPJwIYM0eAWHHgENdXPNM6c2ASU30Dzx2HHRfnA4sWC/9B
+         hzHPLyLPpDddB2Z+Iu9GYZJvgfNfvtuzpVjE8oFXfn/W1umv2O9NJWBSegOZJPL9iEVp4vWMCXqa
+         um6mu/C+ENQu6J9+WbtojzAugRwaonmwKq9q41lFkbs1WazAJvbEiC3b8I259pKjH/8jInKCFEpj
+         1R7yjCIsXZoTlYjgFuYITYFpzuB2rdR5ZZlhyCdNoc7YYGP60KhxozLd6eHzGc8bHAU8s0EEUXU+
+         3ZiM0iCJn8DSpLCrdPn+vPjyYWhjIqD+uiBHlBTf/WHc6D7ARlUZO58gJC1BS/mVAX6hWHfPQWV4
+         KGEQfW1BA8IxxZBeDDHHxzss/uut7Zt5IhhVJfanPpeuvyX6Eyhgod2xv/IKr304uRVjcP2MQTfz
+         PdyIakpKOYP8dVRLLP8ll5m/ily4Db7CwtzX8gPW/KxeRA+B7J38upFGowraPuq+0uRrydWkKw6A
+         ma2c2Nfyxf1MluIkG4lU4Dg3vAUdclxPRaEmfPcJISemCf00fPC5Zlv/Lx63fP/uMrKWpH3tj/ML
+         Vs301TZKX3YvlPMWDGCN+5QsXEPcERWc7IQIJ/a3TWiKILkrL3ELaaLzpBLHkl2ZE4a0ll93s=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
+        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
+Date:   Sat, 29 Oct 2022 10:59:52 +0800
+X-OQ-MSGID: <20221029025952.22566-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAEf4BzazYVkVKrKzPD8a7tRZrcWDvvgoVksJHYk3+46V=8kZhw@mail.gmail.com>
+References: <CAEf4BzazYVkVKrKzPD8a7tRZrcWDvvgoVksJHYk3+46V=8kZhw@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3544; h=from:subject; bh=kUtgUSzjHG/StpxeZ/gAkJuSWQ81P7If0wKJuguKsQA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjXJXoKq5ZWOaEe0w9wu2rU5+gTlHcFnfDONzx5rl8 2MO2kVmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY1yV6AAKCRCJcvTf3G3AJjZFEA CbaiZHl1X/Eo7Q6u7OrXXEEu/Fc8P8Egz+2f9weQmvTFT6k8pHEJ646zRGYaElHNuF8dWLLFMJzM1Y uArHQVBqs6LQJ42PuY5l3YGl7j7pmWZwLgscvoR5jyYaXK+/r4zeRdhSbld8X/9cqZ6Jxk8SiPWveK dR/nJPs+tNkPLMdmyWbiEcz5A5+/tAzCBLmZjrgFBEokROEOl+TXx4IIpQbyqgzIDH3+gZ70I1NUhW lPjsvBvh52LVVOaWPV+GLV49VL/tK9veQLcWdWjSMzbnibeWn/xi9OCf94VNP/sAud9eO3w2PFBOij dA4dB88NxOwPgBSoN72V20mybNtqDdfmFCsI3osTyRAdnS+aFgUZ46I72yHpxd016UXEu6QcEUoTgu hKZz6nCyDNN/LfR5C6KER5YAYDzU+MC2uVFAdvE8GeabTsB5cO9kmujEadXdzd4j3C/ZCm6NsUSXG8 LtqGbSpbXDkuteqDDR8dhqIwYkp1t6sajZpOkWVSrKCyEaP65KGhzNwurPBOwlkjyg/K1aQxVys/l4 WVq86oBHhGxemD+KPFGaiLNBxljDw59+kpBi/I8VyCjT7lfHHIqmjFTKNREDkjg5izXZHA9wWJEJ7z CXrUKoUSAdUN08z2u+RbVOxApyfeLHAPi9Jty6yKPofgiYJneRRiZCO0gQjg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the full kmalloc bucket size is being explicitly allocated, pass
-back the resulting details to take advantage of the full size so that
-reallocation checking will be needed less frequently.
+From: Rong Tao <rongtao@cestc.cn>
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Replace strncpy() with strncat(), strncat() leaves the dst string zero
+terminated. Compile samples/bpf warning:
+
+$ cd samples/bpf
+$ make
+...
+In function ‘__enable_controllers’:
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:80:17: warning: ‘strncpy’ specified bound 4097 equals destination size [-Wstringop-truncation]
+   80 |                 strncpy(enable, controllers, sizeof(enable));
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- kernel/bpf/verifier.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1c040d27b8f6..e58b554e862b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1020,20 +1020,23 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
- 	return dst ? dst : ZERO_SIZE_PTR;
- }
- 
--/* resize an array from old_n items to new_n items. the array is reallocated if it's too
-- * small to hold new_n items. new items are zeroed out if the array grows.
-+/* Resize an array from old_n items to *new_n items. The array is
-+ * reallocated if it's too small to hold *new_n items. New items are
-+ * zeroed out if the array grows. Allocation is rounded up to next kmalloc
-+ * bucket size to reduce frequency of resizing. *new_n contains the new
-+ * total number of items that will fit.
-  *
-- * Contrary to krealloc_array, does not free arr if new_n is zero.
-+ * Contrary to krealloc, does not free arr if new_n is zero.
-  */
--static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
-+static void *realloc_array(void *arr, size_t old_n, size_t *new_n, size_t size)
- {
- 	size_t alloc_size;
- 	void *new_arr;
- 
--	if (!new_n || old_n == new_n)
-+	if (!new_n || !*new_n || old_n == *new_n)
- 		goto out;
- 
--	alloc_size = kmalloc_size_roundup(size_mul(new_n, size));
-+	alloc_size = kmalloc_size_roundup(size_mul(*new_n, size));
- 	new_arr = krealloc(arr, alloc_size, GFP_KERNEL);
- 	if (!new_arr) {
- 		kfree(arr);
-@@ -1041,8 +1044,9 @@ static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index a70e873b267e..912e6522c7c5 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -77,7 +77,8 @@ static int __enable_controllers(const char *cgroup_path, const char *controllers
+ 		enable[len] = 0;
+ 		close(fd);
+ 	} else {
+-		strncpy(enable, controllers, sizeof(enable) - 1);
++		enable[0] = '\0';
++		strncat(enable, controllers, sizeof(enable) - 1);
  	}
- 	arr = new_arr;
  
--	if (new_n > old_n)
--		memset(arr + old_n * size, 0, (new_n - old_n) * size);
-+	*new_n = alloc_size / size;
-+	if (*new_n > old_n)
-+		memset(arr + old_n * size, 0, (*new_n - old_n) * size);
- 
- out:
- 	return arr ? arr : ZERO_SIZE_PTR;
-@@ -1074,7 +1078,7 @@ static int copy_stack_state(struct bpf_func_state *dst, const struct bpf_func_st
- 
- static int resize_reference_state(struct bpf_func_state *state, size_t n)
- {
--	state->refs = realloc_array(state->refs, state->acquired_refs, n,
-+	state->refs = realloc_array(state->refs, state->acquired_refs, &n,
- 				    sizeof(struct bpf_reference_state));
- 	if (!state->refs)
- 		return -ENOMEM;
-@@ -1090,11 +1094,12 @@ static int grow_stack_state(struct bpf_func_state *state, int size)
- 	if (old_n >= n)
- 		return 0;
- 
--	state->stack = realloc_array(state->stack, old_n, n, sizeof(struct bpf_stack_state));
-+	state->stack = realloc_array(state->stack, old_n, &n,
-+				     sizeof(struct bpf_stack_state));
- 	if (!state->stack)
- 		return -ENOMEM;
- 
--	state->allocated_stack = size;
-+	state->allocated_stack = n * BPF_REG_SIZE;
- 	return 0;
- }
- 
+ 	snprintf(path, sizeof(path), "%s/cgroup.subtree_control", cgroup_path);
 -- 
-2.34.1
+2.31.1
 
