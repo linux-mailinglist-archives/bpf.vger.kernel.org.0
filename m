@@ -2,44 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E38611F8C
-	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 05:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC96611F94
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 05:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbiJ2DE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 23:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S229766AbiJ2DJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 23:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbiJ2DEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 23:04:40 -0400
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5173FBE1;
-        Fri, 28 Oct 2022 20:04:18 -0700 (PDT)
+        with ESMTP id S229597AbiJ2DJL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 23:09:11 -0400
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A231C7110;
+        Fri, 28 Oct 2022 20:09:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1667012656;
-        bh=yzgljApEq0qdIxlgB5hEgOKNze+VaVoW3rIffIgUM7U=;
+        s=s201512; t=1667012944;
+        bh=c8DKeSJHy7nv5V+vv7J8kQrLnkZeHMgYOuYV61olSO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=E9nfr1GQ/LWzObN6hICNCZmzPmnm1EfDUkICoCTR3lZpftwCSM8ORt0P/doiUuBtr
-         tPdC2sk4z9ed8FMfgxc3H5sv1dtOrapzJjkHuFiKEV/uY2fsLQUspDGsSkHWIDKNjJ
-         6WagOkxEN0lfL+dQhHJ4ACmx9qBCRmiwDtCzST2w=
+        b=SE3D05l27H4Wqqd9BFHOCeIN7gVyIZ1ITbKps7TVRfxzmKcTqJM9KSpmoXqQuyhEh
+         mWhzsfaF/kPLRKQpJBa1kOSopDaRO75V8NvnSIVXpS9MAQBEbKEYyJ7DQj6gkkAwO0
+         FV09Ezu8eoBJqxeXRDjTsKo0zbr/teA+ucOR/6YQ=
 Received: from localhost.localdomain ([111.199.189.86])
-        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
-        id EF589CDA; Sat, 29 Oct 2022 10:59:53 +0800
-X-QQ-mid: xmsmtpt1667012393tuia2uaof
-Message-ID: <tencent_BA460110770C008560B21A2E3555405E9F09@qq.com>
-X-QQ-XMAILINFO: N7h1OCCDntujuAp5mqx8XHGzuesj9Bu6ZPwpAViukBow+hzL2HWcPWqqa7gFMF
-         TjhfQifJ/YvXVwrMpYQyf6ofAAzK/brsjY06p8SpPd5uVP6GMj6aaz6xZL8buLBLWB0RMG3gEo75
-         OkdpKSRIHWtxIwsJdMjY3nZwLOAG/qMXjcIG5L8UJ2+LnsixUYEBogcjXAarsWns8kozvihdQpf0
-         43wJLOgWCZYWekP8pcF26gnMhDIUfbOgQJZiAAcWDaqzwmOa21uXFTrcqgJaMibQo5voqFxdZvPP
-         p6qX+NDPF3iUrZMJ88Zo1RCxgdaw5N81pwZpN+th/V/yr+0I+sGOhQc0JcrF7IdDld/vem2qhUUt
-         +Y6u1SyPmQG2k0Wy0SBpGgv5GE58o+iPJwIYM0eAWHHgENdXPNM6c2ASU30Dzx2HHRfnA4sWC/9B
-         hzHPLyLPpDddB2Z+Iu9GYZJvgfNfvtuzpVjE8oFXfn/W1umv2O9NJWBSegOZJPL9iEVp4vWMCXqa
-         um6mu/C+ENQu6J9+WbtojzAugRwaonmwKq9q41lFkbs1WazAJvbEiC3b8I259pKjH/8jInKCFEpj
-         1R7yjCIsXZoTlYjgFuYITYFpzuB2rdR5ZZlhyCdNoc7YYGP60KhxozLd6eHzGc8bHAU8s0EEUXU+
-         3ZiM0iCJn8DSpLCrdPn+vPjyYWhjIqD+uiBHlBTf/WHc6D7ARlUZO58gJC1BS/mVAX6hWHfPQWV4
-         KGEQfW1BA8IxxZBeDDHHxzss/uut7Zt5IhhVJfanPpeuvyX6Eyhgod2xv/IKr304uRVjcP2MQTfz
-         PdyIakpKOYP8dVRLLP8ll5m/ily4Db7CwtzX8gPW/KxeRA+B7J38upFGowraPuq+0uRrydWkKw6A
-         ma2c2Nfyxf1MluIkG4lU4Dg3vAUdclxPRaEmfPcJISemCf00fPC5Zlv/Lx63fP/uMrKWpH3tj/ML
-         Vs301TZKX3YvlPMWDGCN+5QsXEPcERWc7IQIJ/a3TWiKILkrL3ELaaLzpBLHkl2ZE4a0ll93s=
+        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+        id 1EE9CAFF; Sat, 29 Oct 2022 11:07:46 +0800
+X-QQ-mid: xmsmtpt1667012866tszdu6uwh
+Message-ID: <tencent_D977F40871CDA0474822CBF7324D25F9B505@qq.com>
+X-QQ-XMAILINFO: M5KH7ZjKOjx4y5ReN9Ig/rkL+0Hdd95Phowszp3b8X0t9jtQIK/Tmf8UovW4pj
+         2pILr1dmXvV9WdTOEEXIajKMZfAfcnVUKbnosj7k4TzakQC9qSEYk74EMq0ZO+toWT2O3SPvbmgh
+         DWlOVi+nEJOnuKEQtzkPKwvfGud8gRvsoKyqQyZQtIJTCYvBX3d6LoSUrXbuTcIWlAsNX31gXOLM
+         oDGyz6kWukIIEtiKTxfwI7xScBX1ny9vIwv939+Ll5Uteg2P9WVMQ7qdYzrD+IVBuQv+veFVlTaB
+         uXbTN7Akr3o4pJkd8hf9lCFkLUojtGfHoU7c/XTRdz8T5AephBAg9p/qcDZGSOjACla9xn1DpLha
+         o+HMxY4dsZZL4WJMrr9tmm7L7gQzIBNpX++JTleScZ88+XqWaC8xrWYjbrInptBvGySwSE0gCXy9
+         oFZBAjQbykXcmPR6i8/Ey7w7SRIrFBtcoerdwL773lL0v91BJtvuimfmZgmzP0+MIsO4JQHbO8jx
+         EpmrEoMzZn2g/iC5lWqZ00/xtukjBhDGU/sdgosfvo9pVB2Geno/HtOw9vGLNtBXx7PCONIafb67
+         IfvOzuHs2HCNpIn7SbFgzwR4VaS/+SWzSxK36EpcRXv3TM7/iuQzwz7KeZtk4HIzMCZY8DmTkBTJ
+         bx0o6tvr9LJ2yrcv0Gu24ba8JwSAXS32IkGIHtQRzaPPRnpZ+8SCJioorTw+lCPMTC9boWqUet0m
+         Sgw98kj38wXUdXEU4L8o1EKBKX9VwE5kwnIGS80ETOj8q3z9OA/QPDC8dBF47aQVH8KLVDHwiJ3H
+         a3tbL7Et9lyTFXgL5paksucNePksbwBVUVCjw/oRv4qEIiw631ci9bRNEyC1HYCKISJH2k8u3aCZ
+         S2sgct1zUCnotBzFuBcAFxA9Qn8/KqyVYFYM18h1s93piWkjCJnGZuMVZNqFPl7LI9z7k5V8D6rr
+         dm9QTdxYZPKXok/t2JDZ0OtIVvBF76b852KDJ9bnQC4IWq4S8xjOVj1wRTrxV/sov5fQHhAeOkqM
+         M3h+BAtR+8I9XxdRyjLZNLPquVFOdmZmqAUhJ+CWtKCZKpI/psDeqNa5da9+w=
 From:   Rong Tao <rtoax@foxmail.com>
 To:     andrii.nakryiko@gmail.com
 Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
@@ -48,9 +49,9 @@ Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
         mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
         sdf@google.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
-Subject: [PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
-Date:   Sat, 29 Oct 2022 10:59:52 +0800
-X-OQ-MSGID: <20221029025952.22566-1-rtoax@foxmail.com>
+Subject: [RESEND PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
+Date:   Sat, 29 Oct 2022 11:07:45 +0800
+X-OQ-MSGID: <20221029030745.25588-1-rtoax@foxmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <CAEf4BzazYVkVKrKzPD8a7tRZrcWDvvgoVksJHYk3+46V=8kZhw@mail.gmail.com>
 References: <CAEf4BzazYVkVKrKzPD8a7tRZrcWDvvgoVksJHYk3+46V=8kZhw@mail.gmail.com>
@@ -87,14 +88,14 @@ Signed-off-by: Rong Tao <rongtao@cestc.cn>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index a70e873b267e..912e6522c7c5 100644
+index e914cc45b766..912e6522c7c5 100644
 --- a/tools/testing/selftests/bpf/cgroup_helpers.c
 +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
 @@ -77,7 +77,8 @@ static int __enable_controllers(const char *cgroup_path, const char *controllers
  		enable[len] = 0;
  		close(fd);
  	} else {
--		strncpy(enable, controllers, sizeof(enable) - 1);
+-		strncpy(enable, controllers, sizeof(enable));
 +		enable[0] = '\0';
 +		strncat(enable, controllers, sizeof(enable) - 1);
  	}
