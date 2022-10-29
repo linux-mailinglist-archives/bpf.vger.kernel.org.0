@@ -2,152 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC68611E6A
-	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 01:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC8B611ED3
+	for <lists+bpf@lfdr.de>; Sat, 29 Oct 2022 02:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbiJ1X6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Oct 2022 19:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        id S229720AbiJ2AzF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Oct 2022 20:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbiJ1X6N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Oct 2022 19:58:13 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2066.outbound.protection.outlook.com [40.107.220.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6771C77DA;
-        Fri, 28 Oct 2022 16:58:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TeKckybSauTX7pvMlZpRcsAClz803TguJPRZ9HVdKh3hxCCUw8MIWGIC/xsgtzI3eRlRKgjaPQIShBKU4TTyAwnLo55uhlGj51+uxEZyLhV466Pfmq6Y5ef/XvClGDSj+CzFI8JZ++cN2NK5FnzqvWhfywsv59mraRT+v2L5uVMcs/La7E6L/IaSlDskBf6FggxqQxy4SIFuPJCY/NPlDAr/2ON/c+wTMpjHDwPNy7E9DblV8GzVeK1AGWXoCPK4cN4wJS7nz47buu6vOL/0KqA6Eh9BNUWqbm7K8GuY9lChVOkkhHZ+326tNZxchy3/TX6LaapUgXkx1P65nMnlMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CvAZVAHcG+zU2Pu+pDcusZ2lToAwyAoJ6UUc79Z/gw8=;
- b=nb1ABB5q4AYQShbxUmyEihFjtryqhwewWXduFB6+Qph2Fjy6utaip6gBmRjm25dKam5KySoRLizrewxVbf07QYA+rYRq2AZwMuoj1JusOVHuEpLGyO0eSqsXPS/04mcBfJ6jUWocQxDnkLTJz1sfRo9yicsGX4+BTUetmfqXKKjZZntc2yx5JG9x6nb9NA51pq57okTgnGh+jVbo0KRM+430tDgZQwmesdH/y1WESTVNYkOUw/U2YC5Ne1ym9dh+yO3XpOMkYOGQYWsSy+2dDh3iQmBJIfx4Boz/GZGHjx7jfUbzoCwF36sTciA4l/+PW7OV/8XMM1n/fGNOi/dilg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CvAZVAHcG+zU2Pu+pDcusZ2lToAwyAoJ6UUc79Z/gw8=;
- b=L4wQcSCGzKOFcMAeNlDqHMveFL1006kc7DcFXOt4Tj4Z//sRqcQJ8e7E7/Z4AILfOJR6uSshJwQZbk6rXfgjsYPqw/DIwVbdm2J7A2PlUCglNB1W4bpPDz1MVjbs2sV5li5KY2RNlrAyACZqyCd7mfHfSW9xldV0IWlpuaPswh3RalJUoGPZ/zcCqCW7Kj1nsovmItuZvIM5DNwqHDWsaE02GbKkCw82PEO7Rwg2OzdGSYvSolPc+4KP68UDkDhV4tBOoD0dIuRt1RkrR+UHseNTmObA7OsMOnq8907GsKdrUwzBfQBeJd9S9B97HrbsqnaBNlIjxSi7j3z0cJyBjw==
-Received: from DM6PR01CA0027.prod.exchangelabs.com (2603:10b6:5:296::32) by
- BL1PR12MB5255.namprd12.prod.outlook.com (2603:10b6:208:315::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5746.28; Fri, 28 Oct 2022 23:58:09 +0000
-Received: from DM6NAM11FT104.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:296:cafe::3a) by DM6PR01CA0027.outlook.office365.com
- (2603:10b6:5:296::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15 via Frontend
- Transport; Fri, 28 Oct 2022 23:58:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DM6NAM11FT104.mail.protection.outlook.com (10.13.173.232) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5769.14 via Frontend Transport; Fri, 28 Oct 2022 23:58:09 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Fri, 28 Oct
- 2022 16:58:03 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.29; Fri, 28 Oct 2022 16:58:02 -0700
-Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29 via Frontend
- Transport; Fri, 28 Oct 2022 16:58:00 -0700
-Date:   Fri, 28 Oct 2022 16:57:59 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Lu Baolu <baolu.lu@linux.intel.com>, <bpf@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, <linux-doc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        <kvm@vger.kernel.org>, "Matthew Rosato" <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Keqian Zhu" <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 00/15] IOMMUFD Generic interface
-Message-ID: <Y1xsh8K7Xsrnkljg@Asurada-Nvidia>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT104:EE_|BL1PR12MB5255:EE_
-X-MS-Office365-Filtering-Correlation-Id: 544f334a-a28d-4c2f-a24d-08dab9404402
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SYVL45BfY2rOGp8PqgIKMUEXlXohqdJLZY8ucx8jDU8mFIZ9bhxxu10TwoWyVu4JmGf+9cf7kfeZtGsGieiQK/rYXNDyhnEBMI5W3/93Sh9Y9PlQcdAnt2ka/PpF06hBF9GQlUUw7EYTB8HWYxuTCK+bVB74/MA2oYQL7AP2lUVO+bcXnVAu+GRsDC0eNzV0rmy9zvdd48ztZJnGsj0afoQ5HoQIWldZUEo+sUiRbZE4bpcK7p2ln4tLAq0gaoKf14YduTDugYwLoJvLiSRJhJgecGxInTlksWzi6LTvdqvZTAdERsJopaO2Q10e6WskM4lOmAm5vo12/sick1+uzFa68hH/ul1l4a/MyclyGgp7CLh7G4idSiUxgpVDxFsT6qoKcMTXXmVrRWKcUCsMGtCieU6XIzAEnsxn4x1dI7m2ycxCMyTxBVV9/J0LMGvxVNui4gzY3bSwauzLMaXjSdvh63boN39SPrzJBGl4A3epUGGCpdCQYrjLATV8NKBouxaa+W6/DthJRvksX8uFhY+7mda3WVTwNQZSJJtFuk24avBZ/Qgn6r8ZsboZ2BrxK1GvEDMPulp+ON8eiZbQjblFNGImHZlxqK7xlKRdOUW+371mv0P4RoIUw//Qt1YV8/EhMY40eRExDLVJRnPtYCUts/Y+u3dPedqvQFrMeFROr3VWKeDpMfewjLpAJpC0yYFv7K8jSajG7eg636pbioA2LkGX+EtPqPvwzNX8G1DB4YU6RSUsoPHvh7+B8/XYSgUq5ia934TZBJc/8A8sL9/JzPD7n//xWf119M9FLcFZjuxAAF6xL3hKlCTpJj5ch69IA2e+ZXP+8UZFh4ObGosLSFbvks0zvMvsoIxRbPJKTPQiYv0aEnpI2WtfF0PM
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(136003)(346002)(376002)(396003)(39860400002)(451199015)(36840700001)(46966006)(40470700004)(336012)(40480700001)(40460700003)(47076005)(5660300002)(8676002)(2906002)(7416002)(7406005)(6636002)(86362001)(70206006)(54906003)(4326008)(55016003)(6862004)(41300700001)(8936002)(4744005)(70586007)(316002)(26005)(9686003)(82310400005)(33716001)(186003)(478600001)(7636003)(426003)(356005)(966005)(82740400003)(36860700001)(41533002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2022 23:58:09.5009
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 544f334a-a28d-4c2f-a24d-08dab9404402
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT104.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5255
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229494AbiJ2AzE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Oct 2022 20:55:04 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E872501BA;
+        Fri, 28 Oct 2022 17:55:02 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 128so6224301pga.1;
+        Fri, 28 Oct 2022 17:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H6L/XIpfLrrDquO6tCF0u0f6mLrqaV8V+i33a188p3w=;
+        b=WdAeeTs94ndz0EV/BqPFJ9hkWGkj+K4NynGm9YtsDtRS+0hKeBrPdDlaBzIpRTywuZ
+         jgynnDr74VMQwx/wMYPcGa1xGcEuDKg+Qsm8gQ+NV757NJNO2GG7nhMchHUEwCzrkm0/
+         J6GVf+TQE/3sY6PGuA1Z2V7pjGI3jVuP8AGhRIqP0IHVDXpTSWycBdDxvelKd6yDDCEK
+         uoC0KdoZJF5eDN709BQaIgI/Te3ydz63EIyQLWT88hJ0MoKwlmvF/IZaA35T0wrv4s12
+         xbS57yETj0ASDuEZ7CNod334EkcSYG4Rh/DTTamOQ9tTZd9X19hO9mphKMKJDN6s1LiC
+         bqCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=H6L/XIpfLrrDquO6tCF0u0f6mLrqaV8V+i33a188p3w=;
+        b=0eyhxglmq407w54DWnVRf6z2hmEObGAz7AxW/NUuX9CYJAThwX2whFj6aHP4B8brLm
+         7DRcpQAe6DqBTVgsPpk9lBARsHS75/6TRagc87r/HkhXEIcSD52YRPZStorD9cfuDaR1
+         bZOlI6jRfhtKgogRIhP2MZ82g9rEzrLCNjcZXiI6lpPvbXudd/jgA/CwvG9WLbu84Jll
+         iWN/oFSPX3hOYAQJUPDwkFWs2Jy2moaEbkQeg25Kass/an6rzeoe3bC1NLWGrukn1Hq2
+         08aViVow+RbcCmHxW8FutiANpMhejKs6Dy/EX10kSvEMmwR1NYz/wY8atBBKFZDKW4AF
+         njrw==
+X-Gm-Message-State: ACrzQf0MCgJq4JWHOWeM9vQMzkICYgdJscjCPCaplD00f/IGcJHxwexw
+        bsUsnFDTwjs4g4upSlTJkSnq2evFjAxYdQ==
+X-Google-Smtp-Source: AMsMyM7Rsw63W6Y8Xiyd7uO+8P4cOl4E/sS3LicmgqwThuevMr6mxPY9oduYLLUgJRRbSD568AalJA==
+X-Received: by 2002:a62:1d52:0:b0:56b:f472:55e7 with SMTP id d79-20020a621d52000000b0056bf47255e7mr2187708pfd.63.1667004901440;
+        Fri, 28 Oct 2022 17:55:01 -0700 (PDT)
+Received: from localhost ([98.97.41.13])
+        by smtp.gmail.com with ESMTPSA id o68-20020a62cd47000000b0056283e2bdbdsm64656pfg.138.2022.10.28.17.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Oct 2022 17:55:00 -0700 (PDT)
+Date:   Fri, 28 Oct 2022 17:54:59 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Donald Hunter <donald.hunter@gmail.com>
+Message-ID: <635c79e315b77_b1ba20836@john.notmuch>
+In-Reply-To: <20221026100232.49181-1-donald.hunter@gmail.com>
+References: <20221026100232.49181-1-donald.hunter@gmail.com>
+Subject: RE: [PATCH bpf-next v1] Document BPF_MAP_TYPE_LPM_TRIE
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 03:12:09PM -0300, Jason Gunthorpe wrote:
-> [
-> At this point everything is done and I will start putting this work into a
-> git tree and into linux-next with the intention of sending it during the
-> next merge window.
+Donald Hunter wrote:
+> Add documentation for BPF_MAP_TYPE_LPM_TRIE including kernel
+> BPF helper usage, userspace usage and examples.
 > 
-> I intend to focus the next several weeks on more intensive QA to look at
-> error flows and other things. Hopefully including syzkaller if I'm lucky
-> ]
- 
-> However, these are not necessary for this series to advance.
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+>  Documentation/bpf/map_lpm_trie.rst | 179 +++++++++++++++++++++++++++++
+>  1 file changed, 179 insertions(+)
+>  create mode 100644 Documentation/bpf/map_lpm_trie.rst
 > 
-> This is on github: https://github.com/jgunthorpe/linux/commits/iommufd
+> diff --git a/Documentation/bpf/map_lpm_trie.rst b/Documentation/bpf/map_lpm_trie.rst
+> new file mode 100644
+> index 000000000000..d57c967d11d0
+> --- /dev/null
+> +++ b/Documentation/bpf/map_lpm_trie.rst
+> @@ -0,0 +1,179 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +=====================
+> +BPF_MAP_TYPE_LPM_TRIE
+> +=====================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_LPM_TRIE`` was introduced in kernel version 4.11
+> +
+> +``BPF_MAP_TYPE_LPM_TRIE`` provides a longest prefix match algorithm that
+> +can be used to match IP addresses to a stored set of prefixes.
+> +Internally, data is stored in an unbalanced trie of nodes that uses
+> +``prefixlen,data`` pairs as its keys. The ``data`` is interpreted in
+> +network byte order, i.e. big endian, so ``data[0]`` stores the most
+> +significant byte.
+> +
+> +LPM tries may be created with a maximum prefix length that is a multiple
+> +of 8, in the range from 8 to 2048. The key used for lookup and update
+> +operations is a ``struct bpf_lpm_trie_key``, extended by
+> +``max_prefixlen/8`` bytes.
+> +
+> +- For IPv4 addresses the data length is 4 bytes
+> +- For IPv6 addresses the data length is 16 bytes
+> +
+> +The value type stored in the LPM trie can be any user defined type.
+> +
+> +.. note::
+> +   When creating a map of type ``BPF_MAP_TYPE_LPM_TRIE`` you must set the
+> +   ``BPF_F_NO_PREALLOC`` flag.
+> +
+> +Usage
+> +=====
+> +
+> +Kernel BPF
+> +----------
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +The longest prefix entry for a given data value can be found using the
+> +``bpf_map_lookup_elem()`` helper. This helper returns a pointer to the
+> +value associated with the longest matching ``key``, or ``NULL`` if no
+> +entry was found.
+> +
+> +The ``key`` should have ``prefixlen`` set to ``max_prefixlen`` when
+> +performing longest prefix lookups. For example, when searching for the
+> +longest prefix match for an IPv4 address, ``prefixlen`` should be set to
+> +``32``.
+> +
+> +.. c:function::
+> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+> +
+> +Prefix entries can be added or updated using the ``bpf_map_update_elem()``
+> +helper. This helper replaces existing elements atomically.
+> +
+> +``bpf_map_update_elem()`` returns ``0`` on success, or negative error in
+> +case of failure.
+> +
+> + .. note::
+> +    The flags parameter must be one of BPF_ANY, BPF_NOEXIST or BPF_EXIST,
+> +    but the value is ignored, giving BPF_ANY semantics.
+> +
+> +.. c:function::
+> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
+> +
+> +Prefix entries can be deleted using the ``bpf_map_delete_elem()``
+> +helper. This helper will return 0 on success, or negative error in case
+> +of failure.
 
-Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+The map ops lookup, update, delete and below userspace are pretty generic to
+all map types. How about moving those into a generic file about maps? Maybe
+./Documentation/bpf/mpas.rst? Then perhaps there is a way to link to
+them from here.
 
-I tested on ARM64+SMMUv3 with the other vfio_iommufd branch that
-includes these core changes too.
+> +
+> +Userspace
+> +---------
+> +
+> +Access from userspace uses libbpf APIs with the same names as above, with
+> +the map identified by ``fd``.
+> +
+> +.. c:function::
+> +   int bpf_map_get_next_key (int fd, const void *cur_key, void *next_key)
+> +
+> +A userspace program can iterate through the entries in an LPM trie using
+> +libbpf's ``bpf_map_get_next_key()`` function. The first key can be
+> +fetched by calling ``bpf_map_get_next_key()`` with ``cur_key`` set to
+> +``NULL``. Subsequent calls will fetch the next key that follows the
+> +current key. ``bpf_map_get_next_key()`` returns ``0`` on success,
+> +``-ENOENT`` if cur_key is the last key in the hash, or negative error in
+> +case of failure.
+> +
+> +``bpf_map_get_next_key()`` will iterate through the LPM trie elements
+> +from leftmost leaf first. This means that iteration will return more
+> +specific keys before less specific ones.
 
-Thanks
-Nicolin
+So I tihnk none of this is specific to LPM tries.
+
+> +
+> +Examples
+> +========
+> +
+> +Please see ``tools/samples/bpf/xdp_router_ipv4_user.c`` and
+
+I wouldn't link to samples. Can we link to a selftest? Maybe move the
+xdp_router_ipv4_user into a selftest otherwise no one ensures it is
+always working.
+
+> +``xdp_router_ipv4.bpf.c`` for a functional example. The code snippets
+> +below demonstrates API usage.
+> +
+> +Kernel BPF
+> +----------
+
+rest lgtm. Thanks for working on docs.
