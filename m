@@ -2,60 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 240C061296E
-	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 10:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8186129E5
+	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 11:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiJ3J3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Oct 2022 05:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
+        id S229835AbiJ3KGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Oct 2022 06:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbiJ3J25 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Oct 2022 05:28:57 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0472C06;
-        Sun, 30 Oct 2022 02:28:55 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id 13so22761064ejn.3;
-        Sun, 30 Oct 2022 02:28:55 -0700 (PDT)
+        with ESMTP id S229441AbiJ3KGk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Oct 2022 06:06:40 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA381A0;
+        Sun, 30 Oct 2022 03:06:39 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id b2so22863242eja.6;
+        Sun, 30 Oct 2022 03:06:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hDKGMCpj76LglQyCjAd4gwCw0ksLmiMkut2VbUcz/SY=;
-        b=o7mfKfrPxwVahtVT9rvYK46TIQu4TAFiTdOv7Z9Ainvp2RaJH/oYOtW0YU/9pbRmOd
-         nATPAoPQTzFkRzb/1jLje1nUhMwZODX9GZ7ZIqCynUtaqfwtdRjU7vUQrRu/iKKwVUrR
-         4DV2ToGCakaGDvsX4Chz9cD5eLWhUnsP5/i3P0xWV2V4BABrNW+PnwKXNvaNRrkXysYi
-         LK0kSOcMgRfiYHICJNXrF+X/o8jw4Dfg6IzHcu63JSnNhgKf37MeLhR43L8OsWGlqJpg
-         jDCmhdmROseeCsK/gA1TkCxyge2yo9DdN5zNxplmLcSS9a+mm+8xo+F/uB5zi+wJ0MKh
-         sBVg==
+        bh=KNk7ZNiVH3ImAqj0kSmZACI8FqLd5viyCJ9HhBYf3kQ=;
+        b=p34yqM+RHJ5uSSTbVyrdOICfqzpdUYnaa9sv7ZWD7rhBE+rLmFbqGfK0KmSlGRpIc+
+         zux3erF/Rb2AZ4Zk34rrR7v+M96VdbuC2FQ7Y/E8gn2q+t4Nj6lAgeSWYfKbA8k6YIuq
+         AcOOrtmmCMyAiutpajcTkmIjX7kUePHtsi8swFe96p65mPeAAfybYvqa0gWXcyYk9wSg
+         NYede4ux5uhdP13rx3l91Jz1hfYQlhgeTgriOx7BgNlvfnfgaXRVFaeFlGhKZ9HdWI6x
+         5qWsyhiMo1FTGzMibFadNLlgoQGV1rPf9hK/EwqeMhwqIU0Kr1fKPtIKTEec5QoTK/d3
+         17iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDKGMCpj76LglQyCjAd4gwCw0ksLmiMkut2VbUcz/SY=;
-        b=rmYXhI4YfTyY7VShY2HdvFK//K2FUQDimJQl8WF+tk0JydlVOtpMVfyqeiuHuawD/O
-         2LupmDh6ZHRpqrtgglDwznHJPkFK6H7OhiPqtQbebuqsestr8XDhV/QKSPzx2ZB6SwZ4
-         NeMKFA4t09jHPQ5BbJ8JKCEg9FqcslL2FVW7CBN41Wtc4xfDN9mdxbrlXBOX4OjLVqmy
-         Y76F5Nm2TSFVvK78oMzhjhRqci3e0lgzMm0yK2bMoljBzJNkhnFMDXxiuImiZv3FsbQH
-         SWvuvcuQztym07BPWNKOdHY1ZnOgtKHp53tnUc1n4dPoxAlelJyBdMhrboNqasD8HJLJ
-         J4Qw==
-X-Gm-Message-State: ACrzQf2IsQUsBBIfSX/qjoILkqoSR6D0SmUAtm9MfoZ2DM5oi5vWGiiM
-        3mSgy9O5dmAyMUUiQ19tLQq8XHz7DmAF6nfGaPhykPJSurxwZg==
-X-Google-Smtp-Source: AMsMyM6ju7m2x+MPHl6QDls0jqNOzAEPHFBvoOaZwEyOcBz7f6HDN+HZRE0549bK5t7dq5OiJjUC1NuvTjzRCJ1RexQ=
-X-Received: by 2002:a17:907:2c75:b0:78d:c201:e9aa with SMTP id
- ib21-20020a1709072c7500b0078dc201e9aamr7470691ejc.235.1667122134192; Sun, 30
- Oct 2022 02:28:54 -0700 (PDT)
+        bh=KNk7ZNiVH3ImAqj0kSmZACI8FqLd5viyCJ9HhBYf3kQ=;
+        b=IwZdIypNsdn5bkC22E/KTBCsBRBXyY/piLXhz9uqrOF8N6BQtLZnZdWLGBx5zLbGNo
+         EWXAcIcUenVrN6Heu90xAQIHlLIZEUgeXc5ZwbJN3wCxBl83rlbePRXHy5Lu45Vw/5xM
+         LEA28uEbjDyHAlSG/LeZhuYJX6eDdqWae08I6en6NhyrBsTlcywsFukpP7DaUik7LoAC
+         Kp3OEpwhXMROst9+5YjxZOoEhCT6ofzpB+hnN9cvBJPqQdxjMwexEH7rVJTHBSsaK4ph
+         zu0Z8csFvY6R1pyJPpu5CepE6l/vNB9fqCva92vbLgWqmC6di2Q43OIQAErpiDIFOEWw
+         +DEA==
+X-Gm-Message-State: ACrzQf1lZowquhBIBrjtR+NwVveTuNY7wC++IeuezcTnyo4BBwp5QeaH
+        Jnvd2zbK4dfXjK6Cdjj2AX6H9UWa/UNg30yyZQU=
+X-Google-Smtp-Source: AMsMyM6roRgpaPqYbU28anLsZgZVIb1DqO4lJiEc0aWffhM9qq2gzAIrMkq6mjwhGd3He+C1S1M5EkPw+mDpqdIM+2I=
+X-Received: by 2002:a17:907:2da6:b0:78d:3cf1:9132 with SMTP id
+ gt38-20020a1709072da600b0078d3cf19132mr7579393ejc.299.1667124397592; Sun, 30
+ Oct 2022 03:06:37 -0700 (PDT)
 MIME-Version: 1.0
 From:   Wei Chen <harperchen1110@gmail.com>
-Date:   Sun, 30 Oct 2022 17:28:18 +0800
-Message-ID: <CAO4mrfdifWvUdi7s30yHsbZkavjLuKF_=snSXUo_DtPX9ONjKQ@mail.gmail.com>
-Subject: BUG: unable to handle kernel paging request in tcp_retransmit_timer
-To:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+Date:   Sun, 30 Oct 2022 18:05:59 +0800
+Message-ID: <CAO4mrfexGm_9=cLK+67ryXhG3bLtAwYn7j15iPV+KkMLKuOJPw@mail.gmail.com>
+Subject: INFO: task hung in ppp_ioctl
+To:     paulus@samba.org, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
@@ -75,7 +74,7 @@ HEAD commit: 64570fbc14f8 Linux 5.15-rc5
 git tree: upstream
 compiler: gcc 8.0.1
 console output:
-https://drive.google.com/file/d/1wVTAdDoOo8KqTaGm1v8SaKuv1V8Pt9qs/view?usp=share_link
+https://drive.google.com/file/d/1CZaZY-5qhU8R8Kx9yRxH3uk-Z-4Klr-H/view?usp=share_link
 kernel config: https://drive.google.com/file/d/1uDOeEYgJDcLiSOrx9W8v2bqZ6uOA_55t/view?usp=share_link
 
 Unfortunately, I don't have any reproducer for this crash yet.
@@ -83,78 +82,104 @@ Unfortunately, I don't have any reproducer for this crash yet.
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
 Reported-by: Wei Chen <harperchen1110@gmail.com>
 
-BUG: unable to handle page fault for address: ffffe8ff3fa5f268
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0002) - not-present page
-PGD 983f067 P4D 983f067 PUD afce067 PMD 4e244067 PTE 0
-Oops: 0002 [#1] PREEMPT SMP
-CPU: 0 PID: 6544 Comm: syz-fuzzer Not tainted 5.15.0-rc5 #1
+INFO: task syz-executor.0:21121 blocked for more than 143 seconds.
+      Not tainted 5.15.0-rc5 #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:13736 pid:21121 ppid: 20431 flags:0x00004004
+Call Trace:
+ __schedule+0x4a1/0x1720
+ schedule+0x36/0xe0
+ schedule_preempt_disabled+0xf/0x20
+ __mutex_lock+0x67a/0x9a0
+ ppp_ioctl+0x1247/0x1ee0
+ __x64_sys_ioctl+0xe8/0x140
+ do_syscall_64+0x34/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4692c9
+RSP: 002b:00007f36d6808c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004692c9
+RDX: 0000000020000040 RSI: 00000000c004743e RDI: 0000000000000004
+RBP: 000000000119bfb0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bfac
+R13: 0000000000000000 R14: 000000000119bfa0 R15: 00007ffeb87bf8c0
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8641dee0 (rcu_read_lock){....}-{1:2}, at:
+debug_show_all_locks+0x15/0x17a
+1 lock held by in:imklog/6162:
+ #0: ffff88800f6a1af0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x92/0xa0
+3 locks held by kworker/1:8/7427:
+ #0: ffff8881070edb38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #1: ffffc90005197e68 ((addr_chk_work).work){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #2: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at:
+addrconf_verify_work+0xa/0x20
+5 locks held by kworker/u4:4/2032:
+ #0: ffff888100046938 ((wq_completion)netns){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #1: ffffc900050cfe68 (net_cleanup_work){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #2: ffffffff86893750 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x4f/0x540
+ #3: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at:
+default_device_exit_batch+0x81/0x1d0
+ #4: ffffffff864205b0 (rcu_state.barrier_mutex){+.+.}-{3:3}, at:
+rcu_barrier+0x2b/0x280
+3 locks held by kworker/0:54/20464:
+ #0: ffff888009856738 ((wq_completion)events){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #1: ffffc9000177be68 ((linkwatch_work).work){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #2: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x40
+3 locks held by kworker/0:55/20465:
+ #0: ffff888009856f38
+((wq_completion)events_power_efficient){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #1: ffffc9000178be68 ((reg_check_chans).work){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #2: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at:
+reg_check_chans_work+0x37/0x7f0
+3 locks held by kworker/0:144/20554:
+ #0: ffff888009856738 ((wq_completion)events){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #1: ffffc90002a73e68 (deferred_process_work){+.+.}-{0:0}, at:
+process_one_work+0x327/0x9f0
+ #2: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at:
+switchdev_deferred_process_work+0xa/0x20
+2 locks held by syz-executor.0/21121:
+ #0: ffffffff866c6ec8 (ppp_mutex){+.+.}-{3:3}, at: ppp_ioctl+0x3c/0x1ee0
+ #1: ffffffff86897be8 (rtnl_mutex){+.+.}-{3:3}, at: ppp_ioctl+0x1247/0x1ee0
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 5.15.0-rc5 #1
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
 rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-RIP: 0010:tcp_retransmit_timer+0x4c5/0x1540
-Code: 31 e7 ff ff e9 65 fd ff ff e8 b7 75 3c fd 48 c7 c7 26 1c ee 85
-e8 8b fa bc 00 48 8b 43 30 bf 1f 00 00 00 48 8b 80 58 02 00 00 <65> 48
-ff 80 40 01 00 00 44 0f b6 73 12 48 8b 43 30 44 89 f6 48 89
-RSP: 0000:ffffc90000807cc0 EFLAGS: 00010202
-RAX: 0000607ec1e5f128 RBX: ffff8880156c0000 RCX: ffff888011480000
-RDX: 0000000000000000 RSI: 0000000000000101 RDI: 000000000000001f
-RBP: ffff8880156c0120 R08: ffffffff8400fda9 R09: 0000000000000000
-R10: 0000000000000005 R11: 0000000080000001 R12: 0000000080000001
-R13: ffff88810cd1b280 R14: ffff888029b5f400 R15: ffff8880156c0278
-FS:  000000c000030c90(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffe8ff3fa5f268 CR3: 0000000015c0b000 CR4: 00000000003506f0
 Call Trace:
- tcp_write_timer_handler+0x132/0x420
- tcp_write_timer+0x179/0x230
- call_timer_fn+0xe8/0x510
- run_timer_softirq+0x423/0xa40
- __do_softirq+0xe2/0x56b
- irq_exit_rcu+0xb6/0xf0
- sysvec_apic_timer_interrupt+0x52/0xc0
- asm_sysvec_apic_timer_interrupt+0x12/0x20
-RIP: 0033:0x415543
-Code: 48 8b 1d a0 e8 76 01 84 03 48 8b 14 d3 48 85 d2 74 1d 48 89 c3
-48 c1 e8 0d 48 25 ff 1f 00 00 48 8b 8c c2 00 00 20 00 48 89 d8 <e9> 6c
-fe ff ff 31 c9 e9 65 fe ff ff cc cc cc cc cc cc cc cc cc cc
-RSP: 002b:000000c00003de70 EFLAGS: 00000202
-RAX: 000000c004cc8600 RBX: 000000c004cc8600 RCX: 00007f27b2e23400
-RDX: 00007f27b2e3b000 RSI: 0000000000000001 RDI: 00000000000dcf40
-RBP: 000000c00003de98 R08: 00007f27b303afff R09: 000000c004beb6c0
-R10: 000000c000021e98 R11: 0000000000000008 R12: 000000c004cc8600
-R13: 000000c000001200 R14: 0000000000c4de75 R15: 0000000000000000
-Modules linked in:
-CR2: ffffe8ff3fa5f268
----[ end trace 8795388675688c1b ]---
-RIP: 0010:tcp_retransmit_timer+0x4c5/0x1540
-Code: 31 e7 ff ff e9 65 fd ff ff e8 b7 75 3c fd 48 c7 c7 26 1c ee 85
-e8 8b fa bc 00 48 8b 43 30 bf 1f 00 00 00 48 8b 80 58 02 00 00 <65> 48
-ff 80 40 01 00 00 44 0f b6 73 12 48 8b 43 30 44 89 f6 48 89
-RSP: 0000:ffffc90000807cc0 EFLAGS: 00010202
-RAX: 0000607ec1e5f128 RBX: ffff8880156c0000 RCX: ffff888011480000
-RDX: 0000000000000000 RSI: 0000000000000101 RDI: 000000000000001f
-RBP: ffff8880156c0120 R08: ffffffff8400fda9 R09: 0000000000000000
-R10: 0000000000000005 R11: 0000000080000001 R12: 0000000080000001
-R13: ffff88810cd1b280 R14: ffff888029b5f400 R15: ffff8880156c0278
-FS:  000000c000030c90(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffe8ff3fa5f268 CR3: 0000000015c0b000 CR4: 00000000003506f0
-----------------
-Code disassembly (best guess), 4 bytes skipped:
-   0: e9 65 fd ff ff        jmpq   0xfffffd6a
-   5: e8 b7 75 3c fd        callq  0xfd3c75c1
-   a: 48 c7 c7 26 1c ee 85 mov    $0xffffffff85ee1c26,%rdi
-  11: e8 8b fa bc 00        callq  0xbcfaa1
-  16: 48 8b 43 30          mov    0x30(%rbx),%rax
-  1a: bf 1f 00 00 00        mov    $0x1f,%edi
-  1f: 48 8b 80 58 02 00 00 mov    0x258(%rax),%rax
-* 26: 65 48 ff 80 40 01 00 incq   %gs:0x140(%rax) <-- trapping instruction
-  2d: 00
-  2e: 44 0f b6 73 12        movzbl 0x12(%rbx),%r14d
-  33: 48 8b 43 30          mov    0x30(%rbx),%rax
-  37: 44 89 f6              mov    %r14d,%esi
-  3a: 48                    rex.W
-  3b: 89                    .byte 0x89
+ dump_stack_lvl+0xcd/0x134
+ nmi_cpu_backtrace.cold.8+0xf3/0x118
+ nmi_trigger_cpumask_backtrace+0x18f/0x1c0
+ watchdog+0x9a0/0xb10
+ kthread+0x1a6/0x1e0
+ ret_from_fork+0x1f/0x30
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 2988 Comm: systemd-journal Not tainted 5.15.0-rc5 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+RIP: 0033:0x7f9ecd0d80f4
+Code: c0 0f 84 df 00 00 00 49 8d 2c 08 48 3b 6f 60 48 89 fb 77 42 8d
+7e ff 48 8d 43 30 83 ff 07 bf 00 00 00 00 0f 43 f7 48 83 ec 08 <48> 8b
+bb 48 01 00 00 41 51 49 89 c9 50 89 f1 41 50 44 0f b6 c2 8b
+RSP: 002b:00007ffc82797cd8 EFLAGS: 00000216
+RAX: 000056106a359cd0 RBX: 000056106a359ca0 RCX: 000000000024cc20
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000000
+RBP: 00000000002591a8 R08: 000000000000c588 R09: 00007ffc82797d20
+R10: 00000000000a43ba R11: 00007f9ec8b7d760 R12: 0000000000000001
+R13: 00007ffc82797d98 R14: 0000000000000006 R15: 00007ffc82797d20
+FS:  00007f9ecd3e98c0 GS:  0000000000000000
 
 Best,
 Wei
