@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A018A612B9B
-	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 17:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B4A612C20
+	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 19:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbiJ3Q2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Oct 2022 12:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S229645AbiJ3SA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Oct 2022 14:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbiJ3Q2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Oct 2022 12:28:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561E79FD7
-        for <bpf@vger.kernel.org>; Sun, 30 Oct 2022 09:27:59 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id o70so11340127yba.7
-        for <bpf@vger.kernel.org>; Sun, 30 Oct 2022 09:27:59 -0700 (PDT)
+        with ESMTP id S229494AbiJ3SA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Oct 2022 14:00:56 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31818C;
+        Sun, 30 Oct 2022 11:00:55 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id c26so1069876uak.5;
+        Sun, 30 Oct 2022 11:00:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Taekh8DQ0sOTqLRWjEVp1m61gFbcRkYBqONksbgx4xM=;
-        b=o7BTw98wk4RZwft0ChqZGwfvgFu89g4bZWtCYyFsxfXGfZU9ecSL3jRZS+00VeTkM6
-         t/VFRLCX7e75Q0bVXeawPtT0pyKPpBk/FYL1rz4LARJ6xN+9essU9ValA+oPJmWfmVHd
-         9mDoG3j9S+3ACO+WnZQmQusp/LGAjKwZRRPm2SX0InmUFNsc8eC6GaNzIq/GtYm8B0DN
-         DMtPQsopS0umSXGzqkoomaY1HQY99RCgN9Mymco9n44eaPv7RoIYbA6c9eWC93yWraSj
-         yHj0bzfba7ReoXoN9hN3EFSiGUyJfDSPdIRxLpCshT0PEjSSm9RxJtU3w0Gi8Hp2Myg7
-         toVQ==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OhvDG29Bt/buhOfUrnDiZGriPE828q/V5FYRl5mJiwU=;
+        b=lLXdvwZclyw8W406puBzN7TXelJzu1eRVh4tGF5eOYC8bMvr/nd1bYlMKw+Ck5eDNH
+         uRGH5PnItyrSJm14my6muHWqZoqwllvTn3cM1z8BNeVvExHGWlYDZvvNF1vi7XH4Grbm
+         ngXJ/WHtlJ2EPJ8LkDMRuvNrfb/xCa7AOMRwy5/rRarvGs4E6qTFAEwR4oU4nUGWsh0M
+         iG3nxPFzQhSCWvxWb4pSlBkCMUTwixzrOnuiXADCQq9+3okMBa0zVOCWoUGdEsDrigQY
+         cDWKqyv8keP9BUJZfQETBtliGloKOgUzaopzqADxjCu1ONArDt+1k70tLHBozfweQZYR
+         upBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Taekh8DQ0sOTqLRWjEVp1m61gFbcRkYBqONksbgx4xM=;
-        b=Aa0+0jMoHM3df/iNCui7VWhHc2fsQRPOG8JgkhpNT6MLGemox28pgSVzuAuA/0AG0m
-         PTSFyM6yNUyzKbsmYz8YRQ9obJTcl1RmCsba241OHTYKTk8aR2/kvf/dZrbrhKOaDsnS
-         2h4m7/HxzfV9pZkuEBYGULXwNI+rQlRs3Z1zbOZQ0/yLO5p0qYwJfsoDxhjrA5sytW4/
-         QR7vGdJWBP9KW2EFoPmXJKw3aj7pXAUVlXI5xZRgv8GGytLuZfcbXZKK1DFqi6QOFpDg
-         HreUzLACN2nvGqOm2KLnuFSOwF8QsGgK86VOnisvVSOzZ+es8UmKtAYp3yZkZ7kW1By3
-         9Weg==
-X-Gm-Message-State: ACrzQf1GZm21BBugKQ4dKja9k+Llb8KwNsk4TfkGavvhB14Lo/9V7rAU
-        qZyqXS2zHnZSsGkteSEQmqoyfMFvAYAzVjCn8Qn+qw==
-X-Google-Smtp-Source: AMsMyM6NUj1XbroRHuY5inYKWnwZYkRsEWb+4pmv5PykHpqYqlGAlxMewZCj2kfgVVbN0xO2TCnYvEv3JJc4JrjFrgE=
-X-Received: by 2002:a25:d64e:0:b0:6cb:7faa:af94 with SMTP id
- n75-20020a25d64e000000b006cb7faaaf94mr9004777ybg.36.1667147278214; Sun, 30
- Oct 2022 09:27:58 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OhvDG29Bt/buhOfUrnDiZGriPE828q/V5FYRl5mJiwU=;
+        b=rVMSiYjPDj0Rhe7WpSagfCd2LjMiNoRq/G8vmV2W8fUuiVEqW9ShzUQnEhtOz/ovcr
+         +vA+C+L77hPR51vhivRT8t6NuCoxKRTFnpgInXQUa6jXrO6LoV0YFDDYYrPQK+YlIi8o
+         ty9g5d0tSHqSYcc9KZvPe+9SpGBfHQAoEa4ZoPJnLH0HWmxJfqtJ8dYi8sWVKs63ibkz
+         mmrJtnI2rnYj2gNFIKuW7M1hlPjd0qFaPL6OUG817qMrEjQek0g+oU2KfsGXrAqtbiSO
+         SRtsFMx0RdzLqyJNjA7S/swBm9d7JXIzj5nWxC3CXStK0q8hsfg2upFAj0QDAJH4CngZ
+         EgPw==
+X-Gm-Message-State: ACrzQf0MTn8s0K0oiMzMsup3lpXfbOSjXb+fk01LQYsyCb1BIlODHZtF
+        7/RUzTM8+3gFazVZuGigEa9PvzIAPVtEMuZQFtAxQ0BJtqw=
+X-Google-Smtp-Source: AMsMyM5fpY2WhhSsZknOqMGJelxEDZzf93cdPEsHrxDNEuIcyn5KtrUWBO003o9EoNf895fUyedVmRWwupON2w1jK6Q=
+X-Received: by 2002:a9f:301b:0:b0:3ae:a45f:463e with SMTP id
+ h27-20020a9f301b000000b003aea45f463emr2099934uab.28.1667152854911; Sun, 30
+ Oct 2022 11:00:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAO4mrfdifWvUdi7s30yHsbZkavjLuKF_=snSXUo_DtPX9ONjKQ@mail.gmail.com>
-In-Reply-To: <CAO4mrfdifWvUdi7s30yHsbZkavjLuKF_=snSXUo_DtPX9ONjKQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sun, 30 Oct 2022 09:27:46 -0700
-Message-ID: <CANn89iLtpGkrujoxNVttRYWwq_QiUZAi2XmCLMRJruq1k1BALA@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in tcp_retransmit_timer
-To:     Wei Chen <harperchen1110@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+References: <20221029211520.24033-1-tegongkang@gmail.com> <Y151wBUkhDHbhzzq@debian.me>
+In-Reply-To: <Y151wBUkhDHbhzzq@debian.me>
+From:   Kang Minchul <tegongkang@gmail.com>
+Date:   Mon, 31 Oct 2022 03:00:43 +0900
+Message-ID: <CA+uqrQDPxDptFWCoSq4ksndBMZd=k7e6FL59BtomA8Wts46Q9A@mail.gmail.com>
+Subject: Re: [PATCH] samples: bpf: fix typo in README
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,119 +71,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 30, 2022 at 2:28 AM Wei Chen <harperchen1110@gmail.com> wrote:
+2022=EB=85=84 10=EC=9B=94 30=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 10:01,=
+ Bagas Sanjaya <bagasdotme@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> Dear Linux Developer,
+> On Sun, Oct 30, 2022 at 06:15:20AM +0900, Kang Minchul wrote:
+> > This commit fixes a simple typo in samples/bpf/README.rst
+> >
+> > changed cofiguration to configuration.
 >
-> Recently when using our tool to fuzz kernel, the following crash was triggered:
+> Better say "Fix 'cofiguration' typo in BPF samples README".
 >
-> HEAD commit: 64570fbc14f8 Linux 5.15-rc5
+> And please write patch description in imperative mood instead of
+> descriptive one.
+Thanks for your feedback.
+I just amended the message and sent patch v2.
 
-This is a quite old kernel. Please do not send reports on old rc kernels.
+regards,
 
-> git tree: upstream
-> compiler: gcc 8.0.1
-> console output:
-> https://drive.google.com/file/d/1wVTAdDoOo8KqTaGm1v8SaKuv1V8Pt9qs/view?usp=share_link
-> kernel config: https://drive.google.com/file/d/1uDOeEYgJDcLiSOrx9W8v2bqZ6uOA_55t/view?usp=share_link
->
-> Unfortunately, I don't have any reproducer for this crash yet.
-
-We already have syzbot reports like this one.
-
-The important missing part is a reproducer, really.
-
-See recent work that has been done recently in order to find the root
-cause for these issue(s) in net-next.
-
-0cafd77dcd03 net: add a refcount tracker for kernel sockets
-d1e96cc4fbe0 mptcp: fix tracking issue in mptcp_subflow_create_socket()
-
-Make sure to use a recent tree, if you really want your fuzzer to
-participate in the effort.
-Also enable:
-
-CONFIG_NET_DEV_REFCNT_TRACKER=y
-
-
-Thanks.
-
->
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: Wei Chen <harperchen1110@gmail.com>
->
-> BUG: unable to handle page fault for address: ffffe8ff3fa5f268
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 983f067 P4D 983f067 PUD afce067 PMD 4e244067 PTE 0
-> Oops: 0002 [#1] PREEMPT SMP
-> CPU: 0 PID: 6544 Comm: syz-fuzzer Not tainted 5.15.0-rc5 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:tcp_retransmit_timer+0x4c5/0x1540
-> Code: 31 e7 ff ff e9 65 fd ff ff e8 b7 75 3c fd 48 c7 c7 26 1c ee 85
-> e8 8b fa bc 00 48 8b 43 30 bf 1f 00 00 00 48 8b 80 58 02 00 00 <65> 48
-> ff 80 40 01 00 00 44 0f b6 73 12 48 8b 43 30 44 89 f6 48 89
-> RSP: 0000:ffffc90000807cc0 EFLAGS: 00010202
-> RAX: 0000607ec1e5f128 RBX: ffff8880156c0000 RCX: ffff888011480000
-> RDX: 0000000000000000 RSI: 0000000000000101 RDI: 000000000000001f
-> RBP: ffff8880156c0120 R08: ffffffff8400fda9 R09: 0000000000000000
-> R10: 0000000000000005 R11: 0000000080000001 R12: 0000000080000001
-> R13: ffff88810cd1b280 R14: ffff888029b5f400 R15: ffff8880156c0278
-> FS:  000000c000030c90(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffe8ff3fa5f268 CR3: 0000000015c0b000 CR4: 00000000003506f0
-> Call Trace:
->  tcp_write_timer_handler+0x132/0x420
->  tcp_write_timer+0x179/0x230
->  call_timer_fn+0xe8/0x510
->  run_timer_softirq+0x423/0xa40
->  __do_softirq+0xe2/0x56b
->  irq_exit_rcu+0xb6/0xf0
->  sysvec_apic_timer_interrupt+0x52/0xc0
->  asm_sysvec_apic_timer_interrupt+0x12/0x20
-> RIP: 0033:0x415543
-> Code: 48 8b 1d a0 e8 76 01 84 03 48 8b 14 d3 48 85 d2 74 1d 48 89 c3
-> 48 c1 e8 0d 48 25 ff 1f 00 00 48 8b 8c c2 00 00 20 00 48 89 d8 <e9> 6c
-> fe ff ff 31 c9 e9 65 fe ff ff cc cc cc cc cc cc cc cc cc cc
-> RSP: 002b:000000c00003de70 EFLAGS: 00000202
-> RAX: 000000c004cc8600 RBX: 000000c004cc8600 RCX: 00007f27b2e23400
-> RDX: 00007f27b2e3b000 RSI: 0000000000000001 RDI: 00000000000dcf40
-> RBP: 000000c00003de98 R08: 00007f27b303afff R09: 000000c004beb6c0
-> R10: 000000c000021e98 R11: 0000000000000008 R12: 000000c004cc8600
-> R13: 000000c000001200 R14: 0000000000c4de75 R15: 0000000000000000
-> Modules linked in:
-> CR2: ffffe8ff3fa5f268
-> ---[ end trace 8795388675688c1b ]---
-> RIP: 0010:tcp_retransmit_timer+0x4c5/0x1540
-> Code: 31 e7 ff ff e9 65 fd ff ff e8 b7 75 3c fd 48 c7 c7 26 1c ee 85
-> e8 8b fa bc 00 48 8b 43 30 bf 1f 00 00 00 48 8b 80 58 02 00 00 <65> 48
-> ff 80 40 01 00 00 44 0f b6 73 12 48 8b 43 30 44 89 f6 48 89
-> RSP: 0000:ffffc90000807cc0 EFLAGS: 00010202
-> RAX: 0000607ec1e5f128 RBX: ffff8880156c0000 RCX: ffff888011480000
-> RDX: 0000000000000000 RSI: 0000000000000101 RDI: 000000000000001f
-> RBP: ffff8880156c0120 R08: ffffffff8400fda9 R09: 0000000000000000
-> R10: 0000000000000005 R11: 0000000080000001 R12: 0000000080000001
-> R13: ffff88810cd1b280 R14: ffff888029b5f400 R15: ffff8880156c0278
-> FS:  000000c000030c90(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffe8ff3fa5f268 CR3: 0000000015c0b000 CR4: 00000000003506f0
-> ----------------
-> Code disassembly (best guess), 4 bytes skipped:
->    0: e9 65 fd ff ff        jmpq   0xfffffd6a
->    5: e8 b7 75 3c fd        callq  0xfd3c75c1
->    a: 48 c7 c7 26 1c ee 85 mov    $0xffffffff85ee1c26,%rdi
->   11: e8 8b fa bc 00        callq  0xbcfaa1
->   16: 48 8b 43 30          mov    0x30(%rbx),%rax
->   1a: bf 1f 00 00 00        mov    $0x1f,%edi
->   1f: 48 8b 80 58 02 00 00 mov    0x258(%rax),%rax
-> * 26: 65 48 ff 80 40 01 00 incq   %gs:0x140(%rax) <-- trapping instruction
->   2d: 00
->   2e: 44 0f b6 73 12        movzbl 0x12(%rbx),%r14d
->   33: 48 8b 43 30          mov    0x30(%rbx),%rax
->   37: 44 89 f6              mov    %r14d,%esi
->   3a: 48                    rex.W
->   3b: 89                    .byte 0x89
->
-> Best,
-> Wei
+Kang Minchul
