@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B4A612C20
-	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 19:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA566612C22
+	for <lists+bpf@lfdr.de>; Sun, 30 Oct 2022 19:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbiJ3SA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Oct 2022 14:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        id S229494AbiJ3SDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Oct 2022 14:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiJ3SA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Oct 2022 14:00:56 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31818C;
-        Sun, 30 Oct 2022 11:00:55 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id c26so1069876uak.5;
-        Sun, 30 Oct 2022 11:00:55 -0700 (PDT)
+        with ESMTP id S229441AbiJ3SDE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Oct 2022 14:03:04 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCED18C;
+        Sun, 30 Oct 2022 11:03:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id b29so8856568pfp.13;
+        Sun, 30 Oct 2022 11:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OhvDG29Bt/buhOfUrnDiZGriPE828q/V5FYRl5mJiwU=;
-        b=lLXdvwZclyw8W406puBzN7TXelJzu1eRVh4tGF5eOYC8bMvr/nd1bYlMKw+Ck5eDNH
-         uRGH5PnItyrSJm14my6muHWqZoqwllvTn3cM1z8BNeVvExHGWlYDZvvNF1vi7XH4Grbm
-         ngXJ/WHtlJ2EPJ8LkDMRuvNrfb/xCa7AOMRwy5/rRarvGs4E6qTFAEwR4oU4nUGWsh0M
-         iG3nxPFzQhSCWvxWb4pSlBkCMUTwixzrOnuiXADCQq9+3okMBa0zVOCWoUGdEsDrigQY
-         cDWKqyv8keP9BUJZfQETBtliGloKOgUzaopzqADxjCu1ONArDt+1k70tLHBozfweQZYR
-         upBw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3bgwDu7yEbSlWh+oZ2tboVXfvOGKM5QoZOmwgtujng=;
+        b=kcr7R+pEISD7rSvrr9wr03fiZOvKieVEESUSh5b79pBMJ6goa79lpWCoupHHv0zih/
+         IbmHIdCpvq7YKq9Is6ZBuL5vv6O0banawYuJ4Smi/dwR8qmPyKzPHBNDeUEtJLz5KNwb
+         cqG+Y+2lmtz5TWDj1gCaC3/oiVBQct6BFCcEp2uJu4iHAILrx11is4MOGG63yHVXUL1U
+         ikQ5vTPTiNdkbe+U3nvuWRBzBE9Op+W0ZXpMni/IqG+k7waVtk9Z1YDA3wNLorTcBTtG
+         ovmEbkN6ZBy7llq4uDdDjvovJ1ghoCgwfcms+zvx/+d6GrwuLhJGkePQb1AImQ6Zfbj3
+         QJhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OhvDG29Bt/buhOfUrnDiZGriPE828q/V5FYRl5mJiwU=;
-        b=rVMSiYjPDj0Rhe7WpSagfCd2LjMiNoRq/G8vmV2W8fUuiVEqW9ShzUQnEhtOz/ovcr
-         +vA+C+L77hPR51vhivRT8t6NuCoxKRTFnpgInXQUa6jXrO6LoV0YFDDYYrPQK+YlIi8o
-         ty9g5d0tSHqSYcc9KZvPe+9SpGBfHQAoEa4ZoPJnLH0HWmxJfqtJ8dYi8sWVKs63ibkz
-         mmrJtnI2rnYj2gNFIKuW7M1hlPjd0qFaPL6OUG817qMrEjQek0g+oU2KfsGXrAqtbiSO
-         SRtsFMx0RdzLqyJNjA7S/swBm9d7JXIzj5nWxC3CXStK0q8hsfg2upFAj0QDAJH4CngZ
-         EgPw==
-X-Gm-Message-State: ACrzQf0MTn8s0K0oiMzMsup3lpXfbOSjXb+fk01LQYsyCb1BIlODHZtF
-        7/RUzTM8+3gFazVZuGigEa9PvzIAPVtEMuZQFtAxQ0BJtqw=
-X-Google-Smtp-Source: AMsMyM5fpY2WhhSsZknOqMGJelxEDZzf93cdPEsHrxDNEuIcyn5KtrUWBO003o9EoNf895fUyedVmRWwupON2w1jK6Q=
-X-Received: by 2002:a9f:301b:0:b0:3ae:a45f:463e with SMTP id
- h27-20020a9f301b000000b003aea45f463emr2099934uab.28.1667152854911; Sun, 30
- Oct 2022 11:00:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221029211520.24033-1-tegongkang@gmail.com> <Y151wBUkhDHbhzzq@debian.me>
-In-Reply-To: <Y151wBUkhDHbhzzq@debian.me>
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n3bgwDu7yEbSlWh+oZ2tboVXfvOGKM5QoZOmwgtujng=;
+        b=FIzTqDK59vsh0bAnywJbBzHYLBp5ukFlQS54BR1AWFIj33qGBb9nYrtHKmFnHU+8L+
+         Ew1ekxQ7uEzaFDbpISZmUDVgufA1Na8Gt4JPmQwIwdOOF0fmWpiiK/6c3b1gH9kGwv2+
+         2P46awV2gkMBE4g0oWhmFCcDFe3AMOf4HVK6vs/wqsEEwWbAqQWWGug9dQ1zK4IY6N7o
+         Q0hNMDWRvKbjQPLVswORrgD+9HZeaG++sxCKSk6FXFR56OvGAfTNP10ACMOqVrzp/xH4
+         at2RfCHf66sAXQ1b7ikq3QmMH2u4do9kl6pNRktPMNPCPIpfDAGJxbfB8cZVV5OWrbr+
+         vMjQ==
+X-Gm-Message-State: ACrzQf3JOQnb1l1SDwphFmHKI62bRnQ13uR2QE0n9ScpkEFxyDUXUFsp
+        eJAanYhwC/tpi0V20GoNgSB7e04zM7+M5yxO
+X-Google-Smtp-Source: AMsMyM7svrXqRhOA9qSH7n/V0BWYlfXAQuV9YrP/sdh79ubDSvBvg5qx7BGXvNvRk3sFI8B9uEK6YA==
+X-Received: by 2002:a05:6a00:10d4:b0:56c:fc55:610c with SMTP id d20-20020a056a0010d400b0056cfc55610cmr10212244pfu.6.1667152983566;
+        Sun, 30 Oct 2022 11:03:03 -0700 (PDT)
+Received: from uftrace.. ([14.5.161.231])
+        by smtp.gmail.com with ESMTPSA id y189-20020a6264c6000000b00540f96b7936sm2905840pfb.30.2022.10.30.11.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Oct 2022 11:03:03 -0700 (PDT)
 From:   Kang Minchul <tegongkang@gmail.com>
-Date:   Mon, 31 Oct 2022 03:00:43 +0900
-Message-ID: <CA+uqrQDPxDptFWCoSq4ksndBMZd=k7e6FL59BtomA8Wts46Q9A@mail.gmail.com>
-Subject: Re: [PATCH] samples: bpf: fix typo in README
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kang Minchul <tegongkang@gmail.com>
+Subject: [PATCH v2] samples/bpf: fix typo in README
+Date:   Mon, 31 Oct 2022 03:02:54 +0900
+Message-Id: <20221030180254.34138-1-tegongkang@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,21 +70,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022=EB=85=84 10=EC=9B=94 30=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 10:01,=
- Bagas Sanjaya <bagasdotme@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Sun, Oct 30, 2022 at 06:15:20AM +0900, Kang Minchul wrote:
-> > This commit fixes a simple typo in samples/bpf/README.rst
-> >
-> > changed cofiguration to configuration.
->
-> Better say "Fix 'cofiguration' typo in BPF samples README".
->
-> And please write patch description in imperative mood instead of
-> descriptive one.
-Thanks for your feedback.
-I just amended the message and sent patch v2.
+Fix 'cofiguration' typo in BPF samples README.
 
-regards,
+Signed-off-by: Kang Minchul <tegongkang@gmail.com>
+---
+V1 -> V2: Amended the commit message more precisely
 
-Kang Minchul
+ samples/bpf/README.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+index 60c6494adb1b..af4934639133 100644
+--- a/samples/bpf/README.rst
++++ b/samples/bpf/README.rst
+@@ -87,7 +87,7 @@ Cross compiling samples
+ -----------------------
+ In order to cross-compile, say for arm64 targets, export CROSS_COMPILE and ARCH
+ environment variables before calling make. But do this before clean,
+-cofiguration and header install steps described above. This will direct make to
++configuration and header install steps described above. This will direct make to
+ build samples for the cross target::
+ 
+  export ARCH=arm64
+-- 
+2.34.1
+
