@@ -2,144 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3250D6140A3
-	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 23:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E16206140B6
+	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 23:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiJaW0L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 31 Oct 2022 18:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S229781AbiJaWcq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Oct 2022 18:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbiJaW0J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Oct 2022 18:26:09 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1196514082
-        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 15:26:09 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29VMPIaJ004159
-        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 15:26:08 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kjn3hs0xn-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 15:26:08 -0700
-Received: from twshared16963.27.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 31 Oct 2022 15:26:06 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id EE8A8F0CC5CC; Mon, 31 Oct 2022 15:25:56 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <linux-mm@kvack.org>
-CC:     <akpm@linux-foundation.org>, <x86@kernel.org>,
-        <peterz@infradead.org>, <hch@lst.de>, <rick.p.edgecombe@intel.com>,
-        <dave.hansen@intel.com>, <mcgrof@kernel.org>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next v1 RESEND 5/5] x86: use register_text_tail_vm
-Date:   Mon, 31 Oct 2022 15:25:41 -0700
-Message-ID: <20221031222541.1773452-6-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221031222541.1773452-1-song@kernel.org>
-References: <20221031222541.1773452-1-song@kernel.org>
+        with ESMTP id S229469AbiJaWcp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Oct 2022 18:32:45 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962B410FC
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 15:32:42 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id f27so32986075eje.1
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 15:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=vvDTkuaUsux+g6wxPiqq82wGh6VnuNHEffXlBYQbqrI=;
+        b=stIVvXYzYw7+erjDVtr/Pon2+3gbP0DW+SmaPbkj0Mci/bZzU0uvv6psHQro1aa1nW
+         7TvqUwyFIZPX6SBZopDWhYrnbeeZxHdV1imqye/+Z/BOaG+IPeR3kg7riWZLhoscxSIR
+         VZ+OjMbEZBOLi0Msf8VqBbE1BP4q4cWnAxluw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vvDTkuaUsux+g6wxPiqq82wGh6VnuNHEffXlBYQbqrI=;
+        b=yA/LQKu8OE2AXaQLVglep26atl1ox/J4DlZ9b8bBiZRtvc3Q2PuBw187WGDbkbPYug
+         7JBMJFWpSE4/yJbMWJkmaasSxwx3QcREes264M4Pdpd8IqTVF0hAuivY3dbRJ5Is/pZ0
+         Ekn0NDZB2MerpXJacX82P/ys6c8nah0CbsywRJiiLDg2yKAyHitMkaZAkuwt2ztECIOt
+         H4CVARDxDLd0a8aTHwLTMyLfRwp3XAMzqWFyxXZ7vzPbdFL+/G2RnpW7SgBIKltBrtsc
+         b7Sz/dDeuQdp9qMiJnu92nGiaC4vSpnq6LqAH6cGDirV37+Fx3H/s2bRYg+sQOXU9q/J
+         esGA==
+X-Gm-Message-State: ACrzQf3uOlhESpISxWJFJRggV8MJ+9t40L2ceM/6GJwtrJ+y831WwnQ0
+        ejHk/Fw2Wp0Aqhf9/WR8/V3MAg==
+X-Google-Smtp-Source: AMsMyM6lr1+QjNnJETiN2xIBWVewGe3NZZMJQjkdypULY30P+2qDkuVSkJlWCsTLvdERofYaUXMZCw==
+X-Received: by 2002:a17:906:8a6a:b0:79e:2efe:e0 with SMTP id hy10-20020a1709068a6a00b0079e2efe00e0mr15582247ejc.401.1667255561128;
+        Mon, 31 Oct 2022 15:32:41 -0700 (PDT)
+Received: from cloudflare.com (79.191.56.44.ipv4.supernova.orange.pl. [79.191.56.44])
+        by smtp.gmail.com with ESMTPSA id n9-20020a056402060900b00459148fbb3csm3707005edv.86.2022.10.31.15.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Oct 2022 15:32:40 -0700 (PDT)
+References: <1667000674-13237-1-git-send-email-wangyufen@huawei.com>
+ <87fsf3q36k.fsf@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        john.fastabend@gmail.com
+Subject: Re: [PATCH net v2] bpf, sockmap: fix the sk->sk_forward_alloc
+ warning of sk_stream_kill_queues()
+Date:   Mon, 31 Oct 2022 23:26:14 +0100
+In-reply-to: <87fsf3q36k.fsf@cloudflare.com>
+Message-ID: <877d0fpqt4.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: OwlWyYD24gRKnoNDlROqcK3kzVLOzMO0
-X-Proofpoint-ORIG-GUID: OwlWyYD24gRKnoNDlROqcK3kzVLOzMO0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-31_21,2022-10-31_01,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allocate 2MB pages up to round_up(_etext, 2MB), and register memory
-[round_up(_etext, 4kb), round_up(_etext, 2MB)] with register_text_tail_vm
-so that we can use this part of memory for dynamic kernel text (BPF
-programs, etc.).
+On Mon, Oct 31, 2022 at 06:56 PM +01, Jakub Sitnicki wrote:
+> On Sat, Oct 29, 2022 at 07:44 AM +08, Wang Yufen wrote:
+>> When running `test_sockmap` selftests, got the following warning:
+>>
+>> WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
+>> Call Trace:
+>>   <TASK>
+>>   inet_csk_destroy_sock+0x55/0x110
+>>   tcp_rcv_state_process+0xd28/0x1380
+>>   ? tcp_v4_do_rcv+0x77/0x2c0
+>>   tcp_v4_do_rcv+0x77/0x2c0
+>>   __release_sock+0x106/0x130
+>>   __tcp_close+0x1a7/0x4e0
+>>   tcp_close+0x20/0x70
+>>   inet_release+0x3c/0x80
+>>   __sock_release+0x3a/0xb0
+>>   sock_close+0x14/0x20
+>>   __fput+0xa3/0x260
+>>   task_work_run+0x59/0xb0
+>>   exit_to_user_mode_prepare+0x1b3/0x1c0
+>>   syscall_exit_to_user_mode+0x19/0x50
+>>   do_syscall_64+0x48/0x90
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> The root case is: In commit 84472b436e76 ("bpf, sockmap: Fix more
+>> uncharged while msg has more_data") , I used msg->sg.size replace
+>> tosend rudely, which break the
+>>    if (msg->apply_bytes && msg->apply_bytes < send)
+>> scene.
+>>
+>> Fixes: 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
+>> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>> Acked-by: John Fastabend <john.fastabend@gmail.com>
+>> ---
+>> v1 -> v2: typo fixup
+>>  net/ipv4/tcp_bpf.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+>> index a1626af..774d481 100644
+>> --- a/net/ipv4/tcp_bpf.c
+>> +++ b/net/ipv4/tcp_bpf.c
+>> @@ -278,7 +278,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>>  {
+>>  	bool cork = false, enospc = sk_msg_full(msg);
+>>  	struct sock *sk_redir;
+>> -	u32 tosend, delta = 0;
+>> +	u32 tosend, orgsize, sent, delta = 0;
+>>  	u32 eval = __SK_NONE;
+>>  	int ret;
+>>  
+>> @@ -333,10 +333,12 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>>  			cork = true;
+>>  			psock->cork = NULL;
+>>  		}
+>> -		sk_msg_return(sk, msg, msg->sg.size);
+>> +		sk_msg_return(sk, msg, tosend);
+>>  		release_sock(sk);
+>>  
+>> +		orgsize = msg->sg.size;
+>>  		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
+>> +		sent = orgsize - msg->sg.size;
+>
+> If I'm reading the code right, it's the same as:
+>
+>                 sent = tosend - msg->sg.size;
+>
+> If so, no need for orgsize.
 
-Here is an example:
+Sorry, that doesn't make any sense. I misread the code.
 
-[root@eth50-1 ~]# grep _etext /proc/kallsyms
-ffffffff82202a08 T _etext
+The fix is correct.
 
-[root@eth50-1 ~]# grep bpf_prog_ /proc/kallsyms  | tail -n 3
-ffffffff8220f920 t bpf_prog_cc61a5364ac11d93_handle__sched_wakeup       [bpf]
-ffffffff8220fa28 t bpf_prog_cc61a5364ac11d93_handle__sched_wakeup_new   [bpf]
-ffffffff8220fad4 t bpf_prog_3bf73fa16f5e3d92_handle__sched_switch       [bpf]
+If I can have a small ask to rename `orgsize` to something more common.
 
-[root@eth50-1 ~]#  grep 0xffffffff82200000 /sys/kernel/debug/page_tables/kernel
-0xffffffff82200000-0xffffffff82400000     2M     ro   PSE         x  pmd
+We have `orig_size` or `origsize` in use today, but no `orgsize`:
 
-ffffffff82200000-ffffffff82400000 is a 2MB page, serving kernel text, and
-bpf programs.
+$ git grep -c '\<orig_size\>' -- net
+net/core/sysctl_net_core.c:3
+net/psample/psample.c:1
+net/tls/tls_device.c:5
+net/tls/tls_sw.c:7
+$ git grep -c '\<origsize\>' -- net
+net/bridge/netfilter/ebtables.c:5
+net/ipv4/netfilter/arp_tables.c:10
+net/ipv4/netfilter/ip_tables.c:10
+net/ipv6/netfilter/ip6_tables.c:10
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- arch/x86/include/asm/pgtable_64_types.h | 1 +
- arch/x86/mm/init_64.c                   | 4 +++-
- include/linux/vmalloc.h                 | 4 ++++
- 3 files changed, 8 insertions(+), 1 deletion(-)
+It reads a bit better, IMHO.
 
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 04f36063ad54..c0f9cceb109a 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -101,6 +101,7 @@ extern unsigned int ptrs_per_p4d;
- #define PUD_MASK	(~(PUD_SIZE - 1))
- #define PGDIR_SIZE	(_AC(1, UL) << PGDIR_SHIFT)
- #define PGDIR_MASK	(~(PGDIR_SIZE - 1))
-+#define PMD_ALIGN(x)	(((unsigned long)(x) + (PMD_SIZE - 1)) & PMD_MASK)
- 
- /*
-  * See Documentation/x86/x86_64/mm.rst for a description of the memory map.
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 3f040c6e5d13..5b42fc0c6099 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1373,7 +1373,7 @@ void mark_rodata_ro(void)
- 	unsigned long start = PFN_ALIGN(_text);
- 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
- 	unsigned long end = (unsigned long)__end_rodata_hpage_align;
--	unsigned long text_end = PFN_ALIGN(_etext);
-+	unsigned long text_end = PMD_ALIGN(_etext);
- 	unsigned long rodata_end = PFN_ALIGN(__end_rodata);
- 	unsigned long all_end;
- 
-@@ -1414,6 +1414,8 @@ void mark_rodata_ro(void)
- 				(void *)rodata_end, (void *)_sdata);
- 
- 	debug_checkwx();
-+	register_text_tail_vm(PFN_ALIGN((unsigned long)_etext),
-+			      PMD_ALIGN((unsigned long)_etext));
- }
- 
- int kern_addr_valid(unsigned long addr)
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 9b2042313c12..7365cf9c4e7f 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -132,11 +132,15 @@ extern void vm_unmap_aliases(void);
- #ifdef CONFIG_MMU
- extern void __init vmalloc_init(void);
- extern unsigned long vmalloc_nr_pages(void);
-+void register_text_tail_vm(unsigned long start, unsigned long end);
- #else
- static inline void vmalloc_init(void)
- {
- }
- static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-+void register_text_tail_vm(unsigned long start, unsigned long end)
-+{
-+}
- #endif
- 
- extern void *vmalloc(unsigned long size) __alloc_size(1);
--- 
-2.30.2
+Thanks for fixing it so quickly.
 
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
