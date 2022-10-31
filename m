@@ -2,42 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A6E6130D8
-	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 08:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B422613325
+	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 10:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbiJaHBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Oct 2022 03:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S229686AbiJaJ6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Oct 2022 05:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiJaHA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Oct 2022 03:00:58 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7183F9590;
-        Mon, 31 Oct 2022 00:00:57 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N13rW5pnszJnNL;
-        Mon, 31 Oct 2022 14:58:03 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
- (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 31 Oct
- 2022 15:00:54 +0800
-From:   Zhengchao Shao <shaozhengchao@huawei.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>, <lmb@cloudflare.com>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <shaozhengchao@huawei.com>
-Subject: [PATCH bpf-next] bpf: fix memory leak in grow_stack_state()
-Date:   Mon, 31 Oct 2022 15:08:12 +0800
-Message-ID: <20221031070812.339883-1-shaozhengchao@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S229785AbiJaJ6h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Oct 2022 05:58:37 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6427662;
+        Mon, 31 Oct 2022 02:58:36 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N17l83dwDzVjKs;
+        Mon, 31 Oct 2022 17:53:40 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 31 Oct 2022 17:58:35 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 31 Oct 2022 17:58:34 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <keescook@chromium.org>,
+        <gustavoars@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <acme@kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] uapi: Add missing linux/stddef.h header file to in.h
+Date:   Mon, 31 Oct 2022 17:55:17 +0800
+Message-ID: <20221031095517.100297-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500026.china.huawei.com (7.185.36.106)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -47,58 +51,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The realloc_array() fails, but the previous memory is not released.
-However, state->stack and state->refs are set to NULL. This will
-cause memory leakage.
+commit 5854a09b4957 ("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper") does not
+include "linux/stddef.h" header file, and tools headers update linux/in.h copy,
+BPF prog fails to be compiled:
 
-The memory leak information is as follows:
-unreferenced object 0xffff888019801800 (size 256):
-  comm "bpf_repo", pid 6490, jiffies 4294959200 (age 17.170s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000b211474b>] __kmalloc_node_track_caller+0x45/0xc0
-    [<0000000086712a0b>] krealloc+0x83/0xd0
-    [<00000000139aab02>] realloc_array+0x82/0xe2
-    [<00000000b1ca41d1>] grow_stack_state+0xfb/0x186
-    [<00000000cd6f36d2>] check_mem_access.cold+0x141/0x1341
-    [<0000000081780455>] do_check_common+0x5358/0xb350
-    [<0000000015f6b091>] bpf_check.cold+0xc3/0x29d
-    [<000000002973c690>] bpf_prog_load+0x13db/0x2240
-    [<00000000028d1644>] __sys_bpf+0x1605/0x4ce0
-    [<00000000053f29bd>] __x64_sys_bpf+0x75/0xb0
-    [<0000000056fedaf5>] do_syscall_64+0x35/0x80
-    [<000000002bd58261>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+    CLNG-BPF [test_maps] bpf_flow.bpf.o
+    CLNG-BPF [test_maps] cgroup_skb_sk_lookup_kern.bpf.o
+  In file included from progs/cgroup_skb_sk_lookup_kern.c:9:
+  /root/linux/tools/include/uapi/linux/in.h:199:3: error: type name requires a specifier or qualifier
+                  __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                  ^
+  /root/linux/tools/include/uapi/linux/in.h:199:32: error: type specifier missing, defaults to 'int' [-Werror,-Wimplicit-int]
+                  __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                                               ^
+  2 errors generated.
 
-Fixes: c69431aab67a ("bpf: verifier: Improve function state reallocation")
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+To maintain consistency, add missing header file to kernel.
+Fixes: 5854a09b4957 ("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper")
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- kernel/bpf/verifier.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/uapi/linux/in.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7f0a9f6cb889..c0b0cc2891e3 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1027,12 +1027,16 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
-  */
- static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
- {
-+	void *old_arr = arr;
-+
- 	if (!new_n || old_n == new_n)
- 		goto out;
+diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
+index f243ce665f74..79015665daf1 100644
+--- a/include/uapi/linux/in.h
++++ b/include/uapi/linux/in.h
+@@ -22,6 +22,7 @@
+ #include <linux/types.h>
+ #include <linux/libc-compat.h>
+ #include <linux/socket.h>
++#include <linux/stddef.h>
  
- 	arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
--	if (!arr)
-+	if (!arr) {
-+		kfree(old_arr);
- 		return NULL;
-+	}
- 
- 	if (new_n > old_n)
- 		memset(arr + old_n * size, 0, (new_n - old_n) * size);
+ #if __UAPI_DEF_IN_IPPROTO
+ /* Standard well-defined IP protocols.  */
 -- 
-2.17.1
+2.30.GIT
 
