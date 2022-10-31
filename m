@@ -2,147 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBFA613C4A
-	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 18:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F51A613D13
+	for <lists+bpf@lfdr.de>; Mon, 31 Oct 2022 19:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbiJaRjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Oct 2022 13:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        id S229912AbiJaSGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Oct 2022 14:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbiJaRix (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Oct 2022 13:38:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDAE13D40;
-        Mon, 31 Oct 2022 10:38:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 17017B819BA;
-        Mon, 31 Oct 2022 17:38:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38709C43147;
-        Mon, 31 Oct 2022 17:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667237917;
-        bh=P9CiTbFkLwYXgkEJtoE1pjsCHoI48SKWU5aipbF3igg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FWoSDZLAWEJZUT6mSbEXa8gW75M91KXEbFRnzgmaEPaVFzfP862DtwPc35OjioWj4
-         vFG/stMP+8m/M+TkH6HKIlUgBQ9FYWXbSvARZmvo6To5gL70wjkOHX6orXCFjdBmhD
-         xS/m5oOjcxexhDG0tJ+96hf9aJKgssVytSEDvVzMg410YPKKTf/58hEwcA+//8NAaI
-         ryWnBKa99eryMwamtaxUrn3YJWkCCeFYU/JOEl99g9AZLhAraPxrxb6DOE7WZOSRb+
-         9cp5p/hkjTkepOa4SW2CKlYlT5qRTftB9rkHvam03HxfVaTEAudlh4rLMtsk+F/ngt
-         H77toNMvDffKQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, x86@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH bpf] bpf: Mark bpf_arch_init_dispatcher_early() as __init_or_module
-Date:   Mon, 31 Oct 2022 10:38:19 -0700
-Message-Id: <20221031173819.2344270-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229983AbiJaSGf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Oct 2022 14:06:35 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E84513E9C
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 11:05:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v27so18653455eda.1
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 11:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=2isgzEVOzATuuJwSzGWZ3YEuAbxmDyfoHMxDF7BrO2c=;
+        b=eCOL/adO2DyRXMvvuWIQob5OAM/haJJgTvm8xt+rpjNpzrFWC0RaZlOa4v1FiQ1OVJ
+         wAiDEXyEu7XFiNDzqXueML8MYU+VdxTqHEU0QM6aNN0oUJbxHaQCrpSWVBVlBhl3RaMG
+         7O+8sO5x6QM0hGn6HhpSFmD1NG+mU2LWZbo+s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2isgzEVOzATuuJwSzGWZ3YEuAbxmDyfoHMxDF7BrO2c=;
+        b=b/z1YM0kJvx2YstzQWGPBI3cTtrUuRJZBrWXDJ1t10YkehgSIHyPd6dmufFYOxHGcE
+         zGGHFYXPIzRC2YgxuNjW05tv2+uwQoNSbrP9XV4Em4ydvb4QZvIyEjl1FGB9jEvUfRhQ
+         D5ZbNsaY32bmXCnjO5hpVkdROds8yySDfYDlOrpcoXkqzWaxTWRHhMEQQGIE8eiNh2ZD
+         kqFlmZhR1k24Lss+jQjqglonfz4h/UzKlA1PFaadvcp1CPEG2ZMe9TfDYgBt6bGMmTr9
+         sPdHw+5Apm/xxONZmrcOniJEwctNhOKFAfyFz2p4AdSEhqLqwQUqp16x+3evXsrYCZCP
+         DU3w==
+X-Gm-Message-State: ACrzQf1K9TYl2KIJOX2TbSph40aF7ff4WE5je1k0zyDdnKn+/qZxoHia
+        LpMZ0vAknmtxmsHRlpoatDnMtw==
+X-Google-Smtp-Source: AMsMyM4Jn+BJzuSqJm0qwadMaYU0P8FmfCoIK5s5kz7nKT2kaxhvB8SjIfQPZNjTbqUQgP4IIF6Ulg==
+X-Received: by 2002:a05:6402:524e:b0:461:fa05:aff8 with SMTP id t14-20020a056402524e00b00461fa05aff8mr15072173edd.283.1667239525375;
+        Mon, 31 Oct 2022 11:05:25 -0700 (PDT)
+Received: from cloudflare.com (79.191.56.44.ipv4.supernova.orange.pl. [79.191.56.44])
+        by smtp.gmail.com with ESMTPSA id b18-20020a1709063cb200b007ad9adabcd4sm3219125ejh.213.2022.10.31.11.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Oct 2022 11:05:24 -0700 (PDT)
+References: <1667000674-13237-1-git-send-email-wangyufen@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        john.fastabend@gmail.com
+Subject: Re: [PATCH net v2] bpf, sockmap: fix the sk->sk_forward_alloc
+ warning of sk_stream_kill_queues()
+Date:   Mon, 31 Oct 2022 18:56:49 +0100
+In-reply-to: <1667000674-13237-1-git-send-email-wangyufen@huawei.com>
+Message-ID: <87fsf3q36k.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit dbe69b299884 ("bpf: Fix dispatcher patchable function entry
-to 5 bytes nop"), building kernel/bpf/dispatcher.c in certain
-configurations with LLVM's integrated assembler results in a known
-recordmcount bug:
+On Sat, Oct 29, 2022 at 07:44 AM +08, Wang Yufen wrote:
+> When running `test_sockmap` selftests, got the following warning:
+>
+> WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
+> Call Trace:
+>   <TASK>
+>   inet_csk_destroy_sock+0x55/0x110
+>   tcp_rcv_state_process+0xd28/0x1380
+>   ? tcp_v4_do_rcv+0x77/0x2c0
+>   tcp_v4_do_rcv+0x77/0x2c0
+>   __release_sock+0x106/0x130
+>   __tcp_close+0x1a7/0x4e0
+>   tcp_close+0x20/0x70
+>   inet_release+0x3c/0x80
+>   __sock_release+0x3a/0xb0
+>   sock_close+0x14/0x20
+>   __fput+0xa3/0x260
+>   task_work_run+0x59/0xb0
+>   exit_to_user_mode_prepare+0x1b3/0x1c0
+>   syscall_exit_to_user_mode+0x19/0x50
+>   do_syscall_64+0x48/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The root case is: In commit 84472b436e76 ("bpf, sockmap: Fix more
+> uncharged while msg has more_data") , I used msg->sg.size replace
+> tosend rudely, which break the
+>    if (msg->apply_bytes && msg->apply_bytes < send)
+> scene.
+>
+> Fixes: 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
+> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+> v1 -> v2: typo fixup
+>  net/ipv4/tcp_bpf.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> index a1626af..774d481 100644
+> --- a/net/ipv4/tcp_bpf.c
+> +++ b/net/ipv4/tcp_bpf.c
+> @@ -278,7 +278,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  {
+>  	bool cork = false, enospc = sk_msg_full(msg);
+>  	struct sock *sk_redir;
+> -	u32 tosend, delta = 0;
+> +	u32 tosend, orgsize, sent, delta = 0;
+>  	u32 eval = __SK_NONE;
+>  	int ret;
+>  
+> @@ -333,10 +333,12 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  			cork = true;
+>  			psock->cork = NULL;
+>  		}
+> -		sk_msg_return(sk, msg, msg->sg.size);
+> +		sk_msg_return(sk, msg, tosend);
+>  		release_sock(sk);
+>  
+> +		orgsize = msg->sg.size;
+>  		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
+> +		sent = orgsize - msg->sg.size;
 
-  Cannot find symbol for section 4: .init.text.
-  kernel/bpf/dispatcher.o: failed
+If I'm reading the code right, it's the same as:
 
-This occurs when there are only weak symbols in a particular section in
-the translation unit; in this case, bpf_arch_init_dispatcher_early() is
-marked '__weak __init' and it is the only symbol in the .init.text
-section. recordmcount expects there to be a symbol for a particular
-section but LLVM's integrated assembler (and GNU as after 2.37) do not
-generated section symbols. This has been worked around in the kernel
-before in commit 55d5b7dd6451 ("initramfs: fix clang build failure")
-and commit 6e7b64b9dd6d ("elfcore: fix building with clang").
+                sent = tosend - msg->sg.size;
 
-Fixing recordmcount has been brought up before but there is no clear
-solution that does not break ftrace outright.
+If so, no need for orgsize.
 
-Unfortunately, working around this issue by removing the '__init' from
-bpf_arch_init_dispatcher_early() is not an option, as the x86 version of
-bpf_arch_init_dispatcher_early() calls text_poke_early(), which is
-marked '__init_or_module', meaning that when CONFIG_MODULES is disabled,
-bpf_arch_init_dispatcher_early() has to be marked '__init' as well to
-avoid a section mismatch warning from modpost.
-
-However, bpf_arch_init_dispatcher_early() can be marked
-'__init_or_module' as well, which would resolve the recordmcount warning
-for configurations that support modules (i.e., the vast majority of
-them) while not introducing any new warnings for all configurations. Do
-so to clear up the build failure for CONFIG_MODULES=y configurations.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/981
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/x86/net/bpf_jit_comp.c | 2 +-
- include/linux/bpf.h         | 2 +-
- kernel/bpf/dispatcher.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 00127abd89ee..4145939bbb6a 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -389,7 +389,7 @@ static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 	return ret;
- }
- 
--int __init bpf_arch_init_dispatcher_early(void *ip)
-+int __init_or_module bpf_arch_init_dispatcher_early(void *ip)
- {
- 	const u8 *nop_insn = x86_nops[5];
- 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 0566705c1d4e..4aa7bde406f5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -971,7 +971,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_funcs);
--int __init bpf_arch_init_dispatcher_early(void *ip);
-+int __init_or_module bpf_arch_init_dispatcher_early(void *ip);
- 
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 04f0a045dcaa..e14a68e9a74f 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -91,7 +91,7 @@ int __weak arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int n
- 	return -ENOTSUPP;
- }
- 
--int __weak __init bpf_arch_init_dispatcher_early(void *ip)
-+int __weak __init_or_module bpf_arch_init_dispatcher_early(void *ip)
- {
- 	return -ENOTSUPP;
- }
-
-base-commit: 8bdc2acd420c6f3dd1f1c78750ec989f02a1e2b9
--- 
-2.38.1
+>  
+>  		if (eval == __SK_REDIRECT)
+>  			sock_put(sk_redir);
+> @@ -375,7 +377,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>  		    msg->sg.data[msg->sg.start].page_link &&
+>  		    msg->sg.data[msg->sg.start].length) {
+>  			if (eval == __SK_REDIRECT)
+> -				sk_mem_charge(sk, msg->sg.size);
+> +				sk_mem_charge(sk, tosend - sent);
+>  			goto more_data;
+>  		}
+>  	}
 
