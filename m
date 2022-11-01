@@ -2,77 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8456152ED
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 21:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EF761531F
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 21:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbiKAUNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 16:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
+        id S230188AbiKAUWz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 16:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbiKAUNI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 16:13:08 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBDD1DF34
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 13:13:06 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p184so13311500iof.11
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 13:13:06 -0700 (PDT)
+        with ESMTP id S229939AbiKAUWy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 16:22:54 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D141C93C;
+        Tue,  1 Nov 2022 13:22:52 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id d26so39915450eje.10;
+        Tue, 01 Nov 2022 13:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=caf1GHMc2i1kN1aSMd0cGy2laVGA9lV+8yflBSHn9mo=;
-        b=S0qrlPSrC44paKIPYtwNQzLcydOGZzJKKwBybEigjEjhKWKqX+bqlDtsSnALWTe5+a
-         wGbGVEJJc+ZPprvFgVHWy1sfBab3fLcOYA4ZyyI3ivaW7kDsyZCb2t1XdnNzDo/5TOlM
-         L9HfuskzIql6X4LzPINs1z9VIgfUJbfwBzVorzPSUr5Aih30tVZTKO5tzBVUcegwvmtJ
-         bTL0ywFctDmK3RpoI4cz7eOXHTXmBODPfadpVYq+D0b2hG9zFnToO6A2uW/mBr/qy1Ej
-         /v7SopC5W90Xz4EIIm1chRuv0pZzlKr8kelkqAiMm1w7x42GXADZ+OVdGkI2TnrwoRrD
-         5Iyg==
+        bh=rEC3cxo4FgQfyvz229nsXnlzkaW2KchFRD8VpXN5RqQ=;
+        b=lWe15kr7Rp4A2m/pQ8BOiAfBflHHkKN8G4bjanedMAno3gnrIl9B0HDcU7woxijBuM
+         TYRTJMWRrwyJqI9+hChtdVt1Tg9j89fJi4fPsk6ZyB7+jIR33PzVNwDbjwA2APPZ0XJ/
+         Pdq7n30QEzYbvdHzxy0u3xmTS5NjUf+VpsyPEygQQ+L2D/90sY2DVYzQaWrDLiGo9Q1g
+         sOGXk4f+ZnayABS5OKKj40T8oUyCvv5m7MPmx7traNKOYSsoFx0UR/3LEYq80vDfUHhs
+         TkxEAKWF2bBQA2unSM9rj3dR1SCfFuPrzUxRdPoWq+8uH128uTWHNtmhbGBSOdWnfVGC
+         YMGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=caf1GHMc2i1kN1aSMd0cGy2laVGA9lV+8yflBSHn9mo=;
-        b=k9kKKPq+ln/d6lSH6qA1ATtvgaQdv6JyM1ZS6kFsNlJrGTA25eOYkjMLw4eDTJDWnZ
-         9eNG2yZhWxo0g4g70AHwubaxOcvgW3LG6FVFOJCZbZvnbzr1jgK7aE/tVTDLsJPnchf1
-         FeQhgQ0fdhOjEzSlyDZLVB6TIWJNkztlP9qDF2FfswltdyBo3mgsv7sSMFnPsMuPep5L
-         eZ/xruD1qC4C9M5kQ5FkE+3Q6zWNu1ES1i9NPHB/Cu2VDchHOi1oKb25Kvp0q7ukXL/3
-         E+OqiqhvqpIewCZosmDVu9CV1FBSM54p3R5+jiPtioHAsXxJzfwmYbyIhxm+6n2Y7J8p
-         obAA==
-X-Gm-Message-State: ACrzQf1eD88jjCnXrUDk9qFjMxv+AhtoFtD1cgDNyO4iothX/SNxMaVp
-        FSkgeHdjipWdNP/mX9qOOQzTTzn5EV3882tCmwrkog==
-X-Google-Smtp-Source: AMsMyM6xsyiAvOvJ3i5+SxSuVQClrjqAVPHrGXBXI0eWGDm3zHvG0QFtRF3ursu5sTvNQXlyW6XLE1JZTJEzPeMYMo8=
-X-Received: by 2002:a05:6602:2e84:b0:6bc:e289:8469 with SMTP id
- m4-20020a0566022e8400b006bce2898469mr12707531iow.202.1667333585939; Tue, 01
- Nov 2022 13:13:05 -0700 (PDT)
+        bh=rEC3cxo4FgQfyvz229nsXnlzkaW2KchFRD8VpXN5RqQ=;
+        b=0uB5dIPHbM/3hMybWMXNs3cnCKPfIohA3L4Bsl+Y611VqF699X4w24bG0MLpYoHO1D
+         VH/vp5rC0sFeuGTQHUchB0eTGaC0UF8yr7fE3rwIGa5dU8+utYAPavKv9i2hI/K4GD3O
+         mmwjtsF1uR6cDwivBG1pNJspv/NQmxqZKCUiMTtZRvANnE8YUOQoTkRcfs/JJTqFAig5
+         ErYVe1a3C7YW3QeG2+H8xWEEwo3+peZ0xyRn+Xv6nSbvQRE3Bh/88OBZS5tZ1L85eUra
+         udll3WyQYRC3nY/idaeSjbfFW1WZ1UAJOwzf7z3CxkhaPBs7IoaRCwKrhvJRYmXWUiut
+         dcLw==
+X-Gm-Message-State: ACrzQf3t05rL9YxS2y0xOcYu23ev5/RiXXwU+0H2YAg0llD9Q/COK/9D
+        z9xamByHVxhrBGhYyV83OVHlIhvXIfH3+WanVSU=
+X-Google-Smtp-Source: AMsMyM4+hgyrpJODY2oIrLoUs7QnEMT0wLGK7O51Ng8WL+dLwNA6kFlJFwabBdS5dJmxiCahCcwNzF47cIqegy3RhZM=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr20210637ejb.633.1667334170925; Tue, 01
+ Nov 2022 13:22:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221027200019.4106375-1-sdf@google.com> <20221027200019.4106375-6-sdf@google.com>
- <31f3aa18-d368-9738-8bb5-857cd5f2c5bf@linux.dev> <1885bc0c-1929-53ba-b6f8-ace2393a14df@redhat.com>
- <CAKH8qBt3hNUO0H_C7wYiwBEObGEFPXJCCLfkA=GuGC1CSpn55A@mail.gmail.com>
- <20221031142032.164247-1-alexandr.lobakin@intel.com> <CAKH8qBt1qM1n0X5uwxcBph9gLOv3FXR2q11viUoxxn35Z2_=ag@mail.gmail.com>
- <a5b70078-5223-b4d6-5aba-1dc698de68a7@redhat.com>
-In-Reply-To: <a5b70078-5223-b4d6-5aba-1dc698de68a7@redhat.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 1 Nov 2022 13:12:55 -0700
-Message-ID: <CAKH8qBskXQ-KSK2vTW1g6m4vXWXQNSYsiyYSANSsee=K_q=FFg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 5/5] selftests/bpf: Test rx_timestamp metadata in xskxceiver
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>, brouer@redhat.com,
-        Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>
+References: <20221020222416.3415511-1-void@manifault.com> <20221020222416.3415511-2-void@manifault.com>
+ <20221101000239.pbbmym4mbdbmnzjd@macbook-pro-4.dhcp.thefacebook.com> <Y2FhXC/s5GUkbr9P@maniforge.dhcp.thefacebook.com>
+In-Reply-To: <Y2FhXC/s5GUkbr9P@maniforge.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 1 Nov 2022 13:22:39 -0700
+Message-ID: <CAADnVQ+KZcFZdC=W_qZ3kam9yAjORtpN-9+Ptg_Whj-gRxCZNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/3] bpf: Allow trusted pointers to be passed
+ to KF_TRUSTED_ARGS kfuncs
+To:     David Vernet <void@manifault.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,208 +78,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 6:18 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Tue, Nov 1, 2022 at 11:11 AM David Vernet <void@manifault.com> wrote:
 >
+> > What kind of bpf prog will be able to pass 'struct nf_conn___init *' into these bpf_ct_* ?
+> > We've introduced / vs nf_conf specifically to express the relationship
+> > between allocated nf_conn and other nf_conn-s via different types.
+> > Why is this not enough?
 >
->
-> On 31/10/2022 18.00, Stanislav Fomichev wrote:
-> > On Mon, Oct 31, 2022 at 7:22 AM Alexander Lobakin
-> > <alexandr.lobakin@intel.com> wrote:
-> >>
-> >> From: Stanislav Fomichev <sdf@google.com>
-> >> Date: Fri, 28 Oct 2022 11:46:14 -0700
-> >>
-> >>> On Fri, Oct 28, 2022 at 3:37 AM Jesper Dangaard Brouer
-> >>> <jbrouer@redhat.com> wrote:
-> >>>>
-> >>>>
-> >>>> On 28/10/2022 08.22, Martin KaFai Lau wrote:
-> >>>>> On 10/27/22 1:00 PM, Stanislav Fomichev wrote:
-> >>>>>> Example on how the metadata is prepared from the BPF context
-> >>>>>> and consumed by AF_XDP:
-> >>>>>>
-> >>>>>> - bpf_xdp_metadata_have_rx_timestamp to test whether it's supported;
-> >>>>>>     if not, I'm assuming verifier will remove this "if (0)" branch
-> >>>>>> - bpf_xdp_metadata_rx_timestamp returns a _copy_ of metadata;
-> >>>>>>     the program has to bpf_xdp_adjust_meta+memcpy it;
-> >>>>>>     maybe returning a pointer is better?
-> >>>>>> - af_xdp consumer grabs it from data-<expected_metadata_offset> and
-> >>>>>>     makes sure timestamp is not empty
-> >>>>>> - when loading the program, we pass BPF_F_XDP_HAS_METADATA+prog_ifindex
-> >>>>>>
-> >>>>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >>>>>> Cc: Jakub Kicinski <kuba@kernel.org>
-> >>>>>> Cc: Willem de Bruijn <willemb@google.com>
-> >>>>>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> >>>>>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> >>>>>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> >>>>>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> >>>>>> Cc: Maryam Tahhan <mtahhan@redhat.com>
-> >>>>>> Cc: xdp-hints@xdp-project.net
-> >>>>>> Cc: netdev@vger.kernel.org
-> >>>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >>>>>> ---
-> >>>>>>    .../testing/selftests/bpf/progs/xskxceiver.c  | 22 ++++++++++++++++++
-> >>>>>>    tools/testing/selftests/bpf/xskxceiver.c      | 23 ++++++++++++++++++-
-> >>>>>>    2 files changed, 44 insertions(+), 1 deletion(-)
-> >>
-> >> [...]
-> >>
-> >>>> IMHO sizeof() should come from a struct describing data_meta area see:
-> >>>>
-> >>>> https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interaction/af_xdp_kern.c#L62
-> >>>
-> >>> I guess I should've used pointers for the return type instead, something like:
-> >>>
-> >>> extern __u64 *bpf_xdp_metadata_rx_timestamp(struct xdp_md *ctx) __ksym;
-> >>>
-> >>> {
-> >>>     ...
-> >>>      __u64 *rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
-> >>>      if (rx_timestamp) {
-> >>>          bpf_xdp_adjust_meta(ctx, -(int)sizeof(*rx_timestamp));
-> >>>          __builtin_memcpy(data_meta, rx_timestamp, sizeof(*rx_timestamp));
-> >>>      }
-> >>> }
-> >>>
-> >>> Does that look better?
-> >>
-> >> I guess it will then be resolved to a direct store, right?
-> >> I mean, to smth like
-> >>
-> >>          if (rx_timestamp)
-> >>                  *(u32 *)data_meta = *rx_timestamp;
-> >>
-> >> , where *rx_timestamp points directly to the Rx descriptor?
-> >
-> > Right. I should've used that form from the beginning, that memcpy is
-> > confusing :-(
-> >
-> >>>
-> >>>>>> +        if (ret != 0)
-> >>>>>> +            return XDP_DROP;
-> >>>>>> +
-> >>>>>> +        data = (void *)(long)ctx->data;
-> >>>>>> +        data_meta = (void *)(long)ctx->data_meta;
-> >>>>>> +
-> >>>>>> +        if (data_meta + sizeof(__u32) > data)
-> >>>>>> +            return XDP_DROP;
-> >>>>>> +
-> >>>>>> +        rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
-> >>>>>> +        __builtin_memcpy(data_meta, &rx_timestamp, sizeof(__u32));
-> >>>>
-> >>>> So, this approach first stores hints on some other memory location, and
-> >>>> then need to copy over information into data_meta area. That isn't good
-> >>>> from a performance perspective.
-> >>>>
-> >>>> My idea is to store it in the final data_meta destination immediately.
-> >>>
-> >>> This approach doesn't have to store the hints in the other memory
-> >>> location. xdp_buff->priv can point to the real hw descriptor and the
-> >>> kfunc can have a bytecode that extracts the data from the hw
-> >>> descriptors. For this particular RFC, we can think that 'skb' is that
-> >>> hw descriptor for veth driver.
->
-> Once you point xdp_buff->priv to the real hw descriptor, then we also
-> need to have some additional data/pointers to NIC hardware info + HW
-> setup state. You will hit some of the same challenges as John, like
-> hardware/firmware revisions and chip models, that Jakub pointed out.
-> Because your approach stays with the driver code, I guess it will be a
-> bit easier code wise. Maybe we can store data/pointer needed for this in
-> xdp_rxq_info (xdp->rxq).
->
-> I would need to see some code that juggling this HW NCI state from the
-> kfunc expansion to be convinced this is the right approach.
+> Kumar should have more context here (he originally suggested this in
+> [0]),
 
-I've replied to Martin in another thread, but that's a good point. We
-might need to do locks while parsing the descriptors and converting to
-kernel time, so maybe assuming that everything can be unrolled won't
-stand 100%. OTOH, it seems like unrolled bytecode can (with some
-quirks) always call into some driver specific c function...
+Quoting:
+"
+Unfortunately a side effect of this change is that now since
+PTR_TO_BTF_ID without ref_obj_id is considered trusted, the bpf_ct_*
+functions would begin working with tp_btf args.
+"
+I couldn't find any tracepoint that has nf_conn___init as an argument.
+The whole point of that new type was to return it to bpf prog,
+so the verifier type matches it when it's passed into bpf_ct_*
+in turn.
+So I don't see a need for a new OWNED flag still.
+If nf_conn___init is passed into tracepoint it's a bug and
+we gotta fix it.
 
-I'm trying to convert a couple of drivers (without really testing the
-implementation) and see whether there are any other big issues.
+> but AFAICT you're correct that this should be sufficient. I added
+> a negative test case that correctly fails if a BPF program tries to call
+> these helpers with a struct nf_conn* rather than a struct
+> nf_conn__init*.
+>
+> [0]: https://lore.kernel.org/all/CAP01T77PTK+bD2mBrxJShKNPhEypT2+nSHcr3=uuJbrghv_wFg@mail.gmail.com/
+>
+> > I prefer to keep only one flag KF_TRUSTED_ARGS that kfunc-s need to use
+> > and eventually make all kfuncs KF_TRUSTED_ARGS by default and remove that flag.
+>
+> Yes, KF_TRUSTED_ARGS really should be the default. As Kumar describes in
+> [1], we'll have to figure out how to avoid trace progs with unsafe args
+> from calling these kfuncs. Maybe the right thing to do is allow-listing
+> rather than deny-listing, as you pointed out.
+>
+> [1]: https://lore.kernel.org/bpf/CAP01T77goGbF3GVithEuJ7yMQR9PxHNA9GXFODq_nfA66G=F9g@mail.gmail.com/
 
+That is still the plan. more or less.
 
-> >>
-> >> I really do think intermediate stores can be avoided with this
-> >> approach.
-> >> Oh, and BTW, if we plan to use a particular Hint in the BPF program
-> >> only, there's no need to place it in the metadata area at all, is
-> >> there? You only want to get it in your code, so just retrieve it to
-> >> the stack and that's it. data_meta is only for cases when you want
-> >> hints to appear in AF_XDP.
-> >
-> > Correct.
+> > Separately...
+> > I think there was a plan to strengthen PTR_TO_BTF_ID and apply PTR_UNTRUSTED.
 >
-> It is not *only* AF_XDP that need data stored in data_meta.
+> That would be nice if we could do it. I assume that the issue is we're
+> breaking backwards compat if we do, so I'd be curious to hear what the
+> plan was if you're aware. The only plan that I've seen so far is what
+> Kumar spelled out above in [1] above.
+
+Right. Backward compat with existing usage of PTR_TO_BTF_ID
+is the main issue.
+
 >
-> The stores data_meta are also needed for veth and cpumap, because the HW
-> descriptor is "out-of-scope" and thus no-longer available.
+> > This PTR_WALKED looks like new thing.
+> > If we really need it PTR_TO_BTF_ID should be allowlisted instead of denylisted
+> > as PTR_WALKED is doing.
+> > I mean we can introduce PTR_TRUSTED and add this flag to return value
+> > of bpf_get_current_task_btf() and arguments of tracepoints.
+> > As soon as any ptr walking is done we can clear PTR_TRUSTED to keep
+> > backward compat behavior of PTR_TO_BTF_ID.
+> > PTR_WALKED is sort-of doing the same, but not conservative enough.
+> > Too many things produce PTR_TO_BTF_ID. Auditing it all is challenging.
 >
+> I very much prefer the idea of allowlisting instead of denylisting,
+> though I wish we'd taken that approach from the start rather than going
+> with PTR_UNTRUSTED. It feels wrong to have both PTR_UNTRUSTED and
+> PTR_TRUSTED as type modifiers, as the absence of PTR_UNTRUSTED should
+> (and currently does) imply PTR_TRUSTED.
+
+I kind agree, but we gotta have both because of backward compat.
+We cannot change PTR_TO_BTF_ID as a whole right now.
+
+Note PTR_TO_BTF_ID appears in kfuncs too.
+I'm proposing to use PTR_TO_BTF_ID | PTR_TRUSTED
+only in tracepoint args and as return value from
+certain helpers like bpf_get_current_task_btf().
+afaik it's all safe. There is no uaf here.
+uaf is for kfunc. Especially fexit.
+Those will stay PTR_TO_BTF_ID. Without PTR_TRUSTED.
+
 >
-> >
-> >>>> Do notice that in my approach, the existing ethtool config setting and
-> >>>> socket options (for timestamps) still apply.  Thus, each individual
-> >>>> hardware hint are already configurable. Thus we already have a config
-> >>>> interface. I do acknowledge, that in-case a feature is disabled it still
-> >>>> takes up space in data_meta areas, but importantly it is NOT stored into
-> >>>> the area (for performance reasons).
-> >>>
-> >>> That should be the case with this rfc as well, isn't it? Worst case
-> >>> scenario, that kfunc bytecode can explicitly check ethtool options and
-> >>> return false if it's disabled?
-> >>
-> >> (to Jesper)
-> >>
-> >> Once again, Ethtool idea doesn't work. Let's say you have roughly
-> >> 50% of frames to be consumed by XDP, other 50% go to skb path and
-> >> the stack. In skb, I want as many HW data as possible: checksums,
-> >> hash and so on. Let's say in XDP prog I want only timestamp. What's
-> >> then? Disable everything but stamp and kill skb path? Enable
-> >> everything and kill XDP path?
-> >> Stanislav's approach allows you to request only fields you need from
-> >> the BPF prog directly, I don't see any reasons for adding one more
-> >> layer "oh no I won't give you checksum because it's disabled via
-> >> Ethtool".
-> >> Maybe I get something wrong, pls explain then :P
-> >
-> > Agree, good point.
+> If we're going to go with an allowlist approach, then I think we should
+> just get rid of PTR_UNTRUSTED altogether. Is that what you're
+> suggesting? Otherwise, if we don't get rid of PTR_UNTRUSTED, then
+> PTR_WALKED seems like a more natural type modifier addition.
+
+Eventually either PTR_TRUSTED or PTR_UNTRUSTED will be removed.
+
+> > I might have missed earlier discussions on this patch set. Apologies if so.
 >
-> Stanislav's (and John's proposal) is definitely focused and addressing
-> something else than my patchset.
+> Just FYI, the main initial thread where this was all discussed was [2].
 >
-> I optimized the XDP-hints population (for i40e) down to 6 nanosec (on
-> 3.6 GHz CPU = 21 cycles).  Plus, I added an ethtool switch to turn it
-> off for those XDP users that cannot live with this overhead.  Hoping
-> this would be fast-enough such that we didn't have to add this layer.
-> (If XDP returns XDP_PASS then this decoded info can be used for the SKB
-> creation. Thus, this is essentially just moving decoding RX-desc a bit
-> earlier in the the driver).
->
-> One of my use-cases is getting RX-checksum support in xdp_frame's and
-> transferring this to SKB creation time.  I have done a number of
-> measurements[1] to find out how much we can gain of performance for UDP
-> packets (1500 bytes) with/without RX-checksum.  Initial result showed I
-> saved 91 nanosec, but that was avoiding to touching data.  Doing full
-> userspace UDP delivery with a copy (or copy+checksum) showed the real
-> save was 54 nanosec.  In this context, the 6 nanosec was very small.
-> Thus, I didn't choose to pursue a BPF layer for individual fields.
->
->   [1]
-> https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_frame01_checksum.org
->
-> Sure it is super cool if we can create this BPF layer that programmable
-> selects individual fields from the descriptor, and maybe we ALSO need that.
-> Could this layer could still be added after my patchset(?), as one could
-> disable the XDP-hints (via ethtool) and then use kfuncs/kptr to extract
-> only fields need by the specific XDP-prog use-case.
-> Could they also co-exist(?), kfuncs/kptr could extend the
-> xdp_hints_rx_common struct (in data_meta area) with more advanced
-> offload-hints and then update the BTF-ID (yes, BPF can already resolve
-> its own BTF-IDs from BPF-prog code).
->
-> Great to see all the discussions and different oppinons :-)
-> --Jesper
->
+> [2]: https://lore.kernel.org/all/CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com/
