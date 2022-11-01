@@ -2,277 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045BB6150B9
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 18:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2768A6150E3
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 18:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbiKARbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 13:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S231154AbiKARiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 13:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbiKARba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 13:31:30 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF41C1C421;
-        Tue,  1 Nov 2022 10:31:28 -0700 (PDT)
-Message-ID: <752afbbb-1a14-3dad-53d0-35bb32632c91@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1667323885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ol7d/SLJ6X6mg36SiC0ZeRFUpUzT12EE9bBK6pbc9MQ=;
-        b=rXflmn5Oiq9pgFgx3WqwuPIIxh8sIrA/eqYpZc4X4RsOVgcstXbLvd9qGoxOTPFJ0SJZnd
-        uP4NVFaaqFtrkDSRNyoNaVD1McC3Z+eHSfhXc79pDHufoUpf3ZXYVprgM6VLkqfiPiGzv5
-        JDWiN0jaoxl0OlVi0AZs0dUpOhc4qXE=
-Date:   Tue, 1 Nov 2022 10:31:19 -0700
+        with ESMTP id S231156AbiKARiC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 13:38:02 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19295DF5
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 10:38:01 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id j14so21920321ljh.12
+        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 10:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=G6KGpArkyH+fVfBIZbzWqQT677fO9YZMwbEYsFu6Cts=;
+        b=mraiD7Bdqc9RtGa9WzfubzrS7xf8P2dJbWWQpx7k43w/c6yr8ttq/uqXRXe6mFCLD5
+         KXpNttcEyEmhVgMVkZXuogPMJ7ZP8XN2wl+xha+kmUOcxH8UY2C2E62YNa701sH6pk8Y
+         /SEcOyPu3L+/BQvNnNYt2rpkA+b64yZMx2J+R+aDwZzCvRHS0SnfpiP5BUHnXTDqbC4O
+         QP1Zlp+VxdiRrtLtIV0cJvRuOg3nhxpMYZFMDE7xSc14XYyeo7jBqMsLBsKS2CjPDlxw
+         Iv+AVgCbI6rCaLWSgX1HJrw06qVmvh7AvloukHHLeHDnQfdRogFyPBuuRmpFUhNY8E0V
+         y3iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G6KGpArkyH+fVfBIZbzWqQT677fO9YZMwbEYsFu6Cts=;
+        b=HpH8UF2bR0VM3nq16ip248B/hNGLivWSij9GbBDqh7+YHp8Oe/1xJWA843SNvR6up7
+         heCADQQ9PVJlDRLoNRQggodgyuo8rceY4kf33RbmoWxbhi1A/7y+CBC1YMwPklDsPNd7
+         kqsgD/mhCgfNAq4i3GXCzeEPyXDOgF3YhZHILIcYsfBWXI7jWHxAouMvgQN6IV6JDYMJ
+         2+oQA8CTi88goONiOnPw/BxD7fHUrHB4qmlu9ngiX4Op/wu0e/89vdAglc25rgK8YrSq
+         kKINkdTkow39x2YzBz0PHmkMKftxOC1o4Q2CwpVaHihugMA9oEZhzeJq+A64d3kBQGHg
+         oo4w==
+X-Gm-Message-State: ACrzQf23dE+TT8Q0tvnBis+LnXk8ZU+jJGM3ivWQ/USVHIuw8O34YgEh
+        e2WX/fl82uvU3c+pvWQIGZM=
+X-Google-Smtp-Source: AMsMyM5SbOK7ZjsgIPOA2QPcNWlrsXi/e5wEEB4upIbk/PpXzolqokiQYUDe/LilzurIYgv2tsMGDA==
+X-Received: by 2002:a2e:a817:0:b0:26e:580:fa70 with SMTP id l23-20020a2ea817000000b0026e0580fa70mr1079317ljq.307.1667324279228;
+        Tue, 01 Nov 2022 10:37:59 -0700 (PDT)
+Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id 4-20020a2e1644000000b00277129b4a10sm1830523ljw.86.2022.11.01.10.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Nov 2022 10:37:58 -0700 (PDT)
+Message-ID: <31c8edcbdda4b4d7ed05e0b25180c8ebf0d94f05.camel@gmail.com>
+Subject: Re: [RFC bpf-next 01/12] libbpf: Deduplicate unambigous standalone
+ forward declarations
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        arnaldo.melo@gmail.com
+Date:   Tue, 01 Nov 2022 19:37:56 +0200
+In-Reply-To: <c70549d8-f9c7-636b-7e4c-2b3e918978ec@oracle.com>
+References: <20221025222802.2295103-1-eddyz87@gmail.com>
+         <20221025222802.2295103-2-eddyz87@gmail.com>
+         <CAEf4Bzaf8XhO6OPoKSHPPSa1oQQ+KFHeN5Rmp0vn_9dgvOkOYw@mail.gmail.com>
+         <264553ab5b53d22442ecb13725da905be8530c21.camel@gmail.com>
+         <c70549d8-f9c7-636b-7e4c-2b3e918978ec@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
-        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "Deric, Nemanja" <nemanja.deric@siemens.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "Kiszka, Jan" <jan.kiszka@siemens.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "willemb@google.com" <willemb@google.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "mtahhan@redhat.com" <mtahhan@redhat.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "haoluo@google.com" <haoluo@google.com>,
-        Yonghong Song <yhs@meta.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <635bfc1a7c351_256e2082f@john.notmuch> <20221028110457.0ba53d8b@kernel.org>
- <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
- <635c62c12652d_b1ba208d0@john.notmuch> <20221028181431.05173968@kernel.org>
- <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
- <875yg057x1.fsf@toke.dk> <663fb4f4-04b7-5c1f-899c-bdac3010f073@meta.com>
- <CAKH8qBt=As5ON+CbH304tRanudvTF27bzeSnjH2GQR2TVx+mXw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBt=As5ON+CbH304tRanudvTF27bzeSnjH2GQR2TVx+mXw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/31/22 3:09 PM, Stanislav Fomichev wrote:
-> On Mon, Oct 31, 2022 at 12:36 PM Yonghong Song <yhs@meta.com> wrote:
->>
->>
->>
->> On 10/31/22 8:28 AM, Toke Høiland-Jørgensen wrote:
->>> "Bezdeka, Florian" <florian.bezdeka@siemens.com> writes:
->>>
->>>> Hi all,
->>>>
->>>> I was closely following this discussion for some time now. Seems we
->>>> reached the point where it's getting interesting for me.
->>>>
->>>> On Fri, 2022-10-28 at 18:14 -0700, Jakub Kicinski wrote:
->>>>> On Fri, 28 Oct 2022 16:16:17 -0700 John Fastabend wrote:
->>>>>>>> And it's actually harder to abstract away inter HW generation
->>>>>>>> differences if the user space code has to handle all of it.
->>>>>>
->>>>>> I don't see how its any harder in practice though?
->>>>>
->>>>> You need to find out what HW/FW/config you're running, right?
->>>>> And all you have is a pointer to a blob of unknown type.
->>>>>
->>>>> Take timestamps for example, some NICs support adjusting the PHC
->>>>> or doing SW corrections (with different versions of hw/fw/server
->>>>> platforms being capable of both/one/neither).
->>>>>
->>>>> Sure you can extract all this info with tracing and careful
->>>>> inspection via uAPI. But I don't think that's _easier_.
->>>>> And the vendors can't run the results thru their validation
->>>>> (for whatever that's worth).
->>>>>
->>>>>>> I've had the same concern:
->>>>>>>
->>>>>>> Until we have some userspace library that abstracts all these details,
->>>>>>> it's not really convenient to use. IIUC, with a kptr, I'd get a blob
->>>>>>> of data and I need to go through the code and see what particular type
->>>>>>> it represents for my particular device and how the data I need is
->>>>>>> represented there. There are also these "if this is device v1 -> use
->>>>>>> v1 descriptor format; if it's a v2->use this another struct; etc"
->>>>>>> complexities that we'll be pushing onto the users. With kfuncs, we put
->>>>>>> this burden on the driver developers, but I agree that the drawback
->>>>>>> here is that we actually have to wait for the implementations to catch
->>>>>>> up.
->>>>>>
->>>>>> I agree with everything there, you will get a blob of data and then
->>>>>> will need to know what field you want to read using BTF. But, we
->>>>>> already do this for BPF programs all over the place so its not a big
->>>>>> lift for us. All other BPF tracing/observability requires the same
->>>>>> logic. I think users of BPF in general perhaps XDP/tc are the only
->>>>>> place left to write BPF programs without thinking about BTF and
->>>>>> kernel data structures.
->>>>>>
->>>>>> But, with proposed kptr the complexity lives in userspace and can be
->>>>>> fixed, added, updated without having to bother with kernel updates, etc.
->>>>>>   From my point of view of supporting Cilium its a win and much preferred
->>>>>> to having to deal with driver owners on all cloud vendors, distributions,
->>>>>> and so on.
->>>>>>
->>>>>> If vendor updates firmware with new fields I get those immediately.
->>>>>
->>>>> Conversely it's a valid concern that those who *do* actually update
->>>>> their kernel regularly will have more things to worry about.
->>>>>
->>>>>>> Jakub mentions FW and I haven't even thought about that; so yeah, bpf
->>>>>>> programs might have to take a lot of other state into consideration
->>>>>>> when parsing the descriptors; all those details do seem like they
->>>>>>> belong to the driver code.
->>>>>>
->>>>>> I would prefer to avoid being stuck on requiring driver writers to
->>>>>> be involved. With just a kptr I can support the device and any
->>>>>> firwmare versions without requiring help.
->>>>>
->>>>> 1) where are you getting all those HW / FW specs :S
->>>>> 2) maybe *you* can but you're not exactly not an ex-driver developer :S
->>>>>
->>>>>>> Feel free to send it early with just a handful of drivers implemented;
->>>>>>> I'm more interested about bpf/af_xdp/user api story; if we have some
->>>>>>> nice sample/test case that shows how the metadata can be used, that
->>>>>>> might push us closer to the agreement on the best way to proceed.
->>>>>>
->>>>>> I'll try to do a intel and mlx implementation to get a cross section.
->>>>>> I have a good collection of nics here so should be able to show a
->>>>>> couple firmware versions. It could be fine I think to have the raw
->>>>>> kptr access and then also kfuncs for some things perhaps.
->>>>>>
->>>>>>>> I'd prefer if we left the door open for new vendors. Punting descriptor
->>>>>>>> parsing to user space will indeed result in what you just said - major
->>>>>>>> vendors are supported and that's it.
->>>>>>
->>>>>> I'm not sure about why it would make it harder for new vendors? I think
->>>>>> the opposite,
->>>>>
->>>>> TBH I'm only replying to the email because of the above part :)
->>>>> I thought this would be self evident, but I guess our perspectives
->>>>> are different.
->>>>>
->>>>> Perhaps you look at it from the perspective of SW running on someone
->>>>> else's cloud, an being able to move to another cloud, without having
->>>>> to worry if feature X is available in xdp or just skb.
->>>>>
->>>>> I look at it from the perspective of maintaining a cloud, with people
->>>>> writing random XDP applications. If I swap a NIC from an incumbent to a
->>>>> (superior) startup, and cloud users are messing with raw descriptor -
->>>>> I'd need to go find every XDP program out there and make sure it
->>>>> understands the new descriptors.
->>>>
->>>> Here is another perspective:
->>>>
->>>> As AF_XDP application developer I don't wan't to deal with the
->>>> underlying hardware in detail. I like to request a feature from the OS
->>>> (in this case rx/tx timestamping). If the feature is available I will
->>>> simply use it, if not I might have to work around it - maybe by falling
->>>> back to SW timestamping.
->>>>
->>>> All parts of my application (BPF program included) should not be
->>>> optimized/adjusted for all the different HW variants out there.
->>>
->>> Yes, absolutely agreed. Abstracting away those kinds of hardware
->>> differences is the whole *point* of having an OS/driver model. I.e.,
->>> it's what the kernel is there for! If people want to bypass that and get
->>> direct access to the hardware, they can already do that by using DPDK.
->>>
->>> So in other words, 100% agreed that we should not expect the BPF
->>> developers to deal with hardware details as would be required with a
->>> kptr-based interface.
->>>
->>> As for the kfunc-based interface, I think it shows some promise.
->>> Exposing a list of function names to retrieve individual metadata items
->>> instead of a struct layout is sorta comparable in terms of developer UI
->>> accessibility etc (IMO).
->>
->> Looks like there are quite some use cases for hw_timestamp.
->> Do you think we could add it to the uapi like struct xdp_md?
->>
->> The following is the current xdp_md:
->> struct xdp_md {
->>           __u32 data;
->>           __u32 data_end;
->>           __u32 data_meta;
->>           /* Below access go through struct xdp_rxq_info */
->>           __u32 ingress_ifindex; /* rxq->dev->ifindex */
->>           __u32 rx_queue_index;  /* rxq->queue_index  */
->>
->>           __u32 egress_ifindex;  /* txq->dev->ifindex */
->> };
->>
->> We could add  __u64 hw_timestamp to the xdp_md so user
->> can just do xdp_md->hw_timestamp to get the value.
->> xdp_md->hw_timestamp == 0 means hw_timestamp is not
->> available.
->>
->> Inside the kernel, the ctx rewriter can generate code
->> to call driver specific function to retrieve the data.
-> 
-> If the driver generates the code to retrieve the data, how's that
-> different from the kfunc approach?
-> The only difference I see is that it would be a more strong UAPI than
-> the kfuncs?
+On Tue, 2022-11-01 at 17:08 +0000, Alan Maguire wrote:
+> On 31/10/2022 15:49, Eduard Zingerman wrote:
+> > On Thu, 2022-10-27 at 15:07 -0700, Andrii Nakryiko wrote:
+> > > On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> =
+wrote:
+> > [...]=20
+> > > > +
+> > > > +/*
+> > > > + * Collect a `name_off_map` that maps type names to type ids for a=
+ll
+> > > > + * canonical structs and unions. If the same name is shared by sev=
+eral
+> > > > + * canonical types use a special value 0 to indicate this fact.
+> > > > + */
+> > > > +static int btf_dedup_fill_unique_names_map(struct btf_dedup *d, st=
+ruct hashmap *names_map)
+> > > > +{
+> > > > +       int i, err =3D 0;
+> > > > +       __u32 type_id, collision_id;
+> > > > +       __u16 kind;
+> > > > +       struct btf_type *t;
+> > > > +
+> > > > +       for (i =3D 0; i < d->btf->nr_types; i++) {
+> > > > +               type_id =3D d->btf->start_id + i;
+> > > > +               t =3D btf_type_by_id(d->btf, type_id);
+> > > > +               kind =3D btf_kind(t);
+> > > > +
+> > > > +               if (kind !=3D BTF_KIND_STRUCT && kind !=3D BTF_KIND=
+_UNION)
+> > > > +                       continue;
+> > >=20
+> > > let's also do ENUM FWD resolution. ENUM FWD is just ENUM with vlen=3D=
+0
+> >=20
+> > Interestingly this is necessary only for mixed enum / enum64 case.
+> > Forward enum declarations are resolved by bpf/btf.c:btf_dedup_prim_type=
+:
+> >=20
+>=20
+> Ah, great catch! A forward can look like an enum to one CU but another CU=
+ can
+> specify values that make it an enum64.
+>=20
+> > 	case BTF_KIND_ENUM:
+> > 		h =3D btf_hash_enum(t);
+> > 		for_each_dedup_cand(d, hash_entry, h) {
+> > 			cand_id =3D (__u32)(long)hash_entry->value;
+> > 			cand =3D btf_type_by_id(d->btf, cand_id);
+> > 			if (btf_equal_enum(t, cand)) {
+> > 				new_id =3D cand_id;
+> > 				break;
+> > 			}
+> > 			if (btf_compat_enum(t, cand)) {
+> > 				if (btf_is_enum_fwd(t)) {
+> > 					/* resolve fwd to full enum */
+> > 					new_id =3D cand_id;
+> > 					break;
+> > 				}
+> > 				/* resolve canonical enum fwd to full enum */
+> > 				d->map[cand_id] =3D type_id;
+> > 			}
+> > 		}
+> > 		break;
+> >     // ... similar logic for ENUM64 ...
+> >=20
+> > - btf_hash_enum ignores vlen when hashing;
+> > - btf_compat_enum compares only names and sizes.
+> >=20
+> > So, if forward and main declaration kinds match (either BTF_KIND_ENUM
+> > or BTF_KIND_ENUM64) the forward declaration would be removed. But if
+> > the kinds are different the forward declaration would remain. E.g.:
+> >=20
+> > CU #1:
+> > enum foo;
+> > enum foo *a;
+> >=20
+> > CU #2:
+> > enum foo { x =3D 0xfffffffff };
+> > enum foo *b;
+> >=20
+> > BTF:
+> > [1] ENUM64 'foo' encoding=3DUNSIGNED size=3D8 vlen=3D1
+> > 	'x' val=3D68719476735ULL
+> > [2] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 encod=
+ing=3D(none)
+> > [3] PTR '(anon)' type_id=3D1
+> > [4] ENUM 'foo' encoding=3DUNSIGNED size=3D4 vlen=3D0
+> > [5] PTR '(anon)' type_id=3D4
+> >=20
+> > BTF_KIND_FWDs are unified during btf_dedup_struct_types but enum
+> > forward declarations are not. So it would be incorrect to add enum
+> > forward declaration unification logic to btf_dedup_resolve_fwds,
+> > because the following case would not be covered:
+> >=20
+> > CU #1:
+> > enum foo;
+> > struct s { enum foo *a; } *a;
+> >=20
+> > CU #2:
+> > enum foo { x =3D 0xfffffffff };
+> > struct s { enum foo *a; } *b;
+> >=20
+> > Currently STRUCTs 's' are not de-duplicated.
+> >=20
+>=20
+> What if CU#1 is in base BTF and CU#2 in split module BTF? I think we'd ex=
+plicitly
+> want to avoid deduping "struct s" then since we can't be sure that it is =
+the
+> same enum they are pointing at.  That's the logic we employ for structs a=
+t=20
+> least, based upon the rationale that we can't feed back knowledge of type=
+s
+> from module to kernel BTF since the latter is now fixed (Andrii, do corre=
+ct me
+> if I have this wrong). In such a case the enum is no longer standalone; i=
+t
+> serves the purpose of allowing us to define a pointer to a module-specifi=
+c
+> type. We recently found some examples of this sort of thing with structs,
+> where the struct was defined in module BTF, making dedup fail for some co=
+re
+> kernel data types, but the problem was restricted to modules which _did_
+> define the type so wasn't a major driver of dedup failures. Not sure if
+> there's many (any?) enum cases of this in practice.
 
-Another thing may be worth considering, some hints for some HW/driver may be 
-harder (or may not worth) to unroll/inline.  For example, I see driver is doing 
-spin_lock_bh while getting the hwtstamp.  For this case, keep calling a kfunc 
-and avoid the unroll/inline may be the right thing to do.
+Hi Alan,
 
-> 
->> The kfunc approach can be used to *less* common use cases?
-> 
-> What's the advantage of having two approaches when one can cover
-> common and uncommon cases?
-> 
->>> There are three main drawbacks, AFAICT:
->>>
->>> 1. It requires driver developers to write and maintain the code that
->>> generates the unrolled BPF bytecode to access the metadata fields, which
->>> is a non-trivial amount of complexity. Maybe this can be abstracted away
->>> with some internal helpers though (like, e.g., a
->>> bpf_xdp_metadata_copy_u64(dst, src, offset) helper which would spit out
->>> the required JMP/MOV/LDX instructions?
->>>
->>> 2. AF_XDP programs won't be able to access the metadata without using a
->>> custom XDP program that calls the kfuncs and puts the data into the
->>> metadata area. We could solve this with some code in libxdp, though; if
->>> this code can be made generic enough (so it just dumps the available
->>> metadata functions from the running kernel at load time), it may be
->>> possible to make it generic enough that it will be forward-compatible
->>> with new versions of the kernel that add new fields, which should
->>> alleviate Florian's concern about keeping things in sync.
->>>
->>> 3. It will make it harder to consume the metadata when building SKBs. I
->>> think the CPUMAP and veth use cases are also quite important, and that
->>> we want metadata to be available for building SKBs in this path. Maybe
->>> this can be resolved by having a convenient kfunc for this that can be
->>> used for programs doing such redirects. E.g., you could just call
->>> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
->>> would recursively expand into all the kfunc calls needed to extract the
->>> metadata supported by the SKB path?
->>>
->>> -Toke
->>>
+As far as I understand the loop in `btf_dedup_prim_types` guarantees
+that only ids from the split module would be remapped:
+
+	struct btf {
+    	...
+		/* BTF type ID of the first type in this BTF instance:
+		 *   - for base BTF it's equal to 1;
+		 *   - for split BTF it's equal to biggest type ID of base BTF plus 1.
+		 */
+		int start_id;
+    	...
+	}
+
+    ...
+	for (i =3D 0; i < d->btf->nr_types; i++) {
+		err =3D btf_dedup_prim_type(d, d->btf->start_id + i);
+		if (err)
+			return err;
+	}
+
+Thus CU1:foo won't be updated to be CU2:foo and CU1:s will not be the
+same as CU2:s. Is that right or am I confused?
+
+Thanks,
+Eduard
+
+>=20
+> I suppose if we could guarantee the dedup happened within the same object
+> (kernel or module) we could relax this constraint though?
+>=20
+> Alan
 
