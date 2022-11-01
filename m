@@ -2,33 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF99614BFE
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 14:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077D5614C1A
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 14:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiKANrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 09:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S230088AbiKANwb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 09:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiKANrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 09:47:09 -0400
+        with ESMTP id S230115AbiKANw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 09:52:28 -0400
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E68DF9A;
-        Tue,  1 Nov 2022 06:47:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A681409C;
+        Tue,  1 Nov 2022 06:52:24 -0700 (PDT)
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1oprbT-000Bjd-Nz; Tue, 01 Nov 2022 14:46:55 +0100
+        id 1oprgf-000DGm-DE; Tue, 01 Nov 2022 14:52:17 +0100
 Received: from [85.1.206.226] (helo=linux.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1oprbT-000CPs-6k; Tue, 01 Nov 2022 14:46:55 +0100
-Subject: Re: [PATCH bpf-next v2 1/3] bpf/verifier: Fix potential memory leak
- in array reallocation
-To:     Bill Wendling <morbo@google.com>, Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id 1oprge-000Jkk-Tx; Tue, 01 Nov 2022 14:52:17 +0100
+Subject: Re: [PATCH bpf-next v2 2/3] bpf/verifier: Use kmalloc_size_roundup()
+ to match ksize() usage
+To:     Kees Cook <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
@@ -36,19 +36,16 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Lorenz Bauer <oss@lmb.io>
+        linux-hardening@vger.kernel.org
 References: <20221029024444.gonna.633-kees@kernel.org>
- <20221029025433.2533810-1-keescook@chromium.org>
- <CAGG=3QXYVwQ5pwARdGTenm-mDQn4Tcz6U-=EZ8BDcwBkM5bFfg@mail.gmail.com>
+ <20221029025433.2533810-2-keescook@chromium.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2c6203ac-de2a-607e-0589-0a69f91e0479@iogearbox.net>
-Date:   Tue, 1 Nov 2022 14:46:54 +0100
+Message-ID: <da0959e7-a91c-ab4c-56be-3c3cd280e592@iogearbox.net>
+Date:   Tue, 1 Nov 2022 14:52:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAGG=3QXYVwQ5pwARdGTenm-mDQn4Tcz6U-=EZ8BDcwBkM5bFfg@mail.gmail.com>
+In-Reply-To: <20221029025433.2533810-2-keescook@chromium.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -63,68 +60,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ +Lorenz ]
-
-On 10/31/22 9:16 PM, Bill Wendling wrote:
-> On Fri, Oct 28, 2022 at 7:55 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> If an error (NULL) is returned by krealloc(), callers of realloc_array()
->> were setting their allocation pointers to NULL, but on error krealloc()
->> does not touch the original allocation. This would result in a memory
->> resource leak. Instead, free the old allocation on the error handling
->> path.
->>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: John Fastabend <john.fastabend@gmail.com>
->> Cc: Andrii Nakryiko <andrii@kernel.org>
->> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> Cc: Song Liu <song@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: KP Singh <kpsingh@kernel.org>
->> Cc: Stanislav Fomichev <sdf@google.com>
->> Cc: Hao Luo <haoluo@google.com>
->> Cc: Jiri Olsa <jolsa@kernel.org>
->> Cc: bpf@vger.kernel.org
->> Signed-off-by: Kees Cook <keescook@chromium.org>
+On 10/29/22 4:54 AM, Kees Cook wrote:
+> Round up allocations with kmalloc_size_roundup() so that the verifier's
+> use of ksize() is always accurate and no special handling of the memory
+> is needed by KASAN, UBSAN_BOUNDS, nor FORTIFY_SOURCE. Pass the new size
+> information back up to callers so they can use the space immediately,
+> so array resizing to happen less frequently as well.
 > 
-> Reviewed-by: Bill Wendling <morbo@google.com>
+[...]
+
+The commit message is a bit cryptic here without further context. Is this
+a bug fix or improvement? I read the latter, but it would be good to have
+more context here for reviewers (maybe Link tag pointing to some discussion
+or the like). Also, why is the kmalloc_size_roundup() not hidden for kmalloc
+callers, isn't this a tree-wide issue?
+
+Thanks,
+Daniel
+
+>   kernel/bpf/verifier.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
 > 
->> ---
->>   kernel/bpf/verifier.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 014ee0953dbd..eb8c34db74c7 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -1027,12 +1027,17 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
->>    */
->>   static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
->>   {
->> +       void *new_arr;
->> +
->>          if (!new_n || old_n == new_n)
->>                  goto out;
->>
->> -       arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
->> -       if (!arr)
->> +       new_arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
->> +       if (!new_arr) {
->> +               kfree(arr);
->>                  return NULL;
->> +       }
->> +       arr = new_arr;
-
-Fyi, I took this fix into bpf tree and improved commit log a bit with the
-one from Zhengchao [0] given yours came in first. Fixes tag would have been
-nice, I added the c69431aab67a to the commit message while applying.
-
-   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20221031070812.339883-1-shaozhengchao@huawei.com/
-
->>          if (new_n > old_n)
->>                  memset(arr + old_n * size, 0, (new_n - old_n) * size);
->> --
->> 2.34.1
->>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index eb8c34db74c7..1c040d27b8f6 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1008,9 +1008,9 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+>   	if (unlikely(check_mul_overflow(n, size, &bytes)))
+>   		return NULL;
+>   
+> -	if (ksize(dst) < bytes) {
+> +	if (ksize(dst) < ksize(src)) {
+>   		kfree(dst);
+> -		dst = kmalloc_track_caller(bytes, flags);
+> +		dst = kmalloc_track_caller(kmalloc_size_roundup(bytes), flags);
+>   		if (!dst)
+>   			return NULL;
+>   	}
+> @@ -1027,12 +1027,14 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+>    */
+>   static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
+>   {
+> +	size_t alloc_size;
+>   	void *new_arr;
+>   
+>   	if (!new_n || old_n == new_n)
+>   		goto out;
+>   
+> -	new_arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
+> +	alloc_size = kmalloc_size_roundup(size_mul(new_n, size));
+> +	new_arr = krealloc(arr, alloc_size, GFP_KERNEL);
+>   	if (!new_arr) {
+>   		kfree(arr);
+>   		return NULL;
+> @@ -2504,9 +2506,11 @@ static int push_jmp_history(struct bpf_verifier_env *env,
+>   {
+>   	u32 cnt = cur->jmp_history_cnt;
+>   	struct bpf_idx_pair *p;
+> +	size_t alloc_size;
+>   
+>   	cnt++;
+> -	p = krealloc(cur->jmp_history, cnt * sizeof(*p), GFP_USER);
+> +	alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
+> +	p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
+>   	if (!p)
+>   		return -ENOMEM;
+>   	p[cnt - 1].idx = env->insn_idx;
+> 
 
