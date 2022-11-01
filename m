@@ -2,121 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0026142B4
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 02:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515B9614300
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 03:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbiKABLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Oct 2022 21:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S229597AbiKAB76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Oct 2022 21:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbiKABLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Oct 2022 21:11:09 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D276596;
-        Mon, 31 Oct 2022 18:11:07 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N1X1f1mgszpVqQ;
-        Tue,  1 Nov 2022 09:07:34 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 1 Nov 2022 09:11:05 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>
-Subject: [PATCH net v3] bpf, sockmap: fix the sk->sk_forward_alloc warning of sk_stream_kill_queues()
-Date:   Tue, 1 Nov 2022 09:31:36 +0800
-Message-ID: <1667266296-8794-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S229475AbiKAB75 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Oct 2022 21:59:57 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6388511813
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 18:59:56 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id h206so7801537iof.10
+        for <bpf@vger.kernel.org>; Mon, 31 Oct 2022 18:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tz2IvL4GW+A3brfA0AhzvjM7rEyd8FHY7/DmEU+TeH0=;
+        b=T7WFWydh0LD3vChB+GqXb24P/X7ei44KzKvR+TqHO0dBFvi1ARAMzt/YdIkeyK5D0B
+         6SpyKlYkdBkTL+ptY4jMEbHc8Z2nBKaFn2Kkny8zJ6VG3WVZeE8EIkTGPP+Y+/dAJiN9
+         B5d9kgTK45V9q7DumxvznM0dMrK9k7b/YNdzR0kCpNl1NcSA1uIJ2PFskkhzdfcriAC7
+         cTysy9ebws1XNyQluguVdoeKSDhL+Ll6HPXVJa0d0kIgMVNSGdioRezPNB+Dgzpez9DP
+         1cgJIpCoSa9DrLsvVlRsKc96vLaNdva8AHLt2u18+xRBNSH38thtssS/YYKp98VGAdm9
+         IdBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tz2IvL4GW+A3brfA0AhzvjM7rEyd8FHY7/DmEU+TeH0=;
+        b=NZCZHbAe5tuut2iVIp/2fnAmOrTT9dmpvtCTdjVR++pkBS5znE+3DXKRnPVGjG5mP8
+         SCziHaQn1pXrkcRGjFnMEvkb3PT8A1l2yz9TsmF6hH8wXsvoW1Dqv2cR+/i2DI0MIXGw
+         yw3XdvTfD7CTo97mH/jTK1gt85duz4q7zYesoPTrA5DtaS1d/LP8Gm85EqdeByihB2jN
+         +cHzQaFseKxOpyUbnYXes77PaEye0NJa5JTYaMU+JkOlyC4VIa6Q++VBpJ4oZtHqRE9r
+         INvQr6YLFxQmac8rLIRS60JlEiOyT1q9pGOkdMm268lvp9Nx0wVuPQxkyOwQRWKIkb8P
+         n3Vg==
+X-Gm-Message-State: ACrzQf10zbcHnKGY21Vfw/u+g4lqggX1+MW1sv2C9H1J8XBRR47MI3s0
+        pEgFc934j21mKLh8Qc6E4hpy2or8XAMR6RHkn0VxCw==
+X-Google-Smtp-Source: AMsMyM50fMCh4OLS6CKka+IBqOHJTMPLVNjRYGU0Vk4PSoQ7dXSO1vU905rE0hcc/k1KpEbbppvxgUw01IoBR3QG3LY=
+X-Received: by 2002:a02:ad18:0:b0:372:e2a5:3a54 with SMTP id
+ s24-20020a02ad18000000b00372e2a53a54mr40880jan.106.1667267995551; Mon, 31 Oct
+ 2022 18:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221027200019.4106375-1-sdf@google.com> <635bfc1a7c351_256e2082f@john.notmuch>
+ <20221028110457.0ba53d8b@kernel.org> <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
+ <635c62c12652d_b1ba208d0@john.notmuch> <20221028181431.05173968@kernel.org>
+ <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
+ <875yg057x1.fsf@toke.dk> <CAKH8qBvQbgE=oSZoH4xiLJmqMSXApH-ufd-qEKGKD8=POfhrWQ@mail.gmail.com>
+ <77b115a0-bbba-48eb-89bd-3078b5fb7eeb@linux.dev>
+In-Reply-To: <77b115a0-bbba-48eb-89bd-3078b5fb7eeb@linux.dev>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 31 Oct 2022 18:59:44 -0700
+Message-ID: <CAKH8qBsGB1G60cu91Au816gsB2zF8T0P-yDwxbTEOxX0TN3WgA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
+        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
+        "song@kernel.org" <song@kernel.org>,
+        "Deric, Nemanja" <nemanja.deric@siemens.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "Kiszka, Jan" <jan.kiszka@siemens.com>,
+        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
+        "willemb@google.com" <willemb@google.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>, "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "mtahhan@redhat.com" <mtahhan@redhat.com>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "haoluo@google.com" <haoluo@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When running `test_sockmap` selftests, got the following warning:
+On Mon, Oct 31, 2022 at 3:57 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 10/31/22 10:00 AM, Stanislav Fomichev wrote:
+> >> 2. AF_XDP programs won't be able to access the metadata without using a
+> >> custom XDP program that calls the kfuncs and puts the data into the
+> >> metadata area. We could solve this with some code in libxdp, though; if
+> >> this code can be made generic enough (so it just dumps the available
+> >> metadata functions from the running kernel at load time), it may be
+> >> possible to make it generic enough that it will be forward-compatible
+> >> with new versions of the kernel that add new fields, which should
+> >> alleviate Florian's concern about keeping things in sync.
+> >
+> > Good point. I had to convert to a custom program to use the kfuncs :-(
+> > But your suggestion sounds good; maybe libxdp can accept some extra
+> > info about at which offset the user would like to place the metadata
+> > and the library can generate the required bytecode?
+> >
+> >> 3. It will make it harder to consume the metadata when building SKBs. I
+> >> think the CPUMAP and veth use cases are also quite important, and that
+> >> we want metadata to be available for building SKBs in this path. Maybe
+> >> this can be resolved by having a convenient kfunc for this that can be
+> >> used for programs doing such redirects. E.g., you could just call
+> >> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
+> >> would recursively expand into all the kfunc calls needed to extract the
+> >> metadata supported by the SKB path?
+> >
+> > So this xdp_copy_metadata_for_skb will create a metadata layout that
+>
+> Can the xdp_copy_metadata_for_skb be written as a bpf prog itself?
+> Not sure where is the best point to specify this prog though.  Somehow during
+> bpf_xdp_redirect_map?
+> or this prog belongs to the target cpumap and the xdp prog redirecting to this
+> cpumap has to write the meta layout in a way that the cpumap is expecting?
 
-WARNING: CPU: 2 PID: 197 at net/core/stream.c:205 sk_stream_kill_queues+0xd3/0xf0
-Call Trace:
-  <TASK>
-  inet_csk_destroy_sock+0x55/0x110
-  tcp_rcv_state_process+0xd28/0x1380
-  ? tcp_v4_do_rcv+0x77/0x2c0
-  tcp_v4_do_rcv+0x77/0x2c0
-  __release_sock+0x106/0x130
-  __tcp_close+0x1a7/0x4e0
-  tcp_close+0x20/0x70
-  inet_release+0x3c/0x80
-  __sock_release+0x3a/0xb0
-  sock_close+0x14/0x20
-  __fput+0xa3/0x260
-  task_work_run+0x59/0xb0
-  exit_to_user_mode_prepare+0x1b3/0x1c0
-  syscall_exit_to_user_mode+0x19/0x50
-  do_syscall_64+0x48/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
+We're probably interested in triggering it from the places where xdp
+frames can eventually be converted into skbs?
+So for plain 'return XDP_PASS' and things like bpf_redirect/etc? (IOW,
+anything that's not XDP_DROP / AF_XDP redirect).
+We can probably make it magically work, and can generate
+kernel-digestible metadata whenever data == data_meta, but the
+question - should we?
+(need to make sure we won't regress any existing cases that are not
+relying on the metadata)
 
-The root case is: In commit 84472b436e76 ("bpf, sockmap: Fix more
-uncharged while msg has more_data") , I used msg->sg.size replace
-tosend rudely, which break the scene:
-  if (msg->apply_bytes && msg->apply_bytes < tosend)
-  	tosend = psock->apply_bytes;
 
-Fixes: 84472b436e76 ("bpf, sockmap: Fix more uncharged while msg has more_data")
-Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
----
-v2 -> v3: rename orgsize to origsize, and commit msg fix.
-v1 -> v2: typo fixup
- net/ipv4/tcp_bpf.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index a1626af..f8b12b9 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -278,7 +278,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
- {
- 	bool cork = false, enospc = sk_msg_full(msg);
- 	struct sock *sk_redir;
--	u32 tosend, delta = 0;
-+	u32 tosend, origsize, sent, delta = 0;
- 	u32 eval = __SK_NONE;
- 	int ret;
- 
-@@ -333,10 +333,12 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
- 			cork = true;
- 			psock->cork = NULL;
- 		}
--		sk_msg_return(sk, msg, msg->sg.size);
-+		sk_msg_return(sk, msg, tosend);
- 		release_sock(sk);
- 
-+		origsize = msg->sg.size;
- 		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
-+		sent = origsize - msg->sg.size;
- 
- 		if (eval == __SK_REDIRECT)
- 			sock_put(sk_redir);
-@@ -375,7 +377,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
- 		    msg->sg.data[msg->sg.start].page_link &&
- 		    msg->sg.data[msg->sg.start].length) {
- 			if (eval == __SK_REDIRECT)
--				sk_mem_charge(sk, msg->sg.size);
-+				sk_mem_charge(sk, tosend - sent);
- 			goto more_data;
- 		}
- 	}
--- 
-1.8.3.1
 
+
+
+> > the kernel will be able to understand when converting back to skb?
+> > IIUC, the xdp program will look something like the following:
+> >
+> > if (xdp packet is to be consumed by af_xdp) {
+> >    // do a bunch of bpf_xdp_metadata_<metadata> calls and assemble your
+> > own metadata layout
+> >    return bpf_redirect_map(xsk, ...);
+> > } else {
+> >    // if the packet is to be consumed by the kernel
+> >    xdp_copy_metadata_for_skb(ctx);
+> >    return bpf_redirect(...);
+> > }
+> >
+> > Sounds like a great suggestion! xdp_copy_metadata_for_skb can maybe
+> > put some magic number in the first byte(s) of the metadata so the
+> > kernel can check whether xdp_copy_metadata_for_skb has been called
+> > previously (or maybe xdp_frame can carry this extra signal, idk).
