@@ -2,207 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A597D6151CD
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 19:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CA4615223
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 20:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbiKASxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 14:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S230451AbiKATSL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 15:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbiKASxL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 14:53:11 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED411D660;
-        Tue,  1 Nov 2022 11:53:09 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 21so23110582edv.3;
-        Tue, 01 Nov 2022 11:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yQ7/MwAQn4LrD4Cf9RqJ2+ZX45LUaYFp5K5tPUEtopc=;
-        b=CZygNYllInTMzzqdHiFTJOLrkjxTQgO1oQpuU+yG/Fw3VBPhuP0ceXjWxu8kChGduR
-         fqoTqd6VAL1EQRLZQ4MK0QChp5USOBCwR+P4aWf0CUDCpDsIMtioht+Ys1bHkOr3XZTq
-         rYq32ODtMzjhUAAYGglasgB85wad2W4smQhN0wyxM1XS7lw7JJLEK1Js0jamImBd/OJ/
-         5xo2VyQ/B/5OwC7g7z/RJrJZlTvaUD7eM8CcC/zl8UDhfXVy7MOZe0z7PWwzO0ZqR/Xw
-         3hmX0MDaRR3l5Yyzqcl3+EWMrYp5qSoirBxw4sjHT0/QFv+kvvIuIJiKvnxW9vsVfZ+R
-         PhzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yQ7/MwAQn4LrD4Cf9RqJ2+ZX45LUaYFp5K5tPUEtopc=;
-        b=NimcRsmeVUvNFumwSNkspAJLr4UNcAWW9FvmICvOQ0nn0O1WhWkU+Jx9v0vgeVHrms
-         6dm8/0dIzPWgW7/cnMYH0M+KWctRbgEsUhPwP+Uk7vRmGWycsaN9vBJui6pE2YFFYO9Q
-         WBedBjKoRYWh532M1mfnYk/RsUk/CjYADr/PJg4B1vRK/X+lBhoB3lHjg9MkEi7Gpwax
-         AK8ntU3FhUuadCSzOe/DS3d58EpWEdjLfKrMhmJuAlTUh50N8sLi7/RK4tFIOA59ThCw
-         ePqoxwW9GGXjod2pwps8BoLfI5sZCP1ypB70ADrIEKf5b7JB7+/GiI18k6qk65HT0WL7
-         7Hjw==
-X-Gm-Message-State: ACrzQf3F39CP2ZPxg5eTWyMmgM7f6jjvM7lu2GJ3DD7n+o3egvrm0Fyn
-        vlaPhxMAAO8NOjyn9CwBEGc2UI9V28ivGH46sDA=
-X-Google-Smtp-Source: AMsMyM4NWTcwa6GoOT/IG73obE/jQ6ZPCtMq7hwJI8TVjbfrYopO5y4KbfIIOZ2nPTKTMxHQ+eZTTqse6EjRNmXOdp8=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr20659134edb.333.1667328788216; Tue, 01
- Nov 2022 11:53:08 -0700 (PDT)
+        with ESMTP id S229974AbiKATSH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 15:18:07 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2077.outbound.protection.outlook.com [40.107.92.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F5B1EAEE;
+        Tue,  1 Nov 2022 12:17:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lg+k2A5AJ4X6h04pD1emr4BPqXxGi+wfenXOmob4/Mzx+D7XmK2+dyqoW71w3cegAqZkW3f32AQ7xZacEsGePvUTSZ9SJjFROBNyfu3nL6Ta2xuUWF6ka+MrSxZgsVydVq9DasUo2URoceLXqGvFPT5VNCTn6kvdLkB5Q9Kw9vQEpSRa2G4zITHloke2OkxVsak7MafPgSHmIuFYj5zu3Xs27s+8N4sTlST8WB4o7IZHHOmgj3dJc+1OjOFZjKIflug3NKYqppqBrvJNDAkQQ/LkjFMVDaMHLeBf1stJOArSRTqK7wufcxKSft3LwOfSi2D5sXgl3DX6sIW0y9HeUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Hj5W3rVaIU0gFrNM3j1dhZkA3BpedesQsKz9UiGNqM=;
+ b=KxMVFBfayUb4T/WZcKX02fn3WE8eYv28vcBYs777//uR22aBsImdtsVIvzuDPq4LOmXkMQnZeQXe4eeajXCpdBrVtrTS6iq4H2OVgI7TaE7hst+QXsOLFnd1wgT2r4TfjKHyDIzwBei7Kfag+2GnEz5ZqiXAMN9PCiwQKa4UHGDa//YyBr4ZUIi5z2t3VjhZPXJmqlxd0ylIIEx2BVbZCscQF74x6/v4aqrTiaKFV3XiNKSJvSGruJ9yhSiBPVDToEIbYBfgeaUSYmAmq49gRDDE0lygzXezttC3rDIsB1eqs8KfBK/+usnaBg6GyjrnrMAirL567N9x31Lj2PqJJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2Hj5W3rVaIU0gFrNM3j1dhZkA3BpedesQsKz9UiGNqM=;
+ b=BEm7tvIcTK6gSFWjmJ0qJLfZ/vRzTA1le9yjIwf0vFkRLHdVwQJiQZT+5pbyBDL4eqGjOODMpuMjusxu2sNqydG0Xee+yea1PUeM5bcu0fKN+a7Y9SQsTPSfUFDPJQGO8fu4Ls14iWZnTbAdxjnPvoA9B4Uf3AFIDFBNuQ9x2SZd5V6nD3YuxiQoEpGAiStcRdgLc73zakdMSbabY3FAEYfDbvdvGWKNo62N/aLwVlGCvTefjaVdByBpqrfz3DYgUKXllYIHmkr0hOrgO8+HpRYis5VSHdgkT/ODXaSaOeUDAP3T88COqolzd7lVj03tDsZ95XpsdM6UtgNoYPkBiw==
+Received: from BN0PR04CA0130.namprd04.prod.outlook.com (2603:10b6:408:ed::15)
+ by BY5PR12MB4098.namprd12.prod.outlook.com (2603:10b6:a03:205::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15; Tue, 1 Nov
+ 2022 19:17:47 +0000
+Received: from BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ed:cafe::ad) by BN0PR04CA0130.outlook.office365.com
+ (2603:10b6:408:ed::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.21 via Frontend
+ Transport; Tue, 1 Nov 2022 19:17:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BN8NAM11FT094.mail.protection.outlook.com (10.13.176.131) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5791.20 via Frontend Transport; Tue, 1 Nov 2022 19:17:46 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Tue, 1 Nov 2022
+ 12:17:33 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.29; Tue, 1 Nov 2022 12:17:32 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29 via Frontend
+ Transport; Tue, 1 Nov 2022 12:17:30 -0700
+Date:   Tue, 1 Nov 2022 12:17:29 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Lu Baolu <baolu.lu@linux.intel.com>, <bpf@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, <linux-doc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        "Jason Wang" <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        <kvm@vger.kernel.org>, "Matthew Rosato" <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Keqian Zhu" <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 09/15] iommufd: Data structure to provide IOVA to PFN
+ mapping
+Message-ID: <Y2FwydZzhcQ2vpdU@Asurada-Nvidia>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <9-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
 MIME-Version: 1.0
-References: <20221101052340.1210239-1-namhyung@kernel.org> <20221101052340.1210239-3-namhyung@kernel.org>
- <Y2DuzmnUm6NIh25a@krava> <CAADnVQJ6+N6vQ=ZUgUjoB_M2RoTGGPXpLwz81mNDmLWrGYKetw@mail.gmail.com>
- <CAPhsuW6iuEZCCYJk-cra8DkEWNtdin8GyJDZ6Y8zd4ecfd1gQA@mail.gmail.com>
-In-Reply-To: <CAPhsuW6iuEZCCYJk-cra8DkEWNtdin8GyJDZ6Y8zd4ecfd1gQA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Nov 2022 11:52:56 -0700
-Message-ID: <CAADnVQ+SYv5O+UxnGaBAvxptopWyANdbQRg=e2GXiRBPyJMGgA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
-To:     Song Liu <song@kernel.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT094:EE_|BY5PR12MB4098:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1f66620-a4e7-4680-c37c-08dabc3dc251
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XHltHxwgGfDR2GhX7Qh1bqvq9yawPePAYkbWYh1vac8T6Fyv3424gr10XIQc2LOSiPdk62VRGhoBc/Cgo4zFh1ElmXDIhOk9HIcKK1OdhpAoQ806LJ/Ra/gr2nPI0E7qwWqM0XfcRE5cv/Eo2iF7wUjIaVh8/6v/4EhfI7yM+8ox4H0tokV5VZg1X5oT4KsqtHavUNmKFPceZr5v5nArhpy5BADTv6PbV4fd1DelZy45MALPQ9K1Wrr+YJdBS64tiOx5KPw07CIiom/07Z3yPvkZphTpkzbq7F8R0wJ4v0iJbZHweoqrAtzNa6P3+2r90b1fO3bOfFHZHtnmSQgzpvuU2P/jkWsPBogPsVr+X1LKypgoIRmnfrK5VXy+3KldzVJpRQYaoObqN0rJ4DV8+PKjQrk2Ca2CRxYHplsuf/h16NpJhfpdDexAylkZwC1aEov1qQDcKh9gLg21IA/aL1VMEl+NFpAe7Sy2Wn5U1I0oUihoRap0ao0KdwdflzrqlL7WGZGUBBTp9EHKik19kzYtY0DbxSNt0Np52OsnpTWY+3pniDz/M0hZWKwcPjlQyBr/bRYoNpTPaeVuH0GXCBrUaJZCkwVJkhWDli95EeB2eNt642YnGK/WsOgczRthKMrQWaiZoC89Nr9kYbAdRhK0SZpO2CFBGadanYK/ZymAhZzAgHtjJOlxCUjt0Rm4/pD8wFsP5zFnCO9bSJsEPxj6Ucfn7RGTYD5HKqJQ9wnZj1b3SnMPQBvAoZWmSq5K5HQrcrZacScTRrtZGTnx7A==
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(39860400002)(346002)(136003)(451199015)(46966006)(36840700001)(40470700004)(47076005)(7636003)(356005)(36860700001)(426003)(9686003)(4744005)(86362001)(7416002)(7406005)(2906002)(5660300002)(8676002)(70206006)(6636002)(8936002)(336012)(4326008)(41300700001)(82310400005)(26005)(6862004)(70586007)(33716001)(54906003)(186003)(478600001)(40460700003)(316002)(82740400003)(55016003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2022 19:17:46.3480
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1f66620-a4e7-4680-c37c-08dabc3dc251
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4098
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 11:47 AM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Nov 1, 2022 at 11:26 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Nov 1, 2022 at 3:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 31, 2022 at 10:23:39PM -0700, Namhyung Kim wrote:
-> > > > The bpf_perf_event_read_sample() helper is to get the specified sample
-> > > > data (by using PERF_SAMPLE_* flag in the argument) from BPF to make a
-> > > > decision for filtering on samples.  Currently PERF_SAMPLE_IP and
-> > > > PERF_SAMPLE_DATA flags are supported only.
-> > > >
-> > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > ---
-> > > >  include/uapi/linux/bpf.h       | 23 ++++++++++++++++
-> > > >  kernel/trace/bpf_trace.c       | 49 ++++++++++++++++++++++++++++++++++
-> > > >  tools/include/uapi/linux/bpf.h | 23 ++++++++++++++++
-> > > >  3 files changed, 95 insertions(+)
-> > > >
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 94659f6b3395..cba501de9373 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -5481,6 +5481,28 @@ union bpf_attr {
-> > > >   *           0 on success.
-> > > >   *
-> > > >   *           **-ENOENT** if the bpf_local_storage cannot be found.
-> > > > + *
-> > > > + * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
-> > > > + *   Description
-> > > > + *           For an eBPF program attached to a perf event, retrieve the
-> > > > + *           sample data associated to *ctx* and store it in the buffer
-> > > > + *           pointed by *buf* up to size *size* bytes.
-> > > > + *
-> > > > + *           The *sample_flags* should contain a single value in the
-> > > > + *           **enum perf_event_sample_format**.
-> > > > + *   Return
-> > > > + *           On success, number of bytes written to *buf*. On error, a
-> > > > + *           negative value.
-> > > > + *
-> > > > + *           The *buf* can be set to **NULL** to return the number of bytes
-> > > > + *           required to store the requested sample data.
-> > > > + *
-> > > > + *           **-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
-> > > > + *
-> > > > + *           **-ENOENT** if the associated perf event doesn't have the data.
-> > > > + *
-> > > > + *           **-ENOSYS** if system doesn't support the sample data to be
-> > > > + *           retrieved.
-> > > >   */
-> > > >  #define ___BPF_FUNC_MAPPER(FN, ctx...)                       \
-> > > >       FN(unspec, 0, ##ctx)                            \
-> > > > @@ -5695,6 +5717,7 @@ union bpf_attr {
-> > > >       FN(user_ringbuf_drain, 209, ##ctx)              \
-> > > >       FN(cgrp_storage_get, 210, ##ctx)                \
-> > > >       FN(cgrp_storage_delete, 211, ##ctx)             \
-> > > > +     FN(perf_event_read_sample, 212, ##ctx)          \
-> > > >       /* */
-> > > >
-> > > >  /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-> > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > > index ce0228c72a93..befd937afa3c 100644
-> > > > --- a/kernel/trace/bpf_trace.c
-> > > > +++ b/kernel/trace/bpf_trace.c
-> > > > @@ -28,6 +28,7 @@
-> > > >
-> > > >  #include <uapi/linux/bpf.h>
-> > > >  #include <uapi/linux/btf.h>
-> > > > +#include <uapi/linux/perf_event.h>
-> > > >
-> > > >  #include <asm/tlb.h>
-> > > >
-> > > > @@ -1743,6 +1744,52 @@ static const struct bpf_func_proto bpf_read_branch_records_proto = {
-> > > >       .arg4_type      = ARG_ANYTHING,
-> > > >  };
-> > > >
-> > > > +BPF_CALL_4(bpf_perf_event_read_sample, struct bpf_perf_event_data_kern *, ctx,
-> > > > +        void *, buf, u32, size, u64, flags)
-> > > > +{
-> > >
-> > > I wonder we could add perf_btf (like we have tp_btf) program type that
-> > > could access ctx->data directly without helpers
-> > >
-> > > > +     struct perf_sample_data *sd = ctx->data;
-> > > > +     void *data;
-> > > > +     u32 to_copy = sizeof(u64);
-> > > > +
-> > > > +     /* only allow a single sample flag */
-> > > > +     if (!is_power_of_2(flags))
-> > > > +             return -EINVAL;
-> > > > +
-> > > > +     /* support reading only already populated info */
-> > > > +     if (flags & ~sd->sample_flags)
-> > > > +             return -ENOENT;
-> > > > +
-> > > > +     switch (flags) {
-> > > > +     case PERF_SAMPLE_IP:
-> > > > +             data = &sd->ip;
-> > > > +             break;
-> > > > +     case PERF_SAMPLE_ADDR:
-> > > > +             data = &sd->addr;
-> > > > +             break;
-> > >
-> > > AFAICS from pe_prog_convert_ctx_access you should be able to read addr
-> > > directly from context right? same as sample_period.. so I think if this
-> > > will be generic way to read sample data, should we add sample_period
-> > > as well?
-> >
-> > +1
-> > Let's avoid new stable helpers for this.
-> > Pls use CORE and read perf_sample_data directly.
->
-> We have legacy ways to access sample_period and addr with
-> struct bpf_perf_event_data and struct bpf_perf_event_data_kern. I
-> think mixing that
-> with CORE makes it confusing for the user. And a helper or a kfunc would make it
-> easier to follow. perf_btf might also be a good approach for this.
+On Tue, Oct 25, 2022 at 03:12:18PM -0300, Jason Gunthorpe wrote:
 
-imo that's a counter argument to non-CORE style.
-struct bpf_perf_event_data has sample_period and addr,
-and as soon as we pushed the boundaries it turned out it's not enough.
-Now we're proposing to extend uapi a bit with sample_ip.
-That will repeat the same mistake.
-Just use CORE and read everything that is there today
-and will be there in the future.
+> diff --git a/drivers/iommu/iommufd/io_pagetable.c b/drivers/iommu/iommufd/io_pagetable.c
+> new file mode 100644
+> index 00000000000000..27cbb652ee33cd
+> --- /dev/null
+> +++ b/drivers/iommu/iommufd/io_pagetable.c
+
+> +void iopt_enable_large_pages(struct io_pagetable *iopt)
+> +{
+> +	down_write(&iopt->domains_rwsem);
+> +	down_write(&iopt->iova_rwsem);
+> +	WRITE_ONCE(iopt->disable_large_pages, false);
+> +	iopt_calculate_iova_alignment(iopt);
+
+Coverity reports unchecked return value, perhaps WARN_ON()?
