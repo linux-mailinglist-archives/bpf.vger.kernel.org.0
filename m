@@ -2,147 +2,301 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF75A614CC8
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F7614DF7
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 16:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbiKAOjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 10:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
+        id S230322AbiKAPMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 11:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiKAOjE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 10:39:04 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA57120B8;
-        Tue,  1 Nov 2022 07:39:03 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=chentao.kernel@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VTjllex_1667313533;
-Received: from VM20210331-5.tbsite.net(mailfrom:chentao.kernel@linux.alibaba.com fp:SMTPD_---0VTjllex_1667313533)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Nov 2022 22:39:00 +0800
-From:   Tao Chen <chentao.kernel@linux.alibaba.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tao Chen <chentao.kernel@linux.alibaba.com>
-Subject: [PATCH] bpftool: Support use full prog name in prog subcommand
-Date:   Tue,  1 Nov 2022 22:38:33 +0800
-Message-Id: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
-X-Mailer: git-send-email 2.2.1
-In-Reply-To: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
-References: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231370AbiKAPMD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 11:12:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5552C1004
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 08:06:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D956661617
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 15:06:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E86C433C1
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 15:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667315191;
+        bh=KsYtGllPGvynMCY3GzO/L7I7rZ7vlfjcEUfFT2fvNNk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=teMTWeqxn4Tx4kbgkG+nt7Cc6KENlB6vgsryjnXOwYPyotGcg/INQoLn/xdWf9mjA
+         05ucAyWnetfx25sVVfx/N0Hk8C9Eg9AtHqHc1Sj5iOEhiuxZXkpvYQ12vqVPMXEfY2
+         AKA/WALFGaFnesQtIDJEm8+5Bof9gEoA203GvXYCslXGBte6I9BWcd0MYoW7qwhQH8
+         n3jB1rLQXMCuM4xmF29TjZkOVv+NdE3fq+7WnCDyHmCYQr21m1t+knkB51P8+wlyqI
+         v25yzdde7HTNpr122jgqiTuOCRmXnx+jnd37GwOZKpBt06K7HgTxLWKDIzWL+jmTNp
+         MqbLPqclSzrNA==
+Received: by mail-ej1-f53.google.com with SMTP id f27so37755818eje.1
+        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 08:06:31 -0700 (PDT)
+X-Gm-Message-State: ACrzQf0s9Cz/XVnWnGXro1gfCtUVpCh4dVHxRtoXdMAeDj2xGdbEX3nh
+        kkJDMiZNgDg2y43Q5+xYGSRpbE6EWzf/iG0y7Wo=
+X-Google-Smtp-Source: AMsMyM7Mo2fRx3Fq+g7lJlwPyodqrQCksZrooLG5S/xRU2M0eRNZIaAY199jFsGhFNYi2Gwf+/TtKomI8LbDuwanK9U=
+X-Received: by 2002:a17:907:628f:b0:72f:58fc:3815 with SMTP id
+ nd15-20020a170907628f00b0072f58fc3815mr18322891ejc.719.1667315189418; Tue, 01
+ Nov 2022 08:06:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221031215834.1615596-1-song@kernel.org> <20221031215834.1615596-2-song@kernel.org>
+ <Y2EJB34M3NPKBY3v@pc636>
+In-Reply-To: <Y2EJB34M3NPKBY3v@pc636>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 1 Nov 2022 08:06:17 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW65B2ApXc0zpEW3OV_FNt9VzxAu2pWffcF3UthL2xty7A@mail.gmail.com>
+Message-ID: <CAPhsuW65B2ApXc0zpEW3OV_FNt9VzxAu2pWffcF3UthL2xty7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/5] vmalloc: introduce vmalloc_exec,
+ vfree_exec, and vcopy_exec
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
+        x86@kernel.org, peterz@infradead.org, hch@lst.de,
+        rick.p.edgecombe@intel.com, dave.hansen@intel.com,
+        mcgrof@kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that the commit: <b662000aff84> ("bpftool: Adding support for BTF
-program names") supported show the full prog name, we can also use
-the full prog name more than 16 (BPF_OBJ_NAME_LEN) chars in prog
-subcommand, such as "bpftool prog show name PROG_NAME".
+On Tue, Nov 1, 2022 at 4:54 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+>
+> On Mon, Oct 31, 2022 at 02:58:30PM -0700, Song Liu wrote:
+> > vmalloc_exec is used to allocate memory to host dynamic kernel text
+> > (modules, BPF programs, etc.) with huge pages. This is similar to the
+> > proposal by Peter in [1].
+> >
+> > A new tree of vmap_area, free_text_area_* tree, is introduced in addition
+> > to free_vmap_area_* and vmap_area_*. vmalloc_exec allocates pages from
+> > free_text_area_*. When there isn't enough space left in free_text_area_*,
+> > new PMD_SIZE page(s) is allocated from free_vmap_area_* and added to
+> > free_text_area_*. To be more accurate, the vmap_area is first added to
+> > vmap_area_* tree and then moved to free_text_area_*. This extra move
+> > simplifies the logic of vmalloc_exec.
+> >
+> > vmap_area in free_text_area_* tree are backed with memory, but we need
+> > subtree_max_size for tree operations. Therefore, vm_struct for these
+> > vmap_area are stored in a separate list, all_text_vm.
+> >
+> > The new tree allows separate handling of < PAGE_SIZE allocations, as
+> > current vmalloc code mostly assumes PAGE_SIZE aligned allocations. This
+> > version of vmalloc_exec can handle bpf programs, which uses 64 byte
+> > aligned allocations), and modules, which uses PAGE_SIZE aligned
+> > allocations.
+> >
+> > Memory allocated by vmalloc_exec() is set to RO+X before returning to the
+> > caller. Therefore, the caller cannot write directly write to the memory.
+> > Instead, the caller is required to use vcopy_exec() to update the memory.
+> > For the safety and security of X memory, vcopy_exec() checks the data
+> > being updated always in the memory allocated by one vmalloc_exec() call.
+> > vcopy_exec() uses text_poke like mechanism and requires arch support.
+> > Specifically, the arch need to implement arch_vcopy_exec().
+> >
+> > In vfree_exec(), the memory is first erased with arch_invalidate_exec().
+> > Then, the memory is added to free_text_area_*. If this free creates big
+> > enough continuous free space (> PMD_SIZE), vfree_exec() will try to free
+> > the backing vm_struct.
+> >
+> > [1] https://lore.kernel.org/bpf/Ys6cWUMHO8XwyYgr@hirez.programming.kicks-ass.net/
+> >
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  include/linux/vmalloc.h |   5 +
+> >  mm/nommu.c              |  12 ++
+> >  mm/vmalloc.c            | 318 ++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 335 insertions(+)
+> >
+> > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> > index 096d48aa3437..9b2042313c12 100644
+> > --- a/include/linux/vmalloc.h
+> > +++ b/include/linux/vmalloc.h
+> > @@ -154,6 +154,11 @@ extern void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> >  void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
+> >               int node, const void *caller) __alloc_size(1);
+> >  void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
+> > +void *vmalloc_exec(unsigned long size, unsigned long align) __alloc_size(1);
+> > +void *vcopy_exec(void *dst, void *src, size_t len);
+> > +void vfree_exec(void *addr);
+> > +void *arch_vcopy_exec(void *dst, void *src, size_t len);
+> > +int arch_invalidate_exec(void *ptr, size_t len);
+> >
+> >  extern void *__vmalloc_array(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
+> >  extern void *vmalloc_array(size_t n, size_t size) __alloc_size(1, 2);
+> > diff --git a/mm/nommu.c b/mm/nommu.c
+> > index 214c70e1d059..8a1317247ef0 100644
+> > --- a/mm/nommu.c
+> > +++ b/mm/nommu.c
+> > @@ -371,6 +371,18 @@ int vm_map_pages_zero(struct vm_area_struct *vma, struct page **pages,
+> >  }
+> >  EXPORT_SYMBOL(vm_map_pages_zero);
+> >
+> > +void *vmalloc_exec(unsigned long size, unsigned long align)
+> > +{
+> > +     return NULL;
+> > +}
+> > +
+> > +void *vcopy_exec(void *dst, void *src, size_t len)
+> > +{
+> > +     return ERR_PTR(-EOPNOTSUPP);
+> > +}
+> > +
+> > +void vfree_exec(const void *addr) { }
+> > +
+> >  /*
+> >   *  sys_brk() for the most part doesn't need the global kernel
+> >   *  lock, except when an application is doing something nasty
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index ccaa461998f3..6f4c73e67191 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -72,6 +72,9 @@ early_param("nohugevmalloc", set_nohugevmalloc);
+> >  static const bool vmap_allow_huge = false;
+> >  #endif       /* CONFIG_HAVE_ARCH_HUGE_VMALLOC */
+> >
+> > +#define PMD_ALIGN(addr) ALIGN(addr, PMD_SIZE)
+> > +#define PMD_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PMD_SIZE)
+> > +
+> >  bool is_vmalloc_addr(const void *x)
+> >  {
+> >       unsigned long addr = (unsigned long)kasan_reset_tag(x);
+> > @@ -769,6 +772,38 @@ static LIST_HEAD(free_vmap_area_list);
+> >   */
+> >  static struct rb_root free_vmap_area_root = RB_ROOT;
+> >
+> > +/*
+> > + * free_text_area for vmalloc_exec()
+> > + */
+> > +static DEFINE_SPINLOCK(free_text_area_lock);
+> > +/*
+> > + * This linked list is used in pair with free_text_area_root.
+> > + * It gives O(1) access to prev/next to perform fast coalescing.
+> > + */
+> > +static LIST_HEAD(free_text_area_list);
+> > +
+> > +/*
+> > + * This augment red-black tree represents the free text space.
+> > + * All vmap_area objects in this tree are sorted by va->va_start
+> > + * address. It is used for allocation and merging when a vmap
+> > + * object is released.
+> > + *
+> > + * Each vmap_area node contains a maximum available free block
+> > + * of its sub-tree, right or left. Therefore it is possible to
+> > + * find a lowest match of free area.
+> > + *
+> > + * vmap_area in this tree are backed by RO+X memory, but they do
+> > + * not have valid vm pointer (because we need subtree_max_size).
+> > + * The vm for these vmap_area are stored in all_text_vm.
+> > + */
+> > +static struct rb_root free_text_area_root = RB_ROOT;
+> > +
+> > +/*
+> > + * List of vm_struct for free_text_area_root. This list is rarely
+> > + * accessed, so the O(N) complexity is not likely a real issue.
+> > + */
+> > +struct vm_struct *all_text_vm;
+> > +
+> >  /*
+> >   * Preload a CPU with one object for "no edge" split case. The
+> >   * aim is to get rid of allocations from the atomic context, thus
+> > @@ -3313,6 +3348,289 @@ void *vmalloc(unsigned long size)
+> >  }
+> >  EXPORT_SYMBOL(vmalloc);
+> >
+> > +#if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
+> > +#define VMALLOC_EXEC_START MODULES_VADDR
+> > +#define VMALLOC_EXEC_END MODULES_END
+> > +#else
+> > +#define VMALLOC_EXEC_START VMALLOC_START
+> > +#define VMALLOC_EXEC_END VMALLOC_END
+> > +#endif
+> > +
+> > +static void move_vmap_to_free_text_tree(void *addr)
+> > +{
+> > +     struct vmap_area *va;
+> > +
+> > +     /* remove from vmap_area_root */
+> > +     spin_lock(&vmap_area_lock);
+> > +     va = __find_vmap_area((unsigned long)addr, &vmap_area_root);
+> > +     if (WARN_ON_ONCE(!va)) {
+> > +             spin_unlock(&vmap_area_lock);
+> > +             return;
+> > +     }
+> > +     unlink_va(va, &vmap_area_root);
+> > +     spin_unlock(&vmap_area_lock);
+> > +
+> > +     /* make the memory RO+X */
+> > +     memset(addr, 0, va->va_end - va->va_start);
+> > +     set_memory_ro(va->va_start, (va->va_end - va->va_start) >> PAGE_SHIFT);
+> > +     set_memory_x(va->va_start, (va->va_end - va->va_start) >> PAGE_SHIFT);
+> > +
+> > +     /* add to all_text_vm */
+> > +     va->vm->next = all_text_vm;
+> > +     all_text_vm = va->vm;
+> > +
+> > +     /* add to free_text_area_root */
+> > +     spin_lock(&free_text_area_lock);
+> > +     merge_or_add_vmap_area_augment(va, &free_text_area_root, &free_text_area_list);
+> > +     spin_unlock(&free_text_area_lock);
+> > +}
+> > +
+> > +/**
+> > + * vmalloc_exec - allocate virtually contiguous RO+X memory
+> > + * @size:    allocation size
+> > + *
+> > + * This is used to allocate dynamic kernel text, such as module text, BPF
+> > + * programs, etc. User need to use text_poke to update the memory allocated
+> > + * by vmalloc_exec.
+> > + *
+> > + * Return: pointer to the allocated memory or %NULL on error
+> > + */
+> > +void *vmalloc_exec(unsigned long size, unsigned long align)
+> > +{
+> > +     struct vmap_area *va, *tmp;
+> > +     unsigned long addr;
+> > +     enum fit_type type;
+> > +     int ret;
+> > +
+> > +     va = kmem_cache_alloc_node(vmap_area_cachep, GFP_KERNEL, NUMA_NO_NODE);
+> > +     if (unlikely(!va))
+> > +             return NULL;
+> > +
+> > +again:
+> > +     preload_this_cpu_lock(&free_text_area_lock, GFP_KERNEL, NUMA_NO_NODE);
+> > +     tmp = find_vmap_lowest_match(&free_text_area_root, size, align, 1, false);
+> > +
+> > +     if (!tmp) {
+> > +             unsigned long alloc_size;
+> > +             void *ptr;
+> > +
+> > +             spin_unlock(&free_text_area_lock);
+> > +
+> > +             /*
+> > +              * Not enough continuous space in free_text_area_root, try
+> > +              * allocate more memory. The memory is first added to
+> > +              * vmap_area_root, and then moved to free_text_area_root.
+> > +              */
+> > +             alloc_size = roundup(size, PMD_SIZE * num_online_nodes());
+> > +             ptr = __vmalloc_node_range(alloc_size, PMD_SIZE, VMALLOC_EXEC_START,
+> > +                                        VMALLOC_EXEC_END, GFP_KERNEL, PAGE_KERNEL,
+> > +                                        VM_ALLOW_HUGE_VMAP | VM_NO_GUARD,
+> > +                                        NUMA_NO_NODE, __builtin_return_address(0));
+> > +             if (unlikely(!ptr))
+> > +                     goto err_out;
+> > +
+> > +             move_vmap_to_free_text_tree(ptr);
+> > +             goto again;
+> >
+> It is yet another allocator built on top of vmalloc. So there are 4 then.
+> Could you please avoid of doing it? I do not find it as something that is
+> reasonable.
 
-Signed-off-by: Tao Chen <chentao.kernel@linux.alibaba.com>
----
- tools/bpf/bpftool/common.c | 48 ++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 40 insertions(+), 8 deletions(-)
+Could you please elaborate why this is not reasonable? Or, what would
+be a more reasonable alternative?
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 067e9ea..5efdedc 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -720,6 +720,40 @@ print_all_levels(__maybe_unused enum libbpf_print_level level,
- 	return vfprintf(stderr, format, args);
- }
- 
-+static bool is_invalid_prog(char *nametag, struct bpf_prog_info *info,
-+				struct bpf_func_info *finfo, bool tag)
-+{
-+	const struct btf *prog_btf;
-+	const struct btf_type *func_type;
-+	const char *name;
-+
-+	if (tag)
-+		return memcmp(nametag, info->tag, BPF_TAG_SIZE);
-+
-+	if (strlen(nametag) < BPF_OBJ_NAME_LEN)
-+		return strncmp(nametag, info->name, BPF_OBJ_NAME_LEN);
-+
-+	prog_btf = btf__load_from_kernel_by_id(info->btf_id);
-+	if (!prog_btf) {
-+		p_err("get prog btf failed, btf_id:%u\n", info->btf_id);
-+		return true;
-+	}
-+
-+	func_type = btf__type_by_id(prog_btf, finfo->type_id);
-+	if (!func_type || !btf_is_func(func_type)) {
-+		p_err("func type invalid, type_id:%u\n", finfo->type_id);
-+		return true;
-+	}
-+
-+	name = btf__name_by_offset(prog_btf, func_type->name_off);
-+	if (!name) {
-+		p_err("func name invalid, name_off:%u\n", func_type->name_off);
-+		return true;
-+	}
-+
-+	return strncmp(nametag, name, strlen(name));
-+}
-+
- static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- {
- 	unsigned int id = 0;
-@@ -729,6 +763,7 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- 
- 	while (true) {
- 		struct bpf_prog_info info = {};
-+		struct bpf_func_info finfo = {};
- 		__u32 len = sizeof(info);
- 
- 		err = bpf_prog_get_next_id(id, &id);
-@@ -747,15 +782,17 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- 			goto err_close_fds;
- 		}
- 
-+		info.nr_func_info = 1;
-+		info.func_info_rec_size = sizeof(finfo);
-+		info.func_info = ptr_to_u64(&finfo);
-+
- 		err = bpf_obj_get_info_by_fd(fd, &info, &len);
- 		if (err) {
- 			p_err("can't get prog info (%u): %s",
- 			      id, strerror(errno));
- 			goto err_close_fd;
- 		}
--
--		if ((tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) ||
--		    (!tag && strncmp(nametag, info.name, BPF_OBJ_NAME_LEN))) {
-+		if (is_invalid_prog(nametag, &info, &finfo, tag)) {
- 			close(fd);
- 			continue;
- 		}
-@@ -818,12 +855,7 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
- 		char *name;
- 
- 		NEXT_ARGP();
--
- 		name = **argv;
--		if (strlen(name) > BPF_OBJ_NAME_LEN - 1) {
--			p_err("can't parse name");
--			return -1;
--		}
- 		NEXT_ARGP();
- 
- 		return prog_fd_by_nametag(name, fds, false);
--- 
-2.2.1
-
+Thanks,
+Song
