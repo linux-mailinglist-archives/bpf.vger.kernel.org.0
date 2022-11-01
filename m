@@ -2,174 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F6E6151A0
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 19:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60DF6151BE
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 19:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiKASfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 14:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S229912AbiKASrN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 14:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbiKASfU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 14:35:20 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77931AF00
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 11:35:17 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id kt23so39215613ejc.7
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 11:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3GaGfQKjTi8JaEFV7e7/zAN9r73rdp9AFp+ya4eP2ok=;
-        b=dRXiIdlXf9+w1EMZ3zBJGQk5WAbJ0eJ6ZcUxDTnZWDz1gb/6BZSUHTP78oRKUkIxKO
-         Cll4qnBEYuw4Rb/3ZDMznBmYTDJPYlCKYdy6ZV00BhA357MRs4zEtqPMSWRul7M2WGYx
-         ddvMfzPhfWFTrlY5mZs9q0pImfieLwDZT22aawjMCE/aPkRpDkTD5SqobKx/+Wvx2x5E
-         p+66SWTzNKWE+6iAHG32smP7oEb0yQDCCnogjZgTbESVRQ+AT9+vCHhE06RBhwtwhgVY
-         fJqFnOMW9gKgz2Q+AMqt4PTSTxDk2RWytpVGin8OJ8Vy7a6KTSGJ1v/swMpJ1vq2I2np
-         5YCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3GaGfQKjTi8JaEFV7e7/zAN9r73rdp9AFp+ya4eP2ok=;
-        b=vlJZm2X9eyqey72bOyx8PBvhoLIbZsKwqfEtx217+gkN3lQOtYSG7wnMZ2BPoZYXpW
-         A1L4vX8+ATxbxyb2Bu02UF1FLTtNH/VZArDSOa6JEh0MjCVxoweVyktwr63Y6UGCj3Kj
-         rlVQC1ZcahZc8bwc311gWWTKmCEa1yVX2HLn9+oruZ8410TZFNKP4jwgSeIKiYwE7fKs
-         0JwkGuhzh9oo/Q5spx0Vrv6uRgJqEgUZMBPklPVfJa9ttqTV0bZ94Zemz5Xsi7nsGEnb
-         HuTpdiCYHoDl/BlL3brI1An49Yvb96XZytFMSXGkfxpY/tUuv7aubkMkFp2CMByYZEMS
-         PFAA==
-X-Gm-Message-State: ACrzQf1laCr7UNycUnYNz/NIOQj0Onv4OPucDccOGUxMnVYmKdZocEdR
-        /cCtiKQXBqGpMpP1ZZkZPAMFN1ZTNLyrXJI9vIY=
-X-Google-Smtp-Source: AMsMyM5wWc1MDctIAHDnaKSuSQLU+z0frPcsfE1d2al2HUppkCZloAmPOUGu83lakv2DW7oSJb90SZYzE3IAZFID9WM=
-X-Received: by 2002:a17:906:9510:b0:7ad:fd3e:124b with SMTP id
- u16-20020a170906951000b007adfd3e124bmr353912ejx.502.1667327716091; Tue, 01
- Nov 2022 11:35:16 -0700 (PDT)
+        with ESMTP id S229462AbiKASrM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 14:47:12 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00371C91B;
+        Tue,  1 Nov 2022 11:47:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 155D1CE1DBE;
+        Tue,  1 Nov 2022 18:47:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 246AAC433D6;
+        Tue,  1 Nov 2022 18:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667328427;
+        bh=QLdC5NhmlPCsZ0fQmjLQ1e7hJz99WGjywddDhFXtMLw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fN/bZfOXY8KV51v5e96jmg59JEkoMANra1x65SSyTmWwyGs6gZJh1P92p+oWqulwP
+         gXlJ1rwaerpAu7IZ1yhZWhpJuhNlvLgX5BonQpF2lFVh2E3oUwEa/qnYZW5h+2Oc2q
+         I9pXK97sKXNNxIu1Q2INqW3r1kUKlv1VPHyOAEQ/ZkRJdCAcQs+of61HrPpWUzONSs
+         QQPUO2W6YAYOPg1icW0qQmzDoytmrgBcAesiEo1Pwd3QMLG2tkTKuUL6aaB3LSF0ij
+         s2x5ZGvjBJ8d3G6hm5ol2KqI/b1ptmr9VgDFBsNJAsjG6JL2h8btWw1vZBg81Waks7
+         icf4yaqPFIPxQ==
+Received: by mail-ed1-f43.google.com with SMTP id z18so18069029edb.9;
+        Tue, 01 Nov 2022 11:47:07 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3gZJHObIJmBbfKvKzh1JjKljwN1owQzQyae7d4RnLaAsErPGm4
+        b2TvdcLwchrUNbeB+KPZDQZr8GivwEJ63F70OQg=
+X-Google-Smtp-Source: AMsMyM7NG+V8QRtMbNL/bl9B7tt5Ew1cnsBIqP2w5Q3U6mKYB6o20GQfUPZVH4oFcKHsN5dOIuUhYpiqRFHpKG2zU0M=
+X-Received: by 2002:aa7:d710:0:b0:463:bd7b:2b44 with SMTP id
+ t16-20020aa7d710000000b00463bd7b2b44mr3721414edq.385.1667328425396; Tue, 01
+ Nov 2022 11:47:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <CAEf4BzbScntAd4Yh5AWw+7bZhooYYaomwLYiuM0+iBtx_7LKoQ@mail.gmail.com>
- <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com> <CAEf4BzYT4pwmw64DaCTxR3_QjO5RRVadqVLO0h-hNa-+xOyLZw@mail.gmail.com>
- <af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com> <CAEf4BzZE7boex4KBjMmhJ4Nib6BA71-pf5jiAg74FjEdr_2e6A@mail.gmail.com>
- <ea841d91-a43f-a6e0-e8ce-90f9b2d3f77c@oracle.com>
-In-Reply-To: <ea841d91-a43f-a6e0-e8ce-90f9b2d3f77c@oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Nov 2022 11:35:04 -0700
-Message-ID: <CAADnVQ+Oe-euDp7dFEOntzdy9uYmGqapVM0YNdRDNerCN-8OQQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@meta.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20221101052340.1210239-1-namhyung@kernel.org> <20221101052340.1210239-3-namhyung@kernel.org>
+ <Y2DuzmnUm6NIh25a@krava> <CAADnVQJ6+N6vQ=ZUgUjoB_M2RoTGGPXpLwz81mNDmLWrGYKetw@mail.gmail.com>
+In-Reply-To: <CAADnVQJ6+N6vQ=ZUgUjoB_M2RoTGGPXpLwz81mNDmLWrGYKetw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 1 Nov 2022 11:46:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6iuEZCCYJk-cra8DkEWNtdin8GyJDZ6Y8zd4ecfd1gQA@mail.gmail.com>
+Message-ID: <CAPhsuW6iuEZCCYJk-cra8DkEWNtdin8GyJDZ6Y8zd4ecfd1gQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 9:02 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Tue, Nov 1, 2022 at 11:26 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> >> Yes, we discussed this before. This will need to add additional work
-> >> in preprocessor. I just made a discussion topic in llvm discourse
-> >>
-> >> https://discourse.llvm.org/t/add-a-type-checking-macro-is-type-defined-type/66268
-
-That would be a great clang feature.
-Thanks Yonghong!
-
-> >>
-> >> Let us see whether we can get some upstream agreement or not.
-> >>
+> On Tue, Nov 1, 2022 at 3:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > Thanks for starting the conversation! I'll be following along.
+> > On Mon, Oct 31, 2022 at 10:23:39PM -0700, Namhyung Kim wrote:
+> > > The bpf_perf_event_read_sample() helper is to get the specified sample
+> > > data (by using PERF_SAMPLE_* flag in the argument) from BPF to make a
+> > > decision for filtering on samples.  Currently PERF_SAMPLE_IP and
+> > > PERF_SAMPLE_DATA flags are supported only.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  include/uapi/linux/bpf.h       | 23 ++++++++++++++++
+> > >  kernel/trace/bpf_trace.c       | 49 ++++++++++++++++++++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h | 23 ++++++++++++++++
+> > >  3 files changed, 95 insertions(+)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 94659f6b3395..cba501de9373 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -5481,6 +5481,28 @@ union bpf_attr {
+> > >   *           0 on success.
+> > >   *
+> > >   *           **-ENOENT** if the bpf_local_storage cannot be found.
+> > > + *
+> > > + * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
+> > > + *   Description
+> > > + *           For an eBPF program attached to a perf event, retrieve the
+> > > + *           sample data associated to *ctx* and store it in the buffer
+> > > + *           pointed by *buf* up to size *size* bytes.
+> > > + *
+> > > + *           The *sample_flags* should contain a single value in the
+> > > + *           **enum perf_event_sample_format**.
+> > > + *   Return
+> > > + *           On success, number of bytes written to *buf*. On error, a
+> > > + *           negative value.
+> > > + *
+> > > + *           The *buf* can be set to **NULL** to return the number of bytes
+> > > + *           required to store the requested sample data.
+> > > + *
+> > > + *           **-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
+> > > + *
+> > > + *           **-ENOENT** if the associated perf event doesn't have the data.
+> > > + *
+> > > + *           **-ENOSYS** if system doesn't support the sample data to be
+> > > + *           retrieved.
+> > >   */
+> > >  #define ___BPF_FUNC_MAPPER(FN, ctx...)                       \
+> > >       FN(unspec, 0, ##ctx)                            \
+> > > @@ -5695,6 +5717,7 @@ union bpf_attr {
+> > >       FN(user_ringbuf_drain, 209, ##ctx)              \
+> > >       FN(cgrp_storage_get, 210, ##ctx)                \
+> > >       FN(cgrp_storage_delete, 211, ##ctx)             \
+> > > +     FN(perf_event_read_sample, 212, ##ctx)          \
+> > >       /* */
+> > >
+> > >  /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index ce0228c72a93..befd937afa3c 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -28,6 +28,7 @@
+> > >
+> > >  #include <uapi/linux/bpf.h>
+> > >  #include <uapi/linux/btf.h>
+> > > +#include <uapi/linux/perf_event.h>
+> > >
+> > >  #include <asm/tlb.h>
+> > >
+> > > @@ -1743,6 +1744,52 @@ static const struct bpf_func_proto bpf_read_branch_records_proto = {
+> > >       .arg4_type      = ARG_ANYTHING,
+> > >  };
+> > >
+> > > +BPF_CALL_4(bpf_perf_event_read_sample, struct bpf_perf_event_data_kern *, ctx,
+> > > +        void *, buf, u32, size, u64, flags)
+> > > +{
 > >
+> > I wonder we could add perf_btf (like we have tp_btf) program type that
+> > could access ctx->data directly without helpers
+> >
+> > > +     struct perf_sample_data *sd = ctx->data;
+> > > +     void *data;
+> > > +     u32 to_copy = sizeof(u64);
+> > > +
+> > > +     /* only allow a single sample flag */
+> > > +     if (!is_power_of_2(flags))
+> > > +             return -EINVAL;
+> > > +
+> > > +     /* support reading only already populated info */
+> > > +     if (flags & ~sd->sample_flags)
+> > > +             return -ENOENT;
+> > > +
+> > > +     switch (flags) {
+> > > +     case PERF_SAMPLE_IP:
+> > > +             data = &sd->ip;
+> > > +             break;
+> > > +     case PERF_SAMPLE_ADDR:
+> > > +             data = &sd->addr;
+> > > +             break;
+> >
+> > AFAICS from pe_prog_convert_ctx_access you should be able to read addr
+> > directly from context right? same as sample_period.. so I think if this
+> > will be generic way to read sample data, should we add sample_period
+> > as well?
 >
->
-> I think this sort of approach assumes that vmlinux.h is included after
-> any uapi headers, and would guard type definitions with
->
-> #if type_is_defined(foo)
-> struct foo {
->
-> };
-> #endif
->
-> ...is that right? My concern is that the vmlinux.h definitions have
-> the CO-RE attributes. From a BPF perspective, would we like the vmlinux.h
-> definitions to dominate over UAPI definitions do you think, or does it
-> matter?
+> +1
+> Let's avoid new stable helpers for this.
+> Pls use CORE and read perf_sample_data directly.
 
-I think it's totally fine to require #include "vmlinux.h" to be last.
-The attr(preserve_access_index) is only useful for kernel internal
-structs. uapi structs don't need it.
+We have legacy ways to access sample_period and addr with
+struct bpf_perf_event_data and struct bpf_perf_event_data_kern. I
+think mixing that
+with CORE makes it confusing for the user. And a helper or a kfunc would make it
+easier to follow. perf_btf might also be a good approach for this.
 
->
-> I was wondering if there might be yet another way to crack this;
-> if we did want the vmlinux.h type definitions to be authoritative
-> because they have the preserve access index attribute, and because
-> bpftool knows all vmlinux types, it could use that info to selectively
-> redefine those type names such that we avoid name clashes when later
-> including UAPI headers. Something like
->
-> #ifdef __VMLINUX_H__
-> //usual vmlinux.h type definitions
-> #endif /* __VMLINUX_H__ */
->
-> #ifdef __VMLINUX_ALIAS__
-> if !defined(timespec64)
-> #define timespec64 __VMLINUX_ALIAS__timespec64
-> #endif
-> // rest of the types define aliases here
-> #undef __VMLINUX_ALIAS__
-> #else /* unalias */
-> #if defined(timespec64)
-> #undef timespec64
-> #endif
-> // rest of types undef aliases here
-> #endif /* __VMLINUX_ALIAS__ */
->
->
-> Then the consumer does this:
->
-> #define __VMLINUX_ALIAS__
-> #include "vmlinux.h"
-> // include uapi headers
-> #include "vmlinux.h"
->
-> (the latter include of vmlinux.h is needed to undef all the type aliases)
-
-Sounds like a bunch of complexity for the use case that is not
-clear to me.
-
->
-> I tried hacking up bpftool to support this aliasing scheme and while
-> it is kind of hacky it does seem to work, aside from some issues with
-> IPPROTO_* definitions - for the enumerated IPPROTO_ values linux/in.h does
-> this:
->
-> enum {
->   IPPROTO_IP = 0,               /* Dummy protocol for TCP               */
-> #define IPPROTO_IP              IPPROTO_IP
->   IPPROTO_ICMP = 1,             /* Internet Control Message Protocol    */
-> #define IPPROTO_ICMP            IPPROTO_ICMP
->
->
-> ...so our enum value definitions for IPPROTO_ values clash with the above
-> definitions. These could be individually ifdef-guarded if needed though I think.
-
-Including vmlinux.h last won't have this enum conflicts, right?
-
-> I can send the proof-of-concept patch if it would help, I just wanted to
-> check in case that might be a workable path too, since it just requires
-> changes to bpftool (and changes to in.h).
-
-I think changing the uapi header like in.h is no-go.
-Touching anything in uapi is too much of a risk.
+Thanks,
+Song
