@@ -2,253 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6691614C79
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FBB614C7C
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbiKAOVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 10:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S230232AbiKAOXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 10:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiKAOVq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 10:21:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACDD1B792
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 07:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667312449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=af8a5692vQNnHtfl4OiAhO0hfTr2zQ516tgQOTBk6F8=;
-        b=Hf3zQUy9KvEkGozb6F54bjfdRCT7zvnU5DeauBLg0eLPwb4BENyODYdkEUds9gi3BSOy0s
-        V/jGZmsdlxUY3+hqQ7QKtQ4JAbnMbp0LcF1Zj8sL8jSK000f16KamxB46uncvOt9w4aVWB
-        3zMYIp10qvEPkuCoG2CJT5oVgZLBIgA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-96-JxMF9NtWMbygXBfiB4Z8Bw-1; Tue, 01 Nov 2022 10:20:47 -0400
-X-MC-Unique: JxMF9NtWMbygXBfiB4Z8Bw-1
-Received: by mail-ed1-f70.google.com with SMTP id w4-20020a05640234c400b004631f8923baso4987900edc.5
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 07:20:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=af8a5692vQNnHtfl4OiAhO0hfTr2zQ516tgQOTBk6F8=;
-        b=Qfg28I7zXT79XvKxkhaIMeyi+wRq27Xjrkvo4q+r76R+N8lcv80OwehYc+faF4HyaW
-         b/G+yj9Rn0HP60YyzaeFgx3onAyMA4HU4Cu8ZPdHBHNQe7vsqRGTO9677Gu23LKNbwZt
-         O+NixM3wxGiULYMuBM5aRJigigdDSCz+SHHTGGE54njEmPBV5v13+gaKV8MvrpqYoszP
-         V1KMkFmpK21UqYj7GM3U5GYaeQsN8YAmIMlqSWNy1L8NG8AV26QyjLdUSx8myamwXVmu
-         cpKFgaYPuhFzHClQmyQBTW4CQTdpFLUJJZw42VeVQlOBUle+rw1Py7oz3VlgdQFlafAx
-         Sm0A==
-X-Gm-Message-State: ACrzQf2+EGdet7wtTGnTCy7T6KzHFNvw0PF21/FFRp/Q5I1UfSwxBG3b
-        E6lTIDheQCM7HYhfsy/lfN1vwhJ+Uc0wY5ziBkM8UzaUiMblEwHQtmBzUA159lpwiJWd7mh306I
-        Jijxyfxg3RcXv
-X-Received: by 2002:a17:907:1dec:b0:7aa:6262:f23f with SMTP id og44-20020a1709071dec00b007aa6262f23fmr18937182ejc.38.1667312446474;
-        Tue, 01 Nov 2022 07:20:46 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6aDckAMRxEEVFgZBwDFvL3lMW4RACwP6nIccNT4NUAIDnjh9X31yp2rCqvrTBmz+z7LIZn4Q==
-X-Received: by 2002:a17:907:1dec:b0:7aa:6262:f23f with SMTP id og44-20020a1709071dec00b007aa6262f23fmr18937142ejc.38.1667312446014;
-        Tue, 01 Nov 2022 07:20:46 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id v14-20020a1709063bce00b0072af4af2f46sm4226672ejf.74.2022.11.01.07.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 07:20:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 21A2E723719; Tue,  1 Nov 2022 15:20:45 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     David Ahern <dsahern@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
-        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "Deric, Nemanja" <nemanja.deric@siemens.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "Kiszka, Jan" <jan.kiszka@siemens.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "willemb@google.com" <willemb@google.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "mtahhan@redhat.com" <mtahhan@redhat.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "haoluo@google.com" <haoluo@google.com>
-Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
-In-Reply-To: <3caaaf96-58cf-9bf5-dcfe-2f6522f4da02@gmail.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <635bfc1a7c351_256e2082f@john.notmuch>
- <20221028110457.0ba53d8b@kernel.org>
- <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
- <635c62c12652d_b1ba208d0@john.notmuch>
- <20221028181431.05173968@kernel.org>
- <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
- <875yg057x1.fsf@toke.dk>
- <CAKH8qBvQbgE=oSZoH4xiLJmqMSXApH-ufd-qEKGKD8=POfhrWQ@mail.gmail.com>
- <77b115a0-bbba-48eb-89bd-3078b5fb7eeb@linux.dev>
- <CAKH8qBsGB1G60cu91Au816gsB2zF8T0P-yDwxbTEOxX0TN3WgA@mail.gmail.com>
- <87wn8e4z14.fsf@toke.dk> <3caaaf96-58cf-9bf5-dcfe-2f6522f4da02@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 01 Nov 2022 15:20:45 +0100
-Message-ID: <87tu3i4uyq.fsf@toke.dk>
+        with ESMTP id S230231AbiKAOXV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 10:23:21 -0400
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAB51B788
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 07:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1667312593;
+        bh=l57fPtvVIgXTiYLMlFVCC6EXs6IDtJKDnxNvjdOUkcM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=dG4TA+4Bll7492rMsS8WJaix0eoOwd7HqJaAylQ9majA9lMWH3lAdDOHRgomRnAkx
+         p7gkd8+tclRIsPHJiVIpcZWie70dvu8i3VBT42+H8c6GYIR1/No4zU6Zrp2E/t+vGO
+         dLTymhQKQvxhQ7X4h5iBGnzbLRC7wWi94CMGk8x8=
+Received: from localhost.localdomain ([111.199.189.86])
+        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+        id 5C8A8617; Tue, 01 Nov 2022 22:23:08 +0800
+X-QQ-mid: xmsmtpt1667312588tydmkk56a
+Message-ID: <tencent_630BF3724BC5EA157B341EB1C7604EE83705@qq.com>
+X-QQ-XMAILINFO: NkHKfw09D6j8nya1MpOLbHO6M3R7kUmTeJKqU8bBsXqWRReOWDSDVWI6V8tWhN
+         YGrHWs/ZqniKBScePxRhbqgGs190QduRHvk0+3ORugItPyo+KjTrVkAwfZFRPoHaE8g6aTEOsKu/
+         DtH3P2KV1Rvi4Zr3KSKl6Crl6xCDX/qiUJ62/aimuZao6phXPLed2obw86eoOAMtKZZmVRVHBl9s
+         GUsWE0XQH2eFlp3KCVkymh5ZzPdiB6BsmwCY3x3g6XDmdhEtSkKrdzGeholKfA5WJx58BE/lSMFz
+         h0G5vEkQ2E7ICILcIqvMxk6K8+9cgRp8bGr5JETqN7v7rpa2sphVrCpS6m5u1Lxjl18KeTaRBK9y
+         Syt6VMCfnctkcFAOLumCvwKbXj6FbJYkzEFOWzvktbWNbskSG7JSc256E+tGIQVlsmjKjTubmN/Z
+         hic6em+Wmub3kqm8Oo0NutB2do6AcJ0PjYDd0Rh3cqc2tqx/Y3BiAs6ISjGvBHPte/ev43eU7CEc
+         AKQR56nHD0HgCvOnWgBlYKKNxM3qC2DdB6a/oOloZI8i6WVqfayjLJ/hO8wfdM6UCNOdvNkhhtSc
+         WBOMPqRpICZQd/WWJmhzNLRCe9MQsHZSg0/C8UFogHQ2zZNjISA++DtrwGhB8RTLvvRZepfka+GK
+         45NQm2uC8syIUepLvCMzZ0jf3DpHEX7U+5uyhzO/dH8Fv7MQKs7k8YlZigI/QJe8BIb2fA0T+al/
+         m0WJdbe5m6LEaRZcQgaQlYrnlTkzGZmogl367ToL5MAILCJu4itC7GBh1voxTYzlua4GUrQYDsqI
+         Niv4X/6Hys/q5uEXXqgjN6eLTo6qrPisOvdQkVp0zTXN2rd52Yhf48rXuqjdCFaRWbJb0sywfEda
+         vuqFjBZDGMdk1E6CyXCz9K+R8GJSyHjRi93e1WoOvUtDyPMxBKfzClOfC90AIl3dlYNG0K1bb6WO
+         9hRHCW4gftV8RBiHNIv6KcqXI7XA74KNDpGFaOXhhIiP9a6kgiYio++dncugKNo81BVCFy5pTbqM
+         o7M0PjNEQczUTFfkRI
+From:   Rong Tao <rtoax@foxmail.com>
+To:     daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, david.laight@aculab.com, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        martin.lau@linux.dev, mykolal@fb.com, rongtao@cestc.cn,
+        rtoax@foxmail.com, sdf@google.com, shuah@kernel.org,
+        song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
+Date:   Tue,  1 Nov 2022 22:23:07 +0800
+X-OQ-MSGID: <20221101142307.19414-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <fc8634e8-6efd-9911-cab4-07ad6ba4ad33@iogearbox.net>
+References: <fc8634e8-6efd-9911-cab4-07ad6ba4ad33@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern <dsahern@gmail.com> writes:
+From: Rong Tao <rongtao@cestc.cn>
 
-> On 11/1/22 6:52 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Stanislav Fomichev <sdf@google.com> writes:
->>=20
->>> On Mon, Oct 31, 2022 at 3:57 PM Martin KaFai Lau <martin.lau@linux.dev>=
- wrote:
->>>>
->>>> On 10/31/22 10:00 AM, Stanislav Fomichev wrote:
->>>>>> 2. AF_XDP programs won't be able to access the metadata without usin=
-g a
->>>>>> custom XDP program that calls the kfuncs and puts the data into the
->>>>>> metadata area. We could solve this with some code in libxdp, though;=
- if
->>>>>> this code can be made generic enough (so it just dumps the available
->>>>>> metadata functions from the running kernel at load time), it may be
->>>>>> possible to make it generic enough that it will be forward-compatible
->>>>>> with new versions of the kernel that add new fields, which should
->>>>>> alleviate Florian's concern about keeping things in sync.
->>>>>
->>>>> Good point. I had to convert to a custom program to use the kfuncs :-(
->>>>> But your suggestion sounds good; maybe libxdp can accept some extra
->>>>> info about at which offset the user would like to place the metadata
->>>>> and the library can generate the required bytecode?
->>>>>
->>>>>> 3. It will make it harder to consume the metadata when building SKBs=
-. I
->>>>>> think the CPUMAP and veth use cases are also quite important, and th=
-at
->>>>>> we want metadata to be available for building SKBs in this path. May=
-be
->>>>>> this can be resolved by having a convenient kfunc for this that can =
-be
->>>>>> used for programs doing such redirects. E.g., you could just call
->>>>>> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
->>>>>> would recursively expand into all the kfunc calls needed to extract =
-the
->>>>>> metadata supported by the SKB path?
->>>>>
->>>>> So this xdp_copy_metadata_for_skb will create a metadata layout that
->>>>
->>>> Can the xdp_copy_metadata_for_skb be written as a bpf prog itself?
->>>> Not sure where is the best point to specify this prog though.  Somehow=
- during
->>>> bpf_xdp_redirect_map?
->>>> or this prog belongs to the target cpumap and the xdp prog redirecting=
- to this
->>>> cpumap has to write the meta layout in a way that the cpumap is expect=
-ing?
->>>
->>> We're probably interested in triggering it from the places where xdp
->>> frames can eventually be converted into skbs?
->>> So for plain 'return XDP_PASS' and things like bpf_redirect/etc? (IOW,
->>> anything that's not XDP_DROP / AF_XDP redirect).
->>> We can probably make it magically work, and can generate
->>> kernel-digestible metadata whenever data =3D=3D data_meta, but the
->>> question - should we?
->>> (need to make sure we won't regress any existing cases that are not
->>> relying on the metadata)
->>=20
->> So I was thinking about whether we could have the kernel do this
->> automatically, and concluded that this was probably not feasible in
->> general, which is why I suggested the explicit helper. My reasoning was
->> as follows:
->>=20
->> For straight XDP_PASS in the driver we don't actually need to do
->> anything today, as the driver itself will build the SKB and read any
->> metadata it needs from the HW descriptor[0].
->
-> The program can pop encap headers, mpls tags, ... and thus affect the
-> metadata in the descriptor (besides the timestamp).
+move libbpf_strlcpy() to bpf_util.h, and replace strncpy() with
+libbpf_strlcpy(), fix compile warning.
 
-Hmm, right, good point. How does XDP_PASS deal with that today, though?
+Compile samples/bpf, warning:
+$ cd samples/bpf
+$ make
+...
+cgroup_helpers.c: In function ‘__enable_controllers’:
+cgroup_helpers.c:80:17: warning: ‘strncpy’ specified bound 4097 equals destination size [-Wstringop-truncation]
+   80 |                 strncpy(enable, controllers, sizeof(enable));
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I guess this is an argument for making the "read HW metadata into SKB
-format" thing be a kfunc/helper rather than a flag to bpf_redirect(),
-then. Because then we can allow the XDP program to override/modify the
-metadata afterwards, either by defining it as:
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/testing/selftests/bpf/bpf_util.h       | 19 +++++++++++++++++++
+ tools/testing/selftests/bpf/cgroup_helpers.c |  3 ++-
+ tools/testing/selftests/bpf/xsk.c            | 20 +-------------------
+ 3 files changed, 22 insertions(+), 20 deletions(-)
 
-int xdp_copy_metadata_for_skb(struct xdp_md *ctx, struct xdp_skb_meta *over=
-ride, int flags)
-
-where the XDP program can fill in 'override' with new data that takes
-precedence over the stuff from the HW (like a modified checksum or
-offset or something).
-
-Or we can just have xdp_copy_metadata_for_skb() into the regular XDP
-metadata area, and let the XDP program modify it afterwards. I feel like
-the override argument would be easier to use, though.
-
-Also, having it be completely opaque *where* the metadata is stored when
-using xdp_copy_metadata_for_skb() lets us be more flexible about it.
-E.g., the helper could write the timestamp directly into
-skb_shared_info, instead of stuffing it into the metadata area where it
-then has to be copied out later.
-
->> This leaves packets that are redirected (either to a veth or a cpumap so
->> we build SKBs from them later); here the problem is that we buffer the
->> packets (for performance reasons) so that the redirect doesn't actually
->> happen until after the driver exits the NAPI loop. At which point we
->> don't have access to the HW descriptors anymore, so we can't actually
->> read the metadata.
->>=20
->> This means that if we want to execute the metadata gathering
->> automatically, we'd have to do it in xdp_do_redirect(). Which means that
->> we'll have to figure out, at that point, whether the XDP frame is likely
->> to be converted to an SKB. This will add at least one branch (and
->> probably more) that will be in-path for every redirected frame.
->
-> or forwarded to a tun device as an xdp frame and wanting to pass
-> metadata into a VM which may construct an skb in the guest. This case is
-> arguably aligned with the redirect from vendor1 to vendor2.
->
-> This thread (and others) seem to be focused on the Rx path, but the Tx
-> path is equally important with similar needs.
-
-You're right, of course. Thinking a bit out loud here, but I actually
-think the kfunc approach makes the TX side easier:
-
-We already have to ability to execute a second "TX" XDP program inside
-the devmaps. At which point that program is also tied to a particular
-interface. So we could duplicate the RX-side kfunc trick, and expose a
-set of *writer* kfuncs for metadata. So that an XDP program in the
-devmap can simply do:
-
-if (bpf_xdp_metadata_tx_timestamp_supported())
-  bpf_xdp_metadata_tx_timestamp(ctx, tsval);
-
-and those two kfuncs will be unrolled by the TX-side driver as well to
-store them wherever they need to go to reach the wire.
-
-The one complication here being, of course, that by the time the devmap
-XDP program is executed, the driver hasn't seen the frame at all, yet,
-so it doesn't have anywhere to store that data. We'd need to reuse the
-frame metadata area for this (with some flag indicating that it's
-valid), or we'd need a new area the driver could use as scratch space
-specific to the xdp_frame (like the skb->cb field, I suppose).
-
--Toke
+diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+index a3352a64c067..bf78212ff6e9 100644
+--- a/tools/testing/selftests/bpf/bpf_util.h
++++ b/tools/testing/selftests/bpf/bpf_util.h
+@@ -20,6 +20,25 @@ static inline unsigned int bpf_num_possible_cpus(void)
+ 	return possible_cpus;
+ }
+ 
++/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
++ * is zero-terminated string no matter what (unless sz == 0, in which case
++ * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
++ * in what is returned. Given this is internal helper, it's trivial to extend
++ * this, when necessary. Use this instead of strncpy inside libbpf source code.
++ */
++static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
++{
++	size_t i;
++
++	if (sz == 0)
++		return;
++
++	sz--;
++	for (i = 0; i < sz && src[i]; i++)
++		dst[i] = src[i];
++	dst[i] = '\0';
++}
++
+ #define __bpf_percpu_val_align	__attribute__((__aligned__(8)))
+ 
+ #define BPF_DECLARE_PERCPU(type, name)				\
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index e914cc45b766..e33b70e509da 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -13,6 +13,7 @@
+ #include <ftw.h>
+ 
+ #include "cgroup_helpers.h"
++#include "bpf_util.h"
+ 
+ /*
+  * To avoid relying on the system setup, when setup_cgroup_env is called
+@@ -77,7 +78,7 @@ static int __enable_controllers(const char *cgroup_path, const char *controllers
+ 		enable[len] = 0;
+ 		close(fd);
+ 	} else {
+-		strncpy(enable, controllers, sizeof(enable));
++		libbpf_strlcpy(enable, controllers, sizeof(enable));
+ 	}
+ 
+ 	snprintf(path, sizeof(path), "%s/cgroup.subtree_control", cgroup_path);
+diff --git a/tools/testing/selftests/bpf/xsk.c b/tools/testing/selftests/bpf/xsk.c
+index 0b3ff49c740d..cf6e9ab37b1b 100644
+--- a/tools/testing/selftests/bpf/xsk.c
++++ b/tools/testing/selftests/bpf/xsk.c
+@@ -33,6 +33,7 @@
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ #include "xsk.h"
++#include "bpf_util.h"
+ 
+ #ifndef SOL_XDP
+  #define SOL_XDP 283
+@@ -521,25 +522,6 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
+ 	return 0;
+ }
+ 
+-/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
+- * is zero-terminated string no matter what (unless sz == 0, in which case
+- * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
+- * in what is returned. Given this is internal helper, it's trivial to extend
+- * this, when necessary. Use this instead of strncpy inside libbpf source code.
+- */
+-static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
+-{
+-        size_t i;
+-
+-        if (sz == 0)
+-                return;
+-
+-        sz--;
+-        for (i = 0; i < sz && src[i]; i++)
+-                dst[i] = src[i];
+-        dst[i] = '\0';
+-}
+-
+ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ {
+ 	struct ethtool_channels channels = { .cmd = ETHTOOL_GCHANNELS };
+-- 
+2.31.1
 
