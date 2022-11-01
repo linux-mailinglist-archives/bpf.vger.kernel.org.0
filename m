@@ -2,183 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FBB614C7C
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E260614CED
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbiKAOXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 10:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S230341AbiKAOmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 10:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbiKAOXV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 10:23:21 -0400
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAB51B788
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 07:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1667312593;
-        bh=l57fPtvVIgXTiYLMlFVCC6EXs6IDtJKDnxNvjdOUkcM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=dG4TA+4Bll7492rMsS8WJaix0eoOwd7HqJaAylQ9majA9lMWH3lAdDOHRgomRnAkx
-         p7gkd8+tclRIsPHJiVIpcZWie70dvu8i3VBT42+H8c6GYIR1/No4zU6Zrp2E/t+vGO
-         dLTymhQKQvxhQ7X4h5iBGnzbLRC7wWi94CMGk8x8=
-Received: from localhost.localdomain ([111.199.189.86])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 5C8A8617; Tue, 01 Nov 2022 22:23:08 +0800
-X-QQ-mid: xmsmtpt1667312588tydmkk56a
-Message-ID: <tencent_630BF3724BC5EA157B341EB1C7604EE83705@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8nya1MpOLbHO6M3R7kUmTeJKqU8bBsXqWRReOWDSDVWI6V8tWhN
-         YGrHWs/ZqniKBScePxRhbqgGs190QduRHvk0+3ORugItPyo+KjTrVkAwfZFRPoHaE8g6aTEOsKu/
-         DtH3P2KV1Rvi4Zr3KSKl6Crl6xCDX/qiUJ62/aimuZao6phXPLed2obw86eoOAMtKZZmVRVHBl9s
-         GUsWE0XQH2eFlp3KCVkymh5ZzPdiB6BsmwCY3x3g6XDmdhEtSkKrdzGeholKfA5WJx58BE/lSMFz
-         h0G5vEkQ2E7ICILcIqvMxk6K8+9cgRp8bGr5JETqN7v7rpa2sphVrCpS6m5u1Lxjl18KeTaRBK9y
-         Syt6VMCfnctkcFAOLumCvwKbXj6FbJYkzEFOWzvktbWNbskSG7JSc256E+tGIQVlsmjKjTubmN/Z
-         hic6em+Wmub3kqm8Oo0NutB2do6AcJ0PjYDd0Rh3cqc2tqx/Y3BiAs6ISjGvBHPte/ev43eU7CEc
-         AKQR56nHD0HgCvOnWgBlYKKNxM3qC2DdB6a/oOloZI8i6WVqfayjLJ/hO8wfdM6UCNOdvNkhhtSc
-         WBOMPqRpICZQd/WWJmhzNLRCe9MQsHZSg0/C8UFogHQ2zZNjISA++DtrwGhB8RTLvvRZepfka+GK
-         45NQm2uC8syIUepLvCMzZ0jf3DpHEX7U+5uyhzO/dH8Fv7MQKs7k8YlZigI/QJe8BIb2fA0T+al/
-         m0WJdbe5m6LEaRZcQgaQlYrnlTkzGZmogl367ToL5MAILCJu4itC7GBh1voxTYzlua4GUrQYDsqI
-         Niv4X/6Hys/q5uEXXqgjN6eLTo6qrPisOvdQkVp0zTXN2rd52Yhf48rXuqjdCFaRWbJb0sywfEda
-         vuqFjBZDGMdk1E6CyXCz9K+R8GJSyHjRi93e1WoOvUtDyPMxBKfzClOfC90AIl3dlYNG0K1bb6WO
-         9hRHCW4gftV8RBiHNIv6KcqXI7XA74KNDpGFaOXhhIiP9a6kgiYio++dncugKNo81BVCFy5pTbqM
-         o7M0PjNEQczUTFfkRI
-From:   Rong Tao <rtoax@foxmail.com>
-To:     daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, david.laight@aculab.com, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        martin.lau@linux.dev, mykolal@fb.com, rongtao@cestc.cn,
-        rtoax@foxmail.com, sdf@google.com, shuah@kernel.org,
-        song@kernel.org, yhs@fb.com
-Subject: [PATCH bpf-next] selftests/bpf: Fix strncpy() fortify warning
-Date:   Tue,  1 Nov 2022 22:23:07 +0800
-X-OQ-MSGID: <20221101142307.19414-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <fc8634e8-6efd-9911-cab4-07ad6ba4ad33@iogearbox.net>
-References: <fc8634e8-6efd-9911-cab4-07ad6ba4ad33@iogearbox.net>
+        with ESMTP id S230344AbiKAOmh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 10:42:37 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EE1120B8
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 07:42:36 -0700 (PDT)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1opsAY-0006E7-QX; Tue, 01 Nov 2022 15:23:10 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1opsAY-0009SD-GJ; Tue, 01 Nov 2022 15:23:10 +0100
+Subject: Re: [PATCH bpf-next] selftests: fix test group SKIPPED result
+To:     Mykola Lysenko <mykolal@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Martin Lau <kafai@meta.com>, Kernel Team <Kernel-team@fb.com>
+References: <20221028175530.1413351-1-cerasuolodomenico@gmail.com>
+ <635c64abe004c_b1ba20850@john.notmuch>
+ <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7cedf721-0438-ba98-1e9a-7a07985d88b1@iogearbox.net>
+Date:   Tue, 1 Nov 2022 15:23:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26706/Tue Nov  1 08:52:34 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+Hi Mykola, hi Domenico,
 
-move libbpf_strlcpy() to bpf_util.h, and replace strncpy() with
-libbpf_strlcpy(), fix compile warning.
+On 11/1/22 12:44 AM, Mykola Lysenko wrote:
+> Hi John,
+> 
+> Test FAILs when there is an unexpected condition during test/subtest execution, developer does not control it. Hence we propagate FAIL subtest result to be the test result, test_progs result and consequently CI result.
+> On the other hand, SKIP state is fully controlled by us. E.g. we decide when particular subtest/test should be skipped. We do not propagate SKIP state to the test_progs result. test_progs result can either be OK or FAIL. Also, SKIPPED subtest is not an indication of a problem in a test. Hence, I do not think one SKIPPED subtest should mark the whole test as SKIPPED.
+> 
+> For example, core_reloc_btfgen has 77 subtests (https://github.com/kernel-patches/bpf/actions/runs/3349035937/jobs/5548924891#step:6:4895). Some of them are skipped right now. However, most of them are passing. It is a normal state. For me, marking core_reloc_btfgen as SKIP would mean that something is not right with the whole test. Also, I do not think we are reviewing SKIP tests / subtests right now. Maybe we should. But this would be orthogonal discussion to this patch.
 
-Compile samples/bpf, warning:
-$ cd samples/bpf
-$ make
-...
-cgroup_helpers.c: In function ‘__enable_controllers’:
-cgroup_helpers.c:80:17: warning: ‘strncpy’ specified bound 4097 equals destination size [-Wstringop-truncation]
-   80 |                 strncpy(enable, controllers, sizeof(enable));
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I think parts of the above should probably be incorporated into the below
+commit description to better explain the rationale for the change.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/bpf_util.h       | 19 +++++++++++++++++++
- tools/testing/selftests/bpf/cgroup_helpers.c |  3 ++-
- tools/testing/selftests/bpf/xsk.c            | 20 +-------------------
- 3 files changed, 22 insertions(+), 20 deletions(-)
+>> On Oct 28, 2022, at 4:24 PM, John Fastabend <john.fastabend@gmail.com> wrote:
+>>
+>> Domenico Cerasuolo wrote:
+>>> From: Domenico Cerasuolo <dceras@meta.com>
+>>>
+>>> When showing the result of a test group, if one
+>>> of the subtests was skipped, while still having
+>>> passing subtets, the group result was marked as
 
-diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
-index a3352a64c067..bf78212ff6e9 100644
---- a/tools/testing/selftests/bpf/bpf_util.h
-+++ b/tools/testing/selftests/bpf/bpf_util.h
-@@ -20,6 +20,25 @@ static inline unsigned int bpf_num_possible_cpus(void)
- 	return possible_cpus;
- }
- 
-+/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
-+ * is zero-terminated string no matter what (unless sz == 0, in which case
-+ * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
-+ * in what is returned. Given this is internal helper, it's trivial to extend
-+ * this, when necessary. Use this instead of strncpy inside libbpf source code.
-+ */
-+static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
-+{
-+	size_t i;
-+
-+	if (sz == 0)
-+		return;
-+
-+	sz--;
-+	for (i = 0; i < sz && src[i]; i++)
-+		dst[i] = src[i];
-+	dst[i] = '\0';
-+}
-+
- #define __bpf_percpu_val_align	__attribute__((__aligned__(8)))
- 
- #define BPF_DECLARE_PERCPU(type, name)				\
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index e914cc45b766..e33b70e509da 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -13,6 +13,7 @@
- #include <ftw.h>
- 
- #include "cgroup_helpers.h"
-+#include "bpf_util.h"
- 
- /*
-  * To avoid relying on the system setup, when setup_cgroup_env is called
-@@ -77,7 +78,7 @@ static int __enable_controllers(const char *cgroup_path, const char *controllers
- 		enable[len] = 0;
- 		close(fd);
- 	} else {
--		strncpy(enable, controllers, sizeof(enable));
-+		libbpf_strlcpy(enable, controllers, sizeof(enable));
- 	}
- 
- 	snprintf(path, sizeof(path), "%s/cgroup.subtree_control", cgroup_path);
-diff --git a/tools/testing/selftests/bpf/xsk.c b/tools/testing/selftests/bpf/xsk.c
-index 0b3ff49c740d..cf6e9ab37b1b 100644
---- a/tools/testing/selftests/bpf/xsk.c
-+++ b/tools/testing/selftests/bpf/xsk.c
-@@ -33,6 +33,7 @@
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
- #include "xsk.h"
-+#include "bpf_util.h"
- 
- #ifndef SOL_XDP
-  #define SOL_XDP 283
-@@ -521,25 +522,6 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
- 	return 0;
- }
- 
--/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
-- * is zero-terminated string no matter what (unless sz == 0, in which case
-- * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
-- * in what is returned. Given this is internal helper, it's trivial to extend
-- * this, when necessary. Use this instead of strncpy inside libbpf source code.
-- */
--static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
--{
--        size_t i;
--
--        if (sz == 0)
--                return;
--
--        sz--;
--        for (i = 0; i < sz && src[i]; i++)
--                dst[i] = src[i];
--        dst[i] = '\0';
--}
--
- static int xsk_get_max_queues(struct xsk_socket *xsk)
- {
- 	struct ethtool_channels channels = { .cmd = ETHTOOL_GCHANNELS };
--- 
-2.31.1
+nit: subtets
+
+>>> SKIPPED.
+>>>
+>>> #223/1   usdt/basic:SKIP
+>>> #223/2   usdt/multispec:OK
+>>> #223     usdt:SKIP
+>>>
+>>> With this change only if all of the subtests
+>>> were skipped the group test is marked as SKIPPED.
+>>>
+>>> #223/1   usdt/basic:SKIP
+>>> #223/2   usdt/multispec:OK
+>>> #223     usdt:OK
+>>
+>> I'm not sure don't you want to know that some of the tests
+>> were skipped? With this change its not knowable from output
+>> if everything passed or one passed.
+>>
+>> I would prefer the behavior: If anything fails return
+>> FAIL, else if anything is skipped SKIP and if _everything_
+>> passes mark it OK.
+>>
+>> My preference is to drop this change.
+
+I guess for manual testing you could just grep for usdt and see all subtest
+results. I think changing from SKIP to OK is fine, but could we indicate e.g.
+"usdt:OK (SKIP:1/2)" to differ from "usdt:OK" where nothing had to be skipped?
+Presumably this would address John's concern, too.
+
+>>> Signed-off-by: Domenico Cerasuolo <dceras@meta.com>
+>>> ---
+>>> tools/testing/selftests/bpf/test_progs.c | 11 +++++++++--
+>>> 1 file changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+>>> index 0e9a47f97890..14b70393018b 100644
+>>> --- a/tools/testing/selftests/bpf/test_progs.c
+>>> +++ b/tools/testing/selftests/bpf/test_progs.c
+>>> @@ -222,6 +222,11 @@ static char *test_result(bool failed, bool skipped)
+>>> 	return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
+>>> }
+>>>
+>>> +static char *test_group_result(int tests_count, bool failed, int skipped)
+>>> +{
+>>> +	return failed ? "FAIL" : (skipped == tests_count ? "SKIP" : "OK");
+>>> +}
+>>> +
+>>> static void print_test_log(char *log_buf, size_t log_cnt)
+>>> {
+>>> 	log_buf[log_cnt] = '\0';
+>>> @@ -308,7 +313,8 @@ static void dump_test_log(const struct prog_test_def *test,
+>>> 	}
+>>>
+>>> 	print_test_name(test->test_num, test->test_name,
+>>> -			test_result(test_failed, test_state->skip_cnt));
+>>> +			test_group_result(test_state->subtest_num,
+>>> +				test_failed, test_state->skip_cnt));
+>>> }
+>>>
+>>> static void stdio_restore(void);
+>>> @@ -1071,7 +1077,8 @@ static void run_one_test(int test_num)
+>>>
+>>> 	if (verbose() && env.worker_id == -1)
+>>> 		print_test_name(test_num + 1, test->test_name,
+>>> -				test_result(state->error_cnt, state->skip_cnt));
+>>> +				test_group_result(state->subtest_num,
+>>> +					state->error_cnt, state->skip_cnt));
+>>>
+>>> 	reset_affinity();
+>>> 	restore_netns();
+>>> -- 
+>>> 2.30.2
+>>>
+>>
+>>
+> 
 
