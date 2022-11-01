@@ -2,111 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E756143CE
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 05:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A716361442C
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 06:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbiKAEEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 00:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        id S229601AbiKAFXt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 01:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKAEEo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 00:04:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C47B313F9A;
-        Mon, 31 Oct 2022 21:04:42 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N1brK2f6GzVj3y;
-        Tue,  1 Nov 2022 11:59:45 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 1 Nov
- 2022 12:04:40 +0800
-From:   Baisong Zhong <zhongbaisong@huawei.com>
-To:     <edumazet@google.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <pabeni@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <zhongbaisong@huawei.com>,
-        <ast@kernel.org>, <song@kernel.org>, <yhs@fb.com>,
-        <haoluo@google.com>
-Subject: [PATCH -next] bpf, test_run: fix alignment problem in bpf_prog_test_run_skb()
-Date:   Tue, 1 Nov 2022 12:04:40 +0800
-Message-ID: <20221101040440.3637007-1-zhongbaisong@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229827AbiKAFXo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 01:23:44 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F99B02;
+        Mon, 31 Oct 2022 22:23:44 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id o7so9036304pjj.1;
+        Mon, 31 Oct 2022 22:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rp3fd65nzOHH/UKQRRA0QHWan+ndr83fFCTGqjP1WxA=;
+        b=e2i7PnDD5BlFpD3CVoE9dzVzHj8/8ElaJEJEkekAMAhr0PeLEvx8Nkeca/iGwARLku
+         ZMBlL5qUGeGUdhROF58J9JvAlMjW8weum5pd04QmLtOdLZQpVanJXpICVbNrleBx0DbR
+         jcMo0TqD5yKpsAky8QtSfMkMv7UjrnazSSCKxUWpaMXkUnk8Pb5PxnZ6tia0hc/5zyEf
+         zJgDRGOc+UhMJzqXI7of+Ncs0iS6WP1LVIPjHyvY+a947n3edYB8a9LN7fslW7BCpOwm
+         jfvRm2YZHTyL9Vpf1Ijv2BZAEcHjT+TuloYSM4772vDVZ3huAsandGJscGtHzURKhQTE
+         l+Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rp3fd65nzOHH/UKQRRA0QHWan+ndr83fFCTGqjP1WxA=;
+        b=vcGnkmIVT5piLNgi7iRE2CiojwpfERPpVYchECqULILHUPvzE7jbztAJEm7dcX0YEs
+         w8pSCs15Kvzc7RzXGYGXugBen+H5V9REoGNkHAQnxWuc59/NIYyDqw7BNLRWgMIZ+4hc
+         k8tRh4FodGWFe0mO9YUcblCNpV/N9Yr0GQiw2HBrpWvqZ0oN50S/lC3QPAMEbzbU5ycd
+         S2SOo6IlASGakYsmXFjgQjOaEXrtuIJRZXG0Oijkv1i1oQIGuMnuqWQ4E6bLIJKNyef9
+         h7qrOhR4JTrtIPBAxxP80NACem3952U3Kw1cHRjB8H4pGDiVwPhIXq6vOcOs5DBYkrrj
+         WXag==
+X-Gm-Message-State: ACrzQf0uog1Rwx7qGqtUCKvxPb5WUylRO22E5muOyKHHnOhHFYW+GvQV
+        RPvaLs/gN5dQGrPXmE4PET0=
+X-Google-Smtp-Source: AMsMyM48/cZIkxyjNEHjJkr1DsIrUu5N0LafBdTd7gj1N847b9k7gAIM8vbc8YOiy9ZKBI4EPK1Elw==
+X-Received: by 2002:a17:902:aa02:b0:186:9395:4e82 with SMTP id be2-20020a170902aa0200b0018693954e82mr18210629plb.5.1667280223695;
+        Mon, 31 Oct 2022 22:23:43 -0700 (PDT)
+Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:7e9:8a64:69f2:c3c7])
+        by smtp.gmail.com with ESMTPSA id i4-20020a056a00004400b00561b53512b0sm5532254pfk.195.2022.10.31.22.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Oct 2022 22:23:43 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH bpf-next 0/3] bpf: Add bpf_perf_event_read_sample() helper (v1)
+Date:   Mon, 31 Oct 2022 22:23:37 -0700
+Message-Id: <20221101052340.1210239-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recently, we got a syzkaller problem because of aarch64
-alignment fault if KFENCE enabled.
+Hello,
 
-When the size from user bpf program is an odd number, like
-399, 407, etc, it will cause skb shard info's alignment access,
-as seen below:
+I'd like to add bpf_perf_event_read_sample() helper to get the sample data
+of an perf_event from BPF programs.  This enables more sophistigated filtering
+for the perf samples.  Initially I'm thinking of code and data address based
+filtering.
 
-BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
+The original discussion can be seen here:
+  https://lore.kernel.org/r/20220823210354.1407473-1-namhyung@kernel.org
 
-Use-after-free read at 0xffff6254fffac077 (in kfence-#213):
- __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:26 [inline]
- arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
- arch_atomic_inc include/linux/atomic-arch-fallback.h:270 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:241 [inline]
- __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
- skb_clone+0xf4/0x214 net/core/skbuff.c:1481
- ____bpf_clone_redirect net/core/filter.c:2433 [inline]
- bpf_clone_redirect+0x78/0x1c0 net/core/filter.c:2420
- bpf_prog_d3839dd9068ceb51+0x80/0x330
- bpf_dispatcher_nop_func include/linux/bpf.h:728 [inline]
- bpf_test_run+0x3c0/0x6c0 net/bpf/test_run.c:53
- bpf_prog_test_run_skb+0x638/0xa7c net/bpf/test_run.c:594
- bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
- __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
- __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
+The bpf_perf_event_read_sample() will take a buffer and size to save the data
+as well as a flag to specify perf sample type.  The flag argument should have
+a single value in the enum perf_event_sample_format like PERF_SAMPLE_IP.  If
+the buffer is NULL, it will return the size of data instead.  This is to
+support variable length data in the future.
 
-kfence-#213: 0xffff6254fffac000-0xffff6254fffac196, size=407, cache=kmalloc-512
+The first patch adds bpf_prepare_sample() to setup necessary perf sample data
+before calling the bpf overflow handler for the perf event.  The existing
+logic for callchain moved to the function and it sets IP and ADDR data if
+they are not set already.
 
-allocated by task 15074 on cpu 0 at 1342.585390s:
- kmalloc include/linux/slab.h:568 [inline]
- kzalloc include/linux/slab.h:675 [inline]
- bpf_test_init.isra.0+0xac/0x290 net/bpf/test_run.c:191
- bpf_prog_test_run_skb+0x11c/0xa7c net/bpf/test_run.c:512
- bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
- __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
- __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
- __arm64_sys_bpf+0x50/0x60 kernel/bpf/syscall.c:4381
+The second patch actually adds the bpf_perf_event_read_sample() helper and
+supports IP and ADDR data.  The last patch adds a test code for this.
 
-To fix the problem, we round up allocations with kmalloc_size_roundup()
-so that build_skb()'s use of kize() is always alignment and no special
-handling of the memory is needed by KFENCE.
+The code is available at 'bpf/perf-sample-v1' branch in
 
-Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
-Signed-off-by: Baisong Zhong <zhongbaisong@huawei.com>
----
- net/bpf/test_run.c | 1 +
- 1 file changed, 1 insertion(+)
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 13d578ce2a09..058b67108873 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -774,6 +774,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 	if (user_size > size)
- 		return ERR_PTR(-EMSGSIZE);
- 
-+	size = kmalloc_size_roundup(size);
- 	data = kzalloc(size + headroom + tailroom, GFP_USER);
- 	if (!data)
- 		return ERR_PTR(-ENOMEM);
+Thanks,
+Namhyung
+
+Namhyung Kim (3):
+  perf/core: Prepare sample data before calling BPF
+  bpf: Add bpf_perf_event_read_sample() helper
+  bpf: Add perf_event_read_sample test cases
+
+ include/uapi/linux/bpf.h                      |  23 +++
+ kernel/events/core.c                          |  40 +++-
+ kernel/trace/bpf_trace.c                      |  49 +++++
+ tools/include/uapi/linux/bpf.h                |  23 +++
+ .../selftests/bpf/prog_tests/perf_sample.c    | 172 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_sample.c    |  28 +++
+ 6 files changed, 326 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_sample.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_sample.c
+
+
+base-commit: e39e739ab57399f46167d453bbdb8ef8d57c6488
 -- 
-2.25.1
+2.38.1.273.g43a17bfeac-goog
 
