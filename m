@@ -2,307 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96136149FE
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 12:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F294614A50
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 13:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiKALyz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 07:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
+        id S229851AbiKAMIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 08:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKALyy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 07:54:54 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BF51B6
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 04:54:52 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id h12so13789130ljg.9
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 04:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T+NHB+45QH9Lm1JwMIt8qyGsRjfvqvv2Oj9l6Fz9484=;
-        b=XqNPJfNlXBKV6CdupK1WlEroJKGEk12PXwL/nLfmDbRphmIB57U9XKaMyXb/TpWmTS
-         2a8S3HYbIzBTirdWLAFnceZBKHKl5V43odVbc3hz0sTRUiEqL8WTzRlS8GYq4qAxjnCw
-         A+kSrDIVZpkqsdwa1LP6PD8LtkZoVF6DSTVIXDuFJvMRRanKl/PBilSjS1X7vwofUXjw
-         WU+iyNHg555cd8Ddiwm3htSfDS/KJta7n2GiAr1yGRYTeqyJP5ZgSZqSvTdj+i9Q/dm0
-         +59mG3Owr8E4D33ZCn9YHc6fKkpC2A/pF2nvHIJqTMxwf3Apgto0KXJgh4L/U8A4qHrH
-         asTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T+NHB+45QH9Lm1JwMIt8qyGsRjfvqvv2Oj9l6Fz9484=;
-        b=CiHG/ijKBCU+dFhvDmbiHIxGkQtNwdrQO2Gc6X71N3IGykAfeTsQsQW3F+qx4pdEBq
-         SYVGckm2ziYRH7nxIE/jP19QrnyVJBD7wC/z+ss2t6ZhT7uDaK+PKZTJCdOXKJrszyPJ
-         eUFFOFhLQwgHSIXks+sTkK1C8Tt/xoU+LoQSeq8WiT9IDc6Ksj+yKMFJdSGoCRRI7RTR
-         S8dtmpziCq9703okOguMerCaJl+en9iLClD7zIff+xsSFw+bNPq13S/F+uK3Em0YwnBQ
-         URz7X384V6micIJpW+K4pgWjPZukqxo7UCsKRDCoYLvnpAcTZtSUeC4wMSuyGC36iH+J
-         TpwQ==
-X-Gm-Message-State: ACrzQf0aJC+A6dG1mMoNhk+cH0lUpPj6b376UVmjfURShwzXdDOXPv8G
-        s0rQh40DJPLs28miKQNYU4o=
-X-Google-Smtp-Source: AMsMyM54VKGz/3N1shyObhBDBs6i4meDvY8fQ6hjvP+FwGXjUu3zMzT3ayiXLB37wcDZYW1BnOdINQ==
-X-Received: by 2002:a2e:9848:0:b0:277:72a:41a5 with SMTP id e8-20020a2e9848000000b00277072a41a5mr801251ljj.352.1667303690742;
-        Tue, 01 Nov 2022 04:54:50 -0700 (PDT)
-Received: from pc636 (host-90-235-23-76.mobileonline.telia.com. [90.235.23.76])
-        by smtp.gmail.com with ESMTPSA id k14-20020a2ea26e000000b0026c2baa72d4sm1764033ljm.27.2022.11.01.04.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 04:54:50 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 1 Nov 2022 12:54:47 +0100
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-        x86@kernel.org, peterz@infradead.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, dave.hansen@intel.com,
-        urezki@gmail.com, mcgrof@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v1 1/5] vmalloc: introduce vmalloc_exec,
- vfree_exec, and vcopy_exec
-Message-ID: <Y2EJB34M3NPKBY3v@pc636>
-References: <20221031215834.1615596-1-song@kernel.org>
- <20221031215834.1615596-2-song@kernel.org>
+        with ESMTP id S229576AbiKAMIJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 08:08:09 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E2C2700
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 05:08:07 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N1pcq1gCGzKGJC
+        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 20:05:31 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgDXb9QcDGFjOtK_BA--.37832S2;
+        Tue, 01 Nov 2022 20:08:00 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tony Finch <dot@dotat.at>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+References: <20220924133620.4147153-1-houtao@huaweicloud.com>
+ <a4eaa33b-016e-b880-cfe6-16ccef7d2141@dotat.at>
+ <CAEf4Bzaj_fUp7z=pERqX5rXrDVSORSXn3m64KKs78MoNy2jNPg@mail.gmail.com>
+Message-ID: <e031ba2b-59f9-bf87-d88a-cbfb10ab50a5@huaweicloud.com>
+Date:   Tue, 1 Nov 2022 20:07:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221031215834.1615596-2-song@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4Bzaj_fUp7z=pERqX5rXrDVSORSXn3m64KKs78MoNy2jNPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgDXb9QcDGFjOtK_BA--.37832S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr48Cw4xGFWrAFW8XF1kKrg_yoWxWr4rpF
+        WFgayjy34DJa4xCw4vvw1UJayFy3y8JFW5GF15G3ykAFZ8uF97Kr1fKa1Y9as7ur4fC340
+        qrs0y347ZFWDZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 02:58:30PM -0700, Song Liu wrote:
-> vmalloc_exec is used to allocate memory to host dynamic kernel text
-> (modules, BPF programs, etc.) with huge pages. This is similar to the
-> proposal by Peter in [1].
-> 
-> A new tree of vmap_area, free_text_area_* tree, is introduced in addition
-> to free_vmap_area_* and vmap_area_*. vmalloc_exec allocates pages from
-> free_text_area_*. When there isn't enough space left in free_text_area_*,
-> new PMD_SIZE page(s) is allocated from free_vmap_area_* and added to
-> free_text_area_*. To be more accurate, the vmap_area is first added to
-> vmap_area_* tree and then moved to free_text_area_*. This extra move
-> simplifies the logic of vmalloc_exec.
-> 
-> vmap_area in free_text_area_* tree are backed with memory, but we need
-> subtree_max_size for tree operations. Therefore, vm_struct for these
-> vmap_area are stored in a separate list, all_text_vm.
-> 
-> The new tree allows separate handling of < PAGE_SIZE allocations, as
-> current vmalloc code mostly assumes PAGE_SIZE aligned allocations. This
-> version of vmalloc_exec can handle bpf programs, which uses 64 byte
-> aligned allocations), and modules, which uses PAGE_SIZE aligned
-> allocations.
-> 
-> Memory allocated by vmalloc_exec() is set to RO+X before returning to the
-> caller. Therefore, the caller cannot write directly write to the memory.
-> Instead, the caller is required to use vcopy_exec() to update the memory.
-> For the safety and security of X memory, vcopy_exec() checks the data
-> being updated always in the memory allocated by one vmalloc_exec() call.
-> vcopy_exec() uses text_poke like mechanism and requires arch support.
-> Specifically, the arch need to implement arch_vcopy_exec().
-> 
-> In vfree_exec(), the memory is first erased with arch_invalidate_exec().
-> Then, the memory is added to free_text_area_*. If this free creates big
-> enough continuous free space (> PMD_SIZE), vfree_exec() will try to free
-> the backing vm_struct.
-> 
-> [1] https://lore.kernel.org/bpf/Ys6cWUMHO8XwyYgr@hirez.programming.kicks-ass.net/
-> 
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  include/linux/vmalloc.h |   5 +
->  mm/nommu.c              |  12 ++
->  mm/vmalloc.c            | 318 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 335 insertions(+)
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 096d48aa3437..9b2042313c12 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -154,6 +154,11 @@ extern void *__vmalloc_node_range(unsigned long size, unsigned long align,
->  void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
->  		int node, const void *caller) __alloc_size(1);
->  void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
-> +void *vmalloc_exec(unsigned long size, unsigned long align) __alloc_size(1);
-> +void *vcopy_exec(void *dst, void *src, size_t len);
-> +void vfree_exec(void *addr);
-> +void *arch_vcopy_exec(void *dst, void *src, size_t len);
-> +int arch_invalidate_exec(void *ptr, size_t len);
->  
->  extern void *__vmalloc_array(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
->  extern void *vmalloc_array(size_t n, size_t size) __alloc_size(1, 2);
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 214c70e1d059..8a1317247ef0 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -371,6 +371,18 @@ int vm_map_pages_zero(struct vm_area_struct *vma, struct page **pages,
->  }
->  EXPORT_SYMBOL(vm_map_pages_zero);
->  
-> +void *vmalloc_exec(unsigned long size, unsigned long align)
-> +{
-> +	return NULL;
-> +}
-> +
-> +void *vcopy_exec(void *dst, void *src, size_t len)
-> +{
-> +	return ERR_PTR(-EOPNOTSUPP);
-> +}
-> +
-> +void vfree_exec(const void *addr) { }
-> +
->  /*
->   *  sys_brk() for the most part doesn't need the global kernel
->   *  lock, except when an application is doing something nasty
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index ccaa461998f3..6f4c73e67191 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -72,6 +72,9 @@ early_param("nohugevmalloc", set_nohugevmalloc);
->  static const bool vmap_allow_huge = false;
->  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMALLOC */
->  
-> +#define PMD_ALIGN(addr) ALIGN(addr, PMD_SIZE)
-> +#define PMD_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PMD_SIZE)
-> +
->  bool is_vmalloc_addr(const void *x)
->  {
->  	unsigned long addr = (unsigned long)kasan_reset_tag(x);
-> @@ -769,6 +772,38 @@ static LIST_HEAD(free_vmap_area_list);
->   */
->  static struct rb_root free_vmap_area_root = RB_ROOT;
->  
-> +/*
-> + * free_text_area for vmalloc_exec()
-> + */
-> +static DEFINE_SPINLOCK(free_text_area_lock);
-> +/*
-> + * This linked list is used in pair with free_text_area_root.
-> + * It gives O(1) access to prev/next to perform fast coalescing.
-> + */
-> +static LIST_HEAD(free_text_area_list);
-> +
-> +/*
-> + * This augment red-black tree represents the free text space.
-> + * All vmap_area objects in this tree are sorted by va->va_start
-> + * address. It is used for allocation and merging when a vmap
-> + * object is released.
-> + *
-> + * Each vmap_area node contains a maximum available free block
-> + * of its sub-tree, right or left. Therefore it is possible to
-> + * find a lowest match of free area.
-> + *
-> + * vmap_area in this tree are backed by RO+X memory, but they do
-> + * not have valid vm pointer (because we need subtree_max_size).
-> + * The vm for these vmap_area are stored in all_text_vm.
-> + */
-> +static struct rb_root free_text_area_root = RB_ROOT;
-> +
-> +/*
-> + * List of vm_struct for free_text_area_root. This list is rarely
-> + * accessed, so the O(N) complexity is not likely a real issue.
-> + */
-> +struct vm_struct *all_text_vm;
-> +
->  /*
->   * Preload a CPU with one object for "no edge" split case. The
->   * aim is to get rid of allocations from the atomic context, thus
-> @@ -3313,6 +3348,289 @@ void *vmalloc(unsigned long size)
->  }
->  EXPORT_SYMBOL(vmalloc);
->  
-> +#if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
-> +#define VMALLOC_EXEC_START MODULES_VADDR
-> +#define VMALLOC_EXEC_END MODULES_END
-> +#else
-> +#define VMALLOC_EXEC_START VMALLOC_START
-> +#define VMALLOC_EXEC_END VMALLOC_END
-> +#endif
-> +
-> +static void move_vmap_to_free_text_tree(void *addr)
-> +{
-> +	struct vmap_area *va;
-> +
-> +	/* remove from vmap_area_root */
-> +	spin_lock(&vmap_area_lock);
-> +	va = __find_vmap_area((unsigned long)addr, &vmap_area_root);
-> +	if (WARN_ON_ONCE(!va)) {
-> +		spin_unlock(&vmap_area_lock);
-> +		return;
-> +	}
-> +	unlink_va(va, &vmap_area_root);
-> +	spin_unlock(&vmap_area_lock);
-> +
-> +	/* make the memory RO+X */
-> +	memset(addr, 0, va->va_end - va->va_start);
-> +	set_memory_ro(va->va_start, (va->va_end - va->va_start) >> PAGE_SHIFT);
-> +	set_memory_x(va->va_start, (va->va_end - va->va_start) >> PAGE_SHIFT);
-> +
-> +	/* add to all_text_vm */
-> +	va->vm->next = all_text_vm;
-> +	all_text_vm = va->vm;
-> +
-> +	/* add to free_text_area_root */
-> +	spin_lock(&free_text_area_lock);
-> +	merge_or_add_vmap_area_augment(va, &free_text_area_root, &free_text_area_list);
-> +	spin_unlock(&free_text_area_lock);
-> +}
-> +
-> +/**
-> + * vmalloc_exec - allocate virtually contiguous RO+X memory
-> + * @size:    allocation size
-> + *
-> + * This is used to allocate dynamic kernel text, such as module text, BPF
-> + * programs, etc. User need to use text_poke to update the memory allocated
-> + * by vmalloc_exec.
-> + *
-> + * Return: pointer to the allocated memory or %NULL on error
-> + */
-> +void *vmalloc_exec(unsigned long size, unsigned long align)
-> +{
-> +	struct vmap_area *va, *tmp;
-> +	unsigned long addr;
-> +	enum fit_type type;
-> +	int ret;
-> +
-> +	va = kmem_cache_alloc_node(vmap_area_cachep, GFP_KERNEL, NUMA_NO_NODE);
-> +	if (unlikely(!va))
-> +		return NULL;
-> +
-> +again:
-> +	preload_this_cpu_lock(&free_text_area_lock, GFP_KERNEL, NUMA_NO_NODE);
-> +	tmp = find_vmap_lowest_match(&free_text_area_root, size, align, 1, false);
-> +
-> +	if (!tmp) {
-> +		unsigned long alloc_size;
-> +		void *ptr;
-> +
-> +		spin_unlock(&free_text_area_lock);
-> +
-> +		/*
-> +		 * Not enough continuous space in free_text_area_root, try
-> +		 * allocate more memory. The memory is first added to
-> +		 * vmap_area_root, and then moved to free_text_area_root.
-> +		 */
-> +		alloc_size = roundup(size, PMD_SIZE * num_online_nodes());
-> +		ptr = __vmalloc_node_range(alloc_size, PMD_SIZE, VMALLOC_EXEC_START,
-> +					   VMALLOC_EXEC_END, GFP_KERNEL, PAGE_KERNEL,
-> +					   VM_ALLOW_HUGE_VMAP | VM_NO_GUARD,
-> +					   NUMA_NO_NODE, __builtin_return_address(0));
-> +		if (unlikely(!ptr))
-> +			goto err_out;
-> +
-> +		move_vmap_to_free_text_tree(ptr);
-> +		goto again;
->
-It is yet another allocator built on top of vmalloc. So there are 4 then.
-Could you please avoid of doing it? I do not find it as something that is
-reasonable.
+Hi,
 
---
-Uladzislau Rezki
+On 10/28/2022 2:52 AM, Andrii Nakryiko wrote:
+> On Wed, Oct 19, 2022 at 10:01 AM Tony Finch <dot@dotat.at> wrote:
+>> Hello all,
+>>
+>> I have just found out about this qp-trie work, and I'm pleased to hear
+>> that it is looking promising for you!
+>>
+> This is a very nice data structure, so thank you for doing a great job
+> explaining it in your post!
+Sorry for the late reply. Stilling digging into other problems. Also thanks Tony
+for his job on qp.git.
+>
+>> I have a few very broad observations:
+>>
+>> The "q" in qp-trie doesn't have to stand for "quadbit". There's a tradeoff
+>> between branch factor, maximum key length, and size of branch node. The
+>> greater the branch factor, the fewer indirections needed to traverse the
+>> tree; but if you go too wide then prefetching is less effective and branch
+>> nodes get bigger. I found that 5 bits was the sweet spot (32 wide bitmap,
+>> 30ish bit key length) - indexing 5 bit mouthfuls out of the key is HORRID
+>> but it was measurably faster than 4 bits. 6 bits (64 bits of bitmap) grew
+>> nodes from 16 bytes to 24 bytes, and it ended up slower.
+>>
+>> Your interior nodes are much bigger than mine, so you might find the
+>> tradeoff is different. I encourage you to try it out.
+parent field in qp_trie_branch is used to support non-recursive iteration and
+rcu_head is used for RCU memory freeing.
+> True, but I think for (at least initial) simplicity, sticking to
+> half-bytes would simplify the code and let us figure out BPF and
+> kernel-specific issues without having to worry about the correctness
+> of the qp-trie core logic itself.
+Agreed.
+>
+>> I saw there has been some discussion about locking and RCU. My current
+>> project is integrating a qp-trie into BIND, with the aim of replacing its
+>> old red-black tree for searching DNS records. It's based on a concurrent
+>> qp-trie that I prototyped in NSD (a smaller and simpler DNS server than
+>> BIND). My strategy is based on a custom allocator for interior nodes. This
+>> has two main effects:
+>>
+>>   * Node references are now 32 bit indexes into the allocator's pool,
+>>     instead of 64 bit pointers; nodes are 12 bytes instead of 16 bytes.
+>>
+>>   * The allocator supports copy-on-write and safe memory reclamation with
+>>     a fairly small overhead, 3 x 32 bit counters per memory chunk (each
+>>     chunk is roughly page sized).
+>>
+>> I wrote some notes when the design was new, but things have changed since
+>> then.
+>>
+>> https://dotat.at/@/2021-06-23-page-based-gc-for-qp-trie-rcu.html
+>>
+>> For memory reclamation the interior nodes get moved / compacted. It's a
+>> kind of garbage collector, but easy-mode because the per-chunk counters
+>> accurately indicate when compaction is worthwhile. I've written some notes
+>> on my several failed GC experiments; the last / current attempt seems (by
+>> and large) good enough.
+>>
+>> https://dotat.at/@/2022-06-22-compact-qp.html
+>>
+>> For exterior / leaf nodes, I'm using atomic refcounts to know when they
+>> can be reclaimed. The caller is responsible for COWing its leaves when
+>> necessary.
+>>
+>> Updates to the tree are transactional in style, and do not block readers:
+>> a single writer gets the write mutex, makes whatever changes it needs
+>> (copying as required), then commits by flipping the tree's root. After a
+>> commit it can free unused chunks. (Compaction can be part of an update
+>> transaction or a transaction of its own.)
+>>
+>> I'm currently using a reader-writer lock for the tree root, but I designed
+>> it with liburcu in mind, while trying to keep things simple.
+>>
+>> This strategy is very heavily biased in favour of readers, which suits DNS
+>> servers. I don't know enough about BPF to have any idea what kind of
+>> update traffic you need to support.
+> These are some nice ideas, I did a quick read on your latest blog
+> posts, missed those updates since last time I checked your blog.
+>
+> One limitation that we have in the BPF world is that BPF programs can
+> be run in extremely restrictive contexts (e.g., NMI), in which things
+> that user-space can assume will almost always succeed (like memory
+> allocation), are not allowed. We do have BPF-specific memory
+> allocator, but even it can fail to allocate memory, depending on
+> allocation patterns. So we need to think if this COW approach is
+> acceptable. I'd love for Hou Tao to think about this and chime in,
+> though, as he spent a lot of time thinking about particulars.
+Current implementation of BPF_MAP_TYPE_QP_TRIE is already COWed. When adding or
+deleting a leaf node, its parent interior node will be copied to a new interior
+node, the pointer to the old parent node (in the grand-parent interior node)
+will be updated by the new parent node, and the old parent node will be RCU-freed.
+According to above description, COW in qp-trie means all nodes on the path from
+the root node to the leaf node are COWed, so I think current COW implementation
+is better for bpf map usage scenario. But I will check the qp-trie code in BIND
+[0] later.
+
+0:
+https://gitlab.isc.org/isc-projects/bind9/-/commit/ecc555e6ec763c4f8f2495864ec08749202fff1a#65b4d67ce64e9195e41ac43d78af5156f9ebb779_0_553
+> But very basically, ultimate memory and performance savings are
+> perhaps less important in trying to fit qp-trie into BPF framework. We
+> can iterate after with optimizations and improvements, but first we
+> need to get the things correct and well-behaved.
+Understand.
+>
+>> At the moment I am reworking and simplifying my transaction and
+>> reclamation code and it's all very broken. I guess this isn't the best
+>> possible time to compare notes on qp-trie variants, but I'm happy to hear
+>> from others who have code and ideas to share.
+> It would be great if you can lend your expertise in reviewing at least
+> generic qp-trie parts, but also in helping to figure out the overall
+> concurrency approach we can take in kernel/BPF land (depending on your
+> familiarity with kernel specifics, of course).
+>
+> Thanks for offering the latest on qp-trie, exciting to see more
+> production applications of qp-trie and that you are still actively
+> working on this!
+Yes, it would be great if Tony could help to review or co-design bpf qp-trie map.
+>> --
+>> Tony Finch  <dot@dotat.at>  https://dotat.at/
+>> Mull of Kintyre to Ardnamurchan Point: East or southeast 4 to 6,
+>> increasing 6 to gale 8 for a time. Smooth or slight in eastern
+>> shelter, otherwise slight or moderate. Rain or showers. Good,
+>> occasionally poor.
+
