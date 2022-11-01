@@ -2,167 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33250615423
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 22:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7482A615455
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 22:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbiKAVVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 17:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        id S230326AbiKAVgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 17:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiKAVV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 17:21:29 -0400
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCA71EEDC;
-        Tue,  1 Nov 2022 14:19:18 -0700 (PDT)
-Message-ID: <ca6e4ce1-abf6-6142-3463-4410181ed0ab@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1667337456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bi/oB/qmacK/RH/CAd+QG/wEP2oGK2k8fvNgbwrWZys=;
-        b=D3M7dUaGs2WbmaCIGS72lKDr0N3fGeYnI9EN5f4raXNPMVE59479rZvo7g8a/rxAQmMDQr
-        Ju0Nf1JIo1uXekI/Ieo7uzG+WtolcOOYCFDzBaGnfJ++KX0ZLPkV1bOwnbMHDq9YsfhS9w
-        q6BUfDVqxCNNELAEvefWbuoTpaXHcKY=
-Date:   Tue, 1 Nov 2022 14:17:16 -0700
+        with ESMTP id S230155AbiKAVgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 17:36:09 -0400
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928C11E725;
+        Tue,  1 Nov 2022 14:36:05 -0700 (PDT)
+Received: by mail-qv1-f47.google.com with SMTP id c8so11230795qvn.10;
+        Tue, 01 Nov 2022 14:36:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+zUiNbr2EYqE40Vv4a2S6JxTFQyRyoDbxpg/5rnhOg=;
+        b=ZPKlDYcgUEFIb9zGoK5hCSLyeoBgAGAdlQswQKsgs8heSZKpFS7BHO/vNhc3yP9WtP
+         geibT10dSEZbPw0MDVyENlW9l8NW5Q3kLfpC8uGZZkw0UoKmo+8crjMTde8LPe9w1k0n
+         wBgdfVQZAc/KaEKOZF4ov70ylUpAryYMIX7pNRj1k49th1vb73dFepsgbSGUgmiTuhsO
+         jKpjQBSHC0U2v/h/Zd7R0i4QAShwjnHa196XeOeSYI3iTwxaa73EzPLOlUgUnc3YfafJ
+         aDlEgIGtoYrlsCV1WbOxYQRSfLI+g+Z9XUcfWb+/yi5eaFPbuCmv4H0vTEROPM8+puFO
+         ej/w==
+X-Gm-Message-State: ACrzQf06PKbRxCRLwWYHGbnFMiIih8o76fxacEsp3avsAX5BTcWib2Jg
+        3jNgeltpC18QPh+y3RiHZY8=
+X-Google-Smtp-Source: AMsMyM7dsAy+VVhJ5K6raJ46JLXkBt6zwzyJrteh5Ta0vDrfLmcgQL8Z91R+2yV/Qc3wHCXq1ufdIQ==
+X-Received: by 2002:ad4:5c47:0:b0:4bc:f84:da8f with SMTP id a7-20020ad45c47000000b004bc0f84da8fmr5290198qva.73.1667338564118;
+        Tue, 01 Nov 2022 14:36:04 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::987b])
+        by smtp.gmail.com with ESMTPSA id h1-20020a05620a244100b006eeb3165554sm7413836qkn.19.2022.11.01.14.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Nov 2022 14:36:03 -0700 (PDT)
+Date:   Tue, 1 Nov 2022 16:36:02 -0500
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/3] bpf: Allow trusted pointers to be passed
+ to KF_TRUSTED_ARGS kfuncs
+Message-ID: <Y2GRQhsyQMNCOZMT@maniforge.dhcp.thefacebook.com>
+References: <20221020222416.3415511-1-void@manifault.com>
+ <20221020222416.3415511-2-void@manifault.com>
+ <20221101000239.pbbmym4mbdbmnzjd@macbook-pro-4.dhcp.thefacebook.com>
+ <Y2FhXC/s5GUkbr9P@maniforge.dhcp.thefacebook.com>
+ <CAADnVQ+KZcFZdC=W_qZ3kam9yAjORtpN-9+Ptg_Whj-gRxCZNQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
-        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "Deric, Nemanja" <nemanja.deric@siemens.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "Kiszka, Jan" <jan.kiszka@siemens.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "willemb@google.com" <willemb@google.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "mtahhan@redhat.com" <mtahhan@redhat.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "haoluo@google.com" <haoluo@google.com>,
-        Yonghong Song <yhs@meta.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <635bfc1a7c351_256e2082f@john.notmuch> <20221028110457.0ba53d8b@kernel.org>
- <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
- <635c62c12652d_b1ba208d0@john.notmuch> <20221028181431.05173968@kernel.org>
- <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
- <875yg057x1.fsf@toke.dk> <663fb4f4-04b7-5c1f-899c-bdac3010f073@meta.com>
- <CAKH8qBt=As5ON+CbH304tRanudvTF27bzeSnjH2GQR2TVx+mXw@mail.gmail.com>
- <752afbbb-1a14-3dad-53d0-35bb32632c91@linux.dev>
- <CAKH8qBsH_bxvH3M8RmSAfgWkuwsgMApU0qpF4H_vJfqN+gdx3A@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBsH_bxvH3M8RmSAfgWkuwsgMApU0qpF4H_vJfqN+gdx3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+KZcFZdC=W_qZ3kam9yAjORtpN-9+Ptg_Whj-gRxCZNQ@mail.gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/1/22 1:12 PM, Stanislav Fomichev wrote:
->>>>> As for the kfunc-based interface, I think it shows some promise.
->>>>> Exposing a list of function names to retrieve individual metadata items
->>>>> instead of a struct layout is sorta comparable in terms of developer UI
->>>>> accessibility etc (IMO).
->>>>
->>>> Looks like there are quite some use cases for hw_timestamp.
->>>> Do you think we could add it to the uapi like struct xdp_md?
->>>>
->>>> The following is the current xdp_md:
->>>> struct xdp_md {
->>>>            __u32 data;
->>>>            __u32 data_end;
->>>>            __u32 data_meta;
->>>>            /* Below access go through struct xdp_rxq_info */
->>>>            __u32 ingress_ifindex; /* rxq->dev->ifindex */
->>>>            __u32 rx_queue_index;  /* rxq->queue_index  */
->>>>
->>>>            __u32 egress_ifindex;  /* txq->dev->ifindex */
->>>> };
->>>>
->>>> We could add  __u64 hw_timestamp to the xdp_md so user
->>>> can just do xdp_md->hw_timestamp to get the value.
->>>> xdp_md->hw_timestamp == 0 means hw_timestamp is not
->>>> available.
->>>>
->>>> Inside the kernel, the ctx rewriter can generate code
->>>> to call driver specific function to retrieve the data.
->>>
->>> If the driver generates the code to retrieve the data, how's that
->>> different from the kfunc approach?
->>> The only difference I see is that it would be a more strong UAPI than
->>> the kfuncs?
->>
->> Another thing may be worth considering, some hints for some HW/driver may be
->> harder (or may not worth) to unroll/inline.  For example, I see driver is doing
->> spin_lock_bh while getting the hwtstamp.  For this case, keep calling a kfunc
->> and avoid the unroll/inline may be the right thing to do.
+On Tue, Nov 01, 2022 at 01:22:39PM -0700, Alexei Starovoitov wrote:
+> On Tue, Nov 1, 2022 at 11:11 AM David Vernet <void@manifault.com> wrote:
+> >
+> > > What kind of bpf prog will be able to pass 'struct nf_conn___init *' into these bpf_ct_* ?
+> > > We've introduced / vs nf_conf specifically to express the relationship
+> > > between allocated nf_conn and other nf_conn-s via different types.
+> > > Why is this not enough?
+> >
+> > Kumar should have more context here (he originally suggested this in
+> > [0]),
 > 
-> Yeah, I'm trying to look at the drivers right now and doing
-> spinlocks/seqlocks might complicate the story...
-> But it seems like in the worst case, the unrolled bytecode can always
-> resort to calling a kernel function?
+> Quoting:
+> "
+> Unfortunately a side effect of this change is that now since
+> PTR_TO_BTF_ID without ref_obj_id is considered trusted, the bpf_ct_*
+> functions would begin working with tp_btf args.
+> "
+> I couldn't find any tracepoint that has nf_conn___init as an argument.
+> The whole point of that new type was to return it to bpf prog,
+> so the verifier type matches it when it's passed into bpf_ct_*
+> in turn.
+> So I don't see a need for a new OWNED flag still.
+> If nf_conn___init is passed into tracepoint it's a bug and
+> we gotta fix it.
 
-unroll the common cases and call kernel function for everything else? that 
-should be doable.  The bpf prog calling it as kfunc will have more flexibility 
-like this here.
+Yep, this is what I'm seeing as well. I think you're right that
+KF_OWNED_ARGS is just strictly unnecessary and that creating wrapper
+types is the way to enable an ownership model like this.
 
-> (we might need to have some scratch area to preserve r1-r5 and we
-> can't touch r6-r9 because we are not in a real call, but seems doable;
-> I'll try to illustrate with a bunch of examples)
+> > but AFAICT you're correct that this should be sufficient. I added
+> > a negative test case that correctly fails if a BPF program tries to call
+> > these helpers with a struct nf_conn* rather than a struct
+> > nf_conn__init*.
+> >
+> > [0]: https://lore.kernel.org/all/CAP01T77PTK+bD2mBrxJShKNPhEypT2+nSHcr3=uuJbrghv_wFg@mail.gmail.com/
+> >
+> > > I prefer to keep only one flag KF_TRUSTED_ARGS that kfunc-s need to use
+> > > and eventually make all kfuncs KF_TRUSTED_ARGS by default and remove that flag.
+> >
+> > Yes, KF_TRUSTED_ARGS really should be the default. As Kumar describes in
+> > [1], we'll have to figure out how to avoid trace progs with unsafe args
+> > from calling these kfuncs. Maybe the right thing to do is allow-listing
+> > rather than deny-listing, as you pointed out.
+> >
+> > [1]: https://lore.kernel.org/bpf/CAP01T77goGbF3GVithEuJ7yMQR9PxHNA9GXFODq_nfA66G=F9g@mail.gmail.com/
 > 
+> That is still the plan. more or less.
 > 
->>>> The kfunc approach can be used to *less* common use cases?
->>>
->>> What's the advantage of having two approaches when one can cover
->>> common and uncommon cases?
->>>
->>>>> There are three main drawbacks, AFAICT:
->>>>>
->>>>> 1. It requires driver developers to write and maintain the code that
->>>>> generates the unrolled BPF bytecode to access the metadata fields, which
->>>>> is a non-trivial amount of complexity. Maybe this can be abstracted away
->>>>> with some internal helpers though (like, e.g., a
->>>>> bpf_xdp_metadata_copy_u64(dst, src, offset) helper which would spit out
->>>>> the required JMP/MOV/LDX instructions?
->>>>>
->>>>> 2. AF_XDP programs won't be able to access the metadata without using a
->>>>> custom XDP program that calls the kfuncs and puts the data into the
->>>>> metadata area. We could solve this with some code in libxdp, though; if
->>>>> this code can be made generic enough (so it just dumps the available
->>>>> metadata functions from the running kernel at load time), it may be
->>>>> possible to make it generic enough that it will be forward-compatible
->>>>> with new versions of the kernel that add new fields, which should
->>>>> alleviate Florian's concern about keeping things in sync.
->>>>>
->>>>> 3. It will make it harder to consume the metadata when building SKBs. I
->>>>> think the CPUMAP and veth use cases are also quite important, and that
->>>>> we want metadata to be available for building SKBs in this path. Maybe
->>>>> this can be resolved by having a convenient kfunc for this that can be
->>>>> used for programs doing such redirects. E.g., you could just call
->>>>> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
->>>>> would recursively expand into all the kfunc calls needed to extract the
->>>>> metadata supported by the SKB path?
->>>>>
->>>>> -Toke
->>>>>
->>
+> > > Separately...
+> > > I think there was a plan to strengthen PTR_TO_BTF_ID and apply PTR_UNTRUSTED.
+> >
+> > That would be nice if we could do it. I assume that the issue is we're
+> > breaking backwards compat if we do, so I'd be curious to hear what the
+> > plan was if you're aware. The only plan that I've seen so far is what
+> > Kumar spelled out above in [1] above.
+> 
+> Right. Backward compat with existing usage of PTR_TO_BTF_ID
+> is the main issue.
+> 
+> >
+> > > This PTR_WALKED looks like new thing.
+> > > If we really need it PTR_TO_BTF_ID should be allowlisted instead of denylisted
+> > > as PTR_WALKED is doing.
+> > > I mean we can introduce PTR_TRUSTED and add this flag to return value
+> > > of bpf_get_current_task_btf() and arguments of tracepoints.
+> > > As soon as any ptr walking is done we can clear PTR_TRUSTED to keep
+> > > backward compat behavior of PTR_TO_BTF_ID.
+> > > PTR_WALKED is sort-of doing the same, but not conservative enough.
+> > > Too many things produce PTR_TO_BTF_ID. Auditing it all is challenging.
+> >
+> > I very much prefer the idea of allowlisting instead of denylisting,
+> > though I wish we'd taken that approach from the start rather than going
+> > with PTR_UNTRUSTED. It feels wrong to have both PTR_UNTRUSTED and
+> > PTR_TRUSTED as type modifiers, as the absence of PTR_UNTRUSTED should
+> > (and currently does) imply PTR_TRUSTED.
+> 
+> I kind agree, but we gotta have both because of backward compat.
+> We cannot change PTR_TO_BTF_ID as a whole right now.
+> 
+> Note PTR_TO_BTF_ID appears in kfuncs too.
+> I'm proposing to use PTR_TO_BTF_ID | PTR_TRUSTED
+> only in tracepoint args and as return value from
+> certain helpers like bpf_get_current_task_btf().
+> afaik it's all safe. There is no uaf here.
+> uaf is for kfunc. Especially fexit.
+> Those will stay PTR_TO_BTF_ID. Without PTR_TRUSTED.
 
+Ok, this feels like the right approach to me. Unless I'm missing
+something, modulo doing our due diligence and checking if there are any
+existing kfuncs that are relying on different behavior, once this lands
+I think we could maybe even make KF_TRUSTED_ARGS the default for all
+kfuncs? That should probably be done in a separate patch set though.
+
+> > If we're going to go with an allowlist approach, then I think we should
+> > just get rid of PTR_UNTRUSTED altogether. Is that what you're
+> > suggesting? Otherwise, if we don't get rid of PTR_UNTRUSTED, then
+> > PTR_WALKED seems like a more natural type modifier addition.
+> 
+> Eventually either PTR_TRUSTED or PTR_UNTRUSTED will be removed.
+
+In that case I'm fine with doing PTR_TRUSTED. Would ideally like to get
+Kumar's input before doing it in v7 to avoid too much more churn.
