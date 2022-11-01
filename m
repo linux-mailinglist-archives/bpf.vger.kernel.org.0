@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1154561442D
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 06:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CAA614430
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 06:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbiKAFXt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 01:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S229645AbiKAFXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 01:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiKAFXr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 01:23:47 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D318C11;
-        Mon, 31 Oct 2022 22:23:47 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id c15-20020a17090a1d0f00b0021365864446so12028677pjd.4;
-        Mon, 31 Oct 2022 22:23:47 -0700 (PDT)
+        with ESMTP id S229729AbiKAFXu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 01:23:50 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E7FB02;
+        Mon, 31 Oct 2022 22:23:48 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 20so12544435pgc.5;
+        Mon, 31 Oct 2022 22:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GQCTwzJqtSBW9Z3UsnAgIL2hpfLmbH6kApaX3wUbVJU=;
-        b=n/2Fq8bQktUiyLhfPxdi+eDo6YGcRrwDABHyI1zooAFSozgpZWpN29PWyrQfpze+oC
-         G42smNXVAAMLZnVXPPTUzDZz89PrOboLcWuOyo8wfkC1DLh+a9GgvSN4v6YejCdTvbAG
-         W83XFWPxzoKIbe1PfAjoLjRvdodoDa7o7XLH7URY5Dd5o3oP1bHMF6KJSxseT1klrroM
-         0PrnphxCsBYQMA9fbGOLFvioR4vchvJ9vbk+HuuJ3cksKoRCj0Lh2RJsYnXNby8Hulk8
-         LshACXvoFG4pmjB5Z2Fl+pRocFpIx7squoPZ7yO5hZ5Mvbs8weFOxYP0HZyybUcYi0uI
-         N/xA==
+        bh=oCQ6m+iiPPfCEHc1DMVvUTpMxY5WVNF+ufmtjL4sYpE=;
+        b=BTX/s0xIMzCAql3L1tLe9UavK2LuJRDuNow7m4tbR6BXXp3GgiNOwKGipwUFB89nYb
+         qXZoVuAhrg3cmWmjArGme96wSj/Org3eRW8khGUBOYGI3/dqF2N1t7HWcotTJ+fcBWOW
+         g+QveSd1i1/IGoohora3JC98p7q0kaxwi4TiI8eTgjzY0TZLm7roIgowHOJ2Ka0gRdD2
+         Bnhfckt9ZV/JUGpkRir6ubYwK8mO3bm21lz+7NhRap0HRq/m9pgy2VC+tSZR4xLXZNza
+         N7OkHHU3DZcxX9xzLlBVHyzvuLKNui6oqO5AYW+rd39diYxUaFyfyQog15kF3rovcWuD
+         2oJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=GQCTwzJqtSBW9Z3UsnAgIL2hpfLmbH6kApaX3wUbVJU=;
-        b=CaUEsQPzCQfcaTkl+7AuA6MSP4ccBCDrDgOmvDqmDBAKpWdaBgbl1qk0/l7bFmLYL2
-         LftBo6IMchWZJRgwVUu/MWyQw7GokFzzjv6hJOAIHfn2qL/vX7+Ws8j8eiLQyJ+tiBRO
-         QmZnEXwwpE1jzZa1liXHickJa+3OQ7ypnCrghf8uwQOXPyAAL1oAH8/ZsF2ejabt4xNq
-         yXlhslPSg7/Avnodlsr1JCwiDwJNBz3H30KghJ8UVfW0sYKTvcoIh9epbzPrFg/MlYUC
-         MhB9gIRaz9a973p5gg+thcKVZ8cB/mulMU/GoIDIv7H5IaQpFJkLANjrhfdKHtfwe1nF
-         xfLQ==
-X-Gm-Message-State: ACrzQf0pJly2NvFQMlrmkWvplyajZ8CIE9DgyOPLnYEUfwM7f8+21pTp
-        NEt6ce7l1VorYi3EV8LJ1VM=
-X-Google-Smtp-Source: AMsMyM4NYx8Jr9vWUge/8JjcrDpS+ni02eXYgJ75yv02VYRtVNQht5P+pJ2N8/1imOPoozzzUErsCw==
-X-Received: by 2002:a17:902:6aca:b0:186:8431:d7e4 with SMTP id i10-20020a1709026aca00b001868431d7e4mr18017807plt.89.1667280226566;
-        Mon, 31 Oct 2022 22:23:46 -0700 (PDT)
+        bh=oCQ6m+iiPPfCEHc1DMVvUTpMxY5WVNF+ufmtjL4sYpE=;
+        b=lmFcgIBCVgPFY3HTCqwrVN02I3wNBBQpfOFKXNGdfJJtLUWKf0dH+s40qiHROP3inT
+         EFTd5fm4kMLlTRFjIW9YjiwTjq/S1C2wYi50RhcLObPM4juQCp3ApXJIuUbMGHvxBjtE
+         +zSTFiceWOj/N91yNgF8EdeotzKITeeFaFg+6wZS+jUxuSbRAGHAP+G2s/paffbjPYP6
+         gZ+s4m4H9Gr/fMeBFTb1Yr2ML42lhom0iUBUWmuMJsLXpQyRVNUSBZ0m17mjcjEHAFlj
+         S7ONKTYzM/oqQl4PHfNSmWhNfH/EF8SabTYnfKwKqmDR7Sh4NHBxF6MFFeUqMUJXfcbi
+         g62g==
+X-Gm-Message-State: ACrzQf3t/WfxKenVeXv5pzkCdZ0WdRfT7s9MK3lLfXc8Sm+ola53owDc
+        LqOU/rzfTjyCwQ+ZHCUNSHU=
+X-Google-Smtp-Source: AMsMyM7hOlhYp65WBPUClvIycuplWVBI76fOiFY3ifPRGxzwOTJ6yqcfirXxMoqkvaOGD6pIwg+oCQ==
+X-Received: by 2002:a05:6a00:1253:b0:56d:8742:a9ff with SMTP id u19-20020a056a00125300b0056d8742a9ffmr7551351pfi.5.1667280228020;
+        Mon, 31 Oct 2022 22:23:48 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:7e9:8a64:69f2:c3c7])
-        by smtp.gmail.com with ESMTPSA id i4-20020a056a00004400b00561b53512b0sm5532254pfk.195.2022.10.31.22.23.45
+        by smtp.gmail.com with ESMTPSA id i4-20020a056a00004400b00561b53512b0sm5532254pfk.195.2022.10.31.22.23.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Oct 2022 22:23:46 -0700 (PDT)
+        Mon, 31 Oct 2022 22:23:47 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
-Date:   Mon, 31 Oct 2022 22:23:39 -0700
-Message-Id: <20221101052340.1210239-3-namhyung@kernel.org>
+Subject: [PATCH bpf-next 3/3] bpf: Add perf_event_read_sample test cases
+Date:   Mon, 31 Oct 2022 22:23:40 -0700
+Message-Id: <20221101052340.1210239-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
 In-Reply-To: <20221101052340.1210239-1-namhyung@kernel.org>
 References: <20221101052340.1210239-1-namhyung@kernel.org>
@@ -83,174 +83,230 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_perf_event_read_sample() helper is to get the specified sample
-data (by using PERF_SAMPLE_* flag in the argument) from BPF to make a
-decision for filtering on samples.  Currently PERF_SAMPLE_IP and
-PERF_SAMPLE_DATA flags are supported only.
+It checks the bpf_perf_event_read_sample() helper with and without buffer
+for supported PERF_SAMPLE_* flags.  The BPF program can control sample
+data using the return value after checking the sample data and size.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- include/uapi/linux/bpf.h       | 23 ++++++++++++++++
- kernel/trace/bpf_trace.c       | 49 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h | 23 ++++++++++++++++
- 3 files changed, 95 insertions(+)
+ .../selftests/bpf/prog_tests/perf_sample.c    | 172 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_sample.c    |  28 +++
+ 2 files changed, 200 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_sample.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_sample.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 94659f6b3395..cba501de9373 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5481,6 +5481,28 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
-+ *	Description
-+ *		For an eBPF program attached to a perf event, retrieve the
-+ *		sample data associated to *ctx*	and store it in the buffer
-+ *		pointed by *buf* up to size *size* bytes.
-+ *
-+ *		The *sample_flags* should contain a single value in the
-+ *		**enum perf_event_sample_format**.
-+ *	Return
-+ *		On success, number of bytes written to *buf*. On error, a
-+ *		negative value.
-+ *
-+ *		The *buf* can be set to **NULL** to return the number of bytes
-+ *		required to store the requested sample data.
-+ *
-+ *		**-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
-+ *
-+ *		**-ENOENT** if the associated perf event doesn't have the data.
-+ *
-+ *		**-ENOSYS** if system doesn't support the sample data to be
-+ *		retrieved.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5695,6 +5717,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(perf_event_read_sample, 212, ##ctx)		\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index ce0228c72a93..befd937afa3c 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -28,6 +28,7 @@
- 
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/btf.h>
-+#include <uapi/linux/perf_event.h>
- 
- #include <asm/tlb.h>
- 
-@@ -1743,6 +1744,52 @@ static const struct bpf_func_proto bpf_read_branch_records_proto = {
- 	.arg4_type      = ARG_ANYTHING,
- };
- 
-+BPF_CALL_4(bpf_perf_event_read_sample, struct bpf_perf_event_data_kern *, ctx,
-+	   void *, buf, u32, size, u64, flags)
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_sample.c b/tools/testing/selftests/bpf/prog_tests/perf_sample.c
+new file mode 100644
+index 000000000000..eee11f23196c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/perf_sample.c
+@@ -0,0 +1,172 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <linux/perf_event.h>
++#include <sys/ioctl.h>
++#include <sys/mman.h>
++#include <sys/syscall.h>
++
++#include <test_progs.h>
++#include "test_perf_sample.skel.h"
++
++#ifndef noinline
++#define noinline __attribute__((noinline))
++#endif
++
++/* treat user-stack data as invalid (for testing only) */
++#define PERF_SAMPLE_INVALID  PERF_SAMPLE_STACK_USER
++
++#define PERF_MMAP_SIZE  8192
++#define DATA_MMAP_SIZE  4096
++
++static int perf_fd = -1;
++static void *perf_ringbuf;
++static struct test_perf_sample *skel;
++
++static int open_perf_event(u64 sample_flags)
 +{
-+	struct perf_sample_data *sd = ctx->data;
-+	void *data;
-+	u32 to_copy = sizeof(u64);
++	struct perf_event_attr attr = {
++		.type = PERF_TYPE_SOFTWARE,
++		.config = PERF_COUNT_SW_PAGE_FAULTS,
++		.sample_type = sample_flags,
++		.sample_period = 1,
++		.disabled = 1,
++		.size = sizeof(attr),
++	};
++	int fd;
++	void *ptr;
 +
-+	/* only allow a single sample flag */
-+	if (!is_power_of_2(flags))
-+		return -EINVAL;
++	fd = syscall(SYS_perf_event_open, &attr, 0, -1, -1, 0);
++	if (!ASSERT_GT(fd, 0, "perf_event_open"))
++		return -1;
 +
-+	/* support reading only already populated info */
-+	if (flags & ~sd->sample_flags)
-+		return -ENOENT;
-+
-+	switch (flags) {
-+	case PERF_SAMPLE_IP:
-+		data = &sd->ip;
-+		break;
-+	case PERF_SAMPLE_ADDR:
-+		data = &sd->addr;
-+		break;
-+	default:
-+		return -ENOSYS;
++	ptr = mmap(NULL, PERF_MMAP_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
++	if (!ASSERT_NEQ(ptr, MAP_FAILED, "mmap")) {
++		close(fd);
++		return -1;
 +	}
 +
-+	if (!buf)
-+		return to_copy;
++	perf_fd = fd;
++	perf_ringbuf = ptr;
 +
-+	if (size < to_copy)
-+		to_copy = size;
-+
-+	memcpy(buf, data, to_copy);
-+	return to_copy;
++	return 0;
 +}
 +
-+static const struct bpf_func_proto bpf_perf_event_read_sample_proto = {
-+	.func           = bpf_perf_event_read_sample,
-+	.gpl_only       = true,
-+	.ret_type       = RET_INTEGER,
-+	.arg1_type      = ARG_PTR_TO_CTX,
-+	.arg2_type      = ARG_PTR_TO_MEM_OR_NULL,
-+	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
-+	.arg4_type      = ARG_ANYTHING,
-+};
++static void close_perf_event(void)
++{
++	if (perf_fd == -1)
++		return;
 +
- static const struct bpf_func_proto *
- pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1759,6 +1806,8 @@ pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_read_branch_records_proto;
- 	case BPF_FUNC_get_attach_cookie:
- 		return &bpf_get_attach_cookie_proto_pe;
-+	case BPF_FUNC_perf_event_read_sample:
-+		return &bpf_perf_event_read_sample_proto;
- 	default:
- 		return bpf_tracing_func_proto(func_id, prog);
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 94659f6b3395..cba501de9373 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5481,6 +5481,28 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
-+ *	Description
-+ *		For an eBPF program attached to a perf event, retrieve the
-+ *		sample data associated to *ctx*	and store it in the buffer
-+ *		pointed by *buf* up to size *size* bytes.
-+ *
-+ *		The *sample_flags* should contain a single value in the
-+ *		**enum perf_event_sample_format**.
-+ *	Return
-+ *		On success, number of bytes written to *buf*. On error, a
-+ *		negative value.
-+ *
-+ *		The *buf* can be set to **NULL** to return the number of bytes
-+ *		required to store the requested sample data.
-+ *
-+ *		**-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
-+ *
-+ *		**-ENOENT** if the associated perf event doesn't have the data.
-+ *
-+ *		**-ENOSYS** if system doesn't support the sample data to be
-+ *		retrieved.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5695,6 +5717,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(perf_event_read_sample, 212, ##ctx)		\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
++	munmap(perf_ringbuf, PERF_MMAP_SIZE);
++	close(perf_fd);
++
++	perf_fd = -1;
++	perf_ringbuf = NULL;
++}
++
++static noinline void trigger_perf_event(void)
++{
++	int *buf = mmap(NULL, DATA_MMAP_SIZE, PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
++
++	if (!ASSERT_NEQ(buf, MAP_FAILED, "mmap"))
++		return;
++
++	ioctl(perf_fd, PERF_EVENT_IOC_ENABLE);
++
++	/* it should generate a page fault which triggers the perf_event */
++	*buf = 1;
++
++	ioctl(perf_fd, PERF_EVENT_IOC_DISABLE);
++
++	munmap(buf, DATA_MMAP_SIZE);
++}
++
++/* check if the perf ringbuf has a sample data */
++static int check_perf_event(void)
++{
++	struct perf_event_mmap_page *page = perf_ringbuf;
++	struct perf_event_header *hdr;
++
++	if (page->data_head == page->data_tail)
++		return 0;
++
++	hdr = perf_ringbuf + page->data_offset;
++
++	if (hdr->type != PERF_RECORD_SAMPLE)
++		return 0;
++
++	return 1;
++}
++
++static void setup_perf_sample_bpf_skel(u64 sample_flags)
++{
++	struct bpf_link *link;
++
++	skel = test_perf_sample__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_perf_sample_open_and_load"))
++		return;
++
++	skel->bss->sample_flag = sample_flags;
++	skel->bss->sample_size = sizeof(sample_flags);
++
++	link = bpf_program__attach_perf_event(skel->progs.perf_sample_filter, perf_fd);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_perf_event"))
++		return;
++}
++
++static void clean_perf_sample_bpf_skel(void)
++{
++	test_perf_sample__detach(skel);
++	test_perf_sample__destroy(skel);
++}
++
++static void test_perf_event_read_sample_invalid(void)
++{
++	u64 flags = PERF_SAMPLE_INVALID;
++
++	if (open_perf_event(flags) < 0)
++		return;
++	setup_perf_sample_bpf_skel(flags);
++	trigger_perf_event();
++	ASSERT_EQ(check_perf_event(), 0, "number of sample");
++	clean_perf_sample_bpf_skel();
++	close_perf_event();
++}
++
++static void test_perf_event_read_sample_ip(void)
++{
++	u64 flags = PERF_SAMPLE_IP;
++
++	if (open_perf_event(flags) < 0)
++		return;
++	setup_perf_sample_bpf_skel(flags);
++	trigger_perf_event();
++	ASSERT_EQ(check_perf_event(), 1, "number of sample");
++	clean_perf_sample_bpf_skel();
++	close_perf_event();
++}
++
++static void test_perf_event_read_sample_addr(void)
++{
++	u64 flags = PERF_SAMPLE_ADDR;
++
++	if (open_perf_event(flags) < 0)
++		return;
++	setup_perf_sample_bpf_skel(flags);
++	trigger_perf_event();
++	ASSERT_EQ(check_perf_event(), 1, "number of sample");
++	clean_perf_sample_bpf_skel();
++	close_perf_event();
++}
++
++void test_perf_event_read_sample(void)
++{
++	if (test__start_subtest("perf_event_read_sample_invalid"))
++		test_perf_event_read_sample_invalid();
++	if (test__start_subtest("perf_event_read_sample_ip"))
++		test_perf_event_read_sample_ip();
++	if (test__start_subtest("perf_event_read_sample_addr"))
++		test_perf_event_read_sample_addr();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_perf_sample.c b/tools/testing/selftests/bpf/progs/test_perf_sample.c
+new file mode 100644
+index 000000000000..79664acafcd9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_perf_sample.c
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2022 Google
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++unsigned long long sample_flag;
++unsigned long long sample_size;
++
++SEC("perf_event")
++int perf_sample_filter(void *ctx)
++{
++	long size;
++	unsigned long long buf[1] = {};
++
++	size = bpf_perf_event_read_sample(ctx, NULL, 0, sample_flag);
++	if (size != sample_size)
++		return 0;
++
++	if (bpf_perf_event_read_sample(ctx, buf, sizeof(buf), sample_flag) < 0)
++		return 0;
++
++	/* generate sample data */
++	return 1;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.38.1.273.g43a17bfeac-goog
 
