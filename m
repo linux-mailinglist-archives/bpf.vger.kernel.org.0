@@ -2,22 +2,22 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35ED614CC6
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF75A614CC8
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 15:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbiKAOjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 10:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        id S230259AbiKAOjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 10:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiKAOjA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 10:39:00 -0400
+        with ESMTP id S229717AbiKAOjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 10:39:04 -0400
 Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762B03895;
-        Tue,  1 Nov 2022 07:38:56 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=chentao.kernel@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VTjllWc_1667313514;
-Received: from VM20210331-5.tbsite.net(mailfrom:chentao.kernel@linux.alibaba.com fp:SMTPD_---0VTjllWc_1667313514)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA57120B8;
+        Tue,  1 Nov 2022 07:39:03 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=chentao.kernel@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VTjllex_1667313533;
+Received: from VM20210331-5.tbsite.net(mailfrom:chentao.kernel@linux.alibaba.com fp:SMTPD_---0VTjllex_1667313533)
           by smtp.aliyun-inc.com;
-          Tue, 01 Nov 2022 22:38:52 +0800
+          Tue, 01 Nov 2022 22:39:00 +0800
 From:   Tao Chen <chentao.kernel@linux.alibaba.com>
 To:     Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -31,9 +31,11 @@ To:     Quentin Monnet <quentin@isovalent.com>,
 Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tao Chen <chentao.kernel@linux.alibaba.com>
 Subject: [PATCH] bpftool: Support use full prog name in prog subcommand
-Date:   Tue,  1 Nov 2022 22:38:32 +0800
+Date:   Tue,  1 Nov 2022 22:38:33 +0800
 Message-Id: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
 X-Mailer: git-send-email 2.2.1
+In-Reply-To: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
+References: <c26d1dde6d1665a9195b054e5fd209a32c94e490.1667313454.git.chentao.kernel@linux.alibaba.com>
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
