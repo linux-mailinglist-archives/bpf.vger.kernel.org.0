@@ -2,240 +2,360 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2768A6150E3
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 18:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F50615154
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 19:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbiKARiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 13:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
+        id S229487AbiKASLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 14:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbiKARiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 13:38:02 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19295DF5
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 10:38:01 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id j14so21920321ljh.12
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 10:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=G6KGpArkyH+fVfBIZbzWqQT677fO9YZMwbEYsFu6Cts=;
-        b=mraiD7Bdqc9RtGa9WzfubzrS7xf8P2dJbWWQpx7k43w/c6yr8ttq/uqXRXe6mFCLD5
-         KXpNttcEyEmhVgMVkZXuogPMJ7ZP8XN2wl+xha+kmUOcxH8UY2C2E62YNa701sH6pk8Y
-         /SEcOyPu3L+/BQvNnNYt2rpkA+b64yZMx2J+R+aDwZzCvRHS0SnfpiP5BUHnXTDqbC4O
-         QP1Zlp+VxdiRrtLtIV0cJvRuOg3nhxpMYZFMDE7xSc14XYyeo7jBqMsLBsKS2CjPDlxw
-         Iv+AVgCbI6rCaLWSgX1HJrw06qVmvh7AvloukHHLeHDnQfdRogFyPBuuRmpFUhNY8E0V
-         y3iQ==
+        with ESMTP id S229452AbiKASLp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 14:11:45 -0400
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF8A1CFD1;
+        Tue,  1 Nov 2022 11:11:43 -0700 (PDT)
+Received: by mail-qv1-f43.google.com with SMTP id x13so10844668qvn.6;
+        Tue, 01 Nov 2022 11:11:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G6KGpArkyH+fVfBIZbzWqQT677fO9YZMwbEYsFu6Cts=;
-        b=HpH8UF2bR0VM3nq16ip248B/hNGLivWSij9GbBDqh7+YHp8Oe/1xJWA843SNvR6up7
-         heCADQQ9PVJlDRLoNRQggodgyuo8rceY4kf33RbmoWxbhi1A/7y+CBC1YMwPklDsPNd7
-         kqsgD/mhCgfNAq4i3GXCzeEPyXDOgF3YhZHILIcYsfBWXI7jWHxAouMvgQN6IV6JDYMJ
-         2+oQA8CTi88goONiOnPw/BxD7fHUrHB4qmlu9ngiX4Op/wu0e/89vdAglc25rgK8YrSq
-         kKINkdTkow39x2YzBz0PHmkMKftxOC1o4Q2CwpVaHihugMA9oEZhzeJq+A64d3kBQGHg
-         oo4w==
-X-Gm-Message-State: ACrzQf23dE+TT8Q0tvnBis+LnXk8ZU+jJGM3ivWQ/USVHIuw8O34YgEh
-        e2WX/fl82uvU3c+pvWQIGZM=
-X-Google-Smtp-Source: AMsMyM5SbOK7ZjsgIPOA2QPcNWlrsXi/e5wEEB4upIbk/PpXzolqokiQYUDe/LilzurIYgv2tsMGDA==
-X-Received: by 2002:a2e:a817:0:b0:26e:580:fa70 with SMTP id l23-20020a2ea817000000b0026e0580fa70mr1079317ljq.307.1667324279228;
-        Tue, 01 Nov 2022 10:37:59 -0700 (PDT)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id 4-20020a2e1644000000b00277129b4a10sm1830523ljw.86.2022.11.01.10.37.57
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6B63Wsta4Owu5UDDP6cwu6XxQKzS3sTXQXrzjyNvFDs=;
+        b=qUf+oTa2TsqOVmweNYrp+4eenzCeIPYEw/9S4K5OiYFeaPuriIrZLOOtxfO/FtzNhS
+         8zqR8JKCY2YlUavaJDHMqeMUD8Ls7mDSqEVqHGhfzHdJcaj1kxIbaznmPD29fs5F+27D
+         4wcUVKlwTpFedE1Qq+HtprRZSwR38znKKjd5RJ/qZMU3gxH816uLI66fJaPvi5yzxy47
+         8ORCPvohgGz5c9LWrFmW8Sn8aikPXKMeksaEhE3MxNyaVWeHTnHIs9Wuqbi+pQWSY777
+         2s66daQN7uJyYwLF+DI+EPm5+hdHqVqBTcjxKh64YGRrOkN9xztWuufhUdUyN3k4BAg8
+         urYg==
+X-Gm-Message-State: ACrzQf3AS8fvmWqqjuCGYgFA7lmPXsxqIGAt5nZbf5I756QKEQfC2S0j
+        lHmvO1BDeqZY2ix5zuwFrkI=
+X-Google-Smtp-Source: AMsMyM6s/W7l7fy60lDOvfSKRRMRw00+edufI7AqdQsKEpLYMwGvAb0XB+4Kap9L3Do4wcw4sPdLCA==
+X-Received: by 2002:a05:6214:d08:b0:4bc:b92:8171 with SMTP id 8-20020a0562140d0800b004bc0b928171mr7160257qvh.78.1667326302621;
+        Tue, 01 Nov 2022 11:11:42 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::987b])
+        by smtp.gmail.com with ESMTPSA id t12-20020a37ea0c000000b006cfaee39ccesm6898126qkj.114.2022.11.01.11.11.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 10:37:58 -0700 (PDT)
-Message-ID: <31c8edcbdda4b4d7ed05e0b25180c8ebf0d94f05.camel@gmail.com>
-Subject: Re: [RFC bpf-next 01/12] libbpf: Deduplicate unambigous standalone
- forward declarations
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        arnaldo.melo@gmail.com
-Date:   Tue, 01 Nov 2022 19:37:56 +0200
-In-Reply-To: <c70549d8-f9c7-636b-7e4c-2b3e918978ec@oracle.com>
-References: <20221025222802.2295103-1-eddyz87@gmail.com>
-         <20221025222802.2295103-2-eddyz87@gmail.com>
-         <CAEf4Bzaf8XhO6OPoKSHPPSa1oQQ+KFHeN5Rmp0vn_9dgvOkOYw@mail.gmail.com>
-         <264553ab5b53d22442ecb13725da905be8530c21.camel@gmail.com>
-         <c70549d8-f9c7-636b-7e4c-2b3e918978ec@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Tue, 01 Nov 2022 11:11:42 -0700 (PDT)
+Date:   Tue, 1 Nov 2022 13:11:40 -0500
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, tj@kernel.org,
+        memxor@gmail.com
+Subject: Re: [PATCH bpf-next v6 1/3] bpf: Allow trusted pointers to be passed
+ to KF_TRUSTED_ARGS kfuncs
+Message-ID: <Y2FhXC/s5GUkbr9P@maniforge.dhcp.thefacebook.com>
+References: <20221020222416.3415511-1-void@manifault.com>
+ <20221020222416.3415511-2-void@manifault.com>
+ <20221101000239.pbbmym4mbdbmnzjd@macbook-pro-4.dhcp.thefacebook.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221101000239.pbbmym4mbdbmnzjd@macbook-pro-4.dhcp.thefacebook.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-11-01 at 17:08 +0000, Alan Maguire wrote:
-> On 31/10/2022 15:49, Eduard Zingerman wrote:
-> > On Thu, 2022-10-27 at 15:07 -0700, Andrii Nakryiko wrote:
-> > > On Tue, Oct 25, 2022 at 3:28 PM Eduard Zingerman <eddyz87@gmail.com> =
-wrote:
-> > [...]=20
-> > > > +
-> > > > +/*
-> > > > + * Collect a `name_off_map` that maps type names to type ids for a=
-ll
-> > > > + * canonical structs and unions. If the same name is shared by sev=
-eral
-> > > > + * canonical types use a special value 0 to indicate this fact.
-> > > > + */
-> > > > +static int btf_dedup_fill_unique_names_map(struct btf_dedup *d, st=
-ruct hashmap *names_map)
-> > > > +{
-> > > > +       int i, err =3D 0;
-> > > > +       __u32 type_id, collision_id;
-> > > > +       __u16 kind;
-> > > > +       struct btf_type *t;
-> > > > +
-> > > > +       for (i =3D 0; i < d->btf->nr_types; i++) {
-> > > > +               type_id =3D d->btf->start_id + i;
-> > > > +               t =3D btf_type_by_id(d->btf, type_id);
-> > > > +               kind =3D btf_kind(t);
-> > > > +
-> > > > +               if (kind !=3D BTF_KIND_STRUCT && kind !=3D BTF_KIND=
-_UNION)
-> > > > +                       continue;
-> > >=20
-> > > let's also do ENUM FWD resolution. ENUM FWD is just ENUM with vlen=3D=
-0
-> >=20
-> > Interestingly this is necessary only for mixed enum / enum64 case.
-> > Forward enum declarations are resolved by bpf/btf.c:btf_dedup_prim_type=
-:
-> >=20
->=20
-> Ah, great catch! A forward can look like an enum to one CU but another CU=
- can
-> specify values that make it an enum64.
->=20
-> > 	case BTF_KIND_ENUM:
-> > 		h =3D btf_hash_enum(t);
-> > 		for_each_dedup_cand(d, hash_entry, h) {
-> > 			cand_id =3D (__u32)(long)hash_entry->value;
-> > 			cand =3D btf_type_by_id(d->btf, cand_id);
-> > 			if (btf_equal_enum(t, cand)) {
-> > 				new_id =3D cand_id;
-> > 				break;
-> > 			}
-> > 			if (btf_compat_enum(t, cand)) {
-> > 				if (btf_is_enum_fwd(t)) {
-> > 					/* resolve fwd to full enum */
-> > 					new_id =3D cand_id;
-> > 					break;
-> > 				}
-> > 				/* resolve canonical enum fwd to full enum */
-> > 				d->map[cand_id] =3D type_id;
-> > 			}
-> > 		}
-> > 		break;
-> >     // ... similar logic for ENUM64 ...
-> >=20
-> > - btf_hash_enum ignores vlen when hashing;
-> > - btf_compat_enum compares only names and sizes.
-> >=20
-> > So, if forward and main declaration kinds match (either BTF_KIND_ENUM
-> > or BTF_KIND_ENUM64) the forward declaration would be removed. But if
-> > the kinds are different the forward declaration would remain. E.g.:
-> >=20
-> > CU #1:
-> > enum foo;
-> > enum foo *a;
-> >=20
-> > CU #2:
-> > enum foo { x =3D 0xfffffffff };
-> > enum foo *b;
-> >=20
-> > BTF:
-> > [1] ENUM64 'foo' encoding=3DUNSIGNED size=3D8 vlen=3D1
-> > 	'x' val=3D68719476735ULL
-> > [2] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 encod=
-ing=3D(none)
-> > [3] PTR '(anon)' type_id=3D1
-> > [4] ENUM 'foo' encoding=3DUNSIGNED size=3D4 vlen=3D0
-> > [5] PTR '(anon)' type_id=3D4
-> >=20
-> > BTF_KIND_FWDs are unified during btf_dedup_struct_types but enum
-> > forward declarations are not. So it would be incorrect to add enum
-> > forward declaration unification logic to btf_dedup_resolve_fwds,
-> > because the following case would not be covered:
-> >=20
-> > CU #1:
-> > enum foo;
-> > struct s { enum foo *a; } *a;
-> >=20
-> > CU #2:
-> > enum foo { x =3D 0xfffffffff };
-> > struct s { enum foo *a; } *b;
-> >=20
-> > Currently STRUCTs 's' are not de-duplicated.
-> >=20
->=20
-> What if CU#1 is in base BTF and CU#2 in split module BTF? I think we'd ex=
-plicitly
-> want to avoid deduping "struct s" then since we can't be sure that it is =
-the
-> same enum they are pointing at.  That's the logic we employ for structs a=
-t=20
-> least, based upon the rationale that we can't feed back knowledge of type=
-s
-> from module to kernel BTF since the latter is now fixed (Andrii, do corre=
-ct me
-> if I have this wrong). In such a case the enum is no longer standalone; i=
-t
-> serves the purpose of allowing us to define a pointer to a module-specifi=
-c
-> type. We recently found some examples of this sort of thing with structs,
-> where the struct was defined in module BTF, making dedup fail for some co=
-re
-> kernel data types, but the problem was restricted to modules which _did_
-> define the type so wasn't a major driver of dedup failures. Not sure if
-> there's many (any?) enum cases of this in practice.
+On Mon, Oct 31, 2022 at 05:02:39PM -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 20, 2022 at 05:24:14PM -0500, David Vernet wrote:
+> > Kfuncs currently support specifying the KF_TRUSTED_ARGS flag to signal
+> > to the verifier that it should enforce that a BPF program passes it a
+> > "safe", trusted pointer. Currently, "safe" means that the pointer is
+> > either PTR_TO_CTX, or is refcounted. There may be cases, however, where
+> > the kernel passes a BPF program a safe / trusted pointer to an object
+> > that the BPF program wishes to use as a kptr, but because the object
+> > does not yet have a ref_obj_id from the perspective of the verifier, the
+> > program would be unable to pass it to a KF_ACQUIRE | KF_TRUSTED_ARGS
+> > kfunc.
+> > 
+> > The solution is to expand the set of pointers that are considered
+> > trusted according to KF_TRUSTED_ARGS, so that programs can invoke kfuncs
+> > with these pointers without getting rejected by the verifier.
+> > 
+> > There is already a PTR_UNTRUSTED flag that is set in some scenarios,
+> > such as when a BPF program reads a kptr directly from a map
+> > without performing a bpf_kptr_xchg() call. These pointers of course can
+> > and should be rejected by the verifier. Unfortunately, however,
+> > PTR_UNTRUSTED does not cover all the cases for safety that need to
+> > be addressed to adequately protect kfuncs. Specifically, pointers
+> > obtained by a BPF program "walking" a struct are _not_ considered
+> > PTR_UNTRUSTED according to BPF. For example, say that we were to add a
+> > kfunc called bpf_task_acquire(), with KF_ACQUIRE | KF_TRUSTED_ARGS, to
+> > acquire a struct task_struct *. If we only used PTR_UNTRUSTED to signal
+> > that a task was unsafe to pass to a kfunc, the verifier would mistakenly
+> > allow the following unsafe BPF program to be loaded:
+> > 
+> > SEC("tp_btf/task_newtask")
+> > int BPF_PROG(unsafe_acquire_task,
+> >              struct task_struct *task,
+> >              u64 clone_flags)
+> > {
+> >         struct task_struct *acquired, *nested;
+> > 
+> >         nested = task->last_wakee;
+> > 
+> >         /* Would not be rejected by the verifier. */
+> >         acquired = bpf_task_acquire(nested);
+> >         if (!acquired)
+> >                 return 0;
+> > 
+> >         bpf_task_release(acquired);
+> >         return 0;
+> > }
+> > 
+> > To address this, this patch defines a new type flag called PTR_WALKED
+> > which tracks whether a PTR_TO_BTF_ID pointer was retrieved from walking
+> > a struct. A pointer passed directly from the kernel begins with
+> > (PTR_WALKED & type) == 0, meaning of course that it is not obtained from
+> > walking another struct. Any pointer received from walking that object,
+> > however, would inherit that flag and become a walked pointer.
+> > 
+> > Additionally, because some kfuncs still only want BPF programs to be
+> > able to send them an arg that they "own" (i.e. which they own a refcount
+> > on) another kfunc arg flag called KF_OWNED_ARGS is added which is
+> > identical to KF_TRUSTED_ARGS, but imposes the stricter requirement that
+> > the arg must also have a refcount.
+> > 
+> > A subsequent patch will add kfuncs for storing a task kfunc as a kptr,
+> > and then another patch will validate this feature by ensuring that the
+> > verifier rejects a kfunc invocation with a nested pointer.
+> > 
+> > Signed-off-by: David Vernet <void@manifault.com>
+> > ---
+> >  Documentation/bpf/kfuncs.rst                  | 50 ++++++++++----
+> >  include/linux/bpf.h                           |  6 ++
+> >  include/linux/btf.h                           | 57 ++++++++++++++--
+> >  kernel/bpf/btf.c                              | 18 ++++-
+> >  kernel/bpf/verifier.c                         | 66 ++++++++++++++-----
+> >  net/bpf/test_run.c                            |  2 +-
+> >  net/netfilter/nf_conntrack_bpf.c              |  8 +--
+> >  net/netfilter/nf_nat_bpf.c                    |  2 +-
+> >  .../selftests/bpf/prog_tests/map_kptr.c       |  2 +-
+> >  tools/testing/selftests/bpf/verifier/calls.c  |  4 +-
+> >  .../testing/selftests/bpf/verifier/map_kptr.c |  2 +-
+> >  11 files changed, 169 insertions(+), 48 deletions(-)
+> > 
+> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> > index 0f858156371d..8e2825150a8d 100644
+> > --- a/Documentation/bpf/kfuncs.rst
+> > +++ b/Documentation/bpf/kfuncs.rst
+> > @@ -137,30 +137,54 @@ KF_ACQUIRE and KF_RET_NULL flags.
+> >  --------------------------
+> >  
+> >  The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
+> > -indicates that the all pointer arguments will always have a guaranteed lifetime,
+> > -and pointers to kernel objects are always passed to helpers in their unmodified
+> > -form (as obtained from acquire kfuncs).
+> > +indicates that the all pointer arguments will always have a guaranteed
+> > +lifetime, and pointers to kernel objects are always passed to helpers in their
+> > +unmodified form (either as passed by the main kernel, or as obtained from
+> > +acquire kfuncs).
+> >  
+> > -It can be used to enforce that a pointer to a refcounted object acquired from a
+> > -kfunc or BPF helper is passed as an argument to this kfunc without any
+> > -modifications (e.g. pointer arithmetic) such that it is trusted and points to
+> > -the original object.
+> > +It can be used to enforce that a safe pointer passed to the program by the
+> > +kernel, or a refcounted object acquired from a kfunc or BPF helper, is passed
+> > +as an argument to this kfunc without any modifications (e.g. pointer
+> > +arithmetic) such that it is trusted and points to the original object.
+> >  
+> >  Meanwhile, it is also allowed pass pointers to normal memory to such kfuncs,
+> >  but those can have a non-zero offset.
+> >  
+> > -This flag is often used for kfuncs that operate (change some property, perform
+> > -some operation) on an object that was obtained using an acquire kfunc. Such
+> > -kfuncs need an unchanged pointer to ensure the integrity of the operation being
+> > -performed on the expected object.
+> > +This flag is often used for kfuncs that receive a trusted pointer from the
+> > +kernel, and which do not require a reference to be held by the program. For
+> > +example, if there's a kernel object that was allocated by the main kernel, and
+> > +which the BPF program wishes to store in a map as a kptr, KF_TRUSTED_ARGS can
+> > +be used to ensure that the pointer is actually a trusted kernel pointer before
+> > +a reference is acquired on it in a KF_ACQUIRE kfunc.
+> > +
+> > +2.4.6 KF_OWNED_ARGS flag
+> > +------------------------
+> > +
+> > +The KF_OWNED_ARGS flag is identical to the KF_TRUSTED_ARGS flag, though it is
+> > +more restrictive in that it also requires the BPF program to hold a reference
+> > +on the object.
+> >  
+> > -2.4.6 KF_SLEEPABLE flag
+> > +In other words, it can be used to enforce that a pointer to a refcounted object
+> > +acquired from a kfunc or BPF helper is passed as an argument to this kfunc
+> > +without any modifications (e.g. pointer arithmetic) such that it is trusted and
+> > +points to the original object that was allocated or owned by the BPF program.
+> > +
+> > +This flag is often used for kfuncs that operate (change some property, perform
+> > +some operation) on an object that was obtained using an acquire kfunc. For
+> > +example, if an acquire kfunc allocates an object on behalf of a program,
+> > +KF_OWNED_ARGS would be an appropriate flag to specify for other kfuncs which
+> > +allow the program to mutate that object. KF_TRUSTED_ARGS, on the other hand,
+> > +would likely not be sufficiently restrictive as the kfunc does not want to
+> > +allow the BPF program to mutate another instance of the same object type which
+> > +was allocated by the main kernel.
+> > +
+> > +2.4.7 KF_SLEEPABLE flag
+> >  -----------------------
+> >  
+> >  The KF_SLEEPABLE flag is used for kfuncs that may sleep. Such kfuncs can only
+> >  be called by sleepable BPF programs (BPF_F_SLEEPABLE).
+> >  
+> > -2.4.7 KF_DESTRUCTIVE flag
+> > +2.4.8 KF_DESTRUCTIVE flag
+> >  --------------------------
+> >  
+> >  The KF_DESTRUCTIVE flag is used to indicate functions calling which is
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 9e7d46d16032..ccdbefd72a95 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -457,6 +457,12 @@ enum bpf_type_flag {
+> >  	/* Size is known at compile time. */
+> >  	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+> >  
+> > +	/* PTR was obtained from walking a struct. This is used with
+> > +	 * PTR_TO_BTF_ID to determine whether the pointer is safe to pass to a
+> > +	 * kfunc with KF_TRUSTED_ARGS.
+> > +	 */
+> > +	PTR_WALKED		= BIT(11 + BPF_BASE_TYPE_BITS),
+> > +
+> >  	__BPF_TYPE_FLAG_MAX,
+> >  	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+> >  };
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index f9aababc5d78..7f5a438196a2 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -17,9 +17,48 @@
+> >  #define KF_RELEASE	(1 << 1) /* kfunc is a release function */
+> >  #define KF_RET_NULL	(1 << 2) /* kfunc returns a pointer that may be NULL */
+> >  #define KF_KPTR_GET	(1 << 3) /* kfunc returns reference to a kptr */
+> > -/* Trusted arguments are those which are meant to be referenced arguments with
+> > - * unchanged offset. It is used to enforce that pointers obtained from acquire
+> > - * kfuncs remain unmodified when being passed to helpers taking trusted args.
+> > +/* Trusted arguments are those which are meant to be guaranteed valid
+> > + * arguments, with an unchanged offset. It is used to enforce that pointers
+> > + * obtained from either acquire kfuncs or the main kernel remain unmodified
+> > + * when being passed to helpers taking trusted args.
+> > + *
+> > + * Consider, for example, the following task tracepoint:
+> > + *
+> > + *	SEC("tp_btf/task_newtask")
+> > + *	int BPF_PROG(new_task_tp, struct task_struct *task, u64 clone_flags)
+> > + *	{
+> > + *		...
+> > + *	}
+> > + *
+> > + * And the following kfunc:
+> > + *
+> > + *	BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
+> > + *
+> > + * All invocations to the kfunc must pass the unmodified, unwalked task:
+> > + *
+> > + *	bpf_task_acquire(task);		    // Allowed
+> > + *	bpf_task_acquire(task->last_wakee); // Rejected, walked task
+> > + *
+> > + * Users may also pass referenced tasks directly to the kfunc:
+> > + *
+> > + *	struct task_struct *acquired;
+> > + *
+> > + *	acquired = bpf_task_acquire(task);	// Allowed, same as above
+> > + *	bpf_task_acquire(acquired);		// Allowed
+> > + *	bpf_task_acquire(task);			// Allowed
+> > + *	bpf_task_acquire(acquired->last_wakee); // Rejected, walked task
+> > + *
+> > + * If users wish to only allow referenced objects to be passed to a kfunc, they
+> > + * may instead specify the KF_OWNED_ARGS flag.
+> > + */
+> > +#define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
+> > +#define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+> > +#define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+> > +/* Owned arguments are similar to trusted arguments, but are even more
+> > + * restrictive.  Owned arguments are arguments which are "owned" by the BPF
+> > + * program, meaning it has acquired a reference to the object via an acquire
+> > + * kfunc. Just as with trusted arguments, the verifier enforces that owned
+> > + * arguments have an unchanged offset when they're passed to kfuncs.
+> 
+> I don't think the kfunc writers will be able to use KF_OWNED_ARGS vs KF_TRUSTED_ARGS properly.
+> refcnt-ed or not is not a property that they should worry about.
 
-Hi Alan,
+Ok, I think I agree with you that making a separate type as we did with
+struct nf_conn___init is a better solution. I'll drop this in v7. First
+though, we'll have to get aligned on PTR_WALKED vs. PTR_TRUSTED.
 
-As far as I understand the loop in `btf_dedup_prim_types` guarantees
-that only ids from the split module would be remapped:
+> Let's evaluate this patch set without KF_OWNED_ARGS and bpf_ct_* are still KF_TRUSTED_ARGS
+> and the other side of the verifier is relaxed to accept non-refcnted PTR_TO_BTF_ID
+> into kfunc.
 
-	struct btf {
-    	...
-		/* BTF type ID of the first type in this BTF instance:
-		 *   - for base BTF it's equal to 1;
-		 *   - for split BTF it's equal to biggest type ID of base BTF plus 1.
-		 */
-		int start_id;
-    	...
-	}
+Sounds good, assuming Kumar agrees.
 
-    ...
-	for (i =3D 0; i < d->btf->nr_types; i++) {
-		err =3D btf_dedup_prim_type(d, d->btf->start_id + i);
-		if (err)
-			return err;
-	}
+> What kind of bpf prog will be able to pass 'struct nf_conn___init *' into these bpf_ct_* ?
+> We've introduced nf_conn___init vs nf_conf specifically to express the relationship
+> between allocated nf_conn and other nf_conn-s via different types.
+> Why is this not enough?
 
-Thus CU1:foo won't be updated to be CU2:foo and CU1:s will not be the
-same as CU2:s. Is that right or am I confused?
+Kumar should have more context here (he originally suggested this in
+[0]), but AFAICT you're correct that this should be sufficient. I added
+a negative test case that correctly fails if a BPF program tries to call
+these helpers with a struct nf_conn* rather than a struct
+nf_conn__init*.
 
-Thanks,
-Eduard
+[0]: https://lore.kernel.org/all/CAP01T77PTK+bD2mBrxJShKNPhEypT2+nSHcr3=uuJbrghv_wFg@mail.gmail.com/
 
->=20
-> I suppose if we could guarantee the dedup happened within the same object
-> (kernel or module) we could relax this constraint though?
->=20
-> Alan
+> I prefer to keep only one flag KF_TRUSTED_ARGS that kfunc-s need to use
+> and eventually make all kfuncs KF_TRUSTED_ARGS by default and remove that flag.
 
+Yes, KF_TRUSTED_ARGS really should be the default. As Kumar describes in
+[1], we'll have to figure out how to avoid trace progs with unsafe args
+from calling these kfuncs. Maybe the right thing to do is allow-listing
+rather than deny-listing, as you pointed out.
+
+[1]: https://lore.kernel.org/bpf/CAP01T77goGbF3GVithEuJ7yMQR9PxHNA9GXFODq_nfA66G=F9g@mail.gmail.com/
+
+> Separately...
+> I think there was a plan to strengthen PTR_TO_BTF_ID and apply PTR_UNTRUSTED.
+
+That would be nice if we could do it. I assume that the issue is we're
+breaking backwards compat if we do, so I'd be curious to hear what the
+plan was if you're aware. The only plan that I've seen so far is what
+Kumar spelled out above in [1] above.
+
+> This PTR_WALKED looks like new thing.
+> If we really need it PTR_TO_BTF_ID should be allowlisted instead of denylisted
+> as PTR_WALKED is doing.
+> I mean we can introduce PTR_TRUSTED and add this flag to return value
+> of bpf_get_current_task_btf() and arguments of tracepoints.
+> As soon as any ptr walking is done we can clear PTR_TRUSTED to keep
+> backward compat behavior of PTR_TO_BTF_ID.
+> PTR_WALKED is sort-of doing the same, but not conservative enough.
+> Too many things produce PTR_TO_BTF_ID. Auditing it all is challenging.
+
+I very much prefer the idea of allowlisting instead of denylisting,
+though I wish we'd taken that approach from the start rather than going
+with PTR_UNTRUSTED. It feels wrong to have both PTR_UNTRUSTED and
+PTR_TRUSTED as type modifiers, as the absence of PTR_UNTRUSTED should
+(and currently does) imply PTR_TRUSTED.
+
+If we're going to go with an allowlist approach, then I think we should
+just get rid of PTR_UNTRUSTED altogether. Is that what you're
+suggesting? Otherwise, if we don't get rid of PTR_UNTRUSTED, then
+PTR_WALKED seems like a more natural type modifier addition.
+
+> I might have missed earlier discussions on this patch set. Apologies if so.
+
+Just FYI, the main initial thread where this was all discussed was [2].
+
+[2]: https://lore.kernel.org/all/CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com/
