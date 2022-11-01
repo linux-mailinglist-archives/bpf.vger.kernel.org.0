@@ -2,85 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E5161481A
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 12:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41704614826
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 12:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbiKALAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 07:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
+        id S229964AbiKALDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 07:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbiKALAc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 07:00:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CF318B1C;
-        Tue,  1 Nov 2022 04:00:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A74E7615B7;
-        Tue,  1 Nov 2022 11:00:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE9ADC433D7;
-        Tue,  1 Nov 2022 11:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667300430;
-        bh=Kj1eE4Y197ou0E8+vB3UV8meREwlWjE+4YDIl8CuQhU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MO8PR9MVgAOzqOcK6/OciwNYrU2zaC+1PiT2tvIWdsH5I0U8nOJDpczs5BtdYDnlA
-         9IqOLs3k3ZGWZNLusOm/DI1U7s26PbmjXa3s3zOgO+9RVjG0dwmuJq6+9uOED1sEuQ
-         sSDwA10ffYZ9N/Ttv0ne4iZW+SYZ+vU/tNvJ1Qscq4cdGdXn7dR8tRzi/VLq3O4M2b
-         b1UwAlNQz6b4k5hl2TYGIOAZgnxaLdIR3s6Vj6PJo5VCK/Q/lYhMfFmm9BJtHnN3W5
-         PVXDkf1m/ScOEyqrv6RvLeNYQDCIPBdoCA+VvpJOwVdRbop/WtR4xEVirM515QB4nN
-         SrxDU34wIFtBw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: Linux 6.1-rc3 build fail in include/linux/bpf.h
-In-Reply-To: <Y2BD6xZ108lv3j7J@krava>
-References: <439d8dc735bb4858875377df67f1b29a@AcuMS.aculab.com>
- <Y1+8zIdf8mgQXwHg@krava>
- <Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net>
- <Y2BD6xZ108lv3j7J@krava>
-Date:   Tue, 01 Nov 2022 12:00:27 +0100
-Message-ID: <87wn8fszw4.fsf@all.your.base.are.belong.to.us>
+        with ESMTP id S230080AbiKALDr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 07:03:47 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC711A053;
+        Tue,  1 Nov 2022 04:03:34 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N1nDy5qmvzHvXt;
+        Tue,  1 Nov 2022 19:03:14 +0800 (CST)
+Received: from dggpemm500013.china.huawei.com (7.185.36.172) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 1 Nov 2022 19:03:06 +0800
+Received: from [10.67.108.67] (10.67.108.67) by dggpemm500013.china.huawei.com
+ (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 1 Nov
+ 2022 19:03:06 +0800
+Message-ID: <be794dca-f3ad-8fe4-98f2-2b17ea8ad72b@huawei.com>
+Date:   Tue, 1 Nov 2022 19:03:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Subject: Re: [PATCH] netfilter: nf_nat: Fix possible memory leak in
+ nf_nat_init()
+Content-Language: en-US
+To:     <linux-kernel@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
+        <coreteam@netfilter.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <john.fastabend@gmail.com>,
+        <lorenzo@kernel.org>, <ast@kernel.org>
+References: <20221101093430.126571-1-chenzhongjin@huawei.com>
+From:   Chen Zhongjin <chenzhongjin@huawei.com>
+In-Reply-To: <20221101093430.126571-1-chenzhongjin@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.67]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500013.china.huawei.com (7.185.36.172)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa <olsajiri@gmail.com> writes:
+On 2022/11/1 17:34, Chen Zhongjin wrote:
+> In nf_nat_init(), register_nf_nat_bpf() can fail and return directly
+> without any error handling.
+> Then nf_nat_bysource will leak and registering of &nat_net_ops won't
+> be reverted. This leaves wild ops in subsystem linkedlist and when
+> another module tries to call register_pernet_operations() it triggers
+> page fault:
+>
+>   BUG: unable to handle page fault for address: fffffbfff81b964c
+>   RIP: 0010:register_pernet_operations+0x1b9/0x5f0
+>   Call Trace:
+>   <TASK>
+>    register_pernet_subsys+0x29/0x40
+>    ebtables_init+0x58/0x1000 [ebtables]
+>    ...
+>
+> Fixes: 820dc0523e05 ("net: netfilter: move bpf_ct_set_nat_info kfunc in nf_nat_bpf.c")
+> Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> ---
+>   net/netfilter/nf_nat_core.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+> index 18319a6e6806..b24b4dfc1ca4 100644
+> --- a/net/netfilter/nf_nat_core.c
+> +++ b/net/netfilter/nf_nat_core.c
+> @@ -1152,7 +1152,12 @@ static int __init nf_nat_init(void)
+>   	WARN_ON(nf_nat_hook != NULL);
+>   	RCU_INIT_POINTER(nf_nat_hook, &nat_hook);
+>   
+> -	return register_nf_nat_bpf();
+> +	ret = register_nf_nat_bpf();
+> +	if (ret < 0) {
+> +		kvfree(nf_nat_bysource);
+> +		unregister_pernet_subsys(&nat_net_ops);
+> +	}
+> +	return ret;
+>   }
 
-> On Mon, Oct 31, 2022 at 04:21:42PM +0100, Peter Zijlstra wrote:
->>=20
->> Does something crazy like the below work? It compiles but is otherwise
->> totally untested.
->
-> looks good
->
-> it has now the ftrace nop and the jump to the dispatcher image
-> or the bpf_dispatcher_nop_func.. great :)
->
-> 	bpf_dispatcher_xdp_func:
->
-> 	ffffffff81cc87b0 <load1+0xcc87b0>:
-> 	ffffffff81cc87b0:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> 	ffffffff81cc87b5:       e9 a6 fe 65 ff          jmp    0xffffffff81328660
->
-> tests work for me..  Toke, Bj=C3=B6rn, could you please check?
+I noticed that follow_master_nat should also be unregistered.
 
-Awesome! Much nicer!=20
+Going to send v2, discard this one.
 
-For Peter's patch, feel free to add:
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+
+Best,
+
+Chen
+
+>   
+>   static void __exit nf_nat_cleanup(void)
