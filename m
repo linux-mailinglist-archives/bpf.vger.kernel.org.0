@@ -2,165 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94936615284
-	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 20:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C2E615289
+	for <lists+bpf@lfdr.de>; Tue,  1 Nov 2022 20:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbiKATpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 15:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
+        id S229930AbiKATpV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 15:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiKATpM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 15:45:12 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD2B12770
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 12:45:11 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id kt23so39677182ejc.7
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 12:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qMOfY/Q7aPt0Mx8H1IgyBcZ5GVgiMq3b06S3LKuua+4=;
-        b=qt08mi02EkvPK0CKNUtT3gDYzzZFUswYvSSsehFtQcIATNTo7tDmmO6IfNVLumlpha
-         vOgdsTekzVFuWkfx5UeuLCb7PU5QTPcVVjcQ4y7nmnbb8DxVwa70mGaGhVL4M1sP4jp4
-         c1N2ttLRnYkAWolFPeY0O2wRS0CrcfV9kW2ozK4bFrL2lAy+CHOLTjoR1zBtiLfSHReV
-         IPMCM6nvM5WcfxupLSqrWqBqUSb6puLdL2NyyfSrXLAfoBpko2gu80jNi1o4g5wIG0tY
-         3Y2uUeP9JLVqAGIwwd6gBY49Ht0E12sv/slz1a0f4xCOVObEI4gtuOT1t2siRdwAmvJh
-         OUBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qMOfY/Q7aPt0Mx8H1IgyBcZ5GVgiMq3b06S3LKuua+4=;
-        b=Bn/4AJ0EF/huU7+H5+uxlQlz5G6xxvetLw0eAC5Y78qfJ5cNASlcx12X5vxw+ZYUGj
-         xM0S8wf0RE4dzqdOdJHGWOK4sbKgGllac+q47L7bWc802w8fDdHFGa7kyz3aQjjeDXs2
-         5CpKgzVZWwU0AS6clFiKG20pXD1EdAn+8k1eSamehSrISEqRd6ru32sgxAgNtmb5ifUQ
-         Q6a4UvPsJwCSqLK/vZx63BU2MQ+8NDitpC2xtRUz4fyreZBmFIdu1RkQfuLj9Q6V7zdz
-         TrcBna/tMJvI6IjTVBgaCOw2qL47K+mmv/4Lvl7k0VStqHvIvBZLu3af83iugcd8gjaB
-         twIg==
-X-Gm-Message-State: ACrzQf3T0B4tPv0qLioJnqUSnhiXHh/+29TMCL6z/6NQ7sOSIUR1qIF7
-        w39yx71wlHMYruYC/Wbeb8898zto9Wq4unmEOYE=
-X-Google-Smtp-Source: AMsMyM7WM7a5gZCLjtUbGBNeNwDVBrjd5j1j1n/ULO5abBoZK5si0eLunylNP8OyLeE4V8D2NzMa9ZE3lRDkww4thO0=
-X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
- wz5-20020a170906fe4500b0078815a57495mr20064239ejb.633.1667331909628; Tue, 01
- Nov 2022 12:45:09 -0700 (PDT)
+        with ESMTP id S229695AbiKATpU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 15:45:20 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2081.outbound.protection.outlook.com [40.107.244.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E502186D6;
+        Tue,  1 Nov 2022 12:45:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UA2F0wS771RVltijfMwWtQO0+dbS+XB6Cz/brgljjQNN1VYSQrCysBUsO6GEgkWGO380/1uElCZBiYetXVtZwOv3GFX/DrawkKLLVEC04WbJdPlAsitfoYeklBDqjRS+rE34nekx5rhpId6cGGmC6t7F4aDSwVDYcc3KFtyaVqPhTb8qBGc32tdFoIcqW0jJq3YCTVzjJ0nAI0cttBdy8e6BLuPRzpgzOjbFtMWc3CNxUJiNI66YlbfZ0woczg7vC6fwrk5mKEffU++XwWv4rKrLzVa58Qw1hv3kFU8b8lQPsVFGYWyYFy0F4hCCtph02//79nqkbbHxbtcj31oKfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+W0wtRtRD4XdFuCDo5lUvrd3tojKIthad6bNrerQ0gI=;
+ b=FU61+SYmsLgWDEFyCbWRM1ZxJxabDy5x3BWRmfWTmiknTRc48ugF9rNBbWcD8PjqHmjATehxW1pxdPBnnO5qIBIabdgv7sUxnVLY1H9xBY0OH4SyrZyvlqdrvBs8ZGg+1gdT5ajJZSvGNt1l/zy+d+rqLkUA4t029MNyc/XAGTKvC259jV7yarTZaXRMf/+ahFRB2pvChBI0R0OMFfUXRDIEXqQsMXXE+SQmZtJFYXSpZKTFfLpWgY/ht+F4iRiIDjI7QoQOb1Tvq/X4Ff6c7s5UmDtkWduFt/+iaJcKA5jI2Uev/pgnx5DRFnxnZ+BEELKiqmzYpcxq0bdvQHTapA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+W0wtRtRD4XdFuCDo5lUvrd3tojKIthad6bNrerQ0gI=;
+ b=N5xW/yROB3ZQjvs2p2Ybfc1OkuJ3bFnz81mbHYRpaq8IvZ7/TeSqxCzV1fisYcfP3oklckD4Qle8LmrEeo4Jt6e1nyzHrmZoSY9zsUGcu2I8z+jFthSfgAVKsYiUPPWshEQ0kiirrOKoK9auxqI8rinKthHqSTeFZuHriTaLAQ+7g7tQvwJoaZC18a3BNFLfUPS0qeRNFEylyA1iQiwVBr1x+sFksruARtcgBYQ3UJDcGH1fMGMvX8PWcFR4gYTOMqVK+gfI0s/aTVhTWQbOpMMsPbQ3q2YXh6DyAlrjSKPgrCXGf9Nv8cO9KGLDxRlI3KDGayh6Vq10+ioLVw/a5A==
+Received: from BN9P221CA0002.NAMP221.PROD.OUTLOOK.COM (2603:10b6:408:10a::9)
+ by BL1PR12MB5778.namprd12.prod.outlook.com (2603:10b6:208:391::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.14; Tue, 1 Nov
+ 2022 19:45:16 +0000
+Received: from BN8NAM11FT008.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:10a:cafe::f8) by BN9P221CA0002.outlook.office365.com
+ (2603:10b6:408:10a::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.21 via Frontend
+ Transport; Tue, 1 Nov 2022 19:45:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ BN8NAM11FT008.mail.protection.outlook.com (10.13.177.95) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5769.14 via Frontend Transport; Tue, 1 Nov 2022 19:45:16 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Tue, 1 Nov 2022
+ 12:45:04 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.29; Tue, 1 Nov 2022 12:45:04 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29 via Frontend
+ Transport; Tue, 1 Nov 2022 12:45:02 -0700
+Date:   Tue, 1 Nov 2022 12:45:01 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Lu Baolu <baolu.lu@linux.intel.com>, <bpf@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, <linux-doc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        "Jason Wang" <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        <kvm@vger.kernel.org>, "Matthew Rosato" <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Keqian Zhu" <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 14/15] iommufd: vfio container FD ioctl compatibility
+Message-ID: <Y2F3PVS2JflqrMI9@Asurada-Nvidia>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <14-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <CAEf4BzbScntAd4Yh5AWw+7bZhooYYaomwLYiuM0+iBtx_7LKoQ@mail.gmail.com>
- <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com> <CAEf4BzYT4pwmw64DaCTxR3_QjO5RRVadqVLO0h-hNa-+xOyLZw@mail.gmail.com>
- <af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com> <CAEf4BzZE7boex4KBjMmhJ4Nib6BA71-pf5jiAg74FjEdr_2e6A@mail.gmail.com>
- <ea841d91-a43f-a6e0-e8ce-90f9b2d3f77c@oracle.com> <CAADnVQ+Oe-euDp7dFEOntzdy9uYmGqapVM0YNdRDNerCN-8OQQ@mail.gmail.com>
- <a1f1cce3ad89c7ff9857cea643763f44d5047186.camel@gmail.com>
-In-Reply-To: <a1f1cce3ad89c7ff9857cea643763f44d5047186.camel@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Nov 2022 12:44:58 -0700
-Message-ID: <CAADnVQKjYcTPJnSjidPq5Tp-Yoj_p=_+g2Gq_MoKPCmymVzftA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <14-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT008:EE_|BL1PR12MB5778:EE_
+X-MS-Office365-Filtering-Correlation-Id: ec3b2a1c-c0a4-4e62-e3eb-08dabc4199ca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HEOwmZW47+McFUN57NN2WaF7Yp1AINn9ZTEE07CikzFR89sxAsic0oCTXPbFpYTqNv1bciAbiPTvkFuIyFA6oDIEsMiOCjRq9SMvIhExYetllir/yMyF49G/FmNiwif7HXy62DY+VP13+BunuJQ5lDWJuVFDBo4hpXm2NxpXpzCMEwLnuSIcJVbv50/fXxoSNxqSpvSkCXmhOvo+vONVq9GJTW8PxDho6nYYVCDJnx/VlA+2wAAod0XMxui9G5QDPuonzaCnBmxEJJQoRBOpdT7pZGIQmkkOLzvsj7Io6B4w6qCpiU7QBRp0PSHYC6LNjgeSlmzM2rk/Ue2dfDZn9vulLi9hAS+3seuslKTpfWxP8R7f8n0Dzd6E/vJDq7TtUtnql5kIrZybfTXksxvG3+/rxLpOK9JioBU6mhwDsa7xHcWTUuQM8xguMV9glTWgZApF3UGJCjMmkBHHtz5ac6Tm2BRaNONmryzWNDYbvTN66w4EW7xLKtwsMYiIsqTaOTbYFjiMNBG4bEdtYWqIZd0OF2taM2tbctL2BEKsWyfrVgB7lmdvAA6oQYOv7ybFnfQM+Dk1nyidELDhjiaqnItu1efN6GkNsPW4BRQTXo8LYnEmVQuZS4HXqtErZxQnShdQ1Vqsa/g+vFkK/3OJF70E47tXbxc52XKGm7tTe62QiP1v5qtwG7E9I+Cqfc2SV0EDDQXEzHmz1VSkyxCgH4Y3Kfgxmvhy+8BusPVMeql4mIZpK4WSujAV1BUrX6Ow92hxqrM9ZpUO4OhDZrCJfg==
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(39860400002)(376002)(396003)(451199015)(40470700004)(46966006)(36840700001)(4744005)(70586007)(316002)(8676002)(70206006)(478600001)(4326008)(54906003)(7406005)(41300700001)(36860700001)(55016003)(6862004)(5660300002)(7416002)(40480700001)(40460700003)(356005)(336012)(7636003)(26005)(82740400003)(9686003)(186003)(6636002)(47076005)(86362001)(33716001)(8936002)(426003)(82310400005)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2022 19:45:16.3578
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec3b2a1c-c0a4-4e62-e3eb-08dabc4199ca
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT008.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5778
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 12:21 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Tue, 2022-11-01 at 11:35 -0700, Alexei Starovoitov wrote:
-> > On Tue, Nov 1, 2022 at 9:02 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > >
-> > > > > Yes, we discussed this before. This will need to add additional work
-> > > > > in preprocessor. I just made a discussion topic in llvm discourse
-> > > > >
-> > > > > https://discourse.llvm.org/t/add-a-type-checking-macro-is-type-defined-type/66268
-> >
-> > That would be a great clang feature.
-> > Thanks Yonghong!
-> >
-> > > > >
-> > > > > Let us see whether we can get some upstream agreement or not.
-> > > > >
-> > > >
-> > > > Thanks for starting the conversation! I'll be following along.
-> > > >
-> > >
-> > >
-> > > I think this sort of approach assumes that vmlinux.h is included after
-> > > any uapi headers, and would guard type definitions with
-> > >
-> > > #if type_is_defined(foo)
-> > > struct foo {
-> > >
-> > > };
-> > > #endif
-> > >
-> > > ...is that right? My concern is that the vmlinux.h definitions have
-> > > the CO-RE attributes. From a BPF perspective, would we like the vmlinux.h
-> > > definitions to dominate over UAPI definitions do you think, or does it
-> > > matter?
-> >
-> > I think it's totally fine to require #include "vmlinux.h" to be last.
-> > The attr(preserve_access_index) is only useful for kernel internal
-> > structs. uapi structs don't need it.
-> >
-> > >
-> > > I was wondering if there might be yet another way to crack this;
-> > > if we did want the vmlinux.h type definitions to be authoritative
-> > > because they have the preserve access index attribute, and because
-> > > bpftool knows all vmlinux types, it could use that info to selectively
-> > > redefine those type names such that we avoid name clashes when later
-> > > including UAPI headers. Something like
-> > >
-> > > #ifdef __VMLINUX_H__
-> > > //usual vmlinux.h type definitions
-> > > #endif /* __VMLINUX_H__ */
-> > >
-> > > #ifdef __VMLINUX_ALIAS__
-> > > if !defined(timespec64)
-> > > #define timespec64 __VMLINUX_ALIAS__timespec64
-> > > #endif
-> > > // rest of the types define aliases here
-> > > #undef __VMLINUX_ALIAS__
-> > > #else /* unalias */
-> > > #if defined(timespec64)
-> > > #undef timespec64
-> > > #endif
-> > > // rest of types undef aliases here
-> > > #endif /* __VMLINUX_ALIAS__ */
-> > >
-> > >
-> > > Then the consumer does this:
-> > >
-> > > #define __VMLINUX_ALIAS__
-> > > #include "vmlinux.h"
-> > > // include uapi headers
-> > > #include "vmlinux.h"
-> > >
-> > > (the latter include of vmlinux.h is needed to undef all the type aliases)
-> >
-> > Sounds like a bunch of complexity for the use case that is not
-> > clear to me.
->
-> Well, my RFC is not shy of complexity :)
-> What Alan suggests should solve the confilicts described in [1] or any
-> other confilicts of such kind.
->
-> [1] https://lore.kernel.org/bpf/999da51bdf050f155ba299500061b3eb6e0dcd0d.camel@gmail.com/
+On Tue, Oct 25, 2022 at 03:12:23PM -0300, Jason Gunthorpe wrote:
 
-I don't quite see how renaming all types in the 1st vmlinux.h
-will help with name collisions inside enum {}.
-The enums will conflict with 2nd vmlinux.h too.
-Unless the proposal is to rename them as well,
-but then what's the point?
+> +static int iommufd_vfio_iommu_get_info(struct iommufd_ctx *ictx,
+> +				       void __user *arg)
+
+> +	if (copy_to_user(arg, &info, minsz))
+> +		rc = -EFAULT;
+> +	rc = 0;
+
+Coverity reports a value overwriting here:
+rc gets -EFAULT first then gets overwritten to 0.
+
+> +
+> +out_put:
+> +	up_read(&ioas->iopt.iova_rwsem);
+> +	iommufd_put_object(&ioas->obj);
+> +	return rc;
+> +}
