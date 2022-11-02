@@ -2,93 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C473B616626
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 16:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CC8616930
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 17:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbiKBP3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 11:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        id S231255AbiKBQfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 12:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbiKBP3F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 11:29:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824626478;
-        Wed,  2 Nov 2022 08:28:55 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id bs21so25097508wrb.4;
-        Wed, 02 Nov 2022 08:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4egQs23B/0jD+O5d0KXLiUFX5T/QwoarUGlcyJUeObo=;
-        b=lhX+ZWrUkKM7HX+sgDGmFCN+A6u2sNjtuKiZxSQ4mBJwSZ9KHSgkNvtZgSfpnFW91Q
-         hCwgAhCGjLNjdwaBZPkzihlW5Z/YEIk4flwfSSVT6MtAYAl8v9mNuPqFKZ4uNnc71ZZN
-         5PrRnS2pTUfjhUwaX4WXqetuE8bbyBFQad70Gu8goJaNXzHV4VJI5T6S4VwimwXKp0tN
-         Qr6+PP6o9wK778I1yvNnre2p2Yg7K+f8myrmCMk9dXlWw4Tor8ImuuFH5XTOvOYV+umS
-         vsK1SNIZFsvlSd5qZyO1O6w6T3Vbtfki1xecI68qhaTgOLRhwPjrnaEKZdoB9ooEZTW/
-         1T+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4egQs23B/0jD+O5d0KXLiUFX5T/QwoarUGlcyJUeObo=;
-        b=m4W4WlHjsx4JlN1itFggdctgOUIG/RilmKX2Ra2bBYhoBWaTycdX1X0A+9iaRqE3bs
-         YJrnW1gyYpRO/qG5krW2PIQN3gH2rJwhJ2EXNTEsCFZdsaFUJYrqHtiJ1KR7p7ZyKqDk
-         gpDpt8Xs4SHUhhK/WcA4KIju8uP2KUA9D60pcrve5wfrclBxGtzDQolgkwKwEePFXoNp
-         6npCHkH1Ep1GxHysrzlhOISEZauFZbVKQo09s5bO2xGNep906S5XYX243/Bm1zTy7SwO
-         OXzQvml/+qmD9Hz5KyuJVr3aP8g0chpSy+IDovPS2dM+csOyCXBXxw/fU4D41LeYV0pn
-         qwKA==
-X-Gm-Message-State: ACrzQf1UrWpZFK0BRZfjGIBC07p3sBBoFjkMkLH0bMLKl701QOo1TTZa
-        yAor/NNZryl2MP5wAbH6yrk=
-X-Google-Smtp-Source: AMsMyM5c8Dd+BBbbPeuG4s5bkCzaunkFfFLCR3siYEdjHx9T6SX0lVAVVT1cCGA/ijAWwR4MUa7RsQ==
-X-Received: by 2002:a5d:554e:0:b0:236:ccf1:f958 with SMTP id g14-20020a5d554e000000b00236ccf1f958mr11087212wrw.378.1667402933989;
-        Wed, 02 Nov 2022 08:28:53 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id bk17-20020a0560001d9100b0022cdb687bf9sm16075337wrb.0.2022.11.02.08.28.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Nov 2022 08:28:53 -0700 (PDT)
-Subject: Re: [PATCH net] net: Fix memory leaks of napi->rx_list
-To:     Eric Dumazet <edumazet@google.com>,
-        Wang Yufen <wangyufen@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, ecree@amd.com
-References: <1667361274-2621-1-git-send-email-wangyufen@huawei.com>
- <CANn89i+cNjUH8pR0-QTdWM09G8ZfX_gzDqOY6ecyY4igDwrYaQ@mail.gmail.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <7632c326-5727-2c71-9895-08c540b2c8d5@gmail.com>
-Date:   Wed, 2 Nov 2022 15:28:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        with ESMTP id S231753AbiKBQer (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 12:34:47 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99FE764B;
+        Wed,  2 Nov 2022 09:30:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4N2XKf5stGz9v7Z1;
+        Thu,  3 Nov 2022 00:24:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwD3lXIbm2JjrrUxAA--.2055S2;
+        Wed, 02 Nov 2022 17:30:26 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaac.jmatt@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] ima: Fix memory leak in __ima_inode_hash()
+Date:   Wed,  2 Nov 2022 17:30:06 +0100
+Message-Id: <20221102163006.1039343-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CANn89i+cNjUH8pR0-QTdWM09G8ZfX_gzDqOY6ecyY4igDwrYaQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwD3lXIbm2JjrrUxAA--.2055S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyrtr4xXw1UAryxJr1UKFg_yoW8XF1xpa
+        4Dua4UCrW8KFWfCr1kGa42vw4Sk3yjgFWUWrZ8twn0yFn3XF1qkr15AF1Y9r95GryFyr1x
+        tw47t345Aa1jyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+        w2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU8imRUUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4D5-QABs2
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/11/2022 04:27, Eric Dumazet wrote:
-<snip>
-> I do not think the bug is there.
-> 
-> Most likely tun driver is buggy.
-<snip>
->> @@ -6471,6 +6481,7 @@ void __netif_napi_del(struct napi_struct *napi)
->>         list_del_rcu(&napi->dev_list);
->>         napi_free_frags(napi);
->>
->> +       flush_rx_list(napi);
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-But maybe it makes sense to put a WARN_ON_ONCE(!list_empty(&napi->rx_list))
- here, to catch such buggy drivers sooner.  WDYT?
+Commit f3cc6b25dcc5 ("ima: always measure and audit files in policy") lets
+measurement or audit happen even if the file digest cannot be calculated.
 
--ed
+As a result, iint->ima_hash could have been allocated despite
+ima_collect_measurement() returning an error.
+
+Since ima_hash belongs to a temporary inode metadata structure, declared
+at the beginning of __ima_inode_hash(), just add a kfree() call if
+ima_collect_measurement() returns an error different from -ENOMEM (in that
+case, ima_hash should not have been allocated).
+
+Cc: stable@vger.kernel.org
+Fixes: 280fe8367b0d ("ima: Always return a file measurement in ima_file_hash()")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ security/integrity/ima/ima_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 040b03ddc1c7..4a207a3ef7ef 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -542,8 +542,13 @@ static int __ima_inode_hash(struct inode *inode, struct file *file, char *buf,
+ 
+ 		rc = ima_collect_measurement(&tmp_iint, file, NULL, 0,
+ 					     ima_hash_algo, NULL);
+-		if (rc < 0)
++		if (rc < 0) {
++			/* ima_hash could be allocated in case of failure. */
++			if (rc != -ENOMEM)
++				kfree(tmp_iint.ima_hash);
++
+ 			return -EOPNOTSUPP;
++		}
+ 
+ 		iint = &tmp_iint;
+ 		mutex_lock(&iint->mutex);
+-- 
+2.25.1
+
