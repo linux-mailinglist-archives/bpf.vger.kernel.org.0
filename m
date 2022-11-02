@@ -2,252 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6856163B1
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 14:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C20616476
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 15:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbiKBNSV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 09:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S231180AbiKBOHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 10:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbiKBNR6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 09:17:58 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA192A722;
-        Wed,  2 Nov 2022 06:17:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HKp7ohdpxGQ5tb62wfeRVXRBiZy0sIRUuCfPhJNtmdfDYvVvXcQSfkdigct2RgVVGsG92Z5Wx5/cR2ZKdr/QxaBG6LvQFhegQ1jfPkGB9p2sssuYFdA67V5MR0uDC6TVlpFZ5L0HdnYi3w5lNgCt6RDFV0D/GmCTLgnzcdn59hLNlsBe+9FdKPhsN4NFvEWryhSr1tHmsHoYpp/8Zz8YRGZtLWT8wYwS3qfO1oX0quIoFLQMK9KWWkAdmezcTmACgrbUoC7pXTbk9kzq2xZyny3R7e845WchWA0Dxbl93F5gtnkD2k1AAw8xl5lrntDecIyLWTPwrRHm6VEPbfC5SA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NmRaQL7SXYCVJ75qusrjG5w/TI/0E8m49d8XBfoeFgE=;
- b=e7dmRfhdasc/Mu12WWoaV3HFlh/zTOPMxcC+pPLvD6HLGs77i843YNnAmNDFv/QIGfsknDaoCBGAMuM9ZekxBPH2l5duSodXSfanInzHQFiLwKgCHj3aPvq9LXhCN78GbQ2AjUm91TcLXB3aJPq0E3FA0CJ62y4vP6UScFvaRmRd/Tf02VuAClnkxiymY9ULLCg5a7/IacepcgR01+s/wqNMXsRkcj75HM1yq+/bTvFyc7GnS1CgqkbP8DQmFDoD2fFpwW8B8BKPEC2wZzRH1PC0OEdF5UV+QcnyyPfu5EGGn1WFb5zDmoOaI5D/UJ2P/QSgRlHC+uk8VHid67TSkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NmRaQL7SXYCVJ75qusrjG5w/TI/0E8m49d8XBfoeFgE=;
- b=mDWgRlzaHjI3g6A0GLd97zx5KWJQQtp7pLtFE/+o9Qaj3UKO5C0/CPWC/LFkk2P0a0W6pme/kU64+WEjFRnuuepqQlkCqKWSTQkIZh9LIFzZh8lxbiJ03Kd0ubbF05HePolpqS4HTCPnzipKdylLuykVhtypT1b5pQlLHJrNicsYFAs/OAu9fdjfhjEl5/100oR5susd0faMC+1+83R9NS7VAUnCFyMq+mJTZcRQBecKPtGM5B776lqDxi0SxZC+WY+WuN90uHD5t7yu+JpG8INavtFtHO1ahEugrqHbWimTbZUsSKG/ylF9S41JLsy7RYqbmmVjxt7OVPlhMgz5Pg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CO6PR12MB5396.namprd12.prod.outlook.com (2603:10b6:303:139::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.21; Wed, 2 Nov
- 2022 13:17:46 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5769.015; Wed, 2 Nov 2022
- 13:17:46 +0000
-Date:   Wed, 2 Nov 2022 10:17:45 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 15/15] iommufd: Add a selftest
-Message-ID: <Y2Jt+WxNUwROJ8fN@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <15-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <Y2GCV97lxEGwAuo6@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2GCV97lxEGwAuo6@Asurada-Nvidia>
-X-ClientProxiedBy: BL0PR05CA0022.namprd05.prod.outlook.com
- (2603:10b6:208:91::32) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S230518AbiKBOHs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 10:07:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CDFE00F
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 07:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667398007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2jf4Id8JS47B7k+3UyTqzVbwapS6kaSdZwlME3DJWj8=;
+        b=VRhueAu2MNsa/3CG7yDgVY2QBFb9eBe062EkqQNnl/e6RFkuWvJYpYgeJaTaySz5Yonvvu
+        77ekvRTlD0v93yS9EH75tD0ixUAnQIkwo/2RGEkS4PRRXxxGH9FuVQc2F4gj3lHrRZIvdR
+        uT0RlXofKCfjB8e15V23Q0/8FHgCskU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-227-U6o1joxmMCWUkblnu6F1XA-1; Wed, 02 Nov 2022 10:06:45 -0400
+X-MC-Unique: U6o1joxmMCWUkblnu6F1XA-1
+Received: by mail-ej1-f72.google.com with SMTP id ho8-20020a1709070e8800b0078db5e53032so9932434ejc.9
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 07:06:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2jf4Id8JS47B7k+3UyTqzVbwapS6kaSdZwlME3DJWj8=;
+        b=t8OjZhMVitHERuwlIkvUwhPv7Zbb9bbfvnWBQs0ma/BuGb4RHZSEy/MGCqY05nHgKI
+         qG3wZtIONfFPrWrsQ4yuG4LIphn8KciKfxsR0H7qCSr+JnAf8mnT+Sfk6oq4CBoAV42p
+         jRQjdO+7Zliroupvwo2GbGsMgCAJf19BzhJL11D5oV32gE10K4t2uuemcnREwk5BNIaD
+         YvCcvLPg8F8fol1ucOhxnnExL9QJAWu3YHT2iBehHZ4xqsVUwdgd1m6hS9GkcIywwM2a
+         n9sFFsaEnoVtuINeBlSr0t6MI07XVeLu3wasr1rOorpV7gzkluvReeIVTUNi+TFQvhm/
+         Rk0w==
+X-Gm-Message-State: ACrzQf3+hVsCpwJTCC9Xs0Z/jYjtkXUuPsLLusn5DvK9rFiOkKm8e2pZ
+        2qos9XgmzFahAL8JvOvHtABsrnLwjJpEzbPA7+4IzDDz73q+mFWZbNIT5Ik1Fa9VS0Vd/OIINww
+        MPuV8a72bvuxo
+X-Received: by 2002:a17:906:eecb:b0:73c:5bcb:8eb3 with SMTP id wu11-20020a170906eecb00b0073c5bcb8eb3mr24267396ejb.284.1667398004323;
+        Wed, 02 Nov 2022 07:06:44 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4Tj2FaxU3roPtMp95VNAskvSpB86ZGmAP7J3JbRyK9bWHjEuushbYOKSfv/6bTQnP1PveiZw==
+X-Received: by 2002:a17:906:eecb:b0:73c:5bcb:8eb3 with SMTP id wu11-20020a170906eecb00b0073c5bcb8eb3mr24267358ejb.284.1667398004086;
+        Wed, 02 Nov 2022 07:06:44 -0700 (PDT)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id f14-20020a056402150e00b004610899742asm5799369edw.13.2022.11.02.07.06.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Nov 2022 07:06:43 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <48ba6e77-1695-50b3-b27f-e82750ee70bb@redhat.com>
+Date:   Wed, 2 Nov 2022 15:06:41 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CO6PR12MB5396:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e60d49f-bf36-414f-39b0-08dabcd4a232
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pCD2pzrpKJ+alfJp5Gr3GaqvySVjOl7vmexgWDs6kb28GTYbO7siN2j0mszKCKGcjbGxxgRRqtf/rpUyu+qZuOUIG90AF+sGbA3Xf8/wnmlnqVQJ3F8mVOXfnHTGYsl6gmq4bVqhM8fAldArxDx385fNHiMXIidZKyXZTRksEuWQabwjuCSEJOlDcUvLPm+OHpXtaALo0TUwAQTwcLTZMNWrMq+xpEe5UoFWQsTKNUnFxTrLKn+C337TFlB1bLMzm8Wrk51tNMcEf/JHXPKmT4YIkTC7m6wHdENSrH+Cos4dAUA7ZHR3vX294kma4tv9RO4TOYJerzXiZ9kyemfIpXUVP2Hc4yetQXqql+gNgXe25SFFExjcqR2Hd5SFg5ITBfjrfAMYwpHQq8UtDYwEADYnBE6EDUmXyiCKVDWZDz9u2KFJ1gqCNM+o7Q/eHn131MfNXZtaO5o0SiXURe2o50IN+jHGniY3rxUEOkYYazv2ZRUDw5VmFA1imedbV/Xb284g8MTaUSASls5mI4cyxSLu8SXWjvYY5/XpwTksR8uN9X3b60FyBijd0n+n2820hxSmElJb4ZM4fXwtByF1q6HegkDwH6rxexC00Eg8GXuHjuYtJPfa9zm+HPZ0chOvnPapttqb7WgYaX4MFJ08xngDqX12gCOo3CuwdOmPfkjinnhGJf517gTd1+JiTgR8iVqlXJmLuAS+p9FdzqttjbJNTXdDvuSDNXrNbsKaGZttrwLf5VrfUuTk6dm14REf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(451199015)(4326008)(6636002)(316002)(478600001)(54906003)(37006003)(66476007)(6486002)(6506007)(8676002)(66556008)(66946007)(26005)(5660300002)(7416002)(41300700001)(7406005)(8936002)(6862004)(38100700002)(36756003)(2906002)(86362001)(83380400001)(186003)(6512007)(2616005)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lrYCHkcYO2XO5GJgH+cNCSJoDeyL5XcLBICN5ka4tMeDM1Es2ANxntkNMMK+?=
- =?us-ascii?Q?gEfHPcAjliaJXvsCniGIBBSAGNK10K0OEfaCDexPCOR5Nn+Vf3sGXoS+t56d?=
- =?us-ascii?Q?xE3P0rpxrCOKaP9h4wsYZGx8o4Zbk6PnJ3STJ/xmgK4TxZKfzoy2IOzU+hLm?=
- =?us-ascii?Q?qo0Gs2T2SKRPPsJOKKB3fk67aC43Kk52qM9sRYiQGcL2FlZR6cbSgbQ6cI15?=
- =?us-ascii?Q?u/dmFtf9q5OT/WHHYwvdNKzlnCgXDKgEtKi1CKbfGdIPjoAz30fBUo8jGtrM?=
- =?us-ascii?Q?DXQ51E9ERERDvy9XYCBi9IXO7aDODcjMhilUFRQuquoII5jiX57veNwmQP6L?=
- =?us-ascii?Q?XtDI8eRZym0jXfHVbwYNP/K/aMuQuZUdJlCf7UDLD5pM+/bfOPS8X7ClPSWq?=
- =?us-ascii?Q?kGtmoS++lTzPVZqzW7VWviJTnvgA7565Bg7bcqd2wXyUicztL6ceWDq7JeIY?=
- =?us-ascii?Q?9WpmBn68izYYFSxa90OoB0GyElQUycfa+JXy1LDP/I00qKDOwJJwSctdCzNP?=
- =?us-ascii?Q?Yp+wl486qhsItJEV46iKMryLCcB40M1a96qAEsAYGb0J6zpXvbkrR1w0ryLb?=
- =?us-ascii?Q?qpJxeIbchHTgvgsCWbNb7WwAyWIgcAsZwOL57hZ8YMLQi+2J3CpJbt+nUI5r?=
- =?us-ascii?Q?LU3FPqCRCcrf05IqHDuDgfdwFrsYeDViLO/JtA6GCBydIhjJz5+3Ea0NhKd2?=
- =?us-ascii?Q?+eOGrmpN5LRdp64CM3mY1aCSONIwWSpDlAbYyfBzUToKm3b8MSTmN+H9eT7H?=
- =?us-ascii?Q?a0uf4peEIWJaS/jP1R9HMWtl2QKNFK6UraRZTlRpwQFI7XqxQL4o4/U+YlQN?=
- =?us-ascii?Q?KFFoOWaoorVAMJi4nemq68MrU80fDZKCiKuoUvrCIMvOhz5SyW00vE4ZrYly?=
- =?us-ascii?Q?Xx8d6hpoEYgNpm6lfHm2Qq+nDzQ2cyL/M1AxzrKt07e3TKgAiOAi21CMpMGs?=
- =?us-ascii?Q?07zCs9sOgg6psRM5R4AyNtuXE9WiaqdW2pNvI7EpYm1balB6fQv4cc0pR2jB?=
- =?us-ascii?Q?5YF+KdBglK9Rf+Z7gYrdx4KEIdB5jLBkMm1QVgQXizU6/CZypOZwcXVYjerc?=
- =?us-ascii?Q?DM4Qb1OM0jRuavsTpIXTkxCzxGTdk63JM3IC81rsxBvzSgNxTggsri94k8i8?=
- =?us-ascii?Q?LqAxzkpYf7Tsz6mMwqNg74a2poLhBLT/93U7j59OftyVRTEHAQFFnN7gOVrr?=
- =?us-ascii?Q?YXibFBYfb9OYV6YR1Nt/RgXMOtdzCOA40wCQY14DpypZRnYMlkKCV3HS9/X+?=
- =?us-ascii?Q?m+L04TuF9zMtfRJTMBpG2b3/X78lqQwXFrM5xv/BGQEBVoGSIxAz+a+jMhic?=
- =?us-ascii?Q?VWcWWVQ0VQGkyU9k7ZTJKPes4QQ0DrMOUjzFBqqQnFJb8TNJ5FTLRVzwQnd3?=
- =?us-ascii?Q?+QIGWyieB8cn5MP1Adrb2vXnT6qlvzlmHx2uY7SMtL0bgx7Bz3aMUOOl2peq?=
- =?us-ascii?Q?JV0vC11Ze7ipApGfDNxOwnRB1rrspyWzeKaIy0s6OTiFDtpcjEwFVmRWSHR5?=
- =?us-ascii?Q?uw5WT2pNVpwX35DVD/1/XbGqWwSJxXdOno4JDLDOR76txrJe2uAyQd6AAD+r?=
- =?us-ascii?Q?J8PMKD4/LoIrxIqgzgg=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e60d49f-bf36-414f-39b0-08dabcd4a232
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2022 13:17:46.8510
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WjKXNYHXNHOXz9Y3PROSeaqNj70VRsDk/meElTlR1husRdvFHq1TXRCuZq4VHLGt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5396
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Cc:     brouer@redhat.com,
+        "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
+        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
+        "song@kernel.org" <song@kernel.org>,
+        "Deric, Nemanja" <nemanja.deric@siemens.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "Kiszka, Jan" <jan.kiszka@siemens.com>,
+        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
+        "willemb@google.com" <willemb@google.com>,
+        "ast@kernel.org" <ast@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "mtahhan@redhat.com" <mtahhan@redhat.com>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "haoluo@google.com" <haoluo@google.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
+Content-Language: en-US
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+References: <20221027200019.4106375-1-sdf@google.com>
+ <635bfc1a7c351_256e2082f@john.notmuch> <20221028110457.0ba53d8b@kernel.org>
+ <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
+ <635c62c12652d_b1ba208d0@john.notmuch> <20221028181431.05173968@kernel.org>
+ <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
+ <875yg057x1.fsf@toke.dk>
+ <CAKH8qBvQbgE=oSZoH4xiLJmqMSXApH-ufd-qEKGKD8=POfhrWQ@mail.gmail.com>
+ <77b115a0-bbba-48eb-89bd-3078b5fb7eeb@linux.dev>
+ <CAKH8qBsGB1G60cu91Au816gsB2zF8T0P-yDwxbTEOxX0TN3WgA@mail.gmail.com>
+ <0c00ba33-f37b-dfe6-7980-45920ffa273b@linux.dev>
+In-Reply-To: <0c00ba33-f37b-dfe6-7980-45920ffa273b@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 01, 2022 at 01:32:23PM -0700, Nicolin Chen wrote:
-> On Tue, Oct 25, 2022 at 03:12:24PM -0300, Jason Gunthorpe wrote:
->  
-> > diff --git a/drivers/iommu/iommufd/selftest.c b/drivers/iommu/iommufd/selftest.c
-> 
-> > +static inline struct iommufd_hw_pagetable *
-> > +get_md_pagetable(struct iommufd_ucmd *ucmd, u32 mockpt_id,
-> > +		 struct mock_iommu_domain **mock)
-> > +{
-> > +	struct iommufd_hw_pagetable *hwpt;
-> > +	struct iommufd_object *obj;
-> > +
-> > +	obj = iommufd_get_object(ucmd->ictx, mockpt_id,
-> > +				 IOMMUFD_OBJ_HW_PAGETABLE);
-> > +	if (IS_ERR(obj))
-> > +		return ERR_CAST(obj);
-> > +	hwpt = container_of(obj, struct iommufd_hw_pagetable, obj);
-> > +	if (hwpt->domain->ops != mock_ops.default_domain_ops) {
-> > +		return ERR_PTR(-EINVAL);
-> > +		iommufd_put_object(&hwpt->obj);
-> 
-> Coverity reports that return is placed before iommufd_put_object.
 
-I'm surprised no compiler warned about this!
 
+On 01/11/2022 18.05, Martin KaFai Lau wrote:
+> On 10/31/22 6:59 PM, Stanislav Fomichev wrote:
+>> On Mon, Oct 31, 2022 at 3:57 PM Martin KaFai Lau 
+>> <martin.lau@linux.dev> wrote:
+>>>
+>>> On 10/31/22 10:00 AM, Stanislav Fomichev wrote:
+>>>>> 2. AF_XDP programs won't be able to access the metadata without 
+>>>>> using a
+>>>>> custom XDP program that calls the kfuncs and puts the data into the
+>>>>> metadata area. We could solve this with some code in libxdp, 
+>>>>> though; if
+>>>>> this code can be made generic enough (so it just dumps the available
+>>>>> metadata functions from the running kernel at load time), it may be
+>>>>> possible to make it generic enough that it will be forward-compatible
+>>>>> with new versions of the kernel that add new fields, which should
+>>>>> alleviate Florian's concern about keeping things in sync.
+>>>>
+>>>> Good point. I had to convert to a custom program to use the kfuncs :-(
+>>>> But your suggestion sounds good; maybe libxdp can accept some extra
+>>>> info about at which offset the user would like to place the metadata
+>>>> and the library can generate the required bytecode?
+>>>>
+>>>>> 3. It will make it harder to consume the metadata when building 
+>>>>> SKBs. I
+>>>>> think the CPUMAP and veth use cases are also quite important, and that
+>>>>> we want metadata to be available for building SKBs in this path. Maybe
+>>>>> this can be resolved by having a convenient kfunc for this that can be
+>>>>> used for programs doing such redirects. E.g., you could just call
+>>>>> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
+>>>>> would recursively expand into all the kfunc calls needed to extract 
+>>>>> the
+>>>>> metadata supported by the SKB path?
+>>>>
+>>>> So this xdp_copy_metadata_for_skb will create a metadata layout that
+>>>
+>>> Can the xdp_copy_metadata_for_skb be written as a bpf prog itself?
+>>> Not sure where is the best point to specify this prog though.  
+>>> Somehow during
+>>> bpf_xdp_redirect_map?
+>>> or this prog belongs to the target cpumap and the xdp prog 
+>>> redirecting to this
+>>> cpumap has to write the meta layout in a way that the cpumap is 
+>>> expecting?
+>>
+>> We're probably interested in triggering it from the places where xdp
+>> frames can eventually be converted into skbs?
+>> So for plain 'return XDP_PASS' and things like bpf_redirect/etc? (IOW,
+>> anything that's not XDP_DROP / AF_XDP redirect).
+>> We can probably make it magically work, and can generate
+>> kernel-digestible metadata whenever data == data_meta, but the
+>> question - should we?
+>> (need to make sure we won't regress any existing cases that are not
+>> relying on the metadata)
 > 
-> > +static int iommufd_test_access_pages(struct iommufd_ucmd *ucmd,
-> > +				     unsigned int access_id, unsigned long iova,
-> > +				     size_t length, void __user *uptr,
-> > +				     u32 flags)
-> > +{
-> > +	struct iommu_test_cmd *cmd = ucmd->cmd;
-> > +	struct selftest_access_item *item;
-> > +	struct selftest_access *staccess;
-> > +	struct page **pages;
-> > +	size_t npages;
-> > +	int rc;
-> > +
-> > +	if (flags & ~MOCK_FLAGS_ACCESS_WRITE)
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	staccess = iommufd_access_get(access_id);
-> > +	if (IS_ERR(staccess))
-> > +		return PTR_ERR(staccess);
-> > +
-> > +	npages = (ALIGN(iova + length, PAGE_SIZE) -
-> > +		  ALIGN_DOWN(iova, PAGE_SIZE)) /
-> > +		 PAGE_SIZE;
-> > +	pages = kvcalloc(npages, sizeof(*pages), GFP_KERNEL_ACCOUNT);
-> > +	if (!pages) {
-> > +		rc = -ENOMEM;
-> > +		goto out_put;
-> > +	}
-> > +
-> > +	rc = iommufd_access_pin_pages(staccess->access, iova, length, pages,
-> > +				      flags & MOCK_FLAGS_ACCESS_WRITE);
-> > +	if (rc)
-> > +		goto out_free_pages;
-> > +
-> > +	rc = iommufd_test_check_pages(
-> > +		uptr - (iova - ALIGN_DOWN(iova, PAGE_SIZE)), pages, npages);
-> > +	if (rc)
-> > +		goto out_unaccess;
-> > +
-> > +	item = kzalloc(sizeof(*item), GFP_KERNEL_ACCOUNT);
-> > +	if (!item) {
-> > +		rc = -ENOMEM;
-> > +		goto out_unaccess;
-> > +	}
-> > +
-> > +	item->iova = iova;
-> > +	item->length = length;
-> > +	spin_lock(&staccess->lock);
-> > +	item->id = staccess->next_id++;
-> > +	list_add_tail(&item->items_elm, &staccess->items);
-> > +	spin_unlock(&staccess->lock);
-> > +
-> > +	cmd->access_pages.out_access_item_id = item->id;
-> > +	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
-> > +	if (rc)
-> > +		goto out_free_item;
-> > +	goto out_free_pages;
-> > +
-> > +out_free_item:
-> > +	spin_lock(&staccess->lock);
-> > +	list_del(&item->items_elm);
-> > +	spin_unlock(&staccess->lock);
-> > +	kfree(item);
-> > +out_unaccess:
-> > +	iommufd_access_unpin_pages(staccess->access, iova, length);
-> > +out_free_pages:
-> > +	kvfree(pages);
+> Instead of having some kernel-digestible meta data, how about calling 
+> another bpf prog to initialize the skb fields from the meta area after 
+> __xdp_build_skb_from_frame() in the cpumap, so 
+> run_xdp_set_skb_fileds_from_metadata() may be a better name.
 > 
-> Coverity reports a double free here, call trace:
-> 
-> [jumped from] rc = iommufd_access_pin_pages(..., pages, ...);
-> 	[in which] iopt_pages_add_access(..., out_pages, ...);
-> 		[then] iopt_pages_fill_xarray(..., out_pages);
-> 			[then] iopt_pages_fill_from_mm(..., out_pages);
-> 				[then] user->upages = out_pages + ...;
-> 				       pfn_reader_user_pin(user, ...);
-> 					[then] kfree(user->upages);
-> 					       return -EFAULT;
-> 
-> Should be the same potential issue in the other email.
 
-Yes, looks like
+I very much like this idea of calling another bpf prog to initialize the
+SKB fields from the meta area. (As a reminder, data need to come from
+meta area, because at this point the hardware RX-desc is out-of-scope).
+I'm onboard with xdp_copy_metadata_for_skb() populating the meta area.
 
-Thanks,
-Jason
+We could invoke this BPF-prog inside __xdp_build_skb_from_frame().
+
+We might need a new BPF_PROG_TYPE_XDP2SKB as this new BPF-prog
+run_xdp_set_skb_fields_from_metadata() would need both xdp_buff + SKB as
+context inputs. Right?  (Not sure, if this is acceptable with the BPF
+maintainers new rules)
+
+> The xdp_prog@rx sets the meta data and then redirect.  If the 
+> xdp_prog@rx can also specify a xdp prog to initialize the skb fields 
+> from the meta area, then there is no need to have a kfunc to enforce a 
+> kernel-digestible layout.  Not sure what is a good way to specify this 
+> xdp_prog though...
+
+The challenge of running this (BPF_PROG_TYPE_XDP2SKB) BPF-prog inside
+__xdp_build_skb_from_frame() is that it need to know howto decode the
+meta area for every device driver or XDP-prog populating this (as veth
+and cpumap can get redirected packets from multiple device drivers).
+Sure, using a common function/helper/macro like
+xdp_copy_metadata_for_skb() could help reduce this multiplexing, but we
+want to have maximum flexibility to extend this without having to update
+the kernel, right.
+
+Fortunately __xdp_build_skb_from_frame() have a net_device parameter,
+that points to the device is was received on (xdp_frame->dev_rx).
+Thus, we could extend net_device and add this BPF-prog on a per
+net_device basis.  This could function as a driver BPF-prog callback
+that populates the SKB fields from the XDP meta data.
+Is this a good or bad idea?
+
+
+>>>> the kernel will be able to understand when converting back to skb?
+>>>> IIUC, the xdp program will look something like the following:
+>>>>
+>>>> if (xdp packet is to be consumed by af_xdp) {
+>>>>     // do a bunch of bpf_xdp_metadata_<metadata> calls and assemble 
+>>>> your
+>>>> own metadata layout
+>>>>     return bpf_redirect_map(xsk, ...);
+>>>> } else {
+>>>>     // if the packet is to be consumed by the kernel
+>>>>     xdp_copy_metadata_for_skb(ctx);
+>>>>     return bpf_redirect(...);
+>>>> }
+>>>>
+>>>> Sounds like a great suggestion! xdp_copy_metadata_for_skb can maybe
+>>>> put some magic number in the first byte(s) of the metadata so the
+>>>> kernel can check whether xdp_copy_metadata_for_skb has been called
+>>>> previously (or maybe xdp_frame can carry this extra signal, idk).
+
+I'm in favor of adding a flag bit to xdp_frame to signal this.
+In __xdp_build_skb_from_frame() we could check this flag signal and then
+invoke the BPF-prog type BPF_PROG_TYPE_XDP2SKB.
+
+--Jesper
+
