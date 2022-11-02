@@ -2,112 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742B4616D21
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFCC616D27
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbiKBStI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 14:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S231527AbiKBSuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 14:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbiKBSso (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 14:48:44 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB08F31216
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 11:48:13 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id h206so12312422iof.10
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 11:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=V3iH6kltXbn8DPbJp+/IxLmJXJxqLstc5tLD9AXFX2A=;
-        b=fp1z4Ve8HlaIUkOCymKtX9XryLF7bC+TBx+ZYubac6gbAMlw+yTJhARqwJWDvk5on1
-         l07gg0JNcRnCgabwBwc+ffyb26jqfhOsEnIfrLXAlUhI2H+unhSJ4/jFBfuNo9cfvXq3
-         jTBPe/3yREEmXW25zOSi9w1sOMrhIZH5lCVj9UgDbG3BQICKlCNhFyONETuhlPDUttBV
-         93fvFr7TsJnu+1lJgOzAsXljL5cwCwwHfVLemgGBdA9dhmOZAxTkf5BXjSVYOBewxpJ5
-         QZ5Z+Q4JDK6Jm4SjRzDYHvx5ZwQ6BB9dhTIclAjgnRLHYLYVLNRimd8UT57bqkwKEA13
-         SgVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V3iH6kltXbn8DPbJp+/IxLmJXJxqLstc5tLD9AXFX2A=;
-        b=P9zCKeCg3iQCE6ULjU3/exMk6g/2D8A1PmUh1aSQdqTmKffHZ1cJDF6ZCLR6KtPgAD
-         ICcJF0zEuX6wjB5Xb2dJ15N0Qv20VyhPssAGnO0vLBEtFbAc4eymxF05aR9ksYJMxJUs
-         l7RpOWZCh6uzC5+fCIOx2v9oVlp2OFHjRmM4sUSoCoJ2JQLV8OuG7OXlPSWPkpiB8hOm
-         TGs+5BslVABmYhcjC20UfrL6F0Mb/nPsN0w4I24r7FyB1UC0PJwTt3AS3tGlkpf1kdcV
-         nA0yHoR0txCCGUqPaQrV/UqseU6DbEpsF5yO5c8VKKWRyVSzd51dfAHrp8b1GjVSP6gr
-         l44g==
-X-Gm-Message-State: ACrzQf0xQ4+ThgT5P4ChzSS3ZeADgQLTRXcSosARYStt6qHFBh70vyNm
-        zX1or9UpAwok4g6HZQfW1E7aLawtyLLeGHfxRwsbeP6Z8ec=
-X-Google-Smtp-Source: AMsMyM6sKcPINQGd+KD6W4GncQDNJyhJZUPzjOCpinuV11Lq0SmAZX7NvSy90r9y8s73TfFuAaNgYoxWM1gz4D6qwX0=
-X-Received: by 2002:a02:3346:0:b0:375:4c11:ee4d with SMTP id
- k6-20020a023346000000b003754c11ee4dmr14060114jak.207.1667414892996; Wed, 02
- Nov 2022 11:48:12 -0700 (PDT)
+        with ESMTP id S231718AbiKBSt4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 14:49:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CE6C01;
+        Wed,  2 Nov 2022 11:49:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1374BB82426;
+        Wed,  2 Nov 2022 18:49:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBFD8C433C1;
+        Wed,  2 Nov 2022 18:49:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667414991;
+        bh=A9V26abd3ofhCXzboqJszcQ8NMZJoEJqgoBj4Pi/PF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n/eYUT5c1MXDySctcF4yD+cGNE9uiEyE8Yln6G6O7ESxBGrWOkD0qXBrIxP5D09tx
+         rPet5rrxRJHAfe8hioWKZQ1iJusfCXAckHA7RwECS67arZyVDWKd/Y/QhKsTgKxco9
+         fJcyq7ZBTJR3e2zg94+sL6bxDLT6dxqk7tFIHafdkuomMQJqTXrd+OVXW5rvQKWImI
+         oxU70L8e/VzYhVf1rQFGdJuJdbFi82J56nqiMSJYPtdM3hZaUOdzHcN2Pl/6O88y+J
+         /4ZlWQygHNWO8kJXUc+bgLLUB14i597HfGfy0iLluCcZoSYl5LjAUwo2LEgEWCJGVl
+         WZQUaqh5TxuQw==
+Date:   Wed, 2 Nov 2022 11:49:48 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 15/15] iommufd: Add a selftest
+Message-ID: <Y2K7zMvzrHmQJ1hk@dev-arch.thelio-3990X>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <15-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <Y2GCV97lxEGwAuo6@Asurada-Nvidia>
+ <Y2Jt+WxNUwROJ8fN@nvidia.com>
 MIME-Version: 1.0
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 2 Nov 2022 11:47:31 -0700
-Message-ID: <CAJD7tkYKmr0daXhCSkvNZYgx_rDuBaq1OExnw=AEMJ+fSzaHwg@mail.gmail.com>
-Subject: Question: BPF maps reliability
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2Jt+WxNUwROJ8fN@nvidia.com>
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey everyone,
+On Wed, Nov 02, 2022 at 10:17:45AM -0300, Jason Gunthorpe wrote:
+> On Tue, Nov 01, 2022 at 01:32:23PM -0700, Nicolin Chen wrote:
+> > On Tue, Oct 25, 2022 at 03:12:24PM -0300, Jason Gunthorpe wrote:
+> >  
+> > > diff --git a/drivers/iommu/iommufd/selftest.c b/drivers/iommu/iommufd/selftest.c
+> > 
+> > > +static inline struct iommufd_hw_pagetable *
+> > > +get_md_pagetable(struct iommufd_ucmd *ucmd, u32 mockpt_id,
+> > > +		 struct mock_iommu_domain **mock)
+> > > +{
+> > > +	struct iommufd_hw_pagetable *hwpt;
+> > > +	struct iommufd_object *obj;
+> > > +
+> > > +	obj = iommufd_get_object(ucmd->ictx, mockpt_id,
+> > > +				 IOMMUFD_OBJ_HW_PAGETABLE);
+> > > +	if (IS_ERR(obj))
+> > > +		return ERR_CAST(obj);
+> > > +	hwpt = container_of(obj, struct iommufd_hw_pagetable, obj);
+> > > +	if (hwpt->domain->ops != mock_ops.default_domain_ops) {
+> > > +		return ERR_PTR(-EINVAL);
+> > > +		iommufd_put_object(&hwpt->obj);
+> > 
+> > Coverity reports that return is placed before iommufd_put_object.
+> 
+> I'm surprised no compiler warned about this!
 
-TL;DR Are BPF map operations guaranteed to succeed if the map is
-configured correctly and accesses to the map do not interrupt each
-other? Can this be relied on in the future as well?
+clang does have -Wunreachable-code-return to try and flag issues like
+this but it is not on by default nor included in -Wall:
 
-I am looking into migrating some cgroup statistics we internally
-maintain to use BPF instead of in-kernel code. I am considering
-several aspects of that, including reliability. With in-kernel code
-things are really simple, we add the data structures containing the
-stats to cgroup controller struct, we update them as appropriate, and
-we export them when needed. With BPF, we need to hook progs to the
-right locations and store the stats in BPF maps (cgroup local
-storages, task local storages, hash tables, trees - in the future -)
-etc.
+https://clang.llvm.org/docs/DiagnosticsReference.html#wunreachable-code-return
 
-The question I am asking here is about the reliability of such map
-operations. Looking at the code for lookups and updates for some map
-types, I can see a lot of failure cases. Looking deeper into them it
-*seems* to me like in an ideal scenario nothing should fail. By an
-ideal scenario I mean:
-- The map size is set correctly,
-- There is sufficient memory on the system,
-- We don't use the BPF maps in any progs attached to the BPF maps
-manipulation code itself,
-- We don't use the BPF maps in any progs that can interrupt each other
-(e.g. NMI context).
+The fact it is included in -Wunreachable-code-aggressive makes me think
+that this might generate a lot of false positives around constructs such
+as
 
-IOW, there are no cases where we fail because two programs running in
-parallel are trying to access the same map (or map element) or because
-we couldn't acquire a resource that we don't want to wait on (that
-wouldn't result in a deadlock)., situations where we might prefer the
-caller to retry later or where we don't care about one missed
-operation.
+    if (IS_ENABLED(CONFIG_...))
+        return ...;
 
-Maybe all of this is obvious and I am being paranoid, or maybe there
-are other obvious failure cases that I missed, or maybe this is just a
-dumb question, so I apologize in advance if any of this is true :)
+    return ...;
 
-Thanks!
+but I have not actually tested it.
+
+> > > +static int iommufd_test_access_pages(struct iommufd_ucmd *ucmd,
+> > > +				     unsigned int access_id, unsigned long iova,
+> > > +				     size_t length, void __user *uptr,
+> > > +				     u32 flags)
+> > > +{
+> > > +	struct iommu_test_cmd *cmd = ucmd->cmd;
+> > > +	struct selftest_access_item *item;
+> > > +	struct selftest_access *staccess;
+> > > +	struct page **pages;
+> > > +	size_t npages;
+> > > +	int rc;
+> > > +
+> > > +	if (flags & ~MOCK_FLAGS_ACCESS_WRITE)
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > > +	staccess = iommufd_access_get(access_id);
+> > > +	if (IS_ERR(staccess))
+> > > +		return PTR_ERR(staccess);
+> > > +
+> > > +	npages = (ALIGN(iova + length, PAGE_SIZE) -
+> > > +		  ALIGN_DOWN(iova, PAGE_SIZE)) /
+> > > +		 PAGE_SIZE;
+> > > +	pages = kvcalloc(npages, sizeof(*pages), GFP_KERNEL_ACCOUNT);
+> > > +	if (!pages) {
+> > > +		rc = -ENOMEM;
+> > > +		goto out_put;
+> > > +	}
+> > > +
+> > > +	rc = iommufd_access_pin_pages(staccess->access, iova, length, pages,
+> > > +				      flags & MOCK_FLAGS_ACCESS_WRITE);
+> > > +	if (rc)
+> > > +		goto out_free_pages;
+> > > +
+> > > +	rc = iommufd_test_check_pages(
+> > > +		uptr - (iova - ALIGN_DOWN(iova, PAGE_SIZE)), pages, npages);
+> > > +	if (rc)
+> > > +		goto out_unaccess;
+> > > +
+> > > +	item = kzalloc(sizeof(*item), GFP_KERNEL_ACCOUNT);
+> > > +	if (!item) {
+> > > +		rc = -ENOMEM;
+> > > +		goto out_unaccess;
+> > > +	}
+> > > +
+> > > +	item->iova = iova;
+> > > +	item->length = length;
+> > > +	spin_lock(&staccess->lock);
+> > > +	item->id = staccess->next_id++;
+> > > +	list_add_tail(&item->items_elm, &staccess->items);
+> > > +	spin_unlock(&staccess->lock);
+> > > +
+> > > +	cmd->access_pages.out_access_item_id = item->id;
+> > > +	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
+> > > +	if (rc)
+> > > +		goto out_free_item;
+> > > +	goto out_free_pages;
+> > > +
+> > > +out_free_item:
+> > > +	spin_lock(&staccess->lock);
+> > > +	list_del(&item->items_elm);
+> > > +	spin_unlock(&staccess->lock);
+> > > +	kfree(item);
+> > > +out_unaccess:
+> > > +	iommufd_access_unpin_pages(staccess->access, iova, length);
+> > > +out_free_pages:
+> > > +	kvfree(pages);
+> > 
+> > Coverity reports a double free here, call trace:
+> > 
+> > [jumped from] rc = iommufd_access_pin_pages(..., pages, ...);
+> > 	[in which] iopt_pages_add_access(..., out_pages, ...);
+> > 		[then] iopt_pages_fill_xarray(..., out_pages);
+> > 			[then] iopt_pages_fill_from_mm(..., out_pages);
+> > 				[then] user->upages = out_pages + ...;
+> > 				       pfn_reader_user_pin(user, ...);
+> > 					[then] kfree(user->upages);
+> > 					       return -EFAULT;
+> > 
+> > Should be the same potential issue in the other email.
+> 
+> Yes, looks like
+> 
+> Thanks,
+> Jason
