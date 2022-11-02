@@ -2,74 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34B3616279
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 13:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF01E61620B
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 12:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbiKBMLv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 08:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        id S230261AbiKBLul (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 07:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiKBMLu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 08:11:50 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2819B2339E;
-        Wed,  2 Nov 2022 05:11:49 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id j15so24241338wrq.3;
-        Wed, 02 Nov 2022 05:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2IkJAPMWkO5FOeNL3Mj+9WKsIqTWMXPw/hrooudOQns=;
-        b=PmL5Pde9zKOoDZ/SSJGPGWD4UAwpixZI2QmGylJGefMPo5sAgFsdn7vRx5AlqIdZ+W
-         gKBjuH/qb8cj8IPg5bwx5G3HO7eJRDav6bjvsEzcnH+RjqjHXWanATiFUuRBt+QjEqIV
-         +NzI/OhtDw1eF6F43JCdqCtAqaL3NmnFQDN+edYA5CReEvJT/rpzXQGoqnkVVfZEp9oh
-         DU3QSN3ZYHNDrfb4nFxfBaot4Eszq4Rf62UWkMbmk/xpAWaNzQdNhTKZynJf1jx7CZ22
-         dGQ3DtLnMCHEvHfRZ87B8jRS+ik+J8yomu5btznv3It7b7kZkymNssKIeXhm0Mq5dqWu
-         K+gA==
+        with ESMTP id S229553AbiKBLuk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 07:50:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AF928714
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 04:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667389779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=06VWUZSI6Qm+q2bw86oGTZUBRk/gldRyN2LaxznNUAc=;
+        b=QJSj1eZNJTTzuF3FQ16UcnzUX1ZsJh3RWx3hstp9KUWOyTB8zgm4KDQh8ypr4Unahd+NaF
+        +c1i53c8QYQ4Ko8FCDjvk4UV/kgWu44dXXFwZ0Afzru1H3pjhxTx9T60toFueB7HoO3Jp6
+        4OtcYNnvWUenvRv4gpp64pVia/Ps3OQ=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-283-UJDp-NTcP1eMOZz03WUiKw-1; Wed, 02 Nov 2022 07:49:38 -0400
+X-MC-Unique: UJDp-NTcP1eMOZz03WUiKw-1
+Received: by mail-qv1-f69.google.com with SMTP id d8-20020a0cfe88000000b004bb65193fdcso9709198qvs.12
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 04:49:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2IkJAPMWkO5FOeNL3Mj+9WKsIqTWMXPw/hrooudOQns=;
-        b=Y1gC7uUlR7yaGBqL5YuzUXtqbe1dnyCyMUCwWH9rNZRq0Wgt64IedWo48wy9pLgt1+
-         TgIu50748+kLDsVPS5nuvJYP5a9/qvrOEwQsVzY5lqtm/sK9EeGGCuEJUnRAfOTfM09L
-         E3BJfo2meP42M0JXXLkmE7P/Ye1wdTesXh0yIvgZBnz0Jb6HTZ5xLXtZjqL06s5zL1jH
-         i9ryHcbMzhmU175qJEgSu8pw9jC0EbMrQ4NerDcIMd8dtRV78ZoB+VkX1qd5hieYWfEA
-         98IABI1w19eRnarIC17q/GWN8aGDqnoI5x7G4v3Va2s7aMXwkfwRAvNOe4J5xwmwOH8P
-         Yazw==
-X-Gm-Message-State: ACrzQf3zdKQUYJLN8AA5l4XUc3+32QyOOmsbOKq4W0VZEsVw75Ka68SD
-        bQRH6MUIqhICkouiGlxiYjg=
-X-Google-Smtp-Source: AMsMyM6nrBzn9BvmDGarhI0IVXpoMaHROpOSRCOg8Pl+EpzbujmE32Ke/rtLlcz9O2arvdNS2lzsyw==
-X-Received: by 2002:a5d:59ae:0:b0:236:6861:a89d with SMTP id p14-20020a5d59ae000000b002366861a89dmr15474105wrr.437.1667391107742;
-        Wed, 02 Nov 2022 05:11:47 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id v16-20020a05600c445000b003cf78aafdd7sm2032822wmn.39.2022.11.02.05.11.46
+        bh=06VWUZSI6Qm+q2bw86oGTZUBRk/gldRyN2LaxznNUAc=;
+        b=ccJPrq2+DxtFb/ieA7uRMen5WpKCvTZ7OR5lsy4OXNxevS6G7DT6bt/Qmg59pmpPDg
+         Bdx8X9/GvpAM1W5RioKcYMIbx7X6za3nki7cN8DnTENFoAxnzHrNJBFj2qKyE9RBwAoM
+         PiTAi7/K1B809huS++M8H3URBGWrCr6HiUrWIxGkwDVyNOelrXYHLvZXhBprKzhc6fsq
+         A6l2XZutYULOYbeb17jnzNcr1GSR3gUfT1pAMwNNGQLlek7UKEoYfFwQrMoyHfstNvqQ
+         2t9D2OjWtCu1+aU/8TXWQ40G3e+cr4osJ16wH5lRl9VDtE7PaPuKa5OmOxqItUxfi/Sm
+         xASw==
+X-Gm-Message-State: ACrzQf24XhJg9Z3ZU6bFgqjqFjGy61ICGwYAp1167XPEYsZ+hexGJXWM
+        nWzB9aeHjRzgmR8c+GENNZmX+4kb71r0r5OhoY4PbioqsMVH/65fUVh6Zw18qSH8U0AY8PXX1Xs
+        hoHy9ntLRsReQ5HjSx6SH69foFjwQbpu9RgdeD0aQJn+OjaMSdj5jxGoKiTN1nvg=
+X-Received: by 2002:a05:622a:1e05:b0:3a5:460f:9655 with SMTP id br5-20020a05622a1e0500b003a5460f9655mr1498353qtb.471.1667389777838;
+        Wed, 02 Nov 2022 04:49:37 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4DJxHdfEPTbBpgqYZxtb6t994NR8WH5p2zFWigdLBnpc2oW+fMr6IzeXsMdnA/biKQcgrwPA==
+X-Received: by 2002:a05:622a:1e05:b0:3a5:460f:9655 with SMTP id br5-20020a05622a1e0500b003a5460f9655mr1498334qtb.471.1667389777564;
+        Wed, 02 Nov 2022 04:49:37 -0700 (PDT)
+Received: from nfvsdn-06.testing.baremetal.edge-sites.net (nat-pool-232-132.redhat.com. [66.187.232.132])
+        by smtp.gmail.com with ESMTPSA id h6-20020a05620a400600b006ee8874f5fasm7784855qko.53.2022.11.02.04.49.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 05:11:47 -0700 (PDT)
-Date:   Wed, 2 Nov 2022 15:11:43 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     oe-kbuild@lists.linux.dev,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg KH <greg@kroah.com>, Jiri Kosina <jikos@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: [PATCH hid v11 07/14] HID: bpf: introduce hid_hw_request()
-Message-ID: <202210291931.zGXW0epb-lkp@intel.com>
+        Wed, 02 Nov 2022 04:49:37 -0700 (PDT)
+From:   mtahhan@redhat.com
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     jbrouer@redhat.com, thoiland@redhat.com,
+        Maryam Tahhan <mtahhan@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: [PATCH bpf-next v2 0/1] docs: BPF_MAP_TYPE_CPUMAP
+Date:   Wed,  2 Nov 2022 08:44:15 -0400
+Message-Id: <20221102124416.2820268-1-mtahhan@redhat.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221025093458.457089-8-benjamin.tissoires@redhat.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,51 +75,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Benjamin,
+From: Maryam Tahhan <mtahhan@redhat.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Tissoires/Introduce-eBPF-support-for-HID-devices/20221025-173852
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git master
-patch link:    https://lore.kernel.org/r/20221025093458.457089-8-benjamin.tissoires%40redhat.com
-patch subject: [PATCH hid v11 07/14] HID: bpf: introduce hid_hw_request()
-config: riscv-randconfig-m041-20221029
-compiler: riscv32-linux-gcc (GCC) 12.1.0
+Add documentation for BPF_MAP_TYPE_CPUMAP including
+kernel version introduced, usage and examples.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
+Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-smatch warnings:
-drivers/hid/bpf/hid_bpf_dispatch.c:297 hid_bpf_hw_request() warn: variable dereferenced before check 'ctx' (see line 289)
+v2:
+- Removed TMI.
+- Updated example to use a round robin scheme.
 
-vim +/ctx +297 drivers/hid/bpf/hid_bpf_dispatch.c
+Maryam Tahhan (1):
+  docs: BPF_MAP_TYPE_CPUMAP
 
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  285  noinline int
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  286  hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  287  		   enum hid_report_type rtype, enum hid_class_request reqtype)
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  288  {
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25 @289  	struct hid_device *hdev = (struct hid_device *)ctx->hid; /* discard const */
-                                                                                                       ^^^^^^^^
-Dereference
-
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  290  	struct hid_report *report;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  291  	struct hid_report_enum *report_enum;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  292  	u8 *dma_data;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  293  	u32 report_len;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  294  	int ret;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  295  
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  296  	/* check arguments */
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25 @297  	if (!ctx || !hid_bpf_ops || !buf)
-                                                             ^^^
-Checked too late.
-
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  298  		return -EINVAL;
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  299  
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  300  	switch (rtype) {
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  301  	case HID_INPUT_REPORT:
-eaf51f2d4f8561 Benjamin Tissoires 2022-10-25  302  	case HID_OUTPUT_REPORT:
+ Documentation/bpf/map_cpumap.rst | 140 +++++++++++++++++++++++++++++++
+ 1 file changed, 140 insertions(+)
+ create mode 100644 Documentation/bpf/map_cpumap.rst
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
-
+2.35.3
 
