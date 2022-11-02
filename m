@@ -2,75 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6515061651D
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 15:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C473B616626
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 16:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbiKBO25 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 10:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
+        id S230179AbiKBP3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 11:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbiKBO24 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 10:28:56 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A411A2A704;
-        Wed,  2 Nov 2022 07:28:52 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y69so26719701ede.5;
-        Wed, 02 Nov 2022 07:28:52 -0700 (PDT)
+        with ESMTP id S230434AbiKBP3F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 11:29:05 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824626478;
+        Wed,  2 Nov 2022 08:28:55 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id bs21so25097508wrb.4;
+        Wed, 02 Nov 2022 08:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JN9e6KnO28jwqscnNvWI6DFGM8wjQ/Z+ADfn8tI1rrU=;
-        b=cXi1du0jLioRrdro2Mry3RZROvpWveZLs8DPOyXerdCZf6h6nZD0lf6u1zu/YVq31h
-         j8Vss8GXlGDyZQqG0Na4QOK0eomYRW9p08zUDzOpLte/26uETzBysY37ACu2tovmqzPd
-         X5jsSdBPrJqtA4eLd6m9+H/QRjweSmCKcKxJeDo/dtmeETXf+1Db9u6HdWus93fbZY3W
-         2v6o65DYAb06bXGEb5X/3/T5mF/KKz0tU5eLW2nXPQeQQssOktOmB8KeSgN+5IaM2cif
-         n+LTx5th6PvvsN75OJx7FAr6Or/h0+WK23Fn0XpOSy94EE8/9PNgCgbb5Q+FRlNJGGuk
-         2TFQ==
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4egQs23B/0jD+O5d0KXLiUFX5T/QwoarUGlcyJUeObo=;
+        b=lhX+ZWrUkKM7HX+sgDGmFCN+A6u2sNjtuKiZxSQ4mBJwSZ9KHSgkNvtZgSfpnFW91Q
+         hCwgAhCGjLNjdwaBZPkzihlW5Z/YEIk4flwfSSVT6MtAYAl8v9mNuPqFKZ4uNnc71ZZN
+         5PrRnS2pTUfjhUwaX4WXqetuE8bbyBFQad70Gu8goJaNXzHV4VJI5T6S4VwimwXKp0tN
+         Qr6+PP6o9wK778I1yvNnre2p2Yg7K+f8myrmCMk9dXlWw4Tor8ImuuFH5XTOvOYV+umS
+         vsK1SNIZFsvlSd5qZyO1O6w6T3Vbtfki1xecI68qhaTgOLRhwPjrnaEKZdoB9ooEZTW/
+         1T+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JN9e6KnO28jwqscnNvWI6DFGM8wjQ/Z+ADfn8tI1rrU=;
-        b=2A3FdV2Jg23CmyDJYHqzdw+cmZX1wkVwtn+ujYv++AI/DFbSMo1JpsOct6euewlbeg
-         JBoMDAzOJUr4WtlrbM/xZuoMRVsm0Hts+XSXQmUmLmeFC8XvR3AuV5RwERvqA8s/j9CA
-         yMvFOzrLu/SpU4NNoBWcOR2G8MpvIMrALBaFpHsihczUSZ4vKL5xUSQKu7ddMXXT5M1D
-         Xadyo3dtDb0QnXVvyXziKDb+7O44AjYi/KLHVSoAs8oEZqos1I8snTDvI0N2SCt5Kf9G
-         /yNlPOQbzP5Pa5v6uKJX9coXMBOLijhTDqabOayrEomN3M+OiwioUd5Vw+1nVXFpnZ0R
-         11sA==
-X-Gm-Message-State: ACrzQf1Z1G6xUqRJhsAF0us9h+qjWohX4LvMk5GhInQZBXDQNnPkULnk
-        tLmn7zJJ61OFKoWcm8mSmRUyhvDmGUobvg==
-X-Google-Smtp-Source: AMsMyM56KVIWrxndO7Iw7G/EJqZjqfE4f1bezoOgvKn27JAwbOIAkXkMrCk3OX5AqIagDmjBX/0O0g==
-X-Received: by 2002:a05:6402:2a03:b0:463:11e7:cd5f with SMTP id ey3-20020a0564022a0300b0046311e7cd5fmr21575119edb.274.1667399331132;
-        Wed, 02 Nov 2022 07:28:51 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id u9-20020a1709061da900b0079800b81709sm5470994ejh.219.2022.11.02.07.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 07:28:50 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 2 Nov 2022 15:28:47 +0100
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        andrii@kernel.org, ast@kernel.org, bpf <bpf@vger.kernel.org>,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, martin.lau@linux.dev, sdf@google.com,
-        song@kernel.org, yhs@fb.com
-Subject: Re: WARNING in bpf_bprintf_prepare
-Message-ID: <Y2J+n7SqmtfyA7ZM@krava>
-References: <CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com>
- <Y1pqWPRmP0M+hcXf@krava>
- <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
+        bh=4egQs23B/0jD+O5d0KXLiUFX5T/QwoarUGlcyJUeObo=;
+        b=m4W4WlHjsx4JlN1itFggdctgOUIG/RilmKX2Ra2bBYhoBWaTycdX1X0A+9iaRqE3bs
+         YJrnW1gyYpRO/qG5krW2PIQN3gH2rJwhJ2EXNTEsCFZdsaFUJYrqHtiJ1KR7p7ZyKqDk
+         gpDpt8Xs4SHUhhK/WcA4KIju8uP2KUA9D60pcrve5wfrclBxGtzDQolgkwKwEePFXoNp
+         6npCHkH1Ep1GxHysrzlhOISEZauFZbVKQo09s5bO2xGNep906S5XYX243/Bm1zTy7SwO
+         OXzQvml/+qmD9Hz5KyuJVr3aP8g0chpSy+IDovPS2dM+csOyCXBXxw/fU4D41LeYV0pn
+         qwKA==
+X-Gm-Message-State: ACrzQf1UrWpZFK0BRZfjGIBC07p3sBBoFjkMkLH0bMLKl701QOo1TTZa
+        yAor/NNZryl2MP5wAbH6yrk=
+X-Google-Smtp-Source: AMsMyM5c8Dd+BBbbPeuG4s5bkCzaunkFfFLCR3siYEdjHx9T6SX0lVAVVT1cCGA/ijAWwR4MUa7RsQ==
+X-Received: by 2002:a5d:554e:0:b0:236:ccf1:f958 with SMTP id g14-20020a5d554e000000b00236ccf1f958mr11087212wrw.378.1667402933989;
+        Wed, 02 Nov 2022 08:28:53 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id bk17-20020a0560001d9100b0022cdb687bf9sm16075337wrb.0.2022.11.02.08.28.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Nov 2022 08:28:53 -0700 (PDT)
+Subject: Re: [PATCH net] net: Fix memory leaks of napi->rx_list
+To:     Eric Dumazet <edumazet@google.com>,
+        Wang Yufen <wangyufen@huawei.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, ecree@amd.com
+References: <1667361274-2621-1-git-send-email-wangyufen@huawei.com>
+ <CANn89i+cNjUH8pR0-QTdWM09G8ZfX_gzDqOY6ecyY4igDwrYaQ@mail.gmail.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <7632c326-5727-2c71-9895-08c540b2c8d5@gmail.com>
+Date:   Wed, 2 Nov 2022 15:28:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <CANn89i+cNjUH8pR0-QTdWM09G8ZfX_gzDqOY6ecyY4igDwrYaQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,51 +76,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 07:45:16PM +0800, Hao Sun wrote:
-> Jiri Olsa <olsajiri@gmail.com> 于2022年10月27日周四 19:24写道：
-> >
-> > On Thu, Oct 27, 2022 at 10:27:28AM +0800, Hao Sun wrote:
-> > > Hi,
-> > >
-> > > The following warning can be triggered with the C reproducer in the link.
-> > > Syzbot also reported this several days ago, Jiri posted a patch that
-> > > uses bpf prog `active` field to fix this by 05b24ff9b2cfab (bpf:
-> > > Prevent bpf program recursion...) according to syzbot dashboard
-> > > (https://syzkaller.appspot.com/bug?id=179313fb375161d50a98311a28b8e2fc5f7350f9).
-> > > But this warning can still be triggered on 247f34f7b803
-> > > (Linux-v6.1-rc2) that already merged the patch, so it seems that this
-> > > still is an issue.
-> > >
-> > > HEAD commit: 247f34f7b803 Linux 6.1-rc2
-> > > git tree: upstream
-> > > console output: https://pastebin.com/raw/kNw8JCu5
-> > > kernel config: https://pastebin.com/raw/sE5QK5HL
-> > > C reproducer: https://pastebin.com/raw/X96ASi27
-> >
-> > hi,
-> > right, that fix addressed that issue for single bpf program,
-> > and it won't prevent if there are multiple programs hook on
-> > contention_begin tracepoint and calling bpf_trace_printk,
-> >
-> > I'm not sure we can do something there.. will check
-> >
-> > do you run just the reproducer, or you load the server somehow?
-> > I cannot hit the issue so far
-> >
+On 02/11/2022 04:27, Eric Dumazet wrote:
+<snip>
+> I do not think the bug is there.
 > 
-> Hi,
-> 
-> Last email has format issues, resend it here.
-> 
-> I built the kernel with the config in the link, which contains
-> “CONFIG_CMDLINE="earlyprintk=serial net.ifnames=0
-> sysctl.kernel.hung_task_all_cpu_backtrace=1 panic_on_warn=1 …”, and
-> boot the kernel with normal qemu setup and then the warning can be
-> triggered by executing the reproducer.
-> 
-> Also, I’m willing to test the proposed patch if any.
+> Most likely tun driver is buggy.
+<snip>
+>> @@ -6471,6 +6481,7 @@ void __netif_napi_del(struct napi_struct *napi)
+>>         list_del_rcu(&napi->dev_list);
+>>         napi_free_frags(napi);
+>>
+>> +       flush_rx_list(napi);
 
-fyi I reproduced that.. will check if we can do anything about that
+But maybe it makes sense to put a WARN_ON_ONCE(!list_empty(&napi->rx_list))
+ here, to catch such buggy drivers sooner.  WDYT?
 
-thanks,
-jirka
+-ed
