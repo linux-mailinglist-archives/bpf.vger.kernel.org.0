@@ -2,64 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E1D616B6C
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F412C616C11
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbiKBSDd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 14:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S229772AbiKBSZl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Nov 2022 14:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbiKBSDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 14:03:16 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CB92EF39
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 11:03:15 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-37063f855e5so87452507b3.3
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 11:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TZ+dLjoYm09HSwY2V625UBoDfQUrFrbVVtB8huuIfFI=;
-        b=AGksGsxycKU0pz7YGhRbwj2Iojk6QuhT7MKrH3A54CQzhF11pu+owlFVD+BOsAMKWi
-         2uKu0k2uauNRvZuCpakhRq0ZWFyLW+ty0mlMEH8nz0+oRY2Vvz4izXaXUld6Wrd+tY1n
-         JKnFsLrXniOFttFffAIWvS1enZyTEZrRjlne1CM14wmMOCHXUWhlP3WlQ+I/3sruJXlz
-         ssmaENl4smV9KLqONOmdzvMtk9lFuvWdy22gLYHch7q8vJjFLb2W0ykcjm64xfLPi0lJ
-         4eUiK2fVWwl9v4Z3IeygH+DKoRppTTk/yXdv/ylHAJ3HEqwyYj0/90vM+aGjQICmommR
-         wgIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TZ+dLjoYm09HSwY2V625UBoDfQUrFrbVVtB8huuIfFI=;
-        b=JIpYIZEkQK2EUJXaRQzuaOegjlhcGVTUk5mfHa2eLYGKdwLH4YnEWNu+8ePHY+/lqq
-         wEjZOLCZ7wwHyWN86mMrVbICe0xq7tPNkyonvb74a+rlpsIzU+7N5oY21Itv15nlOF5s
-         ZV/GanMVUouxZTj9+JsjQNCLuXKNcG1ndRQ92fnI38PzKe2Q3m1LQsXJwsza4KH4bPu+
-         zAyQ0F8uNmb97WZXgra67sJF0RjUEShBzauyTTp9mniaJ0FU+OSdEoHD7zoZGHGBhJ0A
-         oey3RBRlNC86zBXq40AFIWV+WGqvdatPpAkrsqsltnMzMRuYn1NI877cizlPA9808sYL
-         0i3Q==
-X-Gm-Message-State: ACrzQf3YnIZgPrK+8ivC6HzTPQ8LuEZavO3V1oXFerCIghkAsZTFzfDG
-        8DLm/ESOBZ36xSZ2RUDaookFSF+Z4uS+DQ2dxMjS7A==
-X-Google-Smtp-Source: AMsMyM5Gqb6kUi17AH+BhzL0TfWF5uPqYKuMPUkJ++nMUJUlhOgg1fieoLPpuovS0RDTOJskgH/sqYJGZby0NqYzkv4=
-X-Received: by 2002:a81:c11:0:b0:36a:bcf0:6340 with SMTP id
- 17-20020a810c11000000b0036abcf06340mr24062798ywm.467.1667412194201; Wed, 02
- Nov 2022 11:03:14 -0700 (PDT)
+        with ESMTP id S230516AbiKBSZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 14:25:32 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3892A21278
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 11:25:29 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2HnKFM021768
+        for <bpf@vger.kernel.org>; Wed, 2 Nov 2022 11:25:29 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkj3b64af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 11:25:29 -0700
+Received: from twshared16837.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 2 Nov 2022 11:25:27 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id E6A3420FC7435; Wed,  2 Nov 2022 11:25:19 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <kuba@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [PATCH bpf 1/2] net/ipv4: fix linux/in.h header dependencies
+Date:   Wed, 2 Nov 2022 11:25:16 -0700
+Message-ID: <20221102182517.2675301-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1667382079-6499-1-git-send-email-wangyufen@huawei.com>
-In-Reply-To: <1667382079-6499-1-git-send-email-wangyufen@huawei.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 2 Nov 2022 11:03:03 -0700
-Message-ID: <CANn89iJdWq-RvictmCtxE0C6EBifOxEDfoc5xLU0cKyTPcSy7w@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: tun: Fix memory leaks of napi_get_frags
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, peterpenkov96@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: yTVWTgxSfVMUXztS-o2R4JKWwSpaf3OG
+X-Proofpoint-GUID: yTVWTgxSfVMUXztS-o2R4JKWwSpaf3OG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-02_14,2022-11-02_01,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,74 +55,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 2, 2022 at 2:20 AM Wang Yufen <wangyufen@huawei.com> wrote:
->
-> kmemleak reports after running test_progs:
->
-> unreferenced object 0xffff8881b1672dc0 (size 232):
->   comm "test_progs", pid 394388, jiffies 4354712116 (age 841.975s)
->   hex dump (first 32 bytes):
->     e0 84 d7 a8 81 88 ff ff 80 2c 67 b1 81 88 ff ff  .........,g.....
->     00 40 c5 9b 81 88 ff ff 00 00 00 00 00 00 00 00  .@..............
->   backtrace:
->     [<00000000c8f01748>] napi_skb_cache_get+0xd4/0x150
->     [<0000000041c7fc09>] __napi_build_skb+0x15/0x50
->     [<00000000431c7079>] __napi_alloc_skb+0x26e/0x540
->     [<000000003ecfa30e>] napi_get_frags+0x59/0x140
->     [<0000000099b2199e>] tun_get_user+0x183d/0x3bb0 [tun]
->     [<000000008a5adef0>] tun_chr_write_iter+0xc0/0x1b1 [tun]
->     [<0000000049993ff4>] do_iter_readv_writev+0x19f/0x320
->     [<000000008f338ea2>] do_iter_write+0x135/0x630
->     [<000000008a3377a4>] vfs_writev+0x12e/0x440
->     [<00000000a6b5639a>] do_writev+0x104/0x280
->     [<00000000ccf065d8>] do_syscall_64+0x3b/0x90
->     [<00000000d776e329>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> The issue occurs in the following scenarios:
-> tun_get_user()
->   napi_gro_frags()
->     napi_frags_finish()
->       case GRO_NORMAL:
->         gro_normal_one()
->           list_add_tail(&skb->list, &napi->rx_list);
->           <-- While napi->rx_count < READ_ONCE(gro_normal_batch),
->           <-- gro_normal_list() is not called, napi->rx_list is not empty
->   <-- not ask to complete the gro work, will cause memory leaks in
->   <-- following tun_napi_del()
-> ...
-> tun_napi_del()
->   netif_napi_del()
->     __netif_napi_del()
->     <-- &napi->rx_list is not empty, which caused memory leaks
->
-> To fix, add napi_complete() after napi_gro_frags().
->
-> Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> ---
->  drivers/net/tun.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 27c6d23..07a0a61 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1976,6 +1976,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
->
->                 local_bh_disable();
->                 napi_gro_frags(&tfile->napi);
-> +               napi_complete(&tfile->napi);
->                 local_bh_enable();
->                 mutex_unlock(&tfile->napi_mutex);
->         } else if (tfile->napi_enabled) {
-> --
-> 1.8.3.1
->
+__DECLARE_FLEX_ARRAY is defined in include/uapi/linux/stddef.h but
+doesn't seem to be explicitly included from include/uapi/linux/in.h,
+which breaks BPF selftests builds (once we sync linux/stddef.h into
+tools/include directory in the next patch). Fix this by explicitly
+including linux/stddef.h.
 
-I think the intent of this code was to allow user space to send
-multiple packets to GRO layer for test purposes.
-(Check that GRO can aggregate multiple MSS, with respect of standard GRO rules)
-This fix might break some tests, but they can be updated if needed
-(using /sys/class/net/xxx/gro_flush_timeout)
+Given this affects BPF CI and bpf tree, targeting this for bpf tree.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: 5854a09b4957 ("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/uapi/linux/in.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
+index f243ce665f74..07a4cb149305 100644
+--- a/include/uapi/linux/in.h
++++ b/include/uapi/linux/in.h
+@@ -20,6 +20,7 @@
+ #define _UAPI_LINUX_IN_H
+ 
+ #include <linux/types.h>
++#include <linux/stddef.h>
+ #include <linux/libc-compat.h>
+ #include <linux/socket.h>
+ 
+-- 
+2.30.2
+
