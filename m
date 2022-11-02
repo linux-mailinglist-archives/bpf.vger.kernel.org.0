@@ -2,106 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E9B615E07
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 09:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B90615F57
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 10:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbiKBIk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 04:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
+        id S231537AbiKBJPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 05:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbiKBIk1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 04:40:27 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE4524954;
-        Wed,  2 Nov 2022 01:40:26 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N2Kyk0D0bzKGM4;
-        Wed,  2 Nov 2022 16:37:50 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP4 (Coremail) with SMTP id gCh0CgDn9ef4LGJjxZxaAg--.29164S2;
-        Wed, 02 Nov 2022 16:40:24 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf] bpftool: Fix NULL pointer dereference when pin {PROG, MAP, LINK} without FILE
-Date:   Wed,  2 Nov 2022 16:40:34 +0800
-Message-Id: <20221102084034.3342995-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231251AbiKBJOr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 05:14:47 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B56427FD2;
+        Wed,  2 Nov 2022 02:13:27 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N2LlQ5bZ2zHvbR;
+        Wed,  2 Nov 2022 17:13:06 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 2 Nov 2022 17:13:25 +0800
+Message-ID: <8ab6c29a-4080-e321-b762-5e4e0cc4665e@huawei.com>
+Date:   Wed, 2 Nov 2022 17:13:24 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH net] net: tun: Fix memory leaks of napi_get_frags
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <peterpenkov96@gmail.com>
+References: <1667381439-4419-1-git-send-email-wangyufen@huawei.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <1667381439-4419-1-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDn9ef4LGJjxZxaAg--.29164S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF4kZrWxJw48CrW8tw4ruFg_yoWDCFbE9r
-        yvqr9Yvr4rGF9Igw18C3yruFy8Ga4UZr4xZ3W3Jry3Aa1DCFnIk3Wvkws5AFW3WFyDZF17
-        JF92kry3WF4akjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UZa9-UUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+Ignore, will resend later
 
-When using bpftool to pin {PROG, MAP, LINK} without FILE,
-segmentation fault will occur. The reson is that the lack
-of FILE will cause strlen to trigger NULL pointer dereference.
-The corresponding stacktrace is shown below:
-
-do_pin
-  do_pin_any
-    do_pin_fd
-      mount_bpffs_for_pin
-        strlen(name) <- NULL pointer dereference
-
-Fix it by adding validation to the common process.
-
-Fixes: 75a1e792c335 ("tools: bpftool: Allow all prog/map handles for pinning objects")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- tools/bpf/bpftool/common.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index e4d33bc8bbbf..653c130a0aaa 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -302,6 +302,9 @@ int do_pin_any(int argc, char **argv, int (*get_fd)(int *, char ***))
- 	int err;
- 	int fd;
- 
-+	if (!REQ_ARGS(3))
-+		return -EINVAL;
-+
- 	fd = get_fd(&argc, &argv);
- 	if (fd < 0)
- 		return fd;
--- 
-2.25.1
-
+在 2022/11/2 17:30, Wang Yufen 写道:
+> kmemleak reports after running test_progs:
+>
+> unreferenced object 0xffff8881b1672dc0 (size 232):
+>    comm "test_progs", pid 394388, jiffies 4354712116 (age 841.975s)
+>    hex dump (first 32 bytes):
+>      e0 84 d7 a8 81 88 ff ff 80 2c 67 b1 81 88 ff ff  .........,g.....
+>      00 40 c5 9b 81 88 ff ff 00 00 00 00 00 00 00 00  .@..............
+>    backtrace:
+>      [<00000000c8f01748>] napi_skb_cache_get+0xd4/0x150
+>      [<0000000041c7fc09>] __napi_build_skb+0x15/0x50
+>      [<00000000431c7079>] __napi_alloc_skb+0x26e/0x540
+>      [<000000003ecfa30e>] napi_get_frags+0x59/0x140
+>      [<0000000099b2199e>] tun_get_user+0x183d/0x3bb0 [tun]
+>      [<000000008a5adef0>] tun_chr_write_iter+0xc0/0x1b1 [tun]
+>      [<0000000049993ff4>] do_iter_readv_writev+0x19f/0x320
+>      [<000000008f338ea2>] do_iter_write+0x135/0x630
+>      [<000000008a3377a4>] vfs_writev+0x12e/0x440
+>      [<00000000a6b5639a>] do_writev+0x104/0x280
+>      [<00000000ccf065d8>] do_syscall_64+0x3b/0x90
+>      [<00000000d776e329>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> The issue occurs in the following scenarios:
+> tun_get_user()
+>    napi_gro_frags()
+>      napi_frags_finish()
+>        case GRO_NORMAL:
+>          gro_normal_one()
+>            list_add_tail(&skb->list, &napi->rx_list);
+>            <-- While napi->rx_count < READ_ONCE(gro_normal_batch),
+>            <-- gro_normal_list() is not called, napi->rx_list is not empty
+>    <-- not ask to complete the gro work, will cause memory leaks in
+>    <-- following tun_napi_del()
+> ...
+> tun_napi_del()
+>    netif_napi_del()
+>      __netif_napi_del()
+>      <-- &napi->rx_list is not empty, which caused memory leaks
+>
+> To fix, add napi_complete() after napi_gro_frags().
+>
+> Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+>   drivers/net/tun.c | 15 +++++----------
+>   1 file changed, 5 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 27c6d23..910990d 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -1864,13 +1864,8 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+>   
+>   	if (virtio_net_hdr_to_skb(skb, &gso, tun_is_little_endian(tun))) {
+>   		atomic_long_inc(&tun->rx_frame_errors);
+> -		kfree_skb(skb);
+> -		if (frags) {
+> -			tfile->napi.skb = NULL;
+> -			mutex_unlock(&tfile->napi_mutex);
+> -		}
+> -
+> -		return -EINVAL;
+> +		err = -EINVAL;
+> +		goto drop;
+>   	}
+>   
+>   	switch (tun->flags & TUN_TYPE_MASK) {
+> @@ -1886,9 +1881,8 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+>   				pi.proto = htons(ETH_P_IPV6);
+>   				break;
+>   			default:
+> -				dev_core_stats_rx_dropped_inc(tun->dev);
+> -				kfree_skb(skb);
+> -				return -EINVAL;
+> +				err = -EINVAL;
+> +				goto drop;
+>   			}
+>   		}
+>   
+> @@ -1976,6 +1970,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+>   
+>   		local_bh_disable();
+>   		napi_gro_frags(&tfile->napi);
+> +		napi_complete(&tfile->napi);
+>   		local_bh_enable();
+>   		mutex_unlock(&tfile->napi_mutex);
+>   	} else if (tfile->napi_enabled) {
