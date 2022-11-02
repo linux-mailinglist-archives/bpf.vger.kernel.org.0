@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6A9615F16
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 10:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AAC615F89
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 10:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbiKBJMI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 05:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        id S229709AbiKBJWe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 05:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbiKBJLP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 05:11:15 -0400
+        with ESMTP id S230381AbiKBJV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 05:21:28 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E3A29828;
-        Wed,  2 Nov 2022 02:10:07 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N2Lgb09w2zHvbq;
-        Wed,  2 Nov 2022 17:09:47 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03AC11C23;
+        Wed,  2 Nov 2022 02:20:47 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N2Lvv3M9KzHvV3;
+        Wed,  2 Nov 2022 17:20:27 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.70) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 2 Nov 2022 17:10:05 +0800
+ 15.1.2375.31; Wed, 2 Nov 2022 17:20:45 +0800
 From:   Wang Yufen <wangyufen@huawei.com>
 To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
 CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
         <pabeni@redhat.com>, <peterpenkov96@gmail.com>,
         Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH net] net: tun: Fix memory leaks of napi_get_frags
-Date:   Wed, 2 Nov 2022 17:30:39 +0800
-Message-ID: <1667381439-4419-1-git-send-email-wangyufen@huawei.com>
+Subject: [PATCH net v2] net: tun: Fix memory leaks of napi_get_frags
+Date:   Wed, 2 Nov 2022 17:41:19 +0800
+Message-ID: <1667382079-6499-1-git-send-email-wangyufen@huawei.com>
 X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -87,42 +87,14 @@ To fix, add napi_complete() after napi_gro_frags().
 Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
 Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 ---
- drivers/net/tun.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/net/tun.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 27c6d23..910990d 100644
+index 27c6d23..07a0a61 100644
 --- a/drivers/net/tun.c
 +++ b/drivers/net/tun.c
-@@ -1864,13 +1864,8 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
- 
- 	if (virtio_net_hdr_to_skb(skb, &gso, tun_is_little_endian(tun))) {
- 		atomic_long_inc(&tun->rx_frame_errors);
--		kfree_skb(skb);
--		if (frags) {
--			tfile->napi.skb = NULL;
--			mutex_unlock(&tfile->napi_mutex);
--		}
--
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto drop;
- 	}
- 
- 	switch (tun->flags & TUN_TYPE_MASK) {
-@@ -1886,9 +1881,8 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
- 				pi.proto = htons(ETH_P_IPV6);
- 				break;
- 			default:
--				dev_core_stats_rx_dropped_inc(tun->dev);
--				kfree_skb(skb);
--				return -EINVAL;
-+				err = -EINVAL;
-+				goto drop;
- 			}
- 		}
- 
-@@ -1976,6 +1970,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+@@ -1976,6 +1976,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
  
  		local_bh_disable();
  		napi_gro_frags(&tfile->napi);
