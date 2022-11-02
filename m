@@ -2,116 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C38A615D5D
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 09:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A57A615D77
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 09:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbiKBII7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 04:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
+        id S230093AbiKBIQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 04:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKBII6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 04:08:58 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753F3DA6;
-        Wed,  2 Nov 2022 01:08:54 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4N2KBh70whz9xGY8;
-        Wed,  2 Nov 2022 16:03:08 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAHpXGIJWJjLiQwAA--.64703S2;
-        Wed, 02 Nov 2022 09:08:44 +0100 (CET)
-Message-ID: <e45a4736e9fa77acbe48e947f40c023d3cd71922.camel@huaweicloud.com>
-Subject: Re: Possible bug or unintended behaviour using bpf_ima_file_hash
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Isaac Matthews <isaac.jmatt@gmail.com>,
-        linux-integrity@vger.kernel.org, bpf@vger.kernel.org
-Cc:     isaac.matthews@hpe.com
-Date:   Wed, 02 Nov 2022 09:08:30 +0100
-In-Reply-To: <CAFrssUQKyfZXXXQQA2vPMLR957RZtt7MN9rEG_VbLW_D0wBZ0w@mail.gmail.com>
-References: <CAFrssUQKyfZXXXQQA2vPMLR957RZtt7MN9rEG_VbLW_D0wBZ0w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230171AbiKBIQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 04:16:26 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996852529C;
+        Wed,  2 Nov 2022 01:16:23 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N2KQb6XN0zJnS6;
+        Wed,  2 Nov 2022 16:13:27 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 2 Nov
+ 2022 16:16:21 +0800
+From:   Baisong Zhong <zhongbaisong@huawei.com>
+To:     <edumazet@google.com>, <keescook@chromium.org>, <kuba@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <pabeni@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <glider@google.com>, <elver@google.com>, <netdev@vger.kernel.org>,
+        <zhongbaisong@huawei.com>
+Subject: [PATCH -next,v2] bpf, test_run: fix alignment problem in bpf_prog_test_run_skb()
+Date:   Wed, 2 Nov 2022 16:16:20 +0800
+Message-ID: <20221102081620.1465154-1-zhongbaisong@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwAHpXGIJWJjLiQwAA--.64703S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy5tFW8uFyfGFW7tF1UWrg_yoW8ur4Dpr
-        W3GF10kFs0kr10kF9F9a1UWFWFk393ZFy5XFWv9ryrAr4DXrWvqrWYga45WrW8KrykKF18
-        XF4fW347JF1kKa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4DweAABs6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-10-31 at 16:25 +0000, Isaac Matthews wrote:
-> Using bpf_ima_file_hash() from kernel 6.0.
-> 
-> When using bpf_ima_file_hash() with the lsm.s/file_open hook, a hash
-> of the file is only sometimes returned.  This is because the
-> FMODE_CAN_READ flag is set after security_file_open() is already
-> called, and ima_calc_file_hash() only checks for FMODE_READ not
-> FMODE_CAN_READ in order to decide if a new instance needs to be
-> opened. Because of this, if a file passes the FMODE_READ check  it
-> will fail to be hashed as FMODE_CAN_READ has not yet been set.
-> 
-> To demonstrate: if the file is opened for write for example, when
-> ima_calc_file_hash() is called and the file->f_mode is checked
-> against
-> FMODE_READ, a new file instance is opened with the correct flags and
-> a
-> hash is returned. If the file is opened for read, a new file instance
-> is not returned in ima_calc_file_hash() as (!(file->f_mode &
-> FMODE_READ)) is now false. When __kernel_read() is called as part of
-> ima_calc_file_hash_tfm() it will fail on if (!(file->f_mode &
-> FMODE_CAN_READ)) and so no hash will be returned by
-> bpf_ima_file_hash().
-> 
-> If possible could someone please advise me as to whether this is
-> intended behaviour, and is it possible to either modify the flags
-> with
-> eBPF or to open a new instance with the correct flags set as IMA does
-> currently?
+we got a syzkaller problem because of aarch64 alignment fault
+if KFENCE enabled.
 
-Hi Isaac
+When the size from user bpf program is an odd number, like
+399, 407, etc, it will cause the struct skb_shared_info's
+unaligned access. As seen below:
 
-I think this is the intended behavior, as IMA is supposed to be called
-when the file descriptor is ready to use.
+BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
 
-If we need to call ima_file_hash() from lsm.s/file_open, I think it
-should not be a problem to create a new fd just for eBPF, in
-__ima_inode_hash().
+Use-after-free read at 0xffff6254fffac077 (in kfence-#213):
+ __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:26 [inline]
+ arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+ arch_atomic_inc include/linux/atomic-arch-fallback.h:270 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:241 [inline]
+ __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
+ skb_clone+0xf4/0x214 net/core/skbuff.c:1481
+ ____bpf_clone_redirect net/core/filter.c:2433 [inline]
+ bpf_clone_redirect+0x78/0x1c0 net/core/filter.c:2420
+ bpf_prog_d3839dd9068ceb51+0x80/0x330
+ bpf_dispatcher_nop_func include/linux/bpf.h:728 [inline]
+ bpf_test_run+0x3c0/0x6c0 net/bpf/test_run.c:53
+ bpf_prog_test_run_skb+0x638/0xa7c net/bpf/test_run.c:594
+ bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
+ __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
+ __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
 
-Mimi, what do you think?
+kfence-#213: 0xffff6254fffac000-0xffff6254fffac196, size=407, cache=kmalloc-512
 
-Thanks
+allocated by task 15074 on cpu 0 at 1342.585390s:
+ kmalloc include/linux/slab.h:568 [inline]
+ kzalloc include/linux/slab.h:675 [inline]
+ bpf_test_init.isra.0+0xac/0x290 net/bpf/test_run.c:191
+ bpf_prog_test_run_skb+0x11c/0xa7c net/bpf/test_run.c:512
+ bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
+ __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
+ __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
+ __arm64_sys_bpf+0x50/0x60 kernel/bpf/syscall.c:4381
 
-Roberto
+To fix the problem, we adjust @size so that (@size + @hearoom) is a
+multiple of SMP_CACHE_BYTES. So we make sure the struct skb_shared_info
+is aligned to a cache line.
 
-> Alternatively, would a better solution be adding a check for
-> FMODE_CAN_READ to ima_calc_file_hash()? I noticed in the comment
-> above
-> the conditional in ima_calc_file_hash() that the conditional should
-> be
-> checking whether the file can be read, but only checks the FMODE_READ
-> flag which is not the only requirement for __kernel_read() to be able
-> to read a file.
-> 
-> Thanks for your help.
-> Isaac
+Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
+Signed-off-by: Baisong Zhong <zhongbaisong@huawei.com>
+---
+v2: use SKB_DATA_ALIGN instead kmalloc_size_roundup
+---
+ net/bpf/test_run.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 4b855af267b1..bfdd7484b93f 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -259,6 +259,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+ 	if (user_size > size)
+ 		return ERR_PTR(-EMSGSIZE);
+ 
++	size = SKB_DATA_ALIGN(size);
+ 	data = kzalloc(size + headroom + tailroom, GFP_USER);
+ 	if (!data)
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.25.1
 
