@@ -2,97 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E74616303
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 13:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A31F616326
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 13:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiKBMss (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 08:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
+        id S231196AbiKBMzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 08:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiKBMsq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 08:48:46 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F988C17
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 05:48:43 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id d6so28031556lfs.10
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 05:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sz/uTvOc0gNmc74MGKA7yKeLqyFqD/joiI1SxwVZLms=;
-        b=FqR0QeEiB2XkiMCLPdFxi+z4XcVgQxKvw6bgHn3f3xPkbDZZRRzN24dytdenTe6b8l
-         ch99MRl7hpPOd5pq0FxAC7Hpx3Hf9L0GVIJfBGmDmF0zB1aCfSy+0jGSjRbNdxlXdPPJ
-         FzLgWoXBC+7DkA84YLFbDBj2NoWfp/0jXSY5OiGPxzUhrAn6RPAKx+0cfp9GDJjiMK6r
-         pMgjx0mlbOPZ/K8KoxL9SpwPeqxDga0QKdNI4mp1RY1Zu1w2rXbW2n0dtdvEiqjaSbNr
-         3qHHG83/qDEd2etMN+qai0vsvj+MVcIrYoO0uZJEI5HwJFre/IMLZTcSftT2BQVKsYPh
-         PVqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sz/uTvOc0gNmc74MGKA7yKeLqyFqD/joiI1SxwVZLms=;
-        b=Lfk1RR2+GlT8s8y0j80K8nyO+crH7sKtwukyjXD7DhxQf9kvjOtbmOJKuAJN9Q7pwE
-         nfx4Kz9cbxepPX6CIHy+VCUwyns8+fvn30Rci8pEJ7FNnqdsrZluT/PCchaJ4ZlTeGFO
-         xn8i8DARL1RHKJWtOFK50BbxLLyhvZRPaYkuSHoz3+riHBnmbPDVXLn3AZZOJOtJbeeO
-         zt3+wSkXuEo1i9a8knyt7Wj74KMAUkweUPR9h8jZTYuWfwoD1r0A+NrsGmnJ4WNxo+o6
-         jlQA6+wrtUUry9NPX8gkK6qyjQV2APXF3sDavVe5adJ8TbHeIaWAgN2aDhyBLBqw9QTx
-         QMWw==
-X-Gm-Message-State: ACrzQf3MAOZzIuMAzEJBvZlxP/3jxdpekZJ8q15d+o8XZsxmsKtoLH2j
-        nYJbvp32QJwSXCi3SmNa6zbJSd+sXb2Z+WcMMKQ=
-X-Google-Smtp-Source: AMsMyM7/FLs+utVIQxapsGZ8q2BsAvRjzJUNJuePM8AVHc/il67Sc/dKq8vDyAXfW2derLPPwsbq56bqP7LT15bWbbk=
-X-Received: by 2002:ac2:4986:0:b0:4a2:7b62:747 with SMTP id
- f6-20020ac24986000000b004a27b620747mr8754273lfl.92.1667393321545; Wed, 02 Nov
- 2022 05:48:41 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6520:40ee:b0:220:4267:3735 with HTTP; Wed, 2 Nov 2022
- 05:48:40 -0700 (PDT)
-Reply-To: rihabmanyang1993@gmail.com
-From:   Rihab Manyang <bassiroundaw77@gmail.com>
-Date:   Wed, 2 Nov 2022 12:48:40 +0000
-Message-ID: <CAMQfp2i3wveLe1jZUDK9auNy5ghsaAOzXQwOrUeprk0LLwtUQw@mail.gmail.com>
-Subject: HI DEAR..
-To:     undisclosed-recipients:;
+        with ESMTP id S231153AbiKBMzU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 08:55:20 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974F9286C2;
+        Wed,  2 Nov 2022 05:55:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4N2RXF2Rx5z9v7gQ;
+        Wed,  2 Nov 2022 20:48:45 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDXC_ipaGJjheAwAA--.42563S2;
+        Wed, 02 Nov 2022 13:55:10 +0100 (CET)
+Message-ID: <72e37c82754171c47415a4849ea7a1188eb718ee.camel@huaweicloud.com>
+Subject: Re: Possible bug or unintended behaviour using bpf_ima_file_hash
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Isaac Matthews <isaac.jmatt@gmail.com>,
+        linux-integrity@vger.kernel.org, bpf@vger.kernel.org
+Cc:     isaac.matthews@hpe.com
+Date:   Wed, 02 Nov 2022 13:55:02 +0100
+In-Reply-To: <135f442b44af0ac2bcd239c1f11c18c740f6e641.camel@linux.ibm.com>
+References: <CAFrssUQKyfZXXXQQA2vPMLR957RZtt7MN9rEG_VbLW_D0wBZ0w@mail.gmail.com>
+         <e45a4736e9fa77acbe48e947f40c023d3cd71922.camel@huaweicloud.com>
+         <135f442b44af0ac2bcd239c1f11c18c740f6e641.camel@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:130 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5050]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [bassiroundaw77[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [rihabmanyang1993[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [bassiroundaw77[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwDXC_ipaGJjheAwAA--.42563S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr43tF15AFW8try7KF4fAFb_yoW5WFWrpr
+        WfG3WUKF4DGr10krnFv3WDXFWrK393WFy7XFyvgryrAr1qqryvqrW2gayY9FWkKrykK3WI
+        qF4xG347Zryvya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
+        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
+        KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4D2QQAAsE
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-My name is Rihab Manyang,i am here to search for a business partner and
-friend who will help me to invest my fund in his country.
+On Wed, 2022-11-02 at 07:55 -0400, Mimi Zohar wrote:
+> On Wed, 2022-11-02 at 09:08 +0100, Roberto Sassu wrote:
+> > On Mon, 2022-10-31 at 16:25 +0000, Isaac Matthews wrote:
+> > > Using bpf_ima_file_hash() from kernel 6.0.
+> > > 
+> > > When using bpf_ima_file_hash() with the lsm.s/file_open hook, a
+> > > hash
+> > > of the file is only sometimes returned.  This is because the
+> > > FMODE_CAN_READ flag is set after security_file_open() is already
+> > > called, and ima_calc_file_hash() only checks for FMODE_READ not
+> > > FMODE_CAN_READ in order to decide if a new instance needs to be
+> > > opened. Because of this, if a file passes the FMODE_READ
+> > > check  it
+> > > will fail to be hashed as FMODE_CAN_READ has not yet been set.
+> > > 
+> > > To demonstrate: if the file is opened for write for example, when
+> > > ima_calc_file_hash() is called and the file->f_mode is checked
+> > > against
+> > > FMODE_READ, a new file instance is opened with the correct flags
+> > > and
+> > > a
+> > > hash is returned. If the file is opened for read, a new file
+> > > instance
+> > > is not returned in ima_calc_file_hash() as (!(file->f_mode &
+> > > FMODE_READ)) is now false. When __kernel_read() is called as part
+> > > of
+> > > ima_calc_file_hash_tfm() it will fail on if (!(file->f_mode &
+> > > FMODE_CAN_READ)) and so no hash will be returned by
+> > > bpf_ima_file_hash().
+> > > 
+> > > If possible could someone please advise me as to whether this is
+> > > intended behaviour, and is it possible to either modify the flags
+> > > with
+> > > eBPF or to open a new instance with the correct flags set as IMA
+> > > does
+> > > currently?
+> > 
+> > Hi Isaac
+> > 
+> > I think this is the intended behavior, as IMA is supposed to be
+> > called
+> > when the file descriptor is ready to use.
+> > 
+> > If we need to call ima_file_hash() from lsm.s/file_open, I think it
+> > should not be a problem to create a new fd just for eBPF, in
+> > __ima_inode_hash().
+> > 
+> > Mimi, what do you think?
+> 
+> Who/what is checking that this is a regular file and we have
+> permission
+> to open the file?  Are we relying on eBPF to do this?  Will opening a
+> file circumvent all of the LSM checks?
+
+Opening the file again will cause another permission request to be sent
+to LSMs, and thus to the eBPF program implementing lsm.s/file_open.
+Maybe it is not a good idea to use this hook.
+
+In the future, if IMA/EVM stacking is successful, we might introduce
+the file_post_open hook, which I believe could be suitable for calling 
+bpf_ima_file_hash().
+
+Roberto
+
+> > > Alternatively, would a better solution be adding a check for
+> > > FMODE_CAN_READ to ima_calc_file_hash()? I noticed in the comment
+> > > above
+> > > the conditional in ima_calc_file_hash() that the conditional
+> > > should
+> > > be
+> > > checking whether the file can be read, but only checks the
+> > > FMODE_READ
+> > > flag which is not the only requirement for __kernel_read() to be
+> > > able
+> > > to read a file.
+> > > 
+> > > Thanks for your help.
+> > > Isaac
+
