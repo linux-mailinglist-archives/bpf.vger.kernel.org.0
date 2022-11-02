@@ -2,56 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FED616C13
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742B4616D21
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 19:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbiKBSZl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Nov 2022 14:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        id S231512AbiKBStI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 14:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbiKBSZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 14:25:29 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161E521278
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 11:25:28 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2HnWct005038
-        for <bpf@vger.kernel.org>; Wed, 2 Nov 2022 11:25:27 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkvcw8vmj-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 11:25:27 -0700
-Received: from twshared1533.39.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 2 Nov 2022 11:25:24 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id F141E20FC7439; Wed,  2 Nov 2022 11:25:21 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, <kuba@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH bpf 2/2] tools headers uapi: pull in stddef.h to fix BPF selftests build in CI
-Date:   Wed, 2 Nov 2022 11:25:17 -0700
-Message-ID: <20221102182517.2675301-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221102182517.2675301-1-andrii@kernel.org>
-References: <20221102182517.2675301-1-andrii@kernel.org>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: gcuuTK0J1KVvYrenWd696W3IflbZwZ7r
-X-Proofpoint-ORIG-GUID: gcuuTK0J1KVvYrenWd696W3IflbZwZ7r
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S231790AbiKBSso (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 14:48:44 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB08F31216
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 11:48:13 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id h206so12312422iof.10
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 11:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V3iH6kltXbn8DPbJp+/IxLmJXJxqLstc5tLD9AXFX2A=;
+        b=fp1z4Ve8HlaIUkOCymKtX9XryLF7bC+TBx+ZYubac6gbAMlw+yTJhARqwJWDvk5on1
+         l07gg0JNcRnCgabwBwc+ffyb26jqfhOsEnIfrLXAlUhI2H+unhSJ4/jFBfuNo9cfvXq3
+         jTBPe/3yREEmXW25zOSi9w1sOMrhIZH5lCVj9UgDbG3BQICKlCNhFyONETuhlPDUttBV
+         93fvFr7TsJnu+1lJgOzAsXljL5cwCwwHfVLemgGBdA9dhmOZAxTkf5BXjSVYOBewxpJ5
+         QZ5Z+Q4JDK6Jm4SjRzDYHvx5ZwQ6BB9dhTIclAjgnRLHYLYVLNRimd8UT57bqkwKEA13
+         SgVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V3iH6kltXbn8DPbJp+/IxLmJXJxqLstc5tLD9AXFX2A=;
+        b=P9zCKeCg3iQCE6ULjU3/exMk6g/2D8A1PmUh1aSQdqTmKffHZ1cJDF6ZCLR6KtPgAD
+         ICcJF0zEuX6wjB5Xb2dJ15N0Qv20VyhPssAGnO0vLBEtFbAc4eymxF05aR9ksYJMxJUs
+         l7RpOWZCh6uzC5+fCIOx2v9oVlp2OFHjRmM4sUSoCoJ2JQLV8OuG7OXlPSWPkpiB8hOm
+         TGs+5BslVABmYhcjC20UfrL6F0Mb/nPsN0w4I24r7FyB1UC0PJwTt3AS3tGlkpf1kdcV
+         nA0yHoR0txCCGUqPaQrV/UqseU6DbEpsF5yO5c8VKKWRyVSzd51dfAHrp8b1GjVSP6gr
+         l44g==
+X-Gm-Message-State: ACrzQf0xQ4+ThgT5P4ChzSS3ZeADgQLTRXcSosARYStt6qHFBh70vyNm
+        zX1or9UpAwok4g6HZQfW1E7aLawtyLLeGHfxRwsbeP6Z8ec=
+X-Google-Smtp-Source: AMsMyM6sKcPINQGd+KD6W4GncQDNJyhJZUPzjOCpinuV11Lq0SmAZX7NvSy90r9y8s73TfFuAaNgYoxWM1gz4D6qwX0=
+X-Received: by 2002:a02:3346:0:b0:375:4c11:ee4d with SMTP id
+ k6-20020a023346000000b003754c11ee4dmr14060114jak.207.1667414892996; Wed, 02
+ Nov 2022 11:48:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_14,2022-11-02_01,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 2 Nov 2022 11:47:31 -0700
+Message-ID: <CAJD7tkYKmr0daXhCSkvNZYgx_rDuBaq1OExnw=AEMJ+fSzaHwg@mail.gmail.com>
+Subject: Question: BPF maps reliability
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,101 +71,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With recent sync of linux/in.h tools/include headers are now relying on
-__DECLARE_FLEX_ARRAY macro, which isn't itself defined inside
-tools/include headers anywhere and is instead assumed to be present in
-system-wide UAPI header. This breaks isolated environments that don't
-have kernel UAPI headers installed system-wide, like BPF CI ([0]).
+Hey everyone,
 
-To fix this, bring in include/uapi/linux/stddef.h into tools/include. We
-can't just copy/paste it, though, it has to be processed with
-scripts/headers_install.sh, which has a dependency on scripts/unifdef.
-So the full command to (re-)generate stddef.h for inclusion into
-tools/include directory is:
+TL;DR Are BPF map operations guaranteed to succeed if the map is
+configured correctly and accesses to the map do not interrupt each
+other? Can this be relied on in the future as well?
 
-  $ make scripts_unifdef && \
-    cp $KBUILD_OUTPUT/scripts/unifdef scripts/ && \
-    scripts/headers_install.sh include/uapi/linux/stddef.h tools/include/uapi/linux/stddef.h
+I am looking into migrating some cgroup statistics we internally
+maintain to use BPF instead of in-kernel code. I am considering
+several aspects of that, including reliability. With in-kernel code
+things are really simple, we add the data structures containing the
+stats to cgroup controller struct, we update them as appropriate, and
+we export them when needed. With BPF, we need to hook progs to the
+right locations and store the stats in BPF maps (cgroup local
+storages, task local storages, hash tables, trees - in the future -)
+etc.
 
-This assumes KBUILD_OUTPUT envvar is set and used for out-of-tree builds.
+The question I am asking here is about the reliability of such map
+operations. Looking at the code for lookups and updates for some map
+types, I can see a lot of failure cases. Looking deeper into them it
+*seems* to me like in an ideal scenario nothing should fail. By an
+ideal scenario I mean:
+- The map size is set correctly,
+- There is sufficient memory on the system,
+- We don't use the BPF maps in any progs attached to the BPF maps
+manipulation code itself,
+- We don't use the BPF maps in any progs that can interrupt each other
+(e.g. NMI context).
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/3379432493/jobs/5610982609
+IOW, there are no cases where we fail because two programs running in
+parallel are trying to access the same map (or map element) or because
+we couldn't acquire a resource that we don't want to wait on (that
+wouldn't result in a deadlock)., situations where we might prefer the
+caller to retry later or where we don't care about one missed
+operation.
 
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Fixes: 036b8f5b8970 ("tools headers uapi: Update linux/in.h copy")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/include/uapi/linux/in.h     |  1 +
- tools/include/uapi/linux/stddef.h | 47 +++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
- create mode 100644 tools/include/uapi/linux/stddef.h
+Maybe all of this is obvious and I am being paranoid, or maybe there
+are other obvious failure cases that I missed, or maybe this is just a
+dumb question, so I apologize in advance if any of this is true :)
 
-diff --git a/tools/include/uapi/linux/in.h b/tools/include/uapi/linux/in.h
-index f243ce665f74..07a4cb149305 100644
---- a/tools/include/uapi/linux/in.h
-+++ b/tools/include/uapi/linux/in.h
-@@ -20,6 +20,7 @@
- #define _UAPI_LINUX_IN_H
- 
- #include <linux/types.h>
-+#include <linux/stddef.h>
- #include <linux/libc-compat.h>
- #include <linux/socket.h>
- 
-diff --git a/tools/include/uapi/linux/stddef.h b/tools/include/uapi/linux/stddef.h
-new file mode 100644
-index 000000000000..bb6ea517efb5
---- /dev/null
-+++ b/tools/include/uapi/linux/stddef.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _LINUX_STDDEF_H
-+#define _LINUX_STDDEF_H
-+
-+
-+
-+#ifndef __always_inline
-+#define __always_inline __inline__
-+#endif
-+
-+/**
-+ * __struct_group() - Create a mirrored named and anonyomous struct
-+ *
-+ * @TAG: The tag name for the named sub-struct (usually empty)
-+ * @NAME: The identifier name of the mirrored sub-struct
-+ * @ATTRS: Any struct attributes (usually empty)
-+ * @MEMBERS: The member declarations for the mirrored structs
-+ *
-+ * Used to create an anonymous union of two structs with identical layout
-+ * and size: one anonymous and one named. The former's members can be used
-+ * normally without sub-struct naming, and the latter can be used to
-+ * reason about the start, end, and size of the group of struct members.
-+ * The named struct can also be explicitly tagged for layer reuse, as well
-+ * as both having struct attributes appended.
-+ */
-+#define __struct_group(TAG, NAME, ATTRS, MEMBERS...) \
-+	union { \
-+		struct { MEMBERS } ATTRS; \
-+		struct TAG { MEMBERS } ATTRS NAME; \
-+	}
-+
-+/**
-+ * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-+ *
-+ * @TYPE: The type of each flexible array element
-+ * @NAME: The name of the flexible array member
-+ *
-+ * In order to have a flexible array member in a union or alone in a
-+ * struct, it needs to be wrapped in an anonymous struct with at least 1
-+ * named member, but that member can be empty.
-+ */
-+#define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
-+	struct { \
-+		struct { } __empty_ ## NAME; \
-+		TYPE NAME[]; \
-+	}
-+#endif
--- 
-2.30.2
-
+Thanks!
