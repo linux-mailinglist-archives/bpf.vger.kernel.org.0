@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE71616EA0
+	by mail.lfdr.de (Postfix) with ESMTP id DAFC7616EA1
 	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 21:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbiKBU1Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 16:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        id S231157AbiKBU1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 16:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbiKBU1P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 16:27:15 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9025FA4
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 13:27:14 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id j12so17675221plj.5
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 13:27:14 -0700 (PDT)
+        with ESMTP id S231152AbiKBU1S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 16:27:18 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54AF5F8E
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 13:27:17 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so2941375pjl.3
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 13:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=679rfVZbUxs6B459LaScwwW2xi+VSC4APp1SM8g6Ncc=;
-        b=DB+jsykP03wuE+/hbuMSCyTqedKfvnL6Ye32ELR1y0vNSM4jWlhlMBiXlO4EDNUefG
-         /4l1ODWHz64KVQXbPsP3oHtjXsR9NVMHrTn+A9nP8E5JB+NxdGytoDrvT9Aq7NQke4RP
-         I4D/+g+3p1Mr8hm9xFmMNUeI6IJtYy2hOqWIqSoFNNu/2iGJXUsJ6GxRE6c6oM8ca5Sk
-         BbGY4seVcSsFrCHFEZ/4428dhatVhSU3ed1KGofUe3n1Wq06VbPC8X/uHXGZAxfgJdPk
-         1k6sBNHFPNjO5uuIfJsFFw4S3I8oct3kGuTgBSswe9CkMgEIsdMcvKtUXrgtCbq053rT
-         PBmA==
+        bh=M27BRjNYaoCB1+5IJKHZuREsYEBagQvZSID8+oBgMd4=;
+        b=iT4cDo4lRxJP3wmpncIetEW2FbFi7jXUtcfTzWZA7XAagUN/v7U3KvL1eAXeIPl5Lj
+         S2GpM1kEoXYJmW2C2435O6MNnUwTzcyd/Po25O3MmIfuz/E4UOdQobR/IlixpqSH1RIu
+         /j7YWVyN1vp9RTaop16TsserqJ+BkAuYGmr1ZsvtSFa02weLTZr8B8LoahDynikvlaxx
+         +xnV10XSVqebnU69yf2X5xgRcTdHvhx+P5vorZdqhRPKDILQS62Y6cuPx73zkSFJLbjZ
+         Bw2HOTlmQnUTIhkgJmnzsWeCWC//d9kFSFRchRoxbsPDsomEP4ze3XdT0n7RJTDwfRCp
+         obfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=679rfVZbUxs6B459LaScwwW2xi+VSC4APp1SM8g6Ncc=;
-        b=GHreCKusSOrY3ech/8X7qQpjjveXXDzzF76rLCb3rZZZ09HvOWvbvwhnvLxw551L76
-         lQEv+veOj0fs9G32dmLC06Rz9pTPObpSm4HMD7uZIlxZbj7bYFlLD0rWoyWH7smg1JDc
-         MqvoIGlts/W53iYqZy5Nnt7ns2+Q8YSBcZ2Th1RtW8TSDNgU+hhpRMQHFCoBKNk+C6lV
-         Qo7MhPmiMsYyiQ3nlAyW4l2buFgWCpMhigs6m2aTr42ois4olxmTOpoIL0WdvZRiRXv7
-         RwgbiJ6fIcENpDu2OFIm5KAOoSc8PWmLJg919ztEPWiEVD7wXuLgp3nRQTAZZSDsBXW4
-         ry8Q==
-X-Gm-Message-State: ACrzQf3o+5/KtPme8tuPbEmxP6x2CJR/yWuPgIk0kW5kizLfyODasWcs
-        /431+23WD/JT9/B0LnaO4ilKfydTHd0Ezg==
-X-Google-Smtp-Source: AMsMyM7eJUjI+cSbaaAHefeEixmTEuPg+6tODwlFpOO4NAz2i9WjKldD1Nxv6GXdSshgoDjYSbXMtw==
-X-Received: by 2002:a17:90a:df91:b0:213:8a69:c504 with SMTP id p17-20020a17090adf9100b002138a69c504mr33296053pjv.82.1667420833775;
-        Wed, 02 Nov 2022 13:27:13 -0700 (PDT)
+        bh=M27BRjNYaoCB1+5IJKHZuREsYEBagQvZSID8+oBgMd4=;
+        b=6se/Bc22bsmpg8xnSnupluStTTA4Tj/bAS+9AheMm9aflLGXwQNBc4lWyDBPEqVgBg
+         pRDP1EORfGFb2bQGRSIfCG5AH9SaL3GmGCmFh25eykdgrTHu11HRApMczbLRgPvQlhxT
+         Gywb4B7RwWpwdqsG9SGS6f6hKHZ7cXsTYjyR5Kw6Jcbqc/9SyeAkdEQJSD/mXbHMVhiO
+         WQ+nuiH5BXtyYqE2I9Y2VzUSzSrWne+ePWC9QXFGlQrKFruTozW/SLgEdEX1/kz5Oyqi
+         fmdWm2LVoxo/VxmYq8JYY+3koc+v5AzeuO095HalQxZlhdM7mfLYIwZMzHhldGcsh6zS
+         R9aQ==
+X-Gm-Message-State: ACrzQf2IVWDc1YgzPqaBoPgiTDM1PDV0mXUIBMD7qQSKoKi475+u8Of4
+        uzScBY3EJ8inwJSRNXnDZ0TN9H4CwQXu9g==
+X-Google-Smtp-Source: AMsMyM7Xx8p8IT5ah1rtv3l9V4+VG4CJAGPon6Ak5z2kR8UEkR7gaZyCEwYOmJvl1R3VL+4oRfTENw==
+X-Received: by 2002:a17:903:1250:b0:185:40c6:3c2c with SMTP id u16-20020a170903125000b0018540c63c2cmr26523418plh.64.1667420837068;
+        Wed, 02 Nov 2022 13:27:17 -0700 (PDT)
 Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id h7-20020a17090a604700b00205d70ccfeesm1835744pjm.33.2022.11.02.13.27.13
+        by smtp.gmail.com with ESMTPSA id g23-20020a63e617000000b0045fcfde8263sm8007884pgh.53.2022.11.02.13.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 13:27:13 -0700 (PDT)
+        Wed, 02 Nov 2022 13:27:16 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Cc:     Yonghong Song <yhs@meta.com>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: [PATCH bpf-next v3 02/24] bpf: Allow specifying volatile type modifier for kptrs
-Date:   Thu,  3 Nov 2022 01:56:36 +0530
-Message-Id: <20221102202658.963008-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 03/24] bpf: Clobber stack slot when writing over spilled PTR_TO_BTF_ID
+Date:   Thu,  3 Nov 2022 01:56:37 +0530
+Message-Id: <20221102202658.963008-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221102202658.963008-1-memxor@gmail.com>
 References: <20221102202658.963008-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1457; i=memxor@gmail.com; h=from:subject; bh=axG5JWCUjCjgtvaXzroncQ370dgLYGtaV9qCFkTtWp0=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjYtICs09qCok2GndHgo13T3/TvXzZv6eBeNIfNNpd 1vpsS0qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2LSAgAKCRBM4MiGSL8RysaYD/ wOs+dkh01+t3NA4hplzthmhBCqG6ZMZB00hbAJ6upY0FECBaWYUYpKr/bvzd+QSHokEjQ4rSIwhsMJ 0OU/vtc5psXOjuoa7hlRdkmcdgHREhIrWjLzBe0k7qwZOhSfPMYp55Rg/ahU1T1yYrOUGREq9cN9Yc C/YxmPXt4YBS6ny/BvFx/UByPmMM2DU5xHnd2L/OiFBaYCL3S8T2wzvzvLAZJ5UJKBD79WYKObbc66 2MzISjWmjwFTjkQ6jZ+BMv1if02goKfScOH8a+znamRKDaOLOXcjNYchIvcDaHQSkf/P/WgSxPcYgy D/5eymUvcgSk3N+WwJDLswk2y913WjZtJ67kuZ12iS9mK+9xft3pU99OLQYVKsOvt8psujIQOzTkEN WXtbgrUwjCtwta+z/6SKUnNH5NMwbWfYijXP0LvhGVsFvFOXhtn0J0lZ8ur4dMEF4tq3nl48zh8znD IRPdvtQAIdfIojJ17fhgW1EdDdSJ6YlM9Dn10aNTCYV1N00XxRKKYrZhQ5sbOC5/qmJS/I2hBIlREv uuqW8bfDeuQ6r795EQpNvnK30meGbwV3eNwgtS6zfYeYFUgt/fpcyx1oWT25404VyIKaRoixCYmk7W Qy7oTW+cX9EI84yqcGmYCDnictzH7nJiOjkCVYM5rT4DMyWnq1RT7c0+fTyA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2821; i=memxor@gmail.com; h=from:subject; bh=smtUwVhThpmCYQlRPUSYD3/NycKA9FJ543l5AzSuHAY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjYtICHKrpnIimiF8OclK6fIYXNs6gtuKWyGBygg4S XNaIEdKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2LSAgAKCRBM4MiGSL8RyqHFD/ 9XT4Tm8Sqawjkwt0kq4KkAtVPoE1dsYzjvpPBlkcavbeAI6sxWsNBg00So1Z+4BhIxZ7rWnAuRiies pUek92YffDMEb8YeI4kyhU7akc0eOMAjKjyCkVowWlkdw6+G7mnDkYzZesqY71OvStoIq8ZCdtPxDU Ag5cVHuuS6gQMU3+0saNrt/qhWs4ACRDwHm17kWsmzC+MGgfwpjk/2s9TlTyVhfotpWf+0ybOfJzUW /uFdvlN/u8VyHcj8zE1G1XE/WPtjl+QJHsrHENGW1fKkHqFgmC73wcLMzp9IpSA/2Xkd6l6BtVUGgE jTjIusx7f41qCAe4ZCCTCOwT9/nEMgJ4fa8RCpG88ijBD4qJPrrn6Grclyoz8cLND2t8PcTVgbauh6 rnSBK4bqZ85YqwqdDALwZ2Ozq9wR7B/tWDU/M9pmQU3GlMuZki+E0ySbFyIb/w/9Vei9GSsMFTF9+5 BCCqXYN2XYsadO4bGb8xSdMP6i5Evf1kvO33pRRxWhdDrc7V6y89YzdpNwCrBpho7AdNX94SRAb2Ha TN77F5D9SExJwok/shGZLfeED2XjUT2Ok93ENKajcA+kuGpfG5W55PVvw9kSsIpRdGsgNQ9hcDfYR7 U5+HTWRaHjpZr1KlvuJyzcAGZKG3Mz4DZUvUwcoh6Uuf7kOXA+hNgjqFuHyQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,47 +77,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is useful in particular to mark the pointer as volatile, so that
-compiler treats each load and store to the field as a volatile access.
-The alternative is having to define and use READ_ONCE and WRITE_ONCE in
-the BPF program.
+When support was added for spilled PTR_TO_BTF_ID to be accessed by
+helper memory access, the stack slot was not overwritten to STACK_MISC
+(and that too is only safe when env->allow_ptr_leaks is true).
 
+This means that helpers who take ARG_PTR_TO_MEM and write to it may
+essentially overwrite the value while the verifier continues to track
+the slot for spilled register.
+
+This can cause issues when PTR_TO_BTF_ID is spilled to stack, and then
+overwritten by helper write access, which can then be passed to BPF
+helpers or kfuncs.
+
+Handle this by falling back to the case introduced in a later commit,
+which will also handle PTR_TO_BTF_ID along with other pointer types,
+i.e. cd17d38f8b28 ("bpf: Permits pointers on stack for helper calls").
+
+Finally, include a comment on why REG_LIVE_WRITTEN is not being set when
+clobber is set to true. In short, the reason is that while when clobber
+is unset, we know that we won't be writing, when it is true, we *may*
+write to any of the stack slots in that range. It may be a partial or
+complete write, to just one or many stack slots.
+
+We cannot be sure, hence to be conservative, we leave things as is and
+never set REG_LIVE_WRITTEN for any stack slot. However, clobber still
+needs to reset them to STACK_MISC assuming writes happened. However read
+marks still need to be propagated upwards from liveness point of view,
+as parent stack slot's contents may still continue to matter to child
+states.
+
+Cc: Yonghong Song <yhs@meta.com>
+Fixes: 1d68f22b3d53 ("bpf: Handle spilled PTR_TO_BTF_ID properly when checking stack_boundary")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/btf.h | 5 +++++
- kernel/bpf/btf.c    | 3 +++
- 2 files changed, 8 insertions(+)
+ kernel/bpf/verifier.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index f9aababc5d78..86aad9b2ce02 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -288,6 +288,11 @@ static inline bool btf_type_is_typedef(const struct btf_type *t)
- 	return BTF_INFO_KIND(t->info) == BTF_KIND_TYPEDEF;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 275c2f1f00ee..123fcb1b2cca 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5154,10 +5154,6 @@ static int check_stack_range_initialized(
+ 			goto mark;
+ 		}
+ 
+-		if (is_spilled_reg(&state->stack[spi]) &&
+-		    base_type(state->stack[spi].spilled_ptr.type) == PTR_TO_BTF_ID)
+-			goto mark;
+-
+ 		if (is_spilled_reg(&state->stack[spi]) &&
+ 		    (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
+ 		     env->allow_ptr_leaks)) {
+@@ -5188,6 +5184,11 @@ static int check_stack_range_initialized(
+ 		mark_reg_read(env, &state->stack[spi].spilled_ptr,
+ 			      state->stack[spi].spilled_ptr.parent,
+ 			      REG_LIVE_READ64);
++		/* We do not set REG_LIVE_WRITTEN for stack slot, as we can not
++		 * be sure that whether stack slot is written to or not. Hence,
++		 * we must still conservatively propagate reads upwards even if
++		 * helper may write to the entire memory range.
++		 */
+ 	}
+ 	return update_stack_depth(env, state, min_off);
  }
- 
-+static inline bool btf_type_is_volatile(const struct btf_type *t)
-+{
-+	return BTF_INFO_KIND(t->info) == BTF_KIND_VOLATILE;
-+}
-+
- static inline bool btf_type_is_func(const struct btf_type *t)
- {
- 	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index eba603cec2c5..ad301e78f7ee 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3225,6 +3225,9 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
- 	enum bpf_kptr_type type;
- 	u32 res_id;
- 
-+	/* Permit modifiers on the pointer itself */
-+	if (btf_type_is_volatile(t))
-+		t = btf_type_by_id(btf, t->type);
- 	/* For PTR, sz is always == 8 */
- 	if (!btf_type_is_ptr(t))
- 		return BTF_FIELD_IGNORE;
 -- 
 2.38.1
 
