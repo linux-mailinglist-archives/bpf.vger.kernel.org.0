@@ -2,234 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C20616476
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 15:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6515061651D
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 15:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbiKBOHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 10:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
+        id S231140AbiKBO25 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 10:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbiKBOHs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 10:07:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CDFE00F
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 07:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667398007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2jf4Id8JS47B7k+3UyTqzVbwapS6kaSdZwlME3DJWj8=;
-        b=VRhueAu2MNsa/3CG7yDgVY2QBFb9eBe062EkqQNnl/e6RFkuWvJYpYgeJaTaySz5Yonvvu
-        77ekvRTlD0v93yS9EH75tD0ixUAnQIkwo/2RGEkS4PRRXxxGH9FuVQc2F4gj3lHrRZIvdR
-        uT0RlXofKCfjB8e15V23Q0/8FHgCskU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-227-U6o1joxmMCWUkblnu6F1XA-1; Wed, 02 Nov 2022 10:06:45 -0400
-X-MC-Unique: U6o1joxmMCWUkblnu6F1XA-1
-Received: by mail-ej1-f72.google.com with SMTP id ho8-20020a1709070e8800b0078db5e53032so9932434ejc.9
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 07:06:45 -0700 (PDT)
+        with ESMTP id S231278AbiKBO24 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 10:28:56 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A411A2A704;
+        Wed,  2 Nov 2022 07:28:52 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id y69so26719701ede.5;
+        Wed, 02 Nov 2022 07:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JN9e6KnO28jwqscnNvWI6DFGM8wjQ/Z+ADfn8tI1rrU=;
+        b=cXi1du0jLioRrdro2Mry3RZROvpWveZLs8DPOyXerdCZf6h6nZD0lf6u1zu/YVq31h
+         j8Vss8GXlGDyZQqG0Na4QOK0eomYRW9p08zUDzOpLte/26uETzBysY37ACu2tovmqzPd
+         X5jsSdBPrJqtA4eLd6m9+H/QRjweSmCKcKxJeDo/dtmeETXf+1Db9u6HdWus93fbZY3W
+         2v6o65DYAb06bXGEb5X/3/T5mF/KKz0tU5eLW2nXPQeQQssOktOmB8KeSgN+5IaM2cif
+         n+LTx5th6PvvsN75OJx7FAr6Or/h0+WK23Fn0XpOSy94EE8/9PNgCgbb5Q+FRlNJGGuk
+         2TFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jf4Id8JS47B7k+3UyTqzVbwapS6kaSdZwlME3DJWj8=;
-        b=t8OjZhMVitHERuwlIkvUwhPv7Zbb9bbfvnWBQs0ma/BuGb4RHZSEy/MGCqY05nHgKI
-         qG3wZtIONfFPrWrsQ4yuG4LIphn8KciKfxsR0H7qCSr+JnAf8mnT+Sfk6oq4CBoAV42p
-         jRQjdO+7Zliroupvwo2GbGsMgCAJf19BzhJL11D5oV32gE10K4t2uuemcnREwk5BNIaD
-         YvCcvLPg8F8fol1ucOhxnnExL9QJAWu3YHT2iBehHZ4xqsVUwdgd1m6hS9GkcIywwM2a
-         n9sFFsaEnoVtuINeBlSr0t6MI07XVeLu3wasr1rOorpV7gzkluvReeIVTUNi+TFQvhm/
-         Rk0w==
-X-Gm-Message-State: ACrzQf3+hVsCpwJTCC9Xs0Z/jYjtkXUuPsLLusn5DvK9rFiOkKm8e2pZ
-        2qos9XgmzFahAL8JvOvHtABsrnLwjJpEzbPA7+4IzDDz73q+mFWZbNIT5Ik1Fa9VS0Vd/OIINww
-        MPuV8a72bvuxo
-X-Received: by 2002:a17:906:eecb:b0:73c:5bcb:8eb3 with SMTP id wu11-20020a170906eecb00b0073c5bcb8eb3mr24267396ejb.284.1667398004323;
-        Wed, 02 Nov 2022 07:06:44 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4Tj2FaxU3roPtMp95VNAskvSpB86ZGmAP7J3JbRyK9bWHjEuushbYOKSfv/6bTQnP1PveiZw==
-X-Received: by 2002:a17:906:eecb:b0:73c:5bcb:8eb3 with SMTP id wu11-20020a170906eecb00b0073c5bcb8eb3mr24267358ejb.284.1667398004086;
-        Wed, 02 Nov 2022 07:06:44 -0700 (PDT)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id f14-20020a056402150e00b004610899742asm5799369edw.13.2022.11.02.07.06.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Nov 2022 07:06:43 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <48ba6e77-1695-50b3-b27f-e82750ee70bb@redhat.com>
-Date:   Wed, 2 Nov 2022 15:06:41 +0100
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JN9e6KnO28jwqscnNvWI6DFGM8wjQ/Z+ADfn8tI1rrU=;
+        b=2A3FdV2Jg23CmyDJYHqzdw+cmZX1wkVwtn+ujYv++AI/DFbSMo1JpsOct6euewlbeg
+         JBoMDAzOJUr4WtlrbM/xZuoMRVsm0Hts+XSXQmUmLmeFC8XvR3AuV5RwERvqA8s/j9CA
+         yMvFOzrLu/SpU4NNoBWcOR2G8MpvIMrALBaFpHsihczUSZ4vKL5xUSQKu7ddMXXT5M1D
+         Xadyo3dtDb0QnXVvyXziKDb+7O44AjYi/KLHVSoAs8oEZqos1I8snTDvI0N2SCt5Kf9G
+         /yNlPOQbzP5Pa5v6uKJX9coXMBOLijhTDqabOayrEomN3M+OiwioUd5Vw+1nVXFpnZ0R
+         11sA==
+X-Gm-Message-State: ACrzQf1Z1G6xUqRJhsAF0us9h+qjWohX4LvMk5GhInQZBXDQNnPkULnk
+        tLmn7zJJ61OFKoWcm8mSmRUyhvDmGUobvg==
+X-Google-Smtp-Source: AMsMyM56KVIWrxndO7Iw7G/EJqZjqfE4f1bezoOgvKn27JAwbOIAkXkMrCk3OX5AqIagDmjBX/0O0g==
+X-Received: by 2002:a05:6402:2a03:b0:463:11e7:cd5f with SMTP id ey3-20020a0564022a0300b0046311e7cd5fmr21575119edb.274.1667399331132;
+        Wed, 02 Nov 2022 07:28:51 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id u9-20020a1709061da900b0079800b81709sm5470994ejh.219.2022.11.02.07.28.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Nov 2022 07:28:50 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 2 Nov 2022 15:28:47 +0100
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andrii@kernel.org, ast@kernel.org, bpf <bpf@vger.kernel.org>,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, martin.lau@linux.dev, sdf@google.com,
+        song@kernel.org, yhs@fb.com
+Subject: Re: WARNING in bpf_bprintf_prepare
+Message-ID: <Y2J+n7SqmtfyA7ZM@krava>
+References: <CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com>
+ <Y1pqWPRmP0M+hcXf@krava>
+ <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Cc:     brouer@redhat.com,
-        "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
-        "anatoly.burakov@intel.com" <anatoly.burakov@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "Deric, Nemanja" <nemanja.deric@siemens.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "Kiszka, Jan" <jan.kiszka@siemens.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "willemb@google.com" <willemb@google.com>,
-        "ast@kernel.org" <ast@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "mtahhan@redhat.com" <mtahhan@redhat.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "haoluo@google.com" <haoluo@google.com>,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Subject: Re: [xdp-hints] Re: [RFC bpf-next 0/5] xdp: hints via kfuncs
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>
-References: <20221027200019.4106375-1-sdf@google.com>
- <635bfc1a7c351_256e2082f@john.notmuch> <20221028110457.0ba53d8b@kernel.org>
- <CAKH8qBshi5dkhqySXA-Rg66sfX0-eTtVYz1ymHfBxSE=Mt2duA@mail.gmail.com>
- <635c62c12652d_b1ba208d0@john.notmuch> <20221028181431.05173968@kernel.org>
- <5aeda7f6bb26b20cb74ef21ae9c28ac91d57fae6.camel@siemens.com>
- <875yg057x1.fsf@toke.dk>
- <CAKH8qBvQbgE=oSZoH4xiLJmqMSXApH-ufd-qEKGKD8=POfhrWQ@mail.gmail.com>
- <77b115a0-bbba-48eb-89bd-3078b5fb7eeb@linux.dev>
- <CAKH8qBsGB1G60cu91Au816gsB2zF8T0P-yDwxbTEOxX0TN3WgA@mail.gmail.com>
- <0c00ba33-f37b-dfe6-7980-45920ffa273b@linux.dev>
-In-Reply-To: <0c00ba33-f37b-dfe6-7980-45920ffa273b@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 01/11/2022 18.05, Martin KaFai Lau wrote:
-> On 10/31/22 6:59 PM, Stanislav Fomichev wrote:
->> On Mon, Oct 31, 2022 at 3:57 PM Martin KaFai Lau 
->> <martin.lau@linux.dev> wrote:
->>>
->>> On 10/31/22 10:00 AM, Stanislav Fomichev wrote:
->>>>> 2. AF_XDP programs won't be able to access the metadata without 
->>>>> using a
->>>>> custom XDP program that calls the kfuncs and puts the data into the
->>>>> metadata area. We could solve this with some code in libxdp, 
->>>>> though; if
->>>>> this code can be made generic enough (so it just dumps the available
->>>>> metadata functions from the running kernel at load time), it may be
->>>>> possible to make it generic enough that it will be forward-compatible
->>>>> with new versions of the kernel that add new fields, which should
->>>>> alleviate Florian's concern about keeping things in sync.
->>>>
->>>> Good point. I had to convert to a custom program to use the kfuncs :-(
->>>> But your suggestion sounds good; maybe libxdp can accept some extra
->>>> info about at which offset the user would like to place the metadata
->>>> and the library can generate the required bytecode?
->>>>
->>>>> 3. It will make it harder to consume the metadata when building 
->>>>> SKBs. I
->>>>> think the CPUMAP and veth use cases are also quite important, and that
->>>>> we want metadata to be available for building SKBs in this path. Maybe
->>>>> this can be resolved by having a convenient kfunc for this that can be
->>>>> used for programs doing such redirects. E.g., you could just call
->>>>> xdp_copy_metadata_for_skb() before doing the bpf_redirect, and that
->>>>> would recursively expand into all the kfunc calls needed to extract 
->>>>> the
->>>>> metadata supported by the SKB path?
->>>>
->>>> So this xdp_copy_metadata_for_skb will create a metadata layout that
->>>
->>> Can the xdp_copy_metadata_for_skb be written as a bpf prog itself?
->>> Not sure where is the best point to specify this prog though.  
->>> Somehow during
->>> bpf_xdp_redirect_map?
->>> or this prog belongs to the target cpumap and the xdp prog 
->>> redirecting to this
->>> cpumap has to write the meta layout in a way that the cpumap is 
->>> expecting?
->>
->> We're probably interested in triggering it from the places where xdp
->> frames can eventually be converted into skbs?
->> So for plain 'return XDP_PASS' and things like bpf_redirect/etc? (IOW,
->> anything that's not XDP_DROP / AF_XDP redirect).
->> We can probably make it magically work, and can generate
->> kernel-digestible metadata whenever data == data_meta, but the
->> question - should we?
->> (need to make sure we won't regress any existing cases that are not
->> relying on the metadata)
+On Thu, Oct 27, 2022 at 07:45:16PM +0800, Hao Sun wrote:
+> Jiri Olsa <olsajiri@gmail.com> 于2022年10月27日周四 19:24写道：
+> >
+> > On Thu, Oct 27, 2022 at 10:27:28AM +0800, Hao Sun wrote:
+> > > Hi,
+> > >
+> > > The following warning can be triggered with the C reproducer in the link.
+> > > Syzbot also reported this several days ago, Jiri posted a patch that
+> > > uses bpf prog `active` field to fix this by 05b24ff9b2cfab (bpf:
+> > > Prevent bpf program recursion...) according to syzbot dashboard
+> > > (https://syzkaller.appspot.com/bug?id=179313fb375161d50a98311a28b8e2fc5f7350f9).
+> > > But this warning can still be triggered on 247f34f7b803
+> > > (Linux-v6.1-rc2) that already merged the patch, so it seems that this
+> > > still is an issue.
+> > >
+> > > HEAD commit: 247f34f7b803 Linux 6.1-rc2
+> > > git tree: upstream
+> > > console output: https://pastebin.com/raw/kNw8JCu5
+> > > kernel config: https://pastebin.com/raw/sE5QK5HL
+> > > C reproducer: https://pastebin.com/raw/X96ASi27
+> >
+> > hi,
+> > right, that fix addressed that issue for single bpf program,
+> > and it won't prevent if there are multiple programs hook on
+> > contention_begin tracepoint and calling bpf_trace_printk,
+> >
+> > I'm not sure we can do something there.. will check
+> >
+> > do you run just the reproducer, or you load the server somehow?
+> > I cannot hit the issue so far
+> >
 > 
-> Instead of having some kernel-digestible meta data, how about calling 
-> another bpf prog to initialize the skb fields from the meta area after 
-> __xdp_build_skb_from_frame() in the cpumap, so 
-> run_xdp_set_skb_fileds_from_metadata() may be a better name.
+> Hi,
 > 
+> Last email has format issues, resend it here.
+> 
+> I built the kernel with the config in the link, which contains
+> “CONFIG_CMDLINE="earlyprintk=serial net.ifnames=0
+> sysctl.kernel.hung_task_all_cpu_backtrace=1 panic_on_warn=1 …”, and
+> boot the kernel with normal qemu setup and then the warning can be
+> triggered by executing the reproducer.
+> 
+> Also, I’m willing to test the proposed patch if any.
 
-I very much like this idea of calling another bpf prog to initialize the
-SKB fields from the meta area. (As a reminder, data need to come from
-meta area, because at this point the hardware RX-desc is out-of-scope).
-I'm onboard with xdp_copy_metadata_for_skb() populating the meta area.
+fyi I reproduced that.. will check if we can do anything about that
 
-We could invoke this BPF-prog inside __xdp_build_skb_from_frame().
-
-We might need a new BPF_PROG_TYPE_XDP2SKB as this new BPF-prog
-run_xdp_set_skb_fields_from_metadata() would need both xdp_buff + SKB as
-context inputs. Right?  (Not sure, if this is acceptable with the BPF
-maintainers new rules)
-
-> The xdp_prog@rx sets the meta data and then redirect.  If the 
-> xdp_prog@rx can also specify a xdp prog to initialize the skb fields 
-> from the meta area, then there is no need to have a kfunc to enforce a 
-> kernel-digestible layout.  Not sure what is a good way to specify this 
-> xdp_prog though...
-
-The challenge of running this (BPF_PROG_TYPE_XDP2SKB) BPF-prog inside
-__xdp_build_skb_from_frame() is that it need to know howto decode the
-meta area for every device driver or XDP-prog populating this (as veth
-and cpumap can get redirected packets from multiple device drivers).
-Sure, using a common function/helper/macro like
-xdp_copy_metadata_for_skb() could help reduce this multiplexing, but we
-want to have maximum flexibility to extend this without having to update
-the kernel, right.
-
-Fortunately __xdp_build_skb_from_frame() have a net_device parameter,
-that points to the device is was received on (xdp_frame->dev_rx).
-Thus, we could extend net_device and add this BPF-prog on a per
-net_device basis.  This could function as a driver BPF-prog callback
-that populates the SKB fields from the XDP meta data.
-Is this a good or bad idea?
-
-
->>>> the kernel will be able to understand when converting back to skb?
->>>> IIUC, the xdp program will look something like the following:
->>>>
->>>> if (xdp packet is to be consumed by af_xdp) {
->>>>     // do a bunch of bpf_xdp_metadata_<metadata> calls and assemble 
->>>> your
->>>> own metadata layout
->>>>     return bpf_redirect_map(xsk, ...);
->>>> } else {
->>>>     // if the packet is to be consumed by the kernel
->>>>     xdp_copy_metadata_for_skb(ctx);
->>>>     return bpf_redirect(...);
->>>> }
->>>>
->>>> Sounds like a great suggestion! xdp_copy_metadata_for_skb can maybe
->>>> put some magic number in the first byte(s) of the metadata so the
->>>> kernel can check whether xdp_copy_metadata_for_skb has been called
->>>> previously (or maybe xdp_frame can carry this extra signal, idk).
-
-I'm in favor of adding a flag bit to xdp_frame to signal this.
-In __xdp_build_skb_from_frame() we could check this flag signal and then
-invoke the BPF-prog type BPF_PROG_TYPE_XDP2SKB.
-
---Jesper
-
+thanks,
+jirka
