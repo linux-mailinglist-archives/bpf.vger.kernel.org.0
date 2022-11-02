@@ -2,64 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17845615B6C
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 05:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25015615B83
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 05:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiKBE2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 00:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
+        id S229534AbiKBEen (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 00:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbiKBE1z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 00:27:55 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DED42496B
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 21:27:54 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id o70so19770311yba.7
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 21:27:54 -0700 (PDT)
+        with ESMTP id S229496AbiKBEem (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 00:34:42 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52851FCFF;
+        Tue,  1 Nov 2022 21:34:38 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-12c8312131fso19141391fac.4;
+        Tue, 01 Nov 2022 21:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fMRUmAr79mhf65R3r3CTqFdQA1gI3MmG4TA4Iq1Mxog=;
-        b=cPFC1Q0Jchcu9Gb/9jpSZ2rILmIQvFj7BEqMbVp0umpAFjI/+0GXjGwL1icgjpaV/g
-         buteaKvrbSHRt9NUEq2sW3Jg4o8hsXxyZdKLqUbdzJIrxAbFRdY4dAQ2QvEvmLiwGTD4
-         N6DVTgthxYnPaD/5nV/TpwdKaHGBpHefpyJAhRz5LtCVQXAPMyuEyaxXW+af/LAquKuy
-         O0AZVkfFAFCgG/FRGQNeBk43VDrOuf9IckJgIF1ywli1l6n2z+hJXBaqKw9vFLLmNjmi
-         v9Js+Bu8IeKE9Si7exNxD+USuca0EILYkD1x6WCxDR6ubUa0HLOU2tGu5Qi4ljAeASK9
-         MnrA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wS4tDVH6GZmAdKGIIk3ZJCdxVz/QayrTgx7P0+QvSDQ=;
+        b=JBn2HQsWqL1sGyMrJyn9uFKGUMvwv3p8LDfXTthatPO9Hxs10vqm8iUnqF8Ip1EDxC
+         xkHwLOTyxdL1OB3K02msS3vVdXWFWiVDDmCyb/bPlf4tJIeIoTWt+P4a7pDG3v0ZNcM4
+         rdRtUuNYlY6gajjNcMP3yeGvQGlZUxLBtwpHbWMkQM7clwylKzbT4yOg7Hc40btFv31w
+         ar1HIinuTpTrMHRbuIO6cqcws6ISKXxJLrNC3ND0eyvpYNgdnsFIcEs9mYhnqyBMNubw
+         wCKiHF8d6V2OtItxcgkuOFSUxkYWKG6/YwQVwe1XPzVZc7BNE+NGQVp+YctsG3Ol0DsP
+         GzNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fMRUmAr79mhf65R3r3CTqFdQA1gI3MmG4TA4Iq1Mxog=;
-        b=yK2Sep5ycpffGMjibr3mTRooKD+diaojVX338Rpg7b/5po2ExAFl9GBqqpAlgdEkaI
-         nZVMGkA4yT+Hjdg3wf5p0jQHK3hBdTl/fHBcmJHOOa9cuxGXGZgIAkurMcnnSxeV2hBW
-         Hb7rHVqIuMhjcjxiGyaFMTIZVg/5c+UF8H6GTLxzp4EWbND3+2PM2ckmd/EaGu1R7X8y
-         7PEzJRzzfZNCag640+Kmpqk/7PL37fH6QIXts7VqaupoWCbTSmexcqRPKlrqG7JaigQG
-         PV749CETDkStZWttM2xZB9RuHdI4oxyDYGXxVvnYCa8Z237nuHCHNQdPXpxpwVQgPzfs
-         WoBg==
-X-Gm-Message-State: ACrzQf0jZM+jm7QkRrTPuy6BqCmaREs3+mrX5sSB1HReqSJKo8bTB1/h
-        SMPMx74yzIToEaAei9mdCMkiMZuSgbeE8024qoDbXw==
-X-Google-Smtp-Source: AMsMyM44kU871oUxZPoc03xn+TmZq+NKDSwkW+arkCqFM/EoV1M/i3I6vzhuoE/MvnBYO3y9i/AfiEEG4PSqKvjA0Z8=
-X-Received: by 2002:a25:6647:0:b0:6cb:8601:238a with SMTP id
- z7-20020a256647000000b006cb8601238amr20885797ybm.598.1667363273106; Tue, 01
- Nov 2022 21:27:53 -0700 (PDT)
+        bh=wS4tDVH6GZmAdKGIIk3ZJCdxVz/QayrTgx7P0+QvSDQ=;
+        b=AgppsH7kTIk9lM51ciOmoQYaHUksBov1rIlcM3PIFGbrpSe0dKstav4m2zP/7OnPEF
+         MhGvql0m4t/jUWVWkbSr8QvBDpfThU+gIGwIhgrYPkhHCSmcSUbY+H9Q9A4mbFMUXvlz
+         R6hsdw2M9v7oVQrWIq03I/wDmPIOkEtOhs8w0ybR97G7OjIHhdf5Ct/ZM8Rl2CxsKIo/
+         +7+UrZiJHDOmPcbXtkCbWg7c6iVhXTdQwbpkI08hWGpyIfGDAfsbCmWMc85ylj0q0dC8
+         FH62iqhPdids5TOZKlTq7DTDGb6efvi7raU/ngULwbndq+uqUVJkigSEOiMFY8UXAIDl
+         qJSQ==
+X-Gm-Message-State: ACrzQf3GyQmsgF4orcWg3oIK260eZJxMNFb0vKpW4ackqM2irc3pXrIV
+        zSafZdrcHsmVozvGwMWMkFmrolxfK1M=
+X-Google-Smtp-Source: AMsMyM4iejsXHD7L8NmT0gnwrxrbpR1FJIaSTpyCnpK9IN/80lBRuqQvaYQ8k94X8FNOGUr6qkKY1Q==
+X-Received: by 2002:a05:6870:e609:b0:137:de59:4526 with SMTP id q9-20020a056870e60900b00137de594526mr13008103oag.0.1667363676960;
+        Tue, 01 Nov 2022 21:34:36 -0700 (PDT)
+Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:d033:e63d:a624:eb65])
+        by smtp.gmail.com with ESMTPSA id g10-20020a4a250a000000b00480fd5b0d6bsm1882459ooa.22.2022.11.01.21.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Nov 2022 21:34:36 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [Patch bpf v2] sock_map: move cancel_work_sync() out of sock lock
+Date:   Tue,  1 Nov 2022 21:34:17 -0700
+Message-Id: <20221102043417.279409-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <1667361274-2621-1-git-send-email-wangyufen@huawei.com>
-In-Reply-To: <1667361274-2621-1-git-send-email-wangyufen@huawei.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 1 Nov 2022 21:27:42 -0700
-Message-ID: <CANn89i+cNjUH8pR0-QTdWM09G8ZfX_gzDqOY6ecyY4igDwrYaQ@mail.gmail.com>
-Subject: Re: [PATCH net] net: Fix memory leaks of napi->rx_list
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, ecree@solarflare.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,92 +70,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 8:34 PM Wang Yufen <wangyufen@huawei.com> wrote:
->
-> kmemleak reports after running test_progs:
->
-> unreferenced object 0xffff8881b1672dc0 (size 232):
->   comm "test_progs", pid 394388, jiffies 4354712116 (age 841.975s)
->   hex dump (first 32 bytes):
->     e0 84 d7 a8 81 88 ff ff 80 2c 67 b1 81 88 ff ff  .........,g.....
->     00 40 c5 9b 81 88 ff ff 00 00 00 00 00 00 00 00  .@..............
->   backtrace:
->     [<00000000c8f01748>] napi_skb_cache_get+0xd4/0x150
->     [<0000000041c7fc09>] __napi_build_skb+0x15/0x50
->     [<00000000431c7079>] __napi_alloc_skb+0x26e/0x540
->     [<000000003ecfa30e>] napi_get_frags+0x59/0x140
->     [<0000000099b2199e>] tun_get_user+0x183d/0x3bb0 [tun]
->     [<000000008a5adef0>] tun_chr_write_iter+0xc0/0x1b1 [tun]
->     [<0000000049993ff4>] do_iter_readv_writev+0x19f/0x320
->     [<000000008f338ea2>] do_iter_write+0x135/0x630
->     [<000000008a3377a4>] vfs_writev+0x12e/0x440
->     [<00000000a6b5639a>] do_writev+0x104/0x280
->     [<00000000ccf065d8>] do_syscall_64+0x3b/0x90
->     [<00000000d776e329>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> The issue occurs in the following scenarios:
-> tun_get_user()
->   napi_gro_frags()
->     napi_frags_finish()
->       case GRO_NORMAL:
->         gro_normal_one()
->           list_add_tail(&skb->list, &napi->rx_list);
->           <-- While napi->rx_count < READ_ONCE(gro_normal_batch),
->           <-- gro_normal_list() is not called, napi->rx_list is not empty
-> ...
-> netif_napi_del()
->   __netif_napi_del()
->   <-- &napi->rx_list is not empty, which caused memory leaks
->
-> To fix, add flush_rx_list() to free skbs in napi->rx_list.
->
-> Fixes: 323ebb61e32b ("net: use listified RX for handling GRO_NORMAL skbs")
+From: Cong Wang <cong.wang@bytedance.com>
 
-I do not think the bug is there.
+Stanislav reported a lockdep warning, which is caused by the
+cancel_work_sync() called inside sock_map_close(), as analyzed
+below by Jakub:
 
-Most likely tun driver is buggy.
+psock->work.func = sk_psock_backlog()
+  ACQUIRE psock->work_mutex
+    sk_psock_handle_skb()
+      skb_send_sock()
+        __skb_send_sock()
+          sendpage_unlocked()
+            kernel_sendpage()
+              sock->ops->sendpage = inet_sendpage()
+                sk->sk_prot->sendpage = tcp_sendpage()
+                  ACQUIRE sk->sk_lock
+                    tcp_sendpage_locked()
+                  RELEASE sk->sk_lock
+  RELEASE psock->work_mutex
 
-It does not follow the correct napi protocol.
+sock_map_close()
+  ACQUIRE sk->sk_lock
+  sk_psock_stop()
+    sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED)
+    cancel_work_sync()
+      __cancel_work_timer()
+        __flush_work()
+          // wait for psock->work to finish
+  RELEASE sk->sk_lock
 
-It feeds packets to GRO, but does not ever ask to complete the work.
+We can move the cancel_work_sync() out of the sock lock protection,
+but still before saved_close() was called.
 
-More sanity work is needed in tun, not in GRO layer.
+Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+Reported-by: Stanislav Fomichev <sdf@google.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ include/linux/skmsg.h | 2 +-
+ net/core/skmsg.c      | 7 ++-----
+ net/core/sock_map.c   | 7 ++++---
+ 3 files changed, 7 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 48f4b645193b..70d6cb94e580 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -376,7 +376,7 @@ static inline void sk_psock_report_error(struct sk_psock *psock, int err)
+ }
+ 
+ struct sk_psock *sk_psock_init(struct sock *sk, int node);
+-void sk_psock_stop(struct sk_psock *psock, bool wait);
++void sk_psock_stop(struct sk_psock *psock);
+ 
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+ int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock);
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 1efdc47a999b..e6b9ced3eda8 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -803,16 +803,13 @@ static void sk_psock_link_destroy(struct sk_psock *psock)
+ 	}
+ }
+ 
+-void sk_psock_stop(struct sk_psock *psock, bool wait)
++void sk_psock_stop(struct sk_psock *psock)
+ {
+ 	spin_lock_bh(&psock->ingress_lock);
+ 	sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
+ 	sk_psock_cork_free(psock);
+ 	__sk_psock_zap_ingress(psock);
+ 	spin_unlock_bh(&psock->ingress_lock);
+-
+-	if (wait)
+-		cancel_work_sync(&psock->work);
+ }
+ 
+ static void sk_psock_done_strp(struct sk_psock *psock);
+@@ -850,7 +847,7 @@ void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
+ 		sk_psock_stop_verdict(sk, psock);
+ 	write_unlock_bh(&sk->sk_callback_lock);
+ 
+-	sk_psock_stop(psock, false);
++	sk_psock_stop(psock);
+ 
+ 	INIT_RCU_WORK(&psock->rwork, sk_psock_destroy);
+ 	queue_rcu_work(system_wq, &psock->rwork);
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index a660baedd9e7..81beb16ab1eb 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1596,7 +1596,7 @@ void sock_map_destroy(struct sock *sk)
+ 	saved_destroy = psock->saved_destroy;
+ 	sock_map_remove_links(sk, psock);
+ 	rcu_read_unlock();
+-	sk_psock_stop(psock, false);
++	sk_psock_stop(psock);
+ 	sk_psock_put(sk, psock);
+ 	saved_destroy(sk);
+ }
+@@ -1619,9 +1619,10 @@ void sock_map_close(struct sock *sk, long timeout)
+ 	saved_close = psock->saved_close;
+ 	sock_map_remove_links(sk, psock);
+ 	rcu_read_unlock();
+-	sk_psock_stop(psock, true);
+-	sk_psock_put(sk, psock);
++	sk_psock_stop(psock);
+ 	release_sock(sk);
++	cancel_work_sync(&psock->work);
++	sk_psock_put(sk, psock);
+ 	saved_close(sk, timeout);
+ }
+ EXPORT_SYMBOL_GPL(sock_map_close);
+-- 
+2.34.1
 
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> ---
->  net/core/dev.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 3be2560..de3bc9c 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6461,6 +6461,16 @@ static void flush_gro_hash(struct napi_struct *napi)
->         }
->  }
->
-> +static void flush_rx_list(struct napi_struct *napi)
-> +{
-> +       struct sk_buff *skb, *next;
-> +
-> +       list_for_each_entry_safe(skb, next, &napi->rx_list, list) {
-> +               skb_list_del_init(skb);
-> +               kfree_skb(skb);
-> +       }
-> +}
-> +
->  /* Must be called in process context */
->  void __netif_napi_del(struct napi_struct *napi)
->  {
-> @@ -6471,6 +6481,7 @@ void __netif_napi_del(struct napi_struct *napi)
->         list_del_rcu(&napi->dev_list);
->         napi_free_frags(napi);
->
-> +       flush_rx_list(napi);
->         flush_gro_hash(napi);
->         napi->gro_bitmask = 0;
->
-> --
-> 1.8.3.1
->
