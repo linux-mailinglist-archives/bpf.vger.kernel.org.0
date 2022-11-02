@@ -2,168 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930DE616D5F
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 20:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D4C616DFE
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 20:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbiKBTGV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 15:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S229640AbiKBTu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 15:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbiKBTGT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 15:06:19 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45CB3BB;
-        Wed,  2 Nov 2022 12:06:18 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id f27so47862569eje.1;
-        Wed, 02 Nov 2022 12:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XXEVk8RjcP4SkdkjqLG5jpNr6DU98zef4V41f5hG5Rk=;
-        b=etsfG+XsnmbKzS6zmHQnIS6e6MRlQmFOfua0HwT4tUOCvZZKtwgDnqiGEOa0x3xlhv
-         Oc58VZNvTWk4dRTMIx9OXWNgEpcBDHf7B9o6oaxk597TCOlaKWAE95fnWZxbK3T+/kSF
-         xblmW2nLl3EnDDQauhYvvJjmbJEu5iqHc9iecf9ncrAC8140JHH9and+BxoQd7Ajhw60
-         pBOti0tYGobL5//9aIRojffDlF3NvggHSr7S3bbd+4ABYNs1Ttiljo9OIACFhg792g1L
-         lZM10AeFmJAegpwm5Z1tVkb54qev7upJJw+D4H1AKD436U1PrkR9iskKm+EYcGHuSeFe
-         9D0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XXEVk8RjcP4SkdkjqLG5jpNr6DU98zef4V41f5hG5Rk=;
-        b=TUVPrK+b0Rva/iLXAJHfdO8kfHuRXdoX4hVvvZBnaHz470ifNPf1jWj80JjG1Luz2H
-         gKOMQh3G40NViWEJ6XjiDzv8EESD7bA42wePXOuLd6u4j0SrzNMW8bh5ej8POG9b4vAv
-         utaoXROxOPSyXq2jRAJpt8Id1iczrutkblhMMh0FpRyNWdyLQWAhoZOIR1G9H9vvdEq7
-         lDkcB0U2yyM26V+VuraBIsWd5uf/ajPwihbhEfrGYcZdjy0qIpDPnz+5I5MDuKK3+WKd
-         tGkUoU0Luz1h6k88EZnV6JvVcBTKZjOVp7WYhCXKLhue4se9QutwuuYTcMmV1gj1GMNb
-         llSQ==
-X-Gm-Message-State: ACrzQf0X50cgfEVjCJDw+tp7NuVVspwoPm+3yCznOwSYQi0fbzmXNYkO
-        S9kq1JPlFJnXC6yWJ6YIj/QliG/znd1r4OUyUelXleB3
-X-Google-Smtp-Source: AMsMyM6jpU2mnUc4AUyn706jlluVnOEUeRttLf/rvpPy1/dDxpiMlc/26NYoU7la4j8plCcHYeV1o+uanCgLWWhcAiA=
-X-Received: by 2002:a17:907:9705:b0:7ad:b14f:d89e with SMTP id
- jg5-20020a170907970500b007adb14fd89emr24016482ejc.745.1667415977091; Wed, 02
- Nov 2022 12:06:17 -0700 (PDT)
+        with ESMTP id S229547AbiKBTu2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 15:50:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F77E0EC;
+        Wed,  2 Nov 2022 12:50:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FF7F61BB2;
+        Wed,  2 Nov 2022 19:50:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 94904C433D7;
+        Wed,  2 Nov 2022 19:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667418626;
+        bh=f7hyN8uMWR9JNUrhh7YAT+bUNDnqx/5h9w+EU16t4pg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lmYt6ndPFyzH37zKSnOnfBQqRwnLIj5VRJQr2xmr74/s/ObEqoAnmnBrAMzM/FrIk
+         Kh2jH8g2RxdoVdYfnfF1nmEMxdK/E+dTdqXmoCl+cB0+h0+/5IkLR9RHvpNZL8z+0e
+         uJlMAx3mkZQyeGdYV44idndsqHrsyRM837ixru5NYDTrNCc8oy28htMEWRbmTt/5Aw
+         RBhCApydE52598dgN891h6QXULG1aCUeXI6X+pyL69Obzsko7EUSBWw+RHHHJ5ow7h
+         6NXOdyui3jryWyyLq2afORFFSk80ESYsfXw6MHJ6V5B/4iY+/JFTMYbxXHAzogk4At
+         4njdEqMEkkMBg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6C0B6E270D5;
+        Wed,  2 Nov 2022 19:50:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1666934520-22509-1-git-send-email-wangyufen@huawei.com> <CAEf4BzYpsxmmu48YKvWMuAgNp-H+CaEGChAet6DvWCLTcs61Zg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYpsxmmu48YKvWMuAgNp-H+CaEGChAet6DvWCLTcs61Zg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Nov 2022 12:06:04 -0700
-Message-ID: <CAEf4BzZv+4Ykce-fc_G4Xyrm6qMaEQNr1mjs5Ya1fo3ibeis4w@mail.gmail.com>
-Subject: Re: [PATCH net v2] bpf: Fix memory leaks in __check_func_call
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev, yhs@fb.com, joe@wand.net.nz
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2022-11-02
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166741862642.19739.7056656158057973602.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Nov 2022 19:50:26 +0000
+References: <20221102062120.5724-1-daniel@iogearbox.net>
+In-Reply-To: <20221102062120.5724-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 2, 2022 at 12:05 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Oct 27, 2022 at 10:01 PM Wang Yufen <wangyufen@huawei.com> wrote:
-> >
-> > kmemleak reports this issue:
-> >
-> > unreferenced object 0xffff88817139d000 (size 2048):
-> >   comm "test_progs", pid 33246, jiffies 4307381979 (age 45851.820s)
-> >   hex dump (first 32 bytes):
-> >     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >   backtrace:
-> >     [<0000000045f075f0>] kmalloc_trace+0x27/0xa0
-> >     [<0000000098b7c90a>] __check_func_call+0x316/0x1230
-> >     [<00000000b4c3c403>] check_helper_call+0x172e/0x4700
-> >     [<00000000aa3875b7>] do_check+0x21d8/0x45e0
-> >     [<000000001147357b>] do_check_common+0x767/0xaf0
-> >     [<00000000b5a595b4>] bpf_check+0x43e3/0x5bc0
-> >     [<0000000011e391b1>] bpf_prog_load+0xf26/0x1940
-> >     [<0000000007f765c0>] __sys_bpf+0xd2c/0x3650
-> >     [<00000000839815d6>] __x64_sys_bpf+0x75/0xc0
-> >     [<00000000946ee250>] do_syscall_64+0x3b/0x90
-> >     [<0000000000506b7f>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >
-> > The root case here is: In function prepare_func_exit(), the callee is
-> > not released in the abnormal scenario after "state->curframe--;". To
-> > fix, move "state->curframe--;" to the very bottom of the function,
-> > right when we free callee and reset frame[] pointer to NULL, as Andrii
-> > suggested.
-> >
-> > In addition, function __check_func_call() has a similar problem. In
-> > the abnormal scenario before "state->curframe++;", the callee is alse
-> > not released.
-> >
-> > Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-> > Fixes: fd978bf7fd31 ("bpf: Add reference tracking to verifier")
-> > Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> > ---
->
-> This change seems to be breaking BPF selftests quite badly, please
-> check what's going on ([0]):
->
->   [0] https://github.com/kernel-patches/bpf/actions/runs/3379444311/jobs/5611599540
->
+Hello:
 
-And also please target it against bpf tree: [PATCH bpf], not net tree.
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> >  kernel/bpf/verifier.c | 11 ++++++++---
-> >  1 file changed, 8 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 014ee09..d28d460 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -6736,11 +6736,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >         /* Transfer references to the callee */
-> >         err = copy_reference_state(callee, caller);
-> >         if (err)
-> > -               return err;
-> > +               goto err_out;
-> >
-> >         err = set_callee_state_cb(env, caller, callee, *insn_idx);
-> >         if (err)
-> > -               return err;
-> > +               goto err_out;
-> >
-> >         clear_caller_saved_regs(env, caller->regs);
-> >
-> > @@ -6757,6 +6757,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >                 print_verifier_state(env, callee, true);
-> >         }
-> >         return 0;
-> > +
-> > +err_out:
-> > +       kfree(callee);
-> > +       state->frame[state->curframe + 1] = NULL;
-> > +       return err;
-> >  }
-> >
-> >  int map_set_for_each_callback_args(struct bpf_verifier_env *env,
-> > @@ -6969,7 +6974,6 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
-> >                 return -EINVAL;
-> >         }
-> >
-> > -       state->curframe--;
-> >         caller = state->frame[state->curframe];
-> >         if (callee->in_callback_fn) {
-> >                 /* enforce R0 return value range [0, 1]. */
-> > @@ -7000,6 +7004,7 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
-> >                         return err;
-> >         }
-> >
-> > +       state->curframe--;
-> >         *insn_idx = callee->callsite + 1;
-> >         if (env->log.level & BPF_LOG_LEVEL) {
-> >                 verbose(env, "returning from callee:\n");
-> > --
-> > 1.8.3.1
-> >
+On Wed,  2 Nov 2022 07:21:20 +0100 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 70 non-merge commits during the last 14 day(s) which contain
+> a total of 96 files changed, 3203 insertions(+), 640 deletions(-).
+> 
+> [...]
+
+Here is the summary with links:
+  - pull-request: bpf-next 2022-11-02
+    https://git.kernel.org/netdev/net-next/c/b54a0d4094f5
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
