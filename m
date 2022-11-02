@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754FB616E9D
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 21:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE71616EA0
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 21:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbiKBU1M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 16:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
+        id S231143AbiKBU1Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 16:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbiKBU1M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 16:27:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C46C1017
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 13:27:11 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 78so17200464pgb.13
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 13:27:11 -0700 (PDT)
+        with ESMTP id S231127AbiKBU1P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 16:27:15 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9025FA4
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 13:27:14 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id j12so17675221plj.5
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 13:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eJcqn93S4tAYEePwJLhbJs+QlSoAYe/24jf1qS9h1BI=;
-        b=ShR9ZIy0Y7Si6Hp45OQW8K6KwkSc6npylfL/FLeA3vqRY2fBaQtER3kwPI8tEEqqSw
-         2kOwE5B8h/6tJCERZYxJXbEJ+4URKrTdnN7loTY5fmUz1L0xX0Qw5MZEmX+T389ppCH9
-         9lXDH2gvi87yGEUa8HvNl5y0ds+FbT/i+bSMXXGy6hnx744hf8AWfFYf0wgYZGFIKdvU
-         PcoU6C4iCc+gg9JkNiQrWM9aKUEkPkdDJ1c5HmILlcX7jXaE2A6ttqgRhgq+CxiElFR0
-         4QHCAuTBc1VCm7H2+p3ymjYV0Ei1TIUaT0iUKL7jwDCT3MENpgrHla3P0nu6s78nGzOC
-         Bzjg==
+        bh=679rfVZbUxs6B459LaScwwW2xi+VSC4APp1SM8g6Ncc=;
+        b=DB+jsykP03wuE+/hbuMSCyTqedKfvnL6Ye32ELR1y0vNSM4jWlhlMBiXlO4EDNUefG
+         /4l1ODWHz64KVQXbPsP3oHtjXsR9NVMHrTn+A9nP8E5JB+NxdGytoDrvT9Aq7NQke4RP
+         I4D/+g+3p1Mr8hm9xFmMNUeI6IJtYy2hOqWIqSoFNNu/2iGJXUsJ6GxRE6c6oM8ca5Sk
+         BbGY4seVcSsFrCHFEZ/4428dhatVhSU3ed1KGofUe3n1Wq06VbPC8X/uHXGZAxfgJdPk
+         1k6sBNHFPNjO5uuIfJsFFw4S3I8oct3kGuTgBSswe9CkMgEIsdMcvKtUXrgtCbq053rT
+         PBmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eJcqn93S4tAYEePwJLhbJs+QlSoAYe/24jf1qS9h1BI=;
-        b=2CZCMoA8zfjWpUT0ydXSucq4rgdVbA9F/z37RQzm5mxKJYvnwrMEfc0/wQI9Lfkw6u
-         AwX3SruS4ip6FfYD5KS/rETSMJ4NyxO6qKVwQPZil6zFxdmE52MkAa+PUAXtAxHLHr1j
-         JarIAU4ThIVGuFr0QFIMub6k+fTK5o/Xtinx05VQS3rojUi4gtA5FncCTRGSy5ST2vUE
-         Ax2khj/fehYnL9a0tqnn+8oUKRMfR23QOV5hDsl5Q5fC3c9Sk9ivKkNCrw9slkZtRDES
-         ZfVDEGCYAqc/N3V0ypPYM9sIQ72IRkx0oMsNqU/zFdCHUEOjiEIURhIxD0J34X56TMYW
-         f61Q==
-X-Gm-Message-State: ACrzQf3hDu2nQk3TvGP7q2UXqH5j2GJu3hIW7aAXVrejKDqQzFnfrI1b
-        /eEn0cBOdDRWLr/KGpew+ad4NHByDR/kKQ==
-X-Google-Smtp-Source: AMsMyM5US8ndr/wFe2tCcmqhLcCPncVpqIsr8wD4/aX81mSK7erf04UmKtIqQQoHwPA4vfZhkRUBoQ==
-X-Received: by 2002:a05:6a00:24c3:b0:56c:dd9c:dab4 with SMTP id d3-20020a056a0024c300b0056cdd9cdab4mr26945058pfv.36.1667420830700;
-        Wed, 02 Nov 2022 13:27:10 -0700 (PDT)
+        bh=679rfVZbUxs6B459LaScwwW2xi+VSC4APp1SM8g6Ncc=;
+        b=GHreCKusSOrY3ech/8X7qQpjjveXXDzzF76rLCb3rZZZ09HvOWvbvwhnvLxw551L76
+         lQEv+veOj0fs9G32dmLC06Rz9pTPObpSm4HMD7uZIlxZbj7bYFlLD0rWoyWH7smg1JDc
+         MqvoIGlts/W53iYqZy5Nnt7ns2+Q8YSBcZ2Th1RtW8TSDNgU+hhpRMQHFCoBKNk+C6lV
+         Qo7MhPmiMsYyiQ3nlAyW4l2buFgWCpMhigs6m2aTr42ois4olxmTOpoIL0WdvZRiRXv7
+         RwgbiJ6fIcENpDu2OFIm5KAOoSc8PWmLJg919ztEPWiEVD7wXuLgp3nRQTAZZSDsBXW4
+         ry8Q==
+X-Gm-Message-State: ACrzQf3o+5/KtPme8tuPbEmxP6x2CJR/yWuPgIk0kW5kizLfyODasWcs
+        /431+23WD/JT9/B0LnaO4ilKfydTHd0Ezg==
+X-Google-Smtp-Source: AMsMyM7eJUjI+cSbaaAHefeEixmTEuPg+6tODwlFpOO4NAz2i9WjKldD1Nxv6GXdSshgoDjYSbXMtw==
+X-Received: by 2002:a17:90a:df91:b0:213:8a69:c504 with SMTP id p17-20020a17090adf9100b002138a69c504mr33296053pjv.82.1667420833775;
+        Wed, 02 Nov 2022 13:27:13 -0700 (PDT)
 Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id i2-20020a170902e48200b0017c37a5a2fdsm8640769ple.216.2022.11.02.13.27.10
+        by smtp.gmail.com with ESMTPSA id h7-20020a17090a604700b00205d70ccfeesm1835744pjm.33.2022.11.02.13.27.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 13:27:10 -0700 (PDT)
+        Wed, 02 Nov 2022 13:27:13 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,14 +57,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: [PATCH bpf-next v3 01/24] bpf: Document UAPI details for special BPF types
-Date:   Thu,  3 Nov 2022 01:56:35 +0530
-Message-Id: <20221102202658.963008-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 02/24] bpf: Allow specifying volatile type modifier for kptrs
+Date:   Thu,  3 Nov 2022 01:56:36 +0530
+Message-Id: <20221102202658.963008-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221102202658.963008-1-memxor@gmail.com>
 References: <20221102202658.963008-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3643; i=memxor@gmail.com; h=from:subject; bh=YJ4YYMjs69QuOCsnkDF7VGnkZjoWWMSjzzlhZWYg6kI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjYtICMJ+rIrzMLrvMdLV0/3sG/rqpFlecJHDLrPzM EnzNgzKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2LSAgAKCRBM4MiGSL8RyjwrD/ 0UhbqO9LZyGSRvyNYtjuzDHb2K56c3UXXZvtOqqqtbxBK4/+xNSYRwO5fCrT+sbHduXUx0f1BhImW8 6BqzBdPBuJwkb3i9SlUlmtONfyma8kwu4x+M24Fxvdq2jU1TsUo96TjRMJx3+yCEJkRxqrXcEOXsgv cva0eZACTedlegGEhM55bUnmhBOOZLxRkLoTY8UgBxArYAt6V93EhYEHUPnQWl1YWE6osTflcYNptr 4BVz9Jinf6KTxXfLgQNZewjO4IiVwPYzSS1tRaIhSmpim1/NwPy9gyoUmrfCebJNzRkXkhDaPLUik3 Vl+FkQgO8axO8Ms5C315xqdxJ+55k3D/tZULSfnpje1bRpTwvgaiT+udqnezPnIu1dwI6A5D+lyEqf G6imoA3uOkRcjGGbb1zDPLLq3HPZ9l/oD4JuUR9AfCVZN0BNAiOywGcassZzbb+5HUP619d1PnniwV abKTS/xpTF+aFtzu0uXXExWi7ErhCA1Cy5zHAKcnFbZ60FORMPpmj0pi7lzZSEtWOgnCOpoZeue+kn hzNU7/sFNdFmx0NOD7c72pSRJXcntEAe2Dp8k9foaayu0BLcTItltIj95MoFtFzjE2JB8xdq+6bP1Z DewE4DTy3ImMBseORJKjeKtmO0ckra/13bY78A0anJAGH72803iUxbppvz+g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1457; i=memxor@gmail.com; h=from:subject; bh=axG5JWCUjCjgtvaXzroncQ370dgLYGtaV9qCFkTtWp0=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjYtICs09qCok2GndHgo13T3/TvXzZv6eBeNIfNNpd 1vpsS0qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2LSAgAKCRBM4MiGSL8RysaYD/ wOs+dkh01+t3NA4hplzthmhBCqG6ZMZB00hbAJ6upY0FECBaWYUYpKr/bvzd+QSHokEjQ4rSIwhsMJ 0OU/vtc5psXOjuoa7hlRdkmcdgHREhIrWjLzBe0k7qwZOhSfPMYp55Rg/ahU1T1yYrOUGREq9cN9Yc C/YxmPXt4YBS6ny/BvFx/UByPmMM2DU5xHnd2L/OiFBaYCL3S8T2wzvzvLAZJ5UJKBD79WYKObbc66 2MzISjWmjwFTjkQ6jZ+BMv1if02goKfScOH8a+znamRKDaOLOXcjNYchIvcDaHQSkf/P/WgSxPcYgy D/5eymUvcgSk3N+WwJDLswk2y913WjZtJ67kuZ12iS9mK+9xft3pU99OLQYVKsOvt8psujIQOzTkEN WXtbgrUwjCtwta+z/6SKUnNH5NMwbWfYijXP0LvhGVsFvFOXhtn0J0lZ8ur4dMEF4tq3nl48zh8znD IRPdvtQAIdfIojJ17fhgW1EdDdSJ6YlM9Dn10aNTCYV1N00XxRKKYrZhQ5sbOC5/qmJS/I2hBIlREv uuqW8bfDeuQ6r795EQpNvnK30meGbwV3eNwgtS6zfYeYFUgt/fpcyx1oWT25404VyIKaRoixCYmk7W Qy7oTW+cX9EI84yqcGmYCDnictzH7nJiOjkCVYM5rT4DMyWnq1RT7c0+fTyA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,75 +77,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The kernel recognizes some special BPF types in map values or local
-kptrs. Document that only bpf_spin_lock and bpf_timer will preserve
-backwards compatibility, and kptr will preserve backwards compatibility
-for the operations on the pointer, not the types supported for such
-kptrs.
-
-For local kptrs, document that there are no stability guarantees at all.
-
-Finally, document that 'bpf_' namespace is reserved for adding future
-special fields, hence BPF programs must not declare types with such
-names in their programs and still expect backwards compatibility.
+This is useful in particular to mark the pointer as volatile, so that
+compiler treats each load and store to the field as a volatile access.
+The alternative is having to define and use READ_ONCE and WRITE_ONCE in
+the BPF program.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- Documentation/bpf/bpf_design_QA.rst | 44 +++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ include/linux/btf.h | 5 +++++
+ kernel/bpf/btf.c    | 3 +++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
-index a210b8a4df00..b5273148497c 100644
---- a/Documentation/bpf/bpf_design_QA.rst
-+++ b/Documentation/bpf/bpf_design_QA.rst
-@@ -298,3 +298,47 @@ A: NO.
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index f9aababc5d78..86aad9b2ce02 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -288,6 +288,11 @@ static inline bool btf_type_is_typedef(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_TYPEDEF;
+ }
  
- The BTF_ID macro does not cause a function to become part of the ABI
- any more than does the EXPORT_SYMBOL_GPL macro.
++static inline bool btf_type_is_volatile(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_VOLATILE;
++}
 +
-+Q: What is the compatibility story for special BPF types in map values?
-+-----------------------------------------------------------------------
-+Q: Users are allowed to embed bpf_spin_lock, bpf_timer fields in their BPF map
-+values (when using BTF support for BPF maps). This allows to use helpers for
-+such objects on these fields inside map values. Users are also allowed to embed
-+pointers to some kernel types (with __kptr and __kptr_ref BTF tags). Will the
-+kernel preserve backwards compatibility for these features?
-+
-+A: It depends. For bpf_spin_lock, bpf_timer: YES, for kptr and everything else:
-+NO, but see below.
-+
-+For struct types that have been added already, like bpf_spin_lock and bpf_timer,
-+the kernel will preserve backwards compatibility, as they are part of UAPI.
-+
-+For kptrs, they are also part of UAPI, but only with respect to the kptr
-+mechanism. The types that you can use with a __kptr and __kptr_ref tagged
-+pointer in your struct is NOT part of the UAPI contract. The supported types can
-+and will change across kernel releases. However, operations like accessing kptr
-+fields and bpf_kptr_xchg() helper will continue to be supported across kernel
-+releases for the supported types.
-+
-+For any other supported struct type, unless explicitly stated in this document
-+and added to bpf.h UAPI header, such types can and will arbitrarily change their
-+size, type, and alignment, or any other user visible API or ABI detail across
-+kernel releases. The users must adapt their BPF programs to the new changes and
-+update them to make sure their programs continue to work correctly.
-+
-+NOTE: BPF subsystem specially reserves the 'bpf_' prefix for type names, in
-+order to introduce more special fields in the future. Hence, user programs must
-+avoid defining types with 'bpf_' prefix to not be broken in future releases. In
-+other words, no backwards compatibility is guaranteed if one using a type in BTF
-+with 'bpf_' prefix.
-+
-+Q: What is the compatibility story for special BPF types in local kptrs?
-+------------------------------------------------------------------------
-+Q: Same as above, but for local kptrs (i.e. pointers to objects allocated using
-+bpf_obj_new for user defined structures). Will the kernel preserve backwards
-+compatibility for these features?
-+
-+A: NO.
-+
-+Unlike map value types, there are no stability guarantees for this case. The
-+whole local kptr API itself is unstable (since it is exposed through kfuncs).
+ static inline bool btf_type_is_func(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index eba603cec2c5..ad301e78f7ee 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3225,6 +3225,9 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 	enum bpf_kptr_type type;
+ 	u32 res_id;
+ 
++	/* Permit modifiers on the pointer itself */
++	if (btf_type_is_volatile(t))
++		t = btf_type_by_id(btf, t->type);
+ 	/* For PTR, sz is always == 8 */
+ 	if (!btf_type_is_ptr(t))
+ 		return BTF_FIELD_IGNORE;
 -- 
 2.38.1
 
