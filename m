@@ -2,52 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A4D615C48
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 07:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84150615CDD
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 08:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbiKBGZh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Nov 2022 02:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
+        id S230320AbiKBHT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 03:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbiKBGZW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 02:25:22 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D528F26135
-        for <bpf@vger.kernel.org>; Tue,  1 Nov 2022 23:25:03 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A25BQbX024205
-        for <bpf@vger.kernel.org>; Tue, 1 Nov 2022 23:25:03 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kk1vaa1gh-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 01 Nov 2022 23:25:03 -0700
-Received: from twshared16837.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        with ESMTP id S230300AbiKBHT6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 03:19:58 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E296F23164;
+        Wed,  2 Nov 2022 00:19:55 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N2J740d2TzRnx1;
+        Wed,  2 Nov 2022 15:14:56 +0800 (CST)
+Received: from [10.174.178.197] (10.174.178.197) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 1 Nov 2022 23:25:01 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id D3E5E20F58A6D; Tue,  1 Nov 2022 23:22:35 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 6/6] selftests/bpf: make test_align selftest more robust
-Date:   Tue, 1 Nov 2022 23:22:21 -0700
-Message-ID: <20221102062221.2019833-7-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221102062221.2019833-1-andrii@kernel.org>
-References: <20221102062221.2019833-1-andrii@kernel.org>
+ 15.1.2375.31; Wed, 2 Nov 2022 15:19:52 +0800
+Message-ID: <666b976a-8873-25e2-66dd-1398682c6cb7@huawei.com>
+Date:   Wed, 2 Nov 2022 15:19:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6yzs4ynQZSMGugdN_6LY6dp-TPTXzQ47
-X-Proofpoint-GUID: 6yzs4ynQZSMGugdN_6LY6dp-TPTXzQ47
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_03,2022-11-01_02,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH -next] bpf, test_run: fix alignment problem in
+ bpf_prog_test_run_skb()
+To:     Eric Dumazet <edumazet@google.com>,
+        Kees Cook <keescook@chromium.org>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
+        <song@kernel.org>, <yhs@fb.com>, <haoluo@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linux MM <linux-mm@kvack.org>, <kasan-dev@googlegroups.com>
+References: <20221101040440.3637007-1-zhongbaisong@huawei.com>
+ <eca17bfb-c75f-5db1-f194-5b00c2a0c6f2@iogearbox.net>
+ <ca6253bd-dcf4-2625-bc41-4b9a7774d895@huawei.com>
+ <20221101210542.724e3442@kernel.org> <202211012121.47D68D0@keescook>
+ <CANn89i+FVN95uvftTJteZgGQ_sSb6452XXZn0veNjHHKZ2yEFQ@mail.gmail.com>
+From:   zhongbaisong <zhongbaisong@huawei.com>
+Organization: huawei
+In-Reply-To: <CANn89i+FVN95uvftTJteZgGQ_sSb6452XXZn0veNjHHKZ2yEFQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.197]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,126 +62,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_align selftest relies on BPF verifier log emitting register states
-for specific instructions in expected format. Unfortunately, BPF
-verifier precision backtracking log interferes with such expectations.
-And instruction on which precision propagation happens sometimes don't
-output full expected register states. This does indeed look like
-something to be improved in BPF verifier, but is beyond the scope of
-this patch set.
 
-So to make test_align a bit more robust, inject few dummy R4 = R5
-instructions which capture desired state of R5 and won't have precision
-tracking logs on them. This fixes tests until we can improve BPF
-verifier output in the presence of precision tracking.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/align.c  | 38 ++++++++++++-------
- 1 file changed, 24 insertions(+), 14 deletions(-)
+On 2022/11/2 12:37, Eric Dumazet wrote:
+> On Tue, Nov 1, 2022 at 9:27 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> On Tue, Nov 01, 2022 at 09:05:42PM -0700, Jakub Kicinski wrote:
+>>> On Wed, 2 Nov 2022 10:59:44 +0800 zhongbaisong wrote:
+>>>> On 2022/11/2 0:45, Daniel Borkmann wrote:
+>>>>> [ +kfence folks ]
+>>>>
+>>>> + cc: Alexander Potapenko, Marco Elver, Dmitry Vyukov
+>>>>
+>>>> Do you have any suggestions about this problem?
+>>>
+>>> + Kees who has been sending similar patches for drivers
+>>>
+>>>>> On 11/1/22 5:04 AM, Baisong Zhong wrote:
+>>>>>> Recently, we got a syzkaller problem because of aarch64
+>>>>>> alignment fault if KFENCE enabled.
+>>>>>>
+>>>>>> When the size from user bpf program is an odd number, like
+>>>>>> 399, 407, etc, it will cause skb shard info's alignment access,
+>>>>>> as seen below:
+>>>>>>
+>>>>>> BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0
+>>>>>> net/core/skbuff.c:1032
+>>>>>>
+>>>>>> Use-after-free read at 0xffff6254fffac077 (in kfence-#213):
+>>>>>>    __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:26 [inline]
+>>>>>>    arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+>>>>>>    arch_atomic_inc include/linux/atomic-arch-fallback.h:270 [inline]
+>>>>>>    atomic_inc include/asm-generic/atomic-instrumented.h:241 [inline]
+>>>>>>    __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
+>>>>>>    skb_clone+0xf4/0x214 net/core/skbuff.c:1481
+>>>>>>    ____bpf_clone_redirect net/core/filter.c:2433 [inline]
+>>>>>>    bpf_clone_redirect+0x78/0x1c0 net/core/filter.c:2420
+>>>>>>    bpf_prog_d3839dd9068ceb51+0x80/0x330
+>>>>>>    bpf_dispatcher_nop_func include/linux/bpf.h:728 [inline]
+>>>>>>    bpf_test_run+0x3c0/0x6c0 net/bpf/test_run.c:53
+>>>>>>    bpf_prog_test_run_skb+0x638/0xa7c net/bpf/test_run.c:594
+>>>>>>    bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
+>>>>>>    __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
+>>>>>>    __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
+>>>>>>
+>>>>>> kfence-#213: 0xffff6254fffac000-0xffff6254fffac196, size=407,
+>>>>>> cache=kmalloc-512
+>>>>>>
+>>>>>> allocated by task 15074 on cpu 0 at 1342.585390s:
+>>>>>>    kmalloc include/linux/slab.h:568 [inline]
+>>>>>>    kzalloc include/linux/slab.h:675 [inline]
+>>>>>>    bpf_test_init.isra.0+0xac/0x290 net/bpf/test_run.c:191
+>>>>>>    bpf_prog_test_run_skb+0x11c/0xa7c net/bpf/test_run.c:512
+>>>>>>    bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
+>>>>>>    __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
+>>>>>>    __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
+>>>>>>    __arm64_sys_bpf+0x50/0x60 kernel/bpf/syscall.c:4381
+>>>>>>
+>>>>>> To fix the problem, we round up allocations with kmalloc_size_roundup()
+>>>>>> so that build_skb()'s use of kize() is always alignment and no special
+>>>>>> handling of the memory is needed by KFENCE.
+>>>>>>
+>>>>>> Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
+>>>>>> Signed-off-by: Baisong Zhong <zhongbaisong@huawei.com>
+>>>>>> ---
+>>>>>>    net/bpf/test_run.c | 1 +
+>>>>>>    1 file changed, 1 insertion(+)
+>>>>>>
+>>>>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>>>>>> index 13d578ce2a09..058b67108873 100644
+>>>>>> --- a/net/bpf/test_run.c
+>>>>>> +++ b/net/bpf/test_run.c
+>>>>>> @@ -774,6 +774,7 @@ static void *bpf_test_init(const union bpf_attr
+>>>>>> *kattr, u32 user_size,
+>>>>>>        if (user_size > size)
+>>>>>>            return ERR_PTR(-EMSGSIZE);
+>>>>>> +    size = kmalloc_size_roundup(size);
+>>>>>>        data = kzalloc(size + headroom + tailroom, GFP_USER);
+>>>>>
+>>>>> The fact that you need to do this roundup on call sites feels broken, no?
+>>>>> Was there some discussion / consensus that now all k*alloc() call sites
+>>>>> would need to be fixed up? Couldn't this be done transparently in k*alloc()
+>>>>> when KFENCE is enabled? I presume there may be lots of other such occasions
+>>>>> in the kernel where similar issue triggers, fixing up all call-sites feels
+>>>>> like ton of churn compared to api-internal, generic fix.
+>>
+>> I hope I answer this in more detail here:
+>> https://lore.kernel.org/lkml/202211010937.4631CB1B0E@keescook/
+>>
+>> The problem is that ksize() should never have existed in the first
+>> place. :P Every runtime bounds checker has tripped over it, and with
+>> the addition of the __alloc_size attribute, I had to start ripping
+>> ksize() out: it can't be used to pretend an allocation grew in size.
+>> Things need to either preallocate more or go through *realloc() like
+>> everything else. Luckily, ksize() is rare.
+>>
+>> FWIW, the above fix doesn't look correct to me -- I would expect this to
+>> be:
+>>
+>>          size_t alloc_size;
+>>          ...
+>>          alloc_size = kmalloc_size_roundup(size + headroom + tailroom);
+>>          data = kzalloc(alloc_size, GFP_USER);
+> 
+> Making sure the struct skb_shared_info is aligned to a cache line does
+> not need kmalloc_size_roundup().
+> 
+> What is needed is to adjust @size so that (@size + @headroom) is a
+> multiple of SMP_CACHE_BYTES
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testing/selftests/bpf/prog_tests/align.c
-index 970f09156eb4..4666f88f2bb4 100644
---- a/tools/testing/selftests/bpf/prog_tests/align.c
-+++ b/tools/testing/selftests/bpf/prog_tests/align.c
-@@ -2,7 +2,7 @@
- #include <test_progs.h>
- 
- #define MAX_INSNS	512
--#define MAX_MATCHES	16
-+#define MAX_MATCHES	24
- 
- struct bpf_reg_match {
- 	unsigned int line;
-@@ -267,6 +267,7 @@ static struct bpf_align_test tests[] = {
- 			 */
- 			BPF_MOV64_REG(BPF_REG_5, BPF_REG_2),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_5, BPF_REG_6),
-+			BPF_MOV64_REG(BPF_REG_4, BPF_REG_5),
- 			BPF_ALU64_IMM(BPF_ADD, BPF_REG_5, 14),
- 			BPF_MOV64_REG(BPF_REG_4, BPF_REG_5),
- 			BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, 4),
-@@ -280,6 +281,7 @@ static struct bpf_align_test tests[] = {
- 			BPF_MOV64_REG(BPF_REG_5, BPF_REG_2),
- 			BPF_ALU64_IMM(BPF_ADD, BPF_REG_5, 14),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_5, BPF_REG_6),
-+			BPF_MOV64_REG(BPF_REG_4, BPF_REG_5),
- 			BPF_ALU64_IMM(BPF_ADD, BPF_REG_5, 4),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_5, BPF_REG_6),
- 			BPF_MOV64_REG(BPF_REG_4, BPF_REG_5),
-@@ -311,44 +313,52 @@ static struct bpf_align_test tests[] = {
- 			{15, "R4=pkt(id=1,off=18,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
- 			{15, "R5=pkt(id=1,off=14,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* Variable offset is added to R5 packet pointer,
--			 * resulting in auxiliary alignment of 4.
-+			 * resulting in auxiliary alignment of 4. To avoid BPF
-+			 * verifier's precision backtracking logging
-+			 * interfering we also have a no-op R4 = R5
-+			 * instruction to validate R5 state. We also check
-+			 * that R4 is what it should be in such case.
- 			 */
--			{17, "R5_w=pkt(id=2,off=0,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{18, "R4_w=pkt(id=2,off=0,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{18, "R5_w=pkt(id=2,off=0,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* Constant offset is added to R5, resulting in
- 			 * reg->off of 14.
- 			 */
--			{18, "R5_w=pkt(id=2,off=14,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{19, "R5_w=pkt(id=2,off=14,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* At the time the word size load is performed from R5,
- 			 * its total fixed offset is NET_IP_ALIGN + reg->off
- 			 * (14) which is 16.  Then the variable offset is 4-byte
- 			 * aligned, so the total offset is 4-byte aligned and
- 			 * meets the load's requirements.
- 			 */
--			{23, "R4=pkt(id=2,off=18,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
--			{23, "R5=pkt(id=2,off=14,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{24, "R4=pkt(id=2,off=18,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{24, "R5=pkt(id=2,off=14,r=18,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* Constant offset is added to R5 packet pointer,
- 			 * resulting in reg->off value of 14.
- 			 */
--			{25, "R5_w=pkt(off=14,r=8"},
-+			{26, "R5_w=pkt(off=14,r=8"},
- 			/* Variable offset is added to R5, resulting in a
--			 * variable offset of (4n).
-+			 * variable offset of (4n). See comment for insn #18
-+			 * for R4 = R5 trick.
- 			 */
--			{26, "R5_w=pkt(id=3,off=14,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{28, "R4_w=pkt(id=3,off=14,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{28, "R5_w=pkt(id=3,off=14,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* Constant is added to R5 again, setting reg->off to 18. */
--			{27, "R5_w=pkt(id=3,off=18,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
-+			{29, "R5_w=pkt(id=3,off=18,r=0,umax=1020,var_off=(0x0; 0x3fc))"},
- 			/* And once more we add a variable; resulting var_off
- 			 * is still (4n), fixed offset is not changed.
- 			 * Also, we create a new reg->id.
- 			 */
--			{28, "R5_w=pkt(id=4,off=18,r=0,umax=2040,var_off=(0x0; 0x7fc)"},
-+			{31, "R4_w=pkt(id=4,off=18,r=0,umax=2040,var_off=(0x0; 0x7fc)"},
-+			{31, "R5_w=pkt(id=4,off=18,r=0,umax=2040,var_off=(0x0; 0x7fc)"},
- 			/* At the time the word size load is performed from R5,
- 			 * its total fixed offset is NET_IP_ALIGN + reg->off (18)
- 			 * which is 20.  Then the variable offset is (4n), so
- 			 * the total offset is 4-byte aligned and meets the
- 			 * load's requirements.
- 			 */
--			{33, "R4=pkt(id=4,off=22,r=22,umax=2040,var_off=(0x0; 0x7fc)"},
--			{33, "R5=pkt(id=4,off=18,r=22,umax=2040,var_off=(0x0; 0x7fc)"},
-+			{35, "R4=pkt(id=4,off=22,r=22,umax=2040,var_off=(0x0; 0x7fc)"},
-+			{35, "R5=pkt(id=4,off=18,r=22,umax=2040,var_off=(0x0; 0x7fc)"},
- 		},
- 	},
- 	{
-@@ -681,6 +691,6 @@ void test_align(void)
- 		if (!test__start_subtest(test->descr))
- 			continue;
- 
--		CHECK_FAIL(do_test_single(test));
-+		ASSERT_OK(do_test_single(test), test->descr);
- 	}
- }
--- 
-2.30.2
+ok, I'll fix it and send v2.
 
+Thanks
+
+.
