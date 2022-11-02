@@ -2,113 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A57A615D77
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 09:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E9B615E07
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 09:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbiKBIQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 04:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S230256AbiKBIk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 04:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbiKBIQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 04:16:26 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996852529C;
-        Wed,  2 Nov 2022 01:16:23 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N2KQb6XN0zJnS6;
-        Wed,  2 Nov 2022 16:13:27 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 2 Nov
- 2022 16:16:21 +0800
-From:   Baisong Zhong <zhongbaisong@huawei.com>
-To:     <edumazet@google.com>, <keescook@chromium.org>, <kuba@kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <pabeni@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <glider@google.com>, <elver@google.com>, <netdev@vger.kernel.org>,
-        <zhongbaisong@huawei.com>
-Subject: [PATCH -next,v2] bpf, test_run: fix alignment problem in bpf_prog_test_run_skb()
-Date:   Wed, 2 Nov 2022 16:16:20 +0800
-Message-ID: <20221102081620.1465154-1-zhongbaisong@huawei.com>
+        with ESMTP id S230318AbiKBIk1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 04:40:27 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE4524954;
+        Wed,  2 Nov 2022 01:40:26 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N2Kyk0D0bzKGM4;
+        Wed,  2 Nov 2022 16:37:50 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP4 (Coremail) with SMTP id gCh0CgDn9ef4LGJjxZxaAg--.29164S2;
+        Wed, 02 Nov 2022 16:40:24 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf] bpftool: Fix NULL pointer dereference when pin {PROG, MAP, LINK} without FILE
+Date:   Wed,  2 Nov 2022 16:40:34 +0800
+Message-Id: <20221102084034.3342995-1-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500005.china.huawei.com (7.192.104.229)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDn9ef4LGJjxZxaAg--.29164S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4kZrWxJw48CrW8tw4ruFg_yoWDCFbE9r
+        yvqr9Yvr4rGF9Igw18C3yruFy8Ga4UZr4xZ3W3Jry3Aa1DCFnIk3Wvkws5AFW3WFyDZF17
+        JF92kry3WF4akjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UZa9-UUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-we got a syzkaller problem because of aarch64 alignment fault
-if KFENCE enabled.
+From: Pu Lehui <pulehui@huawei.com>
 
-When the size from user bpf program is an odd number, like
-399, 407, etc, it will cause the struct skb_shared_info's
-unaligned access. As seen below:
+When using bpftool to pin {PROG, MAP, LINK} without FILE,
+segmentation fault will occur. The reson is that the lack
+of FILE will cause strlen to trigger NULL pointer dereference.
+The corresponding stacktrace is shown below:
 
-BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
+do_pin
+  do_pin_any
+    do_pin_fd
+      mount_bpffs_for_pin
+        strlen(name) <- NULL pointer dereference
 
-Use-after-free read at 0xffff6254fffac077 (in kfence-#213):
- __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:26 [inline]
- arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
- arch_atomic_inc include/linux/atomic-arch-fallback.h:270 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:241 [inline]
- __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
- skb_clone+0xf4/0x214 net/core/skbuff.c:1481
- ____bpf_clone_redirect net/core/filter.c:2433 [inline]
- bpf_clone_redirect+0x78/0x1c0 net/core/filter.c:2420
- bpf_prog_d3839dd9068ceb51+0x80/0x330
- bpf_dispatcher_nop_func include/linux/bpf.h:728 [inline]
- bpf_test_run+0x3c0/0x6c0 net/bpf/test_run.c:53
- bpf_prog_test_run_skb+0x638/0xa7c net/bpf/test_run.c:594
- bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
- __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
- __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
+Fix it by adding validation to the common process.
 
-kfence-#213: 0xffff6254fffac000-0xffff6254fffac196, size=407, cache=kmalloc-512
-
-allocated by task 15074 on cpu 0 at 1342.585390s:
- kmalloc include/linux/slab.h:568 [inline]
- kzalloc include/linux/slab.h:675 [inline]
- bpf_test_init.isra.0+0xac/0x290 net/bpf/test_run.c:191
- bpf_prog_test_run_skb+0x11c/0xa7c net/bpf/test_run.c:512
- bpf_prog_test_run kernel/bpf/syscall.c:3148 [inline]
- __do_sys_bpf kernel/bpf/syscall.c:4441 [inline]
- __se_sys_bpf+0xad0/0x1634 kernel/bpf/syscall.c:4381
- __arm64_sys_bpf+0x50/0x60 kernel/bpf/syscall.c:4381
-
-To fix the problem, we adjust @size so that (@size + @hearoom) is a
-multiple of SMP_CACHE_BYTES. So we make sure the struct skb_shared_info
-is aligned to a cache line.
-
-Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
-Signed-off-by: Baisong Zhong <zhongbaisong@huawei.com>
+Fixes: 75a1e792c335 ("tools: bpftool: Allow all prog/map handles for pinning objects")
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
-v2: use SKB_DATA_ALIGN instead kmalloc_size_roundup
----
- net/bpf/test_run.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/bpf/bpftool/common.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 4b855af267b1..bfdd7484b93f 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -259,6 +259,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
- 	if (user_size > size)
- 		return ERR_PTR(-EMSGSIZE);
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index e4d33bc8bbbf..653c130a0aaa 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -302,6 +302,9 @@ int do_pin_any(int argc, char **argv, int (*get_fd)(int *, char ***))
+ 	int err;
+ 	int fd;
  
-+	size = SKB_DATA_ALIGN(size);
- 	data = kzalloc(size + headroom + tailroom, GFP_USER);
- 	if (!data)
- 		return ERR_PTR(-ENOMEM);
++	if (!REQ_ARGS(3))
++		return -EINVAL;
++
+ 	fd = get_fd(&argc, &argv);
+ 	if (fd < 0)
+ 		return fd;
 -- 
 2.25.1
 
