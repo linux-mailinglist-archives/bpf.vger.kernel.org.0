@@ -2,63 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A889961579B
-	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 03:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55BF6157A7
+	for <lists+bpf@lfdr.de>; Wed,  2 Nov 2022 03:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbiKBCfN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Nov 2022 22:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S229591AbiKBCgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Nov 2022 22:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbiKBCfM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Nov 2022 22:35:12 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086F5958E;
-        Tue,  1 Nov 2022 19:35:11 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id f27so41802692eje.1;
-        Tue, 01 Nov 2022 19:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aznj2ZKmJdp+fSkwqbXJeWZ95eAYsYDg0L+lHXLDzis=;
-        b=Pk2JOg3a7s7nAaP5dugWfjeBtrJ2fHvCRqXSnL2IUCWBgHyY2jnYO1x4eIjrx8dSZ0
-         i6zUFARQNW0xY+Fo/o92mCLhdBSiW98n6MJGZZGw2g3OzcH9vJ+uPw0FGwG4LAshTmY1
-         DDbbixclT3FNagANjyI9kssTuSMrfvxQf9eJGgXlFagcBhKb0JytTO9EGx1zGAh1ahyZ
-         YEHnovwmB2GYOmJ7i02zJFy6SRwSwAh43lBYdAQ+PgKDGi7BCLCqIz2ij2feaiF08jPW
-         sSmnLipyf6hOUCjnITehhHsj9Ti6ANoJak2IAyrZxP64+ctWRJ2sBp8JtImnKdTxUE74
-         R4dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aznj2ZKmJdp+fSkwqbXJeWZ95eAYsYDg0L+lHXLDzis=;
-        b=MgTHVJIjFUHbgrzV/NTGAJc3QsfElHUCQjhLqmwjjhJxwPMrqAXo9Va+BNllBIgwVS
-         RhQL0FeZkJuQnxXmwvSA+Z8uCP697D5sGkFd7Zb6+LzmYMNm2OG2hf9XeL0r5qA6D/Sv
-         FX505uvm2fRDtFzXtBSslEClNTPZ3O1hdw3luJE2Dl3L2QtB/FlUdGQV/J6BLiByobYn
-         qqU80ApL1UTn3ViTpdJtVZrwOrwkF4wYRTYkRbA9B9X2w5uIsADz4c6aOBCvPzziPGIe
-         eHXbdpt5cBBlz7NhyD5N7z3hum93p46oi3e2kfNEgzWlHq0tIHEE09rg2i7BYutCpSaQ
-         SnJg==
-X-Gm-Message-State: ACrzQf0SGJ5INglNzeSA/Takmd8TRXHISagB2x7yzS4UIxIzKGv/ty3e
-        SXpmKXEjc/e3ZV/m01DQKaoBSKpJELRAH5jEfBqLgxMYxSk=
-X-Google-Smtp-Source: AMsMyM4RHGKYWPsPGTpxUn7s10t/Pa9r6dHhTAgqxqW8kAg6KrttIHCRcrnadfZazRxl+ROr2tr0Dvx/6b+YBFv9dEM=
-X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
- ne20-20020a1709077b9400b007311b11c241mr22169870ejc.676.1667356509367; Tue, 01
- Nov 2022 19:35:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221020222416.3415511-1-void@manifault.com> <20221020222416.3415511-2-void@manifault.com>
- <20221101000239.pbbmym4mbdbmnzjd@macbook-pro-4.dhcp.thefacebook.com>
- <Y2FhXC/s5GUkbr9P@maniforge.dhcp.thefacebook.com> <CAADnVQ+KZcFZdC=W_qZ3kam9yAjORtpN-9+Ptg_Whj-gRxCZNQ@mail.gmail.com>
- <Y2GRQhsyQMNCOZMT@maniforge.dhcp.thefacebook.com> <CAP01T75R+8WF7jAi5=9cvXfpKtKi9Dq6VxpuYyu7NbWjCtozNg@mail.gmail.com>
- <20221102003222.2isv2ewxxamoe6lw@macbook-pro-4.dhcp.thefacebook.com> <CAP01T75cXDoKxj4c7YYrv2YLCLpRdsuWc9fVbV0Qzxii9wneGQ@mail.gmail.com>
-In-Reply-To: <CAP01T75cXDoKxj4c7YYrv2YLCLpRdsuWc9fVbV0Qzxii9wneGQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Nov 2022 19:34:57 -0700
-Message-ID: <CAADnVQJfj9mrFZ+mBfwh8Xba333B6EyHRMdb6DE4s6te_5_V_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 1/3] bpf: Allow trusted pointers to be passed
- to KF_TRUSTED_ARGS kfuncs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S230133AbiKBCgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Nov 2022 22:36:09 -0400
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0347AE0B6;
+        Tue,  1 Nov 2022 19:36:07 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=chentao.kernel@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VTlT0PP_1667356551;
+Received: from VM20210331-5.tbsite.net(mailfrom:chentao.kernel@linux.alibaba.com fp:SMTPD_---0VTlT0PP_1667356551)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Nov 2022 10:36:04 +0800
+From:   Tao Chen <chentao.kernel@linux.alibaba.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -66,181 +27,117 @@ Cc:     David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tao Chen <chentao.kernel@linux.alibaba.com>
+Subject: [RESEND PATCH] bpftool: Support use full prog name in prog subcommand
+Date:   Wed,  2 Nov 2022 10:35:49 +0800
+Message-Id: <2851b8859666a02878bc897d6c2fb51c80cadce8.1667356049.git.chentao.kernel@linux.alibaba.com>
+X-Mailer: git-send-email 2.2.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 6:01 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> On Wed, 2 Nov 2022 at 06:02, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Nov 02, 2022 at 04:01:11AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > On Wed, 2 Nov 2022 at 03:06, David Vernet <void@manifault.com> wrote:
-> > > >
-> > > > On Tue, Nov 01, 2022 at 01:22:39PM -0700, Alexei Starovoitov wrote:
-> > > > > On Tue, Nov 1, 2022 at 11:11 AM David Vernet <void@manifault.com> wrote:
-> > > > > >
-> > > > > > > What kind of bpf prog will be able to pass 'struct nf_conn___init *' into these bpf_ct_* ?
-> > > > > > > We've introduced / vs nf_conf specifically to express the relationship
-> > > > > > > between allocated nf_conn and other nf_conn-s via different types.
-> > > > > > > Why is this not enough?
-> > > > > >
-> > > > > > Kumar should have more context here (he originally suggested this in
-> > > > > > [0]),
-> > > > >
-> > > > > Quoting:
-> > > > > "
-> > > > > Unfortunately a side effect of this change is that now since
-> > > > > PTR_TO_BTF_ID without ref_obj_id is considered trusted, the bpf_ct_*
-> > > > > functions would begin working with tp_btf args.
-> > > > > "
-> > > > > I couldn't find any tracepoint that has nf_conn___init as an argument.
-> > > > > The whole point of that new type was to return it to bpf prog,
-> > > > > so the verifier type matches it when it's passed into bpf_ct_*
-> > > > > in turn.
-> > > > > So I don't see a need for a new OWNED flag still.
-> > > > > If nf_conn___init is passed into tracepoint it's a bug and
-> > > > > we gotta fix it.
-> > > >
-> > > > Yep, this is what I'm seeing as well. I think you're right that
-> > > > KF_OWNED_ARGS is just strictly unnecessary and that creating wrapper
-> > > > types is the way to enable an ownership model like this.
-> > > >
-> > >
-> > > It's not just nf_conn___init. Some CT helpers also take nf_conn.
-> > > e.g. bpf_ct_change_timeout, bpf_ct_change_status.
-> > > Right now they are only allowed in XDP and TC programs, so the tracing
-> > > args part is not a problem _right now_.
-> >
-> > ... and it will be fine to use bpf_ct_change_timeout from tp_btf as well.
-> >
-> > > So currently it may not be possible to pass such a trusted but
-> > > ref_obj_id == 0 nf_conn to those helpers.
-> > > But based on changes unrelated to this, it may become possible in the
-> > > future to obtain such a trusted nf_conn pointer.
-> >
-> > From kfunc's pov trusted pointer means valid pointer.
-> > It doesn't need to be ref_obj_id refcounted from the verifier pov.
-> > It can be refcounted on the kernel side and it will be trusted.
-> > The code that calls trace_*() passes only trusted pointers into tp-s.
-> > If there is a tracepoint somewhere in the kernel that uses a volatile
-> > pointer to potentially uaf kernel object it's a bug that should be fixed.
-> >
->
-> This is all fine. I'm asking you to distinguish between
-> trusted-not-refcounted and trusted-and-refcounted.
+Now that the commit: <b662000aff84> ("bpftool: Adding support for BTF
+program names") supported show the full prog name, we can also use
+the full prog name more than 16 (BPF_OBJ_NAME_LEN) chars in prog
+subcommand, such as "bpftool prog show name PROG_NAME".
 
-That's not what you're asking :)
+Signed-off-by: Tao Chen <chentao.kernel@linux.alibaba.com>
+---
+ tools/bpf/bpftool/common.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 40 insertions(+), 5 deletions(-)
 
-> It is necessary for nf_conn, since the object can be reused if the
-> refcount is not held.
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 8727765..5d61f26 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -720,6 +720,40 @@ print_all_levels(__maybe_unused enum libbpf_print_level level,
+ 	return vfprintf(stderr, format, args);
+ }
+ 
++static bool is_invalid_name(char *nametag, struct bpf_prog_info *info,
++				struct bpf_func_info *finfo, bool tag)
++{
++	const struct btf *prog_btf;
++	const struct btf_type *func_type;
++	const char *name;
++
++	if (tag)
++		return memcmp(nametag, info->tag, BPF_TAG_SIZE);
++
++	if (strlen(nametag) < BPF_OBJ_NAME_LEN)
++		return strncmp(nametag, info->name, BPF_OBJ_NAME_LEN);
++
++	prog_btf = btf__load_from_kernel_by_id(info->btf_id);
++	if (!prog_btf) {
++		p_err("get prog btf failed, btf_id:%u\n", info->btf_id);
++		return true;
++	}
++
++	func_type = btf__type_by_id(prog_btf, finfo->type_id);
++	if (!func_type || !btf_is_func(func_type)) {
++		p_err("func type invalid, type_id:%u\n", finfo->type_id);
++		return true;
++	}
++
++	name = btf__name_by_offset(prog_btf, func_type->name_off);
++	if (!name) {
++		p_err("func name invalid, name_off:%u\n", func_type->name_off);
++		return true;
++	}
++
++	return strncmp(nametag, name, strlen(name));
++}
++
+ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ {
+ 	char prog_name[MAX_PROG_FULL_NAME];
+@@ -730,6 +764,7 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ 
+ 	while (true) {
+ 		struct bpf_prog_info info = {};
++		struct bpf_func_info finfo = {};
+ 		__u32 len = sizeof(info);
+ 
+ 		err = bpf_prog_get_next_id(id, &id);
+@@ -748,6 +783,10 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ 			goto err_close_fds;
+ 		}
+ 
++		info.nr_func_info = 1;
++		info.func_info_rec_size = sizeof(finfo);
++		info.func_info = ptr_to_u64(&finfo);
++
+ 		err = bpf_obj_get_info_by_fd(fd, &info, &len);
+ 		if (err) {
+ 			p_err("can't get prog info (%u): %s",
+@@ -755,7 +794,7 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ 			goto err_close_fd;
+ 		}
+ 
+-		if (tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) {
++		if (is_invalid_name(nametag, &info, &finfo, tag)) {
+ 			close(fd);
+ 			continue;
+ 		}
+@@ -829,10 +868,6 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
+ 		NEXT_ARGP();
+ 
+ 		name = **argv;
+-		if (strlen(name) > MAX_PROG_FULL_NAME - 1) {
+-			p_err("can't parse name");
+-			return -1;
+-		}
+ 		NEXT_ARGP();
+ 
+ 		return prog_fd_by_nametag(name, fds, false);
+-- 
+2.2.1
 
-of course. No one argues the opposite.
-
-> Some other CPU could be reusing the same memory and allocating a new
-> nf_conn on it while we change its status.
-> So it's not ok to call bpf_ct_change_timeout/status on trusted
-> nf_conn, but only on trusted+refcounted nf_conn.
-
-and here we start to disagree.
-
-> Trusted doesn't capture the difference between 'valid' vs 'valid and
-> owned by prog' anymore with the new definition
-> for PTR_TO_BTF_ID.
-
-and here we disagree completely.
-You're asking to distinguish refcnt++ done by the program
-and recognized by the verifier as ref_obj_id > 0 vs
-refcnt++ done by the kernel code before it calls into tracepoint.
-That's odd, right?
-I don't think people adding kfuncs should care what piece
-of code before kfunc did refcnt++.
-
-> Yes, in most cases the tracepoints/tracing functions whitelisted will
-> have the caller ensure that,
-> but we should then allow trusted nf_conn in those hooks explicitly,
-> not implicitly by default everywhere.
-> Until then it should be restricted to ref_obj_id > 0 IMO as it is right now.
->
-> > > It is a requirement of those kfuncs that the nf_conn has its refcount
-> > > held while they are called.
-> >
-> > and it will be. Just not by the verifier.
-> >
-> > > KF_TRUSTED_ARGS was encoding this requirement before, but it wouldn't anymore.
-> > > It seems better to me to keep that restriction instead of relaxing it,
-> > > if it is part of the contract.
-> >
-> > Disagree as explained above.
-> >
-> > > It is fine to not require people to dive into these details and just
-> > > use KF_TRUSTED_ARGS in general, but we need something to cover special
-> > > cases like these where the object is only stable while we hold an
-> > > active refcount, RCU protection is not enough against reuse.
-> >
-> > This is not related to RCU. Let's not mix RCU concerns in here.
-> > It's a different topic.
-> >
->
-> What I meant is that in the normal case, usually objects aren't reused
-> while the RCU read lock is held.
-> In case of nf_conn, the refcount needs to be held to ensure that,
-> since it uses SLAB_TYPESAFE_BY_RCU.
-> This is why bpf_ct_lookup needs to bump the refcount and match the key
-> after that again, and cannot just return the looked up ct directly.
-
-bpf_ct_lookup needs to bump a refcnt?!
-bpf_skb_ct_lookup calls __bpf_nf_ct_lookup
-that calls nf_conntrack_find_get() that does
-the search and incs the refcnt in a generic kernel code.
-There is nothing bpf specific stuff here. bpf kfunc didn't
-add any special refcnt incs.
-
-There are no tracepoints in netfilter, so this discussion
-is all theoretical, but if there was then the code
-should have made sure that refcnt is held before
-passing nf_conn into tracepoint.
-
-> > > It could be 'expert only' __ref suffix on the nf_conn arg, or
-> > > KF_OWNED_ARGS, or something else.
-> >
-> > I'm still against that.
-> >
->
-> I understand (and agree) that you don't want to complicate things further.
-> It's fine if you want to deal with this later when the above concern
-> materializes. But it will be yet another thing to keep in mind for the
-> future.
-
-I don't share the concern.
-With nf_conn there is none, right?
-But imagine there is only RCU protected pointer that
-is passed into tracepoint somewhere.
-The verifier doesn't recognize refcnt++ on it and ref_obj_id == 0
-the kernel code doesn't do refcnt++ either.
-But it's still safe and this arg should still be
-PTR_TO_BTF_ID | PTR_TRUSTED.
-The bpf prog can pass it further into kfunc that has KF_TRUSTED_ARGS.
-Since RCU is held before calling into tracepoint the bpf prog
-has to be non sleepable. Additional rcu_read_lock done by
-the prog is redundant, but doesn't hurt.
-When prog is calling kfunc the pointer is still valid and
-kfunc can safely operate on it assuming that object is not going away.
-That is the definition of KF_TRUSTED_ARGS from pov of kfunc.
-You documented it yourself :)
-"
-The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
-indicates that the all pointer arguments will always have a guaranteed lifetime,
-"
