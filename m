@@ -2,52 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1598B618401
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 17:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DD1618406
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 17:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbiKCQRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 12:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S231625AbiKCQSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 12:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbiKCQRu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 12:17:50 -0400
-X-Greylist: delayed 484 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Nov 2022 09:17:47 PDT
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fac])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1451838E
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 09:17:47 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4N37xc16zjzMpnTN;
-        Thu,  3 Nov 2022 17:09:40 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4N37xb0B4pzMpphG;
-        Thu,  3 Nov 2022 17:09:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1667491780;
-        bh=nAGLkQKdFqX2PHeLP/p0EHiQdszCz61dANsujoabcoE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N7JAAHTsCzpwdAZCamgd480C38UUIhZj3IfHifZ6XxGhVbPNmHSl2t+xd5RM0pd4N
-         nysRkw+4JwMCVFCimEIVztaYcX+x8aVW6VVR32kJzfgONL7ANm79koMM6v/xpbXARF
-         YUybVOVwr/vVCprWG+Psou276VsbNqzCQODLb/cs=
-Message-ID: <1fe5c84d-6f85-9ee8-76d4-d184a47ebff2@digikod.net>
-Date:   Thu, 3 Nov 2022 17:09:38 +0100
-MIME-Version: 1.0
-User-Agent: 
-Subject: Re: [PATCH v2] LSM: Better reporting of actual LSMs at boot
+        with ESMTP id S231638AbiKCQSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 12:18:02 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA2F18363;
+        Thu,  3 Nov 2022 09:18:02 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3DxRcu009985;
+        Thu, 3 Nov 2022 09:17:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=logG50yn8EIy+gwID9YStxOqQiMZfE9M2ioY4cqXbGg=;
+ b=gk8bmprUSSm7lmBJ5wXAjoPKp9UJpGFQT/V8DWKG4q0NnmKxYHLNZgamkbIBANfJTrsS
+ X2UrbhufRSO1iRQ4siovYkmQH+koN45Zvq0YOu2eAfc7Qck9+nvSZnrM7wZv0JjvnayZ
+ 3t7lH8Rbb3YSGX9YTJtC9GounS4+mu7+FYaVeXA6iS03In/ytDKACrOZkZPzOZWHECKW
+ fng5oRe99JJqYRZklKMwhfQAtAhZvpcgLsj3cSND2qDvUys+pSU5fAR9lfbHYgwdfKIi
+ d0LIvhbqolAkc8839spbXXvGOu+scNC/pf6xTBR/aIqTR4TE4bz4PCCNMng+xyQe374p ow== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkvcwjnby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Nov 2022 09:17:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jvfu6U4EIbGlkm56v7N1jTYcF8RTi+OQ9euAxMb2Cb4M4qx9QEwjiDlgLMP7EJbxFJw0Lu2OL9TZ8gdt8CqM8AlaFphoYzW2t3hnARiwLYc5vHnw2WkIBuaH3j9ojwSeHp3J68Y4CtPMtFKM+EGkwfP/EBWgarWSYhu6qmzA5q6OgKe/cS/SsarmfnBfjK41heHVXJvRkTCLCf0cJzc2WL67zT5rbWfV1oXwLXedCrN3cggHoLV33/omVvtle6loCcN1io/rzLp/PjHhGByAAv9oygb59C8zpAKU3lVU8I/T0D2BmdNbZapicNscOoOtwdMDvvaCQ7ZEIHT0fGEHZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=logG50yn8EIy+gwID9YStxOqQiMZfE9M2ioY4cqXbGg=;
+ b=jx/lanwKAEb2cvuzfj/xOlXU1CVvKWtzxNis9xMJrBaxFLJYUuC+j9qTHg2YZm28JjuO0jwhDO9MLGztl7LZas6Q+5j9D6GlF7KNZQxvEjAfo4Bi6rHqr2oR7BvQvx8mYHFkTxiu+/OsOhCxHhKYQwEGPDkKR1F3ck9/WP0C1OqHyGXE+rgCRORZ8hDY5fUHL5PbBOWbt9biBLoznBVfTcnI8ON/E0f0hOrTnPj+Gu96kc5zPFx8KfEwBTXL+l1zsqVjPhnK4++mgH2bf8uBva7eH0LpKZtQ/zb2KL49wSGk1dbqlRXcGKcirmBfXVUNVZh97gCh5EV93/wnBNbg5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM6PR15MB4072.namprd15.prod.outlook.com (2603:10b6:5:2bf::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Thu, 3 Nov
+ 2022 16:17:45 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
+ 16:17:44 +0000
+Message-ID: <1db13bff-a384-d3c8-33a8-ad0133a1c70e@meta.com>
+Date:   Thu, 3 Nov 2022 09:17:40 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.1
+Subject: Re: [PATCH bpf 1/2] net/ipv4: fix linux/in.h header dependencies
+To:     patchwork-bot+netdevbpf@kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, kuba@kernel.org, kernel-team@fb.com,
+        gustavoars@kernel.org
+References: <20221102182517.2675301-1-andrii@kernel.org>
+ <166747981590.20434.6205202822354530507.git-patchwork-notify@kernel.org>
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Paul Moore <paul@paul-moore.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20221102000525.gonna.409-kees@kernel.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-In-Reply-To: <20221102000525.gonna.409-kees@kernel.org>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <166747981590.20434.6205202822354530507.git-patchwork-notify@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0020.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::25) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB4072:EE_
+X-MS-Office365-Filtering-Correlation-Id: 41a1981b-320a-4a17-e7ff-08dabdb6f0c0
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v4aJsGTlbnaX6f/57tdBsGpJ+w9ESU/UqbXuDTx6qrs7WNdQ4AsSWbx5EhTOC2+VYufSqptfce6RpPBIM7wo7Jwen2TexZBwhgT4+9Ard09Bi9odo/P80Rl5CSKr06bJKFlDxXLBbhTih/5beM+n8jdAe/Jia3qALZuHcs/rIrA81c6mUgPBjkjMTSM6tO8sajDZw6ACVH5L+tNoUy7MWHKKU1IyDULpefHNCm3vO6LJskg3CDjKZV5OhWdi/Luapblq5A7qinQPd5iWOcTsQjxcX/dBfEdJL4f5kTuwpDyy3pQAK3QbC0dSC1zQcZiPonJIzSKARMgp7/rnuYAA5ZKt3t/sbwxMfX+vBZtXIFMje4005bGIIuYfk9YHEc3azRjVWiyAy63FJ27d/8ZQy83DhRkRcy6LILnDztnwfpy3+Se1+jnkyE5b4cbT1/aXMkUxIQFowTKVl4ncgaAD8MdeQPpg17s7SyDEMtdQe4wNe82ZRgi+xaei4ak15C5UERc48uMmhUEMey5GXTmb/3pDmBPbaQ+v1+iU1nBOHlNEfDwXNEAMU+/jpBtfFWEMP3naoMbLcBiw6HY47O70GD1vse0eJFbkHDdrMUyM4Fy+VR7uls+b1vBIfETAsUqKz2CsZt2aa7z/4Z6HaXc+Y/pTTa6KUZ0Kfjr8zLMpKTnLRS3b6Bh3guefL8kPrsQ9GBXlu/D/md9+RpE4vkLyx+snW/FsGV45HQ81c4gtVtzkm9Zbzyx2t/nmO80vZLNpN3yLbIkZH0Vd9EaIUtH8myOXbu1DO04IDNLjXpAO27cTB74YXFaaQOD/nMTekrn1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(136003)(366004)(376002)(396003)(451199015)(6506007)(86362001)(41300700001)(6512007)(8936002)(66556008)(8676002)(66476007)(66946007)(4326008)(31696002)(53546011)(2906002)(5660300002)(316002)(36756003)(6666004)(186003)(6916009)(2616005)(31686004)(6486002)(966005)(38100700002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVJ0NXMzcnNRWVlRQmZLM0Z2NGNBOWdnTEk2aGFpV2QwMEJGTlFKSERCUENE?=
+ =?utf-8?B?bjhPdzE4SFd2S09ycGx6OWJkSDdUbHlyR01RL3RibHlLT00rT0I3eC9qL0hD?=
+ =?utf-8?B?Zm0rWDZSblFUUDNYdEFwWk9OcnN6UytwTXFwMGNTa2NobWxJSlFkWk54ZWoy?=
+ =?utf-8?B?SEhJdHpmVzVrdmlTNlh6VmlwcG1kZTJSZTdaWWxDektWd2o4Ty9TYnh6VGhu?=
+ =?utf-8?B?SlhISFFYVzBoakRCcXFxSmRwcHVqRlcyWnBzUWt1WVIvMmw3djVBZmovS0hJ?=
+ =?utf-8?B?b2xnOGNJR1dsaUIrZVdyL3E5ZGZySVdZV2I4U09SZGMzZERwVEt0UGxyeldl?=
+ =?utf-8?B?RzYweGRpT2c4RVpDVlVqVll1cVhjVkRCSi9sWDlOMmFXRHhLUlJ1SXd0OXJ0?=
+ =?utf-8?B?NEFmbVBoQ3lIeEkwUWpPK0tVZG1pSldTOE5IR0hWTHVjS3Ayd3lsMWNVTks5?=
+ =?utf-8?B?L1VKWnZ0TGQyejVScnNVT3FnZ0NmajZyZCtyd29UaW1PZmV3WVA2ci9yOWpS?=
+ =?utf-8?B?THE4SlN6TGltTDlCcDdoT0JHRE5rLzBtU1ByUlQrVjdkRWlJV3EzOUUrUmZo?=
+ =?utf-8?B?bmxIaDljOXZwOUV3d0dQT1UzVUZ4eWJZTlVOVmZ1OG1UaG44VHk1bklROW1o?=
+ =?utf-8?B?OGpsSkV3K0dzZFlZSVR1Nmk0YVoyKy9OOWc2UGxiVEtQQlJKQURnUjk4TUsy?=
+ =?utf-8?B?WHZTb3dJRGJYa2xpbld1b1M1ZVVYSkIxYm1NNFNKUko1UkkvK2tNNmkwZXg4?=
+ =?utf-8?B?NVFTWUY5S0NuVGtudGpvM0EvOW1zamdMczFLWGlQVFV4WXVLNndWZzFMc3E0?=
+ =?utf-8?B?VGpmNjN0TW9DUk0zS3IrdTNhT3lSNGRpOHM1SFAvOXJUN3dzeVVyQk9QNC9R?=
+ =?utf-8?B?UERTYVgrNFdyQVZYLzByalhnYng0OGlQaGtRbS9WY2dMbUhzbUM1TFhtNTRY?=
+ =?utf-8?B?RmRZODdUZ1pmTGlnUXh2WFIrMm9EYVBoTGVabmUvbW5IMFUvOEJlcU83Q2U5?=
+ =?utf-8?B?MEpQTlEyQURCZVlXOVQxd1VMOHRrQ3dxK2FDcFc0dnN3alg4Ukk1WFZMZDdm?=
+ =?utf-8?B?cE5keENWTmtpd2xUTXVtcTEzZGJ3MUV2TUtqVGR6MllQQUlhc3pWR1pVQW5z?=
+ =?utf-8?B?cjZkYWlTUXZTQWFWVE9hZjBzbml2VHVvL3IwUjgxYzJDc0NTRzU4SHVJdUk5?=
+ =?utf-8?B?bG5qelZndG40OWZNaUR0MWYxekN2SlBlaTV6djhZUnFuLzFjMVRzbForWFZr?=
+ =?utf-8?B?SjRmclJydk5BV1dselprRGk3NUtxdml0T1R5NFBMajBmR0l1RjNnSkI2Z3Q4?=
+ =?utf-8?B?TkxJK0hyK1ZXbkhXSFdyOVhUTVVWMTFKWFRtVXpXZ21mVE9HaVpwdHoyZVhk?=
+ =?utf-8?B?YW1YWXlaR1ZlRGhZUnB5ZmtTYTIxSkpjVUlKMTRaZTV6a0ZvSkt2Ry8wUnR1?=
+ =?utf-8?B?dmVPakZoWGZDUzI3MkUzeHVlbjBpa1d0cVRVQ2lKVnBOMjAvY0ozSmZJKzc4?=
+ =?utf-8?B?RjIxeFBEaUlXVVJ1UkdRdlo0UEN6dGlocVkwdDFKdGh5bnR3U3ozbjhuT0hj?=
+ =?utf-8?B?dmViVlFwQmhZVTZKWnhsNmhnQThxdlRlY21SQ3RwdGxrWUFUdzNsT0lQK1lC?=
+ =?utf-8?B?UmtUQmxIRElHY0hZdDNJdm1zSkFRTCs2NFI4NWs3ODVOMlNOK285c0pyWm9y?=
+ =?utf-8?B?NG5ySXppU0cxaGV1QkFDa25pTnVYNGFQTk8xQlp1TU5yVEEyQzRpU2RYampR?=
+ =?utf-8?B?eG1aSWg3RU1nSUxmSjNUUDZPYWY1alViTEVmakMrZWZuYnVKSUhhMUFud3Rl?=
+ =?utf-8?B?cHU0ZjRUYzhpWGFlOC9sV04xY1NMcE1nZHZEN1lGS1JKcllLbnpUUXFBOFNU?=
+ =?utf-8?B?a0VHS2FrQ0FtaExDVktidS8vRWhyVkxPL2l6Z2VvYll0ODdqdmluZWYvdFV5?=
+ =?utf-8?B?bkNVUTBmdnVrREtLU1RhYktzclVGWGdWVmxLa29RdHdqelVielJRdFZqYktu?=
+ =?utf-8?B?UFc1VUdXM2Q5UFAzMVRJNnRGZ1lwaU1veitSZGFaU1RJWXBodFZqRlVSZXFG?=
+ =?utf-8?B?c3JrNlFyeHRaeExYc2cyYVp0TGpIL2xHb3c4dEE0Z1QwaE4rM05QU1F6dmlB?=
+ =?utf-8?Q?PATpquMn4RHuvbd6crYnEfSVK?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41a1981b-320a-4a17-e7ff-08dabdb6f0c0
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 16:17:44.8624
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ffqBRWrqIbaK7m8beZshwZgkEBpnhDQDRBf1CTTfgcsPXMfIwdlhKfiYIBt8YZnQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4072
+X-Proofpoint-GUID: s1wkHBCgy_MoI1mTbRA3v2CYjWvjGA_k
+X-Proofpoint-ORIG-GUID: s1wkHBCgy_MoI1mTbRA3v2CYjWvjGA_k
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,274 +144,32 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 02/11/2022 01:05, Kees Cook wrote:
-> Enhance the details reported by "lsm.debug" in several ways:
-> 
-> - report contents of "security="
-> - report contents of "CONFIG_LSM"
-> - report contents of "lsm="
-> - report any early LSM details
-> - whitespace-align the output of similar phases for easier visual parsing
-> - change "disabled" to more accurate "skipped"
-> - explain what "skipped" and "ignored" mean in a parenthetical
-> 
-> Upgrade the "security= is ignored" warning from pr_info to pr_warn,
-> and include full arguments list to make the cause even more clear.
-> 
-> Replace static "Security Framework initializing" pr_info with specific
-> list of the resulting order of enabled LSMs.
-> 
-> For example, if the kernel is built with:
-> 
-> CONFIG_SECURITY_SELINUX=y
-> CONFIG_SECURITY_APPARMOR=y
-> CONFIG_SECURITY_LOADPIN=y
-> CONFIG_SECURITY_YAMA=y
-> CONFIG_SECURITY_SAFESETID=y
-> CONFIG_SECURITY_LOCKDOWN_LSM=y
-> CONFIG_SECURITY_LANDLOCK=y
-> CONFIG_INTEGRITY=y
-> CONFIG_BPF_LSM=y
-> CONFIG_DEFAULT_SECURITY_APPARMOR=y
-> CONFIG_LSM="landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
-> 
-> Booting without options will show:
-> 
-> LSM: initializing lsm=lockdown,capability,landlock,yama,loadpin,safesetid,integrity,selinux,bpf
-> landlock: Up and running.
-> Yama: becoming mindful.
-> LoadPin: ready to pin (currently not enforcing)
-> SELinux:  Initializing.
-> LSM support for eBPF active
-> 
-> Boot with "lsm.debug" will show:
-> 
-> LSM: legacy security= *unspecified*
-> LSM: CONFIG_LSM=landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm= *unspecified*
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: builtin ordered: landlock (enabled)
-> LSM: builtin ignored: lockdown (not built into kernel)
-> LSM: builtin ordered: yama (enabled)
-> LSM: builtin ordered: loadpin (enabled)
-> LSM: builtin ordered: safesetid (enabled)
-> LSM: builtin ordered: integrity (enabled)
-> LSM: builtin ordered: selinux (enabled)
-> LSM: builtin ignored: smack (not built into kernel)
-> LSM: builtin ignored: tomoyo (not built into kernel)
-> LSM: builtin ordered: apparmor (enabled)
-> LSM: builtin ordered: bpf (enabled)
-> LSM: exclusive chosen:   selinux
-> LSM: exclusive disabled: apparmor
-> LSM: initializing lsm=lockdown,capability,landlock,yama,loadpin,safesetid,integrity,selinux,bpf
-> LSM: cred blob size       = 32
-> LSM: file blob size       = 16
-> LSM: inode blob size      = 72
-> LSM: ipc blob size        = 8
-> LSM: msg_msg blob size    = 4
-> LSM: superblock blob size = 80
-> LSM: task blob size       = 8
-> LSM: initializing capability
-> LSM: initializing landlock
-> landlock: Up and running.
-> LSM: initializing yama
-> Yama: becoming mindful.
-> LSM: initializing loadpin
-> LoadPin: ready to pin (currently not enforcing)
-> LSM: initializing safesetid
-> LSM: initializing integrity
-> LSM: initializing selinux
-> SELinux:  Initializing.
-> LSM: initializing bpf
-> LSM support for eBPF active
-> 
-> And some examples of how the lsm.debug ordering report changes...
-> 
-> With "lsm.debug security=selinux":
-> 
-> LSM: legacy security=selinux
-> LSM: CONFIG_LSM=landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm= *unspecified*
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: security=selinux disabled: apparmor (only one legacy major LSM)
-> LSM: builtin ordered: landlock (enabled)
-> LSM: builtin ignored: lockdown (not built into kernel)
-> LSM: builtin ordered: yama (enabled)
-> LSM: builtin ordered: loadpin (enabled)
-> LSM: builtin ordered: safesetid (enabled)
-> LSM: builtin ordered: integrity (enabled)
-> LSM: builtin ordered: selinux (enabled)
-> LSM: builtin ignored: smack (not built into kernel)
-> LSM: builtin ignored: tomoyo (not built into kernel)
-> LSM: builtin ordered: apparmor (disabled)
-> LSM: builtin ordered: bpf (enabled)
-> LSM: exclusive chosen:   selinux
-> LSM: initializing lsm=lockdown,capability,landlock,yama,loadpin,safesetid,integrity,selinux,bpf
-> 
-> With "lsm.debug lsm=integrity,selinux,loadpin,crabability,bpf,loadpin,loadpin":
-> 
-> LSM: legacy security= *unspecified*
-> LSM: CONFIG_LSM=landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm=integrity,selinux,loadpin,capability,bpf,loadpin,loadpin
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: cmdline ordered: integrity (enabled)
-> LSM: cmdline ordered: selinux (enabled)
-> LSM: cmdline ordered: loadpin (enabled)
-> LSM: cmdline ignored: crabability (not built into kernel)
-> LSM: cmdline ordered: bpf (enabled)
-> LSM: cmdline skipped: apparmor (not in requested order)
-> LSM: cmdline skipped: yama (not in requested order)
-> LSM: cmdline skipped: safesetid (not in requested order)
-> LSM: cmdline skipped: landlock (not in requested order)
-> LSM: exclusive chosen:   selinux
-> LSM: initializing lsm=lockdown,capability,integrity,selinux,loadpin,bpf
-> 
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: linux-security-module@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I think this change would be useful to help users debug their LSM 
-configuration. I'm not sure about the whitespace-aligned output though, 
-I guess it could break some scripts, but it is not part of the ABI and 
-only relevant for debug purpose.
-
-Acked-by: Mickaël Salaün <mic@digikod.net>
-
-
-> ---
-> v2: en/dis-enabled expanded, example output in commit log, use pr_cont.
-> v1: https://lore.kernel.org/lkml/20221018064825.never.323-kees@kernel.org/
-> ---
->   security/security.c | 45 ++++++++++++++++++++++++++++++++++++---------
->   1 file changed, 36 insertions(+), 9 deletions(-)
+On 11/3/22 5:50 AM, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
 > 
-> diff --git a/security/security.c b/security/security.c
-> index 79d82cb6e469..abceabda103d 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -161,8 +161,8 @@ static void __init append_ordered_lsm(struct lsm_info *lsm, const char *from)
->   		lsm->enabled = &lsm_enabled_true;
->   	ordered_lsms[last_lsm++] = lsm;
->   
-> -	init_debug("%s ordering: %s (%sabled)\n", from, lsm->name,
-> -		   is_enabled(lsm) ? "en" : "dis");
-> +	init_debug("%s ordered: %s (%s)\n", from, lsm->name,
-> +		   is_enabled(lsm) ? "enabled" : "disabled");
->   }
->   
->   /* Is an LSM allowed to be initialized? */
-> @@ -224,7 +224,7 @@ static void __init prepare_lsm(struct lsm_info *lsm)
->   	if (enabled) {
->   		if ((lsm->flags & LSM_FLAG_EXCLUSIVE) && !exclusive) {
->   			exclusive = lsm;
-> -			init_debug("exclusive chosen: %s\n", lsm->name);
-> +			init_debug("exclusive chosen:   %s\n", lsm->name);
->   		}
->   
->   		lsm_set_blob_sizes(lsm->blobs);
-> @@ -252,7 +252,7 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
->   	/* LSM_ORDER_FIRST is always first. */
->   	for (lsm = __start_lsm_info; lsm < __end_lsm_info; lsm++) {
->   		if (lsm->order == LSM_ORDER_FIRST)
-> -			append_ordered_lsm(lsm, "first");
-> +			append_ordered_lsm(lsm, "  first");
->   	}
->   
->   	/* Process "security=", if given. */
-> @@ -270,7 +270,7 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
->   			if ((major->flags & LSM_FLAG_LEGACY_MAJOR) &&
->   			    strcmp(major->name, chosen_major_lsm) != 0) {
->   				set_enabled(major, false);
-> -				init_debug("security=%s disabled: %s\n",
-> +				init_debug("security=%s disabled: %s (only one legacy major LSM)\n",
->   					   chosen_major_lsm, major->name);
->   			}
->   		}
-> @@ -291,7 +291,8 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
->   		}
->   
->   		if (!found)
-> -			init_debug("%s ignored: %s\n", origin, name);
-> +			init_debug("%s ignored: %s (not built into kernel)\n",
-> +				   origin, name);
->   	}
->   
->   	/* Process "security=", if given. */
-> @@ -309,7 +310,8 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
->   		if (exists_ordered_lsm(lsm))
->   			continue;
->   		set_enabled(lsm, false);
-> -		init_debug("%s disabled: %s\n", origin, lsm->name);
-> +		init_debug("%s skipped: %s (not in requested order)\n",
-> +			   origin, lsm->name);
->   	}
->   
->   	kfree(sep);
-> @@ -320,6 +322,24 @@ static void __init lsm_early_task(struct task_struct *task);
->   
->   static int lsm_append(const char *new, char **result);
->   
-> +static void __init report_lsm_order(void)
-> +{
-> +	struct lsm_info **lsm, *early;
-> +	int first = 0;
-> +
-> +	pr_info("initializing lsm=");
-> +
-> +	/* Report each enabled LSM name, comma separated. */
-> +	for (early = __start_early_lsm_info; early < __end_early_lsm_info; early++)
-> +		if (is_enabled(early))
-> +			pr_cont("%s%s", first++ == 0 ? "" : ",", early->name);
-> +	for (lsm = ordered_lsms; *lsm; lsm++)
-> +		if (is_enabled(*lsm))
-> +			pr_cont("%s%s", first++ == 0 ? "" : ",", (*lsm)->name);
-> +
-> +	pr_cont("\n");
-> +}
-> +
->   static void __init ordered_lsm_init(void)
->   {
->   	struct lsm_info **lsm;
-> @@ -329,7 +349,8 @@ static void __init ordered_lsm_init(void)
->   
->   	if (chosen_lsm_order) {
->   		if (chosen_major_lsm) {
-> -			pr_info("security= is ignored because it is superseded by lsm=\n");
-> +			pr_warn("security=%s is ignored because it is superseded by lsm=%s\n",
-> +				chosen_major_lsm, chosen_lsm_order);
->   			chosen_major_lsm = NULL;
->   		}
->   		ordered_lsm_parse(chosen_lsm_order, "cmdline");
-> @@ -339,6 +360,8 @@ static void __init ordered_lsm_init(void)
->   	for (lsm = ordered_lsms; *lsm; lsm++)
->   		prepare_lsm(*lsm);
->   
-> +	report_lsm_order();
-> +
->   	init_debug("cred blob size       = %d\n", blob_sizes.lbs_cred);
->   	init_debug("file blob size       = %d\n", blob_sizes.lbs_file);
->   	init_debug("inode blob size      = %d\n", blob_sizes.lbs_inode);
-> @@ -395,13 +418,17 @@ int __init security_init(void)
->   {
->   	struct lsm_info *lsm;
->   
-> -	pr_info("Security Framework initializing\n");
-> +	init_debug("legacy security=%s\n", chosen_major_lsm ?: " *unspecified*");
-> +	init_debug("  CONFIG_LSM=%s\n", builtin_lsm_order);
-> +	init_debug("boot arg lsm=%s\n", chosen_lsm_order ?: " *unspecified*");
->   
->   	/*
->   	 * Append the names of the early LSM modules now that kmalloc() is
->   	 * available
->   	 */
->   	for (lsm = __start_early_lsm_info; lsm < __end_early_lsm_info; lsm++) {
-> +		init_debug("  early started: %s (%s)\n", lsm->name,
-> +			   is_enabled(lsm) ? "enabled" : "disabled");
->   		if (lsm->enabled)
->   			lsm_append(lsm->name, &lsm_names);
->   	}
+> This series was applied to bpf/bpf.git (master)
+> by Daniel Borkmann <daniel@iogearbox.net>:
+> 
+> On Wed, 2 Nov 2022 11:25:16 -0700 you wrote:
+>> __DECLARE_FLEX_ARRAY is defined in include/uapi/linux/stddef.h but
+>> doesn't seem to be explicitly included from include/uapi/linux/in.h,
+>> which breaks BPF selftests builds (once we sync linux/stddef.h into
+>> tools/include directory in the next patch). Fix this by explicitly
+>> including linux/stddef.h.
+>>
+>> Given this affects BPF CI and bpf tree, targeting this for bpf tree.
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>    - [bpf,1/2] net/ipv4: fix linux/in.h header dependencies
+>      https://git.kernel.org/bpf/bpf/c/aec1dc972d27
+>    - [bpf,2/2] tools headers uapi: pull in stddef.h to fix BPF selftests build in CI
+>      https://git.kernel.org/bpf/bpf/c/a778f5d46b62
+
+Can we put this patch set into bpf-next as well? Apparently we have the 
+same issue in bpf-next.
+
+> 
+> You are awesome, thank you!
