@@ -2,219 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2AD61766C
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 06:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455EA617787
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbiKCFyV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Nov 2022 01:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        id S230271AbiKCHVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 03:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbiKCFyF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 01:54:05 -0400
+        with ESMTP id S229436AbiKCHVP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 03:21:15 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE81D193F5
-        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 22:53:37 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2NVs94022925
-        for <bpf@vger.kernel.org>; Wed, 2 Nov 2022 22:53:37 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B36B24
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 00:21:14 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2NVq5d008259
+        for <bpf@vger.kernel.org>; Thu, 3 Nov 2022 00:21:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=mQeDA4CpKaxQ+4HJKD9z4V1U5NBDskcCsr8i1H2Z5lA=;
+ b=em2o/k9GQEDCuWxjrvSg9RZsYMJhlAPMlsS+3eXuSPFtpA0dfd+U8BzkyEqIuOR1pOZm
+ L7uIq0uf6TdwuRgoAc/GxQSuiII9UAMGk5M+hkV13PYp+yOrswNgYsvqXWel039zoIil
+ OPXGIagbeTB3jAI3U7MHH6wkCc2yPLwA7SY= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkj3bb32c-10
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkrv50q5u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 22:53:37 -0700
-Received: from twshared24130.14.prn3.facebook.com (2620:10d:c085:208::f) by
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 00:21:13 -0700
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 2 Nov 2022 22:53:35 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 74FA02102ED42; Wed,  2 Nov 2022 22:53:26 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, <kuba@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 10/10] selftests/bpf: support stat filtering in comparison mode in veristat
-Date:   Wed, 2 Nov 2022 22:53:04 -0700
-Message-ID: <20221103055304.2904589-11-andrii@kernel.org>
+ 15.1.2375.31; Thu, 3 Nov 2022 00:21:12 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id D21F31192D020; Thu,  3 Nov 2022 00:21:02 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next 0/5] bpf: Add bpf_rcu_read_lock() support
+Date:   Thu, 3 Nov 2022 00:21:02 -0700
+Message-ID: <20221103072102.2320490-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221103055304.2904589-1-andrii@kernel.org>
-References: <20221103055304.2904589-1-andrii@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: RWG0Fq4dBSFy-_GytGPyoeA_iCxCmd6y
-X-Proofpoint-GUID: RWG0Fq4dBSFy-_GytGPyoeA_iCxCmd6y
+X-Proofpoint-ORIG-GUID: vYLihwqwPsPdUXBrFaK0Aqo9nDY6336u
+X-Proofpoint-GUID: vYLihwqwPsPdUXBrFaK0Aqo9nDY6336u
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-02_15,2022-11-02_01,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Finally add support for filtering stats values, similar to
-non-comparison mode filtering. For comparison mode 4 variants of stats
-are important for filtering, as they allow to filter either A or B side,
-but even more importantly they allow to filter based on value
-difference, and for verdict stat value difference is MATCH/MISMATCH
-classification. So with these changes it's finally possible to easily
-check if there were any mismatches between failure/success outcomes on
-two separate data sets. Like in an example below:
+Currently, without rcu attribute info in BTF, the verifier treats
+rcu tagged pointer as a normal pointer. This might be a problem
+for sleepable program where rcu_read_lock()/unlock() is not available.
+For example, for a sleepable fentry program, if rcu protected memory
+access is interleaved with a sleepable helper/kfunc, it is possible
+the memory access after the sleepable helper/kfunc might be invalid
+since the object might have been freed then. Even without
+a sleepable helper/kfunc, without rcu_read_lock() protection,
+it is possible that the rcu protected object might be release
+in the middle of bpf program execution which may cause incorrect
+result.
 
-  $ ./veristat -e file,prog,verdict,insns -C ~/baseline-results.csv ~/shortest-results.csv -f verdict_diff=mismatch
-  File                                   Program                Verdict (A)  Verdict (B)  Verdict (DIFF)  Insns (A)  Insns (B)  Insns        (DIFF)
-  -------------------------------------  ---------------------  -----------  -----------  --------------  ---------  ---------  -------------------
-  dynptr_success.bpf.linked1.o           test_data_slice        success      failure      MISMATCH               85          0       -85 (-100.00%)
-  dynptr_success.bpf.linked1.o           test_read_write        success      failure      MISMATCH             1992          0     -1992 (-100.00%)
-  dynptr_success.bpf.linked1.o           test_ringbuf           success      failure      MISMATCH               74          0       -74 (-100.00%)
-  kprobe_multi.bpf.linked1.o             test_kprobe            failure      success      MISMATCH                0        246      +246 (+100.00%)
-  kprobe_multi.bpf.linked1.o             test_kprobe_manual     failure      success      MISMATCH                0        246      +246 (+100.00%)
-  kprobe_multi.bpf.linked1.o             test_kretprobe         failure      success      MISMATCH                0        248      +248 (+100.00%)
-  kprobe_multi.bpf.linked1.o             test_kretprobe_manual  failure      success      MISMATCH                0        248      +248 (+100.00%)
-  kprobe_multi.bpf.linked1.o             trigger                failure      success      MISMATCH                0          2        +2 (+100.00%)
-  netcnt_prog.bpf.linked1.o              bpf_nextcnt            failure      success      MISMATCH                0         56       +56 (+100.00%)
-  pyperf600_nounroll.bpf.linked1.o       on_event               success      failure      MISMATCH           568128    1000001    +431873 (+76.02%)
-  ringbuf_bench.bpf.linked1.o            bench_ringbuf          success      failure      MISMATCH                8          0        -8 (-100.00%)
-  strobemeta.bpf.linked1.o               on_event               success      failure      MISMATCH           557149    1000001    +442852 (+79.49%)
-  strobemeta_nounroll1.bpf.linked1.o     on_event               success      failure      MISMATCH            57240    1000001  +942761 (+1647.03%)
-  strobemeta_nounroll2.bpf.linked1.o     on_event               success      failure      MISMATCH           501725    1000001    +498276 (+99.31%)
-  strobemeta_subprogs.bpf.linked1.o      on_event               success      failure      MISMATCH            65420    1000001  +934581 (+1428.59%)
-  test_map_in_map_invalid.bpf.linked1.o  xdp_noop0              success      failure      MISMATCH                2          0        -2 (-100.00%)
-  test_mmap.bpf.linked1.o                test_mmap              success      failure      MISMATCH               46          0       -46 (-100.00%)
-  test_verif_scale3.bpf.linked1.o        balancer_ingress       success      failure      MISMATCH           845499    1000001    +154502 (+18.27%)
-  -------------------------------------  ---------------------  -----------  -----------  --------------  ---------  ---------  -------------------
+To prevent above cases, enable btf_type_tag("rcu") attributes,
+introduce new bpf_rcu_read_lock/unlock() helpers and add verifier support=
+.
+In the rest of patch set, Patch 1 enabled btf_type_tag for __rcu
+attribute. Patch 2 added new bpf_rcu_read_lock/unlock() helpers.
+Patch 3 added verifier support and Patch 4 enabled sleepable
+program support for cgrp local storage. Patch 5 added some tests
+for new helpers and verifier support.
 
-Note that by filtering on verdict_diff=mismatch, it's now extremely easy and
-fast to see any changes in verdict. Example above showcases both failure ->
-success transitions (which are generally surprising) and success -> failure
-transitions (which are expected if bugs are present).
+Yonghong Song (5):
+  compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
+  bpf: Add bpf_rcu_read_lock/unlock helper
+  bpf: Add rcu btf_type_tag verifier support
+  bpf: Enable sleeptable support for cgrp local storage
+  selftests/bpf: Add tests for bpf_rcu_read_lock()
 
-Given veristat allows to query relative percent difference values, internal
-logic for comparison mode is based on floating point numbers, so requires a bit
-of epsilon precision logic, deviating from typical integer simple handling
-rules.
+ include/linux/bpf.h                           |   5 +
+ include/linux/bpf_verifier.h                  |   1 +
+ include/linux/compiler_types.h                |   3 +-
+ include/uapi/linux/bpf.h                      |  14 +
+ kernel/bpf/btf.c                              |  11 +
+ kernel/bpf/core.c                             |   2 +
+ kernel/bpf/helpers.c                          |  26 ++
+ kernel/bpf/verifier.c                         | 129 +++++++++-
+ tools/include/uapi/linux/bpf.h                |  14 +
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  | 101 ++++++++
+ .../selftests/bpf/progs/rcu_read_lock.c       | 241 ++++++++++++++++++
+ 11 files changed, 537 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 70 ++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index f2ea825ee80a..9e3811ab4866 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -456,12 +456,16 @@ static int append_filter(struct filter **filters, int *cnt, const char *str)
- 		    strcasecmp(p, "t") == 0 ||
- 		    strcasecmp(p, "success") == 0 ||
- 		    strcasecmp(p, "succ") == 0 ||
--		    strcasecmp(p, "s") == 0) {
-+		    strcasecmp(p, "s") == 0 ||
-+		    strcasecmp(p, "match") == 0 ||
-+		    strcasecmp(p, "m") == 0) {
- 			val = 1;
- 		} else if (strcasecmp(p, "false") == 0 ||
- 			   strcasecmp(p, "f") == 0 ||
- 			   strcasecmp(p, "failure") == 0 ||
--			   strcasecmp(p, "fail") == 0) {
-+			   strcasecmp(p, "fail") == 0 ||
-+			   strcasecmp(p, "mismatch") == 0 ||
-+			   strcasecmp(p, "mis") == 0) {
- 			val = 0;
- 		} else {
- 			errno = 0;
-@@ -1011,6 +1015,8 @@ static void fetch_join_stat_value(const struct verif_stats_join *s,
- 	case VARIANT_DIFF:
- 		if (!s->stats_a || !s->stats_b)
- 			*num_val = -DBL_MAX;
-+		else if (id == VERDICT)
-+			*num_val = v1 == v2 ? 1.0 /* MATCH */ : 0.0 /* MISMATCH */;
- 		else
- 			*num_val = (double)(v2 - v1);
- 		return;
-@@ -1532,12 +1538,61 @@ static int cmp_stats_key(const struct verif_stats *base, const struct verif_stat
- 	return strcmp(base->prog_name, comp->prog_name);
- }
- 
-+static bool is_join_stat_filter_matched(struct filter *f, const struct verif_stats_join *stats)
-+{
-+	static const double eps = 1e-9;
-+	const char *str = NULL;
-+	double value = 0.0;
-+
-+	fetch_join_stat_value(stats, f->stat_id, f->stat_var, &str, &value);
-+
-+	switch (f->op) {
-+	case OP_EQ: return value > f->value - eps && value < f->value + eps;
-+	case OP_NEQ: return value < f->value - eps || value > f->value + eps;
-+	case OP_LT: return value < f->value - eps;
-+	case OP_LE: return value <= f->value + eps;
-+	case OP_GT: return value > f->value + eps;
-+	case OP_GE: return value >= f->value - eps;
-+	}
-+
-+	fprintf(stderr, "BUG: unknown filter op %d!\n", f->op);
-+	return false;
-+}
-+
-+static bool should_output_join_stats(const struct verif_stats_join *stats)
-+{
-+	struct filter *f;
-+	int i, allow_cnt = 0;
-+
-+	for (i = 0; i < env.deny_filter_cnt; i++) {
-+		f = &env.deny_filters[i];
-+		if (f->kind != FILTER_STAT)
-+			continue;
-+
-+		if (is_join_stat_filter_matched(f, stats))
-+			return false;
-+	}
-+
-+	for (i = 0; i < env.allow_filter_cnt; i++) {
-+		f = &env.allow_filters[i];
-+		if (f->kind != FILTER_STAT)
-+			continue;
-+		allow_cnt++;
-+
-+		if (is_join_stat_filter_matched(f, stats))
-+			return true;
-+	}
-+
-+	/* if there are no stat allowed filters, pass everything through */
-+	return allow_cnt == 0;
-+}
-+
- static int handle_comparison_mode(void)
- {
- 	struct stat_specs base_specs = {}, comp_specs = {};
- 	struct stat_specs tmp_sort_spec;
- 	enum resfmt cur_fmt;
--	int err, i, j;
-+	int err, i, j, last_idx;
- 
- 	if (env.filename_cnt != 2) {
- 		fprintf(stderr, "Comparison mode expects exactly two input CSV files!\n\n");
-@@ -1664,9 +1719,14 @@ static int handle_comparison_mode(void)
- 
- 	for (i = 0; i < env.join_stat_cnt; i++) {
- 		const struct verif_stats_join *join = &env.join_stats[i];
--		bool last = i == env.join_stat_cnt - 1;
- 
--		output_comp_stats(join, cur_fmt, last);
-+		if (!should_output_join_stats(join))
-+			continue;
-+
-+		if (cur_fmt == RESFMT_TABLE_CALCLEN)
-+			last_idx = i;
-+
-+		output_comp_stats(join, cur_fmt, i == last_idx);
- 	}
- 
- 	if (cur_fmt == RESFMT_TABLE_CALCLEN) {
--- 
+--=20
 2.30.2
 
