@@ -2,194 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB655618AB7
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC89618ABC
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbiKCVjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 17:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S231633AbiKCVmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 17:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiKCVjL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 17:39:11 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4D413E8E
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:39:10 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id o65so2494440iof.4
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 14:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g3QN9qDodq/aU5tlCSzzroSH+1NsZzZo1uA0chP0Tws=;
-        b=PDJ8wyvkq/Ie8hcdLJqtN18Xen2j7nrSLcOtaNEAkFcGSHL/2oLxznK2EdHjYgbTh8
-         ZaSayvgcY1LQ/8oWKpHi310Tm05QM0WNZQJufgs77NPksn3snuf8LG8kCu6W7dxTPzB3
-         qkrlov3T4VyyPFpOjmiBw2l010M9LKLYxsjthI4zdTfdYW0wLwKkbx0LoNo/y8hNs84C
-         8xKN9xO/mzkM5Dbzq8zHvYssjMUBDqKxyCGbkLu2X9tbz2CkOBuisnpFNsfkvO2A37Do
-         cbANjh2Kf2VJ/23F+m+T+HGDC5JbHNk7nUgP2aWxeabJVChzhspdeuxOoZ2+hn6bFoc6
-         KIHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g3QN9qDodq/aU5tlCSzzroSH+1NsZzZo1uA0chP0Tws=;
-        b=gqBzq477N+oflzphpna1ZWo8CY+wYTJ9MAdC/dut7axUXCNwfGszVGWWeLntD1H8O/
-         +xhGgJPQl7XTlOBKB9mnsUeRux+s5tb8K+Y6Y2HsVtOh2D0HW/yZirVUN1SKq2TqowbI
-         CrOy4lwrwRBXUYfzU3opPDRKCmZ16CijGwpISbH6f705GxoSTuPQZK5I6XCEYpCs++s5
-         CPNv7AO6dLWq8AatiHLCOZUb7z+5HFTz9GP/yVOEEKQh13qQezL9YG7PMuOtNrXYgBoe
-         qx5mj0gSqwAJCgvTTtLYNmcTDPppgr44QiZf7oFmQWY8NYSG2i4kAU0JWbSSITT4SC5j
-         htcA==
-X-Gm-Message-State: ACrzQf0+mBM2hbc3c28lYV7v3zm2lHYmI+/PtOBoUYD1b+ALwxrWRf+o
-        Nx3FdLiL+j0NdnaV7DrjgbUXRvkYg1Ijl8p0fUwpgA==
-X-Google-Smtp-Source: AMsMyM61NlIm/gVSRMqzHMipWB7KJn7cV6LWUXDXmyAhDen+qFHchTTmn1qGt1QnB7/7fg0CVexvuWPZ5zjoSPZbhsE=
-X-Received: by 2002:a05:6602:13d5:b0:6d6:1ea:3b0c with SMTP id
- o21-20020a05660213d500b006d601ea3b0cmr2826052iov.16.1667511549268; Thu, 03
- Nov 2022 14:39:09 -0700 (PDT)
+        with ESMTP id S231605AbiKCVl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 17:41:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B791B9DE
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:41:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E23A761FEF
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:41:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D9CC43143
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667511716;
+        bh=uPVjPd0sItmgKWcb/4J3iPNbrhCvC78j4JnZd3nbd0I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ULRJtokjPQ2GKq5DvEh3OyRPqVhAio8Kyu4OAfaBTlnm0rfsDAIsCajH2lXUoJtAS
+         whaqhuIGNu9tv865DpSOadiD1upiBX24066iRjBkGo9Xa0fEfjnYvBDjFZC3dHZJky
+         2uVqeqRq/QuVh/5BhfoX0e2K0gR4ZaZj7KfoAwk1IhTt5bYDdTtgrbzHvvVLYk47Bv
+         e8PMxc2E17i1TfcSyqK+wXVXxakOPwuzff/yjWQ8O4RGFrEc3m+tU6YWUu5vkC8A0e
+         8xaCHaOv/w/LrruWmdj2ai2qZMmvVifqxIHtWSHR1QZvgG5fjHMAFXPwKFYCu73sAk
+         Y5k4ghGKDaVRA==
+Received: by mail-ej1-f52.google.com with SMTP id b2so8799321eja.6
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 14:41:56 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3iZJHxHSO88Dg8qOIBO6JlkuFth8ZO2TzYO9i7UtXoL3E3VNl3
+        l4w9gWXu8+R6kyksULzf2RYkto2HEOC6h2U8JFA=
+X-Google-Smtp-Source: AMsMyM4DDn//BJ3YNxX1pJr0cEile6DXy2QBs9oTdcL26TvcAWsYoPn7YIyNSIIF+3OjWXZde6/KWYhHN9kOuRwi7gc=
+X-Received: by 2002:a17:907:b602:b0:7ad:e82c:3355 with SMTP id
+ vl2-20020a170907b60200b007ade82c3355mr17874916ejc.3.1667511714445; Thu, 03
+ Nov 2022 14:41:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221027225537.353077-1-sdf@google.com> <2efac61c-a477-d3c1-4270-3c98998e6497@linux.dev>
- <CAKH8qBt1QPBLh1Yg+oA-qdQjND9Zp04z6tK9vjDkSMRqbhh24A@mail.gmail.com>
- <1393c4d0-89e0-e5b7-9f40-2c646f2ea2e9@linux.dev> <5de93174-6e27-1d0b-6ff1-b63c6141b6a2@linux.dev>
-In-Reply-To: <5de93174-6e27-1d0b-6ff1-b63c6141b6a2@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 3 Nov 2022 14:38:58 -0700
-Message-ID: <CAKH8qBt5d7fJH6Anw1BHK8YyKjkw3jsR_6Bi01YqGRRxfuGP6g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: make sure skb->len != 0 when redirecting to
- a tunneling device
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, Lorenz Bauer <oss@lmb.io>
+References: <20221031222541.1773452-1-song@kernel.org> <20221031222541.1773452-2-song@kernel.org>
+ <Y2MAR0aj+jcq+15H@bombadil.infradead.org> <Y2Pjnd3mxA9fTlox@kernel.org>
+ <Y2QPpODzdP+2YSMN@bombadil.infradead.org> <eac58f163bd8b6829dff176e67b44c79570025f5.camel@intel.com>
+In-Reply-To: <eac58f163bd8b6829dff176e67b44c79570025f5.camel@intel.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 3 Nov 2022 14:41:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4sYOzdkzpX5=5FBs3dF2DiXyNvRQC0jHnrMQFy5-mUhg@mail.gmail.com>
+Message-ID: <CAPhsuW4sYOzdkzpX5=5FBs3dF2DiXyNvRQC0jHnrMQFy5-mUhg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 RESEND 1/5] vmalloc: introduce vmalloc_exec,
+ vfree_exec, and vcopy_exec
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "rppt@kernel.org" <rppt@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "p.raghav@samsung.com" <p.raghav@samsung.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "dave@stgolabs.net" <dave@stgolabs.net>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hch@lst.de" <hch@lst.de>, "vbabka@suse.cz" <vbabka@suse.cz>,
+        "zhengjun.xing@linux.intel.com" <zhengjun.xing@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Torvalds, Linus" <torvalds@linux-foundation.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "a.manzanares@samsung.com" <a.manzanares@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 2:32 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Nov 3, 2022 at 2:19 PM Edgecombe, Rick P
+<rick.p.edgecombe@intel.com> wrote:
 >
-> On 11/1/22 5:43 PM, Martin KaFai Lau wrote:
-> > On 11/1/22 4:39 PM, Stanislav Fomichev wrote:
-> >> On Tue, Nov 1, 2022 at 1:28 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >>>
-> >>> On 10/27/22 3:55 PM, Stanislav Fomichev wrote:
-> >>>> syzkaller managed to trigger another case where skb->len == 0
-> >>>> when we enter __dev_queue_xmit:
-> >>>>
-> >>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len
-> >>>> include/linux/skbuff.h:2576 [inline]
-> >>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576
-> >>>> __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
-> >>>>
-> >>>> Call Trace:
-> >>>>    dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
-> >>>>    __bpf_tx_skb net/core/filter.c:2115 [inline]
-> >>>>    __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
-> >>>>    __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
-> >>>>    ____bpf_clone_redirect net/core/filter.c:2447 [inline]
-> >>>>    bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
-> >>>>    bpf_prog_48159a89cb4a9a16+0x59/0x5e
-> >>>>    bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
-> >>>>    __bpf_prog_run include/linux/filter.h:596 [inline]
-> >>>>    bpf_prog_run include/linux/filter.h:603 [inline]
-> >>>>    bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
-> >>>>    bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
-> >>>>    bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
-> >>>>    __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
-> >>>>    __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
-> >>>>    __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
-> >>>>    __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
-> >>>>    do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
-> >>>>    entry_SYSCALL_64_after_hwframe+0x61/0xc6
-> >>>>
-> >>>> The reproducer doesn't really reproduce outside of syzkaller
-> >>>> environment, so I'm taking a guess here. It looks like we
-> >>>> do generate correct ETH_HLEN-sized packet, but we redirect
-> >>>> the packet to the tunneling device. Before we do so, we
-> >>>> __skb_pull l2 header and arrive again at skb->len == 0.
-> >>>> Doesn't seem like we can do anything better than having
-> >>>> an explicit check after __skb_pull?
-> >>> hmm... I recall there was similar report but I didn't follow those earlier fixes
-> >>> and discussion.  Not sure if this has been considered:
-> >>> If this skb can only happen in the bpf_prog_test_run (?),
-> >>> how about ensure that the skb will at least have some header after l2 header in
-> >>> bpf_prog_test_run_skb().  Adding some headers/bytes if the data_size_in does not
-> >>> have it.  This may break some external test cases that somehow has no l3/4?
-> >>> test_progs should be mostly fine considering they are using the pkt_v[46] in
-> >>> network_helpers.h.
-> >>
-> >> For the previous issue we've added "skb->len != 0" check which works
-> >> for the cases that remove l2.
->
-> Yeah, I replied on the "bpf: Don't redirect packets with invalid pkt_len" thread
-> which is hitting the same syzbot report afaict.  I don't think that patch is
-> actually fixing it.
->
-> >> For the ones that don't, I think you're right, and checking at the
-> >> time of bpf_prog_test_run_skb can probably be enough, lemme try
-> >> (require ETH_HLEN+1 vs ETH_HLEN).
-> >> For some reason I was under the impression that Lorenz changed the
-> >> size from 0 to 14 [0], but he went from 14 to 15, so we won't break at
-> >> least cilium again..
-> >> CC'd him just in case.
-> >>
-> >> 0: https://github.com/cilium/ebpf/pull/788
+> On Thu, 2022-11-03 at 11:59 -0700, Luis Chamberlain wrote:
+> > > > Mike Rapoport had presented about the Direct map fragmentation
+> > > > problem
+> > > > at Plumbers 2021 [0], and clearly mentioned modules / BPF /
+> > > > ftrace /
+> > > > kprobes as possible sources for this. Then Xing Zhengjun's 2021
+> > > > performance
+> > > > evaluation on whether using 2M/1G pages aggressively for the
+> > > > kernel direct map
+> > > > help performance [1] ends up generally recommending huge pages.
+> > > > The work by Xing
+> > > > though was about using huge pages *alone*, not using a strategy
+> > > > such as in the
+> > > > "bpf prog pack" to share one 2 MiB huge page for *all* small eBPF
+> > > > programs,
+> > > > and that I think is the real golden nugget here.
+> > > >
+> > > > I contend therefore that the theoretical reduction of iTLB misses
+> > > > by using
+> > > > huge pages for "bpf prog pack" is not what gets your systems to
+> > > > perform
+> > > > somehow better. It should be simply that it reduces fragmentation
+> > > > and
+> > > > *this* generally can help with performance long term. If this is
+> > > > accurate
+> > > > then let's please separate the two aspects to this.
+> > >
+> > > The direct map fragmentation is the reason for higher TLB miss
+> > > rate, both
+> > > for iTLB and dTLB.
 > >
-> > Thanks for the pointer.
-> >
-> > The cilium's prog is SOCKET_FILTER (not l2).  It is why the new "skb->len != 0"
-> > test broke it.
-> >
-> >>
-> >>> Adding some headers/bytes if the data_size_in does not have it.
-> >>> This may break some external test cases that somehow has no l3/4?
-> >>
-> >> Yeah, idk, this seems like a last resort? I'd prefer to explicitly
-> >> fail and communicate it back to the user than slap some extra byte and
-> >> then fail in some other place unpredictably?
-> >
-> > If fixing in the fast path in filter.c, is __bpf_redirect_no_mac the only place
-> > that needs this check?  bpf_redirect_neigh() looks ok to me since the neigh
-> > should have filled the mac header.
+> > OK so then whatever benchmark is running in tandem as eBPF JIT is
+> > hammered
+> > should *also* be measured with perf for iTLB and dTLB. ie, the patch
+> > can
+> > provide such results as a justifications.
 >
-> I took a closer look.  This seems to be the only place needed the check, so
-> applied.  If it turns out there are other cases caused by test-run generated
-> skb, we will revisit a fix in test_run.c and the existing tests have to adjust.
+> Song had done some tests on the old prog pack version that to me seemed
+> to indicate most (or possibly all) of the benefit was direct map
+> fragmentation reduction. This was surprised me, since 2MB kernel text
+> has shown to be beneficial.
 >
-> >
-> >>
-> >>>> Cc: Eric Dumazet <edumazet@google.com>
-> >>>> Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
-> >>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >>>> ---
-> >>>>    net/core/filter.c | 4 ++++
-> >>>>    1 file changed, 4 insertions(+)
-> >>>>
-> >>>> diff --git a/net/core/filter.c b/net/core/filter.c
-> >>>> index bb0136e7a8e4..cb3b635e35be 100644
-> >>>> --- a/net/core/filter.c
-> >>>> +++ b/net/core/filter.c
-> >>>> @@ -2126,6 +2126,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb,
-> >>>> struct net_device *dev,
-> >>>>
-> >>>>        if (mlen) {
-> >>>>                __skb_pull(skb, mlen);
-> >>>> +             if (unlikely(!skb->len)) {
-> >>>> +                     kfree_skb(skb);
-> >>>> +                     return -ERANGE;
-> >>>> +             }
+> Otherwise +1 to all these comments. This should be clear about what the
+> benefits are. I would add, that this is also much nicer about TLB
+> shootdowns than the existing way of loading text and saves some memory.
 >
-> One question, if the "!skb->len" check is deleted from convert___skb_to_skb(),
-> this "unlikely(!skb->len)" block here has to be moved out of the "if (mlen)"?
+> So I think there are sort of four areas of improvements:
+> 1. Direct map fragmentation reduction (dTLB miss improvements). This
+> sort of does it as a side effect in this series, and the solution Mike
+> is talking about is a more general, probably better one.
+> 2. 2MB mapped JITs. This is the iTLB side. I think this is a decent
+> solution for this, but surprisingly it doesn't seem to be useful for
+> JITs. (modules testing TBD)
+> 3. Loading text to reused allocation with per-cpu mappings. This
+> reduces TLB shootdowns, which are a short term load and teardown time
+> performance drag. My understanding is this is more of a problem on
+> bigger systems with many CPUs. This series does a decent job at this,
+> but the solution is not compatible with modules. Maybe ok since modules
+> don't load as often as JITs.
+> 4. Having BPF progs share pages. This saves memory. This series could
+> probably easily get a number for how much.
+>
 
-I see, yeah, that might be the alternative. I'm assuming
-__bpf_redirect_common is covered by "skb->mac_header >=
-skb->network_header" check?
+Hi Luis, Rick, and Mike,
+
+Thanks a lot for helping me organize this information. Totally agree with
+all these comments. I will add more data to the next revision.
+
+Besides the motivation improvement, could you please also share your
+comments on:
+1. The logic/design of the vmalloc_exec() et. al. APIs;
+2. The naming of these functions. Does  execmem_[alloc|free|fill|cpy]
+  (as suggested by Chritoph) sound good?
+
+Thanks,
+Song
