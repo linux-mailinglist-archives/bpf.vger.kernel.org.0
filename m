@@ -2,143 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8101A617A09
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 10:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394CA617A1E
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 10:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbiKCJe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 05:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
+        id S229379AbiKCJlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 05:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbiKCJe5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 05:34:57 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98522DF78
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 02:34:56 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id g62so1075905pfb.10
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 02:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2QbGEY4J71OX2r9n4LqKfmPqOIgB9erqJsHB6/sGCpk=;
-        b=DaO5+jedHAQSK3ekGj9SQTlNTTjLyRU/JhTf1qoRfBrFF61AV8FSiEezJ8Urv6GRpd
-         IBxuEfAcqIGlgDVO8Dzs59mJh/iz1xQcaGfjJTuvBnfogaM/v4qcWx94i6p5ZNncWCTX
-         djm/s0FlokRR8lZZ/crUHDjxcA2fVvZcnFlpywrD99IOGFNajYtj4w7S1B0ofddJlP3F
-         IBeGjX1OXcoh7F1rozq7IEBGtYj4NCAYdZMtO+i5TyNdFOfDu1l7BuvI29r6McOnH4NE
-         3MrFFeIoj1gU4tWpieUA1Xt5YxlENQWIi4aXnQD7fSBXtdxlKPmBsEG7mOGSPLJnlEf4
-         yCLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2QbGEY4J71OX2r9n4LqKfmPqOIgB9erqJsHB6/sGCpk=;
-        b=lzvegOw8H2GCTZMcXTjaVPQTQlHqEJ1+WXLWwMnOGPnYgpMBIgXR0cNZN/ljapbuK/
-         K8B0iZjRevFNtLg7TjCG0jW7Q+gKE2ek2JtKxT9Lckp79XZQdJf7VmEQUWOWbNtx2V8l
-         e9NM9riKfT1MNIW28SYltNeilgNnrbWn9cjmrxjt7lQjB9JU5TDfT642O5BQvUgJ+vhy
-         XOrEr13xZTmeYfd8yLp7ewW+qAKVshMGNM4i+cct6KnfnS35kJCvdcft/qtYnj+2PFAH
-         Qy5yqa/eYAgXn3izbIYpo3UxWSPq/dyUesfneBfAY/h6whhPBxzpNlACkn8hyqaNQ8Uk
-         Td6g==
-X-Gm-Message-State: ACrzQf1GFBiqknbNKJUIjBRyI/gBxrdGkR+4beWOQ/o1IbI6g0spSDpu
-        Tj9fCMOifeIOB4NWzB7jl1JKyJ4bMwEHxBGKLJI=
-X-Google-Smtp-Source: AMsMyM6vTWfs1HirVaFhEOcSQnXCzvAPkz1CRgCDz0AkDUVAuyBZJvi6cPDk17AczVtN9THiaafHmQ==
-X-Received: by 2002:a05:6a00:1251:b0:56d:cabd:7207 with SMTP id u17-20020a056a00125100b0056dcabd7207mr12447923pfi.45.1667468095983;
-        Thu, 03 Nov 2022 02:34:55 -0700 (PDT)
-Received: from k1r0aKuee.localdomain ([20.255.2.235])
-        by smtp.gmail.com with ESMTPSA id b4-20020a170902d50400b0018668bee7cdsm177786plg.77.2022.11.03.02.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 02:34:55 -0700 (PDT)
-From:   Youlin Li <liulin063@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, Youlin Li <liulin063@gmail.com>
-Subject: [PATCH bpf 2/2] selftests/bpf: Add verifier test for release_reference()
-Date:   Thu,  3 Nov 2022 17:34:40 +0800
-Message-Id: <20221103093440.3161-2-liulin063@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221103093440.3161-1-liulin063@gmail.com>
-References: <20221103093440.3161-1-liulin063@gmail.com>
+        with ESMTP id S229523AbiKCJlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 05:41:21 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2B064E0;
+        Thu,  3 Nov 2022 02:41:19 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N2zFM6dN3zpW5X;
+        Thu,  3 Nov 2022 17:37:43 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 3 Nov 2022 17:41:12 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 3 Nov 2022 17:41:12 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <acme@redhat.com>, <pabeni@redhat.com>, <adrian.hunter@intel.com>,
+        <wojciech.drewek@intel.com>, <davem@davemloft.net>,
+        <gustavoars@kernel.org>, <tadeusz.struk@linaro.org>,
+        <keescook@chromium.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH bpf RESEND v2] tools headers UAPI: Sync linux/stddef.h with the kernel sources
+Date:   Thu, 3 Nov 2022 17:37:57 +0800
+Message-ID: <20221103093757.252390-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test case to ensure that released pointer registers will not be
-leaked into the MAP.
+commit 036b8f5b8970 ("tools headers uapi: Update linux/in.h copy") modify
+tools/include/uapi/linux/in.h, and __DECLARE_FLEX_ARRAY is introduced.
+Macro is not defined in tools/include, compilation fails:
 
-Before fix:
-./test_verifier 984
-    984/u reference tracking: try to leak released ptr reg FAIL
-    Unexpected success to load!
-    verification time 67 usec
-    stack depth 4
-    processed 23 insns (limit 1000000) max_states_per_insn 0 total_states 2
-    peak_states 2 mark_read 1
-    984/p reference tracking: try to leak released ptr reg OK
-    Summary: 1 PASSED, 0 SKIPPED, 1 FAILED
+    CLNG-BPF [test_maps] bind4_prog.bpf.o
+  In file included from progs/bind4_prog.c:7:
+  /root/linux-mainline-new/linux/tools/include/uapi/linux/in.h:199:3: error: type name requires a specifier or qualifier
+                  __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                  ^
+  /root/linux-mainline-new/linux/tools/include/uapi/linux/in.h:199:32: error: type specifier missing, defaults to 'int' [-Werror,-Wimplicit-int]
+                  __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                                               ^
+  2 errors generated.
 
-After fix:
-./test_verifier 984
-    984/u reference tracking: try to leak released ptr reg OK
-    984/p reference tracking: try to leak released ptr reg OK
-    Summary: 2 PASSED, 0 SKIPPED, 0 FAILED
+Synchronize include/uapi/linux/stddef.h to tools headers directory,
+and delete the line "#include <linux/compiler_types.h>":
 
-Signed-off-by: Youlin Li <liulin063@gmail.com>
+  # cp ./include/uapi/linux/stddef.h tools/include/uapi/linux/stddef.h
+  # sed -i '/#include <linux\/compiler_types.h>/,+1d' tools/include/uapi/linux/stddef.h
+
+And add missed <linux/stddef.h> header in tools/include/uapi/linux/in.h.
+
+Fixes: 036b8f5b8970 ("tools headers uapi: Update linux/in.h copy")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- .../selftests/bpf/verifier/ref_tracking.c     | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/verifier/ref_tracking.c b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-index f18ce867271f..fd683a32a276 100644
---- a/tools/testing/selftests/bpf/verifier/ref_tracking.c
-+++ b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-@@ -1044,3 +1044,39 @@
- 	.result_unpriv = REJECT,
- 	.errstr_unpriv = "unknown func",
- },
-+{
-+	"reference tracking: try to leak released ptr reg",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_0, -4),
-+		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+		BPF_EXIT_INSN(),
-+		BPF_MOV64_REG(BPF_REG_9, BPF_REG_0),
+Changes since v1:
+ - Specify the target tree to "bpf" in title.
+ - Add more reviewers.
+
+ tools/include/uapi/linux/in.h     |  1 +
+ tools/include/uapi/linux/stddef.h | 45 +++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 tools/include/uapi/linux/stddef.h
+
+diff --git a/tools/include/uapi/linux/in.h b/tools/include/uapi/linux/in.h
+index f243ce665f74..79015665daf1 100644
+--- a/tools/include/uapi/linux/in.h
++++ b/tools/include/uapi/linux/in.h
+@@ -22,6 +22,7 @@
+ #include <linux/types.h>
+ #include <linux/libc-compat.h>
+ #include <linux/socket.h>
++#include <linux/stddef.h>
+ 
+ #if __UAPI_DEF_IN_IPPROTO
+ /* Standard well-defined IP protocols.  */
+diff --git a/tools/include/uapi/linux/stddef.h b/tools/include/uapi/linux/stddef.h
+new file mode 100644
+index 000000000000..72bcdf96999f
+--- /dev/null
++++ b/tools/include/uapi/linux/stddef.h
+@@ -0,0 +1,45 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_STDDEF_H
++#define _UAPI_LINUX_STDDEF_H
 +
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		BPF_MOV64_IMM(BPF_REG_2, 8),
-+		BPF_MOV64_IMM(BPF_REG_3, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_ringbuf_reserve),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+		BPF_EXIT_INSN(),
-+		BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
++#ifndef __always_inline
++#define __always_inline inline
++#endif
 +
-+		BPF_MOV64_REG(BPF_REG_1, BPF_REG_8),
-+		BPF_MOV64_IMM(BPF_REG_2, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_ringbuf_discard),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
++/**
++ * __struct_group() - Create a mirrored named and anonyomous struct
++ *
++ * @TAG: The tag name for the named sub-struct (usually empty)
++ * @NAME: The identifier name of the mirrored sub-struct
++ * @ATTRS: Any struct attributes (usually empty)
++ * @MEMBERS: The member declarations for the mirrored structs
++ *
++ * Used to create an anonymous union of two structs with identical layout
++ * and size: one anonymous and one named. The former's members can be used
++ * normally without sub-struct naming, and the latter can be used to
++ * reason about the start, end, and size of the group of struct members.
++ * The named struct can also be explicitly tagged for layer reuse, as well
++ * as both having struct attributes appended.
++ */
++#define __struct_group(TAG, NAME, ATTRS, MEMBERS...) \
++	union { \
++		struct { MEMBERS } ATTRS; \
++		struct TAG { MEMBERS } ATTRS NAME; \
++	}
 +
-+		BPF_STX_MEM(BPF_DW, BPF_REG_9, BPF_REG_8, 0),
-+		BPF_EXIT_INSN()
-+	},
-+	.fixup_map_array_48b = { 4 },
-+	.fixup_map_ringbuf = { 11 },
-+	.result = ACCEPT,
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "R8 !read_ok"
-+},
++/**
++ * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
++ *
++ * @TYPE: The type of each flexible array element
++ * @NAME: The name of the flexible array member
++ *
++ * In order to have a flexible array member in a union or alone in a
++ * struct, it needs to be wrapped in an anonymous struct with at least 1
++ * named member, but that member can be empty.
++ */
++#define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
++	struct { \
++		struct { } __empty_ ## NAME; \
++		TYPE NAME[]; \
++	}
++#endif
 -- 
-2.25.1
+2.30.GIT
 
