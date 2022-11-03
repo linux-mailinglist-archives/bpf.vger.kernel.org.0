@@ -2,146 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C268C618B86
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 23:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E22618BB9
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 23:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiKCWaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 18:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S229600AbiKCWmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 18:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbiKCWaF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 18:30:05 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1B022BD5
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:30:04 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b11so2987864pjp.2
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 15:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3fMKSoAbFdtv7kK19x6+LSLeUsnWQgkr5WPfElpsC14=;
-        b=ZbK03pWheFqXA/nS5IgQ9O8tbxHwFwp70R6tkPNaTljl9NNhtrNje3uCY55IEBYtKc
-         fZEeLhBEcwP3Pz54UGbf6eLANgSw5utCFv8xS00NfS336BlFoPV7WqeFGYqh8nl0GTru
-         Jc/WyUO/1A/wRT5H8ZABrMCNUOMrlj5hPx6OmfFjnHv398aRxj6/cMUwQDmLhqSWVXkk
-         z1uo/gN7Zm3ZD81/5ov9DrVEC00A9qZvPtlksrisJ2VVMnLpQPSq46NTAN7LYJ67AzfR
-         /vNqmS7O1au/HmAIPYXg8hRHFOyFhJO+D9TWCQfCz0aoFr6Iev/k0XpQRmW0iPlHvJam
-         B9Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3fMKSoAbFdtv7kK19x6+LSLeUsnWQgkr5WPfElpsC14=;
-        b=WMYIf+BwOc/2jjp2bKw5YJjCuF/CYwMGhsUCw82pO77vA25+cd2zqlS2XZYyeXMEd/
-         W79jSz2MQotpX9mJtmCfcJNX1sXa26MRINbJm/qXmXvaMyJbRzErkfyIhJpOUjPyr0DP
-         mzaFin2akG7V/ygtjs5uHv6RNPyBJfZtIuj9CGGvpIQMTWXqm+n3hBNFqdS1842a7D2+
-         NzHqGXd8w2y1w63toqWHZTl6keufPXdf5EWWRqhKLNT67RqCCvO9Ljt7JjbOGCih4vH1
-         z3DObL3rZOmLW15zfNLLDjMiG2dsc1x0Ly7CWvz81Yl/npCEebg/EAKm6rJgcuWrxwXG
-         b4xw==
-X-Gm-Message-State: ACrzQf3Y6GntsIS5q+N1d6+8xep06Qj8nt0n/mmC6JKGSw2/No03ikPB
-        HnU+UHw37qab00kyqhzTvD0=
-X-Google-Smtp-Source: AMsMyM5nDT2sT2FqbZQoW8FRe9Pibv8+vF7VjAc2dcM0sbMr7tZcoC5WfnhVTFhy7hMvXXzQu7WF7w==
-X-Received: by 2002:a17:902:7897:b0:178:9292:57b9 with SMTP id q23-20020a170902789700b00178929257b9mr32539050pll.102.1667514604104;
-        Thu, 03 Nov 2022 15:30:04 -0700 (PDT)
-Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id q5-20020a17090a2dc500b002071ee97923sm458143pjm.53.2022.11.03.15.30.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 15:30:03 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 03:59:43 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next 2/5] bpf: Add bpf_rcu_read_lock/unlock helper
-Message-ID: <20221103222943.6wksva7pavt24o7a@apollo>
-References: <20221103072102.2320490-1-yhs@fb.com>
- <20221103072113.2322563-1-yhs@fb.com>
- <CACYkzJ6ASmpYPmenN6NMpThiJiXF2ggQR+sjaE5DATRFTp64eQ@mail.gmail.com>
- <7916c4e0-2957-f05d-a69b-fe74ae8a264c@meta.com>
+        with ESMTP id S229560AbiKCWme (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 18:42:34 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641761FCE7;
+        Thu,  3 Nov 2022 15:42:32 -0700 (PDT)
+Message-ID: <0e69cc92-fece-3673-f7f8-24f5397183b3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1667515350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9rCizRnzj+oCe3ELksUd3cfTqM3VfkkKyF7J/bqWi1k=;
+        b=cO2ENP/Lhd8YxKCCG5lz67br1oBduJZ0DmOYTwf5PltaUiO/BJ7Lp/Ee6fr07tTw5OfybZ
+        Cl2vvjkxmuy167xnEgOxP/2FxG2wJhl17wD3915InZHfw2onEcO2jzr6ZG0i+UavVacPOD
+        NEL1AnpYT5PEjT4b+1XtABOjp2lv/Qs=
+Date:   Thu, 3 Nov 2022 15:42:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7916c4e0-2957-f05d-a69b-fe74ae8a264c@meta.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid
+ pkt_len
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Zhengchao Shao <shaozhengchao@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        bigeasy@linutronix.de, imagedong@tencent.com, petrm@nvidia.com,
+        arnd@arndb.de, dsahern@kernel.org, talalahmad@google.com,
+        keescook@chromium.org, haoluo@google.com, jolsa@kernel.org,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hawk@kernel.org
+References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+ <f0bb3cd6-6986-6ca1-aa40-7a10302c8586@linux.dev>
+ <CAKH8qBvLGaX_+ye5Wdmj1FS+p8K8gBsKUEDRb1x8KzxQE+oDuA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAKH8qBvLGaX_+ye5Wdmj1FS+p8K8gBsKUEDRb1x8KzxQE+oDuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 02:30:55AM IST, Yonghong Song wrote:
->
->
-> On 11/3/22 7:28 AM, KP Singh wrote:
-> > On Thu, Nov 3, 2022 at 8:21 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > > Add bpf_rcu_read_lock() and bpf_rcu_read_unlock() helpers.
-> > > Both helpers are available to all program types with
-> > > CAP_BPF capability.
-> > >
-> > > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > > ---
-> > >   include/linux/bpf.h            |  2 ++
-> > >   include/uapi/linux/bpf.h       | 14 ++++++++++++++
-> > >   kernel/bpf/core.c              |  2 ++
-> > >   kernel/bpf/helpers.c           | 26 ++++++++++++++++++++++++++
-> > >   tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
-> > >   5 files changed, 58 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 8d948bfcb984..a9bda4c91fc7 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -2554,6 +2554,8 @@ extern const struct bpf_func_proto bpf_get_retval_proto;
-> > >   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
-> > >   extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
-> > >   extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
-> > > +extern const struct bpf_func_proto bpf_rcu_read_lock_proto;
-> > > +extern const struct bpf_func_proto bpf_rcu_read_unlock_proto;
-> > >
-> > >   const struct bpf_func_proto *tracing_prog_func_proto(
-> > >     enum bpf_func_id func_id, const struct bpf_prog *prog);
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 94659f6b3395..e86389cd6133 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -5481,6 +5481,18 @@ union bpf_attr {
-> > >    *             0 on success.
-> > >    *
-> > >    *             **-ENOENT** if the bpf_local_storage cannot be found.
-> > > + *
-> > > + * void bpf_rcu_read_lock(void)
-> > > + *     Description
-> > > + *             Call kernel rcu_read_lock().
-> >
-> > Simple wrapper around rcu_read_lock() and maybe explain where and how
-> > it is supposed to
-> > be used.
-> >
-> > e.g. the verifier will check if __rcu pointers are being accessed with
-> > bpf_rcu_read_lock in
-> > sleepable programs.
->
-> Okay, I can add more descriptions.
->
-> >
-> > Calling the helper from a non-sleepable program is inconsequential,
-> > but maybe we can even
-> > avoid exposing it to non-sleepable programs?
->
-> I actually debated myself whether to make bpf_rcu_read_lock()/unlock()
-> to be sleepable only. Although it won't hurt for non-sleepable program,
-> I guess I can make it as sleepable only so users don't make mistake
-> to use them in non-sleepable programs.
->
+On 11/3/22 2:36 PM, Stanislav Fomichev wrote:
+> On Thu, Nov 3, 2022 at 2:07 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 7/15/22 4:55 AM, Zhengchao Shao wrote:
+>>> Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
+>>> skbs, that is, the flow->head is null.
+>>> The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
+>>> run a bpf prog which redirects empty skbs.
+>>> So we should determine whether the length of the packet modified by bpf
+>>> prog or others like bpf_prog_test is valid before forwarding it directly.
+>>>
+>>> LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
+>>> LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
+>>>
+>>> Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
+>>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+>>> ---
+>>> v3: modify debug print
+>>> v2: need move checking to convert___skb_to_skb and add debug info
+>>> v1: should not check len in fast path
+>>>
+>>>    include/linux/skbuff.h | 8 ++++++++
+>>>    net/bpf/test_run.c     | 3 +++
+>>>    net/core/dev.c         | 1 +
+>>>    3 files changed, 12 insertions(+)
+>>>
+>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>>> index f6a27ab19202..82e8368ba6e6 100644
+>>> --- a/include/linux/skbuff.h
+>>> +++ b/include/linux/skbuff.h
+>>> @@ -2459,6 +2459,14 @@ static inline void skb_set_tail_pointer(struct sk_buff *skb, const int offset)
+>>>
+>>>    #endif /* NET_SKBUFF_DATA_USES_OFFSET */
+>>>
+>>> +static inline void skb_assert_len(struct sk_buff *skb)
+>>> +{
+>>> +#ifdef CONFIG_DEBUG_NET
+>>> +     if (WARN_ONCE(!skb->len, "%s\n", __func__))
+>>> +             DO_ONCE_LITE(skb_dump, KERN_ERR, skb, false);
+>>> +#endif /* CONFIG_DEBUG_NET */
+>>> +}
+>>> +
+>>>    /*
+>>>     *  Add data to an sk_buff
+>>>     */
+>>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>>> index 2ca96acbc50a..dc9dc0bedca0 100644
+>>> --- a/net/bpf/test_run.c
+>>> +++ b/net/bpf/test_run.c
+>>> @@ -955,6 +955,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>>>    {
+>>>        struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+>>>
+>>> +     if (!skb->len)
+>>> +             return -EINVAL;
+>>
+>>   From another recent report [0], I don't think this change is fixing the report
+>> from syzbot.  It probably makes sense to revert this patch.
+>>
+>> afaict, This '!skb->len' test is done after
+>>          if (is_l2)
+>>                  __skb_push(skb, hh_len);
+>>
+>> Hence, skb->len is not zero in convert___skb_to_skb().  The proper place to test
+>> skb->len is before __skb_push() to ensure there is some network header after the
+>> mac or may as well ensure "data_size_in > ETH_HLEN" at the beginning.
+> 
+> When is_l2==true, __skb_push will result in non-zero skb->len, so we
+> should be good, right?
+> The only issue is when we do bpf_redirect into a tunneling device and
+> do __skb_pull, but that's now fixed by [0].
+> 
+> When is_l2==false, the existing check in convert___skb_to_skb will
+> make sure there is something in the l3 headers.
+> 
+> So it seems like this patch is still needed. Or am I missing something?
 
-It's better to let it be a noop in non-sleepable programs but still allow
-calling it. It allows writing common helper functions in the BPF program that
-work in both sleepable and non-sleepable cases by holding the RCU read lock.
+Replied in [0].  I think a small change in [0] will make this patch obsolete.
+
+My thinking is the !skb->len test in this patch does not address all cases, at 
+least not the most common one (the sch_cls prog where is_l2 == true) and then it 
+needs another change in __bpf_redirect_no_mac [0].  Then, instead of breaking 
+the existing test cases,  may as well solely depend on the change in 
+__bpf_redirect_no_mac which seems to be the only redirect function that does not 
+have the len check now.
+
+> 
+>> The fix in [0] is applied.  If it turns out there are other cases caused by the
+>> skb generated by test_run that needs extra fixes in bpf_redirect_*,  it needs to
+>> revisit an earlier !skb->len check mentioned above and the existing test cases
+>> outside of test_progs would have to adjust accordingly.
+>>
+>> [0]: https://lore.kernel.org/bpf/20221027225537.353077-1-sdf@google.com/
+>>
+>>> +
+>>>        if (!__skb)
+>>>                return 0;
+>>>
+>>> diff --git a/net/core/dev.c b/net/core/dev.c
+>>> index d588fd0a54ce..716df64fcfa5 100644
+>>> --- a/net/core/dev.c
+>>> +++ b/net/core/dev.c
+>>> @@ -4168,6 +4168,7 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>>>        bool again = false;
+>>>
+>>>        skb_reset_mac_header(skb);
+>>> +     skb_assert_len(skb);
+>>>
+>>>        if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
+>>>                __skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
+>>
+
