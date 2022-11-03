@@ -2,66 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2846185AC
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 18:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC8C61873E
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 19:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbiKCRD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 13:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        id S229611AbiKCSPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 14:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbiKCRDL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 13:03:11 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F7F1D0C3;
-        Thu,  3 Nov 2022 10:03:00 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id v27so4050881eda.1;
-        Thu, 03 Nov 2022 10:03:00 -0700 (PDT)
+        with ESMTP id S231307AbiKCSPU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 14:15:20 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F34167D0;
+        Thu,  3 Nov 2022 11:15:13 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id u24so4270273edd.13;
+        Thu, 03 Nov 2022 11:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMe/w1piolBGnVahRqgDlvg03nMiDV17ymksE4asAgo=;
-        b=byOUMkMoSgwsPdgJfElh/+HW2anWgLMSKtMVUdskPaVMPCfFYA+NulTZxzxduj5LuJ
-         A9DTSRintzRdCI0OSXQ8EouZ48eZ9RnW/fXrNuWN31LrHFn01josAvt8V9F3E1T3vDl0
-         q7n1JjkOJuqYUE5jdtX2UouAmrwtPsL416fQu66aUTZV5IguYiAzF4HKXOeYRVfa5j4Q
-         1k8h2fDV8zG7+qXriBJ3OlfsAtWwo8EXD+gXYbxrUafVYxdfGscxyiDKtsEDa1yQ0yag
-         +U89X4QWgMRD0pMWz1sug6L5lHzKysTpOb7bkoISYA1P8MS1QX6NZjf3XNPJpv9kX8BY
-         aaIA==
+        bh=hpUWD+YhtOzA0jc8BXPLurYBvg3g1SF91WdxaY8kuSg=;
+        b=piOPI/2n64inWAd4dAPDDYloRLYd4EcEp85U48/4ASGi/fj5jLAoJs32492KPRdgBW
+         dp3qOcUzC1fhFBYTokF/8FHd2rTYlT1r0LmVISULPSs+nnjtgAzlLwRIn9KcjLc4lKB5
+         wdFHeDQiF20z5fGWlJYNSl+VyQqga7HpIoYQxfSCorbdwv+YSlLZTkhQVlVxFJhqW0fO
+         AUUuSIUldQomKkzcyJLDPcBuL4zBVVgRNYqssM8uJT5CbzSlIlbfrPI23iT8b+eDUVnb
+         syJh32pyHKqdCCAIWPoTJjoCxPAez1viTiZnVd8As9aSq2IFsCTx7LeFGcyifa9irud9
+         7aUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sMe/w1piolBGnVahRqgDlvg03nMiDV17ymksE4asAgo=;
-        b=J6FTqvM76erDbgETjPCm/OHeT6HQxlxxVFLWtM6y0rf2CaAlG8+KDEy1wqDF9Kf+zk
-         2tYuGemJOqot2XYNYbzMxHbemqr66S8086GOhHu7iJn7Fg+6i2a/HMG5e4JpShCk73QP
-         vlzGK0zQlx/o6inhoV6F+j/FbmgSUGo8ryApN3dk+HogX+AqvHjtfhnCfyeN6VVRQtT+
-         UgXEMKhGX3HxkVECd6qs+7wy2e9juf5TocthCt6KCo1wF/CYi+cF07d9kyBpPevdojAM
-         h9vLuhVTKZOP15Lm4dTXva42Yq4I8TcaBtOI6JDsowqfer3t65ksjRsJtQnlPdCi9tn0
-         2JpA==
-X-Gm-Message-State: ACrzQf3GCNullmP8RglMqqstXTrehDI10Pfy3V2U963pUK+x5+2HMQR3
-        pMRATSISSXCdWgrGhAMHeaqqpE+VYM9IRqtoTOY=
-X-Google-Smtp-Source: AMsMyM7m60RCHrSwiShzF46g7SlxeqpGdr6nzQ8fYR6zzn6NuZzEosn31fOOq69vNhjz11pxmXSaxcZnUtU2V3pG2cY=
-X-Received: by 2002:a50:ee0a:0:b0:463:4055:9db4 with SMTP id
- g10-20020a50ee0a000000b0046340559db4mr25325777eds.421.1667494979022; Thu, 03
- Nov 2022 10:02:59 -0700 (PDT)
+        bh=hpUWD+YhtOzA0jc8BXPLurYBvg3g1SF91WdxaY8kuSg=;
+        b=xWtFah68RbXMo6eOiZF/ZJ7jc/9N4CQ9kRaYmuGZPFmqWrdMY/qG/jrGj15Ttt5Co4
+         cSNJ1ZSCSrJ3GBqRCsJlFsEnnzx3LYKsNRQ0rYZycnRpTh4AebuD7seZ26Kd6WZw46ik
+         ridV1jE5mB1p92NF3u4Edts6MKRdlZWcfT70kfxGQsZKm/J0lGiFQgWKw2y7hvIMobvP
+         Beijf8QkS2NWtNLuX5n+4f7PwUdkEMCPinaksDQpBRu4IYI9+TlC/qgPqjR3RWevbIH2
+         LEncqSSDLUwFnqFNm+ouOO/QpSUrW60m5JzPFWVOtgCo27QV6gtVcjls5efiEOpWYvMa
+         DhVg==
+X-Gm-Message-State: ACrzQf1OyGwdMTn5BuewxLAdLwvCeY5Kim//FswUP2S5MEHhutU2bFFT
+        a+vt88GepwW1v5itXmrlG1sUGpH8pzvJBMPL3I8=
+X-Google-Smtp-Source: AMsMyM4NHmB3buGFso/OgW21idkxjVoJccMg+7Bxc1FmyjmDmcOUiQ1ODXhYJIBD1KoquMzlA/bpmG0Tw05sgFG0mXk=
+X-Received: by 2002:aa7:c6c1:0:b0:460:f684:901a with SMTP id
+ b1-20020aa7c6c1000000b00460f684901amr31666662eds.6.1667499311857; Thu, 03 Nov
+ 2022 11:15:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221103091100.246115-1-yangjihong1@huawei.com>
-In-Reply-To: <20221103091100.246115-1-yangjihong1@huawei.com>
+References: <20221103092118.248600-1-yangjihong1@huawei.com>
+ <20221103092118.248600-3-yangjihong1@huawei.com> <Y2OknBtLgqTHSrvy@shell.armlinux.org.uk>
+In-Reply-To: <Y2OknBtLgqTHSrvy@shell.armlinux.org.uk>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Nov 2022 10:02:47 -0700
-Message-ID: <CAADnVQJTZdDCEVL0ZuieGvTYEPOEqvdScnr77Nnb+tbBuFwx3g@mail.gmail.com>
-Subject: Re: [PATCH net v2] uapi: Add missing linux/stddef.h header file to in.h
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Date:   Thu, 3 Nov 2022 11:15:00 -0700
+Message-ID: <CAADnVQ+gX8Xc57K2hSG5ZNfU1RtKBFgEp2yOWq08X68bWjMqsg@mail.gmail.com>
+Subject: Re: [PATCH bpf RESEND 2/4] bpf: Remove size check for sk in
+ bpf_skb_is_valid_access for 32-bit architecture
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Yang Jihong <yangjihong1@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>,
+        Artem Savkov <asavkov@redhat.com>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -73,38 +91,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 2:16 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+On Thu, Nov 3, 2022 at 4:23 AM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
 >
-> commit 5854a09b4957 ("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper") does
-> not include "linux/stddef.h" header file, and tools headers update
-> linux/in.h copy, BPF prog fails to be compiled:
+> On Thu, Nov 03, 2022 at 05:21:16PM +0800, Yang Jihong wrote:
+> > The error code -EACCES is returned when bpf prog is tested in 32-bit environment,
+> > This is because bpf_object__relocate modifies the instruction to change memory
+> > size to 4 bytes, as shown in the following messages:
+> >
+> > libbpf: prog 'kfunc_call_test1': relo #2: matching candidate #0 <byte_off> [18342] struct __sk_buff.sk (0:30:0 @ offset 168)
+> > libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) off 168 -> 168
+> > libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) mem_sz 8 -> 4
+> >
+> > As a result, the bpf_skb_is_valid_access check fails. For 32-bit architecture,
+> > unnecessary checks need to be deleted.
 >
->     CLNG-BPF [test_maps] bpf_flow.bpf.o
->     CLNG-BPF [test_maps] cgroup_skb_sk_lookup_kern.bpf.o
->   In file included from progs/cgroup_skb_sk_lookup_kern.c:9:
->   /root/linux/tools/include/uapi/linux/in.h:199:3: error: type name requires a specifier or qualifier
->                   __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
->                   ^
->   /root/linux/tools/include/uapi/linux/in.h:199:32: error: type specifier missing, defaults to 'int' [-Werror,-Wimplicit-int]
->                   __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
->                                                ^
->   2 errors generated.
+> Isn't the purpose of this check to ensure that the entire pointer is
+> written, and BPF can't write half of it?
 >
-> To maintain consistency, add missing header file to kernel.
 >
-> Fixes: 5854a09b4957 ("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper")
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
+> >       case offsetof(struct __sk_buff, sk):
+> > -             if (type == BPF_WRITE || size != sizeof(__u64))
+> > -                     return false;
 >
-> Changes since v1:
->  - 'Fixes' tag separates by the commit message by a blank line
->  - Remove the empty line between 'Fixes' and SoB.
->  - Specify the target tree to "net" in title
->  - Wrap the commit message text to 75 chars per line (except build output)
+> Wouldn't "(size != sizeof(struct bpf_sock *) && size != sizeof(__u64))"
+> be more appropriate here, so 32-bit can only write the 32-bit pointer
+> or the full 64-bit value, and 64-bit can only write the 64-bit pointer?
+> Or is there a reason not to? bpf folk?
 
-Since it's bpf related please always use [PATCH bpf] in the subject.
-Please monitor the tree and mailing lists as well.
-In this case the proper fix is already in bpf tree.
-https://lore.kernel.org/bpf/20221102182517.2675301-1-andrii@kernel.org/
-
-Your fix alone is incomplete. See patch 2 in the fix above.
+You're correct. The patch is completely wrong.
+The bug is elsewhere.
