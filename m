@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22044618A18
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876C0618A1F
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbiKCVBR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 17:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
+        id S231294AbiKCVDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 17:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbiKCVBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 17:01:16 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367386427
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:01:16 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 2A3KwKE9026487;
-        Thu, 3 Nov 2022 14:01:02 -0700
+        with ESMTP id S231288AbiKCVDu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 17:03:50 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873C32AC2
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:03:49 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3KwLfb023872;
+        Thu, 3 Nov 2022 14:03:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=AQOWtV8ztAuhlMeck43m9tldDZvNzBaCLj1NAMOiVQY=;
- b=NIsjvB/JF8ggZpHnWdSexs+YaTWCs5VMvW6MUmLpU/5q3bKCHM/Kj+mma3UzRlize06/
- eP70RRbqYG/d79DawceMLEWJYppQuRbYUv2BjSR9jOR+rQQx7flFwaAQIuxkW7eYWnk+
- 4LHx5JD8Fr47zUnPU31bdn45SLwGtRxuY8sRvZZW+gNq3I+31HolGgs/+wOZKyk+iQl5
- 4bO6lJKBlBLvBpSPnjiGmeVguK6D9DFeirVumJs+qatG/ROmwzMxdDdIN9pT9koq7YbU
- IjSTmqvktDwtgtVOPTCudJ2qIDAfkSqDuTCmDeQ7ufrjegzUimBkoy0AerAf80fNs4+a /g== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3kkshd7cea-1
+ bh=9kuWt3FUcwIUUx2V/UL8Rv8otnQn3Ymb4yxSPw+sM6c=;
+ b=Njc7JljPrqSC5WdNzKuc/ZXbfaLkOf9lV7ueTfgKgWn7/NnY3+lDA1DKgI4ZXKfXtboe
+ F7qTDOjaqxVfqTStXILQBVUNUM7W07IXR2lb6/6yDFPSrzJca2gJ1GO7Lhq8/hAW+XNK
+ eddiApdv9UcJyjYWS20CcoXvFwHN8DWCYKWdK4vKdjIFfTR5uePCksRZs6R2xToGC0J7
+ X+RaKn1Y0BbFKfRzCzVgujd8tBXmY/eUE01bbCJnjGSPT9OVyH6FZOpouzTV68xXQ86d
+ FGIjKqtq4Wt8aJc0Yoe3s/CKd/8kaIyAJzLtZyDODi3kr5Y5tI0G5dviqeos9quVfY0K Dg== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkmtv1amb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Nov 2022 14:01:01 -0700
+        Thu, 03 Nov 2022 14:03:35 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LFCgra9JXr8tHWeEUBLITd/hE2rbKH+HobNhN0E+eONHsOmxVic1rnwpOltJD520BUzQoDkXpKDDGbibfIlDx3TQ2Yo4FXUBJn8avcI1Eg5wDfTPbuSNIxvQB4lVehxUSGEqfKO7CLYxk5o9mvVVHhAwyc7Y9DQ4ySM2Ao33bE5AbHnsNWrsEM2obKzrd2wvOwhsgmXjdlL5wM9wIGN9VQLL5fFm+RsWKvZk1L6zL/diQmj0atPFSk+YNsINOzNqfxG0Y4PaEZeO+QiwuSdARgqpQreWyhDVG/F6cfCYuvdFNXviOpcLYYh2x/wJEQVuE18JZqvwcWJX0v2rNDJLKg==
+ b=asjk8XF3zCyNGXS3CxrmYN4sIini6QWYpdiA/i+2bHHS2lBrV8IMjRPWRp6QPlY9Fg7kSm54XMpSfSMrum6W5R8rD+NqD4bnbC/JY0lXVx1MLdG4pM0+Xo1S72DZ6TFWfRGnDOx6RuUTcr/k2GOXTXj1Q6bcfnqOGYj+Kb2rRrZm3ijIpH2dGkCJZCy9Oy8fnOvPjo0eUgZUqBnLzzC3fCJorWOI6S3QEdwVTPhYRqlpT0Ggj6W3DqI14qkUCRr310XBGeUg3nzagz6Lh0KPHjmIJLfZMTZHTTeMrQ7gfpo6JA4PR0eIMvDdVeUKsv7JI3hWGUU51b1ShaU4MOdOtw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AQOWtV8ztAuhlMeck43m9tldDZvNzBaCLj1NAMOiVQY=;
- b=Ykmf8xULaGSHDRF1Z3KZcg1XlVrr5aizpmU7HuZYflFJEz6pJPHmrGUc9j2b0zF+1t6HdCjxbEPTGOwmPBDdCYcae6vYaRi9tLWb/a+mL1k2+0roWG4iT47hjth9MR/lEr8TzsnxucQs5xsN7IzAqMd6byv+UozH2JprRbPDtsmC14uN4axKOI684j2s05i2qr7luHm7zL7Mhjd/zp8mFLiwFeMAYQtKSNWKPJc2Yz25sivmi1+dfP3JIjzFPru+WW3jm+zoIHjcYxZ6EyJB2g8daeawHLRv+CGzw7hUbwiVnsSqyOU7C312Gh79/iE9O3w7edvUdNu2h5azRgd3TQ==
+ bh=9kuWt3FUcwIUUx2V/UL8Rv8otnQn3Ymb4yxSPw+sM6c=;
+ b=EEEgZ5J/UgiQ4JGzgtCwhy3a9KDpktEgzKfbc8BG1mY3Bvk3tnZYFmm9HrDtQj0/vEYa4T+fviz68JgrSs5eQxclHHIuB3GsoZ9weJGLiKzxLf/WDNQ5gpSAE3PUHEanpDYeJu6q90R6Av1VyGMgDaASY8Ig2makqHsTktfMxdZTuImCZhBESk1fwmJP+FUdHsug/R7SdcPzg372oYf6gcOsky513ETUk5ovoiX+G5QRi3zjNcNQEbsoepZqyPwFoLUGb0H9f7GpEj9pM/w97k2LawZjK/VSftkOtUyxbWXoImo4cht38r8+BzPeZfTTi/T1hLzd/OGPhCpQ27AVMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BYAPR15MB2423.namprd15.prod.outlook.com (2603:10b6:a02:8d::23) with
+ by SA1PR15MB4580.namprd15.prod.outlook.com (2603:10b6:806:19c::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.16; Thu, 3 Nov
- 2022 21:00:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15; Thu, 3 Nov
+ 2022 21:03:32 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
- 21:00:58 +0000
-Message-ID: <7916c4e0-2957-f05d-a69b-fe74ae8a264c@meta.com>
-Date:   Thu, 3 Nov 2022 14:00:55 -0700
+ 21:03:32 +0000
+Message-ID: <248ab614-271f-6dc4-be9d-5cc650a1f7f3@meta.com>
+Date:   Thu, 3 Nov 2022 14:03:29 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next 2/5] bpf: Add bpf_rcu_read_lock/unlock helper
+Subject: Re: [PATCH bpf-next 3/5] bpf: Add rcu btf_type_tag verifier support
 Content-Language: en-US
 To:     KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -61,76 +61,76 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Martin KaFai Lau <martin.lau@kernel.org>
 References: <20221103072102.2320490-1-yhs@fb.com>
- <20221103072113.2322563-1-yhs@fb.com>
- <CACYkzJ6ASmpYPmenN6NMpThiJiXF2ggQR+sjaE5DATRFTp64eQ@mail.gmail.com>
+ <20221103072118.2323222-1-yhs@fb.com>
+ <CACYkzJ5WHDdR82wQXfE7DadO7CejXCOy7J96woYcJ=1L5F1c_g@mail.gmail.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <CACYkzJ6ASmpYPmenN6NMpThiJiXF2ggQR+sjaE5DATRFTp64eQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ5WHDdR82wQXfE7DadO7CejXCOy7J96woYcJ=1L5F1c_g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR16CA0028.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::41) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR13CA0169.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BYAPR15MB2423:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54736200-fc4c-4800-1bf4-08dabdde8179
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA1PR15MB4580:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b650419-bc1c-441e-c22f-08dabddeddaf
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gSI2Hxf8YcA65F7rLD2C8BTPjCdCt2H0HAP1sfXE9UzVjzhJJ3HEDuOw67Xo5+63ge7LIk4d1P7Ww7E8bfrOd6225FgbnRTeHSzZvGSS0XrawfCqm9evxoGnErj/pyWPRprNC9yfaq/XUquZXiKW64p3HRsD7AoVeVuZCMvigc8R24tGHQ/F7O7CDFgLaAiv/nWDCoAbdpOE4prIDvNl99nr2AMo/v9deTboMgsks5uAt9drbG2BuwkJ02oyy8PJFGK1rCKphdqwBMN7jfZ2joYJAET7UJwIRxH+SvQd6jGbb77qF9m5pCeqJaajxkbBtmk3Q5Z/ElnFme+wN5c1vidOIoeUBVBD6GsACvNFl4faibz4nasPZoQ4azSvgF6cfxbXj7aZa3DAHgs8H2Ytfk7v/Xq8IMehN+ILXAFlOmb6URKC0RrBbRxUsJ4ogOmV77h1UYhfLvwQQOJsUoM7Vj6t/yyI0G7yvzUwCWC9BUbDMsLm12dnPqdgPdLvRc28aog0yRTsrU97lUbVON9O5bAA9UWlXKUD1Suna8FIbhQEXescRtZkd5k2BcWZihA/c5RocL96T5WN/MRQ6e6746d52w7JOCfUux/ZioJEo7W9cRAHz4A4oCyGS+GHfl/1EAtd7dL8JQLDmWEdQ99I7SGdQUMD1gL1rxKPlE+onlahP3bTQfIBmm2Kk1Rp4LEbxWHwb7rEQgjNhkMM7QZNZzol8+cTfsOYJnhdl7LmiLjRFP1wbO61FNTEJv0cqr/6YDt9MGUM4slMZsYKjx9o5UT7MpJGcRApM+2EWaSijl0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(39860400002)(346002)(136003)(376002)(451199015)(6486002)(83380400001)(478600001)(110136005)(54906003)(31696002)(6666004)(38100700002)(41300700001)(8936002)(86362001)(316002)(2906002)(6506007)(8676002)(36756003)(6512007)(5660300002)(31686004)(4326008)(186003)(66556008)(2616005)(66946007)(66476007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: IRp7R+1tX4f1Vaf+Bs7IzqKJU5NYs+fqAU1sUFAQVO/S/IKeasc1jVft8rZpkvf7D6x13WVVrnd32Ty4IF+P9zf4GcgaB++4WTsquxRFwIpEazm4z/28IAcIX26NIRlzqaltElq7+Wa2pMKsid8L9a4MAB+pD9LibjJYkDXiO2jFmLohR2ywJH8c1tjJ0M+mTe4L7SB4Ug17MbShiI1J7gy26djuZTIIAtcohDEfoRFtCfnSsJVkw6zTkV+VvulW8+d0Hg/asyirjzJ8oEjdwu8YlkO38lg+X4IZpbQniHigUoMCkH2jFxfE9UafCeVzJsKTewJQzh9VCQSHyWP4dJWGK3Eg46AOKgAMrdUVoZyb7TaU9mEt8Gvwal0TQ8IqPLbE0dGRKuYovsnNynPC7R5Ugov11TAJAaawCH3ZlXADFitGwwVhISEN8WGwLZFtxZPMvbsh84A5fFA77B1QCOc3mPrrg74HrNMF5P6njjteT3ayQjP7oFkBsoSpgiwM3JKKzbP6Jc7OpxAaXFc1JLy7L+1wusOK2lq9wLynAWeBZZdecEXJe8Hc79Q/xGrjopMoy4cXYQDE6IlaxI+e54wLtita/QeyEd6pjtXBs8A8L73yuCFmlV2hK5Y1DKrpnNG/a8T8VDCPrYTEA0jgqKDCEKMeo9HeFILSuJtWQ+RSEjQilRfYv35WXZ0lvkxEbqdegNe9rJQikizLLqr9AfdyJfyPnAHPgrvBBt2O1uTIkqyisB4Hx28bqcTDjRKqnb1EW9NAJN1zZZ2GtvV4d9loKzvpJIinDIfoeTK0Gjc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(39860400002)(136003)(376002)(366004)(396003)(451199015)(83380400001)(36756003)(31686004)(38100700002)(86362001)(31696002)(53546011)(6506007)(6666004)(66946007)(6512007)(2616005)(8676002)(110136005)(316002)(8936002)(4326008)(66476007)(54906003)(5660300002)(186003)(2906002)(6486002)(66556008)(478600001)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cGdheG10SVBwUlpqeGdRYlRETSt2NUxlZFh2RUZ5QzhnbTQwLytoejI0OGlU?=
- =?utf-8?B?bXNXL3BzVmsrZ3hrM3VzdVRBWFVWcmZXWDNlNmpweGZnYWhsa3hvcVZwL1Fa?=
- =?utf-8?B?UHZLYjlhL1loM2RvdjNWVVhyZ2ZhTzc3Qng3N2JkM1pVcWM3WE02elg2bmdU?=
- =?utf-8?B?bkVYSFlvOSt2NUgzZXowN05GWEFBMTh0USs5cUNyVkVMNmxkczNIb0J0c0tw?=
- =?utf-8?B?eTVqOWVIWDc4aUVKenNRcHBoUXFJL29MUk5jSXVENlJMUTE1cWVNR1YrekRa?=
- =?utf-8?B?YjNPNVJ6MHA4b2VheUs5Y1M3WUE2azlyL0VHL3lIM2hvWkpDTmUrdmhOelNZ?=
- =?utf-8?B?c2F1ZWRSUzdJK1hGNGhVTnZVV3NIMDFwSmhKeWFTd01JdzVNZDhEejdKMGZ1?=
- =?utf-8?B?eFVWaDRaOXhpTDFzZDZ5TFpRRUxLalFXSE1OdVVEK1I4b0xwRGlwNE1SRlNS?=
- =?utf-8?B?a0g1TTlxdlJ5WlIrWkhtbVdLSkxqMjdFd2t4dzRhYmhRSG4wWXd3ZFQ4QzAw?=
- =?utf-8?B?NFRrRXNYR2dVUGJpK2ljNnN4QXRRZ29QV3NVZ1Z3b1FZbEVUT29ta0pOZ0hW?=
- =?utf-8?B?cDI4VE1sSnMxUmF2ODlwR0lnZU44UVFkSnhvK0RHSGRoMDB3TDA4dEFJSFlw?=
- =?utf-8?B?V0VtVGhuN1NrMzRZQXB2WjBod09iMExrSzZUVGtBcC9mUmRJbGQ3WnBqcXhj?=
- =?utf-8?B?ekovUVNuSkdZZTQ0a2Jzd0hiWStGemxFaURidzRRZkJsc0VlR2RmTDlSVjJU?=
- =?utf-8?B?emlrdHdlaDRJeUcyWVRBcWNxVXBCTDRPYnpDeWVRc0pZZjh1S09QWGd2blBS?=
- =?utf-8?B?NXVSRXMvcVVYbWUyRWRLMVVFZ1VDUkJReVRMTjdIRHUvbHl3anJucUlweXpF?=
- =?utf-8?B?Z3BKb0ZwM2hBRE5JZ05HR1NRdnQramVCZXB3UDdxemNOai9yODZ0VEdYK012?=
- =?utf-8?B?bkZCcTdnRnpYamJTdElkcW9KREhBWWFIbHVySEh6V1BkWG85cHkzaHRSR01O?=
- =?utf-8?B?aE1iNkdsaWdOdUR0OUtaeUxUY0lpT1dKVHZJbUVQWWFWSnlmWW1yK2NnMFR6?=
- =?utf-8?B?TStPTmVkZGZaWld2TVFxRDh5b3RKTFVCLzcrclNRMmpzSHFHSXdwbVRWSFJz?=
- =?utf-8?B?YmJDNzRIVkx4UTRnRVg2ZUJyUklhS1NwOWt4V3ZVSGhSWUhuZ0JkK2VUS240?=
- =?utf-8?B?eDNWdVY2WXU5ak9VRGNHRXV0TGFqYlFGS3RKQmdLb0VYMWJYczZDaDF1NEtC?=
- =?utf-8?B?RDZITElPZmJlc1laS3RnTG0veVJMZGNoS1BnZ0FTSTlNYjJuRHZXWWsvdXNB?=
- =?utf-8?B?U0c1TmhVeFJvbmFZWU84SW1aQXpMbDNWQzN5dkQ1SWJtZE9wYmJydEhpby85?=
- =?utf-8?B?R0RJWFlidEdTcjUvUkRiUVM1M3V2NnNaTkhxUGZTcWVkTWhKRWZHZkl0U1Fx?=
- =?utf-8?B?bUYrbFZuMWNOM3ZFaW51ZW9Dc2ZkTXQ1UC9MTXpaVUp4K2lMd1czelRvaDZV?=
- =?utf-8?B?TDBUSm55OC9FRzV4UDYxaDBRT2Z0M3hGWkZLeGlCNmJVbkFBUEpBY1RPaUh2?=
- =?utf-8?B?MG9aWld0VDdlUU9uVHB4STNjLzNhZ1Jvcmh0a1VjVGpVRzY3MTZQR3pQbUJN?=
- =?utf-8?B?dmdVck1DaFIvalhpQ0k1Z1VxTWRWZEh6Z1lTWG80WHM2K2NKQUZmdDBtZGpq?=
- =?utf-8?B?amZ3YldidVovY0xWY0lRbmNoSllnb2dSekpWejR0UkFxY1RFMDBIK1hVRk9Z?=
- =?utf-8?B?ZURpcXlzVDRKTHlkdzcra1BuYk43cE9HOENta0pMWndMdzg2TnlwOFhFNUV1?=
- =?utf-8?B?Q1B2M0dpdGxMZmZyYlpXRTJTREFraHp4dkJsQko0TmxuZXg3a0sxOHdURENM?=
- =?utf-8?B?ZXZJOUFHWStDUU1SZjVVbHB6ckkrQ1NFcUxLcW9rWDF0OVd4N3V1V1BCWFRu?=
- =?utf-8?B?MWV6MnhVbEV3RDdMMDM0MSsxQzVBeHl5RGtUQUdVS3BBSCswS2dtNjBUTUhC?=
- =?utf-8?B?eE9lQ2V2OTZDRHM4bDBsaCt5elFrVnBtVmIxMmZ2Q010dWJEd1N5N3QyU1Nj?=
- =?utf-8?B?V0ZrUitvKzRWa0wrVjdWUnlCNThTNlJTdnBFVDdBN20vM2kyNVRNYWNLT3RR?=
- =?utf-8?B?VytqS0lZcVBTWldrNXhUcmlLaU5ha3VDelpXN3A1REVJblRvbGFWSjB1MXZo?=
- =?utf-8?B?Z3c9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnpPb3RWeFVULzJHTm53N0Fad1BOelhsWE5Lb1dhaUdiTGpCWjBYQVAwNS9x?=
+ =?utf-8?B?dHVCbDFBMVpoL2xLS09CUTcyWk9FQnFMMnc0MnJRSUphbWxJckFGR2JKb2Q4?=
+ =?utf-8?B?MW1SSXl3TlVvaE9HSVE5SlZKVml3dW9vY1QxVmEzaEVEcHFmVzZGS25qQXpZ?=
+ =?utf-8?B?c0lpaitaV1lJK1NRRTEzajVhMHZ0YkhRN0VzSWtVcUFaVzlZWjQ1c2g1NGNw?=
+ =?utf-8?B?RVY5ZHJkZGdkUUM0MWg5dldKckxqSnIzaXJVRUY4U2dLWGM0VWh6a2VlQTgr?=
+ =?utf-8?B?RVp4djc0YkV2MURCck5WWG40UzdKUTRkUXFCZnpKME5XcVdGZjdVRjVyUGdh?=
+ =?utf-8?B?djhjL0RVRzZiZDFXeEpuS2dHcTdsRWFnd1YxaWFPSXk4emZVSTFkSmJOUTdP?=
+ =?utf-8?B?d0NnK3g5RklDTTE1TGZCaDZydGZPZHJ5VGVoZ2d0bWJFcmdGeHhzMHlPSnJQ?=
+ =?utf-8?B?MVcyT3ZmSXBSUkE0eDlvTWV5cjVWSS9OM0dlVWwvdEUvK3I1THlOTWFVVVk3?=
+ =?utf-8?B?bGVXcGFiRU1FZDZmVWdiZ3dOSjRzVktNdE90ZzBHWlhtTVNGbWc1blZzMnpn?=
+ =?utf-8?B?ZngvbitYbFgyV21MQk1vU1JhRjFNWDZNY2NzVGU2YVlVcnZXbUdDZ0pZYVl3?=
+ =?utf-8?B?WTdUSzVnQ1h4NEROYS96SmtuTzk2MzJlcmlDcERTTWdDM3h5MjgrYjByWk41?=
+ =?utf-8?B?Q2VPbUFEa2xWK2IrcnFYNkZWeFN0UlVnOG9KQVFiT1Rrdk1xaUF0V0lUdEtY?=
+ =?utf-8?B?UXhsdHpaMWd4NXZGSHM1OTREWDNTZHdaWCtIRG1qSmZTNGhvcm5OQXliWU1W?=
+ =?utf-8?B?VCtPVVF6VFJyNEpqMjlzakxMQVlCd25UYURkZk9PbEhOOXRuUmgxMzEyM2VG?=
+ =?utf-8?B?Q1FhOW1KYXd6Mk1Idk1UTENsUTNWNVRpa2hLeUVjWVpxUVBZZmpXL0loS0JB?=
+ =?utf-8?B?WFMrMm5xNDRxTExCMjMyWStoOElJRU9sYmQrYXBCd3hBdGMzUkRwZDBDdzZZ?=
+ =?utf-8?B?RkVnMTUrY0wrZnBXWVc1K00wcGtIejhFOGhORmRubDF3S3hpNXNCVE5kdzln?=
+ =?utf-8?B?YVZhK2liZEV6eHlwMDhDeVd1Z1NqQUhnamYvSEJ6QmlMQUQ1akdWWXUrZlpL?=
+ =?utf-8?B?WWZGL0hSbWhKRTN5ZWd6WGlwaHFSeHlSUlIzYmtMNHRYWkdhNnVWSURFR2xO?=
+ =?utf-8?B?UjBMbnpyc2lyUjVscmY0N1pOcmZrL1RaU24veHNIRGpwbXNFdkFIMmtEbEZn?=
+ =?utf-8?B?cmxoVEJ1d1RWS1VsMWxwdWNUSlgxVnNuUzAvSkZlWmhMK3BmSmtBQmJqR00v?=
+ =?utf-8?B?L0dUc291QWpGMGEwMUYvZDJhMmhFaDY2MERJdXlORnRWU3pmV2NDaFQ0ZEtw?=
+ =?utf-8?B?NGZQSUdMTG9SdDZjOXFwejloakJaVTNPMFEvWUdUT1NjNjJsc1V3UzZVUStE?=
+ =?utf-8?B?elpqeE8yZ3ZaZmNxWjJNc0twSG9lbEx2L1JDRkVSK3VaS0N2OHl4SWNFLzV5?=
+ =?utf-8?B?WkZoNkpaM1JmbXU1UzNOT3FuZnF5eEFZOXQvQ2VaeHBKN0tNYy9QRGtKVTFv?=
+ =?utf-8?B?V1pzSkEvMkZLL0JmampwUVlTSlVZNEFBYzc1dTF1dWp5aGtUaFVRZTFpMC9m?=
+ =?utf-8?B?NVZKVUtpWCthZ0JTNDBoaXpnS3UxZlQxODZFYkNvV0labnBDS1ZhRGF4bVBW?=
+ =?utf-8?B?USt6b2MrbHdhQ2YwN2Y1VmtJbHpWWEpMZW0zOXFEZmM3UnpWbXk4alpvcVlK?=
+ =?utf-8?B?SzMvLzR1ZmZiN2pGUERMazhReUJRNEp3WVU1ZUdOUEhBaTNyQytTR01nWERS?=
+ =?utf-8?B?djdXUDRYdytFZ3NpZ0RwOEw5bjFHa25MUlBiWTluZWFQeVkvYk1JNlV5b3hQ?=
+ =?utf-8?B?NktYOUM0WEhRSUFLa2Qza1dZMFJIT0xZUnhiZVE5YXlVRmMzbXpxMjRRK3hh?=
+ =?utf-8?B?bW94MDVwcVUveHg1SlR5S25lSFdWdE1sY2xPLzVacjBpa1RnL3hKN3pMRHZj?=
+ =?utf-8?B?QWFYV2Z3MzhHRmpGZnJMUUtRcEZZaHJiN2JUSnNLN0Q3ZktNbkdCZ1hZL2xD?=
+ =?utf-8?B?dFZHQ1Z6ZXpDNkd5L3dlRFQ5Nk4xaTIrbWRsN2dyOHN2RlkzU0tvS3VqamRj?=
+ =?utf-8?B?SGcwcGN1cXlRZmVVT3FKVEZlTmMyaEIwOUEySnVFR2F4K2hicXR0VWtXWGE2?=
+ =?utf-8?B?K0E9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54736200-fc4c-4800-1bf4-08dabdde8179
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b650419-bc1c-441e-c22f-08dabddeddaf
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 21:00:58.0496
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 21:03:32.7268
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: slPaV0Z1uLIIEZUBwwem0MVwdhCfZ26b53EYDitygNwyrQ6BEssjyf1vwJq5ptNI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2423
-X-Proofpoint-ORIG-GUID: Ocg95TcpR356xFO3d3JCLWBl5OrXqutk
-X-Proofpoint-GUID: Ocg95TcpR356xFO3d3JCLWBl5OrXqutk
+X-MS-Exchange-CrossTenant-UserPrincipalName: FlqNCkqhPtekikQgSoRV7P25HzulwYhR+DDcTaD1tr2/GRkYMtyhntJKj0H6fi7b
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4580
+X-Proofpoint-ORIG-GUID: eMkKViwgEfTN22ZVmVrzOef_3bvdUhDb
+X-Proofpoint-GUID: eMkKViwgEfTN22ZVmVrzOef_3bvdUhDb
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
@@ -146,86 +146,224 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 11/3/22 7:28 AM, KP Singh wrote:
+On 11/3/22 7:43 AM, KP Singh wrote:
 > On Thu, Nov 3, 2022 at 8:21 AM Yonghong Song <yhs@fb.com> wrote:
 >>
->> Add bpf_rcu_read_lock() and bpf_rcu_read_unlock() helpers.
->> Both helpers are available to all program types with
->> CAP_BPF capability.
+>> A new bpf_type_flag MEM_RCU is added to indicate a PTR_TO_BTF_ID
+>> object access needing rcu_read_lock protection. The rcu protection
+>> is not needed for non-sleepable program. So various verification
+>> checking is only done for sleepable programs. In particular, only
+>> the following insns can be inside bpf_rcu_read_lock() region:
+>>    - any non call insns except BPF_ABS/BPF_IND
+>>    - non sleepable helpers and kfuncs.
+>> Also, bpf_*_storage_get() helper's 5th hidden argument (for memory
+>> allocation flag) should be GFP_ATOMIC.
+>>
+>> If a pointer (PTR_TO_BTF_ID) is marked as rcu, then any use of
+>> this pointer and the load which gets this pointer needs to be
+>> protected by bpf_rcu_read_lock(). The following shows a couple
+>> of examples:
+>>    struct task_struct {
+>>          ...
+>>          struct task_struct __rcu        *real_parent;
+>>          struct css_set __rcu            *cgroups;
+>>          ...
+>>    };
+>>    struct css_set {
+>>          ...
+>>          struct cgroup *dfl_cgrp;
+>>          ...
+>>    }
+>>    ...
+>>    task = bpf_get_current_task_btf();
+>>    cgroups = task->cgroups;
+>>    dfl_cgroup = cgroups->dfl_cgrp;
+>>    ... using dfl_cgroup ...
+>>
+>> The bpf_rcu_read_lock/unlock() should be added like below to
+>> avoid verification failures.
+>>    task = bpf_get_current_task_btf();
+>>    bpf_rcu_read_lock();
+>>    cgroups = task->cgroups;
+>>    dfl_cgroup = cgroups->dfl_cgrp;
+>>    bpf_rcu_read_unlock();
+>>    ... using dfl_cgroup ...
+>>
+>> The following is another example for task->real_parent.
+>>    task = bpf_get_current_task_btf();
+>>    bpf_rcu_read_lock();
+>>    real_parent = task->real_parent;
+>>    ... bpf_task_storage_get(&map, real_parent, 0, 0);
+>>    bpf_rcu_read_unlock();
+>>
+>> There is another case observed in selftest bpf_iter_ipv6_route.c:
+>>    struct fib6_info *rt = ctx->rt;
+>>    ...
+>>    fib6_nh = &rt->fib6_nh[0]; // Not rcu protected
+>>    ...
+>>    if (rt->nh)
+>>      fib6_nh = &nh->nh_info->fib6_nh; // rcu protected
+>>    ...
+>>    ... using fib6_nh ...
+>> Currently verification will fail with
+>>    same insn cannot be used with different pointers
+>> since the use of fib6_nh is tag with rcu in one path
+>> but not in the other path. The above use case is a valid
+>> one so the verifier is changed to ignore MEM_RCU type tag
+>> in such cases.
 >>
 >> Signed-off-by: Yonghong Song <yhs@fb.com>
 >> ---
->>   include/linux/bpf.h            |  2 ++
->>   include/uapi/linux/bpf.h       | 14 ++++++++++++++
->>   kernel/bpf/core.c              |  2 ++
->>   kernel/bpf/helpers.c           | 26 ++++++++++++++++++++++++++
->>   tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
->>   5 files changed, 58 insertions(+)
+>>   include/linux/bpf.h          |   3 +
+>>   include/linux/bpf_verifier.h |   1 +
+>>   kernel/bpf/btf.c             |  11 +++
+>>   kernel/bpf/verifier.c        | 126 ++++++++++++++++++++++++++++++++---
+>>   4 files changed, 133 insertions(+), 8 deletions(-)
 >>
 >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 8d948bfcb984..a9bda4c91fc7 100644
+>> index a9bda4c91fc7..f0d973c8d227 100644
 >> --- a/include/linux/bpf.h
 >> +++ b/include/linux/bpf.h
->> @@ -2554,6 +2554,8 @@ extern const struct bpf_func_proto bpf_get_retval_proto;
->>   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
->>   extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
->>   extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
->> +extern const struct bpf_func_proto bpf_rcu_read_lock_proto;
->> +extern const struct bpf_func_proto bpf_rcu_read_unlock_proto;
+>> @@ -458,6 +458,9 @@ enum bpf_type_flag {
+>>          /* Size is known at compile time. */
+>>          MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
 >>
->>   const struct bpf_func_proto *tracing_prog_func_proto(
->>     enum bpf_func_id func_id, const struct bpf_prog *prog);
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 94659f6b3395..e86389cd6133 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -5481,6 +5481,18 @@ union bpf_attr {
->>    *             0 on success.
->>    *
->>    *             **-ENOENT** if the bpf_local_storage cannot be found.
->> + *
->> + * void bpf_rcu_read_lock(void)
->> + *     Description
->> + *             Call kernel rcu_read_lock().
-> 
-> Simple wrapper around rcu_read_lock() and maybe explain where and how
-> it is supposed to
-> be used.
-> 
-> e.g. the verifier will check if __rcu pointers are being accessed with
-> bpf_rcu_read_lock in
-> sleepable programs.
-
-Okay, I can add more descriptions.
-
-> 
-> Calling the helper from a non-sleepable program is inconsequential,
-> but maybe we can even
-> avoid exposing it to non-sleepable programs?
-
-I actually debated myself whether to make bpf_rcu_read_lock()/unlock()
-to be sleepable only. Although it won't hurt for non-sleepable program,
-I guess I can make it as sleepable only so users don't make mistake
-to use them in non-sleepable programs.
-
-> 
->> + *     Return
->> + *             None.
->> + *
->> + * void bpf_rcu_read_unlock(void)
->> + *     Description
->> + *             Call kernel rcu_read_unlock().
->> + *     Return
->> + *             None.
->>    */
->>   #define ___BPF_FUNC_MAPPER(FN, ctx...)                 \
->>          FN(unspec, 0, ##ctx)                            \
->> @@ -5695,6 +5707,8 @@ union bpf_attr {
->>          FN(user_ringbuf_drain, 209, ##ctx)              \
->>          FN(cgrp_storage_get, 210, ##ctx)                \
->>          FN(cgrp_storage_delete, 211, ##ctx)             \
->> +       FN(rcu_read_lock, 212, ##ctx)                   \
->> +       FN(rcu_read_unlock, 213, ##ctx)                 \
->>          /* */
+>> +       /* MEM is tagged with rcu and memory access needs rcu_read_lock protection. */
+>> +       MEM_RCU                 = BIT(11 + BPF_BASE_TYPE_BITS),
+>> +
+>>          __BPF_TYPE_FLAG_MAX,
+>>          __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+>>   };
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index 1a32baa78ce2..d4e56f5a4b20 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -324,6 +324,7 @@ struct bpf_verifier_state {
+>>          u32 insn_idx;
+>>          u32 curframe;
+>>          u32 active_spin_lock;
+>> +       u32 active_rcu_lock;
+>>          bool speculative;
 >>
+>>          /* first and last insn idx of this verifier state */
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index 35c07afac924..293d224a7f53 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -5527,6 +5527,8 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>>                          info->reg_type |= MEM_USER;
+>>                  if (strcmp(tag_value, "percpu") == 0)
+>>                          info->reg_type |= MEM_PERCPU;
+>> +               if (strcmp(tag_value, "rcu") == 0)
+>> +                       info->reg_type |= MEM_RCU;
+>>          }
+>>
+>>          /* skip modifiers */
+>> @@ -5765,6 +5767,9 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+>>                                  /* check __percpu tag */
+>>                                  if (strcmp(tag_value, "percpu") == 0)
+>>                                          tmp_flag = MEM_PERCPU;
+>> +                               /* check __rcu tag */
+>> +                               if (strcmp(tag_value, "rcu") == 0)
+>> +                                       tmp_flag = MEM_RCU;
+>>                          }
+>>
+>>                          stype = btf_type_skip_modifiers(btf, mtype->type, &id);
+>> @@ -6560,6 +6565,12 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>>                  return -EINVAL;
+>>          }
+>>
+>> +       if (sleepable && env->cur_state->active_rcu_lock) {
+>> +               bpf_log(log, "kernel function %s is sleepable within rcu_read_lock region\n",
+>> +                       func_name);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>>          if (kfunc_meta && ref_obj_id)
+>>                  kfunc_meta->ref_obj_id = ref_obj_id;
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 82c07fe0bfb1..3c5afd3bc216 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -188,6 +188,9 @@ struct bpf_verifier_stack_elem {
+>>                                            POISON_POINTER_DELTA))
+>>   #define BPF_MAP_PTR(X)         ((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
+>>
+>> +/* Using insn->off = BPF_STORAGE_GET_CALL to mark bpf_*_storage_get() helper calls. */
+>> +#define BPF_STORAGE_GET_CALL   1
+>> +
+>>   static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx);
+>>   static int release_reference(struct bpf_verifier_env *env, int ref_obj_id);
+>>
+>> @@ -511,6 +514,22 @@ static bool is_dynptr_ref_function(enum bpf_func_id func_id)
+>>          return func_id == BPF_FUNC_dynptr_data;
+>>   }
+>>
+>> +static bool is_storage_get_function(enum bpf_func_id func_id)
+>> +{
+>> +       return func_id == BPF_FUNC_sk_storage_get ||
+>> +              func_id == BPF_FUNC_inode_storage_get ||
+>> +              func_id == BPF_FUNC_task_storage_get ||
+>> +              func_id == BPF_FUNC_cgrp_storage_get;
+>> +}
+>> +
+>> +static bool is_sleepable_function(enum bpf_func_id func_id)
+>> +{
+>> +       return func_id == BPF_FUNC_copy_from_user ||
+>> +              func_id == BPF_FUNC_copy_from_user_task ||
+>> +              func_id == BPF_FUNC_ima_inode_hash ||
+>> +              func_id == BPF_FUNC_ima_file_hash;
+>> +}
+> 
+> This is a bit concerning that these are in two different places in the kernel.
+> We expose a helper based on prog->aux->sleepable in different places and
+> it's worth doing some refactoring to keep all this logic in a single place.
+
+Okay, let me do a restructing to have a central place to check
+helpers for sleepable program only.
+
+> 
+>> +
+>>   static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
+>>                                          const struct bpf_map *map)
+>>   {
+>> @@ -583,6 +602,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+>>                  strncpy(prefix, "percpu_", 32);
+>>          if (type & PTR_UNTRUSTED)
+>>                  strncpy(prefix, "untrusted_", 32);
+>> +       if (type & MEM_RCU)
+>> +               strncpy(prefix, "rcu_", 32);
 [...]
+>>
+>> -               if (insn->imm == BPF_FUNC_task_storage_get ||
+>> -                   insn->imm == BPF_FUNC_sk_storage_get ||
+>> -                   insn->imm == BPF_FUNC_inode_storage_get ||
+>> -                   insn->imm == BPF_FUNC_cgrp_storage_get) {
+>> -                       if (env->prog->aux->sleepable)
+>> +               if (is_storage_get_function(insn->imm)) {
+>> +                       if (env->prog->aux->sleepable && insn->off) {
+> 
+> I would recommend explicitly checking if insn->off == BPF_STORAGE_GET_CALL.
+> 
+> Also, your comment says you are marking BPF_STORAGE_GET_CALL but this is only
+> set when the call is in a classical RCU critical section and in a
+> sleepable program. The
+> The name and the comment above should reflect that.
+> 
+> BPF_STORAGE_GET_CALL_ATOMIC or something.
+
+BPF_STORAGE_GET_CALL_ATOMIC sounds okay. Will use it unless I can come
+up with a better name.
+
+> 
+> 
+>> +                               insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
+>> +                               insn->off = 0;
+>> +                       } else if (env->prog->aux->sleepable)
+>>                                  insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
+>>                          else
+>>                                  insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
+>> --
+>> 2.30.2
+>>
