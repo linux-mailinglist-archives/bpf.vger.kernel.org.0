@@ -2,232 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F44C61834A
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 16:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77217618356
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 16:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbiKCPwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 11:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        id S231567AbiKCP7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 11:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbiKCPwS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 11:52:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC0CC741
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 08:52:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229634AbiKCP7I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 11:59:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42A013E83
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 08:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667491098;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q2b5W/w/tXDV6Z2W1azf8qIv49f0j543FW6H53v6JOY=;
+        b=fcAlWmE/F1r0dqv1RCsR8NCYrupgz479C70XgkPv0u8473IzRU9z0V3w8lNgtasktIcex0
+        sHROqPUZXhd7puTb8QL248JMhs9kHs2M3G3flIZaIiNYdZmAZKeyIjgNyIUujOiaRQnXx/
+        XE/mR1Zjf5HMidrosYs+DTvjN/sZKqQ=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-486-Y7vjV2S3ORCVQS0f2d6gdQ-1; Thu, 03 Nov 2022 11:58:13 -0400
+X-MC-Unique: Y7vjV2S3ORCVQS0f2d6gdQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D9408B82914
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:52:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20ED5C433C1;
-        Thu,  3 Nov 2022 15:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667490734;
-        bh=etR9lsInx2/VXT53Ga9WQZn2GHbtNzG1RabnVeifxu8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hO3iQ1/6sv3+wkbUu+vM6v2VRZx5XHb4GoxbffGI1juj6P35UiS+6LQ2rxsFNlnI/
-         +4NZOKwFhbXndFRboDkbkuazu2JLZBstqmjPaI1ao3nNYNvj2awqR6dPwSjOYDGnoe
-         89TV4hlLTIwfX+HG2kGpQTbt8zDoHJQCc6I+A5I0jQ74YkfDmjB116Cw6zFOPzy2G4
-         bemCZaRbffnu6TZS7yx0qI5VL7dZuY1g389/Dbc4FXhaX5j43/+QhT5wyO+trbdAvp
-         RJ6FiytHSjXARGjcDQqKlaa9FeqdYli1PcxpE3vQRvfwKKouXyIJexWlnSGs5htOHc
-         loKQ0gcTj9eSg==
-Date:   Thu, 3 Nov 2022 17:51:57 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
-        peterz@infradead.org, hch@lst.de, rick.p.edgecombe@intel.com,
-        dave.hansen@intel.com, zhengjun.xing@linux.intel.com,
-        kbusch@kernel.org, p.raghav@samsung.com, dave@stgolabs.net,
-        vbabka@suse.cz, mgorman@suse.de, willy@infradead.org,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH bpf-next v1 RESEND 1/5] vmalloc: introduce vmalloc_exec,
- vfree_exec, and vcopy_exec
-Message-ID: <Y2Pjnd3mxA9fTlox@kernel.org>
-References: <20221031222541.1773452-1-song@kernel.org>
- <20221031222541.1773452-2-song@kernel.org>
- <Y2MAR0aj+jcq+15H@bombadil.infradead.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FF633816EAD;
+        Thu,  3 Nov 2022 15:58:13 +0000 (UTC)
+Received: from plouf.redhat.com (unknown [10.39.192.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F9DB492CA5;
+        Thu,  3 Nov 2022 15:58:11 +0000 (UTC)
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH hid v12 00/15] Introduce eBPF support for HID devices
+Date:   Thu,  3 Nov 2022 16:57:41 +0100
+Message-Id: <20221103155756.687789-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2MAR0aj+jcq+15H@bombadil.infradead.org>
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Luis,
+Hi,
 
-Thanks for looping me in.
+and here comes the v12 of the HID-BPF series.
 
-On Wed, Nov 02, 2022 at 04:41:59PM -0700, Luis Chamberlain wrote:
-> On Mon, Oct 31, 2022 at 03:25:37PM -0700, Song Liu wrote:
-> > vmalloc_exec is used to allocate memory to host dynamic kernel text
-> > (modules, BPF programs, etc.) with huge pages. This is similar to the
-> > proposal by Peter in [1].
-> 
-> This is allg reat but we need to clarify *why* we would go through the
-> trouble.  So if folks are not to excited about this series, that's
-> probably why. IMHO it lacks substance for rationale, **and** implies a few
-> gains without any *clear* performance metrics. I have 0 experience with
-> mm so I'd like other's feedback on my this -- I'm just trying to do
-> decipher rationale from prior "bpf prog pack" efforts.
-> 
-> I'm sensing that the cables in messaging are a bit crossed here and we need
-> to provide a bit better full picture for rationale and this is being
-> completely missed and this work is being undersold.  If my assessment is
-> accurate though, the bpf prog pack strategy with sharing huge pages may prove
-> useful long term for other things than just modules / ftrace / kprobes.
-> 
-> I was surprised to see this entire patch series upgrade from RFC to proper
-> PATCH form now completely fails to mention any of the original motivations
-> behind the "BPF prog pack", which you are doing a true heroic effort to try to
-> generalize as the problem is hard. Let me try to help with that. The rationale
-> for the old BPF prog pack is documented as follows:
-> 
-> * Most BPF programs are pretty small. Allocating a hole page for each
-> * program is sometime a waste. Many small bpf program also adds pressure
-> * to instruction TLB. To solve this issue, we introduce a BPF program pack
-> * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
-> * to host BPF programs.
-> 
-> Previously you have also stated in earlier versions of this patch set:
-> 
->   "Most BPF programs are small, but they consume a page each. For systems
->    with busy traffic and many BPF programs, this could also add significant
->    pressure to instruction TLB. High iTLB pressure usually causes slow down
->    for the whole system, which includes visible performance
->    degradation for production workloads."
-> 
-> So it is implied here that one of the benefits is to help reduce iTLB misses.
-> But that's it. We have no visible numbers to look at and for what... But
-> reducing iTLB misses doesn't always have a complete direct correlation
-> with improving things, but if the code change is small enough it obviously
-> makes sense to apply. If the change is a bit more intrusive, as in this
-> patch series a bit more rationale should be provided.
-> 
-> Other than the "performance aspects" of your patchset, the *main* reason
-> I am engaged and like it is it reduces the nasty mess of semantics on
-> dealing with special permissions on pages which we see in modules and a
-> few other places which today completely open code it. That proves error
-> prone and I'm glad to see efforts to generalize that nastiness. So
-> please ensure this is added as part of the documented rationale. Even
-> if the iTLB miss ratio improvement is not astronomical I believe that
-> the gains in sanity on improving semantics on special pages and sharing code
-> make it well worthwhile. The iTLB miss ratio improvement is just a small
-> cherry on top.
-> 
-> Going back to performance aspects, when Linus had poked for more details
-> about this your have elaborated further:
-> 
->   "we have seen direct map fragmentation causing visible
->    performance drop for our major services. This is the shadow 
->    production benchmark, so it is not possible to run it out of 
->    our data centers. Tracing showed that BPF program was the top 
->    trigger of these direct map splits."
-> 
-> And the only other metric we have is:
-> 
->   "For our web service production benchmark, bpf_prog_pack on 4kB pages
->    gives 0.5% to 0.7% more throughput than not using bpf_prog_pack."
-> 
-> These metrics are completely arbitrary and opaque to us. We need
-> something tangible and reproducible and I have been suggesting that
-> from early on...
-> 
-> I'm under the impression that the real missed, undocumented, major value-add
-> here is that the old "BPF prog pack" strategy helps to reduce the direct map
-> fragmentation caused by heavy use of the eBPF JIT programs and this in
-> turn helps your overall random system performance (regardless of what
-> it is you do). As I see it then the eBPF prog pack is just one strategy to
-> try to mitigate memory fragmentation on the direct map caused by the the eBPF
-> JIT programs, so the "slow down" your team has obvserved should be due to the
-> eventual fragmentation caused on the direct map *while* eBPF programs
-> get heavily used.
+Again, for a full explanation of HID-BPF, please refer to the last patch
+in this series (15/15).
 
-I believe that while the eBPF prog pack is helpful in mitigation of the
-direct map fragmentation caused by the eBPF JIT programs, the same strategy
-of allocating a large page, splitting its PMD entry and then reusing the
-memory for smaller allocations can be (and should be) generalized to other
-use cases that require non-default permissions in the page table.  Most
-prominent use cases are those that allocate memory for code, but the same
-approach is relevant for other cases, like secretmem or page table
-protection with PKS.
+This revision contains most notably few fixes from the various kernel CI
+bots. I also took Alexei's review into account, and we do not pollute
+tools/include with useless hid headers.
 
-A while ago I've suggested to handle such caching of large pages at the
-page allocator level, but when we discussed it at LSF/MM/BPF, prevailing
-opinion was that added value does not justify changes to the page
-allocator and it was suggested to handle such caching elsewhere. 
+I also removed most of the last checkpatch complains about adding
+external kfunc declarations in C files. And this led me to also show in
+samples/ how we can link together 2 BPF object files. Impressive how
+easy it is :)
 
-I had to put this project on a backburner for $VARIOUS_REASONS, but I still
-think that we need a generic allocator for memory with non-default
-permissions in the direct map and that code allocation should build on that
-allocator.
+Cheers,
+Benjamin
 
-All that said, the direct map fragmentation problem is currently relevant
-only to x86 because it's the only architecture that supports splitting of
-the large pages in the direct map.
- 
-> Mike Rapoport had presented about the Direct map fragmentation problem
-> at Plumbers 2021 [0], and clearly mentioned modules / BPF / ftrace /
-> kprobes as possible sources for this. Then Xing Zhengjun's 2021 performance
-> evaluation on whether using 2M/1G pages aggressively for the kernel direct map
-> help performance [1] ends up generally recommending huge pages. The work by Xing
-> though was about using huge pages *alone*, not using a strategy such as in the
-> "bpf prog pack" to share one 2 MiB huge page for *all* small eBPF programs,
-> and that I think is the real golden nugget here.
-> 
-> I contend therefore that the theoretical reduction of iTLB misses by using
-> huge pages for "bpf prog pack" is not what gets your systems to perform
-> somehow better. It should be simply that it reduces fragmentation and
-> *this* generally can help with performance long term. If this is accurate
-> then let's please separate the two aspects to this.
+Benjamin Tissoires (15):
+  HID: fix I2C_HID not selected when I2C_HID_OF_ELAN is
+  HID: Kconfig: split HID support and hid-core compilation
+  HID: initial BPF implementation
+  selftests: add tests for the HID-bpf initial implementation
+  HID: bpf jmp table: simplify the logic of cleaning up programs
+  HID: bpf: allocate data memory for device_event BPF programs
+  selftests/hid: add test to change the report size
+  HID: bpf: introduce hid_hw_request()
+  selftests/hid: add tests for bpf_hid_hw_request
+  HID: bpf: allow to change the report descriptor
+  selftests/hid: add report descriptor fixup tests
+  selftests/hid: Add a test for BPF_F_INSERT_HEAD
+  samples/hid: add new hid BPF example
+  samples/hid: add Surface Dial example
+  Documentation: add HID-BPF docs
 
-The direct map fragmentation is the reason for higher TLB miss rate, both
-for iTLB and dTLB. Whenever a large page in the direct map is split, all
-kernel accesses via the direct map will use small pages which requires
-dealing with 512 page table entries instead of one for 2M range.
-
-Since small pages in the direct map are never collapsed back to large
-pages, long living system that heavily uses eBPF programs will have its
-direct map severely fragmented, higher TLB miss rate and worse overall
-performance. 
-
-> There's two aspects to what I would like to see from a performance
-> perspective then actually mentioned in the commit logs:
-> 
-> 1) iTLB miss loss ratio with "bpf prog pack" or this generalized solution
->    Vs not using it at all:
-
-... 
- 
-> 2) Estimate in reduction on direct map fragmentation by using the "bpf
->    prog pack" or this generalized solution:
-> 
->    For this I'd expect a benchmark similar to the workload you guys
->    run or something memory intensive, as eBPF JITs are heavily used,
->    and after a certain amount of time somehow compute how fragmented
->    memory is. The only sensible thing I can think to measure memory
->    fragmentation is to look at the memory compaction index
->    /sys/kernel/debug/extfrag/extfrag_index , but I highly welcome other's
->    ideas as I'm a mm n00b.
-
-The direct map fragmentation can be tracked with 
-
-	grep DirectMap /proc/meminfo
-	grep direct_map /proc/vmstat
-
-and by looking at /sys/kernel/debug/page_tables/kernel
- 
-> [0] https://lpc.events/event/11/contributions/1127/attachments/922/1792/LPC21%20Direct%20map%20management%20.pdf
-> [1] https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
-> 
->   Luis
+ Documentation/hid/hid-bpf.rst                 | 512 +++++++++++
+ Documentation/hid/index.rst                   |   1 +
+ MAINTAINERS                                   |   3 +
+ drivers/Makefile                              |   2 +-
+ drivers/hid/Kconfig                           |  18 +-
+ drivers/hid/Makefile                          |   2 +
+ drivers/hid/amd-sfh-hid/Kconfig               |   2 +-
+ drivers/hid/bpf/Kconfig                       |  17 +
+ drivers/hid/bpf/Makefile                      |  11 +
+ drivers/hid/bpf/entrypoints/Makefile          |  93 ++
+ drivers/hid/bpf/entrypoints/README            |   4 +
+ drivers/hid/bpf/entrypoints/entrypoints.bpf.c |  34 +
+ .../hid/bpf/entrypoints/entrypoints.lskel.h   | 330 +++++++
+ drivers/hid/bpf/hid_bpf_dispatch.c            | 531 +++++++++++
+ drivers/hid/bpf/hid_bpf_dispatch.h            |  28 +
+ drivers/hid/bpf/hid_bpf_jmp_table.c           | 565 ++++++++++++
+ drivers/hid/hid-core.c                        |  34 +-
+ drivers/hid/i2c-hid/Kconfig                   |   4 +-
+ include/linux/hid.h                           |   5 +
+ include/linux/hid_bpf.h                       | 163 ++++
+ samples/hid/.gitignore                        |   8 +
+ samples/hid/Makefile                          | 250 ++++++
+ samples/hid/Makefile.target                   |  75 ++
+ samples/hid/hid_bpf_attach.bpf.c              |  18 +
+ samples/hid/hid_bpf_attach.h                  |  14 +
+ samples/hid/hid_bpf_helpers.h                 |  21 +
+ samples/hid/hid_mouse.bpf.c                   | 112 +++
+ samples/hid/hid_mouse.c                       | 155 ++++
+ samples/hid/hid_surface_dial.bpf.c            | 134 +++
+ samples/hid/hid_surface_dial.c                | 226 +++++
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/hid/.gitignore        |   4 +
+ tools/testing/selftests/hid/Makefile          | 233 +++++
+ tools/testing/selftests/hid/config            |  20 +
+ tools/testing/selftests/hid/hid_bpf.c         | 845 ++++++++++++++++++
+ tools/testing/selftests/hid/progs/hid.c       | 196 ++++
+ .../selftests/hid/progs/hid_bpf_helpers.h     |  21 +
+ 37 files changed, 4682 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/hid/hid-bpf.rst
+ create mode 100644 drivers/hid/bpf/Kconfig
+ create mode 100644 drivers/hid/bpf/Makefile
+ create mode 100644 drivers/hid/bpf/entrypoints/Makefile
+ create mode 100644 drivers/hid/bpf/entrypoints/README
+ create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.bpf.c
+ create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.lskel.h
+ create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.c
+ create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.h
+ create mode 100644 drivers/hid/bpf/hid_bpf_jmp_table.c
+ create mode 100644 include/linux/hid_bpf.h
+ create mode 100644 samples/hid/.gitignore
+ create mode 100644 samples/hid/Makefile
+ create mode 100644 samples/hid/Makefile.target
+ create mode 100644 samples/hid/hid_bpf_attach.bpf.c
+ create mode 100644 samples/hid/hid_bpf_attach.h
+ create mode 100644 samples/hid/hid_bpf_helpers.h
+ create mode 100644 samples/hid/hid_mouse.bpf.c
+ create mode 100644 samples/hid/hid_mouse.c
+ create mode 100644 samples/hid/hid_surface_dial.bpf.c
+ create mode 100644 samples/hid/hid_surface_dial.c
+ create mode 100644 tools/testing/selftests/hid/.gitignore
+ create mode 100644 tools/testing/selftests/hid/Makefile
+ create mode 100644 tools/testing/selftests/hid/config
+ create mode 100644 tools/testing/selftests/hid/hid_bpf.c
+ create mode 100644 tools/testing/selftests/hid/progs/hid.c
+ create mode 100644 tools/testing/selftests/hid/progs/hid_bpf_helpers.h
 
 -- 
-Sincerely yours,
-Mike.
+2.36.1
+
