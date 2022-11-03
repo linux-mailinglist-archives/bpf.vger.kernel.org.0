@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA42F6180B9
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 16:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7F96180C3
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 16:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbiKCPLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 11:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
+        id S231881AbiKCPMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 11:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbiKCPKx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 11:10:53 -0400
+        with ESMTP id S231946AbiKCPMB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 11:12:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781D6178B6
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 08:10:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E461B1E2
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 08:11:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0478561F24
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:10:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639E7C43149
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:10:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA22961F29
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:11:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C794C43146
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 15:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667488209;
-        bh=ewhJrs7iVBajHat39GJj2Bvn4oi2wS3pS9klk+VGHKE=;
+        s=k20201202; t=1667488286;
+        bh=bniCAy1g4sGfzDEIIDctFfu6afFtYgYFG63GSJYI7jg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ibheqgN2PUis0iS8hX6RUXLX/rNbv0XjT2xC6Q81GciP19l5o9Vd/P/clcbaehxR/
-         giiUUq7jTs6jBMm9GHm9SMRdmQa9FxZ08fWHU96XRZghbA12zKQOabqn+R13r2Ksn6
-         6V0NxcUTwBd5BonyVgDze9NyOYnSEdSPRnlO+vLG/EcXRxdbfVhjxA8KUcv8dAC0tk
-         8Ze4HZbaGbfzIW96Hhcw1lVt3W3K6MVU331OaiZ+jY6czteof5YuQ7Qp/CgJQcKwS4
-         Hw8o3ewJjD13SxwoAeaS+vZhgdsKVeOK7Qm3Tq/j2kr77ZPvX6KReelFq25XnXRvS7
-         Kv2SInX3eox+Q==
-Received: by mail-lf1-f53.google.com with SMTP id bp15so3290274lfb.13
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 08:10:09 -0700 (PDT)
-X-Gm-Message-State: ACrzQf1YEmII1dtXdu4zksPZMaPZtGGrcFbvAMKnF3Us0PMogDTv4r3K
-        Yj738Hnr/Q9AtXyRmtfeMDgozBQML8y1t2bWwkyUTQ==
-X-Google-Smtp-Source: AMsMyM4Cg6hX3EpnVpClZ01WmQnXuKDsfT4wK4DfY7RDGiifjvu9l3DsMTn43RgsCL9r9814r/hJWGZIoSbvDrkuMOc=
-X-Received: by 2002:a05:6512:10c2:b0:4a2:ed6:4f4e with SMTP id
- k2-20020a05651210c200b004a20ed64f4emr12527874lfg.136.1667488207006; Thu, 03
- Nov 2022 08:10:07 -0700 (PDT)
+        b=f+Bo4acdNsVsk3QFwDOy5D3v1rTgag1bOVEIkfAzZKhfkC3vWkc4vIw++xRyV/m6X
+         yfnEBhhXHsNTEGIo/O++tVC3lGrV8kCqaazslgPOng2+s03izjHf3TEwASRrIKXfbZ
+         mOZFDhpBAs2iXUDS47jyum4rjkTe2xXZ1jMvJLXGLKGJkyMtuz6Kq5OMKebUQZ2eDJ
+         IB2VCLQD13LJdlA4deYJXKyc7pJPKN/rk+1zmm4UsBDZg/9gARN8qPZbIGU+e9BLkK
+         uk01bLk1PXjE7ZmAXkzo6hzmeaTdUKK720td/UeSNXUe5vCBrA5JNO4NqFqCwk7H2T
+         eNuORb5CKZ6sw==
+Received: by mail-lf1-f45.google.com with SMTP id j16so3312519lfe.12
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 08:11:25 -0700 (PDT)
+X-Gm-Message-State: ACrzQf1AxUwlc8p2teesaO59YrtusSuweLITNKiNd/LoVj2SsqABUzYY
+        RrlbqjGQBcv2dsc3zzdYmXGJvcuIPAc97vtyBXApzw==
+X-Google-Smtp-Source: AMsMyM4jINPb7umoaCKz8QypKSvBgLTh17Ae+KPTbRb/nAdAKOwn5WPfjW+jlk9lO3Lkc4w8ci1HePaoAiinWI+o8WY=
+X-Received: by 2002:a05:6512:36c3:b0:4a4:7627:c57 with SMTP id
+ e3-20020a05651236c300b004a476270c57mr12204530lfs.398.1667488284062; Thu, 03
+ Nov 2022 08:11:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221028165423.386151-1-roberto.sassu@huaweicloud.com> <20221028165423.386151-2-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20221028165423.386151-2-roberto.sassu@huaweicloud.com>
+References: <20221028165423.386151-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20221028165423.386151-1-roberto.sassu@huaweicloud.com>
 From:   KP Singh <kpsingh@kernel.org>
-Date:   Thu, 3 Nov 2022 16:09:56 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ5gFu5a-NoKFD6XFNYMDyP+iPon=kHMimJybmNexbhAPg@mail.gmail.com>
-Message-ID: <CACYkzJ5gFu5a-NoKFD6XFNYMDyP+iPon=kHMimJybmNexbhAPg@mail.gmail.com>
-Subject: Re: [RESEND][RFC][PATCH 2/3] bpf-lsm: Limit values that can be
- returned by security modules
+Date:   Thu, 3 Nov 2022 16:11:13 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5nwsdaG57HHkNubPptkB=_Mz68TVzmX8+Tg=ZFjMX3pw@mail.gmail.com>
+Message-ID: <CACYkzJ5nwsdaG57HHkNubPptkB=_Mz68TVzmX8+Tg=ZFjMX3pw@mail.gmail.com>
+Subject: Re: [RESEND][RFC][PATCH 1/3] lsm: Clarify documentation of
+ vm_enough_memory hook
 To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -73,228 +73,35 @@ On Fri, Oct 28, 2022 at 6:55 PM Roberto Sassu
 >
 > From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> BPF LSM defines a bpf_lsm_*() function for each LSM hook, so that
-> security modules can define their own implementation for the desired hooks.
+> include/linux/lsm_hooks.h reports the result of the LSM infrastructure to
+> the callers, not what LSMs should return to the LSM infrastructure.
 >
-> Unfortunately, BPF LSM does not restrict which values security modules can
-> return (for non-void LSM hooks). Security modules might follow the
-> conventions stated in include/linux/lsm_hooks.h, or put arbitrary values.
+> Clarify that and add that returning 1 from the LSMs means calling
+> __vm_enough_memory() with cap_sys_admin set, 0 without.
 >
-> This could cause big troubles, as the kernel is not ready to handle
-> possibly malicious return values from LSMs. Until now, it was not the
-
-I am not sure I would call this malicious. This would be incorrect, if
-someone is writing a BPF LSM program they already have the powers
-to willingly do a lot of malicious stuff.
-
-It's about unknowingly returning values that can break the system.
-
-> case, as each LSM is carefully reviewed and it won't be accepted if it
-> does not meet the return value conventions.
->
-> The biggest problem is when an LSM returns a positive value, instead of a
-> negative value, as it could be converted to a pointer. Since such pointer
-> escapes the IS_ERR() check, its use later in the code can cause
-> unpredictable consequences (e.g. invalid memory access).
->
-> Another problem is returning zero when an LSM is supposed to have done some
-> operations. For example, the inode_init_security hook expects that their
-> implementations return zero only if they set the name and value of the new
-> xattr to be added to the new inode. Otherwise, other kernel subsystems
-> might encounter unexpected conditions leading to a crash (e.g.
-> evm_protected_xattr_common() getting NULL as argument).
->
-> Finally, there are LSM hooks which are supposed to return just one as
-> positive value, or non-negative values. Also in these cases, although it
-> seems less critical, it is safer to return to callers of the LSM
-> infrastructure more precisely what they expect.
->
-> As eBPF allows code outside the kernel to run, it is its responsibility
-> to ensure that only expected values are returned to LSM infrastructure
-> callers.
->
-> Create four new BTF ID sets, respectively for hooks that can return
-> positive values, only one as positive value, that cannot return zero, and
-> that cannot return negative values. Create also corresponding functions to
-> check if the hook a security module is attached to belongs to one of the
-> defined sets.
->
-> Finally, check in the eBPF verifier the value returned by security modules
-> for each attached LSM hook, and return -EINVAL (the security module cannot
-> run) if the hook implementation does not satisfy the hook return value
-> policy.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
 > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+
+Reviewed-by: KP Singh <kpsingh@kernel.org>
+
 > ---
->  include/linux/bpf_lsm.h | 24 ++++++++++++++++++
->  kernel/bpf/bpf_lsm.c    | 56 +++++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c   | 35 +++++++++++++++++++++++---
->  3 files changed, 112 insertions(+), 3 deletions(-)
+>  include/linux/lsm_hooks.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> index 4bcf76a9bb06..cd38aca4cfc0 100644
-> --- a/include/linux/bpf_lsm.h
-> +++ b/include/linux/bpf_lsm.h
-> @@ -28,6 +28,10 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->                         const struct bpf_prog *prog);
->
->  bool bpf_lsm_is_sleepable_hook(u32 btf_id);
-> +bool bpf_lsm_can_ret_pos_value(u32 btf_id);
-> +bool bpf_lsm_can_ret_only_one_as_pos_value(u32 btf_id);
-> +bool bpf_lsm_cannot_ret_zero(u32 btf_id);
-> +bool bpf_lsm_cannot_ret_neg_value(u32 btf_id);
->
-
-This does not need to be exported to the rest of the kernel. Please
-have this logic in bpf_lsm.c and export a single verify function.
-
-Also, these really don't need to be such scattered logic, Could we
-somehow encode this into the LSM_HOOK definition?
-
->  static inline struct bpf_storage_blob *bpf_inode(
->         const struct inode *inode)
-> @@ -51,6 +55,26 @@ static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
->         return false;
->  }
->
-> +static inline bool bpf_lsm_can_ret_pos_value(u32 btf_id)
-> +{
-> +       return false;
-> +}
-> +
-> +static inline bool bpf_lsm_can_ret_only_one_as_pos_value(u32 btf_id)
-> +{
-> +       return false;
-> +}
-> +
-> +static inline bool bpf_lsm_cannot_ret_zero(u32 btf_id)
-> +{
-> +       return false;
-> +}
-> +
-> +static inline bool bpf_lsm_cannot_ret_neg_value(u32 btf_id)
-> +{
-> +       return false;
-> +}
-> +
->  static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->                                       const struct bpf_prog *prog)
->  {
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index d6c9b3705f24..3dcb70b2f978 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -348,6 +348,62 @@ bool bpf_lsm_is_sleepable_hook(u32 btf_id)
->         return btf_id_set_contains(&sleepable_lsm_hooks, btf_id);
->  }
->
-> +/* The set of hooks which are allowed to return a positive value. */
-> +BTF_SET_START(pos_ret_value_lsm_hooks)
-> +BTF_ID(func, bpf_lsm_vm_enough_memory)
-> +BTF_ID(func, bpf_lsm_inode_getsecurity)
-> +BTF_ID(func, bpf_lsm_inode_listsecurity)
-> +BTF_ID(func, bpf_lsm_inode_need_killpriv)
-> +BTF_ID(func, bpf_lsm_inode_copy_up_xattr)
-> +BTF_ID(func, bpf_lsm_getprocattr)
-> +BTF_ID(func, bpf_lsm_setprocattr)
-> +BTF_ID(func, bpf_lsm_xfrm_state_pol_flow_match)
-> +BTF_ID(func, bpf_lsm_key_getsecurity)
-> +BTF_ID(func, bpf_lsm_ismaclabel)
-> +BTF_ID(func, bpf_lsm_audit_rule_known)
-> +BTF_ID(func, bpf_lsm_audit_rule_match)
-> +BTF_SET_END(pos_ret_value_lsm_hooks)
-> +
-> +bool bpf_lsm_can_ret_pos_value(u32 btf_id)
-> +{
-> +       return btf_id_set_contains(&pos_ret_value_lsm_hooks, btf_id);
-> +}
-> +
-> +BTF_SET_START(one_ret_value_lsm_hooks)
-> +BTF_ID(func, bpf_lsm_vm_enough_memory)
-> +BTF_ID(func, bpf_lsm_inode_copy_up_xattr)
-> +BTF_ID(func, bpf_lsm_xfrm_state_pol_flow_match)
-> +BTF_ID(func, bpf_lsm_ismaclabel)
-> +BTF_ID(func, bpf_lsm_audit_rule_known)
-> +BTF_ID(func, bpf_lsm_audit_rule_match)
-> +BTF_SET_END(one_ret_value_lsm_hooks)
-> +
-> +bool bpf_lsm_can_ret_only_one_as_pos_value(u32 btf_id)
-> +{
-> +       return btf_id_set_contains(&one_ret_value_lsm_hooks, btf_id);
-> +}
-> +
-> +/* The set of hooks which are not allowed to return zero. */
-> +BTF_SET_START(not_zero_ret_value_lsm_hooks)
-> +BTF_ID(func, bpf_lsm_inode_init_security)
-> +BTF_SET_END(not_zero_ret_value_lsm_hooks)
-> +
-> +bool bpf_lsm_cannot_ret_zero(u32 btf_id)
-> +{
-> +       return btf_id_set_contains(&not_zero_ret_value_lsm_hooks, btf_id);
-> +}
-> +
-> +/* The set of hooks which are not allowed to return a negative value. */
-> +BTF_SET_START(not_neg_ret_value_lsm_hooks)
-> +BTF_ID(func, bpf_lsm_vm_enough_memory)
-> +BTF_ID(func, bpf_lsm_audit_rule_known)
-> +BTF_SET_END(not_neg_ret_value_lsm_hooks)
-> +
-> +bool bpf_lsm_cannot_ret_neg_value(u32 btf_id)
-> +{
-> +       return btf_id_set_contains(&not_neg_ret_value_lsm_hooks, btf_id);
-> +}
-> +
->  const struct bpf_prog_ops lsm_prog_ops = {
->  };
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 7f0a9f6cb889..099c1bf88fed 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10623,9 +10623,38 @@ static int check_return_code(struct bpf_verifier_env *env)
->
->         case BPF_PROG_TYPE_LSM:
->                 if (env->prog->expected_attach_type != BPF_LSM_CGROUP) {
-> -                       /* Regular BPF_PROG_TYPE_LSM programs can return
-> -                        * any value.
-> -                        */
-> +                       /* < 0 */
-> +                       if (tnum_in(tnum_range((u64)(~0) << 31, (u64)(~0)), reg->var_off)) {
-> +                               if (bpf_lsm_cannot_ret_neg_value(env->prog->aux->attach_btf_id)) {
-> +                                       verbose(env, "Invalid R0, cannot return negative value\n");
-> +                                       return -EINVAL;
-> +                               }
-> +                       /* = 0 */
-> +                       } else if (tnum_equals_const(reg->var_off, 0)) {
-> +                               if (bpf_lsm_cannot_ret_zero(env->prog->aux->attach_btf_id)) {
-> +                                       verbose(env, "Invalid R0, cannot return zero value\n");
-> +                                       return -EINVAL;
-> +                               }
-> +                       /* = 1 */
-> +                       } else if (tnum_equals_const(reg->var_off, 1)) {
-> +                               if (!bpf_lsm_can_ret_pos_value(env->prog->aux->attach_btf_id)) {
-> +                                       verbose(env, "Invalid R0, cannot return positive value\n");
-> +                                       return -EINVAL;
-> +                               }
-> +                       /* > 1 */
-> +                       } else {
-> +                               if (!bpf_lsm_can_ret_pos_value(env->prog->aux->attach_btf_id)) {
-> +                                       verbose(env, "Invalid R0, cannot return positive value\n");
-> +                                       return -EINVAL;
-> +                               }
-> +
-> +                               if (bpf_lsm_can_ret_only_one_as_pos_value(env->prog->aux->attach_btf_id)) {
-> +                                       verbose(env,
-> +                                               "Invalid R0, can return only one as positive value\n");
-> +                                       return -EINVAL;
-> +                               }
-> +                       }
-> +
->                         return 0;
->                 }
->                 if (!env->prog->aux->attach_func_proto->type) {
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index 4ec80b96c22e..f40b82ca91e7 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -1411,7 +1411,9 @@
+>   *     Check permissions for allocating a new virtual mapping.
+>   *     @mm contains the mm struct it is being added to.
+>   *     @pages contains the number of pages.
+> - *     Return 0 if permission is granted.
+> + *     Return 0 if permission is granted by LSMs to the caller. LSMs should
+> + *     return 1 if __vm_enough_memory() should be called with
+> + *     cap_sys_admin set, 0 if not.
+>   *
+>   * @ismaclabel:
+>   *     Check if the extended attribute specified by @name
 > --
 > 2.25.1
 >
