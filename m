@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0581618AAE
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB655618AB7
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbiKCVgn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 17:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S231183AbiKCVjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 17:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbiKCVgl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 17:36:41 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6FE21E2F
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:36:40 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id x16so1755146ilm.5
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 14:36:40 -0700 (PDT)
+        with ESMTP id S230193AbiKCVjL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 17:39:11 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4D413E8E
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:39:10 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id o65so2494440iof.4
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 14:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8kDk3Ehgf1gzFSlGbvkxEAeD+uNpPbTDTXM3slIxjc=;
-        b=G4s4ejetLbgpFsZdlVs+MoXrOedbrKOESJI7Vi9TtQANICEYbIG2T7ey2S2edzqbt0
-         3vH7X03WhPudcU7jZsnYZ7LzpNggJi3B8IGmVQWnwwOaEG+k3mkrg+dhfbHZvNwNkRmB
-         ZrHu1uPGwEorcBcnRONrpLqCs3Kee1TYp05mfs0dZS/gTPfi2cYxlZjVBQ9tqDapqG3a
-         zDsgvaYxFDPzoLbByjJuNXOh0X7o/KzVZ+nHcT5PxWPNTqpkwuzrkyc7rmgROzDT/DBe
-         fuBFbMjp/nRdWQZroqwv7Lvj4IfatMy4A6djXZ1OUeDu6f4SSc7UWR7Sm4H03J5t7gIr
-         fE6w==
+        bh=g3QN9qDodq/aU5tlCSzzroSH+1NsZzZo1uA0chP0Tws=;
+        b=PDJ8wyvkq/Ie8hcdLJqtN18Xen2j7nrSLcOtaNEAkFcGSHL/2oLxznK2EdHjYgbTh8
+         ZaSayvgcY1LQ/8oWKpHi310Tm05QM0WNZQJufgs77NPksn3snuf8LG8kCu6W7dxTPzB3
+         qkrlov3T4VyyPFpOjmiBw2l010M9LKLYxsjthI4zdTfdYW0wLwKkbx0LoNo/y8hNs84C
+         8xKN9xO/mzkM5Dbzq8zHvYssjMUBDqKxyCGbkLu2X9tbz2CkOBuisnpFNsfkvO2A37Do
+         cbANjh2Kf2VJ/23F+m+T+HGDC5JbHNk7nUgP2aWxeabJVChzhspdeuxOoZ2+hn6bFoc6
+         KIHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=T8kDk3Ehgf1gzFSlGbvkxEAeD+uNpPbTDTXM3slIxjc=;
-        b=loesyHGYxbUOzYDWPWqNftw9BE9+SxxeSrtKByMHnjpw/CFljNvI0fHqjKQjjanyOU
-         XjddB1biIp80/X0SRNTcKeqPVOdPt3SuLubKtY5nEx3a03Rgwqm7y+uTtcWcgCEM/WBQ
-         DR4yJ8jwvH8OeSUNYjG8LTCUWBW+cguK0XNFH7HNGlrM9sOpT37bez9Tnp4YIABbwJSF
-         v17TaYR/5FOYlNWRQZlRoVBFekm2ygQyKDmWLElQKvPiFKQY3b9hhsupgBUFV8o5Hv+Q
-         L7nmQFetXLXfc2HIidL5MPWlOMmxXsQLFKlmX3oO7IwvS10yXZnSlr4uFVH4nEQX5NqA
-         X2dw==
-X-Gm-Message-State: ACrzQf001Iacns/y/943i+/Y3HCY8mmo6fmQn6hBnmkSTTt3W2H4Wihh
-        WHdTrcQyugptK9qhH33kEd5XLNQ3kQ3ENm2DnjqxMA==
-X-Google-Smtp-Source: AMsMyM6BFQFqv9R9EjkEEJOdZt0wpbGudAfs35w4GJMsRY1C2CDMeIvVTZb3HQi2Yd7I8TFbWmpuntJY34zYG6WlRmM=
-X-Received: by 2002:a92:5204:0:b0:300:d0b8:5184 with SMTP id
- g4-20020a925204000000b00300d0b85184mr5617868ilb.118.1667511399568; Thu, 03
- Nov 2022 14:36:39 -0700 (PDT)
+        bh=g3QN9qDodq/aU5tlCSzzroSH+1NsZzZo1uA0chP0Tws=;
+        b=gqBzq477N+oflzphpna1ZWo8CY+wYTJ9MAdC/dut7axUXCNwfGszVGWWeLntD1H8O/
+         +xhGgJPQl7XTlOBKB9mnsUeRux+s5tb8K+Y6Y2HsVtOh2D0HW/yZirVUN1SKq2TqowbI
+         CrOy4lwrwRBXUYfzU3opPDRKCmZ16CijGwpISbH6f705GxoSTuPQZK5I6XCEYpCs++s5
+         CPNv7AO6dLWq8AatiHLCOZUb7z+5HFTz9GP/yVOEEKQh13qQezL9YG7PMuOtNrXYgBoe
+         qx5mj0gSqwAJCgvTTtLYNmcTDPppgr44QiZf7oFmQWY8NYSG2i4kAU0JWbSSITT4SC5j
+         htcA==
+X-Gm-Message-State: ACrzQf0+mBM2hbc3c28lYV7v3zm2lHYmI+/PtOBoUYD1b+ALwxrWRf+o
+        Nx3FdLiL+j0NdnaV7DrjgbUXRvkYg1Ijl8p0fUwpgA==
+X-Google-Smtp-Source: AMsMyM61NlIm/gVSRMqzHMipWB7KJn7cV6LWUXDXmyAhDen+qFHchTTmn1qGt1QnB7/7fg0CVexvuWPZ5zjoSPZbhsE=
+X-Received: by 2002:a05:6602:13d5:b0:6d6:1ea:3b0c with SMTP id
+ o21-20020a05660213d500b006d601ea3b0cmr2826052iov.16.1667511549268; Thu, 03
+ Nov 2022 14:39:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220715115559.139691-1-shaozhengchao@huawei.com> <f0bb3cd6-6986-6ca1-aa40-7a10302c8586@linux.dev>
-In-Reply-To: <f0bb3cd6-6986-6ca1-aa40-7a10302c8586@linux.dev>
+References: <20221027225537.353077-1-sdf@google.com> <2efac61c-a477-d3c1-4270-3c98998e6497@linux.dev>
+ <CAKH8qBt1QPBLh1Yg+oA-qdQjND9Zp04z6tK9vjDkSMRqbhh24A@mail.gmail.com>
+ <1393c4d0-89e0-e5b7-9f40-2c646f2ea2e9@linux.dev> <5de93174-6e27-1d0b-6ff1-b63c6141b6a2@linux.dev>
+In-Reply-To: <5de93174-6e27-1d0b-6ff1-b63c6141b6a2@linux.dev>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 3 Nov 2022 14:36:28 -0700
-Message-ID: <CAKH8qBvLGaX_+ye5Wdmj1FS+p8K8gBsKUEDRb1x8KzxQE+oDuA@mail.gmail.com>
-Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid pkt_len
+Date:   Thu, 3 Nov 2022 14:38:58 -0700
+Message-ID: <CAKH8qBt5d7fJH6Anw1BHK8YyKjkw3jsR_6Bi01YqGRRxfuGP6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: make sure skb->len != 0 when redirecting to
+ a tunneling device
 To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Zhengchao Shao <shaozhengchao@huawei.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        bigeasy@linutronix.de, imagedong@tencent.com, petrm@nvidia.com,
-        arnd@arndb.de, dsahern@kernel.org, talalahmad@google.com,
-        keescook@chromium.org, haoluo@google.com, jolsa@kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, hawk@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, Lorenz Bauer <oss@lmb.io>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,103 +74,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 2:07 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Nov 3, 2022 at 2:32 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >
-> On 7/15/22 4:55 AM, Zhengchao Shao wrote:
-> > Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
-> > skbs, that is, the flow->head is null.
-> > The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
-> > run a bpf prog which redirects empty skbs.
-> > So we should determine whether the length of the packet modified by bpf
-> > prog or others like bpf_prog_test is valid before forwarding it directly.
-> >
-> > LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
-> > LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
-> >
-> > Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
-> > Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> > ---
-> > v3: modify debug print
-> > v2: need move checking to convert___skb_to_skb and add debug info
-> > v1: should not check len in fast path
-> >
-> >   include/linux/skbuff.h | 8 ++++++++
-> >   net/bpf/test_run.c     | 3 +++
-> >   net/core/dev.c         | 1 +
-> >   3 files changed, 12 insertions(+)
-> >
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index f6a27ab19202..82e8368ba6e6 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -2459,6 +2459,14 @@ static inline void skb_set_tail_pointer(struct sk_buff *skb, const int offset)
-> >
-> >   #endif /* NET_SKBUFF_DATA_USES_OFFSET */
-> >
-> > +static inline void skb_assert_len(struct sk_buff *skb)
-> > +{
-> > +#ifdef CONFIG_DEBUG_NET
-> > +     if (WARN_ONCE(!skb->len, "%s\n", __func__))
-> > +             DO_ONCE_LITE(skb_dump, KERN_ERR, skb, false);
-> > +#endif /* CONFIG_DEBUG_NET */
-> > +}
-> > +
-> >   /*
-> >    *  Add data to an sk_buff
-> >    */
-> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> > index 2ca96acbc50a..dc9dc0bedca0 100644
-> > --- a/net/bpf/test_run.c
-> > +++ b/net/bpf/test_run.c
-> > @@ -955,6 +955,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
-> >   {
-> >       struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
-> >
-> > +     if (!skb->len)
-> > +             return -EINVAL;
+> On 11/1/22 5:43 PM, Martin KaFai Lau wrote:
+> > On 11/1/22 4:39 PM, Stanislav Fomichev wrote:
+> >> On Tue, Nov 1, 2022 at 1:28 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> >>>
+> >>> On 10/27/22 3:55 PM, Stanislav Fomichev wrote:
+> >>>> syzkaller managed to trigger another case where skb->len == 0
+> >>>> when we enter __dev_queue_xmit:
+> >>>>
+> >>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len
+> >>>> include/linux/skbuff.h:2576 [inline]
+> >>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576
+> >>>> __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
+> >>>>
+> >>>> Call Trace:
+> >>>>    dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
+> >>>>    __bpf_tx_skb net/core/filter.c:2115 [inline]
+> >>>>    __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
+> >>>>    __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
+> >>>>    ____bpf_clone_redirect net/core/filter.c:2447 [inline]
+> >>>>    bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
+> >>>>    bpf_prog_48159a89cb4a9a16+0x59/0x5e
+> >>>>    bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
+> >>>>    __bpf_prog_run include/linux/filter.h:596 [inline]
+> >>>>    bpf_prog_run include/linux/filter.h:603 [inline]
+> >>>>    bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
+> >>>>    bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
+> >>>>    bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
+> >>>>    __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
+> >>>>    __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
+> >>>>    __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
+> >>>>    __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
+> >>>>    do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
+> >>>>    entry_SYSCALL_64_after_hwframe+0x61/0xc6
+> >>>>
+> >>>> The reproducer doesn't really reproduce outside of syzkaller
+> >>>> environment, so I'm taking a guess here. It looks like we
+> >>>> do generate correct ETH_HLEN-sized packet, but we redirect
+> >>>> the packet to the tunneling device. Before we do so, we
+> >>>> __skb_pull l2 header and arrive again at skb->len == 0.
+> >>>> Doesn't seem like we can do anything better than having
+> >>>> an explicit check after __skb_pull?
+> >>> hmm... I recall there was similar report but I didn't follow those earlier fixes
+> >>> and discussion.  Not sure if this has been considered:
+> >>> If this skb can only happen in the bpf_prog_test_run (?),
+> >>> how about ensure that the skb will at least have some header after l2 header in
+> >>> bpf_prog_test_run_skb().  Adding some headers/bytes if the data_size_in does not
+> >>> have it.  This may break some external test cases that somehow has no l3/4?
+> >>> test_progs should be mostly fine considering they are using the pkt_v[46] in
+> >>> network_helpers.h.
+> >>
+> >> For the previous issue we've added "skb->len != 0" check which works
+> >> for the cases that remove l2.
 >
->  From another recent report [0], I don't think this change is fixing the report
-> from syzbot.  It probably makes sense to revert this patch.
+> Yeah, I replied on the "bpf: Don't redirect packets with invalid pkt_len" thread
+> which is hitting the same syzbot report afaict.  I don't think that patch is
+> actually fixing it.
 >
-> afaict, This '!skb->len' test is done after
->         if (is_l2)
->                 __skb_push(skb, hh_len);
+> >> For the ones that don't, I think you're right, and checking at the
+> >> time of bpf_prog_test_run_skb can probably be enough, lemme try
+> >> (require ETH_HLEN+1 vs ETH_HLEN).
+> >> For some reason I was under the impression that Lorenz changed the
+> >> size from 0 to 14 [0], but he went from 14 to 15, so we won't break at
+> >> least cilium again..
+> >> CC'd him just in case.
+> >>
+> >> 0: https://github.com/cilium/ebpf/pull/788
+> >
+> > Thanks for the pointer.
+> >
+> > The cilium's prog is SOCKET_FILTER (not l2).  It is why the new "skb->len != 0"
+> > test broke it.
+> >
+> >>
+> >>> Adding some headers/bytes if the data_size_in does not have it.
+> >>> This may break some external test cases that somehow has no l3/4?
+> >>
+> >> Yeah, idk, this seems like a last resort? I'd prefer to explicitly
+> >> fail and communicate it back to the user than slap some extra byte and
+> >> then fail in some other place unpredictably?
+> >
+> > If fixing in the fast path in filter.c, is __bpf_redirect_no_mac the only place
+> > that needs this check?  bpf_redirect_neigh() looks ok to me since the neigh
+> > should have filled the mac header.
 >
-> Hence, skb->len is not zero in convert___skb_to_skb().  The proper place to test
-> skb->len is before __skb_push() to ensure there is some network header after the
-> mac or may as well ensure "data_size_in > ETH_HLEN" at the beginning.
+> I took a closer look.  This seems to be the only place needed the check, so
+> applied.  If it turns out there are other cases caused by test-run generated
+> skb, we will revisit a fix in test_run.c and the existing tests have to adjust.
+>
+> >
+> >>
+> >>>> Cc: Eric Dumazet <edumazet@google.com>
+> >>>> Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
+> >>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>>> ---
+> >>>>    net/core/filter.c | 4 ++++
+> >>>>    1 file changed, 4 insertions(+)
+> >>>>
+> >>>> diff --git a/net/core/filter.c b/net/core/filter.c
+> >>>> index bb0136e7a8e4..cb3b635e35be 100644
+> >>>> --- a/net/core/filter.c
+> >>>> +++ b/net/core/filter.c
+> >>>> @@ -2126,6 +2126,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb,
+> >>>> struct net_device *dev,
+> >>>>
+> >>>>        if (mlen) {
+> >>>>                __skb_pull(skb, mlen);
+> >>>> +             if (unlikely(!skb->len)) {
+> >>>> +                     kfree_skb(skb);
+> >>>> +                     return -ERANGE;
+> >>>> +             }
+>
+> One question, if the "!skb->len" check is deleted from convert___skb_to_skb(),
+> this "unlikely(!skb->len)" block here has to be moved out of the "if (mlen)"?
 
-When is_l2==true, __skb_push will result in non-zero skb->len, so we
-should be good, right?
-The only issue is when we do bpf_redirect into a tunneling device and
-do __skb_pull, but that's now fixed by [0].
-
-When is_l2==false, the existing check in convert___skb_to_skb will
-make sure there is something in the l3 headers.
-
-So it seems like this patch is still needed. Or am I missing something?
-
-> The fix in [0] is applied.  If it turns out there are other cases caused by the
-> skb generated by test_run that needs extra fixes in bpf_redirect_*,  it needs to
-> revisit an earlier !skb->len check mentioned above and the existing test cases
-> outside of test_progs would have to adjust accordingly.
->
-> [0]: https://lore.kernel.org/bpf/20221027225537.353077-1-sdf@google.com/
->
-> > +
-> >       if (!__skb)
-> >               return 0;
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index d588fd0a54ce..716df64fcfa5 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -4168,6 +4168,7 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
-> >       bool again = false;
-> >
-> >       skb_reset_mac_header(skb);
-> > +     skb_assert_len(skb);
-> >
-> >       if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
-> >               __skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
->
+I see, yeah, that might be the alternative. I'm assuming
+__bpf_redirect_common is covered by "skb->mac_header >=
+skb->network_header" check?
