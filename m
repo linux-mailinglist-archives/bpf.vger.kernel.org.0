@@ -2,171 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABC6618A97
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7036F618AAB
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 22:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbiKCVc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 17:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48366 "EHLO
+        id S231530AbiKCVgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 17:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiKCVc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 17:32:29 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470461EEFE
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 14:32:26 -0700 (PDT)
-Message-ID: <5de93174-6e27-1d0b-6ff1-b63c6141b6a2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1667511144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6mKNiyWkRizy/VAD3D7QUYSHfadJBHqTPUu/yyZMhqY=;
-        b=n5Yyg0gNwz2N6Ui6CW8gbG/aoMa2CtLj4QIZTVxaLAtHGGXP3AJsPxZuA/SxGPJbmeCo/f
-        LYgtKCRZg2V9ERVzV4Mo7LnZd72nkrImXQrO0ULEX0/tWeiBAkOkxlENgEiA6YIDZJcebL
-        o5+WdkFomyFLkMYq1+mWNgDErIjDMeQ=
-Date:   Thu, 3 Nov 2022 14:32:17 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: make sure skb->len != 0 when redirecting to
- a tunneling device
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, Lorenz Bauer <oss@lmb.io>
-References: <20221027225537.353077-1-sdf@google.com>
- <2efac61c-a477-d3c1-4270-3c98998e6497@linux.dev>
- <CAKH8qBt1QPBLh1Yg+oA-qdQjND9Zp04z6tK9vjDkSMRqbhh24A@mail.gmail.com>
- <1393c4d0-89e0-e5b7-9f40-2c646f2ea2e9@linux.dev>
-In-Reply-To: <1393c4d0-89e0-e5b7-9f40-2c646f2ea2e9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230089AbiKCVgO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 17:36:14 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE4A21E2F;
+        Thu,  3 Nov 2022 14:36:12 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id b11so2892589pjp.2;
+        Thu, 03 Nov 2022 14:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z7GUBiiKpfQ3HTf3sZloKJzQ8N14tQccpRdkJfkzLDU=;
+        b=KQPjEpy9VVQ5k3LusQUuzeH8Pe3JCwa9+JO7MjxikUXoDUgM67vZSsy5VMTzkOacJ2
+         oDEH6tfiLSudAz7dOJ+DWZC1hmTl7wczwW/w3jZK2Nz383bhjm4ffaKRNJWufK3ri9fk
+         0h+glOrKo4niDu8WtbDq6recIPxkptJjEqRJr9XUMPywnm97V97K8PXjcZDjh9wbANKO
+         BuHDLNrFdQxnFf6uiWpugALqNxlqY4EQt72qkFixitKHzuQwoOeUkn0HBl3yO504yrJP
+         T+h+gMCJhi0j8IUpxEIu6IGwTPPBo/Av1YDvxh8cnq/bdnzAFmKIc3/UJXtGifOe6/4f
+         SMuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z7GUBiiKpfQ3HTf3sZloKJzQ8N14tQccpRdkJfkzLDU=;
+        b=3nliGTJwc+GKVX+LrSaKZUBvAUgqZ8sHTaK8pUptYErGzOUL+vP8czT+4j+5brB3xg
+         4KgaRmB1mZmhkO7GsJbjoAO1kRwjmpPD8dMzv894GKp4RcUkjkr5IXaqDfBf/I/YTpvB
+         dO2funm1iMpIP8ylUYnihVFv+88hstGzr4q/r6Fi/37NlZNkpPtWJzWCWnBShhmJiZXk
+         SUCVgsYg6hxUDDFAH4kuYkrXao9y7Bg89mRC0lUmmzLRXlZzEjFyY4Tb0p0PTjVSj4Za
+         PDG3jERRtNIUC6h1vpJ7h6RqOfKnfb+DZPa2Qdh5nmi0oeYlpcXPecFtEOl91SyZqE4v
+         cdjg==
+X-Gm-Message-State: ACrzQf3dhevY3DIqw8E3Nk4PfbQ4FqbYa0O74z4devvDH6FCKywMFSBC
+        yP4ATj9X2JQJXS6mf1g/OyA=
+X-Google-Smtp-Source: AMsMyM43FeFXpgD7qbJyeeq1J4FAwhA0rBJmE3UGB32w8iOXYg2fP+oQ6r2RkO4hf+PpAQPeSL9Bog==
+X-Received: by 2002:a17:902:9891:b0:17f:e1d0:45e7 with SMTP id s17-20020a170902989100b0017fe1d045e7mr198778plp.16.1667511371800;
+        Thu, 03 Nov 2022 14:36:11 -0700 (PDT)
+Received: from localhost ([98.97.41.13])
+        by smtp.gmail.com with ESMTPSA id k4-20020a17090a39c400b00211d5f93029sm452523pjf.24.2022.11.03.14.36.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Nov 2022 14:36:11 -0700 (PDT)
+Date:   Thu, 03 Nov 2022 14:36:09 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Cong Wang <cong.wang@bytedance.com>, sdf@google.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <63643449b978a_204d620851@john.notmuch>
+In-Reply-To: <87a6574yz0.fsf@cloudflare.com>
+References: <20221018020258.197333-1-xiyou.wangcong@gmail.com>
+ <Y07sxzoS/s6ZBhEx@google.com>
+ <87eduxfiik.fsf@cloudflare.com>
+ <Y1wqe2ybxxCtIhvL@pop-os.localdomain>
+ <87bkprprxf.fsf@cloudflare.com>
+ <63617b2434725_2eb7208e1@john.notmuch>
+ <87a6574yz0.fsf@cloudflare.com>
+Subject: Re: [Patch bpf] sock_map: convert cancel_work_sync() to cancel_work()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/1/22 5:43 PM, Martin KaFai Lau wrote:
-> On 11/1/22 4:39 PM, Stanislav Fomichev wrote:
->> On Tue, Nov 1, 2022 at 1:28 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>
->>> On 10/27/22 3:55 PM, Stanislav Fomichev wrote:
->>>> syzkaller managed to trigger another case where skb->len == 0
->>>> when we enter __dev_queue_xmit:
->>>>
->>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len 
->>>> include/linux/skbuff.h:2576 [inline]
->>>> WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 
->>>> __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
->>>>
->>>> Call Trace:
->>>>    dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
->>>>    __bpf_tx_skb net/core/filter.c:2115 [inline]
->>>>    __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
->>>>    __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
->>>>    ____bpf_clone_redirect net/core/filter.c:2447 [inline]
->>>>    bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
->>>>    bpf_prog_48159a89cb4a9a16+0x59/0x5e
->>>>    bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
->>>>    __bpf_prog_run include/linux/filter.h:596 [inline]
->>>>    bpf_prog_run include/linux/filter.h:603 [inline]
->>>>    bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
->>>>    bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
->>>>    bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
->>>>    __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
->>>>    __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
->>>>    __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
->>>>    __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
->>>>    do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
->>>>    entry_SYSCALL_64_after_hwframe+0x61/0xc6
->>>>
->>>> The reproducer doesn't really reproduce outside of syzkaller
->>>> environment, so I'm taking a guess here. It looks like we
->>>> do generate correct ETH_HLEN-sized packet, but we redirect
->>>> the packet to the tunneling device. Before we do so, we
->>>> __skb_pull l2 header and arrive again at skb->len == 0.
->>>> Doesn't seem like we can do anything better than having
->>>> an explicit check after __skb_pull?
->>> hmm... I recall there was similar report but I didn't follow those earlier fixes
->>> and discussion.  Not sure if this has been considered:
->>> If this skb can only happen in the bpf_prog_test_run (?),
->>> how about ensure that the skb will at least have some header after l2 header in
->>> bpf_prog_test_run_skb().  Adding some headers/bytes if the data_size_in does not
->>> have it.  This may break some external test cases that somehow has no l3/4?
->>> test_progs should be mostly fine considering they are using the pkt_v[46] in
->>> network_helpers.h.
->>
->> For the previous issue we've added "skb->len != 0" check which works
->> for the cases that remove l2.
-
-Yeah, I replied on the "bpf: Don't redirect packets with invalid pkt_len" thread 
-which is hitting the same syzbot report afaict.  I don't think that patch is 
-actually fixing it.
-
->> For the ones that don't, I think you're right, and checking at the
->> time of bpf_prog_test_run_skb can probably be enough, lemme try
->> (require ETH_HLEN+1 vs ETH_HLEN).
->> For some reason I was under the impression that Lorenz changed the
->> size from 0 to 14 [0], but he went from 14 to 15, so we won't break at
->> least cilium again..
->> CC'd him just in case.
->>
->> 0: https://github.com/cilium/ebpf/pull/788
+Jakub Sitnicki wrote:
+> On Tue, Nov 01, 2022 at 01:01 PM -07, John Fastabend wrote:
+> > Jakub Sitnicki wrote:
+> >> On Fri, Oct 28, 2022 at 12:16 PM -07, Cong Wang wrote:
+> >> > On Mon, Oct 24, 2022 at 03:33:13PM +0200, Jakub Sitnicki wrote:
+> >> >> On Tue, Oct 18, 2022 at 11:13 AM -07, sdf@google.com wrote:
+> >> >> > On 10/17, Cong Wang wrote:
+> >> >> >> From: Cong Wang <cong.wang@bytedance.com>
+> >> >> >
+> >> >> >> Technically we don't need lock the sock in the psock work, but we
+> >> >> >> need to prevent this work running in parallel with sock_map_close().
+> >> >> >
+> >> >> >> With this, we no longer need to wait for the psock->work synchronously,
+> >> >> >> because when we reach here, either this work is still pending, or
+> >> >> >> blocking on the lock_sock(), or it is completed. We only need to cancel
+> >> >> >> the first case asynchronously, and we need to bail out the second case
+> >> >> >> quickly by checking SK_PSOCK_TX_ENABLED bit.
+> >> >> >
+> >> >> >> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+> >> >> >> Reported-by: Stanislav Fomichev <sdf@google.com>
+> >> >> >> Cc: John Fastabend <john.fastabend@gmail.com>
+> >> >> >> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> >> >> >> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> >> >> >
+> >> >> > This seems to remove the splat for me:
+> >> >> >
+> >> >> > Tested-by: Stanislav Fomichev <sdf@google.com>
+> >> >> >
+> >> >> > The patch looks good, but I'll leave the review to Jakub/John.
+> >> >> 
+> >> >> I can't poke any holes in it either.
+> >> >> 
+> >> >> However, it is harder for me to follow than the initial idea [1].
+> >> >> So I'm wondering if there was anything wrong with it?
+> >> >
+> >> > It caused a warning in sk_stream_kill_queues() when I actually tested
+> >> > it (after posting).
+> >> 
+> >> We must have seen the same warnings. They seemed unrelated so I went
+> >> digging. We have a fix for these [1]. They were present since 5.18-rc1.
+> >> 
+> >> >> This seems like a step back when comes to simplifying locking in
+> >> >> sk_psock_backlog() that was done in 799aa7f98d53.
+> >> >
+> >> > Kinda, but it is still true that this sock lock is not for sk_socket
+> >> > (merely for closing this race condition).
+> >> 
+> >> I really think the initial idea [2] is much nicer. I can turn it into a
+> >> patch, if you are short on time.
+> >> 
+> >> With [1] and [2] applied, the dead lock and memory accounting warnings
+> >> are gone, when running `test_sockmap`.
+> >> 
+> >> Thanks,
+> >> Jakub
+> >> 
+> >> [1] https://lore.kernel.org/netdev/1667000674-13237-1-git-send-email-wangyufen@huawei.com/
+> >> [2] https://lore.kernel.org/netdev/Y0xJUc%2FLRu8K%2FAf8@pop-os.localdomain/
+> >
+> > Cong, what do you think? I tend to agree [2] looks nicer to me.
+> >
+> > @Jakub,
+> >
+> > Also I think we could simply drop the proposed cancel_work_sync in
+> > sock_map_close()?
+> >
+> >  }
+> > @@ -1619,9 +1619,10 @@ void sock_map_close(struct sock *sk, long timeout)
+> >  	saved_close = psock->saved_close;
+> >  	sock_map_remove_links(sk, psock);
+> >  	rcu_read_unlock();
+> > -	sk_psock_stop(psock, true);
+> > -	sk_psock_put(sk, psock);
+> > +	sk_psock_stop(psock);
+> >  	release_sock(sk);
+> > +	cancel_work_sync(&psock->work);
+> > +	sk_psock_put(sk, psock);
+> >  	saved_close(sk, timeout);
+> >  }
+> >
+> > The sk_psock_put is going to cancel the work before destroying the psock,
+> >
+> >  sk_psock_put()
+> >    sk_psock_drop()
+> >      queue_rcu_work(system_wq, psock->rwork)
+> >
+> > and then in callback we
+> >
+> >   sk_psock_destroy()
+> >     cancel_work_synbc(psock->work)
+> >
+> > although it might be nice to have the work cancelled earlier rather than
+> > latter maybe.
 > 
-> Thanks for the pointer.
+> Good point.
 > 
-> The cilium's prog is SOCKET_FILTER (not l2).  It is why the new "skb->len != 0" 
-> test broke it.
+> I kinda like the property that once close() returns we know there is no
+> deferred work running for the socket.
 > 
->>
->>> Adding some headers/bytes if the data_size_in does not have it.
->>> This may break some external test cases that somehow has no l3/4?
->>
->> Yeah, idk, this seems like a last resort? I'd prefer to explicitly
->> fail and communicate it back to the user than slap some extra byte and
->> then fail in some other place unpredictably?
+> I find the APIs where a deferred cleanup happens sometimes harder to
+> write tests for.
 > 
-> If fixing in the fast path in filter.c, is __bpf_redirect_no_mac the only place 
-> that needs this check?  bpf_redirect_neigh() looks ok to me since the neigh 
-> should have filled the mac header.
+> But I don't really have a strong opinion here.
 
-I took a closer look.  This seems to be the only place needed the check, so 
-applied.  If it turns out there are other cases caused by test-run generated 
-skb, we will revisit a fix in test_run.c and the existing tests have to adjust.
+I don't either and Cong left it so I'm good with that.
 
-> 
->>
->>>> Cc: Eric Dumazet <edumazet@google.com>
->>>> Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
->>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>>> ---
->>>>    net/core/filter.c | 4 ++++
->>>>    1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/net/core/filter.c b/net/core/filter.c
->>>> index bb0136e7a8e4..cb3b635e35be 100644
->>>> --- a/net/core/filter.c
->>>> +++ b/net/core/filter.c
->>>> @@ -2126,6 +2126,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, 
->>>> struct net_device *dev,
->>>>
->>>>        if (mlen) {
->>>>                __skb_pull(skb, mlen);
->>>> +             if (unlikely(!skb->len)) {
->>>> +                     kfree_skb(skb);
->>>> +                     return -ERANGE;
->>>> +             }
+Reviewing backlog logic though I think there is another bug there, but
+I haven't been able to trigger it in any of our tests.
 
-One question, if the "!skb->len" check is deleted from convert___skb_to_skb(), 
-this "unlikely(!skb->len)" block here has to be moved out of the "if (mlen)"?
+The sk_psock_backlog() logic is,
 
+ sk_psock_backlog(struct work_struct *work)
+   mutex_lock()
+   while (skb = ...)
+   ...
+   do {
+     ret = sk_psock_handle_skb()
+     if (ret <= 0) {
+       if (ret == -EAGAIN) {
+           sk_psock_skb_state()
+           goto  end;
+       } 
+      ...
+   } while (len);
+   ...
+  end:
+   mutex_unlock()
+
+what I'm not seeing is if we get an EAGAIN through sk_psock_handle_skb
+how do we schedule the backlog again. For egress we would set the
+SOCK_NOSPACE bit and then get a write space available callback which
+would do the schedule(). The ingress side could fail with EAGAIN
+through the alloc_sk_msg(GFP_ATOMIC) call. This is just a kzalloc,
+
+   sk_psock_handle_skb()
+    sk_psock_skb_ingress()
+     sk_psock_skb_ingress_self()
+       msg = alloc_sk_msg()
+               kzalloc()          <- this can return NULL
+       if (!msg)
+          return -EAGAIN          <- could we stall now
+
+
+I think we could stall here if there was nothing else to kick it. I
+was thinking about this maybe,
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 1efdc47a999b..b96e95625027 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -624,13 +624,20 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
+ static void sk_psock_skb_state(struct sk_psock *psock,
+                               struct sk_psock_work_state *state,
+                               struct sk_buff *skb,
+-                              int len, int off)
++                              int len, int off, bool ingress)
+ {
+        spin_lock_bh(&psock->ingress_lock);
+        if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
+                state->skb = skb;
+                state->len = len;
+                state->off = off;
++               /* For ingress we may not have a wakeup callback to trigger
++                * the reschedule on so need to reschedule retry. For egress
++                * we will get TCP stack callback when its a good time to
++                * retry.
++                */
++               if (ingress)
++                       schedule_work(&psock->work);
+        } else {
+                sock_drop(psock->sk, skb);
+        }
+@@ -678,7 +685,7 @@ static void sk_psock_backlog(struct work_struct *work)
+                        if (ret <= 0) {
+                                if (ret == -EAGAIN) {
+                                        sk_psock_skb_state(psock, state, skb,
+-                                                          len, off);
++                                                          len, off, ingress);
+                                        goto end;
+                                }
+                                /* Hard errors break pipe and stop xmit. */
+
+
+Its tempting to try and use the memory pressure callbacks but those are
+built for the skb cache so I think overloading them is not so nice. The
+drawback to above is its possible no memory is available even when we
+get back to the backlog. We could use a delayed reschedule but its not
+clear what delay makes sense here. Maybe some backoff...
+
+Any thoughts?
+
+Thanks,
+John
