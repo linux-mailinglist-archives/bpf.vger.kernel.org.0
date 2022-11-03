@@ -2,149 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F316188EA
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 20:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AE7618964
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 21:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbiKCTqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 15:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S231710AbiKCULC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 16:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbiKCTqW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 15:46:22 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F55F1CFF4;
-        Thu,  3 Nov 2022 12:46:21 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 2A3HvLjD017965;
-        Thu, 3 Nov 2022 12:45:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=ndhEL4Par18ws2nje3EV8I4WgBcnwvTyaWkNFBF50i4=;
- b=DV50w9gG56RRGIJxh5REzWA/vD7Dmr4KLZlxRY1/wMAF+nA9EJB+q3UH8ZzsuPcO+Tkz
- /EMO+NNujSGfsNqz1IxZVbvP9Npn64zvNmKgvpSX+SKWBBuZDQzs7sIO/VrCzczgtv4d
- /nefBPMGVy0fmX7BSo/vdOpzmlJZZif7OBQZwNHIBQfbUjt230VfVDpRbvSGM8FuAyoN
- ++bbOGuw91m7+Zpa6WIQG6MSR3mXfEhy5lAhJbiiuqs/BH467egYYT0ez1MezAmyhqVQ
- wzPg2q/CgYpZsHI5n2XpuCy+JSKSvUqe0QhopQSt2vfZ5zdKOivCYyxz5c9Ee/G7xMkW Yw== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3kkhd9t1fb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Nov 2022 12:45:52 -0700
+        with ESMTP id S231699AbiKCUKm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 16:10:42 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2049.outbound.protection.outlook.com [40.107.92.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8CC22BC7;
+        Thu,  3 Nov 2022 13:08:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LMtF9FiznOkKtG5Py4Yo0NYaYSQrQNMmTAidebOU58Poiv4uZflutifysj3MBI9RtPTK6MNW+iy6WYiErDGhlwC6+axeoaiRHChJJW2xWieyoqyXYxWRa72/hi9yOlXL1hy6IFgeuu2SNdlTAdBn+suP1othfLFWYJGBIpIyGr2ZS60BaAAuQVYmRSBXdc2JGtzJMP4OhR8xWMWxIvZZN4VP2k6rUhXGg1lHZFlsbbwwKZIgf06JGsGG63XjqXU46//sbpXcUpEIx3bQqZZXL9gRoVd5TpHv9sgwd8czjyc7TKKWWxpax1DD2Z3eT1Du0eYTA9Ah88HN1k/nNOyIrQ==
+ b=leLh2ETI4Xx8YdcbYpZ0djPGGwtnMi+t1N+y4Eexe20MZILSmRyiKNPaoQb4fWP/q4XmFJFUTwGDCBBRgOYCQkmHmcnNbFvyavBEqECVa5GWl9YVnXD07NNuzlrDIyOiQP7/sXBRdmwVHYsHMeOUIaVH7DJMhgT1SzSQUICyFE9lOql+O58N2zsTzPW8xPx6L0+x5b5ls3itoYrYXaiLHaeFZpzsrit5d8Pi0JvuEX+nbXqOtTFJO7nRG2qiHgSSLwFxjjZiELdwpG8v5MYysC3JiHPwgBp+NW1B9wkWB3r6/7I/lB9tpgIby0rYmMb2NIOJHgalNYIoniiDEQ9Iaw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ndhEL4Par18ws2nje3EV8I4WgBcnwvTyaWkNFBF50i4=;
- b=j5r7Jc6X35PbltLfYtqD8DjDwadopouho3QI2wBlzfabvIAcpiBGzYC2V/ahneJ+cArTvuN/0GIxPNzHM+o/Gs0C+2+S580p4DpD7YJ4g/xxDnPUYUjUutlNjbQMfAdVSfLM7t6YlTIf/NL7NgIF2XeWDmLPCKwkB7527PGMsWFPHerU59gih/sjGAzAo38Wd3RnJAE3M1zPUwnnbA2tbhaIV0iY/HQJsubW2+6OkUDbuNCp9mU0zc1Qa9ILFCSkJoaWbMPP8vUPWzirbJUN9M/VdjvDF20Vqai6yYIZplzIlAl9AsPWgFkMjiuogNfaSecz3My3cNAiuP6NdazWfw==
+ bh=5zm3bIP3L8p2z0OUNnhV6jZNY5NfASqMk1xTsnAFnCI=;
+ b=QyhEhPPNzsdb/P6f6kIXXal2mM4ZTxazCXTzzwsmZMhjPY4yyAixb1SLerc89R4OOam9ik/fxxmF1QR+dASbd7+hKKo1NEaPouyFE1ye0BozJRZWFQm4zhpjKLsse+Y8LGNSc8GogAk6PFAvsu9Z/6CygINeWRXvIur70kxX3Zz/KkG3w6qvwoAAK2OGygrC54BV52L8+bfgtVz7SkO6+xWVUw8jD/WweUQdFMqA0+NWg1QQhr2QUhacccq9sdThnEUwszF6KATUyHaZGnOijDIiBxmE3jrP7F0ZT1ugn24dDjWpnFG3S3QaPf71wfIrdZ/nzDh+knhBp34B8ckQiQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BLAPR15MB3778.namprd15.prod.outlook.com (2603:10b6:208:254::10) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5zm3bIP3L8p2z0OUNnhV6jZNY5NfASqMk1xTsnAFnCI=;
+ b=unNf544L+elQTlBx6FALIwjFcTms8qVb1E0puFr6673nJ4QTAJ71KmOp7znh2njC5DI0MF4XdFw1+GiWx+cM24mhEQHWPNduKDeerDtZHEmI5E7qakLcYZFJ56kNcfbzhNfDeDvMJrnb+v/wfZuMuLoYpyijqgWyVLl+tVOB7ElBsvkU7A/57lnACEPz1QqsJkl+QUARdOU96vq2K6lNe+zaClWiu9UZ20oAaWdUC+WlKLpvTPOFAzjz16AaBvcNyxHBiv5H9XO4ctXuCEuVsGKncV5TJVPUe+x3AF6qXjpdVcfRyEhXC5xXXqRrfCI6vaAgxQan9CtaK4/s0wTeiQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM6PR12MB4926.namprd12.prod.outlook.com (2603:10b6:5:1bb::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.16; Thu, 3 Nov
- 2022 19:45:50 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
- 19:45:50 +0000
-Message-ID: <5b0152db-8a8e-0d8c-0304-8c48b735c3b7@meta.com>
-Date:   Thu, 3 Nov 2022 12:45:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
-Content-Language: en-US
-To:     Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <20221101052340.1210239-1-namhyung@kernel.org>
- <20221101052340.1210239-3-namhyung@kernel.org> <Y2DuzmnUm6NIh25a@krava>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <Y2DuzmnUm6NIh25a@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0099.namprd05.prod.outlook.com
- (2603:10b6:a03:334::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Thu, 3 Nov
+ 2022 20:08:10 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5769.015; Thu, 3 Nov 2022
+ 20:08:10 +0000
+Date:   Thu, 3 Nov 2022 17:08:08 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 8/15] iommufd: Algorithms for PFN storage
+Message-ID: <Y2QfqAWxqT5cCfmN@nvidia.com>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <8-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+X-ClientProxiedBy: MN2PR03CA0007.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::12) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BLAPR15MB3778:EE_
-X-MS-Office365-Filtering-Correlation-Id: aded7644-60e2-4b63-6c53-08dabdd402e7
-X-FB-Source: Internal
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4926:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3852987-e928-40b6-6e26-08dabdd7210c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D3e3fG0lQIqd1vh7JnanBV61kp1bT160QYi2+/FcDjDBkEBMcRXOHJQg5bOSfEs0wWzd0CxJM5BKqjxouStPErkOjZ3Zf28HBUShsf7S25fUqWBrxF5tG2EX8C7dfTSpa3NVQw3QaIy/SrD807aRWwkb6rwKkNGfc339W/gfRQ5F053ifTVVb8kb05ykOE3BbmQ9Me67x0BGWnQVCYKyeSCuFsaV6NW96hicKY8o3IZr7dq1SQYW4OaD6frpgdS1gAdDUsQ/BbXTqPyY8C+HbUVlLiPbjbFDSn7WG97vfGaINoZCPr9VE2Kxqh6507Ql8ZnJAm+TZtgU/y6HksEXYXjBtRfx05SXp8GtftEYTuRNGT9blFJrm3fJt0N254TVTbLy+1AAbONeAvwZaAT3KXZf/jZciA//VJBCM9o9zHv2dSz9O2zTUADDN3pk7gqkjjiOeLb7UVmxSmV4Tq5Ew7U9sOz+iHC/+hdiQ1b7UmBr0BNxRZEEtyNAzPGCuHkXNPtFVAAcpL6totwpcvViJ3TMdIX1WX4Z7giRS5ag9S0ipR9uRLycG8hFHedLd7huJpZvuSR6r71/pPeSbABIUGtaFb03dFOtLxu6DoYVgYMiAOogM6VW30IJVqpb9PsIB2Zcg97eVISGsy9Q+8ak37xOmwEVun/xPxyAp6vwV4OVnZqa4E47dso/oHExpQirNwgdPQO14Kv94mIvFa6chYpKXwV7Kf1MU4LE2wF9TS5QDoHoka34wZkRjm/NyMuE9VlNNxcDRwdeUca55hYN4yK2Z7MKEcY77uvWi8WOk50=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(451199015)(186003)(2906002)(6486002)(83380400001)(6506007)(4326008)(5660300002)(66946007)(66476007)(66556008)(478600001)(8676002)(7416002)(53546011)(36756003)(38100700002)(86362001)(31696002)(8936002)(6512007)(316002)(54906003)(6666004)(110136005)(2616005)(31686004)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: /QhhWZcAE7T73USA680PHEcRNrgHVxtYlDU8bcddGS8bGxNnLOlMwiaMS39Q9xrcbJyX5GBdUHqv1kXDMscYKH+ux9+R852th+Pi20BohuGRXEaLhPODEKOS8oSx1KCfBIxxT5RYoHUwA1tkYXHmXAlhVNCVZ6rq5afT9GIFzXIaaFjit7bjslVZn1tSzOX9oedpsQ3iw6zxKZkC/tUKNeQg4OxZ9TuJAfJadDD4Q+2t8cfu0Pf+1TRE3fYqVmcb5ukGFG2jhW0q4RzgaL9MIVlJ0EvJccI4shHqBKhi8BgOxYTyz+GKsfggaH8hhkkyO7oCPy+p2zfSAhLVrYIlKyC3DQQPq+aIvA/3+eqa7YiPFK7qij3MIyFcYT+VJyL+UrKO64FuEYl8oz+em/yMsgvluU0Tah4eptrh3an8HPSJaa4EEqsqmP87g+XpsnRgdtBUAL3PdgpS825S3TD9xLhQFiyjSe6GqP2lJ6wKfVXJX26Qwykkc+yIlo9oDclFZK42qf7+Z7m5JVpMy33pcS24alMuHHYePbLOg+a5ykuUt0zz2aDUA4tzvzS50DGu51xmQY48ojuDWT/UV70/KetApMRVeKgOpOZfxGqLrmyT83JmQo/HL7O/+0IcM24Kna5xAu1ZFAfYqlb7jW303m7Coyihm8Ua6mPjEPu1CfFx3+0uBXMEX3ys7AaKuYnE4nQJlk528tVcXxFqf0HNeaPlpJoJPWj0gKeteCNrHazcJysFwaqAu4VX1k1+GkxyIspF9WujnuuEOpwOQU5IFjSSC6h9WxZg/CM3Q/i9znlOD2xVI8Iz769og2dErtKrQZm21tYWUQMYn86ervjrsw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(136003)(396003)(366004)(346002)(451199015)(921005)(26005)(41300700001)(36756003)(86362001)(8676002)(66476007)(66946007)(6512007)(66556008)(4326008)(186003)(8936002)(7406005)(5660300002)(2616005)(7416002)(966005)(478600001)(6506007)(6486002)(54906003)(110136005)(316002)(38100700002)(2906002)(83380400001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmFKUVFFVmNTaGVpZlNPMGpBb2d0QmZJNnAwWmt5RjdhYmFmSmxBUjl3Z2h0?=
- =?utf-8?B?U0lWMHBaejgxK2ZqcGhoZ1JsanZWNGN0cS9FV1FqSzBNSlpLd1BBMjdYNUtI?=
- =?utf-8?B?K1gxWFdrTDhKbkRoNlB1SGVTWGY5VEJwSG9GTHkxSmR3dWk1U0I5ZW1uenQ2?=
- =?utf-8?B?enE3d1F6N2xhWk1yQS9FNzBLWnlPc3dWSG9YdjN2d2JtNVpPZVI3NTdRR2NU?=
- =?utf-8?B?Y0JUZHh6UktrdXl1bzJ2a3RSZ1g5T0xyRzllbml1Mm1HRHdVTjNxckdCMGZq?=
- =?utf-8?B?dWlVMjk5UkVpZGgrcTBIZEh5NnNDbVIwT1ExV0xydE5LblpIVXJJZTd1WVR1?=
- =?utf-8?B?enhHQ0tUVGFyaEwxSmRNT3ZDVW1rbjAvMnQ1RTVjN1I5OGxMc3pNc3cxL3I0?=
- =?utf-8?B?MWQ0RFVBbjhjakFnOFZWQUtLZjd5S0Rma253T1MvRnhkbHRZd2xyZ1JLQjhv?=
- =?utf-8?B?elhRSlZTdGRBWEdiT0dYbWliRmpZc0pKckdxYjIwWWlUcmh2aG1PaHhJdkIw?=
- =?utf-8?B?andYZlpJNG9RcGZtc2pESytWd2JIbkNDV05TMm1xTnVWRjVOTUV4aVNRQVhh?=
- =?utf-8?B?ZDZPbTZOdkZLcDMxNGJVN25SYjRkL0dkRDFyMTJFTWkrR0Vsdy96Z1p0THdj?=
- =?utf-8?B?VlFsS1dqMmt6d3h2L1J2TTZOU1VPRGtBTkZrTnlrc1RsT0ExNURKUk5nZThD?=
- =?utf-8?B?d1Jram1yODFSUGZ0eFVwcE1TUFZKSUxWbTZ0NHZQU1FwNENyUGk1MTEzdGda?=
- =?utf-8?B?blhyazdGYWc0UExIVllQclluUkRIOG9jSE0xcFU2MWkwd2JFd0hxY3F5cUln?=
- =?utf-8?B?L1hJbGx5RkNlL3MrS0NIcUFRcHZlY0lOKzY3enJWWVlzb0xEN0M1VHRGcDJu?=
- =?utf-8?B?T3JlT3htdWZsYTlaVTVoekZQbUNpSlBLdno5eDZhazNYeXRGclFUbmd6TkZq?=
- =?utf-8?B?ZkZhK3YzQ2JxczBYaXc4d01XemV2Kzh6eXBad1Y4NUlVSFBMWEdEd3RFVTI1?=
- =?utf-8?B?eHdQTVpnK3BsZ2wzUDYyL3pmL2s1MkQ1Y09hckRYTXBXWmdaVUZoVUh5Y0gy?=
- =?utf-8?B?eEtxWUdNU0lXTDdrM2NiOEhxZ3lRZmJtc0JsLzgxdTI4TjRlSFVXZktBTGtO?=
- =?utf-8?B?bVdSWEpXVTJHWXZvSW5ra0lUTTVYVjJPYkxUWURZRTlGZHovTVVZSEQ0U0Nt?=
- =?utf-8?B?bURtUlVFU2RGcm4zRE0vcDRFRExKVXFDaTRkUkJFYUJEN2hlbTVKT2FlR3o1?=
- =?utf-8?B?QmVOeWtQaXNDWEpUYjhBM1FqS2MxS0NCdHlzR205YkpSWDIwWHpDNEkvNjd2?=
- =?utf-8?B?V0YxTG0zMGhKS3FCeXVJK3VaSmFpV2JiV1hNKzlHNlFLbDRFWVhVRGZRRkJn?=
- =?utf-8?B?Tml2alFHaEwwRzkyNkN4ZkgxVzRXZDdHZGEwUXF6SFpmUGY4dDhFSisvRnhU?=
- =?utf-8?B?RWhrTERnR05QMFVEWUx1dGtPeGtZVm9TbENNVE9ONXJIVFFqbUNWRUxUV2xI?=
- =?utf-8?B?ckFYaXd3bkdycWhaU2x3MHNlVVFqYStHbHhyYVhLb1o3ZGJSWjJOeDBCRjdi?=
- =?utf-8?B?MVR3UXNUWDAwT0pUQWZXT2draW9Gbjk5ZHdRRFBJVGZoaUNwcy9zUHJOaTJr?=
- =?utf-8?B?SkVlR1JZbXMrcTU3ZXhSNHdOQVNEcHdwZk80cGdiTjduVnV0V2xaZVZseHdT?=
- =?utf-8?B?K1FBZzFtRTh2RVdJTzYrVjJlVDc5VWpENDJnR3RkU3FJOEdKV1Y0WFdwY1Zh?=
- =?utf-8?B?WFMxb2gramhGQ2V6VDJUQzF6TTlDOTFWYU1DeTU3Zzd5dXhYdE9MSUx4cHRa?=
- =?utf-8?B?aFIyckdqT0JvNkRyc0txVjJnVERUakZ3ZytzSDBiNjVFbThXbllSOG1mUEUz?=
- =?utf-8?B?ZEwxN2FkOWhMS0pzQVpZT1dOaWNXaiszRkNjMWpLdk9FNm1Wa0MvZmRTRkxn?=
- =?utf-8?B?ZkRWZDlydHFONlFXWnhab3AzaGpmSjg1Q0kzYjgyajZKeEZjU2V4OUhCd0Zy?=
- =?utf-8?B?R25reXFDaHNzMXdBOTg2VWw3YXhRMnZKTnc1ai8waEZHeGFKZXZ4aTYrSVc1?=
- =?utf-8?B?dFBZdjNVc2NVd3dvaGVycGJzalhRRktETi9PSTljNzlZTnlXYUpwbWVkdjhi?=
- =?utf-8?B?YVFZS1VCY1AzS0p5K2tzZGt6QllQek1jNnhrWnBTNGRibzFkeHBKZjlkNkh5?=
- =?utf-8?B?WGc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aded7644-60e2-4b63-6c53-08dabdd402e7
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RjmVIT0evtLp+SHTLmW+txnxnw+dTMOtZty2u1Mx9Zx7+LPt/svF/bfSLp0z?=
+ =?us-ascii?Q?/qsWq2bJXXO07mi451Vk7XMR94kHEgFfShX+10Zy8eeDwnCYpVBmNftRxC3k?=
+ =?us-ascii?Q?C0v3L0Yq/uk4WhLYqk3IgiGzHnQ6ZXPg6wPYVh+bJetc+ik4Jg9NrrGv+kpb?=
+ =?us-ascii?Q?9PFtgKHFbYaZOFAL0lGiOh/px9/sFVET6nF7v9n1DMng2piE4+pO5nfpqrjj?=
+ =?us-ascii?Q?vtB90FhsEdVBqCMHUh2OnJFaUN0PMA6S3TKyr0Qs1xJ6ZN+NVQ46uHC6Qjtf?=
+ =?us-ascii?Q?7kOrRxPJ+i4g0Vu9cWWhunz3hZeXxFFNQXkcLnZ+VsjUjudhGjEsrdT2gRkN?=
+ =?us-ascii?Q?OXh4tXr19WkZuJTxlezq5BLiu9kKhBQRTXf0HZ8406xwPxPy/wuGq6riiV3O?=
+ =?us-ascii?Q?aIfu9sIbjSI8AUCf2Et3UIVPmEDKD0IQZCXJPZvo0KxHpwxVOYggVvKciKLs?=
+ =?us-ascii?Q?pChpiwvjGSfBKf6ewVVHbjgX42WeGXUMMVQlf3TGlrWiLDCXQepdALQ655I/?=
+ =?us-ascii?Q?d0uIHYLihJ8dbdRiTgqYhpMbTwUThMiFU3MfvV1o/lbcfHWy74aztvGJ5BCE?=
+ =?us-ascii?Q?33eXKjRzAGcevJurYkaZR4IIYaC3kVRktZkUN64r9f506u3Mz9ZPA25ZdZq7?=
+ =?us-ascii?Q?GvZ3TjilixYkesLt89sdgUou1s/VoOvxHpyX/qncWFvG2zAYhpx9QO1uQLYt?=
+ =?us-ascii?Q?Nc9V8glPKjkdvM08y9ML//0YcKR2vmbLu85kTkf2F+qNL4i3cFJPaKxO/wCP?=
+ =?us-ascii?Q?ddX2e9cyulPhureo6U1mn7kaJQxExcjDnfb7CettyuyPns6oHoIENNBwJ6lA?=
+ =?us-ascii?Q?t5Z2VCP58Kgs3upMxqVdKbrcO/RsdQhKmOX3wol7u2nfpWzezxzqgnAYYfNK?=
+ =?us-ascii?Q?XC4AoIz25CP1zmqtF9Q90pz2e3vqUPRXXylWKyC0Gx9FQ26sKU5ujEvmTFs1?=
+ =?us-ascii?Q?KP4m3kd+S6UGtULzp23C+hfwHcYQYXRbyK401bK1NbpetDcvWXJjuFXpi6KI?=
+ =?us-ascii?Q?1dZWJK3a8TolCY6f8dHi8daFmdPXRRm/+RSrXXR0hbTAGt8Q7DWc8ekluY9B?=
+ =?us-ascii?Q?y/yYgzz1ixFI0jM+EJJg1NLtxp0h5wfg2okrlCN9FNYuRRKDKz3zypBX0CdH?=
+ =?us-ascii?Q?r6yqKro3s3CI2PYPLr/gQMMxf9qSycqKlWdMbLaoJjuztt0S5F+hhxXm4PRo?=
+ =?us-ascii?Q?/KgtxNUg2RQgKC4jGrUPxhojISosoT3EggoT0AsY4HVUIvtzx9AjkfSjhWtb?=
+ =?us-ascii?Q?8HEkh7s9pFbPF7n8Tar8mN/dNJy2vFymvKn3bDzI0kxGY1rtlGmwFmv3yGD9?=
+ =?us-ascii?Q?fQD8Cem6PKNaY9sQ4niUFlgGXIGJkk5gmUb13Ob/mWFCKh/4QrldCeH64a31?=
+ =?us-ascii?Q?CJANxRHyzUfvjc7LvACSqwW/snUqogzBgItBhXHrRid9YhbwvydgVAEopqYB?=
+ =?us-ascii?Q?abJxteaxmTkJ1ediJ5GbMpg7KpJ1PI5uhv5C5wMLDaQQ+Hgmc6JG14liDZay?=
+ =?us-ascii?Q?dLgp06c6OiWxxR6kervh+t1r+6jxBTHtXGIYZdUXVd0b8sfaGex5kM3z+xPB?=
+ =?us-ascii?Q?EZjUc9M6s+86OjDYHjI=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3852987-e928-40b6-6e26-08dabdd7210c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 19:45:50.7502
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2022 20:08:09.9014
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VMNvDIT0G3RIh9N5roQqvmbR8wuVQnQr3Uo70h6d5v1Xm51RmxmNSK5Wome3yXXy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3778
-X-Proofpoint-GUID: GMER0uJoIlt3_FYgp4FS8Hk16VpMffIq
-X-Proofpoint-ORIG-GUID: GMER0uJoIlt3_FYgp4FS8Hk16VpMffIq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-MS-Exchange-CrossTenant-UserPrincipalName: ePm9doUxLMBAo9VXMlSGz2lulRKwIew6kMy3i4TuAlEHH23N33F17+aVy+LSDLLe
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4926
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -152,160 +140,247 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Oct 25, 2022 at 03:12:17PM -0300, Jason Gunthorpe wrote:
+> +
+> +/**
+> + * iopt_area_fill_domains() - Install PFNs into the area's domains
+> + * @area: The area to act on
+> + * @pages: The pages associated with the area (area->pages is NULL)
+> + *
+> + * Called during area creation. The area is freshly created and not inserted in
+> + * the domains_itree yet. PFNs are read and loaded into every domain held in the
+> + * area's io_pagetable and the area is installed in the domains_itree.
+> + *
+> + * On failure all domains are left unchanged.
+> + */
+> +int iopt_area_fill_domains(struct iopt_area *area, struct iopt_pages *pages)
+> +{
+> +	struct pfn_reader pfns;
+> +	struct iommu_domain *domain;
+> +	unsigned long unmap_index;
+> +	unsigned long index;
+> +	int rc;
+> +
+> +	lockdep_assert_held(&area->iopt->domains_rwsem);
+> +
+> +	if (xa_empty(&area->iopt->domains))
+> +		return 0;
+> +
+> +	mutex_lock(&pages->mutex);
+> +	rc = pfn_reader_first(&pfns, pages, iopt_area_index(area),
+> +			      iopt_area_last_index(area));
+> +	if (rc)
+> +		goto out_unlock;
+> +
+> +	while (!pfn_reader_done(&pfns)) {
+> +		xa_for_each(&area->iopt->domains, index, domain) {
+> +			rc = batch_to_domain(&pfns.batch, domain, area,
+> +					     pfns.batch_start_index);
+> +			if (rc)
+> +				goto out_unmap;
+> +		}
+> +
+> +		rc = pfn_reader_next(&pfns);
+> +		if (rc)
+> +			goto out_unmap;
+> +	}
+> +	rc = pfn_reader_update_pinned(&pfns);
+> +	if (rc)
+> +		goto out_unmap;
+> +
+> +	area->storage_domain = xa_load(&area->iopt->domains, 0);
+> +	interval_tree_insert(&area->pages_node, &pages->domains_itree);
+> +	goto out_destroy;
+> +
+> +out_unmap:
+> +	xa_for_each(&area->iopt->domains, unmap_index, domain) {
+> +		unsigned long end_index = pfns.batch_start_index;
+> +
+> +		if (unmap_index <= index)
+> +			end_index = pfns.batch_end_index;
 
+syzkaller found that there is a typo here, it should be <
 
-On 11/1/22 3:02 AM, Jiri Olsa wrote:
-> On Mon, Oct 31, 2022 at 10:23:39PM -0700, Namhyung Kim wrote:
->> The bpf_perf_event_read_sample() helper is to get the specified sample
->> data (by using PERF_SAMPLE_* flag in the argument) from BPF to make a
->> decision for filtering on samples.  Currently PERF_SAMPLE_IP and
->> PERF_SAMPLE_DATA flags are supported only.
->>
->> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->> ---
->>   include/uapi/linux/bpf.h       | 23 ++++++++++++++++
->>   kernel/trace/bpf_trace.c       | 49 ++++++++++++++++++++++++++++++++++
->>   tools/include/uapi/linux/bpf.h | 23 ++++++++++++++++
->>   3 files changed, 95 insertions(+)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 94659f6b3395..cba501de9373 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -5481,6 +5481,28 @@ union bpf_attr {
->>    *		0 on success.
->>    *
->>    *		**-ENOENT** if the bpf_local_storage cannot be found.
->> + *
->> + * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
->> + *	Description
->> + *		For an eBPF program attached to a perf event, retrieve the
->> + *		sample data associated to *ctx*	and store it in the buffer
->> + *		pointed by *buf* up to size *size* bytes.
->> + *
->> + *		The *sample_flags* should contain a single value in the
->> + *		**enum perf_event_sample_format**.
->> + *	Return
->> + *		On success, number of bytes written to *buf*. On error, a
->> + *		negative value.
->> + *
->> + *		The *buf* can be set to **NULL** to return the number of bytes
->> + *		required to store the requested sample data.
->> + *
->> + *		**-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
->> + *
->> + *		**-ENOENT** if the associated perf event doesn't have the data.
->> + *
->> + *		**-ENOSYS** if system doesn't support the sample data to be
->> + *		retrieved.
->>    */
->>   #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
->>   	FN(unspec, 0, ##ctx)				\
->> @@ -5695,6 +5717,7 @@ union bpf_attr {
->>   	FN(user_ringbuf_drain, 209, ##ctx)		\
->>   	FN(cgrp_storage_get, 210, ##ctx)		\
->>   	FN(cgrp_storage_delete, 211, ##ctx)		\
->> +	FN(perf_event_read_sample, 212, ##ctx)		\
->>   	/* */
->>   
->>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index ce0228c72a93..befd937afa3c 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -28,6 +28,7 @@
->>   
->>   #include <uapi/linux/bpf.h>
->>   #include <uapi/linux/btf.h>
->> +#include <uapi/linux/perf_event.h>
->>   
->>   #include <asm/tlb.h>
->>   
->> @@ -1743,6 +1744,52 @@ static const struct bpf_func_proto bpf_read_branch_records_proto = {
->>   	.arg4_type      = ARG_ANYTHING,
->>   };
->>   
->> +BPF_CALL_4(bpf_perf_event_read_sample, struct bpf_perf_event_data_kern *, ctx,
->> +	   void *, buf, u32, size, u64, flags)
->> +{
-> 
-> I wonder we could add perf_btf (like we have tp_btf) program type that
-> could access ctx->data directly without helpers
+However, I wasn't able to make a quick reproduction for something that
+should have a been a very reliable failure path using nth fault
+injection. This led to a great big adventure where I discovered that
+fault injection and xarray do not play nicely together:
 
-Martin and I have discussed an idea to introduce a generic helper like
-     bpf_get_kern_ctx(void *ctx)
-Given a context, the helper will return a PTR_TO_BTF_ID representing the
-corresponding kernel ctx. So in the above example, user could call
+https://lore.kernel.org/r/Y2QR0EDvq7p9i1xw@nvidia.com
 
-     struct bpf_perf_event_data_kern *kctx = bpf_get_kern_ctx(ctx);
-     ...
+Which ended up spending a whole bunch of time to add a nth failure
+study to the test suite and understand what is going on and how to
+make it work better. It now covers this scenario deterministically.
 
-To implement bpf_get_kern_ctx helper, the verifier can find the type
-of the context and provide a hidden btf_id as the second parameter of
-the actual kernel helper function like
-     bpf_get_kern_ctx(ctx) {
-        return ctx;
-     }
-     /* based on ctx_btf_id, find kctx_btf_id and return it to verifier */
+The exhaustive nth failure study also shows this error handling has
+another, more serious, problem. We keep track of how many pages have
+been pinned inside the pages, and we also keep track of the last
+charge to the rlimit/etc. At the end of operations these are
+reconciled. There are lots of assertions checking that this is being
+tracked properly so that we don't loose track of a pinned page in the
+very complicated logic.
 
-     The bpf_get_kern_ctx helper can be inlined as well.
+The new test suite discovered this missing:
 
-> 
->> +	struct perf_sample_data *sd = ctx->data;
->> +	void *data;
->> +	u32 to_copy = sizeof(u64);
->> +
->> +	/* only allow a single sample flag */
->> +	if (!is_power_of_2(flags))
->> +		return -EINVAL;
->> +
->> +	/* support reading only already populated info */
->> +	if (flags & ~sd->sample_flags)
->> +		return -ENOENT;
->> +
->> +	switch (flags) {
->> +	case PERF_SAMPLE_IP:
->> +		data = &sd->ip;
->> +		break;
->> +	case PERF_SAMPLE_ADDR:
->> +		data = &sd->addr;
->> +		break;
-> 
-> AFAICS from pe_prog_convert_ctx_access you should be able to read addr
-> directly from context right? same as sample_period.. so I think if this
-> will be generic way to read sample data, should we add sample_period
-> as well?
-> 
-> 
->> +	default:
->> +		return -ENOSYS;
->> +	}
->> +
->> +	if (!buf)
->> +		return to_copy;
->> +
->> +	if (size < to_copy)
->> +		to_copy = size;
-> 
-> should we fail in here instead? is there any point in returning
-> not complete data?
-> 
-> jirka
-> 
-> 
->> +
->> +	memcpy(buf, data, to_copy);
->> +	return to_copy;
->> +}
->> +
->> +static const struct bpf_func_proto bpf_perf_event_read_sample_proto = {
->> +	.func           = bpf_perf_event_read_sample,
->> +	.gpl_only       = true,
->> +	.ret_type       = RET_INTEGER,
->> +	.arg1_type      = ARG_PTR_TO_CTX,
->> +	.arg2_type      = ARG_PTR_TO_MEM_OR_NULL,
->> +	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
->> +	.arg4_type      = ARG_ANYTHING,
->> +};
->> +
->[...]
+ 		/* Any pages not transferred to the batch are just unpinned */
+ 		unpin_user_pages(pfns->user.upages + (pfns->batch_end_index -
+ 						      pfns->user.upages_start),
+ 				 npages);
++		iopt_pages_sub_npinned(pages, npages);
+
+We need to charge back the as-yet-unprocessed pages we are unpinning
+when destroying the batch.
+
+And then we get into trouble that things are not happening in the
+order the assertions would like as this:
+
+> +			iopt_area_unfill_partial_domain(area, pages, domain,
+> +							end_index);
+
+Demands that the pinned page charge during unfilling be only
+decreasing, never increasing. However we can still be holding pinned
+pages in the batch at this instant that don't get cleaned up until:
+
+> +		}
+> +	}
+> +out_destroy:
+> +	pfn_reader_destroy(&pfns);
+
+Here
+
+Thus the assertions get unhappy.
+
+Introducing a pfn_reader_release_pins() which is called before
+unfilling gets everything in the right order and the testing of these
+two functions now passes, though I still have to insert a few more
+error injection points to get full coverage.
+
+Syzkaller has found another 4 things I still have to look at and is
+now sitting at 65%(72%) coverage. So steadily progressing..
+
+Jason
+
+diff --git a/drivers/iommu/iommufd/pages.c b/drivers/iommu/iommufd/pages.c
+index 245e7b96902107..ce707d6f5ee959 100644
+--- a/drivers/iommu/iommufd/pages.c
++++ b/drivers/iommu/iommufd/pages.c
+@@ -994,7 +994,15 @@ static int pfn_reader_init(struct pfn_reader *pfns, struct iopt_pages *pages,
+ 	return 0;
+ }
+ 
+-static void pfn_reader_destroy(struct pfn_reader *pfns)
++/*
++ * There are many assertions regarding the state of pages->npinned vs
++ * pages->last_pinned, for instance something like unmapping a domain must only
++ * decrement the npinned, and pfn_reader_destroy() must be called only after all
++ * the pins are updated. This is fine for success flows, but error flows
++ * sometimes need to release the pins held inside the pfn_reader before going on
++ * to complete unmapping and releasing pins held in domains.
++ */
++static void pfn_reader_release_pins(struct pfn_reader *pfns)
+ {
+ 	struct iopt_pages *pages = pfns->pages;
+ 
+@@ -1005,12 +1013,20 @@ static void pfn_reader_destroy(struct pfn_reader *pfns)
+ 		unpin_user_pages(pfns->user.upages + (pfns->batch_end_index -
+ 						      pfns->user.upages_start),
+ 				 npages);
++		iopt_pages_sub_npinned(pages, npages);
++		pfns->user.upages_end = pfns->batch_end_index;
+ 	}
+-
+-	pfn_reader_user_destroy(&pfns->user, pfns->pages);
+-
+ 	if (pfns->batch_start_index != pfns->batch_end_index)
+ 		pfn_reader_unpin(pfns);
++	pfns->batch_start_index = pfns->batch_end_index;
++}
++
++static void pfn_reader_destroy(struct pfn_reader *pfns)
++{
++	struct iopt_pages *pages = pfns->pages;
++
++	pfn_reader_release_pins(pfns);
++	pfn_reader_user_destroy(&pfns->user, pfns->pages);
+ 	batch_destroy(&pfns->batch, NULL);
+ 	WARN_ON(pages->last_npinned != pages->npinned);
+ }
+@@ -1223,6 +1239,7 @@ void iopt_area_unfill_domain(struct iopt_area *area, struct iopt_pages *pages,
+  */
+ int iopt_area_fill_domain(struct iopt_area *area, struct iommu_domain *domain)
+ {
++	unsigned long done_end_index;
+ 	struct pfn_reader pfns;
+ 	int rc;
+ 
+@@ -1234,10 +1251,12 @@ int iopt_area_fill_domain(struct iopt_area *area, struct iommu_domain *domain)
+ 		return rc;
+ 
+ 	while (!pfn_reader_done(&pfns)) {
++		done_end_index = pfns.batch_start_index;
+ 		rc = batch_to_domain(&pfns.batch, domain, area,
+ 				     pfns.batch_start_index);
+ 		if (rc)
+ 			goto out_unmap;
++		done_end_index = pfns.batch_end_index;
+ 
+ 		rc = pfn_reader_next(&pfns);
+ 		if (rc)
+@@ -1250,8 +1269,9 @@ int iopt_area_fill_domain(struct iopt_area *area, struct iommu_domain *domain)
+ 	goto out_destroy;
+ 
+ out_unmap:
++	pfn_reader_release_pins(&pfns);
+ 	iopt_area_unfill_partial_domain(area, area->pages, domain,
+-					pfns.batch_start_index);
++					done_end_index);
+ out_destroy:
+ 	pfn_reader_destroy(&pfns);
+ 	return rc;
+@@ -1270,9 +1290,11 @@ int iopt_area_fill_domain(struct iopt_area *area, struct iommu_domain *domain)
+  */
+ int iopt_area_fill_domains(struct iopt_area *area, struct iopt_pages *pages)
+ {
+-	struct pfn_reader pfns;
++	unsigned long done_first_end_index;
++	unsigned long done_all_end_index;
+ 	struct iommu_domain *domain;
+ 	unsigned long unmap_index;
++	struct pfn_reader pfns;
+ 	unsigned long index;
+ 	int rc;
+ 
+@@ -1288,12 +1310,15 @@ int iopt_area_fill_domains(struct iopt_area *area, struct iopt_pages *pages)
+ 		goto out_unlock;
+ 
+ 	while (!pfn_reader_done(&pfns)) {
++		done_first_end_index = pfns.batch_end_index;
++		done_all_end_index = pfns.batch_start_index;
+ 		xa_for_each(&area->iopt->domains, index, domain) {
+ 			rc = batch_to_domain(&pfns.batch, domain, area,
+ 					     pfns.batch_start_index);
+ 			if (rc)
+ 				goto out_unmap;
+ 		}
++		done_all_end_index = done_first_end_index;
+ 
+ 		rc = pfn_reader_next(&pfns);
+ 		if (rc)
+@@ -1308,11 +1333,14 @@ int iopt_area_fill_domains(struct iopt_area *area, struct iopt_pages *pages)
+ 	goto out_destroy;
+ 
+ out_unmap:
++	pfn_reader_release_pins(&pfns);
+ 	xa_for_each(&area->iopt->domains, unmap_index, domain) {
+-		unsigned long end_index = pfns.batch_start_index;
++		unsigned long end_index;
+ 
+-		if (unmap_index <= index)
+-			end_index = pfns.batch_end_index;
++		if (unmap_index < index)
++			end_index = done_first_end_index;
++		else
++			end_index = done_all_end_index;
+ 
+ 		/*
+ 		 * The area is not yet part of the domains_itree so we have to
