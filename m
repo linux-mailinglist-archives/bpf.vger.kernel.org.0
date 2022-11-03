@@ -2,141 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B096187A7
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 19:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B766187CD
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 19:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiKCSiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 14:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S230381AbiKCSlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 14:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiKCSiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 14:38:16 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E17F61;
-        Thu,  3 Nov 2022 11:38:15 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id y14so7652583ejd.9;
-        Thu, 03 Nov 2022 11:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AdV60lwYNZHd1nY0aYC1vThK2Pv8MfHSq31cC6uqLnw=;
-        b=K6vifuN+hyYqYGS7hup35yInLj34OLtWGhie3fL1HWrzRYZ4Pyw9WrQv+zwR9xaNvt
-         EQ/QV8Tu02cnUS7kOoYiJ8+Psk5gXl8Sk64sAhIx+GY/zybTEVo/IRR/81CloH0b9wE1
-         OLzqDx4+HvQZISclU1rYRlrM78nXlORNZmXv8+eEQ7kilblLpBXkwMKtlGEnYkSup7t5
-         piWM6x7cY2cZxmZpLSZ+X6frGzhVWImwhujiiilkigtUmqvamsO9oBOY3IDOKOCtdtln
-         mqi7dqAbTEfQrhRueb4ulqrYAcEt1QI9CeR6Lnx/cfIqbPS46tLdxRk2A/IrdfjYIwM+
-         DkuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AdV60lwYNZHd1nY0aYC1vThK2Pv8MfHSq31cC6uqLnw=;
-        b=uo17gIli8GldREKM/FwNOMOakvPMYMZPuMjDokjeyqe+yuY3eMM27NNJ2lBajRweSi
-         SQ+zxpKJV7/Mx2iYn+lCWYEO+Vbm8beM3xa8L5k3kqhtEkPSFeOdp69MrRi/94+3+2Xi
-         g7WBcN5QpeeDqMX8e8FrXd1n92enk6xyxageWMF0d9+v/O0f+fTOATuWqUiTHM3ejzvh
-         mCw/AWjhZYas0d7z8A2flC8Vg/a3Tm+ec7DfZNPZ/aHVTZV2Afz1hisHq5iU4r7at49R
-         PEgqDW/F99BbICQsLpHTWhhwJV1RbSd0Mk/kat4DKSq4lggZuSf8xG25H4TXXOZ/bdfW
-         e6LA==
-X-Gm-Message-State: ACrzQf2W2LSMexcokwdJBTyl7FdzE0WjiLeFDJxpu2PElrtMTQyhFqjX
-        eO+ET9bbJiDl+OQUXCwmpSG+kBS+vbCFlGqx2mM=
-X-Google-Smtp-Source: AMsMyM6XqiSWJ8DfS6sbyPWxEdSJArp5SzDs76W8V+EpEBHcscgbmz7pW++nxedhmpvnNK8Kf4GsEvKzAh5nbg775xc=
-X-Received: by 2002:a17:907:7214:b0:7ad:94cf:4a36 with SMTP id
- dr20-20020a170907721400b007ad94cf4a36mr30312331ejc.226.1667500694357; Thu, 03
- Nov 2022 11:38:14 -0700 (PDT)
+        with ESMTP id S230394AbiKCSl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 14:41:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB55313DC4;
+        Thu,  3 Nov 2022 11:41:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7715FB81F9B;
+        Thu,  3 Nov 2022 18:41:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E4F5C43144;
+        Thu,  3 Nov 2022 18:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667500886;
+        bh=+x0WEovETjX96nWQFwOLkbvYF0kQ4DTi71pRIT1th6o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sk/BhSI8QNzqciRrw9XBNYN9knhXD9DdOeneUlayCBRtzammb7jhAAzW6DfJns8DO
+         G2RQpa8pFrb80OQ9TNrZzaJxR0FNtvaNGzREmplYDIvGdT/G9wMDUkmBReIO4kibec
+         cqPzdRHmnXbzh1ndHNfqvgD8T7jSAbzafTLjByx5n8sI+RmfA6xB3zc8RN/9whgc9w
+         nQo2lCfzkda5pjhmCCcw0X3fcT9B4D8oTClXhbhHrzy37CX7/eEe5CYbJDQvAxAYrm
+         1ufC2U7Q1KNupRmJxVm1YRAvXzPDU/Cs5bIdy5gkz9kB4n+F1PP1o3748w+02tE6VQ
+         qUqCd3Sg2Ftog==
+Received: by mail-ej1-f47.google.com with SMTP id d26so7656421eje.10;
+        Thu, 03 Nov 2022 11:41:25 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3OQDYQNusxAojeaPtxMFmbAXsJUnq6RqD4yPJ1/DoWiqECBeGT
+        iUbk2K8Qr7dXYpD/woMoJJ9/KPANRRsjaWJZVIg=
+X-Google-Smtp-Source: AMsMyM7kNiALwBf+N4zPiSLgTQINbawgVQLHjgjL/zWoVwnkkJZFP1vwl80lcs5vCupd7qkj0oC6t32XAe6s1eOZBx4=
+X-Received: by 2002:a17:907:b602:b0:7ad:e82c:3355 with SMTP id
+ vl2-20020a170907b60200b007ade82c3355mr17171451ejc.3.1667500884319; Thu, 03
+ Nov 2022 11:41:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4Bza_6qND8iOuiur+xX0cBVkKJfKoJAOjihnVYRjoB3tWqw@mail.gmail.com>
- <tencent_7DD02046A8398BE3324F85E0F56ED41EB105@qq.com>
-In-Reply-To: <tencent_7DD02046A8398BE3324F85E0F56ED41EB105@qq.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Nov 2022 11:38:02 -0700
-Message-ID: <CAEf4BzbvCABmSB3UqKyka=txTiCUdBpTtQg4X6XOa_qVVXW+hw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] samples/bpf: Fix sockex3: missing BPF prog type
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, rongtao@cestc.cn, sdf@google.com,
-        song@kernel.org, yhs@fb.com
+References: <20221101052340.1210239-1-namhyung@kernel.org> <20221101052340.1210239-3-namhyung@kernel.org>
+ <Y2DuzmnUm6NIh25a@krava> <CAADnVQJ6+N6vQ=ZUgUjoB_M2RoTGGPXpLwz81mNDmLWrGYKetw@mail.gmail.com>
+ <CAPhsuW6iuEZCCYJk-cra8DkEWNtdin8GyJDZ6Y8zd4ecfd1gQA@mail.gmail.com>
+ <CAADnVQ+SYv5O+UxnGaBAvxptopWyANdbQRg=e2GXiRBPyJMGgA@mail.gmail.com>
+ <CAPhsuW55zAYCipf1P4dM8Cu9QFewnyZE+SOquKhSbdqUWG_EKg@mail.gmail.com>
+ <CAM9d7chKunyZX=-9gANZ2BKZTzQXuWYCgPQU46jCHkqsjsoGUg@mail.gmail.com>
+ <CAPhsuW70GMFfzvgp__GOhebPu9bXnG7PzEby6xEExFgg+JmeTQ@mail.gmail.com> <CAM9d7chq+Y5M-4S1HWwxBkL+aRysGt8griGbo_jXG4g+EQK_gg@mail.gmail.com>
+In-Reply-To: <CAM9d7chq+Y5M-4S1HWwxBkL+aRysGt8griGbo_jXG4g+EQK_gg@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 3 Nov 2022 11:41:12 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7ri8gUdhQkk=VWHRWvJGd3MjZk+PMfJ0d-hXFKb=Z8Eg@mail.gmail.com>
+Message-ID: <CAPhsuW7ri8gUdhQkk=VWHRWvJGd3MjZk+PMfJ0d-hXFKb=Z8Eg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 29, 2022 at 12:53 AM Rong Tao <rtoax@foxmail.com> wrote:
+On Wed, Nov 2, 2022 at 3:18 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> From: Rong Tao <rongtao@cestc.cn>
+> On Tue, Nov 1, 2022 at 5:13 PM Song Liu <song@kernel.org> wrote:
+> >
+> > On Tue, Nov 1, 2022 at 3:17 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > IIUC we want something like below to access sample data directly,
+> > > right?
+> > >
+> > >   BPF_CORE_READ(ctx, data, ip);
+> > >
+> >
+> > I haven't tried this, but I guess we may need something like
+> >
+> > data = ctx->data;
+> > BPF_CORE_READ(data, ip);
 >
-> since commit 450b167fb9be("libbpf: clean up SEC() handling"),
-> sec_def_matches() does not recognize "socket/xxx" as "socket", therefore,
-> the BPF program type is not recognized, set "socket/xxx" to SOCKET_FILTER
-> solves this error.
+> Ok, will try.
 >
->  $ cd samples/bpf
->  $ sudo ./sockex3
->  libbpf: prog 'bpf_func_PARSE_IP': missing BPF prog type, check ELF section name 'socket/3'
->  libbpf: prog 'bpf_func_PARSE_IP': failed to load: -22
->  libbpf: failed to load object './sockex3_kern.o'
->  ERROR: loading BPF object file failed
+> >
+> > > Some fields like raw and callchains will have variable length data
+> > > so it'd be hard to check the boundary at load time.
+> >
+> > I think we are fine as long as we can check boundaries at run time.
 >
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
+> Sure, that means it's the responsibility of BPF writers, right?
 
-You need to do changes like this:
+Right, the author of the BPF program could check whether the data
+is valid.
 
-diff --git a/samples/bpf/sockex3_kern.c b/samples/bpf/sockex3_kern.c
-index b363503357e5..db6a93e7ec53 100644
---- a/samples/bpf/sockex3_kern.c
-+++ b/samples/bpf/sockex3_kern.c
-@@ -17,7 +17,7 @@
- #define IP_MF          0x2000
- #define IP_OFFSET      0x1FFF
+Song
 
--#define PROG(F) SEC("socket/"__stringify(F)) int bpf_func_##F
-+#define PROG(F) SEC("socket_filter") int bpf_func_##F
-
- struct {
-        __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-@@ -279,7 +279,7 @@ PROG(PARSE_MPLS)(struct __sk_buff *skb)
-        return 0;
- }
-
--SEC("socket/0")
-+SEC("socket_filter")
- int main_prog(struct __sk_buff *skb)
- {
-        __u32 nhoff = ETH_HLEN;
-
-
-Why fixing up after the fact at runtime, if you can just make those
-BPF programs conform to libbpf rules?
-
-
-
->  samples/bpf/sockex3_user.c | 3 +++
->  1 file changed, 3 insertions(+)
 >
-> diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
-> index cd6fa79df900..dc79c17ad195 100644
-> --- a/samples/bpf/sockex3_user.c
-> +++ b/samples/bpf/sockex3_user.c
-> @@ -39,6 +39,9 @@ int main(int argc, char **argv)
->                 return 0;
->         }
+> >
+> > > Also it's possible
+> > > that some fields are not set (according to sample type), and it'd be
+> > > the user's (or programmer's) responsibility to check if the data is
+> > > valid.  If these are not the concerns, I think I'm good.
+> >
+> > So we still need 1/3 of the set to make sure the data is valid?
 >
-> +       bpf_object__for_each_program(prog, obj)
-> +               bpf_program__set_type(prog, BPF_PROG_TYPE_SOCKET_FILTER);
-> +
->         /* load BPF program */
->         if (bpf_object__load(obj)) {
->                 fprintf(stderr, "ERROR: loading BPF object file failed\n");
-> --
-> 2.31.1
+> Of course, I'll keep it in the v2.
 >
+> Thanks,
+> Namhyung
