@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911CB61778A
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F415D61778C
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiKCHV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 03:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        id S230336AbiKCHVm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 03:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbiKCHV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 03:21:27 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA615B24
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 00:21:25 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2NVtE1010021
-        for <bpf@vger.kernel.org>; Thu, 3 Nov 2022 00:21:25 -0700
+        with ESMTP id S230521AbiKCHVj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 03:21:39 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C4610EE
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 00:21:38 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2NVr1P022919
+        for <bpf@vger.kernel.org>; Thu, 3 Nov 2022 00:21:38 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=RdzCrJvdxD9nIGhVpJFHruUw7YRnzmYhHqMWcmNb3vQ=;
- b=eX/eMPKEaJpgr+A3iBTzTSTQn2cb1N7VnIUR+4xY3WWlUL5PaLaY3dC7FGvHlUmM1DGz
- /bFlVXGrwGZk2jsJkZlXAnjNz47z+HkROV5u0udnEStewsY+Cd5NmmTdVW0dlX22+Tio
- CD6+qG2KmjaG9PpbA0qKMeeSzy6dVEx5yCI= 
-Received: from maileast.thefacebook.com ([163.114.130.3])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkvcwebqj-1
+ bh=7MZOOKe7yDIwEHfUzLNb3xnq1wXdmImbjhj1hcJAmZc=;
+ b=Cw5JvVyYLct5T0WfN1Sc7T/LMNE8/C43GloYg+5fyQOsbxvPGPkG7jcwMMXaVrYuzeQb
+ HrAUr9lBVLQu3qgwbp/ABcU5dbGPo7wOV0nLuJgf0dmP6afqQYikvbFB6cKYs/lEifX+
+ 8NIFakjAESJ9tSyQuQW83Vhs3cIhVeGLjQ4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkj3bbm8v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 00:21:24 -0700
-Received: from twshared9088.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 00:21:37 -0700
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 00:21:24 -0700
+ 15.1.2375.31; Thu, 3 Nov 2022 00:21:36 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 8F3131192D07D; Thu,  3 Nov 2022 00:21:18 -0700 (PDT)
+        id 1D06A1192D0C7; Thu,  3 Nov 2022 00:21:23 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 3/5] bpf: Add rcu btf_type_tag verifier support
-Date:   Thu, 3 Nov 2022 00:21:18 -0700
-Message-ID: <20221103072118.2323222-1-yhs@fb.com>
+Subject: [PATCH bpf-next 4/5] bpf: Enable sleeptable support for cgrp local storage
+Date:   Thu, 3 Nov 2022 00:21:23 -0700
+Message-ID: <20221103072123.2325032-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221103072102.2320490-1-yhs@fb.com>
 References: <20221103072102.2320490-1-yhs@fb.com>
@@ -50,8 +50,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: TBBLguYV3aeLFiVyvSaN9F9HE1tjN2cF
-X-Proofpoint-ORIG-GUID: TBBLguYV3aeLFiVyvSaN9F9HE1tjN2cF
+X-Proofpoint-ORIG-GUID: MrkcQgNvBCCmH7jDnyomC1NvJ3EdUUdg
+X-Proofpoint-GUID: MrkcQgNvBCCmH7jDnyomC1NvJ3EdUUdg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-02_15,2022-11-02_01,2022-06-22_01
@@ -65,442 +65,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new bpf_type_flag MEM_RCU is added to indicate a PTR_TO_BTF_ID
-object access needing rcu_read_lock protection. The rcu protection
-is not needed for non-sleepable program. So various verification
-checking is only done for sleepable programs. In particular, only
-the following insns can be inside bpf_rcu_read_lock() region:
-  - any non call insns except BPF_ABS/BPF_IND
-  - non sleepable helpers and kfuncs.
-Also, bpf_*_storage_get() helper's 5th hidden argument (for memory
-allocation flag) should be GFP_ATOMIC.
-
-If a pointer (PTR_TO_BTF_ID) is marked as rcu, then any use of
-this pointer and the load which gets this pointer needs to be
-protected by bpf_rcu_read_lock(). The following shows a couple
-of examples:
-  struct task_struct {
-	...
-	struct task_struct __rcu        *real_parent;
-	struct css_set __rcu            *cgroups;
-	...
-  };
-  struct css_set {
-	...
-	struct cgroup *dfl_cgrp;
-	...
-  }
-  ...
-  task =3D bpf_get_current_task_btf();
-  cgroups =3D task->cgroups;
-  dfl_cgroup =3D cgroups->dfl_cgrp;
-  ... using dfl_cgroup ...
-
-The bpf_rcu_read_lock/unlock() should be added like below to
-avoid verification failures.
-  task =3D bpf_get_current_task_btf();
-  bpf_rcu_read_lock();
-  cgroups =3D task->cgroups;
-  dfl_cgroup =3D cgroups->dfl_cgrp;
-  bpf_rcu_read_unlock();
-  ... using dfl_cgroup ...
-
-The following is another example for task->real_parent.
-  task =3D bpf_get_current_task_btf();
-  bpf_rcu_read_lock();
-  real_parent =3D task->real_parent;
-  ... bpf_task_storage_get(&map, real_parent, 0, 0);
-  bpf_rcu_read_unlock();
-
-There is another case observed in selftest bpf_iter_ipv6_route.c:
-  struct fib6_info *rt =3D ctx->rt;
-  ...
-  fib6_nh =3D &rt->fib6_nh[0]; // Not rcu protected
-  ...
-  if (rt->nh)
-    fib6_nh =3D &nh->nh_info->fib6_nh; // rcu protected
-  ...
-  ... using fib6_nh ...
-Currently verification will fail with
-  same insn cannot be used with different pointers
-since the use of fib6_nh is tag with rcu in one path
-but not in the other path. The above use case is a valid
-one so the verifier is changed to ignore MEM_RCU type tag
-in such cases.
+With proper bpf_rcu_read_lock() support, sleepable support for cgrp local
+storage can be enabled as typical use case task->cgroups->dfl_cgrp
+can be protected with bpf_rcu_read_lock().
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- include/linux/bpf.h          |   3 +
- include/linux/bpf_verifier.h |   1 +
- kernel/bpf/btf.c             |  11 +++
- kernel/bpf/verifier.c        | 126 ++++++++++++++++++++++++++++++++---
- 4 files changed, 133 insertions(+), 8 deletions(-)
+ kernel/bpf/verifier.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a9bda4c91fc7..f0d973c8d227 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -458,6 +458,9 @@ enum bpf_type_flag {
- 	/* Size is known at compile time. */
- 	MEM_FIXED_SIZE		=3D BIT(10 + BPF_BASE_TYPE_BITS),
-=20
-+	/* MEM is tagged with rcu and memory access needs rcu_read_lock protect=
-ion. */
-+	MEM_RCU			=3D BIT(11 + BPF_BASE_TYPE_BITS),
-+
- 	__BPF_TYPE_FLAG_MAX,
- 	__BPF_TYPE_LAST_FLAG	=3D __BPF_TYPE_FLAG_MAX - 1,
- };
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 1a32baa78ce2..d4e56f5a4b20 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -324,6 +324,7 @@ struct bpf_verifier_state {
- 	u32 insn_idx;
- 	u32 curframe;
- 	u32 active_spin_lock;
-+	u32 active_rcu_lock;
- 	bool speculative;
-=20
- 	/* first and last insn idx of this verifier state */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 35c07afac924..293d224a7f53 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5527,6 +5527,8 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
-ess_type type,
- 			info->reg_type |=3D MEM_USER;
- 		if (strcmp(tag_value, "percpu") =3D=3D 0)
- 			info->reg_type |=3D MEM_PERCPU;
-+		if (strcmp(tag_value, "rcu") =3D=3D 0)
-+			info->reg_type |=3D MEM_RCU;
- 	}
-=20
- 	/* skip modifiers */
-@@ -5765,6 +5767,9 @@ static int btf_struct_walk(struct bpf_verifier_log =
-*log, const struct btf *btf,
- 				/* check __percpu tag */
- 				if (strcmp(tag_value, "percpu") =3D=3D 0)
- 					tmp_flag =3D MEM_PERCPU;
-+				/* check __rcu tag */
-+				if (strcmp(tag_value, "rcu") =3D=3D 0)
-+					tmp_flag =3D MEM_RCU;
- 			}
-=20
- 			stype =3D btf_type_skip_modifiers(btf, mtype->type, &id);
-@@ -6560,6 +6565,12 @@ static int btf_check_func_arg_match(struct bpf_ver=
-ifier_env *env,
- 		return -EINVAL;
- 	}
-=20
-+	if (sleepable && env->cur_state->active_rcu_lock) {
-+		bpf_log(log, "kernel function %s is sleepable within rcu_read_lock reg=
-ion\n",
-+			func_name);
-+		return -EINVAL;
-+	}
-+
- 	if (kfunc_meta && ref_obj_id)
- 		kfunc_meta->ref_obj_id =3D ref_obj_id;
-=20
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 82c07fe0bfb1..3c5afd3bc216 100644
+index 3c5afd3bc216..47b897a28242 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -188,6 +188,9 @@ struct bpf_verifier_stack_elem {
- 					  POISON_POINTER_DELTA))
- #define BPF_MAP_PTR(X)		((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
-=20
-+/* Using insn->off =3D BPF_STORAGE_GET_CALL to mark bpf_*_storage_get() =
-helper calls. */
-+#define BPF_STORAGE_GET_CALL	1
-+
- static int acquire_reference_state(struct bpf_verifier_env *env, int ins=
-n_idx);
- static int release_reference(struct bpf_verifier_env *env, int ref_obj_i=
-d);
-=20
-@@ -511,6 +514,22 @@ static bool is_dynptr_ref_function(enum bpf_func_id =
-func_id)
- 	return func_id =3D=3D BPF_FUNC_dynptr_data;
- }
-=20
-+static bool is_storage_get_function(enum bpf_func_id func_id)
-+{
-+	return func_id =3D=3D BPF_FUNC_sk_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_inode_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_task_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_cgrp_storage_get;
-+}
-+
-+static bool is_sleepable_function(enum bpf_func_id func_id)
-+{
-+	return func_id =3D=3D BPF_FUNC_copy_from_user ||
-+	       func_id =3D=3D BPF_FUNC_copy_from_user_task ||
-+	       func_id =3D=3D BPF_FUNC_ima_inode_hash ||
-+	       func_id =3D=3D BPF_FUNC_ima_file_hash;
-+}
-+
- static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
- 					const struct bpf_map *map)
- {
-@@ -583,6 +602,8 @@ static const char *reg_type_str(struct bpf_verifier_e=
-nv *env,
- 		strncpy(prefix, "percpu_", 32);
- 	if (type & PTR_UNTRUSTED)
- 		strncpy(prefix, "untrusted_", 32);
-+	if (type & MEM_RCU)
-+		strncpy(prefix, "rcu_", 32);
-=20
- 	snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
- 		 prefix, str[base_type(type)], postfix);
-@@ -1201,6 +1222,7 @@ static int copy_verifier_state(struct bpf_verifier_=
-state *dst_state,
- 	dst_state->speculative =3D src->speculative;
- 	dst_state->curframe =3D src->curframe;
- 	dst_state->active_spin_lock =3D src->active_spin_lock;
-+	dst_state->active_rcu_lock =3D src->active_rcu_lock;
- 	dst_state->branches =3D src->branches;
- 	dst_state->parent =3D src->parent;
- 	dst_state->first_insn_idx =3D src->first_insn_idx;
-@@ -4536,6 +4558,14 @@ static int check_ptr_to_btf_access(struct bpf_veri=
-fier_env *env,
- 		return -EACCES;
- 	}
-=20
-+	if ((reg->type & MEM_RCU) && env->prog->aux->sleepable &&
-+	    !env->cur_state->active_rcu_lock) {
-+		verbose(env,
-+			"R%d is ptr_%s access rcu-protected memory with off=3D%d, not in rcu_=
-read_lock region\n",
-+			regno, tname, off);
-+		return -EACCES;
-+	}
-+
- 	if (env->ops->btf_struct_access) {
- 		ret =3D env->ops->btf_struct_access(&env->log, reg->btf, t,
- 						  off, size, atype, &btf_id, &flag);
-@@ -4552,6 +4582,14 @@ static int check_ptr_to_btf_access(struct bpf_veri=
-fier_env *env,
- 	if (ret < 0)
- 		return ret;
-=20
-+	if ((flag & MEM_RCU) && env->prog->aux->sleepable &&
-+	    !env->cur_state->active_rcu_lock) {
-+		verbose(env,
-+			"R%d is rcu dereference ptr_%s with off=3D%d, not in rcu_read_lock re=
-gion\n",
-+			regno, tname, off);
-+		return -EACCES;
-+	}
-+
- 	/* If this is an untrusted pointer, all pointers formed by walking it
- 	 * also inherit the untrusted flag.
- 	 */
-@@ -5684,7 +5722,12 @@ static const struct bpf_reg_types scalar_types =3D=
- { .types =3D { SCALAR_VALUE } };
- static const struct bpf_reg_types context_types =3D { .types =3D { PTR_T=
-O_CTX } };
- static const struct bpf_reg_types alloc_mem_types =3D { .types =3D { PTR=
-_TO_MEM | MEM_ALLOC } };
- static const struct bpf_reg_types const_map_ptr_types =3D { .types =3D {=
- CONST_PTR_TO_MAP } };
--static const struct bpf_reg_types btf_ptr_types =3D { .types =3D { PTR_T=
-O_BTF_ID } };
-+static const struct bpf_reg_types btf_ptr_types =3D {
-+	.types =3D {
-+		PTR_TO_BTF_ID,
-+		PTR_TO_BTF_ID | MEM_RCU,
-+	}
-+};
- static const struct bpf_reg_types spin_lock_types =3D { .types =3D { PTR=
-_TO_MAP_VALUE } };
- static const struct bpf_reg_types percpu_btf_ptr_types =3D { .types =3D =
-{ PTR_TO_BTF_ID | MEM_PERCPU } };
- static const struct bpf_reg_types func_ptr_types =3D { .types =3D { PTR_=
-TO_FUNC } };
-@@ -5758,6 +5801,20 @@ static int check_reg_type(struct bpf_verifier_env =
-*env, u32 regno,
- 	if (arg_type & PTR_MAYBE_NULL)
- 		type &=3D ~PTR_MAYBE_NULL;
-=20
-+	/* If the reg type is marked as MEM_RCU, ensure the usage is in the rcu=
-_read_lock
-+	 * region, and remove MEM_RCU from the type since the arg_type won't en=
-code
-+	 * MEM_RCU.
-+	 */
-+	if (type & MEM_RCU) {
-+		if (env->prog->aux->sleepable && !env->cur_state->active_rcu_lock) {
-+			verbose(env,
-+				"R%d is arg type %s needs rcu protection\n",
-+				regno, reg_type_str(env, reg->type));
-+			return -EACCES;
-+		}
-+		type &=3D ~MEM_RCU;
-+	}
-+
- 	for (i =3D 0; i < ARRAY_SIZE(compatible->types); i++) {
- 		expected =3D compatible->types[i];
- 		if (expected =3D=3D NOT_INIT)
-@@ -5774,7 +5831,8 @@ static int check_reg_type(struct bpf_verifier_env *=
-env, u32 regno,
- 	return -EACCES;
-=20
- found:
--	if (reg->type =3D=3D PTR_TO_BTF_ID) {
-+	/* reg is already protected by rcu_read_lock(). Peel off MEM_RCU from r=
-eg->type. */
-+	if ((reg->type & ~MEM_RCU) =3D=3D PTR_TO_BTF_ID) {
- 		/* For bpf_sk_release, it needs to match against first member
- 		 * 'struct sock_common', hence make an exception for it. This
- 		 * allows bpf_sk_release to work for multiple socket types.
-@@ -5850,6 +5908,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env =
-*env,
- 	 * fixed offset.
- 	 */
- 	case PTR_TO_BTF_ID:
-+	case PTR_TO_BTF_ID | MEM_RCU:
- 		/* When referenced PTR_TO_BTF_ID is passed to release function,
- 		 * it's fixed offset must be 0.	In the other cases, fixed offset
- 		 * can be non-zero.
-@@ -7289,6 +7348,26 @@ static int check_helper_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn
- 	}
-=20
- 	meta.func_id =3D func_id;
-+
-+	if (func_id =3D=3D BPF_FUNC_rcu_read_lock)
-+		env->cur_state->active_rcu_lock++;
-+	if (func_id =3D=3D BPF_FUNC_rcu_read_unlock) {
-+		if (env->cur_state->active_rcu_lock =3D=3D 0) {
-+			verbose(env, "missing bpf_rcu_read_lock\n");
-+			return -EINVAL;
-+		}
-+
-+		env->cur_state->active_rcu_lock--;
-+	}
-+	if (env->cur_state->active_rcu_lock) {
-+		if (is_sleepable_function(func_id))
-+			verbose(env, "sleepable helper %s#%din rcu_read_lock region\n",
-+				func_id_name(func_id), func_id);
-+
-+		if (env->prog->aux->sleepable && is_storage_get_function(func_id))
-+			insn->off =3D BPF_STORAGE_GET_CALL;
-+	}
-+
- 	/* check args */
- 	for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 		err =3D check_func_arg(env, i, &meta, fn);
-@@ -10470,6 +10549,11 @@ static int check_ld_abs(struct bpf_verifier_env =
-*env, struct bpf_insn *insn)
- 		return -EINVAL;
- 	}
-=20
-+	if (env->prog->aux->sleepable && env->cur_state->active_rcu_lock) {
-+		verbose(env, "BPF_LD_[ABS|IND] cannot be used inside bpf_rcu_read_lock=
--ed region\n");
-+		return -EINVAL;
-+	}
-+
- 	if (regs[ctx_reg].type !=3D PTR_TO_CTX) {
- 		verbose(env,
- 			"at the time of BPF_LD_ABS|IND R6 !=3D pointer to skb\n");
-@@ -11734,6 +11818,9 @@ static bool states_equal(struct bpf_verifier_env =
-*env,
- 	if (old->active_spin_lock !=3D cur->active_spin_lock)
- 		return false;
-=20
-+	if (old->active_rcu_lock !=3D cur->active_rcu_lock)
-+		return false;
-+
- 	/* for states to be equal callsites have to be the same
- 	 * and all frame states need to be equivalent
- 	 */
-@@ -12141,6 +12228,11 @@ static bool reg_type_mismatch(enum bpf_reg_type =
-src, enum bpf_reg_type prev)
- 			       !reg_type_mismatch_ok(prev));
- }
-=20
-+static bool reg_type_mismatch_ignore_rcu(enum bpf_reg_type src, enum bpf=
-_reg_type prev)
-+{
-+	return reg_type_mismatch(src & ~MEM_RCU, prev & ~MEM_RCU);
-+}
-+
- static int do_check(struct bpf_verifier_env *env)
- {
- 	bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
-@@ -12266,6 +12358,18 @@ static int do_check(struct bpf_verifier_env *env=
-)
-=20
- 			prev_src_type =3D &env->insn_aux_data[env->insn_idx].ptr_type;
-=20
-+			/* For NOT_INIT *prev_src_type, ignore rcu type tag.
-+			 * For code like below,
-+			 *   struct foo *f;
-+			 *   if (...)
-+			 *     f =3D ...; // f with MEM_RCU type tag.
-+			 *   else
-+			 *     f =3D ...; // f without MEM_RCU type tag.
-+			 *   ... f ...  // Here f could be with/without MEM_RCU
-+			 *
-+			 * It is safe to ignore MEM_RCU type tag here since
-+			 * base types are the same.
-+			 */
- 			if (*prev_src_type =3D=3D NOT_INIT) {
- 				/* saw a valid insn
- 				 * dst_reg =3D *(u32 *)(src_reg + off)
-@@ -12273,7 +12377,7 @@ static int do_check(struct bpf_verifier_env *env)
- 				 */
- 				*prev_src_type =3D src_reg_type;
-=20
--			} else if (reg_type_mismatch(src_reg_type, *prev_src_type)) {
-+			} else if (reg_type_mismatch_ignore_rcu(src_reg_type, *prev_src_type)=
-) {
- 				/* ABuser program is trying to use the same insn
- 				 * dst_reg =3D *(u32*) (src_reg + off)
- 				 * with different pointer types:
-@@ -12412,6 +12516,11 @@ static int do_check(struct bpf_verifier_env *env=
-)
- 					return -EINVAL;
- 				}
-=20
-+				if (env->cur_state->active_rcu_lock) {
-+					verbose(env, "bpf_rcu_read_unlock is missing\n");
-+					return -EINVAL;
-+				}
-+
- 				/* We must do check_reference_leak here before
- 				 * prepare_func_exit to handle the case when
- 				 * state->curframe > 0, it may be a callback
-@@ -13499,6 +13608,7 @@ static int convert_ctx_accesses(struct bpf_verifi=
-er_env *env)
- 			convert_ctx_access =3D bpf_xdp_sock_convert_ctx_access;
+@@ -12823,10 +12823,11 @@ static int check_map_prog_compatibility(struct =
+bpf_verifier_env *env,
+ 		case BPF_MAP_TYPE_INODE_STORAGE:
+ 		case BPF_MAP_TYPE_SK_STORAGE:
+ 		case BPF_MAP_TYPE_TASK_STORAGE:
++		case BPF_MAP_TYPE_CGRP_STORAGE:
  			break;
- 		case PTR_TO_BTF_ID:
-+		case PTR_TO_BTF_ID | MEM_RCU:
- 		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
- 			if (type =3D=3D BPF_READ) {
- 				insn->code =3D BPF_LDX | BPF_PROBE_MEM |
-@@ -14148,11 +14258,11 @@ static int do_misc_fixups(struct bpf_verifier_e=
-nv *env)
- 			goto patch_call_imm;
+ 		default:
+ 			verbose(env,
+-				"Sleepable programs can only use array, hash, and ringbuf maps\n");
++				"Sleepable programs can only use array, hash, ringbuf and local stor=
+age maps\n");
+ 			return -EINVAL;
  		}
 =20
--		if (insn->imm =3D=3D BPF_FUNC_task_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_sk_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_inode_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_cgrp_storage_get) {
--			if (env->prog->aux->sleepable)
-+		if (is_storage_get_function(insn->imm)) {
-+			if (env->prog->aux->sleepable && insn->off) {
-+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
-+				insn->off =3D 0;
-+			} else if (env->prog->aux->sleepable)
- 				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
- 			else
- 				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
 --=20
 2.30.2
 
