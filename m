@@ -2,447 +2,349 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BA561778B
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9BF617793
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbiKCHVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 03:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S229975AbiKCHWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 03:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbiKCHVh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 03:21:37 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAFCB24
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 00:21:36 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2NVtwd000634
-        for <bpf@vger.kernel.org>; Thu, 3 Nov 2022 00:21:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=mgwyfgqUxIlVpYfoLEW7VnZsTqyWJC4e45kvgOpD8yw=;
- b=HvWy3Qfqk2tArI2jY1HWs/HM/qkQbWYyiZ/48qfucL1ZT77eFe5W5ZO5Nlbt1F1YG5/N
- n5VU1by/p8LAQt2xs51mZvJ8wYB/L54HJOuauLBCGsw9qGx0Frs8rm+5qM+Z48voRejS
- x4xAiQG39s84XGX4MPBI88X8au9Pw85Kq34= 
-Received: from maileast.thefacebook.com ([163.114.130.8])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kkmtutha8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 00:21:35 -0700
-Received: from twshared9088.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        with ESMTP id S231204AbiKCHWS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 03:22:18 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ADF616C;
+        Thu,  3 Nov 2022 00:22:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667460136; x=1698996136;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=q/vi0srjax/069InbP/OmhPPNYUr1iRJPCb6F/mpI4A=;
+  b=hPnMv4Fjo6o/YeQ6v+kXe+JxMPBM9J7VgWkSlG3PWr32w0nel5JtN87m
+   +ICGO8n7JT+BUpjayLkQUScYhPT3eCw/mQk93fdRiVMWqzTHn7FEtPq3m
+   4TP+atR21flE3TMu5TH0PyA0Eo97WJML90BvxWcBNnhKNkSjSjAR5KAoJ
+   0ECBYlPO8xzwy6YdUJfFP8XXBXorhR9SYu1j8p9sWlRHqM71vCtGu9+dh
+   xKpqEE9EWSBgFEodtNNefeA1qY1c5cYAJUFLs5zYKm+IDOOpVELingjbd
+   oPVsX6eeHnY6hOSTD/Mef/QbIIW5KDxzJMV+3Twfui/jU+xVX0qZJ0s83
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="289320247"
+X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; 
+   d="scan'208";a="289320247"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2022 00:22:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="740074393"
+X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; 
+   d="scan'208";a="740074393"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP; 03 Nov 2022 00:22:15 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 00:21:34 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 6B0401192D10B; Thu,  3 Nov 2022 00:21:29 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Add tests for bpf_rcu_read_lock()
-Date:   Thu, 3 Nov 2022 00:21:29 -0700
-Message-ID: <20221103072129.2325722-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221103072102.2320490-1-yhs@fb.com>
-References: <20221103072102.2320490-1-yhs@fb.com>
-MIME-Version: 1.0
+ 15.1.2375.31; Thu, 3 Nov 2022 00:22:14 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Thu, 3 Nov 2022 00:22:14 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Thu, 3 Nov 2022 00:22:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y4+u6tgkwgJrMuKb3IgmJqBGiBlNExGY7wJFrlhHngr3ElXntfphw+aTiT7ElfAKZiU9M6jScJYNylZ1bxk+Yi32oTm+vQOibqh4UrXUVDO7aONyEucOPMeC5CJcZ5KVLxF5vdASruYcBrIePFXgdLWlKEVFuTS2HVP6fFNFYCC8ccrUk4o852atOQ2ROHwFJw6Oveu6fg7+HOnFA1+I7VX+ki9nrppLF2IEuX8eacPIJIVRT+IOoVo39uRujE0oxml4pSpBShH2mfRlqrQam2j/nG0TDDQreArllJXl+DwssnBOyi9R6yeYoTKEknjKscWks2s/pPB1fvOELaddMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8zCVHs3bjSeWtaHntisJYYBvvhHeaVuyQu/d7+g7QCo=;
+ b=i86mMRwrKU8qwGyG4elPwbvA8avj2pj2K4U+4LKpeawhyJuTFGRB84mBDdvL7+weLNgRT9M78HXP0ZEqgKVSrs4cUYsUZ95pmqOrl7F3ij/KxtpTAO2bafADz32TqJpf9UwoLzdi3PbySC2LtfDPq0L8BeZYvteLun8Tig+pSgU4ziKQghDHFNFzYwDUwb7N8wu5xzic5Rw+x4HpXa0W8+hgwYmv+o9vYTdVehP98tOqnwZ9F8D4vJtOAlFOtMPg7rPNtkGL7PKesQGwTlFahQqSIsCu3KrS4R0xXYG271SzOkFPMqssG2zb0o9P56zPDtaimi8pEwjz6GkFQCl/oA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH7PR11MB5861.namprd11.prod.outlook.com (2603:10b6:510:133::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.20; Thu, 3 Nov
+ 2022 07:22:12 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7%5]) with mapi id 15.20.5791.022; Thu, 3 Nov 2022
+ 07:22:12 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        "Shameerali Kolothum Thodi" <shameerali.kolothum.thodi@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: RE: [PATCH v3 05/15] iommufd: File descriptor, context, kconfig and
+ makefiles
+Thread-Topic: [PATCH v3 05/15] iommufd: File descriptor, context, kconfig and
+ makefiles
+Thread-Index: AQHY6J1l+fzigYIKuES69TlzAN4Gb64sufHw
+Date:   Thu, 3 Nov 2022 07:22:11 +0000
+Message-ID: <BN9PR11MB527695C6CE5BEA4AFACF3DBB8C389@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+ <5-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+In-Reply-To: <5-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB5861:EE_
+x-ms-office365-filtering-correlation-id: 633ba8d5-2f7a-4417-e2fa-08dabd6c202b
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 068ssBVulA1Am8e5t6g/W0X/+A4SjM+VE+sPcCPC5PPyEBXZHcgHc0d+TybLb9x8ojMBHInUPQSlK6QSSloQVBYHZtaM6gX8ynRvyoOIxsTsThsMnqBARxakGdE52FjptdQ4sNxiqLSVIFaogwHotVZ2qGte86o/NYNaW6rMQhoBxqmyaCo9SLMH9uDNmf18jPnmC/wZnB1+yHV4U0jqvmcuMBlL7X3cF1kCGGZdyfROd+lkPEZKumGHmNmBufzxBZZZvcBG/a5CdDdLyMu+AnCzYQvNlaOsuu+opk4grtai2cowkGXLe9kwJvrxz2Haan9QKONxk3iqW90Yo4ZNq9yiWtOuYMft1l3+qMXZR60dRMDa24wyF9GBNOLvLb9Ozv1JUKgkBgFYRcnYSS25+UIFzJOa3J+TW1iOWTlbIVTObnaNIfwJ7xrxuI3LHeknh7q0vHluw9CjorGfs3IWR+sWnV4McBe2iGkPTGhatdev93dUXhCBrAJJksTti5k5nUuzIHqQLXtLRnJZ/hfXmMBhs7m0iIHVBKi/tw6qFfWC32j7/oAmxvemtw/1DgPf0qqzhlg1igu/RTf4pXTNGOnAZ6heKOsuen1Zh6iIgIZyHg9cnJVhu6h6T6q2k1xjx6DKD8kIlCC2tqUQAizbQxu0cGeZ4+LOmzntOPr438c6frt8YTXsaupmP9Afg8GUM5tqJ70KQEwh9TnSC/jnUmHqA7ADe3P1sk/8oCZnyXDyp7Nz58LDnSbPb6E7yq7vX+1b7ZEDC+RSG7OXVLa2KgQoHgeVHm7O2FrHa6Koqe0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(376002)(136003)(396003)(346002)(366004)(451199015)(110136005)(478600001)(54906003)(8936002)(66446008)(9686003)(66946007)(7696005)(76116006)(7406005)(66556008)(52536014)(26005)(8676002)(41300700001)(66476007)(4326008)(7416002)(5660300002)(186003)(83380400001)(64756008)(38070700005)(2906002)(55016003)(86362001)(71200400001)(6506007)(316002)(82960400001)(66899015)(33656002)(38100700002)(921005)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GcalxYBkK45F/q2P/U5Xt0pU0z7azzW/y9AAiHXYUWpO42yby1ZCfQa61lTU?=
+ =?us-ascii?Q?4e/sVFslIQ/l4SV8pRbA4k8yj214LkOIC2k8aSfvdkw7MFp6Bxex72eFOjuJ?=
+ =?us-ascii?Q?yDoF+lCIl9c9JhuVkNapZCEFPWIbPeNi32RwbqmMBJaohWu93ErgJqM1NsAS?=
+ =?us-ascii?Q?WLVyYo3wcqSFUkDwwVmeLSmEW2jsksRPCVrjlyWmbm+Dlstf8XRHrwx2ZTuA?=
+ =?us-ascii?Q?vpLhCu55CJEnGPbuvf+kmJ20Bi1qWr2R2Kjw2BeFOnkBO+zASbWGTxc9pNE7?=
+ =?us-ascii?Q?12PYDZol7npdPJkT1zO89lvHlNkuOymO9/6qa2u8QcS9xIWUoelxJ14qenET?=
+ =?us-ascii?Q?cjUn7cw56wyXJzzU9++d95fbh/DfqHTcbuc5+MHHWu82dbFO5AXkKyoxZ+ZP?=
+ =?us-ascii?Q?9aF/8bTPaPrg6dFpXUKl15uP9+eGuNyvZpvh/PbtgbiE6GmKJdM22yFAKA1O?=
+ =?us-ascii?Q?yC8zFmHzCacI4t9t/SiTMpTJl7AXwDicr4lEspichoPZC0CfbVCG65x0cQYP?=
+ =?us-ascii?Q?qCIRGGyr9NbHqatz2YAsgpp3/z/qWkrM/gh7/NnLmfbYBIEFZ8gTMSPWGZn+?=
+ =?us-ascii?Q?HQUW6nN55ADMU7AUIIop9U9uiI1+kR62sUdWzQ9WbTx5PhYZPImX7zIEiyz/?=
+ =?us-ascii?Q?nGQVAVhQxUpmG/1pDDvLwJQMe0f9o1fhcSRRrijoucvDUQ/TsVAXHbcHnn1Z?=
+ =?us-ascii?Q?SIkPL448z4in0kNsmZ1YRn3+b4I1lReAd48PWem6ZdTmMMKsb3SDUMozwhLN?=
+ =?us-ascii?Q?B+WIMzkgWVOE4Udq6FJVyQBnrlhiGp1UHGFpLKjs0TKh8bcum9NiOUcaDqNs?=
+ =?us-ascii?Q?lYGJmhE5kDiRhrLEGRHwSOqbjSAZKLKWdYEo4b8FqO29bE2/M0/q4MnV2zgR?=
+ =?us-ascii?Q?3M2ocbIWnc0b1jYGFsKDKKx219wKWxwtWk1xlq06D2lf54G+pG2Hj7ZMLPwQ?=
+ =?us-ascii?Q?/Fy6SxT6NCzEd0AvcJkjPiIM7Aykz/KN4VF8SgtGkB5NGOvbLFncWLYODRQv?=
+ =?us-ascii?Q?CtJPIzzHIFYdXhZkjOpRA8QNlq2yPSnVGVCHIIfj0BiXGavRtWQZfbPpjXxD?=
+ =?us-ascii?Q?vfnbOav8lCctsaOxyN5SUPeT6crecc1elNfPs0o5c7qNGpOXT202nEOagkho?=
+ =?us-ascii?Q?Nxqp43N8B2RqtGQ/Sl4G8OBCO6Q1pMgt6yIR+4qWyPo01cBsXpXuUUaS+FNo?=
+ =?us-ascii?Q?VIGV+2sgdRp8u0qlD4A2/6hJUZm3zAlYVuMT4DCKZdRLtJf4OmvsmfZ1HaG9?=
+ =?us-ascii?Q?6AawAOSJlb2hiIDJE01Ee1h1Nw6MUuP5jveVqII282RwVIFYiAAwSuIegGw7?=
+ =?us-ascii?Q?/q3cMATF+zEXDol4VcM3ZJPu/gGrGoxVrPNs0Nd6oms4CQAsAHWlJShPAHeN?=
+ =?us-ascii?Q?G0PJgJ0aY2wQ4STE2oYxm4+XlGa1dQYZJU4pgJFAWYhCVfohvajGpYoZTH6+?=
+ =?us-ascii?Q?8q8mPYyxTT+e9cBd9eg8ielX9OKqpr0YiGn6mUGdCuejbSFo5CKio8NNGl5n?=
+ =?us-ascii?Q?cjgr1LbWHjn4Qb75XOt52qRucM4L6ZuB4LD+uQ7HBe1q24pMZZxi2D05hx7r?=
+ =?us-ascii?Q?Q3oX366bP/FlXivfT+FVHrsexzzcOnFFsH5dKyqn?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 0z7KlH2eC_ECHlTjHA3R2dtAT8BbQwrF
-X-Proofpoint-GUID: 0z7KlH2eC_ECHlTjHA3R2dtAT8BbQwrF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_15,2022-11-02_01,2022-06-22_01
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 633ba8d5-2f7a-4417-e2fa-08dabd6c202b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2022 07:22:11.9898
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AtHAscA9AvDw+MHBiCASzUVZWnwMOnk7qteE3XHQrN5wv4NJRsWzyTG1XEx3Ksqzg0eJVFVqysB75TYgeqeUSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5861
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a few positive/negative tests to test bpf_rcu_read_lock()
-and its corresponding verifier support.
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Wednesday, October 26, 2022 2:12 AM
+>=20
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10714,6 +10714,16 @@ F:	drivers/iommu/dma-iommu.h
+>  F:	drivers/iommu/iova.c
+>  F:	include/linux/iova.h
+>=20
+> +IOMMU FD
 
-  ./test_progs -t rcu_read_lock
-  ...
-  #145/1   rcu_read_lock/local_storage:OK
-  #145/2   rcu_read_lock/runtime_diff_rcu_tag:OK
-  #145/3   rcu_read_lock/negative_tests:OK
-  #145     rcu_read_lock:OK
-  Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+remove the space, i.e. IOMMUFD
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/rcu_read_lock.c  | 101 ++++++++
- .../selftests/bpf/progs/rcu_read_lock.c       | 241 ++++++++++++++++++
- 2 files changed, 342 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
+> +config IOMMUFD
+> +	tristate "IOMMU Userspace API"
+> +	select INTERVAL_TREE
+> +	select INTERVAL_TREE_SPAN_ITER
+> +	select IOMMU_API
+> +	default n
+> +	help
+> +	  Provides /dev/iommu the user API to control the IOMMU subsystem
+> as
+> +	  it relates to managing IO page tables that point at user space
+> memory.
+> +
+> +	  This would commonly be used in combination with VFIO.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/too=
-ls/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-new file mode 100644
-index 000000000000..46c02bdb1360
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates.*/
-+
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <test_progs.h>
-+#include "rcu_read_lock.skel.h"
-+
-+static void test_local_storage(void)
-+{
-+	struct rcu_read_lock *skel;
-+	int err;
-+
-+        skel =3D rcu_read_lock__open();
-+        if (!ASSERT_OK_PTR(skel, "skel_open"))
-+                return;
-+
-+	skel->bss->target_pid =3D syscall(SYS_gettid);
-+
-+	bpf_program__set_autoload(skel->progs.cgrp_succ, true);
-+	bpf_program__set_autoload(skel->progs.task_succ, true);
-+	err =3D rcu_read_lock__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto done;
-+
-+	err =3D rcu_read_lock__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto done;
-+
-+	syscall(SYS_getpgid);
-+
-+	ASSERT_EQ(skel->bss->result, 2, "result");
-+done:
-+	rcu_read_lock__destroy(skel);
-+	return;
-+}
-+
-+static void test_runtime_diff_rcu_tag(void)
-+{
-+	struct rcu_read_lock *skel;
-+	int err;
-+
-+        skel =3D rcu_read_lock__open();
-+        if (!ASSERT_OK_PTR(skel, "skel_open"))
-+                return;
-+
-+	bpf_program__set_autoload(skel->progs.dump_ipv6_route, true);
-+	err =3D rcu_read_lock__load(skel);
-+	ASSERT_OK(err, "skel_load");
-+	rcu_read_lock__destroy(skel);
-+	return;
-+}
-+
-+static void test_negative(void)
-+{
-+#define NUM_FAILED_PROGS	7
-+	struct bpf_program *failed_progs[NUM_FAILED_PROGS];
-+	struct rcu_read_lock *skel;
-+	int i, err;
-+
-+        skel =3D rcu_read_lock__open();
-+        if (!ASSERT_OK_PTR(skel, "skel_open"))
-+                return;
-+
-+	failed_progs[0] =3D skel->progs.miss_lock;
-+	failed_progs[1] =3D skel->progs.miss_unlock;
-+	failed_progs[2] =3D skel->progs.cgrp_incorrect_rcu_region;
-+	failed_progs[3] =3D skel->progs.task_incorrect_rcu_region1;
-+	failed_progs[4] =3D skel->progs.task_incorrect_rcu_region2;
-+	failed_progs[5] =3D skel->progs.inproper_sleepable_helper;
-+	failed_progs[6] =3D skel->progs.inproper_sleepable_kfunc;
-+	for (i =3D 0; i < NUM_FAILED_PROGS; i++) {
-+		bpf_program__set_autoload(failed_progs[i], true);
-+		err =3D rcu_read_lock__load(skel);
-+		if (!ASSERT_ERR(err, "skel_load")) {
-+			rcu_read_lock__destroy(skel);
-+			return;
-+		}
-+		bpf_program__set_autoload(failed_progs[i], false);
-+	}
-+}
-+
-+void test_rcu_read_lock(void)
-+{
-+	int cgroup_fd;
-+
-+	cgroup_fd =3D test__join_cgroup("/rcu_read_lock");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /rcu_read_lock"))
-+		return;
-+
-+	if (test__start_subtest("local_storage"))
-+		test_local_storage();
-+	if (test__start_subtest("runtime_diff_rcu_tag"))
-+		test_runtime_diff_rcu_tag();
-+	if (test__start_subtest("negative_tests"))
-+		test_negative();
-+
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
-sting/selftests/bpf/progs/rcu_read_lock.c
-new file mode 100644
-index 000000000000..d7cf0a1bbac9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -0,0 +1,241 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tracing_net.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_a SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_b SEC(".maps");
-+
-+__u32 user_data, key_serial, target_pid =3D 0;
-+__u64 flags, result =3D 0;
-+
-+extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __=
-ksym;
-+extern void bpf_key_put(struct bpf_key *key) __ksym;
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int cgrp_succ(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+	long init_val =3D 2;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+	cgroups =3D task->cgroups;
-+	dfl_cgrp =3D cgroups->dfl_cgrp;
-+	bpf_rcu_read_unlock();
-+	ptr =3D bpf_cgrp_storage_get(&map_a, dfl_cgrp, &init_val,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+	ptr =3D bpf_cgrp_storage_get(&map_a, dfl_cgrp, 0, 0);
-+	if (!ptr)
-+		return 0;
-+	result =3D *ptr;
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int task_succ(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_b, real_parent, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?iter.s/ipv6_route")
-+int dump_ipv6_route(struct bpf_iter__ipv6_route *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct fib6_info *rt =3D ctx->rt;
-+	const struct net_device *dev;
-+	struct fib6_nh *fib6_nh;
-+	unsigned int flags;
-+	struct nexthop *nh;
-+
-+	if (rt =3D=3D (void *)0)
-+		return 0;
-+
-+	fib6_nh =3D &rt->fib6_nh[0];
-+	flags =3D rt->fib6_flags;
-+
-+	nh =3D rt->nh;
-+	bpf_rcu_read_lock();
-+	if (rt->nh)
-+		fib6_nh =3D &nh->nh_info->fib6_nh;
-+
-+	if (fib6_nh->fib_nh_gw_family) {
-+		flags |=3D RTF_GATEWAY;
-+		BPF_SEQ_PRINTF(seq, "%pi6 ", &fib6_nh->fib_nh_gw6);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "00000000000000000000000000000000 ");
-+	}
-+
-+	dev =3D fib6_nh->fib_nh_dev;
-+	bpf_rcu_read_unlock();
-+	if (dev)
-+		BPF_SEQ_PRINTF(seq, "%08x %08x %08x %08x %8s\n", rt->fib6_metric,
-+			       rt->fib6_ref.refs.counter, 0, flags, dev->name);
-+	else
-+		BPF_SEQ_PRINTF(seq, "%08x %08x %08x %08x\n", rt->fib6_metric,
-+			       rt->fib6_ref.refs.counter, 0, flags);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int miss_lock(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	cgroups =3D task->cgroups;
-+	bpf_rcu_read_unlock();
-+	dfl_cgrp =3D cgroups->dfl_cgrp;
-+	bpf_rcu_read_unlock();
-+	(void)bpf_cgrp_storage_get(&map_a, dfl_cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int miss_unlock(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+
-+	bpf_rcu_read_lock();
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	cgroups =3D task->cgroups;
-+	bpf_rcu_read_unlock();
-+	dfl_cgrp =3D cgroups->dfl_cgrp;
-+	(void)bpf_cgrp_storage_get(&map_a, dfl_cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int cgrp_incorrect_rcu_region(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+
-+	bpf_rcu_read_lock();
-+	task =3D bpf_get_current_task_btf();
-+	cgroups =3D task->cgroups;
-+	bpf_rcu_read_unlock();
-+	dfl_cgrp =3D cgroups->dfl_cgrp;
-+	(void)bpf_cgrp_storage_get(&map_a, dfl_cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int task_incorrect_rcu_region1(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	bpf_rcu_read_unlock();
-+	(void)bpf_task_storage_get(&map_b, real_parent, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int task_incorrect_rcu_region2(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_b, real_parent, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (real_parent)
-+		bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int inproper_sleepable_helper(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+	struct pt_regs *regs;
-+	__u32 value =3D 0;
-+	void *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	regs =3D (struct pt_regs *)bpf_task_pt_regs(real_parent);
-+	if (!regs) {
-+		bpf_rcu_read_unlock();
-+		return 0;
-+	}
-+
-+	ptr =3D (void *)PT_REGS_IP(regs);
-+	(void)bpf_copy_from_user_task(&value, sizeof(uint32_t), ptr, task, 0);
-+	user_data =3D value;
-+	(void)bpf_task_storage_get(&map_b, real_parent, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?lsm.s/bpf")
-+int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, un=
-signed int size)
-+{
-+	struct bpf_key *bkey;
-+
-+	bpf_rcu_read_lock();
-+	bkey =3D bpf_lookup_user_key(key_serial, flags);
-+	bpf_rcu_read_unlock();
-+        if (!bkey)
-+                return -1;
-+        bpf_key_put(bkey);
-+
-+        return 0;
-+}
---=20
-2.30.2
+remove this line
+
+> +/**
+> + * iommufd_put_object_keep_user() - Release part of the refcount on obj
+
+what does 'part of the refcount' mean?
+
+> + * @obj - Object to release
+> + *
+> + * Objects have two protections to ensure that userspace has a consisten=
+t
+> + * experience with destruction. Normally objects are locked so that dest=
+roy
+> will
+> + * block while there are concurrent users, and wait for the object to be
+> + * unlocked.
+> + *
+> + * However, destroy can also be blocked by holding users reference count=
+s
+> on the
+> + * objects, in that case destroy will immediately return EBUSY and will =
+not
+> wait
+> + * for reference counts to go to zero.
+> + *
+> + * This function switches from blocking userspace to returning EBUSY.
+
+Not sure where "switch from... to..." comes from. Also this function alone
+doesn't deal anything with EBUSY. Probably it is clearer that this interfac=
+e
+is used for long-term refcounting which the destroy path should favor to
+not block as it did for transient refcounting in concurrent ioctl paths.
+
+> + *
+> + * It should be used in places where the users will be held beyond a sin=
+gle
+> + * system call.
+
+'users' or 'external drivers'? Do we ever allow userspace to hold the lock
+of a kernel object for undefined time?
+
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -0,0 +1,345 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (C) 2021 Intel Corporation
+> + * Copyright (c) 2021-2022, NVIDIA CORPORATION & AFFILIATES
+> + *
+> + * iommufd provides control over the IOMMU HW objects created by
+> IOMMU kernel
+> + * drivers. IOMMU HW objects revolve around IO page tables that map
+> incoming DMA
+> + * addresses (IOVA) to CPU addresses.
+
+"to bus addresses".
+
+> + *
+> + * The API is divided into a general portion that is intended to work wi=
+th any
+> + * kernel IOMMU driver, and a device specific portion that  is intended =
+to be
+> + * used with a userspace HW driver paired with the specific kernel drive=
+r.
+> This
+> + * mechanism allows all the unique functionalities in individual IOMMUs =
+to
+> be
+> + * exposed to userspace control.
+
+there is no device specific portion in this series.
+
+> +/*
+> + * Allow concurrent access to the object. This should only be done once =
+the
+> + * system call that created the object is guaranteed to succeed.
+
+an object is not always created by a system call, e.g. iommufd_access
+
+> + */
+> +void iommufd_object_finalize(struct iommufd_ctx *ictx,
+> +			     struct iommufd_object *obj)
+> +{
+...
+
+> +static int iommufd_destroy(struct iommufd_ucmd *ucmd)
+> +{
+> +	struct iommu_destroy *cmd =3D ucmd->cmd;
+> +	struct iommufd_object *obj;
+> +
+> +	obj =3D iommufd_get_object(ucmd->ictx, cmd->id,
+> IOMMUFD_OBJ_ANY);
+> +	if (IS_ERR(obj))
+> +		return PTR_ERR(obj);
+> +	iommufd_put_object_keep_user(obj);
+> +	if (!iommufd_object_destroy_user(ucmd->ictx, obj))
+> +		return -EBUSY;
+
+Add a comment that it implies a refcnt hold by external driver in a
+long time so return error instead of blocking...
+
+> +
+> +static long iommufd_fops_ioctl(struct file *filp, unsigned int cmd,
+> +			       unsigned long arg)
+> +{
+> +	struct iommufd_ucmd ucmd =3D {};
+> +	struct iommufd_ioctl_op *op;
+> +	union ucmd_buffer buf;
+> +	unsigned int nr;
+> +	int ret;
+> +
+> +	ucmd.ictx =3D filp->private_data;
+> +	ucmd.ubuffer =3D (void __user *)arg;
+> +	ret =3D get_user(ucmd.user_size, (u32 __user *)ucmd.ubuffer);
+> +	if (ret)
+> +		return ret;
+> +
+> +	nr =3D _IOC_NR(cmd);
+> +	if (nr < IOMMUFD_CMD_BASE ||
+> +	    (nr - IOMMUFD_CMD_BASE) >=3D ARRAY_SIZE(iommufd_ioctl_ops))
+> +		return -ENOIOCTLCMD;
+
+According to the description in iommufd.h:
+
+	*  - ENOTTY: The IOCTL number itself is not supported at all
+
+> +	op =3D &iommufd_ioctl_ops[nr - IOMMUFD_CMD_BASE];
+> +	if (op->ioctl_num !=3D cmd)
+> +		return -ENOIOCTLCMD;
+> +	if (ucmd.user_size < op->min_size)
+> +		return -EOPNOTSUPP;
+
+-EINVAL?
+
+> +/**
+> + * DOC: General ioctl format
+> + *
+> + * The ioctl mechanims follows a general format to allow for extensibili=
+ty.
+
+mechanism
 
