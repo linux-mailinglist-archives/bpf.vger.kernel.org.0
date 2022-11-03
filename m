@@ -2,163 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE07617BA2
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 12:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261D4617C2B
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 13:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbiKCLfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 07:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
+        id S230388AbiKCMJI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 08:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbiKCLfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 07:35:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB7B11C27;
-        Thu,  3 Nov 2022 04:35:46 -0700 (PDT)
+        with ESMTP id S231493AbiKCMJE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 08:09:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10569FCF;
+        Thu,  3 Nov 2022 05:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cODXvOWILXssuf2hSihjNWxlG+Nis9Z446oDoCKvjaY=; b=maw3pryN8lZOU0IdsOp6Unnp2B
-        0u3eYTW7E8E9A4i53UAc5exT8CsEdtLNR+ICUDriV9QDKFQsNDfjf7fXw++vuCHx+AM+11t3lyioP
-        mR2mLNzr/ejmwGvN8UpTmIIXWB6MZVD7ZYPoAsO/qQPcjNZN4CrTguPNoQfHuOt+lcD+Va3D+VTgq
-        Kfns1g6ZI/cskQSnNt+nGVRMaofodc2kBUEI60MtgQHs1fpaGoOay6jTDmG0PkBWFg6qZVOUMQjsM
-        qISp20JQ0uLG1jRlf3Tv9zXo7gcFxMvepwxZ6mIK2XGWHapcN9cSq9yElgaO+JGod+sN+NVZPHMWr
-        FlA/+eEw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35092)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1oqYVH-0006F9-QI; Thu, 03 Nov 2022 11:35:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1oqYVF-0008K2-Uw; Thu, 03 Nov 2022 11:35:21 +0000
-Date:   Thu, 3 Nov 2022 11:35:21 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org,
-        benjamin.tissoires@redhat.com, memxor@gmail.com, delyank@fb.com,
-        asavkov@redhat.com, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf RESEND 3/4] bpf: Add kernel function call support in
- 32-bit ARM
-Message-ID: <Y2OnedQdQaIQEPDQ@shell.armlinux.org.uk>
-References: <20221103092118.248600-1-yangjihong1@huawei.com>
- <20221103092118.248600-4-yangjihong1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221103092118.248600-4-yangjihong1@huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4jCdzdEgKJMqfguFXzmLkmfG4D81anvgaurHlpLDyOk=; b=JHs1z4axWH2GPoZTKoZtohizp4
+        Wtywg/cyVEHbjeBvtjwYVoiQdcDmBpxNXqs6n0RABGZEqtEXhkf4yzyAwZ2yE/gtrhnEuxanzDbha
+        4WEyUiCkNQgDVcz4AUDyDINctf3nOErtR4ma/VLlSbElWGiD6mgxecLMXbNMAyp5C8RrZvGk5PWQt
+        hgmAg7I81g5TE7Bjp96n2hjVcbdD6+iWl/G1LTL9eQuXx+W0Ggg6SdQsrz+5eiN3MQiHqZuoOKbve
+        ip8rqLkzd6OKmabl3Okdvnh6OJlLjSQ0YUJwJPOZfqV/ABPcFA+++NbWE9JCiymY03EhOrBXYTDST
+        HuZP+l2A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oqZ1g-006RMV-9H; Thu, 03 Nov 2022 12:08:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2DB6730026A;
+        Thu,  3 Nov 2022 13:08:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 80BF520AB9A11; Thu,  3 Nov 2022 13:08:44 +0100 (CET)
+Message-ID: <20221103120012.717020618@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 03 Nov 2022 13:00:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     olsajiri@gmail.com, ast@kernel.org, daniel@iogearbox.net
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, peterz@infradead.org, bjorn@kernel.org,
+        toke@redhat.com, David.Laight@aculab.com, rostedt@goodmis.org
+Subject: [PATCH 0/2] bpf: Yet another approach to fix the BPF dispatcher thing
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 05:21:17PM +0800, Yang Jihong wrote:
-> This patch adds kernel function call support to the 32-bit ARM bpf jit.
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
->  arch/arm/net/bpf_jit_32.c | 130 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 130 insertions(+)
-> 
-> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-> index 6a1c9fca5260..51428c82bec6 100644
-> --- a/arch/arm/net/bpf_jit_32.c
-> +++ b/arch/arm/net/bpf_jit_32.c
-> @@ -1337,6 +1337,118 @@ static void build_epilogue(struct jit_ctx *ctx)
->  #endif
->  }
->  
-> +/*
-> + * Input parameters of function in 32-bit ARM architecture:
-> + * The first four word-sized parameters passed to a function will be
-> + * transferred in registers R0-R3. Sub-word sized arguments, for example,
-> + * char, will still use a whole register.
-> + * Arguments larger than a word will be passed in multiple registers.
-> + * If more arguments are passed, the fifth and subsequent words will be passed
-> + * on the stack.
-> + *
-> + * The first for args of a function will be considered for
-> + * putting into the 32bit register R1, R2, R3 and R4.
-> + *
-> + * Two 32bit registers are used to pass a 64bit arg.
-> + *
-> + * For example,
-> + * void foo(u32 a, u32 b, u32 c, u32 d, u32 e):
-> + *      u32 a: R0
-> + *      u32 b: R1
-> + *      u32 c: R2
-> + *      u32 d: R3
-> + *      u32 e: stack
-> + *
-> + * void foo(u64 a, u32 b, u32 c, u32 d):
-> + *      u64 a: R0 (lo32) R1 (hi32)
-> + *      u32 b: R2
-> + *      u32 c: R3
-> + *      u32 d: stack
-> + *
-> + * void foo(u32 a, u64 b, u32 c, u32 d):
-> + *       u32 a: R0
-> + *       u64 b: R2 (lo32) R3 (hi32)
-> + *       u32 c: stack
-> + *       u32 d: stack
+Hi!
 
-This code supports both EABI and OABI, but the above is EABI-only.
-Either we need to decide not to support OABI, or we need to add code
-for both. That can probably be done by making:
+Even thought the __attribute__((patchable_function_entry())) solution to the
+BPF dispatcher woes works, it turns out to not be supported by the whole range
+of ageing compilers we support. Specifically this attribute seems to be GCC-8
+and later.
 
-> +	for (i = 0; i < fm->nr_args; i++) {
-> +		if (fm->arg_size[i] > sizeof(u32)) {
-> +			if (arg_regs_idx + 1 < nr_arg_regs) {
-> +				/*
-> +				 * AAPCS states:
-> +				 * A double-word sized type is passed in two
-> +				 * consecutive registers (e.g., r0 and r1, or
-> +				 * r2 and r3). The content of the registers is
-> +				 * as if the value had been loaded from memory
-> +				 * representation with a single LDM instruction.
-> +				 */
-> +				if (arg_regs_idx & 1)
-> +					arg_regs_idx++;
+This is another approach -- using static_call() to rewrite the dispatcher
+function. I've compile tested this on:
 
-... this conditional on IS_ENABLED(CONFIG_AEABI).
+  x86_64  (inline static-call support)
+  i386    (out-of-line static-call support)
+  aargh64 (no static-call support)
 
-> +				emit(ARM_LDRD_I(arg_regs[arg_regs_idx], ARM_FP,
-> +						EBPF_SCRATCH_TO_ARM_FP(
-> +							bpf2a32[BPF_REG_1 + i][1])), ctx);
+A previous version was tested and found working by Bjorn.
 
-You probably want to re-use the internals of arm_bpf_get_reg64() to load
-the register.
+It is split in two patches; first reverting the current approach and then
+introducing the new for ease of review.
 
-> +
-> +				arg_regs_idx += 2;
-> +			} else {
-> +				stack_off = ALIGN(stack_off, STACK_ALIGNMENT);
-> +
-> +				emit(ARM_LDRD_I(tmp[1], ARM_FP,
-> +						EBPF_SCRATCH_TO_ARM_FP(
-> +							bpf2a32[BPF_REG_1 + i][1])), ctx);
-
-Same here.
-
-> +				emit(ARM_STRD_I(tmp[1], ARM_SP, stack_off), ctx);
-
-and the internals of arm_bpf_put_reg64() here. Not all Arm CPUs that
-this code runs on supports ldrd and strd.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
