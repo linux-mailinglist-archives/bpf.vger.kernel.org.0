@@ -2,49 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5766173A0
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 02:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F19C6173B5
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 02:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbiKCBPY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Nov 2022 21:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        id S229523AbiKCBXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Nov 2022 21:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKCBPW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Nov 2022 21:15:22 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2F025F6;
-        Wed,  2 Nov 2022 18:15:19 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N2m1W5XwWzpSxV;
-        Thu,  3 Nov 2022 09:11:43 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 09:15:17 +0800
-Message-ID: <3fbb82c9-b6c2-953b-4806-6af7d8cdbbe4@huawei.com>
-Date:   Thu, 3 Nov 2022 09:15:16 +0800
+        with ESMTP id S229436AbiKCBXl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Nov 2022 21:23:41 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4100962D7
+        for <bpf@vger.kernel.org>; Wed,  2 Nov 2022 18:23:40 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id k15so294734pfg.2
+        for <bpf@vger.kernel.org>; Wed, 02 Nov 2022 18:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=870/8kpM9K0R8ccX6XhaBcWMA9RA/g+KUdyXWIrIHRc=;
+        b=gMQpS+WkqnqfrpMDt/WVHMosgZLKY58GWM8gr/8o1uAOUp9SVzXb2/RLoaTr3UWAj4
+         kWaXH1qemMSk8JcVnrKYwuZC0QM4Yf/g6/Z5AsQ9ingrJnFfldCsrJGp8PkUMoFoT3JV
+         mGr3YT8w9W96AirBTWXGb6CNSM9lG9O7xtYo6WADjYWR8jzPUlwy/SeqJb1peZ3DM2Qm
+         OqX6uWu8zJZW7Z+dUiDdZETe4C01jmrTbAISPKW7ApeQaZl5ddigQCMpJWqqP0/p9OWd
+         RYf8AwSxeVBc5b+Ds99eqxa1thJ9e+92hlo7oDJyzcZRAsvyycPzOi/6yRTG3vOzTZo1
+         2hgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=870/8kpM9K0R8ccX6XhaBcWMA9RA/g+KUdyXWIrIHRc=;
+        b=DjRsjwTMpYfeXVvkLZ/XpBmPa3SSNw2h24IhpkBZK3gN3lBQngkKQl2o1mdgXFIlTm
+         l4I8uHovN4Ou4Ag8ZN3SQCnV9sm2sCnmM9jBVYQi9tFNbxgApINi1S6O1scErYV/xHWG
+         awHjWU7g8BsvmLZBv9PTj0o3crLHzLxOmOeHOTjyTxL2egw6bF6iLkcXobjQR/lC7Luy
+         3t9I4PzzlFcU05vz52m+DCfxA9h4IzK8voMzGgaHTgoy9LsYF0X4TR39aKG0h4Attnnq
+         pmU+Ru2Udd7tXIGPaUMS+cp6fermobkLuKoBVNjBkqTKaP8+Yz/8l8oNxFYmNZUbbVjf
+         dGdA==
+X-Gm-Message-State: ACrzQf0ULvpZ+3KW6RUeWFxuDZTXvNRXqLYzh9Fsl0GDWc9gXqQNcTd8
+        Vrawbx+XXnJ04OoYqkgN2P82Fv3jFD8=
+X-Google-Smtp-Source: AMsMyM5/neAZK4WFAkQM4VM3zFMQYM+bkcRQGH1zzyT6h8Gcsr3f3dngzREJcWcTLvJpi/Mp28zETg==
+X-Received: by 2002:a63:8942:0:b0:46e:c02e:2eaf with SMTP id v63-20020a638942000000b0046ec02e2eafmr24391802pgd.394.1667438619749;
+        Wed, 02 Nov 2022 18:23:39 -0700 (PDT)
+Received: from MacBook-Pro-5.local.dhcp.thefacebook.com ([2620:10d:c090:400::5:2035])
+        by smtp.gmail.com with ESMTPSA id v4-20020aa799c4000000b0056c7b49a011sm9083190pfi.76.2022.11.02.18.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Nov 2022 18:23:39 -0700 (PDT)
+Date:   Wed, 2 Nov 2022 18:23:36 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/6] bpf: propagate precision in ALU/ALU64
+ operations
+Message-ID: <20221103012336.2snc6vptsj335dkd@MacBook-Pro-5.local.dhcp.thefacebook.com>
+References: <20221102062221.2019833-1-andrii@kernel.org>
+ <20221102062221.2019833-2-andrii@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH net v2] bpf: Fix memory leaks in __check_func_call
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <yhs@fb.com>,
-        <joe@wand.net.nz>
-References: <1666934520-22509-1-git-send-email-wangyufen@huawei.com>
- <CAEf4BzYpsxmmu48YKvWMuAgNp-H+CaEGChAet6DvWCLTcs61Zg@mail.gmail.com>
- <CAEf4BzZv+4Ykce-fc_G4Xyrm6qMaEQNr1mjs5Ya1fo3ibeis4w@mail.gmail.com>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <CAEf4BzZv+4Ykce-fc_G4Xyrm6qMaEQNr1mjs5Ya1fo3ibeis4w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221102062221.2019833-2-andrii@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,102 +72,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Nov 01, 2022 at 11:22:16PM -0700, Andrii Nakryiko wrote:
+> When processing ALU/ALU64 operations (apart from BPF_MOV, which is
+> handled correctly already; and BPF_NEG and BPF_END are special and don't
+> have source register), if destination register is already marked
+> precise, this causes problem with potentially missing precision tracking
+> for the source register. E.g., when we have r1 >>= r5 and r1 is marked
+> precise, but r5 isn't, this will lead to r5 staying as imprecise. This
+> is due to the precision backtracking logic stopping early when it sees
+> r1 is already marked precise. If r1 wasn't precise, we'd keep
+> backtracking and would add r5 to the set of registers that need to be
+> marked precise. So there is a discrepancy here which can lead to invalid
+> and incompatible states matched due to lack of precision marking on r5.
+> If r1 wasn't precise, precision backtracking would correctly mark both
+> r1 and r5 as precise.
+> 
+> This is simple to fix, luckily. If destination register is already
+> precise, we need to propagate precision to source register (if it is
+> SCALAR). This is similar to `reg += scalar` handling case, so nothing
+> conceptually new here.
 
-在 2022/11/3 3:06, Andrii Nakryiko 写道:
-> On Wed, Nov 2, 2022 at 12:05 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Thu, Oct 27, 2022 at 10:01 PM Wang Yufen <wangyufen@huawei.com> wrote:
->>> kmemleak reports this issue:
->>>
->>> unreferenced object 0xffff88817139d000 (size 2048):
->>>    comm "test_progs", pid 33246, jiffies 4307381979 (age 45851.820s)
->>>    hex dump (first 32 bytes):
->>>      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>>    backtrace:
->>>      [<0000000045f075f0>] kmalloc_trace+0x27/0xa0
->>>      [<0000000098b7c90a>] __check_func_call+0x316/0x1230
->>>      [<00000000b4c3c403>] check_helper_call+0x172e/0x4700
->>>      [<00000000aa3875b7>] do_check+0x21d8/0x45e0
->>>      [<000000001147357b>] do_check_common+0x767/0xaf0
->>>      [<00000000b5a595b4>] bpf_check+0x43e3/0x5bc0
->>>      [<0000000011e391b1>] bpf_prog_load+0xf26/0x1940
->>>      [<0000000007f765c0>] __sys_bpf+0xd2c/0x3650
->>>      [<00000000839815d6>] __x64_sys_bpf+0x75/0xc0
->>>      [<00000000946ee250>] do_syscall_64+0x3b/0x90
->>>      [<0000000000506b7f>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>>
->>> The root case here is: In function prepare_func_exit(), the callee is
->>> not released in the abnormal scenario after "state->curframe--;". To
->>> fix, move "state->curframe--;" to the very bottom of the function,
->>> right when we free callee and reset frame[] pointer to NULL, as Andrii
->>> suggested.
->>>
->>> In addition, function __check_func_call() has a similar problem. In
->>> the abnormal scenario before "state->curframe++;", the callee is alse
->>> not released.
->>>
->>> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
->>> Fixes: fd978bf7fd31 ("bpf: Add reference tracking to verifier")
->>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
->>> ---
->> This change seems to be breaking BPF selftests quite badly, please
->> check what's going on ([0]):
->>
->>    [0] https://github.com/kernel-patches/bpf/actions/runs/3379444311/jobs/5611599540
->>
-> And also please target it against bpf tree: [PATCH bpf], not net tree.
-OK， thanks！
->
->>>   kernel/bpf/verifier.c | 11 ++++++++---
->>>   1 file changed, 8 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 014ee09..d28d460 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -6736,11 +6736,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->>>          /* Transfer references to the callee */
->>>          err = copy_reference_state(callee, caller);
->>>          if (err)
->>> -               return err;
->>> +               goto err_out;
->>>
->>>          err = set_callee_state_cb(env, caller, callee, *insn_idx);
->>>          if (err)
->>> -               return err;
->>> +               goto err_out;
->>>
->>>          clear_caller_saved_regs(env, caller->regs);
->>>
->>> @@ -6757,6 +6757,11 @@ static int __check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->>>                  print_verifier_state(env, callee, true);
->>>          }
->>>          return 0;
->>> +
->>> +err_out:
->>> +       kfree(callee);
->>> +       state->frame[state->curframe + 1] = NULL;
->>> +       return err;
->>>   }
->>>
->>>   int map_set_for_each_callback_args(struct bpf_verifier_env *env,
->>> @@ -6969,7 +6974,6 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
->>>                  return -EINVAL;
->>>          }
->>>
->>> -       state->curframe--;
->>>          caller = state->frame[state->curframe];
->>>          if (callee->in_callback_fn) {
->>>                  /* enforce R0 return value range [0, 1]. */
->>> @@ -7000,6 +7004,7 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
->>>                          return err;
->>>          }
->>>
->>> +       state->curframe--;
->>>          *insn_idx = callee->callsite + 1;
->>>          if (env->log.level & BPF_LOG_LEVEL) {
->>>                  verbose(env, "returning from callee:\n");
->>> --
->>> 1.8.3.1
->>>
+Could you rephrase the above paragraph to make it clear that the fix
+is not in backtracking logic, but in nomral forward simulating part of the verifier.
+After reading the 1st paragraph it sounds that backtracking is wrong,
+but it's the normal pass that is missing precisions propagation.
+Also instead of "similar to `reg += scalar`" could you explicitly mention
+that pointer += scalar and scalar += pointer correctly propagate
+precisions of scalars. It's the scalar += scalar case that was incomplete.
+
+Other than that it's a great fix!
