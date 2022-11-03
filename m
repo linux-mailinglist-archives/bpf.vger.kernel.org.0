@@ -2,103 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 820E16177AA
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A506177F7
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 08:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbiKCH10 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 03:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S230376AbiKCHt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 03:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbiKCH1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 03:27:25 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304812619
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 00:27:24 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id r3so1247724yba.5
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 00:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ly+G7+lyR2tgEVR1WMOK4EJ7N76yR8l41oUG1sHf9c=;
-        b=HrG2x4rNnb4SGZ4hQdH5OcFnrmKg4dnJ93AURRjRRNhh/t7Y5qGudWyzIHd8YDrtRa
-         DObcY/k3auLnQaAuraUBk82c/Wwpwgm+xk3l17J96W+F+acGu6yV4gei0zhQOC6O1R66
-         jWQaf1lExl1/9VVnmXSbJd4WpqqqIQie3+Sb9B1i/CyD6+momFmz2mYCMI3q094loyli
-         fDWk0RkkWEFNieHjdo73T4VNq71CAzD832G+/goGZxI/efxl9R7TGepZrtRN27fMHIo+
-         ZzcRFBpXAgam+vl+RSjHaefBGv00Mty/1OPE66QJwQdW65lYDVJhg3AsZ3zAOZMB9XAh
-         t/Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6ly+G7+lyR2tgEVR1WMOK4EJ7N76yR8l41oUG1sHf9c=;
-        b=n5ty4wjuIIJgq8zZLGpBeIBa/JV1ySwvI97wxiiBlmtAk8tvd27YXwaxjjiaTT0esj
-         cyXrz2A9mE+MQl4+UOqyG3nIjiIvfnjWdzPD2TT/YwVuE+85S3XSuECgUzozORD9HmoM
-         Fllb0iOuFCGuqIw17gfv3PsnbtIZv4rJVgbe2kz8VKvDE7r4tdX/9IGdzCRXmWngcCb8
-         Rs0eEjqednibbrPUeHIyxJ0p4y7K1yoD2NISs9cEVC7TDuKTJ65GZX2Xa5BvdyeRbQPm
-         rEKGWRtmNgt3RzSfcC2OeMMiCzIsO/ylN7s2X969gNJxZa7baUF9P92D0KaogfOD+26O
-         NYlw==
-X-Gm-Message-State: ACrzQf04wqKpXYlNAu+C2l1wXLWS/3hx+DkWVcjjcZOp5usM4N086cFO
-        6nXMstv9C0UFFtsGBcd/kqq+KoyEsntoeEjn92LFOA==
-X-Google-Smtp-Source: AMsMyM707h3+vIMmk1iKOcN3+xAYZCYrZqaa6FBSFeXjdm/4+xJAoqfaOX6vvY2T22hmyCyRhvlXxzQ+GytACfWctBk=
-X-Received: by 2002:a25:7b42:0:b0:6ca:1d03:2254 with SMTP id
- w63-20020a257b42000000b006ca1d032254mr26098678ybc.584.1667460443279; Thu, 03
- Nov 2022 00:27:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000e9df4305ec7a3fc7@google.com> <0000000000005912d405ec8a329c@google.com>
-In-Reply-To: <0000000000005912d405ec8a329c@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 3 Nov 2022 08:26:47 +0100
-Message-ID: <CANpmjNNwjCWa0TX4CYShB5KrErWEd-z0BgpZTrpofnJNx-MkvA@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in __perf_event_overflow
-To:     syzbot <syzbot+589d998651a580e6135d@syzkaller.appspotmail.com>
-Cc:     acme@kernel.org, alex.williamson@redhat.com,
-        alexander.shishkin@linux.intel.com, bpf@vger.kernel.org,
-        cohuck@redhat.com, dvyukov@google.com, jgg@ziepe.ca,
-        jolsa@kernel.org, kevin.tian@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        shameerali.kolothum.thodi@huawei.com,
-        syzkaller-bugs@googlegroups.com, yishaih@nvidia.com
+        with ESMTP id S229826AbiKCHty (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 03:49:54 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2ED96153;
+        Thu,  3 Nov 2022 00:49:50 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4N2wjJ5N4sz9v7Yb;
+        Thu,  3 Nov 2022 15:43:16 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAnXPiHcmNjgWE0AA--.46417S2;
+        Thu, 03 Nov 2022 08:49:35 +0100 (CET)
+Message-ID: <de51358cb9019a1834cb6ad0f0b7785a8b21d72c.camel@huaweicloud.com>
+Subject: Re: [PATCH] ima: Fix memory leak in __ima_inode_hash()
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaac.jmatt@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable@vger.kernel.org
+Date:   Thu, 03 Nov 2022 08:49:23 +0100
+In-Reply-To: <ef7375db277ac6a9398ee31a27e95eed717c4832.camel@linux.ibm.com>
+References: <20221102163006.1039343-1-roberto.sassu@huaweicloud.com>
+         <ef7375db277ac6a9398ee31a27e95eed717c4832.camel@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwAnXPiHcmNjgWE0AA--.46417S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Gr13Cr1fKw4fZw4rtr43Wrg_yoW8JF17pa
+        yUG3WYkr4vqFyfCrZ2vFW7Z3yrZ3yxJ3W2qrZ8twn8Zr13Wr90kr1xXF4Fga1v9r18KFyf
+        t3W7Ka4rJa4jvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAFBF1jj4D+JAACsq
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Nov 2022 at 06:26, syzbot
-<syzbot+589d998651a580e6135d@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit c1d050b0d169fd60c8acef157db53bd4e3141799
-> Author: Yishai Hadas <yishaih@nvidia.com>
-> Date:   Thu Sep 8 18:34:45 2022 +0000
->
->     vfio/mlx5: Create and destroy page tracker object
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=136eb2da880000
-> start commit:   88619e77b33d net: stmmac: rk3588: Allow multiple gmac cont..
-> git tree:       bpf
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10eeb2da880000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=176eb2da880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
-> dashboard link: https://syzkaller.appspot.com/bug?extid=589d998651a580e6135d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11eabcea880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f7e632880000
->
-> Reported-by: syzbot+589d998651a580e6135d@syzkaller.appspotmail.com
-> Fixes: c1d050b0d169 ("vfio/mlx5: Create and destroy page tracker object")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Wed, 2022-11-02 at 18:04 -0400, Mimi Zohar wrote:
+> Hi Roberto,
+> 
+> On Wed, 2022-11-02 at 17:30 +0100, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Any chance you could fix your mailer?
 
-The bisection is wrong - see
-https://lore.kernel.org/all/20221031093513.3032814-1-elver@google.com/
+Hi Mimi
+
+not sure how to fix this. I need to send from @huaweicloud.com because
+some people didn't receive the patches from @huawei.com. But I still
+prefer to have the original email in the patches.
+
+Thanks
+
+Roberto
+
+> > Commit f3cc6b25dcc5 ("ima: always measure and audit files in
+> > policy") lets
+> > measurement or audit happen even if the file digest cannot be
+> > calculated.
+> > 
+> > As a result, iint->ima_hash could have been allocated despite
+> > ima_collect_measurement() returning an error.
+> > 
+> > Since ima_hash belongs to a temporary inode metadata structure,
+> > declared
+> > at the beginning of __ima_inode_hash(), just add a kfree() call if
+> > ima_collect_measurement() returns an error different from -ENOMEM
+> > (in that
+> > case, ima_hash should not have been allocated).
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 280fe8367b0d ("ima: Always return a file measurement in
+> > ima_file_hash()")
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Thanks,
+> 
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
