@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5B16189C1
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 21:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B8F6189C5
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 21:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbiKCUns (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 16:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S230199AbiKCUo1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 16:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiKCUnr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 16:43:47 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C071CFD9
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 13:43:45 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m6-20020a17090a5a4600b00212f8dffec9so2941952pji.0
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 13:43:45 -0700 (PDT)
+        with ESMTP id S231143AbiKCUo0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 16:44:26 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE2E1CFF3
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 13:44:25 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id v28so2708242pfi.12
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 13:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=AxKD7HF4VVY6C126pnDDCJGczug2CgC+SjyJrp+YveA=;
-        b=VeAQSesJwEH64QODI0Yl5C9dKS3LZi8MR8WaYRl2vBDnGQXOmKvh2o4b787hoZOS9T
-         hULp9P//nxDgNnGT7lwRcfPoA7xGxlLLURCtf9w0wHwPrrCryBuTz7CASdoBisFrv3Cl
-         CitYzycCIFl1Jn5xSQvT4yNtxfTkNsZx/fs8ZI3fgunXk4sRET894FS4HzWuOc98F0Rj
-         Wgao2k/74FToyVATc/ECzlYGOixVKwdPPIHkywol/dUZt8I9nRMWGBCsPkAM7tfGFupx
-         TGCkR7QZvgWdc6/FBen1wpXkdXmJ5KihpLpQ5AP5hEL6T2zIZH5Jmn7deB+D/6teUOTh
-         9lfQ==
+        b=Qqajwshc86+H88ho7BNzEiH4HfWO6BWtwZg+QECAgNELOi+NRoU2gBEpbjU4xSbu+i
+         5+6ra/YuVXRpQ3DDcAqdEwRaqcDmfSE+GommNahY2cHmTYDo9tj8Yp3rZC4UdSnBWLWE
+         HGBJ7717HIAtkMrIFLFp2BVU3wXt1Yjj8EV34kihRmljJA+TROErZnVB+musMDBXIZAq
+         X0iy6Mk6ES/vi+FobKUBNyyyuXQe88Xnsq8iOniSbJEQ0T0BFZjwoi/RWBljUBZYMGLD
+         4jlJGf3LTE/0qb4MWQtOd68n3MJm5EmfA7UOyuuU3zRfs8uEjJP1HGAY0kME9Zmmvofh
+         NyyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=AxKD7HF4VVY6C126pnDDCJGczug2CgC+SjyJrp+YveA=;
-        b=mAbAFidY1POoA5YDZhZS+HrUvzPYgbPS7SoOPzRG7Cyv+TANiBTiQFGGXFogjjMH95
-         Q0sHtR07kt52wQwbehMDOO/pxLZZ3m/0Vt6+zx8+8fbN7kcV18RuoCNJ2NkKSMQB0WN8
-         bdB867cG3InkYy5T3DliYnucORuabKRkRvvaPbcrvRNhWdQfgmvxvw2kZFOPgbFCN8ZT
-         8iK2YmYrXrurf0ntTFQIYjGrphZZxsFbHB+IyBFX0twoXw0QXd4CYrmbaHyCuAhLc2d1
-         a8cx1c6ln4mFAUn64NWUfdmJ2d0slcxWdDTTSH3RsbHBbcxzJCz+oePZh7bPSnGrqGNt
-         NcTg==
-X-Gm-Message-State: ACrzQf0/YP5qQkSmarLtPcPxitlF+nia5SsnEfayVmks4m5/YDapfAAq
-        m5BY6ann8FjZ6I6CTPYrqWva3P2ta7qcmw==
-X-Google-Smtp-Source: AMsMyM4v6+6Us6YKO91yjeNjYrHRSjLkkemcfViaksLbMh647KaWDorG6N96eyQ+K+P+ZBud9m8wGw==
-X-Received: by 2002:a17:902:64c1:b0:186:827e:a0da with SMTP id y1-20020a17090264c100b00186827ea0damr32197813pli.94.1667508223855;
-        Thu, 03 Nov 2022 13:43:43 -0700 (PDT)
+        b=JSLsT+R2fMRBkUzTEeQbY5ilQ1ruUDtLeJeKzqKCJfyylmwUUIy+o1gIyZOfJ9gx9P
+         1LMHcygUHwmdjKyPcKN1OTnulGbcVsobfGlwxQakto6CfhPB137HOIbYh5BzUhoMkX3l
+         pmBbg7K9UoP2XxqcLsZfvMsZCxFJNw6AKszCY9s9wyzmYAtuNZuGGiksBVHAO/wwyEId
+         8Tic/E6qgQ2AARxSDXyt0mWpbCEAu2jzEI2Qj5SH3byBSutHhz/V0AxcMtzySSfp1GBC
+         4chQtXQoKtSY0tbPA45/I3qeiSgC3nIIvzX+QHC9V4d299PjK9FQSKU8WMMIWKKOHe/k
+         DGdw==
+X-Gm-Message-State: ACrzQf3t9X/Bn2Dtk5L9GcNtWd5pFseQeJgaDJkJjk2wg+Ywn1pAxZLS
+        oG0KYWxSdXVGel0ThLO1+P5fNg+horXC/A==
+X-Google-Smtp-Source: AMsMyM6CiPa+5R/TyGlp/rFsDqFmZ6NUHGpvAHAw4AwR7B8fo5DynfVKBb5lUBsYWDpyZVeasAHESQ==
+X-Received: by 2002:a05:6a00:2409:b0:54e:a3ad:d32d with SMTP id z9-20020a056a00240900b0054ea3add32dmr31953902pfh.70.1667508263919;
+        Thu, 03 Nov 2022 13:44:23 -0700 (PDT)
 Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id 2-20020a17090a0cc200b00212daa6f41dsm403110pjt.28.2022.11.03.13.43.42
+        by smtp.gmail.com with ESMTPSA id z23-20020a17090ad79700b0020ab246ac79sm391009pju.47.2022.11.03.13.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 13:43:43 -0700 (PDT)
+        Thu, 03 Nov 2022 13:44:23 -0700 (PDT)
 From:   Joe Stringer <joe@isovalent.com>
 To:     bpf@vger.kernel.org
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         ast@kernel.org, corbet@lwn.net, martin.lau@linux.dev
-Subject: [PATCH] docs/bpf: Add LRU internals description and graph
-Date:   Thu,  3 Nov 2022 13:43:29 -0700
-Message-Id: <20221103204330.3257910-1-joe@isovalent.com>
+Subject: [PATCH bpf-next] docs/bpf: Add LRU internals description and graph
+Date:   Thu,  3 Nov 2022 13:44:18 -0700
+Message-Id: <20221103204419.3259331-1-joe@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
