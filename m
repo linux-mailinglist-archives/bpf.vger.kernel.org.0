@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C47618843
-	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 20:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95596618844
+	for <lists+bpf@lfdr.de>; Thu,  3 Nov 2022 20:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbiKCTKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 15:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        id S229567AbiKCTK6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 15:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbiKCTKo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 15:10:44 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37541D0C7
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 12:10:43 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u6so2814670plq.12
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 12:10:43 -0700 (PDT)
+        with ESMTP id S231355AbiKCTKr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 15:10:47 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03ABB1E3C1
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 12:10:47 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id p21so2834285plr.7
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 12:10:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tdmRGU3Y77pVpuYP6VCMvdmUlDIJQeGQjkcU+bcvX4I=;
-        b=oX6n4GZLRy8mF0X37awnt2/GcsnWpFhx1lcx2hriJsdd/REHATq+mTN00xD3hgxNFo
-         fi21Q4cmvnj8eCb5fmujZk8Gpg7YlkbjRNwycb66O5MC0bLi8FOa8blQ7wRn8PTUgwhp
-         q6OPruxCayvjKYcVQTpP1avX+vEVCKE6noEnAXsaCrT06lNNwu/bXt3NuvDwM3Z3N60z
-         HOJvgzqzODgcJme/NNjRFWG+ymOdr8Pe89hV95YoGRn4frBaJ4fA1FoPt6+e0PDlZGws
-         SJY47sr9Di2x0/av8LjLZh4ZqLZbRpq2Y01YGy3JQOY1UegkT9GIp+7rQ002y68xL2Bt
-         11eQ==
+        bh=zfGmH0cBT6tf3UrykusXtQYhxpCV2TiVyfPMAyp7idY=;
+        b=YyJrKt9kmnikIA6saw0QXsCSOcku8hbo0LN+PhinKiRaE2doYf4NEaFUR18dTI0UxP
+         y2Oz87dkjvlHCPWN911+rfb5ru9x+P6YhFeHX4D9jK81vsfKIZRrwcOtJnfu2I3gcj1p
+         v3koTptqX2qVBxXedyrQiNKu8vetQPYBhm4q7pHNW/jtGrw5QSdNop/but/ynaqG+0Or
+         sJw/NXP69VdO6dk7C3vmd7xrssIvmcO/xjuVw4WmyKY0u8QPW7G2d2kJESnWhFAFewQ9
+         BpDBLP5DRTdqi+iVNfZaTaWJf2L8F5G7UCb8KNhVlR1z9Kbjg8/5HBNQwa7Pqsn7NVjU
+         SJEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tdmRGU3Y77pVpuYP6VCMvdmUlDIJQeGQjkcU+bcvX4I=;
-        b=dA56AMje3bPxFZT6ncv567VJ+TqX09t0uNzjd1D0hv9P1LQBJT6cMDkZMg3Ys11fwp
-         vM3rRsCn9Rzwpa2xlsRjRB8PaRFzIEaU531eX/qbbyMPkDrSCZVhobxDx4N0SQ4Kv5Id
-         p5UApc2xc661t6u45i2jwoBFelwthYt28Shn+wW9tk/Ra4GZBva2PSOBxIV91CLAeRzG
-         dtz+erHUTyAnxPNwU/958eiondHPV6oeUeCPWeQIOJeWXxuxOpFDqKIiQLl2oBJ59/4A
-         3RdPSJC9M9kOma9/60z13NmjnD16EHOy2Csc8quTDXnimd8tOABxP5IXOrYlv7FUGoLw
-         eKVw==
-X-Gm-Message-State: ACrzQf2H5IOXmzkFqBHtzeXxi8FMY8R9r5/NWk52c6kdnWav5HFoqcPm
-        GJ6drvw6VcLAgsS/VRfzhLWvnWanjEBzHw==
-X-Google-Smtp-Source: AMsMyM7nXPYwnzR8jgEtox/3FF5dwaL2bs1rfR0Suxr4XEkgAuRCtzrFBwZWS5lkr9qEnx1O0VV+WA==
-X-Received: by 2002:a17:902:ed53:b0:186:6ad3:c155 with SMTP id y19-20020a170902ed5300b001866ad3c155mr30721276plb.43.1667502642877;
-        Thu, 03 Nov 2022 12:10:42 -0700 (PDT)
+        bh=zfGmH0cBT6tf3UrykusXtQYhxpCV2TiVyfPMAyp7idY=;
+        b=gmuLDdLnQ+LwcpvKFrx0QnNhsMpJ6sPBjZghOW3uN1VfZzX6gZ4N7LPNLua2mJxC9s
+         ErBRYTIRVkg4f+qDAs/VGPUbhLsoqrGebbhK/EjIKIwIZbm3X+x6cVzARwMcANF2GvIT
+         SRUnxYkMg7OC4JBVLnAha5GOqz38rwo/LTlqoGr52Fz184wmBL460+UHQ4GxdxplUp2J
+         Gq4ubKX02BsO7ykEgOWDFSn9IXHO/xdrevpj7E2t2DEkJ1/kDwLm/jBYTMhRNagHFyDk
+         TJnoQpryBbJIp1S5L3fIi9SZph0HDlyTUz3hKNomR/5JZR//eF2dPE3fjyCFwGCdLR6u
+         RugA==
+X-Gm-Message-State: ACrzQf3iJG29w8qMEKy/wjlEldxxtGrpygJ+5THyF3D27ZiVBOq1dVWO
+        lIYqX0sHZNnWada/VdAiHmeNAC3vCw6ocA==
+X-Google-Smtp-Source: AMsMyM4ZGayr9nFPxCXyfSvDb62cFHk8fSDs9agRTxLfS7CAmLXH0TQ76ADDXBIwJ+h23RrkjZWAXQ==
+X-Received: by 2002:a17:90b:2353:b0:216:3194:fc74 with SMTP id ms19-20020a17090b235300b002163194fc74mr3984299pjb.112.1667502646221;
+        Thu, 03 Nov 2022 12:10:46 -0700 (PDT)
 Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id l3-20020a655603000000b00438834b14a1sm1068326pgs.80.2022.11.03.12.10.41
+        by smtp.gmail.com with ESMTPSA id x188-20020a6331c5000000b0043941566481sm1104009pgx.39.2022.11.03.12.10.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 12:10:42 -0700 (PDT)
+        Thu, 03 Nov 2022 12:10:45 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Yonghong Song <yhs@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: [PATCH bpf-next v4 03/24] bpf: Clobber stack slot when writing over spilled PTR_TO_BTF_ID
-Date:   Fri,  4 Nov 2022 00:39:52 +0530
-Message-Id: <20221103191013.1236066-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v4 04/24] bpf: Fix slot type check in check_stack_write_var_off
+Date:   Fri,  4 Nov 2022 00:39:53 +0530
+Message-Id: <20221103191013.1236066-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221103191013.1236066-1-memxor@gmail.com>
 References: <20221103191013.1236066-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2821; i=memxor@gmail.com; h=from:subject; bh=Dogk83g2dp5n4+0P8GLLYMG/WYzA2mEITQeu4vHDf/k=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjZBIAI2wW8wQ7W/YDmdBG96JsQvge1WUcwJYH+4/e ywI+xxqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2QSAAAKCRBM4MiGSL8Rynx1EA CeQ2Nbhd7mWjtEbwRgf1pzMygWPvJzVTw55kQvZ3kfiXF/ibES/+SKDabmNrnVM88V/Wn3uyA3DagL S0GKrKd9V2X7pwxxMtRZXtVq8I+8TTnJBdqqmUt2DBx1fzKI0kAsurCP3rgOqTD+71AnFjsXf08eKY qdBOl6TBBWvuDq6GXgrTkC+r+B3V2NlShHaiW3w/Tq/JAhN3aGroN8UL8GRTJUVgTVe7gKPfEX5DGJ CIbKCiSEeoRV06HsA2WENH/zCmrhmRHpZ6fZ9M0SDBxe/pOtV24R17F9SvkjnqQ1+obPw1KApMW017 VNbz3JdZGwwpxi1v5KLj60VUdiYH8Yd6o5ythewPLHGdfQNkXhRxN+YaUBxi1RwGzmum7wHot0Klj4 MoffZxdLmsgLZtJpIuURhKSEs8WOdCeqxzpw3wBzwxg5r4pz9pUH6j4rIWd3ZCVYyuIU8hIKQCFQbN 5aoLHweC3zL0rDvfsiy7p9UhImnyj5xKMaTH+X9rJCaf9CexwxAxRsobCjVhvdAbmjlNdRKLrw/XyO vrD96gyb9HbzadL3ZVYiBqrUPCMAVsnnSOxYorDc49cNCrJlQAoZKVO6wf0zaJRbo6/VRVLMVl7T7H 0h6tIUVoHckweJvE4mrUBnY3WbDy44spHh3ltQYaBLNlNM3ZMPFSR4oU1kyg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1916; i=memxor@gmail.com; h=from:subject; bh=AnZ96Bk1+My2wmZMNe32Fdu/YdcMzWPygNF6Nx+G9UM=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjZBIA4UHf4bfK3Iz2CCatKTOTMQFO+fiSaL116LSH gRREdUOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2QSAAAKCRBM4MiGSL8RyvTaEA CnU/sXQD9TbDj04g4awHU0oPj/QaJpcAIwvcMltHj669eUoWJSbNYvUPiXbw3ERbAEUDXRt3XSJVKa 9AlXlCVcw2QLU4otiNpO2eUdBJUmT8KUqT/0XPidzT+oArhYy5ezukU3bSxKfSgd5gCweKZYxYiS55 1GIuqf9gJxYsPh8IlVxXMqGC4h0ekAs3pq6pX3TJyqseEOirMUdt/2dZWoo6cBATWP7WOinqhXATVw 4ld/EUx3FxJWEARgsgoNFUdwLU+JyYk8//tb/lKZWZHhfW0mLbUihp7Keqv8d62Eu7T6DYmqqLz/hv MhDoiM6QAQDJfeffYo57l9DpKdYLUxDP5xHLpNkd2sXyjFdZoQZ3vTvooG1UzYRlMhsE9xDJHVaB4D 2j208yZL3DksY0QYhsrjakDgKndpHpf/FNHTsyqAItyeoaUlBcE+sqcO0lXW65A6aG/jtLcP0HoCF+ oZ8x1LcQgre40pljQ0nUCkxpRDGjWXzyb+F8yjluWJTCBay1qFowzSDTBYpwldH6abHrm2AS6xzvPt Ir3oYM7Ii/hsBE7a76yk7uvEgFSETk6TufJIAABUv8+2zoYYBTVluFben5UVkggbrqU5GKfDQM3TtQ A7BYQbaS2kSJdW6LoPhdQSHAVoD23cTVuRPoquZQ1kyTpfXrflyoLo5rEAsw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,69 +77,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When support was added for spilled PTR_TO_BTF_ID to be accessed by
-helper memory access, the stack slot was not overwritten to STACK_MISC
-(and that too is only safe when env->allow_ptr_leaks is true).
+For the case where allow_ptr_leaks is false, code is checking whether
+slot type is STACK_INVALID and STACK_SPILL and rejecting other cases.
+This is a consequence of incorrectly checking for register type instead
+of the slot type (NOT_INIT and SCALAR_VALUE respectively). Fix the
+check.
 
-This means that helpers who take ARG_PTR_TO_MEM and write to it may
-essentially overwrite the value while the verifier continues to track
-the slot for spilled register.
-
-This can cause issues when PTR_TO_BTF_ID is spilled to stack, and then
-overwritten by helper write access, which can then be passed to BPF
-helpers or kfuncs.
-
-Handle this by falling back to the case introduced in a later commit,
-which will also handle PTR_TO_BTF_ID along with other pointer types,
-i.e. cd17d38f8b28 ("bpf: Permits pointers on stack for helper calls").
-
-Finally, include a comment on why REG_LIVE_WRITTEN is not being set when
-clobber is set to true. In short, the reason is that while when clobber
-is unset, we know that we won't be writing, when it is true, we *may*
-write to any of the stack slots in that range. It may be a partial or
-complete write, to just one or many stack slots.
-
-We cannot be sure, hence to be conservative, we leave things as is and
-never set REG_LIVE_WRITTEN for any stack slot. However, clobber still
-needs to reset them to STACK_MISC assuming writes happened. However read
-marks still need to be propagated upwards from liveness point of view,
-as parent stack slot's contents may still continue to matter to child
-states.
-
-Cc: Yonghong Song <yhs@meta.com>
-Fixes: 1d68f22b3d53 ("bpf: Handle spilled PTR_TO_BTF_ID properly when checking stack_boundary")
+Fixes: 01f810ace9ed ("bpf: Allow variable-offset stack access")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/bpf/verifier.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 82c07fe0bfb1..7bf12c492201 100644
+index 7bf12c492201..eb111a8034e7 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -5154,10 +5154,6 @@ static int check_stack_range_initialized(
- 			goto mark;
- 		}
+@@ -3181,14 +3181,17 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+ 		stype = &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
+ 		mark_stack_slot_scratched(env, spi);
  
--		if (is_spilled_reg(&state->stack[spi]) &&
--		    base_type(state->stack[spi].spilled_ptr.type) == PTR_TO_BTF_ID)
--			goto mark;
--
- 		if (is_spilled_reg(&state->stack[spi]) &&
- 		    (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
- 		     env->allow_ptr_leaks)) {
-@@ -5188,6 +5184,11 @@ static int check_stack_range_initialized(
- 		mark_reg_read(env, &state->stack[spi].spilled_ptr,
- 			      state->stack[spi].spilled_ptr.parent,
- 			      REG_LIVE_READ64);
-+		/* We do not set REG_LIVE_WRITTEN for stack slot, as we can not
-+		 * be sure that whether stack slot is written to or not. Hence,
-+		 * we must still conservatively propagate reads upwards even if
-+		 * helper may write to the entire memory range.
-+		 */
- 	}
- 	return update_stack_depth(env, state, min_off);
- }
+-		if (!env->allow_ptr_leaks
+-				&& *stype != NOT_INIT
+-				&& *stype != SCALAR_VALUE) {
+-			/* Reject the write if there's are spilled pointers in
+-			 * range. If we didn't reject here, the ptr status
+-			 * would be erased below (even though not all slots are
+-			 * actually overwritten), possibly opening the door to
+-			 * leaks.
++		if (!env->allow_ptr_leaks && *stype != STACK_MISC && *stype != STACK_ZERO) {
++			/* Reject the write if range we may write to has not
++			 * been initialized beforehand. If we didn't reject
++			 * here, the ptr status would be erased below (even
++			 * though not all slots are actually overwritten),
++			 * possibly opening the door to leaks.
++			 *
++			 * We do however catch STACK_INVALID case below, and
++			 * only allow reading possibly uninitialized memory
++			 * later for CAP_PERFMON, as the write may not happen to
++			 * that slot.
+ 			 */
+ 			verbose(env, "spilled ptr in range of var-offset stack write; insn %d, ptr off: %d",
+ 				insn_idx, i);
 -- 
 2.38.1
 
