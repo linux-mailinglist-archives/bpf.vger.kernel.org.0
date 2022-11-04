@@ -2,63 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED0561A54A
-	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 00:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D377461A54E
+	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 00:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbiKDXBR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 19:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
+        id S229481AbiKDXDD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 19:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiKDXBN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 19:01:13 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBB63E0BA;
-        Fri,  4 Nov 2022 16:01:12 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id bj12so16827413ejb.13;
-        Fri, 04 Nov 2022 16:01:12 -0700 (PDT)
+        with ESMTP id S229501AbiKDXDB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 19:03:01 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F94326E0
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 16:02:58 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id b5so5582489pgb.6
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 16:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnBGC6ns2QKQUwsYssAlJWYsRWuUiXzRM8wUSXllHeY=;
-        b=AetqL+GCSI422/2hCgfq4OKkij9RKW/lJHEtnZQzEoFQsQzeQEKibXavqnXftAnlW4
-         I1IE20LMF7RLclidBfU6Rvspd47G4d/CsdXshcIPHgtECQNxukRcNE9JifOPIcUBcseP
-         7tF+veaWTNEErB/Q/siVtNrVxEN7a3b7bR6GWl4748nJZzeBKeQzQMTM+xPzOOtmuIy1
-         1NDHvcuUsKLiW4wRllKoOpbj9DgazsdWHjTmRLDZXQFqhXeQ2aOQyY0Z6Ht4qVgigBsL
-         EjIVH5Behz9OhqNcXlhKRb0mgHnUGHreb+Dd2Ww8Fx8Z9Q4YDAOp3f0aNRY0lFQIFvYf
-         XZXg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mzDwYg/jBVo6GJF4CZyJvC9Rpe9GVn043nzxijNyMPY=;
+        b=jig2TyfQrYF2r6lG6PcfFvBvyPrgtCwXTH7/20ExHy1CmCeaRxH9xQEQ0u6a88RhQn
+         ubE4uxwjLDKBwlQ8lwUw/yF1iQ2xNKmH5PFFTylTRwAE5mHnPD9UntZDN/Ssnga/S0n6
+         KDbMPPmayQLpfMh2VUXWy1reNbWlpzpb9k+RGtx1s77ChIisZyIuGZhQmmQ159D7ylSm
+         4ssWj9tOm+A4diqWNyeRHW5x6XbsXVGjjC0poz010sQNnOUaW9r6V/6PBBkxNlXI5xF+
+         /M7kuWDm1V1i1U8r/H//l2VP+Aj2ik2DCguY8NOs+ZnuSqQoVIvUaMZjtfrgD5RxDMGD
+         8yRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mnBGC6ns2QKQUwsYssAlJWYsRWuUiXzRM8wUSXllHeY=;
-        b=rbshBBZZasceu2AIdgEVTKgYUwToVtTKmJn+6NPmilHAHP0GEeat1ejYqb4+72n1FT
-         cYMFOttH09QIW29z0GcR1xUZAAX4hRcjvLzKZpo68Ob/WAyfn4k2sQwMwZFTx3J0aJzq
-         BT3mLpHyTfb2cCemnMO+HwGIasYwboH4g98ePxBsPelPwkaeLYMn+EoQfBimJb+64LMT
-         iQeOJy+85QG/8m+ixlH5N+DobYZk5/Z/D414n+MvPYT22xYxPeUp8nHQP7TvxfbhWq26
-         XGO7ZHQJLxTsvxjFy6g6kn0WvFfPa8OEHz4qRIG8SEQrakWEO93Lc3tyBmiU/2OPlkIA
-         kPAA==
-X-Gm-Message-State: ACrzQf25+uM7uEUR876MsPzC6VH9zbSGPAdOlI6tE3crqZSchB9Qly+R
-        wYeVZn3x1MT6aVAcg+y3NglSOl0w7OHDYABru40=
-X-Google-Smtp-Source: AMsMyM7TsBN+QDYqHM6OoAfK4Gq41wUB6NminuI/stPHxMvIX4PzuvKL3z2q/CdIq16MG0QJpX3PWRFCM2TL6zSHNqU=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr36127820ejn.302.1667602871140; Fri, 04
- Nov 2022 16:01:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221104172140.19762-1-donald.hunter@gmail.com>
-In-Reply-To: <20221104172140.19762-1-donald.hunter@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 16:00:59 -0700
-Message-ID: <CAEf4BzYpNd_oM6n4eW6UqF5n60xkvTarhbcyCgJSCDFtg1rm4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] docs/bpf: Document BPF map types QUEUE and STACK
-To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mzDwYg/jBVo6GJF4CZyJvC9Rpe9GVn043nzxijNyMPY=;
+        b=Xof///3d2bYwNzmq6cSi4W2pMlRxW9DLPbJm/UkhUGHhw5C8ZPWGTL6/6o8Rqf/0us
+         1gtJMAp8dQSunOaXt8hnSbe7+4jjsG8yUhAtBlg8LucxWkbRb7zuRv7G6yFN1uN49zl0
+         +4MO779FPSS0juiQ8F/dOPxJnUzAnYH1t1Gh5xLtnOhXUd56xRtaEG+kHYfATXPzH3mS
+         woiOkTClUQuh0OYsdQ4jXdJL0gElp5znJ0Apijm6hfeFHz7prWq29VjafcRjpKZWSvkx
+         Q/avnya7l+OsMcT+U6yoy3r7fZLqNqcVvETkVQ2eP2Fl75Wk1noqRt3wGzgOe/5W1mwh
+         mIqg==
+X-Gm-Message-State: ACrzQf1xL9hVJfdxLD+4llBy0QfFg0vnWQeP1IKKb0FuWl9s3tCocXw0
+        Qu3FJaEUPqdEv7xUKaPXap/FcLEBVxRe6A==
+X-Google-Smtp-Source: AMsMyM7MoiCr9oUrbas9J3o/nC+siTr8MPjCF77uu5u920ciER3ixwMzmyxpq503j8d3V/IK6mnjMg==
+X-Received: by 2002:a05:6a02:10e:b0:43b:e57d:2bfa with SMTP id bg14-20020a056a02010e00b0043be57d2bfamr31659536pgb.263.1667602977632;
+        Fri, 04 Nov 2022 16:02:57 -0700 (PDT)
+Received: from localhost ([103.4.222.252])
+        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b0018157b415dbsm273105plg.63.2022.11.04.16.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Nov 2022 16:02:57 -0700 (PDT)
+Date:   Sat, 5 Nov 2022 04:32:56 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH bpf-next v1 07/13] bpf: Fix partial dynptr stack slot
+ reads/writes
+Message-ID: <20221104230256.hjy53o2fmiugyzgh@apollo>
+References: <20221018135920.726360-1-memxor@gmail.com>
+ <20221018135920.726360-8-memxor@gmail.com>
+ <CAJnrk1Y_zn+oR3pN8bd3tHV2VubFxBc00XhcNzaWzHkSn1-UMw@mail.gmail.com>
+ <20221022040830.usuuoeq35mj7vnxe@apollo>
+ <CAJnrk1Zucjztcp-jjp_eRszU+P8BJv71-WimLybEqLtPx_T3mQ@mail.gmail.com>
+ <CAEf4BzYKJJko-f-kGL1sv2CmAf3-HUKiVy7hNYucOTRCDZsEAg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYKJJko-f-kGL1sv2CmAf3-HUKiVy7hNYucOTRCDZsEAg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,151 +80,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 10:21 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+On Sat, Nov 05, 2022 at 03:44:53AM IST, Andrii Nakryiko wrote:
+> On Thu, Nov 3, 2022 at 7:07 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Sat, Oct 22, 2022 at 5:08 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Sat, Oct 22, 2022 at 04:20:28AM IST, Joanne Koong wrote:
+> > > > [...]
+> > > >
+> > > > thanks for your work on this (and on the rest of the stack, which I'm
+> > > > still working on reviewing)
+> > > >
+> > > > Regarding writes leading to partial dynptr stack slots, I'm regretting
+> > > > not having the verifier flat-out reject this in the first place
+> > > > (instead of it being allowed but internally the stack slot gets marked
+> > > > as invalid) - I think it overall ends up being more confusing to end
+> > > > users, where there it's not obvious at all that writing to the dynptr
+> > > > on the stack automatically invalidates it. I'm not sure whether it's
+> > > > too late from a public API behavior perspective to change this or not.
+> > >
+> > > It would be incorrect to reject writes into dynptrs whose reference is not
+> > > tracked by the verifier (so bpf_dynptr_from_mem), because the compiler would be
+> > > free to reuse the stack space for some other variable when the local dynptr
+> > > variable's lifetime ends, and the verifier would have no way to know when the
+> > > variable went out of scope.
+> > >
+> > > I feel it is also incorrect to refuse bpf_dynptr_from_mem where unref dynptr
+> > > already exists as well. Right now it sees STACK_DYNPTR in the slot_type and
+> > > fails. But consider something like this:
+> > >
+> > > void prog(void)
+> > > {
+> > >         {
+> > >                 struct bpf_dynptr ptr;
+> > >                 bpf_dynptr_from_mem(...);
+> > >                 ...
+> > >         }
+> > >
+> > >         ...
+> > >
+> > >         {
+> > >                 struct bpf_dynptr ptr;
+> > >                 bpf_dynptr_from_mem(...);
+> > >         }
+> > > }
+> > >
+> > > The program is valid, but if ptr in both scopes share the same stack slots, the
+> > > call in the second scope would fail because verifier would see STACK_DYNPTR in
+> > > slot_type.
 >
-> Add documentation for BPF_MAP_TYPE_QUEUE and BPF_MAP_TYPE_STACK,
-> including usage and examples.
+> I don't think compiler is allowed to reuse the same stack slot for
+> those two ptrs, because we are passing a pointer to it into a
+> black-box bpf_dynptr_from_mem() function, so kernel can't assume that
+> this slot is free to be reused just because no one is accessing it
+> after bpf_dynptr_from_mem (I think?)
 >
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
->  Documentation/bpf/map_queue_stack.rst | 119 ++++++++++++++++++++++++++
->  1 file changed, 119 insertions(+)
->  create mode 100644 Documentation/bpf/map_queue_stack.rst
->
-> diff --git a/Documentation/bpf/map_queue_stack.rst b/Documentation/bpf/map_queue_stack.rst
-> new file mode 100644
-> index 000000000000..a27e7f573869
-> --- /dev/null
-> +++ b/Documentation/bpf/map_queue_stack.rst
-> @@ -0,0 +1,119 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +=========================================
-> +BPF_MAP_TYPE_QUEUE and BPF_MAP_TYPE_STACK
-> +=========================================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_QUEUE`` and ``BPF_MAP_TYPE_STACK`` were introduced
-> +     in kernel version 4.20
-> +
-> +``BPF_MAP_TYPE_QUEUE`` provides FIFO storage and ``BPF_MAP_TYPE_STACK``
-> +provides LIFO storage for BPF programs. These maps support peek, pop and
-> +push operations that are exposed to BPF programs through the respective
-> +helpers. These operations are exposed to userspace applications using
-> +the existing ``bpf`` syscall in the following way:
-> +
-> +- ``BPF_MAP_LOOKUP_ELEM`` -> peek
-> +- ``BPF_MAP_LOOKUP_AND_DELETE_ELEM`` -> pop
-> +- ``BPF_MAP_UPDATE_ELEM`` -> push
-> +
-> +``BPF_MAP_TYPE_QUEUE`` and ``BPF_MAP_TYPE_STACK`` do not support
-> +``BPF_F_NO_PREALLOC``.
-> +
-> +Usage
-> +=====
-> +
-> +Kernel BPF
-> +----------
-> +
-> +.. c:function::
-> +   long bpf_map_push_elem(struct bpf_map *map, const void *value, u64 flags)
-> +
-> +An element ``value`` can be added to a queue or stack using the
-> +``bpf_map_push_elem()`` helper. If ``flags`` is set to ``BPF_EXIST``
-> +then, when the queue or stack is full, the oldest element will be
-> +removed to make room for ``value`` to be added. Returns ``0`` on
-> +success, or negative error in case of failure.
-> +
-> +.. c:function::
-> +   long bpf_map_peek_elem(struct bpf_map *map, void *value)
-> +
-> +This helper fetches an element ``value`` from a queue or stack without
-> +removing it. Returns ``0`` on success, or negative error in case of
-> +failure.
-> +
-> +.. c:function::
-> +   long bpf_map_pop_elem(struct bpf_map *map, void *value)
-> +
-> +This helper removes an element into ``value`` from a queue or
-> +stack. Returns ``0`` on success, or negative error in case of failure.
-> +
-> +
-> +Userspace
-> +---------
-> +
-> +.. c:function::
-> +   int bpf_map_update_elem (int fd, const void *key, const void *value, __u64 flags)
-> +
-> +A userspace program can push ``value`` onto a queue or stack using libbpf's
-> +``bpf_map_update_elem`` function. The ``key`` parameter must be set to
-> +``NULL`` and ``flags`` must be set to ``BPF_ANY``. Returns ``0`` on
-> +success, or negative error in case of failure.
-> +
-> +.. c:function::
-> +   int bpf_map_lookup_elem (int fd, const void *key, void *value)
-> +
-> +A userspace program can peek at the ``value`` at the head of a queue or stack
-> +using the libbpf ``bpf_map_lookup_elem`` function. The ``key`` parameter must be
-> +set to ``NULL``.  Returns ``0`` on success, or negative error in case of
-> +failure.
-> +
-> +.. c:function::
-> +   int bpf_map_lookup_and_delete_elem (int fd, const void *key, void *value)
-> +
-> +A userspace program can pop a ``value`` from the head of a queue or stack using
-> +the libbpf ``bpf_map_lookup_and_delete_elem`` function. The ``key`` parameter
-> +must be set to ``NULL``. Returns ``0`` on success, or negative error in case of
-> +failure.
-> +
-> +Examples
-> +========
-> +
-> +Kernel BPF
-> +----------
-> +
-> +This snippet shows how to declare a queue in a BPF program:
-> +
-> +.. code-block:: c
-> +
-> +    struct {
-> +            __uint(type, BPF_MAP_TYPE_QUEUE);
-> +            __type(value, __u32);
-> +            __uint(max_entries, 10);
-> +    } queue SEC(".maps");
-> +
-> +
-> +Userspace
-> +---------
-> +
-> +This snippet shows how to use libbpf to create a queue from userspace:
 
-I'd prefer "how to use libbpf's low-level API to create a queue".
-Because ideally people use the declarative way shown above, which is
-also "use libbpf to create", but is simpler and preserves all the BTF
-type information (if map supports it).
+At the C level, once the lifetime of the object ends upon execution going out of
+its enclosing scope, even if its pointer escaped, the ending of the lifetime
+implicitly invalidates any such pointers (as per the abstract machine), so the
+compiler is well within its rights (because using such a pointer any more is UB)
+to reuse the same storage for another object.
 
-> +
-> +.. code-block:: c
-> +
-> +    int create_queue()
-> +    {
-> +            return bpf_map_create(BPF_MAP_TYPE_QUEUE,
-> +                                  "sample_queue", /* name */
-> +                                  0,              /* key size, must be zero */
-> +                                  sizeof(__u32),  /* value size */
-> +                                  10,             /* max entries */
-> +                                  0);             /* create options */
+E.g. https://godbolt.org/z/Wcvzfbfbr
 
-NULL, it's a pointer
+For the following:
 
-> +    }
-> +
-> +
-> +References
-> +==========
-> +
-> +https://lwn.net/ml/netdev/153986858555.9127.14517764371945179514.stgit@kernel/
-> --
-> 2.35.1
->
+struct bpf_dynptr {
+	unsigned long a, b;
+};
+
+extern void bpf_dynptr_func(struct bpf_dynptr *);
+extern void bpf_dynptr_ro(const struct bpf_dynptr *);
+
+int main(void)
+{
+	{
+		struct bpf_dynptr d2;
+
+		bpf_dynptr_func(&d2);
+		bpf_dynptr_ro(&d2);
+	}
+	{
+		struct bpf_dynptr d3;
+
+		bpf_dynptr_func(&d3);
+		bpf_dynptr_ro(&d3);
+	}
+}
+
+clang produces:
+
+main:                                   # @main
+        r6 = r10
+        r6 += -16
+        call bpf_dynptr_func
+        call bpf_dynptr_ro
+        r6 = r10
+        r6 += -16
+        call bpf_dynptr_func
+        call bpf_dynptr_ro
+        exit
+
+> Would it make sense to allow *optional* bpf_dynptr_free (of is it
+> bpf_dynptr_put, not sure) for non-reference-tracked dynptrs if indeed
+> we wanted to reuse the same stack variable for multiple dynptrs,
+> though?
+
+I think it's fine to simply overwrite the type of object when reusing the same
+stack slot.
+
+For some precedence:
+
+This is what compilers essentially do for effective(C)/dynamic(C++) types, for
+instance GCC will simply overwrite the effective type of the object (even for
+declared objects, even though standard only permits overwriting it for allocated
+objects) whenever you do a store using a lvalue of some type T or memcpy
+(transferring the effective type to dst).
+
+For a more concrete analogy, Storage Reuse in
+https://en.cppreference.com/w/cpp/language/lifetime describes how placement new
+simply reuses storage of trivially destructible objects without requiring the
+destructor to be called. Since it is C++ if you replace storage of non-trivial
+object it must be switched back to the same type before the runtime calls the
+original destructors emitted implicitly for declared type.
+
+So in BPF terms, local dynptr (dynptr_from_mem) is trivially destructible, but
+ringbuf dynptr requires its 'destructor' to be called before storage is reused.
+
+There are two choices in the second case, either complain when such a ringbuf
+dynptr's storage is reused without calling its release function, or the verifier
+will complain later when seeing an unreleased reference. I think complaining
+early is better as later the user has to correlate insn_idx of leaked reference.
+The program is going to fail in both cases anyway, so it makes sense to give a
+better error back to the user.
