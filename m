@@ -2,134 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2578619001
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 06:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FE1619000
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 06:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbiKDFa0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 01:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        id S230127AbiKDFaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 01:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbiKDFaZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 01:30:25 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9FD26105
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 22:30:24 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id f27so10629794eje.1
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 22:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Mibve3JTYSoeQIOiqF5nz7UdakU0DvcO22PCs+dIn8=;
-        b=iz7FbFSHjx5krG8d63mkEDqgwX+hr1pmnj0MDnuyWCjYnW25vf2KzJ6KTECC9+UsMe
-         pkHyp4KpHYrZzsF+vfU7W+jxp2aFfs1H7Ej7OxaDqlhm+SiNsJSW7dHpsT8sSynHbWRz
-         /DTOlXvKSmI4hXtDMD0f8dSJu6EzObqwwzImcx7DPTbs2IU5hlDZBBCh/In7qstTmEaF
-         XpZwCi0wj9n4Y4c6jFxPB8cdH/Z8tYQ7kKWvR7Mh3Qm2rxdXU6di/TECs9xuCRxRa+d9
-         5YFyZl5K+Jx+VwX20o1xCAnb9Zs7czfJbwi2WKNfbyEWT/p8ktv/VPxzuJgJIO+AAF3x
-         0FnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0Mibve3JTYSoeQIOiqF5nz7UdakU0DvcO22PCs+dIn8=;
-        b=Dz9FR7sXJvig7ZaKctGD5Vd+QP+8pgKg0L5TvWnLN731NKWKHaVXrMNyMGHkZ8jxIF
-         4dEoghoSYA2Nw4qgMQfDOpkuaW7OVXXqPdQ5irRRaa/EhCwtUL7dzPuJwj8QkkRyXwgB
-         x5P3xXUjBxs1Yz42PmCXQpnwb+bE3Ij6z8aZ2dFeNYDyV4Uzpry3HRXS8gJXVNIMV2Ht
-         vlAfSjbn1oIfl6lqXv6yJ8WM5na8F4mYQwlA+B8cGADx1BaVi1k5NSq1u3AgCyDVMvwS
-         rTqcDEYd7M6yEkeeU+TXiQDCUxweRSnoO/V7flyKkTwPYZA6l0JTcabq1Wt64LoDmonr
-         DgfQ==
-X-Gm-Message-State: ACrzQf1jFSY5kKYUjFtOHCWhME8DemaTaHbTzs3VNjbrlnj/1foDNuAR
-        a5LcUHYs7ec6r0uv1T4NqQ8dGqUt2EG/8oUdSwds7q09
-X-Google-Smtp-Source: AMsMyM6OCSipJ+DGIHqYjmDjU16bCK/6K/ldKe/BFIIzKXqJUekzdO/3U2iEd32y0PkUCi1NiDJCogR+7JqnEoapQEg=
-X-Received: by 2002:a17:906:8a73:b0:7ae:3962:47e7 with SMTP id
- hy19-20020a1709068a7300b007ae396247e7mr460333ejc.502.1667539823179; Thu, 03
- Nov 2022 22:30:23 -0700 (PDT)
+        with ESMTP id S229553AbiKDFaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 01:30:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14562408B
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 22:30:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 689E9620B5
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 05:30:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B8894C433B5;
+        Fri,  4 Nov 2022 05:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667539814;
+        bh=cqfkvxvjo/MkQvv3IHlN0iws12Sxm4bsdlXxX4xRdbg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=R6U/MXYNz270WTwhfRiIrQ7EGqs5D/sKK8Gf9Lt5nIxlNRQG89MiQFvQtub45jEmh
+         6EOd/CDUPYpKGuwQh53HIiqAW9HgPCQK3AoPoU4m4J705uhqc+dNa9jucVRsEzSkG3
+         xVyiFzt32gC9vP9vmin/TqcCXUL53AqNOt+bI2Uy6IVyIiUXxzMG3tn9G1iKf92pwl
+         xGdCT2HUu4FbKw/prbrcJq8oiejpeWemi5RObv2zMioUXT0ou0/mMTsStah9HLvEG3
+         AjBtkFzm9yz0hyqoHc3/+HW0LcLIyvngz5v0xQ9gCoHRvkTug2ax4+4p74uWPgEvNa
+         m/Ge0SStTiHGg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9D892E270EA;
+        Fri,  4 Nov 2022 05:30:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-8-memxor@gmail.com>
-In-Reply-To: <20221103191013.1236066-8-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Nov 2022 22:30:11 -0700
-Message-ID: <CAADnVQ+E8T3dRowYzzVfxXEcE1ntNRvF4YSgaCmGhNfO6Q0CaQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 07/24] bpf: Consolidate spin_lock, timer
- management into btf_record
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 00/24] Local kptrs, BPF linked lists
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166753981464.11870.10486560059847217334.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 05:30:14 +0000
+References: <20221103191013.1236066-1-memxor@gmail.com>
+In-Reply-To: <20221103191013.1236066-1-memxor@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Delyan Kratunov <delyank@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org,
+        davemarchevsky@meta.com, delyank@meta.com
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 12:11 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->  static int bpf_map_alloc_off_arr(struct bpf_map *map)
->  {
-> -       bool has_spin_lock = map_value_has_spin_lock(map);
-> -       bool has_timer = map_value_has_timer(map);
->         bool has_fields = !IS_ERR_OR_NULL(map);
->         struct btf_field_offs *fo;
-> -       u32 i;
-> +       struct btf_record *rec;
-> +       u32 i, *off;
-> +       u8 *sz;
->
-> -       if (!has_spin_lock && !has_timer && !has_fields) {
-> +       if (!has_fields) {
->                 map->field_offs = NULL;
->                 return 0;
->         }
-> @@ -970,32 +987,14 @@ static int bpf_map_alloc_off_arr(struct bpf_map *map)
->                 return -ENOMEM;
->         map->field_offs = fo;
->
-> -       fo->cnt = 0;
-> -       if (has_spin_lock) {
-> -               i = fo->cnt;
-> -
-> -               fo->field_off[i] = map->spin_lock_off;
-> -               fo->field_sz[i] = sizeof(struct bpf_spin_lock);
-> -               fo->cnt++;
-> -       }
-> -       if (has_timer) {
-> -               i = fo->cnt;
-> -
-> -               fo->field_off[i] = map->timer_off;
-> -               fo->field_sz[i] = sizeof(struct bpf_timer);
-> -               fo->cnt++;
-> -       }
-> -       if (has_fields) {
-> -               struct btf_record *rec = map->record;
-> -               u32 *off = &fo->field_off[fo->cnt];
-> -               u8 *sz = &fo->field_sz[fo->cnt];
-> -
-> -               for (i = 0; i < rec->cnt; i++) {
-> -                       *off++ = rec->fields[i].offset;
-> -                       *sz++ = btf_field_type_size(rec->fields[i].type);
-> -               }
-> -               fo->cnt += rec->cnt;
-> +       rec = map->record;
-> +       off = &fo->field_off[fo->cnt];
-> +       sz = &fo->field_sz[fo->cnt];
+Hello:
 
-Another bug that would have been obvious if you run any tests.
-(fo->cnt contains garbage)
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-I'm surprised by the amount of issues in the series.
+On Fri,  4 Nov 2022 00:39:49 +0530 you wrote:
+> This series introduces user defined BPF objects, by introducing the idea
+> of local kptrs. These are kptrs (strongly typed pointers) that refer to
+> objects of a user defined type, hence called "local" kptrs. This allows
+> BPF programs to allocate their own objects, build their own object
+> hierarchies, and use the basic building blocks provided by BPF runtime
+> to build their own data structures flexibly.
+> 
+> [...]
 
-> +       for (i = 0; i < rec->cnt; i++) {
-> +               *off++ = rec->fields[i].offset;
-> +               *sz++ = btf_field_type_size(rec->fields[i].type);
->         }
+Here is the summary with links:
+  - [bpf-next,v4,01/24] bpf: Document UAPI details for special BPF types
+    (no matching commit)
+  - [bpf-next,v4,02/24] bpf: Allow specifying volatile type modifier for kptrs
+    (no matching commit)
+  - [bpf-next,v4,03/24] bpf: Clobber stack slot when writing over spilled PTR_TO_BTF_ID
+    (no matching commit)
+  - [bpf-next,v4,04/24] bpf: Fix slot type check in check_stack_write_var_off
+    (no matching commit)
+  - [bpf-next,v4,05/24] bpf: Drop reg_type_may_be_refcounted_or_null
+    (no matching commit)
+  - [bpf-next,v4,06/24] bpf: Refactor kptr_off_tab into btf_record
+    (no matching commit)
+  - [bpf-next,v4,07/24] bpf: Consolidate spin_lock, timer management into btf_record
+    https://git.kernel.org/bpf/bpf-next/c/db559117828d
+  - [bpf-next,v4,08/24] bpf: Refactor map->off_arr handling
+    (no matching commit)
+  - [bpf-next,v4,09/24] bpf: Support bpf_list_head in map values
+    (no matching commit)
+  - [bpf-next,v4,10/24] bpf: Introduce local kptrs
+    (no matching commit)
+  - [bpf-next,v4,11/24] bpf: Recognize bpf_{spin_lock,list_head,list_node} in local kptrs
+    (no matching commit)
+  - [bpf-next,v4,12/24] bpf: Verify ownership relationships for user BTF types
+    (no matching commit)
+  - [bpf-next,v4,13/24] bpf: Support locking bpf_spin_lock in local kptr
+    (no matching commit)
+  - [bpf-next,v4,14/24] bpf: Allow locking bpf_spin_lock global variables
+    (no matching commit)
+  - [bpf-next,v4,15/24] bpf: Rewrite kfunc argument handling
+    (no matching commit)
+  - [bpf-next,v4,16/24] bpf: Drop kfunc bits from btf_check_func_arg_match
+    (no matching commit)
+  - [bpf-next,v4,17/24] bpf: Support constant scalar arguments for kfuncs
+    (no matching commit)
+  - [bpf-next,v4,18/24] bpf: Teach verifier about non-size constant arguments
+    (no matching commit)
+  - [bpf-next,v4,19/24] bpf: Introduce bpf_obj_new
+    (no matching commit)
+  - [bpf-next,v4,20/24] bpf: Introduce bpf_obj_drop
+    (no matching commit)
+  - [bpf-next,v4,21/24] bpf: Permit NULL checking pointer with non-zero fixed offset
+    (no matching commit)
+  - [bpf-next,v4,22/24] bpf: Introduce single ownership BPF linked list API
+    (no matching commit)
+  - [bpf-next,v4,23/24] selftests/bpf: Add __contains macro to bpf_experimental.h
+    (no matching commit)
+  - [bpf-next,v4,24/24] selftests/bpf: Add BPF linked list API tests
+    (no matching commit)
 
-Anyway, pushed this patch as well after fixing this bug.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
