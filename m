@@ -2,67 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5121061A2F1
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC6A61A351
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbiKDVNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        id S229626AbiKDV0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKDVNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:13:02 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313A943843;
-        Fri,  4 Nov 2022 14:12:57 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id q9so16561900ejd.0;
-        Fri, 04 Nov 2022 14:12:57 -0700 (PDT)
+        with ESMTP id S229457AbiKDV0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:26:48 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D93643871;
+        Fri,  4 Nov 2022 14:26:47 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id kt23so16481052ejc.7;
+        Fri, 04 Nov 2022 14:26:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=k3lmctAkmWwvXl1VWZl8A6gGM1NjwJhPSeg6lKVknz0=;
-        b=iJVDVoTi7bPLy/0kPNkE3R3MGJlvuHmzBmXikRJcYAQRHu+UsCqPyYWgCGQtrHcgh8
-         1hSkExlqylK5lZSfv/pzA5zekZfsNxZ6iLuN350fFKZp9EhUDJqezVcj+1uv2xk6doUo
-         94YdDHCWGjyhgBLOVy7fOHqOHepXWBEhPnYm+ltONPAWDOxxZbZmFptSnq1K1w12dasM
-         SKkg7FNi0BLuAC5wBmlVWIYHrRtYKS/wkJiDixszrV3NSK0cFiaHThsAj9KFMw/zg3Tf
-         W3FXD9PON7zA7nfFBfCYGmdth+KwGelzCTA/TuKdKWo7/TrAMeGkku10MzxG+9e0YIvn
-         6m6Q==
+        bh=AveMACjXVbF/hxLVe9ZZR8krStFPyiZoSTVBDH05wjw=;
+        b=cTOlGMMzZJR1iNQytevx/7l+waGuBR0MG5AnpaC85mR4CkNuOcs9TnL2yON8WE66c7
+         Tsqt73xWDzTuSE91FhwGk4HvIdn/wqgCnKR5PHKaSCBRskr+qMtJY0mnL3bD+eJH1+hX
+         2wkGRVGg55xPWfe+xfP0A68j+X2cnaUni57u6cj9IawCwZwrsLPR5OapHw9Sd1Ah/eS1
+         sJjwnjwRCDH/KPafbFFDq/5/UULs/2VtykHfFacjU//3gQKYI3mZDXOPlKozG7nb/C52
+         t3Ht5UlM7q9empPn2qPlDK99L+oj1l3a7oa3Rb5tQad4tiDzwGi1nrwe4JfHhUSUkks1
+         zIKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k3lmctAkmWwvXl1VWZl8A6gGM1NjwJhPSeg6lKVknz0=;
-        b=adwJm2Pg9ZfLhkA6+43rTYZkwABYu+h0rALYQpQrXcWVsi+QM2+XEcW+rC9bee6nSO
-         ATi8eQh/kRXVkfd2C2QXqoVQE9+vMgiXfJCwsh7RRoojVhnKQHU+AEPuznTmyqIHzG5n
-         1K4iA+U1oRXPgZX5NZLltlJsbZ3glez1PrBdbac5anj4TbO5zerew0j8TaH/12Wrnl1Y
-         1a50ICdrhNlUZa1jlgKZI/cFPRbJFYzKK6EOb16EspP1Eo+B9UmMqIYjKFS9u5gkYnG3
-         /GDgxkPwbbgWc9j7WUWirh10UdH1+1+AaxKxNQnwZVQlt7Tu96Lo8x5gk0682hiNKn0X
-         8rYg==
-X-Gm-Message-State: ACrzQf26N41Z01cmV6J2t3veDTO3gn80g6sqk2NNFqNt4AJhNLBWIZOf
-        ZI1jV5pJ3IbfXKlq9h+WLfT9PBH1Zvp23uzVYWw=
-X-Google-Smtp-Source: AMsMyM6L21ktfnCGlTxwCwRIQyXV0qnnnFPKIdqwggnMU+048Ib/Gh6BVhGnMzx7G+R11Qkr/dv85V/+r9xMYYhyGA0=
-X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
- sc36-20020a1709078a2400b00795bb7d643bmr37134945ejc.115.1667596375750; Fri, 04
- Nov 2022 14:12:55 -0700 (PDT)
+        bh=AveMACjXVbF/hxLVe9ZZR8krStFPyiZoSTVBDH05wjw=;
+        b=VEHyOaUI0MspsFnmn5Ro0SgY0wnpdZVqaxqvtILl7Gz4suzvsAmab2KZJP2Bk+i2KE
+         uhULi7Uh3s8GPxB2Fy7fIsb2ozNKvmQ/3h6G+IuKLzhlDOxQnjT/eo+hDh5//SnLcGjW
+         oz+Y6S6JwGeXtsE919IhOEhzoulmR1DySaXj1i70sYtoGfcCMHKtrCY/FF9ZlA+B7/+J
+         D/4Lf74ku5umAdM8GM+WlmktNgDBHJfPwOB9CCjwBRq0v7NEsMAyO4y3KPY2tIJRwVE3
+         0tQXQ/9fBAg57c9W8bceRNgHq/P6DgDgtieuH6JMe5oOJJaUAVCTX0qzhRFnvKjSyh5F
+         UdjA==
+X-Gm-Message-State: ACrzQf1tSkpX7MWRx4jmg9eRjtSyBysife8IQV7aQAWCAAPxtPTymLhy
+        RMlkzD7LUTDmiW8q4Z4PJSP4exe4W/eSINDnv1s=
+X-Google-Smtp-Source: AMsMyM7Z1SD/98VyO1rZj5Skho54nfScaK7yrTH+svVpB2spa/fkUna6NMalV8wNaNZHqKh4KEQGJNB7iLZJ0LTHtR4=
+X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
+ s5-20020a17090699c500b0073d70c51a4fmr35850607ejn.302.1667597205313; Fri, 04
+ Nov 2022 14:26:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221031215728.50389-1-kuniyu@amazon.com>
-In-Reply-To: <20221031215728.50389-1-kuniyu@amazon.com>
+References: <20221010112154.39494-1-donald.hunter@gmail.com>
+In-Reply-To: <20221010112154.39494-1-donald.hunter@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 14:12:43 -0700
-Message-ID: <CAEf4BzaU+jiCQy7g4N0UuifL0TcdEY4Z_5_3MHiOwZhFzKFFFg@mail.gmail.com>
-Subject: Re: [PATCH] arm64/syscall: Include asm/ptrace.h in syscall_wrapper header.
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Akihiro HARAI <jharai0815@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+Date:   Fri, 4 Nov 2022 14:26:33 -0700
+Message-ID: <CAEf4BzYiSyps09esMH407WnzPvND+c56EQHeooLUF9RKcs-Y3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf, docs: document BPF_MAP_TYPE_ARRAY_OF_MAPS
+ and *_HASH_OF_MAPS
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,54 +66,182 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 2:57 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+On Mon, Oct 10, 2022 at 4:32 AM Donald Hunter <donald.hunter@gmail.com> wrote:
 >
-> Add the same change for ARM64 as done in the commit 9440c4294160
-> ("x86/syscall: Include asm/ptrace.h in syscall_wrapper header") to
-> make sure all syscalls see 'struct pt_regs' definition and resulted
-> BTF for '__arm64_sys_*(struct pt_regs *regs)' functions point to
-> actual struct.
+> Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
+> including usage and examples.
 >
-> Without this patch, the BPF verifier refuses to load a tracing prog
-> which accesses pt_regs.
->
->   bpf(BPF_PROG_LOAD, {prog_type=0x1a, ...}, 128) = -1 EACCES
->
-> With this patch, we can see the correct error, which saves us time
-> in debugging the prog.
->
->   bpf(BPF_PROG_LOAD, {prog_type=0x1a, ...}, 128) = 4
->   bpf(BPF_RAW_TRACEPOINT_OPEN, {raw_tracepoint={name=NULL, prog_fd=4}}, 128) = -1 ENOTSUPP
->
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 > ---
 
-Some of these problems will be mitigated by [0], but still good to
-have completely types if possible. LGTM.
+subject suggestion (as it's pretty long):
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+bpf, docs: document BPF_MAP_TYPE_{ARRAY,HASH}_OF_MAPS
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=691488&state=*
 
-> Note the cited commit only exists in the tip tree for now.
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=9440c42941606af4c379afa3cf8624f0dc43a629
-> ---
->  arch/arm64/include/asm/syscall_wrapper.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/bpf/map_of_maps.rst | 145 ++++++++++++++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 Documentation/bpf/map_of_maps.rst
 >
-> diff --git a/arch/arm64/include/asm/syscall_wrapper.h b/arch/arm64/include/asm/syscall_wrapper.h
-> index b383b4802a7b..d30217c21eff 100644
-> --- a/arch/arm64/include/asm/syscall_wrapper.h
-> +++ b/arch/arm64/include/asm/syscall_wrapper.h
-> @@ -8,7 +8,7 @@
->  #ifndef __ASM_SYSCALL_WRAPPER_H
->  #define __ASM_SYSCALL_WRAPPER_H
->
-> -struct pt_regs;
-> +#include <asm/ptrace.h>
->
->  #define SC_ARM64_REGS_TO_ARGS(x, ...)                          \
->         __MAP(x,__SC_ARGS                                       \
+> diff --git a/Documentation/bpf/map_of_maps.rst b/Documentation/bpf/map_of_maps.rst
+> new file mode 100644
+> index 000000000000..16fcda8720de
+> --- /dev/null
+> +++ b/Documentation/bpf/map_of_maps.rst
+> @@ -0,0 +1,145 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +========================================================
+> +BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
+> +========================================================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` were
+> +     introduced in kernel version 4.12.
+> +
+> +``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` provide general
+> +purpose support for map in map storage. One level of nesting is supported, where
+> +an outer map contains instances of a single type of inner map, for example
+> +``array_of_maps->sock_map``.
+> +
+> +When creating an outer map, an inner map instance is used to initialize the
+> +metadata that the outer map holds about its inner maps. This inner map has a
+> +separate lifetime from the outer map and can be deleted after the outer map has
+> +been created.
+> +
+> +The outer map supports element update and delete from user space using the
+> +syscall API. A BPF program is only allowed to do element lookup in the outer
+> +map.
+> +
+> +.. note::
+> +   - Multi-level nesting is not supported.
+> +   - Any BPF map type can be used as an inner map, except for
+> +     ``BPF_MAP_TYPE_PROG_ARRAY``.
+> +   - A BPF program cannot update or delete outer map entries.
+> +
+> +Array of Maps
+> +-------------
+> +
+> +For ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` the key is an unsigned 32-bit integer index
+> +into the array. The array is a fixed size with `max_entries` elements that are
+> +zero initialized when created.
+> +
+> +Hash of Maps
+> +------------
+> +
+> +For ``BPF_MAP_TYPE_HASH_OF_MAPS`` the key type can be chosen when defining the
+> +map.
+> +
+> +The kernel is responsible for allocating and freeing key/value pairs, up
+> +to the max_entries limit that you specify. Hash maps use pre-allocation
+> +of hash table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be
+> +used to disable pre-allocation when it is too memory expensive.
+> +
+> +Usage
+> +=====
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +Inner maps can be retrieved using the ``bpf_map_lookup_elem()`` helper. This
+> +helper returns a pointer to the inner map, or ``NULL`` if no entry was found.
+> +
+> +Examples
+> +========
+> +
+> +Kernel BPF
+> +----------
+> +
+> +This snippet shows how to create an array of devmaps in a BPF program. Note that
+> +the outer array can only be modified from user space using the syscall API.
+> +
+> +.. code-block:: c
+> +
+> +    struct redirect_map {
+> +            __uint(type, BPF_MAP_TYPE_DEVMAP);
+> +            __uint(max_entries, 32);
+> +            __type(key, enum skb_drop_reason);
+> +            __type(value, __u64);
+> +    } redirect_map SEC(".maps");
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
+> +            __uint(max_entries, 2);
+> +            __uint(key_size, sizeof(int));
+> +            __uint(value_size, sizeof(int));
+> +            __array(values, struct redirect_map);
+> +    } outer_map SEC(".maps");
+> +
+
+Let's also demonstrate libbpf's declarative way to initialize entries
+in outer map? See progs/test_btf_map_in_map.c under selftests/bpf for
+various examples.
+
+> +This snippet shows how to lookup an outer map to retrieve an inner map.
+> +
+> +.. code-block:: c
+> +
+> +    SEC("xdp")
+> +    int redirect_by_priority(struct xdp_md *ctx) {
+> +            struct bpf_map *devmap;
+> +            int action = XDP_PASS;
+> +            int index = 0;
+> +
+> +            devmap = bpf_map_lookup_elem(&outer_arr, &index);
+> +            if (!devmap)
+> +                    return XDP_PASS;
+> +
+> +            /* use inner devmap here */
+> +
+> +            return action;
+> +    }
+> +
+> +User Space
+> +----------
+> +
+> +This snippet shows how to create an array based outer map:
+> +
+> +.. code-block:: c
+> +
+> +    int create_outer_array(int inner_fd) {
+> +            int fd;
+> +            LIBBPF_OPTS(bpf_map_create_opts, opts);
+> +            opts.inner_map_fd = inner_fd;
+
+LIBBPF_OPTS(bpf_map_create_opts, opts, .inner_map_fd = inner_fd);
+
+> +            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS,
+> +                                "example_array",       /* name */
+> +                                sizeof(__u32),         /* key size */
+> +                                sizeof(__u32),         /* value size */
+> +                                256,                   /* max entries */
+> +                                &opts);                /* create opts */
+> +            return fd;
+> +    }
+> +
+> +
+> +This snippet shows how to add an inner map to an outer map:
+> +
+> +.. code-block:: c
+> +
+> +    int add_devmap(int outer_fd, int index, const char *name) {
+> +            int fd, ret;
+> +
+> +            fd = bpf_map_create(BPF_MAP_TYPE_DEVMAP, name,
+> +                                sizeof(__u32), sizeof(__u32), 256, NULL);
+> +            if (fd < 0)
+> +                    return fd;
+> +
+> +            ret = bpf_map_update_elem(outer_fd, &index, &fd, BPF_NOEXIST);
+> +            return ret;
+> +    }
+> +
+> +References
+> +==========
+> +
+> +- https://lore.kernel.org/netdev/20170322170035.923581-3-kafai@fb.com/
+> +- https://lore.kernel.org/netdev/20170322170035.923581-4-kafai@fb.com/
 > --
-> 2.30.2
+> 2.35.1
 >
