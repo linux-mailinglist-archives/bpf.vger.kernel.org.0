@@ -2,52 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B79B618D01
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 00:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F3C618D18
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 01:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbiKCXuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 19:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S230333AbiKDAEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 20:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiKCXuS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 19:50:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F85ECC1
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 16:50:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09BB06204F
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 23:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A7A5C433D7;
-        Thu,  3 Nov 2022 23:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667519415;
-        bh=KfU91qTl49Cnb696V1TmGTNByOvx09X8DG6jYIv+kR8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WeJi5mpCVPl9A7jQeJepW/GqrkV2cp56BTk9E/nDU7FjPUlAK0N7B1cuPCT4e4uaZ
-         Ldr/16yEETkd+Kcm04FbLIlTP0cx3+BFzuPG5X/YPkcouFCfrTLlgL4wv7UAJ4Xw2b
-         qAe//hjSXJdAah9TOVcm9+CWSx/znkki7QSeFL+98TG/FffR0QVk3S6hl/tLSwLXTy
-         PjfEoRqvG32WkjxqqWMQ2CE9VYl5yrIvgZZT2KGk532SoPALnQTfhLdWYJjHuT6ijw
-         X+GWKKMKwgOWdFa9ZjsFf/pkX9aA82tvJV/6HXHyRQ8GnvNpfZXohL06oaitGwTvj/
-         ysvchja8U/Aiw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4EE26E270F6;
-        Thu,  3 Nov 2022 23:50:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230074AbiKDAEv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 20:04:51 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA7B1CB1F;
+        Thu,  3 Nov 2022 17:04:49 -0700 (PDT)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oqkCT-000Lhk-CZ; Fri, 04 Nov 2022 01:04:45 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2022-11-04
+Date:   Fri,  4 Nov 2022 01:04:45 +0100
+Message-Id: <20221104000445.30761-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2 v2] bpf: Fix wrong reg type conversion in
- release_reference()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166751941531.11927.6923605690119797378.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Nov 2022 23:50:15 +0000
-References: <20221103093440.3161-1-liulin063@gmail.com>
-In-Reply-To: <20221103093440.3161-1-liulin063@gmail.com>
-To:     Youlin Li <liulin063@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26709/Thu Nov  3 08:56:21 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,31 +40,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+The following pull-request contains BPF updates for your *net* tree.
 
-On Thu,  3 Nov 2022 17:34:39 +0800 you wrote:
-> Some helper functions will allocate memory. To avoid memory leaks, the
-> verifier requires the eBPF program to release these memories by calling
-> the corresponding helper functions.
-> 
-> When a resource is released, all pointer registers corresponding to the
-> resource should be invalidated. The verifier use release_references() to
-> do this job, by apply  __mark_reg_unknown() to each relevant register.
-> 
-> [...]
+We've added 8 non-merge commits during the last 3 day(s) which contain
+a total of 10 files changed, 113 insertions(+), 16 deletions(-).
 
-Here is the summary with links:
-  - [bpf,1/2,v2] bpf: Fix wrong reg type conversion in release_reference()
-    https://git.kernel.org/bpf/bpf/c/f1db20814af5
-  - [bpf,2/2] selftests/bpf: Add verifier test for release_reference()
-    https://git.kernel.org/bpf/bpf/c/475244f5e06b
+The main changes are:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1) Fix memory leak upon allocation failure in BPF verifier's stack state
+   tracking, from Kees Cook.
 
+2) Fix address leakage when BPF progs release reference to an object, from Youlin Li.
 
+3) Fix BPF CI breakage from buggy in.h uapi header dependency, from Andrii Nakryiko.
+
+4) Fix bpftool pin sub-command's argument parsing, from Pu Lehui.
+
+5) Fix BPF sockmap lockdep warning by cancelling psock work outside of socket
+   lock, from Cong Wang.
+
+6) Follow-up for BPF sockmap to fix sk_forward_alloc accounting, from Wang Yufen.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Bill Wendling, Jakub Sitnicki, John Fastabend, Kees Cook, Quentin 
+Monnet, Stanislav Fomichev, Zhengchao Shao
+
+----------------------------------------------------------------
+
+The following changes since commit 363a5328f4b0517e59572118ccfb7c626d81dca9:
+
+  net: tun: fix bugs for oversize packet when napi frags enabled (2022-10-31 20:04:55 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to 475244f5e06beeda7b557d9dde46a5f439bf3379:
+
+  selftests/bpf: Add verifier test for release_reference() (2022-11-04 00:24:29 +0100)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Andrii Nakryiko (2):
+      net/ipv4: Fix linux/in.h header dependencies
+      tools/headers: Pull in stddef.h to uapi to fix BPF selftests build in CI
+
+Cong Wang (1):
+      bpf, sock_map: Move cancel_work_sync() out of sock lock
+
+Kees Cook (1):
+      bpf, verifier: Fix memory leak in array reallocation for stack state
+
+Pu Lehui (1):
+      bpftool: Fix NULL pointer dereference when pin {PROG, MAP, LINK} without FILE
+
+Wang Yufen (1):
+      bpf, sockmap: Fix the sk->sk_forward_alloc warning of sk_stream_kill_queues
+
+Youlin Li (2):
+      bpf: Fix wrong reg type conversion in release_reference()
+      selftests/bpf: Add verifier test for release_reference()
+
+ include/linux/skmsg.h                              |  2 +-
+ include/uapi/linux/in.h                            |  1 +
+ kernel/bpf/verifier.c                              | 17 ++++++--
+ net/core/skmsg.c                                   |  7 +---
+ net/core/sock_map.c                                |  7 ++--
+ net/ipv4/tcp_bpf.c                                 |  8 ++--
+ tools/bpf/bpftool/common.c                         |  3 ++
+ tools/include/uapi/linux/in.h                      |  1 +
+ tools/include/uapi/linux/stddef.h                  | 47 ++++++++++++++++++++++
+ .../testing/selftests/bpf/verifier/ref_tracking.c  | 36 +++++++++++++++++
+ 10 files changed, 113 insertions(+), 16 deletions(-)
+ create mode 100644 tools/include/uapi/linux/stddef.h
