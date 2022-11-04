@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD8C61909D
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 07:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A420E6190D0
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 07:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiKDGDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 02:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        id S229608AbiKDGSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 02:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiKDGDP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 02:03:15 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457F42181;
-        Thu,  3 Nov 2022 23:03:13 -0700 (PDT)
-Received: by mail-ot1-f52.google.com with SMTP id a13-20020a9d6e8d000000b00668d65fc44fso2165549otr.9;
-        Thu, 03 Nov 2022 23:03:13 -0700 (PDT)
+        with ESMTP id S229611AbiKDGSX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 02:18:23 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70F42BD7;
+        Thu,  3 Nov 2022 23:18:22 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id z127-20020a4a4985000000b0049ea7fbfb74so54388ooa.11;
+        Thu, 03 Nov 2022 23:18:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=loC6w0/i5CbAGUlQZBIMeNBQ+tlvwl3vVB+h9k8NGcM=;
-        b=dP7MW26p0wwpCA83sinsV6MQZLMiNF2uNUVwh0FjPkXSFAiUw2eWbT/uRgadpw9JzX
-         DNHc86MkLFov9ctJQP6QqHZdxY2J34uCEU77bbpO8gAYx+H0seXcZKVUXXI/SQPa8kDT
-         AHn51j3fel/guFI7Alvi4WY1e8nzbjcjt/j04/i1JDhfFBAlFZ+9f9NMM4EmkiysGxYG
-         /sFDninFvJ5OAe14c5TDl2intD91Cnqinv9SQpJ7d3Eh2a8nRKsKDQGvPOeLVk/pVyJC
-         5hEUr4CAjpi/wX+ToOZtg+s/d5Rc1IkmdbxDNFl2EnDoWoBIZWrDblHIc6b8FRi0xMa+
-         x0cw==
-X-Gm-Message-State: ACrzQf2Xj8gN9gmHgcZvNVPkvF1GsUVRwazPyEh+NhAyBlTJFeoHOhyK
-        9gjsxD3tcUv83sWFF2zd9+m9N/6c4ZDMKBG4o2zinFVM
-X-Google-Smtp-Source: AMsMyM4bn6uSw/2awV0vJqKDAmmzvk4us1xVi7uoHenl1cpbKds5aWEL607Utk0fRuHoJTaLZlYzkwhb7jZWljDpkZw=
-X-Received: by 2002:a05:6830:1219:b0:66c:2b26:b164 with SMTP id
- r25-20020a056830121900b0066c2b26b164mr17127010otp.206.1667541792518; Thu, 03
- Nov 2022 23:03:12 -0700 (PDT)
+        bh=nxh4Ult4tm5HMVuIqJILNDXALWg7ao8LKqdSJkXImSw=;
+        b=ho2soYdYdIShE/E5BV/jh2M4ZGBbwS27iUiN/xZfDjK/3t5qjmt7N/I+p4vuxDq5sP
+         XnsA1AkfN04kNE6pv/V8dZzPFHu9CxXz1xGWST8eaYzv9yNxn5yR8K/vNQBnQ449uo8T
+         R1Fr4qpRqZu2yAPnqDMOk+ElVEnevd9+Yb1f/oIl0ESVCwP2c97Tv/hmWu4UOSvYfbZk
+         prkbsBfoo0QLb2LyX53wp/ftImYEtQo92MyViBgJyv/WcVf6hZnvJE6MQ/YzqDPCAi0q
+         hCLhg921OxKFAoeG635d3G+aj0VWDkNY/2yy/VsbPVSnZ63MCqdOrojBIQ0AfBnQLQf/
+         rRVA==
+X-Gm-Message-State: ACrzQf0kJIHdvv0IAc2BCatZpMvP5eVfMN3sELUz8WFFNJhA3/ErUVHj
+        tGgOhpbSFPk1j/HJMKPzC668jiCCFXXrqYX7hWM=
+X-Google-Smtp-Source: AMsMyM5BrSDWcSzLzfxmOrcsbBP5hi2lYFdekiQC8E/8we5njTWkgJUIB5DeAdsgC4wjnecE654QQQgikdE53XrGitA=
+X-Received: by 2002:a4a:b913:0:b0:480:b3bf:7812 with SMTP id
+ x19-20020a4ab913000000b00480b3bf7812mr14565694ooo.97.1667542702047; Thu, 03
+ Nov 2022 23:18:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221101052340.1210239-1-namhyung@kernel.org> <20221101052340.1210239-2-namhyung@kernel.org>
- <Y2Du5/Iolphxcbv2@krava>
-In-Reply-To: <Y2Du5/Iolphxcbv2@krava>
+References: <20221101052340.1210239-1-namhyung@kernel.org> <20221101052340.1210239-3-namhyung@kernel.org>
+ <Y2DuzmnUm6NIh25a@krava> <5b0152db-8a8e-0d8c-0304-8c48b735c3b7@meta.com>
+ <CF3D88C5-4D62-48E2-97AB-F6A7FF9CEF9D@fb.com> <ad15b398-9069-4a0e-48cb-4bb651ec3088@meta.com>
+In-Reply-To: <ad15b398-9069-4a0e-48cb-4bb651ec3088@meta.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 3 Nov 2022 23:03:01 -0700
-Message-ID: <CAM9d7cheyGK9oK+SdoDxqwLuPLkAO5TrNrwJ4x1F4BrfMVzh+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] perf/core: Prepare sample data before
- calling BPF
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 3 Nov 2022 23:18:10 -0700
+Message-ID: <CAM9d7ch+rv8q2yDEFZm6FoDD=3oe9cVRcOX4738CnsJhM2Q_jQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add bpf_perf_event_read_sample() helper
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Song Liu <songliubraving@meta.com>, Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin Lau <kafai@meta.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
         Stanislav Fomichev <sdf@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -68,106 +69,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+On Thu, Nov 3, 2022 at 2:21 PM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 11/3/22 1:55 PM, Song Liu wrote:
+> >
+> >
+> >> On Nov 3, 2022, at 12:45 PM, Yonghong Song <yhs@meta.com> wrote:
+> >>
+> >>
+> >>
+> >> On 11/1/22 3:02 AM, Jiri Olsa wrote:
+> >>> On Mon, Oct 31, 2022 at 10:23:39PM -0700, Namhyung Kim wrote:
+> >>>> The bpf_perf_event_read_sample() helper is to get the specified sample
+> >>>> data (by using PERF_SAMPLE_* flag in the argument) from BPF to make a
+> >>>> decision for filtering on samples.  Currently PERF_SAMPLE_IP and
+> >>>> PERF_SAMPLE_DATA flags are supported only.
+> >>>>
+> >>>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> >>>> ---
+> >>>>   include/uapi/linux/bpf.h       | 23 ++++++++++++++++
+> >>>>   kernel/trace/bpf_trace.c       | 49 ++++++++++++++++++++++++++++++++++
+> >>>>   tools/include/uapi/linux/bpf.h | 23 ++++++++++++++++
+> >>>>   3 files changed, 95 insertions(+)
+> >>>>
+> >>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >>>> index 94659f6b3395..cba501de9373 100644
+> >>>> --- a/include/uapi/linux/bpf.h
+> >>>> +++ b/include/uapi/linux/bpf.h
+> >>>> @@ -5481,6 +5481,28 @@ union bpf_attr {
+> >>>>    *               0 on success.
+> >>>>    *
+> >>>>    *               **-ENOENT** if the bpf_local_storage cannot be found.
+> >>>> + *
+> >>>> + * long bpf_perf_event_read_sample(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 sample_flags)
+> >>>> + *        Description
+> >>>> + *                For an eBPF program attached to a perf event, retrieve the
+> >>>> + *                sample data associated to *ctx* and store it in the buffer
+> >>>> + *                pointed by *buf* up to size *size* bytes.
+> >>>> + *
+> >>>> + *                The *sample_flags* should contain a single value in the
+> >>>> + *                **enum perf_event_sample_format**.
+> >>>> + *        Return
+> >>>> + *                On success, number of bytes written to *buf*. On error, a
+> >>>> + *                negative value.
+> >>>> + *
+> >>>> + *                The *buf* can be set to **NULL** to return the number of bytes
+> >>>> + *                required to store the requested sample data.
+> >>>> + *
+> >>>> + *                **-EINVAL** if *sample_flags* is not a PERF_SAMPLE_* flag.
+> >>>> + *
+> >>>> + *                **-ENOENT** if the associated perf event doesn't have the data.
+> >>>> + *
+> >>>> + *                **-ENOSYS** if system doesn't support the sample data to be
+> >>>> + *                retrieved.
+> >>>>    */
+> >>>>   #define ___BPF_FUNC_MAPPER(FN, ctx...)                   \
+> >>>>    FN(unspec, 0, ##ctx)                            \
+> >>>> @@ -5695,6 +5717,7 @@ union bpf_attr {
+> >>>>    FN(user_ringbuf_drain, 209, ##ctx)              \
+> >>>>    FN(cgrp_storage_get, 210, ##ctx)                \
+> >>>>    FN(cgrp_storage_delete, 211, ##ctx)             \
+> >>>> +  FN(perf_event_read_sample, 212, ##ctx)          \
+> >>>>    /* */
+> >>>>     /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+> >>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >>>> index ce0228c72a93..befd937afa3c 100644
+> >>>> --- a/kernel/trace/bpf_trace.c
+> >>>> +++ b/kernel/trace/bpf_trace.c
+> >>>> @@ -28,6 +28,7 @@
+> >>>>     #include <uapi/linux/bpf.h>
+> >>>>   #include <uapi/linux/btf.h>
+> >>>> +#include <uapi/linux/perf_event.h>
+> >>>>     #include <asm/tlb.h>
+> >>>>   @@ -1743,6 +1744,52 @@ static const struct bpf_func_proto bpf_read_branch_records_proto = {
+> >>>>    .arg4_type      = ARG_ANYTHING,
+> >>>>   };
+> >>>>   +BPF_CALL_4(bpf_perf_event_read_sample, struct bpf_perf_event_data_kern *, ctx,
+> >>>> +     void *, buf, u32, size, u64, flags)
+> >>>> +{
+> >>> I wonder we could add perf_btf (like we have tp_btf) program type that
+> >>> could access ctx->data directly without helpers
+> >>
+> >> Martin and I have discussed an idea to introduce a generic helper like
+> >>     bpf_get_kern_ctx(void *ctx)
+> >> Given a context, the helper will return a PTR_TO_BTF_ID representing the
+> >> corresponding kernel ctx. So in the above example, user could call
+> >>
+> >>     struct bpf_perf_event_data_kern *kctx = bpf_get_kern_ctx(ctx);
+> >>     ...
+> >
+> > This is an interesting idea!
+> >
+> >> To implement bpf_get_kern_ctx helper, the verifier can find the type
+> >> of the context and provide a hidden btf_id as the second parameter of
+> >> the actual kernel helper function like
+> >>     bpf_get_kern_ctx(ctx) {
+> >>        return ctx;
+> >>     }
+> >>     /* based on ctx_btf_id, find kctx_btf_id and return it to verifier */
+> >
+> > I think we will need a map of ctx_btf_id => kctx_btf_id. Shall we somehow
+> > expose this to the user?
+>
+> Yes, inside the kernel we need ctx_btf_id -> kctx_btf_id mapping.
+> Good question. We might not want to this mapping as a stable API.
+> So using kfunc might be more appropriate.
 
-On Tue, Nov 1, 2022 at 3:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Mon, Oct 31, 2022 at 10:23:38PM -0700, Namhyung Kim wrote:
-> > To allow bpf overflow handler to access the perf sample data, it needs to
-> > prepare missing but requested data before calling the handler.
-> >
-> > I'm taking a conservative approach to allow a list of sample formats only
-> > instead of allowing them all.  For now, IP and ADDR data are allowed and
-> > I think it's good enough to build and verify general BPF-based sample
-> > filters for perf events.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  kernel/events/core.c | 40 +++++++++++++++++++++++++++++++---------
-> >  1 file changed, 31 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index aefc1e08e015..519f30c33a24 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -7329,8 +7329,10 @@ void perf_prepare_sample(struct perf_event_header *header,
-> >       filtered_sample_type = sample_type & ~data->sample_flags;
-> >       __perf_event_header__init_id(header, data, event, filtered_sample_type);
-> >
-> > -     if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE))
-> > -             data->ip = perf_instruction_pointer(regs);
-> > +     if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE)) {
-> > +             if (filtered_sample_type & PERF_SAMPLE_IP)
-> > +                     data->ip = perf_instruction_pointer(regs);
-> > +     }
-> >
-> >       if (sample_type & PERF_SAMPLE_CALLCHAIN) {
-> >               int size = 1;
-> > @@ -10006,6 +10008,32 @@ static void perf_event_free_filter(struct perf_event *event)
-> >  }
-> >
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > +static void bpf_prepare_sample(struct bpf_prog *prog,
-> > +                            struct perf_event *event,
-> > +                            struct perf_sample_data *data,
-> > +                            struct pt_regs *regs)
-> > +{
-> > +     u64 filtered_sample_type;
-> > +
-> > +     filtered_sample_type = event->attr.sample_type & ~data->sample_flags;
->
-> could we add the same comment in here as is in perf_prepare_sample
->
->         /*
->          * Clear the sample flags that have already been done by the
->          * PMU driver.
->          */
->
-> it took me while to recall while we set addr to 0 in here ;-)
+Ok, now I don't think I'm following well.. ;-)
 
-Sorry about that! :)  I'll add the comment.
+So currently perf event type BPF programs can have perf_event
+data context directly as an argument, but we want to disallow it?
+I guess the context id mapping can be done implicitly based on
+the prog type and/or attach type, but probably I'm missing
+something here. :)
 
 Thanks,
 Namhyung
-
-
->
-> > +
-> > +     if (prog->call_get_stack &&
-> > +         (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)) {
-> > +             data->callchain = perf_callchain(event, regs);
-> > +             data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> > +     }
-> > +
-> > +     if (filtered_sample_type & PERF_SAMPLE_IP) {
-> > +             data->ip = perf_instruction_pointer(regs);
-> > +             data->sample_flags |= PERF_SAMPLE_IP;
-> > +     }
-> > +
-> > +     if (filtered_sample_type & PERF_SAMPLE_ADDR) {
-> > +             data->addr = 0;
-> > +             data->sample_flags |= PERF_SAMPLE_ADDR;
-> > +     }
-> > +}
-> > +
-> >  static void bpf_overflow_handler(struct perf_event *event,
-> >                                struct perf_sample_data *data,
-> >                                struct pt_regs *regs)
-> > @@ -10023,13 +10051,7 @@ static void bpf_overflow_handler(struct perf_event *event,
-> >       rcu_read_lock();
-> >       prog = READ_ONCE(event->prog);
-> >       if (prog) {
-> > -             if (prog->call_get_stack &&
-> > -                 (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) &&
-> > -                 !(data->sample_flags & PERF_SAMPLE_CALLCHAIN)) {
-> > -                     data->callchain = perf_callchain(event, regs);
-> > -                     data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> > -             }
-> > -
-> > +             bpf_prepare_sample(prog, event, data, regs);
-> >               ret = bpf_prog_run(prog, &ctx);
-> >       }
-> >       rcu_read_unlock();
-> > --
-> > 2.38.1.273.g43a17bfeac-goog
-> >
