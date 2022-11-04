@@ -2,70 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1E7618F55
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2BE618F6A
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbiKDEBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 00:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S229600AbiKDEJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 00:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbiKDEBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 00:01:05 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F751D679
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:01:01 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v17so3825143plo.1
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 21:01:01 -0700 (PDT)
+        with ESMTP id S230199AbiKDEJg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 00:09:36 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7FB1EC42
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:09:35 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id 13so10349745ejn.3
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 21:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8LDpen9auzv65wySFq2IeraImjWTe2BH5sf2SSIkqlk=;
-        b=MlHLteFIuvhYw5+8r4oAirYRsyrzy0h7BtbluFK7wS2DXfh0y2bK+JH4D0RqmUfWgK
-         Wj2wa9IQSUPMz93QSUhsfNnfH47YJ3L3vDoHZvQPUtaySf8SjlQkztqTD0MajFyXUY+L
-         K8UppWoFUB7M5+yD60K/m5DDRPWJ1RF2GWIjDzYPAqBNkriOUafxO3Ui7p1/MB/JZFmP
-         yxAD1WL//SV1/t+eGk+hd5PBO4XUfcyyHtoDZTsPXcmldGJUvyHd6k0T9Qr1bKk8G/1x
-         G+V45n9/EVbcHoLVQpwgwvZIFoLCofJ2y7JPNf9ANEx9y0Q89OdXxLDyziY4jZdGMDBu
-         U4rA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rwwxg0EL6fD56ISk7wBtu8my4uD0oAkiL/InO8sIGk8=;
+        b=bbdH0BSSHvKatY8PJVM5CPZ5m8dpbVMmPMvY6+ofW6W67DY2JoWmimZufsgOYqFKs7
+         Q8BpVGxvZjPpu+zJkcikC0G79qBL2NJ3eoi5Ij6LHUSdlWBv0MXQDYaeKN12lMqFkse2
+         AT2BsenBk+XBPDCC1pIsFWySPEPvFLvVAN2idW28bHhR5ndpGIPfUPNQ/LFjLUiKUDqk
+         7A9Qvof/QU/xl/EqiPXnd1SZeW7+CbIOvkP2wMYQ8SUapQ7b/40ZC60YjQO8p+oJdjqz
+         2qYet3fGUsrAiJxqbSOOAOVl2546wiRYymgAUi4iZ1YU2n9o70ijmtwhiAOLLNmvZpVH
+         YUsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8LDpen9auzv65wySFq2IeraImjWTe2BH5sf2SSIkqlk=;
-        b=17Z7OmUBqhkifW2yDukeUy5uJZ0+B9jPvzGbs54f0skC5hCoNUVO2Bh1Jvtq5Ok8sN
-         O5a9OMlTm9okm84Yekjm8XUYo8f9N1qEl0EpBfVBWVtOWhEautGCd8ezA8PLcieGBGVR
-         bR/ev0QxqDfGUbXF6oB+aG/ZfKnr4N8eCzdlOqG/2sSrKr5y4hGyNixZKQBqCm9miYRz
-         9lHr/yngpqq6WCUMCAVKyaTaRW82q3cLI1fnfO9TdMPrFSPjDxH36N2pwHSMBx+CkIY8
-         bIljkJNoKtEM63yZy0l9jGtZjktq7Req7KKpuHocbNYFooIldxfMMV9W+9WE5MzlP/ig
-         fCFw==
-X-Gm-Message-State: ACrzQf3lmeGooJ/GfQhh+V+DV1rdZxknlL8IqSBcN63Vag4AjhoW3QkL
-        NHWi0LdHMxQdUL0FYlMIDq4=
-X-Google-Smtp-Source: AMsMyM7tmkhI6SlrmCEKjIjxdOpMsLeG70MbAkd9yhQrQ/jAh/+AkYKU5JaKnUHmFN9ji5ls+hHMFQ==
-X-Received: by 2002:a17:90b:4ac6:b0:213:ef82:b111 with SMTP id mh6-20020a17090b4ac600b00213ef82b111mr22903958pjb.170.1667534461414;
-        Thu, 03 Nov 2022 21:01:01 -0700 (PDT)
-Received: from macbook-pro-5.dhcp.thefacebook.com ([2620:10d:c090:400::5:2035])
-        by smtp.gmail.com with ESMTPSA id t16-20020a170902e85000b0018658badef3sm1432876plg.232.2022.11.03.21.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 21:01:00 -0700 (PDT)
-Date:   Thu, 3 Nov 2022 21:00:58 -0700
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Rwwxg0EL6fD56ISk7wBtu8my4uD0oAkiL/InO8sIGk8=;
+        b=3ELmQ9RZO2PnwNM0RgxLvCsE26vSz1EJjDf7azytI9ipkyGS/7ifeBdX5D8/BeZrev
+         0yUA+Q1vTPAunw1cpTqCwxPAcDlUIKoqrZ7phoHltC2RqBPmSrkgzMQcJom7xV5aSAAO
+         wZWwEmuI58a15T5NY7+Ws6GYeUVygBWL8p/xaLHVnHuQ3n+hg9+YekF3G1rt/oJV4c1H
+         m4/wkdRiarnbAkkiwwUqKSRAdv2x9XtpgNjFIz7xNq4p0yHnA2W9nH36zsnAhIjZgWH1
+         rsCUv9WBT1VSlNBVYmW2wBmgLVLECHVTXqhH2gR/kz3wbr+QQNeD2aBchuu+EUKqU5yp
+         Qq8g==
+X-Gm-Message-State: ACrzQf1j7J/zaMPYAGB5HTzYIPUvGE+nfgg/Urho4k6TNRa8lJcLlr1w
+        hxDIJcP2/qRm6p0trGVOlMh9FzXTAUhF1JTqnL4=
+X-Google-Smtp-Source: AMsMyM4Vs918RsIJtpg2B/v7yx5uVDNZuIDbmX9n0ld6WY3C15RRIJwRIRmCDiYfcvJryyjm7kvqDYu3eOR+njLUoh8=
+X-Received: by 2002:a17:906:1f48:b0:7ae:77d:bac with SMTP id
+ d8-20020a1709061f4800b007ae077d0bacmr11193055ejk.708.1667534974027; Thu, 03
+ Nov 2022 21:09:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-7-memxor@gmail.com>
+ <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
+In-Reply-To: <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 3 Nov 2022 21:09:22 -0700
+Message-ID: <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into btf_record
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into
- btf_record
-Message-ID: <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
-References: <20221103191013.1236066-1-memxor@gmail.com>
- <20221103191013.1236066-7-memxor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221103191013.1236066-7-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,39 +71,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
->  
-> -enum bpf_kptr_type {
-> -	BPF_KPTR_UNREF,
-> -	BPF_KPTR_REF,
-> +enum btf_field_type {
-> +	BPF_KPTR_UNREF = (1 << 2),
-> +	BPF_KPTR_REF   = (1 << 3),
-> +	BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF,
->  };
+On Thu, Nov 3, 2022 at 9:01 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
+> >
+> > -enum bpf_kptr_type {
+> > -     BPF_KPTR_UNREF,
+> > -     BPF_KPTR_REF,
+> > +enum btf_field_type {
+> > +     BPF_KPTR_UNREF = (1 << 2),
+> > +     BPF_KPTR_REF   = (1 << 3),
+> > +     BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF,
+> >  };
+>
+> ...
+>
+> > +             for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
+> > +                     switch (map->record->field_mask & (1 << i)) {
+> > +                     case 0:
+> > +                             continue;
+> > +                     case BPF_KPTR_UNREF:
+> > +                     case BPF_KPTR_REF:
+> > +                             if (map->map_type != BPF_MAP_TYPE_HASH &&
+> > +                                 map->map_type != BPF_MAP_TYPE_LRU_HASH &&
+> > +                                 map->map_type != BPF_MAP_TYPE_ARRAY &&
+> > +                                 map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
+> > +                                     ret = -EOPNOTSUPP;
+> > +                                     goto free_map_tab;
+> > +                             }
+> > +                             break;
+> > +                     default:
+> > +                             /* Fail if map_type checks are missing for a field type */
+> > +                             ret = -EOPNOTSUPP;
+> > +                             goto free_map_tab;
+> > +                     }
+>
+> With this patch alone this is also wrong.
 
-...
+Actually this bit is probably fine. The bug is elsewhere.
 
-> +		for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
-> +			switch (map->record->field_mask & (1 << i)) {
-> +			case 0:
-> +				continue;
-> +			case BPF_KPTR_UNREF:
-> +			case BPF_KPTR_REF:
-> +				if (map->map_type != BPF_MAP_TYPE_HASH &&
-> +				    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-> +				    map->map_type != BPF_MAP_TYPE_ARRAY &&
-> +				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
-> +					ret = -EOPNOTSUPP;
-> +					goto free_map_tab;
-> +				}
-> +				break;
-> +			default:
-> +				/* Fail if map_type checks are missing for a field type */
-> +				ret = -EOPNOTSUPP;
-> +				goto free_map_tab;
-> +			}
+The point below stands:
 
-With this patch alone this is also wrong.
-And it breaks bisect.
-Please make sure to do a full vmtest.sh for every patch in the series.
+
+> And it breaks bisect.
+> Please make sure to do a full vmtest.sh for every patch in the series.
