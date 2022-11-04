@@ -2,89 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9809861A04C
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 19:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AFB61A06C
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 20:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbiKDSvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 14:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        id S229523AbiKDTAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 15:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbiKDSvK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 14:51:10 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F1C45A3F
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 11:51:08 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id k2so15625516ejr.2
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 11:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o4EnI9/Dwq2PBbCKtP8LVDnqIoBE2RyQNYcBVFGtkiE=;
-        b=n3ZtutY5dFd66Qn8MKsc1Ub/W7P0UCQb2Lnt1Y7fsDC9fKNVma3lAWxvhKyn86ava+
-         mquxgEtJ7rfYJ290OtUD5df7HZmBYgDBiEz9Dq+oaW4iKFxNjXf63BFSmq5vvuy2NWTX
-         vByn19pBpYPRZIqku341WgxecGOTCaXGN303mnzl0UTwfLyuBpJvpo4lqeiKJbC3rF2Z
-         s36scxf7DlKCGYWYw9N4GrmaratZtmU5IhtC+VjMPLCP4CJxvy1kCrkC3Fxfr0+oyVIM
-         JCCJW2D6WAqBlEs9iB1mtMY8HokmnC09A/NaYMHkNZoLBp5d7baV4vTe429A/QrK/4Wd
-         RPmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o4EnI9/Dwq2PBbCKtP8LVDnqIoBE2RyQNYcBVFGtkiE=;
-        b=aXifGZhtpSjS3wwc4i3rByatilarOr6qJIliAWSSHsBu0FBpNkP7ducxrA92krju7n
-         FDqUs6Dv7YrxK3A8ipvCfeesKZWvwWgljmOiDDFY2kjwt00pD68Qo1bfUs1lx40GJRIT
-         0aHAXtemrtxzlc207F5KP51LujFmKoP8AxLOcdpP/nqN4LBAAVMlUPM4Rmy19QZZ/NyF
-         WKAy4nj3n8zoX5J1BWK3Aa1ez1xQK3qCMSTdlzJ02ztHqVc3uzUpkNM8p3CWVbnzW7T3
-         06lns+3FZHVWFJN+AEN3rFPgzx8nQjY6vFT6vgzY9f34WlrrDtlgMT+B1BUZy8Xvl7yb
-         NuMg==
-X-Gm-Message-State: ACrzQf020nINPmTsQc02wOLZ36i3zC2dl8pWE+K4tuEQ6A8J3hA0NyvE
-        UXS8XITqEDw6TNHwKtAFpg6zVhUyLucGRtbLil4=
-X-Google-Smtp-Source: AMsMyM7aOgpMKXY/Hw5VYXAmlv5gxeSYt8krb01MSsfBM8OfsKxVqVR9F5YOr9obF2rZ920mK1rkC++AKyehfdSsVfQ=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr35322720ejn.302.1667587867331; Fri, 04
- Nov 2022 11:51:07 -0700 (PDT)
+        with ESMTP id S229471AbiKDTAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 15:00:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF903122
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 12:00:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7B5ADB82F5F
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 19:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 15277C433C1;
+        Fri,  4 Nov 2022 19:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667588418;
+        bh=Ed1q4syKwO7QCjaGTYTCr1KFJB5k/5SXUuEyzNjV2EA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TRnfVMnAeQ5Ffkf9vEs6RfnwV9g/sE6cnc6D4cwVs/qm3TI/sv+WNbLyRSv8/Ksnp
+         PlgpOK09geYhtqFXzBFuVgpGEzf/4DozD/aQczLRaThR0JtoVBeIt2bUrNwLdZwQoX
+         21zGZDMGcVovKq953KgC8PYbsmKbgVMBenXBIWbhrKxjZIDhPq1fzyzPJ7ZBXpsbHr
+         29Y4PRvfOCVP4KXIrkCNmBDmUbPukZVnp9OnBkd1nDP0CH+ufxz4ix2ekjAcuqjl6Q
+         8Ni/5COJQ6E3AEbdFnmMg3gWTWqlqfC10ljaF1D21I8POZikUelR6XHgSCGT6VcSFD
+         Z8BMoFtbN5pmg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E91FDE52509;
+        Fri,  4 Nov 2022 19:00:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221103033430.2611623-1-eddyz87@gmail.com> <20221103033430.2611623-3-eddyz87@gmail.com>
-In-Reply-To: <20221103033430.2611623-3-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 11:50:55 -0700
-Message-ID: <CAEf4Bza+W2Fom3JVkykjRNMjJtMoKwapP-hb7bvgJ5AeLSX4cQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: hashmap test cases updated
- for uintptr_t -> uintptr_t interface
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        alan.maguire@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next 0/6] BPF verifier precision tracking improvements
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166758841795.26959.16340729986307349960.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 19:00:17 +0000
+References: <20221104163649.121784-1-andrii@kernel.org>
+In-Reply-To: <20221104163649.121784-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 2, 2022 at 8:35 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> Hashmap test cases require update after libbpf's hashmap interface
-> update from void* -> void* to uintptr_t -> uintptr_t. No logical
-> changes, types / casts updated to satisfy the type checker.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
+Hello:
 
-We have to do this in patch #1 to ensure that selftests builds are
-bisectable. Doing it in a separate patch/commit breaks build between
-patch #1 and #2
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri, 4 Nov 2022 09:36:43 -0700 you wrote:
+> This patch set fixes and improves BPF verifier's precision tracking logic for
+> SCALAR registers.
+> 
+> Patches #1 and #2 are bug fixes discovered while working on these changes.
+> 
+> Patch #3 enables precision tracking for BPF programs that contain subprograms.
+> This was disabled before and prevent any modern BPF programs that use
+> subprograms from enjoying the benefits of SCALAR (im)precise logic.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf-next,1/6] bpf: propagate precision in ALU/ALU64 operations
+    https://git.kernel.org/bpf/bpf-next/c/a3b666bfa9c9
+  - [v2,bpf-next,2/6] bpf: propagate precision across all frames, not just the last one
+    https://git.kernel.org/bpf/bpf-next/c/529409ea92d5
+  - [v2,bpf-next,3/6] bpf: allow precision tracking for programs with subprogs
+    https://git.kernel.org/bpf/bpf-next/c/be2ef8161572
+  - [v2,bpf-next,4/6] bpf: stop setting precise in current state
+    https://git.kernel.org/bpf/bpf-next/c/f63181b6ae79
+  - [v2,bpf-next,5/6] bpf: aggressively forget precise markings during state checkpointing
+    https://git.kernel.org/bpf/bpf-next/c/7a830b53c17b
+  - [v2,bpf-next,6/6] selftests/bpf: make test_align selftest more robust
+    https://git.kernel.org/bpf/bpf-next/c/4f999b767769
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->  .../selftests/bpf/prog_tests/hashmap.c        | 68 +++++++++----------
->  .../bpf/prog_tests/kprobe_multi_test.c        |  6 +-
->  2 files changed, 37 insertions(+), 37 deletions(-)
->
-
-[...]
