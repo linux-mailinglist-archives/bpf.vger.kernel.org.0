@@ -2,103 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B3E61A3DC
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD82461A3E1
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbiKDWE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 18:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        id S230251AbiKDWG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 18:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbiKDWEw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 18:04:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727736571
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 15:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667599436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4BKEW1vtM8NNbjWo0hdZBNH0W3ETngUyp+lvPMbVDv8=;
-        b=HBm0Fgc49XqQpprKgDbSJ+IHkrgx2cUPV1QqSg1WiIStfzCSQbJcOR2mRK0wEocRr3qbVk
-        J2qWoB/z50OLHrL07S9PQUa5T3S3uQ1TxTlj892WkkgfgFclL/a+l136EVjiOhrwoPvNC5
-        e89ot2mSA/c0ZYP4y2UNWDO5v0T7nA8=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-650-BWPYm2I6NBO0tcv3VA6_jA-1; Fri, 04 Nov 2022 18:03:55 -0400
-X-MC-Unique: BWPYm2I6NBO0tcv3VA6_jA-1
-Received: by mail-il1-f197.google.com with SMTP id j7-20020a056e02154700b003007885e7beso4743913ilu.20
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 15:03:55 -0700 (PDT)
+        with ESMTP id S230238AbiKDWG4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 18:06:56 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ABF12A95
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 15:06:54 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id i21so9526720edj.10
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 15:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZQGnI4Fql272mFNX+xYq49ADkeYk0fiL8Ihp8ioh7Z8=;
+        b=XTR1XrwpA2MU4kIZMgnmXjG0BdM3VItXGq69crtVKTx0z3i1wE8Pu/js++UGZYBzym
+         iZm9Fr5yJ9nv2N+VAi0XkUW1l7jTrD4f2YpaLMSA/ZS5kssAr1MymZJ+UTU932MIjlm+
+         jMa9dU1jguLm9xg/4qCbFRsrnzp59TvOfrPxlluxXbAFGGCq7NnNZRR7FKX9wYwoJ4w8
+         33bt4ppmuTYUpzxg+MYkJID/YaH5Aa8J4cmqzyGwv4TK9HRzRnlfcvOb/JiY+Ar6318B
+         5hS1ybfIGMahi1saBUzn8UsEYvrt+EUd3QxkBc4Cx1Oi13/SgI2uJu8SptRjEryy33Ts
+         GLtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4BKEW1vtM8NNbjWo0hdZBNH0W3ETngUyp+lvPMbVDv8=;
-        b=AbqZv/TokHgJC+CzuzpVTSVoQ/FoqtCBMEjtcUmQ+An532nXUinIBMNwD+V6VBIsRW
-         XymJJD+iItWT7LsC0p2erTIrYY/zAIOpVrx/VBTMQ/QEgFu2GleBzgs+7OMcLN+raiDP
-         Wv5iHmW/LRdzJ8mB5WEQM5hpKohMJO/3U1MmJ3lMstr+kGrsv1fafE4zVlR4Fxo4Uf0A
-         QS+vkL6cQb+RZpMlxgFVenFEeLZalclerpBAKsAeuzUi5pJRK5dLH1QDWpyxuMtplr9s
-         D0a0pqNBUYBarsTh0BAi0rm9FvV6xZgyqdjNZ6AidUecqI5uUeFnIkignMygzFXBM0hO
-         AcIw==
-X-Gm-Message-State: ACrzQf09eti8W66UtG8w7gHxZCo0144ga9eGkgGtJNrH9bEK0g/xribo
-        8OS+iaFaBdNbHKnzDuMAq0HYLLR21ZeaoDSmMvJb+S34FWChMMUmF6a6qVxwyvJbTbbKwZXO7hg
-        pE0mvki0ojj3t
-X-Received: by 2002:a05:6602:2d82:b0:6cc:ecf2:74f6 with SMTP id k2-20020a0566022d8200b006ccecf274f6mr22179687iow.103.1667599431269;
-        Fri, 04 Nov 2022 15:03:51 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4BSIwnXgrh6WKIO+D6g0FMzzuLatSveMAp7xE1Q1wtwCSalcwPsKFPe4GaCpv4Kv1Id7VEmA==
-X-Received: by 2002:a05:6602:2d82:b0:6cc:ecf2:74f6 with SMTP id k2-20020a0566022d8200b006ccecf274f6mr22179670iow.103.1667599430970;
-        Fri, 04 Nov 2022 15:03:50 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id o6-20020a92c686000000b002ff5ac4fd1bsm224381ilg.54.2022.11.04.15.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 15:03:50 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 16:03:48 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 00/15] IOMMUFD Generic interface
-Message-ID: <20221104160348.07aed446.alex.williamson@redhat.com>
-In-Reply-To: <20221104152713.3ae1c409.alex.williamson@redhat.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-        <20221104152713.3ae1c409.alex.williamson@redhat.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZQGnI4Fql272mFNX+xYq49ADkeYk0fiL8Ihp8ioh7Z8=;
+        b=HYhlj29o/bGRen1bM1hX9b924bW7JVY8C5kjtrE/wxTcphTq1OW8CJEDTun6/RHM/M
+         tMbwGuxaNvYfWpFkTYqdeWQXted+SrOdILN0EPFaBVsNgkm2ihna71jaQn6fd/8fQjB9
+         KNc8VVGb5kP7XI1cm93mR2+J2o5HnxqI7YQqixcY23tWgEiHD+9yp7hETCm+EW+5Z4s9
+         S+FZRvTd2YGWvqTUtzApU+3Mc+4KdboOs8tFC7mc2e1cQlslXrdblSnMJWewUZh6ZBxN
+         QKO2uzvF5wGQY47oww/deKpVrY09ROBysNq3QrGpaBNFUfbQ8UglJTRy45MeEb5Ks0vW
+         udyw==
+X-Gm-Message-State: ACrzQf0Kj0NAv1N9OGXuob9sAc3fjBhoFdLBzXzhzVeT+BL40e5aklYg
+        XH2OVSqQlJUnQgNbbo0QccRVbUrUzMaCf1uApcsv77mxqBs=
+X-Google-Smtp-Source: AMsMyM5ita2MXgEbEKnqwLeUMmzNIv1txt8WD0BQeEDnj1cejbgr36Cje2vQ+QXHTDzIVMlvwqrFKbWoHhAExT+PZro=
+X-Received: by 2002:aa7:c2ca:0:b0:461:89a6:2281 with SMTP id
+ m10-20020aa7c2ca000000b0046189a62281mr39318033edp.260.1667599613495; Fri, 04
+ Nov 2022 15:06:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <m24jvgtexc.fsf@gmail.com>
+In-Reply-To: <m24jvgtexc.fsf@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Nov 2022 15:06:41 -0700
+Message-ID: <CAEf4BzZgQ6K=8=Aww3XRfUD2cbJUn3v_zfNCZ=JgUAE-r0whBQ@mail.gmail.com>
+Subject: Re: Question: __u32 or u32 in BPF code
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,71 +65,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 4 Nov 2022 15:27:13 -0600
-Alex Williamson <alex.williamson@redhat.com> wrote:
+On Thu, Nov 3, 2022 at 5:37 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+>
+> Hi,
+>
+> Should BPF code be using UAPI types such as __u32 or is it considered
+> acceptable to use kernel types such as u32? I ask because the helper
+> definitions that come from libbpf use the UAPI __u32 style types, but
+> the bpf-helpers(7) man page refers to the kernel u32 style types.
+>
+> As I understand it, u32 et al are kernel internal type definitions that
+> should not leak into userspace which I believe extends to BPF
+> code. In order to use a kernel internal type, the BPF programmer would
+> need to define it themselves, or use a BTF generated vmlinux.h? Please
+> correct me if I am wrong, or oversimplifying things.
+>
+> I think it would be useful to include a statement about UAPI types and
+> usage in BPF code somewhere in the documentation. Once I have an answer
+> to the question above, I am happy to work on a contribution to the
+> documentation.
+>
+> A follow-on question is how to make things consistent across the UAPI
+> header files and the bpf-helpers(7) documentation.
 
-> On Tue, 25 Oct 2022 15:12:09 -0300
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > [
-> > At this point everything is done and I will start putting this work into a
-> > git tree and into linux-next with the intention of sending it during the
-> > next merge window.
-> > 
-> > I intend to focus the next several weeks on more intensive QA to look at
-> > error flows and other things. Hopefully including syzkaller if I'm lucky
-> > ]  
-> 
-> In case this one hasn't been reported yet (with IOMMUFD_VFIO_CONTAINER):
+FWIW, libbpf's bpf_helper_defs.h is using __u32/__u64/etc.
+scripts/bpf_doc.py remaps everything uXX to __uXX for bpf_helper_defs,
+we can probably easily remap for man pages as well? But obviously
+u32/u64 looks a bit cleaner and nicer. And BPF code tends to be
+written in u32/u64 terms when using vmlinux.h, but only for internal
+types. When defining global variables, one has to be careful to not
+use u32/u64 because those types get exposed to user-space code.
 
-And...
-
-------------[ cut here ]------------
-WARNING: CPU: 4 PID: 1736 at drivers/iommu/iommufd/io_pagetable.c:660 iopt_destroy_table+0x91/0xc0 [iommufd]
-Modules linked in: scsi_transport_iscsi(E) xt_CHECKSUM(E) xt_MASQUERADE(E) xt_conntrack(E) ipt_REJECT(E) nf_nat_tftp(E) nft_objref(E) nf_conntrack_tftp(E) nft_fib_inet(E) nft_fib_ipv4(E) nft_fib_ipv6(E) nft_fib(E) nft_reject_inet(E) nf_reject_ipv4(E) nf_reject_ipv6(E) nft_reject(E) nft_ct(E) nft_chain_nat(E) nf_tables(E) bridge(E) stp(E) llc(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E) ip6table_mangle(E) ip6table_raw(E) ip6table_security(E) iptable_nat(E) nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) iptable_mangle(E) iptable_raw(E) iptable_security(E) ip_set(E) nfnetlink(E) ebtable_filter(E) ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E) intel_rapl_msr(E) intel_rapl_common(E) x86_pkg_temp_thermal(E) intel_powerclamp(E) coretemp(E) snd_hda_intel(E) snd_intel_dspcfg(E) kvm_intel(E) snd_hda_codec(E) snd_hwdep(E) bcache(E) iTCO_wdt(E) snd_hda_core(E) kvm(E) mei_hdcp(E) intel_pmc_bxt(E) at24(E) snd_seq(E) iTCO_vendor_support(E)
- eeepc_wmi(E) snd_seq_device(E) asus_wmi(E) rapl(E) snd_pcm(E) ledtrig_audio(E) intel_cstate(E) sparse_keymap(E) intel_uncore(E) mei_me(E) snd_timer(E) platform_profile(E) i2c_i801(E) rfkill(E) wmi_bmof(E) snd(E) i2c_smbus(E) soundcore(E) mei(E) lpc_ich(E) ip_tables(E) i915(E) crct10dif_pclmul(E) crc32_pclmul(E) crc32c_intel(E) ghash_clmulni_intel(E) vfio_pci(E) vfio_pci_core(E) irqbypass(E) vfio_virqfd(E) serio_raw(E) i2c_algo_bit(E) drm_buddy(E) drm_display_helper(E) drm_kms_helper(E) cec(E) ttm(E) r8169(E) e1000e(E) drm(E) video(E) wmi(E) mtty(E) mdev(E) vfio(E) iommufd(E) macvtap(E) macvlan(E) tap(E)
-CPU: 4 PID: 1736 Comm: qemu-system-x86 Tainted: G            E      6.1.0-rc3+ #133
-Hardware name: System manufacturer System Product Name/P8H67-M PRO, BIOS 3904 04/27/2013
-RIP: 0010:iopt_destroy_table+0x91/0xc0 [iommufd]
-Code: a8 01 00 00 48 85 c0 75 21 49 83 bc 24 e0 00 00 00 00 75 23 49 8b 84 24 88 01 00 00 48 85 c0 75 25 5b 5d 41 5c c3 cc cc cc cc <0f> 0b 49 83 bc 24 e0 00 00 00 00 74 dd 0f 0b 49 8b 84 24 88 01 00
-RSP: 0018:ffff9c8dc1c63cb0 EFLAGS: 00010282
-RAX: ffff90d454863a80 RBX: ffff90d3f5fe3e40 RCX: 0000000000000000
-RDX: ffffffffffffffff RSI: 0000000000000000 RDI: ffff90d3f5fe3e40
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffff90d43234b240
-R10: 0000000000000000 R11: ffff90d42c703000 R12: ffff90d3f5fe3ca8
-R13: 0000000000000001 R14: ffff90d43ca32138 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff90d7df700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3fba3c6000 CR3: 000000009ba26005 CR4: 00000000001726e0
-Call Trace:
- <TASK>
- iommufd_ioas_destroy+0x2b/0x60 [iommufd]
- iommufd_fops_release+0x8b/0xe0 [iommufd]
- __fput+0x94/0x250
- task_work_run+0x59/0x90
- do_exit+0x374/0xbd0
- ? rcu_read_lock_sched_held+0x12/0x70
- do_group_exit+0x33/0xa0
- get_signal+0xaf4/0xb20
- arch_do_signal_or_restart+0x36/0x780
- ? do_futex+0x126/0x1c0
- exit_to_user_mode_prepare+0x181/0x260
- syscall_exit_to_user_mode+0x16/0x50
- do_syscall_64+0x48/0x90
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd1ef7a3750
-Code: Unable to access opcode bytes at 0x7fd1ef7a3726.
-RSP: 002b:00007fd1e21fb5d8 EFLAGS: 00000282 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 0000000000000000 RCX: 00007fd1ef7a3750
-RDX: 0000000000000002 RSI: 0000000000000080 RDI: 00005571b8cf38c0
-RBP: 00007fd1e21fb630 R08: 0000000000000000 R09: 000000000000000b
-R10: 0000000000000000 R11: 0000000000000282 R12: 00007ffd9787d1ae
-R13: 00007ffd9787d1af R14: 00007ffd9787d270 R15: 00007fd1e2200700
- </TASK>
-irq event stamp: 202
-hardirqs last  enabled at (201): [<ffffffffa7e235a2>] syscall_enter_from_user_mode+0x22/0xb0
-hardirqs last disabled at (202): [<ffffffffa7e2da5d>] __schedule+0x7ed/0xd30
-softirqs last  enabled at (0): [<ffffffffa70e2241>] copy_process+0x9f1/0x1e90
-softirqs last disabled at (0): [<0000000000000000>] 0x0
----[ end trace 0000000000000000 ]---
-
+So I guess from consistency and POV of the least surprise, __u32/__u64
+is preferrable. From aesthetics POV, u32/u64 are a bit nicer. Curious
+if anyone has a strong opinion, because I don't.
