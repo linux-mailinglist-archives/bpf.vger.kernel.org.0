@@ -2,419 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 504BE6192C9
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 09:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D0961938B
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 10:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbiKDIc6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 04:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        id S229496AbiKDJbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 05:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiKDIc5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 04:32:57 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB18275E2;
-        Fri,  4 Nov 2022 01:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667550776; x=1699086776;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qaqIB0DLjDa/q1nJj6Jd2LMoKIF5bSoAlMvTirS7r8Y=;
-  b=jl5AglLL7hXML7PdxlcRwtRgOq7wl6bldxN+paDU2pbuO2xx/qIJVfKs
-   lSapNrVc6pO2YexeFWJI0K5ULrc1qkv3YA8TKxpupRhs4kXTU0PNcA/Jh
-   /3rbA9ugeggd8VaQsakCZH3KX3YK5Pkf4/A012Zw0vrqJYHu+508jYvyY
-   MRcODRm+mz+G8WG6W/fADAZgVh58TkGq0Lqwn2BwYUHOlE7eN4LbcdMNT
-   v4WV/6uuetOz5cPUMMz27PeMh8DiiYm0CAj2Qd57l3C5Gp8vw/THthbVG
-   L+jxt5S2d7dXIVe0WqS284uuXDtNC75kJ+3UZrxhs+najB64Z138u9kjS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10520"; a="290303266"
-X-IronPort-AV: E=Sophos;i="5.96,136,1665471600"; 
-   d="scan'208";a="290303266"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2022 01:32:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10520"; a="666291185"
-X-IronPort-AV: E=Sophos;i="5.96,136,1665471600"; 
-   d="scan'208";a="666291185"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga008.jf.intel.com with ESMTP; 04 Nov 2022 01:32:34 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 4 Nov 2022 01:32:33 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 4 Nov 2022 01:32:32 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Fri, 4 Nov 2022 01:32:32 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Fri, 4 Nov 2022 01:32:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bu/P1fmUugNiBjf7hF3RW5d9U0nLlZAfLZdvx6YppwGHjSLJclUd1b84Mw2NsKn7QmemHNjaPdQ0wJ98Kr9PA7Wny15SOKOam7mziF/mh3NyBGwcIiClnxLiASs5/60omyOsEYNk3rcRp9uCzz2LPGFdZIuiISJFCGcPiwkfSGurjMQVmsuW4/xpqkJjAB2zy7PSKTMSWeiNZvrp8iFLWOauw/Ng/XWoxdCoq8imb8ASoPj6qsgEUK0br65DT5EtJRO9eCkyYLyUiQZCWdDBcm+5eTt8JFoTCskq34DPtG+taYG0ZH54W+bqzEB00q4ofc+Twd+1v/S6ibJLgvL8Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mEGAH9uBeuAF+Br8ZTyRf7mEzNhrjmxZVsmjgBGqPfk=;
- b=DyZLVN9586EnmmcddMdXB/mzn8oFfz3Pa2oGqdTBJeuAVmmiMIgNQj/QR31/8xz9K8qqlxxgLQPwTwvthDxsKeFSKyjVpg86dNi7xxPDfvYQ5/yau0w/5NzyrDTji3hgZh3mD0Fh/GHGKsHuWy5fxjF60S+bSnHhZeXzK/FHIkaQUFXGXldEA9TOyjIML9LocEC8S/d4CuLUuvQxtuk7iV3kzyHt534j/G2JDkZWnGYlUwcBOaX2gZR/dCsTuzLChxm6jwjGnm4ycnBNmWDsIOD3cmW4rrk4QL1IKALGWxbdg9FU9Rpfb/dRkhbOvEF3kepCHS11JWEpDyjx2GpS7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SN7PR11MB7511.namprd11.prod.outlook.com (2603:10b6:806:347::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.15; Fri, 4 Nov
- 2022 08:32:31 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7%5]) with mapi id 15.20.5791.022; Fri, 4 Nov 2022
- 08:32:30 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: RE: [PATCH v3 10/15] iommufd: IOCTLs for the io_pagetable
-Thread-Topic: [PATCH v3 10/15] iommufd: IOCTLs for the io_pagetable
-Thread-Index: AQHY6J1k/MYko282jUa1sWU0zIDdtq4uXG3g
-Date:   Fri, 4 Nov 2022 08:32:30 +0000
-Message-ID: <BN9PR11MB52765289F880B8A7297077318C3B9@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-In-Reply-To: <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.500.17
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SN7PR11MB7511:EE_
-x-ms-office365-filtering-correlation-id: 1af0de13-fe65-4e7e-7430-08dabe3f1d30
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 72pkc4N80OliOpi05lq7jZnVBuuCF0KQOllFGXM6Ta9yUaWCXMMZ/VOQGfrV8lSb/AQr2/CpAep9/tieD7xbd++rmMf0brMgzYIFTvaZ/fsYf3jFHJTyMJKrBCWX0WZF4Ntjk88IaQus12iOj48mgl26jLzRHphzrb6d1sXKA0JS0xBVqvr2637dbipubnrk94xmYLJ6TgBt8UpHbNTAUYBB5W7dBaapeZ/OJpqY8KAltHfumfWEBpHW9qk9RYXAmFJzQkx7kngdOQY7Vd9/NoYm/5kqNpXtec3dAI15iQlK2ePV85ZdsXi+soaj7lEwHQlyRFLKfD0usI1l7RWv1evzBqJl/fGPRd41FaD9FpSjPjlHPADumE9/jPkNTE7T4rggz9TsIciL6bBAxINAEOBmF531yPXUmCWkWl3n3YOky0HvY5Rk5NlXTHAiWallBJ6kxjnv9+bU5cgx2Beydt46bJsni+sEUOoYQCC6h/aV9KpWEJrCY0oXFHhVAK45A5PzvjohxiJTTE/sTqSUrVZ1eTf8kcCyhi2uP8Mmkb3cMYs7MAnUBCtkaXYx8I12PXAPhcvl5aSXJTjOBXqBnkXO/GZvov82YzXaCUswf0OHnssIVCKMs2yPqLP98lVokU8k59nyQO5xfKwRIyuqAny5z0Ad3H2Fo23rxVXWi9sj86pIsZVgq2N4UTu/1miw3oNQrNbE+8mYRQbFsOtUsSlSl4/dcXSDXL0qN5mTka0ZLaSuq/cu6wwTG4RS7yJF89uByBv5itlDUJt4e+2ZNh95L+Tn2y8HiPWwlSO3mOc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(366004)(376002)(346002)(136003)(39860400002)(451199015)(66446008)(7416002)(8936002)(5660300002)(921005)(82960400001)(41300700001)(4326008)(76116006)(38070700005)(55016003)(71200400001)(52536014)(8676002)(33656002)(7406005)(83380400001)(26005)(122000001)(64756008)(186003)(7696005)(9686003)(478600001)(6506007)(38100700002)(66946007)(2906002)(54906003)(66556008)(86362001)(316002)(110136005)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0Haz219PgZdje3qN6FqAA53uCPmm8esabpCGpIOk2+YsWedBRrXhuPXuwHm6?=
- =?us-ascii?Q?21OHXY3e4x8GZL/86Y/GerX7X7YgrIM/H25HFfvJcnNMDHyJQKn46oWebwcn?=
- =?us-ascii?Q?0xz6FwnQ5fGaKUMZGd91ShSCUAu8y7171DH58gobox5iuagIsqZJx+gW5cK/?=
- =?us-ascii?Q?tTdctpeCfwUKRBxtV6go58RRQBW9jO7bnKBGj6wh26oL3ae8B1IEDez+4HYS?=
- =?us-ascii?Q?uurW+AW7C2p+hmakOpooKMVgUCF/jNu9VDvtAsIJq7AU4P5uXCfoslOS3v2b?=
- =?us-ascii?Q?vSTDq2AxUZuTWJizXhKQlz60IJ7MfvASIqMwGy4TTGpRnjqbK7X2mrtWSfqX?=
- =?us-ascii?Q?kXS/rmChY+vvmLRP0DNVmFI60I5jXUxcu91ODfz1jHjiKvmzjgNH/UVZYr8f?=
- =?us-ascii?Q?qDaWvBH+P2gLDplnCzcS21NigpNXnzyxmqg9GOoCrPN6x1I/raN/83p4KsTb?=
- =?us-ascii?Q?TJYEt0A5XzY2x/iFmBQU6iRvJPFGjRCpWdfJ2D/LivYPHJCkUHgu7hz4/+DF?=
- =?us-ascii?Q?wTzECL3Lqiu9inOMyb/0KeblEYUbC60QuqvIRjO1WKuWwBNNEBIhz/WmwPhW?=
- =?us-ascii?Q?oaPjlBgLXSKNRsXUgnMKYu2LvkAEUW9ElxA7ILbAllz7UTZe9/wGvqK1TIi2?=
- =?us-ascii?Q?jQyGVL/g2T196hmOCPySDnFRM+0pAREtf8bU6fI2vFX37ijQjCD86sN1R8kG?=
- =?us-ascii?Q?k4BP507LSVKcQF6+7GXNu6eI8fTDj/8hfb+8vl4HVfrrN6C1z2PVQo9cuieJ?=
- =?us-ascii?Q?Tvise+0elIU4keRX94LjGj0ANsqqUjTH7qM8+LpqtBBFluGP4T0CYcBIlkCL?=
- =?us-ascii?Q?cwyRhfRlddhnU2hvelE/ZDy/MAXfYPIQ8ItkjizmWkpTJJW5iWdo4+289DcP?=
- =?us-ascii?Q?sEkoH/G+BD+4Wod6Pi7cGV3RFn3nNeNq3+T8o9S7fpYDB9mUJDo8p+6PUGf6?=
- =?us-ascii?Q?1mkqyTqmDrQzX6XAGHFrCjsj/6v64XCpGq67J8pEj3Rq8eGcEzrPBGggy30G?=
- =?us-ascii?Q?TYchk3LkkG4kQiXp7d4pLFlPKxq0cJT0Rv9W+C2s/m3KxVzecmoOSaU5Veh4?=
- =?us-ascii?Q?/zcIja5dk/I2xraVFX4Y2Vwu+YvJw/zd3V8HMPuVZa8lILo7eQ2xSt+/f2SE?=
- =?us-ascii?Q?72sAxd4X/d9l/q/CdpNc1IYYJm4rlDoXfwD75CmQN+0HQ3/JYiVc92h20q18?=
- =?us-ascii?Q?WFuY0draeKig6z2BOwh7NG22l1njg8VpPsFVtgextyhCFFpqHUqQmZXwQKI4?=
- =?us-ascii?Q?TKSkuIhtyeTB5v4v/Jv2PxbiTsfD5QvHNcZnoCvgbnzJtMLNFGwHvmeL9Xe0?=
- =?us-ascii?Q?Evhyd8TzAx22Zi50jf0OhqcHeN7lo1prmd8FH0RyhH0s0Uw7bUWiK5Fq/uD+?=
- =?us-ascii?Q?pALa/x40buhlexUmLcVaMEc1kuTbPEBTC6yW48Hfc+E/RM1vYvQ8SyvKYGuP?=
- =?us-ascii?Q?MuVsj2p438mORBCfTnUQ3VNw9r0d8LIGJ1EDr+24JK0nRTpDSTE0DPcyXrPQ?=
- =?us-ascii?Q?aC+ITk6d6ahE6QwxtPD45ZpLjF9MhNws0eAMVspPhNgoCY+7vfZtw5PBI3UF?=
- =?us-ascii?Q?y0Ug7b7kKUABlRv+Vr/vUd+HQm++vhG3+m3RAKh+?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229539AbiKDJbH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 05:31:07 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1A72655E;
+        Fri,  4 Nov 2022 02:31:06 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h193so3884444pgc.10;
+        Fri, 04 Nov 2022 02:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TFugYYD0BR8hWyBRF4DKWEpDwNwTVF4Yxa7IWquEXJ4=;
+        b=KIUkIiCYoWIFXnawtI9t/7B8BBplMPyLCetFJ9mK+2mI6lzrPhjf5SYdaiOqYqQrnN
+         GMwVTIUs0r6528mtxJ0h8FlD8trC1agoBLpjclO9L0NLm1CIDCEl7XBypabi9QnLRnda
+         t3sEtHqq/QseoFdIVwLmL6ONBkZO5XapLbDQrpDQhCFetTp+zhYZ9/fAxb8GCJDLm1Po
+         y7+Y57NBuf8Xyifc5/JxefeJa1F6f6wKbzBfc3MB1M5ZrHezBrGGDyStvyUfFi7pn+aV
+         j+ak1Kf0kPZKd9yH0mbTvCjlZLRxzr73sK4e0hZieWEXY+JkXNUBnDjbNz7CcR6Q+wun
+         mMqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFugYYD0BR8hWyBRF4DKWEpDwNwTVF4Yxa7IWquEXJ4=;
+        b=5WjlQKtLUvOA+3o/ixJZOqGxaOEAdhrOMdfIzs9WGoGFUHcrC+ZBAzn6kIA7i5GhIP
+         IIxPheymyV9PJrh8HoNXsUmWwggWCw3YyFZbIwJDTYXaGXE05M2IDEUx4PLmNRY9Tg+S
+         orvZjSmoKkep0HXrkVL4OMlxB6lHn4zMN2gSX/odjNRGsNX8h02spYrSpphHzm9iXl2T
+         WBxMc/AA8nBuX8YbjwskPrFDeGKbWrH/nEvqSxvPqGQFT+La0M4Kr3XCOa13//mYUgKG
+         EUbZVsqg1rMBqRFd91y0RhdF5Zn3iSTgom3DUFwcXvsYLCUjHCKZk7luVBEaRdrqbP/p
+         dMsA==
+X-Gm-Message-State: ACrzQf0q32Qx8ybRWpETrkkPfO1bYg17O2uDzzzdNh2CdjTLzaXK5jn/
+        4GlrfB9EDFLRIMlr9vPhYfk=
+X-Google-Smtp-Source: AMsMyM7GrYlstaszFAsFUeDSF1MKxyp1tmcLADtVROUAt9PkVyYVUOK+wK/YvtFh2QDgGvoBvChRkA==
+X-Received: by 2002:a05:6a00:1ac6:b0:56d:ad2c:e803 with SMTP id f6-20020a056a001ac600b0056dad2ce803mr21029480pfv.59.1667554265648;
+        Fri, 04 Nov 2022 02:31:05 -0700 (PDT)
+Received: from [192.168.43.80] (subs02-180-214-232-93.three.co.id. [180.214.232.93])
+        by smtp.gmail.com with ESMTPSA id w188-20020a627bc5000000b005672daedc8fsm2245142pfc.81.2022.11.04.02.31.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Nov 2022 02:31:05 -0700 (PDT)
+Message-ID: <101ab00c-5fa7-c3ee-63bd-f235e7c4d398@gmail.com>
+Date:   Fri, 4 Nov 2022 16:31:02 +0700
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1af0de13-fe65-4e7e-7430-08dabe3f1d30
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2022 08:32:30.7653
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tG4trWrDgXScxsRSJG+ZMSv4FHXHXrmnpAsaXFEnMdcBF/JSwiAkRICG5QDDX47He8AT5B39GnWnQA29EQ9gyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7511
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH bpf-next v2] docs/bpf: Add LRU internals description and
+ graph
+To:     Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ast@kernel.org, corbet@lwn.net, martin.lau@linux.dev
+References: <20221103205010.3266865-1-joe@isovalent.com>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20221103205010.3266865-1-joe@isovalent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, October 26, 2022 2:12 AM
->=20
-> +int iommufd_ioas_allow_iovas(struct iommufd_ucmd *ucmd)
-> +{
-> +	struct iommu_ioas_allow_iovas *cmd =3D ucmd->cmd;
-> +	struct rb_root_cached allowed_iova =3D RB_ROOT_CACHED;
-> +	struct interval_tree_node *node;
-> +	struct iommufd_ioas *ioas;
-> +	struct io_pagetable *iopt;
-> +	int rc =3D 0;
+On 11/4/22 03:50, Joe Stringer wrote:
+> +An LRU hashmap type consists of two properties: Firstly, it is a hash map and
+> +hence is indexable by key for constant time lookups. Secondly, when at map
+> +capacity, map updates will trigger eviction of old entries based on the age of
+> +the elements in a set of lists. Each of these properties may be either global
+> +or per-CPU, depending on the map type and flags used to create the map:
 > +
-> +	ioas =3D iommufd_get_ioas(ucmd, cmd->ioas_id);
-> +	if (IS_ERR(ioas))
-> +		return PTR_ERR(ioas);
-> +	iopt =3D &ioas->iopt;
-
-Missed the check of __reserved field
-
+> +.. flat-table:: Comparison of map properties by map type (x-axis) and flags
+> +   (y-axis)
 > +
-> +int iommufd_ioas_copy(struct iommufd_ucmd *ucmd)
-> +{
-> +	struct iommu_ioas_copy *cmd =3D ucmd->cmd;
-> +	struct iommufd_ioas *src_ioas;
-> +	struct iommufd_ioas *dst_ioas;
-> +	unsigned int flags =3D 0;
-> +	LIST_HEAD(pages_list);
-> +	unsigned long iova;
-> +	int rc;
+> +   * -
+> +     - ``BPF_MAP_TYPE_LRU_HASH``
+> +     - ``BPF_MAP_TYPE_LRU_PERCPU_HASH``
 > +
-> +	if ((cmd->flags &
-> +	     ~(IOMMU_IOAS_MAP_FIXED_IOVA |
-> IOMMU_IOAS_MAP_WRITEABLE |
-> +	       IOMMU_IOAS_MAP_READABLE)))
-> +		return -EOPNOTSUPP;
-> +	if (cmd->length >=3D ULONG_MAX)
-> +		return -EOVERFLOW;
-
-and overflow on cmd->dest_iova/src_iova
-
+> +   * - ``BPF_NO_COMMON_LRU``
+> +     - Per-CPU LRU, global map
+> +     - Per-CPU LRU, per-cpu map
 > +
-> +	src_ioas =3D iommufd_get_ioas(ucmd, cmd->src_ioas_id);
-> +	if (IS_ERR(src_ioas))
-> +		return PTR_ERR(src_ioas);
-> +	rc =3D iopt_get_pages(&src_ioas->iopt, cmd->src_iova, cmd->length,
-> +			    &pages_list);
-> +	iommufd_put_object(&src_ioas->obj);
-> +	if (rc)
-> +		goto out_pages;
-
-direct return given iopt_get_pages() already called
-iopt_free_pages_list() upon error.
-
-> +int iommufd_ioas_unmap(struct iommufd_ucmd *ucmd)
-> +{
-> +	struct iommu_ioas_unmap *cmd =3D ucmd->cmd;
-> +	struct iommufd_ioas *ioas;
-> +	unsigned long unmapped =3D 0;
-> +	int rc;
-> +
-> +	ioas =3D iommufd_get_ioas(ucmd, cmd->ioas_id);
-> +	if (IS_ERR(ioas))
-> +		return PTR_ERR(ioas);
-> +
-> +	if (cmd->iova =3D=3D 0 && cmd->length =3D=3D U64_MAX) {
-> +		rc =3D iopt_unmap_all(&ioas->iopt, &unmapped);
-> +		if (rc)
-> +			goto out_put;
-> +	} else {
-> +		if (cmd->iova >=3D ULONG_MAX || cmd->length >=3D
-> ULONG_MAX) {
-> +			rc =3D -EOVERFLOW;
-> +			goto out_put;
-> +		}
-
-Above check can be moved before iommufd_get_ioas().
-
-> +static int iommufd_option(struct iommufd_ucmd *ucmd)
-> +{
-> +	struct iommu_option *cmd =3D ucmd->cmd;
-> +	int rc;
+> +   * - ``!BPF_NO_COMMON_LRU``
+> +     - Global LRU, global map
+> +     - Global LRU, per-cpu map
 > +
 
-lack of __reserved check
+Shouldn't the table be written in reST table syntax instead?
 
->  static struct iommufd_ioctl_op iommufd_ioctl_ops[] =3D {
->  	IOCTL_OP(IOMMU_DESTROY, iommufd_destroy, struct
-> iommu_destroy, id),
-> +	IOCTL_OP(IOMMU_IOAS_ALLOC, iommufd_ioas_alloc_ioctl,
-> +		 struct iommu_ioas_alloc, out_ioas_id),
-> +	IOCTL_OP(IOMMU_IOAS_ALLOW_IOVAS, iommufd_ioas_allow_iovas,
-> +		 struct iommu_ioas_allow_iovas, allowed_iovas),
-> +	IOCTL_OP(IOMMU_IOAS_COPY, iommufd_ioas_copy, struct
-> iommu_ioas_copy,
-> +		 src_iova),
-> +	IOCTL_OP(IOMMU_IOAS_IOVA_RANGES, iommufd_ioas_iova_ranges,
-> +		 struct iommu_ioas_iova_ranges, out_iova_alignment),
-> +	IOCTL_OP(IOMMU_IOAS_MAP, iommufd_ioas_map, struct
-> iommu_ioas_map,
-> +		 __reserved),
-> +	IOCTL_OP(IOMMU_IOAS_UNMAP, iommufd_ioas_unmap, struct
-> iommu_ioas_unmap,
-> +		 length),
-> +	IOCTL_OP(IOMMU_OPTION, iommufd_option, struct iommu_option,
-> +		 val64),
->  };
+> +The commit message for LRU map support provides a general overview of the
+> +underlying LRU algorithm used for entry eviction when the table is full:
+> +
+> +::
+> +
+> +    commit 3a08c2fd763450a927d1130de078d6f9e74944fb
+> +    Author: Martin KaFai Lau <kafai@fb.com>
+> +    Date:   Fri Nov 11 10:55:06 2016 -0800
+> +
+> +        bpf: LRU List
+> +
+> +        Introduce bpf_lru_list which will provide LRU capability to
+> +        the bpf_htab in the later patch.
+> +
+> +        * General Thoughts:
+> +        1. Target use case.  Read is more often than update.
+> +           (i.e. bpf_lookup_elem() is more often than bpf_update_elem()).
+> +           If bpf_prog does a bpf_lookup_elem() first and then an in-place
+> +           update, it still counts as a read operation to the LRU list concern.
+> +        2. It may be useful to think of it as a LRU cache
+> +        3. Optimize the read case
+> +           3.1 No lock in read case
+> +           3.2 The LRU maintenance is only done during bpf_update_elem()
+> +        4. If there is a percpu LRU list, it will lose the system-wise LRU
+> +           property.  A completely isolated percpu LRU list has the best
+> +           performance but the memory utilization is not ideal considering
+> +           the work load may be imbalance.
+> +        5. Hence, this patch starts the LRU implementation with a global LRU
+> +           list with batched operations before accessing the global LRU list.
+> +           As a LRU cache, #read >> #update/#insert operations, it will work well.
+> +        6. There is a local list (for each cpu) which is named
+> +           'struct bpf_lru_locallist'.  This local list is not used to sort
+> +           the LRU property.  Instead, the local list is to batch enough
+> +           operations before acquiring the lock of the global LRU list.  More
+> +           details on this later.
+> +        7. In the later patch, it allows a percpu LRU list by specifying a
+> +           map-attribute for scalability reason and for use cases that need to
+> +           prepare for the worst (and pathological) case like DoS attack.
+> +           The percpu LRU list is completely isolated from each other and the
+> +           LRU nodes (including free nodes) cannot be moved across the list.  The
+> +           following description is for the global LRU list but mostly applicable
+> +           to the percpu LRU list also.
+> +
+> +        * Global LRU List:
+> +        1. It has three sub-lists: active-list, inactive-list and free-list.
+> +        2. The two list idea, active and inactive, is borrowed from the
+> +           page cache.
+> +        3. All nodes are pre-allocated and all sit at the free-list (of the
+> +           global LRU list) at the beginning.  The pre-allocation reasoning
+> +           is similar to the existing BPF_MAP_TYPE_HASH.  However,
+> +           opting-out prealloc (BPF_F_NO_PREALLOC) is not supported in
+> +           the LRU map.
+> +
+> +        * Active/Inactive List (of the global LRU list):
+> +        1. The active list, as its name says it, maintains the active set of
+> +           the nodes.  We can think of it as the working set or more frequently
+> +           accessed nodes.  The access frequency is approximated by a ref-bit.
+> +           The ref-bit is set during the bpf_lookup_elem().
+> +        2. The inactive list, as its name also says it, maintains a less
+> +           active set of nodes.  They are the candidates to be removed
+> +           from the bpf_htab when we are running out of free nodes.
+> +        3. The ordering of these two lists is acting as a rough clock.
+> +           The tail of the inactive list is the older nodes and
+> +           should be released first if the bpf_htab needs free element.
+> +
+> +        * Rotating the Active/Inactive List (of the global LRU list):
+> +        1. It is the basic operation to maintain the LRU property of
+> +           the global list.
+> +        2. The active list is only rotated when the inactive list is running
+> +           low.  This idea is similar to the current page cache.
+> +           Inactive running low is currently defined as
+> +           "# of inactive < # of active".
+> +        3. The active list rotation always starts from the tail.  It moves
+> +           node without ref-bit set to the head of the inactive list.
+> +           It moves node with ref-bit set back to the head of the active
+> +           list and then clears its ref-bit.
+> +        4. The inactive rotation is pretty simply.
+> +           It walks the inactive list and moves the nodes back to the head of
+> +           active list if its ref-bit is set. The ref-bit is cleared after moving
+> +           to the active list.
+> +           If the node does not have ref-bit set, it just leave it as it is
+> +           because it is already in the inactive list.
+> +
+> +        * Shrinking the Inactive List (of the global LRU list):
+> +        1. Shrinking is the operation to get free nodes when the bpf_htab is
+> +           full.
+> +        2. It usually only shrinks the inactive list to get free nodes.
+> +        3. During shrinking, it will walk the inactive list from the tail,
+> +           delete the nodes without ref-bit set from bpf_htab.
+> +        4. If no free node found after step (3), it will forcefully get
+> +           one node from the tail of inactive or active list.  Forcefully is
+> +           in the sense that it ignores the ref-bit.
+> +
+> +        * Local List:
+> +        1. Each CPU has a 'struct bpf_lru_locallist'.  The purpose is to
+> +           batch enough operations before acquiring the lock of the
+> +           global LRU.
+> +        2. A local list has two sub-lists, free-list and pending-list.
+> +        3. During bpf_update_elem(), it will try to get from the free-list
+> +           of (the current CPU local list).
+> +        4. If the local free-list is empty, it will acquire from the
+> +           global LRU list.  The global LRU list can either satisfy it
+> +           by its global free-list or by shrinking the global inactive
+> +           list.  Since we have acquired the global LRU list lock,
+> +           it will try to get at most LOCAL_FREE_TARGET elements
+> +           to the local free list.
+> +        5. When a new element is added to the bpf_htab, it will
+> +           first sit at the pending-list (of the local list) first.
+> +           The pending-list will be flushed to the global LRU list
+> +           when it needs to acquire free nodes from the global list
+> +           next time.
+> +
+> +        * Lock Consideration:
+> +        The LRU list has a lock (lru_lock).  Each bucket of htab has a
+> +        lock (buck_lock).  If both locks need to be acquired together,
+> +        the lock order is always lru_lock -> buck_lock and this only
+> +        happens in the bpf_lru_list.c logic.
+> +
+> +        In hashtab.c, both locks are not acquired together (i.e. one
+> +        lock is always released first before acquiring another lock).
+> +
+> +        Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> +        Acked-by: Alexei Starovoitov <ast@kernel.org>
+> +        Signed-off-by: David S. Miller <davem@davemloft.net>
+> +
 
-Just personal preference - it reads better to me if the above order (and
-the enum definition in iommufd.h) can be same as how those commands
-are defined/explained in iommufd.h.
+What about just writing the pointer ("See commit 3a08c2fd7634 ("bpf: LRU List")")
+instead?
 
-> +/**
-> + * struct iommu_ioas_iova_ranges - ioctl(IOMMU_IOAS_IOVA_RANGES)
-> + * @size: sizeof(struct iommu_ioas_iova_ranges)
-> + * @ioas_id: IOAS ID to read ranges from
-> + * @num_iovas: Input/Output total number of ranges in the IOAS
-> + * @__reserved: Must be 0
-> + * @allowed_iovas: Pointer to the output array of struct iommu_iova_rang=
-e
-> + * @out_iova_alignment: Minimum alignment required for mapping IOVA
-> + *
-> + * Query an IOAS for ranges of allowed IOVAs. Mapping IOVA outside these
-> ranges
-> + * is not allowed. out_num_iovas will be set to the total number of iova=
-s
-> and
-> + * the out_valid_iovas[] will be filled in as space permits.
+> +Notably, there are various steps that the update algorithm attempts in order to
+> +enforce the LRU property which have increasing impacts on other CPUs involved
+> +in the operations:
+> +
+> +- Attempt to use CPU-local state to batch operations
+> +- Attempt to fetch free nodes from global lists
+> +- Attempt to pull any node from a global list and remove it from the hashmap
+> +- Attempt to pull any node from any CPU's list and remove it from the hashmap
+> +
 
-out_num_iovas and out_valid_iovas[] are stale.
+Better say "... other CPUs involved in the following operation attempts:"
 
-> + *
-> + * The allowed ranges are dependent on the HW path the DMA operation
-> takes, and
-> + * can change during the lifetime of the IOAS. A fresh empty IOAS will h=
-ave a
-> + * full range, and each attached device will narrow the ranges based on =
-that
-> + * devices HW restrictions. Detatching a device can widen the ranges.
+> +Even if an LRU node may be acquired, maps of type ``BPF_MAP_TYPE_LRU_HASH``
+> +may fail to insert the entry into the map if other CPUs are heavily contending
+> +on the global hashmap lock.
+> +
+> +This algorithm is described visually in the following diagram:
+> +
+> +.. kernel-figure::  map_lru_hash_update.dot
+> +   :alt:    Diagram outlining the LRU eviction steps taken during map update
+> +
+> +   LRU hash eviction during map update for ``BPF_MAP_TYPE_LRU_HASH`` and
+> +   variants
+> +
+<snipped>...
+> +
+> +The dot file source for the above diagram is uses internal kernel function
+> +names for the node names in order to make the corresponding logic easier to
+> +find. See ``Documentation/bpf/map_lru_hash_update.dot`` for more details.
 
-devices -> device's
+Since it references the same figure, just say "See the figure above for more
+details".
 
-> +/**
-> + * struct iommu_ioas_allow_iovas - ioctl(IOMMU_IOAS_ALLOW_IOVAS)
-> + * @size: sizeof(struct iommu_ioas_allow_iovas)
-> + * @ioas_id: IOAS ID to allow IOVAs from
+Otherwise LGTM, thanks.
 
-missed num_iovas and __reserved
+-- 
+An old man doll... just what I always wanted! - Clara
 
-> + * @allowed_iovas: Pointer to array of struct iommu_iova_range
-> + *
-> + * Ensure a range of IOVAs are always available for allocation. If this =
-call
-> + * succeeds then IOMMU_IOAS_IOVA_RANGES will never return a list of
-> IOVA ranges
-> + * that are narrower than the ranges provided here. This call will fail =
-if
-> + * IOMMU_IOAS_IOVA_RANGES is currently narrower than the given ranges.
-> + *
-> + * When an IOAS is first created the IOVA_RANGES will be maximally sized=
-,
-> and as
-> + * devices are attached the IOVA will narrow based on the device
-> restrictions.
-> + * When an allowed range is specified any narrowing will be refused, ie
-> device
-> + * attachment can fail if the device requires limiting within the allowe=
-d
-> range.
-> + *
-> + * Automatic IOVA allocation is also impacted by this call. MAP will onl=
-y
-> + * allocate within the allowed IOVAs if they are present.
-
-According to iopt_check_iova() FIXED_IOVA can specify an iova which
-is not in allowed list but in the list of reported IOVA_RANGES. Is it
-correct or make more sense to have FIXED_IOVA also under guard of
-the allowed list (if violating then fail the map call)?
-
-> +/**
-> + * struct iommu_ioas_unmap - ioctl(IOMMU_IOAS_UNMAP)
-> + * @size: sizeof(struct iommu_ioas_unmap)
-> + * @ioas_id: IOAS ID to change the mapping of
-> + * @iova: IOVA to start the unmapping at
-> + * @length: Number of bytes to unmap, and return back the bytes
-> unmapped
-> + *
-> + * Unmap an IOVA range. The iova/length must be a superset of a
-> previously
-> + * mapped range used with IOMMU_IOAS_PAGETABLE_MAP or COPY.
-
-remove 'PAGETABLE'
-
-> +/**
-> + * enum iommufd_option
-> + * @IOMMU_OPTION_RLIMIT_MODE:
-> + *    Change how RLIMIT_MEMLOCK accounting works. The caller must have
-> privilege
-> + *    to invoke this. Value 0 (default) is user based accouting, 1 uses =
-process
-> + *    based accounting. Global option, object_id must be 0
-> + * @IOMMU_OPTION_HUGE_PAGES:
-> + *    Value 1 (default) allows contiguous pages to be combined when
-> generating
-> + *    iommu mappings. Value 0 disables combining, everything is mapped t=
-o
-> + *    PAGE_SIZE. This can be useful for benchmarking.  This is a per-IOA=
-S
-> + *    option, the object_id must be the IOAS ID.
-
-What about HWPT ID? Is there value of supporting HWPT's with different
-mapping size attached to the same IOAS?
-
-> +/**
-> + * @size: sizeof(struct iommu_option)
-> + * @option_id: One of enum iommufd_option
-> + * @op: One of enum iommufd_option_ops
-> + * @__reserved: Must be 0
-> + * @object_id: ID of the object if required
-> + * @val64: Option value to set or value returned on get
-> + *
-> + * Change a simple option value. This multiplexor allows controlling a
-> options
-> + * on objects. IOMMU_OPTION_OP_SET will load an option and
-> IOMMU_OPTION_OP_GET
-> + * will return the current value.
-> + */
-
-This is quite generic. Does it imply that future device capability reportin=
-g
-can be also implemented based on this cmd, i.e. have OP_GET on a
-device object?
