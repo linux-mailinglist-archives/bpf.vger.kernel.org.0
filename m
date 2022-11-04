@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 535AA618EF3
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB23A618EF5
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbiKDD1V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S230011AbiKDD1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbiKDDZ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 23:25:56 -0400
+        with ESMTP id S231497AbiKDD0H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 23:26:07 -0400
 Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4438E64ED
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:36 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id u18-20020a627912000000b0056d93d8b8bdso1686999pfc.16
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB8FA19A
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:37 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id a8-20020a621a08000000b0056e3c6c0746so1720695pfa.20
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YbRm3I0sewWtsZIHwhErDFMz3x0ncMPhKVqkK3e/Kzk=;
-        b=F/j+r+DQWgWU+H64J7k+Tlw9APbvQO6yhhwJkgncOiWnKlmmd7ff3U0fDMWcrIM6eA
-         Rrc6+HsRPDXVFkN/1Ol4jOSGhYk5Cu9FHGQdp5u2VJzi/qceoBkwLigm8V1aSgsBQSyH
-         t2yGCOTZY8ZguLjd7JLXNalfPBqujqIfzSAqmR9dudUMpphE2D4hoDFPrK6M3xMipjdv
-         kqgjtByufledR5lP2KjsFzIIRNsUFCQbD0UXrW6ZohJ2eQLFOicozTT+r4+rEsHhQ2a5
-         PDPpXcDvhQeczI4vZMBENr+pBOUlgphRkuSIuEzsnnUi4HLZf13zUZMJMQtvH7HcspTF
-         P9Ew==
+        bh=k8vC9asssgoYIIsbrAgtOzkrHQJD4SKRHxy5a1maTOc=;
+        b=mQ5SqP1okQHxfCwPKsoo/MW0C+Gu7+jWW7ovyAmjACx/Nj/N6ujMQYhaLvjI3bc4rf
+         r/ybNtgNamJM1kABKutPIKT8VFTNgjo7mL12YQoOk8AqyI7JOaL3Wr0cDVpzLU8A35rE
+         Ilg49UDeMkvq4ER1wfD6FBXDcDI230No7Okl13zhgG09NYCc8I7fJW6UomlVGwkbOeXk
+         HcElH5Eolg/J3hW14+1VvM9LSReWT3FSPf/hKkb59ftoY6+5v1qvPN0z4L97XJ6qdjjP
+         ElaolkEyKgtmiCK//JvxChUuy0oBeA/n/HfwzEMcKBpfDUJGW/T+Aek+Ij7XaKb0f3c0
+         ea2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YbRm3I0sewWtsZIHwhErDFMz3x0ncMPhKVqkK3e/Kzk=;
-        b=W2dN4VAwtVkv4yNtR6ZhPYCVkh1ZuNmTIa/L4mXeSJni+raE+sRxpkT96niN/BByi0
-         dHRN8MPLp8LgUPs3K67Nib2ywun4xN7Fkc+xryR7as6So4aDVj2FgLv0+7X4kuinBZDe
-         Eua7Dfd7WCaqdHBIHVBwS629Lgn0oqSCrNfsRNl/B1YwnPUwn5lZQAwKZ4K6z+Jb2tF+
-         vxpN6dAhx7XhA80R9Ioh2IJ4inRLVXLXScekYO13K+O0tcuMBb/WxjYRisbgI9nJO20m
-         FLeTpkrwvErGGYbv44C4POEbfMiqyCot8FpR9EGHYBk+HJsOmq/U6bC9rfVmmOiwGsUx
-         UmyQ==
-X-Gm-Message-State: ACrzQf2+ZQeuQv+vQqCS1UNm3QZtQLNeTKXYq14NO/PAuRKwot0X1PqN
-        O3uCdD4iHOgZEMgkiAJxlyKFWpDjz6s2Bwgp8akpqtWLmUxXNFMbm2bbQ2PcVy21UUa9jC/A8MT
-        7ViBLBooUYJxo0LauXel3nCq113vQRkTkoavMd/o8LEaHpJ4V9g==
-X-Google-Smtp-Source: AMsMyM7Z6bdvew+CNuqL+zRO4xlM9NhZdHxVH3wfWepJiyS61542z1snHXjcv2qO5a2qvaaQV4BBXL8=
+        bh=k8vC9asssgoYIIsbrAgtOzkrHQJD4SKRHxy5a1maTOc=;
+        b=mmfRVYHObibz6O/chH0qpGrrvnAQHvMy9PiThMffqwV/nt2ufG8Dtkolm7vIonJbxo
+         6veLyA/atQIEQSn3C3LW1hSN2ZR+DtnX5A+R9Rsv7lxs0fCPCjP+h88VrI7rZkPLRFM5
+         CoSve2J6mUYOIncuSPUh1FLqpy6dj/0E3q1wfEYn8sxphf+lfkHpKzctJeEYqHYebC+a
+         IkxRnOulSdRZb2bnBTJx4JiNuFUNVaIpAIDPxZFbrJLeFaJ6y9jn5knHSMLg1sPXP/jS
+         LtElwmNuXOgmrsHazSrs3XvzS3j2XulVAzB7mKOGnxen3ynpZ4wOfXQPJFy89yL4riSO
+         IVpw==
+X-Gm-Message-State: ACrzQf03lgO9vWLya8gVsjkFcITNn6NkIsI6CvhBMw8gedeuG6FgjSyc
+        sXnQWFdxX9XrW2fwxG2gik0f6EW7UiN7PKwXTDPw9QklP/5rw1q2OOwMSaQSC/P/sJD5xTz9JXO
+        teVj4cCbqmDup18vOgv2EwRvKWOHTgvlkzE+PwdSLJ1/KkNEklQ==
+X-Google-Smtp-Source: AMsMyM711NVJ4sAh8nGRqY8XcA7BbCj2ze2Q/d0+StQXC7/msB8nweCUdqLSWH4qU0qqoNoyXV6z0Ew=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:9421:0:b0:56b:b2a8:6822 with SMTP id
- y1-20020aa79421000000b0056bb2a86822mr33149365pfo.86.1667532335655; Thu, 03
- Nov 2022 20:25:35 -0700 (PDT)
-Date:   Thu,  3 Nov 2022 20:25:19 -0700
+ (user=sdf job=sendgmr) by 2002:a05:6a00:4ac3:b0:56d:6e51:60eb with SMTP id
+ ds3-20020a056a004ac300b0056d6e5160ebmr24903792pfb.58.1667532337341; Thu, 03
+ Nov 2022 20:25:37 -0700 (PDT)
+Date:   Thu,  3 Nov 2022 20:25:20 -0700
 In-Reply-To: <20221104032532.1615099-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20221104032532.1615099-1-sdf@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221104032532.1615099-2-sdf@google.com>
-Subject: [RFC bpf-next v2 01/14] bpf: Introduce bpf_patch
+Message-ID: <20221104032532.1615099-3-sdf@google.com>
+Subject: [RFC bpf-next v2 02/14] bpf: Support inlined/unrolled kfuncs for xdp metadata
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -79,14 +79,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A simple abstraction around a series of instructions that transparently
-handles resizing.
+Kfuncs have to be defined with KF_UNROLL for an attempted unroll.
+For now, only XDP programs can have their kfuncs unrolled, but
+we can extend this later on if more programs would like to use it.
 
-Currently, we have insn_buf[16] in convert_ctx_accesses which might
-not be enough for xdp kfuncs.
+For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+implements all possible metatada kfuncs. Not all devices have to
+implement them. If unrolling is not supported by the target device,
+the default implementation is called instead. The default
+implementation is unconditionally unrolled to 'return false/0/NULL'
+for now.
 
-If we find this abstraction helpful, we might convert existing
-insn_buf[16] to it in the future.
+Upon loading, if BPF_F_XDP_HAS_METADATA is passed via prog_flags,
+we treat prog_index as target device for kfunc unrolling.
+net_device_ops gains new ndo_unroll_kfunc which does the actual
+dirty work per device.
+
+The kfunc unrolling itself largely follows the existing map_gen_lookup
+unrolling example, so there is nothing new here.
 
 Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: David Ahern <dsahern@gmail.com>
@@ -102,116 +112,370 @@ Cc: xdp-hints@xdp-project.net
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf_patch.h | 27 +++++++++++++++++++++
- kernel/bpf/Makefile       |  2 +-
- kernel/bpf/bpf_patch.c    | 51 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 79 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/bpf_patch.h
- create mode 100644 kernel/bpf/bpf_patch.c
+ include/linux/bpf.h            |  1 +
+ include/linux/btf.h            |  1 +
+ include/linux/btf_ids.h        |  4 ++
+ include/linux/netdevice.h      |  5 +++
+ include/net/xdp.h              | 24 ++++++++++++
+ include/uapi/linux/bpf.h       |  5 +++
+ kernel/bpf/syscall.c           | 28 +++++++++++++-
+ kernel/bpf/verifier.c          | 67 ++++++++++++++++++++++++++++++++++
+ net/core/dev.c                 |  7 ++++
+ net/core/xdp.c                 | 39 ++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  5 +++
+ 11 files changed, 185 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf_patch.h b/include/linux/bpf_patch.h
-new file mode 100644
-index 000000000000..81ff738eef8d
---- /dev/null
-+++ b/include/linux/bpf_patch.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _LINUX_BPF_PATCH_H
-+#define _LINUX_BPF_PATCH_H 1
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8d948bfcb984..54b353a88a03 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1188,6 +1188,7 @@ struct bpf_prog_aux {
+ 		struct work_struct work;
+ 		struct rcu_head	rcu;
+ 	};
++	const struct net_device_ops *xdp_kfunc_ndo;
+ };
+ 
+ struct bpf_prog {
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index f9aababc5d78..23ad5f8313e4 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -51,6 +51,7 @@
+ #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
+ #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+ #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
++#define KF_UNROLL       (1 << 7) /* kfunc unrolling can be attempted */
+ 
+ /*
+  * Return the name of the passed struct, if exists, or halt the build if for
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index c9744efd202f..eb448e9c79bb 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -195,6 +195,10 @@ asm(							\
+ __BTF_ID_LIST(name, local)				\
+ __BTF_SET8_START(name, local)
+ 
++#define BTF_SET8_START_GLOBAL(name)			\
++__BTF_ID_LIST(name, global)				\
++__BTF_SET8_START(name, global)
 +
-+#include <linux/bpf.h>
+ #define BTF_SET8_END(name)				\
+ asm(							\
+ ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"	\
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 4b5052db978f..33171e5cf83a 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -73,6 +73,8 @@ struct udp_tunnel_info;
+ struct udp_tunnel_nic_info;
+ struct udp_tunnel_nic;
+ struct bpf_prog;
++struct bpf_insn;
++struct bpf_patch;
+ struct xdp_buff;
+ 
+ void synchronize_net(void);
+@@ -1609,6 +1611,9 @@ struct net_device_ops {
+ 	ktime_t			(*ndo_get_tstamp)(struct net_device *dev,
+ 						  const struct skb_shared_hwtstamps *hwtstamps,
+ 						  bool cycles);
++	void			(*ndo_unroll_kfunc)(const struct bpf_prog *prog,
++						    u32 func_id,
++						    struct bpf_patch *patch);
+ };
+ 
+ /**
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 55dbc68bfffc..2a82a98f2f9f 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -7,6 +7,7 @@
+ #define __LINUX_NET_XDP_H__
+ 
+ #include <linux/skbuff.h> /* skb_shared_info */
++#include <linux/btf_ids.h> /* btf_id_set8 */
+ 
+ /**
+  * DOC: XDP RX-queue information
+@@ -409,4 +410,27 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+ 
+ #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+ 
++#define XDP_METADATA_KFUNC_xxx	\
++	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED, \
++			   bpf_xdp_metadata_rx_timestamp_supported) \
++	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
++			   bpf_xdp_metadata_rx_timestamp) \
 +
-+struct bpf_patch {
-+	struct bpf_insn *insn;
-+	size_t capacity;
-+	size_t len;
-+	int err;
++enum {
++#define XDP_METADATA_KFUNC(name, str) name,
++XDP_METADATA_KFUNC_xxx
++#undef XDP_METADATA_KFUNC
++MAX_XDP_METADATA_KFUNC,
 +};
 +
-+void bpf_patch_free(struct bpf_patch *patch);
-+size_t bpf_patch_len(const struct bpf_patch *patch);
-+int bpf_patch_err(const struct bpf_patch *patch);
-+void __bpf_patch_append(struct bpf_patch *patch, struct bpf_insn insn);
-+struct bpf_insn *bpf_patch_data(const struct bpf_patch *patch);
-+
-+#define bpf_patch_append(patch, ...) ({ \
-+	struct bpf_insn insn[] = { __VA_ARGS__ }; \
-+	int i; \
-+	for (i = 0; i < ARRAY_SIZE(insn); i++) \
-+		__bpf_patch_append(patch, insn[i]); \
-+})
-+
++#ifdef CONFIG_DEBUG_INFO_BTF
++extern struct btf_id_set8 xdp_metadata_kfunc_ids;
++static inline u32 xdp_metadata_kfunc_id(int id)
++{
++	return xdp_metadata_kfunc_ids.pairs[id].id;
++}
++#else
++static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
 +#endif
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 3a12e6b400a2..5724f36292a5 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -13,7 +13,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
- obj-$(CONFIG_BPF_SYSCALL) += disasm.o
- obj-$(CONFIG_BPF_JIT) += trampoline.o
--obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
-+obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o bpf_patch.o
- obj-$(CONFIG_BPF_JIT) += dispatcher.o
- ifeq ($(CONFIG_NET),y)
- obj-$(CONFIG_BPF_SYSCALL) += devmap.o
-diff --git a/kernel/bpf/bpf_patch.c b/kernel/bpf/bpf_patch.c
-new file mode 100644
-index 000000000000..82a10bf5624a
---- /dev/null
-+++ b/kernel/bpf/bpf_patch.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-only
 +
-+#include <linux/bpf_patch.h>
+ #endif /* __LINUX_NET_XDP_H__ */
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 94659f6b3395..6938fc4f1ec5 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1156,6 +1156,11 @@ enum bpf_link_type {
+  */
+ #define BPF_F_XDP_HAS_FRAGS	(1U << 5)
+ 
++/* If BPF_F_XDP_HAS_METADATA is used in BPF_PROG_LOAD command, the loaded
++ * program becomes device-bound but can access it's XDP metadata.
++ */
++#define BPF_F_XDP_HAS_METADATA	(1U << 6)
 +
-+void bpf_patch_free(struct bpf_patch *patch)
+ /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+  * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+  */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 5887592eeb93..4b76eee03a10 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2461,6 +2461,20 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+ /* last field in 'union bpf_attr' used by this command */
+ #define	BPF_PROG_LOAD_LAST_FIELD core_relo_rec_size
+ 
++static int xdp_resolve_netdev(struct bpf_prog *prog, int ifindex)
 +{
-+	kfree(patch->insn);
-+}
++	struct net *net = current->nsproxy->net_ns;
++	struct net_device *dev;
 +
-+size_t bpf_patch_len(const struct bpf_patch *patch)
-+{
-+	return patch->len;
-+}
-+
-+int bpf_patch_err(const struct bpf_patch *patch)
-+{
-+	return patch->err;
-+}
-+
-+void __bpf_patch_append(struct bpf_patch *patch, struct bpf_insn insn)
-+{
-+	void *arr;
-+
-+	if (patch->err)
-+		return;
-+
-+	if (patch->len + 1 > patch->capacity) {
-+		if (!patch->capacity)
-+			patch->capacity = 16;
-+		else
-+			patch->capacity *= 2;
-+
-+		arr = krealloc_array(patch->insn, patch->capacity, sizeof(insn), GFP_KERNEL);
-+		if (!arr) {
-+			patch->err = -ENOMEM;
-+			kfree(patch->insn);
-+			return;
++	for_each_netdev(net, dev) {
++		if (dev->ifindex == ifindex) {
++			prog->aux->xdp_kfunc_ndo = dev->netdev_ops;
++			return 0;
 +		}
++	}
++	return -EINVAL;
++}
 +
-+		patch->insn = arr;
-+		patch->capacity *= 2;
+ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+ {
+ 	enum bpf_prog_type type = attr->prog_type;
+@@ -2478,7 +2492,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+ 				 BPF_F_TEST_STATE_FREQ |
+ 				 BPF_F_SLEEPABLE |
+ 				 BPF_F_TEST_RND_HI32 |
+-				 BPF_F_XDP_HAS_FRAGS))
++				 BPF_F_XDP_HAS_FRAGS |
++				 BPF_F_XDP_HAS_METADATA))
+ 		return -EINVAL;
+ 
+ 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+@@ -2566,6 +2581,17 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+ 	prog->aux->sleepable = attr->prog_flags & BPF_F_SLEEPABLE;
+ 	prog->aux->xdp_has_frags = attr->prog_flags & BPF_F_XDP_HAS_FRAGS;
+ 
++	if (attr->prog_flags & BPF_F_XDP_HAS_METADATA) {
++		/* Reuse prog_ifindex to carry request to unroll
++		 * metadata kfuncs.
++		 */
++		prog->aux->offload_requested = false;
++
++		err = xdp_resolve_netdev(prog, attr->prog_ifindex);
++		if (err < 0)
++			goto free_prog;
 +	}
 +
-+	patch->insn[patch->len++] = insn;
-+}
-+EXPORT_SYMBOL(__bpf_patch_append);
-+
-+struct bpf_insn *bpf_patch_data(const struct bpf_patch *patch)
+ 	err = security_bpf_prog_alloc(prog->aux);
+ 	if (err)
+ 		goto free_prog;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 82c07fe0bfb1..4e5c5ff35d5f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9,6 +9,7 @@
+ #include <linux/types.h>
+ #include <linux/slab.h>
+ #include <linux/bpf.h>
++#include <linux/bpf_patch.h>
+ #include <linux/btf.h>
+ #include <linux/bpf_verifier.h>
+ #include <linux/filter.h>
+@@ -13865,6 +13866,45 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+ 	return err;
+ }
+ 
++static int unroll_kfunc_call(struct bpf_verifier_env *env,
++			     struct bpf_insn *insn,
++			     struct bpf_patch *patch)
 +{
-+	return patch->insn;
++	enum bpf_prog_type prog_type;
++	struct bpf_prog_aux *aux;
++	struct btf *desc_btf;
++	u32 *kfunc_flags;
++	u32 func_id;
++
++	desc_btf = find_kfunc_desc_btf(env, insn->off);
++	if (IS_ERR(desc_btf))
++		return PTR_ERR(desc_btf);
++
++	prog_type = resolve_prog_type(env->prog);
++	func_id = insn->imm;
++
++	kfunc_flags = btf_kfunc_id_set_contains(desc_btf, prog_type, func_id);
++	if (!kfunc_flags)
++		return 0;
++	if (!(*kfunc_flags & KF_UNROLL))
++		return 0;
++	if (prog_type != BPF_PROG_TYPE_XDP)
++		return 0;
++
++	aux = env->prog->aux;
++	if (!aux->xdp_kfunc_ndo)
++		return 0;
++
++	aux->xdp_kfunc_ndo->ndo_unroll_kfunc(env->prog, func_id, patch);
++	if (bpf_patch_len(patch) == 0) {
++		/* Default optimized kfunc implementation that
++		 * returns NULL/0/false.
++		 */
++		bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 0));
++	}
++	return bpf_patch_err(patch);
 +}
++
+ static int fixup_kfunc_call(struct bpf_verifier_env *env,
+ 			    struct bpf_insn *insn)
+ {
+@@ -14028,6 +14068,33 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		if (insn->src_reg == BPF_PSEUDO_CALL)
+ 			continue;
+ 		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
++			struct bpf_patch patch = {};
++
++			if (bpf_prog_is_dev_bound(env->prog->aux)) {
++				verbose(env, "no metadata kfuncs offload\n");
++				return -EINVAL;
++			}
++
++			ret = unroll_kfunc_call(env, insn, &patch);
++			if (ret < 0) {
++				verbose(env, "failed to unroll kfunc with func_id=%d\n", insn->imm);
++				return cnt;
++			}
++			cnt = bpf_patch_len(&patch);
++			if (cnt) {
++				new_prog = bpf_patch_insn_data(env, i + delta,
++							       bpf_patch_data(&patch),
++							       bpf_patch_len(&patch));
++				bpf_patch_free(&patch);
++				if (!new_prog)
++					return -ENOMEM;
++
++				delta    += cnt - 1;
++				env->prog = prog = new_prog;
++				insn      = new_prog->insnsi + i + delta;
++				continue;
++			}
++
+ 			ret = fixup_kfunc_call(env, insn);
+ 			if (ret)
+ 				return ret;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 2e4f1c97b59e..c64d9ea9be3a 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9259,6 +9259,13 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+ 			return -EOPNOTSUPP;
+ 		}
+ 
++		if (new_prog &&
++		    new_prog->aux->xdp_kfunc_ndo &&
++		    new_prog->aux->xdp_kfunc_ndo != dev->netdev_ops) {
++			NL_SET_ERR_MSG(extack, "Target device was specified at load time; can only attach to the same device type");
++			return -EINVAL;
++		}
++
+ 		err = dev_xdp_install(dev, mode, bpf_op, extack, flags, new_prog);
+ 		if (err)
+ 			return err;
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 844c9d99dc0e..22f1e44700eb 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -4,6 +4,8 @@
+  * Copyright (c) 2017 Jesper Dangaard Brouer, Red Hat Inc.
+  */
+ #include <linux/bpf.h>
++#include <linux/bpf_patch.h>
++#include <linux/btf_ids.h>
+ #include <linux/filter.h>
+ #include <linux/types.h>
+ #include <linux/mm.h>
+@@ -709,3 +711,40 @@ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
+ 
+ 	return nxdpf;
+ }
++
++/* Indicates whether particular device supports rx_timestamp metadata.
++ * This is an optional helper to support marking some branches as
++ * "dead code" in the BPF programs.
++ */
++noinline int bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx)
++{
++	/* payload is ignored, see default case in unroll_kfunc_call */
++	return false;
++}
++
++/* Returns rx_timestamp metadata or 0 when the frame doesn't have it.
++ */
++noinline const __u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx)
++{
++	/* payload is ignored, see default case in unroll_kfunc_call */
++	return 0;
++}
++
++#ifdef CONFIG_DEBUG_INFO_BTF
++BTF_SET8_START_GLOBAL(xdp_metadata_kfunc_ids)
++#define XDP_METADATA_KFUNC(name, str) BTF_ID_FLAGS(func, str, KF_RET_NULL | KF_UNROLL)
++XDP_METADATA_KFUNC_xxx
++#undef XDP_METADATA_KFUNC
++BTF_SET8_END(xdp_metadata_kfunc_ids)
++
++static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set   = &xdp_metadata_kfunc_ids,
++};
++
++static int __init xdp_metadata_init(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata_kfunc_set);
++}
++late_initcall(xdp_metadata_init);
++#endif
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 94659f6b3395..6938fc4f1ec5 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1156,6 +1156,11 @@ enum bpf_link_type {
+  */
+ #define BPF_F_XDP_HAS_FRAGS	(1U << 5)
+ 
++/* If BPF_F_XDP_HAS_METADATA is used in BPF_PROG_LOAD command, the loaded
++ * program becomes device-bound but can access it's XDP metadata.
++ */
++#define BPF_F_XDP_HAS_METADATA	(1U << 6)
++
+ /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+  * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+  */
 -- 
 2.38.1.431.g37b22c650d-goog
 
