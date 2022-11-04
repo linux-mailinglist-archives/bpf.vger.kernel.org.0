@@ -2,181 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092B9618D66
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 02:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B23B618D9F
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 02:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbiKDBEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 21:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S230427AbiKDB2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 21:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiKDBEq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 21:04:46 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAF0E91
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 18:04:45 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3NTgHW014052;
-        Thu, 3 Nov 2022 18:04:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=MS0jck8h5JcoRQQXr1qK3Y0kYqskMKfCbjcuPIaa+l0=;
- b=ftfdq3RwceEjXELKJk7j/UHazDFALtHynqaADaspDDPg9ENxdv6kTtLLin8y1VRtcKSJ
- AwxKkC3eKBATwJzwU64f2sl4dGUQCadWYXfzvPPDIZyoEuOOkPQ4p5w5AnlDdv2JoQEp
- ztIUJuoXjYnGH0hW8I2bWBLCvxplnQTL51LrRVsmNrbIlwKLgzpQCuaM/DJr11uncJXr
- 4ETv1wEzoLWC9lvb1PRnxWgi2mZ4KLIPwSqVDFocLbVyfcVJF8g9vRjMT3FWyjl5cn3H
- KO8XGcX0YBfCmOLwy92Mzf3RcrbhxjC12BuLc67SP21SaoVbzde0iVP7+3iefnUWDdXb pg== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kmqbn8kck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Nov 2022 18:04:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cq8W1bAekR+GrhZNrGJ0k3ZaL5gLNU2aGKL5ThRha+5Z3uXpZAgkCVgVPL1QFqufyyJ4TDF25niSnkQQJqmqQ9LEjwRwV6aTnM9KtGxNn7GIt3ZZz7YZZcdYl6yE2u84vYau9fccxmug9q7mk/1csXM+scymF5UyDzyPDqYDDkWiVc61XlaTCrqususVG8o3C6qasHC1aNVe0hrINDmp0hGthBiDCBlLF0bG6VAJyFzKAztB/xLDpcbJgrvIwU5e1fRidoRHrfHyNO+HPcjOv+9gIZ8YITGtmIDDiwJfTfZeisZlaklsqH557/y0OK+0kZxlAye0WoAS/oX4K/pklw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MS0jck8h5JcoRQQXr1qK3Y0kYqskMKfCbjcuPIaa+l0=;
- b=kNIYXBsclT1AeiRSPYL3bxKzJJR2OEMPjKlwLdQR7yCDrdljX2QMrwt+IBlOwvIYkAKvyIVC3z4hIUfzUJUGrVzqyxfD/5gVqUZecGfV52fzubgpUUXZ/O3iHcb2jegu42vbD4zMccQ97w82ouE2B9KqqxqrI99mpDFb5EmPkPVskI9+XCYUJ5XDeYgbA3+7uWG2d+jU3pMRBlHSLDIEmaENV4q6Q+c8tnBhTkfNPEx/Ee4+GU+4GM0VO318ZQvaOlHtUfvdjHTUyNxHJSzB7hGDcx1I0pwrgcUSeETdFKCOTexj0tXep/DDWkuRgEVKeg6stUZCC447uVzhlOxT1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from MW4PR15MB4490.namprd15.prod.outlook.com (2603:10b6:303:103::23)
- by MW4PR15MB4681.namprd15.prod.outlook.com (2603:10b6:303:10a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Fri, 4 Nov
- 2022 01:04:28 +0000
-Received: from MW4PR15MB4490.namprd15.prod.outlook.com
- ([fe80::c42b:4da0:5bf4:177]) by MW4PR15MB4490.namprd15.prod.outlook.com
- ([fe80::c42b:4da0:5bf4:177%5]) with mapi id 15.20.5791.022; Fri, 4 Nov 2022
- 01:04:28 +0000
-Message-ID: <2eb74220-7e73-7316-8739-44e5117a8b59@meta.com>
-Date:   Thu, 3 Nov 2022 18:04:25 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next 2/5] bpf: Add bpf_rcu_read_lock/unlock helper
-Content-Language: en-US
-To:     Yonghong Song <yhs@meta.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20221103072102.2320490-1-yhs@fb.com>
- <20221103072113.2322563-1-yhs@fb.com>
- <20221103221800.iqolv5ed2muilrgq@apollo>
- <d9e7c760-a581-8633-f41a-3e5d122ffc9c@meta.com>
-From:   Alexei Starovoitov <ast@meta.com>
-In-Reply-To: <d9e7c760-a581-8633-f41a-3e5d122ffc9c@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0P220CA0008.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:41b::17) To MW4PR15MB4490.namprd15.prod.outlook.com
- (2603:10b6:303:103::23)
+        with ESMTP id S229745AbiKDB2G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 21:28:06 -0400
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DC2233A3
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 18:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1667525281;
+        bh=97NTQrGjhU6NxW3LqmcxEye1WtDELGVVc3QpdO5C//o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=v1FxifU306S8S8Al31LWzWHZMKyyXCwi13rfsB6dl1JLnNX+Pl5SAKzohHX6TET2U
+         lZET6/vS4AzNjJsTclyfA/lc1xWiDof2V8m2ABEMhUIH97xTz67/bJ15bZk4Ijxu/f
+         BUXKuf1iz5L8N6OAhNUImyWL4kR5ML0cIyHi7fRY=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszc2-1.qq.com (NewEsmtp) with SMTP
+        id 6F83B809; Fri, 04 Nov 2022 09:27:56 +0800
+X-QQ-mid: xmsmtpt1667525276t86v0w579
+Message-ID: <tencent_469D8AF32BD56816A29981BED06E96D22506@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9CuKnjIQclbzLKdKQoECHB/HARwfNKMRd1slsqwmunFhqL46bBi
+         Kjk1ejNtv+INL6fZOO7emYHBshwONKKXj9zr/u4gUQJtiYrlG6cRFcCH6kZtpzp8oR897CbzxNAf
+         si3v7PwUyKPZR3TTTA/9Cav/0W9DwlzZVX9tgYDSctJy7xRsaEIed0lrMYiQKaqt8bdykduYvre9
+         D+jeweGGKv1CT7qMQPh6/IeL7lZB+MMD9oJFE9P/PvIqbHS0MuqFiF4oPegTHWgOb0aST+e5lrKd
+         6V1rZbcGIKSxaNO4Bvp8rCq5ETlhIsBTwzc2Xqtwh6bOvH4YLEvwCIXNXn/dU/UGH1nddplnLS5K
+         5DexdWjet36EwMRA8XfE5HAXoGO2dY6xTkgZEv8X5aQitUOb9zBbYTjpjJmlqUhoBqwLOcEzUUco
+         whUaRxrAftgscP3PV8zxejCkQ+M2ZMtF+UocUma3++/9arhU6iLhetF4QWLPbBZ3on3bXHvzfG7X
+         WSO3Qy1mdoUy1mSrQhPkbv+zfcPr1D7H4WLpJFlq22UzMnPnBVI1H2gYPsKRsG3Ux3z3cnSv9dwk
+         NQh1ZOLJSd8E1zSD3ziPCpXcnhbgb6jcKwAyv8RhKsxHNCL7aWYNEO11cR549imsaJLpkyhwqtv4
+         ITFQfsapBz4jjJsvXO2jU72HK2lpNeScqx9OMglSNBwmYB7biCKiJZd3A2lAk4nhv8yGshxngOy7
+         d4zHMZ0MH6fUQwjcRUsKQBlBAIHfZ25uZQ5fWTSVeoxJtLcBU1vbUNJX+j7Hx+RJmQCVj/5ykP2R
+         27hrAp0c8yqGnMCK2rLIeXrPewDtD4QHEZPUwaJNpi2b/J5SQ6u4ZYPj4lDY1rx4FENxefbeFnsz
+         Jq3mzaHN3dJWbNhfHOatXT9wt56GbWvuDn4UoDMFivHfY6ie0/wzGZrjgFlZ2KRtoHa34Z0+3ZTm
+         zt/8QDIVimZti6JQWKyC7qd5ljCat+1UZgoniPVRyafEu01Vrnpw==
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, david.laight@aculab.com, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        martin.lau@linux.dev, mykolal@fb.com, rongtao@cestc.cn,
+        rtoax@foxmail.com, sdf@google.com, shuah@kernel.org,
+        song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: cgroup_helpers.c: Fix strncpy() fortify warning
+Date:   Fri,  4 Nov 2022 09:27:54 +0800
+X-OQ-MSGID: <20221104012754.651653-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAEf4BzYAcGgM93r5YfF2ZQWjAnc4k=aN5C3in-bZ-6n+Jrn1vw@mail.gmail.com>
+References: <CAEf4BzYAcGgM93r5YfF2ZQWjAnc4k=aN5C3in-bZ-6n+Jrn1vw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4490:EE_|MW4PR15MB4681:EE_
-X-MS-Office365-Filtering-Correlation-Id: 630e6d27-8732-4182-d58a-08dabe008605
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iZjMJbq2iRNUsJjPq7cdue5bQbFCa3kpzDxySztz71lD6AUVNJ+4DjIb96W4U/Mppcf2ysi1gg/1emfwkI5Wa4kfSdEKjfOMXNZZR/cmm8JWNdVduCT1SYS8D+bh0jxbIXvfWRX8qxzZ9HdfeymzY58IGuKBXCxPcK+uSrht/W0LD3fr7HFAEegXWrJ2OoaTk8GgbfsLH2i/cnnqL7ihS7Gnmg0o20uqWd7ocNOJLG1IcPi0tFlE7inL0BG+GwnTr+YPuqrTZU7MO/1mf/bXYzqgC7ASEoN2wlLRlWjHKBTFR8h6+RAJzF8xwT42f8smQosNHFCby5uGD+mJ94Tuo4N1vT11ZysmIQIPkslYYyskZquqZvjrwLrcl+B14d9xMHV5E9MK6eyrgb94n3oXQTiXaadL/jxKpSkR0t1WS6yryJU6vsHJ/PBKgkccj9fzzQpvPudp/6bfC0MUp4irYimTyzd8If/8NF1bnconW/ePhZTjwy/fgjiWPcQSuUsIon3iDe+cOf5Us8bURReiqh/WnNUy5Kg548M3WBYLQCXoMKZqdwyWfWRDu2rvwBLpRKNP975wT+Ta31a4ynVoYTM5zTDpTtXJz9SMtG68YOa/6T4g5dCLvqdEx/tqj8KoW9TgqgH2ui/P9zQC+3UaPbjENkM5AtyuB+lZt4SHev+8F2okr+r3xzZZe9HzVNyD7d539srpUxDhRsTGAZ3RlVQ8SP/PV/y+m2y3PEueP/aTquSIRJ88nUd4M6bqw4zPh2FM8DNEb52g97Lmjghz5XoP3d29q4oSpA98q5nPMwI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4490.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(451199015)(6506007)(53546011)(31686004)(31696002)(6512007)(8936002)(86362001)(2616005)(8676002)(186003)(5660300002)(6486002)(6666004)(4326008)(66476007)(66946007)(66556008)(478600001)(110136005)(83380400001)(54906003)(36756003)(316002)(41300700001)(2906002)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmtidHd0M1NaK2lnZDFQV1Fab0UzL3JuNFhOWXZXYXJRY2labDVZdlhFRTg0?=
- =?utf-8?B?RG1xYllQbUZUTTdmT3c3eHRpdHF1QW9sb3ZGQkpsNzhRZHB6ZjN6dGRyQnZV?=
- =?utf-8?B?RXlEN2g3ZXBJUzhyVm9zVERkV3ZRWWNGSzhuSStrc3Mwa2k2bjJvbzhLMGVB?=
- =?utf-8?B?YzVIRWJhcC9TcGQ1TGJwaXc2dldNUUVpTHQ1bExlZEJ6WWtDekxXMnFZM3JC?=
- =?utf-8?B?UEFiS0tkZkdteUQzWDNYQ2tTMDJYVDNzTloyUkJ3ODV2ejVqZys0RU8xT3pW?=
- =?utf-8?B?NG5MUCtvTDJ3d21PWFVGZjZ1L0ZFYjMvZlJjcGMzVUd5Zy96Nmp1OCtQRTRW?=
- =?utf-8?B?ekNTM1JJcnczQWdLL0hiYlRuVXZsdnN2elp3eUs0Ylh3Sm53ckRqdlJWRGlm?=
- =?utf-8?B?MXFLL1g4TjhPUGVnTExkT0FYSjFWaVdwM2IzU21ib0h6MW4yRWdtbTB4a0Ux?=
- =?utf-8?B?SlZOcU14T202dmNiMkFIVmpYRENUVzVWT21iWFk0QjBsM3RpcW9Ga0txNkRs?=
- =?utf-8?B?RVZTR1lBSmVNZGt0WlhDQXN3Zi95TnhtVXpXc0FUUENyVDhSa2xoV3VOSzkx?=
- =?utf-8?B?SklJNk9aRHdHV3NjWXNPWDhJbHU0ZGNxN2x5VEh0VTE2TjhSRndlZ0dCc1Bo?=
- =?utf-8?B?dy9CaVZFM3pHdGdPWlNXNytidGtNRThKdHp6aFBLQmNVTjY3SExyV00yamE0?=
- =?utf-8?B?VUhTblpSUU84aGhxdlNhdzIvMlExMEp3dXBaQ0krWUFHQ1JaL09aUlRxREFO?=
- =?utf-8?B?Q3hXWnR3SEsxQVl0TzUxTkxnZHFHQTdnMUt5QXAxQWphNU9sVUI5VjI1ZnU0?=
- =?utf-8?B?SWhGRkhmblFMMDNxUUNWdkM1dmtCdlBvRFJMWjJNaVllS2MvMDRMOHRQUTVI?=
- =?utf-8?B?U202TkhXczhSVkJrcE5uYWV2MFdvR1VlbUdvUGIyQlA1YVR1TnpialNqdG8r?=
- =?utf-8?B?cnVpSUJ6WHE5b3VtdVRYRTJ2d2s3U3hlaUZ1TXp2WHJxd2JXSjl2bWJWa2p5?=
- =?utf-8?B?SXBsVzRucUJpNmlxWEF2SGhBREErWGdITzhLenMza2IrQTRFVENhN3hmRDJv?=
- =?utf-8?B?SnZSZkVHWklSYlRMaVhibEd6L2NmUExkL2NXUkNtNFJNZ0RlYmVaOUtBZzNt?=
- =?utf-8?B?c2pLTkpubmFqUXJkelQ3YVpLZTMrSEVyTTRIbU0rVzNWa3dsVmhuWEVzTytU?=
- =?utf-8?B?Wjl1N2V6S3VCQk1EalMyTWpWRkFtTXA1dUhwMjFGS1hPb2Z6cnNSZ3BFaFJW?=
- =?utf-8?B?VTJXVzJKUVp3SWJHWHZoOGZPL3NBOG9oWW5jSytOVEtjYXdSTmYvSHBtczJQ?=
- =?utf-8?B?NWd4Q1dKdWtadWNNSHlIVjkyWkNDVnV4aU9IcEk3Vk5pbVdZN2hYL09CMnA3?=
- =?utf-8?B?TXFXc3RuSXBEN0wycG1lTWNkTUFFRXpYWTNET2s1M2hmK2UyY2JRaDhtcWZh?=
- =?utf-8?B?VElQRTR3SU9mVnJYNytjYWxES0hvcE9DTVNWUXhKdmRvMDdYSzJ2SExzL1Fp?=
- =?utf-8?B?Z29GWUU0STVVWW8rZTVFQ3dRMFBadEpHY3VweGszdExTb3RYUEEvVFlHQXB2?=
- =?utf-8?B?VHVsSUtqRnZTbThhZDAvc2dtUTJPV2hRZVUrdmJHb2w4NW04QTNxQWJ2WXpE?=
- =?utf-8?B?MDBScmRhOHZmN0xQcHpzL3g5OGZUeEdmUGRIMmFuSURZVWc0c3cwd3FNcTZH?=
- =?utf-8?B?R3pLOGUxeEFLSnJmMzZLUjJ0TWY3ZDFRYS9WMzREY3BmR3dwajVpV0RNaGo1?=
- =?utf-8?B?ek5ML0lwUTRBdll0NHZkVFNDVHFlRjZVRlE3Z2w1ZzBGTEdQeDFYMmx2eEFT?=
- =?utf-8?B?b0xpK0IxUkZOaEh0TmFwVW01NVFWSlFrSDJjc1F4SGJRM29zMDFGWFdNK0lm?=
- =?utf-8?B?UkM1RXF2bUpla1VSNGZZcTkxSjBaM3U3ZUoydHhKYjJ6azZYYXhUamlJa2RD?=
- =?utf-8?B?OHVBUjZscHM2c3JCVENIMGZqMm1NbzBNdnQrdjU0dnB5NHd4MTEvQmZPVU94?=
- =?utf-8?B?NWlqNWxBYWIvTGxvNWpkYVdPdnlxME5uZzAyTXdnNjl1NVppU0UxYm4vY3Rm?=
- =?utf-8?B?R3NhR1FCbmxDMUo0clFCM2tpZXZ0N0laT1BsVHhEWk9PWnByNlFEWGR0T1Zi?=
- =?utf-8?B?T3ZhMWtxanBlaHFJMGt0RHdBOFNRbXh3dlYwd1dDMWk2enViRFd6L2NmazBN?=
- =?utf-8?B?K3c9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 630e6d27-8732-4182-d58a-08dabe008605
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4490.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2022 01:04:28.6339
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q2B+QI1b1nYUxmLQ8S29J2l60Hm/V4vkkTQTqZ8onAlqGWFP73fZ/B3WDLlMnI0Q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4681
-X-Proofpoint-ORIG-GUID: v_EUSAqV6pmBA-FP3tQNXlJiX-TlBj7y
-X-Proofpoint-GUID: v_EUSAqV6pmBA-FP3tQNXlJiX-TlBj7y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/3/22 5:30 PM, Yonghong Song wrote:
->>> index 94659f6b3395..e86389cd6133 100644
->>> --- a/include/uapi/linux/bpf.h
->>> +++ b/include/uapi/linux/bpf.h
->>> @@ -5481,6 +5481,18 @@ union bpf_attr {
->>>    *        0 on success.
->>>    *
->>>    *        **-ENOENT** if the bpf_local_storage cannot be found.
->>> + *
->>> + * void bpf_rcu_read_lock(void)
->>> + *    Description
->>> + *        Call kernel rcu_read_lock().
->>> + *    Return
->>> + *        None.
->>> + *
->>> + * void bpf_rcu_read_unlock(void)
->>> + *    Description
->>> + *        Call kernel rcu_read_unlock().
->>> + *    Return
->>> + *        None.
->>>    */
->>
->> It would be better to not bake these into UAPI and keep them unstable 
->> only IMO.
-> 
-> rcu_read_lock/unlock() are well known in kernel programming. I think
-> put them as stable UAPI should be fine. But I will reword the
-> description to remove any direct reference to kernel functions.
+From: Rong Tao <rongtao@cestc.cn>
 
-tbh I also feel that kfunc is better here.
-Sooner or later we will need srcu_read_lock,
-then rcu_read_lock_task_trace, etc.
-bpf shouldn't be a burden to RCU.
+Copy libbpf_strlcpy() from libbpf_internal.h to bpf_util.h, and rename it
+to bpf_strlcpy(), then replace selftests strncpy()/libbpf_strlcpy() with
+bpf_strlcpy(), fix compile warning.
+
+The libbpf_internal.h header cannot be used directly here, because
+references to cgroup_helpers.c in samples/bpf will generate compilation
+errors. We also can't add libbpf_strlcpy() directly to bpf_util.h,
+because the definition of libbpf_strlcpy() in libbpf_internal.h is
+duplicated. In order not to modify the libbpf code, add a new function
+bpf_strlcpy() to selftests bpf_util.h.
+
+How to reproduce this compilation warning:
+
+$ make -C samples/bpf
+cgroup_helpers.c: In function ‘__enable_controllers’:
+cgroup_helpers.c:80:17: warning: ‘strncpy’ specified bound 4097 equals destination size [-Wstringop-truncation]
+   80 |                 strncpy(enable, controllers, sizeof(enable));
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/testing/selftests/bpf/bpf_util.h       | 19 ++++++++++++++
+ tools/testing/selftests/bpf/cgroup_helpers.c |  3 ++-
+ tools/testing/selftests/bpf/xsk.c            | 26 +++-----------------
+ 3 files changed, 25 insertions(+), 23 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+index a3352a64c067..10587a29b967 100644
+--- a/tools/testing/selftests/bpf/bpf_util.h
++++ b/tools/testing/selftests/bpf/bpf_util.h
+@@ -20,6 +20,25 @@ static inline unsigned int bpf_num_possible_cpus(void)
+ 	return possible_cpus;
+ }
+ 
++/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
++ * is zero-terminated string no matter what (unless sz == 0, in which case
++ * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
++ * in what is returned. Given this is internal helper, it's trivial to extend
++ * this, when necessary. Use this instead of strncpy inside libbpf source code.
++ */
++static inline void bpf_strlcpy(char *dst, const char *src, size_t sz)
++{
++	size_t i;
++
++	if (sz == 0)
++		return;
++
++	sz--;
++	for (i = 0; i < sz && src[i]; i++)
++		dst[i] = src[i];
++	dst[i] = '\0';
++}
++
+ #define __bpf_percpu_val_align	__attribute__((__aligned__(8)))
+ 
+ #define BPF_DECLARE_PERCPU(type, name)				\
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index e914cc45b766..dd1aa5afcf5a 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -13,6 +13,7 @@
+ #include <ftw.h>
+ 
+ #include "cgroup_helpers.h"
++#include "bpf_util.h"
+ 
+ /*
+  * To avoid relying on the system setup, when setup_cgroup_env is called
+@@ -77,7 +78,7 @@ static int __enable_controllers(const char *cgroup_path, const char *controllers
+ 		enable[len] = 0;
+ 		close(fd);
+ 	} else {
+-		strncpy(enable, controllers, sizeof(enable));
++		bpf_strlcpy(enable, controllers, sizeof(enable));
+ 	}
+ 
+ 	snprintf(path, sizeof(path), "%s/cgroup.subtree_control", cgroup_path);
+diff --git a/tools/testing/selftests/bpf/xsk.c b/tools/testing/selftests/bpf/xsk.c
+index 0b3ff49c740d..39d349509ba4 100644
+--- a/tools/testing/selftests/bpf/xsk.c
++++ b/tools/testing/selftests/bpf/xsk.c
+@@ -33,6 +33,7 @@
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ #include "xsk.h"
++#include "bpf_util.h"
+ 
+ #ifndef SOL_XDP
+  #define SOL_XDP 283
+@@ -521,25 +522,6 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
+ 	return 0;
+ }
+ 
+-/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
+- * is zero-terminated string no matter what (unless sz == 0, in which case
+- * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
+- * in what is returned. Given this is internal helper, it's trivial to extend
+- * this, when necessary. Use this instead of strncpy inside libbpf source code.
+- */
+-static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
+-{
+-        size_t i;
+-
+-        if (sz == 0)
+-                return;
+-
+-        sz--;
+-        for (i = 0; i < sz && src[i]; i++)
+-                dst[i] = src[i];
+-        dst[i] = '\0';
+-}
+-
+ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ {
+ 	struct ethtool_channels channels = { .cmd = ETHTOOL_GCHANNELS };
+@@ -552,7 +534,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ 		return -errno;
+ 
+ 	ifr.ifr_data = (void *)&channels;
+-	libbpf_strlcpy(ifr.ifr_name, ctx->ifname, IFNAMSIZ);
++	bpf_strlcpy(ifr.ifr_name, ctx->ifname, IFNAMSIZ);
+ 	err = ioctl(fd, SIOCETHTOOL, &ifr);
+ 	if (err && errno != EOPNOTSUPP) {
+ 		ret = -errno;
+@@ -771,7 +753,7 @@ static int xsk_create_xsk_struct(int ifindex, struct xsk_socket *xsk)
+ 	}
+ 
+ 	ctx->ifindex = ifindex;
+-	libbpf_strlcpy(ctx->ifname, ifname, IFNAMSIZ);
++	bpf_strlcpy(ctx->ifname, ifname, IFNAMSIZ);
+ 
+ 	xsk->ctx = ctx;
+ 	xsk->ctx->has_bpf_link = xsk_probe_bpf_link();
+@@ -958,7 +940,7 @@ static struct xsk_ctx *xsk_create_ctx(struct xsk_socket *xsk,
+ 	ctx->refcount = 1;
+ 	ctx->umem = umem;
+ 	ctx->queue_id = queue_id;
+-	libbpf_strlcpy(ctx->ifname, ifname, IFNAMSIZ);
++	bpf_strlcpy(ctx->ifname, ifname, IFNAMSIZ);
+ 
+ 	ctx->fill = fill;
+ 	ctx->comp = comp;
+-- 
+2.31.1
+
+
