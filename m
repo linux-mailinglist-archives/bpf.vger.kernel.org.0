@@ -2,72 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A2E619213
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 08:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DD3619223
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 08:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbiKDHfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 03:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S230193AbiKDHnO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 03:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbiKDHfH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 03:35:07 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FD565D2
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 00:35:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f5-20020a17090a4a8500b002131bb59d61so7018402pjh.1
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
+        with ESMTP id S229615AbiKDHnM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 03:43:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFE62935E
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 00:43:12 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso7516367pjc.0
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 00:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E2kqD+OfpudX+jIrhWz28KrItqWYasPHYeABrJ0pXbg=;
-        b=g8J8+9BUiDjGRHEN4oOsWCwUJhpwkGAKcB8AFuqsNQmZBE2HIg2potFNTw9bqgaYd7
-         Cg0fbYdWgOHUDUj9D7x5p5MjtnFSssCV6PCDQSVIznGOOEeQqDqvimIGpVlJIOD7Z7YY
-         Flv+rRSxGP5arhaeEMJV1Hwe3H8t7a0dErh5763F4uWyHqMZ1jtxYbmUSbpW/ODJeRt9
-         CceenNzNCMgPaWKmlAtpY/xKdA37RKeIjFOWTQ3YIyPrFqZH9kGY1ImQZc44ZiFyj5j0
-         zFAsAolell736vGVkPmodLkIFRl9NyS1o6XuZM3ryhSE+XCe8YhdiMcqVsZM7VfqTJcg
-         gw/A==
+        bh=pyLdCh0zuKyHy4h07xinmt3mDOcW4GVMxzcQTthB/YA=;
+        b=X4f66p6FPKm/QKnwwQqrrdMxck8+iRTQTfT4N3RIvx2d2shbWylNS6KxJQN3mCj2Qr
+         cloeHNazK0a3L389uC/WsRASsta+Yu0wht22RwnX4wxOy+pPRexz+VUHwmpcbr8s3GmZ
+         bUDafu3liKVFiJvkGPVfJMiC30eVf2vZk5UoKNquIk0w9LRXlqaU0SQLeYLeNuZOlvlb
+         bm1I2VcIb9+2NjcnHZeZurzESBz6gCVtlKHCjeZmAeHp2SXh1xg0hbhEU33BG3sBFiCl
+         OewX3PilXqupAuWSP8k7Jo3/fcErnG1VVfowA4muG/uZNpoHqoq0HoTyMZmo5+YcR4ac
+         oghA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E2kqD+OfpudX+jIrhWz28KrItqWYasPHYeABrJ0pXbg=;
-        b=dYgRmM4GSvtubEankz28zi+5AHMqBV2jVMg8B/+yxj4XTvdqLGpB5PqlwsNdk2+nTl
-         CQ0O08Z4tRG1JAn2RlhLbRswiuyZ2Lnnd6AerTMAc4x6H9qEk720bVn9sH8AJrR6pFGu
-         iQ0CCfLRIRvFSybFDmx9iVsieWBiATCFPJli2F0RKy5+CXTTmOSJDgfVQqV9zr5PECGY
-         uHTdUG9pGayInz06DwJLwF7MPJHLI33m4SgDmJavARLBgoQu7PBwMYyB+asb+GkoN6Xl
-         rPflnGBfWKGb+ZU7u40nN9rWWlZOMbGj7aKGsGSp3Fsz1XEKyPktysRKz7uTCmLSHSX0
-         wlaw==
-X-Gm-Message-State: ACrzQf35aO9UX43zsle5XFgvzT7V4novsL2u3G58fUjzTnLPqi/110xR
-        bxzPlP8jtZdNSkAYAKPIi0U=
-X-Google-Smtp-Source: AMsMyM7rZVOtmDBbDpFY/PI849oY8EqEuYtMn2kvwkKWKGD0YPAUUASczzFCpKua9MQH/DpFsjMbBg==
-X-Received: by 2002:a17:902:7c12:b0:186:8111:ade2 with SMTP id x18-20020a1709027c1200b001868111ade2mr33899074pll.111.1667547305409;
-        Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
+        bh=pyLdCh0zuKyHy4h07xinmt3mDOcW4GVMxzcQTthB/YA=;
+        b=z4nGQ0FacAYj2yHAHfliaKmH7ixwbHmh36HNi52YDdAtGDwfuFHmtNQrzlshbREeI/
+         dfTPYpTguviaRRe0zXxUdyHjLg9TDJXR62sH4kUYaQ3UMcU7S+OTzJ5V8C3fTk8CVgc9
+         w9BynMAR2SyEUeLH0zE26Zkg00Q5LC2DyPPM48VEYWWwlWxq/IecabCSIw2ykxB5QCQM
+         LuZCJwPpbOSMNUbBIDAZF5KABybAxOmrXg6hS7KyGq89SU3W5GkKVh6FXC5vFmMkyWwG
+         9laCOM4VuEuQ74ZyNlLXuQtqDl3tkwS9OBzMcdtAxpnQXuMKDY6Jy7n+PGaPOWvxnUq9
+         M1Tg==
+X-Gm-Message-State: ACrzQf1ehssmwq/6Pmh3Q4tK7YYuVEhizkNKdFPhuZzRE4A96EAtiNi5
+        m6k0AGgKrZrCsdb0SiT9id7oOtJBOsDMAw==
+X-Google-Smtp-Source: AMsMyM7BlInVn7LZ/PBXmYjlFG0AmRDnSu2NRRX1sGQ5HXq9VOWzhtbdhlTM8I6cAkcx09sE1b4Ddg==
+X-Received: by 2002:a17:90a:1097:b0:213:d7d3:ab8 with SMTP id c23-20020a17090a109700b00213d7d30ab8mr27643483pja.91.1667547791549;
+        Fri, 04 Nov 2022 00:43:11 -0700 (PDT)
 Received: from localhost ([157.51.134.255])
-        by smtp.gmail.com with ESMTPSA id a15-20020a170902710f00b0018869119e37sm217171pll.142.2022.11.04.00.35.04
+        by smtp.gmail.com with ESMTPSA id a9-20020a1709027e4900b00186a2444a43sm1944791pln.27.2022.11.04.00.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 13:04:41 +0530
+        Fri, 04 Nov 2022 00:43:11 -0700 (PDT)
+Date:   Fri, 4 Nov 2022 13:12:48 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into
- btf_record
-Message-ID: <20221104073200.a4mdg5vamev7s76s@apollo>
+Subject: Re: [PATCH bpf-next v4 22/24] bpf: Introduce single ownership BPF
+ linked list API
+Message-ID: <20221104074248.olfotqiujxz75hzd@apollo>
 References: <20221103191013.1236066-1-memxor@gmail.com>
- <20221103191013.1236066-7-memxor@gmail.com>
- <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
- <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
+ <20221103191013.1236066-23-memxor@gmail.com>
+ <d3765c8e-3b1b-3ea4-8612-34b8580bc892@meta.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
+In-Reply-To: <d3765c8e-3b1b-3ea4-8612-34b8580bc892@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,53 +76,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 09:39:22AM IST, Alexei Starovoitov wrote:
-> On Thu, Nov 3, 2022 at 9:01 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Fri, Nov 04, 2022 at 11:26:39AM IST, Dave Marchevsky wrote:
+> On 11/3/22 3:10 PM, Kumar Kartikeya Dwivedi wrote:
+> > Add a linked list API for use in BPF programs, where it expects
+> > protection from the bpf_spin_lock in the same allocation as the
+> > bpf_list_head. Future patches will extend the same infrastructure to
+> > have different flavors with varying protection domains and visibility
+> > (e.g. percpu variant with local_t protection, usable in NMI progs).
 > >
-> > On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > >
-> > > -enum bpf_kptr_type {
-> > > -     BPF_KPTR_UNREF,
-> > > -     BPF_KPTR_REF,
-> > > +enum btf_field_type {
-> > > +     BPF_KPTR_UNREF = (1 << 2),
-> > > +     BPF_KPTR_REF   = (1 << 3),
-> > > +     BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF,
-> > >  };
+> > The following functions are added to kick things off:
 > >
-> > ...
+> > bpf_list_push_front
+> > bpf_list_push_back
+> > bpf_list_pop_front
+> > bpf_list_pop_back
 > >
-> > > +             for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
-> > > +                     switch (map->record->field_mask & (1 << i)) {
-> > > +                     case 0:
-> > > +                             continue;
-> > > +                     case BPF_KPTR_UNREF:
-> > > +                     case BPF_KPTR_REF:
-> > > +                             if (map->map_type != BPF_MAP_TYPE_HASH &&
-> > > +                                 map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-> > > +                                 map->map_type != BPF_MAP_TYPE_ARRAY &&
-> > > +                                 map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
-> > > +                                     ret = -EOPNOTSUPP;
-> > > +                                     goto free_map_tab;
-> > > +                             }
-> > > +                             break;
-> > > +                     default:
-> > > +                             /* Fail if map_type checks are missing for a field type */
-> > > +                             ret = -EOPNOTSUPP;
-> > > +                             goto free_map_tab;
-> > > +                     }
+> > The lock protecting the bpf_list_head needs to be taken for all
+> > operations.
 > >
-> > With this patch alone this is also wrong.
+> > Once a node has been added to the list, it's pointer changes to
+> > PTR_UNTRUSTED. However, it is only released once the lock protecting the
+> > list is unlocked. For such local kptrs with PTR_UNTRUSTED set but an
+> > active ref_obj_id, it is still permitted to read and write to them as
+> > long as the lock is held.
 >
-> Actually this bit is probably fine. The bug is elsewhere.
+> I think "still permitted to ... write to them" is not accurate
+> for this version of the series. In v2 you mentioned [0]:
 >
-> The point below stands:
+> """
+> I have switched things a bit to disallow stores, which is a bug right now in
+> this set, because one can do this:
 >
+> push_front(head, &p->node);
+> p2 = container_of(pop_front(head));
+> // p2 == p
+> bpf_obj_drop(p2);
+> p->data = ...;
 >
-> > And it breaks bisect.
-> > Please make sure to do a full vmtest.sh for every patch in the series.
+> One can always fully initialize the object _before_ inserting it into the list,
+> in some cases that will be the requirement (like adding to RCU protected lists)
+> for correctness.
+> """
+>
+> I confirmed this is currently the case by moving data write after
+> list_push in the selftest and running it:
+>
+> @@ -87,8 +87,8 @@ static __always_inline int list_push_pop(struct bpf_spin_lock *lock,
+>         }
+>
+>         bpf_spin_lock(lock);
+> -       f->data = 13;
+>         bpf_list_push_front(head, &f->node);
+> +       f->data = 13;
+>         bpf_spin_unlock(lock);
+>
+> Got "only read is supported" from verifier.
+> I think it's fine to punt on supporting writes for now and do it in followups.
+>
 
-I'm sorry. I made multiple small changes to these two and never retested them
-again in isolation, and then it was 'fixed' by later changes. I'll make sure it
-doesn't happen again.
+Thanks for catching it, I'll fix up the commit message.
+
+Also, just to manage the expectations I think enabling writes after pushing the
+object won't be possible to make safe, unless the definition of "safe" is
+twisted.
+
+As shown in that example, we can reach a point where it has been freed but we
+hold an untrusted pointer to it. Once it has been freed the object can be
+reallocated and be in use again concurrently, possibly as a different type.
+
+I was contemplating whether to simply drop this whole set_release_on_unlock
+logic entirely. Not sure it's worth the added complexity, atleast for now. Once
+you push you simply lose ownership of the object and any registers are
+immediately killed.
