@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F07A61A4E9
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB2D61A4EB
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbiKDWyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 18:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        id S229495AbiKDWyo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 18:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbiKDWyE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 18:54:04 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B38FAEE;
-        Fri,  4 Nov 2022 15:53:24 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id b2so16889296eja.6;
-        Fri, 04 Nov 2022 15:53:24 -0700 (PDT)
+        with ESMTP id S229544AbiKDWy3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 18:54:29 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91FC4FF88;
+        Fri,  4 Nov 2022 15:54:13 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id t25so16867557ejb.8;
+        Fri, 04 Nov 2022 15:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aRgru+eX2sft8myxTL/E2yHwfYNkhODH4ZywnD+JOQ4=;
-        b=Pd6w3rs8DJKl6GcTJM6vwBBWfSo5t9vvCc+wgHxkCmIzxjJSKEXZQVP3KT5inCVQ+5
-         k9m2JKnOaz/3y7ycGqHx1FSFvtxnCyBcSCI8/QVOdq6TL6jZoe8xlIRJ0n3BBgM9/zva
-         R+NeTinIizIce1kdzO3R2P71nvrUg238xOKbTn3KZTQa+Pc4fQSiLNtpfUN47Yf4ArfQ
-         dRBgBwR/N538PjroIDrfGEecPe9LnUS6F2DnMRzveatrKED6Ueh7fP1q/MyZJYF9ZkhW
-         9k/QxDkruzX6XnK3znGN0UtAlu9VQFyuV7P7U/zdHVjrFAf7ZF5A1/5lNMoTd5zxpBIX
-         +Fog==
+        bh=100fY9KESFaq3hq0fX+Iw8RTNm69n7uFfyY6208fkpo=;
+        b=gReDsr7Bvlbcz4buxyw+70IReOD+ZV8RqRzj56Tu3/IerQ/G6ETQwdXlldmVRxKhCR
+         bnumTTApG89yPYGwDPin9nYTj6t5V8pyLf6HcqrMnE1WBKXXnYM9zFAHnyJe3KyV07CM
+         xTtutHjwSEseogeHbXDawoE8JiGkdNXuXamB2j0gEpT0b2pkK2zybsA71Tck7sU3Gpdz
+         xIqnFRVFO/pJ6yvFk4IFiqLJsez2p7QDywvfaAmjRMHyE0ZJJuU9M/I4KlxULQQ1OkV8
+         F0XMvMUtTXqKfqjMYpRntJqaz2Dik0/NM1j6vME/HPSdnUxZRUSX0pPRNiz5I5FqDdq/
+         Ztog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aRgru+eX2sft8myxTL/E2yHwfYNkhODH4ZywnD+JOQ4=;
-        b=lqj3xFF1MNOJuFY051uy0mSqb333MW+O2ARlZx0p4+m42ljHIkjvITRr0XbF2yaQAS
-         NlBU+slJlVwA09LYE7jdenfnarePDoBozAaoYCDZ9AdEVjo2HU4wmcJGsGQNkS177Xjs
-         wQUJjvz65BdYK5iTccmFJpSDotzqndO2IgeMImRwEVB4IrWbxkhaVLY37ohftIOtaWbE
-         O7h5iAvji9rk2EKOCpin3zlvUgrt/Ei3mizLs5s5+bxs+HpR4g6iIGeelW9Ga8ZLt26i
-         /PheNjmnMJ2LdhYWl3n56ZNH8qi5OFxxnH4vEXXe6QWROphmKAVUjk1tnmF6LokVSDn1
-         cYjg==
-X-Gm-Message-State: ACrzQf0QIkVjoXvEccImpCZoUr6heeXYIwYto2iPR9P0PIxh/xpnkSyF
-        K7CwHDAaQDs5auVDJjO2B6a+yr7PmWPTc+WWpeY+dPp6YeY=
-X-Google-Smtp-Source: AMsMyM7EyxlUJrFmHrxat7v9ocOjrufkf5Y/U5oAOwsRFlS+vYX0/PHU3j6Koo+TVse6j8yZjUAu2Olg+3LAuZaBQZY=
+        bh=100fY9KESFaq3hq0fX+Iw8RTNm69n7uFfyY6208fkpo=;
+        b=mSHy2jepucYMZ25JJFqWIAPj8swJOYhvzl7oeuULyYphhdi/Ble0GlA+hPkS9ds7UF
+         ptzXzIhivkVDZiZBWz2t42V8VSLMrVNFZWPuv4+etZlGvWZ86f3IiiAf+praAWZTDOZR
+         yVVYE6iHmL2Ydu32ILk/FhDPnwuKC407aKD1Ms/XjnwPH4sol00R2Cm2PtV+QCdQSQqO
+         jpCVvOul7xkRxE/x37NVLGhZgDntWKvXj5KPiFjJGkIQBEqoYvpCXfxMERttJxLKUkoP
+         f9tSyejtLJnmMm3C/LvcRLWOEyp6G1wVBBiHSKxWIcSkQX90FrzqkVn4V9UCeN/r1S8t
+         uf8Q==
+X-Gm-Message-State: ACrzQf1hX96lKZwg1WGvXHeI9vQjpJPCPfbb2caoTrE+m2DbCqXG1WzB
+        3m5rW7U0MxC3VQyCnoqYkVK2VB2H8cODO55R2xQ=
+X-Google-Smtp-Source: AMsMyM4c/5imPL+QWpu8mN5nTB1mvVwXVTyxeyZA2Vg/xchascXVGOrmXycgsu1SPi2ymFpzNC6glET1MR76HnJhIxY=
 X-Received: by 2002:a17:906:11d6:b0:7ad:fd3e:2a01 with SMTP id
- o22-20020a17090611d600b007adfd3e2a01mr17390468eja.545.1667602403045; Fri, 04
- Nov 2022 15:53:23 -0700 (PDT)
+ o22-20020a17090611d600b007adfd3e2a01mr17392619eja.545.1667602452262; Fri, 04
+ Nov 2022 15:54:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzbvCABmSB3UqKyka=txTiCUdBpTtQg4X6XOa_qVVXW+hw@mail.gmail.com>
- <tencent_6AD8D17AC411037DA1AC2C8FCB0D15A3D707@qq.com>
-In-Reply-To: <tencent_6AD8D17AC411037DA1AC2C8FCB0D15A3D707@qq.com>
+References: <20221104101928.9479-1-donald.hunter@gmail.com>
+In-Reply-To: <20221104101928.9479-1-donald.hunter@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 15:53:09 -0700
-Message-ID: <CAEf4BzbZDmgnohyyXBwy+p_qfZ1r_kq6d3bfqig+zSOm65vFHg@mail.gmail.com>
-Subject: Re: Re: [PATCH bpf-next] samples/bpf: Fix sockex3: missing BPF prog type
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, rongtao@cestc.cn, sdf@google.com,
-        song@kernel.org, yhs@fb.com
+Date:   Fri, 4 Nov 2022 15:54:00 -0700
+Message-ID: <CAEf4BzYXz_VNYPUsqv_NkFEwZsj6XM-4gJbZvFnCd5-pfqnbkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] docs/bpf: document BPF ARRAY_OF_MAPS and HASH_OF_MAPS
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Maryam Tahhan <mtahhan@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,39 +70,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 8:17 PM Rong Tao <rtoax@foxmail.com> wrote:
+On Fri, Nov 4, 2022 at 3:20 AM Donald Hunter <donald.hunter@gmail.com> wrote:
 >
-> We can not just remove the number of program like:
+> Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
+> including usage and examples.
 >
-> -#define PROG(F) SEC("socket/"__stringify(F)) int bpf_func_##F
-> +#define PROG(F) SEC("socket_filter") int bpf_func_##F
->
-> because "sockex3" use the _NUMBER_ as index(see map "jmp_table"), if we
-> apply the following patch, it's still not recognize "socket_filter/xxx"
-> as "socket_filter", still have "missing BPF prog type" error:
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+> v1 -> v2:
+> - Fix formatting nits
+> - Tidy up code snippets as suggested by Maryam Tahhan
+> ---
 
-Ok, let's keep unwinding this. This is an old and manual way to set up
-tail call map. Libbpf supports declarative way to do, so
-sockex3_user.c won't have to do anything at all.
+Didn't notice v2 and left a few comments on v1. Please check them and
+see if you can address suggestions. Thanks!
 
-See progs/test_prog_array_init.c for an example. Let's convert samples
-to use this as well.
-
-This programmatic setting of program type works, there is no doubt
-about this. But it's a signal that something is not exactly how it
-should be. So let's use this as an opportunity to modernize samples,
-instead of adding workarounds.
-
-I hope you sympathize with this goal.
-
->
-> diff --git a/samples/bpf/sockex3_kern.c b/samples/bpf/sockex3_kern.c
-> index b363503357e5..ab5a7bde66d0 100644
-> --- a/samples/bpf/sockex3_kern.c
-> +++ b/samples/bpf/sockex3_kern.c
-> @@ -17,7 +17,7 @@
->  #define IP_MF          0x2000
->  #define IP_OFFSET      0x1FFF
+>  Documentation/bpf/map_of_maps.rst | 129 ++++++++++++++++++++++++++++++
+>  1 file changed, 129 insertions(+)
+>  create mode 100644 Documentation/bpf/map_of_maps.rst
 >
 
 [...]
