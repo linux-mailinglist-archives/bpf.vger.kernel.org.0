@@ -2,117 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2BE618F6A
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0763F618F6C
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbiKDEJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 00:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        id S229745AbiKDEKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 00:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbiKDEJg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 00:09:36 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7FB1EC42
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:09:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id 13so10349745ejn.3
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 21:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rwwxg0EL6fD56ISk7wBtu8my4uD0oAkiL/InO8sIGk8=;
-        b=bbdH0BSSHvKatY8PJVM5CPZ5m8dpbVMmPMvY6+ofW6W67DY2JoWmimZufsgOYqFKs7
-         Q8BpVGxvZjPpu+zJkcikC0G79qBL2NJ3eoi5Ij6LHUSdlWBv0MXQDYaeKN12lMqFkse2
-         AT2BsenBk+XBPDCC1pIsFWySPEPvFLvVAN2idW28bHhR5ndpGIPfUPNQ/LFjLUiKUDqk
-         7A9Qvof/QU/xl/EqiPXnd1SZeW7+CbIOvkP2wMYQ8SUapQ7b/40ZC60YjQO8p+oJdjqz
-         2qYet3fGUsrAiJxqbSOOAOVl2546wiRYymgAUi4iZ1YU2n9o70ijmtwhiAOLLNmvZpVH
-         YUsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rwwxg0EL6fD56ISk7wBtu8my4uD0oAkiL/InO8sIGk8=;
-        b=3ELmQ9RZO2PnwNM0RgxLvCsE26vSz1EJjDf7azytI9ipkyGS/7ifeBdX5D8/BeZrev
-         0yUA+Q1vTPAunw1cpTqCwxPAcDlUIKoqrZ7phoHltC2RqBPmSrkgzMQcJom7xV5aSAAO
-         wZWwEmuI58a15T5NY7+Ws6GYeUVygBWL8p/xaLHVnHuQ3n+hg9+YekF3G1rt/oJV4c1H
-         m4/wkdRiarnbAkkiwwUqKSRAdv2x9XtpgNjFIz7xNq4p0yHnA2W9nH36zsnAhIjZgWH1
-         rsCUv9WBT1VSlNBVYmW2wBmgLVLECHVTXqhH2gR/kz3wbr+QQNeD2aBchuu+EUKqU5yp
-         Qq8g==
-X-Gm-Message-State: ACrzQf1j7J/zaMPYAGB5HTzYIPUvGE+nfgg/Urho4k6TNRa8lJcLlr1w
-        hxDIJcP2/qRm6p0trGVOlMh9FzXTAUhF1JTqnL4=
-X-Google-Smtp-Source: AMsMyM4Vs918RsIJtpg2B/v7yx5uVDNZuIDbmX9n0ld6WY3C15RRIJwRIRmCDiYfcvJryyjm7kvqDYu3eOR+njLUoh8=
-X-Received: by 2002:a17:906:1f48:b0:7ae:77d:bac with SMTP id
- d8-20020a1709061f4800b007ae077d0bacmr11193055ejk.708.1667534974027; Thu, 03
- Nov 2022 21:09:34 -0700 (PDT)
+        with ESMTP id S230370AbiKDEKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 00:10:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710351F2C0;
+        Thu,  3 Nov 2022 21:10:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8420062091;
+        Fri,  4 Nov 2022 04:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D56C0C433B5;
+        Fri,  4 Nov 2022 04:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667535016;
+        bh=WVmc/zT6xkjPYdilU0jlgr4Zxr1wW2/RoDbqoDEgp04=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MMXlzhtUkBKPsR9tIN1P8zMdYCCuTMweJbpmOMeIvPJlbgPm1/RmeEplXmDDsXKCp
+         xgeZZBu6/07Pk1czA+z1QH32jn6pWRA2Wss7jrYc5Pr8Qn2dhhGk4Tno33w3cDvXyP
+         ZgHX0NVz+b6WFEZ1gw9JDihrUqrd5Knxgcpq21h7seg+tSlmPCvdYWKoc6m/fkbJy9
+         VEXUNegthsUuK6akmBSof5dlPs3lo53uehWCP+0I1uvwBVh3Qb0yPIORRKJ5JgdMrs
+         8MZ/iadQJIevSKCI8atWNQoCEj/UyttIcQjmYkjUYW08Vg7Bl9ly+iLovunbT+L3GW
+         Q0Pxy19WHZEXQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8635E270D2;
+        Fri,  4 Nov 2022 04:10:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-7-memxor@gmail.com>
- <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
-In-Reply-To: <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Nov 2022 21:09:22 -0700
-Message-ID: <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into btf_record
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Delyan Kratunov <delyank@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2022-11-04
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166753501675.4086.8840380962219739735.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 04:10:16 +0000
+References: <20221104000445.30761-1-daniel@iogearbox.net>
+In-Reply-To: <20221104000445.30761-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 9:01 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
-> >
-> > -enum bpf_kptr_type {
-> > -     BPF_KPTR_UNREF,
-> > -     BPF_KPTR_REF,
-> > +enum btf_field_type {
-> > +     BPF_KPTR_UNREF = (1 << 2),
-> > +     BPF_KPTR_REF   = (1 << 3),
-> > +     BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF,
-> >  };
->
-> ...
->
-> > +             for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
-> > +                     switch (map->record->field_mask & (1 << i)) {
-> > +                     case 0:
-> > +                             continue;
-> > +                     case BPF_KPTR_UNREF:
-> > +                     case BPF_KPTR_REF:
-> > +                             if (map->map_type != BPF_MAP_TYPE_HASH &&
-> > +                                 map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-> > +                                 map->map_type != BPF_MAP_TYPE_ARRAY &&
-> > +                                 map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
-> > +                                     ret = -EOPNOTSUPP;
-> > +                                     goto free_map_tab;
-> > +                             }
-> > +                             break;
-> > +                     default:
-> > +                             /* Fail if map_type checks are missing for a field type */
-> > +                             ret = -EOPNOTSUPP;
-> > +                             goto free_map_tab;
-> > +                     }
->
-> With this patch alone this is also wrong.
+Hello:
 
-Actually this bit is probably fine. The bug is elsewhere.
+This pull request was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The point below stands:
+On Fri,  4 Nov 2022 01:04:45 +0100 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 8 non-merge commits during the last 3 day(s) which contain
+> a total of 10 files changed, 113 insertions(+), 16 deletions(-).
+> 
+> [...]
+
+Here is the summary with links:
+  - pull-request: bpf 2022-11-04
+    https://git.kernel.org/netdev/net/c/f2c24be55bb7
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> And it breaks bisect.
-> Please make sure to do a full vmtest.sh for every patch in the series.
