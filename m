@@ -2,82 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0763F618F6C
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C89618FA4
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 05:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbiKDEKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 00:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S231373AbiKDEx4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 00:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbiKDEKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 00:10:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710351F2C0;
-        Thu,  3 Nov 2022 21:10:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8420062091;
-        Fri,  4 Nov 2022 04:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D56C0C433B5;
-        Fri,  4 Nov 2022 04:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667535016;
-        bh=WVmc/zT6xkjPYdilU0jlgr4Zxr1wW2/RoDbqoDEgp04=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MMXlzhtUkBKPsR9tIN1P8zMdYCCuTMweJbpmOMeIvPJlbgPm1/RmeEplXmDDsXKCp
-         xgeZZBu6/07Pk1czA+z1QH32jn6pWRA2Wss7jrYc5Pr8Qn2dhhGk4Tno33w3cDvXyP
-         ZgHX0NVz+b6WFEZ1gw9JDihrUqrd5Knxgcpq21h7seg+tSlmPCvdYWKoc6m/fkbJy9
-         VEXUNegthsUuK6akmBSof5dlPs3lo53uehWCP+0I1uvwBVh3Qb0yPIORRKJ5JgdMrs
-         8MZ/iadQJIevSKCI8atWNQoCEj/UyttIcQjmYkjUYW08Vg7Bl9ly+iLovunbT+L3GW
-         Q0Pxy19WHZEXQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8635E270D2;
-        Fri,  4 Nov 2022 04:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231364AbiKDExo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 00:53:44 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E7B28714
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 21:52:41 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ud5so10482121ejc.4
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 21:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jnO5rChcrVcEFNvsuWUGEjI4P5+QqCyHMxtEnHq9pfk=;
+        b=FDAwxRiUVhuB9NpLGCpNYyv4gOHJcGj4BlbVMkjx5IkiGNDR85o5dUaj3TpsELbTGQ
+         aQCMxq0bbg1kkQ4pIFQ1BdXkBXcD/SXgXPg0r7anN1Lfe9dJyV3ZB9I+X61Srx378X3x
+         iS20SrUZAuiCdRfqlsqHNTW6Lrm6wmlFj3q52ZmpPqZKQVTrrcu0Fck/yawmvDzBi+X8
+         Vd4/yR9Awi5BiyZC69eCbgZDp+2mJY8bsWAcT7XFanvfuBhyyvujIdOoX1bsrIE3lk9j
+         ROjXJYMgbrNlf16xnhn+hMp9ZrfHDHiUWhxFV9sctRVA3KcuQetr1pzpUXzZAG0l5Vei
+         6HRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jnO5rChcrVcEFNvsuWUGEjI4P5+QqCyHMxtEnHq9pfk=;
+        b=vg5ot4cbwRr2kGlZgWyZLLs3wMdzufF5fpjhkPaVweev2vEmIK9fhoiWmHauymwumq
+         of3YUBnjtDm8LSvX0muUJFAi840fG3d/TnAn7TevbrolQA7gDO1deFvdkEkrneufLWdL
+         dkBOAoAFRrcLKvaC8SmGMdBK+RDha8EKlSCdV+bbwxVkzivf98ZwsH2auFxDp5ggQha2
+         WXj0bZBVThXXFlaLvx/IwQh7XsddGcMcbpl2t644CtWkg/kVctzuyFJQH+Wx10lGrZg/
+         GohppcK28WFFuPwYboR1T+MM4vBGZXrVVTQ2pxXuJeYsd5o7VfD21wh+S9p8OoQZVLFG
+         /z7A==
+X-Gm-Message-State: ACrzQf2B5CZI/kZbdrfKArkYWOh8vOXEms87zrY0ugmRH8JvbBMX6o1S
+        RE5MEYXw98fwArMqirQOSYkNhIWwLml123jVBWobso6E
+X-Google-Smtp-Source: AMsMyM6S043ebVoLL/tHCeyn2kkNYA7dXvU+FwrVi6OXNIrsbPSi1j6nlkukjL8S1Abb6c1B3Mw6E8P5/SGNHrTjIKA=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr32826215ejb.633.1667537559432; Thu, 03
+ Nov 2022 21:52:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2022-11-04
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166753501675.4086.8840380962219739735.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Nov 2022 04:10:16 +0000
-References: <20221104000445.30761-1-daniel@iogearbox.net>
-In-Reply-To: <20221104000445.30761-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-8-memxor@gmail.com>
+In-Reply-To: <20221103191013.1236066-8-memxor@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 3 Nov 2022 21:52:28 -0700
+Message-ID: <CAADnVQJ22CO=E2vsJo4f-Y1W-9EoabiCZ4MfDkx55cwPHpwJ=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 07/24] bpf: Consolidate spin_lock, timer
+ management into btf_record
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Delyan Kratunov <delyank@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Nov 3, 2022 at 12:11 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+> +               rec->field_mask |= info_arr[i].type;
+>                 rec->fields[i].offset = info_arr[i].off;
+>                 rec->fields[i].type = info_arr[i].type;
 
-This pull request was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+I spent an hour to figure out that this hunk should have been
+in the previous commit. Sigh.
 
-On Fri,  4 Nov 2022 01:04:45 +0100 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 8 non-merge commits during the last 3 day(s) which contain
-> a total of 10 files changed, 113 insertions(+), 16 deletions(-).
-> 
-> [...]
-
-Here is the summary with links:
-  - pull-request: bpf 2022-11-04
-    https://git.kernel.org/netdev/net/c/f2c24be55bb7
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Anyway, I fixed all the bugs I found in the patch 6 and
+pushed the first 6 patches, since we really need to
+make progress here quickly.
+Too many people are waiting on this set.
