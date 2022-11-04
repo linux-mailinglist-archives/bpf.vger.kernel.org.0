@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8DC618F00
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD18618F01
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbiKDD12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        id S229563AbiKDD1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbiKDD0N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 23:26:13 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6376A23A
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:50 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id p5-20020a170902e74500b001884ba979f8so2629605plf.17
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:50 -0700 (PDT)
+        with ESMTP id S231527AbiKDD0P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 23:26:15 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4891B29D
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:52 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id oo18-20020a17090b1c9200b0020bdba475afso4786829pjb.4
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r4JpR16+tuxaqATGwqLht6317RQRMwdPquwFUdUGcE0=;
-        b=KgBZp53ORsmoHMHeKkqIUp3Z4DKNb8PsjQD7Fr/0TVyAW8OicfTdIvcZ71SSXcKdWW
-         otvZaT5RXe5W4zLZLjdPLmN90+UKobEJzT7nfDPmOnzoE2/GJ+53KO1opPO9hIwlHttB
-         n+iXsBEc0R1Wm4OXFiT4DBPQV8BI6hSy15JDRfXLZQLfz/UeBf9nm0qDADEkSi8WIpaB
-         MwoXY6dbeiE6W3cY7MDtI+osaVi40U2pxlqcHjMAJlCO7etxFvowbfjWXvrxw8caT+k8
-         HMbOT5npxxs5WWbwANAxoH62eS3vtez63xcB5Hp/7GXee6n6SXiUtEInNsxoPYmzcyuN
-         nGZg==
+        bh=zmaQvtYLsF9TKtg/u36OM0LhcEYMaV9waLpFb4MnS1Q=;
+        b=EIrTEzpC8kZmxoComMULXSMr5kl6knLvkr/D1iegqzP0gJ4OnFl3H2XunCuW5lcAtv
+         S27IgOFxZIaHbAgjmox69AMpTnhy0/qg3qTTdRproJE0WfLdAGVsv4iwsfgBKTg9g+1t
+         ireXoSYPjWIpzxVMFYvL93yoiC+OaZxakfk/+/B9R4HAcpTSmXJXgr1iwjfEhr57xiQB
+         7/JWMuDJ60+KbCNg/WYP+D58vKiQaQdm2ucoqos+Qy9l55qC/x6L4bHDav7lzYAH7GNR
+         M+ZMh3MgD2bWZ29lKna28omiu/IPSbzriNJeiCuMi9mwIzVWmdutiXLn4+Bywq82ahB2
+         kpug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r4JpR16+tuxaqATGwqLht6317RQRMwdPquwFUdUGcE0=;
-        b=LPCaJe1Z0CRZBUPVDWrQ9tTgfqawIdvlR8NJac6HRY+XwkhRIkyQAvntCUffs9uwtj
-         CclnneCIN9jp6rLxJCCCTugEbVuoy3rT4DmPt6BIWlx+K/18idzYuDi6o+Kt/4jw0O2S
-         C92GtV4H0lIOStZoN8TZUC7kDNt/wIyWB6Hzt636fhSk5/As5C5kbhKhlPX0VlqabQX5
-         1ic0tRLZYaTTsaqQUCoN8thlCQnx4j0WmCWbJzv9/o8zBSKQMnaobdSIOmcQAzIiQn3H
-         KE48ljTUeTbSH/thV9oJbPUpmjKuB55vxmAv0QlrZl7EcL1GYp71kW1k0K7UPVnhr8v6
-         khvQ==
-X-Gm-Message-State: ACrzQf3TkJ27UWVc4AH6PO9+QfqNTrXKI2b04qSx8HIIrTFRGsydLxcf
-        T0MMWADmFkw9Dsw5yRAax2hPZcbT8if4h4HMtBgkc4sT1TR6BNsr4HindoNrrQ2DD3xTB4ezm/6
-        LI6ZxpwdMAoxcI0Fe4CjvjuET0ke1A2LRv8ScrOA+WadbEK4TDA==
-X-Google-Smtp-Source: AMsMyM7Dz43l6fUcBOSij/8tA745Rndz167891pfCCKpGvaPbvZP68PJFws6sSm7DbpGTaWH/ocIEZ4=
+        bh=zmaQvtYLsF9TKtg/u36OM0LhcEYMaV9waLpFb4MnS1Q=;
+        b=A6a5+KiTWk5ZpJOJDPaGM/A7b/5tu5E1KIbOXqXfJSHq38f/rOsv5QqFxzDM4jX3O3
+         wMZVs7Mc6btR3cUOJgdK0sPYvz28dQa+G0yirXFoELR6k7OorK1UVbW/BkzNyeEsEGOI
+         H9kVICwtUZhJK5vk+OpxDTNgonkTLnJH/Qkvjh2j9QqXWvw1BUY4yI0Vobz5qwcVusTw
+         JsprELNROuxJL63Cb3g26duC9RCHI2XPbVo0QBecNwqgjfqewRhgE6I+qWj0+6ierxk1
+         JqxIidQwneSuuAxJRVppvzSf+WBTyzGeMAoSpxjNyRWGUhYYymRDvTyTy3Kb7zDTJ5ts
+         ZPkg==
+X-Gm-Message-State: ACrzQf3eBQKlaVNL6fZn57wf1DdnFYaPV2QW/SR42akA0mDZuod2Eq15
+        RcdYDLmDHs3oebEzFfbtcGFPGsAbg0PY+hPEsUbvBBIzakn3AIMCAHfW9DJ0TsWBa7D5ESmjPge
+        0Kvdu/EZ2f0LyzbOZ1V852Ux4sgCWam/ykrxq51c3mj1YKCqNgA==
+X-Google-Smtp-Source: AMsMyM7RzevfVCfpk+v3vHhvFphBW61C6xlIKEHis1h+1wQyUVW4C0FrBXHcsgtDMcGjz6TIwnaxeoQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:419a:b0:56c:3696:ad5f with SMTP id
- ca26-20020a056a00419a00b0056c3696ad5fmr245016pfb.30.1667532349728; Thu, 03
- Nov 2022 20:25:49 -0700 (PDT)
-Date:   Thu,  3 Nov 2022 20:25:27 -0700
+ (user=sdf job=sendgmr) by 2002:a17:902:c40a:b0:186:ba20:76fa with SMTP id
+ k10-20020a170902c40a00b00186ba2076famr33267866plk.55.1667532351618; Thu, 03
+ Nov 2022 20:25:51 -0700 (PDT)
+Date:   Thu,  3 Nov 2022 20:25:28 -0700
 In-Reply-To: <20221104032532.1615099-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20221104032532.1615099-1-sdf@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221104032532.1615099-10-sdf@google.com>
-Subject: [RFC bpf-next v2 09/14] ice: Introduce ice_xdp_buff wrapper for xdp_buff
+Message-ID: <20221104032532.1615099-11-sdf@google.com>
+Subject: [RFC bpf-next v2 10/14] ice: Support rx timestamp metadata for xdp
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -79,7 +79,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No functional changes. Boilerplate to allow stuffing more data after xdp_buff.
+COMPILE-TESTED ONLY!
 
 Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: David Ahern <dsahern@gmail.com>
@@ -95,95 +95,139 @@ Cc: xdp-hints@xdp-project.net
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx.c | 30 +++++++++++++----------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h      |  5 ++
+ drivers/net/ethernet/intel/ice/ice_main.c |  1 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c | 75 +++++++++++++++++++++++
+ 3 files changed, 81 insertions(+)
 
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index f88ee051e71c..c51a392d64a4 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -925,6 +925,11 @@ int ice_open_internal(struct net_device *netdev);
+ int ice_stop(struct net_device *netdev);
+ void ice_service_task_schedule(struct ice_pf *pf);
+ 
++struct bpf_insn;
++struct bpf_patch;
++void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
++		      struct bpf_patch *patch);
++
+ /**
+  * ice_set_rdma_cap - enable RDMA support
+  * @pf: PF struct
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 1f27dc20b4f1..8ddc6851ef86 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -9109,4 +9109,5 @@ static const struct net_device_ops ice_netdev_ops = {
+ 	.ndo_xdp_xmit = ice_xdp_xmit,
+ 	.ndo_xsk_wakeup = ice_xsk_wakeup,
+ 	.ndo_get_devlink_port = ice_get_devlink_port,
++	.ndo_unroll_kfunc = ice_unroll_kfunc,
+ };
 diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index dbe80e5053a8..1b6afa168501 100644
+index 1b6afa168501..e9b5e883753e 100644
 --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
 +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -1096,6 +1096,10 @@ ice_is_non_eop(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc)
- 	return true;
- }
+@@ -7,6 +7,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/prefetch.h>
+ #include <linux/bpf_trace.h>
++#include <linux/bpf_patch.h>
+ #include <net/dsfield.h>
+ #include <net/mpls.h>
+ #include <net/xdp.h>
+@@ -1098,8 +1099,80 @@ ice_is_non_eop(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc)
  
-+struct ice_xdp_buff {
-+	struct xdp_buff xdp;
-+};
+ struct ice_xdp_buff {
+ 	struct xdp_buff xdp;
++	struct ice_rx_ring *rx_ring;
++	union ice_32b_rx_flex_desc *rx_desc;
+ };
+ 
++void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
++		      struct bpf_patch *patch)
++{
++	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_EXPORT_TO_SKB)) {
++		return xdp_metadata_export_to_skb(prog, patch);
++	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
++		/* return true; */
++		bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
++	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
++		bpf_patch_append(patch,
++			/* Loosely based on ice_ptp_rx_hwtstamp. */
++
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++
++			/* r5 = ((struct ice_xdp_buff *)r1)->rx_ring; */
++			BPF_LDX_MEM(BPF_DW, BPF_REG_5, BPF_REG_1,
++				    offsetof(struct ice_xdp_buff, rx_ring)),
++			/* if (r5 == NULL) return; */
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_5, 0, S16_MAX),
++
++			/* r5 = rx_ring->cached_phctime; */
++			BPF_LDX_MEM(BPF_DW, BPF_REG_5, BPF_REG_5,
++				    offsetof(struct ice_rx_ring, cached_phctime)),
++			/* if (r5 == 0) return; */
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_5, 0, S16_MAX),
++
++			/* r4 = ((struct ice_xdp_buff *)r1)->rx_desc; */
++			BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_1,
++				    offsetof(struct ice_xdp_buff, rx_desc)),
++
++			/* r3 = rx_desc->wb.time_stamp_low; */
++			BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_4,
++				    offsetof(union ice_32b_rx_flex_desc, wb.time_stamp_low)),
++			/* r3 = r3 & ICE_PTP_TS_VALID; */
++			BPF_ALU64_IMM(BPF_AND, BPF_REG_3, 1),
++			/* if (r3 == 0) return; */
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_3, 0, S16_MAX),
++
++			/* r3 = rx_desc->wb.flex_ts.ts_high; */
++			BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_4,
++				    offsetof(union ice_32b_rx_flex_desc, wb.flex_ts.ts_high)),
++
++			/* r5 == cached_phc_time; */
++			/* r3 == in_tstamp */
++
++			/* r4 = in_tstamp - pch_time_lo; (delta) */
++			BPF_MOV32_REG(BPF_REG_4, BPF_REG_3),
++			BPF_ALU32_REG(BPF_SUB, BPF_REG_4, BPF_REG_5),
++
++			/* if (delta <= U32_MAX / 2) { */
++			BPF_JMP_IMM(BPF_JGT, BPF_REG_4, U32_MAX / 2, 3),
++
++			/*	return cached_pch_time + delta */
++			BPF_MOV64_REG(BPF_REG_0, BPF_REG_4),
++			BPF_ALU32_REG(BPF_ADD, BPF_REG_0, BPF_REG_5),
++			BPF_JMP_A(4),
++
++			/* } else { */
++			/*	r4 = cached_phc_time_lo - in_tstamp; (delta) */
++			BPF_MOV64_REG(BPF_REG_4, BPF_REG_5),
++			BPF_ALU32_REG(BPF_SUB, BPF_REG_4, BPF_REG_3),
++
++			/*	return cached_pch_time - delta */
++			BPF_MOV64_REG(BPF_REG_0, BPF_REG_5),
++			BPF_ALU32_REG(BPF_SUB, BPF_REG_0, BPF_REG_4),
++			/* } */
++		);
++	}
++}
 +
  /**
   * ice_clean_rx_irq - Clean completed descriptors from Rx ring - bounce buf
   * @rx_ring: Rx descriptor ring to transact packets on
-@@ -1117,14 +1121,14 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
- 	unsigned int xdp_res, xdp_xmit = 0;
- 	struct sk_buff *skb = rx_ring->skb;
- 	struct bpf_prog *xdp_prog = NULL;
--	struct xdp_buff xdp;
-+	struct ice_xdp_buff ixbuf;
- 	bool failure;
- 
- 	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
- #if (PAGE_SIZE < 8192)
- 	frame_sz = ice_rx_frame_truesize(rx_ring, 0);
- #endif
--	xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
-+	xdp_init_buff(&ixbuf.xdp, frame_sz, &rx_ring->xdp_rxq);
- 
- 	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
- 	if (xdp_prog)
-@@ -1178,30 +1182,30 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
- 		rx_buf = ice_get_rx_buf(rx_ring, size, &rx_buf_pgcnt);
- 
- 		if (!size) {
--			xdp.data = NULL;
--			xdp.data_end = NULL;
--			xdp.data_hard_start = NULL;
--			xdp.data_meta = NULL;
-+			ixbuf.xdp.data = NULL;
-+			ixbuf.xdp.data_end = NULL;
-+			ixbuf.xdp.data_hard_start = NULL;
-+			ixbuf.xdp.data_meta = NULL;
- 			goto construct_skb;
- 		}
- 
- 		hard_start = page_address(rx_buf->page) + rx_buf->page_offset -
- 			     offset;
--		xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-+		xdp_prepare_buff(&ixbuf.xdp, hard_start, offset, size, true);
- #if (PAGE_SIZE > 4096)
+@@ -1196,6 +1269,8 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
  		/* At larger PAGE_SIZE, frame_sz depend on len size */
--		xdp.frame_sz = ice_rx_frame_truesize(rx_ring, size);
-+		ixbuf.xdp.frame_sz = ice_rx_frame_truesize(rx_ring, size);
+ 		ixbuf.xdp.frame_sz = ice_rx_frame_truesize(rx_ring, size);
  #endif
++		ixbuf.rx_ring = rx_ring;
++		ixbuf.rx_desc = rx_desc;
  
  		if (!xdp_prog)
  			goto construct_skb;
- 
--		xdp_res = ice_run_xdp(rx_ring, &xdp, xdp_prog, xdp_ring);
-+		xdp_res = ice_run_xdp(rx_ring, &ixbuf.xdp, xdp_prog, xdp_ring);
- 		if (!xdp_res)
- 			goto construct_skb;
- 		if (xdp_res & (ICE_XDP_TX | ICE_XDP_REDIR)) {
- 			xdp_xmit |= xdp_res;
--			ice_rx_buf_adjust_pg_offset(rx_buf, xdp.frame_sz);
-+			ice_rx_buf_adjust_pg_offset(rx_buf, ixbuf.xdp.frame_sz);
- 		} else {
- 			rx_buf->pagecnt_bias++;
- 		}
-@@ -1214,11 +1218,11 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
- construct_skb:
- 		if (skb) {
- 			ice_add_rx_frag(rx_ring, rx_buf, skb, size);
--		} else if (likely(xdp.data)) {
-+		} else if (likely(ixbuf.xdp.data)) {
- 			if (ice_ring_uses_build_skb(rx_ring))
--				skb = ice_build_skb(rx_ring, rx_buf, &xdp);
-+				skb = ice_build_skb(rx_ring, rx_buf, &ixbuf.xdp);
- 			else
--				skb = ice_construct_skb(rx_ring, rx_buf, &xdp);
-+				skb = ice_construct_skb(rx_ring, rx_buf, &ixbuf.xdp);
- 		}
- 		/* exit if we failed to retrieve a buffer */
- 		if (!skb) {
 -- 
 2.38.1.431.g37b22c650d-goog
 
