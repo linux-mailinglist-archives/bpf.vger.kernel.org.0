@@ -2,224 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A744619453
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 11:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22A16194FD
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 12:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbiKDKUN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 06:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        id S231580AbiKDLAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 07:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbiKDKUK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 06:20:10 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFA523F;
-        Fri,  4 Nov 2022 03:20:09 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id l14so6414327wrw.2;
-        Fri, 04 Nov 2022 03:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6P8xxdGWubsmXrylRSzncfWm/SKD8aRP3wQQ4UiL6hI=;
-        b=n/r2ULB3Fyty+hwEg7z6CRvCbq8QI1ODnk/0bZfnnUbIMGmRRliuzQoKOzOFKCS8+G
-         8fAGsscJKZwXTd9s5yxEvKwjMTbP1E7q454TSAxO4dxsNxsfOz6XMcmXo/ZUe1frymXN
-         LHa6ZQzV/HKXM8T1NJK/QzIrbWfAcMi0SAJDSyzvJWUvPTksU6dWU6KAIxEqDLzERH/P
-         h0+8s5q32vKbMLUCvzpOt38lLz8+LbrrOUZE+6P/Pk1EO5EIdJbNZ5qemtQNKTXDtcVr
-         hidL+NlGXLbzVsJHReBtkHXawadTULcFYYLGjVJfEhtSU2CEFoKjOAI20DLFw02LlKu8
-         18Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6P8xxdGWubsmXrylRSzncfWm/SKD8aRP3wQQ4UiL6hI=;
-        b=KPpYKv/iCSY/r2jDZRlJobMr8HtFH8TfPlqL6zFdNXv10FsEeJXg8EjIP3hO/DlS3V
-         Zg21kobtT9SRPQMuAGd59H1KEVnqzN/DQgawNaTdEv4A+Ce4HRXDfLJEDgqvMXJbgowW
-         ZYcFXzAbEvUXo46ZPefiZVZAI55YJoQfzJRZaO+ttvJ1Uypqom8I+jSgelQuw136xaMR
-         UQsKq9JHhlb3NAQ78y18hOfIZEIo5+O9FtxDbQ5J0DiClbppeDjTIlhmBV8QUsvEzeTJ
-         dE1pOs7pVlX9XdhLEclg/H4JBcwE6CzfiwLqUJfKs3wokBPPxPj2TWCzq2P2BHrWHB+3
-         0hAQ==
-X-Gm-Message-State: ACrzQf2RhLhDysI5Z+11f12nwB4v7CfY86pDdms4iTSD/O+e0++GLKGu
-        zTeuOhPyYK5g/ARyl7RLN7OtxGBwEmik7w==
-X-Google-Smtp-Source: AMsMyM6kmdIVZ8e+xXiNC3fmreH0pC43qtKWiOp0laBnpdZw0Vns8T571zt4KquZXcBhhwzlyI2HnQ==
-X-Received: by 2002:a5d:4887:0:b0:226:ed34:7bbd with SMTP id g7-20020a5d4887000000b00226ed347bbdmr21079930wrq.561.1667557207079;
-        Fri, 04 Nov 2022 03:20:07 -0700 (PDT)
-Received: from imac.fritz.box ([2a02:8010:60a0:0:69c4:31e5:f2b8:3146])
-        by smtp.gmail.com with ESMTPSA id bj4-20020a0560001e0400b002322bff5b3bsm3846262wrb.54.2022.11.04.03.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 03:20:06 -0700 (PDT)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maryam Tahhan <mtahhan@redhat.com>,
-        Donald Hunter <donald.hunter@gmail.com>
-Subject: [PATCH bpf-next v2] docs/bpf: document BPF ARRAY_OF_MAPS and HASH_OF_MAPS
-Date:   Fri,  4 Nov 2022 10:19:28 +0000
-Message-Id: <20221104101928.9479-1-donald.hunter@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S231208AbiKDLAU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 07:00:20 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D58D20F50;
+        Fri,  4 Nov 2022 04:00:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 93248CE2BA9;
+        Fri,  4 Nov 2022 11:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E41B3C43470;
+        Fri,  4 Nov 2022 11:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667559617;
+        bh=nFblqHRepnbgnMP/bfhjFkuaedd0Cm2zjzCq6sFY8WM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=A0GC/c8V3Qi5fopYUf8unh5wI75tUIO7/oZfWo5wlJZRa+NBgj9O97B0xwYeh17vQ
+         JlcksBbeiTuRfGgNd8gSMLZNjRWx4zaoVIad5KKwK837V1qPOHQc9hVwCKTiI2TlTA
+         tZ+jZGBHzZlMWEVzpCNhMQw+GC3YkKLXxTczozZHYZX/7xlMzkHqG0x0MRp+6E3aEh
+         sskFkJbhuLY9/pYraC4TP4sR9RtZdXIrAcGdvKRoIhIq98dOLh5KHS4sIieuWSB1u8
+         UE1kBpMSUO1VzFWzTWHm9XLJQAsf4Q1ZuSj1B1fSRaZc2cBPMhkxR6ERw/w95ZuPOS
+         svlEpbdqRhG2Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C4895E52509;
+        Fri,  4 Nov 2022 11:00:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net v2] net: tun: Fix memory leaks of napi_get_frags
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166755961680.11617.8800451482056670890.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 11:00:16 +0000
+References: <1667382079-6499-1-git-send-email-wangyufen@huawei.com>
+In-Reply-To: <1667382079-6499-1-git-send-email-wangyufen@huawei.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        peterpenkov96@gmail.com
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
-including usage and examples.
+Hello:
 
-Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
----
-v1 -> v2:
-- Fix formatting nits
-- Tidy up code snippets as suggested by Maryam Tahhan
----
- Documentation/bpf/map_of_maps.rst | 129 ++++++++++++++++++++++++++++++
- 1 file changed, 129 insertions(+)
- create mode 100644 Documentation/bpf/map_of_maps.rst
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/Documentation/bpf/map_of_maps.rst b/Documentation/bpf/map_of_maps.rst
-new file mode 100644
-index 000000000000..d5a09bc669a3
---- /dev/null
-+++ b/Documentation/bpf/map_of_maps.rst
-@@ -0,0 +1,129 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2022 Red Hat, Inc.
-+
-+========================================================
-+BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
-+========================================================
-+
-+.. note::
-+   - ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` were
-+     introduced in kernel version 4.12
-+
-+``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` provide general
-+purpose support for map in map storage. One level of nesting is supported, where
-+an outer map contains instances of a single type of inner map, for example
-+``array_of_maps->sock_map``.
-+
-+When creating an outer map, an inner map instance is used to initialize the
-+metadata that the outer map holds about its inner maps. This inner map has a
-+separate lifetime from the outer map and can be deleted after the outer map has
-+been created.
-+
-+The outer map supports element update and delete from user space using the
-+syscall API. A BPF program is only allowed to do element lookup in the outer
-+map.
-+
-+.. note::
-+   - Multi-level nesting is not supported.
-+   - Any BPF map type can be used as an inner map, except for
-+     ``BPF_MAP_TYPE_PROG_ARRAY``.
-+   - A BPF program cannot update or delete outer map entries.
-+
-+Array of Maps
-+-------------
-+
-+For ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` the key is an unsigned 32-bit integer index
-+into the array. The array is a fixed size with ``max_entries`` elements that are
-+zero initialized when created.
-+
-+Hash of Maps
-+------------
-+
-+For ``BPF_MAP_TYPE_HASH_OF_MAPS`` the key type can be chosen when defining the
-+map.
-+
-+The kernel is responsible for allocating and freeing key/value pairs, up
-+to the max_entries limit that you specify. Hash maps use pre-allocation
-+of hash table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be
-+used to disable pre-allocation when it is too memory expensive.
-+
-+Usage
-+=====
-+
-+Kernel BPF
-+----------
-+
-+.. c:function::
-+   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-+
-+Inner maps can be retrieved using the ``bpf_map_lookup_elem()`` helper. This
-+helper returns a pointer to the inner map, or ``NULL`` if no entry was found.
-+
-+Examples
-+========
-+
-+Kernel BPF
-+----------
-+
-+This snippet shows how to create an array of devmaps in a BPF program. Note that
-+the outer array can only be modified from user space using the syscall API.
-+
-+.. code-block:: c
-+
-+    struct inner_map {
-+            __uint(type, BPF_MAP_TYPE_DEVMAP);
-+            __uint(max_entries, 32);
-+            __type(key, __u32);
-+            __type(value, __u32);
-+    } inner_map SEC(".maps");
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+            __uint(max_entries, 32);
-+            __type(key, __u32);
-+            __type(value, __u32);
-+            __array(values, struct inner_map);
-+    } outer_map SEC(".maps");
-+
-+User Space
-+----------
-+
-+This snippet shows how to create an array based outer map:
-+
-+.. code-block:: c
-+
-+    int create_outer_array(int inner_fd) {
-+            int fd;
-+
-+            LIBBPF_OPTS(bpf_map_create_opts, opts);
-+            opts.inner_map_fd = inner_fd;
-+            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS,
-+                                "example_array",       /* name */
-+                                sizeof(__u32),         /* key size */
-+                                sizeof(__u32),         /* value size */
-+                                256,                   /* max entries */
-+                                &opts);                /* create opts */
-+            return fd;
-+    }
-+
-+
-+This snippet shows how to add an inner map to an outer map:
-+
-+.. code-block:: c
-+
-+    int add_devmap(int outer_fd, int index, const char *name) {
-+            int fd;
-+
-+            fd = bpf_map_create(BPF_MAP_TYPE_DEVMAP, name,
-+                                sizeof(__u32), sizeof(__u32), 256, NULL);
-+            if (fd < 0)
-+                    return fd;
-+
-+            return bpf_map_update_elem(outer_fd, &index, &fd, BPF_NOEXIST);
-+    }
-+
-+References
-+==========
-+
-+- https://lore.kernel.org/netdev/20170322170035.923581-3-kafai@fb.com/
-+- https://lore.kernel.org/netdev/20170322170035.923581-4-kafai@fb.com/
+On Wed, 2 Nov 2022 17:41:19 +0800 you wrote:
+> kmemleak reports after running test_progs:
+> 
+> unreferenced object 0xffff8881b1672dc0 (size 232):
+>   comm "test_progs", pid 394388, jiffies 4354712116 (age 841.975s)
+>   hex dump (first 32 bytes):
+>     e0 84 d7 a8 81 88 ff ff 80 2c 67 b1 81 88 ff ff  .........,g.....
+>     00 40 c5 9b 81 88 ff ff 00 00 00 00 00 00 00 00  .@..............
+>   backtrace:
+>     [<00000000c8f01748>] napi_skb_cache_get+0xd4/0x150
+>     [<0000000041c7fc09>] __napi_build_skb+0x15/0x50
+>     [<00000000431c7079>] __napi_alloc_skb+0x26e/0x540
+>     [<000000003ecfa30e>] napi_get_frags+0x59/0x140
+>     [<0000000099b2199e>] tun_get_user+0x183d/0x3bb0 [tun]
+>     [<000000008a5adef0>] tun_chr_write_iter+0xc0/0x1b1 [tun]
+>     [<0000000049993ff4>] do_iter_readv_writev+0x19f/0x320
+>     [<000000008f338ea2>] do_iter_write+0x135/0x630
+>     [<000000008a3377a4>] vfs_writev+0x12e/0x440
+>     [<00000000a6b5639a>] do_writev+0x104/0x280
+>     [<00000000ccf065d8>] do_syscall_64+0x3b/0x90
+>     [<00000000d776e329>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v2] net: tun: Fix memory leaks of napi_get_frags
+    https://git.kernel.org/netdev/net/c/1118b2049d77
+
+You are awesome, thank you!
 -- 
-2.35.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
