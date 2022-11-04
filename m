@@ -2,137 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017BE618D5E
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 02:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 092B9618D66
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 02:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbiKDBB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 21:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
+        id S229567AbiKDBEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 21:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiKDBB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 21:01:28 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2089.outbound.protection.outlook.com [40.107.94.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2402BC5;
-        Thu,  3 Nov 2022 18:01:26 -0700 (PDT)
+        with ESMTP id S229485AbiKDBEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 21:04:46 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAF0E91
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 18:04:45 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A3NTgHW014052;
+        Thu, 3 Nov 2022 18:04:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=MS0jck8h5JcoRQQXr1qK3Y0kYqskMKfCbjcuPIaa+l0=;
+ b=ftfdq3RwceEjXELKJk7j/UHazDFALtHynqaADaspDDPg9ENxdv6kTtLLin8y1VRtcKSJ
+ AwxKkC3eKBATwJzwU64f2sl4dGUQCadWYXfzvPPDIZyoEuOOkPQ4p5w5AnlDdv2JoQEp
+ ztIUJuoXjYnGH0hW8I2bWBLCvxplnQTL51LrRVsmNrbIlwKLgzpQCuaM/DJr11uncJXr
+ 4ETv1wEzoLWC9lvb1PRnxWgi2mZ4KLIPwSqVDFocLbVyfcVJF8g9vRjMT3FWyjl5cn3H
+ KO8XGcX0YBfCmOLwy92Mzf3RcrbhxjC12BuLc67SP21SaoVbzde0iVP7+3iefnUWDdXb pg== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kmqbn8kck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Nov 2022 18:04:31 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SX06+mrHqy/bofCh99wn2wz9a7ZCN/UeXVf7lMDlpQZQpUGZcxfB7KsOuAt1iC6mFzzwSsXJF18hG9ctCJl6cG055QdjuQH+hoLfLvAK16UDo6WS12Mb9ef5u1LETIYr0RbxDZY9nKFxg+pp4tTJOmmZF2nnf6VVqVaGbpauHCrbSpwhKoMz4sFSq5W1TYObIXfQKpnk6orainV9WMl1nHcDvk38kBa4m31OhcItGY//2JQ3YiPdciA87qZUyJT8KKdCpTjTUz6tY1nnJAU3v5L0M26OqNMBeJplwfrovOH3EE88ExlB4HA3YXYI+1MHfK3CBxF6Rt06k29UMzmXGQ==
+ b=cq8W1bAekR+GrhZNrGJ0k3ZaL5gLNU2aGKL5ThRha+5Z3uXpZAgkCVgVPL1QFqufyyJ4TDF25niSnkQQJqmqQ9LEjwRwV6aTnM9KtGxNn7GIt3ZZz7YZZcdYl6yE2u84vYau9fccxmug9q7mk/1csXM+scymF5UyDzyPDqYDDkWiVc61XlaTCrqususVG8o3C6qasHC1aNVe0hrINDmp0hGthBiDCBlLF0bG6VAJyFzKAztB/xLDpcbJgrvIwU5e1fRidoRHrfHyNO+HPcjOv+9gIZ8YITGtmIDDiwJfTfZeisZlaklsqH557/y0OK+0kZxlAye0WoAS/oX4K/pklw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lEP7l7aPJ0HVUr1jSlstmTerFfJ5jA8N/g7XJ3oH60Q=;
- b=VS5mRkFesk4Z+xGVJvZHsvkSxcju2YyxwTiUU6LxcvQ1U/AGZL4dA/hq53OG/6/dcI2q29mR4ngaLJoQ1dl/nWrUJil4is5r/D+b5gsjewid43pzTcWos2lsPR3c+yDn7+VsnsPMtb/A66xc3mXCjiwDsjhhqJ4BbNYYiNR53jKC6iubedml39my2n4mb7HnkrsztmtB7iavDXQKy/BpknDl7TdksKzl6uZbXMBPraCiAtaHY3jhq6DFqLQznuLFFQlrEImoDPwQiIiE4+fUhPVaekmv0Q5B6JUKLWtWY2GPg7l9D41QrNKvh0HALaE1RDxA9OwGBi+IuVH4muEGIw==
+ bh=MS0jck8h5JcoRQQXr1qK3Y0kYqskMKfCbjcuPIaa+l0=;
+ b=kNIYXBsclT1AeiRSPYL3bxKzJJR2OEMPjKlwLdQR7yCDrdljX2QMrwt+IBlOwvIYkAKvyIVC3z4hIUfzUJUGrVzqyxfD/5gVqUZecGfV52fzubgpUUXZ/O3iHcb2jegu42vbD4zMccQ97w82ouE2B9KqqxqrI99mpDFb5EmPkPVskI9+XCYUJ5XDeYgbA3+7uWG2d+jU3pMRBlHSLDIEmaENV4q6Q+c8tnBhTkfNPEx/Ee4+GU+4GM0VO318ZQvaOlHtUfvdjHTUyNxHJSzB7hGDcx1I0pwrgcUSeETdFKCOTexj0tXep/DDWkuRgEVKeg6stUZCC447uVzhlOxT1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lEP7l7aPJ0HVUr1jSlstmTerFfJ5jA8N/g7XJ3oH60Q=;
- b=PjMxVCty8Xy70+/va2KuN/0fDBOcvQpOUhX85RznRYbzDfKovJB/phZdeYwxMUl15sDR/HlqSAVu8jix3FUoaW0RVAhFKjXYbqjoDwffi6HUOTiD2DHX7rq1E8QC4PQKm+GRjcLP65g0x8icJuGulDlecvvn3mHawsMu3FVU/LBIWvnYBwsEI97nl4jkc7EnnLJWzhfurJ7lEJk6wRXOq9DoxML1vQeDwoa1QusPSUuec5fdiPD9k0QtXPltPsTStZwCJiYbwsf+c84ZjTTm0aae8psdmR+nYyn2Maq/cvrPAHul0Y+SfeUjfNZW05PQm9O6y1aNIASgJrykk5O5og==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB6566.namprd12.prod.outlook.com (2603:10b6:8:8d::16) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from MW4PR15MB4490.namprd15.prod.outlook.com (2603:10b6:303:103::23)
+ by MW4PR15MB4681.namprd15.prod.outlook.com (2603:10b6:303:10a::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.16; Fri, 4 Nov
- 2022 01:01:24 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5769.015; Fri, 4 Nov 2022
- 01:01:24 +0000
-Date:   Thu, 3 Nov 2022 22:01:17 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 15/15] iommufd: Add a selftest
-Message-ID: <Y2RkXV+q0Q6bdTde@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <15-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-X-ClientProxiedBy: BL0PR1501CA0028.namprd15.prod.outlook.com
- (2603:10b6:207:17::41) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Fri, 4 Nov
+ 2022 01:04:28 +0000
+Received: from MW4PR15MB4490.namprd15.prod.outlook.com
+ ([fe80::c42b:4da0:5bf4:177]) by MW4PR15MB4490.namprd15.prod.outlook.com
+ ([fe80::c42b:4da0:5bf4:177%5]) with mapi id 15.20.5791.022; Fri, 4 Nov 2022
+ 01:04:28 +0000
+Message-ID: <2eb74220-7e73-7316-8739-44e5117a8b59@meta.com>
+Date:   Thu, 3 Nov 2022 18:04:25 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.1
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add bpf_rcu_read_lock/unlock helper
+Content-Language: en-US
+To:     Yonghong Song <yhs@meta.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221103072102.2320490-1-yhs@fb.com>
+ <20221103072113.2322563-1-yhs@fb.com>
+ <20221103221800.iqolv5ed2muilrgq@apollo>
+ <d9e7c760-a581-8633-f41a-3e5d122ffc9c@meta.com>
+From:   Alexei Starovoitov <ast@meta.com>
+In-Reply-To: <d9e7c760-a581-8633-f41a-3e5d122ffc9c@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0P220CA0008.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::17) To MW4PR15MB4490.namprd15.prod.outlook.com
+ (2603:10b6:303:103::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6566:EE_
-X-MS-Office365-Filtering-Correlation-Id: 740c9bbb-14f0-4a78-de20-08dabe001809
+X-MS-TrafficTypeDiagnostic: MW4PR15MB4490:EE_|MW4PR15MB4681:EE_
+X-MS-Office365-Filtering-Correlation-Id: 630e6d27-8732-4182-d58a-08dabe008605
+X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GT2zdRz4Iqi6dhj1K6EwRfWcrfghKX5UQ/vbo1fG3W76E9qNK2oel17DJMe/qP6ZbW46S8wWMv38cSyfd8GjxoLczWW10oxWvdzjpoCqq8B5yMpW0xwyrULhxBT5Y00BM3Fa8yA06FNPs107xNvZ/su7IWGgI43S8ue1242cJmmKpKhrDqzbhzJzPuZFVSY0dTY+Im9hIjS0XPA9oDrvKdGmrnTIa23lXd6M+RXkqSiXC1bqTgiqEnh1llXoUjl/ekGtizzqntWrinvTkIi0MFhOx53aAR7OsaAl7BcUMNfKEXE7kgE4waLSAoNgfY3LCEBUMBVV+qGK7ZdMZ1ALIFbEEiU/tcd4AwWS6S773O8EtAlmu6S9aVMXvXj4gIaJZDTWrq+/yEiTEDT1yHku8mzZX4bJN1CE0iraIIgYv/0KD3xEQBS/cWvXqJjTFtPlN1eU36HjRpx6Jx/5HS2qXaqrhXJGOq14Qms+xFmC11i0qJ/+h3EaTku0PhedzDDZzn/LpohwAFOS6qKHwEq0+/eflNJlYtVQ9L1sPEsoU5Z3q7WYhgFT2MoQdZ56ftg47GpImQgqqXZC1/zHBp2sJ0FGIRMcO/tigx0JHDrv/oqdYonQ6JIgdcNNh8iDk4nmuvMtUkPBd0fITCTKVJueUxAo/LOwMjB/H7QODno1mldKERxCxtYTeaZ4cx4HAECiOY7ClG8scPCojnfO5hH3H3TPXR4mOAIDOCjcAdoa6u7Cr5e2Z43rBfblq1eYRxJ4JKBva1ipnkk1/D/nNIGbmg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(366004)(136003)(39860400002)(346002)(451199015)(8936002)(2616005)(83380400001)(4326008)(316002)(36756003)(26005)(6666004)(5660300002)(186003)(7416002)(6512007)(66946007)(66556008)(8676002)(66476007)(41300700001)(6506007)(2906002)(7406005)(6486002)(54906003)(921005)(38100700002)(86362001)(110136005)(478600001)(67856001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: iZjMJbq2iRNUsJjPq7cdue5bQbFCa3kpzDxySztz71lD6AUVNJ+4DjIb96W4U/Mppcf2ysi1gg/1emfwkI5Wa4kfSdEKjfOMXNZZR/cmm8JWNdVduCT1SYS8D+bh0jxbIXvfWRX8qxzZ9HdfeymzY58IGuKBXCxPcK+uSrht/W0LD3fr7HFAEegXWrJ2OoaTk8GgbfsLH2i/cnnqL7ihS7Gnmg0o20uqWd7ocNOJLG1IcPi0tFlE7inL0BG+GwnTr+YPuqrTZU7MO/1mf/bXYzqgC7ASEoN2wlLRlWjHKBTFR8h6+RAJzF8xwT42f8smQosNHFCby5uGD+mJ94Tuo4N1vT11ZysmIQIPkslYYyskZquqZvjrwLrcl+B14d9xMHV5E9MK6eyrgb94n3oXQTiXaadL/jxKpSkR0t1WS6yryJU6vsHJ/PBKgkccj9fzzQpvPudp/6bfC0MUp4irYimTyzd8If/8NF1bnconW/ePhZTjwy/fgjiWPcQSuUsIon3iDe+cOf5Us8bURReiqh/WnNUy5Kg548M3WBYLQCXoMKZqdwyWfWRDu2rvwBLpRKNP975wT+Ta31a4ynVoYTM5zTDpTtXJz9SMtG68YOa/6T4g5dCLvqdEx/tqj8KoW9TgqgH2ui/P9zQC+3UaPbjENkM5AtyuB+lZt4SHev+8F2okr+r3xzZZe9HzVNyD7d539srpUxDhRsTGAZ3RlVQ8SP/PV/y+m2y3PEueP/aTquSIRJ88nUd4M6bqw4zPh2FM8DNEb52g97Lmjghz5XoP3d29q4oSpA98q5nPMwI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4490.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(451199015)(6506007)(53546011)(31686004)(31696002)(6512007)(8936002)(86362001)(2616005)(8676002)(186003)(5660300002)(6486002)(6666004)(4326008)(66476007)(66946007)(66556008)(478600001)(110136005)(83380400001)(54906003)(36756003)(316002)(41300700001)(2906002)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GaCzzxWX2pFPtKET2t2+m8nZyT4BC5i4k8NGyPr4hIaTMZW8UFUkDRyRZXLl?=
- =?us-ascii?Q?gtgPtvA1gP/pZSBKA6iXPORJu4UFJN9JESr2e7Z9UrbXhYMM+CGRVq4+tLr4?=
- =?us-ascii?Q?kxWuFcHdgLp3QIWktq8+2Bqdc2CkgTjd8FoJgswpOjh7lIKlWKr6kT5UvcoY?=
- =?us-ascii?Q?wuuD3gOdbEhGjxJuawGkVUg8vv9/1swk0RsAPSR9CEuOT/5MA/i19nhaa+gr?=
- =?us-ascii?Q?OMX9Q9AHYmIdM3v/HbsScjJeyyEUOtwEJz893puAbyvW1wjlOxszvHQTBVxZ?=
- =?us-ascii?Q?xZhDyKU+TEwgnO9+aRqVUfGh0ArJi+ANCxtBnAhWbO6M9osz8StPXFv27r1I?=
- =?us-ascii?Q?k69OftGlWZyewbKJHvlx42MKhpH97oH4ZWpfoGh0wb6+1imdvqBx1MTs8Soe?=
- =?us-ascii?Q?VEqQsWod6DqPsy7/XMunXoJeDWDputILzb3xINEOqYmTyVq72xU5uU+UzCQz?=
- =?us-ascii?Q?n1gvyXPuBL5Geckd7s4GT6NcJu0SOlbQ3BWlhx6Hva1BrkukpIsrfJXyvH2s?=
- =?us-ascii?Q?pfxWMUevZESTe9KuI5C4elHCppU1C7BFRGdz390TX6xqnlnlFTJ4C4lH/fjB?=
- =?us-ascii?Q?0fxEJnr42h8IhwmurqQ1FKtMUFXJmilItB7YcwdV95il+dFwDem3RprK8uiK?=
- =?us-ascii?Q?yYiZ3vh8OSmbdyXTLnXqSkDnLC3dpe3eZZI5dqCJS2AudLx7mJAYdWb7y1ih?=
- =?us-ascii?Q?6utfT1pfUxaIwgGC9G9ovJ8rTc28W9ohp2fHzBefM6m9LHvNcwPzhccVg/o4?=
- =?us-ascii?Q?4CaqKQiVHN1NMaKIEXDgbPUCkUa9hokjOMAyd0uOnxq/DF3Idj0VjjFWjdH9?=
- =?us-ascii?Q?dWf/FSQxqmIavx/R6FVNpVhI1RVq5yt/GffVap0X8aimhaEllbI+6HLV/8GX?=
- =?us-ascii?Q?gR5fjC1DyhZcZO/Trr7HzXJ0/JhphNolNZRic43TlneBWjbS3wTB4liRj90O?=
- =?us-ascii?Q?krafBZvw7bKqkja2hmwn0CoI7WKNc8nPhTNlNgDP+Aj5PNsTrV1ZNIezOiv2?=
- =?us-ascii?Q?9wcTnukIz/XqMlSDXkPwrNYiKdFTYaiJCSK0RcFxSuF+o+qibO4I9doMMhRs?=
- =?us-ascii?Q?79u/6TS3mzZkwyuLWx/vOdd9gORsOtG6hunYIUq+YZ8NvcoBMHe3Om0e3oc5?=
- =?us-ascii?Q?WSKxoMBfa3AiBx+NMrEcLOsQsSD3q04lF9Og2x7EZLBsButcFc9n2JeiRjau?=
- =?us-ascii?Q?xu71rcDTyNdYzWC0ep9zqZo2UmRxaCVUaHZ06aRUhzVrpsCeSot3+AskVTfk?=
- =?us-ascii?Q?pOCNuOnsKxxdQq5pFak2Zjz3HY7dJ3aE/ZLyMEzajIq5ilO4A9lAKJ0g1hoY?=
- =?us-ascii?Q?W5UXILyxL9RgD/BbckoZ67SiNVLIW/J0dcvqDzxpNgxXVEsgqk/YJGRZnMcj?=
- =?us-ascii?Q?6kVIdXg2lGvqc/AMKSGSMr1K235Ed/ilQVV/FNbhoVc+KxyyOZpDPDHbC/K+?=
- =?us-ascii?Q?/XRFXIYqelrGzssjFJRDSPaA9Bsn2ZKy1pB1ZMq83q5M4eO6pVESz/Pzr8if?=
- =?us-ascii?Q?+TKqabPdBIFYn0YOMhMdRpgxiGcm07LJAJneYUwRSPTXft/pWNRZLYibvoU9?=
- =?us-ascii?Q?BWlEBgtsnqKqWbxHkQo=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 740c9bbb-14f0-4a78-de20-08dabe001809
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmtidHd0M1NaK2lnZDFQV1Fab0UzL3JuNFhOWXZXYXJRY2labDVZdlhFRTg0?=
+ =?utf-8?B?RG1xYllQbUZUTTdmT3c3eHRpdHF1QW9sb3ZGQkpsNzhRZHB6ZjN6dGRyQnZV?=
+ =?utf-8?B?RXlEN2g3ZXBJUzhyVm9zVERkV3ZRWWNGSzhuSStrc3Mwa2k2bjJvbzhLMGVB?=
+ =?utf-8?B?YzVIRWJhcC9TcGQ1TGJwaXc2dldNUUVpTHQ1bExlZEJ6WWtDekxXMnFZM3JC?=
+ =?utf-8?B?UEFiS0tkZkdteUQzWDNYQ2tTMDJYVDNzTloyUkJ3ODV2ejVqZys0RU8xT3pW?=
+ =?utf-8?B?NG5MUCtvTDJ3d21PWFVGZjZ1L0ZFYjMvZlJjcGMzVUd5Zy96Nmp1OCtQRTRW?=
+ =?utf-8?B?ekNTM1JJcnczQWdLL0hiYlRuVXZsdnN2elp3eUs0Ylh3Sm53ckRqdlJWRGlm?=
+ =?utf-8?B?MXFLL1g4TjhPUGVnTExkT0FYSjFWaVdwM2IzU21ib0h6MW4yRWdtbTB4a0Ux?=
+ =?utf-8?B?SlZOcU14T202dmNiMkFIVmpYRENUVzVWT21iWFk0QjBsM3RpcW9Ga0txNkRs?=
+ =?utf-8?B?RVZTR1lBSmVNZGt0WlhDQXN3Zi95TnhtVXpXc0FUUENyVDhSa2xoV3VOSzkx?=
+ =?utf-8?B?SklJNk9aRHdHV3NjWXNPWDhJbHU0ZGNxN2x5VEh0VTE2TjhSRndlZ0dCc1Bo?=
+ =?utf-8?B?dy9CaVZFM3pHdGdPWlNXNytidGtNRThKdHp6aFBLQmNVTjY3SExyV00yamE0?=
+ =?utf-8?B?VUhTblpSUU84aGhxdlNhdzIvMlExMEp3dXBaQ0krWUFHQ1JaL09aUlRxREFO?=
+ =?utf-8?B?Q3hXWnR3SEsxQVl0TzUxTkxnZHFHQTdnMUt5QXAxQWphNU9sVUI5VjI1ZnU0?=
+ =?utf-8?B?SWhGRkhmblFMMDNxUUNWdkM1dmtCdlBvRFJMWjJNaVllS2MvMDRMOHRQUTVI?=
+ =?utf-8?B?U202TkhXczhSVkJrcE5uYWV2MFdvR1VlbUdvUGIyQlA1YVR1TnpialNqdG8r?=
+ =?utf-8?B?cnVpSUJ6WHE5b3VtdVRYRTJ2d2s3U3hlaUZ1TXp2WHJxd2JXSjl2bWJWa2p5?=
+ =?utf-8?B?SXBsVzRucUJpNmlxWEF2SGhBREErWGdITzhLenMza2IrQTRFVENhN3hmRDJv?=
+ =?utf-8?B?SnZSZkVHWklSYlRMaVhibEd6L2NmUExkL2NXUkNtNFJNZ0RlYmVaOUtBZzNt?=
+ =?utf-8?B?c2pLTkpubmFqUXJkelQ3YVpLZTMrSEVyTTRIbU0rVzNWa3dsVmhuWEVzTytU?=
+ =?utf-8?B?Wjl1N2V6S3VCQk1EalMyTWpWRkFtTXA1dUhwMjFGS1hPb2Z6cnNSZ3BFaFJW?=
+ =?utf-8?B?VTJXVzJKUVp3SWJHWHZoOGZPL3NBOG9oWW5jSytOVEtjYXdSTmYvSHBtczJQ?=
+ =?utf-8?B?NWd4Q1dKdWtadWNNSHlIVjkyWkNDVnV4aU9IcEk3Vk5pbVdZN2hYL09CMnA3?=
+ =?utf-8?B?TXFXc3RuSXBEN0wycG1lTWNkTUFFRXpYWTNET2s1M2hmK2UyY2JRaDhtcWZh?=
+ =?utf-8?B?VElQRTR3SU9mVnJYNytjYWxES0hvcE9DTVNWUXhKdmRvMDdYSzJ2SExzL1Fp?=
+ =?utf-8?B?Z29GWUU0STVVWW8rZTVFQ3dRMFBadEpHY3VweGszdExTb3RYUEEvVFlHQXB2?=
+ =?utf-8?B?VHVsSUtqRnZTbThhZDAvc2dtUTJPV2hRZVUrdmJHb2w4NW04QTNxQWJ2WXpE?=
+ =?utf-8?B?MDBScmRhOHZmN0xQcHpzL3g5OGZUeEdmUGRIMmFuSURZVWc0c3cwd3FNcTZH?=
+ =?utf-8?B?R3pLOGUxeEFLSnJmMzZLUjJ0TWY3ZDFRYS9WMzREY3BmR3dwajVpV0RNaGo1?=
+ =?utf-8?B?ek5ML0lwUTRBdll0NHZkVFNDVHFlRjZVRlE3Z2w1ZzBGTEdQeDFYMmx2eEFT?=
+ =?utf-8?B?b0xpK0IxUkZOaEh0TmFwVW01NVFWSlFrSDJjc1F4SGJRM29zMDFGWFdNK0lm?=
+ =?utf-8?B?UkM1RXF2bUpla1VSNGZZcTkxSjBaM3U3ZUoydHhKYjJ6azZYYXhUamlJa2RD?=
+ =?utf-8?B?OHVBUjZscHM2c3JCVENIMGZqMm1NbzBNdnQrdjU0dnB5NHd4MTEvQmZPVU94?=
+ =?utf-8?B?NWlqNWxBYWIvTGxvNWpkYVdPdnlxME5uZzAyTXdnNjl1NVppU0UxYm4vY3Rm?=
+ =?utf-8?B?R3NhR1FCbmxDMUo0clFCM2tpZXZ0N0laT1BsVHhEWk9PWnByNlFEWGR0T1Zi?=
+ =?utf-8?B?T3ZhMWtxanBlaHFJMGt0RHdBOFNRbXh3dlYwd1dDMWk2enViRFd6L2NmazBN?=
+ =?utf-8?B?K3c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 630e6d27-8732-4182-d58a-08dabe008605
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4490.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2022 01:01:24.0955
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2022 01:04:28.6339
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zz0Ii0WcSxn0UAxoQsHf8PfmUbdgwRH2ia5SzQE6sGhqRwjxVQxR4uC8U7bO9zAL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6566
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+X-MS-Exchange-CrossTenant-UserPrincipalName: q2B+QI1b1nYUxmLQ8S29J2l60Hm/V4vkkTQTqZ8onAlqGWFP73fZ/B3WDLlMnI0Q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4681
+X-Proofpoint-ORIG-GUID: v_EUSAqV6pmBA-FP3tQNXlJiX-TlBj7y
+X-Proofpoint-GUID: v_EUSAqV6pmBA-FP3tQNXlJiX-TlBj7y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-03_04,2022-11-03_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,264 +147,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 03:12:24PM -0300, Jason Gunthorpe wrote:
+On 11/3/22 5:30 PM, Yonghong Song wrote:
+>>> index 94659f6b3395..e86389cd6133 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -5481,6 +5481,18 @@ union bpf_attr {
+>>>    *        0 on success.
+>>>    *
+>>>    *        **-ENOENT** if the bpf_local_storage cannot be found.
+>>> + *
+>>> + * void bpf_rcu_read_lock(void)
+>>> + *    Description
+>>> + *        Call kernel rcu_read_lock().
+>>> + *    Return
+>>> + *        None.
+>>> + *
+>>> + * void bpf_rcu_read_unlock(void)
+>>> + *    Description
+>>> + *        Call kernel rcu_read_unlock().
+>>> + *    Return
+>>> + *        None.
+>>>    */
+>>
+>> It would be better to not bake these into UAPI and keep them unstable 
+>> only IMO.
+> 
+> rcu_read_lock/unlock() are well known in kernel programming. I think
+> put them as stable UAPI should be fine. But I will reword the
+> description to remove any direct reference to kernel functions.
 
-> +static void iommufd_test_access_unmap(void *data, unsigned long iova,
-> +				      unsigned long length)
-> +{
-> +	unsigned long iova_last = iova + length - 1;
-> +	struct selftest_access *staccess = data;
-> +	struct selftest_access_item *item;
-> +	struct selftest_access_item *tmp;
-> +
-> +	spin_lock(&staccess->lock);
-> +	list_for_each_entry_safe(item, tmp, &staccess->items, items_elm) {
-> +		if (iova > item->iova_end || iova_last < item->iova)
-> +			continue;
-> +		list_del(&item->items_elm);
-> +		spin_unlock(&staccess->lock);
-> +		iommufd_access_unpin_pages(staccess->access, item->iova,
-> +					   item->length);
-> +		kfree(item);
-> +		spin_lock(&staccess->lock);
-> +	}
-> +	spin_unlock(&staccess->lock);
-> +}
-
-> +static int iommufd_test_access_pages(struct iommufd_ucmd *ucmd,
-> +				     unsigned int access_id, unsigned long iova,
-> +				     size_t length, void __user *uptr,
-> +				     u32 flags)
-> +{
-> +	struct iommu_test_cmd *cmd = ucmd->cmd;
-> +	struct selftest_access_item *item;
-> +	struct selftest_access *staccess;
-> +	struct page **pages;
-> +	size_t npages;
-> +	int rc;
-> +
-> +	if (flags & ~MOCK_FLAGS_ACCESS_WRITE)
-> +		return -EOPNOTSUPP;
-> +
-> +	staccess = iommufd_access_get(access_id);
-> +	if (IS_ERR(staccess))
-> +		return PTR_ERR(staccess);
-> +
-> +	npages = (ALIGN(iova + length, PAGE_SIZE) -
-> +		  ALIGN_DOWN(iova, PAGE_SIZE)) /
-> +		 PAGE_SIZE;
-> +	pages = kvcalloc(npages, sizeof(*pages), GFP_KERNEL_ACCOUNT);
-> +	if (!pages) {
-> +		rc = -ENOMEM;
-> +		goto out_put;
-> +	}
-> +
-> +	rc = iommufd_access_pin_pages(staccess->access, iova, length, pages,
-> +				      flags & MOCK_FLAGS_ACCESS_WRITE);
-> +	if (rc)
-> +		goto out_free_pages;
-> +
-> +	rc = iommufd_test_check_pages(
-> +		uptr - (iova - ALIGN_DOWN(iova, PAGE_SIZE)), pages, npages);
-> +	if (rc)
-> +		goto out_unaccess;
-> +
-> +	item = kzalloc(sizeof(*item), GFP_KERNEL_ACCOUNT);
-> +	if (!item) {
-> +		rc = -ENOMEM;
-> +		goto out_unaccess;
-> +	}
-> +
-> +	item->iova = iova;
-> +	item->length = length;
-> +	spin_lock(&staccess->lock);
-> +	item->id = staccess->next_id++;
-> +	list_add_tail(&item->items_elm, &staccess->items);
-> +	spin_unlock(&staccess->lock);
-
-I haven't been remarking on the bugs that syzkaller finds in the test
-suite itself (sigh), but this one is surprising and complicated enough
-to deserve some wider attention.
-
-VFIO has a protocol which has been mapped into iommufd allowing an
-external driver to convert IOVA to struct pages *. iommufd natively
-represents this as the sequence:
-
-  access = iommufd_access_create(ops)
-  iommufd_access_pin_pages(access, iova, length, pages)
-  iommufd_access_unpin_pages(access, iova, length)
-
-One of the quirks of the VFIO design is that if userspace does an
-unmap then the unmap shall succeed, but like in a HW iommu, the above
-pin_pages is revoked and the external driver must stop accessing that
-memory. iommufd achieves this by calling a callback:
-
-static const struct iommufd_access_ops selftest_access_ops = {
-	.unmap = iommufd_test_access_unmap,
-};
-
-Which has the invariant that upon return the unpin_pages must be
-completed.
-
-This all sounds simple enough, but when you throw syzkalller at this
-and it generates all kinds of races it generates something like this:
-
-            CPU1                         CPU2                 CPU3
-    iommufd_access_create()
-    iommufd_access_pin_pages()
-                                       unmap_all()
-                                         iommufd_test_access_unmap()
-                                                            unmap_all()
-                                                             iommufd_test_access_unmap()
-
-    spin_lock(&staccess->lock);
-    list_add_tail(&item->items_elm, &staccess->items);
-
-And of course since the list_add_tail is in the wrong order it means
-iommufd_test_access_unmap() doesn't see it and doesn't undo it,
-triggering a WARN_ON.
-
-The only way I can see to solve this is to hold a serializing lock
-across iommufd_access_pin_pages() so that neither
-iommufd_test_access_unmap() can progress until both the pin is
-completed and the record of the pin is stored.
-
-Fortunately in the iommufd design we can hold a lock like this across
-these calls, and in the op callback, without deadlocking. I can't
-recall if vfio can do the same, I suspect not since I had in my mind I
-needed to avoid that kind of locking for deadlock reasons..
-
-I doubt any mdev drivers do this properly, so this will be some
-oddball bugs. Thankfully it doesn't harm kernel integrity, but it does
-leave a mess for a userspace vIOMMU which is tracking a guest command
-to unmap an IOVA range and the kernel chucked out a WARN_ON and told
-it EDEADLOCK. I guess sleep and retry?
-
-Anyhow, the below seems to have fixed it. And this is the last open
-syzkaller bug, the rest were dups of the prior one. Now we wait for it
-to find something else.
-
-Jason
-
-@@ -420,7 +420,7 @@ static int iommufd_test_md_check_refs(struct iommufd_ucmd *ucmd,
- struct selftest_access {
- 	struct iommufd_access *access;
- 	struct file *file;
--	spinlock_t lock;
-+	struct mutex lock;
- 	struct list_head items;
- 	unsigned int next_id;
- 	bool destroying;
-@@ -458,19 +458,17 @@ static void iommufd_test_access_unmap(void *data, unsigned long iova,
- 	struct selftest_access_item *item;
- 	struct selftest_access_item *tmp;
- 
--	spin_lock(&staccess->lock);
-+	mutex_lock(&staccess->lock);
- 	list_for_each_entry_safe(item, tmp, &staccess->items, items_elm) {
- 		if (iova > item->iova + item->length - 1 ||
- 		    iova_last < item->iova)
- 			continue;
- 		list_del(&item->items_elm);
--		spin_unlock(&staccess->lock);
- 		iommufd_access_unpin_pages(staccess->access, item->iova,
- 					   item->length);
- 		kfree(item);
--		spin_lock(&staccess->lock);
- 	}
--	spin_unlock(&staccess->lock);
-+	mutex_unlock(&staccess->lock);
- }
- 
- static int iommufd_test_access_item_destroy(struct iommufd_ucmd *ucmd,
-@@ -484,19 +482,19 @@ static int iommufd_test_access_item_destroy(struct iommufd_ucmd *ucmd,
- 	if (IS_ERR(staccess))
- 		return PTR_ERR(staccess);
- 
--	spin_lock(&staccess->lock);
-+	mutex_lock(&staccess->lock);
- 	list_for_each_entry(item, &staccess->items, items_elm) {
- 		if (item->id == item_id) {
- 			list_del(&item->items_elm);
--			spin_unlock(&staccess->lock);
- 			iommufd_access_unpin_pages(staccess->access, item->iova,
- 						   item->length);
-+			mutex_unlock(&staccess->lock);
- 			kfree(item);
- 			fput(staccess->file);
- 			return 0;
- 		}
- 	}
--	spin_unlock(&staccess->lock);
-+	mutex_unlock(&staccess->lock);
- 	fput(staccess->file);
- 	return -ENOENT;
- }
-@@ -510,6 +508,7 @@ static int iommufd_test_staccess_release(struct inode *inode,
- 		iommufd_test_access_unmap(staccess, 0, ULONG_MAX);
- 		iommufd_access_destroy(staccess->access);
- 	}
-+	mutex_destroy(&staccess->lock);
- 	kfree(staccess);
- 	return 0;
- }
-@@ -536,7 +535,7 @@ static struct selftest_access *iommufd_test_alloc_access(void)
- 	if (!staccess)
- 		return ERR_PTR(-ENOMEM);
- 	INIT_LIST_HEAD(&staccess->items);
--	spin_lock_init(&staccess->lock);
-+	mutex_init(&staccess->lock);
- 
- 	filep = anon_inode_getfile("[iommufd_test_staccess]",
- 				   &iommfd_test_staccess_fops, staccess,
-@@ -662,10 +661,20 @@ static int iommufd_test_access_pages(struct iommufd_ucmd *ucmd,
- 		goto out_put;
- 	}
- 
-+	/*
-+	 * Drivers will need to think very carefully about this locking. The
-+	 * core code can do multiple unmaps instantaneously after
-+	 * iommufd_access_pin_pages() and *all* the unmaps must not return until
-+	 * the range is unpinned. This simple implementation puts a global lock
-+	 * around the pin, which may not suit drivers that want this to be a
-+	 * performance path. drivers that get this wrong will trigger WARN_ON
-+	 * races and cause EDEADLOCK failures to userspace.
-+	 */
-+	mutex_lock(&staccess->lock);
- 	rc = iommufd_access_pin_pages(staccess->access, iova, length, pages,
- 				      flags & MOCK_FLAGS_ACCESS_WRITE);
- 	if (rc)
--		goto out_free_pages;
-+		goto out_unlock;
- 
- 	/* For syzkaller allow uptr to be NULL to skip this check */
- 	if (uptr) {
-@@ -684,25 +693,22 @@ static int iommufd_test_access_pages(struct iommufd_ucmd *ucmd,
- 
- 	item->iova = iova;
- 	item->length = length;
--	spin_lock(&staccess->lock);
- 	item->id = staccess->next_id++;
- 	list_add_tail(&item->items_elm, &staccess->items);
--	spin_unlock(&staccess->lock);
- 
- 	cmd->access_pages.out_access_pages_id = item->id;
- 	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
- 	if (rc)
- 		goto out_free_item;
--	goto out_free_pages;
-+	goto out_unlock;
- 
- out_free_item:
--	spin_lock(&staccess->lock);
- 	list_del(&item->items_elm);
--	spin_unlock(&staccess->lock);
- 	kfree(item);
- out_unaccess:
- 	iommufd_access_unpin_pages(staccess->access, iova, length);
--out_free_pages:
-+out_unlock:
-+	mutex_unlock(&staccess->lock);
- 	kvfree(pages);
- out_put:
- 	fput(staccess->file);
+tbh I also feel that kfunc is better here.
+Sooner or later we will need srcu_read_lock,
+then rcu_read_lock_task_trace, etc.
+bpf shouldn't be a burden to RCU.
