@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA71A619BD8
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 16:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2B1619BDD
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 16:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbiKDPiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 11:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S232691AbiKDPju (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 11:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbiKDPiP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 11:38:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437DC2DAA7
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 08:38:14 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id a13so8237225edj.0
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 08:38:14 -0700 (PDT)
+        with ESMTP id S232686AbiKDPjt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 11:39:49 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075AF31DE9
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 08:39:48 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id b2so14274231eja.6
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 08:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ofpn3zhTV0VluzoNSgObGQdM9MGnJuBgUaxeEF5wH3M=;
-        b=QLkA2rN/VSpijo4iz9D6H3zm4U3MmhMOBfu1cQNVtbg58g2ofn/5/im+EwW5s0ZYl8
-         iSROu4zEVS1oIBRFT+2Qqwgb9Q3HnpA8skhIWeIR2LKTX8ESovwZE9EhYs65+2CH/KM3
-         wzpGVX5ansFQZGCV3viAuywM64hSnrxkPy0sI8rpGj/JMMREtwM00NKvkbxo29izL8Ho
-         v+3BVUR0AIZvmujdDnTqtucL/PXxq1ZNZnKW/Zf19EjqzVC1pxrGjnZYzixFcmBBLeJs
-         ttwt927lBKeFQMHjxy9pXxPlfKoXd3P7V+2mDyTraW8R5sVWxie/chUFdGXmbR2Jz/Rz
-         TqyA==
+        bh=7LgYurN7VD2CzC5a2zyT5/knojv+7ACyX8w4NIjJdyA=;
+        b=HkOVIbAjNn3fQ99NNYoSLHw5WDO0W0CQGoMsIdMOs2YRxcfu5fVvmFgceF2ThbjrYT
+         gZDgOS7Pv/jUjm8TSAKqjmUuUyhQQcWtZECUcFsH0vipLGhBfDw7Eb1Lj3jNuLRXcCTv
+         Vu2in/TnfhXq7PRhK52io5L9AdNmQ2PQKa8yze+gr/efTBXHv7cQXvXsMeQgGBueZHI6
+         NWnVfFzqxZjwCN3ZBgiI8LC70/eGZTYbaC9mptnvc/6FPr8iW7uEK8HSvMgoPPWtqO58
+         o8kdCl/d94OyalhpcS06WGHpMY/fbBM+mlKw75nlGlA19BjbpQmk3dxlZDf56hNRbhqB
+         RvSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ofpn3zhTV0VluzoNSgObGQdM9MGnJuBgUaxeEF5wH3M=;
-        b=K+0HpV+jYePur6wTBfisbxpRKtIk1OvI+qRtsrh6tFGj3A7CbyZsw9mUqTaU1M2Fe+
-         XmjaAXgfZ9gbHooMqShi6EAf6NfmrVpDf640AoyfFEtmXml0BdjuCP3Tgxdk+dPwKZoC
-         jLpA8hvu4NJv/boHaLbCobmLG41rpHPqbYKSyF/4murph20sHaepTAUJ8f/A2dCij/ZD
-         CD/jnzujvYmNrMSl1o2baDILfo5lsAlV4jQadjakQssk3YF6hRGJDaYayCy+WK4t6RzP
-         xtuiT54dfD4P3ShsD7WBl/lyQUGZMT85QPH9mrwVSgztbuyfbW5H4Xi2+XYWtQje46CT
-         Idpw==
-X-Gm-Message-State: ACrzQf2xb9xtrQV6Sewmsxij2up4drV0bXBnQk9v3ljSLom9acg5heC4
-        vzLM2ArULONGwHPgNQIrUhOov89oVynbAvY8nR4=
-X-Google-Smtp-Source: AMsMyM6fbSaLXyyOLfYKc5+FZqoCLJOYlW7qAZVAFYu7n33p8Zni8gnIVagzi1TXeBbKieuDxebWOgcLzFXjFeZSQkA=
-X-Received: by 2002:a05:6402:428d:b0:460:b26c:82a5 with SMTP id
- g13-20020a056402428d00b00460b26c82a5mr37369175edc.66.1667576292633; Fri, 04
- Nov 2022 08:38:12 -0700 (PDT)
+        bh=7LgYurN7VD2CzC5a2zyT5/knojv+7ACyX8w4NIjJdyA=;
+        b=loePTBJrgggG959vgUDM0bWm7uTnQTOeYBa8hAaXXVs5muvPKPOLci8lBfC+RF8mgW
+         CqVNtiRUzP8YC5jjWX9uY2dOG+D+TxEaEcKUJW2PXoEmx0ar+zCjkB4FqSF85ZRL+eVY
+         IAOt+1Epw53A+jA6r6jjPn+69m9xkGBgnmaAxYLjLGIABDpklL7kvZJc90+7kXK/0AUm
+         P1q5g3COjhv4UvS0BVeJAGTj/GSTet5ciD4dVHksqZdD9nAnNiXttgTkSoN+rcll6Mu/
+         /x3OqMSXAoGZBG2C1gWzVAqdd/jHY1+/Rm4QlKRsFjga7CDWmkqhhusJtPbWLXy5ym8n
+         pPiA==
+X-Gm-Message-State: ACrzQf1GmBMWdkFiBxb38FW8mD+qrN7KPmNl+oSWgN+I5k+OS+vCR3Qo
+        6usqN5xErLGMSgvL9scHtAXCZp6+2sTpdkSn3mI=
+X-Google-Smtp-Source: AMsMyM6hKnFWvBBLNpX8klzOePuUyfGo8ZaycXgDAhIhvqhz2RcULkVtXjxPjOHhsARRxHmSMVphOBvfWRx1cb1g9Lw=
+X-Received: by 2002:a17:906:1f48:b0:7ae:77d:bac with SMTP id
+ d8-20020a1709061f4800b007ae077d0bacmr13907601ejk.708.1667576387391; Fri, 04
+ Nov 2022 08:39:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-11-memxor@gmail.com>
- <CAADnVQKF7zs39ZRpU-9dAKaXZwRLRE8rFZ6m152AbWKC_6=LdQ@mail.gmail.com> <20221104075113.5ighwdvero4mugu7@apollo>
-In-Reply-To: <20221104075113.5ighwdvero4mugu7@apollo>
+References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-20-memxor@gmail.com>
+ <ba1a01b3-8028-fdbb-910b-19612e22bf5f@meta.com> <20221104080943.fud4grm5tzp6tl3h@apollo>
+In-Reply-To: <20221104080943.fud4grm5tzp6tl3h@apollo>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 4 Nov 2022 08:38:01 -0700
-Message-ID: <CAADnVQK4xNidJt+D1HFohT3tLLYKc1MmvdmA0qN=_SXdsiPO6g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 10/24] bpf: Introduce local kptrs
+Date:   Fri, 4 Nov 2022 08:39:36 -0700
+Message-ID: <CAADnVQ+T467LJafoc5ehDg-4PPepqiGfkEcpZFfTyv4X2JidWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 19/24] bpf: Introduce bpf_obj_new
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Dave Marchevsky <davemarchevsky@meta.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,54 +71,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 12:51 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Nov 4, 2022 at 1:09 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Fri, Nov 04, 2022 at 11:27:04AM IST, Alexei Starovoitov wrote:
-> > On Thu, Nov 3, 2022 at 12:11 PM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
+> On Fri, Nov 04, 2022 at 08:07:25AM IST, Dave Marchevsky wrote:
+> > On 11/3/22 3:10 PM, Kumar Kartikeya Dwivedi wrote:
+> > > Introduce type safe memory allocator bpf_obj_new for BPF programs. The
+> > > kernel side kfunc is named bpf_obj_new_impl, as passing hidden arguments
+> > > to kfuncs still requires having them in prototype, unlike BPF helpers
+> > > which always take 5 arguments and have them checked using bpf_func_proto
+> > > in verifier, ignoring unset argument types.
 > > >
-> > > Introduce local kptrs, i.e. PTR_TO_BTF_ID that point to a type in
-> > > program BTF. This is indicated by the presence of MEM_TYPE_LOCAL type
-> > > tag in reg->type to avoid having to check btf_is_kernel when trying to
-> > > match argument types in helpers.
-> > ...
+> > > Introduce __ign suffix to ignore a specific kfunc argument during type
+> > > checks, then use this to introduce support for passing type metadata to
+> > > the bpf_obj_new_impl kfunc.
 > > >
-> > > +       /* MEM is of a type from program BTF, not kernel BTF. This is used to
-> > > +        * tag PTR_TO_BTF_ID allocated using bpf_kptr_alloc.
-> > > +        */
-> > > +       MEM_TYPE_LOCAL          = BIT(11 + BPF_BASE_TYPE_BITS),
-> > > +
+> > > The user passes BTF ID of the type it wants to allocates in program BTF,
+> > > the verifier then rewrites the first argument as the size of this type,
+> > > after performing some sanity checks (to ensure it exists and it is a
+> > > struct type).
+> > >
+> > > The second argument is also fixed up and passed by the verifier. This is
+> > > the btf_struct_meta for the type being allocated. It would be needed
+> > > mostly for the offset array which is required for zero initializing
+> > > special fields while leaving the rest of storage in unitialized state.
+> > >
+> > > It would also be needed in the next patch to perform proper destruction
+> > > of the object's special fields.
+> > >
+> > > A convenience macro is included in the bpf_experimental.h header to hide
+> > > over the ugly details of the implementation, leading to user code
+> > > looking similar to a language level extension which allocates and
+> > > constructs fields of a user type.
+> > >
+> > > struct bar {
+> > >     struct bpf_list_node node;
+> > > };
+> > >
+> > > struct foo {
+> > >     struct bpf_spin_lock lock;
+> > >     struct bpf_list_head head __contains(bar, node);
+> > > };
+> > >
+> > > void prog(void) {
+> > >     struct foo *f;
+> > >
+> > >     f = bpf_obj_new(typeof(*f));
+> > >     if (!f)
+> > >             return;
+> > >     ...
+> > > }
+> > >
+> > > A key piece of this story is still missing, i.e. the free function,
+> > > which will come in the next patch.
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
 > >
-> > I know we have bpf_core_type_id_local.
-> > It sort-of makes sense in the context of the program.
-> > type_id_local -> inside the program
-> > type_id_kernel -> kernel
+> > [...]
 > >
-> > but in the context of the verifier "local kptr" doesn't read right.
-> > Especially in MEM_TYPE_LOCAL.
+> > > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> > > new file mode 100644
+> > > index 000000000000..1d3451084a68
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> >
+> > Maybe bpf_experimental.h should go in libbpf as part of this series? If
+> > including vmlinux.h is an issue - nothing in libbpf currently includes it - you
+> > could rely on the BPF program including it, with a comment similar to "Note
+> > that bpf programs need to include..." in lib/bpf/bpf_helpers.h .
+> >
 >
-> Yes, "local kptr" is not the best name. "kptr to local type" is too verbose
-> though, do you have any suggestions on what to call this?
->
-> >
-> > Also, since it applies to PTR_TO_BTF_ID, should it prefix with PTR_?
-> > Probably MEM_ is actually cleaner.
-> > And we're not consistent already with MEM_PERCPU.
-> > We can live with this inconsistency for now.
-> >
-> > So how about we rename MEM_ALLOC to MEM_RINGBUF,
-> > since it's special bpf_ringbuf_reserve() memory
-> > and use MEM_ALLOC to indicate the memory that came from bpf_obj_new ?
-> >
->
-> Yes, it makes sense. I think Andrii has expressed the same wish to rename it to
-> something similar to MEM_RINGBUF before in [0].
->
-> [0]: https://lore.kernel.org/bpf/CAEf4BzYK939fgyc3LwNvoz3vPk2avyskP_3wRZO344irubXPtg@mail.gmail.com
+> I don't have a problem with that, but I would like to also know Andrii's opinion
+> on this, since it won't work properly if people don't keep libbpf and kernel
+> version in sync.
 
-Great. Please rename then.
-Also let's all of us agree and stop using this [0] notation
-for links.
-It's an email and not an academic paper.
-Just insert the link.
+let's do the directory bikeshedding later.
+bpf_experimental.h can be moved to libbpf dir in the follow up.
