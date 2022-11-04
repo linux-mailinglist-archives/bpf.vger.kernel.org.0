@@ -2,51 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC7B618FAD
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 06:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959B618FDB
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 06:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiKDFAU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 01:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S230348AbiKDFKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 01:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiKDFAT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 01:00:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E66B1C924
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 22:00:19 -0700 (PDT)
+        with ESMTP id S230377AbiKDFKW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 01:10:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B2027FEF;
+        Thu,  3 Nov 2022 22:10:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 954036209A
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 05:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A91A6C43155;
-        Fri,  4 Nov 2022 05:00:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B7E5F6209A;
+        Fri,  4 Nov 2022 05:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0DFEBC433C1;
+        Fri,  4 Nov 2022 05:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667538017;
-        bh=dgnTW3gLRv1yQcPfocY9KSqqU29bKGmhSN1OU80cCxM=;
+        s=k20201202; t=1667538618;
+        bh=ShXYUOj5Y1kvMFVLzsmxD2jL6MySsFMQncmLY/rxE6c=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dEQetfemwSpRe0rOqdjnJwh8VwE8iqk2mRuQns/q90rAi6aIcPK9APIIQReVKpgfS
-         HcMFKVE55ivAIXEwStxpqRlf4oZ7h2CNMIV2+dVPT8zO3vpZCiqZHU3aedk9FMptm0
-         dvcAGY4ay/KwHk5nrdPwrWe084TQMRVXKj7xN1KUFozSfB4GRWxIPuoqfSvlfAa2LB
-         1kJQiVFCF2Ni/Y3FRD3HqHJeMVjB9Eqtr3fYtZfXaXRiEq2qw5uS5i1qWGFOls5UKn
-         AM6X1dYhS41JiCJ5pteXRgx0u8LA8FZ2ZkSKuYgMxu1OjtJsMjeWk2fMgFMvMH8RXR
-         eKlJsDvhghmlQ==
+        b=PfyZmPs6qZ6uCYp0BcIl2WeoFisqhTCnqnVJHMtAHyASc5bTxBpp3djVkfHyap9aM
+         uUL+0GZwXACmda6Bo3/c/Jpz+XERqFzjUOk2sqO1KhGV9DItJIlO5G3rPbftKIMruQ
+         kKEKWcrXEE0Azr0QoBTyU6FIRWt+j+u7wbDB5p4SR2ImLGuSplLioPrJ0Z637wJURN
+         EYYYbxdR39eEXOg4lWgrIY8+BG/oIjEIlfTEfJ6yYok9TxmK1h4zMUI47LSsoNnZB0
+         DJxTvKq+o/ay3BGTS1jvtn4cqOj/Cbh6YUZ59qsL6A2AWLFzdqJK1B3tXQ+81zIA9M
+         /FfFLJVHDKYeg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7DB9CE270EA;
-        Fri,  4 Nov 2022 05:00:17 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E57BEE270EA;
+        Fri,  4 Nov 2022 05:10:17 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 00/24] Local kptrs, BPF linked lists
+Subject: Re: [PATCH bpf-next 00/10] veristat: replay, filtering, sorting
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166753801750.27738.4286004544054284287.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Nov 2022 05:00:17 +0000
-References: <20221103191013.1236066-1-memxor@gmail.com>
-In-Reply-To: <20221103191013.1236066-1-memxor@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@kernel.org,
-        davemarchevsky@meta.com, delyank@meta.com
+Message-Id: <166753861793.32177.1498265265265978934.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 05:10:17 +0000
+References: <20221103055304.2904589-1-andrii@kernel.org>
+In-Reply-To: <20221103055304.2904589-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, kuba@kernel.org, kernel-team@fb.com
 X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,65 +60,49 @@ Hello:
 This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri,  4 Nov 2022 00:39:49 +0530 you wrote:
-> This series introduces user defined BPF objects, by introducing the idea
-> of local kptrs. These are kptrs (strongly typed pointers) that refer to
-> objects of a user defined type, hence called "local" kptrs. This allows
-> BPF programs to allocate their own objects, build their own object
-> hierarchies, and use the basic building blocks provided by BPF runtime
-> to build their own data structures flexibly.
+On Wed, 2 Nov 2022 22:52:54 -0700 you wrote:
+> This patch set adds a bunch of new featurs and improvements that were sorely
+> missing during recent active use of veristat to develop BPF verifier precision
+> changes. Individual patches provide justification, explanation and often
+> examples showing how new capabilities can be used.
+> 
+> Andrii Nakryiko (10):
+>   selftests/bpf: add veristat replay mode
+>   selftests/bpf: shorten "Total insns/states" column names in veristat
+>   selftests/bpf: consolidate and improve file/prog filtering in veristat
+>   selftests/bpf: ensure we always have non-ambiguous sorting in veristat
+>   selftests/bpf: allow to define asc/desc ordering for sort specs in
+>     veristat
+>   selftests/bpf: support simple filtering of stats in veristat
+>   selftests/bpf: make veristat emit all stats in CSV mode by default
+>   selftests/bpf: handle missing records in comparison mode better in
+>     veristat
+>   selftests/bpf: support stats ordering in comparison mode in veristat
+>   selftests/bpf: support stat filtering in comparison mode in veristat
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v4,01/24] bpf: Document UAPI details for special BPF types
-    https://git.kernel.org/bpf/bpf-next/c/9805af8d8a5b
-  - [bpf-next,v4,02/24] bpf: Allow specifying volatile type modifier for kptrs
-    https://git.kernel.org/bpf/bpf-next/c/23da464dd6b8
-  - [bpf-next,v4,03/24] bpf: Clobber stack slot when writing over spilled PTR_TO_BTF_ID
-    https://git.kernel.org/bpf/bpf-next/c/261f4664caff
-  - [bpf-next,v4,04/24] bpf: Fix slot type check in check_stack_write_var_off
-    https://git.kernel.org/bpf/bpf-next/c/f5e477a861e4
-  - [bpf-next,v4,05/24] bpf: Drop reg_type_may_be_refcounted_or_null
-    https://git.kernel.org/bpf/bpf-next/c/a28ace782e68
-  - [bpf-next,v4,06/24] bpf: Refactor kptr_off_tab into btf_record
-    https://git.kernel.org/bpf/bpf-next/c/aa3496accc41
-  - [bpf-next,v4,07/24] bpf: Consolidate spin_lock, timer management into btf_record
-    (no matching commit)
-  - [bpf-next,v4,08/24] bpf: Refactor map->off_arr handling
-    (no matching commit)
-  - [bpf-next,v4,09/24] bpf: Support bpf_list_head in map values
-    (no matching commit)
-  - [bpf-next,v4,10/24] bpf: Introduce local kptrs
-    (no matching commit)
-  - [bpf-next,v4,11/24] bpf: Recognize bpf_{spin_lock,list_head,list_node} in local kptrs
-    (no matching commit)
-  - [bpf-next,v4,12/24] bpf: Verify ownership relationships for user BTF types
-    (no matching commit)
-  - [bpf-next,v4,13/24] bpf: Support locking bpf_spin_lock in local kptr
-    (no matching commit)
-  - [bpf-next,v4,14/24] bpf: Allow locking bpf_spin_lock global variables
-    (no matching commit)
-  - [bpf-next,v4,15/24] bpf: Rewrite kfunc argument handling
-    (no matching commit)
-  - [bpf-next,v4,16/24] bpf: Drop kfunc bits from btf_check_func_arg_match
-    (no matching commit)
-  - [bpf-next,v4,17/24] bpf: Support constant scalar arguments for kfuncs
-    (no matching commit)
-  - [bpf-next,v4,18/24] bpf: Teach verifier about non-size constant arguments
-    (no matching commit)
-  - [bpf-next,v4,19/24] bpf: Introduce bpf_obj_new
-    (no matching commit)
-  - [bpf-next,v4,20/24] bpf: Introduce bpf_obj_drop
-    (no matching commit)
-  - [bpf-next,v4,21/24] bpf: Permit NULL checking pointer with non-zero fixed offset
-    (no matching commit)
-  - [bpf-next,v4,22/24] bpf: Introduce single ownership BPF linked list API
-    (no matching commit)
-  - [bpf-next,v4,23/24] selftests/bpf: Add __contains macro to bpf_experimental.h
-    (no matching commit)
-  - [bpf-next,v4,24/24] selftests/bpf: Add BPF linked list API tests
-    (no matching commit)
+  - [bpf-next,01/10] selftests/bpf: add veristat replay mode
+    https://git.kernel.org/bpf/bpf-next/c/9b5e3536c898
+  - [bpf-next,02/10] selftests/bpf: shorten "Total insns/states" column names in veristat
+    https://git.kernel.org/bpf/bpf-next/c/62d2c08bb91c
+  - [bpf-next,03/10] selftests/bpf: consolidate and improve file/prog filtering in veristat
+    https://git.kernel.org/bpf/bpf-next/c/10b1b3f3e56a
+  - [bpf-next,04/10] selftests/bpf: ensure we always have non-ambiguous sorting in veristat
+    https://git.kernel.org/bpf/bpf-next/c/b9670b904a59
+  - [bpf-next,05/10] selftests/bpf: allow to define asc/desc ordering for sort specs in veristat
+    https://git.kernel.org/bpf/bpf-next/c/d68c07e2dd91
+  - [bpf-next,06/10] selftests/bpf: support simple filtering of stats in veristat
+    https://git.kernel.org/bpf/bpf-next/c/1bb4ec815015
+  - [bpf-next,07/10] selftests/bpf: make veristat emit all stats in CSV mode by default
+    https://git.kernel.org/bpf/bpf-next/c/77534401d69c
+  - [bpf-next,08/10] selftests/bpf: handle missing records in comparison mode better in veristat
+    https://git.kernel.org/bpf/bpf-next/c/a5710848d824
+  - [bpf-next,09/10] selftests/bpf: support stats ordering in comparison mode in veristat
+    https://git.kernel.org/bpf/bpf-next/c/fa9bb590c289
+  - [bpf-next,10/10] selftests/bpf: support stat filtering in comparison mode in veristat
+    https://git.kernel.org/bpf/bpf-next/c/d5ce4b892341
 
 You are awesome, thank you!
 -- 
