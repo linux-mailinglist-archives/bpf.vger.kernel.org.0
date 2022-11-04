@@ -2,164 +2,301 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D428361A162
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 20:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C5661A1CB
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 21:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbiKDTmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 15:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39310 "EHLO
+        id S229720AbiKDUB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 16:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbiKDTmS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 15:42:18 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1anam02on2066.outbound.protection.outlook.com [40.107.96.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D660110D;
-        Fri,  4 Nov 2022 12:42:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RF/t5KGxJUnp/j+9yubWGsoN+He7TCccFSaGIv648fvfmsvmYBFmTn588iBkxUHWEunGwwFMdXyr5aMLS5WOdV/1xw4R7XYPt5N7iuAji05QsL/m+OYPG5fg0Ab+AQZgHqYT0+cEfd4Cgfk1VVv9xfeneWf5DCfd1rsLiGWvH1ojTvjh/EW61rPiK/6AVW6bNjR4Ep/NTWBqrEBP3vFbNrO1wy8PMtVEUOiU5PYJBn7DyNym03rEoweXwohbnwMJj/jCGZnBjKPBEzDHhi7dIUqlOaA+dqOGpMQLvR0oJjLS6Kjml8Z4H3LYG9YA3g9i8E8UIzHv9gOYJr5Ww94C2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fbMEoeVkrrujqXBvUGz2hBHXQEM8qxATzmNaEy8OBDU=;
- b=IHXKLmL+ieNLwlXXK0JUohxk08QaIi5ouMzIvhUkDe0gVwtFx3i8asVluEVrdCVRHCbH+wJf+c8ShpEi6v/+KGwAsBhTUz8HvKE5Pz4vPTvOsKgFkhN+KxsMs0/eHh7zWIiktBvPhktSiT1XV0iSO5Br6iWf2wHqXxi2tMWaSceg/poHHTRHq4rwLZFDcEP07efpTRhfMiUnCYEJ4ywpDfUWUWFYfdVUShYCsAnTHP/0nYlR60XIwDG/Z8tgpA/EtGMSFqSDyk4aeVBac8HPzg641ZBkgdV4oS/hD+6fZxVt7UEl6Nz096459gU7qlFiT/nmdiTEs06zHzyiIOiKxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fbMEoeVkrrujqXBvUGz2hBHXQEM8qxATzmNaEy8OBDU=;
- b=MP2QVQHyV1pqMC2VuxAWEB456CabZlhDjsKajBgZ++OYZvx09PheSkr4YWCQthYjg+mLWooRMVmse+mZ51TWjBfUrbJZV4IjtNwoCJjQHbHMYt7toSGvJQwIYRIiADni+9ST+De6HbeAO3gfAElhSfGD+vfmOEY9i4zeoBQohQY+elbAGm4xQ6fWW9xcDrsMxaUQXcf7btk3T+eWwdRxzrvkhG7x95X2+du3BtumP/xqIhE/1ytp7t6unSHJkRDYcEl6twlMyy6/kSXWDPb0+mS05dmfpvjWSbD0D4c7BvylO0E/3aom6JdmZFFiwvoRJ7XwWGinxfvPfC32RpU53A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB5640.namprd12.prod.outlook.com (2603:10b6:806:238::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.19; Fri, 4 Nov
- 2022 19:42:16 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5769.015; Fri, 4 Nov 2022
- 19:42:16 +0000
-Date:   Fri, 4 Nov 2022 16:42:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 15/15] iommufd: Add a selftest
-Message-ID: <Y2VrFuToyJwU93WR@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <15-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <Y2RkXV+q0Q6bdTde@nvidia.com>
- <BN9PR11MB52769FA78CA8B7FD3DB7595E8C3B9@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB52769FA78CA8B7FD3DB7595E8C3B9@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR18CA0029.namprd18.prod.outlook.com
- (2603:10b6:208:23c::34) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229945AbiKDUB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 16:01:27 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0894AF22
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 13:01:20 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id u24so9111562edd.13
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 13:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sXraAtl4oTeqRKsNUF6AOFznfXB55x6Ui/B+dUBONuk=;
+        b=nc6KBJxfnhbHJ4ALhbywojXrhkK1UgLDJhMrREoxZWf4BSLxgH6CrAzq7Brf/v1YVe
+         jbkF9g8TvSJCvLQzZk7UX4/tk2FjW2moUiqjDnEVeE/wYkcZdxcjSg+h+XYC35fFfJW1
+         sVqgyEgnmKm2rRhcvlfljex3vLX0Hky0+55BQ72TQSonEcsLL+H0lwPPZgO99vRnHz2q
+         I8KcKZcchPeAgGs0tDYP5yE/I2k+l4OCIddbaSdmmWEZy5zHdMEkzJGrxwHpU2dgvgLN
+         ZcyEKgxOgqkpbd6bs5EFLjTUa3X483X2/kQ3M2O9wyu1RK4qZY/WRq6ghIvxcUnQi1y4
+         LebQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sXraAtl4oTeqRKsNUF6AOFznfXB55x6Ui/B+dUBONuk=;
+        b=7jDDROgXlqJIsYu1AHpAHawMUh5lojW0yXu/Mnqu97tDyn0IZnJJ2dM1kP+y5nS3mG
+         7DV2l6PgiPbOmeZUfeQEC+CCYhH6WZ95YlXNg5vtf/k7jOzkJGcrP7rLFY/v9XjJGZHU
+         eHITGRg2oDB0fuNcyJABNiVttm3EYulAthvY1ydUvVh7F3B+KwYv52c7zpKGxTZvF2nH
+         5pfvnVUHel3g35hYP546YqZSFNNrLc68kl3Y1c9g5k8TOkArTxuiZdstVSfoSlrqMN6k
+         atbMkSvqRbVSkw8hmHc8zzfm0QpOf+ejmjr1KZvJ45GwmmDuBKWdjXfEmBtgTTpvlZPz
+         pHBw==
+X-Gm-Message-State: ACrzQf2Qbg+8hYmeViei9riQ2ZDp5U7GRb0LlPCKF4Zmq4VQmGLK39x7
+        rDahLU8MzT8V1IlMyPn5N16DgUrru179RLgbVuZ5srMh
+X-Google-Smtp-Source: AMsMyM41ArxFU+ey/neDSpS+38St461ruGqSJAG5/Pxbu4J8qgsiRCe+4+GpgttOIg7AFCRn+w7DMyKpZxQ2gCZIiD4=
+X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
+ ev6-20020a056402540600b004521560f9d4mr37774585edb.333.1667592079365; Fri, 04
+ Nov 2022 13:01:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB5640:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa79764b-d442-4044-e654-08dabe9cad3b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IELeb8cKVz5CAUM5ecrepwGPVfO7iAU91sKueH2EwnvktC6SuX5q7mA86bu/CykHJ1stztYIMz5heWcYci6Mm7c7+JQ791mPN7py6NXva145Ag9GeBwGtbsV9xHnMlBwx2cPHPcng+dcxHerUXqZC/iy1YUWecc4/ZrAub4y4UUpSQxDz3Dpr8z9n/azA04cAqBWUgQMgywKZ7gORNRdCFBzmz9ojfpbnux3CTA7RosWF2DvIsde2wrmlkca2/tt2qsInA0QURb8AmAx6W7be+hYi8M16qOmyLi1VBZqt6Di7zOAR+M9PqA3wuOM6W7KXMb9satpHy7CBECyMLvZFcLRI03c8vmIWT8euIPcdh0Bby7onbu5sJtMLED7mOIkIPqW9Z/Ey2okNgZ0Lt2uImVaEvzFUkIcVOBVucGBpQGh3SNxxTUVdglrcFb01oJp2/AaNpf9dC+mYwSGy1f1n0C0FIHK2rQK6EcdKcW8ZvZzpklhfC/wBDj79s933V4ppm1kGJ39plxulh0BZ1c+3NRSELeFNgdfxbfc59PMCobwvosVddGb/5EhdrYbwVotF/ZPE3dgmOfvzNANQE84Dy8/Y8qWZO75gP8eR0hAHRFemKYkCdcKuY5Izz1mgeTUy/0VaLSHviNS5yW0LOXmWj+pS91ByAHbhFDR4xKxcFCMzn75sBrT0KKvYc+Y5HdEApVjtKAm6J62z6ZvZU3vVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(451199015)(6486002)(478600001)(54906003)(6916009)(316002)(6506007)(4326008)(8676002)(86362001)(66946007)(66556008)(66476007)(41300700001)(2906002)(26005)(6512007)(4744005)(38100700002)(8936002)(186003)(83380400001)(36756003)(7416002)(5660300002)(2616005)(7406005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4l+n+GjHGDYcqsy8npVSctdu34AbHYMQJOH8lYGTGz2ZXXTHjdtfCAU2h1aD?=
- =?us-ascii?Q?0qRP64kMgD6fg3uhBL4TlTBceXjFr1i5b9Vlx+TbHD4etRHIPvTt0aV0NZYt?=
- =?us-ascii?Q?2OZ4tsYxBEdx7GHKGxF/HvkLjRTqWiZ96imYwaZON3kP6gnqs7ugely9/tPP?=
- =?us-ascii?Q?GfGI0oBG2rWEZBFwINUbfGiWng0utAlZytHCkTdjI6QgSP+C3UX19hVOEBZ1?=
- =?us-ascii?Q?Xfjd6FIMFvjJpeZzQDb31kC8gZZbYCVDgimo14UZ53S9BRYwbgYm3IzANApJ?=
- =?us-ascii?Q?Rv6GaQVQWjWpgdjY5iSjqonRZRpUWfKWfKgkiP9xX0/SJK5ruNtuOhh/DGl0?=
- =?us-ascii?Q?Zp/cbFSN7cAoon/IXBG8qgDTXBD43BP+Sd8DQIyPXXgaYq8YwmDc2vkyjNXB?=
- =?us-ascii?Q?7zgliYL7Es60uc8d5+6LjibizLRaZ2L4N0XXtqbs0A5a5wvO9nQJHr5k50vj?=
- =?us-ascii?Q?/ZjDXnFi/Hvs7PfOIIeQxTH4ec8N+RwzkgawNrZOykOMnq0r5sUluD6Xe9RG?=
- =?us-ascii?Q?s++CPb4V++FHQNI5n9b0TBNVfoaGTTePgwg4p08xznk7IgrJpbSl91gGVs45?=
- =?us-ascii?Q?SZ4Kt2HsoZHnFIMEVyYinqUOKR0DZ39yzz62Tt8HS8wRZXjqfLIRDcz2PQey?=
- =?us-ascii?Q?B7tq+KCZqFU5C3R3uwdt0v1qtM0kS6daYCOlTwK6qZBjE2bRJ6xU3o1LT+li?=
- =?us-ascii?Q?lk9AtMZ2sZlq52c2yL82eTHIOtCHsOQvnk3Zm2JiDssrm3ihmwNo87CxL03n?=
- =?us-ascii?Q?ikL0QsSXW8lZSY6Ko3i5qyT8jhK10kkQhpWzuPaP3js2te3Ug1W5MzlYscgd?=
- =?us-ascii?Q?6CeQ8vaIOmAgmrkqnh7VI83L+LpXRiK9RwUbaDqT6dkNfish2tMMBlvlsinj?=
- =?us-ascii?Q?kQ8jsOzCfWX9WgYgD9wJtN4C9SxOvr++j72MZ6ygeIXCVAfSf7/ajfB5NPM9?=
- =?us-ascii?Q?Z//kYh3Iqpzf9RvSwEZk7rH1Obrl62u0VjE5WCmOUFvRiXPyxv+K+nU15Heh?=
- =?us-ascii?Q?H9V4CQqwIBCY8wUPSCPuamSUtw+oKYVeQc/E2TKK2OP+9hT9tuwvVeOYWcje?=
- =?us-ascii?Q?auqxdQN50CXZ5znZZHPN1+Gzy9vbWnbYm3KJkfkxRj3f9/0lsN1n5+Lh+ORW?=
- =?us-ascii?Q?zu32vNL8p5dPAKyfTy4AQzspcGPOC+iGFEVvm7lHIRcSvnts45DVBNUIb+Tw?=
- =?us-ascii?Q?oEjTxTJM8UXihI5BkbdYkMdVyUNKifMYUmFyjH6fdc5pPUkX2iq5njfzsEwQ?=
- =?us-ascii?Q?0nKOxg5diIaseBn6lpoOw5BKMXpMgqyys3Sjid9bdNgSuUFdExXpRGyT1wsW?=
- =?us-ascii?Q?raner3sJUIDxb2AXWgHCYp0WPE6XuaH+t0Ff2/DuIwhUe74t4yD40/owTUrX?=
- =?us-ascii?Q?Zo/9/1Jgr82KvIPUFzxibXUSv4VuI0pk6iwN/7aAGhHohVE6wyBMSm91MiaV?=
- =?us-ascii?Q?Su1h/UB2MeAWSLggS2Hs7Szb5im/1ijP3DsIc+szDxQEp4+Ln/zpioyzDmEB?=
- =?us-ascii?Q?uqiS5jMGTQlLCi7uq7YjpagQVOeSUb+1CGxT7oioPoLs/cJFatG2IedcSX4L?=
- =?us-ascii?Q?4zRXjbz+PrzO1rJfnMo=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa79764b-d442-4044-e654-08dabe9cad3b
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2022 19:42:15.9249
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EPGhiqp1t26oPsvFu89Owxp0u+brLHriXEBQgreTgsFwCyRuIYLctpZicTgCbOrL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5640
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221102062221.2019833-1-andrii@kernel.org> <20221102062221.2019833-4-andrii@kernel.org>
+ <20221103014115.x6kbehg2ongf6wof@MacBook-Pro-5.local.dhcp.thefacebook.com> <CAEf4BzbUofKU=-XzYYTn4O2YHKX1RsVZAZxDiB9-ROmkp9qrHQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbUofKU=-XzYYTn4O2YHKX1RsVZAZxDiB9-ROmkp9qrHQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 4 Nov 2022 13:01:07 -0700
+Message-ID: <CAADnVQ+0099j9WXePNThdBYFUAhrZHnFKrASnX99dUtmbM_V3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpf: allow precision tracking for programs
+ with subprogs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 05:43:29AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Friday, November 4, 2022 9:01 AM
-> > 
-> > The only way I can see to solve this is to hold a serializing lock
-> > across iommufd_access_pin_pages() so that neither
-> > iommufd_test_access_unmap() can progress until both the pin is
-> > completed and the record of the pin is stored.
-> 
-> same as gvt does which maintains an internal mapping cache and
-> conducts pin/unmap with cache update under the mutex protection.
+On Fri, Nov 4, 2022 at 9:32 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 2, 2022 at 6:41 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Nov 01, 2022 at 11:22:18PM -0700, Andrii Nakryiko wrote:
+> > > Stop forcing precise=true for SCALAR registers when BPF program has any
+> > > subprograms. Current restriction means that any BPF program, as soon as
+> > > it uses subprograms, will end up not getting any of the precision
+> > > tracking benefits in reduction of number of verified states.
+> > >
+> > > This patch keeps the fallback mark_all_scalars_precise() behavior if
+> > > precise marking has to cross function frames. E.g., if subprogram
+> > > requires R1 (first input arg) to be marked precise, ideally we'd need to
+> > > backtrack to the parent function and keep marking R1 and its
+> > > dependencies as precise. But right now we give up and force all the
+> > > SCALARs in any of the current and parent states to be forced to
+> > > precise=true. We can lift that restriction in the future.
+> > >
+> > > But this patch fixes two issues identified when trying to enable
+> > > precision tracking for subprogs.
+> > >
+> > > First, prevent "escaping" from top-most state in a global subprog. While
+> > > with entry-level BPF program we never end up requesting precision for
+> > > R1-R5 registers, because R2-R5 are not initialized (and so not readable
+> > > in correct BPF program), and R1 is PTR_TO_CTX, not SCALAR, and so is
+> > > implicitly precise. With global subprogs, though, it's different, as
+> > > global subprog a) can have up to 5 SCALAR input arguments, which might
+> > > get marked as precise=true and b) it is validated in isolation from its
+> > > main entry BPF program. b) means that we can end up exhausting parent
+> > > state chain and still not mark all registers in reg_mask as precise,
+> > > which would lead to verifier bug warning.
+> > >
+> > > To handle that, we need to consider two cases. First, if the very first
+> > > state is not immediately "checkpointed" (i.e., stored in state lookup
+> > > hashtable), it will get correct first_insn_idx and last_insn_idx
+> > > instruction set during state checkpointing. As such, this case is
+> > > already handled and __mark_chain_precision() already handles that by
+> > > just doing nothing when we reach to the very first parent state.
+> > > st->parent will be NULL and we'll just stop. Perhaps some extra check
+> > > for reg_mask and stack_mask is due here, but this patch doesn't address
+> > > that issue.
+> > >
+> > > More problematic second case is when global function's initial state is
+> > > immediately checkpointed before we manage to process the very first
+> > > instruction. This is happening because when there is a call to global
+> > > subprog from the main program the very first subprog's instruction is
+> > > marked as pruning point, so before we manage to process first
+> > > instruction we have to check and checkpoint state. This patch adds
+> > > a special handling for such "empty" state, which is identified by having
+> > > st->last_insn_idx set to -1. In such case, we check that we are indeed
+> > > validating global subprog, and with some sanity checking we mark input
+> > > args as precise if requested.
+> > >
+> > > Note that we also initialize state->first_insn_idx with correct start
+> > > insn_idx offset. For main program zero is correct value, but for any
+> > > subprog it's quite confusing to not have first_insn_idx set. This
+> > > doesn't have any functional impact, but helps with debugging and state
+> > > printing. We also explicitly initialize state->last_insns_idx instead of
+> > > relying on is_state_visited() to do this with env->prev_insns_idx, which
+> > > will be -1 on the very first instruction. This concludes necessary
+> > > changes to handle specifically global subprog's precision tracking.
+> > >
+> > > Second identified problem was missed handling of BPF helper functions
+> > > that call into subprogs (e.g., bpf_loop and few others). From precision
+> > > tracking and backtracking logic's standpoint those are effectively calls
+> > > into subprogs and should be called as BPF_PSEUDO_CALL calls.
+> > >
+> > > This patch takes the least intrusive way and just checks against a short
+> > > list of current BPF helpers that do call subprogs, encapsulated in
+> > > is_callback_calling_function() function. But to prevent accidentally
+> > > forgetting to add new BPF helpers to this "list", we also do a sanity
+> > > check in __check_func_call, which has to be called for each such special
+> > > BPF helper, to validate that BPF helper is indeed recognized as
+> > > callback-calling one. This should catch any missed checks in the future.
+> > > Adding some special flags to be added in function proto definitions
+> > > seemed like an overkill in this case.
+> > >
+> > > With the above changes, it's possible to remove forceful setting of
+> > > reg->precise to true in __mark_reg_unknown, which turns on precision
+> > > tracking both inside subprogs and entry progs that have subprogs. No
+> > > warnings or errors were detected across all the selftests, but also when
+> > > validating with veristat against internal Meta BPF objects and Cilium
+> > > objects. Further, in some BPF programs there are noticeable reduction in
+> > > number of states and instructions validated due to more effective
+> > > precision tracking, especially benefiting syncookie test.
+> > >
+>
+> [...]
+>
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  kernel/bpf/verifier.c | 61 ++++++++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 60 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 7a71154de32b..cf9e20da8f6b 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -511,6 +511,15 @@ static bool is_dynptr_ref_function(enum bpf_func_id func_id)
+> > >       return func_id == BPF_FUNC_dynptr_data;
+> > >  }
+> > >
+> > > +static bool is_callback_calling_function(enum bpf_func_id func_id)
+> > > +{
+> > > +     return func_id == BPF_FUNC_for_each_map_elem ||
+> > > +            func_id == BPF_FUNC_timer_set_callback ||
+> > > +            func_id == BPF_FUNC_find_vma ||
+> > > +            func_id == BPF_FUNC_loop ||
+> > > +            func_id == BPF_FUNC_user_ringbuf_drain;
+> > > +}
+> > > +
+> > >  static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
+> > >                                       const struct bpf_map *map)
+> > >  {
+> > > @@ -1684,7 +1693,7 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
+> > >       reg->type = SCALAR_VALUE;
+> > >       reg->var_off = tnum_unknown;
+> > >       reg->frameno = 0;
+> > > -     reg->precise = env->subprog_cnt > 1 || !env->bpf_capable;
+> > > +     reg->precise = !env->bpf_capable;
+> > >       __mark_reg_unbounded(reg);
+> > >  }
+> > >
+> > > @@ -2653,6 +2662,11 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx,
+> > >               if (opcode == BPF_CALL) {
+> > >                       if (insn->src_reg == BPF_PSEUDO_CALL)
+> > >                               return -ENOTSUPP;
+> > > +                     /* BPF helpers that invoke callback subprogs are
+> > > +                      * equivalent to BPF_PSEUDO_CALL above
+> > > +                      */
+> > > +                     if (insn->src_reg == 0 && is_callback_calling_function(insn->imm))
+> > > +                             return -ENOTSUPP;
+> > >                       /* regular helper call sets R0 */
+> > >                       *reg_mask &= ~1;
+> > >                       if (*reg_mask & 0x3f) {
+> > > @@ -2816,10 +2830,39 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int frame, int r
+> > >               return 0;
+> > >       if (!reg_mask && !stack_mask)
+> > >               return 0;
+> > > +
+> > >       for (;;) {
+> > >               DECLARE_BITMAP(mask, 64);
+> > >               u32 history = st->jmp_history_cnt;
+> > >
+> > > +             if (last_idx < 0) {
+> > > +                     /* we are at the entry into subprog, which
+> > > +                      * is expected for global funcs, but only if
+> > > +                      * requested precise registers are R1-R5
+> > > +                      * (which are global func's input arguments)
+> > > +                      */
+> > > +                     if (st->curframe == 0 &&
+> > > +                         st->frame[0]->subprogno > 0 &&
+> > > +                         st->frame[0]->callsite == BPF_MAIN_FUNC &&
+> > > +                         stack_mask == 0 && (reg_mask & ~0x3e) == 0) {
+> > > +                             bitmap_from_u64(mask, reg_mask);
+> > > +                             for_each_set_bit(i, mask, 32) {
+> > > +                                     reg = &st->frame[0]->regs[i];
+> > > +                                     if (reg->type != SCALAR_VALUE) {
+> > > +                                             reg_mask &= ~(1u << i);
+> > > +                                             continue;
+> > > +                                     }
+> > > +                                     reg->precise = true;
+> > > +                             }
+> > > +                             return 0;
+> > > +                     }
+> > > +
+> > > +                     verbose(env, "BUG backtracing func entry subprog %d reg_mask %x stack_mask %llx\n",
+> > > +                             st->frame[0]->subprogno, reg_mask, stack_mask);
+> > > +                     WARN_ONCE(1, "verifier backtracking bug");
+> > > +                     return -EFAULT;
+> > > +             }
+> > > +
+> > >               if (env->log.level & BPF_LOG_LEVEL2)
+> > >                       verbose(env, "last_idx %d first_idx %d\n", last_idx, first_idx);
+> >
+> > Minor nit: maybe move above if (last_idx < 0) after this verbose() print?
+> >
+>
+> yep, done
+>
+> > st->parent should be == NULL once we detected global func, right?
+>
+> yep, if there are no bugs
+>
+> >
+> > If so (and considering next patches) doing reg->precise = true for this state
+> > is unnecessary...
+> > and then doing reg_mask &=
+> > is also unnecessary since there is no st->parent to go next and no insns to backtrack, right?
+> >
+> > Probably worth to keep all this code anyway...
+> > just for clarity and documentation purpose.
+>
+> You are right, there shouldn't be any more parent states. TBH, even
+> this "empty" state with last_idx == -1 is quite surprising.
+>
+> But I thought I'd do correct precision handling just in case there is
+> some jump back to first instruction, at which point we'll do state
+> comparison to detect infinite loops and stuff like that. I haven't
+> analyzed much if precision markings are important for such use case,
+> but theoretically we can use this empty state in is_state_visited(),
+> so best make sure that we don't shortcut any logic.
+>
+> I was actually thinking that maybe a better way to handle all this
+> would be to prevent having a global func's first instruction marked as
+> prune_point. But all this requires some more careful analysis and
+> testing. So maybe I'll get back to this as I work on next patch set.
+> It touches prune points anyways.
+>
+> For now, if this doesn't look wrong, let's land it as is, and I'll
+> work on it some more later.
+>
+> Oh, one more thing. We currently don't have a check at the very end
+> that reg_mask and stack_mask is zero, which should be the case for the
+> main program. We probably should add it. But then global func will be
+> a special case, as it could have R1-R5 as scalar input args, so those
+> might end up being set in reg_mask. And we can check that using BTF.
+> But I left it also for follow up, there are enough tricky changes in
+> one patch set :)
 
-Yeah, that does actually look OK
-
-Jason
+Yep. Agree on all points.
+This set is already tricky and it's a great improvement
+for precision logic.
+Though it's pushed to bpf-next I hope folks who reviewed
+the precision in the past (Kumar, Daniel, others?) will
+spend time carefully analyzing the patches.
