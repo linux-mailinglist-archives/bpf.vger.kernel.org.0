@@ -2,57 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E96761A550
-	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 00:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA0C61A553
+	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 00:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbiKDXDj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 19:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S229496AbiKDXFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 19:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiKDXDh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 19:03:37 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D49CF3;
-        Fri,  4 Nov 2022 16:03:33 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1or5ij-000LG1-6w; Sat, 05 Nov 2022 00:03:29 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1or5ii-000LUC-RY; Sat, 05 Nov 2022 00:03:28 +0100
-Subject: Re: [PATCH] bpf: mark get_entry_ip as __maybe_unused
-To:     Jonas Rabenstein <rabenstein@cs.fau.de>, stable@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@kernel.org>, Song Liu <song@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-References: <20221103150303.974028-1-rabenstein@cs.fau.de>
- <20221103153247.zal3czlsxvanfnc3@kashyyyk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ec1ac9cb-f92c-9a2f-3a6c-bfc4bc88ab11@iogearbox.net>
-Date:   Sat, 5 Nov 2022 00:03:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229494AbiKDXFy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 19:05:54 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E799D7F;
+        Fri,  4 Nov 2022 16:05:52 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id z18so9682403edb.9;
+        Fri, 04 Nov 2022 16:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mN54KKsHo4XMlW8Cy/FqV30oFk3ZH7yAvbdzcrknG6k=;
+        b=Cxio1z00cNocZA0FXAlMAsPTI1uAi3T+jqU04XLyknb5PWFf7isppClOng7V0he2Nt
+         rMy99yUPVF7wnDrSKAOj5nxU9Dp96Q7KXPk66SwhLBHLjfbIY3CswpJlV1HiN1Lbd1CT
+         +5r9vvndMMxWv6jCjNLoOnO64sl0UFY8GjoODqgvWl+jy+pZ9WwytsrheIQTf58XZxHw
+         g52lDNIFQ6lIjBfwFO9oxPZAuXAZ03Mt7Q33d9v3zCy25//Pfj70ad8BvuSqDbGLsjc+
+         DaIBHpVwZ46Ka+T4VLAonROWrXyrEyw1Of4VH4JbK81ndk3WVs7HrsPa35O5M//D0owf
+         SY1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mN54KKsHo4XMlW8Cy/FqV30oFk3ZH7yAvbdzcrknG6k=;
+        b=Gyh+N5azYi0G1B5LD0WEt3zChItZhTkP5ka8TOMHn1lOge36ZKnbX3eHgyZpaf9myv
+         JxVjCsjFkF/Wd/RivlKTMZerZ+ypO4v5IflJlz/OKVtgOiECDu6atNnzvI8//dxi9/IP
+         qEhv27E97ImjjF44fNBOiiemR/hOB/V7pb1FjBxvlOj+zHnoQRgRphHqQF7KF4eOwbpq
+         YxqaikuTFzb0Z4UGHhLm12zDv0glhuuVc21d1cXfGuLTmgFLPRNsvFqyP5rCzWJEyHjB
+         ceWoJi4b/K+/3RQ4iWFSjXG9AvrakgXeNvF0YfNu/tFSqDit8qTLaj05CY1rsgS4Uup5
+         gH7g==
+X-Gm-Message-State: ACrzQf2UtUW7Y6K4lXm4+GBhIhHthzR8vOYNNxT+l3sEl3ouuHCMkVnB
+        fzHvk0Y7LaJaxPwQxo8PGSHKj75/doK1tBqT5tE=
+X-Google-Smtp-Source: AMsMyM68nNj3s9W/PHSKKGY1ohl7omYL5fipU5jIwRmq1czF41xnk5F9G0RWOOUiOqVV2J6yaXs4BaY1ZzG8u7VbXY0=
+X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
+ o4-20020aa7c504000000b00461122b882bmr38809561edq.14.1667603150932; Fri, 04
+ Nov 2022 16:05:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20221103153247.zal3czlsxvanfnc3@kashyyyk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26710/Fri Nov  4 08:53:05 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <0000000000009da4c705dcb87735@google.com> <0000000000002227cf05ecace68c@google.com>
+In-Reply-To: <0000000000002227cf05ecace68c@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Nov 2022 16:05:39 -0700
+Message-ID: <CAEf4BzY03FkV8DsN=rGp_V1aCZhWYE7dBy2CJCUYbr775VPhag@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in check_map_prog_compatibility
+To:     syzbot <syzbot+e3f8d4df1e1981a97abb@syzkaller.appspotmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        martin.lau@linux.dev, memxor@gmail.com, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,47 +73,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/3/22 4:32 PM, Jonas Rabenstein wrote:
-> Hi again,
-> after sending this out, I noticed this is only a problem in the stable
-> versions (starting from v6.0.3), as c09eb2e578eb1668bbc has been applied (as
-> 03f148c159a250dd454) but not 0e253f7e558a3e250902 ("bpf: Return value in kprobe
-> get_func_ip only for entry address") which makes always use of get_entry_ip.
-> I therefore think, 0e253f7e558a3e250902 needs to be added to the stable v6.0
-> series as well as otherwise it can't be compiled with -Werror if
-> CONFIG_X6_KERNEL_IBT is set but CONFIG_FPROBE isn't.
+On Fri, Nov 4, 2022 at 3:50 PM syzbot
+<syzbot+e3f8d4df1e1981a97abb@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 34dd3bad1a6f1dc7d18ee8dd53f1d31bffd2aee8
+> Author: Alexei Starovoitov <ast@kernel.org>
+> Date:   Fri Sep 2 21:10:47 2022 +0000
+>
+>     bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1599d319880000
+> start commit:   200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1b664fba5e66c4bf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e3f8d4df1e1981a97abb
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165415a7080000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1716f705080000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Thanks for the info, Jonas. Added Greg wrt stable cherry-pick.
-
-> On Thu, Nov 03, 2022 at 04:03:03PM +0100, Jonas Rabenstein wrote:
->> Commit c09eb2e578eb1668bbc ("bpf: Adjust kprobe_multi entry_ip
->> for CONFIG_X86_KERNEL_IBT") introduced the get_entry_ip() function.
->> Depending on CONFIG_X86_KERNEL_IBT it is a static function or only
->> a macro definition. The only user of this symbol so far is in
->> kprobe_multi_link_handler() if CONFIG_FPROBE is enabled.
->> If CONFIG_FROBE is not set, the symbol is not used and - depending
->> on CONFIG_X86_KERNEL_IBT - a warning for get_entry_ip() is emitted.
->> To solve this, the function should be marked as __maybe_unused.
->>
->> Signed-off-by: Jonas Rabenstein <rabenstein@cs.fau.de>
->> ---
->>   kernel/trace/bpf_trace.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index f2d8d070d024..19131aae0bc3 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -1032,7 +1032,7 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
->>   };
->>   
->>   #ifdef CONFIG_X86_KERNEL_IBT
->> -static unsigned long get_entry_ip(unsigned long fentry_ip)
->> +static unsigned long __maybe_unused get_entry_ip(unsigned long fentry_ip)
->>   {
->>   	u32 instr;
->>   
->> -- 
->> 2.37.4
->>
-
+#syz fix: bpf: Relax the requirement to use preallocated hash maps in
+tracing progs.
