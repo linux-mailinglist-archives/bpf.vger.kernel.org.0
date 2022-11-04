@@ -2,61 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0114361A2C0
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 21:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BC661A2ED
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbiKDUyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 16:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        id S229615AbiKDVKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbiKDUy3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 16:54:29 -0400
+        with ESMTP id S229445AbiKDVKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:10:17 -0400
 Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EB81A049
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 13:54:27 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id k2so16360447ejr.2
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 13:54:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D21342F71;
+        Fri,  4 Nov 2022 14:10:15 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id 13so16466561ejn.3;
+        Fri, 04 Nov 2022 14:10:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g6x/IDSvo1DKWsq40s4MpOIod4x+yegmIIb/05R7Taw=;
-        b=bDbzLP9jCSgw63ybcTh+yguAGO1IpWoFVNR+QZ7Cdntfoi95PzFQns41OPJaUKDBhU
-         yFT5wKwr6Of501pyBC/Hcis+8uUgpjYLmza53e102oc9A2LVNXr0dJt6JYfgDR+ZfION
-         fi+T4/6wuIIu1O5L2wUAV9qyo9EJMeiVn6TpbxJiKhyUa//22pA7JsDDY9VswGWRF7By
-         KJRrwrdqhYsvZg78Sx20wDl08edaqIjRUJc2N/7782PIhWSHsfKrbhVOtSW6gOXEX9kz
-         4ZRq4lFawk2sgVKvcdpvgfvFNCtsJZlaDjrswpaQLNFVvBgm8zIaFtnHLcniJZEfBQQO
-         Cq1g==
+        bh=P/kQYdJhQRckKt4rUibxSFTIQweO2rniyf8K8sfzQjk=;
+        b=DM5z3k+iPnZPK+YBRtJPPtKb20BElSUppKh+sMir9PZle00aGZf1GxjtodUL3Ej3sY
+         qihJUDUWhmzlju3gP0zViodmMfGWIEYhsxN1NZF2QniK96poSKpj4oB8cX4M/NUFfQje
+         r4yzAr3zAcShmbhsHgqawctAAvG+cDvZvhz+REeMQ7CxRGE4qO6kuisz1Gxf7BcfYayC
+         WO2TAxFh82r8rbDGgUM/BayB2+WxsRCvFfHy+5820OWCBX3qFBL/phTq44vH6Lap++lu
+         24huB/Sdc622j99iHyMk4iQfil4dfhmjRXZt9l/+IuaJiOfiOAzY9ja3/qyMq+1NvUNB
+         bcdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g6x/IDSvo1DKWsq40s4MpOIod4x+yegmIIb/05R7Taw=;
-        b=zlrPkL659zSU54P6T0lQ1ZYNTsI5eRB7A8V6ITRizDMCC5iOs5c3vSIfhQSPp2lVQe
-         dA1wl/BKVtRiJRE1mZKYABsL63iXY9wcEaIYwdWh3q3ixM97HfC1d8M4b0uR5CRTpK+H
-         tq0ze252RH2ivAalY5dmVanyjrh4sVk+vpToBmqzaDAXLU1hmcAijaYoXklNSfOdiyqV
-         TekqcpGvM7C8C2935hez4SyXOSgjLwciTdf6d9+S9QwaJiw2VK3Z7eNN18HaND0G09xJ
-         PxYiUkgEAeyXN6vGXT3XteOXV1FrGNlUynXjTYrpnUzQRQjFV6uw5EDH0L402u8ay1DX
-         FNOA==
-X-Gm-Message-State: ACrzQf0oYiZIuzSFE3q/VJZqXlQBCcHB5PR8Y1/1c6zgtlW+wLfQNCLC
-        HQxMnewoT2n7HOcSJyTO9RAgJZ1JVglDHsimChk=
-X-Google-Smtp-Source: AMsMyM7ffX3Km8AqqfOpVlEAzrHH+pw+xTaM+cZlwyP0pZzfawPW7QKDTNRojF7MjqZMCWu34zRitowoq1GXBfHy/Gk=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr35741636ejn.302.1667595266314; Fri, 04
- Nov 2022 13:54:26 -0700 (PDT)
+        bh=P/kQYdJhQRckKt4rUibxSFTIQweO2rniyf8K8sfzQjk=;
+        b=brQeBk6iOh9KdUqN+nilHWWZVfCzB1pmwdRqbGJfKQOFuPoBt2l1oh08otXyyZBa4c
+         7zlCkstmLcI5m7M5gx2BryJgoiAmPr0B3YptFM+L6eya34ee5zC6qydj2/wVccJO8Fh1
+         eTsTXsV+uiXmHGDcpqzgrKxQeRNHFiaGgNfyOJqPQMq0kRNK+Nw+b49hswBO/vlLywYh
+         UvG3FMT8dIFxqwAi/0+iNIm2XrZyXu9cPsyzvVK9ACYY3tpZJbtfXk5DieAcG/BZPUyo
+         OH72dqW/7bMYkNPXUXAX3Z8NOXY4GpImO+2y8AjfL86IHdQSzobK4mDSKltqIGNP9tHV
+         3HYQ==
+X-Gm-Message-State: ACrzQf3xoZnRgIQXnElR7ltCgxPbmQArvdGNS1bTyREZ9pZI2UzMs2zm
+        O5ydDoJCGOI2My1x/zEohpqos9RTMgLV8Fa23RU=
+X-Google-Smtp-Source: AMsMyM7Go04Xu5XZjzpb2SQMBT4b5LLzG3uR5DHKQLX3P299PePjbF4Tk4K0r46prqF2izEO1cZc54Cw3tzPR6qktxg=
+X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
+ sc36-20020a1709078a2400b00795bb7d643bmr37125222ejc.115.1667596213954; Fri, 04
+ Nov 2022 14:10:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221103134522.2764601-1-eddyz87@gmail.com>
-In-Reply-To: <20221103134522.2764601-1-eddyz87@gmail.com>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+ <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com> <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
+ <a9367491-5ac3-385b-d0d6-820772ebd395@huaweicloud.com>
+In-Reply-To: <a9367491-5ac3-385b-d0d6-820772ebd395@huaweicloud.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 13:54:14 -0700
-Message-ID: <CAEf4Bzb9dcBy5JEWzphkfr=wzvcT8gXcCjA5UYPPKAywh=k_Fg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: __attribute__((btf_decl_tag("...")))
- for btf dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        alan.maguire@oracle.com
+Date:   Fri, 4 Nov 2022 14:10:01 -0700
+Message-ID: <CAEf4BzZJDRNyafMEjy-1RX9cUmpcvZzYd9YBf9Q3uv_vVsiLCw@mail.gmail.com>
+Subject: Re: Closing the BPF map permission loophole
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,359 +75,266 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 6:45 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Mon, Oct 31, 2022 at 4:54 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
 >
-> Clang's `__attribute__((btf_decl_tag("...")))` is represented in BTF
-> as a record of kind BTF_KIND_DECL_TAG with `type` field pointing to
-> the type annotated with this attribute. This commit adds
-> reconstitution of such attributes for BTF dump in C format.
+> On 10/27/2022 6:54 PM, Andrii Nakryiko wrote:
+> > On Wed, Sep 28, 2022 at 1:54 AM Lorenz Bauer <oss@lmb.io> wrote:
+> >>
+> >> On Thu, 15 Sep 2022, at 11:30, Lorenz Bauer wrote:
+> >>> Hi list,
+> >>>
+> >>> Here is a summary of the talk I gave at LPC '22 titled "Closing the BPF
+> >>> map permission loophole", with slides at [0].
+> >>
+> >> I've put this topic on the agenda of the 2022-10-06 BPF office hours to get some maintainer attention. Details are here: https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit
+> >>
+> >> Best
+> >
+> > So after the office hours I had an offline whiteboard discussion with
+> > Alexei explaining more precisely what I was proposing, and it became
+> > apparent that some of the things I was proposing weren't exactly
+> > clear, and thus people were left confused about the solution I was
+> > talking about. So I'll try to summarize it a bit and add some more
+> > specifics. Hopefully that will help, because I still believe we can
+> > solve this problem moving forward.
+> >
+> > But first, two notes.
+> >
+> > 1) Backporting this is going to be hard, and I don't think that should
+> > be the goal, it's going to be too intrusive, probably.
+> >
+> > 2) It turned out that we currently don't store user-space-side
+> > read/write permissions on struct bpf_map itself, and we'd need to do
+> > that as a preliminary step here. Below I just assume that struct
+> > bpf_map records all the bpf-side and user-side read/write permissions.
 >
-> BTF doc says that BTF_KIND_DECL_TAGs should follow a target type but
-> this is not enforced and tests don't honor this restriction.
-> This commit uses hashmap to map types to the list of decl tags.
-> The hashmap is filled by `btf_dump_assign_decl_tags` function called
-> from `btf_dump__new`.
+> +linux-security-module, Paul, Casey
 >
-> It is assumed that total number of types annotated with decl tags is
-> relatively small, thus some space is saved by using hashmap instead of
-> adding a new field to `struct btf_dump_type_aux_state`.
+> Thanks Andrii for writing such detailed proposal. It is very clear.
 >
-> It is assumed that list of decl tags associated with a single type is
-> small. Thus the list is represented by an array which grows linearly.
+> I was thinking about your bpf_map_view abstraction, to record per-fd
+> permission. My question would be, isn't the f_mode enough for this
+> purpose? I mean, if you want to record the access flags per fd, you
+> already have them in f_mode. Apart from map iterators, the eBPF code
+> handling the user space side of map access is already capable of
+> handling and enforcing based on the f_mode.
 >
-> To accommodate older Clang versions decl tags are dumped using the
-> following macro:
+> So, what remains for us to do is to ensure that a requestor gets
+> a fd with modes compatible with what the requestor is allowed to do.
 >
->  #if __has_attribute(btf_decl_tag)
->  #  define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
->  #else
->  #  define __btf_decl_tag(x)
->  #endif
+> For a moment, I exclude MAC-style controls, as I understood that
+> this should not be the only type of enforcement.
 >
-> The macro definition is emitted upon first call to `btf_dump__dump_type`.
+> Then, maybe we could treat maps like inodes, meaning that we could
+> add to bpf_map the following fields:
 >
-> Clang allows to attach btf_decl_tag attributes to the following kinds
-> of items:
-> - struct/union         supported
-> - struct/union field   supported
-> - typedef              supported
-> - function             not applicable
-> - function parameter   not applicable
-> - variable             not applicable
+> m_uid
+> m_gid
+> m_mode
 >
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  tools/lib/bpf/btf_dump.c | 163 ++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 160 insertions(+), 3 deletions(-)
+> These fields will be populated at map creation time, depending on
+> who is requesting it. With similar mechanism as for inodes (umask),
+> we can decide the default m_mode (read-write for the owner,
+> read-only for the group and others). These fields are relevant only
+> for the user space side of map access.
 >
+> We can add two new commands for bpf():
+>
+> BPF_MAP_CHOWN
+> BPF_MAP_CHMOD
+>
+> to change the fields above.
+>
+> I comment below, to see if this alternative proposal works for the
+> use cases you described.
 
-Functions and their args can also have tags. This works:
-
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-index 7a5af8b86065..75fcabe700cd 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-@@ -54,7 +54,7 @@ struct root_struct {
-
- /* ------ END-EXPECTED-OUTPUT ------ */
-
--int f(struct root_struct *s)
-+int f(struct root_struct *s __btf_decl_tag("func_arg_tag"))
-__btf_decl_tag("func_tag")
- {
-        return 0;
- }
-
-And I see correct BTF:
-
-[26] FUNC 'f' type_id=25 linkage=global
-[27] DECL_TAG 'func_arg_tag' type_id=26 component_idx=0
-[28] DECL_TAG 'func_tag' type_id=26 component_idx=-1
-
-So let's add support and test for that case as well. btf_dump
-shouldn't assume vmlinux.h-only case.
-
-Also, please check if DATASEC and VARs can have decl_tags associated with them.
-
-[...]
-
-> @@ -143,6 +174,7 @@ static void btf_dump_printf(const struct btf_dump *d, const char *fmt, ...)
->
->  static int btf_dump_mark_referenced(struct btf_dump *d);
->  static int btf_dump_resize(struct btf_dump *d);
-> +static int btf_dump_assign_decl_tags(struct btf_dump *d);
->
->  struct btf_dump *btf_dump__new(const struct btf *btf,
->                                btf_dump_printf_fn_t printf_fn,
-> @@ -179,11 +211,21 @@ struct btf_dump *btf_dump__new(const struct btf *btf,
->                 d->ident_names = NULL;
->                 goto err;
->         }
-> +       d->decl_tags = hashmap__new(identity_hash_fn, identity_equal_fn, NULL);
-> +       if (IS_ERR(d->decl_tags)) {
-> +               err = PTR_ERR(d->decl_tags);
-> +               d->decl_tags = NULL;
-
-nit: no need to clear out ERR pointer, hashmap__free() handles that properly
-
-> +               goto err;
-> +       }
->
->         err = btf_dump_resize(d);
->         if (err)
->                 goto err;
->
-> +       err = btf_dump_assign_decl_tags(d);
-> +       if (err)
-> +               goto err;
-> +
->         return d;
->  err:
->         btf_dump__free(d);
-> @@ -232,7 +274,8 @@ static void btf_dump_free_names(struct hashmap *map)
->
->  void btf_dump__free(struct btf_dump *d)
->  {
-> -       int i;
-> +       int i, bkt;
-> +       struct hashmap_entry *cur;
->
->         if (IS_ERR_OR_NULL(d))
->                 return;
-> @@ -248,14 +291,22 @@ void btf_dump__free(struct btf_dump *d)
->         free(d->cached_names);
->         free(d->emit_queue);
->         free(d->decl_stack);
-> -       btf_dump_free_names(d->type_names);
-> -       btf_dump_free_names(d->ident_names);
-> +       if (d->type_names)
-> +               btf_dump_free_names(d->type_names);
-> +       if (d->ident_names)
-> +               btf_dump_free_names(d->ident_names);
-> +       if (d->decl_tags) {
-> +               hashmap__for_each_entry(d->decl_tags, cur, bkt)
-> +                       free(cur->value);
-> +               hashmap__free(d->decl_tags);
-
-generalize btf_dump_free_names() to btf_dump_free_strs_map() and
-handle IS_ERR_OR_NULL call internally?
-
-> +       }
->
->         free(d);
->  }
->
->  static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr);
->  static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 cont_id);
-> +static void btf_dump_maybe_define_btf_decl_tag(struct btf_dump *d);
-
-naming nit: btf_dump_ensure_btf_decl_tag_macro() ?
+didn't we establish that we can't trust fd permissions because we
+don't control normal chmod/chown?..
 
 >
->  /*
->   * Dump BTF type in a compilable C syntax, including all the necessary
-> @@ -284,6 +335,8 @@ int btf_dump__dump_type(struct btf_dump *d, __u32 id)
->         if (err)
->                 return libbpf_err(err);
+> > So, the overall idea is that instead of fetching struct bpf_map point
+> > for all kinds of FD-based operations (bpf_obj_get, map_fd_by_id, even
+> > bpf_map_create) we are always working with a view of a map, and that
+> > "view" is a separate struct/object, something like:
+> >
+> > struct bpf_map_view {
+> >      struct bpf_map *map;
+> >      /* BPF_F_RDONLY | BPF_F_WRONLY, but we can later also add
+> >         BPF-side flags: BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG
+> >      */
+> >      int access_flags;
+> > }
+> >
+> > So whenever we work with map by FD, we get struct bpf_map_view (i.e.,
+> > we store struct bpf_map_view inside file->private and
+> > inode->i_private). The semantics of view->access_flags is that it is
+> > superimposed on top of bpf_map->map_flags (specifically its
+> > BPF_F_RDONLY | BPF_F_WRONLY parts, later also BPF_F_RDONLY_PROG |
+> > BPF_F_WRONLY_PROG). This means that if struct bpf_map is R/W, but our
+> > current bpf_map_view says BPF_F_RDONLY, then only read-only access is
+> > allowed through that FD. On the other hand, if bpf_map itself is only
+> > BPF_F_RDONLY, but we somehow go bpf_map_view with BPF_F_RDONLY |
+> > BPF_F_WRONLY (e.g., due to chmod loophole), then it doesn't matter,
+> > it's still BPF_F_RDONLY, no write access. We can try preventing such
+> > situations in some circumstances, but as we showed with chmod() it's
+> > impossible to prevent in general.
+> >
+> > So, just to hopefully make it a bit clearer, let's discuss a use case
+> > that a bunch of people had in mind. Root/CAP_BPF user created R/W
+> > bpf_map, but wants to pin it in one BPFFS path as R/W, so that it can
+> > be later opened as R/W and modified. This BPFFS path will be
+> > restricted through FS permissions to only allow it to be opened by a
+> > privileged user/group. But, that same original root/CAP_BPF user would
+> > like to also create a read-only BPFFS pinning of that same map, and
+> > let unprivileged user(s) to open and work with that map, but only
+> > perform read-only operations (e.g., BPF_MAP_LOOKUP_ELEM command).
+> >
+> > Let's see how that works in this new bpf_map_view model.
+> >
+> > 1. root/CAP_BPF user does BPF_MAP_CREATE operation, struct bpf_map is
+> > created with map_flags BPF_F_RDONLY | BPF_F_WRONLY. Also, immediately
+> > struct bpf_map_view is created with same BPF_F_RDONLY | BPF_F_WRONLY
+> > access_flags. struct bpf_map_view keeps reference on struct bpf_map,
+> > struct bpf_map_view is assigned to struct file->private, new FD is
+> > returned to user-space.
 >
-> +       btf_dump_maybe_define_btf_decl_tag(d);
-> +
->         d->emit_queue_cnt = 0;
->         err = btf_dump_order_type(d, id, false);
->         if (err < 0)
-> @@ -373,6 +426,61 @@ static int btf_dump_mark_referenced(struct btf_dump *d)
->         return 0;
->  }
+> Ok, m_uid, m_gid are taken from the current process. m_mode (for the
+> owner) could be set from the map creation flags (0, BPF_F_RDONLY,
+> BPF_F_WRONLY). The fd the owner receives has f_mode compatible with the
+> map creation flags.
 >
-> +/*
-> + * This hashmap lookup is used in several places, so extract it as a
-> + * function to hide all the ceremony with casts and NULL assignment.
-> + */
-> +static struct decl_tag_array *btf_dump_find_decl_tags(struct btf_dump *d, __u32 id)
-> +{
-> +       struct decl_tag_array *decl_tags = NULL;
-> +
-> +       hashmap__find(d->decl_tags, (void *)(uintptr_t)id, (void **)&decl_tags);
-> +
-> +       return decl_tags;
-> +}
-> +
-
-with your hashmap void * -> long refactoring this is not necessary,
-though, right?
-
-> +/*
-> + * Scans all BTF objects looking for BTF_KIND_DECL_TAG entries.
-> + * The id's of the entries are stored in the `btf_dump.decl_tags` table,
-> + * grouped by a target type.
-> + */
-> +static int btf_dump_assign_decl_tags(struct btf_dump *d)
-> +{
-> +       __u32 id, new_cnt, type_cnt = btf__type_cnt(d->btf);
-> +       struct decl_tag_array *decl_tags;
-> +       const struct btf_type *t;
-> +       int err;
-> +
-> +       for (id = 1; id < type_cnt; id++) {
-> +               t = btf__type_by_id(d->btf, id);
-> +               if (!btf_is_decl_tag(t))
-> +                       continue;
-> +
-> +               decl_tags = btf_dump_find_decl_tags(d, t->type);
-> +               /* Assume small number of decl tags per id, increase array size by 1 */
-> +               new_cnt = decl_tags ? decl_tags->cnt + 1 : 1;
-> +               if (new_cnt > MAX_DECL_TAGS_PER_ID)
-> +                       return -ERANGE;
-
-why artificial limitations? user will pay the price proportional to
-its BTF, and we don't really care as the memory is allocated
-dynamically anyway
-
-> +
-> +               /* Allocate new_cnt + 1 to account for decl_tag_array header */
-> +               decl_tags = libbpf_reallocarray(decl_tags, new_cnt + 1, sizeof(__u32));
-
-oh, this new_cnt + 1 looks weird and error prone. we are reallocating
-entire struct, not just an array, so realloc() makes more sense here.
-How about:
-
-decl_tags = realloc(decl_tags, sizeof(decl_tags) + new_cnt *
-sizeof(decl_tags->tag_ids[0]));
-
-?
-
-> +               if (!decl_tags)
-> +                       return -ENOMEM;
-> +
-> +               err = hashmap__insert(d->decl_tags, (void *)(uintptr_t)t->type, decl_tags,
-> +                                     HASHMAP_SET, NULL, NULL);
-
-why not using hashmap__set()?
-
-> +               if (err) {
-> +                       free(decl_tags);
-
-hm... as this is written, it makes it look like double free can happen
-if previous version of this pointer stays in d->decl_tags.
-
-I think error shouldn't ever be returned because hashmap__insert()
-won't be allocating any new memory, so I think it's best to leave a
-small comment about this and just do:
-
-(void)hashmap__set(d->decl_tag, t->type, (long)decl_tags, NULL, NULL);
-
-and no error checking because we don't expect it to ever fail
-
-> +                       return err;
-> +               }
-> +
-> +               decl_tags->tag_ids[new_cnt - 1] = id;
-> +               decl_tags->cnt = new_cnt;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int btf_dump_add_emit_queue_id(struct btf_dump *d, __u32 id)
->  {
->         __u32 *new_queue;
-> @@ -899,6 +1007,51 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->         }
->  }
+> > 2. That same root/CAP_BPF user does BPF_OBJ_PIN and specifies that
+> > they want R/W pinning (through file_flags). Kernel clones/copies
+> > struct bpf_map_view (I think bpf_map_view shouldn't be shared between
+> > files/inodes, each file/inode has its own personal copy; but we can
+> > work out the details later), sets (keeps in this case) its
+> > access_flags as  BPF_F_RDONLY | BPF_F_WRONLY. After that they are free
+> > to chown/chmod as necessary to prevent unprivileged user from doing
+> > anything with that BPFFS file, if necessary.
 >
-> +/*
-> + * Define __btf_decl_tag to be either __attribute__ or noop.
-> + */
-> +static void btf_dump_maybe_define_btf_decl_tag(struct btf_dump *d)
-> +{
-> +       if (d->btf_decl_tag_is_defined || !hashmap__size(d->decl_tags))
-> +               return;
-> +
-> +       d->btf_decl_tag_is_defined = true;
-> +       btf_dump_printf(d, "#if __has_attribute(btf_decl_tag)\n");
-> +       btf_dump_printf(d, "#  define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))\n");
-> +       btf_dump_printf(d, "#else\n");
-> +       btf_dump_printf(d, "#  define __btf_decl_tag(x)\n");
-> +       btf_dump_printf(d, "#endif\n\n");
-> +}
-> +
-
-$ rg '#\s+define' | wc -l
-44
-$ rg '#define' | wc -l
-696
-
-not a big fan of this cuteness, #define is better IMO (more grep'able
-as well, if anything)
-
-> +/*
-> + * Emits a list of __btf_decl_tag(...) attributes attached to some type.
-> + * Decl tags attached to a type and to it's fields reside in a same
-> + * list, thus use component_idx to filter out relevant tags:
-> + * - component_idx == -1 designates the type itself;
-> + * - component_idx >=  0 designates specific field.
-> + */
-> +static void btf_dump_emit_decl_tags(struct btf_dump *d,
-> +                                   struct decl_tag_array *decl_tags,
-> +                                   int component_idx)
-> +{
-> +       struct btf_type *decl_tag_t;
-
-is there any ambiguity to justify verbose name? maybe just "t"?
-
-> +       const char *decl_tag_text;
-> +       struct btf_decl_tag *tag;
-> +       __u32 i;
-> +
-> +       if (!decl_tags)
-> +               return;
-> +
-> +       for (i = 0; i < decl_tags->cnt; ++i) {
-> +               decl_tag_t = btf_type_by_id(d->btf, decl_tags->tag_ids[i]);
-> +               tag = btf_decl_tag(decl_tag_t);
-> +               if (tag->component_idx != component_idx)
-> +                       continue;
-> +               decl_tag_text = btf__name_by_offset(d->btf, decl_tag_t->name_off);
-> +               btf_dump_printf(d, " __btf_decl_tag(\"%s\")", decl_tag_text);
-> +       }
-> +}
-> +
->  static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
->                                      const struct btf_type *t)
->  {
-> @@ -913,6 +1066,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->                                      const struct btf_type *t,
->                                      int lvl)
->  {
-> +       struct decl_tag_array *decl_tags = btf_dump_find_decl_tags(d, id);
->         const struct btf_member *m = btf_members(t);
->         bool is_struct = btf_is_struct(t);
->         int align, i, packed, off = 0;
-> @@ -945,6 +1099,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->                         m_sz = max((__s64)0, btf__resolve_size(d->btf, m->type));
->                         off = m_off + m_sz * 8;
->                 }
-> +               btf_dump_emit_decl_tags(d, decl_tags, i);
->                 btf_dump_printf(d, ";");
->         }
+> I understand that per-pinned map permissions gives a lot of flexibility.
+> But maybe, the owner/group/others permissions are sufficient to cover
+> most of the use cases. Instead of creating two pinned maps, one
+> read-write and one read-only, we just create one and we define the map
+> m_mode
+> as rw-r--r--.
 >
-> @@ -964,6 +1119,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->         btf_dump_printf(d, "%s}", pfx(lvl));
->         if (packed)
->                 btf_dump_printf(d, " __attribute__((packed))");
-> +       btf_dump_emit_decl_tags(d, decl_tags, -1);
->  }
+> At the time a requestor wants to get a fd from the pinned map through
+> OBJ_GET, the kernel checks from the process UID/GID if it has
+> permissions in m_mode.
 >
->  static const char *missing_base_types[][2] = {
-> @@ -1104,6 +1260,7 @@ static void btf_dump_emit_typedef_def(struct btf_dump *d, __u32 id,
+> We can keep the permission check on the inode of the pinned map as an
+> additional security control.
+
+wouldn't inode permissions be too inflexible? E.g., if I created a map
+and I'm in group1, but I want to give read-only access to group2, but
+not to any other group. I can't use other part of permission and
+setting group permissions to r is too restrictive (I want users in my
+group to be able to open r/w view of the map).
+
 >
->         btf_dump_printf(d, "typedef ");
->         btf_dump_emit_type_decl(d, t->type, name, lvl);
-> +       btf_dump_emit_decl_tags(d, btf_dump_find_decl_tags(d, id), -1);
->  }
+> > 3. Now, for the read-only pinning. User does another BPF_OBJ_PIN using
+> > original R/W map FD, but now they specify file_flags to only allow
+> > BPF_F_RDONLY (I'm too lazy to check what exact flag we pass there to
+> > communicate this intent, it's not that important for this discussion).
+> > At this point, kernel creates a new struct bpf_map_view, pointing to
+> > struct bpf_map, but this time access_flags have only BPF_F_RDONLY set.
+> > Then we proceed to creating an inode, its i_private is assigned this
+> > new R/O bpf_map_view. The user should chmod/chown pinned BPFFS file
+> > appropriately to allow unprivileged users to BPF_OBJ_GET it.
 >
->  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
-> --
-> 2.34.1
+> Now that the main access control check is based on m_mode, we might
+> think who can pin a map. Only the owner? Maybe we can reuse the
+> execute permission in m_mode to determine that.
+
+Why such limitations that only owner should be able to pin? What if
+I'm that read-only user and I want to pin it somewhere else as another
+read-only pinning (for whatever reason, to share with my own
+processes/users).
+
+
+>
+> > Now, let's assume we are unprivileged user who wants to work with that
+> > pinned BPF map. When we do BPF_OBJ_GET on that read-only pinned file,
+> > kernel fetches struct bpf_map_view from inode->i_private which has
+> > access_flags as BPF_F_RDONLY. That's it, there is no way we can do
+> > update on that map, kernel will reject that even though struct bpf_map
+> > itself allows BPF_F_WRONLY.
+>
+> This should be clear now.
+>
+> > Note, though, that once we checked everything, as we create a new
+> > struct file and return new FD to user-space, that new struct file will
+> > have *yet another copy* of struct bpf_map_view, cloned from inode's
+> > bpf_map_view (recall that I was proposing to have 1-to-1 mapping
+> > between file/inode and bpf_map_view).
+> >
+> >
+> > Let's now assume we are sneaky bastards and chmod that second pinned
+> > BPFFS file to allow r/w file permissions. When we do BPF_OBJ_GET,
+> > again, we'll fetch struct bpf_map_view which enforce BPF_F_RDONLY
+> > (only), despite file itself having writable permissions. We can argue
+> > if we should reject such BPF_OBJ_GET command or silently "downgrade"
+> > to read-only view, that's beside the point.
+>
+> Ok, yes. Permissions on the pinned map are just an additional barrier.
+>
+> > Hopefully this is a bit clearer.
+> >
+> > One last note. When we are talking about BPF_OBJ_GET, we are actually
+> > going to be dealing with 4 layers of read and write permissions:
+> >    1) struct bpf_map's "inherent" permissions
+> >    2) struct bpf_map_view's access_flags
+> >    3) struct file's FS read/write permissions
+> >    4) union bpf_attr's file_flags specified for BPF_OBJ_GET
+>
+> In my proposal, that would change to:
+>
+> 1) struct bpf_map m_uid, m_gid, m_mode
+> 2) struct file's FS read/write permission (depends on the inode on
+>     BPFFS)
+> 3) process uid, gid of the requestor
+> 4) union bpf_attr's file_flags specified for BPF_OBJ_GET
+>
+> > While that's a lot, we always intersect them and keep only the most
+> > restrictive combination. So if at any of the layers we have read-only
+> > permissions, resulting *new struct bpf_map_view* will only specify
+> > BPF_F_RDONLY. E.g., if at layers 1, 2, and 4 we allow BPF_F_WRONLY,
+> > but BPFFS file permission (layer #3 above) at that moment is
+> > read-only, we should be only getting read-only view of BPF map.
+>
+> Ok, sure. I think more or less the proposals are aligned. If traditional
+> access control is sufficient, we could avoid the increased complexity of
+> the new bpf_map_view layer.
+
+I think this additional complexity is fundamental to this problem. And
+as I mentioned above, relying just on inode permissions doesn't seem
+sufficient. But maybe I missed something in your proposal.
+
+>
+> > P.S. We can extend this to BPF-side BPF_F_RDONLY_PROG |
+> > BPF_F_WRONLY_PROG as well, it's just that we'll need to define how
+> > user will control that. E.g., FS read-only permission, does it
+> > restrict both user-space and BPF-view, or just user-space view? We can
+> > certainly extend file_flags to allow users to get BPF-side read-only
+> > and user-space-side read-write BPF map FD, for example. Obviously, BPF
+> > verifier would need to know about struct bpf_map_view when accepting
+> > BPF map FD in ldimm64 and such.
+>
+> I guess, this patch could be used:
+>
+> https://lore.kernel.org/bpf/20220926154430.1552800-3-roberto.sassu@huaweicloud.com/
+>
+> When passing a fd to an eBPF program, the permissions of the user space
+> side cannot exceed those defined from eBPF program side.
+
+Don't know, maybe. But I can see how BPF-side can be declared r/w for
+BPF programs, while user-space should be restricted to read-only. I'm
+a bit hesitant to artificially couple both together.
+
+>
+> Thanks
+>
+> Roberto
 >
