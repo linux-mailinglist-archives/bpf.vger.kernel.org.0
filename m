@@ -2,73 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB7A61A38C
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BD161A3BB
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiKDVr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        id S229601AbiKDV44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbiKDVr1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:47:27 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F21D9E
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:47:25 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id p141so4840328iod.6
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:47:25 -0700 (PDT)
+        with ESMTP id S229544AbiKDV4z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:56:55 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71359FCB;
+        Fri,  4 Nov 2022 14:56:54 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id y14so16619863ejd.9;
+        Fri, 04 Nov 2022 14:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oRjSS2dEk9hnD7ThB06Hgs90PSlFs4eH6cYa+KdqcnQ=;
-        b=WQf9bRlsI1XKPD3Jshb9XofLOKEJOYFYf2YIY6e+ns03rUkYYW6OAFrWeWJst0zltf
-         aQzK0nRcI7LBFEWyQ6yVO7lT4s9ZES2Bp8BLM1q5pgRBeDMPDO8ABPRhrMc10/VhYD2Y
-         U8+ERCxxvtn8MMjgFYmViqOGzb1eHnC2Crt0gduVUjhcCr5IWGGUJv2qk+/YGYTr7L5J
-         hqxhtJ6QIcFpnLHNdy17bhkmf5HBdqRvVjeD2OiGdpYJ8xWu7DXdlHjbzOWqCs4ipVj6
-         zmknOR1gsfsfqmIUT3bh28T2YkorBaZwE5OJRfYHB4j2eF0G+c+dUygVVNoEKbwMVEUj
-         WbJg==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4lxURksHj3T3+DcMA1c6SDe+tyv9on8orkNxxpF1wpw=;
+        b=l0krgcQ1x+QyVprsYS3e+Ksm4+O/J8WaR2uV6+jmasJviwEA3s2GkMc63/xsHLjn7v
+         ixmrS6jsmrwUnuUdjE8GWaqkURtfAIBNCCDsOAH5yvj37AORMKhnXUlwGDLLishrkEap
+         hrZHKLTqYnAaRNKiwshxZEHjqjx5LSXqF3INh9C2ED0eTg/NncG5b8HIHoQNzr8f7MXo
+         lpHeaInkAo6UuVIdtSENIfi06o7QZxPQNsBAr4SfuN6j4EXeoA9ICcz0/c7FLMEIYK+3
+         khdW04Rm0KbzqigAluLFYkZG4vif9LQdMRDGfoQzFNW3uBAQJcLVelIpU8Z9vNHcFGmw
+         F7PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oRjSS2dEk9hnD7ThB06Hgs90PSlFs4eH6cYa+KdqcnQ=;
-        b=nax5qxi1f5SrdDz6tuH+nmCn//7ecZnEpWMcR7a6rM0AkasM4G1DI+ZOe4w4+nVXcC
-         HCdwwPe51uCaBfi2sdl7leA6pq/5A3u4KdKQOsvMhN8WWKWvZqwL94gIqHyLP10emoIG
-         3h+JyqkZ2ktEyJTKfOaHzNlhYKk3YGuNGxbP43g+Z15XCXmyy/J6gx8/kMaiWIS1K62X
-         QMYlf0e8L1HkG9/rPqzXAJA1L9+E96KEkjwOr4nzEDupbbxgJqglU/VXcRZ/vZ4pXfRh
-         dyJihrbig+b5Rr/Nbh+Mt4WY9GTd//Bce+PMKR70KchiWvtrt9xu7wRk9xhgSg8Z+a6z
-         nJzg==
-X-Gm-Message-State: ACrzQf2o0wVcjh+1qgfz1Y0AC9pNgPog7bWvIF8Fm30/g+Mq40fUvfwB
-        XT47BfVW4cGYJBvdDrPHtL5URW910OfAndt+GtgSig==
-X-Google-Smtp-Source: AMsMyM4HbweZapfCjy1oNY1gEpuc+TtrBVcA9ubkHAfx3c4hWPaIZHx5JX5znxT5VFxE5La4J1TivVlmOxk8nEPYoOc=
-X-Received: by 2002:a02:cacf:0:b0:375:4038:62a0 with SMTP id
- f15-20020a02cacf000000b00375403862a0mr23423691jap.23.1667598445102; Fri, 04
- Nov 2022 14:47:25 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4lxURksHj3T3+DcMA1c6SDe+tyv9on8orkNxxpF1wpw=;
+        b=s19UwLSENXQF4FoGFDrZAFymyExVHsZAmUN4XTI773aInZYFTxQF/RDCKBTat9Cn+P
+         k11B2wrQmZIIeRLSPy4FLiEf0Emvv1BO1du9cEFAqc/ojJ5jl8No5bjx2I5NOTXFSlTJ
+         8AH/rGPZnB6oDpOe8YAxqTu6zKi+CQxlQy8/o7mnaq5n3vNd2I78orw8+/NkK1Ix949/
+         izf4xzQTjeR58LkDXOXPmIm1/Gk2l05QzQv5rBFbUeDc+5ylbp1dFCQzeoRIKkaYUtSY
+         QiX3sS5FcJLQZu4SDXXiVMOFeYzaMknyautP/1NiKIHNUqtI3PWShAU/moV6o0VYsNxL
+         lRng==
+X-Gm-Message-State: ACrzQf1ZwHhwXxnp6Q5066fm+1XrYgMNHqkm8GQEO3mayw3q+yTltVK0
+        W/pA5HuDtucEMu78IXEwcvCfFvnUfet1+1MB9OI=
+X-Google-Smtp-Source: AMsMyM7L6eNb0nhcMUMgqoe134AW/LDinI4BWgMVWvwPF3qBv3jLgKkauI5+9B9OECRCQCMH3pk11ofWlwIrl3aIwno=
+X-Received: by 2002:a17:906:11d6:b0:7ad:fd3e:2a01 with SMTP id
+ o22-20020a17090611d600b007adfd3e2a01mr17227919eja.545.1667599013262; Fri, 04
+ Nov 2022 14:56:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221104032311.1606050-1-sdf@google.com> <87leori0xh.fsf@all.your.base.are.belong.to.us>
- <CAKH8qBvuPH9GkXKsfi1Nt+J1S16Khcc2D8MtXVkEES8iEQ_9PQ@mail.gmail.com>
-In-Reply-To: <CAKH8qBvuPH9GkXKsfi1Nt+J1S16Khcc2D8MtXVkEES8iEQ_9PQ@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 4 Nov 2022 14:47:14 -0700
-Message-ID: <CAKH8qBtWgefqhMsMFVwFv-mhhhMycVXhyzzgu4s7NDkQGfPy0w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: fix destination buffer address when copying
- with metadata
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
+References: <20221103083254.237646-1-yangjihong1@huawei.com> <20221103083254.237646-3-yangjihong1@huawei.com>
+In-Reply-To: <20221103083254.237646-3-yangjihong1@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Nov 2022 14:56:40 -0700
+Message-ID: <CAEf4BzY+qP1wwVddjg7_rypcUAW8iPRzSa=1O6aFG5dSLX+1Gg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpf: Remove size check for sk in bpf_skb_is_valid_access
+ for 32-bit architecture
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+        shuah@kernel.org, benjamin.tissoires@redhat.com, memxor@gmail.com,
+        delyank@fb.com, asavkov@redhat.com, colin.i.king@gmail.com,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,72 +76,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 11:21 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Thu, Nov 3, 2022 at 1:36 AM Yang Jihong <yangjihong1@huawei.com> wrote:
 >
-> On Fri, Nov 4, 2022 at 1:22 AM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> w=
-rote:
-> >
-> > Stanislav Fomichev <sdf@google.com> writes:
-> >
-> > > While working on a simplified test for [0] it occurred to me that
-> > > the following looks fishy:
-> > >
-> > >       data =3D xsk_umem__get_data(xsk->umem_area, rx_desc->addr);
-> > >       data_meta =3D data - sizeof(my metadata);
-> > >
-> > > Since the data points to umem frame at addr X, data_mem points to
-> > > the end of umem frame X-1.
-> > >
-> > > I don't think it's by design?
-> >
-> > It is by design. :-)
+> The error code -EACCES is returned when bpf prog is tested in 32-bit environment,
+> This is because bpf_object__relocate modifies the instruction to change memory
+> size to 4 bytes, as shown in the following messages:
 >
-> Noted, thanks for clarifying!
+> libbpf: prog 'kfunc_call_test1': relo #2: matching candidate #0 <byte_off> [18342] struct __sk_buff.sk (0:30:0 @ offset 168)
+> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) off 168 -> 168
+> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) mem_sz 8 -> 4
 >
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 9f0561b67c12..0547fe37ba7e 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -163,7 +163,7 @@ static void xsk_copy_xdp(struct xdp_buff *to, str=
-uct xdp_buff *from, u32 len)
-> > >       } else {
-> > >               from_buf =3D from->data_meta;
-> > >               metalen =3D from->data - from->data_meta;
-> > > -             to_buf =3D to->data - metalen;
-> >
-> > This is to include the XDP meta data in the receive buffer. Note that
-> > AF_XDP descriptor that you get back on the RX ring points to the *data*
-> > not the metadata.
-> >
-> > For the unaligned mode you can pass any address (umem offset) into the
-> > fill ring, and the kernel will simply mask it and setup headroom
-> > accordingly.
+> As a result, the bpf_skb_is_valid_access check fails. For 32-bit architecture,
+> unnecessary checks need to be deleted.
 >
-> Thanks for the details! And what happens in the aligned case?
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  net/core/filter.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> Looking purely from the user side:
->
-> tx_desc =3D xsk_ring_prod__tx_desc(&xsk->tx, idx);
-> tx_desc->addr =3D idx * UMEM_FRAME_SIZE; /* this has to be aligned to
-> the frame size? */
-> data =3D xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
->
-> data here is basically =3D umem_area + idx * UMEM_FRAM_SIZE, right? How
-> do I make sure metadata is placed in the same umem chunk? Will passing
-> umem headroom do the trick?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index bb0136e7a8e4..eab7ce89740c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -8269,8 +8269,6 @@ static bool bpf_skb_is_valid_access(int off, int size, enum bpf_access_type type
+>                         return false;
+>                 break;
+>         case offsetof(struct __sk_buff, sk):
+> -               if (type == BPF_WRITE || size != sizeof(__u64))
+> -                       return false;
 
-Ignore me. I do see now that there is always XDP_PACKET_HEADROOM bytes
-of headroom in rx_desc.
+this probably should be specific to host architecture bitness? I'd
+imagine that size = 4 should be invalid on 64-bit arches (reading half
+of the pointer is bad)
+
+either way, please make sure to add tests specifically for this case
+in test_verifier
 
 
 
+>                 info->reg_type = PTR_TO_SOCK_COMMON_OR_NULL;
+>                 break;
+>         case offsetof(struct __sk_buff, tstamp_type):
+> --
+> 2.30.GIT
 >
-> > The buffer allocator guarantees that there's XDP_PACKET_HEADROOM
-> > available.
-> >
-> > IOW your example userland code above is correct.
-> >
-> >
-> > Bj=C3=B6rn
-> >
-> >
