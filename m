@@ -2,76 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1CD618F07
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F129B618F17
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbiKDD1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S231180AbiKDDc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbiKDD0f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 23:26:35 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29099C26
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:59 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d18-20020a170902ced200b001871dab2d59so2623937plg.22
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQ6JlR5MuJ+4TNT/9F0XUiWRUVg6v0604de78bhCMH0=;
-        b=e95nTNyu1/zqYk594Wc2lEyKkIdbtwOKjh9caLsaCAaRuH9Dc6FetzenTjkT1Ud+2m
-         7hetwgd/CHvIWjr5pMDXS848OuGsVBvWeSi3si8WVYmY9BYbAyA/06KZer6peqFwMwwC
-         yv0AKBrq+xOi3xXMGygdVXCudkOUZnIHThJ3B0/XuV78jWQpnWBT+m/dc7OYF8rdShgU
-         MmcDnsYE8ToJS7DPQ935kHR7rlO+93sKESXrHOehd7hDxkHqPmua2TFOQ0rxAQ7oaqH+
-         UF19V1roe/y+TgOUwdX9vzD2DfoU9BMDAEfyLjxXA9vK1ik07qeIFXjoj+kH1a0ir1Uz
-         vClw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQ6JlR5MuJ+4TNT/9F0XUiWRUVg6v0604de78bhCMH0=;
-        b=DlZzFJynaf8b1KP7/gr2wndw6Qa64VM2u12OtSUOtDiHqcbb6wC3OGSVNj1gLMHpay
-         VhPJp903WGHa4WTE+MSjfJdWqeTLOTZoUYRMsNY92VyXPtqMe8XnfBArRFVVZQAmYdsV
-         uQsmtT7KXwJ1N0Iz0bGvtTR+7sWYqsz4hE2rnIbdgd+aAVeR9yznu2/OBjoOsADzNvzA
-         tkCwUCdgn3vvm86NjP3BWsVv3XIdkFunBpNVRo/yGAzsD39Emhkv7ItH2vUWbetD4I99
-         kXdqR6HGHzc9Kox+HVhrLIKtIWN9JjWft4UsGwvH7PDEBrwINFxJ3uE2abyXalrQvV7t
-         83PQ==
-X-Gm-Message-State: ACrzQf1PQ9lk2NXyMytUjeypXsJDGxpuQl7bWh8meizGtX1rTE+DBG0q
-        jD+P2lBJJlJlNduvaI3TeFo/LZUlyL1MjAkDSdMbPuFRutbuq+LN+WF2rz1WKpD5N8DlhPGBqoc
-        EYPsT1HQYVz4RiOVHc+EtVQrk0SsH73VY12o25Ffelm0haUxaeg==
-X-Google-Smtp-Source: AMsMyM5KfIChbdj/RzkOJbzKK0JWi/IItAP2XkKFHFa0ViMAPEtrpdpDFmxFkThxRo8fGBWfxcRTA4A=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:2496:b0:213:e03d:bc30 with SMTP id
- nt22-20020a17090b249600b00213e03dbc30mr25753722pjb.109.1667532359345; Thu, 03
- Nov 2022 20:25:59 -0700 (PDT)
-Date:   Thu,  3 Nov 2022 20:25:32 -0700
-In-Reply-To: <20221104032532.1615099-1-sdf@google.com>
-Mime-Version: 1.0
-References: <20221104032532.1615099-1-sdf@google.com>
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221104032532.1615099-15-sdf@google.com>
-Subject: [RFC bpf-next v2 14/14] bnxt: Support rx timestamp metadata for xdp
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        with ESMTP id S231485AbiKDDbv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 23:31:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A088DFFB
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bcSYSNvDHZdAJ46wXRu1CIpoQa17xIwvlEBsfNRpqtI=; b=xKgDuZO7/QGr1PXuSZbxoDjeKm
+        JkZeptvQzbKI4Cni3sPxrOq0F8MglBd3bqb5Pb1V83fIHeL4agiMg7ZbMdPhfyiZscL7mx+d21+IN
+        hyKIbEj9u/bKJPcDwIAT1/C5t8I0kDay23yJL/4XwdkOGpI109g4Fjtzp+6KWKQW/80yhUeo+4JCM
+        H0HEhR5+NP2cBfQR273vw2iZ+cFvyPrVRpDc9NDwij9Bermy+Fva4hh8YM4Qc6ti+T2CifPf7cW2z
+        eWifPTMguRvS/4k/zuUGsDBljVJwCXw6Zd/zgkbNQL8vxHw1WY5jLU6N6d4OALzwP+7S5uEOoblM2
+        M1nHs/+w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oqnOT-002Ixy-Rt; Fri, 04 Nov 2022 03:29:21 +0000
+Date:   Thu, 3 Nov 2022 20:29:21 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "rppt@kernel.org" <rppt@kernel.org>,
+        "p.raghav@samsung.com" <p.raghav@samsung.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "dave@stgolabs.net" <dave@stgolabs.net>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "song@kernel.org" <song@kernel.org>, "hch@lst.de" <hch@lst.de>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "zhengjun.xing@linux.intel.com" <zhengjun.xing@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Torvalds, Linus" <torvalds@linux-foundation.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "a.manzanares@samsung.com" <a.manzanares@samsung.com>
+Subject: Re: [PATCH bpf-next v1 RESEND 1/5] vmalloc: introduce vmalloc_exec,
+ vfree_exec, and vcopy_exec
+Message-ID: <Y2SHEb/Y6GtKQXFu@bombadil.infradead.org>
+References: <20221031222541.1773452-1-song@kernel.org>
+ <20221031222541.1773452-2-song@kernel.org>
+ <Y2MAR0aj+jcq+15H@bombadil.infradead.org>
+ <Y2Pjnd3mxA9fTlox@kernel.org>
+ <Y2QPpODzdP+2YSMN@bombadil.infradead.org>
+ <eac58f163bd8b6829dff176e67b44c79570025f5.camel@intel.com>
+ <Y2Raa2wSQnXwd7j8@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2Raa2wSQnXwd7j8@bombadil.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,114 +71,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-COMPILE-TESTED ONLY!
+On Thu, Nov 03, 2022 at 05:18:51PM -0700, Luis Chamberlain wrote:
+> On Thu, Nov 03, 2022 at 09:19:25PM +0000, Edgecombe, Rick P wrote:
+> > On Thu, 2022-11-03 at 11:59 -0700, Luis Chamberlain wrote:
+> > > > > Mike Rapoport had presented about the Direct map fragmentation
+> > > > > problem
+> > > > > at Plumbers 2021 [0], and clearly mentioned modules / BPF /
+> > > > > ftrace /
+> > > > > kprobes as possible sources for this. Then Xing Zhengjun's 2021
+> > > > > performance
+> > > > > evaluation on whether using 2M/1G pages aggressively for the
+> > > > > kernel direct map
+> > > > > help performance [1] ends up generally recommending huge pages.
+> > > > > The work by Xing
+> > > > > though was about using huge pages *alone*, not using a strategy
+> > > > > such as in the
+> > > > > "bpf prog pack" to share one 2 MiB huge page for *all* small eBPF
+> > > > > programs,
+> > > > > and that I think is the real golden nugget here.
+> > > > > 
+> > > > > I contend therefore that the theoretical reduction of iTLB misses
+> > > > > by using
+> > > > > huge pages for "bpf prog pack" is not what gets your systems to
+> > > > > perform
+> > > > > somehow better. It should be simply that it reduces fragmentation
+> > > > > and
+> > > > > *this* generally can help with performance long term. If this is
+> > > > > accurate
+> > > > > then let's please separate the two aspects to this.
+> > > > 
+> > > > The direct map fragmentation is the reason for higher TLB miss
+> > > > rate, both
+> > > > for iTLB and dTLB.
+> > > 
+> > > OK so then whatever benchmark is running in tandem as eBPF JIT is
+> > > hammered
+> > > should *also* be measured with perf for iTLB and dTLB. ie, the patch
+> > > can
+> > > provide such results as a justifications.
+> > 
+> > Song had done some tests on the old prog pack version that to me seemed
+> > to indicate most (or possibly all) of the benefit was direct map
+> > fragmentation reduction.
+> 
+> Matches my observations but I also provided quite a bit of hints as to
+> *why* I think that is. I suggested lib/test_kmod.c as an example beefy
+> multithreaded selftests which really kicks the hell out of the kernel
+> with whatever crap you want to run. That is precicely how I uncovered
+> some odd kmod bug lingering for years.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Maryam Tahhan <mtahhan@redhat.com>
-Cc: xdp-hints@xdp-project.net
-Cc: netdev@vger.kernel.org
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 55 +++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+*and*, *perhaps*... it may be that you need another memory intensive benchmark
+to run in tandem, one which mimics the behaviour of the internal "shadow
+production benchmark", whatever that is.
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index b2e0607a6400..968266844f49 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -37,6 +37,7 @@
- #include <linux/if_bridge.h>
- #include <linux/rtc.h>
- #include <linux/bpf.h>
-+#include <linux/bpf_patch.h>
- #include <net/gro.h>
- #include <net/ip.h>
- #include <net/tcp.h>
-@@ -1791,8 +1792,53 @@ static void bnxt_deliver_skb(struct bnxt *bp, struct bnxt_napi *bnapi,
- 
- struct bnxt_xdp_buff {
- 	struct xdp_buff xdp;
-+	struct rx_cmp_ext *rxcmp1;
-+	struct bnxt *bp;
-+	u64 r0;
- };
- 
-+struct bnxt_xdp_buff *bnxt_xdp_rx_timestamp(struct bnxt_xdp_buff *ctx)
-+{
-+	struct bnxt_ptp_cfg *ptp;
-+	u32 cmpl_ts;
-+	u64 ns, ts;
-+
-+	if (!ctx->rxcmp1) {
-+		ctx->r0 = 0;
-+		return ctx;
-+	}
-+
-+	cmpl_ts = le32_to_cpu(ctx->rxcmp1->rx_cmp_timestamp);
-+	if (bnxt_get_rx_ts_p5(ctx->bp, &ts, cmpl_ts) < 0) {
-+		ctx->r0 = 0;
-+		return ctx;
-+	}
-+
-+	ptp = ctx->bp->ptp_cfg;
-+
-+	spin_lock_bh(&ptp->ptp_lock);
-+	ns = timecounter_cyc2time(&ptp->tc, ts);
-+	spin_unlock_bh(&ptp->ptp_lock);
-+
-+	ctx->r0 = (u64)ns_to_ktime(ns);
-+	return ctx;
-+}
-+
-+void bnxt_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
-+		       struct bpf_patch *patch)
-+{
-+	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_EXPORT_TO_SKB)) {
-+		return xdp_metadata_export_to_skb(prog, patch);
-+	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-+		/* return true; */
-+		bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
-+	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-+		xdp_kfunc_call_preserving_r1(patch,
-+					     offsetof(struct bnxt_xdp_buff, r0),
-+					     bnxt_xdp_rx_timestamp);
-+	}
-+}
-+
- /* returns the following:
-  * 1       - 1 packet successfully received
-  * 0       - successful TPA_START, packet not completed yet
-@@ -1941,6 +1987,14 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 	}
- 
- 	if (xdp_active) {
-+		if (unlikely((flags & RX_CMP_FLAGS_ITYPES_MASK) ==
-+			     RX_CMP_FLAGS_ITYPE_PTP_W_TS) || bp->ptp_all_rx_tstamp) {
-+			if (bp->flags & BNXT_FLAG_CHIP_P5) {
-+				bxbuf.rxcmp1 = rxcmp1;
-+				bxbuf.bp = bp;
-+			}
-+		}
-+
- 		if (bnxt_rx_xdp(bp, rxr, cons, bxbuf.xdp, data, &len, event)) {
- 			rc = 1;
- 			goto next_rx;
-@@ -13116,6 +13170,7 @@ static const struct net_device_ops bnxt_netdev_ops = {
- 	.ndo_bridge_getlink	= bnxt_bridge_getlink,
- 	.ndo_bridge_setlink	= bnxt_bridge_setlink,
- 	.ndo_get_devlink_port	= bnxt_get_devlink_port,
-+	.ndo_unroll_kfunc	= bnxt_unroll_kfunc,
- };
- 
- static void bnxt_remove_one(struct pci_dev *pdev)
--- 
-2.38.1.431.g37b22c650d-goog
-
+  Luis
