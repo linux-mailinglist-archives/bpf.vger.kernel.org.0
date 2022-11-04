@@ -2,93 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15D961A4DC
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D121B61A4E0
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbiKDWwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 18:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        id S229975AbiKDWwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 18:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbiKDWwO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 18:52:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0179543AD5;
-        Fri,  4 Nov 2022 15:50:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 919CB62361;
-        Fri,  4 Nov 2022 22:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D6731C433B5;
-        Fri,  4 Nov 2022 22:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667602215;
-        bh=fA8aiQw4jlIUqRMgCixxIHpvXhT2q5L1pCsZsa7GlHA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SKt18paJ4ZdIFIcISrUZw0+aMBrHjZsG4PXE9Kot4R2UvbX0CEAV1E3QOMyucc9LX
-         XEjtCVhxPOlCsRS4LqaGvIMmCWGVACT7ApMFFdC/QEr9tvJ1ddlLm3yXLU1IjxZ/tn
-         S2Ud9MsKhDG32E4T1xJVzWKacCaJwo9HtVy4jJeC/sqVRvMvoPNFXkevcXkEF8E1Nr
-         0uij/MBvqgPt8X5akWiA33SRTkCPQqW7Q0x+dMTQPDL25UYwSELba1v9bY+xD4ZHto
-         p94g9puUa10Mhl29znpS6h6fz3w426B60znQVNY6LCL2/9AsKfuOBEk7lrzcbhA4aq
-         uyzGZWsEBB/dA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BBA20E270FB;
-        Fri,  4 Nov 2022 22:50:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231360AbiKDWwP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 18:52:15 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE3F43855
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 15:50:23 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id o13-20020a056e0214cd00b00300a27f9424so4791927ilk.10
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 15:50:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQUV465XYKy6BEOy3Swc3M1CyT3Q1DkqUbMYNjsBM7w=;
+        b=YfgI0OaPvl+4QVBrQ5oXfer0yeLfaoFU01LrGtZUxlBvXIBUzPyJ5E0Uv47JvYoRfx
+         Kn0dXzz+Vd29JtZaouAAR/hAxvjyFyqvZr/64mwpT6kG9l8hlw0EHI4N42ESaA09Pcb5
+         wvOkkrrSgyU6e3XpljeRfvtzMadRiKod+ZKNqoXQK6Qy/rLrtrGNR0RgyyDnj/POmr6V
+         cGzPwrFwVYxbhVtMPUHBodqy5DuKJGhXvQqhJdAxeCFsmb+Rfa87fE6wXVc/gXLIzVt3
+         vzeveRubiuBXSZaiRRSZ+KJv0I+sYbRSURtQZqPYo1FwnG7C+qdtr/sPuOInPytvftrZ
+         0ZBg==
+X-Gm-Message-State: ACrzQf3Fx0ufCG8752vU/gvaLA42pkuSIhtTu1LRXODI4AHW34xYOyUc
+        HuX1U6lHS50irSbteNkbVa/D0TDT10pnccHNE8Ti15+nOpyy
+X-Google-Smtp-Source: AMsMyM5nTnIogJYJ095mPEs92Yep38gpfi+2iOs4VSUyK/pRUwAakFTI8laAK2zkHMNKd64/tVLlrFqFcjq22AiZc4BVcdLyhALO
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: cgroup_helpers.c: Fix strncpy()
- fortify warning
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166760221576.27361.8207434405001811248.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Nov 2022 22:50:15 +0000
-References: <tencent_469D8AF32BD56816A29981BED06E96D22506@qq.com>
-In-Reply-To: <tencent_469D8AF32BD56816A29981BED06E96D22506@qq.com>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, david.laight@aculab.com,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, rongtao@cestc.cn, sdf@google.com, shuah@kernel.org,
-        song@kernel.org, yhs@fb.com
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:2107:b0:375:ddb:54c0 with SMTP id
+ n7-20020a056638210700b003750ddb54c0mr21194896jaj.244.1667602223078; Fri, 04
+ Nov 2022 15:50:23 -0700 (PDT)
+Date:   Fri, 04 Nov 2022 15:50:23 -0700
+In-Reply-To: <0000000000009da4c705dcb87735@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002227cf05ecace68c@google.com>
+Subject: Re: [syzbot] WARNING in check_map_prog_compatibility
+From:   syzbot <syzbot+e3f8d4df1e1981a97abb@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        martin.lau@linux.dev, memxor@gmail.com, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+syzbot suspects this issue was fixed by commit:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+commit 34dd3bad1a6f1dc7d18ee8dd53f1d31bffd2aee8
+Author: Alexei Starovoitov <ast@kernel.org>
+Date:   Fri Sep 2 21:10:47 2022 +0000
 
-On Fri,  4 Nov 2022 09:27:54 +0800 you wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> Copy libbpf_strlcpy() from libbpf_internal.h to bpf_util.h, and rename it
-> to bpf_strlcpy(), then replace selftests strncpy()/libbpf_strlcpy() with
-> bpf_strlcpy(), fix compile warning.
-> 
-> The libbpf_internal.h header cannot be used directly here, because
-> references to cgroup_helpers.c in samples/bpf will generate compilation
-> errors. We also can't add libbpf_strlcpy() directly to bpf_util.h,
-> because the definition of libbpf_strlcpy() in libbpf_internal.h is
-> duplicated. In order not to modify the libbpf code, add a new function
-> bpf_strlcpy() to selftests bpf_util.h.
-> 
-> [...]
+    bpf: Relax the requirement to use preallocated hash maps in tracing progs.
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: cgroup_helpers.c: Fix strncpy() fortify warning
-    https://git.kernel.org/bpf/bpf-next/c/b3c09fdca113
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1599d319880000
+start commit:   200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b664fba5e66c4bf
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3f8d4df1e1981a97abb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165415a7080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1716f705080000
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: bpf: Relax the requirement to use preallocated hash maps in tracing progs.
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
