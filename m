@@ -2,102 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718A461A353
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F761A361
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbiKDV2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        id S229688AbiKDVes (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKDV2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:28:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B241B45A28
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667597239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YoZ/g2DAWgongxe9b4hSKenV+1Uju4Pu+Tb56vnaUnc=;
-        b=R5qXdn4/ROs0a31Nugp8QCj91mutlPU8ZyZB23KwDlHTG/ktZHObxnAvnFQK5pdSQ0nlAb
-        k4WJCVgIkOg1RWZ5WeoXBOMGUVM411E4t+DX9WOrBVqaZlGSk2mtzG0M7q45NM5OHhrtrg
-        I9ZljvwNrHlOHH1gl09/C3wc3OKTnjU=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-634-9QZDoMY9NE-3aJChAXfnkg-1; Fri, 04 Nov 2022 17:27:17 -0400
-X-MC-Unique: 9QZDoMY9NE-3aJChAXfnkg-1
-Received: by mail-io1-f72.google.com with SMTP id n23-20020a056602341700b00689fc6dbfd6so3766386ioz.8
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:27:17 -0700 (PDT)
+        with ESMTP id S229495AbiKDVer (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:34:47 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D8C49B77
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:34:44 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id kt23so16521996ejc.7
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:34:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lVYX25cF/7yJyc+Fqlz5EWiIvWzpgtymbDR3XQ+a3Zo=;
+        b=EKcL51cfyKn9i6TvaiYLzXpF0xH3NE/pBGn3pDwVXCEy35FER0coW2ePuDp7Gf11GJ
+         TasusRB6LQW6IJPqdBkr7w+heRrE03s3pcF7it8wJX8KgHWZfswzP8rf6NDaD+M4CA8c
+         I9Pyf+bVCn/dqJLJ257baj8N2Pz7Lqkla3s+8YrwM4PVOI6L8lZ5da8/KlXUAc6+76hj
+         s3d+v4oxRITp3BKrf1sqCh7IKzPHBEnowgcqEzO6QENuRIgXnJ4+rJ7dQFZRjzXPTX5q
+         qJQKwHusmhH4mG9Bl4USbbhHhr5ukz4ONrxvA1uONg01hniHUGRqN6I/GxhlW+lvtU7Q
+         alhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YoZ/g2DAWgongxe9b4hSKenV+1Uju4Pu+Tb56vnaUnc=;
-        b=PSwLjghQXaFa9/VXuwZFXMuY6WQabmWZ8JHUZj6KbwSVGr57STEFH12/c8S/R1TvMq
-         Yuwf/5u3tFyUa4VW+op74a0pfuBTw5KuaDTbM1425s9cvT/7c+OL25Qus15m5F87RnX2
-         gupk95bLDJwinhpg4VEIt1oNlwVdTvi+6fRmu28gzBPcCUqUaylAxFOrgyiNcFoXxRJs
-         VDUezkv9INtc+K9PNnA23ZpEw67yeFY6E9N4Lfc9y+nxDtJYAHpTY0wdpck9l8qE7rAo
-         slnkwiIzAicbslINAB6lFrmxdTdjtWvcywvkQQ4G/CebsxRCbww+LJ1yHPAuoFp5niJC
-         PmSQ==
-X-Gm-Message-State: ACrzQf2jpFSTS7LxJ2ZUQakEAjn+qS94Gq0II2b4u4Gvg8+rAsYOqEMS
-        7APgP94f9IkFA92fo2+SF9HBlNa1R/RFe5U9P8ZboNVtlmnqxEx+c7sdCCuaxTE4TGWfcF7frU1
-        tkK6OcjGBeOb+
-X-Received: by 2002:a05:6e02:214f:b0:2fb:cffb:3182 with SMTP id d15-20020a056e02214f00b002fbcffb3182mr22382675ilv.161.1667597236124;
-        Fri, 04 Nov 2022 14:27:16 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6xntdoFJKVfpeppsLDlrkfZ0zh5SfnW45NbHgq32Vi/+W9JWLm/9wuAT8FlOqwG8d2w81aMQ==
-X-Received: by 2002:a05:6e02:214f:b0:2fb:cffb:3182 with SMTP id d15-20020a056e02214f00b002fbcffb3182mr22382662ilv.161.1667597235835;
-        Fri, 04 Nov 2022 14:27:15 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id 67-20020a020a46000000b003636c046e73sm30446jaw.95.2022.11.04.14.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 14:27:15 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 15:27:13 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 00/15] IOMMUFD Generic interface
-Message-ID: <20221104152713.3ae1c409.alex.williamson@redhat.com>
-In-Reply-To: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
+        bh=lVYX25cF/7yJyc+Fqlz5EWiIvWzpgtymbDR3XQ+a3Zo=;
+        b=adsysTCdn9BKdw3HTq828avqbOrPdkjjcC2829ovtfsvGDnCJ03mYfePp5Y2Q+NqHF
+         hqjtvDj5Z2O8wReBn/LTOMP4lWdVtugne6uTqXH/tojIYZt84oNFVDDncrqHlnHJ6wJf
+         DNJymjimXMsU+IxShZuuQ3YuZoC0q/kD1d9uZGNLOqQqljpv2YT3biBfuYBmm7F5L24S
+         i3S2r0sTXBjS6yUa30EZySXb3afzbV1Tgt5ZoO+BzecfGwZhgeF6LIgYxGH1yac4VdYh
+         0BK4q+ALvmreVpaPGZYQwObhGMzjO6rSFqwEdCSy8m9lgSYqTVXVmiOANZjYYG+QHdce
+         TF4g==
+X-Gm-Message-State: ACrzQf34felnuVraGiAdJf6AGpj/7PfY6KP6zgXJNAJLoA2KRyOTAkzZ
+        ehlTlurhrr9oSo67weY7VLOg+pX2q4jJjv3UY8w=
+X-Google-Smtp-Source: AMsMyM74MYbh7yTUYvGMDfNCI8pEHNaKgEJyIy8CczluE0s1tq4f6vwQ+uaJM4RbUeR4QyXAOeDGUuxU4/n0/pNo8N8=
+X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
+ s5-20020a17090699c500b0073d70c51a4fmr35876272ejn.302.1667597682654; Fri, 04
+ Nov 2022 14:34:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <20221028175530.1413351-1-cerasuolodomenico@gmail.com>
+ <635c64abe004c_b1ba20850@john.notmuch> <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
+In-Reply-To: <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Nov 2022 14:34:30 -0700
+Message-ID: <CAEf4BzZ-LQMFAv-5fZTFQp0693R-BjGNWbZV9jscM31S854+-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests: fix test group SKIPPED result
+To:     Mykola Lysenko <mykolal@meta.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Martin Lau <kafai@meta.com>, Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,100 +74,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Oct 2022 15:12:09 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, Oct 31, 2022 at 4:45 PM Mykola Lysenko <mykolal@meta.com> wrote:
+>
+> Hi John,
+>
+> Test FAILs when there is an unexpected condition during test/subtest exec=
+ution, developer does not control it. Hence we propagate FAIL subtest resul=
+t to be the test result, test_progs result and consequently CI result.
+> On the other hand, SKIP state is fully controlled by us.
 
-> [
-> At this point everything is done and I will start putting this work into a
-> git tree and into linux-next with the intention of sending it during the
-> next merge window.
-> 
-> I intend to focus the next several weeks on more intensive QA to look at
-> error flows and other things. Hopefully including syzkaller if I'm lucky
-> ]
+So this is not entirely correct. Tests can "skip themselves" if they
+detect conditions under which they can't run (e.g., hardware perf
+events support). So in some contexts SKIP might be surprising.
 
-In case this one hasn't been reported yet (with IOMMUFD_VFIO_CONTAINER):
+What Daniel proposed looks good to me, we'd be able to quickly tell if
+a test had some skipped subtests and how many.
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-rc3+ #133 Tainted: G            E     
-------------------------------------------------------
-qemu-system-x86/1731 is trying to acquire lock:
-ffff90d3f5fe3e08 (&iopt->iova_rwsem){++++}-{3:3}, at: iopt_map_pages.part.0+0x85/0xe0 [iommufd]
-
-but task is already holding lock:
-ffff90d3f5fe3d18 (&iopt->domains_rwsem){.+.+}-{3:3}, at: iopt_map_pages.part.0+0x18/0xe0 [iommufd]
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&iopt->domains_rwsem){.+.+}-{3:3}:
-       down_read+0x2d/0x40
-       iommufd_vfio_ioctl+0x2cc/0x640 [iommufd]
-       iommufd_fops_ioctl+0x14e/0x190 [iommufd]
-       __x64_sys_ioctl+0x8b/0xc0
-       do_syscall_64+0x3b/0x90
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&iopt->iova_rwsem){++++}-{3:3}:
-       __lock_acquire+0x10dc/0x1da0
-       lock_acquire+0xc2/0x2d0
-       down_write+0x2b/0xd0
-       iopt_map_pages.part.0+0x85/0xe0 [iommufd]
-       iopt_map_user_pages+0x179/0x1d0 [iommufd]
-       iommufd_vfio_ioctl+0x216/0x640 [iommufd]
-       iommufd_fops_ioctl+0x14e/0x190 [iommufd]
-       __x64_sys_ioctl+0x8b/0xc0
-       do_syscall_64+0x3b/0x90
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&iopt->domains_rwsem);
-                               lock(&iopt->iova_rwsem);
-                               lock(&iopt->domains_rwsem);
-  lock(&iopt->iova_rwsem);
-
- *** DEADLOCK ***
-
-2 locks held by qemu-system-x86/1731:
- #0: ffff90d3f5fe3c70 (&obj->destroy_rwsem){.+.+}-{3:3}, at: get_compat_ioas+0x2b/0x90 [iommufd]
- #1: ffff90d3f5fe3d18 (&iopt->domains_rwsem){.+.+}-{3:3}, at: iopt_map_pages.part.0+0x18/0xe0 [iommufd]
-
-stack backtrace:
-CPU: 0 PID: 1731 Comm: qemu-system-x86 Tainted: G            E      6.1.0-rc3+ #133
-Hardware name: System manufacturer System Product Name/P8H67-M PRO, BIOS 3904 04/27/2013
-Call Trace:
- <TASK>
- dump_stack_lvl+0x56/0x73
- check_noncircular+0xd6/0x100
- ? lock_is_held_type+0xe2/0x140
- __lock_acquire+0x10dc/0x1da0
- lock_acquire+0xc2/0x2d0
- ? iopt_map_pages.part.0+0x85/0xe0 [iommufd]
- ? lock_release+0x137/0x2d0
- down_write+0x2b/0xd0
- ? iopt_map_pages.part.0+0x85/0xe0 [iommufd]
- iopt_map_pages.part.0+0x85/0xe0 [iommufd]
- iopt_map_user_pages+0x179/0x1d0 [iommufd]
- iommufd_vfio_ioctl+0x216/0x640 [iommufd]
- iommufd_fops_ioctl+0x14e/0x190 [iommufd]
- __x64_sys_ioctl+0x8b/0xc0
- do_syscall_64+0x3b/0x90
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd1eee7c17b
-Code: 0f 1e fa 48 8b 05 1d ad 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ed ac 0c 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffd9787b9a8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd1eee7c17b
-RDX: 00007ffd9787b9e0 RSI: 0000000000003b71 RDI: 000000000000001c
-RBP: 00007ffd9787ba10 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000000c0000 R11: 0000000000000206 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
+> E.g. we decide when particular subtest/test should be skipped. We do not =
+propagate SKIP state to the test_progs result. test_progs result can either=
+ be OK or FAIL. Also, SKIPPED subtest is not an indication of a problem in =
+a test. Hence, I do not think one SKIPPED subtest should mark the whole tes=
+t as SKIPPED.
+>
+> For example, core_reloc_btfgen has 77 subtests (https://github.com/kernel=
+-patches/bpf/actions/runs/3349035937/jobs/5548924891#step:6:4895). Some of =
+them are skipped right now. However, most of them are passing. It is a norm=
+al state. For me, marking core_reloc_btfgen as SKIP would mean that somethi=
+ng is not right with the whole test. Also, I do not think we are reviewing =
+SKIP tests / subtests right now. Maybe we should. But this would be orthogo=
+nal discussion to this patch.
+>
+>
+> > On Oct 28, 2022, at 4:24 PM, John Fastabend <john.fastabend@gmail.com> =
+wrote:
+> >
+> > Domenico Cerasuolo wrote:
+> >> From: Domenico Cerasuolo <dceras@meta.com>
+> >>
+> >> When showing the result of a test group, if one
+> >> of the subtests was skipped, while still having
+> >> passing subtets, the group result was marked as
+> >> SKIPPED.
+> >>
+> >> #223/1   usdt/basic:SKIP
+> >> #223/2   usdt/multispec:OK
+> >> #223     usdt:SKIP
+> >>
+> >> With this change only if all of the subtests
+> >> were skipped the group test is marked as SKIPPED.
+> >>
+> >> #223/1   usdt/basic:SKIP
+> >> #223/2   usdt/multispec:OK
+> >> #223     usdt:OK
+> >
+> > I'm not sure don't you want to know that some of the tests
+> > were skipped? With this change its not knowable from output
+> > if everything passed or one passed.
+> >
+> > I would prefer the behavior: If anything fails return
+> > FAIL, else if anything is skipped SKIP and if _everything_
+> > passes mark it OK.
+> >
+> > My preference is to drop this change.
+> >
+> >>
+> >> Signed-off-by: Domenico Cerasuolo <dceras@meta.com>
+> >> ---
+> >> tools/testing/selftests/bpf/test_progs.c | 11 +++++++++--
+> >> 1 file changed, 9 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/=
+selftests/bpf/test_progs.c
+> >> index 0e9a47f97890..14b70393018b 100644
+> >> --- a/tools/testing/selftests/bpf/test_progs.c
+> >> +++ b/tools/testing/selftests/bpf/test_progs.c
+> >> @@ -222,6 +222,11 @@ static char *test_result(bool failed, bool skippe=
+d)
+> >>      return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
+> >> }
+> >>
+> >> +static char *test_group_result(int tests_count, bool failed, int skip=
+ped)
+> >> +{
+> >> +    return failed ? "FAIL" : (skipped =3D=3D tests_count ? "SKIP" : "=
+OK");
+> >> +}
+> >> +
+> >> static void print_test_log(char *log_buf, size_t log_cnt)
+> >> {
+> >>      log_buf[log_cnt] =3D '\0';
+> >> @@ -308,7 +313,8 @@ static void dump_test_log(const struct prog_test_d=
+ef *test,
+> >>      }
+> >>
+> >>      print_test_name(test->test_num, test->test_name,
+> >> -                    test_result(test_failed, test_state->skip_cnt));
+> >> +                    test_group_result(test_state->subtest_num,
+> >> +                            test_failed, test_state->skip_cnt));
+> >> }
+> >>
+> >> static void stdio_restore(void);
+> >> @@ -1071,7 +1077,8 @@ static void run_one_test(int test_num)
+> >>
+> >>      if (verbose() && env.worker_id =3D=3D -1)
+> >>              print_test_name(test_num + 1, test->test_name,
+> >> -                            test_result(state->error_cnt, state->skip=
+_cnt));
+> >> +                            test_group_result(state->subtest_num,
+> >> +                                    state->error_cnt, state->skip_cnt=
+));
+> >>
+> >>      reset_affinity();
+> >>      restore_netns();
+> >> --
+> >> 2.30.2
+> >>
+> >
+> >
+>
