@@ -2,71 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00F761A361
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB7A61A38C
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbiKDVes (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S229866AbiKDVr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiKDVer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:34:47 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D8C49B77
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:34:44 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id kt23so16521996ejc.7
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:34:44 -0700 (PDT)
+        with ESMTP id S229609AbiKDVr1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:47:27 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F21D9E
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:47:25 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id p141so4840328iod.6
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:47:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lVYX25cF/7yJyc+Fqlz5EWiIvWzpgtymbDR3XQ+a3Zo=;
-        b=EKcL51cfyKn9i6TvaiYLzXpF0xH3NE/pBGn3pDwVXCEy35FER0coW2ePuDp7Gf11GJ
-         TasusRB6LQW6IJPqdBkr7w+heRrE03s3pcF7it8wJX8KgHWZfswzP8rf6NDaD+M4CA8c
-         I9Pyf+bVCn/dqJLJ257baj8N2Pz7Lqkla3s+8YrwM4PVOI6L8lZ5da8/KlXUAc6+76hj
-         s3d+v4oxRITp3BKrf1sqCh7IKzPHBEnowgcqEzO6QENuRIgXnJ4+rJ7dQFZRjzXPTX5q
-         qJQKwHusmhH4mG9Bl4USbbhHhr5ukz4ONrxvA1uONg01hniHUGRqN6I/GxhlW+lvtU7Q
-         alhQ==
+        bh=oRjSS2dEk9hnD7ThB06Hgs90PSlFs4eH6cYa+KdqcnQ=;
+        b=WQf9bRlsI1XKPD3Jshb9XofLOKEJOYFYf2YIY6e+ns03rUkYYW6OAFrWeWJst0zltf
+         aQzK0nRcI7LBFEWyQ6yVO7lT4s9ZES2Bp8BLM1q5pgRBeDMPDO8ABPRhrMc10/VhYD2Y
+         U8+ERCxxvtn8MMjgFYmViqOGzb1eHnC2Crt0gduVUjhcCr5IWGGUJv2qk+/YGYTr7L5J
+         hqxhtJ6QIcFpnLHNdy17bhkmf5HBdqRvVjeD2OiGdpYJ8xWu7DXdlHjbzOWqCs4ipVj6
+         zmknOR1gsfsfqmIUT3bh28T2YkorBaZwE5OJRfYHB4j2eF0G+c+dUygVVNoEKbwMVEUj
+         WbJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lVYX25cF/7yJyc+Fqlz5EWiIvWzpgtymbDR3XQ+a3Zo=;
-        b=adsysTCdn9BKdw3HTq828avqbOrPdkjjcC2829ovtfsvGDnCJ03mYfePp5Y2Q+NqHF
-         hqjtvDj5Z2O8wReBn/LTOMP4lWdVtugne6uTqXH/tojIYZt84oNFVDDncrqHlnHJ6wJf
-         DNJymjimXMsU+IxShZuuQ3YuZoC0q/kD1d9uZGNLOqQqljpv2YT3biBfuYBmm7F5L24S
-         i3S2r0sTXBjS6yUa30EZySXb3afzbV1Tgt5ZoO+BzecfGwZhgeF6LIgYxGH1yac4VdYh
-         0BK4q+ALvmreVpaPGZYQwObhGMzjO6rSFqwEdCSy8m9lgSYqTVXVmiOANZjYYG+QHdce
-         TF4g==
-X-Gm-Message-State: ACrzQf34felnuVraGiAdJf6AGpj/7PfY6KP6zgXJNAJLoA2KRyOTAkzZ
-        ehlTlurhrr9oSo67weY7VLOg+pX2q4jJjv3UY8w=
-X-Google-Smtp-Source: AMsMyM74MYbh7yTUYvGMDfNCI8pEHNaKgEJyIy8CczluE0s1tq4f6vwQ+uaJM4RbUeR4QyXAOeDGUuxU4/n0/pNo8N8=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr35876272ejn.302.1667597682654; Fri, 04
- Nov 2022 14:34:42 -0700 (PDT)
+        bh=oRjSS2dEk9hnD7ThB06Hgs90PSlFs4eH6cYa+KdqcnQ=;
+        b=nax5qxi1f5SrdDz6tuH+nmCn//7ecZnEpWMcR7a6rM0AkasM4G1DI+ZOe4w4+nVXcC
+         HCdwwPe51uCaBfi2sdl7leA6pq/5A3u4KdKQOsvMhN8WWKWvZqwL94gIqHyLP10emoIG
+         3h+JyqkZ2ktEyJTKfOaHzNlhYKk3YGuNGxbP43g+Z15XCXmyy/J6gx8/kMaiWIS1K62X
+         QMYlf0e8L1HkG9/rPqzXAJA1L9+E96KEkjwOr4nzEDupbbxgJqglU/VXcRZ/vZ4pXfRh
+         dyJihrbig+b5Rr/Nbh+Mt4WY9GTd//Bce+PMKR70KchiWvtrt9xu7wRk9xhgSg8Z+a6z
+         nJzg==
+X-Gm-Message-State: ACrzQf2o0wVcjh+1qgfz1Y0AC9pNgPog7bWvIF8Fm30/g+Mq40fUvfwB
+        XT47BfVW4cGYJBvdDrPHtL5URW910OfAndt+GtgSig==
+X-Google-Smtp-Source: AMsMyM4HbweZapfCjy1oNY1gEpuc+TtrBVcA9ubkHAfx3c4hWPaIZHx5JX5znxT5VFxE5La4J1TivVlmOxk8nEPYoOc=
+X-Received: by 2002:a02:cacf:0:b0:375:4038:62a0 with SMTP id
+ f15-20020a02cacf000000b00375403862a0mr23423691jap.23.1667598445102; Fri, 04
+ Nov 2022 14:47:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221028175530.1413351-1-cerasuolodomenico@gmail.com>
- <635c64abe004c_b1ba20850@john.notmuch> <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
-In-Reply-To: <DC4AB44C-734B-46BC-A9E2-9A24C56F7F9A@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 14:34:30 -0700
-Message-ID: <CAEf4BzZ-LQMFAv-5fZTFQp0693R-BjGNWbZV9jscM31S854+-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests: fix test group SKIPPED result
-To:     Mykola Lysenko <mykolal@meta.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@meta.com>, Kernel Team <Kernel-team@fb.com>
+References: <20221104032311.1606050-1-sdf@google.com> <87leori0xh.fsf@all.your.base.are.belong.to.us>
+ <CAKH8qBvuPH9GkXKsfi1Nt+J1S16Khcc2D8MtXVkEES8iEQ_9PQ@mail.gmail.com>
+In-Reply-To: <CAKH8qBvuPH9GkXKsfi1Nt+J1S16Khcc2D8MtXVkEES8iEQ_9PQ@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 4 Nov 2022 14:47:14 -0700
+Message-ID: <CAKH8qBtWgefqhMsMFVwFv-mhhhMycVXhyzzgu4s7NDkQGfPy0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: fix destination buffer address when copying
+ with metadata
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,121 +76,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 4:45 PM Mykola Lysenko <mykolal@meta.com> wrote:
+On Fri, Nov 4, 2022 at 11:21 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Hi John,
+> On Fri, Nov 4, 2022 at 1:22 AM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> w=
+rote:
+> >
+> > Stanislav Fomichev <sdf@google.com> writes:
+> >
+> > > While working on a simplified test for [0] it occurred to me that
+> > > the following looks fishy:
+> > >
+> > >       data =3D xsk_umem__get_data(xsk->umem_area, rx_desc->addr);
+> > >       data_meta =3D data - sizeof(my metadata);
+> > >
+> > > Since the data points to umem frame at addr X, data_mem points to
+> > > the end of umem frame X-1.
+> > >
+> > > I don't think it's by design?
+> >
+> > It is by design. :-)
 >
-> Test FAILs when there is an unexpected condition during test/subtest exec=
-ution, developer does not control it. Hence we propagate FAIL subtest resul=
-t to be the test result, test_progs result and consequently CI result.
-> On the other hand, SKIP state is fully controlled by us.
+> Noted, thanks for clarifying!
+>
+> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > index 9f0561b67c12..0547fe37ba7e 100644
+> > > --- a/net/xdp/xsk.c
+> > > +++ b/net/xdp/xsk.c
+> > > @@ -163,7 +163,7 @@ static void xsk_copy_xdp(struct xdp_buff *to, str=
+uct xdp_buff *from, u32 len)
+> > >       } else {
+> > >               from_buf =3D from->data_meta;
+> > >               metalen =3D from->data - from->data_meta;
+> > > -             to_buf =3D to->data - metalen;
+> >
+> > This is to include the XDP meta data in the receive buffer. Note that
+> > AF_XDP descriptor that you get back on the RX ring points to the *data*
+> > not the metadata.
+> >
+> > For the unaligned mode you can pass any address (umem offset) into the
+> > fill ring, and the kernel will simply mask it and setup headroom
+> > accordingly.
+>
+> Thanks for the details! And what happens in the aligned case?
+>
+> Looking purely from the user side:
+>
+> tx_desc =3D xsk_ring_prod__tx_desc(&xsk->tx, idx);
+> tx_desc->addr =3D idx * UMEM_FRAME_SIZE; /* this has to be aligned to
+> the frame size? */
+> data =3D xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
+>
+> data here is basically =3D umem_area + idx * UMEM_FRAM_SIZE, right? How
+> do I make sure metadata is placed in the same umem chunk? Will passing
+> umem headroom do the trick?
 
-So this is not entirely correct. Tests can "skip themselves" if they
-detect conditions under which they can't run (e.g., hardware perf
-events support). So in some contexts SKIP might be surprising.
+Ignore me. I do see now that there is always XDP_PACKET_HEADROOM bytes
+of headroom in rx_desc.
 
-What Daniel proposed looks good to me, we'd be able to quickly tell if
-a test had some skipped subtests and how many.
 
-> E.g. we decide when particular subtest/test should be skipped. We do not =
-propagate SKIP state to the test_progs result. test_progs result can either=
- be OK or FAIL. Also, SKIPPED subtest is not an indication of a problem in =
-a test. Hence, I do not think one SKIPPED subtest should mark the whole tes=
-t as SKIPPED.
+
 >
-> For example, core_reloc_btfgen has 77 subtests (https://github.com/kernel=
--patches/bpf/actions/runs/3349035937/jobs/5548924891#step:6:4895). Some of =
-them are skipped right now. However, most of them are passing. It is a norm=
-al state. For me, marking core_reloc_btfgen as SKIP would mean that somethi=
-ng is not right with the whole test. Also, I do not think we are reviewing =
-SKIP tests / subtests right now. Maybe we should. But this would be orthogo=
-nal discussion to this patch.
->
->
-> > On Oct 28, 2022, at 4:24 PM, John Fastabend <john.fastabend@gmail.com> =
-wrote:
+> > The buffer allocator guarantees that there's XDP_PACKET_HEADROOM
+> > available.
 > >
-> > Domenico Cerasuolo wrote:
-> >> From: Domenico Cerasuolo <dceras@meta.com>
-> >>
-> >> When showing the result of a test group, if one
-> >> of the subtests was skipped, while still having
-> >> passing subtets, the group result was marked as
-> >> SKIPPED.
-> >>
-> >> #223/1   usdt/basic:SKIP
-> >> #223/2   usdt/multispec:OK
-> >> #223     usdt:SKIP
-> >>
-> >> With this change only if all of the subtests
-> >> were skipped the group test is marked as SKIPPED.
-> >>
-> >> #223/1   usdt/basic:SKIP
-> >> #223/2   usdt/multispec:OK
-> >> #223     usdt:OK
-> >
-> > I'm not sure don't you want to know that some of the tests
-> > were skipped? With this change its not knowable from output
-> > if everything passed or one passed.
-> >
-> > I would prefer the behavior: If anything fails return
-> > FAIL, else if anything is skipped SKIP and if _everything_
-> > passes mark it OK.
-> >
-> > My preference is to drop this change.
-> >
-> >>
-> >> Signed-off-by: Domenico Cerasuolo <dceras@meta.com>
-> >> ---
-> >> tools/testing/selftests/bpf/test_progs.c | 11 +++++++++--
-> >> 1 file changed, 9 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/=
-selftests/bpf/test_progs.c
-> >> index 0e9a47f97890..14b70393018b 100644
-> >> --- a/tools/testing/selftests/bpf/test_progs.c
-> >> +++ b/tools/testing/selftests/bpf/test_progs.c
-> >> @@ -222,6 +222,11 @@ static char *test_result(bool failed, bool skippe=
-d)
-> >>      return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
-> >> }
-> >>
-> >> +static char *test_group_result(int tests_count, bool failed, int skip=
-ped)
-> >> +{
-> >> +    return failed ? "FAIL" : (skipped =3D=3D tests_count ? "SKIP" : "=
-OK");
-> >> +}
-> >> +
-> >> static void print_test_log(char *log_buf, size_t log_cnt)
-> >> {
-> >>      log_buf[log_cnt] =3D '\0';
-> >> @@ -308,7 +313,8 @@ static void dump_test_log(const struct prog_test_d=
-ef *test,
-> >>      }
-> >>
-> >>      print_test_name(test->test_num, test->test_name,
-> >> -                    test_result(test_failed, test_state->skip_cnt));
-> >> +                    test_group_result(test_state->subtest_num,
-> >> +                            test_failed, test_state->skip_cnt));
-> >> }
-> >>
-> >> static void stdio_restore(void);
-> >> @@ -1071,7 +1077,8 @@ static void run_one_test(int test_num)
-> >>
-> >>      if (verbose() && env.worker_id =3D=3D -1)
-> >>              print_test_name(test_num + 1, test->test_name,
-> >> -                            test_result(state->error_cnt, state->skip=
-_cnt));
-> >> +                            test_group_result(state->subtest_num,
-> >> +                                    state->error_cnt, state->skip_cnt=
-));
-> >>
-> >>      reset_affinity();
-> >>      restore_netns();
-> >> --
-> >> 2.30.2
-> >>
+> > IOW your example userland code above is correct.
 > >
 > >
->
+> > Bj=C3=B6rn
+> >
+> >
