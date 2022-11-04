@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA401618EFD
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8DC618F00
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbiKDD11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
+        id S230522AbiKDD12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbiKDD0N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230017AbiKDD0N (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 3 Nov 2022 23:26:13 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCFC275
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:48 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id k9-20020a17090a39c900b0021671e97a25so1137771pjf.1
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:48 -0700 (PDT)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6376A23A
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:50 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id p5-20020a170902e74500b001884ba979f8so2629605plf.17
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/SmIMRH/Y1RlEhU9+aJo9WoglDO0d23IHXz7QGzof4o=;
-        b=oWWEdrBP33iyR3WA+I17MgMvutvdn0/iPBiKK5q4K2Nn/nGxsVPsVPqBrDkhuaaRoW
-         jY0FQELOqD57dEzlX9cYJVgmnRIVQyOHtuAycjNg7z7CyoklXyevcbR7k19/BKhXngFQ
-         L8NHGO2QupByMiipH5OPRb4z8O4umyWVzVXluLWDtkbyF4nZSxO3wJp0DMNI8Kfc57X7
-         CMH2JRHRzbcj7GzUFxm933O2lA/dPXZw3S+P84EWgB6EegNk4kXb/Mojjny8zbsgJanX
-         mM91Hp2kwt2POgYfk3sKhNu3B4LiQj7Aoe1E67WDul/w0fVoaUATqb6Rz3JQnibSAmRk
-         CFtg==
+        bh=r4JpR16+tuxaqATGwqLht6317RQRMwdPquwFUdUGcE0=;
+        b=KgBZp53ORsmoHMHeKkqIUp3Z4DKNb8PsjQD7Fr/0TVyAW8OicfTdIvcZ71SSXcKdWW
+         otvZaT5RXe5W4zLZLjdPLmN90+UKobEJzT7nfDPmOnzoE2/GJ+53KO1opPO9hIwlHttB
+         n+iXsBEc0R1Wm4OXFiT4DBPQV8BI6hSy15JDRfXLZQLfz/UeBf9nm0qDADEkSi8WIpaB
+         MwoXY6dbeiE6W3cY7MDtI+osaVi40U2pxlqcHjMAJlCO7etxFvowbfjWXvrxw8caT+k8
+         HMbOT5npxxs5WWbwANAxoH62eS3vtez63xcB5Hp/7GXee6n6SXiUtEInNsxoPYmzcyuN
+         nGZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/SmIMRH/Y1RlEhU9+aJo9WoglDO0d23IHXz7QGzof4o=;
-        b=UdKu+rr/hjD5kBekGXom6/cdrk32fgm+JwWwviffcSBF/KdNMpV4sIZZErdZtTJgmp
-         mtvCIl+pFRUczO/7vLm4slusubOdqV5yjEyIQy2E6hR8G6OwMewtOpYxF2s/d1OFtgVi
-         ByWnSGcZTq5MFeNyaSnEShqqIEv5hjfC0kUQRD4wpDFVzCZomzPgvx8p5MiL52jABqpB
-         5yjJvwNEim9rSjFrRV0/QodKxJaYMIIEtKBxHaeogmpJN4lhNDJosUg4hiFNtN1gIYPv
-         /KOEFqDeK+U87ksL+ScHgvrz9lpKmi880yMIMKibQDBkJjc3wfuPW7D9sgCd2RknFZ2p
-         yy9Q==
-X-Gm-Message-State: ACrzQf0FSffbhPopVhh2PG9IHJfbI3p+9NFxlpuEQWNOcsZOAsB68i3v
-        jW2AkhlV9Jl6YI18zNS76ENWyTdhvrl9qo3Os+lzFDlYmiZZ0IexntnMxp3fOiHOUxN9VgINrh/
-        ku2fch/jqyDfzhQXEgcEqLa1X2h9PZRoUyMzbLA2RNNRKyhGDKw==
-X-Google-Smtp-Source: AMsMyM4A5OOe8cbq45cAGa7FY0nMjH57LZI4EDuiMJTcLrV982AD3efX0qrTVub/Ev8SMCSkXhjlsvA=
+        bh=r4JpR16+tuxaqATGwqLht6317RQRMwdPquwFUdUGcE0=;
+        b=LPCaJe1Z0CRZBUPVDWrQ9tTgfqawIdvlR8NJac6HRY+XwkhRIkyQAvntCUffs9uwtj
+         CclnneCIN9jp6rLxJCCCTugEbVuoy3rT4DmPt6BIWlx+K/18idzYuDi6o+Kt/4jw0O2S
+         C92GtV4H0lIOStZoN8TZUC7kDNt/wIyWB6Hzt636fhSk5/As5C5kbhKhlPX0VlqabQX5
+         1ic0tRLZYaTTsaqQUCoN8thlCQnx4j0WmCWbJzv9/o8zBSKQMnaobdSIOmcQAzIiQn3H
+         KE48ljTUeTbSH/thV9oJbPUpmjKuB55vxmAv0QlrZl7EcL1GYp71kW1k0K7UPVnhr8v6
+         khvQ==
+X-Gm-Message-State: ACrzQf3TkJ27UWVc4AH6PO9+QfqNTrXKI2b04qSx8HIIrTFRGsydLxcf
+        T0MMWADmFkw9Dsw5yRAax2hPZcbT8if4h4HMtBgkc4sT1TR6BNsr4HindoNrrQ2DD3xTB4ezm/6
+        LI6ZxpwdMAoxcI0Fe4CjvjuET0ke1A2LRv8ScrOA+WadbEK4TDA==
+X-Google-Smtp-Source: AMsMyM7Dz43l6fUcBOSij/8tA745Rndz167891pfCCKpGvaPbvZP68PJFws6sSm7DbpGTaWH/ocIEZ4=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:8e81:0:b0:56b:9ce2:891f with SMTP id
- a1-20020aa78e81000000b0056b9ce2891fmr247317pfr.43.1667532347949; Thu, 03 Nov
- 2022 20:25:47 -0700 (PDT)
-Date:   Thu,  3 Nov 2022 20:25:26 -0700
+ (user=sdf job=sendgmr) by 2002:a05:6a00:419a:b0:56c:3696:ad5f with SMTP id
+ ca26-20020a056a00419a00b0056c3696ad5fmr245016pfb.30.1667532349728; Thu, 03
+ Nov 2022 20:25:49 -0700 (PDT)
+Date:   Thu,  3 Nov 2022 20:25:27 -0700
 In-Reply-To: <20221104032532.1615099-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20221104032532.1615099-1-sdf@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221104032532.1615099-9-sdf@google.com>
-Subject: [RFC bpf-next v2 08/14] bpf: Helper to simplify calling kernel
- routines from unrolled kfuncs
+Message-ID: <20221104032532.1615099-10-sdf@google.com>
+Subject: [RFC bpf-next v2 09/14] ice: Introduce ice_xdp_buff wrapper for xdp_buff
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -80,15 +79,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we need to call the kernel function from the unrolled
-kfunc, we have to take extra care: r6-r9 belong to the callee,
-not us, so we can't use these registers to stash our r1.
-
-We use the same trick we use elsewhere: ask the user
-to provide extra on-stack storage.
-
-Also, note, the program being called has to receive and
-return the context.
+No functional changes. Boilerplate to allow stuffing more data after xdp_buff.
 
 Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: David Ahern <dsahern@gmail.com>
@@ -104,78 +95,95 @@ Cc: xdp-hints@xdp-project.net
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/xdp.h |  4 ++++
- net/core/xdp.c    | 24 +++++++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_txrx.c | 30 +++++++++++++----------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 8c97c6996172..09c05d1da69c 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -440,10 +440,14 @@ static inline u32 xdp_metadata_kfunc_id(int id)
- 	return xdp_metadata_kfunc_ids.pairs[id].id;
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index dbe80e5053a8..1b6afa168501 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -1096,6 +1096,10 @@ ice_is_non_eop(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc)
+ 	return true;
  }
- void xdp_metadata_export_to_skb(const struct bpf_prog *prog, struct bpf_patch *patch);
-+void xdp_kfunc_call_preserving_r1(struct bpf_patch *patch, size_t r0_offset,
-+				  void *kfunc);
- #else
- #define xdp_metadata_magic 0
- static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
- static void xdp_metadata_export_to_skb(const struct bpf_prog *prog, struct bpf_patch *patch) { return 0; }
-+static void xdp_kfunc_call_preserving_r1(struct bpf_patch *patch, size_t r0_offset,
-+					 void *kfunc) {}
+ 
++struct ice_xdp_buff {
++	struct xdp_buff xdp;
++};
++
+ /**
+  * ice_clean_rx_irq - Clean completed descriptors from Rx ring - bounce buf
+  * @rx_ring: Rx descriptor ring to transact packets on
+@@ -1117,14 +1121,14 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 	unsigned int xdp_res, xdp_xmit = 0;
+ 	struct sk_buff *skb = rx_ring->skb;
+ 	struct bpf_prog *xdp_prog = NULL;
+-	struct xdp_buff xdp;
++	struct ice_xdp_buff ixbuf;
+ 	bool failure;
+ 
+ 	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
+ #if (PAGE_SIZE < 8192)
+ 	frame_sz = ice_rx_frame_truesize(rx_ring, 0);
+ #endif
+-	xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
++	xdp_init_buff(&ixbuf.xdp, frame_sz, &rx_ring->xdp_rxq);
+ 
+ 	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
+ 	if (xdp_prog)
+@@ -1178,30 +1182,30 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 		rx_buf = ice_get_rx_buf(rx_ring, size, &rx_buf_pgcnt);
+ 
+ 		if (!size) {
+-			xdp.data = NULL;
+-			xdp.data_end = NULL;
+-			xdp.data_hard_start = NULL;
+-			xdp.data_meta = NULL;
++			ixbuf.xdp.data = NULL;
++			ixbuf.xdp.data_end = NULL;
++			ixbuf.xdp.data_hard_start = NULL;
++			ixbuf.xdp.data_meta = NULL;
+ 			goto construct_skb;
+ 		}
+ 
+ 		hard_start = page_address(rx_buf->page) + rx_buf->page_offset -
+ 			     offset;
+-		xdp_prepare_buff(&xdp, hard_start, offset, size, true);
++		xdp_prepare_buff(&ixbuf.xdp, hard_start, offset, size, true);
+ #if (PAGE_SIZE > 4096)
+ 		/* At larger PAGE_SIZE, frame_sz depend on len size */
+-		xdp.frame_sz = ice_rx_frame_truesize(rx_ring, size);
++		ixbuf.xdp.frame_sz = ice_rx_frame_truesize(rx_ring, size);
  #endif
  
- #endif /* __LINUX_NET_XDP_H__ */
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 8204fa05c5e9..16dd7850b9b0 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -737,6 +737,7 @@ BTF_SET8_START_GLOBAL(xdp_metadata_kfunc_ids)
- XDP_METADATA_KFUNC_xxx
- #undef XDP_METADATA_KFUNC
- BTF_SET8_END(xdp_metadata_kfunc_ids)
-+EXPORT_SYMBOL(xdp_metadata_kfunc_ids);
+ 		if (!xdp_prog)
+ 			goto construct_skb;
  
- /* Make sure userspace doesn't depend on our layout by using
-  * different pseudo-generated magic value.
-@@ -756,7 +757,8 @@ static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
-  *
-  * The above also means we _cannot_ easily call any other helper/kfunc
-  * because there is no place for us to preserve our R1 argument;
-- * existing R6-R9 belong to the callee.
-+ * existing R6-R9 belong to the callee. For the cases where calling into
-+ * the kernel is the only option, see xdp_kfunc_call_preserving_r1.
-  */
- void xdp_metadata_export_to_skb(const struct bpf_prog *prog, struct bpf_patch *patch)
- {
-@@ -832,6 +834,26 @@ void xdp_metadata_export_to_skb(const struct bpf_prog *prog, struct bpf_patch *p
- 
- 	bpf_patch_resolve_jmp(patch);
- }
-+EXPORT_SYMBOL(xdp_metadata_export_to_skb);
-+
-+/* Helper to generate the bytecode that calls the supplied kfunc.
-+ * The kfunc has to accept a pointer to the context and return the
-+ * same pointer back. The user also has to supply an offset within
-+ * the context to store r0.
-+ */
-+void xdp_kfunc_call_preserving_r1(struct bpf_patch *patch, size_t r0_offset,
-+				  void *kfunc)
-+{
-+	bpf_patch_append(patch,
-+		/* r0 = kfunc(r1); */
-+		BPF_EMIT_CALL(kfunc),
-+		/* r1 = r0; */
-+		BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+		/* r0 = *(r1 + r0_offset); */
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, r0_offset),
-+	);
-+}
-+EXPORT_SYMBOL(xdp_kfunc_call_preserving_r1);
- 
- static int __init xdp_metadata_init(void)
- {
+-		xdp_res = ice_run_xdp(rx_ring, &xdp, xdp_prog, xdp_ring);
++		xdp_res = ice_run_xdp(rx_ring, &ixbuf.xdp, xdp_prog, xdp_ring);
+ 		if (!xdp_res)
+ 			goto construct_skb;
+ 		if (xdp_res & (ICE_XDP_TX | ICE_XDP_REDIR)) {
+ 			xdp_xmit |= xdp_res;
+-			ice_rx_buf_adjust_pg_offset(rx_buf, xdp.frame_sz);
++			ice_rx_buf_adjust_pg_offset(rx_buf, ixbuf.xdp.frame_sz);
+ 		} else {
+ 			rx_buf->pagecnt_bias++;
+ 		}
+@@ -1214,11 +1218,11 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ construct_skb:
+ 		if (skb) {
+ 			ice_add_rx_frag(rx_ring, rx_buf, skb, size);
+-		} else if (likely(xdp.data)) {
++		} else if (likely(ixbuf.xdp.data)) {
+ 			if (ice_ring_uses_build_skb(rx_ring))
+-				skb = ice_build_skb(rx_ring, rx_buf, &xdp);
++				skb = ice_build_skb(rx_ring, rx_buf, &ixbuf.xdp);
+ 			else
+-				skb = ice_construct_skb(rx_ring, rx_buf, &xdp);
++				skb = ice_construct_skb(rx_ring, rx_buf, &ixbuf.xdp);
+ 		}
+ 		/* exit if we failed to retrieve a buffer */
+ 		if (!skb) {
 -- 
 2.38.1.431.g37b22c650d-goog
 
