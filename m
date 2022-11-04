@@ -2,68 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3389619FB4
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 19:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3165619FB5
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 19:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbiKDSWi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 14:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
+        id S232009AbiKDSWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 14:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbiKDSWL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232012AbiKDSWL (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 4 Nov 2022 14:22:11 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B5E4B984
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 11:21:59 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id p141so4444348iod.6
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 11:21:59 -0700 (PDT)
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB54145A1A
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 11:22:00 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id 7so2994028ilg.11
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 11:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j5isSgji227OnXCXBtz9OXLRfJu0KpxWw6aIG81a7vo=;
-        b=LRXTX1ke/zE9Xa5Ofl+JiFsQxcsxi5UuY5Jm2skqH2ojrvCpQkUQZsz6YNstF9rOxZ
-         bKYhAntgaw++z1XyE2mn7NbQcpSja2KrWs+ATtE5Kk3jghOlf+miyhSubqOsepDLNsgP
-         luUCHER0/LgPx26bqsuM+NdT+TncHyEQ5uUOhcOiHwJ5HgJ6Qz1aGzQBhlohptr3eSDj
-         pDfk6J6HOkPQ3oFnSRS/5+TAJPTPhjGtjIY3o2GeorySPK1DlFE/GcK5BhBJ5yCe2+9F
-         yvle3lufYDpyWR/T1I3DN0puyYh7azxRPlKh6IF/+WaNRFqZSnDuJ2KfFOZdyuoPcEcK
-         rDJA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=K1k4WN2r7t/52mL+ugQRSlpNfDTjZcSRsmfM/st8EfQ=;
+        b=NlOjSeut/Chjx9weuZnDn0wAec7Z5R9jiU7mFJRiMWsKCli0GmxJHUCin/Oh+0s/0k
+         bDnY42jcAwS3M1Sa49AL8vAviZi1gszjv+ollhC317fRIvcrtXznA35Fy2RLkWe061J0
+         +FZryw8HiQVOvM6prKMFJVSez5nyYshL2L4TWOpyWXC57f15w1BkqMHiJapPoViSiDM4
+         1TMDTPYMWSFUOacJyaITm/BxSs2hYg3t4SHZrkLnsjUMmCc1LOQUJSvFKYej1POjAG2t
+         RSUqKuk3cX6pAsgnWoTiGqQndg5t26yTCwkrmKl9lR45vXkBhUm5R1+KBTXN/pwfA5Fk
+         tqSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j5isSgji227OnXCXBtz9OXLRfJu0KpxWw6aIG81a7vo=;
-        b=AUQxIRpg1WfpmzRR9uizePMxEtYggg2vkvpnLtuXZnb7gNk2WTQOZhG1Kl7MNfEudF
-         57PsnxsIoxUye8IaRCi3stkPngWl9kGmO9BQeYOQq7YfLdQ0BCPThtKdGR6Samo00KOT
-         t3Bp935h///oQ7AhHlKN9N7kevhYCOuJKT/jVWoZVQ8EpIdwzwT110qIzRSqBdw3qggQ
-         h9B5fi/IoeePbm+zNjh0kzk8vMgLSNRVXI33Sfvebd6e8nGOXgOya5ya+4FEyjwRwEm6
-         hW09fmatOeKg4ewmtljmiwbbdcfk4wAn1SQMua447XbU3Z6oJLBdFD84HFbZ10nhQ1Qc
-         1E5g==
-X-Gm-Message-State: ACrzQf1Iqk6rK609LyY60F6TfQImzUcUQsahUM16HK6UT2lAANiDt33w
-        MS2pwhj3p1kqm3pWPOKjQnHQIj+JnzZ4JWG3smcNKQ==
-X-Google-Smtp-Source: AMsMyM4K0pV8YXMUH6zIcn59kuwZdSU8ufQZsEVjZO23fbx9zo7WsOGnyriwbnsFk3gX+SMpp2JgOEP9HR6k0U5rM14=
-X-Received: by 2002:a6b:400e:0:b0:6ca:91aa:c0ca with SMTP id
- k14-20020a6b400e000000b006ca91aac0camr23793547ioa.34.1667586118276; Fri, 04
- Nov 2022 11:21:58 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K1k4WN2r7t/52mL+ugQRSlpNfDTjZcSRsmfM/st8EfQ=;
+        b=JdQcOCd5yeu4Z6IXUXcFIoRITjrjWFRMNNcqPc7D09DsVKQMM9WITjDy+prMDpgz1o
+         jJA8Hjfs/arQI/VyGkY09Bp2HMc0o9v8jLE1Yi2iL1FIc4sa351/tMi3Kh5Fy/RmnibB
+         04TRAGHdTROPi17csdTf6vhiskayMs00GeAag4vMexokVxeQdzSdmWOH+i2lC0+G0UZV
+         AP4Ta3npfJ51v/HcroJHOb1pqxX01tVZ6OakbQ8IvmFJDT2zCBDOGYBn2FYn9F+jyTBx
+         /ihGgPL7lNMrPe0Obk5QKeKESQ1ahOjf2tniTVxX+q102StXpIIoITVgqfGTykDZUItZ
+         L/0w==
+X-Gm-Message-State: ACrzQf0c5t646i5b35FppgLNgyDHRIuLW4wx/yDidnZMVI8y/0Cuqrqi
+        JokWYMeW2b3I/U5h1pPRltT9B7xyRZt/HuWCStxRPEi9yyHhdA==
+X-Google-Smtp-Source: AMsMyM70/MrBu8d7nQRFy0qecyRBPBOyVm88lmIP3GwrqmytkGF4i+QrzWrr4vvTceF6CORiXQSlRTFz/GZDSOsUdf4=
+X-Received: by 2002:a92:d3ca:0:b0:2ff:fb6a:5c38 with SMTP id
+ c10-20020a92d3ca000000b002fffb6a5c38mr22312218ilh.259.1667586120229; Fri, 04
+ Nov 2022 11:22:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221104032311.1606050-1-sdf@google.com> <87leori0xh.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87leori0xh.fsf@all.your.base.are.belong.to.us>
+References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-11-sdf@google.com>
+ <20221104143547.3575615-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20221104143547.3575615-1-alexandr.lobakin@intel.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 4 Nov 2022 11:21:43 -0700
-Message-ID: <CAKH8qBvuPH9GkXKsfi1Nt+J1S16Khcc2D8MtXVkEES8iEQ_9PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: fix destination buffer address when copying
- with metadata
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Date:   Fri, 4 Nov 2022 11:21:47 -0700
+Message-ID: <CAKH8qBuaJ1usZEirN9=ReugusS8t_=Mn0LoFdy93iOYpHs2+Yg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 10/14] ice: Support rx timestamp metadata for xdp
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         haoluo@google.com, jolsa@kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -75,67 +78,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 1:22 AM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> wro=
-te:
+On Fri, Nov 4, 2022 at 7:38 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
 >
-> Stanislav Fomichev <sdf@google.com> writes:
+> From: Stanislav Fomichev <sdf@google.com>
+> Date: Thu,3 Nov 2022 20:25:28 -0700
 >
-> > While working on a simplified test for [0] it occurred to me that
-> > the following looks fishy:
+> > COMPILE-TESTED ONLY!
 > >
-> >       data =3D xsk_umem__get_data(xsk->umem_area, rx_desc->addr);
-> >       data_meta =3D data - sizeof(my metadata);
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: David Ahern <dsahern@gmail.com>
+> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Willem de Bruijn <willemb@google.com>
+> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > Cc: Maryam Tahhan <mtahhan@redhat.com>
+> > Cc: xdp-hints@xdp-project.net
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  drivers/net/ethernet/intel/ice/ice.h      |  5 ++
+> >  drivers/net/ethernet/intel/ice/ice_main.c |  1 +
+> >  drivers/net/ethernet/intel/ice/ice_txrx.c | 75 +++++++++++++++++++++++
+> >  3 files changed, 81 insertions(+)
 > >
-> > Since the data points to umem frame at addr X, data_mem points to
-> > the end of umem frame X-1.
+> > diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> > index f88ee051e71c..c51a392d64a4 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice.h
+> > +++ b/drivers/net/ethernet/intel/ice/ice.h
+> > @@ -925,6 +925,11 @@ int ice_open_internal(struct net_device *netdev);
+> >  int ice_stop(struct net_device *netdev);
+> >  void ice_service_task_schedule(struct ice_pf *pf);
 > >
-> > I don't think it's by design?
+> > +struct bpf_insn;
+> > +struct bpf_patch;
+> > +void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
+> > +                   struct bpf_patch *patch);
+> > +
+> >  /**
+> >   * ice_set_rdma_cap - enable RDMA support
+> >   * @pf: PF struct
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+> > index 1f27dc20b4f1..8ddc6851ef86 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> > @@ -9109,4 +9109,5 @@ static const struct net_device_ops ice_netdev_ops = {
+> >       .ndo_xdp_xmit = ice_xdp_xmit,
+> >       .ndo_xsk_wakeup = ice_xsk_wakeup,
+> >       .ndo_get_devlink_port = ice_get_devlink_port,
+> > +     .ndo_unroll_kfunc = ice_unroll_kfunc,
+> >  };
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> > index 1b6afa168501..e9b5e883753e 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/netdevice.h>
+> >  #include <linux/prefetch.h>
+> >  #include <linux/bpf_trace.h>
+> > +#include <linux/bpf_patch.h>
+> >  #include <net/dsfield.h>
+> >  #include <net/mpls.h>
+> >  #include <net/xdp.h>
+> > @@ -1098,8 +1099,80 @@ ice_is_non_eop(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc)
+> >
+> >  struct ice_xdp_buff {
+> >       struct xdp_buff xdp;
+> > +     struct ice_rx_ring *rx_ring;
+> > +     union ice_32b_rx_flex_desc *rx_desc;
+> >  };
+> >
+> > +void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
+> > +                   struct bpf_patch *patch)
+> > +{
+> > +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_EXPORT_TO_SKB)) {
+> > +             return xdp_metadata_export_to_skb(prog, patch);
 >
-> It is by design. :-)
-
-Noted, thanks for clarifying!
-
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 9f0561b67c12..0547fe37ba7e 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -163,7 +163,7 @@ static void xsk_copy_xdp(struct xdp_buff *to, struc=
-t xdp_buff *from, u32 len)
-> >       } else {
-> >               from_buf =3D from->data_meta;
-> >               metalen =3D from->data - from->data_meta;
-> > -             to_buf =3D to->data - metalen;
+> Hey,
 >
-> This is to include the XDP meta data in the receive buffer. Note that
-> AF_XDP descriptor that you get back on the RX ring points to the *data*
-> not the metadata.
+> FYI, our team wants to write a follow-up patch with ice support
+> added, not like a draft, more of a mature code. I'm thinking of
+> calling ice C function which would process Rx descriptors from
+> that BPF code from the unrolling callback -- otherwise,
+> implementing a couple hundred C code lines from ice_txrx_lib.c
+> would be a bit too much :D
+
+Sounds good! I would gladly drop all/most of the driver changes for
+the non-rfc posting :-)
+I'll probably have a mlx4 one because there is a chance I might find
+HW, but the rest I'll drop most likely.
+(they are here to show how the driver changes might look like, hence
+compile-tested only)
+
+Btw, does it make sense to have some small xsk selftest binary that
+can be used to test the metadata with the real device?
+The one I'm having right now depends on veth/namespaces; having a
+similar one for the real hardware to qualify it sounds useful?
+Something simple that sets up af_xdp for all queues, divers some
+traffic, and exposes to the userspace consumer all the info about
+frame metadata...
+Or maybe there is something I can reuse already?
+
+
+> > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
+> > +             /* return true; */
+> > +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
+> > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
 >
-> For the unaligned mode you can pass any address (umem offset) into the
-> fill ring, and the kernel will simply mask it and setup headroom
-> accordingly.
-
-Thanks for the details! And what happens in the aligned case?
-
-Looking purely from the user side:
-
-tx_desc =3D xsk_ring_prod__tx_desc(&xsk->tx, idx);
-tx_desc->addr =3D idx * UMEM_FRAME_SIZE; /* this has to be aligned to
-the frame size? */
-data =3D xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
-
-data here is basically =3D umem_area + idx * UMEM_FRAM_SIZE, right? How
-do I make sure metadata is placed in the same umem chunk? Will passing
-umem headroom do the trick?
-
-
-
-
-> The buffer allocator guarantees that there's XDP_PACKET_HEADROOM
-> available.
+> [...]
 >
-> IOW your example userland code above is correct.
+> > --
+> > 2.38.1.431.g37b22c650d-goog
 >
->
-> Bj=C3=B6rn
->
->
+> Thanks,
+> Olek
