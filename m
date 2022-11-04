@@ -2,121 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BD161A3BB
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8589D61A3C6
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 23:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiKDV44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        id S229754AbiKDWAU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 18:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiKDV4z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:56:55 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71359FCB;
-        Fri,  4 Nov 2022 14:56:54 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id y14so16619863ejd.9;
-        Fri, 04 Nov 2022 14:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4lxURksHj3T3+DcMA1c6SDe+tyv9on8orkNxxpF1wpw=;
-        b=l0krgcQ1x+QyVprsYS3e+Ksm4+O/J8WaR2uV6+jmasJviwEA3s2GkMc63/xsHLjn7v
-         ixmrS6jsmrwUnuUdjE8GWaqkURtfAIBNCCDsOAH5yvj37AORMKhnXUlwGDLLishrkEap
-         hrZHKLTqYnAaRNKiwshxZEHjqjx5LSXqF3INh9C2ED0eTg/NncG5b8HIHoQNzr8f7MXo
-         lpHeaInkAo6UuVIdtSENIfi06o7QZxPQNsBAr4SfuN6j4EXeoA9ICcz0/c7FLMEIYK+3
-         khdW04Rm0KbzqigAluLFYkZG4vif9LQdMRDGfoQzFNW3uBAQJcLVelIpU8Z9vNHcFGmw
-         F7PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4lxURksHj3T3+DcMA1c6SDe+tyv9on8orkNxxpF1wpw=;
-        b=s19UwLSENXQF4FoGFDrZAFymyExVHsZAmUN4XTI773aInZYFTxQF/RDCKBTat9Cn+P
-         k11B2wrQmZIIeRLSPy4FLiEf0Emvv1BO1du9cEFAqc/ojJ5jl8No5bjx2I5NOTXFSlTJ
-         8AH/rGPZnB6oDpOe8YAxqTu6zKi+CQxlQy8/o7mnaq5n3vNd2I78orw8+/NkK1Ix949/
-         izf4xzQTjeR58LkDXOXPmIm1/Gk2l05QzQv5rBFbUeDc+5ylbp1dFCQzeoRIKkaYUtSY
-         QiX3sS5FcJLQZu4SDXXiVMOFeYzaMknyautP/1NiKIHNUqtI3PWShAU/moV6o0VYsNxL
-         lRng==
-X-Gm-Message-State: ACrzQf1ZwHhwXxnp6Q5066fm+1XrYgMNHqkm8GQEO3mayw3q+yTltVK0
-        W/pA5HuDtucEMu78IXEwcvCfFvnUfet1+1MB9OI=
-X-Google-Smtp-Source: AMsMyM7L6eNb0nhcMUMgqoe134AW/LDinI4BWgMVWvwPF3qBv3jLgKkauI5+9B9OECRCQCMH3pk11ofWlwIrl3aIwno=
-X-Received: by 2002:a17:906:11d6:b0:7ad:fd3e:2a01 with SMTP id
- o22-20020a17090611d600b007adfd3e2a01mr17227919eja.545.1667599013262; Fri, 04
- Nov 2022 14:56:53 -0700 (PDT)
+        with ESMTP id S229469AbiKDWAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 18:00:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15335383;
+        Fri,  4 Nov 2022 15:00:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C1E81B82FF0;
+        Fri,  4 Nov 2022 22:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CD6FC433B5;
+        Fri,  4 Nov 2022 22:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667599216;
+        bh=knNHN94eaRctWPLNdav1x0QZF0vD2JKY+q8uDxxpXrg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KVFnCPQNAE1wRFSO5ac/t7NiGOZA5gk+bnOF86K0VYWCLxMS/+GolHR/2NYlYjaEg
+         5wMiaaMrTVFuZZwrh3AjxiMj+teAxvGS8Zg7VRgsCL/bdnjspvQDnygWVfe4U3TXhf
+         hIKCL0F3vET3Hogm2OcmT6zpSN62VkNUqz0nPvaTlSeUGuJg1m3WHZgDk5ytFHo89S
+         d6DPdTDLMr2t3u8bgfpahYNNGR2Ov1dHPdStuh8Xm204ENda/tZtJB7/gwZ7R2QlOf
+         1eWHx9vM1cvv42cttcL98ALg1kUppoxzlXl4V4Fnue6LEt9LOHxalnMG8CnCimdGMC
+         H4aCXpejb8AjQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D8B6E270FB;
+        Fri,  4 Nov 2022 22:00:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221103083254.237646-1-yangjihong1@huawei.com> <20221103083254.237646-3-yangjihong1@huawei.com>
-In-Reply-To: <20221103083254.237646-3-yangjihong1@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 14:56:40 -0700
-Message-ID: <CAEf4BzY+qP1wwVddjg7_rypcUAW8iPRzSa=1O6aFG5dSLX+1Gg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] bpf: Remove size check for sk in bpf_skb_is_valid_access
- for 32-bit architecture
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
-        shuah@kernel.org, benjamin.tissoires@redhat.com, memxor@gmail.com,
-        delyank@fb.com, asavkov@redhat.com, colin.i.king@gmail.com,
-        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] samples/bpf: Fix tracex2 error: No such file or
+ directory
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166759921624.32033.15327405753171549306.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Nov 2022 22:00:16 +0000
+References: <tencent_0F0DAE84C0B3C42E0B550E5E9F47A9114D09@qq.com>
+In-Reply-To: <tencent_0F0DAE84C0B3C42E0B550E5E9F47A9114D09@qq.com>
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     rongtao@cestc.cn, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 1:36 AM Yang Jihong <yangjihong1@huawei.com> wrote:
->
-> The error code -EACCES is returned when bpf prog is tested in 32-bit environment,
-> This is because bpf_object__relocate modifies the instruction to change memory
-> size to 4 bytes, as shown in the following messages:
->
-> libbpf: prog 'kfunc_call_test1': relo #2: matching candidate #0 <byte_off> [18342] struct __sk_buff.sk (0:30:0 @ offset 168)
-> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) off 168 -> 168
-> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) mem_sz 8 -> 4
->
-> As a result, the bpf_skb_is_valid_access check fails. For 32-bit architecture,
-> unnecessary checks need to be deleted.
->
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
->  net/core/filter.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index bb0136e7a8e4..eab7ce89740c 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -8269,8 +8269,6 @@ static bool bpf_skb_is_valid_access(int off, int size, enum bpf_access_type type
->                         return false;
->                 break;
->         case offsetof(struct __sk_buff, sk):
-> -               if (type == BPF_WRITE || size != sizeof(__u64))
-> -                       return false;
+Hello:
 
-this probably should be specific to host architecture bitness? I'd
-imagine that size = 4 should be invalid on 64-bit arches (reading half
-of the pointer is bad)
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-either way, please make sure to add tests specifically for this case
-in test_verifier
+On Sat, 29 Oct 2022 17:11:13 +0800 you wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> since commit c504e5c2f964("net: skb: introduce kfree_skb_reason()")
+> kfree_skb() is replaced by kfree_skb_reason() and kfree_skb() is set to
+> the inline function. So, we replace kprobe/kfree_skb with
+> kprobe/kfree_skb_reason to solve the tracex2 error.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] samples/bpf: Fix tracex2 error: No such file or directory
+    https://git.kernel.org/bpf/bpf-next/c/1baa7e380021
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
->                 info->reg_type = PTR_TO_SOCK_COMMON_OR_NULL;
->                 break;
->         case offsetof(struct __sk_buff, tstamp_type):
-> --
-> 2.30.GIT
->
