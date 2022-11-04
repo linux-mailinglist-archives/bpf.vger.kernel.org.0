@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F2C6191F6
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 08:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A2E619213
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 08:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiKDH2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 03:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
+        id S230199AbiKDHfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 03:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbiKDH2Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 03:28:24 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AB7178B8
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 00:28:23 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c15-20020a17090a1d0f00b0021365864446so3925242pjd.4
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 00:28:23 -0700 (PDT)
+        with ESMTP id S229756AbiKDHfH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 03:35:07 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FD565D2
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 00:35:05 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id f5-20020a17090a4a8500b002131bb59d61so7018402pjh.1
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rj7IFiGXn0AAbpAiHGFR2G1nnVitFzbnIp3gRESbHDo=;
-        b=qQt1+BUW4AOA1x3WE0K4Sq/dOjBlb13Jgl8dJ/eCk4PR8oEzm/FFnszyF5wLZ8ii/U
-         lVZysmb7rsaHJs1Ld4XVZrxKdeAtA3o5JSOIKaD5TQ9A8E+6BKu2q45UK+AvtGpTab4g
-         MAgQpFnUopPqRCb67d5liK+Tl8uCW9301YMK3djc8hVkXoCfTT7GuWQ5WLcyW1uXtQFL
-         HOq6YPMg96PhY2nhXD75JCUlVsMAOBY9ek8l3SOQy748YU1b921X1MFjczq3c//aMFKW
-         ZhygIlBBF22WD8gG0hisO9AnD/MrkUjDJvHMkoNY8/7KBOfHRcXdEuCitrondCIlge0X
-         Iu8Q==
+        bh=E2kqD+OfpudX+jIrhWz28KrItqWYasPHYeABrJ0pXbg=;
+        b=g8J8+9BUiDjGRHEN4oOsWCwUJhpwkGAKcB8AFuqsNQmZBE2HIg2potFNTw9bqgaYd7
+         Cg0fbYdWgOHUDUj9D7x5p5MjtnFSssCV6PCDQSVIznGOOEeQqDqvimIGpVlJIOD7Z7YY
+         Flv+rRSxGP5arhaeEMJV1Hwe3H8t7a0dErh5763F4uWyHqMZ1jtxYbmUSbpW/ODJeRt9
+         CceenNzNCMgPaWKmlAtpY/xKdA37RKeIjFOWTQ3YIyPrFqZH9kGY1ImQZc44ZiFyj5j0
+         zFAsAolell736vGVkPmodLkIFRl9NyS1o6XuZM3ryhSE+XCe8YhdiMcqVsZM7VfqTJcg
+         gw/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rj7IFiGXn0AAbpAiHGFR2G1nnVitFzbnIp3gRESbHDo=;
-        b=7EHDBm8XjEEecZQrav9VDjrVl/QryJo0WeZOghn/xnR8FyRs6JVEe/Aam9f1Bgn/N+
-         hAL7O/Wv3CsMhqAlHE4yXpqrJPt+PpBuArX3vGWfreMq42NM51NLT5ohfJtCsr1kKLKs
-         U3HArf9a97P9Aq1DEzXc9wzLz1T6kgn/QECb9f0xW/PER08Q+zCK8rztPZh9iefTS8Mc
-         OZL7z+A5hK2GX0jJ5IO29oNsQDyTyyu7dNcgQWnCwgVWcwvzkYy9/GWxbGgsH72aPTtS
-         i0O7TcCDbnKO2S1ZcxDnDpIV1+hCeYR9IzC4ZuRPV+q117ln7pgAqshAB3jFoxgKobno
-         cVNw==
-X-Gm-Message-State: ACrzQf3HDirLvRe9fzZLgNk6RpJGEIMbqZRcnIEWpxKCgG5Zx1xpTO2b
-        7JJRI+XiSXpSh3KN8eOUPCU=
-X-Google-Smtp-Source: AMsMyM6ebeNs95BNCqUmjgiay183LsFFBQsuM0Sqr+rvjjuN1U+XV8Ssgirq4Mckw92jR9aCrnLJiw==
-X-Received: by 2002:a17:902:f252:b0:186:9efb:7203 with SMTP id j18-20020a170902f25200b001869efb7203mr33455306plc.12.1667546903415;
-        Fri, 04 Nov 2022 00:28:23 -0700 (PDT)
-Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id i134-20020a62878c000000b00561dcfa700asm1941319pfe.107.2022.11.04.00.28.22
+        bh=E2kqD+OfpudX+jIrhWz28KrItqWYasPHYeABrJ0pXbg=;
+        b=dYgRmM4GSvtubEankz28zi+5AHMqBV2jVMg8B/+yxj4XTvdqLGpB5PqlwsNdk2+nTl
+         CQ0O08Z4tRG1JAn2RlhLbRswiuyZ2Lnnd6AerTMAc4x6H9qEk720bVn9sH8AJrR6pFGu
+         iQ0CCfLRIRvFSybFDmx9iVsieWBiATCFPJli2F0RKy5+CXTTmOSJDgfVQqV9zr5PECGY
+         uHTdUG9pGayInz06DwJLwF7MPJHLI33m4SgDmJavARLBgoQu7PBwMYyB+asb+GkoN6Xl
+         rPflnGBfWKGb+ZU7u40nN9rWWlZOMbGj7aKGsGSp3Fsz1XEKyPktysRKz7uTCmLSHSX0
+         wlaw==
+X-Gm-Message-State: ACrzQf35aO9UX43zsle5XFgvzT7V4novsL2u3G58fUjzTnLPqi/110xR
+        bxzPlP8jtZdNSkAYAKPIi0U=
+X-Google-Smtp-Source: AMsMyM7rZVOtmDBbDpFY/PI849oY8EqEuYtMn2kvwkKWKGD0YPAUUASczzFCpKua9MQH/DpFsjMbBg==
+X-Received: by 2002:a17:902:7c12:b0:186:8111:ade2 with SMTP id x18-20020a1709027c1200b001868111ade2mr33899074pll.111.1667547305409;
+        Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
+Received: from localhost ([157.51.134.255])
+        by smtp.gmail.com with ESMTPSA id a15-20020a170902710f00b0018869119e37sm217171pll.142.2022.11.04.00.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 00:28:23 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 12:57:58 +0530
+        Fri, 04 Nov 2022 00:35:05 -0700 (PDT)
+Date:   Fri, 4 Nov 2022 13:04:41 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
@@ -59,15 +59,15 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Delyan Kratunov <delyank@meta.com>
 Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into
  btf_record
-Message-ID: <20221104072758.rr6uleke3arkpwxt@apollo>
+Message-ID: <20221104073200.a4mdg5vamev7s76s@apollo>
 References: <20221103191013.1236066-1-memxor@gmail.com>
  <20221103191013.1236066-7-memxor@gmail.com>
- <20221104030028.muy5ui3an3vkdfqg@macbook-pro-5.dhcp.thefacebook.com>
- <20221104070241.sa2v7ertneocowcq@apollo>
+ <20221104040058.mo4r62wf72clvhcb@macbook-pro-5.dhcp.thefacebook.com>
+ <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221104070241.sa2v7ertneocowcq@apollo>
+In-Reply-To: <CAADnVQJ1TnKYdJ=--BVAw7Y24rkAohX+4zSYbWc-TjDHWJROvQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,51 +78,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 12:32:41PM IST, Kumar Kartikeya Dwivedi wrote:
-> On Fri, Nov 04, 2022 at 08:30:28AM IST, Alexei Starovoitov wrote:
+On Fri, Nov 04, 2022 at 09:39:22AM IST, Alexei Starovoitov wrote:
+> On Thu, Nov 3, 2022 at 9:01 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
 > > On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > >  		else
-> > > @@ -311,11 +344,12 @@ static inline void __copy_map_value(struct bpf_map *map, void *dst, void *src, b
-> > >  		return;
-> > >  	}
 > > >
-> > > -	for (i = 0; i < map->off_arr->cnt; i++) {
-> > > -		u32 next_off = map->off_arr->field_off[i];
-> > > +	for (i = 0; i < map->field_offs->cnt; i++) {
-> > > +		u32 next_off = map->field_offs->field_off[i];
-> > > +		u32 sz = next_off - curr_off;
-> > >
-> > > -		memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
-> > > -		curr_off += map->off_arr->field_sz[i];
-> > > +		memcpy(dst + curr_off, src + curr_off, sz);
-> > > +		curr_off += map->field_offs->field_sz[i] + sz;
+> > > -enum bpf_kptr_type {
+> > > -     BPF_KPTR_UNREF,
+> > > -     BPF_KPTR_REF,
+> > > +enum btf_field_type {
+> > > +     BPF_KPTR_UNREF = (1 << 2),
+> > > +     BPF_KPTR_REF   = (1 << 3),
+> > > +     BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF,
+> > >  };
 > >
-> > This is a clear bug. The kernel is crashing with this change.
-> > How did you test this?
+> > ...
 > >
+> > > +             for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
+> > > +                     switch (map->record->field_mask & (1 << i)) {
+> > > +                     case 0:
+> > > +                             continue;
+> > > +                     case BPF_KPTR_UNREF:
+> > > +                     case BPF_KPTR_REF:
+> > > +                             if (map->map_type != BPF_MAP_TYPE_HASH &&
+> > > +                                 map->map_type != BPF_MAP_TYPE_LRU_HASH &&
+> > > +                                 map->map_type != BPF_MAP_TYPE_ARRAY &&
+> > > +                                 map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
+> > > +                                     ret = -EOPNOTSUPP;
+> > > +                                     goto free_map_tab;
+> > > +                             }
+> > > +                             break;
+> > > +                     default:
+> > > +                             /* Fail if map_type checks are missing for a field type */
+> > > +                             ret = -EOPNOTSUPP;
+> > > +                             goto free_map_tab;
+> > > +                     }
+> >
+> > With this patch alone this is also wrong.
 >
-> For me it is crashing at bpf-next now without this.
+> Actually this bit is probably fine. The bug is elsewhere.
 >
-> When for map value with size 48, having fields at:
-> off: 0, 16, 32
-> sz:  4, 16, 16
+> The point below stands:
 >
-> The above produces:
 >
-> memcpy(dst + 0, src + 0, 0)
-> memcpy(dst + 4, src + 4, 12)
-> memcpy(dst + 32, src + 32, 0)
-> memcpy(dst + 48, src + 48, 0)
->
-> Without it, it becomes:
->
-> memcpy(dst + 0, src + 0, 0)
-> memcpy(dst + 4, src + 4, 12)
-> memcpy(dst + 20, src + 20, 12)
-> memcpy(dst + 36, src + 36, 12)
->
-> I will send a follow up fix.
->
+> > And it breaks bisect.
+> > Please make sure to do a full vmtest.sh for every patch in the series.
 
-I think this is broken in the original code, I didn't realise this at first but
-it's effectively the same in that commit. So it should have Fixes: tag for that.
+I'm sorry. I made multiple small changes to these two and never retested them
+again in isolation, and then it was 'fixed' by later changes. I'll make sure it
+doesn't happen again.
