@@ -2,115 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AD5618E9C
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC85618ED9
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbiKDDQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
+        id S231336AbiKDDTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiKDDQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 23:16:29 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A78820186
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:16:29 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so3559416pjl.3
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=73DpOygwqROboGZAzCEuDXOOiYvXH6dIRTXXA+Wyidw=;
-        b=OyF9tIlJ2tk0hSrXjMIpUBWOHClKOmpJOhGko6n2Udj8HG9wvr7cjD2J8EtAIOWZUC
-         iAr++A+KePeROumVy2aRZ17tu4MjIy8CnJs3yF37SXQ6U0YQcCASjzCXB12Yay4JPqNc
-         YMfYMnFbiNytc6RbONJzsaSN0XcGlJNjLTlNx/QgADniQdjnSWvlYCXl9z/xB5UGu26e
-         +K1Rf5xwtVgX8HLkYjLHkgAB97S+WNh3MpAYZu+1SFKBdpii7WJrjzSbIIeHUOXpD3Jb
-         MfvpmefeFrzLfIO2fNXJP83Jb3SZLfnM7fwd7BkLoy166ZUuf+wPNN6wGpmanPDtipp8
-         WUNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73DpOygwqROboGZAzCEuDXOOiYvXH6dIRTXXA+Wyidw=;
-        b=O8mk2c2YwuqRHzy1UTuYygyIbeP57MIDGMiGMstVTQ/pAWrtwLsLa7Zan6mjhq7FP0
-         afCUeQI3UQmcApGtzZFcZi5oIveEqkEwssez07u9xEKmXj249csFM3c/m6Al7F434ImJ
-         V5Y/6YB9nsXurUbZploVZ9Q0ko51mJQNc/57ZZuNyxvDlIigWHrJie8SwFnPWXrSNc1v
-         aOMQOBDrG+f77wrlWeplhUOIl6Le86LXCP1oi+qWEl8P1erXn1wEvvkaTzoduhvFjWbU
-         oaS6ci0e5gK4g4/nzKPH9SSKt2QGdA5T/TYvfslNelDcQxmdMIYek28apGj/LWUv14iS
-         +f/A==
-X-Gm-Message-State: ACrzQf2xEZldZTPNTYbVkwV+K5Tv2JtHTBJeeD42wOe0Vx530kFtPM/a
-        4rzrGqTRauHzUUh3ykikxOU=
-X-Google-Smtp-Source: AMsMyM53FqlwBfH4M+vIFwjOxwJ0BHYjePzId05spH3xaPg25Mirys91stj7MdndcYfkQ8tw3AFFdA==
-X-Received: by 2002:a17:902:f643:b0:185:50e4:f55e with SMTP id m3-20020a170902f64300b0018550e4f55emr33421615plg.156.1667531788605;
-        Thu, 03 Nov 2022 20:16:28 -0700 (PDT)
-Received: from macbook-pro-5.dhcp.thefacebook.com ([2620:10d:c090:400::5:2035])
-        by smtp.gmail.com with ESMTPSA id l36-20020a635724000000b0045dc85c4a5fsm1451893pgb.44.2022.11.03.20.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 20:16:28 -0700 (PDT)
-Date:   Thu, 3 Nov 2022 20:16:25 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v4 06/24] bpf: Refactor kptr_off_tab into
- btf_record
-Message-ID: <20221104031625.inxdktu6ztbpz4mk@macbook-pro-5.dhcp.thefacebook.com>
-References: <20221103191013.1236066-1-memxor@gmail.com>
- <20221103191013.1236066-7-memxor@gmail.com>
+        with ESMTP id S231518AbiKDDSv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 23:18:51 -0400
+Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B659325EAA;
+        Thu,  3 Nov 2022 20:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1667531838;
+        bh=xhvqscpJ8eJYk/Q1N9/AJKfFH00gTLPyIzjaSVR0k08=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=roa+3ScDD5VMRjXOG53h6XVLuVaoeVDE1Q1GLaMsAjzLxDQR5rSet9QmaRE8x1M6C
+         1Y81LScFpVMJ4IMzMpaV7nUx0zNkxYn3IOb2yjwfG2mbkQJjWYnTh6MxLF8GqqbwVa
+         AMBRvtK39mUBQxBfSM2nZ9x+UXSE8DdzP2QpaJ+I=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
+        id 44E2E01A; Fri, 04 Nov 2022 11:17:14 +0800
+X-QQ-mid: xmsmtpt1667531834turi4l2i0
+Message-ID: <tencent_6AD8D17AC411037DA1AC2C8FCB0D15A3D707@qq.com>
+X-QQ-XMAILINFO: MMlYfvMiV1QnzSU/jATHOmgR8F5vhf1cuFc1zIQTTj922N06YwuoU/DuDKoXx1
+         SHs0eXcxKw+hBwtigH33hQbb07gG7y0b++YpCt49bXitNaT7nFbbO5a7x9fLPbpgeZxk49aa8jFl
+         SI/IS1Sx+xG1+AUsS3D/h6kjSBgsOzQRltVzqj9NGgmhpmpIe3pWmM1EaJThPWf7Uf4bTNug3xXq
+         7tVJxmNdsmolCyoCEyJr8k9CcgTRZ8NPWqvXS9vm88oX5gvZYSSFwsc4gl4C7sbQVb7BCZiOf7as
+         inWyJFUHpHQsgDoAnyMmz0VrXSgvOmGvfkeSt5SwmBEAvbL/4NegphtTaHk08RTCnSmuYRnriHzY
+         5cKDxZ7J6GDI+XIcz3XNUERdKcx7HiCuKir8bRL1LuKyRHcgusiYn/cWP4AY/OZPJx5VKRCd+PNN
+         HCMzqyosXzrXNQeQsLXDGJaq5xihlDXFFiGiULOR5+MdBmL+2mwQ0UYnTo5BIZHhycDH7UQa9Tp/
+         g156OjDzTM1lHPm4iEDmloSHg7XqWXjcNJU4UzjZ3xPbF6s06JVICEecCh7drdCt79s6kzAnZT7m
+         /gFeMZrTXsg+joirhplELGYXRov1Ct9A3wP5Eqm2pdLkmRJe3xYKDYj6ZB+Ch+cpSalsDEAL+NR+
+         YgpnP7BXUQY6dLT50aH+ek3cIgXWnFEtHI55lDEC5We5337OrF3Mma9Uc8tIM+tB/6+4xwfzzTkU
+         sP+9mP9RC0fms3wSBlWo/7NRa7+t3XrI+GoLivqxON4EUnJGCtyystj3GEd3okIC4ISoNUqp3Lih
+         wUAG8688cKStCBFfRa3o44OD0R1Jmy2qxOLiAvw1HfP6gOAmhJ+NyTLUKI7iWa12AUaWeDV8n8sy
+         eUeDedX5N+nyC/oBC39Kh2mKMYu7w/APnO3OlnJXglXJjJEu48/XmCuRuT02SSrKdCBwBAxnAsHM
+         NxbbEy6lFA3+m6gh2qsuDc0LrmrfFHlcUX3C3dQYx3PeMS4CHn8sIg8shCBwr1qJd0dLPmDP0=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, song@kernel.org, yhs@fb.com
+Subject: Re: Re: [PATCH bpf-next] samples/bpf: Fix sockex3: missing BPF prog type
+Date:   Fri,  4 Nov 2022 11:17:13 +0800
+X-OQ-MSGID: <20221104031713.668305-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAEf4BzbvCABmSB3UqKyka=txTiCUdBpTtQg4X6XOa_qVVXW+hw@mail.gmail.com>
+References: <CAEf4BzbvCABmSB3UqKyka=txTiCUdBpTtQg4X6XOa_qVVXW+hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221103191013.1236066-7-memxor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 12:39:55AM +0530, Kumar Kartikeya Dwivedi wrote:
-> -
-> -	for (i = 0; i < nr_off; i++) {
-> +	rec->cnt = 0;
-> +	for (i = 0; i < cnt; i++) {
->  		const struct btf_type *t;
->  		s32 id;
->  
-> @@ -3500,28 +3499,24 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
->  				ret = -EINVAL;
->  				goto end_mod;
->  			}
-> -			tab->off[i].kptr.dtor = (void *)addr;
-> +			rec->fields[i].kptr.dtor = (void *)addr;
->  		}
->  
-> -		tab->off[i].offset = info_arr[i].off;
-> -		tab->off[i].type = info_arr[i].type;
-> -		tab->off[i].kptr.btf_id = id;
-> -		tab->off[i].kptr.btf = kernel_btf;
-> -		tab->off[i].kptr.module = mod;
-> +		rec->fields[i].offset = info_arr[i].off;
-> +		rec->fields[i].type = info_arr[i].type;
-> +		rec->fields[i].kptr.btf_id = id;
-> +		rec->fields[i].kptr.btf = kernel_btf;
-> +		rec->fields[i].kptr.module = mod;
-> +		rec->cnt++;
->  	}
-> -	tab->nr_off = nr_off;
-> -	return tab;
-> +	rec->cnt = cnt;
-> +	return rec;
+We can not just remove the number of program like:
 
-This is weird. You also undo this assignment in the next patch.
-What is the point of rec->cnt = 0;
-followed by rec->cnt++
-just to be overwritten with rec->cnt = cnt;
-??
+-#define PROG(F) SEC("socket/"__stringify(F)) int bpf_func_##F
++#define PROG(F) SEC("socket_filter") int bpf_func_##F
+
+because "sockex3" use the _NUMBER_ as index(see map "jmp_table"), if we
+apply the following patch, it's still not recognize "socket_filter/xxx"
+as "socket_filter", still have "missing BPF prog type" error:
+
+diff --git a/samples/bpf/sockex3_kern.c b/samples/bpf/sockex3_kern.c
+index b363503357e5..ab5a7bde66d0 100644
+--- a/samples/bpf/sockex3_kern.c
++++ b/samples/bpf/sockex3_kern.c
+@@ -17,7 +17,7 @@
+ #define IP_MF          0x2000
+ #define IP_OFFSET      0x1FFF
+
+-#define PROG(F) SEC("socket/"__stringify(F)) int bpf_func_##F
++#define PROG(F) SEC("socket_filter/"__stringify(F)) int bpf_func_##F
+
+ struct {
+        __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+@@ -279,7 +279,7 @@ PROG(PARSE_MPLS)(struct __sk_buff *skb)
+        return 0;
+ }
+
+-SEC("socket/0")
++SEC("socket_filter/0")
+ int main_prog(struct __sk_buff *skb)
+ {
+        __u32 nhoff = ETH_HLEN;
+diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
+index cd6fa79df900..63fc9a8077b1 100644
+--- a/samples/bpf/sockex3_user.c
++++ b/samples/bpf/sockex3_user.c
+@@ -56,7 +56,7 @@ int main(int argc, char **argv)
+                fd = bpf_program__fd(prog);
+
+                section = bpf_program__section_name(prog);
+-               if (sscanf(section, "socket/%d", &key) != 1) {
++               if (sscanf(section, "socket_filter/%d", &key) != 1) {
+                        fprintf(stderr, "ERROR: finding prog failed\n");
+                        goto cleanup;
+                }
+
+For a reason, in sockex3_kern.c only have five PROGs, list all five:
+
+#define PROG(F) SEC("socket/"__stringify(F)) int bpf_func_##F
+PROG(PARSE_IP)(struct __sk_buff *skb)
+PROG(PARSE_IPV6)(struct __sk_buff *skb)
+PROG(PARSE_VLAN)(struct __sk_buff *skb)
+PROG(PARSE_MPLS)(struct __sk_buff *skb)
+SEC("socket/0") int main_prog(struct __sk_buff *skb)
+
+As you can see, all those PROGs are BPF_PROG_TYPE_SOCKET_FILTER, so we can
+use the follow patch specify bpf program type as SOCKET_FILTER:
+
+https://lore.kernel.org/lkml/tencent_7DD02046A8398BE3324F85E0F56ED41EB105@qq.com/
+
+diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
+index cd6fa79df900..dc79c17ad195 100644
+--- a/samples/bpf/sockex3_user.c
++++ b/samples/bpf/sockex3_user.c
+@@ -39,6 +39,9 @@ int main(int argc, char **argv)
+                return 0;
+        }
+
++       bpf_object__for_each_program(prog, obj)
++               bpf_program__set_type(prog, BPF_PROG_TYPE_SOCKET_FILTER);
++
+        /* load BPF program */
+        if (bpf_object__load(obj)) {
+                fprintf(stderr, "ERROR: loading BPF object file failed\n");
+
+This patch above totally solved the compile error.
+
