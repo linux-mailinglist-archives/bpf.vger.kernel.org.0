@@ -2,72 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721B5618EE4
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83080618EF1
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 04:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbiKDD0H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Nov 2022 23:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
+        id S229523AbiKDD1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Nov 2022 23:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbiKDDZW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Nov 2022 23:25:22 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BCFC06
-        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:23:13 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id l1-20020a170902f68100b00187117d8e44so2617573plg.2
-        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:23:13 -0700 (PDT)
+        with ESMTP id S230368AbiKDDZy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Nov 2022 23:25:54 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013116436
+        for <bpf@vger.kernel.org>; Thu,  3 Nov 2022 20:25:34 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-349423f04dbso35985417b3.13
+        for <bpf@vger.kernel.org>; Thu, 03 Nov 2022 20:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zm63eFTPkWJYYLLsqSUKS3qevDGfBEn8OaulzKVgrZY=;
-        b=QQckuPRmxt9NSuibqdCcuInp7/mT6aw7sEhbS55GZcSJBqXeK63jgG0VzKvbx1Iod7
-         z/dAu1Ad5z/h+R/WlEJTXq69elnqvh8Un4vfd/3VAlRVVMo0n65PxFUqylK7rCe/bDNQ
-         903MKjL/p59TJNyJ8Y65UVJqyBIl/GqH7vimRndphcRIiIAS4aj2WrPdMXHbLYlxFtZm
-         cK9No07YHACxtces8ROWT1FbmlELmV/2Yrop7kWIXovUsjmh7hg40jNZO6glurD7YQz6
-         9kFS0D7qUI/sEkgXkroBuZdS/uSFYdoCBUPRuPkmeP16A3pZ7ah00xEejxZer+ScUc8A
-         LExQ==
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PUk/KzpzScQpgR6M7qGYfZX/G9X9dItCofF/HHylYj4=;
+        b=gMWIfG1emRxrVj3GyaVOH00tmqqnQXYIzwJzyGg+LotRtT7/13UdKQCitTcq1lddFF
+         w7YoyreI/+mDOVzPc/bFF8SQE/T7Z/8qGxTc0Fdq0c5HmeYGP5WVmosxwEcW3VDg9VL/
+         gupQdFaR26PAjkrXLt0FYzyKaPNfJfTWqIUCDrbSiKJEHFao/OQfEgCYP29Uy6t5KaQN
+         r0Rf+/FM0Lam4KlajBiPQwgeh1/5vK89s8U0CD6H5sYA2vz88FHawMAG7x8fpY6Q3W/i
+         jhsbcRGsaS++U/GsdSLSbCoIdn+MzR15ZsorjSJNxkVZaC41STe9fVSsml7G7t7hU2oO
+         SRUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zm63eFTPkWJYYLLsqSUKS3qevDGfBEn8OaulzKVgrZY=;
-        b=Cv6M50fBg4MLTq4EoSEDRaZx27NlNW55jY/VjFKuH4M59X8T7Dt39LSSGAODrDaJZp
-         zP81yB/VeMBl6gXGLaWRNlYQW2MVR5s+rQeKFEa1bfp1LaU2ztadbGy5dcXkyD6wAQLG
-         jdhPdebxTSEfgtKAtxHQSkL2420WAefiuRS8HbFvbR+4+EaFIaw2/JylZdnTQ4PPtsNO
-         3+pli/10WOmpdnXqhezZZHm3zR6V7Olv9S5cSzY595HB7PlH6BCu9VE9bXKvgZtgdMUi
-         IHuzV0jeYAzTCNMBHNOt1m6sshoqoyzLbTnn/CqvjRRx69ZC9f0AXh3JSochX7pVmMNF
-         9WcA==
-X-Gm-Message-State: ACrzQf1y8lbcZoC5NgyMt0boDMv1KPDd9Fn58bX9WU9X3KW06EsgL97w
-        K80pcIgsbDwaKDo0hU2XWBsLa2AkSKqtchua+SIgAb+jk7hr2YAX4FQ3gcomI0rNwWewH+uJZUc
-        NZYPdPLCbNEt9DTGos8nJfRpiOZtG4/EEsdeIeRycwVYJr25JXA==
-X-Google-Smtp-Source: AMsMyM75KRXjJbs47kRvpwqA4GBTKMRPXnM5/kegtdEIdhmNbSKj2I3T87EwDWoQmIFVy8wtsgwjXpg=
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PUk/KzpzScQpgR6M7qGYfZX/G9X9dItCofF/HHylYj4=;
+        b=JBwhWrabxMKdE6OfPlByIPH0YqYq4EnACJLwAHePIps3plywWdCqU6p0z4uijeAl63
+         zICxkxB95iHk3YeFA7/y5BAw0sap9E85HAXIdtr4LK8iSLPIb6WLTi8B9M5eHDYk0Wso
+         58riMTGCyNJDa7ud54hP49YVkythwl+Y52EsofkaCeYCwSKtjCxhMEwT751onKNGy9jT
+         sKSrVrjDOBtKncYnZkUnQ9rroMyiv0IMX6ohV44LXEsfvCEkQEnsXxHD1FrIYW/aUdMt
+         mMDvBzSZZWoBO5MDpmwOabHcSKCT/vnYgHvN9eXQSV/5RG+6VsemuFS+Vlvh/btyu5FB
+         m/IQ==
+X-Gm-Message-State: ACrzQf2SZN2Dh1luSPq+DDxrWdU1cksnMGK7ZZ9qr3ikDLPMM+j517mO
+        FVq9e5WEVbEktz7kMjTniYduXOCsgqkhhIf35c+xOWUZVA0J44jFjXCWaHc4CjHOj1Ht/LJ00RI
+        6R3gKYxiy0FlnutcZbyK3vnY1ADiYyT4jUxYvYaPK5vNg/M9oBw==
+X-Google-Smtp-Source: AMsMyM7zc6prS8uR4b3KOrhY0adVhR9NmhhrHCa3CBp7mSaJS3isYh571BeYQWM6TiZfTQQ1/Yt3ojg=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:e0b:b0:56c:8c13:2a54 with SMTP id
- bq11-20020a056a000e0b00b0056c8c132a54mr33390859pfb.17.1667532193234; Thu, 03
- Nov 2022 20:23:13 -0700 (PDT)
-Date:   Thu,  3 Nov 2022 20:23:11 -0700
+ (user=sdf job=sendgmr) by 2002:a0d:e647:0:b0:36f:f93f:7f7d with SMTP id
+ p68-20020a0de647000000b0036ff93f7f7dmr33503616ywe.149.1667532334126; Thu, 03
+ Nov 2022 20:25:34 -0700 (PDT)
+Date:   Thu,  3 Nov 2022 20:25:18 -0700
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221104032311.1606050-1-sdf@google.com>
-Subject: [PATCH bpf-next] xsk: fix destination buffer address when copying
- with metadata
+Message-ID: <20221104032532.1615099-1-sdf@google.com>
+Subject: [RFC bpf-next v2 00/14] xdp: hints via kfuncs
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org,
-        "=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?=" <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,42 +77,216 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While working on a simplified test for [0] it occurred to me that
-the following looks fishy:
+Changes since the original RFC:
 
-	data =3D xsk_umem__get_data(xsk->umem_area, rx_desc->addr);
-	data_meta =3D data - sizeof(my metadata);
+- 'struct bpf_patch' to more easily manage insn arrays
 
-Since the data points to umem frame at addr X, data_mem points to
-the end of umem frame X-1.
+  While working on longer unrolled functions I've bumped into verifier's
+  insn_buf[16]. Instead of increasing it, I've added a simple
+  abstraction that handles resizing.
 
-I don't think it's by design?
+  *insn++ = BPF_XXX_XXX();
+  *insn++ = BPF_YYY_YYY();
 
-0: https://lore.kernel.org/bpf/20221028181431.05173968@kernel.org/T/#t
+  vs
 
-Cc: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- net/xdp/xsk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  bpf_patch_append(patch,
+          BPF_XXX_XXX(),
+          BPF_YYY_YYY(),
+  );
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 9f0561b67c12..0547fe37ba7e 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -163,7 +163,7 @@ static void xsk_copy_xdp(struct xdp_buff *to, struct xd=
-p_buff *from, u32 len)
- 	} else {
- 		from_buf =3D from->data_meta;
- 		metalen =3D from->data - from->data_meta;
--		to_buf =3D to->data - metalen;
-+		to_buf =3D to->data;
- 	}
-=20
- 	memcpy(to_buf, from_buf, len + metalen);
---=20
+  There are also some tricks where we resolve BPF_JMP_IMM(op, dst, imm,
+  S16_MAX) to the real end of the program; mostly to make it easy to generate
+  the following:
+
+  if (some_condition) {
+          if (some_other_condition) {
+                  // insns
+          }
+  }
+
+- Drop xdp_buff->priv in favor of container_of (Jakub)
+
+  The drivers might need to maintain more data, so instead of
+  constraining them to a single ->priv pointer in xdp_buff, use container_of
+  and require the users to define the outer struct. xdp_buff should
+  be the first member.
+
+  Each driver now has two patches: the first one introduces new struct
+  wrapper; the second one does the actual work.
+
+- bpf_xdp_metadata_export_to_skb (Toke)
+
+  To solve the case where we're constructing skb from a redirected
+  frame. bpf_xdp_metadata_export_to_skb is an unrolled kfunc
+  that prepares 'struct xdp_to_skb_metadata' in the metadata.
+  The layout is randomized and it has a randomized magic number
+  to make sure userspace doesn't depend on it. I'm not sure how
+  strict we should be here? Toke/Jesper seem to be ok with
+  userspace depending on this but as long as they read the
+  layout via BTF, so maybe having a fixed magic is ok/better her?
+
+  Later, at skb_metadata_set time, we call into
+  skb_metadata_import_from_xdp that tries to parse this fixed format
+  and extract relevant metadata.
+
+  Note that because we are unrolling bpf_xdp_metadata_export_to_skb,
+  we have to constrain other kfuncs to R2-R5 only; I've added the
+  reasoning to the comments. It might be better idea to do a real
+  kfunc call (but we have to generate this kfunc anyway)?
+
+- helper to make it easier to call kernel code from unrolled kfuncs
+
+  Since we're unrolling, we're running in a somewhat constrained
+  environment. R6-R9 belong to the real callee, so we can't use them
+  to stash our R1-R5. We also can't use stack in any way. Another
+  constraint comes from bpf_xdp_metadata_export_to_skb which
+  might call several metadata kfuncs and wants its R1 to be preserved.
+
+  Thus, we add xdp_kfunc_call_preserving_r1, which generates the
+  bytecode to preserve r1 somewhere in the user-supplied context.
+
+  Again, we have to do this because we unroll bpf_xdp_metadata_export_to_skb.
+
+- mlx4/bnxt/ice examples (Jesper)
+
+  ice is the only one where it seems feasible to unroll. The code is
+  untested, but at least it shows that it's somewhat possible to
+  get to the timestamp in our R2-R5-constrained environment.
+
+  mlx4/bnxt do spinlocks/seqlocks, so I'm just calling into the kernel
+  code.
+
+- Unroll default implementation to return false/0/NULL
+
+  Original RFC left default kfuncs calls when the driver doesn't
+  do the unrolling. Here, instead, we unroll to single 'return 0'
+  instruction.
+
+- Drop prog_ifindex libbpf patch, use bpf_program__set_ifindex instead (Andrii)
+
+- Keep returning metadata by value instead of using a pointer
+
+  I've tried using the pointer, it works currently, but it requires extra
+  argument per commit eb1f7f71c126 ("bpf/verifier: allow kfunc to return
+  an allocated mem"). The requirement can probably be lifted for our
+  case, but not sure it's necessary for now.
+
+  While adding rx_timestamp support for the drivers, it turns out
+  we never really return the raw pointer to the descriptor field. We read
+  the descriptor field, do shifts/multiplies, convert to kernel clock,
+  etc/etc. So returning a value instead of a pointer seems more logical,
+  at least for the rx timestamp case. For the other types of metadata,
+  we might reconsider.
+
+- rename bpf_xdp_metadata_have_<xxx> to bpf_xdp_metadata_<xxx>_supported
+
+  Spotted in one of Toke's emails. Seems like it better conveys
+  the intent that it actually tests that the device supports the
+  metadata, not that the particular packet has the metadata.
+
+The following is unchanged since the original RFC:
+
+This is an RFC for the alternative approach suggested by Martin and
+Jakub. I've tried to CC most of the people from the original discussion,
+feel free to add more if you think I've missed somebody.
+
+Summary:
+- add new BPF_F_XDP_HAS_METADATA program flag and abuse
+  attr->prog_ifindex to pass target device ifindex at load time
+- at load time, find appropriate ndo_unroll_kfunc and call
+  it to unroll/inline kfuncs; kfuncs have the default "safe"
+  implementation if unrolling is not supported by a particular
+  device
+- rewrite xskxceiver test to use C bpf program and extend
+  it to export rx_timestamp (plus add rx timestamp to veth driver)
+
+I've intentionally kept it small and hacky to see whether the approach is
+workable or not.
+
+Pros:
+- we avoid BTF complexity; the BPF programs themselves are now responsible
+  for agreeing on the metadata layout with the AF_XDP consumer
+- the metadata is free if not used
+- the metadata should, in theory, be cheap if used; kfuncs should be
+  unrolled to the same code as if the metadata was pre-populated and
+  passed with a BTF id
+- it's not all or nothing; users can use small subset of metadata which
+  is more efficient than the BTF id approach where all metadata has to be
+  exposed for every frame (and selectively consumed by the users)
+
+Cons:
+- forwarding has to be handled explicitly; the BPF programs have to
+  agree on the metadata layout (IOW, the forwarding program
+  has to be aware of the final AF_XDP consumer metadata layout)
+- TX picture is not clear; but it's not clear with BTF ids as well;
+  I think we've agreed that just reusing whatever we have at RX
+  won't fly at TX; seems like TX XDP program might be the answer
+  here? (with a set of another tx kfuncs to "expose" bpf/af_xdp metatata
+  back into the kernel)
+
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (14):
+  bpf: Introduce bpf_patch
+  bpf: Support inlined/unrolled kfuncs for xdp metadata
+  veth: Introduce veth_xdp_buff wrapper for xdp_buff
+  veth: Support rx timestamp metadata for xdp
+  selftests/bpf: Verify xdp_metadata xdp->af_xdp path
+  xdp: Carry over xdp metadata into skb context
+  selftests/bpf: Verify xdp_metadata xdp->skb path
+  bpf: Helper to simplify calling kernel routines from unrolled kfuncs
+  ice: Introduce ice_xdp_buff wrapper for xdp_buff
+  ice: Support rx timestamp metadata for xdp
+  mlx4: Introduce mlx4_xdp_buff wrapper for xdp_buff
+  mxl4: Support rx timestamp metadata for xdp
+  bnxt: Introduce bnxt_xdp_buff wrapper for xdp_buff
+  bnxt: Support rx timestamp metadata for xdp
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  73 +++-
+ drivers/net/ethernet/intel/ice/ice.h          |   5 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 105 ++++-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |   1 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  66 ++-
+ drivers/net/veth.c                            |  89 ++--
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_patch.h                     |  29 ++
+ include/linux/btf.h                           |   1 +
+ include/linux/btf_ids.h                       |   4 +
+ include/linux/mlx4/device.h                   |   7 +
+ include/linux/netdevice.h                     |   5 +
+ include/linux/skbuff.h                        |   4 +
+ include/net/xdp.h                             |  41 ++
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_patch.c                        |  81 ++++
+ kernel/bpf/syscall.c                          |  28 +-
+ kernel/bpf/verifier.c                         |  85 ++++
+ net/core/dev.c                                |   7 +
+ net/core/skbuff.c                             |  25 ++
+ net/core/xdp.c                                | 165 +++++++-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 394 ++++++++++++++++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  78 ++++
+ 27 files changed, 1244 insertions(+), 65 deletions(-)
+ create mode 100644 include/linux/bpf_patch.h
+ create mode 100644 kernel/bpf/bpf_patch.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata.c
+
+-- 
 2.38.1.431.g37b22c650d-goog
 
