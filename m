@@ -2,60 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C40C61A07C
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 20:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B3361A07F
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 20:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbiKDTCj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 15:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
+        id S229637AbiKDTEl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 15:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbiKDTCi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 15:02:38 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C60FAEE
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 12:02:37 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id f7so8962247edc.6
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 12:02:37 -0700 (PDT)
+        with ESMTP id S229617AbiKDTEk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 15:04:40 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885D043AF9
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 12:04:38 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id b2so15680303eja.6
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 12:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ahy4Buzb+0k11FGgiZlp8vfLSvkdiZd3aX//Zeul/I=;
-        b=fnZWqKGZNotD3akKjEWlLelrDq+IOVx4z7Vb0pMa3/iermvENRUOxE8h+kXbAe7eW7
-         Z7SMWBhwP83TnJlS8USQvpfo7Mn8SKsJeEq0IzhbWPOdaGhJn3DeSFVjQdxoez79z+38
-         PeJ3CPpxqa6XOrJi+OgSWD+hc5ErCvIQuFynFgUbhzOi9ax6KaD8d1mok4lkKCglWEF+
-         rQmQq3bciCaDyQOmLtxByzJODcFOCtaHbAgBrH6ggMGv7ByGAAK7V6JF6Yww0SL27Sl4
-         lErk689i09fW+Zhoa97GwAdbd36f7icF5bQIvNjQXsLjBCxYBmqUXRPcGE/GSpgObPKR
-         haGQ==
+        bh=Cum2xEz4MGoRfzOdFRMmCclq75XDisZoCNF2agR8YTc=;
+        b=hVp00/IdQqTahpZlnGmkwPXWLjmBmkmyFkMUiHlg5vi9mbyI58SUvzWnKI1qPExwCP
+         ejCs3GFo5WkEMNRFnoCEA1jb8IAOU0bL0MZ/rrj7O0Pjpb9qZ3Rkg5hXyn1zy3zwvCn0
+         uWXi2r8kzwHWDazYJRJybONeveGYJM2SZ9tyc4rtH6t/9fp374qrzoMx0Y9+2rVd1+s3
+         /wQetDZfh8XYCmSWc4jZupsMOHx5/68AP3QsjLjnUEGb/EozsSsPUlLl1y8VDfZsS0FR
+         6y54ZZSe5Puqvlr4u2yz0IalDSNfIGtvsgwQr43oc/aZdya6r4YqATxvWsscxvYE+4t/
+         PRnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7ahy4Buzb+0k11FGgiZlp8vfLSvkdiZd3aX//Zeul/I=;
-        b=IPirTA0XnS4Jhkjg6xxpn65rx62vFDS+zcWLVU5QBYqnd+j/jMeXZKl0QV2HVAdHOo
-         olxpt7i3SbEk0JEILAvR0hBzAYfoEgsaMMr/fLynVmDSoU1R2Pe8rzoWNAw8KpAdy2K/
-         FWVMYQ/d2h5HkItFQLyS7rqVgWJWufRvf3DhBGCJ32lz0RiYH8QiajAyGy/ykns1Jfo0
-         HpaTHTHV4JpO4bT1PbDDuwU640AP+BRrVRoAXjgicdRG1Bl6Wvy01RP9v+f0LX2X4p8D
-         FpFaUO6mzT1WN4jjhItMfZlE9iO7FOVj4Z15Age7YwIaoIusuSRp2qKT+3uknSiVpwak
-         Vn+w==
-X-Gm-Message-State: ACrzQf1bngiE7bNK6hbWc/IFUubDBlFXiCRiDDcqafE66IMOsFmzhp3s
-        TQ3qjTqLHDcqY5xbvs7yw4KNGqTAVb8CwKBG+r8=
-X-Google-Smtp-Source: AMsMyM7KKx8g7Djh0ZB3C1/bBLa4lj7NO6qviwWjdxzK10tlqzFu0Kb0ZOsIKsxSboTnVfD4VomA9GbHSjxqWMnt56I=
-X-Received: by 2002:a05:6402:3641:b0:45c:4231:ddcc with SMTP id
- em1-20020a056402364100b0045c4231ddccmr37941018edb.224.1667588555748; Fri, 04
- Nov 2022 12:02:35 -0700 (PDT)
+        bh=Cum2xEz4MGoRfzOdFRMmCclq75XDisZoCNF2agR8YTc=;
+        b=2xmvEpIsRxVbXYJDFySnMWl6dFZ7EyQyjys4a1y55Cy40Rxfox6NytDouXG+yypHBP
+         ZoiUia9N559gHxlX0/HWbcx/Kl1Bwx985Cx5tBPcV5SYa0k5hkd0lBYdwWArwjcvTUXt
+         F/TYp1GayEECgkxU8lvVerTb+83Fe/8usZvoTwFhPmB6lBHlvsV605Ei/jUsfOAKnd0l
+         gbbw0/kUmsowChlPQUktwFSKyto8O6stvXvQ3mQKtMlSujI8E+BZj3QHsW0H+UUhoi+/
+         75HUOFIEUeVyRBs4RX53JUSzP9VeEKUnH7cgxRJsaMivPDriPtqYbTzaiD4QCgU8Pi9E
+         nHTw==
+X-Gm-Message-State: ACrzQf1F0eIyXCBFdBs9Jy0ORam00XtjlOX5MMSclNx+SjeOe27AoCOp
+        YfM5w0Sw5DqClAw3D2HOKqHo7CAzM3BInjOo2iM=
+X-Google-Smtp-Source: AMsMyM6dic9t3iwhBgJikTk33h5C3UqP9ORvmpdq71sdPHuvrGS0wJEEIp2MAPnhpq6AAyBazz1ejtt6STgwh5lmuv0=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr36257566ejb.633.1667588676801; Fri, 04
+ Nov 2022 12:04:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221103033430.2611623-1-eddyz87@gmail.com> <20221103033430.2611623-4-eddyz87@gmail.com>
-In-Reply-To: <20221103033430.2611623-4-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 12:02:24 -0700
-Message-ID: <CAEf4Bzax+kH65_s7sDmCO_gn+W4WqaARimLkn_-c8RAgXxY0KA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Resolve unambigous forward declarations
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        alan.maguire@oracle.com
+References: <20221104051644.nogfilmnjred2dt2@altlinux.org> <CACYkzJ4AeNEbag2EZo4+Mpn6NM-ELvKUkSKVDHdoNFHcFOygQA@mail.gmail.com>
+ <CAADnVQKUeyDwdJ9AZvbxCCVc6hyvm1wdBRg4+3RHx5u5o1wLMA@mail.gmail.com> <43fd3775-e796-6802-17f0-5c9fdbf368f5@oracle.com>
+In-Reply-To: <43fd3775-e796-6802-17f0-5c9fdbf368f5@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 4 Nov 2022 12:04:25 -0700
+Message-ID: <CAADnVQKBUZx_ABSii1i+8=tQWs8N=i6Zro=AFYq=SOX+Zke3UQ@mail.gmail.com>
+Subject: Re: bpf: Is it possible to move .BTF data into a module
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     KP Singh <kpsingh@kernel.org>, Vitaly Chikunov <vt@altlinux.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -67,147 +70,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 2, 2022 at 8:35 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Fri, Nov 4, 2022 at 9:12 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> Resolve forward declarations that don't take part in type graphs
-> comparisons if declaration name is unambiguous. Example:
+> On 04/11/2022 15:59, Alexei Starovoitov wrote:
+> > On Fri, Nov 4, 2022 at 7:35 AM KP Singh <kpsingh@kernel.org> wrote:
+> >>
+> >> On Fri, Nov 4, 2022 at 6:16 AM Vitaly Chikunov <vt@altlinux.org> wrote:
+> >>>
+> >>> Hi,
+> >>>
+> >>> We need to reduce kernel size for aarch64, because it does not fit into
+> >>> U-Boot loader on Raspberry Pi (due to it having fdt_addr_r=0x02600000)
+> >>> and one of big ELF sections in vmlinuz is .BTF taking around 5MB.
+> >>> Compression does not help because on aarch64 kernels are
+> >>> uncompressed[1].
+> >>>
+> >>> Is it theoretically possible to make sysfs_btf a module?
+> >>
+> >> I think so, it may need some refactoring and changes
+> >> but, yeah, in theory, the module could ship with the
+> >> kernel's BTF information which can then be initialized by the module.
+> >>
+> >> Curious to see what others think as well.
+> >
+> > Yeah. That request came up a few times.
+> > Whoever has cycles to work on it... please go ahead :)
+> >
 >
-> CU #1:
->
-> struct foo;              // standalone forward declaration
-> struct foo *some_global;
->
-> CU #2:
->
-> struct foo { int x; };
-> struct foo *another_global;
->
-> The `struct foo` from CU #1 is not a part of any definition that is
-> compared against another definition while `btf_dedup_struct_types`
-> processes structural types. The the BTF after `btf_dedup_struct_types`
-> the BTF looks as follows:
->
-> [1] STRUCT 'foo' size=4 vlen=1 ...
-> [2] INT 'int' size=4 ...
-> [3] PTR '(anon)' type_id=1
-> [4] FWD 'foo' fwd_kind=struct
-> [5] PTR '(anon)' type_id=4
->
-> This commit adds a new pass `btf_dedup_resolve_fwds`, that maps such
-> forward declarations to structs or unions with identical name in case
-> if the name is not ambiguous.
->
-> The pass is positioned before `btf_dedup_ref_types` so that types
-> [3] and [5] could be merged as a same type after [1] and [4] are merged.
-> The final result for the example above looks as follows:
->
-> [1] STRUCT 'foo' size=4 vlen=1
->         'x' type_id=2 bits_offset=0
-> [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> [3] PTR '(anon)' type_id=1
->
-> For defconfig kernel with BTF enabled this removes 63 forward
-> declarations. Examples of removed declarations: `pt_regs`, `in6_addr`.
-> The running time of `btf__dedup` function is increased by about 3%.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/lib/bpf/btf.c | 143 ++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 139 insertions(+), 4 deletions(-)
->
+> We've experimented with this a bit for the global variable patch
+> series, where global variable BTF is a tristate config
+> parameter, and if set to 'm' the BTF for variables ends up in
+> vmlinux_btf_extra.ko instead (patch series forthcoming; it was
+> stuck behind the dedup issues which took a while to uncover).
+> One approach would be to extend that scheme such that
+> CONFIG_DEBUG_INFO_BTF=m I guess?
 
-LGTM, small nit about hashmap__new initialization
+makes sense.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> The only thing that might require change is the name; vmlinux_btf
+> might be a more appropriate module name than vmlinux_btf_extra
+> perhaps? Thanks!
 
-
-> +}
-> +
-> +static int btf_dedup_resolve_fwd(struct btf_dedup *d, struct hashmap *names_map, __u32 type_id)
-> +{
-> +       struct btf_type *t = btf_type_by_id(d->btf, type_id);
-> +       enum btf_fwd_kind fwd_kind = btf_kflag(t);
-
-this is a bit subtle, but probably won't ever break as enum
-btf_fwd_kind is part of libbpf UAPI
-
-> +       __u16 cand_kind, kind = btf_kind(t);
-> +       struct btf_type *cand_t;
-> +       uintptr_t cand_id;
-> +
-> +       if (kind != BTF_KIND_FWD)
-> +               return 0;
-> +
-> +       /* Skip if this FWD already has a mapping */
-> +       if (type_id != d->map[type_id])
-> +               return 0;
-> +
-> +       if (!hashmap__find(names_map, t->name_off, &cand_id))
-> +               return 0;
-> +
-> +       /* Zero is a special value indicating that name is not unique */
-> +       if (!cand_id)
-> +               return 0;
-> +
-> +       cand_t = btf_type_by_id(d->btf, cand_id);
-> +       cand_kind = btf_kind(cand_t);
-> +       if ((cand_kind == BTF_KIND_STRUCT && fwd_kind != BTF_FWD_STRUCT) ||
-> +           (cand_kind == BTF_KIND_UNION && fwd_kind != BTF_FWD_UNION))
-> +               return 0;
-> +
-> +       d->map[type_id] = cand_id;
-> +
-> +       return 0;
-> +}
-> +
-> +/*
-> + * Resolve unambiguous forward declarations.
-> + *
-> + * The lion's share of all FWD declarations is resolved during
-> + * `btf_dedup_struct_types` phase when different type graphs are
-> + * compared against each other. However, if in some compilation unit a
-> + * FWD declaration is not a part of a type graph compared against
-> + * another type graph that declaration's canonical type would not be
-> + * changed. Example:
-> + *
-> + * CU #1:
-> + *
-> + * struct foo;
-> + * struct foo *some_global;
-> + *
-> + * CU #2:
-> + *
-> + * struct foo { int u; };
-> + * struct foo *another_global;
-> + *
-> + * After `btf_dedup_struct_types` the BTF looks as follows:
-> + *
-> + * [1] STRUCT 'foo' size=4 vlen=1 ...
-> + * [2] INT 'int' size=4 ...
-> + * [3] PTR '(anon)' type_id=1
-> + * [4] FWD 'foo' fwd_kind=struct
-> + * [5] PTR '(anon)' type_id=4
-> + *
-> + * This pass assumes that such FWD declarations should be mapped to
-> + * structs or unions with identical name in case if the name is not
-> + * ambiguous.
-> + */
-> +static int btf_dedup_resolve_fwds(struct btf_dedup *d)
-> +{
-> +       int i, err;
-> +       struct hashmap *names_map =
-> +               hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_equal_fn, NULL);
-
-if variable declaration and initialization doesn't even fit in a
-single line, that's a signal that they should better be split.
-
-In general we also try to avoid doing "complex" initialization at
-declaration time. So please split.
-
-> +
-> +       if (!names_map)
-> +               return -ENOMEM;
-> +
-
-[...]
+yeah. vmlinux_btf as a module name should work.
+libbpf can be taught to look at /sys/kernel/btf/vmlinux and vmlinux_btf.
