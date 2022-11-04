@@ -2,63 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC6A61A351
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718A461A353
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 22:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbiKDV0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 17:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S229637AbiKDV2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 17:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKDV0s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 17:26:48 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D93643871;
-        Fri,  4 Nov 2022 14:26:47 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id kt23so16481052ejc.7;
-        Fri, 04 Nov 2022 14:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AveMACjXVbF/hxLVe9ZZR8krStFPyiZoSTVBDH05wjw=;
-        b=cTOlGMMzZJR1iNQytevx/7l+waGuBR0MG5AnpaC85mR4CkNuOcs9TnL2yON8WE66c7
-         Tsqt73xWDzTuSE91FhwGk4HvIdn/wqgCnKR5PHKaSCBRskr+qMtJY0mnL3bD+eJH1+hX
-         2wkGRVGg55xPWfe+xfP0A68j+X2cnaUni57u6cj9IawCwZwrsLPR5OapHw9Sd1Ah/eS1
-         sJjwnjwRCDH/KPafbFFDq/5/UULs/2VtykHfFacjU//3gQKYI3mZDXOPlKozG7nb/C52
-         t3Ht5UlM7q9empPn2qPlDK99L+oj1l3a7oa3Rb5tQad4tiDzwGi1nrwe4JfHhUSUkks1
-         zIKg==
+        with ESMTP id S229457AbiKDV2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 17:28:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B241B45A28
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 14:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667597239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YoZ/g2DAWgongxe9b4hSKenV+1Uju4Pu+Tb56vnaUnc=;
+        b=R5qXdn4/ROs0a31Nugp8QCj91mutlPU8ZyZB23KwDlHTG/ktZHObxnAvnFQK5pdSQ0nlAb
+        k4WJCVgIkOg1RWZ5WeoXBOMGUVM411E4t+DX9WOrBVqaZlGSk2mtzG0M7q45NM5OHhrtrg
+        I9ZljvwNrHlOHH1gl09/C3wc3OKTnjU=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-634-9QZDoMY9NE-3aJChAXfnkg-1; Fri, 04 Nov 2022 17:27:17 -0400
+X-MC-Unique: 9QZDoMY9NE-3aJChAXfnkg-1
+Received: by mail-io1-f72.google.com with SMTP id n23-20020a056602341700b00689fc6dbfd6so3766386ioz.8
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 14:27:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AveMACjXVbF/hxLVe9ZZR8krStFPyiZoSTVBDH05wjw=;
-        b=VEHyOaUI0MspsFnmn5Ro0SgY0wnpdZVqaxqvtILl7Gz4suzvsAmab2KZJP2Bk+i2KE
-         uhULi7Uh3s8GPxB2Fy7fIsb2ozNKvmQ/3h6G+IuKLzhlDOxQnjT/eo+hDh5//SnLcGjW
-         oz+Y6S6JwGeXtsE919IhOEhzoulmR1DySaXj1i70sYtoGfcCMHKtrCY/FF9ZlA+B7/+J
-         D/4Lf74ku5umAdM8GM+WlmktNgDBHJfPwOB9CCjwBRq0v7NEsMAyO4y3KPY2tIJRwVE3
-         0tQXQ/9fBAg57c9W8bceRNgHq/P6DgDgtieuH6JMe5oOJJaUAVCTX0qzhRFnvKjSyh5F
-         UdjA==
-X-Gm-Message-State: ACrzQf1tSkpX7MWRx4jmg9eRjtSyBysife8IQV7aQAWCAAPxtPTymLhy
-        RMlkzD7LUTDmiW8q4Z4PJSP4exe4W/eSINDnv1s=
-X-Google-Smtp-Source: AMsMyM7Z1SD/98VyO1rZj5Skho54nfScaK7yrTH+svVpB2spa/fkUna6NMalV8wNaNZHqKh4KEQGJNB7iLZJ0LTHtR4=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr35850607ejn.302.1667597205313; Fri, 04
- Nov 2022 14:26:45 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YoZ/g2DAWgongxe9b4hSKenV+1Uju4Pu+Tb56vnaUnc=;
+        b=PSwLjghQXaFa9/VXuwZFXMuY6WQabmWZ8JHUZj6KbwSVGr57STEFH12/c8S/R1TvMq
+         Yuwf/5u3tFyUa4VW+op74a0pfuBTw5KuaDTbM1425s9cvT/7c+OL25Qus15m5F87RnX2
+         gupk95bLDJwinhpg4VEIt1oNlwVdTvi+6fRmu28gzBPcCUqUaylAxFOrgyiNcFoXxRJs
+         VDUezkv9INtc+K9PNnA23ZpEw67yeFY6E9N4Lfc9y+nxDtJYAHpTY0wdpck9l8qE7rAo
+         slnkwiIzAicbslINAB6lFrmxdTdjtWvcywvkQQ4G/CebsxRCbww+LJ1yHPAuoFp5niJC
+         PmSQ==
+X-Gm-Message-State: ACrzQf2jpFSTS7LxJ2ZUQakEAjn+qS94Gq0II2b4u4Gvg8+rAsYOqEMS
+        7APgP94f9IkFA92fo2+SF9HBlNa1R/RFe5U9P8ZboNVtlmnqxEx+c7sdCCuaxTE4TGWfcF7frU1
+        tkK6OcjGBeOb+
+X-Received: by 2002:a05:6e02:214f:b0:2fb:cffb:3182 with SMTP id d15-20020a056e02214f00b002fbcffb3182mr22382675ilv.161.1667597236124;
+        Fri, 04 Nov 2022 14:27:16 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6xntdoFJKVfpeppsLDlrkfZ0zh5SfnW45NbHgq32Vi/+W9JWLm/9wuAT8FlOqwG8d2w81aMQ==
+X-Received: by 2002:a05:6e02:214f:b0:2fb:cffb:3182 with SMTP id d15-20020a056e02214f00b002fbcffb3182mr22382662ilv.161.1667597235835;
+        Fri, 04 Nov 2022 14:27:15 -0700 (PDT)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id 67-20020a020a46000000b003636c046e73sm30446jaw.95.2022.11.04.14.27.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Nov 2022 14:27:15 -0700 (PDT)
+Date:   Fri, 4 Nov 2022 15:27:13 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 00/15] IOMMUFD Generic interface
+Message-ID: <20221104152713.3ae1c409.alex.williamson@redhat.com>
+In-Reply-To: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20221010112154.39494-1-donald.hunter@gmail.com>
-In-Reply-To: <20221010112154.39494-1-donald.hunter@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Nov 2022 14:26:33 -0700
-Message-ID: <CAEf4BzYiSyps09esMH407WnzPvND+c56EQHeooLUF9RKcs-Y3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf, docs: document BPF_MAP_TYPE_ARRAY_OF_MAPS
- and *_HASH_OF_MAPS
-To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,182 +105,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 10, 2022 at 4:32 AM Donald Hunter <donald.hunter@gmail.com> wrote:
->
-> Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
-> including usage and examples.
->
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
+On Tue, 25 Oct 2022 15:12:09 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-subject suggestion (as it's pretty long):
+> [
+> At this point everything is done and I will start putting this work into a
+> git tree and into linux-next with the intention of sending it during the
+> next merge window.
+> 
+> I intend to focus the next several weeks on more intensive QA to look at
+> error flows and other things. Hopefully including syzkaller if I'm lucky
+> ]
 
-bpf, docs: document BPF_MAP_TYPE_{ARRAY,HASH}_OF_MAPS
+In case this one hasn't been reported yet (with IOMMUFD_VFIO_CONTAINER):
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.1.0-rc3+ #133 Tainted: G            E     
+------------------------------------------------------
+qemu-system-x86/1731 is trying to acquire lock:
+ffff90d3f5fe3e08 (&iopt->iova_rwsem){++++}-{3:3}, at: iopt_map_pages.part.0+0x85/0xe0 [iommufd]
+
+but task is already holding lock:
+ffff90d3f5fe3d18 (&iopt->domains_rwsem){.+.+}-{3:3}, at: iopt_map_pages.part.0+0x18/0xe0 [iommufd]
+
+which lock already depends on the new lock.
 
 
->  Documentation/bpf/map_of_maps.rst | 145 ++++++++++++++++++++++++++++++
->  1 file changed, 145 insertions(+)
->  create mode 100644 Documentation/bpf/map_of_maps.rst
->
-> diff --git a/Documentation/bpf/map_of_maps.rst b/Documentation/bpf/map_of_maps.rst
-> new file mode 100644
-> index 000000000000..16fcda8720de
-> --- /dev/null
-> +++ b/Documentation/bpf/map_of_maps.rst
-> @@ -0,0 +1,145 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +========================================================
-> +BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
-> +========================================================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` were
-> +     introduced in kernel version 4.12.
-> +
-> +``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` provide general
-> +purpose support for map in map storage. One level of nesting is supported, where
-> +an outer map contains instances of a single type of inner map, for example
-> +``array_of_maps->sock_map``.
-> +
-> +When creating an outer map, an inner map instance is used to initialize the
-> +metadata that the outer map holds about its inner maps. This inner map has a
-> +separate lifetime from the outer map and can be deleted after the outer map has
-> +been created.
-> +
-> +The outer map supports element update and delete from user space using the
-> +syscall API. A BPF program is only allowed to do element lookup in the outer
-> +map.
-> +
-> +.. note::
-> +   - Multi-level nesting is not supported.
-> +   - Any BPF map type can be used as an inner map, except for
-> +     ``BPF_MAP_TYPE_PROG_ARRAY``.
-> +   - A BPF program cannot update or delete outer map entries.
-> +
-> +Array of Maps
-> +-------------
-> +
-> +For ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` the key is an unsigned 32-bit integer index
-> +into the array. The array is a fixed size with `max_entries` elements that are
-> +zero initialized when created.
-> +
-> +Hash of Maps
-> +------------
-> +
-> +For ``BPF_MAP_TYPE_HASH_OF_MAPS`` the key type can be chosen when defining the
-> +map.
-> +
-> +The kernel is responsible for allocating and freeing key/value pairs, up
-> +to the max_entries limit that you specify. Hash maps use pre-allocation
-> +of hash table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be
-> +used to disable pre-allocation when it is too memory expensive.
-> +
-> +Usage
-> +=====
-> +
-> +.. c:function::
-> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +Inner maps can be retrieved using the ``bpf_map_lookup_elem()`` helper. This
-> +helper returns a pointer to the inner map, or ``NULL`` if no entry was found.
-> +
-> +Examples
-> +========
-> +
-> +Kernel BPF
-> +----------
-> +
-> +This snippet shows how to create an array of devmaps in a BPF program. Note that
-> +the outer array can only be modified from user space using the syscall API.
-> +
-> +.. code-block:: c
-> +
-> +    struct redirect_map {
-> +            __uint(type, BPF_MAP_TYPE_DEVMAP);
-> +            __uint(max_entries, 32);
-> +            __type(key, enum skb_drop_reason);
-> +            __type(value, __u64);
-> +    } redirect_map SEC(".maps");
-> +
-> +    struct {
-> +            __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-> +            __uint(max_entries, 2);
-> +            __uint(key_size, sizeof(int));
-> +            __uint(value_size, sizeof(int));
-> +            __array(values, struct redirect_map);
-> +    } outer_map SEC(".maps");
-> +
+the existing dependency chain (in reverse order) is:
 
-Let's also demonstrate libbpf's declarative way to initialize entries
-in outer map? See progs/test_btf_map_in_map.c under selftests/bpf for
-various examples.
+-> #1 (&iopt->domains_rwsem){.+.+}-{3:3}:
+       down_read+0x2d/0x40
+       iommufd_vfio_ioctl+0x2cc/0x640 [iommufd]
+       iommufd_fops_ioctl+0x14e/0x190 [iommufd]
+       __x64_sys_ioctl+0x8b/0xc0
+       do_syscall_64+0x3b/0x90
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-> +This snippet shows how to lookup an outer map to retrieve an inner map.
-> +
-> +.. code-block:: c
-> +
-> +    SEC("xdp")
-> +    int redirect_by_priority(struct xdp_md *ctx) {
-> +            struct bpf_map *devmap;
-> +            int action = XDP_PASS;
-> +            int index = 0;
-> +
-> +            devmap = bpf_map_lookup_elem(&outer_arr, &index);
-> +            if (!devmap)
-> +                    return XDP_PASS;
-> +
-> +            /* use inner devmap here */
-> +
-> +            return action;
-> +    }
-> +
-> +User Space
-> +----------
-> +
-> +This snippet shows how to create an array based outer map:
-> +
-> +.. code-block:: c
-> +
-> +    int create_outer_array(int inner_fd) {
-> +            int fd;
-> +            LIBBPF_OPTS(bpf_map_create_opts, opts);
-> +            opts.inner_map_fd = inner_fd;
+-> #0 (&iopt->iova_rwsem){++++}-{3:3}:
+       __lock_acquire+0x10dc/0x1da0
+       lock_acquire+0xc2/0x2d0
+       down_write+0x2b/0xd0
+       iopt_map_pages.part.0+0x85/0xe0 [iommufd]
+       iopt_map_user_pages+0x179/0x1d0 [iommufd]
+       iommufd_vfio_ioctl+0x216/0x640 [iommufd]
+       iommufd_fops_ioctl+0x14e/0x190 [iommufd]
+       __x64_sys_ioctl+0x8b/0xc0
+       do_syscall_64+0x3b/0x90
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-LIBBPF_OPTS(bpf_map_create_opts, opts, .inner_map_fd = inner_fd);
+other info that might help us debug this:
 
-> +            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS,
-> +                                "example_array",       /* name */
-> +                                sizeof(__u32),         /* key size */
-> +                                sizeof(__u32),         /* value size */
-> +                                256,                   /* max entries */
-> +                                &opts);                /* create opts */
-> +            return fd;
-> +    }
-> +
-> +
-> +This snippet shows how to add an inner map to an outer map:
-> +
-> +.. code-block:: c
-> +
-> +    int add_devmap(int outer_fd, int index, const char *name) {
-> +            int fd, ret;
-> +
-> +            fd = bpf_map_create(BPF_MAP_TYPE_DEVMAP, name,
-> +                                sizeof(__u32), sizeof(__u32), 256, NULL);
-> +            if (fd < 0)
-> +                    return fd;
-> +
-> +            ret = bpf_map_update_elem(outer_fd, &index, &fd, BPF_NOEXIST);
-> +            return ret;
-> +    }
-> +
-> +References
-> +==========
-> +
-> +- https://lore.kernel.org/netdev/20170322170035.923581-3-kafai@fb.com/
-> +- https://lore.kernel.org/netdev/20170322170035.923581-4-kafai@fb.com/
-> --
-> 2.35.1
->
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&iopt->domains_rwsem);
+                               lock(&iopt->iova_rwsem);
+                               lock(&iopt->domains_rwsem);
+  lock(&iopt->iova_rwsem);
+
+ *** DEADLOCK ***
+
+2 locks held by qemu-system-x86/1731:
+ #0: ffff90d3f5fe3c70 (&obj->destroy_rwsem){.+.+}-{3:3}, at: get_compat_ioas+0x2b/0x90 [iommufd]
+ #1: ffff90d3f5fe3d18 (&iopt->domains_rwsem){.+.+}-{3:3}, at: iopt_map_pages.part.0+0x18/0xe0 [iommufd]
+
+stack backtrace:
+CPU: 0 PID: 1731 Comm: qemu-system-x86 Tainted: G            E      6.1.0-rc3+ #133
+Hardware name: System manufacturer System Product Name/P8H67-M PRO, BIOS 3904 04/27/2013
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x56/0x73
+ check_noncircular+0xd6/0x100
+ ? lock_is_held_type+0xe2/0x140
+ __lock_acquire+0x10dc/0x1da0
+ lock_acquire+0xc2/0x2d0
+ ? iopt_map_pages.part.0+0x85/0xe0 [iommufd]
+ ? lock_release+0x137/0x2d0
+ down_write+0x2b/0xd0
+ ? iopt_map_pages.part.0+0x85/0xe0 [iommufd]
+ iopt_map_pages.part.0+0x85/0xe0 [iommufd]
+ iopt_map_user_pages+0x179/0x1d0 [iommufd]
+ iommufd_vfio_ioctl+0x216/0x640 [iommufd]
+ iommufd_fops_ioctl+0x14e/0x190 [iommufd]
+ __x64_sys_ioctl+0x8b/0xc0
+ do_syscall_64+0x3b/0x90
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fd1eee7c17b
+Code: 0f 1e fa 48 8b 05 1d ad 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ed ac 0c 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffd9787b9a8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd1eee7c17b
+RDX: 00007ffd9787b9e0 RSI: 0000000000003b71 RDI: 000000000000001c
+RBP: 00007ffd9787ba10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000000c0000 R11: 0000000000000206 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
