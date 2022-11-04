@@ -2,75 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3165619FB5
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 19:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C076261A030
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 19:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbiKDSWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 14:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
+        id S231812AbiKDSmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 14:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbiKDSWL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 14:22:11 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB54145A1A
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 11:22:00 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id 7so2994028ilg.11
-        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 11:22:00 -0700 (PDT)
+        with ESMTP id S231841AbiKDSmQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 14:42:16 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F16B41995
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 11:42:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id n12so15470225eja.11
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 11:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K1k4WN2r7t/52mL+ugQRSlpNfDTjZcSRsmfM/st8EfQ=;
-        b=NlOjSeut/Chjx9weuZnDn0wAec7Z5R9jiU7mFJRiMWsKCli0GmxJHUCin/Oh+0s/0k
-         bDnY42jcAwS3M1Sa49AL8vAviZi1gszjv+ollhC317fRIvcrtXznA35Fy2RLkWe061J0
-         +FZryw8HiQVOvM6prKMFJVSez5nyYshL2L4TWOpyWXC57f15w1BkqMHiJapPoViSiDM4
-         1TMDTPYMWSFUOacJyaITm/BxSs2hYg3t4SHZrkLnsjUMmCc1LOQUJSvFKYej1POjAG2t
-         RSUqKuk3cX6pAsgnWoTiGqQndg5t26yTCwkrmKl9lR45vXkBhUm5R1+KBTXN/pwfA5Fk
-         tqSA==
+        bh=RT+Qd1ObW4o+XeJSHqGJUz8gFH7LsChhLbQVi31XESE=;
+        b=QtUak57pW8BIaAE6AMcchhg6GBei/KfvXv5xgtTzlxW+qw1jWs42GLqz0DL7ZwYY3k
+         8PXnco7Thz0Ir40khtsA+RlY/zY01ffBeBCwIj3xBwqf8y6Aw/3iZt2QXgDIrvanFxTc
+         6ef6AFyhxAZVeItQrL3uYwqydnvmzFKJEDzB5WJy504do7n9snZInthx3KnAIwWFoJC+
+         jHHJgRkBQldswMGBBGrDKkY2YZOv1yfrGdX9iM0FZAm7rebkORdQA9u7wBlFBD0VM2Dy
+         DXFmMUuq47daRVD6SGW1uMD0BW/UYYwcS15+nYaHjStd9duhrlkixkJdkJbBhvU7K61t
+         2x5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K1k4WN2r7t/52mL+ugQRSlpNfDTjZcSRsmfM/st8EfQ=;
-        b=JdQcOCd5yeu4Z6IXUXcFIoRITjrjWFRMNNcqPc7D09DsVKQMM9WITjDy+prMDpgz1o
-         jJA8Hjfs/arQI/VyGkY09Bp2HMc0o9v8jLE1Yi2iL1FIc4sa351/tMi3Kh5Fy/RmnibB
-         04TRAGHdTROPi17csdTf6vhiskayMs00GeAag4vMexokVxeQdzSdmWOH+i2lC0+G0UZV
-         AP4Ta3npfJ51v/HcroJHOb1pqxX01tVZ6OakbQ8IvmFJDT2zCBDOGYBn2FYn9F+jyTBx
-         /ihGgPL7lNMrPe0Obk5QKeKESQ1ahOjf2tniTVxX+q102StXpIIoITVgqfGTykDZUItZ
-         L/0w==
-X-Gm-Message-State: ACrzQf0c5t646i5b35FppgLNgyDHRIuLW4wx/yDidnZMVI8y/0Cuqrqi
-        JokWYMeW2b3I/U5h1pPRltT9B7xyRZt/HuWCStxRPEi9yyHhdA==
-X-Google-Smtp-Source: AMsMyM70/MrBu8d7nQRFy0qecyRBPBOyVm88lmIP3GwrqmytkGF4i+QrzWrr4vvTceF6CORiXQSlRTFz/GZDSOsUdf4=
-X-Received: by 2002:a92:d3ca:0:b0:2ff:fb6a:5c38 with SMTP id
- c10-20020a92d3ca000000b002fffb6a5c38mr22312218ilh.259.1667586120229; Fri, 04
- Nov 2022 11:22:00 -0700 (PDT)
+        bh=RT+Qd1ObW4o+XeJSHqGJUz8gFH7LsChhLbQVi31XESE=;
+        b=AGnUp/ddQPHiVnbVoIp9r6M5gGvq/XE+01IKRrmhXJi9Y/VIT08uaf+Ac1CtEtSCJ8
+         42S4rzCXqli+XcNYChAAiLTYxABfziHkbN456i+ox5gJAtyvg6mVtTsqibqg4wTlWc4O
+         L33Ks/Bbd1s+EI3GHeLehFXhrJLG/93ErAX4fR+dfCxVxf6SUgxikEN/Ray3Nnz+S3qx
+         EE3ku/o26RbRAUcpWrFredsiXbmyOGKTNUek2+56sObwL4QJ03a4xu6xPu09GOgwhvXJ
+         8Yu5NmL7oAEfgyLLk4B9z9EksTIApEGxSilWSpIgTnlh/BHg+BstCyYa89kvQbf6uMsT
+         M01w==
+X-Gm-Message-State: ACrzQf16M2Z5lcvKneB+3TtqRaFZvin1CpLBduiBmeAzXEhg16Ovs/CC
+        hgvadSh+rVjau1mHQ3VR+IBzBjUdLBJwGDIxpM8=
+X-Google-Smtp-Source: AMsMyM5yGyj0JnS60soHMnKJewZ6bt+kTqftZXnZ5py0hlm7CsOv8Rmh62eoILUn+DT3v08sYKFPtYy54otmC2DVNTw=
+X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
+ sc36-20020a1709078a2400b00795bb7d643bmr36621489ejc.115.1667587325265; Fri, 04
+ Nov 2022 11:42:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-11-sdf@google.com>
- <20221104143547.3575615-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20221104143547.3575615-1-alexandr.lobakin@intel.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 4 Nov 2022 11:21:47 -0700
-Message-ID: <CAKH8qBuaJ1usZEirN9=ReugusS8t_=Mn0LoFdy93iOYpHs2+Yg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 10/14] ice: Support rx timestamp metadata for xdp
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
+References: <20221103033430.2611623-1-eddyz87@gmail.com> <20221103033430.2611623-2-eddyz87@gmail.com>
+In-Reply-To: <20221103033430.2611623-2-eddyz87@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Nov 2022 11:41:53 -0700
+Message-ID: <CAEf4BzYDuixeeFxVOntJWkCh_owZnMyVdAUSFLX3_Zf=VrtjEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] libbpf: hashmap interface update to
+ uintptr_t -> uintptr_t
+To:     Eduard Zingerman <eddyz87@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        alan.maguire@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,120 +69,118 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 7:38 AM Alexander Lobakin
-<alexandr.lobakin@intel.com> wrote:
+On Wed, Nov 2, 2022 at 8:35 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> From: Stanislav Fomichev <sdf@google.com>
-> Date: Thu,3 Nov 2022 20:25:28 -0700
+> An update for libbpf's hashmap interface from void* -> void* to
+> uintptr_t -> uintptr_t. Removes / simplifies some type casts when
+> hashmap keys or values are 32-bit integers. In libbpf hashmap is more
+> often used with integral keys / values rather than with pointer keys /
+> values.
 >
-> > COMPILE-TESTED ONLY!
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: David Ahern <dsahern@gmail.com>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> > Cc: Maryam Tahhan <mtahhan@redhat.com>
-> > Cc: xdp-hints@xdp-project.net
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice.h      |  5 ++
-> >  drivers/net/ethernet/intel/ice/ice_main.c |  1 +
-> >  drivers/net/ethernet/intel/ice/ice_txrx.c | 75 +++++++++++++++++++++++
-> >  3 files changed, 81 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-> > index f88ee051e71c..c51a392d64a4 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice.h
-> > @@ -925,6 +925,11 @@ int ice_open_internal(struct net_device *netdev);
-> >  int ice_stop(struct net_device *netdev);
-> >  void ice_service_task_schedule(struct ice_pf *pf);
-> >
-> > +struct bpf_insn;
-> > +struct bpf_patch;
-> > +void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
-> > +                   struct bpf_patch *patch);
-> > +
-> >  /**
-> >   * ice_set_rdma_cap - enable RDMA support
-> >   * @pf: PF struct
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> > index 1f27dc20b4f1..8ddc6851ef86 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> > @@ -9109,4 +9109,5 @@ static const struct net_device_ops ice_netdev_ops = {
-> >       .ndo_xdp_xmit = ice_xdp_xmit,
-> >       .ndo_xsk_wakeup = ice_xsk_wakeup,
-> >       .ndo_get_devlink_port = ice_get_devlink_port,
-> > +     .ndo_unroll_kfunc = ice_unroll_kfunc,
-> >  };
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > index 1b6afa168501..e9b5e883753e 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > @@ -7,6 +7,7 @@
-> >  #include <linux/netdevice.h>
-> >  #include <linux/prefetch.h>
-> >  #include <linux/bpf_trace.h>
-> > +#include <linux/bpf_patch.h>
-> >  #include <net/dsfield.h>
-> >  #include <net/mpls.h>
-> >  #include <net/xdp.h>
-> > @@ -1098,8 +1099,80 @@ ice_is_non_eop(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc)
-> >
-> >  struct ice_xdp_buff {
-> >       struct xdp_buff xdp;
-> > +     struct ice_rx_ring *rx_ring;
-> > +     union ice_32b_rx_flex_desc *rx_desc;
-> >  };
-> >
-> > +void ice_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
-> > +                   struct bpf_patch *patch)
-> > +{
-> > +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_EXPORT_TO_SKB)) {
-> > +             return xdp_metadata_export_to_skb(prog, patch);
+> This is a follow up for [1].
 >
-> Hey,
+> [1] https://lore.kernel.org/bpf/af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com/T/#m65b28f1d6d969fcd318b556db6a3ad499a42607d
 >
-> FYI, our team wants to write a follow-up patch with ice support
-> added, not like a draft, more of a mature code. I'm thinking of
-> calling ice C function which would process Rx descriptors from
-> that BPF code from the unrolling callback -- otherwise,
-> implementing a couple hundred C code lines from ice_txrx_lib.c
-> would be a bit too much :D
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
 
-Sounds good! I would gladly drop all/most of the driver changes for
-the non-rfc posting :-)
-I'll probably have a mlx4 one because there is a chance I might find
-HW, but the rest I'll drop most likely.
-(they are here to show how the driver changes might look like, hence
-compile-tested only)
+I think this is a pretty clear win. Keys are almost always (if not
+always) integers, so this is very natural. And pointer values are
+relatively infrequent and casts there look quite clean anyways (there
+was a place where you were casting to some long-named struct, in C we
+can cast to void * and rely on compiler to coalesce pointer types, so
+even such casts can be short).
 
-Btw, does it make sense to have some small xsk selftest binary that
-can be used to test the metadata with the real device?
-The one I'm having right now depends on veth/namespaces; having a
-similar one for the real hardware to qualify it sounds useful?
-Something simple that sets up af_xdp for all queues, divers some
-traffic, and exposes to the userspace consumer all the info about
-frame metadata...
-Or maybe there is something I can reuse already?
+But you forgot to update perf, so it's build is badly broken with
+these changes, please convert perf as well. Also cc Arnaldo
+(acme@kernel.org) on this patch set, please.
+
+>  tools/bpf/bpftool/btf.c    | 23 ++++++++------------
+>  tools/bpf/bpftool/common.c | 10 ++++-----
+>  tools/bpf/bpftool/gen.c    | 19 +++++++----------
+>  tools/bpf/bpftool/link.c   |  8 +++----
+>  tools/bpf/bpftool/main.h   |  4 ++--
+>  tools/bpf/bpftool/map.c    |  8 +++----
+>  tools/bpf/bpftool/pids.c   | 16 +++++++-------
+>  tools/bpf/bpftool/prog.c   |  8 +++----
+>  tools/lib/bpf/btf.c        | 43 +++++++++++++++++++-------------------
+>  tools/lib/bpf/btf_dump.c   | 16 +++++++-------
+>  tools/lib/bpf/hashmap.c    | 16 +++++++-------
+>  tools/lib/bpf/hashmap.h    | 35 ++++++++++++++++---------------
+>  tools/lib/bpf/libbpf.c     | 18 ++++++----------
+>  tools/lib/bpf/strset.c     | 24 ++++++++++-----------
+>  tools/lib/bpf/usdt.c       | 31 +++++++++++++--------------
+>  15 files changed, 127 insertions(+), 152 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 68a70ac03c80..ccb3b8b0378b 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -815,8 +815,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
+>                 if (!btf_id)
+>                         continue;
+>
+> -               err = hashmap__append(tab, u32_as_hash_field(btf_id),
+> -                                     u32_as_hash_field(id));
+> +               err = hashmap__append(tab, btf_id, id);
+>                 if (err) {
+>                         p_err("failed to append entry to hashmap for BTF ID %u, object ID %u: %s",
+>                               btf_id, id, strerror(-err));
+> @@ -875,17 +874,15 @@ show_btf_plain(struct bpf_btf_info *info, int fd,
+>         printf("size %uB", info->btf_size);
+>
+>         n = 0;
+> -       hashmap__for_each_key_entry(btf_prog_table, entry,
+> -                                   u32_as_hash_field(info->id)) {
+> +       hashmap__for_each_key_entry(btf_prog_table, entry, info->id) {
+>                 printf("%s%u", n++ == 0 ? "  prog_ids " : ",",
+> -                      hash_field_as_u32(entry->value));
+> +                      (__u32)entry->value);
+
+so if we make key/value as long, we won't need such casts, we can just
+do %lu in printfs
+
+I still prefer long vs uintptr_t, and this is one reason for this. I
+don't understand how uintptr_t simplifies anything with 32-bit
+integers as uintptr_t is 64-bit on 64-architecture, so you'd still
+have to handle 32-to-64 conversions.
+
+If you are worried about unsigned vs signed conversions, I don't think
+it's a problem:
+
+$ cat t.c
+#include <stdio.h>
+
+int main(){
+        int x = -2;
+        int lx = (long)x;
+        int xx = (int)lx;
+        unsigned ux = 3000000000;
+        long ulx = (long)ux;
+        unsigned ulxx = (unsigned)ulx;
+
+        printf("%d %x %ld %lx %d %x\n", x, x, lx, lx, xx, xx);
+        printf("%u %x %ld %lx %u %x\n", ux, ux, ulx, ulx, ulxx, ulxx);
+}
+$ cc t.c
+$ ./a.out
+-2 fffffffe 4294967294 fffffffe -2 fffffffe
+3000000000 b2d05e00 3000000000 b2d05e00 3000000000 b2d05e00
 
 
-> > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-> > +             /* return true; */
-> > +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
-> > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
+So please clarify what won't work.
+
+>         }
 >
-> [...]
+>         n = 0;
+> -       hashmap__for_each_key_entry(btf_map_table, entry,
+> -                                   u32_as_hash_field(info->id)) {
+> +       hashmap__for_each_key_entry(btf_map_table, entry, info->id) {
+>                 printf("%s%u", n++ == 0 ? "  map_ids " : ",",
+> -                      hash_field_as_u32(entry->value));
+> +                      (__u32)entry->value);
+>         }
 >
-> > --
-> > 2.38.1.431.g37b22c650d-goog
->
-> Thanks,
-> Olek
+>         emit_obj_refs_plain(refs_table, info->id, "\n\tpids ");
+
+[...]
