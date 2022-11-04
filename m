@@ -2,72 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D7C619C55
-	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 16:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F64B619C5C
+	for <lists+bpf@lfdr.de>; Fri,  4 Nov 2022 16:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbiKDP65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 11:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
+        id S231948AbiKDP7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 11:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbiKDP6t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 11:58:49 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC7431DFA
-        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 08:58:47 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A4FOAbK029158;
-        Fri, 4 Nov 2022 15:58:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2022-7-12;
- bh=adHgz4kVbI901SIIOaK8yYmP+d+eeCOJ7yXT4FKlmrA=;
- b=W7J7gfghc0A0N6DXW5hv1VyuaTiMPZVkn8Be9bxzfPwxMCO+cBsywGWAaxGdVaNEBsWb
- 2ixIK7Qhd4wqRuqpcEWSY8tcD8raSBtv4gdhD1hYxlL1wDP/1djXtVJgBcYrXCVD8JnC
- Gxy39Izd4iRThxU2JBxkTHdWfMXi/L+dd9Ce/MWAMAlHSUqO/aA1XW/S+uIf8YNrzlay
- oM27ZYGgl63jg891o0Ux9eBTT7sPK06+pA6cvdjLp9l1G5+IytB16Gwsa4fzkdrdtz/o
- ETLa3zON/o2TySyBQ6f3UKEj8eJ9IUYrc1xCqhT8r1Xa0MDRZvW8S/R25rMPhTFNuHbz eA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgv2ar3pc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Nov 2022 15:58:27 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A4EF5qg023389;
-        Fri, 4 Nov 2022 15:58:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kmpwnpedf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Nov 2022 15:58:26 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A4FwITm025431;
-        Fri, 4 Nov 2022 15:58:26 GMT
-Received: from myrouter.uk.oracle.com (dhcp-10-175-178-135.vpn.oracle.com [10.175.178.135])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3kmpwnpe7w-3;
-        Fri, 04 Nov 2022 15:58:25 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        daniel@iogearbox.net
-Cc:     song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, masahiroy@kernel.org, michal.lkml@markovi.net,
-        ndesaulniers@google.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC bpf-next 2/2] bpf: allow opt-out from using split BTF for modules
-Date:   Fri,  4 Nov 2022 15:58:07 +0000
-Message-Id: <1667577487-9162-3-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1667577487-9162-1-git-send-email-alan.maguire@oracle.com>
-References: <1667577487-9162-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-04_11,2022-11-03_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
- definitions=main-2211040104
-X-Proofpoint-ORIG-GUID: 89Ov_aqinCCPWeaWAJc8bulKoF5PAQjH
-X-Proofpoint-GUID: 89Ov_aqinCCPWeaWAJc8bulKoF5PAQjH
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S232086AbiKDP73 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 11:59:29 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D723054D
+        for <bpf@vger.kernel.org>; Fri,  4 Nov 2022 08:59:27 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id i21so8226329edj.10
+        for <bpf@vger.kernel.org>; Fri, 04 Nov 2022 08:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zs7UKNzIY/itGlp6zdkxW4FR/Xd6w9KeYRagvnFqMRg=;
+        b=InLNXczhjBthFo1/HW3TxLlo7RJv2PItQ6YEgHsVMtYs4JiLWTILwpwhh3itax8M71
+         PJrXcGHiIn+LyWq34A4MeL47HCc0Q2M5sxjNB/GXlhumHuTvWf0WOfp27+N8aDZGbUeC
+         xKY8ZMob2i35ssiLiOUsVX6d5JLie+rlDPxrgDAtnXH/+nZCalr7/E8qKR7bYxoRr9pr
+         4H9aT9X8FpnQjxJJKv2cqkHh38oqYiovFQ+rUHCOoReJvx7NpG933rNrPZDQidQgc9Ql
+         eKvvJ7gjyFg/0B6JHZ9CLskHzWZDKkgXBuB0Gw2ItCoJ2Z/nVTD+Z+sYHHKX7AsDjG4a
+         pH3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zs7UKNzIY/itGlp6zdkxW4FR/Xd6w9KeYRagvnFqMRg=;
+        b=UhF6hN+X8UxjT6jqUGesqxp+cbYdvpBbWHdO5W2RRAxyLWbAT/JKRytkO6Sp+B+kxY
+         NhSN/oJHsgI7OLO0/vrOMgJj0+G5DX3km/kLEm/VES6yRcSXxi9CN3D96PRjVxJ/6Vj8
+         TV4jaOQLrkSIF7fLQHHTKUd3fL4sP1wkAItsMng/87d/XAnLMowuvwHRv0isWHyIuiBz
+         klTGCCr1g3pYaqG+6EO2EiBk0qp603N7x0zDQDcU88oEhgJSP1XDc97YuqM+iq6Vz4NQ
+         RqrAeLMw/xpcaz8kzLummjUr+KTA6pAQJdWvBHwVgM3ahLfd3PkeCw4sQqh0qqR6EL5g
+         6opA==
+X-Gm-Message-State: ACrzQf20laj1Sfzo2zEXu550vzfykXmxEGd4eWCaDacCksz4bNp77hxk
+        i0mtgRch/s8AV+7kzdw7AfOviUgl2jYWjCjFjMk=
+X-Google-Smtp-Source: AMsMyM4Twt1W9RzwKiWYvewP4DHGjRyEHt6VKEIyTyznZdCK/J24nrxXbvEnUT8mIZ002UcgBFDzSeLB10zqdhMrDp0=
+X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
+ ev6-20020a056402540600b004521560f9d4mr36788198edb.333.1667577565715; Fri, 04
+ Nov 2022 08:59:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221104051644.nogfilmnjred2dt2@altlinux.org> <CACYkzJ4AeNEbag2EZo4+Mpn6NM-ELvKUkSKVDHdoNFHcFOygQA@mail.gmail.com>
+In-Reply-To: <CACYkzJ4AeNEbag2EZo4+Mpn6NM-ELvKUkSKVDHdoNFHcFOygQA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 4 Nov 2022 08:59:14 -0700
+Message-ID: <CAADnVQKUeyDwdJ9AZvbxCCVc6hyvm1wdBRg4+3RHx5u5o1wLMA@mail.gmail.com>
+Subject: Re: bpf: Is it possible to move .BTF data into a module
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Vitaly Chikunov <vt@altlinux.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,45 +69,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-By having a BTF_BASE variable defaulting to using vmlinux
-as base BTF, we allow module builders to build standalone
-BTF such that it is generated independently and not
-de-duplicated with core vmlinux BTF.  This allows such
-modules to be more resilient to changes in vmlinux BTF
-if they occur, as would happen if a change resulted in
-a different vmlinux BTF id mapping.
+On Fri, Nov 4, 2022 at 7:35 AM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Fri, Nov 4, 2022 at 6:16 AM Vitaly Chikunov <vt@altlinux.org> wrote:
+> >
+> > Hi,
+> >
+> > We need to reduce kernel size for aarch64, because it does not fit into
+> > U-Boot loader on Raspberry Pi (due to it having fdt_addr_r=0x02600000)
+> > and one of big ELF sections in vmlinuz is .BTF taking around 5MB.
+> > Compression does not help because on aarch64 kernels are
+> > uncompressed[1].
+> >
+> > Is it theoretically possible to make sysfs_btf a module?
+>
+> I think so, it may need some refactoring and changes
+> but, yeah, in theory, the module could ship with the
+> kernel's BTF information which can then be initialized by the module.
+>
+> Curious to see what others think as well.
 
-Opt-out of split BTF is done via
-
- make BTF_BASE= M=path/2/module
-
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- scripts/Makefile.modfinal | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 25bedd8..7294918 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -30,6 +30,8 @@ quiet_cmd_cc_o_c = CC [M]  $@
- 
- ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
- 
-+BTF_BASE := --btf_base vmlinux
-+
- quiet_cmd_ld_ko_o = LD [M]  $@
-       cmd_ld_ko_o +=							\
- 	$(LD) -r $(KBUILD_LDFLAGS)					\
-@@ -44,7 +46,7 @@ quiet_cmd_btf_ko = BTF [M] $@
- 	elif [ -n "$(CONFIG_RUST)" ] && $(srctree)/scripts/is_rust_module.sh $@; then 		\
- 		printf "Skipping BTF generation for %s because it's a Rust module\n" $@ 1>&2; \
- 	else								\
--		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
-+		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(BTF_BASE) $@; \
- 		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
- 	fi;
- 
--- 
-1.8.3.1
-
+Yeah. That request came up a few times.
+Whoever has cycles to work on it... please go ahead :)
