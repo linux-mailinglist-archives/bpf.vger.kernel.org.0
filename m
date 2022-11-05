@@ -2,107 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A05061A646
-	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 01:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1024561A649
+	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 01:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbiKEAGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Nov 2022 20:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
+        id S229461AbiKEAHg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Nov 2022 20:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiKEAGM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Nov 2022 20:06:12 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0203C31DFD;
-        Fri,  4 Nov 2022 17:06:09 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id r61-20020a17090a43c300b00212f4e9cccdso9591956pjg.5;
-        Fri, 04 Nov 2022 17:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZqfxDZq07uNhmpz8OtVuHc6V3X9DHW6/pxboCfsjhxw=;
-        b=odrF02VrcCdcaeE2buh4ccbEOSosqfyqnVmsxzwL4kHlOwy45j4cbgTiCr/h6ITopP
-         U0klm94tB1IyJOl1KJ4iM8xujBKGcXaPP+zWxfdGTBXIgI9k9mySeRbtylSGwzvDJS6m
-         /pW9hvxIb76r2FTqgv4e5WkLOiVA6ITVYTvG4g09eTlqkhjJdtuOp3YFfc7yHt3lugfk
-         fBqFocrWlbHy4UnixDHl3Tp3OCrp+W++bT1XareYP+4IX3NcdBppKEWq4+OjWxH/gXvx
-         JXeEIfSpFqDlZ0QeX44fe0moMC3eB4y5d3pEOjqM6Bowhy8CLsfaJJC3JrDO7iT98en9
-         Q3Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZqfxDZq07uNhmpz8OtVuHc6V3X9DHW6/pxboCfsjhxw=;
-        b=6GHI1F31CwDLXxIditZ5KD2yK6szjiYXKjJHAsbbqubO0TKzm9ujz1MRzQFTFvXDNb
-         +uRImwAt3TKTFrp6HrxUedgjj/ClPl+BrbLWEQOfEIrvfZwJzvMVkKbVgANRH1lbmZ+B
-         4fwWraVubYlC2dEetn9DA6qVRJpukUTNGQPna7udBNuwf3S6bvclttU+PBHyzFXUqgsR
-         KkJCx5FxmZiqSAAHqaMuSErLcezvMHx38F49hJX5PJDmxrUswG/PLwdfvuWH8owM7dvW
-         cjuvIhckYQOhX0+gu5WNEPXV8Qqdr7m/hu6LYHRyMmvQeTfdDtC7ehTeQ78l81/X8t4H
-         Sfgg==
-X-Gm-Message-State: ACrzQf0Zon1mYvDt/ROxQV9nXFMZJlMXPuOY4HX6i8z3fkG5YfmWc/ZH
-        +WP7OL4s0a3RJdopztMUpqo=
-X-Google-Smtp-Source: AMsMyM40brYimWNa5DlF7NB355tZrwTWkssHW5YPKdjXorcfhZf7GER2T/a5ER+VO+PwcyiGMrCpIA==
-X-Received: by 2002:a17:90a:1382:b0:213:c2a7:5ad with SMTP id i2-20020a17090a138200b00213c2a705admr34311937pja.193.1667606749249;
-        Fri, 04 Nov 2022 17:05:49 -0700 (PDT)
-Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902684400b0017808db132bsm303972pln.137.2022.11.04.17.05.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Nov 2022 17:05:48 -0700 (PDT)
-Message-ID: <1c8a0445-ee7d-991a-2ec8-cdc29204c68a@gmail.com>
-Date:   Sat, 5 Nov 2022 09:05:42 +0900
+        with ESMTP id S229450AbiKEAHg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Nov 2022 20:07:36 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EDA317F8;
+        Fri,  4 Nov 2022 17:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667606855; x=1699142855;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SK2sI5aDoV9/etevfTVRBjvDW9ZuCS66qUATN3sgJBw=;
+  b=ayEmehNwuQ/zjz1ydkXJ7oAEdaPl42r03VNwDT7lLUrh21bhAA46/DbQ
+   0YLA0aRb1FjWYgpb7tJmwiz8i3Xud/6tgHQFfN0XgRX970+dsMXfvCQlX
+   poPUIRZXR+yEPpvr1xFh3R9c/UqHkD3WyPa17HmkUzNCAMX2hC6+YpKQy
+   ayNN+yKvjMwBdnddCX0K6jH7VoRaFHsa1O/RK/sK6ZpEEm7AbNk05ZhcY
+   1xtW3Vdg3u3X4N6/74dkes1/vQLezkGF4YVkFbDdxtee3DSii9GwKeUfQ
+   a7E6ncv8pgiDv3TKNhSCPHXXJ6IfstaUVLV6V5xQHBF6GTV6TAUywMu/z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10521"; a="293432643"
+X-IronPort-AV: E=Sophos;i="5.96,139,1665471600"; 
+   d="scan'208";a="293432643"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2022 17:07:34 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10521"; a="760501944"
+X-IronPort-AV: E=Sophos;i="5.96,139,1665471600"; 
+   d="scan'208";a="760501944"
+Received: from ztao-mobl.ccr.corp.intel.com (HELO [10.254.213.180]) ([10.254.213.180])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2022 17:07:26 -0700
+Message-ID: <2d2b467b-da07-2b96-27c9-569b727dd8c9@linux.intel.com>
+Date:   Sat, 5 Nov 2022 08:07:24 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bagasdotme@gmail.com,
-        bpf@vger.kernel.org, corbet@lwn.net, daniel@iogearbox.net,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        memxor@gmail.com, sdf@google.com, song@kernel.org,
-        void@manifault.com, yhs@fb.com, Akira Yokosawa <akiyks@gmail.com>
-References: <CAEf4Bzau0QuBiNsXoMq_QRV+_MTyodQsvW7O2kbScgmVmbuXkQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] Documentation: bpf: escape underscore in BPF
- type name prefix
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v3 14/15] iommufd: vfio container FD ioctl compatibility
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+References: <14-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
 Content-Language: en-US
-From:   Akira Yokosawa <akiyks@gmail.com>
-In-Reply-To: <CAEf4Bzau0QuBiNsXoMq_QRV+_MTyodQsvW7O2kbScgmVmbuXkQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <14-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 2022/10/26 2:12, Jason Gunthorpe wrote:
+> +static int iommufd_fill_cap_iova(struct iommufd_ioas *ioas,
+> +				 struct vfio_info_cap_header __user *cur,
+> +				 size_t avail)
+> +{
+> +	struct vfio_iommu_type1_info_cap_iova_range __user *ucap_iovas =
+> +		container_of(cur,
+> +			     struct vfio_iommu_type1_info_cap_iova_range __user,
+> +			     header);
+> +	struct vfio_iommu_type1_info_cap_iova_range cap_iovas = {
+> +		.header = {
+> +			.id = VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE,
+> +			.version = 1,
+> +		},
+> +	};
+> +	struct interval_tree_span_iter span;
 
-On Fri, 4 Nov 2022 16:11:10 -0700, Andrii Nakryiko wrote:
-[...]
-> Applied, thanks. But would the other similar case be problematic?
-> 
-> $ rg 'bpf_\b'
-> bpf_design_QA.rst
-> 329:NOTE: BPF subsystem specially reserves the 'bpf_' prefix for type names, in
-> 331:avoid defining types with 'bpf_' prefix to not be broken in future
-> releases. In
-> 333:with 'bpf_' prefix.
-> 
-> libbpf/libbpf_naming_convention.rst
-> 12:following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``btf_dump_``,
-> 59:described above should have ``libbpf_`` prefix, e.g.
+Intel 0day robot reported:
 
-Those other cases are all inside double back quotes and
-construct "inline literal" strings. So they are fine.
+commit: 954c5e0297d664c7f46c628b3151567b53afe153 [14/15] iommufd: vfio 
+container FD ioctl compatibility
+config: m68k-randconfig-s053-20221104 (attached as .config)
+compiler: m68k-linux-gcc (GCC) 12.1.0
+reproduce:
+         wget 
+https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+-O ~/bin/make.cross
+         chmod +x ~/bin/make.cross
+         # apt-get install sparse
+         # sparse version: v0.6.4-39-gce1a6720-dirty
+         git remote add internal-blu2-usb 
+git://bee.sh.intel.com/git/blu2/usb.git
+         git fetch --no-tags internal-blu2-usb iommu/iommufd/v3
+         git checkout 954c5e0297d664c7f46c628b3151567b53afe153
+         # save the config file
+         mkdir build_dir && cp config build_dir/.config
+         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross 
+C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=m68k 
+SHELL=/bin/bash drivers/iommu/iommufd/
 
-Which means Bagas could have used the "inline literal" approach
-instead.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-Regards,
-Akira
+sparse warnings: (new ones prefixed by >>)
+ >> drivers/iommu/iommufd/vfio_compat.c:294:17: sparse: sparse: cast 
+removes address space '__user' of expression
 
+vim +/__user +294 drivers/iommu/iommufd/vfio_compat.c
+
+    288	
+    289	static int iommufd_fill_cap_iova(struct iommufd_ioas *ioas,
+    290					 struct vfio_info_cap_header __user *cur,
+    291					 size_t avail)
+    292	{
+    293		struct vfio_iommu_type1_info_cap_iova_range __user *ucap_iovas =
+  > 294			container_of(cur,
+    295				     struct vfio_iommu_type1_info_cap_iova_range __user,
+    296				     header);
+    297		struct vfio_iommu_type1_info_cap_iova_range cap_iovas = {
+    298			.header = {
+    299				.id = VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE,
+    300				.version = 1,
+    301			},
+    302		};
+    303		struct interval_tree_span_iter span;
+    304	
+    305		interval_tree_for_each_span(&span, &ioas->iopt.reserved_itree, 0,
+    306					    ULONG_MAX) {
+    307			struct vfio_iova_range range;
+    308	
+    309			if (!span.is_hole)
+    310				continue;
+    311			range.start = span.start_hole;
+    312			range.end = span.last_hole;
+    313			if (avail >= struct_size(&cap_iovas, iova_ranges,
+    314						 cap_iovas.nr_iovas + 1) &&
+    315			    copy_to_user(&ucap_iovas->iova_ranges[cap_iovas.nr_iovas],
+    316					 &range, sizeof(range)))
+    317				return -EFAULT;
+    318			cap_iovas.nr_iovas++;
+    319		}
+    320		if (avail >= struct_size(&cap_iovas, iova_ranges, 
+cap_iovas.nr_iovas) &&
+    321		    copy_to_user(ucap_iovas, &cap_iovas, sizeof(cap_iovas)))
+    322			return -EFAULT;
+    323		return struct_size(&cap_iovas, iova_ranges, cap_iovas.nr_iovas);
+    324	}
+    325	
+
+Best regards,
+baolu
