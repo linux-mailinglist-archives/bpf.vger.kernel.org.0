@@ -2,84 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2766961DBF6
-	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 17:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D667961DD20
+	for <lists+bpf@lfdr.de>; Sat,  5 Nov 2022 19:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbiKEQUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Nov 2022 12:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S229786AbiKESQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Nov 2022 14:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbiKEQUh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Nov 2022 12:20:37 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AC61A3AC;
-        Sat,  5 Nov 2022 09:20:36 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v17so11650529edc.8;
-        Sat, 05 Nov 2022 09:20:36 -0700 (PDT)
+        with ESMTP id S229533AbiKESQQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Nov 2022 14:16:16 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D302DDEED
+        for <bpf@vger.kernel.org>; Sat,  5 Nov 2022 11:16:15 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id 13so20841222ejn.3
+        for <bpf@vger.kernel.org>; Sat, 05 Nov 2022 11:16:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=srQ3lTh3ov/uW1CynRa0KjN77ReKbgwHiOujQ3nMVGI=;
-        b=P0kLwQwYClIZzoWMQF0niGOEZY4ILluvbFpoIzNEfGSiaBf5YEbKrtilG8yOZt23rS
-         A9Vn4TNmkIG8F/Z4HcJKJDpzol0995YgFK9jc/y9B+yZZWZv3sE6Q+tDvgndaqqA8tUa
-         GBpk7naq0m1IqFdv0pbGxcfdRsz4I9XaPo0zt2YVWaQFjQ16FTBxaHdpFw/y0izCcaEf
-         oSaYqWxONukSWy28TM0SRTQyooBPLQeQKL1DxvUuvEI00eHM33jFhETT2xm6tzTXGmwY
-         O1RaLVhp/FW7yx2zx0x9KAWRtwguiW83/3ZEaOUVaVPx4HoKCop39fY8BUTvITaxccsp
-         st1w==
+        bh=OrAhEo8k47oe3cpcGfkIxGEi16aTTzYY4ICC0og8xDU=;
+        b=CaQpM895LX/CyiZEz8fYQa8ZcFQOCcv6uOVroKDEpkN4B9HC8GiRuM7snX0l1l4JL5
+         0iy4ibZ5MjaelPIHQ/XvBNcNn4ldQzTeYq9sDg/HjKNAWmOj0qi2PxjX0z3tyZI0edyj
+         9REzReYLmsOyoxYMmqN7vUygUF/KFvbfPDJ7bsJSxVaFBdCraPElftR/MecJZR2pg8fu
+         37HFBZCXTaVq3RCXAmukIUa2T2N5o/iti1A3UGvqlfHIKZcA1t//9zFvwgnhAkpk+s3y
+         sBk/NERPLlfKVSjNALV58z7Aq56TxSi4h6Mw788rHvHnC0rZpFGxXWHTCLv8S2uarBBd
+         rCnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=srQ3lTh3ov/uW1CynRa0KjN77ReKbgwHiOujQ3nMVGI=;
-        b=E9vVk8RXVOmGELl63j9QVDIKz0oEMf4Akj95O+VoAwrfat0qSa8hDdwlC/XWa1H8mv
-         ool3eplXKN8lDD9bxIFLdDL6Y3Ux3JWUWfPS5aN1Rk75EUV53t6juzXaPlqXki0Klqfy
-         shRJ/7eBbpr6Cq5DtnaKTcxiFfyt36CV1Rbvk0Cn8fPv+ND3yGEb6uBOHNLDUm3r9lHD
-         B5igVF6hha87e5NrCSz+GaQ7XKaU8MD8bsXlMCPOJNCLgmtOL/ds+okcXJHKzLBJNrCK
-         98b9GqDD/QPU8VP8MMptWeAeO0R6GMInLZuIwUwMQo1p7YfYTKOC9JqYMNPjQQ1l+ukJ
-         gbfQ==
-X-Gm-Message-State: ACrzQf0xAgfL6Z5DPXjoPh7rE7frbNZRe/Th3F0DR+9/G79f3xB12RIT
-        +/4/XJO2cxw8G2RXa0H6+lmLd95Eow2VqPXe4iLXy2pJ
-X-Google-Smtp-Source: AMsMyM7zSz2xzkf30t95QCMUe/+35Au5IQDfWUWwp1tGv7KynUmdAkPytr6E2YTxR4NYApaYSEmfEf0uMjZO7JpmzeE=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr41547613edb.333.1667665234700; Sat, 05
- Nov 2022 09:20:34 -0700 (PDT)
+        bh=OrAhEo8k47oe3cpcGfkIxGEi16aTTzYY4ICC0og8xDU=;
+        b=312LeCHB5+f7xf5XPxdJaZp82aBofn4TdGFbqO9td/e34yZ99NfZwUMDThCElaVwV2
+         lH01LJfokbytEqm/o2Y2DoBEQI2iuIQX7XQnj0nq/m6QO7KQzNo7qrUD67OPEnK9hFOm
+         QyiLPYS8y8HhYYqVzgcFdaen93W2MBTLdbcKQb/ZDfVJERv3HIcRiB1DCszKoy1TpN3z
+         CkuHGwarP+bnevGeFGMRDNdUzssb2DcOz+SBA3JRtYoLVl5svvAfZ40BrWkVGkKvwGlM
+         n/HIxlOpjiyTwwef7rBdQN3blUGCEr8mfUUtvSx1EqEgtutLJ6+vU/nuZ1pq8AmGJnHS
+         1biA==
+X-Gm-Message-State: ACrzQf21XZ7HCt76xDjF8+m5dMdJEIC0g8CQonOZa2N+DY3yeZdkTItz
+        vtfBx68TEPaJdxqHzgJGlV+Zojvzkt6dBbFbYwf9x99s
+X-Google-Smtp-Source: AMsMyM4yjKD4tL6e1ArJF2OZOienz3GlIkh/wC+k95q2kA2ZW1fxwWCLoj4+FoC6lTJMyhiKxT3LVeU1JOnkuXGij/8=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr40583964ejb.633.1667672174191; Sat, 05
+ Nov 2022 11:16:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221105025146.238209-1-horenchuang@bytedance.com>
-In-Reply-To: <20221105025146.238209-1-horenchuang@bytedance.com>
+References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-23-memxor@gmail.com>
+ <d3765c8e-3b1b-3ea4-8612-34b8580bc892@meta.com> <20221104074248.olfotqiujxz75hzd@apollo>
+ <65edb881-f877-2d90-2d5c-46fad3a41251@meta.com>
+In-Reply-To: <65edb881-f877-2d90-2d5c-46fad3a41251@meta.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 5 Nov 2022 09:20:23 -0700
-Message-ID: <CAADnVQK5t0YWGgdWmjiWX6vA0SjANrnf5x=yzu7PtDKpoK6cJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/4] Add BPF htab map's used size for monitoring
-To:     "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Jiri Olsa <olsajiri@gmail.com>,
+Date:   Sat, 5 Nov 2022 11:16:02 -0700
+Message-ID: <CAADnVQJbMzkYAPC8vzRHjO1jMjx=MXPMTuwfV8tYdL0vfYSSoA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 22/24] bpf: Introduce single ownership BPF
+ linked list API
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Hao Xiang <hao.xiang@bytedance.com>,
-        Punit Agrawal <punit.agrawal@bytedance.com>,
-        Yifei Ma <yifeima@bytedance.com>,
-        Xiaoning Ding <xiaoning.ding@bytedance.com>,
-        bpf <bpf@vger.kernel.org>, Ho-Ren Chuang <horenc@vt.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Delyan Kratunov <delyank@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -91,18 +73,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 7:52 PM Ho-Ren (Jack) Chuang
-<horenchuang@bytedance.com> wrote:
+On Fri, Nov 4, 2022 at 7:15 PM Dave Marchevsky <davemarchevsky@meta.com> wrote:
 >
-> Hello everyone,
+> > I was contemplating whether to simply drop this whole set_release_on_unlock
+> > logic entirely. Not sure it's worth the added complexity, atleast for now. Once
+> > you push you simply lose ownership of the object and any registers are
+> > immediately killed.
 >
-> We have prepared patches to address an issue from a previous discussion.
-> The previous discussion email thread is here: https://lore.kernel.org/all/CAADnVQLBt0snxv4bKwg1WKQ9wDFbaDCtZ03v1-LjOTYtsKPckQ@mail.gmail.com/
+> I think that being able to read / modify the datastructure node after it's been
+> added is pretty critical, at least from a UX perspective.
+>
+> Totally fine with it being dropped from the series and experimented with
+> later, though.
 
-Rephrasing what was said earlier.
-We're not keeping the count of elements in a preallocated hash map
-and we are not going to add one.
-The bpf prog needs to do the accounting on its own if it needs
-this kind of statistics.
-Keeping the count for non-prealloc is already significant performance
-overhead. We don't trade performance for stats.
+Kumar,
+please split release_on_unlock logic into separate patch.
+afaics it doesn't have to be introduced together with these kfuncs.
