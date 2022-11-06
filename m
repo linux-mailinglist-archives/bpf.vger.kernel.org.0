@@ -2,74 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E155161E6A6
-	for <lists+bpf@lfdr.de>; Sun,  6 Nov 2022 22:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D261E6AE
+	for <lists+bpf@lfdr.de>; Sun,  6 Nov 2022 22:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbiKFVov (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Nov 2022 16:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S230080AbiKFVuC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Nov 2022 16:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbiKFVou (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Nov 2022 16:44:50 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CAB101E9
-        for <bpf@vger.kernel.org>; Sun,  6 Nov 2022 13:44:49 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id q1-20020a17090a750100b002139ec1e999so8712503pjk.1
-        for <bpf@vger.kernel.org>; Sun, 06 Nov 2022 13:44:49 -0800 (PST)
+        with ESMTP id S229932AbiKFVuB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Nov 2022 16:50:01 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D211D86
+        for <bpf@vger.kernel.org>; Sun,  6 Nov 2022 13:49:59 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id h9so13817112wrt.0
+        for <bpf@vger.kernel.org>; Sun, 06 Nov 2022 13:49:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wD5+CBP3/1WrOwk8PnUpixdQgVoa4M8TS8t2CtprVk8=;
-        b=B9kLQgJwT443imHLYGm0kyQzyCq0JqLTd23aCUh1/0tCuk6E2f1S1Ys009+bOY7LBD
-         nmDQuq//MxQMKJkZfNouCrnVd/k1cqJfs7Pp7aMtfAIQZf3wQ8r/QLYB/NsbVVN0C0EZ
-         ddSM9dz6mdLUffsSlc4PbtS/4jPz00bIu62sJyh/+acOhzwTmum2lfSB2B9qe6bju8OG
-         4L87AGwTlCc6D5schOmO52aBcPEABc5R/s3DyA9QVIgMdzOh93e9mQX7/irtUuGTCvs+
-         Wt7rHOsWfBTDSCUbDSH653yOi/ePaGH6pw2aFI6EvUZxiiB3pmjqeTzokpaHrSuMdVwN
-         kWpQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I/IKTC7aMJzgK7Cd7+5E3K+h4tSCZaljmZE660gxT3c=;
+        b=HZKy/jy6Prp+xWAkGMMPko0KN9JNnbsCTu2wSmFr2ogr81y0uVF2twvu8wywCfBGKr
+         VbpwT74OWh2IKtfqh8jTMtbRmH7J966qUvTDB4JGSs37rBa96vgKKUIWM3fZ+D/W9a3b
+         2SiGreECGOP/oNHonUufJlW7xR1cKulml0mAV4kN+jjvQnuUOzhRpqhatC2d3YkNMDF8
+         UtlINPyTl/pDdW1DCqhSRvkvd1OkHcVXd9EG07cAixAyEwVXaLF+7Pdnca8RU4p6Romx
+         HM460CkS6GnSPfmswRlsFyRMgLTTancLH+1d3V9ttPQSYi049R9QX0ByzNttg9pKZLvH
+         vAPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wD5+CBP3/1WrOwk8PnUpixdQgVoa4M8TS8t2CtprVk8=;
-        b=zGUtBtd2z3wEW0/INJ4x6tfLvHSfL67K15mTURr7jkVULrTnpMK4qVezNVVylU3PZw
-         we/vkVMj8uDg2tROADnTvZBxTEkl6rfk+QiDqiAIjU0zHxYGcF/eBn2ZuQx1hJxqT6VD
-         m+IJDAVbfbpkPFGNj1RxcpGA2yEMhxAZBMHL/AQ5OqHx6Ti9mzOV1Ap/UaZbSFYYWM6s
-         hUdlNFyi3C1OTbi7xCS3uItlp+I63rKJy5otclXi7ycDagvC3jae6rsJYbDpJS/xlkP/
-         4M1wUhoDLmchGNdx8a73N+HyNkJU+GJwS6tRupSwlmuFhdv3iV2n3KE04bSBP7dUoOuB
-         dnAQ==
-X-Gm-Message-State: ACrzQf379pPoFb7PAoHeQSTbEaqBFhgFeIkj3Bfx49/N0llOSb97KuMU
-        CSZoE/4hIlEkYyAsMWzy17Q=
-X-Google-Smtp-Source: AMsMyM6UT9DTLFVOW0doGlPV2l2rWHAxujBpLszABhPLsPL2w/ylkUxCQsE2ohElPng4F79p153cTA==
-X-Received: by 2002:a17:902:ed85:b0:186:f151:de7d with SMTP id e5-20020a170902ed8500b00186f151de7dmr47328628plj.73.1667771089191;
-        Sun, 06 Nov 2022 13:44:49 -0800 (PST)
-Received: from localhost ([14.139.187.71])
-        by smtp.gmail.com with ESMTPSA id t7-20020a635f07000000b0046a1c832e9fsm2895188pgb.34.2022.11.06.13.44.48
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I/IKTC7aMJzgK7Cd7+5E3K+h4tSCZaljmZE660gxT3c=;
+        b=5BOuqxX09Y5+O+FqYP3DE9QCsQSksub5lT7+gBMVoMJy8kuIy/mQ0rZpGZle4NpDbh
+         NRXON+AIoEZ2uHwFNEzmQUMP3F/K5edMPZ7PDAo88lIymrYK2fVkhE4jKRF2qihY4iUD
+         Jlf3YTuCRjD5Lel4MtMKRDASB6hYco14aaYhZkfh4PqERh5pomYNT04M5EiIg/Sf/GFc
+         uXpFDRY2+HKqfSb+ESN6aeC8OplmHcW8ri/+sv6VFcReqSfW/2+Z3jvALPB6a6cr1v+Z
+         Q8OSy6lmfwekLX3PD/lW8q+3dk6fcLXcYh44YQM3v2qR7X09LONwlsGTWI4SMesB2IL6
+         loIQ==
+X-Gm-Message-State: ACrzQf32Dayd/cHAx9B5SSeY2soMYoLsUlpQ0C3K2m64ZMshofyzQr4X
+        thJCDFB3zKnPXsmt87QERz/SJ/BY8MoWJ4Mf
+X-Google-Smtp-Source: AMsMyM7LXPp4mcz/bUv27Oc+C7Ao8nXbokG9PO7A20YY4dl6P50NX8wbbvrFl6H/zqTG6i5k1SgMXw==
+X-Received: by 2002:adf:f9cf:0:b0:236:6a26:c055 with SMTP id w15-20020adff9cf000000b002366a26c055mr29558516wrr.195.1667771397893;
+        Sun, 06 Nov 2022 13:49:57 -0800 (PST)
+Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id v128-20020a1cac86000000b003a3170a7af9sm6345326wme.4.2022.11.06.13.49.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Nov 2022 13:44:48 -0800 (PST)
-Date:   Mon, 7 Nov 2022 03:14:44 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH RFC bpf-next v1 1/2] bpf: Fix deadlock for bpf_timer's
- spinlock
-Message-ID: <20221106214444.nbqh4qdpsoaj5t7s@apollo>
-References: <20221106015152.2556188-1-memxor@gmail.com>
- <20221106015152.2556188-2-memxor@gmail.com>
- <CAADnVQ+iuB6abH0=N0su6DGAW1FnOtgUQ+Zq6x9bH1w5X_6P=w@mail.gmail.com>
+        Sun, 06 Nov 2022 13:49:57 -0800 (PST)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, shung-hsi.yu@suse.com,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] propagate nullness information for reg to reg comparisons
+Date:   Sun,  6 Nov 2022 23:49:19 +0200
+Message-Id: <20221106214921.117631-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+iuB6abH0=N0su6DGAW1FnOtgUQ+Zq6x9bH1w5X_6P=w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,83 +69,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 02:50:08AM IST, Alexei Starovoitov wrote:
-> On Sat, Nov 5, 2022 at 6:52 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > Currently, unlike other tracing program types, BPF_PROG_TYPE_TRACING is
-> > excluded is_tracing_prog_type checks. This means that they can use maps
-> > containing bpf_spin_lock, bpf_timer, etc. without verification failure.
-> >
-> > However, allowing fentry/fexit programs to use maps that have such
-> > bpf_timer in the map value can lead to deadlock.
-> >
-> > Suppose that an fentry program is attached to bpf_prog_put, and a TC
-> > program executes and does bpf_map_update_elem on an array map that both
-> > progs share. If the fentry programs calls bpf_map_update_elem for the
-> > same key, it will lead to acquiring of the same lock from within the
-> > critical section protecting the timer.
-> >
-> > The call chain is:
-> >
-> > bpf_prog_test_run_opts() // TC
-> >   bpf_prog_TC
-> >     bpf_map_update_elem(array_map, key=0)
-> >       bpf_obj_free_fields
-> >         bpf_timer_cancel_and_free
-> >           __bpf_spin_lock_irqsave
-> >             drop_prog_refcnt
-> >               bpf_prog_put
-> >                 bpf_prog_FENTRY // FENTRY
-> >                   bpf_map_update_elem(array_map, key=0)
-> >                     bpf_obj_free_fields
-> >                       bpf_timer_cancel_and_free
-> >                         __bpf_spin_lock_irqsave // DEADLOCK
-> >
-> > BPF_TRACE_ITER attach type can be excluded because it always executes in
-> > process context.
-> >
-> > Update selftests using bpf_timer in fentry to TC as they will be broken
-> > by this change.
->
-> which is an obvious red flag and the reason why we cannot do
-> this change.
-> This specific issue could be addressed with addition of
-> notrace in drop_prog_refcnt, bpf_prog_put, __bpf_prog_put.
-> Other calls from __bpf_prog_put can stay as-is,
-> since they won't be called in this convoluted case.
-> I frankly don't get why you're spending time digging such
-> odd corner cases that no one can hit in real use.
+This patchset adds ability to propagates nullness information for
+branches of register to register equality compare instructions. The
+following rules are used:
+ - suppose register A maybe null
+ - suppose register B is not null
+ - for JNE A, B, ... - A is not null in the false branch
+ - for JEQ A, B, ... - A is not null in the true branch
 
-I was trying to figure out whether bpf_list_head_free would be safe to call all
-the time in map updates from bpf_obj_free_fields, since it takes the very same
-spin lock that BPF program can also take to update the list.
+E.g. for program like below:
 
-Map update ops are not allowed in the critical section, so this particular kind
-of recurisve map update call should not be possible. perf event is already
-prevented using is_tracing_prog_type, so NMI prog cannot interrupt and update
-the same map.
+  r6 = skb->sk;
+  r7 = sk_fullsock(r6);
+  r0 = sk_fullsock(r6);
+  if (r0 == 0) return 0;    (a)
+  if (r0 != r7) return 0;   (b)
+  *r7->type;                (c)
+  return 0;
 
-But then I went looking whether it was a problem elsewhere...
+It is safe to dereference r7 at point (c), because of (a) and (b).
 
-FWIW I have updated my patch to do:
+The utility of this change came up while working on BPF CLang backend
+issue [1]. Specifically, while debugging issue with selftest
+`test_sk_lookup.c`. This test has the following structure:
 
-  if (btf_record_has_field(map->record, BPF_LIST_HEAD)) { ‣rec: map->record ‣type: BPF_LIST_HEAD
-	if (is_tracing_prog_type(prog_type) || ‣type: prog_type
-	    (prog_type == BPF_PROG_TYPE_TRACING &&
-	     env->prog->expected_attach_type != BPF_TRACE_ITER)) {
-		verbose(env, "tracing progs cannot use bpf_list_head yet\n"); ‣private_data: env ‣fmt: "tracing progs cannot use bp
-		return -EINVAL;
-	}
-  }
+    int access_ctx_sk(struct bpf_sk_lookup *ctx __CTX__)
+    {
+        struct bpf_sock *sk1 = NULL, *sk2 = NULL;
+        ...
+        sk1 = bpf_map_lookup_elem(&redir_map, &KEY_SERVER_A);
+        if (!sk1)           // (a)
+            goto out;
+        ...
+        if (ctx->sk != sk1) // (b)
+            goto out;
+        ...
+        if (ctx->sk->family != AF_INET ||     // (c)
+            ctx->sk->type != SOCK_STREAM ||
+            ctx->sk->state != BPF_TCP_LISTEN)
+            goto out;
+            ...
+    }
 
-v5 coming soon.
+- at (a) `sk1` is checked to be not null;
+- at (b) `ctx->sk` is verified to be equal to `sk1`;
+- at (c) `ctx->sk` is accessed w/o nullness check.
 
-> There are probably other equally weird corner cases and sooner
-> or later will just declare them as 'wont-fix'. Not kidding.
+Currently Global Value Numbering pass considers expressions `sk1` and
+`ctx->sk` to be identical at point (c) and replaces `ctx->sk` with
+`sk1` (not expressions themselves but corresponding SSA values).
+Since `sk1` is known to be not null after (b) verifier allows
+execution of the program.
 
-Understood.
+However, such optimization is not guaranteed to happen. When it does
+not happen verifier reports an error.
 
-> Please channel your energy to something that helps.
-> Positive patches are more pleasant to review.
+Changelog:
+v1 -> v2:
+ - after investigation described in [2] as suggested by John, Daniel
+   and Shung-Hsi, function `type_is_pointer` is removed, calls to this
+   function are replaced by `__is_pointer_value(false, src_reg)`.
+   
+RFC -> v1:
+ - newly added if block in `check_cond_jmp_op` is moved down to keep
+   `make_ptr_not_null_reg` actions together;
+ - tests rewritten to have a single `r0 = 0; exit;` block.
 
-Understood.
+[1]   https://reviews.llvm.org/D131633#3722231
+[2]   https://lore.kernel.org/bpf/bad8be826d088e0d180232628160bf932006de89.camel@gmail.com/
+[v1]  https://lore.kernel.org/bpf/20220826172915.1536914-1-eddyz87@gmail.com/
+[RFC] https://lore.kernel.org/bpf/20220822094312.175448-1-eddyz87@gmail.com/
+
+Eduard Zingerman (2):
+  bpf: propagate nullness information for reg to reg comparisons
+  selftests/bpf: check nullness propagation for reg to reg comparisons
+
+ kernel/bpf/verifier.c                         |  35 +++-
+ .../bpf/verifier/jeq_infer_not_null.c         | 166 ++++++++++++++++++
+ 2 files changed, 199 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+
+-- 
+2.34.1
+
