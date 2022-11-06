@@ -2,70 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D400061DFF1
-	for <lists+bpf@lfdr.de>; Sun,  6 Nov 2022 02:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3715761E5E5
+	for <lists+bpf@lfdr.de>; Sun,  6 Nov 2022 21:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiKFBxp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Nov 2022 21:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S229993AbiKFU3s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Nov 2022 15:29:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiKFBxo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Nov 2022 21:53:44 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2702D101E2
-        for <bpf@vger.kernel.org>; Sat,  5 Nov 2022 18:53:44 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id cb2-20020a056830618200b00661b6e5dcd8so4722007otb.8
-        for <bpf@vger.kernel.org>; Sat, 05 Nov 2022 18:53:44 -0700 (PDT)
+        with ESMTP id S229669AbiKFU3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Nov 2022 15:29:46 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52427BC2C
+        for <bpf@vger.kernel.org>; Sun,  6 Nov 2022 12:29:45 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id ay14-20020a05600c1e0e00b003cf6ab34b61so8478868wmb.2
+        for <bpf@vger.kernel.org>; Sun, 06 Nov 2022 12:29:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4RjUL9GIVQIAdPM/QA+rb/e4Gr7L6zBnkJTHg7HWU5c=;
-        b=gASbQi4GGnBA9elxMwautB6BT/LQVl0tSxT2m/9FXsxDJ2dRkFK5VXvbu3PIjw7bC2
-         XpG7MHfhpZTrVvSWJZtsXFTxwnNUYWFmM2IMSJFA0SgAjrg/mhjl0wdv7I5fuFjAvzOm
-         EL96vpsoJv1crG9xJ8SGaX360P6TE3RTqiTp3L1FRP1cXB0m/zfiJZS7eu7vm7VZjtoK
-         dCV7o3x/m1FqynYUy8GvVogZHAuse4vWfPyOq6gg6X+DgmnIhElgyN6MnUdJ42UeB9x2
-         ASlDCGUmze6xUeulmyHSJDKJ1gw1YXZ+xlmiWbn0/dktNDz0+E3ddHP9wtf1I0L63wwU
-         s2LQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTn+LaLS6t1g7b608IA3qBHIl40XwctiP/rZqs9E+S8=;
+        b=OYC7zPPCSYsfBlktYGB0QyvlBYCLg5GAGWe4vYMnBfPP3zRfD+Wc3hoStPA4Mnmoxs
+         h5D4E/3+f8qw5RF4YeuDVkT1CHRobwb+8smVqU/y/bauJCNFro1rdP6x0MORswHUI2pn
+         0jGyz2jR9aOUccXBCv/uXsR/mwTV5/djLi3Uk8+6uYSE63G1beJhg5IkyICEI+BDjUPi
+         nvuExiA6++RjshZ7PzozTw4EVcAwVMTd0vG2Ekw+aqQWD7TSoGzJ4OlS5mI2Z4tLPy2M
+         SPSQptr9/+fB/DJv5YaDeFGMYu9WpOQMrt9v6X8KC4ZKOXwn8NWRS0BNmY9LWtTFBhPD
+         QmTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4RjUL9GIVQIAdPM/QA+rb/e4Gr7L6zBnkJTHg7HWU5c=;
-        b=KbX+Vi0EmEs/D87un4VgR+7ZjSTLSxOZyDqMGIbeA028jxFOKl+4PXlwJ7iwtwTZeH
-         YLNfhic59ih0x76OpjzBxs5vNheWYi+vasNjVS6cg3nLWkZmeOhOhwXD6Hy7EmGAyL1R
-         i+4OCiXRJQjRPZrRnXpAF4SszoqgVunu9kdpoyVg1XxDOPpv8GOZUlwdmpbLJsRzn9yV
-         1EE0OOpS684BpEPHdyhc3gFFDLFKYJhLw+q96YKs2yiBSjOc+1/e0KZPxmujwgqKYllY
-         vz/+GEePWbBb7JaoTxzbT1AdancrBZ0bQ8wYHGYarx5Dg1NsBFh2HdK/5F+AmkGhC/pK
-         HN+A==
-X-Gm-Message-State: ACrzQf0VDeXSDJ3F4CgoYxYRYEmX5fJSdwGMQ18eT2IocsEez0sO2yJV
-        AUMOZ+JSrQe1oREdF07qq7UbWCJ9lRU49Ux0gvY=
-X-Google-Smtp-Source: AMsMyM7N2prDrHLirOhR0T4mQSNn2wue+g7TUjJR1TXizoRZYkipffreC4R5CJyCxqX79oi4N4faBmXGHpYiY+aGWO8=
-X-Received: by 2002:a05:6830:1419:b0:66a:a9d0:e37b with SMTP id
- v25-20020a056830141900b0066aa9d0e37bmr21788674otp.326.1667699623446; Sat, 05
- Nov 2022 18:53:43 -0700 (PDT)
+        bh=lTn+LaLS6t1g7b608IA3qBHIl40XwctiP/rZqs9E+S8=;
+        b=wGRdc2leh81Ny9mfwwrWK1IJfiR5/IKNCv6YXOG0MTsQpXMKUXEkFY1IYNXknvse5R
+         BMt2AGjbZhkiXebyMy3d0WqMClG9fJLntdm1G/QfYyXN/S7A5EGl6eqfYzIbMYGpugUw
+         uGlcldO5ie6UmuhSCRTmetDreprrpdXe78vTbchfSks9nn8CoBkBfhUbxlw1RFmYcI/i
+         kHcmunpYqzNn5hdFbSVp67Sbgpi9ja98tVSBur2o+YKY4mslOnwZF/lI/GmTXEYSSdt7
+         i3muR8RAQMPD+2WJE7eQDUELbZSMAsbbghwWpkkFywPDeo4yYh2mUQF9EMlZCxILfl7G
+         ENTw==
+X-Gm-Message-State: ACrzQf34WQ6ZZzz7i/ehpE4KfVZlgcZEVzxK7ErP1ekoOt2ztxzULsz4
+        jKhZUPACvuwk524gCWNz6caVvBV4ag+y/bwl
+X-Google-Smtp-Source: AMsMyM7N/bp3ugx3CJNvE03ztxIhiQbuHXzhCZHl8s21KTxBWiprlsITSfeyxu7SSqbXztYm/CQNhA==
+X-Received: by 2002:a7b:cd99:0:b0:3cf:7556:a52c with SMTP id y25-20020a7bcd99000000b003cf7556a52cmr24360177wmj.53.1667766583486;
+        Sun, 06 Nov 2022 12:29:43 -0800 (PST)
+Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id q188-20020a1c43c5000000b003cf894c05e4sm9358636wma.22.2022.11.06.12.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Nov 2022 12:29:42 -0800 (PST)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, alan.maguire@oracle.com, acme@kernel.org,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 0/3] libbpf: Resolve unambigous forward declarations
+Date:   Sun,  6 Nov 2022 22:29:07 +0200
+Message-Id: <20221106202910.4193104-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20221103191013.1236066-1-memxor@gmail.com> <20221103191013.1236066-23-memxor@gmail.com>
- <d3765c8e-3b1b-3ea4-8612-34b8580bc892@meta.com> <20221104074248.olfotqiujxz75hzd@apollo>
- <65edb881-f877-2d90-2d5c-46fad3a41251@meta.com> <CAADnVQJbMzkYAPC8vzRHjO1jMjx=MXPMTuwfV8tYdL0vfYSSoA@mail.gmail.com>
-In-Reply-To: <CAADnVQJbMzkYAPC8vzRHjO1jMjx=MXPMTuwfV8tYdL0vfYSSoA@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sun, 6 Nov 2022 07:23:08 +0530
-Message-ID: <CAP01T74OOEoDYAfCXd+nL555h2TB9J4QX70CAb7qYJwhCLMtxg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 22/24] bpf: Introduce single ownership BPF
- linked list API
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@meta.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Delyan Kratunov <delyank@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,24 +69,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 5 Nov 2022 at 23:46, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Nov 4, 2022 at 7:15 PM Dave Marchevsky <davemarchevsky@meta.com> wrote:
-> >
-> > > I was contemplating whether to simply drop this whole set_release_on_unlock
-> > > logic entirely. Not sure it's worth the added complexity, atleast for now. Once
-> > > you push you simply lose ownership of the object and any registers are
-> > > immediately killed.
-> >
-> > I think that being able to read / modify the datastructure node after it's been
-> > added is pretty critical, at least from a UX perspective.
-> >
-> > Totally fine with it being dropped from the series and experimented with
-> > later, though.
->
-> Kumar,
-> please split release_on_unlock logic into separate patch.
-> afaics it doesn't have to be introduced together with these kfuncs.
+The patch-set is consists of the following parts:
+- A refactoring of the libbpf's hashmap interface to use `long`
+  instead of `void*` for keys and values. The reasoning behind the
+  refactoring is that integer keys / values are used in libbpf more
+  often then pointer keys / values. Thus the refactoring reduces the
+  number of awkward looking casts like `(void *)(long)off`.
+  The `long` is used with an implicit assumption that
+  `sizeof(long) == sizeof(void *)` on all supported platforms.
+  This includes changes in `libbpf` and `perf` source code. 
 
-Ack.
+- A change to `lib/bpf/btf.c:btf__dedup` that adds a new pass named
+  "Resolve unambiguous forward declaration". This pass builds a
+  hashmap `name_off -> uniquely named struct or union` and uses it to
+  replace FWD types by structs or unions. This is necessary for corner
+  cases when FWD is not used as a part of some struct or union
+  definition de-duplicated by `btf_dedup_struct_types`.
+
+The goal of the patch-set is to resolve forward declarations that
+don't take part in type graphs comparisons if declaration name is
+unambiguous.
+
+Example:
+
+CU #1:
+
+struct foo;              // standalone forward declaration
+struct foo *some_global;
+
+CU #2:
+
+struct foo { int x; };
+struct foo *another_global;
+
+Currently the de-duplicated BTF for this example looks as follows:
+
+[1] STRUCT 'foo' size=4 vlen=1 ...
+[2] INT 'int' size=4 ...
+[3] PTR '(anon)' type_id=1
+[4] FWD 'foo' fwd_kind=struct
+[5] PTR '(anon)' type_id=4
+
+The goal of this patch-set is to simplify it as follows:
+
+[1] STRUCT 'foo' size=4 vlen=1
+	'x' type_id=2 bits_offset=0
+[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+[3] PTR '(anon)' type_id=1
+
+For defconfig kernel with BTF enabled this removes 63 forward
+declarations.
+
+For allmodconfig kernel with BTF enabled this removes ~5K out of ~21K
+forward declarations in ko objects. This unlocks some additional
+de-duplication in ko objects, but impact is tiny: ~13K less BTF ids
+out of ~2M.
+
+Changelog:
+ v1 -> v2
+ - Style fixes in btf_dedup_resolve_fwd and btf_dedup_resolve_fwds as
+   suggested by Alan.
+ v2 -> v3
+ Changes suggested by Andrii:
+ - perf's util/hashtable.{c,h} are synchronized with libbpf
+   implementation, perf's source code updated accordingly;
+ - changes to libbpf, bpf selftests and perf are combined in a single
+   patch to simplify bisecting;
+ - hashtable interface updated to be long -> long instead of
+   uintptr_t -> uintptr_t;
+ - btf_dedup_resolve_fwds updated to correctly use IS_ERR / PTR_ERR
+   macro;
+ - test cases for btf_dedup_resolve_fwds are updated for better
+   clarity.
+
+[v1] https://lore.kernel.org/bpf/20221102110905.2433622-1-eddyz87@gmail.com/
+[v2] https://lore.kernel.org/bpf/20221103033430.2611623-1-eddyz87@gmail.com/
+
+Eduard Zingerman (3):
+  libbpf: hashmap interface update to long -> long
+  libbpf: Resolve unambigous forward declarations
+  selftests/bpf: Tests for btf_dedup_resolve_fwds
+
+ tools/bpf/bpftool/btf.c                       |  25 +--
+ tools/bpf/bpftool/common.c                    |  10 +-
+ tools/bpf/bpftool/gen.c                       |  19 +-
+ tools/bpf/bpftool/link.c                      |   8 +-
+ tools/bpf/bpftool/main.h                      |  14 +-
+ tools/bpf/bpftool/map.c                       |   8 +-
+ tools/bpf/bpftool/pids.c                      |  16 +-
+ tools/bpf/bpftool/prog.c                      |   8 +-
+ tools/lib/bpf/btf.c                           | 184 +++++++++++++++---
+ tools/lib/bpf/btf_dump.c                      |  16 +-
+ tools/lib/bpf/hashmap.c                       |  16 +-
+ tools/lib/bpf/hashmap.h                       |  34 ++--
+ tools/lib/bpf/libbpf.c                        |  18 +-
+ tools/lib/bpf/strset.c                        |  18 +-
+ tools/lib/bpf/usdt.c                          |  31 ++-
+ tools/perf/tests/expr.c                       |  40 ++--
+ tools/perf/tests/pmu-events.c                 |   6 +-
+ tools/perf/util/bpf-loader.c                  |  23 ++-
+ tools/perf/util/expr.c                        |  32 ++-
+ tools/perf/util/hashmap.c                     |  16 +-
+ tools/perf/util/hashmap.h                     |  34 ++--
+ tools/perf/util/metricgroup.c                 |  12 +-
+ tools/perf/util/stat.c                        |   9 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 176 +++++++++++++++++
+ .../bpf/prog_tests/btf_dedup_split.c          |  45 +++--
+ .../selftests/bpf/prog_tests/hashmap.c        | 102 +++++-----
+ .../bpf/prog_tests/kprobe_multi_test.c        |   6 +-
+ 27 files changed, 602 insertions(+), 324 deletions(-)
+
+-- 
+2.34.1
+
