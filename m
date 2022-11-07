@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5377C61F41C
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 14:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F93F61F49F
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 14:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbiKGNSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 08:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        id S231324AbiKGNsu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 08:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231551AbiKGNSf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 08:18:35 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF6D65F9
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 05:18:33 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 7so8988060ybp.13
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 05:18:33 -0800 (PST)
+        with ESMTP id S229778AbiKGNst (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 08:48:49 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F0A1B1C1;
+        Mon,  7 Nov 2022 05:48:47 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id o4so16310919wrq.6;
+        Mon, 07 Nov 2022 05:48:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5SoqAUcnwiRm88ADd2ljnWMq6OYtUHzfrs6KNHdyEzE=;
-        b=UGhWJk4HpX9TKsQWQGTHKMh66inqZKg22bG/7kNXFFQ3kZkidg97XqTIHwxg7WPOXu
-         0v2Y5ywyxTm8lK4tBBVrN7AiivG6csBLgRaKdyQnRao7nV8N5aOvbgLHoSMCgmQFQyDc
-         P87IdNxHWNAAYgvfcEc11SC556SRE2deFJ7I51lI/P+WQ0tCIlZuVbZPBUAraptpo1iV
-         HPagSQ3kgZQp0lwo+iU90EWh3daa+XDUDbFYJP15USWHYAYV+3YZqa69ti4roaHutWsS
-         tlruEWldOByyLJJXOYjkavzkTQ0kST9VtsXYHB6M93pJmTmgUHEwb1+kVsYuJB9mdnqY
-         4lew==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrUyRGzwE2ra16JuFmiYoijJKLT6LRaYNEIkUv8jxGc=;
+        b=YYI1hnetdP6OmFZwGJk4mhjMc40VULbuk5jWaMguvr01Slbr4wiLy7x3EgjEEcfeWZ
+         M7t8/Zzch/lICelcpBhFq9hB1D0ry3et/sZ/UcCuXxewlsVa19HyyXxzVv2th/hAmuGV
+         27NVyps0+BgQgVcm4pM1Ijo70HWDH97hrNMP0VeBfYRZTD3Gyi7poKF7u+kdraeQ0SGU
+         miSXlBJD7m5DUaaV+YGyVbJ2mMDkmNnJaNFTCG9n0Nt+4Lo09c0LDcsvF8R9VzNl8ZV9
+         kwA5k/xieQGt4vAlkx+YoBFiFnoFaeSZW4hX0PH2uZhxcqeTtIKczBigEGWzwcnNy5Mw
+         0VpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5SoqAUcnwiRm88ADd2ljnWMq6OYtUHzfrs6KNHdyEzE=;
-        b=ypzNvCAbB9Svk4ONxcEJrzSx6EAYnd+uzlFUGHKC/SHI7HclDrr45w6MrEE1RitPz+
-         EQj+sysrLo278h+Fjk6lvu13AdAABQQ1ePQSH3wnOV+D+r8XmlHZcBCvlA84/IsM7A4B
-         EgyTDr0sXQ8cGpbo3XEJ8Qs7ZexBxjquUdrebC/Y86Kafm4mRIVlRbgc/640nFmYANBa
-         zyyY222zRj6Bl90TPFHYpNIFV3kiftctZDFgXi7cGkRMVXtbPkcDSFOJrgblgYyR0nN0
-         Ta0BhqKboBIrDYqnFFoCtUMJlPq91ZgelIxqRZDezIhlCZmmDiMVHeeQ3hmFI9UpnvHY
-         kPKg==
-X-Gm-Message-State: ANoB5pmpPsFyY2enUSkYD0gkpzTk1WMB60qg/nCIgf/ur2KjeHN1pF/H
-        EfOGSvHLQA3/qc3Hg0/gNO2gsLJbtcflHYfXQHRkNQ==
-X-Google-Smtp-Source: AA0mqf5/eEsy8pyLnv/X6ea7Qff2XeVAQvDcA+/uWKpr7VBmhDic4hY9dpkmZ5Hj8IbqB8MTAJmRX3TqClSEXMTqEFY=
-X-Received: by 2002:a25:4090:0:b0:6d3:7bde:23fe with SMTP id
- n138-20020a254090000000b006d37bde23femr15834157yba.388.1667827112974; Mon, 07
- Nov 2022 05:18:32 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OrUyRGzwE2ra16JuFmiYoijJKLT6LRaYNEIkUv8jxGc=;
+        b=CJTlGPU0elaaZu1Hq+bg97twCijV1T4mpOgdZ4Y2n86pwmRHWZ+dyAjs0ysA8Tla/B
+         i8ym77sqbJJSi1DnZNQaqjWqHFUf1QE94JMDj7ZWdba8gkJndf9AbIgFr5F1GyT8JdPr
+         EHJ/Y3nb41tYZ9n2ofRR6OVe57EB0l7T14KB2h6NID/DXrpKUyzEMbwD6Vcrk7CT4ecm
+         ccEXuDa8LSHUhPrB+NccH0Q0214E5hR0+/d9MLLmuQSnl31FP8BXgWa1jAknw4uZOtWz
+         9L2xxlll7tfcx5XzWzxaitTIK1guatrhADk/vedVO0OrqRuXua3UMZROg9BUC8meiARQ
+         R6bg==
+X-Gm-Message-State: ACrzQf2rE+KERixmsfvumKf1G417trxfOPCoeJJtM/JL54vXJE1UvhBc
+        4HMtr4qZaBp/TGDXLePU1lPlqjVngpNtWQ==
+X-Google-Smtp-Source: AMsMyM5uzEBl2o9U1yFezMAlIGgYgVNM3K41WHriM+gNssdy1c660NjenqwNcOsfm0zsmzV7zgMCRw==
+X-Received: by 2002:adf:ed4a:0:b0:236:aef1:9c75 with SMTP id u10-20020adfed4a000000b00236aef19c75mr31432407wro.258.1667828925431;
+        Mon, 07 Nov 2022 05:48:45 -0800 (PST)
+Received: from imac.fritz.box ([2a02:8010:60a0:0:5c58:5d45:1992:a386])
+        by smtp.gmail.com with ESMTPSA id k8-20020a05600c168800b003cf47fdead5sm8140396wmn.30.2022.11.07.05.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Nov 2022 05:48:44 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Maryam Tahhan <mtahhan@redhat.com>,
+        Donald Hunter <donald.hunter@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next v3] docs/bpf: document BPF ARRAY_OF_MAPS and HASH_OF_MAPS
+Date:   Mon,  7 Nov 2022 13:48:40 +0000
+Message-Id: <20221107134840.92633-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20221102081620.1465154-1-zhongbaisong@huawei.com>
- <CAG_fn=UDAjNd2xFrRxSVyLTZOAGapjSq2Zu5Xht12JNq-A7S=A@mail.gmail.com> <Y2je9dJxUjEchB9k@FVFF77S0Q05N>
-In-Reply-To: <Y2je9dJxUjEchB9k@FVFF77S0Q05N>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 7 Nov 2022 14:17:56 +0100
-Message-ID: <CAG_fn=UdPzBp9uSayPWvtRgjSKoLyfiYacofTS-bbbTauc2F-w@mail.gmail.com>
-Subject: Re: [PATCH -next,v2] bpf, test_run: fix alignment problem in bpf_prog_test_run_skb()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Baisong Zhong <zhongbaisong@huawei.com>, elver@google.com,
-        Catalin Marinas <catalin.marinas@arm.com>, edumazet@google.com,
-        keescook@chromium.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,101 +73,159 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 7, 2022 at 11:33 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Fri, Nov 04, 2022 at 06:06:05PM +0100, Alexander Potapenko wrote:
-> > On Wed, Nov 2, 2022 at 9:16 AM Baisong Zhong <zhongbaisong@huawei.com> =
-wrote:
-> > >
-> > > we got a syzkaller problem because of aarch64 alignment fault
-> > > if KFENCE enabled.
-> > >
-> > > When the size from user bpf program is an odd number, like
-> > > 399, 407, etc, it will cause the struct skb_shared_info's
-> > > unaligned access. As seen below:
-> > >
-> > > BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/=
-skbuff.c:1032
-> >
-> > It's interesting that KFENCE is reporting a UAF without a deallocation
-> > stack here.
-> >
-> > Looks like an unaligned access to 0xffff6254fffac077 causes the ARM
-> > CPU to throw a fault handled by __do_kernel_fault()
->
-> Importantly, an unaligned *atomic*, which is a bug regardless of KFENCE.
->
-> > This isn't technically a page fault, but anyway the access address
-> > gets passed to kfence_handle_page_fault(), which defaults to a
-> > use-after-free, because the address belongs to the object page, not
-> > the redzone page.
-> >
-> > Catalin, Mark, what is the right way to only handle traps caused by
-> > reading/writing to a page for which `set_memory_valid(addr, 1, 0)` was
-> > called?
->
-> That should appear as a translation fault, so we could add an
-> is_el1_translation_fault() helper for that. I can't immediately recall ho=
-w
-> misaligned atomics are presented, but I presume as something other than a
-> translation fault.
->
-> If the below works for you, I can go spin that as a real patch.
+Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
+including usage and examples.
 
-Thanks!
-It works for me in QEMU (doesn't report UAF for an unaligned atomic
-access and doesn't break the original KFENCE tests), and matches my
-reading of https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-=
-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-
+Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+---
+v2 -> v3:
+- Update BPF example to show declarative initialisation, as
+  suggested by Andrii Nakryiko
+- Use LIBBPF_OPTS inline initialisation, as suggested by
+  Andrii Nakryiko
+- Fix duplicate label warning,
+Reported-by: kernel test robot <lkp@intel.com>
 
-Feel free to add:
-  Reviewed-by: Alexander Potapenko <glider@google.com>
-  Tested-by: Alexander Potapenko <glider@google.com>
+v1 -> v2:
+- Fix formatting nits
+- Tidy up code snippets as suggested by Maryam Tahhan
+---
+ Documentation/bpf/map_of_maps.rst | 126 ++++++++++++++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+ create mode 100644 Documentation/bpf/map_of_maps.rst
 
-> Mark.
->
-> ---->8----
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 5b391490e045b..1de4b6afa8515 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -239,6 +239,11 @@ static bool is_el1_data_abort(unsigned long esr)
->         return ESR_ELx_EC(esr) =3D=3D ESR_ELx_EC_DABT_CUR;
->  }
->
-> +static bool is_el1_translation_fault(unsigned long esr)
-> +{
-> +       return (esr & ESR_ELx_FSC_TYPE) =3D=3D ESR_ELx_FSC_FAULT;
+diff --git a/Documentation/bpf/map_of_maps.rst b/Documentation/bpf/map_of_maps.rst
+new file mode 100644
+index 000000000000..63e41b06a91d
+--- /dev/null
++++ b/Documentation/bpf/map_of_maps.rst
+@@ -0,0 +1,126 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++.. Copyright (C) 2022 Red Hat, Inc.
++
++========================================================
++BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
++========================================================
++
++.. note::
++   - ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` were
++     introduced in kernel version 4.12
++
++``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` provide general
++purpose support for map in map storage. One level of nesting is supported, where
++an outer map contains instances of a single type of inner map, for example
++``array_of_maps->sock_map``.
++
++When creating an outer map, an inner map instance is used to initialize the
++metadata that the outer map holds about its inner maps. This inner map has a
++separate lifetime from the outer map and can be deleted after the outer map has
++been created.
++
++The outer map supports element update and delete from user space using the
++syscall API. A BPF program is only allowed to do element lookup in the outer
++map.
++
++.. note::
++   - Multi-level nesting is not supported.
++   - Any BPF map type can be used as an inner map, except for
++     ``BPF_MAP_TYPE_PROG_ARRAY``.
++   - A BPF program cannot update or delete outer map entries.
++
++For ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` the key is an unsigned 32-bit integer index
++into the array. The array is a fixed size with ``max_entries`` elements that are
++zero initialized when created.
++
++For ``BPF_MAP_TYPE_HASH_OF_MAPS`` the key type can be chosen when defining the
++map. The kernel is responsible for allocating and freeing key/value pairs, up to
++the max_entries limit that you specify. Hash maps use pre-allocation of hash
++table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be used to disable
++pre-allocation when it is too memory expensive.
++
++Usage
++=====
++
++Kernel BPF Helper
++-----------------
++
++.. c:function::
++   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
++
++Inner maps can be retrieved using the ``bpf_map_lookup_elem()`` helper. This
++helper returns a pointer to the inner map, or ``NULL`` if no entry was found.
++
++Examples
++========
++
++Kernel BPF Example
++------------------
++
++This snippet shows how to create and initialise an array of devmaps in a BPF
++program. Note that the outer array can only be modified from user space using
++the syscall API.
++
++.. code-block:: c
++
++    struct inner_map {
++            __uint(type, BPF_MAP_TYPE_DEVMAP);
++            __uint(max_entries, 10);
++            __type(key, __u32);
++            __type(value, __u32);
++    } inner_map1 SEC(".maps"), inner_map2 SEC(".maps");
++
++    struct {
++            __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
++            __uint(max_entries, 2);
++            __type(key, __u32);
++            __array(values, struct inner_map);
++    } outer_map SEC(".maps") = {
++            .values = { &inner_map1,
++                        &inner_map2 }
++    };
++
++See ``progs/test_bpf_map_in_map.c`` in ``tools/testing/selftests/bpf`` for more
++examples of declarative initialisation of outer maps.
++
++User Space
++----------
++
++This snippet shows how to create an array based outer map:
++
++.. code-block:: c
++
++    int create_outer_array(int inner_fd) {
++            int fd;
++
++            LIBBPF_OPTS(bpf_map_create_opts, opts, .inner_map_fd = inner_fd);
++            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS,
++                                "example_array",       /* name */
++                                sizeof(__u32),         /* key size */
++                                sizeof(__u32),         /* value size */
++                                256,                   /* max entries */
++                                &opts);                /* create opts */
++            return fd;
++    }
++
++
++This snippet shows how to add an inner map to an outer map:
++
++.. code-block:: c
++
++    int add_devmap(int outer_fd, int index, const char *name) {
++            int fd;
++
++            fd = bpf_map_create(BPF_MAP_TYPE_DEVMAP, name,
++                                sizeof(__u32), sizeof(__u32), 256, NULL);
++            if (fd < 0)
++                    return fd;
++
++            return bpf_map_update_elem(outer_fd, &index, &fd, BPF_ANY);
++    }
++
++References
++==========
++
++- https://lore.kernel.org/netdev/20170322170035.923581-3-kafai@fb.com/
++- https://lore.kernel.org/netdev/20170322170035.923581-4-kafai@fb.com/
+-- 
+2.35.1
 
-Should we also introduce ESR_ELx_FSC(esr) for this?
-
-> +}
-> +
->  static inline bool is_el1_permission_fault(unsigned long addr, unsigned =
-long esr,
->                                            struct pt_regs *regs)
->  {
-> @@ -385,7 +390,8 @@ static void __do_kernel_fault(unsigned long addr, uns=
-igned long esr,
->         } else if (addr < PAGE_SIZE) {
->                 msg =3D "NULL pointer dereference";
->         } else {
-> -               if (kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, reg=
-s))
-> +               if (is_el1_translation_fault(esr) &&
-> +                   kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, reg=
-s))
->                         return;
->
->                 msg =3D "paging request";
---
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
