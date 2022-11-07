@@ -2,72 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B443E61F7C2
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 16:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E01C61F81F
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 17:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbiKGPfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 10:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S232108AbiKGQA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 11:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbiKGPfp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 10:35:45 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A589C35
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 07:35:43 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id j5-20020a05600c410500b003cfa9c0ea76so1981238wmi.3
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 07:35:43 -0800 (PST)
+        with ESMTP id S232161AbiKGQAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 11:00:25 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F73638A;
+        Mon,  7 Nov 2022 08:00:22 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id f5so31386224ejc.5;
+        Mon, 07 Nov 2022 08:00:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hNwAYHnHbOqb9YnU6BP3lOqlyARkljca2W1ssOf4eXQ=;
-        b=c6ox0GAvIAVGpCJw4enoq51gW4oKJmdI+WfdR0Tfv3N/XxnWHUzFT/H/EjESMkQHlC
-         Gywo8LMKFINy7hSCS5ydglaJtocWzGSVyLVO/V9PiHRWD2f9cZTJE7UISw8MYARVLHYL
-         DRG64E3xTiBJRkYiuCJ97zrHlQs5DO6LhDxXm0Yjrth5gTQtRgks2FVYgNLE37xQlu8u
-         pNjoXVkaDwngv5OkihP26CFgoQV53JWHQIs6mr6+OGIVTiodscqG1pVVKz4dk1Ry1gXD
-         pBhYOvHtC6YM4YpNjIQTIUIIiM3h/8MJW8UWHISzRH1SzBKJ4u28CX39UAL4gPCVYSsK
-         GSdQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g+lIXqP4rj9xpDmU5hRWj/6YWyT2YMyOV99bvITSLGw=;
+        b=Dzzx/pid0uEsTtvM7XLovM8woWQJDT60+jm6is41mDgEax/ZkH2ZhI8T4mv3UQmpz7
+         uF8leVHpYCihcnxCP9CJ7xAcGhVLe1J0IDl5bH/fAQAnYppe9ezCWTLRagRw2yyVDqLQ
+         twG4w8cGvu1Fi6k8PgEAqMTigvlfj6w8N+UHzCzYI4tmmrSO0SqhiWf1FxksEwlT0dBJ
+         ld2aB+EsuZW34P8epCwSAHuRfeTz1x1k+xgW0GXO3XMAVUwtv1Yy2CZCrF5AtAJMLaur
+         jEcX2J7VJsSP0BHgYxRn6GqWhIgkz3NqjsM8ZQv70HzBv4jL2vOlHu0XoYMtNLK0ld+p
+         4MKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hNwAYHnHbOqb9YnU6BP3lOqlyARkljca2W1ssOf4eXQ=;
-        b=3u5hjx8bB5TbyA/RM6p8Ez7BZwLIdq1NY63kLXEfRZ3cXqKuUBwlyoLTq0jzUSbKkP
-         2zC06+ussd8V5HpnpEa1MJkfOXVRHnZe5u0907OVAJ3nZBvuLXftpWSmZ9+iJF2AbA71
-         mzhaQGDlfjg9YYyv9+Ji7T3uM/UKhgwPArCGxvchC9yd6IXM9d8PXg+F5M2IvMQPV32/
-         bnAywz5FVuOPcxmHp9YV3XJrXED8+GVy8CXRDyMji78rs4eESc6H5r5ZGySuOfqM+W7/
-         vlm22LNK6hYx15sv5z1//MfmpvvDbEtampha9xS4Zk2SEB/Cuezp9TnqSyLf+RukeyX3
-         gOZg==
-X-Gm-Message-State: ACrzQf09NaE5U13vDr8XtBe1wkrs0k2LEH5CThsuEswnixhLw7KxNO7t
-        UZrc8TrsmZcXIfbwrNOOmzQ=
-X-Google-Smtp-Source: AMsMyM7PHf0CQc36kRX5VZ6LTbTPCtCBMazcGrTO2T3PSyfJBwu6IXCBFF+3JbNcC34cO/yRV8eS9g==
-X-Received: by 2002:a05:600c:4586:b0:3c6:fbb0:bf5a with SMTP id r6-20020a05600c458600b003c6fbb0bf5amr44701684wmo.47.1667835341416;
-        Mon, 07 Nov 2022 07:35:41 -0800 (PST)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0a4500b003b4a68645e9sm13390779wmq.34.2022.11.07.07.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Nov 2022 07:35:40 -0800 (PST)
-Message-ID: <e54ee0f0528ad7b9e59c39b3e7da1144ed45cbba.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf:
- __attribute__((btf_decl_tag("..."))) for btf dump in C format
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        alan.maguire@oracle.com
-Date:   Mon, 07 Nov 2022 17:35:38 +0200
-In-Reply-To: <CAEf4Bzb9dcBy5JEWzphkfr=wzvcT8gXcCjA5UYPPKAywh=k_Fg@mail.gmail.com>
-References: <20221103134522.2764601-1-eddyz87@gmail.com>
-         <CAEf4Bzb9dcBy5JEWzphkfr=wzvcT8gXcCjA5UYPPKAywh=k_Fg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g+lIXqP4rj9xpDmU5hRWj/6YWyT2YMyOV99bvITSLGw=;
+        b=AdVXfaiERIQfIsv3dVgOLjfiE/efy4iKlVLopi1gihFJACj3AIDXCmCLFQznaYAVHx
+         I2eUPHOsTuURAlUMO/egKflWT3H8j/R2MFlL+twOADAJlW1rlDoQQruIvLTvJNh7pke0
+         xnBSRicZ4CWXM73x+vb7SOS6fiOzVenGjkLbQHPNCinfsk+31a7/v2R0SB/pEUxkT5ml
+         XLbEr3PoE6IfQCQVB2ApU+Gbam8VNRtIsZ/L9tmSCLRTFvtDY8LlyhMmwpvvy/I71gRJ
+         kBWZIpJty9c6739cfX8fKMILBxrGbkwN9mdjuTWxV0vsOIFpbtd9MVgCZZ+VSfU2mkn2
+         hjrA==
+X-Gm-Message-State: ACrzQf0+/buRaDlDzw1HUh/2B4CbMSznsSMPOUq8Ek/RN5VRFwaYLc2O
+        dj9+yB/cvwsmDEDF10lEASKWq3HZmHzF9bBh6u8=
+X-Google-Smtp-Source: AMsMyM5f1sOg/7ieiNovUftNSyFVCfw4+gAEpvzWwyAldDM3ERMOc2Mqb8vSCd6HkUUKovrUHad2eyGhUjAz8q6a8mY=
+X-Received: by 2002:a17:906:8a73:b0:7ae:3962:47e7 with SMTP id
+ hy19-20020a1709068a7300b007ae396247e7mr16098703ejc.502.1667836820607; Mon, 07
+ Nov 2022 08:00:20 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20221028165423.386151-1-roberto.sassu@huaweicloud.com>
+ <20221028165423.386151-2-roberto.sassu@huaweicloud.com> <CACYkzJ5gFu5a-NoKFD6XFNYMDyP+iPon=kHMimJybmNexbhAPg@mail.gmail.com>
+ <38c3ff70963de4a7a396c0fad84349c7c39c0f07.camel@huaweicloud.com>
+ <CAADnVQ+K0NMFKV8pQR+ZMHMM9KArRsLSv-F82_qbK4+4xaPxrg@mail.gmail.com> <7ecbf4fff621bb3340422ff668452c0bbf4c4e71.camel@huaweicloud.com>
+In-Reply-To: <7ecbf4fff621bb3340422ff668452c0bbf4c4e71.camel@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 7 Nov 2022 08:00:08 -0800
+Message-ID: <CAADnVQ+nmneJGNRHHh8yAbrewnD_SVsZmw1U=CzNf8AD38BTrw@mail.gmail.com>
+Subject: Re: [RESEND][RFC][PATCH 2/3] bpf-lsm: Limit values that can be
+ returned by security modules
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nicolas.bouchinet@clip-os.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,457 +89,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-11-04 at 13:54 -0700, Andrii Nakryiko wrote:
-> On Thu, Nov 3, 2022 at 6:45 AM Eduard Zingerman <eddyz87@gmail.com> wrote=
-:
-> >=20
-> > Clang's `__attribute__((btf_decl_tag("...")))` is represented in BTF
-> > as a record of kind BTF_KIND_DECL_TAG with `type` field pointing to
-> > the type annotated with this attribute. This commit adds
-> > reconstitution of such attributes for BTF dump in C format.
-> >=20
-> > BTF doc says that BTF_KIND_DECL_TAGs should follow a target type but
-> > this is not enforced and tests don't honor this restriction.
-> > This commit uses hashmap to map types to the list of decl tags.
-> > The hashmap is filled by `btf_dump_assign_decl_tags` function called
-> > from `btf_dump__new`.
-> >=20
-> > It is assumed that total number of types annotated with decl tags is
-> > relatively small, thus some space is saved by using hashmap instead of
-> > adding a new field to `struct btf_dump_type_aux_state`.
-> >=20
-> > It is assumed that list of decl tags associated with a single type is
-> > small. Thus the list is represented by an array which grows linearly.
-> >=20
-> > To accommodate older Clang versions decl tags are dumped using the
-> > following macro:
-> >=20
-> >  #if __has_attribute(btf_decl_tag)
-> >  #  define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
-> >  #else
-> >  #  define __btf_decl_tag(x)
-> >  #endif
-> >=20
-> > The macro definition is emitted upon first call to `btf_dump__dump_type=
-`.
-> >=20
-> > Clang allows to attach btf_decl_tag attributes to the following kinds
-> > of items:
-> > - struct/union         supported
-> > - struct/union field   supported
-> > - typedef              supported
-> > - function             not applicable
-> > - function parameter   not applicable
-> > - variable             not applicable
-> >=20
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf_dump.c | 163 ++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 160 insertions(+), 3 deletions(-)
-> >=20
->=20
-> Functions and their args can also have tags. This works:
->=20
-> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_ta=
-g.c
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> index 7a5af8b86065..75fcabe700cd 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> @@ -54,7 +54,7 @@ struct root_struct {
->=20
->  /* ------ END-EXPECTED-OUTPUT ------ */
->=20
-> -int f(struct root_struct *s)
-> +int f(struct root_struct *s __btf_decl_tag("func_arg_tag"))
-> __btf_decl_tag("func_tag")
->  {
->         return 0;
->  }
->=20
-> And I see correct BTF:
->=20
-> [26] FUNC 'f' type_id=3D25 linkage=3Dglobal
-> [27] DECL_TAG 'func_arg_tag' type_id=3D26 component_idx=3D0
-> [28] DECL_TAG 'func_tag' type_id=3D26 component_idx=3D-1
->=20
-> So let's add support and test for that case as well. btf_dump
-> shouldn't assume vmlinux.h-only case.
->=20
-> Also, please check if DATASEC and VARs can have decl_tags associated with=
- them.
+On Mon, Nov 7, 2022 at 4:33 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> On Fri, 2022-11-04 at 17:42 -0700, Alexei Starovoitov wrote:
+> > On Fri, Nov 4, 2022 at 8:29 AM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > On Thu, 2022-11-03 at 16:09 +0100, KP Singh wrote:
+> > > > On Fri, Oct 28, 2022 at 6:55 PM Roberto Sassu
+> > > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > >
+> > > > > BPF LSM defines a bpf_lsm_*() function for each LSM hook, so that
+> > > > > security modules can define their own implementation for the desired hooks.
+> > > > >
+> > > > > Unfortunately, BPF LSM does not restrict which values security modules can
+> > > > > return (for non-void LSM hooks). Security modules might follow the
+> > > > > conventions stated in include/linux/lsm_hooks.h, or put arbitrary values.
+> > > > >
+> > > > > This could cause big troubles, as the kernel is not ready to handle
+> > > > > possibly malicious return values from LSMs. Until now, it was not the
+> > > >
+> > > > I am not sure I would call this malicious. This would be incorrect, if
+> > > > someone is writing a BPF LSM program they already have the powers
+> > > > to willingly do a lot of malicious stuff.
+> > > >
+> > > > It's about unknowingly returning values that can break the system.
+> > >
+> > > Maybe it is possible to return specific values that lead to acquire
+> > > more information/do actions that the eBPF program is not supposed to
+> > > cause.
+> > >
+> > > I don't have a concrete example, so I will use the word you suggested.
+> > >
+> > > > > case, as each LSM is carefully reviewed and it won't be accepted if it
+> > > > > does not meet the return value conventions.
+> > > > >
+> > > > > The biggest problem is when an LSM returns a positive value, instead of a
+> > > > > negative value, as it could be converted to a pointer. Since such pointer
+> > > > > escapes the IS_ERR() check, its use later in the code can cause
+> > > > > unpredictable consequences (e.g. invalid memory access).
+> > > > >
+> > > > > Another problem is returning zero when an LSM is supposed to have done some
+> > > > > operations. For example, the inode_init_security hook expects that their
+> > > > > implementations return zero only if they set the name and value of the new
+> > > > > xattr to be added to the new inode. Otherwise, other kernel subsystems
+> > > > > might encounter unexpected conditions leading to a crash (e.g.
+> > > > > evm_protected_xattr_common() getting NULL as argument).
+> > > > >
+> > > > > Finally, there are LSM hooks which are supposed to return just one as
+> > > > > positive value, or non-negative values. Also in these cases, although it
+> > > > > seems less critical, it is safer to return to callers of the LSM
+> > > > > infrastructure more precisely what they expect.
+> > > > >
+> > > > > As eBPF allows code outside the kernel to run, it is its responsibility
+> > > > > to ensure that only expected values are returned to LSM infrastructure
+> > > > > callers.
+> > > > >
+> > > > > Create four new BTF ID sets, respectively for hooks that can return
+> > > > > positive values, only one as positive value, that cannot return zero, and
+> > > > > that cannot return negative values. Create also corresponding functions to
+> > > > > check if the hook a security module is attached to belongs to one of the
+> > > > > defined sets.
+> > > > >
+> > > > > Finally, check in the eBPF verifier the value returned by security modules
+> > > > > for each attached LSM hook, and return -EINVAL (the security module cannot
+> > > > > run) if the hook implementation does not satisfy the hook return value
+> > > > > policy.
+> > > > >
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
+> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > ---
+> > > > >  include/linux/bpf_lsm.h | 24 ++++++++++++++++++
+> > > > >  kernel/bpf/bpf_lsm.c    | 56 +++++++++++++++++++++++++++++++++++++++++
+> > > > >  kernel/bpf/verifier.c   | 35 +++++++++++++++++++++++---
+> > > > >  3 files changed, 112 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > > > > index 4bcf76a9bb06..cd38aca4cfc0 100644
+> > > > > --- a/include/linux/bpf_lsm.h
+> > > > > +++ b/include/linux/bpf_lsm.h
+> > > > > @@ -28,6 +28,10 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> > > > >                         const struct bpf_prog *prog);
+> > > > >
+> > > > >  bool bpf_lsm_is_sleepable_hook(u32 btf_id);
+> > > > > +bool bpf_lsm_can_ret_pos_value(u32 btf_id);
+> > > > > +bool bpf_lsm_can_ret_only_one_as_pos_value(u32 btf_id);
+> > > > > +bool bpf_lsm_cannot_ret_zero(u32 btf_id);
+> > > > > +bool bpf_lsm_cannot_ret_neg_value(u32 btf_id);
+> > > > >
+> > > >
+> > > > This does not need to be exported to the rest of the kernel. Please
+> > > > have this logic in bpf_lsm.c and export a single verify function.
+> > > >
+> > > > Also, these really don't need to be such scattered logic, Could we
+> > > > somehow encode this into the LSM_HOOK definition?
+> > >
+> > > The problem is that a new LSM_HOOK definition would apply to every LSM
+> > > hook, while we need the ability to select subsets.
+> > >
+> > > I was thinking, but I didn't check yet, what about using BTF_ID_FLAGS,
+> > > introducing a flag for each interval (<0, 0, 1, >1) and setting the
+> > > appropriate flags for each LSM hook?
+> >
+> > Before adding infra to all hooks, let's analyze all hooks first.
+> > I thought the number of exceptions is very small.
+> > 99% of hooks will be fine with IS_ERR.
+> > If so, adding an extra flag to every hook will cause too much churn.
+>
+> If I counted them correctly, there are 12 hooks which can return a
+> positive value. Among them, 6 can return only 1. 3 should not return a
+> negative value.
+>
+> A reason for making this change in the LSM infrastructure would be that
+> the return values provided there would be the official reference for
+> anyone dealing with LSM hooks (e.g. redefining the LSM_HOOK macro).
+>
+> Another reason would be that for new hooks, the developer introducing
+> them would have to provide the information. BPF LSM would use that
+> automatically (otherwise it might get out of sync).
 
-I see that right now decl tags are saved for:
-- BTF_KIND_VAR
-- BTF_KIND_FUNC
-- BTF_KIND_FUNC arguments
+I'd prefer these 12 hooks to get converted to IS_ERR instead.
+Especially those that can only return 1... why aren't they void?
 
-Decl tags are lost but legal for:
-- BTF_KIND_FUNC_PROTO arguments
+> The idea would be to use BTF_ID_FLAGS() with the flags coming from
+> lsm_hook_defs.h, and to check if a flag is set depending on the
+> interval of the return value provided by the eBPF program.
 
-I have not found a way to attach decl tag to DATASEC.
-
-For BTF_KIND_FUNC_PROTO  arguments it would  be great to  update clang
-first. Then  it would be  possible to keep all  decl tags checks  as a
-single  `btf_dump_test_case`.  On  the   other  hand  this  will  make
-testsuite dependent on the latest clang version, which is not great. I
-can add a test with hand-crafted BTF instead. Which way is preferable?
-
-BTF_KIND_FUNC is ignored by `btf_dump__dump_type_data`
-(via `btf_dump_unsupported_data`).
-
-BTF_KIND_VAR is dumped but current  testing infrastructure is not very
-convenient, it only checks for  some variables defined in vmlinux BTF.
-I can write a  test that accepts a custom built BTF  but this is still
-inferior   to  what   `test_btf_dump_case`  provides.   I've  extended
-`test_btf_dump_case` to print DATASEC  with subordinate vars alongside
-the type definitions instead.
-
-------
-
-$ cat test.c=20
-#define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
-
-int var __btf_decl_tag("var_tag");
-
-struct root {
-  int a;
-  int (*b)(int x __btf_decl_tag("arg_tag_proto")) __btf_decl_tag("field_tag=
-");
-};
-
-int foo(struct root *x __btf_decl_tag("arg_tag_fn")) __btf_decl_tag("func_t=
-ag_fn") {
-  return 0;
-}
-$ clang -g -O2 -mcpu=3Dv3 -target bpf -c test.c -o test.o
-$ bpftool btf dump file test.o
-[1] PTR '(anon)' type_id=3D2
-[2] STRUCT 'root' size=3D16 vlen=3D2
-	'a' type_id=3D3 bits_offset=3D0
-	'b' type_id=3D4 bits_offset=3D64
-[3] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
-[4] PTR '(anon)' type_id=3D5
-[5] FUNC_PROTO '(anon)' ret_type_id=3D3 vlen=3D1
-	'(anon)' type_id=3D3
-[6] DECL_TAG 'field_tag' type_id=3D2 component_idx=3D1
-[7] FUNC_PROTO '(anon)' ret_type_id=3D3 vlen=3D1
-	'x' type_id=3D1
-[8] FUNC 'foo' type_id=3D7 linkage=3Dglobal
-[9] DECL_TAG 'arg_tag_fn' type_id=3D8 component_idx=3D0
-[10] DECL_TAG 'func_tag_fn' type_id=3D8 component_idx=3D-1
-[11] VAR 'var' type_id=3D3, linkage=3Dglobal
-[12] DECL_TAG 'var_tag' type_id=3D11 component_idx=3D-1
-[13] DATASEC '.bss' size=3D0 vlen=3D1
-	type_id=3D11 offset=3D0 size=3D4 (VAR 'var')
-
-> [...]
->=20
-> > @@ -143,6 +174,7 @@ static void btf_dump_printf(const struct btf_dump *=
-d, const char *fmt, ...)
-> >=20
-> >  static int btf_dump_mark_referenced(struct btf_dump *d);
-> >  static int btf_dump_resize(struct btf_dump *d);
-> > +static int btf_dump_assign_decl_tags(struct btf_dump *d);
-> >=20
-> >  struct btf_dump *btf_dump__new(const struct btf *btf,
-> >                                btf_dump_printf_fn_t printf_fn,
-> > @@ -179,11 +211,21 @@ struct btf_dump *btf_dump__new(const struct btf *=
-btf,
-> >                 d->ident_names =3D NULL;
-> >                 goto err;
-> >         }
-> > +       d->decl_tags =3D hashmap__new(identity_hash_fn, identity_equal_=
-fn, NULL);
-> > +       if (IS_ERR(d->decl_tags)) {
-> > +               err =3D PTR_ERR(d->decl_tags);
-> > +               d->decl_tags =3D NULL;
->=20
-> nit: no need to clear out ERR pointer, hashmap__free() handles that prope=
-rly
->=20
-> > +               goto err;
-> > +       }
-> >=20
-> >         err =3D btf_dump_resize(d);
-> >         if (err)
-> >                 goto err;
-> >=20
-> > +       err =3D btf_dump_assign_decl_tags(d);
-> > +       if (err)
-> > +               goto err;
-> > +
-> >         return d;
-> >  err:
-> >         btf_dump__free(d);
-> > @@ -232,7 +274,8 @@ static void btf_dump_free_names(struct hashmap *map=
-)
-> >=20
-> >  void btf_dump__free(struct btf_dump *d)
-> >  {
-> > -       int i;
-> > +       int i, bkt;
-> > +       struct hashmap_entry *cur;
-> >=20
-> >         if (IS_ERR_OR_NULL(d))
-> >                 return;
-> > @@ -248,14 +291,22 @@ void btf_dump__free(struct btf_dump *d)
-> >         free(d->cached_names);
-> >         free(d->emit_queue);
-> >         free(d->decl_stack);
-> > -       btf_dump_free_names(d->type_names);
-> > -       btf_dump_free_names(d->ident_names);
-> > +       if (d->type_names)
-> > +               btf_dump_free_names(d->type_names);
-> > +       if (d->ident_names)
-> > +               btf_dump_free_names(d->ident_names);
-> > +       if (d->decl_tags) {
-> > +               hashmap__for_each_entry(d->decl_tags, cur, bkt)
-> > +                       free(cur->value);
-> > +               hashmap__free(d->decl_tags);
->=20
-> generalize btf_dump_free_names() to btf_dump_free_strs_map() and
-> handle IS_ERR_OR_NULL call internally?
->=20
-> > +       }
-> >=20
-> >         free(d);
-> >  }
-> >=20
-> >  static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool thro=
-ugh_ptr);
-> >  static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 con=
-t_id);
-> > +static void btf_dump_maybe_define_btf_decl_tag(struct btf_dump *d);
->=20
-> naming nit: btf_dump_ensure_btf_decl_tag_macro() ?
->=20
-> >=20
-> >  /*
-> >   * Dump BTF type in a compilable C syntax, including all the necessary
-> > @@ -284,6 +335,8 @@ int btf_dump__dump_type(struct btf_dump *d, __u32 i=
-d)
-> >         if (err)
-> >                 return libbpf_err(err);
-> >=20
-> > +       btf_dump_maybe_define_btf_decl_tag(d);
-> > +
-> >         d->emit_queue_cnt =3D 0;
-> >         err =3D btf_dump_order_type(d, id, false);
-> >         if (err < 0)
-> > @@ -373,6 +426,61 @@ static int btf_dump_mark_referenced(struct btf_dum=
-p *d)
-> >         return 0;
-> >  }
-> >=20
-> > +/*
-> > + * This hashmap lookup is used in several places, so extract it as a
-> > + * function to hide all the ceremony with casts and NULL assignment.
-> > + */
-> > +static struct decl_tag_array *btf_dump_find_decl_tags(struct btf_dump =
-*d, __u32 id)
-> > +{
-> > +       struct decl_tag_array *decl_tags =3D NULL;
-> > +
-> > +       hashmap__find(d->decl_tags, (void *)(uintptr_t)id, (void **)&de=
-cl_tags);
-> > +
-> > +       return decl_tags;
-> > +}
-> > +
->=20
-> with your hashmap void * -> long refactoring this is not necessary,
-> though, right?
->=20
-> > +/*
-> > + * Scans all BTF objects looking for BTF_KIND_DECL_TAG entries.
-> > + * The id's of the entries are stored in the `btf_dump.decl_tags` tabl=
-e,
-> > + * grouped by a target type.
-> > + */
-> > +static int btf_dump_assign_decl_tags(struct btf_dump *d)
-> > +{
-> > +       __u32 id, new_cnt, type_cnt =3D btf__type_cnt(d->btf);
-> > +       struct decl_tag_array *decl_tags;
-> > +       const struct btf_type *t;
-> > +       int err;
-> > +
-> > +       for (id =3D 1; id < type_cnt; id++) {
-> > +               t =3D btf__type_by_id(d->btf, id);
-> > +               if (!btf_is_decl_tag(t))
-> > +                       continue;
-> > +
-> > +               decl_tags =3D btf_dump_find_decl_tags(d, t->type);
-> > +               /* Assume small number of decl tags per id, increase ar=
-ray size by 1 */
-> > +               new_cnt =3D decl_tags ? decl_tags->cnt + 1 : 1;
-> > +               if (new_cnt > MAX_DECL_TAGS_PER_ID)
-> > +                       return -ERANGE;
->=20
-> why artificial limitations? user will pay the price proportional to
-> its BTF, and we don't really care as the memory is allocated
-> dynamically anyway
->=20
-> > +
-> > +               /* Allocate new_cnt + 1 to account for decl_tag_array h=
-eader */
-> > +               decl_tags =3D libbpf_reallocarray(decl_tags, new_cnt + =
-1, sizeof(__u32));
->=20
-> oh, this new_cnt + 1 looks weird and error prone. we are reallocating
-> entire struct, not just an array, so realloc() makes more sense here.
-> How about:
->=20
-> decl_tags =3D realloc(decl_tags, sizeof(decl_tags) + new_cnt *
-> sizeof(decl_tags->tag_ids[0]));
->=20
-> ?
->=20
-> > +               if (!decl_tags)
-> > +                       return -ENOMEM;
-> > +
-> > +               err =3D hashmap__insert(d->decl_tags, (void *)(uintptr_=
-t)t->type, decl_tags,
-> > +                                     HASHMAP_SET, NULL, NULL);
->=20
-> why not using hashmap__set()?
->=20
-> > +               if (err) {
-> > +                       free(decl_tags);
->=20
-> hm... as this is written, it makes it look like double free can happen
-> if previous version of this pointer stays in d->decl_tags.
->=20
-> I think error shouldn't ever be returned because hashmap__insert()
-> won't be allocating any new memory, so I think it's best to leave a
-> small comment about this and just do:
->=20
-> (void)hashmap__set(d->decl_tag, t->type, (long)decl_tags, NULL, NULL);
->=20
-> and no error checking because we don't expect it to ever fail
->=20
-> > +                       return err;
-> > +               }
-> > +
-> > +               decl_tags->tag_ids[new_cnt - 1] =3D id;
-> > +               decl_tags->cnt =3D new_cnt;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static int btf_dump_add_emit_queue_id(struct btf_dump *d, __u32 id)
-> >  {
-> >         __u32 *new_queue;
-> > @@ -899,6 +1007,51 @@ static void btf_dump_emit_bit_padding(const struc=
-t btf_dump *d,
-> >         }
-> >  }
-> >=20
-> > +/*
-> > + * Define __btf_decl_tag to be either __attribute__ or noop.
-> > + */
-> > +static void btf_dump_maybe_define_btf_decl_tag(struct btf_dump *d)
-> > +{
-> > +       if (d->btf_decl_tag_is_defined || !hashmap__size(d->decl_tags))
-> > +               return;
-> > +
-> > +       d->btf_decl_tag_is_defined =3D true;
-> > +       btf_dump_printf(d, "#if __has_attribute(btf_decl_tag)\n");
-> > +       btf_dump_printf(d, "#  define __btf_decl_tag(x) __attribute__((=
-btf_decl_tag(x)))\n");
-> > +       btf_dump_printf(d, "#else\n");
-> > +       btf_dump_printf(d, "#  define __btf_decl_tag(x)\n");
-> > +       btf_dump_printf(d, "#endif\n\n");
-> > +}
-> > +
->=20
-> $ rg '#\s+define' | wc -l
-> 44
-> $ rg '#define' | wc -l
-> 696
->=20
-> not a big fan of this cuteness, #define is better IMO (more grep'able
-> as well, if anything)
->=20
-> > +/*
-> > + * Emits a list of __btf_decl_tag(...) attributes attached to some typ=
-e.
-> > + * Decl tags attached to a type and to it's fields reside in a same
-> > + * list, thus use component_idx to filter out relevant tags:
-> > + * - component_idx =3D=3D -1 designates the type itself;
-> > + * - component_idx >=3D  0 designates specific field.
-> > + */
-> > +static void btf_dump_emit_decl_tags(struct btf_dump *d,
-> > +                                   struct decl_tag_array *decl_tags,
-> > +                                   int component_idx)
-> > +{
-> > +       struct btf_type *decl_tag_t;
->=20
-> is there any ambiguity to justify verbose name? maybe just "t"?
->=20
-> > +       const char *decl_tag_text;
-> > +       struct btf_decl_tag *tag;
-> > +       __u32 i;
-> > +
-> > +       if (!decl_tags)
-> > +               return;
-> > +
-> > +       for (i =3D 0; i < decl_tags->cnt; ++i) {
-> > +               decl_tag_t =3D btf_type_by_id(d->btf, decl_tags->tag_id=
-s[i]);
-> > +               tag =3D btf_decl_tag(decl_tag_t);
-> > +               if (tag->component_idx !=3D component_idx)
-> > +                       continue;
-> > +               decl_tag_text =3D btf__name_by_offset(d->btf, decl_tag_=
-t->name_off);
-> > +               btf_dump_printf(d, " __btf_decl_tag(\"%s\")", decl_tag_=
-text);
-> > +       }
-> > +}
-> > +
-> >  static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
-> >                                      const struct btf_type *t)
-> >  {
-> > @@ -913,6 +1066,7 @@ static void btf_dump_emit_struct_def(struct btf_du=
-mp *d,
-> >                                      const struct btf_type *t,
-> >                                      int lvl)
-> >  {
-> > +       struct decl_tag_array *decl_tags =3D btf_dump_find_decl_tags(d,=
- id);
-> >         const struct btf_member *m =3D btf_members(t);
-> >         bool is_struct =3D btf_is_struct(t);
-> >         int align, i, packed, off =3D 0;
-> > @@ -945,6 +1099,7 @@ static void btf_dump_emit_struct_def(struct btf_du=
-mp *d,
-> >                         m_sz =3D max((__s64)0, btf__resolve_size(d->btf=
-, m->type));
-> >                         off =3D m_off + m_sz * 8;
-> >                 }
-> > +               btf_dump_emit_decl_tags(d, decl_tags, i);
-> >                 btf_dump_printf(d, ";");
-> >         }
-> >=20
-> > @@ -964,6 +1119,7 @@ static void btf_dump_emit_struct_def(struct btf_du=
-mp *d,
-> >         btf_dump_printf(d, "%s}", pfx(lvl));
-> >         if (packed)
-> >                 btf_dump_printf(d, " __attribute__((packed))");
-> > +       btf_dump_emit_decl_tags(d, decl_tags, -1);
-> >  }
-> >=20
-> >  static const char *missing_base_types[][2] =3D {
-> > @@ -1104,6 +1260,7 @@ static void btf_dump_emit_typedef_def(struct btf_=
-dump *d, __u32 id,
-> >=20
-> >         btf_dump_printf(d, "typedef ");
-> >         btf_dump_emit_type_decl(d, t->type, name, lvl);
-> > +       btf_dump_emit_decl_tags(d, btf_dump_find_decl_tags(d, id), -1);
-> >  }
-> >=20
-> >  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
-> > --
-> > 2.34.1
-> >=20
-
+BTF_ID_FLAGS is not appropriate for this.
