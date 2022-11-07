@@ -2,138 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D584761FAF8
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 18:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BFD61FB49
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 18:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbiKGRP7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 12:15:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S231921AbiKGR0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 12:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbiKGRP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 12:15:57 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466D220BC6;
-        Mon,  7 Nov 2022 09:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667841356; x=1699377356;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=N1bnCz4fk3zMX9lzTCpsSxKGgJYz7Wz+oYj3aAcVq6I=;
-  b=M8zJiIevJBoIWRdXlqL7+Wnc43deBHi+Jayqwj1mAK2JCamHVdHYE7nd
-   6snzMMI84L3rtQ7Kyq4fJ4e6hm1fzvjNeSYuoAjrUaL70SbPKfVyyWRm7
-   gUC014I9UGyiSKrnsyfPhBB1FApMUgKrXQ4k9ZoiHynYzxg/JSsnkb8FL
-   HFn9NDrjnZLwFfFUoHqoTbzNRFAeBU0sg8RCPof0/Bx3NqKsIvM/HRgIa
-   r1seZozBwNZu7vgXA97/xRkDnnORNTeBfvFEjsXcLL4y6qlNvq/lQzZzg
-   pCDT2SKI6o6uGfulDIdo3KSlqgrOcuaUIoxqjkwhvWHN5tlODUD+3bC7i
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="337190057"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="337190057"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2022 09:14:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="761167231"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="761167231"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 07 Nov 2022 09:14:45 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2A7HEhNj031969;
-        Mon, 7 Nov 2022 17:14:43 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [RFC bpf-next v2 10/14] ice: Support rx timestamp metadata for xdp
-Date:   Mon,  7 Nov 2022 18:11:30 +0100
-Message-Id: <20221107171130.559191-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <CAKH8qBuaJ1usZEirN9=ReugusS8t_=Mn0LoFdy93iOYpHs2+Yg@mail.gmail.com>
-References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-11-sdf@google.com> <20221104143547.3575615-1-alexandr.lobakin@intel.com> <CAKH8qBuaJ1usZEirN9=ReugusS8t_=Mn0LoFdy93iOYpHs2+Yg@mail.gmail.com>
+        with ESMTP id S232815AbiKGR0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 12:26:48 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DF82124D
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 09:26:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aLI+4wjhcQmAlu+Gn5bISv4vWpUWkAnzhvT5WsWZyPs=; b=IeEGQ3fgr586+CYhOV5y4IFBIJ
+        XPxBM0Rca6JHVxak18bq7Ml6Iuka7K+DnJAgjwKXOo0DuoqusIDphybfKTbjtu0/rBoFssTe3ZZ2S
+        N/mJXOm84q7sowtj3hyqyVCd6m3uFoHVXir4YfmS+62wFYSmqYi/o2pahmUFameYyv5khNmOcbask
+        nDpYm04ePoq4ipkiw4mxt1HVSwvYmJCFszbAwHeLLKB+p96K2Qs6jNFlLqkuy8FmBiXxR7V2oePgf
+        lnQAfejAYSEOMKv+BsKnkrv0Twi93RQC98noKKIhMBaIoGy5QgmeD27AZVSal8dJ8uIe9Yj9TnfoJ
+        CLDbGYLQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1os5tT-00GfW6-NJ; Mon, 07 Nov 2022 17:26:43 +0000
+Date:   Mon, 7 Nov 2022 09:26:43 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        peterz@infradead.org, hch@lst.de, rick.p.edgecombe@intel.com,
+        dave.hansen@intel.com, zhengjun.xing@linux.intel.com,
+        kbusch@kernel.org, p.raghav@samsung.com, dave@stgolabs.net,
+        vbabka@suse.cz, mgorman@suse.de, willy@infradead.org,
+        torvalds@linux-foundation.org, a.manzanares@samsung.com
+Subject: Re: [PATCH bpf-next v1 RESEND 1/5] vmalloc: introduce vmalloc_exec,
+ vfree_exec, and vcopy_exec
+Message-ID: <Y2k/0yIQ+iECMdaO@bombadil.infradead.org>
+References: <20221031222541.1773452-1-song@kernel.org>
+ <20221031222541.1773452-2-song@kernel.org>
+ <Y2MAR0aj+jcq+15H@bombadil.infradead.org>
+ <Y2Pjnd3mxA9fTlox@kernel.org>
+ <Y2QPpODzdP+2YSMN@bombadil.infradead.org>
+ <Y2isiVZcd9vA/kec@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2isiVZcd9vA/kec@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
-Date: Fri, 4 Nov 2022 11:21:47 -0700
-
-> On Fri, Nov 4, 2022 at 7:38 AM Alexander Lobakin
-> <alexandr.lobakin@intel.com> wrote:
-> >
-> > From: Stanislav Fomichev <sdf@google.com>
-> > Date: Thu,3 Nov 2022 20:25:28 -0700
-
-[...]
-
-> > Hey,
-> >
-> > FYI, our team wants to write a follow-up patch with ice support
-> > added, not like a draft, more of a mature code. I'm thinking of
-> > calling ice C function which would process Rx descriptors from
-> > that BPF code from the unrolling callback -- otherwise,
-> > implementing a couple hundred C code lines from ice_txrx_lib.c
-> > would be a bit too much :D
+On Mon, Nov 07, 2022 at 08:58:17AM +0200, Mike Rapoport wrote:
+> On Thu, Nov 03, 2022 at 11:59:48AM -0700, Luis Chamberlain wrote:
+> > On Thu, Nov 03, 2022 at 05:51:57PM +0200, Mike Rapoport wrote:
+> > 
+> > > I had to put this project on a backburner for $VARIOUS_REASONS, but I still
+> > > think that we need a generic allocator for memory with non-default
+> > > permissions in the direct map and that code allocation should build on that
+> > > allocator.
+> > 
+> > It seems this generalization of the bpf prog pack to possibly be used
+> > for modules / kprobes / ftrace is a small step in that direction.
+> > 
+> > > All that said, the direct map fragmentation problem is currently relevant
+> > > only to x86 because it's the only architecture that supports splitting of
+> > > the large pages in the direct map.
+> > 
+> > I was thinking even more long term too, using this as a proof of concept. If
+> > this practice in general helps with fragmentation, could it be used for
+> > experimetnation with compound pages later, as a way to reduce possible
+> > fragmentation.
 > 
-> Sounds good! I would gladly drop all/most of the driver changes for
-> the non-rfc posting :-)
-> I'll probably have a mlx4 one because there is a chance I might find
-> HW, but the rest I'll drop most likely.
-> (they are here to show how the driver changes might look like, hence
-> compile-tested only)
+> As Rick already mentioned, these patches help with the direct map
+> fragmentation only indirectly. With these patches memory is freed in
+> PMD_SIZE chunks and this makes the changes to the direct map in
+> vm_remove_mappings() to happen in in PMD_SIZE units and this is pretty much
+> the only effect of this series on the direct map layout.
+
+I understand that is what *this* series does. I was wondering is similar
+scheme may be useful to study to see if it helps with aggregating say
+something like 32 x 64 kb for compound page allocations of order 16 (64 Kib)
+to see if it may help with possible fragmentation concerns for that world
+where that may be useful in the future (completely unrelated to page
+permissions).
+
+> A bit unrelated, but I'm wondering now if we want to have the direct map
+> alias of the pages allocated for code also to be read-only...
 > 
-> Btw, does it make sense to have some small xsk selftest binary that
-> can be used to test the metadata with the real device?
-> The one I'm having right now depends on veth/namespaces; having a
-> similar one for the real hardware to qualify it sounds useful?
-> Something simple that sets up af_xdp for all queues, divers some
-> traffic, and exposes to the userspace consumer all the info about
-> frame metadata...
-> Or maybe there is something I can reuse already?
-
-There's XSk selftest already and recently Maciej added support for
-executing it on a physical device (via `-i <iface>` cmdline arg)[0].
-I guess the most optimal solution is to expand it to cover metadata
-cases as it has some sort of useful helper functions / infra? In the
-set I posted in June, I simply expanded xdp_meta selftest, but there
-weren't any XSk bits, so I don't think it's a way to go.
-
+> > > Whenever a large page in the direct map is split, all
+> > > kernel accesses via the direct map will use small pages which requires
+> > > dealing with 512 page table entries instead of one for 2M range.
+> > > 
+> > > Since small pages in the direct map are never collapsed back to large
+> > > pages, long living system that heavily uses eBPF programs will have its
+> > > direct map severely fragmented, higher TLB miss rate and worse overall
+> > > performance. 
+> > 
+> > Shouldn't compaction help with those situations?
 > 
-> 
-> > > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-> > > +             /* return true; */
-> > > +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
-> > > +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-> >
-> > [...]
-> >
-> > > --
-> > > 2.38.1.431.g37b22c650d-goog
-> >
-> > Thanks,
-> > Olek
+> Compaction helps to reduce fragmentation of the physical memory, it tries
+> to bring free physical pages next to each other to create large contiguous
+> chunks, but it does not change the virtual addresses the users of the
+> underlying data see.
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=a693ff3ed5610a07b1b0dd831d10f516e13cf6c6
+Sorry I understood that 'bpf prog pack' only only used *one* 2 MiB huge
+page for *all* eBPF JIT programs, and so the fragmentation issue prior
+to 'bpf prog pack' I thought was the fact that as eBPF programs are
+still alive, we have fragmentation. In the world without 'bpf prog pack'
+I thought no huge pages were used.
 
-Thank,
-Olek
+> Changing permissions of a small page in the direct map causes
+> "discontinuity" in the virtual space. E.g. if we have 2M mapped RW with a
+> single PMD changing several page in the middle of those 2M to R+X will
+> require to remap that range with 512 PTEs.
+
+Makes sense, thanks.
+
+  Luis
