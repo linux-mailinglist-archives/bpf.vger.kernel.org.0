@@ -2,139 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 349DE61FED3
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 20:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB13C61FF68
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 21:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbiKGTle (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 14:41:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        id S232069AbiKGUSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 15:18:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232582AbiKGTld (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 14:41:33 -0500
+        with ESMTP id S231790AbiKGUSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 15:18:01 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E731002;
-        Mon,  7 Nov 2022 11:41:32 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A7JaVgt011943;
-        Mon, 7 Nov 2022 11:41:15 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F52AE2D;
+        Mon,  7 Nov 2022 12:18:00 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A7JaSIR012872;
+        Mon, 7 Nov 2022 12:17:56 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
+ subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=NypOF+9rh/Q91c4KA9+tOqiVriqY00KxfaxbHmllXGM=;
- b=f7wgRfRjHsEJfHXj1NgiZ1Luap02RSh10FBXfzrU82bnyqKmKtp/XqnPasOLitmZ+NFn
- ZhXDxo/hE+uDbIkHb6rqQCa33zNKHsbaIBDz4oO/5v6IUAHFivHwCY2JOu8SSy4PADzd
- ou5IFi4jRrRTBeLXvzD2AaSxXfT44x6Hv0xRm8eaz03grt4P2Se5uKFSPschBPctMOeV
- hMIPCvh6/L7HqJhTN2ooYEvMlUL+2g52KYpAa5JWEj2yP3SWIB+MSVPX8Bj7hkrjTPAp
- 15Apos3YSxUtcFDoSp1jGefCwn7RU0CLlMFZNxiOK/c0nQfnVYZz75z/9cDYPWkJEPUw 8A== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3knnhnsvmf-1
+ bh=86tZqmXkMov3REgCDCBEIlQMILLXEKmk1u0st5GonYc=;
+ b=c13CArE76x6Y2OfCVLWmWEAP+WPA/XmxaNWnOKZRTq4rCsd0zthtXLapIz6p0/vb/8n2
+ b9755OcT3bQ+L+FlnETFgzHv5ytWk8aGQhOBNLjjD8aNmec1QBZyQJBkih5oPSyOWsfM
+ BlRXt2r+t3H+Ete33RFgpaAt1MORabaSt6D5+fjg0jTCdaUQ16ytZQIucEGWP4A+xL4r
+ nAXvsTDWwYxPXpdDOGwS9/4pWc0T44VtCWyXtB4chnAPDi/H8zYR0EeNAIdmcv0QVXk2
+ H7As3ACHukdj7ZLjENbNbDMDkaWgg5XMmxPbqMGF0B2j6Yo4+dFckURh/DbLVb/gtGKK bg== 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2177.outbound.protection.outlook.com [104.47.73.177])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3knk5mjwg8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Nov 2022 11:41:14 -0800
+        Mon, 07 Nov 2022 12:17:56 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R+vF1d1FlgIALoG37xFpgzOmQoCxVF0Na4yd1aphH9LEAR56iDHA7l06hJWZAn29VsPnuaaVRnAVy7FOiAaZ33p0u8+kAvSKFyciFxbYOWuXDnMZs5elX3JJ2bkgK9wk0x9WJHZYqh0Dg08MYqSNXmUpukzFN+4Jb8B63ziL+MMZWFDM+CkvwAxbSVFJJ3amzR9zlffas+gnRivx1s4yWI5eyIPJWlED1MOOcUlJ5/ULiRyzgLh9OYroSGR2AAwnAyjrwKM3fvysB9RG0q1a4bo3dPhIUSQFy8SdMgylZmGiBP6hw2TtC9GAJypPQ7QB88km5roZCbK+YSCTdHPe6A==
+ b=Vem+6ZNUoNmsXR8lKOGyaEqP6ipeyCovT98sk3ADNyfNNOm+feFDL14qdgcl0J9Z9ai7OCW9W01X18KUkgoZ4nUcDbSSlyB0uvcDXz58ZzhQUZ/ZldFQx9heVgi7gPR8wB0uPRqumXczNHv2JnhONOA0R4IXW/tTmcnAwl85MDnaAo2FQq4NwtNQ6QcrUUvp2wYUDPaEi0mcJP/vU5ts0jyIz2MZT5M1e4Y1PhyeqBQKog3UyRT7sMGqe1bOVllQVwtuwAEQZK7Xd5rAxU0UUT1HpbTBexh1Xtc5F2gGrAG7+UYhVRQqGiIW2m3NOIZ7LD6F38iNzs9NNdWF4xtQCg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NypOF+9rh/Q91c4KA9+tOqiVriqY00KxfaxbHmllXGM=;
- b=ZbXOJ568NCwjSH7OTFfY8qmYPy8TazyvzhTuV5EIpB+dyOBLrZvNDjV4E8hP3NuJI2Tj9keM4Z7FnN9AyYtMf2FZK7Nr5M/6QQjdRreB84ovFuDgbVi9zdb2DdJ5/tGL1uzrXXXzXWWUKKu9aUIlty5mmUpXfqmSQi9SNDEijpRFeyu6iLyUISRUVN3qxAOjmi8kJYtwQYnKMm6UGsrPSgeqBdZD1qC3M3W44KPmm0D88FsbXyUHzcmNbNBkDKlriiX58zKGMjzDsbe/i0qeIysUdgeviWD1DunULJg14tzqITmambYdGp0XaKdcVk5o0LYHdPhaOiWZjP995C1Kyg==
+ bh=86tZqmXkMov3REgCDCBEIlQMILLXEKmk1u0st5GonYc=;
+ b=KH9UrUAWqViP+v7hBJbvhBwuCJaPt2XO/8onaMM6ZKQr9bi4ItJxR/tkjrhMh7FieBJ1WwO/YrXlOUhEisvmaE0fLxBYKpIHjL2/QaJqJGV4qiGrY3dIIfbNOZ0in6ETllP9RTViV/oJHhhp4mlrjrCRlY2+dt/RzqZMuRmv7pLrs/EhKzNq1djxNL+f33bJ0/U85Q1Rkx6e6PqdA66eVmHP+EzgGvdt+GebTXoURkZip3I34jK5einFY5UjWTyY29i/Qf+5CE+jB72p6Rw9pDcsK9jzkKJfMv6TgZed+ibgO0o32cSKVOkKO3Pe5PyITWlML8juJ1lzTlFI8o3VFg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB3066.namprd15.prod.outlook.com (2603:10b6:5:140::12) with
+ by BYAPR15MB3143.namprd15.prod.outlook.com (2603:10b6:a03:b5::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.20; Mon, 7 Nov
- 2022 19:41:12 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Mon, 7 Nov
+ 2022 20:17:53 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.026; Mon, 7 Nov 2022
- 19:41:11 +0000
-Message-ID: <ad5e6435-30d6-afa3-ab4a-5cc6767a0f09@meta.com>
-Date:   Mon, 7 Nov 2022 11:41:09 -0800
+ 20:17:53 +0000
+Message-ID: <26fe394e-b235-d992-b7ef-f8cc855e13d5@meta.com>
+Date:   Mon, 7 Nov 2022 12:17:50 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next v3] docs/bpf: document BPF ARRAY_OF_MAPS and
- HASH_OF_MAPS
+Subject: Re: [PATCH bpf-next v3 1/1] docs: BPF_MAP_TYPE_CPUMAP
 Content-Language: en-US
+To:     mtahhan@redhat.com, bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+References: <20221107165207.2682075-1-mtahhan@redhat.com>
+ <20221107165207.2682075-2-mtahhan@redhat.com>
 From:   Yonghong Song <yhs@meta.com>
-To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maryam Tahhan <mtahhan@redhat.com>,
-        kernel test robot <lkp@intel.com>
-References: <20221107134840.92633-1-donald.hunter@gmail.com>
- <1ef036ac-1499-ae14-0ceb-997fa03db509@meta.com>
-In-Reply-To: <1ef036ac-1499-ae14-0ceb-997fa03db509@meta.com>
+In-Reply-To: <20221107165207.2682075-2-mtahhan@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: SJ0PR03CA0142.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::27) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR10CA0021.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB3066:EE_
-X-MS-Office365-Filtering-Correlation-Id: 479f31f4-8b7b-4e4d-bca2-08dac0f80633
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BYAPR15MB3143:EE_
+X-MS-Office365-Filtering-Correlation-Id: d2fcd374-fa6e-4927-4444-08dac0fd264b
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U3Au9QKuNCQ+q3Y1CGE1xCzNs7iHSLPf7lfmtU98iGU/fYWZe6pTq7kf7JDx3entLt0eRnd6dT94AjjbbiLQhbj16GiWGkjnC3LNzXcTGiFzhL8T46rwIxAx0Bi5iKfPcTsfA5ILvZeLZTCSBqYYckYdPG+mh0tEp7/ap87z9+XHhScLOrHj/stUWuTwOGZheMGomVaPnYutUHlTJ1agHAjm34/N0+D27RbM3zWjP8tihrYVLZzGfz+2xbpda4ZmYMjTbI4SNZuTbrQ5L+aPXbzL7I6mw7+MbtbiKZ9yzBbMSgvWZQBKAtjqvFL6QeDmBYErX9JLIyqHx87hSIwpphAAOO7OgNGI3mZHxr0fBoPVieSBSNMrUEqmHHEPTqACtft44G9uLhFonZwBTuXt1i8cqHNRE/Czn0zKKp3aWVa6L4uAbZB7n8J03tzw3Ei0PQQtKlDDtRgWK2jQwDwj5NYhY9YUk4DBZ/t0tBYivi7B+QoF7cjWUZL2Nrt0lTtZ2G1D5d4Wjllx4SgPl/0TIZ+XWbwxPD3+RqXJKb0VoBQPvfLSmDph29c9eGmU+r8pGWVd4LMiPxAuDN+RBx8XmAirKKWt8vuTn3ic24WumSpby4QzUJb3gTzHcYXX4TotvavVKMZSjfvbbGz3iG/bHbLyaCsEZLdOtYozseyM9MeYPfnW8kPtiL84VGzGlq19418LlAykW4z9CHGzEqqsNLOiYd27fYHSrS0rP0NN1vWJ2pPu1ot0QBbgvj4GmfdEFvRdehzOL4TNcr74HjpAAmHcWAEf74QxxlGneti92I0HCjenmrrVfrWKWR7paAETmZaKIo7YCGgV0twk5MyP4F8psR20UbxBjDsNodoRlt9jva54DrrWQ9jj7vy2AG8f
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(346002)(366004)(39860400002)(376002)(396003)(451199015)(478600001)(2906002)(66946007)(316002)(8676002)(66476007)(4326008)(41300700001)(66556008)(5660300002)(6486002)(966005)(54906003)(8936002)(83380400001)(53546011)(38100700002)(6506007)(86362001)(31696002)(186003)(2616005)(6512007)(31686004)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: +ptEiofiWKGWPb1B8KFJfKvxCBBhNznmlLorynP+uRIPV2kSPkecsyCld/Q9w3xln6P1o9tXhnRP+hdUoML/+5QCb4AwqRVochsheIgNB3QzwcZ6I2dUci15vU7NLZMwkO43Edx0rNaY8VL5aiStcm7GgYTzANFgb6NuKl8rKmtc6cDEHte9J8W4039PFuwnR2KfWk0cVt1pRk6y4NMSXEu60mxMP4yDlYcprQDj5eaAmzy0qgwMttUMhm4r+x1ajAyRJzy6mJSLe537FsMlAdQiZx9Y1FWJC3bcPFfgIJkuBD0a3z/T93nHrjueSPS+5PrAUxskURU29PrlRz/VyERUSFO1Sh/e9F4gsuk6v+nXPVdSurZSGF8FLPKAAEqXJdJKbO3FK2JyxuWA+OJKU/iqJAkFLYFEPXtPdIt79d5DijSuI0hywNeJ3nAizc1LkrCSPP3LuWHCsv+r+whjSEDq+m/Fn9ZizsJqHzb3cvnYHK0pDRboABrFnKo6R2apDtCZ1+YJx6NjzRO8pM337aMuAUilV3RUXVd2qGYude6gJHgA25R6Nde3FechYPubFZ/DFe+Md+72YU7yo0bleQ/bHvriJ+fs7AHxlzX2/skkara59jbU3Cb6w+BIRAo4KcxUBBaMnfUTmQoyxX1RreNFxn8DRAb/dJ/YfLMRxQowfHdFPKydLHE6rZHMNYGge5maG8HOt+U8Py0HALmhvt0kBswPsUAQwV7QBUsSXZeDjPqrH9i2farXrASa6ZI3B3veIRmn5cQO0kfdI6at7HPh+rVXQoVIjXSXjo2ER80=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(451199015)(31696002)(86362001)(31686004)(36756003)(8936002)(5660300002)(2906002)(4744005)(66476007)(38100700002)(186003)(6512007)(2616005)(316002)(8676002)(66556008)(66946007)(4326008)(41300700001)(53546011)(6506007)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ckhrUGd3MzFFN2lFZUtqRzBic1NNMFhzblRtRldJU2NEemwvTnlmVG1GejBj?=
- =?utf-8?B?VW84NG9aalNraFhHcFA2a3RzcjJZSjV6cDk4NTJzK01zUkZ4S3F1SDJEMmMv?=
- =?utf-8?B?Mm5VK0pGa21wNEZLVmdiNkt4c1YxeWFmaWdmM3JiSmxEY0RuYi8wWTVmV3M4?=
- =?utf-8?B?L3lmUVZUT0I0TzJYQTRwSElvS2VFeHhxNWNuRGRSOU9pcDZCTjRCUmFYaHF6?=
- =?utf-8?B?R1JCbGYyaHFmYmk5TkJCRVlwZy90aHFWbVh6UlhLa09yL1kwa0pXbmJmbDYr?=
- =?utf-8?B?cnc5UFhnWWRuSVphZmF5V2wwY3ZhTnhieUJreG10UzUzVkJQYUJDalRVR1Mz?=
- =?utf-8?B?RGMwS0ozaFFvRnRvMkpId2RNNHJpMkZEZUQ5ZTBqQ0tmei8vN2orOGFDQUto?=
- =?utf-8?B?MlBXUm5xaU9rQTl1VFV1SFZwNkY4eGREOEM1MnZtS3NyMTNBVG5VSGUyd3JR?=
- =?utf-8?B?V04zdk9YSFlKUFdjWm5BUzArRjFvZk9BOGxoK1Bra0QzSGV1SEpScTREUDUz?=
- =?utf-8?B?UGdOY3ZkZ3Y2TmJNWVprNjN2TW52eTVCWFJWTFg4VXl2U2JEczF4ZnNJWSt0?=
- =?utf-8?B?c1hQUTNNYXg2bEtmaUQ4VlloQW1oVFZlUWNiQmhFYUlhMzRkYk1ySFZsaTJq?=
- =?utf-8?B?ejV6dVpscm1nU1Y3cUlRZjRTaHppejVRTkVJWkkyQmxRa3h2d05TdVcvTDVv?=
- =?utf-8?B?UEZqMGF1MkphZFBjazJwYm1LVm9ZVnRublFWUEJROVp1VFJNa1Y5c2I4QnZH?=
- =?utf-8?B?RmxDZmJFbDZqdm96OUpJWHdNem1HQlo5VTNHMXVENlN3cnp4aWVxVnpaUmQx?=
- =?utf-8?B?SStibXpDUzNNd3lOMWNJRHhCNzg5VDA1S0ZTSlNQT0pvWlhZbmxzSDB3NTVM?=
- =?utf-8?B?VlByV0wwMENhcjl6MDhWYm5XSGRCTU9LSk9ObmV6aGhEK25PdjkrTUNUL0hV?=
- =?utf-8?B?eVJqRysxMHlLQ1hwbEorbXZ3bDhnZ0s0SHFacERmM0JaRjJvUFRSNCtDRTQy?=
- =?utf-8?B?RVVjbDg0UmYwZStKcVB6UVNZdjIzYjhPSVg4cHIvenRIaGxoQTJqbHkxRUF3?=
- =?utf-8?B?VjZVdmRIKythUURkcm1mY01GT250N0FMY3RhTHRlWW8zNi9qYTFyeE1hZkFO?=
- =?utf-8?B?aTVEMGdpd0pZRlB4RUZQbmdkcXBabnA4T3l0L2o3OEdjbkxsRXMzWGo3TXRp?=
- =?utf-8?B?aDd1cXVDWjNud3BFQWpjenRXRGtVdko5dUtEL0hLbk5uM2FmbEtRSWEvbkdC?=
- =?utf-8?B?cTU2N2xtME9lQllnZ2ppQUM3R29FUXRHTmpDcDlqa0ttc0sydGtXMlMzOUZE?=
- =?utf-8?B?dEVRd0NobWpuU3dZb2YvVDJKZzZzdEJCR2JPb0VpbXM3VktYVUg1TkN3b0dE?=
- =?utf-8?B?QmFvdzhxeFhBMlUzT3ZVYVR1bjNjdkhNRzl2b2tNNmZ6SDlhL3R3YzN2Y1Y2?=
- =?utf-8?B?WjBpWkV1VWVGMDdTc3ZZaGVVTVZ6VzN0czhQamZueFArekNwUFEvcEdnSGpL?=
- =?utf-8?B?YWxMdzZjQ0tobENlWEhiVUFmdGVUZnFNdnBJb0tKK3p1ZHZ6RXhUSXhrOHNC?=
- =?utf-8?B?cDFYeFVaYTJhZzFsMXJBRWF2b3VhUlQ1NVR3RnFnZElVQ2pYNFZjVVB6RzdX?=
- =?utf-8?B?dkhDTTlSSVk1ZDNMaTVNcGhZOGVwaVZMcW5LSEFPb29SdXB6bll6eGZwOTVi?=
- =?utf-8?B?eFo1SS9YMUdaTGc3Qy9vUXk3RG4zTElMOVlHRVI0UmRaTTV5SG82RUlITUM0?=
- =?utf-8?B?aHNmUjNEUFY3RlJzTHU4amthWWJjK1BDUWFDVTl3RXdnUEZvVnNnNHNPZWl0?=
- =?utf-8?B?SUUxY1NCSWt4aVZKaUZNSlcrak1rVmFLbTVjbDErRWttY21OWmErTnRaU1lW?=
- =?utf-8?B?dTVra1M4R0ZycHdRcXRGYW45TnBONVhJekNQWStpY244NmJDV2VpZmpMTWRx?=
- =?utf-8?B?QVZabFdSYlFxa2dKVGJ4M2F4cm15Wm96WnZOeDhQNktMTmFJZ0hSN3MrK0hy?=
- =?utf-8?B?V2ZqT0RLWE9QbjQrdXBCMTFtN240ekdLb3kvZlU0dWlzNXdVM05tQjBqN09K?=
- =?utf-8?B?OHpTT0RRdllTSVB5ZkZpdVZVMk9FamdmQm5yaWtZenF1eFlNVlBwdTc1ZFph?=
- =?utf-8?B?NktaV0ZTaGREbG9MTXk3RWw5OWw5VUs4Wm1WYUhvNlRDMGkrblA5WkJvNWVm?=
- =?utf-8?B?VWc9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OWtnb3dCZ3d1bWhUazBabzB4WGRuZThxa0F5N2JrdjV2dTQ4SzRzUXZEL0s4?=
+ =?utf-8?B?UWY2eFZLU0tlRFZnUjBZMTFSdlY5Q3kvQkVodExwTTVmaEVZVW1ETXlIaDJW?=
+ =?utf-8?B?V2hsNC83cHJoVXdXcTZMRCtwNWkrbXBxMjJPWHA5ZlgvOGdVVklKNmQzNCt3?=
+ =?utf-8?B?c0NBeGVWZnpObmN1eFdTYkh5OHN3ZzFaN2paMHRyTUlad25GZkZTRzEzM2Nt?=
+ =?utf-8?B?bXU0VjV2QTZhdHZNdVJWUkF0NXNNZE94TENaUytOdURnY1R2Y3Qxdno0U1l5?=
+ =?utf-8?B?U3QvMXF2NTZhNk80M28vanNJTTloMXBUT2F5V0FuWDNYdjNQdjh3L3B0bThC?=
+ =?utf-8?B?VWM5Z2MyZWZoZkVWQ2h2anZscExUZEhOdmZTOG10ZndDeEJMS1B6ZEdMN2h0?=
+ =?utf-8?B?NHdnVzlhZ2NISm11VkpNWFM4YTBlQkJ2WG1sN0RMb21oajBRaE14WENVMnhs?=
+ =?utf-8?B?S3N6MzhVZlRoVzluOFBnSG9PRHVqckhzaFN3TzNLOGNkNWhKT1p1VjJNcUVq?=
+ =?utf-8?B?YThkc20rQ0ZhWGVvVXZwbnBRUkJiemUwSVc2RU9OZDhMWkVWM0xOVGpzKzMx?=
+ =?utf-8?B?Q0p3SGhKTk1tN1FPa2pQZk4vZjh2dEQwSE9POU1sc1FZdmo4VXhkOFovcUIy?=
+ =?utf-8?B?OUNzdlFsMmNidTJtZFdVRjRuTmdpTTBpcVVsSmNvdEgwUUNIclkvdFZVTnBV?=
+ =?utf-8?B?Q3gzdTZDU2NKR0lRNmxzUHZpNUlRcHZzR1lqT3I5SUIwaVRWbEdQazRORkd3?=
+ =?utf-8?B?YnJDRXRkTnZoejNpclIwNGNHODlyc0p5Z0JBNDk1Sml0b0o3RFNFK1FUVUxl?=
+ =?utf-8?B?VWpEdnZZOFYrWTR3VkRRd0RjUDNtM1ZjUnN2cnR6QmQ1c2VUTDZJMXQrTkJ3?=
+ =?utf-8?B?cllVLzA4NEphQjBBN2J0NEIwUTRUV2dRV3FQQ0pQRjQxRzR6Uk9IRXBSNDRl?=
+ =?utf-8?B?SjhwcExBOEVuaFBranlpQW5xQWFIWnJVejFNK1Bvc3JVV3pyOWUrNzRJY2pr?=
+ =?utf-8?B?V0lhbHlzR0pCbGExM2o1SU5oUFBUYzBYZ21JQlhsS3dNUThSeUJCdTluSHl4?=
+ =?utf-8?B?NmhuNjVDSXVSd2lmTlhXdnhlZWRwTU1lb1hzWmZyQlNBOUhDOEdCRGdSSktD?=
+ =?utf-8?B?NVFEbEtpQUdTREUzSWVNMmpaUGM2WEEwRWRmdmVKNDBiUzF3emZ5eGlFTmhN?=
+ =?utf-8?B?OURMUnRuMmh5NXNma3BsM2d6VVR5ZnR3UzJ3eURqVmM2dTNvRmhKbVltUnJn?=
+ =?utf-8?B?Wng5OHdybTNMalhUd3JkNU5aNkZHRGFVS0dnazVUV2xXRW9XejZFaDlPL0dF?=
+ =?utf-8?B?RzMxYnFiVXhMamplUHFPbUxGVjFvZmVMUkpuNW5lV0NmNlpvaVBPVlBBRE0v?=
+ =?utf-8?B?TE9QeWQ0WnNxYkEwYUlvT1dzbDVPRG1qYXg4UFZ5U2dodFRtdS9kVENQUkE5?=
+ =?utf-8?B?S3hmTFdIZ2hqejZEMnljdmUvWEVjejRRT2tadUlpdHE0YWQrRXVUYjJwSjJu?=
+ =?utf-8?B?d1l2WDNIZHQzWXhLdld0VHIreGhvZ2hTK3FFYzZpSkhLeHcycFVIR1lIU3RY?=
+ =?utf-8?B?b2cvaUh2bDBPb2hOcDdWNkxZKzBmY2wvTGdqQkF0b1hwQTlmanBjdC9UOHcw?=
+ =?utf-8?B?M1B5RmxSZWZ1allENkVHVEVYZmpveFhUd3hPUzRMVTB4MW5FaGJVYVJuNXZa?=
+ =?utf-8?B?cmFRd3RjRVhWMXFBd0VPbDBhenVKNU9CYXRVM3F6aU5hV3dwclBKVTk5bHo2?=
+ =?utf-8?B?MVJ4YnF5VSttRGRuQzlMRy9wb3JBTUU5OS80KzdkWWhVNWJkbFlzbEpybHBa?=
+ =?utf-8?B?L09SNy8rU2RURmRkT3RrY3ZnUjh2aUxsaXBwVFBIQmVCRGJYaXpxRHd3MmZ6?=
+ =?utf-8?B?Vkc2Ym85K2hLWTZiYU5vQ1lmaWljcnY5THpEdHl4NnhxUm5wdkNIZDNUZytK?=
+ =?utf-8?B?MHZkRkprSFNjblBtYkJxd0Z3UUdZaFJleUxjSHZJVGxwcWU5UW5JOTh6YXlW?=
+ =?utf-8?B?TVlWTGVZSFVJN09qSzlORHppTnk3VTFVN0Q2ZFR5bWIzZTBnNDNQTmZNZlFX?=
+ =?utf-8?B?M1Y4d3kvUlNRT2xLZmlrNWFQQXhMYjNZOWw2OVJhVXhMdW8vK1gra1VCU1pw?=
+ =?utf-8?B?UG14MGFFV0FWUHhTWlUrdjBCcy9GQUxhSVl3UHN3ZlEzb0RzaThXR1ZGSDgz?=
+ =?utf-8?B?Nmc9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 479f31f4-8b7b-4e4d-bca2-08dac0f80633
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2fcd374-fa6e-4927-4444-08dac0fd264b
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2022 19:41:11.6385
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2022 20:17:53.2447
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZAzb/8RcJ0SPQUVtty6i7Viy3Vmm9E5zXnYVOpV7qi9oTfyfEPgXLtVbmeQ443EA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3066
-X-Proofpoint-GUID: eE9a6c9H8u8ZKCAqq_E99OhaBeS2Ydh_
-X-Proofpoint-ORIG-GUID: eE9a6c9H8u8ZKCAqq_E99OhaBeS2Ydh_
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: k2AztpjGR6ycFYMCJzuUJ/RGAcpXJrmW2riIXFwkJ9Bou4XFlZWmJPUDgTKObEhZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3143
+X-Proofpoint-ORIG-GUID: RRdPG1SO-j4QhPw0TfqnSuYcgmGtx9Xu
+X-Proofpoint-GUID: RRdPG1SO-j4QhPw0TfqnSuYcgmGtx9Xu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
@@ -150,212 +143,14 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 11/7/22 9:46 AM, Yonghong Song wrote:
+On 11/7/22 8:52 AM, mtahhan@redhat.com wrote:
+> From: Maryam Tahhan <mtahhan@redhat.com>
 > 
+> Add documentation for BPF_MAP_TYPE_CPUMAP including
+> kernel version introduced, usage and examples.
 > 
-> On 11/7/22 5:48 AM, Donald Hunter wrote:
->> Add documentation for the ARRAY_OF_MAPS and HASH_OF_MAPS map types,
->> including usage and examples.
->>
->> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
->> ---
->> v2 -> v3:
->> - Update BPF example to show declarative initialisation, as
->>    suggested by Andrii Nakryiko
->> - Use LIBBPF_OPTS inline initialisation, as suggested by
->>    Andrii Nakryiko
->> - Fix duplicate label warning,
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> v1 -> v2:
->> - Fix formatting nits
->> - Tidy up code snippets as suggested by Maryam Tahhan
->> ---
->>   Documentation/bpf/map_of_maps.rst | 126 ++++++++++++++++++++++++++++++
->>   1 file changed, 126 insertions(+)
->>   create mode 100644 Documentation/bpf/map_of_maps.rst
->>
->> diff --git a/Documentation/bpf/map_of_maps.rst 
->> b/Documentation/bpf/map_of_maps.rst
->> new file mode 100644
->> index 000000000000..63e41b06a91d
->> --- /dev/null
->> +++ b/Documentation/bpf/map_of_maps.rst
->> @@ -0,0 +1,126 @@
->> +.. SPDX-License-Identifier: GPL-2.0-only
->> +.. Copyright (C) 2022 Red Hat, Inc.
->> +
->> +========================================================
->> +BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
->> +========================================================
->> +
->> +.. note::
->> +   - ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` 
->> were
->> +     introduced in kernel version 4.12
->> +
->> +``BPF_MAP_TYPE_ARRAY_OF_MAPS`` and ``BPF_MAP_TYPE_HASH_OF_MAPS`` 
->> provide general
->> +purpose support for map in map storage. One level of nesting is 
->> supported, where
->> +an outer map contains instances of a single type of inner map, for 
->> example
->> +``array_of_maps->sock_map``.
->> +
->> +When creating an outer map, an inner map instance is used to 
->> initialize the
->> +metadata that the outer map holds about its inner maps. This inner 
->> map has a
->> +separate lifetime from the outer map and can be deleted after the 
->> outer map has
->> +been created.
->> +
->> +The outer map supports element update and delete from user space 
->> using the
->> +syscall API. A BPF program is only allowed to do element lookup in 
->> the outer
->> +map.
-> 
-> The outer map supports element lookup, update and delete from user space 
-> using the syscall API.
-> 
-> A BPF program can do element delete for array/hash_of_maps. Please 
-> double check.
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Okay, I double checked with verifier.c. You are right, only lookup
-is supported for bpf programs.
-
-> 
->> +
->> +.. note::
->> +   - Multi-level nesting is not supported.
->> +   - Any BPF map type can be used as an inner map, except for
->> +     ``BPF_MAP_TYPE_PROG_ARRAY``.
->> +   - A BPF program cannot update or delete outer map entries.
-> 
-> A BPF program cannot update outer map entries.
-
-Yes, only lookup is allowed for bpf programs.
-
-> 
->> +
->> +For ``BPF_MAP_TYPE_ARRAY_OF_MAPS`` the key is an unsigned 32-bit 
->> integer index
->> +into the array. The array is a fixed size with ``max_entries`` 
->> elements that are
->> +zero initialized when created.
->> +
->> +For ``BPF_MAP_TYPE_HASH_OF_MAPS`` the key type can be chosen when 
->> defining the
->> +map. The kernel is responsible for allocating and freeing key/value 
->> pairs, up to
->> +the max_entries limit that you specify. Hash maps use pre-allocation 
->> of hash
->> +table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be used 
->> to disable
->> +pre-allocation when it is too memory expensive.
->> +
->> +Usage
->> +=====
->> +
->> +Kernel BPF Helper
->> +-----------------
->> +
->> +.. c:function::
->> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
->> +
->> +Inner maps can be retrieved using the ``bpf_map_lookup_elem()`` 
->> helper. This
->> +helper returns a pointer to the inner map, or ``NULL`` if no entry 
->> was found.
-> 
-> bpf_map_delete_elem?
-
-same here. bpf_map_delete_elem is not available for bpf programs.
-
-> 
->> +
->> +Examples
->> +========
->> +
->> +Kernel BPF Example
->> +------------------
->> +
->> +This snippet shows how to create and initialise an array of devmaps 
->> in a BPF
->> +program. Note that the outer array can only be modified from user 
->> space using
->> +the syscall API.
->> +
->> +.. code-block:: c
->> +
->> +    struct inner_map {
->> +            __uint(type, BPF_MAP_TYPE_DEVMAP);
->> +            __uint(max_entries, 10);
->> +            __type(key, __u32);
->> +            __type(value, __u32);
->> +    } inner_map1 SEC(".maps"), inner_map2 SEC(".maps");
->> +
->> +    struct {
->> +            __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
->> +            __uint(max_entries, 2);
->> +            __type(key, __u32);
->> +            __array(values, struct inner_map);
->> +    } outer_map SEC(".maps") = {
->> +            .values = { &inner_map1,
->> +                        &inner_map2 }
->> +    };
->> +
->> +See ``progs/test_bpf_map_in_map.c`` in 
->> ``tools/testing/selftests/bpf`` for more
-> 
-> The file name test_bpf_map_in_map.c` does not exist.
-> 
->> +examples of declarative initialisation of outer maps.
->> +
->> +User Space
->> +----------
->> +
->> +This snippet shows how to create an array based outer map:
->> +
->> +.. code-block:: c
->> +
->> +    int create_outer_array(int inner_fd) {
->> +            int fd;
->> +
->> +            LIBBPF_OPTS(bpf_map_create_opts, opts, .inner_map_fd = 
->> inner_fd);
-> 
-> This is declaration. Please put it adjacent to 'int fd'.
-> 
->> +            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS,
->> +                                "example_array",       /* name */
->> +                                sizeof(__u32),         /* key size */
->> +                                sizeof(__u32),         /* value size */
->> +                                256,                   /* max entries */
->> +                                &opts);                /* create opts */
->> +            return fd;
->> +    }
->> +
->> +
->> +This snippet shows how to add an inner map to an outer map:
->> +
->> +.. code-block:: c
->> +
->> +    int add_devmap(int outer_fd, int index, const char *name) {
->> +            int fd;
->> +
->> +            fd = bpf_map_create(BPF_MAP_TYPE_DEVMAP, name,
->> +                                sizeof(__u32), sizeof(__u32), 256, 
->> NULL);
->> +            if (fd < 0)
->> +                    return fd;
->> +
->> +            return bpf_map_update_elem(outer_fd, &index, &fd, BPF_ANY);
->> +    }
->> +
->> +References
->> +==========
->> +
->> +- https://lore.kernel.org/netdev/20170322170035.923581-3-kafai@fb.com/
->> +- https://lore.kernel.org/netdev/20170322170035.923581-4-kafai@fb.com/
+Acked-by: Yonghong Song <yhs@fb.com>
