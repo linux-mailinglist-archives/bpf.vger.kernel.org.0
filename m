@@ -2,112 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE9761F0BC
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 11:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC9661F11F
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 11:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbiKGKdz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 05:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
+        id S231797AbiKGKsU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 05:48:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbiKGKdu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 05:33:50 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD3B6EA6;
-        Mon,  7 Nov 2022 02:33:49 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDB7A1FB;
-        Mon,  7 Nov 2022 02:33:54 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.69.132])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96A1D3F534;
-        Mon,  7 Nov 2022 02:33:46 -0800 (PST)
-Date:   Mon, 7 Nov 2022 10:33:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Baisong Zhong <zhongbaisong@huawei.com>, elver@google.com,
-        Catalin Marinas <catalin.marinas@arm.com>, edumazet@google.com,
-        keescook@chromium.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH -next,v2] bpf, test_run: fix alignment problem in
- bpf_prog_test_run_skb()
-Message-ID: <Y2je9dJxUjEchB9k@FVFF77S0Q05N>
-References: <20221102081620.1465154-1-zhongbaisong@huawei.com>
- <CAG_fn=UDAjNd2xFrRxSVyLTZOAGapjSq2Zu5Xht12JNq-A7S=A@mail.gmail.com>
+        with ESMTP id S231651AbiKGKsU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 05:48:20 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C89119005
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 02:48:19 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id j17-20020a5d93d1000000b006bcdc6b49cbso6969433ioo.22
+        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 02:48:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9HymTYv1Z6I3VvgCZ0iLRhqEFf+ukVe1UdjyszgmAxI=;
+        b=mEzzxVM41lpz9SaLKqDnBMsTqeeWu0cMRBoT7nH/9XwJbUSs39V4RfXgHDY1N04s+Z
+         iQk3184kGl3hyktEmviBnVoP9Crf2yk4jJJeJ+klWB6/MMV6IRZgDVkNDiixRi9Ug0iU
+         m0PuuWo/SLvn0ct4TigJI8JWmVhfRB3Yo6RJbkZ4MQ3+WLfqqeDFyssprGv6wUDGYGl5
+         SiyY0ZZutUsRYVmcejluPQsq2y3GJdLU4zNPigetxfsjm2AkeZG4cssBJFDTPXCF1AIG
+         Z5GIxdqboyKTQSRXf4qZhVNpfeoyQPu0Er/qF8IZ1PB2qz1lXHguUeOOMmckZeab25dy
+         3Glg==
+X-Gm-Message-State: ANoB5pkliW6/mItYY9R93oukCH8+rGrr6V2w7X5QAHxLSWNbkuwqshH8
+        qWVYVwq5XHFg5D3lq9uuldl8xQroEytcIqbZixKdkN3gCxj6
+X-Google-Smtp-Source: AA0mqf7r1E4MKid00wX0yDhGFAGS6Xo1k+8PsoDNvQMQNAUP6OuSDpJhigPiU3WHs+JavxGKKAry0mzKRG/vb8O76Qox/AZOd5qM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG_fn=UDAjNd2xFrRxSVyLTZOAGapjSq2Zu5Xht12JNq-A7S=A@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:1565:b0:302:c61:4c38 with SMTP id
+ k5-20020a056e02156500b003020c614c38mr4401538ilu.76.1667818098935; Mon, 07 Nov
+ 2022 02:48:18 -0800 (PST)
+Date:   Mon, 07 Nov 2022 02:48:18 -0800
+In-Reply-To: <000000000000dc81b705a0af279c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000564bd705ecdf291f@google.com>
+Subject: Re: [syzbot] WARNING in bpf_check (3)
+From:   syzbot <syzbot+245129539c27fecf099a@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        martin.lau@linux.dev, memxor@gmail.com, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
+        shanavas@crystalwater.ae, song@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        trix@redhat.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 06:06:05PM +0100, Alexander Potapenko wrote:
-> On Wed, Nov 2, 2022 at 9:16 AM Baisong Zhong <zhongbaisong@huawei.com> wrote:
-> >
-> > we got a syzkaller problem because of aarch64 alignment fault
-> > if KFENCE enabled.
-> >
-> > When the size from user bpf program is an odd number, like
-> > 399, 407, etc, it will cause the struct skb_shared_info's
-> > unaligned access. As seen below:
-> >
-> > BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/skbuff.c:1032
-> 
-> It's interesting that KFENCE is reporting a UAF without a deallocation
-> stack here.
-> 
-> Looks like an unaligned access to 0xffff6254fffac077 causes the ARM
-> CPU to throw a fault handled by __do_kernel_fault()
+syzbot suspects this issue was fixed by commit:
 
-Importantly, an unaligned *atomic*, which is a bug regardless of KFENCE.
+commit 34dd3bad1a6f1dc7d18ee8dd53f1d31bffd2aee8
+Author: Alexei Starovoitov <ast@kernel.org>
+Date:   Fri Sep 2 21:10:47 2022 +0000
 
-> This isn't technically a page fault, but anyway the access address
-> gets passed to kfence_handle_page_fault(), which defaults to a
-> use-after-free, because the address belongs to the object page, not
-> the redzone page.
-> 
-> Catalin, Mark, what is the right way to only handle traps caused by
-> reading/writing to a page for which `set_memory_valid(addr, 1, 0)` was
-> called?
+    bpf: Relax the requirement to use preallocated hash maps in tracing progs.
 
-That should appear as a translation fault, so we could add an
-is_el1_translation_fault() helper for that. I can't immediately recall how
-misaligned atomics are presented, but I presume as something other than a
-translation fault.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1232e176880000
+start commit:   506357871c18 Merge tag 'spi-fix-v6.0-rc4' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b95a17a5bfb1521
+dashboard link: https://syzkaller.appspot.com/bug?extid=245129539c27fecf099a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10940477080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177e8f43080000
 
-If the below works for you, I can go spin that as a real patch.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Mark.
+#syz fix: bpf: Relax the requirement to use preallocated hash maps in tracing progs.
 
----->8----
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 5b391490e045b..1de4b6afa8515 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -239,6 +239,11 @@ static bool is_el1_data_abort(unsigned long esr)
-        return ESR_ELx_EC(esr) == ESR_ELx_EC_DABT_CUR;
- }
- 
-+static bool is_el1_translation_fault(unsigned long esr)
-+{
-+       return (esr & ESR_ELx_FSC_TYPE) == ESR_ELx_FSC_FAULT;
-+}
-+
- static inline bool is_el1_permission_fault(unsigned long addr, unsigned long esr,
-                                           struct pt_regs *regs)
- {
-@@ -385,7 +390,8 @@ static void __do_kernel_fault(unsigned long addr, unsigned long esr,
-        } else if (addr < PAGE_SIZE) {
-                msg = "NULL pointer dereference";
-        } else {
--               if (kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, regs))
-+               if (is_el1_translation_fault(esr) &&
-+                   kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, regs))
-                        return;
- 
-                msg = "paging request";
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
