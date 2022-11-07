@@ -2,259 +2,414 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335C361F953
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 17:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D3561FA0D
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 17:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbiKGQVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 11:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        id S231961AbiKGQiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 11:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbiKGQUn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 11:20:43 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A7B205E5;
-        Mon,  7 Nov 2022 08:20:10 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4N5brC4vK5z9v7gG;
-        Tue,  8 Nov 2022 00:13:31 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDn0G0WMGljx9JGAA--.121S2;
-        Mon, 07 Nov 2022 17:19:47 +0100 (CET)
-Message-ID: <ae11a88f0a56ff6164a2ae9d8f07e1c8da28c264.camel@huaweicloud.com>
-Subject: Re: [RESEND][RFC][PATCH 2/3] bpf-lsm: Limit values that can be
- returned by security modules
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+        with ESMTP id S231302AbiKGQh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 11:37:59 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20195F86
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 08:37:57 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A7GTKFU009034;
+        Mon, 7 Nov 2022 16:37:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=K5MWXdT7GL00Ranh7ycqu4zRFiz/nBZOIfEmvda+eXY=;
+ b=mUJc3Vh+afcNxGMbA/liH77jafI6IsVN/WtVmnBnjwppyFqooS4NmqRE//FA5NAdXDwD
+ XUit3HG2L0bJZ+6Fs265+VKch9JTe1jZzrZYT9kkuRGJUduReoS0ywNCToa0ev465FUL
+ QT4wCU21hOE2id1FZ9mnvJhIOEDlc5AzKLXveRIpJVzecSUqN09f+jGaYZiLXb3URQ63
+ vzIM584MhWSVz+xlSYM8RKvH/MB1iOtJbDUKGGicZUdMzpMW3ZU1q6m17q83fmGy0cGq
+ G2Tj3h7Nz8XW7BBkI370P1n4DOkIWat/v0ssqAYOIsjXlg9Z7k37E32wAuJxjDLkqqge EQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kngremedj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Nov 2022 16:37:33 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A7Ehglv003310;
+        Mon, 7 Nov 2022 16:37:33 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kpctb780r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Nov 2022 16:37:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AbOueZ/Nnow5BAUWK8gFoe07znF14X0kIZpIxuA3zyBZrA9CIsD0maE8fO55RRBIyQhKceLuy6Xvr8QVqzaWC7/zb28j0ULuTAAVRMaMAi7Bxq9QueXoxz2z+q0M59rnx+UZe9N1r0xXsiw921RBgYJVh966Ur3gYsY9YMn43NjOs8SeglHIuuOy5FFOZ7G1Tgcke/leHmyiks3kN/CdPzvNLJW33JBbBl6VIikNrbcvf4HKoqV9ih6DlqEOWOaOb0rLHKcifuSZPAwSl+ZY/UIbg6guigCBZu+TyRNmjX3QwctoDVhP8xpRSifPCgrieL9Gb/CP0tTRFDc2KrN8IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K5MWXdT7GL00Ranh7ycqu4zRFiz/nBZOIfEmvda+eXY=;
+ b=oCs2I8BDMoZWnBpX2djA5SWRWUsCB0yJMgdCoGADaNmaQKLeXBVQpHo7e7pWQlyhAqlY5G2PZ8LXabnQBHiN0rjP5aun1rakn04ShdpBQTAOSYAoMtPp8K20unSCRWqM/V2klRWAgj09ESBDqb62uyCTmmWjn/h5FtB6txbqnFQEdsxHmOKY7n/m9yLClxrPQLOJfXd59ICCRf9Ko/3a78LlYVTMYUevoGKbPZX9wyGZYilv7koTtlUIkCgYXWwxH+rVHdWFXwWGmuTj8RKqQKU0LcF05MvOs7y2qa2IWVaaw5hwdyMNJ971+X7JnkeL1eTrBxq/OD0iDiEdkSbP6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K5MWXdT7GL00Ranh7ycqu4zRFiz/nBZOIfEmvda+eXY=;
+ b=I69UWB4dCbuMrfXyuTkNbId1RUYdhL606VxwPHscGpLAF0enMnVpca+64aPljL4UeNtPiYTJ6LK22rhHXlWznxm8k5wCGbFFLIwqNdEO+wCQ8DDanBuXI3/Ds6afGIIGBvR1PF4FqbGPhJ8FwoK1jg31pwSeVX2F9sKBEX7HRUA=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by PH7PR10MB5853.namprd10.prod.outlook.com (2603:10b6:510:126::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.24; Mon, 7 Nov
+ 2022 16:37:30 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::46dc:29f:ee11:711]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::46dc:29f:ee11:711%8]) with mapi id 15.20.5791.026; Mon, 7 Nov 2022
+ 16:37:30 +0000
+Subject: Re: [RFC bpf-next 1/2] bpf: support standalone BTF in modules
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mimi Zohar <zohar@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nicolas.bouchinet@clip-os.org
-Date:   Mon, 07 Nov 2022 17:19:28 +0100
-In-Reply-To: <CAADnVQ+nmneJGNRHHh8yAbrewnD_SVsZmw1U=CzNf8AD38BTrw@mail.gmail.com>
-References: <20221028165423.386151-1-roberto.sassu@huaweicloud.com>
-         <20221028165423.386151-2-roberto.sassu@huaweicloud.com>
-         <CACYkzJ5gFu5a-NoKFD6XFNYMDyP+iPon=kHMimJybmNexbhAPg@mail.gmail.com>
-         <38c3ff70963de4a7a396c0fad84349c7c39c0f07.camel@huaweicloud.com>
-         <CAADnVQ+K0NMFKV8pQR+ZMHMM9KArRsLSv-F82_qbK4+4xaPxrg@mail.gmail.com>
-         <7ecbf4fff621bb3340422ff668452c0bbf4c4e71.camel@huaweicloud.com>
-         <CAADnVQ+nmneJGNRHHh8yAbrewnD_SVsZmw1U=CzNf8AD38BTrw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        bpf <bpf@vger.kernel.org>
+References: <1667577487-9162-1-git-send-email-alan.maguire@oracle.com>
+ <1667577487-9162-2-git-send-email-alan.maguire@oracle.com>
+ <CAADnVQJ-WXrTj86Qd4PHMFo+fyyn+qWCLMVOHR+upj=fog7zNg@mail.gmail.com>
+From:   Alan Maguire <alan.maguire@oracle.com>
+Message-ID: <1b17769a-7e22-b8ce-afaf-70314cc31f4f@oracle.com>
+Date:   Mon, 7 Nov 2022 16:37:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+In-Reply-To: <CAADnVQJ-WXrTj86Qd4PHMFo+fyyn+qWCLMVOHR+upj=fog7zNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwDn0G0WMGljx9JGAA--.121S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr15Zw47KF4UZrWUCrWxZwb_yoW3Xry7pF
-        WfJFyYkr4vyr43Jw1ava1rZa1Fyr1fKr4UXrnxJr1Yvw1qyrn8tr1UKr1Y9F95Gr1UKw1j
-        qr42qFy3u34DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAJBF1jj4UnjwAAsQ
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: LO2P123CA0013.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:a6::25) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|PH7PR10MB5853:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7baf1dd6-a5c7-4507-625a-08dac0de5cce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iUS9RQQjMYNNtpOFnxetRBW0KhYwMIIe8O19LjnbVxa3omt5UeA8pdGOwjBFb443248+9BXyI+QRc4frhnQH2yBCNFg79SHYvLqAKZ00XvuraYaEv5LlLYq77crG+93xJw0ViAP5h7eMmH6XatLXB0BcUSIGwcHONQyCwD+SL9olX0CtY1hkUG7QzmbLHiK0NpjgQXRaYdMih9fDT27V1qJaggaM7iWjQtozYBHhasn0i2JVU/6Idl4sz3KON7v/482scHUf0nM2LMqXVt4DIGWE8liibc6xbW8kY0/vcdWHiMDvZZcBjX0W6JvRcTxKJPYrC5pDNcR0q43IzDRso5J/CkYo07sOt0miUBLMboV4Jby9LUbppDORtVpOoSH6OpKBQdoJl/KY65z+W9BokPs9V1uqkMIiShnaDxnRQY/VGd4MyTDV/imCdyGhpUdW5o18lwhzfpv3uHKzAFOne3Sp9zIjInCOWC0k8fwXafDRMUOZsiCw3ACfAoEsPyedzPGjweEqBuDHVX4GIvf9j7mrZQJRxINcsh9xq1ZTZ/5CvYWYUDZ8KDJR6wytbQ2gDps69FTJWd794RAV+y4JDp/7Ryo6Q8oN0QVCJithnYt746eiy4Bbxnp6mqOnrpUfG/tQCJr0ccbhemwp8Ja12cQv80CqPIi4zs3ZnIGAzjdyicHWvR9pNNOKeaHCUFBlQ+CnTpipiqJl7a4jzfxrZX+ZPHYMMcV5z0Ps+JH5l7PKbGLQkWGKOvLJYpzKGqkjCnAwvPJ2bh/jJ61W7FIoRLYYOqjjWCVvKDitBzsLZaRXXyp+nk40pQ/6tD0GdjXkhK4Wtl0lMCvrznrpGpKfGLZyyWuDTZt5iuZx5LSZCY8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(39860400002)(366004)(346002)(396003)(136003)(451199015)(186003)(66899015)(36756003)(66946007)(4326008)(66556008)(8676002)(66476007)(83380400001)(44832011)(966005)(5660300002)(6486002)(478600001)(2906002)(6916009)(316002)(54906003)(7416002)(41300700001)(8936002)(53546011)(2616005)(6512007)(31686004)(38100700002)(86362001)(31696002)(6506007)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXNXS3ZESWVMNkNGN1lvY0lwWW9GYWVBbWgvUGRWZ3U1SHByT0NPMWVzeEli?=
+ =?utf-8?B?eWtSK0QvcFA5dTh3b21meGJqZVFIMGNpS29WSmI4Sm5rZGw0T0hoU1UyRHVo?=
+ =?utf-8?B?TURMdm5ZekVQMHVmTmE4bGhVQ0FjWDRqREhObTlmdkZoVkpIdU11NzlxZ2xi?=
+ =?utf-8?B?S0Q5YS83VjEwV1EzRFFGcmU0em16Uml3bU8rTTRWa21wRm14TWN2T1h5Z25O?=
+ =?utf-8?B?QUNXVmRMMi9aQTNvN0lFUGpuSWtQc2ZOWlF3ZTVOWWZUc2tjTjgwcWFCSFZs?=
+ =?utf-8?B?V0J2bCtTNGxHeDIvTUZRTFBhRFU0VG51b1Z5c0ZBL0w1eGlXRnhvLzR5cGNk?=
+ =?utf-8?B?cnVBK2I4VEZYa3VBTmM3L2pXWC9xa2dtWlVvdXpPSVFYYW0veUQyWE52aFR1?=
+ =?utf-8?B?QjllcDhsamQxNHJvdmhhcm03bWFCNEY4QW04Smt3VHQzd2Fma1lRVHVtK2tB?=
+ =?utf-8?B?L25BcUpIVm43RzJJdndtbjQxOGk5Y2tZYjJZWkl2MzlVY3YrK011VkdxVlJt?=
+ =?utf-8?B?OE1RakNuSWJDblpINkFwWjZPUkl0WU9RUkNMTTFBWTVDMmliNngvbXAvQTFn?=
+ =?utf-8?B?RUlqeW9xd215eFo1ekt3ellHWUhnd09HZm1JNmZsMlN3eFlNd1hhcTg4amtk?=
+ =?utf-8?B?bU4vUVlJcjkycEI1TFlic2JYM0VMYklqMERHR203T1JKNXJkN0RZc3c0UE5u?=
+ =?utf-8?B?cXV4TG43VVpxbFNWTWFPWlQyam5SaGxBVm1BUVhDcFBkT3BlWndJb2FwanhF?=
+ =?utf-8?B?a3BKS0VidWRLU3pEUG1adTVjTVdaVWFPM2QwZWovdldmNTVQekFJMjdYOUhV?=
+ =?utf-8?B?SFBmaHJoUEhHc1NCSm1Hc0dSc0l3bHF2WFVQWkxPRUhJSGxURlU0bUM3Mmxu?=
+ =?utf-8?B?dkFZR3d3OFE0ZXhSUjkvNUVZTGNnM2NWNlZYODBsRm1WWmpoNUhFS3lqbmtr?=
+ =?utf-8?B?Y2MwdEMzWmFoWG1KdkdJaXUxM054ckoxSndNRHNuajhmWmtVQVBUdFhRMGpp?=
+ =?utf-8?B?eGFsaFNNN2NVNzFWckZvbnBBMEhva05FcmhSNFpFWkVWUVJ1eStteDZ6c1kv?=
+ =?utf-8?B?K1Y2dC9IRHpEaUI0VUdueEM1M20rTFh6ZTVCbGhZU1BlMzFKcjFnK2crNGdu?=
+ =?utf-8?B?TnNPRXNmVDdKWFpKRC8rc2kxOTE1bVpuTFdqOWhvalNrZUJzTDdQTXZSakt3?=
+ =?utf-8?B?dm4yU3RZd3h0a2pPVFVGRStRSUNwUVBKSGtVcENxUlNlZWlnMVZ6ZElvWXZW?=
+ =?utf-8?B?MVdCL0kwZ2ZaMlp4S0JPaUxhelZRd3I3K0xudlUvY01peS90R1JhZ1U0YjZy?=
+ =?utf-8?B?Zm5hb2VxYTNLNFFVc1liYXBsQk1ZMDVzY1c1TW1rSUNtenRKM213N1VsaFQy?=
+ =?utf-8?B?SFN0QzAxSWpxVEZvOGNFVFVKd2QzVTdoclhnTm9WL0VySmFwQThiQWJVdUQ2?=
+ =?utf-8?B?MHlLNDVKcFJWKytmbFE1Tld3aVFrTDBlY0tOVTNFNVZudlRmbGJkbmNhUnZ6?=
+ =?utf-8?B?SUl0eFVSbXd3cVVTMTlXd1owS1R1Tm9oUXNhWXZUc1JsU1pxR0xCSjBNeWhG?=
+ =?utf-8?B?VGhvNWNuRFNnQi96dlZkTDdsZDM0a3BYZXFsQXFna2ZqV0lDMk16eTdXQzdC?=
+ =?utf-8?B?YmUxdjRWQjExcU0ybnAyd29mbVBraWlyYWhsaVBINDdtZEx1N1BYRjJsRS9p?=
+ =?utf-8?B?MG5qK24zSC83ZjYvT3pwZUxoV05sWWFSNnllUk1MZVJ2YVZxRlJtaVdiTEdH?=
+ =?utf-8?B?UnlwNUNleldZSnpjRS9naE80KzRNdzZXcS9mSzUvMGRKSkpGZFM4TTlPaXdJ?=
+ =?utf-8?B?Q1FaWGoxUUlhSEVPRmY5UjVoZlE2cHoyOEYzOWlWUHJNdThvcHN4czNWZjVz?=
+ =?utf-8?B?RjM0cmJNdTdWaDJaUGdwdmdYNzRGOXZwWDNROG00bTBPNFBlZlpHSmJmTVMr?=
+ =?utf-8?B?dWF4YnBuQnY2Ly9WNitTOHhBaVJUWjlydVZWa3BkdXQ1eEl3UTdBYzcySHV6?=
+ =?utf-8?B?MytKb0ZMWExDQmIvU1pUbndLdGxtcHJmRURaUHFZdmhFalIwa3BaWkxOYzN4?=
+ =?utf-8?B?ZFRkQjRZd0c5N2FHb09IdTBYanpOZGZ3NGlEOFQ0b3RmMWUwK2I0eDl0QXRj?=
+ =?utf-8?B?Z2tNcmZKdXVXMG15WEl5SEpVZnljME5jQmEwNXF0TjlkLzNveGlzNk1uWFFk?=
+ =?utf-8?Q?WkEIK3f+Vt1rZ+RVo8aikyg=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7baf1dd6-a5c7-4507-625a-08dac0de5cce
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2022 16:37:30.0367
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Dm6QH2vKUqM1xnE3ZE8FeAP55xMgfYP/uHKnLKwE8OHagigPh4YTa3g8Jdo/5oAnIoyR8fWLOMx4FEMJwmPqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5853
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_08,2022-11-07_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2211070132
+X-Proofpoint-ORIG-GUID: Y1SP4GD7pdb1XANX33O_kX9rmxVQPUK2
+X-Proofpoint-GUID: Y1SP4GD7pdb1XANX33O_kX9rmxVQPUK2
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-11-07 at 08:00 -0800, Alexei Starovoitov wrote:
-> On Mon, Nov 7, 2022 at 4:33 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Fri, 2022-11-04 at 17:42 -0700, Alexei Starovoitov wrote:
-> > > On Fri, Nov 4, 2022 at 8:29 AM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > On Thu, 2022-11-03 at 16:09 +0100, KP Singh wrote:
-> > > > > On Fri, Oct 28, 2022 at 6:55 PM Roberto Sassu
-> > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > 
-> > > > > > BPF LSM defines a bpf_lsm_*() function for each LSM hook, so that
-> > > > > > security modules can define their own implementation for the desired hooks.
-> > > > > > 
-> > > > > > Unfortunately, BPF LSM does not restrict which values security modules can
-> > > > > > return (for non-void LSM hooks). Security modules might follow the
-> > > > > > conventions stated in include/linux/lsm_hooks.h, or put arbitrary values.
-> > > > > > 
-> > > > > > This could cause big troubles, as the kernel is not ready to handle
-> > > > > > possibly malicious return values from LSMs. Until now, it was not the
-> > > > > 
-> > > > > I am not sure I would call this malicious. This would be incorrect, if
-> > > > > someone is writing a BPF LSM program they already have the powers
-> > > > > to willingly do a lot of malicious stuff.
-> > > > > 
-> > > > > It's about unknowingly returning values that can break the system.
-> > > > 
-> > > > Maybe it is possible to return specific values that lead to acquire
-> > > > more information/do actions that the eBPF program is not supposed to
-> > > > cause.
-> > > > 
-> > > > I don't have a concrete example, so I will use the word you suggested.
-> > > > 
-> > > > > > case, as each LSM is carefully reviewed and it won't be accepted if it
-> > > > > > does not meet the return value conventions.
-> > > > > > 
-> > > > > > The biggest problem is when an LSM returns a positive value, instead of a
-> > > > > > negative value, as it could be converted to a pointer. Since such pointer
-> > > > > > escapes the IS_ERR() check, its use later in the code can cause
-> > > > > > unpredictable consequences (e.g. invalid memory access).
-> > > > > > 
-> > > > > > Another problem is returning zero when an LSM is supposed to have done some
-> > > > > > operations. For example, the inode_init_security hook expects that their
-> > > > > > implementations return zero only if they set the name and value of the new
-> > > > > > xattr to be added to the new inode. Otherwise, other kernel subsystems
-> > > > > > might encounter unexpected conditions leading to a crash (e.g.
-> > > > > > evm_protected_xattr_common() getting NULL as argument).
-> > > > > > 
-> > > > > > Finally, there are LSM hooks which are supposed to return just one as
-> > > > > > positive value, or non-negative values. Also in these cases, although it
-> > > > > > seems less critical, it is safer to return to callers of the LSM
-> > > > > > infrastructure more precisely what they expect.
-> > > > > > 
-> > > > > > As eBPF allows code outside the kernel to run, it is its responsibility
-> > > > > > to ensure that only expected values are returned to LSM infrastructure
-> > > > > > callers.
-> > > > > > 
-> > > > > > Create four new BTF ID sets, respectively for hooks that can return
-> > > > > > positive values, only one as positive value, that cannot return zero, and
-> > > > > > that cannot return negative values. Create also corresponding functions to
-> > > > > > check if the hook a security module is attached to belongs to one of the
-> > > > > > defined sets.
-> > > > > > 
-> > > > > > Finally, check in the eBPF verifier the value returned by security modules
-> > > > > > for each attached LSM hook, and return -EINVAL (the security module cannot
-> > > > > > run) if the hook implementation does not satisfy the hook return value
-> > > > > > policy.
-> > > > > > 
-> > > > > > Cc: stable@vger.kernel.org
-> > > > > > Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
-> > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > ---
-> > > > > >  include/linux/bpf_lsm.h | 24 ++++++++++++++++++
-> > > > > >  kernel/bpf/bpf_lsm.c    | 56 +++++++++++++++++++++++++++++++++++++++++
-> > > > > >  kernel/bpf/verifier.c   | 35 +++++++++++++++++++++++---
-> > > > > >  3 files changed, 112 insertions(+), 3 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > > > > > index 4bcf76a9bb06..cd38aca4cfc0 100644
-> > > > > > --- a/include/linux/bpf_lsm.h
-> > > > > > +++ b/include/linux/bpf_lsm.h
-> > > > > > @@ -28,6 +28,10 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> > > > > >                         const struct bpf_prog *prog);
-> > > > > > 
-> > > > > >  bool bpf_lsm_is_sleepable_hook(u32 btf_id);
-> > > > > > +bool bpf_lsm_can_ret_pos_value(u32 btf_id);
-> > > > > > +bool bpf_lsm_can_ret_only_one_as_pos_value(u32 btf_id);
-> > > > > > +bool bpf_lsm_cannot_ret_zero(u32 btf_id);
-> > > > > > +bool bpf_lsm_cannot_ret_neg_value(u32 btf_id);
-> > > > > > 
-> > > > > 
-> > > > > This does not need to be exported to the rest of the kernel. Please
-> > > > > have this logic in bpf_lsm.c and export a single verify function.
-> > > > > 
-> > > > > Also, these really don't need to be such scattered logic, Could we
-> > > > > somehow encode this into the LSM_HOOK definition?
-> > > > 
-> > > > The problem is that a new LSM_HOOK definition would apply to every LSM
-> > > > hook, while we need the ability to select subsets.
-> > > > 
-> > > > I was thinking, but I didn't check yet, what about using BTF_ID_FLAGS,
-> > > > introducing a flag for each interval (<0, 0, 1, >1) and setting the
-> > > > appropriate flags for each LSM hook?
-> > > 
-> > > Before adding infra to all hooks, let's analyze all hooks first.
-> > > I thought the number of exceptions is very small.
-> > > 99% of hooks will be fine with IS_ERR.
-> > > If so, adding an extra flag to every hook will cause too much churn.
-> > 
-> > If I counted them correctly, there are 12 hooks which can return a
-> > positive value. Among them, 6 can return only 1. 3 should not return a
-> > negative value.
-> > 
-> > A reason for making this change in the LSM infrastructure would be that
-> > the return values provided there would be the official reference for
-> > anyone dealing with LSM hooks (e.g. redefining the LSM_HOOK macro).
-> > 
-> > Another reason would be that for new hooks, the developer introducing
-> > them would have to provide the information. BPF LSM would use that
-> > automatically (otherwise it might get out of sync).
+On 05/11/2022 22:54, Alexei Starovoitov wrote:
+> On Fri, Nov 4, 2022 at 8:58 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>
+>> Not all kernel modules can be built in-tree when the core
+>> kernel is built. This presents a problem for split BTF, because
+>> split module BTF refers to type ids in the base kernel BTF, and
+>> if that base kernel BTF changes (even in minor ways) those
+>> references become invalid.  Such modules then cannot take
+>> advantage of BTF (or at least they only can until the kernel
+>> changes enough to invalidate their vmlinux type id references).
+>> This problem has been discussed before, and the initial approach
+>> was to allow BTF mismatch but fail to load BTF.  See [1]
+>> for more discussion.
+>>
+>> Generating standalone BTF for modules helps solve this problem
+>> because the BTF generated is self-referential only.  However,
+>> tooling is geared towards split BTF - for example bpftool assumes
+>> a module's BTF is defined relative to vmlinux BTF.  To handle
+>> this, dynamic remapping of standalone BTF is done on module
+>> load to make it appear like split BTF - type ids and string
+>> offsets are remapped such that they appear as they would in
+>> split BTF.  It just so happens that the BTF is self-referential.
+>> With this approach, existing tooling works with standalone
+>> module BTF from /sys/kernel/btf in the same way as before;
+>> no knowledge of split versus standalone BTF is required.
+>>
+>> Currently, the approach taken is to assume that the BTF
+>> associated with a module is split BTF.  If however the
+>> checking of types fails, we fall back to interpreting it as
+>> standalone BTF and carrying out remapping.  As discussed in [1]
+>> there are some heuristics we could use to identify standalone
+>> versus split module BTF, but for now the simplistic fallback
+>> method is used.
+>>
+>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+>>
+>> [1] https://lore.kernel.org/bpf/YfK18x%2FXrYL4Vw8o@syu-laptop/
+>> ---
+>>  kernel/bpf/btf.c | 132 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 132 insertions(+)
+>>
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index 5579ff3..5efdcaf 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -5315,11 +5315,120 @@ struct btf *btf_parse_vmlinux(void)
+>>
+>>  #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>>
+>> +static u32 btf_name_off_renumber(struct btf *btf, u32 name_off)
+>> +{
+>> +       return name_off + btf->start_str_off;
+>> +}
+>> +
+>> +static u32 btf_id_renumber(struct btf *btf, u32 id)
+>> +{
+>> +       /* no need to renumber void */
+>> +       if (id == 0)
+>> +               return id;
+>> +       return id + btf->start_id - 1;
+>> +}
+>> +
+>> +/* Renumber standalone BTF to appear as split BTF; name offsets must
+>> + * be relative to btf->start_str_offset and ids relative to btf->start_id.
+>> + * When user sees BTF it will appear as normal module split BTF, the only
+>> + * difference being it is fully self-referential and does not refer back
+>> + * to vmlinux BTF (aside from 0 "void" references).
+>> + */
+>> +static void btf_type_renumber(struct btf_verifier_env *env, struct btf_type *t)
+>> +{
+>> +       struct btf_var_secinfo *secinfo;
+>> +       struct btf *btf = env->btf;
+>> +       struct btf_member *member;
+>> +       struct btf_param *param;
+>> +       struct btf_array *array;
+>> +       struct btf_enum64 *e64;
+>> +       struct btf_enum *e;
+>> +       int i;
+>> +
+>> +       t->name_off = btf_name_off_renumber(btf, t->name_off);
+>> +
+>> +       switch (BTF_INFO_KIND(t->info)) {
+>> +       case BTF_KIND_INT:
+>> +       case BTF_KIND_FLOAT:
+>> +       case BTF_KIND_TYPE_TAG:
+>> +               /* nothing to renumber here, no type references */
+>> +               break;
+>> +       case BTF_KIND_PTR:
+>> +       case BTF_KIND_FWD:
+>> +       case BTF_KIND_TYPEDEF:
+>> +       case BTF_KIND_VOLATILE:
+>> +       case BTF_KIND_CONST:
+>> +       case BTF_KIND_RESTRICT:
+>> +       case BTF_KIND_FUNC:
+>> +       case BTF_KIND_VAR:
+>> +       case BTF_KIND_DECL_TAG:
+>> +               /* renumber the referenced type */
+>> +               t->type = btf_id_renumber(btf, t->type);
+>> +               break;
+>> +       case BTF_KIND_ARRAY:
+>> +               array = btf_array(t);
+>> +               array->type = btf_id_renumber(btf, array->type);
+>> +               array->index_type = btf_id_renumber(btf, array->index_type);
+>> +               break;
+>> +       case BTF_KIND_STRUCT:
+>> +       case BTF_KIND_UNION:
+>> +               member = (struct btf_member *)(t + 1);
+>> +               for (i = 0; i < btf_type_vlen(t); i++) {
+>> +                       member->type = btf_id_renumber(btf, member->type);
+>> +                       member->name_off = btf_name_off_renumber(btf, member->name_off);
+>> +                       member++;
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_FUNC_PROTO:
+>> +               param = (struct btf_param *)(t + 1);
+>> +               for (i = 0; i < btf_type_vlen(t); i++) {
+>> +                       param->type = btf_id_renumber(btf, param->type);
+>> +                       param->name_off = btf_name_off_renumber(btf, param->name_off);
+>> +                       param++;
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_DATASEC:
+>> +               secinfo = (struct btf_var_secinfo *)(t + 1);
+>> +               for (i = 0; i < btf_type_vlen(t); i++) {
+>> +                       secinfo->type = btf_id_renumber(btf, secinfo->type);
+>> +                       secinfo++;
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_ENUM:
+>> +               e = (struct btf_enum *)(t + 1);
+>> +               for (i = 0; i < btf_type_vlen(t); i++) {
+>> +                       e->name_off = btf_name_off_renumber(btf, e->name_off);
+>> +                       e++;
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_ENUM64:
+>> +               e64 = (struct btf_enum64 *)(t + 1);
+>> +               for (i = 0; i < btf_type_vlen(t); i++) {
+>> +                       e64->name_off = btf_name_off_renumber(btf, e64->name_off);
+>> +                       e64++;
+>> +               }
+>> +               break;
+>> +       }
+>> +}
+>> +
+>> +static void btf_renumber(struct btf_verifier_env *env, struct btf *base_btf)
+>> +{
+>> +       struct btf *btf = env->btf;
+>> +       int i;
+>> +
+>> +       btf->start_id = base_btf->nr_types;
+>> +       btf->start_str_off = base_btf->hdr.str_len;
+>> +
+>> +       for (i = 0; i < btf->nr_types; i++)
+>> +               btf_type_renumber(env, btf->types[i]);
+>> +}
+>> +
+>>  static struct btf *btf_parse_module(const char *module_name, const void *data, unsigned int data_size)
+>>  {
+>>         struct btf_verifier_env *env = NULL;
+>>         struct bpf_verifier_log *log;
+>>         struct btf *btf = NULL, *base_btf;
+>> +       bool standalone = false;
+>>         int err;
+>>
+>>         base_btf = bpf_get_btf_vmlinux();
+>> @@ -5367,9 +5476,32 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
+>>                 goto errout;
+>>
+>>         err = btf_check_all_metas(env);
+>> +       if (err) {
+>> +               /* BTF may be standalone; in that case meta checks will
+>> +                * fail and we fall back to standalone BTF processing.
+>> +                * Later on, once we have checked all metas, we will
+>> +                * retain start id from  base BTF so it will look like
+>> +                * split BTF (but is self-contained); renumbering is done
+>> +                * also to give the split BTF-like appearance and not
+>> +                * confuse pahole which assumes split BTF for modules.
+>> +                */
+>> +               btf->base_btf = NULL;
+>> +               if (btf->types)
+>> +                       kvfree(btf->types);
+>> +               btf->types = NULL;
+>> +               btf->types_size = 0;
+>> +               btf->start_id = 0;
+>> +               btf->nr_types = 0;
+>> +               btf->start_str_off = 0;
+>> +               standalone = true;
+>> +               err = btf_check_all_metas(env);
+>> +       }
 > 
-> I'd prefer these 12 hooks to get converted to IS_ERR instead.
-> Especially those that can only return 1... why aren't they void?
-
-Sorry, I meant can only return 1 as positive value (but can return 0 or
-a negative value).
-
-Not sure it is a good idea to change the conventions.
-
-> > The idea would be to use BTF_ID_FLAGS() with the flags coming from
-> > lsm_hook_defs.h, and to check if a flag is set depending on the
-> > interval of the return value provided by the eBPF program.
+> Interesting idea!
+> Instead of failing the first time, how about we make
+> such standalone module BTFs explicit?
+> Some flag or special type?
+> Then the kernel just checks that and renumbers right away.
 > 
-> BTF_ID_FLAGS is not appropriate for this.
 
-Uhm, why not? If you store the flags in the BTF ID set, the
-implementation would be something like this.
+I was thinking that might be one way to do it, perhaps even
+a .BTF_standalone section name or somesuch as a signal we
+are dealing with standalone BTF. However I _think_
+we can actually determine the module BTF is standalone
+without needing to change anything in the toolchain (I 
+think adding flags would require that).
 
-Assuming that a hook definition becomes:
+If the BTF consists of string offsets all within base BTF
+string range, and it contains a definition for a BTF_KIND_INT
+called "int", we can infer safely it is standalone BTF I think.
+The nice thing is we are guaranteed such an int definition will
+be there in every module, thanks to the module init function 
+signature. These tests could be put into a btf_is_standalone() 
+function, and it would avoid the need to fall back from interpreting
+as split BTF, which was messy and polluted logs. If that makes sense,
+I'll respin with that change.
 
-LSM_HOOK(int, 0, LSM_RET_NEG | LSM_RET_ZERO, path_unlink,
-         const struct path *dir, struct dentry *dentry)
+> And combining this with what we discussed in the other thread
+> to load vmlinux's BTF through the module...
+> We'd need two flags in BTF to address both cases.
+> One to load base vmlinux BTF from a module and
+> another to load standalone module BTF.
+> Maybe add another BTF_KIND and it will be first in all types ?
+> Or use DATASEC with a special name ?
+> 
 
+I'm wondering if we can minimize impact on existing tools for
+vmlinux BTF when loaded as a module; even if the module is
+called vmlinux_btf, we could special-case how it appears
+in /sys/kernel/btf such that it is still represented as 
+/sys/kernel/btf/vmlinux I suspect, rather than as its module
+name "vmlinux_btf". If only part of the core kernel BTF was
+in vmlinux_btf (CONFIG_DEBUG_INFO_BTF=y and say 
+CONFIG_DEBUG_INFO_BTF_VARS=m as per [1]) the vmlinux_btf
+name would be used to for the extras.
 
-In bpf_lsm.c, we would have:
+One pain point is that if vmlinux_btf was loaded after other 
+modules we'd need to iterate over them to (re)-load 
+their BTF, so I think CONFIG_DEBUG_INFO_BTF=m would possibly require
+CONFIG_DEBUG_INFO_BTF_MISMATCH=y, otherwise late loading of vmlinux_btf
+might block other modules loading, as their split BTF would be invalid
+without the base BTF. Even standalone modules would need that to
+get their BTF renumbering right. But that all seems doable.
 
-#include <linux/lsm_hook_defs.h>
-#undef LSM_HOOK
+Alan
 
-#define LSM_HOOK(RET, DEFAULT, RET_FLAGS, NAME, ...) \
-	BTF_ID_FLAGS(func, bpf_lsm_##NAME, RET_FLAGS)
-BTF_SET_START(bpf_lsm_hooks)
-#include <linux/lsm_hook_defs.h>
-#undef LSM_HOOK
-BTF_SET_END(bpf_lsm_hooks)
-
-bool bpf_lsm_ret_value_allowed(u32 btf_id, ...)
-{
-	u32 *flags = btf_id_set8_contains(&bpf_lsm_hooks, btf_id);
-
-	if (lsm_ret < 0 && !(*flags & LSM_RET_NEG))
-		return false;
-
-	...
-
-
-	return true;
-}
-
-Thanks
-
-Roberto
-
+[1] https://lore.kernel.org/bpf/20221104231103.752040-10-stephen.s.brennan@oracle.com/T/#u
