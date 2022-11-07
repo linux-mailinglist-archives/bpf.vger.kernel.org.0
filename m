@@ -2,63 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CE8620353
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 00:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC14620354
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 00:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbiKGXJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 18:09:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S231659AbiKGXKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 18:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbiKGXJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 18:09:32 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E771FCD6
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 15:09:31 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id ud5so34218743ejc.4
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 15:09:31 -0800 (PST)
+        with ESMTP id S231974AbiKGXJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 18:09:59 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433CB2018E
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 15:09:58 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so16243110pjc.3
+        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 15:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ayhK4uUG9nDhkYW0271GbtTzx/2u6sp8RjwLfUFCWPo=;
-        b=Ao/8O7aSMF1JoZHWHcsWlKPLthzWax/utphc3yPpUomXgFYpvr8rFzvz+o9PI9Rpg/
-         H+3CzC89FASBtDM5yZJZLBxZXgWfdzlxUZDbkyLnyri8671sVKh3PCK5/s6sjRsq04l/
-         7QD+4919imh1rZupRbM8PWgiNcOgtbl0j+t+hWH9mxZc5kJdtdtscnlIBvwjb3bj7etv
-         DJ4iuNZBeYvCLCcumZk0IaAMM3F/J74Dzlby5BW5CWRTUZdBjjYWtJpz7nEB8eEXVKMu
-         77KjpoAnIe714gubquqoZ/ofRx5UiflFXxugVbJAVK9TBUkpHsNV8Q6qjAfVyxzGZk9W
-         fosQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vF06KNbBVxJp/htpITxfS+QnHFHn88RPU8DUmOJx618=;
+        b=E1yerRJs8DRVeXpjXjzaCNP3GlmHZqu7PYpyVQS+9QvXhD7pUYVXObVqkRkuddCafQ
+         YyYYQPWOawkvEWnDC0g5EW49xh/pCFkc8NFhgMEuj3HceG/C/KuujuOBj9d6J0qLJS8M
+         gKthBMHDoCBVlggem7dOGnIS6uiMaJSuZ9TY3J51e/RWDSR9ktn1c3W33MI/yTG7B5fS
+         3UpPShc6D6631F13QOpYwNJWRJ7YpJ6+wMlJlCljJFG7XsZ3SJNmLoOBWO79O1DtnZUK
+         23MA8rKLw7vspOse7eAWjQ2cnzTzJ+xGNHgVopA4ABoIgwygVWLFyYUjv/mLOOBKW+Te
+         L0nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ayhK4uUG9nDhkYW0271GbtTzx/2u6sp8RjwLfUFCWPo=;
-        b=7xX+Zs9M0VM+o6s5u0ak6akaJEIYXvAHnEZjFI+fmHz5NP4yunVWQ2B4fgzzfE4/eb
-         aeyJ1vHLQDadLJdFSBMi4Oo9uWwIcfVV3GpgA4eXVPCcnwvrymhh54nM4Z+YQ0ImaSRk
-         dtAcivOy4+sOhokp4jsGSQfU/fvGWpfYJaGWsVaURc4F7nEloU7WOBdop+rMb+8Cm1R+
-         ajNvJ/0FqvHRKkBu0nlqzHuqrV2cJEvyRsIZyLOt7zyeSAYnUaooxWY4R+PzaU14aWSb
-         VjH3/YkSHruS9ZGCNJL4gG6VZZ7W9qQwcfRfkt7pzR/cVwhaxqzOEAT7HVUg8nTZmu92
-         4uqA==
-X-Gm-Message-State: ACrzQf2etbXWJ+ulZqI96NzODZeX6zMePldcHT4JFNiOhlXv2qhRY/vQ
-        zjor+P4sKcaLYOQ7XRvCiDxxHz4rj8cGYx51Qso=
-X-Google-Smtp-Source: AMsMyM4mZ/IuU1Y1nDDSaIlip7NJ0w4Z8L3WiHCiI76I+zuRxDSC95fGlv7QKnU9M8Vt1QWO49UPPTqDQZ3TZLSm0QY=
-X-Received: by 2002:a17:906:11d6:b0:7ad:fd3e:2a01 with SMTP id
- o22-20020a17090611d600b007adfd3e2a01mr30786263eja.545.1667862569906; Mon, 07
- Nov 2022 15:09:29 -0800 (PST)
+        bh=vF06KNbBVxJp/htpITxfS+QnHFHn88RPU8DUmOJx618=;
+        b=xM4dYu77VWxhh2datznDO7h1D1Nme7j8+dik+YKnqg6PwRFvlIjjWdceAuhdlJOhyS
+         sr1tFeQDpHUPs+t7UrEwhWPxPF8WMXyQprQ2LeUpeep6671a7lf/DW/PMqXkBfDkezFh
+         lbXZknODfrxi85FyjBioHk6msDtiFxoPWV6b69yQ/pO6dxafc7wYghKC7l66QJzSVqC/
+         G5hG9fO3q8KxUxVjl/d93U40xYLsVmi7/HJw9HMzv3g2b5/KF5YYU9YFI9IS/zJ25vms
+         Orb3Y7uNrUiNLBUmJA1aKvCcf4kZrNgdB2h+Mycux0y3c2rmPelBaGUyb5YEWia6iiE+
+         6Z5w==
+X-Gm-Message-State: ACrzQf1vd4Qv15shACmcf+a7ISZSGRGDKU368JlpQdySCMCuSHzm5lXw
+        2/bFNfoQdbLfjE3KVhUp7Kko2GFQQlbSnA==
+X-Google-Smtp-Source: AMsMyM45zIbCB099O4TnJG+pvHF68K3Bckx3BYpypRb7HiptW9dPFr7dCHp8kOqI53RWvElCm93+FA==
+X-Received: by 2002:a17:90b:2496:b0:213:e03d:bc30 with SMTP id nt22-20020a17090b249600b00213e03dbc30mr45412172pjb.109.1667862597422;
+        Mon, 07 Nov 2022 15:09:57 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id s3-20020a17090a2f0300b0020dd9382124sm6585964pjd.57.2022.11.07.15.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Nov 2022 15:09:57 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Delyan Kratunov <delyank@meta.com>
+Subject: [PATCH bpf-next v5 00/25] Local kptrs, BPF linked lists
+Date:   Tue,  8 Nov 2022 04:39:25 +0530
+Message-Id: <20221107230950.7117-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-References: <20221103134522.2764601-1-eddyz87@gmail.com> <CAEf4Bzb9dcBy5JEWzphkfr=wzvcT8gXcCjA5UYPPKAywh=k_Fg@mail.gmail.com>
- <e54ee0f0528ad7b9e59c39b3e7da1144ed45cbba.camel@gmail.com>
-In-Reply-To: <e54ee0f0528ad7b9e59c39b3e7da1144ed45cbba.camel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Nov 2022 15:09:17 -0800
-Message-ID: <CAEf4BzYzVLTojnbx-qK6BchBYj599yK7fohssfDX=nSbHUJRwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: __attribute__((btf_decl_tag("...")))
- for btf dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        alan.maguire@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10940; i=memxor@gmail.com; h=from:subject; bh=cmdDr9ff4XC4bP0Ecj4SRy4WX9d7qCLx0yUJRXrmQuc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjaY+1K32JcM1de59VCzKTZOiVaqgLiNs2qg8khvnS oc5S2SWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY2mPtQAKCRBM4MiGSL8Ryj7GD/ 9RceFo7HGMzCgm4keeNHR8cQy83eZSKVkQO1cdjApf+AWs05m989qbzWc3yH0Ttqp/wqOsG5d7IfZX gn2jFwfZoRFYTpDarp0jdrTERH91ncPSLD6J3Z508v2cFtGvTUrrXWN1uvs4F1uxwsUm11ZvcTsuMR M4UctvuR2agX5RTz0PXhn5VRlBXF3EC02iRCJTWK20Jm3D25/EQiyzM4grDVUo+dnTXWIf1Wew4ApU q2X2fsa3CSNVJirIMrK30cveRDOHrfGotDusrpJ3VgXt9BXOWpOvgv7Iu7PnzE2SioMcT+OS5trv4K MJmS6tV+xvqo9r3zkWSUH5RGZ1M4vYSwp3rKf24AuesQrF9qjxnztKB8mU0+9RY+j0recfDFcx0w+b WoeA3notX/A5CbEONPX+h5IMh2EQwZvTYML2DCbaSaArRn8hBJ0af6ATIjEHzd5brKpW2ww93nm1Do FogNiJIa3IV7BjGhn9HuJ5PnrP9010voYCU9fqZolyGQqsiKw/LqSLQYkys0lpng7eM//HizAnvYJo kPiFde2uk7ASTsgM4NK5eSbGvdPVdVLhPFkcUuXvXOpB5GKHO6n5WGqKmeBxav7vT1P5176op42PVh vdlbhJrCQ6MmsXA5REcTKNLchQ57Dd+BE5QbP3or7af8mrq9wOMicw9QsIgQ==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,176 +74,227 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 7, 2022 at 7:35 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Fri, 2022-11-04 at 13:54 -0700, Andrii Nakryiko wrote:
-> > On Thu, Nov 3, 2022 at 6:45 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > Clang's `__attribute__((btf_decl_tag("...")))` is represented in BTF
-> > > as a record of kind BTF_KIND_DECL_TAG with `type` field pointing to
-> > > the type annotated with this attribute. This commit adds
-> > > reconstitution of such attributes for BTF dump in C format.
-> > >
-> > > BTF doc says that BTF_KIND_DECL_TAGs should follow a target type but
-> > > this is not enforced and tests don't honor this restriction.
-> > > This commit uses hashmap to map types to the list of decl tags.
-> > > The hashmap is filled by `btf_dump_assign_decl_tags` function called
-> > > from `btf_dump__new`.
-> > >
-> > > It is assumed that total number of types annotated with decl tags is
-> > > relatively small, thus some space is saved by using hashmap instead of
-> > > adding a new field to `struct btf_dump_type_aux_state`.
-> > >
-> > > It is assumed that list of decl tags associated with a single type is
-> > > small. Thus the list is represented by an array which grows linearly.
-> > >
-> > > To accommodate older Clang versions decl tags are dumped using the
-> > > following macro:
-> > >
-> > >  #if __has_attribute(btf_decl_tag)
-> > >  #  define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
-> > >  #else
-> > >  #  define __btf_decl_tag(x)
-> > >  #endif
-> > >
-> > > The macro definition is emitted upon first call to `btf_dump__dump_type`.
-> > >
-> > > Clang allows to attach btf_decl_tag attributes to the following kinds
-> > > of items:
-> > > - struct/union         supported
-> > > - struct/union field   supported
-> > > - typedef              supported
-> > > - function             not applicable
-> > > - function parameter   not applicable
-> > > - variable             not applicable
-> > >
-> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > ---
-> > >  tools/lib/bpf/btf_dump.c | 163 ++++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 160 insertions(+), 3 deletions(-)
-> > >
-> >
-> > Functions and their args can also have tags. This works:
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> > b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> > index 7a5af8b86065..75fcabe700cd 100644
-> > --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> > +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
-> > @@ -54,7 +54,7 @@ struct root_struct {
-> >
-> >  /* ------ END-EXPECTED-OUTPUT ------ */
-> >
-> > -int f(struct root_struct *s)
-> > +int f(struct root_struct *s __btf_decl_tag("func_arg_tag"))
-> > __btf_decl_tag("func_tag")
-> >  {
-> >         return 0;
-> >  }
-> >
-> > And I see correct BTF:
-> >
-> > [26] FUNC 'f' type_id=25 linkage=global
-> > [27] DECL_TAG 'func_arg_tag' type_id=26 component_idx=0
-> > [28] DECL_TAG 'func_tag' type_id=26 component_idx=-1
-> >
-> > So let's add support and test for that case as well. btf_dump
-> > shouldn't assume vmlinux.h-only case.
-> >
-> > Also, please check if DATASEC and VARs can have decl_tags associated with them.
->
-> I see that right now decl tags are saved for:
-> - BTF_KIND_VAR
-> - BTF_KIND_FUNC
-> - BTF_KIND_FUNC arguments
->
-> Decl tags are lost but legal for:
-> - BTF_KIND_FUNC_PROTO arguments
+This series introduces user defined BPF objects, by introducing local
+kptrs. These are kptrs (strongly typed pointers) that refer to objects
+of a user defined type, hence called "local" kptrs. This allows BPF
+programs to allocate their own objects, build their own object
+hierarchies, and use the basic building blocks provided by BPF runtime
+to build their own data structures flexibly.
 
-ah, that's unfortunate and even DECL_TAGS example I showed above seems
-like a bug. FUNC itself doesn't have args, I implicitly assumed that
-all DECL_TAG will be actually associated with underlying FUNC_PROTO.
+Then, we introduce the support for single ownership BPF linked lists,
+which can be put inside BPF maps, or local kptrs, and hold such
+allocated local kptrs as elements. It works as an instrusive collection,
+which is done to allow making local kptrs part of multiple data
+structures at the same time in the future.
 
-Yonghong, is this by design or a bug?
+The eventual goal of this and future patches is to allow one to do some
+limited form of kernel style programming in BPF C, and allow programmers
+to build their own complex data structures flexibly out of basic
+building blocks.
 
->
-> I have not found a way to attach decl tag to DATASEC.
->
-> For BTF_KIND_FUNC_PROTO  arguments it would  be great to  update clang
-> first. Then  it would be  possible to keep all  decl tags checks  as a
-> single  `btf_dump_test_case`.  On  the   other  hand  this  will  make
-> testsuite dependent on the latest clang version, which is not great. I
-> can add a test with hand-crafted BTF instead. Which way is preferable?
+The key difference will be that such programs are verified to be safe,
+preserve runtime integrity of the system, and are proven to be bug free
+as far as the invariants of BPF specific APIs are concerned.
 
-let's figure out if current state is accidental or by design.
+One immediate use case that will be using the entire infrastructure this
+series is introducing will be managing percpu NMI safe linked lists
+inside BPF programs.
 
-From practical standpoint, I'd still implement the code for FUNC_PROTO
-and its args, but I wouldn't go all the way to hand-craft BTF
-programmatically. As you said, btf_dump tests are way more ergonomic
-because we rely on compiler to do the heavy lifting.
+The other use case this will serve in the near future will be linking
+kernel structures like XDP frame and sk_buff directly into user data
+structures (rbtree, pifomap, etc.) for packet queueing. This will follow
+single ownership concept included in this series.
 
-As for the dependency on latest clang for some tests, I think that's
-totally fine and unavoidable. Worst case some subtests will fail on
-old kernels, they can be denylisted on systems with old compiler. All
-that won't break the build (which is much worse and inconvenient).
+The user has complete control of the internal locking, and hence also
+the batching of operations for each critical section.
 
->
-> BTF_KIND_FUNC is ignored by `btf_dump__dump_type_data`
-> (via `btf_dump_unsupported_data`).
->
-> BTF_KIND_VAR is dumped but current  testing infrastructure is not very
-> convenient, it only checks for  some variables defined in vmlinux BTF.
-> I can write a  test that accepts a custom built BTF  but this is still
-> inferior   to  what   `test_btf_dump_case`  provides.   I've  extended
-> `test_btf_dump_case` to print DATASEC  with subordinate vars alongside
-> the type definitions instead.
->
+The features are:
+- Local kptrs - User defined kernel objects.
+- bpf_obj_new, bpf_obj_drop to allocate and free them.
+- Single ownership BPF linked lists.
+  - Support for them in BPF maps.
+  - Support for them in local kptrs.
+- Global spin locks.
+- Spin locks inside local kptrs.
 
-dumping DATASEC/VAR and FUNC is something that seems useful in
-general, but we should treat it as a separate problem. Seeing DATASEC
-variables and FUNCs in a familiar C syntax would be nice, but it
-probably should be guarded behind a bpftool option or something.
+Some other notable things:
+- Completely static verification of locking.
+- Kfunc argument handling has been completely reworked.
+- Argument rewriting support for kfuncs.
+- Search pruning now understands non-size precise registers.
+- A new bpf_experimental.h header as a dumping ground for these APIs.
 
-So in summary, let's figure out the situation with FUNC and FUNC_PROTO
-first, and let's not due too laborious selftests yet
+Any functionality exposed in this series is NOT part of UAPI. It is only
+available through use of kfuncs, and structs that can be added to map
+value may also change their size or name in the future. Hence, every
+feature in this series must be considered experimental.
 
-> ------
->
-> $ cat test.c
-> #define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
->
-> int var __btf_decl_tag("var_tag");
->
-> struct root {
->   int a;
->   int (*b)(int x __btf_decl_tag("arg_tag_proto")) __btf_decl_tag("field_tag");
-> };
->
-> int foo(struct root *x __btf_decl_tag("arg_tag_fn")) __btf_decl_tag("func_tag_fn") {
->   return 0;
-> }
-> $ clang -g -O2 -mcpu=v3 -target bpf -c test.c -o test.o
-> $ bpftool btf dump file test.o
-> [1] PTR '(anon)' type_id=2
-> [2] STRUCT 'root' size=16 vlen=2
->         'a' type_id=3 bits_offset=0
->         'b' type_id=4 bits_offset=64
-> [3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> [4] PTR '(anon)' type_id=5
-> [5] FUNC_PROTO '(anon)' ret_type_id=3 vlen=1
->         '(anon)' type_id=3
-> [6] DECL_TAG 'field_tag' type_id=2 component_idx=1
-> [7] FUNC_PROTO '(anon)' ret_type_id=3 vlen=1
->         'x' type_id=1
-> [8] FUNC 'foo' type_id=7 linkage=global
-> [9] DECL_TAG 'arg_tag_fn' type_id=8 component_idx=0
-> [10] DECL_TAG 'func_tag_fn' type_id=8 component_idx=-1
-> [11] VAR 'var' type_id=3, linkage=global
-> [12] DECL_TAG 'var_tag' type_id=11 component_idx=-1
-> [13] DATASEC '.bss' size=0 vlen=1
->         type_id=11 offset=0 size=4 (VAR 'var')
->
-> > [...]
-> >
+Follow-ups:
+-----------
+ * Support for kptrs (local and kernel) in local storage and percpu maps + kptr tests
+ * Fixes for helper access checks rebasing on top of this series
 
-[...]
+Next steps:
+-----------
+ * NMI safe percpu single ownership linked lists (using local_t protection).
+ * Lockless linked lists.
+ * Allow RCU protected local kptrs. This then allows RCU protected list
+   lookups, since spinlock protection for readers does not scale.
+ * Introduce bpf_refcount for local kptrs, shared ownership.
+ * Introduce shared ownership linked lists.
+ * Documentation.
+
+Changelog:
+----------
+ v4 -> v5
+ v4: https://lore.kernel.org/bpf/20221103191013.1236066-1-memxor@gmail.com
+
+  * Add a lot more selftests (failure, success, runtime, BTF)
+  * Make sure series is bisect friendly
+  * Move list draining out of spin lock
+    * This exposed an issue where bpf_mem_free can now be called in
+      map_free path without migrate_disable, also fixed that.
+  * Rename MEM_ALLOC -> MEM_RINGBUF, MEM_TYPE_LOCAL -> MEM_ALLOC (Alexei)
+  * Group lock identity into a struct active_lock { ptr, id } (Dave)
+  * Split set_release_on_unlock logic into separate patch (Alexei)
+
+ v3 -> v4
+ v3: https://lore.kernel.org/bpf/20221102202658.963008-1-memxor@gmail.com
+
+  * Fix compiler error for !CONFIG_BPF_SYSCALL (Kernel Test Robot)
+  * Fix error due to BUILD_BUG_ON on 32-bit platforms (Kernel Test Robot)
+
+ v2 -> v3
+ v2: https://lore.kernel.org/bpf/20221013062303.896469-1-memxor@gmail.com
+
+  * Add ack from Dave for patch 5
+  * Rename btf_type_fields -> btf_record, btf_type_fields_off ->
+    btf_field_offs, rename functions similarly (Alexei)
+  * Remove 'kind' component from contains declaration tag (Alexei)
+  * Move bpf_list_head, bpf_list_node definitions to UAPI bpf.h (Alexei)
+  * Add note in commit log about modifying btf_struct_access API (Dave)
+  * Downgrade WARN_ON_ONCE to verbose(env, "...") and return -EFAULT (Dave)
+  * Add type_is_local_kptr wrapper to avoid noisy checks (Dave)
+  * Remove unused flags parameter from bpf_kptr_new (Alexei)
+  * Rename bpf_kptr_new -> bpf_obj_new, bpf_kptr_drop -> bpf_obj_drop (Alexei)
+  * Reword comment in ref_obj_id_set_release_on_unlock (Dave)
+  * Fix return type of ref_obj_id_set_release_on_unlock (Dave)
+  * Introduce is_bpf_list_api_kfunc to dedup checks (Dave)
+  * Disallow BPF_WRITE to untrusted local kptrs
+  * Add details about soundness of check_reg_allocation_locked logic
+  * List untrusted local kptrs for PROBE_MEM handling
+
+ v1 -> v2
+ v1: https://lore.kernel.org/bpf/20221011012240.3149-1-memxor@gmail.com
+
+  * Rebase on bpf-next to resolve merge conflict in DENYLIST.s390x
+  * Fix a couple of mental lapses in bpf_list_head_free
+
+ RFC v1 -> v1
+ RFC v1: https://lore.kernel.org/bpf/20220904204145.3089-1-memxor@gmail.com
+
+  * Mostly a complete rewrite of BTF parsing, refactor existing code (Kartikeya)
+  * Rebase kfunc rewrite for bpf-next, add support for more changes
+  * Cache type metadata in BTF to avoid recomputation inside verifier (Kartikeya)
+  * Remove __kernel tag, make things similar to map values, reserve bpf_ prefix
+  * bpf_kptr_new, bpf_kptr_drop
+  * Rename precision state enum values (Alexei)
+  * Drop explicit constructor/destructor support (Alexei)
+  * Rewrite code for constructing/destructing objects and offload to runtime
+  * Minimize duplication in bpf_map_value_off_desc handling (Alexei)
+  * Expose global memory allocator (Alexei)
+  * Address other nits from Alexei
+  * Split out local kptrs in maps, more kptrs in maps support into a follow up
+
+Links:
+------
+ * Dave's BPF RB-Tree RFC series
+   v1 (Discussion thread)
+     https://lore.kernel.org/bpf/20220722183438.3319790-1-davemarchevsky@fb.com
+   v2 (With support for static locks)
+     https://lore.kernel.org/bpf/20220830172759.4069786-1-davemarchevsky@fb.com
+ * BPF Linked Lists Discussion
+   https://lore.kernel.org/bpf/CAP01T74U30+yeBHEgmgzTJ-XYxZ0zj71kqCDJtTH9YQNfTK+Xw@mail.gmail.com
+ * BPF Memory Allocator from Alexei
+   https://lore.kernel.org/bpf/20220902211058.60789-1-alexei.starovoitov@gmail.com
+ * BPF Memory Allocator UAPI Discussion
+   https://lore.kernel.org/bpf/d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com
+
+Kumar Kartikeya Dwivedi (25):
+  bpf: Remove BPF_MAP_OFF_ARR_MAX
+  bpf: Fix copy_map_value, zero_map_value
+  bpf: Support bpf_list_head in map values
+  bpf: Rename RET_PTR_TO_ALLOC_MEM
+  bpf: Rename MEM_ALLOC to MEM_RINGBUF
+  bpf: Introduce local kptrs
+  bpf: Recognize bpf_{spin_lock,list_head,list_node} in local kptrs
+  bpf: Verify ownership relationships for user BTF types
+  bpf: Allow locking bpf_spin_lock in local kptr
+  bpf: Allow locking bpf_spin_lock global variables
+  bpf: Allow locking bpf_spin_lock in inner map values
+  bpf: Rewrite kfunc argument handling
+  bpf: Drop kfunc bits from btf_check_func_arg_match
+  bpf: Support constant scalar arguments for kfuncs
+  bpf: Teach verifier about non-size constant arguments
+  bpf: Introduce bpf_obj_new
+  bpf: Introduce bpf_obj_drop
+  bpf: Permit NULL checking pointer with non-zero fixed offset
+  bpf: Introduce single ownership BPF linked list API
+  bpf: Add 'release on unlock' logic for bpf_list_push_{front,back}
+  selftests/bpf: Add __contains macro to bpf_experimental.h
+  selftests/bpf: Update spinlock selftest
+  selftests/bpf: Add failure test cases for spin lock pairing
+  selftests/bpf: Add BPF linked list API tests
+  selftests/bpf: Add BTF sanity tests
+
+ Documentation/bpf/kfuncs.rst                  |   30 +
+ include/linux/bpf.h                           |  113 +-
+ include/linux/bpf_verifier.h                  |   24 +-
+ include/linux/btf.h                           |   67 +-
+ include/linux/filter.h                        |    8 +-
+ include/uapi/linux/bpf.h                      |   10 +
+ kernel/bpf/btf.c                              |  808 +++++-----
+ kernel/bpf/core.c                             |   16 +
+ kernel/bpf/helpers.c                          |  143 +-
+ kernel/bpf/map_in_map.c                       |    5 -
+ kernel/bpf/ringbuf.c                          |    6 +-
+ kernel/bpf/syscall.c                          |   30 +-
+ kernel/bpf/verifier.c                         | 1346 +++++++++++++++--
+ net/bpf/bpf_dummy_struct_ops.c                |   14 +-
+ net/core/filter.c                             |   34 +-
+ net/ipv4/bpf_tcp_ca.c                         |   13 +-
+ net/netfilter/nf_conntrack_bpf.c              |   17 +-
+ tools/include/uapi/linux/bpf.h                |   10 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |    1 +
+ .../testing/selftests/bpf/bpf_experimental.h  |   68 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |    2 +-
+ .../bpf/prog_tests/kfunc_dynptr_param.c       |    2 +-
+ .../selftests/bpf/prog_tests/linked_list.c    |  524 +++++++
+ .../selftests/bpf/prog_tests/spin_lock.c      |  133 ++
+ .../selftests/bpf/prog_tests/spinlock.c       |   45 -
+ .../testing/selftests/bpf/progs/linked_list.c |  370 +++++
+ .../testing/selftests/bpf/progs/linked_list.h |   56 +
+ .../selftests/bpf/progs/linked_list_fail.c    |  581 +++++++
+ .../selftests/bpf/progs/test_spin_lock.c      |    4 +-
+ .../selftests/bpf/progs/test_spin_lock_fail.c |  204 +++
+ tools/testing/selftests/bpf/verifier/calls.c  |    2 +-
+ .../selftests/bpf/verifier/ref_tracking.c     |    4 +-
+ .../testing/selftests/bpf/verifier/ringbuf.c  |    2 +-
+ .../selftests/bpf/verifier/spill_fill.c       |    2 +-
+ 34 files changed, 4012 insertions(+), 682 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_experimental.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_list.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/spin_lock.c
+ delete mode 100644 tools/testing/selftests/bpf/prog_tests/spinlock.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_list.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_list.h
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_list_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
+
+
+base-commit: 25906092edb4bcf94cb669bd1ed03a0ef2f4120c
+prerequisite-patch-id: c763e9eecf8258840e7db20e4475c26f4c7800bc
+prerequisite-patch-id: 553e0a3f3035d36a96bdcc798793cbecc519d3e7
+-- 
+2.38.1
+
