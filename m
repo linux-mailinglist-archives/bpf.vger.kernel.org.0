@@ -2,81 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193F061F365
-	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 13:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5377C61F41C
+	for <lists+bpf@lfdr.de>; Mon,  7 Nov 2022 14:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbiKGMea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 07:34:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
+        id S232095AbiKGNSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 08:18:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbiKGMe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 07:34:26 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4F0C752;
-        Mon,  7 Nov 2022 04:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XJWdfHds6cu0a4MTLgis3djdrD+COFTfF+Wy0zLW4R0=; b=lJDbHNVaBv7jiewOvtBkS6Pcdp
-        Ka0h5e7/h6sRgeEM2NbmWjo5zwTDPfnEe4U5AAX126ujmtNDdketXBLXb4Ya8cji7qx2n7xmS6/Sl
-        H0xAFNn1qZw1mjEvqJP0pXDRntAARB1ekl0ZBzYEDungU2oGxMQheLcualkzjUOPis2CGC5PGW0aO
-        AlVO2WpmuLQ5tjVhL6tWFaJ1lDpO7WGaaq2zyPbJLxLt8rStoHw0lPswo3B0QIfAXJP0qv+B5sPCw
-        WQeIYv+elK4FQKEy2nooNmpRROtPEoh+Oj4pCdvaFDNEm0KnGRpdk06PCJ0tRZqOmWxzcGtie5S02
-        FWUf9EdQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35154)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1os1K1-0001u9-Tj; Mon, 07 Nov 2022 12:33:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1os1Jv-0003mj-7M; Mon, 07 Nov 2022 12:33:43 +0000
-Date:   Mon, 7 Nov 2022 12:33:43 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org,
-        benjamin.tissoires@redhat.com, memxor@gmail.com,
-        asavkov@redhat.com, delyank@fb.com, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf v2 4/5] bpf: Add kernel function call support in
- 32-bit ARM for EABI
-Message-ID: <Y2j7J9mJxmKJ4ZpP@shell.armlinux.org.uk>
-References: <20221107092032.178235-1-yangjihong1@huawei.com>
- <20221107092032.178235-5-yangjihong1@huawei.com>
+        with ESMTP id S231551AbiKGNSf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 08:18:35 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF6D65F9
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 05:18:33 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 7so8988060ybp.13
+        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 05:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5SoqAUcnwiRm88ADd2ljnWMq6OYtUHzfrs6KNHdyEzE=;
+        b=UGhWJk4HpX9TKsQWQGTHKMh66inqZKg22bG/7kNXFFQ3kZkidg97XqTIHwxg7WPOXu
+         0v2Y5ywyxTm8lK4tBBVrN7AiivG6csBLgRaKdyQnRao7nV8N5aOvbgLHoSMCgmQFQyDc
+         P87IdNxHWNAAYgvfcEc11SC556SRE2deFJ7I51lI/P+WQ0tCIlZuVbZPBUAraptpo1iV
+         HPagSQ3kgZQp0lwo+iU90EWh3daa+XDUDbFYJP15USWHYAYV+3YZqa69ti4roaHutWsS
+         tlruEWldOByyLJJXOYjkavzkTQ0kST9VtsXYHB6M93pJmTmgUHEwb1+kVsYuJB9mdnqY
+         4lew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5SoqAUcnwiRm88ADd2ljnWMq6OYtUHzfrs6KNHdyEzE=;
+        b=ypzNvCAbB9Svk4ONxcEJrzSx6EAYnd+uzlFUGHKC/SHI7HclDrr45w6MrEE1RitPz+
+         EQj+sysrLo278h+Fjk6lvu13AdAABQQ1ePQSH3wnOV+D+r8XmlHZcBCvlA84/IsM7A4B
+         EgyTDr0sXQ8cGpbo3XEJ8Qs7ZexBxjquUdrebC/Y86Kafm4mRIVlRbgc/640nFmYANBa
+         zyyY222zRj6Bl90TPFHYpNIFV3kiftctZDFgXi7cGkRMVXtbPkcDSFOJrgblgYyR0nN0
+         Ta0BhqKboBIrDYqnFFoCtUMJlPq91ZgelIxqRZDezIhlCZmmDiMVHeeQ3hmFI9UpnvHY
+         kPKg==
+X-Gm-Message-State: ANoB5pmpPsFyY2enUSkYD0gkpzTk1WMB60qg/nCIgf/ur2KjeHN1pF/H
+        EfOGSvHLQA3/qc3Hg0/gNO2gsLJbtcflHYfXQHRkNQ==
+X-Google-Smtp-Source: AA0mqf5/eEsy8pyLnv/X6ea7Qff2XeVAQvDcA+/uWKpr7VBmhDic4hY9dpkmZ5Hj8IbqB8MTAJmRX3TqClSEXMTqEFY=
+X-Received: by 2002:a25:4090:0:b0:6d3:7bde:23fe with SMTP id
+ n138-20020a254090000000b006d37bde23femr15834157yba.388.1667827112974; Mon, 07
+ Nov 2022 05:18:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221107092032.178235-5-yangjihong1@huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221102081620.1465154-1-zhongbaisong@huawei.com>
+ <CAG_fn=UDAjNd2xFrRxSVyLTZOAGapjSq2Zu5Xht12JNq-A7S=A@mail.gmail.com> <Y2je9dJxUjEchB9k@FVFF77S0Q05N>
+In-Reply-To: <Y2je9dJxUjEchB9k@FVFF77S0Q05N>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 7 Nov 2022 14:17:56 +0100
+Message-ID: <CAG_fn=UdPzBp9uSayPWvtRgjSKoLyfiYacofTS-bbbTauc2F-w@mail.gmail.com>
+Subject: Re: [PATCH -next,v2] bpf, test_run: fix alignment problem in bpf_prog_test_run_skb()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Baisong Zhong <zhongbaisong@huawei.com>, elver@google.com,
+        Catalin Marinas <catalin.marinas@arm.com>, edumazet@google.com,
+        keescook@chromium.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 05:20:31PM +0800, Yang Jihong wrote:
-> +bool bpf_jit_supports_kfunc_call(void)
+On Mon, Nov 7, 2022 at 11:33 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Fri, Nov 04, 2022 at 06:06:05PM +0100, Alexander Potapenko wrote:
+> > On Wed, Nov 2, 2022 at 9:16 AM Baisong Zhong <zhongbaisong@huawei.com> =
+wrote:
+> > >
+> > > we got a syzkaller problem because of aarch64 alignment fault
+> > > if KFENCE enabled.
+> > >
+> > > When the size from user bpf program is an odd number, like
+> > > 399, 407, etc, it will cause the struct skb_shared_info's
+> > > unaligned access. As seen below:
+> > >
+> > > BUG: KFENCE: use-after-free read in __skb_clone+0x23c/0x2a0 net/core/=
+skbuff.c:1032
+> >
+> > It's interesting that KFENCE is reporting a UAF without a deallocation
+> > stack here.
+> >
+> > Looks like an unaligned access to 0xffff6254fffac077 causes the ARM
+> > CPU to throw a fault handled by __do_kernel_fault()
+>
+> Importantly, an unaligned *atomic*, which is a bug regardless of KFENCE.
+>
+> > This isn't technically a page fault, but anyway the access address
+> > gets passed to kfence_handle_page_fault(), which defaults to a
+> > use-after-free, because the address belongs to the object page, not
+> > the redzone page.
+> >
+> > Catalin, Mark, what is the right way to only handle traps caused by
+> > reading/writing to a page for which `set_memory_valid(addr, 1, 0)` was
+> > called?
+>
+> That should appear as a translation fault, so we could add an
+> is_el1_translation_fault() helper for that. I can't immediately recall ho=
+w
+> misaligned atomics are presented, but I presume as something other than a
+> translation fault.
+>
+> If the below works for you, I can go spin that as a real patch.
+
+Thanks!
+It works for me in QEMU (doesn't report UAF for an unaligned atomic
+access and doesn't break the original KFENCE tests), and matches my
+reading of https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-=
+Registers/ESR-EL1--Exception-Syndrome-Register--EL1-
+
+Feel free to add:
+  Reviewed-by: Alexander Potapenko <glider@google.com>
+  Tested-by: Alexander Potapenko <glider@google.com>
+
+> Mark.
+>
+> ---->8----
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 5b391490e045b..1de4b6afa8515 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -239,6 +239,11 @@ static bool is_el1_data_abort(unsigned long esr)
+>         return ESR_ELx_EC(esr) =3D=3D ESR_ELx_EC_DABT_CUR;
+>  }
+>
+> +static bool is_el1_translation_fault(unsigned long esr)
 > +{
-> +	return true;
+> +       return (esr & ESR_ELx_FSC_TYPE) =3D=3D ESR_ELx_FSC_FAULT;
 
-It would be far cleaner to make this:
+Should we also introduce ESR_ELx_FSC(esr) for this?
 
-	return IS_ENABLED(CONFIG_AEABI);
+> +}
+> +
+>  static inline bool is_el1_permission_fault(unsigned long addr, unsigned =
+long esr,
+>                                            struct pt_regs *regs)
+>  {
+> @@ -385,7 +390,8 @@ static void __do_kernel_fault(unsigned long addr, uns=
+igned long esr,
+>         } else if (addr < PAGE_SIZE) {
+>                 msg =3D "NULL pointer dereference";
+>         } else {
+> -               if (kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, reg=
+s))
+> +               if (is_el1_translation_fault(esr) &&
+> +                   kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, reg=
+s))
+>                         return;
+>
+>                 msg =3D "paging request";
+--
+Alexander Potapenko
+Software Engineer
 
-So userspace knows that it isn't supported on OABI.
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
