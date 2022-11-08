@@ -2,263 +2,329 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E04620405
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 00:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD25A620472
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 01:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbiKGXxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 18:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S231974AbiKHAJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 19:09:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbiKGXxc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 18:53:32 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C2A1DF15;
-        Mon,  7 Nov 2022 15:53:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667865210; x=1699401210;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=18muDm/G/qmztsgT7+hKKxx7ZJ0rqL6Yz/xY5Y3kWc8=;
-  b=CneSexJVLYsUxbPKHLD08jfRevnGiAxAI0yYJRqHmwhBJm4J2/Q+46HP
-   3YJ/CC9ITuM306AtWwVHOwyMY309o9Tl9ZF5izoQrelwQe8CM2bupKTQw
-   n55T08v6UilisQqaUg+yL7HAVLJrJ0ux6mG26prWyc0alTKpu7Lp+DAlG
-   +/BWRokeEa3WBTGdytR5edx91DPsJmvr/Gvp0e7+xdiwZ8ts+cZgp7vH7
-   k095nWoJJkx8MusFEDo/Z6tPM6DfT6zyZEK5EedFdZQcmIoGFWLO5qNRi
-   lb8PeqLWbqc6YGok8Hkq2lfmWQa2ceDdjFMMBHaGyC45aj1H8GIbrebRP
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="309263456"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="309263456"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2022 15:53:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="761283334"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="761283334"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga004.jf.intel.com with ESMTP; 07 Nov 2022 15:53:28 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 15:53:28 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 15:53:27 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Mon, 7 Nov 2022 15:53:27 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Mon, 7 Nov 2022 15:53:27 -0800
+        with ESMTP id S232135AbiKHAJB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 19:09:01 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452E61EEC4
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 16:08:56 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A7LKpKu010043;
+        Mon, 7 Nov 2022 16:08:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=K/mxUHVVuhu5QnJ1D05xxi1M+K1lcscqMye2B8DHq7Y=;
+ b=dvt2FdG0ostMU/x/MAWYSX0PTiiAk1I7+nyxsy68/Ad+j569LU7lvbwFC4livDR+XfPE
+ +pG+YLAQ9pqttpzmwFq2/iFRSRmA5urEOgXcz8rzTurUztI9oRt0E3UZCUhqhzJtq73L
+ UEF0NamXzCTcP1oQoLjQnfMmCokiZ92rQcKmSznauXe/0j5peLT/36CjXBE9Jj0mO5w0
+ e6pIquqb8g/B7TRKiLL/IOd8zjgNpDH24/67D+LAorbYV83yxduJEFOBwqsGX8pOWH50
+ XBpevgW2LSnovyae9XDT6xfFO+e+i96YSQ0CFxkFKatZnbnzad8CdQQZTSVoLB04nsdU jA== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3knq54ur89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Nov 2022 16:08:23 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kcNpn7NeiZqRN7Ft69OwJMUto6lttRDYrYR8IPKLxude5+AU7JiDn2Pt+pdL79mobmrABloUAlUhqFBgWTA9wMJVJe6f/j20x/pHyVagZcGxnjncuOjNux44Vzs5MPlPiqyh0sU7Fbgmgb7bkFPZGvUPfrVYrOzp3/NZnekkG5cWmGkZZ6Tg48h1/oOoiQGpvuMPOSgTh2vUc7uATTFl+BT5OMpVpGmmyhjMD1U+kmY83RHRcj73xEw5DANZ7Htmpzi8+fSZSM/VJZTvUZNGUv4OUEoYX+ALnnJ1Jz87oNS4t/aqrrb9XjRMNXGiVLV2xXulzjL3LDad9Tkjgw2yiw==
+ b=jO8FOqtYx2ZGT21bsEcXJCBE5HpKMjQQDSIV7itoTzjAXGTWhZD35IIJFtlPV6hbewaedrF61CuRlEX1zRPaGYHYtF9NYPw3QRNhK5jsGM9FBdZAIKdPpNnO5hE2ogix474lg+zkd06mTAwWq3Aspdd9CBmIIyT4//QAktTnw0pfI+bLE70AGZwkW9OlvXgd/w76eOwO/YPMYbUTrAkSySALIMAsM/Aa3b0abyTD6f8ufBX1BBpfO9a4DTvBy5T0uDrTqblMWXFrK9Ll3cpsP7NgjzYxaS+2+6yELluK5nScAKcH7socqcx/7ot1aJRVgpcecqsZUs+vqQGB1Jdf4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lNiKn3TQppU/Y7UznE3utk29XVOxW//Rs+R1HwvItME=;
- b=bmRnbsRz3YdafoTYYQdd/4eGniTsEJxGnXYE2Syq93FIuNvRzQ+wvrcOuoif2cx6bsIlGuo8lyzK8yXYeuXqqotW4Sy7XJygiCMISJXhOUx6J76NOGTkoTcmeQ4X/3Yjl+gZMqw6xDqV2ifg//7eWnrP5Baf2lLMKSoZZpudH9SUlJB7TVIYUJiQ/xgD6BfSWJg19cK0VaK/qK7Tj+DyNvlRY+3OSxcOd2c01TdcM+mQM6HjmlCiT6gjqWPdpOoAwg8I/0r5ZRb8RjpSZ9/VF/YNR+4UL7JttjjlVs6LOtGfXj62LyOnZWGKX4VUg1DA6YR0EK6jMihz3mbQY20Uuw==
+ bh=K/mxUHVVuhu5QnJ1D05xxi1M+K1lcscqMye2B8DHq7Y=;
+ b=F/aIRsjPcO8VAO4ZvwZknr4VBjFQxjhCH3egBjOuAZq6D2bAzQ+yx2lcdqm0qIY+9nUyq/HBLp5pAxAH2JqAxZTfy28pS5tAEBmfj1jJJtOcUMYw7XVDhoXNyL2DG9eaBJblmBB8EIKctpOdW1Y38MHqVEh5HCfgTRGW6kXIRENnRLLqzqOcBvTj40L04Lr3R3Q86jEqXoE8S4M641ZwXo5bw8dx6cVp8lSAQKbbC0mHBJtgxwaJ5yUs6pFik66vVW8mFQdSbPpMbUnApINjBLrwSodDoLwjjQfflAVQcpwmONunV27tJbR6VxbXphNyVMSZ2v2sZm78+JpVcfKlgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by IA1PR11MB7342.namprd11.prod.outlook.com (2603:10b6:208:425::19) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BN8PR15MB2772.namprd15.prod.outlook.com (2603:10b6:408:d0::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.26; Mon, 7 Nov
- 2022 23:53:24 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7%5]) with mapi id 15.20.5791.026; Mon, 7 Nov 2022
- 23:53:24 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "Suravee Suthikulpanit" <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Eric Farman" <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: RE: [PATCH v3 14/15] iommufd: vfio container FD ioctl compatibility
-Thread-Topic: [PATCH v3 14/15] iommufd: vfio container FD ioctl compatibility
-Thread-Index: AQHY6J1rgVJHY6EaeUmpkBEcYy6wd64wHMEwgAOpDwCAAG9EkA==
-Date:   Mon, 7 Nov 2022 23:53:24 +0000
-Message-ID: <BN9PR11MB5276EA038EAA0345CA0ED0438C3C9@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <14-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <BN9PR11MB52763ADFBACFE7AFE11F5F078C3A9@BN9PR11MB5276.namprd11.prod.outlook.com>
- <Y2k7fkxSzxTPTXkN@nvidia.com>
-In-Reply-To: <Y2k7fkxSzxTPTXkN@nvidia.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.24; Tue, 8 Nov
+ 2022 00:08:19 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.026; Tue, 8 Nov 2022
+ 00:08:19 +0000
+Message-ID: <ef14ccf1-fc17-57df-fba7-162845be4722@meta.com>
+Date:   Mon, 7 Nov 2022 16:08:17 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.1
+Subject: Re: [PATCH bpf-next] bpf: Pass map file to .map_update_batch directly
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|IA1PR11MB7342:EE_
-x-ms-office365-filtering-correlation-id: 90b0c620-6e58-4898-33a1-08dac11b420c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7+zYXmCdImSoWlmOMooDXa39FzpPu9acehUdy35BwTElkChlWzOW9DGkTQsWdPkhU9EWVAi0AYNLGWBilru70FLv+/Ay8AB3CFIITDFXPi3jLdemPPUhXtJO7C/OM85QSgIOHwVpQnmZx9m0JjVe7v9WsA7NTuozxrft5LloiUEO80TAnjP7Tclr4a51vMPHCbubc+7DBB0GNx70B0Y2kDvDtQmrw+5O43LEuzcH49sTqPQ74PBAopxIoLImk1e0zOKtR2VfJAE1O7RzOFxPGZbPz+XPsRMPa5Qa6qzI5cIz49ek4rWLJqigxphJ9yy5NGR2UwHoAl8Op+mRWzgldxMrHNFuOFB941h2Mw6vk90U0ULjWEtVW31KidPCbqh4Jo5JEljIoNU8UG60vOK9mWtTj40q5cL2XxXdT8l/g7rCvxGZvp+MyFeEPlLIzT3lPGaquxTa20jbgtiFyuadRLjDRSvM+2P+l/X3Ub4CYxexmwdW5bgvp62VvoXQ/PdcJjjgobwN86dSOjE0htdizS/UZfyEHktYVpP45nQ98dirVgt/svsA8oAuGNmaPgeuaub3I8W4bOFv2r9SPTJ00hIxz05FU/Tl3RZ32vvZRK7rhaanw+Gvw8kWAOSxp+/+gov/a+f/BQqrLL8A4ePmfEYhQIn6tG0WR+CVuFVZerGzRS+7/I2KLbg2pzTajQn5sR64s9lkgAKBeBHSgjBMET8ADL1HuASU+dEm0zCdUZswWEf2WtQI7bKsQb0OWH+LGyvHEQX5TnAWYe7uNeeF8Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(396003)(376002)(39860400002)(346002)(366004)(451199015)(186003)(38100700002)(82960400001)(122000001)(71200400001)(55016003)(38070700005)(478600001)(86362001)(33656002)(83380400001)(7696005)(9686003)(6506007)(26005)(7416002)(7406005)(5660300002)(2906002)(8936002)(54906003)(316002)(6916009)(8676002)(66556008)(76116006)(4326008)(66476007)(66946007)(66446008)(64756008)(41300700001)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?su7So4DOJshBsY4st3bYiBfYanUSjArybLnDnUnv9Is4cGDqW10fpPfLHs/O?=
- =?us-ascii?Q?qabosUL3lIywwXW+/T0PUxsYmko7QOolsTSWrv8tMJn6+B43qWry9t2vxRdu?=
- =?us-ascii?Q?gd++d4hx6KZNcplU2QEZA7f0jkQqqhA+e6MKqAZkBfmeVI+FaJWwyfJiaYqE?=
- =?us-ascii?Q?wHvSw+po3V1G4FAxqoHHXflvukgvySWrx6mmqhp21oyWwF5x/+JDPCTzVMAY?=
- =?us-ascii?Q?JL+tCLOOUcGHPn8/ks04XVSMc5zeDWY4XYQiyr+fB3SpkiGzMFr1AtZR3x8C?=
- =?us-ascii?Q?TbKxfKOauaTsFwf6mRWU5KOXbaxoPzg3qtk918rIOvwUFfjC31wwQlOTuwN7?=
- =?us-ascii?Q?aG4zKrB7GjURXQ4+wB4KLmOg87sdMlhRAwJ5iqoE4b6tm5a6bIHqLPvZqpDJ?=
- =?us-ascii?Q?6PZnolQYImhgN6/8sUPUuBIKhYgv9vguXNVSrcy4Yp8RyHnBEjdtblUnf8EG?=
- =?us-ascii?Q?+44pSLHeMvsclJ5l9oqukT2qwNhi6UvCDltfdXyPzZetwZysEp5yD/UrqSv6?=
- =?us-ascii?Q?k4Xcw8fdLHewkR8ZTfGBToF06X4ycTM+WsWAPxeqD2oR0CE1gFewLs3FnW5G?=
- =?us-ascii?Q?YXlL3YZunxUv7RThVQOEgvaqAHafLMARQOEotYr0O05TFydzDpiiCIYMAEoW?=
- =?us-ascii?Q?/qCi3efQTaQqJSasH1jdLs2fciSrFSKcwjmc5mjTBorq0D+9LgfqfK9KEb77?=
- =?us-ascii?Q?Ylzv4EE/caM4Z12xr88cOzBHgRFq9uE9YP6Atu32Ge2d91yIPXEdt7/D6eoW?=
- =?us-ascii?Q?melpDtFTBKVj4IWM8oIScYp1ib5M643NUEDoc9VD+ePkoaYJ7xlwMcG/7yB6?=
- =?us-ascii?Q?xk1NaztlCnPOytd52iMHj/atAk1z7EhHQyKRkkdTzQjgNXDhkv3aa1iJK0Oi?=
- =?us-ascii?Q?JUzk22eJO7FpYaLGu5wJudO0vXipQrBBNSkBjg36BY9VnOhPNN50DlKUJWqx?=
- =?us-ascii?Q?sHSVVYHOneEjqBUk2E/yds7KIfDVkbVr20qsderJtJvM+3eAgxq90NJnTnII?=
- =?us-ascii?Q?t/GQpHidD22Rr3BNudG3cLgI23lszuERBE244qljwShPycjlZOIP76B7zm7T?=
- =?us-ascii?Q?i7EAgtjUi/abYto3USpLgzqfbfwMvySQrVXQPBkchKT4aQfDz+Jp2bMRNhzc?=
- =?us-ascii?Q?wYwrXXgjXz57UvSxSxTbVofZAyRo1en3paY0H5Aq3KmB2q6ZCCylX36z1HzO?=
- =?us-ascii?Q?IGbzD0IYu4FI0x/OEyI0MiCF22CHv6a0mp/KBpbc/QV5EV1KcKIi5CGCghI3?=
- =?us-ascii?Q?O+HYG4DcltyS868nNpHJHL5SMvc91bitnQkbYxcCnLLQDUdLI5UNN8daps0k?=
- =?us-ascii?Q?boRqTGPPgt7V5Np/Sc19Z56vC1J/aG9nVtslHFZmIaPEVafpAKk/qQepcbEu?=
- =?us-ascii?Q?+TIuAE+hEwddszto9GoIEubuTthtlSaxhc0nTO4buFTkKduESBCX9sLuTP1I?=
- =?us-ascii?Q?1tOSGNhtvDzZDqWF7m/b6jFll/FSE3hn8DHVWAdcy3A3sjRDpLoG6hVY0UUB?=
- =?us-ascii?Q?wU66Xt4TkpaHYs37u4sZ/8A58PoiHgCLaPTwd/w2zqRP5rRS9wLzK2NXrYa0?=
- =?us-ascii?Q?tG4f435TWiNHJ5RUlEivHUkDsQjhg5ZI03Ldm1Gi?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
+        Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xu Kuohai <xukuohai@huawei.com>, houtao1@huawei.com
+References: <20221107075537.1445644-1-houtao@huaweicloud.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221107075537.1445644-1-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0137.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BN8PR15MB2772:EE_
+X-MS-Office365-Filtering-Correlation-Id: e3686a25-d0dc-4bad-6856-08dac11d57ac
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g0ox7hQu33NyQiaDoRLvnzVrGdxJnK1Z3QZwvMeLvMjg1l2ZC68nKc5aJ3wLZfBiyXtkDsUTv8j7K6mewZK8PrghVyg/5hH4wb20NUPiAXPPBECh8LaMd2KwJxBFDVXHmVPwAIYKVsp8DvLxylvAo1ml7QoCjEg4IKm2fJwpEgT8XNW8UkTNSHFSZd0YAIj9qXeVz9uwYZl7Xxom8ClIo+wzpb7rNVYyJWMeDB4/TKWIR40zyApY8AZJF8k7TFpY0TTdURRqPw12bXZHjkmO9LY4jhf3jddEgiR1FhdWNjx2zkGUWsjMJyPKfY4A2AsP7nJiAE6ds5C90U4iIyIziB+Ekoun/BoX9s5OL86iR+1zpfRiOerG9dA3KBB7cRmroREUHE/ClaQTdI1ZtibsI/ie1Wau2icW/23oUE7pljnGjzdj+Ey9n22DUnpzR99wkckQM+yr5jeZJBCI+PLIYqhk/KNy75KqI54JANUdchX+Yvxs7awawUu/e7HnDVMaXtFABOQdI1VulE0AAFDXCrhnz0rnFbfzxV0r/saOSBP/1BGvZusyQneY5ySZ8oO3MCm8qFMcluxbiFAa5MFAzHFxeCH7Q+gx0RYgcEOsgbZYfCzCE7kitc/DNbAkD1K7ZQZ3xUeD/lMYf6XzHLwPK95UCXF70HVebWhmWxN2PdwTFoKgBjbQRpDe/G1XxgSYDXOTDAWHsOthT9whLW0Mf/lXXjoFnE66LFOYXQ8tAvzspEXoY4+p+hnCbpZKlkrO1+N7PD/F68VkR43I8pBQgt3tU3gcmLmnGuyw+ZprQdK/i8wIVpzr59srfxORstNk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(451199015)(36756003)(31686004)(31696002)(86362001)(66556008)(2906002)(5660300002)(7416002)(6512007)(83380400001)(186003)(38100700002)(2616005)(6506007)(53546011)(8676002)(4326008)(110136005)(41300700001)(66946007)(316002)(66476007)(8936002)(6486002)(54906003)(478600001)(142923001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SlNGcG9IMUl2ZjZRK3BDUVVnWVVuMk04aGUxWVlhd0Vldm02VjF5QmwxdUFk?=
+ =?utf-8?B?VURwY1dvNHhqNENaSVEyVkVUMGpKcXVBVnk1VGpHQ1lOUFpvQmFoeUtzODVL?=
+ =?utf-8?B?QkZiSElua3Q5RGZHdkRWcDNEbklWYSswOHBkRXMvT1hpeEx4VlRCTEVLcnZB?=
+ =?utf-8?B?VmJ2WVovbi9ZY3VLQVQ5U0o5ajRhSXdkY2FmVTExSmowbmV6Y3BGbnNHeTB3?=
+ =?utf-8?B?cGtBRHU0cVFMdkZMdThzdEEzNzNOZ1Rwb1BRVGNRZWZQWVJFcDczd04yVFZ2?=
+ =?utf-8?B?MmFhZEw0bDQwWnd2WUpWL0M4UzhpWnRvRnpzR3BhVlZRRVZESU5xSWRtRjNq?=
+ =?utf-8?B?ckNZMDZwdDZIMnJGVzFxMjE3TmRGbDV0YVFDYzFwb1NkR1ZLckFTbW9jc0VP?=
+ =?utf-8?B?bEEwVE1KMlJDdjA0c3RzT1JPUHZONmJMQjJ6L2ZNTnM2VjFlamYwdFJ2Mis5?=
+ =?utf-8?B?RndQS0g3aWg5NHl1ODZVUXVTcjljNThrcVFhYVJ5V0hRcXYvZmlLVGtqbXhM?=
+ =?utf-8?B?YVpyaEhwUHc2RkZaWFNieVo4cmMzZGZVdnZiZHJIUTJOYkdoQ1pUSHJGbjJU?=
+ =?utf-8?B?NWp5dWtkTXFwZUkvdUtqSXNCTkRHaHNMZ0JrQTZFZ1ZhTFFINTk1TnRTZXRw?=
+ =?utf-8?B?dmQ4aEFYV2FSNmNMYmMzcUZGZnE3T0E0RHk2d0tpUFJoQjZ1Ny9LSEdWakZK?=
+ =?utf-8?B?RXdMWlh2U2kyajBIelFQZktqdC9kZWpDQXlOK0NlbFVidU5LbnpkK1RqeVR6?=
+ =?utf-8?B?SmxOM05WbzJ6N2hZaXlRZExEZ0pmZWs5UzkyTVV3N2p6VExBb0FtYllZRzVB?=
+ =?utf-8?B?NlhLa3dVKzIxVjkrNU44RTA4WjBXUFMyV09nbDBhMXBLMW1xMUNtRmhMN25J?=
+ =?utf-8?B?N0NDUVVDVlNSRENoT081cWZHMEZ4eERNWDVjTDczK2xKbjVCWjcvSm5KcUtD?=
+ =?utf-8?B?TEk4VGNnUzFvbGNreFZVOGx5bmpkYjFwUTVKa2RDUXA0UTRudUo3VUI2dmM0?=
+ =?utf-8?B?TzJhd3duaG8yVkZCMW9JWEU2alptL3dJeVFkakdUUG5ldVM5a202d2UvZytU?=
+ =?utf-8?B?eGRUcnpGU2NtZHZ0ampUU28wZVRiNDhjQTZxcis2aHJlYVVDUW4xZW5taHlR?=
+ =?utf-8?B?K2VHK3FQOTFkNWtYM05rSi9XVWovUmtrUnVKd01SVTlIZ0U2aUtVL1VYb3hw?=
+ =?utf-8?B?SHR4NTBwZXYwMUZTeStVTVZPUzM4NU55enNtR1J0RWs5eDNpaEFkdlVsVUds?=
+ =?utf-8?B?bHBUakdnWU4wS3NEZFhMRFAybFlNbURwajBlOGxqRytIZExteGlIY1pFcnFM?=
+ =?utf-8?B?MGlPays1TmE0bGMrWlpLTUtXVUY1cHozdjBZUG5EQmRhZldXanVMaHZIa3M3?=
+ =?utf-8?B?ZmtEcHFZUENBTTZCdUlSem9jR1hGMGN5SVR1YWZ0MmtoSlpIbHJWSjdwSVZ0?=
+ =?utf-8?B?bmhqc3djUjVscWZnUnR0NGhhQStndXdpVGVLNjhSTDJFR09FSEh3M3BPQ2lu?=
+ =?utf-8?B?OXlrNXUrUVJUWnVvWmpES1lMTXlVbmdMcTZlU3UxRGt5SGYwZHNzK0dtWUcy?=
+ =?utf-8?B?eXpGOW5LcStkNHZHdVNEVVBOcFlaQ0tET0lBTitaUjk5Tk1vMmZTS3Jmd3Ay?=
+ =?utf-8?B?ZThHN0RzckJsb2xrM09iUHVJdWd1S0lUY1VHVVkybzhqbUJyRTJ3SU9lTFVI?=
+ =?utf-8?B?Y2p6eDZUUmFyOUNxWnRNa00rQm1ZYlRsTS9KZkpNVHd3SFQra3hpRkZXWTM2?=
+ =?utf-8?B?bmozVm5vYnFNRGo3ZE5pR3J3TXF5U1JZWVBzNWRDNjNmTGJwb09hNENkaVg0?=
+ =?utf-8?B?ejIxU1RTSjhLQnhEMmE3bXQyNzR5ZVFmTnBaK2ovTm5jMDk5K3NiVjJEMUdD?=
+ =?utf-8?B?R0x3Z3UrSmJCcWtWWjM1TlJhMnlvUWIvVXhyT3M3VlU1SENVK3NER3ZGemFz?=
+ =?utf-8?B?R21sTHM4dkR3amhOV3BzMVZRbk5vRi94Q0NSVzAwcXFZMUZXcUE2Z1VqcUoy?=
+ =?utf-8?B?dWM5eWZtcTJMekhvQlBmbUlkTUY5WGNGend5eHBSMUtVY3lPdEkxa0JQQy9o?=
+ =?utf-8?B?cjdJVm5jU3c1Q2hWREtpUGx0dnJibUFIY2NwSzVqSVluclFXazJiL2NqY09U?=
+ =?utf-8?B?ckErU3lKZFFoenNWSGJLaDRDMkNscCtreXhUcElNaDRaWXE5SmN6Mk1VTXJy?=
+ =?utf-8?B?eXc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3686a25-d0dc-4bad-6856-08dac11d57ac
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90b0c620-6e58-4898-33a1-08dac11b420c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2022 23:53:24.2406
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 00:08:19.7506
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2jhp9wSr9M/8LgxQjRCzj1TrdBUE+z1mXfqpRoUK8U1U4YEruruqoTbzq7y+/v4p0g3ZWACgvWBI6yScBEAb3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7342
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eV9VQEtlReqLV3T5BAWGMEE0cdPdM265rmbFbXZaYgUTAACdHy2K1sE/x1tZYvn5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2772
+X-Proofpoint-ORIG-GUID: hUxo5FZsFnai2SpySMzkaJ3B2i7O8U26
+X-Proofpoint-GUID: hUxo5FZsFnai2SpySMzkaJ3B2i7O8U26
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Tuesday, November 8, 2022 1:08 AM
->=20
-> On Sat, Nov 05, 2022 at 09:31:39AM +0000, Tian, Kevin wrote:
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Wednesday, October 26, 2022 2:12 AM
-> > >
-> > > +int iommufd_vfio_compat_ioas_id(struct iommufd_ctx *ictx, u32
-> > > *out_ioas_id)
-> > > +{
-> > > +	struct iommufd_ioas *ioas =3D NULL;
-> > > +	struct iommufd_ioas *out_ioas;
-> > > +
-> > > +	ioas =3D iommufd_ioas_alloc(ictx);
-> > > +	if (IS_ERR(ioas))
-> > > +		return PTR_ERR(ioas);
-> >
-> > I tried to find out where the auto-created compat_ioas is destroyed.
-> >
-> > Is my understanding correct that nobody holds a long-term users
-> > count on it then we expect it to be destroyed in iommufd release?
->=20
-> This is creating a userspace owned ID, like every other IOAS.
->=20
-> Userspace can obtain the ID using IOMMU_VFIO_IOAS GET and destroy it,
-> if it wants. We keep track in a later hunk:
->=20
-> +	if (ictx->vfio_ioas && &ictx->vfio_ioas->obj =3D=3D obj)
-> +		ictx->vfio_ioas =3D NULL;
->=20
-> As with all userspace owned IDs they are always freed during iommufd
-> release.
->=20
-> So, a comment is:
->=20
-> 	/*
-> 	 * An automatically created compat IOAS is treated as a userspace
-> 	 * created object. Userspace can learn the ID via
-> IOMMU_VFIO_IOAS_GET,
-> 	 * and if not manually destroyed it will be destroyed automatically
-> 	 * at iommufd release.
-> 	 */
 
-this is clear
 
->=20
-> > > +	case IOMMU_VFIO_IOAS_SET:
-> > > +		ioas =3D iommufd_get_ioas(ucmd, cmd->ioas_id);
-> > > +		if (IS_ERR(ioas))
-> > > +			return PTR_ERR(ioas);
-> > > +		xa_lock(&ucmd->ictx->objects);
-> > > +		ucmd->ictx->vfio_ioas =3D ioas;
-> > > +		xa_unlock(&ucmd->ictx->objects);
-> > > +		iommufd_put_object(&ioas->obj);
-> > > +		return 0;
-> >
-> > disallow changing vfio_ioas when it's already in-use e.g. has
-> > a list of hwpt attached?
->=20
-> I don't see a reason to do so..
->=20
-> The semantic we have is the IOAS, whatever it is, is fixed once the
-> device or access object is created. In VFIO sense that means it
-> becomes locked to the IOAS that was set as compat when the vfio device
-> is bound.
->=20
-> Other than that, userspace can change the IOAS it wants freely, there
-> is no harm to the kernel and it may even be useful.
->=20
+On 11/6/22 11:55 PM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> Currently generic_map_update_batch() will get map file from
+> attr->batch.map_fd and pass it to bpf_map_update_value(). The problem is
+> map_fd may have been closed or reopened as a different file type and
+> generic_map_update_batch() doesn't check the validity of map_fd.
+> 
+> It doesn't incur any problem as for now, because only
+> BPF_MAP_TYPE_PERF_EVENT_ARRAY uses the passed map file and it doesn't
+> support batch update operation. But it is better to fix the potential
+> use of an invalid map file.
 
-it allows devices SET_CONTAINER to an same iommufd attached to different
-IOAS's if IOAS_SET comes in the middle. Is it desired?
+I think we don't have problem here. The reason is in bpf_map_do_batch()
+we have
+	f = fdget(ufd);
+	...
+	BPF_DO_BATCH(map->ops->map_update_batch);
+	fdput(f)
 
-while it's flexible I don't see a real usage would use it. Instead it cause=
-s
-conceptual confusion to the original vfio semantics.=20
+So the original ufd is still valid during map->ops->map_update_batch
+which eventually may call generic_map_update_batch() which tries to
+do fdget(ufd) again.
+
+Did I miss anything here?
+
+> 
+> Checking the validity of map file returned from fdget() in
+> generic_map_update_batch() can not fix the problem, because the returned
+> map file may be different with map file got in bpf_map_do_batch() due to
+> the reopening of fd, so just passing the map file directly to
+> .map_update_batch() in bpf_map_do_batch().
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>   include/linux/bpf.h  |  5 +++--
+>   kernel/bpf/syscall.c | 31 ++++++++++++++++++-------------
+>   2 files changed, 21 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 798aec816970..20cfe88ee6df 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -85,7 +85,8 @@ struct bpf_map_ops {
+>   	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+>   					   const union bpf_attr *attr,
+>   					   union bpf_attr __user *uattr);
+> -	int (*map_update_batch)(struct bpf_map *map, const union bpf_attr *attr,
+> +	int (*map_update_batch)(struct bpf_map *map, struct file *map_file,
+> +				const union bpf_attr *attr,
+>   				union bpf_attr __user *uattr);
+>   	int (*map_delete_batch)(struct bpf_map *map, const union bpf_attr *attr,
+>   				union bpf_attr __user *uattr);
+> @@ -1776,7 +1777,7 @@ void bpf_map_init_from_attr(struct bpf_map *map, union bpf_attr *attr);
+>   int  generic_map_lookup_batch(struct bpf_map *map,
+>   			      const union bpf_attr *attr,
+>   			      union bpf_attr __user *uattr);
+> -int  generic_map_update_batch(struct bpf_map *map,
+> +int  generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   			      const union bpf_attr *attr,
+>   			      union bpf_attr __user *uattr);
+>   int  generic_map_delete_batch(struct bpf_map *map,
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 85532d301124..cb8a87277bf8 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -175,8 +175,8 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+>   		synchronize_rcu();
+>   }
+>   
+> -static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+> -				void *value, __u64 flags)
+> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+> +				void *key, void *value, __u64 flags)
+>   {
+>   	int err;
+>   
+> @@ -190,7 +190,7 @@ static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+>   		   map->map_type == BPF_MAP_TYPE_SOCKMAP) {
+>   		return sock_map_update_elem_sys(map, key, value, flags);
+>   	} else if (IS_FD_PROG_ARRAY(map)) {
+> -		return bpf_fd_array_map_update_elem(map, f.file, key, value,
+> +		return bpf_fd_array_map_update_elem(map, map_file, key, value,
+>   						    flags);
+>   	}
+>   
+> @@ -205,12 +205,12 @@ static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+>   						       flags);
+>   	} else if (IS_FD_ARRAY(map)) {
+>   		rcu_read_lock();
+> -		err = bpf_fd_array_map_update_elem(map, f.file, key, value,
+> +		err = bpf_fd_array_map_update_elem(map, map_file, key, value,
+>   						   flags);
+>   		rcu_read_unlock();
+>   	} else if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
+>   		rcu_read_lock();
+> -		err = bpf_fd_htab_map_update_elem(map, f.file, key, value,
+> +		err = bpf_fd_htab_map_update_elem(map, map_file, key, value,
+>   						  flags);
+>   		rcu_read_unlock();
+>   	} else if (map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
+> @@ -1390,7 +1390,7 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>   		goto free_key;
+>   	}
+>   
+> -	err = bpf_map_update_value(map, f, key, value, attr->flags);
+> +	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
+>   
+>   	kvfree(value);
+>   free_key:
+> @@ -1576,16 +1576,14 @@ int generic_map_delete_batch(struct bpf_map *map,
+>   	return err;
+>   }
+>   
+> -int generic_map_update_batch(struct bpf_map *map,
+> +int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   			     const union bpf_attr *attr,
+>   			     union bpf_attr __user *uattr)
+>   {
+>   	void __user *values = u64_to_user_ptr(attr->batch.values);
+>   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+>   	u32 value_size, cp, max_count;
+> -	int ufd = attr->batch.map_fd;
+>   	void *key, *value;
+> -	struct fd f;
+>   	int err = 0;
+>   
+>   	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> @@ -1612,7 +1610,6 @@ int generic_map_update_batch(struct bpf_map *map,
+>   		return -ENOMEM;
+>   	}
+>   
+> -	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
+>   	for (cp = 0; cp < max_count; cp++) {
+>   		err = -EFAULT;
+>   		if (copy_from_user(key, keys + cp * map->key_size,
+> @@ -1620,7 +1617,7 @@ int generic_map_update_batch(struct bpf_map *map,
+>   		    copy_from_user(value, values + cp * value_size, value_size))
+>   			break;
+>   
+> -		err = bpf_map_update_value(map, f, key, value,
+> +		err = bpf_map_update_value(map, map_file, key, value,
+>   					   attr->batch.elem_flags);
+>   
+>   		if (err)
+> @@ -1633,7 +1630,6 @@ int generic_map_update_batch(struct bpf_map *map,
+>   
+>   	kvfree(value);
+>   	kvfree(key);
+> -	fdput(f);
+>   	return err;
+>   }
+>   
+> @@ -4435,6 +4431,15 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>   		err = fn(map, attr, uattr);	\
+>   	} while (0)
+>   
+> +#define BPF_DO_BATCH_WITH_FILE(fn)			\
+> +	do {						\
+> +		if (!fn) {				\
+> +			err = -ENOTSUPP;		\
+> +			goto err_put;			\
+> +		}					\
+> +		err = fn(map, f.file, attr, uattr);	\
+> +	} while (0)
+> +
+>   static int bpf_map_do_batch(const union bpf_attr *attr,
+>   			    union bpf_attr __user *uattr,
+>   			    int cmd)
+> @@ -4470,7 +4475,7 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+>   	else if (cmd == BPF_MAP_LOOKUP_AND_DELETE_BATCH)
+>   		BPF_DO_BATCH(map->ops->map_lookup_and_delete_batch);
+>   	else if (cmd == BPF_MAP_UPDATE_BATCH)
+> -		BPF_DO_BATCH(map->ops->map_update_batch);
+> +		BPF_DO_BATCH_WITH_FILE(map->ops->map_update_batch);
+>   	else
+>   		BPF_DO_BATCH(map->ops->map_delete_batch);
+>   err_put:
