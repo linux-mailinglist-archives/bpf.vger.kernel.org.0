@@ -2,357 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B47621C96
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 19:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E94621C7A
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 19:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbiKHS7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 13:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S229707AbiKHSuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 13:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiKHS7H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 13:59:07 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D61F5E3FC
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 10:59:05 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id i21so23922237edj.10
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 10:59:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=61ZB7BZd7CUPH5RTkWLYWpyStnL3hubIYZcLW3GBhlM=;
-        b=TROy8mnM4gUsrLJGbuhdhUDv135mtweeOG4slsBmVvTI2lR9KlD/GFM4Y0H/IBTrq7
-         rqxKWV3L6QS9qahLg+R0qljUG8YwTBsls4bbzwkiJquQ0a+HCgkHyiOWrXp+a2C1HO1K
-         WvrFHuWryc/7/YxfSQsInRv5+/gaEwVptoyoM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=61ZB7BZd7CUPH5RTkWLYWpyStnL3hubIYZcLW3GBhlM=;
-        b=iKpr83kQ6kF8aqiJAB2xJnqzI20AxILhNwpzi8G0sPd9s2dJYz1ti2qysn3ZtS6PGZ
-         gpyeXk/b3czJ989vloAhm2ERQcoN+lbwVhoQki7Td/kOuVF5q7aNnsVLID3c6ypoVr77
-         yGr2bMjDGloZuq0tHFGMvf5lRlRBl3m5ZPnil2vJ4CM4LlNiepkOiyj3m/iMaTRqOO/+
-         vugbUMYdY3g+pVERPSL/H7n2WS3XoJgYfe40/q44hSggoniB6yhGvxDogen2d9JwiqJG
-         wGVnAtKCKzrPnvTySIVL5uxeoTnVcMttPRRg3QfHhWhs/Ma1ss0WvJa1SMToceoXSJUM
-         lpDw==
-X-Gm-Message-State: ACrzQf2mloqqVXeG9o62nNE1g/kthntL/aQHO+Pv7bc5G8o/vIz2R0C3
-        /uuVQAsw8dJ/ElRp5c4rKtO1xw==
-X-Google-Smtp-Source: AMsMyM69YhJT1KQ0oVMD08z8PNsr3e20NHRiUCZg/aUjANM9D33BtLHoEihjSXB3va0Jo+W0DCh+/A==
-X-Received: by 2002:a05:6402:b0e:b0:461:f7a8:3e3a with SMTP id bm14-20020a0564020b0e00b00461f7a83e3amr56756709edb.372.1667933943719;
-        Tue, 08 Nov 2022 10:59:03 -0800 (PST)
-Received: from cloudflare.com (79.184.204.15.ipv4.supernova.orange.pl. [79.184.204.15])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170906309300b0079800b8173asm4976875ejv.158.2022.11.08.10.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Nov 2022 10:59:03 -0800 (PST)
-References: <20221018020258.197333-1-xiyou.wangcong@gmail.com>
- <Y07sxzoS/s6ZBhEx@google.com> <87eduxfiik.fsf@cloudflare.com>
- <Y1wqe2ybxxCtIhvL@pop-os.localdomain> <87bkprprxf.fsf@cloudflare.com>
- <63617b2434725_2eb7208e1@john.notmuch> <87a6574yz0.fsf@cloudflare.com>
- <63643449b978a_204d620851@john.notmuch>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Cong Wang <cong.wang@bytedance.com>, sdf@google.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Patch bpf] sock_map: convert cancel_work_sync() to cancel_work()
-Date:   Tue, 08 Nov 2022 19:49:23 +0100
-In-reply-to: <63643449b978a_204d620851@john.notmuch>
-Message-ID: <87fsetqnm2.fsf@cloudflare.com>
+        with ESMTP id S229501AbiKHSuY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 13:50:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D5A6DCFC
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 10:50:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43F4B61750
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 18:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A751AC433D7
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 18:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667933418;
+        bh=zu9PMhVfzzTPBM578gdkzAALFYMkI9GwJjbL3eyvjAM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y86jQbHnVfUqG1sMkGTtdBeomtv/wb2PQODh1qzPhXx7eWj4bLqsm0za77Jf2M6Mx
+         PKjkEklqRZVcq283TRIz2nZyfRjafK+1zWjj2hVzWuEbSgjviV/t+agMyoQnqp1Wgj
+         UDtoaJma16bxcNNTkDDlZ2E+rwWzePTfXRms9XpFplP/eB7u9oOEOKl/Kfh7kubWhQ
+         QYw9wsUSp4rssTJSlbtSCGHHyrkyiK+20JUWBbNvBxRq56rA5afe3CD7RRskeOe1Op
+         3xglcKn2N0aLn6oEc+VjRGWxgKSdKjx2ey/hKmt9vep3zJVPRmF8uF6aIzQ9VGds/W
+         DHKNQKmRVKsKw==
+Received: by mail-ej1-f51.google.com with SMTP id kt23so40957777ejc.7
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 10:50:18 -0800 (PST)
+X-Gm-Message-State: ACrzQf3l4Ohve8DJr0+NdilZXB3j7pBd0/rlOyy+4xoAUB93AbQBc0J/
+        m+X6DmB4MUFn57pKA/r/+XZ+mTGAdI5npwSBAjc=
+X-Google-Smtp-Source: AMsMyM56A9ld/ijomWhhxZcM0Q6GqvKYUhlV48OrAak6z2K8RXAGhJXA8FLeGzN+XDmHx5xVq2WtTK4fY+TaCd2Ejuw=
+X-Received: by 2002:a17:907:b602:b0:7ad:e82c:3355 with SMTP id
+ vl2-20020a170907b60200b007ade82c3355mr41175687ejc.3.1667933416863; Tue, 08
+ Nov 2022 10:50:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
+ <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+In-Reply-To: <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 8 Nov 2022 10:50:04 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5d9nbV88-KSG3qFffKJ+cnNbsq4nEOS5FwF0q9-gQuzQ@mail.gmail.com>
+Message-ID: <CAPhsuW5d9nbV88-KSG3qFffKJ+cnNbsq4nEOS5FwF0q9-gQuzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "rppt@kernel.org" <rppt@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "Lu, Aaron" <aaron.lu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 02:36 PM -07, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Tue, Nov 01, 2022 at 01:01 PM -07, John Fastabend wrote:
->> > Jakub Sitnicki wrote:
->> >> On Fri, Oct 28, 2022 at 12:16 PM -07, Cong Wang wrote:
->> >> > On Mon, Oct 24, 2022 at 03:33:13PM +0200, Jakub Sitnicki wrote:
->> >> >> On Tue, Oct 18, 2022 at 11:13 AM -07, sdf@google.com wrote:
->> >> >> > On 10/17, Cong Wang wrote:
->> >> >> >> From: Cong Wang <cong.wang@bytedance.com>
->> >> >> >
->> >> >> >> Technically we don't need lock the sock in the psock work, but we
->> >> >> >> need to prevent this work running in parallel with sock_map_close().
->> >> >> >
->> >> >> >> With this, we no longer need to wait for the psock->work synchronously,
->> >> >> >> because when we reach here, either this work is still pending, or
->> >> >> >> blocking on the lock_sock(), or it is completed. We only need to cancel
->> >> >> >> the first case asynchronously, and we need to bail out the second case
->> >> >> >> quickly by checking SK_PSOCK_TX_ENABLED bit.
->> >> >> >
->> >> >> >> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
->> >> >> >> Reported-by: Stanislav Fomichev <sdf@google.com>
->> >> >> >> Cc: John Fastabend <john.fastabend@gmail.com>
->> >> >> >> Cc: Jakub Sitnicki <jakub@cloudflare.com>
->> >> >> >> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
->> >> >> >
->> >> >> > This seems to remove the splat for me:
->> >> >> >
->> >> >> > Tested-by: Stanislav Fomichev <sdf@google.com>
->> >> >> >
->> >> >> > The patch looks good, but I'll leave the review to Jakub/John.
->> >> >> 
->> >> >> I can't poke any holes in it either.
->> >> >> 
->> >> >> However, it is harder for me to follow than the initial idea [1].
->> >> >> So I'm wondering if there was anything wrong with it?
->> >> >
->> >> > It caused a warning in sk_stream_kill_queues() when I actually tested
->> >> > it (after posting).
->> >> 
->> >> We must have seen the same warnings. They seemed unrelated so I went
->> >> digging. We have a fix for these [1]. They were present since 5.18-rc1.
->> >> 
->> >> >> This seems like a step back when comes to simplifying locking in
->> >> >> sk_psock_backlog() that was done in 799aa7f98d53.
->> >> >
->> >> > Kinda, but it is still true that this sock lock is not for sk_socket
->> >> > (merely for closing this race condition).
->> >> 
->> >> I really think the initial idea [2] is much nicer. I can turn it into a
->> >> patch, if you are short on time.
->> >> 
->> >> With [1] and [2] applied, the dead lock and memory accounting warnings
->> >> are gone, when running `test_sockmap`.
->> >> 
->> >> Thanks,
->> >> Jakub
->> >> 
->> >> [1]
->> >> https://lore.kernel.org/netdev/1667000674-13237-1-git-send-email-wangyufen@huawei.com/
->> >> [2] https://lore.kernel.org/netdev/Y0xJUc%2FLRu8K%2FAf8@pop-os.localdomain/
->> >
->> > Cong, what do you think? I tend to agree [2] looks nicer to me.
->> >
->> > @Jakub,
->> >
->> > Also I think we could simply drop the proposed cancel_work_sync in
->> > sock_map_close()?
->> >
->> >  }
->> > @@ -1619,9 +1619,10 @@ void sock_map_close(struct sock *sk, long timeout)
->> >  	saved_close = psock->saved_close;
->> >  	sock_map_remove_links(sk, psock);
->> >  	rcu_read_unlock();
->> > -	sk_psock_stop(psock, true);
->> > -	sk_psock_put(sk, psock);
->> > +	sk_psock_stop(psock);
->> >  	release_sock(sk);
->> > +	cancel_work_sync(&psock->work);
->> > +	sk_psock_put(sk, psock);
->> >  	saved_close(sk, timeout);
->> >  }
->> >
->> > The sk_psock_put is going to cancel the work before destroying the psock,
->> >
->> >  sk_psock_put()
->> >    sk_psock_drop()
->> >      queue_rcu_work(system_wq, psock->rwork)
->> >
->> > and then in callback we
->> >
->> >   sk_psock_destroy()
->> >     cancel_work_synbc(psock->work)
->> >
->> > although it might be nice to have the work cancelled earlier rather than
->> > latter maybe.
->> 
->> Good point.
->> 
->> I kinda like the property that once close() returns we know there is no
->> deferred work running for the socket.
->> 
->> I find the APIs where a deferred cleanup happens sometimes harder to
->> write tests for.
->> 
->> But I don't really have a strong opinion here.
+On Tue, Nov 8, 2022 at 8:51 AM Edgecombe, Rick P
+<rick.p.edgecombe@intel.com> wrote:
 >
-> I don't either and Cong left it so I'm good with that.
+> On Tue, 2022-11-08 at 13:27 +0200, Mike Rapoport wrote:
+> > > Based on our experiments [5], we measured 0.5% performance
+> > > improvement
+> > > from bpf_prog_pack. This patchset further boosts the improvement to
+> > > 0.7%.
+> > > The difference is because bpf_prog_pack uses 512x 4kB pages instead
+> > > of
+> > > 1x 2MB page, bpf_prog_pack as-is doesn't resolve #2 above.
+> > >
+> > > This patchset replaces bpf_prog_pack with a better API and makes it
+> > > available for other dynamic kernel text, such as modules, ftrace,
+> > > kprobe.
+> >
+> >
+> > The proposed execmem_alloc() looks to me very much tailored for x86
+> > to be
+> > used as a replacement for module_alloc(). Some architectures have
+> > module_alloc() that is quite different from the default or x86
+> > version, so
+> > I'd expect at least some explanation how modules etc can use execmem_
+> > APIs
+> > without breaking !x86 architectures.
 >
-> Reviewing backlog logic though I think there is another bug there, but
-> I haven't been able to trigger it in any of our tests.
+> I think this is fair, but I think we should ask ask ourselves - how
+> much should we do in one step?
 >
-> The sk_psock_backlog() logic is,
+> For non-text_poke() architectures, the way you can make it work is have
+> the API look like:
+> execmem_alloc()  <- Does the allocation, but necessarily usable yet
+> execmem_write()  <- Loads the mapping, doesn't work after finish()
+> execmem_finish() <- Makes the mapping live (loaded, executable, ready)
 >
->  sk_psock_backlog(struct work_struct *work)
->    mutex_lock()
->    while (skb = ...)
->    ...
->    do {
->      ret = sk_psock_handle_skb()
->      if (ret <= 0) {
->        if (ret == -EAGAIN) {
->            sk_psock_skb_state()
->            goto  end;
->        } 
->       ...
->    } while (len);
->    ...
->   end:
->    mutex_unlock()
+> So for text_poke():
+> execmem_alloc()  <- reserves the mapping
+> execmem_write()  <- text_pokes() to the mapping
+> execmem_finish() <- does nothing
 >
-> what I'm not seeing is if we get an EAGAIN through sk_psock_handle_skb
-> how do we schedule the backlog again. For egress we would set the
-> SOCK_NOSPACE bit and then get a write space available callback which
-> would do the schedule(). The ingress side could fail with EAGAIN
-> through the alloc_sk_msg(GFP_ATOMIC) call. This is just a kzalloc,
+> And non-text_poke():
+> execmem_alloc()  <- Allocates a regular RW vmalloc allocation
+> execmem_write()  <- Writes normally to it
+> execmem_finish() <- does set_memory_ro()/set_memory_x() on it
+
+Yeah, some fallback mechanism like this is missing in current version.
+It is not a problem for BPF programs, as we call it from arch code.
+But we do need better APIs for modules.
+
+Thanks,
+Song
 >
->    sk_psock_handle_skb()
->     sk_psock_skb_ingress()
->      sk_psock_skb_ingress_self()
->        msg = alloc_sk_msg()
->                kzalloc()          <- this can return NULL
->        if (!msg)
->           return -EAGAIN          <- could we stall now
+> Non-text_poke() only gets the benefits of centralized logic, but the
+> interface works for both. This is pretty much what the perm_alloc() RFC
+> did to make it work with other arch's and modules. But to fit with the
+> existing modules code (which is actually spread all over) and also
+> handle RO sections, it also needed some additional bells and whistles.
+>
+> So the question I'm trying to ask is, how much should we target for the
+> next step? I first thought that this functionality was so intertwined,
+> it would be too hard to do iteratively. So if we want to try
+> iteratively, I'm ok if it doesn't solve everything.
 >
 >
-> I think we could stall here if there was nothing else to kick it. I
-> was thinking about this maybe,
->
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 1efdc47a999b..b96e95625027 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -624,13 +624,20 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
->  static void sk_psock_skb_state(struct sk_psock *psock,
->                                struct sk_psock_work_state *state,
->                                struct sk_buff *skb,
-> -                              int len, int off)
-> +                              int len, int off, bool ingress)
->  {
->         spin_lock_bh(&psock->ingress_lock);
->         if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
->                 state->skb = skb;
->                 state->len = len;
->                 state->off = off;
-> +               /* For ingress we may not have a wakeup callback to trigger
-> +                * the reschedule on so need to reschedule retry. For egress
-> +                * we will get TCP stack callback when its a good time to
-> +                * retry.
-> +                */
-> +               if (ingress)
-> +                       schedule_work(&psock->work);
->         } else {
->                 sock_drop(psock->sk, skb);
->         }
-> @@ -678,7 +685,7 @@ static void sk_psock_backlog(struct work_struct *work)
->                         if (ret <= 0) {
->                                 if (ret == -EAGAIN) {
->                                         sk_psock_skb_state(psock, state, skb,
-> -                                                          len, off);
-> +                                                          len, off, ingress);
->                                         goto end;
->                                 }
->                                 /* Hard errors break pipe and stop xmit. */
->
->
-> Its tempting to try and use the memory pressure callbacks but those are
-> built for the skb cache so I think overloading them is not so nice. The
-> drawback to above is its possible no memory is available even when we
-> get back to the backlog. We could use a delayed reschedule but its not
-> clear what delay makes sense here. Maybe some backoff...
->
-> Any thoughts?
-
-I don't have any thoughts on the fix yet, but I have a repro.
-
-We can use fault injection [1]. For some reason it's been disabled on
-x86-64 since 2007 (stack walking didn't work back then?), so we need to
-patch the kernel slightly.
-
-Also, to better target the failure, just for this case, I've de-inlined
-alloc_sk_msg(). But in general testing we can just inject any alloc
-under sk_psock_backlog().
-
-Incantation looks like so:
-
-#!/usr/bin/env bash
-
-readonly TARGET_FUNC=alloc_sk_msg
-readonly ADDR=($(grep -A1 ${TARGET_FUNC} /proc/kallsyms | awk '{print "0x" $1}'))
-
-exec bash \
-     ../../fault-injection/failcmd.sh \
-     --require-start=${ADDR[0]} --require-end=${ADDR[1]} \
-     --stacktrace-depth=32 \
-     --probability=50 --times=100 \
-     --ignore-gfp-wait=N --task-filter=N \
-     -- \
-     ./test_sockmap
-
-We won't get a message in dmesg (even with --verbosity=1 set) because
-we're allocating with __GFP_NOWARN, and fault injection interface
-doesn't provide a way to override that. But we can obseve the 'times'
-count go down after ./test_sockmap blocks (also confirmed with a printk
-added on -EAGAIN error path).
-
-This is what I observe:
-
-bash-5.1# ./repro.sh
-# 1/ 6  sockmap::txmsg test passthrough:OK
-# 2/ 6  sockmap::txmsg test redirect:OK
-# 3/ 1  sockmap::txmsg test redirect wait send mem:OK
-# 4/ 6  sockmap::txmsg test drop:OK
-# 5/ 6  sockmap::txmsg test ingress redirect:OK <-- blocked here
-^Z
-[1]+  Stopped                 ./repro.sh
-bash-5.1# cat /sys/kernel/debug/failslab/times
-99
-bash-5.1#
-
-Kernel tweaks attached below.
-
--jkbs
-
-[1] https://www.kernel.org/doc/html/latest/fault-injection/fault-injection.html
-
----8<---
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 3fc7abffc7aa..32c5329b0dd9 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1963,7 +1963,6 @@ config FAIL_SUNRPC
- config FAULT_INJECTION_STACKTRACE_FILTER
- 	bool "stacktrace filter for fault-injection capabilities"
- 	depends on FAULT_INJECTION_DEBUG_FS && STACKTRACE_SUPPORT
--	depends on !X86_64
- 	select STACKTRACE
- 	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	help
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index e6b9ced3eda8..0f7dc67a3708 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -500,7 +500,7 @@ bool sk_msg_is_readable(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sk_msg_is_readable);
- 
--static struct sk_msg *alloc_sk_msg(gfp_t gfp)
-+static noinline struct sk_msg *alloc_sk_msg(gfp_t gfp)
- {
- 	struct sk_msg *msg;
- 
-diff --git a/tools/testing/fault-injection/failcmd.sh b/tools/testing/fault-injection/failcmd.sh
-index 78dac34264be..887dd4553cae 100644
---- a/tools/testing/fault-injection/failcmd.sh
-+++ b/tools/testing/fault-injection/failcmd.sh
-@@ -212,7 +212,7 @@ done
- echo $oom_kill_allocating_task > /proc/sys/vm/oom_kill_allocating_task
- echo $task_filter > $FAULTATTR/task-filter
- echo $probability > $FAULTATTR/probability
--echo $times > $FAULTATTR/times
-+printf "%#x" $times > $FAULTATTR/times
- 
- trap "restore_values" SIGINT SIGTERM EXIT
- 
