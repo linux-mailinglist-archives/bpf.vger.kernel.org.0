@@ -2,73 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C518621F91
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 23:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D270C621FE7
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 00:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbiKHWxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 17:53:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S229734AbiKHXCJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 18:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbiKHWxq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 17:53:46 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB722CC9D
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 14:53:45 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id cb2-20020a056830618200b00661b6e5dcd8so9206391otb.8
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 14:53:45 -0800 (PST)
+        with ESMTP id S229702AbiKHXCI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 18:02:08 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70C722B1F
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 15:02:05 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id ft34so6055438ejc.12
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 15:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=knuha/0L3whh8nT50lR2ItuT1EONyZVV+ouqJ68QHZA=;
-        b=i4I18xsZKajr58O29V/LVujDoAOrDQYT3U7wdkvIrXpZbp9Ca5Qiz8midqU94kQUvG
-         gK76lIwmEix693nERMwMD6nG3KorWFLH/s/CHOQz//303Bvnm/tfoXivbxi1i0o4jXIW
-         2PpsEz25qapySiXRBuCGz0aZYcfaU3D4FmlWh/TFh79GWt/Qdepu0al2QH59vWvwGs4c
-         Z7YlYsstqw5pFYtTap3ya3+HLSnjPu9tsI7N6wdqLiA9XSmiUJ1OcG7JqNjiT75YOeFf
-         XAd96YEsw7RXoFHQ25QlPlf9bi+lKbkUfmFPwU1ozWFnU1kt5PEaDyFAGAt5ZwuaAyTD
-         Hzew==
+        bh=f3gJtHiZpbHaQgjxW/MuhxkN0YHSxCA4RWHswebzhsw=;
+        b=ONsMxY6HFZ9sdTWkCYzimTIfowyIMbYSVVQEqmJyT6+mF1ccNX+Ki91yIt7KFRJpMd
+         EFGvGq2mG+/zbxKKMpzU48Jb6HznkkZhz+9KWnTq752A6L9yeSL0KKCL/CqD27LHE/0W
+         46UhGwIlqbPF3dJ6/wCB8cOUoJJaIzjSl0Z4812mmjTjPC0Kz3nkgl9A8UFBbqyHEKZJ
+         aMrIKzQoXMENC6Y002zL7ppw68CFbvogyVmqUpptmHMmwj+H2ndZAsguwnGqGIg8hgIB
+         qc5l6bUONq/4nCuW+pQukuYAJlwl8zuP8HvJZqYGPAuMKr2zkly8fGndNEwOMXkBzlUy
+         qmNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=knuha/0L3whh8nT50lR2ItuT1EONyZVV+ouqJ68QHZA=;
-        b=K/pMXLyk8RHWiPNdu9X0izF2r5T0jj5AFTqL4eh6rMeJt+m6M588qignBDTnUy6pa+
-         LCgzV17QDF9xOGxAO7R8Prw45XKY2JzTkcd4uuBdt85ikj1WZO8T3B3NzHgahm60peSA
-         YDx+Fy/tq61J8TwpZ9dGP//avBMsctKepsflV3adaC2bjxS1snSc70ovbiA3QWuXEilR
-         /b6l2K5gdPcXJKw8k75MftM8OL+PbqpQe8e6timRSVURWPaQ4ADGFxTv8QZ728ypRUoH
-         hCXt+jK1iF1JUeebRoNiqqaB0YGsfH4Vl7IuVah2U95VmodMWzexhBL5qSq8JU9Y+/rT
-         YMuQ==
-X-Gm-Message-State: ACrzQf01OcEJqbav9/vy9R49iyi/E2ypLZvzfJPKTUZHmPcwJN8cbJPg
-        ZarP9VvtrzQ7dRFC7kpmf78KI6od2dlHpGK9EFifOQ==
-X-Google-Smtp-Source: AMsMyM6sbyW4Z90a1WvOaiYwAlYDgogLA5zn3UR3LNLstqEXoVzvOwGScU2a4MAsLERATJ/u37KNdb+1huwgmhmZXno=
-X-Received: by 2002:a9d:62d8:0:b0:66c:4f88:78ff with SMTP id
- z24-20020a9d62d8000000b0066c4f8878ffmr23580029otk.269.1667948024724; Tue, 08
- Nov 2022 14:53:44 -0800 (PST)
+        bh=f3gJtHiZpbHaQgjxW/MuhxkN0YHSxCA4RWHswebzhsw=;
+        b=aDP0Icmd5FKBwnDdmk2kraeeEs+SY/Ibi320+GhIuG3CitcU2zgHDiUvRvRhyKKa8j
+         iLCHJ0oeUxv2SheTkxLwtvz2feLJ9GB4MQsHaAutRl53WvwKJGrQGEBaj/P3YdSl2swx
+         3ihsJ3u3V2uRWbk6N6CsfVLlj/torvKB5XUcSprLW88R38Me87Hw6rkA70FtJIAiMedt
+         Qx22TeLsLLEmtyArWpiYjTQ4fVj8xm23JP56DMg328wVW5PqKFtqc8fiw1WnmXKuzCap
+         q//iM0SgrWnZ7BkAqrWh5N2VsLEFXH7oKescvvHaMhJhrCFk8cyA7IgGB4w3krp6H5os
+         PvWg==
+X-Gm-Message-State: ACrzQf3TXdD96xqt8P5yqiIVEFbpXKncP9YNULeS0YcwKKKlvz90gewb
+        BaCq5zNcHUyxXwYvu4etcWXvBFopxzhH7BnIp00RLZOd
+X-Google-Smtp-Source: AMsMyM6jHDRYiyWASk7IqPH21mtlD0i0vza0fI/wAHTNKO0AO5PIHa17+PxqF6Aj9TMOYl9TVbR4fYGMd0SS1O4Ev3k=
+X-Received: by 2002:a17:906:b050:b0:78d:99ee:4e68 with SMTP id
+ bj16-20020a170906b05000b0078d99ee4e68mr1023652ejb.302.1667948524078; Tue, 08
+ Nov 2022 15:02:04 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000dc81b705a0af279c@google.com> <000000000000564bd705ecdf291f@google.com>
-In-Reply-To: <000000000000564bd705ecdf291f@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 8 Nov 2022 14:53:34 -0800
-Message-ID: <CACT4Y+bnN7oZp2WJf+Jcx8+de1roOdLB=f_Zu+0H4UHEkfcO8A@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in bpf_check (3)
-To:     syzbot <syzbot+245129539c27fecf099a@syzkaller.appspotmail.com>
-Cc:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        martin.lau@linux.dev, memxor@gmail.com, nathan@kernel.org,
-        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
-        shanavas@crystalwater.ae, song@kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        trix@redhat.com, yhs@fb.com
+References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-4-memxor@gmail.com>
+In-Reply-To: <20221107230950.7117-4-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Nov 2022 15:01:52 -0800
+Message-ID: <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 03/25] bpf: Support bpf_list_head in map values
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Delyan Kratunov <delyank@meta.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,32 +70,180 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 7 Nov 2022 at 02:48, syzbot
-<syzbot+245129539c27fecf099a@syzkaller.appspotmail.com> wrote:
+On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
+> Add the support on the map side to parse, recognize, verify, and build
+> metadata table for a new special field of the type struct bpf_list_head.
+> To parameterize the bpf_list_head for a certain value type and the
+> list_node member it will accept in that value type, we use BTF
+> declaration tags.
 >
-> commit 34dd3bad1a6f1dc7d18ee8dd53f1d31bffd2aee8
-> Author: Alexei Starovoitov <ast@kernel.org>
-> Date:   Fri Sep 2 21:10:47 2022 +0000
+> The definition of bpf_list_head in a map value will be done as follows:
 >
->     bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+> struct foo {
+>         struct bpf_list_node node;
+>         int data;
+> };
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1232e176880000
-> start commit:   506357871c18 Merge tag 'spi-fix-v6.0-rc4' of git://git.ker..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1b95a17a5bfb1521
-> dashboard link: https://syzkaller.appspot.com/bug?extid=245129539c27fecf099a
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10940477080000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177e8f43080000
+> struct map_value {
+>         struct bpf_list_head head __contains(foo, node);
+> };
 >
-> If the result looks correct, please mark the issue as fixed by replying with:
+> Then, the bpf_list_head only allows adding to the list 'head' using the
+> bpf_list_node 'node' for the type struct foo.
 >
-> #syz fix: bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+> The 'contains' annotation is a BTF declaration tag composed of four
+> parts, "contains:name:node" where the name is then used to look up the
+> type in the map BTF, with its kind hardcoded to BTF_KIND_STRUCT during
+> the lookup. The node defines name of the member in this type that has
+> the type struct bpf_list_node, which is actually used for linking into
+> the linked list. For now, 'kind' part is hardcoded as struct.
 >
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> This allows building intrusive linked lists in BPF, using container_of
+> to obtain pointer to entry, while being completely type safe from the
+> perspective of the verifier. The verifier knows exactly the type of the
+> nodes, and knows that list helpers return that type at some fixed offset
+> where the bpf_list_node member used for this list exists. The verifier
+> also uses this information to disallow adding types that are not
+> accepted by a certain list.
+>
+> For now, no elements can be added to such lists. Support for that is
+> coming in future patches, hence draining and freeing items is done with
+> a TODO that will be resolved in a future patch.
+>
+> Note that the bpf_list_head_free function moves the list out to a local
+> variable under the lock and releases it, doing the actual draining of
+> the list items outside the lock. While this helps with not holding the
+> lock for too long pessimizing other concurrent list operations, it is
+> also necessary for deadlock prevention: unless every function called in
+> the critical section would be notrace, a fentry/fexit program could
+> attach and call bpf_map_update_elem again on the map, leading to the
+> same lock being acquired if the key matches and lead to a deadlock.
+> While this requires some special effort on part of the BPF programmer to
+> trigger and is highly unlikely to occur in practice, it is always better
+> if we can avoid such a condition.
+>
+> While notrace would prevent this, doing the draining outside the lock
+> has advantages of its own, hence it is used to also fix the deadlock
+> related problem.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h            |  17 ++++
+>  include/uapi/linux/bpf.h       |  10 +++
+>  kernel/bpf/btf.c               | 143 ++++++++++++++++++++++++++++++++-
+>  kernel/bpf/helpers.c           |  32 ++++++++
+>  kernel/bpf/syscall.c           |  22 ++++-
+>  kernel/bpf/verifier.c          |   7 ++
+>  tools/include/uapi/linux/bpf.h |  10 +++
+>  7 files changed, 237 insertions(+), 4 deletions(-)
+>
 
-Looks reasonable based on the subsystem and the patch:
+[...]
 
-#syz fix:
-bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+>  struct bpf_offload_dev;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 94659f6b3395..dd381086bad9 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6887,6 +6887,16 @@ struct bpf_dynptr {
+>         __u64 :64;
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_list_head {
+> +       __u64 :64;
+> +       __u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+> +struct bpf_list_node {
+> +       __u64 :64;
+> +       __u64 :64;
+> +} __attribute__((aligned(8)));
+
+Dave mentioned that this `__u64 :64` trick makes vmlinux.h lose the
+alignment information, as the struct itself is empty, and so there is
+nothing indicating that it has to be 8-byte aligned.
+
+So what if we have
+
+struct bpf_list_node {
+    __u64 __opaque[2];
+} __attribute__((aligned(8)));
+
+?
+
+> +
+>  struct bpf_sysctl {
+>         __u32   write;          /* Sysctl is being read (= 0) or written (= 1).
+>                                  * Allows 1,2,4-byte read, but no write.
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+
+[...]
+
+> @@ -3284,6 +3347,12 @@ static int btf_get_field_type(const char *name, u32 field_mask, u32 *seen_mask,
+>                         goto end;
+>                 }
+>         }
+> +       if (field_mask & BPF_LIST_HEAD) {
+> +               if (!strcmp(name, "bpf_list_head")) {
+> +                       type = BPF_LIST_HEAD;
+> +                       goto end;
+> +               }
+> +       }
+>         /* Only return BPF_KPTR when all other types with matchable names fail */
+>         if (field_mask & BPF_KPTR) {
+>                 type = BPF_KPTR_REF;
+> @@ -3317,6 +3386,8 @@ static int btf_find_struct_field(const struct btf *btf,
+>                         return field_type;
+>
+>                 off = __btf_member_bit_offset(t, member);
+> +               if (i && !off)
+> +                       return -EFAULT;
+
+why? why can't my struct has zero-sized field in the beginning? This
+seems like a very incomplete and unnecessary check to me.
+
+>                 if (off % 8)
+>                         /* valid C code cannot generate such BTF */
+>                         return -EINVAL;
+> @@ -3339,6 +3410,12 @@ static int btf_find_struct_field(const struct btf *btf,
+>                         if (ret < 0)
+>                                 return ret;
+>                         break;
+> +               case BPF_LIST_HEAD:
+> +                       ret = btf_find_list_head(btf, t, member_type, i, off, sz,
+> +                                                idx < info_cnt ? &info[idx] : &tmp);
+> +                       if (ret < 0)
+> +                               return ret;
+> +                       break;
+>                 default:
+>                         return -EFAULT;
+>                 }
+> @@ -3373,6 +3450,8 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>                         return field_type;
+>
+>                 off = vsi->offset;
+> +               if (i && !off)
+> +                       return -EFAULT;
+
+similarly, I'd say that either we'd need to calculate the exact
+expected offset, or just not do anything here?
+
+>                 if (vsi->size != sz)
+>                         continue;
+>                 if (off % align)
+> @@ -3393,6 +3472,12 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>                         if (ret < 0)
+>                                 return ret;
+>                         break;
+> +               case BPF_LIST_HEAD:
+> +                       ret = btf_find_list_head(btf, var, var_type, -1, off, sz,
+> +                                                idx < info_cnt ? &info[idx] : &tmp);
+> +                       if (ret < 0)
+> +                               return ret;
+> +                       break;
+>                 default:
+>                         return -EFAULT;
+>                 }
+
+[...]
