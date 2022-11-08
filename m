@@ -2,95 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAEF620B9F
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 09:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE902620CDE
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 11:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbiKHI6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 03:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
+        id S233551AbiKHKIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 05:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbiKHI55 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 03:57:57 -0500
-Received: from mail.groupteam.pl (mail.groupteam.pl [51.75.73.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADE32F647
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 00:57:52 -0800 (PST)
-Received: by mail.groupteam.pl (Postfix, from userid 1002)
-        id 8CCDDA589F; Tue,  8 Nov 2022 08:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=groupteam.pl; s=mail;
-        t=1667897824; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
-        h=Date:From:To:Subject:From;
-        b=BnYFT7wppKGVjeSA9nNYIS1dYDpKbgCFlW81lmDjYM1eMIrbdQ1E7FBXSRzK/7Kd0
-         IFXkjgaLH4oRGbF9NLR31FB6B9hFiRm/d4hBmg/a/g+Iy/ZIuoj8rgjMQNlHNcgwj8
-         k9VRn/CmW/naHup7Ds5t5aFMx1ZBshXxLXzlLuazMgc/jOsxcXfSdqZbBtcGD2O1ji
-         LjJndxJumGfjyAM1trleLlA3Pfw93NTv1N8XvMpmC9CB+DKa5fw9KQAYTtCJCqMf5k
-         4jB42XtjivJ4xBDCvyfR8/U0GV5pUd5IgaiRJ9LBUfcd2OEGYhK9c9/8Ug4I/P94al
-         j8RaQ3ULuf18w==
-Received: by mail.groupteam.pl for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 08:56:06 GMT
-Message-ID: <20221108074500-0.1.6j.2aj4a.0.2du56h4rrk@groupteam.pl>
-Date:   Tue,  8 Nov 2022 08:56:06 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@groupteam.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Biznesowy angielski
-X-Mailer: mail.groupteam.pl
+        with ESMTP id S233739AbiKHKIi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 05:08:38 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF862BF9;
+        Tue,  8 Nov 2022 02:08:36 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id j15so20147268wrq.3;
+        Tue, 08 Nov 2022 02:08:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2C6cKXTuh9PjHXXGu6GpQS6dNWhxcXl81NbxxvAbDTY=;
+        b=JZ4YTkYYieN70wi7kRTlkDUD67fVAJGyGo9CutNyrgPKQ1lPcQNRvx4RT6Gd7JfLWN
+         yHyy+LykKoezrLoy/gPdOQ9/Tc5saIB1nPF23ikrgqWiVeK52RzrpFhUxZUISvAReBVf
+         Xr7jQW0QcKG2U7f6QqTq4aEp/n7DljWJtEsN9wXOUUJd1NK5A90Jzbyjreicy3+7k+ON
+         8A4o7cWJI2ofW/pLPFq1/VJxRJcAyIcUlo+9F9nNgXiG3//o4corAIXUiCol2v9xbJAr
+         m45CIrSrMRHwEVlitV/b1vY021caJnTFeY3K/akrHl0LJXvwvPc2SqrENorn0Ws3e9H0
+         rzzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2C6cKXTuh9PjHXXGu6GpQS6dNWhxcXl81NbxxvAbDTY=;
+        b=0O9ze3fbM408PbQBQ7ebGGePj3ItzZz9v4mYNdq4J/JEShqgKta+JVpZhMnCtImivt
+         2ibZ9w2yj2WSCyrEZ2PgRHDpM60KTKHIYi6pJpInyMDOX/xyK5r0IDZJslsz31JGjINV
+         6Gxb8uM/FtMIytHSA/fMYmhnrf5s61W59cuvBlze0bqZczrxhB+bVddZTj90awNvvr0/
+         ToNzSwAuezwIm2rxuDBiHofEttBLm5/7EbCiXSto2FlTaHkNH3T7kxmtmQkPo6lum2id
+         v/0mpncwgoxrFzs6ymygjE+v+Hv0GKUUDCyu3j/QxhM4rVrgLX2NT4pe3BBzlFOhMZ+M
+         eTYg==
+X-Gm-Message-State: ACrzQf0MUfbqrK4EDXQi5gDSetkC39Qlj8T430Ib2zfU/hCtXU+LnA6w
+        RJD1WSv/S2tj48CLb+0x5DP6aRjkWuBgRw==
+X-Google-Smtp-Source: AMsMyM69LAmvBj+4lYiWsMO1XctWn7rSmBiFG7vqIfAAh0RT+KiSgEjaB3Jp5Tfg9TC6F3tDhWq2Aw==
+X-Received: by 2002:a05:6000:a11:b0:236:7685:e7 with SMTP id co17-20020a0560000a1100b00236768500e7mr36162245wrb.359.1667902114630;
+        Tue, 08 Nov 2022 02:08:34 -0800 (PST)
+Received: from imac ([2a02:8010:60a0:0:550:1196:18a3:8071])
+        by smtp.gmail.com with ESMTPSA id k186-20020a1ca1c3000000b003cf4d99fd2asm10639611wme.6.2022.11.08.02.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Nov 2022 02:08:33 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Yonghong Song <yhs@meta.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH bpf-next v2] docs/bpf: Document BPF map types QUEUE and
+ STACK
+In-Reply-To: <976d046e-6b10-78bd-4c20-d23f81e5c907@meta.com> (Yonghong Song's
+        message of "Mon, 7 Nov 2022 10:27:58 -0800")
+Date:   Tue, 08 Nov 2022 09:20:36 +0000
+Message-ID: <m2edudssyj.fsf@gmail.com>
+References: <20221107150550.94855-1-donald.hunter@gmail.com>
+        <976d046e-6b10-78bd-4c20-d23f81e5c907@meta.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,
-        URIBL_DBL_SPAM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: groupteam.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [51.75.73.133 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: groupteam.pl]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [51.75.73.133 listed in bl.score.senderscore.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-X-Spam-Level: *****
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+Yonghong Song <yhs@meta.com> writes:
 
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
+> On 11/7/22 7:05 AM, Donald Hunter wrote:
+[...]
+>> +
+>> +Userspace
+>> +---------
+>> +
+>> +.. c:function::
+>> +   int bpf_map_update_elem (int fd, const void *key, const void *value, __u64 flags)
+>> +
+>> +A userspace program can push ``value`` onto a queue or stack using libbpf's
+>> +``bpf_map_update_elem`` function. The ``key`` parameter must be set to
+>> +``NULL`` and ``flags`` must be set to ``BPF_ANY``. Returns ``0`` on
+>> +success, or negative error in case of failure.
+>
+> Besides BPF_ANY, BPF_EXIST is allowed as well?
 
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
-
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
-
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
-
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
-
-
-Pozdrawiam
-Krzysztof Maj
+Good catch, thanks!
