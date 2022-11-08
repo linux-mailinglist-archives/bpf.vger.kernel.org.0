@@ -2,53 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FE1620A77
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 08:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBB8620A79
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 08:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbiKHHla (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 02:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S233749AbiKHHld (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 02:41:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbiKHHlE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 02:41:04 -0500
+        with ESMTP id S230246AbiKHHlM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 02:41:12 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0057BEF
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 23:40:54 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A85q3Zm017275
-        for <bpf@vger.kernel.org>; Mon, 7 Nov 2022 23:40:54 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927BB26EA
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 23:40:57 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A80UoUb007136
+        for <bpf@vger.kernel.org>; Mon, 7 Nov 2022 23:40:57 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=pd0arNR95VOK/awekiE0yD4Gbd4lamiz20GEU5Sf0T4=;
- b=mSFAhTz0Q7MFSv1KfJgzV0wy8gC9ykzP1M5RKLB6A/kfyoKmpAauIHDeaJ4C+zHTVWZq
- L2mqTa1M8vBDQ8yPZxD6QjC1URI3VSE+GLh8e8ZGbaVh9vyOI/iu14aZ9KkODETHgceI
- XcHPtYiopSeRV9rdnkBNw4xb5dHXXatLzmE= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=Nbtmoc9lLSKreYlbRoKrmsrKIDLlzBEi1cQlB9kvHQI=;
+ b=pFaCc9askuCEySDlWCeOgySpGPPuAybiz7KHmkkx+Mb0dAWD51cdemAwAlLXxHl9KgdJ
+ 46sqcZE1MsOd2XhbRBjJDME/C+vikgjiZNqgfdnWRIF0wgRI13MUWHqfLy+o8WbdOsXd
+ lMTc54KAtmpZVdcbpL405uGMoWY+JG2dNys= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqhba0hb3-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqcmqt6fg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 23:40:54 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 23:40:57 -0800
+Received: from twshared27579.05.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 23:40:53 -0800
+ 15.1.2375.31; Mon, 7 Nov 2022 23:40:56 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id F394011D23313; Mon,  7 Nov 2022 23:40:47 -0800 (PST)
+        id 3EFCC11D2334E; Mon,  7 Nov 2022 23:40:53 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 0/8] bpf: Add bpf_rcu_read_lock() support
-Date:   Mon, 7 Nov 2022 23:40:47 -0800
-Message-ID: <20221108074047.261848-1-yhs@fb.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next v2 1/8] compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
+Date:   Mon, 7 Nov 2022 23:40:53 -0800
+Message-ID: <20221108074053.262530-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221108074047.261848-1-yhs@fb.com>
+References: <20221108074047.261848-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: P63mcR5aynEIo3qQrCL8HIXfMj9uitFv
-X-Proofpoint-GUID: P63mcR5aynEIo3qQrCL8HIXfMj9uitFv
+X-Proofpoint-GUID: Z07tGaLWjb_n3Gj6CdxtPo9tnT7UhS9-
+X-Proofpoint-ORIG-GUID: Z07tGaLWjb_n3Gj6CdxtPo9tnT7UhS9-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
@@ -68,64 +72,37 @@ for sleepable program where rcu_read_lock()/unlock() is not available.
 For example, for a sleepable fentry program, if rcu protected memory
 access is interleaved with a sleepable helper/kfunc, it is possible
 the memory access after the sleepable helper/kfunc might be invalid
-since the object might have been freed then. Even without
-a sleepable helper/kfunc, without rcu_read_lock() protection,
-it is possible that the rcu protected object might be release
-in the middle of bpf program execution which may cause incorrect
-result.
+since the object might have been freed then. To prevent such cases,
+introducing rcu tagging for memory accesses in verifier can help
+to reject such programs.
 
-To prevent above cases, enable btf_type_tag("rcu") attributes,
-introduce new bpf_rcu_read_lock/unlock() kfuncs and add verifier support.
+To enable rcu tagging in BTF, during kernel compilation,
+define __rcu as attribute btf_type_tag("rcu") so __rcu information can
+be preserved in dwarf and btf, and later can be used for bpf prog verific=
+ation.
 
-In the rest of patch set, Patch 1 enabled btf_type_tag for __rcu
-attribute. Patches 2 and 3 are refactoring patches. Patch 4 added new
-bpf_rcu_read_lock/unlock() kfuncs. Patch 5 added verifier support
-and Patch 6 enabled sleepable program support for cgrp local storage.
-Patch 7 added some tests for new helpers and verifier support and
-Patch 8 added new test to the deny list for s390x arch.
+Acked-by: KP Singh <kpsingh@kernel.org>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ include/linux/compiler_types.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changelogs:
-  v1 -> v2:
-    . use kfunc instead of helper for bpf_rcu_read_lock/unlock.
-    . not use MEM_RCU bpf_type_flag, instead use active_rcu_lock
-      in reg state to identify rcu ptr's.
-    . Add more self tests.
-    . add new test to s390x deny list.
-
-Yonghong Song (8):
-  compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
-  bpf: Refactor btf_struct_access callback interface
-  bpf: Abstract out functions to check sleepable helpers
-  bpf: Add kfunc bpf_rcu_read_lock/unlock()
-  bpf: Add bpf_rcu_read_lock() verifier support
-  bpf: Enable sleeptable support for cgrp local storage
-  selftests/bpf: Add tests for bpf_rcu_read_lock()
-  selftests/bpf: Add rcu_read_lock test to s390x deny list
-
- include/linux/bpf.h                           |  15 +-
- include/linux/bpf_lsm.h                       |   6 +
- include/linux/bpf_verifier.h                  |   7 +
- include/linux/btf.h                           |   2 +
- include/linux/compiler_types.h                |   3 +-
- include/linux/filter.h                        |   4 +-
- include/linux/trace_events.h                  |   8 +
- kernel/bpf/bpf_lsm.c                          |  20 +-
- kernel/bpf/btf.c                              |  65 +++-
- kernel/bpf/helpers.c                          |  25 +-
- kernel/bpf/verifier.c                         | 111 +++++-
- kernel/trace/bpf_trace.c                      |  22 +-
- net/bpf/bpf_dummy_struct_ops.c                |   6 +-
- net/core/filter.c                             |  20 +-
- net/ipv4/bpf_tcp_ca.c                         |   6 +-
- net/netfilter/nf_conntrack_bpf.c              |   3 +-
- tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
- .../selftests/bpf/prog_tests/rcu_read_lock.c  | 127 +++++++
- .../selftests/bpf/progs/rcu_read_lock.c       | 353 ++++++++++++++++++
- 19 files changed, 733 insertions(+), 71 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
-
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_type=
+s.h
+index eb0466236661..7c1afe0f4129 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -49,7 +49,8 @@ static inline void __chk_io_ptr(const volatile void __i=
+omem *ptr) { }
+ # endif
+ # define __iomem
+ # define __percpu	BTF_TYPE_TAG(percpu)
+-# define __rcu
++# define __rcu		BTF_TYPE_TAG(rcu)
++
+ # define __chk_user_ptr(x)	(void)0
+ # define __chk_io_ptr(x)	(void)0
+ /* context/locking */
 --=20
 2.30.2
 
