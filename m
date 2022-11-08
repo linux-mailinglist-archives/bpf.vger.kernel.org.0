@@ -2,70 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF31862126C
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 14:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9031662127F
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 14:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbiKHN2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 08:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S233372AbiKHNiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 08:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbiKHN2y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 08:28:54 -0500
+        with ESMTP id S232693AbiKHNiH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 08:38:07 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44BE17079
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 05:28:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB7612AA3;
+        Tue,  8 Nov 2022 05:38:06 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N687f1k11z4f3jqC
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 21:28:46 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgCnyteNWWpj5Vy_AA--.3268S2;
-        Tue, 08 Nov 2022 21:28:48 +0800 (CST)
-Subject: Re: [PATCH bpf 1/3] bpf: Pin the start cgroup in
- cgroup_iter_seq_init()
-To:     Yonghong Song <yhs@meta.com>, Hao Luo <haoluo@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Tejun Heo <tj@kernel.org>, houtao1@huawei.com
-References: <20221107074222.1323017-1-houtao@huaweicloud.com>
- <20221107074222.1323017-2-houtao@huaweicloud.com>
- <a4721692-82bf-05eb-a1fa-72ddb5d1461b@meta.com>
- <CA+khW7jmm4UWXve_kzXdh4sv8cFbFKNYQ-G-XCJ6qGRW1_verg@mail.gmail.com>
- <8bae6a03-9d31-2da5-1b7d-cf5c74e76cfd@huaweicloud.com>
- <a85181da-99dc-d3a3-53c7-96584dbad8bf@meta.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <0ad23bcc-b4dd-307f-f188-1181efaa3e53@huaweicloud.com>
-Date:   Tue, 8 Nov 2022 21:28:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N68LJ6Z50z4f3jYl;
+        Tue,  8 Nov 2022 21:38:00 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+        by APP4 (Coremail) with SMTP id gCh0CgAXO9i6W2pjdLm_AA--.5393S2;
+        Tue, 08 Nov 2022 21:38:04 +0800 (CST)
+Message-ID: <a9889f76-d667-7ef7-e2e8-f912b9ba2663@huaweicloud.com>
+Date:   Tue, 8 Nov 2022 21:38:02 +0800
 MIME-Version: 1.0
-In-Reply-To: <a85181da-99dc-d3a3-53c7-96584dbad8bf@meta.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next] bpf: Initialize same number of free nodes for
+ each pcpu_freelist
 Content-Language: en-US
-X-CM-TRANSID: gCh0CgCnyteNWWpj5Vy_AA--.3268S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4DZF4xuw4xJrW5Zr1kXwb_yoW8ur4Upa
-        y8WayUtrs7Cr42vr4qy3y8u3W0yrWftr13Xrs0yryUCF90vry3Gry8Kr45CFyUAFs7Ar17
-        ZF4v9a4fWFyjy37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+To:     Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20221107085030.3901608-1-xukuohai@huaweicloud.com>
+ <7c3f3057-033a-f871-bd5d-0ac0da2b18a0@meta.com>
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <7c3f3057-033a-f871-bd5d-0ac0da2b18a0@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAXO9i6W2pjdLm_AA--.5393S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw15WFyxWFyUKFWxZF43KFg_yoW5Wr4xpr
+        s5Ja4Utr98Wrn5Gw4rJw1UWFy3Jw4UJ3WDGw1rKF15ZrW5Jryqqr1UXrs0gFW7Wr4xZr1j
+        yF1qqr9rZay7XFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -75,53 +72,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 11/8/2022 12:40 AM, Yonghong Song wrote:
+> 
+> 
+> On 11/7/22 12:50 AM, Xu Kuohai wrote:
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
+>> free nodes for each CPU except the last initialized CPU, always making
+>> the last CPU get fewer free nodes. For example, when nr_elems == 256
+> 
+> ... free nodes for some cpus, and then possibly one cpu with fewer nodes, followed by remaining cpus with 0 nodes.
+> 
 
-On 11/8/2022 3:03 PM, Yonghong Song wrote:
->
->
-> On 11/7/22 8:08 PM, Hou Tao wrote:
->> Hi,
+Will update the commit message to describe it more accurately, thanks.
+
+>> and num_possible_cpus() == 32, if CPU 0 is the current cpu, CPU 0~27
+>> each gets 9 free nodes, CPU 28 gets 4 free nodes, CPU 29~31 get 0 free
+>> nodes, while in fact each CPU should get 8 nodes equally.
 >>
->> On 11/8/2022 10:11 AM, Hao Luo wrote:
->>> On Mon, Nov 7, 2022 at 1:59 PM Yonghong Song <yhs@meta.com> wrote:
->>>>
->>>>
->>>> On 11/6/22 11:42 PM, Hou Tao wrote:
->>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>
->>>>> bpf_iter_attach_cgroup() has already acquired an extra reference for the
->>>>> start cgroup, but the reference will be released if the iterator link fd
->>>>> is closed after the creation of iterator fd, and it may lead to
->>>>> User-After-Free when reading the iterator fd.
->>>>>
->>>>> So fixing it by acquiring another reference for the start cgroup.
->>>>>
->>>>> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
->>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>> Acked-by: Yonghong Song <yhs@fb.com>
->>> There is an alternative: does it make sense to have the iterator hold
->>> a ref of the link? When the link is closed, my assumption is that the
->>> program is already detached from the cgroup. After that, it makes no
->>> sense to still allow iterating the cgroup. IIUC, holding a ref to the
->>> link in the iterator also fixes for other types of objects.
->> Also considered the alternative solution when fixing the similar problem in bpf
->> map element iterator [0]. The problem is not all of bpf iterators need the
->> pinning (e.g., bpf map iterator). Because bpf prog is also pinned by iterator fd
->> in iter_open(), so closing the fd of iterator link doesn't release the bpf
->> program.
+>> This patch initializes nr_elems / num_possible_cpus() free nodes for each
+>> CPU firstly, and then allocates the remaining free nodes by one for each
+>> CPU until no free nodes left.
 >>
->> [0]: https://lore.kernel.org/bpf/20220810080538.1845898-2-houtao@huaweicloud.com/
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> 
+> LGTM. Did you observe any performance issues?
 >
-> Okay, let us do the solution to hold a reference to the link for the iterator.
-> For cgroup_iter, that means, both prog and cgroup will be present so we should
-> be okay then.
-The reason I did not use the solution is that it will create unnecessary
-dependency between iterator fd and iterator link and many bpf iterators also
-don't need that. If we use the solution, should I revert the fixes to bpf map
-iterator done before or keep it as-is ?
->
->>>
->>> Hao
+
+No. I ran map_perf_test and did not observe any performance issues. I think
+it's because the test cases are repeated in loops, so the pcpu_freelists become
+stable and balanced after the first few loops.
+
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>> ---
+>>   kernel/bpf/percpu_freelist.c | 9 ++++++---
+>>   1 file changed, 6 insertions(+), 3 deletions(-)
 >>
+>> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+>> index b6e7f5c5b9ab..89e84f7381cc 100644
+>> --- a/kernel/bpf/percpu_freelist.c
+>> +++ b/kernel/bpf/percpu_freelist.c
+>> @@ -100,12 +100,15 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
+>>                   u32 nr_elems)
+>>   {
+>>       struct pcpu_freelist_head *head;
+>> -    int i, cpu, pcpu_entries;
+>> +    int i, cpu, pcpu_entries, remain_entries;
+>> +
+>> +    pcpu_entries = nr_elems / num_possible_cpus();
+>> +    remain_entries = nr_elems % num_possible_cpus();
+>> -    pcpu_entries = nr_elems / num_possible_cpus() + 1;
+>>       i = 0;
+>>       for_each_possible_cpu(cpu) {
+>> +        int j = i + pcpu_entries + (remain_entries-- > 0 ? 1 : 0);
+>>   again:
+>>           head = per_cpu_ptr(s->freelist, cpu);
+>>           /* No locking required as this is not visible yet. */
+>> @@ -114,7 +117,7 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
+>>           buf += elem_size;
+>>           if (i == nr_elems)
+>>               break;
+>> -        if (i % pcpu_entries)
+>> +        if (i < j)
+>>               goto again;
+>>       }
+>>   }
 
