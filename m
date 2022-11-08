@@ -2,433 +2,499 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24F06204E2
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 01:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593906204FD
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 01:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbiKHArH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 19:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        id S233143AbiKHAtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 19:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbiKHArG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 19:47:06 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A7920BC6
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 16:47:04 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id sc25so34525817ejc.12
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 16:47:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gLoiTEIqT0L7IglWBe/aHweeZf5c4tGDupcFHFa/LyM=;
-        b=pEz+EXZ03uvvAaAXv1VUWA8xw/jrT2FcdmIqBaLcuclHL7e0p2731DwN9h5oUKfj++
-         S7gn8Bs8PrbwOl/3nevO953Z0ym1FVB0eU1bxwPSNztqWk01ONzvsOdvRkzlylg9JoVw
-         Gx0EkV3hYXD0xrr+ocbyDLFrHuA8NrCcrysVw+D835o4WAGGSDK43oJb/lilG+LARqKV
-         uymCtCWkujnOm3u/eIRNW1HalPkAmkE1JxXIrwUZbFJNYVh51eLqoR3HNiU9hR2ouuUK
-         Z08LH7PUV1E+m9zVSrTaHFwSalqMIDeHkwu7aq2Wyr3VyFU+7XbaBIXPbgw9iMxVF4gY
-         bV3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gLoiTEIqT0L7IglWBe/aHweeZf5c4tGDupcFHFa/LyM=;
-        b=wxbkEHuqFeUWn0GUw/9SPgRgCIAU8HKWKY11XMjtQAddVGkEohmZmWqkeXd/qFYMIc
-         RXy92NQA5bQbGyHZO36FJEfvCEGCPMgFTb8xFNRr42tmglJh8KRFZviLeILEPS0UCf+W
-         bmqZ/+XhDfnDMUiIksImcOs9E68rOVW5Nr3T5OhJDtx6v6SY9rDSXqzoXsM0XO2AlozE
-         mo+1TEYrHjhbVaagejN/UBveMvhQS8Km1yO13PdHenXoL3FvQsUzAs839U9oSb6jbSLH
-         oq98tlXvkyY6PvcGKxy9egaObE9m92DQz71iVil6i6lBdVvQo9+PNFD3f+Ms6eCCIDd/
-         WSmg==
-X-Gm-Message-State: ACrzQf2uc1eLEJMf1LVAMvNr3FE0j11rt+AnEZ2w68Y0/kNeZ+En+agL
-        bjkHMZJwhP7ezu2oAK7jQWFXRva9MPtbPCVEzRQ=
-X-Google-Smtp-Source: AMsMyM6DqmV0nsgoERJl8gtidZwn8yrt3uHw9bS1pvZGzkWE6pJvLA+si05Dn2skwSMnjxg/8DklA36FiunfuysRCLQ=
-X-Received: by 2002:a17:907:8a24:b0:795:bb7d:643b with SMTP id
- sc36-20020a1709078a2400b00795bb7d643bmr51367356ejc.115.1667868423170; Mon, 07
- Nov 2022 16:47:03 -0800 (PST)
+        with ESMTP id S232391AbiKHAtU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 19:49:20 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10hn2218.outbound.protection.outlook.com [52.100.155.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA6D2528F;
+        Mon,  7 Nov 2022 16:49:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gBivI2ZOzDZ4RAeNUiUhvDa9NY+wclgDdx1P+/YMZWdjd1WeOp5xgULa7Y3pbOvVZHIH+mocgmJzJd6VwblD8BYnIHYs6YTr+KbwuglVIw45zYGJRceT5xPoyMsoxaYaQRUkyqM1FPZ2a4/j9xOeNRoQLcB7uEXtRFJFyTk+DAj1QpVrrBQl3LwTLeo2F0h1jk+pYcx/NSqJTmOfbnMFlq0442Hmyp0H/PmskFkqO1ZDx1c7VrIqNTYYWTzsEGKRJlbQw63r/HabWfHNW0a0fTjR71VOyfPcv/vfZAK8PIV/8y30SA9bFSZK6JuDr2etmQkX/JR3GeWhD32vbn4tRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+vj3CQOvGSipB/xMomnlk1QFGDRvPeOXM4z+ycmEGpI=;
+ b=f+gh1YbXtxqUye/i9t+GOkSWSb1xc0/XtB+NNkxRUVvdidQ7+YvcZgunwQwEk8WK0gVYESG0u1A5U9f27oKB+YW4agBBXjMdCEd9MxKh0GWyyleQpxNMv1ZvgAaKjg8qVmyjn2HR2yNlCzDY7bT/nEX5II/J/HBe4WBWa1XtPA34GXxi9kfKT8MjfNcFUkh1RVXfn0gwMY9YjKFnU6UV/o3djZstA7/zUp5L0CZPe8tCGvrfdwUyua2V5D0BejsgWDvbSJ8SsiBcadSVWUZzeUW/nNzjTM11HgcjGsprAOQThhJZI45/HnLOcJvYlh23gHXOvRbRy7Y1OvxakMVgOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vj3CQOvGSipB/xMomnlk1QFGDRvPeOXM4z+ycmEGpI=;
+ b=IKqRXiS5qm9e8TxACwimWUMwCqiafCkrAEL4xOdDTbUhuZtymyLt3+3LqJ3u13CmWrSY5K3dODdwTWMZebHDVjVWHM/twRRIYGNSqrpgyZOFDn7JTxvHLAnHTrtpIg6yA+JB56NOKHxqnKMRFHlWG3TGtEDJyEEwkbAHz1kBQmJn+KjUG/jRjuyNxSimvtegktYHTgrFrjRKyZGNnEn/Z0SuFoHs5k0gWJ32+jI5Rnxr2iXfdPubH4qSWpbY6o34EZ+i5Fk5GNPO+LgByuO6CcvPFgzAjTkT+LYS7MTGyJwxIDd5s3tzQmW4xP7gGetUKzpCizdB5mCuz11ev5PEYA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB7222.namprd12.prod.outlook.com (2603:10b6:806:2bf::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.26; Tue, 8 Nov
+ 2022 00:49:16 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5791.026; Tue, 8 Nov 2022
+ 00:49:16 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH v4 00/17] IOMMUFD Generic interface
+Date:   Mon,  7 Nov 2022 20:48:53 -0400
+Message-Id: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR15CA0059.namprd15.prod.outlook.com
+ (2603:10b6:208:237::28) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20221106202910.4193104-1-eddyz87@gmail.com> <20221106202910.4193104-2-eddyz87@gmail.com>
- <CAADnVQJNFqGE+5b9kicHnfxd37bpeCJV1Cz+5rXi-vt8imTMaQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJNFqGE+5b9kicHnfxd37bpeCJV1Cz+5rXi-vt8imTMaQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Nov 2022 16:46:51 -0800
-Message-ID: <CAEf4BzZ8KFneEJxFAaNCCFPGqp20hSpS2aCj76uRk3-qZUH5xg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: hashmap interface update to long
- -> long
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7222:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ea17a1b-340e-4579-54f5-08dac1230d58
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?VhfD/SvvQdPziGLjSGlHwPkUaO7z8bO3cMYUt4xOH15eO3T0LjjmhkmOhdBK?=
+ =?us-ascii?Q?xYqHzbGatGL1SVoD2E6oNXUERlEm7rUYgNw+w3UWSNHm3S/r/PJgkGKt/+wT?=
+ =?us-ascii?Q?Y+JlVSJbt1wC0rCG96/tkiLdtWh75YtoxQydOHjB5uEEMiUe+VZDGBURqKyg?=
+ =?us-ascii?Q?YYtM61p4W4u/60/y9QPHpt6viC+/iDLI+ZSMqu7zDQUgB9YXxLY7vyUD5/1v?=
+ =?us-ascii?Q?xzcoKUsKu+baFlXJJvW1D4vEixZ29SOelA4LCFGFEluK5C0NK3RA0O1ZdaM8?=
+ =?us-ascii?Q?tJWEs68YbA0pCXNRDlm/sSoGE31SrwUVKkhFJdjk21oLH9RPdZc939vjv5LT?=
+ =?us-ascii?Q?9Qd7ul396XUvIsVoqD2Il/jmnWdetL6P3HPM1vbN/Mb2xUJFgxzOlLvVQdHR?=
+ =?us-ascii?Q?yqu6da4lEqjmdDPMBlUUUoV/PU4kW8CgRS+qTxBdUjx8/nC92DuQpd/G+Rjd?=
+ =?us-ascii?Q?wm1k8/sFqUG4SPNTP34DX4wyUjGk1KWSw9bKKPUYJDU2dHdmUm3stE9rZc4t?=
+ =?us-ascii?Q?i3ilBXPz9qnepe7UDISXQjKTV3IZyEAKFijKDtwfvq/jGFMf2JxQJvMRwml9?=
+ =?us-ascii?Q?ZMYA88LSTKhqKh9vgoCs/Z/RztmiwiQQvOd9zXDdku5ZsUW1LP0tQoD+OKL9?=
+ =?us-ascii?Q?BQ4mVfNSVo7fX2ETpXOUssK2zm3XVxcVYkY/U4ociumGbqdfzSYhVkhZNf/h?=
+ =?us-ascii?Q?6ztgXT5KFuZHJ6iH6Wcus9LOE4gR+KKd4y6nO6oouFC2fc/M9DIw1eFtwfCN?=
+ =?us-ascii?Q?ullvng2BfX6pwQajryBSeWCx7029anqcgFAMD35NXHAybjNikPcMiGR8A7a+?=
+ =?us-ascii?Q?PdkyWGXmL7Cm4wdebwpe4EHRTQtpzPqkFdcCgIqjoAnHKhynPXwHJz7Jw4aK?=
+ =?us-ascii?Q?W+LLHMFLHvheVOI1PLqqtEb40MKzp710w/GdYOgSMX6uFEly9ULjWQ9g/g08?=
+ =?us-ascii?Q?02ciwtogzb4i8ANFeNtkop/X5RdmAaQ5HB9XuMAadPJ1Gkx4SNpElgxLLzJA?=
+ =?us-ascii?Q?MiDkhPURy0KOTeeywokXQJfT00+ypSXyYyNdBfwaeJ/l4dKrT2FACQOnW2mQ?=
+ =?us-ascii?Q?8QaKoPzawBfamc6UyJ4pgQy1hvAOOIMA2iruw3/AbllNDA6LEH7LuA1cZQoE?=
+ =?us-ascii?Q?4xEC7IeepFRdkJ9JGZNrXSTYPhvEmUVJ8ZNf+lypdnrkmzQzS+RnML35GKIm?=
+ =?us-ascii?Q?N4OYPC9Ysfdsz4Y9PvePb/8Upj/2hA/pOwSTt+kIDosSO/g/7BdaZm0NJbbH?=
+ =?us-ascii?Q?N0lM4QIJFdmHzyr61L93g62K0/aqfKUnC2Ip47RC34h70+un1NADjHkOTzzQ?=
+ =?us-ascii?Q?CLYcydo4NHRnOAyxM+qURc7egWRkqyxRw0hB9J/jbyiUPWwrC0z34ZekZjtC?=
+ =?us-ascii?Q?qVterkM3+tpn0wpeql5ce+1ohjuooYoMu0FPLQZc2R1Q2yClBdQGcZUXZyEh?=
+ =?us-ascii?Q?RfgJ4qniWQYT8nCQ8owmanrPKfXcxN/EHkGWn0GVfnFukYcfIHFjfPTtaZvz?=
+ =?us-ascii?Q?3mSu6A1wNIrTv/HCMbpbQNN8I6YSK2s53zbX?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:9;SRV:;IPV:NLI;SFV:SPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:OSPM;SFS:(13230022)(4636009)(366004)(376002)(396003)(39860400002)(136003)(346002)(451199015)(30864003)(8676002)(54906003)(110136005)(66476007)(8936002)(7416002)(5660300002)(7406005)(2906002)(38100700002)(316002)(66946007)(41300700001)(66556008)(4326008)(186003)(2616005)(83380400001)(966005)(6486002)(478600001)(6512007)(26005)(6666004)(6506007)(86362001)(921005)(36756003)(4216001)(41533002);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bWFhTq80fDC7DtHy4K/Dl8jts8BM3o3Ask13cvsBc+qB0wOlKASA8xeHwERf?=
+ =?us-ascii?Q?A2jf1JHq50Qwz6+5GFwniT0HoeshviF06bOeRnhXWep72JLNoq8B9e3el3KC?=
+ =?us-ascii?Q?J6HEcUM9R77oa4A8S+O1KWxYPjM721St+TsYSWQRzvrwqn01sgQGQOVy+Keb?=
+ =?us-ascii?Q?1mpCqtUCN5XloI4l9hyEvUEdqS97IQCJItOewImDq3+c5whDY8+ERb4M0MB2?=
+ =?us-ascii?Q?GCCo9Iiwm8KrtIW+mGTMyJ3XiAluG/eeSd6Su3W5rvHYjMVR4HvMMak76zZV?=
+ =?us-ascii?Q?w9uTLLFlZHdh+geO0Qufq0g1J3WhKZ2Flic9CD06xrGWYnd/PsULqmrl8XpQ?=
+ =?us-ascii?Q?H7QoKK9f5aoEtXOGHPCJ8bVlPwsWQaCKu+/xKsput5I5KW4FcRoxqyZ9cH4k?=
+ =?us-ascii?Q?BEPhjstxE9hFPno2SnkrkK0O+yaduemg8YdjG+rpPtp3leLmZUW+XjfPyXB2?=
+ =?us-ascii?Q?pSgAu+FwcrDl7eaj0wlIYt+MdH1yYbiViYFGG3qhb9BrkfsFZplRIMDqjXeA?=
+ =?us-ascii?Q?hgoxiG1/IkU28GE7lGqndFd7w/uMh3vFRFh9SRqjYUP5mSXqZ4snC0vAIhEP?=
+ =?us-ascii?Q?FcoOnp9/ylK+OaL2p2NeVik5Gt3ONtMpyJCc/v0pW3kRmSeFn/mNwkoelKwA?=
+ =?us-ascii?Q?2OqXXthkDpD1JPkKvQSY16/xuY1dF5JKSu1pDnE/RfJm2lGgFprjLbHlRJ6M?=
+ =?us-ascii?Q?4d4rAGZmnx3WiXcsTYyHq0lFj5QcjmKY/Ub+nrCjDeDmShy0QzVMJlkugRA6?=
+ =?us-ascii?Q?0DZvnA3ffn/s34AQNn/w3q+lXrjdVzI8rjZmtU67Q/88+lSg8TBsoEd5mnJ0?=
+ =?us-ascii?Q?uLlt4qWLAjDWp9D8rUZj7Vn7fluA1wm3OGCm7seeg7EgW4sroaUV5l+S+SJR?=
+ =?us-ascii?Q?8NShasEzw6IW7SkN9RAGtyD7SCTUz6BP9URrXJGobB3HVFEZPrnXRlvQEf44?=
+ =?us-ascii?Q?Y7ydAZvH/zoENhUOsMTKV8K0nArr/QvknnA70a33ujeSYHhqPidinMF2qm3y?=
+ =?us-ascii?Q?7wATtIPlEYGLouHDiIKqvr54rDv7Uo1sR0M4LS8iXka9Zujn6sIIArqZqLq3?=
+ =?us-ascii?Q?GOfGF9RkHzLRM6jP5wOOu/xWvezhPJpTPD0ypQ5Sg7TkJhRtzCZ6v9TXj9f0?=
+ =?us-ascii?Q?7atky2XYJy08u5PY8fy+a01gKrFlG6teoyril2OpLasAwDWgk9R1t0TJCj1P?=
+ =?us-ascii?Q?4+q2gLvfj2X4SNQ5F9P89YwAjqG21W7zUfrrJD+IcHnl+G0pNHSVcX3QIPvp?=
+ =?us-ascii?Q?i+Z27CUO9Iqldb6SAnco1UqYcWobvFteN/ubJWk4hmGM7CuBSxwvjL0BxA2R?=
+ =?us-ascii?Q?Ex1hSVN7JCp6Cpab5w9O/ZJPZKg3p7FsCuKN1CYLP855H3W8x6nkhRO7gUr+?=
+ =?us-ascii?Q?j3oG4LUu5zja3VSSxsbB1oNaHGAdHOIJEHrC6kUxex4AN+oImYzIWKT+hUGN?=
+ =?us-ascii?Q?BBUxp08aC76sTB87p3WHqbNRn3faNP7supkxHN8UFYFcoBL+GMTD2nTmd9VT?=
+ =?us-ascii?Q?4ZEo79A51ejCqC7usIFu9lkBel3RUPkYfOOYFPJvwfgwrIm6xKKkilIqFluW?=
+ =?us-ascii?Q?SPJSLnvIMnjp/WH0HyI=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ea17a1b-340e-4579-54f5-08dac1230d58
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 00:49:11.9973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FCWVHx1iNSGomMApJHKlTR7KmXUitnZZQqajvwilE5sIsN41yfHKMucgesvOVIUq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7222
+X-Spam-Status: No, score=2.5 required=5.0 tests=AXB_X_FF_SEZ_S,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 6, 2022 at 12:43 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Nov 6, 2022 at 12:29 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >
-> > An update for libbpf's hashmap interface from void* -> void* to
-> > long -> long. Removes / simplifies some type casts when hashmap
-> > keys or values are 32-bit integers.
-> >
-> > In libbpf hashmap is more often used with integral keys / values
-> > rather than with pointer keys / values.
-> >
-> > Perf copies hashmap implementation from libbpf and has to be
-> > updated as well.
-> >
-> > Changes to libbpf, selftests/bpf and perf are packed as a single
-> > commit to avoid compilation issues with any future bisect.
-> >
-> > The net number of casts is decreased after this refactoring. Although
-> > perf mostly uses ptr to ptr maps, thus a lot of casts have to be
-> > added there:
-> >
-> >              Casts    Casts
-> >              removed  added
-> > libbpf       ~50      ~20
-> > libbpf tests ~55      ~0
-> > perf         ~0       ~33
-> > perf tests   ~0       ~13
-> >
-> > This is a follow up for [1].
-> >
-> > [1] https://lore.kernel.org/bpf/af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com/T/#m65b28f1d6d969fcd318b556db6a3ad499a42607d
-> >
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  tools/bpf/bpftool/btf.c                       |  25 ++---
-> >  tools/bpf/bpftool/common.c                    |  10 +-
-> >  tools/bpf/bpftool/gen.c                       |  19 ++--
-> >  tools/bpf/bpftool/link.c                      |   8 +-
-> >  tools/bpf/bpftool/main.h                      |  14 +--
-> >  tools/bpf/bpftool/map.c                       |   8 +-
-> >  tools/bpf/bpftool/pids.c                      |  16 +--
-> >  tools/bpf/bpftool/prog.c                      |   8 +-
-> >  tools/lib/bpf/btf.c                           |  41 ++++---
-> >  tools/lib/bpf/btf_dump.c                      |  16 +--
-> >  tools/lib/bpf/hashmap.c                       |  16 +--
-> >  tools/lib/bpf/hashmap.h                       |  34 +++---
-> >  tools/lib/bpf/libbpf.c                        |  18 ++--
-> >  tools/lib/bpf/strset.c                        |  18 ++--
-> >  tools/lib/bpf/usdt.c                          |  31 +++---
-> >  tools/perf/tests/expr.c                       |  40 +++----
-> >  tools/perf/tests/pmu-events.c                 |   6 +-
-> >  tools/perf/util/bpf-loader.c                  |  23 ++--
-> >  tools/perf/util/expr.c                        |  32 +++---
-> >  tools/perf/util/hashmap.c                     |  16 +--
-> >  tools/perf/util/hashmap.h                     |  34 +++---
-> >  tools/perf/util/metricgroup.c                 |  12 +--
-> >  tools/perf/util/stat.c                        |   9 +-
-> >  .../selftests/bpf/prog_tests/hashmap.c        | 102 +++++++++---------
-> >  .../bpf/prog_tests/kprobe_multi_test.c        |   6 +-
-> >  25 files changed, 257 insertions(+), 305 deletions(-)
->
-> Looks like the churn is not worth it.
-> I'd keep it as-is.
+[
+This has been in linux-next for a little while now, and we've completed
+the syzkaller run. 1300 hours of CPU time have been invested since the
+last report with no improvement in coverage or new detections. syzkaller
+coverage reached 69%(75%), and review of the misses show substantial
+amounts are WARN_ON's and other debugging which are not expected to be
+covered.
+]
 
-No-no, this is already a big win for libbpf/bpftool as is, but we can
-do even better for perf and some uses in selftest and libbpf itself.
-Given a hashmap can be used with a pointer or an integer as the
-key/value, we can use a bit of smartness (while keeping the safety)
-through simple macro wrapper for operations like hashmap__find and
-hashmap__insert (and co). That will avoid most of if not all casts for
-hashmap lookups/updates. And then for hashmap__for_each_entry and
-such, we can define hashmap_entry to have a union of long-based and
-void*-based key:
+iommufd is the user API to control the IOMMU subsystem as it relates to
+managing IO page tables that point at user space memory.
 
-struct hashmap_entry {
-  union {
-    long key;
-    const void *pkey;
-  };
-  union {
-    long value;
-    void *pvalue;
-  };
-  ...
-}
+It takes over from drivers/vfio/vfio_iommu_type1.c (aka the VFIO
+container) which is the VFIO specific interface for a similar idea.
 
-I have it a try in few perf places, and it allows to avoid all the
-casts while thanks to that _Statis_assert we should be even safer than
-it was before. Eduard, please check the diff below and see if you can
-incorporate similar changes for other operations, if necessary.
+We see a broad need for extended features, some being highly IOMMU device
+specific:
+ - Binding iommu_domain's to PASID/SSID
+ - Userspace IO page tables, for ARM, x86 and S390
+ - Kernel bypassed invalidation of user page tables
+ - Re-use of the KVM page table in the IOMMU
+ - Dirty page tracking in the IOMMU
+ - Runtime Increase/Decrease of IOPTE size
+ - PRI support with faults resolved in userspace
 
-$ git diff
-diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
-index dfe99e766f30..0c1c1289a694 100644
---- a/tools/lib/bpf/hashmap.c
-+++ b/tools/lib/bpf/hashmap.c
-@@ -203,7 +203,7 @@ int hashmap__insert(struct hashmap *map, long key,
-long value,
-        return 0;
- }
+Many of these HW features exist to support VM use cases - for instance the
+combination of PASID, PRI and Userspace IO Page Tables allows an
+implementation of DMA Shared Virtual Addressing (vSVA) within a
+guest. Dirty tracking enables VM live migration with SRIOV devices and
+PASID support allow creating "scalable IOV" devices, among other things.
 
--bool hashmap__find(const struct hashmap *map, long key, long *value)
-+bool hashmap_find(const struct hashmap *map, long key, long *value)
- {
-        struct hashmap_entry *entry;
-        size_t h;
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index 7393ef616920..daec29012808 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -47,8 +47,14 @@ typedef size_t (*hashmap_hash_fn)(long key, void *ctx);
- typedef bool (*hashmap_equal_fn)(long key1, long key2, void *ctx);
+As these features are fundamental to a VM platform they need to be
+uniformly exposed to all the driver families that do DMA into VMs, which
+is currently VFIO and VDPA.
 
- struct hashmap_entry {
--       long key;
--       long value;
-+       union {
-+               long key;
-+               const void *pkey;
-+       };
-+       union {
-+               long value;
-+               void *pvalue;
-+       };
-        struct hashmap_entry *next;
- };
+The pre-v1 series proposed re-using the VFIO type 1 data structure,
+however it was suggested that if we are doing this big update then we
+should also come with an improved data structure that solves the
+limitations that VFIO type1 has. Notably this addresses:
 
-@@ -144,7 +150,13 @@ static inline int hashmap__append(struct hashmap
-*map, long key, long value)
+ - Multiple IOAS/'containers' and multiple domains inside a single FD
 
- bool hashmap__delete(struct hashmap *map, long key, long *old_key,
-long *old_value);
+ - Single-pin operation no matter how many domains and containers use
+   a page
 
--bool hashmap__find(const struct hashmap *map, long key, long *value);
-+bool hashmap_find(const struct hashmap *map, long key, long *value);
-+
-+#define hashmap__find(map, key, value) ({
-                         \
-+               _Static_assert(value == NULL || sizeof(*value) ==
-sizeof(long),                 \
-+                              "Value pointee should be a long-sized
-integer or a pointer");    \
-+               hashmap_find(map, (long)key, (long *)value);
-                         \
-+})
+ - A fine grained locking scheme supporting user managed concurrency for
+   multi-threaded map/unmap
 
- /*
-  * hashmap__for_each_entry - iterate over all entries in hashmap
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 96092c9cb34b..1a1a76357f72 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5669,7 +5669,7 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
-                return -EINVAL;
+ - A pre-registration mechanism to optimize vIOMMU use cases by
+   pre-pinning pages
 
-        if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
--           !hashmap__find(cand_cache, local_id, (long *)&cands)) {
-+           !hashmap__find(cand_cache, local_id, &cands)) {
-                cands = bpf_core_find_cands(prog->obj, local_btf, local_id);
-                if (IS_ERR(cands)) {
-                        pr_warn("prog '%s': relo #%d: target candidate
-search failed for [%d] %s %s: %ld\n",
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index 8107ed0428c2..cb206003c1f0 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -130,12 +130,9 @@ static int test__expr(struct test_suite *t
-__maybe_unused, int subtest __maybe_u
-                        expr__find_ids("FOO + BAR + BAZ + BOZO", "FOO",
-                                        ctx) == 0);
-        TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 3);
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, (long)"BAR",
--                                                 (long *)&val_ptr));
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, (long)"BAZ",
--                                                 (long *)&val_ptr));
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, (long)"BOZO",
--                                                 (long *)&val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"BAR", &val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"BAZ", &val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"BOZO", &val_ptr));
+ - Extended ioctl API that can manage these new objects and exposes
+   domains directly to user space
 
-        expr__ctx_clear(ctx);
-        ctx->sctx.runtime = 3;
-@@ -143,20 +140,16 @@ static int test__expr(struct test_suite *t
-__maybe_unused, int subtest __maybe_u
-                        expr__find_ids("EVENT1\\,param\\=?@ +
-EVENT2\\,param\\=?@",
-                                        NULL, ctx) == 0);
-        TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 2);
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"EVENT1,param=3@",
--                                                 (long *)&val_ptr));
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"EVENT2,param=3@",
--                                                 (long *)&val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"EVENT1,param=3@", &val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"EVENT2,param=3@", &val_ptr));
+ - domains are sharable between subsystems, eg VFIO and VDPA
 
-        expr__ctx_clear(ctx);
-        TEST_ASSERT_VAL("find ids",
-                        expr__find_ids("dash\\-event1 - dash\\-event2",
-                                       NULL, ctx) == 0);
-        TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 2);
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, (long)"dash-event1",
--                                                 (long *)&val_ptr));
--       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, (long)"dash-event2",
--                                                 (long *)&val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"dash-event1", &val_ptr));
-+       TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-(long)"dash-event2", &val_ptr));
+The bulk of this code is a new data structure design to track how the
+IOVAs are mapped to PFNs.
 
-        /* Only EVENT1 or EVENT2 need be measured depending on the
-value of smt_on. */
-        {
-@@ -174,7 +167,7 @@ static int test__expr(struct test_suite *t
-__maybe_unused, int subtest __maybe_u
-                TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 1);
-                TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
-                                                          (long)(smton
-? "EVENT1" : "EVENT2"),
--                                                         (long *)&val_ptr));
-+                                                         &val_ptr));
+iommufd intends to be general and consumable by any driver that wants to
+DMA to userspace. From a driver perspective it can largely be dropped in
+in-place of iommu_attach_device() and provides a uniform full feature set
+to all consumers.
 
-                expr__ctx_clear(ctx);
-                TEST_ASSERT_VAL("find ids",
-@@ -183,7 +176,7 @@ static int test__expr(struct test_suite *t
-__maybe_unused, int subtest __maybe_u
-                TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 1);
-                TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
+As this is a larger project this series is the first step. This series
+provides the iommfd "generic interface" which is designed to be suitable
+for applications like DPDK and VMM flows that are not optimized to
+specific HW scenarios. It is close to being a drop in replacement for the
+existing VFIO type 1 and supports existing qemu based VM flows.
 
-(long)(corewide ? "EVENT1" : "EVENT2"),
--                                                         (long *)&val_ptr));
-+                                                         &val_ptr));
+Several follow-on series are being prepared:
 
-        }
-        /* The expression is a constant 1.0 without needing to
-evaluate EVENT1. */
-@@ -220,8 +213,7 @@ static int test__expr(struct test_suite *t
-__maybe_unused, int subtest __maybe_u
-                        expr__find_ids("source_count(EVENT1)",
-                        NULL, ctx) == 0);
-        TEST_ASSERT_VAL("source count", hashmap__size(ctx->ids) == 1);
--       TEST_ASSERT_VAL("source count", hashmap__find(ctx->ids, (long)"EVENT1",
--                                                     (long *)&val_ptr));
-+       TEST_ASSERT_VAL("source count", hashmap__find(ctx->ids,
-(long)"EVENT1", &val_ptr));
+- Patches integrating with qemu in native mode:
+  https://github.com/yiliu1765/qemu/commits/qemu-iommufd-6.0-rc2
 
-        expr__ctx_free(ctx);
+- A completed integration with VFIO now exists that covers "emulated" mdev
+  use cases now, and can pass testing with qemu/etc in compatability mode:
+  https://github.com/jgunthorpe/linux/commits/vfio_iommufd
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 55f114450316..2430b8965268 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -131,7 +131,7 @@ static void *program_priv(const struct bpf_program *prog)
+- A draft providing system iommu dirty tracking on top of iommufd,
+  including iommu driver implementations:
+  https://github.com/jpemartins/linux/commits/x86-iommufd
 
-        if (IS_ERR_OR_NULL(bpf_program_hash))
-                return NULL;
--       if (!hashmap__find(bpf_program_hash, (long)prog, (long *)&priv))
-+       if (!hashmap__find(bpf_program_hash, prog, &priv))
-                return NULL;
-        return priv;
- }
-@@ -1170,7 +1170,7 @@ static void *map_priv(const struct bpf_map *map)
+  This pairs with patches for providing a similar API to support VFIO-device
+  tracking to give a complete vfio solution:
+  https://lore.kernel.org/kvm/20220901093853.60194-1-yishaih@nvidia.com/
 
-        if (IS_ERR_OR_NULL(bpf_map_hash))
-                return NULL;
--       if (!hashmap__find(bpf_map_hash, (long)map, (long *)&priv))
-+       if (!hashmap__find(bpf_map_hash, map, &priv))
-                return NULL;
-        return priv;
- }
-@@ -1184,7 +1184,7 @@ static void bpf_map_hash_free(void)
-                return;
+- Userspace page tables aka 'nested translation' for ARM and Intel iommu
+  drivers:
+  https://github.com/nicolinc/iommufd/commits/iommufd_nesting
 
-        hashmap__for_each_entry(bpf_map_hash, cur, bkt)
--               bpf_map_priv__clear((struct bpf_map *)cur->key, (void
-*)cur->value);
-+               bpf_map_priv__clear(cur->pkey, cur->pvalue);
+- "device centric" vfio series to expose the vfio_device FD directly as a
+  normal cdev, and provide an extended API allowing dynamically changing
+  the IOAS binding:
+  https://github.com/yiliu1765/iommufd/commits/iommufd-v6.0-rc2-nesting-0901
 
-        hashmap__free(bpf_map_hash);
-        bpf_map_hash = NULL;
-diff --git a/tools/perf/util/hashmap.c b/tools/perf/util/hashmap.c
-index dfe99e766f30..0c1c1289a694 100644
---- a/tools/perf/util/hashmap.c
-+++ b/tools/perf/util/hashmap.c
-@@ -203,7 +203,7 @@ int hashmap__insert(struct hashmap *map, long key,
-long value,
-        return 0;
- }
+- Drafts for PASID and PRI interfaces are included above as well
 
--bool hashmap__find(const struct hashmap *map, long key, long *value)
-+bool hashmap_find(const struct hashmap *map, long key, long *value)
- {
-        struct hashmap_entry *entry;
-        size_t h;
-diff --git a/tools/perf/util/hashmap.h b/tools/perf/util/hashmap.h
-index 7393ef616920..edbadb712725 100644
---- a/tools/perf/util/hashmap.h
-+++ b/tools/perf/util/hashmap.h
-@@ -47,8 +47,14 @@ typedef size_t (*hashmap_hash_fn)(long key, void *ctx);
- typedef bool (*hashmap_equal_fn)(long key1, long key2, void *ctx);
+Overall enough work is done now to show the merit of the new API design
+and at least draft solutions to many of the main problems.
 
- struct hashmap_entry {
--       long key;
--       long value;
-+       union {
-+               long key;
-+               const void *pkey;
-+       };
-+       union {
-+               long value;
-+               void *pvalue;
-+       };
-        struct hashmap_entry *next;
- };
+Several people have contributed directly to this work: Eric Auger, Joao
+Martins, Kevin Tian, Lu Baolu, Nicolin Chen, Yi L Liu. Many more have
+participated in the discussions that lead here, and provided ideas. Thanks
+to all!
 
-@@ -144,7 +150,13 @@ static inline int hashmap__append(struct hashmap
-*map, long key, long value)
+The v1/v2 iommufd series has been used to guide a large amount of preparatory
+work that has now been merged. The general theme is to organize things in
+a way that makes injecting iommufd natural:
 
- bool hashmap__delete(struct hashmap *map, long key, long *old_key,
-long *old_value);
+ - VFIO live migration support with mlx5 and hisi_acc drivers.
+   These series need a dirty tracking solution to be really usable.
+   https://lore.kernel.org/kvm/20220224142024.147653-1-yishaih@nvidia.com/
+   https://lore.kernel.org/kvm/20220308184902.2242-1-shameerali.kolothum.thodi@huawei.com/
 
--bool hashmap__find(const struct hashmap *map, long key, long *value);
-+bool hashmap_find(const struct hashmap *map, long key, long *value);
-+
-+#define hashmap__find(map, key, value) ({
-                         \
-+               _Static_assert(sizeof(*value) == sizeof(long),
-                         \
-+                              "Value pointee should be a long-sized
-integer or a pointer");    \
-+               hashmap_find(map, (long)key, (long *)value);
-                         \
-+})
+ - Significantly rework the VFIO gvt mdev and remove struct
+   mdev_parent_ops
+   https://lore.kernel.org/lkml/20220411141403.86980-1-hch@lst.de/
 
- /*
-  * hashmap__for_each_entry - iterate over all entries in hashmap
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index e9bd881c6912..2059ed3164ae 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -288,7 +288,7 @@ static int setup_metric_events(struct hashmap *ids,
-                 * combined or shared groups, this metric may not care
-                 * about this event.
-                 */
--               if (hashmap__find(ids, (long)metric_id, (long *)&val_ptr)) {
-+               if (hashmap__find(ids, metric_id, &val_ptr)) {
-                        metric_events[matched_events++] = ev;
+ - Rework how PCIe no-snoop blocking works
+   https://lore.kernel.org/kvm/0-v3-2cf356649677+a32-intel_no_snoop_jgg@nvidia.com/
 
-                        if (matched_events >= ids_size)
-11/07 16:45:42.699 andriin@devbig019:~/linux/tools/lib/bpf (master)
-$
+ - Consolidate dma ownership into the iommu core code
+   https://lore.kernel.org/linux-iommu/20220418005000.897664-1-baolu.lu@linux.intel.com/
+
+ - Make all vfio driver interfaces use struct vfio_device consistently
+   https://lore.kernel.org/kvm/0-v4-8045e76bf00b+13d-vfio_mdev_no_group_jgg@nvidia.com/
+
+ - Remove the vfio_group from the kvm/vfio interface
+   https://lore.kernel.org/kvm/0-v3-f7729924a7ea+25e33-vfio_kvm_no_group_jgg@nvidia.com/
+
+ - Simplify locking in vfio
+   https://lore.kernel.org/kvm/0-v2-d035a1842d81+1bf-vfio_group_locking_jgg@nvidia.com/
+
+ - Remove the vfio notifiter scheme that faces drivers
+   https://lore.kernel.org/kvm/0-v4-681e038e30fd+78-vfio_unmap_notif_jgg@nvidia.com/
+
+ - Improve the driver facing API for vfio pin/unpin pages to make the
+   presence of struct page clear
+   https://lore.kernel.org/kvm/20220723020256.30081-1-nicolinc@nvidia.com/
+
+ - Clean up in the Intel IOMMU driver
+   https://lore.kernel.org/linux-iommu/20220301020159.633356-1-baolu.lu@linux.intel.com/
+   https://lore.kernel.org/linux-iommu/20220510023407.2759143-1-baolu.lu@linux.intel.com/
+   https://lore.kernel.org/linux-iommu/20220514014322.2927339-1-baolu.lu@linux.intel.com/
+   https://lore.kernel.org/linux-iommu/20220706025524.2904370-1-baolu.lu@linux.intel.com/
+   https://lore.kernel.org/linux-iommu/20220702015610.2849494-1-baolu.lu@linux.intel.com/
+
+ - Rework s390 vfio drivers
+   https://lore.kernel.org/kvm/20220707135737.720765-1-farman@linux.ibm.com/
+
+ - Normalize vfio ioctl handling
+   https://lore.kernel.org/kvm/0-v2-0f9e632d54fb+d6-vfio_ioctl_split_jgg@nvidia.com/
+
+ - VFIO API for dirty tracking (aka dma logging) managed inside a PCI
+   device, with mlx5 implementation
+   https://lore.kernel.org/kvm/20220901093853.60194-1-yishaih@nvidia.com
+
+ - Introduce a struct device sysfs presence for struct vfio_device
+   https://lore.kernel.org/kvm/20220901143747.32858-1-kevin.tian@intel.com/
+
+ - Complete restructuring the vfio mdev model
+   https://lore.kernel.org/kvm/20220822062208.152745-1-hch@lst.de/
+
+ - Isolate VFIO container code in preperation for iommufd to provide an
+   alternative implementation of it all
+   https://lore.kernel.org/kvm/0-v1-a805b607f1fb+17b-vfio_container_split_jgg@nvidia.com
+
+ - Simplify and consolidate iommu_domain/device compatability checking
+   https://lore.kernel.org/linux-iommu/cover.1666042872.git.nicolinc@nvidia.com/
+
+ - Align iommu SVA support with the domain-centric model
+   https://lore.kernel.org/all/20221031005917.45690-1-baolu.lu@linux.intel.com/
+
+This is about 233 patches applied since March, thank you to everyone
+involved in all this work!
+
+Currently there are a number of supporting series still in progress:
+
+ - DMABUF exporter support for VFIO to allow PCI P2P with VFIO
+   https://lore.kernel.org/r/0-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com
+
+ - Start to provide iommu_domain ops for POWER
+   https://lore.kernel.org/all/20220714081822.3717693-1-aik@ozlabs.ru/
+
+However, these are not necessary for this series to advance.
+
+This is on github: https://github.com/jgunthorpe/linux/commits/iommufd
+
+v4:
+ - Rebase to v6.1-rc3, include the iommu branch with the needed EINVAL
+   patch series and also the SVA rework
+ - All bug fixes and comments with no API or behavioral changes
+ - gvt tests are passing again
+ - Syzkaller is no longer finding issues and achieved high coverage of
+   69%(75%)
+ - Coverity has been run by two people
+ - new "nth failure" test that systematically sweeps all error unwind paths
+   looking for splats
+ - All fixes noted in the mailing list
+   If you sent an email and I didn't reply please ping it, I have lost it.
+ - The selftest patch has been broken into three to make the additional
+   modification to the main code clearer
+ - The interdiff is 1.8k lines for the main code, with another 3k of
+   test suite changes
+v3: https://lore.kernel.org/r/0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com
+ - Rebase to v6.1-rc1
+ - Improve documentation
+ - Use EXPORT_SYMBOL_NS
+ - Fix W1, checkpatch stuff
+ - Revise pages.c to resolve the FIXMEs. Create a
+   interval_tree_double_span_iter which allows a simple expression of the
+   previously problematic algorithms
+ - Consistently use the word 'access' instead of user to refer to an
+   access from an in-kernel user (eg vfio mdev)
+ - Support two forms of rlimit accounting and make the vfio compatible one
+   the default in compatability mode (following series)
+ - Support old VFIO type1 by disabling huge pages and implementing a
+   simple algorithm to split a struct iopt_area
+ - Full implementation of access support, test coverage and optimizations
+ - Complete COPY to be able to copy across contiguous areas. Improve
+   all the algorithms around contiguous areas with a dedicated iterator
+ - Functional ENFORCED_COHERENT support
+ - Support multi-device groups
+ - Lots of smaller changes (the interdiff is 5k lines)
+v2: https://lore.kernel.org/r/0-v2-f9436d0bde78+4bb-iommufd_jgg@nvidia.com
+ - Rebase to v6.0-rc3
+ - Improve comments
+ - Change to an iterative destruction approach to avoid cycles
+ - Near rewrite of the vfio facing implementation, supported by a complete
+   implementation on the vfio side
+ - New IOMMU_IOAS_ALLOW_IOVAS API as discussed. Allows userspace to
+   assert that ranges of IOVA must always be mappable. To be used by a VMM
+   that has promised a guest a certain availability of IOVA. May help
+   guide PPC's multi-window implementation.
+ - Rework how unmap_iova works, user can unmap the whole ioas now
+ - The no-snoop / wbinvd support is implemented
+ - Bug fixes
+ - Test suite improvements
+ - Lots of smaller changes (the interdiff is 3k lines)
+v1: https://lore.kernel.org/r/0-v1-e79cd8d168e8+6-iommufd_jgg@nvidia.com
+
+Jason Gunthorpe (15):
+  iommu: Add IOMMU_CAP_ENFORCE_CACHE_COHERENCY
+  interval-tree: Add a utility to iterate over spans in an interval tree
+  iommufd: File descriptor, context, kconfig and makefiles
+  kernel/user: Allow user::locked_vm to be usable for iommufd
+  iommufd: PFN handling for iopt_pages
+  iommufd: Algorithms for PFN storage
+  iommufd: Data structure to provide IOVA to PFN mapping
+  iommufd: IOCTLs for the io_pagetable
+  iommufd: Add a HW pagetable object
+  iommufd: Add kAPI toward external drivers for physical devices
+  iommufd: Add kAPI toward external drivers for kernel access
+  iommufd: vfio container FD ioctl compatibility
+  iommufd: Add a selftest
+  iommufd: Add some fault injection points
+  iommufd: Add additional invariant assertions
+
+Kevin Tian (1):
+  iommufd: Document overview of iommufd
+
+Lu Baolu (1):
+  iommu: Add device-centric DMA ownership interfaces
+
+ .clang-format                                 |    3 +
+ Documentation/userspace-api/index.rst         |    1 +
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ Documentation/userspace-api/iommufd.rst       |  222 ++
+ MAINTAINERS                                   |   12 +
+ drivers/iommu/Kconfig                         |    1 +
+ drivers/iommu/Makefile                        |    2 +-
+ drivers/iommu/amd/iommu.c                     |    2 +
+ drivers/iommu/intel/iommu.c                   |   16 +-
+ drivers/iommu/iommu.c                         |  124 +-
+ drivers/iommu/iommufd/Kconfig                 |   23 +
+ drivers/iommu/iommufd/Makefile                |   13 +
+ drivers/iommu/iommufd/device.c                |  748 +++++++
+ drivers/iommu/iommufd/double_span.h           |   98 +
+ drivers/iommu/iommufd/hw_pagetable.c          |   57 +
+ drivers/iommu/iommufd/io_pagetable.c          | 1214 +++++++++++
+ drivers/iommu/iommufd/io_pagetable.h          |  241 +++
+ drivers/iommu/iommufd/ioas.c                  |  390 ++++
+ drivers/iommu/iommufd/iommufd_private.h       |  307 +++
+ drivers/iommu/iommufd/iommufd_test.h          |   93 +
+ drivers/iommu/iommufd/main.c                  |  419 ++++
+ drivers/iommu/iommufd/pages.c                 | 1884 +++++++++++++++++
+ drivers/iommu/iommufd/selftest.c              |  853 ++++++++
+ drivers/iommu/iommufd/vfio_compat.c           |  452 ++++
+ include/linux/interval_tree.h                 |   58 +
+ include/linux/iommu.h                         |   17 +
+ include/linux/iommufd.h                       |  102 +
+ include/linux/sched/user.h                    |    2 +-
+ include/uapi/linux/iommufd.h                  |  332 +++
+ kernel/user.c                                 |    1 +
+ lib/Kconfig                                   |    4 +
+ lib/interval_tree.c                           |  132 ++
+ tools/testing/selftests/Makefile              |    1 +
+ tools/testing/selftests/iommu/.gitignore      |    3 +
+ tools/testing/selftests/iommu/Makefile        |   12 +
+ tools/testing/selftests/iommu/config          |    2 +
+ tools/testing/selftests/iommu/iommufd.c       | 1627 ++++++++++++++
+ .../selftests/iommu/iommufd_fail_nth.c        |  580 +++++
+ tools/testing/selftests/iommu/iommufd_utils.h |  278 +++
+ 39 files changed, 10294 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/userspace-api/iommufd.rst
+ create mode 100644 drivers/iommu/iommufd/Kconfig
+ create mode 100644 drivers/iommu/iommufd/Makefile
+ create mode 100644 drivers/iommu/iommufd/device.c
+ create mode 100644 drivers/iommu/iommufd/double_span.h
+ create mode 100644 drivers/iommu/iommufd/hw_pagetable.c
+ create mode 100644 drivers/iommu/iommufd/io_pagetable.c
+ create mode 100644 drivers/iommu/iommufd/io_pagetable.h
+ create mode 100644 drivers/iommu/iommufd/ioas.c
+ create mode 100644 drivers/iommu/iommufd/iommufd_private.h
+ create mode 100644 drivers/iommu/iommufd/iommufd_test.h
+ create mode 100644 drivers/iommu/iommufd/main.c
+ create mode 100644 drivers/iommu/iommufd/pages.c
+ create mode 100644 drivers/iommu/iommufd/selftest.c
+ create mode 100644 drivers/iommu/iommufd/vfio_compat.c
+ create mode 100644 include/linux/iommufd.h
+ create mode 100644 include/uapi/linux/iommufd.h
+ create mode 100644 tools/testing/selftests/iommu/.gitignore
+ create mode 100644 tools/testing/selftests/iommu/Makefile
+ create mode 100644 tools/testing/selftests/iommu/config
+ create mode 100644 tools/testing/selftests/iommu/iommufd.c
+ create mode 100644 tools/testing/selftests/iommu/iommufd_fail_nth.c
+ create mode 100644 tools/testing/selftests/iommu/iommufd_utils.h
+
+
+base-commit: 69e61edebea030f177de7a23b8d5d9b8c4a90bda
+-- 
+2.38.1
+
