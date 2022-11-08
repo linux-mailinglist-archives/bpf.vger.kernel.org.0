@@ -2,228 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC39621B44
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 18:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17ED7621B4C
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 18:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbiKHR5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 12:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S233901AbiKHR6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 12:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbiKHR5O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 12:57:14 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95161A80A;
-        Tue,  8 Nov 2022 09:57:13 -0800 (PST)
+        with ESMTP id S233472AbiKHR6j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 12:58:39 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F1A1FCE5
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 09:58:38 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A8HnHI6003802;
+        Tue, 8 Nov 2022 09:58:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=Cc/BZ3JNYNuxZ2kcK6CqqR94dLwvmv98Uds0IAHuKVE=;
+ b=diPqJC/MRGjr9j9FDg4yBPB0xgA3qPmRRo/0hP++lpYQjl588+1v05rsMDCqcRyBCaka
+ XBT5vpAq4WXWN11P4J0K2SqvUIwEtiB0Gt2R55vG90ipYVHAHMSQy8FBXrgyfGECiTEE
+ MRX71wtJu3LJLGdwpG9IkvPJhoMM61t0TGm8yZawV0s2lNM6DzNzCF4jCu5GNAqGmAhU
+ Mw9gSoqFyc5c8qUY7q0h+tOZYGHrMadENN16VETloWb6ebeqTcovjjJn9iw0DYeLdBsa
+ 6a403lKI/TgmqyBKhgA2VYKCMWLhls4RLqbGs/+J+wactuSseHgY0wN7eSJcqe9604Ur xQ== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqj97mwyc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Nov 2022 09:58:16 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=azwt/z0z0F+vvhs+qrMw3snhOeTOWZKc4bLqlM1mOv30U8BU3kaSY8sikWisy5cFXHZgXPbYG/5dXto/QvTxBPHGVgT4sHeNvaUhNqOaherfOrwKIAzGYz/dzKiFKlFqD8D7QXho8n7xerb/0Cl04VsOPv/d7SxprdlhEPq3b0ii5GBtoJn+tRllrwEL5uIu4yM5euGIh/vP3SnPNtsTOIAcBTMcsGNgh1+b404MOW9ZaHC8tgRAUzxtTPUZGZHAb/SGBBFkITMhVQWja1YiFTPUIMLOfUL8160PySl3lzHL3jWVSmmyA3GwhfqH0+edkbIqHc53j9+U7wX6vgEpaQ==
+ b=TgaialDWH6/z5UWSM0NBwXIWUmTduNW7dWHu4XpV9BuYus8QCQzbkLEgfuXD3o0L9Ava4FPfrIJJNBFrnaL0ymY+DDeep2n9QAv8KT5L+3YWx7yB2NZU//C0GnkI8hkTxMDwr/kVtMrp2UD4epoGazfqmV55mBxzu33AOIDB6xP6I/hUVLio2oihZkusmUD57Ka3bJlz1lwKrna3G1ztUVm0eb2IKpf9T+1QGf9vJVVtnOnEolSrroo6aPLDUF9EfJ4PV1Jr0BcWm4hh1qKVKzeIhlh2Y7pbdzbW/61q4DKxMRMf42Sz/jwhQI3wLaVDvLa/f5U002aF3su29tknAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0eB6UXbeCUZbPbpsR6COyGhET08rXi95JQRmA8dXsQQ=;
- b=WpikBDAXm/LHv2pGjZQXkaOcT67+R6Her2StkxmxmQZP9joPWuW4Jq7ifNVtZZnkrxCNcFSW4A3HGwhuXzEQf26ULf03g3vSbn5tobOriejFl5pYgwpJZr07SsZ+Dyc6OAL8nlhcgIGTz7IWAATiFxifKZ0hU0Me0CuOuEdm8959ZZp+P/n9xewQOddgeU07+L5n8e5+idPKbO4GjvdExWP0/1XG9/MkFW4o1LLs9Ds5zSkOjVJJPg0hDtKPTFIERp6xuWX3tV8Nv3kJuYhmSBSmckgnfuWwBH56kA+DHFrhcHTbMlz3Ybs4myNSx0NRv6idd0CsUtNOHySgkqMAtg==
+ bh=Cc/BZ3JNYNuxZ2kcK6CqqR94dLwvmv98Uds0IAHuKVE=;
+ b=gt61rmmYrlr85Fx/vC3bEh8VR2g/er/JsuqYOY8U0SzQ/PDkneTpY2FkpgrqDPRh7nFeyzyF7gwh2DMSY3p9QmbHq4AV6f7OUz62rDbTg/YbP7IbM6zU7XLI5oueL1KOKp5JPFE0D2f4V/32riPiImHTeRG39HKTQKLnSWr5Mbn4Mb9DQUltdqc0f98t2bAomOFMtBJ3CluwXubsfi+R18hpwxG72pLEUIM+A45cA2OuoR1Y7gtzqD5pSao1vJheRyRZZVxaOschEzJjfcfsnav1Rgf9LPt1D1nKZrleHR1EH1KmvlBIXNauHuP8QsiLVO/sPOyrdySZcJ7nSJz4rg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0eB6UXbeCUZbPbpsR6COyGhET08rXi95JQRmA8dXsQQ=;
- b=m7zmbKXGCBcnzvARHmgMqwPn2WsDsEJzrk0LIb3dJP7B0T3LERLNNl7mAJFXZk0ESuwbvJ3KXT3xtJdpUNCI1+HzqI7t+rlEY81vLXU3jVc+Ah6B2KgvGFHHEgQNZ6ZTaTSp1WzEBBPu+ljzMwZDREz4bAcyoYVf57+rqGr+/Frixdoi5N2NLbXvKyhc/mNfI29BSsXDtDIkpE8AMTdSh4vQvE+8jua76oECnlJqlKfgbTA6eLhiu2k1j2NV+ook52tlLkKfRmJYWE7xwt7UY3TfIXZgTHSNkisyAEyteqpUIFxhp39yDXFV6pjRCJI0EVchU5+jKspzhzW+MJbX0w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BL1PR12MB5029.namprd12.prod.outlook.com (2603:10b6:208:31d::14) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM5PR15MB1371.namprd15.prod.outlook.com (2603:10b6:3:d1::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.26; Tue, 8 Nov
- 2022 17:57:12 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5791.026; Tue, 8 Nov 2022
- 17:57:12 +0000
-Date:   Tue, 8 Nov 2022 13:57:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v4 12/17] iommufd: Add kAPI toward external drivers for
- physical devices
-Message-ID: <Y2qYd4W2zlvHLfJ7@nvidia.com>
-References: <12-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <2cbd00ff-a51f-bd0f-1bd9-67db5f5d22f4@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cbd00ff-a51f-bd0f-1bd9-67db5f5d22f4@intel.com>
-X-ClientProxiedBy: MN2PR16CA0030.namprd16.prod.outlook.com
- (2603:10b6:208:134::43) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.24; Tue, 8 Nov
+ 2022 17:58:12 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.027; Tue, 8 Nov 2022
+ 17:58:12 +0000
+Message-ID: <8c305248-e3ea-c74a-2fd1-83737af61f78@meta.com>
+Date:   Tue, 8 Nov 2022 09:58:09 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.1
+Subject: Re: [PATCH 4/4] bpftool: clean-up usage of libbpf_get_error()
+Content-Language: en-US
+To:     Sahid Orentino Ferdjaoui 
+        <sahid.ferdjaoui@industrialdiscipline.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        quentin@isovalent.com
+Cc:     martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+References: <20221108142515.126199-1-sahid.ferdjaoui@industrialdiscipline.com>
+ <20221108142515.126199-5-sahid.ferdjaoui@industrialdiscipline.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221108142515.126199-5-sahid.ferdjaoui@industrialdiscipline.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0042.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL1PR12MB5029:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b077e7c-f595-4420-649b-08dac1b2a97b
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM5PR15MB1371:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc41ff8a-7d63-4fcd-9e12-08dac1b2cd6b
+X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fhYNGrLY27xyJxvq1mMqfFAX3DPyHyipRi3gLTT3qESUGaTpqMkwpXBkICQ2dldvpMIIAcD9nLLBDw6kFuVHK695qh04rZpGJC1kb0j8pkhsQFRhA+pn9tkivPj5a3JqdaJWte/Nyzm7h/9eNcrJfJknLyCqxvmvomytqACOLFxQfnbFPSByeXqQl5WYiDLZT8+9slJ0iKBXvsHzTAx58fUfCLw+Q4umvs4E0ki5hp6DRd1z9EmW/HL2EDXervVi3oChh0PzjYnzrnrELFoJjKFSjjIHZDdQRDj4tRGeZYwiMfpAf47EUhxXQA+/oujKAraBQ5V3kI6pR1B742KR+HQcNVAPKHUQ4sUjiY7OEfZaGkamtYYQ7/7aQvaFGYueJwybqv85qsMQOSIe3fUHt65jrX4BQHOed3lSf52rIXYAMaRXBVYcJu6Hs95zG0GklrA+YF/yLJ8r7X0H2zumwzD7q4xlHLdL8acGO7tr3SG77e/XA71tSfySob0YybNNgaUo9I4WcGkcMqCJmZhWFkrM2AKiISxwqZqLkIBrceF+/XgPf2TyRUdEaL3InN+dxHeBnUP7V+XW3CLQAwkSm8IAymQxznmWEGDuN23XiZO06bUzEqple+G28NudaQwWyHq1bro0uHjkwLMTuxQvAhzWCnHlrDiEkkEi+g+Lf3L2T6EDo1n3mBQr2crNbZFF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(451199015)(26005)(38100700002)(2616005)(6506007)(6512007)(186003)(83380400001)(7416002)(5660300002)(2906002)(7406005)(478600001)(6916009)(316002)(6486002)(41300700001)(66476007)(4326008)(8936002)(66556008)(8676002)(54906003)(66946007)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: CZFpNmhg+/rj5ERPSXUl20VPe7FUW+vLnNeD010cJYqPZnifJooP1W+kxcJ3vV7LU/gsZwH9gvH4qNo22I4Vu4r6EZ+k5nVBjj57QVGJflqoF0UZu1NQZzWPJfLYU3Fv/Oo9nZoPDWGtkPyKeZDl51+VSpxCTG40CFwucSmuWI9EXsJtyaJ0ZpEqzYqnYnNGY+r5p9QFtDjaRHffITDS5btrk5Pwvijc6u35sYJ/YG41UXrw2j0LA8yXER0hEc8M+T0t2eKzBUGAcjkjZ0JguaaG9fvyCIvoH6qygDMNKT/FbOtrHZbktIALLwfdeHMnXZ0RZ0rwBWoQ7tYddvjEF03yynP1v/5gaewS9jpeuxfv9z5iH+kWtTtM4ni+k1FFnMVuY3lFDsR7gMIdwFYZy+7THYRWXDmjRi1TS1zSaguWZ2pa7p3Do5Ezil3EgOeEjvh678rB9f3wMez81q6Cm99ytvsWx0qHz4ZmS7seEyrSejQe9ZRJ41MRL2rY6zRqI89ljHhwIFOwsSlAjQf1zt/sMNu+x78uF6b7ZQifFkf/SIwzRZicCY7UobyASjMSxvhYdb6zBtwYrBUK3qki/c8zOHAmwUo/WmK6VjVuWrC/sPdv4NM6CUrZ0IPJFjjDuhHFKfd+3x1izdPat2TVAm1Q6ULJj37/VgIdV/SnIC/YE3aOzVOgHz+l228sSYQ0zK3UGiGacv8lOQThf+mscFCmpFrxRUPXYYbzllL5LftDuCpDotK4U28C3AFDLCGuIgEiANVVE6B/AGLr36L5h8TEAvZN66v0rNgb13rz6ME=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(366004)(396003)(136003)(346002)(39860400002)(451199015)(31686004)(36756003)(38100700002)(86362001)(2906002)(6486002)(316002)(66556008)(31696002)(478600001)(6506007)(6666004)(53546011)(66476007)(4326008)(8676002)(5660300002)(7416002)(6512007)(8936002)(186003)(66946007)(83380400001)(2616005)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9nqBZGL3TiFn8nvqhYqBbai/pXfLbkXR1BXftWQuSduNgeN1a7MnoysRk9y7?=
- =?us-ascii?Q?FspPwacFJQS3OobGs9y7yEMhTvVxWsJSFaiHsacuakKKgVELLH5qFOSbEKmG?=
- =?us-ascii?Q?LQGabKYmnqIBb7Fxl3fZ+wG6fD5P6az1TMkMpVEHasP0ElIq2jqENLYKnDxV?=
- =?us-ascii?Q?cEnldZaPBMiem/YFW7KC0b046iRsPwr0Rak8rMMyyKaRElforuZLZSyh4zAU?=
- =?us-ascii?Q?QypATIkhD6fhTj/su5PIlxcDjz3ZD2bnWRghxorkcOf7ZDoPyUFWFt9dj8NL?=
- =?us-ascii?Q?3aJrCXlJdKE+Y41wct1ykAOohpnNdejVFU9z1OqhJmup51wqjnqwoDR76dwP?=
- =?us-ascii?Q?ogg8UDNEN/0gOFXNufuAqkvkqEZ21qTduYcF+w/wlgPgCw0ILdyR2X284srg?=
- =?us-ascii?Q?idZlLAYDH2+W+wLGDk/CZzHlCtUKHfxZexPXIPPt1jPa8TUI3aFPLQfvFZb0?=
- =?us-ascii?Q?i2/ThoqIcmZxhDHOhyhIborvjc+zDZs2AnE31d+jjgYR/ejwidm/y1xKPpRD?=
- =?us-ascii?Q?kFhLXRC/T+GXtFmoTd723JXWaF0TusTfjw1K4VD23kkg7E50JJOVJG7NdeQ3?=
- =?us-ascii?Q?e9z3a/daC8gYe4PJ98nieT+CpkhBaGXhXpASFw5hZKA5gkdN77+AzrB73gLG?=
- =?us-ascii?Q?f4251Lbh4IukVUnLIqFw6Ma/a1zWh4wbnW40Z3mtup614Y1PCOgXz7n8JEPo?=
- =?us-ascii?Q?MxV10Tmwj6gtQTHQJF6h0PSWviMrPcQVEdKJ9BEYouM6cT9lMBo8puYPh7RZ?=
- =?us-ascii?Q?Z+ff0ZG/kcW52zOa/xlMr+XrfHDBHB9UlW7nmsfA3dH4Y0rBBw+bsvhwEm8A?=
- =?us-ascii?Q?j0IAeUu5705xWriC+kjiC9Ne3bG2m1meDa757Gmkl4p1YSJ2E/R4m7uj+U4w?=
- =?us-ascii?Q?dEGsZHHn6rVDdTx++uFG2XiSzd/2FOgh16NgGTlc9Qkn56A/XfarSLcm2fgR?=
- =?us-ascii?Q?m8PXD0M4iXbW3oIx6NPXXN3TBTIAXAj4+1hoUxTBTKksnEIGhEBP1rBqRdX4?=
- =?us-ascii?Q?dxRwJIT/yR5L2mnE/fqx1GbA/sQRX1hURFCl/TPM2oTCOLa3+FrilGI8B8DU?=
- =?us-ascii?Q?OGn8B+sa9IdJMT8uqj6VWbPjIOOCmrR/Q+0Y/gajrqcLyUJeXF3zEK0g8mgt?=
- =?us-ascii?Q?DA6389tnZ3VhdFXTj2M4meGNYjw08ypGlgL5KKFof+09ZZ0MpC56g4WKf0ca?=
- =?us-ascii?Q?XVLfgLifKj6p31cGXJQM+UVbaw9iz55xGZ4PWKSAat5kdgU3oavzc7K7kDfs?=
- =?us-ascii?Q?JFoxnfCGmcyxvxe93uXsR+kCxgLWvqu+FAUYeOdetvTN9+PJMawfk8P9CU6E?=
- =?us-ascii?Q?aAAMyIC7rExMxFTwNMj3o870J7hmFelwJfKgBI1EPg+AKG/Zj1K9foDMdLdP?=
- =?us-ascii?Q?+zdpTn+cFkLzbbLWv8nZVZNmHJDjjZ1GoWTId38Py8jPRfmrKEWJs1QXWuk/?=
- =?us-ascii?Q?0Z/1MA3gtcaRN3af5byiURtM6ZJrHofLSgOXA9u3wv3GNHEYfV3Me7XISsxA?=
- =?us-ascii?Q?E6vXsKEBCi4gzcnIPfxfPzF5gtjLmdGb31JJLeS5p5qDf1N1stqNN9sHNEby?=
- =?us-ascii?Q?9gAnZljRmngA5eD7leA=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b077e7c-f595-4420-649b-08dac1b2a97b
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S25UeFhPL1NsRmJTbnphdzk5QzRPS0lhTmpKVUhLanNTeEZZL3JheHRQVEFQ?=
+ =?utf-8?B?UEZ2RERMUkZUaFpFdGhFa2kyZUNaM1J1bnVxZlMySUF2aDdQVVBqV1FmaFg1?=
+ =?utf-8?B?RnZjazlYR1h6RG9pbmNMODcxNXl6ZHNONGFDQk9ocmgyb2x6LzlWcktUY2NI?=
+ =?utf-8?B?TmZDQlBOR2VJZjlOYlJrYkFYSTl4bXhKd3V3VlUzVjYxaE1lMTkrY3J6M3N1?=
+ =?utf-8?B?YnZVTldYT2VIUWxEVklSQ2YzeGt0bTVtemR5QWFwRWlhcHVMT3lYc0Fodm11?=
+ =?utf-8?B?NGYyL2NNaDRrKytnaUYydU1GcktYQWx3MDdESm93TFB6Zk1jSldKN3pGTHJZ?=
+ =?utf-8?B?WE9TUTY1ZUlEdVAwaWhoMTMwZzFwRGROU2N0Z3cySzlhZjlwMHh5U2JrZEVI?=
+ =?utf-8?B?ZGw2aERsWkVYcEZhd3hncTFBSlJOWFJLc01PVWxlVHlhNGtVckM3OU5uVG10?=
+ =?utf-8?B?ZlhkcnVLNmNEUngrVVM3Z21kSnFDMGJIMU1VOWErUTltcWdlYXpVQWdtY1pH?=
+ =?utf-8?B?T3lzQVVFL3cwc09ZYWRuWEc3NkVNMWxJQWZEYWJCZTVJeURQcGUrWEZPWGFr?=
+ =?utf-8?B?YnNUUWU3Tk0yeFlwaWZoaWJya0ZPYTkrbG9pOXpXSFRPVHYxMUxYRTdBWXo4?=
+ =?utf-8?B?aFlhSkY2SElkYUhOZU5VMTQ5YmMyNDcyZ3F2VDR6TG91MmhUMlFpMEFFUDIv?=
+ =?utf-8?B?K2hJQkxHOUx4OUxCTXgxSHJJME9tMGlFTkg4NlNDbEk4Qmo0TEk4UmEyV2d5?=
+ =?utf-8?B?VDAyMHl3K3l4WlR1UnBmYjNHdEVnVkYyM3JUV0duQ1k1MDlXajJzalA5YzVY?=
+ =?utf-8?B?NG92WlBVcTA4bTQ3NDJyYWwzeWx0MUhpUUIrUU13dzYrd0xoRG9tbXB5UHcw?=
+ =?utf-8?B?N2VrcUprclAzaTFSS0pZaTRvcTFEczl5Y1UyNFMvbkxuL2tVcEVHM3hORE44?=
+ =?utf-8?B?ZzE1d29rTi9PS3cySlZOOWZBT1J5NHRPbzlGaFFuSVNpTkVPbm5DQ3dwSkQv?=
+ =?utf-8?B?SWszdDI1dytIcHd1VVEvRSswSTBjSFluUWppY3F6ZVpuMm9BT1ZOaTV0bkMw?=
+ =?utf-8?B?VlVhejVhQXVQaDdtQ3ZnT0JyM1lIb2xBc3RCRnl6N1YwaXkvbVRLQVdLdW43?=
+ =?utf-8?B?c1BrU1RsaXN4WVdHLzBPaGV6RlIxeTQ5ZHluV0oxRDIwQlozZlR1ZTBNcGxR?=
+ =?utf-8?B?MENDVkh4cE90QlAyRXJCeW5jTmx5U2RMaUF5RmJzcHBUZ2VFT0RveHJUV2tB?=
+ =?utf-8?B?VG55UU11MmVKQWM0VzVIUWRpQitEUVdqNXM4ckJESGEvSmVKUTE0ejZPdHMz?=
+ =?utf-8?B?czlFN1dzWktjaEVLYlkwbGd1RlJCZHdldHhTMUMyRWNibGNaMGE0TUE2dkd4?=
+ =?utf-8?B?NXdQNmdkRjJ6K24zdVNQVjdvaG85L2RRdEducytoaXZsN2IxOTdyOTlOSG9H?=
+ =?utf-8?B?SkkyUkV5bnJzcGVubGIwZU1mK0hOOFU5SUJsRnhncDlmNC9odm5MTDhwSVBZ?=
+ =?utf-8?B?VHdTdGZIYXBqREJEZklCRmsyeG85cWtCVzBVem91MEVmL21MSjVzdVdCV0Rm?=
+ =?utf-8?B?Zm84UGtFaVlaWk9kYXU0WWdmKzJjd3lNTFdaVWpFcHZvRXlPRFROcG1hOWQ4?=
+ =?utf-8?B?bUdqYjNKVnZrY1VYeXJJV2F6Z1FaOUFpZ2VKaVJ4bXhzVnhVQ1NtQXowVDVj?=
+ =?utf-8?B?ZktyQTFZdjc0TkxkMGptb3FiYUtVZFhCU0RLdkczUHpYRzA3WnNpODI5RURw?=
+ =?utf-8?B?WXNJU0xXUTBOSXY2Y24zRjdxWmpPeERySFRRcGw2cDhkR1NqdkRjbmx0aW1x?=
+ =?utf-8?B?U2tKaVhKVmRLVWdhSlJOamFSSVZyblkrZjA3eEVQVEdJZjFLVnNha3BwWkt0?=
+ =?utf-8?B?OWI3N29JNmgvTUFCTTlhaWFiaTdycm1uMlFCRDFmYmUyeTJmMTMxWmIrakNY?=
+ =?utf-8?B?OVVRYlNWYVpscS9FTmhmNytPQWxOOFJMS0FlcHhVcHMrVk1wLzBod1o0aXVV?=
+ =?utf-8?B?ZlprZEIxYnJDUU0zNFRIbFZtMElCNU5jZmpFZlFGWm1BSmRsdDdRZnh5am5O?=
+ =?utf-8?B?MytVYlJrcm5EREM4S3NBTlA1UkYwTWFHVGRCNy9uQjFXa01TZmdER2RaVmx0?=
+ =?utf-8?B?VjV4UmJ4citpMW8wZHVMRWtHOXFsbTBtOXMvTE5IOGxOcC92d3NaTisyK244?=
+ =?utf-8?B?a2c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc41ff8a-7d63-4fcd-9e12-08dac1b2cd6b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 17:57:11.9684
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 17:58:12.2630
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tzcioPbbA5Glyc1btNeAb/KNQI28X9LE4HPjxl+xfhQQYs+IsV17GsLMQlZTzgTc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5029
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3BnHVgPpreMls1xT4hAMHQDfv+uA/Sz9CXbXxPzSB/QgYLAe0BX6/9QELVM4Izx6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1371
+X-Proofpoint-GUID: 77ApoaxOQhI7On02Bu7B4ZbaOc4w6U6q
+X-Proofpoint-ORIG-GUID: 77ApoaxOQhI7On02Bu7B4ZbaOc4w6U6q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-08_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 08, 2022 at 10:34:05PM +0800, Yi Liu wrote:
-> > +/**
-> > + * iommufd_device_bind - Bind a physical device to an iommu fd
-> > + * @ictx: iommufd file descriptor
-> > + * @dev: Pointer to a physical PCI device struct
-> > + * @id: Output ID number to return to userspace for this device
-> > + *
-> > + * A successful bind establishes an ownership over the device and returns
-> > + * struct iommufd_device pointer, otherwise returns error pointer.
-> > + *
-> > + * A driver using this API must set driver_managed_dma and must not touch
-> > + * the device until this routine succeeds and establishes ownership.
-> > + *
-> > + * Binding a PCI device places the entire RID under iommufd control.
-> > + *
-> > + * The caller must undo this with iommufd_unbind_device()
+
+
+On 11/8/22 6:28 AM, Sahid Orentino Ferdjaoui wrote:
+> bpftool is now totally compliant with libbpf 1.0 mode and is not
+> expected to be compiled with pre-1.0, let's clean-up the usage of
+> libbpf_get_error().
 > 
-> it should be iommufd_device_unbind() now.
-
-Done
-
-> > +static int iommufd_device_do_attach(struct iommufd_device *idev,
-> > +				    struct iommufd_hw_pagetable *hwpt,
-> > +				    unsigned int flags)
-> > +{
-> > +	phys_addr_t sw_msi_start = 0;
-> > +	int rc;
-> > +
-> > +	mutex_lock(&hwpt->devices_lock);
-> > +
-> > +	/*
-> > +	 * Try to upgrade the domain we have, it is an iommu driver bug to
-> > +	 * report IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail
-> > +	 * enforce_cache_coherency when there are no devices attached to the
-> > +	 * domain.
-> > +	 */
-> > +	if (idev->enforce_cache_coherency && !hwpt->enforce_cache_coherency) {
-> > +		if (hwpt->domain->ops->enforce_cache_coherency)
-> > +			hwpt->enforce_cache_coherency =
-> > +				hwpt->domain->ops->enforce_cache_coherency(
-> > +					hwpt->domain);
-> > +		if (!hwpt->enforce_cache_coherency) {
-> > +			WARN_ON(list_empty(&hwpt->devices));
-> > +			rc = -EINVAL;
-> > +			goto out_unlock;
-> > +		}
-> > +	}
-> > +
-> > +	rc = iopt_table_enforce_group_resv_regions(&hwpt->ioas->iopt, idev->dev,
-> > +						   idev->group, &sw_msi_start);
-> > +	if (rc)
-> > +		goto out_unlock;
-> > +
-> > +	rc = iommufd_device_setup_msi(idev, hwpt, sw_msi_start, flags);
-> > +	if (rc)
-> > +		goto out_iova;
+> sidenode: We can remove the checks on NULL pointers before calling
+> btf__free() because that function already does the check.
 > 
-> aren't the above two operations only once for a group? I remember you did
-> the two after iommu_attach_group().
+> Signed-off-by: Sahid Orentino Ferdjaoui <sahid.ferdjaoui@industrialdiscipline.com>
 
-No, with the new attach logic per-device is simpler.
+Ack with a few nits below.
 
-iopt_table_enforce_group_resv_regions() tags all the reserved ranges
-with:
+Acked-by: Yonghong Song <yhs@fb.com>
 
-		rc = iopt_reserve_iova(iopt, resv->start,
-				       resv->length - 1 + resv->start,
-				       device);
+> ---
+>   tools/bpf/bpftool/btf.c        | 16 +++++++---------
+>   tools/bpf/bpftool/btf_dumper.c |  2 +-
+>   tools/bpf/bpftool/gen.c        | 11 ++++-------
+>   tools/bpf/bpftool/iter.c       |  6 ++----
+>   tools/bpf/bpftool/main.c       |  7 +++----
+>   tools/bpf/bpftool/map.c        | 15 +++++++--------
+>   tools/bpf/bpftool/prog.c       | 10 +++++-----
+>   tools/bpf/bpftool/struct_ops.c | 15 +++++++--------
+>   8 files changed, 36 insertions(+), 46 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 68a70ac03c80..9bcd3be42358 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -467,9 +467,8 @@ static int dump_btf_c(const struct btf *btf,
+>   	int err = 0, i;
+> 
+>   	d = btf_dump__new(btf, btf_dump_printf, NULL, NULL);
+> -	err = libbpf_get_error(d);
+> -	if (err)
+> -		return err;
+> +	if (!d)
+> +		return errno;
 
-So they are all undone as each device detaches
+Actually there is a difference here.
+libbpf_get_error() will return -errno in such case. So the old
+way is returning -errno and the new way returning errno.
+It looks like this won't impact the functionality as the
+caller checks 0/non-0 for success/failure and still use
+errno for actual error. But it may still be worthwhile
+to mention this in the commit message.
 
-And iommufd_device_setup_msi() keeps track of what has happened to the
-domain via:
+There are some other instances below as well.
 
-		if (hwpt->msi_cookie)
-			return 0;
-		rc = iommu_get_msi_cookie(hwpt->domain, sw_msi_start);
-		if (rc)
-			return rc;
-		hwpt->msi_cookie = true;
+> 
+>   	printf("#ifndef __VMLINUX_H__\n");
+>   	printf("#define __VMLINUX_H__\n");
+> @@ -512,10 +511,9 @@ static struct btf *get_vmlinux_btf_from_sysfs(void)
+>   	struct btf *base;
+> 
+>   	base = btf__parse(sysfs_vmlinux, NULL);
+> -	if (libbpf_get_error(base)) {
+> -		p_err("failed to parse vmlinux BTF at '%s': %ld\n",
+> -		      sysfs_vmlinux, libbpf_get_error(base));
+> -		base = NULL;
+> +	if (!base) {
+> +		p_err("failed to parse vmlinux BTF at '%s': %d\n",
+> +		      sysfs_vmlinux, errno);
+>   	}
 
-So it is OK to call it multiple times
+You can remove the bracket since only one statement in the 'if' body.
 
-Thanks,
-Jason
+> 
+>   	return base;
+> @@ -634,8 +632,8 @@ static int do_dump(int argc, char **argv)
+>   			base = get_vmlinux_btf_from_sysfs();
+> 
+>   		btf = btf__parse_split(*argv, base ?: base_btf);
+> -		err = libbpf_get_error(btf);
+>   		if (!btf) {
+> +			err = errno;
+>   			p_err("failed to load BTF from %s: %s",
+>   			      *argv, strerror(errno));
+>   			goto done;
+> @@ -681,8 +679,8 @@ static int do_dump(int argc, char **argv)
+>   		}
+> 
+>   		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+> -		err = libbpf_get_error(btf);
+>   		if (!btf) {
+> +			err = errno;
+>   			p_err("get btf by id (%u): %s", btf_id, strerror(errno));
+>   			goto done;
+>   		}
+[...]
+> @@ -809,14 +809,13 @@ static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
+> 
+>   static void free_map_kv_btf(struct btf *btf)
+>   {
+> -	if (!libbpf_get_error(btf) && btf != btf_vmlinux)
+> +	if (btf != btf_vmlinux)
+>   		btf__free(btf);
+>   }
+> 
+>   static void free_btf_vmlinux(void)
+>   {
+> -	if (!libbpf_get_error(btf_vmlinux))
+> -		btf__free(btf_vmlinux);
+> +	btf__free(btf_vmlinux);
+>   }
+
+free_btf_vmlinux() contains a single btf__free() now which can be 
+inlined and this function can be removed.
+
+> 
+>   static int
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index b6b62b3ef49b..72e1c458dadc 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -322,7 +322,7 @@ static void show_prog_metadata(int fd, __u32 num_maps)
+>   		return;
+> 
+>   	btf = btf__load_from_kernel_by_id(map_info.btf_id);
+> -	if (libbpf_get_error(btf))
+> +	if (!btf)
+>   		goto out_free;
+> 
+>   	t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
+[...]
