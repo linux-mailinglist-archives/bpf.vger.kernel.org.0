@@ -2,180 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AF9620EFB
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1AC620EED
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbiKHLZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 06:25:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
+        id S234101AbiKHLYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 06:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbiKHLZA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 06:25:00 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2653207A;
-        Tue,  8 Nov 2022 03:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667906700; x=1699442700;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bZWtWPh8AjDaSa0OzVSrWb7bd/MpGa9wkljck/k+riw=;
-  b=YOobgmPx3OSwZmIIbOP8gI+zi33HhP62I+Y1qguvqL7FfV0WQdRDhxsL
-   y0kY4PpmkScML6YRfd2XI/PFSBzfREHm9Etpjt5lz+67iYQc6vcurTaEq
-   PNSuM+18uJGkwQ1ziv1oMCjyHrgN6GSIEQ15jr34skLW79RMFwvGbOvbq
-   X6A7nrhdm1PFK1od619gkz5pW10PLaZ1oLCuMasgHVIyyuH2nmUmqQ4Ik
-   4UyX1FWHkTqHv1wRhseLfX83kEdZlGeGu5V+1VAWGPLVfIXR7fmnmPmCl
-   hT2XbkUZPfq78bhEos81/j9DO0VRBFuAHYMEn7ytwqLUZj5OYJgT3PpX7
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="294040903"
-X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
-   d="scan'208";a="294040903"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 03:24:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="965555581"
-X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
-   d="scan'208";a="965555581"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Nov 2022 03:24:56 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2A8BOsMT010189;
-        Tue, 8 Nov 2022 11:24:54 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        linux@armlinux.org.uk
-Subject: Re: [PATCH net-next v2 2/4] net: lan966x: Split function lan966x_fdma_rx_get_frame
-Date:   Tue,  8 Nov 2022 12:21:46 +0100
-Message-Id: <20221108112146.605140-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221107212415.pwkdyyrdlbndb7ob@soft-dev3-1>
-References: <20221106211154.3225784-1-horatiu.vultur@microchip.com> <20221106211154.3225784-3-horatiu.vultur@microchip.com> <20221107160656.556195-1-alexandr.lobakin@intel.com> <20221107212415.pwkdyyrdlbndb7ob@soft-dev3-1>
+        with ESMTP id S234055AbiKHLYS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 06:24:18 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967D326D5
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 03:24:14 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id q5so7292367ilt.13
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 03:24:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
+        b=LXzLwEfFEIjs9nRQ/0D9sK0UdFF/hcYD1/7lPcxtKxGf+ipiOyxIUkG9FxWjTQwnxI
+         D0k1pcJ4r9HbGweGR8VttiL8E2qc4lcsz3jC3X1z+Myzw30J2a8GCz5AS/bkRvOOAlHD
+         E+tAU65cwh01zP65Dht/AwghXmg8POvqM5wMW+NclASoJJ1M+p89BgFOSDch5BgQ0Avc
+         9JiZIkvYkz5qbwJiVyZnhn8aEs4dsNPEV6aJ60VBa1B1c4nkJvkSo/q1xUjbvGvnQsI2
+         YCKRfjADZRvavXIhrgWVqvohpAMKlTCL5cT3Ex4YqBvyGRv/IX591YGJ8Vqkx1vqKbDZ
+         WAQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
+        b=tmVmlUn8f4+jLs+yq8flqDshprZaYTc6qxNm9N+F01MdX9hHXHxG+SvTSoe6fWC8pg
+         JtfM4F2XVzMUWexiE7AKnOp/GkURAZKWX2VA+S/moW21RrGiy/nUdOoh/gIuvepL7VmM
+         RCC73OQVLSAY8lelRkNyWzz9BgVBd4LCF4qY8NnVdyERP1OnToiHT3/PalWv8QvXKzoA
+         16FUFZ2dtu6I7zgZsfuuTjElwRwekCO8IIPRO5UQ7Inj9Bfwymte9ENE6fEQgSqry2Up
+         DITtYsq+dlHQtWurZey/DBsJjqO/Y1qriS9n3S1qtT/ilisc7x4lkzHYnOjnCkf06ov3
+         AxAA==
+X-Gm-Message-State: ACrzQf2T4uTzr3EV/nLLk6OV1cZ9ehojbfDczhsfY5CRjSSdfcg/NVO2
+        pyqnbgYNzLQmR7YHyJH7hA3vfFz4U45hsyiqn/s=
+X-Google-Smtp-Source: AMsMyM7l9664LpWj9QcPDmFBWC92J2k8lgTtaMBq0d8Kn2LaY6/WvjL6jmQ58ep7k3CUc1mU0tvXdcs9IQAedNtHTSY=
+X-Received: by 2002:a92:bf0e:0:b0:300:cc8e:fe07 with SMTP id
+ z14-20020a92bf0e000000b00300cc8efe07mr18642833ilh.184.1667906653482; Tue, 08
+ Nov 2022 03:24:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6638:1921:0:0:0:0 with HTTP; Tue, 8 Nov 2022 03:24:13
+ -0800 (PST)
+Reply-To: mrinvest1010@gmail.com
+From:   "K. A. Mr. Kairi" <ctocik10@gmail.com>
+Date:   Tue, 8 Nov 2022 03:24:13 -0800
+Message-ID: <CAEbPynvxfjzGLRVVaaVB9fasgmGPWiH+Ceaj9c3oE5eqT5_+0Q@mail.gmail.com>
+Subject: Re: My Response..
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:131 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrinvest1010[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ctocik10[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ctocik10[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-Date: Mon, 7 Nov 2022 22:24:15 +0100
+-- 
+Dear
 
-> The 11/07/2022 17:06, Alexander Lobakin wrote:
-> 
-> Hi Olek,
+How are you, I have a serious client, whom will be interested to
+invest in your country, I got your Details through the Investment
+Network and world Global Business directory.
 
-Hey,
+Let me know if you are interested for more details.....
 
-> 
-> > 
-> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > Date: Sun, 6 Nov 2022 22:11:52 +0100
-> > 
-> > > The function lan966x_fdma_rx_get_frame was unmapping the frame from
-> > > device and check also if the frame was received on a valid port. And
-> > > only after that it tried to generate the skb.
-> > > Move this check in a different function, in preparation for xdp
-> > > support. Such that xdp to be added here and the
-> > > lan966x_fdma_rx_get_frame to be used only when giving the skb to upper
-> > > layers.
-
-[...]
-
-> > > +     lan966x_ifh_get_src_port(page_address(page), src_port);
-> > > +     if (WARN_ON(*src_port >= lan966x->num_phys_ports))
-> > > +             return FDMA_ERROR;
-> > > +
-> > > +     return FDMA_PASS;
-> > 
-> > How about making this function return s64, which would be "src_port
-> > or negative error", and dropping the second argument @src_port (the
-> > example of calling it below)?
-> 
-> That was also my first thought.
-> But the thing is, I am also adding FDMA_DROP in the next patch of this
-> series(3/4). And I am planning to add also FDMA_TX and FDMA_REDIRECT in
-> a next patch series.
-
-Yeah, I was reviewing the patches one by one and found out you're
-adding more return values later :S
-
-> Should they(FDMA_DROP, FDMA_TX, FDMA_REDIRECT) also be some negative
-> numbers? And then have something like you proposed belowed:
-> ---
-> src_port = lan966x_fdma_rx_check_frame(rx);
-> if (unlikely(src_port < 0)) {
-> 
->         switch(src_port) {
->         case FDMA_ERROR:
->              ...
->              goto allocate_new
->         case FDMA_DROP:
->              ...
->              continue;
->         case FDMA_TX:
->         case FDMA_REDIRECT:
->         }
-
-It's okay to make them negative, but I wouldn't place them under
-`unlikely`. It could be something like:
-
-	src_port = lan966x_fdma_rx_check_frame(rx);
-	if (unlikely(src_port == FDMA_ERROR))
-		goto allocate_new;
-
-	switch (src_port) {
-	case 0 ... S64_MAX:
-		// do PASS;
-		break;
-	case FDMA_TX:
-		// do TX;
-		break;
-	case FDMA_REDIRECT:
-	// and so on
-	}
-
-where
-
-enum {
-	FDMA_ERROR = -1, // only this one is "unlikely"
-	FDMA_TX = -2,
-	...
-};
-
-It's all just personal taste, so up to you :) Making
-rx_check_frame() writing src_port to a pointer is fine as well.
-
-> }
-> ---
-> 
-> > 
-> > > +}
-> > > +
-> > > +static struct sk_buff *lan966x_fdma_rx_get_frame(struct lan966x_rx *rx,
-> > > +                                              u64 src_port)
-> > > +{
-
-[...]
-
-> > > --
-> > > 2.38.0
-> > 
-> > Thanks,
-> > Olek
-> 
-> -- 
-> /Horatiu
-
-Thanks,
-Olek
+Sincerely,
+Mr. Kairi Andrew
