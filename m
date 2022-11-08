@@ -2,156 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC8B620F0A
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2C4620F33
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbiKHL1v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 06:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S233629AbiKHLhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 06:37:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbiKHL1u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 06:27:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570212FC30
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 03:27:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8C9F6150F
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 11:27:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10607C433D7;
-        Tue,  8 Nov 2022 11:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667906866;
-        bh=4vB3dDsBGGBe8WY5RJOdGjKO2DmDNLhaee1m4xacIUQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XCpRWw5/plxudf8E9fItao4aUQp+cg+RZu6iqW0cKcfVTRh/BSeVOflaJT3tdU4Ix
-         6CivndC+8DWCnewzJPLddPk43COJGcWkPBWKinYpbu4o3dH0m6kwOYbmekVyiGwsB7
-         ocKOJ8ewyeH/iFeKUoA0BaTDP0fly4T/cdnt+U4Q26FMWWC9m519ZhO//9xXpZYd4h
-         Uu8ZsjSW0DoCqgQPUcZcPnc4Av/taD+VQwUAS1Q5jGooi6mTFXulc/zlgxMUmdbzi4
-         rShr9sHIQaa1iQn08AppnV892dSRLySHEPwYvlEEbPfhT54mDjeq9dmSsreI+l1A6G
-         uyCLAG9GBbNhA==
-Date:   Tue, 8 Nov 2022 13:27:31 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-        x86@kernel.org, peterz@infradead.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, mcgrof@kernel.org
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Message-ID: <Y2o9Iz30A3Nruqs4@kernel.org>
-References: <20221107223921.3451913-1-song@kernel.org>
+        with ESMTP id S233592AbiKHLhG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 06:37:06 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F6E15723;
+        Tue,  8 Nov 2022 03:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667907425; x=1699443425;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=wS7+TWmj2Lw3rMZ6NWcYNkuSEncHx1hdZe7Eikl/1AM=;
+  b=ispRJdmhZIDA+cz48HXbePXDNNJAnTc2p04ZYO3hjjIpI+y6gVQwuZvL
+   w23R0hamT0UOBPDPeLeOE6yOB07Lcp/VrI0vY6zoH31XiMrWgSnQQ7w9j
+   tpJjKhdI52P8XcFtqlQa+THnvQOoYfsAkKBufJg8ofHXpMkOyAwyS2yOn
+   ooby1zgCTQdwM+APaVVSPSfwiRKhcZRQbUrlP2ZYIOUkuY3QqBdV7CsNp
+   rSCzKQtQa6VwKYTNpS9rUk4+/CGqRoFHZLsHbjJ+WcNKwVQckyTEsKA71
+   zxPgMe2CKPprHe9ClTBSl6gW07jzmLC1FYwc246z8t78GWDXEIfL0Id34
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="290391527"
+X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
+   d="scan'208";a="290391527"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 03:37:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="638761222"
+X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
+   d="scan'208";a="638761222"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga007.fm.intel.com with ESMTP; 08 Nov 2022 03:37:02 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2A8Bb1SU015189;
+        Tue, 8 Nov 2022 11:37:01 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        linux@armlinux.org.uk
+Subject: Re: [PATCH net-next v2 4/4] net: lan96x: Use page_pool API
+Date:   Tue,  8 Nov 2022 12:33:31 +0100
+Message-Id: <20221108113331.605821-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221107213521.i6qmjut5hdxrrmcs@soft-dev3-1>
+References: <20221106211154.3225784-1-horatiu.vultur@microchip.com> <20221106211154.3225784-5-horatiu.vultur@microchip.com> <20221107164056.557894-1-alexandr.lobakin@intel.com> <20221107213521.i6qmjut5hdxrrmcs@soft-dev3-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20221107223921.3451913-1-song@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
- 
-On Mon, Nov 07, 2022 at 02:39:16PM -0800, Song Liu wrote:
-> This patchset tries to address the following issues:
-> 
-> 1. Direct map fragmentation
-> 
-> On x86, STRICT_*_RWX requires the direct map of any RO+X memory to be also
-> RO+X. These set_memory_* calls cause 1GB page table entries to be split
-> into 2MB and 4kB ones. This fragmentation in direct map results in bigger
-> and slower page table, and pressure for both instruction and data TLB.
->
-> Our previous work in bpf_prog_pack tries to address this issue from BPF
-> program side. Based on the experiments by Aaron Lu [4], bpf_prog_pack has
-> greatly reduced direct map fragmentation from BPF programs.
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+Date: Mon, 7 Nov 2022 22:35:21 +0100
 
-Usage of set_memory_* APIs with memory allocated from vmalloc/modules
-virtual range does not change the direct map, but only updates the
-permissions in vmalloc range. The direct map splits occur in
-vm_remove_mappings() when the memory is *freed*.
+> The 11/07/2022 17:40, Alexander Lobakin wrote:
+> 
+> Hi Olek,
+> 
+> > 
+> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > Date: Sun, 6 Nov 2022 22:11:54 +0100
+> > 
+> > > Use the page_pool API for allocation, freeing and DMA handling instead
+> > > of dev_alloc_pages, __free_pages and dma_map_page.
+> > >
+> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > > ---
+> > >  .../net/ethernet/microchip/lan966x/Kconfig    |  1 +
+> > >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 72 ++++++++++---------
+> > >  .../ethernet/microchip/lan966x/lan966x_main.h |  3 +
+> > >  3 files changed, 43 insertions(+), 33 deletions(-)
+> > 
+> > [...]
+> > 
+> > > @@ -84,6 +62,27 @@ static void lan966x_fdma_rx_add_dcb(struct lan966x_rx *rx,
+> > >       rx->last_entry = dcb;
+> > >  }
+> > >
+> > > +static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
+> > > +{
+> > > +     struct lan966x *lan966x = rx->lan966x;
+> > > +     struct page_pool_params pp_params = {
+> > > +             .order = rx->page_order,
+> > > +             .flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV,
+> > > +             .pool_size = FDMA_DCB_MAX,
+> > > +             .nid = NUMA_NO_NODE,
+> > > +             .dev = lan966x->dev,
+> > > +             .dma_dir = DMA_FROM_DEVICE,
+> > > +             .offset = 0,
+> > > +             .max_len = PAGE_SIZE << rx->page_order,
+> > 
+> > ::max_len's primary purpose is to save time on DMA syncs.
+> > First of all, you can substract
+> > `SKB_DATA_ALIGN(sizeof(struct skb_shared_info))`, your HW never
+> > writes to those last couple hundred bytes.
+> > But I suggest calculating ::max_len basing on your current MTU
+> > value. Let's say you have 16k pages and MTU of 1500, that is a huge
+> > difference (except your DMA is always coherent, but I assume that's
+> > not the case).
+> > 
+> > In lan966x_fdma_change_mtu() you do:
+> > 
+> >         max_mtu = lan966x_fdma_get_max_mtu(lan966x);
+> >         max_mtu += IFH_LEN_BYTES;
+> >         max_mtu += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> >         max_mtu += VLAN_HLEN * 2;
+> > 
+> > `lan966x_fdma_get_max_mtu(lan966x) + IFH_LEN_BYTES + VLAN_HLEN * 2`
+> > (ie 1536 for the MTU of 1500) is your max_len value actually, given
+> > that you don't reserve any headroom (which is unfortunate, but I
+> > guess you're working on this already, since XDP requires
+> > %XDP_PACKET_HEADROOM).
+> 
+> Thanks for the suggestion. I will try it.
+> Regarding XDP_PACKET_HEADROOM, for the XDP_DROP, I didn't see it to be
+> needed. Once the support for XDP_TX or XDP_REDIRECT is added, then yes I
+> need to reserve also the headroom.
 
-That said, both bpf_prog_pack and these patches do reduce the
-fragmentation, but this happens because the memory is freed to the system
-in 2M chunks and there are no splits of 2M pages. Besides, since the same
-2M page used for many BPF programs there should be way less vfree() calls. 
- 
-> 2. iTLB pressure from BPF program
-> 
-> Dynamic kernel text such as modules and BPF programs (even with current
-> bpf_prog_pack) use 4kB pages on x86, when the total size of modules and
-> BPF program is big, we can see visible performance drop caused by high
-> iTLB miss rate.
+Correct, since you're disabling metadata support in
+xdp_prepare_buff(), headroom is not needed for pass and drop
+actions.
 
-Like Luis mentioned several times already, it would be nice to see numbers.
- 
-> 3. TLB shootdown for short-living BPF programs
-> 
-> Before bpf_prog_pack loading and unloading BPF programs requires global
-> TLB shootdown. This patchset (and bpf_prog_pack) replaces it with a local
-> TLB flush.
-> 
-> 4. Reduce memory usage by BPF programs (in some cases)
-> 
-> Most BPF programs and various trampolines are small, and they often
-> occupies a whole page. From a random server in our fleet, 50% of the
-> loaded BPF programs are less than 500 byte in size, and 75% of them are
-> less than 2kB in size. Allowing these BPF programs to share 2MB pages
-> would yield some memory saving for systems with many BPF programs. For
-> systems with only small number of BPF programs, this patch may waste a
-> little memory by allocating one 2MB page, but using only part of it.
+It's always good to have at least %NET_SKB_PAD headroom inside an
+skb, so that networking stack won't perform excessive reallocations,
+and your code currently misses that -- if I understand currently,
+after converting hardware-specific header to an Ethernet header you
+have 28 - 14 = 14 bytes of headroom, which sometimes can be not
+enough for example for forwarding cases. It's not related to XDP,
+but I would do that as a prerequisite patch for Tx/redirect, since
+you'll be adding headroom support anyway :)
 
-I'm not convinced there are memory savings here. Unless you have hundreds
-of BPF programs, most of 2M page will be wasted, won't it?
-So for systems that have moderate use of BPF most of the 2M page will be
-unused, right?
- 
-> Based on our experiments [5], we measured 0.5% performance improvement
-> from bpf_prog_pack. This patchset further boosts the improvement to 0.7%.
-> The difference is because bpf_prog_pack uses 512x 4kB pages instead of
-> 1x 2MB page, bpf_prog_pack as-is doesn't resolve #2 above.
 > 
-> This patchset replaces bpf_prog_pack with a better API and makes it
-> available for other dynamic kernel text, such as modules, ftrace, kprobe.
- 
-The proposed execmem_alloc() looks to me very much tailored for x86 to be
-used as a replacement for module_alloc(). Some architectures have
-module_alloc() that is quite different from the default or x86 version, so
-I'd expect at least some explanation how modules etc can use execmem_ APIs
-without breaking !x86 architectures.
- 
-> This set enables bpf programs and bpf dispatchers to share huge pages with
-> new API:
->   execmem_alloc()
->   execmem_alloc()
->   execmem_fill()
-> 
-> The idea is similar to Peter's suggestion in [1].
-> 
-> execmem_alloc() manages a set of PMD_SIZE RO+X memory, and allocates these
-> memory to its users. execmem_alloc() is used to free memory allocated by
-> execmem_alloc(). execmem_fill() is used to update memory allocated by
-> execmem_alloc().
-> 
-> Memory allocated by execmem_alloc() is RO+X, so this doesnot violate W^X.
-> The caller has to update the content with text_poke like mechanism.
-> Specifically, execmem_fill() is provided to update memory allocated by
-> execmem_alloc(). execmem_fill() also makes sure the update stays in the
-> boundary of one chunk allocated by execmem_alloc(). Please refer to patch
-> 1/5 for more details of
+> > 
+> > > +     };
+> > > +
+> > > +     rx->page_pool = page_pool_create(&pp_params);
+> > > +     if (IS_ERR(rx->page_pool))
+> > > +             return PTR_ERR(rx->page_pool);
 
-Unless I'm mistaken, a failure to allocate PMD_SIZE page will fail text
-allocation altogether. That means that if somebody tries to load a BFP
-program on a busy long lived system, they are quite likely to fail because
-high order free lists might be already exhausted although there is still
-plenty of free memory.
+[...]
 
-Did you consider a fallback for small pages if the high order allocation
-fails?
+> > > --
+> > > 2.38.0
+> > 
+> > Thanks,
+> > Olek
+> 
+> -- 
+> /Horatiu
 
--- 
-Sincerely yours,
-Mike.
+Thanks,
+Olek
