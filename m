@@ -2,136 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE0262099A
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 07:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681C66209D8
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 08:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbiKHGjD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 01:39:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
+        id S229843AbiKHHEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 02:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbiKHGjC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 01:39:02 -0500
+        with ESMTP id S229521AbiKHHEW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 02:04:22 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A941BE9F;
-        Mon,  7 Nov 2022 22:39:01 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A80V3a6008200;
-        Mon, 7 Nov 2022 22:38:37 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECB8DFEF
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 23:04:21 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A85q2Yi017254;
+        Mon, 7 Nov 2022 23:03:40 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
+ subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=yZ/PQ81oczH/qHAp6SO6WPGajotVdGvsI4PxQjF8IYI=;
- b=ZdkH0ulYoYz2ZVZ1hwUyKM2VIIfBQbf0r7AJ+OTNBHaktm0duC0QNucqbzQFFPAsZd0g
- jgvFBPvJf8X8QRSTkiDX9qzcya2+lA6XRCuE4QjWM49P0J639bjnFlXBZUyr7QeJ3exi
- FAcIqFjRx4SHfEauoXNEeIQNb7FnerMuyTaf7w/NG6Ub4m5+vzakt4A+OKF9b326Z07a
- HxA+0d2uCvdsyOQH3zJEMXwK5xNJ3x4UU7bi0vq6J2TlOBQXMu/CfnVGdBEt5BFiHv+5
- B/ju3sMn6zhiUZ5mR4oxiHkRAoAr9upqy7u80pLDhnJQCidVSwJJCd9iqmfBCDOoBkKd 2Q== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqcmqsure-1
+ bh=0tX9KceRYhFKRhdZ6424utH4mqqZfJDmKD4/e73AK3M=;
+ b=Y+G6PikpTemHaOUQRiidozc4X9SzWDjBQF/XVCqGaa+miQOcD51bG+yOGeRXMtiRwUrY
+ uo/JLfACn5X5LliC6EfjEWfzIzFptrmhXLUs0uexIu3Xt0sGkQBeeYQ0UhraLHxcBI2m
+ 5YlR9mGjRWFwwJ0eWk+0eu7OL8S53chf0JwalgrdRqHoE6ovVVyYBcsYOK2RSciBsNos
+ Fz7+kxkIQL4N6Ppr+vtlsIlU8qpOeUvUN8zWWhSVtPSLG52dfTy/CdJYfycDNmgkaVEd
+ MmgVYl3nlBkO2Dx7h5WDhtsh2ffsbcGLMNlrFJhH9bOEWqFPDZBcdKrq7pJnycpxgaIN 6w== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqhba0bem-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Nov 2022 22:38:36 -0800
+        Mon, 07 Nov 2022 23:03:40 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C33EBUqIWefs6yYai14eU/8rl6KanHcdu6DPYFK1emnqPHUwi3DktM7qz99jbuphi9aG6mLlfTLxIeyZRw8s1RXirJNPTa4gv5Yk99qqNxWHIlLO7ad6RjFCGkx+GJrO+D04rpWkpAfe9oBlQ00hIs6haLwHXuZi6CBT5SvgrX/eoYdTaWkReER5Np+KA0CY9Yn2jaXhtHoa0fAJ2VMgwM4WoKgEeR8HHdZBPq03O26zw3OQLRiUPi/WpPojpyvd9R6dBvvyNZjxgB4pkvAMCS8B9HKHZUvAWSaluPd8rj37ywaX9ualAJWD3/ta3erv9ZFrzsVBBnkxxHyxw4ie5Q==
+ b=Kj4L26TmcTh1NaUCssZ2anlie7/sxNeqCZgwGKdjzgPh4u6BXZ2JepP6h8H3lfaqNa/rjWfJUFeZX440hyNT1meWhFjTIhv1AAwMaaAdSvrVNWOFW/EbiG/3WEWlXMumvvZKW6DrpMun309fBKgoHQHFfLepHcMxQHx9y1oZX6us1hSi/um6CU1WLDDZYwqTy3b6o0ig89vw41nAc680Iqdz9C46TgfU3MqcgdsZSbekIq4RAKANA2ajdc33A4aY8Dx/Vbhn6vy060DVBHwEhJX2G8kLHTNTg3MMbaHMUvGG5DyBy9jnwrFubBdVH03Mxbtxhjrk/F/9mAhuYd920Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yZ/PQ81oczH/qHAp6SO6WPGajotVdGvsI4PxQjF8IYI=;
- b=PEWr/nUgetopE5oVB9nPnAK4SrDUVz6JwgbZbIZZwAzXGrUv/jyUYjDdLZ3D42ll5NT3lJtHttCsH6MEAi7CBuXrazQyVQtOlX73Fjw3JJgKi9ZeXUae1F2pUOvxSMOxrf9DYG5GKkXeQqhi0st5MvSqonH4mUqGzoB5soGDdTqmMQYt6kTOvFUg97ClzjvVrYY7aIe/KLTifOQ6NO3v7WGMFyqxTu6fd69aN65XPPjaZt/DZhpR9h3Tu8LY+ISITxNAvquVZuRi0+Tc7Yjcntih3joPporqep8xjn4g0/K6hPCRunR+Uo1m2ZhCjVkXD07hBWzX+O1EFAQyoccn1w==
+ bh=0tX9KceRYhFKRhdZ6424utH4mqqZfJDmKD4/e73AK3M=;
+ b=ZF+XkFasYEnKAoLbxPFqWpp9Ww0rw7Q1vBRJvpNTPX/XCXocwvIEaIF6dZQ98VVnlJZR77WvylhZGgag8Kx/q25Ed8pBAsakgGlTQjV6/zsPYWPV4EhA9Eu1xLKnKc7PQYRvrGYaW0oXf4KgzKM2+oHEnCwn4r1SndOxQEoFAMH6ztVannRnDFp4pxChXrNeUJEnU78CZoI7a8DBqgk14g9/o/lXDdXS3KZ+JAPEOwnKkPva5qXv20RK4SMOuY7SI3+6JioUoki/i0ZTrBe3pQzOFUoowMajFYmxHHeKGPfngPelUUeAV2YZ+dChOuOTXVXbd2VPibmFZjsz77nZYA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BN8PR15MB2660.namprd15.prod.outlook.com (2603:10b6:408:c6::21) with
+ by DM5PR15MB1385.namprd15.prod.outlook.com (2603:10b6:3:ce::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.26; Tue, 8 Nov
- 2022 06:38:34 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.25; Tue, 8 Nov
+ 2022 07:03:38 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.027; Tue, 8 Nov 2022
- 06:38:34 +0000
-Message-ID: <52f848ad-fc12-c360-bb91-c1d9cd14853f@meta.com>
-Date:   Mon, 7 Nov 2022 22:38:31 -0800
+ 07:03:37 +0000
+Message-ID: <a85181da-99dc-d3a3-53c7-96584dbad8bf@meta.com>
+Date:   Mon, 7 Nov 2022 23:03:35 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH] selftests/bpf: Fix test_progs compilation failure in
- 32-bit arch
+Subject: Re: [PATCH bpf 1/3] bpf: Pin the start cgroup in
+ cgroup_iter_seq_init()
 Content-Language: en-US
-To:     Yang Jihong <yangjihong1@huawei.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
-        sunyucong@gmail.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221108015857.132457-1-yangjihong1@huawei.com>
+To:     Hou Tao <houtao@huaweicloud.com>, Hao Luo <haoluo@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Tejun Heo <tj@kernel.org>, houtao1@huawei.com
+References: <20221107074222.1323017-1-houtao@huaweicloud.com>
+ <20221107074222.1323017-2-houtao@huaweicloud.com>
+ <a4721692-82bf-05eb-a1fa-72ddb5d1461b@meta.com>
+ <CA+khW7jmm4UWXve_kzXdh4sv8cFbFKNYQ-G-XCJ6qGRW1_verg@mail.gmail.com>
+ <8bae6a03-9d31-2da5-1b7d-cf5c74e76cfd@huaweicloud.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221108015857.132457-1-yangjihong1@huawei.com>
+In-Reply-To: <8bae6a03-9d31-2da5-1b7d-cf5c74e76cfd@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0087.namprd03.prod.outlook.com
- (2603:10b6:a03:331::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR05CA0101.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BN8PR15MB2660:EE_
-X-MS-Office365-Filtering-Correlation-Id: b9b06fcf-4efb-4a8a-19ff-08dac153dbed
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM5PR15MB1385:EE_
+X-MS-Office365-Filtering-Correlation-Id: ffa6b0ee-2a32-4e7f-a543-08dac1575c16
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MOsmtPuoXYf+nX6krFAFMI4NFGQbXY2iZe4rJ81m9N/QnLLKzUH8gJYsrdsQyU0LajFFOSZ7AvvLtcRPJ+H6V8fJP9QYEmuJxua+1E7qLt/7PPIWZ6d6xAoiUam2KGjEee/aSlw9ZFH+UA8/ETTkednygvdBxLBiuHAIfusM/MchOcw/dDKYfxuZAiATeYrpxNimDMhT+QbCHnxjXlFfODwp4YKwOjDsHU1po85cyFq/IW8YzHrwtRB303QFtdN2e1Y6qCnfF9/ZL99krm5Kf/zQgPi5ZlM/y44g/hoK2Rr6NxQseSYxeoD+cqQser/OUSH0uqmDyXoTkBjZxb/AyI2jlTHHRzQn/7v0Egk5BcSGxIatzNaG59kbzlVOlN8rx/vAx4CZN3NzljwP8r8d5H/XJIvFXPGbswXGi5upXt4pI3Pvowo+a5ndD3P6OXebPAar/F7dmdUqOrs+nnEkrx7olv6sk2Ke0kARSoO//5rJykqF9Ag6dE4KKPrWtgCLgyjQVnW6g1RJam9perSxJp9ubc2juGogKtboMXG/eMu1dS6RwvAMARWP/dRaxGaNtrW27mtfaNV2R8xjy1CrbOjlGN5ayqVVZjqw9XbfiQ78XXWTlnyDPXdWD3UNY/FCBweu+5slj6mMchbyIM77FDgubwHPTFI0CqJaLKE75TF50mVz/4HCqNLWhrNIHzYZKTwpy5livzsDyksQWeGnLPgqjSrQW3ALfmsyAZdyMx8gVPK0sEnSO9lXGN1iMvwe2jTlSPEi6yuvMxh8yAU9L4J8Z4qk/EpTw2zhChQf49FGh0m27OCOqM5zdXukxrvM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199015)(41300700001)(6506007)(36756003)(6666004)(316002)(2906002)(38100700002)(86362001)(921005)(31696002)(6512007)(66946007)(66556008)(478600001)(2616005)(7416002)(4744005)(66476007)(8676002)(5660300002)(6486002)(186003)(53546011)(8936002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: DpBPjdWgsDdPp3DznLKoXp4fLPMMVrThJ56LRWdUQFYmhVi7oVmkKPQNeiURkbG7FQu0Aed76Sq8tQxlXtv04Jg7qEmx9HUCqPBAXL9JPt32GDwzq3HAK8ZGnbC0fwUnzLFahQUQc/DVw7Sc9cvFtP0h5oVzglSPTpK2xKx9Tgd78aBJ0tnjjgonYdmo1z1rSk8x81kX/YEecI6QIcoNqDwFLWd1TW2+ecGfEpkGDa0ubgh8tG5fA30NMH8Y8jG7gNqbfJcrYdb0X8Y7fFAbIQoHBymyRGDjVL9tGm/6zaN39w74nzeTfURfn6y0/Vx6laOUKuStExBnlqxjn+X2o64ZJgYZ0LfbeJ0hgJEDLwtRQ79WuzjqW+dGvdk5KHlA7iDhjsOyXNtLYW2QhWC8l5bDVQ8RXQFzPy3/wK8syRTxrbwApsI1M8roqDTmLaopJ1YOuoDQzzXeu9SLm+KyaYwZ9VxnGQHOLoXpm8ecDhdOaHg4WLld6bquksjtaO8MdzIOslV2StsPfmc0tWn5g7df8egIkzSzrIiRNCHgCWc945u+XtBpg5Yu00UZ2Cx99hu8GmjQ8F6j/0FqeKSvZKcrE9cXawCbqMn3Q1qMuwTeBDGhGsEvTofw9dElWyEDYOonf3N68oxx/sx015P4zssb/v7BMY/fjq5aykdiizIdxlhP/uIZsDjPlAqQ9eTRJr6I5SVr2lIKiDDL1WKe7Ai3ewM6H1B2j/Gqsdwv5e00ji1wnMbAsRzR9j60GlQHDjKEnrjOEWZDVYQoy8LhO4OSQvMOdWpjMAEhgLd29GvULu5U3CTAVdg79Po5yKtQ7I4UinmOMLDViGa1qp1CwQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(376002)(366004)(396003)(136003)(39860400002)(451199015)(31686004)(83380400001)(36756003)(6506007)(38100700002)(4326008)(86362001)(2906002)(5660300002)(7416002)(8676002)(8936002)(53546011)(31696002)(41300700001)(316002)(110136005)(2616005)(54906003)(966005)(186003)(6512007)(66946007)(66556008)(66476007)(478600001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akhBVTJLQVlpc3JaemVHMkcxYlhDa1M1VlRFeXFJMjZJVFJLcGFEa29SQXda?=
- =?utf-8?B?dDgxT3d2dWVKS2pacE1MaitjVG9EdmtaS2dJQ0JaKzNjU0dlRXRiS0xmdlY3?=
- =?utf-8?B?Tk9IaWdDdE9FMkNoRVI2MHdod2Z3WjhpeGhlYjJNWHhXMVF4ODZaS0M4V3ZR?=
- =?utf-8?B?THBzaVU2Q1JRbHRwNDhGOXprd0QyMm1UQnRoZnFhYldESGJVRXNiS1dqc2F0?=
- =?utf-8?B?cENuSnpOWFlQQ3UybWF4b0ZsK2VVUDc3dVZuZlFGSlpPM0JvRXErQ2FnbDlR?=
- =?utf-8?B?eWNZcVVETEI5WXdBU2dwWkRJTzZpemtydzVPRlZwUDR5QTFmR2xUTnVJbkJR?=
- =?utf-8?B?RXFzRHA4bS9nRFFwU056Zk4valhpSnRvSGk1RHBKWFFMY2Yvd2ZyVGc5bFZT?=
- =?utf-8?B?TkEyVDhTZS9Kdkc3ZE1TNnVPWndPbUgwQUk2MWduWXo3bDArMHFtSHBSY1Bq?=
- =?utf-8?B?MVJtVC9ISEJHWU1MdTN6SHZHbmxPSEZiQmJxUGExRFJzdEx2a2xuV2dxQ3Mx?=
- =?utf-8?B?TFh6enVTMHBwT2E1M1NiLy9ZMFJ2UUxCS0hoUmt3UmJmVjVsT0NmYUx3c2dI?=
- =?utf-8?B?MjcyVmdmSnB1MlMzUU5VNXlmY2Iyc1ZyVm95MGFldkcvQlhrRE5IU0kweThw?=
- =?utf-8?B?VEJOSWYzdVRXMHNtb0M4N2paeFpHSTh3d3NSUFN5SHdUSXB0VmhYRG8yUkhi?=
- =?utf-8?B?czBKdlNmb09MdGhCdDg4RCswU0IxdXBnRXp6bmtCLytvRHRvMTlKN0k2cFo3?=
- =?utf-8?B?N1gwUCtXMm9JZGxuNlBJMUthZDdBaGU2Z09IVkZEdm84dm1pUE1UVXBaTXJt?=
- =?utf-8?B?T3FhTTdrcVg2eldhTHpycXV2UkZ4amRqL2JjYThDcGMzWEhNT2lTS0dpdFlG?=
- =?utf-8?B?cGdzRGtjQVl6ZDdhK2RSNU44am5WRkY1ajhHOXpIcGM3T0FTRERtY0pmUHcy?=
- =?utf-8?B?QXc5QUwzZWxDd2gzeVZlRk1JcFJLTDllT0luT2w0Wm1YejVyc0lDZzBiOUZW?=
- =?utf-8?B?dHNZUWlhdmRBWU55WVQ4VDV3UWZjdGM0QXU4OHhzZ2liNE1JeGYzVE0wZVQv?=
- =?utf-8?B?bGcweFRmeHdkeUk0cVdrWitPY3BEVXkrRGVtbXVwT1NWNVlBZTdwVGc1bWxk?=
- =?utf-8?B?QlV1LzAvSXgvWjhSbUhoMVBJV0pXbUFjZ3lod2M1SVlreENIWjExTXZ1Y1A2?=
- =?utf-8?B?ekV2NWJZN3FRVEVOZFRwaGtENDBDbmtUVUdiRkU4Tld2a3daYUVUYkhWUzBR?=
- =?utf-8?B?YXpWZFRheDlzYlVzcHl4bmdyUFBTbjNGcTlVdkJVN2hQb1k4SzFVK2paQzcx?=
- =?utf-8?B?N21VSm5wemJQVzFxN3g1Yk9LbWpNVHlPNGRCakRRM0drK2xxZjQ1RDMxMXNK?=
- =?utf-8?B?SFVOTTNMOWF3Qjh6aVhwVER6cW80TW9JTVh4OEtITUVEZWR0WFVkZkoyT1dM?=
- =?utf-8?B?SXYza0RwajEyV1RqY3NpRVFxdXFJc08yaThVeHVzYUZRa1NmT01sT1N0WitK?=
- =?utf-8?B?c28vU2pxbW5zVlk3TExXWnFSMGNKcW1mU1hYT0wwaVZDRlpwSWJ4QStPUFVM?=
- =?utf-8?B?dE5uY05mWWhwcUtxL1lMYVdkWDg5NTBFU29GTTNuN2UxSzZhQzVmdVpDVXoy?=
- =?utf-8?B?dG5VWUxzdmpFSVp0cmtOVDFjdS9JUWdVOWRFb0J5andCOFN6bUxKUit2eU1C?=
- =?utf-8?B?V1hYTTVMYmtBbUV4UUNqb29lV09OT3gzL0RLbnZ0YWtUbWVYNUFJTEdmMVh1?=
- =?utf-8?B?Z0dhZzRpZnZDQ2xmVi9td2J1UEY3TldmdUdKSlJ0SEppamZob2JZbXlmeXB5?=
- =?utf-8?B?eXhYejFRYmZnSnlCL2U5N3doZ2Y5aE1MTk83NFdPblVISzA5ZCt0VTFhZHdH?=
- =?utf-8?B?ckRLYzd5eEcvQWVLWUxyejZla28xaW8zL2NnQ0duVmNyZmwwL0FHd1hsVDNC?=
- =?utf-8?B?NEg2VC8zdXR0THg3SjRobE01MkZmbE0rUXFZS2VnNkppbDlGUWNEaS9xQTQ2?=
- =?utf-8?B?RVMrV0lRZ3BrTjZnRDdQWTZzV25BRHRmZGdId0ZwVFU4Zlg3Q2h6WVB6RVdM?=
- =?utf-8?B?OTV5YXFoU1AzQ0p2S1BjREZzbDVySWVVY3BMSEdZOHQ3T3o1cWVlbW5NNXBD?=
- =?utf-8?B?VTFweGNBbHpydk1VdUlhSGdCcklGRHJUeTcrcUQ2SHhHeU5Eb1R2UXNtZDEv?=
- =?utf-8?B?ZlE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VUEwMHBwM29kNUJYMnRZQVk2VitNN1U5bFkyODlHQWl4NVp1Q0lIdDVENEd4?=
+ =?utf-8?B?OUtRNEFhYjVNOVlaY0h3SCtveHk5eTdLdFBpWEhFeThVc1NZdHB5UDFiU3p1?=
+ =?utf-8?B?NnNmZnZPWVR0Ym1jSlU4TFkrM0NqTWp1NCtLS0hFcGFURWs5YUVZYjRPZEdO?=
+ =?utf-8?B?clg3bkp1cWpZQzk2Y0JjZCsyV01QV1NzeXJYYklLNEJPbnVZTG1RbGdzTkRZ?=
+ =?utf-8?B?VGdQZTRQV005bEUycklqVHd6TDJ2NFMwTi9oWmd4UWhXWVhsRVBjdmsvdktt?=
+ =?utf-8?B?Zk5rbHBWdXVYTG80NUpYcjhFeEJ0Rnh2WGxzZ3ovbzZTMndMVyt2Q01hNUhl?=
+ =?utf-8?B?UnhUa0NxYkM5TklHNE93dUJwQmxmZ1k0WXFIVE9lRmJqa3F0enhwanRyWlFC?=
+ =?utf-8?B?SzB6SlJ4SDYreEZMRnNnRmtBMUtaZDkwRHZMMXh3YVJ2cFhIWFVMU2l4MW5H?=
+ =?utf-8?B?QmEvRGd2SVBySCtvSW1NbmFjUm1JcmJBVEtqVnFVZzg1WjlEdTZXZ0VWWDFL?=
+ =?utf-8?B?cWluSUF1RHVSQXByMHllU1Rkc0xIWFNLUW9wYWFWSThWRmlvZmVmL2FHM1gx?=
+ =?utf-8?B?K0JuUTMyVkhQSUFNU2hsaDRRSUZRZWs4M3lIeFNCRUZZSjRZRTl1S0NSeGl3?=
+ =?utf-8?B?bXh1anBaRit4SXEvMkdPZGhoL1pjMDJTTml3RG9icFpVS05RN3grak83Nk14?=
+ =?utf-8?B?S0hWbU5VV3VsMGlmcFpQcmJleUo1ZEIrcEJTajlPcThzeHFPc2tUdE9JUjd1?=
+ =?utf-8?B?U1lyRXY3RHRNS2N4WXlJVjM4WTVDM3BzaGtYWHdaQWZvdy8vYWVWQWpPdlJJ?=
+ =?utf-8?B?U2V1UDZMWGtIMlB6N0FHWWwxc0x4TzVDZHYrSUorNy8rT21rUzhYUzQzZVRT?=
+ =?utf-8?B?eXhBb3VBdDcrcTNTeGFpUkI1NStGcUNlbjdXeGdCaDdUazMzWktpRGNGUktH?=
+ =?utf-8?B?ZER2dERXWnFzN2ZGNXpvNHNDTStEZUp4aHpEQ1R3OEdGZnU1OUFCaG5DRTE1?=
+ =?utf-8?B?cEJMWmVqTkR0QnA4empiRHV5ZVlpUFk0UHNlU05iQjE5SjdVUmhBN2QzMUo4?=
+ =?utf-8?B?ZDJaTUtoWS8wRjdqbm4rREI5NGdnUjBpNmIycnZPU21vYis5d2kwSEVrM1pD?=
+ =?utf-8?B?amMzSGloVEFjRFVleHdGNnZlQUR4UURwUmN2cDloK0VBU3Y5T005YUxkOTBT?=
+ =?utf-8?B?V0NwMGlPRmpnWlpLNEVCMU1pSXVwRkhzeWowbVRWN2h1OVJsTmZzQ2dPTWp0?=
+ =?utf-8?B?WlNod21EY0d0bGU5UnprM3ZHeXh4ZjhjbitjMFdKdzBYVHFhQ1VrV05MU1Mz?=
+ =?utf-8?B?Z2VwNWw0OC9JczRaZDcwNnBpZy9ZbVZTYmd5VFJ6YU1FSm5TcFhnOEhDMWY1?=
+ =?utf-8?B?ZnNLMjRFWXpLZDl4Q3IzdWRENE1iMHhkd1dKWXJMaFdpaTM4SlhKd2tYSldD?=
+ =?utf-8?B?WTluSzNEVVlxSjlaZXFWcTdKakdrMlE1OFhySk9xZFFtd3FIRHFFRC9ucUI5?=
+ =?utf-8?B?YUJCcXdKUVdIdmdhQmRwY3ZkTlZMU3YvS2poY1ZGaTYxeERtQmZhbFNLZ1Rx?=
+ =?utf-8?B?S1BqMElhWGh4SmpzTE5QUlkxVjl4WGdDMm9ER0FzQVlacmZ1cnBIR3FlK1Y2?=
+ =?utf-8?B?cDdLUXluSnBsdnRTT09zQzdSeDRaNlA1Z1h3Z0w0NzlZS0x0UGpJZDd5TlIr?=
+ =?utf-8?B?aVpEQTRNTksxSUxJUHd3Uk1YaytZWmxSU1MrL3UvOHBBSEVUdnlZaUxPdllo?=
+ =?utf-8?B?TE1BdmszZnBUdGUxbkhQU3d5bTdXcEJqZWZQcTRKR0NOUmRidjZkMGw4K1BC?=
+ =?utf-8?B?bXkzTUhjTlJkcXpsMTZteXBmUmUxWjFqTldxU1NOZ1poekd5QW9nL3ZFdUxv?=
+ =?utf-8?B?blUxUUNRTzYxcFRwckJtQ21nRjQ1cXRDd3ZuVVBQSDlTVUVrakpPNnZ4N0FV?=
+ =?utf-8?B?WDQrOTROelZ0cjBsTloxM2dnM1hGZ3djNVVaaTVtYWt1THB4dGpLdkc2b1Bo?=
+ =?utf-8?B?Z1M0QXFnOVkyYmI3eXJzK3owRXBYZHkyRkpwcVhHNTdha1ZYb0xrOWRnZEpw?=
+ =?utf-8?B?SGlUU01QNUNOVDNzQVBuaDFqcjZuWlVuaVNkaFpBdnZCMitub0EwR05wRExR?=
+ =?utf-8?B?UzlNb0hxRTVqS0MvSE1DK1lBVlFoRGVwaGxJaEwvN2pzTzA3N29Fb2k1RHU5?=
+ =?utf-8?B?bGc9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9b06fcf-4efb-4a8a-19ff-08dac153dbed
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffa6b0ee-2a32-4e7f-a543-08dac1575c16
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 06:38:34.3791
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 07:03:37.9212
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D8SgBSiYPldhZqJZJKAkm9v5+tXabaJb2dBMRzIa6/ky+Z+2JyF87cnzgEYnd/AW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2660
-X-Proofpoint-GUID: NHgpkUM3xQ5uTHwJSnf785nOl-kTj9Zs
-X-Proofpoint-ORIG-GUID: NHgpkUM3xQ5uTHwJSnf785nOl-kTj9Zs
+X-MS-Exchange-CrossTenant-UserPrincipalName: R97rqnx/iNls9yaWW9nXqojLtb4XTBMubeHl34/8NRsfd968xjssED//9sV8+m2t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1385
+X-Proofpoint-ORIG-GUID: cwCPf16cfnjHSwI_plEkYls-7j5u3cI7
+X-Proofpoint-GUID: cwCPf16cfnjHSwI_plEkYls-7j5u3cI7
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
@@ -147,23 +155,42 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 11/7/22 5:58 PM, Yang Jihong wrote:
-> test_progs fails to be compiled in the 32-bit arch, log is as follows:
+On 11/7/22 8:08 PM, Hou Tao wrote:
+> Hi,
 > 
->    test_progs.c:1013:52: error: format '%ld' expects argument of type 'long int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
->     1013 |                 sprintf(buf, "MSG_TEST_LOG (cnt: %ld, last: %d)",
->          |                                                  ~~^
->          |                                                    |
->          |                                                    long int
->          |                                                  %d
->     1014 |                         strlen(msg->test_log.log_buf),
->          |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->          |                         |
->          |                         size_t {aka unsigned int}
+> On 11/8/2022 10:11 AM, Hao Luo wrote:
+>> On Mon, Nov 7, 2022 at 1:59 PM Yonghong Song <yhs@meta.com> wrote:
+>>>
+>>>
+>>> On 11/6/22 11:42 PM, Hou Tao wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> bpf_iter_attach_cgroup() has already acquired an extra reference for the
+>>>> start cgroup, but the reference will be released if the iterator link fd
+>>>> is closed after the creation of iterator fd, and it may lead to
+>>>> User-After-Free when reading the iterator fd.
+>>>>
+>>>> So fixing it by acquiring another reference for the start cgroup.
+>>>>
+>>>> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
+>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>> Acked-by: Yonghong Song <yhs@fb.com>
+>> There is an alternative: does it make sense to have the iterator hold
+>> a ref of the link? When the link is closed, my assumption is that the
+>> program is already detached from the cgroup. After that, it makes no
+>> sense to still allow iterating the cgroup. IIUC, holding a ref to the
+>> link in the iterator also fixes for other types of objects.
+> Also considered the alternative solution when fixing the similar problem in bpf
+> map element iterator [0]. The problem is not all of bpf iterators need the
+> pinning (e.g., bpf map iterator). Because bpf prog is also pinned by iterator fd
+> in iter_open(), so closing the fd of iterator link doesn't release the bpf program.
 > 
-> Fix it.
-> 
-> Fixes: 91b2c0afd00c ("selftests/bpf: Add parallelism to test_progs")
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> [0]: https://lore.kernel.org/bpf/20220810080538.1845898-2-houtao@huaweicloud.com/
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Okay, let us do the solution to hold a reference to the link for the 
+iterator. For cgroup_iter, that means, both prog and cgroup will be 
+present so we should be okay then.
+
+>>
+>> Hao
+> 
