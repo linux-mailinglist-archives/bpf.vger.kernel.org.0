@@ -2,64 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F966622064
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 00:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129EA622065
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 00:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbiKHXiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 18:38:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        id S230050AbiKHXju (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 18:39:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbiKHXh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 18:37:58 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AB8528B1
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 15:37:57 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id s12so15242724edd.5
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 15:37:57 -0800 (PST)
+        with ESMTP id S229832AbiKHXjt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 18:39:49 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0FD56562
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 15:39:48 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id k5so15177900pjo.5
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 15:39:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4CPutKSfsOlDMCf1dcNQsShFxDZrqyMNUhM3YyMjCRY=;
-        b=CpgxHi4upLWbGGwJO8XB7FNP9oryynH/picJLtowGiOiZVKc2Ab+jRl9owkiM4UKPu
-         3lkEqjvLZ1TNntylj6syQutwzq5zObLrtnLZPbNS0FVPZuZ0QlJY0e5gUmqC7X4v3wCj
-         31Z/PLcLvS+ZPymtqUAeHTGWNH8sFKmF5wKnkZ8q7T+wWOvRJB9h7Ig9mXpKcgpP817J
-         3dM4j3E9PCVv747L94jCHp5q81IkmWJOoz75Ph8GijP4qmvtd48b38e8OlH25FmZAcJr
-         5vdhzZHUi/0iACTcjQg7zYUqYju33xeAdlN6sfLbtyDUgn++C6E7MGAJUwbo8nardgqY
-         x5RQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VEe+i1Eq30j+5kzNT8U9PVFkxGYtvVKNECzGRcfLFNA=;
+        b=FeCckHSE3ZbVfYTvX8oPCrIv3x3iDYrQzSztWRKbwPTnQ8oevxIJoYniC4w3/bwwUl
+         Y8Ms9Q6VmJxR0uro97yMcz2rPgCJuGvKYZPvZQbdnZQelyxU8g8mbaUE6mJv/78C97/u
+         oUxJ2ApGPnjpZBERUYTJUKQCacn19ibPIFDc8KB4Brb/gH5MQTaeKfEsXkQP06S+LjB/
+         Lxkjz4+gm8wNdtwiHBdvoJbV7LtkmQ9Pf6ae56kiVYL27jqx5TMoOaVD3Zn0Qpgf1JT4
+         fdhLv+3LhnLjXaeGvjnpcoenW24nXLz2Qo6RpSRpgRziPKRYj6CiI/R9GLQBQVAwVsPU
+         XI3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4CPutKSfsOlDMCf1dcNQsShFxDZrqyMNUhM3YyMjCRY=;
-        b=j7L3cHU7WSqPnc9XZE8o9yZHCSGz4nJWrkjLJOphvhXFWbWk7RMPftyvDxidzjbjSB
-         bUgkVWHnFU+BD4XPqipRakBAW8uYBqJYuAo36Cr3KLoYBvghL07aJZlih1fy1VX3ftaq
-         7RKxG5BY/H7KB4mqALBqVfgqt6KZ9ngtrgK7nNYj41ZCTyKZ1xzTsHqYCvAEsLMP9smX
-         9itr4cnWKqR18ED7DsD3BRYP08m/1OMsxnq2gIID9woFvY3p80S9axGP9z+ujUm6cwnC
-         jUrqzgBn03eWaN3Qc5kcrt3KEgEi61lj5YzF41TsCo9pUabnAoMTq7b3v1y8A5O+a/7I
-         DljA==
-X-Gm-Message-State: ACrzQf3meBRcEV4JsI+2yascVdpKGnRPC2mZNFcAcnxqTfHZVCHjgaMf
-        DDok7NN4iqE5uGeNVst8w1I61JVG48K598HJP2Y=
-X-Google-Smtp-Source: AMsMyM7MPGe0oXlvbAQPGIfPajG7OpHBKXHKKxWHFc2TZRGXNuvhbS4wmHs3V9L2gmnL67Fn/qlAWojPRftTaDCYLOA=
-X-Received: by 2002:aa7:c2ca:0:b0:461:89a6:2281 with SMTP id
- m10-20020aa7c2ca000000b0046189a62281mr59948475edp.260.1667950676561; Tue, 08
- Nov 2022 15:37:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-11-memxor@gmail.com>
-In-Reply-To: <20221107230950.7117-11-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Nov 2022 15:37:44 -0800
-Message-ID: <CAEf4BzaSLudM-uii61Xe3CVYhG+RXB_BiYDDZtAe5Or5ipoo9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 10/25] bpf: Allow locking bpf_spin_lock global variables
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VEe+i1Eq30j+5kzNT8U9PVFkxGYtvVKNECzGRcfLFNA=;
+        b=VjSvEAswOoFUVSEb+gh/RMEuwcdEHm6ouJ4W8dT1xuhOX8hv718Zm4CqZdhdeoOer1
+         PGT501tK5wFuwgQV296GdwFXDFt90PKTSIM1ARnAYHutAamklqKj1Sm/m0Hs8TIdExX8
+         nJ6EIpxxJ31GLJEzbSuaSC9LWu0W3Kj+TKTI0FBxe1tWqXxgHXLxvT1cfT/cbL8iP9y8
+         5gVwc31D3KCn8xwvXwqGTmhqK0Xs6hvpslFK9sv7JY8P0XkFW22rX1d4CunqvssazjFJ
+         DVuksgMmJjHreemNxv9wCb61eaCwIPy/A5xRbQIyYol6R2FEBmtLYfSeuKLxwSuKzPqY
+         J2sA==
+X-Gm-Message-State: ACrzQf3+jU2GDMHAHhXwGxpbqIJ/dfinrDIyEu3SmKY3xaG8lOftkFtv
+        WeufHB17acsoqMRoEtGhq1s=
+X-Google-Smtp-Source: AMsMyM4fBrfiZECJon0bwvLfl+aTuE0CzWg1vBUZs43dbHw3uV6eTf2h8920bB1YrmzYWL8NrtsDvw==
+X-Received: by 2002:a17:902:d591:b0:186:fe2d:f3b7 with SMTP id k17-20020a170902d59100b00186fe2df3b7mr59325196plh.68.1667950787523;
+        Tue, 08 Nov 2022 15:39:47 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id a3-20020aa795a3000000b0056cea9530b9sm6885628pfk.200.2022.11.08.15.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Nov 2022 15:39:47 -0800 (PST)
+Date:   Wed, 9 Nov 2022 05:09:44 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next v5 03/25] bpf: Support bpf_list_head in map
+ values
+Message-ID: <20221108233944.o6ktnoinaggzir7t@apollo>
+References: <20221107230950.7117-1-memxor@gmail.com>
+ <20221107230950.7117-4-memxor@gmail.com>
+ <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,72 +77,181 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Wed, Nov 09, 2022 at 04:31:52AM IST, Andrii Nakryiko wrote:
+> On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > Add the support on the map side to parse, recognize, verify, and build
+> > metadata table for a new special field of the type struct bpf_list_head.
+> > To parameterize the bpf_list_head for a certain value type and the
+> > list_node member it will accept in that value type, we use BTF
+> > declaration tags.
+> >
+> > The definition of bpf_list_head in a map value will be done as follows:
+> >
+> > struct foo {
+> >         struct bpf_list_node node;
+> >         int data;
+> > };
+> >
+> > struct map_value {
+> >         struct bpf_list_head head __contains(foo, node);
+> > };
+> >
+> > Then, the bpf_list_head only allows adding to the list 'head' using the
+> > bpf_list_node 'node' for the type struct foo.
+> >
+> > The 'contains' annotation is a BTF declaration tag composed of four
+> > parts, "contains:name:node" where the name is then used to look up the
+> > type in the map BTF, with its kind hardcoded to BTF_KIND_STRUCT during
+> > the lookup. The node defines name of the member in this type that has
+> > the type struct bpf_list_node, which is actually used for linking into
+> > the linked list. For now, 'kind' part is hardcoded as struct.
+> >
+> > This allows building intrusive linked lists in BPF, using container_of
+> > to obtain pointer to entry, while being completely type safe from the
+> > perspective of the verifier. The verifier knows exactly the type of the
+> > nodes, and knows that list helpers return that type at some fixed offset
+> > where the bpf_list_node member used for this list exists. The verifier
+> > also uses this information to disallow adding types that are not
+> > accepted by a certain list.
+> >
+> > For now, no elements can be added to such lists. Support for that is
+> > coming in future patches, hence draining and freeing items is done with
+> > a TODO that will be resolved in a future patch.
+> >
+> > Note that the bpf_list_head_free function moves the list out to a local
+> > variable under the lock and releases it, doing the actual draining of
+> > the list items outside the lock. While this helps with not holding the
+> > lock for too long pessimizing other concurrent list operations, it is
+> > also necessary for deadlock prevention: unless every function called in
+> > the critical section would be notrace, a fentry/fexit program could
+> > attach and call bpf_map_update_elem again on the map, leading to the
+> > same lock being acquired if the key matches and lead to a deadlock.
+> > While this requires some special effort on part of the BPF programmer to
+> > trigger and is highly unlikely to occur in practice, it is always better
+> > if we can avoid such a condition.
+> >
+> > While notrace would prevent this, doing the draining outside the lock
+> > has advantages of its own, hence it is used to also fix the deadlock
+> > related problem.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h            |  17 ++++
+> >  include/uapi/linux/bpf.h       |  10 +++
+> >  kernel/bpf/btf.c               | 143 ++++++++++++++++++++++++++++++++-
+> >  kernel/bpf/helpers.c           |  32 ++++++++
+> >  kernel/bpf/syscall.c           |  22 ++++-
+> >  kernel/bpf/verifier.c          |   7 ++
+> >  tools/include/uapi/linux/bpf.h |  10 +++
+> >  7 files changed, 237 insertions(+), 4 deletions(-)
+> >
 >
-> Global variables reside in maps accessible using direct_value_addr
-> callbacks, so giving each load instruction's rewrite a unique reg->id
-> disallows us from holding locks which are global.
+> [...]
 >
-> The reason for preserving reg->id as a unique value for registers that
-> may point to spin lock is that two separate lookups are treated as two
-> separate memory regions, and any possible aliasing is ignored for the
-> purposes of spin lock correctness.
+> >  struct bpf_offload_dev;
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 94659f6b3395..dd381086bad9 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -6887,6 +6887,16 @@ struct bpf_dynptr {
+> >         __u64 :64;
+> >  } __attribute__((aligned(8)));
+> >
+> > +struct bpf_list_head {
+> > +       __u64 :64;
+> > +       __u64 :64;
+> > +} __attribute__((aligned(8)));
+> > +
+> > +struct bpf_list_node {
+> > +       __u64 :64;
+> > +       __u64 :64;
+> > +} __attribute__((aligned(8)));
 >
-> This is not great especially for the global variable case, which are
-> served from maps that have max_entries == 1, i.e. they always lead to
-> map values pointing into the same map value.
+> Dave mentioned that this `__u64 :64` trick makes vmlinux.h lose the
+> alignment information, as the struct itself is empty, and so there is
+> nothing indicating that it has to be 8-byte aligned.
 >
-> So refactor the active_spin_lock into a 'active_lock' structure which
-> represents the lock identity, and instead of the reg->id, remember two
-> fields, a pointer and the reg->id. The pointer will store reg->map_ptr
-> or reg->btf. It's only necessary to distinguish for the id == 0 case of
-> global variables, but always setting the pointer to a non-NULL value and
-> using the pointer to check whether the lock is held simplifies code in
-> the verifier.
+> So what if we have
 >
-> This is generic enough to allow it for global variables, map lookups,
-> and local kptr registers at the same time.
+> struct bpf_list_node {
+>     __u64 __opaque[2];
+> } __attribute__((aligned(8)));
 >
-> Note that while whether a lock is held can be answered by just comparing
-> active_lock.ptr to NULL, to determine whether the register is pointing
-> to the same held lock requires comparing _both_ ptr and id.
+> ?
 >
-> Finally, as a result of this refactoring, pseudo load instructions are
-> not given a unique reg->id, as they are doing lookup for the same map
-> value (max_entries is never greater than 1).
->
-> Essentially, we consider that the tuple of (ptr, id) will always be
-> unique for any kind of argument to bpf_spin_{lock,unlock}.
->
-> Note that this can be extended in the future to also remember offset
-> used for locking, so that we can introduce multiple bpf_spin_lock fields
-> in the same allocation.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  include/linux/bpf_verifier.h |  5 ++++-
->  kernel/bpf/verifier.c        | 41 ++++++++++++++++++++++++------------
->  2 files changed, 32 insertions(+), 14 deletions(-)
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 1a32baa78ce2..70cccac62a15 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -323,7 +323,10 @@ struct bpf_verifier_state {
->         u32 branches;
->         u32 insn_idx;
->         u32 curframe;
-> -       u32 active_spin_lock;
-> +       struct {
-> +               void *ptr;
 
-document that this could be either struct bpf_map or struct btf
-pointer, at least?
+Yep, can do that. Note that it's also potentially an issue for existing cases,
+like bpf_spin_lock, bpf_timer, bpf_dynptr, etc. Not completely sure if changing
+things now is possible, but if it is, we should probably make it for all of
+them?
 
-> +               u32 id;
-> +       } active_lock;
->         bool speculative;
+> > +
+> >  struct bpf_sysctl {
+> >         __u32   write;          /* Sysctl is being read (= 0) or written (= 1).
+> >                                  * Allows 1,2,4-byte read, but no write.
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
 >
->         /* first and last insn idx of this verifier state */
+> [...]
+>
+> > @@ -3284,6 +3347,12 @@ static int btf_get_field_type(const char *name, u32 field_mask, u32 *seen_mask,
+> >                         goto end;
+> >                 }
+> >         }
+> > +       if (field_mask & BPF_LIST_HEAD) {
+> > +               if (!strcmp(name, "bpf_list_head")) {
+> > +                       type = BPF_LIST_HEAD;
+> > +                       goto end;
+> > +               }
+> > +       }
+> >         /* Only return BPF_KPTR when all other types with matchable names fail */
+> >         if (field_mask & BPF_KPTR) {
+> >                 type = BPF_KPTR_REF;
+> > @@ -3317,6 +3386,8 @@ static int btf_find_struct_field(const struct btf *btf,
+> >                         return field_type;
+> >
+> >                 off = __btf_member_bit_offset(t, member);
+> > +               if (i && !off)
+> > +                       return -EFAULT;
+>
+> why? why can't my struct has zero-sized field in the beginning? This
+> seems like a very incomplete and unnecessary check to me.
+>
 
-[...]
+Right, I will drop it for the struct case.
+
+> >                 if (off % 8)
+> >                         /* valid C code cannot generate such BTF */
+> >                         return -EINVAL;
+> > @@ -3339,6 +3410,12 @@ static int btf_find_struct_field(const struct btf *btf,
+> >                         if (ret < 0)
+> >                                 return ret;
+> >                         break;
+> > +               case BPF_LIST_HEAD:
+> > +                       ret = btf_find_list_head(btf, t, member_type, i, off, sz,
+> > +                                                idx < info_cnt ? &info[idx] : &tmp);
+> > +                       if (ret < 0)
+> > +                               return ret;
+> > +                       break;
+> >                 default:
+> >                         return -EFAULT;
+> >                 }
+> > @@ -3373,6 +3450,8 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+> >                         return field_type;
+> >
+> >                 off = vsi->offset;
+> > +               if (i && !off)
+> > +                       return -EFAULT;
+>
+> similarly, I'd say that either we'd need to calculate the exact
+> expected offset, or just not do anything here?
+>
+
+This thread is actually what prompted this check:
+https://lore.kernel.org/bpf/CAEf4Bza7ga2hEQ4J7EtgRHz49p1vZtaT4d2RDiyGOKGK41Nt=Q@mail.gmail.com
+
+Unless loaded using libbpf all offsets are zero. So I think we need to reject it
+here, but I think the same zero sized field might be an issue for this as well,
+so maybe we remember the last field size and check whether it was zero or not?
+
+I'll also include some more tests for these cases.
