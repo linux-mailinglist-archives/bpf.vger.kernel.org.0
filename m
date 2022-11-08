@@ -2,149 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2207621EEB
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 23:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DE3621EF0
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 23:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbiKHWPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 17:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S229551AbiKHWQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 17:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiKHWPq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 17:15:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806D360693
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 14:15:45 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C246617B9
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 22:15:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 745E6C4347C
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 22:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667945744;
-        bh=Sw4tANTE+dawfZSjfyP+2ulbQaW96VNcPfkTetU8//8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nqqjsXfbcl6YB9Ih6IDvFHeWpOhcLLZkhJDk3ZQ4pqNaieOOapYR+0AXOd285CL0Z
-         uIA+bfxino86moRCMHrkehN6HSbsDp/RGhro0TC8Z9YfWhg9mhAjOzCie1RQjQeEJV
-         LGgDmMxwfeYB6MB0vclOTxOxGbO27h24hzNDeU77Nd/AyHetYSKAkknYC317uzubtZ
-         RRsIYyXVphqxQ0l4dby2Q5lamHVpd+nlfutFMfClcN78E5QNybqBbMSPc6YgH4KdEF
-         4BRnuJIHfVEdoFK07G9NXLTBPrtMPDhS7RnXvFKk0wRmDeqvEqeH+Zf7Nx/foKm2KT
-         UBQJVROTAEJrQ==
-Received: by mail-ej1-f52.google.com with SMTP id kt23so42126174ejc.7
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 14:15:44 -0800 (PST)
-X-Gm-Message-State: ANoB5pmHy83BE43DEEhzm+Nur0zDWXrt2WLZdPmvFxwDuH6z4W8bfW21
-        8oKckumIXMLvMAUpzp/AAv5e75suYqtKXL6aOGg=
-X-Google-Smtp-Source: AA0mqf5tnnNsKl7S47XbEODY3KkyXwbDOhssxV+2Aj+ywStgbYqIfC4p6mZuEmh2qPEX8Y+PdlBa+PAhuGF0hXPDYVU=
-X-Received: by 2002:a17:907:2995:b0:7ae:8956:ab56 with SMTP id
- eu21-20020a170907299500b007ae8956ab56mr1069923ejc.719.1667945742697; Tue, 08
- Nov 2022 14:15:42 -0800 (PST)
+        with ESMTP id S229802AbiKHWQz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 17:16:55 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D261B95;
+        Tue,  8 Nov 2022 14:16:54 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id v4-20020a17090a088400b00212cb0ed97eso151094pjc.5;
+        Tue, 08 Nov 2022 14:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kg0VFpmVctbaS2R2BvaZL5i+SVLF+xudlOVUQRPBDsU=;
+        b=B8b8BpCpyEY4UcshDqcmlYIjA2cgmYqYztczau+2cdIbIudTHEAN5v4NyY5LTZf6KI
+         3RyNyrJZ+PnsLGfQxKzZoCtEE1qnAGJcbLGKYMhmPykwpVAWMu1ZT5qqElOj7U5+Tt2K
+         pGhpqhjfgPfh2GPZ7PKgU6PywzoxsGTXPjxQcT9Wf5bUpg5TOAZiPYN9kYztMQDObs6U
+         doq/GChlyuRJTIqt7vf2KJdr6A1Z1J29FkDEzCnRvw5kaDbGx0CJfUaq2GPmMfLjSyKr
+         r0hW4deAfXInLb5eJaufyRrOszYt9eP+A+x+Hbnwe4f0NciqYwDLRlZzLN6GZXCwgO6H
+         lv2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kg0VFpmVctbaS2R2BvaZL5i+SVLF+xudlOVUQRPBDsU=;
+        b=FR1MWap5NTfCBvG2J5OpxRx3r5ZeK8yP/BViU8sJqvQgsLD/eVKw7OfaAUzf7ckG4h
+         yCNYyQswjq1rvTCO2DSGjjkaaqY7gBOfs9Jt1Kmdx1QtqmDRiu2eUabt6EV2iq7BC+uq
+         7tpqVbNjMtX5A7HSx9uysAkuWzF+5hF/+trA9UlK2ZziE2Bmrw2AyHqbmBC3kxHpBOEm
+         OOIiiqTKoTTPQ2lQnRrorgG+a54LfoOUyI7Fdu9U6AFQARIjkyYA8PkXZZGPbM3Gz4lq
+         dc6jmi6rklQ0meQGTMBxohXtDHa0oYfncCTP/ZCGW5qo+myp4gKLO/OFRmNxIp73Nkuw
+         3/Lg==
+X-Gm-Message-State: ACrzQf2qcgs1squ4FzSqiRoQwgypSnlCbUviS97u6QnsBJCkEEA328g/
+        Q9mWhbXJuFcSZ7A/q1KcqEQ=
+X-Google-Smtp-Source: AMsMyM5h/arPkkA1e1MpeVG8zTjOlPNEI+u9q1kRVYHlKyrIUXDG2EZKJCXcjZpRUNpRft3mv9f7OQ==
+X-Received: by 2002:a17:902:be06:b0:187:4466:aaba with SMTP id r6-20020a170902be0600b001874466aabamr37848881pls.0.1667945813482;
+        Tue, 08 Nov 2022 14:16:53 -0800 (PST)
+Received: from john.lan ([98.97.44.106])
+        by smtp.gmail.com with ESMTPSA id p3-20020a622903000000b005636326fdbfsm6848366pfp.78.2022.11.08.14.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Nov 2022 14:16:52 -0800 (PST)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     daniel@iogearbox.net, kuba@kernel.org, davem@davemloft.net,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com
+Subject: [0/1 bpf-next] fix panic bringing up veth with xdp progs
+Date:   Tue,  8 Nov 2022 14:16:49 -0800
+Message-Id: <20221108221650.808950-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <20221107223921.3451913-6-song@kernel.org>
- <572a1977126b54f50eb69b7b2f826e271bfd42c7.camel@intel.com>
-In-Reply-To: <572a1977126b54f50eb69b7b2f826e271bfd42c7.camel@intel.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 8 Nov 2022 14:15:30 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6rp01kuVXq7t4ukExPJY+W+nmHcgdVON7WSH+4_W57dg@mail.gmail.com>
-Message-ID: <CAPhsuW6rp01kuVXq7t4ukExPJY+W+nmHcgdVON7WSH+4_W57dg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 5/5] x86: use register_text_tail_vm
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "hch@lst.de" <hch@lst.de>, "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 11:04 AM Edgecombe, Rick P
-<rick.p.edgecombe@intel.com> wrote:
->
-> On Mon, 2022-11-07 at 14:39 -0800, Song Liu wrote:
-> > Allocate 2MB pages up to round_up(_etext, 2MB), and register memory
-> > [round_up(_etext, 4kb), round_up(_etext, 2MB)] with
-> > register_text_tail_vm
-> > so that we can use this part of memory for dynamic kernel text (BPF
-> > programs, etc.).
-> >
-> > Here is an example:
-> >
-> > [root@eth50-1 ~]# grep _etext /proc/kallsyms
-> > ffffffff82202a08 T _etext
-> >
-> > [root@eth50-1 ~]# grep bpf_prog_ /proc/kallsyms  | tail -n 3
-> > ffffffff8220f920 t
-> > bpf_prog_cc61a5364ac11d93_handle__sched_wakeup       [bpf]
-> > ffffffff8220fa28 t
-> > bpf_prog_cc61a5364ac11d93_handle__sched_wakeup_new   [bpf]
-> > ffffffff8220fad4 t
-> > bpf_prog_3bf73fa16f5e3d92_handle__sched_switch       [bpf]
-> >
-> > [root@eth50-1 ~]#  grep 0xffffffff82200000
-> > /sys/kernel/debug/page_tables/kernel
-> > 0xffffffff82200000-0xffffffff82400000     2M     ro   PSE         x
-> > pmd
-> >
-> > ffffffff82200000-ffffffff82400000 is a 2MB page, serving kernel text,
-> > and
-> > bpf programs.
-> >
-> > Signed-off-by: Song Liu <song@kernel.org>
->
-> Please update Documentation/x86/x86_64/mm.txt and teach places that
-> check if an address is text about it.
+Not sure if folks want to take this through BPF tree or networking tree.
+I took a quick look and didn't see any pending fixes so seems no one
+has noticed the panic yet. It reproducible and easy to repro.
 
-For mm.rst, I got something like:
+I put bpf in the title thinking it woudl be great to run through the
+BPF selftests given its XDP triggering the panic.
 
-=========================== 8< ===========================
+Sorry maintainers resent with CC'ing actual lists. Had a scripting
+issue. Also dropped henqqi has they are bouncing.
 
-diff --git i/Documentation/x86/x86_64/mm.rst w/Documentation/x86/x86_64/mm.rst
-index 9798676bb0bf..ac041b7d3965 100644
---- i/Documentation/x86/x86_64/mm.rst
-+++ w/Documentation/x86/x86_64/mm.rst
-@@ -62,7 +62,7 @@ Complete virtual memory map with 4-level page tables
-    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
-    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI
-region mapping space
-    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
--   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB |
-kernel text mapping, mapped to physical address 0
-+   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB |
-kernel and module text mapping, mapped to physical address 0
-    ffffffff80000000 |-2048    MB |                  |         |
-    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB |
-module mapping space
-    ffffffffff000000 |  -16    MB |                  |         |
-@@ -121,7 +121,7 @@ Complete virtual memory map with 5-level page tables
-    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
-    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI
-region mapping space
-    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
--   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB |
-kernel text mapping, mapped to physical address 0
-+   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB |
-kernel and module text mapping, mapped to physical address 0
-    ffffffff80000000 |-2048    MB |                  |         |
-    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB |
-module mapping space
-    ffffffffff000000 |  -16    MB |                  |         |
+Thanks!
 
-=========================== 8< ===========================
+John Fastabend (1):
+  bpf: veth driver panics when xdp prog attached before veth_open
 
-Is this good enough?
+ drivers/net/veth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I added extra check in is_vmalloc_or_module_addr() (4/5). Where do we need
-similar logic?
+-- 
+2.33.0
 
-Thanks,
-Song
