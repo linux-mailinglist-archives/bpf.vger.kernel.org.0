@@ -2,105 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1AC620EED
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B74620F16
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 12:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbiKHLYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 06:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        id S233880AbiKHL3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 06:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbiKHLYS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 06:24:18 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967D326D5
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 03:24:14 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id q5so7292367ilt.13
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 03:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
-        b=LXzLwEfFEIjs9nRQ/0D9sK0UdFF/hcYD1/7lPcxtKxGf+ipiOyxIUkG9FxWjTQwnxI
-         D0k1pcJ4r9HbGweGR8VttiL8E2qc4lcsz3jC3X1z+Myzw30J2a8GCz5AS/bkRvOOAlHD
-         E+tAU65cwh01zP65Dht/AwghXmg8POvqM5wMW+NclASoJJ1M+p89BgFOSDch5BgQ0Avc
-         9JiZIkvYkz5qbwJiVyZnhn8aEs4dsNPEV6aJ60VBa1B1c4nkJvkSo/q1xUjbvGvnQsI2
-         YCKRfjADZRvavXIhrgWVqvohpAMKlTCL5cT3Ex4YqBvyGRv/IX591YGJ8Vqkx1vqKbDZ
-         WAQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
-        b=tmVmlUn8f4+jLs+yq8flqDshprZaYTc6qxNm9N+F01MdX9hHXHxG+SvTSoe6fWC8pg
-         JtfM4F2XVzMUWexiE7AKnOp/GkURAZKWX2VA+S/moW21RrGiy/nUdOoh/gIuvepL7VmM
-         RCC73OQVLSAY8lelRkNyWzz9BgVBd4LCF4qY8NnVdyERP1OnToiHT3/PalWv8QvXKzoA
-         16FUFZ2dtu6I7zgZsfuuTjElwRwekCO8IIPRO5UQ7Inj9Bfwymte9ENE6fEQgSqry2Up
-         DITtYsq+dlHQtWurZey/DBsJjqO/Y1qriS9n3S1qtT/ilisc7x4lkzHYnOjnCkf06ov3
-         AxAA==
-X-Gm-Message-State: ACrzQf2T4uTzr3EV/nLLk6OV1cZ9ehojbfDczhsfY5CRjSSdfcg/NVO2
-        pyqnbgYNzLQmR7YHyJH7hA3vfFz4U45hsyiqn/s=
-X-Google-Smtp-Source: AMsMyM7l9664LpWj9QcPDmFBWC92J2k8lgTtaMBq0d8Kn2LaY6/WvjL6jmQ58ep7k3CUc1mU0tvXdcs9IQAedNtHTSY=
-X-Received: by 2002:a92:bf0e:0:b0:300:cc8e:fe07 with SMTP id
- z14-20020a92bf0e000000b00300cc8efe07mr18642833ilh.184.1667906653482; Tue, 08
- Nov 2022 03:24:13 -0800 (PST)
+        with ESMTP id S233897AbiKHL3I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 06:29:08 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04916614B;
+        Tue,  8 Nov 2022 03:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667906947; x=1699442947;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=iFgt+xRSCifhlEtMvApfJxKTh8oobLSPoJahFBguwSk=;
+  b=D8PDaxeWyhi0gkXSEidgAyyZH55/ihD52NC0idr6X771PiTCZCW8pbDW
+   /hG0Y/m0qk6xX/WEx9PIMVxrYAIiE9sh4jKk4JzhZt8dV/6J4Ll2QE4Ye
+   8SBOi2zAHYuQSEi0OYaSUeH4Rc6cJlrqNF3keLaaqjWqP/Glp0qp7viO3
+   N2J43wJo4TxV8yWV0/9RRCgWkVMZhHaEOpawbglUDd2OHw9y5bj8LIEgB
+   fTwTw5TB1gooDRfe9RlVQvS2A4nUtRyr1uxbkvZQUibAkNH3RUZxaWGC2
+   gVpRsH8qL7TcdBpXDZEthWQDpiZTPhy4A/HdySXZ91w7rqWwCiLQtOH1q
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="311826544"
+X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
+   d="scan'208";a="311826544"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 03:29:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="638759350"
+X-IronPort-AV: E=Sophos;i="5.96,147,1665471600"; 
+   d="scan'208";a="638759350"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga007.fm.intel.com with ESMTP; 08 Nov 2022 03:29:03 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2A8BT2xd013292;
+        Tue, 8 Nov 2022 11:29:02 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        linux@armlinux.org.uk
+Subject: Re: [PATCH net-next v2 3/4] net: lan966x: Add basic XDP support
+Date:   Tue,  8 Nov 2022 12:26:01 +0100
+Message-Id: <20221108112601.605326-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221107212618.73aqn3cdqojs6zbo@soft-dev3-1>
+References: <20221106211154.3225784-1-horatiu.vultur@microchip.com> <20221106211154.3225784-4-horatiu.vultur@microchip.com> <20221107161357.556549-1-alexandr.lobakin@intel.com> <20221107212618.73aqn3cdqojs6zbo@soft-dev3-1>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1921:0:0:0:0 with HTTP; Tue, 8 Nov 2022 03:24:13
- -0800 (PST)
-Reply-To: mrinvest1010@gmail.com
-From:   "K. A. Mr. Kairi" <ctocik10@gmail.com>
-Date:   Tue, 8 Nov 2022 03:24:13 -0800
-Message-ID: <CAEbPynvxfjzGLRVVaaVB9fasgmGPWiH+Ceaj9c3oE5eqT5_+0Q@mail.gmail.com>
-Subject: Re: My Response..
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:131 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrinvest1010[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [ctocik10[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [ctocik10[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Dear
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+Date: Mon, 7 Nov 2022 22:26:18 +0100
 
-How are you, I have a serious client, whom will be interested to
-invest in your country, I got your Details through the Investment
-Network and world Global Business directory.
+> The 11/07/2022 17:13, Alexander Lobakin wrote:
+> 
+> Hi Olek,
+> 
+> > 
+> > From: Alexander Lobakin <alexander.lobakin@intel.com>
+> > 
+> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > Date: Sun, 6 Nov 2022 22:11:53 +0100
+> > 
+> > > Introduce basic XDP support to lan966x driver. Currently the driver
+> > > supports only the actions XDP_PASS, XDP_DROP and XDP_ABORTED.
+> > >
+> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > > ---
+> > >  .../net/ethernet/microchip/lan966x/Makefile   |  3 +-
+> > >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 11 ++-
+> > >  .../ethernet/microchip/lan966x/lan966x_main.c |  5 ++
+> > >  .../ethernet/microchip/lan966x/lan966x_main.h | 13 +++
+> > >  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 81 +++++++++++++++++++
+> > >  5 files changed, 111 insertions(+), 2 deletions(-)
+> > >  create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > 
+> > [...]
+> > 
+> > > +bool lan966x_xdp_port_present(struct lan966x_port *port)
+> > > +{
+> > > +     return !!port->xdp_prog;
+> > > +}
+> > 
+> > Why uninline such a simple check? I realize you want to keep all XDP
+> > stuff inside in the separate file, but doesn't this one looks too
+> > much?
+> 
+> I was kind of hoping that the compiler will inline it for me.
+> But I can add it in the header file to inline it.
 
-Let me know if you are interested for more details.....
+That is very unlikely for the compilers to uninline an extern
+function. LTO is able to do that, but even then it's not
+guaranteed. So I'd keep it in a header file as an inline.
 
-Sincerely,
-Mr. Kairi Andrew
+> 
+> > 
+> > > +
+> > > +int lan966x_xdp_port_init(struct lan966x_port *port)
+> > > +{
+> > > +     struct lan966x *lan966x = port->lan966x;
+> > > +
+> > > +     return xdp_rxq_info_reg(&port->xdp_rxq, port->dev, 0,
+> > > +                             lan966x->napi.napi_id);
+> > > +}
+> > > +
+> > > +void lan966x_xdp_port_deinit(struct lan966x_port *port)
+> > > +{
+> > > +     if (xdp_rxq_info_is_reg(&port->xdp_rxq))
+> > > +             xdp_rxq_info_unreg(&port->xdp_rxq);
+> > > +}
+> > > --
+> > > 2.38.0
+> > 
+> > Thanks,
+> > Olek
+> 
+> -- 
+> /Horatiu
+
+Thanks,
+Olek
