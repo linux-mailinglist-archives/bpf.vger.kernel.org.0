@@ -2,91 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0736205B1
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 02:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D73206205B8
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 02:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbiKHBUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 20:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S232679AbiKHBWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 20:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbiKHBUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 20:20:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FD213F69;
-        Mon,  7 Nov 2022 17:20:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5690A61366;
-        Tue,  8 Nov 2022 01:20:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B07D8C433D6;
-        Tue,  8 Nov 2022 01:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667870414;
-        bh=dpkPDcJPtqZTtIpxNRqZ6cixfRSOG+L+wWBmqj6uDdw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=AS9YWDXOnR0RpUknh0+YAYwdfLgGSQXqwBKXpsoLoKjYTrdTpi2xJ1wIPLs5I1Yjt
-         BXFIpdmIRHm7cH5bq0+oO8WaBHeGGxe3lVTuDlhbfSAnq6saXU10F+KNjVRW0/1ZIi
-         YPug7jH6Trttkj+Q8Q0CGpypdlk+pL7FhuT/05vdI3AKF3NGLFvc4ED42i0uD2e8Tf
-         NgFQorU1mLnBTQXt9qVpPhC0gXeE/dP3VxQkcnxTibvXZ7ZgliQYuBetMOtJ0sJ9yP
-         BNk/f//ovTVbtY9ZMyL4tJ76uXgipIx/QQV9wfQomyJdBMYbV6NpcfEMStDRp9M5ek
-         LcSj8y7UlohRA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9556EC41671;
-        Tue,  8 Nov 2022 01:20:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232075AbiKHBWp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 20:22:45 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638071A06A;
+        Mon,  7 Nov 2022 17:22:44 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id u24so20238087edd.13;
+        Mon, 07 Nov 2022 17:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qogEVG2fX+zGMVl9bXIk2ZIpX0dWcbHLBDNY+TfrxQ4=;
+        b=jOWOhDrUwS3p4IVFpoZ6YkDH4dkN4bw/5En2W4X97Se/mBin9BPthDJOr68aVU0TZC
+         UayHpNLvKTpCrjoj0TmkqEQWWbEq92SWAMudexeHLsqxlM3+5TbBgQW7Z9EJAIJzYnBZ
+         dUfknKEkC6dmr1OT2njm08OAogxNFU5XbCU8W5brpdTwrttXCgApuV4vVr2aVYfKVVWH
+         h1FDJMYDN5WaVYvG1SGy/TurxUmzONuc747AeZVRvqa+dlO9KT3fPaI+DtsjYrA4x55R
+         EAZl5tzAIQbOtUOBinUh0nGWtbMMCZKOjY0d0bgwdcs7cwDpzw+7nFcmaALnTEyUgIzH
+         5XlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qogEVG2fX+zGMVl9bXIk2ZIpX0dWcbHLBDNY+TfrxQ4=;
+        b=R6KSjCWzUxxVtMylz3A9pyqsdcspWfHJYweJImIPTGttTJ07b3U1ILScTZZEmYZs2K
+         KjTnSfku3U60hTiZ7U9vGddckBFzpHzSoYHgo+TNE5Dm07UftBCASU3mwgyV9aHvEhAT
+         HbSj2id8xA0VQi9DaMyY63YuLH6Gum3eXUrCwCzlys8z/w4fLv68t4GgFfgIF1X0+LE9
+         zrstlSxu/2yiyZzsM3u4kzUpTkGfFaCR46j3RzVrHHcUjyeJ75Q9+ewTZZ7cSPSsXFLT
+         eplvyCmAGMestUBbWkolJrwhPSlmBFZZ/8GTG54hkSLILyXRGH0kavm3k54Md8o3uulk
+         BMjQ==
+X-Gm-Message-State: ACrzQf0Y0PoggLrYx2EhoMi+6XkhmGyRc1FBk220Uk059BHBSuyaGot3
+        7dWgWwGjZbqD50n2zhyCP5ECooY6yWC7S6xCRVg=
+X-Google-Smtp-Source: AMsMyM73SWtfWOixjC5sjgHIO9B7+8yTA1q/o+5ymiX1BM2pBNcxWX8uhsj+de/eJ3hYoHbavNeZymTaAXtp7j56ynI=
+X-Received: by 2002:a05:6402:951:b0:459:aa70:d4b6 with SMTP id
+ h17-20020a056402095100b00459aa70d4b6mr871932edz.224.1667870562814; Mon, 07
+ Nov 2022 17:22:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] samples/bpf: Fix sockex3 error: missing BPF prog
- type
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166787041460.14648.14053712268169387053.git-patchwork-notify@kernel.org>
-Date:   Tue, 08 Nov 2022 01:20:14 +0000
-References: <tencent_EBA3C18864069E42175946973C2ACBAF5408@qq.com>
-In-Reply-To: <tencent_EBA3C18864069E42175946973C2ACBAF5408@qq.com>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        rongtao@cestc.cn, sdf@google.com, song@kernel.org, yhs@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221107092032.178235-1-yangjihong1@huawei.com> <20221107092032.178235-4-yangjihong1@huawei.com>
+In-Reply-To: <20221107092032.178235-4-yangjihong1@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Nov 2022 17:22:30 -0800
+Message-ID: <CAEf4BzZd+hzeRhLD6DaDVx67fySd+KaTP6eOJid-u9mqnQwigg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 3/5] libbpf: Skip adjust mem size for load pointer
+ in 32-bit arch in CO_RE
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+        shuah@kernel.org, benjamin.tissoires@redhat.com, memxor@gmail.com,
+        asavkov@redhat.com, delyank@fb.com, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Nov 7, 2022 at 1:23 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>
+> bpf_core_patch_insn modifies load's mem size from 8 bytes to 4 bytes.
+> As a result, the bpf check fails, we need to skip adjust mem size to fit
+> the verifier.
+>
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 34 +++++++++++++++++++++++++++++-----
+>  1 file changed, 29 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 184ce1684dcd..e1c21b631a0b 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5634,6 +5634,28 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
+>                                        targ_res);
+>  }
+>
+> +static bool
+> +bpf_core_patch_insn_skip(const struct btf *local_btf, const struct bpf_insn *insn,
+> +                        const struct bpf_core_relo_res *res)
+> +{
+> +       __u8 class;
+> +       const struct btf_type *orig_t;
+> +
+> +       class = BPF_CLASS(insn->code);
+> +       orig_t = btf_type_by_id(local_btf, res->orig_type_id);
+> +
+> +       /*
+> +        * verifier has to see a load of a pointer as a 8-byte load,
+> +        * CO_RE should not screws up access, bpf_core_patch_insn modifies
+> +        * load's mem size from 8 bytes to 4 bytes in 32-bit arch,
+> +        * so we skip adjust mem size.
+> +        */
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Nope, this is only for BPF UAPI context types like __sk_buff (right
+now). fentry/fexit/raw_tp_btf programs traversing kernel types and
+following pointers actually need this to work correctly. Don't do
+this.
 
-On Sat,  5 Nov 2022 14:48:00 +0800 you wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> since commit 450b167fb9be("libbpf: clean up SEC() handling"),
-> sec_def_matches() does not recognize "socket/xxx" as "socket", therefore,
-> the BPF program type is not recognized.
-> 
-> Instead of sockex3_user.c parsing section names to get the BPF program fd.
-> We use the program array map to assign a static index to each BPF program
-> (get inspired by selftests/bpf progs/test_prog_array_init.c).
-> Therefore, use SEC("socket") as section name instead of SEC("socket/xxx"),
-> so that the BPF program is parsed to SOCKET_FILTER type. The "missing BPF
-> prog type" problem is solved.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] samples/bpf: Fix sockex3 error: missing BPF prog type
-    https://git.kernel.org/bpf/bpf-next/c/e5659e4e19e4
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +       if (class == BPF_LDX && btf_is_ptr(orig_t))
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  static int
+>  bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_path)
+>  {
+> @@ -5730,11 +5752,13 @@ bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_path)
+>                                 goto out;
+>                         }
+>
+> -                       err = bpf_core_patch_insn(prog->name, insn, insn_idx, rec, i, &targ_res);
+> -                       if (err) {
+> -                               pr_warn("prog '%s': relo #%d: failed to patch insn #%u: %d\n",
+> -                                       prog->name, i, insn_idx, err);
+> -                               goto out;
+> +                       if (!bpf_core_patch_insn_skip(obj->btf, insn, &targ_res)) {
+> +                               err = bpf_core_patch_insn(prog->name, insn, insn_idx, rec, i, &targ_res);
+> +                               if (err) {
+> +                                       pr_warn("prog '%s': relo #%d: failed to patch insn #%u: %d\n",
+> +                                               prog->name, i, insn_idx, err);
+> +                                       goto out;
+> +                               }
+>                         }
+>                 }
+>         }
+> --
+> 2.30.GIT
+>
