@@ -2,163 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BEE620A5E
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 08:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FE1620A77
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 08:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbiKHHiL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 02:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        id S233736AbiKHHla (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 02:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233571AbiKHHh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 02:37:27 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC5A2F672
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 23:37:25 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-370624ca2e8so129934557b3.16
-        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 23:37:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHQYG2S+r6ZQkfu64Vbijcu9xq3IEuE8DFugpR25f3I=;
-        b=ZUAZDJI66aG+v2oL+iUezXAlrcjCsx9STzuWpYrFIJ7KKSwlLdAeNYs6QXC12jzbr/
-         bUpGUlyBk99Us4IxVCkwQlFnPFn8h1EUalTZqH/TU8mV86dDNvu0UmnfecUV5mPeockq
-         G3yZNHGXas/SEjphMVJ2jTGysrb12qr9GZefcLdrPs7fWqPM5xK0/u58DVEyA4hKvkz5
-         6pKeza5OGk7tiEFBLcXfYErgwUObvWjHsk5t9Lu70d89j87FhY3ebuxcNMz3iCj9jl/l
-         m2kdkkOoG0vomG1G7qgqFTFoKv3qWH+KoJM5BQMF+aFTpwNRQcfpDXzK2Ey1BZ5y9fwh
-         QjEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHQYG2S+r6ZQkfu64Vbijcu9xq3IEuE8DFugpR25f3I=;
-        b=YS4MCtcapzMQNiMfHvy5Y94f59QDVldrfwY+scwufiMPc1WUArIo2nMyBPRI2D3jsX
-         FMqIxT3+8KaTcP6q4OyzG7J9tQSvOoljcIrTl42UfG2cQN9aCglqyrU1Hm2Y21t4dsOq
-         ZefjiZSTfzuqKHlJSEBfBGQ0OjKd8dbs5fPUZw0lcb4bIlzKNuOArVsWQgl6SyM3Btmr
-         gtNmYpxDJSKzftnOV9kQr7H5ihnoDqXXtTkQc5C4YEofnQDs5W4BsyOosYaCMN89zIn6
-         3rsml8EoBbF2yoLL9R2q7tbjRAqFI36jPRqX20ESjqQMwOihk8MotIHBgijHv//obKPV
-         Sbvg==
-X-Gm-Message-State: ANoB5plWd5+ZnO9b0rHLpUIw5x3KPcEwjL8Vj08UuvBqRe46SPQL93gC
-        4eMNy6T0Zicb6WlbdNbTNob8+oyN2xNC
-X-Google-Smtp-Source: AA0mqf77IeoARDi2HjW0xRmFqlor4qhJZxA6V4qBqBtWXQ+/I6DQ+Yo3d3HGw2vk41NyDb4dHed9X3vbRKAq
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:a697:9013:186f:ed07])
- (user=irogers job=sendgmr) by 2002:a25:2507:0:b0:6d4:13d1:c781 with SMTP id
- l7-20020a252507000000b006d413d1c781mr617399ybl.478.1667893044770; Mon, 07 Nov
- 2022 23:37:24 -0800 (PST)
-Date:   Mon,  7 Nov 2022 23:35:18 -0800
-In-Reply-To: <20221108073518.1154450-1-irogers@google.com>
-Message-Id: <20221108073518.1154450-15-irogers@google.com>
-Mime-Version: 1.0
-References: <20221108073518.1154450-1-irogers@google.com>
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Subject: [PATCH v1 14/14] perf build: Use tools/lib headers from install path
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233753AbiKHHlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 02:41:04 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0057BEF
+        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 23:40:54 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A85q3Zm017275
+        for <bpf@vger.kernel.org>; Mon, 7 Nov 2022 23:40:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=pd0arNR95VOK/awekiE0yD4Gbd4lamiz20GEU5Sf0T4=;
+ b=mSFAhTz0Q7MFSv1KfJgzV0wy8gC9ykzP1M5RKLB6A/kfyoKmpAauIHDeaJ4C+zHTVWZq
+ L2mqTa1M8vBDQ8yPZxD6QjC1URI3VSE+GLh8e8ZGbaVh9vyOI/iu14aZ9KkODETHgceI
+ XcHPtYiopSeRV9rdnkBNw4xb5dHXXatLzmE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kqhba0hb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 07 Nov 2022 23:40:54 -0800
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 7 Nov 2022 23:40:53 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id F394011D23313; Mon,  7 Nov 2022 23:40:47 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v2 0/8] bpf: Add bpf_rcu_read_lock() support
+Date:   Mon, 7 Nov 2022 23:40:47 -0800
+Message-ID: <20221108074047.261848-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: P63mcR5aynEIo3qQrCL8HIXfMj9uitFv
+X-Proofpoint-GUID: P63mcR5aynEIo3qQrCL8HIXfMj9uitFv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch -I from tools/lib to the install path for the tools/lib
-libraries that are depended upon.
+Currently, without rcu attribute info in BTF, the verifier treats
+rcu tagged pointer as a normal pointer. This might be a problem
+for sleepable program where rcu_read_lock()/unlock() is not available.
+For example, for a sleepable fentry program, if rcu protected memory
+access is interleaved with a sleepable helper/kfunc, it is possible
+the memory access after the sleepable helper/kfunc might be invalid
+since the object might have been freed then. Even without
+a sleepable helper/kfunc, without rcu_read_lock() protection,
+it is possible that the rcu protected object might be release
+in the middle of bpf program execution which may cause incorrect
+result.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Makefile.config | 2 --
- tools/perf/Makefile.perf   | 6 ++++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+To prevent above cases, enable btf_type_tag("rcu") attributes,
+introduce new bpf_rcu_read_lock/unlock() kfuncs and add verifier support.
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index d3d3c13a9f25..d7fcd1624cd7 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -349,7 +349,6 @@ ifeq ($(DEBUG),0)
-   endif
- endif
- 
--INC_FLAGS += -I$(srctree)/tools/lib/perf/include
- INC_FLAGS += -I$(src-perf)/util/include
- INC_FLAGS += -I$(src-perf)/arch/$(SRCARCH)/include
- INC_FLAGS += -I$(srctree)/tools/include/
-@@ -367,7 +366,6 @@ endif
- 
- INC_FLAGS += -I$(src-perf)/util
- INC_FLAGS += -I$(src-perf)
--INC_FLAGS += -I$(srctree)/tools/lib/
- 
- CORE_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
- 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 1d90d78303b4..851dcc0272e5 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -305,6 +305,7 @@ LIBTRACEEVENT_INCLUDE = $(LIBTRACEEVENT_DESTDIR)/include
- LIBTRACEEVENT = $(LIBTRACEEVENT_OUTPUT)/libtraceevent.a
- export LIBTRACEEVENT
- LIBTRACEEVENT_DYNAMIC_LIST = $(LIBTRACEEVENT_PLUGINS_OUTPUT)/libtraceevent-dynamic-list
-+CFLAGS += -I$(LIBTRACEEVENT_OUTPUT)/include
- 
- #
- # The static build has no dynsym table, so this does not work for
-@@ -322,6 +323,7 @@ LIBAPI_DESTDIR = $(LIBAPI_OUTPUT)
- LIBAPI_INCLUDE = $(LIBAPI_DESTDIR)/include
- LIBAPI = $(LIBAPI_OUTPUT)/libapi.a
- export LIBAPI
-+CFLAGS += -I$(LIBAPI_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBBPF_OUTPUT = $(abspath $(OUTPUT))/libbpf
-@@ -331,6 +333,7 @@ endif
- LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
- LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
- LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
-+CFLAGS += -I$(LIBBPF_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBSUBCMD_OUTPUT = $(abspath $(OUTPUT))/libsubcmd
-@@ -340,6 +343,7 @@ endif
- LIBSUBCMD_DESTDIR = $(LIBSUBCMD_OUTPUT)
- LIBSUBCMD_INCLUDE = $(LIBSUBCMD_DESTDIR)/include
- LIBSUBCMD = $(LIBSUBCMD_OUTPUT)/libsubcmd.a
-+CFLAGS += -I$(LIBSUBCMD_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBSYMBOL_OUTPUT = $(abspath $(OUTPUT))/libsymbol
-@@ -349,6 +353,7 @@ endif
- LIBSYMBOL_DESTDIR = $(LIBSYMBOL_OUTPUT)
- LIBSYMBOL_INCLUDE = $(LIBSYMBOL_DESTDIR)/include
- LIBSYMBOL = $(LIBSYMBOL_OUTPUT)/libsymbol.a
-+CFLAGS += -I$(LIBSYMBOL_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBPERF_OUTPUT = $(abspath $(OUTPUT))/libperf
-@@ -359,6 +364,7 @@ LIBPERF_DESTDIR = $(LIBPERF_OUTPUT)
- LIBPERF_INCLUDE = $(LIBPERF_DESTDIR)/include
- LIBPERF = $(LIBPERF_OUTPUT)/libperf.a
- export LIBPERF
-+CFLAGS += -I$(LIBPERF_OUTPUT)/include
- 
- # python extension build directories
- PYTHON_EXTBUILD     := $(OUTPUT)python_ext_build/
--- 
-2.38.1.431.g37b22c650d-goog
+In the rest of patch set, Patch 1 enabled btf_type_tag for __rcu
+attribute. Patches 2 and 3 are refactoring patches. Patch 4 added new
+bpf_rcu_read_lock/unlock() kfuncs. Patch 5 added verifier support
+and Patch 6 enabled sleepable program support for cgrp local storage.
+Patch 7 added some tests for new helpers and verifier support and
+Patch 8 added new test to the deny list for s390x arch.
+
+Changelogs:
+  v1 -> v2:
+    . use kfunc instead of helper for bpf_rcu_read_lock/unlock.
+    . not use MEM_RCU bpf_type_flag, instead use active_rcu_lock
+      in reg state to identify rcu ptr's.
+    . Add more self tests.
+    . add new test to s390x deny list.
+
+Yonghong Song (8):
+  compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
+  bpf: Refactor btf_struct_access callback interface
+  bpf: Abstract out functions to check sleepable helpers
+  bpf: Add kfunc bpf_rcu_read_lock/unlock()
+  bpf: Add bpf_rcu_read_lock() verifier support
+  bpf: Enable sleeptable support for cgrp local storage
+  selftests/bpf: Add tests for bpf_rcu_read_lock()
+  selftests/bpf: Add rcu_read_lock test to s390x deny list
+
+ include/linux/bpf.h                           |  15 +-
+ include/linux/bpf_lsm.h                       |   6 +
+ include/linux/bpf_verifier.h                  |   7 +
+ include/linux/btf.h                           |   2 +
+ include/linux/compiler_types.h                |   3 +-
+ include/linux/filter.h                        |   4 +-
+ include/linux/trace_events.h                  |   8 +
+ kernel/bpf/bpf_lsm.c                          |  20 +-
+ kernel/bpf/btf.c                              |  65 +++-
+ kernel/bpf/helpers.c                          |  25 +-
+ kernel/bpf/verifier.c                         | 111 +++++-
+ kernel/trace/bpf_trace.c                      |  22 +-
+ net/bpf/bpf_dummy_struct_ops.c                |   6 +-
+ net/core/filter.c                             |  20 +-
+ net/ipv4/bpf_tcp_ca.c                         |   6 +-
+ net/netfilter/nf_conntrack_bpf.c              |   3 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  | 127 +++++++
+ .../selftests/bpf/progs/rcu_read_lock.c       | 353 ++++++++++++++++++
+ 19 files changed, 733 insertions(+), 71 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
+
+--=20
+2.30.2
 
