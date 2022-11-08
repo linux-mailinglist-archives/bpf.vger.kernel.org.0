@@ -2,101 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355226206B1
-	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 03:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889076206BB
+	for <lists+bpf@lfdr.de>; Tue,  8 Nov 2022 03:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbiKHCWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Nov 2022 21:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52562 "EHLO
+        id S232910AbiKHC3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Nov 2022 21:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbiKHCWc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Nov 2022 21:22:32 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2DBB15
-        for <bpf@vger.kernel.org>; Mon,  7 Nov 2022 18:22:30 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N5sLm53fQz4f3snD
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 10:22:24 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgDnSrZfvWljlyakAA--.9756S2;
-        Tue, 08 Nov 2022 10:22:27 +0800 (CST)
-Subject: Re: [PATCH bpf] bpf: Support for setting numa node in bpf memory
- allocator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S229534AbiKHC3B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Nov 2022 21:29:01 -0500
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ED8DED1;
+        Mon,  7 Nov 2022 18:29:00 -0800 (PST)
+Message-ID: <efa7cacb-b737-666e-a212-133c2d6c3ded@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1667874539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S1EfmxtmKoktQc7Es/70hBVj158wVXgBw1F8lAf4s7w=;
+        b=lz7f5oQXnIAykB6o2ncm7fLe2lUZTVzTx7L1/fVsVbSTOgauTQeSADW7b/fUMSkACI+9iB
+        MYnbkK/7r59brXI9EWXBOBOnorU2PXX1nucGl0lB+IRtNhRtTeaG8T/kYkv0hZoJVKm9Bt
+        u/J3AOU1ZZD97RIoIOF7KUF765gy838=
+Date:   Mon, 7 Nov 2022 18:28:51 -0800
+MIME-Version: 1.0
+Subject: Re: [PATCH 2/4] bpf: Remove size check for sk in
+ bpf_skb_is_valid_access for 32-bit architecture
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221020142247.1682009-1-houtao@huaweicloud.com>
- <CA+khW7jE_inL9-66Cb_WAPey6YkY+yf1H+q2uASTQujNXbRF=Q@mail.gmail.com>
- <212fbd46-7371-c3f9-e900-3a49d9fafab8@huaweicloud.com>
- <20221021014807.pvjppg433lucybui@macbook-pro-4.dhcp.thefacebook.com>
- <b20aa49f-61ee-6275-3f8b-aa2b5e950874@huaweicloud.com>
- <CAADnVQJXdFsPXSQBhD9WD_66bWaGyq1x_=SY5UiFGzUqm=34Dg@mail.gmail.com>
- <de1173bb-3adf-a04c-7999-44e7e7103ff9@huaweicloud.com>
- <CAADnVQ+_xJzdLpJMucRA7wXRBUr7msDktEjYfcinfzrRGLfVTg@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <6b73a103-e8db-d7e8-e7e5-88b9be6bc8e2@huaweicloud.com>
-Date:   Tue, 8 Nov 2022 10:22:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+_xJzdLpJMucRA7wXRBUr7msDktEjYfcinfzrRGLfVTg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>,
+        Artem Savkov <asavkov@redhat.com>, colin.i.king@gmail.com,
+        bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20221103083254.237646-1-yangjihong1@huawei.com>
+ <20221103083254.237646-3-yangjihong1@huawei.com>
+ <CAEf4BzY+qP1wwVddjg7_rypcUAW8iPRzSa=1O6aFG5dSLX+1Gg@mail.gmail.com>
+ <CAADnVQJW3CisB3L2nNOC0aGkPPBTHnyM-ZCXoZJc-KtNNEj+QQ@mail.gmail.com>
+ <CAEf4Bzb+qJ-jzMkvWkBV0nXYj51P8DSbEHagT7h5ujCjCrRu8Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAEf4Bzb+qJ-jzMkvWkBV0nXYj51P8DSbEHagT7h5ujCjCrRu8Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgDnSrZfvWljlyakAA--.9756S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw13GFyUWw43tFWxXr1UJrb_yoWfAFb_Cr
-        Wktry8Wr9xAa1rGw45KFWktFZ0kayUG3Z5urykJr9rtryrZas0vayq9ws5uF47GF4Iv3s0
-        gFn8JF13ZrZaqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 11/7/22 5:07 PM, Andrii Nakryiko wrote:
+> On Fri, Nov 4, 2022 at 4:32 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Fri, Nov 4, 2022 at 2:56 PM Andrii Nakryiko
+>> <andrii.nakryiko@gmail.com> wrote:
+>>>
+>>> On Thu, Nov 3, 2022 at 1:36 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>>>
+>>>> The error code -EACCES is returned when bpf prog is tested in 32-bit environment,
+>>>> This is because bpf_object__relocate modifies the instruction to change memory
+>>>> size to 4 bytes, as shown in the following messages:
+>>>>
+>>>> libbpf: prog 'kfunc_call_test1': relo #2: matching candidate #0 <byte_off> [18342] struct __sk_buff.sk (0:30:0 @ offset 168)
+>>>> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) off 168 -> 168
+>>>> libbpf: prog 'kfunc_call_test1': relo #2: patched insn #1 (LDX/ST/STX) mem_sz 8 -> 4
+>>>>
+>>>> As a result, the bpf_skb_is_valid_access check fails. For 32-bit architecture,
+>>>> unnecessary checks need to be deleted.
+>>>>
+>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>> ---
+>>>>   net/core/filter.c | 2 --
+>>>>   1 file changed, 2 deletions(-)
+>>>>
+>>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>>> index bb0136e7a8e4..eab7ce89740c 100644
+>>>> --- a/net/core/filter.c
+>>>> +++ b/net/core/filter.c
+>>>> @@ -8269,8 +8269,6 @@ static bool bpf_skb_is_valid_access(int off, int size, enum bpf_access_type type
+>>>>                          return false;
+>>>>                  break;
+>>>>          case offsetof(struct __sk_buff, sk):
+>>>> -               if (type == BPF_WRITE || size != sizeof(__u64))
+>>>> -                       return false;
+>>>
+>>> this probably should be specific to host architecture bitness? I'd
+>>> imagine that size = 4 should be invalid on 64-bit arches (reading half
+>>> of the pointer is bad)
+>>
+>> Not quite.
+>> In __sk_buff the field 'sk' is defined as:
+>> __bpf_md_ptr(struct bpf_sock *, sk);
+>> so it's always 64-bit load when bpf prog reads it.
+>> In this case CO_RE shouldn't have been applied to uapi struct __sk_buff.
+> 
+> Ok, hold on. __bpf_md_ptr just creates a 8-byte sized and aligned
+> union. It doesn't change the pointer itself in any way:
+> 
+> union {
+>      struct bpf_sock* sk;
+>      __u64 :64;
+> };
+> 
+> 
+> It's a 64-bit pointer only because any pointer in the BPF target is
+> 64-bit. But on 32-bit architectures such struct bpf_sock *sk pointer
+> will *actually* be 4-byte pointer (and __u64 :64 will just make
+> compiler add 4 bytes of padding after it, effectively), and BPF
+> verifier will actually generate LDX instruction of BPF_W size (4 byte
+> load):
+> 
+>          case offsetof(struct __sk_buff, sk):
+>                  *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
+>                                        si->dst_reg, si->src_reg,
+>                                        offsetof(struct sk_buff, sk));
+>                  break;
+> 
+> 
+> BPF_FIELD_SIZEOF(struct sk_buff, sk) is 4 for 32-bit kernels.
+> 
+> So while you are correct that it will be 8-byte load from the BPF
+> side, allowing 4-byte load for such pointers should also be correct.
+> It's our choice, there is no fundamental limitation why this shouldn't
+> be the case.
+> 
+> Note also that we do this transformation when fentry/fexit/raw_tp_btf
+> programs traverse pointers in kernel structures. There pretending like
+> pointer to an 8-byte value is actually invalid. So libbpf adjusts such
+> loads to 4-byte loads for CO-RE-relocatable types, which makes it all
+> work transparently on 32-bit architectures. Context accesses deviate
+> from that, as they came earlier and we didn't have CO-RE at that time.
+> 
+> So what you are saying is that __sk_buff shouldn't be
+> CO-RE-relocatable, and yes, that would be good. But I think that's
+> orthogonal in this case.
 
-On 10/21/2022 12:22 PM, Alexei Starovoitov wrote:
-> On Thu, Oct 20, 2022 at 7:26 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> How about reject the NUMA node setting for non-preallocated hash table in
->> hashtab.c ?
-> It's easy to ask the question, but please answer it yourself.
-> Analyze the code and describe what you think is happening now
-> and what should or should not be the behavior.
-> .
-I found it is a bad idea to reject the numa node setting for non-preallocated
-hash table. The reason is that now hash buckets are still allocated according to
-the numa node setting. If the numa node setting is rejected, the use case below
-won't work normally, so I will keep it as-is:
+This issue should be from
+commit c1ff181ffabc ("selftests/bpf: Extend kfunc selftests") which replaced the 
+uapi's bpf.h with vmlinux.h.  One option to unblock this for now is to separate 
+those tests that read __sk_buff->sk to its own prog.c and use the uapi's bpf.h 
+instead of vmlinux.h.
 
-1. a non-preallocated hash table is created on numa node 2 (buckets are
-allocated from node 2)
-2. bpf program is running on numa node 2 (elements are also allocated from node 2)
-3. all used memories are allocated from node 2.
-
-
+It would be nice if the bpf-tc program can take 'struct sk_buff *skb' instead of 
+'struct __sk_buff *skb' but it will be a separate topic.
