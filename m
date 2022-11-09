@@ -2,223 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D52622C1B
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 14:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFCB622C5A
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 14:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbiKINFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 08:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        id S230129AbiKIN07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 08:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbiKINF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 08:05:29 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799A4278;
-        Wed,  9 Nov 2022 05:05:27 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KhcnIZlKBgQkOGl+TyjmSOT5mwKR0b+zao5Wpsk6hxyTUnpoYV9jObjuA1JvVKb5xSVr7uvSFsB7UxcRXCtI1xG2gzs/Geom0sOaslU6buEiksTSn8Aw7RnFgivcjAEhGrvl9ZL5slPsPOFI15KeUfAJL4sYU5puvepIObdMMA1NoQCJ9bZ/EK0GAMOiBilFWbD5aGNWz+zAHnYwX+fJ7lZ7cOEW5WHd4lAaXMlb5LtMjFfRDnK8FiKLQmjrx1AcohRi+x6Ah9anjoboiaXUjwj3ynVfo5HgY3t1TuX2RkHMcC09FAjpLy3i4r+tAZY9ZmPjAa4IX0CMPyvzZX0DMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=za1nBEgAbzThlyMfklpADYMUTsWbM4JSSz2CfbrI6pQ=;
- b=dDOSKBETl9ufy1HOWSKkdkW2TQcUcckN2S4uRSigIvwScxSUV7qvoGxROUgTJcO36rJRYyYfQkUs1gacC64QwWhq1zpbewtzRhqUTwtx+5w9eQWtkyLbElIms6E5DFYHjfg6BihxfQ8IQSHBHDTzg96yZ7JUG3nTe387EgX/7jZbMIcOEzbjbqSycWBKgdU4lJxNQMXy2dz7Ly+SkCqFoQrlL8PKpsfoLUrK4tmjXsJfzgPodaA6I/qBotUylcDL9AtnFahrMcuHQduhzLZP5yetNimO7u4oPFruItOQAZoMC7AXPyOqL9RlH/ptONkkW1wEbWk/AKdkWjwB4NBjeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=za1nBEgAbzThlyMfklpADYMUTsWbM4JSSz2CfbrI6pQ=;
- b=YO0u5N5077n/SGQV5N14tABN2lO+ZPK5XjBpx2xSfjor6FFYecjCScLomG+q7m+2E3n2lNesjP170JztMTbrYcQ8yQlcReqCXXhoO+3xq4egFCc6m+AMgFnoLYLB4nZcayekYK8rCEXD6Ce+eqWy+5KuP0dv2dABYCpS7bHVAOBuge65eqXcnXwYXzrH/c8e1Co/5Tm7/9Ym8izMHLKL36CYhGCSc1xXNEroppzCPnQDzMPjN8FnsH0xLNXCvOVnAQG+yNqhSpGIS0FTgbklcWEUFN18zdYu8p4HHt6kxNnVTCv83VbeSoezZatvz1L2K1+d0oHhDBgg6A+POWrBuQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM8PR12MB5429.namprd12.prod.outlook.com (2603:10b6:8:29::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Wed, 9 Nov
- 2022 13:05:25 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%7]) with mapi id 15.20.5791.027; Wed, 9 Nov 2022
- 13:05:25 +0000
-Date:   Wed, 9 Nov 2022 09:05:24 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 10/15] iommufd: IOCTLs for the io_pagetable
-Message-ID: <Y2ullBdcxIhJKFeH@nvidia.com>
-References: <0-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <10-v3-402a7d6459de+24b-iommufd_jgg@nvidia.com>
- <BN9PR11MB52765289F880B8A7297077318C3B9@BN9PR11MB5276.namprd11.prod.outlook.com>
- <Y2kd/Ptt0iR6SGsh@nvidia.com>
- <BN9PR11MB5276706B744018EC6E36E1128C3F9@BN9PR11MB5276.namprd11.prod.outlook.com>
- <Y2qSEVu91SOfvVmO@nvidia.com>
- <BN9PR11MB5276DAAAB20671B6DCC135728C3E9@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276DAAAB20671B6DCC135728C3E9@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR1501CA0018.namprd15.prod.outlook.com
- (2603:10b6:207:17::31) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM8PR12MB5429:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3013618c-ccff-4e51-bb99-08dac253111a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QaJ2NE50QpsokFb+30Ru5btUqgWkwOLqUy6gwEg8l4+j+yW45BjDIE1/XQGWWfiig/0GEHqQoyLS33gnBWsa/SsnMLb197x/jPJpIpGtTRX/8MVZqeNjNntLQrdWH/7Git18F7l1L6nQ/42ubovyEQ/U3kEQHZL3kbYlu3NYTbPbx5yyffXrmXxS2F2ar/5L5Pc1UPYpSncXwVzlXWDhuQXY1hNrdX+2rekaUVHdacDQWumWd/GRBhzomFPNJ/uvCby1HyHzLDMPGFvJM6EBGr1oJoMBeo+m4c2IAMUv7AO+9+OV5NcZJJsFL+AJIvktiENsiDZAzRQ60IkTUYG1dkBIeVKuK3nfakcEPv87gAvZKr76f9OEr8rcozB//uKJEY5jAssCKW2RH/ri8Tk0TYsOVLI/+Gq70z0QMyI9HE9Wwx8S9i3UPUacIHTDFX7bBk+AdCbyPRY9GFNKxCxaErzz3/CrAMfZPIiI1rXrspRznn12rziTz3ykPkTXhRaRMhiI/Pn4I12T8i+h2G+ZOD7iPFeXn6TYrl/XRykirQkt0DQyMbYeRs1nGLVx+xeAsnaMskFrPTsZQcoThrkmq4Tg7tYVY4Ilvhtdp7gu0VawEXEyupIxTGjZdZDhIvHF1/kMJR7oxOEPY22TcVEvHPkv+oFItxEqZbeRgF22qk2j8Z5RrswE3VCXkiUKVMXtmFrp6FijdZnHu5uT8zSfaw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(136003)(366004)(39860400002)(346002)(451199015)(2906002)(5660300002)(7406005)(7416002)(66946007)(38100700002)(66476007)(66556008)(4326008)(6512007)(6506007)(26005)(8676002)(36756003)(316002)(8936002)(41300700001)(54906003)(478600001)(6486002)(83380400001)(6916009)(86362001)(186003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9HMaxZZDvNPi0M2Y5keEmjIV5H8JHyasQAmICa8GAZdighYH+6ETUVncMYqB?=
- =?us-ascii?Q?0Mq5es44ZaoeFfN6eqEJKRARrPuoQOtpCioWj7E5fYY2SMiNcfBISs0uVYcp?=
- =?us-ascii?Q?kL9utEBE3KMvE2e+5BPJHeoiJwSkfxP6CYtFlmGESZ5yKWgHYEllsLU2TGwj?=
- =?us-ascii?Q?Xa57SLm+DINe8uQ2wc5afZrGWjCunvz0wu6wPYG9GA/ktZ+vFFkSN+WpVlL2?=
- =?us-ascii?Q?RmvS6bqxzJDmD8E9Eo18Gq5B1m47GW/FmM2Lt1u33/dda3bF5x4z3E70AHWw?=
- =?us-ascii?Q?wWci7P+KYNbsPQJZlj7Phc/Nv839clQs/s4iSX2siYzdbIjdKMSe3aSC4Pgf?=
- =?us-ascii?Q?AehJzpv2DT7L5HpGczl5ShgVBrVPIPJ6fktFSX0m+8IeLDRllT6wsut3F83m?=
- =?us-ascii?Q?j7WwFBeZTOF4q7SrVG0GO0+9Fvjovecae+EH/kCEFaWH+AeFLN7JAN6XsGdZ?=
- =?us-ascii?Q?nqDd3Txpxx824lcFFKzS69DlIP58MD62zTcPzNFVTZOFd0Hsjpti58A8it2T?=
- =?us-ascii?Q?AcayAi96H/OaxA7VekJKR4hMCNgTd0Nxn/Mp1OgpMjHYsCyMLM9XD0j6D7Mm?=
- =?us-ascii?Q?QpofhnsgXISMVGfXgUlkynx2Cy8LwgGijhdGdkZjL0aaAqU8KgCV/l9MagSa?=
- =?us-ascii?Q?YO6xaWhDJTSzXF3+ZOS5EPKr8t7a7KFQ/IICKvr1kUnW4geRHMK6lkR53Hso?=
- =?us-ascii?Q?glzl5dbfdItih93X2wQJ291+JgWS4+GjmBTcWf72OhqoZxm3v746j/e8oQD5?=
- =?us-ascii?Q?EqsxaiUm+Nn0KIe9HmzTm03z2H6eK/fRrrUsxbE1hH99ZYs2fG+N1D30/Lq2?=
- =?us-ascii?Q?1K4eJ7Wdh5mVAJIg4SNMLErJ7cfcAi1CwT8MxFL4a+G5KnSPNAwYPpI49Bps?=
- =?us-ascii?Q?ekVFQTip34qhqqE4v+6gNtjYsr+Hc58NpU9AnWnV/aVPL3tnaSiOWx6iwIgv?=
- =?us-ascii?Q?8oa7rSoWSIO+roJ4+j3mdKlz0szWSkLwJ0mDUAG/lTtI3uLzsRJB6QMlV2ic?=
- =?us-ascii?Q?fts40lX8Zy4YiEov73uQOEn8EKy+LdpJzH9fhpG3ZWBZGGSejKyQ25yX4E3A?=
- =?us-ascii?Q?uLp9oSQSn4ixvJIkM9RK/2qTH2TSx3Q7Zc60B3JoS0VTNQMW8qZpv2NyybyL?=
- =?us-ascii?Q?qE4x4mKRQPg5L/VHJhnedy/Ql/F8IP0mp7iBU7Zf5fSHoFl9ASW/9pQs3Nxe?=
- =?us-ascii?Q?UZ69meKRoxkJvnk/oooU5UUnZGjtAneAJSf7zeqbNPn6z+/fSweCotqZKsWe?=
- =?us-ascii?Q?HPAa0iY/dQQ8DrWr4hTqaaML2mYfyE80+FHx4r63nfw7mQlTrX4JbmumsvLc?=
- =?us-ascii?Q?u/m1ByzXxR/y46QFy6POai8nLhF41aDJtHC0anPH5eQniEYdKDqNKYz1zkFJ?=
- =?us-ascii?Q?ZFh6UWGm23kTUhrAjIIeQjMuoTEUWlvkTnB6ILXX7irRP479Js4o/dTxkInN?=
- =?us-ascii?Q?PDMxIBezMhFQJ/SYrKFpkrBMPX9Pzlfvoqcr53lOQv2iG0QXUfHB/t/JxMx5?=
- =?us-ascii?Q?9vel7P0ShrbTNKyz4IgX5AAke4On//b1fe2A8TMyBSTP5QO7/iOEW7uHuy9/?=
- =?us-ascii?Q?WLd1w1/pAA2A19lz/vo=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3013618c-ccff-4e51-bb99-08dac253111a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2022 13:05:25.3728
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dvjeAR5MKz/JG3aCoXEF9ERXvZ4SU2pSAjge5MoiMo+NI4Kl21zSOgDCrzWaBTWA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5429
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S230097AbiKIN0z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 08:26:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9CE2D3;
+        Wed,  9 Nov 2022 05:26:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0019E61AA5;
+        Wed,  9 Nov 2022 13:26:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3065BC433B5;
+        Wed,  9 Nov 2022 13:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668000413;
+        bh=zOnR20PQeCE3FFyKuASlv7XcbYLItRRWOxYi/XO2yns=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iAIWUrqQt78w9ZIOCLM8gX/YEgCenk6TQjgEP1zIVUmMa50BvDtFKe4hYFsgA/MMY
+         ODjPuQfd+b0+OVGJFgor+1+oNQS1mHhN4b2OSPCjepWb6k8pOhBTIco3EB+NqKBNUI
+         CMYpWRN+SV+XefrQtvYc1C2VSgVfEYdoonSgfp+xVQ/7ZCK1Oe5/Nqr6C2mv3PI9nn
+         7vjpCmn97IT/MaJ2Hgbm0yPA64mMtsYKI66U63GJd36w/L2U737mMARNvTvDEVvjxs
+         e5ru+5HVQ4UBWJ16LtwdpD9G11tZHYmE5tx77xz3oH4HKvaDuKFi449Q1Dzsq7nTrm
+         asSI2vaFFNDCg==
+Date:   Wed, 9 Nov 2022 22:26:50 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     <rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH] tracing: Optimize event type allocation with IDA
+Message-Id: <20221109222650.ce6c22e231345f6852f6956f@kernel.org>
+In-Reply-To: <20221109032352.254502-1-zhengyejian1@huawei.com>
+References: <20221109032352.254502-1-zhengyejian1@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 02:50:34AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, November 9, 2022 1:30 AM
-> > 
-> > On Tue, Nov 08, 2022 at 02:05:20AM +0000, Tian, Kevin wrote:
-> > > > The concept was the allow list only really impacts domain
-> > > > attachment. When a user uses FIXED they have to know what they are
-> > >
-> > > it also impacts automatic IOVA
-> > >
-> > > > doing. There is not a good reason to deny the user to use any IOVA
-> > > > that is not restricted by the reserved list.
-> > >
-> > > I just didn't get why different restrictions are applied to automatics vs.
-> > > fixed allocation.
-> > 
-> > Because it isn't a restriction on allocation, it is a restriction on
-> > domain attachment. (and this is a bit confusing and subtle, but it is
-> > what it was built for)
-> > 
-> > The purpose is to allow the IOMMU driver to allocate a domain with
-> > knowledge of what the user would like to do. For instance a small
-> > allowed range may allow the driver to allocate fewer hops in the IO
-> > page table, and a create a domain with a smaller aperture.
+On Wed, 9 Nov 2022 11:23:52 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
+
+> After commit 060fa5c83e67 ("tracing/events: reuse trace event ids after
+>  overflow"), trace events with dynamic type are linked up in list
+> 'ftrace_event_list' through field 'trace_event.list'. Then when max
+> event type number used up, it's possible to reuse type number of some
+> freed one by traversing 'ftrace_event_list'.
 > 
-> if a domain can be created with a smaller aperture according to
-> allowed ranges then the impact is not just on future domain
-> attachment. a fixed IOVA outside of the allowed ranges will
-> find error on current domain too.
->
-> Should a driver which does this update the reserved ranges too?
-
-Not reserved ranges, the domain should have a smaller aperture, and
-the checks during domain attachment will refuse if IOVA is to be
-mapped out side the domain's aperture.
-
-So if someone mis-uses fixed mode and gets a domain with an aperture
-that doesn't cover stuff they mapped then domain attachment will fail.
-
-It is no different from mapping something before domain attachment.
-
-> > "automatic" is supposed to find a good IOVA that is the best IOVA for
-> > that mapping. We have defined the best IOVA as one that doesn't reach
-> > into areas that future domains are allowed to mark as reserved.
+> As instead, using IDA to manage available type numbers can make codes
+> simpler and then the field 'trace_event.list' can be dropped.
 > 
-> 'good' or 'best' just implies that the allocation prefers to permitted
-> ranges over reserved ranges. then when permitted ranges are used
-> up the allocator can then go to find less-favorable holes outside of
-> the permitted ranges if not reserved. same as what FIXED IOVA allows.
+> Since 'struct trace_event' is used in static tracepoints, drop
+> 'trace_event.list' can make vmlinux smaller. Local test with about 2000
+> tracepoints, vmlinux reduced about 64KB:
+>   before：-rwxrwxr-x 1 root root 76669448 Nov  8 17:14 vmlinux
+>   after： -rwxrwxr-x 1 root root 76604176 Nov  8 17:15 vmlinux
 > 
-> But the behavior in this uAPI is that automatic IOVAs can be only
-> in permitted ranges. This is a restriction on allocation instead of
-> preference.
 
-Again, it is not a restriction. It is just how the automatic allocater
-works.
+This looks good to me, I just have one comment below.
 
-> IMHO I'd like this uAPI clearly defined as either of below:
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>  include/linux/trace_events.h |  1 -
+>  kernel/trace/trace_output.c  | 65 +++++++++---------------------------
+>  2 files changed, 15 insertions(+), 51 deletions(-)
 > 
-> 1) only related to domain attach then automatic IOVA can be allocated
->    outside of permitted ranges after the latter are used up;
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 20749bd9db71..bb2053246d6a 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -136,7 +136,6 @@ struct trace_event_functions {
+>  
+>  struct trace_event {
+>  	struct hlist_node		node;
+> -	struct list_head		list;
+>  	int				type;
+>  	struct trace_event_functions	*funcs;
+>  };
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index 67f47ea27921..314d175dee3a 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
 
-This makes automatic allocation functionally useless when composed
-with allowed ranges. There is no reason to do this.
+Please include linux/idr.h in this source file explicitly beause
+IDA APIs are defined in it.
 
-> 2) applied to both domain attach and IOVA allocation which then applied
->    to both automatic IOVA and fixed IOVA;
+Thank you,
 
-And this is more complicated and slow, without any real purpose.
+> @@ -21,8 +21,6 @@ DECLARE_RWSEM(trace_event_sem);
+>  
+>  static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
+>  
+> -static int next_event_type = __TRACE_LAST_TYPE;
+> -
+>  enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
+>  {
+>  	struct trace_seq *s = &iter->seq;
+> @@ -688,38 +686,23 @@ struct trace_event *ftrace_find_event(int type)
+>  	return NULL;
+>  }
+>  
+> -static LIST_HEAD(ftrace_event_list);
+> +static DEFINE_IDA(trace_event_ida);
+>  
+> -static int trace_search_list(struct list_head **list)
+> +static void free_trace_event_type(int type)
+>  {
+> -	struct trace_event *e = NULL, *iter;
+> -	int next = __TRACE_LAST_TYPE;
+> -
+> -	if (list_empty(&ftrace_event_list)) {
+> -		*list = &ftrace_event_list;
+> -		return next;
+> -	}
+> +	if (type >= __TRACE_LAST_TYPE)
+> +		ida_free(&trace_event_ida, type);
+> +}
+>  
+> -	/*
+> -	 * We used up all possible max events,
+> -	 * lets see if somebody freed one.
+> -	 */
+> -	list_for_each_entry(iter, &ftrace_event_list, list) {
+> -		if (iter->type != next) {
+> -			e = iter;
+> -			break;
+> -		}
+> -		next++;
+> -	}
+> +static int alloc_trace_event_type(void)
+> +{
+> +	int next;
+>  
+> -	/* Did we used up all 65 thousand events??? */
+> -	if (next > TRACE_EVENT_TYPE_MAX)
+> +	/* Skip static defined type numbers */
+> +	next = ida_alloc_range(&trace_event_ida, __TRACE_LAST_TYPE,
+> +			       TRACE_EVENT_TYPE_MAX, GFP_KERNEL);
+> +	if (next < 0)
+>  		return 0;
+> -
+> -	if (e)
+> -		*list = &e->list;
+> -	else
+> -		*list = &ftrace_event_list;
+>  	return next;
+>  }
+>  
+> @@ -761,28 +744,10 @@ int register_trace_event(struct trace_event *event)
+>  	if (WARN_ON(!event->funcs))
+>  		goto out;
+>  
+> -	INIT_LIST_HEAD(&event->list);
+> -
+>  	if (!event->type) {
+> -		struct list_head *list = NULL;
+> -
+> -		if (next_event_type > TRACE_EVENT_TYPE_MAX) {
+> -
+> -			event->type = trace_search_list(&list);
+> -			if (!event->type)
+> -				goto out;
+> -
+> -		} else {
+> -
+> -			event->type = next_event_type++;
+> -			list = &ftrace_event_list;
+> -		}
+> -
+> -		if (WARN_ON(ftrace_find_event(event->type)))
+> +		event->type = alloc_trace_event_type();
+> +		if (!event->type)
+>  			goto out;
+> -
+> -		list_add_tail(&event->list, list);
+> -
+>  	} else if (WARN(event->type > __TRACE_LAST_TYPE,
+>  			"Need to add type to trace.h")) {
+>  		goto out;
+> @@ -819,7 +784,7 @@ EXPORT_SYMBOL_GPL(register_trace_event);
+>  int __unregister_trace_event(struct trace_event *event)
+>  {
+>  	hlist_del(&event->node);
+> -	list_del(&event->list);
+> +	free_trace_event_type(event->type);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
-Jason
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
