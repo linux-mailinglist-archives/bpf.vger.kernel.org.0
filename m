@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED77623030
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 17:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589D8623031
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 17:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbiKIQc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 11:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41306 "EHLO
+        id S229954AbiKIQeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 11:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiKIQc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 11:32:26 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE54C19C0A
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 08:32:25 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id gw22so17206465pjb.3
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 08:32:25 -0800 (PST)
+        with ESMTP id S229527AbiKIQeA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 11:34:00 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160E412AB7
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 08:33:58 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id k22so17190861pfd.3
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 08:33:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JmPZM+ck5t49vl2nen2+qwHlesdw+y9rtemVG3D5bFw=;
-        b=bqF92Gv5R3C5AUt7rmOlXV8WHqBSS6t57BYlfCa2Groc9nu/mSlF/J2Bw8lLXZpsoY
-         LQPgKGZHLDG8FUL3uWlbTQvlKLNht4O4rQ1rI3DoGQAc0E2JvVljP0hdgsp4mSLQDdQM
-         bMdvwXg0+x6PeE1CspTjBr5xEfb1k9CK+8eNYWmbWUYUQd9wqZPocmvXgX2puau+w04q
-         94zlhJ1M6jKkEz10QmZ1GVDwxSCg9qTWAxXdjKFAVI+6Umh9xu2sbfNpEJqPJSNEOEx9
-         slsxfBbDbk3Mrl2jWphWH7usn8L4owIyfHzTGkcaR0Nb7uyJAGVX/NIeLpoQP4HLccEo
-         DJVQ==
+        bh=7BRNKofCO4axNKhJQw2nNX1TtMf9Uuve+u5bSJS9XJE=;
+        b=Ch2MxWBtz5ka6BF12mWwspmevALDI2rY/HigmYbbEVcktBtN5sAcPvthryJhmdFzUY
+         GpWBTE1roVLznNYBwcX3QOvzyCUU5dYTsSmUHQzHOPa62Z2B2t79feJNbL9Pi+QXsQCA
+         B46nHM9qmJdiz5JRv1ZUViOTK/qRlEeW7W/xInRHcnskSWFXibomC3bSK8bpZKz9/zvW
+         4PQNwxtaifqlxuW7BXYpKUkw6TOjDqvYna2ULVWVdcOxr79HO/xc7LEy9zAEHDIgvVSE
+         kSG1FMBsGRaRsXVSa6vsAoaGuPFYdcCkLUDlmPExZ3O/PihxNAAzvozM7lOUbZ8aU+J9
+         TAVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JmPZM+ck5t49vl2nen2+qwHlesdw+y9rtemVG3D5bFw=;
-        b=DCQ6SK7xqThOy3FCgmE+mJVCpXa+b0yVNLHMBVZHQLr4X5rlh4+NydVV3qSmqnpPVf
-         X05wyE2xUWhHxEAikElRrM9Olu6WsDQbZNHMVNy9Cd7Qme+vwly1eB+8RAinDepiKT4S
-         X8/pmXilK+kKf6fcF0tTSCTCCN3N+fYNVQASGAgbPYItGxnb2q074T/Q8e3rOeom0knw
-         oER+EpH54jYfuyapQ7sJGdfTnas1WG0gsRCyid3vMWsmXJn/Ffzs2kJVqF0PXw/Bzq3I
-         a0PuDx6QIuuMKjpGQtt0jtUkeFDOPh4+RCBoup1Oe3m+qwdnHaYNBqHL6dKUl6NfhM3z
-         cQZQ==
-X-Gm-Message-State: ACrzQf0b78wGUz5qFwPvaDrFzhUAY8iXdWt1PG2ZiWETyaMXAuL4iyFt
-        PnP9wMJ1oNjbDsuz2nUBNaIAg/WKhFv3yQ==
-X-Google-Smtp-Source: AMsMyM6CDw1mNwMIjwpSvLtCizwVIau0aK2rCOJSvNi/2s7fAtgH1xLB8cPi28wm9IYBCTZG3QFHNQ==
-X-Received: by 2002:a17:902:e84a:b0:186:b8ff:c698 with SMTP id t10-20020a170902e84a00b00186b8ffc698mr61606768plg.143.1668011545097;
-        Wed, 09 Nov 2022 08:32:25 -0800 (PST)
+        bh=7BRNKofCO4axNKhJQw2nNX1TtMf9Uuve+u5bSJS9XJE=;
+        b=bEWK8RxwQZEqO5jBx2iLE2tnJkaonVApn/ByiqlrAzstxutcP3mBpZjmYpLb8b3leC
+         12TjSQ2d1GfCka/B+kl+1am5SgtcgUTR9cmomfcVnOAfre5W3lAbubufG1l27ASWB4Xf
+         ypX4Ew3b+hD0c5ANaZakrGbFzlKyG5Hi7KhE4sgFYsFKjtE+xAG7GAliikk/l9G263aF
+         Wqrsbvs5/GENQhaUBMCAqKoOXe+/3frRYJbr0sHKT2HpQyE2tx8jg5c9b/8y6IYR43mp
+         K47NQ1P2edYp5FM6D/Fb2RtsJaSTazQlRq/zHIojNhMRGUQalj1WMHJC0s17kcy0+tHm
+         ZpPA==
+X-Gm-Message-State: ACrzQf0M1genvyQ6vNU5p8YSmCaQzfbzmcaDy/U4ou2Z+mpIDTRnmPQd
+        eHmCuOayyJoBxll899rC0yg=
+X-Google-Smtp-Source: AMsMyM58q5DNjGrESAwwACwxyEGwZyaWl6q9fCk7tNFytZJsdIIIJaT5jEhphEK9oNRViQfCbFp3Cw==
+X-Received: by 2002:a63:a06:0:b0:458:2853:45e4 with SMTP id 6-20020a630a06000000b00458285345e4mr51271361pgk.20.1668011637450;
+        Wed, 09 Nov 2022 08:33:57 -0800 (PST)
 Received: from localhost ([103.4.221.252])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170902ed0200b00183ba0fd54dsm9237578pld.262.2022.11.09.08.32.24
+        by smtp.gmail.com with ESMTPSA id n4-20020a17090a670400b0020dda7efe61sm1461610pjj.5.2022.11.09.08.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Nov 2022 08:32:24 -0800 (PST)
-Date:   Wed, 9 Nov 2022 22:02:19 +0530
+        Wed, 09 Nov 2022 08:33:57 -0800 (PST)
+Date:   Wed, 9 Nov 2022 22:03:51 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -57,15 +57,15 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v5 22/25] selftests/bpf: Update spinlock selftest
-Message-ID: <20221109163219.on5vdlzqisy2z7k5@apollo>
+Subject: Re: [PATCH bpf-next v5 25/25] selftests/bpf: Add BTF sanity tests
+Message-ID: <20221109163351.tjharqbhffnmebqq@apollo>
 References: <20221107230950.7117-1-memxor@gmail.com>
- <20221107230950.7117-23-memxor@gmail.com>
- <CAEf4BzbpLYCxXe+k4Hq_Dy0GbqKL-70t_ad4-pdqBzdojLp2uA@mail.gmail.com>
+ <20221107230950.7117-26-memxor@gmail.com>
+ <CAEf4BzZCki9Dmqms4E643t6RctZxo3BowQvPY1u5Ht1zdiOxHg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbpLYCxXe+k4Hq_Dy0GbqKL-70t_ad4-pdqBzdojLp2uA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZCki9Dmqms4E643t6RctZxo3BowQvPY1u5Ht1zdiOxHg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,47 +76,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 05:43:34AM IST, Andrii Nakryiko wrote:
+On Wed, Nov 09, 2022 at 05:48:00AM IST, Andrii Nakryiko wrote:
 > On Mon, Nov 7, 2022 at 3:11 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > Make updates in preparation for adding more test cases to this selftest:
-> > - Convert from CHECK_ to ASSERT macros.
-> > - Use BPF skeleton
-> > - Fix typo sping -> spin
-> > - Rename spinlock.c -> spin_lock.c
+> > Preparing the metadata for bpf_list_head involves a complicated parsing
+> > step and type resolution for the contained value. Ensure that corner
+> > cases are tested against and invalid specifications in source are duly
+> > rejected. Also include tests for incorrect ownership relationships in
+> > the BTF.
 > >
 > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > > ---
-> >  .../selftests/bpf/prog_tests/spin_lock.c      | 46 +++++++++++++++++++
-> >  .../selftests/bpf/prog_tests/spinlock.c       | 45 ------------------
-> >  .../selftests/bpf/progs/test_spin_lock.c      |  4 +-
-> >  3 files changed, 48 insertions(+), 47 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/spin_lock.c
-> >  delete mode 100644 tools/testing/selftests/bpf/prog_tests/spinlock.c
+> >  .../selftests/bpf/prog_tests/linked_list.c    | 271 ++++++++++++++++++
+> >  1 file changed, 271 insertions(+)
 > >
 >
-> [...]
->
-> > +void test_spinlock(void)
-> > +{
-> > +       struct test_spin_lock *skel;
-> > +       pthread_t thread_id[4];
-> > +       int prog_fd, i;
-> > +       void *ret;
-> > +
-> > +       skel = test_spin_lock__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "test_spin_lock__open_and_load"))
-> > +               return;
-> > +       prog_fd = bpf_program__fd(skel->progs.bpf_spin_lock_test);
-> > +       for (i = 0; i < 4; i++)
-> > +               if (!ASSERT_OK(pthread_create(&thread_id[i], NULL,
-> > +                                             &spin_lock_thread, &prog_fd), "pthread_create"))
->
-> I mean... does that pthread_create() call have to happen inside ASSERT_OK?
->
-> err = pthread_create(...)
-> if (!ASSERT_OK(err, "pthread_create"))
->     goto end;
+> Have you considered using BTW write API to construct BTFs?
+> btf__new_empty() + btf__add_xxx()?
 >
 
-Ack, I'll rewrite it like this.
+I didn't know about these. Let me give them a shot!
