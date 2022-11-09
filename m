@@ -2,223 +2,376 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B309B62324E
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC60F62326B
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbiKISWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 13:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S229503AbiKIS1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 13:27:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiKISWX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 13:22:23 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A1E2792B;
-        Wed,  9 Nov 2022 10:22:22 -0800 (PST)
-Message-ID: <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668018140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfObcJDPf5gEmYlvJlE9NKgi68kSqcyEYtXQfgjzd4Q=;
-        b=S0xfJz/6hcuQo4rMiSyxO+9ePlVkWfpoF9B5A1BlpdgUSqhFTddqAOMUSVSmU0zEtDfIve
-        O4XgyubS9/xderFMaGJ8Dh5eKXEszZ78e588H063Y6MxiWLcitYk55s+LXMUTAK0ME5ITA
-        pajRF/OaIawTuSfYO/p5Rhn6C1w2gSw=
-Date:   Wed, 9 Nov 2022 10:22:11 -0800
+        with ESMTP id S230146AbiKIS1f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 13:27:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2805BC28;
+        Wed,  9 Nov 2022 10:27:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 81CA6B80AE1;
+        Wed,  9 Nov 2022 18:27:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A62C433D6;
+        Wed,  9 Nov 2022 18:27:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668018450;
+        bh=+vuumfRZwlPhaYrVqNpSTVMk/BgdhB1/aWWQDAh2tD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vAgsJEhT9a9Vw861+DGL85gpTNsQzfjcLQyNX6kouSagqMTU9EN3GKlGR67IupB0e
+         2/lkYmQ6uh0eE5KTqPn4ib1HmVynX4MoIiUecVUCewP6Iec8hLEfOmv41haRL3aUSz
+         0EodlEKT2TJKDI1bJtsiISsCIrF5aZ9yZnkF0heeyjuWj+Ky0vZpCkv3rIwlkYrJ4K
+         EDW+ElIVN/gmrzz3DVfsJhw63Ao4KbiNhFOFopBTthjlvLa+KF1LYjv6t/DH//ar6A
+         lXmG3aDvKxbuStL6IwXlFsZVOE4uwe5OQXXxg1gftoF2biIFv1U8ILjGyEHI2ae3Q/
+         absb5q5B4QOWQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 74C504034E; Wed,  9 Nov 2022 15:27:27 -0300 (-03)
+Date:   Wed, 9 Nov 2022 15:27:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v1 00/14] Fix perf tools/lib includes
+Message-ID: <Y2vxD1fgyCdO8nIO@kernel.org>
+References: <20221108073518.1154450-1-irogers@google.com>
+ <Y2vG13WVahGoib57@kernel.org>
+ <CAP-5=fXMEE6LAoBcV-UtRRhG3wvVtzBW4r5FGz06=qsE2U6jPw@mail.gmail.com>
+ <CAP-5=fXECqhQpvMVdyzFpNixGwC+9BBo_Jj9nXEZ1hsDvjRd8Q@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
-Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <87leokz8lq.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fXECqhQpvMVdyzFpNixGwC+9BBo_Jj9nXEZ1hsDvjRd8Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/9/22 3:10 AM, Toke Høiland-Jørgensen wrote:
-> Snipping a bit of context to reply to this bit:
+Em Wed, Nov 09, 2022 at 08:57:01AM -0800, Ian Rogers escreveu:
+> On Wed, Nov 9, 2022 at 8:52 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Wed, Nov 9, 2022 at 7:27 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > >
+> > > Em Mon, Nov 07, 2022 at 11:35:04PM -0800, Ian Rogers escreveu:
+> > > > The previous build would add -Itools/lib and get dependencies for
+> > > > libtraceevent, libsubcmd, libsymbol, libapi and libbpf meaning that
+> > > > overriding these libraries would change the link time dependency but
+> > > > the headers would erroneously come from tools/lib. Fix the build to
+> > > > install headers and then depend on these. To reduce exposing internal
+> > > > headers/APIs some clean up is performed. tools/lib/symbol has a
+> > > > Makefile added, while tools/lib/api and tools/lib/subcmd have install
+> > > > targets added. The pattern used for the dependencies in Makefile.perf
+> > > > is modelled on libbpf.
+> > >
+> > > It builds with O=, I tried it one by one, but  there are problems with
+> > > make from a detached tarball, that is how I do the container builds, see
+> > > below, I'm trying to figure this out...
+> >
+> > Sorry, I didn't know to test this. The added Build and Makefile in
+> > libsymbol are missing, so I'd guess that's the major issue.
+> >
+> > Thanks,
+> > Ian
 > 
->>>>> Can the xdp prog still change the metadata through xdp->data_meta? tbh, I am not
->>>>> sure it is solid enough by asking the xdp prog not to use the same random number
->>>>> in its own metadata + not to change the metadata through xdp->data_meta after
->>>>> calling bpf_xdp_metadata_export_to_skb().
->>>>
->>>> What do you think the usecase here might be? Or are you suggesting we
->>>> reject further access to data_meta after
->>>> bpf_xdp_metadata_export_to_skb somehow?
->>>>
->>>> If we want to let the programs override some of this
->>>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add
->>>> more kfuncs instead of exposing the layout?
->>>>
->>>> bpf_xdp_metadata_export_to_skb(ctx);
->>>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
+> The following fixes this for me:
+
+But then there are some other problems related to making sure those
+libraries are built and installed _before_ perf proper starts building
+when it expects to find the headers for those libraries.
+
+So perhaps we need to first run the 'install' target for those libraries
+before build perf proper?
+
+I'm pushing what I have to perf/tools-libs-includes branch.
+
+- Arnaldo
+ 
+> --- a/tools/perf/MANIFEST
+> +++ b/tools/perf/MANIFEST
+> @@ -13,8 +13,7 @@ tools/lib/ctype.c
+> tools/lib/hweight.c
+> tools/lib/rbtree.c
+> tools/lib/string.c
+> -tools/lib/symbol/kallsyms.c
+> -tools/lib/symbol/kallsyms.h
+> +tools/lib/symbol
+> tools/lib/find_bit.c
+> tools/lib/bitmap.c
+> tools/lib/list_sort.c
 > 
-> There are several use cases for needing to access the metadata after
-> calling bpf_xdp_metdata_export_to_skb():
+> Thanks,
+> Ian
 > 
-> - Accessing the metadata after redirect (in a cpumap or devmap program,
->    or on a veth device)
-> - Transferring the packet+metadata to AF_XDP
-fwiw, the xdp prog could also be more selective and only stores one of the hints 
-instead of the whole 'struct xdp_to_skb_metadata'.
+> > > ⬢[acme@toolbox perf]$ make perf-tar-src-pkg
+> > >   TAR
+> > >   PERF_VERSION = 6.1.rc3.g7e5d8b7a1fbd
+> > > ⬢[acme@toolbox perf]$ mv perf-6.1.0-rc3.tar /tmp
+> > > ⬢[acme@toolbox perf]$ cd /tmp
+> > > ⬢[acme@toolbox tmp]$ tar xf perf-6.1.0-rc3.tar
+> > > ⬢[acme@toolbox tmp]$ cd perf-6.1.0-rc3/
+> > > ⬢[acme@toolbox perf-6.1.0-rc3]$ make -C tools/perf
+> > > make: Entering directory '/tmp/perf-6.1.0-rc3/tools/perf'
+> > >   BUILD:   Doing 'make -j32' parallel build
+> > >   HOSTCC  fixdep.o
+> > >   HOSTLD  fixdep-in.o
+> > >   LINK    fixdep
+> > >
+> > > Auto-detecting system features:
+> > > ...                                   dwarf: [ on  ]
+> > > ...                      dwarf_getlocations: [ on  ]
+> > > ...                                   glibc: [ on  ]
+> > > ...                                  libbfd: [ on  ]
+> > > ...                          libbfd-buildid: [ on  ]
+> > > ...                                  libcap: [ on  ]
+> > > ...                                  libelf: [ on  ]
+> > > ...                                 libnuma: [ on  ]
+> > > ...                  numa_num_possible_cpus: [ on  ]
+> > > ...                                 libperl: [ on  ]
+> > > ...                               libpython: [ on  ]
+> > > ...                               libcrypto: [ on  ]
+> > > ...                               libunwind: [ on  ]
+> > > ...                      libdw-dwarf-unwind: [ on  ]
+> > > ...                                    zlib: [ on  ]
+> > > ...                                    lzma: [ on  ]
+> > > ...                               get_cpuid: [ on  ]
+> > > ...                                     bpf: [ on  ]
+> > > ...                                  libaio: [ on  ]
+> > > ...                                 libzstd: [ on  ]
+> > >
+> > >   GEN     common-cmds.h
+> > >   PERF_VERSION = 6.1.rc3.g7e5d8b7a1fbd
+> > >   CC      perf-read-vdso32
+> > >   GEN     perf-archive
+> > >   GEN     perf-iostat
+> > >   CC      dlfilters/dlfilter-test-api-v0.o
+> > >   CC      dlfilters/dlfilter-show-cycles.o
+> > >   CC      jvmti/libjvmti.o
+> > > make[3]: *** No rule to make target '/tmp/perf-6.1.0-rc3/tools/perf/libsymbol/libsymbol.a'.  Stop.
+> > > make[2]: *** [Makefile.perf:907: /tmp/perf-6.1.0-rc3/tools/perf/libsymbol/libsymbol.a] Error 2
+> > > make[2]: *** Waiting for unfinished jobs....
+> > >   CC      jvmti/jvmti_agent.o
+> > >   CC      jvmti/libstring.o
+> > >   CC      jvmti/libctype.o
+> > >   GEN     pmu-events/pmu-events.c
+> > >   INSTALL headers
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/exec-cmd.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/help.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/pager.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/parse-options.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/run-command.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/sigchain.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/subcmd-config.o
+> > >   INSTALL headers
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch.o
+> > >   INSTALL headers
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/core.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/cpu.o
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/array.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/fs.o
+> > >   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libbpf/bpf_helper_defs.h
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/tracing_path.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/cgroup.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf.h
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/debug.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2-in.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer-in.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf.h
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem-in.o
+> > >   INSTALL headers
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/btf.h
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211-in.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/cpumap.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/threadmap.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/str_error_r.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_common.h
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2.so
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer.so
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_legacy.h
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evsel.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm-in.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem.so
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211.so
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch.so
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helpers.h
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_tracing.h
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-plugin.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evlist.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/mmap.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/trace-seq.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_endian.h
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_core_read.h
+> > > if [ ! -d ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs' ]; then install -d -m 755 ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs'; fi; install fs/tracing_path.h -m 644 ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs';
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/libapi-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/zalloc.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-filter.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-utils.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/kbuffer-parse.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen-in.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/skel_internal.h
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_version.h
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/tep_strerror.o
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/usdt.bpf.h
+> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helper_defs.h
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse-api.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/xyarray.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function.so
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen.so
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/lib.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi-in.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211-in.o
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm.so
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex.so
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi.so
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/libapi-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/nlattr.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf.o
+> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb-in.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211.so
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/str_error.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/netlink.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi-in.o
+> > >   LD      jvmti/jvmti-in.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_errno.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb.so
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf_prog_linfo.o
+> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi.a
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_probes.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/hashmap.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf_dump.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/ringbuf.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/strset.o
+> > >   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/libtraceevent-dynamic-list
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/linker.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/gen_loader.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/relo_core.o
+> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/usdt.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd-in.o
+> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd.a
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf-in.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent-in.o
+> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf.a
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent.a
+> > >   CC      pmu-events/pmu-events.o
+> > >   LD      pmu-events/pmu-events-in.o
+> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf-in.o
+> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libbpf/libbpf.a
+> > > make[1]: *** [Makefile.perf:240: sub-make] Error 2
+> > > make: *** [Makefile:70: all] Error 2
+> > > make: Leaving directory '/tmp/perf-6.1.0-rc3/tools/perf'
+> > > ⬢[acme@toolbox perf-6.1.0-rc3]$
+> > >
+> > >
+> > >
+> > > > The problem and solution were motivated by this issue and discussion:
+> > > > https://lore.kernel.org/lkml/CAEf4BzbbOHQZUAe6iWaehKCPQAf3VC=hq657buqe2_yRKxaK-A@mail.gmail.com/
+> > > >
+> > > > Ian Rogers (14):
+> > > >   tools lib api: Add install target
+> > > >   tools lib subcmd: Add install target
+> > > >   perf build: Install libsubcmd locally when building
+> > > >   perf build: Install libapi locally when building
+> > > >   perf build: Install libperf locally when building
+> > > >   perf build: Install libtraceevent locally when building
+> > > >   tools lib api: Add missing install headers
+> > > >   tools lib perf: Add missing install headers
+> > > >   tool lib symbol: Add Makefile/Build
+> > > >   perf build: Install libsymbol locally when building
+> > > >   perf expr: Tidy hashmap dependency
+> > > >   perf thread_map: Reduce exposure of libperf internal API
+> > > >   perf cpumap: Tidy libperf includes
+> > > >   perf build: Use tools/lib headers from install path
+> > > >
+> > > >  tools/lib/api/Makefile                        |  52 ++++++
+> > > >  tools/lib/perf/Makefile                       |  10 +-
+> > > >  tools/lib/subcmd/Makefile                     |  49 ++++++
+> > > >  tools/lib/symbol/Build                        |   1 +
+> > > >  tools/lib/symbol/Makefile                     | 115 +++++++++++++
+> > > >  tools/perf/.gitignore                         |   7 +-
+> > > >  tools/perf/Makefile.config                    |   2 -
+> > > >  tools/perf/Makefile.perf                      | 152 ++++++++++++------
+> > > >  tools/perf/builtin-stat.c                     |   1 +
+> > > >  tools/perf/builtin-trace.c                    |   4 +-
+> > > >  tools/perf/tests/cpumap.c                     |   2 +-
+> > > >  tools/perf/tests/expr.c                       |   1 +
+> > > >  tools/perf/tests/openat-syscall.c             |   1 +
+> > > >  tools/perf/tests/pmu-events.c                 |   1 +
+> > > >  tools/perf/tests/thread-map.c                 |   1 +
+> > > >  tools/perf/util/Build                         |   5 -
+> > > >  tools/perf/util/auxtrace.h                    |   2 +-
+> > > >  tools/perf/util/bpf-loader.c                  |   4 -
+> > > >  tools/perf/util/bpf_counter.c                 |   2 +-
+> > > >  tools/perf/util/cpumap.c                      |   1 +
+> > > >  tools/perf/util/cpumap.h                      |   2 +-
+> > > >  tools/perf/util/evsel.c                       |   5 +-
+> > > >  tools/perf/util/evsel.h                       |   2 -
+> > > >  tools/perf/util/expr.c                        |   1 +
+> > > >  tools/perf/util/expr.h                        |   7 +-
+> > > >  tools/perf/util/metricgroup.c                 |   1 +
+> > > >  tools/perf/util/python.c                      |   6 +-
+> > > >  .../scripting-engines/trace-event-python.c    |   2 +-
+> > > >  tools/perf/util/stat-shadow.c                 |   1 +
+> > > >  tools/perf/util/stat.c                        |   4 -
+> > > >  tools/perf/util/thread_map.c                  |   1 +
+> > > >  tools/perf/util/thread_map.h                  |   2 -
+> > > >  32 files changed, 361 insertions(+), 86 deletions(-)
+> > > >  create mode 100644 tools/lib/symbol/Build
+> > > >  create mode 100644 tools/lib/symbol/Makefile
+> > > >
+> > > > --
+> > > > 2.38.1.431.g37b22c650d-goog
+> > >
+> > > --
+> > >
+> > > - Arnaldo
 
-> - Returning XDP_PASS, but accessing some of the metadata first (whether
->    to read or change it)
-> 
-> The last one could be solved by calling additional kfuncs, but that
-> would be less efficient than just directly editing the struct which
-> will be cache-hot after the helper returns.
+-- 
 
-Yeah, it is more efficient to directly write if possible.  I think this set 
-allows the direct reading and writing already through data_meta (as a _u8 *).
-
-> 
-> And yeah, this will allow the XDP program to inject arbitrary metadata
-> into the netstack; but it can already inject arbitrary *packet* data
-> into the stack, so not sure if this is much of an additional risk? If it
-> does lead to trivial crashes, we should probably harden the stack
-> against that?
-> 
-> As for the random number, Jesper and I discussed replacing this with the
-> same BTF-ID scheme that he was using in his patch series. I.e., instead
-> of just putting in a random number, we insert the BTF ID of the metadata
-> struct at the end of it. This will allow us to support multiple
-> different formats in the future (not just changing the layout, but
-> having multiple simultaneous formats in the same kernel image), in case
-> we run out of space.
-
-This seems a bit hypothetical.  How much headroom does it usually have for the 
-xdp prog?  Potentially the hints can use all the remaining space left after the 
-header encap and the current bpf_xdp_adjust_meta() usage?
-
-> 
-> We should probably also have a flag set on the xdp_frame so the stack
-> knows that the metadata area contains relevant-to-skb data, to guard
-> against an XDP program accidentally hitting the "magic number" (BTF_ID)
-> in unrelated stuff it puts into the metadata area.
-
-Yeah, I think having a flag is useful.  The flag will be set at xdp_buff and 
-then transfer to the xdp_frame?
-
-> 
->> After re-reading patch 6, have another question. The 'void
->> bpf_xdp_metadata_export_to_skb();' function signature. Should it at
->> least return ok/err? or even return a 'struct xdp_to_skb_metadata *'
->> pointer and the xdp prog can directly read (or even write) it?
-> 
-> Hmm, I'm not sure returning a failure makes sense? Failure to read one
-> or more fields just means that those fields will not be populated? We
-> should probably have a flags field inside the metadata struct itself to
-> indicate which fields are set or not, but I'm not sure returning an
-> error value adds anything? Returning a pointer to the metadata field
-> might be convenient for users (it would just be an alias to the
-> data_meta pointer, but the verifier could know its size, so the program
-> doesn't have to bounds check it).
-
-If some hints are not available, those hints should be initialized to 
-0/CHECKSUM_NONE/...etc.  The xdp prog needs a direct way to tell hard failure 
-when it cannot write the meta area because of not enough space.  Comparing 
-xdp->data_meta with xdp->data as a side effect is not intuitive.
-
-It is more than saving the bound check.  With type info of 'struct 
-xdp_to_skb_metadata *', the verifier can do more checks like reading in the 
-middle of an integer member.  The verifier could also limit write access only to 
-a few struct's members if it is needed.
-
-The returning 'struct xdp_to_skb_metadata *' should not be an alias to the 
-xdp->data_meta.  They should actually point to different locations in the 
-headroom.  bpf_xdp_metadata_export_to_skb() sets a flag in xdp_buff. 
-xdp->data_meta won't be changed and keeps pointing to the last 
-bpf_xdp_adjust_meta() location.  The kernel will know if there is 
-xdp_to_skb_metadata before the xdp->data_meta when that bit is set in the 
-xdp_{buff,frame}.  Would it work?
-
-> 
->> A related question, why 'struct xdp_to_skb_metadata' needs
->> __randomize_layout?
-> 
-> The __randomize_layout thing is there to force BPF programs to use CO-RE
-> to access the field. This is to avoid the struct layout accidentally
-> ossifying because people in practice rely on a particular layout, even
-> though we tell them to use CO-RE. There are lots of examples of this
-> happening in other domains (IP header options, TCP options, etc), and
-> __randomize_layout seemed like a neat trick to enforce CO-RE usage :)
-
-I am not sure if it is necessary or helpful to only enforce __randomize_layout 
-in 'struct xdp_to_skb_metadata'.  There are other CO-RE use cases (tracing and 
-non tracing) that already have direct access (reading and/or writing) to other 
-kernel structures.
-
-It is more important for the verifier to see the xdp prog accessing it as a 
-'struct xdp_to_skb_metadata *' instead of xdp->data_meta which is a __u8 * so 
-that the verifier can enforce the rules of access.
-
-> 
->>>>> Does xdp_to_skb_metadata have a use case for XDP_PASS (like patch 7) or the
->>>>> xdp_to_skb_metadata can be limited to XDP_REDIRECT only?
->>>>
->>>> XDP_PASS cases where we convert xdp_buff into skb in the drivers right
->>>> now usually have C code to manually pull out the metadata (out of hw
->>>> desc) and put it into skb.
->>>>
->>>> So, currently, if we're calling bpf_xdp_metadata_export_to_skb() for
->>>> XDP_PASS, we're doing a double amount of work:
->>>> skb_metadata_import_from_xdp first, then custom driver code second.
->>>>
->>>> In theory, maybe we should completely skip drivers custom parsing when
->>>> there is a prog with BPF_F_XDP_HAS_METADATA?
->>>> Then both xdp->skb paths (XDP_PASS+XDP_REDIRECT) will be bpf-driven
->>>> and won't require any mental work (plus, the drivers won't have to
->>>> care either in the future).
->>>>   > WDYT?
->>>
->>>
->>> Yeah, not sure if it can solely depend on BPF_F_XDP_HAS_METADATA but it makes
->>> sense to only use the hints (if ever written) from xdp prog especially if it
->>> will eventually support xdp prog changing some of the hints in the future.  For
->>> now, I think either way is fine since they are the same and the xdp prog is sort
->>> of doing extra unnecessary work anyway by calling
->>> bpf_xdp_metadata_export_to_skb() with XDP_PASS and knowing nothing can be
->>> changed now.
-> 
-> I agree it would be best if the drivers also use the XDP metadata (if
-> present) on XDP_PASS. Longer term my hope is we can make the XDP
-> metadata support the only thing drivers need to implement (i.e., have
-> the stack call into that code even when no XDP program is loaded), but
-> for now just for consistency (and allowing the XDP program to update the
-> metadata), we should probably at least consume it on XDP_PASS.
-> 
-> -Toke
-> 
-
+- Arnaldo
