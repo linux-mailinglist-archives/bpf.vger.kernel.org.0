@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A48622DCE
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 15:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC19622DCA
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 15:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbiKIO1R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 09:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        id S231153AbiKIO1Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 09:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbiKIO05 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231597AbiKIO05 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 9 Nov 2022 09:26:57 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF95A13CEE
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 06:26:37 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id l11so27495279edb.4
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 06:26:37 -0800 (PST)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48D213D7D
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 06:26:39 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id f7so27470220edc.6
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 06:26:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UZYb1ywv/V4N6EpGagcMJPAzk+hiPGMsBg+zbvxIb/Y=;
-        b=cJuTaNkoyo8+ch+uFQ0urAJmwxjICdhtuKOHAngnjya6xovX0CtcI87TTxuJpzvBcs
-         p/O5yoPe8PdP0yvzj+9/3+xunuAOc/EsFW5snH3xZZpuN/WGExurPIMDwLzcsgyahq/y
-         OT1OsSNuTZhwpOxc+5i28wpvHWm+IOcLRuHUsLEZ95su+7PlblqKukhqFaYg/iLywKs/
-         yTk2b+J/CVA+ToX429gk+Qm1ha7yLiHTR0ew77ONNctvTtRmRuiwGSK+zyZ2kZLRMvPX
-         r2UTvcgMm6l3MThvS4pYyb4Be06tqMsitwePTARvnh303yDNUuHC3+Lne2zgV+iC6/v5
-         Fgow==
+        bh=zeYpBI/Zis9oRLlLkun7Q/n0Uulsc8veDV2HLGI+YVE=;
+        b=KQ3PY4C6U9kmOWRjG6M274C9UnuIXP3YVgAb9voPVuisX9la0BC1+oRI3WFqUhBOlN
+         ZTGMWP/Ny74xWcmMXCOpgvkf0F7Y0uUXikkT1r98UBJVvI8h5QmkjUCYVGLWzoPdrI62
+         q0oZqu5GREQK5c3pHuolHYZMpqhlAvvauDFoA/Ai88ob8ZRZ+GhFwg0MtbI2tteznE30
+         zoY4EcZ4OAERJGNcDGTJGaAXO9yQCzOVuD2f/CxbN7Gfb8Hqc2DRS6+9g4e9L+HEwuQl
+         ngRMuaj4sezVkPRqddV0ptSYm6U5sERtnc8QJAIrBJ6Re0icHpADFn7rlUKRxHxmCs+x
+         Qq1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UZYb1ywv/V4N6EpGagcMJPAzk+hiPGMsBg+zbvxIb/Y=;
-        b=qnC3Dl6z9mvdg5Bsc4CqjWa0O9zUhYrADvUdB5uc9jHOZ7DksDH3tFhNoo2ONEJUmq
-         1QdTrE5KcMjU8SHVKtpI0QEAVT+jnmEXcqt2dKibLOn6X3W2bn8rM48XiO7BR4a+8Jzg
-         FRfp7bR0xgiTU/mbjbSweQQUjlS1Z270uZPaUTFUkOH4Krq44l4zPVLxev3s3YrStRxa
-         j8ERuYlMuDKV/vi0V9tkRMhJnJmSRyJlYWVetAtrUtOf0DJsCUuQ38CzPSo58oduBGCP
-         aQKXjJm5jEcCPUgR/e1fnPg3Ud3P0TtiBYfrfhiwhaKY1b5sFvj6pE+jqOOVGhD/zxgD
-         5Vqg==
-X-Gm-Message-State: ACrzQf1LQDGaakcITjGvP5qwkQer9Hr/Fxmz02M67bWqZQ9hm8YzcA/T
-        1Z6L7lP2REqnkkV9xR47/yKs4gba3jFCYqto
-X-Google-Smtp-Source: AMsMyM5hlA3IF3VMLPfo/HOHa6l8vSLZU5Xt/Fj1WwAPvVjC6LJyfiweZoaOgIkWjGT/0VxQjUFLTA==
-X-Received: by 2002:a05:6402:3213:b0:461:dec8:336d with SMTP id g19-20020a056402321300b00461dec8336dmr62488885eda.221.1668003996196;
-        Wed, 09 Nov 2022 06:26:36 -0800 (PST)
+        bh=zeYpBI/Zis9oRLlLkun7Q/n0Uulsc8veDV2HLGI+YVE=;
+        b=3mv6rHzIMigYv2INZAAso0eQ/HSaDW9z/00rQzieqTjDmHht8OSSoj+ogDcBCWSix6
+         QkFuWgY6X9YCTe+5wRhzhzQlrOzPkV7FUGcGb9YBmrg9TNVCNKzno8KGF71zTaNskYZT
+         71P0IE1umeiq5r+1RCpzpNnPNivsQgtdIX5Wfaxk4p0XpBbAX25Fi9PHmp4uNaTmqujr
+         PQ95lNZrlrW3dGDySfnbdiiw6uKzUE9Bo0G7BimRgCxdgtljMj8sWYsJ8Ut/5ed4ePRV
+         aATrOjXUqPQeXTVVcPYY82+cVgNH3D4nRcT7G7fbmroAV+/A/Q2U1zALfe8JfPbbV+Ek
+         wLCw==
+X-Gm-Message-State: ANoB5pk0JjZ78AwaTx5kYKTFzidCype2qhUmvQvvcMGySzIh57eDxZbM
+        Kxiv25z/dJNESFCYFdZCwWdRht46YfZlWXSN
+X-Google-Smtp-Source: AA0mqf4r8fiw3Nbrk8qpxIWq1TqnRKW/829gPgP+5VGZtsjOjjYxwMmOBxE+5/BZnzS5ZXbJDqzuHA==
+X-Received: by 2002:a50:bb67:0:b0:466:f299:bb32 with SMTP id y94-20020a50bb67000000b00466f299bb32mr1405061ede.307.1668003997994;
+        Wed, 09 Nov 2022 06:26:37 -0800 (PST)
 Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id w21-20020a170906131500b007addcbd402esm5921013ejb.215.2022.11.09.06.26.34
+        by smtp.gmail.com with ESMTPSA id w21-20020a170906131500b007addcbd402esm5921013ejb.215.2022.11.09.06.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Nov 2022 06:26:34 -0800 (PST)
+        Wed, 09 Nov 2022 06:26:37 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, alan.maguire@oracle.com, acme@kernel.org,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v4 2/3] libbpf: Resolve unambigous forward declarations
-Date:   Wed,  9 Nov 2022 16:26:10 +0200
-Message-Id: <20221109142611.879983-3-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v4 3/3] selftests/bpf: Tests for btf_dedup_resolve_fwds
+Date:   Wed,  9 Nov 2022 16:26:11 +0200
+Message-Id: <20221109142611.879983-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221109142611.879983-1-eddyz87@gmail.com>
 References: <20221109142611.879983-1-eddyz87@gmail.com>
@@ -72,234 +72,292 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Resolve forward declarations that don't take part in type graphs
-comparisons if declaration name is unambiguous. Example:
-
-CU #1:
-
-struct foo;              // standalone forward declaration
-struct foo *some_global;
-
-CU #2:
-
-struct foo { int x; };
-struct foo *another_global;
-
-The `struct foo` from CU #1 is not a part of any definition that is
-compared against another definition while `btf_dedup_struct_types`
-processes structural types. The the BTF after `btf_dedup_struct_types`
-the BTF looks as follows:
-
-[1] STRUCT 'foo' size=4 vlen=1 ...
-[2] INT 'int' size=4 ...
-[3] PTR '(anon)' type_id=1
-[4] FWD 'foo' fwd_kind=struct
-[5] PTR '(anon)' type_id=4
-
-This commit adds a new pass `btf_dedup_resolve_fwds`, that maps such
-forward declarations to structs or unions with identical name in case
-if the name is not ambiguous.
-
-The pass is positioned before `btf_dedup_ref_types` so that types
-[3] and [5] could be merged as a same type after [1] and [4] are merged.
-The final result for the example above looks as follows:
-
-[1] STRUCT 'foo' size=4 vlen=1
-	'x' type_id=2 bits_offset=0
-[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-[3] PTR '(anon)' type_id=1
-
-For defconfig kernel with BTF enabled this removes 63 forward
-declarations. Examples of removed declarations: `pt_regs`, `in6_addr`.
-The running time of `btf__dedup` function is increased by about 3%.
+Tests to verify the following behavior of `btf_dedup_resolve_fwds`:
+- remapping for struct forward declarations;
+- remapping for union forward declarations;
+- no remapping if forward declaration kind does not match similarly
+  named struct or union declaration;
+- no remapping if forward declaration name is ambiguous;
+- base ids are considered for fwd resolution in split btf scenario.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/btf.c | 143 ++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 139 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 176 ++++++++++++++++++
+ .../bpf/prog_tests/btf_dedup_split.c          |  45 +++--
+ 2 files changed, 206 insertions(+), 15 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 442d4d0f98b8..3bd812bf88ff 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -2881,6 +2881,7 @@ static int btf_dedup_strings(struct btf_dedup *d);
- static int btf_dedup_prim_types(struct btf_dedup *d);
- static int btf_dedup_struct_types(struct btf_dedup *d);
- static int btf_dedup_ref_types(struct btf_dedup *d);
-+static int btf_dedup_resolve_fwds(struct btf_dedup *d);
- static int btf_dedup_compact_types(struct btf_dedup *d);
- static int btf_dedup_remap_types(struct btf_dedup *d);
- 
-@@ -2988,15 +2989,16 @@ static int btf_dedup_remap_types(struct btf_dedup *d);
-  * Algorithm summary
-  * =================
-  *
-- * Algorithm completes its work in 6 separate passes:
-+ * Algorithm completes its work in 7 separate passes:
-  *
-  * 1. Strings deduplication.
-  * 2. Primitive types deduplication (int, enum, fwd).
-  * 3. Struct/union types deduplication.
-- * 4. Reference types deduplication (pointers, typedefs, arrays, funcs, func
-+ * 4. Resolve unambiguous forward declarations.
-+ * 5. Reference types deduplication (pointers, typedefs, arrays, funcs, func
-  *    protos, and const/volatile/restrict modifiers).
-- * 5. Types compaction.
-- * 6. Types remapping.
-+ * 6. Types compaction.
-+ * 7. Types remapping.
-  *
-  * Algorithm determines canonical type descriptor, which is a single
-  * representative type for each truly unique type. This canonical type is the
-@@ -3060,6 +3062,11 @@ int btf__dedup(struct btf *btf, const struct btf_dedup_opts *opts)
- 		pr_debug("btf_dedup_struct_types failed:%d\n", err);
- 		goto done;
- 	}
-+	err = btf_dedup_resolve_fwds(d);
-+	if (err < 0) {
-+		pr_debug("btf_dedup_resolve_fwds failed:%d\n", err);
-+		goto done;
-+	}
- 	err = btf_dedup_ref_types(d);
- 	if (err < 0) {
- 		pr_debug("btf_dedup_ref_types failed:%d\n", err);
-@@ -4501,6 +4508,134 @@ static int btf_dedup_ref_types(struct btf_dedup *d)
- 	return 0;
- }
- 
-+/*
-+ * Collect a map from type names to type ids for all canonical structs
-+ * and unions. If the same name is shared by several canonical types
-+ * use a special value 0 to indicate this fact.
-+ */
-+static int btf_dedup_fill_unique_names_map(struct btf_dedup *d, struct hashmap *names_map)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index c3e1cea9abae..95a2b80f0d17 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -7690,6 +7690,182 @@ static struct btf_dedup_test dedup_tests[] = {
+ 		BTF_STR_SEC("\0e1\0e1_val\0td"),
+ 	},
+ },
 +{
-+	__u32 nr_types = btf__type_cnt(d->btf);
-+	struct btf_type *t;
-+	__u32 type_id;
-+	__u16 kind;
-+	int err;
-+
++	.descr = "dedup: standalone fwd declaration struct",
 +	/*
-+	 * Iterate over base and split module ids in order to get all
-+	 * available structs in the map.
++	 * Verify that CU1:foo and CU2:foo would be unified and that
++	 * typedef/ptr would be updated to point to CU1:foo.
++	 *
++	 * // CU 1:
++	 * struct foo { int x; };
++	 *
++	 * // CU 2:
++	 * struct foo;
++	 * typedef struct foo *foo_ptr;
 +	 */
-+	for (type_id = 1; type_id < nr_types; ++type_id) {
-+		t = btf_type_by_id(d->btf, type_id);
-+		kind = btf_kind(t);
-+
-+		if (kind != BTF_KIND_STRUCT && kind != BTF_KIND_UNION)
-+			continue;
-+
-+		/* Skip non-canonical types */
-+		if (type_id != d->map[type_id])
-+			continue;
-+
-+		err = hashmap__add(names_map, t->name_off, type_id);
-+		if (err == -EEXIST)
-+			err = hashmap__set(names_map, t->name_off, 0, NULL, NULL);
-+
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int btf_dedup_resolve_fwd(struct btf_dedup *d, struct hashmap *names_map, __u32 type_id)
++	.input = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_NTH(1), 0),                   /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               /* [5] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++	.expect = {
++		.raw_types = {
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			BTF_PTR_ENC(1),                                /* [3] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 3),               /* [4] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++},
 +{
-+	struct btf_type *t = btf_type_by_id(d->btf, type_id);
-+	enum btf_fwd_kind fwd_kind = btf_kflag(t);
-+	__u16 cand_kind, kind = btf_kind(t);
-+	struct btf_type *cand_t;
-+	uintptr_t cand_id;
-+
-+	if (kind != BTF_KIND_FWD)
-+		return 0;
-+
-+	/* Skip if this FWD already has a mapping */
-+	if (type_id != d->map[type_id])
-+		return 0;
-+
-+	if (!hashmap__find(names_map, t->name_off, &cand_id))
-+		return 0;
-+
-+	/* Zero is a special value indicating that name is not unique */
-+	if (!cand_id)
-+		return 0;
-+
-+	cand_t = btf_type_by_id(d->btf, cand_id);
-+	cand_kind = btf_kind(cand_t);
-+	if ((cand_kind == BTF_KIND_STRUCT && fwd_kind != BTF_FWD_STRUCT) ||
-+	    (cand_kind == BTF_KIND_UNION && fwd_kind != BTF_FWD_UNION))
-+		return 0;
-+
-+	d->map[type_id] = cand_id;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Resolve unambiguous forward declarations.
-+ *
-+ * The lion's share of all FWD declarations is resolved during
-+ * `btf_dedup_struct_types` phase when different type graphs are
-+ * compared against each other. However, if in some compilation unit a
-+ * FWD declaration is not a part of a type graph compared against
-+ * another type graph that declaration's canonical type would not be
-+ * changed. Example:
-+ *
-+ * CU #1:
-+ *
-+ * struct foo;
-+ * struct foo *some_global;
-+ *
-+ * CU #2:
-+ *
-+ * struct foo { int u; };
-+ * struct foo *another_global;
-+ *
-+ * After `btf_dedup_struct_types` the BTF looks as follows:
-+ *
-+ * [1] STRUCT 'foo' size=4 vlen=1 ...
-+ * [2] INT 'int' size=4 ...
-+ * [3] PTR '(anon)' type_id=1
-+ * [4] FWD 'foo' fwd_kind=struct
-+ * [5] PTR '(anon)' type_id=4
-+ *
-+ * This pass assumes that such FWD declarations should be mapped to
-+ * structs or unions with identical name in case if the name is not
-+ * ambiguous.
-+ */
-+static int btf_dedup_resolve_fwds(struct btf_dedup *d)
++	.descr = "dedup: standalone fwd declaration union",
++	/*
++	 * Verify that CU1:foo and CU2:foo would be unified and that
++	 * typedef/ptr would be updated to point to CU1:foo.
++	 * Same as "dedup: standalone fwd declaration struct" but for unions.
++	 *
++	 * // CU 1:
++	 * union foo { int x; };
++	 *
++	 * // CU 2:
++	 * union foo;
++	 * typedef union foo *foo_ptr;
++	 */
++	.input = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_UNION_ENC(NAME_NTH(1), 1, 4),              /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_TBD, 1),                      /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               /* [5] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++	.expect = {
++		.raw_types = {
++			BTF_UNION_ENC(NAME_NTH(1), 1, 4),              /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			BTF_PTR_ENC(1),                                /* [3] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 3),               /* [4] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++},
 +{
-+	int i, err;
-+	struct hashmap *names_map;
-+
-+	names_map = hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_equal_fn, NULL);
-+	if (IS_ERR(names_map))
-+		return PTR_ERR(names_map);
-+
-+	err = btf_dedup_fill_unique_names_map(d, names_map);
-+	if (err < 0)
-+		goto exit;
-+
-+	for (i = 0; i < d->btf->nr_types; i++) {
-+		err = btf_dedup_resolve_fwd(d, names_map, d->btf->start_id + i);
-+		if (err < 0)
-+			break;
-+	}
-+
-+exit:
-+	hashmap__free(names_map);
-+	return err;
-+}
-+
- /*
-  * Compact types.
-  *
++	.descr = "dedup: standalone fwd declaration wrong kind",
++	/*
++	 * Negative test for btf_dedup_resolve_fwds:
++	 * - CU1:foo is a struct, C2:foo is a union, thus CU2:foo is not deduped;
++	 * - typedef/ptr should remain unchanged as well.
++	 *
++	 * // CU 1:
++	 * struct foo { int x; };
++	 *
++	 * // CU 2:
++	 * union foo;
++	 * typedef union foo *foo_ptr;
++	 */
++	.input = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_NTH(3), 1),                   /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               /* [5] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++	.expect = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_NTH(3), 1),                   /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               /* [5] */
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0foo_ptr"),
++	},
++},
++{
++	.descr = "dedup: standalone fwd declaration name conflict",
++	/*
++	 * Negative test for btf_dedup_resolve_fwds:
++	 * - two candidates for CU2:foo dedup, thus it is unchanged;
++	 * - typedef/ptr should remain unchanged as well.
++	 *
++	 * // CU 1:
++	 * struct foo { int x; };
++	 *
++	 * // CU 2:
++	 * struct foo;
++	 * typedef struct foo *foo_ptr;
++	 *
++	 * // CU 3:
++	 * struct foo { int x; int y; };
++	 */
++	.input = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_NTH(1), 0),                   /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(4), 4),               /* [5] */
++			/* CU 3 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             /* [6] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_MEMBER_ENC(NAME_NTH(3), 2, 0),
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0y\0foo_ptr"),
++	},
++	.expect = {
++		.raw_types = {
++			/* CU 1 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             /* [1] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), /* [2] */
++			/* CU 2 */
++			BTF_FWD_ENC(NAME_NTH(1), 0),                   /* [3] */
++			BTF_PTR_ENC(3),                                /* [4] */
++			BTF_TYPEDEF_ENC(NAME_NTH(4), 4),               /* [5] */
++			/* CU 3 */
++			BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             /* [6] */
++			BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
++			BTF_MEMBER_ENC(NAME_NTH(3), 2, 0),
++			BTF_END_RAW,
++		},
++		BTF_STR_SEC("\0foo\0x\0y\0foo_ptr"),
++	},
++},
+ };
+ 
+ static int btf_type_size(const struct btf_type *t)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+index 90aac437576d..d9024c7a892a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+@@ -141,6 +141,10 @@ static void test_split_fwd_resolve() {
+ 	btf__add_field(btf1, "f2", 3, 64, 0);		/*      struct s2 *f2; */
+ 							/* } */
+ 	btf__add_struct(btf1, "s2", 4);			/* [5] struct s2 { */
++	btf__add_field(btf1, "f1", 1, 0, 0);		/*      int f1; */
++							/* } */
++	/* keep this not a part of type the graph to test btf_dedup_resolve_fwds */
++	btf__add_struct(btf1, "s3", 4);                 /* [6] struct s3 { */
+ 	btf__add_field(btf1, "f1", 1, 0, 0);		/*      int f1; */
+ 							/* } */
+ 
+@@ -153,20 +157,24 @@ static void test_split_fwd_resolve() {
+ 		"\t'f1' type_id=2 bits_offset=0\n"
+ 		"\t'f2' type_id=3 bits_offset=64",
+ 		"[5] STRUCT 's2' size=4 vlen=1\n"
++		"\t'f1' type_id=1 bits_offset=0",
++		"[6] STRUCT 's3' size=4 vlen=1\n"
+ 		"\t'f1' type_id=1 bits_offset=0");
+ 
+ 	btf2 = btf__new_empty_split(btf1);
+ 	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
+ 		goto cleanup;
+ 
+-	btf__add_int(btf2, "int", 4, BTF_INT_SIGNED);	/* [6] int */
+-	btf__add_ptr(btf2, 10);				/* [7] ptr to struct s1 */
+-	btf__add_fwd(btf2, "s2", BTF_FWD_STRUCT);	/* [8] fwd for struct s2 */
+-	btf__add_ptr(btf2, 8);				/* [9] ptr to fwd struct s2 */
+-	btf__add_struct(btf2, "s1", 16);		/* [10] struct s1 { */
+-	btf__add_field(btf2, "f1", 7, 0, 0);		/*      struct s1 *f1; */
+-	btf__add_field(btf2, "f2", 9, 64, 0);		/*      struct s2 *f2; */
++	btf__add_int(btf2, "int", 4, BTF_INT_SIGNED);	/* [7] int */
++	btf__add_ptr(btf2, 11);				/* [8] ptr to struct s1 */
++	btf__add_fwd(btf2, "s2", BTF_FWD_STRUCT);	/* [9] fwd for struct s2 */
++	btf__add_ptr(btf2, 9);				/* [10] ptr to fwd struct s2 */
++	btf__add_struct(btf2, "s1", 16);		/* [11] struct s1 { */
++	btf__add_field(btf2, "f1", 8, 0, 0);		/*      struct s1 *f1; */
++	btf__add_field(btf2, "f2", 10, 64, 0);		/*      struct s2 *f2; */
+ 							/* } */
++	btf__add_fwd(btf2, "s3", BTF_FWD_STRUCT);	/* [12] fwd for struct s3 */
++	btf__add_ptr(btf2, 12);				/* [13] ptr to struct s1 */
+ 
+ 	VALIDATE_RAW_BTF(
+ 		btf2,
+@@ -178,13 +186,17 @@ static void test_split_fwd_resolve() {
+ 		"\t'f2' type_id=3 bits_offset=64",
+ 		"[5] STRUCT 's2' size=4 vlen=1\n"
+ 		"\t'f1' type_id=1 bits_offset=0",
+-		"[6] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
+-		"[7] PTR '(anon)' type_id=10",
+-		"[8] FWD 's2' fwd_kind=struct",
+-		"[9] PTR '(anon)' type_id=8",
+-		"[10] STRUCT 's1' size=16 vlen=2\n"
+-		"\t'f1' type_id=7 bits_offset=0\n"
+-		"\t'f2' type_id=9 bits_offset=64");
++		"[6] STRUCT 's3' size=4 vlen=1\n"
++		"\t'f1' type_id=1 bits_offset=0",
++		"[7] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[8] PTR '(anon)' type_id=11",
++		"[9] FWD 's2' fwd_kind=struct",
++		"[10] PTR '(anon)' type_id=9",
++		"[11] STRUCT 's1' size=16 vlen=2\n"
++		"\t'f1' type_id=8 bits_offset=0\n"
++		"\t'f2' type_id=10 bits_offset=64",
++		"[12] FWD 's3' fwd_kind=struct",
++		"[13] PTR '(anon)' type_id=12");
+ 
+ 	err = btf__dedup(btf2, NULL);
+ 	if (!ASSERT_OK(err, "btf_dedup"))
+@@ -199,7 +211,10 @@ static void test_split_fwd_resolve() {
+ 		"\t'f1' type_id=2 bits_offset=0\n"
+ 		"\t'f2' type_id=3 bits_offset=64",
+ 		"[5] STRUCT 's2' size=4 vlen=1\n"
+-		"\t'f1' type_id=1 bits_offset=0");
++		"\t'f1' type_id=1 bits_offset=0",
++		"[6] STRUCT 's3' size=4 vlen=1\n"
++		"\t'f1' type_id=1 bits_offset=0",
++		"[7] PTR '(anon)' type_id=6");
+ 
+ cleanup:
+ 	btf__free(btf2);
 -- 
 2.34.1
 
