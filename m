@@ -2,144 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A81623791
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 00:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FA86237BA
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 00:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbiKIXgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 18:36:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
+        id S231996AbiKIXwE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 18:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbiKIXfr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 18:35:47 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206A12E9DC
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 15:35:47 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id v17so541954edc.8
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 15:35:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cX60kSRACSEe4BPNdgnQj1ayNctCEfbcxUvnaT3k0ls=;
-        b=WYZTJ5aN/S1WwPCWOJzOjf6o0leE4wiyX2SzS19piWnredD7fvZXsKl4/W5+a0gvgx
-         yGvOJBP5QhfKZs4TxcTU9s8+Gvo4JRqjSxUasSWzquHAaAgZ5Dv4ZEkFAdEOHPyoDOSi
-         8I9cihCxjeR5YS2oHsPEaVB0fIedu0SBNRI5xJGuEom0q2UIhWDutzovuSA3yudZLUpJ
-         84g2Qqe5dMmPK76rtmodzZw/N8OQVRzRsv7eIF3SnNQ52PihB+b7zqVC6BXU/5azuXS4
-         dFDWoMMWB17AuE0QQV9Czg1h3RtlF7eVo01H3XbD8Q8D80g69Vgx7CX/JGLn3jTZkAVU
-         sW/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cX60kSRACSEe4BPNdgnQj1ayNctCEfbcxUvnaT3k0ls=;
-        b=CiFhHU8ns+RZN1SMIb+f2LGyERYwkdPNkTG76dE/DycxkVEkzmNFHcKbkamcYfXq+X
-         Y7z5VxgrTAVrjBTRZaFm34hedwX36I03QXlhI3iIBdwdzoRGOR5qvb5Wfphdo/GeLSuB
-         0NBzUW+DENUdh6XL6ZItn2/2h/yzVr9PKZvjI3vNhlovhytA9jvSk1Hi0qjI8u9C+rMG
-         h7h7yVH81zW5YISPqJlAXqiQB+vKIyKpd+hkD6rZowwYCHYue/9OHwDQjoEbggoah8ra
-         kJOyaxi1tjoXSrTfDz4/dcYzB/2CdCxf2opH8aF+EJC4jiDmsDj4/osafBCsj9X6Aha6
-         UREA==
-X-Gm-Message-State: ACrzQf278TP00yxo7r1mLfhtiO1YdqgeVXr7XBtYCt22TaiM9Q+5GbB2
-        pjCQJy/sBGL0aphs1xrd2EaInyQ+51Sa4YMlGAE=
-X-Google-Smtp-Source: AMsMyM5HIj95WyeRMvePUB/p7bXucpcslRRe+Btfzc+SfY1lX8VpvzlW3keOXmws34g4CrA0w3qMM2rJwhI0xbvgJSU=
-X-Received: by 2002:a05:6402:428d:b0:460:b26c:82a5 with SMTP id
- g13-20020a056402428d00b00460b26c82a5mr63154328edc.66.1668036945370; Wed, 09
- Nov 2022 15:35:45 -0800 (PST)
+        with ESMTP id S231939AbiKIXwE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 18:52:04 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B91DEDF;
+        Wed,  9 Nov 2022 15:52:03 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A9M6Wmk026925;
+        Wed, 9 Nov 2022 23:51:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=r2y6FqBtbLq2FplQA0MEJ5QEQdgEf4YRwMBtghSYQ50=;
+ b=NUoO9/P5o4yJwUu1TaYaJ9GIivUKJRvnKaAnO5G1f7SmkqRWmDAw6fRFpXdBrmV6gLDl
+ RZ2IaQ3wTzFFDsPScmvNYA7xZ+e2oROB9i4sY9Xx9nyp/xkEkzGEWP1sZj2NH0AM4tBh
+ HKoFOCUZ4RF+RHAAsjajGCfbP+YZM7eIIZfExWmWEyzVIG5Y4PRRsDpqM7ey7IM5Q6Dx
+ wsRycAa3Xb4mcxO2RdnbHPADWgvwg8pqILqwkj1DbyyfsjSkB7yvfH5Pgil7Wy9OZ1DV
+ fwGWwbaXMAHXMvCtcBWOJyobmX4qPysC6d/MWz1z3QG1uapdjgQCBvCXICS+SaASF1CE 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3krkgubm6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Nov 2022 23:51:12 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A9NhXNd004196;
+        Wed, 9 Nov 2022 23:51:11 GMT
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3krkgubm66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Nov 2022 23:51:11 +0000
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A9No9Gq008858;
+        Wed, 9 Nov 2022 23:51:10 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01dal.us.ibm.com with ESMTP id 3kngsyh2p8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Nov 2022 23:51:10 +0000
+Received: from smtpav03.dal12v.mail.ibm.com ([9.208.128.129])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2A9NpAlG47644974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Nov 2022 23:51:10 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F6CD5805A;
+        Wed,  9 Nov 2022 23:51:08 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9CCB58068;
+        Wed,  9 Nov 2022 23:51:05 +0000 (GMT)
+Received: from [9.160.191.98] (unknown [9.160.191.98])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Nov 2022 23:51:05 +0000 (GMT)
+Message-ID: <6ddf657f-9ec7-6de5-62f4-508d61a467fe@linux.ibm.com>
+Date:   Wed, 9 Nov 2022 18:51:05 -0500
 MIME-Version: 1.0
-References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-4-memxor@gmail.com>
- <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
- <20221108233944.o6ktnoinaggzir7t@apollo> <CAEf4BzbBNSsqvJnD8Sy4EzzOQOSuVb-g8HecCcBdJy1J2c09-A@mail.gmail.com>
- <CAADnVQLaiNYALgngkU+iKe-f7qJp9FOCqNKpcCfSVn5U4od32A@mail.gmail.com> <CAEf4BzbR-GjtjXi4mZTdya9gidPBsSi8hn3MJ7+G5J_r4iw5xQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbR-GjtjXi4mZTdya9gidPBsSi8hn3MJ7+G5J_r4iw5xQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 9 Nov 2022 15:35:33 -0800
-Message-ID: <CAADnVQK19sEn7reWbXFbAwSpefiN+Q_xx+UvGLqYNRx-fxBtYw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 03/25] bpf: Support bpf_list_head in map values
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Delyan Kratunov <delyank@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v4 15/17] iommufd: Add a selftest
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <15-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+In-Reply-To: <15-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NVWUBpQHwQeub4Vtor_WE-ljRzrQR9IE
+X-Proofpoint-GUID: ZRDWBG7lTzZ5mzkpMVZQghrekqNfJFmA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-09_06,2022-11-09_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2210170000 definitions=main-2211090177
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 9, 2022 at 3:11 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> >
-> > > > >
-> > > > > So what if we have
-> > > > >
-> > > > > struct bpf_list_node {
-> > > > >     __u64 __opaque[2];
-> > > > > } __attribute__((aligned(8)));
-> > > > >
-> > > > > ?
-> > > > >
-> > > >
-> > > > Yep, can do that. Note that it's also potentially an issue for existing cases,
-> > > > like bpf_spin_lock, bpf_timer, bpf_dynptr, etc. Not completely sure if changing
-> > > > things now is possible, but if it is, we should probably make it for all of
-> > > > them?
-> > >
-> > > Why not? We are not removing anything or changing sizes, so it's
-> > > backwards compatible.
-> > > But I have a suspicion Alexei might not like
-> > > this __opaque field, so let's see what he says.
-> >
-> > I prefer to fix them all at once without adding a name.
-> >
->
-> This is not an issue with BTF per se.
->
-> struct blah {
->   u64: 64
-> };
->
-> is just an empty struct blah with 8-byte size. Both BTF and DWARF will
-> record it as just
->
-> struct blah {
-> }
->
-> and record it's size as 8 bytes.
->
-> With that, there is nothing to suggest that this struct has to have
-> 8-byte alignment.
->
-> If we mark explicitly __attribute__((aligned(8))) then DWARF will
-> additionally record alignment=8 for such struct. BTF doesn't record
-> alignment, though.
->
-> adding u64 fields internally will make libbpf recognize that struct
-> needs at least 8-byte alignment, which is what I propose as a simple
-> solution.
->
-> Alternatives are:
->  - extend BTF to record struct/union alignments in BTF_KIND_{STRUCT,UNION}
->  - record __attribute__((aligned(8))) as a new KIND (BTF_KIND_ATTRIBUTE)
+On 11/7/22 7:49 PM, Jason Gunthorpe wrote:
+> Cover the essential functionality of the iommufd with a directed
+> test. This aims to achieve reasonable functional coverage using the
+> in-kernel self test framework.
+> 
+> It provides a mock kernel module for the iommu_domain that allows it to
+> run without any HW and the mocking provides a way to directly validate
+> that the PFNs loaded into the iommu_domain are correct.
+> 
+> The mock also simulates the rare case of PAGE_SIZE > iommu page size as
+> the mock will operate at a 2K iommu page size. This allows exercising all
+> of the calculations to support this mismatch.
+> 
+> This allows achieving high coverage of the corner cases in the iopt_pages.
+> 
+> However, it is an unusually invasive config option to enable all of
+> this. The config option should not be enabled in a production kernel.
+> 
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
 
-imo above two options are way better than adding __opaque which
-is nothing but a workaround for a missing feature in BTF.
+Ran the selftests on s390 in both LPAR (z16) and a QEMU kvm guest using 1M hugepages, all tests are passing.
 
-> Both seem like a bit of an overkill, given the work around is to have
-> u64 __opaque[] fields, which we won't have to remove or rename ever
-> (because those fields are not used).
-
-There is no rush to do this workaround.
-As Kumar says we can land the existing patch as-is
-and add BTF_KIND_ATTR (or anything else) in the followup.
-
-Adding __opaque now won't work, since we won't be able
-to remove it later due to backward compat.
+Tested-by: Matthew Rosato <mjrosato@linux.ibm.com> # s390
