@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980896232EE
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 911A66232F0
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbiKISuA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 13:50:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
+        id S231273AbiKISuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 13:50:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbiKIStx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 13:49:53 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9D615A04
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 10:49:49 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id j132-20020a25238a000000b006da635e2073so3900310ybj.2
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 10:49:49 -0800 (PST)
+        with ESMTP id S231681AbiKISt7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 13:49:59 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1460B17054
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 10:49:57 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3691846091fso168547397b3.9
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 10:49:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5rlVN6/O6ud7i+l5M9N1PAvZ4u3YCtftz8CMo8WwgUg=;
-        b=Pst/p+SP8ArcizzeOdYdK9oukzMegssjv7eyFFIkdPoKsMYGFPyXLfm8/N3yKz+Vg0
-         dofEvx2C47DeVsYgMsn+nVEIbAtw1JV1f6PvghnjZTJyc4RCQPuYzthPbULPeV5BkNlW
-         7tdsXn8yMObCUNvAHoF4zUDu8S5kfbCtASnfyjRSysdKlZgKxPMn1ImFwAqHGLmPP8Ab
-         c/+JAdlA1YWOjP0+BNI+36fDq3Ix0jkJn2/OcN1mIH/lwnEL/j671IHrkuJzq208f55s
-         iBvcaTd0fcxFSuKfVJGMTDFu5eoZbHdGHDaF3H66ecowF1Ra7zWCiw43fisERT0s4bJD
-         HIaA==
+        bh=DP4kj7DiRL+xHUHvBLH3ge+vTpwFxXziF3rVwxkIDtE=;
+        b=nYvq+SL0Spjx3Tz0Hp/FjWjdEbXMgRbK3pMAgdwoMnMdsPV9NVAv8NQRumPEkW2CdT
+         7Ed4PVw9zmJMTMZPm9eWAmiAPSO6HSGMw+WnbOCGehZzlp2kEg6Mhi2D+VOhGx5dbN3W
+         FenY5Q5AaDyYpxr3+fHT5hOp/uYTT5NT7b0BGqcJH85njZOzufE5EjTFYGUxqA/Ot/Qd
+         e8qpGs+e9Yk0yy72dAu3sHSgF4yOiiMxIs3hWay7ZvUQRkErUvK+olBdYiAn7mkZtGjU
+         VicdUDOt9EfDUeMo0N2FUxHvYO0j6ozd1n6gEdR320gUVJzVfvVUeeQyMa1nzciB4mtU
+         FtOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5rlVN6/O6ud7i+l5M9N1PAvZ4u3YCtftz8CMo8WwgUg=;
-        b=G/6aMwLiR5ULSZlwFeB9A4N4iZ1gSTho6ia7NI5aBCL2XgrMMa/3aVKwQIac+Ghiz+
-         pKBpWFukGeQ2QpkR7z7RhWTWtwcuYhbceDG6nuLKhVQ8TJsT+HlDE13kZG9/wgJL/dv6
-         eahFz2Xb0aAVUShUR11PAvSR7pmqv1bjee3pz6fEEcp5s2Kv9DVn/faV3MKGyyYW8NDP
-         XfuuSIGzuS+09Uj+Qu1fktRmwlLQBnEaVo6hUKiCx+m7Uz/FTNRXfEpv+BqRFnV8kT+R
-         ZvrytxaJLxF+JuaKuEiepfJ6Q+6RVgTKrpsNcJ8ypnm6Yqjt514MMCiZY/BjQ7eSmgMb
-         dsWg==
-X-Gm-Message-State: ACrzQf2VK2bYSlPrbAwpuPWWdCFHtC9J2Kw+E0UuU/qaxk0LDqvCrVpm
-        hND5UX/EL0yxix7Zh5NimohDD+Splbm9
-X-Google-Smtp-Source: AMsMyM5FcLGFT2SQkb9U591ISwR4jLJ/1QbGCHi79LiEXj+dda25rXAZSNpQdxvhrJjSlu0xPw7nHT3Wk+Gt
+        bh=DP4kj7DiRL+xHUHvBLH3ge+vTpwFxXziF3rVwxkIDtE=;
+        b=5Nx/rxq9W36+i/WpzbhgN5cRYYzDS7NeoIq95CbZFTBY8gwX/W61p8ILwL/T69h+rR
+         9HmbKItgCNHrUvU6UWBwXOwjps5UpB32Qan6Q7e9ic0JrqFSzIRUcrjeUKsHHm3zpvQi
+         hX7D771UQwQoqFJ2KqRnpqTKCLVyzQHw0N1bZ52mGaVObfFfBvc0Qlp1Ji6ymIYjr1R8
+         nZEQML6pomWA7TFXSZd1pdWSylpPBZc6hWXJprNfmE5JfY3uePqTF+fL/S2K3xeJ8gtB
+         TTR8THBBRzL7o8+NZo/R2AcGSvvuDldPbdZQlrzwF//VkBC9BEkRl3pprO6OW1sEYaZs
+         j0WQ==
+X-Gm-Message-State: ANoB5ploIPuzxdyHR0GKDivV90yE9xKPpMmENEaVmIlR6ytqHaKKV4/A
+        zkOFYEioCNyoV9l0XVsru63Qiime8F42
+X-Google-Smtp-Source: AA0mqf776vexvsO1Tb9gGLbX7UHKb+p7Y2EiSv6LhHFFKLSdtKbNiPoABCTWkVzGxwPK7DWOmOmCk7rQTWDu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:b06f:a254:5ce9:c442])
- (user=irogers job=sendgmr) by 2002:a81:f04:0:b0:36a:d4bf:c187 with SMTP id
- 4-20020a810f04000000b0036ad4bfc187mr56341249ywp.208.1668019788911; Wed, 09
- Nov 2022 10:49:48 -0800 (PST)
-Date:   Wed,  9 Nov 2022 10:49:03 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:728:b0:6dc:6bf7:bde1 with SMTP id
+ l8-20020a056902072800b006dc6bf7bde1mr541469ybt.108.1668019797001; Wed, 09 Nov
+ 2022 10:49:57 -0800 (PST)
+Date:   Wed,  9 Nov 2022 10:49:04 -0800
 In-Reply-To: <20221109184914.1357295-1-irogers@google.com>
-Message-Id: <20221109184914.1357295-4-irogers@google.com>
+Message-Id: <20221109184914.1357295-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20221109184914.1357295-1-irogers@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Subject: [PATCH v2 03/14] perf build: Install libsubcmd locally when building
+Subject: [PATCH v2 04/14] perf build: Install libapi locally when building
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -81,97 +81,98 @@ X-Mailing-List: bpf@vger.kernel.org
 The perf build currently has a '-Itools/lib' on the CC command
 line. This causes issues as the libapi, libsubcmd, libtraceevent,
 libbpf headers are all found via this path, making it impossible to
-override include behavior. Change the libsubcmd build mirroring the
-libbpf build, so that it is installed in a directory along with its
-headers. A later change will modify the include behavior.
+override include behavior. Change the libapi build mirroring the
+libbpf and libsubcmd build, so that it is installed in a directory
+along with its headers. A later change will modify the include
+behavior.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
  tools/perf/.gitignore    |  1 +
- tools/perf/Makefile.perf | 24 ++++++++++++++++--------
- 2 files changed, 17 insertions(+), 8 deletions(-)
+ tools/perf/Makefile.perf | 27 +++++++++++++++------------
+ 2 files changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-index a653311d9693..626f5dd9a037 100644
+index 626f5dd9a037..1932848343f3 100644
 --- a/tools/perf/.gitignore
 +++ b/tools/perf/.gitignore
-@@ -39,6 +39,7 @@ pmu-events/pmu-events.c
+@@ -38,6 +38,7 @@ trace/beauty/generated/
+ pmu-events/pmu-events.c
  pmu-events/jevents
  feature/
++libapi/
  libbpf/
-+libsubcmd/
+ libsubcmd/
  fixdep
- libtraceevent-dynamic-list
- Documentation/doc.dep
 diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 67819f905611..4ec6b95a1c49 100644
+index 4ec6b95a1c49..f8c712e26a69 100644
 --- a/tools/perf/Makefile.perf
 +++ b/tools/perf/Makefile.perf
-@@ -244,7 +244,7 @@ else # force_fixdep
- LIB_DIR         = $(srctree)/tools/lib/api/
+@@ -241,7 +241,7 @@ sub-make: fixdep
+ 
+ else # force_fixdep
+ 
+-LIB_DIR         = $(srctree)/tools/lib/api/
++LIBAPI_DIR      = $(srctree)/tools/lib/api/
  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
  LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
--SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
-+LIBSUBCMD_DIR   = $(srctree)/tools/lib/subcmd/
- LIBPERF_DIR     = $(srctree)/tools/lib/perf/
- DOC_DIR         = $(srctree)/tools/perf/Documentation/
- 
-@@ -294,7 +294,6 @@ strip-libs = $(filter-out -l%,$(1))
- ifneq ($(OUTPUT),)
+ LIBSUBCMD_DIR   = $(srctree)/tools/lib/subcmd/
+@@ -295,15 +295,9 @@ ifneq ($(OUTPUT),)
    TE_PATH=$(OUTPUT)
    PLUGINS_PATH=$(OUTPUT)
--  SUBCMD_PATH=$(OUTPUT)
    LIBPERF_PATH=$(OUTPUT)
- ifneq ($(subdir),)
-   API_PATH=$(OUTPUT)/../lib/api/
-@@ -305,7 +304,6 @@ else
+-ifneq ($(subdir),)
+-  API_PATH=$(OUTPUT)/../lib/api/
+-else
+-  API_PATH=$(OUTPUT)
+-endif
+ else
    TE_PATH=$(TRACE_EVENT_DIR)
    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
-   API_PATH=$(LIB_DIR)
--  SUBCMD_PATH=$(SUBCMD_DIR)
+-  API_PATH=$(LIB_DIR)
    LIBPERF_PATH=$(LIBPERF_DIR)
  endif
  
-@@ -332,7 +330,14 @@ LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
- LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
- LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
+@@ -318,7 +312,14 @@ LIBTRACEEVENT_DYNAMIC_LIST = $(PLUGINS_PATH)libtraceevent-dynamic-list
+ DYNAMIC_LIST_LDFLAGS               = -Xlinker --dynamic-list=$(LIBTRACEEVENT_DYNAMIC_LIST)
+ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DYNAMIC_LIST_LDFLAGS))
  
--LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
+-LIBAPI = $(API_PATH)libapi.a
 +ifneq ($(OUTPUT),)
-+  LIBSUBCMD_OUTPUT = $(abspath $(OUTPUT))/libsubcmd
++  LIBAPI_OUTPUT = $(abspath $(OUTPUT))/libapi
 +else
-+  LIBSUBCMD_OUTPUT = $(CURDIR)/libsubcmd
++  LIBAPI_OUTPUT = $(CURDIR)/libapi
 +endif
-+LIBSUBCMD_DESTDIR = $(LIBSUBCMD_OUTPUT)
-+LIBSUBCMD_INCLUDE = $(LIBSUBCMD_DESTDIR)/include
-+LIBSUBCMD = $(LIBSUBCMD_OUTPUT)/libsubcmd.a
++LIBAPI_DESTDIR = $(LIBAPI_OUTPUT)
++LIBAPI_INCLUDE = $(LIBAPI_DESTDIR)/include
++LIBAPI = $(LIBAPI_OUTPUT)/libapi.a
+ export LIBAPI
  
- LIBPERF = $(LIBPERF_PATH)libperf.a
- export LIBPERF
-@@ -849,11 +854,14 @@ $(LIBPERF)-clean:
- 	$(call QUIET_CLEAN, libperf)
- 	$(Q)$(MAKE) -C $(LIBPERF_DIR) O=$(OUTPUT) clean >/dev/null
+ ifneq ($(OUTPUT),)
+@@ -831,12 +832,14 @@ $(LIBTRACEEVENT)-clean:
+ install-traceevent-plugins: libtraceevent_plugins
+ 	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR) $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) install_plugins
  
--$(LIBSUBCMD): FORCE
--	$(Q)$(MAKE) -C $(SUBCMD_DIR) O=$(OUTPUT) $(OUTPUT)libsubcmd.a
-+$(LIBSUBCMD): FORCE | $(LIBSUBCMD_OUTPUT)
-+	$(Q)$(MAKE) -C $(LIBSUBCMD_DIR) O=$(LIBSUBCMD_OUTPUT) \
-+		DESTDIR=$(LIBSUBCMD_DESTDIR) prefix= \
+-$(LIBAPI): FORCE
+-	$(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) $(OUTPUT)libapi.a
++$(LIBAPI): FORCE | $(LIBAPI_OUTPUT)
++	$(Q)$(MAKE) -C $(LIBAPI_DIR) O=$(LIBAPI_OUTPUT) \
++		DESTDIR=$(LIBAPI_DESTDIR) prefix= \
 +		$@ install_headers
  
- $(LIBSUBCMD)-clean:
--	$(Q)$(MAKE) -C $(SUBCMD_DIR) O=$(OUTPUT) clean
-+	$(call QUIET_CLEAN, libsubcmd)
-+	$(Q)$(RM) -r -- $(LIBSUBCMD_OUTPUT)
+ $(LIBAPI)-clean:
+ 	$(call QUIET_CLEAN, libapi)
+-	$(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
++	$(Q)$(RM) -r -- $(LIBAPI_OUTPUT)
  
- help:
- 	@echo 'Perf make targets:'
-@@ -1039,7 +1047,7 @@ SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.skel.h
+ $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+ 	$(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
+@@ -1047,7 +1050,7 @@ SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.skel.h
  SKELETONS += $(SKEL_OUT)/off_cpu.skel.h $(SKEL_OUT)/lock_contention.skel.h
  SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h
  
--$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
-+$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT) $(LIBSUBCMD_OUTPUT):
+-$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT) $(LIBSUBCMD_OUTPUT):
++$(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT) $(LIBSUBCMD_OUTPUT):
  	$(Q)$(MKDIR) -p $@
  
  ifdef BUILD_BPF_SKEL
