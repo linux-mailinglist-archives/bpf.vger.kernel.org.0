@@ -2,139 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58018622A25
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 12:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DC7622A55
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 12:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbiKILSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 06:18:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S229938AbiKILWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 06:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbiKILSD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 06:18:03 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EB26344
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 03:18:02 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07526619FE
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 11:18:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA778C433D6;
-        Wed,  9 Nov 2022 11:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667992681;
-        bh=X0mUcunS2+WQwAFy3NAIChidBa7zo166VTsPNnz+xsY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XJb2r5iVIrV8Dgi2i4J11MfRwRuKuSGv/9FFWtd3xjkV0hGKzNVn2gGWyLyn/C+Gn
-         X1LsrY4R7mBG65r9bpmpoJifneTDolrcJ+GqgFvjFdsrNUHNdBbX9kLon4zrp7FQlV
-         4zG5idn3X0w2/A/RWRhFODKXQSRa24pTDQrUcpDv4aBqxTsGaFCufDBL+Ppp3Fo9ED
-         6om0GJhQYY20+PiWiC+77xbbzzOUp6XHKiI24+fYqOZiqCSTayZ+XI5GDp+uyj4NM9
-         aX2LZkld1hQ2Lz3/ZEeuPJs6E5CrbES121DJg0ujixNgcnX2KqLpRgzcRUaw4hzC/0
-         hIU3iHEhnWgYg==
-Date:   Wed, 9 Nov 2022 13:17:46 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "song@kernel.org" <song@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Message-ID: <Y2uMWvmiPlaNXlZz@kernel.org>
-References: <20221107223921.3451913-1-song@kernel.org>
- <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+        with ESMTP id S229723AbiKILWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 06:22:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCF5BD7
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 03:21:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667992907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iu6WVQzYd6QVJ2aRddjHWcCe6Wgq/3xvvgm9HbBXmlM=;
+        b=ZIj01nKdDnt7pV4RYc9xtnRoCAJOWOyS5Gm+ImKGrZjTUH32kmzu6KiOmOy03HRVqDVtTm
+        v4pbEq2fSs8ZAEPMxIO5WgcbAVjcq/Ou/+7ljgq0+1bQk3qbvId4ksSep9Ga3plqhsH3LM
+        iMhuwCnTMg6WFpaldT1g9E6Xr6yzano=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-671-0rzyqaxiOn2Z3nz2huU5lw-1; Wed, 09 Nov 2022 06:21:46 -0500
+X-MC-Unique: 0rzyqaxiOn2Z3nz2huU5lw-1
+Received: by mail-ed1-f69.google.com with SMTP id y20-20020a056402271400b004630f3a32c3so12521131edd.15
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 03:21:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iu6WVQzYd6QVJ2aRddjHWcCe6Wgq/3xvvgm9HbBXmlM=;
+        b=f3NNDC7DZU+ORuiwrfd+nTRb5libPTX2U33/tV01Psi6mf3KeBWRQyTFxWdZfE3P4v
+         GFa1XaEFUZyy+PYImUymBaaJnlpbwDcFaICPKQj+DKDIyfAGcTLdcUL0bxIgZ38sG9ew
+         AacYzT9lrApdxm5HR3NrLrctaQbkHErokrr67ihFugAaV0h3VIsR5PTBwYy8rHQqvymF
+         a0MU8bie48vVmPDobWJYahtLqVaeQ09EhC2d5Q7eS2fHGwMmVNQ/+2tVvZl6hSB2rNsO
+         d9wVjcLF1soPyRD+h/opzsLx2IxIeqQAw0q0LvfMCesaNDkPpTy16g1qv252fFzMTPlK
+         9kKA==
+X-Gm-Message-State: ANoB5pmleVTBFmPfyag/nFU4N9lrJ06lX8ahl8VRaHiJlDe8RUtByn+S
+        m94atzad+mbjZCNHJvNbepD5dnTJwPBqEB1sh0nbrzuFOcG78QAbSTCUN3Zl+GakMWNMNVjPcIb
+        F9JVJl29CwSTW
+X-Received: by 2002:a17:907:778a:b0:7ae:743c:61c1 with SMTP id ky10-20020a170907778a00b007ae743c61c1mr10018340ejc.511.1667992904103;
+        Wed, 09 Nov 2022 03:21:44 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6TQe48yQLkJdpv+TaqjpnyJXWIfV1jTzYt4LWLlnCMU7wmlEFns3k5hY9omtckGMfN0SMwrQ==
+X-Received: by 2002:a17:907:778a:b0:7ae:743c:61c1 with SMTP id ky10-20020a170907778a00b007ae743c61c1mr10018283ejc.511.1667992903225;
+        Wed, 09 Nov 2022 03:21:43 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id qp18-20020a170907207200b007838e332d78sm5687061ejb.128.2022.11.09.03.21.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Nov 2022 03:21:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4C42678250B; Wed,  9 Nov 2022 12:21:42 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [xdp-hints] [RFC bpf-next v2 04/14] veth: Support rx timestamp
+ metadata for xdp
+In-Reply-To: <20221104032532.1615099-5-sdf@google.com>
+References: <20221104032532.1615099-1-sdf@google.com>
+ <20221104032532.1615099-5-sdf@google.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 09 Nov 2022 12:21:42 +0100
+Message-ID: <87iljoz83d.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 08, 2022 at 04:51:12PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2022-11-08 at 13:27 +0200, Mike Rapoport wrote:
-> > > Based on our experiments [5], we measured 0.5% performance
-> > > improvement
-> > > from bpf_prog_pack. This patchset further boosts the improvement to
-> > > 0.7%.
-> > > The difference is because bpf_prog_pack uses 512x 4kB pages instead
-> > > of
-> > > 1x 2MB page, bpf_prog_pack as-is doesn't resolve #2 above.
-> > > 
-> > > This patchset replaces bpf_prog_pack with a better API and makes it
-> > > available for other dynamic kernel text, such as modules, ftrace,
-> > > kprobe.
-> > 
-> >  
-> > The proposed execmem_alloc() looks to me very much tailored for x86
-> > to be
-> > used as a replacement for module_alloc(). Some architectures have
-> > module_alloc() that is quite different from the default or x86
-> > version, so
-> > I'd expect at least some explanation how modules etc can use execmem_
-> > APIs
-> > without breaking !x86 architectures.
-> 
-> I think this is fair, but I think we should ask ask ourselves - how
-> much should we do in one step?
+Stanislav Fomichev <sdf@google.com> writes:
 
-I think that at least we need an evidence that execmem_alloc() etc can be
-actually used by modules/ftrace/kprobes. Luis said that RFC v2 didn't work
-for him at all, so having a core MM API for code allocation that only works
-with BPF on x86 seems not right to me.
- 
-> For non-text_poke() architectures, the way you can make it work is have
-> the API look like:
-> execmem_alloc()  <- Does the allocation, but necessarily usable yet
-> execmem_write()  <- Loads the mapping, doesn't work after finish()
-> execmem_finish() <- Makes the mapping live (loaded, executable, ready)
-> 
-> So for text_poke():
-> execmem_alloc()  <- reserves the mapping
-> execmem_write()  <- text_pokes() to the mapping
-> execmem_finish() <- does nothing
-> 
-> And non-text_poke():
-> execmem_alloc()  <- Allocates a regular RW vmalloc allocation
-> execmem_write()  <- Writes normally to it
-> execmem_finish() <- does set_memory_ro()/set_memory_x() on it
-> 
-> Non-text_poke() only gets the benefits of centralized logic, but the
-> interface works for both. This is pretty much what the perm_alloc() RFC
-> did to make it work with other arch's and modules. But to fit with the
-> existing modules code (which is actually spread all over) and also
-> handle RO sections, it also needed some additional bells and whistles.
+> xskxceiver conveniently setups up veth pairs so it seems logical
+> to use veth as an example for some of the metadata handling.
+>
+> We timestamp skb right when we "receive" it, store its
+> pointer in new veth_xdp_buff wrapper and generate BPF bytecode to
+> reach it from the BPF program.
+>
+> This largely follows the idea of "store some queue context in
+> the xdp_buff/xdp_frame so the metadata can be reached out
+> from the BPF program".
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: David Ahern <dsahern@gmail.com>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Cc: Maryam Tahhan <mtahhan@redhat.com>
+> Cc: xdp-hints@xdp-project.net
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 917ba57453c1..0e629ceb087b 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/filter.h>
+>  #include <linux/ptr_ring.h>
+>  #include <linux/bpf_trace.h>
+> +#include <linux/bpf_patch.h>
+>  #include <linux/net_tstamp.h>
+>  
+>  #define DRV_NAME	"veth"
+> @@ -118,6 +119,7 @@ static struct {
+>  
+>  struct veth_xdp_buff {
+>  	struct xdp_buff xdp;
+> +	struct sk_buff *skb;
+>  };
+>  
+>  static int veth_get_link_ksettings(struct net_device *dev,
+> @@ -602,6 +604,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+>  
+>  		xdp_convert_frame_to_buff(frame, xdp);
+>  		xdp->rxq = &rq->xdp_rxq;
+> +		vxbuf.skb = NULL;
+>  
+>  		act = bpf_prog_run_xdp(xdp_prog, xdp);
+>  
+> @@ -826,6 +829,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+>  
+>  	orig_data = xdp->data;
+>  	orig_data_end = xdp->data_end;
+> +	vxbuf.skb = skb;
+>  
+>  	act = bpf_prog_run_xdp(xdp_prog, xdp);
+>  
+> @@ -942,6 +946,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+>  			struct sk_buff *skb = ptr;
+>  
+>  			stats->xdp_bytes += skb->len;
+> +			__net_timestamp(skb);
+>  			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
+>  			if (skb) {
+>  				if (skb_shared(skb) || skb_unclone(skb, GFP_ATOMIC))
+> @@ -1665,6 +1670,31 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+>  	}
+>  }
+>  
+> +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
+> +			      struct bpf_patch *patch)
+> +{
+> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
+> +		/* return true; */
+> +		bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
+> +	} else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
+> +		bpf_patch_append(patch,
+> +			/* r5 = ((struct veth_xdp_buff *)r1)->skb; */
+> +			BPF_LDX_MEM(BPF_DW, BPF_REG_5, BPF_REG_1,
+> +				    offsetof(struct veth_xdp_buff, skb)),
+> +			/* if (r5 == NULL) { */
+> +			BPF_JMP_IMM(BPF_JNE, BPF_REG_5, 0, 2),
+> +			/*	return 0; */
+> +			BPF_MOV64_IMM(BPF_REG_0, 0),
+> +			BPF_JMP_A(1),
+> +			/* } else { */
+> +			/*	return ((struct sk_buff *)r5)->tstamp; */
+> +			BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_5,
+> +				    offsetof(struct sk_buff, tstamp)),
+> +			/* } */
 
-I'm less concerned about non-text_poke() part, but rather about
-restrictions where code and data can live on different architectures and
-whether these restrictions won't lead to inability to use the centralized
-logic on, say, arm64 and powerpc.
+I don't think it's realistic to expect driver developers to write this
+level of BPF instructions for everything. With the 'patch' thing it
+should be feasible to write some helpers that driver developers can use,
+right? E.g., this one could be:
 
-For instance, if we use execmem_alloc() for modules, it means that data
-sections should be allocated separately with plain vmalloc(). Will this
-work universally? Or this will require special care with additional
-complexity in the modules code?
- 
-> So the question I'm trying to ask is, how much should we target for the
-> next step? I first thought that this functionality was so intertwined,
-> it would be too hard to do iteratively. So if we want to try
-> iteratively, I'm ok if it doesn't solve everything.
- 
-With execmem_alloc() as the first step I'm failing to see the large
-picture. If we want to use it for modules, how will we allocate RO data?
-with similar rodata_alloc() that uses yet another tree in vmalloc? 
-How the caching of large pages in vmalloc can be made useful for use cases
-like secretmem and PKS?
+bpf_read_context_member_u64(size_t ctx_offset, size_t member_offset)
 
--- 
-Sincerely yours,
-Mike.
+called as:
+
+bpf_read_context_member_u64(offsetof(struct veth_xdp_buff, skb), offsetof(struct sk_buff, tstamp));
+
+or with some macro trickery we could even hide the offsetof so you just
+pass in types and member names?
+
+-Toke
+
