@@ -2,90 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD06862297E
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 12:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB70C622996
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 12:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbiKILEd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 06:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S230129AbiKILGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 06:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbiKILEc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 06:04:32 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 909B7644C;
-        Wed,  9 Nov 2022 03:04:30 -0800 (PST)
-Received: from pwmachine.localnet (85-170-25-210.rev.numericable.fr [85.170.25.210])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E10EA20B929F;
-        Wed,  9 Nov 2022 03:04:26 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E10EA20B929F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1667991870;
-        bh=xjS3RSgFinUTnn09YzQPAUOcc5Q2nF9iD2L4KzdBxww=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gf/R1SCtcGFF4CgzLlMsIc28oU4/5u8K8PB3INvwTTeVUNeluS7YQDzb7WkVZBGXM
-         aTE3sOLwkcICATx7N4IcHvqtFxt3hZH5a9ZuqjcrhWmR/tnPzX5NnDMaAnbb243Fdt
-         a+TEzsT3R21bijzQv3l8DC5BsrleqV8rqMp/comQ=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alban Crequy <alban.crequy@gmail.com>,
-        Alban Crequy <albancrequy@microsoft.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/2] maccess: fix writing offset in case of fault in strncpy_from_kernel_nofault()
-Date:   Wed, 09 Nov 2022 12:04:24 +0100
-Message-ID: <2655397.mvXUDI8C0e@pwmachine>
-In-Reply-To: <20221108130551.85ad67b402582e3855418294@linux-foundation.org>
-References: <20221108195211.214025-1-flaniel@linux.microsoft.com> <20221108195211.214025-2-flaniel@linux.microsoft.com> <20221108130551.85ad67b402582e3855418294@linux-foundation.org>
+        with ESMTP id S229868AbiKILGa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 06:06:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370D31A3AA
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 03:06:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/IkzV8yvUA7Vr60S7GhslnSnuxhvF+TnodYNUtT0N3w=; b=XQUqPUgFP1vxme1fsqnx7sKOhx
+        Nr7tsJDn+TYxTMKfu6e5+brc+Xj8cIPgJhtKXcsB6BhkmuHPKrFJWuBp9Krf5K5QKTMSF1HLqApnu
+        FvHi437aH0q0khheqttPUzdjbbM5Js6ibx9i5S/3M08cW55gHl9V71AsiXjqdwKERObB4TNlpV7UO
+        hK8spPSjHjUD2OjFuKWZVZKj+sodv4dVEq6tXzkZ39XQ3Twc1p4yF5KELCmiGVvnzeDAoo/xo4wTj
+        EZoJODw46Pj4z+pg/OgTKFoGga/MzVcd2RE5HWx7fKqxX/v/HupMl5czCunaAjuMCaRAeOHu8/ZU8
+        4uuhmhfQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ositx-00B7Pe-OB; Wed, 09 Nov 2022 11:05:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 45D4930036B;
+        Wed,  9 Nov 2022 12:05:41 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F01AE20264769; Wed,  9 Nov 2022 12:05:40 +0100 (CET)
+Date:   Wed, 9 Nov 2022 12:05:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Aaron Lu <aaron.lu@intel.com>, Mike Rapoport <rppt@kernel.org>,
+        Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        rick.p.edgecombe@intel.com, mcgrof@kernel.org
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+Message-ID: <Y2uJhFEY+1XDJHiL@hirez.programming.kicks-ass.net>
+References: <20221107223921.3451913-1-song@kernel.org>
+ <Y2o9Iz30A3Nruqs4@kernel.org>
+ <Y2pNyKmMnOEeongp@ziqianlu-desk2>
+ <20221109065512.GA11254@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-11.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221109065512.GA11254@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+On Wed, Nov 09, 2022 at 07:55:12AM +0100, Christoph Hellwig wrote:
+> On Tue, Nov 08, 2022 at 08:38:32PM +0800, Aaron Lu wrote:
+> > set_memory_nx/x() on a vmalloced range will not affect direct map but
+> > set_memory_ro/rw() will.
+> 
+> Which seems a little odd.  Is there any good reason to not also propagate
+> the NX bit?
 
-Le mardi 8 novembre 2022, 22:05:51 CET Andrew Morton a =E9crit :
-> On Tue,  8 Nov 2022 20:52:06 +0100 Francis Laniel=20
-<flaniel@linux.microsoft.com> wrote:
-> > From: Alban Crequy <albancrequy@microsoft.com>
-> >=20
-> > If a page fault occurs while copying the first byte, this function rese=
-ts
-> > one byte before dst.
-> > As a consequence, an address could be modified and leaded to kernel
-> > crashes if case the modified address was accessed later.
-> >=20
-> > Signed-off-by: Alban Crequy <albancrequy@microsoft.com>
-> > Tested-by: Francis Laniel <flaniel@linux.microsoft.com>
->=20
-> Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
->=20
-> Please merge via the bpf tree.
->=20
-> This looks potentially nasty.  Fortunately only tracing code uses it,
-> but I'm thinking it should have cc:stable and a Fixes:?
-
-Thank you for the review!
-Sorry, I thought to add stable list but forgot to add it when sending the=20
-series...
-I will sent a v2 with your review and without rfc tag to, among others,=20
-stable.
+Less executable ranges more better. That is, the direct map is *always*
+NX.
 
 
