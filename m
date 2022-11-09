@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6699622121
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 02:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4997622127
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 02:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiKIBDp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 20:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
+        id S230008AbiKIBFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 20:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbiKIBDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 20:03:44 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0941415A3E
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 17:03:40 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id v17so25065940edc.8
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 17:03:39 -0800 (PST)
+        with ESMTP id S229770AbiKIBFd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 20:05:33 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3068C63CF4
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 17:05:29 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id q9so43045876ejd.0
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 17:05:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/n2hdxIC5mY1i9uKM3KuiZjcJGjR3GV02BNKOEmqVuk=;
-        b=mWLydqv3ZvTiaZfoP5a2mv/IRliPkSWm29v32IYacZyV4ZJIvoGWePQbVsR14qgt9D
-         HTNZlvaro4Vo3RqqiQOEErFVFocWkcbg8fxsFJWJy231Kj3j1xSKRTAjDzjTr4LIQnPa
-         o6Rok3IfGhYlmabPTV9I4lwtu9YNtt6Xv3Dyj9103bVhvfBoo0bHTAyxukcJYZHEn3XE
-         s+lFOzG7tgHdEWCjWYCcKjqzRhjTlm6dbobNmVectsvZJbjfovQdKDpM94dxuL4zfYya
-         g2fHR+PUTJxAMmUNKIsMn4nMnoHtnNYP3oFNl9rYK43noAOxON+RoAoynbLlDssX9N/u
-         oquA==
+        bh=xFXqQY047XYBWypt82Fm3fZZXIzTFgiyjTFsnnBnPZg=;
+        b=Y9CdM6W5Z0iJz+mA2/gVG8aC5rUDk39YWTsZyJIsC9NXzj8rFWBNJWAA+6cKbmCjJd
+         wm3s38LAs6lYKpg7z0Gmd7nmyciUzrYigoqksB7uynZUTS4O0R23vV0/a3JASobXPBWh
+         rR4gkUxCFYPighpVWn2y8MWv+biIWjnNbzussKheu+lrCyYhWDMzyLSbjwS0gj1AaEJV
+         Grus4oLD+dl/GwP70Ja66nUI+WG+INn89ucMVHMwfXiLxLfnNK6M8qHodfjgvfLqYiEq
+         GeC0lj4UN5rLOZo3K0FFKhtHfej4A7VMbyBEzAm4BYpuv/zMrDKbZMSEitFWYCZbUuKI
+         6Y6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/n2hdxIC5mY1i9uKM3KuiZjcJGjR3GV02BNKOEmqVuk=;
-        b=AnEN/WbENUyEBP5GvFdi/ZAHPJunXtQMXt3og6lpJDXK2wvjRorSIqLIx1vnVlY8FO
-         jVcc0UO86eNVyL1Q4hiJrIqJ6DcoifbRU0Nx0WHgWAfKxqVBoV/LzslmdQkH5xTccgsK
-         rQw+x4tn+GrdcVqyuM3BWCHr3OK8NAVJrCmMMkKR2pQsNHgDC3RyFNN86jic/lCy36AU
-         HgfEvlmv/4ru6s/EYNZFqm/tuzzfkXfXHWyGNtDpe7WGea1DEmLkyCc0VmUkO9Gaw+bP
-         PTwfnBm8AWGswEW+MZUCQJstN1g6T4etxDStOsg3M3j8vYUCZh1DyQ4WSY5YPdEeNeLS
-         EgIw==
-X-Gm-Message-State: ACrzQf3DW3N5WURmZ6S6hQo7wregS5Av3cr5BQB3Ec8X6LFxfhTOV5nF
-        hENxSHoLRUHT94hWfApSV1N1adHjhUHBIN6+Zeg=
-X-Google-Smtp-Source: AMsMyM4DQkyf1o6Tabhe3qVcj6g/AU0YF4BQ9UR3J6bp4lOWYiPSc9IMsyj75CBnMRtqVqI27zV2Vm3pn/Xx/YXHCaQ=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr58526681edb.333.1667955818469; Tue, 08
- Nov 2022 17:03:38 -0800 (PST)
+        bh=xFXqQY047XYBWypt82Fm3fZZXIzTFgiyjTFsnnBnPZg=;
+        b=JZNynoaZ1vMXNIgijqo+Kdx/RqMcKOqRAsEcl8QxRO8oEPdMCQ+AN/3WXQ2c5kRf6z
+         ia3z00F13OX5Tv1GUBvxk5RiAaEn0fvTAmnlT/2V7mW+7PYHp4ub8jnZXmqa4nqlwGM1
+         1l1Cz+npOqquvSnYpI7f8738Hi3shcoTTI5nWezSnVea0Rr5ku4PoyXrSB1wxAHErSRb
+         xPxrzeQ3PIVOBBCFARISVNCi4s3sOYWzrNFyFYUFQa+D7GKFAb3mJDjgBuuXqc5GDvlZ
+         OimeFBgFI5KM7uRrUX/JrXRNhHsGqBNao2FfvXnq5GB+nfulOQh4DvPc7Emj0SyLfPbS
+         kctw==
+X-Gm-Message-State: ACrzQf2QJQPCmPJ5bVR4VXEjrbpjMtEpt3QYSklUeTjb9QxQUxs3rtTj
+        nrYSikbL3TrYREaVLd8QV5z3g99g56ezbhxyL/4=
+X-Google-Smtp-Source: AMsMyM6UncjGF4WDxEsdrjqNcPBE7qu0qKnuHP8RNjPmUM2pkIZ0e7l05ag+fqVXaS6YOyLgDtbCn/FNnCNsuQJu1eQ=
+X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
+ wz5-20020a170906fe4500b0078815a57495mr56105955ejb.633.1667955927673; Tue, 08
+ Nov 2022 17:05:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-4-memxor@gmail.com>
- <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
- <20221108233944.o6ktnoinaggzir7t@apollo> <CAEf4BzbBNSsqvJnD8Sy4EzzOQOSuVb-g8HecCcBdJy1J2c09-A@mail.gmail.com>
-In-Reply-To: <CAEf4BzbBNSsqvJnD8Sy4EzzOQOSuVb-g8HecCcBdJy1J2c09-A@mail.gmail.com>
+References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-6-memxor@gmail.com>
+ <CAEf4BzZ180YJ+fbynJSR2fXXMVuKZTyginHyRdxydvOm-po7TA@mail.gmail.com>
+ <20221108234901.erzrj2b6bsvqkzir@apollo> <CAEf4BzZJBeBr69QFdbj0L_76uViBsJJ1EzTiTFni+eUtTCG9mQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZJBeBr69QFdbj0L_76uViBsJJ1EzTiTFni+eUtTCG9mQ@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 8 Nov 2022 17:03:25 -0800
-Message-ID: <CAADnVQLaiNYALgngkU+iKe-f7qJp9FOCqNKpcCfSVn5U4od32A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 03/25] bpf: Support bpf_list_head in map values
+Date:   Tue, 8 Nov 2022 17:05:15 -0800
+Message-ID: <CAADnVQJnHLu30fxj3rpzNNMDseJDk2Rs37e9PrqLQ3n=UEtZcQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 05/25] bpf: Rename MEM_ALLOC to MEM_RINGBUF
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -73,83 +73,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 4:23 PM Andrii Nakryiko
+On Tue, Nov 8, 2022 at 4:26 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
-> > > >  struct bpf_offload_dev;
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 94659f6b3395..dd381086bad9 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -6887,6 +6887,16 @@ struct bpf_dynptr {
-> > > >         __u64 :64;
-> > > >  } __attribute__((aligned(8)));
+>
+> On Tue, Nov 8, 2022 at 3:49 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > On Wed, Nov 09, 2022 at 04:44:16AM IST, Andrii Nakryiko wrote:
+> > > On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > > > >
-> > > > +struct bpf_list_head {
-> > > > +       __u64 :64;
-> > > > +       __u64 :64;
-> > > > +} __attribute__((aligned(8)));
-> > > > +
-> > > > +struct bpf_list_node {
-> > > > +       __u64 :64;
-> > > > +       __u64 :64;
-> > > > +} __attribute__((aligned(8)));
+> > > > Currently, verifier uses MEM_ALLOC type tag to specially tag memory
+> > > > returned from bpf_ringbuf_reserve helper. However, this is currently
+> > > > only used for this purpose and there is an implicit assumption that it
+> > > > only refers to ringbuf memory (e.g. the check for ARG_PTR_TO_ALLOC_MEM
+> > > > in check_func_arg_reg_off).
+> > > >
+> > > > Hence, rename MEM_ALLOC to MEM_RINGBUF to indicate this special
+> > > > relationship and instead open the use of MEM_ALLOC for more generic
+> > > > allocations made for user types.
+> > > >
+> > > > Also, since ARG_PTR_TO_ALLOC_MEM_OR_NULL is unused, simply drop it.
+> > > >
+> > > > Finally, update selftests using 'alloc_' verifier string to 'ringbuf_'.
+> > > >
+> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > ---
 > > >
-> > > Dave mentioned that this `__u64 :64` trick makes vmlinux.h lose the
-> > > alignment information, as the struct itself is empty, and so there is
-> > > nothing indicating that it has to be 8-byte aligned.
-
-Since it's not a new issue let's fix it for all.
-Whether it's a combination of pahole + bpftool or just pahole.
-
+> > > Ok, so you are doing what I asked in the previous patch, nice :)
 > > >
-> > > So what if we have
+> > > >  include/linux/bpf.h                               | 11 ++++-------
+> > > >  kernel/bpf/ringbuf.c                              |  6 +++---
+> > > >  kernel/bpf/verifier.c                             | 14 +++++++-------
+> > > >  tools/testing/selftests/bpf/prog_tests/dynptr.c   |  2 +-
+> > > >  tools/testing/selftests/bpf/verifier/ringbuf.c    |  2 +-
+> > > >  tools/testing/selftests/bpf/verifier/spill_fill.c |  2 +-
+> > > >  6 files changed, 17 insertions(+), 20 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > index 2fe3ec620d54..afc1c51b59ff 100644
+> > > > --- a/include/linux/bpf.h
+> > > > +++ b/include/linux/bpf.h
+> > > > @@ -488,10 +488,8 @@ enum bpf_type_flag {
+> > > >          */
+> > > >         MEM_RDONLY              = BIT(1 + BPF_BASE_TYPE_BITS),
+> > > >
+> > > > -       /* MEM was "allocated" from a different helper, and cannot be mixed
+> > > > -        * with regular non-MEM_ALLOC'ed MEM types.
+> > > > -        */
+> > > > -       MEM_ALLOC               = BIT(2 + BPF_BASE_TYPE_BITS),
+> > > > +       /* MEM points to BPF ring buffer reservation. */
+> > > > +       MEM_RINGBUF             = BIT(2 + BPF_BASE_TYPE_BITS),
 > > >
-> > > struct bpf_list_node {
-> > >     __u64 __opaque[2];
-> > > } __attribute__((aligned(8)));
-> > >
-> > > ?
+> > > What do we gain by having ringbuf memory as additional modified flag
+> > > instead of its own type like PTR_TO_MAP_VALUE or PTR_TO_PACKET? It
+> > > feels like here separate register type is more justified and is less
+> > > error prone overall.
 > > >
 > >
-> > Yep, can do that. Note that it's also potentially an issue for existing cases,
-> > like bpf_spin_lock, bpf_timer, bpf_dynptr, etc. Not completely sure if changing
-> > things now is possible, but if it is, we should probably make it for all of
-> > them?
+> > I'm not sure it's all that different. It only matters when checking argument
+> > during release. We want to ensure it came from ringbuf_reserve. That's all,
+> > apart from that it's no different from PTR_TO_MEM. In all other places it's
+> > folded and code for PTR_TO_MEM is used. Same idea as PTR_TO_BTF_ID | MEM_ALLOC.
+> >
+> > But I don't feel too strongly, so if you still think it's better I can make the
+> > switch.
 >
-> Why not? We are not removing anything or changing sizes, so it's
-> backwards compatible.
-> But I have a suspicion Alexei might not like
-> this __opaque field, so let's see what he says.
+> Not strongly, but I think having this as a flag is more error prone.
+> For cases where ringbuf memory should be treated just as memory, we
+> should use the same mechanism we have for MAP_VALUE. But I haven't
+> checked how we deal with MAP_VALUE, if that's a special case
+> everywhere, in addition to generic PTR_TO_MEM, then fine. But if
+> having PTR_TO_RINGBUF_MEM is converted to PTR_TO_MEM generically where
+> needed, I'd have dedicated PTR_TO_RINGBUF_MEM.
 
-I prefer to fix them all at once without adding a name.
-
->
-> > > >                 off = vsi->offset;
-> > > > +               if (i && !off)
-> > > > +                       return -EFAULT;
-> > >
-> > > similarly, I'd say that either we'd need to calculate the exact
-> > > expected offset, or just not do anything here?
-> > >
-> >
-> > This thread is actually what prompted this check:
-> > https://lore.kernel.org/bpf/CAEf4Bza7ga2hEQ4J7EtgRHz49p1vZtaT4d2RDiyGOKGK41Nt=Q@mail.gmail.com
-> >
-> > Unless loaded using libbpf all offsets are zero. So I think we need to reject it
-> > here, but I think the same zero sized field might be an issue for this as well,
-> > so maybe we remember the last field size and check whether it was zero or not?
-> >
-> > I'll also include some more tests for these cases.
->
-> The question is whether this affects correctness from the verifier
-> standpoint? If it does, there must be some other place where this will
-> cause problem and should be caught and reported.
-
-If it's an issue with BTF then we should probably check it
-during generic datasec verification.
-Here it's kinda late to warn.
-
-> My main objection is that it's half a check, we check that it's
-> non-zero, but we don't check that it is correct in stricter sense. So
-> I'd rather drop it altogether, or go all the way to check that it is
-> correct offset (taking into account sizes of previous vars).
+I don't think we can or at least it's not as easy to generalize
+ringbuf mem as map_value.
+iirc MEM_ALLOC was there to make sure reserver->commit is the same mem.
+That's what MEM_RINGBUF will doing after this patch.
