@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDBE623766
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 00:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A81623791
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 00:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbiKIXXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 18:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
+        id S231927AbiKIXgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 18:36:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbiKIXXU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 18:23:20 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E10713E39
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 15:23:19 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id q9so985972ejd.0
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 15:23:19 -0800 (PST)
+        with ESMTP id S231963AbiKIXfr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 18:35:47 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206A12E9DC
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 15:35:47 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id v17so541954edc.8
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 15:35:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GE9AXFXIZcsh3Sm50f7BWup17+px/Hy65QAFKTk8xVs=;
-        b=NhFXWooepLCRGPq6FeCjYSmi2NNS212l0j2O5+LT7+FOy4SH6HBSk/uugILFTolM/T
-         52LA4rjrzE3k7bf4o8mRKceUCNBlEV+PUur+TF9CI401juvv6lYN3DjfngGF0J5pnlf2
-         T9W6PSUptdk5txQT9OZnl0UIbZSJav1M8YgAsVn9WtMvYksc4r8a3Edf3NwAHotO+u4z
-         n3TN5en3Zu0pvoetr89UnV8p38yCkpUFBTsyarf8ddoQTmuAT2ZFDyvhyWrMfpqqI6yq
-         mA/oD8GyUHKEXnT8LQGNAsSxuPvg3CBzwpleVWdSnXS4lgG0qdbMF0LebnSzf7wvNv4V
-         npvw==
+        bh=cX60kSRACSEe4BPNdgnQj1ayNctCEfbcxUvnaT3k0ls=;
+        b=WYZTJ5aN/S1WwPCWOJzOjf6o0leE4wiyX2SzS19piWnredD7fvZXsKl4/W5+a0gvgx
+         yGvOJBP5QhfKZs4TxcTU9s8+Gvo4JRqjSxUasSWzquHAaAgZ5Dv4ZEkFAdEOHPyoDOSi
+         8I9cihCxjeR5YS2oHsPEaVB0fIedu0SBNRI5xJGuEom0q2UIhWDutzovuSA3yudZLUpJ
+         84g2Qqe5dMmPK76rtmodzZw/N8OQVRzRsv7eIF3SnNQ52PihB+b7zqVC6BXU/5azuXS4
+         dFDWoMMWB17AuE0QQV9Czg1h3RtlF7eVo01H3XbD8Q8D80g69Vgx7CX/JGLn3jTZkAVU
+         sW/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GE9AXFXIZcsh3Sm50f7BWup17+px/Hy65QAFKTk8xVs=;
-        b=V7Zek33jy509O5zSqREAS/wLiFoWNtQKp4vZRoFtxOO2TC4fgIsSGNr4ocs9iqVKgF
-         Kguxd0Pr7rcK/isqg3pYds4Q/DCs4Fh0uLy9niX7htW2HiRPS8AGR3t1rWUF+EZTCOI7
-         LEKyzg+1UmqzPa0dHe/9EGrkdC32N7GNgrN7tSa6DanT+kjIT1bZ6HNv69lExZ46NxND
-         +yfYBO2HGhNZ8dSnIF7brubvyPWmspOdZTOIC8yGlfkO881Gnbs+3wJILfUgvdxTo9RC
-         fPn5zrMtqkDkWlg2H3lW4QMwblzEwWrDddYRiGqpAczGYfNjvRUCKyqP8Ul0sSW+K64/
-         Z36A==
-X-Gm-Message-State: ACrzQf0hXeq8HLSZm9XeKK6yGOhXFrom1OecucJIZ/osSxogZ3AUn0hI
-        qCxJKiNid6wcPZ8u8ufKJcO9PQiyEhzM8E4PhwQ=
-X-Google-Smtp-Source: AMsMyM6Xce1XGqF+ckUaHBnjHU2CKa1Ui61QvBt85H+Lbc8Tt276xo4WPBawThCsykScbj9u6bVVCkGLKcVLUYWXfNU=
-X-Received: by 2002:a17:906:b050:b0:78d:99ee:4e68 with SMTP id
- bj16-20020a170906b05000b0078d99ee4e68mr1903552ejb.302.1668036197669; Wed, 09
- Nov 2022 15:23:17 -0800 (PST)
+        bh=cX60kSRACSEe4BPNdgnQj1ayNctCEfbcxUvnaT3k0ls=;
+        b=CiFhHU8ns+RZN1SMIb+f2LGyERYwkdPNkTG76dE/DycxkVEkzmNFHcKbkamcYfXq+X
+         Y7z5VxgrTAVrjBTRZaFm34hedwX36I03QXlhI3iIBdwdzoRGOR5qvb5Wfphdo/GeLSuB
+         0NBzUW+DENUdh6XL6ZItn2/2h/yzVr9PKZvjI3vNhlovhytA9jvSk1Hi0qjI8u9C+rMG
+         h7h7yVH81zW5YISPqJlAXqiQB+vKIyKpd+hkD6rZowwYCHYue/9OHwDQjoEbggoah8ra
+         kJOyaxi1tjoXSrTfDz4/dcYzB/2CdCxf2opH8aF+EJC4jiDmsDj4/osafBCsj9X6Aha6
+         UREA==
+X-Gm-Message-State: ACrzQf278TP00yxo7r1mLfhtiO1YdqgeVXr7XBtYCt22TaiM9Q+5GbB2
+        pjCQJy/sBGL0aphs1xrd2EaInyQ+51Sa4YMlGAE=
+X-Google-Smtp-Source: AMsMyM5HIj95WyeRMvePUB/p7bXucpcslRRe+Btfzc+SfY1lX8VpvzlW3keOXmws34g4CrA0w3qMM2rJwhI0xbvgJSU=
+X-Received: by 2002:a05:6402:428d:b0:460:b26c:82a5 with SMTP id
+ g13-20020a056402428d00b00460b26c82a5mr63154328edc.66.1668036945370; Wed, 09
+ Nov 2022 15:35:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-7-memxor@gmail.com>
- <CAEf4BzZRaN_zd07jvtom6QJEEDGmFQTLJy4BM1bKi1MH5+n5QA@mail.gmail.com>
- <20221109000016.np325iqjjegvdose@apollo> <CAEf4BzZ0h4yda0_M8+wgpsHAgm_J5oeUtaxm8V-jqy3gNjFWdg@mail.gmail.com>
- <CAADnVQL1ZojMCzt5FZU5Di2m6W3JYTrGZHBLoMQCinQfyL=4Og@mail.gmail.com> <20221109170017.jvutgcd6qrsuvrsg@apollo>
-In-Reply-To: <20221109170017.jvutgcd6qrsuvrsg@apollo>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Nov 2022 15:23:05 -0800
-Message-ID: <CAEf4BzaDAZoRyRx_jCzACupKjxrFaKwomKPBEbHUB4+q6EHocw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 06/25] bpf: Introduce local kptrs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-4-memxor@gmail.com>
+ <CAEf4Bza6R67US05R6Oh-FY9Kit8abH6eiJ33Z6TnSSpC_n5FBA@mail.gmail.com>
+ <20221108233944.o6ktnoinaggzir7t@apollo> <CAEf4BzbBNSsqvJnD8Sy4EzzOQOSuVb-g8HecCcBdJy1J2c09-A@mail.gmail.com>
+ <CAADnVQLaiNYALgngkU+iKe-f7qJp9FOCqNKpcCfSVn5U4od32A@mail.gmail.com> <CAEf4BzbR-GjtjXi4mZTdya9gidPBsSi8hn3MJ7+G5J_r4iw5xQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbR-GjtjXi4mZTdya9gidPBsSi8hn3MJ7+G5J_r4iw5xQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 9 Nov 2022 15:35:33 -0800
+Message-ID: <CAADnVQK19sEn7reWbXFbAwSpefiN+Q_xx+UvGLqYNRx-fxBtYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 03/25] bpf: Support bpf_list_head in map values
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -74,147 +74,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 9, 2022 at 9:00 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Wed, Nov 9, 2022 at 3:11 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, Nov 09, 2022 at 07:02:11AM IST, Alexei Starovoitov wrote:
-> > On Tue, Nov 8, 2022 at 4:36 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 8, 2022 at 4:00 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > > >
-> > > > On Wed, Nov 09, 2022 at 04:59:41AM IST, Andrii Nakryiko wrote:
-> > > > > On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > > > > >
-> > > > > > Introduce local kptrs, i.e. PTR_TO_BTF_ID that point to a type in
-> > > > > > program BTF. This is indicated by the presence of MEM_ALLOC type flag in
-> > > > > > reg->type to avoid having to check btf_is_kernel when trying to match
-> > > > > > argument types in helpers.
-> > > > > >
-> > > > > > Refactor btf_struct_access callback to just take bpf_reg_state instead
-> > > > > > of btf and btf_type paramters. Note that the call site in
-> > > > > > check_map_access now simulates access to a PTR_TO_BTF_ID by creating a
-> > > > > > dummy reg on stack. Since only the type, btf, and btf_id of the register
-> > > > > > matter for the checks, it can be done so without complicating the usual
-> > > > > > cases elsewhere in the verifier where reg->btf and reg->btf_id is used
-> > > > > > verbatim.
-> > > > > >
-> > > > > > Whenever walking such types, any pointers being walked will always yield
-> > > > > > a SCALAR instead of pointer. In the future we might permit kptr inside
-> > > > > > local kptr (either kernel or local), and it would be permitted only in
-> > > > > > that case.
-> > > > > >
-> > > > > > For now, these local kptrs will always be referenced in verifier
-> > > > > > context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
-> > > > > > to such objects, as long fields that are special are not touched
-> > > > > > (support for which will be added in subsequent patches). Note that once
-> > > > > > such a local kptr is marked PTR_UNTRUSTED, it is no longer allowed to
-> > > > > > write to it.
-> > > > > >
-> > > > > > No PROBE_MEM handling is therefore done for loads into this type unless
-> > > > > > PTR_UNTRUSTED is part of the register type, since they can never be in
-> > > > > > an undefined state, and their lifetime will always be valid.
-> > > > > >
-> > > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > ---
-> > > > > >  include/linux/bpf.h              | 28 ++++++++++++++++--------
-> > > > > >  include/linux/filter.h           |  8 +++----
-> > > > > >  kernel/bpf/btf.c                 | 16 ++++++++++----
-> > > > > >  kernel/bpf/verifier.c            | 37 ++++++++++++++++++++++++++------
-> > > > > >  net/bpf/bpf_dummy_struct_ops.c   | 14 ++++++------
-> > > > > >  net/core/filter.c                | 34 ++++++++++++-----------------
-> > > > > >  net/ipv4/bpf_tcp_ca.c            | 13 ++++++-----
-> > > > > >  net/netfilter/nf_conntrack_bpf.c | 17 ++++++---------
-> > > > > >  8 files changed, 99 insertions(+), 68 deletions(-)
-> > > > > >
-> > > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > > > index afc1c51b59ff..75dbd2ecf80a 100644
-> > > > > > --- a/include/linux/bpf.h
-> > > > > > +++ b/include/linux/bpf.h
-> > > > > > @@ -524,6 +524,11 @@ enum bpf_type_flag {
-> > > > > >         /* Size is known at compile time. */
-> > > > > >         MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
-> > > > > >
-> > > > > > +       /* MEM is of a type from program BTF, not kernel BTF. This is used to
-> > > > > > +        * tag PTR_TO_BTF_ID allocated using bpf_obj_new.
-> > > > > > +        */
-> > > > > > +       MEM_ALLOC               = BIT(11 + BPF_BASE_TYPE_BITS),
-> > > > > > +
+> >
 > > > > >
-> > > > > you fixed one naming confusion with RINGBUF and basically are creating
-> > > > > a new one, where "ALLOC" means "local kptr"... If we are stuck with
-> > > > > "local kptr" (which I find very confusing as well, but that's beside
-> > > > > the point), why not stick to the whole "local" terminology here?
-> > > > > MEM_LOCAL?
+> > > > > So what if we have
+> > > > >
+> > > > > struct bpf_list_node {
+> > > > >     __u64 __opaque[2];
+> > > > > } __attribute__((aligned(8)));
+> > > > >
+> > > > > ?
 > > > > >
 > > > >
-> > > > See the discussion about this in v4:
-> > > > https://lore.kernel.org/bpf/20221104075113.5ighwdvero4mugu7@apollo
-> > > >
-> > > > It was MEM_TYPE_LOCAL before. Also, better naming suggestions are always
-> > > > welcome, I asked the same in that message as well.
+> > > > Yep, can do that. Note that it's also potentially an issue for existing cases,
+> > > > like bpf_spin_lock, bpf_timer, bpf_dynptr, etc. Not completely sure if changing
+> > > > things now is possible, but if it is, we should probably make it for all of
+> > > > them?
 > > >
-> > > Sorry, I haven't followed <v5. Don't have perfect name, but logically
-> > > this is BPF program memory. So "prog_kptr" would be something to
-> > > convert this, but I'm not super happy with such a name. "user_kptr"
-> > > would be too confusing, drawing incorrect "kernel space vs user space"
-> > > comparison, while both are kernel memory. It's BPF-side kptr, so
-> > > "bpf_kptr", but also not great.
+> > > Why not? We are not removing anything or changing sizes, so it's
+> > > backwards compatible.
+> > > But I have a suspicion Alexei might not like
+> > > this __opaque field, so let's see what he says.
 > >
-> > yep. I went through the same thinking process.
-> >
-> > > So that's why didn't suggest anything specific, but at least as far as
-> > > MEM_xxx flag goes, MEM_LOCAL_KPTR is better than MEM_ALLOC, IMO. It's
-> > > at least consistent with the official name of the concept it
-> > > represents.
-> >
-> > "local kptr" doesn't fit here.
-> > In libbpf, "local" is equally badly named.
-> > If "local" was a good name we wouldn't have had this discussion.
-> > So we need to fix it libbpf, but we should start with a proper
-> > name in the kernel.
-> > And "local kptr" is not it.
-> >
-> > We must avoid exhausting bikeshedding too.
-> > MEM_ALLOC is something we can use right now and
-> > as long as "local kptr" doesn't appear in docs, comments and
-> > commit logs we're good.
-> > We can rename MEM_ALLOC to something else later.
-> >
-> > In commit logs we can just say that this is
-> > a pointer to an object allocated by the bpf program.
-> > It's crystal clear definition whereas "local kptr" is nonsensical.
+> > I prefer to fix them all at once without adding a name.
 > >
 >
-> Ok, I'll drop the naming everywhere.
+> This is not an issue with BTF per se.
 >
-> > Going back to the kptr definition.
-> > kptr was supposed to mean a pointer to a kernel object.
-> > In that light "pointer to an object allocated by the bpf prog"
-> > is something else.
-> > Maybe "bptr" ?
-> > In some ways bpf is a layer different from kernel space and user space.
-> > Some people joked that there is ring-0 for kernel, ring-3 for user space
-> > while bpf runs in ring-B.
-> > Two new btf_tags __bptr and __bptr_ref (or may be just one?)
-> > might be necessary as well to make it easier to distinguish
-> > kernel and bpf prog allocated objects.
-> >
+> struct blah {
+>   u64: 64
+> };
 >
-> There's also the option of simply using __kptr and __kptr_ref for these (without
-> __local tag in BPF maps) and doing two stage name lookup for the types. Kernel
-> BTF takes precedence, if not found there, then it searches program BTF for a
-> local type. It would probably the simplest for users.
-
-Disagree about the simplest for users. It's going to be quite
-confusing for anyone reading the code and trying to understand what's
-going on. Explicit tag seems better to me. But it's subjective.
-
+> is just an empty struct blah with 8-byte size. Both BTF and DWARF will
+> record it as just
 >
-> struct map_value {
->         struct nf_conn __kptr_ref *ct; // kernel
->         struct foo __kptr_ref *f; // local
->         struct task_struct __kptr_ref *t; // kernel
->         struct bar __kptr_ref *b; // local
+> struct blah {
 > }
 >
-> We can revisit this again once the post the follow up to store them in maps.
+> and record it's size as 8 bytes.
+>
+> With that, there is nothing to suggest that this struct has to have
+> 8-byte alignment.
+>
+> If we mark explicitly __attribute__((aligned(8))) then DWARF will
+> additionally record alignment=8 for such struct. BTF doesn't record
+> alignment, though.
+>
+> adding u64 fields internally will make libbpf recognize that struct
+> needs at least 8-byte alignment, which is what I propose as a simple
+> solution.
+>
+> Alternatives are:
+>  - extend BTF to record struct/union alignments in BTF_KIND_{STRUCT,UNION}
+>  - record __attribute__((aligned(8))) as a new KIND (BTF_KIND_ATTRIBUTE)
+
+imo above two options are way better than adding __opaque which
+is nothing but a workaround for a missing feature in BTF.
+
+> Both seem like a bit of an overkill, given the work around is to have
+> u64 __opaque[] fields, which we won't have to remove or rename ever
+> (because those fields are not used).
+
+There is no rush to do this workaround.
+As Kumar says we can land the existing patch as-is
+and add BTF_KIND_ATTR (or anything else) in the followup.
+
+Adding __opaque now won't work, since we won't be able
+to remove it later due to backward compat.
