@@ -2,376 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC60F62326B
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068766232B9
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 19:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbiKIS1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 13:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        id S231378AbiKISlz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 13:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbiKIS1f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 13:27:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2805BC28;
-        Wed,  9 Nov 2022 10:27:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 81CA6B80AE1;
-        Wed,  9 Nov 2022 18:27:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A62C433D6;
-        Wed,  9 Nov 2022 18:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668018450;
-        bh=+vuumfRZwlPhaYrVqNpSTVMk/BgdhB1/aWWQDAh2tD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vAgsJEhT9a9Vw861+DGL85gpTNsQzfjcLQyNX6kouSagqMTU9EN3GKlGR67IupB0e
-         2/lkYmQ6uh0eE5KTqPn4ib1HmVynX4MoIiUecVUCewP6Iec8hLEfOmv41haRL3aUSz
-         0EodlEKT2TJKDI1bJtsiISsCIrF5aZ9yZnkF0heeyjuWj+Ky0vZpCkv3rIwlkYrJ4K
-         EDW+ElIVN/gmrzz3DVfsJhw63Ao4KbiNhFOFopBTthjlvLa+KF1LYjv6t/DH//ar6A
-         lXmG3aDvKxbuStL6IwXlFsZVOE4uwe5OQXXxg1gftoF2biIFv1U8ILjGyEHI2ae3Q/
-         absb5q5B4QOWQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 74C504034E; Wed,  9 Nov 2022 15:27:27 -0300 (-03)
-Date:   Wed, 9 Nov 2022 15:27:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v1 00/14] Fix perf tools/lib includes
-Message-ID: <Y2vxD1fgyCdO8nIO@kernel.org>
-References: <20221108073518.1154450-1-irogers@google.com>
- <Y2vG13WVahGoib57@kernel.org>
- <CAP-5=fXMEE6LAoBcV-UtRRhG3wvVtzBW4r5FGz06=qsE2U6jPw@mail.gmail.com>
- <CAP-5=fXECqhQpvMVdyzFpNixGwC+9BBo_Jj9nXEZ1hsDvjRd8Q@mail.gmail.com>
+        with ESMTP id S231458AbiKISlh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 13:41:37 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA4E20BE8
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 10:41:28 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id d20so16841484plr.10
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 10:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0klVcULHlU8QXUEofEvOlzpjeMUDF9HThIA1Ap5cafU=;
+        b=p/SQBNp03h1dCAlbGNYzoIrkqmkGiVrYdHro8VPgLnF46x5Fhb+eBT+vGz3cUkUVz1
+         zTp68PazIW74Ged1YQXZQr8dgQPWCyg/COCiXiLFWo5KE2tuxbVKatSFmKWpa6YYcWsz
+         HKOGr+E0A1IzrF4+/5waL8GQCMjrcUxDJgSi3MLYmAwvdfyyimN5/WJ2ELvTO+QlBn8R
+         jekUKNtCCihexRGKivqWRHlgpHvu9P3VmMtISPhxaewq9+Xd1xaV2khGYdOC2Sre6PUK
+         xC5YHF3lnyCgu7bY2ptzD3XscQpMCUUIvp0JDZevJU/jvYz9dxNv/haw1m7Pmzx/hxlg
+         wixg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0klVcULHlU8QXUEofEvOlzpjeMUDF9HThIA1Ap5cafU=;
+        b=uid7nLXKuXdG/zaBjUZJJjJJ12ugX3JlbTjPVJBk2i9RbGA1LvxCo9/730V11pRpRB
+         Za54s78oLfqTBNm/a92++x80zYacnn9+FmwYoP3u4xB1MNfQMPqAk4b8/dxlZSksKvHS
+         pTRj3a32rdaJ9MP2/uxvxLwX/EARk6+KjngcMG7CAiH6SfpF7uXVYsPCCQGuR7o1Iehu
+         6KaEy1OX4aT/WxWmxLif/ntMwlu9NQVmK+4IACETASM5mETZC77YyMTuVhdu93nNPKEu
+         r+GYMdWIX+AUr8YztM3t10mJTG1lWuNIqnKLLrK0ciA4A9cjB+cJ2CUFguANrnA03grc
+         qdBw==
+X-Gm-Message-State: ACrzQf2/MLVkbNToMl4KAEd10at6z5zs6lgyAY+x3c/vGaDg0yZQM039
+        p9Yr/Sp9kz0WNx0FoZ1F2Ag=
+X-Google-Smtp-Source: AMsMyM4ZUz9JyvHCpu62YLqkTLdt2FUaIdXWAL/YJdGWV7vO1gkEdTR/ejC978Dk9zf/eBkFWSfUsQ==
+X-Received: by 2002:a17:902:6ac2:b0:184:7a4c:fdd6 with SMTP id i2-20020a1709026ac200b001847a4cfdd6mr61776828plt.54.1668019287955;
+        Wed, 09 Nov 2022 10:41:27 -0800 (PST)
+Received: from localhost ([103.4.222.252])
+        by smtp.gmail.com with ESMTPSA id n126-20020a622784000000b005624e2e0508sm8519407pfn.207.2022.11.09.10.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Nov 2022 10:41:27 -0800 (PST)
+Date:   Thu, 10 Nov 2022 00:09:14 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH bpf-next v1 05/13] bpf: Fix state pruning for
+ STACK_DYNPTR stack slots
+Message-ID: <20221109183914.jutmz277zwbpdlbh@apollo>
+References: <20221018135920.726360-1-memxor@gmail.com>
+ <20221018135920.726360-6-memxor@gmail.com>
+ <CAJnrk1b08wtmrac2HENCSYyRjD3van6jjKmkYP_Lq4gCCLCoHg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXECqhQpvMVdyzFpNixGwC+9BBo_Jj9nXEZ1hsDvjRd8Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAJnrk1b08wtmrac2HENCSYyRjD3van6jjKmkYP_Lq4gCCLCoHg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Nov 09, 2022 at 08:57:01AM -0800, Ian Rogers escreveu:
-> On Wed, Nov 9, 2022 at 8:52 AM Ian Rogers <irogers@google.com> wrote:
+On Wed, Nov 09, 2022 at 01:52:50AM IST, Joanne Koong wrote:
+> On Tue, Oct 18, 2022 at 6:59 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 > >
-> > On Wed, Nov 9, 2022 at 7:27 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > >
-> > > Em Mon, Nov 07, 2022 at 11:35:04PM -0800, Ian Rogers escreveu:
-> > > > The previous build would add -Itools/lib and get dependencies for
-> > > > libtraceevent, libsubcmd, libsymbol, libapi and libbpf meaning that
-> > > > overriding these libraries would change the link time dependency but
-> > > > the headers would erroneously come from tools/lib. Fix the build to
-> > > > install headers and then depend on these. To reduce exposing internal
-> > > > headers/APIs some clean up is performed. tools/lib/symbol has a
-> > > > Makefile added, while tools/lib/api and tools/lib/subcmd have install
-> > > > targets added. The pattern used for the dependencies in Makefile.perf
-> > > > is modelled on libbpf.
-> > >
-> > > It builds with O=, I tried it one by one, but  there are problems with
-> > > make from a detached tarball, that is how I do the container builds, see
-> > > below, I'm trying to figure this out...
+> > The root of the problem is missing liveness marking for STACK_DYNPTR
+> > slots. This leads to all kinds of problems inside stacksafe.
 > >
-> > Sorry, I didn't know to test this. The added Build and Makefile in
-> > libsymbol are missing, so I'd guess that's the major issue.
+> > The verifier by default inside stacksafe ignores spilled_ptr in stack
+> > slots which do not have REG_LIVE_READ marks. Since this is being checked
+> > in the 'old' explored state, it must have already done clean_live_states
+> > for this old bpf_func_state. Hence, it won't be receiving any more
+> > liveness marks from to be explored insns (it has received REG_LIVE_DONE
+> > marking from liveness point of view).
+>
+> To summarize, your last two sentences are saying that once an "old"
+> state has been explored, its liveness will never be modified when the
+> verifier explores other newer states, correct?
+>
+
+Yes, once you enter is_state_visited for a prune point with the current state,
+it will do clean_live_states for all existing states at that insn_idx (with the
+same callsite) for states with branches == 0. The branches counter keeps track
+of currently being explored paths. It is always 1 by default for cur.]
+
+So it is not ok to set REG_LIVE_DONE for them when branches > 0, as it shows
+that there are still other paths that need to be explored and this is possibly a
+parent of those.
+
+So when branches == 0, it becomes a completely explored state with nothing left
+to be simulated for it. It will be receiving no more liveness marks from
+anything, so we can set REG_LIVE_DONE for its regs.
+
+An example is an if statement. When you do that you use push_stack to push one
+state to be explored, and the follow the 'else' in the current state. When
+current reaches BPF_EXIT, you will pop the other branch and continue exploring
+from there. So when we do push_stack cur->parent.branches will become 2, and it
+will be 1 for both cur and the pushed state.
+
 > >
-> > Thanks,
-> > Ian
-> 
-> The following fixes this for me:
+> > What this means is that verifier considers that it's safe to not compare
+> > the stack slot if was never read by children states. While liveness
+> > marks are usually propagated correctly following the parentage chain for
+> > spilled registers (SCALAR_VALUE and PTR_* types), the same is not the
+> > case for STACK_DYNPTR.
+> >
+>
+> In the context of liveness marking, what is "parent" and "children"?
+> Is the parent the first possibility that is explored, and every
+> possibility after that is its children?
+>
 
-But then there are some other problems related to making sure those
-libraries are built and installed _before_ perf proper starts building
-when it expects to find the headers for those libraries.
+parent will be the state we forked from, the registers in current are connected
+to the same registers in parent using reg->parent. Liveness allows us to know
+whether that forked child state ever really used the particular reg in our state
+later.
 
-So perhaps we need to first run the 'install' target for those libraries
-before build perf proper?
+Once everything has been explored for our children and our branches count drops
+to 0, and a reg never got REG_LIVE_READ propagated by following reg->parent
+whenever a read was done for a reg, we know that the reg was unused, so it isn't
+required to compare it during states_equal checks. Both regsafe and stacksafe
+ignore regs without REG_LIVE_READ.
 
-I'm pushing what I have to perf/tools-libs-includes branch.
+The child sets REG_LIVE_WRITTEN whenever it overwrites a reg, as that value of
+the parent no longer matters to it. There are some subtleties (like not setting
+it when size != BPF_REG_SIZE, because the partial contents still continue to
+matter).
 
-- Arnaldo
- 
-> --- a/tools/perf/MANIFEST
-> +++ b/tools/perf/MANIFEST
-> @@ -13,8 +13,7 @@ tools/lib/ctype.c
-> tools/lib/hweight.c
-> tools/lib/rbtree.c
-> tools/lib/string.c
-> -tools/lib/symbol/kallsyms.c
-> -tools/lib/symbol/kallsyms.h
-> +tools/lib/symbol
-> tools/lib/find_bit.c
-> tools/lib/bitmap.c
-> tools/lib/list_sort.c
-> 
-> Thanks,
-> Ian
-> 
-> > > ⬢[acme@toolbox perf]$ make perf-tar-src-pkg
-> > >   TAR
-> > >   PERF_VERSION = 6.1.rc3.g7e5d8b7a1fbd
-> > > ⬢[acme@toolbox perf]$ mv perf-6.1.0-rc3.tar /tmp
-> > > ⬢[acme@toolbox perf]$ cd /tmp
-> > > ⬢[acme@toolbox tmp]$ tar xf perf-6.1.0-rc3.tar
-> > > ⬢[acme@toolbox tmp]$ cd perf-6.1.0-rc3/
-> > > ⬢[acme@toolbox perf-6.1.0-rc3]$ make -C tools/perf
-> > > make: Entering directory '/tmp/perf-6.1.0-rc3/tools/perf'
-> > >   BUILD:   Doing 'make -j32' parallel build
-> > >   HOSTCC  fixdep.o
-> > >   HOSTLD  fixdep-in.o
-> > >   LINK    fixdep
-> > >
-> > > Auto-detecting system features:
-> > > ...                                   dwarf: [ on  ]
-> > > ...                      dwarf_getlocations: [ on  ]
-> > > ...                                   glibc: [ on  ]
-> > > ...                                  libbfd: [ on  ]
-> > > ...                          libbfd-buildid: [ on  ]
-> > > ...                                  libcap: [ on  ]
-> > > ...                                  libelf: [ on  ]
-> > > ...                                 libnuma: [ on  ]
-> > > ...                  numa_num_possible_cpus: [ on  ]
-> > > ...                                 libperl: [ on  ]
-> > > ...                               libpython: [ on  ]
-> > > ...                               libcrypto: [ on  ]
-> > > ...                               libunwind: [ on  ]
-> > > ...                      libdw-dwarf-unwind: [ on  ]
-> > > ...                                    zlib: [ on  ]
-> > > ...                                    lzma: [ on  ]
-> > > ...                               get_cpuid: [ on  ]
-> > > ...                                     bpf: [ on  ]
-> > > ...                                  libaio: [ on  ]
-> > > ...                                 libzstd: [ on  ]
-> > >
-> > >   GEN     common-cmds.h
-> > >   PERF_VERSION = 6.1.rc3.g7e5d8b7a1fbd
-> > >   CC      perf-read-vdso32
-> > >   GEN     perf-archive
-> > >   GEN     perf-iostat
-> > >   CC      dlfilters/dlfilter-test-api-v0.o
-> > >   CC      dlfilters/dlfilter-show-cycles.o
-> > >   CC      jvmti/libjvmti.o
-> > > make[3]: *** No rule to make target '/tmp/perf-6.1.0-rc3/tools/perf/libsymbol/libsymbol.a'.  Stop.
-> > > make[2]: *** [Makefile.perf:907: /tmp/perf-6.1.0-rc3/tools/perf/libsymbol/libsymbol.a] Error 2
-> > > make[2]: *** Waiting for unfinished jobs....
-> > >   CC      jvmti/jvmti_agent.o
-> > >   CC      jvmti/libstring.o
-> > >   CC      jvmti/libctype.o
-> > >   GEN     pmu-events/pmu-events.c
-> > >   INSTALL headers
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/exec-cmd.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/help.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/pager.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/parse-options.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/run-command.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/sigchain.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/subcmd-config.o
-> > >   INSTALL headers
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch.o
-> > >   INSTALL headers
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/core.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/cpu.o
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/array.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/fs.o
-> > >   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libbpf/bpf_helper_defs.h
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/tracing_path.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/cgroup.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf.h
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/debug.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2-in.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer-in.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf.h
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem-in.o
-> > >   INSTALL headers
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/btf.h
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211-in.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/cpumap.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/threadmap.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/str_error_r.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_common.h
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd2.so
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrtimer.so
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_legacy.h
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evsel.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm-in.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kmem.so
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac80211.so
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sched_switch.so
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helpers.h
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_tracing.h
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-plugin.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evlist.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/mmap.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/trace-seq.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_endian.h
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_core_read.h
-> > > if [ ! -d ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs' ]; then install -d -m 755 ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs'; fi; install fs/tracing_path.h -m 644 ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs';
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/libapi-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/zalloc.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-filter.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-utils.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/kbuffer-parse.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen-in.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/skel_internal.h
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_version.h
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/tep_strerror.o
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/usdt.bpf.h
-> > >   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helper_defs.h
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse-api.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/xyarray.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_function.so
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen.so
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/lib.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi-in.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211-in.o
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm.so
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_futex.so
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scsi.so
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/libapi-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/nlattr.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf.o
-> > >   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb-in.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg80211.so
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/str_error.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/netlink.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi-in.o
-> > >   LD      jvmti/jvmti-in.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_errno.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb.so
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf_prog_linfo.o
-> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi.a
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_probes.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/hashmap.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf_dump.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/ringbuf.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/strset.o
-> > >   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/libtraceevent-dynamic-list
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/linker.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/gen_loader.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/relo_core.o
-> > >   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/usdt.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd-in.o
-> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd.a
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf-in.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent-in.o
-> > >   AR      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf.a
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent.a
-> > >   CC      pmu-events/pmu-events.o
-> > >   LD      pmu-events/pmu-events-in.o
-> > >   LD      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf-in.o
-> > >   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libbpf/libbpf.a
-> > > make[1]: *** [Makefile.perf:240: sub-make] Error 2
-> > > make: *** [Makefile:70: all] Error 2
-> > > make: Leaving directory '/tmp/perf-6.1.0-rc3/tools/perf'
-> > > ⬢[acme@toolbox perf-6.1.0-rc3]$
-> > >
-> > >
-> > >
-> > > > The problem and solution were motivated by this issue and discussion:
-> > > > https://lore.kernel.org/lkml/CAEf4BzbbOHQZUAe6iWaehKCPQAf3VC=hq657buqe2_yRKxaK-A@mail.gmail.com/
-> > > >
-> > > > Ian Rogers (14):
-> > > >   tools lib api: Add install target
-> > > >   tools lib subcmd: Add install target
-> > > >   perf build: Install libsubcmd locally when building
-> > > >   perf build: Install libapi locally when building
-> > > >   perf build: Install libperf locally when building
-> > > >   perf build: Install libtraceevent locally when building
-> > > >   tools lib api: Add missing install headers
-> > > >   tools lib perf: Add missing install headers
-> > > >   tool lib symbol: Add Makefile/Build
-> > > >   perf build: Install libsymbol locally when building
-> > > >   perf expr: Tidy hashmap dependency
-> > > >   perf thread_map: Reduce exposure of libperf internal API
-> > > >   perf cpumap: Tidy libperf includes
-> > > >   perf build: Use tools/lib headers from install path
-> > > >
-> > > >  tools/lib/api/Makefile                        |  52 ++++++
-> > > >  tools/lib/perf/Makefile                       |  10 +-
-> > > >  tools/lib/subcmd/Makefile                     |  49 ++++++
-> > > >  tools/lib/symbol/Build                        |   1 +
-> > > >  tools/lib/symbol/Makefile                     | 115 +++++++++++++
-> > > >  tools/perf/.gitignore                         |   7 +-
-> > > >  tools/perf/Makefile.config                    |   2 -
-> > > >  tools/perf/Makefile.perf                      | 152 ++++++++++++------
-> > > >  tools/perf/builtin-stat.c                     |   1 +
-> > > >  tools/perf/builtin-trace.c                    |   4 +-
-> > > >  tools/perf/tests/cpumap.c                     |   2 +-
-> > > >  tools/perf/tests/expr.c                       |   1 +
-> > > >  tools/perf/tests/openat-syscall.c             |   1 +
-> > > >  tools/perf/tests/pmu-events.c                 |   1 +
-> > > >  tools/perf/tests/thread-map.c                 |   1 +
-> > > >  tools/perf/util/Build                         |   5 -
-> > > >  tools/perf/util/auxtrace.h                    |   2 +-
-> > > >  tools/perf/util/bpf-loader.c                  |   4 -
-> > > >  tools/perf/util/bpf_counter.c                 |   2 +-
-> > > >  tools/perf/util/cpumap.c                      |   1 +
-> > > >  tools/perf/util/cpumap.h                      |   2 +-
-> > > >  tools/perf/util/evsel.c                       |   5 +-
-> > > >  tools/perf/util/evsel.h                       |   2 -
-> > > >  tools/perf/util/expr.c                        |   1 +
-> > > >  tools/perf/util/expr.h                        |   7 +-
-> > > >  tools/perf/util/metricgroup.c                 |   1 +
-> > > >  tools/perf/util/python.c                      |   6 +-
-> > > >  .../scripting-engines/trace-event-python.c    |   2 +-
-> > > >  tools/perf/util/stat-shadow.c                 |   1 +
-> > > >  tools/perf/util/stat.c                        |   4 -
-> > > >  tools/perf/util/thread_map.c                  |   1 +
-> > > >  tools/perf/util/thread_map.h                  |   2 -
-> > > >  32 files changed, 361 insertions(+), 86 deletions(-)
-> > > >  create mode 100644 tools/lib/symbol/Build
-> > > >  create mode 100644 tools/lib/symbol/Makefile
-> > > >
-> > > > --
-> > > > 2.38.1.431.g37b22c650d-goog
-> > >
-> > > --
-> > >
-> > > - Arnaldo
+> > clean_live_states hence simply rewrites these stack slots to the type
+> > STACK_INVALID since it sees no REG_LIVE_READ marks.
+> >
+> > The end result is that we will never see STACK_DYNPTR slots in explored
+> > state. Even if verifier was conservatively matching !REG_LIVE_READ
+> > slots, very next check continuing the stacksafe loop on seeing
+> > STACK_INVALID would again prevent further checks.
+> >
+> > Now as long as verifier stores an explored state which we can compare to
+> > when reaching a pruning point, we can abuse this bug to make verifier
+> > prune search for obviously unsafe paths using STACK_DYNPTR slots
+> > thinking they are never used hence safe.
+> >
+> > Doing this in unprivileged mode is a bit challenging. add_new_state is
+> > only set when seeing BPF_F_TEST_STATE_FREQ (which requires privileges)
+> > or when jmps_processed difference is >= 2 and insn_processed difference
+> > is >= 8. So coming up with the unprivileged case requires a little more
+> > work, but it is still totally possible. The test case being discussed
+> > below triggers the heuristic even in unprivileged mode.
+> >
+> > However, it no longer works since commit
+> > 8addbfc7b308 ("bpf: Gate dynptr API behind CAP_BPF").
+> >
+> > Let's try to study the test step by step.
+> >
+> > Consider the following program (C style BPF ASM):
+> >
+> > 0  r0 = 0;
+> > 1  r6 = &ringbuf_map;
+> > 3  r1 = r6;
+> > 4  r2 = 8;
+> > 5  r3 = 0;
+> > 6  r4 = r10;
+> > 7  r4 -= -16;
+> > 8  call bpf_ringbuf_reserve_dynptr;
+> > 9  if r0 == 0 goto pc+1;
+> > 10 goto pc+1;
+> > 11 *(r10 - 16) = 0xeB9F;
+> > 12 r1 = r10;
+> > 13 r1 -= -16;
+> > 14 r2 = 0;
+> > 15 call bpf_ringbuf_discard_dynptr;
+> > 16 r0 = 0;
+> > 17 exit;
+> >
+> > We know that insn 12 will be a pruning point, hence if we force
+> > add_new_state for it, it will first verify the following path as
+> > safe in straight line exploration:
+> > 0 1 3 4 5 6 7 8 9 -> 10 -> (12) 13 14 15 16 17
+> >
+> > Then, when we arrive at insn 12 from the following path:
+> > 0 1 3 4 5 6 7 8 9 -> 11 (12)
+> >
+> > We will find a state that has been verified as safe already at insn 12.
+> > Since register state is same at this point, regsafe will pass. Next, in
+> > stacksafe, for spi = 0 and spi = 1 (location of our dynptr) is skipped
+> > seeing !REG_LIVE_READ. The rest matches, so stacksafe returns true.
+> > Next, refsafe is also true as reference state is unchanged in both
+> > states.
+> >
+> > The states are considered equivalent and search is pruned.
+> >
+> > Hence, we are able to construct a dynptr with arbitrary contents and use
+> > the dynptr API to operate on this arbitrary pointer and arbitrary size +
+> > offset.
+> >
+> > To fix this, first define a mark_dynptr_read function that propagates
+> > liveness marks whenever a valid initialized dynptr is accessed by dynptr
+> > helpers. REG_LIVE_WRITTEN is marked whenever we initialize an
+> > uninitialized dynptr. This is done in mark_stack_slots_dynptr. It allows
+> > screening off mark_reg_read and not propagating marks upwards from that
+> > point.
+> >
+> > This ensures that we either set REG_LIVE_READ64 on both dynptr slots, or
+> > none, so clean_live_states either sets both slots to STACK_INVALID or
+> > none of them. This is the invariant the checks inside stacksafe rely on.
+> >
+> > Next, do a complete comparison of both stack slots whenever they have
+> > STACK_DYNPTR. Compare the dynptr type stored in the spilled_ptr, and
+> > also whether both form the same first_slot. Only then is the later path
+> > safe.
+> >
+> > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  kernel/bpf/verifier.c | 73 +++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index a8c277e51d63..8f667180f70f 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -752,6 +752,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
+> >                 state->stack[spi - 1].spilled_ptr.ref_obj_id = id;
+> >         }
+> >
+> > +       state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +
+>
+> Is the purpose of REG_LIVE_WRITTEN that it indicates to the verifier
+> that this register needs to be checked when comparing the state
+> against another possible state?
+>
 
--- 
+It simply means that the slot was overwritten, so we shouldn't be following
+spilled_ptr.parent when doing mark_reg_read for the spilled_ptr in
+mark_dynptr_read. __mark_reg_not_init won't touch live, parent, and other such
+states, so they need to be handled separately.
 
-- Arnaldo
+> >         return 0;
+> >  }
+> >
+> > @@ -776,6 +779,26 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
+> >
+> >         __mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
+> >         __mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
+> > +
+> > +       /* Why do we need to set REG_LIVE_WRITTEN for STACK_INVALID slot?
+> > +        *
+> > +        * While we don't allow reading STACK_INVALID, it is still possible to
+> > +        * do <8 byte writes marking some but not all slots as STACK_MISC. Then,
+> > +        * helpers or insns can do partial read of that part without failing,
+> > +        * but check_stack_range_initialized, check_stack_read_var_off, and
+> > +        * check_stack_read_fixed_off will do mark_reg_read for all 8-bytes of
+> > +        * the slot conservatively. Hence we need to screen off those liveness
+> > +        * marking walks.
+> > +        *
+> > +        * This was not a problem before because STACK_INVALID is only set by
+> > +        * default, or in clean_live_states after REG_LIVE_DONE, not randomly
+> > +        * during verifier state exploration. Hence, for this case parentage
+> > +        * chain will still be live, while earlier reg->parent was NULL, so we
+> > +        * need REG_LIVE_WRITTEN to screen off read marker propagation.
+>
+> What does "screen off" mean in "screen off those liveness marking
+> walks" and "screen off read marker propagation"?
+>
+
+"screen off" simply means setting REG_LIVE_WRITTEN prevents mark_reg_read from
+following reg->parent pointers after that point. What was in this stack slot
+doesn't matter anymore as it was overwritten, so it's liveness won't matter and
+any reads don't have to be propagated upwards. They need to be propagated to
+this slot if children states use it.
+
+> > +        */
+> > +       state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +
+>
+>
+> >         return 0;
+> >  }
+> >
+> > @@ -2354,6 +2377,30 @@ static int mark_reg_read(struct bpf_verifier_env *env,
+> >         return 0;
+> >  }
+> >
+> > +static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > +{
+> > +       struct bpf_func_state *state = func(env, reg);
+> > +       int spi, ret;
+> > +
+> > +       /* For CONST_PTR_TO_DYNPTR, it must have already been done by
+> > +        * check_reg_arg in check_helper_call and mark_btf_func_reg_size in
+> > +        * check_kfunc_call.
+> > +        */
+> > +       if (reg->type == CONST_PTR_TO_DYNPTR)
+> > +               return 0;
+> > +       spi = get_spi(reg->off);
+> > +       /* Caller ensures dynptr is valid and initialized, which means spi is in
+> > +        * bounds and spi is the first dynptr slot. Simply mark stack slot as
+> > +        * read.
+> > +        */
+> > +       ret = mark_reg_read(env, &state->stack[spi].spilled_ptr,
+> > +                           state->stack[spi].spilled_ptr.parent, REG_LIVE_READ64);
+> > +       if (ret)
+> > +               return ret;
+> > +       return mark_reg_read(env, &state->stack[spi - 1].spilled_ptr,
+> > +                            state->stack[spi - 1].spilled_ptr.parent, REG_LIVE_READ64);
+> > +}
+> > +
+> >  /* This function is supposed to be used by the following 32-bit optimization
+> >   * code only. It returns TRUE if the source or destination register operates
+> >   * on 64-bit, otherwise return FALSE.
+> > @@ -5648,6 +5695,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+> >                         u8 *uninit_dynptr_regno)
+> >  {
+> >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> > +       int err;
+> >
+> >         if ((arg_type & (MEM_UNINIT | MEM_RDONLY)) == (MEM_UNINIT | MEM_RDONLY)) {
+> >                 verbose(env, "verifier internal error: misconfigured dynptr helper type flags\n");
+> > @@ -5729,6 +5777,10 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+> >                                 err_extra, argno + 1);
+> >                         return -EINVAL;
+> >                 }
+> > +
+> > +               err = mark_dynptr_read(env, reg);
+> > +               if (err)
+> > +                       return err;
+> >         }
+> >         return 0;
+> >  }
+> > @@ -11793,6 +11845,27 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+> >                          * return false to continue verification of this path
+> >                          */
+> >                         return false;
+> > +               /* Both are same slot_type, but STACK_DYNPTR requires more
+> > +                * checks before it can considered safe.
+> > +                */
+> > +               if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_DYNPTR) {
+> > +                       /* If both are STACK_DYNPTR, type must be same */
+> > +                       if (old->stack[spi].spilled_ptr.dynptr.type != cur->stack[spi].spilled_ptr.dynptr.type)
+> > +                               return false;
+> > +                       /* Both should also have first slot at same spi */
+> > +                       if (old->stack[spi].spilled_ptr.dynptr.first_slot != cur->stack[spi].spilled_ptr.dynptr.first_slot)
+> > +                               return false;
+> > +                       /* ids should be same */
+> > +                       if (!!old->stack[spi].spilled_ptr.ref_obj_id != !!cur->stack[spi].spilled_ptr.ref_obj_id)
+>
+> Do we need two !s or is just one ! enough?
+>
+
+It is trying to test whether both have ref_obj_id or none.
+So if set it turns non-zero to 1, otherwise 0.
+Then 1 != 0 or 0 != 1 fails, 0 == 0 or 1 == 1 succeeds,
+and if ref_obj_id is set we match the ids in the next comparison.
