@@ -2,136 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5615F6235BD
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 22:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F7E6235DD
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 22:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbiKIVYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 16:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S229784AbiKIVdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 16:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbiKIVYD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 16:24:03 -0500
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-eopbgr120059.outbound.protection.outlook.com [40.107.12.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816492F025
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 13:24:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OAU8eIDsuSJIpAZKrZ+pc3OtnnLxcq2hlkSa6PiB8fpJxY1kFRA+S+m4NwqsfdrdrUR7idaaysF3CFI/FU4UYirj+rnicTbuXYWTLz1Ypfnlqiv4Jz5MQmRDbemZPakv1mrhjbg/hq+az4J4I8sW0Qn9H/BwAGnO/Y2yw9x7BT/rCH4hk9RnZleIuVPPebuWSiI+FxwyzYN8Wsn56n0PmNZGw7IeXgpBl59fvg1yLum76YBetjL11icnwOcYUy/B7Mss2FbenChWMNA5cudQH9F8chah7OO9yxWj7WGa85pqM2xGQvvXEVCvvXdNqFwiXd6Qb5Bd6TTF9kVbbu+AGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SWH/M9gCgz4Ga0pCi3cyE59BnWacLyoq2QmZOW3dPno=;
- b=mm9scaegvJntKFMagu/3ZCPq/92X/uBaIQeAFgIYiW2I7NeeRcFNPtl0U+j+uoG9ECen8o2t2E+kAsMQkZzrpcEuQegzRSI9CpvGgBv23aoyOMqvHOkp2Hs3BZ5RYYRj1CRkw66STS7cW2AWxKA6hF6Ofo8Zr/1vdeqd2y1ZDkcMmPngjBKDaWkLxrsPCBkAsCIHkiYyITJTPrsyXzy0IxsCvKxCIRoxvKZvkEYl+3aJiYD5B/3mVKzoFrUYDGA4CzGKUm1A2DlDkeu2DiCzrziXzZ6e6nsnnZAyAOzS1uhBWRldmUPEe/b1CVpMFPhmK//6DtUXpLE7gz9nYruqGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SWH/M9gCgz4Ga0pCi3cyE59BnWacLyoq2QmZOW3dPno=;
- b=2+rqNbb3BdzT81jyhBapr8+sd1DXIwucVq1+lc6n06kRDWLrw+/ALc/D7ciBen+idkCCpagKsPtjRi3ZftL1QCNQHWE1u/ByL9cDlQqO4tjYNsFc9kQHeJCOS67T3w5GkHsLYbfrfnNI/X9dPT69FjEJemGJcovd89f7RXywi0rOKxw5JbF/XyfKwftDoh9Y6TsuzhQCxc/v6y16JL/ZA9ldqxXezVQFETCLtuxtdv2CM9KNtCBJAexeLmfxIBu9LqcYJwlei8DFMF0glV3afIktGcY+LGaoK75ww6JINKh50Mp4Nec8Sfd3IbD4Il9+9a96tXz3py5gpHHeGirUwQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB1790.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.12; Wed, 9 Nov
- 2022 21:23:58 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6%9]) with mapi id 15.20.5791.027; Wed, 9 Nov 2022
- 21:23:58 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Song Liu <song@kernel.org>, Mike Rapoport <rppt@kernel.org>
-CC:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Thread-Topic: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Thread-Index: AQHY8voad8K6jE28j02RCI2Gw4PNuq405DmAgABacACAATUsAIAAa90AgAA9fwA=
-Date:   Wed, 9 Nov 2022 21:23:58 +0000
-Message-ID: <d60266dc-6a10-b234-954c-a899a7ad054f@csgroup.eu>
-References: <20221107223921.3451913-1-song@kernel.org>
- <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
- <Y2uMWvmiPlaNXlZz@kernel.org>
- <CAPhsuW5e8rBnu73DYkyc1L6gC-WBxjTZVwdFC_L12GVyzROR1w@mail.gmail.com>
-In-Reply-To: <CAPhsuW5e8rBnu73DYkyc1L6gC-WBxjTZVwdFC_L12GVyzROR1w@mail.gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1790:EE_
-x-ms-office365-filtering-correlation-id: 1dda1ec3-6579-426e-e322-08dac298b703
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DZKDRiEpe2xByeq7QqGx7I1jOaQNSzaSoITmz8suifKypw87hQCuXNnFUCcsFFV2b1QrM4axna5BQUpqe1YwIhJSd4e2VtO4a8Tp0iR3QKk2U+nRusFPSTHMQ1VNzFwvsj5/YhOOeUyPtDUBtv+JyelPZIk4Zwz/D0gYPIOsoDlTlDD9maExogAG+IVUcenrOFhapNqWHfLG5N4jUlJqJPGQ+nHKOFpo33fSILikoXwSdpxjqh6h+ZLWfX3xsTz3PmcSf96GPvU6vFD2xB0kmbeu6DI11+o0EM3kC45WPKqXbsVEt6Lv1umhNxSNJpek65nIfU4DwZm6VtTWAMtoCNHQ08Ik7lTPYX8aqduV2twX5iltUBsAOcRuGSba1LavPfq2t/Qgr4YZ/uaE/4c2Z5UsizFpngotAd6vTOTcCpFbrE+Cs+cZsKB3vW/cDybNJdaFF9rPzIok8SmDeyHxV2f7HM/+XMa+sLr582Oe2bHAZ7vJGVKhnFoFSADyL0Fq7RNAKbYSYdhRKmtIS02Wb27Tp+s+dEejhlS9SKf09gYiI7ASlkbsz77N87NxqkT5ondRiXXoJP+mRrRTb1pAQls2gdNmUrIfv+iChzwm8cc/GkLMPTaSVnKRmSXglgJ8cdM/87W01D2ihHeOFeXghqsEwN09Mv7Yz8gWygo92UVbc8nNBgInVtYoPgtllF1ZX1LHFZEtei7xA/9ssDTPLfcnU7WU5I7CosgdfyPrY/mLGo2nYapgmkvC2sj/2rCUIQ+Zx4FmN4PQSG4Q3GPRYVZ+FuxqYYS1FiiSDEGJjWH1nLV4sQBApOfE8qjSdCUuwwGLtuzfqUBn5AF/MNlA0A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(451199015)(71200400001)(6486002)(53546011)(478600001)(66574015)(4326008)(91956017)(8676002)(66556008)(76116006)(64756008)(66446008)(66476007)(66946007)(83380400001)(5660300002)(44832011)(41300700001)(8936002)(7416002)(122000001)(86362001)(31696002)(38100700002)(2906002)(31686004)(26005)(54906003)(110136005)(38070700005)(2616005)(6506007)(6512007)(316002)(186003)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Uk5MOVpydGQ1aVdTdWlacTE4TDVZbWhYSkhTQXFrWlZOUVJFZk9iZGp2NVBD?=
- =?utf-8?B?Q21SVzdhcmluaHVaZzBRdERpSFJzRUdzeC9Gc09IT0o1SytNQUpjdnd2QkRx?=
- =?utf-8?B?bzQyYW8zZXFtY3ViTmF0TTdVckhMdmRaUnhxRGRXdjF2c0F3RnBJSVM4NHRu?=
- =?utf-8?B?RmxFanY0T0N5dGpia1lQQ3dGdWFRTmozYXovR3lLQ01ORWZHL3IwQUVjeVcz?=
- =?utf-8?B?dWJkOWFMSHNORDBXY3ZZRmJnZ1AydXdaOE12Yk9sZi81ZE10OEZWMS84RHFE?=
- =?utf-8?B?RjNPS2txQzIwVVIrQkNhbjRvNHpIZWNUdjVFVFJMeThGbEJBbHNmV1F1RlFF?=
- =?utf-8?B?MDh0bnRoL2o3VEt3blg5eURRakhJZDVWQkp4b3dLZzhUUEtwblFjQUxHL2pY?=
- =?utf-8?B?djJDb3lSM08xSmR2T0ZvMk1yZ2d3UFgzdFNXajg4V1pxMkloazVFSVJ0TWhG?=
- =?utf-8?B?bzZWbU94V0xGaCtqOCtmalZEcHkxVGFUTEdITytHNzRYcWVHcm0rU0hNcC9H?=
- =?utf-8?B?cERheHRkQVA3RXNmTXlETHQ1RFNNdi9nUEJtWTliYjJieElMV24yOUtZWDd6?=
- =?utf-8?B?Tmd2bnU0QnZDY0xCdFpKQU9keVdpK1k2OXd5NnFyYVc5VkhBUXlSL2E1SDY4?=
- =?utf-8?B?VHd2WE9heHZlNEo0STl3WTdNbVU2OEhYa2ZmSmdCMFBoR1JsUTNjU2NKU2M4?=
- =?utf-8?B?T0tYQlM2MkdSakVzWlYzcEM4OUhpaUlvUlE4RGlXR1dVMlZxcGppWDJoandD?=
- =?utf-8?B?Rk9LTmREUDdEcUUwMzVpTEhydjFjT3gxY0xKQUR3QnMxVE5QNTZhNWM3dkZC?=
- =?utf-8?B?VnVIWnIybm53cHJhWEJQZEgxcmdpYTBlTFZSNVd2WlQyV2NIenJrMzljd2Vq?=
- =?utf-8?B?bFNGSzFMUDJ5WUx3Z3dodUNqWFRkSS9ETVBkZStrbGlrcHUwMEZHTWRVSVB2?=
- =?utf-8?B?Z01MZ0xkS1hBU3NyT2FqSCtnU3ZXQmhMUzlGbkxSU1ArV2lsbTJOUXcxQlQy?=
- =?utf-8?B?dnpDYWFDQm9IQjZDNXFoNzVzVDR4SlZ0cXBrNEJXS3YzQjZtSEoxMEJNbHg5?=
- =?utf-8?B?UGo5RmZLcDFudnhnYTgzTkx6Qk5uYngwN3BWd0tPT0NxcjlaaGY4MHFldzhC?=
- =?utf-8?B?Z3BqelJoNUpta1hHQjVibDlxaE14UmhITEV5WDNsRW9IeUZUZXpnWHBZMGtS?=
- =?utf-8?B?UEYxMDBtbUlBOEFncTlzaVRPdDJ1OWN1K05DZTliWjlnR3c4cExsV0I4YldQ?=
- =?utf-8?B?ZWZGYmRta3BrV29VRlZkd29TMHMyQ1VjOHBTUmkyS0YzRXFjVVVUTnJWN0Nn?=
- =?utf-8?B?T2xpMWFCWlhxWnFlcXF2NkE0aGM1RXpNK0xTbmRMMFlHaXZnQnVlSmFmZklj?=
- =?utf-8?B?djM2bDU2RnRLRjU3Sm41RWkvalZDQ240QkNvTit0b3lTM1FQQnNJY2JsaTdk?=
- =?utf-8?B?V29LSnY4R214ZHgrUjZ1ay9JSkpxQXM4SlNQVVF4dys4MnU2ZHp1MElwc3JP?=
- =?utf-8?B?bWo1YVc2SzJwazNEL0ZzVm1nVmhzdFVESVpEdUJiY252ZjZTNi90eHpZbTFT?=
- =?utf-8?B?UWd3RkJsQk1zQXk3d0xwQ2ZWc2JtZHpaMGQrT2FET2pRT1IvL3FqQjZQOXpL?=
- =?utf-8?B?NGt3SVcvQzk2Y1ZnalZGdEVUY1ZGclA4T3FZc2N4SktVWHhwVlNsd1E3Tngy?=
- =?utf-8?B?U0M2NHpWRDJkL2NJcVE0NWpwb3Z5N3JBMVAvbjd3cHNETVVKUFErb2FRYUND?=
- =?utf-8?B?NC90Wit4eTVMbXREejE3allmUnhqYnlKVTZST25jdUFLenNVQmRaSnNKNHVx?=
- =?utf-8?B?SjJZbkZrN283ZDRkd1BKbnVzQytrMXBRUk1DalFFVEFadEFEYVA2My9nMWUz?=
- =?utf-8?B?MzVOZ1d4ck5ITjd0RHM3elNvT2NCc1RBWDlPQ0s2ZGIvRkgzakFEai9xNE5j?=
- =?utf-8?B?dFhKZnJxbjQ5T2Z0TGhDbGVKeXNFOFRXTzVRajd4Y2hOaDljVjVMLytQQjNu?=
- =?utf-8?B?cVhkVVJ5Um1UTWQ4MTUwSk5ncFBVUERSV0tla0tydmNQdm8zWVY1enpxK0U1?=
- =?utf-8?B?cm94ZUVtQS8rdnhDaUtKMEZCcWpuVS8ybU1GVHZFeklDL201bWZQT3poSVIv?=
- =?utf-8?B?TWlxaUtOdHVyOXNrOWpGdDBSeDZPcVpFZmJ5M2YzbS9SUWJ6MC9ORTRWZVZZ?=
- =?utf-8?Q?Nnh/C7/LOiSiZzv+K73nUD8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A9ED4B6E3CD86F4397D4543C1CFF7ACA@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        with ESMTP id S231801AbiKIVdX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 16:33:23 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D29B13F
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 13:33:21 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id h206so14987670iof.10
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 13:33:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PyXyVL/Z+RUnZ+jmkHNbcIWBek0qjReCVML/hp+yGBY=;
+        b=SyjyZwnppvgf/6k9LzLkEsh6tb8AEiPF6mvGtj0TxFlnTlTo5habksS8c50y2XeuYH
+         hjwyUslbwYUesMaHdASNHygIGrKsla2NK/qYnD5WZKChe36gvpVV7EZ52HdevuGSBPfh
+         r0I5ljntIkFhXN9ZXLly2Hde3wm7NLj4Diee2U/flpZOSQes+b9eXKbb5jKmGqz9JYYB
+         wsD0RxZ0345QUaLmR6IGLUp17h7prI21i4vvXJh2/cB7d7x/4A5Gcu6BUnQto6KMMGlJ
+         +ZkuYrCJ9VT2eqibuGykR+eaqA/OytBinJzIqIF71DAF3EXimAojX8FPDQvbX13HQ9nK
+         +qqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PyXyVL/Z+RUnZ+jmkHNbcIWBek0qjReCVML/hp+yGBY=;
+        b=FLEH4R/yzC+PBKVKi9K+HJT4XFpywlM2V4RQJkoax55n68QSu672g3WkaxCc3+zjpi
+         NXlwsNcjgJqt1ujKQphE82/z6oKKJyKie5xL9PllzTtxbga8kDhmmYeaURLhPMkcmyOE
+         lCaZCh5onSp+TVKWBlM/Y0X9P+MCB1m3xAuHed77fbDK8osEL2l5D8/dIEWsQ98h1tTV
+         9i/DfunhaRjno7Uqlzs5egHGrVFvTLuWRvdi4HcYFTr61HNc7AEhNe6lDaOVCZZgkCjn
+         14nnDLHovLb+aAoRYlnefFBUQVTuTpRmNpROQRJqHRFVRJ0IW9RURs/pHNxiWiGZGCHp
+         O4tw==
+X-Gm-Message-State: ACrzQf1OW6Uyv2uUn6wjWGvD5fIjFWXv3ms4mA7CX9mhr18KQ+t8D8Wr
+        WjyJB2+wq1WAvJPabM/bKEYhCEM6MdazX9M9pAKAdw==
+X-Google-Smtp-Source: AMsMyM5cpFUZJn2dMV9xm4c81KxfmuHl38zlehFlqfkcBeU/lQHzWZuuCN6SB2xUbE+aysRupfUa9WLBo4MCI8gtWJQ=
+X-Received: by 2002:a02:9401:0:b0:375:6e82:482b with SMTP id
+ a1-20020a029401000000b003756e82482bmr25456380jai.84.1668029599385; Wed, 09
+ Nov 2022 13:33:19 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dda1ec3-6579-426e-e322-08dac298b703
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2022 21:23:58.7492
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GjjiXPq9+4nJGOECogrPTg2UPEcT/HZ609VjWP24cvzdU7/zga1Z0xS3b/eBtTPDS6vMXufHqI1JAU2br/kndgIFk1sBC6mDpfWHTN0x9KQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1790
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-7-sdf@google.com>
+ <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev> <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
+ <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev> <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev>
+ <87leokz8lq.fsf@toke.dk> <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
+In-Reply-To: <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 9 Nov 2022 13:33:08 -0800
+Message-ID: <CAKH8qBsfVOoR1MNAFx3uR9Syoc0APHABsf97kb8SGpK+T1qcew@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
+ metadata into skb context
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,91 +84,257 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-KyBsaW51eHBwYy1kZXYgbGlzdCBhcyB3ZSBzdGFydCBtZW50aW9uaW5nIHBvd2VycGMuDQoNCkxl
-IDA5LzExLzIwMjIgw6AgMTg6NDMsIFNvbmcgTGl1IGEgw6ljcml0wqA6DQo+IE9uIFdlZCwgTm92
-IDksIDIwMjIgYXQgMzoxOCBBTSBNaWtlIFJhcG9wb3J0IDxycHB0QGtlcm5lbC5vcmc+IHdyb3Rl
-Og0KPj4NCj4gWy4uLl0NCj4gDQo+Pj4+DQo+Pj4+IFRoZSBwcm9wb3NlZCBleGVjbWVtX2FsbG9j
-KCkgbG9va3MgdG8gbWUgdmVyeSBtdWNoIHRhaWxvcmVkIGZvciB4ODYNCj4+Pj4gdG8gYmUNCj4+
-Pj4gdXNlZCBhcyBhIHJlcGxhY2VtZW50IGZvciBtb2R1bGVfYWxsb2MoKS4gU29tZSBhcmNoaXRl
-Y3R1cmVzIGhhdmUNCj4+Pj4gbW9kdWxlX2FsbG9jKCkgdGhhdCBpcyBxdWl0ZSBkaWZmZXJlbnQg
-ZnJvbSB0aGUgZGVmYXVsdCBvciB4ODYNCj4+Pj4gdmVyc2lvbiwgc28NCj4+Pj4gSSdkIGV4cGVj
-dCBhdCBsZWFzdCBzb21lIGV4cGxhbmF0aW9uIGhvdyBtb2R1bGVzIGV0YyBjYW4gdXNlIGV4ZWNt
-ZW1fDQo+Pj4+IEFQSXMNCj4+Pj4gd2l0aG91dCBicmVha2luZyAheDg2IGFyY2hpdGVjdHVyZXMu
-DQo+Pj4NCj4+PiBJIHRoaW5rIHRoaXMgaXMgZmFpciwgYnV0IEkgdGhpbmsgd2Ugc2hvdWxkIGFz
-ayBhc2sgb3Vyc2VsdmVzIC0gaG93DQo+Pj4gbXVjaCBzaG91bGQgd2UgZG8gaW4gb25lIHN0ZXA/
-DQo+Pg0KPj4gSSB0aGluayB0aGF0IGF0IGxlYXN0IHdlIG5lZWQgYW4gZXZpZGVuY2UgdGhhdCBl
-eGVjbWVtX2FsbG9jKCkgZXRjIGNhbiBiZQ0KPj4gYWN0dWFsbHkgdXNlZCBieSBtb2R1bGVzL2Z0
-cmFjZS9rcHJvYmVzLiBMdWlzIHNhaWQgdGhhdCBSRkMgdjIgZGlkbid0IHdvcmsNCj4+IGZvciBo
-aW0gYXQgYWxsLCBzbyBoYXZpbmcgYSBjb3JlIE1NIEFQSSBmb3IgY29kZSBhbGxvY2F0aW9uIHRo
-YXQgb25seSB3b3Jrcw0KPj4gd2l0aCBCUEYgb24geDg2IHNlZW1zIG5vdCByaWdodCB0byBtZS4N
-Cj4gDQo+IFdoaWxlIHVzaW5nIGV4ZWNtZW1fYWxsb2MoKSBldC4gYWwuIGluIG1vZHVsZSBzdXBw
-b3J0IGlzIGRpZmZpY3VsdCwgZm9sa3MgYXJlDQo+IG1ha2luZyBwcm9ncmVzcyB3aXRoIGl0LiBG
-b3IgZXhhbXBsZSwgdGhlIHByb3RvdHlwZSB3b3VsZCBiZSBtb3JlIGRpZmZpY3VsdA0KPiBiZWZv
-cmUgQ09ORklHX0FSQ0hfV0FOVFNfTU9EVUxFU19EQVRBX0lOX1ZNQUxMT0MNCj4gKGludHJvZHVj
-ZWQgYnkgQ2hyaXN0b3BoZSkuDQoNCkJ5IHRoZSB3YXksIHRoZSBtb3RpdmF0aW9uIGZvciBDT05G
-SUdfQVJDSF9XQU5UU19NT0RVTEVTX0RBVEFfSU5fVk1BTExPQyANCndhcyBjb21wbGV0ZWx5IGRp
-ZmZlcmVudDogVGhpcyB3YXMgYmVjYXVzZSBvbiBwb3dlcnBjIGJvb2szcy8zMiwgbm8tZXhlYyAN
-CmZsYWdnaW4gaXMgcGVyIHNlZ21lbnQgb2Ygc2l6ZSAyNTYgTWJ5dGVzLCBzbyBpbiBvcmRlciB0
-byBwcm92aWRlIA0KU1RSSUNUX01PRFVMRVNfUldYIGl0IHdhcyBuZWNlc3NhcnkgdG8gcHV0IGRh
-dGEgb3V0c2lkZSBvZiB0aGUgc2VnbWVudCANCnRoYXQgaG9sZHMgbW9kdWxlIHRleHQgaW4gb3Jk
-ZXIgdG8gYmUgYWJsZSB0byBmbGFnIFJXIGRhdGEgYXMgbm8tZXhlYy4NCg0KQnV0IEknbSBoYXBw
-eSBpZiBpdCBjYW4gYWxzbyBzZXJ2ZSBvdGhlciBwdXJwb3Nlcy4NCg0KPiANCj4gV2UgYWxzbyBo
-YXZlIG90aGVyIHVzZXJzIHRoYXQgd2UgY2FuIG9uYm9hcmQgc29vbjogQlBGIHRyYW1wb2xpbmUg
-b24NCj4geDg2XzY0LCBCUEYgaml0IGFuZCB0cmFtcG9saW5lIG9uIGFybTY0LCBhbmQgbWF5YmUg
-YWxzbyBvbiBwb3dlcnBjIGFuZA0KPiBzMzkwLg0KPiANCj4+DQo+Pj4gRm9yIG5vbi10ZXh0X3Bv
-a2UoKSBhcmNoaXRlY3R1cmVzLCB0aGUgd2F5IHlvdSBjYW4gbWFrZSBpdCB3b3JrIGlzIGhhdmUN
-Cj4+PiB0aGUgQVBJIGxvb2sgbGlrZToNCj4+PiBleGVjbWVtX2FsbG9jKCkgIDwtIERvZXMgdGhl
-IGFsbG9jYXRpb24sIGJ1dCBuZWNlc3NhcmlseSB1c2FibGUgeWV0DQo+Pj4gZXhlY21lbV93cml0
-ZSgpICA8LSBMb2FkcyB0aGUgbWFwcGluZywgZG9lc24ndCB3b3JrIGFmdGVyIGZpbmlzaCgpDQo+
-Pj4gZXhlY21lbV9maW5pc2goKSA8LSBNYWtlcyB0aGUgbWFwcGluZyBsaXZlIChsb2FkZWQsIGV4
-ZWN1dGFibGUsIHJlYWR5KQ0KPj4+DQo+Pj4gU28gZm9yIHRleHRfcG9rZSgpOg0KPj4+IGV4ZWNt
-ZW1fYWxsb2MoKSAgPC0gcmVzZXJ2ZXMgdGhlIG1hcHBpbmcNCj4+PiBleGVjbWVtX3dyaXRlKCkg
-IDwtIHRleHRfcG9rZXMoKSB0byB0aGUgbWFwcGluZw0KPj4+IGV4ZWNtZW1fZmluaXNoKCkgPC0g
-ZG9lcyBub3RoaW5nDQo+Pj4NCj4+PiBBbmQgbm9uLXRleHRfcG9rZSgpOg0KPj4+IGV4ZWNtZW1f
-YWxsb2MoKSAgPC0gQWxsb2NhdGVzIGEgcmVndWxhciBSVyB2bWFsbG9jIGFsbG9jYXRpb24NCj4+
-PiBleGVjbWVtX3dyaXRlKCkgIDwtIFdyaXRlcyBub3JtYWxseSB0byBpdA0KPj4+IGV4ZWNtZW1f
-ZmluaXNoKCkgPC0gZG9lcyBzZXRfbWVtb3J5X3JvKCkvc2V0X21lbW9yeV94KCkgb24gaXQNCj4+
-Pg0KPj4+IE5vbi10ZXh0X3Bva2UoKSBvbmx5IGdldHMgdGhlIGJlbmVmaXRzIG9mIGNlbnRyYWxp
-emVkIGxvZ2ljLCBidXQgdGhlDQo+Pj4gaW50ZXJmYWNlIHdvcmtzIGZvciBib3RoLiBUaGlzIGlz
-IHByZXR0eSBtdWNoIHdoYXQgdGhlIHBlcm1fYWxsb2MoKSBSRkMNCj4+PiBkaWQgdG8gbWFrZSBp
-dCB3b3JrIHdpdGggb3RoZXIgYXJjaCdzIGFuZCBtb2R1bGVzLiBCdXQgdG8gZml0IHdpdGggdGhl
-DQo+Pj4gZXhpc3RpbmcgbW9kdWxlcyBjb2RlICh3aGljaCBpcyBhY3R1YWxseSBzcHJlYWQgYWxs
-IG92ZXIpIGFuZCBhbHNvDQo+Pj4gaGFuZGxlIFJPIHNlY3Rpb25zLCBpdCBhbHNvIG5lZWRlZCBz
-b21lIGFkZGl0aW9uYWwgYmVsbHMgYW5kIHdoaXN0bGVzLg0KPj4NCj4+IEknbSBsZXNzIGNvbmNl
-cm5lZCBhYm91dCBub24tdGV4dF9wb2tlKCkgcGFydCwgYnV0IHJhdGhlciBhYm91dA0KPj4gcmVz
-dHJpY3Rpb25zIHdoZXJlIGNvZGUgYW5kIGRhdGEgY2FuIGxpdmUgb24gZGlmZmVyZW50IGFyY2hp
-dGVjdHVyZXMgYW5kDQo+PiB3aGV0aGVyIHRoZXNlIHJlc3RyaWN0aW9ucyB3b24ndCBsZWFkIHRv
-IGluYWJpbGl0eSB0byB1c2UgdGhlIGNlbnRyYWxpemVkDQo+PiBsb2dpYyBvbiwgc2F5LCBhcm02
-NCBhbmQgcG93ZXJwYy4NCg0KVW50aWwgcmVjZW50bHksIHBvd2VycGMgQ1BVIGRpZG4ndCBpbXBs
-ZW1lbnQgUEMtcmVsYXRpdmUgZGF0YSBhY2Nlc3MuIA0KT25seSB2ZXJ5IHJlY2VudCBwb3dlcnBj
-IENQVXMgKHBvd2VyMTAgb25seSA/KSBoYXZlIGNhcGFiaWxpdHkgdG8gZG8gDQpQQy1yZWxhdGl2
-ZSBhY2Nlc3NlcywgYnV0IHRoZSBrZXJuZWwgZG9lc24ndCB1c2UgaXQgeWV0LiBTbyB0aGVyZSdz
-IG5vIA0KY29uc3RyYWludCBhYm91dCBkaXN0YW5jZSBiZXR3ZWVuIHRleHQgYW5kIGRhdGEuIFdo
-YXQgbWF0dGVycyBpcyB0aGUgDQpkaXN0YW5jZSBiZXR3ZWVuIGNvcmUga2VybmVsIHRleHQgYW5k
-IG1vZHVsZSB0ZXh0IHRvIGF2b2lkIHRyYW1wb2xpbmVzLg0KDQo+Pg0KPj4gRm9yIGluc3RhbmNl
-LCBpZiB3ZSB1c2UgZXhlY21lbV9hbGxvYygpIGZvciBtb2R1bGVzLCBpdCBtZWFucyB0aGF0IGRh
-dGENCj4+IHNlY3Rpb25zIHNob3VsZCBiZSBhbGxvY2F0ZWQgc2VwYXJhdGVseSB3aXRoIHBsYWlu
-IHZtYWxsb2MoKS4gV2lsbCB0aGlzDQo+PiB3b3JrIHVuaXZlcnNhbGx5PyBPciB0aGlzIHdpbGwg
-cmVxdWlyZSBzcGVjaWFsIGNhcmUgd2l0aCBhZGRpdGlvbmFsDQo+PiBjb21wbGV4aXR5IGluIHRo
-ZSBtb2R1bGVzIGNvZGU/DQo+Pg0KPj4+IFNvIHRoZSBxdWVzdGlvbiBJJ20gdHJ5aW5nIHRvIGFz
-ayBpcywgaG93IG11Y2ggc2hvdWxkIHdlIHRhcmdldCBmb3IgdGhlDQo+Pj4gbmV4dCBzdGVwPyBJ
-IGZpcnN0IHRob3VnaHQgdGhhdCB0aGlzIGZ1bmN0aW9uYWxpdHkgd2FzIHNvIGludGVydHdpbmVk
-LA0KPj4+IGl0IHdvdWxkIGJlIHRvbyBoYXJkIHRvIGRvIGl0ZXJhdGl2ZWx5LiBTbyBpZiB3ZSB3
-YW50IHRvIHRyeQ0KPj4+IGl0ZXJhdGl2ZWx5LCBJJ20gb2sgaWYgaXQgZG9lc24ndCBzb2x2ZSBl
-dmVyeXRoaW5nLg0KPj4NCj4+IFdpdGggZXhlY21lbV9hbGxvYygpIGFzIHRoZSBmaXJzdCBzdGVw
-IEknbSBmYWlsaW5nIHRvIHNlZSB0aGUgbGFyZ2UNCj4+IHBpY3R1cmUuIElmIHdlIHdhbnQgdG8g
-dXNlIGl0IGZvciBtb2R1bGVzLCBob3cgd2lsbCB3ZSBhbGxvY2F0ZSBSTyBkYXRhPw0KPj4gd2l0
-aCBzaW1pbGFyIHJvZGF0YV9hbGxvYygpIHRoYXQgdXNlcyB5ZXQgYW5vdGhlciB0cmVlIGluIHZt
-YWxsb2M/DQo+PiBIb3cgdGhlIGNhY2hpbmcgb2YgbGFyZ2UgcGFnZXMgaW4gdm1hbGxvYyBjYW4g
-YmUgbWFkZSB1c2VmdWwgZm9yIHVzZSBjYXNlcw0KPj4gbGlrZSBzZWNyZXRtZW0gYW5kIFBLUz8N
-Cj4gDQo+IElmIFJPIGRhdGEgY2F1c2VzIHByb2JsZW1zIHdpdGggZGlyZWN0IG1hcCBmcmFnbWVu
-dGF0aW9uLCB3ZSBjYW4gdXNlDQo+IHNpbWlsYXIgbG9naWMuIEkgdGhpbmsgd2Ugd2lsbCBuZWVk
-IGFub3RoZXIgdHJlZSBpbiB2bWFsbG9jIGZvciB0aGlzIGNhc2UuDQo+IFNpbmNlIHRoZSBsb2dp
-YyB3aWxsIGJlIG1vc3RseSBpZGVudGljYWwsIEkgcGVyc29uYWxseSBkb24ndCB0aGluayBhZGRp
-bmcNCj4gYW5vdGhlciB0cmVlIGlzIGEgYmlnIG92ZXJoZWFkLg0KDQpPbiBwb3dlcnBjLCBrZXJu
-ZWwgY29yZSBSQU0gaXMgbm90IG1hcHBlZCBieSBwYWdlcyBidXQgaXMgbWFwcGVkIGJ5IA0KYmxv
-Y2tzLiBUaGVyZSBhcmUgb25seSB0d28gYmxvY2tzOiBPbmUgUk9YIGJsb2NrIHdoaWNoIGNvbnRh
-aW5zIGJvdGggDQp0ZXh0IGFuZCByb2RhdGEsIGFuZCBvbmUgUlcgYmxvY2sgdGhhdCBjb250YWlu
-cyBldmVyeXRoaW5nIGVsc2UuIE1heWJlIA0KdGhlIHNhbWUgY2FuIGJlIGRvbmUgZm9yIG1vZHVs
-ZXMuIFdoYXQgbWF0dGVycyBpcyB0byBiZSBzdXJlIHlvdSBuZXZlciANCmhhdmUgV1ggbWVtb3J5
-LiBIYXZpbmcgUk9YIHJvZGF0YSBpcyBub3QgYW4gaXNzdWUuDQoNCkNocmlzdG9waGU=
+On Wed, Nov 9, 2022 at 10:22 AM Martin KaFai Lau <martin.lau@linux.dev> wro=
+te:
+>
+> On 11/9/22 3:10 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Snipping a bit of context to reply to this bit:
+> >
+> >>>>> Can the xdp prog still change the metadata through xdp->data_meta? =
+tbh, I am not
+> >>>>> sure it is solid enough by asking the xdp prog not to use the same =
+random number
+> >>>>> in its own metadata + not to change the metadata through xdp->data_=
+meta after
+> >>>>> calling bpf_xdp_metadata_export_to_skb().
+> >>>>
+> >>>> What do you think the usecase here might be? Or are you suggesting w=
+e
+> >>>> reject further access to data_meta after
+> >>>> bpf_xdp_metadata_export_to_skb somehow?
+> >>>>
+> >>>> If we want to let the programs override some of this
+> >>>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add
+> >>>> more kfuncs instead of exposing the layout?
+> >>>>
+> >>>> bpf_xdp_metadata_export_to_skb(ctx);
+> >>>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
+> >
+> > There are several use cases for needing to access the metadata after
+> > calling bpf_xdp_metdata_export_to_skb():
+> >
+> > - Accessing the metadata after redirect (in a cpumap or devmap program,
+> >    or on a veth device)
+> > - Transferring the packet+metadata to AF_XDP
+> fwiw, the xdp prog could also be more selective and only stores one of th=
+e hints
+> instead of the whole 'struct xdp_to_skb_metadata'.
+>
+> > - Returning XDP_PASS, but accessing some of the metadata first (whether
+> >    to read or change it)
+> >
+> > The last one could be solved by calling additional kfuncs, but that
+> > would be less efficient than just directly editing the struct which
+> > will be cache-hot after the helper returns.
+>
+> Yeah, it is more efficient to directly write if possible.  I think this s=
+et
+> allows the direct reading and writing already through data_meta (as a _u8=
+ *).
+>
+> >
+> > And yeah, this will allow the XDP program to inject arbitrary metadata
+> > into the netstack; but it can already inject arbitrary *packet* data
+> > into the stack, so not sure if this is much of an additional risk? If i=
+t
+> > does lead to trivial crashes, we should probably harden the stack
+> > against that?
+> >
+> > As for the random number, Jesper and I discussed replacing this with th=
+e
+> > same BTF-ID scheme that he was using in his patch series. I.e., instead
+> > of just putting in a random number, we insert the BTF ID of the metadat=
+a
+> > struct at the end of it. This will allow us to support multiple
+> > different formats in the future (not just changing the layout, but
+> > having multiple simultaneous formats in the same kernel image), in case
+> > we run out of space.
+>
+> This seems a bit hypothetical.  How much headroom does it usually have fo=
+r the
+> xdp prog?  Potentially the hints can use all the remaining space left aft=
+er the
+> header encap and the current bpf_xdp_adjust_meta() usage?
+>
+> >
+> > We should probably also have a flag set on the xdp_frame so the stack
+> > knows that the metadata area contains relevant-to-skb data, to guard
+> > against an XDP program accidentally hitting the "magic number" (BTF_ID)
+> > in unrelated stuff it puts into the metadata area.
+>
+> Yeah, I think having a flag is useful.  The flag will be set at xdp_buff =
+and
+> then transfer to the xdp_frame?
+>
+> >
+> >> After re-reading patch 6, have another question. The 'void
+> >> bpf_xdp_metadata_export_to_skb();' function signature. Should it at
+> >> least return ok/err? or even return a 'struct xdp_to_skb_metadata *'
+> >> pointer and the xdp prog can directly read (or even write) it?
+> >
+> > Hmm, I'm not sure returning a failure makes sense? Failure to read one
+> > or more fields just means that those fields will not be populated? We
+> > should probably have a flags field inside the metadata struct itself to
+> > indicate which fields are set or not, but I'm not sure returning an
+> > error value adds anything? Returning a pointer to the metadata field
+> > might be convenient for users (it would just be an alias to the
+> > data_meta pointer, but the verifier could know its size, so the program
+> > doesn't have to bounds check it).
+>
+> If some hints are not available, those hints should be initialized to
+> 0/CHECKSUM_NONE/...etc.  The xdp prog needs a direct way to tell hard fai=
+lure
+> when it cannot write the meta area because of not enough space.  Comparin=
+g
+> xdp->data_meta with xdp->data as a side effect is not intuitive.
+>
+> It is more than saving the bound check.  With type info of 'struct
+> xdp_to_skb_metadata *', the verifier can do more checks like reading in t=
+he
+> middle of an integer member.  The verifier could also limit write access =
+only to
+> a few struct's members if it is needed.
+>
+> The returning 'struct xdp_to_skb_metadata *' should not be an alias to th=
+e
+> xdp->data_meta.  They should actually point to different locations in the
+> headroom.  bpf_xdp_metadata_export_to_skb() sets a flag in xdp_buff.
+> xdp->data_meta won't be changed and keeps pointing to the last
+> bpf_xdp_adjust_meta() location.  The kernel will know if there is
+> xdp_to_skb_metadata before the xdp->data_meta when that bit is set in the
+> xdp_{buff,frame}.  Would it work?
+>
+> >
+> >> A related question, why 'struct xdp_to_skb_metadata' needs
+> >> __randomize_layout?
+> >
+> > The __randomize_layout thing is there to force BPF programs to use CO-R=
+E
+> > to access the field. This is to avoid the struct layout accidentally
+> > ossifying because people in practice rely on a particular layout, even
+> > though we tell them to use CO-RE. There are lots of examples of this
+> > happening in other domains (IP header options, TCP options, etc), and
+> > __randomize_layout seemed like a neat trick to enforce CO-RE usage :)
+>
+> I am not sure if it is necessary or helpful to only enforce __randomize_l=
+ayout
+> in 'struct xdp_to_skb_metadata'.  There are other CO-RE use cases (tracin=
+g and
+> non tracing) that already have direct access (reading and/or writing) to =
+other
+> kernel structures.
+>
+> It is more important for the verifier to see the xdp prog accessing it as=
+ a
+> 'struct xdp_to_skb_metadata *' instead of xdp->data_meta which is a __u8 =
+* so
+> that the verifier can enforce the rules of access.
+>
+> >
+> >>>>> Does xdp_to_skb_metadata have a use case for XDP_PASS (like patch 7=
+) or the
+> >>>>> xdp_to_skb_metadata can be limited to XDP_REDIRECT only?
+> >>>>
+> >>>> XDP_PASS cases where we convert xdp_buff into skb in the drivers rig=
+ht
+> >>>> now usually have C code to manually pull out the metadata (out of hw
+> >>>> desc) and put it into skb.
+> >>>>
+> >>>> So, currently, if we're calling bpf_xdp_metadata_export_to_skb() for
+> >>>> XDP_PASS, we're doing a double amount of work:
+> >>>> skb_metadata_import_from_xdp first, then custom driver code second.
+> >>>>
+> >>>> In theory, maybe we should completely skip drivers custom parsing wh=
+en
+> >>>> there is a prog with BPF_F_XDP_HAS_METADATA?
+> >>>> Then both xdp->skb paths (XDP_PASS+XDP_REDIRECT) will be bpf-driven
+> >>>> and won't require any mental work (plus, the drivers won't have to
+> >>>> care either in the future).
+> >>>>   > WDYT?
+> >>>
+> >>>
+> >>> Yeah, not sure if it can solely depend on BPF_F_XDP_HAS_METADATA but =
+it makes
+> >>> sense to only use the hints (if ever written) from xdp prog especiall=
+y if it
+> >>> will eventually support xdp prog changing some of the hints in the fu=
+ture.  For
+> >>> now, I think either way is fine since they are the same and the xdp p=
+rog is sort
+> >>> of doing extra unnecessary work anyway by calling
+> >>> bpf_xdp_metadata_export_to_skb() with XDP_PASS and knowing nothing ca=
+n be
+> >>> changed now.
+> >
+> > I agree it would be best if the drivers also use the XDP metadata (if
+> > present) on XDP_PASS. Longer term my hope is we can make the XDP
+> > metadata support the only thing drivers need to implement (i.e., have
+> > the stack call into that code even when no XDP program is loaded), but
+> > for now just for consistency (and allowing the XDP program to update th=
+e
+> > metadata), we should probably at least consume it on XDP_PASS.
+> >
+> > -Toke
+> >
+
+Not to derail the discussion (left the last message intact on top,
+feel free to continue), but to summarize. The proposed changes seem to
+be:
+
+1. bpf_xdp_metadata_export_to_skb() should return pointer to "struct
+xdp_to_skb_metadata"
+  - This should let bpf programs change the metadata passed to the skb
+
+2. "struct xdp_to_skb_metadata" should have its btf_id as the first
+__u32 member (and remove the magic)
+  - This is for the redirect case where the end users, including
+AF_XDP, can parse this metadata from btf_id
+  - This, however, is not all the metadata that the device can
+support, but a much narrower set that the kernel is expected to use
+for skb construction
+
+3. __randomize_layout isn't really helping, CO-RE will trigger
+regardless; maybe only the case where it matters is probably AF_XDP,
+so still useful?
+
+4. The presence of the metadata generated by
+bpf_xdp_metadata_export_to_skb should be indicated by a flag in
+xdp_{buff,frame}->flags
+  - Assuming exposing it via xdp_md->has_skb_metadata is ok?
+  - Since the programs probably need to do the following:
+
+  if (xdp_md->has_skb_metadata) {
+    access/change skb metadata by doing struct xdp_to_skb_metadata *p
+=3D data_meta;
+  } else {
+    use kfuncs
+  }
+
+5. Support the case where we keep program's metadata and kernel's
+xdp_to_skb_metadata
+  - skb_metadata_import_from_xdp() will "consume" it by mem-moving the
+rest of the metadata over it and adjusting the headroom
+
+
+I think the above solves all the cases Toke points to?
+
+a) Accessing the metadata after redirect (in a cpumap or devmap
+program, or on a veth device)
+  - only a small xdp_to_skb_metadata subset will work out of the box
+iff the redirecttor calls bpf_xdp_metadata_export_to_skb; for the rest
+the progs will have to agree on the layout, right?
+
+b) Transferring the packet+metadata to AF_XDP
+  - here, again, the AF_XDP consumer will have to either expect
+xdp_to_skb_metadata with a smaller set of skb-related metadata, or
+will have to make sure the producer builds a custom layout using
+kfuncs; there is also no flag to indicate whether xdp_to_skb_metadata
+is there or not; the consumer will have to test btf_id at the right
+offset
+
+c) Returning XDP_PASS, but accessing some of the metadata first
+(whether to read or change it)
+  - can read via kfuncs, can change via
+bpf_xdp_metadata_export_to_skb(); m->xyz=3Dabc;
+
+Anything I'm missing?
