@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F26220B4
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 01:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB356220E5
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 01:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbiKIA0R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Nov 2022 19:26:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        id S229875AbiKIAhC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Nov 2022 19:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbiKIA0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Nov 2022 19:26:16 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4A122B09
-        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 16:26:15 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id q9so42889638ejd.0
-        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 16:26:15 -0800 (PST)
+        with ESMTP id S229719AbiKIAgw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Nov 2022 19:36:52 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E024663162
+        for <bpf@vger.kernel.org>; Tue,  8 Nov 2022 16:36:42 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id u24so24934106edd.13
+        for <bpf@vger.kernel.org>; Tue, 08 Nov 2022 16:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VKslX2EvFAOH2H7iVkn02NVu/Uebn7E/8NO4PeVhHgQ=;
-        b=q1a25w/Em1jNik5j5lCEOU70rjAr9Ex1iSVsxbGezstAV6EL5wIPxIZJiQfYDHgK3Q
-         KBtDmmF+JNoAWzgblqSPV63b4ln9KmeOyHWylUeO+HSq6BSD1U/CxMURoZg3gP5yafqw
-         2lRNO1ZUQfGCEY7P7aiN93THkg/OzGTxDySLKg8N9jnzz+brTkec+4lTOrxg7Ag4rPez
-         LfHlEQbWAarSu0sEsM6NeqBwWi32YAGv/EJ/3+8RbFrNRvmASOM5yl+gFwKCinD8gMn7
-         2Ewk78vDKy0VILMS6nc0iWTOV7anVPf48E1Ozkb+dYNI1oK9lZarzTKdp9RKCvVFlZLs
-         ++Ag==
+        bh=/p5Lc2b7tDwotLFDsld0l4ZvQmPo23leE/943+s/L8M=;
+        b=NsnH19YFO/L0KRFwoBTEjwwFESKGI0tMJGJs4pHpEzqKWROZohG/6OVadep8b+4hdz
+         lmz5A/ns/Xpy6khC0zE/QAdM/kHCzS1r2BUqPHFkkvumGAXgiKsxrv5PgFRV9JSZUhm9
+         8KR8VDOAqTce2JhL9yVl4/g4K775dQZkqJYR8qXtyVfQAvnrTPYDj/2aXxgP06spjcaw
+         nNgl4i0W+HOpeFP1jvsAIlJV+NNcG1IeyjQFQpPD6t7DUhg0TYuOxw8ifoBCU5Cj8o+L
+         b8MHQ2KdiJw14SbcCFeOQlmHg3fTtqcYwN8J5Qek9Nga/3CrqF0sTvCtZFPEVpNlXqvF
+         WZoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VKslX2EvFAOH2H7iVkn02NVu/Uebn7E/8NO4PeVhHgQ=;
-        b=8MZOVJY47LFOwp12OMNXwMb8DwSTzeBhztiSxIHQaAoxtnRWVqYqjbVDYNBOzay8QD
-         J/J3k+PB8W6nMuTr+YNW1k2OCTY1bV1U+wAalIJbjNcwWqtBBmCgn9qml2uTYnH7uoTA
-         vFJKAKEuqFEjKU5SgGKNL1Xdci1+xr+2sjMJMppbxjl8+eJJpubNwV1ljWtg9JBk75Ee
-         tfgNwBLk7GJ1q/aneTDT19XG/WZV7M9889Ip/lUA060egxtlEPwcOgYNZZRPHQl/KDt7
-         aALla9gcZWQHtz1Dv2vEZTHEVGm/gdujYQg/aqP7vVix2IrQXSOpma22SnD+7T0R06m9
-         TcvA==
-X-Gm-Message-State: ACrzQf0g0ZbFb1F1eqhMMp/X0PueWTGFofscODJ73Ry+65KD1UuRiiji
-        amQBkLj3zmU9NwreLQte1605HFzAYc57uRNrdP0=
-X-Google-Smtp-Source: AMsMyM5mXl7xsDgY/prWwqE1dHuq+JPaKkHTKEkU+mGRuRXxYnZ1Mu/o1mA7Th7QhRlbWN7XbiVotlyRPfGYO05LEEU=
-X-Received: by 2002:a17:906:af6b:b0:7a9:ecc1:2bd2 with SMTP id
- os11-20020a170906af6b00b007a9ecc12bd2mr1048818ejb.545.1667953574141; Tue, 08
- Nov 2022 16:26:14 -0800 (PST)
+        bh=/p5Lc2b7tDwotLFDsld0l4ZvQmPo23leE/943+s/L8M=;
+        b=rT5Fg/WI2+bYCF1WHIlDtplKSyeaEfo4mo2d4gInkTNswyPYJJdMup2rfXKJGX+ToA
+         r84u+l4NFiygFffeAa4Zm05KBxmO8od2wqNen1CpNJkkhllQxNjR547ahq2WjPxcbRen
+         r5vZvbCOXqzkxDX1q4LA6NQD7jqHJC0eTtwlveK3Vx5881BQk9vLaTsgSHvE1Hk8/3IJ
+         aZUb6iWEGuaZUYW82S1cIq95MRRbNu0d3lerlJXbS/1Mx/oVtWfSjwimT567NLgVs88G
+         C3pUAkLhPcxeEtjn/+4UK6qXnIGehdAPEpZl77uSXm/Xv87SW6et0voqXjZiTKcAuesa
+         R+Bg==
+X-Gm-Message-State: ACrzQf0WBW5ejLHbrIralXrwnGV/56iLXUE5D25y4ujIZs/lokDospRo
+        1K68I2GKJV+tj6euS9fo+x6VR4mgPxS2Mq/MIeo=
+X-Google-Smtp-Source: AMsMyM4Vw8o747KWhwjjtBzeb6+rfIUhacsgG0LGQ4tEx1mDuzPk1ak6xjQdHjdA9qMWLY2Bppl2wHV8rTZlNGolFAg=
+X-Received: by 2002:aa7:c2ca:0:b0:461:89a6:2281 with SMTP id
+ m10-20020aa7c2ca000000b0046189a62281mr60107297edp.260.1667954201243; Tue, 08
+ Nov 2022 16:36:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-6-memxor@gmail.com>
- <CAEf4BzZ180YJ+fbynJSR2fXXMVuKZTyginHyRdxydvOm-po7TA@mail.gmail.com> <20221108234901.erzrj2b6bsvqkzir@apollo>
-In-Reply-To: <20221108234901.erzrj2b6bsvqkzir@apollo>
+References: <20221107230950.7117-1-memxor@gmail.com> <20221107230950.7117-7-memxor@gmail.com>
+ <CAEf4BzZRaN_zd07jvtom6QJEEDGmFQTLJy4BM1bKi1MH5+n5QA@mail.gmail.com> <20221109000016.np325iqjjegvdose@apollo>
+In-Reply-To: <20221109000016.np325iqjjegvdose@apollo>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Nov 2022 16:26:02 -0800
-Message-ID: <CAEf4BzZJBeBr69QFdbj0L_76uViBsJJ1EzTiTFni+eUtTCG9mQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 05/25] bpf: Rename MEM_ALLOC to MEM_RINGBUF
+Date:   Tue, 8 Nov 2022 16:36:29 -0800
+Message-ID: <CAEf4BzZ0h4yda0_M8+wgpsHAgm_J5oeUtaxm8V-jqy3gNjFWdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 06/25] bpf: Introduce local kptrs
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -71,71 +71,167 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 3:49 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Tue, Nov 8, 2022 at 4:00 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Wed, Nov 09, 2022 at 04:44:16AM IST, Andrii Nakryiko wrote:
+> On Wed, Nov 09, 2022 at 04:59:41AM IST, Andrii Nakryiko wrote:
 > > On Mon, Nov 7, 2022 at 3:10 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > > >
-> > > Currently, verifier uses MEM_ALLOC type tag to specially tag memory
-> > > returned from bpf_ringbuf_reserve helper. However, this is currently
-> > > only used for this purpose and there is an implicit assumption that it
-> > > only refers to ringbuf memory (e.g. the check for ARG_PTR_TO_ALLOC_MEM
-> > > in check_func_arg_reg_off).
+> > > Introduce local kptrs, i.e. PTR_TO_BTF_ID that point to a type in
+> > > program BTF. This is indicated by the presence of MEM_ALLOC type flag in
+> > > reg->type to avoid having to check btf_is_kernel when trying to match
+> > > argument types in helpers.
 > > >
-> > > Hence, rename MEM_ALLOC to MEM_RINGBUF to indicate this special
-> > > relationship and instead open the use of MEM_ALLOC for more generic
-> > > allocations made for user types.
+> > > Refactor btf_struct_access callback to just take bpf_reg_state instead
+> > > of btf and btf_type paramters. Note that the call site in
+> > > check_map_access now simulates access to a PTR_TO_BTF_ID by creating a
+> > > dummy reg on stack. Since only the type, btf, and btf_id of the register
+> > > matter for the checks, it can be done so without complicating the usual
+> > > cases elsewhere in the verifier where reg->btf and reg->btf_id is used
+> > > verbatim.
 > > >
-> > > Also, since ARG_PTR_TO_ALLOC_MEM_OR_NULL is unused, simply drop it.
+> > > Whenever walking such types, any pointers being walked will always yield
+> > > a SCALAR instead of pointer. In the future we might permit kptr inside
+> > > local kptr (either kernel or local), and it would be permitted only in
+> > > that case.
 > > >
-> > > Finally, update selftests using 'alloc_' verifier string to 'ringbuf_'.
+> > > For now, these local kptrs will always be referenced in verifier
+> > > context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+> > > to such objects, as long fields that are special are not touched
+> > > (support for which will be added in subsequent patches). Note that once
+> > > such a local kptr is marked PTR_UNTRUSTED, it is no longer allowed to
+> > > write to it.
+> > >
+> > > No PROBE_MEM handling is therefore done for loads into this type unless
+> > > PTR_UNTRUSTED is part of the register type, since they can never be in
+> > > an undefined state, and their lifetime will always be valid.
 > > >
 > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > > > ---
-> >
-> > Ok, so you are doing what I asked in the previous patch, nice :)
-> >
-> > >  include/linux/bpf.h                               | 11 ++++-------
-> > >  kernel/bpf/ringbuf.c                              |  6 +++---
-> > >  kernel/bpf/verifier.c                             | 14 +++++++-------
-> > >  tools/testing/selftests/bpf/prog_tests/dynptr.c   |  2 +-
-> > >  tools/testing/selftests/bpf/verifier/ringbuf.c    |  2 +-
-> > >  tools/testing/selftests/bpf/verifier/spill_fill.c |  2 +-
-> > >  6 files changed, 17 insertions(+), 20 deletions(-)
+> > >  include/linux/bpf.h              | 28 ++++++++++++++++--------
+> > >  include/linux/filter.h           |  8 +++----
+> > >  kernel/bpf/btf.c                 | 16 ++++++++++----
+> > >  kernel/bpf/verifier.c            | 37 ++++++++++++++++++++++++++------
+> > >  net/bpf/bpf_dummy_struct_ops.c   | 14 ++++++------
+> > >  net/core/filter.c                | 34 ++++++++++++-----------------
+> > >  net/ipv4/bpf_tcp_ca.c            | 13 ++++++-----
+> > >  net/netfilter/nf_conntrack_bpf.c | 17 ++++++---------
+> > >  8 files changed, 99 insertions(+), 68 deletions(-)
 > > >
 > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 2fe3ec620d54..afc1c51b59ff 100644
+> > > index afc1c51b59ff..75dbd2ecf80a 100644
 > > > --- a/include/linux/bpf.h
 > > > +++ b/include/linux/bpf.h
-> > > @@ -488,10 +488,8 @@ enum bpf_type_flag {
-> > >          */
-> > >         MEM_RDONLY              = BIT(1 + BPF_BASE_TYPE_BITS),
+> > > @@ -524,6 +524,11 @@ enum bpf_type_flag {
+> > >         /* Size is known at compile time. */
+> > >         MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
 > > >
-> > > -       /* MEM was "allocated" from a different helper, and cannot be mixed
-> > > -        * with regular non-MEM_ALLOC'ed MEM types.
-> > > -        */
-> > > -       MEM_ALLOC               = BIT(2 + BPF_BASE_TYPE_BITS),
-> > > +       /* MEM points to BPF ring buffer reservation. */
-> > > +       MEM_RINGBUF             = BIT(2 + BPF_BASE_TYPE_BITS),
+> > > +       /* MEM is of a type from program BTF, not kernel BTF. This is used to
+> > > +        * tag PTR_TO_BTF_ID allocated using bpf_obj_new.
+> > > +        */
+> > > +       MEM_ALLOC               = BIT(11 + BPF_BASE_TYPE_BITS),
+> > > +
 > >
-> > What do we gain by having ringbuf memory as additional modified flag
-> > instead of its own type like PTR_TO_MAP_VALUE or PTR_TO_PACKET? It
-> > feels like here separate register type is more justified and is less
-> > error prone overall.
+> > you fixed one naming confusion with RINGBUF and basically are creating
+> > a new one, where "ALLOC" means "local kptr"... If we are stuck with
+> > "local kptr" (which I find very confusing as well, but that's beside
+> > the point), why not stick to the whole "local" terminology here?
+> > MEM_LOCAL?
 > >
 >
-> I'm not sure it's all that different. It only matters when checking argument
-> during release. We want to ensure it came from ringbuf_reserve. That's all,
-> apart from that it's no different from PTR_TO_MEM. In all other places it's
-> folded and code for PTR_TO_MEM is used. Same idea as PTR_TO_BTF_ID | MEM_ALLOC.
+> See the discussion about this in v4:
+> https://lore.kernel.org/bpf/20221104075113.5ighwdvero4mugu7@apollo
 >
-> But I don't feel too strongly, so if you still think it's better I can make the
-> switch.
+> It was MEM_TYPE_LOCAL before. Also, better naming suggestions are always
+> welcome, I asked the same in that message as well.
 
-Not strongly, but I think having this as a flag is more error prone.
-For cases where ringbuf memory should be treated just as memory, we
-should use the same mechanism we have for MAP_VALUE. But I haven't
-checked how we deal with MAP_VALUE, if that's a special case
-everywhere, in addition to generic PTR_TO_MEM, then fine. But if
-having PTR_TO_RINGBUF_MEM is converted to PTR_TO_MEM generically where
-needed, I'd have dedicated PTR_TO_RINGBUF_MEM.
+Sorry, I haven't followed <v5. Don't have perfect name, but logically
+this is BPF program memory. So "prog_kptr" would be something to
+convert this, but I'm not super happy with such a name. "user_kptr"
+would be too confusing, drawing incorrect "kernel space vs user space"
+comparison, while both are kernel memory. It's BPF-side kptr, so
+"bpf_kptr", but also not great.
+
+So that's why didn't suggest anything specific, but at least as far as
+MEM_xxx flag goes, MEM_LOCAL_KPTR is better than MEM_ALLOC, IMO. It's
+at least consistent with the official name of the concept it
+represents.
+
+>
+> > >         __BPF_TYPE_FLAG_MAX,
+> > >         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+> > >  };
+> > > @@ -771,6 +776,7 @@ struct bpf_prog_ops {
+> > >                         union bpf_attr __user *uattr);
+> > >  };
+> > >
+> >
+> > [...]
+> >
+> > > -int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> > > -                     const struct btf_type *t, int off, int size,
+> > > -                     enum bpf_access_type atype __maybe_unused,
+> > > +int btf_struct_access(struct bpf_verifier_log *log,
+> > > +                     const struct bpf_reg_state *reg,
+> > > +                     int off, int size, enum bpf_access_type atype __maybe_unused,
+> > >                       u32 *next_btf_id, enum bpf_type_flag *flag)
+> > >  {
+> > > +       const struct btf *btf = reg->btf;
+> > >         enum bpf_type_flag tmp_flag = 0;
+> > > +       const struct btf_type *t;
+> > > +       u32 id = reg->btf_id;
+> > >         int err;
+> > > -       u32 id;
+> > >
+> > > +       t = btf_type_by_id(btf, id);
+> > >         do {
+> > >                 err = btf_struct_walk(log, btf, t, off, size, &id, &tmp_flag);
+> > >
+> > >                 switch (err) {
+> > >                 case WALK_PTR:
+> > > +                       /* For local types, the destination register cannot
+> > > +                        * become a pointer again.
+> > > +                        */
+> > > +                       if (type_is_local_kptr(reg->type))
+> > > +                               return SCALAR_VALUE;
+> >
+> > passing the entire bpf_reg_state just to differentiate between local
+> > vs kernel pointer seems like a huge overkill. bpf_reg_state is quite a
+> > complicated and extensive amount of state, and it seems cleaner to
+> > just pass it as a flag whether to allow pointer chasing or not. At
+> > least then we know we only care about that specific aspect, not about
+> > dozens of other possible fields of bpf_reg_state.
+> >
+>
+> I agree that the separation is usually better, especially because this is also a
+> callback. I don't feel too strong about this though, we certainly do pass the
+> whole reg to functions which only work on a specific type of pointer. Though the
+
+Yeah, and then it takes a lot of grepping and jumping around the code
+to verify that only one simple field out of the entire bpf_reg_state
+is actually used. I'd say this is actually bad that we do pass it
+around so willy-nilly. Verifier code is already a hot complex mess,
+let's not actively make it harder than necessary.
+
+> concern in this case is justified as it's not only an internal function but also
+> a callback.
+>
+> It was just a bool in the RFC.
+> But in https://lore.kernel.org/bpf/20220907233023.x3uclwlnjuhftvtb@macbook-pro-4.dhcp.thefacebook.com
+> Alexei suggested passing reg instead.
+> From the link:
+> > imo it's cleaner to pass 'reg' instead of 'reg->btf',
+> > so we don't have to pass another boolean.
+> > And check type_is_local(reg) inside btf_struct_access().
+
+I sympathize with "too many input args" (especially if it's a bunch of
+bools) argument, but see above, I find it increasingly harder to know
+what parts of complex internal register state is used by helper
+functions and which are not.
+
+And the fact that we have to construct a fake register state in some
+case is a red flag to me. Pass enum bpf_reg_type type to avoid passing
+true/false. Or let's invent a new enum. Or extend enum bpf_access_type
+to have READ_NOPTR/WRITE_NOPTR or something like that. Don't know.
+
+This isn't a major issue, I can live with this just fine, but this
+definitely doesn't feel like a clean approach.
