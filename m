@@ -2,190 +2,402 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B36623061
-	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 17:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B4E62308D
+	for <lists+bpf@lfdr.de>; Wed,  9 Nov 2022 17:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbiKIQpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 11:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        id S230072AbiKIQyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 11:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbiKIQpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 11:45:36 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6954122BDE;
-        Wed,  9 Nov 2022 08:45:35 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 2A9CWLch000753;
-        Wed, 9 Nov 2022 08:45:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=ee7UR+lYWesgrxLbZL0ShmTfth7huwpCSCLZDq5/PxM=;
- b=YzaqsmrW+I8bJ0Kiz9rOKwxvt/GqKcVi2t9UseMp/LWhwG2HMZ2Fk1RV9WfLXjq+Rpmb
- J930JZVb7eH6ld+Ed2MZ1CMO4QBErQg5Vhyu8CTltY/aoUu46Mi++l35z8gSdeTvRcud
- vug1TZWdP1iDk22QUGRSE0vp37XRef0mPhWvLzhn8xuLflo/s5l9KaLwn0orIKjmnmq9
- CgNE94+AIwio63gZjZKK6l16KlDk/Zr4zaBVsZkI3WVuSjfWhB54Ytp3PK33hauiE2tb
- 9Zt4wWPiL5Fv+4jAjHdGC9ojYFqv6ZYNt4N6UxKe578Tz4qjYO0U3P4KarRvo+Gs5XnK zA== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3krca322bt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Nov 2022 08:45:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KyGLnebpNKdEybpxmckVhl2ZfI/hwJx+i56Yb7mAgLjeONWrOOXC4bOZdLz1rtJvpnr+7k+T29UfSwbg1hY3DyvqFCP0sgnv518Rj9DTO/hu+TFCgeXKI0k/dAQyGLjEIm9DmLXpqIc50YBakTwRwJWILKuKMeqnmrc4Hc6atoUya3GmFeBcrhWaZMm79NCjfyhar3mWsb+A7T26rKFPzMzM1EjX2MeiL9ml/UKHIpO5SKEexqx+/KbYVT3vZ5OTp+b9cfPBPBhx8rE8UtM/VDdehmbDC7UvMVaN/ixF7esjovbAnRw6pX39a9jPqewaOXTCPuzFKur5tVWJG9xAKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ee7UR+lYWesgrxLbZL0ShmTfth7huwpCSCLZDq5/PxM=;
- b=k46D3CajfWpqDc7ES76JzziAovxqPQFhbF/UQ6xZPUJsgqi1i/gtxxf/k/a3xKOQnVO/CUoOVmRe+Z8DsfAhMMMHBFL80di0PAnmcZo0C0VmzjI11LJ9YF3WXL3YvkN47EPfsWsuTJKLB7z8OfBqHBNTMkU863XCatJVe8aXA8kJHn3cYbgSgKdILaM/TSZ8R62sCSv65ZHShjOUE8hLbiFYCk26L/PQZ9DUqp0v664Eu1DRA65l5xMhLkKujmongk+qNGX2K/5O2hBfTqPhJBdlO1AvQlvcpAw0cWi7RahSZ6ytvd9wmNLDbmuRDREkps1mBfiirEjagV5/WlbMog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB5192.namprd15.prod.outlook.com (2603:10b6:510:12a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.25; Wed, 9 Nov
- 2022 16:45:11 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.027; Wed, 9 Nov 2022
- 16:45:11 +0000
-Message-ID: <5708a47d-5400-e75e-ccf6-96177366ea38@meta.com>
-Date:   Wed, 9 Nov 2022 08:45:07 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.2
-Subject: Re: [PATCH bpf-next] bpf: btf: don't log ignored BTF mismatches
-Content-Language: en-US
-To:     Connor O'Brien <connoro@google.com>, bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20221109024155.2810410-1-connoro@google.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221109024155.2810410-1-connoro@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0054.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::31) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S230215AbiKIQx3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 11:53:29 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF3327920
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 08:52:44 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id p16so11225074wmc.3
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 08:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XeazlkoR15bj6bus0hUXdYMA3hw2fOnNyQLZPc3/V6I=;
+        b=Ws+WdGa1MPyo/8p+N127B4G4oW53e9d/89TZpilCjUeq0TfGFm7xfq48areBge1KL2
+         y4vaG3qbPBQ2NCmMyn9oyBK2TmEzNVa7bpQtJehl0tYPt2yRQc7uJc5XeImf1OEECQzE
+         SThf6zwPRQaLojRHoA6DYQCCdUWA/bx+thODGaLIb8KLdijjcP3nNjbS65fRVQTqEa/R
+         fn3Q7hZzzmvPWny5KBa8ZPh5nG2E8qZMta+sZydNo9ErwO2+26/+sYzEy7WIMhPUDVOK
+         eLey+8eihleDNsbHRL/Z9qCzgK8ScDD121qqS7PxylDT8aV6CICE9QNgkyika3aWfSxW
+         +Urg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XeazlkoR15bj6bus0hUXdYMA3hw2fOnNyQLZPc3/V6I=;
+        b=Qu3qDvJuYilOR7cPKAmolx/G8Pfzz+q76uw+yAae/9ZfFd4VpnYr42AI+6SGwdpwOj
+         9OREJyAgBaoXpF9CXlClTO9n6lKFOuE2whN505/WXw8NrUM3qEy594RA3nG7Fn7Ye2iR
+         jZxO5kyXfIx5bXI3WNMDyYOxNG0ATyXcin3gN6jEbovWk99JJuXXcPHHwzjSrNbBSMXQ
+         rltVSqa6SBq79+YXVz4gYLWYlAa98qu0F96XeUn4WuduvzyAq6k84V8ZuxL9Jw3FxjCW
+         VnGn5dQwkpz8bZC6MqMvcdtxpIn+gek3Jakr2wW7ZUM92osgnHRdwvXqgzX4C5+OODet
+         uIUA==
+X-Gm-Message-State: ANoB5pkQHLNRzK93Pt2LcW1gYKl0ml3VaDB09eHtXlfmUcsqtZHQ0gWN
+        E8+km4WnWVE4IZdk32sGV1A88SXaVFYRiDJ5bwfsyQ==
+X-Google-Smtp-Source: AA0mqf70GgSs4M39HKz55xfSCOPPY2j7rJrV6rTKC2wuhQZwcsfqbHBobJp3b5VB18QenxkiWlbw/moxSpr3sdUCtFs=
+X-Received: by 2002:a05:600c:3ba1:b0:3cf:a511:320c with SMTP id
+ n33-20020a05600c3ba100b003cfa511320cmr13625122wms.182.1668012762285; Wed, 09
+ Nov 2022 08:52:42 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH0PR15MB5192:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d9720a8-a099-4205-f332-08dac271c48e
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lJ6+p2+KXlPtb+fICGH4h7VNPzuG4APZkGJ1f+FxXO/phtwlKeXwSKSKxYuWOwcPMlQrBCN9ZTR+TtaGkyA6NFPC4oRtIM98jguk9wh2BMJvN/VzPLO1Gz/9oGgiWdAm6kJW5hvD8bE1wF6kSoDkqsspNHhly5CD+DPW36BtaZUESKsUz26nZ6V+9Sd3jPzwKUJL1AsIcjt1n2BA2N81kaJo7pVY7CwX68FmAMcrhgJRR93F/NsV24Znv4HZnUSjJe3awBFeCh/dzMSuODYklWDwvM8EEfHlf8iZdCiCd6rHv9xGPjcwkQlfeBxhii4SHtUnR1oo+LpuU8q834jxdMuy5Hby9/jkoxpt1yxGgUTkUhkDYVnjJtnhON6vW72kTOStbLIMdaUDQPwcJPwETz8m6qvd+ec6pz4Ykfd+UGpDO6B2b1uSlLnJPtSlX2QmOTyBAm6v4MHQokOaWNdlwCP/Dzg5GSedVg3oAh5vbGDShp6BfHEmIpvw3mgNfmh1INHYxDtzSjakRYnISfI9T2hSZ+M7wasOcMR0dfXbziNnOM/KZTwvDVR22dMVeHCyRAehZvBiQPkLxBchYYCba2Y/FtN+qG8QtYdcAPBiDqsNrk1ax3x8922MN1Teb61ohtpVPZCF4uTk1GOcqFHDire7cSBOEXW17peXO0PWqPO3427QOqEpAz4V0VqC7SjwzyjL0d6oYm9zZ+m6fvHL6+Pjp0yt9/XA/dWD6zqeLA1IDhErLLmU2YOo06YDh764NCivg3XR5tU4gPr37mTLXY23A3yNOJgJDvHzSQasTDk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(451199015)(31696002)(86362001)(38100700002)(6486002)(478600001)(8936002)(6666004)(66946007)(66556008)(54906003)(2906002)(6506007)(316002)(83380400001)(5660300002)(66476007)(186003)(7416002)(41300700001)(2616005)(6512007)(8676002)(4326008)(53546011)(31686004)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2NFUkx2M3g4RGRqTCthWnVVZkZyaVlVOFV0WE5LSjhvcUFrakxlb3hjZ1RI?=
- =?utf-8?B?NHp2VlNIcXhZQ1l3QmZiRElWRXZLZkFsODl1K3NiYlE1Smp4T3hCQ0hzZFlt?=
- =?utf-8?B?aG1RN0VsdUVpSFJlOHVFc0xVQU03YUNrcmZsMWRQZCsyMUJ1QUtZRE5ScmpJ?=
- =?utf-8?B?WGRZOHd3N0Y2eHNsQTRNeVhWS0RKQ1ZaZVVQOUUyS2FtTURvRVJacGFwMWxi?=
- =?utf-8?B?dUVBeWRFbEhkbzJLUlo1L1ZOQ1BpOGlkVmFlUlZHMEFhUWFpOHVkeGQvb0J2?=
- =?utf-8?B?N2VVNkE4aHcxUFI0S0kvL3NJcUQ2a1BOK0RCcWZQWndCQk96dnBMWFZNNEFz?=
- =?utf-8?B?M3hvNy95ZjV4M3NJM2ZlRWxwMlo0UTdZWGl0VHJJVS9zak9JTVBocXdYN3pv?=
- =?utf-8?B?SlprVGRLU29rTjlPdlNWQ29yMng4VkVIaXM4VGFCaURuY0FaSlZMajlIOHFD?=
- =?utf-8?B?ZnRvNUxyeDlWVElJWTRqMWZlYnJMd1krREF2M3doNUJZSm45L055UzA4dDhP?=
- =?utf-8?B?ZWZYYkdtNHNka09wQ3VwL2xldnQ1ZVRYcGpUVmhkOHBTd3BhcERzMGdsT3RW?=
- =?utf-8?B?cU1sVUNVTElxVUhGVS94dXJuSzJRYng5bGQ0NkF2RWNMblo2ZzBvYU1sZzl3?=
- =?utf-8?B?Z1Ivd1Y1MEdkRlAvamw4OWNxY3JzVFNKYzRvOTZNdFdzQ2ZkV2p4RTdELzVU?=
- =?utf-8?B?ZFh3bjJ0b3RZNnBodFJRaEhwbnJBLyswU1BWR0V4bzFISHo1VHp2UDNhZzJl?=
- =?utf-8?B?UldlQ01XN0lJcDhtcGlUdGhNMGFHdk04cFBOSEFCa3ZaL29TRjFZR24xdmU0?=
- =?utf-8?B?eXRhMnNZbDM5VVhEN1RZUE1nOWVGZEFSaDROTVBGdmZabGI3ZXk3U3haOXIx?=
- =?utf-8?B?NE53YVlFeUhJenUwY0JUTkwxM2hHaThYcTlFVDFKYjdvWG43QU5FL05manhw?=
- =?utf-8?B?bFRFcityOHBIWHNJMStxV1JYNDBVWnhoV2c2N3dPb3R2OThxWXIvTHRVbUdh?=
- =?utf-8?B?ZzlWMGNMOXVXY2JEQUQ1ZW40MzJjVk5XZExha3lXajZoSWNCUXJkMk5RMlZX?=
- =?utf-8?B?L3U3MDg4d2xhRWI3c0dVejcvUEhpSTZ1UFFYZmpsbmgxWXI2RUtGTFAvK2cx?=
- =?utf-8?B?TUkvOXZocmhORDdKekJDTmZ5UnA3UFZXVWF0T3N3MlViVWpsSEcwTlNwVUFx?=
- =?utf-8?B?NVdMUzFXWjNobm5Md2hiUDVqUmZlTDhyc3lTbzdkdzBpQjN5QzFyRUdPdnRX?=
- =?utf-8?B?eFlaVDRpR0xHelp5bUMxUGJldURtN2U2WE0rNmt5N3RYUHlZdmVQbWtybTNO?=
- =?utf-8?B?WHJvQnc2UW5WQnJ4WlphcGwwVFo4SHd4bk1YNHk1ZmswSkozRm5HYWdJU0Ns?=
- =?utf-8?B?dEVEZEdTS0NnbHEzRmdSUU1uY2srenh4ak9JM2FtV0xJZGVvTlhNbjdtWHZU?=
- =?utf-8?B?a0lSRGc2N3RoTC9xQ0R1TXFYOC9Dd0IrUnhvOEUrb3dTcUdCVERiNzBzb240?=
- =?utf-8?B?dXNmNEtOekt0V1BLZU91dlRBK0lGZGhxV0k5ZDBqLzBScFYxV0tKNEx2bU5p?=
- =?utf-8?B?ZXNxa05yOCs4dlFsNU9kemlRaUxXNER5K2Q1N056cjYxTXVqcjdMU3RvQkZl?=
- =?utf-8?B?eVNXdXRXU0FGa045SFl1RzJGajBDOFozbXl1M1NMOVlGQW5RdndCY1N4QzJ1?=
- =?utf-8?B?L3djenRuWk1UZjJEVzR2NHgvZVpFckxtNkNEd0tYdHY4clpGYytnQ2tBRjAw?=
- =?utf-8?B?akMyM0tXZEFHZGNxZEtmbUJDQVd5aHY3emNYL29qTXJyM0lXMFpoMEJQQ25t?=
- =?utf-8?B?Qk5FcEFOb2NlZ0pwQ0Y1cXp2dFNQditCajFqQVRjRkpKY0pIREk5UlNKejdI?=
- =?utf-8?B?Qy9Cbi8xTVF2cWFYdlZZYTNHYi8vVEE3WUdYNytxZGM3Wk9SYUdIV0UydXRl?=
- =?utf-8?B?QklxbFZGaWFuUkpBa3FyOXlOYnNyaVdJeWpRWFZnbFRKVHM3MjNPSDQ0bDZF?=
- =?utf-8?B?U3JsejhRWTREblNDdnVmajJYTFRwZGs5M2xIZlE1dFpZdjVQWWJSekhlVjI1?=
- =?utf-8?B?QU1HMW9hMklxZHRHdVhvV2tkeTNRY3JXMXVidC9oclFrcDR2RXFyV1dzS3FU?=
- =?utf-8?B?eUZ4bTEyL1hHN1BNTXVoUG5yVkFpYVBkL0JWd1Y0elVhVkY4eUd5TENLLytx?=
- =?utf-8?B?dlE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d9720a8-a099-4205-f332-08dac271c48e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2022 16:45:11.2704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ACcL+nOTWtc4oAA9OvdB6rbys++2ZcMPFJp6wPoQkuTGvR+a5ngEEzY0ChlWt+C1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB5192
-X-Proofpoint-GUID: sY93e0vLrjtZETiWMU26cUJl-yMTsGdq
-X-Proofpoint-ORIG-GUID: sY93e0vLrjtZETiWMU26cUJl-yMTsGdq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-09_06,2022-11-09_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221108073518.1154450-1-irogers@google.com> <Y2vG13WVahGoib57@kernel.org>
+In-Reply-To: <Y2vG13WVahGoib57@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 9 Nov 2022 08:52:29 -0800
+Message-ID: <CAP-5=fXMEE6LAoBcV-UtRRhG3wvVtzBW4r5FGz06=qsE2U6jPw@mail.gmail.com>
+Subject: Re: [PATCH v1 00/14] Fix perf tools/lib includes
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Nov 9, 2022 at 7:27 AM Arnaldo Carvalho de Melo <acme@kernel.org> w=
+rote:
+>
+> Em Mon, Nov 07, 2022 at 11:35:04PM -0800, Ian Rogers escreveu:
+> > The previous build would add -Itools/lib and get dependencies for
+> > libtraceevent, libsubcmd, libsymbol, libapi and libbpf meaning that
+> > overriding these libraries would change the link time dependency but
+> > the headers would erroneously come from tools/lib. Fix the build to
+> > install headers and then depend on these. To reduce exposing internal
+> > headers/APIs some clean up is performed. tools/lib/symbol has a
+> > Makefile added, while tools/lib/api and tools/lib/subcmd have install
+> > targets added. The pattern used for the dependencies in Makefile.perf
+> > is modelled on libbpf.
+>
+> It builds with O=3D, I tried it one by one, but  there are problems with
+> make from a detached tarball, that is how I do the container builds, see
+> below, I'm trying to figure this out...
 
+Sorry, I didn't know to test this. The added Build and Makefile in
+libsymbol are missing, so I'd guess that's the major issue.
 
-On 11/8/22 6:41 PM, Connor O'Brien wrote:
-> Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
-> mismatches are expected and module loading should proceed
-> anyway. Logging with pr_warn() on every one of these "benign"
-> mismatches creates unnecessary noise when many such modules are
-> loaded. Instead, limit logging to the case where a BTF mismatch
-> actually prevents a module form loading.
-> 
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> ---
->   kernel/bpf/btf.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 5579ff3a5b54..406370487413 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -7190,11 +7190,12 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
->   		}
->   		btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
->   		if (IS_ERR(btf)) {
-> -			pr_warn("failed to validate module [%s] BTF: %ld\n",
-> -				mod->name, PTR_ERR(btf));
+Thanks,
+Ian
 
-I think such warning still useful even with 
-CONFIG_MODULE_ALLOW_BTF_MISMATCH.
-Can we use pr_warn_ratelimited instead of pr_warn in the above to
-avoid excessive warnings?
-
->   			kfree(btf_mod);
-> -			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-> +			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
-> +				pr_warn("failed to validate module [%s] BTF: %ld\n",
-> +					mod->name, PTR_ERR(btf));
->   				err = PTR_ERR(btf);
-> +			}
->   			goto out;
->   		}
->   		err = btf_alloc_id(btf);
+> =E2=AC=A2[acme@toolbox perf]$ make perf-tar-src-pkg
+>   TAR
+>   PERF_VERSION =3D 6.1.rc3.g7e5d8b7a1fbd
+> =E2=AC=A2[acme@toolbox perf]$ mv perf-6.1.0-rc3.tar /tmp
+> =E2=AC=A2[acme@toolbox perf]$ cd /tmp
+> =E2=AC=A2[acme@toolbox tmp]$ tar xf perf-6.1.0-rc3.tar
+> =E2=AC=A2[acme@toolbox tmp]$ cd perf-6.1.0-rc3/
+> =E2=AC=A2[acme@toolbox perf-6.1.0-rc3]$ make -C tools/perf
+> make: Entering directory '/tmp/perf-6.1.0-rc3/tools/perf'
+>   BUILD:   Doing 'make -j32' parallel build
+>   HOSTCC  fixdep.o
+>   HOSTLD  fixdep-in.o
+>   LINK    fixdep
+>
+> Auto-detecting system features:
+> ...                                   dwarf: [ on  ]
+> ...                      dwarf_getlocations: [ on  ]
+> ...                                   glibc: [ on  ]
+> ...                                  libbfd: [ on  ]
+> ...                          libbfd-buildid: [ on  ]
+> ...                                  libcap: [ on  ]
+> ...                                  libelf: [ on  ]
+> ...                                 libnuma: [ on  ]
+> ...                  numa_num_possible_cpus: [ on  ]
+> ...                                 libperl: [ on  ]
+> ...                               libpython: [ on  ]
+> ...                               libcrypto: [ on  ]
+> ...                               libunwind: [ on  ]
+> ...                      libdw-dwarf-unwind: [ on  ]
+> ...                                    zlib: [ on  ]
+> ...                                    lzma: [ on  ]
+> ...                               get_cpuid: [ on  ]
+> ...                                     bpf: [ on  ]
+> ...                                  libaio: [ on  ]
+> ...                                 libzstd: [ on  ]
+>
+>   GEN     common-cmds.h
+>   PERF_VERSION =3D 6.1.rc3.g7e5d8b7a1fbd
+>   CC      perf-read-vdso32
+>   GEN     perf-archive
+>   GEN     perf-iostat
+>   CC      dlfilters/dlfilter-test-api-v0.o
+>   CC      dlfilters/dlfilter-show-cycles.o
+>   CC      jvmti/libjvmti.o
+> make[3]: *** No rule to make target '/tmp/perf-6.1.0-rc3/tools/perf/libsy=
+mbol/libsymbol.a'.  Stop.
+> make[2]: *** [Makefile.perf:907: /tmp/perf-6.1.0-rc3/tools/perf/libsymbol=
+/libsymbol.a] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+>   CC      jvmti/jvmti_agent.o
+>   CC      jvmti/libstring.o
+>   CC      jvmti/libctype.o
+>   GEN     pmu-events/pmu-events.c
+>   INSTALL headers
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/exec-cmd.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/help.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/pager.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/parse-options.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/run-command.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/sigchain.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/subcmd-config.o
+>   INSTALL headers
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd=
+2.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrt=
+imer.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kme=
+m.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm=
+.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac=
+80211.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fun=
+ction.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sch=
+ed_switch.o
+>   INSTALL headers
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/core.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/cpu.o
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/array.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/fs.o
+>   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libbpf/bpf_helper_defs.h
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/tracing_path.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/cgroup.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf.h
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/debug.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fut=
+ex.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen=
+.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scs=
+i.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg=
+80211.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb=
+.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd=
+2-in.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrt=
+imer-in.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf.h
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kme=
+m-in.o
+>   INSTALL headers
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/btf.h
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac=
+80211-in.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sch=
+ed_switch-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/cpumap.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/threadmap.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libapi/str_error_r.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_common=
+.h
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_jbd=
+2.so
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_hrt=
+imer.so
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_legacy=
+.h
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fun=
+ction-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evsel.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm=
+-in.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kme=
+m.so
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_mac=
+80211.so
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_sch=
+ed_switch.so
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helpers.h
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_tracing.h
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-plugin.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/evlist.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/mmap.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/trace-seq.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_endian.h
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_core_read=
+.h
+> if [ ! -d ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs' ]; the=
+n install -d -m 755 ''/tmp/perf-6.1.0-rc3/tools/perf/libapi'/include/api/fs=
+'; fi; install fs/tracing_path.h -m 644 ''/tmp/perf-6.1.0-rc3/tools/perf/li=
+bapi'/include/api/fs';
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fd/libapi-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/zalloc.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-filter.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/parse-utils.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/kbuffer-parse.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen=
+-in.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/skel_internal=
+.h
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/libbpf_versio=
+n.h
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/tep_strerror.o
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/usdt.bpf.h
+>   INSTALL /tmp/perf-6.1.0-rc3/tools/perf/libbpf/include/bpf/bpf_helper_de=
+fs.h
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/event-parse-api.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/xyarray.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fun=
+ction.so
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_xen=
+.so
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fut=
+ex-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libperf/lib.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scs=
+i-in.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg=
+80211-in.o
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_kvm=
+.so
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_fut=
+ex.so
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_scs=
+i.so
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/fs/libapi-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/nlattr.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf.o
+>   MKDIR   /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb=
+-in.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_cfg=
+80211.so
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/str_error.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/netlink.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi-in.o
+>   LD      jvmti/jvmti-in.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_errno.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/plugin_tlb=
+.so
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/bpf_prog_linfo=
+.o
+>   AR      /tmp/perf-6.1.0-rc3/tools/perf/libapi/libapi.a
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf_probes.=
+o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/hashmap.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/btf_dump.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/ringbuf.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/strset.o
+>   GEN     /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent_plugins/libtraceev=
+ent-dynamic-list
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/linker.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/gen_loader.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/relo_core.o
+>   CC      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/usdt.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd-in.o
+>   AR      /tmp/perf-6.1.0-rc3/tools/perf/libsubcmd/libsubcmd.a
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf-in.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent-in.o
+>   AR      /tmp/perf-6.1.0-rc3/tools/perf/libperf/libperf.a
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libtraceevent/libtraceevent.a
+>   CC      pmu-events/pmu-events.o
+>   LD      pmu-events/pmu-events-in.o
+>   LD      /tmp/perf-6.1.0-rc3/tools/perf/libbpf/staticobjs/libbpf-in.o
+>   LINK    /tmp/perf-6.1.0-rc3/tools/perf/libbpf/libbpf.a
+> make[1]: *** [Makefile.perf:240: sub-make] Error 2
+> make: *** [Makefile:70: all] Error 2
+> make: Leaving directory '/tmp/perf-6.1.0-rc3/tools/perf'
+> =E2=AC=A2[acme@toolbox perf-6.1.0-rc3]$
+>
+>
+>
+> > The problem and solution were motivated by this issue and discussion:
+> > https://lore.kernel.org/lkml/CAEf4BzbbOHQZUAe6iWaehKCPQAf3VC=3Dhq657buq=
+e2_yRKxaK-A@mail.gmail.com/
+> >
+> > Ian Rogers (14):
+> >   tools lib api: Add install target
+> >   tools lib subcmd: Add install target
+> >   perf build: Install libsubcmd locally when building
+> >   perf build: Install libapi locally when building
+> >   perf build: Install libperf locally when building
+> >   perf build: Install libtraceevent locally when building
+> >   tools lib api: Add missing install headers
+> >   tools lib perf: Add missing install headers
+> >   tool lib symbol: Add Makefile/Build
+> >   perf build: Install libsymbol locally when building
+> >   perf expr: Tidy hashmap dependency
+> >   perf thread_map: Reduce exposure of libperf internal API
+> >   perf cpumap: Tidy libperf includes
+> >   perf build: Use tools/lib headers from install path
+> >
+> >  tools/lib/api/Makefile                        |  52 ++++++
+> >  tools/lib/perf/Makefile                       |  10 +-
+> >  tools/lib/subcmd/Makefile                     |  49 ++++++
+> >  tools/lib/symbol/Build                        |   1 +
+> >  tools/lib/symbol/Makefile                     | 115 +++++++++++++
+> >  tools/perf/.gitignore                         |   7 +-
+> >  tools/perf/Makefile.config                    |   2 -
+> >  tools/perf/Makefile.perf                      | 152 ++++++++++++------
+> >  tools/perf/builtin-stat.c                     |   1 +
+> >  tools/perf/builtin-trace.c                    |   4 +-
+> >  tools/perf/tests/cpumap.c                     |   2 +-
+> >  tools/perf/tests/expr.c                       |   1 +
+> >  tools/perf/tests/openat-syscall.c             |   1 +
+> >  tools/perf/tests/pmu-events.c                 |   1 +
+> >  tools/perf/tests/thread-map.c                 |   1 +
+> >  tools/perf/util/Build                         |   5 -
+> >  tools/perf/util/auxtrace.h                    |   2 +-
+> >  tools/perf/util/bpf-loader.c                  |   4 -
+> >  tools/perf/util/bpf_counter.c                 |   2 +-
+> >  tools/perf/util/cpumap.c                      |   1 +
+> >  tools/perf/util/cpumap.h                      |   2 +-
+> >  tools/perf/util/evsel.c                       |   5 +-
+> >  tools/perf/util/evsel.h                       |   2 -
+> >  tools/perf/util/expr.c                        |   1 +
+> >  tools/perf/util/expr.h                        |   7 +-
+> >  tools/perf/util/metricgroup.c                 |   1 +
+> >  tools/perf/util/python.c                      |   6 +-
+> >  .../scripting-engines/trace-event-python.c    |   2 +-
+> >  tools/perf/util/stat-shadow.c                 |   1 +
+> >  tools/perf/util/stat.c                        |   4 -
+> >  tools/perf/util/thread_map.c                  |   1 +
+> >  tools/perf/util/thread_map.h                  |   2 -
+> >  32 files changed, 361 insertions(+), 86 deletions(-)
+> >  create mode 100644 tools/lib/symbol/Build
+> >  create mode 100644 tools/lib/symbol/Makefile
+> >
+> > --
+> > 2.38.1.431.g37b22c650d-goog
+>
+> --
+>
+> - Arnaldo
