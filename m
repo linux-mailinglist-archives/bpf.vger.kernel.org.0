@@ -2,116 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B04624B89
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 21:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC132624CD1
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 22:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbiKJURH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 15:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S231341AbiKJVVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 16:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbiKJURF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 15:17:05 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4584FF81;
-        Thu, 10 Nov 2022 12:17:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1668111423; x=1699647423;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5PLnax8XorRp3Zie4kgXRfWwQFyg+n9E8n1hQRXSQwk=;
-  b=1Iglbzheq/lHp0o/cB+aDGpNc61GJ//KOICQj4gxnGJsUGS6jCE6isy6
-   OHrDWMcfGYJosZyPibHGrrbDldJojBnVsdsElMsmOsq+VQLA68XfgVQQu
-   7I/3RG7SUP/tCW3X9YRAEU8R9vfCJ0WOD/VqY25vzrUn4/ec3fe9hNfPc
-   xnItxYDppcJPaVPl1Ge6Saf8OxsTf5Tu3rBXraS2F+W1P7rx348nz58qp
-   lmQ44BI0ljPCynkLzuNZKwFLIBkUMy0pv+cstv2f7NaWt6ItgpMjJjuCB
-   mrKfjEljAU1pYTXyISYuvYf9fhQF737da7SXppQ+0AFB6aenqDPtALmAN
-   g==;
-X-IronPort-AV: E=Sophos;i="5.96,154,1665471600"; 
-   d="scan'208";a="186424713"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Nov 2022 13:17:02 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Thu, 10 Nov 2022 13:17:01 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
- Transport; Thu, 10 Nov 2022 13:17:01 -0700
-Date:   Thu, 10 Nov 2022 21:21:47 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-CC:     Andrew Lunn <andrew@lunn.ch>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <linux@armlinux.org.uk>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v3 0/4] net: lan966x: Add xdp support
-Message-ID: <20221110202147.hkhfvvb55djob43x@soft-dev3-1>
-References: <20221109204613.3669905-1-horatiu.vultur@microchip.com>
- <20221110111747.1176760-1-alexandr.lobakin@intel.com>
- <Y20DT2XTTIlU/wbx@lunn.ch>
- <20221110162148.3533816-1-alexandr.lobakin@intel.com>
+        with ESMTP id S230247AbiKJVVS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 16:21:18 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76ED812082;
+        Thu, 10 Nov 2022 13:21:17 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id o13so1670392ilc.7;
+        Thu, 10 Nov 2022 13:21:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NJTtFMk9IclrsPZ9bH5dYLYGp8zVd3QiiY7z+IF5nlY=;
+        b=SGgOEck9s8MJVqYRKp7ulJYa2RvHlAfha4mZbeGvt2QHcw/gVlrUmSbQ05Mn7IyDJ+
+         T+T57zpIL8t2dtaYHRQOydJQzz4CmCkfDlu6aaa/sPGuIoifSGEdMW/Y9I3vkU7XOujV
+         msAgn28nX9IV+ubuWCknWbELarl6gc6fph9TOeazYpom5dEtvNMx+vA/n9LqEv81TqzL
+         1996ALeQkazRsbhKLnZXQnW5ZBXyPfqMgtw9dAG0zzqATOml3mkdssi5gjFGpw9c2Y9P
+         Y3wf0yfWbYe/8tKvfHjxHdqBCXY8CrCuB8kjeBZZ/DnM/3KGkAZ9zopaxNF8pkyL+FJd
+         xVqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NJTtFMk9IclrsPZ9bH5dYLYGp8zVd3QiiY7z+IF5nlY=;
+        b=zuw/eFKn7X7oS54HSz2uWnQrHMlNFJ0RJTS42VvgCpqlLrVNomnXdIiCp8mIM1WM3e
+         KkJUkaAPqvUhVss+D9xvoNbDcO7OTsJzPHWXjx62qEuq7ITtRSF1hc5o/Fav+LzMeXOw
+         YmhCBx3WhoCSVSitzEr2vo1sIsq/zMqlM9rd4TIBoOMPp/ggNg8HiximNL38QV6V/5IT
+         umDoQ23TasXZZ4V5eYaqNRNZpH8dD2DXM5txzemYk1sg/4PMGrkXr0eMRFdBDay4nJZc
+         qb0BbIGWFTX0OCdwKK88MhyihpXkOZYn9DHaY1pAup6I9flwQaOcsR37nosuqoT5Emtw
+         J/GA==
+X-Gm-Message-State: ACrzQf28pVq5wTZ394cGxGeLQs+t7cOgqurmclbU3HAUSgMVXpjZYjHK
+        swInwFZ/RlI8+K5/EAtpRXY=
+X-Google-Smtp-Source: AMsMyM5cof5VwkRpjF9dTMXmLIMUk9LM8fqk8PswJUUBw7dzIXzAyzvEcaRhpStE/mnVj0bJorUDrg==
+X-Received: by 2002:a05:6e02:20cb:b0:2ff:d44c:67e1 with SMTP id 11-20020a056e0220cb00b002ffd44c67e1mr3614105ilq.104.1668115276866;
+        Thu, 10 Nov 2022 13:21:16 -0800 (PST)
+Received: from ?IPV6:2601:282:800:dc80:41d2:94a2:b558:c66e? ([2601:282:800:dc80:41d2:94a2:b558:c66e])
+        by smtp.googlemail.com with ESMTPSA id s5-20020a0566022bc500b006a102cb4900sm78796iov.39.2022.11.10.13.21.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Nov 2022 13:21:16 -0800 (PST)
+Message-ID: <bb0f7a70-8504-d402-d759-bef2ebb5d649@gmail.com>
+Date:   Thu, 10 Nov 2022 14:21:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20221110162148.3533816-1-alexandr.lobakin@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp metadata into skb
+ context
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+References: <20221104032532.1615099-1-sdf@google.com>
+ <20221104032532.1615099-7-sdf@google.com>
+ <636c4f5a3812f_13c9f4208b1@john.notmuch>
+ <CAKH8qBuv29gSDme+XUaFOMvPWcsrar+U0GjhT9y7ZcKaPrsydA@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <CAKH8qBuv29gSDme+XUaFOMvPWcsrar+U0GjhT9y7ZcKaPrsydA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 11/10/2022 17:21, Alexander Lobakin wrote:
-
-Hi,
-
+On 11/9/22 11:44 PM, Stanislav Fomichev wrote:
+>>> @@ -423,14 +425,25 @@ XDP_METADATA_KFUNC_xxx
+>>>  MAX_XDP_METADATA_KFUNC,
+>>>  };
+>>>
+>>> +struct xdp_to_skb_metadata {
+>>> +     u32 magic; /* xdp_metadata_magic */
+>>> +     u64 rx_timestamp;
+>>
+>> Slightly confused. I thought/think most drivers populate the skb timestamp
+>> if they can already? So why do we need to bounce these through some xdp
+>> metadata? Won't all this cost more than the load/store directly from the
+>> descriptor into the skb? Even if drivers are not populating skb now
+>> shouldn't an ethtool knob be enough to turn this on?
 > 
-> From: Andrew Lunn <andrew@lunn.ch>
-> Date: Thu, 10 Nov 2022 14:57:35 +0100
-> 
-> > > Nice stuff! I hear time to time that XDP is for 10G+ NICs only, but
-> > > I'm not a fan of such, and this series proves once again XDP fits
-> > > any hardware ^.^
-> >
-> > The Freescale FEC recently gained XDP support. Many variants of it are
-> > Fast Ethernet only.
-> >
-> > What i found most interesting about that patchset was that the use of
-> > the page_ppol API made the driver significantly faster for the general
-> > case as well as XDP.
-> 
-> The driver didn't have any page recycling or page splitting logics,
-> while Page Pool recycles even pages from skbs if
-> skb_mark_for_recycle() is used, which is the case here. So it
-> significantly reduced the number of new page allocations for Rx, if
-> there still are any at all.
-> Plus, Page Pool allocates pages by bulks (of 16 IIRC), not one by
-> one, that reduces CPU overhead as well.
+> dsahern@ pointed out that it might be useful for the program to be
+> able to override some of that metadata.
 
-Just to make sure that everything is clear, those results that I have
-shown in the cover letter are without any XDP programs on the
-interfaces. Because I thought that is the correct comparison of the
-results before and after all these changes.
+Examples that come to mind from previous work:
+1. changing vlans on a redirect: Rx on vlan 1 with h/w popping the vlan
+so it is provided in metadata. Then on a redirect it shifts to vlan 2
+for Tx. But this example use case assumes Tx accesses the metadata to
+ask h/w to insert the header.
 
-Once I add an XDP program on the interface the performance drops. The
-program will look for some ether types and always return XDP_PASS.
+2. popping or updating an encap header and wanting to update the checksum
 
-These are the results when I have such a XDP program on the interface:
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.01  sec   486 MBytes   408 Mbits/sec    0 sender
-[  5]   0.00-10.00  sec   483 MBytes   405 Mbits/sec      receiver
-
-> 
-> >
-> >      Andrew
-> 
-> Thanks,
-> Olek
-
--- 
-/Horatiu
+3. changing the h/w provided hash to affect steering of a subsequent skb
