@@ -2,96 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC97A624E77
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 00:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AFC624E88
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 00:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbiKJXap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 18:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S231559AbiKJXkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 18:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbiKJXao (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 18:30:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D34E4AF21
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 15:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668122989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jWjU1ZjrkixCn1stDyI9mL1Ga7OCVWYkVGzuz+ZpzuI=;
-        b=hrqVwQCkZQjnnjdbBIaBooGPi690cCO+MmNeHYpV0Z35J11K2k7s1MX5DIT5OBS2WSZRSj
-        ht6ecSO7xl3bnAUuAnhIE9Ic6dk414+mTd3xQhnzDuXZaUf4SaC1xwNcHEUdVwAbll748G
-        VeBH+nFTeBEUlgldaGZzzTQyWtbcr/I=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-654-V-XsexJnO_eEM7kunHD60w-1; Thu, 10 Nov 2022 18:29:48 -0500
-X-MC-Unique: V-XsexJnO_eEM7kunHD60w-1
-Received: by mail-ed1-f69.google.com with SMTP id m7-20020a056402430700b0045daff6ee5dso2479908edc.10
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 15:29:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jWjU1ZjrkixCn1stDyI9mL1Ga7OCVWYkVGzuz+ZpzuI=;
-        b=k0MIRWEAWM1AFdjlLYra9EnOCrMB2TNlaXlBZAXslYPpYoX3qMtfjhtFMq8HjTcXDQ
-         OBAwJuhW7HQVEgGlrpuNKMovvRBe2vhEtHopTz32PDduIW3ZWvCB1ZftaTuoU5nDLwUV
-         SgkK8RF1LAzdLvESvojtsOeknHThEB692NQjFEvywWgWqAx3bDG7YKNunZxuehcSYi6D
-         K9HVmmLQ0ZZZ4wPum/JoEmsNK5ZP4czX6bf8KXVUpWYgtwg5oXHtya7ACf1J9RdxG2g6
-         eHCqtbNHswyNB/v4uj7uo1igSrNx+VsTjAUT//4qfJwcdqKrY4SxdkJv7rbXIicmVoqp
-         qBnA==
-X-Gm-Message-State: ACrzQf0qCYfcLZPKCs/+BZZOnxaG0efBx+B8NOehRuN4k6EVq75XElJI
-        xMp0a3ruJChZ4jj1TdFsAJGPZGH6sZvQbAjYveTKNo55N7B10ONm5pS/fk7/Qg7sZYF7gJa/4UO
-        1g5APA/t7EIQK
-X-Received: by 2002:a17:906:3b88:b0:78d:c7fd:f755 with SMTP id u8-20020a1709063b8800b0078dc7fdf755mr4426789ejf.702.1668122986003;
-        Thu, 10 Nov 2022 15:29:46 -0800 (PST)
-X-Google-Smtp-Source: AMsMyM6BhWXNZxWXrSk7JS8geHKSi+qj9E3kJi5RxB0R8EdWapfeFbSK4BbwEo0nB6F2C3R3Tn4usA==
-X-Received: by 2002:a17:906:3b88:b0:78d:c7fd:f755 with SMTP id u8-20020a1709063b8800b0078dc7fdf755mr4426743ejf.702.1668122985047;
-        Thu, 10 Nov 2022 15:29:45 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id c20-20020a17090603d400b007417041fb2bsm241541eja.116.2022.11.10.15.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Nov 2022 15:29:44 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E737A78274C; Fri, 11 Nov 2022 00:29:43 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Stanislav Fomichev <sdf@google.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
-In-Reply-To: <7eb3e22a-c416-e898-dff0-1146d3cc82c0@linux.dev>
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
- <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev> <871qqazyc9.fsf@toke.dk>
- <7eb3e22a-c416-e898-dff0-1146d3cc82c0@linux.dev>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 11 Nov 2022 00:29:43 +0100
-Message-ID: <87mt8yxuag.fsf@toke.dk>
+        with ESMTP id S229675AbiKJXkR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 18:40:17 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97244E425;
+        Thu, 10 Nov 2022 15:40:15 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4N7dcD5q8Wz4xZb;
+        Fri, 11 Nov 2022 10:40:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1668123613;
+        bh=v7WFZwCJE44bk4UDPUyj4rHwotdx4Bm2Nb3T9fecMuw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y4r9ZkDpf995uXVoICLmPHujhVCw3qMtTeqwS6JHzBBAJ0h0eNoFqpk5jOO1g3/S8
+         +fMFzL5SfzVRLJbCv2UdZdGokgYBK+DpTV9fJBGMPNWR7WhCxlbMkMb+UUrGVWzvwK
+         u1fE9bG5m47OZSHZcQ1SWEY6gRk7OF/wK7cZau8wQrB8WRd9GXumsGKJ3OhoEzbjjy
+         15In/dkOlwsbEWXcl3YAlWLTAPJ2SrrR9KA3M0hOxsNkYW+27XfOXnIwNVSg/7rAhF
+         AIMVzlz4XSl1LyAstg7TRP4oOR4bX7Z+hud+E7G9rqJS+CazrBbeuvpFh2KHE1Mg0S
+         HB9UQ6O+eCbQQ==
+Date:   Fri, 11 Nov 2022 10:40:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with the perf tree
+Message-ID: <20221111104009.0edfa8a6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Type: multipart/signed; boundary="Sig_/Mf=VGpDvB3Is_MT5DV3pyQm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,269 +56,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <martin.lau@linux.dev> writes:
+--Sig_/Mf=VGpDvB3Is_MT5DV3pyQm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On 11/10/22 6:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Martin KaFai Lau <martin.lau@linux.dev> writes:
->>=20
->>> On 11/9/22 3:10 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> Snipping a bit of context to reply to this bit:
->>>>
->>>>>>>> Can the xdp prog still change the metadata through xdp->data_meta?=
- tbh, I am not
->>>>>>>> sure it is solid enough by asking the xdp prog not to use the same=
- random number
->>>>>>>> in its own metadata + not to change the metadata through xdp->data=
-_meta after
->>>>>>>> calling bpf_xdp_metadata_export_to_skb().
->>>>>>>
->>>>>>> What do you think the usecase here might be? Or are you suggesting =
-we
->>>>>>> reject further access to data_meta after
->>>>>>> bpf_xdp_metadata_export_to_skb somehow?
->>>>>>>
->>>>>>> If we want to let the programs override some of this
->>>>>>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add
->>>>>>> more kfuncs instead of exposing the layout?
->>>>>>>
->>>>>>> bpf_xdp_metadata_export_to_skb(ctx);
->>>>>>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
->>>>
->>>> There are several use cases for needing to access the metadata after
->>>> calling bpf_xdp_metdata_export_to_skb():
->>>>
->>>> - Accessing the metadata after redirect (in a cpumap or devmap program,
->>>>     or on a veth device)
->>>> - Transferring the packet+metadata to AF_XDP
->>> fwiw, the xdp prog could also be more selective and only stores one of =
-the hints
->>> instead of the whole 'struct xdp_to_skb_metadata'.
->>=20
->> Yup, absolutely! In that sense, reusing the SKB format is mostly a
->> convenience feature. However, lots of people consume AF_XDP through the
->> default program installed by libxdp in the XSK setup code, and including
->> custom metadata there is awkward. So having the metadata consumed by the
->> stack as the "default subset" would enable easy consumption by
->> non-advanced users, while advanced users can still do custom stuff by
->> writing their own XDP program that calls the kfuncs.
->>=20
->>>> - Returning XDP_PASS, but accessing some of the metadata first (whether
->>>>     to read or change it)
->>>>
->>>> The last one could be solved by calling additional kfuncs, but that
->>>> would be less efficient than just directly editing the struct which
->>>> will be cache-hot after the helper returns.
->>>
->>> Yeah, it is more efficient to directly write if possible.  I think this=
- set
->>> allows the direct reading and writing already through data_meta (as a _=
-u8 *).
->>=20
->> Yup, totally fine with just keeping that capability :)
->>=20
->>>> And yeah, this will allow the XDP program to inject arbitrary metadata
->>>> into the netstack; but it can already inject arbitrary *packet* data
->>>> into the stack, so not sure if this is much of an additional risk? If =
-it
->>>> does lead to trivial crashes, we should probably harden the stack
->>>> against that?
->>>>
->>>> As for the random number, Jesper and I discussed replacing this with t=
-he
->>>> same BTF-ID scheme that he was using in his patch series. I.e., instead
->>>> of just putting in a random number, we insert the BTF ID of the metada=
-ta
->>>> struct at the end of it. This will allow us to support multiple
->>>> different formats in the future (not just changing the layout, but
->>>> having multiple simultaneous formats in the same kernel image), in case
->>>> we run out of space.
->>>
->>> This seems a bit hypothetical.  How much headroom does it usually have =
-for the
->>> xdp prog?  Potentially the hints can use all the remaining space left a=
-fter the
->>> header encap and the current bpf_xdp_adjust_meta() usage?
->>=20
->> For the metadata consumed by the stack right now it's a bit
->> hypothetical, yeah. However, there's a bunch of metadata commonly
->> supported by hardware that the stack currently doesn't consume and that
->> hopefully this feature will end up making more accessible. My hope is
->> that the stack can also learn how to use this in the future, in which
->> case we may run out of space. So I think of that bit mostly as
->> future-proofing...
->
-> ic. in this case, Can the btf_id be added to 'struct xdp_to_skb_metadata'=
- later=20
-> if it is indeed needed?  The 'struct xdp_to_skb_metadata' is not in UAPI =
-and=20
-> doing it with CO-RE is to give us flexibility to make this kind of change=
-s in=20
-> the future.
+Hi all,
 
-My worry is mostly that it'll be more painful to add it later than just
-including it from the start, mostly because of AF_XDP users. But if we
-do the randomisation thing (thus forcing AF_XDP users to deal with the
-dynamic layout as well), it should be possible to add it later, and I
-can live with that option as well...
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
->>>> We should probably also have a flag set on the xdp_frame so the stack
->>>> knows that the metadata area contains relevant-to-skb data, to guard
->>>> against an XDP program accidentally hitting the "magic number" (BTF_ID)
->>>> in unrelated stuff it puts into the metadata area.
->>>
->>> Yeah, I think having a flag is useful.  The flag will be set at xdp_buf=
-f and
->>> then transfer to the xdp_frame?
->>=20
->> Yeah, exactly!
->>=20
->>>>> After re-reading patch 6, have another question. The 'void
->>>>> bpf_xdp_metadata_export_to_skb();' function signature. Should it at
->>>>> least return ok/err? or even return a 'struct xdp_to_skb_metadata *'
->>>>> pointer and the xdp prog can directly read (or even write) it?
->>>>
->>>> Hmm, I'm not sure returning a failure makes sense? Failure to read one
->>>> or more fields just means that those fields will not be populated? We
->>>> should probably have a flags field inside the metadata struct itself to
->>>> indicate which fields are set or not, but I'm not sure returning an
->>>> error value adds anything? Returning a pointer to the metadata field
->>>> might be convenient for users (it would just be an alias to the
->>>> data_meta pointer, but the verifier could know its size, so the program
->>>> doesn't have to bounds check it).
->>>
->>> If some hints are not available, those hints should be initialized to
->>> 0/CHECKSUM_NONE/...etc.
->>=20
->> The problem with that is that then we have to spend cycles writing
->> eight bytes of zeroes into the checksum field :)
->
-> With a common 'struct xdp_to_skb_metadata', I am not sure how some of the=
-se zero=20
-> writes can be avoided.  If the xdp prog wants to optimize, it can call=20
-> individual kfunc to get individual hints.
+  tools/perf/util/stat.c
 
-Erm, we just... don't write those fields? Something like:
+between commit:
 
-void write_skb_meta(hw, ctx) {
-  struct xdp_skb_metadata meta =3D ctx->data_meta - sizeof(struct xdp_skb_m=
-etadata);
-  meta->valid_fields =3D 0;
+  8b76a3188b85 ("perf stat: Remove unused perf_counts.aggr field")
 
-  if (hw_has_timestamp) {
-    meta->timestamp =3D hw->timestamp;
-    meta->valid_fields |=3D FIELD_TIMESTAMP;
-  } /* otherwise meta->timestamp is just uninitialised */
+from the perf tree and commit:
 
-  if (hw_has_rxhash) {
-    meta->rxhash =3D hw->rxhash;
-    meta->valid_fields |=3D FIELD_RXHASH;
-  } /* otherwise meta->rxhash is just uninitialised */
-  ...etc...
-}
+  c302378bc157 ("libbpf: Hashmap interface update to allow both long and vo=
+id* keys/values")
 
->>> The xdp prog needs a direct way to tell hard failure when it cannot
->>> write the meta area because of not enough space. Comparing
->>> xdp->data_meta with xdp->data as a side effect is not intuitive.
->>=20
->> Yeah, hence a flags field so we can just see if setting each field
->> succeeded?
->
-> How testing a flag is different from checking 0/invalid-value of a
-> field?
+from the bpf-next tree.
 
-The flags field is smaller, so we write fewer bytes if not all fields
-are populated.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-> or some fields just don't have an invalid value to check for
-> like vlan_tci?
+--=20
+Cheers,
+Stephen Rothwell
 
-Yeah, that could also be an issue.
+diff --cc tools/perf/util/stat.c
+index 3a432a949d46,c0656f85bfa5..000000000000
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@@ -318,7 -258,27 +318,7 @@@ void evlist__copy_prev_raw_counts(struc
+  		evsel__copy_prev_raw_counts(evsel);
+  }
+ =20
+- static size_t pkg_id_hash(const void *__key, void *ctx __maybe_unused)
+ -void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
+ -{
+ -	struct evsel *evsel;
+ -
+ -	/*
+ -	 * To collect the overall statistics for interval mode,
+ -	 * we copy the counts from evsel->prev_raw_counts to
+ -	 * evsel->counts. The perf_stat_process_counter creates
+ -	 * aggr values from per cpu values, but the per cpu values
+ -	 * are 0 for AGGR_GLOBAL. So we use a trick that saves the
+ -	 * previous aggr value to the first member of perf_counts,
+ -	 * then aggr calculation in process_counter_values can work
+ -	 * correctly.
+ -	 */
+ -	evlist__for_each_entry(evlist, evsel) {
+ -		*perf_counts(evsel->prev_raw_counts, 0, 0) =3D
+ -			evsel->prev_raw_counts->aggr;
+ -	}
+ -}
+ -
++ static size_t pkg_id_hash(long __key, void *ctx __maybe_unused)
+  {
+  	uint64_t *key =3D (uint64_t *) __key;
+ =20
 
-> You meant a flags field as a return value or in the 'struct xdp_to_skb_me=
-tadata' ?
+--Sig_/Mf=VGpDvB3Is_MT5DV3pyQm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-See above.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmNti9kACgkQAVBC80lX
+0GwgvQf/ZUMJAeCiTypChJ8m4r0T4j7X7SfL7YtAh1iIJA87lNmaQBQs6KcwmfE0
+/XRouDfgqloRk0EdSSx9M/bJ7j4pmbHS/n/CfHBEuktttkPxf+V4gd5c5lPNajjq
+z1yYKiSo9mMbv4gNrHYhY/r7iv/lTH3hQw8IXUTeX6ShaTrdm53xkNuWg+Np6SEh
+wZX1cUXBo3QQXCZHYXiVmrzeGffGznMxy9Zlmfx6CG2KqiEy7EqOXstGDltfAD1l
+1zQlrEAVcEXsA7Bcm1lorwWsloRYLQYDne3IaukqqHwJoXNbgLm/fNl3aQd4Jdy2
+6Ubwqh7symR9bLFe6oBW5ohU2mzeFg==
+=8UFj
+-----END PGP SIGNATURE-----
 
->>=20
->>> It is more than saving the bound check.  With type info of 'struct
->>> xdp_to_skb_metadata *', the verifier can do more checks like reading in=
- the
->>> middle of an integer member.  The verifier could also limit write acces=
-s only to
->>> a few struct's members if it is needed.
->>>
->>> The returning 'struct xdp_to_skb_metadata *' should not be an alias to =
-the
->>> xdp->data_meta.  They should actually point to different locations in t=
-he
->>> headroom.  bpf_xdp_metadata_export_to_skb() sets a flag in xdp_buff.
->>> xdp->data_meta won't be changed and keeps pointing to the last
->>> bpf_xdp_adjust_meta() location.  The kernel will know if there is
->>> xdp_to_skb_metadata before the xdp->data_meta when that bit is set in t=
-he
->>> xdp_{buff,frame}.  Would it work?
->>=20
->> Hmm, logically splitting the program metadata and the xdp_hints metadata
->> (but having them share the same area) *could* work, I guess, I'm just
->> not sure it's worth the extra complexity?
->
-> It shouldn't stop the existing xdp prog writing its own metadata from usi=
-ng the=20
-> the new bpf_xdp_metadata_export_to_skb().
-
-Right, I think I see what you mean, and I agree that splitting it
-internally in the kernel does make sense (see my other reply to
-Stanislav).
-
->>=20
->>>>> A related question, why 'struct xdp_to_skb_metadata' needs
->>>>> __randomize_layout?
->>>>
->>>> The __randomize_layout thing is there to force BPF programs to use CO-=
-RE
->>>> to access the field. This is to avoid the struct layout accidentally
->>>> ossifying because people in practice rely on a particular layout, even
->>>> though we tell them to use CO-RE. There are lots of examples of this
->>>> happening in other domains (IP header options, TCP options, etc), and
->>>> __randomize_layout seemed like a neat trick to enforce CO-RE usage :)
->>>
->>> I am not sure if it is necessary or helpful to only enforce __randomize=
-_layout
->>> in 'struct xdp_to_skb_metadata'.  There are other CO-RE use cases (trac=
-ing and
->>> non tracing) that already have direct access (reading and/or writing) t=
-o other
->>> kernel structures.
->>>
->>> It is more important for the verifier to see the xdp prog accessing it =
-as a
->>> 'struct xdp_to_skb_metadata *' instead of xdp->data_meta which is a __u=
-8 * so
->>> that the verifier can enforce the rules of access.
->>=20
->> That only works inside the kernel, though. Since the metadata field can
->> be copied wholesale to AF_XDP, having it randomized forces userspace
->> consumers to also write code to deal with the layout being dynamic...
->
-> hm... I still don't see how useful it is, in particular you mentioned
-> the libxdp will install a xdp prog to write this default format
-> (xdp_to_skb_metadata) and likely libxdp will also provide some helpers
-> to parse the xdp_to_skb_metadata and the libxdp user should not need
-> to know if CO-RE is used or not. Considering it is a kernel internal
-> struct, I think it is fine to keep it and can be revisited later if
-> needed. Lets get on to other things first :)
-
-Well, if it was just kernel-internal, sure. But we're also exporting it
-to userspace (through AF_XDP). Well-behaved users will obviously do the
-right thing and use CO-RE. I'm trying to guard against users just
-blindly copy-pasting the struct definition from the kernel and doing a
-static cast, then complaining about their code breaking the first time
-we change the struct layout. Which I sadly expect that there absolutely
-will be people who do unless we actively make sure that doesn't work
-from the get-go. And since the randomisation is literally just adding
-__randomize_layout to the struct definition, I'd rather start out with
-having it, and removing it later if it turns out not to be needed... :)
-
--Toke
-
+--Sig_/Mf=VGpDvB3Is_MT5DV3pyQm--
