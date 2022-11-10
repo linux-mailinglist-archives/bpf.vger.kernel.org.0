@@ -2,53 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AFC624E88
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 00:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E43624E96
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 00:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbiKJXkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 18:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        id S231305AbiKJXwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 18:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbiKJXkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 18:40:17 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97244E425;
-        Thu, 10 Nov 2022 15:40:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4N7dcD5q8Wz4xZb;
-        Fri, 11 Nov 2022 10:40:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1668123613;
-        bh=v7WFZwCJE44bk4UDPUyj4rHwotdx4Bm2Nb3T9fecMuw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Y4r9ZkDpf995uXVoICLmPHujhVCw3qMtTeqwS6JHzBBAJ0h0eNoFqpk5jOO1g3/S8
-         +fMFzL5SfzVRLJbCv2UdZdGokgYBK+DpTV9fJBGMPNWR7WhCxlbMkMb+UUrGVWzvwK
-         u1fE9bG5m47OZSHZcQ1SWEY6gRk7OF/wK7cZau8wQrB8WRd9GXumsGKJ3OhoEzbjjy
-         15In/dkOlwsbEWXcl3YAlWLTAPJ2SrrR9KA3M0hOxsNkYW+27XfOXnIwNVSg/7rAhF
-         AIMVzlz4XSl1LyAstg7TRP4oOR4bX7Z+hud+E7G9rqJS+CazrBbeuvpFh2KHE1Mg0S
-         HB9UQ6O+eCbQQ==
-Date:   Fri, 11 Nov 2022 10:40:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the perf tree
-Message-ID: <20221111104009.0edfa8a6@canb.auug.org.au>
+        with ESMTP id S229528AbiKJXwg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 18:52:36 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C9863EC
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 15:52:35 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id z3so2562678iof.3
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 15:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fqw6jViJ3ciqenxJsnS3Bs7/H5V0XPi+dXHXXGO5vWg=;
+        b=VfnIaJYjWb4hYilFDKmYjvr8KVMkySzTkmisugm9WMRz2zjlebIMucyH8FShDU5GO4
+         JD7X8/EVqS5UTUqE/UQPtH+YzhH6mzMxp1YkmEeDf0UQXlfGmkwe9u0Z+uyMbKUPHV2h
+         P5bpjb/EtMyTKjvJY3Xv8w8SL14ZOX9JkISZD2q59gU+jq0183WhPTzBVPqDv/yMe2w5
+         d5al3h7V55pQVE3JrVX6Vx+FhlrbZnkvtMGW961VLYbOtj6pf1CinRPl759KEHEuaoIo
+         w1QNcbP6l5W7xt5YZ3f2QTHolzGIcfwpk9ZESfm+1UjduNRrbLkoyx+G4sVxXT5Sm2B8
+         SF+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fqw6jViJ3ciqenxJsnS3Bs7/H5V0XPi+dXHXXGO5vWg=;
+        b=n/jLNukbMC6TAoukZdjk+DO6ibPGzQ62hNoeRjdLH3KgKdXP9D0ZAJ/M2V8+W9sHce
+         7AlSNCmBvk2b7G/Hj9ppJLe188qL8SrkhNvRgEqQO8xyu22QO083QnnF/9kaYJTLhKPc
+         cDP62iUnisnU7afL89jdqiKC9CrZJiCVLPvQxPbfvZtr4X0D2Aasa8e4+ppxNI0Ull9P
+         6UacgRB9OdgMUI+x9SRoxEAU1AOFZxLpuQ9L+rqs2f/nMLYWSq2B7yk+7Qc+/yb7eCq3
+         Uj3OSF5UNQDLUYNGujaOWZU5wX/ZAoswEFd6stCIDjiegeuskrPPVc1hSkQKhPyOpfbT
+         +hYg==
+X-Gm-Message-State: ACrzQf2O/8TqL4yj1vQr72ScmfQHlinsym3vlY0XHfCx10NRxEKRYO/G
+        CO++ShBkOSkY9iRlLgnvRD15a/HTTCFq51U8/mMQ4w==
+X-Google-Smtp-Source: AMsMyM4YWKEy3238V27C3Pd+R311sQZMF4avZ30HOLUkB+bnMErl3IyMaOGz2bjVaEn+k9jYbrEOFCQtfeZ+33zzy9c=
+X-Received: by 2002:a5e:c744:0:b0:6ce:46a:ec7b with SMTP id
+ g4-20020a5ec744000000b006ce046aec7bmr3723391iop.79.1668124354396; Thu, 10 Nov
+ 2022 15:52:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Mf=VGpDvB3Is_MT5DV3pyQm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-7-sdf@google.com>
+ <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev> <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
+ <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev> <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev>
+ <87leokz8lq.fsf@toke.dk> <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
+ <CAKH8qBsfVOoR1MNAFx3uR9Syoc0APHABsf97kb8SGpK+T1qcew@mail.gmail.com>
+ <32f81955-8296-6b9a-834a-5184c69d3aac@linux.dev> <CAKH8qBuLMZrFmmi77Qbt7DCd1w9FJwdeK5CnZTJqHYiWxwDx6w@mail.gmail.com>
+ <87y1siyjf6.fsf@toke.dk> <CAKH8qBsfzYmQ9SZXhFetf_zQPNmE_L=_H_rRxJEwZzNbqtoKJA@mail.gmail.com>
+ <87o7texv08.fsf@toke.dk>
+In-Reply-To: <87o7texv08.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 10 Nov 2022 15:52:23 -0800
+Message-ID: <CAKH8qBtjYV=tb28y6bvo3tGonzjvm2JLyis9AFPSMTuXsL3NPA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
+ metadata into skb context
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,86 +88,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/Mf=VGpDvB3Is_MT5DV3pyQm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 10, 2022 at 3:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Skipping to the last bit:
+>
+> >> >> >    } else {
+> >> >> >      use kfuncs
+> >> >> >    }
+> >> >> >
+> >> >> > 5. Support the case where we keep program's metadata and kernel's
+> >> >> > xdp_to_skb_metadata
+> >> >> >    - skb_metadata_import_from_xdp() will "consume" it by mem-movi=
+ng the
+> >> >> > rest of the metadata over it and adjusting the headroom
+> >> >>
+> >> >> I was thinking the kernel's xdp_to_skb_metadata is always before th=
+e program's
+> >> >> metadata.  xdp prog should usually work in this order also: read/wr=
+ite headers,
+> >> >> write its own metadata, call bpf_xdp_metadata_export_to_skb(), and =
+return
+> >> >> XDP_PASS/XDP_REDIRECT.  When it is XDP_PASS, the kernel just needs =
+to pop the
+> >> >> xdp_to_skb_metadata and pass the remaining program's metadata to th=
+e bpf-tc.
+> >> >>
+> >> >> For the kernel and xdp prog, I don't think it matters where the
+> >> >> xdp_to_skb_metadata is.  However, the xdp->data_meta (program's met=
+adata) has to
+> >> >> be before xdp->data because of the current data_meta and data compa=
+rison usage
+> >> >> in the xdp prog.
+> >> >>
+> >> >> The order of the kernel's xdp_to_skb_metadata and the program's met=
+adata
+> >> >> probably only matters to the userspace AF_XDP.  However, I don't se=
+e how AF_XDP
+> >> >> supports the program's metadata now.  afaict, it can only work now =
+if there is
+> >> >> some sort of contract between them or the AF_XDP currently does not=
+ use the
+> >> >> program's metadata.  Either way, we can do the mem-moving only for =
+AF_XDP and it
+> >> >> should be a no op if there is no program's metadata?  This behavior=
+ could also
+> >> >> be configurable through setsockopt?
+> >> >
+> >> > Agreed on all of the above. For now it seems like the safest thing t=
+o
+> >> > do is to put xdp_to_skb_metadata last to allow af_xdp to properly
+> >> > locate btf_id.
+> >> > Let's see if Toke disagrees :-)
+> >>
+> >> As I replied to Martin, I'm not sure it's worth the complexity to
+> >> logically split the SKB metadata from the program's own metadata (as
+> >> opposed to just reusing the existing data_meta pointer)?
+> >
+> > I'd gladly keep my current requirement where it's either or, but not bo=
+th :-)
+> > We can relax it later if required?
+>
+> So the way I've been thinking about it is simply that the skb_metadata
+> would live in the same place at the data_meta pointer (including
+> adjusting that pointer to accommodate it), and just overriding the
+> existing program metadata, if any exists. But looking at it now, I guess
+> having the split makes it easier for a program to write its own custom
+> metadata and still use the skb metadata. See below about the ordering.
+>
+> >> However, if we do, the layout that makes most sense to me is putting t=
+he
+> >> skb metadata before the program metadata, like:
+> >>
+> >> --------------
+> >> | skb_metadata
+> >> --------------
+> >> | data_meta
+> >> --------------
+> >> | data
+> >> --------------
+> >>
+> >> Not sure if that's what you meant? :)
+> >
+> > I was suggesting the other way around: |custom meta|skb_metadata|data|
+> > (but, as Martin points out, consuming skb_metadata in the kernel
+> > becomes messier)
+> >
+> > af_xdp can check whether skb_metdata is present by looking at data -
+> > offsetof(struct skb_metadata, btf_id).
+> > progs that know how to handle custom metadata, will look at data -
+> > sizeof(skb_metadata)
+> >
+> > Otherwise, if it's the other way around, how do we find skb_metadata
+> > in a redirected frame?
+> > Let's say we have |skb_metadata|custom meta|data|, how does the final
+> > program find skb_metadata?
+> > All the progs have to agree on the sizeof(tc/custom meta), right?
+>
+> Erm, maybe I'm missing something here, but skb_metadata is fixed size,
+> right? So if the "skb_metadata is present" flag is set, we know that the
+> sizeof(skb_metadata) bytes before the data_meta pointer contains the
+> metadata, and if the flag is not set, we know those bytes are not valid
+> metadata.
+>
+> For AF_XDP, we'd need to transfer the flag as well, and it could apply
+> the same logic (getting the size from the vmlinux BTF).
+>
+> By this logic, the BTF_ID should be the *first* entry of struct
+> skb_metadata, since that will be the field AF_XDP programs can find
+> right off the bat, no?
 
-Hi all,
+The problem with AF_XDP is that, IIUC, it doesn't have a data_meta
+pointer in the userspace.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+You get an rx descriptor where the address points to the 'data':
+| 256 bytes headroom where metadata can go | data |
 
-  tools/perf/util/stat.c
+So you have (at most) 256 bytes of headroom, some of that might be the
+metadata, but you really don't know where it starts. But you know it
+definitely ends where the data begins.
 
-between commit:
+So if we have the following, we can locate skb_metadata:
+| 256-sizeof(skb_metadata) headroom | custom metadata | skb_metadata | data=
+ |
+data - sizeof(skb_metadata) will get you there
 
-  8b76a3188b85 ("perf stat: Remove unused perf_counts.aggr field")
+But if it's the other way around, the program has to know
+sizeof(custom metadata) to locate skb_metadata:
+| 256-sizeof(skb_metadata) headroom | skb_metadata | custom metadata | data=
+ |
 
-from the perf tree and commit:
-
-  c302378bc157 ("libbpf: Hashmap interface update to allow both long and vo=
-id* keys/values")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/perf/util/stat.c
-index 3a432a949d46,c0656f85bfa5..000000000000
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@@ -318,7 -258,27 +318,7 @@@ void evlist__copy_prev_raw_counts(struc
-  		evsel__copy_prev_raw_counts(evsel);
-  }
- =20
-- static size_t pkg_id_hash(const void *__key, void *ctx __maybe_unused)
- -void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
- -{
- -	struct evsel *evsel;
- -
- -	/*
- -	 * To collect the overall statistics for interval mode,
- -	 * we copy the counts from evsel->prev_raw_counts to
- -	 * evsel->counts. The perf_stat_process_counter creates
- -	 * aggr values from per cpu values, but the per cpu values
- -	 * are 0 for AGGR_GLOBAL. So we use a trick that saves the
- -	 * previous aggr value to the first member of perf_counts,
- -	 * then aggr calculation in process_counter_values can work
- -	 * correctly.
- -	 */
- -	evlist__for_each_entry(evlist, evsel) {
- -		*perf_counts(evsel->prev_raw_counts, 0, 0) =3D
- -			evsel->prev_raw_counts->aggr;
- -	}
- -}
- -
-+ static size_t pkg_id_hash(long __key, void *ctx __maybe_unused)
-  {
-  	uint64_t *key =3D (uint64_t *) __key;
- =20
-
---Sig_/Mf=VGpDvB3Is_MT5DV3pyQm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmNti9kACgkQAVBC80lX
-0GwgvQf/ZUMJAeCiTypChJ8m4r0T4j7X7SfL7YtAh1iIJA87lNmaQBQs6KcwmfE0
-/XRouDfgqloRk0EdSSx9M/bJ7j4pmbHS/n/CfHBEuktttkPxf+V4gd5c5lPNajjq
-z1yYKiSo9mMbv4gNrHYhY/r7iv/lTH3hQw8IXUTeX6ShaTrdm53xkNuWg+Np6SEh
-wZX1cUXBo3QQXCZHYXiVmrzeGffGznMxy9Zlmfx6CG2KqiEy7EqOXstGDltfAD1l
-1zQlrEAVcEXsA7Bcm1lorwWsloRYLQYDne3IaukqqHwJoXNbgLm/fNl3aQd4Jdy2
-6Ubwqh7symR9bLFe6oBW5ohU2mzeFg==
-=8UFj
------END PGP SIGNATURE-----
-
---Sig_/Mf=VGpDvB3Is_MT5DV3pyQm--
+Am I missing something here?
