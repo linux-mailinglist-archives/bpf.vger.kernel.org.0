@@ -2,62 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B436238C7
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 02:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D43516238E8
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 02:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbiKJB0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 20:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        id S231273AbiKJBfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 20:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbiKJB0N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 20:26:13 -0500
+        with ESMTP id S229802AbiKJBfY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 20:35:24 -0500
 Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994D2186D6;
-        Wed,  9 Nov 2022 17:26:12 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so355232pjl.3;
-        Wed, 09 Nov 2022 17:26:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E6B1E71D;
+        Wed,  9 Nov 2022 17:35:23 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so3501932pjc.3;
+        Wed, 09 Nov 2022 17:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QDNKEh/nnMeolmM2NRHpBe+qACbk9dXcfRIfhAI2nC4=;
-        b=qrxtzVcLdOjnF1pVDiyeQcnoJ2J8SBIp14Y38ivJX3x/WhZhPe2HQWipf+K/U77yA0
-         emgCx8WohDOumt2OnN02MFX7SEF4rtKb2vPX+EwXDPLkdR/NRQaELEn0eW0cDzv3HbU/
-         1+dlHps5usVtChYEW1Z0L8hsbzNHnUJMNKq+fXta1fwfx8FyV00sDC18oW+LPGhIb49N
-         WYwPErYLOOViLp8m/nJ4m9rh4t5FY1hzUmbd2Z1H0AxJroIqnIBs6W9OtHAxHGj9O3qM
-         pll6Vbthi8kV7N4853ayKZoFv8e4iQae07YtCte+89y84ylIIT71Y1IZP0gQgCXDUpCJ
-         oq8w==
+        bh=aBWVLQ8bpcmSVCI9/eRrlYiKEKS4ChABCKWm3hWCQDg=;
+        b=WND2qg3NkTaTsQ8lEHsgRLDmkmUZAVv/AC3413t0qb54lb6POtCdQmiu87lwHHAedW
+         OGmK6OdBNEjdbvchZPQk/9OIgHw7H0UcvOqg0AiexDghWa/Dk4564O7zHvZFRGRatE40
+         BirfxSzbykucGYQ9dyjIRvH6d5H17C5rvOi82Z9j9DRZZgNGMOuq0I4HpwfLoCTbXZeH
+         DDRDvDOp1G305SDGXvS3cu6wx1mkS/UmwbE3qXI6uq971LXVAruuEHNeNtu2EAYtQSS9
+         hgj2qJ8a6BqOqiXMoyBCSLdSCcB/6ijxhk1rP2zEhesiQAf9x+m43I0KwTMC8B6cx7Ya
+         HPeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=QDNKEh/nnMeolmM2NRHpBe+qACbk9dXcfRIfhAI2nC4=;
-        b=5R0NCqlfqzYfu6239yVabggTrInAnOAPmCuPRziaYxAOyVOZaUbHeFOXFLON/b/GQ4
-         sOK7TOke4YCX8brwWQfNQRQH53PKwHooOS7ksRHqUerKq8ngd6LzEzF1dHbqyq5Sh7N9
-         XOOkPh3z1PKriFVk/IRXs7nsuY/89oz5vBF5lNkr1JRRQ/WmWJGIaJCix4geeYA7lmyM
-         sEfbqzYOR8zPYCXMmxvyqU7PLXIwtRqQIGy1JgwRzjzYg9E1AHAuvANzqR/lWIaja+VZ
-         SZEa6XnrvmtUnXYG5nSxNM1Aw8BibCDwx0RTatpTtdnv+4Wh7FQabktpAxBL36wj59L6
-         0fUw==
-X-Gm-Message-State: ACrzQf1iLEo+aIKz3DUY7Me7xxZg4HJJGXJkStDkS/27g7vNqAlx4J7K
-        pYw4VNeNFA1x7QGg82Rn6U8=
-X-Google-Smtp-Source: AMsMyM7S9Svs1nfnHtDkykC5jm6zIG/MFVAfwMkeX9pyECGdstQcsq/gvvpf8yDb9Z+5A3MiyJoaGg==
-X-Received: by 2002:a17:902:bcc1:b0:187:31da:494a with SMTP id o1-20020a170902bcc100b0018731da494amr48297993pls.121.1668043572087;
-        Wed, 09 Nov 2022 17:26:12 -0800 (PST)
+        bh=aBWVLQ8bpcmSVCI9/eRrlYiKEKS4ChABCKWm3hWCQDg=;
+        b=Jx/+H0GAlX9IeOgJuqr2Ifpi8uJfpk/lt8NUKdz+8D4VI/ONEn7dEqCh7sOjNQHTd1
+         1gvofzPXz1oH2imvxTCD1pItVlBuLcQHvu5CnC9rtneez59ondRYLXzyaSyZrWhvexqH
+         SOS/EOuzz9OwJBVKk/UN05GBvu/1tBPDmbbC4lsxDs2DWfScx7/s2AWzQ//ca2NnfA4a
+         jfDX+KobNCAuqxFSgB+a2N87Ux+W24XPNCc7wRTKKBoEq3jvOhNlJ2EoqTeRz89GyRmt
+         VvVXgqDvi2zuBmImdsd0va4fxuRKa7jSdUzlFFr7QpGRN/1JkS0r3QphwG7EPcLa10i2
+         rlVw==
+X-Gm-Message-State: ANoB5pnT5WxQDEGdghO8BOPZEGoCUX5gKmjVHO0sPGVro/N1mk/G2FhZ
+        8lswOhidP8Xpb+KiSmQ7PzM=
+X-Google-Smtp-Source: AA0mqf6TRCn3ocObYvdfwHgBkIrFKVPceTIVdjm2HuYhQENpPOLxnlmnM7o0hD7CU6SJ1vEi32ewDQ==
+X-Received: by 2002:a17:90a:fd0c:b0:217:cd6b:466 with SMTP id cv12-20020a17090afd0c00b00217cd6b0466mr19237426pjb.4.1668044123216;
+        Wed, 09 Nov 2022 17:35:23 -0800 (PST)
 Received: from localhost ([98.97.44.95])
-        by smtp.gmail.com with ESMTPSA id j126-20020a625584000000b0056bb21cd7basm8876013pfb.51.2022.11.09.17.26.11
+        by smtp.gmail.com with ESMTPSA id o24-20020aa79798000000b0056a7486da77sm9143255pfp.13.2022.11.09.17.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Nov 2022 17:26:11 -0800 (PST)
-Date:   Wed, 09 Nov 2022 17:26:10 -0800
+        Wed, 09 Nov 2022 17:35:22 -0800 (PST)
+Date:   Wed, 09 Nov 2022 17:35:21 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
+To:     Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
@@ -65,22 +64,19 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <636c533231572_13c9f42087c@john.notmuch>
-In-Reply-To: <87leokz8lq.fsf@toke.dk>
+        netdev@vger.kernel.org
+Message-ID: <636c555942433_13ef3820861@john.notmuch>
+In-Reply-To: <CAKH8qBvS9C5Z2L2dT4Ze-dz7YBSpw52VF6iZK5phcU2k4azN5A@mail.gmail.com>
 References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev>
- <87leokz8lq.fsf@toke.dk>
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
+ <20221104032532.1615099-5-sdf@google.com>
+ <636c4514917fa_13c168208d0@john.notmuch>
+ <CAKH8qBvS9C5Z2L2dT4Ze-dz7YBSpw52VF6iZK5phcU2k4azN5A@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 04/14] veth: Support rx timestamp metadata for
+ xdp
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -91,70 +87,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Snipping a bit of context to reply to this bit:
-> =
+Stanislav Fomichev wrote:
+> On Wed, Nov 9, 2022 at 4:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Stanislav Fomichev wrote:
+> > > xskxceiver conveniently setups up veth pairs so it seems logical
+> > > to use veth as an example for some of the metadata handling.
+> > >
+> > > We timestamp skb right when we "receive" it, store its
+> > > pointer in new veth_xdp_buff wrapper and generate BPF bytecode to
+> > > reach it from the BPF program.
+> > >
+> > > This largely follows the idea of "store some queue context in
+> > > the xdp_buff/xdp_frame so the metadata can be reached out
+> > > from the BPF program".
+> > >
+> >
+> > [...]
+> >
+> > >       orig_data = xdp->data;
+> > >       orig_data_end = xdp->data_end;
+> > > +     vxbuf.skb = skb;
+> > >
+> > >       act = bpf_prog_run_xdp(xdp_prog, xdp);
+> > >
+> > > @@ -942,6 +946,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+> > >                       struct sk_buff *skb = ptr;
+> > >
+> > >                       stats->xdp_bytes += skb->len;
+> > > +                     __net_timestamp(skb);
+> >
+> > Just getting to reviewing in depth a bit more. But we hit veth with lots of
+> > packets in some configurations I don't think we want to add a __net_timestamp
+> > here when vast majority of use cases will have no need for timestamp on veth
+> > device. I didn't do a benchmark but its not free.
+> >
+> > If there is a real use case for timestamping on veth we could do it through
+> > a XDP program directly? Basically fallback for devices without hw timestamps.
+> > Anyways I need the helper to support hardware without time stamping.
+> >
+> > Not sure if this was just part of the RFC to explore BPF programs or not.
+> 
+> Initially I've done it mostly so I can have selftests on top of veth
+> driver, but I'd still prefer to keep it to have working tests.
 
-> >>>> Can the xdp prog still change the metadata through xdp->data_meta?=
- tbh, I am not
-> >>>> sure it is solid enough by asking the xdp prog not to use the same=
- random number
-> >>>> in its own metadata + not to change the metadata through xdp->data=
-_meta after
-> >>>> calling bpf_xdp_metadata_export_to_skb().
-> >>>
-> >>> What do you think the usecase here might be? Or are you suggesting =
-we
-> >>> reject further access to data_meta after
-> >>> bpf_xdp_metadata_export_to_skb somehow?
-> >>>
-> >>> If we want to let the programs override some of this
-> >>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add=
+I can't think of a use for it though so its just extra cycles. There
+is a helper to read the ktime.
 
-> >>> more kfuncs instead of exposing the layout?
-> >>>
-> >>> bpf_xdp_metadata_export_to_skb(ctx);
-> >>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
-> =
+> Any way I can make it configurable? Is there some ethtool "enable tx
+> timestamping" option I can reuse?
+
+There is a -T option for timestamping in ethtool. There are also the
+socket controls for it. So you could spin up a socket and use it.
+But that is a bit broken as well I think it would be better if the
+timestamp came from the receiving physical nic?
+
+I have some mlx nics here and a k8s cluster with lots of veth
+devices so I could think a bit more. I'm just not sure why I would
+want the veth to timestamp things off hand?
+
+> 
+> > >                       skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
+> > >                       if (skb) {
+> > >                               if (skb_shared(skb) || skb_unclone(skb, GFP_ATOMIC))
 
 
-Hi Toke,
-
-Trying not to bifurcate your thread. Can I start a new one here to
-elaborate on these use cases. I'm still a bit lost on any use case
-for this that makes sense to actually deploy on a network.
-
-> There are several use cases for needing to access the metadata after
-> calling bpf_xdp_metdata_export_to_skb():
-> =
-
-> - Accessing the metadata after redirect (in a cpumap or devmap program,=
-
->   or on a veth device)
-
-I think for devmap there are still lots of opens how/where the skb
-is even built.
-
-For cpumap I'm a bit unsure what the use case is. For ice, mlx and
-such you should use the hardware RSS if performance is top of mind.
-And then for specific devices on cpumap (maybe realtime or ptp things?)
-could we just throw it through the xdp_frame?
-
-> - Transferring the packet+metadata to AF_XDP
-
-In this case we have the metadata and AF_XDP program and XDP program
-simply need to agree on metadata format. No need to have some magic
-numbers and driver specific kfuncs.
-
-> - Returning XDP_PASS, but accessing some of the metadata first (whether=
-
->   to read or change it)
-> =
-
-
-I don't get this case? XDP_PASS should go to stack normally through
-drivers build_skb routines. These will populate timestamp normally.
-My guess is simply descriptor->skb load/store is cheaper than carrying
-around this metadata and doing the call in BPF side. Anyways you
-just built an entire skb and hit the stack I don't think you will
-notice this noise in any benchmark.=
