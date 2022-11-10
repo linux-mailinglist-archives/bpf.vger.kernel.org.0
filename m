@@ -2,251 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1C16247A0
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 17:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91756247A6
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 17:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiKJQxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 11:53:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        id S232550AbiKJQym (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 11:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbiKJQxn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 11:53:43 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B75AE48;
-        Thu, 10 Nov 2022 08:53:42 -0800 (PST)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2AA4xENG007140;
-        Thu, 10 Nov 2022 08:53:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=bERNP+NKm04jC1lUpEW5OkPxqNEsOyqrvQkkVEUlrnU=;
- b=ImgYIC/ZcMdCnyF+QwI9P6wbn+u9e6ovazMxLDDtZPYu25qbxnvALKT6TbGWsCmuGMSu
- eQtw/skJpXEs6SOZMO6qaufzaFuXjMUOqy1lnHi+kbCnjLEYraYuRtSrYmNITCW2ToG1
- yWfzBsZrNpe90XZSxZjnL7D3HBUPeT7aIfBwjeAk7O4nk1KnVnUO+43Ze5+cXXdkDSBj
- +M59j2a05smBuMLa4g4qpfpte4KxO/JLxRsEMdLlOkw233a71P4dMDjjJQTVNEB3/p6Q
- fTnfjKJ5bFBGEBDXrLIhEagYrYIbGEwwMT2TCZSiU5Z6A1CG1I8K8Qy8UyUqY+AAUjol mg== 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2046.outbound.protection.outlook.com [104.47.56.46])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3krnrhe81q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Nov 2022 08:53:25 -0800
+        with ESMTP id S232384AbiKJQyj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 11:54:39 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2042.outbound.protection.outlook.com [40.107.93.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D86A22296;
+        Thu, 10 Nov 2022 08:54:36 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a5A5yKhwfzXbGEULomOgQe3/R/V49ub8udtpqHcMjbYEkKzJOCCKgr9v0jgi/MjKTEbAUAiu07e27+Lo9uMsI7f5C+6qoxSb0TbR9Hy/AbRvLCuTkk9S2caEOfvteynBJpTjN+DbfHrv3pGePiltQcvO4pUJ5Msx7tuxKSHej8QB7wQqr8vz9elceJYL0xGXHLtAGY4INR6KlvMLIde/TkTIdRFa1jG48ge3p+zhSkyLBuItjU1aBBMmsiC9GRRXQ3DxyDBH1OwCs2oUMPlt4j6X1EmGSrLX/W7T7iifvSjXH6lWRpttvQQwSWDqaqZLqJWhcHDMuNKqP7sgDv8H9w==
+ b=G5lkpbdIhpnlkvDX5mStyX0fBlcn3d5LSVr8M+dxYBDpC0zThTHZwpOn/nSIZHNefnjtwiECiLThK/XjWfekHW/2jFIGzwoAEDkl4vljcNTU6nglOstIpzgwg1zfa1auVFLjRgPEJp86IvT3YOVj9yI5cKgVHGkQigxFPU3t3KzSaDcVfEqOYEtwITjNhAmAZoyP81sxse0MEPMKVbEMo0T4vSw2WI5AW8jXY+Am5R+veqXhunAdUzgCNYO5y2cwc5cG7DWwU8UNBosNxx6k4SwRTR+gvzY36DpAwOFPjo5J+hJP0NfRVApPJW2xW+jh1ymalrLOSX8BGfVyPDX5Yg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bERNP+NKm04jC1lUpEW5OkPxqNEsOyqrvQkkVEUlrnU=;
- b=Rp91cqHaXVchOMJQ/mVFZVs1NLoOHZLkeZ457Ml8wnQk09NAuPejZv8Tkt42BzBBLwO1nr846U+gnOdPn9u1hI14jP6kejIaMCJal3BZ0/FdWn4JfF1LbJ/7g5D2aH7ssmZLrgLcZtJ4Pmewz4f/SI8/KVxM6i1N8s3WCBg49bL5HewwvcTtVCDNmOgY73j57k7XtlTxGSNeuuvq+pAcQRzKDiCV7WZ3NQp+Jc6hv2h1ogMXch63c093Pwt3Dr7+bg5yABBq3lLqj074rNOpKsej4umqeEqLtVPDBs8v10shDzzM/Ptlgpjo45t7EMrWh+xtTFrhJzEvThnJHy5J5w==
+ bh=wrrZWZU6FbMwGAp0zUwc1YwU9yX3ebzjFEAhB6dLDHE=;
+ b=S9t7EvQSgCQufGH7W+jG0PJ4FihKYt57ig626+NfZUdQV6acewqaQCAGlAlxgY8qBaiqQcj4Yek0pjhnIVd0IQjy6imeePrTHY3dLdfT4UMFdhZdtkPV5OcZDLiZblldd1O948YPQ1HZcKre7Rmh1pZ4umhga7bcTF8ZwfR1n7gxMPLjBy/1mBSYaGCRDJqKFdhQjtPOoEy/mmRWc1Dyea8KoThOyHOtdzXMaa1GA/ImqPIeI5knGFUiTlrmWLn+YvFz0jg/RumlGfzDZTxdShoMyNvXE9QBoA5bTJdxA8+9KN/2GXq6Ya7Ug+At9N5WnhKU0bXFH2MBaZ/wLotvsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4418.namprd15.prod.outlook.com (2603:10b6:806:195::5) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wrrZWZU6FbMwGAp0zUwc1YwU9yX3ebzjFEAhB6dLDHE=;
+ b=j9kJ236b1S8pdlZJppX8dmRIfnYC3nkbiTu5pftWJLXMNeoVazXUvACuzqiw6J3f9NYH9rKWeDXwq30VOtkE06NfgXPmUaWjhkdHOfDJ2isVDjWW26Hzm099lAuEc7gBlwpOYaBTZIptmDUcaTkXfWZH8D0vn0EU64ZoVMZzH7XlIBLywTtO1k6VM7kJ5ohma6rIZDO3unwfdTeawhzVTEee2pLzeLs9DjJBqv8+CoG+3pUFDW2DuzR+Km4+fBaLH38AylnHjJEzn2apIevwkE+ibt0xn///b7nokK/Xn+yFejSrOfLxm4fpgT6JH/2mCwag44fXJ3dl/FgjsgblWg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB5168.namprd12.prod.outlook.com (2603:10b6:5:397::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Thu, 10 Nov
- 2022 16:53:23 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::1f2:1491:9990:c8e3%4]) with mapi id 15.20.5791.027; Thu, 10 Nov 2022
- 16:53:22 +0000
-Message-ID: <9ba5a3ae-73fa-27a4-e438-492a15e2ca0a@meta.com>
-Date:   Thu, 10 Nov 2022 08:53:19 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.2
-Subject: Re: [1/2 bpf-next] bpf: expose net_device from xdp for metadata
-Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
-        daniel@iogearbox.net, kuba@kernel.org, davem@davemloft.net,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, sdf@google.com
-References: <20221109215242.1279993-1-john.fastabend@gmail.com>
- <20221109215242.1279993-2-john.fastabend@gmail.com>
- <0697cf41-eaa0-0181-b5c0-7691cb316733@meta.com>
- <636c5f21d82c1_13fe5e208e9@john.notmuch> <87cz9vyo40.fsf@toke.dk>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <87cz9vyo40.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BN8PR07CA0013.namprd07.prod.outlook.com
- (2603:10b6:408:ac::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+ 2022 16:54:34 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de%7]) with mapi id 15.20.5791.027; Thu, 10 Nov 2022
+ 16:54:34 +0000
+Date:   Thu, 10 Nov 2022 12:54:33 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, bpf@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v4 04/17] iommufd: Document overview of iommufd
+Message-ID: <Y20syTS/BUzPdu/i@nvidia.com>
+References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <4-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <Y2zE0zfnQ7mt740i@debian.me>
+ <87v8nmhnkl.fsf@meer.lwn.net>
+ <Y20QotPsxivvV53l@nvidia.com>
+ <87r0yahmlg.fsf@meer.lwn.net>
+ <Y20XhjH96k4x7qdx@nvidia.com>
+ <87mt8yhlqr.fsf@meer.lwn.net>
+ <Y20Y9Jlp3vG8x27a@nvidia.com>
+ <87iljmhknj.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87iljmhknj.fsf@meer.lwn.net>
+X-ClientProxiedBy: BL0PR02CA0103.namprd02.prod.outlook.com
+ (2603:10b6:208:51::44) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA1PR15MB4418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c4eaaf1-8568-4a02-9a26-08dac33c13f5
-X-FB-Source: Internal
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5168:EE_
+X-MS-Office365-Filtering-Correlation-Id: 360eb242-d9e6-436c-f0c0-08dac33c3e81
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LTTimtvdt6g9sDcvjSodZifPlah8btzbxpw7F0+RQKH95uUdMHW2jBSZVZD8QgB07TOyQjADBZPf8/dtFuLopsr57QXpNg46iHboKvbIuLzu8BpQBKINCPpl4BJa4GIFU3nIDDnVdtFaRF9VRt4qs3K2JEr9/1yQU18zLEFofgzqUiKL/EoRf06kEagXqTBo1uYuOE3N2St/jgUBEKZIIP/b35yjtK80+yLLgQvr6Skspushxhhvpj5GZYk3BeFMSxLuRAWNiI8xJ8SfEMydlKe+DgWS2gZIgs0Yz72nHwBALCVuhgk1oqGLf39hMZZLB+2Pyphgxxy70JH6Z3RdCQRu805ZfUDFd6El0UK+JLbJrm5T/1ACrvWFOeOSVNbTezvuNUpoilBqKWLKoT559RUroGHpv8yEO77KPnYL93jwmJH6l4fTN6BGchfoQZV7vh9RC81ZVFzJfWHVrTl5p7qWkF+5h0EvxNY5GD9Y5LwucBNY/l7RlhRJok+aavoaZyZrWn7Vg0JvywYCvSAiDqg0bKv4S6y3GcP1wt/uC4cK0yZMJOLFqyj+sYcqnMQAVkMFTyUJ7F4vs0kx3Glq+VY9/4wyhHYr2fCjozvlDaAiQA6nVz+yW3xp1wY7ykH1WfKbkmyWRlQingdo2mz5NISgllbbbwkOXzttJ9onCW4qtXEK1j+48aJrBQwVoxj1oXMVY3s7fBJenrP0+mPRepJQ5opK6OrVruN2ecJb2FIA+PDNl3N6dDrXLVe6kNP/Cl5BuKGuJnSPGx4F3cdVtBzriRHEjytfcpGtL/X1T3HX5TGh/HhImy+zgAh9MYdxEu2oscYr4dO223JDGiBASpfmlTfLdiUaseVVkejjG7B0DPwORrxmL7VKAI2LoakM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(396003)(376002)(39860400002)(366004)(451199015)(316002)(110136005)(2616005)(41300700001)(5660300002)(7416002)(186003)(2906002)(66574015)(8936002)(6506007)(53546011)(4326008)(6512007)(31696002)(66476007)(66946007)(66556008)(8676002)(36756003)(86362001)(31686004)(478600001)(6486002)(966005)(83380400001)(38100700002)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: rwxmx1iXsZM2P9JOzKyKtzHaybCdg4a23beaDXgfhbOe59qIlSy47xFt10c38aM7Rqnrh4c3g3Er5Nn1BUVCpB0FED8Dw5Er3Py1pJrUM5IzZjo1eRt+v5YcZcl6AiMVy6LzX78jiO9ghZ9pmzBfbtFAs/h1Nhic9JI6Wyv0XoFpZpzSacqnpC1kq0D6j1RyRtJebrYmTT4l20ytFM3CKsA3tBfPNS9apCme3E8ILhUqABXFDcef+9KrEkU/9/YzY0Z9BX8p+WhqGA6qC4jn8PBdShY63DKXKk8S6KMPCV0sDF3+YNwpMWRNWZL8vaGhbMvO9FXm93ALu/hQcSRUSNjVdr1Cy7VHadwLCFu4Ukjefqle1nQa2uElm+H+K8az3rYhbC3dN/5vrWiWe7YeEi9Em1jCg03YKnN9aHe/1qEt4kZfzNAhNVi3Dq79sZVdJxfV01TO1Bg/1q8hUp17UqtX36i5lDWbgPWino/s7b3eJpV2XJveMDfbulP9wji6EPQtDImq4dDii9l5KBZAEiJbdqYaVvLvdn+A/cndcH53uEBboHnbC2J2xL+myq75ngKQAUKZORhCrhvIZDVh76fR6TyGwTwmbHIH40XcDk8B8Egz7Ux/hCN9Me3cLOsTEgFifu0qJMF97b+vPQkQjcFUMwH0fCd/KGjvevRf2p4FCfdo3nBFiRPyU0Idbwse
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(396003)(366004)(136003)(346002)(451199015)(316002)(6916009)(54906003)(2616005)(41300700001)(4744005)(5660300002)(7406005)(186003)(7416002)(86362001)(2906002)(6506007)(66476007)(66556008)(66946007)(4326008)(6512007)(8676002)(26005)(36756003)(8936002)(478600001)(6486002)(66899015)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEVoMTJKMytlOVhDZ0xEeXJOendiMUxybEVjc3J4Z29iUkhvaGg1cW03RjRk?=
- =?utf-8?B?Y0lueFNteTdncnlDS1J6d1VqanVJOTFYWFFjaWhtTmlONnY0Rm5FYTlxSFpw?=
- =?utf-8?B?dkxBWVkyUEZPVXJyNjhFNW1BdlAveDF2dHJ4cGxPZmUvY1hiY3RtUzRBaEk1?=
- =?utf-8?B?dHJ6M3BmNi9DTnZiU3k1Q0FNSmZLOVNnMnV2QUdPZmMxclVSTDFlamw1SkZB?=
- =?utf-8?B?SlNneG44blNwbWozaFNZUncyRW9YU2JHa3VoSEtwWlVTSW5OaHNGeUNmVWJR?=
- =?utf-8?B?R0NzbGhLSjZjM1VCK1YxVFJ0UzNNcnRVSW11SU9jbmdhOFJ5Ulp5OWJZM1hv?=
- =?utf-8?B?eEd1WnRCY0R2VXhacStlRGtwVHRVTHRtdmNyZnJSVUY4aXlhejljZ0IzeUZX?=
- =?utf-8?B?bUxZTE0wK1UzeG9RbjQ4OTdwTnhSY3hFNXJ5OTVQRGEwRmJLaXhjc09ZZWZV?=
- =?utf-8?B?YU8xa2sxaE9QYWVGSmFGZmlab0JzcVBYN3JraGNhRW9vVXYvTlJEOVdGZ2lU?=
- =?utf-8?B?RFh3b3YwQlc2YmZwcncwTHJ0cUp4S1dhZHdxcElqamVwb0xtaXRCUjhiU0hK?=
- =?utf-8?B?V0c2UER0ZTltbjVkMFA3YjBOZm4zcUJGUnE5elhJa2FEb2JHRTJCbWZvUzJE?=
- =?utf-8?B?Q1NGWWNQdFNCdGVnNUtLTmppR3Fab25RRWhFcG9LWGx3bCttb3dSNWt5L1NR?=
- =?utf-8?B?OTdYTG5vNzRnWHR1QWgxaVVsKzNLQ2dMVlZTSFFSLzE1bTZjK1RrRkptcWM5?=
- =?utf-8?B?dTRLcFhUVGR5S0JFTUI5RDVpMG1aSVFPaXp4SHlmc3lqcHZRYnpmNHlkdDIz?=
- =?utf-8?B?bmZJUXdoQ1dEZElVSHpMVWhwR1Z5UGplWnEvVnBXc0xBckVWT3RtTjBsV2pL?=
- =?utf-8?B?QmNvRExsQVZ2bmRHL3ZiNEppYlhoUzZYM3ZPUzIrQjJBRGkvS2tvcWhUbndn?=
- =?utf-8?B?Y285UEhMUmxEQWVML2tBRy9ScEc1Wll1WGwxZ20ydU1GSjRSeUM5MC9JTkgx?=
- =?utf-8?B?UmlWVVYrVlk4bXhQTzlHd3hLWGZreDBrbWR4M0tkWHNEZDVMbXFKeFV0bkNR?=
- =?utf-8?B?WkJNRDhNUGpDcTN4ZVRhQWtScGRPeEQrRmcyMnZ5UVlqQ1pMMjEzWXh3bXFO?=
- =?utf-8?B?UlhXZnp1Mk82VFRPOXhvNHRRWEc4N0dsbUFoM1NhZ05XU0I1NERWZ2g1Yy9i?=
- =?utf-8?B?NXFydTdEZUliY3I0K09memZPT1pMejk0WitFNnc3ODZMNHFmemIyVHFYdVBl?=
- =?utf-8?B?WUtoVElKZXZ2THNTWnl6cnhmbzdPZ2lsM0FjSmMxc1BqN0FTekdlajJhbVFv?=
- =?utf-8?B?dWdCNnFBMEQrY3ZPaG5ndFFQNXhSZFJNRWM4dVFCdVovS1RzUHZoT0E5bnRo?=
- =?utf-8?B?K0dleGFQL2l0QWttSGV5QnpxRFkrWW53YXVvamRIWXZkSVEvRis5WFNibHQx?=
- =?utf-8?B?dmtiT1JDcHdkOWl1NXVNdTZ1NUt6eDJPemQ0VjRzTHE0RG9vMEE5ZC9FQW0y?=
- =?utf-8?B?czhacWxZam11ZkQxQ1JueEhRRHc5TTVWWnVpVFR5dWF1ZU1OeGxDcW45Uncx?=
- =?utf-8?B?c2hQeWlqUTJRbUJqOXQydEduNTJPZWluYjBOY0RpRjlsalR1cktpSmg0dDcy?=
- =?utf-8?B?Z3FmNEpEZEJnNVZHaldzODVob09OUnh2WHhCN0crQWpEcUhEVGRlM1gxRlZO?=
- =?utf-8?B?UkF0alVHTG9PSDZPYml1Vm5mN0Vpek53cnFoOXl1RVVCcGIzVnU1WjIyTzhn?=
- =?utf-8?B?YytNcUdrczNTQkgrZTZ0b256cnRzZmpKNHFJMCtEU1Z5V2kvWDFjY2J3MzI5?=
- =?utf-8?B?NHJ6ZU1FV2IvQ3d5ZmxmSkt1aHhtY09Ba2MvM1ZxTlFlY2N0YkdhOWpUbFFh?=
- =?utf-8?B?Mi8weDVHVEpHOHJWSkFVTlpBdWFNYkpzbUpaMlhRaVlFTkh3VWtWTnk3akhN?=
- =?utf-8?B?MCtadFNUK3ZBQ05UYjRtanpTcDVxck1yZjc2UERKTmtkbDA2K1FCdVVhenJG?=
- =?utf-8?B?MFZ3a3JUb0d3c04rSFhSWTFnejBGOEMwNWRWbU45dmF2emw5SDNnVTkyRUMr?=
- =?utf-8?B?VjVYT055RER6UjY3ZGpkamJRSDg3TGlkVWNEUzdQbkVFV2RvQm1UNXNxWjVD?=
- =?utf-8?B?czBiSWJiaGhXalcvMFRzVytvaVNkNVU1QjlMazAzQmpMUFY4SW1TZXFPczUz?=
- =?utf-8?B?SUE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c4eaaf1-8568-4a02-9a26-08dac33c13f5
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GdKpjsLOzgrJweAdI8yhSjX6izTEQjJlPgMw32X9prbwsgM2BbeSyKFPNmpI?=
+ =?us-ascii?Q?OoNUuRqqIaMyzSnCHnkePegLZN4yii+lLYZWRS0uQ8dNovy9ya7d42cx5tlT?=
+ =?us-ascii?Q?66RBK7LPIUPuPR115yZYz2pVyrfDdcS3DWZfOQzngGFA0wLBBG2f3lXYGgNr?=
+ =?us-ascii?Q?2aiMXuXxgqL8i2kW9q4GcfFG596CN4YhzUqCWZ3V7T54sUEqw2kD85X+NSKT?=
+ =?us-ascii?Q?OX+oZrYn1YSqx74x97xy30CJBDM8E3VzFFdY+QN0wIVAIUuKiUqhnx+qxC/J?=
+ =?us-ascii?Q?NVMXYFFQwMxSHvlqWOUB/I1oWA8W/vWZWLC8RNNX3pBDBGDZMa/VUB3MXP+k?=
+ =?us-ascii?Q?MHDavhd+AhbMjVor0cESTmu9YcJN9tWgbON0ESNPFosTMeFnoTNe/wzMFoiD?=
+ =?us-ascii?Q?GODykfpfEEx0LsffMpnA8Wn0SXTAfLYV8y3LYjyh4PFiqQDzXl6vuf/CQiN/?=
+ =?us-ascii?Q?R65Acm8C8NbpxhFjNd1H5kCKywHxekyoa+js1pNy8/wA0JyAGOkJ34SOMNp+?=
+ =?us-ascii?Q?dJQxYviG0hsNPTg6InkotTDTobx2+0cRk7xPCJJV52dhGQNUEQyyl/b8CZUj?=
+ =?us-ascii?Q?Qs8P0AKey6e99xyD4D5NImRcoAN/YrflMYV31iTZKpe8xxXqgBJ7vehYJgF2?=
+ =?us-ascii?Q?/cB3yRfecBvsFDhK5u10EYlpvH/UXWXV6G1b5VAAbBy8HsVt83ZHhSaKQCVh?=
+ =?us-ascii?Q?DXP4e8i9eO9A6+jBuTd2mBL8zdZZFnLwsYuj52r1aN4do7paMMhmyFCFucmN?=
+ =?us-ascii?Q?yVc4CDAamOjESTEKbUEs30FlEw2SkYtmwfBCKQ5FPOsff9ERLllRnlD0oM0I?=
+ =?us-ascii?Q?oJi0PV1KckleHBdPciEThdyRlLo3Q00d7jXmCOgYiYSRN503cQQr+w9y4hn1?=
+ =?us-ascii?Q?Y4ibFewGTYPEqyWuVm80EMNMl5Ghm3Lu3dg5ifesFPbZX+gvCSHLnUjnCQMF?=
+ =?us-ascii?Q?B1uealH4znnJTf5MDgNSgS27yV7ZB4KoMIhCX6AojkFhV0HIFYPmHx7g/826?=
+ =?us-ascii?Q?WSzSyThQN1WEWiBUDle32w+NkeXaCPKisl8I9D5YbP4Y69636Vr0TLmIY+2X?=
+ =?us-ascii?Q?wcJ1oF/TACfzv/PE2gD3c1qNbii16iA51o8BmJZ7WZSqLvt73K1lef/edlUy?=
+ =?us-ascii?Q?3zv7QNJ2shGTFh23SVgZGzN3WKqgQquew/1qeKbCxqQxE0/s8xkIXaghyyQm?=
+ =?us-ascii?Q?oHS9avFEW6DRehuelzPrjLBVR+0/y2HuAOFzeWKKtTlpgb8cNkjOg3evl92l?=
+ =?us-ascii?Q?qvPDSis2TZqQuILy5uhv5UhA+ao3yr+EjoyidAEHLI/JHSXqTV9olULhG2Tv?=
+ =?us-ascii?Q?u4ptBkUzmWaR96KEbcw4CAqRMCM+jDsvQ6XddqIp9Kwc6E2ypOuyrzSZ7AX6?=
+ =?us-ascii?Q?njff+qt6gTzUr6j4gzNEsNNE9drl2QLDZ/qj2PD42AYHG5Hd/BjkPI3NPFru?=
+ =?us-ascii?Q?XEYyFJ7ZSoLyNNqFQsSwMfWliEi04Uzdp8KmcygX5hnbZK6GGa9GvGhB8Ahi?=
+ =?us-ascii?Q?dYU2lOYKePzYz395wURR2OPaariEPEpzwG0dsUtJu0kj7sJR1g61C8kcg6aS?=
+ =?us-ascii?Q?iTHaa+cI4jykR4SkaVc=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 360eb242-d9e6-436c-f0c0-08dac33c3e81
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2022 16:53:22.7600
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2022 16:54:34.1753
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Je1rCdZXbR0yxVaXehakcpiJzUgGuusTMT4bOQezga0j5h04GQiUgC4IxyH11Bk/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4418
-X-Proofpoint-GUID: og25n3wXZqnXeyo1RAP1MnwOclveLXZg
-X-Proofpoint-ORIG-GUID: og25n3wXZqnXeyo1RAP1MnwOclveLXZg
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-10_11,2022-11-09_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: GCTv8Tm8aHz7unUKyCYXkIPepOdo94/TOH35QO4mAEnbTgb/xjiTNVXGr4RtDY46
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5168
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 11/10/22 4:45 AM, Toke Høiland-Jørgensen wrote:
-> John Fastabend <john.fastabend@gmail.com> writes:
+On Thu, Nov 10, 2022 at 08:52:16AM -0700, Jonathan Corbet wrote:
+> Jason Gunthorpe <jgg@nvidia.com> writes:
 > 
->> Yonghong Song wrote:
->>>
->>>
->>> On 11/9/22 1:52 PM, John Fastabend wrote:
->>>> Allow xdp progs to read the net_device structure. Its useful to extract
->>>> info from the dev itself. Currently, our tracing tooling uses kprobes
->>>> to capture statistics and information about running net devices. We use
->>>> kprobes instead of other hooks tc/xdp because we need to collect
->>>> information about the interface not exposed through the xdp_md structures.
->>>> This has some down sides that we want to avoid by moving these into the
->>>> XDP hook itself. First, placing the kprobes in a generic function in
->>>> the kernel is after XDP so we miss redirects and such done by the
->>>> XDP networking program. And its needless overhead because we are
->>>> already paying the cost for calling the XDP program, calling yet
->>>> another prog is a waste. Better to do everything in one hook from
->>>> performance side.
->>>>
->>>> Of course we could one-off each one of these fields, but that would
->>>> explode the xdp_md struct and then require writing convert_ctx_access
->>>> writers for each field. By using BTF we avoid writing field specific
->>>> convertion logic, BTF just knows how to read the fields, we don't
->>>> have to add many fields to xdp_md, and I don't have to get every
->>>> field we will use in the future correct.
->>>>
->>>> For reference current examples in our code base use the ifindex,
->>>> ifname, qdisc stats, net_ns fields, among others. With this
->>>> patch we can now do the following,
->>>>
->>>>           dev = ctx->rx_dev;
->>>>           net = dev->nd_net.net;
->>>>
->>>> 	uid.ifindex = dev->ifindex;
->>>> 	memcpy(uid.ifname, dev->ifname, NAME);
->>>>           if (net)
->>>> 		uid.inum = net->ns.inum;
->>>>
->>>> to report the name, index and ns.inum which identifies an
->>>> interface in our system.
->>>
->>> In
->>> https://lore.kernel.org/bpf/ad15b398-9069-4a0e-48cb-4bb651ec3088@meta.com/
->>> Namhyung Kim wanted to access new perf data with a helper.
->>> I proposed a helper bpf_get_kern_ctx() which will get
->>> the kernel ctx struct from which the actual perf data
->>> can be retrieved. The interface looks like
->>> 	void *bpf_get_kern_ctx(void *)
->>> the input parameter needs to be a PTR_TO_CTX and
->>> the verifer is able to return the corresponding kernel
->>> ctx struct based on program type.
->>>
->>> The following is really hacked demonstration with
->>> some of change coming from my bpf_rcu_read_lock()
->>> patch set https://lore.kernel.org/bpf/20221109211944.3213817-1-yhs@fb.com/
->>>
->>> I modified your test to utilize the
->>> bpf_get_kern_ctx() helper in your test_xdp_md.c.
->>>
->>> With this single helper, we can cover the above perf
->>> data use case and your use case and maybe others
->>> to avoid new UAPI changes.
->>
->> hmm I like the idea of just accessing the xdp_buff directly
->> instead of adding more fields. I'm less convinced of the
->> kfunc approach. What about a terminating field *self in the
->> xdp_md. Then we can use existing convert_ctx_access to make
->> it BPF inlined and no verifier changes needed.
->>
->> Something like this quickly typed up and not compiled, but
->> I think shows what I'm thinking.
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 94659f6b3395..10ebd90d6677 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -6123,6 +6123,10 @@ struct xdp_md {
->>          __u32 rx_queue_index;  /* rxq->queue_index  */
->>   
->>          __u32 egress_ifindex;  /* txq->dev->ifindex */
->> +       /* Last xdp_md entry, for new types add directly to xdp_buff and use
->> +        * BTF access. Reading this gives BTF access to xdp_buff.
->> +        */
->> +       __bpf_md_ptr(struct xdp_buff *, self);
->>   };
+> >> Single is nicer but it's not worth a great deal of angst; nothing we do
+> >> is going to turn kernel-doc into a thing of beauty :)
+> >
+> > I will leave it be then because it is a bit tricky to tell if the new
+> > regex breaks anything, and the first three attempts to create it
+> > didn't work at all...
 > 
-> xdp_md is UAPI; I really don't think it's a good idea to add "unstable"
-> BTF fields like this to it, that's just going to confuse people. Tying
-> this to a kfunc for conversion is more consistent with the whole "kfunc
-> and BTF are its own thing" expectation.
+> That's fine.  If you want to keep it as part of your series feel free to
+> add:
 > 
-> The kfunc doesn't actually have to execute any instructions either, it
-> can just be collapsed into a type conversion to BTF inside the verifier,
-> no?
+> Acked-by: Jonathan Corbet <corbet@lwn.net>
 
-The kfunc execution can be replaced with a register move like
-	r0 = r1  /* r1 is the ctx */
-	/* r0 is the kctx */
+Thanks, I'll keep it together since nothing else needs this right now
 
-> 
-> -Toke
+Jason
