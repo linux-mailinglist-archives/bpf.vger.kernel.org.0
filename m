@@ -2,69 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 610546239D9
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 03:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E0C6239E1
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 03:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbiKJCj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 21:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        id S232226AbiKJCkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 21:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbiKJCjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 21:39:25 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1255713EAD;
-        Wed,  9 Nov 2022 18:39:24 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N75dL0p1bz4f3mWP;
-        Thu, 10 Nov 2022 10:39:18 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-        by APP2 (Coremail) with SMTP id Syh0CgCHnLdYZGxj3g0UAQ--.21205S2;
-        Thu, 10 Nov 2022 10:39:21 +0800 (CST)
-Message-ID: <9caf3639-97f7-367f-a4a2-1c31b271d620@huaweicloud.com>
-Date:   Thu, 10 Nov 2022 10:39:20 +0800
+        with ESMTP id S232335AbiKJCkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 21:40:18 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDF713EAD;
+        Wed,  9 Nov 2022 18:40:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3882FB82062;
+        Thu, 10 Nov 2022 02:40:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CEB1BC433D7;
+        Thu, 10 Nov 2022 02:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668048014;
+        bh=yrsGQQL1q+GBNKW7AMNQYw3Mlguuo+PD9a5PiSGG0kM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=m47KIj8K98+UnShqojg3+ANKHyZ7J2M2l5dM/1nVrfrHTPohFMPfb2prTFmrdsSVD
+         ErMT1+K+uni1aJ9eh0H9gk6ed5MrOeHYs7jxrm4PChzClABC4s0+C4PnGo7F+fnFJw
+         JMK53yzECJBVabJsuHr6PUBWs+MW9Z92L8vKtaeq3LgQt/UJg/bx2N6hNQMWV7uLKg
+         Aq9+NVFT7XOqXHCzt+wwb9SyqAdCvo6UK+CaynGb8Ep7cTar+bHDi+HQNWUsStoEQd
+         YyNv5lmWml7/Xsf7lJXYGJCLTPgtS9GQbeCbM9gBNHzulaOscnz5Z27+WsSAQa/vsw
+         /JEKwSOmzJEXA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A55B1C395F7;
+        Thu, 10 Nov 2022 02:40:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v2] bpf: Initialize same number of free nodes for
- each pcpu_freelist
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20221108142207.4079521-1-xukuohai@huaweicloud.com>
- <CAEf4BzYjkP_xjaEErXwe5mG9pV+HQHKwY3hTamKH6zQTZrobLw@mail.gmail.com>
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAEf4BzYjkP_xjaEErXwe5mG9pV+HQHKwY3hTamKH6zQTZrobLw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgCHnLdYZGxj3g0UAQ--.21205S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWryUAry8Xw4rWFWxuFy7Awb_yoW5CrWrpF
-        4fJ3WUtwn5Xr98uw4rW3W7WrW3twsrGr17Wa98KF15Ary3tFyvqr1vkFs0qrWxWr17Zr1F
-        yr4q9FZrZa4UXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: cpsw: disable napi in cpsw_ndo_open()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166804801465.842.8389256583880399963.git-patchwork-notify@kernel.org>
+Date:   Thu, 10 Nov 2022 02:40:14 +0000
+References: <20221109011537.96975-1-shaozhengchao@huawei.com>
+In-Reply-To: <20221109011537.96975-1-shaozhengchao@huawei.com>
+To:     Zhengchao Shao <shaozhengchao@huawei.com>
+Cc:     linux-omap@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, grygorii.strashko@ti.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, chi.minghao@zte.com.cn,
+        mkl@pengutronix.de, wsa+renesas@sang-engineering.com,
+        ardb@kernel.org, yangyingliang@huawei.com, mugunthanvnm@ti.com,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,105 +61,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/10/2022 7:56 AM, Andrii Nakryiko wrote:
-> On Tue, Nov 8, 2022 at 6:05 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
->> free nodes for some CPUs, and then possibly one CPU with fewer nodes,
->> followed by remaining cpus with 0 nodes. For example, when nr_elems == 256
->> and num_possible_cpus() == 32, if CPU 0 is the current cpu, CPU 0~27
->> each gets 9 free nodes, CPU 28 gets 4 free nodes, CPU 29~31 get 0 free
->> nodes, while in fact each CPU should get 8 nodes equally.
->>
->> This patch initializes nr_elems / num_possible_cpus() free nodes for each
->> CPU firstly, then allocates the remaining free nodes by one for each CPU
->> until no free nodes left.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> Acked-by: Yonghong Song <yhs@fb.com>
->> ---
->> v2: Update commit message and add Yonghong's ack
->> ---
->>   kernel/bpf/percpu_freelist.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
->> index b6e7f5c5b9ab..89e84f7381cc 100644
->> --- a/kernel/bpf/percpu_freelist.c
->> +++ b/kernel/bpf/percpu_freelist.c
->> @@ -100,12 +100,15 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
->>                              u32 nr_elems)
->>   {
->>          struct pcpu_freelist_head *head;
->> -       int i, cpu, pcpu_entries;
->> +       int i, cpu, pcpu_entries, remain_entries;
->> +
->> +       pcpu_entries = nr_elems / num_possible_cpus();
->> +       remain_entries = nr_elems % num_possible_cpus();
->>
->> -       pcpu_entries = nr_elems / num_possible_cpus() + 1;
->>          i = 0;
->>
->>          for_each_possible_cpu(cpu) {
->> +               int j = i + pcpu_entries + (remain_entries-- > 0 ? 1 : 0);
->>   again:
->>                  head = per_cpu_ptr(s->freelist, cpu);
->>                  /* No locking required as this is not visible yet. */
->> @@ -114,7 +117,7 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
->>                  buf += elem_size;
->>                  if (i == nr_elems)
->>                          break;
->> -               if (i % pcpu_entries)
->> +               if (i < j)
->>                          goto again;
->>          }
-> 
-> this loop's logic is quite hard to follow, if we are fixing it, can we
-> simplify it maybe? something like:
-> 
-> int cpu, cpu_idx, i, j, n, m;
-> 
-> n = nr_elems / num_possible_cpus();
-> m = nr_elems % num_possible_cpus();
-> 
-> for_each_possible_cpu(cpu) {
->      i = n + (cpu_idx < m ? 1 : 0);
->      for (j = 0; j < i; j++) {
->          head = per_cpu_ptr(s->freelist, cpu);
->          pcpu_freelist_push_node(head, buf);
->          buf += elem_size;
->      }
->      cpu_idx++;
-> }
-> 
-> 
-> no gotos, no extra ifs: for each cpu we determine correct number of
-> elements to allocate, then just allocate them in a straightforward
-> loop
-> 
+Hello:
 
-that's great, will update to:
+This patch was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-int cpu, cpu_idx, i, j, n, m;
+On Wed, 9 Nov 2022 09:15:37 +0800 you wrote:
+> When failed to create xdp rxqs or fill rx channels in cpsw_ndo_open() for
+> opening device, napi isn't disabled. When open cpsw device next time, it
+> will report a invalid opcode issue. Fix it. Only be compiled, not be
+> tested.
+> 
+> Fixes: d354eb85d618 ("drivers: net: cpsw: dual_emac: simplify napi usage")
+> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> 
+> [...]
 
-n = nr_elems / num_possible_cpus();
-m = nr_elems % num_possible_cpus();
+Here is the summary with links:
+  - [net] net: cpsw: disable napi in cpsw_ndo_open()
+    https://git.kernel.org/netdev/net/c/6d47b53fb3f3
 
-for_each_possible_cpu(cpu) {
-       j = min(n + (cpu_idx < m ? 1 : 0), nr_elems);
-       for (i = 0; i < j; i++) {
-           head = per_cpu_ptr(s->freelist, cpu);
-           pcpu_freelist_push_node(head, buf);
-           buf += elem_size;
-       }
-       nr_elems -= j;
-       cpu_idx++;
-}
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->>   }
->> --
->> 2.30.2
->>
 
