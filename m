@@ -2,96 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8041262445D
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 15:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006E562448C
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 15:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbiKJOdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 09:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S229888AbiKJOnm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 09:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbiKJOde (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 09:33:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA56260D
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 06:32:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668090756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kKjCDDez5PjtMLjEbRFqRZ0Q9e8y5qhGRMnKFr/7yvE=;
-        b=J/d+gh0DembRYM05GqXxdfpY4mT6HDVOb3n2DsORnMg7FV3PilxjqCG0Cfl3DX5C0vHRf2
-        9oPEocGObOyQ4cjEZUqZi5Ebt8cuLy92sUChDWFYGWKS8JU3WdC5Kjxih6DjMGSQ4OYwS7
-        eYDl3Vfac2a0bW0eCYtu2iTyy0KBaiE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-654-3HTfjhKvPjS8XvAUZpyV1Q-1; Thu, 10 Nov 2022 09:32:35 -0500
-X-MC-Unique: 3HTfjhKvPjS8XvAUZpyV1Q-1
-Received: by mail-ed1-f71.google.com with SMTP id y18-20020a056402359200b004635f8b1bfbso1638397edc.17
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 06:32:34 -0800 (PST)
+        with ESMTP id S230430AbiKJOnk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 09:43:40 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C38303D1
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 06:43:39 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id b2so5526472eja.6
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 06:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vn+V/3k+ExUHU0PBVxTLxALE0aRVofa8KLDQKs5W/u0=;
+        b=WRSV+eV3yPQakUcV2ivZ4+kf3cGhReUT5YB4Je9dYlSJ4OGT4eO1Q+pJnFZ/5BXlIg
+         nyBHTHj43vFx7YRHl/ujXMIuvj1IO0LLnXGyJDY/Tch2OJnkCv9tygJ2V796ocTC5NBu
+         G/5jVklrADi3GRfKFZaHTs6lOqD5oTfBkI+mGaqsfHt6wktGIQ6qXI2Sw8p2AN53ryv5
+         kg/Xzt2o9o3qGwU+Dt96I+ZhlZJkGC4hbYmM/qF1FOpY99hWwS6fTf7SbHz7Ps737yOI
+         nvWlIubTcn85UawHbQ0/pXhDMV3i6gjLXihx5lqbxiMOYuiOV2ihZyzbsmw5LwqR0asA
+         wVeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kKjCDDez5PjtMLjEbRFqRZ0Q9e8y5qhGRMnKFr/7yvE=;
-        b=jxV0OE3fEXh+iyYfiO4bmuS7+Zn2j5dMygIP0ayZIU+Z8/LAtra03UI6D9jGKYCoCZ
-         XVLOZbIA1CQdEk5pGqiBgefwYm5OTTk7oW4yCMrwn8BZddkgGoOHzl9vsEe6po8J61ct
-         epBphTozN23uiCURvq3ubg4clenVVxz8ODhTcOicGMhMq9WagyhFTODOFi0xjQJlqob3
-         X9Z9K8KOaV5kvKvpQZ5bg6HAhAMxthTFtAnn1GVjLkdzBZ0YQ2sTQkCU1OxApyOEppEX
-         02rizWDmz28uL8uQvys/gH+lmSKjSQSiCVuYcpTJkiVE1j4gJHkiX1kAoOiwQ9BA1/Jk
-         EJBg==
-X-Gm-Message-State: ANoB5pltBh0yr6fxuaRr/+T9b1kH8quRq7imvUwxHQ0ry7nNvIuHZYjJ
-        bjOwwZrwGI191/iA5AUlV+xNZZnegfzdr6eimUz5KawOtF4+f/ARo81LTpuoG+o34k+lg0CSRLB
-        wEUyMbf+bysTz
-X-Received: by 2002:a17:906:748:b0:7ae:8d01:8202 with SMTP id z8-20020a170906074800b007ae8d018202mr5362139ejb.384.1668090753683;
-        Thu, 10 Nov 2022 06:32:33 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6UEJrPsczEooz7DX8InQa+zTUE9wf/exSIc56qc+Cf6pWb/J8hT4/bzL4bKtHmF+mnPM0WRw==
-X-Received: by 2002:a17:906:748:b0:7ae:8d01:8202 with SMTP id z8-20020a170906074800b007ae8d018202mr5362115ejb.384.1668090753302;
-        Thu, 10 Nov 2022 06:32:33 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id j2-20020a17090623e200b007aa3822f4d2sm7396132ejg.17.2022.11.10.06.32.32
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vn+V/3k+ExUHU0PBVxTLxALE0aRVofa8KLDQKs5W/u0=;
+        b=4Upe93a3omxQk/nTkk7/U4oT4FOknRR4vu/t6ySpUHFQY0hEM+btjYCwcG/ZuhVC9s
+         rP7aMGdEL5gwa3ngWEUWJOuxMSjRMmAG8Z0SAUQJWpQsgLPjkmzixxBGHWqOwZnD2A0i
+         CuT9QbjSFeMKudZBmWmfuJkivJuqyC/alkRa8ghgs6VOm/WWdZuCKPiexhwUv7I6Zs2e
+         bKaLfEMyOge8t/ILrPAsZM/KOCMRwS5OwrztOGQuZxYv1Bb1dcsKHfc3pXqOw5boDSI/
+         Hwu0+noSoWEa2D0yuqNJVE41z0FOb1YFNOPOERTRtvkOLcKAtH1u/b/pr4X9bWMuo+GK
+         UgNQ==
+X-Gm-Message-State: ANoB5pnHqGRKhPIMkRCM6O23az3XIEUbM6j2WXYlR4RAck6s4F1JjJJW
+        PxFkCx/JrSb+csRDq8udD7pNXLnCvoT4qvDa
+X-Google-Smtp-Source: AA0mqf4/VWkBWlqTH20C/CMAuDyVV1tMzusZ64Ygsy8wHVjFQQ0mMteO996Mt5IxI0OpFq2ybIugvg==
+X-Received: by 2002:a17:907:c086:b0:7ae:566e:3eba with SMTP id st6-20020a170907c08600b007ae566e3ebamr21973825ejc.470.1668091417813;
+        Thu, 10 Nov 2022 06:43:37 -0800 (PST)
+Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id g22-20020a50ee16000000b004616b006871sm8609272eds.82.2022.11.10.06.43.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Nov 2022 06:32:32 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 77CB87826D5; Thu, 10 Nov 2022 15:32:32 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
-In-Reply-To: <636c533231572_13c9f42087c@john.notmuch>
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
- <636c533231572_13c9f42087c@john.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 10 Nov 2022 15:32:32 +0100
-Message-ID: <87v8nmyj5r.fsf@toke.dk>
+        Thu, 10 Nov 2022 06:43:37 -0800 (PST)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 0/3] libbpf: btf_decl_tag attribute for btf dump in C format
+Date:   Thu, 10 Nov 2022 16:43:17 +0200
+Message-Id: <20221110144320.1075367-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,88 +68,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+Support for clang's __attribute__((btf_decl_tag("..."))) by
+btf_dump__dump_type and btf_dump__dump_type_data functions.
+Decl tag attributes are restored for:
+- structs and unions
+- struct and union fields
+- typedefs
+- global variables
+- function prototype parameters
 
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Snipping a bit of context to reply to this bit:
->>=20
->> >>>> Can the xdp prog still change the metadata through xdp->data_meta? =
-tbh, I am not
->> >>>> sure it is solid enough by asking the xdp prog not to use the same =
-random number
->> >>>> in its own metadata + not to change the metadata through xdp->data_=
-meta after
->> >>>> calling bpf_xdp_metadata_export_to_skb().
->> >>>
->> >>> What do you think the usecase here might be? Or are you suggesting we
->> >>> reject further access to data_meta after
->> >>> bpf_xdp_metadata_export_to_skb somehow?
->> >>>
->> >>> If we want to let the programs override some of this
->> >>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add
->> >>> more kfuncs instead of exposing the layout?
->> >>>
->> >>> bpf_xdp_metadata_export_to_skb(ctx);
->> >>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
->>=20
->
-> Hi Toke,
->
-> Trying not to bifurcate your thread. Can I start a new one here to
-> elaborate on these use cases. I'm still a bit lost on any use case
-> for this that makes sense to actually deploy on a network.
->
->> There are several use cases for needing to access the metadata after
->> calling bpf_xdp_metdata_export_to_skb():
->>=20
->> - Accessing the metadata after redirect (in a cpumap or devmap program,
->>   or on a veth device)
->
-> I think for devmap there are still lots of opens how/where the skb
-> is even built.
+The attribute is restored using __btf_decl_tag macro that is printed
+upon first call to btf_dump__dump_type function:
 
-For veth it's pretty clear; i.e., when redirecting into containers.
+ #if __has_attribute(btf_decl_tag)
+ #define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
+ #else
+ #define __btf_decl_tag(x)
+ #endif
 
-> For cpumap I'm a bit unsure what the use case is. For ice, mlx and
-> such you should use the hardware RSS if performance is top of mind.
+To simplify testing of the btf_dump__dump_type_data the
+prog_tests/btf_dump.c:test_btf_dump_case is extended to invoke
+btf_dump__dump_type_data for each DATASEC object in the test case
+binary file.
 
-Hardware RSS works fine if your hardware supports the hashing you want;
-many do not. As an example, Jesper wrote this application that uses
-cpumap to divide out ISP customer traffic among different CPUs (solving
-an HTB scaling problem):
+Changelog:
+v2 -> v3:
+- rebase to fix merge issues after recent hashmap interface update;
+- call to btf_dump_assign_decl_tags removed from btf_dump__new as
+  redundant.
 
-https://github.com/xdp-project/xdp-cpumap-tc
+v1 -> v2:
+- prog_tests/btf_dump.c:test_btf_dump_case modified to print DATASECs
+  using btf_dump__dump_type_data;
+- support for decl tags applied to global variables and function
+  prototype parameters;
+- update to support interleaved calls to btf_dump__dump_type and
+  btf__add_decl_tag (incremental dump);
+- fix for potential double free error in btf_dump_assign_decl_tags;
+- styling fixes suggested by Andrii.
 
-> And then for specific devices on cpumap (maybe realtime or ptp
-> things?) could we just throw it through the xdp_frame?
+RFC -> v1:
+- support for decl tags applied to struct / union fields and typedefs;
+- __btf_decl_tag macro;
+- btf_dump->decl_tags hash and equal functions updated to use integer
+  key instead of a pointer;
+- realloc_decl_tags function removed;
+- update for allocation logic in btf_dump_assign_decl_tags.
 
-Not sure what you mean here? Throw what through the xdp_frame?
+[v2]  https://lore.kernel.org/bpf/20221108153135.491383-1-eddyz87@gmail.com/
+[v1]  https://lore.kernel.org/bpf/20221103134522.2764601-1-eddyz87@gmail.com/
+[RFC] https://lore.kernel.org/bpf/20221025222802.2295103-4-eddyz87@gmail.com/
 
->> - Transferring the packet+metadata to AF_XDP
->
-> In this case we have the metadata and AF_XDP program and XDP program
-> simply need to agree on metadata format. No need to have some magic
-> numbers and driver specific kfuncs.
+Eduard Zingerman (3):
+  libbpf: __attribute__((btf_decl_tag("..."))) for btf dump in C format
+  selftests/bpf: Dump data sections as part of btf_dump_test_case tests
+  selftests/bpf: Tests for BTF_KIND_DECL_TAG dump in C format
 
-See my other reply to Martin: Yeah, for AF_XDP users that write their
-own kernel XDP programs, they can just do whatever they want. But many
-users just rely on the default program in libxdp, so having a standard
-format to include with that is useful.
+ tools/lib/bpf/btf_dump.c                      | 181 +++++++++++++++-
+ .../selftests/bpf/prog_tests/btf_dump.c       | 197 ++++++++++++++++--
+ .../bpf/progs/btf_dump_test_case_decl_tag.c   |  65 ++++++
+ 3 files changed, 421 insertions(+), 22 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
 
->> - Returning XDP_PASS, but accessing some of the metadata first (whether
->>   to read or change it)
->>=20
->
-> I don't get this case? XDP_PASS should go to stack normally through
-> drivers build_skb routines. These will populate timestamp normally.
-> My guess is simply descriptor->skb load/store is cheaper than carrying
-> around this metadata and doing the call in BPF side. Anyways you
-> just built an entire skb and hit the stack I don't think you will
-> notice this noise in any benchmark.
-
-If you modify the packet before calling XDP_PASS you may want to update
-the metadata as well (for instance the RX hash, or in the future the
-metadata could also carry transport header offsets).
-
--Toke
+-- 
+2.34.1
 
