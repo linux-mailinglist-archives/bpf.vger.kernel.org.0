@@ -2,201 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D56623977
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 03:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EF16239AE
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 03:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbiKJCEA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 21:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S232306AbiKJCRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 21:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbiKJCDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 21:03:44 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A1023BD0;
-        Wed,  9 Nov 2022 18:03:05 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N74qG4nl5z15MWN;
-        Thu, 10 Nov 2022 10:02:50 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 10:03:03 +0800
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 10:03:03 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <zhengyejian1@huawei.com>
-Subject: [PATCH v2] tracing: Optimize event type allocation with IDA
-Date:   Thu, 10 Nov 2022 10:03:19 +0800
-Message-ID: <20221110020319.1259291-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232323AbiKJCRJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 21:17:09 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32ABC1CFE1;
+        Wed,  9 Nov 2022 18:17:08 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 78so375427pgb.13;
+        Wed, 09 Nov 2022 18:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t2DoUuLyDklwEW0j2nOp93tQ1wYcuGknzJHZS7L1EQk=;
+        b=ZIRGvSfHyLUwkJYPML71KWex8PekPTTp1reMGv29Mz9wTzedlzibxxJqw8GazS40og
+         oW+hCTcFs3COT9J5IQ3GKSEFGa2Z8Wigp/ZYQs1zT0YGZ1+Stg/CjCr1c7/wny8OpqVi
+         xwe2twTw+RHxw3YMfBAquKfpidyE1udI96RgZ3xjohi2oYs1Pv/mFU/LkZ4I22TXKipU
+         qAgOHgxF8s02sf+QdBtDGuPqp4ua0sP3hk5c+4wsdYCqEU2NUCZhHUSY5mMx+QliBJlq
+         A2GIfrx8Cm1Wh/eGKLyqQxqsXwUN+IgBv5rVCOToVT1PmuyhFMfHH6DKSIAbcrWoVN6K
+         5Qog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=t2DoUuLyDklwEW0j2nOp93tQ1wYcuGknzJHZS7L1EQk=;
+        b=Me7N4JWweIlRF4WUC8/8Qhbe0fP0g1r4nmA9a9knR0QfQRTzxlEPjcrd6d88YJ+mlZ
+         RPPdmKCpblszoT49JWlNwBuzbqdbOSVXg6CeY1uF5SdB7ptYiARjegsTVvMk1WlyR2Do
+         OyF+sSjsARcz684C1ZUtCQBb6cOoXhZvVUq6zZoyvprqLha/Yq2zfDkRDBR7pEJEyzZz
+         02rbgvsROlGVCUapfYZxO+tuay7LJlWnqC/gmCV3YFu/dAWaOfptlDQrCSJiSa2feHpL
+         MwX8ReC4i/XkRN96pUSCsPH8A78VAwPuicsyY2OkBmR3oBcjv6wmYxCiAiYZWLd7iulE
+         KQ5g==
+X-Gm-Message-State: ACrzQf3UaSy/ovWBeNOCttR/AMkoiRpzyQ9NtGB1Lv7fOwpRWmB3Em3Y
+        /IR7H/sy13pS0HTC+lrEq4c=
+X-Google-Smtp-Source: AMsMyM5QElE4liueo1lbyDrs7FHa9KieuDjQYM/6gcKC39qtvE3NSDW/6dBPdsSYgxB95k1817SciQ==
+X-Received: by 2002:a63:4e64:0:b0:43a:2570:b5c5 with SMTP id o36-20020a634e64000000b0043a2570b5c5mr1538850pgl.29.1668046627528;
+        Wed, 09 Nov 2022 18:17:07 -0800 (PST)
+Received: from localhost ([98.97.44.95])
+        by smtp.gmail.com with ESMTPSA id m21-20020a170902bb9500b00186e2123506sm9738426pls.300.2022.11.09.18.17.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Nov 2022 18:17:06 -0800 (PST)
+Date:   Wed, 09 Nov 2022 18:17:05 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
+        daniel@iogearbox.net, kuba@kernel.org, davem@davemloft.net,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, sdf@google.com
+Message-ID: <636c5f21d82c1_13fe5e208e9@john.notmuch>
+In-Reply-To: <0697cf41-eaa0-0181-b5c0-7691cb316733@meta.com>
+References: <20221109215242.1279993-1-john.fastabend@gmail.com>
+ <20221109215242.1279993-2-john.fastabend@gmail.com>
+ <0697cf41-eaa0-0181-b5c0-7691cb316733@meta.com>
+Subject: Re: [1/2 bpf-next] bpf: expose net_device from xdp for metadata
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit 060fa5c83e67 ("tracing/events: reuse trace event ids after
- overflow"), trace events with dynamic type are linked up in list
-'ftrace_event_list' through field 'trace_event.list'. Then when max
-event type number used up, it's possible to reuse type number of some
-freed one by traversing 'ftrace_event_list'.
+Yonghong Song wrote:
+> 
+> 
+> On 11/9/22 1:52 PM, John Fastabend wrote:
+> > Allow xdp progs to read the net_device structure. Its useful to extract
+> > info from the dev itself. Currently, our tracing tooling uses kprobes
+> > to capture statistics and information about running net devices. We use
+> > kprobes instead of other hooks tc/xdp because we need to collect
+> > information about the interface not exposed through the xdp_md structures.
+> > This has some down sides that we want to avoid by moving these into the
+> > XDP hook itself. First, placing the kprobes in a generic function in
+> > the kernel is after XDP so we miss redirects and such done by the
+> > XDP networking program. And its needless overhead because we are
+> > already paying the cost for calling the XDP program, calling yet
+> > another prog is a waste. Better to do everything in one hook from
+> > performance side.
+> > 
+> > Of course we could one-off each one of these fields, but that would
+> > explode the xdp_md struct and then require writing convert_ctx_access
+> > writers for each field. By using BTF we avoid writing field specific
+> > convertion logic, BTF just knows how to read the fields, we don't
+> > have to add many fields to xdp_md, and I don't have to get every
+> > field we will use in the future correct.
+> > 
+> > For reference current examples in our code base use the ifindex,
+> > ifname, qdisc stats, net_ns fields, among others. With this
+> > patch we can now do the following,
+> > 
+> >          dev = ctx->rx_dev;
+> >          net = dev->nd_net.net;
+> > 
+> > 	uid.ifindex = dev->ifindex;
+> > 	memcpy(uid.ifname, dev->ifname, NAME);
+> >          if (net)
+> > 		uid.inum = net->ns.inum;
+> > 
+> > to report the name, index and ns.inum which identifies an
+> > interface in our system.
+> 
+> In
+> https://lore.kernel.org/bpf/ad15b398-9069-4a0e-48cb-4bb651ec3088@meta.com/
+> Namhyung Kim wanted to access new perf data with a helper.
+> I proposed a helper bpf_get_kern_ctx() which will get
+> the kernel ctx struct from which the actual perf data
+> can be retrieved. The interface looks like
+> 	void *bpf_get_kern_ctx(void *)
+> the input parameter needs to be a PTR_TO_CTX and
+> the verifer is able to return the corresponding kernel
+> ctx struct based on program type.
+> 
+> The following is really hacked demonstration with
+> some of change coming from my bpf_rcu_read_lock()
+> patch set https://lore.kernel.org/bpf/20221109211944.3213817-1-yhs@fb.com/
+> 
+> I modified your test to utilize the
+> bpf_get_kern_ctx() helper in your test_xdp_md.c.
+> 
+> With this single helper, we can cover the above perf
+> data use case and your use case and maybe others
+> to avoid new UAPI changes.
 
-As instead, using IDA to manage available type numbers can make codes
-simpler and then the field 'trace_event.list' can be dropped.
+hmm I like the idea of just accessing the xdp_buff directly
+instead of adding more fields. I'm less convinced of the
+kfunc approach. What about a terminating field *self in the
+xdp_md. Then we can use existing convert_ctx_access to make
+it BPF inlined and no verifier changes needed.
 
-Since 'struct trace_event' is used in static tracepoints, drop
-'trace_event.list' can make vmlinux smaller. Local test with about 2000
-tracepoints, vmlinux reduced about 64KB:
-  before：-rwxrwxr-x 1 root root 76669448 Nov  8 17:14 vmlinux
-  after： -rwxrwxr-x 1 root root 76604176 Nov  8 17:15 vmlinux
+Something like this quickly typed up and not compiled, but
+I think shows what I'm thinking.
 
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- include/linux/trace_events.h |  1 -
- kernel/trace/trace_output.c  | 66 +++++++++---------------------------
- 2 files changed, 16 insertions(+), 51 deletions(-)
-
-Changes since v1:
-  - Explicitly include linux/idr.h as suggested by Masami Hiramatsu
-    Link: https://lore.kernel.org/lkml/20221109222650.ce6c22e231345f6852f6956f@kernel.org/#t
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 20749bd9db71..bb2053246d6a 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -136,7 +136,6 @@ struct trace_event_functions {
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 94659f6b3395..10ebd90d6677 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6123,6 +6123,10 @@ struct xdp_md {
+        __u32 rx_queue_index;  /* rxq->queue_index  */
  
- struct trace_event {
- 	struct hlist_node		node;
--	struct list_head		list;
- 	int				type;
- 	struct trace_event_functions	*funcs;
+        __u32 egress_ifindex;  /* txq->dev->ifindex */
++       /* Last xdp_md entry, for new types add directly to xdp_buff and use
++        * BTF access. Reading this gives BTF access to xdp_buff.
++        */
++       __bpf_md_ptr(struct xdp_buff *, self);
  };
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 67f47ea27921..f0ba97121345 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -11,6 +11,7 @@
- #include <linux/kprobes.h>
- #include <linux/sched/clock.h>
- #include <linux/sched/mm.h>
-+#include <linux/idr.h>
  
- #include "trace_output.h"
+ /* DEVMAP map-value layout
+diff --git a/net/core/filter.c b/net/core/filter.c
+index bb0136e7a8e4..547e9576a918 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9808,6 +9808,11 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+                *insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg,
+                                      offsetof(struct net_device, ifindex));
+                break;
++       case offsetof(struct xdp_md, self):
++               *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, self),
++                                     si->dst_reg, si->src_reg,
++                                     offsetof(struct xdp_buff, 0));
++               break;
+        }
  
-@@ -21,8 +22,6 @@ DECLARE_RWSEM(trace_event_sem);
- 
- static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
- 
--static int next_event_type = __TRACE_LAST_TYPE;
--
- enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
- {
- 	struct trace_seq *s = &iter->seq;
-@@ -688,38 +687,23 @@ struct trace_event *ftrace_find_event(int type)
- 	return NULL;
- }
- 
--static LIST_HEAD(ftrace_event_list);
-+static DEFINE_IDA(trace_event_ida);
- 
--static int trace_search_list(struct list_head **list)
-+static void free_trace_event_type(int type)
- {
--	struct trace_event *e = NULL, *iter;
--	int next = __TRACE_LAST_TYPE;
--
--	if (list_empty(&ftrace_event_list)) {
--		*list = &ftrace_event_list;
--		return next;
--	}
-+	if (type >= __TRACE_LAST_TYPE)
-+		ida_free(&trace_event_ida, type);
-+}
- 
--	/*
--	 * We used up all possible max events,
--	 * lets see if somebody freed one.
--	 */
--	list_for_each_entry(iter, &ftrace_event_list, list) {
--		if (iter->type != next) {
--			e = iter;
--			break;
--		}
--		next++;
--	}
-+static int alloc_trace_event_type(void)
-+{
-+	int next;
- 
--	/* Did we used up all 65 thousand events??? */
--	if (next > TRACE_EVENT_TYPE_MAX)
-+	/* Skip static defined type numbers */
-+	next = ida_alloc_range(&trace_event_ida, __TRACE_LAST_TYPE,
-+			       TRACE_EVENT_TYPE_MAX, GFP_KERNEL);
-+	if (next < 0)
- 		return 0;
--
--	if (e)
--		*list = &e->list;
--	else
--		*list = &ftrace_event_list;
- 	return next;
- }
- 
-@@ -761,28 +745,10 @@ int register_trace_event(struct trace_event *event)
- 	if (WARN_ON(!event->funcs))
- 		goto out;
- 
--	INIT_LIST_HEAD(&event->list);
--
- 	if (!event->type) {
--		struct list_head *list = NULL;
--
--		if (next_event_type > TRACE_EVENT_TYPE_MAX) {
--
--			event->type = trace_search_list(&list);
--			if (!event->type)
--				goto out;
--
--		} else {
--
--			event->type = next_event_type++;
--			list = &ftrace_event_list;
--		}
--
--		if (WARN_ON(ftrace_find_event(event->type)))
-+		event->type = alloc_trace_event_type();
-+		if (!event->type)
- 			goto out;
--
--		list_add_tail(&event->list, list);
--
- 	} else if (WARN(event->type > __TRACE_LAST_TYPE,
- 			"Need to add type to trace.h")) {
- 		goto out;
-@@ -819,7 +785,7 @@ EXPORT_SYMBOL_GPL(register_trace_event);
- int __unregister_trace_event(struct trace_event *event)
- {
- 	hlist_del(&event->node);
--	list_del(&event->list);
-+	free_trace_event_type(event->type);
- 	return 0;
- }
- 
--- 
-2.25.1
+        return insn - insn_buf;
 
+Actually even that single insn conversion is a bit unnessary because
+should be enough to just change the type to the correct BTF_ID in the
+verifier and omit any instructions. But it wwould be a bit confusing
+for C side. Might be a good use for passing 'cast' info through to
+the verifier as an annotation so it could just do the BTF_ID cast for
+us without any insns.
