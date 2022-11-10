@@ -2,103 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F27E62465C
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 16:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3767262454D
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 16:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbiKJPwU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 10:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S230408AbiKJPPN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 10:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbiKJPwS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 10:52:18 -0500
-X-Greylist: delayed 3783 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Nov 2022 07:52:18 PST
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640762FC20;
-        Thu, 10 Nov 2022 07:52:18 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7B7C037E;
-        Thu, 10 Nov 2022 15:52:17 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7B7C037E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1668095537; bh=xpFTWZn9sbFBGd6WKn9o/SIHLSDqMwfNDLiBmx96Qjw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=quXtIBVHhn6GRJvpgOS+7BTs3aZN6UDPSZkHRixCPa1D2mE8KI2+f7xpptqPAUzCb
-         iYmP6g2ejS1Cn6vCrSix4w9C3MBwyU0eSF4mclPDsgxBks6KOFxoiDds4MYkj7xKdU
-         Sot2p5dw8GRWYAFNKJLjgBFdyLG0KCcVsMJkM4vTQg0crFcfmHbprSaz5LBVmEaVRk
-         wuq/T23gU9DmYOUF9KeNhvxdk7awpM/9NRTvATLZjhGjcG+++PIQbf/zWiZBQC4L9m
-         +TU3oQG1Js9TOxRMlqh0Riw1SkkS8CRV4dVRvH6FHCwiBWfztDHquhlc3LZDzdHp7R
-         y4+9067GwoQYg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, bpf@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v4 04/17] iommufd: Document overview of iommufd
-In-Reply-To: <Y20Y9Jlp3vG8x27a@nvidia.com>
-References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <4-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <Y2zE0zfnQ7mt740i@debian.me> <87v8nmhnkl.fsf@meer.lwn.net>
- <Y20QotPsxivvV53l@nvidia.com> <87r0yahmlg.fsf@meer.lwn.net>
- <Y20XhjH96k4x7qdx@nvidia.com> <87mt8yhlqr.fsf@meer.lwn.net>
- <Y20Y9Jlp3vG8x27a@nvidia.com>
-Date:   Thu, 10 Nov 2022 08:52:16 -0700
-Message-ID: <87iljmhknj.fsf@meer.lwn.net>
+        with ESMTP id S230124AbiKJPPM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 10:15:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7998831216
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 07:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668093253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zEvplYuwssLJ3t9LRCQjT4FvP3g4vYYyMhE2+Vd/Jhg=;
+        b=Ga0gkv8AayPlb5Abmj8q3yjqb2HE21IS2xzrfqeOO1tfH/hdcmsW/U1GpZ5U8TvoqkhDFK
+        MjJPtxs8qTmHrSUy89upojFupSGa1naYZFk5c2hin3n3QY+WyFXt4ycvSmTIYHIRWJuRwU
+        4qTWjRY4XBlX4olCE3VMW5UtliSQizY=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-322-tgG83INzP3eKUsnfIKVYAg-1; Thu, 10 Nov 2022 10:14:11 -0500
+X-MC-Unique: tgG83INzP3eKUsnfIKVYAg-1
+Received: by mail-qk1-f197.google.com with SMTP id bm2-20020a05620a198200b006fa6eeee4a9so2166137qkb.14
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 07:14:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zEvplYuwssLJ3t9LRCQjT4FvP3g4vYYyMhE2+Vd/Jhg=;
+        b=Xcx2vWGGIPNReRXB5hCyzl9wfLKD9dn98cKECWcBjUQfSSfvBOuzIJSBcAGRIe4aU2
+         hduDaYgfY4V5rzS0jhcjCX2i+6BjDoJioyTiCd4VwyYgxqvROLncFUzL6lwB1Rr8LpYW
+         R/T5mOgSwCwGs05o9Xl9jlsk/glNCjGmH4+ItWdHXQeSZ7hMumh1uL1yooDPdzRAHo3c
+         r145zdvx3eYF9fLNfpynxBLco79SaHUovQCWWDmX4ObG5GbYP/ycjHVmt+jG3vmi6O7t
+         hqT9o84GJ8AoEjXLOubDA1j+OQ2kK64hK+14U5Vzcmdob3W72Szfoei/Jo/zM5rVs9TF
+         Ofww==
+X-Gm-Message-State: ACrzQf1rBMad7IugMnHdZSkvy1Mxs7041Q2h5LER0RLwLVXzJ1MNu4XR
+        wJkiwpDdkNPStRch7rnvSHgetEM/ehRVryfj/L7Ochp3XM5bzsXLix1rv5mwNckrdssN2i7+I0C
+        Sla6kSQ30IG5wJGX9D2uN4mOr5lbAdv8xyK/7Y5bEG90kFQPKx0nRZMn53Qv//ds=
+X-Received: by 2002:a05:620a:13db:b0:6fa:28c5:e06 with SMTP id g27-20020a05620a13db00b006fa28c50e06mr43421389qkl.629.1668093247128;
+        Thu, 10 Nov 2022 07:14:07 -0800 (PST)
+X-Google-Smtp-Source: AMsMyM6SrgJUuJzXrqbA4GxWXofdLpOydoJ4P2uTKkpP4SreDc2IjZepp/HIqPuhN2wzy4WK+ZYaRw==
+X-Received: by 2002:a05:620a:13db:b0:6fa:28c5:e06 with SMTP id g27-20020a05620a13db00b006fa28c50e06mr43421357qkl.629.1668093246786;
+        Thu, 10 Nov 2022 07:14:06 -0800 (PST)
+Received: from nfvsdn-06.redhat.com (nat-pool-232-132.redhat.com. [66.187.232.132])
+        by smtp.gmail.com with ESMTPSA id fg26-20020a05622a581a00b00399b73d06f0sm11320703qtb.38.2022.11.10.07.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Nov 2022 07:14:06 -0800 (PST)
+From:   mtahhan@redhat.com
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
+        yhs@meta.com, Maryam Tahhan <mtahhan@redhat.com>
+Subject: [PATCH bpf-next v8 0/1] doc: DEVMAPs and XDP_REDIRECT
+Date:   Thu, 10 Nov 2022 11:08:17 -0500
+Message-Id: <20221110160818.1053910-1-mtahhan@redhat.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jason Gunthorpe <jgg@nvidia.com> writes:
+From: Maryam Tahhan <mtahhan@redhat.com>
 
->> Single is nicer but it's not worth a great deal of angst; nothing we do
->> is going to turn kernel-doc into a thing of beauty :)
->
-> I will leave it be then because it is a bit tricky to tell if the new
-> regex breaks anything, and the first three attempts to create it
-> didn't work at all...
+Add documentation for BPF_MAP_TYPE_DEVMAP and
+BPF_MAP_TYPE_DEVMAP_HASH including kernel version
+introduced, usage and examples.
 
-That's fine.  If you want to keep it as part of your series feel free to
-add:
+Add documentation that describes XDP_REDIRECT.
 
-Acked-by: Jonathan Corbet <corbet@lwn.net>
+v7->v8:
+- Updated multicast to use description suggested by Toke Høiland-Jørgensen.
 
-Otherwise I can carry it through the docs tree.
+v6-v7:
+- Got rid of unnecessary initializations in examples.
 
-Thanks,
+v5->v6:
+- Separate Kernel BPF and userspace functions for devmaps.
+- Include some packet/tracepoint debug info in the redirect
+  documentation.
 
-jon
+v4->v5:
+- Remove unused 'index' variable in example.
+
+v3->v4:
+- Prepend supported map section for XDP_REDIRECT documentation.
+
+v2->v3:
+- Fixed indentations in usage section to exclude non note text.
+- Replace links to selftest with actual paths.
+
+v1->v2:
+- Separate xdp_redirect documentation to its own file.
+- Clean up and simplify examples and usage function descriptions.
+
+Maryam Tahhan (1):
+  doc: DEVMAPs and XDP_REDIRECT
+
+ Documentation/bpf/index.rst      |   1 +
+ Documentation/bpf/map_devmap.rst | 222 +++++++++++++++++++++++++++++++
+ Documentation/bpf/redirect.rst   |  81 +++++++++++
+ net/core/filter.c                |   8 +-
+ 4 files changed, 310 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/bpf/map_devmap.rst
+ create mode 100644 Documentation/bpf/redirect.rst
+
+--
+2.35.3
+
