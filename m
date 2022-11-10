@@ -2,68 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7C0623AC7
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 05:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40D4623B0E
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 05:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbiKJEGK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Nov 2022 23:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        id S230254AbiKJEyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Nov 2022 23:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbiKJEGI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Nov 2022 23:06:08 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365F720F48;
-        Wed,  9 Nov 2022 20:06:03 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id t25so1944796ejb.8;
-        Wed, 09 Nov 2022 20:06:03 -0800 (PST)
+        with ESMTP id S229959AbiKJEyY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Nov 2022 23:54:24 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24A82B1B8
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 20:54:22 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id l11so1347727edb.4
+        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 20:54:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=broEoXdt1RORQBiw4E0W6sQ7sc1LDhrBYXkzX8MV7dU=;
-        b=MhhL7AhcIH5JSSYX4/uG5eIFGmzaru4Q93jwmJ0PVtE+tpK7Dukwu19vxR6LMOu53T
-         D77ijPWUyEuM5d9Y+CopZDWewNcBL3S8WXQFy5QHyGPmMktYW8epiJEtLmYh4axrOIBk
-         tb21BOBMnQxcg6kCnJi1xUJiAdPoVu2QcIzl7/DXVvdYH2BDSdtAU6H25wTHEqN67pfT
-         /xOoIslkTda50mnaWQcrG5kiVri/UT9ZNf5uecZ/rdgLKQfMWSanVHltdjVyIG1cprX0
-         4r5LfSR+izL9SD8xG+0Np0WqgqNf64H8nFtfUXDPoklF4z1VRV/WBUMyiwqLrY1r6GMK
-         dPEg==
+        bh=wqSoewpCxJ4Y0ggQ4s9JwInWi59LSt8/aFh6EKqhC7I=;
+        b=STZG+mAylSYQpVxyAlQiNwpasF23sqdyRkXKndQpRm7jV3Sl5n6FgHoCCV3mVjFBSn
+         i6NyQGH4LSax4xhGgZifOdONY5mpq0bw/z/1rGyp7QoeQsiRNqO3KmlaY0e99yPxoiyM
+         GHuqUBL9R2ORqF5IsCpikhwL/GvDx4yxzJ733ozMCNQF7HYWgi56JAr6hQSKsWhGbmzt
+         he5wnTiTWTd+BR5zS/wVhZZNUz1E2KEceqd7/OGGvYMubq1OQF1y6ICzomgTAhlg5thI
+         NRYxxVjS4KOm/DlM2n6jPk+hIEEGGyhDZMOQBRsX/Seq/NhXiBNJhulUi6SAGSq1JOsg
+         h1ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=broEoXdt1RORQBiw4E0W6sQ7sc1LDhrBYXkzX8MV7dU=;
-        b=HMGwY7+lWwAbcQhQ8thBFXZt68UrxdUS9WTux4XC+4jIsIc1jJy/2ulCgDmIiuZleb
-         W/Bn5MdHi3PYx+jZIPtLFMwXUk1P11uOFH2apSvboUBGa2Z2KQvJigMalarlPzkXr+nO
-         YM+cFr204364AchkZAFpnx4emPNFk/cUWx8tQ+MnjMwqbpgn121lg+tntaJb3IctzlKK
-         tRvzkdUdPrl58FWG11/YAmvFDmIUuzTf8iVeZrN13lFOfdjKkL2EdUcpHlUhay3+Jhm6
-         aL39PJWQiYmRv81P6v+3rWbVG8W3AFuurPQWCstqzspKz5R2V5MuiNj1EtGdLIL/p1/s
-         ZcEQ==
-X-Gm-Message-State: ACrzQf2lVtudLzE3ylqkscM6zbO35TgzV5SisWNtEbT+RIHa+5ifujv4
-        peaUlxtDixz93G2LD1OxTN0ILPPqWzZBlXsgIXI=
-X-Google-Smtp-Source: AMsMyM5gfhKEeYJ+fDO/piTkRkzP3Md9j/DgxLolYJWk8S2r8lyNrfg00inpL/ulmvkymthXwIN3niwxx/3PShYB5k8=
-X-Received: by 2002:a17:906:11d6:b0:7ad:fd3e:2a01 with SMTP id
- o22-20020a17090611d600b007adfd3e2a01mr39368145eja.545.1668053161605; Wed, 09
- Nov 2022 20:06:01 -0800 (PST)
+        bh=wqSoewpCxJ4Y0ggQ4s9JwInWi59LSt8/aFh6EKqhC7I=;
+        b=3l0HbwS7b9LCxnntLAJNIFevIerPOZ3j/RVR4hMWxe3Hqcltb/zo6eY0BSSwVcjSrJ
+         4cKL/LUkSZ28sWLRO+7z5bNISC8v8it+bWbJjZqb1d8K+QrcoQHA4QSFBfk2FyuZA2JC
+         UMeXvfW2tOyLAxlbZxx0HgqZftjZxk481kRUJJ3a86oEdIxQFTscDEYybdD4Q/Fwpk75
+         0XG8OQl1h2UhgraDMMnmB1aOtlZrJ7lZX82X0Mlu0VHVmbIGIZaEYcjzEqq/5IwxwNGF
+         wr7V+MpM/nRn7QY3IF0REFmCr1RMYSzaG5APgoGxaNG0QSwqzqPVU590od4L1cAVUX4Z
+         yq+A==
+X-Gm-Message-State: ACrzQf1+j5eo5d7/hULS9WdqHsXfuODuWXinkUYPPxoos1QEafdj29Pc
+        g6I9UHsChjfaiJ3+0UTwkPEdavYfUpGP23LXTIg=
+X-Google-Smtp-Source: AMsMyM4oHlhjRWhyaCOVjabsMguArvSMWOJLHfx4yG7BsdmC5q6SInYMNH3xsF5IiwwQT3Qwt3qRcmMKcTnXNHdcuUc=
+X-Received: by 2002:aa7:c2ca:0:b0:461:89a6:2281 with SMTP id
+ m10-20020aa7c2ca000000b0046189a62281mr64121781edp.260.1668056061204; Wed, 09
+ Nov 2022 20:54:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20221110035039.54859-1-xukuohai@huawei.com>
-In-Reply-To: <20221110035039.54859-1-xukuohai@huawei.com>
+References: <20221109142611.879983-1-eddyz87@gmail.com> <20221109142611.879983-2-eddyz87@gmail.com>
+In-Reply-To: <20221109142611.879983-2-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Nov 2022 20:05:49 -0800
-Message-ID: <CAEf4BzYMExNVP353xUmkD=M7_QKDG8Ukm0T7D9aCZG=-GToiaA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: Initialize same number of free nodes for
- each pcpu_freelist
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 9 Nov 2022 20:54:08 -0800
+Message-ID: <CAEf4BzZXrNPe+kk0yv117=5hMLXtV_odiY=f+tHDLn=sHh3RAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] libbpf: hashmap interface update to allow
+ both long and void* keys/values
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        alan.maguire@oracle.com, acme@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,72 +68,187 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 9, 2022 at 7:33 PM Xu Kuohai <xukuohai@huawei.com> wrote:
+On Wed, Nov 9, 2022 at 6:26 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
-> free nodes for some CPUs, and then possibly one CPU with fewer nodes,
-> followed by remaining cpus with 0 nodes. For example, when nr_elems == 256
-> and num_possible_cpus() == 32, CPU 0~27 each gets 9 free nodes, CPU 28 gets
-> 4 free nodes, CPU 29~31 get 0 free nodes, while in fact each CPU should get
-> 8 nodes equally.
+> An update for libbpf's hashmap interface from void* -> void* to a
+> polymorphic one, allowing both long and void* keys and values.
 >
-> This patch initializes nr_elems / num_possible_cpus() free nodes for each
-> CPU firstly, then allocates the remaining free nodes by one for each CPU
-> until no free nodes left.
+> This simplifies many use cases in libbpf as hashmaps there are mostly
+> integer to integer.
 >
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
+> Perf copies hashmap implementation from libbpf and has to be
+> updated as well.
+>
+> Changes to libbpf, selftests/bpf and perf are packed as a single
+> commit to avoid compilation issues with any future bisect.
+>
+> Polymorphic interface is acheived by hiding hashmap interface
+> functions behind auxiliary macros that take care of necessary
+> type casts, for example:
+>
+>     #define hashmap_cast_ptr(p)                                         \
+>         ({                                                              \
+>                 _Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),\
+>                                #p " pointee should be a long-sized integer or a pointer"); \
+>                 (long *)(p);                                            \
+>         })
+>
+>     bool hashmap_find(const struct hashmap *map, long key, long *value);
+>
+>     #define hashmap__find(map, key, value) \
+>                 hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+>
+> - hashmap__find macro casts key and value parameters to long
+>   and long* respectively
+> - hashmap_cast_ptr ensures that value pointer points to a memory
+>   of appropriate size.
+>
+> This hack was suggested by Andrii Nakryiko in [1].
+> This is a follow up for [2].
+>
+> [1] https://lore.kernel.org/bpf/CAEf4BzZ8KFneEJxFAaNCCFPGqp20hSpS2aCj76uRk3-qZUH5xg@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com/T/#m65b28f1d6d969fcd318b556db6a3ad499a42607d
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
-> v3: Simplify code as suggested by Andrii
-> v2: Update commit message and add Yonghong's ack
-> ---
->  kernel/bpf/percpu_freelist.c | 27 ++++++++++++++-------------
->  1 file changed, 14 insertions(+), 13 deletions(-)
->
-> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
-> index b6e7f5c5b9ab..bd60070c079f 100644
-> --- a/kernel/bpf/percpu_freelist.c
-> +++ b/kernel/bpf/percpu_freelist.c
-> @@ -100,22 +100,23 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
->                             u32 nr_elems)
->  {
->         struct pcpu_freelist_head *head;
-> -       int i, cpu, pcpu_entries;
-> +       unsigned int cpu, cpu_idx, i, j, n, m;
->
-> -       pcpu_entries = nr_elems / num_possible_cpus() + 1;
-> -       i = 0;
-> +       n = nr_elems / num_possible_cpus();
-> +       m = nr_elems % num_possible_cpus();
-> +
-> +       cpu_idx = 0;
->
->         for_each_possible_cpu(cpu) {
-> -again:
-> -               head = per_cpu_ptr(s->freelist, cpu);
-> -               /* No locking required as this is not visible yet. */
-> -               pcpu_freelist_push_node(head, buf);
-> -               i++;
-> -               buf += elem_size;
-> -               if (i == nr_elems)
-> -                       break;
-> -               if (i % pcpu_entries)
-> -                       goto again;
-> +               j = min(n + (cpu_idx < m ? 1 : 0), nr_elems);
+>  tools/bpf/bpftool/btf.c                       |  25 +--
+>  tools/bpf/bpftool/common.c                    |  10 +-
+>  tools/bpf/bpftool/gen.c                       |  19 +-
+>  tools/bpf/bpftool/link.c                      |   8 +-
+>  tools/bpf/bpftool/main.h                      |  14 +-
+>  tools/bpf/bpftool/map.c                       |   8 +-
+>  tools/bpf/bpftool/pids.c                      |  16 +-
+>  tools/bpf/bpftool/prog.c                      |   8 +-
+>  tools/lib/bpf/btf.c                           |  41 ++--
+>  tools/lib/bpf/btf_dump.c                      |  17 +-
+>  tools/lib/bpf/hashmap.c                       |  18 +-
+>  tools/lib/bpf/hashmap.h                       |  91 +++++----
+>  tools/lib/bpf/libbpf.c                        |  18 +-
+>  tools/lib/bpf/strset.c                        |  18 +-
+>  tools/lib/bpf/usdt.c                          |  29 ++-
+>  tools/perf/tests/expr.c                       |  28 +--
+>  tools/perf/tests/pmu-events.c                 |   6 +-
+>  tools/perf/util/bpf-loader.c                  |  11 +-
+>  tools/perf/util/evsel.c                       |   2 +-
+>  tools/perf/util/expr.c                        |  36 ++--
+>  tools/perf/util/hashmap.c                     |  18 +-
+>  tools/perf/util/hashmap.h                     |  91 +++++----
+>  tools/perf/util/metricgroup.c                 |  10 +-
+>  tools/perf/util/stat-shadow.c                 |   2 +-
+>  tools/perf/util/stat.c                        |   9 +-
+>  .../selftests/bpf/prog_tests/hashmap.c        | 190 +++++++++++++-----
 
-why the min() here?
+would be better if you added new tests in separate patch and didn't
+use CHECK(), but oh well, we'll improve that some time in the future
 
-> +               for (i = 0; i < j; i++) {
-> +                       head = per_cpu_ptr(s->freelist, cpu);
-> +                       /* No locking required as this is not visible yet. */
-> +                       pcpu_freelist_push_node(head, buf);
-> +                       buf += elem_size;
-> +               }
-> +               nr_elems -= j;
-> +               cpu_idx++;
->         }
+But regardless this is a pretty clear win, thanks a lot for working on
+this! I made a few pedantic changes mentioned below, and applied to
+bpf-next.
+
+
+>  .../bpf/prog_tests/kprobe_multi_test.c        |   6 +-
+>  27 files changed, 411 insertions(+), 338 deletions(-)
+>
+
+[...]
+
+> @@ -545,7 +545,7 @@ void delete_pinned_obj_table(struct hashmap *map)
+>                 return;
+>
+>         hashmap__for_each_entry(map, entry, bkt)
+> -               free(entry->value);
+> +               free((void *)entry->value);
+
+entry->pvalue
+
+>
+>         hashmap__free(map);
 >  }
+
+[...]
+
+> @@ -309,8 +308,7 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+>         if (!hashmap__empty(link_table)) {
+>                 struct hashmap_entry *entry;
 >
-> --
-> 2.30.2
+> -               hashmap__for_each_key_entry(link_table, entry,
+> -                                           u32_as_hash_field(info->id))
+> +               hashmap__for_each_key_entry(link_table, entry, info->id)
+>                         printf("\n\tpinned %s", (char *)entry->value);
+
+(char *)entry->pvalue for consistent use of pvalue
+
+>         }
+>         emit_obj_refs_plain(refs_table, info->id, "\n\tpids ");
+
+[...]
+
+> @@ -595,8 +594,7 @@ static int show_map_close_plain(int fd, struct bpf_map_info *info)
+>         if (!hashmap__empty(map_table)) {
+>                 struct hashmap_entry *entry;
 >
+> -               hashmap__for_each_key_entry(map_table, entry,
+> -                                           u32_as_hash_field(info->id))
+> +               hashmap__for_each_key_entry(map_table, entry, info->id)
+>                         printf("\n\tpinned %s", (char *)entry->value);
+
+same, pvalue for consistency
+
+>         }
+>
+
+[...]
+
+> @@ -561,8 +560,7 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
+>         if (!hashmap__empty(prog_table)) {
+>                 struct hashmap_entry *entry;
+>
+> -               hashmap__for_each_key_entry(prog_table, entry,
+> -                                           u32_as_hash_field(info->id))
+> +               hashmap__for_each_key_entry(prog_table, entry, info->id)
+>                         printf("\n\tpinned %s", (char *)entry->value);
+
+ditto
+
+>         }
+>
+
+[...]
+
+> @@ -1536,18 +1536,17 @@ static size_t btf_dump_name_dups(struct btf_dump *d, struct hashmap *name_map,
+>                                  const char *orig_name)
+>  {
+>         char *old_name, *new_name;
+> -       size_t dup_cnt = 0;
+> +       long dup_cnt = 0;
+
+size_t is fine as is, right?
+
+>         int err;
+>
+>         new_name = strdup(orig_name);
+>         if (!new_name)
+>                 return 1;
+>
+
+[...]
+
+> @@ -102,6 +122,13 @@ enum hashmap_insert_strategy {
+>         HASHMAP_APPEND,
+>  };
+>
+> +#define hashmap_cast_ptr(p)                                            \
+> +       ({                                                              \
+> +               _Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),\
+> +                              #p " pointee should be a long-sized integer or a pointer"); \
+> +               (long *)(p);                                            \
+> +       })
+> +
+
+I've reformatted this slightly, making it less indented to the right
+
+>  /*
+>   * hashmap__insert() adds key/value entry w/ various semantics, depending on
+>   * provided strategy value. If a given key/value pair replaced already
+
+[...]
