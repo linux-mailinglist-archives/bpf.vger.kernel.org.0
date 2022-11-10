@@ -2,133 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF85623B1A
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 06:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC9D623B24
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 06:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbiKJFCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 00:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
+        id S229960AbiKJFKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 00:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiKJFCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 00:02:19 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34552165A6
-        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 21:02:17 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id a13so1420873edj.0
-        for <bpf@vger.kernel.org>; Wed, 09 Nov 2022 21:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kaV0BbvpIy/0LDBs+pCO9W9XyXVj1dABuJc0LFqLr6c=;
-        b=GIQor+3V7adPeTYd8L11CdRw0EqdBWvt1xpkJPe44ygzlT3RXWSFSqHCTi/UQo3cr/
-         QNeyPLN4zsw1+8KGNA5D8+VGQa+6Mzo7zzhAv29gu829hr27LH9QOfD6vgQR5E6ln31p
-         oLz8/H6s2CL/A1A3V8pPwHpxfqSlDGInwRYMnA7IAgBN4tgfgv4kxH4Zln655akQVEH0
-         xnRvG25QaUuDNE0QVXinLo3k3vYPzr+Ug0phHZMJtyNjDCl/P4ZgQfiMjDMauRKLi8mV
-         fmOtF4JJBsDr6ZnUaKIdxTaFcWdGksULGbgOOAhDa9NK7lbMAiIlc2lDwb9sjMGvl9bH
-         +/UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kaV0BbvpIy/0LDBs+pCO9W9XyXVj1dABuJc0LFqLr6c=;
-        b=fvttc0jvz1Ex7tLPKzDcWXONYb9j8vQxwlJKkDYf4apFihjbUlHiCyZrS9v/7y6ofY
-         ELvz8yTcZCCXdrrXZKDYZXFhw+ABVbqLivimeAnD22QDAUHnzR+RL+ot+5CqAF9KrNUS
-         zksJ+Ne/qpCEmnH9XmLoVZgughoIKW+teECk5y7qmgnIwzNUJBHcP92AvKMmT/LnS8+x
-         f+ZhO1gf2h+5Ohs96M57XrBk5K9bijC2uzTQFaMieGf16NXjLXLuUptotIVogIoOw4XN
-         N3MHsAQJMW8dnO+GOiGQJFWWJ0PpiybhliX2Rz73JTiLpXC71tg06Pb8QVr8qAslAbQO
-         v/0w==
-X-Gm-Message-State: ACrzQf2p0c5rw7G7k23Hn6akqzcN61mWvPSRaygEtXbYn177cGqK+XrR
-        qv8roNamgR3KP3pAnKq87tujRej7Xp1u5a2+DFk=
-X-Google-Smtp-Source: AMsMyM6TDAC9gGbX/0aJOKZZheBtWFGwOwwQNRcqKD1VE0croYL+aTZb0KHQxI6qu5nnY2MxXeVE3y+ilYp0AY68EBc=
-X-Received: by 2002:aa7:d58f:0:b0:461:524f:a8f4 with SMTP id
- r15-20020aa7d58f000000b00461524fa8f4mr1658847edq.260.1668056535461; Wed, 09
- Nov 2022 21:02:15 -0800 (PST)
+        with ESMTP id S229921AbiKJFKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 00:10:18 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AF02B1B8
+        for <bpf@vger.kernel.org>; Wed,  9 Nov 2022 21:10:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1D4C5B820CB
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 05:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 92EBCC433D7;
+        Thu, 10 Nov 2022 05:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668057014;
+        bh=RV8DuRP483ZB0GRyF+ASKfNRXUpzmngLNyOflbIzYI8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fTIDToOLvMbKa2dOkT0LyhDXXt89NwIA+E+9ojtIDxQdOGJ2+u1rL5xxnb7UvkXhZ
+         zFPKUuZQ9R23/8T3vUgOjo8xPEAE53GBV6qGX7ZH+TfbgJbHydWhH7YfsS8uSjE+Eu
+         7zoKj6b6bXDkpjfJ1SsWHOGbHp+22ubTbsnmLYM9KMEOo9giWuiGW6BO70nC1ziAKh
+         3YXbJN5AD6I8Rq3FAaUTWmb+MUbQHDBLn0ZSrxB11scP96iHKiaXOWgyun8/JVMX0k
+         SDJaliZMpdj4HUPlCPsnxMpCuueL8G6SW2dLE/5DlKhqg4kkDvt9U7/9HAUdpB1l7k
+         3Tnz76p83y3Zw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A3DFC41671;
+        Thu, 10 Nov 2022 05:10:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221108153135.491383-1-eddyz87@gmail.com>
-In-Reply-To: <20221108153135.491383-1-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Nov 2022 21:02:03 -0800
-Message-ID: <CAEf4BzYHJYbm-BY3JLnREKZ27ZMUHQ-1UN3xbSyt1LfCNzgvEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] libbpf: btf_decl_tag attribute for btf
- dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftests: fix test group SKIPPED result
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166805701449.8788.6440487679157292855.git-patchwork-notify@kernel.org>
+Date:   Thu, 10 Nov 2022 05:10:14 +0000
+References: <20221109184039.3514033-1-cerasuolodomenico@gmail.com>
+In-Reply-To: <20221109184039.3514033-1-cerasuolodomenico@gmail.com>
+To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 7:32 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> Support for clang's __attribute__((btf_decl_tag("..."))) by
-> btf_dump__dump_type and btf_dump__dump_type_data functions.
-> Decl tag attributes are restored for:
-> - structs and unions
-> - struct and union fields
-> - typedefs
-> - global variables
-> - function prototype parameters
->
-> The attribute is restored using __btf_decl_tag macro that is printed
-> upon first call to btf_dump__dump_type function:
->
->  #if __has_attribute(btf_decl_tag)
->  #define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
->  #else
->  #define __btf_decl_tag(x)
->  #endif
->
-> To simplify testing of the btf_dump__dump_type_data the
-> prog_tests/btf_dump.c:test_btf_dump_case is extended to invoke
-> btf_dump__dump_type_data for each DATASEC object in the test case
-> binary file.
->
-> Changelog:
-> v1 -> v2:
-> - prog_tests/btf_dump.c:test_btf_dump_case modified to print DATASECs
->   using btf_dump__dump_type_data;
-> - support for decl tags applied to global variables and function
->   prototype parameters;
-> - update to support interleaved calls to btf_dump__dump_type and
->   btf__add_decl_tag (incremental dump);
-> - fix for potential double free error in btf_dump_assign_decl_tags;
-> - styling fixes suggested by Andrii.
->
-> RFC -> v1:
-> - support for decl tags applied to struct / union fields and typedefs;
-> - __btf_decl_tag macro;
-> - btf_dump->decl_tags hash and equal functions updated to use integer
->   key instead of a pointer;
-> - realloc_decl_tags function removed;
-> - update for allocation logic in btf_dump_assign_decl_tags.
->
-> [v1]  https://lore.kernel.org/bpf/20221103134522.2764601-1-eddyz87@gmail.com/
-> [RFC] https://lore.kernel.org/bpf/20221025222802.2295103-4-eddyz87@gmail.com/
->
-> Eduard Zingerman (3):
->   libbpf: __attribute__((btf_decl_tag("..."))) for btf dump in C format
->   selftests/bpf: Dump data sections as part of btf_dump_test_case tests
->   selftests/bpf: Tests for BTF_KIND_DECL_TAG dump in C format
->
->  tools/lib/bpf/btf_dump.c                      | 186 +++++++++++++++-
->  .../selftests/bpf/prog_tests/btf_dump.c       | 198 ++++++++++++++++--
->  .../bpf/progs/btf_dump_test_case_decl_tag.c   |  65 ++++++
->  3 files changed, 427 insertions(+), 22 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
->
-> --
-> 2.34.1
->
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Wed,  9 Nov 2022 10:40:39 -0800 you wrote:
+> From: Domenico Cerasuolo <dceras@meta.com>
+> 
+> When showing the result of a test group, if one
+> of the subtests was skipped, while still having
+> passing subtests, the group result was marked as
+> SKIP. E.g.:
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2] selftests: fix test group SKIPPED result
+    https://git.kernel.org/bpf/bpf-next/c/fd74b79df0d1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-with your other patch set applied this doesn't apply cleanly anymore,
-please rebase and resubmit
