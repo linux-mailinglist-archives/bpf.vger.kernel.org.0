@@ -2,249 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923FB624A34
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 20:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E69624AC6
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 20:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbiKJTFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 14:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S230294AbiKJThf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 14:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbiKJTEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 14:04:40 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EAF3C6F8;
-        Thu, 10 Nov 2022 11:04:38 -0800 (PST)
-Message-ID: <7eb3e22a-c416-e898-dff0-1146d3cc82c0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668107075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+NSPXeLQ/Mg0rCIKeH+oDdwD6iVX2B+YTMnbLZkHni4=;
-        b=o1DspNdBKs9kWMisaewWSwdQEiy7LnpDmQcUnj11PH3HsYa9jwEXdebpykTPCEve+U0if0
-        KU/zgbiiPfvKEzBcNsVhH+oHEOvH4Kko0ahM7o77KpE5R1a+PGeEWLjfijRNXnhZJJzYl3
-        gS9YT5cLFdF3H+F1WTmZZDlQU0PsuXU=
-Date:   Thu, 10 Nov 2022 11:04:28 -0800
+        with ESMTP id S230055AbiKJThd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 14:37:33 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653710FE1
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 11:37:32 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id q1-20020a17090a750100b002139ec1e999so2688115pjk.1
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 11:37:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e82WZn+PdIOTq2ivRn4vNcmVczMFWHVdc+EZkRphALY=;
+        b=cdn1crSnEOEcfHcOTY5rNP958blGA4/YI4a2S2Xpvp9BRuZVrgHJuKwFPVLl1NIVSH
+         Lq372plgciYVj47x1U1YF2P00Tx6TJh69KvhAOl5USLmCCyAd3Rww/J8AfV7DDOt3Kux
+         Km9/WebAcQ0CWPBUIXSAdZwN2HCRIpz+zbIDintYY0bGWtOmmy5+jAF/ylNsXB7d1bV4
+         89OznTNRMJna2IFvESs3ri0tKulAU2celxJ9Z3DnULFfJ7krlMB5zlH4rdSGQTZEkjo1
+         PJt3b/4sIpxSN7rEEJ4ZHXicz+HaQth0ydS6DSTcFKWDe0Yy0QqWew+m1QwqZ4C0Sis2
+         lAsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e82WZn+PdIOTq2ivRn4vNcmVczMFWHVdc+EZkRphALY=;
+        b=fv46euqH5Nd0Z7DMZ8CPLwD57k5i7UdTc9ZnImi8zaGL9gWTUvr05cYNeC8zvdF9K5
+         14GsH+ED7SYuzTz+DmKAQVgkcF5BjuojK3hDcoa5+tJx+Z5A2Ov7VSJgyObxHT28j2L3
+         l/8PenT2yOTaV89H7T7nnvA5un363jF9yrxx7VLG6SwNOawGg3P1odu55V0mDkvR/qQM
+         ecKkC6n2Xb+kc3XOvSDJwVr2xo3VKDU/yPZnUdvh8GJc8uwz1IufPP2fT+HX4IUuRbVa
+         xPETesfbdPwcYv/edJ/31ylibNIQ1VixoEdF2CosmjOK8UvQW+NHF5E3RvmqGtmmYOm6
+         iHUg==
+X-Gm-Message-State: ACrzQf1J9yGL9o2GxgT9vNOKmB5T+rw9sVvYK3hXeBHePcPKyx3GzhSK
+        v3+Z9JhjMN9cgD/6DPBD2Ro=
+X-Google-Smtp-Source: AMsMyM7bFCZPI+Hdqn2TkrMdGR/U4VndB3V4l9ZT7HrhiL8LYYgxbQEuv6fCXnwJl6LPzmYMub+8bw==
+X-Received: by 2002:a17:90b:48c7:b0:212:a14e:b8b0 with SMTP id li7-20020a17090b48c700b00212a14eb8b0mr1792339pjb.39.1668109051562;
+        Thu, 10 Nov 2022 11:37:31 -0800 (PST)
+Received: from surya ([2600:1700:3ec2:2011:c158:5e42:f39d:8e0c])
+        by smtp.gmail.com with ESMTPSA id b8-20020a1709027e0800b00174d9bbeda4sm43357plm.197.2022.11.10.11.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Nov 2022 11:37:30 -0800 (PST)
+Date:   Thu, 10 Nov 2022 11:37:15 -0800
+From:   Manu Bretelle <chantr4@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next v4 7/7] selftests/bpf: Add rcu_read_lock test to
+ s390x deny list
+Message-ID: <Y21S6+9rfmwA8R8S@surya>
+References: <20221110180124.913882-1-yhs@fb.com>
+ <20221110180201.917531-1-yhs@fb.com>
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
-Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
- <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev> <871qqazyc9.fsf@toke.dk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <871qqazyc9.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221110180201.917531-1-yhs@fb.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/10/22 6:19 AM, Toke Høiland-Jørgensen wrote:
-> Martin KaFai Lau <martin.lau@linux.dev> writes:
+On Thu, Nov 10, 2022 at 10:02:01AM -0800, Yonghong Song wrote:
+> The new rcu_read_lock test will fail on s390x with the following error message:
 > 
->> On 11/9/22 3:10 AM, Toke Høiland-Jørgensen wrote:
->>> Snipping a bit of context to reply to this bit:
->>>
->>>>>>> Can the xdp prog still change the metadata through xdp->data_meta? tbh, I am not
->>>>>>> sure it is solid enough by asking the xdp prog not to use the same random number
->>>>>>> in its own metadata + not to change the metadata through xdp->data_meta after
->>>>>>> calling bpf_xdp_metadata_export_to_skb().
->>>>>>
->>>>>> What do you think the usecase here might be? Or are you suggesting we
->>>>>> reject further access to data_meta after
->>>>>> bpf_xdp_metadata_export_to_skb somehow?
->>>>>>
->>>>>> If we want to let the programs override some of this
->>>>>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can add
->>>>>> more kfuncs instead of exposing the layout?
->>>>>>
->>>>>> bpf_xdp_metadata_export_to_skb(ctx);
->>>>>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
->>>
->>> There are several use cases for needing to access the metadata after
->>> calling bpf_xdp_metdata_export_to_skb():
->>>
->>> - Accessing the metadata after redirect (in a cpumap or devmap program,
->>>     or on a veth device)
->>> - Transferring the packet+metadata to AF_XDP
->> fwiw, the xdp prog could also be more selective and only stores one of the hints
->> instead of the whole 'struct xdp_to_skb_metadata'.
+>   ...
+>   test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
+>   test_local_storage:PASS:skel_open 0 nsec
+>   libbpf: prog 'cgrp_succ': failed to find kernel BTF type ID of '__s390x_sys_getpgid': -3
+>   libbpf: prog 'cgrp_succ': failed to prepare load attributes: -3
+>   libbpf: prog 'cgrp_succ': failed to load: -3
+>   libbpf: failed to load object 'rcu_read_lock'
+>   libbpf: failed to load BPF skeleton 'rcu_read_lock': -3
+>   test_local_storage:FAIL:skel_load unexpected error: -3 (errno 3)
+>   ...
 > 
-> Yup, absolutely! In that sense, reusing the SKB format is mostly a
-> convenience feature. However, lots of people consume AF_XDP through the
-> default program installed by libxdp in the XSK setup code, and including
-> custom metadata there is awkward. So having the metadata consumed by the
-> stack as the "default subset" would enable easy consumption by
-> non-advanced users, while advanced users can still do custom stuff by
-> writing their own XDP program that calls the kfuncs.
+> So add it to the s390x deny list.
 > 
->>> - Returning XDP_PASS, but accessing some of the metadata first (whether
->>>     to read or change it)
->>>
->>> The last one could be solved by calling additional kfuncs, but that
->>> would be less efficient than just directly editing the struct which
->>> will be cache-hot after the helper returns.
->>
->> Yeah, it is more efficient to directly write if possible.  I think this set
->> allows the direct reading and writing already through data_meta (as a _u8 *).
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/testing/selftests/bpf/DENYLIST.s390x | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Yup, totally fine with just keeping that capability :)
-> 
->>> And yeah, this will allow the XDP program to inject arbitrary metadata
->>> into the netstack; but it can already inject arbitrary *packet* data
->>> into the stack, so not sure if this is much of an additional risk? If it
->>> does lead to trivial crashes, we should probably harden the stack
->>> against that?
->>>
->>> As for the random number, Jesper and I discussed replacing this with the
->>> same BTF-ID scheme that he was using in his patch series. I.e., instead
->>> of just putting in a random number, we insert the BTF ID of the metadata
->>> struct at the end of it. This will allow us to support multiple
->>> different formats in the future (not just changing the layout, but
->>> having multiple simultaneous formats in the same kernel image), in case
->>> we run out of space.
->>
->> This seems a bit hypothetical.  How much headroom does it usually have for the
->> xdp prog?  Potentially the hints can use all the remaining space left after the
->> header encap and the current bpf_xdp_adjust_meta() usage?
-> 
-> For the metadata consumed by the stack right now it's a bit
-> hypothetical, yeah. However, there's a bunch of metadata commonly
-> supported by hardware that the stack currently doesn't consume and that
-> hopefully this feature will end up making more accessible. My hope is
-> that the stack can also learn how to use this in the future, in which
-> case we may run out of space. So I think of that bit mostly as
-> future-proofing...
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+> index be4e3d47ea3e..dd5db40b5a09 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+> @@ -41,6 +41,7 @@ module_attach                            # skel_attach skeleton attach failed: -
+>  mptcp
+>  netcnt                                   # failed to load BPF skeleton 'netcnt_prog': -7                               (?)
+>  probe_user                               # check_kprobe_res wrong kprobe res from probe read                           (?)
+> +rcu_read_lock                            # failed to find kernel BTF type ID of '__x64_sys_getpgid': -3                (?)
 
-ic. in this case, Can the btf_id be added to 'struct xdp_to_skb_metadata' later 
-if it is indeed needed?  The 'struct xdp_to_skb_metadata' is not in UAPI and 
-doing it with CO-RE is to give us flexibility to make this kind of changes in 
-the future.
+This also seems to fail on aarch64:
+```
+2022-11-10T18:39:39.2406543Z test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
+2022-11-10T18:39:39.2409781Z test_local_storage:PASS:skel_open 0 nsec
+2022-11-10T18:39:39.2413002Z test_local_storage:PASS:skel_load 0 nsec
+2022-11-10T18:39:39.2418758Z libbpf: prog 'cgrp_succ': failed to attach: ERROR: strerror_r(-524)=22
+2022-11-10T18:39:39.2422765Z libbpf: prog 'cgrp_succ': failed to auto-attach: -524
+2022-11-10T18:39:39.2428250Z test_local_storage:FAIL:skel_attach unexpected error: -524 (errno 524)
+2022-11-10T18:39:39.2431555Z #145/1   rcu_read_lock/local_storage:FAIL
+2022-11-10T18:39:39.2435392Z #145/2   rcu_read_lock/runtime_diff_rcu_tag:OK
+2022-11-10T18:39:39.2439296Z #145/3   rcu_read_lock/negative_tests_region:OK
+2022-11-10T18:39:39.2443876Z #145/4   rcu_read_lock/negative_tests_rcuptr_misuse:SKIP
+2022-11-10T18:39:39.2446212Z #145     rcu_read_lock:FAIL
+```
 
-> 
->>> We should probably also have a flag set on the xdp_frame so the stack
->>> knows that the metadata area contains relevant-to-skb data, to guard
->>> against an XDP program accidentally hitting the "magic number" (BTF_ID)
->>> in unrelated stuff it puts into the metadata area.
->>
->> Yeah, I think having a flag is useful.  The flag will be set at xdp_buff and
->> then transfer to the xdp_frame?
-> 
-> Yeah, exactly!
-> 
->>>> After re-reading patch 6, have another question. The 'void
->>>> bpf_xdp_metadata_export_to_skb();' function signature. Should it at
->>>> least return ok/err? or even return a 'struct xdp_to_skb_metadata *'
->>>> pointer and the xdp prog can directly read (or even write) it?
->>>
->>> Hmm, I'm not sure returning a failure makes sense? Failure to read one
->>> or more fields just means that those fields will not be populated? We
->>> should probably have a flags field inside the metadata struct itself to
->>> indicate which fields are set or not, but I'm not sure returning an
->>> error value adds anything? Returning a pointer to the metadata field
->>> might be convenient for users (it would just be an alias to the
->>> data_meta pointer, but the verifier could know its size, so the program
->>> doesn't have to bounds check it).
->>
->> If some hints are not available, those hints should be initialized to
->> 0/CHECKSUM_NONE/...etc.
-> 
-> The problem with that is that then we have to spend cycles writing
-> eight bytes of zeroes into the checksum field :)
+Can you add the test to DENYLIST.aarch64 also?
 
-With a common 'struct xdp_to_skb_metadata', I am not sure how some of these zero 
-writes can be avoided.  If the xdp prog wants to optimize, it can call 
-individual kfunc to get individual hints.
 
+>  recursion                                # skel_attach unexpected error: -524                                          (trampoline)
+>  ringbuf                                  # skel_load skeleton load failed                                              (?)
+>  select_reuseport                         # intermittently fails on new s390x setup
+> -- 
+> 2.30.2
 > 
->> The xdp prog needs a direct way to tell hard failure when it cannot
->> write the meta area because of not enough space. Comparing
->> xdp->data_meta with xdp->data as a side effect is not intuitive.
-> 
-> Yeah, hence a flags field so we can just see if setting each field
-> succeeded?
-
-How testing a flag is different from checking 0/invalid-value of a field?  or 
-some fields just don't have an invalid value to check for like vlan_tci?
-
-You meant a flags field as a return value or in the 'struct xdp_to_skb_metadata' ?
-
-> 
->> It is more than saving the bound check.  With type info of 'struct
->> xdp_to_skb_metadata *', the verifier can do more checks like reading in the
->> middle of an integer member.  The verifier could also limit write access only to
->> a few struct's members if it is needed.
->>
->> The returning 'struct xdp_to_skb_metadata *' should not be an alias to the
->> xdp->data_meta.  They should actually point to different locations in the
->> headroom.  bpf_xdp_metadata_export_to_skb() sets a flag in xdp_buff.
->> xdp->data_meta won't be changed and keeps pointing to the last
->> bpf_xdp_adjust_meta() location.  The kernel will know if there is
->> xdp_to_skb_metadata before the xdp->data_meta when that bit is set in the
->> xdp_{buff,frame}.  Would it work?
-> 
-> Hmm, logically splitting the program metadata and the xdp_hints metadata
-> (but having them share the same area) *could* work, I guess, I'm just
-> not sure it's worth the extra complexity?
-
-It shouldn't stop the existing xdp prog writing its own metadata from using the 
-the new bpf_xdp_metadata_export_to_skb().
-
-> 
->>>> A related question, why 'struct xdp_to_skb_metadata' needs
->>>> __randomize_layout?
->>>
->>> The __randomize_layout thing is there to force BPF programs to use CO-RE
->>> to access the field. This is to avoid the struct layout accidentally
->>> ossifying because people in practice rely on a particular layout, even
->>> though we tell them to use CO-RE. There are lots of examples of this
->>> happening in other domains (IP header options, TCP options, etc), and
->>> __randomize_layout seemed like a neat trick to enforce CO-RE usage :)
->>
->> I am not sure if it is necessary or helpful to only enforce __randomize_layout
->> in 'struct xdp_to_skb_metadata'.  There are other CO-RE use cases (tracing and
->> non tracing) that already have direct access (reading and/or writing) to other
->> kernel structures.
->>
->> It is more important for the verifier to see the xdp prog accessing it as a
->> 'struct xdp_to_skb_metadata *' instead of xdp->data_meta which is a __u8 * so
->> that the verifier can enforce the rules of access.
-> 
-> That only works inside the kernel, though. Since the metadata field can
-> be copied wholesale to AF_XDP, having it randomized forces userspace
-> consumers to also write code to deal with the layout being dynamic...
-
-hm... I still don't see how useful it is, in particular you mentioned the libxdp 
-will install a xdp prog to write this default format (xdp_to_skb_metadata) and 
-likely libxdp will also provide some helpers to parse the xdp_to_skb_metadata 
-and the libxdp user should not need to know if CO-RE is used or not. 
-Considering it is a kernel internal struct, I think it is fine to keep it and 
-can be revisited later if needed.  Lets get on to other things first :)
-
