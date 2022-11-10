@@ -2,662 +2,504 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1716249CD
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 19:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C8B6249F9
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 19:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbiKJSoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 13:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        id S229643AbiKJSwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 13:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbiKJSoB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 13:44:01 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011704E41E
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 10:43:59 -0800 (PST)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2AAIBr87012663;
-        Thu, 10 Nov 2022 18:43:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ip8ytpLaYIaHj8XG/6nSOQLlseTMoi6yybEV/OLlZHY=;
- b=gRSSI69cu1ekKb0laILIcwSmOrHWKIGUs16FgsHAj7nWpe8xZqYnIVQvbvwp/JM+eLsP
- IDn4N0PXv7oJr/DBpA7uIEnXCLsG0aHj+SPaE2Z7dUlida7FIuE5tuhGUbo9XyDmLBE1
- iGH6GzgymJm+0zk9s1eQR4luq/oY2GWvhVWH+iMHJ6LlCDuWkDO1ON17fR23dGr8aSS5
- puX7z2yeObrxnbBqgLdOb84uNa9jdRax7CNGKfmJ2QE1BQDEqiWHo2R9te/brRGkrc42
- WtebMFs+L5ZQxndlzGIlyqp7gqtuXBXAjYL2dtEZ+b+AErw/kcDl1vPI2aFKshikycvu fQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ks6c1h106-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Nov 2022 18:43:39 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AAIaXjb000794;
-        Thu, 10 Nov 2022 18:43:36 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3kngqgfp91-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Nov 2022 18:43:36 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AAIhYBA3211816
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Nov 2022 18:43:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D590A404D;
-        Thu, 10 Nov 2022 18:43:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC472A4040;
-        Thu, 10 Nov 2022 18:43:29 +0000 (GMT)
-Received: from hbathini-workstation.ibm.com.com (unknown [9.163.72.10])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Nov 2022 18:43:29 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [RFC PATCH 3/3] powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
-Date:   Fri, 11 Nov 2022 00:13:03 +0530
-Message-Id: <20221110184303.393179-4-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20221110184303.393179-1-hbathini@linux.ibm.com>
-References: <20221110184303.393179-1-hbathini@linux.ibm.com>
+        with ESMTP id S229566AbiKJSwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 13:52:34 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D7B1C43D
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 10:52:33 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id bp12so1454474ilb.9
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 10:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BXPql77ETR70D4+Ki5KPU2P7ku92c2gzNayHMoKl8vw=;
+        b=fBIi7KiZ7dGs+2UZ2sHn8d/NPh4t2vA3a1cfy0a/cpcWfyHafxM/uzOGVaAOG8QO0y
+         /drXsjbJJAm0AVkfp0gf7TvFJ9tjNhfquQdCTL0dMm5nx7rKkvntr6iGSx21xFM9Y2f2
+         IW6jcSIDC1kq/3LnPoa1u9n2LhTOrzsrbGBXff+Gu7SRv6aD3p7S+ALixKXq01j9YmL5
+         Y7c9bFZ/rDaicEWbkVTrSJH55S2wXzQLiXuQcrVOqt72bjmYnZGGzuN6JzbW3JTD1qm7
+         Xug5uB7xHbVyJFiNIBAIzXwdgAFmae7Txx9ogOHjVre8Fk0UkK6nvd+8E8Snag1VxQmI
+         i81Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BXPql77ETR70D4+Ki5KPU2P7ku92c2gzNayHMoKl8vw=;
+        b=Q6uZph40x8s4epUHtq+Eh9kn0P2m4M1d3f9ogy3ZW7reFa5vjgmbWH2X4xCUx17LxN
+         s4LcgUB0DtAoEnqG1FPQYxUnLY76r46mPyJOc9uDeCrG/PQJAe8qqFdqQx/H/eDumAfW
+         tuN+sb+F+o0knB/6QKrdSlxOGeLwZzoPGevP+8WPHkxs0978jmrL27TbO6p5t4agsY7f
+         4we9A6GBGV+NCm0SZ0OwunHVDmNnERDk8p281kkXzNf24e2swSkLuRtU1WdzWa8Fy0Ss
+         9J0wJSO2A6UhZYf+MFE14TK8AcSX4ag5uopdlmMtAmBPZlj1MNA+5VFLJFiwlIT4UQLZ
+         0TgA==
+X-Gm-Message-State: ACrzQf28C/tBRJSScpN9fnwgwnSGQ1q0UuoFe6NK8GDq2c0/3BaN37sf
+        0MrcEAQx4E1lF46GmHuV+ep6efQr8HtRWv3xOyDEoQ==
+X-Google-Smtp-Source: AMsMyM6NZanLtBx3PVRF0JjSsMtU6FszIa+kJp24LBB3TwNCDEtQB+3Li47y5a19tvOfQrYq50ShqVX0cwdi6H9dgpM=
+X-Received: by 2002:a05:6e02:1542:b0:2ff:9e9f:6604 with SMTP id
+ j2-20020a056e02154200b002ff9e9f6604mr3433933ilu.20.1668106352183; Thu, 10 Nov
+ 2022 10:52:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FLup-9iK6iBBvea89SerjMUkId0NAXnk
-X-Proofpoint-ORIG-GUID: FLup-9iK6iBBvea89SerjMUkId0NAXnk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-10_12,2022-11-09_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- spamscore=0 bulkscore=0 adultscore=0 phishscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211100129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221104032532.1615099-1-sdf@google.com> <20221104032532.1615099-7-sdf@google.com>
+ <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev> <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
+ <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev> <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev>
+ <87leokz8lq.fsf@toke.dk> <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
+ <CAKH8qBsfVOoR1MNAFx3uR9Syoc0APHABsf97kb8SGpK+T1qcew@mail.gmail.com>
+ <32f81955-8296-6b9a-834a-5184c69d3aac@linux.dev> <CAKH8qBuLMZrFmmi77Qbt7DCd1w9FJwdeK5CnZTJqHYiWxwDx6w@mail.gmail.com>
+ <87y1siyjf6.fsf@toke.dk>
+In-Reply-To: <87y1siyjf6.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 10 Nov 2022 10:52:21 -0800
+Message-ID: <CAKH8qBsfzYmQ9SZXhFetf_zQPNmE_L=_H_rRxJEwZzNbqtoKJA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
+ metadata into skb context
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use bpf_jit_binary_pack_alloc in powerpc jit. The jit engine first
-writes the program to the rw buffer. When the jit is done, the program
-is copied to the final location with bpf_jit_binary_pack_finalize.
-With multiple jit_subprogs, bpf_jit_free is called on some subprograms
-that haven't got bpf_jit_binary_pack_finalize() yet. Implement custom
-bpf_jit_free() like in commit 1d5f82d9dd47 ("bpf, x86: fix freeing of
-not-finalized bpf_prog_pack") to call bpf_jit_binary_pack_finalize(),
-if necessary. While here, correct the misnomer powerpc64_jit_data to
-powerpc_jit_data as it is meant for both ppc32 and ppc64.
+On Thu, Nov 10, 2022 at 6:27 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > On Wed, Nov 9, 2022 at 4:13 PM Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
+> >>
+> >> On 11/9/22 1:33 PM, Stanislav Fomichev wrote:
+> >> > On Wed, Nov 9, 2022 at 10:22 AM Martin KaFai Lau <martin.lau@linux.d=
+ev> wrote:
+> >> >>
+> >> >> On 11/9/22 3:10 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> >>> Snipping a bit of context to reply to this bit:
+> >> >>>
+> >> >>>>>>> Can the xdp prog still change the metadata through xdp->data_m=
+eta? tbh, I am not
+> >> >>>>>>> sure it is solid enough by asking the xdp prog not to use the =
+same random number
+> >> >>>>>>> in its own metadata + not to change the metadata through xdp->=
+data_meta after
+> >> >>>>>>> calling bpf_xdp_metadata_export_to_skb().
+> >> >>>>>>
+> >> >>>>>> What do you think the usecase here might be? Or are you suggest=
+ing we
+> >> >>>>>> reject further access to data_meta after
+> >> >>>>>> bpf_xdp_metadata_export_to_skb somehow?
+> >> >>>>>>
+> >> >>>>>> If we want to let the programs override some of this
+> >> >>>>>> bpf_xdp_metadata_export_to_skb() metadata, it feels like we can=
+ add
+> >> >>>>>> more kfuncs instead of exposing the layout?
+> >> >>>>>>
+> >> >>>>>> bpf_xdp_metadata_export_to_skb(ctx);
+> >> >>>>>> bpf_xdp_metadata_export_skb_hash(ctx, 1234);
+> >> >>>
+> >> >>> There are several use cases for needing to access the metadata aft=
+er
+> >> >>> calling bpf_xdp_metdata_export_to_skb():
+> >> >>>
+> >> >>> - Accessing the metadata after redirect (in a cpumap or devmap pro=
+gram,
+> >> >>>     or on a veth device)
+> >> >>> - Transferring the packet+metadata to AF_XDP
+> >> >> fwiw, the xdp prog could also be more selective and only stores one=
+ of the hints
+> >> >> instead of the whole 'struct xdp_to_skb_metadata'.
+> >> >>
+> >> >>> - Returning XDP_PASS, but accessing some of the metadata first (wh=
+ether
+> >> >>>     to read or change it)
+> >> >>>
+> >> >>> The last one could be solved by calling additional kfuncs, but tha=
+t
+> >> >>> would be less efficient than just directly editing the struct whic=
+h
+> >> >>> will be cache-hot after the helper returns.
+> >> >>
+> >> >> Yeah, it is more efficient to directly write if possible.  I think =
+this set
+> >> >> allows the direct reading and writing already through data_meta (as=
+ a _u8 *).
+> >> >>
+> >> >>>
+> >> >>> And yeah, this will allow the XDP program to inject arbitrary meta=
+data
+> >> >>> into the netstack; but it can already inject arbitrary *packet* da=
+ta
+> >> >>> into the stack, so not sure if this is much of an additional risk?=
+ If it
+> >> >>> does lead to trivial crashes, we should probably harden the stack
+> >> >>> against that?
+> >> >>>
+> >> >>> As for the random number, Jesper and I discussed replacing this wi=
+th the
+> >> >>> same BTF-ID scheme that he was using in his patch series. I.e., in=
+stead
+> >> >>> of just putting in a random number, we insert the BTF ID of the me=
+tadata
+> >> >>> struct at the end of it. This will allow us to support multiple
+> >> >>> different formats in the future (not just changing the layout, but
+> >> >>> having multiple simultaneous formats in the same kernel image), in=
+ case
+> >> >>> we run out of space.
+> >> >>
+> >> >> This seems a bit hypothetical.  How much headroom does it usually h=
+ave for the
+> >> >> xdp prog?  Potentially the hints can use all the remaining space le=
+ft after the
+> >> >> header encap and the current bpf_xdp_adjust_meta() usage?
+> >> >>
+> >> >>>
+> >> >>> We should probably also have a flag set on the xdp_frame so the st=
+ack
+> >> >>> knows that the metadata area contains relevant-to-skb data, to gua=
+rd
+> >> >>> against an XDP program accidentally hitting the "magic number" (BT=
+F_ID)
+> >> >>> in unrelated stuff it puts into the metadata area.
+> >> >>
+> >> >> Yeah, I think having a flag is useful.  The flag will be set at xdp=
+_buff and
+> >> >> then transfer to the xdp_frame?
+> >> >>
+> >> >>>
+> >> >>>> After re-reading patch 6, have another question. The 'void
+> >> >>>> bpf_xdp_metadata_export_to_skb();' function signature. Should it =
+at
+> >> >>>> least return ok/err? or even return a 'struct xdp_to_skb_metadata=
+ *'
+> >> >>>> pointer and the xdp prog can directly read (or even write) it?
+> >> >>>
+> >> >>> Hmm, I'm not sure returning a failure makes sense? Failure to read=
+ one
+> >> >>> or more fields just means that those fields will not be populated?=
+ We
+> >> >>> should probably have a flags field inside the metadata struct itse=
+lf to
+> >> >>> indicate which fields are set or not, but I'm not sure returning a=
+n
+> >> >>> error value adds anything? Returning a pointer to the metadata fie=
+ld
+> >> >>> might be convenient for users (it would just be an alias to the
+> >> >>> data_meta pointer, but the verifier could know its size, so the pr=
+ogram
+> >> >>> doesn't have to bounds check it).
+> >> >>
+> >> >> If some hints are not available, those hints should be initialized =
+to
+> >> >> 0/CHECKSUM_NONE/...etc.  The xdp prog needs a direct way to tell ha=
+rd failure
+> >> >> when it cannot write the meta area because of not enough space.  Co=
+mparing
+> >> >> xdp->data_meta with xdp->data as a side effect is not intuitive.
+> >> >>
+> >> >> It is more than saving the bound check.  With type info of 'struct
+> >> >> xdp_to_skb_metadata *', the verifier can do more checks like readin=
+g in the
+> >> >> middle of an integer member.  The verifier could also limit write a=
+ccess only to
+> >> >> a few struct's members if it is needed.
+> >> >>
+> >> >> The returning 'struct xdp_to_skb_metadata *' should not be an alias=
+ to the
+> >> >> xdp->data_meta.  They should actually point to different locations =
+in the
+> >> >> headroom.  bpf_xdp_metadata_export_to_skb() sets a flag in xdp_buff=
+.
+> >> >> xdp->data_meta won't be changed and keeps pointing to the last
+> >> >> bpf_xdp_adjust_meta() location.  The kernel will know if there is
+> >> >> xdp_to_skb_metadata before the xdp->data_meta when that bit is set =
+in the
+> >> >> xdp_{buff,frame}.  Would it work?
+> >> >>
+> >> >>>
+> >> >>>> A related question, why 'struct xdp_to_skb_metadata' needs
+> >> >>>> __randomize_layout?
+> >> >>>
+> >> >>> The __randomize_layout thing is there to force BPF programs to use=
+ CO-RE
+> >> >>> to access the field. This is to avoid the struct layout accidental=
+ly
+> >> >>> ossifying because people in practice rely on a particular layout, =
+even
+> >> >>> though we tell them to use CO-RE. There are lots of examples of th=
+is
+> >> >>> happening in other domains (IP header options, TCP options, etc), =
+and
+> >> >>> __randomize_layout seemed like a neat trick to enforce CO-RE usage=
+ :)
+> >> >>
+> >> >> I am not sure if it is necessary or helpful to only enforce __rando=
+mize_layout
+> >> >> in 'struct xdp_to_skb_metadata'.  There are other CO-RE use cases (=
+tracing and
+> >> >> non tracing) that already have direct access (reading and/or writin=
+g) to other
+> >> >> kernel structures.
+> >> >>
+> >> >> It is more important for the verifier to see the xdp prog accessing=
+ it as a
+> >> >> 'struct xdp_to_skb_metadata *' instead of xdp->data_meta which is a=
+ __u8 * so
+> >> >> that the verifier can enforce the rules of access.
+> >> >>
+> >> >>>
+> >> >>>>>>> Does xdp_to_skb_metadata have a use case for XDP_PASS (like pa=
+tch 7) or the
+> >> >>>>>>> xdp_to_skb_metadata can be limited to XDP_REDIRECT only?
+> >> >>>>>>
+> >> >>>>>> XDP_PASS cases where we convert xdp_buff into skb in the driver=
+s right
+> >> >>>>>> now usually have C code to manually pull out the metadata (out =
+of hw
+> >> >>>>>> desc) and put it into skb.
+> >> >>>>>>
+> >> >>>>>> So, currently, if we're calling bpf_xdp_metadata_export_to_skb(=
+) for
+> >> >>>>>> XDP_PASS, we're doing a double amount of work:
+> >> >>>>>> skb_metadata_import_from_xdp first, then custom driver code sec=
+ond.
+> >> >>>>>>
+> >> >>>>>> In theory, maybe we should completely skip drivers custom parsi=
+ng when
+> >> >>>>>> there is a prog with BPF_F_XDP_HAS_METADATA?
+> >> >>>>>> Then both xdp->skb paths (XDP_PASS+XDP_REDIRECT) will be bpf-dr=
+iven
+> >> >>>>>> and won't require any mental work (plus, the drivers won't have=
+ to
+> >> >>>>>> care either in the future).
+> >> >>>>>>    > WDYT?
+> >> >>>>>
+> >> >>>>>
+> >> >>>>> Yeah, not sure if it can solely depend on BPF_F_XDP_HAS_METADATA=
+ but it makes
+> >> >>>>> sense to only use the hints (if ever written) from xdp prog espe=
+cially if it
+> >> >>>>> will eventually support xdp prog changing some of the hints in t=
+he future.  For
+> >> >>>>> now, I think either way is fine since they are the same and the =
+xdp prog is sort
+> >> >>>>> of doing extra unnecessary work anyway by calling
+> >> >>>>> bpf_xdp_metadata_export_to_skb() with XDP_PASS and knowing nothi=
+ng can be
+> >> >>>>> changed now.
+> >> >>>
+> >> >>> I agree it would be best if the drivers also use the XDP metadata =
+(if
+> >> >>> present) on XDP_PASS. Longer term my hope is we can make the XDP
+> >> >>> metadata support the only thing drivers need to implement (i.e., h=
+ave
+> >> >>> the stack call into that code even when no XDP program is loaded),=
+ but
+> >> >>> for now just for consistency (and allowing the XDP program to upda=
+te the
+> >> >>> metadata), we should probably at least consume it on XDP_PASS.
+> >> >>>
+> >> >>> -Toke
+> >> >>>
+> >> >
+> >> > Not to derail the discussion (left the last message intact on top,
+> >> > feel free to continue), but to summarize. The proposed changes seem =
+to
+> >> > be:
+> >> >
+> >> > 1. bpf_xdp_metadata_export_to_skb() should return pointer to "struct
+> >> > xdp_to_skb_metadata"
+> >> >    - This should let bpf programs change the metadata passed to the =
+skb
+> >> >
+> >> > 2. "struct xdp_to_skb_metadata" should have its btf_id as the first
+> >> > __u32 member (and remove the magic)
+> >> >    - This is for the redirect case where the end users, including
+> >> > AF_XDP, can parse this metadata from btf_id
+> >>
+> >> I think Toke's idea is to put the btf_id at the end of xdp_to_skb_meta=
+data.  I
+> >> can see why the end is needed for the userspace AF_XDP because, afaict=
+, AF_XDP
+> >> rx_desc currently cannot tell if there is metadata written by the xdp =
+prog or
+> >> not.  However, if the 'has_skb_metadata' bit can also be passed to the=
+ AF_XDP
+> >> rx_desc->options, the btf_id may as well be not needed now.  However, =
+the btf_id
+> >> and other future new members can be added to the xdp_to_skb_metadata l=
+ater if
+> >> there is a need.
+> >>
+> >> For the kernel and xdp prog, a bit in the xdp->flags should be enough =
+to get to
+> >> the xdp_to_skb_metadata.  The xdp prog will use CO-RE to access the me=
+mbers in
+> >> xdp_to_skb_metadata.
+> >
+> > Ack, good points on putting it at the end.
+> > Regarding bit in desc->options vs btf_id: since it seems that btf_id
+> > is useful anyway, let's start with that? We can add a bit later on if
+> > it turns out using metadata is problematic otherwise.
+>
+> I think the bit is mostly useful so that the stack can know that the
+> metadata has been set before consuming it (to guard against regular
+> xdp_metadata usage accidentally hitting the "right" BTF ID). I don't
+> think it needs to be exposed to the XDP programs themselves.
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit.h        |  18 +++--
- arch/powerpc/net/bpf_jit_comp.c   | 123 +++++++++++++++++++++---------
- arch/powerpc/net/bpf_jit_comp32.c |  26 +++----
- arch/powerpc/net/bpf_jit_comp64.c |  32 ++++----
- 4 files changed, 128 insertions(+), 71 deletions(-)
+SG! A flag for xdp_buff/frame and a kfunc to query it for bpf.
 
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index a4f7880f959d..e314d6a23bce 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -21,7 +21,7 @@
- 
- #define PLANT_INSTR(d, idx, instr)					      \
- 	do { if (d) { (d)[idx] = instr; } idx++; } while (0)
--#define EMIT(instr)		PLANT_INSTR(image, ctx->idx, instr)
-+#define EMIT(instr)		PLANT_INSTR(rw_image, ctx->idx, instr)
- 
- /* Long jump; (unconditional 'branch') */
- #define PPC_JMP(dest)							      \
-@@ -167,16 +167,18 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
- }
- 
- void bpf_jit_init_reg_mapping(struct codegen_context *ctx);
--int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_emit_func_call_rel(u32 *image, u32 *rw_image, struct codegen_context *ctx, u64 func);
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *rw_image, struct codegen_context *ctx,
- 		       u32 *addrs, int pass);
--void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
--void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
-+void bpf_jit_build_prologue(u32 *image, u32 *rw_image, struct codegen_context *ctx);
-+void bpf_jit_build_epilogue(u32 *image, u32 *rw_image, struct codegen_context *ctx);
- void bpf_jit_realloc_regs(struct codegen_context *ctx);
--int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg, long exit_addr);
-+int bpf_jit_emit_exit_insn(u32 *image, u32 *rw_image, struct codegen_context *ctx,
-+			   int tmp_reg, long exit_addr);
- 
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg);
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *rw_image, int pass,
-+			  struct codegen_context *ctx, int insn_idx,
-+			  int jmp_off, int dst_reg);
- 
- #endif
- 
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index f925755cd249..c4c1f7a21d89 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -83,7 +83,7 @@ static void *bpf_patch_instructions(void *addr, void *opcode, size_t len)
- }
- 
- /* Fix updated addresses (for subprog calls, ldimm64, et al) during extra pass */
--static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
-+static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image, u32 *rw_image,
- 				   struct codegen_context *ctx, u32 *addrs)
- {
- 	const struct bpf_insn *insn = fp->insnsi;
-@@ -118,7 +118,7 @@ static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
- 			 */
- 			tmp_idx = ctx->idx;
- 			ctx->idx = addrs[i] / 4;
--			ret = bpf_jit_emit_func_call_rel(image, ctx, func_addr);
-+			ret = bpf_jit_emit_func_call_rel(image, rw_image, ctx, func_addr);
- 			if (ret)
- 				return ret;
- 
-@@ -150,7 +150,8 @@ static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
- 	return 0;
- }
- 
--int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg, long exit_addr)
-+int bpf_jit_emit_exit_insn(u32 *image, u32 *rw_image, struct codegen_context *ctx,
-+			   int tmp_reg, long exit_addr)
- {
- 	if (!exit_addr || is_offset_in_branch_range(exit_addr - (ctx->idx * 4))) {
- 		PPC_JMP(exit_addr);
-@@ -160,13 +161,14 @@ int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg,
- 		PPC_JMP(ctx->alt_exit_addr);
- 	} else {
- 		ctx->alt_exit_addr = ctx->idx * 4;
--		bpf_jit_build_epilogue(image, ctx);
-+		bpf_jit_build_epilogue(image, rw_image, ctx);
- 	}
- 
- 	return 0;
- }
- 
--struct powerpc64_jit_data {
-+struct powerpc_jit_data {
-+	struct bpf_binary_header *rw_header;
- 	struct bpf_binary_header *header;
- 	u32 *addrs;
- 	u8 *image;
-@@ -181,22 +183,25 @@ bool bpf_jit_needs_zext(void)
- 
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- {
--	u32 proglen;
--	u32 alloclen;
--	u8 *image = NULL;
--	u32 *code_base;
--	u32 *addrs;
--	struct powerpc64_jit_data *jit_data;
--	struct codegen_context cgctx;
--	int pass;
--	int flen;
-+	struct bpf_binary_header *rw_header = NULL;
-+	struct powerpc_jit_data *jit_data;
- 	struct bpf_binary_header *bpf_hdr;
-+	struct codegen_context cgctx;
- 	struct bpf_prog *org_fp = fp;
- 	struct bpf_prog *tmp_fp;
- 	bool bpf_blinded = false;
- 	bool extra_pass = false;
-+	u8 *rw_image = NULL;
-+	u32 *rw_code_base;
-+	u8 *image = NULL;
- 	u32 extable_len;
-+	u32 *code_base;
- 	u32 fixup_len;
-+	u32 alloclen;
-+	u32 proglen;
-+	u32 *addrs;
-+	int pass;
-+	int flen;
- 
- 	if (!fp->jit_requested)
- 		return org_fp;
-@@ -227,6 +232,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		image = jit_data->image;
- 		bpf_hdr = jit_data->header;
- 		proglen = jit_data->proglen;
-+		rw_header = jit_data->rw_header;
-+		rw_image = (void *)rw_header + ((void *)image - (void *)bpf_hdr);
- 		extra_pass = true;
- 		goto skip_init_ctx;
- 	}
-@@ -244,7 +251,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
- 
- 	/* Scouting faux-generate pass 0 */
--	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
-+	if (bpf_jit_build_body(fp, 0, 0, &cgctx, addrs, 0)) {
- 		/* We hit something illegal or unsupported. */
- 		fp = org_fp;
- 		goto out_addrs;
-@@ -259,7 +266,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 */
- 	if (cgctx.seen & SEEN_TAILCALL || !is_offset_in_branch_range((long)cgctx.idx * 4)) {
- 		cgctx.idx = 0;
--		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
-+		if (bpf_jit_build_body(fp, 0, 0, &cgctx, addrs, 0)) {
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
-@@ -271,9 +278,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 * update ctgtx.idx as it pretends to output instructions, then we can
- 	 * calculate total size from idx.
- 	 */
--	bpf_jit_build_prologue(0, &cgctx);
-+	bpf_jit_build_prologue(0, 0, &cgctx);
- 	addrs[fp->len] = cgctx.idx * 4;
--	bpf_jit_build_epilogue(0, &cgctx);
-+	bpf_jit_build_epilogue(0, 0, &cgctx);
- 
- 	fixup_len = fp->aux->num_exentries * BPF_FIXUP_LEN * 4;
- 	extable_len = fp->aux->num_exentries * sizeof(struct exception_table_entry);
-@@ -281,7 +288,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	proglen = cgctx.idx * 4;
- 	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
- 
--	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
-+	bpf_hdr = bpf_jit_binary_pack_alloc(alloclen, &image, 4, &rw_header, &rw_image,
-+					    bpf_jit_fill_ill_insns);
- 	if (!bpf_hdr) {
- 		fp = org_fp;
- 		goto out_addrs;
-@@ -292,6 +300,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 
- skip_init_ctx:
- 	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
-+	rw_code_base = (u32 *)(rw_image + FUNCTION_DESCR_SIZE);
- 
- 	if (extra_pass) {
- 		/*
-@@ -303,7 +312,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		 * call instruction sequences and hence, the size of the JITed
- 		 * image as well.
- 		 */
--		bpf_jit_fixup_addresses(fp, code_base, &cgctx, addrs);
-+		bpf_jit_fixup_addresses(fp, code_base, rw_code_base, &cgctx, addrs);
- 
- 		/* There is no need to perform the usual passes. */
- 		goto skip_codegen_passes;
-@@ -314,13 +323,15 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		/* Now build the prologue, body code & epilogue for real. */
- 		cgctx.idx = 0;
- 		cgctx.alt_exit_addr = 0;
--		bpf_jit_build_prologue(code_base, &cgctx);
--		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass)) {
--			bpf_jit_binary_free(bpf_hdr);
-+		bpf_jit_build_prologue(code_base, rw_code_base, &cgctx);
-+		if (bpf_jit_build_body(fp, code_base, rw_code_base, &cgctx, addrs, pass)) {
-+			bpf_arch_text_copy(&bpf_hdr->size, &rw_header->size,
-+					   sizeof(rw_header->size));
-+			bpf_jit_binary_pack_free(bpf_hdr, rw_header);
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
--		bpf_jit_build_epilogue(code_base, &cgctx);
-+		bpf_jit_build_epilogue(code_base, rw_code_base, &cgctx);
- 
- 		if (bpf_jit_enable > 1)
- 			pr_info("Pass %d: shrink = %d, seen = 0x%x\n", pass,
-@@ -337,17 +348,26 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 
- #ifdef CONFIG_PPC64_ELF_ABI_V1
- 	/* Function descriptor nastiness: Address + TOC */
--	((u64 *)image)[0] = (u64)code_base;
--	((u64 *)image)[1] = local_paca->kernel_toc;
-+	((u64 *)rw_image)[0] = (u64)code_base;
-+	((u64 *)rw_image)[1] = local_paca->kernel_toc;
- #endif
- 
- 	fp->bpf_func = (void *)image;
- 	fp->jited = 1;
- 	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
- 
--	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
- 	if (!fp->is_func || extra_pass) {
--		bpf_jit_binary_lock_ro(bpf_hdr);
-+		/*
-+		 * bpf_jit_binary_pack_finalize fails in two scenarios:
-+		 *   1) header is not pointing to proper module memory;
-+		 *   2) the arch doesn't support bpf_arch_text_copy().
-+		 *
-+		 * Both cases are serious bugs that justify WARN_ON.
-+		 */
-+		if (WARN_ON(bpf_jit_binary_pack_finalize(fp, bpf_hdr, rw_header))) {
-+			fp = org_fp;
-+			goto out_addrs;
-+		}
- 		bpf_prog_fill_jited_linfo(fp, addrs);
- out_addrs:
- 		kfree(addrs);
-@@ -359,6 +379,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		jit_data->proglen = proglen;
- 		jit_data->image = image;
- 		jit_data->header = bpf_hdr;
-+		jit_data->rw_header = rw_header;
- 	}
- 
- out:
-@@ -372,12 +393,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-  * The caller should check for (BPF_MODE(code) == BPF_PROBE_MEM) before calling
-  * this function, as this only applies to BPF_PROBE_MEM, for now.
-  */
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg)
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *rw_image, int pass,
-+			  struct codegen_context *ctx, int insn_idx,
-+			  int jmp_off, int dst_reg)
- {
--	off_t offset;
-+	struct exception_table_entry *ex, *rw_extable;
- 	unsigned long pc;
--	struct exception_table_entry *ex;
-+	off_t offset;
- 	u32 *fixup;
- 
- 	/* Populate extable entries only in the last pass */
-@@ -388,9 +410,16 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
- 		return -EINVAL;
- 
--	pc = (unsigned long)&image[insn_idx];
-+	/*
-+	 * Program is firt written to rw_image before copying to the
-+	 * final location. Accordingly, update in the rw_image first.
-+	 * As all offsets used are relative, copying as is to the
-+	 * final location should be alright.
-+	 */
-+	pc = (unsigned long)&rw_image[insn_idx];
-+	rw_extable = (void *)fp->aux->extable - (void *)image + (void *)rw_image;
- 
--	fixup = (void *)fp->aux->extable -
-+	fixup = (void *)rw_extable -
- 		(fp->aux->num_exentries * BPF_FIXUP_LEN * 4) +
- 		(ctx->exentry_idx * BPF_FIXUP_LEN * 4);
- 
-@@ -401,7 +430,7 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	fixup[BPF_FIXUP_LEN - 1] =
- 		PPC_RAW_BRANCH((long)(pc + jmp_off) - (long)&fixup[BPF_FIXUP_LEN - 1]);
- 
--	ex = &fp->aux->extable[ctx->exentry_idx];
-+	ex = &rw_extable[ctx->exentry_idx];
- 
- 	offset = pc - (long)&ex->insn;
- 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-@@ -426,3 +455,27 @@ int bpf_arch_text_invalidate(void *dst, size_t len)
- {
- 	return IS_ERR(bpf_patch_ill_insns(dst, len));
- }
-+
-+void bpf_jit_free(struct bpf_prog *fp)
-+{
-+	if (fp->jited) {
-+		struct powerpc_jit_data *jit_data = fp->aux->jit_data;
-+		struct bpf_binary_header *hdr;
-+
-+		/*
-+		 * If we fail the final pass of JIT (from jit_subprogs),
-+		 * the program may not be finalized yet. Call finalize here
-+		 * before freeing it.
-+		 */
-+		if (jit_data) {
-+			bpf_jit_binary_pack_finalize(fp, jit_data->header, jit_data->rw_header);
-+			kvfree(jit_data->addrs);
-+			kfree(jit_data);
-+		}
-+		hdr = bpf_jit_binary_pack_hdr(fp);
-+		bpf_jit_binary_pack_free(hdr, NULL);
-+		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
-+	}
-+
-+	bpf_prog_unlock_free(fp);
-+}
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 43f1c76d48ce..047ef627c2aa 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -109,7 +109,7 @@ void bpf_jit_realloc_regs(struct codegen_context *ctx)
- 	}
- }
- 
--void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
-+void bpf_jit_build_prologue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
- 	int i;
- 
-@@ -162,7 +162,7 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
- 		EMIT(PPC_RAW_STW(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
- }
- 
--static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx)
-+static void bpf_jit_emit_common_epilogue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
- 	int i;
- 
-@@ -172,11 +172,11 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
- 			EMIT(PPC_RAW_LWZ(i, _R1, bpf_jit_stack_offsetof(ctx, i)));
- }
- 
--void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
-+void bpf_jit_build_epilogue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
- 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
- 
--	bpf_jit_emit_common_epilogue(image, ctx);
-+	bpf_jit_emit_common_epilogue(image, rw_image, ctx);
- 
- 	/* Tear down our stack frame */
- 
-@@ -191,7 +191,7 @@ void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
- 	EMIT(PPC_RAW_BLR());
- }
- 
--int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func)
-+int bpf_jit_emit_func_call_rel(u32 *image, u32 *rw_image, struct codegen_context *ctx, u64 func)
- {
- 	s32 rel = (s32)func - (s32)(image + ctx->idx);
- 
-@@ -211,7 +211,7 @@ int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func
- 	return 0;
- }
- 
--static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
-+static int bpf_jit_emit_tail_call(u32 *image, u32 *rw_image, struct codegen_context *ctx, u32 out)
- {
- 	/*
- 	 * By now, the eBPF program has already setup parameters in r3-r6
-@@ -269,7 +269,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_1)));
- 
- 	/* tear restore NVRs, ... */
--	bpf_jit_emit_common_epilogue(image, ctx);
-+	bpf_jit_emit_common_epilogue(image, rw_image, ctx);
- 
- 	EMIT(PPC_RAW_BCTR());
- 
-@@ -278,7 +278,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- }
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *rw_image, struct codegen_context *ctx,
- 		       u32 *addrs, int pass)
- {
- 	const struct bpf_insn *insn = fp->insnsi;
-@@ -954,8 +954,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 					jmp_off += 4;
- 				}
- 
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, insn_idx,
--							    jmp_off, dst_reg);
-+				ret = bpf_add_extable_entry(fp, image, rw_image, pass, ctx,
-+							    insn_idx, jmp_off, dst_reg);
- 				if (ret)
- 					return ret;
- 			}
-@@ -986,7 +986,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			 * we'll just fall through to the epilogue.
- 			 */
- 			if (i != flen - 1) {
--				ret = bpf_jit_emit_exit_insn(image, ctx, _R0, exit_addr);
-+				ret = bpf_jit_emit_exit_insn(image, rw_image, ctx, _R0, exit_addr);
- 				if (ret)
- 					return ret;
- 			}
-@@ -1009,7 +1009,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_5), _R1, 12));
- 			}
- 
--			ret = bpf_jit_emit_func_call_rel(image, ctx, func_addr);
-+			ret = bpf_jit_emit_func_call_rel(image, rw_image, ctx, func_addr);
- 			if (ret)
- 				return ret;
- 
-@@ -1231,7 +1231,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		 */
- 		case BPF_JMP | BPF_TAIL_CALL:
- 			ctx->seen |= SEEN_TAILCALL;
--			ret = bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			ret = bpf_jit_emit_tail_call(image, rw_image, ctx, addrs[i + 1]);
- 			if (ret < 0)
- 				return ret;
- 			break;
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 29ee306d6302..f15bc20909d8 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -122,7 +122,7 @@ void bpf_jit_realloc_regs(struct codegen_context *ctx)
- {
- }
- 
--void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
-+void bpf_jit_build_prologue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
- 	int i;
- 
-@@ -171,7 +171,7 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
- 				STACK_FRAME_MIN_SIZE + ctx->stack_size));
- }
- 
--static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx)
-+static void bpf_jit_emit_common_epilogue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
- 	int i;
- 
-@@ -190,9 +190,9 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
- 	}
- }
- 
--void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
-+void bpf_jit_build_epilogue(u32 *image, u32 *rw_image, struct codegen_context *ctx)
- {
--	bpf_jit_emit_common_epilogue(image, ctx);
-+	bpf_jit_emit_common_epilogue(image, rw_image, ctx);
- 
- 	/* Move result to r3 */
- 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
-@@ -200,7 +200,8 @@ void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
- 	EMIT(PPC_RAW_BLR());
- }
- 
--static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u64 func)
-+static int bpf_jit_emit_func_call_hlp(u32 *image, u32 *rw_image, struct codegen_context *ctx,
-+				      u64 func)
- {
- 	unsigned long func_addr = func ? ppc_function_entry((void *)func) : 0;
- 	long reladdr;
-@@ -222,7 +223,7 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
- 	return 0;
- }
- 
--int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func)
-+int bpf_jit_emit_func_call_rel(u32 *image, u32 *rw_image, struct codegen_context *ctx, u64 func)
- {
- 	unsigned int i, ctx_idx = ctx->idx;
- 
-@@ -254,7 +255,7 @@ int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func
- 	return 0;
- }
- 
--static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
-+static int bpf_jit_emit_tail_call(u32 *image, u32 *rw_image, struct codegen_context *ctx, u32 out)
- {
- 	/*
- 	 * By now, the eBPF program has already setup parameters in r3, r4 and r5
-@@ -311,7 +312,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- 	EMIT(PPC_RAW_MTCTR(bpf_to_ppc(TMP_REG_1)));
- 
- 	/* tear down stack, restore NVRs, ... */
--	bpf_jit_emit_common_epilogue(image, ctx);
-+	bpf_jit_emit_common_epilogue(image, rw_image, ctx);
- 
- 	EMIT(PPC_RAW_BCTR());
- 
-@@ -342,7 +343,7 @@ asm (
- );
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *rw_image, struct codegen_context *ctx,
- 		       u32 *addrs, int pass)
- {
- 	enum stf_barrier_type stf_barrier = stf_barrier_type_get();
-@@ -921,8 +922,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				addrs[++i] = ctx->idx * 4;
- 
- 			if (BPF_MODE(code) == BPF_PROBE_MEM) {
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, ctx->idx - 1,
--							    4, dst_reg);
-+				ret = bpf_add_extable_entry(fp, image, rw_image, pass, ctx,
-+							    ctx->idx - 1, 4, dst_reg);
- 				if (ret)
- 					return ret;
- 			}
-@@ -954,7 +955,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			 * we'll just fall through to the epilogue.
- 			 */
- 			if (i != flen - 1) {
--				ret = bpf_jit_emit_exit_insn(image, ctx, tmp1_reg, exit_addr);
-+				ret = bpf_jit_emit_exit_insn(image, rw_image, ctx,
-+							     tmp1_reg, exit_addr);
- 				if (ret)
- 					return ret;
- 			}
-@@ -973,9 +975,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				return ret;
- 
- 			if (func_addr_fixed)
--				ret = bpf_jit_emit_func_call_hlp(image, ctx, func_addr);
-+				ret = bpf_jit_emit_func_call_hlp(image, rw_image, ctx, func_addr);
- 			else
--				ret = bpf_jit_emit_func_call_rel(image, ctx, func_addr);
-+				ret = bpf_jit_emit_func_call_rel(image, rw_image, ctx, func_addr);
- 
- 			if (ret)
- 				return ret;
-@@ -1184,7 +1186,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		 */
- 		case BPF_JMP | BPF_TAIL_CALL:
- 			ctx->seen |= SEEN_TAILCALL;
--			ret = bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			ret = bpf_jit_emit_tail_call(image, rw_image, ctx, addrs[i + 1]);
- 			if (ret < 0)
- 				return ret;
- 			break;
--- 
-2.37.3
+> >> >    - This, however, is not all the metadata that the device can
+> >> > support, but a much narrower set that the kernel is expected to use
+> >> > for skb construction
+> >> >
+> >> > 3. __randomize_layout isn't really helping, CO-RE will trigger
+> >> > regardless; maybe only the case where it matters is probably AF_XDP,
+> >> > so still useful?
+>
+> Yeah, see my response to Martin, I think the randomisation is useful for
+> AF_XDP transfer.
 
+SG. Let's keep it for now. Worst case, if it hurts, we can remove it later.=
+..
+
+> >> > 4. The presence of the metadata generated by
+> >> > bpf_xdp_metadata_export_to_skb should be indicated by a flag in
+> >> > xdp_{buff,frame}->flags
+> >> >    - Assuming exposing it via xdp_md->has_skb_metadata is ok?
+> >>
+> >> probably __bpf_md_ptr(struct xdp_to_skb_metadata *, skb_metadata) and =
+the type
+> >> will be PTR_TO_BTF_ID_OR_NULL.
+> >
+> > Oh, that seems even better than returning it from
+> > bpf_xdp_metadata_export_to_skb.
+> > bpf_xdp_metadata_export_to_skb can return true/false and the rest goes
+> > via default verifier ctx resolution mechanism..
+> > (returning ptr from a kfunc seems to be a bit complicated right now)
+>
+> See my response to John in the other thread about mixing stable UAPI (in
+> xdp_md) and unstable BTF structures in the xdp_md struct: I think this
+> is confusing and would prefer a kfunc.
+
+SG!
+
+> >> >    - Since the programs probably need to do the following:
+> >> >
+> >> >    if (xdp_md->has_skb_metadata) {
+> >> >      access/change skb metadata by doing struct xdp_to_skb_metadata =
+*p
+> >> > =3D data_meta;
+> >>
+> >> and directly access/change xdp->skb_metadata instead of using xdp->dat=
+a_meta.
+> >
+> > Ack.
+> >
+> >> >    } else {
+> >> >      use kfuncs
+> >> >    }
+> >> >
+> >> > 5. Support the case where we keep program's metadata and kernel's
+> >> > xdp_to_skb_metadata
+> >> >    - skb_metadata_import_from_xdp() will "consume" it by mem-moving =
+the
+> >> > rest of the metadata over it and adjusting the headroom
+> >>
+> >> I was thinking the kernel's xdp_to_skb_metadata is always before the p=
+rogram's
+> >> metadata.  xdp prog should usually work in this order also: read/write=
+ headers,
+> >> write its own metadata, call bpf_xdp_metadata_export_to_skb(), and ret=
+urn
+> >> XDP_PASS/XDP_REDIRECT.  When it is XDP_PASS, the kernel just needs to =
+pop the
+> >> xdp_to_skb_metadata and pass the remaining program's metadata to the b=
+pf-tc.
+> >>
+> >> For the kernel and xdp prog, I don't think it matters where the
+> >> xdp_to_skb_metadata is.  However, the xdp->data_meta (program's metada=
+ta) has to
+> >> be before xdp->data because of the current data_meta and data comparis=
+on usage
+> >> in the xdp prog.
+> >>
+> >> The order of the kernel's xdp_to_skb_metadata and the program's metada=
+ta
+> >> probably only matters to the userspace AF_XDP.  However, I don't see h=
+ow AF_XDP
+> >> supports the program's metadata now.  afaict, it can only work now if =
+there is
+> >> some sort of contract between them or the AF_XDP currently does not us=
+e the
+> >> program's metadata.  Either way, we can do the mem-moving only for AF_=
+XDP and it
+> >> should be a no op if there is no program's metadata?  This behavior co=
+uld also
+> >> be configurable through setsockopt?
+> >
+> > Agreed on all of the above. For now it seems like the safest thing to
+> > do is to put xdp_to_skb_metadata last to allow af_xdp to properly
+> > locate btf_id.
+> > Let's see if Toke disagrees :-)
+>
+> As I replied to Martin, I'm not sure it's worth the complexity to
+> logically split the SKB metadata from the program's own metadata (as
+> opposed to just reusing the existing data_meta pointer)?
+
+I'd gladly keep my current requirement where it's either or, but not both :=
+-)
+We can relax it later if required?
+
+> However, if we do, the layout that makes most sense to me is putting the
+> skb metadata before the program metadata, like:
+>
+> --------------
+> | skb_metadata
+> --------------
+> | data_meta
+> --------------
+> | data
+> --------------
+>
+> Not sure if that's what you meant? :)
+
+I was suggesting the other way around: |custom meta|skb_metadata|data|
+(but, as Martin points out, consuming skb_metadata in the kernel
+becomes messier)
+
+af_xdp can check whether skb_metdata is present by looking at data -
+offsetof(struct skb_metadata, btf_id).
+progs that know how to handle custom metadata, will look at data -
+sizeof(skb_metadata)
+
+Otherwise, if it's the other way around, how do we find skb_metadata
+in a redirected frame?
+Let's say we have |skb_metadata|custom meta|data|, how does the final
+program find skb_metadata?
+All the progs have to agree on the sizeof(tc/custom meta), right?
