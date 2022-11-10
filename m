@@ -2,151 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FAF62491F
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 19:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F6A6249CA
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 19:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbiKJSKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 13:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S231194AbiKJSoJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 13:44:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbiKJSKb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 13:10:31 -0500
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D022865F2;
-        Thu, 10 Nov 2022 10:10:30 -0800 (PST)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-13c569e5ff5so3005696fac.6;
-        Thu, 10 Nov 2022 10:10:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ii2uAwWf7GjMB0IiYJRHuLlDIfmuSdb6hv0bvJzZ04k=;
-        b=hZGg/tMYHdvIq6uUvgBFQWg362cZZ65q1EovZWwFXzIy3/6Y9KCBzNShlCy8vFp6Sh
-         NoRulcDK2Rq5YzNrtKrtHpGeXjMSllIiRDsT6DAmAg6vpP8mCSvLCCfjsTSabA/oHn38
-         Le8rN7dyhHxNwLUak4JqppwGEh0CDpNMH3O3TIB3gGEZPjsE+C6qGRZr5Nh0O4KNlQbe
-         qRqHBVAoazxWbIl/NXKopfi6iQVBT/IYfQaAxqxLhr50iun71ndJImr2PfhNR/PiGSXt
-         h7rlkVIG4OigOfsy2ss93ChX9tWQYSfPQx3pCKfJxtSKj+USehDIBdeHgbyvjN+Za29P
-         V0dA==
-X-Gm-Message-State: ACrzQf2w3u31zv8OrYZhrinvU5ehdIDx9N9josXxgAEyBbU6vYqNI6zS
-        L5GWaFdx3aKi1Jjr1XdCmTwtAOsEjRCspiCl8Kg=
-X-Google-Smtp-Source: AMsMyM4vPjtYENfiSr6Uu6NX2CAOWsgWXktTtBylzHXoXDEA0dIm/3nVVQ1EvdUoMqdNRTYEisZ65gKK0POUas8u90c=
-X-Received: by 2002:a05:6870:b6a8:b0:13c:8991:2ac7 with SMTP id
- cy40-20020a056870b6a800b0013c89912ac7mr1792064oab.209.1668103830064; Thu, 10
- Nov 2022 10:10:30 -0800 (PST)
+        with ESMTP id S231203AbiKJSnv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 13:43:51 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09BE4B982
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 10:43:50 -0800 (PST)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2AAIflD3025941;
+        Thu, 10 Nov 2022 18:43:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=XxpamRVRCdt9qvuSBAP0HIPKDfuNwKHeN4iEf3SmIOg=;
+ b=J3th4QqjdzmQniy2NbEw40tsy4dWZ0MIt/9t/9/X3E3Pfd7HiKYIqv+2XADjueD7WgOs
+ cpyI/xzhhLrEYuXutH1X8DSykv8ybMCvPCnjQGHpIXfYoGv7tz6wV53XsmG6v3ZhXmi8
+ eHLZcilGMkWieMKUOsWZtfz78FSJ4dWj9nCgEuAAZCYNcT0OToCXp9bAx89sqyPTynSp
+ fJBe06TvV1gamqRfD+9UMERr51vz59gnZz4J9TmI6qDw3/mM96tLG0gHSzUJ9PnvqE3j
+ t+7dHJgbsKnnp/EGPE9MKYmQ0azUKsQP6X3Ggltt4l9emZzJP79TfmJDESm2n7t//GbP OQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ks6t8r16q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Nov 2022 18:43:24 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AAIaXja000794;
+        Thu, 10 Nov 2022 18:43:21 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3kngqgfp8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Nov 2022 18:43:21 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AAIbVbx49152334
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Nov 2022 18:37:31 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 587E7A4051;
+        Thu, 10 Nov 2022 18:43:19 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58549A404D;
+        Thu, 10 Nov 2022 18:43:15 +0000 (GMT)
+Received: from hbathini-workstation.ibm.com.com (unknown [9.163.72.10])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Nov 2022 18:43:14 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
+Date:   Fri, 11 Nov 2022 00:13:00 +0530
+Message-Id: <20221110184303.393179-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.37.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AtrBRS8GN6rS4KnIU9RtSzs3_d1ZLh6v
+X-Proofpoint-ORIG-GUID: AtrBRS8GN6rS4KnIU9RtSzs3_d1ZLh6v
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20221109184914.1357295-1-irogers@google.com>
-In-Reply-To: <20221109184914.1357295-1-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Nov 2022 10:10:18 -0800
-Message-ID: <CAM9d7ciPe-uR5MdayhUEEK8a-j1QDm50qPffsod9BHdUF5Z-TA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] Fix perf tools/lib includes
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-10_12,2022-11-09_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ clxscore=1011 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ impostorscore=0 adultscore=0 priorityscore=1501 mlxlogscore=828
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211100129
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ian,
+Most BPF programs are small, but they consume a page each. For systems
+with busy traffic and many BPF programs, this may also add significant
+pressure on instruction TLB. High iTLB pressure usually slows down the
+whole system causing visible performance degradation for production
+workloads.
 
-On Wed, Nov 9, 2022 at 10:49 AM Ian Rogers <irogers@google.com> wrote:
->
-> The previous build would add -Itools/lib and get dependencies for
-> libtraceevent, libsubcmd, libsymbol, libapi and libbpf meaning that
-> overriding these libraries would change the link time dependency but
-> the headers would erroneously come from tools/lib. Fix the build to
-> install headers and then depend on these. To reduce exposing internal
-> headers/APIs some clean up is performed. tools/lib/symbol has a
-> Makefile added, while tools/lib/api and tools/lib/subcmd have install
-> targets added. The pattern used for the dependencies in Makefile.perf
-> is modelled on libbpf.
->
-> The problem and solution were motivated by this issue and discussion:
-> https://lore.kernel.org/lkml/CAEf4BzbbOHQZUAe6iWaehKCPQAf3VC=hq657buqe2_yRKxaK-A@mail.gmail.com/
->
-> v2. Fix a MANIFEST issue for the source tar ball. Add dependencies for
->     the installed header files so that the build doesn't overtake
->     building these dependencies. Both issues reported by Arnaldo
->     Carvalho de Melo <acme@kernel.org>.
->
-> Ian Rogers (14):
->   tools lib api: Add install target
->   tools lib subcmd: Add install target
->   perf build: Install libsubcmd locally when building
->   perf build: Install libapi locally when building
->   perf build: Install libperf locally when building
->   perf build: Install libtraceevent locally when building
->   tools lib api: Add missing install headers
->   tools lib perf: Add missing install headers
->   tool lib symbol: Add Makefile/Build
->   perf build: Install libsymbol locally when building
->   perf expr: Tidy hashmap dependency
->   perf thread_map: Reduce exposure of libperf internal API
->   perf cpumap: Tidy libperf includes
->   perf build: Use tools/lib headers from install path
+bpf_prog_pack, a customized allocator that packs multiple bpf programs
+into preallocated memory chunks, was proposed [1] to address it. This
+series extends this support on powerpc.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Patches 1 & 2 add the arch specific functions needed to support this
+feature. Patch 3 enables the support for powerpc. The last patch
+ensures cleanup is handled racefully.
 
-Thanks,
-Namhyung
+Tested the changes successfully on a PowerVM. patch_instruction(),
+needed for bpf_arch_text_copy(), is failing for ppc32. Debugging it.
+Posting the patches in the meanwhile for feedback on these changes.
 
+[1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
 
->
->  tools/lib/api/Makefile                        |  52 +++++
->  tools/lib/perf/Makefile                       |  10 +-
->  tools/lib/subcmd/Makefile                     |  49 +++++
->  tools/lib/symbol/Build                        |   1 +
->  tools/lib/symbol/Makefile                     | 115 +++++++++++
->  tools/perf/.gitignore                         |   7 +-
->  tools/perf/MANIFEST                           |   3 +-
->  tools/perf/Makefile.config                    |   2 -
->  tools/perf/Makefile.perf                      | 192 ++++++++++++++----
->  tools/perf/builtin-stat.c                     |   1 +
->  tools/perf/builtin-trace.c                    |   4 +-
->  tools/perf/tests/cpumap.c                     |   2 +-
->  tools/perf/tests/expr.c                       |   1 +
->  tools/perf/tests/openat-syscall.c             |   1 +
->  tools/perf/tests/pmu-events.c                 |   1 +
->  tools/perf/tests/thread-map.c                 |   1 +
->  tools/perf/util/Build                         |   5 -
->  tools/perf/util/auxtrace.h                    |   2 +-
->  tools/perf/util/bpf-loader.c                  |   4 -
->  tools/perf/util/bpf_counter.c                 |   2 +-
->  tools/perf/util/cpumap.c                      |   1 +
->  tools/perf/util/cpumap.h                      |   2 +-
->  tools/perf/util/evsel.c                       |   5 +-
->  tools/perf/util/evsel.h                       |   2 -
->  tools/perf/util/expr.c                        |   1 +
->  tools/perf/util/expr.h                        |   7 +-
->  tools/perf/util/metricgroup.c                 |   1 +
->  tools/perf/util/python.c                      |   6 +-
->  .../scripting-engines/trace-event-python.c    |   2 +-
->  tools/perf/util/stat-shadow.c                 |   1 +
->  tools/perf/util/stat.c                        |   4 -
->  tools/perf/util/thread_map.c                  |   1 +
->  tools/perf/util/thread_map.h                  |   2 -
->  33 files changed, 402 insertions(+), 88 deletions(-)
->  create mode 100644 tools/lib/symbol/Build
->  create mode 100644 tools/lib/symbol/Makefile
->
-> --
-> 2.38.1.431.g37b22c650d-goog
->
+Hari Bathini (3):
+  powerpc/bpf: implement bpf_arch_text_copy
+  powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
+  powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+
+ arch/powerpc/net/bpf_jit.h        |  18 +--
+ arch/powerpc/net/bpf_jit_comp.c   | 194 ++++++++++++++++++++++++------
+ arch/powerpc/net/bpf_jit_comp32.c |  26 ++--
+ arch/powerpc/net/bpf_jit_comp64.c |  32 ++---
+ 4 files changed, 198 insertions(+), 72 deletions(-)
+
+-- 
+2.37.3
+
