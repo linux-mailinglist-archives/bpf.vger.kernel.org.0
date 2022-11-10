@@ -2,109 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BD462453B
-	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 16:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF7F624582
+	for <lists+bpf@lfdr.de>; Thu, 10 Nov 2022 16:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbiKJPKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 10:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S231549AbiKJPTr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 10:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbiKJPKU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 10:10:20 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6336E2BB0D;
-        Thu, 10 Nov 2022 07:10:20 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A5B6C37E;
-        Thu, 10 Nov 2022 15:10:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A5B6C37E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1668093019; bh=mBBbrMtJ5EuS0waUjuX4ugyR94/nkClQDPlg7UQzF8Y=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fMIg9GgJX6Yi1LkwBsIBU6h2mwkmwarirOjb/su2PGoW6AQeQJK3eTJId6Wxgil4l
-         Isz1r9IqAHVjwMQEAXh8FUAe/HP+Qnx00HR8yjoI8ICNEAIL1PP8ePz3X2Plh48pxF
-         s14Sz9HSryXXL1Xt55tLGvXFHkHGn8kzD3QGaojQbuyZ+o9OimM08WYil3dA9eYvcO
-         Z9yBE7PlH6ZqDTWq62s3OReyeP7aOtfgGZsa4h6ndsxoAM2vv6kfJr+Ns8aLZIP4Fo
-         X3/yxLKBIz/ZczuKvT46AUTA3r/AK+YM0HL8BIbykjzoBQY2TLNel2Aj3/ZswAkEM4
-         W97k7Z43jx6jw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, bpf@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v4 04/17] iommufd: Document overview of iommufd
-In-Reply-To: <Y20QotPsxivvV53l@nvidia.com>
-References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <4-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <Y2zE0zfnQ7mt740i@debian.me> <87v8nmhnkl.fsf@meer.lwn.net>
- <Y20QotPsxivvV53l@nvidia.com>
-Date:   Thu, 10 Nov 2022 08:10:19 -0700
-Message-ID: <87r0yahmlg.fsf@meer.lwn.net>
+        with ESMTP id S231551AbiKJPTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 10:19:25 -0500
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3947F1F9E4;
+        Thu, 10 Nov 2022 07:18:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1668093515;
+        bh=WKAaVON2ncuiTViXUV+2Pk+5RbBLa1ZdK2Z4ndXxZMQ=;
+        h=From:To:Cc:Subject:Date;
+        b=pQnqhmtIbEmvHoXq1aE7qIGgcoxR0pN4NNxRxH0jcN9BJiDKIktU4vI1nNJcxOQ4J
+         yAPWpU0lZrg9GEyhAwjNnLeFAVGVcvut9AYAiSUQSC46qmWDR7NoCUwWsoJZuFKq9n
+         QaT+IdFdI8hcbQjkiFZ++fqZg7gmQnoIhSWKX1c0=
+Received: from localhost.localdomain ([111.199.191.46])
+        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+        id 4542142F; Thu, 10 Nov 2022 23:17:20 +0800
+X-QQ-mid: xmsmtpt1668093440tv75ycliw
+Message-ID: <tencent_3E0335A1CE2C91CB09159057B15138441F07@qq.com>
+X-QQ-XMAILINFO: M7uElAZZZMmFzi406KAbOEUgH0eGd75eD6bJqID8rYRD5CrJERuxDIF0WfeAdX
+         9jOU7DAdGKxOFYXWDsC34QRU938KhVZumwwYUl1gwPNEzU7lruJ7tCaDoPHmM4bpNm8osR4667+Z
+         /k0xfRURYd8v6yQY7rCqx0Fu61FNzR1YbMxA8ATQXtSn7ALy6buG6UrvEl7V8NaYtZiKCIHNVPFf
+         sk3knfOzCmB08uCnMTiQ99flslita/eYY48uVapJxPaJZeZLrgBUQEASa/U0Pb7VX2oukbX6J6hZ
+         mGAY/8uQts+kb++ROdfYYmYMC/R+d9TWWotPNNq5TYy9ubk/Fau7KiWSV2GMr5RSirHzqB3dmazv
+         kMDXbINCHqP+sCAt8XIVEpWkOXnulk5jZXvbF4XVAnPnfBIommDv2PfbF67JiMFp4ZnbrZPGHq7w
+         ZzhLln+LgOzLXtEIxpI/U6Vsi3hNUhsHQk137ooL/J/nXL+lXA7P+GzxVyXGnjgDgvYMI9CM6YFb
+         M2oBbRSykvzS05N/M9my/QjRSNdruDyzJKKZWnHcj6eMTSUUVJ4T7b4cGajdIBNVUtAoSpCrgh/p
+         mdvWA5Refy5skFGFWYYiyP9TpuVj2Ss3zuAFwwWgYZ/6ZroAaB+e+GXNumKDAWC/vFPO5aicSRIt
+         wHKvzBRuLScGua9PyYVF/y7CCgoQlZv94z67ak81fcff/I7TfSN3Uc5xRDXzFUQr3sWzTW8rzDC9
+         DUoh24GIhG02CdyvrDR9uJzYZi6caPyryWZEqdnUS49vynvYbIQjrmzAL8Y6uvvXeBicyLGNxLS9
+         73NLk70kim0EAnJ/nJdjnoM+U2QQrRxvHNAthjwJf9pwJqdf/rc4j83Js9YBMFtX3/LRKEy3wyQA
+         tes0k32SwsEIW8yR4lRkjgJXXgn7ISpgw+dH/BST3xf5RXavBc9IzfuTPBvrIpVySVTGZbYawyHh
+         OVM9y4GEYi6qel8XYDVNItlR06K4wHEwgM1G2rgu6uOCJShR3TWw==
+From:   Rong Tao <rtoax@foxmail.com>
+To:     davem@davemloft.net
+Cc:     Rong Tao <rongtao@cestc.cn>, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list),
+        bpf@vger.kernel.org (open list:BPF [MISC])
+Subject: [PATCH] net/ipv4: Fix error: type name requires a specifier or qualifier
+Date:   Thu, 10 Nov 2022 23:17:12 +0800
+X-OQ-MSGID: <20221110151712.40621-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jason Gunthorpe <jgg@nvidia.com> writes:
+From: Rong Tao <rongtao@cestc.cn>
 
-> On Thu, Nov 10, 2022 at 07:49:14AM -0700, Jonathan Corbet wrote:
->
->> The *real* problem, methinks, is that the directives are added in patch 4
->> of the series, but the documentation doesn't show up until later.  So
->> the real fix would be to simply move this patch down.  Or just not worry
->> about it, since it all works out in the end and nobody will be bisecting
->> a docs build.
->
-> That is half the problem, the other is this:
->
-> https://lore.kernel.org/r/0-v1-c80e152ce63b+12-kdoc_export_ns_jgg@nvidia.com
->
-> Since even after the whole series the EXPORT_NS functions don't parse
-> properly. I'm going to put this patch before the doc patch and ignore
-> the bisection problem.
->
-> I'd like someone to say they are happy with the perl :)
+since commit 5854a09b4957("net/ipv4: Use __DECLARE_FLEX_ARRAY() helper")
+linux/in.h use __DECLARE_FLEX_ARRAY() macro, and sync to tools/ in commit
+036b8f5b8970("tools headers uapi: Update linux/in.h copy"), this macro
+define in linux/stddef.h, which introduced in commit 3080ea5553cc("stddef:
+Introduce DECLARE_FLEX_ARRAY() helper"), thus, stddef.h should be included
+in in.h, which resolves the compilation error below:
 
-I'm not happy with *any* perl! :)
+How to reproduce this compilation error:
 
-I've been sitting on that patch because I was under the impression
-another version was coming - was that wrong?
+$ make -C tools/testing/selftests/bpf/
+In file included from progs/bpf_flow.c:8:
+linux/in.h:199:3: error: type name requires a specifier or qualifier
+                __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                ^
+linux/in.h:199:32: error: type specifier missing, defaults to 'int' [-Werror,-Wimplicit-int]
+                __DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
+                                             ^
+2 errors generated.
 
-Thanks,
+Same error occurs with cgroup_skb_sk_lookup_kern.c, connect_force_port4.c,
+connect_force_port6.c, etc. that contain the header linux/in.h.
 
-jon
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ include/uapi/linux/in.h       | 1 +
+ tools/include/uapi/linux/in.h | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
+index f243ce665f74..07a4cb149305 100644
+--- a/include/uapi/linux/in.h
++++ b/include/uapi/linux/in.h
+@@ -20,6 +20,7 @@
+ #define _UAPI_LINUX_IN_H
+ 
+ #include <linux/types.h>
++#include <linux/stddef.h>
+ #include <linux/libc-compat.h>
+ #include <linux/socket.h>
+ 
+diff --git a/tools/include/uapi/linux/in.h b/tools/include/uapi/linux/in.h
+index f243ce665f74..07a4cb149305 100644
+--- a/tools/include/uapi/linux/in.h
++++ b/tools/include/uapi/linux/in.h
+@@ -20,6 +20,7 @@
+ #define _UAPI_LINUX_IN_H
+ 
+ #include <linux/types.h>
++#include <linux/stddef.h>
+ #include <linux/libc-compat.h>
+ #include <linux/socket.h>
+ 
+-- 
+2.31.1
+
