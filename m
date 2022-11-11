@@ -2,104 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1576261E1
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78976261F0
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbiKKT3f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 14:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
+        id S233908AbiKKTaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:30:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbiKKT3e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 14:29:34 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128FC6CA1D;
-        Fri, 11 Nov 2022 11:29:34 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id m22so14752057eji.10;
-        Fri, 11 Nov 2022 11:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCawkF6LEOLVHZwjEBGXQw5suytiQvMMfoA6wpZGHVE=;
-        b=NvFHGwEaTEky/6SwEmA6/+dQIm3mjVTIBSFAB8Yldz+y7ah2uzyCr1bNLRSL2q61dp
-         2bUbvuqwk75IH1qmj/az6iTNl/R4/TRYXJxV63DotfQzEMVdHPRoPLf6JatS1ubkt6/N
-         zi06gF2M6DRAgDiX0CwzSmYaeLINCWEGOIkyRuLVeG4V/JF7AUNM8cKvAWGuCjRjLO80
-         zTuYMpQzXgOqjHkR9SYkQnaOBqQyW76sbgk3IRWM19MZn1LaaAdSF3gkhIipsqoBp2TG
-         zfYRvp1A6LXKlJXHY3uwhpq0SHnU3UWi5cMdocbmL5dgHSSKHCfDF56vpKoMcD7SGFNP
-         htOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FCawkF6LEOLVHZwjEBGXQw5suytiQvMMfoA6wpZGHVE=;
-        b=wNCvqymoxg/w69cP/w4iiFPNuNjAh4XJvTUURINXKzTgWDD6qB4ffcMC5Cz7AzOepj
-         /7c+8AWgQs8NUUk4pWm1VNkhqEG5qHhZk1JP4HKq7uBX9X7+sXdInApVRScDKvZjHi6k
-         l6CNWzDDBsd5qZF7T08Si/RQFEbf+mgUPulDcsBxdvuRwfRNtwOa82/dpgyDfANOxtQd
-         M+wuv74An+7TCdgB3Wx7jNbczdp4kdnN27jbkJNOQnInRM21jRpd/4jm3LDXoGBxMgH5
-         nAXB5497hpmFAe4gIocbKUvqEOtcDxy158MBbmHO0Gt2aBMzGTOdW7/q09p9LZ2zHron
-         UcgA==
-X-Gm-Message-State: ANoB5pnJPdj6PE1FAFNK4XlWVTiWdziNskOFxam59x0vd6nPxKZeRH5t
-        HIEc7yz6qdhOci9ZZ68KcGOLbDZTBNZxkSAAEszOKvkR
-X-Google-Smtp-Source: AA0mqf6RzbRIsUumsadVwc6BggJIswJbMaC8VzAszVy9wH+YtA5aCty1z5XukxmeK3js7vYabgl0pIkAFCe6QYPwCcs=
-X-Received: by 2002:a17:906:1d08:b0:7a9:ecc1:2bd2 with SMTP id
- n8-20020a1709061d0800b007a9ecc12bd2mr3030830ejh.545.1668194972619; Fri, 11
- Nov 2022 11:29:32 -0800 (PST)
+        with ESMTP id S233593AbiKKTaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:30:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212176CA2C;
+        Fri, 11 Nov 2022 11:30:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 946BEB82798;
+        Fri, 11 Nov 2022 19:30:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 301A9C433B5;
+        Fri, 11 Nov 2022 19:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668195016;
+        bh=+v1+NIo24cO3WPlk7aT5pT5gGXZgqePZFhna1SyKOpQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=beP4hXYfxhapV0/f+vgX82UyoK7M9/yEDWnlPU56MXkvkI2mcnolnB5hNiSZxfJQx
+         nJTGTd0PIVs4RUo5ItuF7KBqQHscitgGABljnInUBBzA+xzrDfmRhxfrFrdVULHVRp
+         RZAUpEmVlnFG+Q0L7/NBThpuM+tmS1hFpWxxStfPm9jz8sRdXYsRSDgxbBrWHr33eG
+         LJoHX6erF8gDQZ8PFV07tJFFQRa5ekeqsn3lPznElpMHf0074ed5/RpnbV0pmlreLp
+         kjDKcAoxQ13Gth30kWD0EeNH6ER9R6cICHE5m5jFGFb6tR+kduvMoL4D1UQkt8R7IK
+         sVsIwFfoo9XeA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 11690E4D022;
+        Fri, 11 Nov 2022 19:30:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221107165207.2682075-1-mtahhan@redhat.com>
-In-Reply-To: <20221107165207.2682075-1-mtahhan@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 11:29:20 -0800
-Message-ID: <CAEf4BzacLJ-yE0x+JYSbZ=azfSMXgYzb9Fw2-_Gh+m3EGyPDRA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/1] docs: BPF_MAP_TYPE_CPUMAP
-To:     mtahhan@redhat.com
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
-        thoiland@redhat.com, donhunte@redhat.com,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/1] Document BPF_MAP_TYPE_LPM_TRIE
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166819501606.28850.1971179882661561739.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Nov 2022 19:30:16 +0000
+References: <20221101114542.24481-1-donald.hunter@gmail.com>
+In-Reply-To: <20221101114542.24481-1-donald.hunter@gmail.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, corbet@lwn.net
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 7, 2022 at 8:06 AM <mtahhan@redhat.com> wrote:
->
-> From: Maryam Tahhan <mtahhan@redhat.com>
->
-> Add documentation for BPF_MAP_TYPE_CPUMAP including
-> kernel version introduced, usage and examples.
->
-> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
->
-> v3:
-> - Updated introduction to use cpumap definition from kernel/bpf/cpumap.c
-> - Separated examples and APIs under Kernel and Userspace headings.
-> - Updated Userspace function signatures.
-> - Fixed typos.
-> - Migrated the use of u32 types to __u32.
->
-> v2:
-> - Removed TMI.
-> - Updated example to use a round robin scheme.
->
-> Maryam Tahhan (1):
->   docs: BPF_MAP_TYPE_CPUMAP
->
->  Documentation/bpf/map_cpumap.rst | 166 +++++++++++++++++++++++++++++++
->  kernel/bpf/cpumap.c              |   9 +-
->  2 files changed, 172 insertions(+), 3 deletions(-)
->  create mode 100644 Documentation/bpf/map_cpumap.rst
->
-> --
-> 2.35.3
->
+Hello:
 
-Similar to Donald's patch, there is no need for a cover letter for
-single patch submission. Applied to bpf-next, thanks.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue,  1 Nov 2022 11:45:41 +0000 you wrote:
+> Add documentation for BPF_MAP_TYPE_LPM_TRIE including kernel
+> BPF helper usage, userspace usage and examples.
+> 
+> v1->v2:
+> - Point to code in tools/testing/selftests/... as requested
+>   by John Fastabend
+> - Clean up some wording
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/1] Document BPF_MAP_TYPE_LPM_TRIE
+    https://git.kernel.org/bpf/bpf-next/c/656234e8e9c1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
