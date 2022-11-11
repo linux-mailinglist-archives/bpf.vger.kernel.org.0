@@ -2,81 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFAD6261AF
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426DD6261B9
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbiKKSz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 13:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S233654AbiKKS7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 13:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbiKKSz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 13:55:26 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21D71F1F
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:55:25 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id d3so2957216ils.1
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:55:25 -0800 (PST)
+        with ESMTP id S230303AbiKKS7I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 13:59:08 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617BF5F869
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:59:07 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ft34so14552504ejc.12
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:59:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g9eX0z58SKZAsOdWY7m+4OycDcrautiSe0xtp5Jr/YA=;
-        b=oBkyoNti/n1H5DmNo5si5qEcD97KnH26ULsAv7/mh/gPF0I34K0iSx2MPU9UD9msZm
-         OGWU3y4E2vepo7LW/uixh9h+9a92AbtaGcYsE1/LjAjOXmzCpzvh3pmBPWttCVExH/yf
-         feeD9w1lk1m/pbK2qonPx/ctIIAYxGBHzYU6udBvP0y03PWol2GJBNV1HgVh6+oZjGEK
-         SNJqvAdzsOZnmzyY/CR8tGtwXuJHbnVwSHCM4QqJRXM4ocObhIWDmVZZwsRl/gLI3mso
-         +yKkXrnYTky4dY+fCjs0mZjcSZGlgSgVsw6+uxDkLuRJP5GQWH63URM3rN3hWmdNpy2d
-         nO0w==
+        bh=OdCzXFKBBW7NkirtC8r0cdGq04Sb9Pl3+uTqudpwjcA=;
+        b=cVrPq3++I6kQlBXVmInanm/hA5L1Ts2fn9hWjsyPO5chE57ZZO3aVpRgCTBPkWohup
+         LiS3YtnxZSm7wcZ/v/fll+R5HsI3RFaYX4tuqcbXqBVMLf6JbsNfVa9bzM3yYNix/l3Y
+         MDh2IhVZn0gU8u6jAB0szA1SHqW89J5y8BYv6BMIN0WauEOnpqKMi1fMBdJW8xCk2ECl
+         hMUnJMlTPa42kmaH6EK1lYYxjiSK8iaprjA3to0EtVm3CuNuBUml07Ybst9c/rUiRH60
+         AnwRV2LrM8whDcPTEpU1xVtY8o/cinYT9vUumQbPf7BmvdPZKIiLKE9lp4njmoWu9ter
+         DmHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g9eX0z58SKZAsOdWY7m+4OycDcrautiSe0xtp5Jr/YA=;
-        b=VCTJXwjOwBwAxgZt1QxvJYnyw25UVhoB4fm2THjDGKSbCKrBoB/DYcHp+rLLXA/X+t
-         Yl4569dnMq5GV9Vi/Wz9LYQ/gWHxeXUyYen4nsxOM+8Mr0IULQ4A5l9HlwgFVq35BZpu
-         s3f20LEjCnGK2YjlLn5WEgJIuOSweUtiYF93yRpnfTVtLbuNn2LNhLRvoarcSphhwn7o
-         2TQ7Xi9q2LtAPIhEx0dGsmn0AX5YcytLZcUXIF5ppkbsbh18YrtVhuDkCncvhuFiNAOs
-         /0d89USD9URfegDbNWiv2ntj66QS/T8lmWnTs2a9n6W+1cJZoOBfUNfmTFq8C9/oDvYi
-         TmYQ==
-X-Gm-Message-State: ANoB5pmpnOZYCEpKExmqlEGgflEZZwVG0v3V1mdp8t4auPyv0V8cVqhh
-        8bLO1KL63gr0BMcLoZ6SQUalsMQiDZdmT8LvL6iYy1EXiSK6tzhaInE=
-X-Google-Smtp-Source: AA0mqf6hLmbobvzmsTs81beRE0LT0fUFgNcuW/eZQJXVhOOi5VsuVDwTovAvzok6/rTjGxsKTMoroYPCFtGti9Yy2CA=
-X-Received: by 2002:a92:de41:0:b0:2ff:9e9f:6604 with SMTP id
- e1-20020a92de41000000b002ff9e9f6604mr1734778ilr.20.1668192925093; Fri, 11 Nov
- 2022 10:55:25 -0800 (PST)
+        bh=OdCzXFKBBW7NkirtC8r0cdGq04Sb9Pl3+uTqudpwjcA=;
+        b=6DGMkDXlWlInODw3XumnNCyKFYirUWxY38qC+gJN+i3XvzmHHpjy85TP2yjMcq0OqN
+         4qxA6J0bex66rnhCX6kV9jrpMVFNzK+Y8vafBthk2od0EJo6z4Is1jZDjjhfhwKEOSDe
+         fc8SpfBbNFvr4bXO5FOY+roDD6OH1+06ifyXfJOLgOiTnlXS9jgii2XyERHesfOwA2YR
+         J4T2mIw46ZjtdDEF+nLBoA4CiUAfy32NYP1ycwN2xee1GA2TMN3290l0gFnAJC82GWN7
+         oljtq1pFXUAShOCzL2EMg+1qfZ899KkZXq7OS7gJkYgcT6O+6gV5sg3FdDFf7NzpC/pJ
+         D78Q==
+X-Gm-Message-State: ANoB5pnKbChNzeA9C9YxNNhTL3tpT+o5PsnHuX14pfhg73B+gFLC3cNY
+        8CWzYFznOjvk3W9fG+sAulEHEMMsAtlrk1ktw2hZ4waJ
+X-Google-Smtp-Source: AA0mqf7NATcUkcJFcFJFk4b/sjJTGJc5SkR+pmKT+EPMGUpbvWJc0aO51AkPgaL45kBEWVf4TaeiFhVv+f4C85yZXNY=
+X-Received: by 2002:a17:907:2b26:b0:7ae:c460:c65f with SMTP id
+ gc38-20020a1709072b2600b007aec460c65fmr2938572ejc.226.1668193145730; Fri, 11
+ Nov 2022 10:59:05 -0800 (PST)
 MIME-Version: 1.0
-References: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
- <Y26FgIJLR3nVKjcb@google.com> <Y26MSS2twSskZ5J2@lore-desk>
- <CAKH8qBvxZBX7_GQYQzSrZ5j=P3rViyqNq3V3oo5CtEMR9BQepA@mail.gmail.com> <Y26QjqvVTosoCgPT@lore-desk>
-In-Reply-To: <Y26QjqvVTosoCgPT@lore-desk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 11 Nov 2022 10:55:14 -0800
-Message-ID: <CAKH8qBsA-r=7S9hrsX=S7wXMaUikNh0gY=PdQK0urjORahrVBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier 'NF_NAT_MANIP_SRC'
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Rong Tao <rtoax@foxmail.com>, ast@kernel.org,
-        Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
-        <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-2-eddyz87@gmail.com>
+In-Reply-To: <20221110144320.1075367-2-eddyz87@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 11 Nov 2022 10:58:53 -0800
+Message-ID: <CAEf4Bzbnd2UOT9Mko+0Yf9Kgsn-sGsV43MKExYjEaYbWg0WgZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] libbpf: __attribute__((btf_decl_tag("...")))
+ for btf dump in C format
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,85 +67,191 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 10:12 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> > On Fri, Nov 11, 2022 at 9:54 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > >
-> > > > On 11/11, Rong Tao wrote:
-> > > > > From: Rong Tao <rongtao@cestc.cn>
-> > > >
-> > > > > commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
-> > > > > introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
-> > > > > and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
-> > > > > kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
-> > > > > nf_nat_manip_type to test_bpf_nf.c fix this error.
-> > > >
-> > > > > How to reproduce the error:
-> > > >
-> > > > >      $ make -C tools/testing/selftests/bpf/
-> > > > >      ...
-> > > > >        CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-> > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
-> > > > >              bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-> > > > >                                                             ^
-> > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_DST'
-> > > > >              bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-> > > > >                                                             ^
-> > > > >      2 errors generated.
-> > > >
-> > > > $ grep NF_NAT_MANIP_SRC
-> > > > ./tools/testing/selftests/bpf/tools/include/vmlinux.h
-> > > >         NF_NAT_MANIP_SRC = 0,
-> > > >
-> > > > Doesn't look like your kernel config compiles netfilter nat modules?
-> > >
-> > > yes, in bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
-> > > is compiled as built-in. This issue occurs just if it is compiled as module.
-> >
-> > Right, but if we unconditionally define this enum, I think you'll
-> > break the case where it's compiled as a built-in?
-> > Since at least in my vmlinux.h I have all the defines and this test
-> > includes vmlinux.h...
+> Clang's `__attribute__((btf_decl_tag("...")))` is represented in BTF
+> as a record of kind BTF_KIND_DECL_TAG with `type` field pointing to
+> the type annotated with this attribute. This commit adds
+> reconstitution of such attributes for BTF dump in C format.
 >
-> yes, it is correct.
+> BTF doc says that BTF_KIND_DECL_TAGs should follow a target type but
+> this is not enforced and tests don't honor this restriction.
+> This commit uses hashmap to map types to the list of decl tags.
+> The hashmap is filled incrementally by the function
+> `btf_dump_assign_decl_tags` called from `btf_dump__dump_type` and
+> `btf_dump__dump_type_data`.
+>
+> It is assumed that total number of types annotated with decl tags is
+> relatively small, thus some space is saved by using hashmap instead of
+> adding a new field to `struct btf_dump_type_aux_state`.
+>
+> It is assumed that list of decl tags associated with a single type is
+> small. Thus the list is represented by an array which grows linearly.
+>
+> To accommodate older Clang versions decl tags are dumped using the
+> following macro:
+>
+>  #if __has_attribute(btf_decl_tag)
+>  #define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
+>  #else
+>  #define __btf_decl_tag(x)
+>  #endif
+>
+> The macro definition is emitted upon first call to `btf_dump__dump_type`.
+>
+> Clang allows to attach btf_decl_tag attributes to the following kinds
+> of items:
+> - struct/union                   supported
+> - struct/union field             supported
+> - typedef                        supported
+> - global variables               supported
+> - function prototype parameters  supported
+> - function                       not applicable
+> - function parameter             not applicable
+> - local variables                not applicable
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/lib/bpf/btf_dump.c | 181 +++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 173 insertions(+), 8 deletions(-)
+>
 
-And it will break the CI:
+[...]
 
-$ grep NETFILTER tools/testing/selftests/bpf/config
-CONFIG_NETFILTER=y
+> +/*
+> + * Scans all BTF objects looking for BTF_KIND_DECL_TAG entries.
+> + * The id's of the entries are stored in the `btf_dump.decl_tags` table,
+> + * grouped by a target type.
+> + */
+> +static int btf_dump_assign_decl_tags(struct btf_dump *d)
+> +{
+> +       __u32 id, new_cnt, type_cnt = btf__type_cnt(d->btf);
+> +       struct decl_tag_array *old_tags, *new_tags;
+> +       const struct btf_type *t;
+> +       size_t new_sz;
+> +       int err;
+> +
+> +       for (id = d->next_decl_tag_scan_id; id < type_cnt; id++) {
+> +               t = btf__type_by_id(d->btf, id);
+> +               if (!btf_is_decl_tag(t))
+> +                       continue;
+> +
+> +               old_tags = NULL;
+> +               hashmap__find(d->decl_tags, t->type, &old_tags);
+> +               /* Assume small number of decl tags per id, increase array size by 1 */
+> +               new_cnt = old_tags ? old_tags->cnt + 1 : 1;
+> +               if (new_cnt == UINT_MAX)
+> +                       return -ERANGE;
 
-So yeah, not sure what to do here. The selftests expect "sane" configs
-(see that bpf/config above) which is not what the bot seems to be
-doing...
+this can't happen, BTF IDs don't go up to UINT_MAX even, let's drop
+unnecessary check
 
-> > > Regards,
-> > > Lorenzo
-> > >
-> > > >
-> > > > > Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
-> > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> > > > > ---
-> > > > >   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
-> > > > >   1 file changed, 5 insertions(+)
-> > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > index 227e85e85dda..307ca166ff34 100644
-> > > > > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > @@ -3,6 +3,11 @@
-> > > > >   #include <bpf/bpf_helpers.h>
-> > > > >   #include <bpf/bpf_endian.h>
-> > > >
-> > > > > +enum nf_nat_manip_type {
-> > > > > +   NF_NAT_MANIP_SRC,
-> > > > > +   NF_NAT_MANIP_DST
-> > > > > +};
-> > > > > +
-> > > > >   #define EAFNOSUPPORT 97
-> > > > >   #define EPROTO 71
-> > > > >   #define ENONET 64
-> > > > > --
-> > > > > 2.31.1
-> > > >
+> +               new_sz = sizeof(struct decl_tag_array) + new_cnt * sizeof(old_tags->tag_ids[0]);
+> +               new_tags = realloc(old_tags, new_sz);
+> +               if (!new_tags)
+> +                       return -ENOMEM;
+> +
+> +               new_tags->tag_ids[new_cnt - 1] = id;
+> +               new_tags->cnt = new_cnt;
+> +
+> +               /* No need to update the map if realloc have not changed the pointer */
+> +               if (old_tags == new_tags)
+> +                       continue;
+
+this is a nice and simple optimization, I like it
+
+> +
+> +               err = hashmap__set(d->decl_tags, t->type, new_tags, NULL, NULL);
+> +               if (!err)
+> +                       continue;
+> +               /*
+> +                * If old_tags != NULL there is a record that holds it in the map, thus
+> +                * the hashmap__set() call should not fail as it does not have to
+> +                * allocate. If it does fail for some bizarre reason it's a bug and double
+> +                * free is imminent because of the previous realloc call.
+> +                */
+> +               if (old_tags)
+> +                       pr_warn("hashmap__set() failed to update value for existing entry\n");
+> +               free(new_tags);
+> +               return err;
+
+but this is an overkill, it should not fail and btf_dump is not the
+place to log bugs in hashmap, please do just
+
+(void)hashmap__set(...);
+
+
+> +       }
+> +
+> +       d->next_decl_tag_scan_id = type_cnt;
+> +
+> +       return 0;
+> +}
+> +
+
+[...]
+
+>  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
+> @@ -1438,9 +1593,12 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+>                 }
+>                 case BTF_KIND_FUNC_PROTO: {
+>                         const struct btf_param *p = btf_params(t);
+> +                       struct decl_tag_array *decl_tags = NULL;
+>                         __u16 vlen = btf_vlen(t);
+>                         int i;
+>
+> +                       hashmap__find(d->decl_tags, id, &decl_tags);
+> +
+>                         /*
+>                          * GCC emits extra volatile qualifier for
+>                          * __attribute__((noreturn)) function pointers. Clang
+
+should there be btf_dump_emit_decl_tags(d, decl_tags, -1) somewhere
+here to emit tags of FUNC_PROTO itself?
+
+> @@ -1481,6 +1639,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+>
+>                                 name = btf_name_of(d, p->name_off);
+>                                 btf_dump_emit_type_decl(d, p->type, name, lvl);
+> +                               btf_dump_emit_decl_tags(d, decl_tags, i);
+>                         }
+>
+>                         btf_dump_printf(d, ")");
+> @@ -1896,6 +2055,7 @@ static int btf_dump_var_data(struct btf_dump *d,
+>                              const void *data)
+>  {
+>         enum btf_func_linkage linkage = btf_var(v)->linkage;
+> +       struct decl_tag_array *decl_tags = NULL;
+>         const struct btf_type *t;
+>         const char *l;
+>         __u32 type_id;
+> @@ -1920,7 +2080,10 @@ static int btf_dump_var_data(struct btf_dump *d,
+>         type_id = v->type;
+>         t = btf__type_by_id(d->btf, type_id);
+>         btf_dump_emit_type_cast(d, type_id, false);
+> -       btf_dump_printf(d, " %s = ", btf_name_of(d, v->name_off));
+> +       btf_dump_printf(d, " %s", btf_name_of(d, v->name_off));
+> +       hashmap__find(d->decl_tags, id, &decl_tags);
+> +       btf_dump_emit_decl_tags(d, decl_tags, -1);
+> +       btf_dump_printf(d, " = ");
+>         return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
+>  }
+>
+> @@ -2421,6 +2584,8 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+>         d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
+>         d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
+>
+> +       btf_dump_assign_decl_tags(d);
+> +
+
+I'm actually not sure we want those tags on binary data dump.
+Generally data dump is not type definition dump, so this seems
+unnecessary, it will just distract from data itself. Let's drop it for
+now? If there would be a need we can add it easily later.
+
+>         ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
+>
+>         d->typed_dump = NULL;
+> --
+> 2.34.1
+>
