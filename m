@@ -2,79 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AAA62631C
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 21:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8AD626326
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 21:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbiKKUoX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 15:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        id S231625AbiKKUp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 15:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbiKKUoW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 15:44:22 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494C145A26;
-        Fri, 11 Nov 2022 12:44:21 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id a67so9149115edf.12;
-        Fri, 11 Nov 2022 12:44:21 -0800 (PST)
+        with ESMTP id S234522AbiKKUp4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 15:45:56 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB18833A2;
+        Fri, 11 Nov 2022 12:45:55 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id g24so5121613plq.3;
+        Fri, 11 Nov 2022 12:45:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B12MKUKtvOLgGXlIX/YXOWokDcl/6BmGBXPeQeFKB1E=;
-        b=QqNbuF6lthzfDA6xT4mz5BzHhSuYLXOIKWaFH2nOgbkCTmUcA3ivV78Yux5CyWdkrL
-         1ze/V8s9ZmYHBlQq7wbdbInXAhqER2LdkFcSmTQs/KEqLIHkcpAx7AXucMc4hyl4GGRC
-         +VejOznWiluaEmE6ErRdH9xyaRf93sNAez0dvr0fbUHK+F7mRzaG36i6FqLmZyEHCHI2
-         KhJeN9+ioCdMSWiStLOb8NB4HsietthS/l17NFUJ4ZN1q1U1j6dkAaWdHmFtcudPPZth
-         UitA8kEC6Yy4nNSfqR3crpmqMzWvxtTHMvjbSZtuR5Axsewj1G7h5rKiiasRj2VJC6X1
-         +4bA==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnI7n9XZqmIR17w46t8MUJxKc1QyxlQoFQRbOEAeGo8=;
+        b=ghpI9XVfAJyyM74p2KldKROpseFBFk3gc6WoZn3NY8JZd0SHq+m18oXuM/3J4ye5TX
+         n3fDjzmj2Kqc2pZY9VqmaE7aNoYsh9A756wN+cKfWv48JlI0KSHwjkj56NSXAl+iGuaM
+         hBti4WA3TPRIzbeijIY7FgCeFqlv4XPAatmwEyZTRhakGZy8FbEfiNrMjcoFGEyHzQM2
+         AahitdOsfddBSTP6fkwFEk7txIrX0MUVKoDzzPVl1xgcJkgaD9+1MrN8EUzUEj/HPTBX
+         91Z6dMetU1365RCsUQKPMko7wKdNksi0QyBGc65tobb4sFbfi2OX8/NwyeVKzE20QcWU
+         W7ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B12MKUKtvOLgGXlIX/YXOWokDcl/6BmGBXPeQeFKB1E=;
-        b=01xh+wOOlObQnzEaPZNV47TrP9edb50ABQnABRnPyion623cV8IjpHe0Pp7o4HW4wA
-         WabQF0dk8P8FMYYe7Q5SfXzVMUBGAlf6BomFLe07p7cDFEjRHfd1hf8w9dcCXDihM70G
-         XrjjJW/fRpKJ2fuFj0dDpDuLYfOddL4LFQqUIapAnE3J61c0Bd3LsZc+zvvyoEtCKvjg
-         hrSfH6WEObg/z/QM1N9w6UnEQbhYGhsTBsJf4aC+AMXTkoEEIK9R39PKBLfB56KPdolU
-         HpFNBbPFJOjf6evgPyrz8MyjPvKd375x2Rc8c9AdyKqMJGB7u9dCq1V9SUCkJG+54Uw7
-         FpYw==
-X-Gm-Message-State: ANoB5pnlMOVgSLedco/RDcWj9GoyyoiZxeSNCRYklgzqEd1KgrIoJr0e
-        +DbIwE/dhQZWhDN93GjdgjvdV4+isVl0D/sez6hYLHKJSFs=
-X-Google-Smtp-Source: AA0mqf65vMJWGStXOYx4lgEyY+XIW3owd1Z1kToC9CtK0I3j/Sto130SsJcwTob3QxEL2+brr5Mk0F7obgMm4PMprfo=
-X-Received: by 2002:a50:9512:0:b0:457:1323:1b7e with SMTP id
- u18-20020a509512000000b0045713231b7emr2910613eda.311.1668199459685; Fri, 11
- Nov 2022 12:44:19 -0800 (PST)
-MIME-Version: 1.0
-References: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
- <Y26FgIJLR3nVKjcb@google.com> <Y26MSS2twSskZ5J2@lore-desk>
- <CAKH8qBvxZBX7_GQYQzSrZ5j=P3rViyqNq3V3oo5CtEMR9BQepA@mail.gmail.com>
- <Y26QjqvVTosoCgPT@lore-desk> <CAKH8qBsA-r=7S9hrsX=S7wXMaUikNh0gY=PdQK0urjORahrVBw@mail.gmail.com>
-In-Reply-To: <CAKH8qBsA-r=7S9hrsX=S7wXMaUikNh0gY=PdQK0urjORahrVBw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 12:44:07 -0800
-Message-ID: <CAEf4BzY0dsog-_1v9Phskt2YzyavL_fNsSi2hUvGZboggDqM2w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier 'NF_NAT_MANIP_SRC'
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Rong Tao <rtoax@foxmail.com>, ast@kernel.org,
-        Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnI7n9XZqmIR17w46t8MUJxKc1QyxlQoFQRbOEAeGo8=;
+        b=MS6FJ4mXrKoKMFN79rvWp5OanxXZluc/YZ3mZU+NDafD0Rug4QBOj5wtrk6pnvsWWP
+         RKQTzgRusgaAHFZq3FkZUl8nHXG7RXQsEptzHLY6qNh3jSqOgxlGtZ/5VPVB/82oBsBk
+         rY0cfC5ZiIXx6K88ptYyqHDsb+S1+/oy1q3HckWXnovKpC4T8D0vcj+Qmu57+L4aeuW2
+         59+DgImYxpH3vVfrq9e4a9zpy/Xpn+OkqzOy3GHCvxp3yhPPx9lRxf2lcIdyTbQzzKRH
+         NXyA99JnXhohLZq5P/luyUj9y8TXsIlPzNyD5qYVE6Ckxg2GWgoXgxLY+PInG4Mop4ar
+         lJLw==
+X-Gm-Message-State: ANoB5pnMS7mERC6Lzb3QApQ+fILdE79tBlu4RWVTC0P4m15/Pf4ylULr
+        mlq1hALCEglIgGDqGMGYHZBQaxObWuBwQA==
+X-Google-Smtp-Source: AA0mqf4CfHK/0b5SOuNYZ7g/gl3mQmf/15k+g4zZRHPmt2xQ/5BDNClybz09JeHVS+G42dkHiLREjw==
+X-Received: by 2002:a17:902:d151:b0:186:7db1:d294 with SMTP id t17-20020a170902d15100b001867db1d294mr4334140plt.68.1668199554918;
+        Fri, 11 Nov 2022 12:45:54 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id k11-20020a170902d58b00b001868d4600b8sm2138027plh.158.2022.11.11.12.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Nov 2022 12:45:54 -0800 (PST)
+Date:   Sat, 12 Nov 2022 02:15:47 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     sdf@google.com
+Cc:     Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
-        <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf] bpf: Fix offset calculation error in
+ __copy_map_value and zero_map_value
+Message-ID: <20221111204547.lyeim477afgfgkhh@apollo>
+References: <20221111125620.754855-1-xukuohai@huaweicloud.com>
+ <Y26f4H7buQXKqQFd@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y26f4H7buQXKqQFd@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -85,94 +79,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 10:55 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Sat, Nov 12, 2022 at 12:47:52AM IST, sdf@google.com wrote:
+> On 11/11, Xu Kuohai wrote:
+> > From: Xu Kuohai <xukuohai@huawei.com>
 >
-> On Fri, Nov 11, 2022 at 10:12 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> >
-> > > On Fri, Nov 11, 2022 at 9:54 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > > >
-> > > > > On 11/11, Rong Tao wrote:
-> > > > > > From: Rong Tao <rongtao@cestc.cn>
-> > > > >
-> > > > > > commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
-> > > > > > introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
-> > > > > > and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
-> > > > > > kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
-> > > > > > nf_nat_manip_type to test_bpf_nf.c fix this error.
-> > > > >
-> > > > > > How to reproduce the error:
-> > > > >
-> > > > > >      $ make -C tools/testing/selftests/bpf/
-> > > > > >      ...
-> > > > > >        CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-> > > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
-> > > > > >              bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-> > > > > >                                                             ^
-> > > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_DST'
-> > > > > >              bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-> > > > > >                                                             ^
-> > > > > >      2 errors generated.
-> > > > >
-> > > > > $ grep NF_NAT_MANIP_SRC
-> > > > > ./tools/testing/selftests/bpf/tools/include/vmlinux.h
-> > > > >         NF_NAT_MANIP_SRC = 0,
-> > > > >
-> > > > > Doesn't look like your kernel config compiles netfilter nat modules?
-> > > >
-> > > > yes, in bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
-> > > > is compiled as built-in. This issue occurs just if it is compiled as module.
-> > >
-> > > Right, but if we unconditionally define this enum, I think you'll
-> > > break the case where it's compiled as a built-in?
-> > > Since at least in my vmlinux.h I have all the defines and this test
-> > > includes vmlinux.h...
-> >
-> > yes, it is correct.
+> > Function __copy_map_value and zero_map_value miscalculated copy offset,
+> > resulting in possible copy of unwanted data to user or kernel.
 >
-> And it will break the CI:
+> > Fix it.
+>
+> > Fixes: cc48755808c6 ("bpf: Add zero_map_value to zero map value with
+> > special fields")
+> > Fixes: 4d7d7f69f4b1 ("bpf: Adapt copy_map_value for multiple offset case")
+> > Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> > ---
+> >   include/linux/bpf.h | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 74c6f449d81e..c1bd1bd10506 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -315,7 +315,7 @@ static inline void __copy_map_value(struct bpf_map
+> > *map, void *dst, void *src, b
+> >   		u32 next_off = map->off_arr->field_off[i];
+>
+> >   		memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
+> > -		curr_off += map->off_arr->field_sz[i];
+> > +		curr_off = next_off + map->off_arr->field_sz[i];
+> >   	}
+> >   	memcpy(dst + curr_off, src + curr_off, map->value_size - curr_off);
+> >   }
+> > @@ -344,7 +344,7 @@ static inline void zero_map_value(struct bpf_map
+> > *map, void *dst)
+> >   		u32 next_off = map->off_arr->field_off[i];
+>
+> >   		memset(dst + curr_off, 0, next_off - curr_off);
+> > -		curr_off += map->off_arr->field_sz[i];
+> > +		curr_off = next_off + map->off_arr->field_sz[i];
+> >   	}
+> >   	memset(dst + curr_off, 0, map->value_size - curr_off);
+> >   }
+>
+> Hmm, does it mean that it currently works only for the cases where
+> these special fields are first/last?
+>
+> Also, what about bpf-next? The same problem seem to exist there?
 >
 
-It does break CI ([0]). We could use BPF CO-RE and ___suffix rule to
-avoid this. But we can also say that selftests/bpf/config{,<arch>} has
-to be used by bots that want to build BPF selftests.
+Replied with the patch in the other email.
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/3446651033/jobs/5752592868
+> Might be a good idea to have some selftest to exercise this?
+>
 
-> $ grep NETFILTER tools/testing/selftests/bpf/config
-> CONFIG_NETFILTER=y
->
-> So yeah, not sure what to do here. The selftests expect "sane" configs
-> (see that bpf/config above) which is not what the bot seems to be
-> doing...
->
-> > > > Regards,
-> > > > Lorenzo
-> > > >
-> > > > >
-> > > > > > Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
-> > > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> > > > > > ---
-> > > > > >   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
-> > > > > >   1 file changed, 5 insertions(+)
-> > > > >
-> > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > > b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > > index 227e85e85dda..307ca166ff34 100644
-> > > > > > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> > > > > > @@ -3,6 +3,11 @@
-> > > > > >   #include <bpf/bpf_helpers.h>
-> > > > > >   #include <bpf/bpf_endian.h>
-> > > > >
-> > > > > > +enum nf_nat_manip_type {
-> > > > > > +   NF_NAT_MANIP_SRC,
-> > > > > > +   NF_NAT_MANIP_DST
-> > > > > > +};
-> > > > > > +
-> > > > > >   #define EAFNOSUPPORT 97
-> > > > > >   #define EPROTO 71
-> > > > > >   #define ENONET 64
-> > > > > > --
-> > > > > > 2.31.1
-> > > > >
+I agree, there was another bug in the same code before this, so I think we
+should add tests for this (I should have done that with the commit being
+fixed...).
+
+Xu, if you have cycles, can you work on testing a few edge cases and make sure
+we don't regress in the future? Otherwise I will take a look next week.
