@@ -2,82 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB34626187
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFAD6261AF
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbiKKSmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 13:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S233633AbiKKSz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 13:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234553AbiKKSm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 13:42:26 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832FB83B9D
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:40:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 19B0762092
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 18:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A71DC433D7;
-        Fri, 11 Nov 2022 18:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668192015;
-        bh=ncPABe4Zdh+PkpnOBGMQRKKTFuLe8fQByu+JKhkQ1JE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=D7bTzOIkpDljYLDMQJdvIvRmZCdEQrJm1mYNjcGiIpMSQalect5eoNpDPJ8CSRjig
-         s5BqG0xJx9gB2+zEpkDRR/pSkiqrYTYzrl3NzEErtrIedXIeEGaBlrnDEi6W34B4hR
-         taMa8mpPmDGDeCHcSGnrcj8gDXdka7wONxQdeGzZ4sdiZavdrTQWinDUjxq4rArnTK
-         dRAT5HrW1dU0kfrIUUFozpmBgj7Q1UCcAjB3MKItWoX+a9z63WGQnT5a3zB8ziosVC
-         wQ+vnKC0lo7bBy9A5KwnPH0ECD1iz/W0w/YOHzysrKL2v7eiBIN8wCC61nJioNBMDk
-         t4DhsohVl7lNA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4DD9CE270EF;
-        Fri, 11 Nov 2022 18:40:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232901AbiKKSz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 13:55:26 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21D71F1F
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:55:25 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id d3so2957216ils.1
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:55:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g9eX0z58SKZAsOdWY7m+4OycDcrautiSe0xtp5Jr/YA=;
+        b=oBkyoNti/n1H5DmNo5si5qEcD97KnH26ULsAv7/mh/gPF0I34K0iSx2MPU9UD9msZm
+         OGWU3y4E2vepo7LW/uixh9h+9a92AbtaGcYsE1/LjAjOXmzCpzvh3pmBPWttCVExH/yf
+         feeD9w1lk1m/pbK2qonPx/ctIIAYxGBHzYU6udBvP0y03PWol2GJBNV1HgVh6+oZjGEK
+         SNJqvAdzsOZnmzyY/CR8tGtwXuJHbnVwSHCM4QqJRXM4ocObhIWDmVZZwsRl/gLI3mso
+         +yKkXrnYTky4dY+fCjs0mZjcSZGlgSgVsw6+uxDkLuRJP5GQWH63URM3rN3hWmdNpy2d
+         nO0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g9eX0z58SKZAsOdWY7m+4OycDcrautiSe0xtp5Jr/YA=;
+        b=VCTJXwjOwBwAxgZt1QxvJYnyw25UVhoB4fm2THjDGKSbCKrBoB/DYcHp+rLLXA/X+t
+         Yl4569dnMq5GV9Vi/Wz9LYQ/gWHxeXUyYen4nsxOM+8Mr0IULQ4A5l9HlwgFVq35BZpu
+         s3f20LEjCnGK2YjlLn5WEgJIuOSweUtiYF93yRpnfTVtLbuNn2LNhLRvoarcSphhwn7o
+         2TQ7Xi9q2LtAPIhEx0dGsmn0AX5YcytLZcUXIF5ppkbsbh18YrtVhuDkCncvhuFiNAOs
+         /0d89USD9URfegDbNWiv2ntj66QS/T8lmWnTs2a9n6W+1cJZoOBfUNfmTFq8C9/oDvYi
+         TmYQ==
+X-Gm-Message-State: ANoB5pmpnOZYCEpKExmqlEGgflEZZwVG0v3V1mdp8t4auPyv0V8cVqhh
+        8bLO1KL63gr0BMcLoZ6SQUalsMQiDZdmT8LvL6iYy1EXiSK6tzhaInE=
+X-Google-Smtp-Source: AA0mqf6hLmbobvzmsTs81beRE0LT0fUFgNcuW/eZQJXVhOOi5VsuVDwTovAvzok6/rTjGxsKTMoroYPCFtGti9Yy2CA=
+X-Received: by 2002:a92:de41:0:b0:2ff:9e9f:6604 with SMTP id
+ e1-20020a92de41000000b002ff9e9f6604mr1734778ilr.20.1668192925093; Fri, 11 Nov
+ 2022 10:55:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: hashmap.h update to fix build issues using
- LLVM14
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166819201531.3747.11542448346995110143.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Nov 2022 18:40:15 +0000
-References: <20221110223240.1350810-1-eddyz87@gmail.com>
-In-Reply-To: <20221110223240.1350810-1-eddyz87@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com, lkp@intel.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
+ <Y26FgIJLR3nVKjcb@google.com> <Y26MSS2twSskZ5J2@lore-desk>
+ <CAKH8qBvxZBX7_GQYQzSrZ5j=P3rViyqNq3V3oo5CtEMR9BQepA@mail.gmail.com> <Y26QjqvVTosoCgPT@lore-desk>
+In-Reply-To: <Y26QjqvVTosoCgPT@lore-desk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 11 Nov 2022 10:55:14 -0800
+Message-ID: <CAKH8qBsA-r=7S9hrsX=S7wXMaUikNh0gY=PdQK0urjORahrVBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier 'NF_NAT_MANIP_SRC'
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Rong Tao <rtoax@foxmail.com>, ast@kernel.org,
+        Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Nov 11, 2022 at 10:12 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> > On Fri, Nov 11, 2022 at 9:54 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > >
+> > > > On 11/11, Rong Tao wrote:
+> > > > > From: Rong Tao <rongtao@cestc.cn>
+> > > >
+> > > > > commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+> > > > > introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+> > > > > and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+> > > > > kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
+> > > > > nf_nat_manip_type to test_bpf_nf.c fix this error.
+> > > >
+> > > > > How to reproduce the error:
+> > > >
+> > > > >      $ make -C tools/testing/selftests/bpf/
+> > > > >      ...
+> > > > >        CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+> > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+> > > > >              bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+> > > > >                                                             ^
+> > > > >        error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+> > > > >              bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+> > > > >                                                             ^
+> > > > >      2 errors generated.
+> > > >
+> > > > $ grep NF_NAT_MANIP_SRC
+> > > > ./tools/testing/selftests/bpf/tools/include/vmlinux.h
+> > > >         NF_NAT_MANIP_SRC = 0,
+> > > >
+> > > > Doesn't look like your kernel config compiles netfilter nat modules?
+> > >
+> > > yes, in bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+> > > is compiled as built-in. This issue occurs just if it is compiled as module.
+> >
+> > Right, but if we unconditionally define this enum, I think you'll
+> > break the case where it's compiled as a built-in?
+> > Since at least in my vmlinux.h I have all the defines and this test
+> > includes vmlinux.h...
+>
+> yes, it is correct.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+And it will break the CI:
 
-On Fri, 11 Nov 2022 00:32:40 +0200 you wrote:
-> A fix for the LLVM compilation error while building bpftool.
-> Replaces the expression:
-> 
->   _Static_assert((p) == NULL || ...)
-> 
-> by expression:
-> 
-> [...]
+$ grep NETFILTER tools/testing/selftests/bpf/config
+CONFIG_NETFILTER=y
 
-Here is the summary with links:
-  - [bpf-next] libbpf: hashmap.h update to fix build issues using LLVM14
-    https://git.kernel.org/bpf/bpf-next/c/42597aa372f5
+So yeah, not sure what to do here. The selftests expect "sane" configs
+(see that bpf/config above) which is not what the bot seems to be
+doing...
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> > > Regards,
+> > > Lorenzo
+> > >
+> > > >
+> > > > > Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
+> > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> > > > > ---
+> > > > >   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+> > > > >   1 file changed, 5 insertions(+)
+> > > >
+> > > > > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > > b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > > index 227e85e85dda..307ca166ff34 100644
+> > > > > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > > @@ -3,6 +3,11 @@
+> > > > >   #include <bpf/bpf_helpers.h>
+> > > > >   #include <bpf/bpf_endian.h>
+> > > >
+> > > > > +enum nf_nat_manip_type {
+> > > > > +   NF_NAT_MANIP_SRC,
+> > > > > +   NF_NAT_MANIP_DST
+> > > > > +};
+> > > > > +
+> > > > >   #define EAFNOSUPPORT 97
+> > > > >   #define EPROTO 71
+> > > > >   #define ENONET 64
+> > > > > --
+> > > > > 2.31.1
+> > > >
