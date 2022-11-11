@@ -2,124 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E1A6251A5
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDCF6251BE
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbiKKD1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 22:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        id S231235AbiKKDhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 22:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbiKKD13 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 22:27:29 -0500
-X-Greylist: delayed 2724 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Nov 2022 19:26:33 PST
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E15654E1;
-        Thu, 10 Nov 2022 19:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1668137187;
-        bh=VG03AryjN1xYa93c1hmpENqh0pc82ZJb7GUcVRfapEg=;
-        h=From:To:Cc:Subject:Date;
-        b=jxpyxrMzXu0S6nnjluXJY6+WLuU/FGUCfS4ZQWZemR8HF/hYMjCx7c7MdxBir5kFP
-         48pXosBCB/s22b5nLKAa40AwQ7mIhaVSnwd5Jd+FtXChZ3h2WqwTfoGBqplF7qPj9M
-         /KYZfgMv9/h2i6jncEPn21EKkPXIcOhq0WCN6fis=
-Received: from localhost.localdomain ([111.199.191.46])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 695818DF; Fri, 11 Nov 2022 11:26:21 +0800
-X-QQ-mid: xmsmtpt1668137181t31ricq3i
-Message-ID: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
-X-QQ-XMAILINFO: NhUkPfKlCtQwXEHQjVhadMlQmPdB09PSlN9uaDXEq28soLLj8jyChox9gJTCqR
-         REubEYCYiEeRGIsZfrpDgCR2Mkm6LMvFNCkFWnzgkRTY70pR7Fqx47jRFUEZf2U9RU9TR3ROn4WC
-         eVH7+y0yHhajHrr6DK2C6CYOtCzXZy0Jf+UhIRGQxYCq3BoADv7UNO4eeFJM1A36OBtQROfg7UKh
-         z/t8VQZl+IWhQIAg3dR/qF/k7yxJTPxGL/Kp7PxU/2/oMFY2pOS4wWPr3sGLWdv57/s8ovIKBAzG
-         2zXL6l/qCbSGaZdJ1yugAaRJnWBM0p/WJQ61XXq0V0UVmlTbr82VfGfZOHKYUv2+JXbTZXnjyH7f
-         T72i/gaUnVPR8AmdaxnuQVPciL6r4D45K0c7o4hQu7ch1tjXLGppqO69PpN11Lwrqpw1UIvsXt1U
-         n/Xy79DcTZcDATllKcLuwmP+mlgaRTZTMOebLj4T3VKnbfbM/I3eH4J6PNbPZfwyshk8sCcuE1hi
-         QGI+23clUYl01WwnwOF5ghgTN8bb3XpX0ENJr4LtQXae+oYXH+PHRGPEVN8BJ2gChzSPEJFCdFPN
-         AiPxmjT8D6vxhU2NQGl25jUfqUrGc3f3a83naZ1GQANUS19HmCAGBlQC421IoLWIV7/DRX29Z1Ew
-         ZtxrGPv+sNy6E5g3aPp5SJVJPGVk6t6QadoWeuZC8aapdjOb4OXckbDE1MoLGvYVA/vvbmZj94xE
-         cyxs3zXk1WsXygJ9JvVo6OMP4ACWTeyVh1XE15T95MXpJQu+R4xOpnGBHBY5sDKyZBKWUp1iJLpW
-         xu3/q3VEBQZoGHVl+KNuACyKzeK4id4/S2Yop2kgmElAZsjhNu2Cy1XJ0drEZ3Dd6WlCEnugAWoP
-         YP7XD8enx0UrBs8gCsuMoqWNz4eb+yDE/RVbeOLXO1r7/7H8I5MiOOv4r8zE++f1fvib229+WYX4
-         Cn8KXKf5Pn2iwFP5tROOBbL9jhFHI890FEjwDMQ2bgRajRuH0v5CWAD3ubDVHt
-From:   Rong Tao <rtoax@foxmail.com>
-To:     ast@kernel.org
-Cc:     Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier 'NF_NAT_MANIP_SRC'
-Date:   Fri, 11 Nov 2022 11:26:11 +0800
-X-OQ-MSGID: <20221111032613.31106-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229489AbiKKDhN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 22:37:13 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F45B3FB97;
+        Thu, 10 Nov 2022 19:37:12 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id z5-20020a17090a8b8500b00210a3a2364fso7046755pjn.0;
+        Thu, 10 Nov 2022 19:37:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UpLIPoTOVASCSlXTwISNDCxecZwjTUnBDUOg439sSQM=;
+        b=X7t+saoG1f9rGEOEiKdP5URD5BZyPn6p6MiaJZl31dpYGX2OVvavoIMLP4047EAQNp
+         GJXRVjK2Oh9xH/mtCk6hMEZHGLEd8mtdEf8oUcc4EOVkqHGzJlPKsSjiD5gpJ+7Q9JmS
+         56/5Ny7sEyRHFTBQeCu3OAnRH61VIjl08QdZSclWrIVoMiTOHreOaafvMDi+e+qz5yw7
+         V5YvhwRCf4h+eKuIdaBvScagPQNv2H85Dry9i7Y0l6EE28DyvxYmZUC7ajlRFaLNBSkq
+         O18zz/OpRDwUPTsWIRX2t7rYr89lzrBKtayvAIRxm0xPPCzOC3wJ//2c2SNSFtkcsMee
+         CMdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UpLIPoTOVASCSlXTwISNDCxecZwjTUnBDUOg439sSQM=;
+        b=dGzhyR8vTdaY81KB00+0nUyHqPX0lz98NxlueACqYOYR8+0nVl4HZ/ETi6/Qx2ikCp
+         LQKLL1YqQkq1RbuNYjERtArGPtb6NmZomAfSeS5U4Rf0RwgRsUOf4JzfC0uQjZ8+R4ds
+         njYpkm3MeUIjQ9ROQlcjJeHpatsAHkhbByy5JNcf/nG0senImimkpRiU4kjxB1WEM0Hv
+         DOi4HgFuOrO1L2/B6+FS5xWaPcoXoCoBIiGv2DjqMVE+eK4wagNVfTpn+HAOSFQ8d3oq
+         NEnCXMCiG/LysXHEkYtoGSccTfiEHsE79teNEhT0Uwh3JKWWI82rLKJCRV63FtYPqh3w
+         1HVQ==
+X-Gm-Message-State: ANoB5pmlGXrT4VDPKyKU/B/tVtR5IbF79b/IHni22U1KuKb7v+/dczk5
+        LeW50+ls5EuxjAC6kDNR1jU=
+X-Google-Smtp-Source: AA0mqf73BjCPxg5HyxMLElofxbPoFQy7G0PeNGYuVaj6gJ28RISfKJKW0IWyvC31auwuO/3a9nsOBw==
+X-Received: by 2002:a17:902:ea85:b0:186:8bca:1d50 with SMTP id x5-20020a170902ea8500b001868bca1d50mr606941plb.158.1668137831946;
+        Thu, 10 Nov 2022 19:37:11 -0800 (PST)
+Received: from debian.me (subs03-180-214-233-90.three.co.id. [180.214.233.90])
+        by smtp.gmail.com with ESMTPSA id f1-20020a170902ab8100b00174c1855cd9sm433968plr.267.2022.11.10.19.37.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Nov 2022 19:37:11 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 8E40E103C71; Fri, 11 Nov 2022 10:28:18 +0700 (WIB)
+Date:   Fri, 11 Nov 2022 10:28:18 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     mtahhan@redhat.com
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
+        thoiland@redhat.com, donhunte@redhat.com, yhs@meta.com,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v8 1/1] doc: DEVMAPs and XDP_REDIRECT
+Message-ID: <Y23BUlmDrRgPCapY@debian.me>
+References: <20221110160818.1053910-1-mtahhan@redhat.com>
+ <20221110160818.1053910-2-mtahhan@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6sFJFZAKsSLwQKvi"
+Content-Disposition: inline
+In-Reply-To: <20221110160818.1053910-2-mtahhan@redhat.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
 
-commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
-introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
-and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
-kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
-nf_nat_manip_type to test_bpf_nf.c fix this error.
+--6sFJFZAKsSLwQKvi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-How to reproduce the error:
+On Thu, Nov 10, 2022 at 11:08:18AM -0500, mtahhan@redhat.com wrote:
+> From: Maryam Tahhan <mtahhan@redhat.com>
+>=20
+> Add documentation for BPF_MAP_TYPE_DEVMAP and
+> BPF_MAP_TYPE_DEVMAP_HASH including kernel version
+> introduced, usage and examples.
+>=20
+> Add documentation that describes XDP_REDIRECT.
 
-    $ make -C tools/testing/selftests/bpf/
-    ...
-      CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-      error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
-            bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-                                                           ^
-      error: use of undeclared identifier 'NF_NAT_MANIP_DST'
-            bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-                                                           ^
-    2 errors generated.
+Shouldn't two documentations be separated into its own patch (thus
+creating 2-patch series)?
 
-Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+=20
+> +XDP_REDIRECT works with the following map types:
+> +
+><snipped>...
+> +Silent packet drops for ``XDP_REDIRECT`` can be debugged using:
+> +
+> +- bpf_trace
+> +- perf_record
 
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 227e85e85dda..307ca166ff34 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -3,6 +3,11 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
-+enum nf_nat_manip_type {
-+	NF_NAT_MANIP_SRC,
-+	NF_NAT_MANIP_DST
-+};
-+
- #define EAFNOSUPPORT 97
- #define EPROTO 71
- #define ENONET 64
--- 
-2.31.1
+XDP_REDIRECT is inline-quoted here, but plain on other places. I would
+like to keep that above plain instead.
 
+What about below instead?
+
+```
+Silent packet drops for ``XDP_REDIRECT`` can be debugged using either
+bpf_trace tool or ``perf record`` command.
+```
+
+Otherwise LGTM.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--6sFJFZAKsSLwQKvi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY23BTQAKCRD2uYlJVVFO
+o6wAAP9thL7Ab1Zlgfhrf1+HEMGzGo/CRxS80f3F7DmsM9lbkAD/fsGKk5wixSIT
+/IPoDJxiCjeFozuY/dsIUtkOVvrPuAg=
+=4NRD
+-----END PGP SIGNATURE-----
+
+--6sFJFZAKsSLwQKvi--
