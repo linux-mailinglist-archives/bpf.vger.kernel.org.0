@@ -2,51 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5799E625D5B
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 15:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E4D625D70
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 15:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbiKKOnk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 09:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S234774AbiKKOqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 09:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234743AbiKKOnO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 09:43:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D6065870;
-        Fri, 11 Nov 2022 06:41:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A484B61FE6;
-        Fri, 11 Nov 2022 14:41:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C04C433D6;
-        Fri, 11 Nov 2022 14:41:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668177701;
-        bh=rGEIHLPEICYwUECDm+ra1Rny+amGBJwmuk17o2juNNE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SkCUes6m7WwfXVIdP+0DM6mr97vCnrEtSVtHkENZ284mQ+A7A04svKiUGVV/9QLgH
-         2ko247lGaf3veH43D6M2LI9WjC23sKj/5jF8VCd56G/udmcv/KTRjUz27BWRkH0+8n
-         QXxPA7iHnC26EhRPjdezukpEn6Ty0eLPQdQbWLZhLCfJ0FclwnstJeYGfEIHMuzeaB
-         WxZSrMEVTqUo5XaaxNfExx+Y9iHfEDx0wI+5VqaT46hK105nZyAM/Ji1HWhi0BTEGA
-         ShXU+MHeY9kz/oir6xBtrSrRnTmbPx0GLxGpsr5Miccxy9At9SjGTNzO0bHuwqn4uI
-         n2oRmvb0ZFkUQ==
-Date:   Fri, 11 Nov 2022 23:41:37 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing: Optimize event type allocation with IDA
-Message-Id: <20221111234137.90d9ec624497a7e1f5cb5003@kernel.org>
-In-Reply-To: <20221110020319.1259291-1-zhengyejian1@huawei.com>
-References: <20221110020319.1259291-1-zhengyejian1@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S234665AbiKKOpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 09:45:47 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61861E0E2;
+        Fri, 11 Nov 2022 06:45:46 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id i10so4377964ejg.6;
+        Fri, 11 Nov 2022 06:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hqu57zoF/psAQB3zkG+KCRnbst4n8c4x2+PRCb87ZFw=;
+        b=WWU6AvO7f1Ljtyy2Y6LiHGg4IvwIJ3GDTps31Fi2Q6P4xlrG96E6qPgZD/j+IrmxhM
+         Q+pKLjvCihFlZB4pJU7feVo9Z0RCRaNYjQ9G5ZRAscSAPENAG8Cev7STPICSarXNVXnS
+         FUMofNY3nYb/zoF9BAUj43otzq+Qlc9o/fmeaEyIzEW/51WMvOKEjqej7N6a96BOjjw7
+         wW8GvzU5Z/0bG6PQc2BIWDu94D6eKrt30AsnLw/arRO+cKQqeYZnxcQNcejqxXgTeX67
+         otvMZS9hkO4gJz8a1uZ4V2nysQlOJRwGANxjDF3PWeAuITE1WmX4LWSno/qbYirHsj09
+         2f1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hqu57zoF/psAQB3zkG+KCRnbst4n8c4x2+PRCb87ZFw=;
+        b=IHNkqOSfNLGoyJWM92Cww8roR85Q8gjsUaWjjRqZ9Mm6eLnPx2LBaqS/2/mElMKibz
+         6hEpU5R4jYnz+GJKr4suCRm8YaIihMYqXv2oniy+RsFo+bavRl01qqYYvssqbZf9mX0s
+         6gTu1IMm06//PKRhwINYrjbJ7UGYiB3NqehotSxxMD/FAtgtwC2R4szxCenbhCShkOuq
+         jmO9e7Umd5jAvfrueHFr13BPr6HXVSfASBV6s9E7HO8r+fNIahfnDQkAd5NJthquS3LF
+         6X07SLlfjSMOPLo7XXdk5IviaGW8DiiDiFDIB2mhwgwxrUOKjQk5/Gru2xf7zJScL2Eu
+         J3Bw==
+X-Gm-Message-State: ANoB5ple2CQ5JSYn7DZL6nzhPvscdLerdWAGbznq+oa31CjYBCj/DaWY
+        rsTjk2HLJshhAX8+LZ+8GTo=
+X-Google-Smtp-Source: AA0mqf4Ex9avT3Y51DfYT0NJHIbmMtSTsKgvwDqZsh/sm98euVJhW1RuN5NtW5sX8TLPvEJcEYK41Q==
+X-Received: by 2002:a17:906:2f11:b0:78d:cc87:b1d7 with SMTP id v17-20020a1709062f1100b0078dcc87b1d7mr2093872eji.543.1668177944775;
+        Fri, 11 Nov 2022 06:45:44 -0800 (PST)
+Received: from krava ([83.240.62.198])
+        by smtp.gmail.com with ESMTPSA id up22-20020a170907cc9600b007acbac07f07sm962943ejc.51.2022.11.11.06.45.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Nov 2022 06:45:44 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 11 Nov 2022 15:45:41 +0100
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: WARNING in bpf_bprintf_prepare
+Message-ID: <Y25gFdliV7XqdUnN@krava>
+References: <CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com>
+ <Y1pqWPRmP0M+hcXf@krava>
+ <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
+ <Y2J+n7SqmtfyA7ZM@krava>
+ <Y2j6ivTwFmA0FtvY@krava>
+ <CAADnVQKXcdVa-gDj2_QTrBuVea+KMuFUdabR--HCf7x6Vo6uXg@mail.gmail.com>
+ <Y2uv/GjnSdr/ujOj@krava>
+ <CAADnVQJp0ZrodRu8ZtvvtXk6KAbjxmwqD-nXgFAxNpNxN6JM=g@mail.gmail.com>
+ <Y2w9bNhVlAs/PcNV@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2w9bNhVlAs/PcNV@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,169 +89,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Nov 2022 10:03:19 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
+On Thu, Nov 10, 2022 at 12:53:16AM +0100, Jiri Olsa wrote:
 
-> After commit 060fa5c83e67 ("tracing/events: reuse trace event ids after
->  overflow"), trace events with dynamic type are linked up in list
-> 'ftrace_event_list' through field 'trace_event.list'. Then when max
-> event type number used up, it's possible to reuse type number of some
-> freed one by traversing 'ftrace_event_list'.
+SNIP
+
+> > > > > ---
+> > > > > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> > > > > index 6a13220d2d27..5a354ae096e5 100644
+> > > > > --- a/include/trace/bpf_probe.h
+> > > > > +++ b/include/trace/bpf_probe.h
+> > > > > @@ -78,11 +78,15 @@
+> > > > >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+> > > > >
+> > > > >  #define __BPF_DECLARE_TRACE(call, proto, args)                         \
+> > > > > +static DEFINE_PER_CPU(int, __bpf_trace_tp_active_##call);              \
+> > > > >  static notrace void                                                    \
+> > > > >  __bpf_trace_##call(void *__data, proto)                                        \
+> > > > >  {                                                                      \
+> > > > >         struct bpf_prog *prog = __data;                                 \
+> > > > > -       CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > > > +                                                                       \
+> > > > > +       if (likely(this_cpu_inc_return(__bpf_trace_tp_active_##call) == 1))             \
+> > > > > +               CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > > > +       this_cpu_dec(__bpf_trace_tp_active_##call);                                     \
+> > > > >  }
+> > > >
+> > > > This approach will hurt real use cases where
+> > > > multiple and different raw_tp progs run on the same cpu.
+> > >
+> > > would the 2 levels of nesting help in here?
+> > >
+> > > I can imagine the change above would break use case where we want to
+> > > trigger tracepoints in irq context that interrupted task that's already
+> > > in the same tracepoint
+> > >
+> > > with 2 levels of nesting we would trigger that tracepoint from irq and
+> > > would still be safe with bpf_bprintf_prepare buffer
+> > 
+> > How would these 2 levels work?
 > 
-> As instead, using IDA to manage available type numbers can make codes
-> simpler and then the field 'trace_event.list' can be dropped.
+> just using the active counter like below, but I haven't tested it yet
 > 
-> Since 'struct trace_event' is used in static tracepoints, drop
-> 'trace_event.list' can make vmlinux smaller. Local test with about 2000
-> tracepoints, vmlinux reduced about 64KB:
->   before：-rwxrwxr-x 1 root root 76669448 Nov  8 17:14 vmlinux
->   after： -rwxrwxr-x 1 root root 76604176 Nov  8 17:15 vmlinux
+> jirka
+
+seems to be working
+Hao Sun, could you please test this patch?
+
+thanks,
+jirka
 > 
-
-This looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks
-
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> 
 > ---
->  include/linux/trace_events.h |  1 -
->  kernel/trace/trace_output.c  | 66 +++++++++---------------------------
->  2 files changed, 16 insertions(+), 51 deletions(-)
-> 
-> Changes since v1:
->   - Explicitly include linux/idr.h as suggested by Masami Hiramatsu
->     Link: https://lore.kernel.org/lkml/20221109222650.ce6c22e231345f6852f6956f@kernel.org/#t
-> 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index 20749bd9db71..bb2053246d6a 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -136,7 +136,6 @@ struct trace_event_functions {
+> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> index 6a13220d2d27..ca5dd34478b7 100644
+> --- a/include/trace/bpf_probe.h
+> +++ b/include/trace/bpf_probe.h
+> @@ -78,11 +78,15 @@
+>  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
 >  
->  struct trace_event {
->  	struct hlist_node		node;
-> -	struct list_head		list;
->  	int				type;
->  	struct trace_event_functions	*funcs;
->  };
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index 67f47ea27921..f0ba97121345 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kprobes.h>
->  #include <linux/sched/clock.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/idr.h>
->  
->  #include "trace_output.h"
->  
-> @@ -21,8 +22,6 @@ DECLARE_RWSEM(trace_event_sem);
->  
->  static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
->  
-> -static int next_event_type = __TRACE_LAST_TYPE;
-> -
->  enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
->  {
->  	struct trace_seq *s = &iter->seq;
-> @@ -688,38 +687,23 @@ struct trace_event *ftrace_find_event(int type)
->  	return NULL;
+>  #define __BPF_DECLARE_TRACE(call, proto, args)				\
+> +static DEFINE_PER_CPU(int, __bpf_trace_tp_active_##call);		\
+>  static notrace void							\
+>  __bpf_trace_##call(void *__data, proto)					\
+>  {									\
+>  	struct bpf_prog *prog = __data;					\
+> -	CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));	\
+> +									\
+> +	if (likely(this_cpu_inc_return(__bpf_trace_tp_active_##call) < 3))		\
+> +		CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));	\
+> +	this_cpu_dec(__bpf_trace_tp_active_##call);					\
 >  }
 >  
-> -static LIST_HEAD(ftrace_event_list);
-> +static DEFINE_IDA(trace_event_ida);
->  
-> -static int trace_search_list(struct list_head **list)
-> +static void free_trace_event_type(int type)
->  {
-> -	struct trace_event *e = NULL, *iter;
-> -	int next = __TRACE_LAST_TYPE;
-> -
-> -	if (list_empty(&ftrace_event_list)) {
-> -		*list = &ftrace_event_list;
-> -		return next;
-> -	}
-> +	if (type >= __TRACE_LAST_TYPE)
-> +		ida_free(&trace_event_ida, type);
-> +}
->  
-> -	/*
-> -	 * We used up all possible max events,
-> -	 * lets see if somebody freed one.
-> -	 */
-> -	list_for_each_entry(iter, &ftrace_event_list, list) {
-> -		if (iter->type != next) {
-> -			e = iter;
-> -			break;
-> -		}
-> -		next++;
-> -	}
-> +static int alloc_trace_event_type(void)
-> +{
-> +	int next;
->  
-> -	/* Did we used up all 65 thousand events??? */
-> -	if (next > TRACE_EVENT_TYPE_MAX)
-> +	/* Skip static defined type numbers */
-> +	next = ida_alloc_range(&trace_event_ida, __TRACE_LAST_TYPE,
-> +			       TRACE_EVENT_TYPE_MAX, GFP_KERNEL);
-> +	if (next < 0)
->  		return 0;
-> -
-> -	if (e)
-> -		*list = &e->list;
-> -	else
-> -		*list = &ftrace_event_list;
->  	return next;
->  }
->  
-> @@ -761,28 +745,10 @@ int register_trace_event(struct trace_event *event)
->  	if (WARN_ON(!event->funcs))
->  		goto out;
->  
-> -	INIT_LIST_HEAD(&event->list);
-> -
->  	if (!event->type) {
-> -		struct list_head *list = NULL;
-> -
-> -		if (next_event_type > TRACE_EVENT_TYPE_MAX) {
-> -
-> -			event->type = trace_search_list(&list);
-> -			if (!event->type)
-> -				goto out;
-> -
-> -		} else {
-> -
-> -			event->type = next_event_type++;
-> -			list = &ftrace_event_list;
-> -		}
-> -
-> -		if (WARN_ON(ftrace_find_event(event->type)))
-> +		event->type = alloc_trace_event_type();
-> +		if (!event->type)
->  			goto out;
-> -
-> -		list_add_tail(&event->list, list);
-> -
->  	} else if (WARN(event->type > __TRACE_LAST_TYPE,
->  			"Need to add type to trace.h")) {
->  		goto out;
-> @@ -819,7 +785,7 @@ EXPORT_SYMBOL_GPL(register_trace_event);
->  int __unregister_trace_event(struct trace_event *event)
->  {
->  	hlist_del(&event->node);
-> -	list_del(&event->list);
-> +	free_trace_event_type(event->type);
->  	return 0;
->  }
->  
-> -- 
-> 2.25.1
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>  #undef DECLARE_EVENT_CLASS
