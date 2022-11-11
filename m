@@ -2,149 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCBC6260A9
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 18:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822006260B5
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 18:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbiKKRrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 12:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
+        id S233842AbiKKRy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 12:54:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233466AbiKKRrc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 12:47:32 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776D5193E5
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 09:47:31 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id k131-20020a628489000000b0056b3e1a9629so3036818pfd.8
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 09:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8D1kZh1leoO2ZCbFhqFSE+VcwIBIPBKirg4sZODP+18=;
-        b=osr0stJt2iNGD9pYQmN3cHZv5wYstkKxOJQF6k7vB5m70R1y5O6CIUoJiNMf9f+4mM
-         38+mbt++lpO9VWG8lkjnOyz7JwFGd2LE9nk9wU5nWE2JkWC87KGWhdXM0EkLM3c98CNc
-         HgdhdAwu2ab5Eh920Xx/Pk7lENR6+TATg73o+hjABCaZDo+sADKFhN9OrzHSv8BFPRCs
-         L59l7sK927XkAItVlklriL4DUxBn/xTUA47a5SPWtR83NDp46MLVr4Ztbldymty6at8I
-         9JEvbpB2r7NMtdT4tDDN22oosgxe77n3r4MNOLle6y1cCxF00vvDJzHpDA7f60qQhDxb
-         Hi9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8D1kZh1leoO2ZCbFhqFSE+VcwIBIPBKirg4sZODP+18=;
-        b=hb9D1Z9zF9PFhEkcwsZWHwt9eifY9Rye/FLk0zAnAO3U3/zfCyr5y+JNfNU0MY+HwV
-         FPShajVTnMnceg1WlNPau28UDIgfgHCYX0rlfzVOuAermRS5VA8wNOJ/FTz104YwDTDk
-         RaD0kHlg1ft1jTPPxhwTj1cM8ur8bdvJyYgTXjkKY7VBilrjDwRayhdVr4UhZiVhpuDv
-         UW2Nj9IobflutIO0/ka9MERERJLglz2YbpLjmaxpG6BDZi03HSp/LpjmIGTxvDEdkfft
-         MhBC/9Ea2dmbwf9Fm+9IALeli/t7RTXhEjjBVoM2DpeMTphGWogo9KfCgLAVpX3OinnB
-         u+yA==
-X-Gm-Message-State: ANoB5pnm/NmEeAn2mwLUvRSL/tn6eFAmsy9vKtBEe1JWfn4SkKnXTUEb
-        OiqlXNcFBwpNrkUqcRZxDtK/bNo=
-X-Google-Smtp-Source: AA0mqf4w68Cr00TNnMXw14b7W7371i5ChTks0qDP32SIKRgiSSrjLpP9v2d+qZrjt5u9ceO/hrvx07A=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:d381:b0:186:5de3:8f10 with SMTP id
- e1-20020a170902d38100b001865de38f10mr3481665pld.92.1668188850963; Fri, 11 Nov
- 2022 09:47:30 -0800 (PST)
-Date:   Fri, 11 Nov 2022 09:47:29 -0800
-In-Reply-To: <20221111092642.2333724-2-houtao@huaweicloud.com>
-Mime-Version: 1.0
-References: <20221111092642.2333724-1-houtao@huaweicloud.com> <20221111092642.2333724-2-houtao@huaweicloud.com>
-Message-ID: <Y26KsQfOLGYeJJoo@google.com>
-Subject: Re: [PATCH bpf 1/4] libbpf: Adjust ring buffer size when probing ring
- buffer map
-From:   sdf@google.com
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232851AbiKKRyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 12:54:25 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11628DE90;
+        Fri, 11 Nov 2022 09:54:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 752B7B826AA;
+        Fri, 11 Nov 2022 17:54:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8536CC433D6;
+        Fri, 11 Nov 2022 17:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668189261;
+        bh=PKJPaIOgDW5uqG2gedKa2Ua6yA1OebpqOraZ3Ok0JaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ayj0kwZTRWcDBKsLXLi7CimQafyMHSGNuL/1WTYX4Rdh34Y4+6Ghhys7g162ogurE
+         UzVezODXJuCq5jby0sWZjjg5TSwvglEVjkyIZr33EyAA2IpEfmyNjyzFAbnDMTTYsc
+         wbZ2i8DkidmDfl07LsAVIsvvi005e5YTmmjRcAvhxZ2XBdOppih9TzfLVY64kIwIkl
+         51MA+kECriuSr19m0fNiQqTHOP6HOcZyzL1RMJ3XUCw8GW8YUSb2KV7t3Pol/HbctQ
+         /CbjEmPYRu/+l40FqtiGMmebGaeHW6C1gaB9Cd9aEAZ0vMWew115wB+pFtW3nwlTVK
+         Muplud1IdO+oQ==
+Date:   Fri, 11 Nov 2022 18:54:17 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     sdf@google.com
+Cc:     Rong Tao <rtoax@foxmail.com>, ast@kernel.org,
+        Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier
+ 'NF_NAT_MANIP_SRC'
+Message-ID: <Y26MSS2twSskZ5J2@lore-desk>
+References: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
+ <Y26FgIJLR3nVKjcb@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="spvS383o4CqWiEAy"
+Content-Disposition: inline
+In-Reply-To: <Y26FgIJLR3nVKjcb@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/11, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
 
-> Adjusting the size of ring buffer when probing ring buffer map, else
-> the probe may fail on host with 64KB page size (e.g., an ARM64 host).
+--spvS383o4CqWiEAy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> After the fix, the output of "bpftool feature" on above host will be
-> correct.
+> On 11/11, Rong Tao wrote:
+> > From: Rong Tao <rongtao@cestc.cn>
+>=20
+> > commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+> > introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+> > and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_in=
+fo
+> > kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
+> > nf_nat_manip_type to test_bpf_nf.c fix this error.
+>=20
+> > How to reproduce the error:
+>=20
+> >      $ make -C tools/testing/selftests/bpf/
+> >      ...
+> >        CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+> >        error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+> >              bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+> >                                                             ^
+> >        error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+> >              bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+> >                                                             ^
+> >      2 errors generated.
+>=20
+> $ grep NF_NAT_MANIP_SRC
+> ./tools/testing/selftests/bpf/tools/include/vmlinux.h
+>         NF_NAT_MANIP_SRC =3D 0,
+>=20
+> Doesn't look like your kernel config compiles netfilter nat modules?
 
-> Before :
->      eBPF map_type ringbuf is NOT available
->      eBPF map_type user_ringbuf is NOT available
+yes, in bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+is compiled as built-in. This issue occurs just if it is compiled as module.
 
-> After :
->      eBPF map_type ringbuf is available
->      eBPF map_type user_ringbuf is available
+Regards,
+Lorenzo
 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->   tools/lib/bpf/libbpf.c          | 2 +-
->   tools/lib/bpf/libbpf_internal.h | 2 ++
->   tools/lib/bpf/libbpf_probes.c   | 2 +-
->   3 files changed, 4 insertions(+), 2 deletions(-)
+>=20
+> > Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> > ---
+> >   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+>=20
+> > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > index 227e85e85dda..307ca166ff34 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > @@ -3,6 +3,11 @@
+> >   #include <bpf/bpf_helpers.h>
+> >   #include <bpf/bpf_endian.h>
+>=20
+> > +enum nf_nat_manip_type {
+> > +	NF_NAT_MANIP_SRC,
+> > +	NF_NAT_MANIP_DST
+> > +};
+> > +
+> >   #define EAFNOSUPPORT 97
+> >   #define EPROTO 71
+> >   #define ENONET 64
+> > --
+> > 2.31.1
+>=20
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 184ce1684dcd..907f735568ae 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2353,7 +2353,7 @@ int parse_btf_map_def(const char *map_name, struct  
-> btf *btf,
->   	return 0;
->   }
+--spvS383o4CqWiEAy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> -static size_t adjust_ringbuf_sz(size_t sz)
-> +size_t adjust_ringbuf_sz(size_t sz)
->   {
->   	__u32 page_sz = sysconf(_SC_PAGE_SIZE);
->   	__u32 mul;
-> diff --git a/tools/lib/bpf/libbpf_internal.h  
-> b/tools/lib/bpf/libbpf_internal.h
-> index 377642ff51fc..99dc4d6a19be 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -576,4 +576,6 @@ static inline bool is_pow_of_2(size_t x)
->   #define PROG_LOAD_ATTEMPTS 5
->   int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int  
-> attempts);
+-----BEGIN PGP SIGNATURE-----
 
-> +size_t adjust_ringbuf_sz(size_t sz);
-> +
->   #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index f3a8e8e74eb8..29a1db2645fd 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -234,7 +234,7 @@ static int probe_map_create(enum bpf_map_type  
-> map_type)
->   	case BPF_MAP_TYPE_USER_RINGBUF:
->   		key_size = 0;
->   		value_size = 0;
-> -		max_entries = 4096;
-> +		max_entries = adjust_ringbuf_sz(4096);
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY26MSQAKCRA6cBh0uS2t
+rLElAP9pPBWUXclDPJGbSNpyrM4V88sp2TfBB253Ro32lDa5iQD9FgiwFywB44z3
+TxNXrDkcdn1g8qBiTzEx2EeRDXP04Ao=
+=Q86U
+-----END PGP SIGNATURE-----
 
-Why not pass PAGE_SIZE directly here? Something like:
-
-max_entries = sysconf(_SC_PAGE_SIZE);
-
-?
-
->   		break;
->   	case BPF_MAP_TYPE_STRUCT_OPS:
->   		/* we'll get -ENOTSUPP for invalid BTF type ID for struct_ops */
-> --
-> 2.29.2
-
+--spvS383o4CqWiEAy--
