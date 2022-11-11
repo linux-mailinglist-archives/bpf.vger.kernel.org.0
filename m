@@ -2,146 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0562C62630A
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 21:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCA7626310
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 21:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbiKKUjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 15:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
+        id S234113AbiKKUkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 15:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbiKKUjY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 15:39:24 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4EE845FF;
-        Fri, 11 Nov 2022 12:39:22 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id t25so15114507ejb.8;
-        Fri, 11 Nov 2022 12:39:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6mZywrIT4mxmQPRJhWF4x6aKBO4TsB+l1a8Gch2fYws=;
-        b=IJR+sFHwMtnnLwEy1psWwD6SaMqnQsfL0KVFDoFLWI/lOGM7FU/18/o0BSKzLaGI5Y
-         PDCssb++BiAPpxDS9t9dmwVBkZ5wBXigWX8Lip0x7T5qf/kZvnb9LPqL97wE4nqGIhqK
-         tl9pSOyo9eh4c9ztiEFmsjfskEC2Vl5FqcW6X1s9Yboabx0/zq4eeFzkesbh4fzRqSYY
-         wywFS2orQPhJsXe7kWyrGZ8LiQksGqy9BlfOTihEz8ix7UkpmXJDfHEIWq3DV8vDdBEW
-         +yDHTliPh/yBQuB4uCRoolbEh+ClV+pz/vmxOUnPm0nKkymZjs6IBD9FxPGqHkc4PoN1
-         bs9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6mZywrIT4mxmQPRJhWF4x6aKBO4TsB+l1a8Gch2fYws=;
-        b=AU6MeswDQhC0VH3AckQggT3EvehauUxyWRXeYpMm7woeSqCxKrtnOFyhGvBMrhyPjs
-         OxkGVKvhTYpmaDThvPtm0Dp2yonrxXEWWKXFMYapjimuWlSPPAi93pHD80i+ua1Ur1xK
-         ez1C6Xr4KuKFA4ki4DrDmJcaI1W1TpwCPwML4+QmbC/AEYTtzVwroHWe7G+plc9CZkWd
-         /nqmRh1sFhYBAOkO8PzS4r4HIjtpjqhWTIs2OJXWT0pKq2T/k91/M7sXp/7K1fuLCQXo
-         j3RXiSFPiUl420Mv4/58p5GojpvYCvOYSvy+7gK+jKhqTG9GndeZwoWax9UVYVNy4HDx
-         38yg==
-X-Gm-Message-State: ANoB5pnmtXiu3Pp+vdzftqCa86ccHflnrNudeHbEczml/ZBD6bTfB0YG
-        qwrDs6KDSE/LKpkAmjY9G7EDJB2wuesSVx8b5hw=
-X-Google-Smtp-Source: AA0mqf5Az7IKLeiNL0xVNmNbN+DON6QSJc6EuuTMxoTfXCRDN4m63NaY1egPPV9bPbTLd1++bwfSoM9v7elqeI36NuQ=
-X-Received: by 2002:a17:906:1b0f:b0:78d:3188:9116 with SMTP id
- o15-20020a1709061b0f00b0078d31889116mr3273528ejg.176.1668199160780; Fri, 11
- Nov 2022 12:39:20 -0800 (PST)
+        with ESMTP id S231840AbiKKUkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 15:40:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583BE845E7;
+        Fri, 11 Nov 2022 12:40:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0229EB827DA;
+        Fri, 11 Nov 2022 20:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C47FC433D7;
+        Fri, 11 Nov 2022 20:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668199215;
+        bh=MGPnWxh4tvBV+1Xxqjdq4EQiObbEg9pDz4uCpUSJLNo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mRuuOmyXMHI1QHMbT3zpN17jMVaLaBPt6FvdljFLSd3lcCIyh4UgGWWchn+qS2CcU
+         04ZTzYEHH+4kRUavuFE8eQs2CxbqZrK5XgUt91ATkJULZRxgI/ZtZWzaabMUoLTZIJ
+         jRjDz/6nZXGFQ6EcBSHAP6ssihzHTh0Pfaxz46Br5tfBDgZB+ohoTcsqeQfnlpdbe7
+         N84if0ljui7fqzZJQ3Ojy/SIX5UQXoF7jpsAT2TM4Dd+STr0edSTwVVsH6+8rpXNzV
+         bJ8HVjN4w/YXUWf1xed3S/6aQPwTvfLNJ+izjQTRoxyMbEMnMoPxaIDxI+sE2zRSMX
+         wiQcB0bN6dl+w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61F68E270EF;
+        Fri, 11 Nov 2022 20:40:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221111132258.762033-1-xukuohai@huaweicloud.com>
-In-Reply-To: <20221111132258.762033-1-xukuohai@huaweicloud.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 12:39:08 -0800
-Message-ID: <CAEf4Bza8+8xDw9dSafVOswrAgLBGjaO_wcBEf+K+CkDEHubW-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5] bpf: Initialize same number of free nodes for
- each pcpu_freelist
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        wuqiang <wuqiang.matt@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2] selftests/bpf: Fix xdp_synproxy compilation failure in
+ 32-bit arch
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166819921539.1528.5255567846899299026.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Nov 2022 20:40:15 +0000
+References: <20221111030836.37632-1-yangjihong1@huawei.com>
+In-Reply-To: <20221111030836.37632-1-yangjihong1@huawei.com>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+        tariqt@nvidia.com, maximmi@nvidia.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 5:06 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->
-> From: Xu Kuohai <xukuohai@huawei.com>
->
-> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
-> free nodes for some CPUs, and then possibly one CPU with fewer nodes,
-> followed by remaining cpus with 0 nodes. For example, when nr_elems == 256
-> and num_possible_cpus() == 32, CPU 0~27 each gets 9 free nodes, CPU 28 gets
-> 4 free nodes, CPU 29~31 get 0 free nodes, while in fact each CPU should get
-> 8 nodes equally.
->
-> This patch initializes nr_elems / num_possible_cpus() free nodes for each
-> CPU firstly, then allocates the remaining free nodes by one for each CPU
-> until no free nodes left.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
-> v5: Move "head = per_cpu_ptr ..." out of the i-loop as suggesetd by wuqiang
+Hello:
 
-I've applied v4 (before seeing v5) with head moved out of innermost
-loop. But I do prefer v4 anyways.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> v4: Remove unneeded min()
-> v3: Simplify code as suggested by Andrii
-> v2: Update commit message and add Yonghong's ack
-> ---
->  kernel/bpf/percpu_freelist.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
->
-> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
-> index b6e7f5c5b9ab..de336e3dffee 100644
-> --- a/kernel/bpf/percpu_freelist.c
-> +++ b/kernel/bpf/percpu_freelist.c
-> @@ -100,22 +100,19 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
->                             u32 nr_elems)
->  {
->         struct pcpu_freelist_head *head;
-> -       int i, cpu, pcpu_entries;
-> +       unsigned int cpu_idx = 0, cpu, i, j, n, m;
->
-> -       pcpu_entries = nr_elems / num_possible_cpus() + 1;
-> -       i = 0;
-> +       n = nr_elems / num_possible_cpus();
-> +       m = nr_elems % num_possible_cpus();
->
->         for_each_possible_cpu(cpu) {
-> -again:
->                 head = per_cpu_ptr(s->freelist, cpu);
-> -               /* No locking required as this is not visible yet. */
-> -               pcpu_freelist_push_node(head, buf);
-> -               i++;
-> -               buf += elem_size;
-> -               if (i == nr_elems)
-> -                       break;
-> -               if (i % pcpu_entries)
-> -                       goto again;
-> +               j = n + (cpu_idx++ < m ? 1 : 0);
-> +               for (i = 0; i < j; i++) {
-> +                       /* No locking required as this is not visible yet. */
-> +                       pcpu_freelist_push_node(head, buf);
-> +                       buf += elem_size;
-> +               }
->         }
->  }
->
-> --
-> 2.30.2
->
+On Fri, 11 Nov 2022 11:08:36 +0800 you wrote:
+> xdp_synproxy fails to be compiled in the 32-bit arch, log is as follows:
+> 
+>   xdp_synproxy.c: In function 'parse_options':
+>   xdp_synproxy.c:175:36: error: left shift count >= width of type [-Werror=shift-count-overflow]
+>     175 |                 *tcpipopts = (mss6 << 32) | (ttl << 24) | (wscale << 16) | mss4;
+>         |                                    ^~
+>   xdp_synproxy.c: In function 'syncookie_open_bpf_maps':
+>   xdp_synproxy.c:289:28: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>     289 |                 .map_ids = (__u64)map_ids,
+>         |                            ^
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v2] selftests/bpf: Fix xdp_synproxy compilation failure in 32-bit arch
+    https://git.kernel.org/bpf/bpf-next/c/e4c9cf0ce8c4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
