@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426DD6261B9
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D316261BE
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbiKKS7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 13:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        id S232574AbiKKTHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbiKKS7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 13:59:08 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617BF5F869
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:59:07 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ft34so14552504ejc.12
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:59:07 -0800 (PST)
+        with ESMTP id S230303AbiKKTHg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:07:36 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7E022BE3
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:07:35 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id t25so14658892ejb.8
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:07:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OdCzXFKBBW7NkirtC8r0cdGq04Sb9Pl3+uTqudpwjcA=;
-        b=cVrPq3++I6kQlBXVmInanm/hA5L1Ts2fn9hWjsyPO5chE57ZZO3aVpRgCTBPkWohup
-         LiS3YtnxZSm7wcZ/v/fll+R5HsI3RFaYX4tuqcbXqBVMLf6JbsNfVa9bzM3yYNix/l3Y
-         MDh2IhVZn0gU8u6jAB0szA1SHqW89J5y8BYv6BMIN0WauEOnpqKMi1fMBdJW8xCk2ECl
-         hMUnJMlTPa42kmaH6EK1lYYxjiSK8iaprjA3to0EtVm3CuNuBUml07Ybst9c/rUiRH60
-         AnwRV2LrM8whDcPTEpU1xVtY8o/cinYT9vUumQbPf7BmvdPZKIiLKE9lp4njmoWu9ter
-         DmHg==
+        bh=Z0NG/SPBkBMAdK8ZvnWhMnvWe583K0D4bdlQoDWDMww=;
+        b=pCcp6QN+6hZH+lYfo/FtyNR8xKD9UBXX/8y/a4uaykMrIAXzhqh7A+sa31WKVlLVvb
+         Y2ivsCAzH4h5gJsTNuiQpR16RdU3CfB37Un5x+Ya2ccYU4H4xaydgaVu/tzQLwtm3AZm
+         +1LcxZZTBay8MLMmH7ppiuwgmyE34i0qvtjs9omOrgtBnfDyXv7z+mz6HwJVN3sHoxPl
+         DBc6uLSm/Jx4G+Yi2HwvLCtUvM/PeevgQnKXE598HbpsstozN4SJL1GXfyPl2B/VDiSG
+         w/HnC0UVxsqLpCVd4fzKoFYI8YLOmttT9qTxCOg8dX7Jau5JQGAD2DiuZDL78CztePjp
+         o7ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OdCzXFKBBW7NkirtC8r0cdGq04Sb9Pl3+uTqudpwjcA=;
-        b=6DGMkDXlWlInODw3XumnNCyKFYirUWxY38qC+gJN+i3XvzmHHpjy85TP2yjMcq0OqN
-         4qxA6J0bex66rnhCX6kV9jrpMVFNzK+Y8vafBthk2od0EJo6z4Is1jZDjjhfhwKEOSDe
-         fc8SpfBbNFvr4bXO5FOY+roDD6OH1+06ifyXfJOLgOiTnlXS9jgii2XyERHesfOwA2YR
-         J4T2mIw46ZjtdDEF+nLBoA4CiUAfy32NYP1ycwN2xee1GA2TMN3290l0gFnAJC82GWN7
-         oljtq1pFXUAShOCzL2EMg+1qfZ899KkZXq7OS7gJkYgcT6O+6gV5sg3FdDFf7NzpC/pJ
-         D78Q==
-X-Gm-Message-State: ANoB5pnKbChNzeA9C9YxNNhTL3tpT+o5PsnHuX14pfhg73B+gFLC3cNY
-        8CWzYFznOjvk3W9fG+sAulEHEMMsAtlrk1ktw2hZ4waJ
-X-Google-Smtp-Source: AA0mqf7NATcUkcJFcFJFk4b/sjJTGJc5SkR+pmKT+EPMGUpbvWJc0aO51AkPgaL45kBEWVf4TaeiFhVv+f4C85yZXNY=
-X-Received: by 2002:a17:907:2b26:b0:7ae:c460:c65f with SMTP id
- gc38-20020a1709072b2600b007aec460c65fmr2938572ejc.226.1668193145730; Fri, 11
- Nov 2022 10:59:05 -0800 (PST)
+        bh=Z0NG/SPBkBMAdK8ZvnWhMnvWe583K0D4bdlQoDWDMww=;
+        b=K2u0vEsxgOJ4KHt2Z7hD4wgut4ijAAXbc5jEeKL3e66qJabTBaKinUgtGOfPboAjC/
+         iCq5Dzo9QXG1QuyXe4Nm3aydstM//rAxpFwoBZKNTI9ufyd141tyIWwpL/7hZCl3xvPB
+         PXq/xz64cSnnyS25vgr8gz2lv/cXqQBQrLsFKGNAGtnz7En/aG11AkqvVjHGTMR2ruNX
+         CNVszEDkT5l5PgoBImkJ7NCf9/LNEpXs1SZQn/xMnP/LPrtXTiFqzd3X+pTkOqHcSZW6
+         acJdMM6rLsL/cEWYxBEPZuQQaD5ry6niBU6Wtgx3g1tiWObQbt/5oqLLi5jAunOKGQwz
+         8eyw==
+X-Gm-Message-State: ANoB5pmTT7byIZv3AUKAqIlUQR4w+u3bbsHUS2TCGQua4EBnb6TpADP/
+        TqTLCzfxVMGY3UE5X5CZUAtlnc2Cm5irEho25Rg=
+X-Google-Smtp-Source: AA0mqf7PPOqNNs6asop9Kic1CTIsCsUQkguCcs0+ynp5HdjyY4tPvanmCrdb7Rdpac+jcJq4QtdeswSa5U6ZUJEjDxA=
+X-Received: by 2002:a17:906:cd0f:b0:78d:99ee:4e68 with SMTP id
+ oz15-20020a170906cd0f00b0078d99ee4e68mr2934253ejb.302.1668193654297; Fri, 11
+ Nov 2022 11:07:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-2-eddyz87@gmail.com>
-In-Reply-To: <20221110144320.1075367-2-eddyz87@gmail.com>
+References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-4-eddyz87@gmail.com>
+In-Reply-To: <20221110144320.1075367-4-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 10:58:53 -0800
-Message-ID: <CAEf4Bzbnd2UOT9Mko+0Yf9Kgsn-sGsV43MKExYjEaYbWg0WgZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: __attribute__((btf_decl_tag("...")))
- for btf dump in C format
+Date:   Fri, 11 Nov 2022 11:07:22 -0800
+Message-ID: <CAEf4Bzb1P1+hn=k498F3FPjT_jJMOhC-HcVfUkRso0kSgC5SOQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: Tests for
+ BTF_KIND_DECL_TAG dump in C format
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
@@ -69,189 +69,100 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> Clang's `__attribute__((btf_decl_tag("...")))` is represented in BTF
-> as a record of kind BTF_KIND_DECL_TAG with `type` field pointing to
-> the type annotated with this attribute. This commit adds
-> reconstitution of such attributes for BTF dump in C format.
->
-> BTF doc says that BTF_KIND_DECL_TAGs should follow a target type but
-> this is not enforced and tests don't honor this restriction.
-> This commit uses hashmap to map types to the list of decl tags.
-> The hashmap is filled incrementally by the function
-> `btf_dump_assign_decl_tags` called from `btf_dump__dump_type` and
-> `btf_dump__dump_type_data`.
->
-> It is assumed that total number of types annotated with decl tags is
-> relatively small, thus some space is saved by using hashmap instead of
-> adding a new field to `struct btf_dump_type_aux_state`.
->
-> It is assumed that list of decl tags associated with a single type is
-> small. Thus the list is represented by an array which grows linearly.
->
-> To accommodate older Clang versions decl tags are dumped using the
-> following macro:
->
->  #if __has_attribute(btf_decl_tag)
->  #define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))
->  #else
->  #define __btf_decl_tag(x)
->  #endif
->
-> The macro definition is emitted upon first call to `btf_dump__dump_type`.
->
-> Clang allows to attach btf_decl_tag attributes to the following kinds
-> of items:
-> - struct/union                   supported
-> - struct/union field             supported
-> - typedef                        supported
-> - global variables               supported
-> - function prototype parameters  supported
-> - function                       not applicable
-> - function parameter             not applicable
-> - local variables                not applicable
+> Covers the following cases:
+> - `__atribute__((btf_decl_tag("...")))` could be applied to structs
+>   and unions;
+> - decl tag applied to an empty struct is printed on a single line;
+> - decl tags with the same name could be applied to several structs;
+> - several decl tags could be applied to the same struct;
+> - attribute `packed` works fine with decl tags (it is a separate
+>   branch in `tools/lib/bpf/btf_dump.c:btf_dump_emit_attributes`;
+> - decl tag could be attached to typedef;
+> - decl tag could be attached to a struct field;
+> - decl tag could be attached to a struct field and a struct itself
+>   simultaneously;
+> - decl tag could be attached to a global variable;
+> - decl tag could be attached to a func proto parameter;
+> - btf__add_decl_tag could be interleaved with btf_dump__dump_type calls.
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  tools/lib/bpf/btf_dump.c | 181 +++++++++++++++++++++++++++++++++++++--
->  1 file changed, 173 insertions(+), 8 deletions(-)
+>  .../selftests/bpf/prog_tests/btf_dump.c       | 79 +++++++++++++++++++
+>  .../bpf/progs/btf_dump_test_case_decl_tag.c   | 65 +++++++++++++++
+>  2 files changed, 144 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
 >
 
 [...]
 
-> +/*
-> + * Scans all BTF objects looking for BTF_KIND_DECL_TAG entries.
-> + * The id's of the entries are stored in the `btf_dump.decl_tags` table,
-> + * grouped by a target type.
-> + */
-> +static int btf_dump_assign_decl_tags(struct btf_dump *d)
+> +       /* First, BTF corresponding to the following C code:
+> +        *
+> +        * typedef void (*fn)(int a __btf_decl_tag("a_tag"));
+> +        *
+> +        */
+> +       id = btf__add_int(btf, "int", 4, BTF_INT_SIGNED);
+> +       ASSERT_EQ(id, 1, "int_id");
+> +       id = btf__add_func_proto(btf, 0);
+> +       ASSERT_EQ(id, 2, "func_proto_id");
+> +       err = btf__add_func_param(btf, "a", 1);
+> +       ASSERT_OK(err, "func_param_ok");
+> +       id = btf__add_decl_tag(btf, "a_tag", 2, 0);
+> +       ASSERT_EQ(id, 3, "decl_tag_a");
+> +       id = btf__add_ptr(btf, 2);
+> +       ASSERT_EQ(id, 4, "proto_ptr");
+> +       id = btf__add_typedef(btf, "fn", 4);
+> +       ASSERT_EQ(id, 5, "typedef");
+
+can you please also add decl_tag for func_proto itself (comp_idx == -1)
+
+> +
+> +       err = btf_dump_all_types(btf, d);
+> +       ASSERT_OK(err, "btf_dump_all_types #1");
+> +       fflush(dump_buf_file);
+> +       dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
+> +
+> +       ASSERT_STREQ(dump_buf,
+> +                    "#if __has_attribute(btf_decl_tag)\n"
+> +                    "#define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))\n"
+> +                    "#else\n"
+> +                    "#define __btf_decl_tag(x)\n"
+> +                    "#endif\n"
+> +                    "\n"
+> +                    "typedef void (*fn)(int a __btf_decl_tag(\"a_tag\"));\n\n",
+> +                    "decl tags for fn");
+> +
+
+[...]
+
+> +struct tag_on_field_and_struct {
+> +       int x __btf_decl_tag("t1");
+> +} __btf_decl_tag("t2");
+> +
+> +struct root_struct {
+> +       struct empty_with_tag a;
+> +       struct one_tag b;
+> +       struct same_tag c;
+> +       struct two_tags d;
+> +       struct packed e;
+> +       td_with_tag f;
+> +       struct tags_on_fields g;
+> +       struct tag_on_field_and_struct h;
+> +};
+> +
+> +SEC(".data") int global_var __btf_decl_tag("var_tag") = (int)777;
+
+do you need explicit SEC(".data")? I'd expect global_var is put into
+.data anyways. If it's about __attribute__((unused)), then we can do
+that more explicitly here instead of through SEC()? Or just make sure
+global_var is used in f() internally
+
+> +
+> +/* ------ END-EXPECTED-OUTPUT ------ */
+> +
+> +int f(struct root_struct *s)
 > +{
-> +       __u32 id, new_cnt, type_cnt = btf__type_cnt(d->btf);
-> +       struct decl_tag_array *old_tags, *new_tags;
-> +       const struct btf_type *t;
-> +       size_t new_sz;
-> +       int err;
-> +
-> +       for (id = d->next_decl_tag_scan_id; id < type_cnt; id++) {
-> +               t = btf__type_by_id(d->btf, id);
-> +               if (!btf_is_decl_tag(t))
-> +                       continue;
-> +
-> +               old_tags = NULL;
-> +               hashmap__find(d->decl_tags, t->type, &old_tags);
-> +               /* Assume small number of decl tags per id, increase array size by 1 */
-> +               new_cnt = old_tags ? old_tags->cnt + 1 : 1;
-> +               if (new_cnt == UINT_MAX)
-> +                       return -ERANGE;
-
-this can't happen, BTF IDs don't go up to UINT_MAX even, let's drop
-unnecessary check
-
-> +               new_sz = sizeof(struct decl_tag_array) + new_cnt * sizeof(old_tags->tag_ids[0]);
-> +               new_tags = realloc(old_tags, new_sz);
-> +               if (!new_tags)
-> +                       return -ENOMEM;
-> +
-> +               new_tags->tag_ids[new_cnt - 1] = id;
-> +               new_tags->cnt = new_cnt;
-> +
-> +               /* No need to update the map if realloc have not changed the pointer */
-> +               if (old_tags == new_tags)
-> +                       continue;
-
-this is a nice and simple optimization, I like it
-
-> +
-> +               err = hashmap__set(d->decl_tags, t->type, new_tags, NULL, NULL);
-> +               if (!err)
-> +                       continue;
-> +               /*
-> +                * If old_tags != NULL there is a record that holds it in the map, thus
-> +                * the hashmap__set() call should not fail as it does not have to
-> +                * allocate. If it does fail for some bizarre reason it's a bug and double
-> +                * free is imminent because of the previous realloc call.
-> +                */
-> +               if (old_tags)
-> +                       pr_warn("hashmap__set() failed to update value for existing entry\n");
-> +               free(new_tags);
-> +               return err;
-
-but this is an overkill, it should not fail and btf_dump is not the
-place to log bugs in hashmap, please do just
-
-(void)hashmap__set(...);
-
-
-> +       }
-> +
-> +       d->next_decl_tag_scan_id = type_cnt;
-> +
 > +       return 0;
 > +}
-> +
-
-[...]
-
->  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
-> @@ -1438,9 +1593,12 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
->                 }
->                 case BTF_KIND_FUNC_PROTO: {
->                         const struct btf_param *p = btf_params(t);
-> +                       struct decl_tag_array *decl_tags = NULL;
->                         __u16 vlen = btf_vlen(t);
->                         int i;
->
-> +                       hashmap__find(d->decl_tags, id, &decl_tags);
-> +
->                         /*
->                          * GCC emits extra volatile qualifier for
->                          * __attribute__((noreturn)) function pointers. Clang
-
-should there be btf_dump_emit_decl_tags(d, decl_tags, -1) somewhere
-here to emit tags of FUNC_PROTO itself?
-
-> @@ -1481,6 +1639,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
->
->                                 name = btf_name_of(d, p->name_off);
->                                 btf_dump_emit_type_decl(d, p->type, name, lvl);
-> +                               btf_dump_emit_decl_tags(d, decl_tags, i);
->                         }
->
->                         btf_dump_printf(d, ")");
-> @@ -1896,6 +2055,7 @@ static int btf_dump_var_data(struct btf_dump *d,
->                              const void *data)
->  {
->         enum btf_func_linkage linkage = btf_var(v)->linkage;
-> +       struct decl_tag_array *decl_tags = NULL;
->         const struct btf_type *t;
->         const char *l;
->         __u32 type_id;
-> @@ -1920,7 +2080,10 @@ static int btf_dump_var_data(struct btf_dump *d,
->         type_id = v->type;
->         t = btf__type_by_id(d->btf, type_id);
->         btf_dump_emit_type_cast(d, type_id, false);
-> -       btf_dump_printf(d, " %s = ", btf_name_of(d, v->name_off));
-> +       btf_dump_printf(d, " %s", btf_name_of(d, v->name_off));
-> +       hashmap__find(d->decl_tags, id, &decl_tags);
-> +       btf_dump_emit_decl_tags(d, decl_tags, -1);
-> +       btf_dump_printf(d, " = ");
->         return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
->  }
->
-> @@ -2421,6 +2584,8 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
->         d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
->         d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
->
-> +       btf_dump_assign_decl_tags(d);
-> +
-
-I'm actually not sure we want those tags on binary data dump.
-Generally data dump is not type definition dump, so this seems
-unnecessary, it will just distract from data itself. Let's drop it for
-now? If there would be a need we can add it easily later.
-
->         ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
->
->         d->typed_dump = NULL;
 > --
 > 2.34.1
 >
