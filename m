@@ -2,97 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1128862561F
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 10:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3426256F5
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 10:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbiKKJEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 04:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        id S233575AbiKKJjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 04:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbiKKJDp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 04:03:45 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA1BDE9E
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:01:06 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N7t3J4LWHz4f47Qj
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 17:01:00 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgC329hLD25jbi9eAQ--.31717S8;
-        Fri, 11 Nov 2022 17:01:03 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Subject: [PATCH bpf 4/4] libbpf: Check the validity of size in user_ring_buffer__reserve()
-Date:   Fri, 11 Nov 2022 17:26:42 +0800
-Message-Id: <20221111092642.2333724-5-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221111092642.2333724-1-houtao@huaweicloud.com>
-References: <20221111092642.2333724-1-houtao@huaweicloud.com>
+        with ESMTP id S232749AbiKKJjM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 04:39:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F386DCE4
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:38:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668159494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CuzRwI1mSTi/386dr9HtHu+gFAxlK7t/8OnS9h0/MI8=;
+        b=AhnIctxeCpN8RqRjsz/pQFU3vd7pUSZcStlVe43xd+0Mya5BN5YJGYgW2hwvaOXB7WgLYi
+        F3d99aBORvAZc+4klCjqu4PKlg9bZ5+V9Wk4zEiqQ7HDFsxTh/CcAQnoEorUWIE6jiVCWZ
+        DpO5Oqvz0GArLtPTtc2AOxOvGYOJMtA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-613-Dt8ah1ovP76rlLa2bJaqSQ-1; Fri, 11 Nov 2022 04:38:12 -0500
+X-MC-Unique: Dt8ah1ovP76rlLa2bJaqSQ-1
+Received: by mail-ej1-f70.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so2730965ejb.19
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:38:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CuzRwI1mSTi/386dr9HtHu+gFAxlK7t/8OnS9h0/MI8=;
+        b=H/hT2cv3if5koA3dmGBv7Vu38wQKcBa5t+SQA2T0Yc2diW41Ff+MyVgoWKbBv/KR8x
+         8f00mjiz6Zk3A2nPFslXspRLYqSATC0Ez6AeVX3Pyzd+X5r6Na3Dkv44YewnmdXw9yGL
+         vB4Jqdv72VcOE7RLSlbcAo0ys7QkGVxrJPzPm8VJ1dLCME0ziYBh6Sb/fJGiz7fcEETH
+         jw/hngQ0xlE+B02ONh8jH0UBsYarIfV8bH5Q5ZRxOOU3kn+Gvj1sID711H8/41InHrY9
+         sW18Gb5Jw19JG9nyBd9FjUy5eERQyhUeiVjuovYIXbvvX7Vs7iQZPT4tsbId2uS3i98S
+         zLBg==
+X-Gm-Message-State: ANoB5pkEXKshHcLkJrRi3xEyK88j4MagCbsrVhrpldqlbG7w25SFcRJL
+        2Idwnf5IJx6KKqGQyh7toNSlrWmtmSY7OicP/mK84mG170YqT9ygBmvClR9uEhuKYp54MLPmDIM
+        koR2tmoRSwnJJ
+X-Received: by 2002:a05:6402:34f:b0:460:12ef:cc45 with SMTP id r15-20020a056402034f00b0046012efcc45mr731711edw.249.1668159491246;
+        Fri, 11 Nov 2022 01:38:11 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5BoVg5/sQIOxSVn1Wrw0hWRqLlG7VKbMrBd99qOGof+9QDVLhrIqKUJpzb0Jcybgy+fNljWA==
+X-Received: by 2002:a05:6402:34f:b0:460:12ef:cc45 with SMTP id r15-20020a056402034f00b0046012efcc45mr731679edw.249.1668159490817;
+        Fri, 11 Nov 2022 01:38:10 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id eg25-20020a056402289900b00457b5ba968csm875513edb.27.2022.11.11.01.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Nov 2022 01:38:10 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3E3EE7A689F; Fri, 11 Nov 2022 10:37:53 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
+ metadata into skb context
+In-Reply-To: <d403ef7d-6dfd-bcaf-6088-cff5081f49e9@linux.dev>
+References: <20221104032532.1615099-1-sdf@google.com>
+ <20221104032532.1615099-7-sdf@google.com>
+ <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
+ <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
+ <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
+ <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
+ <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev>
+ <CAKH8qBsfVOoR1MNAFx3uR9Syoc0APHABsf97kb8SGpK+T1qcew@mail.gmail.com>
+ <32f81955-8296-6b9a-834a-5184c69d3aac@linux.dev>
+ <CAKH8qBuLMZrFmmi77Qbt7DCd1w9FJwdeK5CnZTJqHYiWxwDx6w@mail.gmail.com>
+ <87y1siyjf6.fsf@toke.dk>
+ <CAKH8qBsfzYmQ9SZXhFetf_zQPNmE_L=_H_rRxJEwZzNbqtoKJA@mail.gmail.com>
+ <87o7texv08.fsf@toke.dk>
+ <CAKH8qBtjYV=tb28y6bvo3tGonzjvm2JLyis9AFPSMTuXsL3NPA@mail.gmail.com>
+ <87eduaxsep.fsf@toke.dk> <d403ef7d-6dfd-bcaf-6088-cff5081f49e9@linux.dev>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 11 Nov 2022 10:37:53 +0100
+Message-ID: <87o7td7rwu.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgC329hLD25jbi9eAQ--.31717S8
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF1UtFyfCr1UXF18GFy5XFb_yoWDGFgEkF
-        ykAF1SyFy3G3y7twn5Grsxuryxu3Z5GF4kWa1Utr4akr13C3s7Jwn2yF9rWFyUWa1qqrsx
-        W3s3X3Z7tr13KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbSkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
-        0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-        Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-        v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-        WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Martin KaFai Lau <martin.lau@linux.dev> writes:
 
-The top two bits of size are used as busy and discard flags, so reject
-the reservation that has any of these special bits in the size. With the
-addition of validity check, these is also no need to check whether or
-not total_size is overflowed.
+> On 11/10/22 4:10 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>> The problem with AF_XDP is that, IIUC, it doesn't have a data_meta
+>>> pointer in the userspace.
+>>>
+>>> You get an rx descriptor where the address points to the 'data':
+>>> | 256 bytes headroom where metadata can go | data |
+>>=20
+>> Ah, I was missing the bit where the data pointer actually points at
+>> data, not the start of the buf. Oops, my bad!
+>>=20
+>>> So you have (at most) 256 bytes of headroom, some of that might be the
+>>> metadata, but you really don't know where it starts. But you know it
+>>> definitely ends where the data begins.
+>>>
+>>> So if we have the following, we can locate skb_metadata:
+>>> | 256-sizeof(skb_metadata) headroom | custom metadata | skb_metadata | =
+data |
+>>> data - sizeof(skb_metadata) will get you there
+>>>
+>>> But if it's the other way around, the program has to know
+>>> sizeof(custom metadata) to locate skb_metadata:
+>>> | 256-sizeof(skb_metadata) headroom | skb_metadata | custom metadata | =
+data |
+>>>
+>>> Am I missing something here?
+>>=20
+>> Hmm, so one could argue that the only way AF_XDP can consume custom
+>> metadata today is if it knows out of band what the size of it is. And if
+>> it knows that, it can just skip over it to go back to the skb_metadata,
+>> no?
+>
+> +1 I replied with a similar point in another email. I also think we
+> can safely assume this.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- tools/lib/bpf/ringbuf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Great!
 
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index b34e61c538d7..91146562e18a 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -490,6 +490,10 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
- 	__u64 cons_pos, prod_pos;
- 	struct ringbuf_hdr *hdr;
- 
-+	/* The top two bits are used as special flags */
-+	if (size & (BPF_RINGBUF_BUSY_BIT | BPF_RINGBUF_DISCARD_BIT))
-+		return errno = E2BIG, NULL;
-+
- 	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_peek() in
- 	 * the kernel.
- 	 */
--- 
-2.29.2
+>>=20
+>> The only problem left then is if there were multiple XDP programs called
+>> in sequence (whether before a redirect, or by libxdp chaining or tail
+>> calls), and the first one resized the metadata area without the last one
+>> knowing about it. For this, we could add a CLOBBER_PROGRAM_META flag to
+>> the skb_metadata helper which if set will ensure that the program
+>> metadata length is reset to 0?
+>
+> How is it different from the same xdp prog calling bpf_xdp_adjust_meta() =
+and=20
+> bpf_xdp_metadata_export_to_skb() multiple times.  The earlier stored=20
+> skb_metadata needs to be moved during the latter bpf_xdp_adjust_meta().  =
+The=20
+> latter bpf_xdp_metadata_export_to_skb() will overwrite the earlier skb_me=
+tadata.
+
+Well, it would just be a convenience flag, so instead of doing:
+
+metalen =3D ctx->data - ctx->data_meta;
+if (metalen)
+  xdp_adjust_meta(-metalen);
+bpf_xdp_metadata_export_to_skb(ctx);
+
+you could just do:
+
+bpf_xdp_metadata_export_to_skb(ctx, CLOBBER_PROGRAM_META);
+
+and the kernel would do the check+move for you. But, well, the couple of
+extra instructions to do the check in BPF is probably fine.
+
+(I'm talking here about a program that wants to make sure that any
+custom metadata that may have been added by an earlier program is
+removed before redirecting to an XSK socket; I expect we'd want to do
+something like this in the default program in libxdp).
+
+-Toke
 
