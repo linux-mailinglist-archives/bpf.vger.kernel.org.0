@@ -2,111 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED9B62514B
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E1A6251A5
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbiKKDLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 22:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S232537AbiKKD1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 22:27:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbiKKDLp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 22:11:45 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260552EF48;
-        Thu, 10 Nov 2022 19:11:42 -0800 (PST)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N7kDh5RrKzJnbh;
-        Fri, 11 Nov 2022 11:08:36 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 11:11:39 +0800
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 11:11:38 +0800
-Subject: Re: [PATCH bpf] selftests/bpf: Fix xdp_synproxy compilation failure
- in 32-bit arch
-To:     Yonghong Song <yhs@meta.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>, <mykolal@fb.com>, <shuah@kernel.org>,
-        <tariqt@nvidia.com>, <maximmi@nvidia.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20221108131242.17362-1-yangjihong1@huawei.com>
- <c8bd9f3b-52fa-08bd-e5df-e87b68ffdbba@meta.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <f5391830-352a-6daa-9233-a177db43ba71@huawei.com>
-Date:   Fri, 11 Nov 2022 11:11:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        with ESMTP id S232506AbiKKD13 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 22:27:29 -0500
+X-Greylist: delayed 2724 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Nov 2022 19:26:33 PST
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E15654E1;
+        Thu, 10 Nov 2022 19:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1668137187;
+        bh=VG03AryjN1xYa93c1hmpENqh0pc82ZJb7GUcVRfapEg=;
+        h=From:To:Cc:Subject:Date;
+        b=jxpyxrMzXu0S6nnjluXJY6+WLuU/FGUCfS4ZQWZemR8HF/hYMjCx7c7MdxBir5kFP
+         48pXosBCB/s22b5nLKAa40AwQ7mIhaVSnwd5Jd+FtXChZ3h2WqwTfoGBqplF7qPj9M
+         /KYZfgMv9/h2i6jncEPn21EKkPXIcOhq0WCN6fis=
+Received: from localhost.localdomain ([111.199.191.46])
+        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+        id 695818DF; Fri, 11 Nov 2022 11:26:21 +0800
+X-QQ-mid: xmsmtpt1668137181t31ricq3i
+Message-ID: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
+X-QQ-XMAILINFO: NhUkPfKlCtQwXEHQjVhadMlQmPdB09PSlN9uaDXEq28soLLj8jyChox9gJTCqR
+         REubEYCYiEeRGIsZfrpDgCR2Mkm6LMvFNCkFWnzgkRTY70pR7Fqx47jRFUEZf2U9RU9TR3ROn4WC
+         eVH7+y0yHhajHrr6DK2C6CYOtCzXZy0Jf+UhIRGQxYCq3BoADv7UNO4eeFJM1A36OBtQROfg7UKh
+         z/t8VQZl+IWhQIAg3dR/qF/k7yxJTPxGL/Kp7PxU/2/oMFY2pOS4wWPr3sGLWdv57/s8ovIKBAzG
+         2zXL6l/qCbSGaZdJ1yugAaRJnWBM0p/WJQ61XXq0V0UVmlTbr82VfGfZOHKYUv2+JXbTZXnjyH7f
+         T72i/gaUnVPR8AmdaxnuQVPciL6r4D45K0c7o4hQu7ch1tjXLGppqO69PpN11Lwrqpw1UIvsXt1U
+         n/Xy79DcTZcDATllKcLuwmP+mlgaRTZTMOebLj4T3VKnbfbM/I3eH4J6PNbPZfwyshk8sCcuE1hi
+         QGI+23clUYl01WwnwOF5ghgTN8bb3XpX0ENJr4LtQXae+oYXH+PHRGPEVN8BJ2gChzSPEJFCdFPN
+         AiPxmjT8D6vxhU2NQGl25jUfqUrGc3f3a83naZ1GQANUS19HmCAGBlQC421IoLWIV7/DRX29Z1Ew
+         ZtxrGPv+sNy6E5g3aPp5SJVJPGVk6t6QadoWeuZC8aapdjOb4OXckbDE1MoLGvYVA/vvbmZj94xE
+         cyxs3zXk1WsXygJ9JvVo6OMP4ACWTeyVh1XE15T95MXpJQu+R4xOpnGBHBY5sDKyZBKWUp1iJLpW
+         xu3/q3VEBQZoGHVl+KNuACyKzeK4id4/S2Yop2kgmElAZsjhNu2Cy1XJ0drEZ3Dd6WlCEnugAWoP
+         YP7XD8enx0UrBs8gCsuMoqWNz4eb+yDE/RVbeOLXO1r7/7H8I5MiOOv4r8zE++f1fvib229+WYX4
+         Cn8KXKf5Pn2iwFP5tROOBbL9jhFHI890FEjwDMQ2bgRajRuH0v5CWAD3ubDVHt
+From:   Rong Tao <rtoax@foxmail.com>
+To:     ast@kernel.org
+Cc:     Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier 'NF_NAT_MANIP_SRC'
+Date:   Fri, 11 Nov 2022 11:26:11 +0800
+X-OQ-MSGID: <20221111032613.31106-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <c8bd9f3b-52fa-08bd-e5df-e87b68ffdbba@meta.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+From: Rong Tao <rongtao@cestc.cn>
 
-On 2022/11/8 23:59, Yonghong Song wrote:
-> 
-> 
-> On 11/8/22 5:12 AM, Yang Jihong wrote:
->> xdp_synproxy fails to be compiled in the 32-bit arch, log is as follows:
->>
->>    xdp_synproxy.c: In function 'parse_options':
->>    xdp_synproxy.c:175:36: error: left shift count >= width of type 
->> [-Werror=shift-count-overflow]
->>      175 |                 *tcpipopts = (mss6 << 32) | (ttl << 24) | 
->> (wscale << 16) | mss4;
->>          |                                    ^~
->>    xdp_synproxy.c: In function 'syncookie_open_bpf_maps':
->>    xdp_synproxy.c:289:28: error: cast from pointer to integer of 
->> different size [-Werror=pointer-to-int-cast]
->>      289 |                 .map_ids = (__u64)map_ids,
->>          |                            ^
->>
->> Fix it.
->>
->> Fixes: fb5cd0ce70d4 ("selftests/bpf: Add selftests for raw syncookie 
->> helpers")
->> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->> ---
->>   tools/testing/selftests/bpf/xdp_synproxy.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/xdp_synproxy.c 
->> b/tools/testing/selftests/bpf/xdp_synproxy.c
->> index ff35320d2be9..45fef01a87a8 100644
->> --- a/tools/testing/selftests/bpf/xdp_synproxy.c
->> +++ b/tools/testing/selftests/bpf/xdp_synproxy.c
->> @@ -172,7 +172,7 @@ static void parse_options(int argc, char *argv[], 
->> unsigned int *ifindex, __u32 *
->>       if (tcpipopts_mask == 0xf) {
->>           if (mss4 == 0 || mss6 == 0 || wscale == 0 || ttl == 0)
->>               usage(argv[0]);
->> -        *tcpipopts = (mss6 << 32) | (ttl << 24) | (wscale << 16) | mss4;
->> +        *tcpipopts = ((unsigned long long)mss6 << 32) | (ttl << 24) | 
->> (wscale << 16) | mss4;
-> 
-> This looks weird. Maybe we should define mss6 as unsigned long long to 
-> avoid this casting at all?
-OK, will fix in next version.
+commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
+nf_nat_manip_type to test_bpf_nf.c fix this error.
 
-Thanks,
-Yang
+How to reproduce the error:
+
+    $ make -C tools/testing/selftests/bpf/
+    ...
+      CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+      error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+            bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+                                                           ^
+      error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+            bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+                                                           ^
+    2 errors generated.
+
+Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 227e85e85dda..307ca166ff34 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -3,6 +3,11 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+ 
++enum nf_nat_manip_type {
++	NF_NAT_MANIP_SRC,
++	NF_NAT_MANIP_DST
++};
++
+ #define EAFNOSUPPORT 97
+ #define EPROTO 71
+ #define ENONET 64
+-- 
+2.31.1
+
