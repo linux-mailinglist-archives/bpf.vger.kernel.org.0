@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3426256F5
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 10:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6844C62570E
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 10:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbiKKJjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 04:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S233491AbiKKJmh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 04:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbiKKJjM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 04:39:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F386DCE4
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:38:14 -0800 (PST)
+        with ESMTP id S231235AbiKKJmf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 04:42:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19626F373
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:41:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668159494;
+        s=mimecast20190719; t=1668159696;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CuzRwI1mSTi/386dr9HtHu+gFAxlK7t/8OnS9h0/MI8=;
-        b=AhnIctxeCpN8RqRjsz/pQFU3vd7pUSZcStlVe43xd+0Mya5BN5YJGYgW2hwvaOXB7WgLYi
-        F3d99aBORvAZc+4klCjqu4PKlg9bZ5+V9Wk4zEiqQ7HDFsxTh/CcAQnoEorUWIE6jiVCWZ
-        DpO5Oqvz0GArLtPTtc2AOxOvGYOJMtA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=xbnPOqtI0GzWpFzFMeJ+pnuodgROHkMeeL/ReftNsOE=;
+        b=WHqh3lzHyMO4jkgzDeDQVcTGxHBP2UW0CV817rFIz8u7QgHrPRXH5B5bph6BZvwiVGatO6
+        ZRvWRAdjfj4Uu7ToeM4UF6b4oPK8J9aYkvWPvRQyPP4cJxOO9qQ6ZoFTdefOc9vtdLWgiz
+        lgH3n4vl+D+5tP3IHosVwBXwARXIhQ8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-613-Dt8ah1ovP76rlLa2bJaqSQ-1; Fri, 11 Nov 2022 04:38:12 -0500
-X-MC-Unique: Dt8ah1ovP76rlLa2bJaqSQ-1
-Received: by mail-ej1-f70.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so2730965ejb.19
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:38:12 -0800 (PST)
+ us-mta-640-3oBln5oMMSm8dHRge8fvZA-1; Fri, 11 Nov 2022 04:41:35 -0500
+X-MC-Unique: 3oBln5oMMSm8dHRge8fvZA-1
+Received: by mail-ed1-f70.google.com with SMTP id dz9-20020a0564021d4900b0045d9a3aded4so3329481edb.22
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 01:41:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CuzRwI1mSTi/386dr9HtHu+gFAxlK7t/8OnS9h0/MI8=;
-        b=H/hT2cv3if5koA3dmGBv7Vu38wQKcBa5t+SQA2T0Yc2diW41Ff+MyVgoWKbBv/KR8x
-         8f00mjiz6Zk3A2nPFslXspRLYqSATC0Ez6AeVX3Pyzd+X5r6Na3Dkv44YewnmdXw9yGL
-         vB4Jqdv72VcOE7RLSlbcAo0ys7QkGVxrJPzPm8VJ1dLCME0ziYBh6Sb/fJGiz7fcEETH
-         jw/hngQ0xlE+B02ONh8jH0UBsYarIfV8bH5Q5ZRxOOU3kn+Gvj1sID711H8/41InHrY9
-         sW18Gb5Jw19JG9nyBd9FjUy5eERQyhUeiVjuovYIXbvvX7Vs7iQZPT4tsbId2uS3i98S
-         zLBg==
-X-Gm-Message-State: ANoB5pkEXKshHcLkJrRi3xEyK88j4MagCbsrVhrpldqlbG7w25SFcRJL
-        2Idwnf5IJx6KKqGQyh7toNSlrWmtmSY7OicP/mK84mG170YqT9ygBmvClR9uEhuKYp54MLPmDIM
-        koR2tmoRSwnJJ
-X-Received: by 2002:a05:6402:34f:b0:460:12ef:cc45 with SMTP id r15-20020a056402034f00b0046012efcc45mr731711edw.249.1668159491246;
-        Fri, 11 Nov 2022 01:38:11 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5BoVg5/sQIOxSVn1Wrw0hWRqLlG7VKbMrBd99qOGof+9QDVLhrIqKUJpzb0Jcybgy+fNljWA==
-X-Received: by 2002:a05:6402:34f:b0:460:12ef:cc45 with SMTP id r15-20020a056402034f00b0046012efcc45mr731679edw.249.1668159490817;
-        Fri, 11 Nov 2022 01:38:10 -0800 (PST)
+        bh=xbnPOqtI0GzWpFzFMeJ+pnuodgROHkMeeL/ReftNsOE=;
+        b=e7PJQZESh5v9Adv/t/5GAPQeTVO+PD4kARtUvM+8a59bMXitcx0JqkDvF3EkM2tveX
+         +AYnrV6qdry1lHNBYNbm8ATEXwAmjBrNSlEs0jzgdaVHg/j5pedZalxG29IsJQsy6+nY
+         R5X2BdWQ690LxqGnKUuRHEkQbGdKjdUar3RP3JvOnq9nTDuNQHENGdkhmH7nq7vLnBAc
+         yol8j1TD56mJVT43JXmiKIZnl8ERhFqHcuDY+MZukqcje1/T3pKZYETdF6bqUna2nwjq
+         Koa2d8YuO3w/ROOStpBQxoPyFf5v8C8WB1OGxQm60s+DpQM2YEdDQcBuj8Ug2gmUezok
+         qAew==
+X-Gm-Message-State: ANoB5pm2pBuZ5wUNAPBIGeYhxlhibYQ6nXCJnageC11gCNgRPup42lL8
+        yp/yVo0qYyCm9W/UsdoKqYESJfzWwObvTh2oEO2amyjWm2lUIHfy+OsrNnxTBjoukWMu1YzIdhF
+        6F4GdJw4Hg39/
+X-Received: by 2002:a17:906:7692:b0:7ae:3fa3:d7c6 with SMTP id o18-20020a170906769200b007ae3fa3d7c6mr1121710ejm.494.1668159693506;
+        Fri, 11 Nov 2022 01:41:33 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6Mg+PoPArGJwZiTT3bqzPZX5EP/LiJTsP0djh+ZVpddPIv6lk82BEnXjz3ExeQxTbQb/kWZg==
+X-Received: by 2002:a17:906:7692:b0:7ae:3fa3:d7c6 with SMTP id o18-20020a170906769200b007ae3fa3d7c6mr1121685ejm.494.1668159693073;
+        Fri, 11 Nov 2022 01:41:33 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id eg25-20020a056402289900b00457b5ba968csm875513edb.27.2022.11.11.01.38.09
+        by smtp.gmail.com with ESMTPSA id ky14-20020a170907778e00b00782539a02absm663743ejc.194.2022.11.11.01.41.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 01:38:10 -0800 (PST)
+        Fri, 11 Nov 2022 01:41:32 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3E3EE7A689F; Fri, 11 Nov 2022 10:37:53 +0100 (CET)
+        id D9A427A68A1; Fri, 11 Nov 2022 10:41:29 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Martin KaFai Lau <martin.lau@linux.dev>,
         Stanislav Fomichev <sdf@google.com>
@@ -74,7 +74,7 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
  metadata into skb context
-In-Reply-To: <d403ef7d-6dfd-bcaf-6088-cff5081f49e9@linux.dev>
+In-Reply-To: <2e3c1e2d-bc60-b406-31e3-6e922eea3f9f@linux.dev>
 References: <20221104032532.1615099-1-sdf@google.com>
  <20221104032532.1615099-7-sdf@google.com>
  <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
@@ -89,10 +89,12 @@ References: <20221104032532.1615099-1-sdf@google.com>
  <CAKH8qBsfzYmQ9SZXhFetf_zQPNmE_L=_H_rRxJEwZzNbqtoKJA@mail.gmail.com>
  <87o7texv08.fsf@toke.dk>
  <CAKH8qBtjYV=tb28y6bvo3tGonzjvm2JLyis9AFPSMTuXsL3NPA@mail.gmail.com>
- <87eduaxsep.fsf@toke.dk> <d403ef7d-6dfd-bcaf-6088-cff5081f49e9@linux.dev>
+ <d8d23d7b-c997-ae8d-b4ee-a1182ff657f5@linux.dev>
+ <CAKH8qBvoR36wJShRE5zbgif2L9hweM6vSPVEHugY_ctOQgvpdQ@mail.gmail.com>
+ <2e3c1e2d-bc60-b406-31e3-6e922eea3f9f@linux.dev>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 11 Nov 2022 10:37:53 +0100
-Message-ID: <87o7td7rwu.fsf@toke.dk>
+Date:   Fri, 11 Nov 2022 10:41:29 +0100
+Message-ID: <87leoh7rqu.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -108,76 +110,202 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Martin KaFai Lau <martin.lau@linux.dev> writes:
 
-> On 11/10/22 4:10 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>> The problem with AF_XDP is that, IIUC, it doesn't have a data_meta
->>> pointer in the userspace.
+> On 11/10/22 4:57 PM, Stanislav Fomichev wrote:
+>> On Thu, Nov 10, 2022 at 4:33 PM Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
 >>>
->>> You get an rx descriptor where the address points to the 'data':
->>> | 256 bytes headroom where metadata can go | data |
+>>> On 11/10/22 3:52 PM, Stanislav Fomichev wrote:
+>>>> On Thu, Nov 10, 2022 at 3:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>>>>>
+>>>>> Skipping to the last bit:
+>>>>>
+>>>>>>>>>>      } else {
+>>>>>>>>>>        use kfuncs
+>>>>>>>>>>      }
+>>>>>>>>>>
+>>>>>>>>>> 5. Support the case where we keep program's metadata and kernel's
+>>>>>>>>>> xdp_to_skb_metadata
+>>>>>>>>>>      - skb_metadata_import_from_xdp() will "consume" it by mem-m=
+oving the
+>>>>>>>>>> rest of the metadata over it and adjusting the headroom
+>>>>>>>>>
+>>>>>>>>> I was thinking the kernel's xdp_to_skb_metadata is always before =
+the program's
+>>>>>>>>> metadata.  xdp prog should usually work in this order also: read/=
+write headers,
+>>>>>>>>> write its own metadata, call bpf_xdp_metadata_export_to_skb(), an=
+d return
+>>>>>>>>> XDP_PASS/XDP_REDIRECT.  When it is XDP_PASS, the kernel just need=
+s to pop the
+>>>>>>>>> xdp_to_skb_metadata and pass the remaining program's metadata to =
+the bpf-tc.
+>>>>>>>>>
+>>>>>>>>> For the kernel and xdp prog, I don't think it matters where the
+>>>>>>>>> xdp_to_skb_metadata is.  However, the xdp->data_meta (program's m=
+etadata) has to
+>>>>>>>>> be before xdp->data because of the current data_meta and data com=
+parison usage
+>>>>>>>>> in the xdp prog.
+>>>>>>>>>
+>>>>>>>>> The order of the kernel's xdp_to_skb_metadata and the program's m=
+etadata
+>>>>>>>>> probably only matters to the userspace AF_XDP.  However, I don't =
+see how AF_XDP
+>>>>>>>>> supports the program's metadata now.  afaict, it can only work no=
+w if there is
+>>>>>>>>> some sort of contract between them or the AF_XDP currently does n=
+ot use the
+>>>>>>>>> program's metadata.  Either way, we can do the mem-moving only fo=
+r AF_XDP and it
+>>>>>>>>> should be a no op if there is no program's metadata?  This behavi=
+or could also
+>>>>>>>>> be configurable through setsockopt?
+>>>>>>>>
+>>>>>>>> Agreed on all of the above. For now it seems like the safest thing=
+ to
+>>>>>>>> do is to put xdp_to_skb_metadata last to allow af_xdp to properly
+>>>>>>>> locate btf_id.
+>>>>>>>> Let's see if Toke disagrees :-)
+>>>>>>>
+>>>>>>> As I replied to Martin, I'm not sure it's worth the complexity to
+>>>>>>> logically split the SKB metadata from the program's own metadata (as
+>>>>>>> opposed to just reusing the existing data_meta pointer)?
+>>>>>>
+>>>>>> I'd gladly keep my current requirement where it's either or, but not=
+ both :-)
+>>>>>> We can relax it later if required?
+>>>>>
+>>>>> So the way I've been thinking about it is simply that the skb_metadata
+>>>>> would live in the same place at the data_meta pointer (including
+>>>>> adjusting that pointer to accommodate it), and just overriding the
+>>>>> existing program metadata, if any exists. But looking at it now, I gu=
+ess
+>>>>> having the split makes it easier for a program to write its own custom
+>>>>> metadata and still use the skb metadata. See below about the ordering.
+>>>>>
+>>>>>>> However, if we do, the layout that makes most sense to me is puttin=
+g the
+>>>>>>> skb metadata before the program metadata, like:
+>>>>>>>
+>>>>>>> --------------
+>>>>>>> | skb_metadata
+>>>>>>> --------------
+>>>>>>> | data_meta
+>>>>>>> --------------
+>>>>>>> | data
+>>>>>>> --------------
+>>>>>>>
+>>>
+>>> Yeah, for the kernel and xdp prog (ie not AF_XDP), I meant this:
+>>>
+>>> | skb_metadata | custom metadata | data |
+>>>
+>>>>>>> Not sure if that's what you meant? :)
+>>>>>>
+>>>>>> I was suggesting the other way around: |custom meta|skb_metadata|dat=
+a|
+>>>>>> (but, as Martin points out, consuming skb_metadata in the kernel
+>>>>>> becomes messier)
+>>>>>>
+>>>>>> af_xdp can check whether skb_metdata is present by looking at data -
+>>>>>> offsetof(struct skb_metadata, btf_id).
+>>>>>> progs that know how to handle custom metadata, will look at data -
+>>>>>> sizeof(skb_metadata)
+>>>>>>
+>>>>>> Otherwise, if it's the other way around, how do we find skb_metadata
+>>>>>> in a redirected frame?
+>>>>>> Let's say we have |skb_metadata|custom meta|data|, how does the final
+>>>>>> program find skb_metadata?
+>>>>>> All the progs have to agree on the sizeof(tc/custom meta), right?
+>>>>>
+>>>>> Erm, maybe I'm missing something here, but skb_metadata is fixed size,
+>>>>> right? So if the "skb_metadata is present" flag is set, we know that =
+the
+>>>>> sizeof(skb_metadata) bytes before the data_meta pointer contains the
+>>>>> metadata, and if the flag is not set, we know those bytes are not val=
+id
+>>>>> metadata.
+>>>
+>>> right, so to get to the skb_metadata, it will be
+>>> data_meta -=3D sizeof(skb_metadata);  /* probably need alignment */
+>>>
+>>>>>
+>>>>> For AF_XDP, we'd need to transfer the flag as well, and it could apply
+>>>>> the same logic (getting the size from the vmlinux BTF).
+>>>>>
+>>>>> By this logic, the BTF_ID should be the *first* entry of struct
+>>>>> skb_metadata, since that will be the field AF_XDP programs can find
+>>>>> right off the bat, no? >
+>>>> The problem with AF_XDP is that, IIUC, it doesn't have a data_meta
+>>>> pointer in the userspace.
+>>>
+>>> Yep. It is my understanding also.  Missing data_meta pointer in the AF_=
+XDP
+>>> rx_desc is a potential problem.  Having BTF_ID or not won't help.
+>>>
+>>>>
+>>>> You get an rx descriptor where the address points to the 'data':
+>>>> | 256 bytes headroom where metadata can go | data |
+>>>>
+>>>> So you have (at most) 256 bytes of headroom, some of that might be the
+>>>> metadata, but you really don't know where it starts. But you know it
+>>>> definitely ends where the data begins.
+>>>>
+>>>> So if we have the following, we can locate skb_metadata:
+>>>> | 256-sizeof(skb_metadata) headroom | custom metadata | skb_metadata |=
+ data |
+>>>> data - sizeof(skb_metadata) will get you there
+>>>>
+>>>> But if it's the other way around, the program has to know
+>>>> sizeof(custom metadata) to locate skb_metadata:
+>>>> | 256-sizeof(skb_metadata) headroom | skb_metadata | custom metadata |=
+ data |
+>>>
+>>> Right, this won't work if the AF_XDP user does not know how big the cus=
+tom
+>>> metadata is.  The kernel then needs to swap the "skb_metadata" and "cus=
+tom
+>>> metadata" + setting a flag in the AF_XDP rx_desc->options to make it lo=
+oks like
+>>> this:
+>>> | custom metadata | skb_metadata | data |
+>>>
+>>> However, since data_meta is missing from the rx_desc, may be we can saf=
+ely
+>>> assume the AF_XDP user always knows the size of the custom metadata or =
+there is
+>>> usually no "custom metadata" and no swap is needed?
 >>=20
->> Ah, I was missing the bit where the data pointer actually points at
->> data, not the start of the buf. Oops, my bad!
+>> If we can assume they can share that info, can they also share more
+>> info on what kind of metadata they would prefer to get?
+>> If they can agree on the size, maybe they also can agree on the flows
+>> that need skb_metdata vs the flows that need a custom one?
 >>=20
->>> So you have (at most) 256 bytes of headroom, some of that might be the
->>> metadata, but you really don't know where it starts. But you know it
->>> definitely ends where the data begins.
->>>
->>> So if we have the following, we can locate skb_metadata:
->>> | 256-sizeof(skb_metadata) headroom | custom metadata | skb_metadata | =
-data |
->>> data - sizeof(skb_metadata) will get you there
->>>
->>> But if it's the other way around, the program has to know
->>> sizeof(custom metadata) to locate skb_metadata:
->>> | 256-sizeof(skb_metadata) headroom | skb_metadata | custom metadata | =
-data |
->>>
->>> Am I missing something here?
+>> Seems like we can start with supporting either one, but not both and
+>> extend in the future once we have more understanding on whether it's
+>> actually needed or not?
 >>=20
->> Hmm, so one could argue that the only way AF_XDP can consume custom
->> metadata today is if it knows out of band what the size of it is. And if
->> it knows that, it can just skip over it to go back to the skb_metadata,
->> no?
+>> bpf_xdp_metadata_export_to_skb: adjust data meta, add uses-skb-metadata =
+flag
+>> bpf_xdp_adjust_meta: unconditionally reset uses-skb-metadata flag
+> hmm... I am thinking:
 >
-> +1 I replied with a similar point in another email. I also think we
-> can safely assume this.
-
-Great!
-
->>=20
->> The only problem left then is if there were multiple XDP programs called
->> in sequence (whether before a redirect, or by libxdp chaining or tail
->> calls), and the first one resized the metadata area without the last one
->> knowing about it. For this, we could add a CLOBBER_PROGRAM_META flag to
->> the skb_metadata helper which if set will ensure that the program
->> metadata length is reset to 0?
+> bpf_xdp_adjust_meta: move the existing (if any) skb_metadata and adjust=20
+> xdp->data_meta.
 >
-> How is it different from the same xdp prog calling bpf_xdp_adjust_meta() =
-and=20
-> bpf_xdp_metadata_export_to_skb() multiple times.  The earlier stored=20
-> skb_metadata needs to be moved during the latter bpf_xdp_adjust_meta().  =
-The=20
-> latter bpf_xdp_metadata_export_to_skb() will overwrite the earlier skb_me=
-tadata.
+> bpf_xdp_metadata_export_to_skb: If skb_metadata exists, overwrites the ex=
+isting=20
+> one.  If not exists, gets headroom before xdp->data_meta and writes hints.
 
-Well, it would just be a convenience flag, so instead of doing:
-
-metalen =3D ctx->data - ctx->data_meta;
-if (metalen)
-  xdp_adjust_meta(-metalen);
-bpf_xdp_metadata_export_to_skb(ctx);
-
-you could just do:
-
-bpf_xdp_metadata_export_to_skb(ctx, CLOBBER_PROGRAM_META);
-
-and the kernel would do the check+move for you. But, well, the couple of
-extra instructions to do the check in BPF is probably fine.
-
-(I'm talking here about a program that wants to make sure that any
-custom metadata that may have been added by an earlier program is
-removed before redirecting to an XSK socket; I expect we'd want to do
-something like this in the default program in libxdp).
+Yeah, +1 on this. For AF_XDP that means that if you only do
+bpf_xdp_metadata_export_to_skb() you'll get the skb metadata right
+before data, and if you add custom metadata yourself, that goes
+in-between so you'll need to have some way to communicate the length to
+the AF_XDP consumer. And a default program (like in libxdp) can just
+check the metadata pointer and make sure to remove any metadata before
+redirecting to userspace, like in the example from my other reply to
+Martin.
 
 -Toke
 
