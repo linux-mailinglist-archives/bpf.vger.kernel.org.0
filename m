@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE12262620A
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B15762620B
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbiKKTeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 14:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S234025AbiKKTeV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbiKKTeR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 14:34:17 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E029B7BE48
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:34:15 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id g62so5683426pfb.10
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:34:15 -0800 (PST)
+        with ESMTP id S233898AbiKKTeU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:34:20 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5877576FB2
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:34:19 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id c15-20020a17090a1d0f00b0021365864446so5510132pjd.4
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:34:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Uvy4NXZKIbN/6I7uJYBvLP272GMrTz5GbhVR2rUVS0Y=;
-        b=NOMPqQt/0Gnf1mlAJi7jT9xm88zluJ+3HrLBXgLfpaZDK55xuczrgdUkTP5ChJ8KmD
-         7SoCbFEveWP7MdtiR7vAc+bKqSbY2aZ5zTzmr1syYlCsVq8/NelKi6oxfmjigrFBGHC6
-         cmVDPiiJoUN+yAWKGOMtpx5zKzxxGk0aAC4mehrErQDUxZUZNV/Z+MUkUBMctl78Lw5h
-         P8fJVCBfh3XiYdbyAg/U3TlRSl+qks8rLY6R9qqneb7C9YVRXNux5MUVsvJA+TkpNakR
-         9+aMCATyS3ibf4WX7ZKlZ9dsmRiMqTaJuDSMJqgJLxbt3hU9dG/fIUSYy1MkYtHvXY6D
-         ksEg==
+        bh=JW6kTYVA+y8b43HdcehxOTQglQ0619cSpShurQ4DCNI=;
+        b=VQ/++5mL2S2MoypmSgUmH8N9aeORZfHN3I7Vx9J846awQbfjrk+6JjtuMlHXvodZ9j
+         H4f6tsP7HOwaqLUmZ0Nk6hfg3dlY4VYPD1lKPEgw1mNFLBQ7sC8UAxM9ngsjbQdrq0Av
+         lP4YlkjmHlhyQ8xGgWhC6AsgObszTjBHIoevwl7zwuRM6pbUKGjT455oqhCuHcjZ79AJ
+         /9s44YZNRUs6gt0FGyvVKsZ0ciV1LsSJTY8DIkA2/1JG0IrTqNRIpS+kiPW6OoSO2nfB
+         6Z3YEhVeWyXg8+K6R2rlmVlyzOtMITfRsOrohqOZbo3CVmmU2vzeu4/xtoYahvTMz2Be
+         /yuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Uvy4NXZKIbN/6I7uJYBvLP272GMrTz5GbhVR2rUVS0Y=;
-        b=38PEp8/xGltH/Dv5MWqLRchCxkCjhbVIiZEWmd7bfaXSCXKby96YQylDOhtAwUa2xH
-         AkH2GJM77qQEp3riD2DrhS7vY39PLjulmBN76j68QNTy2pw0491uQbWOBlZk2qvSMYiD
-         x9bRP2LlqwcxsddZJDqdbeMnAsD9Yfs0IwRhxOdCj9IfiOrlZQjOSzjaphPyUwlI9kN1
-         b/3h0iQi29bhIBYibvBXogADHfaFHjkNGWtgNZK9LIJpvY9itx2aWLYNV1XgDfWhdu+Y
-         KJ/bDREM2BdA0a0vFwtcmcOmV9Q5MCyFymq1kL6nEXkZYOOOa1lHLiOU81wUJQtih8MQ
-         QSVw==
-X-Gm-Message-State: ANoB5pntO9skqFE7vZHS4p3k2VfcfQcjclkwr8+nZQpIlbIwpLBsTYYx
-        yZBzAZMwWDhamfzA+G5mvaegn8KGdE+Kiw==
-X-Google-Smtp-Source: AA0mqf5y0OAIkoq61OZarA99+k8Q/I9KW4ido6RGwdRVaVeRVHGXli99p35w2qNw5pRQbDlpcdfHtA==
-X-Received: by 2002:a62:6001:0:b0:52f:db84:81cf with SMTP id u1-20020a626001000000b0052fdb8481cfmr4236261pfb.26.1668195255333;
-        Fri, 11 Nov 2022 11:34:15 -0800 (PST)
+        bh=JW6kTYVA+y8b43HdcehxOTQglQ0619cSpShurQ4DCNI=;
+        b=bUCQpBIg+BXEWJJpuEILG4xD+spCsS+Yyh96Rtf4Cg1MyTvXIrHk4FdfBCEibj5TLd
+         vUY2enT0RmiAQXUsMcsC2pVLtdflrEHz6WqUSyAtgoqbhqmXBJvvB/qkTQs9i9VA8ep2
+         hth/OCjWRGqhN7UCvOGV6XpsNfeeaqlxmVPsx0HgBUDXN/rbQvNYuc36+9/12Z8vrWMb
+         BDfXh3urr4EZ+ApNV4Pu8BYidfu3z5cB/RollnOlFwRg4ntcxC3/10GI9xnIAnSgD1NU
+         WMRu+x6jQYPTKK/EI45yFXpT7yhVPoHK/OaLC76nRtAOg8kTkBrGh5U4g7YEJjWMD6Ee
+         cp6A==
+X-Gm-Message-State: ANoB5pm9iIlfH3mWq7MwLIxvmYqYn0iTmNHtK26SsiET2/lIwu1AVdEc
+        02aMF/51dmvAXXQT4teO4u8aikIk+PaEYw==
+X-Google-Smtp-Source: AA0mqf4uiAKBfpHQt34rkbp6pZ8Y24BEK2LS6tq2fEuWbpfnsVerxjcqLG9nsn/ZpuYnbZGRBewWoA==
+X-Received: by 2002:a17:90a:9ce:b0:200:40a2:eaaa with SMTP id 72-20020a17090a09ce00b0020040a2eaaamr3483870pjo.68.1668195258621;
+        Fri, 11 Nov 2022 11:34:18 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id k2-20020a628402000000b0056bd4ec964csm1941188pfd.194.2022.11.11.11.34.14
+        by smtp.gmail.com with ESMTPSA id d17-20020a170902ced100b001868ed86a95sm2090498plg.174.2022.11.11.11.34.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 11:34:15 -0800 (PST)
+        Fri, 11 Nov 2022 11:34:18 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,14 +57,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: [PATCH bpf-next v6 18/26] bpf: Introduce bpf_obj_drop
-Date:   Sat, 12 Nov 2022 01:02:16 +0530
-Message-Id: <20221111193224.876706-19-memxor@gmail.com>
+Subject: [PATCH bpf-next v6 19/26] bpf: Permit NULL checking pointer with non-zero fixed offset
+Date:   Sat, 12 Nov 2022 01:02:17 +0530
+Message-Id: <20221111193224.876706-20-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221111193224.876706-1-memxor@gmail.com>
 References: <20221111193224.876706-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7764; i=memxor@gmail.com; h=from:subject; bh=iFiLM3YROrBHvTmWIWtn4om7dtKuji+UnL/mVE5Lchk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjbqIovDlDjQISoeeodXnG6Rft4YOv0XyZu2R8Y9Oy uBnV4++JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY26iKAAKCRBM4MiGSL8Ryv/2EA ClfHOYAZFnLnUYntH0N8LRtSW0kFolodOt6XoY0O+eC9jS8AiSLqKPus3BP7x8s0HoIeLlYLRJwAxS zwFaYNtBU31VSH4sFRazT0KKXBH7yd9o8TaMfZj1LfbrHA+Q5LKcUNRMR1cGZ3/QjKnt0xpaXcEKWk gd4gAS6iQGP3UM+JBU0ivEjQ35XCxW9R1h2HZY6OTZlIJEIYnK+TPP7OyKaoUgFEHjFjjLXVL/lTTS zNiYPNMgZ2wmIjSCVXk9RxjZBRc0vb8zLE3l5DYFcz7QG2Rr+CxMsN3dw8QI2gTkzKdPObYwnJ8Dg8 M19qvWQ4RGGCR5gCUvNRkmrdzOBCENZTkUBvEBb5AzQsrcte83jaPnSiSbc2jJ2iTpZahz7n5YWhOV 4FC8nnBvrJX2TSSNRSTr01kX7eVTs2LypYse2Mi7b7FNE5xMnmlOAiA0mM3ipbwKCe+bUL/9ogbnsk IzHux21IhFLNPKkeCqc9y1P0gjkPUh6ozFplzIJvbxYrJvZAdE/Y38KqIKItMehVO8Quqo3vx5/op3 5CyFrROMu8TCxosdiM4OtSNcS/IsuxphoB+MTRJ7f4UQjyrQ8tbEpaLQpSdkg2+oF6DMMqttVpsAqy E5sBe1wL3i5IxlsCElR2yVba31hzrLLZrFlFkn/6zhhPVbCGuUoFk23BcyqA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2227; i=memxor@gmail.com; h=from:subject; bh=QQzN5i+KVGSbJY/B6kG18+QcbhNJQ0FLx/9bPyIyj94=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjbqIoyWIZpGQdJsqdKnCM9pbpjWfQelScT3yZZP6B sYxnWaOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY26iKAAKCRBM4MiGSL8RylQwEA CTjXtLH73tr6rq8rQOltYG54cDIs/NYIiN/BqQoMlMJr+xjrjYW3IMb5qqbx9MU0RWFEYmgKEOnd5T txpaLRSNbnpkGAm0/Ken0E1hsxLc77IM4drbon5IMbhFrJoExpctmP2GTaQAXjOTQFSnRhWcqCqoyQ 6shobJNpfQwNdY4WX1FawP+nEAvM2UrpSMikvtzdYqBQkiAl3bLlZevfD0ILJTjZ7gbXI0RMGQ/oRr J71kUWiFfF6JfhlxsCBzPV25hZPZN8W0qweMkr34VflaHtKGTPz+FMFOnz9BGNl6sLzpdNMhZQnk5I hE5luMmmWMKKaAJTNHA0AtQEpJ4qj91TkqtxFKxEh+hT4/Ie2pHgN+4xYYRolntre2nD3dQIolmNRw gkpr2CaFGZbL/oRXKwF9/k/+N5titE8uI8NM/5Jwx0rVrB8rYzJgBjP9sU7aRIPH5gIAiZwt9HVSLg MRBT0XB1envsGDsOVhmE4sLuazMTbYYKjx1tJ9J/BGFShughLRO8EUEkSijpmDlnTC049H7kog+Zck +J17r48PbImWN1CVWKz2y74HXreh0UEacw+yiwWb8DdDvwoCtA9OyJhITyiKum1zG4r+OGc4sHrI0l yGOgcA19Aey3HUSkp8pIdGt+3sUCPuwH5Xh/UIDKiKYiSBE9brpHuCznK6Pw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,226 +77,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce bpf_obj_drop, which is the kfunc used to free allocated
-objects (allocated using bpf_obj_new). Pairing with bpf_obj_new, it
-implicitly destructs the fields part of object automatically without
-user intervention.
+Pointer increment on seeing PTR_MAYBE_NULL is already protected against,
+hence make an exception for PTR_TO_BTF_ID | MEM_ALLOC while still
+keeping the warning for other unintended cases that might creep in.
 
-Just like the previous patch, btf_struct_meta that is needed to free up
-the special fields is passed as a hidden argument to the kfunc.
+bpf_list_pop_{front,_back} helpers planned to be introduced in next
+commit will return a MEM_ALLOC register with incremented offset pointing
+to bpf_list_node field. The user is supposed to then obtain the pointer
+to the entry using container_of after NULL checking it. The current
+restrictions trigger a warning when doing the NULL checking. Revisiting
+the reason, it is meant as an assertion which seems to actually work and
+catch the bad case.
 
-For the user, a convenience macro hides over the kernel side kfunc which
-is named bpf_obj_drop_impl.
-
-Continuing the previous example:
-
-void prog(void) {
-	struct foo *f;
-
-	f = bpf_obj_new(typeof(*f));
-	if (!f)
-		return;
-	bpf_obj_drop(f);
-}
+Hence, under no other circumstances can reg->off be non-zero for a
+register that has the PTR_MAYBE_NULL type flag set.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/helpers.c                          | 11 ++++
- kernel/bpf/verifier.c                         | 66 +++++++++++++++----
- .../testing/selftests/bpf/bpf_experimental.h  | 13 ++++
- 3 files changed, 79 insertions(+), 11 deletions(-)
+ kernel/bpf/verifier.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index c4f1c22cc44c..71d803ca0c1d 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1770,6 +1770,16 @@ void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
- 	return p;
- }
- 
-+void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-+{
-+	struct btf_struct_meta *meta = meta__ign;
-+	void *p = p__alloc;
-+
-+	if (meta)
-+		bpf_obj_free_fields(meta->record, p);
-+	bpf_mem_free(&bpf_global_ma, p);
-+}
-+
- __diag_pop();
- 
- BTF_SET8_START(generic_btf_ids)
-@@ -1777,6 +1787,7 @@ BTF_SET8_START(generic_btf_ids)
- BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
- #endif
- BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
- BTF_SET8_END(generic_btf_ids)
- 
- static const struct btf_kfunc_id_set generic_kfunc_set = {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b7c663a2dbfa..5f98aa4c9d7c 100644
+index 5f98aa4c9d7c..7f44885d04dc 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -7866,6 +7866,10 @@ struct bpf_kfunc_call_arg_meta {
- 		u64 value;
- 		bool found;
- 	} arg_constant;
-+	struct {
-+		struct btf *btf;
-+		u32 btf_id;
-+	} arg_obj_drop;
- };
- 
- static bool is_kfunc_acquire(struct bpf_kfunc_call_arg_meta *meta)
-@@ -7944,6 +7948,11 @@ static bool is_kfunc_arg_sfx_ignore(const struct btf *btf, const struct btf_para
- 	return __kfunc_param_match_suffix(btf, arg, "__ign");
- }
- 
-+static bool is_kfunc_arg_alloc_obj(const struct btf *btf, const struct btf_param *arg)
-+{
-+	return __kfunc_param_match_suffix(btf, arg, "__alloc");
-+}
-+
- static bool is_kfunc_arg_ret_buf_size(const struct btf *btf,
- 				      const struct btf_param *arg,
- 				      const struct bpf_reg_state *reg,
-@@ -8044,6 +8053,7 @@ static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
- 
- enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_CTX,
-+	KF_ARG_PTR_TO_ALLOC_BTF_ID,  /* Allocated object */
- 	KF_ARG_PTR_TO_KPTR_STRONG,   /* PTR_TO_KPTR but type specific */
- 	KF_ARG_PTR_TO_DYNPTR,
- 	KF_ARG_PTR_TO_BTF_ID,	     /* Also covers reg2btf_ids conversions */
-@@ -8051,6 +8061,20 @@ enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_MEM_SIZE,	     /* Size derived from next argument, skip it */
- };
- 
-+enum special_kfunc_type {
-+	KF_bpf_obj_new_impl,
-+	KF_bpf_obj_drop_impl,
-+};
-+
-+BTF_SET_START(special_kfunc_set)
-+BTF_ID(func, bpf_obj_new_impl)
-+BTF_ID(func, bpf_obj_drop_impl)
-+BTF_SET_END(special_kfunc_set)
-+
-+BTF_ID_LIST(special_kfunc_list)
-+BTF_ID(func, bpf_obj_new_impl)
-+BTF_ID(func, bpf_obj_drop_impl)
-+
- static enum kfunc_ptr_arg_type
- get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 		       struct bpf_kfunc_call_arg_meta *meta,
-@@ -8071,6 +8095,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (btf_get_prog_ctx_type(&env->log, meta->btf, t, resolve_prog_type(env->prog), argno))
- 		return KF_ARG_PTR_TO_CTX;
- 
-+	if (is_kfunc_arg_alloc_obj(meta->btf, &args[argno]))
-+		return KF_ARG_PTR_TO_ALLOC_BTF_ID;
-+
- 	if (is_kfunc_arg_kptr_get(meta, argno)) {
- 		if (!btf_type_is_ptr(ref_t)) {
- 			verbose(env, "arg#0 BTF type must be a double pointer for kptr_get kfunc\n");
-@@ -8289,6 +8316,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			return kf_arg_type;
- 
- 		switch (kf_arg_type) {
-+		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
- 		case KF_ARG_PTR_TO_BTF_ID:
- 			if (!is_kfunc_trusted_args(meta))
- 				break;
-@@ -8325,6 +8353,21 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 				return -EINVAL;
- 			}
- 			break;
-+		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
-+			if (reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
-+				verbose(env, "arg#%d expected pointer to allocated object\n", i);
-+				return -EINVAL;
-+			}
-+			if (!reg->ref_obj_id) {
-+				verbose(env, "allocated object must be referenced\n");
-+				return -EINVAL;
-+			}
-+			if (meta->btf == btf_vmlinux &&
-+			    meta->func_id == special_kfunc_list[KF_bpf_obj_drop_impl]) {
-+				meta->arg_obj_drop.btf = reg->btf;
-+				meta->arg_obj_drop.btf_id = reg->btf_id;
-+			}
-+			break;
- 		case KF_ARG_PTR_TO_KPTR_STRONG:
- 			if (reg->type != PTR_TO_MAP_VALUE) {
- 				verbose(env, "arg#0 expected pointer to map value\n");
-@@ -8395,17 +8438,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 	return 0;
- }
- 
--enum special_kfunc_type {
--	KF_bpf_obj_new_impl,
--};
--
--BTF_SET_START(special_kfunc_set)
--BTF_ID(func, bpf_obj_new_impl)
--BTF_SET_END(special_kfunc_set)
--
--BTF_ID_LIST(special_kfunc_list)
--BTF_ID(func, bpf_obj_new_impl)
--
- static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			    int *insn_idx_p)
+@@ -10791,15 +10791,20 @@ static void mark_ptr_or_null_reg(struct bpf_func_state *state,
  {
-@@ -8532,6 +8564,10 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 				env->insn_aux_data[insn_idx].obj_new_size = ret_t->size;
- 				env->insn_aux_data[insn_idx].kptr_struct_meta =
- 					btf_find_struct_meta(ret_btf, ret_btf_id);
-+			} else if (meta.func_id == special_kfunc_list[KF_bpf_obj_drop_impl]) {
-+				env->insn_aux_data[insn_idx].kptr_struct_meta =
-+					btf_find_struct_meta(meta.arg_obj_drop.btf,
-+							     meta.arg_obj_drop.btf_id);
- 			} else {
- 				verbose(env, "kernel function %s unhandled dynamic return type\n",
- 					meta.func_name);
-@@ -14737,6 +14773,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		insn_buf[2] = addr[1];
- 		insn_buf[3] = *insn;
- 		*cnt = 4;
-+	} else if (desc->func_id == special_kfunc_list[KF_bpf_obj_drop_impl]) {
-+		struct btf_struct_meta *kptr_struct_meta = env->insn_aux_data[insn_idx].kptr_struct_meta;
-+		struct bpf_insn addr[2] = { BPF_LD_IMM64(BPF_REG_2, (long)kptr_struct_meta) };
-+
-+		insn_buf[0] = addr[0];
-+		insn_buf[1] = addr[1];
-+		insn_buf[2] = *insn;
-+		*cnt = 3;
- 	}
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index aeb6a7fcb7c4..8473395a11af 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -22,4 +22,17 @@ extern void *bpf_obj_new_impl(__u64 local_type_id, void *meta) __ksym;
- /* Convenience macro to wrap over bpf_obj_new_impl */
- #define bpf_obj_new(type) ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
- 
-+/* Description
-+ *	Free an allocated object. All fields of the object that require
-+ *	destruction will be destructed before the storage is freed.
-+ *
-+ *	The 'meta' parameter is a hidden argument that is ignored.
-+ * Returns
-+ *	Void.
-+ */
-+extern void bpf_obj_drop_impl(void *kptr, void *meta) __ksym;
-+
-+/* Convenience macro to wrap over bpf_obj_drop_impl */
-+#define bpf_obj_drop(kptr) bpf_obj_drop_impl(kptr, NULL)
-+
- #endif
+ 	if (type_may_be_null(reg->type) && reg->id == id &&
+ 	    !WARN_ON_ONCE(!reg->id)) {
+-		if (WARN_ON_ONCE(reg->smin_value || reg->smax_value ||
+-				 !tnum_equals_const(reg->var_off, 0) ||
+-				 reg->off)) {
++		if (reg->smin_value || reg->smax_value || !tnum_equals_const(reg->var_off, 0) || reg->off) {
+ 			/* Old offset (both fixed and variable parts) should
+ 			 * have been known-zero, because we don't allow pointer
+ 			 * arithmetic on pointers that might be NULL. If we
+ 			 * see this happening, don't convert the register.
++			 *
++			 * But in some cases, some helpers that return local
++			 * kptrs advance offset for the returned pointer.
++			 * In those cases, it is fine to expect to see reg->off.
+ 			 */
+-			return;
++			if (WARN_ON_ONCE(reg->type != (PTR_TO_BTF_ID | MEM_ALLOC | PTR_MAYBE_NULL)))
++				return;
++			if (WARN_ON_ONCE(reg->smin_value || reg->smax_value || !tnum_equals_const(reg->var_off, 0)))
++				return;
+ 		}
+ 		if (is_null) {
+ 			reg->type = SCALAR_VALUE;
 -- 
 2.38.1
 
