@@ -2,146 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A28625FF0
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 17:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A316E626056
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 18:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbiKKQ6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 11:58:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        id S233436AbiKKRUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 12:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbiKKQ6Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 11:58:24 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3722B0
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 08:58:23 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2ABDIfge016375
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 08:58:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=gn/mpXdzqFUbDxT/p4jEJDcMoK7eHpCVUCOI+zk5JbM=;
- b=JiusaLD5nGG8Ij8cdr3M84O4LZ/OS+BfHH8luUjvQ25iIEISKUxYGvAyoQW0lZyQrfvM
- gWGpVxUHrUh5PWS4RIzXyEKzmd6NSlBZp9ywuRXCpD5mLIyg9zUwUxO0LMyAkvzTul7D
- rim2glXRBnhjH+iFLS69UznVfiwU9yML3FQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ks8pn6kgj-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 08:58:22 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 08:58:21 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 6C51611FF3FFB; Fri, 11 Nov 2022 08:58:11 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v5 7/7] selftests/bpf: Add rcu_read_lock test to s390x/aarch64 deny lists
-Date:   Fri, 11 Nov 2022 08:58:11 -0800
-Message-ID: <20221111165811.2530740-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221111165734.2524596-1-yhs@fb.com>
-References: <20221111165734.2524596-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ZFpSamt3ShwKqAGCUAYDnPLxktzy6c2O
-X-Proofpoint-ORIG-GUID: ZFpSamt3ShwKqAGCUAYDnPLxktzy6c2O
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-11_08,2022-11-11_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234483AbiKKRTx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 12:19:53 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE90859FF6
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 09:19:38 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id t6-20020a25b706000000b006b38040b6f7so4982891ybj.6
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 09:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6PFX+CGHlg2L75TbaYPOEyPm2gVRHc3sOiqBvG6MyE=;
+        b=lAhzaPjnGUUwHDdUj5BuuYNAZ9nEkvkUH/fjS+YtSQyLQsRGUvECoifdApGVnGVHSi
+         9UfR6Uo4U2f1xwjzic5I2Y2OnaFEqYNsc8BTmSl1UmYQ2j8Dlz4JAs6m5lfHqdUFE990
+         WOF5Fa1yKfseL/37Pu29lF+xxqtfys3raM1WGoxRvKptx4juezPTMXb3dzAfwIfd6PFi
+         ywAWjUF93qO9GJ9dzQ3xX4pKwRfx6WxqS0AFaumae4jRCbXLKLA8WYg+3f+IA2c/bLZX
+         GxiaXDWLb+soY4Oggwz8v+AjU2+h54I456dUQ+sbXUNnVQf+QwUo5OuHsSzsOusAcwdn
+         RHRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6PFX+CGHlg2L75TbaYPOEyPm2gVRHc3sOiqBvG6MyE=;
+        b=7mp2fmF7BZIBafKw5m0SCrWLVV9TxqF2CNnHaymeaCTtZy8D1obrBVTjT1pe1Ilb7g
+         QNTNwdTI24zgI0gNstmkXg4ha8e+z+6oYpu+u+EK7TRDAaH0LE6zPH06Bn5/4pkOtpIm
+         x9qL278nMejugw52Ci8PmCqmIm/H4Yf4OsWYbUedHkCXL1P6eED6Jxew5hvjsaKbLlIJ
+         0DtTQJB0bUilOYlESaoS7IEjF/Y5Mnmd6HWJsSvT5QhavKBDNHd6K2S9d8+6mLLoxB+c
+         clM6oQVzxjekAdcjr6Ib4dZ9Er9ZiaqTPcKcbTKHN6Xp/0LXHIQ45YJotkaeWUIclE0P
+         02rg==
+X-Gm-Message-State: ANoB5plM5nl+GGdPXiKdYseZ6ywtF++7ZP9A2eahrfHnT1W4GKA91rzw
+        UzQa4eAfBBkocTMllOFiahQBp90=
+X-Google-Smtp-Source: AA0mqf7JTIn+CZqJY44nJAMV7faNM0m14cP2uvxK3tDme4M/b5bxqHh3WxcS8It8p2UE6665q2/gwUU=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:8286:0:b0:6be:266d:eeec with SMTP id
+ r6-20020a258286000000b006be266deeecmr2716345ybk.397.1668187178083; Fri, 11
+ Nov 2022 09:19:38 -0800 (PST)
+Date:   Fri, 11 Nov 2022 09:19:36 -0800
+In-Reply-To: <7253d4c4f2ffcd3bff90df8cf8f71af7475167de.camel@gmail.com>
+Mime-Version: 1.0
+References: <20221110223240.1350810-1-eddyz87@gmail.com> <Y22khvpDYu639yom@google.com>
+ <Y22mtIyofEus4KZ0@google.com> <7253d4c4f2ffcd3bff90df8cf8f71af7475167de.camel@gmail.com>
+Message-ID: <Y26EKFAMfKPktLBd@google.com>
+Subject: Re: [PATCH bpf-next] libbpf: hashmap.h update to fix build issues
+ using LLVM14
+From:   sdf@google.com
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The new rcu_read_lock test failed on s390x with the following error messa=
-ge:
+On 11/11, Eduard Zingerman wrote:
+> On Thu, 2022-11-10 at 17:34 -0800, sdf@google.com wrote:
+> > On 11/10, Stanislav Fomichev wrote:
+> > > On 11/11, Eduard Zingerman wrote:
+> > > > A fix for the LLVM compilation error while building bpftool.
+> > > > Replaces the expression:
+> > > >
+> > > >   _Static_assert((p) == NULL || ...)
+> > > >
+> > > > by expression:
+> > > >
+> > > >   _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) | 
+> | ...)
+> >
+> > > IIUC, when __builtin_constant_p(p) returns false, we just ignore the  
+> NULL
+> > > check?
+> > > Do we have cases like that? If no, maybe it's safer to fail?
+> >
+> > > s/(p) == NULL : 0/(p) == NULL : 1/ ?
+> >
+> > I'm probably missing something, can you pls clarify? So the error is as
+> > follows:
+> >
+> > > > btf_dump.c:1546:2: error: static_assert expression is not an  
+> integral
+> > > > constant expression
+> >     hashmap__find(name_map, orig_name, &dup_cnt);
+> >     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
+> >     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+> >     ^~~~~~~~~~~~~~~~~~~~~~~
+> >     ./hashmap.h:126:17: note: expanded from macro 'hashmap_cast_ptr'
+> >     _Static_assert((p) == NULL || sizeof(*(p)) ==
+> > sizeof(long),
+> > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a  
+> constant
+> > expression
+> >     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
+> >     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+> >
+> > This line in particular:
+> >
+> >     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a  
+> constant
+> > expression
+> >
+> > And the code does:
+> >
+> >    size_t dup_cnt = 0;
+> >    hashmap__find(name_map, orig_name, &dup_cnt);
+> >
+> > So where is that cast from 'void *' is happening? Is it the NULL check
+> > itself?
+> >
+> > Are we simply guarding against the user calling hashmap_cast_ptr with
+> > explicit NULL argument?
 
-  ...
-  test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
-  test_local_storage:PASS:skel_open 0 nsec
-  libbpf: prog 'cgrp_succ': failed to find kernel BTF type ID of '__s390x=
-_sys_getpgid': -3
-  libbpf: prog 'cgrp_succ': failed to prepare load attributes: -3
-  libbpf: prog 'cgrp_succ': failed to load: -3
-  libbpf: failed to load object 'rcu_read_lock'
-  libbpf: failed to load BPF skeleton 'rcu_read_lock': -3
-  test_local_storage:FAIL:skel_load unexpected error: -3 (errno 3)
-  ...
+> In case if (p) is not a constant I want the second part of the || to  
+> kick-in.
+> The complete condition looks as follows:
 
-It failed on aarch64 with the following error message due to inadequate
-trampoline support.
+>    _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) || \
+> 			sizeof(*(p)) == sizeof(long), "...error...")
 
-  ...
-  test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
-  test_local_storage:PASS:skel_open 0 nsec
-  test_local_storage:PASS:skel_load 0 nsec
-  libbpf: prog 'cgrp_succ': failed to attach: ERROR: strerror_r(-524)=3D2=
-2
-  libbpf: prog 'cgrp_succ': failed to auto-attach: -524
-  test_local_storage:FAIL:skel_attach unexpected error: -524 (errno 524)
-  ...
+> The intent is to check that (p) is either NULL or a pointer to
+> something of size long. So, if (p) is not a constant the expression
+> would be equivalent to:
 
-So add the test to s390x and aarch64 deny lists.
+>    _Static_assert(0 || sizeof(*(p)) == sizeof(long), "...error...")
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/DENYLIST.aarch64 | 1 +
- tools/testing/selftests/bpf/DENYLIST.s390x   | 1 +
- 2 files changed, 2 insertions(+)
+> I just tried the following:
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing=
-/selftests/bpf/DENYLIST.aarch64
-index 09416d5d2e33..2ff8a40ed9dd 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -44,6 +44,7 @@ modify_return                                    # modi=
-fy_return__attach failed
- module_attach                                    # skel_attach skeleton =
-attach failed: -524
- mptcp/base                                       # run_test mptcp unexpe=
-cted error: -524 (errno 524)
- netcnt                                           # packets unexpected pa=
-ckets: actual 10001 !=3D expected 10000
-+rcu_read_lock                                    # failed to attach: ERR=
-OR: strerror_r(-524)=3D22
- recursion                                        # skel_attach unexpecte=
-d error: -524 (errno 524)
- ringbuf                                          # skel_attach skeleton =
-attachment failed: -1
- setget_sockopt                                   # attach_cgroup unexpec=
-ted error: -524
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-index be4e3d47ea3e..dd5db40b5a09 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -41,6 +41,7 @@ module_attach                            # skel_attach =
-skeleton attach failed: -
- mptcp
- netcnt                                   # failed to load BPF skeleton '=
-netcnt_prog': -7                               (?)
- probe_user                               # check_kprobe_res wrong kprobe=
- res from probe read                           (?)
-+rcu_read_lock                            # failed to find kernel BTF typ=
-e ID of '__x64_sys_getpgid': -3                (?)
- recursion                                # skel_attach unexpected error:=
- -524                                          (trampoline)
- ringbuf                                  # skel_load skeleton load faile=
-d                                              (?)
- select_reuseport                         # intermittently fails on new s=
-390x setup
---=20
-2.30.2
+> 	struct hashmap *name_map;
+> 	char x; // not a constant, wrong pointer size
+> 	...
+> 	hashmap__find(name_map, orig_name, &x);
+
+> And it fails with an error message as intended:
+
+> btf_dump.c:1548:2: error: static_assert failed due to  
+> requirement '(__builtin_constant_p((&x)) ? (&x) == ((void *)0) : 0) ||  
+> sizeof (*(&x)) == sizeof(long)' "&x pointee should be a long-sized  
+> integer or a pointer"
+>          hashmap__find(name_map, orig_name, &x);
+> ./hashmap.h:170:35: note: expanded from macro 'hashmap__find'
+>          hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+> ./hashmap.h:126:2: note: expanded from macro 'hashmap_cast_ptr'
+>          _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||
+
+Awesome, thanks for clarifying!
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+
+> >
+> > > > When "p" is not a constant the former is not considered to be a
+> > > > constant expression by LLVM 14.
+> > > >
+> > > > The error was introduced in the following patch-set: [1].
+> > > > The error was reported here: [2].
+> > > >
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > >
+> > > > [1]
+> > > https://lore.kernel.org/bpf/20221109142611.879983-1-eddyz87@gmail.com/
+> > > > [2] https://lore.kernel.org/all/202211110355.BcGcbZxP-lkp@intel.com/
+> > > > ---
+> > > >  tools/lib/bpf/hashmap.h   | 3 ++-
+> > > >  tools/perf/util/hashmap.h | 3 ++-
+> > > >  2 files changed, 4 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
+> > > > index 3fe647477bad..0a5bf1937a7c 100644
+> > > > --- a/tools/lib/bpf/hashmap.h
+> > > > +++ b/tools/lib/bpf/hashmap.h
+> > > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
+> > > >  };
+> > > >
+> > > >  #define hashmap_cast_ptr(p) ({								\
+> > > > -	_Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),			\
+> > > > +	_Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||			 
+> \
+> > > > +				sizeof(*(p)) == sizeof(long),				\
+> > > >  		       #p " pointee should be a long-sized integer or a  
+> pointer");	\
+> > > >  	(long *)(p);									\
+> > > >  })
+> > > > diff --git a/tools/perf/util/hashmap.h b/tools/perf/util/hashmap.h
+> > > > index 3fe647477bad..0a5bf1937a7c 100644
+> > > > --- a/tools/perf/util/hashmap.h
+> > > > +++ b/tools/perf/util/hashmap.h
+> > > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
+> > > >  };
+> > > >
+> > > >  #define hashmap_cast_ptr(p) ({								\
+> > > > -	_Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),			\
+> > > > +	_Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||			 
+> \
+> > > > +				sizeof(*(p)) == sizeof(long),				\
+> > > >  		       #p " pointee should be a long-sized integer or a  
+> pointer");	\
+> > > >  	(long *)(p);									\
+> > > >  })
+> > > > --
+> > > > 2.34.1
+> > > >
 
