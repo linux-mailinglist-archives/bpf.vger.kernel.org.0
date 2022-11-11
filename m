@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D316261BE
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4974B6261BF
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbiKKTHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 14:07:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S231564AbiKKTIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbiKKTHg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 14:07:36 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7E022BE3
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:07:35 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id t25so14658892ejb.8
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:07:35 -0800 (PST)
+        with ESMTP id S230303AbiKKTIP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:08:15 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FBD22BE3
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:08:14 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id r14so8890309edc.7
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:08:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0NG/SPBkBMAdK8ZvnWhMnvWe583K0D4bdlQoDWDMww=;
-        b=pCcp6QN+6hZH+lYfo/FtyNR8xKD9UBXX/8y/a4uaykMrIAXzhqh7A+sa31WKVlLVvb
-         Y2ivsCAzH4h5gJsTNuiQpR16RdU3CfB37Un5x+Ya2ccYU4H4xaydgaVu/tzQLwtm3AZm
-         +1LcxZZTBay8MLMmH7ppiuwgmyE34i0qvtjs9omOrgtBnfDyXv7z+mz6HwJVN3sHoxPl
-         DBc6uLSm/Jx4G+Yi2HwvLCtUvM/PeevgQnKXE598HbpsstozN4SJL1GXfyPl2B/VDiSG
-         w/HnC0UVxsqLpCVd4fzKoFYI8YLOmttT9qTxCOg8dX7Jau5JQGAD2DiuZDL78CztePjp
-         o7ow==
+        bh=5eMrE+xSIwXoz/4Xb5cFztQjHM1pZry5Cu6Br3bA3VU=;
+        b=iYhz8Lrze0rjWe/qdEh7Di2gctdtTyQHZbDceemez+p8Ekjity31IdndzLP815LjJN
+         4AuuEPyN+v9n8CiF8BSKnvKioS7sVKG68pfhBo1nDEtpKM42eGBbxt/1lqe7JaroRYDF
+         4sUMBrkL2PLP0oO6hkg+aRy9YxQJxf30AgRa/pNBnvZixcPEIXFKLx3NwnparklyorB7
+         I8H02a9lASyfwUGYy5uo1zN4yrM5X6D8MphXQAv8iG5m9jicIK5KorJjr22anPMNzeic
+         O6GSXB4s9F+/s2+arVYFHKU6HNpgnJNsPzbqAxfPIQMYGTdKqkKTOGbJnDga2jVdoEtw
+         2k7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Z0NG/SPBkBMAdK8ZvnWhMnvWe583K0D4bdlQoDWDMww=;
-        b=K2u0vEsxgOJ4KHt2Z7hD4wgut4ijAAXbc5jEeKL3e66qJabTBaKinUgtGOfPboAjC/
-         iCq5Dzo9QXG1QuyXe4Nm3aydstM//rAxpFwoBZKNTI9ufyd141tyIWwpL/7hZCl3xvPB
-         PXq/xz64cSnnyS25vgr8gz2lv/cXqQBQrLsFKGNAGtnz7En/aG11AkqvVjHGTMR2ruNX
-         CNVszEDkT5l5PgoBImkJ7NCf9/LNEpXs1SZQn/xMnP/LPrtXTiFqzd3X+pTkOqHcSZW6
-         acJdMM6rLsL/cEWYxBEPZuQQaD5ry6niBU6Wtgx3g1tiWObQbt/5oqLLi5jAunOKGQwz
-         8eyw==
-X-Gm-Message-State: ANoB5pmTT7byIZv3AUKAqIlUQR4w+u3bbsHUS2TCGQua4EBnb6TpADP/
-        TqTLCzfxVMGY3UE5X5CZUAtlnc2Cm5irEho25Rg=
-X-Google-Smtp-Source: AA0mqf7PPOqNNs6asop9Kic1CTIsCsUQkguCcs0+ynp5HdjyY4tPvanmCrdb7Rdpac+jcJq4QtdeswSa5U6ZUJEjDxA=
-X-Received: by 2002:a17:906:cd0f:b0:78d:99ee:4e68 with SMTP id
- oz15-20020a170906cd0f00b0078d99ee4e68mr2934253ejb.302.1668193654297; Fri, 11
- Nov 2022 11:07:34 -0800 (PST)
+        bh=5eMrE+xSIwXoz/4Xb5cFztQjHM1pZry5Cu6Br3bA3VU=;
+        b=AjCCcbVT3O10zarAbnzeuwX2e+ksSYF+ARcA9v9o/I+XkO/xkOJm6HrsOtKulT0CpV
+         xIiRXsY7S7E6G7Tq9Xy2eBMh5r1Nc0eBObnmSQq5Bp5edX9mEnypmBkBkY79pxW4IXvE
+         zy2ZqhOiRfXC4wbQBQ4fu1Nges4dKYFwZGh8LV4TGQlKMXIsxdDjkkko2bHLwV9/qleE
+         vjoN8CvgcN3t28TERcC6sbd4bxihb++XRO6YKteGKQKqydVbosnARgTKNeh2OyGC9yxG
+         iW2IDCMTyeu2oujPdCiuU6X6hcNU2fox9N3VNuEAHpyGXDBEJcR9HJYK6miws4MEhNT+
+         EtsA==
+X-Gm-Message-State: ANoB5pldZtLJq8FxqbMH3Cb21wuc9VDToZay2GdmHS95nE8OWk2wODrn
+        Sv+UIFxgaX+x7liU84nAYO76J7y9EryDaOeLfo8=
+X-Google-Smtp-Source: AA0mqf5Ymj6L1S7Z15piwzdBAkda5GNy6MhtGe7b5EN4TdzXFDEwH9ciEan8l2M9hecJaku2HjBmwPbXuhCDocTG1Ac=
+X-Received: by 2002:a05:6402:344f:b0:461:d726:438f with SMTP id
+ l15-20020a056402344f00b00461d726438fmr2743249edc.333.1668193692691; Fri, 11
+ Nov 2022 11:08:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-4-eddyz87@gmail.com>
-In-Reply-To: <20221110144320.1075367-4-eddyz87@gmail.com>
+References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-3-eddyz87@gmail.com>
+In-Reply-To: <20221110144320.1075367-3-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 11:07:22 -0800
-Message-ID: <CAEf4Bzb1P1+hn=k498F3FPjT_jJMOhC-HcVfUkRso0kSgC5SOQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: Tests for
- BTF_KIND_DECL_TAG dump in C format
+Date:   Fri, 11 Nov 2022 11:07:59 -0800
+Message-ID: <CAEf4BzYMqzG9QapRsT11XT3keCkpTkrqMxYsfmQJkGByqcRJdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Dump data sections as part
+ of btf_dump_test_case tests
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
@@ -69,100 +69,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> Covers the following cases:
-> - `__atribute__((btf_decl_tag("...")))` could be applied to structs
->   and unions;
-> - decl tag applied to an empty struct is printed on a single line;
-> - decl tags with the same name could be applied to several structs;
-> - several decl tags could be applied to the same struct;
-> - attribute `packed` works fine with decl tags (it is a separate
->   branch in `tools/lib/bpf/btf_dump.c:btf_dump_emit_attributes`;
-> - decl tag could be attached to typedef;
-> - decl tag could be attached to a struct field;
-> - decl tag could be attached to a struct field and a struct itself
->   simultaneously;
-> - decl tag could be attached to a global variable;
-> - decl tag could be attached to a func proto parameter;
-> - btf__add_decl_tag could be interleaved with btf_dump__dump_type calls.
+> Modify `test_btf_dump_case` to test `btf_dump__dump_type_data`
+> alongside `btf_dump__dump_type`.
+>
+> The `test_btf_dump_case` function provides a convenient way to test
+> `btf_dump__dump_type` behavior as test cases are specified in separate
+> C files and any differences are reported using `diff` utility. This
+> commit extends `test_btf_dump_case` to call `btf_dump__dump_type_data`
+> for each `BTF_KIND_DATASEC` object in the test case object file.
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  .../selftests/bpf/prog_tests/btf_dump.c       | 79 +++++++++++++++++++
->  .../bpf/progs/btf_dump_test_case_decl_tag.c   | 65 +++++++++++++++
->  2 files changed, 144 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_decl_tag.c
+
+please use ASSERT_xxx() instead of CHECK()
+
+>  .../selftests/bpf/prog_tests/btf_dump.c       | 118 +++++++++++++++---
+>  1 file changed, 104 insertions(+), 14 deletions(-)
 >
 
 [...]
-
-> +       /* First, BTF corresponding to the following C code:
-> +        *
-> +        * typedef void (*fn)(int a __btf_decl_tag("a_tag"));
-> +        *
-> +        */
-> +       id = btf__add_int(btf, "int", 4, BTF_INT_SIGNED);
-> +       ASSERT_EQ(id, 1, "int_id");
-> +       id = btf__add_func_proto(btf, 0);
-> +       ASSERT_EQ(id, 2, "func_proto_id");
-> +       err = btf__add_func_param(btf, "a", 1);
-> +       ASSERT_OK(err, "func_param_ok");
-> +       id = btf__add_decl_tag(btf, "a_tag", 2, 0);
-> +       ASSERT_EQ(id, 3, "decl_tag_a");
-> +       id = btf__add_ptr(btf, 2);
-> +       ASSERT_EQ(id, 4, "proto_ptr");
-> +       id = btf__add_typedef(btf, "fn", 4);
-> +       ASSERT_EQ(id, 5, "typedef");
-
-can you please also add decl_tag for func_proto itself (comp_idx == -1)
-
-> +
-> +       err = btf_dump_all_types(btf, d);
-> +       ASSERT_OK(err, "btf_dump_all_types #1");
-> +       fflush(dump_buf_file);
-> +       dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
-> +
-> +       ASSERT_STREQ(dump_buf,
-> +                    "#if __has_attribute(btf_decl_tag)\n"
-> +                    "#define __btf_decl_tag(x) __attribute__((btf_decl_tag(x)))\n"
-> +                    "#else\n"
-> +                    "#define __btf_decl_tag(x)\n"
-> +                    "#endif\n"
-> +                    "\n"
-> +                    "typedef void (*fn)(int a __btf_decl_tag(\"a_tag\"));\n\n",
-> +                    "decl tags for fn");
-> +
-
-[...]
-
-> +struct tag_on_field_and_struct {
-> +       int x __btf_decl_tag("t1");
-> +} __btf_decl_tag("t2");
-> +
-> +struct root_struct {
-> +       struct empty_with_tag a;
-> +       struct one_tag b;
-> +       struct same_tag c;
-> +       struct two_tags d;
-> +       struct packed e;
-> +       td_with_tag f;
-> +       struct tags_on_fields g;
-> +       struct tag_on_field_and_struct h;
-> +};
-> +
-> +SEC(".data") int global_var __btf_decl_tag("var_tag") = (int)777;
-
-do you need explicit SEC(".data")? I'd expect global_var is put into
-.data anyways. If it's about __attribute__((unused)), then we can do
-that more explicitly here instead of through SEC()? Or just make sure
-global_var is used in f() internally
-
-> +
-> +/* ------ END-EXPECTED-OUTPUT ------ */
-> +
-> +int f(struct root_struct *s)
-> +{
-> +       return 0;
-> +}
-> --
-> 2.34.1
->
