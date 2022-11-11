@@ -2,64 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4974B6261BF
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D4F6261CA
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbiKKTIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 14:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S233552AbiKKTRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbiKKTIP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 14:08:15 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FBD22BE3
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:08:14 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id r14so8890309edc.7
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:08:14 -0800 (PST)
+        with ESMTP id S230103AbiKKTRz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:17:55 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B9576F88
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:17:54 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id r9-20020a17090a2e8900b0021409b8020cso5927481pjd.0
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:17:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5eMrE+xSIwXoz/4Xb5cFztQjHM1pZry5Cu6Br3bA3VU=;
-        b=iYhz8Lrze0rjWe/qdEh7Di2gctdtTyQHZbDceemez+p8Ekjity31IdndzLP815LjJN
-         4AuuEPyN+v9n8CiF8BSKnvKioS7sVKG68pfhBo1nDEtpKM42eGBbxt/1lqe7JaroRYDF
-         4sUMBrkL2PLP0oO6hkg+aRy9YxQJxf30AgRa/pNBnvZixcPEIXFKLx3NwnparklyorB7
-         I8H02a9lASyfwUGYy5uo1zN4yrM5X6D8MphXQAv8iG5m9jicIK5KorJjr22anPMNzeic
-         O6GSXB4s9F+/s2+arVYFHKU6HNpgnJNsPzbqAxfPIQMYGTdKqkKTOGbJnDga2jVdoEtw
-         2k7g==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6LNVQVouc+OP1BK7X0ZPCCVP9t58isq5AJxGmdz60sI=;
+        b=Zw1XnKVX9ymWCWmLkPXsRTLz5PUxcDLfkFWyMVQaG5P+v92bAzbIe7WvZpx3cXWg4B
+         PWn+TCAWaQ9yDT3rgEG0GFMjDyaob+DkR3NK50DHOBAKDLLAFXO7Ul7WXwTb70ooGtFO
+         EpPBTUxyAszBkJEFq25va/NBIekcdsaxbKX83AVi71zyjycSKo1Gfq0ws8tBm7IrbFI2
+         fOloR4AaYdck0Er135C1fpvD0MmVOQkszST4xxqSJDHMsTKJen9zqApxhi+s8XNv6Vhf
+         e6XkK/oMWsUGLpNggstozb2cyl2qxnMqruSnCuEZkJTAjBN/hnmpNnXIDwr2mtN5aGA/
+         Y62Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5eMrE+xSIwXoz/4Xb5cFztQjHM1pZry5Cu6Br3bA3VU=;
-        b=AjCCcbVT3O10zarAbnzeuwX2e+ksSYF+ARcA9v9o/I+XkO/xkOJm6HrsOtKulT0CpV
-         xIiRXsY7S7E6G7Tq9Xy2eBMh5r1Nc0eBObnmSQq5Bp5edX9mEnypmBkBkY79pxW4IXvE
-         zy2ZqhOiRfXC4wbQBQ4fu1Nges4dKYFwZGh8LV4TGQlKMXIsxdDjkkko2bHLwV9/qleE
-         vjoN8CvgcN3t28TERcC6sbd4bxihb++XRO6YKteGKQKqydVbosnARgTKNeh2OyGC9yxG
-         iW2IDCMTyeu2oujPdCiuU6X6hcNU2fox9N3VNuEAHpyGXDBEJcR9HJYK6miws4MEhNT+
-         EtsA==
-X-Gm-Message-State: ANoB5pldZtLJq8FxqbMH3Cb21wuc9VDToZay2GdmHS95nE8OWk2wODrn
-        Sv+UIFxgaX+x7liU84nAYO76J7y9EryDaOeLfo8=
-X-Google-Smtp-Source: AA0mqf5Ymj6L1S7Z15piwzdBAkda5GNy6MhtGe7b5EN4TdzXFDEwH9ciEan8l2M9hecJaku2HjBmwPbXuhCDocTG1Ac=
-X-Received: by 2002:a05:6402:344f:b0:461:d726:438f with SMTP id
- l15-20020a056402344f00b00461d726438fmr2743249edc.333.1668193692691; Fri, 11
- Nov 2022 11:08:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-3-eddyz87@gmail.com>
-In-Reply-To: <20221110144320.1075367-3-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 11:07:59 -0800
-Message-ID: <CAEf4BzYMqzG9QapRsT11XT3keCkpTkrqMxYsfmQJkGByqcRJdA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Dump data sections as part
- of btf_dump_test_case tests
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6LNVQVouc+OP1BK7X0ZPCCVP9t58isq5AJxGmdz60sI=;
+        b=EwnMaYVYXyJuviEFwnOD9MvCdAAQHwCDKM3pi+7mhDLEi5WxlNpwzj4c1vvVAeYkB1
+         vpvezd40M1jhILaXnPu3T4FSrb2sAS2dshUM0sMQd6LU6RvrFObtgHZnh7C5occ5mDAb
+         hQjrAQ27xONJrpwAl6Ac3sA5XYR3WnxR/9jBwjMlYYd3COPML8lHwN1/vMARaJsnqXEW
+         sYYue+UceBwVYLIgsqIOweB5WEpS1Esdt2Ecs6uwvDuBrZbvyOjQoTPrTwhzsvpwekCc
+         v+xDng8mnL3HdWSfBrnreOBTO6ZuW8/39XYDEfWcENAkiraCIdPhfYjLBzvFRnqlab2t
+         ljVw==
+X-Gm-Message-State: ANoB5pn2H+FXOTb6Md91nn/up20UEVRadFoQz08Q2+mVTqI3Su9Xe0QS
+        a+fNny96ow2lJhHnk+EzdXVwhNg=
+X-Google-Smtp-Source: AA0mqf6POcOAvgrUkrl711vuXNSof/3BT8e1WMDxoCgSx4f+sjsFIENcRqWGW5PmNAqzXCoMF9TVomk=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:8a11:b0:213:1935:9744 with SMTP id
+ w17-20020a17090a8a1100b0021319359744mr3409621pjn.207.1668194274187; Fri, 11
+ Nov 2022 11:17:54 -0800 (PST)
+Date:   Fri, 11 Nov 2022 11:17:52 -0800
+In-Reply-To: <20221111125620.754855-1-xukuohai@huaweicloud.com>
+Mime-Version: 1.0
+References: <20221111125620.754855-1-xukuohai@huaweicloud.com>
+Message-ID: <Y26f4H7buQXKqQFd@google.com>
+Subject: Re: [PATCH bpf] bpf: Fix offset calculation error in __copy_map_value
+ and zero_map_value
+From:   sdf@google.com
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,24 +75,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> Modify `test_btf_dump_case` to test `btf_dump__dump_type_data`
-> alongside `btf_dump__dump_type`.
->
-> The `test_btf_dump_case` function provides a convenient way to test
-> `btf_dump__dump_type` behavior as test cases are specified in separate
-> C files and any differences are reported using `diff` utility. This
-> commit extends `test_btf_dump_case` to call `btf_dump__dump_type_data`
-> for each `BTF_KIND_DATASEC` object in the test case object file.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+On 11/11, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
+
+> Function __copy_map_value and zero_map_value miscalculated copy offset,
+> resulting in possible copy of unwanted data to user or kernel.
+
+> Fix it.
+
+> Fixes: cc48755808c6 ("bpf: Add zero_map_value to zero map value with  
+> special fields")
+> Fixes: 4d7d7f69f4b1 ("bpf: Adapt copy_map_value for multiple offset case")
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 > ---
+>   include/linux/bpf.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 
-please use ASSERT_xxx() instead of CHECK()
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 74c6f449d81e..c1bd1bd10506 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -315,7 +315,7 @@ static inline void __copy_map_value(struct bpf_map  
+> *map, void *dst, void *src, b
+>   		u32 next_off = map->off_arr->field_off[i];
 
->  .../selftests/bpf/prog_tests/btf_dump.c       | 118 +++++++++++++++---
->  1 file changed, 104 insertions(+), 14 deletions(-)
->
+>   		memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
+> -		curr_off += map->off_arr->field_sz[i];
+> +		curr_off = next_off + map->off_arr->field_sz[i];
+>   	}
+>   	memcpy(dst + curr_off, src + curr_off, map->value_size - curr_off);
+>   }
+> @@ -344,7 +344,7 @@ static inline void zero_map_value(struct bpf_map  
+> *map, void *dst)
+>   		u32 next_off = map->off_arr->field_off[i];
 
-[...]
+>   		memset(dst + curr_off, 0, next_off - curr_off);
+> -		curr_off += map->off_arr->field_sz[i];
+> +		curr_off = next_off + map->off_arr->field_sz[i];
+>   	}
+>   	memset(dst + curr_off, 0, map->value_size - curr_off);
+>   }
+
+Hmm, does it mean that it currently works only for the cases where
+these special fields are first/last?
+
+Also, what about bpf-next? The same problem seem to exist there?
+
+Might be a good idea to have some selftest to exercise this?
+
+> --
+> 2.30.2
+
