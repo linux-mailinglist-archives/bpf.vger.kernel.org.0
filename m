@@ -2,70 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DAE625A75
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 13:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F354D625A95
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 13:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbiKKMa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 07:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
+        id S231778AbiKKMjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 07:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbiKKMa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 07:30:27 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E196B398
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 04:30:22 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id g24so4153113plq.3
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 04:30:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ffCoKNiZCbLVipbg2otJCA7P5+JqnENgNvxYbkwxONY=;
-        b=N+Nr23sjC8iHuDV8sBYjCDxfUaW9xTWufeYgLdv0iQPUZjkB3AuQpFxGzfFHP9Ksg5
-         mwSg+0N5bMCiSSH/X4oHtzItCxXD5NgCxhovidkgmSDZdvZX6XoS1s0uKXVf1tU07pcw
-         XZl8LzA1q9kn8mQvWNgFTr5hiSR/u/J0hiZhEufA9MMG7Ij2fssvrHolOPZKK3sheZjf
-         DuBLkN0sSVYUXcqkEnHdM/XuUJiOoOqQJgsZZVwVIw5NC5+Aw5EK5gxGNyvIi8TV5sf9
-         EVfB+MYDaNYV9YIa2Ub6amsZKHd0kGSuPtJrZqckuY13V34Iha2+GnQ7IIDVEzkSYYT4
-         P/QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffCoKNiZCbLVipbg2otJCA7P5+JqnENgNvxYbkwxONY=;
-        b=izeWCFF7Hz75ExO1JMXhV1VIurRPFFcXUg2qXWb37piiMLznvO95BMHsBAe0s53Xgn
-         Gd8hH35jDN2D1Zmc4zET0SpB5fZYnxlnL/qJrImVXE16Y6dQzttSpaWZCTsayrondmAK
-         DjfuK82x/HqgcFcuN4udgw/zdqSYw7TMyybj3Dvqqr1ddcqcsSNHvvrURbbojCBwQgVM
-         a/WIjXS2g9nbu8M88zJq6820hn1VkVhXe4TgnY9jZfNMEqQJTZ3TtLUcNz+TQQZ6oEv/
-         UAFEu78SAVWU1p2KJr7V7LC/cSmz3QL5xy2SrGi7U0RFhxLKIRy+62gZESCnZiCgckzb
-         afWQ==
-X-Gm-Message-State: ANoB5pn8QwjP6EFLc73MD31vY8dqfnIEtUj9mDYtYqu0jDKGwVNdZGTU
-        nUWGrCoGzZyaTgEq7FOELSys2j1KWwDVZ9Sz154=
-X-Google-Smtp-Source: AA0mqf5C+N7KITTal0uVxMR6CKVzAKplA5WtQGe13CGWVHtVW3eHI2B2g24G6VslNPiaSs5UXctvTzEEE+g1t35404A=
-X-Received: by 2002:a17:90a:b286:b0:213:34f7:fb14 with SMTP id
- c6-20020a17090ab28600b0021334f7fb14mr1695901pjr.25.1668169821449; Fri, 11 Nov
- 2022 04:30:21 -0800 (PST)
+        with ESMTP id S233475AbiKKMj1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 07:39:27 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6658E7B20B;
+        Fri, 11 Nov 2022 04:39:26 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N7yvD2yLsz4f3w0C;
+        Fri, 11 Nov 2022 20:39:20 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+        by APP4 (Coremail) with SMTP id gCh0CgDX+9h6Qm5j+2ZmAQ--.47155S2;
+        Fri, 11 Nov 2022 20:39:23 +0800 (CST)
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH bpf] bpf: Fix offset calculation error in __copy_map_value and zero_map_value
+Date:   Fri, 11 Nov 2022 07:56:20 -0500
+Message-Id: <20221111125620.754855-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a17:902:e884:b0:187:110d:29fd with HTTP; Fri, 11 Nov 2022
- 04:30:21 -0800 (PST)
-Reply-To: ecobankauditormanager@yahoo.com
-From:   ECO BANK <cw209886@gmail.com>
-Date:   Fri, 11 Nov 2022 13:30:21 +0100
-Message-ID: <CAByE_KHj=Zig85B_QK84ApzCrC-irLPXdfNkAsmnLcBu1fhdcQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDX+9h6Qm5j+2ZmAQ--.47155S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFyDJFy8Kr4ktry3uFWfZrb_yoW8GF4kpF
+        Z8KFyjkr1kXrWjqrZ8Xw1xCr95Aw4qkw1UGr98CayrtF1fJrnFqryxGF42q398Gr4vvr4U
+        ZF12qFZYk3yIqrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, please I need to communicate with you,
-Can I share words with you?
+From: Xu Kuohai <xukuohai@huawei.com>
 
-Steven
+Function __copy_map_value and zero_map_value miscalculated copy offset,
+resulting in possible copy of unwanted data to user or kernel.
+
+Fix it.
+
+Fixes: cc48755808c6 ("bpf: Add zero_map_value to zero map value with special fields")
+Fixes: 4d7d7f69f4b1 ("bpf: Adapt copy_map_value for multiple offset case")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ include/linux/bpf.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 74c6f449d81e..c1bd1bd10506 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -315,7 +315,7 @@ static inline void __copy_map_value(struct bpf_map *map, void *dst, void *src, b
+ 		u32 next_off = map->off_arr->field_off[i];
+ 
+ 		memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
+-		curr_off += map->off_arr->field_sz[i];
++		curr_off = next_off + map->off_arr->field_sz[i];
+ 	}
+ 	memcpy(dst + curr_off, src + curr_off, map->value_size - curr_off);
+ }
+@@ -344,7 +344,7 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
+ 		u32 next_off = map->off_arr->field_off[i];
+ 
+ 		memset(dst + curr_off, 0, next_off - curr_off);
+-		curr_off += map->off_arr->field_sz[i];
++		curr_off = next_off + map->off_arr->field_sz[i];
+ 	}
+ 	memset(dst + curr_off, 0, map->value_size - curr_off);
+ }
+-- 
+2.30.2
+
