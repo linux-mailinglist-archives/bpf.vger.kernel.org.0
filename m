@@ -2,232 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9EC62612B
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB34626187
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbiKKSak (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 13:30:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
+        id S234477AbiKKSmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 13:42:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbiKKSac (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 13:30:32 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169FB8290B
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:30:15 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id t25so14451749ejb.8
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tms08DPyk0Raed2khCDdUHFX8RWjR1AXvWPAitcvlS8=;
-        b=bFQDvvCBklQunUYncg8ktuEaTXqIvPbRsmlJnbGvdiDLDOicVwaX1Wis0i6qj+orV3
-         rp+Ra1XRtP6h9ohl+3/nWgsjIgcbEicerOOxbO0dkvkWMCB8pN5wHvFLl5CkGU6U1Pkq
-         ZmG/WHRWR2DqisBzXPUJT508z9uBXbzNlH5FCIaqY3shLnUEVzHSfIlNekj2UXnpy0NS
-         G/RnUeNUUVlm13dTZg1F4ceFoFCyd8ODuutxHl7wczkMzrn8HbP2oGK7pwPEar56gwTU
-         Ke/iQcCnS34Y/Eri7f2WeQsvGkZM1O5bJPBAZN5IIe17CQ1/BqxazzJaQbN2rY/OR+Bp
-         ByVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tms08DPyk0Raed2khCDdUHFX8RWjR1AXvWPAitcvlS8=;
-        b=BzsZ9yy7zn5FSOKTV+vJvsW7XKP/a+3/kIXTyvzWixfxMntTCVeTEiQJY+J1vW8IAK
-         tfl/THwPsHKC7uRMZXTLNmy7rvNSXUAK8jHEpwOMhqzdz3+WIhrj1tAcuyFDjbrtbpq8
-         rQ+yvEcgPL54KNI9JBgnJ9enTgYkDk2Tt0fD/ZxqTe509OKxr6CL/MkPHi1cY4ZNJ0Ym
-         Udm9quhoJA+vzCPRpbjtqGXxb8BOjCukGUVgTOwrIBPqM69MVOUPxSSuzY1ESeJIopNf
-         u6w1IGwZxvnM7YzbuP5d0O9YxPn3nJACijdx1aoEKzYZo1n3tfM8x5ivrLVFxk0NcZs0
-         MW2g==
-X-Gm-Message-State: ANoB5pmP4CACBipgzQPX5K7PpsHDkUdMzJUsTd4nT5ygL3hC5y2PYo+X
-        Zahja/EPGZ0GRuK2P3rQ1L/xLbN/ocqbpariWqc=
-X-Google-Smtp-Source: AA0mqf7CuoDVjpTSUfGXYnxatP6iVqLs8Lyz1TA37Acg4TcQ4jhLOv3KDEqxasC4gq7nmc1og7oNLeEj9uyKlX6rM9c=
-X-Received: by 2002:a17:906:d8a3:b0:7a0:9d58:5c7b with SMTP id
- qc3-20020a170906d8a300b007a09d585c7bmr2977954ejb.115.1668191413539; Fri, 11
- Nov 2022 10:30:13 -0800 (PST)
+        with ESMTP id S234553AbiKKSm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 13:42:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832FB83B9D
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:40:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 19B0762092
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 18:40:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A71DC433D7;
+        Fri, 11 Nov 2022 18:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668192015;
+        bh=ncPABe4Zdh+PkpnOBGMQRKKTFuLe8fQByu+JKhkQ1JE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=D7bTzOIkpDljYLDMQJdvIvRmZCdEQrJm1mYNjcGiIpMSQalect5eoNpDPJ8CSRjig
+         s5BqG0xJx9gB2+zEpkDRR/pSkiqrYTYzrl3NzEErtrIedXIeEGaBlrnDEi6W34B4hR
+         taMa8mpPmDGDeCHcSGnrcj8gDXdka7wONxQdeGzZ4sdiZavdrTQWinDUjxq4rArnTK
+         dRAT5HrW1dU0kfrIUUFozpmBgj7Q1UCcAjB3MKItWoX+a9z63WGQnT5a3zB8ziosVC
+         wQ+vnKC0lo7bBy9A5KwnPH0ECD1iz/W0w/YOHzysrKL2v7eiBIN8wCC61nJioNBMDk
+         t4DhsohVl7lNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4DD9CE270EF;
+        Fri, 11 Nov 2022 18:40:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221110223240.1350810-1-eddyz87@gmail.com> <Y22khvpDYu639yom@google.com>
- <Y22mtIyofEus4KZ0@google.com> <7253d4c4f2ffcd3bff90df8cf8f71af7475167de.camel@gmail.com>
- <Y26EKFAMfKPktLBd@google.com>
-In-Reply-To: <Y26EKFAMfKPktLBd@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Nov 2022 10:30:01 -0800
-Message-ID: <CAEf4Bzb=asc-e2MA04wniDN6i9cCr99PGcAEfWcPq=er8BRn3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: hashmap.h update to fix build issues
- using LLVM14
-To:     sdf@google.com
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, yhs@fb.com, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: hashmap.h update to fix build issues using
+ LLVM14
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166819201531.3747.11542448346995110143.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Nov 2022 18:40:15 +0000
+References: <20221110223240.1350810-1-eddyz87@gmail.com>
+In-Reply-To: <20221110223240.1350810-1-eddyz87@gmail.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com, lkp@intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 9:19 AM <sdf@google.com> wrote:
->
-> On 11/11, Eduard Zingerman wrote:
-> > On Thu, 2022-11-10 at 17:34 -0800, sdf@google.com wrote:
-> > > On 11/10, Stanislav Fomichev wrote:
-> > > > On 11/11, Eduard Zingerman wrote:
-> > > > > A fix for the LLVM compilation error while building bpftool.
-> > > > > Replaces the expression:
-> > > > >
-> > > > >   _Static_assert((p) == NULL || ...)
-> > > > >
-> > > > > by expression:
-> > > > >
-> > > > >   _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) |
-> > | ...)
-> > >
-> > > > IIUC, when __builtin_constant_p(p) returns false, we just ignore the
-> > NULL
-> > > > check?
-> > > > Do we have cases like that? If no, maybe it's safer to fail?
-> > >
-> > > > s/(p) == NULL : 0/(p) == NULL : 1/ ?
-> > >
-> > > I'm probably missing something, can you pls clarify? So the error is as
-> > > follows:
-> > >
-> > > > > btf_dump.c:1546:2: error: static_assert expression is not an
-> > integral
-> > > > > constant expression
-> > >     hashmap__find(name_map, orig_name, &dup_cnt);
-> > >     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
-> > >     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
-> > >     ^~~~~~~~~~~~~~~~~~~~~~~
-> > >     ./hashmap.h:126:17: note: expanded from macro 'hashmap_cast_ptr'
-> > >     _Static_assert((p) == NULL || sizeof(*(p)) ==
-> > > sizeof(long),
-> > > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a
-> > constant
-> > > expression
-> > >     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
-> > >     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
-> > >
-> > > This line in particular:
-> > >
-> > >     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a
-> > constant
-> > > expression
-> > >
-> > > And the code does:
-> > >
-> > >    size_t dup_cnt = 0;
-> > >    hashmap__find(name_map, orig_name, &dup_cnt);
-> > >
-> > > So where is that cast from 'void *' is happening? Is it the NULL check
-> > > itself?
-> > >
-> > > Are we simply guarding against the user calling hashmap_cast_ptr with
-> > > explicit NULL argument?
->
-> > In case if (p) is not a constant I want the second part of the || to
-> > kick-in.
-> > The complete condition looks as follows:
->
-> >    _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) || \
-> >                       sizeof(*(p)) == sizeof(long), "...error...")
->
-> > The intent is to check that (p) is either NULL or a pointer to
-> > something of size long. So, if (p) is not a constant the expression
-> > would be equivalent to:
->
-> >    _Static_assert(0 || sizeof(*(p)) == sizeof(long), "...error...")
->
-> > I just tried the following:
->
-> >       struct hashmap *name_map;
-> >       char x; // not a constant, wrong pointer size
-> >       ...
-> >       hashmap__find(name_map, orig_name, &x);
->
-> > And it fails with an error message as intended:
->
-> > btf_dump.c:1548:2: error: static_assert failed due to
-> > requirement '(__builtin_constant_p((&x)) ? (&x) == ((void *)0) : 0) ||
-> > sizeof (*(&x)) == sizeof(long)' "&x pointee should be a long-sized
-> > integer or a pointer"
-> >          hashmap__find(name_map, orig_name, &x);
-> > ./hashmap.h:170:35: note: expanded from macro 'hashmap__find'
-> >          hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
-> > ./hashmap.h:126:2: note: expanded from macro 'hashmap_cast_ptr'
-> >          _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||
->
-> Awesome, thanks for clarifying!
->
-> Acked-by: Stanislav Fomichev <sdf@google.com>
->
+Hello:
 
-Added
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Fixes: c302378bc157 ("libbpf: Hashmap interface update to allow both
-long and void* keys/values")
+On Fri, 11 Nov 2022 00:32:40 +0200 you wrote:
+> A fix for the LLVM compilation error while building bpftool.
+> Replaces the expression:
+> 
+>   _Static_assert((p) == NULL || ...)
+> 
+> by expression:
+> 
+> [...]
 
-and moved links to be before Signed-off-by (they should be last).
+Here is the summary with links:
+  - [bpf-next] libbpf: hashmap.h update to fix build issues using LLVM14
+    https://git.kernel.org/bpf/bpf-next/c/42597aa372f5
 
-Pushed to bpf-next, thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> > >
-> > > > > When "p" is not a constant the former is not considered to be a
-> > > > > constant expression by LLVM 14.
-> > > > >
-> > > > > The error was introduced in the following patch-set: [1].
-> > > > > The error was reported here: [2].
-> > > > >
-> > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > > >
-> > > > > [1]
-> > > > https://lore.kernel.org/bpf/20221109142611.879983-1-eddyz87@gmail.com/
-> > > > > [2] https://lore.kernel.org/all/202211110355.BcGcbZxP-lkp@intel.com/
-> > > > > ---
-> > > > >  tools/lib/bpf/hashmap.h   | 3 ++-
-> > > > >  tools/perf/util/hashmap.h | 3 ++-
-> > > > >  2 files changed, 4 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > > > > index 3fe647477bad..0a5bf1937a7c 100644
-> > > > > --- a/tools/lib/bpf/hashmap.h
-> > > > > +++ b/tools/lib/bpf/hashmap.h
-> > > > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
-> > > > >  };
-> > > > >
-> > > > >  #define hashmap_cast_ptr(p) ({                                                         \
-> > > > > -       _Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),                     \
-> > > > > +       _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||
-> > \
-> > > > > +                               sizeof(*(p)) == sizeof(long),                           \
-> > > > >                        #p " pointee should be a long-sized integer or a
-> > pointer");    \
-> > > > >         (long *)(p);                                                                    \
-> > > > >  })
-> > > > > diff --git a/tools/perf/util/hashmap.h b/tools/perf/util/hashmap.h
-> > > > > index 3fe647477bad..0a5bf1937a7c 100644
-> > > > > --- a/tools/perf/util/hashmap.h
-> > > > > +++ b/tools/perf/util/hashmap.h
-> > > > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
-> > > > >  };
-> > > > >
-> > > > >  #define hashmap_cast_ptr(p) ({                                                         \
-> > > > > -       _Static_assert((p) == NULL || sizeof(*(p)) == sizeof(long),                     \
-> > > > > +       _Static_assert((__builtin_constant_p((p)) ? (p) == NULL : 0) ||
-> > \
-> > > > > +                               sizeof(*(p)) == sizeof(long),                           \
-> > > > >                        #p " pointee should be a long-sized integer or a
-> > pointer");    \
-> > > > >         (long *)(p);                                                                    \
-> > > > >  })
-> > > > > --
-> > > > > 2.34.1
-> > > > >
->
+
