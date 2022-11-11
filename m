@@ -2,146 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6618F624FB6
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 02:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5A8624FDA
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 02:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbiKKBjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 20:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S232571AbiKKBow (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 20:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbiKKBjI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 20:39:08 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A17D6175B;
-        Thu, 10 Nov 2022 17:39:07 -0800 (PST)
-Message-ID: <ed37045f-eb3d-8db0-4e5d-12bf7da8587e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668130746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=twDtSwj2Z37lCvXOgLdZKmh5FpMX714tcT+gZauocX4=;
-        b=KOIpzGnbUf+6ykkdl3c9FO5xpydUPJ3oSwuzM6myq3dUhK/+2ddxSgHbU9kvQCY/0CxXvw
-        kil1n3mvrlUGjXkDfmvRFkL2TxEsBRasxhG+Sc4RK9ZGk19KbiODfNiBKr93CiTDQQzHp+
-        VQi1/+b8rH84Qo9pF1nSINvoWS2Zqm0=
-Date:   Thu, 10 Nov 2022 17:39:00 -0800
+        with ESMTP id S232707AbiKKBof (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 20:44:35 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E37EA454
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 17:44:34 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ud5so9505035ejc.4
+        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 17:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vb6InLIzUA6RK+PTNqGGQ9GHyZhzWb6UW9CTQHLaSRU=;
+        b=Qyajb8+XfDymdioLUaCeb+5PeAduTZPebVGjbbQe3jqi7npkda2CyGCEqQ/hj/bXr6
+         guyAJr1UQf+eKLfbnBbgwV4lFer69m9FI+QzvF1eRBCkCqi50qbAgLFD+VmHKJCA4KDq
+         DKn+3MrS43QKWpkpY4Qej7r27UmgIpBe1BY4PqpjqO/rRmCW0N3qUosNKGTNgaEVZw2f
+         IB+TiMXHGWN0Lp+veVLoYymVxRkokAQYEHcaAaOe03I0M/JCMRTxAuBtxFqTokWy9Ih3
+         gyGkjK0xLbOaOuBVzNwQlbHyq1m2UX/lX39XtElGC5HYk6mF0Hm6hYReIIQUiYAUEoCN
+         q0Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vb6InLIzUA6RK+PTNqGGQ9GHyZhzWb6UW9CTQHLaSRU=;
+        b=zuM3XHP3T/J2MkTUH4knsKMI/ZI6WfCpSzk9aEZJ9Zj59D3hros1ncv/yxTEg0E8dg
+         x9ZLjCbmFOP58oeCOChg25IS57EWkpLg5mlajiSDuvMOJFeAV+21NJpLB1+J7b6EFLJS
+         1KqZonn/APbIbE54n5OkPkxLVtmuWTjVWZPzu2dNKXnxFhiPMAJL/votXUsogBVMlNAH
+         21tOAxmT/aX5fkVdRw79rl1CkM1laK6D+YMvmsyCaYAgDaqjWFyoOwoLyTS3k2A+A/zq
+         NtiUC5O/mvBIWMJDDP2wxmIUIhYmZJWKs7Wd8oWNCi56SC56GFjomuPS21vAdlZoWwSz
+         irVA==
+X-Gm-Message-State: ANoB5plk+t8M7OHnnL1p61qxF4OnxTpyQ1mur9K1Gyq+CsRrOUDaSwMv
+        pcHPqLmDitD/qQV7AWJhIeI=
+X-Google-Smtp-Source: AA0mqf6msBwhXkiLXT0MlpWCJNzJO0+im/PWJHkmrIx7iuMdzHhh6JayCV8kElQnUrcn1G3flZFiUg==
+X-Received: by 2002:a17:906:a095:b0:78d:a334:555f with SMTP id q21-20020a170906a09500b0078da334555fmr221806ejy.243.1668131072639;
+        Thu, 10 Nov 2022 17:44:32 -0800 (PST)
+Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id ml21-20020a170906cc1500b0078d22b0bcf2sm313686ejb.168.2022.11.10.17.44.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Nov 2022 17:44:31 -0800 (PST)
+Message-ID: <7253d4c4f2ffcd3bff90df8cf8f71af7475167de.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: hashmap.h update to fix build issues
+ using LLVM14
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        kernel test robot <lkp@intel.com>
+Date:   Fri, 11 Nov 2022 03:44:30 +0200
+In-Reply-To: <Y22mtIyofEus4KZ0@google.com>
+References: <20221110223240.1350810-1-eddyz87@gmail.com>
+         <Y22khvpDYu639yom@google.com> <Y22mtIyofEus4KZ0@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 06/14] xdp: Carry over xdp
- metadata into skb context
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-7-sdf@google.com>
- <187e89c3-d7de-7bec-c72e-d9d6eb5bcca0@linux.dev>
- <CAKH8qBv_ZO=rsJcq2Lvq36d9sTAXs6kfUmW1Hk17bB=BGiGzhw@mail.gmail.com>
- <9a8fefe4-2fcb-95b7-cda0-06509feee78e@linux.dev>
- <6f57370f-7ec3-07dd-54df-04423cab6d1f@linux.dev> <87leokz8lq.fsf@toke.dk>
- <5a23b856-88a3-a57a-2191-b673f4160796@linux.dev> <871qqazyc9.fsf@toke.dk>
- <7eb3e22a-c416-e898-dff0-1146d3cc82c0@linux.dev> <87mt8yxuag.fsf@toke.dk>
-Content-Language: en-US
-In-Reply-To: <87mt8yxuag.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/10/22 3:29 PM, Toke Høiland-Jørgensen wrote:
->>> For the metadata consumed by the stack right now it's a bit
->>> hypothetical, yeah. However, there's a bunch of metadata commonly
->>> supported by hardware that the stack currently doesn't consume and that
->>> hopefully this feature will end up making more accessible. My hope is
->>> that the stack can also learn how to use this in the future, in which
->>> case we may run out of space. So I think of that bit mostly as
->>> future-proofing...
->>
->> ic. in this case, Can the btf_id be added to 'struct xdp_to_skb_metadata' later
->> if it is indeed needed?  The 'struct xdp_to_skb_metadata' is not in UAPI and
->> doing it with CO-RE is to give us flexibility to make this kind of changes in
->> the future.
-> 
-> My worry is mostly that it'll be more painful to add it later than just
-> including it from the start, mostly because of AF_XDP users. But if we
-> do the randomisation thing (thus forcing AF_XDP users to deal with the
-> dynamic layout as well), it should be possible to add it later, and I
-> can live with that option as well...
+On Thu, 2022-11-10 at 17:34 -0800, sdf@google.com wrote:
+> On 11/10, Stanislav Fomichev wrote:
+> > On 11/11, Eduard Zingerman wrote:
+> > > A fix for the LLVM compilation error while building bpftool.
+> > > Replaces the expression:
+> > >=20
+> > >   _Static_assert((p) =3D=3D NULL || ...)
+> > >=20
+> > > by expression:
+> > >=20
+> > >   _Static_assert((__builtin_constant_p((p)) ? (p) =3D=3D NULL : 0) ||=
+ ...)
+>=20
+> > IIUC, when __builtin_constant_p(p) returns false, we just ignore the NU=
+LL =20
+> > check?
+> > Do we have cases like that? If no, maybe it's safer to fail?
+>=20
+> > s/(p) =3D=3D NULL : 0/(p) =3D=3D NULL : 1/ ?
+>=20
+> I'm probably missing something, can you pls clarify? So the error is as
+> follows:
+>=20
+> > > btf_dump.c:1546:2: error: static_assert expression is not an integral=
+ =20
+> > > constant expression
+>     hashmap__find(name_map, orig_name, &dup_cnt);
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
+>     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+>     ^~~~~~~~~~~~~~~~~~~~~~~
+>     ./hashmap.h:126:17: note: expanded from macro 'hashmap_cast_ptr'
+>     _Static_assert((p) =3D=3D NULL || sizeof(*(p)) =3D=3D =20
+> sizeof(long),                                            =20
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a const=
+ant =20
+> expression
+>     ./hashmap.h:169:35: note: expanded from macro 'hashmap__find'
+>     hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+>=20
+> This line in particular:
+>=20
+>     btf_dump.c:1546:2: note: cast from 'void *' is not allowed in a const=
+ant =20
+> expression
+>=20
+> And the code does:
+>=20
+>    size_t dup_cnt =3D 0;
+>    hashmap__find(name_map, orig_name, &dup_cnt);
+>=20
+> So where is that cast from 'void *' is happening? Is it the NULL check =
+=20
+> itself?
+>=20
+> Are we simply guarding against the user calling hashmap_cast_ptr with
+> explicit NULL argument?
 
-imo, considering we are trying to optimize unnecessary field initialization as 
-below, it is sort of wasteful to always initialize the btf_id with the same 
-value.  It is better to add it in the future when there is a need.
+In case if (p) is not a constant I want the second part of the || to kick-i=
+n.
+The complete condition looks as follows:
 
->>>>> We should probably also have a flag set on the xdp_frame so the stack
->>>>> knows that the metadata area contains relevant-to-skb data, to guard
->>>>> against an XDP program accidentally hitting the "magic number" (BTF_ID)
->>>>> in unrelated stuff it puts into the metadata area.
->>>>
->>>> Yeah, I think having a flag is useful.  The flag will be set at xdp_buff and
->>>> then transfer to the xdp_frame?
->>>
->>> Yeah, exactly!
->>>
->>>>>> After re-reading patch 6, have another question. The 'void
->>>>>> bpf_xdp_metadata_export_to_skb();' function signature. Should it at
->>>>>> least return ok/err? or even return a 'struct xdp_to_skb_metadata *'
->>>>>> pointer and the xdp prog can directly read (or even write) it?
->>>>>
->>>>> Hmm, I'm not sure returning a failure makes sense? Failure to read one
->>>>> or more fields just means that those fields will not be populated? We
->>>>> should probably have a flags field inside the metadata struct itself to
->>>>> indicate which fields are set or not, but I'm not sure returning an
->>>>> error value adds anything? Returning a pointer to the metadata field
->>>>> might be convenient for users (it would just be an alias to the
->>>>> data_meta pointer, but the verifier could know its size, so the program
->>>>> doesn't have to bounds check it).
->>>>
->>>> If some hints are not available, those hints should be initialized to
->>>> 0/CHECKSUM_NONE/...etc.
->>>
->>> The problem with that is that then we have to spend cycles writing
->>> eight bytes of zeroes into the checksum field :)
->>
->> With a common 'struct xdp_to_skb_metadata', I am not sure how some of these zero
->> writes can be avoided.  If the xdp prog wants to optimize, it can call
->> individual kfunc to get individual hints.
-> 
-> Erm, we just... don't write those fields? Something like:
-> 
-> void write_skb_meta(hw, ctx) {
->    struct xdp_skb_metadata meta = ctx->data_meta - sizeof(struct xdp_skb_metadata);
->    meta->valid_fields = 0;
-> 
->    if (hw_has_timestamp) {
->      meta->timestamp = hw->timestamp;
->      meta->valid_fields |= FIELD_TIMESTAMP;
->    } /* otherwise meta->timestamp is just uninitialised */
-> 
->    if (hw_has_rxhash) {
->      meta->rxhash = hw->rxhash;
->      meta->valid_fields |= FIELD_RXHASH;
->    } /* otherwise meta->rxhash is just uninitialised */
->    ...etc...
-> }
+  _Static_assert((__builtin_constant_p((p)) ? (p) =3D=3D NULL : 0) || \
+			sizeof(*(p)) =3D=3D sizeof(long), "...error...")
 
-Ah, got it.  Make sense.  My mind was stalled in the paradigm that a helper that 
-needs to initialize the result.
+The intent is to check that (p) is either NULL or a pointer to
+something of size long. So, if (p) is not a constant the expression
+would be equivalent to:
+
+  _Static_assert(0 || sizeof(*(p)) =3D=3D sizeof(long), "...error...")
+
+I just tried the following:
+
+	struct hashmap *name_map;
+	char x; // not a constant, wrong pointer size
+	...
+	hashmap__find(name_map, orig_name, &x);
+
+And it fails with an error message as intended:
+
+btf_dump.c:1548:2: error: static_assert failed due to requirement '(__built=
+in_constant_p((&x)) ? (&x) =3D=3D ((void *)0) : 0) || sizeof (*(&x)) =3D=3D=
+ sizeof(long)' "&x pointee should be a long-sized integer or a pointer"
+        hashmap__find(name_map, orig_name, &x);
+./hashmap.h:170:35: note: expanded from macro 'hashmap__find'
+        hashmap_find((map), (long)(key), hashmap_cast_ptr(value))
+./hashmap.h:126:2: note: expanded from macro 'hashmap_cast_ptr'
+        _Static_assert((__builtin_constant_p((p)) ? (p) =3D=3D NULL : 0) ||
+
+
+>=20
+> > > When "p" is not a constant the former is not considered to be a
+> > > constant expression by LLVM 14.
+> > >=20
+> > > The error was introduced in the following patch-set: [1].
+> > > The error was reported here: [2].
+> > >=20
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > >=20
+> > > [1] =20
+> > https://lore.kernel.org/bpf/20221109142611.879983-1-eddyz87@gmail.com/
+> > > [2] https://lore.kernel.org/all/202211110355.BcGcbZxP-lkp@intel.com/
+> > > ---
+> > >  tools/lib/bpf/hashmap.h   | 3 ++-
+> > >  tools/perf/util/hashmap.h | 3 ++-
+> > >  2 files changed, 4 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
+> > > index 3fe647477bad..0a5bf1937a7c 100644
+> > > --- a/tools/lib/bpf/hashmap.h
+> > > +++ b/tools/lib/bpf/hashmap.h
+> > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
+> > >  };
+> > >=20
+> > >  #define hashmap_cast_ptr(p) ({								\
+> > > -	_Static_assert((p) =3D=3D NULL || sizeof(*(p)) =3D=3D sizeof(long),=
+			\
+> > > +	_Static_assert((__builtin_constant_p((p)) ? (p) =3D=3D NULL : 0) ||=
+			\
+> > > +				sizeof(*(p)) =3D=3D sizeof(long),				\
+> > >  		       #p " pointee should be a long-sized integer or a pointer");=
+	\
+> > >  	(long *)(p);									\
+> > >  })
+> > > diff --git a/tools/perf/util/hashmap.h b/tools/perf/util/hashmap.h
+> > > index 3fe647477bad..0a5bf1937a7c 100644
+> > > --- a/tools/perf/util/hashmap.h
+> > > +++ b/tools/perf/util/hashmap.h
+> > > @@ -123,7 +123,8 @@ enum hashmap_insert_strategy {
+> > >  };
+> > >=20
+> > >  #define hashmap_cast_ptr(p) ({								\
+> > > -	_Static_assert((p) =3D=3D NULL || sizeof(*(p)) =3D=3D sizeof(long),=
+			\
+> > > +	_Static_assert((__builtin_constant_p((p)) ? (p) =3D=3D NULL : 0) ||=
+			\
+> > > +				sizeof(*(p)) =3D=3D sizeof(long),				\
+> > >  		       #p " pointee should be a long-sized integer or a pointer");=
+	\
+> > >  	(long *)(p);									\
+> > >  })
+> > > --
+> > > 2.34.1
+> > >=20
+
