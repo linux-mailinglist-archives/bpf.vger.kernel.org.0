@@ -2,117 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941646260E1
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111706260E9
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 19:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbiKKSJf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 13:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        id S233320AbiKKSMs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 13:12:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbiKKSJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 13:09:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA9510E
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:08:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668190114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qL7KWGyJ6F9vY31lSiEsrf+3YWslW3DUyNdiavfNqZw=;
-        b=AfzT3NsRzUzZAa76ZV41ZpWbtvSOQtkCqsK85QXHQxSOJ5+iFrYu8LOwQqdsIS8Y1drwjo
-        2dau2WUM3aKfSrn1TkorsKWQG9bhmlhJSmjczmkfKlfG0k82J4wKSZrqeEEV63ypk5pa0r
-        vRHAnFofzsCG1QR278NJkHdVChTLtwk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-403-tSNd9l5jNT6XsEH9IKLDHQ-1; Fri, 11 Nov 2022 13:08:33 -0500
-X-MC-Unique: tSNd9l5jNT6XsEH9IKLDHQ-1
-Received: by mail-wm1-f70.google.com with SMTP id l1-20020a7bc341000000b003bfe1273d6cso2038620wmj.4
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 10:08:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qL7KWGyJ6F9vY31lSiEsrf+3YWslW3DUyNdiavfNqZw=;
-        b=DvSPNTjguBBwoKqFXucx12Ja0OxH+A0HYSWZqIgvod1OpBIMHbMWwYwW9XaoRFZ9Rj
-         VknmurZ8tp+OBUw8tGqlgzrPJjMvbas8m5hyjpMurfOPLdqbQkEwG8tWBpqhGwPobXSi
-         PubtxtxATM0RYZGD9seDnWWRH2BAp4Z8n/EGZBFoktRY19VBpEUI71rDPs448ReoE9GV
-         +qQev7kCloYAtjH4U6ttPwEW8mbXMYO6v3J2dlhiA8hsc0U85KQIjGxJwXgGXsQ/UTbM
-         GnqkDLL39hTNyMOL3VsA9V6t/XQxwFuak6ntstPF+oAsucIRtmBtOO9kP6gweKMDU8cG
-         uRJg==
-X-Gm-Message-State: ANoB5pl21sJjsEfyj/Km/Vm+GoPLGOrJ3IgOZBKi/kyzmv3Lwxj490fx
-        KlRH/VbxvCuc+hCLQd1ZZaoU1uJRH8Q1wsUIUn14Y85TQgddhvlB+PY5N4sk7A74JiEEn0aaTII
-        ehOXFaZ53on4FYysFHdMGxNFSNk/D
-X-Received: by 2002:a05:600c:4e14:b0:3cf:7194:e0 with SMTP id b20-20020a05600c4e1400b003cf719400e0mr2038689wmq.141.1668190111888;
-        Fri, 11 Nov 2022 10:08:31 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4w2oUJXX9LES8p0j4NAsMLcVI+y+8hKFZAk42nKDXuRfirx3O3JtA1K08hxC5ZILa2G6Kop/MnO63PC3GFOpQ=
-X-Received: by 2002:a05:600c:4e14:b0:3cf:7194:e0 with SMTP id
- b20-20020a05600c4e1400b003cf719400e0mr2038678wmq.141.1668190111686; Fri, 11
- Nov 2022 10:08:31 -0800 (PST)
+        with ESMTP id S231625AbiKKSMi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 13:12:38 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281AE63BAD;
+        Fri, 11 Nov 2022 10:12:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D5B51B826C7;
+        Fri, 11 Nov 2022 18:12:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BABC433C1;
+        Fri, 11 Nov 2022 18:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668190354;
+        bh=8e/RTvJUsWMsttv0bdTCoFlXV86DjbvOcbtUwMf1f7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d3XWKd6thOjnst/9+wq/TS2jqhP2vcPa/JozNYyKQogRn3AdbikTAKpCsXE/FeUJX
+         gHh/skBHCQWafH0rJ63En89BRIbccbJWozf6NUdRe+luQ49pO4GNfw3iwDxfsoL4vH
+         Gk85xDygOnofj2Fe8jVJs7DDQ0j8nlU4B32MzQC/brSNzQnUgRkjnxp/COsWVingWs
+         J/1OiZgZBa+idXbvO0knhX5WFBYHlP/7tFXvRxpjyeAZZ5Nrf95bMxYX8fS/p7ZK9l
+         m9I2ZClWXBgp6HnHCpdHumWTVSTTMOZi8+WUovsUMcb5o+1WbOOqfUnKNdxupWZKgs
+         8nEDGH6C405cA==
+Date:   Fri, 11 Nov 2022 19:12:30 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Rong Tao <rtoax@foxmail.com>, ast@kernel.org,
+        Rong Tao <rongtao@cestc.cn>, kernel test robot <lkp@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix error undeclared identifier
+ 'NF_NAT_MANIP_SRC'
+Message-ID: <Y26QjqvVTosoCgPT@lore-desk>
+References: <tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com>
+ <Y26FgIJLR3nVKjcb@google.com>
+ <Y26MSS2twSskZ5J2@lore-desk>
+ <CAKH8qBvxZBX7_GQYQzSrZ5j=P3rViyqNq3V3oo5CtEMR9BQepA@mail.gmail.com>
 MIME-Version: 1.0
-References: <87leoh372s.fsf@toke.dk>
-In-Reply-To: <87leoh372s.fsf@toke.dk>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Fri, 11 Nov 2022 19:08:20 +0100
-Message-ID: <CAJ0CqmWO-MsjL3i6pfATJ=JakbnTfQmwKmruz9zEM_H-sz1_uA@mail.gmail.com>
-Subject: Re: Calling kfuncs in modules - BTF mismatch?
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RREGnsch0YAdzI4A"
+Content-Disposition: inline
+In-Reply-To: <CAKH8qBvxZBX7_GQYQzSrZ5j=P3rViyqNq3V3oo5CtEMR9BQepA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> Hi everyone
->
-> There seems to be some issue with BTF mismatch when trying to run the
-> bpf_ct_set_nat_info() kfunc from a module. I was under the impression
-> that this is supposed to work, so is there some kind of BTF dedup issue
-> here or something?
->
-> Steps to reproduce:
->
-> 1. Compile kernel with nf_conntrack built-in and run selftests;
->    './test_progs -a bpf_nf' works
->
-> 2. Change the kernel config so nf_conntrack is build as a module
->
-> 3. Start the test kernel and manually modprobe nf_conntrack and nf_nat
->
-> 4. Run ./test_progs -a bpf_nf; this now fails with an error like:
->
-> kernel function bpf_ct_set_nat_info args#0 expected pointer to STRUCT nf_conn___init but R1 has a pointer to STRUCT nf_conn___init
 
-This week Kumar and I took a look at this issue and we ended up
-identifying a duplication of nf_conn___init structure. In particular:
+--RREGnsch0YAdzI4A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[~/workspace/bpf-next]$ bpftool btf --base-btf vmlinux dump file
-net/netfilter/nf_conntrack.ko format raw | grep nf_conn__
-[110941] STRUCT 'nf_conn___init' size=248 vlen=1
-[~/workspace/bpf-next]$ bpftool btf --base-btf vmlinux dump file
-net/netfilter/nf_nat.ko format raw | grep nf_conn__
-[107488] STRUCT 'nf_conn___init' size=248 vlen=1
+> On Fri, Nov 11, 2022 at 9:54 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
+te:
+> >
+> > > On 11/11, Rong Tao wrote:
+> > > > From: Rong Tao <rongtao@cestc.cn>
+> > >
+> > > > commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+> > > > introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat=
+=2Eh,
+> > > > and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_na=
+t_info
+> > > > kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c. We copy enum
+> > > > nf_nat_manip_type to test_bpf_nf.c fix this error.
+> > >
+> > > > How to reproduce the error:
+> > >
+> > > >      $ make -C tools/testing/selftests/bpf/
+> > > >      ...
+> > > >        CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+> > > >        error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+> > > >              bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SR=
+C);
+> > > >                                                             ^
+> > > >        error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+> > > >              bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DS=
+T);
+> > > >                                                             ^
+> > > >      2 errors generated.
+> > >
+> > > $ grep NF_NAT_MANIP_SRC
+> > > ./tools/testing/selftests/bpf/tools/include/vmlinux.h
+> > >         NF_NAT_MANIP_SRC =3D 0,
+> > >
+> > > Doesn't look like your kernel config compiles netfilter nat modules?
+> >
+> > yes, in bpf kself-test config (tools/testing/selftests/bpf/config) nf_n=
+at
+> > is compiled as built-in. This issue occurs just if it is compiled as mo=
+dule.
+>=20
+> Right, but if we unconditionally define this enum, I think you'll
+> break the case where it's compiled as a built-in?
+> Since at least in my vmlinux.h I have all the defines and this test
+> includes vmlinux.h...
 
-Is it the root cause of the problem?
+yes, it is correct.
 
-Regards,
-Lorenzo
+>=20
+> > Regards,
+> > Lorenzo
+> >
+> > >
+> > > > Link: https://lore.kernel.org/lkml/202210280447.STsT1gvq-lkp@intel.=
+com/
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> > > > ---
+> > > >   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+> > > >   1 file changed, 5 insertions(+)
+> > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > index 227e85e85dda..307ca166ff34 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> > > > @@ -3,6 +3,11 @@
+> > > >   #include <bpf/bpf_helpers.h>
+> > > >   #include <bpf/bpf_endian.h>
+> > >
+> > > > +enum nf_nat_manip_type {
+> > > > +   NF_NAT_MANIP_SRC,
+> > > > +   NF_NAT_MANIP_DST
+> > > > +};
+> > > > +
+> > > >   #define EAFNOSUPPORT 97
+> > > >   #define EPROTO 71
+> > > >   #define ENONET 64
+> > > > --
+> > > > 2.31.1
+> > >
 
->
-> Anyone has any ideas what's going on here, and how to fix it?
->
-> -Toke
->
+--RREGnsch0YAdzI4A
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY26QjgAKCRA6cBh0uS2t
+rHk5AP4qKv4HeJgc4FhLgnxgdpQCBOm8g3Mc5xObRZcWvlHFqAD7BNeUFMwaLLfl
+TxvON7agcBk0KFLjb/YFnU10Zk8+GwQ=
+=Hrtv
+-----END PGP SIGNATURE-----
+
+--RREGnsch0YAdzI4A--
