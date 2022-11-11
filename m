@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D3A6261FD
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8C26261FE
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 20:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbiKKTde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 14:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
+        id S233865AbiKKTdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 14:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233865AbiKKTdc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 14:33:32 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0C7B1E3
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:33:30 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso8613558pjc.0
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:33:30 -0800 (PST)
+        with ESMTP id S233828AbiKKTdg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 14:33:36 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1107712AD4
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:33:35 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id b62so5160882pgc.0
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 11:33:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IDKjaXQrzw8xzAKuOLSOkHReeUI2bgGmwlrnNY+xHtA=;
-        b=NhpRCOOVZdtqTH2jNaDSbQ96S1XZ+sdIUPAoEcXp1kHjvZShn+1NKcgUH0DtEGMh09
-         FViI4ClZKIYuDZ5Sc9/tcyWMJIXdC4bfGrzzeXPFQnzEnZIItFtnGESpme06sPgngzuE
-         LCQGLg3noPY1K5MbHWoLpdyViFq87nF3otF7eCgsTxf1QkP1oUJIgZZ65b+LZauEBFu6
-         uc8ZRbXsWKOw5IhcZmK20OQm7STLiIDhNn/sFLchk3nk0UNU28MekSHAWFmnPzOwnLU0
-         78iti8qYQWi9kwfyEV7Xuzhz1jQ7shdPpfCppXZkz0t2k+E2gDEww1a0K6A6FZRJVyd9
-         CnKA==
+        bh=EkCP4Dony/PsvTJnx7VXRtAY09Fp+elLOavyTVsL+mM=;
+        b=O6EEv9Zn/QdYjXyJkambhe8De3lN2lBQmXNkhVlUtGVpGEPtGa0B42FatsfrrPub37
+         wjD1aqT63Oo4uZxK8+f8Ic3Fw9IIMFsvyiE572gkpMqLhZlg299ERvbROPvVVoiqQcXK
+         POi2I4yY6gntkzYN5+Pgbb+vTzBe6XecXro/jcsmCre3JLlU9s0lTvajslftKZ89Uu+d
+         LnWStP6z3r3Ne/bfpDA3OqKYcE9oEsibotezHOUa3ZiTm3ZlYW6joIkN9XuuTFullnxM
+         GdFbj9gkj7KwR/s74b8KMwfhds5997fuwLKuuCHeJafnqupgglL7KvKHDdbdy1CL7i33
+         G1wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IDKjaXQrzw8xzAKuOLSOkHReeUI2bgGmwlrnNY+xHtA=;
-        b=kgoe88kkX7Nw7eSBdoG3ziEVxqBVmnQCZJxfpkTjLs3CqmNom8pJv3eKY/uzOEAvqx
-         4/lKUDfiCYawxJhQhkiHvaOx8yxWpkUzLvllwStYLoTEp7x/99tnXvEJl+0kxbELxaZi
-         MrvPvqzJ0tdLM+NaQHe2y6XRbiQzeeRmNlhPMsNhlpd9NFTW+bhyx7of4UkcY8uYsUpN
-         //E5PuERa+EcxC1L4Qir3hxTWJVpxX7Wx4QnjeEoWB8CxaFrCab95ZXMMCk9tkiMZm7R
-         hfQLX6yUsN11oWFH8w2U2sLZJim8dBUHQtDvLn7BEfny9VDBOiCaHbmRVIxoa8GiD3Ex
-         qEnw==
-X-Gm-Message-State: ANoB5pniLlmx6nhExmhzK7/KpFh2GYw5WbwpkWOvJKW7sSe3DwZbWNRg
-        9ilwS6hmeWvoojMKMiY1VwUI/kD/NVsekg==
-X-Google-Smtp-Source: AA0mqf7fqHoVBn1EKj/Bn8GibTQXjGaNnfOWESzI6+dqOCmZsACWk03WgnqoVwpYdP82mB/d3WYBVQ==
-X-Received: by 2002:a17:90b:3c44:b0:212:ec17:3fd0 with SMTP id pm4-20020a17090b3c4400b00212ec173fd0mr3423344pjb.241.1668195210052;
-        Fri, 11 Nov 2022 11:33:30 -0800 (PST)
+        bh=EkCP4Dony/PsvTJnx7VXRtAY09Fp+elLOavyTVsL+mM=;
+        b=pgH3zfJgVI4i3DWUP1ehSssa/DlYu/lv7phNNmTsS0P/W8Z/HokjxPrfaIsslJXpto
+         K3ZsggYB7NPqr/7+j3Qh7x7lw1YKYkI+mSAxLTH5MPk10OeeZKS2868QobWRKL7izuvP
+         XHWjf0L3bIVVrpF+SetxZF1143iWGddFZA6h0CA3jk0YqPh+pY2bFO5Mt8eG+xhGCWCg
+         ixYqvPdv466gmwwHj0FMSYWnaWTydtdPfjTEjYl7c9hXhZ7qG7z/fk05DmoTGDmB+AkM
+         Lx6q2uqH9yQ0IfhK6mDDmfHBhHI0LaQD9Q0VXOJNkVdczADasa/cy9hzj83dSD4aj/gA
+         tyOQ==
+X-Gm-Message-State: ANoB5plwebz8lG8zWkxID6lSF/Z1o6QxqfT1sB7DdEJ4y75qUVYajBv5
+        XUTUqX0i2cof/OKEyUSRm4kJ2UclK6mZFg==
+X-Google-Smtp-Source: AA0mqf6jF0yHfS4VbGr42Dg87w+qb37XiIdNf3nmDXbtWnuF6xjenR+C9M2/J6v7TOfEdEXHoYn1uw==
+X-Received: by 2002:a63:1665:0:b0:426:9c23:9f94 with SMTP id 37-20020a631665000000b004269c239f94mr2929036pgw.105.1668195214260;
+        Fri, 11 Nov 2022 11:33:34 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090ade0100b0020dc318a43esm1949847pjv.25.2022.11.11.11.33.29
+        by smtp.gmail.com with ESMTPSA id u3-20020a170902e80300b00172e19c5f8bsm2089877plg.168.2022.11.11.11.33.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 11:33:29 -0800 (PST)
+        Fri, 11 Nov 2022 11:33:33 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,14 +57,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         Delyan Kratunov <delyank@meta.com>
-Subject: [PATCH bpf-next v6 07/26] bpf: Refactor btf_struct_access
-Date:   Sat, 12 Nov 2022 01:02:05 +0530
-Message-Id: <20221111193224.876706-8-memxor@gmail.com>
+Subject: [PATCH bpf-next v6 08/26] bpf: Introduce allocated objects support
+Date:   Sat, 12 Nov 2022 01:02:06 +0530
+Message-Id: <20221111193224.876706-9-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221111193224.876706-1-memxor@gmail.com>
 References: <20221111193224.876706-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12746; i=memxor@gmail.com; h=from:subject; bh=J59s9TVGQk1qIQ03OK9PLmTtdwn8dkmFxeIuacvaOIY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjbqInSTonag6VERR0d31rxPLsk5FtlPEhOYfOuBUo kWTQYQeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY26iJwAKCRBM4MiGSL8Rypn4D/ 9mUUFTXN2NIrhQjI3WHoQqvV8O2gH16y/j9sJk+E9YxPU41oSKOCd+mrzvYuhdnfKS8j4JTv7ohozl 7/eTb6f0OUfZcSK0CciWJUZ/eSvrBzMuMFk/R13ARLXO5591KAjQ1xqncCtawwQUBYC39kS+9yeCEf s5mWkiYsqpShbgABqFLyZpAMYOkbMQ+TNGn6RthQT7deInX9bZfTRcPKpXkY/RsBrp8FjEndNAygem ghVJVHvY34GmZgkRRT2LUQUbygYryVwnNvC7/9i8+1oSdDbZzjikpebYQ8lELaaoifdo94hPbLEdQ3 u5ulRPS9QcpDu1ENBo6LEETWMHbGworB7VY2Lk9vTnK33Kf13jteuSboebGZMlMjt4DNZgUkQnrovi h8VLttcwmhNIhPh8eWQdPh6CH/RKI3japPNQisPnw64rmOG0z+5kml23Toj91bQWslVz82ZGmLnhZv mcxZdtSzcyHUUzATey9zGVD88eQrUS/st8C2FeWUJQqsbxnHZJV0zQmQKmW4xB5C7TTAtGJR2PjCKg NqhfrzlcaKuNAENmnCzSVPjI/3zJkT4SFSAife32LrQUvdrMMBwhVRAAzbbV+Ke3fc2Z6Z4fJi5ppu JU+7AEtNmmjybIeHtX1/S9RSoa5oF7MYVRriGl4xaQgoc5d2sYLFj4zSuTtw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4871; i=memxor@gmail.com; h=from:subject; bh=meS7gQZTEGq/DUEJpmd9jyqWTUThhVE5S28cbBs7iUA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjbqIo0xyMZd3AtlXePT7oI/kJPUEhIBQ1Tl7N1l1f t0tz1JaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY26iKAAKCRBM4MiGSL8Ryk17EA CZIAsithALdp/QdbU9kHEYOH1EgKJlh4WqdQ5Wecvz4eFTDOcfFtnXwCFwOzWKvYIsDaTuOGu60yXO NR5aDUaxVmFOyuhU/XCX7yMHKXl1qg4f7e7D28C1nl0uPiYN4Y8hgMpdNpPybQEbKm1aLlrJWm8QaX H+7IIZwewP844hw+sd8adNWMsDP0wKcKBrXzotf/aX6u+Qdgqke1jazmZdoJ2JlMPHm1aR3lEhINAe OPiz6ulKw0AtYzLGzLsWl7u0qqqu120KCvkIj9VeVvL1LBh9xwKHYwBawiA+04mlvkBJ2SZUaPfY9n XdAQf23GfT1kIWJOz4+O/5adfe8FKFtJGOc2+oDb4tTP37Ona3z0XH+KfeAISvrO3HuStEvtvQegaH sFeDadm+KXpYO4sMhgdOUi92D/sYWwm1WBXl+ofKu9PI/3WHfgqQVdTdJcDd810Xyp2ywZNoqNkFSr kyn4PBEJC750ltQi4XGtqdSzXzMTyGkNkK6X1OjPQxbvfwGbaXngNF1hStspqPovOZwWIpUB0sbK4B HHa2+UFNUywdpFuh7cOn/CVrYtXpgha1CPxCo6LmuDex0JBsbdAf5HghwBC3oPluFWCkPPo/8LhtWA YYPWmJNa+J/SNByItwugDIdOUz9I5/JyFY+HPlsD4zR1oYDqv0X4swBakfeQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,333 +77,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of having to pass multiple arguments that describe the register,
-pass the bpf_reg_state into the btf_struct_access callback. Currently,
-all call sites simply reuse the btf and btf_id of the reg they want to
-check the access of. The only exception to this pattern is the callsite
-in check_ptr_to_map_access, hence for that case create a dummy reg to
-simulate PTR_TO_BTF_ID access.
+Introduce support for representing pointers to objects allocated by the
+BPF program, i.e. PTR_TO_BTF_ID that point to a type in program BTF.
+This is indicated by the presence of MEM_ALLOC type flag in reg->type to
+avoid having to check btf_is_kernel when trying to match argument types
+in helpers.
+
+Whenever walking such types, any pointers being walked will always yield
+a SCALAR instead of pointer. In the future we might permit kptr inside
+such allocated objects (either kernel or local), and it will then form a
+PTR_TO_BTF_ID of the respective type.
+
+For now, such allocated objects will always be referenced in verifier
+context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+to such objects, as long fields that are special are not touched
+(support for which will be added in subsequent patches). Note that once
+such a pointer is marked PTR_UNTRUSTED, it is no longer allowed to write
+to it.
+
+No PROBE_MEM handling is therefore done for loads into this type unless
+PTR_UNTRUSTED is part of the register type, since they can never be in
+an undefined state, and their lifetime will always be valid.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h              | 17 ++++++++--------
- include/linux/filter.h           |  8 ++++----
- kernel/bpf/btf.c                 | 11 +++++++----
- kernel/bpf/verifier.c            | 12 ++++++-----
- net/bpf/bpf_dummy_struct_ops.c   | 14 ++++++-------
- net/core/filter.c                | 34 +++++++++++++-------------------
- net/ipv4/bpf_tcp_ca.c            | 13 ++++++------
- net/netfilter/nf_conntrack_bpf.c | 17 +++++++---------
- 8 files changed, 60 insertions(+), 66 deletions(-)
+ include/linux/bpf.h   | 11 +++++++++++
+ kernel/bpf/btf.c      |  5 +++++
+ kernel/bpf/verifier.c | 25 +++++++++++++++++++++++--
+ 3 files changed, 39 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index afc1c51b59ff..49f9d2bec401 100644
+index 49f9d2bec401..3cab113b149e 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -771,6 +771,7 @@ struct bpf_prog_ops {
- 			union bpf_attr __user *uattr);
+@@ -524,6 +524,11 @@ enum bpf_type_flag {
+ 	/* Size is known at compile time. */
+ 	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+ 
++	/* MEM is of a an allocated object of type from program BTF. This is
++	 * used to tag PTR_TO_BTF_ID allocated using bpf_obj_new.
++	 */
++	MEM_ALLOC		= BIT(11 + BPF_BASE_TYPE_BITS),
++
+ 	__BPF_TYPE_FLAG_MAX,
+ 	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
  };
- 
-+struct bpf_reg_state;
- struct bpf_verifier_ops {
- 	/* return eBPF function prototype for verification */
- 	const struct bpf_func_proto *
-@@ -792,9 +793,8 @@ struct bpf_verifier_ops {
- 				  struct bpf_insn *dst,
- 				  struct bpf_prog *prog, u32 *target_size);
- 	int (*btf_struct_access)(struct bpf_verifier_log *log,
--				 const struct btf *btf,
--				 const struct btf_type *t, int off, int size,
--				 enum bpf_access_type atype,
-+				 const struct bpf_reg_state *reg,
-+				 int off, int size, enum bpf_access_type atype,
- 				 u32 *next_btf_id, enum bpf_type_flag *flag);
+@@ -2791,4 +2796,10 @@ struct bpf_key {
+ 	bool has_ref;
  };
- 
-@@ -2080,9 +2080,9 @@ static inline bool bpf_tracing_btf_ctx_access(int off, int size,
- 	return btf_ctx_access(off, size, type, prog, info);
- }
- 
--int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
--		      const struct btf_type *t, int off, int size,
--		      enum bpf_access_type atype,
-+int btf_struct_access(struct bpf_verifier_log *log,
-+		      const struct bpf_reg_state *reg,
-+		      int off, int size, enum bpf_access_type atype,
- 		      u32 *next_btf_id, enum bpf_type_flag *flag);
- bool btf_struct_ids_match(struct bpf_verifier_log *log,
- 			  const struct btf *btf, u32 id, int off,
-@@ -2333,9 +2333,8 @@ static inline struct bpf_prog *bpf_prog_by_id(u32 id)
- }
- 
- static inline int btf_struct_access(struct bpf_verifier_log *log,
--				    const struct btf *btf,
--				    const struct btf_type *t, int off, int size,
--				    enum bpf_access_type atype,
-+				    const struct bpf_reg_state *reg,
-+				    int off, int size, enum bpf_access_type atype,
- 				    u32 *next_btf_id, enum bpf_type_flag *flag)
- {
- 	return -EACCES;
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index efc42a6e3aed..787d35dbf5b0 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -568,10 +568,10 @@ struct sk_filter {
- DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
- 
- extern struct mutex nf_conn_btf_access_lock;
--extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log, const struct btf *btf,
--				     const struct btf_type *t, int off, int size,
--				     enum bpf_access_type atype, u32 *next_btf_id,
--				     enum bpf_type_flag *flag);
-+extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log,
-+				     const struct bpf_reg_state *reg,
-+				     int off, int size, enum bpf_access_type atype,
-+				     u32 *next_btf_id, enum bpf_type_flag *flag);
- 
- typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
- 					  const struct bpf_insn *insnsi,
+ #endif /* CONFIG_KEYS */
++
++static inline bool type_is_alloc(u32 type)
++{
++	return type & MEM_ALLOC;
++}
++
+ #endif /* _LINUX_BPF_H */
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index c0d73d71c539..875355ff3718 100644
+index 875355ff3718..9a596f430558 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -6017,15 +6017,18 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	return -EINVAL;
- }
+@@ -6034,6 +6034,11 @@ int btf_struct_access(struct bpf_verifier_log *log,
  
--int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
--		      const struct btf_type *t, int off, int size,
--		      enum bpf_access_type atype __maybe_unused,
-+int btf_struct_access(struct bpf_verifier_log *log,
-+		      const struct bpf_reg_state *reg,
-+		      int off, int size, enum bpf_access_type atype __maybe_unused,
- 		      u32 *next_btf_id, enum bpf_type_flag *flag)
- {
-+	const struct btf *btf = reg->btf;
- 	enum bpf_type_flag tmp_flag = 0;
-+	const struct btf_type *t;
-+	u32 id = reg->btf_id;
- 	int err;
--	u32 id;
- 
-+	t = btf_type_by_id(btf, id);
- 	do {
- 		err = btf_struct_walk(log, btf, t, off, size, &id, &tmp_flag);
- 
+ 		switch (err) {
+ 		case WALK_PTR:
++			/* For local types, the destination register cannot
++			 * become a pointer again.
++			 */
++			if (type_is_alloc(reg->type))
++				return SCALAR_VALUE;
+ 			/* If we found the pointer or scalar on t+off,
+ 			 * we're done.
+ 			 */
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5fca156eca43..bbbb0f27c7d1 100644
+index bbbb0f27c7d1..5cf14c1391a5 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -4683,16 +4683,14 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+@@ -4682,14 +4682,27 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 		return -EACCES;
  	}
  
- 	if (env->ops->btf_struct_access) {
--		ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
--						  off, size, atype, &btf_id, &flag);
-+		ret = env->ops->btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+-	if (env->ops->btf_struct_access) {
++	if (env->ops->btf_struct_access && !type_is_alloc(reg->type)) {
++		if (!btf_is_kernel(reg->btf)) {
++			verbose(env, "verifier internal error: reg->btf must be kernel btf\n");
++			return -EFAULT;
++		}
+ 		ret = env->ops->btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
  	} else {
- 		if (atype != BPF_READ) {
+-		if (atype != BPF_READ) {
++		/* Writes are permitted with default btf_struct_access for local
++		 * kptrs (which always have ref_obj_id > 0), but not for
++		 * untrusted PTR_TO_BTF_ID | MEM_ALLOC.
++		 */
++		if (atype != BPF_READ && reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
  			verbose(env, "only read is supported\n");
  			return -EACCES;
  		}
  
--		ret = btf_struct_access(&env->log, reg->btf, t, off, size,
--					atype, &btf_id, &flag);
-+		ret = btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
++		if (type_is_alloc(reg->type) && !reg->ref_obj_id) {
++			verbose(env, "verifier internal error: ref_obj_id for allocated object must be non-zero\n");
++			return -EFAULT;
++		}
++
+ 		ret = btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
  	}
  
- 	if (ret < 0)
-@@ -4718,6 +4716,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
- {
- 	struct bpf_reg_state *reg = regs + regno;
- 	struct bpf_map *map = reg->map_ptr;
-+	struct bpf_reg_state map_reg;
- 	enum bpf_type_flag flag = 0;
- 	const struct btf_type *t;
- 	const char *tname;
-@@ -4756,7 +4755,10 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
- 		return -EACCES;
- 	}
- 
--	ret = btf_struct_access(&env->log, btf_vmlinux, t, off, size, atype, &btf_id, &flag);
-+	/* Simulate access to a PTR_TO_BTF_ID */
-+	memset(&map_reg, 0, sizeof(map_reg));
-+	mark_btf_ld_reg(env, &map_reg, 0, PTR_TO_BTF_ID, btf_vmlinux, *map->ops->map_btf_id, 0);
-+	ret = btf_struct_access(&env->log, &map_reg, off, size, atype, &btf_id, &flag);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-index e78dadfc5829..2d434c1f4617 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -156,29 +156,29 @@ static bool bpf_dummy_ops_is_valid_access(int off, int size,
- }
- 
- static int bpf_dummy_ops_btf_struct_access(struct bpf_verifier_log *log,
--					   const struct btf *btf,
--					   const struct btf_type *t, int off,
--					   int size, enum bpf_access_type atype,
-+					   const struct bpf_reg_state *reg,
-+					   int off, int size, enum bpf_access_type atype,
- 					   u32 *next_btf_id,
- 					   enum bpf_type_flag *flag)
- {
- 	const struct btf_type *state;
-+	const struct btf_type *t;
- 	s32 type_id;
- 	int err;
- 
--	type_id = btf_find_by_name_kind(btf, "bpf_dummy_ops_state",
-+	type_id = btf_find_by_name_kind(reg->btf, "bpf_dummy_ops_state",
- 					BTF_KIND_STRUCT);
- 	if (type_id < 0)
- 		return -EINVAL;
- 
--	state = btf_type_by_id(btf, type_id);
-+	t = btf_type_by_id(reg->btf, reg->btf_id);
-+	state = btf_type_by_id(reg->btf, type_id);
- 	if (t != state) {
- 		bpf_log(log, "only access to bpf_dummy_ops_state is supported\n");
- 		return -EACCES;
- 	}
- 
--	err = btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
--				flag);
-+	err = btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index cb3b635e35be..199632e6a7cb 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8651,28 +8651,25 @@ static bool tc_cls_act_is_valid_access(int off, int size,
- DEFINE_MUTEX(nf_conn_btf_access_lock);
- EXPORT_SYMBOL_GPL(nf_conn_btf_access_lock);
- 
--int (*nfct_btf_struct_access)(struct bpf_verifier_log *log, const struct btf *btf,
--			      const struct btf_type *t, int off, int size,
--			      enum bpf_access_type atype, u32 *next_btf_id,
--			      enum bpf_type_flag *flag);
-+int (*nfct_btf_struct_access)(struct bpf_verifier_log *log,
-+			      const struct bpf_reg_state *reg,
-+			      int off, int size, enum bpf_access_type atype,
-+			      u32 *next_btf_id, enum bpf_type_flag *flag);
- EXPORT_SYMBOL_GPL(nfct_btf_struct_access);
- 
- static int tc_cls_act_btf_struct_access(struct bpf_verifier_log *log,
--					const struct btf *btf,
--					const struct btf_type *t, int off,
--					int size, enum bpf_access_type atype,
--					u32 *next_btf_id,
--					enum bpf_type_flag *flag)
-+					const struct bpf_reg_state *reg,
-+					int off, int size, enum bpf_access_type atype,
-+					u32 *next_btf_id, enum bpf_type_flag *flag)
- {
- 	int ret = -EACCES;
- 
- 	if (atype == BPF_READ)
--		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
--					 flag);
-+		return btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 
- 	mutex_lock(&nf_conn_btf_access_lock);
- 	if (nfct_btf_struct_access)
--		ret = nfct_btf_struct_access(log, btf, t, off, size, atype, next_btf_id, flag);
-+		ret = nfct_btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 	mutex_unlock(&nf_conn_btf_access_lock);
- 
- 	return ret;
-@@ -8738,21 +8735,18 @@ void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog,
- EXPORT_SYMBOL_GPL(bpf_warn_invalid_xdp_action);
- 
- static int xdp_btf_struct_access(struct bpf_verifier_log *log,
--				 const struct btf *btf,
--				 const struct btf_type *t, int off,
--				 int size, enum bpf_access_type atype,
--				 u32 *next_btf_id,
--				 enum bpf_type_flag *flag)
-+				 const struct bpf_reg_state *reg,
-+				 int off, int size, enum bpf_access_type atype,
-+				 u32 *next_btf_id, enum bpf_type_flag *flag)
- {
- 	int ret = -EACCES;
- 
- 	if (atype == BPF_READ)
--		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
--					 flag);
-+		return btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 
- 	mutex_lock(&nf_conn_btf_access_lock);
- 	if (nfct_btf_struct_access)
--		ret = nfct_btf_struct_access(log, btf, t, off, size, atype, next_btf_id, flag);
-+		ret = nfct_btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 	mutex_unlock(&nf_conn_btf_access_lock);
- 
- 	return ret;
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index 6da16ae6a962..d15c91de995f 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -69,18 +69,17 @@ static bool bpf_tcp_ca_is_valid_access(int off, int size,
- }
- 
- static int bpf_tcp_ca_btf_struct_access(struct bpf_verifier_log *log,
--					const struct btf *btf,
--					const struct btf_type *t, int off,
--					int size, enum bpf_access_type atype,
--					u32 *next_btf_id,
--					enum bpf_type_flag *flag)
-+					const struct bpf_reg_state *reg,
-+					int off, int size, enum bpf_access_type atype,
-+					u32 *next_btf_id, enum bpf_type_flag *flag)
- {
-+	const struct btf_type *t;
- 	size_t end;
- 
- 	if (atype == BPF_READ)
--		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
--					 flag);
-+		return btf_struct_access(log, reg, off, size, atype, next_btf_id, flag);
- 
-+	t = btf_type_by_id(reg->btf, reg->btf_id);
- 	if (t != tcp_sock_type) {
- 		bpf_log(log, "only read is supported\n");
- 		return -EACCES;
-diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-index 8639e7efd0e2..24002bc61e07 100644
---- a/net/netfilter/nf_conntrack_bpf.c
-+++ b/net/netfilter/nf_conntrack_bpf.c
-@@ -191,19 +191,16 @@ BTF_ID(struct, nf_conn___init)
- 
- /* Check writes into `struct nf_conn` */
- static int _nf_conntrack_btf_struct_access(struct bpf_verifier_log *log,
--					   const struct btf *btf,
--					   const struct btf_type *t, int off,
--					   int size, enum bpf_access_type atype,
--					   u32 *next_btf_id,
--					   enum bpf_type_flag *flag)
-+					   const struct bpf_reg_state *reg,
-+					   int off, int size, enum bpf_access_type atype,
-+					   u32 *next_btf_id, enum bpf_type_flag *flag)
- {
--	const struct btf_type *ncit;
--	const struct btf_type *nct;
-+	const struct btf_type *ncit, *nct, *t;
- 	size_t end;
- 
--	ncit = btf_type_by_id(btf, btf_nf_conn_ids[1]);
--	nct = btf_type_by_id(btf, btf_nf_conn_ids[0]);
--
-+	ncit = btf_type_by_id(reg->btf, btf_nf_conn_ids[1]);
-+	nct = btf_type_by_id(reg->btf, btf_nf_conn_ids[0]);
-+	t = btf_type_by_id(reg->btf, reg->btf_id);
- 	if (t != nct && t != ncit) {
- 		bpf_log(log, "only read is supported\n");
- 		return -EACCES;
+@@ -5968,6 +5981,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 	 * fixed offset.
+ 	 */
+ 	case PTR_TO_BTF_ID:
++	case PTR_TO_BTF_ID | MEM_ALLOC:
+ 		/* When referenced PTR_TO_BTF_ID is passed to release function,
+ 		 * it's fixed offset must be 0.	In the other cases, fixed offset
+ 		 * can be non-zero.
+@@ -13650,6 +13664,13 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 			break;
+ 		case PTR_TO_BTF_ID:
+ 		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
++		/* PTR_TO_BTF_ID | MEM_ALLOC always has a valid lifetime, unlike
++		 * PTR_TO_BTF_ID, and an active ref_obj_id, but the same cannot
++		 * be said once it is marked PTR_UNTRUSTED, hence we must handle
++		 * any faults for loads into such types. BPF_WRITE is disallowed
++		 * for this case.
++		 */
++		case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+ 			if (type == BPF_READ) {
+ 				insn->code = BPF_LDX | BPF_PROBE_MEM |
+ 					BPF_SIZE((insn)->code);
 -- 
 2.38.1
 
