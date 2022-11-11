@@ -2,48 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E601462653B
-	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 00:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B9B62659D
+	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 00:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbiKKXQe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Nov 2022 18:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
+        id S233734AbiKKXho convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Nov 2022 18:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbiKKXQd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 18:16:33 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982F71007C
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:16:32 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2ABJO33A003958
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:16:32 -0800
+        with ESMTP id S234490AbiKKXhm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 18:37:42 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0175FCDD
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:37:41 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2ABJO3TN007586
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:37:41 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ksq5rm3f8-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ksts6jh3a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:16:32 -0800
-Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
- snc-exhub202.TheFacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 15:16:31 -0800
-Received: from twshared24130.14.prn3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 15:37:40 -0800
+Received: from twshared15216.17.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 15:16:31 -0800
+ 15.1.2375.31; Fri, 11 Nov 2022 15:37:39 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 18E6B218EE36C; Fri, 11 Nov 2022 15:16:24 -0800 (PST)
+        id 3B1C9218F2885; Fri, 11 Nov 2022 15:37:33 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <davem@davemloft.net>
 CC:     <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
         <daniel@iogearbox.net>, <ast@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: pull-request: bpf 2022-11-11
-Date:   Fri, 11 Nov 2022 15:16:24 -0800
-Message-ID: <20221111231624.938829-1-andrii@kernel.org>
+        <bpf@vger.kernel.org>, <andrii@kernel.org>
+Subject: pull-request: bpf-next 2022-11-11
+Date:   Fri, 11 Nov 2022 15:37:33 -0800
+Message-ID: <20221111233733.1088228-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 Content-Type: text/plain; charset="UTF-8"
 X-FB-Internal: Safe
-X-Proofpoint-GUID: 9wa5DXVOdXqWIgSX-SYmpXKBh3Ukmmfi
-X-Proofpoint-ORIG-GUID: 9wa5DXVOdXqWIgSX-SYmpXKBh3Ukmmfi
+X-Proofpoint-ORIG-GUID: HJxhCIniMbNvz95M3d9PUWgRSlSqyaXc
+X-Proofpoint-GUID: HJxhCIniMbNvz95M3d9PUWgRSlSqyaXc
 Content-Transfer-Encoding: 8BIT
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
@@ -62,98 +58,226 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hi David, hi Jakub, hi Paolo, hi Eric,
 
-The following pull-request contains BPF updates for your *net* tree.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-We've added 11 non-merge commits during the last 8 day(s) which contain
-a total of 11 files changed, 83 insertions(+), 74 deletions(-).
+We've added 49 non-merge commits during the last 9 day(s) which contain
+a total of 68 files changed, 3592 insertions(+), 1371 deletions(-).
 
 The main changes are:
 
-1) Fix strncpy_from_kernel_nofault() to prevent out-of-bounds writes,
-   from Alban Crequy.
+1) Veristat tool improvements to support custom filtering, sorting, and replay
+   of results, from Andrii Nakryiko.
 
-2) Fix for bpf_prog_test_run_skb() to prevent wrong alignment,
-   from Baisong Zhong.
+2) BPF verifier precision tracking fixes and improvements, from Andrii Nakryiko.
 
-3) Switch BPF_DISPATCHER to static_call() instead of ftrace infra, with
-   a small build fix on top, from Peter Zijlstra and Nathan Chancellor.
+3) Lots of new BPF documentation for various BPF maps, from Dave Tucker,
+   Donald Hunter, Maryam Tahhan, Bagas Sanjaya.
 
-4) Fix memory leak in BPF verifier in some error cases, from Wang Yufen.
+4) BTF dedup improvements and libbpf's hashmap interface clean ups, from
+   Eduard Zingerman.
 
-5) 32-bit compilation error fixes for BPF selftests, from Pu Lehui and
-   Yang Jihong.
+5) Fix veth driver panic if XDP program is attached before veth_open, from
+   John Fastabend.
 
-6) Ensure even distribution of per-CPU free list elements, from Xu Kuohai.
+6) BPF verifier clean ups and fixes in preparation for follow up features,
+   from Kumar Kartikeya Dwivedi.
 
-7) Fix copy_map_value() to track special zeroed out areas properly,
-   from Xu Kuohai.
+7) Add access to hwtstamp field from BPF sockops programs, from Martin KaFai Lau.
+
+8) Various fixes for BPF selftests and samples, from Artem Savkov,
+   Domenico Cerasuolo, Kang Minchul, Rong Tao, Yang Jihong.
+
+9) Fix redirection to tunneling device logic, preventing skb->len == 0, from
+   Stanislav Fomichev.
 
 Please consider pulling these changes from:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
 
 Thanks a lot!
 
 Also thanks to reporters, reviewers and testers of commits in this pull-request:
 
-Andrew Morton, Björn Töpel, David Laight, Francis Laniel, Jiri Olsa, 
-"kernelci.org bot", kernel test robot, Kumar Kartikeya Dwivedi, Yonghong 
+Alan Maguire, Andrii Nakryiko, Bagas Sanjaya, Björn Töpel, Dave 
+Marchevsky, David Vernet, Jakub Kicinski, kernel test robot, KP Singh, 
+Maryam Tahhan, Randy Dunlap, Stanislav Fomichev, Wang Yufen, Yonghong 
 Song
 
 ----------------------------------------------------------------
 
-The following changes since commit 1118b2049d77ca0b505775fc1a8d1909cf19a7ec:
+The following changes since commit fbeb229a6622523c092a13c02bd0e15f69240dde:
 
-  net: tun: Fix memory leaks of napi_get_frags (2022-11-04 10:56:22 +0000)
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2022-11-03 13:21:54 -0700)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
 
-for you to fetch changes up to 1f6e04a1c7b85da3b765ca9f46029e5d1826d839:
+for you to fetch changes up to eb6af4ceda2d885416d8382f096030d39896aafc:
 
-  bpf: Fix offset calculation error in __copy_map_value and zero_map_value (2022-11-11 12:35:07 -0800)
+  selftests/bpf: fix veristat's singular file-or-prog filter (2022-11-11 14:06:20 -0800)
 
 ----------------------------------------------------------------
-Alban Crequy (2):
-      maccess: Fix writing offset in case of fault in strncpy_from_kernel_nofault()
-      selftests: bpf: Add a test when bpf_probe_read_kernel_str() returns EFAULT
+bpf-next-for-netdev
 
-Andrii Nakryiko (1):
-      Merge branch 'Fix offset when fault occurs in strncpy_from_kernel_nofault()'
+----------------------------------------------------------------
+Alexei Starovoitov (2):
+      Merge branch 'veristat: replay, filtering, sorting'
+      Merge branch 'BPF verifier precision tracking improvements'
 
-Baisong Zhong (1):
-      bpf, test_run: Fix alignment problem in bpf_prog_test_run_skb()
+Andrii Nakryiko (19):
+      selftests/bpf: add veristat replay mode
+      selftests/bpf: shorten "Total insns/states" column names in veristat
+      selftests/bpf: consolidate and improve file/prog filtering in veristat
+      selftests/bpf: ensure we always have non-ambiguous sorting in veristat
+      selftests/bpf: allow to define asc/desc ordering for sort specs in veristat
+      selftests/bpf: support simple filtering of stats in veristat
+      selftests/bpf: make veristat emit all stats in CSV mode by default
+      selftests/bpf: handle missing records in comparison mode better in veristat
+      selftests/bpf: support stats ordering in comparison mode in veristat
+      selftests/bpf: support stat filtering in comparison mode in veristat
+      bpf: propagate precision in ALU/ALU64 operations
+      bpf: propagate precision across all frames, not just the last one
+      bpf: allow precision tracking for programs with subprogs
+      bpf: stop setting precise in current state
+      bpf: aggressively forget precise markings during state checkpointing
+      selftests/bpf: make test_align selftest more robust
+      Merge branch 'libbpf: Resolve unambigous forward declarations'
+      Merge branch 'bpf: Add hwtstamp field for the sockops prog'
+      selftests/bpf: fix veristat's singular file-or-prog filter
 
-Nathan Chancellor (1):
-      bpf: Add explicit cast to 'void *' for __BPF_DISPATCHER_UPDATE()
+Artem Savkov (1):
+      selftests/bpf: Use consistent build-id type for liburandom_read.so
 
-Peter Zijlstra (2):
-      bpf: Revert ("Fix dispatcher patchable function entry to 5 bytes nop")
-      bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
+Bagas Sanjaya (1):
+      Documentation: bpf: Escape underscore in BPF type name prefix
 
-Pu Lehui (1):
-      selftests/bpf: Fix casting error when cross-compiling test_verifier for 32-bit platforms
+Dave Tucker (1):
+      bpf, docs: Document BPF_MAP_TYPE_ARRAY
 
-Wang Yufen (1):
-      bpf: Fix memory leaks in __check_func_call
+Domenico Cerasuolo (1):
+      selftests: Fix test group SKIPPED result
 
-Xu Kuohai (2):
-      bpf: Initialize same number of free nodes for each pcpu_freelist
-      bpf: Fix offset calculation error in __copy_map_value and zero_map_value
+Donald Hunter (3):
+      docs/bpf: Document BPF_MAP_TYPE_LPM_TRIE map
+      docs/bpf: Document BPF ARRAY_OF_MAPS and HASH_OF_MAPS
+      docs/bpf: Document BPF map types QUEUE and STACK
+
+Eduard Zingerman (6):
+      libbpf: Resolve enum fwd as full enum64 and vice versa
+      selftests/bpf: Tests for enum fwd resolved as full enum64
+      libbpf: Hashmap interface update to allow both long and void* keys/values
+      libbpf: Resolve unambigous forward declarations
+      selftests/bpf: Tests for btf_dedup_resolve_fwds
+      libbpf: Hashmap.h update to fix build issues using LLVM14
+
+John Fastabend (1):
+      bpf: veth driver panics when xdp prog attached before veth_open
+
+Kang Minchul (1):
+      selftests/bpf: Fix u32 variable compared with less than zero
+
+Kumar Kartikeya Dwivedi (8):
+      bpf: Document UAPI details for special BPF types
+      bpf: Allow specifying volatile type modifier for kptrs
+      bpf: Clobber stack slot when writing over spilled PTR_TO_BTF_ID
+      bpf: Fix slot type check in check_stack_write_var_off
+      bpf: Drop reg_type_may_be_refcounted_or_null
+      bpf: Refactor kptr_off_tab into btf_record
+      bpf: Consolidate spin_lock, timer management into btf_record
+      bpf: Refactor map->off_arr handling
+
+Martin KaFai Lau (4):
+      Merge branch 'fix panic bringing up veth with xdp progs'
+      bpf: Add hwtstamp field for the sockops prog
+      selftests/bpf: Fix incorrect ASSERT in the tcp_hdr_options test
+      selftests/bpf: Test skops->skb_hwtstamp
+
+Maryam Tahhan (1):
+      docs/bpf: Document BPF_MAP_TYPE_CPUMAP map
+
+Rong Tao (3):
+      samples/bpf: Fix tracex2 error: No such file or directory
+      selftests/bpf: cgroup_helpers.c: Fix strncpy() fortify warning
+      samples/bpf: Fix sockex3 error: Missing BPF prog type
+
+Stanislav Fomichev (1):
+      bpf: make sure skb->len != 0 when redirecting to a tunneling device
 
 Yang Jihong (1):
-      selftests/bpf: Fix test_progs compilation failure in 32-bit arch
+      selftests/bpf: Fix xdp_synproxy compilation failure in 32-bit arch
 
- arch/x86/net/bpf_jit_comp.c                     | 13 ------
- include/linux/bpf.h                             | 60 ++++++++++++++++---------
- kernel/bpf/dispatcher.c                         | 28 ++++--------
- kernel/bpf/percpu_freelist.c                    | 23 +++++-----
- kernel/bpf/verifier.c                           | 14 +++---
- mm/maccess.c                                    |  2 +-
- net/bpf/test_run.c                              |  1 +
- tools/testing/selftests/bpf/prog_tests/varlen.c |  7 +++
- tools/testing/selftests/bpf/progs/test_varlen.c |  5 +++
- tools/testing/selftests/bpf/test_progs.c        |  2 +-
- tools/testing/selftests/bpf/test_verifier.c     |  2 +-
- 11 files changed, 83 insertions(+), 74 deletions(-)
+ Documentation/bpf/bpf_design_QA.rst                |  44 +
+ Documentation/bpf/map_array.rst                    | 250 ++++++
+ Documentation/bpf/map_cpumap.rst                   | 166 ++++
+ Documentation/bpf/map_lpm_trie.rst                 | 181 +++++
+ Documentation/bpf/map_of_maps.rst                  | 126 +++
+ Documentation/bpf/map_queue_stack.rst              | 122 +++
+ drivers/net/veth.c                                 |   2 +-
+ include/linux/bpf.h                                | 179 +++--
+ include/linux/btf.h                                |  10 +-
+ include/uapi/linux/bpf.h                           |   1 +
+ kernel/bpf/arraymap.c                              |  30 +-
+ kernel/bpf/bpf_local_storage.c                     |   2 +-
+ kernel/bpf/btf.c                                   | 420 ++++++----
+ kernel/bpf/cpumap.c                                |   9 +-
+ kernel/bpf/hashtab.c                               |  38 +-
+ kernel/bpf/helpers.c                               |   6 +-
+ kernel/bpf/local_storage.c                         |   2 +-
+ kernel/bpf/map_in_map.c                            |  19 +-
+ kernel/bpf/syscall.c                               | 373 ++++-----
+ kernel/bpf/verifier.c                              | 485 +++++++----
+ net/core/bpf_sk_storage.c                          |   4 +-
+ net/core/filter.c                                  |  43 +-
+ samples/bpf/sockex3_kern.c                         |  95 ++-
+ samples/bpf/sockex3_user.c                         |  23 +-
+ samples/bpf/tracex2_kern.c                         |   4 +-
+ samples/bpf/tracex2_user.c                         |   3 +-
+ tools/bpf/bpftool/btf.c                            |  25 +-
+ tools/bpf/bpftool/common.c                         |  10 +-
+ tools/bpf/bpftool/gen.c                            |  19 +-
+ tools/bpf/bpftool/link.c                           |  10 +-
+ tools/bpf/bpftool/main.h                           |  14 +-
+ tools/bpf/bpftool/map.c                            |  10 +-
+ tools/bpf/bpftool/pids.c                           |  16 +-
+ tools/bpf/bpftool/prog.c                           |  10 +-
+ tools/include/uapi/linux/bpf.h                     |   1 +
+ tools/lib/bpf/btf.c                                | 259 ++++--
+ tools/lib/bpf/btf_dump.c                           |  15 +-
+ tools/lib/bpf/hashmap.c                            |  18 +-
+ tools/lib/bpf/hashmap.h                            |  91 ++-
+ tools/lib/bpf/libbpf.c                             |  18 +-
+ tools/lib/bpf/strset.c                             |  18 +-
+ tools/lib/bpf/usdt.c                               |  28 +-
+ tools/perf/tests/expr.c                            |  28 +-
+ tools/perf/tests/pmu-events.c                      |   6 +-
+ tools/perf/util/bpf-loader.c                       |  11 +-
+ tools/perf/util/evsel.c                            |   2 +-
+ tools/perf/util/expr.c                             |  36 +-
+ tools/perf/util/hashmap.c                          |  18 +-
+ tools/perf/util/hashmap.h                          |  91 ++-
+ tools/perf/util/metricgroup.c                      |  10 +-
+ tools/perf/util/stat-shadow.c                      |   2 +-
+ tools/perf/util/stat.c                             |   9 +-
+ tools/testing/selftests/bpf/Makefile               |   7 +-
+ tools/testing/selftests/bpf/bpf_util.h             |  19 +
+ tools/testing/selftests/bpf/cgroup_helpers.c       |   3 +-
+ tools/testing/selftests/bpf/prog_tests/align.c     |  38 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c       | 264 +++++-
+ .../selftests/bpf/prog_tests/btf_dedup_split.c     |  45 +-
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c  |   4 +-
+ tools/testing/selftests/bpf/prog_tests/hashmap.c   | 190 +++--
+ .../selftests/bpf/prog_tests/kprobe_multi_test.c   |   6 +-
+ .../selftests/bpf/prog_tests/tcp_hdr_options.c     |   6 +-
+ .../bpf/progs/test_misc_tcp_hdr_options.c          |   4 +
+ tools/testing/selftests/bpf/test_progs.c           |  38 +-
+ tools/testing/selftests/bpf/veristat.c             | 893 +++++++++++++++++----
+ tools/testing/selftests/bpf/xdp_synproxy.c         |   5 +-
+ tools/testing/selftests/bpf/xsk.c                  |  26 +-
+ tools/testing/selftests/bpf/xskxceiver.c           |   3 +-
+ 68 files changed, 3592 insertions(+), 1371 deletions(-)
+ create mode 100644 Documentation/bpf/map_array.rst
+ create mode 100644 Documentation/bpf/map_cpumap.rst
+ create mode 100644 Documentation/bpf/map_lpm_trie.rst
+ create mode 100644 Documentation/bpf/map_of_maps.rst
+ create mode 100644 Documentation/bpf/map_queue_stack.rst
