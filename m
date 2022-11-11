@@ -2,72 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCC262501A
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 03:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5637625150
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbiKKCX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 21:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S232190AbiKKDLx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Nov 2022 22:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbiKKCXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 21:23:55 -0500
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77471A04E;
-        Thu, 10 Nov 2022 18:23:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1668133429;
-        bh=7iJKokxuUjBIOn6wbzdHXufK/C8oDwn9NjLD/zCCRRY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=TYOKaEkcvUweNWpJAXwEwm9PaCn0atDPNNPVzO0Fpgsh1Eh2mm3G9VrglrX3wBCiC
-         +3rofAnkJrIIr9T49W5bSeFprNGP2HhFA2QaPFcKNlxN8J78DVRoVEknCaU+5hSZpW
-         jW/JmNHEbwX/pe+05L/8isCcKEq4UvUUQ1zk+5sQ=
-Received: from localhost.localdomain ([111.199.191.46])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 5EE088D2; Fri, 11 Nov 2022 10:23:46 +0800
-X-QQ-mid: xmsmtpt1668133426tuae2lc93
-Message-ID: <tencent_9BC988B1066D426A591B97A02A43AF1EA308@qq.com>
-X-QQ-XMAILINFO: OZsapEVPoiO6i2VupZGcD9JwYl8dwgYlrh0QadPdjMF/2Zq++q94mkvr0ruGmU
-         u9bgFg8nCxgr7bIlyH0ba9wn5MM5GwB+i7LbbIB/iJVgkRt5CW6nj6+5JGVlOzqVonvh10p0Bb+f
-         eJJeoE58rKvua2uduASufeo2AK1mkCqZkmXs8cASXvweDHFY0aZgFzQK25AejG8kTXtM0l9A7xrs
-         px47JvF1enw5Y6abjaDWgHK/sGZ8FtS/U5lY7QPyVDum6KgXpJWT2W7FDy1wGIMKYmtKWtuXn3cs
-         uv7d1WHYrMKoq7C/yYZeYcTqEOe6hKj0NFRDc/FqA9s3Ict870KK90+MxNwTrxGDPPAq7pDzMNtr
-         nNEFpZpNAEmIRXOp1m5MeIwTZcN/5wQY+J7KGJEk6cUUg4mGbNN9I3qQosEBXs8tzAeXaurZWw5D
-         SvfLJpBtb0FshsK/eHQ0Vs9XzTrcau9rv+BhKKd/H/smdmSBGAorwFXipSLIZKe3JWq5FCrvf4O1
-         Czy/q88elA1G8vIwEIAtssxtDZBpqDQgsMifMJhvkX/L7TuBF58rN1yLEQIuRkHJeZoM6PwM5nxD
-         g5GwxE57DVao3RZRnI1BH2PHoYv4WbGjQqlWVrJiaZ4G2GDamPB0g+Py3V9AkMW0Tow7q/2yFgoX
-         y+tMoEAyuW2bMEvSVAusziwIlBAjFl1CrDjs1KHTKa+w4Oo5SoLKy5HEUU92gQBOj1Drxg/msFVd
-         yMRnrHPDFwjif8LyVbHgACudWzkNaS4F8LaEKlWmWhH50WxuTyzxr0qbu4NtFv6SoYkL+ceRVL6i
-         33CyPKlM9Drbcnp2hq71QSkyFfQvFrFPD5sk1Eeql4lomKhpVX005qhWv/6X5r5pdpLwq+aPm9gc
-         coBH0RxXgO0ou2S8P1nytzUCfIa6inOT9k/eLATwV81YKWsc7Fp+L8tJ+GxC22oWWpfzLzBA1HEA
-         Q1cw2StnmhwBjGFuQEtVJOE06MBnv7DCvpnu7NZ+sXFbh8FcGrt+hhkn0DY4BfXgJryBXRjhg=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     yhs@meta.com
-Cc:     acme@redhat.com, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, rongtao@cestc.cn,
-        rtoax@foxmail.com
-Subject: The subject of the previous email error
-Date:   Fri, 11 Nov 2022 10:23:45 +0800
-X-OQ-MSGID: <20221111022345.13164-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <4ed2ebee-26a8-f0ab-2bc4-a0b6a29768af@meta.com>
-References: <4ed2ebee-26a8-f0ab-2bc4-a0b6a29768af@meta.com>
+        with ESMTP id S231167AbiKKDLu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Nov 2022 22:11:50 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3B72EF78;
+        Thu, 10 Nov 2022 19:11:49 -0800 (PST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N7kJ52Dnpz15MX1;
+        Fri, 11 Nov 2022 11:11:33 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 11 Nov 2022 11:11:47 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 11 Nov 2022 11:11:46 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>,
+        <shuah@kernel.org>, <tariqt@nvidia.com>, <maximmi@nvidia.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH bpf v2] selftests/bpf: Fix xdp_synproxy compilation failure in 32-bit arch
+Date:   Fri, 11 Nov 2022 11:08:36 +0800
+Message-ID: <20221111030836.37632-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm sorry, The subject of the previous email error. Please Just Ignore 
+xdp_synproxy fails to be compiled in the 32-bit arch, log is as follows:
 
-https://lore.kernel.org/lkml/tencent_754AAA6CBDDE8DB223CE1BF009D566E55E0A@qq.com/
+  xdp_synproxy.c: In function 'parse_options':
+  xdp_synproxy.c:175:36: error: left shift count >= width of type [-Werror=shift-count-overflow]
+    175 |                 *tcpipopts = (mss6 << 32) | (ttl << 24) | (wscale << 16) | mss4;
+        |                                    ^~
+  xdp_synproxy.c: In function 'syncookie_open_bpf_maps':
+  xdp_synproxy.c:289:28: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+    289 |                 .map_ids = (__u64)map_ids,
+        |                            ^
 
-It's not a PATCH.
+Fix it.
+
+Fixes: fb5cd0ce70d4 ("selftests/bpf: Add selftests for raw syncookie helpers")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+---
+ tools/testing/selftests/bpf/xdp_synproxy.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/xdp_synproxy.c b/tools/testing/selftests/bpf/xdp_synproxy.c
+index ff35320d2be9..410a1385a01d 100644
+--- a/tools/testing/selftests/bpf/xdp_synproxy.c
++++ b/tools/testing/selftests/bpf/xdp_synproxy.c
+@@ -104,7 +104,8 @@ static void parse_options(int argc, char *argv[], unsigned int *ifindex, __u32 *
+ 		{ "tc", no_argument, NULL, 'c' },
+ 		{ NULL, 0, NULL, 0 },
+ 	};
+-	unsigned long mss4, mss6, wscale, ttl;
++	unsigned long mss4, wscale, ttl;
++	unsigned long long mss6;
+ 	unsigned int tcpipopts_mask = 0;
+ 
+ 	if (argc < 2)
+@@ -286,7 +287,7 @@ static int syncookie_open_bpf_maps(__u32 prog_id, int *values_map_fd, int *ports
+ 
+ 	prog_info = (struct bpf_prog_info) {
+ 		.nr_map_ids = 8,
+-		.map_ids = (__u64)map_ids,
++		.map_ids = (__u64)(unsigned long)map_ids,
+ 	};
+ 	info_len = sizeof(prog_info);
+ 
+-- 
+2.30.GIT
 
