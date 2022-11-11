@@ -2,150 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1166251F0
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 04:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C5E625323
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 06:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbiKKDxX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Nov 2022 22:53:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S229461AbiKKFiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 00:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbiKKDxW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Nov 2022 22:53:22 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A809267F41
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 19:53:21 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id u6so3250165plq.12
-        for <bpf@vger.kernel.org>; Thu, 10 Nov 2022 19:53:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zSURtCN1UggPbkBn4QxhZJcNzyV2Z+XMSNo4/7DrXvA=;
-        b=ToVFlZr0h2iO5+oEArTsEbIw04BWLZEu22qnnjBGadSngF8Xd+hiVxnzFfTLeSUOzb
-         VJGXUwcw+uOSR8nazxgWYdyrcl8Eo+ICBd1RdLbxTGh0DDvy/SNrhbVFiioh5H4kZM1Z
-         Cz0de2EG4fOFg3t31w8Q86fxMYH7baREo/AfRC6QmDlBialTwPBNPJz/+VBbGr3cSQgV
-         HleoxKF8aIG+nTemXzBBTlM/WthqUTv/+AIuBipaxvKshd0Lwmwty9sD7CWnCOtxhQgd
-         6z4M4qUPiAkxbBBg+D+iX0+Avm0ItuXbf5AVS1IbEQEgHAia+nVVOEsXeRR1y19RlVPY
-         OxOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zSURtCN1UggPbkBn4QxhZJcNzyV2Z+XMSNo4/7DrXvA=;
-        b=jKMFiJ0YwBg4k8gfXpOOhPa/7p78oTUb9g6gxBOtfxP9j49alEjMSuoHBSEUSphGoB
-         vn0l+8mSVYuLawkRgI/jL8O/tHVd+igqLUXJa+lkfFTaggvY5EvG4b/I5QmMyIXsPPbd
-         8I+/gNdx9464vWB/ABMp9ngEP7BjW5OLW0oHDhni2kBz5FATlwk/G4ZB+evUR+zNHkev
-         Q/BTYVDX6O+SmLLrGktrYmfYIQqS85Mkjl85oHx1yeb9SpjvPD1c0soZieuDzaYQgpeg
-         L2ptSZTmlHnAh4F9n17VM84+/PS1g1vJaPbX/Ml+phTdFVZc3sk58gGeZhhQFoccO9Fp
-         Txdg==
-X-Gm-Message-State: ACrzQf27YIkE9JlglYuMEdSo4IVycP6A9uFgHT48mRnoJVhjlQPhNIC2
-        27O8gcw4sAeBBbqFWqW14bdWjQ==
-X-Google-Smtp-Source: AMsMyM7NzkaExPqYOf0TbKdsq4OxB5FkNzbCRzwBicmvZ3W7J2y5XCfO/JdV3zPyJJ7dJA4E0VN+7Q==
-X-Received: by 2002:a17:90b:3d8d:b0:212:ccda:88bc with SMTP id pq13-20020a17090b3d8d00b00212ccda88bcmr3402947pjb.212.1668138801175;
-        Thu, 10 Nov 2022 19:53:21 -0800 (PST)
-Received: from [10.251.254.250] ([103.136.221.54])
-        by smtp.gmail.com with ESMTPSA id i10-20020a17090332ca00b00186abb95bfdsm500371plr.25.2022.11.10.19.53.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Nov 2022 19:53:20 -0800 (PST)
-Message-ID: <83161e5e-5aa4-acdc-630b-95274bfb47d3@bytedance.com>
-Date:   Fri, 11 Nov 2022 11:53:14 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next v4] bpf: Initialize same number of free nodes for
- each pcpu_freelist
+        with ESMTP id S232408AbiKKFh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 00:37:58 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B67D716CD;
+        Thu, 10 Nov 2022 21:37:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668145066; x=1699681066;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sX9Ja+Y926d7iZ5+akhiZVG21OURNYoPZmCwTijDzyE=;
+  b=G+V7RmZLoe/2+/RYhVepPczpq3IrxhCqpGJXZntk5nmMjvMaEqoxdJ6i
+   eYzI59zNWQuKChRF9gjCHE0b3D9DS0gVLF97xTQfnL6yrcSnadH6XCZq3
+   dxb9WK4AugHG2ydoWwddtcaDsP9BUngk52St/UfTtOUJMdw1+tte9q8hJ
+   Fu92kjLjrSgYly1+Q08y8cAQokSJznh/K8HTHXFJpRyCMRL559YNPVV+3
+   d9M4zYMVwLgedtknCPTe5Xbv/2d2E7WVZ1MjT30z8y19VLJsIBkx3mDQb
+   SpN5lgCnj1a+bLCgL4T4/qeRIsOJNJP+9Zbwh0Mhg+R1nn+OGhzUlZOgX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="310243206"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; 
+   d="scan'208";a="310243206"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2022 21:37:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="631930016"
+X-IronPort-AV: E=Sophos;i="5.96,156,1665471600"; 
+   d="scan'208";a="631930016"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 10 Nov 2022 21:37:43 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 10 Nov 2022 21:37:42 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Thu, 10 Nov 2022 21:37:42 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Thu, 10 Nov 2022 21:37:41 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IqGoXsqKP7WZvPkjGjscj8HWz1T+4BZgSvZVQtt1cXlBsACTkXtfqlSdfg+zgFI5kj4fzvEOU3pDuhyB6QYyZQ1JYWBuLfsNWsftRDkAhm1ZUJiq2NEb75vbBYZC17R4C3Rx2gJR9xDg0T8JMw4ktq1kOUB01Tx9ESZCmbqW6PKKwCrzibG7APnerxWCpus2zduvpK23gFBjs12qgASZfNZbukfWhyv2ao2zLEIoHnqu9m5J3F6yYHZIrC7Rd+bR4FFiEE3CQjdaFdW6k+lFdclFCR4L2ipzUKI2dn+msr0CNjKbdcXu97iyM0iLsbFbxGogChB2B1wQQXW0cDBvqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ISZlFgV4OxaS9OL242PMlqJNGAFE6cqmOEghE6wvkk0=;
+ b=E0KMh0b0JwZUxYhRYK+Mr2Kg0KeV5xzqqoOWK2TFNBsYJPIMjExrcQ8KUDnroZmrp42r7MgLZwGB/LGxuuq/ZkEmeszdaQLsiT3VFgnft6R+NoFmi74DVNDBNLWIMD5ZjccvueePb3W+oDckEFu+G+opZyEokzUsRIrNuyBxtn2eP7FxUvQdm7LenZ5VEV1kgpHEa1rsMB6JR8Edo64ldM1BmKW6SIXY150Pf0rNLbIg5TfQmOIY30kTZ/AxRnfmqQxzysD+xnln3V3APmMBIiz29CrnJcFSAdGGHXJ/VHzr+pkLxXi3a6vye436u9NpxZ+LgBZSD50jkKdmbgxd8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH7PR11MB5959.namprd11.prod.outlook.com (2603:10b6:510:1e2::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Fri, 11 Nov
+ 2022 05:37:36 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7%6]) with mapi id 15.20.5813.012; Fri, 11 Nov 2022
+ 05:37:36 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        "Shameerali Kolothum Thodi" <shameerali.kolothum.thodi@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: RE: [PATCH v4 02/17] iommu: Add device-centric DMA ownership
+ interfaces
+Thread-Topic: [PATCH v4 02/17] iommu: Add device-centric DMA ownership
+ interfaces
+Thread-Index: AQHY8wvzmTpnChrVskWqRIeYPNrPva45OL0Q
+Date:   Fri, 11 Nov 2022 05:37:36 +0000
+Message-ID: <BN9PR11MB5276FBFDC7C96C9EFB87D4FF8C009@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <2-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+In-Reply-To: <2-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Xu Kuohai <xukuohai@huawei.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20221110122128.105214-1-xukuohai@huawei.com>
-From:   wuqiang <wuqiang.matt@bytedance.com>
-In-Reply-To: <20221110122128.105214-1-xukuohai@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB5959:EE_
+x-ms-office365-filtering-correlation-id: 8330a2fd-ff5b-455d-0910-08dac3a6d6f4
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /153qBtMtrSZBvuw/tKCLMvjA86hxacpxK9+NUP+CIQp0BT+XZQymPa9F2HyDYmtLQLqk2TYY41oU5SD0F7ZgkjXILpKF9xXmFR180fw6k/xpW8Sg5hwJquILL//4xSSopdVKOfEeedyBtHXdXaImW1sw40KsTg857BesN7hT/3ImJmqOI7BDBDiYOSocOVQak6BMixvBDdzKogCG8jtmVMsSmKUyByTkKjcffPSLm2KQ6QGWXVEdTUQ4SnMCB7HlbMq3IJ/xMyEgtoWQCGuESWQKgMr8S/JZhuQhBDrygdI6RlckkT/TbOCfM7D+Weu6WaXV48IxiA2CjgSZWieVwnU6VI/v7/sTtX6cslJDrRjJWJnob9b7lb14ise+NbgdqXLV0m7+tQ7fQ1V+/kleL8Lnu+F2n3tl2L9cGtPuEPrBnN1aHmoJly6YmMEniXKhwYlat3beuUiM1gVY6i2nr29Cfk/Q3a0CiLRIuuqEoXrMheWrzcQNpEVqUZDCbEOEHFgkRFdgVfWDXjko5XdyBx/tD0cZrRlfWUYreqjIcEEEpmzTuEGE0tAzf/5QxZDDX470MygVl879l7t6nbh36WW8Bfyu4e1wd59HoLrvV7xjCeb805CTZ0S9fDTIadfKmI3btQITCDXRCa3+u4h/0/oqzyrNU8GIpDOu+bG9+pXZi28iG6JC/Zk98a1JwEyk2ZL2JVbDsvK0yyxilPSKBGBinSVVkOPD21NcF2maA6miOGpEgB0ZltQQSZG6GYpVpENhkfxgbYm3umYQgQx1HMKU3NtY7gHicZ5Cauqdfo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(136003)(346002)(396003)(376002)(39860400002)(451199015)(86362001)(122000001)(33656002)(921005)(38100700002)(38070700005)(52536014)(6506007)(55016003)(82960400001)(9686003)(2906002)(26005)(7696005)(478600001)(7406005)(186003)(110136005)(5660300002)(316002)(41300700001)(71200400001)(4744005)(8936002)(54906003)(76116006)(4326008)(66446008)(66476007)(7416002)(64756008)(66946007)(8676002)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?26438Vd1T+eeKDPrGid9tLQiirVZD5e0m3WbqRnN5OMTO0P0kij1ZBTCpZTt?=
+ =?us-ascii?Q?raBqjvPE1N/uZhX7YSpqsyxk6HgrN4B2PCjhK3zy3wZl0f0gUjiXkmnbCKJ1?=
+ =?us-ascii?Q?k6fiv6HiUo4vLUQ2w2gDgBF27tJBCWKP5PlXlmADVbo46/NUpWVEQfuoVyik?=
+ =?us-ascii?Q?4g3f4oYB7a58Jf8XBh9rAto2wsLuMlD7tYvHZfJfwRN6kPtWG3lFnku49VWp?=
+ =?us-ascii?Q?x66VhFx9zS4bxtOvPDtFXFsi9Drvb7T/QXrtQD1L9TXztq7MFLrEQlZFSVo7?=
+ =?us-ascii?Q?5uwqRTb1HXMyYAcqb/LMdoop6OvisuOMu/yM54yFLSE0EDvfTWv5Fefg1lyH?=
+ =?us-ascii?Q?WG1j6zmyWFlGojcJ42/2IG6EQWapXSLbmY9GYhNt4GUU33g2741cuxWSQC0Z?=
+ =?us-ascii?Q?hJ7jlLtYgUi1TBDZ1u9o0TWcWIb7gP3YKlFkadVo6aCU51kEOVjLDTgcuWJr?=
+ =?us-ascii?Q?cP/152XU2eqeWiCwSwVjLEnyyJzHoT+6+oaAb1sg7fNVa9M1N6eQxxW2EFHX?=
+ =?us-ascii?Q?8qariGvRiTI8e/CJOuKe4WazeyBcsChuNHYFm8AQ6+gfYgQ9Xn8IXxV8bJF4?=
+ =?us-ascii?Q?jbeAidpaAypP4zGHjZK2mgSD8Ew8/M/O2U7+oSCZjwmnuLFQV1G3EP4vHv/6?=
+ =?us-ascii?Q?HckQvA1TjFni1GsXPIoTTNxKpihEDNHjfizol7cVDJHlnAyQaIpTefMXSoEz?=
+ =?us-ascii?Q?tW+NNX5zOnWnZ5O7ZBEFHSLcIRR5i7EcSnMm/m8sY9Ebt75mCscebsYsoY2o?=
+ =?us-ascii?Q?eXbCQZlabRimOeLcX0WATiaoTXaSzXtKjCiWrs+EOd/V7HiW1O/ON4s/90XP?=
+ =?us-ascii?Q?IxbxVc/ARwmPWyVB7+bFxj83DUk8+wbMwA8R+3hz0lB+xtd+qZIyXY0beDWs?=
+ =?us-ascii?Q?Sv2CRuyXfRVYXfqReWwjY88GPvXWF4gr6GbpH1lBS+YXnkl6fkgUW5ha8og0?=
+ =?us-ascii?Q?aPn4pq6S37AIa4x81Jv1UzKllZevZs/x0gWEu7XFGugs7bjnBUC0pL8RyNCd?=
+ =?us-ascii?Q?+IoMfhQuptRuCshn0T0B62nIi1CnMTdCdlpWVNf2jQeSqIRwibSg4CFmwdu3?=
+ =?us-ascii?Q?k0BHhZZkiAEC6qsNRU7t2C6XWxJkOnhN74q82RrZCktZzaa8ac7tL8RtECT7?=
+ =?us-ascii?Q?1q7usKXiZxjPGL1nTUYlRaUJl/0Cin1meb5fweG3GpCAXZQXpyY3GOVDWear?=
+ =?us-ascii?Q?SmiOqKDo/G5+6jNTLClcJeGm4qsBCUhq8DzBQE2v23jSeq44S474hF7FUmpm?=
+ =?us-ascii?Q?7AMXftawBgW8jJRHgtX5VT9b4IEJlZy7ly7FowLHCoNGR6nxTO+Z9PoFfQG5?=
+ =?us-ascii?Q?MtlnF70a1dFDf1i2bv2rMn/ybCFHUCIvMaxgcpSLr/ZHwG1oC0Ki+xTYgzWW?=
+ =?us-ascii?Q?lQHhivxRLm8j+LoOQmXthjQP3diQPcoTTpww9cfCzswVWoy12yJb0zXqCjkK?=
+ =?us-ascii?Q?0bS1e1ceE3bT81NgjrTl1jogtBcufLACgwPNkj3J9dohSYocRhloVhnyYTEn?=
+ =?us-ascii?Q?BJGIa/fd93UbAjxvp5+kQebydAGXKc6dD+Y5JCTEwGK5u/SkLCfdVYR2/7C4?=
+ =?us-ascii?Q?bjtwmNPYgi31ZC5T4ngeC5awDPwQVLlVUVOp+i0y?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8330a2fd-ff5b-455d-0910-08dac3a6d6f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2022 05:37:36.4025
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HWw2AvBSxnz02GcJ/kTA8lSXt+XkXOUOC9xj55Gr5DxZtUu+OgJSxAqm+OaXZLRQgmYCRVOop7uJ/Jw25ta72w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5959
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/11/10 20:21, Xu Kuohai wrote:
-> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
-> free nodes for some CPUs, and then possibly one CPU with fewer nodes,
-> followed by remaining cpus with 0 nodes. For example, when nr_elems == 256
-> and num_possible_cpus() == 32, CPU 0~27 each gets 9 free nodes, CPU 28 gets
-> 4 free nodes, CPU 29~31 get 0 free nodes, while in fact each CPU should get
-> 8 nodes equally.
-> 
-> This patch initializes nr_elems / num_possible_cpus() free nodes for each
-> CPU firstly, then allocates the remaining free nodes by one for each CPU
-> until no free nodes left.
-> 
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
-> v4: Remove unneeded min()
-> v3: Simplify code as suggested by Andrii
-> v2: Update commit message and add Yonghong's ack
-> ---
->   kernel/bpf/percpu_freelist.c | 26 +++++++++++++-------------
->   1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
-> index b6e7f5c5b9ab..27f2c4aff623 100644
-> --- a/kernel/bpf/percpu_freelist.c
-> +++ b/kernel/bpf/percpu_freelist.c
-> @@ -100,22 +100,22 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
->   			    u32 nr_elems)
->   {
->   	struct pcpu_freelist_head *head;
-> -	int i, cpu, pcpu_entries;
-> +	unsigned int cpu, cpu_idx, i, j, n, m;
->   
-> -	pcpu_entries = nr_elems / num_possible_cpus() + 1;
-> -	i = 0;
-> +	n = nr_elems / num_possible_cpus();
-> +	m = nr_elems % num_possible_cpus();
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, November 8, 2022 8:49 AM
+> +static int __iommu_take_dma_ownership(struct iommu_group *group, void
+> *owner)
+> +{
+> +	int ret;
 > +
-> +	cpu_idx = 0;
->   
->   	for_each_possible_cpu(cpu) {
-> -again:
-> -		head = per_cpu_ptr(s->freelist, cpu);
-> -		/* No locking required as this is not visible yet. */
-> -		pcpu_freelist_push_node(head, buf);
-> -		i++;
-> -		buf += elem_size;
-> -		if (i == nr_elems)
-> -			break;
-> -		if (i % pcpu_entries)
-> -			goto again;
-> +		j = n + (cpu_idx < m ? 1 : 0);
-> +		for (i = 0; i < j; i++) {
-> +			head = per_cpu_ptr(s->freelist, cpu);
+> +	if (WARN_ON(!owner))
+> +		return -EINVAL;
 
-Better move it out of "i-loop", and rename "j" to a meaningful name to avoid
-possible misuse.
+move to iommu_device_claim_dma_owner(). just like how it's checked
+in the group version.
 
-> +			/* No locking required as this is not visible yet. */
-> +			pcpu_freelist_push_node(head, buf);
-> +			buf += elem_size;
-> +		}
-> +		cpu_idx++;
->   	}
->   }
->   
+> +
+> +	if ((group->domain && group->domain !=3D group->default_domain) ||
+> +	    !xa_empty(&group->pasid_array))
+> +		return -EBUSY;
 
+the check of pasid_array is a new addition in this version. it's probably
+worthy a comment here.
+
+otherwise,
+
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
