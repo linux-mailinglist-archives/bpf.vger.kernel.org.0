@@ -2,218 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A79625D21
-	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 15:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5799E625D5B
+	for <lists+bpf@lfdr.de>; Fri, 11 Nov 2022 15:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbiKKOeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 09:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
+        id S234730AbiKKOnk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 09:43:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234609AbiKKOeP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 09:34:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB6956EFD
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 06:34:10 -0800 (PST)
+        with ESMTP id S234743AbiKKOnO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 09:43:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D6065870;
+        Fri, 11 Nov 2022 06:41:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4C524B823F8
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 14:34:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1638BC433C1;
-        Fri, 11 Nov 2022 14:34:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A484B61FE6;
+        Fri, 11 Nov 2022 14:41:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C04C433D6;
+        Fri, 11 Nov 2022 14:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668177247;
-        bh=7wovpbCN6iri8bpiqnWAMrbiiRxRb+uXy0ogxgWGH3k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D+CHDzd4hzyaSJp76ESS77/8ANRxIFAbqcWo0OaghvS7S7Nm9YhAzweoaC+0lYxC3
-         MHkKHwe6ttq7U22XBKVXk1k2N9f0WlrDwtoQmJVz08iRz1kuicyhdGhCqSu8AprOZl
-         Krx4HDdBhClxd8nJKO+fPWmyr3dy1jTpE1xXsxXvpmSg9rJhk+Xyul7oycSuXmO9zM
-         9kPWsTzqIe3iaKK6ClkvXPntIiStZBg0Xyf+FJnRU2FTqNZ3wZWSOtVKtH09lsBxKa
-         tLrPijsy2OQQYfGTFmVquBAEOP9QhGPrL/INqIsVYtsP40T7WzEqtKNK++9R9T7A7F
-         BseK8dtlVHvdg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCHv2 bpf-next 2/2] selftests/bpf: Add bpf_vma_build_id_parse kfunc test
-Date:   Fri, 11 Nov 2022 15:33:41 +0100
-Message-Id: <20221111143341.508022-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221111143341.508022-1-jolsa@kernel.org>
-References: <20221111143341.508022-1-jolsa@kernel.org>
-MIME-Version: 1.0
+        s=k20201202; t=1668177701;
+        bh=rGEIHLPEICYwUECDm+ra1Rny+amGBJwmuk17o2juNNE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SkCUes6m7WwfXVIdP+0DM6mr97vCnrEtSVtHkENZ284mQ+A7A04svKiUGVV/9QLgH
+         2ko247lGaf3veH43D6M2LI9WjC23sKj/5jF8VCd56G/udmcv/KTRjUz27BWRkH0+8n
+         QXxPA7iHnC26EhRPjdezukpEn6Ty0eLPQdQbWLZhLCfJ0FclwnstJeYGfEIHMuzeaB
+         WxZSrMEVTqUo5XaaxNfExx+Y9iHfEDx0wI+5VqaT46hK105nZyAM/Ji1HWhi0BTEGA
+         ShXU+MHeY9kz/oir6xBtrSrRnTmbPx0GLxGpsr5Miccxy9At9SjGTNzO0bHuwqn4uI
+         n2oRmvb0ZFkUQ==
+Date:   Fri, 11 Nov 2022 23:41:37 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     <rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2] tracing: Optimize event type allocation with IDA
+Message-Id: <20221111234137.90d9ec624497a7e1f5cb5003@kernel.org>
+In-Reply-To: <20221110020319.1259291-1-zhengyejian1@huawei.com>
+References: <20221110020319.1259291-1-zhengyejian1@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test for bpf_vma_build_id_parse kfunc.
+On Thu, 10 Nov 2022 10:03:19 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-On bpf side the test finds the vma of the test_progs text through the
-test function pointer and reads its build id with the new kfunc.
+> After commit 060fa5c83e67 ("tracing/events: reuse trace event ids after
+>  overflow"), trace events with dynamic type are linked up in list
+> 'ftrace_event_list' through field 'trace_event.list'. Then when max
+> event type number used up, it's possible to reuse type number of some
+> freed one by traversing 'ftrace_event_list'.
+> 
+> As instead, using IDA to manage available type numbers can make codes
+> simpler and then the field 'trace_event.list' can be dropped.
+> 
+> Since 'struct trace_event' is used in static tracepoints, drop
+> 'trace_event.list' can make vmlinux smaller. Local test with about 2000
+> tracepoints, vmlinux reduced about 64KB:
+>   before：-rwxrwxr-x 1 root root 76669448 Nov  8 17:14 vmlinux
+>   after： -rwxrwxr-x 1 root root 76604176 Nov  8 17:15 vmlinux
+> 
 
-On user side the test uses readelf to get test_progs build id and
-compares it with the one from bpf side.
+This looks good to me.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/bpf_vma_build_id_parse.c   | 88 +++++++++++++++++++
- .../bpf/progs/bpf_vma_build_id_parse.c        | 40 +++++++++
- 2 files changed, 128 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c b/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
-new file mode 100644
-index 000000000000..83030a3b2c42
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include "bpf_vma_build_id_parse.skel.h"
-+
-+#define BUILDID_STR_SIZE (BPF_BUILD_ID_SIZE*2 + 1)
-+
-+static int read_buildid(char **build_id)
-+{
-+	char tmp[] = "/tmp/dataXXXXXX";
-+	char buf[200];
-+	int err, fd;
-+	FILE *f;
-+
-+	fd = mkstemp(tmp);
-+	if (fd == -1)
-+		return -1;
-+	close(fd);
-+
-+	snprintf(buf, sizeof(buf),
-+		"readelf -n ./test_progs 2>/dev/null | grep 'Build ID' | awk '{print $3}' > %s",
-+		tmp);
-+
-+	err = system(buf);
-+	if (err)
-+		goto out;
-+
-+	f = fopen(tmp, "r");
-+	if (f) {
-+		if (fscanf(f, "%ms$*\n", build_id) != 1) {
-+			*build_id = NULL;
-+			err = -1;
-+		}
-+		fclose(f);
-+	}
-+
-+out:
-+	unlink(tmp);
-+	return err;
-+}
-+
-+void test_bpf_vma_build_id_parse(void)
-+{
-+	char bpf_build_id[BUILDID_STR_SIZE] = {}, *build_id;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct bpf_vma_build_id_parse *skel;
-+	int i, err, prog_fd;
-+
-+	skel = bpf_vma_build_id_parse__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_vma_build_id_parse__open_and_load"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->addr = (__u64)(uintptr_t)test_bpf_vma_build_id_parse;
-+
-+	err = bpf_vma_build_id_parse__attach(skel);
-+	if (!ASSERT_OK(err, "bpf_vma_build_id_parse__attach"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run_err");
-+	ASSERT_EQ(topts.retval, 0, "test_run_retval");
-+
-+	ASSERT_EQ(skel->data->ret, 0, "ret");
-+
-+	ASSERT_GT(skel->data->size_pass, 0, "size_pass");
-+	ASSERT_EQ(skel->data->size_fail, -EINVAL, "size_fail");
-+
-+	/* Read build id via readelf to compare with build_id. */
-+	if (!ASSERT_OK(read_buildid(&build_id), "read_buildid"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->data->size_pass, strlen(build_id)/2, "build_id_size");
-+
-+	/* Convert bpf build id to string, so we can compare it later. */
-+	for (i = 0; i < skel->data->size_pass; i++) {
-+		sprintf(bpf_build_id + i*2, "%02x",
-+			(unsigned char) skel->bss->build_id[i]);
-+	}
-+	ASSERT_STREQ(bpf_build_id, build_id, "build_id_match");
-+
-+	free(build_id);
-+out:
-+	bpf_vma_build_id_parse__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c b/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
-new file mode 100644
-index 000000000000..8937212207db
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define BPF_BUILD_ID_SIZE 20
-+
-+extern int bpf_vma_build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-+				  size_t build_id__sz) __ksym;
-+
-+pid_t target_pid = 0;
-+__u64 addr = 0;
-+
-+int ret = -1;
-+int size_pass = -1;
-+int size_fail = -1;
-+
-+unsigned char build_id[BPF_BUILD_ID_SIZE];
-+
-+static long check_vma(struct task_struct *task, struct vm_area_struct *vma,
-+		      void *data)
-+{
-+	size_fail = bpf_vma_build_id_parse(vma, build_id, sizeof(build_id)/2);
-+	size_pass = bpf_vma_build_id_parse(vma, build_id, sizeof(build_id));
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test1, int a)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	ret = bpf_find_vma(task, addr, check_vma, NULL, 0);
-+	return 0;
-+}
+Thanks
+
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>  include/linux/trace_events.h |  1 -
+>  kernel/trace/trace_output.c  | 66 +++++++++---------------------------
+>  2 files changed, 16 insertions(+), 51 deletions(-)
+> 
+> Changes since v1:
+>   - Explicitly include linux/idr.h as suggested by Masami Hiramatsu
+>     Link: https://lore.kernel.org/lkml/20221109222650.ce6c22e231345f6852f6956f@kernel.org/#t
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 20749bd9db71..bb2053246d6a 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -136,7 +136,6 @@ struct trace_event_functions {
+>  
+>  struct trace_event {
+>  	struct hlist_node		node;
+> -	struct list_head		list;
+>  	int				type;
+>  	struct trace_event_functions	*funcs;
+>  };
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index 67f47ea27921..f0ba97121345 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/kprobes.h>
+>  #include <linux/sched/clock.h>
+>  #include <linux/sched/mm.h>
+> +#include <linux/idr.h>
+>  
+>  #include "trace_output.h"
+>  
+> @@ -21,8 +22,6 @@ DECLARE_RWSEM(trace_event_sem);
+>  
+>  static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
+>  
+> -static int next_event_type = __TRACE_LAST_TYPE;
+> -
+>  enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
+>  {
+>  	struct trace_seq *s = &iter->seq;
+> @@ -688,38 +687,23 @@ struct trace_event *ftrace_find_event(int type)
+>  	return NULL;
+>  }
+>  
+> -static LIST_HEAD(ftrace_event_list);
+> +static DEFINE_IDA(trace_event_ida);
+>  
+> -static int trace_search_list(struct list_head **list)
+> +static void free_trace_event_type(int type)
+>  {
+> -	struct trace_event *e = NULL, *iter;
+> -	int next = __TRACE_LAST_TYPE;
+> -
+> -	if (list_empty(&ftrace_event_list)) {
+> -		*list = &ftrace_event_list;
+> -		return next;
+> -	}
+> +	if (type >= __TRACE_LAST_TYPE)
+> +		ida_free(&trace_event_ida, type);
+> +}
+>  
+> -	/*
+> -	 * We used up all possible max events,
+> -	 * lets see if somebody freed one.
+> -	 */
+> -	list_for_each_entry(iter, &ftrace_event_list, list) {
+> -		if (iter->type != next) {
+> -			e = iter;
+> -			break;
+> -		}
+> -		next++;
+> -	}
+> +static int alloc_trace_event_type(void)
+> +{
+> +	int next;
+>  
+> -	/* Did we used up all 65 thousand events??? */
+> -	if (next > TRACE_EVENT_TYPE_MAX)
+> +	/* Skip static defined type numbers */
+> +	next = ida_alloc_range(&trace_event_ida, __TRACE_LAST_TYPE,
+> +			       TRACE_EVENT_TYPE_MAX, GFP_KERNEL);
+> +	if (next < 0)
+>  		return 0;
+> -
+> -	if (e)
+> -		*list = &e->list;
+> -	else
+> -		*list = &ftrace_event_list;
+>  	return next;
+>  }
+>  
+> @@ -761,28 +745,10 @@ int register_trace_event(struct trace_event *event)
+>  	if (WARN_ON(!event->funcs))
+>  		goto out;
+>  
+> -	INIT_LIST_HEAD(&event->list);
+> -
+>  	if (!event->type) {
+> -		struct list_head *list = NULL;
+> -
+> -		if (next_event_type > TRACE_EVENT_TYPE_MAX) {
+> -
+> -			event->type = trace_search_list(&list);
+> -			if (!event->type)
+> -				goto out;
+> -
+> -		} else {
+> -
+> -			event->type = next_event_type++;
+> -			list = &ftrace_event_list;
+> -		}
+> -
+> -		if (WARN_ON(ftrace_find_event(event->type)))
+> +		event->type = alloc_trace_event_type();
+> +		if (!event->type)
+>  			goto out;
+> -
+> -		list_add_tail(&event->list, list);
+> -
+>  	} else if (WARN(event->type > __TRACE_LAST_TYPE,
+>  			"Need to add type to trace.h")) {
+>  		goto out;
+> @@ -819,7 +785,7 @@ EXPORT_SYMBOL_GPL(register_trace_event);
+>  int __unregister_trace_event(struct trace_event *event)
+>  {
+>  	hlist_del(&event->node);
+> -	list_del(&event->list);
+> +	free_trace_event_type(event->type);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+
+
 -- 
-2.38.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
