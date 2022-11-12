@@ -2,51 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B8A62670B
-	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 05:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C81626715
+	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 06:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbiKLEuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 23:50:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
+        id S232395AbiKLFKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Nov 2022 00:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbiKLEuY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 23:50:24 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCDDDB8;
-        Fri, 11 Nov 2022 20:50:24 -0800 (PST)
+        with ESMTP id S230257AbiKLFKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Nov 2022 00:10:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CFE391C7;
+        Fri, 11 Nov 2022 21:10:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1E6A0B828AD;
-        Sat, 12 Nov 2022 04:50:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ADDC8C433B5;
-        Sat, 12 Nov 2022 04:50:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 487BD609FE;
+        Sat, 12 Nov 2022 05:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 772AAC433B5;
+        Sat, 12 Nov 2022 05:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668228621;
-        bh=X1oN0J+zXSJDkg/gmDDzsyLAs0ESOPf0QVbl7gVzh8s=;
+        s=k20201202; t=1668229817;
+        bh=b9hy5Uu/5y7S/TF2TAungVdatpEEDrM3Mfp/gMVTcQg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oFeQCGFBveaY9OB4mTTMU3O1Qkhi31B9XOjN3YA70KL5V4cuNbflPDL+B5k/zLaN0
-         Cytu75BS537S7oTqKlEG9rY27zlYvWKg+K89cmVmJHmlpKLXYlVHNon4zSfxWH+ME1
-         3wenk/uy1lUU1qr9nc0sP2rMo5cxc9hA0LBBwUYEFX28zvLSoPYTppjkgqm6C7VntV
-         5OSO3jafAsuktBlMndK2VWBNxHr5z1mWq/5ud85ZKGPrvg13adcCFoRjicRpNNAbVT
-         M7/7v6IixYLwWj4+jhVn++u+yOlgshhowUjVJ8qW3srBwQhvx/Ln7dyQ2JCGU/MbI4
-         BVwRi6kNJNzvg==
+        b=Qu9JGc2sCb/GEwSr0HpmKCLsOu7Zz+SEslo20KxWtTw6zVIcuD61md/ia6uY7Vc5P
+         EvLLAX4uTA/zF/MPBJ7MWjneV+jpj8ljcBhHzjsYYWaWGBqo0FVgX0aTPw0n2/PEf4
+         bIZWo43mm6GKi6wGFRBZK3j1j2ftDzdTO6AuobXbCDlhR1FeDj0M9U88KwSf/5WTOu
+         dpx+scy55B3e19ZBxEG36dMalX48TNJn7zrf8RRFauQ78z3F96Yd+MGuR4AGkCWbj9
+         xul1FzVbhNo6odPPaXAs9Yonc+4Ca/3gD/Bjr+wKi0ZjJClEzZMplAs+tL3d7fgwgq
+         1LfU6heYafYoQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 95825C395F7;
-        Sat, 12 Nov 2022 04:50:21 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3F40FC395F7;
+        Sat, 12 Nov 2022 05:10:17 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2022-11-11
+Subject: Re: [PATCH net 1/1] net: stmmac: ensure tx function is not running in
+ stmmac_xdp_release()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166822862160.12539.1296563144301803906.git-patchwork-notify@kernel.org>
-Date:   Sat, 12 Nov 2022 04:50:21 +0000
-References: <20221111233733.1088228-1-andrii@kernel.org>
-In-Reply-To: <20221111233733.1088228-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+Message-Id: <166822981724.20406.14762867463134105044.git-patchwork-notify@kernel.org>
+Date:   Sat, 12 Nov 2022 05:10:17 +0000
+References: <20221110064552.22504-1-noor.azura.ahmad.tarmizi@linux.intel.com>
+In-Reply-To: <20221110064552.22504-1-noor.azura.ahmad.tarmizi@linux.intel.com>
+To:     Noor Azura Ahmad Tarmizi 
+        <noor.azura.ahmad.tarmizi@linux.intel.com>
+Cc:     davem@davemloft.net, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mcoquelin.stm32@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        boon.leong.ong@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, yoong.siang.song@intel.com,
+        faizal.abdul.rahim@intel.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,22 +67,24 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This pull request was applied to netdev/net-next.git (master)
+This patch was applied to netdev/net.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 11 Nov 2022 15:37:33 -0800 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
+On Thu, 10 Nov 2022 14:45:52 +0800 you wrote:
+> From: Mohd Faizal Abdul Rahim <faizal.abdul.rahim@intel.com>
 > 
-> The following pull-request contains BPF updates for your *net-next* tree.
+> When stmmac_xdp_release() is called, there is a possibility that tx
+> function is still running on other queues which will lead to tx queue
+> timed out and reset adapter.
 > 
-> We've added 49 non-merge commits during the last 9 day(s) which contain
-> a total of 68 files changed, 3592 insertions(+), 1371 deletions(-).
+> This commit ensure that tx function is not running xdp before release
+> flow continue to run.
 > 
 > [...]
 
 Here is the summary with links:
-  - pull-request: bpf-next 2022-11-11
-    https://git.kernel.org/netdev/net-next/c/f4c4ca70dedc
+  - [net,1/1] net: stmmac: ensure tx function is not running in stmmac_xdp_release()
+    https://git.kernel.org/netdev/net/c/77711683a504
 
 You are awesome, thank you!
 -- 
