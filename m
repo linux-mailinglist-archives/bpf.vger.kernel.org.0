@@ -2,63 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DF86266D6
-	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 05:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B03626709
+	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 05:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbiKLEFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 23:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        id S233320AbiKLEuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 23:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234017AbiKLEFg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 23:05:36 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04340532D0;
-        Fri, 11 Nov 2022 20:05:34 -0800 (PST)
+        with ESMTP id S232943AbiKLEuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 23:50:23 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81B5DB8;
+        Fri, 11 Nov 2022 20:50:22 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A9BBDCE1884;
-        Sat, 12 Nov 2022 04:05:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B837C433C1;
-        Sat, 12 Nov 2022 04:05:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 610EF609FA;
+        Sat, 12 Nov 2022 04:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AB771C433D7;
+        Sat, 12 Nov 2022 04:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668225929;
-        bh=nfkO2oakwXbsXV+Bx9tVN0tDdiORcPa8UJoKUe4po1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XHngi1vXRn1yXKYcAWqqEHGNPWpF9/2uxfjNIoSQQ0AWIHZFAVEauX9LLAf13ppwe
-         Hu1pxqHtFPgQc/FBeSf1Lve30eKZNI+AnWXZNvVh6sgsq+L4kZ7IwK7R8DC3xi/uDn
-         GrzLQ31zwVMKp9Cgafv6C0aIuwejtkROhV8VYDoEOheacgglXCm3ydNGeqwJmgqJxq
-         rs2NqegdMUvC569Ubtdth0Wte12yOuZwybbghLuDZM/8RuB6kapQTY8dEbfVIJD18A
-         xoj6oaDPL7z7gnoiyXhbUiKEJ91Ki0vwmTXxIwF9beH3Ms/DZIsaaHmqB0KsIbNYz9
-         bKM8jLEMK8gKg==
-Date:   Fri, 11 Nov 2022 20:05:28 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Noor Azura Ahmad Tarmizi 
-        <noor.azura.ahmad.tarmizi@linux.intel.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Song Yoong Siang <yoong.siang.song@intel.com>,
-        Mohd Faizal Abdul Rahim <faizal.abdul.rahim@intel.com>
-Subject: Re: [PATCH net 1/1] net: stmmac: ensure tx function is not running
- in stmmac_xdp_release()
-Message-ID: <20221111200528.1ca0aa29@kernel.org>
-In-Reply-To: <20221110064552.22504-1-noor.azura.ahmad.tarmizi@linux.intel.com>
-References: <20221110064552.22504-1-noor.azura.ahmad.tarmizi@linux.intel.com>
+        s=k20201202; t=1668228621;
+        bh=l4AT+oslbEXAcHs2cSywHoF/9T7DsjOJ2eU5FzrcU2U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=U4N0M6gd3S3O8i+hthTD/YEP5k53K2NJECNqmaU4Guv7yiy7Mq4RbfQ8k4ORbGx4m
+         WI2CfBfV1583MLpRdaos6HtQWM1tqx9MdcXe9DMVnP5ApCDyA0cvaqXlGjx/oMHIob
+         MQuidKqi8NvKR33hHV0mkyfxOpPfnTfK+Qk9w5S7J1Dw/AJT8+C/azbnAVcsmWfA2F
+         MtzGLYJ5uW3XZ5sYwtAVetTQrwntG/JGZ5ylL9mYPyEWPhDY3y6ytC+g5P0QgqS/c/
+         h7a6u/kXhg72uzs4DmpiESV27aiVvHeXQJ+sqRA9GFmNih7XQTnVBMdIbB2Hjc/bDI
+         uFEZUFl7iWQZQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8E363E270EF;
+        Sat, 12 Nov 2022 04:50:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/2] net: vlan: claim one bit from sk_buff
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166822862157.12539.11699913480152181206.git-patchwork-notify@kernel.org>
+Date:   Sat, 12 Nov 2022 04:50:21 +0000
+References: <20221109095759.1874969-1-edumazet@google.com>
+In-Reply-To: <20221109095759.1874969-1-edumazet@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, eric.dumazet@gmail.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -68,13 +56,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Nov 2022 14:45:52 +0800 Noor Azura Ahmad Tarmizi wrote:
-> When stmmac_xdp_release() is called, there is a possibility that tx
-> function is still running on other queues which will lead to tx queue
-> timed out and reset adapter.
-> 
-> This commit ensure that tx function is not running xdp before release
-> flow continue to run.
+Hello:
 
-Do we still need that netif_trans_update() later in the function?
-That looks odd.
+This series was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed,  9 Nov 2022 09:57:57 +0000 you wrote:
+> First patch claims skb->vlan_present.
+> This means some bpf changes, eg for sparc32 that I could not test.
+> 
+> Second patch removes one conditional test in gro_list_prepare().
+> 
+> Eric Dumazet (2):
+>   net: remove skb->vlan_present
+>   net: gro: no longer use skb_vlan_tag_present()
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/2] net: remove skb->vlan_present
+    https://git.kernel.org/netdev/net-next/c/354259fa73e2
+  - [net-next,2/2] net: gro: no longer use skb_vlan_tag_present()
+    https://git.kernel.org/netdev/net-next/c/be3ed48683f0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
