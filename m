@@ -2,155 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B976266A3
-	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 04:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BA36266B1
+	for <lists+bpf@lfdr.de>; Sat, 12 Nov 2022 04:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbiKLDef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Nov 2022 22:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S233320AbiKLDtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Nov 2022 22:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbiKLDee (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Nov 2022 22:34:34 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62EEFD0E
-        for <bpf@vger.kernel.org>; Fri, 11 Nov 2022 19:34:31 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N8Lm13Z4Nz4f3lXT
-        for <bpf@vger.kernel.org>; Sat, 12 Nov 2022 11:34:25 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP3 (Coremail) with SMTP id _Ch0CgCntqI_FG9jhPpmAQ--.43828S2;
-        Sat, 12 Nov 2022 11:34:28 +0800 (CST)
-Subject: Re: [PATCH bpf 2/4] libbpf: Handle size overflow for ringbuf mmap
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, sdf@google.com
-Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        with ESMTP id S232943AbiKLDtA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Nov 2022 22:49:00 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEDACE2A;
+        Fri, 11 Nov 2022 19:48:58 -0800 (PST)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N8M4S5g5tz15MWD;
+        Sat, 12 Nov 2022 11:48:40 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 12 Nov 2022 11:48:56 +0800
+Message-ID: <325d89c4-7189-63bb-5a5b-ee9a01d7823d@huawei.com>
+Date:   Sat, 12 Nov 2022 11:48:55 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v4] bpf: Initialize same number of free nodes for
+ each pcpu_freelist
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     wuqiang <wuqiang.matt@bytedance.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-References: <20221111092642.2333724-1-houtao@huaweicloud.com>
- <20221111092642.2333724-3-houtao@huaweicloud.com>
- <Y26MTygDw2PUQlFz@google.com>
- <CAEf4Bza4yPEW2wOFAFMC8nwEEqVtD-jBD2T52CQ7vJpCUWCvmA@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <251d0ed2-7767-ecfa-1ac9-d6e940ad6c54@huaweicloud.com>
-Date:   Sat, 12 Nov 2022 11:34:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza4yPEW2wOFAFMC8nwEEqVtD-jBD2T52CQ7vJpCUWCvmA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20221110122128.105214-1-xukuohai@huawei.com>
+ <83161e5e-5aa4-acdc-630b-95274bfb47d3@bytedance.com>
+ <f6d87d0e-4773-d27a-dd50-139307460b4c@huawei.com>
+ <CAEf4BzYG_Rw_vNWK1pX9WJPdWw8c4nxtQPFwisX13iepHT+7KQ@mail.gmail.com>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <CAEf4BzYG_Rw_vNWK1pX9WJPdWw8c4nxtQPFwisX13iepHT+7KQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: _Ch0CgCntqI_FG9jhPpmAQ--.43828S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr4UKF1rKw1kKw18Jr4xJFb_yoW5tr48pa
-        1Y9FWUGFsrZr1jyw17ZwnY9r90yFZagF43Gr9rGa4rAr1qgFsxWF1Duay3urs7Zr1kGr4F
-        9ryq9ayF9a45trJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 11/12/2022 4:12 AM, Andrii Nakryiko wrote:
+> On Thu, Nov 10, 2022 at 11:00 PM Xu Kuohai <xukuohai@huawei.com> wrote:
+>>
+>> On 11/11/2022 11:53 AM, wuqiang wrote:
+>>> On 2022/11/10 20:21, Xu Kuohai wrote:
+>>>> pcpu_freelist_populate() initializes nr_elems / num_possible_cpus() + 1
+>>>> free nodes for some CPUs, and then possibly one CPU with fewer nodes,
+>>>> followed by remaining cpus with 0 nodes. For example, when nr_elems == 256
+>>>> and num_possible_cpus() == 32, CPU 0~27 each gets 9 free nodes, CPU 28 gets
+>>>> 4 free nodes, CPU 29~31 get 0 free nodes, while in fact each CPU should get
+>>>> 8 nodes equally.
+>>>>
+>>>> This patch initializes nr_elems / num_possible_cpus() free nodes for each
+>>>> CPU firstly, then allocates the remaining free nodes by one for each CPU
+>>>> until no free nodes left.
+>>>>
+>>>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>>>> Acked-by: Yonghong Song <yhs@fb.com>
+>>>> ---
+>>>> v4: Remove unneeded min()
+>>>> v3: Simplify code as suggested by Andrii
+>>>> v2: Update commit message and add Yonghong's ack
+>>>> ---
+>>>>    kernel/bpf/percpu_freelist.c | 26 +++++++++++++-------------
+>>>>    1 file changed, 13 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+>>>> index b6e7f5c5b9ab..27f2c4aff623 100644
+>>>> --- a/kernel/bpf/percpu_freelist.c
+>>>> +++ b/kernel/bpf/percpu_freelist.c
+>>>> @@ -100,22 +100,22 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
+>>>>                    u32 nr_elems)
+>>>>    {
+>>>>        struct pcpu_freelist_head *head;
+>>>> -    int i, cpu, pcpu_entries;
+>>>> +    unsigned int cpu, cpu_idx, i, j, n, m;
+>>>> -    pcpu_entries = nr_elems / num_possible_cpus() + 1;
+>>>> -    i = 0;
+>>>> +    n = nr_elems / num_possible_cpus();
+>>>> +    m = nr_elems % num_possible_cpus();
+>>>> +
+>>>> +    cpu_idx = 0;
+>>>>        for_each_possible_cpu(cpu) {
+>>>> -again:
+>>>> -        head = per_cpu_ptr(s->freelist, cpu);
+>>>> -        /* No locking required as this is not visible yet. */
+>>>> -        pcpu_freelist_push_node(head, buf);
+>>>> -        i++;
+>>>> -        buf += elem_size;
+>>>> -        if (i == nr_elems)
+>>>> -            break;
+>>>> -        if (i % pcpu_entries)
+>>>> -            goto again;
+>>>> +        j = n + (cpu_idx < m ? 1 : 0);
+>>>> +        for (i = 0; i < j; i++) {
+>>>> +            head = per_cpu_ptr(s->freelist, cpu);
+>>>
+>>> Better move it out of "i-loop",
+>>
+>> OK, will do
+>>
+> 
+> I did that while applying. Also added
+> 
+> Fixes: e19494edab82 ("bpf: introduce percpu_freelist")
+> 
+> Please don't forget to add Fixes tag for future patches.
+>
 
-On 11/12/2022 4:56 AM, Andrii Nakryiko wrote:
-> On Fri, Nov 11, 2022 at 9:54 AM <sdf@google.com> wrote:
->> On 11/11, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>> The maximum size of ringbuf is 2GB on x86-64 host, so 2 * max_entries
->>> will overflow u32 when mapping producer page and data pages. Only
->>> casting max_entries to size_t is not enough, because for 32-bits
->>> application on 64-bits kernel the size of read-only mmap region
->>> also could overflow size_t.
->>> Fixes: bf99c936f947 ("libbpf: Add BPF ring buffer support")
->>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>> ---
->>>   tools/lib/bpf/ringbuf.c | 11 +++++++++--
->>>   1 file changed, 9 insertions(+), 2 deletions(-)
->>> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
->>> index d285171d4b69..c4bdc88af672 100644
->>> --- a/tools/lib/bpf/ringbuf.c
->>> +++ b/tools/lib/bpf/ringbuf.c
->>> @@ -77,6 +77,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->>>       __u32 len = sizeof(info);
->>>       struct epoll_event *e;
->>>       struct ring *r;
->>> +     __u64 ro_size;
-> I found ro_size quite a confusing name, let's call it mmap_sz?
-OK.
->
->>>       void *tmp;
->>>       int err;
->>> @@ -129,8 +130,14 @@ int ring_buffer__add(struct ring_buffer *rb, int
->>> map_fd,
->>>        * data size to allow simple reading of samples that wrap around the
->>>        * end of a ring buffer. See kernel implementation for details.
->>>        * */
->>> -     tmp = mmap(NULL, rb->page_size + 2 * info.max_entries, PROT_READ,
->>> -                MAP_SHARED, map_fd, rb->page_size);
->>> +     ro_size = rb->page_size + 2 * (__u64)info.max_entries;
->> [..]
->>
->>> +     if (ro_size != (__u64)(size_t)ro_size) {
->>> +             pr_warn("ringbuf: ring buffer size (%u) is too big\n",
->>> +                     info.max_entries);
->>> +             return libbpf_err(-E2BIG);
->>> +     }
->> Why do we need this check at all? IIUC, the problem is that the expression
->> "rb->page_size + 2 * info.max_entries" is evaluated as u32 and can
->> overflow. So why doing this part only isn't enough?
->>
->> size_t mmap_size = rb->page_size + 2 * (size_t)info.max_entries;
->> mmap(NULL, mmap_size, PROT_READ, MAP_SHARED, map_fd, ...);
->>
->> sizeof(size_t) should be 8, so no overflow is possible?
-> not on 32-bit arches, presumably?
-Yes. For 32-bits kernel, the total size of virtual address space for user space
-and kernel space is 4GB, so when map_entries is 2GB, the needed virtual address
-space will be 2GB + 4GB, so the mapping of ring buffer will fail either in
-kernel or in userspace. A extreme case is 32-bits userspace under 64-bits
-kernel. The mapping of 2GB ring buffer in kernel is OK, but 4GB will overflow
-size_t on 32-bits userspace.
->
+OK, thanks for the kind reminder
 
-
->
->
+> Applied to bpf tree.
+> 
+>>> and rename "j" to a meaningful name to avoid
+>>> possible misuse.
+>>>
+>> The loop is short enough to be readable and "j" is not used elsewhere, so I
+>> think it's good to keep the name simple.
 >>
->>> +     tmp = mmap(NULL, (size_t)ro_size, PROT_READ, MAP_SHARED, map_fd,
->>> +                rb->page_size);
-> should we split this mmap into two mmaps -- one for producer_pos page,
-> another for data area. That will presumably allow to mmap ringbuf with
-> max_entries = 1GB?
-I don't understand the reason for the splitting. Even without the splitting, in
-theory ring buffer with max_entries = 1GB will be OK for 32-bits kernel, despite
-in practice the mapping of 1GB ring buffer on 32-bits kernel will fail because
-the most common size of kernel virtual address space is 1GB (although ARM could
-use VMSPLIT_1G to increase the size of kernel virtual address to 3GB).
->
->>>       if (tmp == MAP_FAILED) {
->>>               err = -errno;
->>>               ringbuf_unmap_ring(rb, r);
->>> --
->>> 2.29.2
+>>>> +            /* No locking required as this is not visible yet. */
+>>>> +            pcpu_freelist_push_node(head, buf);
+>>>> +            buf += elem_size;
+>>>> +        }
+>>>> +        cpu_idx++;
+>>>>        }
+>>>>    }
+>>>
+>>> .
+>>
+> .
 
