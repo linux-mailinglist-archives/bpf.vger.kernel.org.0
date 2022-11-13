@@ -2,72 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500CD626CDF
-	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 01:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A09626D61
+	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 02:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbiKMATl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Nov 2022 19:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S234317AbiKMB6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Nov 2022 20:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbiKMATl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Nov 2022 19:19:41 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF84DEFC;
-        Sat, 12 Nov 2022 16:19:39 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id b62so7344980pgc.0;
-        Sat, 12 Nov 2022 16:19:39 -0800 (PST)
+        with ESMTP id S233054AbiKMB6P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Nov 2022 20:58:15 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178562DED
+        for <bpf@vger.kernel.org>; Sat, 12 Nov 2022 17:58:14 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id t5-20020a5b07c5000000b006dfa2102debso2286606ybq.4
+        for <bpf@vger.kernel.org>; Sat, 12 Nov 2022 17:58:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kNEyg40CCFx17PBhtNgPOgiExcnGtc6VatoUUGof/cc=;
-        b=p5VvUddSGpNVEKqyZIF4WVv2z4i4XqkqKt6NUmjgCXYslKtssbvwvjF0nqOm5Lbd5b
-         99Xhsz+VfgSZ41u7sbsS7/wvnxyxQWx/Lr+L6TTc8NVDU5ImtN4YYklxiWW1dmL1G+/X
-         zQorccsNtcNUsDyN06m5LAanLdcEcxh6jMo+mur43ILLkraTS4TUkSyngM5TbwSE+FXE
-         jMKlkE5CRv5nXHEzHqHdAQUHyTJYUMHnk6/X23jtCAIGEWjPmBye1FsYLNOLmjntCKMT
-         IE8nQHV13Kvo+BEtEYYcTYByYbdF14XWVYHZgmRjqk2YAgj0k9bTpkWad+7fIKSrQPbJ
-         PTTQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eoMmIMpf4RD5dt8dZBCDE+bIJuy0GA2QFmMHiqu0czw=;
+        b=iW84YXsyot5bLcfsrAWwo2iuj8UvtwCg/yqrb55L2wReZSGLP/m9nXV1tLB0pDmGqg
+         IyNQaR3hJf1Z9z67ENTLVDmTUiOCBkMI4tUfUIEmdowUdKW/mv0F7u4IN8N4FZ1kX/i6
+         tihJ/5/D0BDMsqZywCGHcI9LlHaYrE+6pn+uZQMANDy/t3IxS5hwd9ln+XuIpQz3mLDz
+         Zo9FXlgpalsROgIA9CArDJs2DNrtW4bbu69JSHpOVT/Z/O+rOVSdYvx0jG3VMVgH59vp
+         dApXFzVtZix9BXJP6H1KYvHGyJldtH7QtuRO4F+kaN7OCmKzQUWWwrtWdpzc4GBzV1XF
+         s3Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kNEyg40CCFx17PBhtNgPOgiExcnGtc6VatoUUGof/cc=;
-        b=7FvB2qx3vDeJnNEwR1QwUvY25URih6JXzHirnZtDXiGW2NMMFJUhgAmNGLPo8942vS
-         Equjb5X94BGmrlNTeV5JTFmVgQFrbS9f98cpppL+rOgnIZH5dcmyile9Rd4yIRc0BZiK
-         ON42KHUzK0Vg9MygyPBwwg6wt0wqweXmOb/jkIPX1BBnRyvTQrX4WvqJh1zyV887f7AR
-         mbi9oIXf15ak7Qz5mFZLqSVFOmdd4c9pZvF3L3bzvIy7IRCUnnO4b3Z5KTDpiWYFwXnG
-         iBfT4eVbFAMBYHw5vP4cs9mfl0AUsa1oqWtMdpsG+rfgAUrH12RaNM7ANirPuJSYtNk+
-         wwzA==
-X-Gm-Message-State: ANoB5pmC42WaQkmKqxvlj/SIN6Mez4fGiJiLYQIzfIJR4lYBdrmhbYGY
-        Q5ooWRulTtIGrWUAX9ngs3I=
-X-Google-Smtp-Source: AA0mqf5iUayVbTf1/ykPaRPoSKcy1AwFhx9prO8kbkYjbk25BrZTqP0pE/Pvx15v8RsWoOfN/rRepg==
-X-Received: by 2002:aa7:92c7:0:b0:56d:6450:9e48 with SMTP id k7-20020aa792c7000000b0056d64509e48mr8558159pfa.14.1668298778515;
-        Sat, 12 Nov 2022 16:19:38 -0800 (PST)
-Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id z10-20020a170903018a00b00180a7ff78ccsm4217202plg.126.2022.11.12.16.19.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Nov 2022 16:19:37 -0800 (PST)
-Message-ID: <65d9b890-05d2-0215-b7ae-3011d6dff0a2@gmail.com>
-Date:   Sun, 13 Nov 2022 09:19:33 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/1] docs: BPF_MAP_TYPE_CPUMAP
-To:     mtahhan@redhat.com
-Cc:     bpf@vger.kernel.org, donhunte@redhat.com, jbrouer@redhat.com,
-        linux-doc@vger.kernel.org, lorenzo@kernel.org, thoiland@redhat.com,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20221107165207.2682075-2-mtahhan@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20221107165207.2682075-2-mtahhan@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eoMmIMpf4RD5dt8dZBCDE+bIJuy0GA2QFmMHiqu0czw=;
+        b=DNeYWjzz/p7JNNLuIeeS8eE5Ugqank+yT0+4drfHzLsdrhME+s60PzjEsn5gY8AInF
+         UtzE0cVhLSlASPEfVJ582ceoxkjsvrKF+6Em1ulH3b6x0lE/YQlTxMP82BSmBJyxTQ82
+         pe7HkkIAoqr3GNqhJz6S14YXj2ds0pnqdbYmS46xlm5UTHrsqOSH6CvtGZJ/U8njrjLN
+         s+qp+z27I1t5eV3dny3Vua2RASTkhAfSNeOCr1LGt0Tpft1DjGXzg2Aicf4gJrmrbAMY
+         OKwDW/KQpP5snL8oDyPJviro2DxJTmBzuYt2LmIwvafXtiLss99BfhLulqkH2W1uwCGR
+         xGfQ==
+X-Gm-Message-State: ACrzQf15LNb/p1L6hMrsHjalVFbVZTyr09Vh0uVfvtEhna59aACt4Cok
+        97yuSC1JdNXzvcw0F6uV6YXOpCM=
+X-Google-Smtp-Source: AMsMyM4cjqen1gXXOLL040RZyb05LlBl/pv+vtv9K+fXBHsGhG1PZIOAcyD5yij5yGVIqLu9B+xC0m8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:3941:0:b0:370:4850:e086 with SMTP id
+ g62-20020a813941000000b003704850e086mr60461991ywa.152.1668304693079; Sat, 12
+ Nov 2022 17:58:13 -0800 (PST)
+Date:   Sat, 12 Nov 2022 17:58:11 -0800
+In-Reply-To: <20221111202719.982118-2-memxor@gmail.com>
+Mime-Version: 1.0
+References: <20221111202719.982118-1-memxor@gmail.com> <20221111202719.982118-2-memxor@gmail.com>
+Message-ID: <Y3BPMwmK2DahdiK5@google.com>
+Subject: Re: [PATCH bpf v1 1/2] bpf: Fix state pruning check for PTR_TO_MAP_VALUE
+From:   sdf@google.com
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Edward Cree <ecree.xilinx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,112 +69,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Maryam,
+On 11/12, Kumar Kartikeya Dwivedi wrote:
+> Currently, the verifier preserves reg->id for PTR_TO_MAP_VALUE when it
+> points to a map value that contains a bpf_spin_lock element (see the
+> logic in reg_may_point_to_spin_lock and how it is used to skip setting
+> reg->id to 0 in mark_ptr_or_null_reg). This gives a unique lock ID for
+> each critical section begun by a bpf_spin_lock helper call.
 
-I know this has already been applied, but I see warnings from
-"make htmldocs" on pbf-next caused by this. See inline comment
-below.
+> The same reg->id is matched with env->active_spin_lock during unlock to
+> determine whether bpf_spin_unlock is called for the same bpf_spin_lock
+> object.
 
-On Mon,  7 Nov 2022 11:52:07 -0500, mtahhan@redhat.com wrote:
-> From: Maryam Tahhan <mtahhan@redhat.com>
-> 
-> Add documentation for BPF_MAP_TYPE_CPUMAP including
-> kernel version introduced, usage and examples.
-> 
-> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> However, regsafe takes a different approach to safety checks currently.
+> The comparison of reg->id was explicitly skipped in the commit being
+> fixed with the reasoning that the reg->id value should have no bearing
+> on the safety of the program if the old state was verified to be safe.
+
+> This however is demonstrably not true (with a selftest having the
+> verbose working test case in a later commit), with the following pseudo
+> code:
+
+> 	r0 = bpf_map_lookup_elem(&map, ...); // id=1
+> 	r6 = r0;
+> 	r0 = bpf_map_lookup_elem(&map, ...); // id=2
+> 	r7 = r0;
+
+> 	bpf_spin_lock(r1=r6);
+> 	if (cond) // unknown scalar, hence verifier cannot predict branch
+> 		r6 = r7;
+> 	p:
+> 	bpf_spin_unlock(r1=r7);
+
+> In the first exploration path, we would want the verifier to skip
+> over the r6 = r7 assignment so that it reaches BPF_EXIT and the
+> state branches counter drops to 0 and it becomes a safe verified
+> state.
+
+> The branch target 'p' acts a pruning point, hence states will be
+> compared. If the old state was verified without assignment, it has
+> r6 with id=1, but the new state will have r6 with id=2. The other
+> parts of register, stack, and reference state and any other verifier
+> state compared in states_equal remain unaffected by the assignment.
+
+> Now, when the memcmp fails for r6, the verifier drops to the switch case
+> and simply memcmp until the id member, and requires the var_off to be
+> more permissive in the current state. Once establishing this fact, it
+> returns true and search is pruned.
+
+> Essentially, we end up calling unlock for a bpf_spin_lock that was never
+> locked whenever the condition is true at runtime.
+
+> To fix this, also include id in the memcmp comparison. Since ref_obj_id
+> is never set for PTR_TO_MAP_VALUE, change the offsetof to be until that
+> member.
+
+> Note that by default the reg->id in case of PTR_TO_MAP_VALUE should be 0
+> (without PTR_MAYBE_NULL), so it should only really impact cases where a
+> bpf_spin_lock is present in the map element.
+
+> Fixes: d83525ca62cf ("bpf: introduce bpf_spin_lock")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+
+Sounds convincing. Also run the selftest to make sure it fails w/o this
+patch.
+
 > ---
->  Documentation/bpf/map_cpumap.rst | 166 +++++++++++++++++++++++++++++++
->  kernel/bpf/cpumap.c              |   9 +-
->  2 files changed, 172 insertions(+), 3 deletions(-)
->  create mode 100644 Documentation/bpf/map_cpumap.rst
-> 
-> diff --git a/Documentation/bpf/map_cpumap.rst b/Documentation/bpf/map_cpumap.rst
-> new file mode 100644
-> index 000000000000..eaf57b38cafd
-> --- /dev/null
-> +++ b/Documentation/bpf/map_cpumap.rst
-> @@ -0,0 +1,166 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +===================
-> +BPF_MAP_TYPE_CPUMAP
-> +===================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_CPUMAP`` was introduced in kernel version 4.15
-> +
-> +.. kernel-doc:: kernel/bpf/cpumap.c
-> + :doc: cpu map
-> +
-> +An example use-case for this map type is software based Receive Side Scaling (RSS).
-> +
-> +The CPUMAP represents the CPUs in the system indexed as the map-key, and the
-> +map-value is the config setting (per CPUMAP entry). Each CPUMAP entry has a dedicated
-> +kernel thread bound to the given CPU to represent the remote CPU execution unit.
-> +
-> +Starting from Linux kernel version 5.9 the CPUMAP can run a second XDP program
-> +on the remote CPU. This allows an XDP program to split its processing across
-> +multiple CPUs. For example, a scenario where the initial CPU (that sees/receives
-> +the packets) needs to do minimal packet processing and the remote CPU (to which
-> +the packet is directed) can afford to spend more cycles processing the frame. The
-> +initial CPU is where the XDP redirect program is executed. The remote CPU
-> +receives raw ``xdp_frame`` objects.
-> +
-> +Usage
-> +=====
-> +
-> +Kernel BPF
-> +----------
-> +.. c:function::
-> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
-> +
-> + Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
-> + For ``BPF_MAP_TYPE_CPUMAP`` this map contains references to CPUs.
-> +
-> + The lower two bits of ``flags`` are used as the return code if the map lookup
-> + fails. This is so that the return value can be one of the XDP program return
-> + codes up to ``XDP_TX``, as chosen by the caller.
-> +
-> +Userspace
-> +---------
-> +.. note::
-> +    CPUMAP entries can only be updated/looked up/deleted from user space and not
-> +    from an eBPF program. Trying to call these functions from a kernel eBPF
-> +    program will result in the program failing to load and a verifier warning.
-> +
-> +.. c:function::
-> +    int bpf_map_update_elem(int fd, const void *key, const void *value,
-> +                   __u64 flags);
-Sphinx's domain directives assumes single-line declarations [1].
-Hence "make htmldocs" with Sphinx >= 3.1 emits warnings like:
+>   kernel/bpf/verifier.c | 33 +++++++++++++++++++++++++++------
+>   1 file changed, 27 insertions(+), 6 deletions(-)
 
-/linux/Documentation/bpf/map_cpumap.rst:50: WARNING: Error in declarator or parameters
-Invalid C declaration: Expected identifier in nested name. [error at 67]
-  int bpf_map_update_elem(int fd, const void *key, const void *value,
-  -------------------------------------------------------------------^
-/linux/Documentation/bpf/map_cpumap.rst:50: WARNING: Error in declarator or parameters
-Invalid C declaration: Expecting "(" in parameters. [error at 11]
-  __u64 flags);
-  -----------^
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 264b3dc714cc..7e6bac344d37 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11559,13 +11559,34 @@ static bool regsafe(struct bpf_verifier_env  
+> *env, struct bpf_reg_state *rold,
 
-This can be fixed by using reST's continuation line as follows:
+>   		/* If the new min/max/var_off satisfy the old ones and
+>   		 * everything else matches, we are OK.
+> -		 * 'id' is not compared, since it's only used for maps with
+> -		 * bpf_spin_lock inside map element and in such cases if
+> -		 * the rest of the prog is valid for one map element then
+> -		 * it's valid for all map elements regardless of the key
+> -		 * used in bpf_map_lookup()
+> +		 *
+> +		 * 'id' must also be compared, since it's used for maps with
+> +		 * bpf_spin_lock inside map element and in such cases if the
+> +		 * rest of the prog is valid for one map element with a specific
+> +		 * id, then the id in the current state must match that of the
+> +		 * old state so that any operations on this reg in the rest of
+> +		 * the program work correctly.
+> +		 *
+> +		 * One example is a program doing the following:
+> +		 *	r0 = bpf_map_lookup_elem(&map, ...); // id=1
+> +		 *	r6 = r0;
+> +		 *	r0 = bpf_map_lookup_elem(&map, ...); // id=2
+> +		 *	r7 = r0;
+> +		 *
+> +		 *	bpf_spin_lock(r1=r6);
+> +		 *	if (cond)
+> +		 *		r6 = r7;
+> +		 * p:
+> +		 *	bpf_spin_unlock(r1=r6);
+> +		 *
+> +		 * The label 'p' is a pruning point, hence states for that
+> +		 * insn_idx will be compared. If we don't compare the id, the
+> +		 * program will pass as the r6 and r7 are otherwise identical
+> +		 * during the second pass that compares the already verified
+> +		 * state with the one coming from the path having the additional
+> +		 * r6 = r7 assignment.
+>   		 */
+> -		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)) == 0 &&
+> +		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, ref_obj_id))  
+> == 0 &&
+>   		       range_within(rold, rcur) &&
+>   		       tnum_in(rold->var_off, rcur->var_off);
+>   	case PTR_TO_PACKET_META:
+> --
+> 2.38.1
 
-.. c:function::
-    int bpf_map_update_elem(int fd, const void *key, const void *value, \
-                   __u64 flags);
-
-, or by permitting a somewhat long declaration:
-
-.. c:function::
-    int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags);
-
-Can you please fix it?
-
-[1]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#basic-markup
-
-        Thanks, Akira
-
-[...]
