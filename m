@@ -2,132 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FAA627165
-	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 19:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4F3627168
+	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 19:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233930AbiKMSAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Nov 2022 13:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        id S234044AbiKMSFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Nov 2022 13:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbiKMSAl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Nov 2022 13:00:41 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-eopbgr90058.outbound.protection.outlook.com [40.107.9.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39F02AED
-        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 10:00:38 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GFxX8BMb8qAg8a/FZfI8aORMbhqdDzxwZjDlQrOPLgMfCyCy+mV8WwziUsHr78RlkrLbndsb6mC4nc9436nmTHcCVDALVTUd58/Yc871CRBVOOxg+VI+UJxY+zkbxoP4zRF/9gE9nw1XzZee3IOZHpPj8wfqaFHYH+bKwZzfNlCdgl6RBu2FjwGBtRQtMNfH8Y/1toVLxT6XW2SNJxXoC4G9C4mtWZrv0d6zOTPfSSybWbySGKbF2Ri1d2DHapFV3LCMyXx4sm7tG8PaUiHe+8qrvRtTH9X+7z5cjf8gGH2o7wW6zmmxgxK+pdw/lw5L152oPJ+hxw+Xgo0LKCkMGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AX6sANSvjmbmibz0+9WO5KsMBolCPp0TxctvTg0Y7Qk=;
- b=c9yaMzwAb8MZhR/ZFeNsXnnrTQWNdLjltdWRozM/O/m5DmUYb6vKDihLUTftSTXuQhPrXbUaNrjLq0Cx6HXgP3A3a+yyLwbCUBaP5kXUMQPuZL/hXhGP4JSdfw3a/4we5FuqAQekc86nhnD4OCV564DIbGmDRYLOZ23OMV1q7s9KV7CCiGowLjcTfL86iONXACKk3VV1WdN0sVDm9VkYtEXlgXOpCo3FIFtVS0MN8o7AP1RBak6Cn4874ABv9YdbvSbpp+0u47V8nlCYCIpwXzyKdoLGh1kGRKUC++pKWjPkOtw4iyxK7frH4RcOF62t7vXwX/X9w6iYwKAUo5kbBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AX6sANSvjmbmibz0+9WO5KsMBolCPp0TxctvTg0Y7Qk=;
- b=F+IGr4VDH4n2XD493HAxV9TJr3s61yLfRPRJ7mYTXFk8O1fGrq6h98VZC6h7YA/p2Nqb47NPniMzOH9xaAV4iNLspKdhYxMeFUIBPQSN6//G2px7aKw9X07xQS4rwDuXDF1KVaJRREHhc/dEwzMPCXEYkSY4IIaS5PL2iiPAFsN70k9w16y87b4U9nqUMj55vgsKmaZ0E33wcA40H/Ysvx/eJQNsIB4lPOxdPgBYvXIsMPOuWQShJI3souw8hnu9P7JgIlksw8dXI7BtVZH8/1vt95T9qCkVRKWl/5JfSSMfH4W8t2QDuaeGUWy/yPa7XXLjuHsFN4+lk1C7HzTJEg==
-Received: from MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:3d::7) by
- PR0P264MB1787.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16f::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5813.17; Sun, 13 Nov 2022 18:00:35 +0000
-Received: from MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
- ([fe80::fd:d69d:cf17:c18]) by MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
- ([fe80::fd:d69d:cf17:c18%4]) with mapi id 15.20.5813.017; Sun, 13 Nov 2022
- 18:00:35 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Hari Bathini <hbathini@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [RFC PATCH 2/3] powerpc/bpf: implement bpf_arch_text_invalidate
- for bpf_prog_pack
-Thread-Topic: [RFC PATCH 2/3] powerpc/bpf: implement bpf_arch_text_invalidate
- for bpf_prog_pack
-Thread-Index: AQHY9TSc0oruryYX3EWtbkBZh4KbHa49KT0A
-Date:   Sun, 13 Nov 2022 18:00:35 +0000
-Message-ID: <0efbcdd4-8e08-2c31-debe-389f3415ec21@csgroup.eu>
-References: <20221110184303.393179-1-hbathini@linux.ibm.com>
- <20221110184303.393179-3-hbathini@linux.ibm.com>
-In-Reply-To: <20221110184303.393179-3-hbathini@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MR1P264MB2980:EE_|PR0P264MB1787:EE_
-x-ms-office365-filtering-correlation-id: 8ad8b250-5e10-44c2-a136-08dac5a0f6cb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: K1LMjvEh5Qdf/gDA/ONu8NhRBVYzpKe/xLHCRwU6vvUhiSKDb3WzDOR98KtKAMVivuJWtyMWpK9/sBbUe038ihX3vVmJVGdfUGdc/3pJULNgwVFG+4sRbuH7fsPQc7T5s90srN6npvZPLPDe7xg/HFFHlyNVzfZYnxVJQ3fUGbwvdA36EXBPSBUKg2wpf51s80Gm+pPG2JFLp2llANcZZfyeX4/73RSrgilDQiu3hndB1KbDHl4iCfCXp690szbN4FyO+wEtAQbUbDxt4sQSjHURfPTtzTBBaKaDyhKAXjugGNxlcSqFlnO6M24vtkSFBxmqtXTbKQgZ9/Uomk7hEdaGO7481n1Kdl9ZYs3WLrO6qHJWGs4z6cOk7Idp/Uckivup889ReBMdmSk8clvdK+WEX5n5t8Jkmy0rHMQzPja4z0ABCt7yyrGtsdUZYOHtdYtKTYpGxQMEcsVcJ9jeYlCIu7R8jFg2lm/mG6OWQLeedaldg5jJI6Qpy2kb5rKdJ7nF6hRRCEIKN1TiZSIy35k5vixP1yKAS4huGo9oUlwW2DucHLkh/Yfzt4/KeaLcGQ7oSV/Oxm7dBAei/gLbayUf5orPhHunVjW/sbXTQ/RK37nwNRy+8+GqlQNHyPF4pHWTLyPwZu1SY7PujLhtf4cMZUUb1+5kl0/Zh8Z0FmqekQe1pIZ9VoJNuRGNY/sq+T4/19LuCYtI7K2T+g9eDeZSANflJUbMTA6bwblo0SEtKAEAzNbTioS5GAOJfDQKnPuWGalR4OE48nUet+34oLdryqkeQ+4z9LqBXWD6au0C8s3ilNtQopO8oKlqRmHQA+wkqmugnB+IYRS39F40qA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(376002)(136003)(39840400004)(366004)(451199015)(6486002)(38070700005)(478600001)(71200400001)(31696002)(122000001)(86362001)(38100700002)(110136005)(316002)(83380400001)(41300700001)(2906002)(6506007)(186003)(54906003)(26005)(8676002)(66946007)(76116006)(66446008)(64756008)(66556008)(66476007)(6512007)(91956017)(4326008)(31686004)(66574015)(44832011)(5660300002)(36756003)(8936002)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a2FBdHY4ZWJxU1l4QjRyUnZ5ekp6ZzhUb3A4WndCRW54RmFVVzJNNlh3SFZC?=
- =?utf-8?B?MFZoM3ppV3pCTTJIcFJyY0xHUHhROGFTRTJUUVRQdWFVMjkyTzF4elRSZTZD?=
- =?utf-8?B?cno5TGZZUzY3bGpwSnJLZW1LRjhQK1kwWnJlMlVJSGlCSnZISWprTHAwZDVo?=
- =?utf-8?B?NTRISTlmOElNUmhoTlJkaW5GV1dTaXZiNXVIVXhjbWpuM2pKRG5PMkp6YkpO?=
- =?utf-8?B?QmN6TWdlWUdOMm9yMU1ja0pDM2J2UnVLZmFveXh2b2VyRytZVnhKTlVXR0Nq?=
- =?utf-8?B?L1VpcG9BaHJ1cmo3RDVHREdZV0ZsdlNvMUlFZXl5ZWtwZlhGTEVkNTZsTTVN?=
- =?utf-8?B?ckMxL2FKaStPY3g0YVdhUkw2YldtTGU0V2pLaE9QQ0Q3ZXNZK1lpWWlXemJJ?=
- =?utf-8?B?Zk1qZzBIUkpqcy9ZYytIaFg4bFJaS2dxbmxidDgwZ0tkcGsvaU5jT0k1NlVp?=
- =?utf-8?B?djF4VUJ0VTFoekpQT3RRUUU1S3VCaUVlOU5ya2hKa0tEbzdYV3JTdGd5TzB2?=
- =?utf-8?B?ZVloRzM2NG9WUitqQ1FjbE4rVzFuYVFLUGJHMitmSGNjaHdGcVNocmYxdWZJ?=
- =?utf-8?B?UU5GQUR5SGh5NERYTGlWM0NZbXFrZVByTzdYOExHWU9CZVNVOGFCY00wc1c3?=
- =?utf-8?B?anZROVRNTGxiR055dytNQ0JNV2lPSVZ4L215aUtqM0VlZTNrMW9Ld3FyZkM2?=
- =?utf-8?B?Q3NUZUZsdkJDQVNKdi9zVVJwUW92SVJ4M1lSQmsyNUFnR3hmYUdqV28yT29V?=
- =?utf-8?B?WDZoMWF3bE9HNWY1Z2JsSWJSVkV0eVNDdVV3cnFoWTZMckNqNm91QnFMek9I?=
- =?utf-8?B?bElYd0VYZ3kyd1RkVzcwWEYwZms4QUVGSWoySXN5SlZndXVid05nc1hwSUpo?=
- =?utf-8?B?bFpoeWpvN3ZRUjkzdXVFSmpsTFExcndYWkExNDVxWXVXdjBKa1RHSlpsT1J5?=
- =?utf-8?B?eUdhcjlVUjgyaTRIMi9kTFdFT2VobGVKamFVUEV6WEZBV2pZdUZkSmZLK3Ey?=
- =?utf-8?B?NTdPM2tuRGhUS3FJT00xaURYbzg2U09YWGZpSGZLa2xwT0FXVm5ld3hYbW5F?=
- =?utf-8?B?K0piSzFHeC9JLzBuL004QVNHdHNQeWEzaU42aGIzT3ZVbGdCMkFOVXc1eVdF?=
- =?utf-8?B?ZFRpeHFaaUUvUjF4WWdDc1h2cHE3TE5Rcmx6Q3pxZHNGMXBCL1hGbXBEWUxa?=
- =?utf-8?B?eVVRYkZzMnhkRWdnYUdmNitUdHplSFA5d3NVTGxEdy9vZmpIb0NYeHA5emJJ?=
- =?utf-8?B?V0MzT0RVYWEzZUpLNXFHSlVMNytIaU94b3lqNVIwTVZtT0RIK3A3MWh6d1hC?=
- =?utf-8?B?bzFSZVlRQURPa1pwd3FvQnpTdG9GeEs3dDZLOTFDSUJQbDNST3VWd0hUYkM0?=
- =?utf-8?B?TUgzYS9KekZqdHZOZkcrUDlQSjdFc2gxSE9JbXBUU2NnQkRkZ1c3VWZ1VTdk?=
- =?utf-8?B?QjBwenZSMWI2QWFsdHgzRmNjSGFmeG10blJrTmpibnVoT0hCK2dvNk1CZTEz?=
- =?utf-8?B?UzlCS1FWSFJibk5STS9YNVdJYUtmNUNYWTQ1cnZrak9Ed1lLTGdUT3VoTlRq?=
- =?utf-8?B?UlI0d2pvOWREMVgzNTN3L3N4QmdhL0g1MkFqejFsaUhqWmxTRU5yR1RMNzJj?=
- =?utf-8?B?ZjhUa0hLOUlYY0RLUzF2NVV5TW5Ba1NWMHRrSitYOEJVd0o0aTcya2pObUVv?=
- =?utf-8?B?dEZGb3RjTGZob3ZrbkpjZHpWcDVxc0FsTlp2TDh6blNGLzNMSFlHcUJaYkE0?=
- =?utf-8?B?TjJiQzJJTnhKbWVvbEVSREpWaGhFZ3hKOUt5ZFhPRCtqZ296QTRleFpIRzVI?=
- =?utf-8?B?TURrS2M4WTNZOTExeHllS2lJenQxb0t4REJORUxnaVpjVzhaNUpobDQ0bDh4?=
- =?utf-8?B?OTZXajZvUXJwekRydWFHYUplT1lOUlplSnFqaWU2ZTJDNHEzZ25EcEIvSzNM?=
- =?utf-8?B?eGF5dk9BcWRoZ0lFeWZtSTVZM3RaN0NtbWhWZkVleGk1aEUrcWRhTFYzMzRQ?=
- =?utf-8?B?T2x2U290ODNFRnVMNTFHY05Td0VuSUhIcGFIY1BVb0tHZDhsMnZ5Vk12NE4r?=
- =?utf-8?B?bHVjY05NeUY2RmhpTk90YlBPOU1aY2FQT04wSFhMWVZjSVdpVlpJWCs3R2g3?=
- =?utf-8?B?a0dobFl0aHplK09jc3JKeVRwSUNndEUxSnRLSklEZWVQZTBQVS9Bd3JVdS96?=
- =?utf-8?B?NXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AF7B472B4B2B6C489573EA484510D4FA@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        with ESMTP id S232676AbiKMSFn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Nov 2022 13:05:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C157DFF0
+        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 10:04:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668362688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N9OJ0x8MrvaJl/DjUU16mVrSN9xb8A083xpJrrJNsVE=;
+        b=HDCvDBldFWlqrfw8d89dF2C+CY6n+yyaIObB3Ji7GO/KhfKgx+yyzcRpy1COd9Q3iwn1De
+        +Yap8+qDLaSmXIa9AU0LL8cNzLdwVjGZ9dKjMYMT6pSfmfxQ5E8cIWlRUYpUF317EhtvIB
+        fJGptcyWn1+urxHt0AESkM6ToTr9qJU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-587-4LB6Zjo7MZu9tM0uWrHf8Q-1; Sun, 13 Nov 2022 13:04:46 -0500
+X-MC-Unique: 4LB6Zjo7MZu9tM0uWrHf8Q-1
+Received: by mail-ed1-f71.google.com with SMTP id e15-20020a056402190f00b00461b0576620so6726730edz.2
+        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 10:04:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9OJ0x8MrvaJl/DjUU16mVrSN9xb8A083xpJrrJNsVE=;
+        b=NsWmq8Hx9+n935UkVparujR0wk7cLxGioaNnPtmNc6n3rIsTe7Zgl48W0xJEA95AcY
+         xgbPCbD8ZMhuw86Qq2CB5JlkJOgktkWs56+JDfbTHMkJqbcCxh6eoyZYBfn9yTMT7dD0
+         FvOnyhcjht8aJTIGywJRJHjmO5MaGZHc7gQSxrJMGNk49a/Mfs6hv0KnN0cCP2kplGye
+         hwKR6BmLCRbOD8L5CIC5xpcyvvQAr6FqCUXUFP8xOlaSBvCxShfPdr/tqnHrtqopwNfh
+         nCsECsrY8trKsxEtbMDaaDr7J0dLf221JW6Ow60EkATuB0eGwoek/WpfAcGyqROUxDyH
+         Mtxg==
+X-Gm-Message-State: ANoB5plwcqAhE2WNm8uMlP2GmQRqXZW5wuSh4BbM+djxA1sfeCiMxwKp
+        r9w3plRa7u0yOkckklAVCBOIvwe7Ptu616vK23fPXLhhPPSPm90wZp44KasDwsI+Nc70SLvfngc
+        3i9H8BzYCiG6k
+X-Received: by 2002:a17:907:110d:b0:7a9:6107:572a with SMTP id qu13-20020a170907110d00b007a96107572amr8226464ejb.729.1668362685407;
+        Sun, 13 Nov 2022 10:04:45 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5Ji+2YF7kB9se3JOD6xPVfmmyu67Ta+P9TMJpdu6H3Gdkb6L9SxUewxV/1odjQTvBWFgzR2Q==
+X-Received: by 2002:a17:907:110d:b0:7a9:6107:572a with SMTP id qu13-20020a170907110d00b007a96107572amr8226449ejb.729.1668362684975;
+        Sun, 13 Nov 2022 10:04:44 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id g18-20020a17090604d200b0073dc5bb7c32sm3226700eja.64.2022.11.13.10.04.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Nov 2022 10:04:44 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0C6627A69E0; Sun, 13 Nov 2022 19:04:43 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: Re: Calling kfuncs in modules - BTF mismatch?
+In-Reply-To: <CAJ0CqmWO-MsjL3i6pfATJ=JakbnTfQmwKmruz9zEM_H-sz1_uA@mail.gmail.com>
+References: <87leoh372s.fsf@toke.dk>
+ <CAJ0CqmWO-MsjL3i6pfATJ=JakbnTfQmwKmruz9zEM_H-sz1_uA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sun, 13 Nov 2022 19:04:43 +0100
+Message-ID: <875yfiwx1g.fsf@toke.dk>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ad8b250-5e10-44c2-a136-08dac5a0f6cb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2022 18:00:35.2012
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +sNj0jbmmMvScQ7iCPPojVKqO97ujbwyrvhh+tZSf5IqW/OnYIYvvFm+SCcH4U0fzSbNMfOV78lFfF1m63F/QVepckhxkm6NlcPGQWIDPIg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1787
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,45 +80,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-TGUgMTAvMTEvMjAyMiDDoCAxOTo0MywgSGFyaSBCYXRoaW5pIGEgw6ljcml0wqA6DQo+IEltcGxl
-bWVudCBicGZfYXJjaF90ZXh0X2ludmFsaWRhdGUgYW5kIHVzZSBpdCB0byBmaWxsIHVudXNlZCBw
-YXJ0IG9mDQo+IHRoZSBicGZfcHJvZ19wYWNrIHdpdGggdHJhcCBpbnN0cnVjdGlvbnMgd2hlbiBh
-IEJQRiBwcm9ncmFtIGlzIGZyZWVkLg0KDQpTYW1lIGhlcmUsIGFsbHRob3VnaCBwYXRjaF9pbnN0
-cnVjdGlvbigpIGlzIG5pY2UgZm9yIGEgZmlyc3QgdHJ5LCBpdCBpcyANCm5vdCB0aGUgc29sdXRp
-b24gb24gdGhlIGxvbmcgcnVuLiBTYW1lIGFzIHdpdGggcHJldmlvdXMgcGF0Y2gsIGl0IHNob3Vs
-ZCANCmp1c3QgbWFwIHRoZSBuZWNlc3NhcnkgcGFnZSBieSBhbGxvY2F0aW5nIGEgdm1hIGFyZWEg
-dGhlbiBtYXBwaW5nIHRoZSANCmFzc29jaWF0ZWQgcGh5c2ljYWwgcGFnZXMgb3ZlciBpdCB1c2lu
-ZyBtYXBfa2VybmVsX3BhZ2UoKSwgdGhlbiB1c2UgDQpicGZfaml0X2ZpbGxfaWxsX2luc25zKCkg
-b3ZlciB0aGFuIHBhZ2UuDQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhhcmkgQmF0aGluaSA8aGJh
-dGhpbmlAbGludXguaWJtLmNvbT4NCj4gLS0tDQo+ICAgYXJjaC9wb3dlcnBjL25ldC9icGZfaml0
-X2NvbXAuYyB8IDMyICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgMSBmaWxl
-IGNoYW5nZWQsIDMyIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2Vy
-cGMvbmV0L2JwZl9qaXRfY29tcC5jIGIvYXJjaC9wb3dlcnBjL25ldC9icGZfaml0X2NvbXAuYw0K
-PiBpbmRleCA3MzgzZTBlZmZhZDIuLmY5MjU3NTVjZDI0OSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9w
-b3dlcnBjL25ldC9icGZfaml0X2NvbXAuYw0KPiArKysgYi9hcmNoL3Bvd2VycGMvbmV0L2JwZl9q
-aXRfY29tcC5jDQo+IEBAIC0yNiw2ICsyNiwzMyBAQCBzdGF0aWMgdm9pZCBicGZfaml0X2ZpbGxf
-aWxsX2luc25zKHZvaWQgKmFyZWEsIHVuc2lnbmVkIGludCBzaXplKQ0KPiAgIAltZW1zZXQzMihh
-cmVhLCBCUkVBS1BPSU5UX0lOU1RSVUNUSU9OLCBzaXplIC8gNCk7DQo+ICAgfQ0KPiAgIA0KPiAr
-LyoNCj4gKyAqIFBhdGNoICdsZW4nIGJ5dGVzIHdpdGggdHJhcCBpbnN0cnVjdGlvbiBhdCBhZGRy
-LCBvbmUgaW5zdHJ1Y3Rpb24NCj4gKyAqIGF0IGEgdGltZS4gUmV0dXJucyBhZGRyIG9uIHN1Y2Nl
-c3MuIEVSUl9QVFIoLUVJTlZBTCksIG90aGVyd2lzZS4NCj4gKyAqLw0KPiArc3RhdGljIHZvaWQg
-KmJwZl9wYXRjaF9pbGxfaW5zbnModm9pZCAqYWRkciwgc2l6ZV90IGxlbikNCj4gK3sNCj4gKwl2
-b2lkICpyZXQgPSBFUlJfUFRSKC1FSU5WQUwpOw0KPiArCXNpemVfdCBwYXRjaGVkID0gMDsNCj4g
-Kwl1MzIgKnN0YXJ0ID0gYWRkcjsNCj4gKw0KPiArCWlmIChXQVJOX09OX09OQ0UoY29yZV9rZXJu
-ZWxfdGV4dCgodW5zaWduZWQgbG9uZylhZGRyKSkpDQo+ICsJCXJldHVybiByZXQ7DQo+ICsNCj4g
-KwltdXRleF9sb2NrKCZ0ZXh0X211dGV4KTsNCj4gKwl3aGlsZSAocGF0Y2hlZCA8IGxlbikgew0K
-PiArCQlpZiAocGF0Y2hfaW5zdHJ1Y3Rpb24oc3RhcnQrKywgcHBjX2luc3QoUFBDX1JBV19UUkFQ
-KCkpKSkNCg0KVXNlIEJSRUFLUE9JTlRfSU5TVFJVQ1RJT04gaW5zdGVhZCBvZiBQUENfUkFXX1RS
-QVAoKQ0KDQo+ICsJCQlnb3RvIGVycm9yOw0KPiArDQo+ICsJCXBhdGNoZWQgKz0gNDsNCj4gKwl9
-DQo+ICsNCj4gKwlyZXQgPSBhZGRyOw0KPiArZXJyb3I6DQo+ICsJbXV0ZXhfdW5sb2NrKCZ0ZXh0
-X211dGV4KTsNCj4gKwlyZXR1cm4gcmV0Ow0KPiArfQ0KPiArDQo+ICAgLyoNCj4gICAgKiBQYXRj
-aCAnbGVuJyBieXRlcyBvZiBpbnN0cnVjdGlvbnMgZnJvbSBvcGNvZGUgdG8gYWRkciwgb25lIGlu
-c3RydWN0aW9uDQo+ICAgICogYXQgYSB0aW1lLiBSZXR1cm5zIGFkZHIgb24gc3VjY2Vzcy4gRVJS
-X1BUUigtRUlOVkFMKSwgb3RoZXJ3aXNlLg0KPiBAQCAtMzk0LDMgKzQyMSw4IEBAIHZvaWQgKmJw
-Zl9hcmNoX3RleHRfY29weSh2b2lkICpkc3QsIHZvaWQgKnNyYywgc2l6ZV90IGxlbikNCj4gICB7
-DQo+ICAgCXJldHVybiBicGZfcGF0Y2hfaW5zdHJ1Y3Rpb25zKGRzdCwgc3JjLCBsZW4pOw0KPiAg
-IH0NCj4gKw0KPiAraW50IGJwZl9hcmNoX3RleHRfaW52YWxpZGF0ZSh2b2lkICpkc3QsIHNpemVf
-dCBsZW4pDQo+ICt7DQo+ICsJcmV0dXJuIElTX0VSUihicGZfcGF0Y2hfaWxsX2luc25zKGRzdCwg
-bGVuKSk7DQo+ICt9DQoNCg0KVGhlIGV4YWN0IHNhbWUgc3BsaXQgYmV0d2VlbiBicGZfYXJjaF90
-ZXh0X2ludmFsaWRhdGUoKSBhbmQgDQpicGZfcGF0Y2hfaWxsX2luc25zKCkgYXMgcHJldmlvdXMg
-cGF0Y2ggY291bGQgYmUgZG9uZSBoZXJlLg0KDQo=
+Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+
+>>
+>> Hi everyone
+>>
+>> There seems to be some issue with BTF mismatch when trying to run the
+>> bpf_ct_set_nat_info() kfunc from a module. I was under the impression
+>> that this is supposed to work, so is there some kind of BTF dedup issue
+>> here or something?
+>>
+>> Steps to reproduce:
+>>
+>> 1. Compile kernel with nf_conntrack built-in and run selftests;
+>>    './test_progs -a bpf_nf' works
+>>
+>> 2. Change the kernel config so nf_conntrack is build as a module
+>>
+>> 3. Start the test kernel and manually modprobe nf_conntrack and nf_nat
+>>
+>> 4. Run ./test_progs -a bpf_nf; this now fails with an error like:
+>>
+>> kernel function bpf_ct_set_nat_info args#0 expected pointer to STRUCT nf_conn___init but R1 has a pointer to STRUCT nf_conn___init
+>
+> This week Kumar and I took a look at this issue and we ended up
+> identifying a duplication of nf_conn___init structure. In particular:
+>
+> [~/workspace/bpf-next]$ bpftool btf --base-btf vmlinux dump file
+> net/netfilter/nf_conntrack.ko format raw | grep nf_conn__
+> [110941] STRUCT 'nf_conn___init' size=248 vlen=1
+> [~/workspace/bpf-next]$ bpftool btf --base-btf vmlinux dump file
+> net/netfilter/nf_nat.ko format raw | grep nf_conn__
+> [107488] STRUCT 'nf_conn___init' size=248 vlen=1
+>
+> Is it the root cause of the problem?
+
+It certainly seems to be related to it, at least. Amending the log
+message to include the BTF object IDs of the two versions shows that the
+register has a reference to nf_conn__init in nf_conntrack.ko, while the kernel
+expects it to point to nf_nat.ko.
+
+Not sure what's the right fix for this? Should libbpf be smart enough to
+pull the kfunc arg ID from the same BTF ID as the function itself? Or
+should the kernel compare structs and allow things if they're identical?
+Andrii, WDYT?
+
+-Toke
+
