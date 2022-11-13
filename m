@@ -2,102 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F916626EC7
-	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 10:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D54626EFF
+	for <lists+bpf@lfdr.de>; Sun, 13 Nov 2022 11:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235271AbiKMJkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Nov 2022 04:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S235280AbiKMKfO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Nov 2022 05:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbiKMJkT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Nov 2022 04:40:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BE4DE83
-        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 01:39:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668332361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7aQcfARlP8kkqYFBPkiKIdeI1nmjJ0+x3xBdw4YF//Q=;
-        b=CWjLkuutvefh94nzrYBZU5/Y//oVqwVkuBGiqF4opty8TVAp5mdN62NkIuIc+C3rQr0jrL
-        CszSJpP+A7UBHKy87KQtKrrGplUCPjqec1yEkxsZBLJGxicS1hXkpcn78rmt8QDGngjfAF
-        0phv1VWC/DdUdsiUx46Li3kLzCo9P8g=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-62-vH0sYuLFPOmIeQB_BvKxfA-1; Sun, 13 Nov 2022 04:39:20 -0500
-X-MC-Unique: vH0sYuLFPOmIeQB_BvKxfA-1
-Received: by mail-qk1-f198.google.com with SMTP id h13-20020a05620a244d00b006fb713618b8so611052qkn.0
-        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 01:39:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7aQcfARlP8kkqYFBPkiKIdeI1nmjJ0+x3xBdw4YF//Q=;
-        b=HSeHCHuBCQLMaBBY/GjZu/OIOdBRQxAZjEzV+Fv0QmXASBFVGYmVGTF8jeIwShVyWL
-         0iJ2BneS8U52r8v0Uo6ETIe0hBNAcb8pKlvGmVcM50VvF3XbS2l4nDNkToV5zfaRGBAH
-         lDWv4nlXrTjyRro4onrFAWBTqE2jPmvby6lYvTrf+/ZTzIFTRk5JThA88hmjm/UAU58C
-         jhZZhjohXw+9cgq8Z13+hZu/3jRi+df3lrHszuO/szDmlzTWJWlSwZZIKephm6PxpyYv
-         Pmv+fmKwNnx0LvfLFeWffIpOUc150iw3jOns7YhCw+/vIiccpUhSKrlYhhuB0Q6Foc3T
-         fUQg==
-X-Gm-Message-State: ANoB5pkEw57RV9Xx8+optAPqYDHWJpP57rSNiyWa1QoCebTmSHvF+Lxv
-        DmdFZKMJp6rOmCgCIqnzR45P+7Qc1KbE8qs9Jzllh+RE/HEK+VvwPZUtz9+hbQvXexZPixyu8p9
-        gun/Z09epbq9S+KVVg0O5R0Z556sYHJu+RDZdLcaZVbk2suZLiV4Eb/liIS4gVeE=
-X-Received: by 2002:ac8:44a4:0:b0:3a5:3ae2:ff14 with SMTP id a4-20020ac844a4000000b003a53ae2ff14mr8114032qto.594.1668332360133;
-        Sun, 13 Nov 2022 01:39:20 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4mMWgdRfQp+cXFnydxZrFlcpnHUuculWEqy7HZTQQ6S5CgdeY2JZ/iT2pPwdU0Wqi7a0BWug==
-X-Received: by 2002:ac8:44a4:0:b0:3a5:3ae2:ff14 with SMTP id a4-20020ac844a4000000b003a53ae2ff14mr8114019qto.594.1668332359884;
-        Sun, 13 Nov 2022 01:39:19 -0800 (PST)
-Received: from nfvsdn-06.redhat.com (nat-pool-232-132.redhat.com. [66.187.232.132])
-        by smtp.gmail.com with ESMTPSA id v65-20020a379344000000b006e54251993esm4462884qkd.97.2022.11.13.01.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Nov 2022 01:39:19 -0800 (PST)
-From:   mtahhan@redhat.com
-To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
-        akiyks@gmail.com, Maryam Tahhan <mtahhan@redhat.com>
-Subject: [PATCH bpf-next v1 1/1] docs: fixup cpumap sphinx >= 3.1 warning
-Date:   Sun, 13 Nov 2022 05:33:27 -0500
-Message-Id: <20221113103327.3287482-1-mtahhan@redhat.com>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S235261AbiKMKfN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Nov 2022 05:35:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448F812767
+        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 02:35:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F0D12B80B57
+        for <bpf@vger.kernel.org>; Sun, 13 Nov 2022 10:35:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31849C433C1;
+        Sun, 13 Nov 2022 10:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668335709;
+        bh=ufCkQX6a3GW5pk9FkMMBMqawDJUa85eoEfD8vzO4vMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UjXeV1BC+cd+vWP5utBBqi51Hzk+ERy/zQ4o/9f3kKQTTxZ8p1RZOLxmxA7JRALKz
+         L0t967TetfUDH04eKd7I/0nYZMkHkZ5zbpQb4umDT0bOmywxho2bmJapfhFM5aEKuv
+         Qx6PIA5Lwoxfg6w2UtkN8TNskIQjYB+dDntT/jxJPiAaGb4vNI2jKcCBdIfgVoZMF+
+         DETWge3vu42K7zVmOxfjsjVEPgpAfsN3k3SIE3hYO4CTh/z3QkLPIjIz6/A+B+OTH8
+         Rtzy3ztHaRUSLFb+h6MnSu5tLeDNI3faBZEY9CDFyE6j7pu4CIuppR7iYZIJhPdjsc
+         DsXvrGdID2xLA==
+Date:   Sun, 13 Nov 2022 12:34:54 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "song@kernel.org" <song@kernel.org>, "hch@lst.de" <hch@lst.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "Lu, Aaron" <aaron.lu@intel.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+Message-ID: <Y3DITs3J8koEw3Hz@kernel.org>
+References: <20221107223921.3451913-1-song@kernel.org>
+ <Y2o9Iz30A3Nruqs4@kernel.org>
+ <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+ <Y2uMWvmiPlaNXlZz@kernel.org>
+ <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maryam Tahhan <mtahhan@redhat.com>
+On Wed, Nov 09, 2022 at 05:04:25PM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2022-11-09 at 13:17 +0200, Mike Rapoport wrote:
+> > On Tue, Nov 08, 2022 at 04:51:12PM +0000, Edgecombe, Rick P wrote:
+>
+> > How the caching of large pages in vmalloc can be made useful for use
+> > cases like secretmem and PKS?
+> 
+> This part is easy I think. If we had an unmapped page allocator it
+> could just feed this. 
 
-Fixup bpf_map_update_elem() declaration to use a single line.
+The unmapped page allocator could be used by anything that needs
+non-default permissions in the direct map and knows how to map the pages
+elsewhere. E.g it would have been a oneliner to switch x86::module_alloc()
+to use unmapped allocations. But ...
 
-Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-Reported-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/bpf/map_cpumap.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> Do you have any idea when you might pick up that stuff again?
 
-diff --git a/Documentation/bpf/map_cpumap.rst b/Documentation/bpf/map_cpumap.rst
-index eaf57b38cafd..61a797a86342 100644
---- a/Documentation/bpf/map_cpumap.rst
-+++ b/Documentation/bpf/map_cpumap.rst
-@@ -48,8 +48,7 @@ Userspace
-     program will result in the program failing to load and a verifier warning.
+... unfortunately I don't see it happening anytime soon.
  
- .. c:function::
--    int bpf_map_update_elem(int fd, const void *key, const void *value,
--                   __u64 flags);
-+    int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags);
- 
-  CPU entries can be added or updated using the ``bpf_map_update_elem()``
-  helper. This helper replaces existing elements atomically. The ``value`` parameter
+> To answer my own question, I think a good first step would be to make
+> the interface also work for non-text_poke() so it could really be cross
+> arch, then use it for everything except modules. The benefit to the
+> other arch's at that point is centralized handling of loading text. 
+
+My concern is that the proposed execmem_alloc() cannot be used for
+centralized handling of loading text. I'm not familiar enough with
+modules/ftrace/kprobes/BPF to clearly identify the potential caveats, but
+my gut feeling is that the proposed execmem_alloc() won't be an improvement
+but rather a hindrance for moving to centralized handling of loading text.
+
+It feels to me that a lot of ground work is needed to get to the point
+where we can use centralized handling of loading text.
+
 -- 
-2.35.3
-
+Sincerely yours,
+Mike.
