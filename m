@@ -2,71 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDEC628B96
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 22:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AF0628B97
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbiKNVuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 16:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
+        id S237189AbiKNVvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 16:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236128AbiKNVuy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 16:50:54 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175C312D34
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 13:50:52 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id f27so31712017eje.1
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 13:50:52 -0800 (PST)
+        with ESMTP id S236128AbiKNVvg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 16:51:36 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C6012D34
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 13:51:35 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id d7so5980889qkk.3
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 13:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fi/+WhhMdzhAnOoPAur0yPUPudYFpfaYFXrNP1YptI4=;
-        b=LrIaBFgfeYzGB4jrMnn5NRb6h8W3+kc0DhJXNxyCmn0KiglAnAqti/rSFekCzp+RlH
-         eA7dMSbUXHX4SBb5/V3XD2LDZem7qnn2VFhWUXc4Letpo/hMhNBHY2rIDaRcoXjw5Ovc
-         FAL/PWrleR3vpXFyMG1EF6n08ZzYOeZ7bW+kBCb8iJjM7eoX87dNtPwYeg5OxmiEfp2+
-         fFpGa2ya4lNvAFmdYbkpsgxp6byY/Cphh/T7bsPZdV+3lNjXZuM+Ko4yu1U2Rm3W+Lx1
-         mzR1aFDBo6hGxBWNF6NtyI7vGCNiuZ9BEarfxbrwO8KDBrCooDm1tzGmcjCwwz/w3EXX
-         NOCA==
+        bh=r6Q5/JPSBBWvo6+Gkj/fxw/rW/J7gv/Pi9m6mf17+TI=;
+        b=yuyICg4HW2R9mBv3EkSy/ycA6vAFj+4D8vIrkBaJ7+WXRT/Wk2rNvT0NjonQACTRgL
+         zfl8u4BRVyedjJC8fwOjOscXHOYHNSBCcM8Og7iV+BVMlL8L8oTsYMPYiAvTFKpkHkII
+         7hSW6vxKM/ETVq/EIOR5FdnfONoRwUZvhis/cRMCWUYhZsihmCra/JyFPI6/Ob8xTg/4
+         3bDg4+hgG/sAQK4E7f4lIGGPquc/HvhXDA2RjFgG0c86xe4aw5tLu82WezVQTTlXoq1n
+         CSUUtaJbw+ql9iPrVLEsY/3QQfbVQ6tfwJFOWcqUoNDW99QfUTZVMpZcZcc+1Tz1XpJ7
+         DewQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Fi/+WhhMdzhAnOoPAur0yPUPudYFpfaYFXrNP1YptI4=;
-        b=tgIgreBklnUVtR5sKR0K2qdisieJZXjbOut6tx2aY5ovR09NH0v6Qq4qq0e7SisuSx
-         iX40SqCrg98C/FHHhfgFFjAaqiaqEYfMsPg2ttrHduVm1fwmjmhf9+uFOaKi7EjNObjr
-         cummdneLseEyG4F+Bwo6Xi5jAEFyrr3EbG7NFbPRDklgiW3ab8UOU1AqE548oaeFWLcK
-         w7nJX9Bn6NIE5v7usPwTjWmYk1nLbylBVjlfkSxYw1cw1pO98g5I4sfyvzyJvSppMlCW
-         OIOEqV+wPszaBGi01DHNqXUmidY0qG2X3clduryGa77kC6Bq9dgGgNvu/HPMo3QZlcE5
-         W9eg==
-X-Gm-Message-State: ANoB5pmhr/fRKgYusDMmPmkryCiORlQyh+ycNddR5iLxmANkrJc0ptIP
-        HkHsxnHWwrbWw6hJ7abimdG4nbzsblzl8f6eSjQ=
-X-Google-Smtp-Source: AA0mqf6oGEryk5LXl5eaYv9rojy9KmQjM2kN+Ukv4kFIHrJ2Rruz+dDsBCkm7Y9jZLrNgBMRlw6P+JoeGvyV9lFzXJg=
-X-Received: by 2002:a17:906:9c93:b0:7ae:dc58:ffe7 with SMTP id
- fj19-20020a1709069c9300b007aedc58ffe7mr8493702ejc.58.1668462650444; Mon, 14
- Nov 2022 13:50:50 -0800 (PST)
+        bh=r6Q5/JPSBBWvo6+Gkj/fxw/rW/J7gv/Pi9m6mf17+TI=;
+        b=QZQeW/wFaE9IUHD8YCsCH6zuu6me5MgrqvepTLtwq6D6vPv5ZuP2T5TsEb5tesH94w
+         4Df1np4ANnzX4Ut7rvgN340PZ7+DoH3byLpnN8GUIXZHlQWlyVYvg12i5Z6AOqqNJ8U/
+         6RIJg4o+l6mXJZaoAtTSVWSRZYkNkHY8n02ZJsrjnHZOlhJrw4aqB3IORvIjb87knFf1
+         3ZDRAykLxncMEfut9YtXYfV9SjFjIf5eL6EdTUtDXCS1yTjAxe+lSwxUrS8Ujb650FCP
+         ReY0NO2TspoIQpm2bVcs3DUyUV55dmBC7Xd1oBddQnp1QU5wyzAYUxXrJzY8NUT/kMyc
+         mOVA==
+X-Gm-Message-State: ANoB5pl7yBpCaq/Jzd0JadMHZK1KXYA9KHFX6Ru2fZPvVXjvRnJwBXIq
+        HDrE5dynQ70L9tPkgeeYHrO9lAarLtqSbKYUKtUvXw==
+X-Google-Smtp-Source: AA0mqf7a8kG1ofpy1vkuR9aCipr49/KJCDobO3xklR8h9TbNYGO7Nbw0NymJ+gOsLg2KQ66gM9JoEa86jSLGHi+Osj4=
+X-Received: by 2002:a05:620a:4895:b0:6ce:2d77:92d0 with SMTP id
+ ea21-20020a05620a489500b006ce2d7792d0mr13022192qkb.713.1668462694264; Mon, 14
+ Nov 2022 13:51:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20221025222802.2295103-1-eddyz87@gmail.com> <CAEf4BzbScntAd4Yh5AWw+7bZhooYYaomwLYiuM0+iBtx_7LKoQ@mail.gmail.com>
- <f62834eb-fd3f-ba55-2cec-c256c328926e@meta.com> <CAEf4BzYT4pwmw64DaCTxR3_QjO5RRVadqVLO0h-hNa-+xOyLZw@mail.gmail.com>
- <af1facf9-7bc8-8a3d-0db4-7b3f333589a2@meta.com> <806f02669ee8930a2f5c5e3f2d5cb0b3166832bb.camel@gmail.com>
- <67c5d476-b8f4-9007-ca00-a8a9c111c826@meta.com> <e001c117fc2f7c202e34a68007abdd4f7744c0e1.camel@gmail.com>
-In-Reply-To: <e001c117fc2f7c202e34a68007abdd4f7744c0e1.camel@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 14 Nov 2022 13:50:38 -0800
-Message-ID: <CAADnVQLTetCdDetVGNBDddnfPEAhmhU+gXtWsZuVNeP0wbcOnA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/12] Use uapi kernel headers with vmlinux.h
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+References: <20221113101438.30910-5-sahid.ferdjaoui@industrialdiscipline.com>
+In-Reply-To: <20221113101438.30910-5-sahid.ferdjaoui@industrialdiscipline.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Mon, 14 Nov 2022 21:51:23 +0000
+Message-ID: <CACdoK4+7DUg+H0p-sPeM-FtpTbazk2JrGG+Cbu=BoPL9HfnuKg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/5] bpftool: clean-up usage of libbpf_get_error()
+To:     Sahid Orentino Ferdjaoui 
+        <sahid.ferdjaoui@industrialdiscipline.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, yhs@fb.com, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,126 +68,356 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 1:13 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Sun, 13 Nov 2022 at 10:15, Sahid Orentino Ferdjaoui
+<sahid.ferdjaoui@industrialdiscipline.com> wrote:
 >
-> On Sun, 2022-11-13 at 23:52 -0800, Yonghong Song wrote:
-> >
-> > On 11/11/22 1:55 PM, Eduard Zingerman wrote:
-> > > On Fri, 2022-10-28 at 11:56 -0700, Yonghong Song wrote:
-> > > > > > [...]
-> > > > >
-> > > > > Ok, could we change the problem to detecting if some type is defined.
-> > > > > Would it be possible to have something like
-> > > > >
-> > > > > #if !__is_type_defined(struct abc)
-> > > > > struct abc {
-> > > > > };
-> > > > > #endif
-> > > > >
-> > > > > I think we talked about this and there were problems with this
-> > > > > approach, but I don't remember details and how insurmountable the
-> > > > > problem is. Having a way to check whether some type is defined would
-> > > > > be very useful even outside of -target bpf parlance, though, so maybe
-> > > > > it's the problem worth attacking?
-> > > >
-> > > > Yes, we discussed this before. This will need to add additional work
-> > > > in preprocessor. I just made a discussion topic in llvm discourse
-> > > >
-> > > > https://discourse.llvm.org/t/add-a-type-checking-macro-is-type-defined-type/66268
-> > > >
-> > > > Let us see whether we can get some upstream agreement or not.
-> > >
-> > > I did a small investigation of this feature.
-> > >
-> > > The main pre-requirement is construction of the symbol table during
-> > > source code pre-processing, which implies necessity to parse the
-> > > source code at the same time. It is technically possible in clang, as
-> > > lexing, pre-processing and AST construction happens at the same time
-> > > when in compilation mode.
-> > >
-> > > The prototype is available here [1], it includes:
-> > > - Change in the pre-processor that adds an optional callback
-> > >    "IsTypeDefinedFn" & necessary parsing of __is_type_defined
-> > >    construct.
-> > > - Change in Sema module (responsible for parsing/AST & symbol table)
-> > >    that installs the appropriate "IsTypeDefinedFn" in the pre-processor
-> > >    instance.
-> > >
-> > > However, this prototype builds a backward dependency between
-> > > pre-processor and semantic analysis. There are currently no such
-> > > dependencies in the clang code base.
-> > >
-> > > This makes it impossible to do pre-processing and compilation
-> > > separately, e.g. consider the following example:
-> > >
-> > > $ cat test.c
-> > >
-> > >    struct foo { int x; };
-> > >
-> > >    #if __is_type_defined(foo)
-> > >      const int x = 1;
-> > >    #else
-> > >      const int x = 2;
-> > >    #endif
-> > >
-> > > $ clang -cc1 -ast-print test.c -o -
-> > >
-> > >    struct foo {
-> > >        int x;
-> > >    };
-> > >    const int x = 1;
-> > >
-> > > $ clang -E test.c -o -
-> > >
-> > >    # ... some line directives ...
-> > >    struct foo { int x; };
-> > >    const int x = 2;
-> >
-> > Is it any chance '-E' could output the same one as '-cc1 -ast-print'?
-> > That is, even with -E we could do some semantics analysis
-> > as well, using either current clang semantics analysis or creating
-> > an minimal version of sema analysis in preprocessor itself?
+> bpftool is now totally compliant with libbpf 1.0 mode and is not
+> expected to be compiled with pre-1.0, let's clean-up the usage of
+> libbpf_get_error().
 >
-> Sema drives consumption of tokens from Preprocessor. Calls to
-> Preprocessor are done on a parsing recursive descent. Extracting a
-> stream of tokens would require an incremental parser instead.
+> The changes stay aligned with returned errors always negative.
 >
-> A minimal version of such parser is possible to implement for C.
-> It might be the case that matching open / closing braces and
-> identifiers following 'struct' / 'union' / 'enum' keywords might be
-> almost sufficient but I need to try to be sure (e.g. it is more
-> complex for 'typedef').
+> - In tools/bpf/bpftool/btf.c This fixes an unintialized local variable
+> `err` in function do_dump() because it may now be returned without
+> having been set.
+> - This also removes the checks on NULL pointers before calling
+> btf__free() because that function already does the check.
 >
-> I can work on it but I don't think there is a chance to upstream this work.
+> Signed-off-by: Sahid Orentino Ferdjaoui <sahid.ferdjaoui@industrialdiscipline.com>
+> ---
+>  tools/bpf/bpftool/btf.c        | 19 ++++++++-----------
+>  tools/bpf/bpftool/btf_dumper.c |  2 +-
+>  tools/bpf/bpftool/gen.c        | 11 ++++-------
+>  tools/bpf/bpftool/iter.c       |  6 ++----
+>  tools/bpf/bpftool/main.c       |  7 +++----
+>  tools/bpf/bpftool/map.c        | 15 +++++++--------
+>  tools/bpf/bpftool/prog.c       | 10 +++++-----
+>  tools/bpf/bpftool/struct_ops.c | 12 ++++++------
+>  8 files changed, 36 insertions(+), 46 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index b87e4a7fd689..352290ba7b29 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -467,9 +467,8 @@ static int dump_btf_c(const struct btf *btf,
+>         int err = 0, i;
+>
+>         d = btf_dump__new(btf, btf_dump_printf, NULL, NULL);
+> -       err = libbpf_get_error(d);
+> -       if (err)
+> -               return err;
+> +       if (!d)
+> +               return -errno;
+>
+>         printf("#ifndef __VMLINUX_H__\n");
+>         printf("#define __VMLINUX_H__\n");
+> @@ -512,11 +511,9 @@ static struct btf *get_vmlinux_btf_from_sysfs(void)
+>         struct btf *base;
+>
+>         base = btf__parse(sysfs_vmlinux, NULL);
+> -       if (libbpf_get_error(base)) {
+> -               p_err("failed to parse vmlinux BTF at '%s': %ld\n",
+> -                     sysfs_vmlinux, libbpf_get_error(base));
+> -               base = NULL;
+> -       }
+> +       if (!base)
+> +               p_err("failed to parse vmlinux BTF at '%s': %d\n",
+> +                     sysfs_vmlinux, -errno);
+>
+>         return base;
+>  }
+> @@ -559,7 +556,7 @@ static int do_dump(int argc, char **argv)
+>         __u32 btf_id = -1;
+>         const char *src;
+>         int fd = -1;
+> -       int err;
+> +       int err = 0;
+>
+>         if (!REQ_ARGS(2)) {
+>                 usage();
+> @@ -634,8 +631,8 @@ static int do_dump(int argc, char **argv)
+>                         base = get_vmlinux_btf_from_sysfs();
+>
+>                 btf = btf__parse_split(*argv, base ?: base_btf);
+> -               err = libbpf_get_error(btf);
+>                 if (!btf) {
+> +                       err = -errno;
+>                         p_err("failed to load BTF from %s: %s",
+>                               *argv, strerror(errno));
+>                         goto done;
+> @@ -681,8 +678,8 @@ static int do_dump(int argc, char **argv)
+>                 }
+>
+>                 btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+> -               err = libbpf_get_error(btf);
+>                 if (!btf) {
+> +                       err = -errno;
+>                         p_err("get btf by id (%u): %s", btf_id, strerror(errno));
+>                         goto done;
+>                 }
+> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> index 19924b6ce796..eda71fdfe95a 100644
+> --- a/tools/bpf/bpftool/btf_dumper.c
+> +++ b/tools/bpf/bpftool/btf_dumper.c
+> @@ -75,7 +75,7 @@ static int dump_prog_id_as_func_ptr(const struct btf_dumper *d,
+>                 goto print;
+>
+>         prog_btf = btf__load_from_kernel_by_id(info.btf_id);
+> -       if (libbpf_get_error(prog_btf))
+> +       if (!prog_btf)
+>                 goto print;
+>         func_type = btf__type_by_id(prog_btf, finfo.type_id);
+>         if (!func_type || !btf_is_func(func_type))
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 01bb8d8f5568..5c68b0983491 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -252,9 +252,8 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
+>         int err = 0;
+>
+>         d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
+> -       err = libbpf_get_error(d);
+> -       if (err)
+> -               return err;
+> +       if (!d)
+> +               return -errno;
+>
+>         bpf_object__for_each_map(map, obj) {
+>                 /* only generate definitions for memory-mapped internal maps */
+> @@ -976,13 +975,11 @@ static int do_skeleton(int argc, char **argv)
+>                 /* log_level1 + log_level2 + stats, but not stable UAPI */
+>                 opts.kernel_log_level = 1 + 2 + 4;
+>         obj = bpf_object__open_mem(obj_data, file_sz, &opts);
+> -       err = libbpf_get_error(obj);
+> -       if (err) {
+> +       if (!obj) {
+>                 char err_buf[256];
+>
+> -               libbpf_strerror(err, err_buf, sizeof(err_buf));
+> +               libbpf_strerror(errno, err_buf, sizeof(err_buf));
+>                 p_err("failed to open BPF object file: %s", err_buf);
+> -               obj = NULL;
+>                 goto out;
+>         }
+>
+> diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+> index a3e6b167153d..ab6f1b2befe7 100644
+> --- a/tools/bpf/bpftool/iter.c
+> +++ b/tools/bpf/bpftool/iter.c
+> @@ -48,8 +48,7 @@ static int do_pin(int argc, char **argv)
+>         }
+>
+>         obj = bpf_object__open(objfile);
+> -       err = libbpf_get_error(obj);
+> -       if (err) {
+> +       if (!obj) {
 
-Right. It's going to be C only.
-C++ with namespaces and nested class decls won't work with simple
-type parser.
+We could maybe set err to -errno here, so the function returns it
+instead of the default -1 on error. Doesn't matter too much because
+the return value is not used by the caller (other than to compare it
+to 0), but it would be more consistent with the surrounding checks in
+my opinion.
 
-On the other side if we're asking preprocessor to look for
-'struct foo' and remember that 'foo' is a type
-maybe we can add a regex-search instead?
-It would be a bit more generic and will work for basic
-union/struct foo definition?
-Something like instead of:
-#if __is_type_defined(foo)
-use:
-#if regex(struct[\t]+foo)
+>                 p_err("can't open objfile %s", objfile);
+>                 goto close_map_fd;
+>         }
+> @@ -67,8 +66,7 @@ static int do_pin(int argc, char **argv)
+>         }
+>
+>         link = bpf_program__attach_iter(prog, &iter_opts);
+> -       err = libbpf_get_error(link);
+> -       if (err) {
+> +       if (!link) {
 
-enums are harder in this approach, but higher chance to land?
+Same
 
-regex() would mean "search for this pattern in the file until this line.
+>                 p_err("attach_iter failed for program %s",
+>                       bpf_program__name(prog));
+>                 goto close_obj;
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 87ceafa4b9b8..da43ba596610 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -510,10 +510,9 @@ int main(int argc, char **argv)
+>                         break;
+>                 case 'B':
+>                         base_btf = btf__parse(optarg, NULL);
+> -                       if (libbpf_get_error(base_btf)) {
+> -                               p_err("failed to parse base BTF at '%s': %ld\n",
+> -                                     optarg, libbpf_get_error(base_btf));
+> -                               base_btf = NULL;
+> +                       if (!base_btf) {
+> +                               p_err("failed to parse base BTF at '%s': %d\n",
+> +                                     optarg, errno);
 
-Or some other preprocessor "language" tricks?
+You fixed the errno -> -errno occurrences reported by Andrii, but you
+have a few remaining: here...
 
-For example:
-The preprocessor would grep for 'struct *' in a single line
-while processing a file and emit #define __secret_prefix_##$1
-where $1 would be a capture from "single line regex".
-Then later in the same file instead of:
-#if __is_type_defined(foo)
-use:
-#ifdef __secret_prefix_foo
+>                                 return -1;
+>                         }
+>                         break;
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index d884070a2314..26d4022ec374 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+> @@ -786,18 +786,18 @@ static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
+>         if (info->btf_vmlinux_value_type_id) {
+>                 if (!btf_vmlinux) {
+>                         btf_vmlinux = libbpf_find_kernel_btf();
+> -                       err = libbpf_get_error(btf_vmlinux);
+> -                       if (err) {
+> +                       if (!btf_vmlinux) {
+>                                 p_err("failed to get kernel btf");
+> -                               return err;
+> +                               return errno;
 
-This "single line regex" may look like:
-#if regex_in_any_later_line(struct[\t]+[a-zA-Z_]+) define __secret_prefix_$2
+... and here...
+
+>                         }
+>                 }
+>                 *btf = btf_vmlinux;
+>         } else if (info->btf_value_type_id) {
+>                 *btf = btf__load_from_kernel_by_id(info->btf_id);
+> -               err = libbpf_get_error(*btf);
+> -               if (err)
+> +               if (!*btf) {
+> +                       err = errno;
+
+... and here. Please double-check in case I missed some too.
+
+>                         p_err("failed to get btf");
+> +               }
+>         } else {
+>                 *btf = NULL;
+>         }
+> @@ -807,14 +807,13 @@ static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
+>
+>  static void free_map_kv_btf(struct btf *btf)
+>  {
+> -       if (!libbpf_get_error(btf) && btf != btf_vmlinux)
+> +       if (btf != btf_vmlinux)
+>                 btf__free(btf);
+>  }
+>
+>  static void free_btf_vmlinux(void)
+>  {
+> -       if (!libbpf_get_error(btf_vmlinux))
+> -               btf__free(btf_vmlinux);
+> +       btf__free(btf_vmlinux);
+>  }
+>
+>  static int
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 2266958f203f..cfc9fdc1e863 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -322,7 +322,7 @@ static void show_prog_metadata(int fd, __u32 num_maps)
+>                 return;
+>
+>         btf = btf__load_from_kernel_by_id(map_info.btf_id);
+> -       if (libbpf_get_error(btf))
+> +       if (!btf)
+>                 goto out_free;
+>
+>         t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
+> @@ -726,7 +726,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>
+>         if (info->btf_id) {
+>                 btf = btf__load_from_kernel_by_id(info->btf_id);
+> -               if (libbpf_get_error(btf)) {
+> +               if (!btf) {
+>                         p_err("failed to get btf");
+>                         return -1;
+>                 }
+> @@ -1663,7 +1663,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>                 open_opts.kernel_log_level = 1 + 2 + 4;
+>
+>         obj = bpf_object__open_file(file, &open_opts);
+> -       if (libbpf_get_error(obj)) {
+> +       if (!obj) {
+>                 p_err("failed to open object file");
+>                 goto err_free_reuse_maps;
+>         }
+> @@ -1882,7 +1882,7 @@ static int do_loader(int argc, char **argv)
+>                 open_opts.kernel_log_level = 1 + 2 + 4;
+>
+>         obj = bpf_object__open_file(file, &open_opts);
+> -       if (libbpf_get_error(obj)) {
+> +       if (!obj) {
+>                 p_err("failed to open object file");
+>                 goto err_close_obj;
+>         }
+> @@ -2199,7 +2199,7 @@ static char *profile_target_name(int tgt_fd)
+>         }
+>
+>         btf = btf__load_from_kernel_by_id(info.btf_id);
+> -       if (libbpf_get_error(btf)) {
+> +       if (!btf) {
+>                 p_err("failed to load btf for prog FD %d", tgt_fd);
+>                 goto out;
+>         }
+> diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
+> index a6c6d5b9551e..903b80ff4e9a 100644
+> --- a/tools/bpf/bpftool/struct_ops.c
+> +++ b/tools/bpf/bpftool/struct_ops.c
+> @@ -32,7 +32,7 @@ static const struct btf *get_btf_vmlinux(void)
+>                 return btf_vmlinux;
+>
+>         btf_vmlinux = libbpf_find_kernel_btf();
+> -       if (libbpf_get_error(btf_vmlinux))
+> +       if (!btf_vmlinux)
+>                 p_err("struct_ops requires kernel CONFIG_DEBUG_INFO_BTF=y");
+>
+>         return btf_vmlinux;
+> @@ -45,7 +45,7 @@ static const char *get_kern_struct_ops_name(const struct bpf_map_info *info)
+>         const char *st_ops_name;
+>
+>         kern_btf = get_btf_vmlinux();
+> -       if (libbpf_get_error(kern_btf))
+> +       if (!kern_btf)
+>                 return "<btf_vmlinux_not_found>";
+>
+>         t = btf__type_by_id(kern_btf, info->btf_vmlinux_value_type_id);
+> @@ -62,6 +62,7 @@ static __s32 get_map_info_type_id(void)
+>         if (map_info_type_id)
+>                 return map_info_type_id;
+>
+> +       kern_btf = get_btf_vmlinux();
+
+Looks like that line you removed by mistake in a previous patch?
+
+>         if (!kern_btf)
+>                 return 0;
+>
+> @@ -412,7 +413,7 @@ static int do_dump(int argc, char **argv)
+>         }
+>
+>         kern_btf = get_btf_vmlinux();
+> -       if (libbpf_get_error(kern_btf))
+> +       if (!kern_btf)
+>                 return -1;
+>
+>         if (!json_output) {
+> @@ -495,7 +496,7 @@ static int do_register(int argc, char **argv)
+>                 open_opts.kernel_log_level = 1 + 2 + 4;
+>
+>         obj = bpf_object__open_file(file, &open_opts);
+> -       if (libbpf_get_error(obj))
+> +       if (!obj)
+>                 return -1;
+>
+>         set_max_rlimit();
+> @@ -589,8 +590,7 @@ int do_struct_ops(int argc, char **argv)
+>
+>         err = cmd_select(cmds, argc, argv, do_help);
+>
+> -       if (!libbpf_get_error(btf_vmlinux))
+> -               btf__free(btf_vmlinux);
+> +       btf__free(btf_vmlinux);
+>
+>         return err;
+>  }
+> --
+> 2.34.1
+>
+>
