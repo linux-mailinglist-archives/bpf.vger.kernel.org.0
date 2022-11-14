@@ -2,67 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619B46289D3
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AD66289ED
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235636AbiKNTvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 14:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        id S236005AbiKNT5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 14:57:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235639AbiKNTvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 14:51:18 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1747FC16
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:51:17 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id y192so11359085yby.1
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:51:17 -0800 (PST)
+        with ESMTP id S237511AbiKNT5M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 14:57:12 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F5D6569
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:57:11 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-367b8adf788so117469837b3.2
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:57:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sg5Dni5DCJDAujeJpZa5ibaRe02AOPeH0OrypvPSAoI=;
-        b=Ork/fUHHdkEvo2YB+SIDMZwJz2ASj9yWEDxW7mr/VdEvpY6mFLorTdnppVwdXW9nph
-         IK1qlv8UcJ3wv21FPdmAdsx9Ah9cDcSCkwbNIL3TozpdUFLtgezPokiPHBFr2OxlB0w9
-         o1++OIdq+9aVXkiLwjjFdz0PoniEyG1Y0oJGYzS4Gkihbhy3/yfIPIE0/azI/ODqdSpT
-         r5h+ir4/qjr0OyU4/b400SeCxWShcWE5UQCjhMYdtEcyBIF9Mx3O+vgQfzUzChUIzz0J
-         o6ZRW9ia3SPmgJua48EYanksieiw0tDTe7ZslkttRzW5A6vtrvgMVEwHtVyA0YJtB5HK
-         EDwg==
+        bh=okZRZ7eVdw7Xd9wS10vzsWvpx4uhGH+TJK+PhT6rGPo=;
+        b=kUAsD8OmX6iZKCbLQweqX50R2lDx4n8m24//MS8yhtXQD+qVdKtMwtg8uphwrUcClb
+         FMFXATtrImh9txppEJ6dGwM9DTAj69oCDPPkN0LYvExj0b6U2FBgitrZblmjvQ69jBMr
+         Fyx1enBLr0+65SWzlDv5IhJOPdYYO0UbwGmON7qgYxrSNMuPLOcXHGbLMTU1z+FnpvtQ
+         uncyIJ3ZYKweJs+3g0/9L4GsAwX5vg715/7+DNnh/4GVjHeePl2HL3Ck4TeYqMH1xCaj
+         sVTqkEkrHHPxlMAU2GTj4gXZQIk0sxZw4lx0DztmlTyBGcq1Uq4Pphp2EV4BqBN4W9Gp
+         5GDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sg5Dni5DCJDAujeJpZa5ibaRe02AOPeH0OrypvPSAoI=;
-        b=TcDxKysoU3qBFFdKgpWR4Llz4ljG2uw9H7fM2824zbQ1DcB25VRXb0qrOaNb/RxHX+
-         zvftaZFq9FqWi8KnNy8l8nge2A2WC/ImMl87+gkJDDY7MrFxWeJE/c+R41ByHPZwKMc7
-         joMhoEwhWf8FRAnXocgV5aCS2PYxEQ5MCZ3TxA3Pn4Lh+89xV12IZAE+IzUKkSzR4xrm
-         43qaCBF7iiw8fyS9EnRaPwF1N3r1lXM/gFTGWBOMU8UBiVKYKiKbXsg9Fye3ngZAb48f
-         6s1uGf1J+3QLtdL6iAfxU8/K+pu+ksFCn3Nq9wex+N/ibcjL+smY5a5M4zfTUgshqMXx
-         y44g==
-X-Gm-Message-State: ANoB5pnktqK6DhaNT/1D+LTLq/opBYuHUQ/ruRdSKm7vTj+vxuBJyasn
-        mSebhei8a6vsGpx1g8gNJZvHtKGv7+3n6Ic5ph+B413h
-X-Google-Smtp-Source: AA0mqf4ljG5n0960v7XidYO2BcKJy/K1U5HwEhyPs9XK0Z8I7Ih1Qd6VJRQTFd2uZPmC6RJjVwQoGowk1nJf8pSOwuU=
-X-Received: by 2002:a5b:405:0:b0:6d3:bab1:8e68 with SMTP id
- m5-20020a5b0405000000b006d3bab18e68mr12924093ybp.609.1668455476209; Mon, 14
- Nov 2022 11:51:16 -0800 (PST)
+        bh=okZRZ7eVdw7Xd9wS10vzsWvpx4uhGH+TJK+PhT6rGPo=;
+        b=NL/m07e6SN9BB5DxQjX9GwnT2F5d7EQBKFi+dzfi4ZhC9/RtgvUgkK7B9OAGXHu0aW
+         iXqJa4enqQqUs4mGMT8IMZDMHM9TmnajEW3fsJIIpIPKn1mhqDjlvMtsLtRvgHpFzWfq
+         bM9dZl22g9xW1zwT+qaglN0kczqKp2B7f8gb2Q969Tlks2JJ/1uG4+vg6kVfA3LlurjE
+         C6qk7xdwm3QwQaP3VoBn0Wv2zntPNyVhTmWxDQkM8teeVIHO9Dt7KJ8pdMv4cbv7mLNU
+         PoRU2pBe143xc50qddQ7jnEifyjHBNC+tnEd6pbALHeCr2xECTsIiNScezcoByN8lbhl
+         YmaQ==
+X-Gm-Message-State: ANoB5pnnh7w6vtu3STUXT89XXZWeEl8jDh35WAYMnPkOXF8PQ6GqsYyd
+        w0RfwRjl+kvKDX36PyEU/bzywbghbW05rVHG1+s=
+X-Google-Smtp-Source: AA0mqf79T1FTqPu1Jw2q5kOIehM+krOrcgDoHQGfq4Qi07uy9lTbMtG2kpW1Uv+qQsKQ2wD4D+2rNvowPSb+hLIusFk=
+X-Received: by 2002:a81:5702:0:b0:368:ba4f:dd9f with SMTP id
+ l2-20020a815702000000b00368ba4fdd9fmr14631851ywb.155.1668455830824; Mon, 14
+ Nov 2022 11:57:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20221111092642.2333724-1-houtao@huaweicloud.com>
- <20221111092642.2333724-3-houtao@huaweicloud.com> <Y26MTygDw2PUQlFz@google.com>
- <CAEf4Bza4yPEW2wOFAFMC8nwEEqVtD-jBD2T52CQ7vJpCUWCvmA@mail.gmail.com> <251d0ed2-7767-ecfa-1ac9-d6e940ad6c54@huaweicloud.com>
-In-Reply-To: <251d0ed2-7767-ecfa-1ac9-d6e940ad6c54@huaweicloud.com>
+References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-2-eddyz87@gmail.com>
+ <CAEf4Bzbnd2UOT9Mko+0Yf9Kgsn-sGsV43MKExYjEaYbWg0WgZg@mail.gmail.com> <3d638bd465fb604ef01c1dc5a5a92617b90482d8.camel@gmail.com>
+In-Reply-To: <3d638bd465fb604ef01c1dc5a5a92617b90482d8.camel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Nov 2022 11:51:02 -0800
-Message-ID: <CAEf4Bzb7EwugkWY7Ma3hmsWA-8sHuh7MwzMRTEZh445q5XvqOw@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/4] libbpf: Handle size overflow for ringbuf mmap
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     sdf@google.com, bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+Date:   Mon, 14 Nov 2022 11:56:57 -0800
+Message-ID: <CAEf4BzYZ-oo38ATgv32=0LhFWYciGtwAUcpSeB3Aam8hJ5Yuzg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] libbpf: __attribute__((btf_decl_tag("...")))
+ for btf dump in C format
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,93 +68,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 7:34 PM Hou Tao <houtao@huaweicloud.com> wrote:
+On Fri, Nov 11, 2022 at 1:30 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> Hi,
->
-> On 11/12/2022 4:56 AM, Andrii Nakryiko wrote:
-> > On Fri, Nov 11, 2022 at 9:54 AM <sdf@google.com> wrote:
-> >> On 11/11, Hou Tao wrote:
-> >>> From: Hou Tao <houtao1@huawei.com>
-> >>> The maximum size of ringbuf is 2GB on x86-64 host, so 2 * max_entries
-> >>> will overflow u32 when mapping producer page and data pages. Only
-> >>> casting max_entries to size_t is not enough, because for 32-bits
-> >>> application on 64-bits kernel the size of read-only mmap region
-> >>> also could overflow size_t.
-> >>> Fixes: bf99c936f947 ("libbpf: Add BPF ring buffer support")
-> >>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >>> ---
-> >>>   tools/lib/bpf/ringbuf.c | 11 +++++++++--
-> >>>   1 file changed, 9 insertions(+), 2 deletions(-)
-> >>> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> >>> index d285171d4b69..c4bdc88af672 100644
-> >>> --- a/tools/lib/bpf/ringbuf.c
-> >>> +++ b/tools/lib/bpf/ringbuf.c
-> >>> @@ -77,6 +77,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_fd,
-> >>>       __u32 len = sizeof(info);
-> >>>       struct epoll_event *e;
-> >>>       struct ring *r;
-> >>> +     __u64 ro_size;
-> > I found ro_size quite a confusing name, let's call it mmap_sz?
-> OK.
-> >
-> >>>       void *tmp;
-> >>>       int err;
-> >>> @@ -129,8 +130,14 @@ int ring_buffer__add(struct ring_buffer *rb, int
-> >>> map_fd,
-> >>>        * data size to allow simple reading of samples that wrap around the
-> >>>        * end of a ring buffer. See kernel implementation for details.
-> >>>        * */
-> >>> -     tmp = mmap(NULL, rb->page_size + 2 * info.max_entries, PROT_READ,
-> >>> -                MAP_SHARED, map_fd, rb->page_size);
-> >>> +     ro_size = rb->page_size + 2 * (__u64)info.max_entries;
-> >> [..]
-> >>
-> >>> +     if (ro_size != (__u64)(size_t)ro_size) {
-> >>> +             pr_warn("ringbuf: ring buffer size (%u) is too big\n",
-> >>> +                     info.max_entries);
-> >>> +             return libbpf_err(-E2BIG);
-> >>> +     }
-> >> Why do we need this check at all? IIUC, the problem is that the expression
-> >> "rb->page_size + 2 * info.max_entries" is evaluated as u32 and can
-> >> overflow. So why doing this part only isn't enough?
-> >>
-> >> size_t mmap_size = rb->page_size + 2 * (size_t)info.max_entries;
-> >> mmap(NULL, mmap_size, PROT_READ, MAP_SHARED, map_fd, ...);
-> >>
-> >> sizeof(size_t) should be 8, so no overflow is possible?
-> > not on 32-bit arches, presumably?
-> Yes. For 32-bits kernel, the total size of virtual address space for user space
-> and kernel space is 4GB, so when map_entries is 2GB, the needed virtual address
-> space will be 2GB + 4GB, so the mapping of ring buffer will fail either in
-> kernel or in userspace. A extreme case is 32-bits userspace under 64-bits
-> kernel. The mapping of 2GB ring buffer in kernel is OK, but 4GB will overflow
-> size_t on 32-bits userspace.
-> >
->
->
+> On Fri, 2022-11-11 at 10:58 -0800, Andrii Nakryiko wrote:
+> > On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 > >
 > >
-> >>
-> >>> +     tmp = mmap(NULL, (size_t)ro_size, PROT_READ, MAP_SHARED, map_fd,
-> >>> +                rb->page_size);
-> > should we split this mmap into two mmaps -- one for producer_pos page,
-> > another for data area. That will presumably allow to mmap ringbuf with
-> > max_entries = 1GB?
-> I don't understand the reason for the splitting. Even without the splitting, in
-> theory ring buffer with max_entries = 1GB will be OK for 32-bits kernel, despite
-> in practice the mapping of 1GB ring buffer on 32-bits kernel will fail because
-> the most common size of kernel virtual address space is 1GB (although ARM could
-> use VMSPLIT_1G to increase the size of kernel virtual address to 3GB).
+> > [...]
+> >
+> > >  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
+> > > @@ -1438,9 +1593,12 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+> > >                 }
+> > >                 case BTF_KIND_FUNC_PROTO: {
+> > >                         const struct btf_param *p = btf_params(t);
+> > > +                       struct decl_tag_array *decl_tags = NULL;
+> > >                         __u16 vlen = btf_vlen(t);
+> > >                         int i;
+> > >
+> > > +                       hashmap__find(d->decl_tags, id, &decl_tags);
+> > > +
+> > >                         /*
+> > >                          * GCC emits extra volatile qualifier for
+> > >                          * __attribute__((noreturn)) function pointers. Clang
+> >
+> > should there be btf_dump_emit_decl_tags(d, decl_tags, -1) somewhere
+> > here to emit tags of FUNC_PROTO itself?
+>
+> Actually, I have not found a way to attach decl tag to a FUNC_PROTO itself:
 
-Yep, never mind. size_t is positive, so it can express up to 4GB, so
-2GB + 4KB is fine as is already (even though it most probably will
-fail).
+I'll need to check with Yonghong, but I think what happens right now
+with decl_tag being attached to FUNC instead of its underlying
+FUNC_PROTO might be a bug (or maybe it's by design, but certainly is
+quite confusing as FUNC itself doesn't have arguments, so
+component_idx != -1 is a bit weird).
 
+But regardless if Clang allows you to express it in C code today or
+not, if we support decl_tags on func proto args, for completeness
+let's support it also on func_proto itself (comp_idx == -1). You can
+build BTF manually for test, just like you do it for func_proto args,
+right?
+
+>
+>   typedef void (*fn)(void) __decl_tag("..."); // here tag is attached to typedef
+>   struct foo {
+>     void (*fn)(void) __decl_tag("..."); // here tag is attached to a foo.fn field
+>   }
+>   void foo(void (*fn)(void) __decl_tag("...")); // here tag is attached to FUNC foo
+>                                                 // parameter but should probably
+>                                                 // be attached to
+>                                                 // FUNC_PROTO parameter instead.
+>
+> Also, I think that Yonghong had reservations about decl tags attached to
+> FUNC_PROTO parameters.
+> Yonghong, could you please comment?
+
+yep, curious to hear as well
+
+
+>
 > >
-> >>>       if (tmp == MAP_FAILED) {
-> >>>               err = -errno;
-> >>>               ringbuf_unmap_ring(rb, r);
-> >>> --
-> >>> 2.29.2
+> > > @@ -1481,6 +1639,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+> > >
+> > >                                 name = btf_name_of(d, p->name_off);
+> > >                                 btf_dump_emit_type_decl(d, p->type, name, lvl);
+> > > +                               btf_dump_emit_decl_tags(d, decl_tags, i);
+> > >                         }
+> > >
+> > >                         btf_dump_printf(d, ")");
+> > > @@ -1896,6 +2055,7 @@ static int btf_dump_var_data(struct btf_dump *d,
+> > >                              const void *data)
+> > >  {
+> > >         enum btf_func_linkage linkage = btf_var(v)->linkage;
+> > > +       struct decl_tag_array *decl_tags = NULL;
+> > >         const struct btf_type *t;
+> > >         const char *l;
+> > >         __u32 type_id;
+> > > @@ -1920,7 +2080,10 @@ static int btf_dump_var_data(struct btf_dump *d,
+> > >         type_id = v->type;
+> > >         t = btf__type_by_id(d->btf, type_id);
+> > >         btf_dump_emit_type_cast(d, type_id, false);
+> > > -       btf_dump_printf(d, " %s = ", btf_name_of(d, v->name_off));
+> > > +       btf_dump_printf(d, " %s", btf_name_of(d, v->name_off));
+> > > +       hashmap__find(d->decl_tags, id, &decl_tags);
+> > > +       btf_dump_emit_decl_tags(d, decl_tags, -1);
+> > > +       btf_dump_printf(d, " = ");
+> > >         return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
+> > >  }
+> > >
+> > > @@ -2421,6 +2584,8 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+> > >         d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
+> > >         d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
+> > >
+> > > +       btf_dump_assign_decl_tags(d);
+> > > +
+> >
+> > I'm actually not sure we want those tags on binary data dump.
+> > Generally data dump is not type definition dump, so this seems
+> > unnecessary, it will just distract from data itself. Let's drop it for
+> > now? If there would be a need we can add it easily later.
+>
+> Well, this is the only place where VARs are processed, removing this code
+> would make the second patch in a series useless.
+> But I like my second patch in a series :) should I just drop it?
+> I can extract it as a separate series and simplify some of the existing
+> data dump tests.
+
+yep, data dump tests can be completely orthogonal, send them
+separately if you are attached to that code ;)
+
+but for decl_tags on dump_type_data() I'd rather be conservative for
+now, unless in practice those decl_tags will turn out to be needed
+
+
+>
+> >
+> > >         ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
+> > >
+> > >         d->typed_dump = NULL;
+> > > --
+> > > 2.34.1
+> > >
 >
