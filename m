@@ -2,190 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AD66289ED
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57740628A3C
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236005AbiKNT5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 14:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S235800AbiKNUNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 15:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237511AbiKNT5M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 14:57:12 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F5D6569
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:57:11 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-367b8adf788so117469837b3.2
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=okZRZ7eVdw7Xd9wS10vzsWvpx4uhGH+TJK+PhT6rGPo=;
-        b=kUAsD8OmX6iZKCbLQweqX50R2lDx4n8m24//MS8yhtXQD+qVdKtMwtg8uphwrUcClb
-         FMFXATtrImh9txppEJ6dGwM9DTAj69oCDPPkN0LYvExj0b6U2FBgitrZblmjvQ69jBMr
-         Fyx1enBLr0+65SWzlDv5IhJOPdYYO0UbwGmON7qgYxrSNMuPLOcXHGbLMTU1z+FnpvtQ
-         uncyIJ3ZYKweJs+3g0/9L4GsAwX5vg715/7+DNnh/4GVjHeePl2HL3Ck4TeYqMH1xCaj
-         sVTqkEkrHHPxlMAU2GTj4gXZQIk0sxZw4lx0DztmlTyBGcq1Uq4Pphp2EV4BqBN4W9Gp
-         5GDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=okZRZ7eVdw7Xd9wS10vzsWvpx4uhGH+TJK+PhT6rGPo=;
-        b=NL/m07e6SN9BB5DxQjX9GwnT2F5d7EQBKFi+dzfi4ZhC9/RtgvUgkK7B9OAGXHu0aW
-         iXqJa4enqQqUs4mGMT8IMZDMHM9TmnajEW3fsJIIpIPKn1mhqDjlvMtsLtRvgHpFzWfq
-         bM9dZl22g9xW1zwT+qaglN0kczqKp2B7f8gb2Q969Tlks2JJ/1uG4+vg6kVfA3LlurjE
-         C6qk7xdwm3QwQaP3VoBn0Wv2zntPNyVhTmWxDQkM8teeVIHO9Dt7KJ8pdMv4cbv7mLNU
-         PoRU2pBe143xc50qddQ7jnEifyjHBNC+tnEd6pbALHeCr2xECTsIiNScezcoByN8lbhl
-         YmaQ==
-X-Gm-Message-State: ANoB5pnnh7w6vtu3STUXT89XXZWeEl8jDh35WAYMnPkOXF8PQ6GqsYyd
-        w0RfwRjl+kvKDX36PyEU/bzywbghbW05rVHG1+s=
-X-Google-Smtp-Source: AA0mqf79T1FTqPu1Jw2q5kOIehM+krOrcgDoHQGfq4Qi07uy9lTbMtG2kpW1Uv+qQsKQ2wD4D+2rNvowPSb+hLIusFk=
-X-Received: by 2002:a81:5702:0:b0:368:ba4f:dd9f with SMTP id
- l2-20020a815702000000b00368ba4fdd9fmr14631851ywb.155.1668455830824; Mon, 14
- Nov 2022 11:57:10 -0800 (PST)
+        with ESMTP id S236128AbiKNUNb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 15:13:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27033DE0
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:13:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E2DB5B81200
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:13:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89440C433B5
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668456806;
+        bh=evWACerkMgPDV2iTZqsEi8ywuNBzXAvxPW2Xk8G2OBU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=C65L8kYtUw2wQtwX+8t8BIb91ZDeXHBRWBps4GPdZ/BWu/hQGauagjA2DGsLyrBnM
+         ETfRraPQMVzI2QM8Rq8kj2fltQZ+SbbV4UeDD+rQ2ojCzAi4MAHdFpnRR0jRXpOq40
+         vToOftpvY3fEeUxctQRx2vHCuU84f5+onNEGbS0DpGbaZ5DoW86dhQwpPnLurEhdTk
+         dZWekuVpCYo/IEHkiM7cUz3jUlOYQ3eGSU31juIIjx2Jj6l4rbtanaPPO1kDYcTiwo
+         ke+t+RCb8pmOKzZk43wYI3uVgb1RrVm49rwMrKnX02hY8c2JpZ9kKst0i3k7xGRDIM
+         ozyEJxISzzI1A==
+Received: by mail-ej1-f49.google.com with SMTP id f5so31104574ejc.5
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:13:25 -0800 (PST)
+X-Gm-Message-State: ANoB5pm/ScrsbLiBhIUozAFFbnSqPTwNJZPewH02U+z4AzphBqFCjAVR
+        WtrNVAtcU0FvfzuhJXCYSMw8JsJRwO2eGtCDkdU=
+X-Google-Smtp-Source: AA0mqf7ENa/NO+V3ctrhT8zWG2na9i2XUmqqM9TNRdX64zkoNebB/7px/ngcBRNTKeo5RRwFgFU9PJ8Z64UIfAUao0w=
+X-Received: by 2002:a17:907:1308:b0:7af:bc9:5e8d with SMTP id
+ vj8-20020a170907130800b007af0bc95e8dmr2955180ejb.3.1668456803725; Mon, 14 Nov
+ 2022 12:13:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-2-eddyz87@gmail.com>
- <CAEf4Bzbnd2UOT9Mko+0Yf9Kgsn-sGsV43MKExYjEaYbWg0WgZg@mail.gmail.com> <3d638bd465fb604ef01c1dc5a5a92617b90482d8.camel@gmail.com>
-In-Reply-To: <3d638bd465fb604ef01c1dc5a5a92617b90482d8.camel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Nov 2022 11:56:57 -0800
-Message-ID: <CAEf4BzYZ-oo38ATgv32=0LhFWYciGtwAUcpSeB3Aam8hJ5Yuzg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: __attribute__((btf_decl_tag("...")))
- for btf dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
+ <CAPhsuW7xtUKb7ovjLFDPap-_t1TzPZ0Td+kHparOniZf7cBCSQ@mail.gmail.com> <Y3C/4Y5bt5eXadzJ@kernel.org>
+In-Reply-To: <Y3C/4Y5bt5eXadzJ@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 14 Nov 2022 12:13:11 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6Opkg0_qc53jQ3RyN5XKB2i3X3qNfoXLNrmUbD3AzcFA@mail.gmail.com>
+Message-ID: <CAPhsuW6Opkg0_qc53jQ3RyN5XKB2i3X3qNfoXLNrmUbD3AzcFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
+        x86@kernel.org, peterz@infradead.org, hch@lst.de,
+        rick.p.edgecombe@intel.com, aaron.lu@intel.com, mcgrof@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 1:30 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Fri, 2022-11-11 at 10:58 -0800, Andrii Nakryiko wrote:
-> > On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Sun, Nov 13, 2022 at 1:59 AM Mike Rapoport <rppt@kernel.org> wrote:
+[...]
 > >
-> >
-> > [...]
-> >
-> > >  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32 id)
-> > > @@ -1438,9 +1593,12 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
-> > >                 }
-> > >                 case BTF_KIND_FUNC_PROTO: {
-> > >                         const struct btf_param *p = btf_params(t);
-> > > +                       struct decl_tag_array *decl_tags = NULL;
-> > >                         __u16 vlen = btf_vlen(t);
-> > >                         int i;
-> > >
-> > > +                       hashmap__find(d->decl_tags, id, &decl_tags);
-> > > +
-> > >                         /*
-> > >                          * GCC emits extra volatile qualifier for
-> > >                          * __attribute__((noreturn)) function pointers. Clang
-> >
-> > should there be btf_dump_emit_decl_tags(d, decl_tags, -1) somewhere
-> > here to emit tags of FUNC_PROTO itself?
+> > There will be some memory waste in such cases. But it will get better with:
+> > 1) With 4/5 and 5/5, BPF programs will share this 2MB page with kernel .text
+> > section (_stext to _etext);
+> > 2) modules, ftrace, kprobe will also share this 2MB page;
 >
-> Actually, I have not found a way to attach decl tag to a FUNC_PROTO itself:
+> Unless I'm missing something, what will be shared is the virtual space, the
+> actual physical pages will be still allocated the same way as any vmalloc()
+> allocation.
 
-I'll need to check with Yonghong, but I think what happens right now
-with decl_tag being attached to FUNC instead of its underlying
-FUNC_PROTO might be a bug (or maybe it's by design, but certainly is
-quite confusing as FUNC itself doesn't have arguments, so
-component_idx != -1 is a bit weird).
-
-But regardless if Clang allows you to express it in C code today or
-not, if we support decl_tags on func proto args, for completeness
-let's support it also on func_proto itself (comp_idx == -1). You can
-build BTF manually for test, just like you do it for func_proto args,
-right?
+What do you mean by shared virtual space, but the actual physical pages are
+still the same? This is a 2MB page shared by BPF programs, modules, etc.,
+so it is 2MB virtual address space, and it is also 1x 2MB physical huge page.
+For example, we will allocate one 2MB page, and put 1MB of module text,
+512kB of BPF programs, some ftrace trampolines in this page.
 
 >
->   typedef void (*fn)(void) __decl_tag("..."); // here tag is attached to typedef
->   struct foo {
->     void (*fn)(void) __decl_tag("..."); // here tag is attached to a foo.fn field
->   }
->   void foo(void (*fn)(void) __decl_tag("...")); // here tag is attached to FUNC foo
->                                                 // parameter but should probably
->                                                 // be attached to
->                                                 // FUNC_PROTO parameter instead.
+> > 3) There are bigger BPF programs in many use cases.
 >
-> Also, I think that Yonghong had reservations about decl tags attached to
-> FUNC_PROTO parameters.
-> Yonghong, could you please comment?
+> With statistics you provided above one will need hundreds if not thousands
+> of BPF programs to fill a 2M page. I didn't do the math, but it seems that
+> to see memory savings there should be several hundreds of BPF programs.
 
-yep, curious to hear as well
+powerpc is trying to use bpf_prog_pack [1]. IIUC, execmem_alloc() should
+allocate 512kB pages for powerpc. This already yielding memory savings:
+on a random system in our fleet (x86_64), BPF programs use 140x 4kB
+pages (or 560kB) without execmem_alloc(). They will fit in 200kB with
+execmem_alloc(), and we can use the other 300kB+ for modules, ftrace,
+etc.
 
+OTOH, 512kB or even 2MB is really small for module systems, but iTLB
+is always a limited resource.
 
->
-> >
-> > > @@ -1481,6 +1639,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
-> > >
-> > >                                 name = btf_name_of(d, p->name_off);
-> > >                                 btf_dump_emit_type_decl(d, p->type, name, lvl);
-> > > +                               btf_dump_emit_decl_tags(d, decl_tags, i);
-> > >                         }
-> > >
-> > >                         btf_dump_printf(d, ")");
-> > > @@ -1896,6 +2055,7 @@ static int btf_dump_var_data(struct btf_dump *d,
-> > >                              const void *data)
-> > >  {
-> > >         enum btf_func_linkage linkage = btf_var(v)->linkage;
-> > > +       struct decl_tag_array *decl_tags = NULL;
-> > >         const struct btf_type *t;
-> > >         const char *l;
-> > >         __u32 type_id;
-> > > @@ -1920,7 +2080,10 @@ static int btf_dump_var_data(struct btf_dump *d,
-> > >         type_id = v->type;
-> > >         t = btf__type_by_id(d->btf, type_id);
-> > >         btf_dump_emit_type_cast(d, type_id, false);
-> > > -       btf_dump_printf(d, " %s = ", btf_name_of(d, v->name_off));
-> > > +       btf_dump_printf(d, " %s", btf_name_of(d, v->name_off));
-> > > +       hashmap__find(d->decl_tags, id, &decl_tags);
-> > > +       btf_dump_emit_decl_tags(d, decl_tags, -1);
-> > > +       btf_dump_printf(d, " = ");
-> > >         return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
-> > >  }
-> > >
-> > > @@ -2421,6 +2584,8 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
-> > >         d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
-> > >         d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
-> > >
-> > > +       btf_dump_assign_decl_tags(d);
-> > > +
-> >
-> > I'm actually not sure we want those tags on binary data dump.
-> > Generally data dump is not type definition dump, so this seems
-> > unnecessary, it will just distract from data itself. Let's drop it for
-> > now? If there would be a need we can add it easily later.
->
-> Well, this is the only place where VARs are processed, removing this code
-> would make the second patch in a series useless.
-> But I like my second patch in a series :) should I just drop it?
-> I can extract it as a separate series and simplify some of the existing
-> data dump tests.
+Thanks,
+Song
 
-yep, data dump tests can be completely orthogonal, send them
-separately if you are attached to that code ;)
-
-but for decl_tags on dump_type_data() I'd rather be conservative for
-now, unless in practice those decl_tags will turn out to be needed
-
-
->
-> >
-> > >         ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
-> > >
-> > >         d->typed_dump = NULL;
-> > > --
-> > > 2.34.1
-> > >
->
+[1] https://lore.kernel.org/bpf/20221110184303.393179-1-hbathini@linux.ibm.com/
