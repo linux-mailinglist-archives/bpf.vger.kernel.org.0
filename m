@@ -2,343 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C7E628880
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 19:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECFE6288D3
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236432AbiKNSoE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 13:44:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
+        id S235941AbiKNTCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 14:02:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbiKNSoD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 13:44:03 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2089.outbound.protection.outlook.com [40.107.102.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F054B64DC;
-        Mon, 14 Nov 2022 10:44:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UnESpzo0pKHlxdshz0QBBVpf5iCPaFYKJBDRrMwxp6jxtIsJZQ5reAy8AfgpdqNS60isdtZ3x5D1xmV3LQoIRsq6r0KX3VTEEYSVf8wWZ4hwBVQQ4RAukSpyDmTp0mlV+A8P2jfK4UKuWfCR1xJwfQ0Z5mtinjv0YZGI+8dcxVDHSviWlLwLJaEPGBi0FlyCH9xjge3yz8w3XBbzGLFIID4IWTHKqgeNSlB5LE42VzzaGVTOaQLRkNqEfO0Jet/VyplW5FD2/LQdC0BkhYBc7UM09RM3X3N5rg1QNFjCtj5GMIb7Q5hJI/9o6lmE8VTCbN/qxEoDdEKEEYNxF4Zx6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XsV1baQSd8ilPQl+ipAWe/6Cl+WBAGfK/gJCcwbb4KI=;
- b=E5aEvDdjP5eEkog2E+x9LxYBpDaFWKiL6dr7L7WclB3OVfs14/SvTCyC5FD7iG0R8HEOie90+z+lLVEHC02ebL4Tc9Ud57ccpenF8UYXy3OMjBP/i5upYnZ8clwaWIbZVhLPIbIYF4MfPRGJsEOuFbV374akxrA3XrruL81NVEZEpRitcwynIpGqmRKj2Z3l3sgYt3sQAS5xhF55igrMZIB5596cAvY9huti02aJY07KycqVfktcDIWo0kI+V4690OvD0NjxaFcaTH+Fb+Z9+4Fq6SnTxSjMxseMBvlxTJkJNNZzDtiqnU0NOjX4zIzijzwmNDASuY4guyfnnZDchQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsV1baQSd8ilPQl+ipAWe/6Cl+WBAGfK/gJCcwbb4KI=;
- b=BDRwtgI0zZpcgBK3KrT+/yxRuVgvzL8VQB5Uamt0/iHQJUioq7hiBrgAMP7IeZnH7ZwVyN3tOtiqzzbtk6yruyxaxc76Uf2SKeR7bjSy0yh1PXYozL4Kf/gnw0K6gDYbebw6vGgeZR0kIARUn2nW5uNSJxL95WOol9SPv2WKOR0jg+rz8ILmDKyzvA6bDAsSWCEuJ7wNPgOHW4DzUSY96x8QqyrKyGFh3bzWuLK3vqHjtw+21j51z3+iv90UH2qif3BLKILF9ndyfY0zHLiEpoe7oMagDFrhcIrq50REkaOrEzJRlib2l80ieB1B/iqBxJoI3WBFQMWPWEA8bQhK4Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB5639.namprd12.prod.outlook.com (2603:10b6:806:22a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Mon, 14 Nov
- 2022 18:44:00 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5813.017; Mon, 14 Nov 2022
- 18:44:00 +0000
-Date:   Mon, 14 Nov 2022 14:43:59 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v4 09/17] iommufd: Data structure to provide IOVA to PFN
- mapping
-Message-ID: <Y3KMbyVwS6D505cA@nvidia.com>
-References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <9-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <BN9PR11MB527638FCF4A1351DBA1A644E8C059@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB527638FCF4A1351DBA1A644E8C059@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR05CA0025.namprd05.prod.outlook.com
- (2603:10b6:208:91::35) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S235617AbiKNTCu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 14:02:50 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D173926E
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:02:49 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id k5so11172932pjo.5
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:02:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JesK8RfIzaG2Wdh3Ptq3bdpkcsYA3Bjzkbx/5Cl4fM8=;
+        b=LqnUmnLIAp4w+yt7pfzyQhDnVUW0kbFA0rQSZghxBbj+DHdHyvutDy5NE0VTs+q7vD
+         7eauEX5AyQfZ2M255fw4fvvgtNpVkjUXALsRS1xjTuVyRWqJMDfcJkLUwszL1NVhPxH8
+         nLmhDzyis3nOtB7piYs09IF0XJCwt+sWNVosHTV0Ef97Mb5qnFLh3TSh9KFBbduLd1oC
+         zPpgv4T/1W8Wee4ZFo7qZoSB5JiwNhhndSwByEVuPb610Q+EQ8wm3gGJ7Hz7y4GEM8Zs
+         C41fo4zchELSeQSfVFzMKPlUVMlyQDA50GeuXJXvqtBcT/0mYLw7H/LmpvPB1te2cbVW
+         ZBoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JesK8RfIzaG2Wdh3Ptq3bdpkcsYA3Bjzkbx/5Cl4fM8=;
+        b=8JfazQRcDN0Fgt31CuLz27CFXKzLmbtGkHtz4J9gOtyDF6/GRVT0xhfjf0+G8l0BEm
+         nBdhvxQbGCgO+IkG7Nc9Tb89p2ZeoOdq+PSLl/EPePia2CMV3UQwY7IjY6mjmFjGNkQl
+         NJB7mtNWkVkvtBZOAgqmnB10X6rc3aG1hTF1Eg+dmqNgOhqA0cYn5jrxd5wJm686IPa2
+         NpxrbTfarEV6de6D82PuSl//KXmkJAvFGqzUwMS+ClIDPZzLilAWKeywjZYF4wXdnKNr
+         IGCJLqr4gkBN96yCcOHMNj3A6vA2715/02OZTXTL8Y8XWIJZCXS731UdHOMK9RW+2wL7
+         cB5w==
+X-Gm-Message-State: ANoB5plU8QEIKHyAmmfHVTd36MoXktXnFtvDjgR86iEN/x1it7lIWR3x
+        w29Dr5ehS/16Uu6kIvkU0oWgEuGqmjnwUzYLbxcnmD2OmvI=
+X-Google-Smtp-Source: AA0mqf78SFrsIvXUysfJzQxvpRJy4ZMG4eaeCr4/CjibH19Z5pBhrXMBkrjS2gAnK5WW/qubEWVle/oo7NSvljFB4rc=
+X-Received: by 2002:a17:902:b695:b0:17d:95af:fb59 with SMTP id
+ c21-20020a170902b69500b0017d95affb59mr485617pls.154.1668452569237; Mon, 14
+ Nov 2022 11:02:49 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB5639:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd6e07df-875e-4215-41fd-08dac67031ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hbp1pt3AYmL3wPJWk1027JAbdegTFRAXpfGjOgRJ5K/PX9WYCo6R+2dwQvZk+97FlFJpbUyh/UyF+UeJE0Y8YdOoQ6b9Ah12Af5x0D9jm99SYRRobeXCJGxcpC7veMCKmXDiSzkj1PoTgK6sQHed/nsMvtvNKeWzPxvSpTXl2Ls1tFNvD94wG8biyQZMUn/MITLJF7x3U/2W7baEuD2uyJSZZB5pSokXFIxSk239of8681iZCjRwnD61AbtPo2eyZAQ1p1blK6G7FNJl7t9tJW9j97J5xAQTNRRdxDPSfez8KPxeFR4YXQYu3oT6W7dRv5+/493+ai/mE4elkIDFQNfaYYtQM2wmtPJctj8zjuFcxZ+OPceky8dLPNgKD2074cy1Rdf4NV7GQy4/k4hVpl3LCovn3ezniY3rsXmSB+Swai3WcO/IiHomdL2nVlvJcEClj4yt2amxg+up3fg7xrdNdkdaZJ46X0ACQXDcB61Ld3FzleZHmnDAA7WPf27somX69h0UDxclRcuwAReB7mtpnMi6ZF7ZtOqKu30uQuDfsZ/iriZo578AaH0Z/LgmtORTPW6Q99Y1bW7CPvLoC/JaX+bKBPTAj/0s3RMcBTxSF2EMtpmlzfZBYczRq+YbWafnjr7lj4QgeD7Eh+sxmLzyDQ+BbJiD9v+e8H3WerbiH5Mhkw4FnsQrdrNsMKRz5VtLm1cYUU/ynXGz3OoHRA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(346002)(39860400002)(396003)(376002)(366004)(451199015)(6486002)(54906003)(478600001)(6916009)(6506007)(316002)(86362001)(26005)(66946007)(66476007)(6512007)(66556008)(38100700002)(4326008)(8676002)(186003)(41300700001)(8936002)(2616005)(7416002)(36756003)(7406005)(5660300002)(83380400001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OTlQ9PPCwHphZwBf8/BaY3IrGq0tagGYaUlteIEj3R594Ha6kvQviUu7YUkk?=
- =?us-ascii?Q?sUL6hN6RgKLu2afJpm+izBr9gaK+yTDCxlj/Epx7dMBSQm434yPcdXe0eYNJ?=
- =?us-ascii?Q?a2H2GbjQtevEwsTvgiluvbM1ALR/OSc+zQOdPUYMXb0FOqsY8RcmaAQw+ebr?=
- =?us-ascii?Q?Pi6JxyWnjGEw58c31cWCykEV94Xp+M5I9H/l/nv8jpbvbzyDtlRl7+COm/TV?=
- =?us-ascii?Q?EONF1qZpD1PYYWWy9PEI5R7wMLzLppc0xZVc/T4SYcasu5Tr6CXJwmMcQSKT?=
- =?us-ascii?Q?QhYfLOz2yCi6XPgBpCBPklxtQEDzl3b2UW2O3zVpV5Vak5+YiwfHjOaBkkZX?=
- =?us-ascii?Q?qCIpfht1iVWxIq1JUYjk6sVb2Mpl+OCTUt/crbroJWF5vPJY5FYRE8aWBQ0p?=
- =?us-ascii?Q?NEpgQSesRHG2bDw9796owhgLIpJg2LmK7rduZT23lRvtadYARtFShW0Xs9vC?=
- =?us-ascii?Q?GQ+HwVOKLwUqe3h4KGy2OQLUoaDMnJWBKh0GdN5qc89jkJOJpR3kJPgq4y1H?=
- =?us-ascii?Q?sXXfqvdNT4OaCk1iub6MKaT9/c9mKN6RVD8peNYsocZL0QW9mSl8fIV/fQS/?=
- =?us-ascii?Q?3v7V7HdA4zV36fCVA6sWNS/9s535WSwEmluE4uZ+hVfbmBXwjWiS+oN/T5j9?=
- =?us-ascii?Q?v9Jq2fzsnyVC+BATEsjHd9NsHJKBmff/2LpiWmkRKq9gZvv9SEz6zhYJWM5p?=
- =?us-ascii?Q?hHn6JNFTChBGBImpA2F9zBXlgRNtnh4uv+c+pY708FlBD/K4sYkM0P4JTY19?=
- =?us-ascii?Q?ZqOB3X+HVSNTy0SFuvO00+e1eKTU67Q9iaNsp3XocHm7cMQqfKRqyo9kJi3m?=
- =?us-ascii?Q?HuprjOv5UTCunJatPHtKRL/HQVuXea/b53YVyoxRVcaum6bOC+UDROBqob5j?=
- =?us-ascii?Q?HGO8prMr/4sC58lfI40or8fWEqWAIqtldXPgjniWcdw9gcjcqx/l+HmxxR9g?=
- =?us-ascii?Q?p6pKBxgwqF4wHM43Wutt3TxDxuGDygNoPrcLmZc7xK9gQ36mXM53CIOtCsd+?=
- =?us-ascii?Q?Ka0aMbqccvD21hqvJqRItqm5wSDExAhdC1+4f8cUgGsD318Ldf/4pAfTnlbh?=
- =?us-ascii?Q?L8AkNX+iraKHTiSOTYMvTnRX0a05bSKM3z6Cn6lyPVk9uwM8H16ik0J+1hZS?=
- =?us-ascii?Q?QgYXnUKJfwAT6kFYp25i9MjiSr7E9FSsiDHief6RC4VMESOOcQ6IlJDZCx+f?=
- =?us-ascii?Q?iu8JllbwjVZjggovyhHZzPGQv4Lk6TGDKtO99LD8GqVU+0lzlMy60FtVLLU0?=
- =?us-ascii?Q?wc/WbnZIdnrcckjmPsrmNIC/vUEJcc7IflPKsqL7fi+H5sI3+QebGe5Be6vS?=
- =?us-ascii?Q?4MuEgRPJMBnkRA/aejA0lX8OXUz+0tACoKt9dP4CV+hqqUQAoPPbraHyj1KR?=
- =?us-ascii?Q?TBOEJjEE6Ism/TxzOKoHt8wbyk5KhPJLvMLHuC0gap5kaDSG9tfBKeoo5Yj3?=
- =?us-ascii?Q?x0W3L5JszjdVImmAvaV2/XcIbaf7NfzQ0sWw9VVW2aadDVYXUzoz74E0b42q?=
- =?us-ascii?Q?SRFgql4vy58v5rO1Y+QJ92Vu8xztCTtmx3BBan6ieLsLNNNxjzNY1uSKYJL2?=
- =?us-ascii?Q?f8SnpN96AnHBTjX8xDY=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd6e07df-875e-4215-41fd-08dac67031ad
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2022 18:43:59.9983
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JLH8yy3xcRqhjWhssvVsK6b1bLXlm71vKmwsGXzhpQuI6x+hBKMQrmktjUZLuaDd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5639
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <CAO658oUrud+RaV4dAWQ+JYkDttgW00xyDmsoa8-vCeknQNjVtg@mail.gmail.com>
+ <91787040-3612-e847-b512-a38a3dae199e@meta.com>
+In-Reply-To: <91787040-3612-e847-b512-a38a3dae199e@meta.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Mon, 14 Nov 2022 14:02:36 -0500
+Message-ID: <CAO658oXVoDsiNt3NtC0qDECOCA8XnLh+aOb4kR=-HhFvddo1aA@mail.gmail.com>
+Subject: Re: Best way to share maps between multiple files/objects?
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 07:28:47AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Tuesday, November 8, 2022 8:49 AM
-> > 
-> > +
-> > +/*
-> > + * Automatically find a block of IOVA that is not being used and not reserved.
-> > + * Does not return a 0 IOVA even if it is valid.
-> 
-> what is the problem with 0? should this be documented in uAPI?
+On Fri, Nov 11, 2022 at 2:34 AM Dave Marchevsky <davemarchevsky@meta.com> wrote:
+>
+> On 11/10/22 7:32 PM, Grant Seltzer Richman wrote:
+> > Hi folks,
+> >
+> > I want to organize my BPF programs so that I can load them
+> > individually. I want this so that if loading one fails (because of
+> > lack of kernel support for BPF features), I can load a fall-back
+> > replacement program. To do so, I've organized the BPF programs into
+> > their own source code files and compiled them individually. Each BPF
+> > program references what is supposed to be the same ringbuffer. Using
+> > libbpf I open them and attempt to load each in order.
+> >
+> > My question is, how am I supposed to share maps such as ringbuffers
+> > between them? If I have identical map definitions in each, they have
+> > their own file descriptors. Is the best way to call
+> > `bpf_map__reuse_fd()` on each handle of the maps in each BPF object?
+>
+> Sounds like each of the source files have the exact same map definitions,
+> including name? And each is compiled into a separate BPF object?
+>
+> If so, adding __uint(pinning, LIBBPF_PIN_BY_NAME); to
+> each definition will probably be the easiest way to get the map reuse
+> behavior you want. The first bpf object in the set that successfully loads
+> will pin its maps by name in /sys/fs/bpf and future objects which load same
+> maps will reuse them instead of creating new maps.
 
-0 is commonly used as an errant value for uninitialized things. We
-don't automatically map it into a process mm because it can cause
-security problems if we don't trap a bogus 0/NULL pointer reference.
+This worked beautifully, thank you for the suggestion!
 
-The same logic applies here too, the allocator should not return 0 to
-reserve it as an unmapped IOVA page to catch bugs.
+>
+> selftests/bpf/progs/test_pinning.c demonstrates this behavior.
+>
+> I'm curious, though: is this a single BPF program with various fallbacks,
+> with goal of running only one? Or a set of N programs working together using
+> same maps, each of which might have fallbacks, with goal of running some
+> version of all N programs?
 
-I don't think it needs to be documented
+The latter. We have N programs all sharing M maps. Each program might
+have fallbacks but some version should be loaded.
 
-> > +	interval_tree_for_each_span(&allowed_span, &iopt->allowed_itree,
-> > +				    PAGE_SIZE, ULONG_MAX - PAGE_SIZE) {
-> > +		if (RB_EMPTY_ROOT(&iopt->allowed_itree.rb_root)) {
-> > +			allowed_span.start_used = PAGE_SIZE;
-> > +			allowed_span.last_used = ULONG_MAX - PAGE_SIZE;
-> > +			allowed_span.is_hole = false;
-> > +		}
-> 
-> statically initialize it when iopt is created?
+>
+> > I'd also take advice on how to better achieve my overall goal of being
+> > able to load programs individually!
+>
+> You can group each program together with its fallbacks in the same
+> source file / BPF object by disabling autoload for all variants of the
+> program via SEC("?foobar") syntax. Then in userspace you could turn
+> autoload on for the first version you'd like to try after opening
+> the BPF object, try loading the object, try with 2nd variant if that
+> fails, etc.
 
-allowed_span is a stack variable?
+Thank you for this suggestion as well, but it doesn't seem to work as
+I get: `load can't be attempted twice`. Is this a potential bug?
+`obj->loaded` is set to true regardless of success in
+`bpf_object_load()`
 
-> > +		if (!__alloc_iova_check_used(&allowed_span, length,
-> > +					     iova_alignment, page_offset))
-> > +			continue;
-> > +
-> > +		interval_tree_for_each_span(&area_span, &iopt->area_itree,
-> > +					    allowed_span.start_used,
-> > +					    allowed_span.last_used) {
-> > +			if (!__alloc_iova_check_hole(&area_span, length,
-> > +						     iova_alignment,
-> > +						     page_offset))
-> > +				continue;
-> > +
-> > +			interval_tree_for_each_span(&reserved_span,
-> > +						    &iopt->reserved_itree,
-> > +						    area_span.start_used,
-> > +						    area_span.last_used) {
-> > +				if (!__alloc_iova_check_hole(
-> > +					    &reserved_span, length,
-> > +					    iova_alignment, page_offset))
-> > +					continue;
-> 
-> this could be simplified by double span.
-
-It is subtly not compatible, the double span looks for used areas.
-This is looking for a used area in the allowed_itree, a hole in the
-area_itree, and a hole in the reserved_itree.
-
-I don't think IOVA allocation should be a fast path so it is not worth
-alot of effort to micro-optimize this.
-
-> > +static int iopt_check_iova(struct io_pagetable *iopt, unsigned long iova,
-> > +			   unsigned long length)
-> > +{
-> > +	unsigned long last;
-> > +
-> > +	lockdep_assert_held(&iopt->iova_rwsem);
-> > +
-> > +	if ((iova & (iopt->iova_alignment - 1)))
-> > +		return -EINVAL;
-> > +
-> > +	if (check_add_overflow(iova, length - 1, &last))
-> > +		return -EOVERFLOW;
-> > +
-> > +	/* No reserved IOVA intersects the range */
-> > +	if (iopt_reserved_iter_first(iopt, iova, last))
-> > +		return -ENOENT;
-> 
-> vfio type1 returns -EINVAL
-> 
-> > +
-> > +	/* Check that there is not already a mapping in the range */
-> > +	if (iopt_area_iter_first(iopt, iova, last))
-> > +		return -EADDRINUSE;
-> 
-> vfio type1 returns -EEXIST
-
-Hum I guess we can change them here, it is a bit annoying for the test suite
-though.
-
-> > +static int iopt_unmap_iova_range(struct io_pagetable *iopt, unsigned long
-> > start,
-> > +				 unsigned long end, unsigned long
-> 
-> s/end/last/
-> 
-> > +int iopt_unmap_iova(struct io_pagetable *iopt, unsigned long iova,
-> > +		    unsigned long length, unsigned long *unmapped)
-> > +{
-> > +	unsigned long iova_end;
-> 
-> s/iova_end/iova_last/
-
-yep
- 
-> > +static int iopt_calculate_iova_alignment(struct io_pagetable *iopt)
-> > +{
-> > +	unsigned long new_iova_alignment;
-> > +	struct iommufd_access *access;
-> > +	struct iommu_domain *domain;
-> > +	unsigned long index;
-> > +
-> > +	lockdep_assert_held_write(&iopt->iova_rwsem);
-> > +	lockdep_assert_held(&iopt->domains_rwsem);
-> > +
-> > +	if (iopt->disable_large_pages)
-> > +		new_iova_alignment = PAGE_SIZE;
-> > +	else
-> > +		new_iova_alignment = 1;
-> 
-> I didn't understand why we start searching alignment from a
-> smaller value when large pages is enabled. what is the
-> connection here?
-
-'disable_large_pages' is a tiny bit misnamed, what it really does is
-ensure that every iommu_map call is exactly PAGE_SIZE, not more (large
-pages) and not less (what this is protecting against).
-
-So if a domain has less than PAGE_SIZE we upgrade to
-PAGE_SIZE. Otherwise we allow using the lowest possible alignment.
-
-This allows userspace to always work in PAGE_SIZE units without fear
-of problems, eg with sub-page-size units becoming weird or something.
-
-> > +	interval_tree_remove(&area->node, &iopt->area_itree);
-> > +	rc = iopt_insert_area(iopt, lhs, area->pages, start_iova,
-> > +			      iopt_area_start_byte(area, start_iova),
-> > +			      (new_start - 1) - start_iova + 1,
-> > +			      area->iommu_prot);
-> > +	if (WARN_ON(rc))
-> > +		goto err_insert;
-> > +
-> > +	rc = iopt_insert_area(iopt, rhs, area->pages, new_start,
-> > +			      iopt_area_start_byte(area, new_start),
-> > +			      last_iova - new_start + 1, area->iommu_prot);
-> > +	if (WARN_ON(rc))
-> > +		goto err_remove_lhs;
-> > +
-> > +	lhs->storage_domain = area->storage_domain;
-> > +	lhs->num_accesses = area->num_accesses;
-> > +	lhs->pages = area->pages;
-> > +	rhs->storage_domain = area->storage_domain;
-> > +	rhs->num_accesses = area->num_accesses;
-> 
-> if an access only spans one side, is it correct to have both split sides
-> keep the access number?
-
-Er, this is acatually completely broken, woops. A removal of an access
-will trigger a WARN_ON since the access_itree element is very likely
-no longer correct.
-
-Ah.. So the only use case here is unmapping and you can't unmap
-something that has an access established, except in some pathalogical
-case where the access does not intersect with what is being mapped.
-
-There is no way to tell which iopt_pages_access are connected to which
-areas, so without spending some memory this can't be fixed up. I think
-it is not a real issue as mdev plus this ancient VFIO interface is
-probably not something that exists in the real world..
-
-+       /*
-+        * Splitting is not permitted if an access exists, we don't track enough
-+        * information to split existing accesses.
-+        */
-+       if (area->num_accesses) {
-+               rc = -EINVAL;
-+               goto err_unlock;
-+       }
-+
-@@ -1041,10 +1050,8 @@ static int iopt_area_split(struct iopt_area *area, unsigned long iova)
-                goto err_remove_lhs;
- 
-        lhs->storage_domain = area->storage_domain;
--       lhs->num_accesses = area->num_accesses;
-        lhs->pages = area->pages;
-        rhs->storage_domain = area->storage_domain;
--       rhs->num_accesses = area->num_accesses;
-        rhs->pages = area->pages;
-        kref_get(&rhs->pages->kref);
-        kfree(area);
-
-Thanks,
-Jason
+>
+> selftests/bpf/progs/dynptr_fail.c + verify_fail function in
+> selftests/bpf/prog_tests/dynptr.c is an example of this pattern.
+>
+> > Thanks so much for your help,
+> > Grant Seltzer
