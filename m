@@ -2,121 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2539B628A72
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A79B628A8F
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236756AbiKNUbF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 15:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S237613AbiKNUev (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 15:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237633AbiKNUbE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 15:31:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB50102
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:31:03 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S237029AbiKNUer (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 15:34:47 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF55E0A8
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:34:45 -0800 (PST)
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BBC56145C
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:31:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C101BC433C1
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668457862;
-        bh=zgQp4XhE91vIyGmXpMyVsZiJPfANBzqEOoaMA7ygUl0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XkzIyf1Zp85kbVY6WLYUJWf3jjYhTfIAZw7sml4tSceIA7UHw+MCgFm0nwU/TREn8
-         f/dBOio7J7O/5sa4SdhyIJmP7dRPbzTJECSF+2e3OovFIc/hGdSrPnmlJQag43A9b3
-         vSvGhp0thsgu9cv1o+NLfxprN/mpOd9oMmq4AlFE+GYW+85uHmFiwPAEn7dTWjQG7p
-         ONmFFzfE1m6BuWtLR4bu/xS4xDUEzxUqaNXbotxzLCcJL0PiVLpJEq5ytFotfySTMG
-         jjip8zwZacUZOUIAoAbN40K2QpvA3xz70z2L7PbV7eZ630pSto3c/aio3wOLpiaSN1
-         mzc7xOfxUwRCQ==
-Received: by mail-ed1-f42.google.com with SMTP id z18so18986451edb.9
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:31:02 -0800 (PST)
-X-Gm-Message-State: ANoB5pkWI2/xnlrXyzN6ZOaHOGlr3EXE60nGtCBXUBh/+xME6XJH6i7t
-        59jG48KMEF9WhC3+slszCrchg6aEQfpE2CzGOK8=
-X-Google-Smtp-Source: AA0mqf6FbNrkfPGlxAnsH2TFSgi5UFu/qy0uRw1hliM5lNSCQG4sS57dgxaoVyPr4JrPCvPFa1HA33yrBcnbXJC92Hc=
-X-Received: by 2002:a50:fe13:0:b0:461:565e:8779 with SMTP id
- f19-20020a50fe13000000b00461565e8779mr12733916edt.387.1668457861058; Mon, 14
- Nov 2022 12:31:01 -0800 (PST)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5B9DE423C3
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1668458080;
+        bh=WC+NC/bp8exDJsewvJ8oxWxlDpF4ig1RrOTupSn7stI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=AFtoIpExSd2eubpbRf5wJWhmT7tYJyCgJGPm2kEjpWM57257OWBBjzCFmreI+fEkc
+         ubobirbTtxz1847PdMzf9lQB5gIwec8sUqwwDnvtHtvpxhZCvFh8WWTiLwtoo6lI8B
+         9QJj1h5ixEYfKGKx7fM4TLmPwrJqI5R9/BLA6OnJSWozr5HWesIEkO3q72Pgp4EDIm
+         wb0hZTbFElnQK4/4RfkncWWIGYDJtv3N9Q4NkVayPcyh/3KBkc/eBtbXvDWgXkiIUV
+         tSbYtNVpD20xGqkcympzKpezhrxGlew4BQh0oJGEiiHPpgSNKOFEaEjOxGCvDZoAJS
+         M0EfjDo+vcW3w==
+Received: by mail-ej1-f69.google.com with SMTP id oz34-20020a1709077da200b007adc8d68e90so5990157ejc.11
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:34:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WC+NC/bp8exDJsewvJ8oxWxlDpF4ig1RrOTupSn7stI=;
+        b=t1zPo9Cya9d7RoVr8/qZsgeSX3x9BJKYlB/7Zt2j6nci9dKYZgDUf2uTO9nXP0YaLD
+         FS2U7Hf1emKE5k2KQp6LZWANBf/RanTu3KPqwBy3EEHocylBpx7MWS/nUGdCwR2fefwC
+         ArghF5zQxYo/5jZk0Ye4/y2yVPgtOUMBrmFnK7ETVCkWTAHeBICpX5sS33varY0f7Cxa
+         fnS52s5Jw0M2o8JHmPh0PH1tTR19+f433jnitEsJ5gyxluHH+KUp44mW52jLYHax0YoX
+         gR/udWrp5sYYLDdkdgiTL5WCXJ8ZlroeMKxgAgUJcl4Kzn2ikzpTfmmTlHMQJRvZ1Za4
+         HUzA==
+X-Gm-Message-State: ANoB5pmSA/OhSeiKT7K9oZJGNwyT9wUXSFmf4uSfkiD6EhRejkiDHpr1
+        6d9nZBHnguSTnlwYLM30wSN+aaOExy/fqCNksoAI3DO3LugAw5sX+C0hBgiOCVVjw4lH8HKRiLZ
+        oRr6SxTXDEzsAbKkDJlWntgAirRpnHQ==
+X-Received: by 2002:a17:906:388c:b0:7aa:97c7:2c04 with SMTP id q12-20020a170906388c00b007aa97c72c04mr11621710ejd.191.1668458078753;
+        Mon, 14 Nov 2022 12:34:38 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5s/a1Lng3ilCkg3POCMwx76l0spcBD3eOI0wAt+YffElcdeD9WJFZ0nls6iE/3xfYz1CCwNg==
+X-Received: by 2002:a17:906:388c:b0:7aa:97c7:2c04 with SMTP id q12-20020a170906388c00b007aa97c72c04mr11621699ejd.191.1668458078551;
+        Mon, 14 Nov 2022 12:34:38 -0800 (PST)
+Received: from localhost.localdomain (host-87-10-120-177.retail.telecomitalia.it. [87.10.120.177])
+        by smtp.gmail.com with ESMTPSA id k15-20020a1709063fcf00b007ae32daf4b9sm4572587ejj.106.2022.11.14.12.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Nov 2022 12:34:38 -0800 (PST)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Coleman Dietsch <dietschc@csp.edu>,
+        Lina Wang <lina.wang@mediatek.com>,
+        Kamal Mostafa <kamal@canonical.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests net: additional fix for kselftest net build error
+Date:   Mon, 14 Nov 2022 21:34:31 +0100
+Message-Id: <20221114203431.302655-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
- <Y2uMWvmiPlaNXlZz@kernel.org> <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
- <Y3DITs3J8koEw3Hz@kernel.org>
-In-Reply-To: <Y3DITs3J8koEw3Hz@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Nov 2022 12:30:49 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
-Message-ID: <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 2:35 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Wed, Nov 09, 2022 at 05:04:25PM +0000, Edgecombe, Rick P wrote:
-> > On Wed, 2022-11-09 at 13:17 +0200, Mike Rapoport wrote:
-> > > On Tue, Nov 08, 2022 at 04:51:12PM +0000, Edgecombe, Rick P wrote:
-> >
-> > > How the caching of large pages in vmalloc can be made useful for use
-> > > cases like secretmem and PKS?
-> >
-> > This part is easy I think. If we had an unmapped page allocator it
-> > could just feed this.
->
-> The unmapped page allocator could be used by anything that needs
-> non-default permissions in the direct map and knows how to map the pages
-> elsewhere. E.g it would have been a oneliner to switch x86::module_alloc()
-> to use unmapped allocations. But ...
->
-> > Do you have any idea when you might pick up that stuff again?
->
-> ... unfortunately I don't see it happening anytime soon.
->
-> > To answer my own question, I think a good first step would be to make
-> > the interface also work for non-text_poke() so it could really be cross
-> > arch, then use it for everything except modules. The benefit to the
-> > other arch's at that point is centralized handling of loading text.
->
-> My concern is that the proposed execmem_alloc() cannot be used for
-> centralized handling of loading text. I'm not familiar enough with
-> modules/ftrace/kprobes/BPF to clearly identify the potential caveats, but
-> my gut feeling is that the proposed execmem_alloc() won't be an improvement
-> but rather a hindrance for moving to centralized handling of loading text.
+We need to make sure that bpf_helpers.h is properly generated when
+building the net kselftest, otherwise we get this build error:
 
-I don't follow why this could ever be a hindrance. Luis is very excited about
-this, and I am very sure it works for ftrace, kprobe, and BPF.
+ $ make -C tools/testing/selftests/net
+ ...
+ bpf/nat6to4.c:43:10: fatal error: 'bpf/bpf_helpers.h' file not found
+          ^~~~~~~~~~~~~~~~~~~
+ 1 error generated.
 
-If there is a better API, it shouldn't be too hard to do the migration. See the
-example in 3/5 of the set, where we move x86 BPF jit AND BPF dispatcher
-from bpf_prog_pack to execmem_alloc():
+Fix by adding a make dependency on tools/lib/bpf/bpf_helper_defs.h.
 
-  5 files changed, 21 insertions(+), 201 deletions(-)
+Moreover, re-add the include that was initially added by commit
+cf67838c4422 ("selftests net: fix bpf build error"), otherwise we won't
+be able to properly include bpf_helpers.h.
 
-It is not a one liner, but it is definitely very easy.
+Fixes: 7b92aa9e6135 ("selftests net: fix kselftest net fatal error")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/net/bpf/Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->
-> It feels to me that a lot of ground work is needed to get to the point
-> where we can use centralized handling of loading text.
+diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
+index 8ccaf8732eb2..cc6579e154eb 100644
+--- a/tools/testing/selftests/net/bpf/Makefile
++++ b/tools/testing/selftests/net/bpf/Makefile
+@@ -2,11 +2,15 @@
+ 
+ CLANG ?= clang
+ CCINCLUDE += -I../../bpf
++CCINCLUDE += -I../../../lib
+ CCINCLUDE += -I../../../../lib
+ CCINCLUDE += -I../../../../../usr/include/
+ 
++bpf_helper_defs.h:
++	@make OUTPUT=./ -C $(OUTPUT)/../../../../tools/lib/bpf bpf_helper_defs.h
++
+ TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
+-all: $(TEST_CUSTOM_PROGS)
++all: bpf_helper_defs.h $(TEST_CUSTOM_PROGS)
+ 
+ $(OUTPUT)/%.o: %.c
+ 	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) -o $@
+-- 
+2.37.2
 
-Could you please be more specific on what is needed?
-
-Thanks,
-Song
