@@ -2,109 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EC8627907
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 10:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC19D627B22
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 11:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbiKNJcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 04:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S235709AbiKNK5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 05:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235793AbiKNJb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 04:31:57 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7639BE03;
-        Mon, 14 Nov 2022 01:31:55 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4N9kbT1kGLz4f3thC;
-        Mon, 14 Nov 2022 17:31:49 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9gGC3JjGIwHAg--.15506S4;
-        Mon, 14 Nov 2022 17:31:52 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        with ESMTP id S235617AbiKNK5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 05:57:16 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22301A207;
+        Mon, 14 Nov 2022 02:57:15 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id z14so17315957wrn.7;
+        Mon, 14 Nov 2022 02:57:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6WjFufgdkg/OkYWcIaQRnwXicBL1zcGqAln66oAXCb8=;
+        b=IOHD6TkkM8jJW1lWBwzRJ+XOJPBdntJ3gje1DWAKn0tKNsIVypUozdO7F1tPI6XclJ
+         phOcu5JlJPmOOm9qjcuSIYnCSkBAzz56R7kMNQIY1kx/kdHvKgE8smpBHgf9BBlKNDkY
+         wZ/Q2PF/CHyrp/DfekjEqJ7DWwLaFrmnw/wyJOC50+8cjLif0HQRYPN2qZq5BTcd2oNi
+         Trxjuq4ZAuaWV/vpfvvHcNR7lUA7Dwe+N1DymWTQ7SjAycBIwY0bLE9yAWLWSRExGdNs
+         +tRnvCMSJiSakDTYAyDNtkKfA1y+vcaNaCUima1R6QyrEHPB6O3wCmkxpt5zYT7c96JQ
+         NwRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6WjFufgdkg/OkYWcIaQRnwXicBL1zcGqAln66oAXCb8=;
+        b=FpSn/Sdtx20kZXL5qVx+AgtnFs6qxzM5ahIrFFrMo1CIiSzvs1lxMbYPl6PVra02Dx
+         d7/25FuL2z344MagWyqBkLXlsjmyHuvxU7qkVddBt6qnmYvImNKvRJWVx129vZO1RPIo
+         e7GDAsY06Lejz+p/aoASfK91naPVTQOpwnRxdIHcfttGYXy3+h3fwkYfQ5I/+UrDY0Mu
+         6hLT1PNGKYPBYtmN2ny1Lok9HhNeItfmCX0LsEgh9SMVffE3UTatwNkdpTV6Znb10/cp
+         wb3Fm3BH4rPw0gZxb1v63sV5FE7rru4p40JMemv+63g+X9dj+IXld9/oxWi6tmOPWwBu
+         Ijxg==
+X-Gm-Message-State: ANoB5pkfCWGLnMZDBHu/3eusSIiMrrTA7RGIyJ4zTwy3JeLEJ0Oqo6hn
+        WWQF9abHesTghERgtt6g6ZU=
+X-Google-Smtp-Source: AA0mqf4WeoJGh9UpaiS0ZkbteiHw+SNHbGFL2jdaBsDx/ANXC8uS0rBqB7yo48ZbBV0/pCVspdwFPg==
+X-Received: by 2002:adf:ef8b:0:b0:236:5700:d4cb with SMTP id d11-20020adfef8b000000b002365700d4cbmr7361348wro.597.1668423434278;
+        Mon, 14 Nov 2022 02:57:14 -0800 (PST)
+Received: from imac ([2a02:8010:60a0:0:6942:6e2a:2257:aa49])
+        by smtp.gmail.com with ESMTPSA id p16-20020adfe610000000b002364c77bc96sm9276977wrm.33.2022.11.14.02.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Nov 2022 02:57:13 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>, houtao1@huawei.com,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH bpf] perf, bpf: Use subprog name when reporting subprog ksymbol
-Date:   Mon, 14 Nov 2022 17:57:33 +0800
-Message-Id: <20221114095733.158588-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dave Tucker <dave@dtucker.co.uk>,
+        Maryam Tahhan <mtahhan@redhat.com>
+Subject: Re: [PATCH bpf-next v10 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+In-Reply-To: <CAEf4Bzak4A-vP=NeJheA0poiu_8fK53cvbq1EnnSHC78FB7mtQ@mail.gmail.com>
+        (Andrii Nakryiko's message of "Fri, 11 Nov 2022 11:39:51 -0800")
+Date:   Mon, 14 Nov 2022 10:18:04 +0000
+Message-ID: <m24jv17sbn.fsf@gmail.com>
+References: <20221109174604.31673-1-donald.hunter@gmail.com>
+        <20221109174604.31673-2-donald.hunter@gmail.com>
+        <CAEf4Bzak4A-vP=NeJheA0poiu_8fK53cvbq1EnnSHC78FB7mtQ@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9gGC3JjGIwHAg--.15506S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw43Zr17Wr4xtw48CF1UAwb_yoW8Ww1kpF
-        yUtr10k34UKF4jk347AFWSq3yUArs8W3yxtw1rtr4a9w47WrykWay7Wa90vr90vryftFyS
-        v3yqyrW3tr98JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Since commit bfea9a8574f3 ("bpf: Add name to struct bpf_ksym"), when
-reporting subprog ksymbol to perf, prog name instead of subprog name is
-used. The backtrace of bpf program with subprogs will be incorrect as
-shown below:
+> On Wed, Nov 9, 2022 at 9:46 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+>>
+>> +This example BPF program shows how to access an array element.
+>> +
+>> +.. code-block:: c
+>> +
+>> +    int bpf_prog(struct __sk_buff *skb)
+>> +    {
+>> +            struct iphdr ip;
+>> +            int index;
+>> +            long *value;
+>> +
+>> +            if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip, sizeof(ip)) < 0)
+>> +                    return 0;
+>> +
+>> +            index = ip.protocol;
+>> +            value = bpf_map_lookup_elem(&my_map, &index);
+>> +            if (value)
+>> +                    __sync_fetch_and_add(value, skb->len);
+>
+> should be &value
+>
+> I fixed it up and applied to bpf-next, thanks.
 
-  ffffffffc02deace bpf_prog_e44a3057dcb151f8_overwrite+0x66
-  ffffffffc02de9f7 bpf_prog_e44a3057dcb151f8_overwrite+0x9f
-  ffffffffa71d8d4e trace_call_bpf+0xce
-  ffffffffa71c2938 perf_call_bpf_enter.isra.0+0x48
+I double checked and it really should be value, which is already a
+pointer.
 
-overwrite is the entry program and it invokes the overwrite_htab subprog
-through bpf_loop, but in above backtrace, overwrite program just jumps
-inside itself.
-
-Fixing it by using subprog name when reporting subprog ksymbol. After
-the fix, the output of perf script will be correct as shown below:
-
-  ffffffffc031aad2 bpf_prog_37c0bec7d7c764a4_overwrite_htab+0x66
-  ffffffffc031a9e7 bpf_prog_c7eb827ef4f23e71_overwrite+0x9f
-  ffffffffa3dd8d4e trace_call_bpf+0xce
-  ffffffffa3dc2938 perf_call_bpf_enter.isra.0+0x48
-
-Fixes: bfea9a8574f3 ("bpf: Add name to struct bpf_ksym")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/events/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4ec3717003d5..8b50ef2569d9 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9030,7 +9030,7 @@ static void perf_event_bpf_emit_ksymbols(struct bpf_prog *prog,
- 				PERF_RECORD_KSYMBOL_TYPE_BPF,
- 				(u64)(unsigned long)subprog->bpf_func,
- 				subprog->jited_len, unregister,
--				prog->aux->ksym.name);
-+				subprog->aux->ksym.name);
- 		}
- 	}
- }
--- 
-2.29.2
-
+Do you want me to send a patch to fix it up?
