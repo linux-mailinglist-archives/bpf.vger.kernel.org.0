@@ -2,599 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB651628926
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0544A62892A
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236601AbiKNTRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 14:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        id S235636AbiKNTUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 14:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236156AbiKNTRL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 14:17:11 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FB82654F
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:17:10 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso14764979pjc.0
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 11:17:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ikZwvFVx43nJH39b53Lifsz5EBKM+wB7iSYfgKZ+Cw0=;
-        b=JDvyCBGFS7FQdipJCzkdxh3jwb1NwCtL58SeBmBbC9PLNJ4bmwiKTO3GTPwcv1+94R
-         WjityXnxysfMjk8bm3xEb7d2aEn4anDi3GJvoBv75aigFwIfPjWgRwCMAZO/eQJxnZDR
-         8m9S2k9Lcz7Vnv85VcMMvKGg03AGU7IZtkhntDG7iEMB5gbRmtO4V3yOcyKXFlBA2lJt
-         Ld15uf4sk/Y/jyREBbp5sCIC5Y+J/W//cLyvOSph77oZKhiTyRJ1mC1y9zy5rAogfmFi
-         l2fQfQikaK2qLV8zsKkLckIWIbJSNOPDXuPcSkPAafbtXxN9g4A4czNVsPqpzZMaSk0c
-         r9HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ikZwvFVx43nJH39b53Lifsz5EBKM+wB7iSYfgKZ+Cw0=;
-        b=WK7+N32b6Uf5yBJiO65C9yhpObj+UigZ2GooysQK+vlr9nDwi1qwlcR/XHtu+TgfaT
-         uxpVzsA2PG8daJvXJ59f1pJACKNYD7qZhFkzlmHk9L+g8mKqpNJaxfVJIhklQ++Od2Ec
-         6uXjTGPYerupCTjRum50Pl6RIqQ5LFc8MnKuu0r6FdnwZG56bXo6dwCFyfIAHIPZfxo2
-         EKFVTm6Bkx7tVbL31vzs/1Ja7f0kADVDv6VHvRtnjNuG4th3y7AIUKsuY6zwRVWOmHRb
-         nhuB9uveoHbnRLp9yhc2G1OKVzS5ykasOoT2UAgev61orkLI2qbOV0yxRLL/AmxPobSw
-         KsAg==
-X-Gm-Message-State: ANoB5pkK0L1t+d5pcePeBvUCFguTI4oD/FWqqyosATtMciZ50Eo/G0kC
-        /8yDTahrdUPRY1T0NVAU3ZSWp6gyTsWSRw==
-X-Google-Smtp-Source: AA0mqf7QkxMpU2C5MEspUcz2ItbKThJNNKpyNDMvfwqDDNPm2C8CnRHnGA4Fqh0qykBCEmp+j2PW3A==
-X-Received: by 2002:a17:902:b183:b0:186:d5b9:fbcd with SMTP id s3-20020a170902b18300b00186d5b9fbcdmr690778plr.64.1668453429760;
-        Mon, 14 Nov 2022 11:17:09 -0800 (PST)
-Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id e18-20020a17090301d200b00172cb8b97a8sm7998615plh.5.2022.11.14.11.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Nov 2022 11:17:09 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Subject: [PATCH bpf-next v7 26/26] selftests/bpf: Add BTF sanity tests
-Date:   Tue, 15 Nov 2022 00:45:47 +0530
-Message-Id: <20221114191547.1694267-27-memxor@gmail.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221114191547.1694267-1-memxor@gmail.com>
-References: <20221114191547.1694267-1-memxor@gmail.com>
+        with ESMTP id S235617AbiKNTUD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 14:20:03 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2074.outbound.protection.outlook.com [40.107.94.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048AF21260;
+        Mon, 14 Nov 2022 11:20:02 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q7Vs0kyQQozSab45YBxeJqJ9u1X7BdWj9VFm2ZLxoNPo+qB3aJuw0GddWyw3KpZmWpovs1BlCK/1S3b58qYBa6MGyVBwNY6gmaOjlNClLQhZkT/+uHr3rb+7Qy3ssYrBdlfH4RfrDcb6gJSKbcqhMfedN3jDqRcrrwQ+8wiiSYQtC8ra0ANIQ7jW9y8OExFzv1Ce+yrRm+Bzsz6S+bD/l/CtZgJ5/nFaU+ge2ZQbZNvs9wWBbkownGUx0NQiDfoGNrxheI8bvLPM8V1DMuNrL/K0L1VnBvcVRmfKDASZqOqddW0GWSjp/pe7wgfpdBezrIC37Aye2WYeqpjQKjwT5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BoZJ3wnMabn02B8hcF/u/273eif/EmrMqad0kxlu5II=;
+ b=DNvuo1JJVjkQBImry5nO0fPjMpBOaepQKoG7D5hvBbVmuR+bMoMLNC7qBRqPCHx/fEWyrkMPTpU98mOjxUWlv+UfsFC68U0JvxAHtOTeKeaPU/TX2y4hSIJLg6EyRrasFBf7UdhlDhOLJyBNhONCZeyzMYKPVD2BwUg99NwQO9+aSzkdV/Dap8+zxfX9r+Fesvk2YffwJD+AX2gLCBAh+R8amE+CF7evaYb4J1v573xa0qFOLtrI340B6IDn+v67HI/D+t+Nl9JhwhXad7A/a534wGtphvZ9E+UU905RFCE27r0HT2kNEorLWlNVJ2LqaJsL5D19vBY3CuSiB5jfUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BoZJ3wnMabn02B8hcF/u/273eif/EmrMqad0kxlu5II=;
+ b=ACzg/mS//Upm5C0Si3VyYNQDqq8T8A/76qgGUKnfCkhXK8vi3XsyhN597QkJfkkFL5rTcmlzixm4jr7zz9WOuME350enbH1Ld9Yt+K09b7lVQd7vlApcqaI4WBMA3tDRr5MqqXMibnKYAZbAGh3W+F2U9ceIiXN/cAYqM3RhZGjA/1VuB4zcRCy4Dt5r8ko/bWIlxBB75XmpB/seEYxCz/rRo3L5RVM6Cvw5YP5WYYyvMxFmyFoOPJ3huczFhlXsJqfG9e2mypgtQDegJkfHaDONYyl0PxBduFwQCj8Ao/MOzqUQkJyUOcv0LLNCGLS5xUb1R4S4UTwER+8qA6mr7A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY8PR12MB7683.namprd12.prod.outlook.com (2603:10b6:930:86::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Mon, 14 Nov
+ 2022 19:20:00 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5813.017; Mon, 14 Nov 2022
+ 19:20:00 +0000
+Date:   Mon, 14 Nov 2022 15:19:59 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v4 8/17] iommufd: Algorithms for PFN storage
+Message-ID: <Y3KU32D6BVuyz1Lz@nvidia.com>
+References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <8-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+X-ClientProxiedBy: BLAPR05CA0022.namprd05.prod.outlook.com
+ (2603:10b6:208:36e::27) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=17214; i=memxor@gmail.com; h=from:subject; bh=v1LI+fTgGiLUO8irIiQN9nGTkKTb9ImcS7iWlL1GYas=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjcpPKCJRIpIn4JAqKr4qE23QDsjdcoPPPSP3mg+KN HkCcjVGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3KTygAKCRBM4MiGSL8Rym8eEA DDWwcSUIO07IO/hreP3tMGGpsma1v44kAANn4fm9KMeNH/+kdVtboyQG/GwkFiRolQwcM+VQ3iUe5v qrGKt1m4spoeG9n+n7Q7gLMcSOub3CI/H5twrgI+EMljl5I10eLfh6fddcQafFixwI2zeBQJ3cDYS3 A5Sldeghaxpbsf5mqs/hO3lk+Mg7pgpZ21rM3jRbt00R8QZ/5oG9n52OyyTq+KZlxRQgq7MnPSyQ8f TgdFBIEO457cMurwFppOZeDt4iJy5L1Agv6wQaDN9uxCzugiDeI3dU+nH7S5WJIA+QjgeErUmtqlgH c9izRhr+7iH65RP0xPz+ENq8Hk5z1Atpal0jymTknMuzf9EE/yHDHsroGdGlmZKflu1AmsakGbl56A RX0HRvQ9tcAc8N3SZjEIOPhO1c3fNmBzOmpJDDTRkdt6oU6sscnVmdRsKNQtP15wDxWIdz/jEnSqqh IjAc+IaFKuitsUXf17UD9GsbBu8ZTcw20xhNDpqgZT43Bkj9PWCOpd5hTpmAsJ/eQ8SRauLfMFGyjC h073eZHTm9cgTFZpWLcePnXpZISp2XvP8lMfhuDhNR2cLiB2xvtxTSP0JiZeqVkRs106eg4GbfcWZR sUaoQa5ye1eRlUcDJfTx328EtSuzI0rGi/sTL9ZLxJvv3s6iwi7zUSrCSPPg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7683:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7fc0b717-357d-4d6f-4dab-08dac6753992
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JPenxn4h/j3wl/+xmS1lmmC9bobw5PxlNCuUaUN28FGPazMzoinIal+taqXKKtDEzkNAD4ZHRfPKtH960/J10uC3IMyWixMFf34sLy9JRKhkTaLy+5MsydzgYM1vRkQB/t8K6yIYkjLmuIdV6VJHTL5F7s7DAH7Po2sAVvOUGvPudoScxB/cif32F8jVtEV8WdwL6QmKmv5EfB3lLLZ2fbkHaDii3RXh0US63ggr5K9XC3Mfqj8/kru62B16yNv7PZHJmPP95P0Yhgm1bIxUgPSNgblv1oZecheXmekYSh7QiAnfVFnnfSPvDvklzDG1F4W5vU7lppeQKWBzZHORPpCGqUgluR+e0Jh46CwhB+yilfMDDF2wbn10ets3OV2UVTYa6rlUOkDzXNmav+BsLfblsKqXeEO++JX33U3C+Fx2lVZWXxcJPWEaco4ykzdwi0w26hGXBdjpvlRPowZrHltMBrpB4SGcKHNteVHLiSUOpQXM+ao4OyR4sjrbRCXlvJwxArlZhvb3qKhZkdrWWLMvJJZkRBcJtXAFTbMdOylwT4p3npWlVzDzxcZKdLvuVFpsV2yQcJi4d66QIQ04f6eC55SLFpmVEaxIVsLWSuEDx/+nRr0ZCxoVsDPqb1arwnqPhz125Q6WokKBVrzF9mZ0qD3ZGTA6XXEWgerZs5eM7eGZ49KdLNKwWlbarr+gQ6nScFgzBDIuk3X9aTtobwlLgh7dZhChKUV9lYIum4SAYt8AitSQgJmbCCrdCqxt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(39860400002)(366004)(346002)(396003)(376002)(451199015)(86362001)(36756003)(5660300002)(186003)(8936002)(110136005)(2906002)(4744005)(7406005)(7416002)(83380400001)(38100700002)(921005)(2616005)(54906003)(4326008)(66476007)(66556008)(66946007)(8676002)(6486002)(478600001)(316002)(6506007)(41300700001)(26005)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?juSAq2URbg0adoPHif8W1a0CDPc3mcZa/WnxMuRJF1mZz9ikIG6A1OSjD9pJ?=
+ =?us-ascii?Q?A8GXL6wgRo4TAAP1gGUu7APVr7RdZ/L0GRTDSlFgpKI1CFmrDd1E9sfrmYEY?=
+ =?us-ascii?Q?o2SaHnnu2XpfDkivnwJ+X1BsmYLMnm+3vb2RE0baMFWygv1mbTUWuaFImhQb?=
+ =?us-ascii?Q?uI3pjKr4By87wdDnE3uVaoTdabau0llpH5jRepIOhah36SgA1NcPnvdTFeHA?=
+ =?us-ascii?Q?oUhXiJ+1BU4AR/Gv3jtG2HlmeL5v6dUKlV8PUXj7c39HuoHJk8KVNHtEARRJ?=
+ =?us-ascii?Q?PA5eU7ghiAYb9VnpFryQsoIUEZm+Yvc0/hIiHpDuzZSu4ibGne1IDVYEoFEn?=
+ =?us-ascii?Q?cTxxNtJX7chNHtsHkdXjQvtYSjE8vZ9ViFMn3GZuLv4Aya7OPr6yn3u92XhU?=
+ =?us-ascii?Q?QZ9b+zv+kL8iU7FnwK0j7//fCO+SExoQrpi5yQNeClIT2goTNHzIB/wyIKGa?=
+ =?us-ascii?Q?cVodS+BwdysPbQdKfGKQKmVNdfJiHYbmKDAhPZcfrlhUYWSoj9P725rZ99mk?=
+ =?us-ascii?Q?FIMeaCS6Tv+bAbJtpZroyTZrngtsOb67d2s0/eTGyo/e1IEtIz7q9U3QGi0T?=
+ =?us-ascii?Q?Rgfn+krx6m+GBEJh624q5EveqPFurc6QwNTDhJ0OCN0S+qJY+T+0+2Qbf2hh?=
+ =?us-ascii?Q?THSaR9PEefVAX9zJZ8yaNZaUJWcoCQt6jQns6I6By4jQrW6eDj+SNVesNnTq?=
+ =?us-ascii?Q?P5P6U3u3hQf5Zz0Ij6oabNZrMGRiaMMrRAter0wWaXPCS2TFLQ6h6NZaz5E+?=
+ =?us-ascii?Q?6gNYKebkWQ/2IC6m9vvHhDCgh3X6a8p99QE3POBeuZw1iuR6Z1jjXODN+qWF?=
+ =?us-ascii?Q?RlblvdzfE+TmJBys21sRNsznj9gyoej1T2TYqy6pyViFYtZ73LsB+YJeRmeh?=
+ =?us-ascii?Q?XgaK7rCjcLiHCGm+1FV952k2pI4ID2HD0WAHBLf/L6c8q19g0451+MOlDEow?=
+ =?us-ascii?Q?EofsKgdzMraFxDOUdH5SIM/GmtjUh0fb4BSLOdzmnUxbl13XEQRYyzG6fvm2?=
+ =?us-ascii?Q?hecz0x9Q+BnH+DUWwPfDqu911s/d97WRtDHDSvy+YUxuZun1d3lOzfXepXW3?=
+ =?us-ascii?Q?WvjvAxls6AzMjt6wJ9RX5T4n0vstqGtMFLH3+BGUf34hW/PRxMkvV7dOtZYq?=
+ =?us-ascii?Q?qSvSg03m/6tfrC9o7hS1dVfOPvZA+mS/trtgofjNT6H6PXUxFKW6nofBK2Jw?=
+ =?us-ascii?Q?f7f/3BOUE7yDtMuu49pU3dTbdfkgybropL32c4OxG1Rib7wgedMlhEeIH9cm?=
+ =?us-ascii?Q?SgnDv9yQ/+gXOyIaqbpFHXE0S6xYh+iqzN5y4biIEoFYJv5un+lv+p/ZXABO?=
+ =?us-ascii?Q?6YmeRnqT8BvL0TYtZ5Y28xH8nV42Ig59e3NM4NAmTtp/jHu0gK3GT2bCZP0q?=
+ =?us-ascii?Q?jJhUWvYXmOXHm6xS7+nr3B78TGyi7iUGGQ0lpOArP24+lIPfJJJXiBr2/HRl?=
+ =?us-ascii?Q?O/uZrAPPmm8g+aFbQgPfjgiK7niEcDSM/BnPsxMEyK+SJfIDV8l1CL0G4dry?=
+ =?us-ascii?Q?w435FlBQQX657JunR0cnDCFG5DJRXgQrF1dXpGW/fHLH8GoDHi178d6XGG2c?=
+ =?us-ascii?Q?2pKONOChEPbSQIt2MiQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fc0b717-357d-4d6f-4dab-08dac6753992
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2022 19:20:00.6959
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JlcK9L6mFqiN7FzOStnvuwvsTEvXoCFX6vQCg/vSLgmoHbEb50it/O93Uq79ljgG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7683
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Preparing the metadata for bpf_list_head involves a complicated parsing
-step and type resolution for the contained value. Ensure that corner
-cases are tested against and invalid specifications in source are duly
-rejected. Also include tests for incorrect ownership relationships in
-the BTF.
+On Mon, Nov 07, 2022 at 08:49:01PM -0400, Jason Gunthorpe wrote:
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/linked_list.c    | 485 ++++++++++++++++++
- 1 file changed, 485 insertions(+)
+> +/*
+> + * Each interval represents an active iopt_access_pages(), it acts as an
+> + * interval lock that keeps the PFNs pinned and stored in the xarray.
+> + */
+> +struct iopt_pages_access {
+> +	struct interval_tree_node node;
+> +	refcount_t refcount;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index e8569db2f3bc..bdc5a4f82e79 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <bpf/btf.h>
-+#include <test_btf.h>
-+#include <linux/btf.h>
- #include <test_progs.h>
- #include <network_helpers.h>
- 
-@@ -233,6 +236,487 @@ static void test_linked_list_success(int mode, bool leave_in_map)
- 	linked_list__destroy(skel);
- }
- 
-+#define SPIN_LOCK 2
-+#define LIST_HEAD 3
-+#define LIST_NODE 4
-+
-+static struct btf *init_btf(void)
-+{
-+	int id, lid, hid, nid;
-+	struct btf *btf;
-+
-+	btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "btf__new_empty"))
-+		return NULL;
-+	id = btf__add_int(btf, "int", 4, BTF_INT_SIGNED);
-+	if (!ASSERT_EQ(id, 1, "btf__add_int"))
-+		goto end;
-+	lid = btf__add_struct(btf, "bpf_spin_lock", 4);
-+	if (!ASSERT_EQ(lid, SPIN_LOCK, "btf__add_struct bpf_spin_lock"))
-+		goto end;
-+	hid = btf__add_struct(btf, "bpf_list_head", 16);
-+	if (!ASSERT_EQ(hid, LIST_HEAD, "btf__add_struct bpf_list_head"))
-+		goto end;
-+	nid = btf__add_struct(btf, "bpf_list_node", 16);
-+	if (!ASSERT_EQ(nid, LIST_NODE, "btf__add_struct bpf_list_node"))
-+		goto end;
-+	return btf;
-+end:
-+	btf__free(btf);
-+	return NULL;
-+}
-+
-+static void test_btf(void)
-+{
-+	struct btf *btf = NULL;
-+	int id, err;
-+
-+	while (test__start_subtest("btf: too many locks")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 32, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		err = btf__add_field(btf, "c", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -E2BIG, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing lock")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 16);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: bad offset")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EEXIST, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing contains:")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing struct")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:bar", 5, 1);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:bar"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ENOENT, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing node")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:c", 5, 1);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:c"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		btf__free(btf);
-+		ASSERT_EQ(err, -ENOENT, "check btf");
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: node incorrect type")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:a"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 4);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: multiple bpf_list_node with name b")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 52);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		err = btf__add_field(btf, "d", SPIN_LOCK, 384, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::d"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned AA cycle")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned ABA cycle")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:a"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 16);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, 0, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz:a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, 0, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz:a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owning | owned -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:b", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 36);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bam:a", 9, 0);
-+		if (!ASSERT_EQ(id, 10, "btf__add_decl_tag contains:bam:a"))
-+			break;
-+		id = btf__add_struct(btf, "bam", 16);
-+		if (!ASSERT_EQ(id, 11, "btf__add_struct bam"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bam::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+}
-+
- void test_linked_list(void)
- {
- 	int i;
-@@ -243,6 +727,7 @@ void test_linked_list(void)
- 		test_linked_list_fail_prog(linked_list_fail_tests[i].prog_name,
- 					   linked_list_fail_tests[i].err_msg);
- 	}
-+	test_btf();
- 	test_linked_list_success(PUSH_POP, false);
- 	test_linked_list_success(PUSH_POP, true);
- 	test_linked_list_success(PUSH_POP_MULT, false);
--- 
-2.38.1
+I noticed this is never used unlocked, everything holds the
+pages->mutex for the pages that holds the node in its itree
 
+So this is just an unsigned int, we don't need that atomic.
+
+Jason
