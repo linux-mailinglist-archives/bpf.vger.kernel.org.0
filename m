@@ -2,138 +2,381 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CB6628AB2
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECBC628AD7
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbiKNUph (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 15:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
+        id S236233AbiKNUwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 15:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237552AbiKNUpe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 15:45:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F96BC03
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:45:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C611DB8128D
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:45:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72C3EC433C1
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668458730;
-        bh=/eoltmfxhsBQW5kbqj1zICYdalEqwl1ONE/tve5V7AE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IQCgWBHlftUOEBFnnrG/zBegCsdaFFUHrFU4LcjgMbRNhQhwia+oSFePr3A8Jmlv5
-         XIlOjrKtLHvNOVxHLQ0s9iYU8OdV/2z+Nj1qbj4kSU75jdQGF9AHe56N/7nk7ijwQt
-         LStNFzhA6zuR208290meBL49XG2JI10ALR0nW3OBwrDcDNR50zwkCQVrLs6xmJLbhf
-         YswuXiWK25+spdG0cTd+3vlcMn23oTWbpTmyKYb9q8s9p8mh8Tl8N7CZYF1Q49h0iJ
-         LPS+jYwixSpYop/fYjky6Vvt6LnVZWSzV2xnONPWW3oUYxMIqcEZjV1oEXZ7v16B+Y
-         dyA8QFXKg4LZw==
-Received: by mail-ej1-f47.google.com with SMTP id 13so31374616ejn.3
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:45:30 -0800 (PST)
-X-Gm-Message-State: ANoB5pknv+f/1l7tjq+UrEt67AmvOes0fLeS2gVgsqwlRLf+07Qk9s3c
-        hC1/9YvTI4XdLRt8hvGKhFr3VL+b2NWFqdSBkwY=
-X-Google-Smtp-Source: AA0mqf427AJW1JzObQrvS6YeAaU43qdBOSBTg00ztEgA6leExZNvsOuD0m2LF5ODPqjC58L5pQzObhvC14C39kr6VSc=
-X-Received: by 2002:a17:906:ad98:b0:7a1:e4c2:fb0a with SMTP id
- la24-20020a170906ad9800b007a1e4c2fb0amr11916627ejb.101.1668458728697; Mon, 14
- Nov 2022 12:45:28 -0800 (PST)
+        with ESMTP id S236117AbiKNUwF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 15:52:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8471F1759E
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:51:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668459066;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I/YJv37yRjo5ACwfT3yKKFW4DrSCcOFuv19x/jgkIVU=;
+        b=HRkuPQdxcRnbxB3k5hDfFggoGJ1cbI+3CGSkciAatDqAiQ5ZjY6YyJRCithxaEcpJqXwb9
+        v7Dt63lxn0UFUnzEmdO3xJ9m/lCgDcPOg2Eoodt1EKDOk5PcAKmsLHkf+u5ns3SI9Qtyaa
+        KD7w1NDcKmnw8AtFXo/vxN3p1YHHCbI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-439-8y91wTsZOJ2kTA_W4cNOmQ-1; Mon, 14 Nov 2022 15:51:05 -0500
+X-MC-Unique: 8y91wTsZOJ2kTA_W4cNOmQ-1
+Received: by mail-qv1-f72.google.com with SMTP id on28-20020a056214449c00b004bbf12d7976so9188712qvb.18
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:51:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I/YJv37yRjo5ACwfT3yKKFW4DrSCcOFuv19x/jgkIVU=;
+        b=zIZ12uJ3gtGBXUfzC1pWmpx3HmMkeIZUHVR6Byx8Oij4w8SvgkzNEz4AEtQXfUUiOM
+         v29x2IH/rwAEMgW6yb9w7t4AaAJSW45kgmNctZy2U5z8ewJfOzv4PhLQN71pMmKP/UM5
+         SUSZ3FEVl79fNSJjG3oyBrnWOscX2W8y9uBouH96UipfNVcqUqdkDiiSoxwj9/8kqPQf
+         nkKA8+iJEmQ4tmytYvvSZ6SOtip68jYPl6/8JdkZXcc3c/p13xGcYWcftK/S1NWltS3G
+         ZyuorMyTtepLrpaYTOamELJdNDD/PxjGYDrOSeqGBg5wLZ4SdiYBfCZPhb3VPSZQ1cBw
+         s9zw==
+X-Gm-Message-State: ANoB5pk3q1h3vasY9IPukGbH9XDVZcQy/l7i1nBNWSNNiN6jUrQ9b4RL
+        K/HAwY+cry0KvJh0sPB70Wp54NEzakmry3dS1wh9H06fZZ9uVRZVIMU/ePSi8IAjTdTRj7LaH1+
+        crn7S/zWprh4G
+X-Received: by 2002:a05:6214:a61:b0:4b3:e0de:6e5a with SMTP id ef1-20020a0562140a6100b004b3e0de6e5amr14028194qvb.116.1668459064501;
+        Mon, 14 Nov 2022 12:51:04 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6e/azmbTdK1OZ72h1IOmU0Jo9tESYe18+hG5xNlVI0FhpCldoqcYsaU9R/8EmzpWv/XeDHpA==
+X-Received: by 2002:a05:6214:a61:b0:4b3:e0de:6e5a with SMTP id ef1-20020a0562140a6100b004b3e0de6e5amr14028162qvb.116.1668459064104;
+        Mon, 14 Nov 2022 12:51:04 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id c8-20020ac86608000000b0039d02911555sm6108783qtp.78.2022.11.14.12.50.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Nov 2022 12:51:03 -0800 (PST)
+Message-ID: <eef35bbc-f977-3e0d-60ac-5b0a0a30894f@redhat.com>
+Date:   Mon, 14 Nov 2022 21:50:56 +0100
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
- <Y2uMWvmiPlaNXlZz@kernel.org> <CAPhsuW5e8rBnu73DYkyc1L6gC-WBxjTZVwdFC_L12GVyzROR1w@mail.gmail.com>
- <Y3DKKivOwk+5rhNb@kernel.org>
-In-Reply-To: <Y3DKKivOwk+5rhNb@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Nov 2022 12:45:16 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW48AJiY2OuZb9ZeLS9Bq4aUN2iceD5iUt8=uCpSe95_xw@mail.gmail.com>
-Message-ID: <CAPhsuW48AJiY2OuZb9ZeLS9Bq4aUN2iceD5iUt8=uCpSe95_xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v4 04/17] iommufd: Document overview of iommufd
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <4-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <4-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 2:43 AM Mike Rapoport <rppt@kernel.org> wrote:
+Hi,
+
+On 11/8/22 01:48, Jason Gunthorpe wrote:
+> From: Kevin Tian <kevin.tian@intel.com>
 >
-> On Wed, Nov 09, 2022 at 09:43:50AM -0800, Song Liu wrote:
-> > On Wed, Nov 9, 2022 at 3:18 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > [...]
-> >
-> > > > >
-> > > > > The proposed execmem_alloc() looks to me very much tailored for x86
-> > > > > to be
-> > > > > used as a replacement for module_alloc(). Some architectures have
-> > > > > module_alloc() that is quite different from the default or x86
-> > > > > version, so
-> > > > > I'd expect at least some explanation how modules etc can use execmem_
-> > > > > APIs
-> > > > > without breaking !x86 architectures.
-> > > >
-> > > > I think this is fair, but I think we should ask ask ourselves - how
-> > > > much should we do in one step?
-> > >
-> > > I think that at least we need an evidence that execmem_alloc() etc can be
-> > > actually used by modules/ftrace/kprobes. Luis said that RFC v2 didn't work
-> > > for him at all, so having a core MM API for code allocation that only works
-> > > with BPF on x86 seems not right to me.
-> >
-> > While using execmem_alloc() et. al. in module support is difficult, folks are
-> > making progress with it. For example, the prototype would be more difficult
-> > before CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC
-> > (introduced by Christophe).
-> >
-> > We also have other users that we can onboard soon: BPF trampoline on
-> > x86_64, BPF jit and trampoline on arm64, and maybe also on powerpc and
-> > s390.
+> Add iommufd into the documentation tree, and supply initial documentation.
+> Much of this is linked from code comments by kdoc.
 >
-> Caching of large pages won't make any difference on arm64 and powerpc
-> because they do not support splitting of the direct map, so the only
-> potential benefit there is a centralized handling of text loading and I'm
-> not convinced execmem_alloc() will get us there.
-
-Sharing large pages helps reduce iTLB pressure, which is the second
-motivation here (after reducing direct map fragmentation).
-
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  Documentation/userspace-api/index.rst   |   1 +
+>  Documentation/userspace-api/iommufd.rst | 222 ++++++++++++++++++++++++
+>  2 files changed, 223 insertions(+)
+>  create mode 100644 Documentation/userspace-api/iommufd.rst
 >
-> > > With execmem_alloc() as the first step I'm failing to see the large
-> > > picture. If we want to use it for modules, how will we allocate RO data?
-> > > with similar rodata_alloc() that uses yet another tree in vmalloc?
-> > > How the caching of large pages in vmalloc can be made useful for use cases
-> > > like secretmem and PKS?
-> >
-> > If RO data causes problems with direct map fragmentation, we can use
-> > similar logic. I think we will need another tree in vmalloc for this case.
-> > Since the logic will be mostly identical, I personally don't think adding
-> > another tree is a big overhead.
->
-> Actually, it would be interesting to quantify memory savings/waste as the
-> result of using execmem_alloc()
+> diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
+> index c78da9ce0ec44e..f16337bdb8520f 100644
+> --- a/Documentation/userspace-api/index.rst
+> +++ b/Documentation/userspace-api/index.rst
+> @@ -25,6 +25,7 @@ place where this information is gathered.
+>     ebpf/index
+>     ioctl/index
+>     iommu
+> +   iommufd
+>     media/index
+>     netlink/index
+>     sysfs-platform_profile
+> diff --git a/Documentation/userspace-api/iommufd.rst b/Documentation/userspace-api/iommufd.rst
+> new file mode 100644
+> index 00000000000000..64a135f3055adc
+> --- /dev/null
+> +++ b/Documentation/userspace-api/iommufd.rst
+> @@ -0,0 +1,222 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +=======
+> +IOMMUFD
+> +=======
+> +
+> +:Author: Jason Gunthorpe
+> +:Author: Kevin Tian
+> +
+> +Overview
+> +========
+> +
+> +IOMMUFD is the user API to control the IOMMU subsystem as it relates to managing
+> +IO page tables from userspace using file descriptors. It intends to be general
+> +and consumable by any driver that wants to expose DMA to userspace. These
+> +drivers are eventually expected to deprecate any internal IOMMU logic if exists
+they may already/historically implement (eg. vfio_iommu_type1.c)?
+> +(e.g. vfio_iommu_type1.c).
+> +
+> +At minimum iommufd provides universal support of managing I/O address spaces and
+> +I/O page tables for all IOMMUs, with room in the design to add non-generic
+> +features to cater to specific hardware functionality.
+> +
+> +In this context the capital letter (IOMMUFD) refers to the subsystem while the
+> +small letter (iommufd) refers to the file descriptors created via /dev/iommu for
+> +use by userspace.
+> +
+> +Key Concepts
+> +============
+> +
+> +User Visible Objects
+> +--------------------
+> +
+> +Following IOMMUFD objects are exposed to userspace:
+> +
+> +- IOMMUFD_OBJ_IOAS, representing an I/O address space (IOAS), allowing map/unmap
+> +  of user space memory into ranges of I/O Virtual Address (IOVA).
+> +
+> +  The IOAS is a functional replacement for the VFIO container, and like the VFIO
+> +  container it copies an IOVA map to a list of iommu_domains held within it.
+> +
+> +- IOMMUFD_OBJ_DEVICE, representing a device that is bound to iommufd by an
+> +  external driver.
+> +
+> +- IOMMUFD_OBJ_HW_PAGETABLE, representing an actual hardware I/O page table
+> +  (i.e. a single struct iommu_domain) managed by the iommu driver.
+> +
+> +  The IOAS has a list of HW_PAGETABLES that share the same IOVA mapping and
+> +  it will synchronize its mapping with each member HW_PAGETABLE.
+> +
+> +All user-visible objects are destroyed via the IOMMU_DESTROY uAPI.
+> +
+> +The diagram below shows relationship between user-visible objects and kernel
+> +datastructures (external to iommufd), with numbers referred to operations
+> +creating the objects and links::
+> +
+> +  _________________________________________________________
+> + |                         iommufd                         |
+> + |       [1]                                               |
+> + |  _________________                                      |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |        [3]                 [2]      |
+> + | |                 |    ____________         __________  |
+> + | |      IOAS       |<--|            |<------|          | |
+> + | |                 |   |HW_PAGETABLE|       |  DEVICE  | |
+> + | |                 |   |____________|       |__________| |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |_________________|         |                   |       |
+> + |         |                   |                   |       |
+> + |_________|___________________|___________________|_______|
+> +           |                   |                   |
+> +           |              _____v______      _______v_____
+> +           | PFN storage |            |    |             |
+> +           |------------>|iommu_domain|    |struct device|
+> +                         |____________|    |_____________|
+> +
+> +1. IOMMUFD_OBJ_IOAS is created via the IOMMU_IOAS_ALLOC uAPI. An iommufd can
+> +   hold multiple IOAS objects. IOAS is the most generic object and does not
+> +   expose interfaces that are specific to single IOMMU drivers. All operations
+> +   on the IOAS must operate equally on each of the iommu_domains inside of it.
+> +
+> +2. IOMMUFD_OBJ_DEVICE is created when an external driver calls the IOMMUFD kAPI
+> +   to bind a device to an iommufd. The driver is expected to implement proper a
+s/proper/properly?
+> +   set of ioctls to allow userspace to initiate the binding operation.
+> +   Successful completion of this operation establishes the desired DMA ownership
+> +   over the device. The driver must also set the driver_managed_dma flag and
+> +   must not touch the device until this operation succeeds.
+> +
+> +3. IOMMUFD_OBJ_HW_PAGETABLE is created when an external driver calls the IOMMUFD
+> +   kAPI to attach a bound device to an IOAS. Similarly the external driver uAPI
+> +   allows userspace to initiate the attaching operation. If a compatible
+> +   pagetable already exists then it is reused for the attachment. Otherwise a
+> +   new pagetable object and iommu_domain is created. Successful completion of
+> +   this operation sets up the linkages among IOAS, device and iommu_domain. Once
+> +   this completes the device could do DMA.
+> +
+> +   Every iommu_domain inside the IOAS is also represented to userspace as a
+> +   HW_PAGETABLE object.
+> +
+> +   .. note::
+> +
+> +      Future IOMMUFD updates will provide an API to create and manipulate the
+> +      HW_PAGETABLE directly.
+> +
+> +A device can only bind to an iommufd due to DMA ownership claim and attach to at
+> +most one IOAS object (no support of PASID yet).
+> +
+> +Currently only PCI device is allowed to use IOMMUFD.
+is it still true? device_bind() now takes a struct device *
 
-From a random system in our fleet, execmem_alloc() saves:
+In [PATCH v4 12/17] iommufd: Add kAPI toward external drivers for
+physical devices "PCI" is used at several places
+but shouldn't it be removed now?
 
-139 iTLB entries (1x 2MB entry vs, 140x 4kB entries), which is more than
-100% of L1 iTLB and about 10% of L2 TLB.
+> +
+> +Kernel Datastructure
+> +--------------------
+> +
+> +User visible objects are backed by following datastructures:
+> +
+> +- iommufd_ioas for IOMMUFD_OBJ_IOAS.
+> +- iommufd_device for IOMMUFD_OBJ_DEVICE.
+> +- iommufd_hw_pagetable for IOMMUFD_OBJ_HW_PAGETABLE.
+> +
+> +Several terminologies when looking at these datastructures:
+> +
+> +- Automatic domain - refers to an iommu domain created automatically when
+> +  attaching a device to an IOAS object. This is compatible to the semantics of
+> +  VFIO type1.
+> +
+> +- Manual domain - refers to an iommu domain designated by the user as the
+> +  target pagetable to be attached to by a device. Though currently there are
+> +  no uAPIs to directly create such domain, the datastructure and algorithms
+> +  are ready for handling that use case.
+> +
+> +- In-kernel user - refers to something like a VFIO mdev that is using the
+> +  IOMMUFD access interface to access the IOAS. This starts by creating an
+> +  iommufd_access object that is similar to the domain binding a physical device
+> +  would do. The access object will then allow converting IOVA ranges into struct
+> +  page * lists, or doing direct read/write to an IOVA.
+> +
+> +iommufd_ioas serves as the metadata datastructure to manage how IOVA ranges are
+> +mapped to memory pages, composed of:
+> +
+> +- struct io_pagetable holding the IOVA map
+> +- struct iopt_areas representing populated portions of IOVA
+> +- struct iopt_pages representing the storage of PFNs
+> +- struct iommu_domain representing the IO page table in the IOMMU
+> +- struct iopt_pages_access representing in-kernel users of PFNs
+> +- struct xarray pinned_pfns holding a list of pages pinned by in-kernel users
+> +
+> +Each iopt_pages represents a logical linear array of full PFNs. The PFNs are
+> +ultimately derived from userspave VAs via an mm_struct. Once they have been
+> +pinned the PFN is stored in IOPTEs of an iommu_domain or inside the pinned_pages
+s/is/are
+> +xarray if they have been pinned through an iommufd_access.
+> +
+> +PFN have to be copied between all combinations of storage locations, depending
+> +on what domains are present and what kinds of in-kernel "software access" users
+> +exists. The mechanism ensures that a page is pinned only once.
+> +
+> +An io_pagetable is composed of iopt_areas pointing at iopt_pages, along with a
+> +list of iommu_domains that mirror the IOVA to PFN map.
+> +
+> +Multiple io_pagetable-s, through their iopt_area-s, can share a single
+> +iopt_pages which avoids multi-pinning and double accounting of page
+> +consumption.
+> +
+> +iommufd_ioas is sharable between subsystems, e.g. VFIO and VDPA, as long as
+> +devices managed by different subsystems are bound to a same iommufd.
+> +
+> +IOMMUFD User API
+> +================
+> +
+> +.. kernel-doc:: include/uapi/linux/iommufd.h
+> +
+> +IOMMUFD Kernel API
+> +==================
+> +
+> +The IOMMUFD kAPI is device-centric with group-related tricks managed behind the
+> +scene. This allows the external drivers calling such kAPI to implement a simple
+> +device-centric uAPI for connecting its device to an iommufd, instead of
+> +explicitly imposing the group semantics in its uAPI as VFIO does.
+> +
+> +.. kernel-doc:: drivers/iommu/iommufd/device.c
+> +   :export:
+> +
+> +VFIO and IOMMUFD
+> +----------------
+> +
+> +Connecting a VFIO device to iommufd can be done in two ways.
+> +
+> +First is a VFIO compatible way by directly implementing the /dev/vfio/vfio
+> +container IOCTLs by mapping them into io_pagetable operations. Doing so allows
+> +the use of iommufd in legacy VFIO applications by symlinking /dev/vfio/vfio to
+> +/dev/iommufd or extending VFIO to SET_CONTAINER using an iommufd instead of a
+> +container fd.
+> +
+> +The second approach directly extends VFIO to support a new set of device-centric
+> +user API based on aforementioned IOMMUFD kernel API. It requires userspace
+> +change but better matches the IOMMUFD API semantics and easier to support new
+> +iommufd features when comparing it to the first approach.
+> +
+> +Currently both approaches are still work-in-progress.
+> +
+> +There are still a few gaps to be resolved to catch up with VFIO type1, as
+> +documented in iommufd_vfio_check_extension().
+> +
+> +Future TODOs
+> +============
+> +
+> +Currently IOMMUFD supports only kernel-managed I/O page table, similar to VFIO
+> +type1. New features on the radar include:
+> +
+> + - Binding iommu_domain's to PASID/SSID
+> + - Userspace page tables, for ARM, x86 and S390
+> + - Kernel bypass'd invalidation of user page tables
+> + - Re-use of the KVM page table in the IOMMU
+> + - Dirty page tracking in the IOMMU
+> + - Runtime Increase/Decrease of IOPTE size
+> + - PRI support with faults resolved in userspace
+Thanks
 
-It wastes 1.5MB memory, which is 0.0023% of system memory (64GB).
+Eric
 
-I believe this is clearly a good trade-off.
-
-Thanks,
-Song
