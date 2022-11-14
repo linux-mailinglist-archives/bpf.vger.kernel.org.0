@@ -2,206 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6750A6276E1
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 08:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2026362770C
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 09:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbiKNH71 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 02:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S236197AbiKNIFR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 03:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235760AbiKNH70 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 02:59:26 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4610232;
-        Sun, 13 Nov 2022 23:59:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668412765; x=1699948765;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=evywZJYpIwUqvewLPcv7nV8kI+p0Cb27xbjSIiqRzN4=;
-  b=EvrPm5xg77uMFzaBDqwqBoCRkaFZMUIh8AfBZWjdVdsjFQATeB8PjOSC
-   vCBQbPioItBSx8sPQV7yP9XEKf6pyb/j+b2FBg/JipcEXbAhYWQOHp98B
-   Q4MMd65pFY9gS0SDh+cB14PYur/m5SsOZfzTIKohfziBOJDw+zaRl48dn
-   7GnRYTzE7os60BwlDK2QFczB77UI9AYbugfRn5JW36pSCHCz0KJBbOpAF
-   2Qs8vuWd5M/5uJnshJTMublZlD2+hP5UjIeQhjOrl7DX+X091cASxcUB8
-   686Ni+0oFDjSEKKKLTm/CjmWipNSGS81B8VCoQtpSEPUfroKsJmb34gHi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10530"; a="398198990"
-X-IronPort-AV: E=Sophos;i="5.96,161,1665471600"; 
-   d="scan'208";a="398198990"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2022 23:59:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10530"; a="640672634"
-X-IronPort-AV: E=Sophos;i="5.96,161,1665471600"; 
-   d="scan'208";a="640672634"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Nov 2022 23:59:25 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sun, 13 Nov 2022 23:59:24 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sun, 13 Nov 2022 23:59:24 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Sun, 13 Nov 2022 23:59:24 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Sun, 13 Nov 2022 23:59:24 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OfnEjK3ZYWbybwVYFwUSyrA+CQCO9NwViBdUPDj/Ut0ORgrdmIiVK2c0beUBPbQ1oTzX2qIuUP3V4BJ4hMHDKLkIrv8KJpuAEz/unWG1OHkMW8vtaH5MpLupueSyuBTjq7bzSJGBpL7gTRruSg1xPfrH3k3erAI9TUB8VVn3G4kvh7FmChfuzP/c76M/sN/UWq6/scooO6S3Of+ZygTbsxVw64dwqG5qQh6+HV5DAo7CBJ15PMRFsIG1hvZY8XixpGrn/5ohIm2Syd8WEu43EbcZN0dMFPui3uERRBcnwMDlebDFt4YblOO1GUm6QevJea9SFGnNZ4SjulLCpMyv2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LsaFSLu9/nKASWVE5/5/dn8/ulV4gv7tL2Ofap6o94E=;
- b=bHEtkd95QGP8atwC29+WPR5k2WVEibZKonWuhOCR9CGuXfQlKgV6EZCMgp+BjMqDS2EFgESphz23QLvC9tLW+t/DFd6UJClI8hePJwF7g1D46dafVoWdy5H39VxDXFLNAVeiIs5tG22x7TyOg0vigCyLbGCziZtsTsaOUsM1wIu6ozuJd9YOhZpiiaUfmr6y0yShbWf6ga959wXJUlkpswcwYMcaBw9TzF4R7x8spZTJmYUM4cV1GRCkbGOcKCCZbmgXDVq1K+GE0KdNIYdqMNQvcOD5JZ5vucZ8PHgR5mMmOz8ltu00vOGSUD8KyeWWm0+E2b7JZluMtnH7ALgTYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA0PR11MB4672.namprd11.prod.outlook.com (2603:10b6:806:96::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Mon, 14 Nov
- 2022 07:59:20 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::737e:211a:bb53:4cd7%5]) with mapi id 15.20.5813.017; Mon, 14 Nov 2022
- 07:59:20 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "Suravee Suthikulpanit" <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: RE: [PATCH v4 12/17] iommufd: Add kAPI toward external drivers for
- physical devices
-Thread-Topic: [PATCH v4 12/17] iommufd: Add kAPI toward external drivers for
- physical devices
-Thread-Index: AQHY8wv6CA8CJb32DkCNRqc1fvgrX64+FLig
-Date:   Mon, 14 Nov 2022 07:59:20 +0000
-Message-ID: <BN9PR11MB52761A3A0F28380664A009588C059@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
- <12-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
-In-Reply-To: <12-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA0PR11MB4672:EE_
-x-ms-office365-filtering-correlation-id: eace3faf-44a7-458f-c1c8-08dac61622d1
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hbyeBNC6fjBzo2NjFjrpPfeviTBGqU6u2Bvr+ozVQYsrrYfD8BV2dMsmJOUYuB7osZURtfNG0zg9OxwlngPDCXDzgZkZ6RQwjfNJqpm/CiJjI4YDoVvTBfETDt6WRzkHg4/2BBPC8eENo/XcIai+zQO4P4Rj52nrjqAiW8uIcM/l0LT0pXTrhnHHlZxvl84EO3s6o4jeq7mhq8Ru0Lw7WA/btNzw0aVoQ31Khn2CMUtfe1guKrxf0yQHcmOVkBjjSld4DujIIsicEcl7RmLi4TM9cBqKQbw3lHhMSoB39cbMvBFrpgdIDevJ6Uh4dp6IWTcuqU35hUnsC9P8So6pzJW1/JOM/mBSBjkBMCAyx0t5/ryiU5ZG0w+XrObq5bTsTe2iWpW1r/y13JAwYaEwAeOPekvWWQt4EoB5RHOQdyNRxRAkzzpY8vWSjDG9K6/xWd1B6WDDeVKkYbh1bHzyaBoAKmFa9KVUHc7rd7/VdZ+LdL5ZLZTUZ6l8vn7KIRZvvw5UB+0QhdgRhhe0zDI5e5t4vpkU5jJPmnDUJ03h0TBHH4/JhqGWpXblU9crclgTVL49zjWHPiuav4p0xcG4btroq/IAROkgYh8JkSfzlX/25jMr7lz/p8DGiyAatkBqmiKGarzteOXU0ZOUdZkbfAhzdATjaqaqRgTZVbx7FkmTEQtHNInjMljx/Zeb3znEYIIMUc1Ag4BJB0TOnQ6Vh3HzyJ7M41VKlHheUSXmdaBOIZocO9X/s8rY7CvMv+2Sl85wX1dF1PTMS26zf/5H6RdvgibExC7Ay6DYZia/LYs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(366004)(136003)(346002)(396003)(376002)(451199015)(186003)(71200400001)(83380400001)(64756008)(2906002)(66556008)(66946007)(110136005)(66476007)(54906003)(4326008)(8676002)(33656002)(76116006)(66446008)(316002)(26005)(52536014)(9686003)(921005)(38070700005)(8936002)(7406005)(7416002)(38100700002)(122000001)(82960400001)(5660300002)(86362001)(4744005)(7696005)(6506007)(55016003)(41300700001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fsyx1zM4EFNmNzI30UC7KiEbAfHXjh2/S/NAPsmAVbBFSoeO2Wf9MzL/V7w4?=
- =?us-ascii?Q?P+dl7VBTfjXDyE+ol2KiBow0eMo1mmmhpxITLGqOVHnbKX4eEEqOfdwd6mWX?=
- =?us-ascii?Q?Gt3T5AWIUhFjdNdDxiwGI7NY8ym5225TgggSdBGjKlVhdiNbBw8LrTeTRApg?=
- =?us-ascii?Q?LhFPtF5wwCDbVNguVxpbqI4ASTc7oCqMzkK1R2gEvfjrrR1883aHxYh85rMW?=
- =?us-ascii?Q?9MMQXRx8bq9uFb3TmuvL4D2LENACuEplGBbrZQ59zD4kV+4rx+iItI0gQMFb?=
- =?us-ascii?Q?xftJ2mFahdEAQqGoV+rmkofgPJtpAIZE3+05idkvw3flCJ/IiVcAGEkNZGBT?=
- =?us-ascii?Q?ynpW3fhlGZTth+6G+fvxyy1vvTuski+DqXzIoa45yXm4TxturrcBJnCbsdyN?=
- =?us-ascii?Q?7opE3/LLAqXWbnT0yStq1pEThe5LTOwPoXMNm43o80afV2u0aInMeUqoRBol?=
- =?us-ascii?Q?Fpy+c8bKH8iOify9PWrGYC6EjyysNtrVtpam4eO+C7zqyJXJ/6znKWPLCIpl?=
- =?us-ascii?Q?egEPoRD9RrvslyPIFBoj/rVXJMCn1c993libx8EiICiH1ReHJ0oMYtCaBHYI?=
- =?us-ascii?Q?HHHntO3z8EcYY/zzA+AXYNDHeMEBdzliv8QWbRCvrEULCW2Jt0rJ4nDu8HPi?=
- =?us-ascii?Q?ioHq118eXIuPxD7YT/OSFNAY7XPG5BYtPR6Y8RvVxgjhu5upDtCG0SnG5HzC?=
- =?us-ascii?Q?d/DGSH56OHjmldS9f98F6dVaV46c1WNLYWtNeQs2NIVT+d3VNECeY6eH5DgQ?=
- =?us-ascii?Q?0LJ5bHufeciN09zfDXrSMQvYhwAmwElU7Xnx8GznaIOgYJNnc8a4LCwsSZoS?=
- =?us-ascii?Q?T5Ta6LdAfeCTogZfg1c7fzR1QGPucWPcsoQFgRc8HGJTcIVdyB0o1A8LS7up?=
- =?us-ascii?Q?UBfchLs40GvJ28P7GRkPhBQx/RTVHCpgy342VH6FUwQiC+mh9RvTOIAYRvBM?=
- =?us-ascii?Q?efl2LOyXEX7t4voUNTG8/XYBPTRv3CbKPaxrDktF6YT5zmjCfIa7bO+lfOZd?=
- =?us-ascii?Q?DVWJflpMVC4wWZhPx1ZbGd/sp+KO+285TuvFr01rmRF9g4fGSIKTVWJBTFjD?=
- =?us-ascii?Q?VN0VK3gBbRIC62vFKKu/RI8SU23FZiNxAf5LORX4nFwiRyrPfAg5Mr7YBpx8?=
- =?us-ascii?Q?7VTtNVhmDQ7k3Ht+RFDLHaIwPIJbUISCn4wY4irQhVE5nH0hlPKzGjem5YRR?=
- =?us-ascii?Q?Pyt+isFv/VkQxfngsQxTeDdmNgHTGhJ1Eoyo8mpSpQgyvfjvfsRcwmjFK38u?=
- =?us-ascii?Q?KDjwNbEX1++RmY1YClcUJq32DdcGU/qVLCeS7mwsF9LfU2G6scPU0kundQN7?=
- =?us-ascii?Q?JJ+dlTirzZYlIqbp/gAca42pvMoMYTkWLn7lIf8C2ZO9NpfzbQw0D63YiBhS?=
- =?us-ascii?Q?Nz0yMG7lAp6L6osmYotwSZQxQ16jGZvxSToIWl/XlAB2U5InZcTvPvxQmJwR?=
- =?us-ascii?Q?ln0zIXZ5tviQ/9frIuuTPLynCcmga5QrtaPi2tvSG+FxlIuJLSa/xUWH5kWf?=
- =?us-ascii?Q?3q8Vr8qahjR3ZImsuFTl5blRbhlgzraeOQmBQYZKewhfsB3C9FMqYBlsVhvt?=
- =?us-ascii?Q?Ek27hfGbTp2plbYs2zYDkJAHsWXjEYqjJ7iq0yvW?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S236220AbiKNIFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 03:05:04 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD6219C37;
+        Mon, 14 Nov 2022 00:05:01 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id t4so6897450wmj.5;
+        Mon, 14 Nov 2022 00:05:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pOyiUcMlwb6iIVRqneCejRT6cmL7tqvbaweeGxkyVQY=;
+        b=Dyc8hE3bkgv3fdwVYEBfrPWDvVKTVU06p9uMkW25ygudpx2YRztu5SwPN6oI74OdmN
+         i27q8tlebGRQRqXbRKD1cjIjJcljAlGFhN5CMVnn5PqV2Btwi93+9lz0LnU37Re6bLfJ
+         w0xfNxRnH54n7ldZXCj41JKAaCiMcuR9cNMzPW2VOUT5vkWjjYOHu2/3ouQDvda8LNWH
+         +dzURGiupdQAAUEISvmhfQ/7sQtNooOPGZ1NmR0wsV+2ZLLsUTq7ZBnQmhAc3Eydastk
+         /u9oyV6/MGawMRJhARpEg7YcIHnVc9YiWrklAO7YnXV60QGKLAs/uqkK428XukAMN2JZ
+         qPgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pOyiUcMlwb6iIVRqneCejRT6cmL7tqvbaweeGxkyVQY=;
+        b=0GIRvs9b2YgtA6GaAYSnbLl+JUwaWj1P8YTSMaPFuuOa86Xahle+oqkVYhTS6t0f8I
+         nBGrQfl9WVKCveGZx/UfSyHuiyHuU+506VX+qPKzyJddt8Gi7QNDYedOslxoL9eCMzkS
+         v7iFXCdtV7eX7azWhW4kEv3TFBSFPoV/0BjWAzmftlD4tdndr8zej2uMgUWr71IWWMYX
+         uoyg9S4xnEInsIyVD8H0dIpOQ0BqWJfCIqy27s3L2bWxebwzmW9o4bvM19z5+a+CWasZ
+         sFBus0Havi4/EC8jUiLE7hH8ARBrXgvKWBePeTLElpBitu8twwVOSDVKZGQwIftEeCfj
+         j5TA==
+X-Gm-Message-State: ANoB5pntF4uxej5gIgWcL4j0YJJlRGeFowXYzpW9TaK7lJUZ9ZOG4scM
+        qPkDaO1AxcqQyAE1Hwnz5GA=
+X-Google-Smtp-Source: AA0mqf64pGdD2UaEYHY8pljQvwTmpH49tOtWZi446rG8mET9/Ydm1Gxb7e/GwboTH4or17hX/iJ6ig==
+X-Received: by 2002:a05:600c:5107:b0:3cf:9d20:d928 with SMTP id o7-20020a05600c510700b003cf9d20d928mr6948675wms.27.1668413100017;
+        Mon, 14 Nov 2022 00:05:00 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
+        by smtp.gmail.com with ESMTPSA id r7-20020a05600c458700b003c7087f6c9asm18052254wmo.32.2022.11.14.00.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Nov 2022 00:04:59 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 14 Nov 2022 09:04:57 +0100
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: WARNING in bpf_bprintf_prepare
+Message-ID: <Y3H2qayW0hKlzBkK@krava>
+References: <Y1pqWPRmP0M+hcXf@krava>
+ <CACkBjsbP-iw-gpnYN=Ormcu2zXAeOgjeptjGAFXNNJRRVhRAag@mail.gmail.com>
+ <Y2J+n7SqmtfyA7ZM@krava>
+ <Y2j6ivTwFmA0FtvY@krava>
+ <CAADnVQKXcdVa-gDj2_QTrBuVea+KMuFUdabR--HCf7x6Vo6uXg@mail.gmail.com>
+ <Y2uv/GjnSdr/ujOj@krava>
+ <CAADnVQJp0ZrodRu8ZtvvtXk6KAbjxmwqD-nXgFAxNpNxN6JM=g@mail.gmail.com>
+ <Y2w9bNhVlAs/PcNV@krava>
+ <Y25gFdliV7XqdUnN@krava>
+ <CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eace3faf-44a7-458f-c1c8-08dac61622d1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2022 07:59:20.1629
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d9OwVf5EPSb1oCW/4FnnyYCVQUj5qevw39zdvlTPxXjEa1lPF7wOq43z7hyPItka6lL/+FzyOKqucMMRlIWc1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4672
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Tuesday, November 8, 2022 8:49 AM
->=20
-> Add the four functions external drivers need to connect physical DMA to
-> the IOMMUFD:
->=20
-> iommufd_device_bind() / iommufd_device_unbind()
->   Register the device with iommufd and establish security isolation.
->=20
-> iommufd_device_attach() / iommufd_device_detach()
->   Connect a bound device to a page table
->=20
-> Binding a device creates a device object ID in the uAPI, however the
-> generic API provides no IOCTLs to manipulate them.
->=20
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On Sat, Nov 12, 2022 at 12:02:50AM +0800, Hao Sun wrote:
+> Jiri Olsa <olsajiri@gmail.com> 于2022年11月11日周五 22:45写道：
+> >
+> > On Thu, Nov 10, 2022 at 12:53:16AM +0100, Jiri Olsa wrote:
+> >
+> > SNIP
+> >
+> > > > > > > ---
+> > > > > > > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> > > > > > > index 6a13220d2d27..5a354ae096e5 100644
+> > > > > > > --- a/include/trace/bpf_probe.h
+> > > > > > > +++ b/include/trace/bpf_probe.h
+> > > > > > > @@ -78,11 +78,15 @@
+> > > > > > >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+> > > > > > >
+> > > > > > >  #define __BPF_DECLARE_TRACE(call, proto, args)                         \
+> > > > > > > +static DEFINE_PER_CPU(int, __bpf_trace_tp_active_##call);              \
+> > > > > > >  static notrace void                                                    \
+> > > > > > >  __bpf_trace_##call(void *__data, proto)                                        \
+> > > > > > >  {                                                                      \
+> > > > > > >         struct bpf_prog *prog = __data;                                 \
+> > > > > > > -       CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > > > > > +                                                                       \
+> > > > > > > +       if (likely(this_cpu_inc_return(__bpf_trace_tp_active_##call) == 1))             \
+> > > > > > > +               CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > > > > > +       this_cpu_dec(__bpf_trace_tp_active_##call);                                     \
+> > > > > > >  }
+> > > > > >
+> > > > > > This approach will hurt real use cases where
+> > > > > > multiple and different raw_tp progs run on the same cpu.
+> > > > >
+> > > > > would the 2 levels of nesting help in here?
+> > > > >
+> > > > > I can imagine the change above would break use case where we want to
+> > > > > trigger tracepoints in irq context that interrupted task that's already
+> > > > > in the same tracepoint
+> > > > >
+> > > > > with 2 levels of nesting we would trigger that tracepoint from irq and
+> > > > > would still be safe with bpf_bprintf_prepare buffer
+> > > >
+> > > > How would these 2 levels work?
+> > >
+> > > just using the active counter like below, but I haven't tested it yet
+> > >
+> > > jirka
+> >
+> > seems to be working
+> > Hao Sun, could you please test this patch?
+> >
+> 
+> Hi Jirka,
+> 
+> I've tested the proposed patch, the warning from bpf_bprintf_prepare will not
+> be triggered with the patch, but the reproducer can still trigger the following
+> warning. My test was conducted on:
+> 
+> commit:  f67dd6ce0723 Merge tag 'slab-for-6.1-rc4-fixes'
+> git tree:   upstream
+> kernel config: https://pastebin.com/raw/sE5QK5HL
+> C reproducer: https://pastebin.com/raw/X96ASi27
+> console log *before* the patch: https://pastebin.com/raw/eSCUNFrd
+> console log *after* the patch: https://pastebin.com/raw/tzcmdWZt
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+thanks for testing.. I can't reproduce this for some reason
+
+I'll check some more and perhaps go with denying bpf attachment
+for this tracepoint as Alexei suggeste
+
+jirka
+
+
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 6.1.0-rc4-00020-gf67dd6ce0723-dirty #11 Not tainted
+> --------------------------------------------
+> a.out/6703 is trying to acquire lock:
+> ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
+> ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:376
+> 
+> but task is already holding lock:
+> ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
+> ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:376
+> 
+> other info that might help us debug this:
+> Possible unsafe locking scenario:
+> 
+> CPU0
+> ----
+> lock(trace_printk_lock);
+> lock(trace_printk_lock);
+> 
+> *** DEADLOCK ***
+> 
+> May be due to missing lock nesting notation
+> 
+> 4 locks held by a.out/6703:
+> #0: ffffffff8ce02fc8 (event_mutex){+.+.}-{3:3}, at:
+> __ftrace_set_clr_event kernel/trace/trace_events.c:1060 [inline]
+> #0: ffffffff8ce02fc8 (event_mutex){+.+.}-{3:3}, at:
+> trace_set_clr_event+0xd5/0x140 kernel/trace/trace_events.c:1126
+> #1: ffffffff8cd85f00 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run
+> kernel/trace/bpf_trace.c:2249 [inline]
+> #1: ffffffff8cd85f00 (rcu_read_lock){....}-{1:2}, at:
+> bpf_trace_run2+0xb9/0x3d0 kernel/trace/bpf_trace.c:2293
+> #2: ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
+> #2: ffffffff8ce0ea18 (trace_printk_lock){....}-{2:2}, at:
+> bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:376
+> #3: ffffffff8cd85f00 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run
+> kernel/trace/bpf_trace.c:2249 [inline]
+> #3: ffffffff8cd85f00 (rcu_read_lock){....}-{1:2}, at:
+> bpf_trace_run2+0xb9/0x3d0 kernel/trace/bpf_trace.c:2293
+> 
+> stack backtrace:
+> CPU: 7 PID: 6703 Comm: a.out Not tainted 6.1.0-rc4-00020-gf67dd6ce0723-dirty #11
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux
+> 1.16.0-3-3 04/01/2014
+> Call Trace:
+> <TASK>
+> __dump_stack lib/dump_stack.c:88 [inline]
+> dump_stack_lvl+0xfc/0x174 lib/dump_stack.c:106
+> print_deadlock_bug kernel/locking/lockdep.c:2990 [inline]
+> check_deadlock kernel/locking/lockdep.c:3033 [inline]
+> validate_chain kernel/locking/lockdep.c:3818 [inline]
+> __lock_acquire.cold+0x119/0x3b9 kernel/locking/lockdep.c:5055
+> lock_acquire kernel/locking/lockdep.c:5668 [inline]
+> lock_acquire+0x1dc/0x600 kernel/locking/lockdep.c:5633
+> __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> _raw_spin_lock_irqsave+0x36/0x50 kernel/locking/spinlock.c:162
+> ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
+> bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:376
+> ___bpf_prog_run+0x42e5/0x8de0 kernel/bpf/core.c:1818
+> __bpf_prog_run32+0x99/0xe0 kernel/bpf/core.c:2041
+> bpf_dispatcher_nop_func include/linux/bpf.h:964 [inline]
+> __bpf_prog_run include/linux/filter.h:600 [inline]
+> bpf_prog_run include/linux/filter.h:607 [inline]
+> __bpf_trace_run kernel/trace/bpf_trace.c:2254 [inline]
+> bpf_trace_run2+0x14d/0x3d0 kernel/trace/bpf_trace.c:2293
+> __bpf_trace_contention_begin+0xc8/0x120 include/trace/events/lock.h:95
+> __traceiter_contention_begin+0x56/0x90 include/trace/events/lock.h:95
+> trace_contention_begin.constprop.0+0x143/0x240 include/trace/events/lock.h:95
+> __pv_queued_spin_lock_slowpath+0xfd/0xc70 kernel/locking/qspinlock.c:405
+> pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:591 [inline]
+> queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+> queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+> do_raw_spin_lock+0x20a/0x2b0 kernel/locking/spinlock_debug.c:115
+> __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+> _raw_spin_lock_irqsave+0x3e/0x50 kernel/locking/spinlock.c:162
+> ____bpf_trace_printk kernel/trace/bpf_trace.c:390 [inline]
+> bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:376
+> ___bpf_prog_run+0x42e5/0x8de0 kernel/bpf/core.c:1818
+> __bpf_prog_run32+0x99/0xe0 kernel/bpf/core.c:2041
+> bpf_dispatcher_nop_func include/linux/bpf.h:964 [inline]
+> __bpf_prog_run include/linux/filter.h:600 [inline]
+> bpf_prog_run include/linux/filter.h:607 [inline]
+> __bpf_trace_run kernel/trace/bpf_trace.c:2254 [inline]
+> bpf_trace_run2+0x14d/0x3d0 kernel/trace/bpf_trace.c:2293
+> __bpf_trace_contention_begin+0xc8/0x120 include/trace/events/lock.h:95
+> __traceiter_contention_begin+0x56/0x90 include/trace/events/lock.h:95
+> trace_contention_begin+0x129/0x1e0 include/trace/events/lock.h:95
+> __mutex_lock_common kernel/locking/mutex.c:605 [inline]
+> __mutex_lock+0x15a/0x12d0 kernel/locking/mutex.c:747
+> __ftrace_set_clr_event kernel/trace/trace_events.c:1060 [inline]
+> trace_set_clr_event+0xd5/0x140 kernel/trace/trace_events.c:1126
+> __set_printk_clr_event kernel/trace/bpf_trace.c:419 [inline]
+> bpf_get_trace_printk_proto kernel/trace/bpf_trace.c:425 [inline]
+> bpf_tracing_func_proto+0x476/0x5a0 kernel/trace/bpf_trace.c:1422
+> raw_tp_prog_func_proto+0x4f/0x60 kernel/trace/bpf_trace.c:1885
+> check_helper_call+0x20a/0x94d0 kernel/bpf/verifier.c:7255
+> do_check kernel/bpf/verifier.c:12384 [inline]
+> do_check_common+0x6b3e/0xdf20 kernel/bpf/verifier.c:14643
+> do_check_main kernel/bpf/verifier.c:14706 [inline]
+> bpf_check+0x714c/0xa9b0 kernel/bpf/verifier.c:15276
+> bpf_prog_load+0xfb1/0x2110 kernel/bpf/syscall.c:2605
+> __sys_bpf+0xaba/0x5520 kernel/bpf/syscall.c:4965
+> __do_sys_bpf kernel/bpf/syscall.c:5069 [inline]
+> __se_sys_bpf kernel/bpf/syscall.c:5067 [inline]
+> __x64_sys_bpf+0x74/0xb0 kernel/bpf/syscall.c:5067
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fe9f4ee4469
+> Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
+> RSP: 002b:00007fff7c845438 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe9f4ee4469
+> RDX: 0000000000000048 RSI: 0000000020000080 RDI: 0000000000000005
+> RBP: 00007fff7c845450 R08: 00007fe9f4f2e160 R09: 00007fff7c845450
+> R10: 0000000020001cc2 R11: 0000000000000246 R12: 000055643c800c00
+> R13: 00007fff7c845570 R14: 0000000000000000 R15: 0000000000000000
+> </TASK>
+> 
+> Regards
+> Hao
+> 
+> > thanks,
+> > jirka
+> > >
+> > >
+> > > ---
+> > > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> > > index 6a13220d2d27..ca5dd34478b7 100644
+> > > --- a/include/trace/bpf_probe.h
+> > > +++ b/include/trace/bpf_probe.h
+> > > @@ -78,11 +78,15 @@
+> > >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+> > >
+> > >  #define __BPF_DECLARE_TRACE(call, proto, args)                               \
+> > > +static DEFINE_PER_CPU(int, __bpf_trace_tp_active_##call);            \
+> > >  static notrace void                                                  \
+> > >  __bpf_trace_##call(void *__data, proto)                                      \
+> > >  {                                                                    \
+> > >       struct bpf_prog *prog = __data;                                 \
+> > > -     CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > +                                                                     \
+> > > +     if (likely(this_cpu_inc_return(__bpf_trace_tp_active_##call) < 3))              \
+> > > +             CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > > +     this_cpu_dec(__bpf_trace_tp_active_##call);                                     \
+> > >  }
+> > >
+> > >  #undef DECLARE_EVENT_CLASS
