@@ -2,109 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2980B62899B
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4E76289CC
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 20:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbiKNTpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 14:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S236250AbiKNTud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 14:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235905AbiKNTpI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 14:45:08 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E111117F;
-        Mon, 14 Nov 2022 11:45:08 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-367b8adf788so117169857b3.2;
-        Mon, 14 Nov 2022 11:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0kTaazvMn+z7PkbY5IIj8bT/sIYdhb5EA9tVD/sgOk=;
-        b=LTVjtCRzIcENz2uMWyMTJLNHxbs1s0zAT4BOk+LWOqU2MubC/4YkcoLJpN1SGcaief
-         WoTgigKHlHrzy0GzGgctB3lnteKhoPlhrKcfnWN+mPy4aGvW+6IRm1Db3nuZrb4RCbKV
-         F+/Wc8QnumdjeShTx3wGs+5pSZBOdYGAZtsHYltCNWSGixiwuz0ScD3pW8v9YOXaRnJG
-         eZW1PM3Q3pojWkk1jdsrlXUj+7mp68xyvDH2+RQYNjZE/vBNdtar1m9Gb25GFPnPyYGv
-         MTDZO+n9tRZ0+9opdCwoSlNCYQDOfm6dSFToOujc4gGaVI1SaYdLHUKGmxCm1ZNaJK4s
-         re5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K0kTaazvMn+z7PkbY5IIj8bT/sIYdhb5EA9tVD/sgOk=;
-        b=58f3wt4lbiJtrCSeDGEWHl4CMuNv/e8+hYoHtrIM+n8+/Al8tx5vmGgFHqit09i3Lb
-         hgZBdaCHLslJUy2eOGhH0ivQRgGb9hw73fKQnSGBQoE7Rtfog0h6gXnELdGSwwkJKAwu
-         YkVwv7LHMnFzfdpeCzAK8iVGW5RNzDkkssrD6QZ8TT+5+tOYQKreTcsowFws1a/mTxxC
-         jBBWn/5SP9QsDIf9enclgW8xDtYtONsdQV1cu/M8C4QcpkZHpoVksOAWc+6peM9ZD4FU
-         vKGD5HzQKLvp1V27Upp4I25UMahVHs/kTjFN/ABaKX2IkfT/HkNmmz0u628w9eGdvQoB
-         F/Eg==
-X-Gm-Message-State: ANoB5pkbMNwwZ9WSwC1e5lEPGi5FP+rZRMWfqESUiCYY13NpW5Ag1yRd
-        dU24zD1stl16o/hpdFtEyi2MGBvsUrh76oYobsA=
-X-Google-Smtp-Source: AA0mqf6vxug+NW6/2EGHo80FbfEq9l2aNaKfoEXFXFi/DxRbB76grQcYVWmSr4VaVaNWGCgHegNm1nIw5tBETR3lvJg=
-X-Received: by 2002:a81:8087:0:b0:367:3d7c:30df with SMTP id
- q129-20020a818087000000b003673d7c30dfmr14249259ywf.511.1668455107198; Mon, 14
- Nov 2022 11:45:07 -0800 (PST)
+        with ESMTP id S235636AbiKNTuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 14:50:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C479717A96;
+        Mon, 14 Nov 2022 11:50:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6ACDE61411;
+        Mon, 14 Nov 2022 19:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5A65C433D7;
+        Mon, 14 Nov 2022 19:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668455415;
+        bh=Ewq+7kBghgMuQKiCyYcVqka2wlNE/4gjkl3ZLYGvwH4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BccZtJjq+0s4vjQpDh6kgMv2OlNBXO8JeNduc5IOtSrfzblryG9dKRGijApesYKI8
+         IqjGj/QDj7zEJD055+joB6cHfv6fO7N6csC5Gi5TU7TF1eUvumoBgjY6wd/z/DoWws
+         +a877/vciCMFhyp8gi+Uj1PXON4u9ORfxw8OGbYK0T+XyzToaswAtCHPFciWiGPCrq
+         0kMuZ72Kp0WePcDJVEYe0CdIfXYWc1hDgHQ8y4/dxgrDrFCL5/8HK24EpIrnCrrmtU
+         RA6Fdbp3p+OLSadDiVvEBemVBcnJ+f/+F3J4s7rdJskWcdbQfgT0lDvIG9QAw7ZdVf
+         wif4NMPbpSSqg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 96788E270C2;
+        Mon, 14 Nov 2022 19:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221109174604.31673-1-donald.hunter@gmail.com>
- <20221109174604.31673-2-donald.hunter@gmail.com> <CAEf4Bzak4A-vP=NeJheA0poiu_8fK53cvbq1EnnSHC78FB7mtQ@mail.gmail.com>
- <m24jv17sbn.fsf@gmail.com>
-In-Reply-To: <m24jv17sbn.fsf@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Nov 2022 11:44:53 -0800
-Message-ID: <CAEf4BzZeYN0BY6xRB8XnXE8n6Nd3Y1t5Y-LpjgsLDgGaNGgE_w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
-To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dave Tucker <dave@dtucker.co.uk>,
-        Maryam Tahhan <mtahhan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/3] libbpf: Fixed various checkpatch issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166845541560.2198.17027977446805211141.git-patchwork-notify@kernel.org>
+Date:   Mon, 14 Nov 2022 19:50:15 +0000
+References: <20221113190648.38556-1-tegongkang@gmail.com>
+In-Reply-To: <20221113190648.38556-1-tegongkang@gmail.com>
+To:     Kang Minchul <tegongkang@gmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 2:57 AM Donald Hunter <donald.hunter@gmail.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Wed, Nov 9, 2022 at 9:46 AM Donald Hunter <donald.hunter@gmail.com> wrote:
-> >>
-> >> +This example BPF program shows how to access an array element.
-> >> +
-> >> +.. code-block:: c
-> >> +
-> >> +    int bpf_prog(struct __sk_buff *skb)
-> >> +    {
-> >> +            struct iphdr ip;
-> >> +            int index;
-> >> +            long *value;
-> >> +
-> >> +            if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip, sizeof(ip)) < 0)
-> >> +                    return 0;
-> >> +
-> >> +            index = ip.protocol;
-> >> +            value = bpf_map_lookup_elem(&my_map, &index);
-> >> +            if (value)
-> >> +                    __sync_fetch_and_add(value, skb->len);
-> >
-> > should be &value
-> >
-> > I fixed it up and applied to bpf-next, thanks.
->
-> I double checked and it really should be value, which is already a
-> pointer.
->
-> Do you want me to send a patch to fix it up?
+Hello:
 
-Oh, my bad, value is a pointer already and I was (wrongly) convinced
-that it's just a stack variable. Yes, please send a patch, thanks!
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Mon, 14 Nov 2022 04:06:45 +0900 you wrote:
+> This patch series contains various checkpatch fixes
+> in btf.c, libbpf.c, ringbuf.c.
+> 
+> I know these are trivial but some issues are hard to ignore
+> and I think these checkpatch issues are accumulating.
+> 
+> v1 -> v2: changed cover letter message.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,1/3] libbpf: checkpatch: Fixed code alignments in btf.c
+    https://git.kernel.org/bpf/bpf-next/c/c7694ac340b0
+  - [v2,2/3] libbpf: Fixed various checkpatch issues in libbpf.c
+    https://git.kernel.org/bpf/bpf-next/c/e3ba8e4e8c19
+  - [v2,3/3] libbpf: checkpatch: Fixed code alignments in ringbuf.c
+    https://git.kernel.org/bpf/bpf-next/c/b486d19a0ab0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
