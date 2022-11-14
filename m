@@ -2,57 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57740628A3C
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA0628A4A
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 21:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbiKNUNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 15:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
+        id S235738AbiKNURP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 15:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236128AbiKNUNb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 15:13:31 -0500
+        with ESMTP id S237515AbiKNURG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 15:17:06 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27033DE0
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:13:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1EED80;
+        Mon, 14 Nov 2022 12:17:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E2DB5B81200
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:13:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89440C433B5
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:13:25 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BCA09B81250;
+        Mon, 14 Nov 2022 20:17:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23131C433D6;
+        Mon, 14 Nov 2022 20:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668456806;
-        bh=evWACerkMgPDV2iTZqsEi8ywuNBzXAvxPW2Xk8G2OBU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C65L8kYtUw2wQtwX+8t8BIb91ZDeXHBRWBps4GPdZ/BWu/hQGauagjA2DGsLyrBnM
-         ETfRraPQMVzI2QM8Rq8kj2fltQZ+SbbV4UeDD+rQ2ojCzAi4MAHdFpnRR0jRXpOq40
-         vToOftpvY3fEeUxctQRx2vHCuU84f5+onNEGbS0DpGbaZ5DoW86dhQwpPnLurEhdTk
-         dZWekuVpCYo/IEHkiM7cUz3jUlOYQ3eGSU31juIIjx2Jj6l4rbtanaPPO1kDYcTiwo
-         ke+t+RCb8pmOKzZk43wYI3uVgb1RrVm49rwMrKnX02hY8c2JpZ9kKst0i3k7xGRDIM
-         ozyEJxISzzI1A==
-Received: by mail-ej1-f49.google.com with SMTP id f5so31104574ejc.5
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 12:13:25 -0800 (PST)
-X-Gm-Message-State: ANoB5pm/ScrsbLiBhIUozAFFbnSqPTwNJZPewH02U+z4AzphBqFCjAVR
-        WtrNVAtcU0FvfzuhJXCYSMw8JsJRwO2eGtCDkdU=
-X-Google-Smtp-Source: AA0mqf7ENa/NO+V3ctrhT8zWG2na9i2XUmqqM9TNRdX64zkoNebB/7px/ngcBRNTKeo5RRwFgFU9PJ8Z64UIfAUao0w=
-X-Received: by 2002:a17:907:1308:b0:7af:bc9:5e8d with SMTP id
- vj8-20020a170907130800b007af0bc95e8dmr2955180ejb.3.1668456803725; Mon, 14 Nov
- 2022 12:13:23 -0800 (PST)
+        s=k20201202; t=1668457020;
+        bh=lArEVRhnhBStJg8lVysI0AXQxfySf17f2xZUNA8QEFA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qtTVz014n8NvY6nbqwwKhoZ2xNVIXYJFixHk1bHFUjMNV99l+ImUDlMSKp2NbDpP6
+         HkwTpHs3t0bDyPSHeTYbZuhfQ5ZP4d3BANOPOl2UWGAGOUHZrIs96mwoQ/X5VEKiAo
+         a2eSjLo3SvEmNr3D5jNGR9rBabqwWEtrKv0PmNuFq4ICnoZLi3jtZ5tlkupUTdKsWC
+         MAGSwZzhyAhturAJCh8CRFq6lBSOXsiA0d8wWKrHs+6KrWL5FjqXjU+MzpXmd2i59D
+         LMR+/bYNBmlMsqYBtOSfpBnU3gN4Ax86RrqNeRSUC7ruqQ4RygiAp+IUK43KN9NTmn
+         M1utTd37W/ixA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A96E44034E; Mon, 14 Nov 2022 17:16:57 -0300 (-03)
+Date:   Mon, 14 Nov 2022 17:16:57 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 00/14] Fix perf tools/lib includes
+Message-ID: <Y3KiOU/bYokRSENk@kernel.org>
+References: <20221109184914.1357295-1-irogers@google.com>
+ <CAM9d7ciPe-uR5MdayhUEEK8a-j1QDm50qPffsod9BHdUF5Z-TA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
- <CAPhsuW7xtUKb7ovjLFDPap-_t1TzPZ0Td+kHparOniZf7cBCSQ@mail.gmail.com> <Y3C/4Y5bt5eXadzJ@kernel.org>
-In-Reply-To: <Y3C/4Y5bt5eXadzJ@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Nov 2022 12:13:11 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6Opkg0_qc53jQ3RyN5XKB2i3X3qNfoXLNrmUbD3AzcFA@mail.gmail.com>
-Message-ID: <CAPhsuW6Opkg0_qc53jQ3RyN5XKB2i3X3qNfoXLNrmUbD3AzcFA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-        x86@kernel.org, peterz@infradead.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, mcgrof@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7ciPe-uR5MdayhUEEK8a-j1QDm50qPffsod9BHdUF5Z-TA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,42 +67,133 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 1:59 AM Mike Rapoport <rppt@kernel.org> wrote:
-[...]
+Em Thu, Nov 10, 2022 at 10:10:18AM -0800, Namhyung Kim escreveu:
+> Hi Ian,
+> 
+> On Wed, Nov 9, 2022 at 10:49 AM Ian Rogers <irogers@google.com> wrote:
 > >
-> > There will be some memory waste in such cases. But it will get better with:
-> > 1) With 4/5 and 5/5, BPF programs will share this 2MB page with kernel .text
-> > section (_stext to _etext);
-> > 2) modules, ftrace, kprobe will also share this 2MB page;
->
-> Unless I'm missing something, what will be shared is the virtual space, the
-> actual physical pages will be still allocated the same way as any vmalloc()
-> allocation.
+> > The previous build would add -Itools/lib and get dependencies for
+> > libtraceevent, libsubcmd, libsymbol, libapi and libbpf meaning that
+> > overriding these libraries would change the link time dependency but
+> > the headers would erroneously come from tools/lib. Fix the build to
+> > install headers and then depend on these. To reduce exposing internal
+> > headers/APIs some clean up is performed. tools/lib/symbol has a
+> > Makefile added, while tools/lib/api and tools/lib/subcmd have install
+> > targets added. The pattern used for the dependencies in Makefile.perf
+> > is modelled on libbpf.
+> >
+> > The problem and solution were motivated by this issue and discussion:
+> > https://lore.kernel.org/lkml/CAEf4BzbbOHQZUAe6iWaehKCPQAf3VC=hq657buqe2_yRKxaK-A@mail.gmail.com/
+> >
+> > v2. Fix a MANIFEST issue for the source tar ball. Add dependencies for
+> >     the installed header files so that the build doesn't overtake
+> >     building these dependencies. Both issues reported by Arnaldo
+> >     Carvalho de Melo <acme@kernel.org>.
+> >
+> > Ian Rogers (14):
+> >   tools lib api: Add install target
+> >   tools lib subcmd: Add install target
+> >   perf build: Install libsubcmd locally when building
+> >   perf build: Install libapi locally when building
+> >   perf build: Install libperf locally when building
+> >   perf build: Install libtraceevent locally when building
+> >   tools lib api: Add missing install headers
+> >   tools lib perf: Add missing install headers
+> >   tool lib symbol: Add Makefile/Build
+> >   perf build: Install libsymbol locally when building
+> >   perf expr: Tidy hashmap dependency
+> >   perf thread_map: Reduce exposure of libperf internal API
+> >   perf cpumap: Tidy libperf includes
+> >   perf build: Use tools/lib headers from install path
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-What do you mean by shared virtual space, but the actual physical pages are
-still the same? This is a 2MB page shared by BPF programs, modules, etc.,
-so it is 2MB virtual address space, and it is also 1x 2MB physical huge page.
-For example, we will allocate one 2MB page, and put 1MB of module text,
-512kB of BPF programs, some ftrace trampolines in this page.
+'make -C tools/perf build-test' is failing, looks like parallelization
+woes again:
 
->
-> > 3) There are bigger BPF programs in many use cases.
->
-> With statistics you provided above one will need hundreds if not thousands
-> of BPF programs to fill a 2M page. I didn't do the math, but it seems that
-> to see memory savings there should be several hundreds of BPF programs.
+⬢[acme@toolbox perf]$ getconf _NPROCESSORS_ONLN
+32
+⬢[acme@toolbox perf]$
 
-powerpc is trying to use bpf_prog_pack [1]. IIUC, execmem_alloc() should
-allocate 512kB pages for powerpc. This already yielding memory savings:
-on a random system in our fleet (x86_64), BPF programs use 140x 4kB
-pages (or 560kB) without execmem_alloc(). They will fit in 200kB with
-execmem_alloc(), and we can use the other 300kB+ for modules, ftrace,
-etc.
+⬢[acme@toolbox perf]$ git log --oneline -1 ; time make -C tools/perf build-test
+9f22d36a1dd0297a (HEAD -> perf/core) perf build: Use tools/lib headers from install path
+make: Entering directory '/var/home/acme/git/perf/tools/perf'
+- tarpkg: ./tests/perf-targz-src-pkg .
+                 make_static: cd . && make LDFLAGS=-static NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 NO_JVMTI=1 -j32  DESTDIR=/tmp/tmp.i0kUDsiQbV
+              make_with_gtk2: cd . && make GTK2=1 -j32  DESTDIR=/tmp/tmp.MNcgfeG07c
+cd . && make GTK2=1 -j32 DESTDIR=/tmp/tmp.MNcgfeG07c
+  BUILD:   Doing 'make -j32' parallel build
+  HOSTCC  fixdep.o
+  HOSTLD  fixdep-in.o
+  LINK    fixdep
+Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/perf_regs.h' differs from latest version at 'arch/arm64/include/uapi/asm/perf_regs.h'
+diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h arch/arm64/include/uapi/asm/perf_regs.h
+Warning: Kernel ABI header at 'tools/arch/arm64/include/asm/cputype.h' differs from latest version at 'arch/arm64/include/asm/cputype.h'
+diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
+Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/syscalls/syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscalls/syscall.tbl'
+diff -u tools/perf/arch/powerpc/entry/syscalls/syscall.tbl arch/powerpc/kernel/syscalls/syscall.tbl
 
-OTOH, 512kB or even 2MB is really small for module systems, but iTLB
-is always a limited resource.
+Auto-detecting system features:
+...                                   dwarf: [ on  ]
+...                      dwarf_getlocations: [ on  ]
+...                                   glibc: [ on  ]
+...                                  libbfd: [ on  ]
+...                          libbfd-buildid: [ on  ]
+...                                  libcap: [ on  ]
+...                                  libelf: [ on  ]
+...                                 libnuma: [ on  ]
+...                  numa_num_possible_cpus: [ on  ]
+...                                 libperl: [ on  ]
+...                               libpython: [ on  ]
+...                               libcrypto: [ on  ]
+...                               libunwind: [ on  ]
+...                      libdw-dwarf-unwind: [ on  ]
+...                                    zlib: [ on  ]
+...                                    lzma: [ on  ]
+...                               get_cpuid: [ on  ]
+...                                     bpf: [ on  ]
+...                                  libaio: [ on  ]
+...                                 libzstd: [ on  ]
 
-Thanks,
-Song
-
-[1] https://lore.kernel.org/bpf/20221110184303.393179-1-hbathini@linux.ibm.com/
+  GEN     common-cmds.h
+  CC      perf-read-vdso32
+  CC      dlfilters/dlfilter-test-api-v0.o
+  CC      dlfilters/dlfilter-show-cycles.o
+  CC      jvmti/libjvmti.o
+  CC      jvmti/jvmti_agent.o
+  CC      jvmti/libstring.o
+  CC      jvmti/libctype.o
+  CC      ui/gtk/browser.o
+  CC      ui/gtk/hists.o
+  CC      ui/gtk/setup.o
+  CC      ui/gtk/util.o
+  GEN     pmu-events/pmu-events.c
+  CC      ui/gtk/helpline.o
+  LINK    dlfilters/dlfilter-show-cycles.so
+  CC      ui/gtk/progress.o
+  CC      ui/gtk/annotate.o
+  CC      ui/gtk/zalloc.o
+  LINK    dlfilters/dlfilter-test-api-v0.so
+  INSTALL headers
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/exec-cmd.o
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/help.o
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/pager.o
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/parse-options.o
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/run-command.o
+In file included from ui/gtk/hists.c:2:
+/var/home/acme/git/perf/tools/perf/util/include/../evlist.h:9:10: fatal error: api/fd/array.h: No such file or directory
+    9 | #include <api/fd/array.h>
+      |          ^~~~~~~~~~~~~~~~
+compilation terminated.
+make[6]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:97: ui/gtk/hists.o] Error 1
+make[6]: *** Waiting for unfinished jobs....
+  CC      /var/home/acme/git/perf/tools/perf/libsubcmd/sigchain.o
+make -f /var/home/acme/git/perf/tools/build/Makefile.build dir=. obj=libsymbol V=1
+In file included from ui/gtk/browser.c:2:
+/var/home/acme/git/perf/tools/perf/util/include/../evsel.h:10:10: fatal error: internal/evsel.h: No such file or directory
+   10 | #include <internal/evsel.h>
+      |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[6]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:97: ui/gtk/browser.o] Error 1
+  INSTALL headers
+  CC      /var/home/acme/git/perf/tools/perf/libtraceevent/event-parse.o
