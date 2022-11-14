@@ -2,23 +2,23 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C03A6274EB
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 04:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E564D6274EA
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 04:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235592AbiKND2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Nov 2022 22:28:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S235493AbiKND2J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Nov 2022 22:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbiKND2J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S235338AbiKND2J (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sun, 13 Nov 2022 22:28:09 -0500
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 509A4DEA2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E812DECF;
         Sun, 13 Nov 2022 19:28:07 -0800 (PST)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxndrGtXFjzskGAA--.20720S3;
+        by gateway (Coremail) with SMTP id _____8Dxu9jGtXFj0skGAA--.20398S3;
         Mon, 14 Nov 2022 11:28:06 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxn+DFtXFj3j0SAA--.49444S2;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxn+DFtXFj3j0SAA--.49444S3;
         Mon, 14 Nov 2022 11:28:05 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Quentin Monnet <quentin@isovalent.com>,
@@ -26,26 +26,31 @@ To:     Quentin Monnet <quentin@isovalent.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 0/2] Some small changes about bpftool
-Date:   Mon, 14 Nov 2022 11:28:02 +0800
-Message-Id: <1668396484-4596-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next 1/2] bpftool: Use strcmp() instead of is_prefix() to check parameters
+Date:   Mon, 14 Nov 2022 11:28:03 +0800
+Message-Id: <1668396484-4596-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8Cxn+DFtXFj3j0SAA--.49444S2
+In-Reply-To: <1668396484-4596-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1668396484-4596-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf8Cxn+DFtXFj3j0SAA--.49444S3
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E
-        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Coremail-Antispam: 1Uk129KBjvdXoWrZrW3AF1DuFWUWr1xZrWUurg_yoWktwc_WF
+        ZxXrnavrZ5Jry7CFW09398uFy8Ka15X3Z7Cw4avr15AFW8Xay7Ar48Ca95Z3y5ZFyqv3Wa
+        yF9xZr1fGF47CjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
+        xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
+        g7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
+        AFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
+        6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7
+        xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAa
+        w2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
+        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2
+        jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s02
+        6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF
+        0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvE
+        c7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+        v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7I
+        U8q2NtUUUUU==
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,13 +59,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tiezhu Yang (2):
-  bpftool: Use strcmp() instead of is_prefix() to check parameters
-  bpftool: Check argc first before "file" in do_batch()
+In the current code, the parameters check of bpftool seems not correct,
+for example, "bpftool batch file FILE" is the expected command format,
+but "bpftool b f FILE" is recognized as valid, so use strcmp() instead
+of is_prefix() to check parameters.
 
- tools/bpf/bpftool/main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/bpf/bpftool/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 741e50e..4ef87c2 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -200,7 +200,7 @@ int cmd_select(const struct cmd *cmds, int argc, char **argv,
+ 		return cmds[0].func(argc, argv);
+ 
+ 	for (i = 0; cmds[i].cmd; i++) {
+-		if (is_prefix(*argv, cmds[i].cmd)) {
++		if (!strcmp(*argv, cmds[i].cmd)) {
+ 			if (!cmds[i].func) {
+ 				p_err("command '%s' is not supported in bootstrap mode",
+ 				      cmds[i].cmd);
+@@ -337,7 +337,7 @@ static int do_batch(int argc, char **argv)
+ 	if (argc < 2) {
+ 		p_err("too few parameters for batch");
+ 		return -1;
+-	} else if (!is_prefix(*argv, "file")) {
++	} else if (strcmp(*argv, "file")) {
+ 		p_err("expected 'file', got: %s", *argv);
+ 		return -1;
+ 	} else if (argc > 2) {
 -- 
 2.1.0
 
