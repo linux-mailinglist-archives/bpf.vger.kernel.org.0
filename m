@@ -2,51 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7526627E48
-	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 13:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6EC628054
+	for <lists+bpf@lfdr.de>; Mon, 14 Nov 2022 14:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237371AbiKNMnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 07:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
+        id S237769AbiKNNFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 08:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237372AbiKNMnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 07:43:09 -0500
-Received: from nbd.name (nbd.name [46.4.11.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D458F2648E;
-        Mon, 14 Nov 2022 04:42:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-        s=20160729; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=fd6JWHYXTEEkVoIaIYliQKMwXcFdw67d/23OBe+aVN0=; b=jtzURUaH1e7IkKZYFECsI9pNxH
-        sUD6fTBIJYr9eGMEC8ZqhHM48K7Pb7eQEGKMVMA+v4BH9W+TWqkSTgdMtkosAeT+C/SUq3DPAKSzY
-        YfPUHe/6IJsXZYAMs8FoDI7SchZGemi5T1poOnBur61THaQFB8CNfS6iIMXkmJqyiyEE=;
-Received: from p54ae9c3f.dip0.t-ipconnect.de ([84.174.156.63] helo=Maecks.lan)
-        by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-        (Exim 4.94.2)
-        (envelope-from <nbd@nbd.name>)
-        id 1ouYn6-0021wc-UK; Mon, 14 Nov 2022 13:42:21 +0100
-From:   Felix Fietkau <nbd@nbd.name>
-To:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v4 0/4] mtk_eth_soc rx vlan offload improvement + dsa hardware untag support
-Date:   Mon, 14 Nov 2022 13:42:10 +0100
-Message-Id: <20221114124214.58199-1-nbd@nbd.name>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S237766AbiKNNFF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 08:05:05 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0132A273;
+        Mon, 14 Nov 2022 05:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=2y401i8RHooQYJjpyKGYLxQ8w5xfHy0k3TPsSzf0CGA=; b=eSL/pC96cN8kEPu5RWSDqWXolS
+        ST7oY5KrZkL2r7mOdgFqhzgx/uS9F9A9dNr4lmTkKfc7oKEGyI0Sb3SLFo52pQe7K0h+4v3M0NSn1
+        rjM81IGwTY4dd2Ou+T4OuSLdIc7Uk+5aJgTc82sSRD3LDwoZ2EXnuuG233yCEUihuYXo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ouZ7i-002Kls-44; Mon, 14 Nov 2022 14:03:38 +0100
+Date:   Mon, 14 Nov 2022 14:03:38 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
+Cc:     qiangqing.zhang@nxp.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] net: fec: Create device link between fec0 and fec1
+Message-ID: <Y3I8qnNj1EUmPDmd@lunn.ch>
+References: <20221114041143.2189624-1-xiaolei.wang@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221114041143.2189624-1-xiaolei.wang@windriver.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,33 +50,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series improves rx vlan offloading on mtk_eth_soc and extends it to
-support hardware DSA untagging where possible.
-This improves performance by avoiding calls into the DSA tag driver receive
-function, including mangling of skb->data.
+On Mon, Nov 14, 2022 at 12:11:43PM +0800, Xiaolei Wang wrote:
+> On imx6sx, there are two fec interfaces, but the external
+> phys can only be configured by fec0 mii_bus. That means
+> the fec1 can't work independently, it only work when the
+> fec0 is active. It is alright in the normal boot since the
+> fec0 will be probed first. But then the fec0 maybe moved
+> behind of fec1 in the dpm_list due to various device link.
+> So in system suspend and resume, we would get the following
+> warning when configuring the external phy of fec1 via the
+> fec0 mii_bus due to the inactive of fec0. In order to fix
+> this issue, we create a device link between fec0 and fec1.
+> This will make sure that fec0 is always active when fec1
+> is in active mode.
 
-This is split out of a previous series, which added other fixes and
-multiqueue support
+I'm wondering if this should be more generic? I have seen this setup
+more frequently on the FEC, but there are other dual MAC SoCs which
+can have a similar setup, two PHYs sharing one MDIO bus.
 
-Changes in v4:
- - fix reverse christmas tree in dsa patch
- - use skb_dst_drop to support metadata dst refcounting
- - disable dsa untag offload in mtk_eth_soc if xdp is used
+Can this be pushed into phylib?
 
-Felix Fietkau (4):
-  net: dsa: add support for DSA rx offloading via metadata dst
-  net: ethernet: mtk_eth_soc: pass correct VLAN protocol ID to the
-    network stack
-  net: ethernet: mtk_eth_soc: add support for configuring vlan rx
-    offload
-  net: ethernet: mtk_eth_soc: enable hardware DSA untagging
-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 93 ++++++++++++++++++---
- drivers/net/ethernet/mediatek/mtk_eth_soc.h |  8 ++
- net/core/flow_dissector.c                   |  4 +-
- net/dsa/dsa.c                               | 19 ++++-
- 4 files changed, 109 insertions(+), 15 deletions(-)
-
--- 
-2.38.1
-
+    Andrew
