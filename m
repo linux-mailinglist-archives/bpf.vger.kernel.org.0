@@ -2,47 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC3462907C
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D990762908B
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbiKODHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 22:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
+        id S232163AbiKODKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 22:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbiKODHL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 22:07:11 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE70D72;
-        Mon, 14 Nov 2022 19:07:06 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NB9wj5v66zqSHH;
-        Tue, 15 Nov 2022 11:03:17 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 11:07:03 +0800
-Message-ID: <c6c98d38-17bc-c0d1-a83b-be666bb24f74@huawei.com>
-Date:   Tue, 15 Nov 2022 11:07:03 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH bpf] selftests/bpf: fix memory leak of lsm_cgroup
-To:     <sdf@google.com>
-CC:     <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <paul@paul-moore.com>
-References: <1668401942-6309-1-git-send-email-wangyufen@huawei.com>
- <Y3J8HyIfhm7rgpvI@google.com>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <Y3J8HyIfhm7rgpvI@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S232033AbiKODKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 22:10:34 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B92263D
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:10:34 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id o5-20020a17090a744500b002184049217aso1554186pjk.9
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:10:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZUlSKv9E0vl3kFdY3gqPlGDz72/1PsMjxppIL0hF14E=;
+        b=cFbBY/TeQheP5lKm/k4spJ+X3nq6JMsDt65hczh4AzY7JX+VkF0yDHR8S5ME6L6ed/
+         +y/OL2bZM694z3ftChmBMEpEshwF8DRbp+uO0+yEg3V/EAMm5hBjCuvazTZCr6CSA9Qb
+         Hgo+KXbgFQ1tjnsio4jkXEJGiJUmCiqUdpjJlq4Hd8iBQDqZnb7mFhGWdFC81dWNuA7g
+         AIP1w2s5dPdlW/aoZAZ17zJX3WePijQHwveERwQUBUO+a1Bd7CghOagOwCVi0hkhORIG
+         i5yqmKgPggKpjthat/eyMv9oOfRiKiZhp/u5lgT0V4agMz1rooBfkzg6cSyfTRDf/Icd
+         pQZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZUlSKv9E0vl3kFdY3gqPlGDz72/1PsMjxppIL0hF14E=;
+        b=b/tU73r/DifjYRF25/RLD+b70l0MxBjSrvWTmSy4BQ9sii2Uh6f0gZ0BjPBohPIAZH
+         sThXLpESFrPKV8ZE7yuOkeAjtb9qEvA6ieRvXborJiGp7lRFpwKPXV5BRdK1qMkhHuaH
+         FdZbzucSNIQbgSBPM/Ofx9xZ+66injvKvjfBt9ckkM405zUwdLp/DFJ3ib7q+U/6a7Dp
+         bHKrv1MbS4RQe1OLE3R2/go9sRpd2RdnsQJ+hhlOld4uNTbi0pmK9Em0dvdoSql7coIt
+         jo8R2e7oivtMnrisGqmXuRM47E2zASuQzMGjI+80CBDAvcELDDLkkFvXcUyIUpKcGhNl
+         4zoQ==
+X-Gm-Message-State: ANoB5pm6AP67+mHCxBgY+AHcp0//Bo9tSZEV5P7NXLkeXcxURWToff99
+        6xP9CuMvPiC/LaNOZ68gkracPk8Rf2Lq2TTUUo/0MiV+R/4QNHY4d7diKIvFJMk1w6pV9ioJq9i
+        6KLz4g6Wcp0Mn1WaO3BXtFMmtnpKSZQujqnyNcYiBJcbTByN2aA==
+X-Google-Smtp-Source: AA0mqf7IcAAuGDiGtAzRofZJl+gvUNY2iSUBvQP1hROH8Vg+ENJ3zOsLsdI54I6mdl33mjI2yZlkKss=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:9503:b0:20a:eab5:cf39 with SMTP id
+ t3-20020a17090a950300b0020aeab5cf39mr78150pjo.1.1668481833133; Mon, 14 Nov
+ 2022 19:10:33 -0800 (PST)
+Date:   Mon, 14 Nov 2022 19:10:30 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
+Message-ID: <20221115031031.3281094-1-sdf@google.com>
+Subject: [PATCH bpf-next 1/2] bpf: Move skb->len == 0 checks into __bpf_redirect
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,155 +68,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+To avoid potentially breaking existing users.
 
-在 2022/11/15 1:34, sdf@google.com 写道:
-> On 11/14, Wang Yufen wrote:
->> kmemleak reports this issue:
->
->> unreferenced object 0xffff88810b7835c0 (size 32):
->>    comm "test_progs", pid 270, jiffies 4294969007 (age 1621.315s)
->>    hex dump (first 32 bytes):
->>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
->>      03 00 00 00 03 00 00 00 0f 00 00 00 00 00 00 00 ................
->>    backtrace:
->>      [<00000000376cdeab>] kmalloc_trace+0x27/0x110
->>      [<000000003bcdb3b6>] selinux_sk_alloc_security+0x66/0x110
->>      [<000000003959008f>] security_sk_alloc+0x47/0x80
->>      [<00000000e7bc6668>] sk_prot_alloc+0xbd/0x1a0
->>      [<0000000002d6343a>] sk_alloc+0x3b/0x940
->>      [<000000009812a46d>] unix_create1+0x8f/0x3d0
->>      [<000000005ed0976b>] unix_create+0xa1/0x150
->>      [<0000000086a1d27f>] __sock_create+0x233/0x4a0
->>      [<00000000cffe3a73>] __sys_socket_create.part.0+0xaa/0x110
->>      [<0000000007c63f20>] __sys_socket+0x49/0xf0
->>      [<00000000b08753c8>] __x64_sys_socket+0x42/0x50
->>      [<00000000b56e26b3>] do_syscall_64+0x3b/0x90
->>      [<000000009b4871b8>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
->> The issue occurs in the following scenarios:
->
->> unix_create1()
->>    sk_alloc()
->>      sk_prot_alloc()
->>        security_sk_alloc()
->>          call_int_hook()
->>            hlist_for_each_entry()
->>              entry1->hook.sk_alloc_security
->>              <-- selinux_sk_alloc_security() succeeded,
->>              <-- sk->security alloced here.
->>              entry2->hook.sk_alloc_security
->>              <-- bpf_lsm_sk_alloc_security() failed
->>        goto out_free;
->>          ...    <-- the sk->security not freed, memleak
->
->> The core problem is that the LSM is not yet fully stacked (work is
->> actively going on in this space) which means that some LSM hooks do
->> not support multiple LSMs at the same time. To fix, skip the
->> "EPERM" test when it runs in the environments that already have
->> non-bpf lsms installed
->
->> Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
->> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
->> Cc: Stanislav Fomichev <sdf@google.com>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 19 
->> +++++++++++++++----
->>   tools/testing/selftests/bpf/progs/lsm_cgroup.c      |  8 ++++++++
->>   2 files changed, 23 insertions(+), 4 deletions(-)
->
->> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c 
->> b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
->> index 1102e4f..a927ade 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
->> @@ -173,10 +173,14 @@ static void test_lsm_cgroup_functional(void)
->>       ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
->>       ASSERT_EQ(query_prog_cnt(cgroup_fd2, NULL), 1, "total prog 
->> count");
->
->> -    /* AF_UNIX is prohibited. */
->> -
->>       fd = socket(AF_UNIX, SOCK_STREAM, 0);
->> -    ASSERT_LT(fd, 0, "socket(AF_UNIX)");
->> +    if (skel->kconfig->CONFIG_SECURITY_APPARMOR
->> +        || skel->kconfig->CONFIG_SECURITY_SELINUX
->> +        || skel->kconfig->CONFIG_SECURITY_SMACK)
->
-> [..]
->
->> +        ASSERT_GE(fd, 0, "socket(AF_UNIX)");
->
-> nit: maybe skip this completely instead of having ASSERT_GE+close?
->
->     if (!(skel->kconfig->CONFIG_SECURITY_APPARMOR || _SELINUX || _SMACK)
->         /* AF_UNIX is prohibited. */
->         ASSERT_LT(fd, 0, "socket(AF_UNIX)");
+Both mac/no-mac cases have to be amended; mac_header >= network_header
+is not enough (verified with a new test, see next patch).
 
+Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ net/bpf/test_run.c |  3 ---
+ net/core/filter.c  | 11 ++++++-----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-OK, thanks! Will change in v2
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 13d578ce2a09..6fba440efc40 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ {
+ 	struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+ 
+-	if (!skb->len)
+-		return -EINVAL;
+-
+ 	if (!__skb)
+ 		return 0;
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6dd2baf5eeb2..910ccd416465 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2124,12 +2124,13 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	unsigned int mlen = skb_network_offset(skb);
+ 
++	if (unlikely(skb->len <= mlen)) {
++		kfree_skb(skb);
++		return -ERANGE;
++	}
++
+ 	if (mlen) {
+ 		__skb_pull(skb, mlen);
+-		if (unlikely(!skb->len)) {
+-			kfree_skb(skb);
+-			return -ERANGE;
+-		}
+ 
+ 		/* At ingress, the mac header has already been pulled once.
+ 		 * At egress, skb_pospull_rcsum has to be done in case that
+@@ -2149,7 +2150,7 @@ static int __bpf_redirect_common(struct sk_buff *skb, struct net_device *dev,
+ 				 u32 flags)
+ {
+ 	/* Verify that a link layer header is carried */
+-	if (unlikely(skb->mac_header >= skb->network_header)) {
++	if (unlikely(skb->mac_header >= skb->network_header || skb->len == 0)) {
+ 		kfree_skb(skb);
+ 		return -ERANGE;
+ 	}
+-- 
+2.38.1.431.g37b22c650d-goog
 
->
->
->> +    else
->> +        /* AF_UNIX is prohibited. */
->> +        ASSERT_LT(fd, 0, "socket(AF_UNIX)");
->>       close(fd);
->
->>       /* AF_INET6 gets default policy (sk_priority). */
->> @@ -233,11 +237,18 @@ static void test_lsm_cgroup_functional(void)
->
->>       /* AF_INET6+SOCK_STREAM
->>        * AF_PACKET+SOCK_RAW
->> +     * AF_UNIX+SOCK_RAW if already have non-bpf lsms installed
->>        * listen_fd
->>        * client_fd
->>        * accepted_fd
->>        */
->> -    ASSERT_EQ(skel->bss->called_socket_post_create2, 5, 
->> "called_create2");
->> +    if (skel->kconfig->CONFIG_SECURITY_APPARMOR
->> +        || skel->kconfig->CONFIG_SECURITY_SELINUX
->> +        || skel->kconfig->CONFIG_SECURITY_SMACK)
->> +        /* AF_UNIX+SOCK_RAW if already have non-bpf lsms installed */
->> +        ASSERT_EQ(skel->bss->called_socket_post_create2, 6, 
->> "called_create2");
->> +    else
->> +        ASSERT_EQ(skel->bss->called_socket_post_create2, 5, 
->> "called_create2");
->
->>       /* start_server
->>        * bind(ETH_P_ALL)
->> diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c 
->> b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
->> index 4f2d60b..02c11d1 100644
->> --- a/tools/testing/selftests/bpf/progs/lsm_cgroup.c
->> +++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
->> @@ -7,6 +7,10 @@
->
->>   char _license[] SEC("license") = "GPL";
->
->> +extern bool CONFIG_SECURITY_SELINUX __kconfig __weak;
->> +extern bool CONFIG_SECURITY_SMACK __kconfig __weak;
->> +extern bool CONFIG_SECURITY_APPARMOR __kconfig __weak;
->> +
->>   #ifndef AF_PACKET
->>   #define AF_PACKET 17
->>   #endif
->> @@ -140,6 +144,10 @@ int BPF_PROG(socket_bind2, struct socket *sock, 
->> struct sockaddr *address,
->>   int BPF_PROG(socket_alloc, struct sock *sk, int family, gfp_t 
->> priority)
->>   {
->>       called_socket_alloc++;
->> +    /* if already have non-bpf lsms installed, EPERM will cause 
->> memory leak of non-bpf lsms */
->> +    if (CONFIG_SECURITY_SELINUX || CONFIG_SECURITY_SMACK || 
->> CONFIG_SECURITY_APPARMOR)
->> +        return 1;
->> +
->>       if (family == AF_UNIX)
->>           return 0; /* EPERM */
->
->> -- 
->> 1.8.3.1
->
