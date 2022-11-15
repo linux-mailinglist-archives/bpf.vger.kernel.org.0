@@ -2,208 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC8F62A458
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 22:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9F462A48C
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 22:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238606AbiKOVlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 16:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S231434AbiKOVzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 16:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238808AbiKOVkt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 16:40:49 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17085659D;
-        Tue, 15 Nov 2022 13:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1668548440; x=1700084440;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nl98HcOSodJTwdzaq/n4NRjid0k79X3jiygrlPJKglg=;
-  b=1gl63uHMF++mFQQxE80M8koo7u9ZnpdeBMTMUfZyttQLFK9nU85mgbIV
-   R1PHd6oVYGlAPJ+M5/m0FZbgCXlIt1l4KaJdBtB9QpebBe0tgbhrvDEL7
-   c1spY5eS4VZj848W4Pm6yxPx+7i6SZTp4NMqoeQD2UmaQxC9McKHyEDQW
-   rApH/EmYM/FKz+lIyTWP3E1LiYlFHdYJl3v8ixeoFSsl43Fj5u+9NCPds
-   5b5g0vF2eWC6JGy662Qg4WFl6g/viT6JqjhGYWOCtlvKwZADclp1EPb8i
-   ez2VGF6Px1wbsPLjujsEZ0o5gLJTDuaSpOz5CGLt1ofsmZXlDOKxPw6Ep
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; 
-   d="scan'208";a="123588545"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Nov 2022 14:40:39 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Tue, 15 Nov 2022 14:40:36 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.12 via Frontend Transport; Tue, 15 Nov 2022 14:40:34 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <alexandr.lobakin@intel.com>, <UNGLinuxDriver@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v2 5/5] net: lan966x: Add support for XDP_REDIRECT
-Date:   Tue, 15 Nov 2022 22:44:56 +0100
-Message-ID: <20221115214456.1456856-6-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221115214456.1456856-1-horatiu.vultur@microchip.com>
-References: <20221115214456.1456856-1-horatiu.vultur@microchip.com>
+        with ESMTP id S231883AbiKOVzA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 16:55:00 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9649628E04
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 13:54:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33B1161A4E
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 21:54:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97A9CC433D7
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 21:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668549298;
+        bh=FkwNcIJqGGamLt011iLTJ7zJo/CK72Y6usvbBaNt3+4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qr3500K/tqi1WqGzh7pn/bSvedry9IR239IEJQiUiOYwtBLKJaOqqRK4Cve+M4Oln
+         uDCO9TTNABkmpOGEzKy21kTJAm1EDLlMQZ/4C+KJJGLeFhbyCKbySGepyKmm52VwiU
+         mzFMhH3UAm7JzuuxiPziHQGxOntRP63xtVjz3/0QT8KzQI342WjwiBxPGyt6gsiBxo
+         QQdMKxCpD7QhdmM3Lm6MPpGJkKwJlXqRHIPrTJGLXTr21kToBjJLjjaBjXLeQTBLn3
+         xrcST5vE6IvtrD6cyR7KdQMt0IP6h2RRQB/9yS7doJO+Zvx/FcZYIutX+UlysGmliz
+         h3Og0BtpZhl8w==
+Received: by mail-ed1-f54.google.com with SMTP id i21so23902388edj.10
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 13:54:58 -0800 (PST)
+X-Gm-Message-State: ANoB5pnp5D9uvRxM18xxU1lUhuNZdodlGEiVixNMbKs8J8kS+XV8ZfE9
+        3WGZMNXLZPEdBWEP3uyvseyXy7VXcqy0pUJ+W1w=
+X-Google-Smtp-Source: AA0mqf5a/6rdvupjvmUGbpWqbD57+Pf89dMK5ea/DHCCSjfoGocpQnumMVMIn2mRWl6RBaN5UJMEJroIEbZzcqgMeJk=
+X-Received: by 2002:aa7:c684:0:b0:462:9bc2:d039 with SMTP id
+ n4-20020aa7c684000000b004629bc2d039mr16900435edq.127.1668549296786; Tue, 15
+ Nov 2022 13:54:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221107223921.3451913-1-song@kernel.org> <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
+ <c7e9bbf45b2d52253fec16525645bda0887a9cf9.camel@intel.com>
+In-Reply-To: <c7e9bbf45b2d52253fec16525645bda0887a9cf9.camel@intel.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 15 Nov 2022 13:54:44 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7H95hUUCGEk9etwTT8kYRCKCtD6Lo+8WxHUyGTKSyEFA@mail.gmail.com>
+Message-ID: <CAPhsuW7H95hUUCGEk9etwTT8kYRCKCtD6Lo+8WxHUyGTKSyEFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hch@lst.de" <hch@lst.de>, "Lu, Aaron" <aaron.lu@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend lan966x XDP support with the action XDP_REDIRECT. This is similar
-with the XDP_TX, so a lot of functionality can be reused.
+On Tue, Nov 15, 2022 at 9:34 AM Edgecombe, Rick P
+<rick.p.edgecombe@intel.com> wrote:
+>
+> On Mon, 2022-11-14 at 17:30 -0800, Song Liu wrote:
+> > Currently, I have got the following action items for v3:
+> > 1. Add unify API to allocate text memory to motivation;
+> > 2. Update Documentation/x86/x86_64/mm.rst;
+> > 3. Allow none PMD_SIZE allocation for powerpc.
+>
+> So what do we think about supporting the fallback mechanism for the
+> first version, like:
+>
+> https://lore.kernel.org/all/9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com/
+>
+> It helps the (1) story by actually being usable by non-text_poke()
+> architectures.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- .../ethernet/microchip/lan966x/lan966x_fdma.c |  9 ++++++
- .../ethernet/microchip/lan966x/lan966x_main.c |  1 +
- .../ethernet/microchip/lan966x/lan966x_main.h |  6 ++++
- .../ethernet/microchip/lan966x/lan966x_xdp.c  | 28 +++++++++++++++++++
- 4 files changed, 44 insertions(+)
+I personally think this might be a good idea. We will need this when we use
+execmem_alloc for modules. But I haven't got a chance to look at module code in
+great detail. I was thinking of adding this logic with changes in module code.
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-index c2e56233a8da5..b863a5b50d4de 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
- #include <linux/bpf.h>
-+#include <linux/filter.h>
- 
- #include "lan966x_main.h"
- 
-@@ -518,6 +519,7 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 	int dcb_reload = rx->dcb_index;
- 	struct lan966x_rx_dcb *old_dcb;
- 	struct lan966x_db *db;
-+	bool redirect = false;
- 	struct sk_buff *skb;
- 	struct page *page;
- 	int counter = 0;
-@@ -543,6 +545,10 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 		case FDMA_TX:
- 			lan966x_fdma_rx_advance_dcb(rx);
- 			continue;
-+		case FDMA_REDIRECT:
-+			lan966x_fdma_rx_advance_dcb(rx);
-+			redirect = true;
-+			continue;
- 		case FDMA_DROP:
- 			lan966x_fdma_rx_free_page(rx);
- 			lan966x_fdma_rx_advance_dcb(rx);
-@@ -579,6 +585,9 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 	if (counter < weight && napi_complete_done(napi, counter))
- 		lan_wr(0xff, lan966x, FDMA_INTR_DB_ENA);
- 
-+	if (redirect)
-+		xdp_do_flush();
-+
- 	return counter;
- }
- 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-index 0b7707306da26..0aed244826d39 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-@@ -469,6 +469,7 @@ static const struct net_device_ops lan966x_port_netdev_ops = {
- 	.ndo_eth_ioctl			= lan966x_port_ioctl,
- 	.ndo_setup_tc			= lan966x_tc_setup,
- 	.ndo_bpf			= lan966x_xdp,
-+	.ndo_xdp_xmit			= lan966x_xdp_xmit,
- };
- 
- bool lan966x_netdevice_check(const struct net_device *dev)
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index df7fec361962b..b73c5a6cc0beb 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -106,12 +106,14 @@ enum macaccess_entry_type {
-  * FDMA_ERROR, something went wrong, stop getting more frames
-  * FDMA_DROP, frame is dropped, but continue to get more frames
-  * FDMA_TX, frame is given to TX, but continue to get more frames
-+ * FDMA_REDIRECT, frame is given to TX, but continue to get more frames
-  */
- enum lan966x_fdma_action {
- 	FDMA_PASS = 0,
- 	FDMA_ERROR,
- 	FDMA_DROP,
- 	FDMA_TX,
-+	FDMA_REDIRECT,
- };
- 
- struct lan966x_port;
-@@ -564,6 +566,10 @@ int lan966x_xdp(struct net_device *dev, struct netdev_bpf *xdp);
- int lan966x_xdp_run(struct lan966x_port *port,
- 		    struct page *page,
- 		    u32 data_len);
-+int lan966x_xdp_xmit(struct net_device *dev,
-+		     int n,
-+		     struct xdp_frame **frames,
-+		     u32 flags);
- static inline bool lan966x_xdp_port_present(struct lan966x_port *port)
- {
- 	return !!port->xdp_prog;
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-index 9b0ba3179df62..d2ecfe78382cf 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-@@ -35,6 +35,29 @@ int lan966x_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- 	}
- }
- 
-+int lan966x_xdp_xmit(struct net_device *dev,
-+		     int n,
-+		     struct xdp_frame **frames,
-+		     u32 flags)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	int i, nxmit = 0;
-+
-+	for (i = 0; i < n; ++i) {
-+		struct xdp_frame *xdpf = frames[i];
-+		int err;
-+
-+		err = lan966x_fdma_xmit_xdpf(port, xdpf,
-+					     virt_to_head_page(xdpf->data));
-+		if (err)
-+			break;
-+
-+		nxmit++;
-+	}
-+
-+	return nxmit;
-+}
-+
- int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- {
- 	struct bpf_prog *xdp_prog = port->xdp_prog;
-@@ -59,6 +82,11 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- 
- 		return lan966x_fdma_xmit_xdpf(port, xdpf, page) ?
- 		       FDMA_DROP : FDMA_TX;
-+	case XDP_REDIRECT:
-+		if (xdp_do_redirect(port->dev, &xdp, xdp_prog))
-+			return FDMA_DROP;
-+
-+		return FDMA_REDIRECT;
- 	default:
- 		bpf_warn_invalid_xdp_action(port->dev, xdp_prog, act);
- 		fallthrough;
--- 
-2.38.0
-
+Thanks,
+Song
