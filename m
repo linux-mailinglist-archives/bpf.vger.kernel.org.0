@@ -2,98 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0396294D2
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 10:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438AD62950C
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 10:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbiKOJuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 04:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S232338AbiKOJ7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 04:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbiKOJuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 04:50:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C291210FC7
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 01:50:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5EC976157E
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 09:50:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D3DC433C1;
-        Tue, 15 Nov 2022 09:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668505848;
-        bh=OoyzS1XqMqSfR/sjCelb3asBQoG2s5J9uPGMiKs42EY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MuuMvGJnq/ntCgCJ6pTe+uqAjqkmGOMuv520Ufj9hJD06Un3o7nWjiJwHsfUWr8Bi
-         gX8aQaUVSG92SloOm93HUVPihj+TVGosuOCLdsigJMmkC3BhDwuu7dCe0UFMniDIER
-         L6xz/s/XuZikajSNhsuI33zYlr0i7D4GOVXLVilKb0RTn5F82RpU4m08niJy8zT0Fj
-         iQbFPoI6EMkduYpMkfTb0VF5wBd0KDJdhehudljFlJohjsQaneV3xKYtNZtYtSzW1/
-         WJ/R4zGYMRCoJBrJzExeMF4rfO4wjdNsLRZ7kE4Q9EAcYDZw4BDMAoAb92VolriGZF
-         RgHSH6DmzWxkQ==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S232705AbiKOJ7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 04:59:17 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192D7DF4E;
+        Tue, 15 Nov 2022 01:59:16 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id m7-20020a05600c090700b003cf8a105d9eso9828306wmp.5;
+        Tue, 15 Nov 2022 01:59:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=61NlKiTNTDTVesE8Rv6V0GdCCK+sgb98OdfqledH+Uw=;
+        b=qX4VJxyLwawd96elL++aETjrkSldaVvegyD1tQNdcvGcWe+3N4p+PJC+8gfQC0uHXT
+         cC8ZU5XEUWLQbx0CUwJ/A/lHTVr77FRihNMlg/LtpOPVqc8/e24U9vLgoSHarSxVAadX
+         uDphyW+r4mcr8D7fmWmiVYO05JlkBl4GJ+tryzGRVwanNW/1NIKgnqwOAuQSJKZp3A4B
+         /5DyBENYhaa9qQb4xCma/FBa+HFs30RMNwI598N1p9pWlCzkMtNk7CikNInXmL+uGd34
+         233AgBJesN2GcRSKpRAp+m9+ulhuZ0eFAkuytSjYnGXq/ukzdz6j9qYPCkFDtxMlUiCs
+         dYog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=61NlKiTNTDTVesE8Rv6V0GdCCK+sgb98OdfqledH+Uw=;
+        b=dwL+7ct/v7SglQBw056wjaKqcOsebrYLoNvtF9KaHUxlfuyIBMLRYyqOs7xKDtS7r4
+         uv4hiK9ffSjvK8ZBu89Vqe2u//D9iIkAgbEXs4exv73AXanjkkXgFrDzu4ynK8+hhEvf
+         q/sFSf8x9zfb9tJF2Fm7M2M/BzT7Yqdm0d8HCgkTDL69hwn8UzYnIGZRsyagfyQ4oVX/
+         qhz3cADnxUdfCIGb/1c1/C1o3yOZMj243o+K3TH9KxgIAjDn9hxjvZrQgsWrzVMvgo3o
+         QPLBdUQl7UQNjDfKBLknjPsuvOi+5LA3QQN250YHGC4HKDrU1AovFL6yIFqfXTITxJCu
+         Dyzg==
+X-Gm-Message-State: ANoB5pmWb110ny7ZNu2aGQ369OBcj7EC7KE5pN+VIXAy+AyIiofD4RSG
+        Z7r9M6gqsvvWmCeRUD84nTWiedqclrXHhA==
+X-Google-Smtp-Source: AA0mqf56Qz3ENxFWWlCFaXoZ07IcXWek/ED1sU8Wdv2BApLayvzB3U3+T+ckj6RgoW/y9tyCgwb/wQ==
+X-Received: by 2002:a05:600c:688b:b0:3cf:9efc:a9b7 with SMTP id fn11-20020a05600c688b00b003cf9efca9b7mr883623wmb.10.1668506354121;
+        Tue, 15 Nov 2022 01:59:14 -0800 (PST)
+Received: from imac.fritz.box ([2a02:8010:60a0:0:c14:eac2:879e:46a4])
+        by smtp.gmail.com with ESMTPSA id e24-20020a5d5958000000b002356c051b9csm11727492wri.66.2022.11.15.01.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 01:59:13 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
         Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>
-Subject: [RFC bpf-next] bpf: Fix perf bpf event and audit prog id logging
-Date:   Tue, 15 Nov 2022 10:50:43 +0100
-Message-Id: <20221115095043.1249776-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.38.1
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Donald Hunter <donald.hunter@gmail.com>
+Subject: [PATCH bpf-next v1] docs/bpf: Fix sample code in MAP_TYPE_ARRAY docs
+Date:   Tue, 15 Nov 2022 09:59:10 +0000
+Message-Id: <20221115095910.86407-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-perf_event_bpf_event and bpf_audit_prog calls currently report zero
-program id for unload path.
+Remove mistaken & from code example in MAP_TYPE_ARRAY docs
 
-It's because of the [1] change moved those audit calls into work queue
-and they are executed after the id is zeroed in bpf_prog_free_id.
-
-I originally made a change that added 'id_audit' field to struct
-bpf_prog, which would be initialized as id, untouched and used
-in audit callbacks.
-
-Then I realized we might actually not need to zero prog->aux->id
-in bpf_prog_free_id. It seems to be called just once on release
-paths. Tests seems ok with that.
-
-thoughts?
-
-thanks,
-jirka
-
-
-[1] d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
+Fixes: 1cfa97b30c5a ("bpf, docs: Document BPF_MAP_TYPE_ARRAY")
+Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 ---
- kernel/bpf/syscall.c | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/bpf/map_array.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index fdbae52f463f..426529355c29 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1991,7 +1991,6 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
- 		__acquire(&prog_idr_lock);
+diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+index b2cceb6c696b..97bb80333254 100644
+--- a/Documentation/bpf/map_array.rst
++++ b/Documentation/bpf/map_array.rst
+@@ -119,7 +119,7 @@ This example BPF program shows how to access an array element.
+             index = ip.protocol;
+             value = bpf_map_lookup_elem(&my_map, &index);
+             if (value)
+-                    __sync_fetch_and_add(&value, skb->len);
++                    __sync_fetch_and_add(value, skb->len);
  
- 	idr_remove(&prog_idr, prog->aux->id);
--	prog->aux->id = 0;
- 
- 	if (do_idr_lock)
- 		spin_unlock_irqrestore(&prog_idr_lock, flags);
+             return 0;
+     }
 -- 
-2.38.1
+2.35.1
 
