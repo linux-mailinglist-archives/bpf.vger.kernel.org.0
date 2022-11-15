@@ -2,167 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88062908A
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3A76290FB
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbiKODJ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 22:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S232093AbiKODx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 22:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbiKODJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 22:09:27 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555FE646F;
-        Mon, 14 Nov 2022 19:09:26 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NB9zQ1KSwzqSM5;
-        Tue, 15 Nov 2022 11:05:38 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 11:09:24 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <paul@paul-moore.com>,
-        Wang Yufen <wangyufen@huawei.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH bpf v2] selftests/bpf: fix memory leak of lsm_cgroup
-Date:   Tue, 15 Nov 2022 11:29:40 +0800
-Message-ID: <1668482980-16163-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S232040AbiKODx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 22:53:57 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8298A11A32
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:53:55 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id a5so20109992edb.11
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:53:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qCb+H1aKdjS8OV1+GSYtbPZ2oW1lBxVM+lLaaRwwfE4=;
+        b=XBNQSkL/62l4+8qS/JmpG8wk3jdUMqnqF3XbdgatLMEDZ+LwCHMQeBSovcUsW8wgnV
+         1kEhjVQ1mUw8ggYV2lVhq04OzkSAqL2Hg92G9V0hhtoFSM/Ktzhy7nG1u2Z3X1KCKLv/
+         TxZXajYxJD2TivlNxMBjP+b9wwOpdEPwii5n0ZgRqM7/Ko6D+vl42ZH0gPXE9eRWY6fW
+         7Pn8A6VhGRuEm0OyrSltS69UBkPkKPmdrteKpT2CvoMTWlUZg4m99t62h02qz/dz/rtm
+         Zka/BWMWGfQKiKkNB7sHmOUpD4XMQNKQ6gUKlRwQAYyG0KJqpSEkzERzhzBlmyNGh+bB
+         em4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qCb+H1aKdjS8OV1+GSYtbPZ2oW1lBxVM+lLaaRwwfE4=;
+        b=OwD6e9s2bEzauqGpme6nZlcGIa+6k+Hun8CXlej0tQ4wE9hpzP95AYvGogDM8LpnYO
+         gdId6lqxPqoY1HFglnBal2HoXBoNXSmi9LRHg7aOYbEF4CF8IMju6svhX/WXWKYwcVnD
+         W6l8lnPiqJYpgYUcPsPZb6z+DpasnWXVznZHdmfUkDnv5py7+MMwvxqOMNwc3KkvDpBX
+         /WCjCjoRO2LyRoe/dJV6WD30FNXVj0DoTO0VE0pPhJreD/H/ntbZJ9tVI1L0rVUvdo0C
+         +ZaK+yiXO7kJd+iE9RaK2KtT2UUhhCZ4WjxzlaB5HgyT3Sq9n9J2iTPwngHB4YbO/biC
+         2qhg==
+X-Gm-Message-State: ANoB5pls61cVNNDTovAN7adzm4iNpVLcgIH7CAfu7KQLeWwfNI6ozm3T
+        8wgVqXvZfrIkmcjZYeWVDEKd5BqhJiYFweaK2TM=
+X-Google-Smtp-Source: AA0mqf6xnQDMTLTF0sZvmZaGVObt3CgQz4Ql5MVkvdYjqn86JTTgCIA2HLv1rMCbDy14HHL+Tv4xT+Jd1Y6uggGiDfI=
+X-Received: by 2002:aa7:c155:0:b0:461:8cf7:4783 with SMTP id
+ r21-20020aa7c155000000b004618cf74783mr13704480edp.385.1668484433942; Mon, 14
+ Nov 2022 19:53:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221115000130.1967465-1-memxor@gmail.com> <20221115000130.1967465-3-memxor@gmail.com>
+In-Reply-To: <20221115000130.1967465-3-memxor@gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 14 Nov 2022 19:53:42 -0800
+Message-ID: <CAJnrk1Zn4-LxUfRoL1Brh=xnmg4NxXXfE_2uW9LrnamKc8e+Fw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/7] bpf: Propagate errors from process_*
+ checks in check_func_arg
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kmemleak reports this issue:
+On Mon, Nov 14, 2022 at 4:01 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Currently, we simply ignore the errors in process_spin_lock,
+> process_timer_func, process_kptr_func, process_dynptr_func.
+> Instead, bubble up storing and checking err variable.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-unreferenced object 0xffff88810b7835c0 (size 32):
-  comm "test_progs", pid 270, jiffies 4294969007 (age 1621.315s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    03 00 00 00 03 00 00 00 0f 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000376cdeab>] kmalloc_trace+0x27/0x110
-    [<000000003bcdb3b6>] selinux_sk_alloc_security+0x66/0x110
-    [<000000003959008f>] security_sk_alloc+0x47/0x80
-    [<00000000e7bc6668>] sk_prot_alloc+0xbd/0x1a0
-    [<0000000002d6343a>] sk_alloc+0x3b/0x940
-    [<000000009812a46d>] unix_create1+0x8f/0x3d0
-    [<000000005ed0976b>] unix_create+0xa1/0x150
-    [<0000000086a1d27f>] __sock_create+0x233/0x4a0
-    [<00000000cffe3a73>] __sys_socket_create.part.0+0xaa/0x110
-    [<0000000007c63f20>] __sys_socket+0x49/0xf0
-    [<00000000b08753c8>] __x64_sys_socket+0x42/0x50
-    [<00000000b56e26b3>] do_syscall_64+0x3b/0x90
-    [<000000009b4871b8>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Acked-by: Joanne Koong <joannelkoong@gmail.com>
 
-The issue occurs in the following scenarios:
-
-unix_create1()
-  sk_alloc()
-    sk_prot_alloc()
-      security_sk_alloc()
-        call_int_hook()
-          hlist_for_each_entry()
-            entry1->hook.sk_alloc_security
-            <-- selinux_sk_alloc_security() succeeded,
-            <-- sk->security alloced here.
-            entry2->hook.sk_alloc_security
-            <-- bpf_lsm_sk_alloc_security() failed
-      goto out_free;
-        ...    <-- the sk->security not freed, memleak
-
-The core problem is that the LSM is not yet fully stacked (work is
-actively going on in this space) which means that some LSM hooks do
-not support multiple LSMs at the same time. To fix, skip the
-"EPERM" test when it runs in the environments that already have
-non-bpf lsms installed
-
-Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-Cc: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 17 +++++++++++++----
- tools/testing/selftests/bpf/progs/lsm_cgroup.c      |  8 ++++++++
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-index 1102e4f..f117bfe 100644
---- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -173,10 +173,12 @@ static void test_lsm_cgroup_functional(void)
- 	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
- 	ASSERT_EQ(query_prog_cnt(cgroup_fd2, NULL), 1, "total prog count");
- 
--	/* AF_UNIX is prohibited. */
--
- 	fd = socket(AF_UNIX, SOCK_STREAM, 0);
--	ASSERT_LT(fd, 0, "socket(AF_UNIX)");
-+	if (!(skel->kconfig->CONFIG_SECURITY_APPARMOR
-+	    || skel->kconfig->CONFIG_SECURITY_SELINUX
-+	    || skel->kconfig->CONFIG_SECURITY_SMACK))
-+		/* AF_UNIX is prohibited. */
-+		ASSERT_LT(fd, 0, "socket(AF_UNIX)");
- 	close(fd);
- 
- 	/* AF_INET6 gets default policy (sk_priority). */
-@@ -233,11 +235,18 @@ static void test_lsm_cgroup_functional(void)
- 
- 	/* AF_INET6+SOCK_STREAM
- 	 * AF_PACKET+SOCK_RAW
-+	 * AF_UNIX+SOCK_RAW if already have non-bpf lsms installed
- 	 * listen_fd
- 	 * client_fd
- 	 * accepted_fd
- 	 */
--	ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
-+	if (skel->kconfig->CONFIG_SECURITY_APPARMOR
-+	    || skel->kconfig->CONFIG_SECURITY_SELINUX
-+	    || skel->kconfig->CONFIG_SECURITY_SMACK)
-+		/* AF_UNIX+SOCK_RAW if already have non-bpf lsms installed */
-+		ASSERT_EQ(skel->bss->called_socket_post_create2, 6, "called_create2");
-+	else
-+		ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
- 
- 	/* start_server
- 	 * bind(ETH_P_ALL)
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-index 4f2d60b..02c11d1 100644
---- a/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-@@ -7,6 +7,10 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+extern bool CONFIG_SECURITY_SELINUX __kconfig __weak;
-+extern bool CONFIG_SECURITY_SMACK __kconfig __weak;
-+extern bool CONFIG_SECURITY_APPARMOR __kconfig __weak;
-+
- #ifndef AF_PACKET
- #define AF_PACKET 17
- #endif
-@@ -140,6 +144,10 @@ int BPF_PROG(socket_bind2, struct socket *sock, struct sockaddr *address,
- int BPF_PROG(socket_alloc, struct sock *sk, int family, gfp_t priority)
- {
- 	called_socket_alloc++;
-+	/* if already have non-bpf lsms installed, EPERM will cause memory leak of non-bpf lsms */
-+	if (CONFIG_SECURITY_SELINUX || CONFIG_SECURITY_SMACK || CONFIG_SECURITY_APPARMOR)
-+		return 1;
-+
- 	if (family == AF_UNIX)
- 		return 0; /* EPERM */
- 
--- 
-1.8.3.1
-
+> ---
+>  kernel/bpf/verifier.c | 25 +++++++++++++++----------
+>  1 file changed, 15 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 56f48ab9827f..41ef7e4b73e4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6220,19 +6220,22 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 break;
+>         case ARG_PTR_TO_SPIN_LOCK:
+>                 if (meta->func_id == BPF_FUNC_spin_lock) {
+> -                       if (process_spin_lock(env, regno, true))
+> -                               return -EACCES;
+> +                       err = process_spin_lock(env, regno, true);
+> +                       if (err)
+> +                               return err;
+>                 } else if (meta->func_id == BPF_FUNC_spin_unlock) {
+> -                       if (process_spin_lock(env, regno, false))
+> -                               return -EACCES;
+> +                       err = process_spin_lock(env, regno, false);
+> +                       if (err)
+> +                               return err;
+>                 } else {
+>                         verbose(env, "verifier internal error\n");
+>                         return -EFAULT;
+>                 }
+>                 break;
+>         case ARG_PTR_TO_TIMER:
+> -               if (process_timer_func(env, regno, meta))
+> -                       return -EACCES;
+> +               err = process_timer_func(env, regno, meta);
+> +               if (err)
+> +                       return err;
+>                 break;
+>         case ARG_PTR_TO_FUNC:
+>                 meta->subprogno = reg->subprogno;
+> @@ -6255,8 +6258,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 err = check_mem_size_reg(env, reg, regno, true, meta);
+>                 break;
+>         case ARG_PTR_TO_DYNPTR:
+> -               if (process_dynptr_func(env, regno, arg_type, meta))
+> -                       return -EACCES;
+> +               err = process_dynptr_func(env, regno, arg_type, meta);
+> +               if (err)
+> +                       return err;
+>                 break;
+>         case ARG_CONST_ALLOC_SIZE_OR_ZERO:
+>                 if (!tnum_is_const(reg->var_off)) {
+> @@ -6323,8 +6327,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 break;
+>         }
+>         case ARG_PTR_TO_KPTR:
+> -               if (process_kptr_func(env, regno, meta))
+> -                       return -EACCES;
+> +               err = process_kptr_func(env, regno, meta);
+> +               if (err)
+> +                       return err;
+>                 break;
+>         }
+>
+> --
+> 2.38.1
+>
