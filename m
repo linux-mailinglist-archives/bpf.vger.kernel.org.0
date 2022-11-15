@@ -2,64 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18EE629F76
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7273D629F7E
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbiKOQqo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 11:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58716 "EHLO
+        id S230106AbiKOQrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 11:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiKOQqn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:46:43 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA401F3
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:46:42 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id gw22so13817070pjb.3
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:46:42 -0800 (PST)
+        with ESMTP id S231578AbiKOQrK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 11:47:10 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0683C1C914
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:47:10 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 130so13777356pgc.5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:47:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3iOhbkWK5hCd762mPr7ZlVFRGoZc8NDZ9OvXUXj4SHU=;
-        b=i9Cuz/dAgJKOSDMvr7pMBPVGOsR0TmpiL8JNKC2AnHaS+7G3T0P8E/R0eipLhkppn6
-         J1bJZO20REIEKc3rnGopkrfHVw40d9MGK/ndREPeDKBQCiZ2Z/DvwrSRCDc6ENmqZPpC
-         josw24uk5KREqQwyjNGjxylXyMN8tuitfazJqztzDPYGQd8K13fofpwyjpkQU+huokxA
-         YvXEnBjrpCa3SEd+NvVnjiK3EWX5wR2XCHcEzwV8WR4rMEHmoX+1n77q6OX2ycdAxB+t
-         q8WAKISLKbn3M5lRJ7sJ//mtDmcIRFFn+FboSkieQHjQzwW6WrLZBEeQtSHzZlrBltNl
-         BTXg==
+        bh=Gw6o36XG0u5wXXSATGXL3ZlsjLB6ZQzQEtwNgPRmg/8=;
+        b=GCp55Vxca5CXHR4Scjn2I/TOVr0NaRL/1o6jZYj02jffe6ZSDEdDcrj9+FlsrZK3ty
+         XuJ2s+9xrIk0Z2+s3w78NlmM/G6Im95vamxxTmK7ksLnQMb64LIN8OTylil84j78hP/E
+         WLq1NOVNvhMx7nJCrGlquvDiZ/DgEuabkEWg9T/rkw5SmJIFTPIBvQAkQFqJqbFvkc0N
+         H9IB4J3HR4F3QKokuS3gDP0j5d6Adok+6dsjucKJGrQ4TEdULl0R9FEM4N5AofpREuU7
+         AdsgUYWoYT0o7/0iaV03pUbltjWBkVIB29NK36LJ7+42XqRufAVNzT/XNWPf2PpmreF/
+         EPeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3iOhbkWK5hCd762mPr7ZlVFRGoZc8NDZ9OvXUXj4SHU=;
-        b=CTJB0IbBIDGDfqLvBcno63jhVLL1Snh8r5YKBmfBWP1b9+LSJXbphgDq4Og8/IHfuo
-         BBQ9X+pn43MsY85OXIsSjEf96oduGXfneCPhCHEUZhePmddxgO0XpB9qG6bCutB2Ehip
-         4Xi9S+ybeKVs+hOWPUdu13rDBhvo8jqUqAZ7hMABgX5fWoj+kIaSit9imjw7vuC+X92i
-         Qd+h1SStwzy9GckOeaHu8hmbHFzgr2ylLadZY5fN1o9OJDVppPYDgii1i+M2PDFEaACD
-         kfHgUTA8XcbQrAEaCESzH2PUMHcYzzJus6zzjRZW2j9KmxFasZljIhpdNaOWKJSlANC8
-         +6EQ==
-X-Gm-Message-State: ANoB5pk4qV/SjArVGThgwjw0hBIiCptB/nV9inEET/7MTCkcOHBDbDwN
-        jzsby60eTDp4SCr59tjHiAzZYw63lz0=
-X-Google-Smtp-Source: AA0mqf5M3klTPNqInMGHmEGoOifXPKwcPPVNaEcbnt7br2Oas0f3UdcPB0MBJkNut0EIG187KOSTUA==
-X-Received: by 2002:a17:90a:e81:b0:212:c216:50c1 with SMTP id 1-20020a17090a0e8100b00212c21650c1mr3133895pjx.163.1668530802372;
-        Tue, 15 Nov 2022 08:46:42 -0800 (PST)
+        bh=Gw6o36XG0u5wXXSATGXL3ZlsjLB6ZQzQEtwNgPRmg/8=;
+        b=vbYBf4A+HKJRqWa0MxfSmhe658ywO4/R0joS4tEyqYqAPz1qs2F62+3vxquhi6MhDh
+         xR+NuMuwchxj7nLmNVc/ah4zfmYeU/SZVRapoRZDzEXq3745uc7DPGDkPZTtAHh5SGHT
+         3xG2QAFnBb3eU/mznfuBkyEcHUwFmLFUNb90sE69XH8yTCPx7LBRy+2beDbgubauJzk/
+         ahj61rPJOVx6/I0nLkhpKPkpYdSA262/kTjBRko7sHXrs9lGxfQJ+QRd5jevQ4KSPkR4
+         wAYME03jPqoe8CDDTyzimiCMz6zYCQ9ZVQMXC40wixCWzefL673ApIkWa/eiXU+yvCT4
+         VYww==
+X-Gm-Message-State: ANoB5pmvaUqUlsCrRA9q2nPJeq7FNySteUXKgYm/V3T6dvjSlx0cmZ1N
+        ZKbJHlperP2LDmNwtHYbQl8=
+X-Google-Smtp-Source: AA0mqf4VgjmjDI7IUOqxxhWibufndVybMp0Dlm3VCtYQPHIqUjlimy52+9Ko4GFsuZU5UyGYfFQlfA==
+X-Received: by 2002:a63:c5d:0:b0:42b:87fd:1077 with SMTP id 29-20020a630c5d000000b0042b87fd1077mr16999005pgm.478.1668530829405;
+        Tue, 15 Nov 2022 08:47:09 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id h7-20020a170902f7c700b00186b945c0d1sm10138345plw.2.2022.11.15.08.46.41
+        by smtp.gmail.com with ESMTPSA id e15-20020a170902784f00b00178acc7ef16sm9998667pln.253.2022.11.15.08.47.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 08:46:42 -0800 (PST)
-Date:   Tue, 15 Nov 2022 22:16:37 +0530
+        Tue, 15 Nov 2022 08:47:09 -0800 (PST)
+Date:   Tue, 15 Nov 2022 22:17:04 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Dan Carpenter <error27@gmail.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: [bug report] bpf: Consolidate spin_lock, timer management into
- btf_record
-Message-ID: <20221115164637.abhfdtcq6xu6h2xr@apollo>
-References: <Y3OO0aZps7WeVpFA@kili>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v7 08/26] bpf: Introduce allocated objects
+ support
+Message-ID: <20221115164704.ab74gul36mcscnlw@apollo>
+References: <20221114191547.1694267-1-memxor@gmail.com>
+ <20221114191547.1694267-9-memxor@gmail.com>
+ <20221115054818.r7p3jbqg352obbb6@macbook-pro-5.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3OO0aZps7WeVpFA@kili>
+In-Reply-To: <20221115054818.r7p3jbqg352obbb6@macbook-pro-5.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,82 +76,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 06:36:25PM IST, Dan Carpenter wrote:
-> [ Email screwup on my end means I have to resend two weeks of email.
->   :/  -dan ]
+On Tue, Nov 15, 2022 at 11:18:18AM IST, Alexei Starovoitov wrote:
+> On Tue, Nov 15, 2022 at 12:45:29AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > Introduce support for representing pointers to objects allocated by the
+> > BPF program, i.e. PTR_TO_BTF_ID that point to a type in program BTF.
+> > This is indicated by the presence of MEM_ALLOC type flag in reg->type to
+> > avoid having to check btf_is_kernel when trying to match argument types
+> > in helpers.
+> >
+> > Whenever walking such types, any pointers being walked will always yield
+> > a SCALAR instead of pointer. In the future we might permit kptr inside
+> > such allocated objects (either kernel or local), and it will then form a
 >
-> Hello Kumar Kartikeya Dwivedi,
+> (either kernel or program allocated) ?
 >
-> The patch db559117828d: "bpf: Consolidate spin_lock, timer management
-> into btf_record" from Nov 4, 2022, leads to the following Smatch
-> static checker warning:
+> > PTR_TO_BTF_ID of the respective type.
+> >
+> > For now, such allocated objects will always be referenced in verifier
+> > context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+> > to such objects, as long fields that are special are not touched
+> > (support for which will be added in subsequent patches). Note that once
+> > such a pointer is marked PTR_UNTRUSTED, it is no longer allowed to write
+> > to it.
+> >
+> > No PROBE_MEM handling is therefore done for loads into this type unless
+> > PTR_UNTRUSTED is part of the register type, since they can never be in
+> > an undefined state, and their lifetime will always be valid.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h   | 11 +++++++++++
+> >  kernel/bpf/btf.c      |  5 +++++
+> >  kernel/bpf/verifier.c | 25 +++++++++++++++++++++++--
+> >  3 files changed, 39 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 49f9d2bec401..3cab113b149e 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -524,6 +524,11 @@ enum bpf_type_flag {
+> >  	/* Size is known at compile time. */
+> >  	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+> >
+> > +	/* MEM is of a an allocated object of type from program BTF. This is
+> > +	 * used to tag PTR_TO_BTF_ID allocated using bpf_obj_new.
+> > +	 */
+> > +	MEM_ALLOC		= BIT(11 + BPF_BASE_TYPE_BITS),
+> > +
+> >  	__BPF_TYPE_FLAG_MAX,
+> >  	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+> >  };
+> > @@ -2791,4 +2796,10 @@ struct bpf_key {
+> >  	bool has_ref;
+> >  };
+> >  #endif /* CONFIG_KEYS */
+> > +
+> > +static inline bool type_is_alloc(u32 type)
+> > +{
+> > +	return type & MEM_ALLOC;
+> > +}
+> > +
+> >  #endif /* _LINUX_BPF_H */
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 875355ff3718..9a596f430558 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6034,6 +6034,11 @@ int btf_struct_access(struct bpf_verifier_log *log,
+> >
+> >  		switch (err) {
+> >  		case WALK_PTR:
+> > +			/* For local types, the destination register cannot
+> > +			 * become a pointer again.
+> > +			 */
+> > +			if (type_is_alloc(reg->type))
+> > +				return SCALAR_VALUE;
+> >  			/* If we found the pointer or scalar on t+off,
+> >  			 * we're done.
+> >  			 */
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 5e74f460dfd0..d726d55622c9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4687,14 +4687,27 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+> >  		return -EACCES;
+> >  	}
+> >
+> > -	if (env->ops->btf_struct_access) {
+> > +	if (env->ops->btf_struct_access && !type_is_alloc(reg->type)) {
+> > +		if (!btf_is_kernel(reg->btf)) {
+> > +			verbose(env, "verifier internal error: reg->btf must be kernel btf\n");
+> > +			return -EFAULT;
+> > +		}
+> >  		ret = env->ops->btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+> >  	} else {
+> > -		if (atype != BPF_READ) {
+> > +		/* Writes are permitted with default btf_struct_access for local
+> > +		 * kptrs (which always have ref_obj_id > 0), but not for
 >
-> 	kernel/bpf/syscall.c:1002 map_check_btf()
-> 	warn: ignoring unreachable code.
->
-> kernel/bpf/syscall.c
->     946 static int map_check_btf(struct bpf_map *map, const struct btf *btf,
->     947                          u32 btf_key_id, u32 btf_value_id)
->     948 {
->     949         const struct btf_type *key_type, *value_type;
->     950         u32 key_size, value_size;
->     951         int ret = 0;
->     952
->     953         /* Some maps allow key to be unspecified. */
->     954         if (btf_key_id) {
->     955                 key_type = btf_type_id_size(btf, &btf_key_id, &key_size);
->     956                 if (!key_type || key_size != map->key_size)
->     957                         return -EINVAL;
->     958         } else {
->     959                 key_type = btf_type_by_id(btf, 0);
->     960                 if (!map->ops->map_check_btf)
->     961                         return -EINVAL;
->     962         }
->     963
->     964         value_type = btf_type_id_size(btf, &btf_value_id, &value_size);
->     965         if (!value_type || value_size != map->value_size)
->     966                 return -EINVAL;
->     967
->     968         map->record = btf_parse_fields(btf, value_type, BPF_SPIN_LOCK | BPF_TIMER | BPF_KPTR,
->     969                                        map->value_size);
->     970         if (!IS_ERR_OR_NULL(map->record)) {
->     971                 int i;
->     972
->     973                 if (!bpf_capable()) {
->     974                         ret = -EPERM;
->     975                         goto free_map_tab;
->     976                 }
->     977                 if (map->map_flags & (BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG)) {
->     978                         ret = -EACCES;
->     979                         goto free_map_tab;
->     980                 }
->     981                 for (i = 0; i < sizeof(map->record->field_mask) * 8; i++) {
->     982                         switch (map->record->field_mask & (1 << i)) {
->     983                         case 0:
->     984                                 continue;
->     985                         case BPF_SPIN_LOCK:
->     986                                 if (map->map_type != BPF_MAP_TYPE_HASH &&
->     987                                     map->map_type != BPF_MAP_TYPE_ARRAY &&
->     988                                     map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
->     989                                     map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
->     990                                     map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
->     991                                     map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
->     992                                     map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
->     993                                         ret = -EOPNOTSUPP;
->     994                                         goto free_map_tab;
->     995                                 }
->     996                                 break;
->     997                         case BPF_TIMER:
->     998                                 if (map->map_type != BPF_MAP_TYPE_HASH &&
->     999                                     map->map_type != BPF_MAP_TYPE_LRU_HASH &&
->     1000                                     map->map_type != BPF_MAP_TYPE_ARRAY) {
->     1001                                         return -EOPNOTSUPP;
->                                                  ^^^^^^^^^^^^^^^^^^^
-> --> 1002                                         goto free_map_tab;
->
-> s/return/ret =/
->
-> Surprised the coverity-bot hasn't complained about this...
+> for program allocated objects (which always have ref_obj_id > 0) ?
 >
 
-Thanks, another bad gaffe :/. Fixed locally, will push it out with v8.
+Ack for both.
