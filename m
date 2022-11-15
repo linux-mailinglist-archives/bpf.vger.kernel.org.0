@@ -2,186 +2,410 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D963A629F9F
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E6C629FA4
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbiKOQxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 11:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        id S230245AbiKOQxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 11:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbiKOQxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:53:16 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85F12D27
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:53:15 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AFGNKaJ032624;
-        Tue, 15 Nov 2022 08:53:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=1IOqWDa56CgoRU2rB2pIvVEJ1HCmE+J5nbgj4AM88sM=;
- b=HcZD9rpwmzpSNMjyrnz8hA69fBHLp84kn0szDZtHtoIKpCC92Ry5KzhCO4lYTBPCk6dr
- txk+tXuWjfvXN0eN5sRstgWX5xCiPtgha7GHXaZhH8Rdua3JXbBG37Uihdp9+jT0nACL
- IPkQgMduBlZcp7yb534DxcIlAZNr6q9Ipz8jYdoeaut4EfXbVQ2IunMfTUvs1xoy99Df
- 4X8rq2JUGv/I1LvBhSczdLXvSCQrR3I5DZROywllNkcpVz7lQG+Z+3/k+5fY7gXHs4hV
- JsPnVcfOgpGC9kLubANU5aXPxNpwtcS4b6jCVJmROGtI8qOI0qlc3MsyvSt3+mryHxRp kA== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kve8689ep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Nov 2022 08:53:01 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gLSLjxYtQerV7ccv11TWUNIuuLCUC7h3EqyADJevjQwQPHZl1dn2Y1tC8JBxctNUmYOwKwkS3O3iPtRxvei9rAeKO657hrMGgxGEY/vpt0nPVBqem1CJf+zbRjaWPfIeyXCQtGCs99f9iM0i1pKIpC8FPlqjoxev2bxowzhrQfEbvXiq4KQalmyan05xAJKsFhDXOLtX6xU3eb4lXvQVHRk05GOJRSC28A70l9SXXka3c6HSnITxu7H6KQ2HNnSfeamICdPdPk8S2v7nloM7hR/dkT6jRPGANz7VM6mL9ICQma9ZmijUmOkaoDOjHp4WdznSnltIZDiVZH8bMtEFYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1IOqWDa56CgoRU2rB2pIvVEJ1HCmE+J5nbgj4AM88sM=;
- b=MGM/wg3uqTcPA9stj83+TSW9k36voWJPO/5MFRjbnCS3+WEh99V8lkd6tPwoHoxoN0h3jI1k4XyoA9qqIykMtE/+cyW5sIbNwijcU4KqcX7McAKTPkZkc4qX8doqgNprC8qSAfV48M/LryE82Lp3MWoAXwD0YzJx6q9sKniLbZ8aKwgawhnaS8ajeuJGSJ69k3VNX3zd9QLLfG5UEiWMGb9WCyhgUaSaZMpJ6pcueGgxoXO3hDnsTggdQlNHgexDREN0JC2gzZd0tHHxgoGDFJBNeLI3tOo2b1hsZIyZavXiK4mGbwzGD/vmha3+OVWePO9rZWGAhGUEsKCASJkESw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by SJ2PR15MB5720.namprd15.prod.outlook.com (2603:10b6:a03:4ca::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Tue, 15 Nov
- 2022 16:52:59 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c%4]) with mapi id 15.20.5813.017; Tue, 15 Nov 2022
- 16:52:59 +0000
-Message-ID: <f0058919-d90a-bf0e-100d-fcd991093ee6@meta.com>
-Date:   Tue, 15 Nov 2022 11:52:56 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.2
-Subject: Re: [PATCH bpf-next v7 21/26] bpf: Add 'release on unlock' logic for
- bpf_list_push_{front,back}
-Content-Language: en-US
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232192AbiKOQxu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 11:53:50 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213E010FC7
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:53:49 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so17450626pjc.3
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:53:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KatermWEaYj98rMOWiY5llAoihhz+HBAjkiuHkKL8hQ=;
+        b=lp2t5WJD2Q+imAI5phVvCMH2RB+qkBfaLXcyiSVPOt88NZJKRe+8jhTYIeC4Z5GI/D
+         oel9dUou6/GKVhlUja2Q25xo4SlMgNr2scV7hrKVHlz/Voswi4n7DMX6L3Cqrnmm4h0C
+         cLalpAdih292rW/3q4LcltM4/Gd9hhHGxjIQGN+qYPeBsGlQPq9rtwM8CLEygcGyyOq4
+         /4FSw3iQK4aS4Ax+WX8ZHpaPvXVrCBew1MK6Bkg7OiPGmSUIFSqxzX57ZmAb23KzeCoE
+         T6iCohjxcEpbBre+PJF6Dc9bKKdUwkuboUZbdj6p7OFgBpVNFlx2XiEsssEydFbaFucz
+         LJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KatermWEaYj98rMOWiY5llAoihhz+HBAjkiuHkKL8hQ=;
+        b=UCFYjUNHP5EDVP844owcnh+xyzCJCldqjb5ApTPrjSidyT2R0IIm94XuRfFWrhKRgt
+         dGQHz2Me8XvE+gDTCl3hby5hT2P0hf5wlkxRmFv27W7mCHE2AEP1aCzEwXZ4U3y3AXUA
+         xTWWs4/xFNwfMnZeShz4xaMmwEwqqhPH5SpMEe3ErVb6ZOMtCQ0jPqYtVOacL40aiwv3
+         1Uxy0SYBjpimfdcvQguaaxS8dRLMJDXOWmCOTLfex2m6SbmttRAb+5EHIt7FjAAT6A7k
+         zR/3h6jKg63J6Xui9PfXFUcbLtCOnpe7fubdTwFiUCGa7j8eqcAf+30UaGIjVyJlYyvR
+         W+qQ==
+X-Gm-Message-State: ANoB5pnfLsx2OSauo3Q8g14+ray6Qu46+YtH43JeLnIIYKu8l1vtBjej
+        VmHZQ3wuePiN4fh5G2muqxs=
+X-Google-Smtp-Source: AA0mqf4zUM0t6AnnwhUFg3beVUiXjkkZtw5t64vTUN6WPZgqeQFxjJ2GWL2uFSZjOnMc1cxbvsOqxA==
+X-Received: by 2002:a17:902:d54d:b0:186:886f:e1e0 with SMTP id z13-20020a170902d54d00b00186886fe1e0mr4836304plf.162.1668531228479;
+        Tue, 15 Nov 2022 08:53:48 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id kx4-20020a17090b228400b002008d0e5cb5sm11789970pjb.47.2022.11.15.08.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 08:53:48 -0800 (PST)
+Date:   Tue, 15 Nov 2022 22:23:41 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v7 17/26] bpf: Introduce bpf_obj_new
+Message-ID: <20221115165341.7y4hmnkfexjbo6oe@apollo>
 References: <20221114191547.1694267-1-memxor@gmail.com>
- <20221114191547.1694267-22-memxor@gmail.com>
-From:   Dave Marchevsky <davemarchevsky@meta.com>
-In-Reply-To: <20221114191547.1694267-22-memxor@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR19CA0020.namprd19.prod.outlook.com
- (2603:10b6:208:178::33) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+ <20221114191547.1694267-18-memxor@gmail.com>
+ <20221115061912.pcgjnx427dn6aaq2@macbook-pro-5.dhcp.thefacebook.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|SJ2PR15MB5720:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bd14b18-cfd6-4ccd-f75c-08dac729d921
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ElrquC/k2rweQl2D8pjMC5h7osPt3vHJZIbcKDjUOf6VxndUraIdLDsEhjSgqxrn2WiISadN3Ddu8YyhxOmtsyxhYzKyktflNqkVIiUpBJ2UGBbk0yKOESoXeGgE4ozcW4vFYR6colB1YwbNTk4opAFGwcrF4IbMVilINgTf6xgi3VfgEtoCupqqI3YeIvnbqUZqNhn2ImrTjUNLPHE3iK8IDSr7BOx8/6HpSHSb5x1/kcg7tF9P7oft6EQaCqnKElIhmfwOd9qsmfZ/l0bqY7tM8Yx6Lzb+lqvqULkt8U98pLrhzst4hQmauZczMRoVJsXBpkKSa506gi612/tmdbIDkTVjWR7qg1xPWhY1XL5CRFmaL0YASrHe2OIudSeN6cG0nuHo4dB0xHoQmAoc7ZdIVHUMPvK16ojTluxQlJoVZfz8unq8s7eMsW6Y/95karsasGI+7I/+zVUjaZ5s1NxEhf/RbJUM/Tr8IA9sSxwrQWg90sl0ZyZUlKeBV5ARzfKwYMOC2+tONSTHT0P+A7NgICdtH3dz0Kojtm8+YfpN7SKGQXBbE8bMzgDLirzXvZdYQmp/MaEJyaDFEwFvzoGjvU1Bb6BKJo0ixazOWvTSe/dTsdmPpxE5p1Ikdley/H7hTL8/lQqVE+iPz+kMeukxaJW8MZvh3WgFFi2JCHnapX7a2EGO0Yxi5MHfbdWb6b+mg1+2/gw0lnyKlYX6bBce/Afq6IVqLctO4HZbHdfWSiCzwR+THwMInY2E4Wj7wKXG5ELUF3fK5KrpRcsdduG4ZddsKak2+t+9CB6q+Uc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(451199015)(31686004)(36756003)(31696002)(86362001)(6512007)(83380400001)(186003)(53546011)(6666004)(2616005)(38100700002)(6506007)(6486002)(66946007)(66556008)(478600001)(8676002)(316002)(41300700001)(54906003)(8936002)(4326008)(66476007)(2906002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K01hM0xVb2dRRGtXYjh5ODFQWjV0Ky96UHExekt6Tm5kdFMrWE9NNm83aW9Q?=
- =?utf-8?B?NHRSaHhMZVpyTWNsZ0FTWk52N2t4K1FjUVlSTUVWOU83cEZ5bmxwdE1qeUFu?=
- =?utf-8?B?SnV1S2ptOWxCL090V2p2aWFqSHZNWXFyOWRUbzR6My9BZTNRNXJwNnY4dDNj?=
- =?utf-8?B?enJyL3hVS1hFb2MxOVBNQmhJTFplWTk4OEFHQjVNclBxcWU1OU42TVdyUjMv?=
- =?utf-8?B?bFdHTlgzNFgycDc4bURXM1ZBcnBld0s4a2wwREhheHBFc2M5U0U2Y2RIMGJv?=
- =?utf-8?B?Uk05SDZldlphdlVsenVkZ3dUeXRibjZIQTNJZytJRGhwamZZd00vUEpBd1dr?=
- =?utf-8?B?RXBsa2ZwTHJmWmJhdjZKall2b2x3L0hlQ01KV3lHL2E0VXZhUHczenk1U0VP?=
- =?utf-8?B?Q0NLcUx0L3BiV1pqeVdpdnlEK29XMWdhcTZZczMxSWErRzRaYitMMy9DTWpB?=
- =?utf-8?B?N21KWTRGc2Jjd0JWZVhKV29JMVFqb2JJUXZKQ3lPcmFBWlhZMUJ1YlJsREpT?=
- =?utf-8?B?eHc0OWRRbmhPRUE4bXI4S1BnclY5NUdHTzFGTmhrT0VqUUFTd1dDV3ltR2ZL?=
- =?utf-8?B?SzJNbmc4MjdubWV5ZEdqVWtySmpHN0xZZXVSczY5eDBIaVpYa29KMzZWM3RG?=
- =?utf-8?B?WFZ3ZU5QZWkyMWFYcE9LREpOaWNNeC96Q3k0NXVhT1FGSEVXZWRGMThFTmpL?=
- =?utf-8?B?b1VFQ3BYQlBQNWFsMWwvMmpEQnZybFIyUWJBb042SlcxbWVLVldMN3pXUEgx?=
- =?utf-8?B?bjJiaW9kQTdPRmpJRHMwSTc5UHRTYm1vN2dBWFlUMnhJa0pLZW91N1VSaW9i?=
- =?utf-8?B?NHBQaURWSkpYR1lPNlJQeTZ4Y1ZGVVYwdHg4dU9jRzF4dVBGek8rZUVnanpz?=
- =?utf-8?B?ajBzZTNTSG95WEVSL1RuWFdmSmhLaXRwNUpBSjVFSUhNekhjNGlxTjJTNnVh?=
- =?utf-8?B?YzNzNW5yVVFxTEhyV3haUCtsand3bkx5dmZOMXV3dkx2TFNGM2owMmFZa2w0?=
- =?utf-8?B?MEhBc1lZSXBsUEJWTGluK0R5bDRWeXZVOVJsTlkwZGpoWUs2SXJoNG9TOEJk?=
- =?utf-8?B?N01oYWpZSHpocGxiTVBCekdNWlY5d09TcjE3QWt0R2pCZEJKcXJubEJ3cUkx?=
- =?utf-8?B?clFzNUJSeWZIUUVaLzkzZzlQMkRHVjB4d0dLcDFrNm5UVGVkOUlzWWEraXli?=
- =?utf-8?B?WXBTZGdlU0UrMXRRUWNWdzdKa2NVNXUwU2dJbVBjNjJESkhtU0pJTWVsUGJK?=
- =?utf-8?B?cW9VWlBkVVRtci9SQ1M3WU84VDRhNVhOVTV3eTl1NnV4eU9KbXM3UUl4alpw?=
- =?utf-8?B?TExQbnNneGRvN2VBRWVORXh4Z3h3S3VrY2ZCbHVCTFY5UzR1YkxhelZ6SVNI?=
- =?utf-8?B?R2ZxcVJOYUczQ0JFdXBlU05kMTV1eUxCbXBuL0c5SnFJOVBObzI0eFo5QnRX?=
- =?utf-8?B?eXRRbGhPcTlNUVE2N1hKYzNXVm1DMWFxQXV3UTdRUTVwV0JWR3N2Z2VqQVkv?=
- =?utf-8?B?dll0Z3Zya2FmMVBIN3F5Qm9GSzhTSXhONEtoRXM0Y1BoOVRNVXRDMGJPTU51?=
- =?utf-8?B?VXNXTGM1Y21TWW1GVWtwVGV4Zk0rQ2FSUmZBcGYvdW9NdExseXluZm82c2x1?=
- =?utf-8?B?K2xVbFQyWHgvaVJzZmlyeHlsVjg1SnRMUzUyclh6MGtES3hWYWhnVTJUN2dJ?=
- =?utf-8?B?MVlUZDhWSEJieW1ZbGNYd0E1WWhnRHBiK01oWUFyVXpibnZkRDh5STdjc3lU?=
- =?utf-8?B?a1EwT3hKMUJyRUY2dnZleGF2d0x4SjVteXBHa2Y4MXRzYkxJTkRpb3VZNVJS?=
- =?utf-8?B?aE1qVmdpdmlZcE0ybkZVV0JtV0w3RTdIVkJGYklkVXViOEtJZ3RQbnVDeWsx?=
- =?utf-8?B?ekZIaEdseU5lYWtXZlNXMEFyVWNib0R2WHN0MDBQOFg0RVpQbEwwR2pScGth?=
- =?utf-8?B?N1YyaFhBa2kwbXFpOUFsRTNOSytxOHdESEszWmNaSnlYMm0xWkQ2NkFJMzZh?=
- =?utf-8?B?V3llTzJib3hsM2FncldWS1hiR1gwRzRFaUt6NzlkL21zbEJ5YndzK0dEMFpF?=
- =?utf-8?B?UmkvU25RSE5ZSlkxd0JvY3FGM3RGdGpnWExiYkpnZnRMREk3N3A4dGhGVmZI?=
- =?utf-8?B?Skc2NGI2bFd4SEsrRmlqLzZFRGpBQ1BvdmtKaC8yYVYvRWlqTkxaaGsrQWJl?=
- =?utf-8?Q?h+/3tjArnDsNUH9oiKrkaNI=3D?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bd14b18-cfd6-4ccd-f75c-08dac729d921
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 16:52:59.1825
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wIubzaQF2MGkskytiUZGjXYqN6gu75OsK9fvKQ5aYBU1kdMl1vkgPCI+siVVYZEJduazwalYbq5ZL2Ijh6S75w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR15MB5720
-X-Proofpoint-GUID: 1OUHu__1YCOMKuucUDGTPwhPv6KeM3KT
-X-Proofpoint-ORIG-GUID: 1OUHu__1YCOMKuucUDGTPwhPv6KeM3KT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-15_08,2022-11-15_03,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221115061912.pcgjnx427dn6aaq2@macbook-pro-5.dhcp.thefacebook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/14/22 2:15 PM, Kumar Kartikeya Dwivedi wrote:
-> This commit implements the delayed release logic for bpf_list_push_front
-> and bpf_list_push_back.
-> 
-> Once a node has been added to the list, it's pointer changes to
-> PTR_UNTRUSTED. However, it is only released once the lock protecting the
-> list is unlocked. For such PTR_TO_BTF_ID | MEM_ALLOC with PTR_UNTRUSTED
-> set but an active ref_obj_id, it is still permitted to read them as long
-> as the lock is held. Writing to them is not allowed.
-> 
-> This allows having read access to push items we no longer own until we
-> release the lock guarding the list, allowing a little more flexibility
-> when working with these APIs.
-> 
-> Note that enabling write support has fairly tricky interactions with
-> what happens inside the critical section. Just as an example, currently,
-> bpf_obj_drop is not permitted, but if it were, being able to write to
-> the PTR_UNTRUSTED pointer while the object gets released back to the
-> memory allocator would violate safety properties we wish to guarantee
-> (i.e. not crashing the kernel). The memory could be reused for a
-> different type in the BPF program or even in the kernel as it gets
-> eventually kfree'd.
-> 
-> Not enabling bpf_obj_drop inside the critical section would appear to
-> prevent all of the above, but that is more of an artifical limitation
-> right now. Since the write support is tangled with how we handle
-> potential aliasing of nodes inside the critical section that may or may
-> not be part of the list anymore, it has been deferred to a future patch.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+On Tue, Nov 15, 2022 at 11:49:12AM IST, Alexei Starovoitov wrote:
+> On Tue, Nov 15, 2022 at 12:45:38AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > Introduce type safe memory allocator bpf_obj_new for BPF programs. The
+> > kernel side kfunc is named bpf_obj_new_impl, as passing hidden arguments
+> > to kfuncs still requires having them in prototype, unlike BPF helpers
+> > which always take 5 arguments and have them checked using bpf_func_proto
+> > in verifier, ignoring unset argument types.
+> >
+> > Introduce __ign suffix to ignore a specific kfunc argument during type
+> > checks, then use this to introduce support for passing type metadata to
+> > the bpf_obj_new_impl kfunc.
+> >
+> > The user passes BTF ID of the type it wants to allocates in program BTF,
+> > the verifier then rewrites the first argument as the size of this type,
+> > after performing some sanity checks (to ensure it exists and it is a
+> > struct type).
+> >
+> > The second argument is also fixed up and passed by the verifier. This is
+> > the btf_struct_meta for the type being allocated. It would be needed
+> > mostly for the offset array which is required for zero initializing
+> > special fields while leaving the rest of storage in unitialized state.
+> >
+> > It would also be needed in the next patch to perform proper destruction
+> > of the object's special fields.
+> >
+> > Under the hood, bpf_obj_new will call bpf_mem_alloc and bpf_mem_free,
+> > using the any context BPF memory allocator introduced recently. To this
+> > end, a global instance of the BPF memory allocator is initialized on
+> > boot to be used for this purpose. This 'bpf_global_ma' serves all
+> > allocations for bpf_obj_new. In the future, bpf_obj_new variants will
+> > allow specifying a custom allocator.
+> >
+> > Note that now that bpf_obj_new can be used to allocate objects that can
+> > be linked to BPF linked list (when future linked list helpers are
+> > available), we need to also free the elements using bpf_mem_free.
+> > However, since the draining of elements is done outside the
+> > bpf_spin_lock, we need to do migrate_disable around the call since
+> > bpf_list_head_free can be called from map free path where migration is
+> > enabled. Otherwise, when called from BPF programs migration is already
+> > disabled.
+> >
+> > A convenience macro is included in the bpf_experimental.h header to hide
+> > over the ugly details of the implementation, leading to user code
+> > looking similar to a language level extension which allocates and
+> > constructs fields of a user type.
+> >
+> > struct bar {
+> > 	struct bpf_list_node node;
+> > };
+> >
+> > struct foo {
+> > 	struct bpf_spin_lock lock;
+> > 	struct bpf_list_head head __contains(bar, node);
+> > };
+> >
+> > void prog(void) {
+> > 	struct foo *f;
+> >
+> > 	f = bpf_obj_new(typeof(*f));
+> > 	if (!f)
+> > 		return;
+> > 	...
+> > }
+> >
+> > A key piece of this story is still missing, i.e. the free function,
+> > which will come in the next patch.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h                           |  21 ++--
+> >  include/linux/bpf_verifier.h                  |   2 +
+> >  kernel/bpf/core.c                             |  16 +++
+> >  kernel/bpf/helpers.c                          |  47 ++++++--
+> >  kernel/bpf/verifier.c                         | 107 ++++++++++++++++--
+> >  .../testing/selftests/bpf/bpf_experimental.h  |  25 ++++
+> >  6 files changed, 195 insertions(+), 23 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/bpf_experimental.h
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 62a16b699e71..4635e31bd6fc 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -54,6 +54,8 @@ struct cgroup;
+> >  extern struct idr btf_idr;
+> >  extern spinlock_t btf_idr_lock;
+> >  extern struct kobject *btf_kobj;
+> > +extern struct bpf_mem_alloc bpf_global_ma;
+> > +extern bool bpf_global_ma_set;
+> >
+> >  typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+> >  typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+> > @@ -333,16 +335,19 @@ static inline bool btf_record_has_field(const struct btf_record *rec, enum btf_f
+> >  	return rec->field_mask & type;
+> >  }
+> >
+> > -static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+> > +static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
+> >  {
+> > -	if (!IS_ERR_OR_NULL(map->record)) {
+> > -		struct btf_field *fields = map->record->fields;
+> > -		u32 cnt = map->record->cnt;
+> > -		int i;
+> > +	int i;
+> >
+> > -		for (i = 0; i < cnt; i++)
+> > -			memset(dst + fields[i].offset, 0, btf_field_type_size(fields[i].type));
+> > -	}
+> > +	if (!foffs)
+> > +		return;
+> > +	for (i = 0; i < foffs->cnt; i++)
+> > +		memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
+> > +}
+> > +
+> > +static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+> > +{
+> > +	bpf_obj_init(map->field_offs, dst);
+> >  }
+> >
+> >  /* memcpy that is used with 8-byte aligned pointers, power-of-8 size and
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index 887fa4d922f6..306fc1d6cc4a 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -427,6 +427,8 @@ struct bpf_insn_aux_data {
+> >  		 */
+> >  		struct bpf_loop_inline_state loop_inline_state;
+> >  	};
+> > +	u64 obj_new_size; /* remember the size of type passed to bpf_obj_new to rewrite R1 */
+> > +	struct btf_struct_meta *kptr_struct_meta;
+> >  	u64 map_key_state; /* constant (32 bit) key tracking for maps */
+> >  	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+> >  	u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 9c16338bcbe8..2e57fc839a5c 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -34,6 +34,7 @@
+> >  #include <linux/log2.h>
+> >  #include <linux/bpf_verifier.h>
+> >  #include <linux/nodemask.h>
+> > +#include <linux/bpf_mem_alloc.h>
+> >
+> >  #include <asm/barrier.h>
+> >  #include <asm/unaligned.h>
+> > @@ -60,6 +61,9 @@
+> >  #define CTX	regs[BPF_REG_CTX]
+> >  #define IMM	insn->imm
+> >
+> > +struct bpf_mem_alloc bpf_global_ma;
+> > +bool bpf_global_ma_set;
+> > +
+> >  /* No hurry in this branch
+> >   *
+> >   * Exported for the bpf jit load helper.
+> > @@ -2746,6 +2750,18 @@ int __weak bpf_arch_text_invalidate(void *dst, size_t len)
+> >  	return -ENOTSUPP;
+> >  }
+> >
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +static int __init bpf_global_ma_init(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+> > +	bpf_global_ma_set = !ret;
+> > +	return ret;
+> > +}
+> > +late_initcall(bpf_global_ma_init);
+> > +#endif
+> > +
+> >  DEFINE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+> >  EXPORT_SYMBOL(bpf_stats_enabled_key);
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 5bc0b9f0f306..c4f1c22cc44c 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -19,6 +19,7 @@
+> >  #include <linux/proc_ns.h>
+> >  #include <linux/security.h>
+> >  #include <linux/btf_ids.h>
+> > +#include <linux/bpf_mem_alloc.h>
+> >
+> >  #include "../../lib/kstrtox.h"
+> >
+> > @@ -1735,25 +1736,57 @@ void bpf_list_head_free(const struct btf_field *field, void *list_head,
+> >
+> >  		obj -= field->list_head.node_offset;
+> >  		head = head->next;
+> > -		/* TODO: Rework later */
+> > -		kfree(obj);
+> > +		/* The contained type can also have resources, including a
+> > +		 * bpf_list_head which needs to be freed.
+> > +		 */
+> > +		bpf_obj_free_fields(field->list_head.value_rec, obj);
+> > +		/* bpf_mem_free requires migrate_disable(), since we can be
+> > +		 * called from map free path as well apart from BPF program (as
+> > +		 * part of map ops doing bpf_obj_free_fields).
+> > +		 */
+> > +		migrate_disable();
+> > +		bpf_mem_free(&bpf_global_ma, obj);
+> > +		migrate_enable();
+> >  	}
+> >  }
+> >
+> > -BTF_SET8_START(tracing_btf_ids)
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +		  "Global functions as their definitions will be in vmlinux BTF");
+> > +
+> > +void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+> > +{
+> > +	struct btf_struct_meta *meta = meta__ign;
+> > +	u64 size = local_type_id__k;
+> > +	void *p;
+> > +
+> > +	if (unlikely(!bpf_global_ma_set))
+> > +		return NULL;
+> > +	p = bpf_mem_alloc(&bpf_global_ma, size);
+> > +	if (!p)
+> > +		return NULL;
+> > +	if (meta)
+> > +		bpf_obj_init(meta->field_offs, p);
+> > +	return p;
+> > +}
+> > +
+> > +__diag_pop();
+> > +
+> > +BTF_SET8_START(generic_btf_ids)
+> >  #ifdef CONFIG_KEXEC_CORE
+> >  BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+> >  #endif
+> > -BTF_SET8_END(tracing_btf_ids)
+> > +BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
+> > +BTF_SET8_END(generic_btf_ids)
+> >
+> > -static const struct btf_kfunc_id_set tracing_kfunc_set = {
+> > +static const struct btf_kfunc_id_set generic_kfunc_set = {
+> >  	.owner = THIS_MODULE,
+> > -	.set   = &tracing_btf_ids,
+> > +	.set   = &generic_btf_ids,
+> >  };
+> >
+> >  static int __init kfunc_init(void)
+> >  {
+> > -	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &tracing_kfunc_set);
+> > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &generic_kfunc_set);
+> >  }
+> >
+> >  late_initcall(kfunc_init);
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index a4a1424b19a5..c7f5d83783db 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -7948,6 +7948,11 @@ static bool is_kfunc_arg_sfx_constant(const struct btf *btf, const struct btf_pa
+> >  	return __kfunc_param_match_suffix(btf, arg, "__k");
+> >  }
+> >
+> > +static bool is_kfunc_arg_sfx_ignore(const struct btf *btf, const struct btf_param *arg)
+> > +{
+> > +	return __kfunc_param_match_suffix(btf, arg, "__ign");
+> > +}
+> > +
+> >  static bool is_kfunc_arg_ret_buf_size(const struct btf *btf,
+> >  				      const struct btf_param *arg,
+> >  				      const struct bpf_reg_state *reg,
+> > @@ -8216,6 +8221,10 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >  		int kf_arg_type;
+> >
+> >  		t = btf_type_skip_modifiers(btf, args[i].type, NULL);
+> > +
+> > +		if (is_kfunc_arg_sfx_ignore(btf, &args[i]))
+> > +			continue;
+> > +
+> >  		if (btf_type_is_scalar(t)) {
+> >  			if (reg->type != SCALAR_VALUE) {
+> >  				verbose(env, "R%d is not a scalar\n", regno);
+> > @@ -8395,6 +8404,17 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >  	return 0;
+> >  }
+> >
+> > +enum special_kfunc_type {
+> > +	KF_bpf_obj_new_impl,
+> > +};
+> > +
+> > +BTF_SET_START(special_kfunc_set)
+> > +BTF_ID(func, bpf_obj_new_impl)
+> > +BTF_SET_END(special_kfunc_set)
+> > +
+> > +BTF_ID_LIST(special_kfunc_list)
+> > +BTF_ID(func, bpf_obj_new_impl)
+> > +
+> >  static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >  			    int *insn_idx_p)
+> >  {
+> > @@ -8469,17 +8489,64 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >  	t = btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
+> >
+> >  	if (is_kfunc_acquire(&meta) && !btf_type_is_struct_ptr(meta.btf, t)) {
+> > -		verbose(env, "acquire kernel function does not return PTR_TO_BTF_ID\n");
+> > -		return -EINVAL;
+> > +		/* Only exception is bpf_obj_new_impl */
+> > +		if (meta.btf != btf_vmlinux || meta.func_id != special_kfunc_list[KF_bpf_obj_new_impl]) {
+> > +			verbose(env, "acquire kernel function does not return PTR_TO_BTF_ID\n");
+> > +			return -EINVAL;
+> > +		}
+> >  	}
+> >
+> >  	if (btf_type_is_scalar(t)) {
+> >  		mark_reg_unknown(env, regs, BPF_REG_0);
+> >  		mark_btf_func_reg_size(env, BPF_REG_0, t->size);
+> >  	} else if (btf_type_is_ptr(t)) {
+> > -		ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
+> > -						   &ptr_type_id);
+> > -		if (!btf_type_is_struct(ptr_type)) {
+> > +		ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
+> > +
+> > +		if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
+> > +			if (!btf_type_is_void(ptr_type)) {
+> > +				verbose(env, "kernel function %s must have void * return type\n",
+> > +					meta.func_name);
+> > +				return -EINVAL;
+> > +			}
+>
+> Here you're checking that void *bpf_obj_new_impl and obj_drop actually were
+> declared with 'void *' return ?
+> and wasting run-time cycle to check that??
+> Please don't.
+>
+> Even if we miss that during code review there is no safety issue.
+>
 
-Can the two WARN_ON_ONCE in this patch be converted to
-verifier-log-and-EFAULT? Looks like they're both in
-functions with access to 'env' and are checking for
-scenarios that should be considered bugs in the verifier.
-
-Aside from that style nit, logic and patch summary updates
-here LGTM.
-
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+Right, I think the later linked list patch actually drops this hunk anyway. We
+fail if any of the other cases are unhandled anyway.
