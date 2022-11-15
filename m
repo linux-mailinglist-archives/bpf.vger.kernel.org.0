@@ -2,63 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6877962A148
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E5E62A149
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbiKOSYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 13:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S230150AbiKOS0V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 13:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbiKOSYn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 13:24:43 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA7813CC3
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:24:42 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id l11so23137913edb.4
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:24:42 -0800 (PST)
+        with ESMTP id S230005AbiKOS0V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 13:26:21 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC0113CEA
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:26:20 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id v17so13953485plo.1
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:26:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jC2PkYakuAoeBZZ1HRii6iFmDQnLOnZ0ORw0PZGEwRE=;
-        b=H9SEsV5Sl6HvJznBxZ1oeWMcw3xPYvo0W+Iy2BX9dcHwlddatASK5horAbppu5LypE
-         j4OGXS7t/h2f6PPiLFwxYjfWGcZ+YfgUBdCHNTaRJj2pBVUCkiVF9fL89be/863mhQos
-         yzwSIkZYQnrSKkXO8muAI/K2pZnvOSRwVHhgpONRt4/Q0BS9Bua16g+6WF40Y2/gnc5G
-         XI7yUvYfzLd/Ct4VRIi5izwciIGF63OBOfeAGaoqIH4W3zESnCtMmdx/4iAAtcSszDyr
-         71KLXS3sVCxevofkPIiAHRlGBQ0T4c9YfkbBOq+xNf7T+RWv3wmk8+5jpCIhfgGw55sB
-         BpNw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6rPHSnauYY4zffLg6cRQMCQegEOu5nJtuVBpj8l37BQ=;
+        b=FUFCLVw6MBmY5bBVWwGJ+wkotNm3Ll8Q9ZV+Bb2sKesKywN5YTfEX5NhEaCcdSwJ23
+         duZkBLLIWl31TEj7OjwPC0OfPjh7gq8dwNXboqKmK1SkIIyPA3zbXNxlZN/Kr1dAKJfv
+         iUgDJ5zXFLIElYYPQ6ALRTtz55pi+iwG6tfxxV0heU6E0pZYPWgaoYfpqMIBSDZHiwoj
+         mgSaSIWdEcOFg89Eso17/9Pql1ON2lWbs18as03OkvWyCz3rcAISRB+3BSWFmZVXKNr9
+         9j/eLYeVsMhmtWoJkhchVsCIq4mvaTDxTe0wpnVJIc0dN51cXiiAMs3zLLqmFv8K10kE
+         lDAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jC2PkYakuAoeBZZ1HRii6iFmDQnLOnZ0ORw0PZGEwRE=;
-        b=a0blARKiMhvMiMz+YMZRCFPTAqe+yMNoqk72BvAc/lsJBIZ7hO25RriN2NMzgZwDpn
-         eiw1+jNVSTg34cLGhU++0YvtlroVGU8GAWVt8oBCWnbAxJYgNlvP+uw/sLAQXGfLJSI5
-         U0MW/QvOk/ZPnAWagv5eaFkg2OZS9mJR0G69abT3GHxzTjc/nRlj/50YpPeI5CJEWnsP
-         KQjWsZHZn7iw9+H/bVEuQzOwv/qe38m5Da1T88vY8MG482ZhyT2pPRep0f5y/GaWGyNX
-         AngoAveiYNPlnujHoknNhR+Ge3FWh+3kHzwp/74nUX3kDC8zfUaBA3LtIdpQ87QKEoLE
-         0YRQ==
-X-Gm-Message-State: ANoB5pkQ4EimudaaIL+rySCpSG1ywxtWsmj7YEBSRWw5rLT3aHi0/unx
-        6Bg3lOZ9FFWqC6GqH3W+jwCagRiFYr9LAqixbO4=
-X-Google-Smtp-Source: AA0mqf7uBKi25mxw+M3GnGaG5u32h2O8V7m2haNCXnoEj/iCXD9tmkDzon2gv6pLFxMkHW4d4EqEfenWBBehoYdJdLs=
-X-Received: by 2002:aa7:d64a:0:b0:45b:cb6b:c342 with SMTP id
- v10-20020aa7d64a000000b0045bcb6bc342mr16205679edr.282.1668536680622; Tue, 15
- Nov 2022 10:24:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20221115000130.1967465-1-memxor@gmail.com> <20221115000130.1967465-5-memxor@gmail.com>
-In-Reply-To: <20221115000130.1967465-5-memxor@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 15 Nov 2022 10:24:29 -0800
-Message-ID: <CAJnrk1aewh__MOvu3Yo_ePRhgEdgXdAyD-=jsphQBFkkK4t-1Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/7] bpf: Rework check_func_arg_reg_off
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6rPHSnauYY4zffLg6cRQMCQegEOu5nJtuVBpj8l37BQ=;
+        b=7OXVDSt27hp2YAoMU1Bq3865wENaHB+PARmJxxZgyLq5lQBYoumSg44oXPNK01rmEO
+         IVwYb/kNzkwqPs1U4zGeYAxrth6J4cXTWE0fUHV0iseD02Aehj7aKLQp5DkEZBywpKaV
+         xW3u1/oTqGknLIjSrzDg89KerSy5udROrkIVJrKls8D6eaIoxR8huRthsQd9tsbdaXL5
+         25PMJ0tK6WFc47bOx/6Mr47sUZudsdi3iUnpDdlQCxxzaSJK/aCYXbSd8L2WNqbUNaxQ
+         KHj/X7s1xHFPnJFYheW0jyYu0kRc69MbZr1qBuiypih7KnwUobwcmT4spHBfNnqtq9CW
+         qo5w==
+X-Gm-Message-State: ANoB5pm6zvSFithc8N3WjQOWJTObuUJKn2QmYjSXICsocm+Xk1AnNqse
+        7ZeQKn5Z/+h+QW6VnbVB7C2BGy1Q4A8=
+X-Google-Smtp-Source: AA0mqf4RqPO2xDR8ugm3r4wQtTKSh9LFpFOhxwhGlhpvDURNn4shE0JcN1GN2SM0xIi5D76sOWIeAg==
+X-Received: by 2002:a17:90b:2547:b0:215:db2e:bb17 with SMTP id nw7-20020a17090b254700b00215db2ebb17mr3465039pjb.166.1668536779956;
+        Tue, 15 Nov 2022 10:26:19 -0800 (PST)
+Received: from MacBook-Pro-5.local.dhcp.thefacebook.com ([2620:10d:c090:500::7:32e])
+        by smtp.gmail.com with ESMTPSA id e4-20020a6558c4000000b0044046aec036sm8079823pgu.81.2022.11.15.10.26.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 10:26:19 -0800 (PST)
+Date:   Tue, 15 Nov 2022 10:26:16 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v7 20/26] bpf: Introduce single ownership BPF
+ linked list API
+Message-ID: <20221115182616.ctmabyirb7vdpa66@MacBook-Pro-5.local.dhcp.thefacebook.com>
+References: <20221114191547.1694267-1-memxor@gmail.com>
+ <20221114191547.1694267-21-memxor@gmail.com>
+ <20221115062637.hzuo7ehffpuxflsw@macbook-pro-5.dhcp.thefacebook.com>
+ <20221115165951.fy7bqwcum3veiz2d@apollo>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221115165951.fy7bqwcum3veiz2d@apollo>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,164 +77,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 4:01 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> While check_func_arg_reg_off is the place which performs generic checks
-> needed by various candidates of reg->type, there is some handling for
-> special cases, like ARG_PTR_TO_DYNPTR, OBJ_RELEASE, and
-> ARG_PTR_TO_ALLOC_MEM.
->
-> This commit aims to streamline these special cases and instead leave
-> other things up to argument type specific code to handle. The function
-> will be restrictive by default, and cover all possible cases when
-> OBJ_RELEASE is set, without having to update the function again (and
-> missing to do that being a bug).
->
-> This is done primarily for two reasons: associating back reg->type to
-> its argument leaves room for the list getting out of sync when a new
-> reg->type is supported by an arg_type.
->
-> The other case is ARG_PTR_TO_ALLOC_MEM. The problem there is something
-> we already handle, whenever a release argument is expected, it should
-> be passed as the pointer that was received from the acquire function.
-> Hence zero fixed and variable offset.
->
-> There is nothing special about ARG_PTR_TO_ALLOC_MEM, where technically
-> its target register type PTR_TO_MEM | MEM_ALLOC can already be passed
-> with non-zero offset to other helper functions, which makes sense.
->
-> Hence, lift the arg_type_is_release check for reg->off and cover all
-> possible register types, instead of duplicating the same kind of check
-> twice for current OBJ_RELEASE arg_types (alloc_mem and ptr_to_btf_id).
->
-> For the release argument, arg_type_is_dynptr is the special case, where
-> we go to actual object being freed through the dynptr, so the offset of
-> the pointer still needs to allow fixed and variable offset and
-> process_dynptr_func will verify them later for the release argument case
-> as well.
->
-> This is not specific to ARG_PTR_TO_DYNPTR though, we will need to make
-> this exception for any future object on the stack that needs to be
-> released. In this sense, PTR_TO_STACK as a candidate for object on stack
-> argument is a special case for release offset checks, and they need to
-> be done by the helper releasing the object on stack.
->
-> Since the check has been lifted above all register type checks, remove
-> the duplicated check that is being done for PTR_TO_BTF_ID.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Tue, Nov 15, 2022 at 10:29:51PM +0530, Kumar Kartikeya Dwivedi wrote:
+> On Tue, Nov 15, 2022 at 11:56:37AM IST, Alexei Starovoitov wrote:
+> > On Tue, Nov 15, 2022 at 12:45:41AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > +}
+> > > +
+> > > +static int process_kf_arg_ptr_to_list_node(struct bpf_verifier_env *env,
+> > > +					   struct bpf_reg_state *reg, u32 regno,
+> > > +					   struct bpf_kfunc_call_arg_meta *meta)
+> > > +{
+> > > +	struct btf_struct_meta *struct_meta;
+> > > +	struct btf_field *field;
+> > > +	struct btf_record *rec;
+> > > +	u32 list_node_off;
+> > > +
+> > > +	if (meta->btf != btf_vmlinux ||
+> > > +	    (meta->func_id != special_kfunc_list[KF_bpf_list_push_front] &&
+> > > +	     meta->func_id != special_kfunc_list[KF_bpf_list_push_back])) {
+> > > +		verbose(env, "verifier internal error: bpf_list_head argument for unknown kfunc\n");
+> >
+> > typo. bpf_list_node ?
+> >
+> > > +		return -EFAULT;
+> > > +	}
+> > > +
+> > > +	if (!tnum_is_const(reg->var_off)) {
+> > > +		verbose(env,
+> > > +			"R%d doesn't have constant offset. bpf_list_head has to be at the constant offset\n",
+> >
+> > same typo?
+> >
+> 
+> These two are typos.
+> 
+> > > +			regno);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	struct_meta = btf_find_struct_meta(reg->btf, reg->btf_id);
+> > > +	if (!struct_meta) {
+> > > +		verbose(env, "bpf_list_node not found for allocated object\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +	rec = struct_meta->record;
+> > > +
+> > > +	list_node_off = reg->off + reg->var_off.value;
+> > > +	field = btf_record_find(rec, list_node_off, BPF_LIST_NODE);
+> > > +	if (!field || field->offset != list_node_off) {
+> > > +		verbose(env, "bpf_list_node not found at offset=%u\n", list_node_off);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	field = meta->arg_list_head.field;
+> > > +
+> > > +	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, 0, field->list_head.btf,
+> > > +				  field->list_head.value_btf_id, true)) {
+> > > +		verbose(env, "bpf_list_head value type does not match arg#1\n");
+> >
+> > and the same typo again?!
+> >
+> 
+> This is probably just poorly worded.
+> The value type (__contains) of bpf_list_head does not match arg#1 (node).
+> 
+> What's better, maybe:
+> bpf_list_node type does not match bpf_list_head value type?
 
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
-
-> ---
->  kernel/bpf/verifier.c                         | 62 ++++++++++++-------
->  .../testing/selftests/bpf/verifier/ringbuf.c  |  2 +-
->  2 files changed, 39 insertions(+), 25 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c484e632b0cd..34e67d04579b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6092,11 +6092,38 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->                            const struct bpf_reg_state *reg, int regno,
->                            enum bpf_arg_type arg_type)
->  {
-> -       enum bpf_reg_type type = reg->type;
-> -       bool fixed_off_ok = false;
-> +       u32 type = reg->type;
->
-> -       switch ((u32)type) {
-> -       /* Pointer types where reg offset is explicitly allowed: */
-> +       /* When referenced register is passed to release function, it's fixed
-> +        * offset must be 0.
-> +        *
-> +        * We will check arg_type_is_release reg has ref_obj_id when storing
-> +        * meta->release_regno.
-> +        */
-> +       if (arg_type_is_release(arg_type)) {
-> +               /* ARG_PTR_TO_DYNPTR with OBJ_RELEASE is a bit special, as it
-> +                * may not directly point to the object being released, but to
-> +                * dynptr pointing to such object, which might be at some offset
-> +                * on the stack. In that case, we simply to fallback to the
-> +                * default handling.
-> +                */
-> +               if (!arg_type_is_dynptr(arg_type) || type != PTR_TO_STACK) {
-> +                       /* Doing check_ptr_off_reg check for the offset will
-> +                        * catch this because fixed_off_ok is false, but
-> +                        * checking here allows us to give the user a better
-> +                        * error message.
-> +                        */
-> +                       if (reg->off) {
-> +                               verbose(env, "R%d must have zero offset when passed to release func\n",
-> +                                       regno);
-> +                               return -EINVAL;
-> +                       }
-> +                       return __check_ptr_off_reg(env, reg, regno, false);
-> +               }
-> +               /* Fallback to default handling */
-> +       }
-> +       switch (type) {
-> +       /* Pointer types where both fixed and variable offset is explicitly allowed: */
->         case PTR_TO_STACK:
->                 if (arg_type_is_dynptr(arg_type) && reg->off % BPF_REG_SIZE) {
->                         verbose(env, "cannot pass in dynptr at an offset\n");
-> @@ -6113,35 +6140,22 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->         case PTR_TO_BUF:
->         case PTR_TO_BUF | MEM_RDONLY:
->         case SCALAR_VALUE:
-> -               /* Some of the argument types nevertheless require a
-> -                * zero register offset.
-> -                */
-> -               if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
-> -                       return 0;
-> -               break;
-> +               return 0;
->         /* All the rest must be rejected, except PTR_TO_BTF_ID which allows
->          * fixed offset.
->          */
->         case PTR_TO_BTF_ID:
->                 /* When referenced PTR_TO_BTF_ID is passed to release function,
->                  * it's fixed offset must be 0. In the other cases, fixed offset
-> -                * can be non-zero.
-> +                * can be non-zero. This was already checked above. So pass
-> +                * fixed_off_ok as true to allow fixed offset for all other
-> +                * cases. var_off always must be 0 for PTR_TO_BTF_ID, hence we
-> +                * still need to do checks instead of returning.
->                  */
-> -               if (arg_type_is_release(arg_type) && reg->off) {
-> -                       verbose(env, "R%d must have zero offset when passed to release func\n",
-> -                               regno);
-> -                       return -EINVAL;
-> -               }
-> -               /* For arg is release pointer, fixed_off_ok must be false, but
-> -                * we already checked and rejected reg->off != 0 above, so set
-> -                * to true to allow fixed offset for all other cases.
-> -                */
-> -               fixed_off_ok = true;
-> -               break;
-> +               return __check_ptr_off_reg(env, reg, regno, true);
->         default:
-> -               break;
-> +               return __check_ptr_off_reg(env, reg, regno, false);
->         }
-> -       return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
->  }
->
->  static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> diff --git a/tools/testing/selftests/bpf/verifier/ringbuf.c b/tools/testing/selftests/bpf/verifier/ringbuf.c
-> index b64d33e4833c..92e3f6a61a79 100644
-> --- a/tools/testing/selftests/bpf/verifier/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/verifier/ringbuf.c
-> @@ -28,7 +28,7 @@
->         },
->         .fixup_map_ringbuf = { 1 },
->         .result = REJECT,
-> -       .errstr = "dereference of modified alloc_mem ptr R1",
-> +       .errstr = "R1 must have zero offset when passed to release func",
->  },
->  {
->         "ringbuf: invalid reservation offset 2",
-> --
-> 2.38.1
->
+That would be the case when user is trying to bpf_list_push_head
+to head that has __contains tag that point to a different node ?
+It feels the users will be hitting this error case from time to time,
+so the most verbose message is the best.
+Both options above are a bit cryptic.
