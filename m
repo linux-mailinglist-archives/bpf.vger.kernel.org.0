@@ -2,208 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949F662AF67
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 00:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E344D62AF74
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 00:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbiKOX04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 18:26:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S229656AbiKOXea (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 18:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbiKOX0e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 18:26:34 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C9E27908
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:26:32 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id f18so7061825ejz.5
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DY++N/b93BxdltXMTeLdUPgzPkCVBFPWyIHIT+cRgeQ=;
-        b=UfLpknoHmLMzJZwKQ0I/rchQv4UdGcbstofMOgR3/JRLKdD3mAfexK6TFqArJ1aVLd
-         AkbA9FI7twN6R5Bf+1wqFhirLiCG+cBApyGM5TPp+VZknPfwCL8zR75eVR71GRB8Qo24
-         t/m1UTe21EKBTJVY9LTr8kUx3fd9cT/L5BCD/1JFpnKyQXduvEN0I9We3BuOUHoduWEJ
-         wlUNmgO2kNXat+N6veY4hGr2kFl4jwmOHAJdXb232ah6Rl9v+Guo0cQwPJm39VznlKD1
-         vVTZurhQn3OrvqnAAx6802UIUtelimet+Cg3dAbegcTBxhpKUZDNTnaXgY+A29/wanCz
-         Xm7A==
+        with ESMTP id S229560AbiKOXe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 18:34:29 -0500
+Received: from mail-pj1-x1062.google.com (mail-pj1-x1062.google.com [IPv6:2607:f8b0:4864:20::1062])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3880825C44
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:34:28 -0800 (PST)
+Received: by mail-pj1-x1062.google.com with SMTP id v3-20020a17090ac90300b00218441ac0f6so2519834pjt.0
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:34:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DY++N/b93BxdltXMTeLdUPgzPkCVBFPWyIHIT+cRgeQ=;
-        b=FU1Emhzt53i959MkbzAsB3AthuZfIC/09Bo3LNcHWr4KsLxFR7/lG18/0sZwOxcIaQ
-         2wCGlpMLF+n8BeQ4nWWXrGW5awrHBhFWSOU+QjIgdo0Zmk0fDIZRjqHry+AwWLC3OX4T
-         apF7Yw2mxY+GVk7wAxuvld43+ZhTvNmyWcn9TVjAUewgG3+DHhHuSIuTdCAJyUh2ZepA
-         qWg5Vt3RXI3ya66OaOl05QNtwYhHgCpFRHbgLfdrSAi0mmRZ8GgTxk9dWoCWzZDIf7Ch
-         nOWeYkcAC7Z/joQAQOwZ8Iqvo9cJgE8sMpLLsC/DJzn3TeDcuBGfYAXXbrGSaMaEZSM1
-         ymvA==
-X-Gm-Message-State: ANoB5pk2Bx2rFaubxgKsX2ApcECyZs53oAG1SjemvYGhsEEUGjDxClcI
-        PRgCNnD8rMyqiLCnzEBqTys=
-X-Google-Smtp-Source: AA0mqf7IZ9q1lqJm7/yPihcbLxDnHT5VMy7I5LfhDM+o3Khg484ZdDpTKwoCcvwDggcR6tY8jKHFXQ==
-X-Received: by 2002:a17:906:3e05:b0:78d:aaf9:7b8c with SMTP id k5-20020a1709063e0500b0078daaf97b8cmr16155052eji.229.1668554791006;
-        Tue, 15 Nov 2022 15:26:31 -0800 (PST)
-Received: from krava ([83.240.62.198])
-        by smtp.gmail.com with ESMTPSA id la8-20020a170907780800b00781b589a1afsm6110483ejc.159.2022.11.15.15.26.30
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KJY1h/lHP09IY+eljRKbCQakk7HMzR+MefkzkB9YYgM=;
+        b=C/iH8Xy0pGEtBRRmo2vxEy4wpoguJMd+y1H+7e7VQhvEf7/PlE4ky5/zwnzJse8aY7
+         7Omz0aqCWML+pfASadHwjHY/tmSK4OF6gUXCdR4F6TDWPQoJgNQNJcgh2gAiMk3hu5S9
+         fL/ycjQdOw5ePVZ64gnBBqLB7//C1sNeB+haaN97c9zJwBU17Xctna1ln2G5bQ51XKg/
+         +sxBjwZnFSUxbBCYvCNBHk3Pas3nsudALdVODi741k3hEYXMdY1ItSMqIVnu1yR+cpUR
+         Ffmph/LLjoVkZC5Klye/CgYVkkDDG/b6qWdny/g1YAJlTrY2+X6n2HbnnnHZQKp6dENr
+         l5pg==
+X-Gm-Message-State: ANoB5pkhbXdRQDZhQE4NCs0c/gU0EliwX4+r/80Rp8DHzIJe88BaYW/V
+        7n98JRltIwdDWLET+CnH1WzlDD0Bd+8rvEX01tMrEPgMIjrTeg==
+X-Google-Smtp-Source: AA0mqf50Wsv3ZeaacKyTIcH5MFDeCXDuv1NXDxNS6bjw2fyt4z5K63MwySWVRqDSOHWbJfmHZqRzEcQdGDID
+X-Received: by 2002:a17:90b:370e:b0:20a:78b7:9210 with SMTP id mg14-20020a17090b370e00b0020a78b79210mr731237pjb.138.1668555267832;
+        Tue, 15 Nov 2022 15:34:27 -0800 (PST)
+Received: from riotgames.com ([163.116.128.203])
+        by smtp-relay.gmail.com with ESMTPS id e4-20020a170903240400b0018680e701ecsm729928plo.76.2022.11.15.15.34.27
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 15:26:30 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 16 Nov 2022 00:26:28 +0100
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [RFC bpf-next] bpf: Fix perf bpf event and audit prog id logging
-Message-ID: <Y3QgJMsknnAvvYqU@krava>
-References: <20221115095043.1249776-1-jolsa@kernel.org>
- <4d91b1d3-3ffc-11f9-50a6-bfb503e4b3cd@iogearbox.net>
+        Tue, 15 Nov 2022 15:34:27 -0800 (PST)
+X-Relaying-Domain: riotgames.com
+Received: by mail-il1-f198.google.com with SMTP id j7-20020a056e02154700b003025b3c0ea3so5311812ilu.10
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:34:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KJY1h/lHP09IY+eljRKbCQakk7HMzR+MefkzkB9YYgM=;
+        b=jDob1wC8OZpTRMfh1pQAe/iwy3nqh0Z3TeIExFe0UbKqOgxgt4tmMozO7Xm0wuVL39
+         jAtJe+CIIVE7Q0N3oknrB2usEtXwwjAp2zTNfrqRIxzxm6dpL2p25wJGAfsl5JNN0X82
+         ZxeY2rgy1pqRMkiGm6FX/xSV+W8R2Gd1qHNEI=
+X-Received: by 2002:a5d:8d95:0:b0:6c3:168a:a25e with SMTP id b21-20020a5d8d95000000b006c3168aa25emr8858771ioj.174.1668555266085;
+        Tue, 15 Nov 2022 15:34:26 -0800 (PST)
+X-Received: by 2002:a5d:8d95:0:b0:6c3:168a:a25e with SMTP id
+ b21-20020a5d8d95000000b006c3168aa25emr8858759ioj.174.1668555265735; Tue, 15
+ Nov 2022 15:34:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d91b1d3-3ffc-11f9-50a6-bfb503e4b3cd@iogearbox.net>
+References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-2-sdf@google.com>
+ <CAC1LvL2Qg3jYAUPJ4GofJPBnk4HKYOuqyH_P_ZOcN45TZUzrHQ@mail.gmail.com> <CAKH8qBtDbZSa9VTaNOFNsm-FJgvDngjw7rJuT=QAnAD3FoGfsw@mail.gmail.com>
+In-Reply-To: <CAKH8qBtDbZSa9VTaNOFNsm-FJgvDngjw7rJuT=QAnAD3FoGfsw@mail.gmail.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Tue, 15 Nov 2022 15:34:14 -0800
+Message-ID: <CAC1LvL3AqXF37HM4Gp9F_CaE7i-kQx95iqaaGXCx-LLw3JAUdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/11] bpf: Document XDP RX metadata
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+x-netskope-inspected: true
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 01:49:54PM +0100, Daniel Borkmann wrote:
-> On 11/15/22 10:50 AM, Jiri Olsa wrote:
-> > hi,
-> > perf_event_bpf_event and bpf_audit_prog calls currently report zero
-> > program id for unload path.
-> > 
-> > It's because of the [1] change moved those audit calls into work queue
-> > and they are executed after the id is zeroed in bpf_prog_free_id.
-> > 
-> > I originally made a change that added 'id_audit' field to struct
-> > bpf_prog, which would be initialized as id, untouched and used
-> > in audit callbacks.
-> > 
-> > Then I realized we might actually not need to zero prog->aux->id
-> > in bpf_prog_free_id. It seems to be called just once on release
-> > paths. Tests seems ok with that.
-> > 
-> > thoughts?
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > [1] d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
-> > ---
-> >   kernel/bpf/syscall.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index fdbae52f463f..426529355c29 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -1991,7 +1991,6 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
-> >   		__acquire(&prog_idr_lock);
-> >   	idr_remove(&prog_idr, prog->aux->id);
-> > -	prog->aux->id = 0;
-> 
-> This would trigger a race when offloaded progs are used, see also ad8ad79f4f60 ("bpf:
-> offload: free program id when device disappears"). __bpf_prog_offload_destroy() calls
-> it, and my read is that later bpf_prog_free_id() then hits the early !prog->aux->id
-> return path. Is there a reason for irq context to not defer the bpf_prog_free_id()?
+On Tue, Nov 15, 2022 at 2:44 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Tue, Nov 15, 2022 at 2:31 PM Zvi Effron <zeffron@riotgames.com> wrote:
+> >
+> > On Mon, Nov 14, 2022 at 7:04 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > >
+> > > Document all current use-cases and assumptions.
+> > >
+> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > ---
+> > > Documentation/bpf/xdp-rx-metadata.rst | 109 ++++++++++++++++++++++++++
+> > > 1 file changed, 109 insertions(+)
+> > > create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
+> > >
+> > > diff --git a/Documentation/bpf/xdp-rx-metadata.rst b/Documentation/bpf/xdp-rx-metadata.rst
+> > > new file mode 100644
+> > > index 000000000000..5ddaaab8de31
+> > > --- /dev/null
+> > > +++ b/Documentation/bpf/xdp-rx-metadata.rst
+> > > @@ -0,0 +1,109 @@
+> > > +===============
+> > > +XDP RX Metadata
+> > > +===============
+> > > +
+> > > +XDP programs support creating and passing custom metadata via
+> > > +``bpf_xdp_adjust_meta``. This metadata can be consumed by the following
+> > > +entities:
+> > > +
+> > > +1. ``AF_XDP`` consumer.
+> > > +2. Kernel core stack via ``XDP_PASS``.
+> > > +3. Another device via ``bpf_redirect_map``.
+> >
+> > 4. Other eBPF programs via eBPF tail calls.
+>
+> Don't think a tail call is a special case here?
+> Correct me if I'm wrong, but with a tail call, we retain the original
+> xdp_buff ctx, so the tail call can still use the same kfuncs as if the
+> original bpf prog was running.
+>
 
-there's comment saying:
-  /* bpf_prog_free_id() must be called first */
+That's correct, but it's still a separate program that consumes the metadata,
+unrelated to anything kfuncs. Prior to the existence of kfuncs and AF_XDP, this
+was (to my knowledge) the primary consumer (outside of the original program, of
+course) of the metadata.
 
-it was added together with the BPF_(PROG|MAP)_GET_NEXT_ID api:
-  34ad5580f8f9 bpf: Add BPF_(PROG|MAP)_GET_NEXT_ID command
+From the name of the file and commit message, it sounds like this is the
+documentation for XDP metadata, not the documentation for XDP metadata as used
+by kfuncs to implement xdp-hints. Is that correct?
 
-Martin, any idea?
-
-while looking on this I noticed we can remove the do_idr_lock argument
-(patch below) because it's always true and I think we need to upgrade
-all the prog_idr_lock locks to spin_lock_irqsave because bpf_prog_put
-could be called from irq context because of d809e134be7a
-
-thanks,
-jirka
-
-
----
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 49f9d2bec401..50c71ce698d0 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1761,7 +1761,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
- struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
- void bpf_prog_put(struct bpf_prog *prog);
- 
--void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
-+void bpf_prog_free_id(struct bpf_prog *prog);
- void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
- 
- struct btf_field *btf_record_find(const struct btf_record *rec,
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 13e4efc971e6..327dab644200 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -217,7 +217,7 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
- 		offload->offdev->ops->destroy(prog);
- 
- 	/* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
--	bpf_prog_free_id(prog, true);
-+	bpf_prog_free_id(prog);
- 
- 	list_del_init(&offload->offloads);
- 	kfree(offload);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index fdbae52f463f..9b929d8ab06d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1973,7 +1973,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
- 	return id > 0 ? 0 : id;
- }
- 
--void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
-+void bpf_prog_free_id(struct bpf_prog *prog)
- {
- 	unsigned long flags;
- 
-@@ -1985,18 +1985,12 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
- 	if (!prog->aux->id)
- 		return;
- 
--	if (do_idr_lock)
--		spin_lock_irqsave(&prog_idr_lock, flags);
--	else
--		__acquire(&prog_idr_lock);
-+	spin_lock_irqsave(&prog_idr_lock, flags);
- 
- 	idr_remove(&prog_idr, prog->aux->id);
- 	prog->aux->id = 0;
- 
--	if (do_idr_lock)
--		spin_unlock_irqrestore(&prog_idr_lock, flags);
--	else
--		__release(&prog_idr_lock);
-+	spin_unlock_irqrestore(&prog_idr_lock, flags);
- }
- 
- static void __bpf_prog_put_rcu(struct rcu_head *rcu)
-@@ -2048,7 +2042,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
- 
- 	if (atomic64_dec_and_test(&aux->refcnt)) {
- 		/* bpf_prog_free_id() must be called first */
--		bpf_prog_free_id(prog, do_idr_lock);
-+		bpf_prog_free_id(prog);
- 
- 		if (in_irq() || irqs_disabled()) {
- 			INIT_WORK(&aux->work, bpf_prog_put_deferred);
+> > > +
+> > > +General Design
+> > > +==============
+> > > +
+> > > +XDP has access to a set of kfuncs to manipulate the metadata. Every
+> > > +device driver implements these kfuncs by generating BPF bytecode
+> > > +to parse it out from the hardware descriptors. The set of kfuncs is
+> > > +declared in ``include/net/xdp.h`` via ``XDP_METADATA_KFUNC_xxx``.
+> > > +
+> > > +Currently, the following kfuncs are supported. In the future, as more
+> > > +metadata is supported, this set will grow:
+> > > +
+> > > +- ``bpf_xdp_metadata_rx_timestamp_supported`` returns true/false to
+> > > + indicate whether the device supports RX timestamps in general
+> > > +- ``bpf_xdp_metadata_rx_timestamp`` returns packet RX timestamp or 0
+> > > +- ``bpf_xdp_metadata_export_to_skb`` prepares metadata layout that
+> > > + the kernel will be able to consume. See ``bpf_redirect_map`` section
+> > > + below for more details.
+> > > +
+> > > +Within the XDP frame, the metadata layout is as follows::
+> > > +
+> > > + +----------+------------------+-----------------+------+
+> > > + | headroom | xdp_skb_metadata | custom metadata | data |
+> > > + +----------+------------------+-----------------+------+
+> > > + ^ ^
+> > > + | |
+> > > + xdp_buff->data_meta xdp_buff->data
+> > > +
+> > > +Where ``xdp_skb_metadata`` is the metadata prepared by
+> > > +``bpf_xdp_metadata_export_to_skb``. And ``custom metadata``
+> > > +is prepared by the BPF program via calls to ``bpf_xdp_adjust_meta``.
+> > > +
+> > > +Note that ``bpf_xdp_metadata_export_to_skb`` doesn't adjust
+> > > +``xdp->data_meta`` pointer. To access the metadata generated
+> > > +by ``bpf_xdp_metadata_export_to_skb`` use ``xdp_buf->skb_metadata``.
+> > > +
+> > > +AF_XDP
+> > > +======
+> > > +
+> > > +``AF_XDP`` use-case implies that there is a contract between the BPF program
+> > > +that redirects XDP frames into the ``XSK`` and the final consumer.
+> > > +Thus the BPF program manually allocates a fixed number of
+> > > +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+> > > +of kfuncs to populate it. User-space ``XSK`` consumer, looks
+> > > +at ``xsk_umem__get_data() - METADATA_SIZE`` to locate its metadata.
+> > > +
+> > > +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+> > > +
+> > > + +----------+------------------+-----------------+------+
+> > > + | headroom | xdp_skb_metadata | custom metadata | data |
+> > > + +----------+------------------+-----------------+------+
+> > > + ^
+> > > + |
+> > > + rx_desc->address
+> > > +
+> > > +XDP_PASS
+> > > +========
+> > > +
+> > > +This is the path where the packets processed by the XDP program are passed
+> > > +into the kernel. The kernel creates ``skb`` out of the ``xdp_buff`` contents.
+> > > +Currently, every driver has a custom kernel code to parse the descriptors and
+> > > +populate ``skb`` metadata when doing this ``xdp_buff->skb`` conversion.
+> > > +In the future, we'd like to support a case where XDP program can override
+> > > +some of that metadata.
+> > > +
+> > > +The plan of record is to make this path similar to ``bpf_redirect_map``
+> > > +below where the program would call ``bpf_xdp_metadata_export_to_skb``,
+> > > +override the metadata and return ``XDP_PASS``. Additional work in
+> > > +the drivers will be required to enable this (for example, to skip
+> > > +populating ``skb`` metadata from the descriptors when
+> > > +``bpf_xdp_metadata_export_to_skb`` has been called).
+> > > +
+> > > +bpf_redirect_map
+> > > +================
+> > > +
+> > > +``bpf_redirect_map`` can redirect the frame to a different device.
+> > > +In this case we don't know ahead of time whether that final consumer
+> > > +will further redirect to an ``XSK`` or pass it to the kernel via ``XDP_PASS``.
+> > > +Additionally, the final consumer doesn't have access to the original
+> > > +hardware descriptor and can't access any of the original metadata.
+> > > +
+> > > +To support passing metadata via ``bpf_redirect_map``, there is a
+> > > +``bpf_xdp_metadata_export_to_skb`` kfunc that populates a subset
+> > > +of metadata into ``xdp_buff``. The layout is defined in
+> > > +``struct xdp_skb_metadata``.
+> > > +
+> > > +Mixing custom metadata and xdp_skb_metadata
+> > > +===========================================
+> > > +
+> > > +For the cases of ``bpf_redirect_map``, where the final consumer isn't
+> > > +known ahead of time, the program can store both, custom metadata
+> > > +and ``xdp_skb_metadata`` for the kernel consumption.
+> > > +
+> > > +Current limitation is that the program cannot adjust ``data_meta`` (via
+> > > +``bpf_xdp_adjust_meta``) after a call to ``bpf_xdp_metadata_export_to_skb``.
+> > > +So it has to, first, prepare its custom metadata layout and only then,
+> > > +optionally, store ``xdp_skb_metadata`` via a call to
+> > > +``bpf_xdp_metadata_export_to_skb``.
+> > > --
+> > > 2.38.1.431.g37b22c650d-goog
+> > >
