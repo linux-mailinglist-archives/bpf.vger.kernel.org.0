@@ -2,90 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 957BC62997C
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 14:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DE162998E
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 14:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiKONAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 08:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S232883AbiKONEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 08:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbiKONAL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 08:00:11 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93BFD63C9;
-        Tue, 15 Nov 2022 05:00:09 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxDdlYjXNjuEQHAA--.21336S3;
-        Tue, 15 Nov 2022 21:00:08 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHuJXjXNjIaQTAA--.52645S2;
-        Tue, 15 Nov 2022 21:00:07 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] bpftool: Check argc first before "file" in do_batch()
-Date:   Tue, 15 Nov 2022 21:00:07 +0800
-Message-Id: <1668517207-11822-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8BxHuJXjXNjIaQTAA--.52645S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvdXoW7JF4fWF43WFy5Aw4DKF47XFb_yoWDXrX_ua
-        9xXF1avFn5Jryakr47W3yq9ryxKa1rArsYqrZI9r18Jr48J3y7ZF18C395Xw45uFyjk3W2
-        yFZ3u34fGF129jkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
-        xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
-        87kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
-        AFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
-        6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7
-        xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1A9N7UUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230375AbiKONEt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 08:04:49 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E42962E8
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 05:04:48 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id o30so9620087wms.2
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 05:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1omGc4nP71X/++3HfzeQkSCYnTcd+Apx3yOP4xHTytU=;
+        b=Rxw+LGv24IG2KDLDqzvRpjtZu7Qb3NjQp8JXoc2KUHbU1Jk3PK8k3YOBv146mIOTvP
+         TaMYf5VvycjKDkow2MQ30IMiQggparXxREppIS0XCD/YdR//1TXpBZ66NQC0U9Ci5nnD
+         95ivxt1oIbgrfM2WUPYGZiQLhdm80jYeh39ta+h+IyTAN8Th7r9ZwRmThWqBg58P1IE2
+         GskuQC0sihvm3ivDdlL6svJMpv8TOctLX4glz8zZHkQOPu/Diwx7d/z9BUXA3pPXG72N
+         QTCukwZX1hju+K8v5V87nxGq0RZhuGOIsDKnylE2hywe+yHrVb1ELtkEB2U0agAObz78
+         9NWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1omGc4nP71X/++3HfzeQkSCYnTcd+Apx3yOP4xHTytU=;
+        b=HnvyEHr4ARVvqSx+7P4nC5zEOoJKv7rtPb/fXum5WCxCQeyGzsoa0WCPYOYfpO8Ar5
+         yQ829C4l8Ib4VZwZrCZZ8aapRtSEAdXL0aJbkYfvwaUcCui0mgRXVH0hsr5BTSwjNtic
+         bIHk1OnUZi+xk7YhOJOFW1V91bAQ9nF+D9L4xpE0hX7ULMQLbXETxT60GTRFnQiNf6Ed
+         +1ioDL4whor1ngHMQQCfD4Uskbex2EuOid3id9sYFA6EBVadjTv5x9mIkdpYQGaEghEg
+         dMNLJNznEru16KoapLFBCLdsrvRTKCkuq8ou6kEe8fxUZTsAQwQvQGgce5ekdYp9n9jy
+         XcRg==
+X-Gm-Message-State: ANoB5pko4f7LGDBOwcLQswMQBrHixQrHrCHk9pLuVE0kiPTr6HAePoIv
+        LgpOk53L8gb3Rxm6Y80kr/U=
+X-Google-Smtp-Source: AA0mqf71MjhX7unhMiQvveIwf4J0x3rpjVtXsSiKXi0uJCZ2az3Ubca0g1BsQRSIcXYYpcuDjfbsDA==
+X-Received: by 2002:a1c:4c13:0:b0:3cf:baa6:8ca5 with SMTP id z19-20020a1c4c13000000b003cfbaa68ca5mr244714wmf.178.1668517486672;
+        Tue, 15 Nov 2022 05:04:46 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c350f00b003cfcf9f9d62sm16098754wmq.12.2022.11.15.05.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 05:04:46 -0800 (PST)
+Date:   Tue, 15 Nov 2022 16:04:43 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     memxor@gmail.com
+Cc:     bpf@vger.kernel.org
+Subject: [bug report] bpf: Refactor map->off_arr handling
+Message-ID: <Y3OOa77Sn6GnyLvB@kili>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the parameters for batch are more than 2, check argc first can
-return immediately, no need to use is_prefix() to check "file" with
-a little overhead and then check argc, it is better to check "file"
-only when the parameters for batch are 2.
+Hello Kumar Kartikeya Dwivedi,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/bpf/bpftool/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The patch f71b2f64177a: "bpf: Refactor map->off_arr handling" from
+Nov 4, 2022, leads to the following Smatch static checker warning:
 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 741e50e..337ab79 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -337,12 +337,12 @@ static int do_batch(int argc, char **argv)
- 	if (argc < 2) {
- 		p_err("too few parameters for batch");
- 		return -1;
--	} else if (!is_prefix(*argv, "file")) {
--		p_err("expected 'file', got: %s", *argv);
--		return -1;
- 	} else if (argc > 2) {
- 		p_err("too many parameters for batch");
- 		return -1;
-+	} else if (!is_prefix(*argv, "file")) {
-+		p_err("expected 'file', got: %s", *argv);
-+		return -1;
- 	}
- 	NEXT_ARG();
- 
--- 
-2.1.0
+	kernel/bpf/btf.c:3597 btf_parse_field_offs()
+	warn: potential pointer math issue ('off' is a 32 bit pointer)
 
+kernel/bpf/btf.c
+    3580 struct btf_field_offs *btf_parse_field_offs(struct btf_record *rec)
+    3581 {
+    3582         struct btf_field_offs *foffs;
+    3583         u32 i, *off;
+    3584         u8 *sz;
+    3585 
+    3586         BUILD_BUG_ON(ARRAY_SIZE(foffs->field_off) != ARRAY_SIZE(foffs->field_sz));
+    3587         if (IS_ERR_OR_NULL(rec) || WARN_ON_ONCE(rec->cnt > sizeof(foffs->field_off)))
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^
+s/sizeof/ARRAY_SIZE/
+
+    3588                 return NULL;
+    3589 
+    3590         foffs = kzalloc(sizeof(*foffs), GFP_KERNEL | __GFP_NOWARN);
+    3591         if (!foffs)
+    3592                 return ERR_PTR(-ENOMEM);
+    3593 
+    3594         off = foffs->field_off;
+    3595         sz = foffs->field_sz;
+    3596         for (i = 0; i < rec->cnt; i++) {
+--> 3597                 off[i] = rec->fields[i].offset;
+    3598                 sz[i] = btf_field_type_size(rec->fields[i].type);
+    3599         }
+    3600         foffs->cnt = rec->cnt;
+    3601 
+    3602         if (foffs->cnt == 1)
+    3603                 return foffs;
+    3604         sort_r(foffs->field_off, foffs->cnt, sizeof(foffs->field_off[0]),
+    3605                btf_field_offs_cmp, btf_field_offs_swap, foffs);
+    3606         return foffs;
+    3607 }
+
+regards,
+dan carpenter
