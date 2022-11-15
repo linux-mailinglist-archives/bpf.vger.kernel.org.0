@@ -2,82 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF3A62A212
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 20:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E7262A216
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 20:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbiKOTjh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 14:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
+        id S230445AbiKOTlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 14:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbiKOTj2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 14:39:28 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6DA22B03;
-        Tue, 15 Nov 2022 11:39:17 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 136so14272481pga.1;
-        Tue, 15 Nov 2022 11:39:17 -0800 (PST)
+        with ESMTP id S229602AbiKOTlS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 14:41:18 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B3B2F652
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 11:41:18 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id d13-20020a17090a3b0d00b00213519dfe4aso14818138pjc.2
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 11:41:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qH8eATSNEhYowGeu9g4jqYSSjClFtVibr4y+PP4MUWk=;
-        b=hunhRnw215mH9phbmkHXWMhwIpSa13+JUliaS9yh+6opvI0yiN3bfJHo9QPHXmLTSg
-         A3dbzCDcRZ4GIe2fbD3HrvdyKvU5gEom8uTlvqj1+50bVo1Vt12uT4ZM+kd2zUihPhNC
-         etqAe4/2ndqj7fm4f2LTf06uVNywGMAvMRGi+QkFOqigpYh8upcB622irX0cjcaqbO6V
-         GlEhT1O7/61cGLljTketNpZoMXd0wlaOa+s4btc2LHTlSgg6pHHOSLqQSEs3lzcqstwS
-         mjCDT2tAksFLzoY8dVZTppHVHwmuL5395r1TfhOWiKLAHa8Y/tin0hMozVHf2L8QjSf3
-         XKAg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7x8pvvmHHGSgsbnVY/+UThDLA4lb0Y6REXc0sN06JDA=;
+        b=DzvsRwbOmqlZKPva2jWoKuisq0RV69BEf3uyyT7Aj+DmzlaD1bjeZ04IAA0cJ6YmUF
+         j+f6In+wXlk52RZvVFqWy/2J2Qb/P6JF/I3/RBdc1M5TztgNL4xj1sOV0C49VCQ9tkLt
+         dyn6nZovvNJC69+oyGGyUBEBjxlbsOfXtouUGMDrb1hQRGvL+3GTi3ZNsWtJILLQFGtU
+         2GBZ+PN/QFtOn7vPaCRWIpDiJ7wQNC3yKu4l4OVuM+8NqrSOHfmXsb9YnP1T7bbbV3Yr
+         MfrwKF7Hl4sdfimg004OMLPKZKYqsFKQX2iOL+uZmq07BmUB163gPzVXAxE+Iw85aWlB
+         +T5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qH8eATSNEhYowGeu9g4jqYSSjClFtVibr4y+PP4MUWk=;
-        b=SNoufT5L88hr74O6LEo0ZXWZP7Fs1oIFua8W3EA9SyZbbqqFwfOsaTdUS9Vs5SR+kc
-         UGcXyrSP8+JM5QxljlnoX4N+XUNw02PeYqVD3UZY6O1yqKCm9zAJRo6rMfkPebJszwuS
-         R3J6N6Al6KaE/tTTqVa+oIoSpRIjT2flSC4f9bABskTHvKrMyaOKPRr8Rrad573ct7ip
-         glNbUhv0KtwUoO5mKtaNSHj3BGCtqg3bwNX5nYyLO+m6MC/7zW9unyGH0E8Y9Gd8l7NP
-         LSbTJdLOATmiFuUNQOhQE+LTZGztIgMQfhJfaRzYWeH8pUfCbNjQAOLH7l0kjEB1jfHV
-         J9Rw==
-X-Gm-Message-State: ANoB5plvYNldM/fXc2RpTd8yGCVufHwnMKGF5ttwu4CPEeNZbOQtrXmR
-        Ec0cBiVxk4mxWoSrfB5EUL8=
-X-Google-Smtp-Source: AA0mqf4PIu0/zji++l195rCB9xgAKknUTVz1ZR8oTSR6Bjco75JgI/dVPE41kOyMxvWgcICgziIHRg==
-X-Received: by 2002:a65:5908:0:b0:474:4380:cce8 with SMTP id f8-20020a655908000000b004744380cce8mr16989430pgu.557.1668541156622;
-        Tue, 15 Nov 2022 11:39:16 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7x8pvvmHHGSgsbnVY/+UThDLA4lb0Y6REXc0sN06JDA=;
+        b=qz8nUOY8Tb31WC3Ssbwo1v4ZaYuEGurQDTF83arYkKyPOSlUWQBk4+wxAY0rmjUucg
+         NOhEVHQK30zYQs6WE3p6CF3ILPNhdCgVDyn147q0HPfsrFm/ilyUV4U751SwBcnneXK5
+         cJMP2JLj7pc/fflR/xJ27O4fcSjGM6gqhzXdOacSYrUmYsz1gClfmd1OpuHtyk4m/HXh
+         wYewROE0M4MqHG/DYZ3vbIuA1ZJKHxbBKfcpBLSVoL91MfcGn/jEldEZjq7vGi0yKsvq
+         l9yjMicNBICia5p5g616zhNK/Vb9I5dR5tJw4WV73oeaRssCxgJRVh6K25U8cmt0bSRt
+         J2Pg==
+X-Gm-Message-State: ANoB5pl+BsDcZmi6sRCFYIDNyX8xWRYK/+AEp2wld0RG6/G42AOcg1Bh
+        MXWC3NzXF/7xEzHNrwUETeM=
+X-Google-Smtp-Source: AA0mqf7xTea/VKrSVnu/wN65LHZMbBNC9V8Asg3XVsH0CC3DY+ldUBah9M3J4UBMxd3jVe1B4r2lzw==
+X-Received: by 2002:a17:902:ed41:b0:175:105a:3087 with SMTP id y1-20020a170902ed4100b00175105a3087mr5660591plb.65.1668541277542;
+        Tue, 15 Nov 2022 11:41:17 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id 124-20020a630482000000b004608b721dfesm8157930pge.38.2022.11.15.11.39.15
+        by smtp.gmail.com with ESMTPSA id n63-20020a17090a5ac500b00200461cfa99sm11936119pji.11.2022.11.15.11.41.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 11:39:16 -0800 (PST)
-Date:   Wed, 16 Nov 2022 01:09:11 +0530
+        Tue, 15 Nov 2022 11:41:17 -0800 (PST)
+Date:   Wed, 16 Nov 2022 01:11:13 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, David Vernet <void@manifault.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 3/3] bpf: Use 64-bit return value for
- bpf_prog_run
-Message-ID: <20221115193911.u6prvskdzr5jevni@apollo>
-References: <20221108140601.149971-1-toke@redhat.com>
- <20221108140601.149971-4-toke@redhat.com>
- <CAADnVQJjxdUAE6NHNtbbqVj3p3=8KsKrvRb3ShdYb9CcfVY8Ow@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next v1 7/7] selftests/bpf: Add test for dynptr
+ reinit in user_ringbuf callback
+Message-ID: <20221115194113.ag6pocm2hvrskd3i@apollo>
+References: <20221115000130.1967465-1-memxor@gmail.com>
+ <20221115000130.1967465-8-memxor@gmail.com>
+ <CAJnrk1aynT73OZJauUEn_OFkVBsZ0wGSZHjnDSKwUG_wYd1Opw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJjxdUAE6NHNtbbqVj3p3=8KsKrvRb3ShdYb9CcfVY8Ow@mail.gmail.com>
+In-Reply-To: <CAJnrk1aynT73OZJauUEn_OFkVBsZ0wGSZHjnDSKwUG_wYd1Opw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,50 +76,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 10:39:04PM IST, Alexei Starovoitov wrote:
-> On Tue, Nov 8, 2022 at 6:07 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+On Wed, Nov 16, 2022 at 12:06:36AM IST, Joanne Koong wrote:
+> On Mon, Nov 14, 2022 at 4:01 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 > >
-> > From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > The original support for bpf_user_ringbuf_drain callbacks simply
+> > short-circuited checks for the dynptr state, allowing users to pass
+> > PTR_TO_DYNPTR (now CONST_PTR_TO_DYNPTR) to helpers that initialize a
+> > dynptr. This bug would have also surfaced with other dynptr helpers in
+> > the future that changed dynptr view or modified it in some way.
 > >
-> > BPF ABI always uses 64-bit return value, but so far __bpf_prog_run and
-> > higher level wrappers always truncated the return value to 32-bit. We
-> > want to be able to introduce a new BPF program type that returns a
-> > PTR_TO_BTF_ID or NULL from the BPF program to the caller context in the
-> > kernel. To be able to use this returned pointer value, the bpf_prog_run
-> > invocation needs to be able to return a 64-bit value, so update the
-> > definitions to allow this.
+> > Include test cases for all cases, i.e. both bpf_dynptr_from_mem and
+> > bpf_ringbuf_reserve_dynptr, and ensure verifier rejects both of them.
+> > Without the fix, both of these programs load and pass verification.
+> >
+> > Acked-by: David Vernet <void@manifault.com>
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 >
-> ...
+> Acked-by: Joanne Koong <joannelkoong@gmail.com>
 >
-> > -static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
-> > +static __always_inline u64 __bpf_prog_run(const struct bpf_prog *prog,
-> >                                           const void *ctx,
-> >                                           bpf_dispatcher_fn dfunc)
+> Left a small comment below.
+>
+> > ---
+> >  .../selftests/bpf/prog_tests/user_ringbuf.c   |  2 ++
+> >  .../selftests/bpf/progs/user_ringbuf_fail.c   | 35 +++++++++++++++++++
+> >  2 files changed, 37 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+> > index 39882580cb90..500a63bb70a8 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+> > @@ -676,6 +676,8 @@ static struct {
+> >         {"user_ringbuf_callback_discard_dynptr", "cannot release unowned const bpf_dynptr"},
+> >         {"user_ringbuf_callback_submit_dynptr", "cannot release unowned const bpf_dynptr"},
+> >         {"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
+> > +       {"user_ringbuf_callback_reinit_dynptr_mem", "Dynptr has to be an uninitialized dynptr"},
+> > +       {"user_ringbuf_callback_reinit_dynptr_ringbuf", "Dynptr has to be an uninitialized dynptr"},
+> >  };
+> >
+> >  #define SUCCESS_TEST(_func) { _func, #_func }
+> > diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+> > index 82aba4529aa9..7730d13c0cea 100644
+> > --- a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+> > +++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+> > @@ -18,6 +18,13 @@ struct {
+> >         __uint(type, BPF_MAP_TYPE_USER_RINGBUF);
+> >  } user_ringbuf SEC(".maps");
+> >
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_RINGBUF);
+> > +       __uint(max_entries, 2);
+> > +} ringbuf SEC(".maps");
+> > +
+> > +static int map_value;
+> > +
+> >  static long
+> >  bad_access1(struct bpf_dynptr *dynptr, void *context)
 > >  {
-> > -       u32 ret;
-> > +       u64 ret;
+> > @@ -175,3 +182,31 @@ int user_ringbuf_callback_invalid_return(void *ctx)
 > >
-> >         cant_migrate();
-> >         if (static_branch_unlikely(&bpf_stats_enabled_key)) {
-> > @@ -602,7 +602,7 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
-> >         return ret;
+> >         return 0;
 > >  }
-> >
-> > -static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
-> > +static __always_inline u64 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
-> >  {
-> >         return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
-> >  }
+> > +
+> > +static long
+> > +try_reinit_dynptr_mem(struct bpf_dynptr *dynptr, void *context)
+> > +{
+> > +       bpf_dynptr_from_mem(&map_value, 4, 0, dynptr);
+> > +       return 0;
+> > +}
+> > +
+> > +static long
+> > +try_reinit_dynptr_ringbuf(struct bpf_dynptr *dynptr, void *context)
+> > +{
+> > +       bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, dynptr);
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("?raw_tp/sys_nanosleep")
+> > +int user_ringbuf_callback_reinit_dynptr_mem(void *ctx)
+> > +{
+> > +       bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_mem, NULL, 0);
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("?raw_tp/sys_nanosleep")
 >
-> I suspect 32-bit archs with JITs are partially broken with this change.
-> As long as progs want to return pointers it's ok, but actual
-> 64-bit values will be return garbage in upper 32-bit, since 32-bit
-> JITs won't populate the upper bits.
-> I don't think changing u32->long retval is a good idea either,
-> since BPF ISA has to be stable regardless of underlying arch.
-> The u32->u64 transition is good long term, but let's add
-> full 64-bit tests to lib/test_bpf and fix JITs.
+> nit: here and above, I think this should just be "?raw_tp/" without
+> the nanosleep, since there is no nanosleep tracepoint.
 >
 
-I will resubmit with these tests and revisiting the 32-bit JITs (but it will
-take some time, since my backlog is full).
+True, looks like it's the same for all prior cases in this file as well. I will
+drop sys_nanosleep for all of them.
