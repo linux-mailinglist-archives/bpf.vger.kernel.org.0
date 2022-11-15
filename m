@@ -2,118 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FBB62AEAB
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 23:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A26D62AF21
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 00:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbiKOWyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 17:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S230157AbiKOXKa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 18:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbiKOWyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 17:54:18 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFF72B271;
-        Tue, 15 Nov 2022 14:54:16 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id f27so39968479eje.1;
-        Tue, 15 Nov 2022 14:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tS7itbUVU0VT0dkwZPn1BAAjaVKk6+KaYVTgLf/SfTo=;
-        b=DYqo9KKntKJjmEdFY8Pi0MZOMz1ZtOgJkp/EkvXbcw2fMSAox+swrc6SoOaTAEvCVW
-         0W+/2g8gPfIeIbtkTk6liz+UZz100NuyHMaq1d/9c48i9GOHv5lDryGHj7fA/53AZ6wA
-         N02KoGIJ8VNY5RL6sn+77iRa8+gzD1LoMlnEfvxOPsmDE01dviDTI8f5IARg37MJdaQg
-         8Cd2oxwTz8BJaOeHTSeQmdRl4TxOdydRDb+/Z80Nefi2yC0tj7kSqgSUomoDjJSnwiDJ
-         u+Gf55yXuhanUIt336yDfQAfhxdUYEUlhIVQkb1YKX0wcM9GCDJ7v00Huu9//cvvIMXe
-         dpRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tS7itbUVU0VT0dkwZPn1BAAjaVKk6+KaYVTgLf/SfTo=;
-        b=ZCpPo90M3DWyc5k3tmJ0oGyPN7qgyZlJvoBm5bqahFwOLO0lLD+rDvuxU/2I93oJu0
-         S5NCOIgO9R/dyKVdn59BHew5mdPLGXxqb/WAcT0cKKcWlHReYJZ8YYMTG/kldC89vw8k
-         VdhSgeJEctZrjUG+sVux/+dtbTgnNrBwZYg3C04KRxlsOm9BHx2FC1lj4IyXxL8rt3KU
-         O603QjC/ngwW6a/cV+NIVBn1Ooz8sb3TFyJvahW6f4pPC0RvOntoUBLwAViyfefhXaEM
-         319xzHSnNqZ15npn8OD4N9tN1RU5vjZqDPU13Du+SNa4/Cm/YwMf2jiEoqYRgMotd0iG
-         8b3Q==
-X-Gm-Message-State: ANoB5pnxFnmPwaCFlr+aHt0vveJTiuUn6a0th/S6tRr5nFYx7O1nvHZZ
-        VJj8MeN6MUTT+trvHvotaD4PleyFp28PF9++N8s=
-X-Google-Smtp-Source: AA0mqf6sPgQHEUxw4WJdC/SaR9y5RJiZLK4nfQ6acj7MHepRTEu8qIhCXM99URaFwS4AFQRfLUFZlkFvd3gnGQLsYKk=
-X-Received: by 2002:a17:907:a701:b0:78d:9858:e538 with SMTP id
- vw1-20020a170907a70100b0078d9858e538mr16152395ejc.502.1668552854643; Tue, 15
- Nov 2022 14:54:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com> <87mt8si56i.fsf@toke.dk> <CAKH8qBszV6Ni_k8JYOxtAQ2j79qe5KVryAzDqtb1Ng8+TW=+7A@mail.gmail.com>
-In-Reply-To: <CAKH8qBszV6Ni_k8JYOxtAQ2j79qe5KVryAzDqtb1Ng8+TW=+7A@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 15 Nov 2022 14:54:03 -0800
-Message-ID: <CAADnVQKs=2zJ3=3BQp=OfCre3s6zTffjKRK+kbnwpQqvxF9ygA@mail.gmail.com>
-Subject: Re: [xdp-hints] [PATCH bpf-next 00/11] xdp: hints via kfuncs
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229607AbiKOXKa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 18:10:30 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9206F2B611;
+        Tue, 15 Nov 2022 15:10:28 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4NBhjS6jt0z4xG5;
+        Wed, 16 Nov 2022 10:10:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1668553822;
+        bh=fhm8U/HFFB9ybOHcPNtA20Cg6w7QILs8MaHaUQL6Qos=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uVTTlGGMy5A4Mcer6p1i5sBWxWgPw5knKjyZN15KZAbzKU9s7oALRyIiEOFvXfZ+8
+         ZrHABKZ28mh82V5sV256/BXNoFlffBom9PhtRZH+jLRl2Sqxfc3lpcyiWeBJjygmt6
+         mDS0EpbS7LD6VShO5Q0VjeUyUGY6p7SgKWiXYwN3ZhuhKogruDGSzPUb+LVc7QJ0AO
+         HrqD33EmCOxkTs/iWAuF80pRgc8Lm1Lx4GzVgSSbawF3Y4ujn/WWRvOv5/GlkGRAXK
+         EzUuyzmYDiFhXbR1Wmi5Cvb1ezYO1lYoSpns2hKYithZbuEKuxm/JlsjAPcwdhGXKX
+         h2hnNkU4mOpWg==
+Date:   Wed, 16 Nov 2022 10:10:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        David Miller <davem@davemloft.net>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>
+Subject: linux-next: manual merge of the bpf-next tree with the net tree
+Message-ID: <20221116101017.235b5952@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Me5A8Qfxn+JpOkY3s_c5Lj3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 10:38 AM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Tue, Nov 15, 2022 at 7:54 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> >
-> > Stanislav Fomichev <sdf@google.com> writes:
-> >
-> > > - drop __randomize_layout
-> > >
-> > >   Not sure it's possible to sanely expose it via UAPI. Because every
-> > >   .o potentially gets its own randomized layout, test_progs
-> > >   refuses to link.
-> >
-> > So this won't work if the struct is in a kernel-supplied UAPI header
-> > (which would include the __randomize_layout tag). But if it's *not* in =
-a
-> > UAPI header it should still be included in a stable form (i.e., without
-> > the randomize tag) in vmlinux.h, right? Which would be the point:
-> > consumers would be forced to read it from there and do CO-RE on it...
->
-> So you're suggesting something like the following in the uapi header?
->
-> #ifndef __KERNEL__
-> #define __randomize_layout
-> #endif
->
+--Sig_/Me5A8Qfxn+JpOkY3s_c5Lj3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-1.
-__randomize_layout in uapi header makes no sense.
+Hi all,
 
-2.
-It's supported by gcc plugin and afaik that plugin is broken
-vs debug info, so dwarf is broken, hence BTF is broken too,
-and CO-RE doesn't work on kernels compiled with that gcc plugin.
+Today's linux-next merge of the bpf-next tree got a conflict in:
+
+  include/linux/bpf.h
+
+between commit:
+
+  1f6e04a1c7b8 ("bpf: Fix offset calculation error in __copy_map_value and =
+zero_map_value")
+
+from the net tree and commit:
+
+  e5feed0f64f7 ("bpf: Fix copy_map_value, zero_map_value")
+
+from the bpf-next tree.
+
+I fixed it up (I just used the latter) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Me5A8Qfxn+JpOkY3s_c5Lj3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmN0HFkACgkQAVBC80lX
+0GxPWwf/S+gFmnq8yPPU3IaosmITk2dreuKKRhL3x8Vx7ijz4/MyVWFKx9ecDWZM
+Js10zM5Z6T3Y732nRadIw/fbvmBTeuQtR3XBBr71ESzHdJ1oX8ZiLbWv/gMg2OIC
+5FmF93MqMWKyI6RaACSyb8SIZ1jiFoIY6xcaPHB6KQi0vT5mRi6jG//CA4PVXALT
+E29vL0DgR/Df72bBKCY1QLC1mmR1bnCbNA7TtgO/zHShdikDkUZjR2F0GHomY4sL
+zx2TAXNecoeCvQFAq+x/waiRwiqza4EFWaSMWiMzCYLC2dm9dS3DfahBVgaalqab
+9opeDbZvAbohl8197OI6f/EHbfLcJg==
+=f23a
+-----END PGP SIGNATURE-----
+
+--Sig_/Me5A8Qfxn+JpOkY3s_c5Lj3--
