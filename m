@@ -2,689 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCC262906F
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5863C629080
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237874AbiKODEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 22:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
+        id S236629AbiKODHx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 22:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237702AbiKODDW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 22:03:22 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5B615731
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:02:32 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id bq9-20020a056a000e0900b00571802a2eaaso6460326pfb.22
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:02:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+qAGOGJeiSRN/c9VTgDhqmHnVCRAYQw0nUJ4nC0eLc=;
-        b=QYILD6UjxDDYBtywFRA4u5O6cZXK4U4oNiop/Bu2MOj3FUfblryFcTEXh4hK4azjEO
-         lkLGEgkUtaoW66d5xcDme7F1IpZ1Y5L1/W/D0nYrCQYYbYZT3KQQAwZlPwUNUOWFh/tl
-         54aOj2R34n5JHBcwnN3sQ0CGAGRg1ZK2jPPIOkKQt82XmtfY9r6W9EKf/H3DhnJG5aE/
-         yAAqP9mhjfvRKbpdhrJ/XbMuhTFNHvBiWSeH88t/LYprccU3upeT3I4CtZ3yzf5fQ4vv
-         cpWYuPCyTmrNvEqitWGXD8ikk5pzjIxuLrM3TpDR+qZ9KVn0aj+QBZ6POhQQB2ZniADY
-         35uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+qAGOGJeiSRN/c9VTgDhqmHnVCRAYQw0nUJ4nC0eLc=;
-        b=K9UhB5TW3ViY63AazpRbdV6m1fb4G62iHtW8rhMVd+jNlZimpYtGOVZs9TUSqHTGTZ
-         QqnIz536DKrt7fXN5Xj0/5ioBRnmoMbmJpFQ9TmGf45GCdF39+gJyalxSXYTJNdHdwry
-         2JxO5XpH2JqgLTSnUElVL1sySk0l5DHbzAt8RpFzHYIOtcJOMZE2K9IsxnBXYidIcSss
-         wV0VzdzPK7O7kOFt91hvgiUTPwNp7/p3+Oy+2ryFt6tztwS3tOTOn0PGJW9AOLt/V06K
-         gYuOcF+n0TXnHF5Cz9nceD5i4Q4crR4WZlxXkNzWzJdaZeRZrcZDwSIEGsO7n0mdm+ZA
-         iPVg==
-X-Gm-Message-State: ANoB5pmYZgx1LTQn3yFI3CZas5dVR8izazZP/lttsuNndcWJLb6i5b1d
-        GuFV9MBaFNatHl2JuzRq2FxytxHx/EBc91jYInselGaWo/PbsIqAXHES0lfmY3kgHotHnkGghMe
-        diGT0mSzi2vHqXlq6qgtLjIlp8FLLTIZnrV/Uu2ZXLMair5GsMA==
-X-Google-Smtp-Source: AA0mqf52/firdP/8HuCdLe1fFEb6+300WlxL47Uyq+gvDuZiNP2+ZuoGm/5/uFAzEib7pf+bXDH9DiM=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:9503:b0:20a:eab5:cf39 with SMTP id
- t3-20020a17090a950300b0020aeab5cf39mr74647pjo.1.1668481351496; Mon, 14 Nov
- 2022 19:02:31 -0800 (PST)
-Date:   Mon, 14 Nov 2022 19:02:10 -0800
-In-Reply-To: <20221115030210.3159213-1-sdf@google.com>
-Mime-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com>
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221115030210.3159213-12-sdf@google.com>
-Subject: [PATCH bpf-next 11/11] selftests/bpf: Simple program to dump XDP RX metadata
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S235865AbiKODHL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 22:07:11 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1658311D;
+        Mon, 14 Nov 2022 19:07:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668481629; x=1700017629;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=V35rOfBgRmlwsx7oMapNmea9Flf00WAELVkvDVPNPbw=;
+  b=H+xKBZrqKGFrR0Y0a6vXov5puSpwO3kK4IYSpwPACPF3f56WLBrLkCpS
+   uyaobP+HheNhEMsAsgbNpnaPIGQ6uae6nKZtBcdnXqhSocQ+VoQBaCNgA
+   GtOuFWr7XETlImiI1x9l1g7eSA4orgo5veY/04vmu/xz+Nmz6wRUvv9xg
+   4o8YXxH0wq71HIrefoHCwAGblg3xWP6qsnf21L23wSxbft+A7uaMwB1Rj
+   e7Ll2nCnLGaqRDKF2w+A0IWjUfAh/xew82L/+LyqsX/MMFNwxCAybMwZB
+   rTJIZP9Yl052c1zuMuHs+ik55uDhXEsKDuoFkUEIIE8JciRtjSiQ2R7lK
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="374276196"
+X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
+   d="scan'208";a="374276196"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2022 19:07:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="744405692"
+X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
+   d="scan'208";a="744405692"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Nov 2022 19:07:07 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 14 Nov 2022 19:07:07 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Mon, 14 Nov 2022 19:07:07 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.49) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Mon, 14 Nov 2022 19:07:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Az31loaddQC7h9PMPmlV4YDVA+jBVbxkFl4KAx8NQLj5wUAXFm7Wh9TH/ZG+vY7kx4wySbRKOFvISKcCALJS4MSphd3SztBWeU1zRO0sFanP9RjyUjsX0lFrRP+ppvyeicSB7+9WmbxkyxSqIQzMT3u8rngJn05lmKZ6ml4CXTNF5bvlxrBhqGP+wdxDu9E7BqiiRSAAlC2y+EuV11NghrJpiSvM9sydNW2zkEhpSt5alXms8k7zrpu5Y+0sIHulRusQ1bvyT84bLrBOuKtJc2twHxJkg5IPgbNTYQQbG0CpZBgtY0jPSieuodZy2M9fllUu2rtaFGnB4i9ReYMdLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=V35rOfBgRmlwsx7oMapNmea9Flf00WAELVkvDVPNPbw=;
+ b=lCufD+pmFVW2EdeHVLZk3+8SmPiwyjH9b5b3K2qqfrQCI9cIOCT+RAoDf70FjteHAPrq60Bqal+QQIDhfSJV6KkkzanvGuYjRFlnfia2jpFbTdjDHNEz4VnFVF8oN/CM3EkJ98zuy43ZLJ2H3MZhFF4VlMYpCVtT0re4SURebUCERHeKAp6KgDb+0RHmLkBoK28bP8Rx85YkIJCfi72GHZwTjgY8VQEbaeygIxwcml0lfGRKTs4scMdXKmGlqSyMUSVUDnUiHKk/8eNtUE2YO9lC3qDIK+UEYkmXdzx2gNF4wqb8NA8GPJAYhlK1oybuLXi6RWiRfNc3Q1y+TwwC0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by DS7PR11MB6150.namprd11.prod.outlook.com (2603:10b6:8:9d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Tue, 15 Nov
+ 2022 03:06:58 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::737e:211a:bb53:4cd7%5]) with mapi id 15.20.5813.017; Tue, 15 Nov 2022
+ 03:06:58 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Chaitanya Kulkarni" <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "Daniel Jordan" <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Eric Farman" <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: RE: [PATCH v4 08/17] iommufd: Algorithms for PFN storage
+Thread-Topic: [PATCH v4 08/17] iommufd: Algorithms for PFN storage
+Thread-Index: AQHY8wv0HC8jKTqbBk2RHRrOWTCfU649tSKQgAELVQCAAJclYA==
+Date:   Tue, 15 Nov 2022 03:06:57 +0000
+Message-ID: <BN9PR11MB5276E1EFCCDBDFA8D6C58FF78C049@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <8-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <BN9PR11MB52762E5ACAAE7D7B398730D78C059@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <Y3KCvnLOZpGXAGhU@nvidia.com>
+In-Reply-To: <Y3KCvnLOZpGXAGhU@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS7PR11MB6150:EE_
+x-ms-office365-filtering-correlation-id: f50d2f2f-7028-4eae-d53b-08dac6b67546
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hIvb1KukqqRBP8WKKHyoXz+lfLNsomqopwuCQKs6P2y+2fSOrTAtuaz/Rwpd6wmAGpSbb3bcHIECTUx3MlgFyQYPnPO9leiyhbYsunhbpvIGoxbacZWf1bs0D46pMInbeoBBmCGdlFJT8SZ+FfvGiiHSXJ2yTVyw3wK1+oBWm9LnypVDVsmo6Gf30kHDdietrRMRinBouhl66hXarBDk7icr43XoxbnsdP14bq+eMTC7BgMOEaTNc6nAmWfFuUhAjN22Z3Xwh0rJNxH5bkXgsMrK93OUPimf0OnfK7+AIytKs74bF0SCxx5941Lz4AIDveWo3xB4w3aPwH2Q1y6E6PFoyxkKVvzCAH90KmaYINDLKDZeUpY2KP2K3nAW8zRbNZ94aYECC8BTGyWMe0QnG6ayhZDqYLw5ML0IYfDWlwdD1QeOJjb7Wpfb+KJ+brWqCWtwRoqjkkp4c1Z8FWT+vxSskc6k+IJeH/fsuVjTAZuJRP9ugtzLLq7OpmH6SIbxZkXsWWoHQLmMRN2ec0Yt+CBbdGJ3ZMCK22w4gQrhzxndPCL25MNyYC9zOopPXHU0e6eyfw2bo59MFd/E+CqP6nVc22G0sl+OIpgbPbGgHXpW64usr/FzQ3y7BOkq1PEVYbLmLvSfqm4rXSvSLJRW01Q3mQSSjLdl50YUlnZP43fPNnkTSeK/DwmU/7ORQ2EmC6UntqUvvfxyZImVZHLVLn8iHR9f425w6JeRhm3oCLRV2cSMzm32pQ31g3LTT+l8VV/eSC83lrCE6io9fJKFBw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(366004)(376002)(136003)(39860400002)(346002)(451199015)(82960400001)(9686003)(26005)(122000001)(316002)(86362001)(55016003)(4744005)(83380400001)(4326008)(33656002)(2906002)(8936002)(38100700002)(66556008)(41300700001)(8676002)(66446008)(64756008)(66946007)(52536014)(5660300002)(76116006)(7406005)(186003)(7416002)(66476007)(71200400001)(478600001)(6506007)(7696005)(6916009)(54906003)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U3B6WXR6anV4MSs0MXhvc3JYNERzRHU1RStLd25CUE1RZFd5eUVISVhibXN0?=
+ =?utf-8?B?QmtRSyswYW4zYUNFMldMTVhHaTc0L1RlNXdiK0ErVno4eFI5NGpvemppbDRE?=
+ =?utf-8?B?emcwTCtOS2dFemsxc2wvS2ZsdFNjR2FtOHZaZ0hqNFo1bnFNNFpkTUVGSlZF?=
+ =?utf-8?B?SnM4VWJCazIwYVV6cldUYjJmWEZQZ2NVRk1MeG1NM0RpQUpHeHd4azhBZjNX?=
+ =?utf-8?B?MElBSGI2SzZBSzNJRS9WTVZyR1EwOExQa1NGL3N1NlJET09wOEpoZzJXTk5Z?=
+ =?utf-8?B?bnNVaU1TODhOb1JjR05EaWFIZHc5a29aZFhWVGZRaXZZcVNGQ2xwSDE0YWM1?=
+ =?utf-8?B?Mm0vOS9IWjJxS0prSWpGa0Z0T1BwK0FZK3BwcFo1MitRV2c5UHBMMTBHeU4w?=
+ =?utf-8?B?NmtSSWcvclNHMitIOXRSS2JHRzZFYkFxQXB0QThDaURnaXo3THZ3REl0cWdK?=
+ =?utf-8?B?SjFTTjlJRTJtMis0RURMUUgzeHpxcHhoeXM3bkd2bGNjdTBXc3AwcGhzQWt5?=
+ =?utf-8?B?TCszOWFJU0RlR1hDSUxiUWJYME8walVnZzByT1NNRlk3NjNaVlhYeHBpQWpF?=
+ =?utf-8?B?aTVzWStiVjROcGFzMlViYy9iV2NtRy9JNkgreEJ0NGc0bXlBL1V3N2RVWFNB?=
+ =?utf-8?B?cUcyeGtoMmlYMnY2WEs4bElybmZJNHJZcXJuUy92NkZUK1lpb3hhT0w3dGlZ?=
+ =?utf-8?B?K0FSM245UDFJWkljQVgvNU5rMWFCKzJHelNiWi9taXZaa1Fudnh5K0pRdEIz?=
+ =?utf-8?B?S3c0RVBVNFBpME5ob3lHN213VGd3NHQ5amJ1SEQwY0ZPNHVRWHkyL2lhSVNi?=
+ =?utf-8?B?cGF2MjY0SjVSUmxMZ0VPaUk0dTQvNUtNZm8yKzZnZHVuYmZUdWxEbjc1NWxi?=
+ =?utf-8?B?NUcrTlZWVFdSalRkc3k0cmFyVjlZbGlsZVg1VU93SzFWdi83OTlLSFBvUXo3?=
+ =?utf-8?B?cEdIZ0p3RjM0d1cwR0g3Z0t6dVYwTjVHbllteHpwNi9TMko1QURGaStmOVlI?=
+ =?utf-8?B?VUhBWWNXK1ZUWGF1RElVNE1UYlMxT2o2SllwYWw0Wit4dGtvUzhoZ3RWTXc5?=
+ =?utf-8?B?cDJ6bkZHK2pBTGVQcE9XcHpaVndoR3lOeHM2SmU0eG9ndFV2aDltNUZKOG9T?=
+ =?utf-8?B?NnZ2QXJVTlJrek1ITDB5UDNwSVhpeDVSLzBZUFd3Q2NodnJkM1gxa1VKa3R0?=
+ =?utf-8?B?VWZ6bmowc2pBZGdFUXlEYUE0ays1RlQ1b1J2VVlGQ3Nvems2YVpIL0JDNjl3?=
+ =?utf-8?B?RU5uaHBrclhyOHlvT01LMU01MjhzR2ZqWDZTQ2xhTkwvQldZekJsN3lrYnNu?=
+ =?utf-8?B?UE5CdVcrbXFIbXhvSmN3Y3NOblBJcmZWNmhuWDN6SzZvYzhMY2V4bGVGQ1hI?=
+ =?utf-8?B?K0VLZEtmMHN6TjBTQXNFY2RoUEk4U21WTXM2UHcwZWdwOWp6Wkw4dTV6cXJQ?=
+ =?utf-8?B?Rm5lYWNaTlNBd0ZGYnZaQ0pVcDVqVC9DSEJmQlpqNjRYL2llbk9BTmZkOFcv?=
+ =?utf-8?B?T05OcW05Qlg2Q2VNWjBTUWlNYTRuZXQwdzdLV3BGbCszb0xoOXh4dlJ5YmdE?=
+ =?utf-8?B?N290ODZ0NnFtZXdJSXIxemNzazN6b2xWeklZbVo4azRaTVNWOWJPbDdWVHZJ?=
+ =?utf-8?B?MUdYN3E1aXI4MUx5MlY0OG8yTWN0SmxqR1dGZ3V4b0djVndzc0ZqaW8vYlBq?=
+ =?utf-8?B?cEhMdFE5cURNTW5nZzBGbHkyR3VaSmJUeElYb3ZOUVVGQWFKcU5WNmV3N21B?=
+ =?utf-8?B?ZFdJbkV2V3lIMk5zZGZ3YUg1NDRvdVgrK3I3eFlKQUJkbHpNMEpnS3QxbEdo?=
+ =?utf-8?B?L05ESDhPMFVZdTNzRENhSGkxT0lXNjBhaWdObGZpQlhZZWpuQzgxVVBPeklj?=
+ =?utf-8?B?UDQyeTNaQW1KcWxaS3NUTi9oSFFhNEZCOFk4R0NnVVdzZ1FTS0F4RXVhTzlK?=
+ =?utf-8?B?WnJyaHRkWlAwSkpoZ0I0cDd1RlROeFI0VWFVcVdYNUE4YVg4V2ZGL285OGVt?=
+ =?utf-8?B?ZXVUVTE4Rkg1NFc0YnNQYmZnbHZPd0lXbVEvTlpUS1dvblViTkVUbWhGYnBN?=
+ =?utf-8?B?ODlESmErN2s2U005aWpVcjF2M0ljMFFkMm9FVDRwUVJFMnk0d200WDBqNDlt?=
+ =?utf-8?Q?9mf4F5SQFV6tz/cpJ0FXazyJX?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f50d2f2f-7028-4eae-d53b-08dac6b67546
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2022 03:06:57.9957
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uN/H0BADpKXjINLrA+5MpzGaTX8ty7iHA5bilbsiSlDjGxEd9R/zVelp1ME5rQEjxUv2jblygcfk733LskhF7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6150
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To be used for verification of driver implementations:
-
-$ xdp_hw_metadata <ifname>
-
-On the other machine:
-
-$ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
-$ echo -n skb | nc -u -q1 <target> 9092 # for skb
-
-Sample output:
-
-  # xdp
-  xsk_ring_cons__peek: 1
-  0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-  rx_timestamp_supported: 1
-  rx_timestamp: 1667850075063948829
-  0x19f9090: complete idx=8 addr=8000
-
-  # skb
-  found skb hwtstamp = 1668314052.854274681
-
-Decoding:
-  # xdp
-  rx_timestamp=1667850075.063948829
-
-  $ date -d @1667850075
-  Mon Nov  7 11:41:15 AM PST 2022
-  $ date
-  Mon Nov  7 11:42:05 AM PST 2022
-
-  # skb
-  $ date -d @1668314052
-  Sat Nov 12 08:34:12 PM PST 2022
-  $ date
-  Sat Nov 12 08:37:06 PM PST 2022
-
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |   6 +-
- .../selftests/bpf/progs/xdp_hw_metadata.c     |  99 +++++
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 404 ++++++++++++++++++
- tools/testing/selftests/bpf/xdp_hw_metadata.h |   6 +
- 5 files changed, 515 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
- create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
- create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.h
-
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 07d2d0a8c5cb..01e3baeefd4f 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -46,3 +46,4 @@ test_cpp
- xskxceiver
- xdp_redirect_multi
- xdp_synproxy
-+xdp_hw_metadata
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b645cf5a5021..74d6ed307157 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -83,7 +83,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
- TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
--	xskxceiver xdp_redirect_multi xdp_synproxy veristat
-+	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata
- 
- TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
- TEST_GEN_FILES += liburandom_read.so
-@@ -241,6 +241,9 @@ $(OUTPUT)/test_maps: $(TESTING_HELPERS)
- $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
- $(OUTPUT)/xsk.o: $(BPFOBJ)
- $(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o
-+$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/xsk.o $(OUTPUT)/xdp_hw_metadata.skel.h
-+$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/network_helpers.o
-+$(OUTPUT)/xdp_hw_metadata: LDFLAGS += -static
- 
- BPFTOOL ?= $(DEFAULT_BPFTOOL)
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
-@@ -379,6 +382,7 @@ linked_maps.skel.h-deps := linked_maps1.bpf.o linked_maps2.bpf.o
- test_subskeleton.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o test_subskeleton.bpf.o
- test_subskeleton_lib.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o
- test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
-+xdp_hw_metadata.skel.h-deps := xdp_hw_metadata.bpf.o
- 
- LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
- 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-new file mode 100644
-index 000000000000..549ec3b1f3a0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/in.h>
-+#include <linux/udp.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#include "xdp_hw_metadata.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_XSKMAP);
-+	__uint(max_entries, 256);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} xsk SEC(".maps");
-+
-+extern int bpf_xdp_metadata_export_to_skb(const struct xdp_md *ctx) __ksym;
-+extern int bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx) __ksym;
-+extern const __u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx) __ksym;
-+
-+SEC("xdp")
-+int rx(struct xdp_md *ctx)
-+{
-+	void *data, *data_meta, *data_end;
-+	struct ipv6hdr *ip6h = NULL;
-+	struct ethhdr *eth = NULL;
-+	struct udphdr *udp = NULL;
-+	struct xsk_metadata *meta;
-+	struct iphdr *iph = NULL;
-+	int ret;
-+
-+	data = (void *)(long)ctx->data;
-+	data_end = (void *)(long)ctx->data_end;
-+	eth = data;
-+	if (eth + 1 < data_end) {
-+		if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+			iph = (void *)(eth + 1);
-+			if (iph + 1 < data_end && iph->protocol == IPPROTO_UDP)
-+				udp = (void *)(iph + 1);
-+		}
-+		if (eth->h_proto == bpf_htons(ETH_P_IPV6)) {
-+			ip6h = (void *)(eth + 1);
-+			if (ip6h + 1 < data_end && ip6h->nexthdr == IPPROTO_UDP)
-+				udp = (void *)(ip6h + 1);
-+		}
-+		if (udp && udp + 1 > data_end)
-+			udp = NULL;
-+	}
-+
-+	if (!udp)
-+		return XDP_PASS;
-+
-+	if (udp->dest == bpf_htons(9092)) {
-+		bpf_printk("forwarding UDP:9092 to socket listener");
-+
-+		if (!bpf_xdp_metadata_export_to_skb(ctx)) {
-+			bpf_printk("bpf_xdp_metadata_export_to_skb failed");
-+			return XDP_DROP;
-+		}
-+
-+		return XDP_PASS;
-+	}
-+
-+	if (udp->dest != bpf_htons(9091))
-+		return XDP_PASS;
-+
-+	bpf_printk("forwarding UDP:9091 to AF_XDP");
-+
-+	ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xsk_metadata));
-+	if (ret != 0) {
-+		bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
-+		return XDP_PASS;
-+	}
-+
-+	data = (void *)(long)ctx->data;
-+	data_meta = (void *)(long)ctx->data_meta;
-+	meta = data_meta;
-+
-+	if (meta + 1 > data) {
-+		bpf_printk("bpf_xdp_adjust_meta doesn't appear to work");
-+		return XDP_PASS;
-+	}
-+
-+
-+	if (bpf_xdp_metadata_rx_timestamp_supported(ctx)) {
-+		meta->rx_timestamp_supported = 1;
-+		meta->rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
-+		bpf_printk("populated rx_timestamp with %u", meta->rx_timestamp);
-+	}
-+
-+	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-new file mode 100644
-index 000000000000..a043e9ef5691
---- /dev/null
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -0,0 +1,404 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* Reference program for verifying XDP metadata on real HW. Functional test
-+ * only, doesn't test the performance.
-+ *
-+ * RX:
-+ * - UDP 9091 packets are diverted into AF_XDP
-+ * - Metadata verified:
-+ *   - rx_timestamp
-+ *
-+ * TX:
-+ * - TBD
-+ */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "xdp_hw_metadata.skel.h"
-+#include "xsk.h"
-+
-+#include <error.h>
-+#include <linux/errqueue.h>
-+#include <linux/if_link.h>
-+#include <linux/net_tstamp.h>
-+#include <linux/udp.h>
-+#include <linux/sockios.h>
-+#include <sys/mman.h>
-+#include <net/if.h>
-+#include <poll.h>
-+
-+#include "xdp_hw_metadata.h"
-+
-+#define UMEM_NUM 16
-+#define UMEM_FRAME_SIZE XSK_UMEM__DEFAULT_FRAME_SIZE
-+#define UMEM_SIZE (UMEM_FRAME_SIZE * UMEM_NUM)
-+#define XDP_FLAGS (XDP_FLAGS_DRV_MODE | XDP_FLAGS_REPLACE)
-+
-+struct xsk {
-+	void *umem_area;
-+	struct xsk_umem *umem;
-+	struct xsk_ring_prod fill;
-+	struct xsk_ring_cons comp;
-+	struct xsk_ring_prod tx;
-+	struct xsk_ring_cons rx;
-+	struct xsk_socket *socket;
-+};
-+
-+struct xdp_hw_metadata *bpf_obj;
-+struct xsk *rx_xsk;
-+const char *ifname;
-+int ifindex;
-+int rxq;
-+
-+void test__fail(void) { /* for network_helpers.c */ }
-+
-+static int open_xsk(const char *ifname, struct xsk *xsk, __u32 queue_id)
-+{
-+	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-+	const struct xsk_socket_config socket_config = {
-+		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD,
-+		.xdp_flags = XDP_FLAGS,
-+		.bind_flags = XDP_COPY,
-+	};
-+	const struct xsk_umem_config umem_config = {
-+		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
-+		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
-+		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
-+	};
-+	__u32 idx;
-+	u64 addr;
-+	int ret;
-+	int i;
-+
-+	xsk->umem_area = mmap(NULL, UMEM_SIZE, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-+	if (xsk->umem_area == MAP_FAILED)
-+		return -ENOMEM;
-+
-+	ret = xsk_umem__create(&xsk->umem,
-+			       xsk->umem_area, UMEM_SIZE,
-+			       &xsk->fill,
-+			       &xsk->comp,
-+			       &umem_config);
-+	if (ret)
-+		return ret;
-+
-+	ret = xsk_socket__create(&xsk->socket, ifname, queue_id,
-+				 xsk->umem,
-+				 &xsk->rx,
-+				 &xsk->tx,
-+				 &socket_config);
-+	if (ret)
-+		return ret;
-+
-+	/* First half of umem is for TX. This way address matches 1-to-1
-+	 * to the completion queue index.
-+	 */
-+
-+	for (i = 0; i < UMEM_NUM / 2; i++) {
-+		addr = i * UMEM_FRAME_SIZE;
-+		printf("%p: tx_desc[%d] -> %lx\n", xsk, i, addr);
-+	}
-+
-+	/* Second half of umem is for RX. */
-+
-+	ret = xsk_ring_prod__reserve(&xsk->fill, UMEM_NUM / 2, &idx);
-+	for (i = 0; i < UMEM_NUM / 2; i++) {
-+		addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
-+		printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
-+		*xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
-+	}
-+	xsk_ring_prod__submit(&xsk->fill, ret);
-+
-+	return 0;
-+}
-+
-+static void close_xsk(struct xsk *xsk)
-+{
-+	if (xsk->umem)
-+		xsk_umem__delete(xsk->umem);
-+	if (xsk->socket)
-+		xsk_socket__delete(xsk->socket);
-+	munmap(xsk->umem, UMEM_SIZE);
-+}
-+
-+static void refill_rx(struct xsk *xsk, __u64 addr)
-+{
-+	__u32 idx;
-+
-+	if (xsk_ring_prod__reserve(&xsk->fill, 1, &idx) == 1) {
-+		printf("%p: complete idx=%u addr=%llx\n", xsk, idx, addr);
-+		*xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
-+		xsk_ring_prod__submit(&xsk->fill, 1);
-+	}
-+}
-+
-+static void verify_xdp_metadata(void *data)
-+{
-+	struct xsk_metadata *meta;
-+
-+	meta = data - sizeof(*meta);
-+
-+	printf("rx_timestamp_supported: %u\n", meta->rx_timestamp_supported);
-+	printf("rx_timestamp: %llu\n", meta->rx_timestamp);
-+}
-+
-+static void verify_skb_metadata(int fd)
-+{
-+	char cmsg_buf[1024];
-+	char packet_buf[128];
-+
-+	struct scm_timestamping *ts;
-+	struct iovec packet_iov;
-+	struct cmsghdr *cmsg;
-+	struct msghdr hdr;
-+
-+	memset(&hdr, 0, sizeof(hdr));
-+	hdr.msg_iov = &packet_iov;
-+	hdr.msg_iovlen = 1;
-+	packet_iov.iov_base = packet_buf;
-+	packet_iov.iov_len = sizeof(packet_buf);
-+
-+	hdr.msg_control = cmsg_buf;
-+	hdr.msg_controllen = sizeof(cmsg_buf);
-+
-+	if (recvmsg(fd, &hdr, 0) < 0)
-+		error(-1, errno, "recvmsg");
-+
-+	for (cmsg = CMSG_FIRSTHDR(&hdr); cmsg != NULL;
-+	     cmsg = CMSG_NXTHDR(&hdr, cmsg)) {
-+
-+		if (cmsg->cmsg_level != SOL_SOCKET)
-+			continue;
-+
-+		switch (cmsg->cmsg_type) {
-+		case SCM_TIMESTAMPING:
-+			ts = (struct scm_timestamping *)CMSG_DATA(cmsg);
-+			if (ts->ts[2].tv_sec || ts->ts[2].tv_nsec) {
-+				printf("found skb hwtstamp = %lu.%lu\n",
-+				       ts->ts[2].tv_sec, ts->ts[2].tv_nsec);
-+				return;
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	printf("skb hwtstamp is not found!\n");
-+}
-+
-+static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd)
-+{
-+	const struct xdp_desc *rx_desc;
-+	struct pollfd fds[rxq + 1];
-+	__u64 comp_addr;
-+	__u64 addr;
-+	__u32 idx;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < rxq; i++) {
-+		fds[i].fd = xsk_socket__fd(rx_xsk[i].socket);
-+		fds[i].events = POLLIN;
-+		fds[i].revents = 0;
-+	}
-+
-+	fds[rxq].fd = server_fd;
-+	fds[rxq].events = POLLIN;
-+	fds[rxq].revents = 0;
-+
-+	while (true) {
-+		errno = 0;
-+		ret = poll(fds, rxq + 1, 1000);
-+		printf("poll: %d (%d)\n", ret, errno);
-+		if (ret < 0)
-+			break;
-+		if (ret == 0)
-+			continue;
-+
-+		if (fds[rxq].revents)
-+			verify_skb_metadata(server_fd);
-+
-+		for (i = 0; i < rxq; i++) {
-+			if (fds[i].revents == 0)
-+				continue;
-+
-+			struct xsk *xsk = &rx_xsk[i];
-+
-+			ret = xsk_ring_cons__peek(&xsk->rx, 1, &idx);
-+			printf("xsk_ring_cons__peek: %d\n", ret);
-+			if (ret != 1)
-+				continue;
-+
-+			rx_desc = xsk_ring_cons__rx_desc(&xsk->rx, idx);
-+			comp_addr = xsk_umem__extract_addr(rx_desc->addr);
-+			addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
-+			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
-+			       xsk, idx, rx_desc->addr, addr, comp_addr);
-+			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr));
-+			xsk_ring_cons__release(&xsk->rx, 1);
-+			refill_rx(xsk, comp_addr);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+struct ethtool_channels {
-+	__u32	cmd;
-+	__u32	max_rx;
-+	__u32	max_tx;
-+	__u32	max_other;
-+	__u32	max_combined;
-+	__u32	rx_count;
-+	__u32	tx_count;
-+	__u32	other_count;
-+	__u32	combined_count;
-+};
-+
-+#define ETHTOOL_GCHANNELS	0x0000003c /* Get no of channels */
-+
-+static int rxq_num(const char *ifname)
-+{
-+	struct ethtool_channels ch = {
-+		.cmd = ETHTOOL_GCHANNELS,
-+	};
-+
-+	struct ifreq ifr = {
-+		.ifr_data = (void *)&ch,
-+	};
-+	strcpy(ifr.ifr_name, ifname);
-+	int fd, ret;
-+
-+	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		error(-1, errno, "socket");
-+
-+	ret = ioctl(fd, SIOCETHTOOL, &ifr);
-+	if (ret < 0)
-+		error(-1, errno, "socket");
-+
-+	close(fd);
-+
-+	return ch.rx_count;
-+}
-+
-+static void cleanup(void)
-+{
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-+	int ret;
-+	int i;
-+
-+	if (bpf_obj) {
-+		opts.old_prog_fd = bpf_program__fd(bpf_obj->progs.rx);
-+		if (opts.old_prog_fd >= 0) {
-+			printf("detaching bpf program....\n");
-+			ret = bpf_xdp_detach(ifindex, XDP_FLAGS, &opts);
-+			if (ret)
-+				printf("failed to detach XDP program: %d\n", ret);
-+		}
-+	}
-+
-+	for (i = 0; i < rxq; i++)
-+		close_xsk(&rx_xsk[i]);
-+
-+	if (bpf_obj)
-+		xdp_hw_metadata__destroy(bpf_obj);
-+}
-+
-+static void handle_signal(int sig)
-+{
-+	/* interrupting poll() is all we need */
-+}
-+
-+static void timestamping_enable(int fd, int val)
-+{
-+	int ret;
-+
-+	ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, sizeof(val));
-+	if (ret < 0)
-+		error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int server_fd = -1;
-+	int ret;
-+	int i;
-+
-+	struct bpf_program *prog;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "pass device name\n");
-+		return -1;
-+	}
-+
-+	ifname = argv[1];
-+	ifindex = if_nametoindex(ifname);
-+	rxq = rxq_num(ifname);
-+
-+	printf("rxq: %d\n", rxq);
-+
-+	rx_xsk = malloc(sizeof(struct xsk) * rxq);
-+	if (!rx_xsk)
-+		error(-1, ENOMEM, "malloc");
-+
-+	for (i = 0; i < rxq; i++) {
-+		printf("open_xsk(%s, %p, %d)\n", ifname, &rx_xsk[i], i);
-+		ret = open_xsk(ifname, &rx_xsk[i], i);
-+		if (ret)
-+			error(-1, -ret, "open_xsk");
-+
-+		printf("xsk_socket__fd() -> %d\n", xsk_socket__fd(rx_xsk[i].socket));
-+	}
-+
-+	printf("open bpf program...\n");
-+	bpf_obj = xdp_hw_metadata__open();
-+	if (libbpf_get_error(bpf_obj))
-+		error(-1, libbpf_get_error(bpf_obj), "xdp_hw_metadata__open");
-+
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_HAS_METADATA);
-+
-+	printf("load bpf program...\n");
-+	ret = xdp_hw_metadata__load(bpf_obj);
-+	if (ret)
-+		error(-1, -ret, "xdp_hw_metadata__load");
-+
-+	printf("prepare skb endpoint...\n");
-+	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
-+	if (server_fd < 0)
-+		error(-1, errno, "start_server");
-+	timestamping_enable(server_fd,
-+			    SOF_TIMESTAMPING_SOFTWARE |
-+			    SOF_TIMESTAMPING_RAW_HARDWARE);
-+
-+	printf("prepare xsk map...\n");
-+	for (i = 0; i < rxq; i++) {
-+		int sock_fd = xsk_socket__fd(rx_xsk[i].socket);
-+		__u32 queue_id = i;
-+
-+		printf("map[%d] = %d\n", queue_id, sock_fd);
-+		ret = bpf_map_update_elem(bpf_map__fd(bpf_obj->maps.xsk), &queue_id, &sock_fd, 0);
-+		if (ret)
-+			error(-1, -ret, "bpf_map_update_elem");
-+	}
-+
-+	printf("attach bpf program...\n");
-+	ret = bpf_xdp_attach(ifindex,
-+			     bpf_program__fd(bpf_obj->progs.rx),
-+			     XDP_FLAGS, NULL);
-+	if (ret)
-+		error(-1, -ret, "bpf_xdp_attach");
-+
-+	signal(SIGINT, handle_signal);
-+	ret = verify_metadata(rx_xsk, rxq, server_fd);
-+	close(server_fd);
-+	cleanup();
-+	if (ret)
-+		error(-1, -ret, "verify_metadata");
-+}
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.h b/tools/testing/selftests/bpf/xdp_hw_metadata.h
-new file mode 100644
-index 000000000000..b4580015ee93
---- /dev/null
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.h
-@@ -0,0 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+struct xsk_metadata {
-+	__u32 rx_timestamp_supported:1;
-+	__u64 rx_timestamp;
-+};
--- 
-2.38.1.431.g37b22c650d-goog
-
+PiBGcm9tOiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPg0KPiBTZW50OiBUdWVzZGF5
+LCBOb3ZlbWJlciAxNSwgMjAyMiAyOjAzIEFNDQo+IC0JCW11dGV4X2xvY2soJmFyZWEtPnBhZ2Vz
+LT5tdXRleCk7DQo+IC0JCXJjID0gaW9wdF9wYWdlc19hZGRfYWNjZXNzKGFyZWEtPnBhZ2VzLCBp
+bmRleCwgbGFzdF9pbmRleCwNCj4gLQkJCQkJICAgb3V0X3BhZ2VzLCBmbGFncyk7DQo+IC0JCWlm
+IChyYykgew0KPiAtCQkJbXV0ZXhfdW5sb2NrKCZhcmVhLT5wYWdlcy0+bXV0ZXgpOw0KPiArCQly
+YyA9IGlvcHRfcGFnZXNfYWRkX2FjY2VzcyhhcmVhLCBpbmRleCwgbGFzdF9pbmRleCwNCj4gb3V0
+X3BhZ2VzLA0KPiArCQkJCQkgICBmbGFncyk7DQo+ICsJCWlmIChyYykNCg0KaW9wdF9hcmVhX2Fk
+ZF9hY2Nlc3MoKSwgd2hpY2ggSSBzdXBwb3NlIHlvdSBoYXZlIGFscmVhZHkgZml4ZWQgd2hlbg0K
+Y29tcGlsaW5nIHRoaXMgY2hhbmdlLiBidXQganVzdCBpbiBjYXNlLi4uIPCfmIoNCg0KPiBAQCAt
+MTgxOSw0MCArMTgzOCw0OSBAQCBpb3B0X3BhZ2VzX2dldF9leGFjdF9hY2Nlc3Moc3RydWN0IGlv
+cHRfcGFnZXMNCj4gKnBhZ2VzLCB1bnNpZ25lZCBsb25nIGluZGV4LA0KPiAgICoNCj4gICAqIFRo
+aXMgc2hvdWxkIGJlIHVuZG9uZSB0aHJvdWdoIGEgbWF0Y2hpbmcgY2FsbCB0bw0KPiBpb3B0X3Bh
+Z2VzX3JlbW92ZV9hY2Nlc3MoKQ0KDQppb3B0X2FyZWFfcmVtb3ZlX2FjY2VzcygpDQoNCj4gQEAg
+LTE4NjUsMTEgKzE4OTMsMTEgQEAgaW50IGlvcHRfcGFnZXNfYWRkX2FjY2VzcyhzdHJ1Y3QgaW9w
+dF9wYWdlcw0KPiAqcGFnZXMsIHVuc2lnbmVkIGxvbmcgc3RhcnRfaW5kZXgsDQo+ICAgKiBVbmRv
+IGlvcHRfcGFnZXNfYWRkX2FjY2VzcygpIGFuZCB1bnBpbiB0aGUgcGFnZXMgaWYgbmVjZXNzYXJ5
+LiBUaGUNCg0KaW9wdF9hcmVhX2FkZF9hY2Nlc3MoKQ0KDQp3aXRoIGFib3ZlLA0KDQpSZXZpZXdl
+ZC1ieTogS2V2aW4gVGlhbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+DQo=
