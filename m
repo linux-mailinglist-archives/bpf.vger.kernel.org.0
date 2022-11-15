@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CCB62A0CF
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB95662A0D2
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiKOR5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 12:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
+        id S229877AbiKOR5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 12:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbiKOR5d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 12:57:33 -0500
+        with ESMTP id S231415AbiKOR5m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 12:57:42 -0500
 Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38C82F387;
-        Tue, 15 Nov 2022 09:57:30 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4NBYcj3pJpz9xs6N;
-        Wed, 16 Nov 2022 01:50:45 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10CB2F3A6;
+        Tue, 15 Nov 2022 09:57:39 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4NBYcv13TDz9xtmS;
+        Wed, 16 Nov 2022 01:50:55 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwCHcW7o0nNj73dpAA--.16599S2;
-        Tue, 15 Nov 2022 18:57:07 +0100 (CET)
+        by APP1 (Coremail) with SMTP id LxC2BwCHcW7o0nNj73dpAA--.16599S3;
+        Tue, 15 Nov 2022 18:57:16 +0100 (CET)
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -30,30 +30,33 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 0/4] security: Ensure LSMs return expected values
-Date:   Tue, 15 Nov 2022 18:56:48 +0100
-Message-Id: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH 1/4] lsm: Clarify documentation of vm_enough_memory hook
+Date:   Tue, 15 Nov 2022 18:56:49 +0100
+Message-Id: <20221115175652.3836811-2-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
+References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwCHcW7o0nNj73dpAA--.16599S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW5WrW3JFWxWw18Jr45Awb_yoW5Ary3pF
-        sayFyYyr4qka47urs3Aan7ZayrC395GrWjkF98Jw1vv3Z5Cr1Yyr45Kw1YqFyxCrW0kr1r
-        tr1av398u34DZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvmb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
-        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
-        F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
-        kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
-        xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IU0bAw3UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQARBF1jj4V5ZAABs8
+X-CM-TRANSID: LxC2BwCHcW7o0nNj73dpAA--.16599S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy8GF18ZrWxtw17KrWUCFg_yoWkZrX_u3
+        4fG348Xw4fXF4xKa1IkF9aqryrK3yfXr1qgF1Yq39IqFWDAas5Gw4IgF9xX3Wqgwn293s5
+        uF97trWxAwnIgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbg8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r18M2
+        8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
+        021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
+        4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
+        Av7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
+        6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14
+        v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
+        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXw
+        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
+        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7I
+        U0GYLDUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgARBF1jj4F5bQAAsz
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,63 +68,33 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-LSMs should follow the conventions stated in include/linux/lsm_hooks.h for
-return values, as these conventions are followed by callers of the LSM
-infrastructure for error handling.
+include/linux/lsm_hooks.h reports the result of the LSM infrastructure to
+the callers, not what LSMs should return to the LSM infrastructure.
 
-The ability of an LSM to return arbitrary values could cause big troubles.
-For LSMs aiming at being upstreamed, this event is unlikely, as each LSM is
-carefully reviewed and it won't be accepted if it does not meet the return
-value conventions. However, the recent introduction of BPF LSM allows
-security modules (not part of the kernel) to inject arbitrary values,
-without BPF LSM verifying them.
+Clarify that and add that returning 1 from the LSMs means calling
+__vm_enough_memory() with cap_sys_admin set, 0 without.
 
-The initial idea was to fix BPF LSM itself. However, due to technical
-difficulties to determine the precise interval of return values from a
-static code analysis of eBPF programs, the new approach was to put the
-fix in the LSM infrastructure, so that all LSMs can benefit from this work
-as well.
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: KP Singh <kpsingh@kernel.org>
+---
+ include/linux/lsm_hooks.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The biggest problem of allowing arbitrary return values is when an LSM
-returns a positive value, instead of a negative value, as it could be
-converted to a pointer. Since such pointer escapes the IS_ERR() check, its
-use later in the code can cause unpredictable consequences (e.g. invalid
-memory access).
-
-Another problem is returning zero when an LSM is supposed to have done some
-operations. For example, the inode_init_security hook expects that their
-implementations return zero only if they set the fields of the new xattr to
-be added to the new inode. Otherwise, other kernel subsystems might
-encounter unexpected conditions leading to a crash (e.g.
-evm_protected_xattr_common() getting NULL as argument). This problem is
-addressed separately in another patch set.
-
-Finally, there are LSM hooks which are supposed to return just 1 as
-positive value, or non-negative values. Also in these cases, although it
-seems less critical, it is safer to return to callers of the LSM
-infrastructure more precisely what they expect.
-
-Patches 1 and 2 ensure that the documentation of LSM return values is
-complete and accurate. Then, patch 3 introduces four flags (LSM_RET_NEG,
-LSM_RET_ZERO, LSM_RET_ONE, LSM_RET_GT_ONE), one for each interval of
-interest (< 0, = 0, = 1, > 1), and sets the correct flags for each LSM
-hook. Finally, patch 4 verifies for each return value from LSMs that it is
-an expected one.
-
-Roberto Sassu (4):
-  lsm: Clarify documentation of vm_enough_memory hook
-  lsm: Add missing return values doc in lsm_hooks.h and fix formatting
-  lsm: Redefine LSM_HOOK() macro to add return value flags as argument
-  security: Enforce limitations on return values from LSMs
-
- include/linux/bpf_lsm.h       |   2 +-
- include/linux/lsm_hook_defs.h | 779 ++++++++++++++++++++--------------
- include/linux/lsm_hooks.h     | 136 ++++--
- kernel/bpf/bpf_lsm.c          |   5 +-
- security/bpf/hooks.c          |   2 +-
- security/security.c           |  38 +-
- 6 files changed, 589 insertions(+), 373 deletions(-)
-
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 4ec80b96c22e..f40b82ca91e7 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -1411,7 +1411,9 @@
+  *	Check permissions for allocating a new virtual mapping.
+  *	@mm contains the mm struct it is being added to.
+  *	@pages contains the number of pages.
+- *	Return 0 if permission is granted.
++ *	Return 0 if permission is granted by LSMs to the caller. LSMs should
++ *	return 1 if __vm_enough_memory() should be called with
++ *	cap_sys_admin set, 0 if not.
+  *
+  * @ismaclabel:
+  *	Check if the extended attribute specified by @name
 -- 
 2.25.1
 
