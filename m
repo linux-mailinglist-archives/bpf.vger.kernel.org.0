@@ -2,154 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AAE629F32
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DDD629F66
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 17:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbiKOQlT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 11:41:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
+        id S231303AbiKOQpC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 11:45:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbiKOQlS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:41:18 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6172B18E
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 08:41:16 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AFEOs0f030992;
-        Tue, 15 Nov 2022 08:41:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=Ndx4e0CDD8bKe1lRAJBpD1DCe3ENVFnMaCTvrYFVneo=;
- b=TXR8yNIYFOdN4mKA1ay0qXE+bPGkc3D/2boxnxmckmEQgWzQy0T6ITWbeuLpsOxKuAVR
- kdSkTR8cofendi6vEopyKewVQCvmX2D1TXW2ECoQqG696v9TMFz3Z+2cZM1MUHYxLs5x
- FFukrIIWaMOpfWSRHTuhtn1oPS5DrRir8reef2j8m0o/OQvWDAYoYm0YAat6ibitDSkl
- +2S7mKVYFEsg+9GS89hz24/+ICmME9KrQGCEEZqlkIWA0UK2fxtfkwVPLJNHGrWOSlZb
- 0uXNkY/RklE6T4I60wrhJTJYyXza9j0ER6UAwEyMbzRgUQvujy7XTSCsO9jhaZShYkhw lQ== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kvcghhbgq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Nov 2022 08:41:01 -0800
+        with ESMTP id S231826AbiKOQo7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 11:44:59 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736881BEB6;
+        Tue, 15 Nov 2022 08:44:58 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DZqSzygFEyBYUTFBHRjBFRekX2X4RgnSwSwWU6t0nlqC35DGJ8aOLI52iOueMDgPE9/5jMeommUeqEGv3iIiD6ixSA5cTQk3hHgLLeETt6W9Jg+77hrrzKaS4Ge79z8dlIw0QfYnQLljtyRGE0QaxtNEDa1T2frZriwHVLcRtBWT13iW0KYzYY2mbLcYIKCasRVhrLU9SO6o8wXeVqFZHIEA7827OQeoThcErOuGuW7fYa8bIg3HH1Dd8jSd12HoPmEz0xGOCTeaYZugxAUHZw2Z9X70hW1/Ij9tmp79nK75mE6hd3cAyq3FCzBwkxWiDUYS4wsHarUNPEjbfXEznA==
+ b=Hs+NHMCheCKLroyU626KI2tJAYE0VkGt98X/x9ZRNgUabJpuRLCZ73y63bAdoeioyBty5+HOyyzKcLs5Q/7xXHX+vZbhu8qZjvNbRvm4nSbEFEKZow3WNNenPvSrFZsT8O/FDUKR6MPjmOjHLAQvEhCGmdavIHnULPOkjPkGSkqOcOlUE/tJX731wzKWc1D6YxDhAVrMc6pyZTcZuwuIDBu9RBxc/G6ujvFsJ3a4qi65+TE9FZDPNDQvm1yT8T3g0/uZaf6Bv6LuPkZH6zeYAOl5koVP3S5Y119/VZks1R1LeGNtsY9ywStvlJsLtVWlsj+UY14I/pGzh02lKvxqlg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ndx4e0CDD8bKe1lRAJBpD1DCe3ENVFnMaCTvrYFVneo=;
- b=WyKy985GrSaYN7HNZxCDOjOdaHQHvUTu4mLLX9d2n6Vfc6Hi4VTf2m9KTId8R1CVBTSoOA7TyxGs36FPiJ+m9dwPnoxcNbPOjexOWtyhj26IHN9tikqjFWhG8TwR+uZ5+w1c0km3k6Psphf+gOQ9I1tOPXK1qAhmmhsprj6ySEG9ZlhhrSBgxCEhn4iyYLAl8BO52V7QnkRM9JGYyUdGCv8QWqVKbC3SCKsmJbalUnSVNk4TxGBsRaWs9co/YVX08lKOeAUp7XaWr3ZEK0wgwREMKQ5sgTpFRS6pcSnfdJvR5oAulrMjWDul0l8AS1DE1NMJiEQU9tLMp7LO2RqicA==
+ bh=yadb2DY0fufBAn9xcNz380NISVadgeCgKXblmyMCJyE=;
+ b=Lv+7Hf2otQAOhKQSBL5BHmzK6OBuM1NHXrYXPg9DnFIBRUZgNEgo1HNoCNkz9taGqwDfE3UP88kev106jzZiGlIqgJqKNiC86E5ayZreeWOv/fuKZFv48WORGG0f/Ap3iks/KuoK56y1Tccy/SGFPtwhU6EM2hpyTQJgEXg87yxobEEFOi3aFpWG+ZUUE09CS7/5EHBRlAHtx77egfK4xtX0kotGCQa3GPguHF+k+A6muEeFXw7RSsDwPo4hNcdX2mjpu/MA7N1crjCkPzuit/stD+/KblaJ69XPZBdc6xwl18ogM1fqOIRjrWKYwZFdNwIqKS7H7b+Sm19NeTC3FQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by DM6PR15MB4793.namprd15.prod.outlook.com (2603:10b6:5:1f5::22) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yadb2DY0fufBAn9xcNz380NISVadgeCgKXblmyMCJyE=;
+ b=Qxxq+taYL+NeXd7816984RYvfC9eH2U2NVeWtnCcMYx6RUTQpyi6KzZD1U/h+EaD3DM8NGpQEpmd20R+qRJ0kphhMI4/3upBGTLDPzC4DsaSZ42/Ujk0xF6j1A5AoZ2TEjPTPhbVP2PPHyFA+iJMl41uk3Bn6+z9kmkGoDbAUPZxxizMdScCb4Msm6lbh59Gi4UulU+8lY6yG2VBMi5joIJHlNovi538l/pm/VCjyR18HZ0Bog2CYO/wjGonxEwvQWdyI1VolqgXIDHif6E9BYyL4akhFgmCaCqCbgSHk/wku0Go1Qo2YyROeR9KjFVLbR9yIWhGDewNwLqA9h1RTw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB7294.namprd12.prod.outlook.com (2603:10b6:806:2b8::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Tue, 15 Nov
- 2022 16:40:59 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c%4]) with mapi id 15.20.5813.017; Tue, 15 Nov 2022
- 16:40:59 +0000
-Message-ID: <169ff1b6-aa81-e3f1-7bc4-3abcc616883f@meta.com>
-Date:   Tue, 15 Nov 2022 11:40:56 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.2
-Subject: Re: [PATCH bpf-next v7 22/26] selftests/bpf: Add __contains macro to
- bpf_experimental.h
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20221114191547.1694267-1-memxor@gmail.com>
- <20221114191547.1694267-23-memxor@gmail.com>
-Content-Language: en-US
-From:   Dave Marchevsky <davemarchevsky@meta.com>
-In-Reply-To: <20221114191547.1694267-23-memxor@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR22CA0003.namprd22.prod.outlook.com
- (2603:10b6:208:238::8) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Tue, 15 Nov
+ 2022 16:44:55 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5813.017; Tue, 15 Nov 2022
+ 16:44:55 +0000
+Date:   Tue, 15 Nov 2022 12:44:54 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v4 03/17] interval-tree: Add a utility to iterate over
+ spans in an interval tree
+Message-ID: <Y3PCBnGxPm2ZKrm+@nvidia.com>
+References: <3-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <112905a9-ed6f-4aaa-2bfc-46502e558ab5@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <112905a9-ed6f-4aaa-2bfc-46502e558ab5@redhat.com>
+X-ClientProxiedBy: MN2PR06CA0026.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::31) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|DM6PR15MB4793:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3bd2bd0-af4c-4e26-49ed-08dac7282cb1
-X-FB-Source: Internal
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7294:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2bb139f-d0d1-4a35-15de-08dac728b996
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jB2Le9ce1TKarXbpn7CcNv3pFLVfxGBbPNEBI9QFhKwIxJXY4xLn3cADvxdlaGLKk1KTV0Tw5QnpX4m7GjoVkX6/EyFH8H61dkNwoWuI0qzTuZey5Lj/0lg10YUk7dPYvNW8OR9hqQIUDKoTGSeZVJpGoGd1zoG5QkABP2lmtkneNHzcERaDDFMGj8mdnsbQ9hXF62kjM1rQLko7MleM0VQpzk2Plhbv1raiXa1HbLjR0ZbnBiP3zQcfGzG6d2e0uz5PHE48JmBQNTodqyn6uh3nh4PqV0Gc3QdlrHvsvSH+a4QHTsaZUnVz7WJD8NSnsKa6FJ8NvHgdomm9VcsDXxNRGhYVTB/36VNnn/vERFnCl+kU8KVVhQGUKgfNET8v3hWLfTwBKD2yA1083HAEVKFiYsYcDO9YZiO3W/f712Z3R9CnaKTMzWgP9BvQrBKvts2pZdk2Kbtbvi4pKpwUjA203IFyLgaQiZI3bDVz67MiMjLy2qGvSADAVjXn33A+MI1GIoX8DbLKnraTqRTNOmAbohGA/Yc30Kry95pD+Lrep4ME30ajqyk1hMJUM/Q09+1IZE22tNgx7xA0KZdGkuE0+31ce/ILdWJyRlgIB+V4fr8Y/KDZapqz//fmBINhaFCKOkROV8fDs52SDMbSJ9QqDJuSZwpfkdp7l9BtAfNYwTokgdcoNhqtEhpqTz+c1C1GuIEO+TbjnNoxLZBedZvYOI3gyvACY+tDcvXppBHm86BIM6w088GypEjXur9wI3kj8Xyl6mwTzQLHo2VWRQwoFpb3M4RbhdPkg3KmB4c=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(451199015)(31686004)(4326008)(6512007)(6666004)(53546011)(6506007)(2616005)(478600001)(4744005)(8936002)(6486002)(2906002)(36756003)(316002)(66946007)(186003)(38100700002)(5660300002)(54906003)(86362001)(41300700001)(66476007)(66556008)(31696002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: CoStVEITRn5h3gV1Dk5+m7AhZoSBIK/s96Sbl0PSXtbnD66fcCYEZrcLh6b2HbJfyRRt8mHysH4JSLHm492Xm98tV5bKG8NpaqbySIVqQdh9QvEMuJ1pTRRdBib/oFAENzYjqmOJPegN6kXKWs0uoByoei05yiyKZ3i9vD3ppD+68FAh+l1k3So6NuiwDPm2SCLAb62muoxclfRCkLuS5VQz0ZnDpBZsWSSHBwtzb34IlO54QwrME5/Cd2w5o+h9KLS7ldPwG3iv0CdEiTHltbpIUGyiqjKfLuEuUrXiME8QQkFDYB0sO4i3yz/Qet1ZSfe+ht1AiPii01DBaAkjGGqEP4vGc/AmEFWf6SDErE9VFV3XN3SgljtAhq9bb5EfQlfVs3332Zk7MdKDKRVrhBipJ2I8qHNxjgQEZNTTXr5+oE0Ef3IpM/X62U48An089TqvcPH/EGOCCancbiF0Su/0NcfQUAUcdC+LIERbiH4vm1sL70DHNF7Extz2j8KrMim4RD8mH6VLXqXWHAPV+kXy2BPoiwxRtk/ur5mVMpu5CRWUgPDTUgpe2NYejmRxkT+2KqJxvTepiocG4o3t5TB5zibjUBa9FTrieSPKGwf/foPNxvOPCfe0CK1GXo/8ZJqVC7MgZn2/SkHJA10S42zPlXXRRRxndPNa8c/UXCiCHNDQPDT+gHl0qbMYX02ZnZAngdH4GPjXrGXaCxyBMg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199015)(2906002)(7406005)(7416002)(66946007)(66476007)(66556008)(5660300002)(8936002)(8676002)(4326008)(41300700001)(6506007)(6486002)(83380400001)(2616005)(36756003)(6512007)(26005)(316002)(6916009)(186003)(54906003)(478600001)(86362001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUgybFVQV3RHc2RldkRkbnRjVkdiZ3U4SmUzcjh5K1B0d1NLV2RLRkQwWjFO?=
- =?utf-8?B?THpZdENHU1BQbkM5VjFXb3ZLMHlKcDBYSWtGNkUrWUhGbEtBRFd0LzdFSFpB?=
- =?utf-8?B?dERaU2xPRjdEZzUxMnd0aUVNbE5HY3l1VHlzaldxbE10WE5udlR0QlNsWG1R?=
- =?utf-8?B?MmN5bW0wUFA2SVRyejFZS2V5cmpOaEJuK1B5MXpWK0RzWS9LaWRIUlVZR1ln?=
- =?utf-8?B?ait3QWlDV2xXQ2xzdTYvNVIrc1VBdkhteDdkeCtXd1JKZXM5NFpORDNRRFJC?=
- =?utf-8?B?R05RVitOcU4vcWxSV2RseFZYeE5UZ1lrK3ZnT0EybnpuQUtOemZOeTJwL2lX?=
- =?utf-8?B?a0lDaUFoT2ZoeGt4ZElQYmE4VngxVmJoRE5aQWIxQ2xNTXB6ZGJuaGVDZXFG?=
- =?utf-8?B?NzY1YVVSWlkrbzVvTUhrWDJLV1ZpZGI2Tmk1V09lVzdXQUtvTXNkTGFXOG9z?=
- =?utf-8?B?dm9oTmhJQTd1b0x4YjBVYmE2SlhycTVuMmdQMUhUWkh3dkhBUkg2UDI4RldD?=
- =?utf-8?B?bTlqemtQY3ZWcWZrdEZFbFg5Tm1wQWNkaW5BWGw1UlZ2RTBReWZIUlNWN2dT?=
- =?utf-8?B?VFpzQlEyN3RacTlHSlN6SW9KWnZEVktkQkZTVHlkaHc5Um5JZXdWQXI2WVlh?=
- =?utf-8?B?UEh4R21oeHNielNXYi9NUEh6K3k4ckw0c1FkZFZiZithdXBPZVB6TUFmWkV4?=
- =?utf-8?B?QmxhUjBWMUdmWElxZWl5bXgxSGFVSGlOQkE5Z1ZsK0RCZzkzYUFzd2xZWUE5?=
- =?utf-8?B?eEppU2w4dy95WVlweUZzNkZwL1JDMTlGbXBzSnZWa0krdVBxNi9OWkRzQ0M0?=
- =?utf-8?B?Q0VmNXJRTG5rQ1o3a2FXczlZNHQyNytqZFFXT3ZjeEk4RUJwSHM0SUhhaEVw?=
- =?utf-8?B?Q2VMZjJ1K0tNbEJMMGlCV0V1bFVlbjhFenR3Vm1JVWZkZk9Fa0U4ZlZ4NkRm?=
- =?utf-8?B?QzlCejNlUzNRVEUrbFhLUWF3QWNqNVJkb29rcUJFMkZQVWpQY3ZXdyttSjdv?=
- =?utf-8?B?NnIyWTk0WXh2NDRETWZHZThZamR0SDRob2J3TVN2dDUxeUJlQ0l5d3ZJUGt6?=
- =?utf-8?B?SWpsd0NHbzdwM2FobTZnbE00N3Q5a3FlL2tCMGt4UmhTdDhpZ0k4RUVmNHIv?=
- =?utf-8?B?RGFFQzhrM29Bcms1ZDZaSzFCM0pYcldkWjlyb3VQL2txMmRyTDVENTlSMTFm?=
- =?utf-8?B?Ty80ZGFBKy9xZU45ajBIVzdkMkczOXhMSTAvQXZ4Mk5tKzRraFZOOXJtd0kz?=
- =?utf-8?B?QVJueDhXSHhsaWtRM1VyOVJ2dURPRXFTemw4WitpQTZYaXFOZlVSQThoRXZL?=
- =?utf-8?B?cWh1cjBKKytDOG1lYVhZN2YrbkdBckI2QVo0T0lCMlFCN0NyWDlVM0pTQmZs?=
- =?utf-8?B?cWhwMnhWTDhLZERmaG05bkV2a3NnZi9udGNHbVU0SXVIeVE0OXFNWXdCeGhw?=
- =?utf-8?B?UzJjVmVOdFlvQzlseHE1a0NmbDNWeHRFTTlBc2pqZysweFFYT1E0N0hRdnRH?=
- =?utf-8?B?QVBPRnRnNW9BcVQrU2w0QXFGQ1Fxby8zTS91MEdTMkJHdG9sR2lyaE9KOUhB?=
- =?utf-8?B?VVJGMnI1Z0J5TXlOTmtCZG1QMmU3QzVENUdUeHRWd0QwOVVjQzVwSkU5Vzh3?=
- =?utf-8?B?T0hmOVhiZnFmSDQySDlwZG81aXg4Z3dYaEluWFBrSE1UNnRBWEl3TVUvOFhU?=
- =?utf-8?B?ZWRLaU8rS0JwRGhWTkoraGhlTGpwc0ExVkdXUXFxSG1QVHI3bncvODhkd201?=
- =?utf-8?B?MUplUzlWdWVUdVprWEFiVjBNUi9lcElnQk1vMnZUY3ZVUzVxTTZaSkI4ZEg2?=
- =?utf-8?B?Rk5QdUs5TU13VVdISzhNTlladEZ0K0Z0RThrZ2tQV1REL3p6a3hsRTZCMkIv?=
- =?utf-8?B?Q3duYzdOUzlJeHA3b21nUS9wTnhHN3pXdTVEMkI5ZE5NZEp2UVNnejFKLzFG?=
- =?utf-8?B?SGltN3g4aE1jTmNsNWRxcTdUQnRTeHhBY2dkOGJNVkd6c2lKWlEvQ1Y1VXhD?=
- =?utf-8?B?NGhTaEZsZCs5c1E4bGx1ZHhEOTNKelAxM0piMVhVTmY0MG5tOURYV2NHSnIw?=
- =?utf-8?B?L01kUVFGY2xFSDZZRUdQZ1dJdGZROTBwcG1kUDh2Z3Fta1I3ZHBTUWQ2R2pM?=
- =?utf-8?B?SFpCTzdZZW1vUk0rS2U5NzEvZVMrb0w2TjlIc3BEeVl3bzBYcjZPNXpxSVd6?=
- =?utf-8?Q?fRCc2S7AX0oOnkLBER+F0MQ=3D?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3bd2bd0-af4c-4e26-49ed-08dac7282cb1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zxsIXjRvkDjAry3FO+8HNVEymt5B0g6sKzZ/c7To82FL3lG6N6AB12vVKJSw?=
+ =?us-ascii?Q?Fw+1vc01Vm/5NllOYcIq5uWCH339x2/Y6P0NTg6vNdgjWkMytmdNE/c751KK?=
+ =?us-ascii?Q?8hiz48822V64UHnLWZwpmperTigiFcSP28WaxD4DwipAiqaaR0GQpcLDvTRa?=
+ =?us-ascii?Q?oeRi6ghYpio2hJ0Ps8yMGtrw5tp2dCPYPNFKFcEXJAdvkxhH/XNRwv0WEZJQ?=
+ =?us-ascii?Q?aXXHWVvxlKmZGpL7NCswhpMI0rKWYV1pkFOJQ36lzvYdhSaP00u9EjXWgsEq?=
+ =?us-ascii?Q?bq1rUZXSh3HdC8zUpZc3cSdNWma5zNmZS9E5d6n8bDMYoqXl/LVhGJnAd6iw?=
+ =?us-ascii?Q?POPLSw7cWeYEZmsRtiGIGmZmylyj2OjeTzDKbJLiyOKNssQA4yL/Qo4KiW96?=
+ =?us-ascii?Q?bKoaMMC7twlz8Eeg+cyGYzcYzUgNl+UJTjnEQ/E8tQYWgWh+fqpusrZFpxhd?=
+ =?us-ascii?Q?zwylZGCqPcs5dl+5kwxydSnGzrSKQTp1lLQTLvYUzCuv8fzTC9XCwfTiicUr?=
+ =?us-ascii?Q?f3eNnbM26L/nRt6YO/5sXP9tVz7TqKa05l9NKq2SJ/qGCE3+PH+Q5eHRB1zq?=
+ =?us-ascii?Q?UiHTAiPjuQbceheB3UKnNnT+6KGfoCKE1HbJnvQbCuv7NYQnVGPOcccUxKa2?=
+ =?us-ascii?Q?dugKmj+PhFuRpV4smRzm08bKADnAAFDQW2uXTo5aBL7a+3XzcbZuJRNFWFC1?=
+ =?us-ascii?Q?POB+mR2MistKrDFAsQYCogw+tFIYqQnoPZ4pKPNF/ymoj5Hob2Z6IJYJ/pXq?=
+ =?us-ascii?Q?vEMWio45laKDVLEawWqys3ZFVhDxWDexjAzaQ8K06mnq5vOwtKseW9/vlSWV?=
+ =?us-ascii?Q?Qcs+DDJRhoTzM0z5DGkbc5IAGucYhKukVwGWOD7Twh/+GZ8bwgjEV/KHs9lV?=
+ =?us-ascii?Q?jHj2wBprzObUlUkg0IKtqT5XIJLDlP4SWsBHmGO7cIC6ZWyfiz8We2wyyM8K?=
+ =?us-ascii?Q?nGdRHnMKmTFF3/0TBqmvte+0baOnEdzTwhXiPc5cf6w61GEe7Kx+xTCoVerm?=
+ =?us-ascii?Q?18A6r+5+JkMIM7hRY/23IPFEdK+HzRNNBQKJ+8P5c1qHn4qDTcWi+rnvSTnw?=
+ =?us-ascii?Q?fxRUsEj/9sXzCbPkLCQvBIyAs+JBjs92ChUCUj2CytoYQj82RXieNZnsuxTW?=
+ =?us-ascii?Q?t+NKg08P3MGP4F7DgLPaRe1IDWQKTnm/ixAo5ZT+4w48zKL3H8ztFWMKo3vS?=
+ =?us-ascii?Q?adGhiL+aKLnp9/6Z1UoJ+ZibmLzT8CfcCUqOCvWEYH/ZBP7gP2KRXRAIxOsY?=
+ =?us-ascii?Q?zTQGgAOO+JMeWdo7Jj89J9RFAYe5KVxGTC6R0IwD2g80NK3bEGJQrlaU3y1b?=
+ =?us-ascii?Q?OK3SLNERcf0qbXgy5O7aL58J2qAJuMq5vgpH/uwQpjeF/9kyX59/TkntSpLw?=
+ =?us-ascii?Q?NOWWQXAjHVklcqmrFH0ZlMGUWmBqwrxdGEXrAETHnkUPGfBoKXrqBQEbFtki?=
+ =?us-ascii?Q?brqX505ylKuj6cBQv/fCIvJ3lCS/ZzVk0EL+HkS4RF2GUjaK06ZG9KBBYhr+?=
+ =?us-ascii?Q?63e4l4Ikp0TSPEHB/DPwvehaveSztfKwGurdNGUKQBol2OvWodGonQfRcQP5?=
+ =?us-ascii?Q?/TEh5F8dhWpwooHQjoQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2bb139f-d0d1-4a35-15de-08dac728b996
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 16:40:59.0656
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 16:44:55.5101
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mrus3+nzk7tuMMVOyFe5v7+DYVD+eYMyAY4nJWGjgmpvDYIg+31Hc4BGyi5UuMQAwcsqcu+OiLb0VHAZOTakoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4793
-X-Proofpoint-GUID: qLd3vljfiT7wEtLhQ9Z8nW8-sZZmQTg-
-X-Proofpoint-ORIG-GUID: qLd3vljfiT7wEtLhQ9Z8nW8-sZZmQTg-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-15_08,2022-11-15_03,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: ar/hvdcZ0QE/UG5lhoj6uKr4WwdMnBBSe1iRPIIrp1H/uM9tEiDOsXQk5arf9Xxl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7294
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/14/22 2:15 PM, Kumar Kartikeya Dwivedi wrote:
-> Add user facing __contains macro which provides a convenient wrapper
-> over the verbose kernel specific BTF declaration tag required to
-> annotate BPF list head structs in user types.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+On Tue, Nov 15, 2022 at 03:14:00PM +0100, Eric Auger wrote:
+> > diff --git a/lib/interval_tree.c b/lib/interval_tree.c
+> > index 593ce56ece5050..d2882db8fa2a07 100644
+> > --- a/lib/interval_tree.c
+> > +++ b/lib/interval_tree.c
+> > @@ -15,3 +15,135 @@ EXPORT_SYMBOL_GPL(interval_tree_insert);
+> >  EXPORT_SYMBOL_GPL(interval_tree_remove);
+> >  EXPORT_SYMBOL_GPL(interval_tree_iter_first);
+> >  EXPORT_SYMBOL_GPL(interval_tree_iter_next);
+> > +
+> > +#ifdef CONFIG_INTERVAL_TREE_SPAN_ITER
 
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Maybe add in a kernel doc that a prerequisite is state.nodes[1] must be
+> populated
+
+Sure, lets just move the below comment up a bit:
+
+/*
+ * Roll nodes[1] into nodes[0] by advancing nodes[1] to the end of a contiguous
+ * span of nodes. This makes nodes[0]->last the end of that contiguous used span
+ * indexes that started at the original nodes[1]->start. nodes[1] is now the
+ * first node starting the next used span. A hole span is between nodes[0]->last
+ * and nodes[1]->start. nodes[1] must be !NULL.
+ */
+
+> > +/*
+> > + * Advance the iterator index to a specific position. The returned used/hole is
+> > + * updated to start at new_index. This is faster than calling
+> > + * interval_tree_span_iter_first() as it can avoid full searches in several
+> > + * cases where the iterator is already set.
+> > + */
+> > +void interval_tree_span_iter_advance(struct interval_tree_span_iter *iter,
+> > +				     struct rb_root_cached *itree,
+> > +				     unsigned long new_index)
+> > +{
+> > +	if (iter->is_hole == -1)
+> > +		return;
+> > +
+> > +	iter->first_index = new_index;
+> check new_index > iter->first_index?
+
+It is odd but it actually works out OK if that is violated. I  guess a
+WARN_ON would be appropriate but I've avoided adding assertions to
+this code..
+
+> > +	if (new_index > iter->last_index) {
+> > +		iter->is_hole = -1;
+> > +		return;
+> > +	}
+> > +
+> > +	/* Rely on the union aliasing hole/used */
+> > +	if (iter->start_hole <= new_index && new_index <= iter->last_hole) {
+> > +		iter->start_hole = new_index;
+> > +		return;
+> > +	}
+> > +	if (new_index == iter->last_hole + 1)
+> > +		interval_tree_span_iter_next(iter);
+> > +	else
+> > +		interval_tree_span_iter_first(iter, itree, new_index,
+> > +					      iter->last_index);
+
+This call will reset iter->first_index to new_index and even if it is
+outside the original bounds everything will work. Of course if the
+caller does some 'backwards' advance then they are going to probably
+be very sad and likely hit an infinite loop, but that applies to all
+kinds of backwards advances, not just going before the original
+bounds.
+
+Thanks,
+Jason
