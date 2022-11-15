@@ -2,87 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7448062AF5D
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 00:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949F662AF67
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 00:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbiKOXVa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 18:21:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S231419AbiKOX04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 18:26:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiKOXV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 18:21:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE826319
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:20:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668554431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HB6zekTxMq+hKIhJy2TlN2K0Ppt1J67WxSLXwQ7+MSo=;
-        b=cfmqMQtIpSzIvvS3qFJIDkj0Dtp3FYLkEf6dsVrSuAoBVRp92Seh4uLClFN3fDCmLiGO4v
-        5ANw3Tz+LMNf73X6BAcJlKweVV1ZM2FcJxd8wBjhaY94l/GWZ0dLCUbnoR5wTu+2hFZov/
-        ahVshvclLIQ5KMaszfPXleVp2fRhjwk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-504-eoky0GX0O7u_oFkmqTVIvQ-1; Tue, 15 Nov 2022 18:20:30 -0500
-X-MC-Unique: eoky0GX0O7u_oFkmqTVIvQ-1
-Received: by mail-ed1-f70.google.com with SMTP id b13-20020a056402350d00b00464175c3f1eso10938991edd.11
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:20:30 -0800 (PST)
+        with ESMTP id S230260AbiKOX0e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 18:26:34 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C9E27908
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:26:32 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id f18so7061825ejz.5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 15:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DY++N/b93BxdltXMTeLdUPgzPkCVBFPWyIHIT+cRgeQ=;
+        b=UfLpknoHmLMzJZwKQ0I/rchQv4UdGcbstofMOgR3/JRLKdD3mAfexK6TFqArJ1aVLd
+         AkbA9FI7twN6R5Bf+1wqFhirLiCG+cBApyGM5TPp+VZknPfwCL8zR75eVR71GRB8Qo24
+         t/m1UTe21EKBTJVY9LTr8kUx3fd9cT/L5BCD/1JFpnKyQXduvEN0I9We3BuOUHoduWEJ
+         wlUNmgO2kNXat+N6veY4hGr2kFl4jwmOHAJdXb232ah6Rl9v+Guo0cQwPJm39VznlKD1
+         vVTZurhQn3OrvqnAAx6802UIUtelimet+Cg3dAbegcTBxhpKUZDNTnaXgY+A29/wanCz
+         Xm7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HB6zekTxMq+hKIhJy2TlN2K0Ppt1J67WxSLXwQ7+MSo=;
-        b=DDssTmCHOV+6B1u8K7fFqy1VQbvuf0BtTbIFY5EPD47ERk87SDK4wNOjfTUcZE8CqM
-         lGE4ss6MVtPA1MZmSeKVg6IOzrCRBGruhCchFsjCTNbd96qOHfGMd06VnT94GatltrlO
-         Iw2SKuDDrwiR3sJ7Fk0XcPExqG5GPwN/z20wMviH2TZ4Vbz91u2MRKv7GzLox5J7WgrF
-         qxkqzNP3TQuT41RRUc6rb3PDQJwo/iJzi2ETtHjS6icHgOvwIs/pjdMi6Kx6VEdxGtzi
-         EHJDhYGjPs/KUiKE/H3AYTILgiycdGlpOSnJwc6iNOTh5vhtMY5l3s8HoUft9NwTsX8E
-         zlnQ==
-X-Gm-Message-State: ANoB5pmCEYEOmC2SArhkiYErBmSL2WN8jisBk26JzbGEmXqRKoHu7340
-        KP37+9E07liGproSHUg0qvSxBfSR2SRyDukM6jonpWGGS7tuAM/ofl+TMG4zZciQx5nynOLQoNu
-        PnThDS+E5hHb6
-X-Received: by 2002:a17:907:20c2:b0:7ae:967a:50bb with SMTP id qq2-20020a17090720c200b007ae967a50bbmr15745809ejb.383.1668554428720;
-        Tue, 15 Nov 2022 15:20:28 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5trZODpBQ09vRtNhMWv8QUfUjuwKz3UoAgxjob/GtLbJSfb4HKBIn/zGAtCHtmuzYW+aASyw==
-X-Received: by 2002:a17:907:20c2:b0:7ae:967a:50bb with SMTP id qq2-20020a17090720c200b007ae967a50bbmr15745759ejb.383.1668554427864;
-        Tue, 15 Nov 2022 15:20:27 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05640204c500b00457c85bd890sm6741473edw.55.2022.11.15.15.20.27
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DY++N/b93BxdltXMTeLdUPgzPkCVBFPWyIHIT+cRgeQ=;
+        b=FU1Emhzt53i959MkbzAsB3AthuZfIC/09Bo3LNcHWr4KsLxFR7/lG18/0sZwOxcIaQ
+         2wCGlpMLF+n8BeQ4nWWXrGW5awrHBhFWSOU+QjIgdo0Zmk0fDIZRjqHry+AwWLC3OX4T
+         apF7Yw2mxY+GVk7wAxuvld43+ZhTvNmyWcn9TVjAUewgG3+DHhHuSIuTdCAJyUh2ZepA
+         qWg5Vt3RXI3ya66OaOl05QNtwYhHgCpFRHbgLfdrSAi0mmRZ8GgTxk9dWoCWzZDIf7Ch
+         nOWeYkcAC7Z/joQAQOwZ8Iqvo9cJgE8sMpLLsC/DJzn3TeDcuBGfYAXXbrGSaMaEZSM1
+         ymvA==
+X-Gm-Message-State: ANoB5pk2Bx2rFaubxgKsX2ApcECyZs53oAG1SjemvYGhsEEUGjDxClcI
+        PRgCNnD8rMyqiLCnzEBqTys=
+X-Google-Smtp-Source: AA0mqf7IZ9q1lqJm7/yPihcbLxDnHT5VMy7I5LfhDM+o3Khg484ZdDpTKwoCcvwDggcR6tY8jKHFXQ==
+X-Received: by 2002:a17:906:3e05:b0:78d:aaf9:7b8c with SMTP id k5-20020a1709063e0500b0078daaf97b8cmr16155052eji.229.1668554791006;
+        Tue, 15 Nov 2022 15:26:31 -0800 (PST)
+Received: from krava ([83.240.62.198])
+        by smtp.gmail.com with ESMTPSA id la8-20020a170907780800b00781b589a1afsm6110483ejc.159.2022.11.15.15.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 15:20:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3718C7A6D70; Wed, 16 Nov 2022 00:20:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] [PATCH bpf-next 06/11] xdp: Carry over xdp metadata
- into skb context
-In-Reply-To: <20221115030210.3159213-7-sdf@google.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-7-sdf@google.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 16 Nov 2022 00:20:26 +0100
-Message-ID: <87wn7vdcud.fsf@toke.dk>
+        Tue, 15 Nov 2022 15:26:30 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 16 Nov 2022 00:26:28 +0100
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [RFC bpf-next] bpf: Fix perf bpf event and audit prog id logging
+Message-ID: <Y3QgJMsknnAvvYqU@krava>
+References: <20221115095043.1249776-1-jolsa@kernel.org>
+ <4d91b1d3-3ffc-11f9-50a6-bfb503e4b3cd@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d91b1d3-3ffc-11f9-50a6-bfb503e4b3cd@iogearbox.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,29 +78,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index b444b1118c4f..71e3bc7ad839 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6116,6 +6116,12 @@ enum xdp_action {
->  	XDP_REDIRECT,
->  };
->  
-> +/* Subset of XDP metadata exported to skb context.
-> + */
-> +struct xdp_skb_metadata {
-> +	__u64 rx_timestamp;
-> +};
+On Tue, Nov 15, 2022 at 01:49:54PM +0100, Daniel Borkmann wrote:
+> On 11/15/22 10:50 AM, Jiri Olsa wrote:
+> > hi,
+> > perf_event_bpf_event and bpf_audit_prog calls currently report zero
+> > program id for unload path.
+> > 
+> > It's because of the [1] change moved those audit calls into work queue
+> > and they are executed after the id is zeroed in bpf_prog_free_id.
+> > 
+> > I originally made a change that added 'id_audit' field to struct
+> > bpf_prog, which would be initialized as id, untouched and used
+> > in audit callbacks.
+> > 
+> > Then I realized we might actually not need to zero prog->aux->id
+> > in bpf_prog_free_id. It seems to be called just once on release
+> > paths. Tests seems ok with that.
+> > 
+> > thoughts?
+> > 
+> > thanks,
+> > jirka
+> > 
+> > 
+> > [1] d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
+> > ---
+> >   kernel/bpf/syscall.c | 1 -
+> >   1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index fdbae52f463f..426529355c29 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -1991,7 +1991,6 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+> >   		__acquire(&prog_idr_lock);
+> >   	idr_remove(&prog_idr, prog->aux->id);
+> > -	prog->aux->id = 0;
+> 
+> This would trigger a race when offloaded progs are used, see also ad8ad79f4f60 ("bpf:
+> offload: free program id when device disappears"). __bpf_prog_offload_destroy() calls
+> it, and my read is that later bpf_prog_free_id() then hits the early !prog->aux->id
+> return path. Is there a reason for irq context to not defer the bpf_prog_free_id()?
 
-Okay, so given Alexei's comment about __randomize_struct not actually
-working, I think we need to come up with something else for this. Just
-sticking this in a regular UAPI header seems like a bad idea; we'd just
-be inviting people to use it as-is.
+there's comment saying:
+  /* bpf_prog_free_id() must be called first */
 
-Do we actually need the full definition here? It's just a pointer
-declaration below, so is an opaque forward-definition enough? Then we
-could have the full definition in an internal header, moving the full
-definition back to being in vmlinux.h only?
+it was added together with the BPF_(PROG|MAP)_GET_NEXT_ID api:
+  34ad5580f8f9 bpf: Add BPF_(PROG|MAP)_GET_NEXT_ID command
 
--Toke
+Martin, any idea?
 
+while looking on this I noticed we can remove the do_idr_lock argument
+(patch below) because it's always true and I think we need to upgrade
+all the prog_idr_lock locks to spin_lock_irqsave because bpf_prog_put
+could be called from irq context because of d809e134be7a
+
+thanks,
+jirka
+
+
+---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 49f9d2bec401..50c71ce698d0 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1761,7 +1761,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
+ struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+ void bpf_prog_put(struct bpf_prog *prog);
+ 
+-void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
++void bpf_prog_free_id(struct bpf_prog *prog);
+ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
+ 
+ struct btf_field *btf_record_find(const struct btf_record *rec,
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index 13e4efc971e6..327dab644200 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -217,7 +217,7 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+ 		offload->offdev->ops->destroy(prog);
+ 
+ 	/* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
+-	bpf_prog_free_id(prog, true);
++	bpf_prog_free_id(prog);
+ 
+ 	list_del_init(&offload->offloads);
+ 	kfree(offload);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fdbae52f463f..9b929d8ab06d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1973,7 +1973,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
+ 	return id > 0 ? 0 : id;
+ }
+ 
+-void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
++void bpf_prog_free_id(struct bpf_prog *prog)
+ {
+ 	unsigned long flags;
+ 
+@@ -1985,18 +1985,12 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+ 	if (!prog->aux->id)
+ 		return;
+ 
+-	if (do_idr_lock)
+-		spin_lock_irqsave(&prog_idr_lock, flags);
+-	else
+-		__acquire(&prog_idr_lock);
++	spin_lock_irqsave(&prog_idr_lock, flags);
+ 
+ 	idr_remove(&prog_idr, prog->aux->id);
+ 	prog->aux->id = 0;
+ 
+-	if (do_idr_lock)
+-		spin_unlock_irqrestore(&prog_idr_lock, flags);
+-	else
+-		__release(&prog_idr_lock);
++	spin_unlock_irqrestore(&prog_idr_lock, flags);
+ }
+ 
+ static void __bpf_prog_put_rcu(struct rcu_head *rcu)
+@@ -2048,7 +2042,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+ 
+ 	if (atomic64_dec_and_test(&aux->refcnt)) {
+ 		/* bpf_prog_free_id() must be called first */
+-		bpf_prog_free_id(prog, do_idr_lock);
++		bpf_prog_free_id(prog);
+ 
+ 		if (in_irq() || irqs_disabled()) {
+ 			INIT_WORK(&aux->work, bpf_prog_put_deferred);
