@@ -2,158 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E9C629953
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 13:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957BC62997C
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 14:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237946AbiKOMyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 07:54:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S229918AbiKONAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 08:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238203AbiKOMx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 07:53:58 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7266A28721
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 04:53:47 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id r81so10569588iod.2
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 04:53:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7T8Z9k/WSW3C/sE+kXbNggOaFfWMjgf59LaJO7rAnEU=;
-        b=xpSP1Z0yFq9lAZSnyC0nQyN2VqA+WArLaNIOK2PliGH4W2ajvZvydR5maGEqkDyWAX
-         /6StPGUvpVEYfx6VjtQNdjhgpp78BuwegZOTdhJ6mNnJlsa7fVi7Ls2AJMDKkOpdxlo7
-         KAukloV0CwCwoeJZgw/JeARuEnA1QCbalFomoLRhGqBdnhiR0SGVPcrtdTGmg5E/KuQs
-         mO9CUZFgQNlSucFqreGh11NRPkPxubMdQD1bVYN6MRD+8by9/Tp5kY3LV+FzzKZWjMzZ
-         fzFUwcg7LZfeZ64kRlnCDsAguisHSk6c91e2JC5Eic+CgXC7zB9MTg60ifzSpSyWgCca
-         Q+EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7T8Z9k/WSW3C/sE+kXbNggOaFfWMjgf59LaJO7rAnEU=;
-        b=i3kiZ9Mmq7C+dDe7c9+xI3kfWfWwnWyT/HIJsURy8NgbJ1e43GxUadnGE5iLfBpZp6
-         8tZZtozQASwCRgqJ8moUrYEu/OLHlcBHgyz2S42vDnCr7zIyhECNfhUv1n83eSSE0Bh8
-         st1ehuLJIx6pfk2SSRnvsbNABULG6bczpbYLP/JgY+W0IWVJGPM+KhCyZFr7wYJ5maZR
-         K7WAMKrlGd9i/u6FmsdTaoAqwHzeKZj7E0os0I1D6A13yB90RSSffgQRlILS3lhk04+n
-         wBdV6cbjaJRnrI0FxX/PBZcXqUqejXKVSZJ/wRKmxWUucy/uH5lncnBUeu+Y1bS7Yqy4
-         CKSQ==
-X-Gm-Message-State: ANoB5pms+V3h2ju/HP8r8dMETqiqoFjKD95a8EC/5GaLwQ0kw10j2iW3
-        UgKIClW+bZCUrtxeZEQzY2bWodPb6z9VXET0GX+C0A==
-X-Google-Smtp-Source: AA0mqf53cL6DyqN7ZIzesNpzPUxXbF6j/A6pn+eQUj0mRp9WIogr3QKH+MJHbCSIQX+UGalSXPxT9m9UdWI2F4Jdyzg=
-X-Received: by 2002:a02:ccf1:0:b0:375:ab48:de95 with SMTP id
- l17-20020a02ccf1000000b00375ab48de95mr7628617jaq.14.1668516826738; Tue, 15
- Nov 2022 04:53:46 -0800 (PST)
-MIME-Version: 1.0
-References: <878rkc1jk7.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <878rkc1jk7.fsf@all.your.base.are.belong.to.us>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Tue, 15 Nov 2022 13:53:36 +0100
-Message-ID: <CADYN=9LfU3g9MCk0TZZN=tv6keAM_xPUhe9bMTczLdNw=FHELQ@mail.gmail.com>
-Subject: Re: BPF, cross-compiling, and selftests
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229542AbiKONAL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 08:00:11 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93BFD63C9;
+        Tue, 15 Nov 2022 05:00:09 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxDdlYjXNjuEQHAA--.21336S3;
+        Tue, 15 Nov 2022 21:00:08 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHuJXjXNjIaQTAA--.52645S2;
+        Tue, 15 Nov 2022 21:00:07 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] bpftool: Check argc first before "file" in do_batch()
+Date:   Tue, 15 Nov 2022 21:00:07 +0800
+Message-Id: <1668517207-11822-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8BxHuJXjXNjIaQTAA--.52645S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvdXoW7JF4fWF43WFy5Aw4DKF47XFb_yoWDXrX_ua
+        9xXF1avFn5Jryakr47W3yq9ryxKa1rArsYqrZI9r18Jr48J3y7ZF18C395Xw45uFyjk3W2
+        yFZ3u34fGF129jkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
+        xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
+        87kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
+        AFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
+        6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7
+        xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1l
+        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
+        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1A9N7UUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 15 Nov 2022 at 13:36, Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> wrot=
-e:
->
+If the parameters for batch are more than 2, check argc first can
+return immediately, no need to use is_prefix() to check "file" with
+a little overhead and then check argc, it is better to check "file"
+only when the parameters for batch are 2.
 
-Hi,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/bpf/bpftool/main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Adding the kselftest list
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 741e50e..337ab79 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -337,12 +337,12 @@ static int do_batch(int argc, char **argv)
+ 	if (argc < 2) {
+ 		p_err("too few parameters for batch");
+ 		return -1;
+-	} else if (!is_prefix(*argv, "file")) {
+-		p_err("expected 'file', got: %s", *argv);
+-		return -1;
+ 	} else if (argc > 2) {
+ 		p_err("too many parameters for batch");
+ 		return -1;
++	} else if (!is_prefix(*argv, "file")) {
++		p_err("expected 'file', got: %s", *argv);
++		return -1;
+ 	}
+ 	NEXT_ARG();
+ 
+-- 
+2.1.0
 
-> I ran into build issues when building selftests/net on Ubuntu/Debian,
-> which is related to that BPF program builds usually needs libc (and the
-> corresponding target host configuration/defines).
->
-> When I try to build selftests/net, on my Debian host I get:
-
-I've ran into this issue too building with tuxmake [1] that uses
-debian containers.
-
->
->   clang -O2 -target bpf -c bpf/nat6to4.c -I../../bpf -I../../../../lib -I=
-../../../../../usr/include/ -o /home/bjorn/src/linux/linux/tools/testing/se=
-lftests/net/bpf/nat6to4.o
->   In file included from bpf/nat6to4.c:27:
->   In file included from /usr/include/linux/bpf.h:11:
->   /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not fo=
-und
->   #include <asm/types.h>
->            ^~~~~~~~~~~~~
->   1 error generated.
->
-> asm/types.h lives in /usr/include/"TRIPLE" on Debian, say
-> /usr/include/x86_64-linux-gnu. Target BPF does not (obviously) add the
-> x86-64 search path. These kind of problems have been worked around in,
-> e.g., commit 167381f3eac0 ("selftests/bpf: Makefile fix "missing"
-> headers on build with -idirafter").
->
-> However, just adding the host specific path is not enough. Typically,
-> when you start to include libc files, like "sys/socket.h" it's
-> expected that host specific defines are set. On my x86-64 host:
->
->   $ clang -dM -E - < /dev/null|grep x86_
->   #define __x86_64 1
->   #define __x86_64__ 1
->
->   $ clang -target riscv64-linux-gnu -dM -E - < /dev/null|grep xlen
->   #define __riscv_xlen 64
->
-> otherwise you end up with errors like the one below.
->
-> Missing __x86_64__:
->   #if !defined __x86_64__
->   # include <gnu/stubs-32.h>
->   #endif
->
->   clang -O2 -target bpf -c bpf/nat6to4.c -idirafter /usr/lib/llvm-16/lib/=
-clang/16.0.0/include -idirafter /usr/local/include -idirafter /usr/include/=
-x86_64-linux-gnu -idirafter /usr/include  -Wno-compare-distinct-pointer-typ=
-es -I../../bpf -I../../../../lib -I../../../../../usr/include/ -o /home/bjo=
-rn/src/linux/linux/tools/testing/selftests/net/bpf/nat6to4.o
->   In file included from bpf/nat6to4.c:28:
->   In file included from /usr/include/linux/if.h:28:
->   In file included from /usr/include/x86_64-linux-gnu/sys/socket.h:22:
->   In file included from /usr/include/features.h:510:
->   /usr/include/x86_64-linux-gnu/gnu/stubs.h:7:11: fatal error: 'gnu/stubs=
--32.h' file not found
->   # include <gnu/stubs-32.h>
->             ^~~~~~~~~~~~~~~~
->   1 error generated.
->
-> Now, say that we'd like to cross-compile for a platform. Should I make
-> sure that all the target compiler's "default defines" are exported to
-> the BPF-program build step? I did a hack for RISC-V a while back in
-> commit 6016df8fe874 ("selftests/bpf: Fix broken riscv build"). Not
-> super robust, and not something I'd like to see for all supported
-> platforms.
->
-> Any ideas? Maybe a convenience switch to Clang/target bpf? :-)
-
-I added the same thing selftests/bpf have in their Makefile [2] and that
-highlighted another issue which is that selftests/net/bpf depends on
-bpf_helpers.h
-which in turn depends on the generated file bpf_helper_defs.h...
-
-
-Cheers,
-Anders
-[1] https://tuxmake.org/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/tools/testing/selftests/bpf/Makefile#n305
