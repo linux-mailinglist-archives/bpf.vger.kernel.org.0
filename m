@@ -2,67 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3057262908C
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1287D629094
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 04:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbiKODKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 22:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
+        id S231969AbiKODMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Nov 2022 22:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbiKODKg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 22:10:36 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CC6CCA
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:10:35 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id p1-20020a17090a2c4100b00212733d7aaaso6790349pjm.4
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:10:35 -0800 (PST)
+        with ESMTP id S236796AbiKODMB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Nov 2022 22:12:01 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8E4646F
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:12:00 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id br15-20020a056830390f00b0061c9d73b8bdso7845303otb.6
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 19:12:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO83fAkgz8rUAsfS/dvhp2L3T5zhQC+S2sXZEZfZE3Q=;
-        b=qKMn69zADIDXZMEoWjNsPhXib8WrK7MLkeldMmG9bY2Edf1X9ZP31rO4qItzHp8byT
-         mPHmr/KVAWdZwKv1mPyO2rohxwVcPaOYFnXM7ZOdM6rNCAC880kOgrF28tzWJSWdK3G1
-         /Z10O/zUXOf3D9cVxOTmL718+ZlnIkQXblbFJffQlBAsE/mbgVxzcjvtU5cKBPgsKcCg
-         IHU8E9akVk7ih0Vl6PKyajQtyxldyG3MV+YnSY6X/i443aAqyCT7U4zX8qNklaDP4F3V
-         vmP0HzYGSPNDeEt6uDqqohsN/h5+XqPGNUETFLxIQT3Zjpw8/aYxmP8vvDiHhjYzomuh
-         L78w==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dAAmI/mpX34X1iM1ddDtHCn4cxjCzzyc5sEgoPbFM7U=;
+        b=RZDpoliVXSMBH72Dy/aKisKzQP+pUECejEj8wA1REQJjXEMbEluU4dKASvB1WxIyZy
+         5/+nd4J72ANzeCvhmfCaCckqLrQeUF1QMqf/uz4+Pyf7Q3DgbHIE+r7fFdzRyblFFDE4
+         Qtua/qHhblsQKLsL96tNMkXpi9XN51eeBxRaQVx19MDhaz5OB64SbNVWL/nt/oCiCos9
+         OP+3HAHdFGRqAbhv9KKp9meCf3xUWDDP1x7IbyshwwceyuANuB8y5k1ZSU9M0M98O5+3
+         PBNrUrqdMzj089EsIvRBFDe/0CcKU31S1YYUg6JXgfFXiYSVHXXSphzXt3fpKLehUE2R
+         gRdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO83fAkgz8rUAsfS/dvhp2L3T5zhQC+S2sXZEZfZE3Q=;
-        b=wpKzRsws/hnAk28mur+o8FltcnEzEETjiTwiZcxdWN+5Q1rle38hSVFxxvN2dzp3ZU
-         JiZpLKOFeBpM6luet5SaUre95p+WqrbvN75K6L+FskcmFXKRCdDp3Ni+UeyxWAoq/Jwi
-         va8DL6NMBdM5YoJpvwXhy+yaYHmG4UmoL+RGHrfkt5AdVt1VcSYM/wCfc4BPan2SsSi7
-         vxyeJnEU4OJI8pdUj1yBKtTPHYCfuPu4wADCrFUwjE1BO+JGdgz4Xvo4grcQsdxWTUTE
-         C62YtKTTcGlwhFpFFExWTEeBpRuwJrElxXWZkfQHmEv7dxahrBmjv82TXY5BlCipl3zv
-         ilug==
-X-Gm-Message-State: ANoB5plHMqmLEzpfFz+a8ZgQnZkvVppmkgYuBYOhCZQtqUNUKzMCWpl4
-        v8AVW/ATHE+vsFr02RLkrLnLg+ID4VK5B8z8gb4iqp8zoshp2skqQ+lBwv8YzPXVzvBlF/8Elw1
-        S4WSfdEAAtmptzb2V7rT/8yvNNEKkLZRFKs9OPlQOGO5bo1EFyg==
-X-Google-Smtp-Source: AA0mqf5Lj2+xvEeOWxAgEl+NsBBahHdx9JZhUAEzJi38S7Zj/Y6F7H5HNoHWHRJ5kn3K+ggvO6Otk10=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:1b05:0:b0:461:8ba8:e056 with SMTP id
- b5-20020a631b05000000b004618ba8e056mr14079677pgb.517.1668481834949; Mon, 14
- Nov 2022 19:10:34 -0800 (PST)
-Date:   Mon, 14 Nov 2022 19:10:31 -0800
-In-Reply-To: <20221115031031.3281094-1-sdf@google.com>
-Mime-Version: 1.0
-References: <20221115031031.3281094-1-sdf@google.com>
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221115031031.3281094-2-sdf@google.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Make sure zero-len skbs aren't redirectable
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dAAmI/mpX34X1iM1ddDtHCn4cxjCzzyc5sEgoPbFM7U=;
+        b=k8yxjankm7qfwbw4ZbliOU66ah8mqR9wo+lBcWx7NnsLRXf/oHYDYjvaByO5l3EjXZ
+         PiqfCTsGiNOiAmU1m5GmyQpZRdKaDGB+Y7bq/lbmwZHXObiuhXT9vbWZOH6W3eBAhJoD
+         GsJogrrbkiJpkbP/brjic/0HkZYkXg3DS1Ivle53pTIL9Fhlm0O8ZmRo5uPb6rnZpIx2
+         RODFjirk5QXeNlPXevhz32hFqlmpZ+m4kVoCpL6fGfFy7kwonGMPsDSxu+1+SiMYQbvJ
+         +lF2t8BAC75Yc8pxKjNN6ROHhOiJKP+gPaEcRqwHt6jvdKiy6Afnlhv8R5orYOiV8+vN
+         Fb+w==
+X-Gm-Message-State: ANoB5pnlQxc8BMwvABZIWtb1XKLuUkiCKO/quzK4YCFLyHZbyBgyhwTN
+        7gD/vIZH7DzO2CHSCB2rKErF7VOnZose9QP+agNo7w==
+X-Google-Smtp-Source: AA0mqf6LeU70wR6Wvto3d88rRH+RsUpIaI4o5uD9hVQwEGfKA8+TFMDOcwSnRW8I6QNmT7Zdt/BHglnrSMBwSOUdFsc=
+X-Received: by 2002:a9d:685a:0:b0:66c:dd29:813d with SMTP id
+ c26-20020a9d685a000000b0066cdd29813dmr8037560oto.312.1668481919811; Mon, 14
+ Nov 2022 19:11:59 -0800 (PST)
+MIME-Version: 1.0
+References: <1668482980-16163-1-git-send-email-wangyufen@huawei.com>
+In-Reply-To: <1668482980-16163-1-git-send-email-wangyufen@huawei.com>
 From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
+Date:   Mon, 14 Nov 2022 19:11:48 -0800
+Message-ID: <CAKH8qBurjSs+nvXVsOPqpPGhODj=Ja2Zwt7mPYxJ20LWbj2FRg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] selftests/bpf: fix memory leak of lsm_cgroup
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, paul@paul-moore.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,205 +68,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LWT_XMIT to test L3 case, TC to test L2 case.
+On Mon, Nov 14, 2022 at 7:09 PM Wang Yufen <wangyufen@huawei.com> wrote:
+>
+> kmemleak reports this issue:
+>
+> unreferenced object 0xffff88810b7835c0 (size 32):
+>   comm "test_progs", pid 270, jiffies 4294969007 (age 1621.315s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     03 00 00 00 03 00 00 00 0f 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000376cdeab>] kmalloc_trace+0x27/0x110
+>     [<000000003bcdb3b6>] selinux_sk_alloc_security+0x66/0x110
+>     [<000000003959008f>] security_sk_alloc+0x47/0x80
+>     [<00000000e7bc6668>] sk_prot_alloc+0xbd/0x1a0
+>     [<0000000002d6343a>] sk_alloc+0x3b/0x940
+>     [<000000009812a46d>] unix_create1+0x8f/0x3d0
+>     [<000000005ed0976b>] unix_create+0xa1/0x150
+>     [<0000000086a1d27f>] __sock_create+0x233/0x4a0
+>     [<00000000cffe3a73>] __sys_socket_create.part.0+0xaa/0x110
+>     [<0000000007c63f20>] __sys_socket+0x49/0xf0
+>     [<00000000b08753c8>] __x64_sys_socket+0x42/0x50
+>     [<00000000b56e26b3>] do_syscall_64+0x3b/0x90
+>     [<000000009b4871b8>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> The issue occurs in the following scenarios:
+>
+> unix_create1()
+>   sk_alloc()
+>     sk_prot_alloc()
+>       security_sk_alloc()
+>         call_int_hook()
+>           hlist_for_each_entry()
+>             entry1->hook.sk_alloc_security
+>             <-- selinux_sk_alloc_security() succeeded,
+>             <-- sk->security alloced here.
+>             entry2->hook.sk_alloc_security
+>             <-- bpf_lsm_sk_alloc_security() failed
+>       goto out_free;
+>         ...    <-- the sk->security not freed, memleak
+>
+> The core problem is that the LSM is not yet fully stacked (work is
+> actively going on in this space) which means that some LSM hooks do
+> not support multiple LSMs at the same time. To fix, skip the
+> "EPERM" test when it runs in the environments that already have
+> non-bpf lsms installed
+>
+> Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> Cc: Stanislav Fomichev <sdf@google.com>
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/empty_skb.c      | 140 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/empty_skb.c |  37 +++++
- 2 files changed, 177 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/empty_skb.c
- create mode 100644 tools/testing/selftests/bpf/progs/empty_skb.c
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-new file mode 100644
-index 000000000000..6e35739babed
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <net/if.h>
-+#include "empty_skb.skel.h"
-+
-+#define SYS(cmd) ({ \
-+	if (!ASSERT_OK(system(cmd), (cmd))) \
-+		goto out; \
-+})
-+
-+void test_empty_skb(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, tattr);
-+	struct empty_skb *bpf_obj = NULL;
-+	struct nstoken *tok = NULL;
-+	struct bpf_program *prog;
-+	char eth_hlen_pp[15];
-+	char eth_hlen[14];
-+	int veth_ifindex;
-+	int ipip_ifindex;
-+	int err;
-+	int i;
-+
-+	struct {
-+		const char *msg;
-+		const void *data_in;
-+		__u32 data_size_in;
-+		int *ifindex;
-+		int err;
-+		int ret;
-+		bool success_on_tc;
-+	} tests[] = {
-+		/* Empty packets are always rejected. */
-+
-+		{
-+			.msg = "veth empty ingress packet",
-+			.data_in = NULL,
-+			.data_size_in = 0,
-+			.ifindex = &veth_ifindex,
-+			.err = -EINVAL,
-+		},
-+		{
-+			.msg = "ipip empty ingress packet",
-+			.data_in = NULL,
-+			.data_size_in = 0,
-+			.ifindex = &ipip_ifindex,
-+			.err = -EINVAL,
-+		},
-+
-+		/* ETH_HLEN-sized packets:
-+		 * - can not be redirected at LWT_XMIT
-+		 * - can be redirected at TC
-+		 */
-+
-+		{
-+			.msg = "veth ETH_HLEN packet ingress",
-+			.data_in = eth_hlen,
-+			.data_size_in = sizeof(eth_hlen),
-+			.ifindex = &veth_ifindex,
-+			.ret = -ERANGE,
-+			.success_on_tc = true,
-+		},
-+		{
-+			.msg = "ipip ETH_HLEN packet ingress",
-+			.data_in = eth_hlen,
-+			.data_size_in = sizeof(eth_hlen),
-+			.ifindex = &veth_ifindex,
-+			.ret = -ERANGE,
-+			.success_on_tc = true,
-+		},
-+
-+		/* ETH_HLEN+1-sized packet should be redirected. */
-+
-+		{
-+			.msg = "veth ETH_HLEN+1 packet ingress",
-+			.data_in = eth_hlen_pp,
-+			.data_size_in = sizeof(eth_hlen_pp),
-+			.ifindex = &veth_ifindex,
-+		},
-+		{
-+			.msg = "ipip ETH_HLEN+1 packet ingress",
-+			.data_in = eth_hlen_pp,
-+			.data_size_in = sizeof(eth_hlen_pp),
-+			.ifindex = &veth_ifindex,
-+		},
-+
-+	};
-+
-+	SYS("ip netns add empty_skb");
-+	tok = open_netns("empty_skb");
-+	SYS("ip link add veth0 type veth peer veth1");
-+	SYS("ip link set dev veth0 up");
-+	SYS("ip link set dev veth1 up");
-+	SYS("ip addr add 10.0.0.1/8 dev veth0");
-+	SYS("ip addr add 10.0.0.2/8 dev veth1");
-+	veth_ifindex = if_nametoindex("veth0");
-+
-+	SYS("ip link add ipip0 type ipip local 10.0.0.1 remote 10.0.0.2");
-+	SYS("ip link set ipip0 up");
-+	SYS("ip addr add 192.168.1.1/16 dev ipip0");
-+	ipip_ifindex = if_nametoindex("ipip0");
-+
-+	bpf_obj = empty_skb__open_and_load();
-+	if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
-+		goto out;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		bpf_object__for_each_program(prog, bpf_obj->obj) {
-+			char buf[128];
-+			bool at_tc = !strncmp(bpf_program__section_name(prog), "tc", 2);
-+
-+			tattr.data_in = tests[i].data_in;
-+			tattr.data_size_in = tests[i].data_size_in;
-+
-+			tattr.data_size_out = 0;
-+			bpf_obj->bss->ifindex = *tests[i].ifindex;
-+			bpf_obj->bss->ret = 0;
-+			err = bpf_prog_test_run_opts(bpf_program__fd(prog), &tattr);
-+			sprintf(buf, "err: %s [%s]", tests[i].msg, bpf_program__name(prog));
-+
-+			if (at_tc && tests[i].success_on_tc)
-+				ASSERT_GE(err, 0, buf);
-+			else
-+				ASSERT_EQ(err, tests[i].err, buf);
-+			sprintf(buf, "ret: %s [%s]", tests[i].msg, bpf_program__name(prog));
-+			if (at_tc && tests[i].success_on_tc)
-+				ASSERT_GE(bpf_obj->bss->ret, 0, buf);
-+			else
-+				ASSERT_EQ(bpf_obj->bss->ret, tests[i].ret, buf);
-+		}
-+	}
-+
-+out:
-+	if (bpf_obj)
-+		empty_skb__destroy(bpf_obj);
-+	if (tok)
-+		close_netns(tok);
-+	system("ip netns del empty_skb");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/empty_skb.c b/tools/testing/selftests/bpf/progs/empty_skb.c
-new file mode 100644
-index 000000000000..4b0cd6753251
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/empty_skb.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int ifindex;
-+int ret;
-+
-+SEC("lwt_xmit")
-+int redirect_ingress(struct __sk_buff *skb)
-+{
-+	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
-+	return 0;
-+}
-+
-+SEC("lwt_xmit")
-+int redirect_egress(struct __sk_buff *skb)
-+{
-+	ret = bpf_clone_redirect(skb, ifindex, 0);
-+	return 0;
-+}
-+
-+SEC("tc")
-+int tc_redirect_ingress(struct __sk_buff *skb)
-+{
-+	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
-+	return 0;
-+}
-+
-+SEC("tc")
-+int tc_redirect_egress(struct __sk_buff *skb)
-+{
-+	ret = bpf_clone_redirect(skb, ifindex, 0);
-+	return 0;
-+}
--- 
-2.38.1.431.g37b22c650d-goog
+Thank you!
 
+> ---
+>  tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 17 +++++++++++++----
+>  tools/testing/selftests/bpf/progs/lsm_cgroup.c      |  8 ++++++++
+>  2 files changed, 21 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> index 1102e4f..f117bfe 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> @@ -173,10 +173,12 @@ static void test_lsm_cgroup_functional(void)
+>         ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
+>         ASSERT_EQ(query_prog_cnt(cgroup_fd2, NULL), 1, "total prog count");
+>
+> -       /* AF_UNIX is prohibited. */
+> -
+>         fd = socket(AF_UNIX, SOCK_STREAM, 0);
+> -       ASSERT_LT(fd, 0, "socket(AF_UNIX)");
+> +       if (!(skel->kconfig->CONFIG_SECURITY_APPARMOR
+> +           || skel->kconfig->CONFIG_SECURITY_SELINUX
+> +           || skel->kconfig->CONFIG_SECURITY_SMACK))
+> +               /* AF_UNIX is prohibited. */
+> +               ASSERT_LT(fd, 0, "socket(AF_UNIX)");
+>         close(fd);
+>
+>         /* AF_INET6 gets default policy (sk_priority). */
+> @@ -233,11 +235,18 @@ static void test_lsm_cgroup_functional(void)
+>
+>         /* AF_INET6+SOCK_STREAM
+>          * AF_PACKET+SOCK_RAW
+> +        * AF_UNIX+SOCK_RAW if already have non-bpf lsms installed
+>          * listen_fd
+>          * client_fd
+>          * accepted_fd
+>          */
+> -       ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
+> +       if (skel->kconfig->CONFIG_SECURITY_APPARMOR
+> +           || skel->kconfig->CONFIG_SECURITY_SELINUX
+> +           || skel->kconfig->CONFIG_SECURITY_SMACK)
+> +               /* AF_UNIX+SOCK_RAW if already have non-bpf lsms installed */
+> +               ASSERT_EQ(skel->bss->called_socket_post_create2, 6, "called_create2");
+> +       else
+> +               ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
+>
+>         /* start_server
+>          * bind(ETH_P_ALL)
+> diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
+> index 4f2d60b..02c11d1 100644
+> --- a/tools/testing/selftests/bpf/progs/lsm_cgroup.c
+> +++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
+> @@ -7,6 +7,10 @@
+>
+>  char _license[] SEC("license") = "GPL";
+>
+> +extern bool CONFIG_SECURITY_SELINUX __kconfig __weak;
+> +extern bool CONFIG_SECURITY_SMACK __kconfig __weak;
+> +extern bool CONFIG_SECURITY_APPARMOR __kconfig __weak;
+> +
+>  #ifndef AF_PACKET
+>  #define AF_PACKET 17
+>  #endif
+> @@ -140,6 +144,10 @@ int BPF_PROG(socket_bind2, struct socket *sock, struct sockaddr *address,
+>  int BPF_PROG(socket_alloc, struct sock *sk, int family, gfp_t priority)
+>  {
+>         called_socket_alloc++;
+> +       /* if already have non-bpf lsms installed, EPERM will cause memory leak of non-bpf lsms */
+> +       if (CONFIG_SECURITY_SELINUX || CONFIG_SECURITY_SMACK || CONFIG_SECURITY_APPARMOR)
+> +               return 1;
+> +
+>         if (family == AF_UNIX)
+>                 return 0; /* EPERM */
+>
+> --
+> 1.8.3.1
+>
