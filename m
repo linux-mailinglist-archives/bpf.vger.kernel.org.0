@@ -2,192 +2,347 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EBB62A04A
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6AD62A069
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbiKOR2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 12:28:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S229490AbiKORd2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 12:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbiKOR2g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 12:28:36 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2161711C29
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 09:28:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668533315; x=1700069315;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Q8bMBv+VQL4IpSrjh8Blg8RJyGJ9dF5zo4GrSauuWkk=;
-  b=T/NCvt8Dbt+nRA4PtIhcleycPQAi7cQV18gz3bv9T9tpCGh8vQ1kvdQj
-   0Y0BFACuaHRldi7c1FUz+6CkdOeYAhoM+g4SCjqhKcVBojqFFfhKIP7dU
-   e9BeuJrUJ4me7hjVY0eSByFWRnriiackD7/UiTvvDPcQGEOHXhls3/v39
-   6jfRukYyzdTjciBlbof2QqHEXChu4sAhuHEQSQiJSlFus1hL1NfZMJR49
-   xBcmeiSpL8GFmmVHmbunYgqkw81Otjdo7puQlsm9jhm30+C7lBPT1t2Fg
-   y3Be8pTwjKHCVQVvSOjs3ePPYz5a1cP42JdfdOsYZKxu8ezm0BukG3XCZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="312320119"
-X-IronPort-AV: E=Sophos;i="5.96,166,1665471600"; 
-   d="scan'208";a="312320119"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2022 09:28:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="616833127"
-X-IronPort-AV: E=Sophos;i="5.96,166,1665471600"; 
-   d="scan'208";a="616833127"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2022 09:28:34 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 09:28:34 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 09:28:33 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Tue, 15 Nov 2022 09:28:33 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Tue, 15 Nov 2022 09:28:33 -0800
+        with ESMTP id S229681AbiKORd0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 12:33:26 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813062CE3A
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 09:33:22 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AFHBS6m011227;
+        Tue, 15 Nov 2022 09:33:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=FYsYQiMrtbB7UmZFU2mescmQGLSPD/0aMWppdUs+Z8c=;
+ b=CGRuY/NROjG0VUS/Zn+3NyFZQbUe0PbT39bsJpRYRf/pC4poWtZ2GKnp0IQk2axiZ+FO
+ l253Trcd2FbhMAyNvdgllZhUuIK3+Wl4vDsD3WG2NRvDG3ZhWfK80OlguVOWQL1MKEeo
+ t6XnlrTxjH+NS+hz+HHaTCYHVUMdOMHoyhlYVzUsgiDXEnP5suCTCYGDHjaWUKILioAA
+ izJLwUu3EFpWr0oGa/CtKZ/XkYMxTXuPWlNjCu1TM0bwF1eUw6UsLICqaTZzT4DnyOG3
+ o1UFI/xNaS5/9x7Km63vWcaFCWAKEhgwV9v5vHR1WaUL073BhlPiQfyXXAuvNB12Zv3e cg== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kva7fu5mk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Nov 2022 09:33:06 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D6gROKfRQgWDltvTbDX+Y+YZuO5G0ndeXGpATcvR+udkImDVi0w1w9SeNDh/cclQybq0ZLuv5hyhAfpiKXMVR+nuvNxrVB8A84kWpHaXlgnxk6e5w1r/Go0Sx7+3/A37yNIAdjnqLoGLMRQ5yfs+x4OwTBPN7XVLfTtheh8a09Bc6MDnin3GpA8TmiYM5fOmtx+C50YqXOCf49ukF0yOhjIDkYnW+iE1nqhJ/yD1EnyA/iy2kGSwAjr5CrVsCVIxMmDUl4pHVMj+cTq9WmVU40RGfgRI6GMx/YvQcLOBYfldbGDe7zDCu/9r3/dk5BEyP9kQtLJJVA6DLNFKBGXpkQ==
+ b=A4xycsSNWxFwSXPIXw/GfKJoan0w0AbTO6iC1k3PZucGwjbFlbII6MqSyHP21Q7V92qeaDTpzOtVw8BHdfhdfkMLyv3rkFpEk35r6AUvkacRY4d7LHLma79ptb5Ulqkqj9tMBt9aPk0PIFvhsGgKRN9JlBvY71beQuJq/Bi845KHZQHpH3cMRxLkCIoFQG2ir+mqgIAugx3bu3kyGtkBV5Iyw7nWp3F2cpJm+H4d/fvtJJB9mVRiT2cJdqLYXny3e46hNPiatZNRIzm4RZMJrvCt5ZtaQ0PKVq5UUFbM0Wy+3Cnpon3WZlwZroCGYWjpnQDPFTBnTjHtz34ueVj8fg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q8bMBv+VQL4IpSrjh8Blg8RJyGJ9dF5zo4GrSauuWkk=;
- b=R3MDu8Ur2HgcFgCtiaPm3UIcra02QpcaKub4v5TvwypgYM3n5FXGNTpSIgRCrDOYOAoaAvPJSXbXXawMHDNYLwyv0Fm7m6xjuQaDTohAH0d3/Xc5eZAl8FxE4YpqoWoI85uWAHgtqWT3gbyrfutvsE3CO0s16jEeb/11haFXPRE0AwtMtCEzYos07GvPUpnv3RIA/fCGUv9AUPDtkjCZB4Tz1dnHSFNKdCbznSL0u7JEWAlJgG+sRW/a3UAzi+LXd3xj0t5wAKy4Zm+YjuBwCYYF2P/P1McD7paxGHbi1srtKiwYqgl2T8WqLts7vJZeNQQutnlEuFupTujqgh6lJg==
+ bh=FYsYQiMrtbB7UmZFU2mescmQGLSPD/0aMWppdUs+Z8c=;
+ b=XoaCaOHqtxt4w42SNMjPyPPky9jRgWra+cBuL+q6Tjsnvj48ih0aB0M0qRi1vcebSWFrho4bhK7gHvAJ6YYolybnAn2nCQUwGPVe3iiBt3gpAnz9Z8RrsHVbbhb2F/Z7qoO8WUIU3IzA8kWtdipH9dhGE9WG/EqCAw5gdSuwnQXBx5Yfc07qn5ilz2Fxs4rhGplMPHDzDa/m8bWAa1SWwrxqLZzN4L+d2FIiwm8EKDAdP2FsPUIbGnhNOZi7A//w54l5TyZt+XynYb4zSL/myhPdNyxxP8WCOBRzN3vvhrG3fvCPV8OCSWlkWow7AI0o6gzAoPCkS9fYd5UqFQu0TQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MWHPR11MB1392.namprd11.prod.outlook.com (2603:10b6:300:24::14)
- by IA1PR11MB6148.namprd11.prod.outlook.com (2603:10b6:208:3ec::20) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ by MN2PR15MB3679.namprd15.prod.outlook.com (2603:10b6:208:1bb::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Tue, 15 Nov
- 2022 17:28:31 +0000
-Received: from MWHPR11MB1392.namprd11.prod.outlook.com
- ([fe80::add7:df23:7f86:ecf3]) by MWHPR11MB1392.namprd11.prod.outlook.com
- ([fe80::add7:df23:7f86:ecf3%5]) with mapi id 15.20.5813.018; Tue, 15 Nov 2022
- 17:28:31 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "song@kernel.org" <song@kernel.org>
-CC:     "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Subject: Re: [PATCH bpf-next v2 5/5] x86: use register_text_tail_vm
-Thread-Topic: [PATCH bpf-next v2 5/5] x86: use register_text_tail_vm
-Thread-Index: AQHY8vpB5ncG2TwEA0WkYnZuK4LEMK41Y9kAgAA1awCACrAiAA==
-Date:   Tue, 15 Nov 2022 17:28:31 +0000
-Message-ID: <24f2a65c53fd060d02e410db61ad91fcc4ca29b6.camel@intel.com>
-References: <20221107223921.3451913-1-song@kernel.org>
-         <20221107223921.3451913-6-song@kernel.org>
-         <572a1977126b54f50eb69b7b2f826e271bfd42c7.camel@intel.com>
-         <CAPhsuW6rp01kuVXq7t4ukExPJY+W+nmHcgdVON7WSH+4_W57dg@mail.gmail.com>
-In-Reply-To: <CAPhsuW6rp01kuVXq7t4ukExPJY+W+nmHcgdVON7WSH+4_W57dg@mail.gmail.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Tue, 15 Nov
+ 2022 17:33:03 +0000
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::fc34:c193:75d9:101c]) by DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::fc34:c193:75d9:101c%4]) with mapi id 15.20.5813.017; Tue, 15 Nov 2022
+ 17:33:03 +0000
+Message-ID: <3e726a4f-5e26-47c7-ddfe-0cd73778f4b5@meta.com>
+Date:   Tue, 15 Nov 2022 12:33:02 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.2
+Subject: Re: [PATCH bpf-next v7 12/26] bpf: Allow locking bpf_spin_lock global
+ variables
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR11MB1392:EE_|IA1PR11MB6148:EE_
-x-ms-office365-filtering-correlation-id: 77e81570-0821-4370-1e33-08dac72ed117
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IAv0zBPoshQUKWrp+aXlBkQ9tqiKQ3ZH/PppLksMSx6sDaBVfywynccHvQIbevt/zNh71asSr1jR46+mqsylRe5C8XGeCopztwvfiOpun8FnVp83e8PWtmmVnDjQkTYKWbwdiUSOvcD+LiVM5ECA3A1if57tx91FmBaDLk1/mSJIK40PoytA6sz1rht15qGPzxYEQhTd4XTSmkbLs6JoMbLkdjFJErjuoqg56jVocrEBJTZDisnCNaZ3KoqwWMltfBV3J4fditHqXqFMCdjijxfOJuknSbXbFUkWZZ28oVF3HTOmlBCBrsB4iVDm57kiLYg1TNfUVYh0eOSq2UYYuZJzQJz1dA5IyT+uOibjHIGzyJfuSOZmyj2O1CYc1kn40M9bK4duE7vRFukdQrAqDkzRCfiXv+ShIAaCGjcoll+yzOmaObjGTKPhl4xwO+HSa63SjgHdG1BAvIwkxjUDPqJYL5z8Qo8hH2TguZ281Y83vAF5Vh8KMtWYo9ZyTm4zqHPxIpRuhkUufHAIOaNUogM+Obw2zA4Bo1SFuV9GWX13DYGc7D4ExsX79nmaPOUs77+LaWQAqTUMxBV5O02yPtwCrvoRV1H7Noj5x1IZtGid7YM4QmrKckYwSqWoWITgIn6STKNOH4LxCgF5Mruexf63u/0yM99+dySlh2GlKVavcS4zQ7lStr/Ai5NwkpK7pnwHb9mYcsfM66U7iv+zSDKlgTC+NTh2jU+DhFB2NfS7Go81v8SzyKeaehIm5MZmQA7DbmI9qVxnC7Ei/u/isoUjVLseJ7HMBghJCniJRos=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(39860400002)(136003)(396003)(366004)(346002)(451199015)(26005)(6512007)(2616005)(186003)(122000001)(38100700002)(82960400001)(6506007)(5660300002)(2906002)(6916009)(66476007)(107886003)(6486002)(66446008)(71200400001)(478600001)(64756008)(41300700001)(8936002)(4326008)(8676002)(316002)(76116006)(66946007)(91956017)(66556008)(54906003)(38070700005)(86362001)(36756003)(99106002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eXFDTy9vV2ZvcUFpbjg1MU1aY2NpTVNubnhwMlk5NytZR3ppVGtST0VhWTNh?=
- =?utf-8?B?K2ZENHlpdkVTZzZUUHpWcW9samVuS2UwZU9RV20vUVRHeDdIeHVHN2RXQkVa?=
- =?utf-8?B?ejRjSnVkTzlKN3N3aEQ2T3VLR2c1ZjZQeFBrR2hhQ2pRSkN3bUt1cURVK2li?=
- =?utf-8?B?R3BvMGtURGs2TFhUeGZ6Tk1YL1RQWnNlc2czN1dENzJ5bFZUeXdwZDFVeHdX?=
- =?utf-8?B?Q2xrSytZcFlzWEoxeGY4aVJ6WjAvWEZiUkxCYVJiZmpMT1lPMlZUY0lKQzlH?=
- =?utf-8?B?Qnl3QWlNamdBNzFCY0d5a2Y1YnhTY3k1WDE2TGJNK3RoRTFOTzc2azRzNUVs?=
- =?utf-8?B?MktwdnFqQjRva1Z1RVlOZnAxVTRCVVBnZnZ0QVNmWjV3ZURBNXN2ZlM2aWQ4?=
- =?utf-8?B?UWdOa3ZaM3E4VEltUjBmdVphYUhTS0gzSGZ4UnV4Tnd2cmMzR1RSKzRkYTNU?=
- =?utf-8?B?RFBGdDIrR1NpcDFrejFteFQ0eFpNUjFuK01tOVJaNVQxWlJpQVRYS01KcVho?=
- =?utf-8?B?dlhTT3l3ejlzR0JCNS95YW9WZnNHc1BnbzdBWDdnWFE1eDNMWnpOV3BZSk9D?=
- =?utf-8?B?TDNhMW0ySDVBVnl4QldVeG1uaDhhcGt6WXJUdDV4NDBFNFhoWEtOUTV5ODIv?=
- =?utf-8?B?MFJwWHZNczd3T3RzTU1SaWk3cVJrek54UUd5N084WGhKbjk0WXQrK01FQk1D?=
- =?utf-8?B?RDZldUlVSFhaNnEzaGIva2dmeWprbmlMRHVkTjRZdXhLY25JbHREYzd1VUla?=
- =?utf-8?B?VzRCd0gyakZJR3NRWTgyL3cveGw0V0ZmdlpHWkVVTlplSUJ4ODY3eDhNdkg2?=
- =?utf-8?B?cGJTYzg3Wi8rd0NOUnZXY2FsRTBzbkRYOUprd29UVEZBeXFBWW9VN0hZaWI1?=
- =?utf-8?B?aWFybGxlQnM0WmNFOHBwZXcrMVFzdGthR0NtTjNPdE5qbVZwaWw3bldCRFNY?=
- =?utf-8?B?S05vT3doNTZrTW1QaEdOZWZNcnBMQ2JyamtBTWdrcE5MWlFwUUF1UmJ4cnNL?=
- =?utf-8?B?SXRmY0JVaVdxaWFGSFV5N3RtVFBSTjdhTzdiTm9saWlxM0hQYmplc0FESTFX?=
- =?utf-8?B?eTc5UGQ4ZU9aSXlpcWVWSHlhZnV6TnNSYTQ1ZXRnaGczT2pKUzVtNURPTzZy?=
- =?utf-8?B?blJ6M3gzQnVNUmpLdjdJR3FwS0Q4c2JSZ0JvVjFlcWp2MTBQMDMzUzlKVnpi?=
- =?utf-8?B?Y2EvYzdxalROMGxoTlBWbGN4UW9JUjR6L1MvR05nRVZod1NQWWRsZXRlN1Zr?=
- =?utf-8?B?QjI2dVFadThOaVNoYkFuamdMWkNvSzl3b1g5NVZzalQ2UE5yVjBGSWRpd2pt?=
- =?utf-8?B?TmVDSmU1RUhjK202aEx4TldJNFZTWjQ2L1dESG9YcG04MDNNVjVSZXYyVkw1?=
- =?utf-8?B?alVJS3ZBdWpkWXhKc1NvRkNJWjJmRGJOSjRic2hOYzlkUWswL3B4YW05OTc4?=
- =?utf-8?B?RHo5REM4RnpVTFJCZmNzTzg3c2RkKy9HMXUwSUZCWlV4bmFFWGpweWNBRVo0?=
- =?utf-8?B?eXR5K3VXSURvMDl2S3JHSlozaGxobWtrM1lvZTJGUDFaTDhWTGNyWlRNL0Nq?=
- =?utf-8?B?dXVENTZDOVhKSUxQYzlLQWx6cDRpTXJwQkhybFBTL2wza200dGNya2RYOGpp?=
- =?utf-8?B?cklZbjRHemxDL2cyZzRVeWNlL1VheGREam9CQjRXRU8vdWErNks2MjZoQW9E?=
- =?utf-8?B?MmhlSy94SHBnRmppUlJMTHlFUzNFUXpnMmdMYUdXTXRtREg4Smc5dlNNRzJ4?=
- =?utf-8?B?S0gvTXJNVTl1LzkrN1NORkFydEN4RnZmd25HdkYxNEl5QkdqM1NGVXRpRnpz?=
- =?utf-8?B?cGwxMStpdzJkZlU1aWxsWXJTRSszYWsrTDEyTDVxK0JEMERuVmN6MGJZemZ2?=
- =?utf-8?B?SkF0amcwSUs2MXBOeDRtbDFtM2NUWnZYZDhHWkw1OVUwVkxWSFlpemRlODhZ?=
- =?utf-8?B?T3VZYjJEWkZLODFZclN0OTQrRkdQMk1pUFp1d3VEKzZxSkxPY2dwckdmRFNj?=
- =?utf-8?B?Qld5ZHlkMDFSaVJjc0daT1RralFnaDVUZU1WS0Q0dHJsR2pnblhJd1FyT2Za?=
- =?utf-8?B?MzNRTm4yNUNtYTVCNFhlbWc2cmx1SkhDem45QmljZS95dnBSUHFIWUFJbFpV?=
- =?utf-8?B?MTdZUnI0ck51VG1Mem82Z1FmcWxZTC9YeDE5TjA3ZE5GS0ZNVUdXam56M0dO?=
- =?utf-8?Q?JudHF4jLjjyF+D83M95+xxI=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <66CED2C53737F84E937EECEEDC6E360A@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221114191547.1694267-1-memxor@gmail.com>
+ <20221114191547.1694267-13-memxor@gmail.com>
+From:   Dave Marchevsky <davemarchevsky@meta.com>
+In-Reply-To: <20221114191547.1694267-13-memxor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR20CA0017.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::30) To DM6PR15MB4039.namprd15.prod.outlook.com
+ (2603:10b6:5:2b2::20)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|MN2PR15MB3679:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fc8ce4d-614b-47c1-2d5b-08dac72f732c
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FwnyDaj46M4qqk5A6z2z0QwqB17Wdvsjn/6L1Ou+WalefqgTrcYIzM0tm3RdCbj7NRvWWyLLknFPAL5raAIqrwxbXHGxXYPxlt/iCUq7f/dYHgv6yCIZBA3GpggxDdx1CG7+YvVKeAj+4Q2jjiEnvkSwvZS1lonAUR1NxF0LXepMLcIBnYe/EeCDCXCP+pfB+zRhOrdUxW1Y4lIn6z4PAngABqskUH/85sbFUNoMiFXHXh5FMSZu+aN3RU9J/4Hod18rpNgwYAv13Hol2qAyGQX3dW/LTQHuNTakzct8LtHofmxqSTAFbYRsIjcX/MUkdBrOtJ68vv0Xjnt7xEO4ajfZGo3G1m7R14ZiDxZZYS22vEyftyVkB/5WzUXbWbwT7KpJZyDDZrl4cqGUFCaIsPgskwGwvy3qKujtU+dao/w6PUlRVd3azziTlR3lYlu7CRwR6CFHFdiUbV1bJ9BM8xEHpUUEy0JjvIS8QoULQO3ueih+lmeDQGZ6a6Ss3tx2pxImBsuCpRQPykmO/OKCNhsstwnqVIG4U0MU86BGThCpAUur2WnzmWvqgracOD09+mKBwNokrz3Gdne4748DVm6cYuZT/gmKSu5SRluoq3UnREOLBJBedqzA1qZ24SmLJ+wE9lduJjIXcFQRh6CHYv4dpLvnINP/klHRpA1nqsvaulyH/rW0ldoe5rfAp0HP9nYO+OSOl47iXMTumDdUyyrxrKLD7pZNDfgbSrledOcI/p1+27IRZ8JCHKRq43zItgze5E4Eqk7fI4sE2vDQ9mvOic3mEOrwe8WeQYlxovA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(39860400002)(346002)(366004)(376002)(451199015)(54906003)(66946007)(2616005)(4326008)(31696002)(66556008)(36756003)(86362001)(186003)(41300700001)(6512007)(66476007)(5660300002)(8676002)(316002)(53546011)(83380400001)(2906002)(8936002)(31686004)(6506007)(6486002)(38100700002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WEsyVjdoSUJSdE1DUDVBZXdHdGptbWhLRmtUY1J4akQ3bml3MEVoMytqWldR?=
+ =?utf-8?B?QnJGT1M1QWhGQmpHRlhuTk5XU2xJN0QrdThPNGVPK1V4dUxyc0pwQ0xPNjNl?=
+ =?utf-8?B?ZUpXK2pxYkYydzlZblU1bk1FYUl0aXFDMVRCYmVIWStBd1BIVzVIaXdRUmtr?=
+ =?utf-8?B?c3pKUndJRzlHMG5VTVlsUXpaNmJQdUdtcmx5Q0FnejkrdGRVMkxzbFRhSkNj?=
+ =?utf-8?B?V1M4K3pDdm9TZDVzMUtabTFBN0FoTVZQbkowMWlKTTZJR2FOT3A0eERiWS9X?=
+ =?utf-8?B?aUxSRTEvbTJxbUxCMi9pdjgyWi9FeUNXS1ZPaTVuZ0Z5bDJKbGM3UE9wcmpa?=
+ =?utf-8?B?dTE1NGdHa1hhSUlHSU5nSFV6Z3NTUE1HVEFPQXc1MGZIL2NESXJ2ZnhFLzd0?=
+ =?utf-8?B?Y2dUTlVHTHhhZy9lZ0FiS1FGU2NHZUt1QWUwZHFEdGx0SndiYXBkNVNrekc3?=
+ =?utf-8?B?SXlocEIxL2NVS3NYZStveC9sVjBGQTE3aDlEeTNJNVlEd1dsdVhqVDF6aFhK?=
+ =?utf-8?B?empXbmpsYlNkU3V1TXRRNTlLbEdkbGNTZUNPbnV5bWw2ZnJLeXhKaFcvU00w?=
+ =?utf-8?B?UXZCT0F1Wkdjb2Q2VjViOG13ZzRpMUFYWVplaVd5MFdsVUNRRWNwS1N4N2pK?=
+ =?utf-8?B?aE14ZEo2RzQwVzdVSTV0bm8ySkNHNk9oSnF1Y1ZSOHA2NEJ0Yk9qa0NWakZu?=
+ =?utf-8?B?TXpmK2RTVElYOVhEU3FpcktxbTh2eGY3dlR0VHJtNkZHWTgzbGdPbXVBWER1?=
+ =?utf-8?B?ZWVQbVpQeG95MStrajc3RzE1dllvSkVSaDhZM1N5VnNGeHVVOEhGRmd0L0E4?=
+ =?utf-8?B?a01ocEFKT3pYS1AzdHMzTDlHSGdFbThyaDFYOVdCYlBXOVBOMmhIWDBaSDl3?=
+ =?utf-8?B?dGZkQ2g0WmgrQ0R0cE9kbDJjY3hhNVFNWGpyTitVdkJ5N21ZTW9SbGJZNnRo?=
+ =?utf-8?B?UHM1b3c3Sk5ITlp6WVd5azc1cW1raDU2citUS1dWQU9wNEk2Njc1OVgxNWY1?=
+ =?utf-8?B?UlNqV0d4aDFXU3liMjBBZWd2OUJvYUVJZUg3RjFZZTFwSENna1d2VFBIdUZL?=
+ =?utf-8?B?MXd1dWJjR2Ira21IanpCVFhYZmRLVDRLY2RUQ1J4ck02bjA5WFZGTmVtYkM4?=
+ =?utf-8?B?MGdnWVFVTXVYMXg1WXhjYk1OczRIRldjQnBFSkt0Sy93STdEcmFPQTdTa3Vm?=
+ =?utf-8?B?MnJRNFFGYitkbFlVUDNyamp1a2xUMzBXN1lhdGdUTGRORzRudFkxT3FSNC9W?=
+ =?utf-8?B?ZEY5WER0VjVQTnVCY0lsWXh2MUovRWlYZld6endpbjh2U0N0R3hTTVlZVW8z?=
+ =?utf-8?B?dzVqS0lhak1ZdUhici9iL0p0RnMwS1Zxa2hlYTNUTFo4MGNtdk1nWmVjUzk4?=
+ =?utf-8?B?eWZoaVZGTnhackN4b0ovWFc3L2cvQXFKaFVkMjMvOXREQ2pOWCtvMWpMSXFx?=
+ =?utf-8?B?R0xSVWYyUk1tczQvZnc4Q05uNEVObld6SVZ2ZndTS0FLcmF3SFBsUjZRSVNz?=
+ =?utf-8?B?L2NSbitIcjMyeEMvOXRnR1ZZb1k1UUZIN240QURONDZnczJyM0xnZzdhSlZM?=
+ =?utf-8?B?UW9hQ1hhK2h1aUVIQWRGM3BSRkY5bjFzVmlwckRoZGxYVnJZQ01KdEp4bjhq?=
+ =?utf-8?B?MkZQNmZwRHI2aG1wdmo2VEpHZzBnNWJ4RTBRWWowQ29lM21jNUtSajg2Rkpo?=
+ =?utf-8?B?enNCbFl0bi9qWnJLU0VNOVZlTXp1MHdhRVRaVWVnd3FVeHpCVzQ3cXNZdGZX?=
+ =?utf-8?B?SlBEbDFVa0I1NVFOKysvcGhxYWttY20rNkVGcytPcUtRQVFCMHpmNFM4cU12?=
+ =?utf-8?B?Umc5OEYvVklYQ1lyTWdqcFZQWk9YWVA1L3pGQ2VGVDJkMmo3RnVHeHNsaVBp?=
+ =?utf-8?B?cDdZT0xvMlBrU3BFb2U2cUROSllpZmdYbHhCNlBhaUpFRU8vTE41bnF0c09l?=
+ =?utf-8?B?VzhyZStzWXJNRENCbGhHdmhFZncvWE9hdndxaEpRK3hsakovbGx3VTFvZ1FV?=
+ =?utf-8?B?d1dCV2tyc3YwOE8reUVnN0c1aEZ4ZVpzNWxLUklPM2ZVb25ialprTDJxQ0FR?=
+ =?utf-8?B?cXVvUm1uVU03L2tyTHBZYmRUVkRCaFlhRTB0OWFvYU4vV0hjeWtSRnBPTUEv?=
+ =?utf-8?B?S095OTBpaVlMakxHcEFSakRQMVFZNlhseFg1anpnYkk1cnZPWXdTWXU5QU8v?=
+ =?utf-8?Q?xfVXXkLQqPItfJNtXs3N/0s=3D?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fc8ce4d-614b-47c1-2d5b-08dac72f732c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77e81570-0821-4370-1e33-08dac72ed117
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2022 17:28:31.6254
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 17:33:03.7417
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kB6rPLK5jXGhO9dy8jsfb6PhmP+TvxeqCy7zqzOPlJ0lK8jbUv9+leanW856Lk3gh9ST/qhVaIrg0MLzLWAdqGKSEFy/aviVSEo7q3gqmMM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6148
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: viv1iq9PR1fQ2AUS+u+mHLqVvQpUIfDG0up25zV4lVDnVZuakjxVtYtnzUnvR65l70O0geku1ESxL7mqPnZf9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3679
+X-Proofpoint-GUID: CsRovq49wLf78zMUI6uNNwQ4kno0Utxq
+X-Proofpoint-ORIG-GUID: CsRovq49wLf78zMUI6uNNwQ4kno0Utxq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-15_08,2022-11-15_03,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVHVlLCAyMDIyLTExLTA4IGF0IDE0OjE1IC0wODAwLCBTb25nIExpdSB3cm90ZToNCj4gZGlm
-ZiAtLWdpdCBpL0RvY3VtZW50YXRpb24veDg2L3g4Nl82NC9tbS5yc3QNCj4gdy9Eb2N1bWVudGF0
-aW9uL3g4Ni94ODZfNjQvbW0ucnN0DQo+IGluZGV4IDk3OTg2NzZiYjBiZi4uYWMwNDFiN2QzOTY1
-IDEwMDY0NA0KPiAtLS0gaS9Eb2N1bWVudGF0aW9uL3g4Ni94ODZfNjQvbW0ucnN0DQo+ICsrKyB3
-L0RvY3VtZW50YXRpb24veDg2L3g4Nl82NC9tbS5yc3QNCj4gQEAgLTYyLDcgKzYyLDcgQEAgQ29t
-cGxldGUgdmlydHVhbCBtZW1vcnkgbWFwIHdpdGggNC1sZXZlbCBwYWdlDQo+IHRhYmxlcw0KPiAg
-ICAgZmZmZmZmODAwMDAwMDAwMCB8IC01MTIgICAgR0IgfCBmZmZmZmZlZWZmZmZmZmZmIHwgIDQ0
-NCBHQiB8IC4uLg0KPiB1bnVzZWQgaG9sZQ0KPiAgICAgZmZmZmZmZWYwMDAwMDAwMCB8ICAtNjgg
-ICAgR0IgfCBmZmZmZmZmZWZmZmZmZmZmIHwgICA2NCBHQiB8IEVGSQ0KPiByZWdpb24gbWFwcGlu
-ZyBzcGFjZQ0KPiAgICAgZmZmZmZmZmYwMDAwMDAwMCB8ICAgLTQgICAgR0IgfCBmZmZmZmZmZjdm
-ZmZmZmZmIHwgICAgMiBHQiB8IC4uLg0KPiB1bnVzZWQgaG9sZQ0KPiAtICAgZmZmZmZmZmY4MDAw
-MDAwMCB8ICAgLTIgICAgR0IgfCBmZmZmZmZmZjlmZmZmZmZmIHwgIDUxMiBNQiB8DQo+IGtlcm5l
-bCB0ZXh0IG1hcHBpbmcsIG1hcHBlZCB0byBwaHlzaWNhbCBhZGRyZXNzIDANCj4gKyAgIGZmZmZm
-ZmZmODAwMDAwMDAgfCAgIC0yICAgIEdCIHwgZmZmZmZmZmY5ZmZmZmZmZiB8ICA1MTIgTUIgfA0K
-PiBrZXJuZWwgYW5kIG1vZHVsZSB0ZXh0IG1hcHBpbmcsIG1hcHBlZCB0byBwaHlzaWNhbCBhZGRy
-ZXNzIDANCg0KSXQncyBub3QgcmVhbGx5ICJtb2R1bGUgdGV4dCBtYXBwaW5nIiB5ZXQgcmlnaHQ/
-IEJlY2F1c2UgaXQgZG9lc24ndCBnZXQNCnVzZWQgYnkgbW9kdWxlcy4gSSBtaWdodCBqdXN0IGNh
-bGwgaXQgZXhlY21lbSBvciB3aGF0ZXZlciB5b3UgY2FsbCB0aGUNCmNvbXBvbmVudC4gT3RoZXJ3
-aXNlIGl0IGlzIG91dGRhdGVkIHdoZW4gdGhlIG5leHQgdXNlcnMgc3RhcnRzIHVzaW5nDQp0aGUg
-QVBJLiBPdGhlcndpc2UgbG9va3Mgb2ssIHRoYW5rcy4NCg==
+On 11/14/22 2:15 PM, Kumar Kartikeya Dwivedi wrote:
+> Global variables reside in maps accessible using direct_value_addr
+> callbacks, so giving each load instruction's rewrite a unique reg->id
+> disallows us from holding locks which are global.
+> 
+> The reason for preserving reg->id as a unique value for registers that
+> may point to spin lock is that two separate lookups are treated as two
+> separate memory regions, and any possible aliasing is ignored for the
+> purposes of spin lock correctness.
+> 
+> This is not great especially for the global variable case, which are
+> served from maps that have max_entries == 1, i.e. they always lead to
+> map values pointing into the same map value.
+> 
+> So refactor the active_spin_lock into a 'active_lock' structure which
+> represents the lock identity, and instead of the reg->id, remember two
+> fields, a pointer and the reg->id. The pointer will store reg->map_ptr
+> or reg->btf. It's only necessary to distinguish for the id == 0 case of
+> global variables, but always setting the pointer to a non-NULL value and
+> using the pointer to check whether the lock is held simplifies code in
+> the verifier.
+> 
+> This is generic enough to allow it for global variables, map lookups,
+> and allocated objects at the same time.
+> 
+> Note that while whether a lock is held can be answered by just comparing
+> active_lock.ptr to NULL, to determine whether the register is pointing
+> to the same held lock requires comparing _both_ ptr and id.
+> 
+> Finally, as a result of this refactoring, pseudo load instructions are
+> not given a unique reg->id, as they are doing lookup for the same map
+> value (max_entries is never greater than 1).
+> 
+> Essentially, we consider that the tuple of (ptr, id) will always be
+> unique for any kind of argument to bpf_spin_{lock,unlock}.
+> 
+> Note that this can be extended in the future to also remember offset
+> used for locking, so that we can introduce multiple bpf_spin_lock fields
+> in the same allocation.
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf_verifier.h | 10 ++++++++-
+>  kernel/bpf/verifier.c        | 41 ++++++++++++++++++++++++------------
+>  2 files changed, 37 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 1a32baa78ce2..fa738abea267 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -323,7 +323,15 @@ struct bpf_verifier_state {
+>  	u32 branches;
+>  	u32 insn_idx;
+>  	u32 curframe;
+> -	u32 active_spin_lock;
+> +	struct {
+> +		/* This can either be reg->map_ptr or reg->btf, but it is only
+> +		 * used to check whether the lock is held or not by comparing to
+> +		 * NULL.
+> +		 */
+> +		void *ptr;
+> +		/* This will be reg->id */
+> +		u32 id;
+> +	} active_lock;
+
+I didn't get back to you re: naming here, but I think these names are clear,
+especially with comments elaborating on the details. The first comment can
+be clarified a bit, though. Sounds like "is only used to check whether lock is
+held or not by comparing to NULL" is saying that active_lock.ptr is only
+compared to NULL in this patch, but changes to process_spin_lock check
+which results in verbose(env, "bpf_spin_unlock of different lock\n") are
+comparing it to another ptr. 
+
+Maybe you're trying to say "if active_lock.ptr
+is NULL, there's no active lock and other fields in this struct don't hold
+anything valid. If non-NULL, there is an active lock held"?
+
+Separately, the line in patch summary with "we consider that the tuple of 
+(ptr, id) will always be unique" would help with clarity if it was in the
+comments here.
+
+>  	bool speculative;
+>  
+>  	/* first and last insn idx of this verifier state */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 070d003a99f0..99b5edb56978 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1215,7 +1215,8 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+>  	}
+>  	dst_state->speculative = src->speculative;
+>  	dst_state->curframe = src->curframe;
+> -	dst_state->active_spin_lock = src->active_spin_lock;
+> +	dst_state->active_lock.ptr = src->active_lock.ptr;
+> +	dst_state->active_lock.id = src->active_lock.id;
+>  	dst_state->branches = src->branches;
+>  	dst_state->parent = src->parent;
+>  	dst_state->first_insn_idx = src->first_insn_idx;
+> @@ -5587,7 +5588,7 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
+>   * Since only one bpf_spin_lock is allowed the checks are simpler than
+>   * reg_is_refcounted() logic. The verifier needs to remember only
+>   * one spin_lock instead of array of acquired_refs.
+> - * cur_state->active_spin_lock remembers which map value element got locked
+> + * cur_state->active_lock remembers which map value element got locked
+
+Maybe remove "map value" here? Since previous patch adds support for allocated
+object. "remembers which element got locked" or "remembers which map value
+or allocated object" better reflect current state of spin_lock support after
+these patches.
+
+>   * and clears it after bpf_spin_unlock.
+>   */
+>  static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+> @@ -5636,22 +5637,35 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+>  		return -EINVAL;
+>  	}
+>  	if (is_lock) {
+> -		if (cur->active_spin_lock) {
+> +		if (cur->active_lock.ptr) {
+>  			verbose(env,
+>  				"Locking two bpf_spin_locks are not allowed\n");
+>  			return -EINVAL;
+>  		}
+> -		cur->active_spin_lock = reg->id;
+> +		if (map)
+> +			cur->active_lock.ptr = map;
+> +		else
+> +			cur->active_lock.ptr = btf;
+> +		cur->active_lock.id = reg->id;
+>  	} else {
+> -		if (!cur->active_spin_lock) {
+> +		void *ptr;
+> +
+> +		if (map)
+> +			ptr = map;
+> +		else
+> +			ptr = btf;
+> +
+> +		if (!cur->active_lock.ptr) {
+>  			verbose(env, "bpf_spin_unlock without taking a lock\n");
+>  			return -EINVAL;
+>  		}
+> -		if (cur->active_spin_lock != reg->id) {
+> +		if (cur->active_lock.ptr != ptr ||
+> +		    cur->active_lock.id != reg->id) {
+>  			verbose(env, "bpf_spin_unlock of different lock\n");
+>  			return -EINVAL;
+>  		}
+> -		cur->active_spin_lock = 0;
+> +		cur->active_lock.ptr = NULL;
+> +		cur->active_lock.id = 0;
+>  	}
+>  	return 0;
+>  }
+> @@ -10582,8 +10596,8 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
+>  	    insn->src_reg == BPF_PSEUDO_MAP_IDX_VALUE) {
+>  		dst_reg->type = PTR_TO_MAP_VALUE;
+>  		dst_reg->off = aux->map_off;
+> -		if (btf_record_has_field(map->record, BPF_SPIN_LOCK))
+> -			dst_reg->id = ++env->id_gen;
+> +		WARN_ON_ONCE(map->max_entries != 1);
+> +		/* We want reg->id to be same (0) as map_value is not distinct */
+>  	} else if (insn->src_reg == BPF_PSEUDO_MAP_FD ||
+>  		   insn->src_reg == BPF_PSEUDO_MAP_IDX) {
+>  		dst_reg->type = CONST_PTR_TO_MAP;
+> @@ -10661,7 +10675,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
+>  		return err;
+>  	}
+>  
+> -	if (env->cur_state->active_spin_lock) {
+> +	if (env->cur_state->active_lock.ptr) {
+>  		verbose(env, "BPF_LD_[ABS|IND] cannot be used inside bpf_spin_lock-ed region\n");
+>  		return -EINVAL;
+>  	}
+> @@ -11927,7 +11941,8 @@ static bool states_equal(struct bpf_verifier_env *env,
+>  	if (old->speculative && !cur->speculative)
+>  		return false;
+>  
+> -	if (old->active_spin_lock != cur->active_spin_lock)
+> +	if (old->active_lock.ptr != cur->active_lock.ptr ||
+> +	    old->active_lock.id != cur->active_lock.id)
+>  		return false;
+>  
+>  	/* for states to be equal callsites have to be the same
+> @@ -12572,7 +12587,7 @@ static int do_check(struct bpf_verifier_env *env)
+>  					return -EINVAL;
+>  				}
+>  
+> -				if (env->cur_state->active_spin_lock &&
+> +				if (env->cur_state->active_lock.ptr &&
+>  				    (insn->src_reg == BPF_PSEUDO_CALL ||
+>  				     insn->imm != BPF_FUNC_spin_unlock)) {
+>  					verbose(env, "function calls are not allowed while holding a lock\n");
+> @@ -12609,7 +12624,7 @@ static int do_check(struct bpf_verifier_env *env)
+>  					return -EINVAL;
+>  				}
+>  
+> -				if (env->cur_state->active_spin_lock) {
+> +				if (env->cur_state->active_lock.ptr) {
+>  					verbose(env, "bpf_spin_unlock is missing\n");
+>  					return -EINVAL;
+>  				}
