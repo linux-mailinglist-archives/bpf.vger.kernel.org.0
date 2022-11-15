@@ -2,161 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADFF62A1B4
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 20:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15F462A204
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 20:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbiKOTQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 14:16:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S230260AbiKOTga (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 14:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiKOTQX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 14:16:23 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7239212083
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 11:16:21 -0800 (PST)
-Message-ID: <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668539780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tYYSYZHcg3nPCqrrTa0lZUWDeIYN9RtJ5/NHhDQjFhg=;
-        b=mFAM/vxaiKORXF0e9cd3fz3g5RVrt03dlkv6tVrkk/N5k8EMECsR6jFHataS/dRqvGBI2u
-        GYfseYb+1MdT3mi82zLQM/NLshe8DSeFM9WyjtN3JmguOSpsR3k/fWGsjn+38xV9mzjZgz
-        Hols8wTXvUNvGywGqiYA3+fFl510jxw=
-Date:   Tue, 15 Nov 2022 11:16:15 -0800
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
-Content-Language: en-US
-To:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230288AbiKOTg3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 14:36:29 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B469FC8
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 11:36:28 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id j12so14090120plj.5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 11:36:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ga/EMhRwwsGebJ4GWq98CXPy+A/eMGDF57GCfjJZmyo=;
+        b=UpeVSPd4DQslOHqHns4Gobpc3oS1A/T8rwYniDI3sprWKPn0G2NcDKDg7aJzTQYkpJ
+         tXbJrfuqXY5d6QM1RaX+XDCvFMESfkE+gyUfh4dqzIvvOIfiewSHP+R4H94Oo3wP+2Qw
+         UV+CeyTKjbAL7eB/hEx4K7UBQ+XMwPKqlHn4KzbBOqFlEPtwVBL+t06Ne2YgqQiUaL0+
+         H+gC+a1KkavgflfC+xUaDESWHfOMk7j/i6zWnljHKEwkROjb5i9/HZxai2jfXgK90gvj
+         iazicyghUbXQjscQ3jMpoxnecJDINS1uvA7gv8DjWs6tY0YwJ6amd+2tlYHWApkg2ORt
+         DnPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ga/EMhRwwsGebJ4GWq98CXPy+A/eMGDF57GCfjJZmyo=;
+        b=urbJs4JRfTOWJdv3xaS6UilSHhtuyP1rxzgZ0pwgahgQVxtgvmT+isP//g9PvysBI3
+         ObMP4bxiWT4fjVtIMPIpd2jzGPuULtoqwCQxPvqQgllaB01XWMh1kbVdF2Rkysn101Cx
+         PTm9HIXhwHsnzM+aJsWwSQVB6kMBW/quIdtzB7odDwY9SO6erDprOWO0gJwVAcJTLYGf
+         z5LXyO/VdWlwfTC0MTNssFJofZCB+atHrpswMcvPJ0f4GBXa+1iFdJiGIdwnR/H4ADmu
+         MLtdHBi/s/7rztSuIlvW4jlsIeMksQOky4hzo/UiWpJl+zxwlDiYnVy0VI8uMEylEjMS
+         qqfA==
+X-Gm-Message-State: ANoB5pl709ibQ45+n6t7UmuHyvz8kLdvA4yufua3y2zFsu89gTyD51gL
+        km+RhzhhClTNFmz4BBeDpcejO+i46rI=
+X-Google-Smtp-Source: AA0mqf6gv7q1CcOk1uFsnjSJ/obP033SfnxL6dElHgc7hpXGd2YO49Z1J4PSdr1S4+JmrYFQXQDu/A==
+X-Received: by 2002:a17:903:228e:b0:177:faf5:58c5 with SMTP id b14-20020a170903228e00b00177faf558c5mr5524016plh.166.1668540987468;
+        Tue, 15 Nov 2022 11:36:27 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id j14-20020a170903024e00b0017f72a430adsm10447344plh.71.2022.11.15.11.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 11:36:27 -0800 (PST)
+Date:   Wed, 16 Nov 2022 01:06:23 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-References: <20221111063417.1603111-1-houtao@huaweicloud.com>
- <20221111063417.1603111-2-houtao@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221111063417.1603111-2-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v7 20/26] bpf: Introduce single ownership BPF
+ linked list API
+Message-ID: <20221115193623.ncblmxapyiljqsuw@apollo>
+References: <20221114191547.1694267-1-memxor@gmail.com>
+ <20221114191547.1694267-21-memxor@gmail.com>
+ <20221115062637.hzuo7ehffpuxflsw@macbook-pro-5.dhcp.thefacebook.com>
+ <20221115165951.fy7bqwcum3veiz2d@apollo>
+ <20221115182616.ctmabyirb7vdpa66@MacBook-Pro-5.local.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221115182616.ctmabyirb7vdpa66@MacBook-Pro-5.local.dhcp.thefacebook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/10/22 10:34 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> For many bpf iterator (e.g., cgroup iterator), iterator link acquires
-> the reference of iteration target in .attach_target(), but iterator link
-> may be closed before or in the middle of iteration, so iterator will
-> need to acquire the reference of iteration target as well to prevent
-> potential use-after-free. To avoid doing the acquisition in
-> .init_seq_private() for each iterator type, just pin iterator link in
-> iterator.
+On Tue, Nov 15, 2022 at 11:56:16PM IST, Alexei Starovoitov wrote:
+> On Tue, Nov 15, 2022 at 10:29:51PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > On Tue, Nov 15, 2022 at 11:56:37AM IST, Alexei Starovoitov wrote:
+> > > On Tue, Nov 15, 2022 at 12:45:41AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > +}
+> > > > +
+> > > > +static int process_kf_arg_ptr_to_list_node(struct bpf_verifier_env *env,
+> > > > +					   struct bpf_reg_state *reg, u32 regno,
+> > > > +					   struct bpf_kfunc_call_arg_meta *meta)
+> > > > +{
+> > > > +	struct btf_struct_meta *struct_meta;
+> > > > +	struct btf_field *field;
+> > > > +	struct btf_record *rec;
+> > > > +	u32 list_node_off;
+> > > > +
+> > > > +	if (meta->btf != btf_vmlinux ||
+> > > > +	    (meta->func_id != special_kfunc_list[KF_bpf_list_push_front] &&
+> > > > +	     meta->func_id != special_kfunc_list[KF_bpf_list_push_back])) {
+> > > > +		verbose(env, "verifier internal error: bpf_list_head argument for unknown kfunc\n");
+> > >
+> > > typo. bpf_list_node ?
+> > >
+> > > > +		return -EFAULT;
+> > > > +	}
+> > > > +
+> > > > +	if (!tnum_is_const(reg->var_off)) {
+> > > > +		verbose(env,
+> > > > +			"R%d doesn't have constant offset. bpf_list_head has to be at the constant offset\n",
+> > >
+> > > same typo?
+> > >
+> >
+> > These two are typos.
+> >
+> > > > +			regno);
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > > +	struct_meta = btf_find_struct_meta(reg->btf, reg->btf_id);
+> > > > +	if (!struct_meta) {
+> > > > +		verbose(env, "bpf_list_node not found for allocated object\n");
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +	rec = struct_meta->record;
+> > > > +
+> > > > +	list_node_off = reg->off + reg->var_off.value;
+> > > > +	field = btf_record_find(rec, list_node_off, BPF_LIST_NODE);
+> > > > +	if (!field || field->offset != list_node_off) {
+> > > > +		verbose(env, "bpf_list_node not found at offset=%u\n", list_node_off);
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > > +	field = meta->arg_list_head.field;
+> > > > +
+> > > > +	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, 0, field->list_head.btf,
+> > > > +				  field->list_head.value_btf_id, true)) {
+> > > > +		verbose(env, "bpf_list_head value type does not match arg#1\n");
+> > >
+> > > and the same typo again?!
+> > >
+> >
+> > This is probably just poorly worded.
+> > The value type (__contains) of bpf_list_head does not match arg#1 (node).
+> >
+> > What's better, maybe:
+> > bpf_list_node type does not match bpf_list_head value type?
+>
+> That would be the case when user is trying to bpf_list_push_head
+> to head that has __contains tag that point to a different node ?
 
-iiuc, a link currently will go away when all its fds closed and pinned file 
-removed.  After this change, the link will stay until the last iter is closed(). 
-  Before then, the user space can still "bpftool link show" and even get the 
-link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful 
-to explain it in the commit message.
+Right.
 
-and does this new behavior make sense when comparing with other link types?
+> It feels the users will be hitting this error case from time to time,
+> so the most verbose message is the best.
+> Both options above are a bit cryptic.
 
-> 
-> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->   kernel/bpf/bpf_iter.c | 21 ++++++++++++++-------
->   1 file changed, 14 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index 5dc307bdeaeb..67d899011cb2 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
-> @@ -20,7 +20,7 @@ struct bpf_iter_link {
->   };
->   
->   struct bpf_iter_priv_data {
-> -	struct bpf_iter_target_info *tinfo;
-> +	struct bpf_iter_link *link;
->   	const struct bpf_iter_seq_info *seq_info;
->   	struct bpf_prog *prog;
->   	u64 session_id;
-> @@ -79,7 +79,7 @@ static bool bpf_iter_support_resched(struct seq_file *seq)
->   
->   	iter_priv = container_of(seq->private, struct bpf_iter_priv_data,
->   				 target_private);
-> -	return bpf_iter_target_support_resched(iter_priv->tinfo);
-> +	return bpf_iter_target_support_resched(iter_priv->link->tinfo);
->   }
->   
->   /* maximum visited objects before bailing out */
-> @@ -276,6 +276,7 @@ static int iter_release(struct inode *inode, struct file *file)
->   		iter_priv->seq_info->fini_seq_private(seq->private);
->   
->   	bpf_prog_put(iter_priv->prog);
-> +	bpf_link_put(&iter_priv->link->link);
->   	seq->private = iter_priv;
->   
->   	return seq_release_private(inode, file);
-> @@ -576,11 +577,19 @@ int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
->   }
->   
->   static void init_seq_meta(struct bpf_iter_priv_data *priv_data,
-> -			  struct bpf_iter_target_info *tinfo,
-> +			  struct bpf_iter_link *link,
->   			  const struct bpf_iter_seq_info *seq_info,
->   			  struct bpf_prog *prog)
->   {
-> -	priv_data->tinfo = tinfo;
-> +	/* For many bpf iterator, iterator link acquires the reference of
-> +	 * iteration target in .attach_target(), but iterator link may be
-> +	 * closed before or in the middle of iteration, so iterator will
-> +	 * need to acquire the reference of iteration target as well. To
-> +	 * avoid doing the acquisition in .init_seq_private() for each
-> +	 * iterator type, just pin iterator link in iterator.
-> +	 */
-> +	bpf_link_inc(&link->link);
-> +	priv_data->link = link;
->   	priv_data->seq_info = seq_info;
->   	priv_data->prog = prog;
->   	priv_data->session_id = atomic64_inc_return(&session_id);
-> @@ -592,7 +601,6 @@ static int prepare_seq_file(struct file *file, struct bpf_iter_link *link,
->   			    const struct bpf_iter_seq_info *seq_info)
->   {
->   	struct bpf_iter_priv_data *priv_data;
-> -	struct bpf_iter_target_info *tinfo;
->   	struct bpf_prog *prog;
->   	u32 total_priv_dsize;
->   	struct seq_file *seq;
-> @@ -603,7 +611,6 @@ static int prepare_seq_file(struct file *file, struct bpf_iter_link *link,
->   	bpf_prog_inc(prog);
->   	mutex_unlock(&link_mutex);
->   
-> -	tinfo = link->tinfo;
->   	total_priv_dsize = offsetof(struct bpf_iter_priv_data, target_private) +
->   			   seq_info->seq_priv_size;
->   	priv_data = __seq_open_private(file, seq_info->seq_ops,
-> @@ -619,7 +626,7 @@ static int prepare_seq_file(struct file *file, struct bpf_iter_link *link,
->   			goto release_seq_file;
->   	}
->   
-> -	init_seq_meta(priv_data, tinfo, seq_info, prog);
-> +	init_seq_meta(priv_data, link, seq_info, prog);
->   	seq = file->private_data;
->   	seq->private = priv_data->target_private;
->   
+How about something like this?
 
+operation on bpf_list_head expects node at offset=X in struct foo, but
+node is at offset=Y in struct bar
