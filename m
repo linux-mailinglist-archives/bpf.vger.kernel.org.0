@@ -2,64 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAA2629124
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 05:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E726291A5
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 06:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbiKOEQC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Nov 2022 23:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
+        id S229835AbiKOFsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 00:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbiKOEP4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Nov 2022 23:15:56 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764051DF08
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:15:53 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id ft34so33102372ejc.12
-        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 20:15:53 -0800 (PST)
+        with ESMTP id S229661AbiKOFsY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 00:48:24 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFBC1ADA2
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 21:48:22 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so15904367pjc.3
+        for <bpf@vger.kernel.org>; Mon, 14 Nov 2022 21:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=25mVgtKGUkJMTXKF1kyF8wFUjw56pp0SsVm1813ZUUs=;
-        b=Ejc46E9PD7+EK+Ec2NBc+EJHgt29xDtAiaM0r/h8JgsXZKDkxenn7xatChyKipukBV
-         SMcuZwQiIu0oFURVBY+2kkX0zdzf/aDemdrZOaBcw9t5eW5tHma8QlMQeFtYqydqdHEu
-         kh5YvH/5JbDtr77qDLsLVNC8nhcIoW93aAvy0Hfml0eB/YjvqKEe2Ag37GM8hegLh39G
-         n4b7i7UJLsJSrAdYbRJIyhip7IIWg0s+OmIHSZpr6sOACdtaxIfPBguT7xeSTo88OuRH
-         UxbYbDcs8QpXJo3ANgPW8hMvT8yJdxN1to8A29El2WDbt4YodG9SCs4j5hlZc9doWArL
-         c2dQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ghaqiA5ZORDqJSeuGAwGkyGytz21rNx2Nwal26Cm0E=;
+        b=J85u52To4+6LnlHYycphH/x46mfz6jINjl1yL51dgjvPorXmtSDCfhGsS2c8kDA4vO
+         cQdIPmDy0kwp85J1hJTniasIAp4io6IIgMZzfSTQy5TuebnFRCwoW48nJkDdLf2RCooI
+         WRWqVpKKH6cx+eI/uraYT8Juc24J7hOBF9GfJvbBYQnmPN9WIWx8XH0Ypw2HSHEOOr6K
+         4SGgGjO+kP8g4WjBbz/VylOPsisOoCz1lyinZ7RrIcOB62heIgFAt/Ka8PKEUWHzm6go
+         0yXrR7F06TLD2mm94jqQZnkt9QOReccB9pKhK4bFXhQDFBeeOtJCCQQACrQrT/bp6NVN
+         T2eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=25mVgtKGUkJMTXKF1kyF8wFUjw56pp0SsVm1813ZUUs=;
-        b=6Q9hgPcmM1dtMX54g4v2jfdoNSIVpd3GTNMeHkwQ/z6IC0adOjoJPv39rBowWlGTXE
-         WI3TvCmP6SUarOjdM3omAZFAikf6fZ6ZQm7PPdZRpqnU8J5gNeZfQCIokrME2IuwY3Rx
-         eAnrypUdlDdpEuwpsut3Ev7bZptXRGbVZmzgiRdHaxFBIo4RLL+GrmQw1Ci6uABepdp1
-         8xhdQaZbpDEAAZ2RutBvc4vYRVTeaE6WiT6zLBu779kEsl4JD+wQpaKE5A5IrojlmaPE
-         cyUIX017VGp0Z5a0VKMfTO+TQ4LPxSkZzqAybm8+MlBBeVXK1y4zY+rD0nI4UVgM3JeJ
-         Dkag==
-X-Gm-Message-State: ANoB5pmFFXc65/55MncFp3IZgsgzbrq11oIlNgBEimRYTz8bTI6/YMTX
-        IHSy25sMLOBkKJnLecI8d0fYthGVGlHpRtXFF/w=
-X-Google-Smtp-Source: AA0mqf4kItxK5NJE/1teLnL4sWA/DJ58wR77ikwH6D5k5k217uxOADTqCGuImhmN9figMbMAmnR79vvDIiuYU4ep1fQ=
-X-Received: by 2002:a17:906:7ca:b0:7ad:934e:95d3 with SMTP id
- m10-20020a17090607ca00b007ad934e95d3mr12359178ejc.393.1668485751777; Mon, 14
- Nov 2022 20:15:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20221115000130.1967465-1-memxor@gmail.com> <20221115000130.1967465-2-memxor@gmail.com>
-In-Reply-To: <20221115000130.1967465-2-memxor@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 14 Nov 2022 20:15:40 -0800
-Message-ID: <CAJnrk1bGOU-FFS5J=BJHVQh_nVPjWK4w777zL=1fz7LRetu3+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/7] bpf: Refactor ARG_PTR_TO_DYNPTR checks
- into process_dynptr_func
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ghaqiA5ZORDqJSeuGAwGkyGytz21rNx2Nwal26Cm0E=;
+        b=HWfFYgUwYuky9fYZQ4K4OyC7xSWgtVo/7mC0MxOYqcVgUVnArG65GSrZnxJsWhDgmb
+         7+N/QQ6ndlgSZIeqOQ7e1jn2PSAgyyBOlDTeDhMfGa9GTsxb2xWkBNAAF6FMCVQ6OYym
+         aitun05/Xyx14armLcmSmw+KkKBPeD75PsDUkwpTqx72X0z9ACHY5HBYckw2okeFobr+
+         bwcbZKwEracS2/WqNVbSHzDLmUSdkWEEsyIrMfQAdnt1im9l17acYZm46ybTBjDxPFhB
+         FygqbYD0K0Vh9EJHxV1FKzA7g+nOk64El6Lp/yj8bsazbVjWX6HPPM6VlGxHrI2dBwD/
+         aUtg==
+X-Gm-Message-State: ANoB5pk9Us9QhDIgCYKB5FUrxugV1//2DM9t+aVRF01wN6wwwJUUp0dx
+        7TtO8H7B4BAVewvMqLOuK/g=
+X-Google-Smtp-Source: AA0mqf4npVjRuaHIplhZGDWhhvgD9fStJJtKvVyxERCffpInQRmt5HH7ogXUpaEd+2/SSCYRTGE/2w==
+X-Received: by 2002:a17:90a:d803:b0:213:13f2:1635 with SMTP id a3-20020a17090ad80300b0021313f21635mr526250pjv.242.1668491302205;
+        Mon, 14 Nov 2022 21:48:22 -0800 (PST)
+Received: from macbook-pro-5.dhcp.thefacebook.com ([2620:10d:c090:400::5:cee6])
+        by smtp.gmail.com with ESMTPSA id c5-20020a634e05000000b0046f7e1ca434sm6948191pgb.0.2022.11.14.21.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Nov 2022 21:48:21 -0800 (PST)
+Date:   Mon, 14 Nov 2022 21:48:18 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, David Vernet <void@manifault.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v7 08/26] bpf: Introduce allocated objects
+ support
+Message-ID: <20221115054818.r7p3jbqg352obbb6@macbook-pro-5.dhcp.thefacebook.com>
+References: <20221114191547.1694267-1-memxor@gmail.com>
+ <20221114191547.1694267-9-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221114191547.1694267-9-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,279 +75,141 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 4:01 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> ARG_PTR_TO_DYNPTR is akin to ARG_PTR_TO_TIMER, ARG_PTR_TO_KPTR, where
-> the underlying register type is subjected to more special checks to
-> determine the type of object represented by the pointer and its state
-> consistency.
->
-> Move dynptr checks to their own 'process_dynptr_func' function so that
-> is consistent and in-line with existing code. This also makes it easier
-> to reuse this code for kfunc handling.
->
-> Then, reuse this consolidated function in kfunc dynptr handling too.
-> Note that for kfuncs, the arg_type constraint of DYNPTR_TYPE_LOCAL has
-> been lifted.
->
-> Acked-by: David Vernet <void@manifault.com>
+On Tue, Nov 15, 2022 at 12:45:29AM +0530, Kumar Kartikeya Dwivedi wrote:
+> Introduce support for representing pointers to objects allocated by the
+> BPF program, i.e. PTR_TO_BTF_ID that point to a type in program BTF.
+> This is indicated by the presence of MEM_ALLOC type flag in reg->type to
+> avoid having to check btf_is_kernel when trying to match argument types
+> in helpers.
+> 
+> Whenever walking such types, any pointers being walked will always yield
+> a SCALAR instead of pointer. In the future we might permit kptr inside
+> such allocated objects (either kernel or local), and it will then form a
+
+(either kernel or program allocated) ?
+
+> PTR_TO_BTF_ID of the respective type.
+> 
+> For now, such allocated objects will always be referenced in verifier
+> context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+> to such objects, as long fields that are special are not touched
+> (support for which will be added in subsequent patches). Note that once
+> such a pointer is marked PTR_UNTRUSTED, it is no longer allowed to write
+> to it.
+> 
+> No PROBE_MEM handling is therefore done for loads into this type unless
+> PTR_UNTRUSTED is part of the register type, since they can never be in
+> an undefined state, and their lifetime will always be valid.
+> 
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
-
-Left a couple of comments below but otherwise LGTM!
-
 > ---
->  include/linux/bpf_verifier.h                  |   8 +-
->  kernel/bpf/btf.c                              |  17 +--
->  kernel/bpf/verifier.c                         | 116 ++++++++++--------
->  .../bpf/prog_tests/kfunc_dynptr_param.c       |   5 +-
->  .../bpf/progs/test_kfunc_dynptr_param.c       |  12 --
->  5 files changed, 70 insertions(+), 88 deletions(-)
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 1a32baa78ce2..a69b6d49d40c 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -593,11 +593,9 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
->                              u32 regno);
->  int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->                    u32 regno, u32 mem_size);
-> -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> -                             struct bpf_reg_state *reg);
-> -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> -                            struct bpf_reg_state *reg,
-> -                            enum bpf_arg_type arg_type);
-> +struct bpf_call_arg_meta;
-> +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> +                       enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta);
->
->  /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
->  static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 5579ff3a5b54..d02ae2f4249b 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6575,23 +6575,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->                                                 return -EINVAL;
->                                         }
->
-> -                                       if (!is_dynptr_reg_valid_init(env, reg)) {
-> -                                               bpf_log(log,
-> -                                                       "arg#%d pointer type %s %s must be valid and initialized\n",
-> -                                                       i, btf_type_str(ref_t),
-> -                                                       ref_tname);
-> +                                       if (process_dynptr_func(env, regno, ARG_PTR_TO_DYNPTR, NULL))
->                                                 return -EINVAL;
-> -                                       }
-> -
-> -                                       if (!is_dynptr_type_expected(env, reg,
-> -                                                       ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL)) {
-> -                                               bpf_log(log,
-> -                                                       "arg#%d pointer type %s %s points to unsupported dynamic pointer type\n",
-> -                                                       i, btf_type_str(ref_t),
-> -                                                       ref_tname);
-> -                                               return -EINVAL;
-> -                                       }
-> -
->                                         continue;
->                                 }
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 07c0259dfc1a..56f48ab9827f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -784,8 +784,7 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
->         return true;
->  }
->
-> -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> -                             struct bpf_reg_state *reg)
-> +static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->  {
->         struct bpf_func_state *state = func(env, reg);
->         int spi = get_spi(reg->off);
-> @@ -804,9 +803,8 @@ bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
->         return true;
->  }
->
-> -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> -                            struct bpf_reg_state *reg,
-> -                            enum bpf_arg_type arg_type)
-> +static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> +                                   enum bpf_arg_type arg_type)
->  {
->         struct bpf_func_state *state = func(env, reg);
->         enum bpf_dynptr_type dynptr_type;
-> @@ -5694,6 +5692,66 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
->         return 0;
->  }
->
-> +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> +                       enum bpf_arg_type arg_type,
-> +                       struct bpf_call_arg_meta *meta)
+>  include/linux/bpf.h   | 11 +++++++++++
+>  kernel/bpf/btf.c      |  5 +++++
+>  kernel/bpf/verifier.c | 25 +++++++++++++++++++++++--
+>  3 files changed, 39 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 49f9d2bec401..3cab113b149e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -524,6 +524,11 @@ enum bpf_type_flag {
+>  	/* Size is known at compile time. */
+>  	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+>  
+> +	/* MEM is of a an allocated object of type from program BTF. This is
+> +	 * used to tag PTR_TO_BTF_ID allocated using bpf_obj_new.
+> +	 */
+> +	MEM_ALLOC		= BIT(11 + BPF_BASE_TYPE_BITS),
+> +
+>  	__BPF_TYPE_FLAG_MAX,
+>  	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+>  };
+> @@ -2791,4 +2796,10 @@ struct bpf_key {
+>  	bool has_ref;
+>  };
+>  #endif /* CONFIG_KEYS */
+> +
+> +static inline bool type_is_alloc(u32 type)
 > +{
-> +       struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-> +       int argno = regno - 1;
-
-I think we can just get rid of argno here and replace every instance
-of argno in this function with regno
-
-> +
-> +       /* We only need to check for initialized / uninitialized helper
-> +        * dynptr args if the dynptr is not PTR_TO_DYNPTR, as the
-> +        * assumption is that if it is, that a helper function
-> +        * initialized the dynptr on behalf of the BPF program.
-> +        */
-> +       if (base_type(reg->type) == PTR_TO_DYNPTR)
-> +               return 0;
-> +       if (arg_type & MEM_UNINIT) {
-> +               if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> +                       verbose(env, "Dynptr has to be an uninitialized dynptr\n");
-> +                       return -EINVAL;
-> +               }
-> +
-> +               /* We only support one dynptr being uninitialized at the moment,
-> +                * which is sufficient for the helper functions we have right now.
-> +                */
-> +               if (meta->uninit_dynptr_regno) {
-> +                       verbose(env, "verifier internal error: multiple uninitialized dynptr args\n");
-> +                       return -EFAULT;
-> +               }
-> +
-> +               meta->uninit_dynptr_regno = regno;
-> +       } else {
-> +               if (!is_dynptr_reg_valid_init(env, reg)) {
-> +                       verbose(env,
-> +                               "Expected an initialized dynptr as arg #%d\n",
-> +                               argno + 1);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (!is_dynptr_type_expected(env, reg, arg_type)) {
-> +                       const char *err_extra = "";
-> +
-> +                       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> +                       case DYNPTR_TYPE_LOCAL:
-> +                               err_extra = "local";
-> +                               break;
-> +                       case DYNPTR_TYPE_RINGBUF:
-> +                               err_extra = "ringbuf";
-> +                               break;
-> +                       default:
-> +                               err_extra = "<unknown>";
-> +                               break;
-> +                       }
-> +                       verbose(env,
-> +                               "Expected a dynptr of type %s as arg #%d\n",
-> +                               err_extra, argno + 1);
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +       return 0;
+> +	return type & MEM_ALLOC;
 > +}
 > +
->  static bool arg_type_is_mem_size(enum bpf_arg_type type)
->  {
->         return type == ARG_CONST_SIZE ||
-> @@ -6197,52 +6255,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                 err = check_mem_size_reg(env, reg, regno, true, meta);
->                 break;
->         case ARG_PTR_TO_DYNPTR:
-> -               /* We only need to check for initialized / uninitialized helper
-> -                * dynptr args if the dynptr is not PTR_TO_DYNPTR, as the
-> -                * assumption is that if it is, that a helper function
-> -                * initialized the dynptr on behalf of the BPF program.
-> -                */
-> -               if (base_type(reg->type) == PTR_TO_DYNPTR)
-> -                       break;
-> -               if (arg_type & MEM_UNINIT) {
-> -                       if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> -                               verbose(env, "Dynptr has to be an uninitialized dynptr\n");
-> -                               return -EINVAL;
-> -                       }
-> -
-> -                       /* We only support one dynptr being uninitialized at the moment,
-> -                        * which is sufficient for the helper functions we have right now.
-> -                        */
-> -                       if (meta->uninit_dynptr_regno) {
-> -                               verbose(env, "verifier internal error: multiple uninitialized dynptr args\n");
-> -                               return -EFAULT;
-> -                       }
-> -
-> -                       meta->uninit_dynptr_regno = regno;
-> -               } else if (!is_dynptr_reg_valid_init(env, reg)) {
-> -                       verbose(env,
-> -                               "Expected an initialized dynptr as arg #%d\n",
-> -                               arg + 1);
-> -                       return -EINVAL;
-> -               } else if (!is_dynptr_type_expected(env, reg, arg_type)) {
-> -                       const char *err_extra = "";
-> -
-> -                       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> -                       case DYNPTR_TYPE_LOCAL:
-> -                               err_extra = "local";
-> -                               break;
-> -                       case DYNPTR_TYPE_RINGBUF:
-> -                               err_extra = "ringbuf";
-> -                               break;
-> -                       default:
-> -                               err_extra = "<unknown>";
-> -                               break;
-> -                       }
-> -                       verbose(env,
-> -                               "Expected a dynptr of type %s as arg #%d\n",
-> -                               err_extra, arg + 1);
-> -                       return -EINVAL;
-> -               }
-> +               if (process_dynptr_func(env, regno, arg_type, meta))
-> +                       return -EACCES;
+>  #endif /* _LINUX_BPF_H */
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 875355ff3718..9a596f430558 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6034,6 +6034,11 @@ int btf_struct_access(struct bpf_verifier_log *log,
+>  
+>  		switch (err) {
+>  		case WALK_PTR:
+> +			/* For local types, the destination register cannot
+> +			 * become a pointer again.
+> +			 */
+> +			if (type_is_alloc(reg->type))
+> +				return SCALAR_VALUE;
+>  			/* If we found the pointer or scalar on t+off,
+>  			 * we're done.
+>  			 */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5e74f460dfd0..d726d55622c9 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4687,14 +4687,27 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>  		return -EACCES;
+>  	}
+>  
+> -	if (env->ops->btf_struct_access) {
+> +	if (env->ops->btf_struct_access && !type_is_alloc(reg->type)) {
+> +		if (!btf_is_kernel(reg->btf)) {
+> +			verbose(env, "verifier internal error: reg->btf must be kernel btf\n");
+> +			return -EFAULT;
+> +		}
+>  		ret = env->ops->btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+>  	} else {
+> -		if (atype != BPF_READ) {
+> +		/* Writes are permitted with default btf_struct_access for local
+> +		 * kptrs (which always have ref_obj_id > 0), but not for
 
-Should this return -EACCES or propagate the error from process_dynptr_func?
+for program allocated objects (which always have ref_obj_id > 0) ?
 
->                 break;
->         case ARG_CONST_ALLOC_SIZE_OR_ZERO:
->                 if (!tnum_is_const(reg->var_off)) {
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> index c210657d4d0a..fc562e863e79 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> @@ -18,10 +18,7 @@ static struct {
->         const char *expected_verifier_err_msg;
->         int expected_runtime_err;
->  } kfunc_dynptr_tests[] = {
-> -       {"dynptr_type_not_supp",
-> -        "arg#0 pointer type STRUCT bpf_dynptr_kern points to unsupported dynamic pointer type", 0},
-> -       {"not_valid_dynptr",
-> -        "arg#0 pointer type STRUCT bpf_dynptr_kern must be valid and initialized", 0},
-> +       {"not_valid_dynptr", "Expected an initialized dynptr as arg #1", 0},
->         {"not_ptr_to_stack", "arg#0 pointer type STRUCT bpf_dynptr_kern not to stack", 0},
->         {"dynptr_data_null", NULL, -EBADMSG},
->  };
-> diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> index ce39d096bba3..f4a8250329b2 100644
-> --- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> @@ -32,18 +32,6 @@ int err, pid;
->
->  char _license[] SEC("license") = "GPL";
->
-> -SEC("?lsm.s/bpf")
-> -int BPF_PROG(dynptr_type_not_supp, int cmd, union bpf_attr *attr,
-> -            unsigned int size)
-> -{
-> -       char write_data[64] = "hello there, world!!";
-> -       struct bpf_dynptr ptr;
-> -
-> -       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
-> -
-> -       return bpf_verify_pkcs7_signature(&ptr, &ptr, NULL);
-> -}
-> -
->  SEC("?lsm.s/bpf")
->  int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
->  {
-> --
+> +		 * untrusted PTR_TO_BTF_ID | MEM_ALLOC.
+> +		 */
+> +		if (atype != BPF_READ && reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
+>  			verbose(env, "only read is supported\n");
+>  			return -EACCES;
+>  		}
+>  
+> +		if (type_is_alloc(reg->type) && !reg->ref_obj_id) {
+> +			verbose(env, "verifier internal error: ref_obj_id for allocated object must be non-zero\n");
+> +			return -EFAULT;
+> +		}
+> +
+>  		ret = btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+>  	}
+>  
+> @@ -5973,6 +5986,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  	 * fixed offset.
+>  	 */
+>  	case PTR_TO_BTF_ID:
+> +	case PTR_TO_BTF_ID | MEM_ALLOC:
+>  		/* When referenced PTR_TO_BTF_ID is passed to release function,
+>  		 * it's fixed offset must be 0.	In the other cases, fixed offset
+>  		 * can be non-zero.
+> @@ -13659,6 +13673,13 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  			break;
+>  		case PTR_TO_BTF_ID:
+>  		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
+> +		/* PTR_TO_BTF_ID | MEM_ALLOC always has a valid lifetime, unlike
+> +		 * PTR_TO_BTF_ID, and an active ref_obj_id, but the same cannot
+> +		 * be said once it is marked PTR_UNTRUSTED, hence we must handle
+> +		 * any faults for loads into such types. BPF_WRITE is disallowed
+> +		 * for this case.
+> +		 */
+> +		case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+>  			if (type == BPF_READ) {
+>  				insn->code = BPF_LDX | BPF_PROBE_MEM |
+>  					BPF_SIZE((insn)->code);
+> -- 
 > 2.38.1
->
+> 
