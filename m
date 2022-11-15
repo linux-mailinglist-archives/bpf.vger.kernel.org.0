@@ -2,67 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C73EF62A166
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9E062A169
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiKOSgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 13:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S230287AbiKOSh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 13:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiKOSgu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 13:36:50 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D263D64F8
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:36:48 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id i21so23157792edj.10
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:36:48 -0800 (PST)
+        with ESMTP id S230258AbiKOSh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 13:37:57 -0500
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEF7DFB5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:56 -0800 (PST)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-141ca09c2fbso7620061fac.6
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dNEnPX9RPM+k2QnX3GILrznbeobMUXRqqJeMyQJqDZ0=;
-        b=GT4CvBVLBufHtwyYyWnz9Q4M2IJClorK3Rv1TShHFb5hTPfpoGrtF9cAYa+Yb8+iS0
-         uJK7F3mux7Q7Fy6RlphwIYqPg8SrGzLNybwWozTTYcdLD0brYnPy8c/kPS6z1GxE3d5/
-         I1WyZr9nNaXTuEW6TVRCUQNO09vhyRtD7JpPNkwo2rv0wCN7BzEB7ilG/p5v5XM67Sq5
-         ObHLZE04X5IyQ0amj9tl1lODWN9YvLgKhprfIxR7lnjDdLqoxKyeVwRKVcf7rbFPBf0z
-         atcI3rTPUBtC3mmJgBxdagIwj6Em+dxPejqdmKz18W7C80I0g5vyLLdxVqthlMnz9em4
-         qbGw==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QhMUoKXVcMHmZEBz9MdS5zopFN48S1PqhhOi5SQP8d8=;
+        b=V0rZ4d85Xqc2HRJ94PzmtFOnpPbAaBdwVWu/3Iev1I5GTwtDLKyuG1FwKqZDzphhWF
+         PmzT8Mue1qsX/T/wISpvNwvtp01Vxrj3doz0SdUrjfD/F0YlP82djlWuq0Uq9Xy3uaXR
+         mIM3dwXPUGMJU+MPYWN3x4Rpr5p99iyI24oWzxlEpyvnqAtPb28hjXr1WhWWU/4LwOc9
+         Qnnxs4THCRLdL5NuyM7LyBq2bigQxiVWi4zbf2+4BD5Jl9Y4CjRmr9ZQydCnd0Jaq6aP
+         VYR+eMLieAydf9FplWWfG7K8aUEXGDJ5ockZvspK2jsEbZYmIs0KDROCsjBybfTdB2gn
+         p3hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dNEnPX9RPM+k2QnX3GILrznbeobMUXRqqJeMyQJqDZ0=;
-        b=FLyISqLwLOR04bXv52h5db6jL5xLGOD09ykzaivYE9rZnIggBE/NQRPzEnaYkIbUrh
-         YeV4t5DOJdNoAjpG9Jo80MT8Q6uvhca2xqxGM4R3lzuhez4kuqIbr1coNURAn/lkG1nR
-         JmpyIP9cW1nh5BIUa62PwEM6YnyKDcLefeabD/0UnuFul9t2rmR02Kg0Ho/bPPmbM1rM
-         qwolcFPdWSBP+KmRvlNZLJ2twlaXiO4HN9TekyvIE17NCVKEy8UHpDKZ493XFN9n40Na
-         fYqRLtrC5dKIMFv4j68MEKWpGF3+sn5Y3bypfQaLAr8+GpgZe109vSnIMi2WpT79ovF6
-         QQKA==
-X-Gm-Message-State: ANoB5pkYffjeZQLVHQAYF2lZqggc4t5dKD8zKs7cIinFIQiB6JPt/YmC
-        x5GGqtKVslaqhesKCRj/tLjTI/PzlRH5PDc03ozWl8kc
-X-Google-Smtp-Source: AA0mqf63LAXOlfpfJXQoyEOsD3VHunToiVKyjVgU+mutCKeDFYOvBs0ZjbkRowvO++MVtoVrlec/xeBSSO+q9PQwn0s=
-X-Received: by 2002:aa7:c155:0:b0:461:8cf7:4783 with SMTP id
- r21-20020aa7c155000000b004618cf74783mr16506369edp.385.1668537407411; Tue, 15
- Nov 2022 10:36:47 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QhMUoKXVcMHmZEBz9MdS5zopFN48S1PqhhOi5SQP8d8=;
+        b=mIeA/D09lymu1NEDv3DctXMjTr9xubmmjItUqdzI2twNIt7lW1GBVjGk3gQpMiXOVM
+         Esu+uzRn0MithknaPWWHZhJEx8rdKtIpBlH2lVbXf3xZSKopAQsEABDz0XMOJDdDMMWu
+         QMXFbeX9nPwwoJkON2RX7XliifNOGt6ayXrsJCDmPiMvWbtk4uc5/z7om6kdRsTabAz1
+         HkHh8rWoIq8nnNkVda7ZoE/1k0rMGmAusrhgiO6iUPXELu6x5tJPLv3war8hSwW6MMqq
+         Qesgnb/XsnXO4Kxn7d7Wc+GL4CMLXdO6mKv7cmG6+P8wMTqiArZc4zs8kbOTYGqMt9e0
+         DpVg==
+X-Gm-Message-State: ANoB5pmHgznpfyYBFsxyx3udL/V9ay85xdcSF35NEH+uoygL+pEa1EDf
+        JUvgKLKu4V5Ici2uDsaPREG/aTFio7Kx1W8NNsXkuJn1aHrvBA==
+X-Google-Smtp-Source: AA0mqf41NxdjStkZGmG9M30H6U1J1P0O9gnXmxLWefGJiEvgAFmccBPxAM9KsLI4KXvYYOU+yHPWdMvsDvJODX86Ef8=
+X-Received: by 2002:a05:6870:9624:b0:13b:be90:a68a with SMTP id
+ d36-20020a056870962400b0013bbe90a68amr1856335oaq.181.1668537474926; Tue, 15
+ Nov 2022 10:37:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20221115000130.1967465-1-memxor@gmail.com> <20221115000130.1967465-8-memxor@gmail.com>
-In-Reply-To: <20221115000130.1967465-8-memxor@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 15 Nov 2022 10:36:36 -0800
-Message-ID: <CAJnrk1aynT73OZJauUEn_OFkVBsZ0wGSZHjnDSKwUG_wYd1Opw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 7/7] selftests/bpf: Add test for dynptr reinit
- in user_ringbuf callback
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, David Vernet <void@manifault.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-6-sdf@google.com>
+ <87h6z0i449.fsf@toke.dk>
+In-Reply-To: <87h6z0i449.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 15 Nov 2022 10:37:43 -0800
+Message-ID: <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next 05/11] veth: Support rx timestamp
+ metadata for xdp
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,98 +82,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 4:01 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Nov 15, 2022 at 8:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> The original support for bpf_user_ringbuf_drain callbacks simply
-> short-circuited checks for the dynptr state, allowing users to pass
-> PTR_TO_DYNPTR (now CONST_PTR_TO_DYNPTR) to helpers that initialize a
-> dynptr. This bug would have also surfaced with other dynptr helpers in
-> the future that changed dynptr view or modified it in some way.
+> Stanislav Fomichev <sdf@google.com> writes:
 >
-> Include test cases for all cases, i.e. both bpf_dynptr_from_mem and
-> bpf_ringbuf_reserve_dynptr, and ensure verifier rejects both of them.
-> Without the fix, both of these programs load and pass verification.
+> > The goal is to enable end-to-end testing of the metadata
+> > for AF_XDP. Current rx_timestamp kfunc returns current
+> > time which should be enough to exercise this new functionality.
+> >
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: David Ahern <dsahern@gmail.com>
+> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Willem de Bruijn <willemb@google.com>
+> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > Cc: Maryam Tahhan <mtahhan@redhat.com>
+> > Cc: xdp-hints@xdp-project.net
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  drivers/net/veth.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index 2a4592780141..c626580a2294 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -25,6 +25,7 @@
+> >  #include <linux/filter.h>
+> >  #include <linux/ptr_ring.h>
+> >  #include <linux/bpf_trace.h>
+> > +#include <linux/bpf_patch.h>
+> >  #include <linux/net_tstamp.h>
+> >
+> >  #define DRV_NAME     "veth"
+> > @@ -1659,6 +1660,18 @@ static int veth_xdp(struct net_device *dev, stru=
+ct netdev_bpf *xdp)
+> >       }
+> >  }
+> >
+> > +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id=
+,
+> > +                           struct bpf_patch *patch)
+> > +{
+> > +     if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TI=
+MESTAMP_SUPPORTED)) {
+> > +             /* return true; */
+> > +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
+> > +     } else if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_METADATA_KFUN=
+C_RX_TIMESTAMP)) {
+> > +             /* return ktime_get_mono_fast_ns(); */
+> > +             bpf_patch_append(patch, BPF_EMIT_CALL(ktime_get_mono_fast=
+_ns));
+> > +     }
+> > +}
 >
-> Acked-by: David Vernet <void@manifault.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> So these look reasonable enough, but would be good to see some examples
+> of kfunc implementations that don't just BPF_CALL to a kernel function
+> (with those helper wrappers we were discussing before).
 
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
-
-Left a small comment below.
-
-> ---
->  .../selftests/bpf/prog_tests/user_ringbuf.c   |  2 ++
->  .../selftests/bpf/progs/user_ringbuf_fail.c   | 35 +++++++++++++++++++
->  2 files changed, 37 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> index 39882580cb90..500a63bb70a8 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> @@ -676,6 +676,8 @@ static struct {
->         {"user_ringbuf_callback_discard_dynptr", "cannot release unowned const bpf_dynptr"},
->         {"user_ringbuf_callback_submit_dynptr", "cannot release unowned const bpf_dynptr"},
->         {"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
-> +       {"user_ringbuf_callback_reinit_dynptr_mem", "Dynptr has to be an uninitialized dynptr"},
-> +       {"user_ringbuf_callback_reinit_dynptr_ringbuf", "Dynptr has to be an uninitialized dynptr"},
->  };
->
->  #define SUCCESS_TEST(_func) { _func, #_func }
-> diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> index 82aba4529aa9..7730d13c0cea 100644
-> --- a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> @@ -18,6 +18,13 @@ struct {
->         __uint(type, BPF_MAP_TYPE_USER_RINGBUF);
->  } user_ringbuf SEC(".maps");
->
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_RINGBUF);
-> +       __uint(max_entries, 2);
-> +} ringbuf SEC(".maps");
-> +
-> +static int map_value;
-> +
->  static long
->  bad_access1(struct bpf_dynptr *dynptr, void *context)
->  {
-> @@ -175,3 +182,31 @@ int user_ringbuf_callback_invalid_return(void *ctx)
->
->         return 0;
->  }
-> +
-> +static long
-> +try_reinit_dynptr_mem(struct bpf_dynptr *dynptr, void *context)
-> +{
-> +       bpf_dynptr_from_mem(&map_value, 4, 0, dynptr);
-> +       return 0;
-> +}
-> +
-> +static long
-> +try_reinit_dynptr_ringbuf(struct bpf_dynptr *dynptr, void *context)
-> +{
-> +       bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, dynptr);
-> +       return 0;
-> +}
-> +
-> +SEC("?raw_tp/sys_nanosleep")
-> +int user_ringbuf_callback_reinit_dynptr_mem(void *ctx)
-> +{
-> +       bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_mem, NULL, 0);
-> +       return 0;
-> +}
-> +
-> +SEC("?raw_tp/sys_nanosleep")
-
-nit: here and above, I think this should just be "?raw_tp/" without
-the nanosleep, since there is no nanosleep tracepoint.
-
-> +int user_ringbuf_callback_reinit_dynptr_ringbuf(void *ctx)
-> +{
-> +       bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_ringbuf, NULL, 0);
-> +       return 0;
-> +}
-> --
-> 2.38.1
->
+Let's maybe add them if/when needed as we add more metadata support?
+xdp_metadata_export_to_skb has an example, and rfc 1/2 have more
+examples, so it shouldn't be a problem to resurrect them back at some
+point?
