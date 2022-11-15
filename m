@@ -2,69 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AEC629FD1
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F2A629FF8
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 18:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbiKORBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 12:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        id S230130AbiKORJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 12:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbiKORBw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 12:01:52 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506992717D
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 09:01:52 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id y4so13732616plb.2
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 09:01:52 -0800 (PST)
+        with ESMTP id S229846AbiKORJS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 12:09:18 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10F865CA;
+        Tue, 15 Nov 2022 09:09:17 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id l11so22841608edb.4;
+        Tue, 15 Nov 2022 09:09:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PxMKZOoPyVcRUMBilPywR4X0Hi/lwu1qQCl5H75DsRw=;
-        b=d/LJDJFFYEu4VZD4eEbJF2Rx19yY3VTMz4s3QSWtkhjMQrnPUIr17RZFQVk2PElhvC
-         bxyU4Ho3RjXIimiWE/2nMaYB4QLsY+Vv/RJiyYb37bAgz3qXAcVlDSBDwhlZevWSvdrs
-         hJCwWhIBF03QEXuq2faBoR5HDxBoYrvwT/x0trmmel+ZPV1Lg7wDxklxZzuhmst1SUB1
-         GiiOzLZTweNrYXEA4Ss96isIIFFvWx9aIkFcv8HXQ9CKvb36Btg0nFqbSZYiwP/vEJuY
-         wQPB7Ski7dVduq20Zpn8NQr6Zh5IPCkefTZDVr6BRFkBRwTEbp31/JLJwL8CSMiblvSg
-         3JAA==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=13kwedfdgnKnT0nAJkpeTAEFco8AeqnjcbtoFZQynKE=;
+        b=F+/WJzugxdRYB6xGIh4hz5t74AefbRu0GH1KdogoFrjrRHoj3SeIwh2LNYCUrML4ZD
+         Rh3Z7AyjFRrT1fH4K3RG14tJfAear3uXUuD05MQrbSbiWl8nTD1uouBbj7sW0vn8w0eJ
+         S1PcdO95o5YhllXVedfMa3zRtJFxFX0oyqgK6adsv7NJ5tdEVucq/B8UlxHLHlKHdvo4
+         UKzhjbzTfK+mDOq+ccyZvGDqdxGqXb9vcmRLLtsOQHB/d5ByDNqUtVHTnLFl2IPbm3lt
+         Bwi/fXPpLm8GyGaioEECw2IUv2OiHowAtRMz2nEmFjM1RocS141FHDLOKTNY5FfK35y+
+         IfyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PxMKZOoPyVcRUMBilPywR4X0Hi/lwu1qQCl5H75DsRw=;
-        b=BMXPRgJV3OPXQ1YOQ7kajJCCaFhIsWtb4An/BZZzF9g+xsFWdqbylj9ZGXmptY0+1S
-         8c7eK9xgDNHpzf7UUGs/eCS6H2avcp12C+GlVjCP3asMnyPDYl19D5XxM5JjRjTZJCYq
-         rCfwN5tn/8LiMgX+FT5yNdsHXZ2zYVOp1X1vJqzES+GLylMMrKTkO3SsJe/GGxrdYHhz
-         c2HwbKGLgbEFK7+lzOKfJevWE2vEYeLJY6VVByT41Svq1krf8VJbWhL2GjyjNpvJYEdN
-         EVc7Lp1g25XvLhJm4MSnxbqc5HZrl66Mcl37iNCrsuYDGEwlHGZgo5srcgAOgh3YwCJO
-         XATA==
-X-Gm-Message-State: ANoB5pl7Gjqgnt376x1UsBxmts2E5FMtwNg0y7wB0r9fOQeS7vh3IhvW
-        1hXhCW17iiwaZUH/CACHvCkPi7yOZc8=
-X-Google-Smtp-Source: AA0mqf4iEh62umqV5KaEfKbWxrOyRTiUi66vRLhHSVGIPcf3UvfGLTcA5VKMgOmhEJRIi+XZFLv+jw==
-X-Received: by 2002:a17:902:d54d:b0:174:b537:266d with SMTP id z13-20020a170902d54d00b00174b537266dmr4882195plf.144.1668531711763;
-        Tue, 15 Nov 2022 09:01:51 -0800 (PST)
-Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id u136-20020a62798e000000b00565c8634e55sm8995393pfc.135.2022.11.15.09.01.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 09:01:51 -0800 (PST)
-Date:   Tue, 15 Nov 2022 22:31:44 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next v7 21/26] bpf: Add 'release on unlock' logic for
- bpf_list_push_{front,back}
-Message-ID: <20221115170144.axgypthtx7yaseqp@apollo>
-References: <20221114191547.1694267-1-memxor@gmail.com>
- <20221114191547.1694267-22-memxor@gmail.com>
- <f0058919-d90a-bf0e-100d-fcd991093ee6@meta.com>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=13kwedfdgnKnT0nAJkpeTAEFco8AeqnjcbtoFZQynKE=;
+        b=JEdSV6P+0e7OcOl0AQoaRLxU44nFap5FGH8PhBfJ8+fbWdGVyJd+jGKhNc0jEQCP3t
+         s1jcQoHu5ArlhFb2V5va/mEqFoTC5hIReLTQjiEk5tIgF+/VKN9/4sVbu68BzxxHPbqk
+         DzOLgyY7v+xMauAj1VJwfxNYH1vdDauF9o12WjlEs8RC0ZAv9hg88hKZzZ5MjSaLoffz
+         qyLv4nI1D2KjasFskrdOXc5mLYph96e44BJJHNENuVgVUvsKLdz6Sye9MdUdBqH+B4yH
+         ZuI4t6sKv5GPXzrhq8/x1wmb9SZYufe8XHsWithRvzKcTRjT4XswbJn+Sw91K011HXWk
+         l90Q==
+X-Gm-Message-State: ANoB5pkUPYJlBEOdJ68cPlkV30yfeKtq31qYgBLJwZ0wFgG21DNuWH4W
+        hPuDAmKCpyX0Ex3qbrJWJm3I556okQCWL4n0KlY=
+X-Google-Smtp-Source: AA0mqf5zokgESgJxV0AlRiXEMRIyYAtE4sgyWuQZDtA3AbedrogGwElUjg51a/G6HIptzBnoj4JrjYbYep1HTcglsdQ=
+X-Received: by 2002:a50:fe19:0:b0:462:70ee:fdb8 with SMTP id
+ f25-20020a50fe19000000b0046270eefdb8mr16344191edt.66.1668532156039; Tue, 15
+ Nov 2022 09:09:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0058919-d90a-bf0e-100d-fcd991093ee6@meta.com>
+References: <20221108140601.149971-1-toke@redhat.com> <20221108140601.149971-4-toke@redhat.com>
+In-Reply-To: <20221108140601.149971-4-toke@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 15 Nov 2022 09:09:04 -0800
+Message-ID: <CAADnVQJjxdUAE6NHNtbbqVj3p3=8KsKrvRb3ShdYb9CcfVY8Ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: Use 64-bit return value for bpf_prog_run
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,48 +81,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 10:22:56PM IST, Dave Marchevsky wrote:
-> On 11/14/22 2:15 PM, Kumar Kartikeya Dwivedi wrote:
-> > This commit implements the delayed release logic for bpf_list_push_front
-> > and bpf_list_push_back.
-> >
-> > Once a node has been added to the list, it's pointer changes to
-> > PTR_UNTRUSTED. However, it is only released once the lock protecting the
-> > list is unlocked. For such PTR_TO_BTF_ID | MEM_ALLOC with PTR_UNTRUSTED
-> > set but an active ref_obj_id, it is still permitted to read them as long
-> > as the lock is held. Writing to them is not allowed.
-> >
-> > This allows having read access to push items we no longer own until we
-> > release the lock guarding the list, allowing a little more flexibility
-> > when working with these APIs.
-> >
-> > Note that enabling write support has fairly tricky interactions with
-> > what happens inside the critical section. Just as an example, currently,
-> > bpf_obj_drop is not permitted, but if it were, being able to write to
-> > the PTR_UNTRUSTED pointer while the object gets released back to the
-> > memory allocator would violate safety properties we wish to guarantee
-> > (i.e. not crashing the kernel). The memory could be reused for a
-> > different type in the BPF program or even in the kernel as it gets
-> > eventually kfree'd.
-> >
-> > Not enabling bpf_obj_drop inside the critical section would appear to
-> > prevent all of the above, but that is more of an artifical limitation
-> > right now. Since the write support is tangled with how we handle
-> > potential aliasing of nodes inside the critical section that may or may
-> > not be part of the list anymore, it has been deferred to a future patch.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
+On Tue, Nov 8, 2022 at 6:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> Can the two WARN_ON_ONCE in this patch be converted to
-> verifier-log-and-EFAULT? Looks like they're both in
-> functions with access to 'env' and are checking for
-> scenarios that should be considered bugs in the verifier.
+> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 >
+> BPF ABI always uses 64-bit return value, but so far __bpf_prog_run and
+> higher level wrappers always truncated the return value to 32-bit. We
+> want to be able to introduce a new BPF program type that returns a
+> PTR_TO_BTF_ID or NULL from the BPF program to the caller context in the
+> kernel. To be able to use this returned pointer value, the bpf_prog_run
+> invocation needs to be able to return a 64-bit value, so update the
+> definitions to allow this.
 
-Will do.
+...
 
-> Aside from that style nit, logic and patch summary updates
-> here LGTM.
+> -static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+> +static __always_inline u64 __bpf_prog_run(const struct bpf_prog *prog,
+>                                           const void *ctx,
+>                                           bpf_dispatcher_fn dfunc)
+>  {
+> -       u32 ret;
+> +       u64 ret;
 >
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+>         cant_migrate();
+>         if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+> @@ -602,7 +602,7 @@ static __always_inline u32 __bpf_prog_run(const struc=
+t bpf_prog *prog,
+>         return ret;
+>  }
+>
+> -static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, con=
+st void *ctx)
+> +static __always_inline u64 bpf_prog_run(const struct bpf_prog *prog, con=
+st void *ctx)
+>  {
+>         return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+>  }
+
+I suspect 32-bit archs with JITs are partially broken with this change.
+As long as progs want to return pointers it's ok, but actual
+64-bit values will be return garbage in upper 32-bit, since 32-bit
+JITs won't populate the upper bits.
+I don't think changing u32->long retval is a good idea either,
+since BPF ISA has to be stable regardless of underlying arch.
+The u32->u64 transition is good long term, but let's add
+full 64-bit tests to lib/test_bpf and fix JITs.
+
+I've applied the first two patches of the series.
