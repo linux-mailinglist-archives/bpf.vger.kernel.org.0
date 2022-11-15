@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9E062A169
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EB962A16B
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 19:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbiKOSh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 13:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S230343AbiKOSiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 13:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbiKOSh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 13:37:57 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEF7DFB5
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:56 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-141ca09c2fbso7620061fac.6
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:56 -0800 (PST)
+        with ESMTP id S230258AbiKOSiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 13:38:00 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D2EDFB5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:59 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id 46-20020a9d0631000000b00666823da25fso9063443otn.0
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 10:37:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QhMUoKXVcMHmZEBz9MdS5zopFN48S1PqhhOi5SQP8d8=;
-        b=V0rZ4d85Xqc2HRJ94PzmtFOnpPbAaBdwVWu/3Iev1I5GTwtDLKyuG1FwKqZDzphhWF
-         PmzT8Mue1qsX/T/wISpvNwvtp01Vxrj3doz0SdUrjfD/F0YlP82djlWuq0Uq9Xy3uaXR
-         mIM3dwXPUGMJU+MPYWN3x4Rpr5p99iyI24oWzxlEpyvnqAtPb28hjXr1WhWWU/4LwOc9
-         Qnnxs4THCRLdL5NuyM7LyBq2bigQxiVWi4zbf2+4BD5Jl9Y4CjRmr9ZQydCnd0Jaq6aP
-         VYR+eMLieAydf9FplWWfG7K8aUEXGDJ5ockZvspK2jsEbZYmIs0KDROCsjBybfTdB2gn
-         p3hQ==
+        bh=vRtHQTIXlGRFGOjkr6EDMKnB9t1vQVBbtJP/KeMf3TE=;
+        b=fjujC6ulsB7CfxonS1ufPghI3e7ar9cDBjeFsF8wxKMIGbDPvLv6cGUn/9pTiOZGNt
+         5bcTR6A33gYqJ4KomGMXa7ZhzLPBd8i4EBzsccXqr6qpab0dxZgONax2AuCaDiMp7wS2
+         h+YJsRo0UjPCfymXFkSEl3julaAltSBCea96L2AqEAQ/QCIRW0/21oc7r0uOMymyaS6y
+         JJ8cHtHz2it+7C9cqq41gh2bkYR5MzQVQefiuoddgtCuciTuo1vq6r5Ce3CimLoXoJXK
+         r/F7kcpUq0Asw+Q6n98aWeNNpTXMc/D25wT+aV1t5O2BTKZbRblIKRCcEFaJl5BLuifl
+         a2pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QhMUoKXVcMHmZEBz9MdS5zopFN48S1PqhhOi5SQP8d8=;
-        b=mIeA/D09lymu1NEDv3DctXMjTr9xubmmjItUqdzI2twNIt7lW1GBVjGk3gQpMiXOVM
-         Esu+uzRn0MithknaPWWHZhJEx8rdKtIpBlH2lVbXf3xZSKopAQsEABDz0XMOJDdDMMWu
-         QMXFbeX9nPwwoJkON2RX7XliifNOGt6ayXrsJCDmPiMvWbtk4uc5/z7om6kdRsTabAz1
-         HkHh8rWoIq8nnNkVda7ZoE/1k0rMGmAusrhgiO6iUPXELu6x5tJPLv3war8hSwW6MMqq
-         Qesgnb/XsnXO4Kxn7d7Wc+GL4CMLXdO6mKv7cmG6+P8wMTqiArZc4zs8kbOTYGqMt9e0
-         DpVg==
-X-Gm-Message-State: ANoB5pmHgznpfyYBFsxyx3udL/V9ay85xdcSF35NEH+uoygL+pEa1EDf
-        JUvgKLKu4V5Ici2uDsaPREG/aTFio7Kx1W8NNsXkuJn1aHrvBA==
-X-Google-Smtp-Source: AA0mqf41NxdjStkZGmG9M30H6U1J1P0O9gnXmxLWefGJiEvgAFmccBPxAM9KsLI4KXvYYOU+yHPWdMvsDvJODX86Ef8=
-X-Received: by 2002:a05:6870:9624:b0:13b:be90:a68a with SMTP id
- d36-20020a056870962400b0013bbe90a68amr1856335oaq.181.1668537474926; Tue, 15
- Nov 2022 10:37:54 -0800 (PST)
+        bh=vRtHQTIXlGRFGOjkr6EDMKnB9t1vQVBbtJP/KeMf3TE=;
+        b=nLIC+vCBYuFuQv4Uqnyl+ezPZuZBvjqf3oywBRASGWgB1qVmreOQU51vLYO0xQDG11
+         9YX5WZGm/21cZymXLGbuCXrJC1raP7J40FchSbi0k+7i/mQgfnd32XEJDMAH/bL67E+a
+         DJiEC33A1d5Riyuq1I6APfPFuup8vZ6S4VsQQAdtq7Bp6oaRth6+EAEGQaLGxzCzhaj7
+         8UFcoZsOVoJ/1J5GlItJWgZuIOqCDBZztsdoHa86ZscuKQZJ1dWbjAMj7ERvDbL1NITl
+         pi3j7jr8fzafkMfdErUkVvj4H1/4ie13JI7K0+nx9K9degrljHH6QfvxBZiquEzVQ9zF
+         gOzQ==
+X-Gm-Message-State: ANoB5plqTiZ88JdFHdCeGr1MNgc8OQ7WMAv+g2mW+O+i9saszzUQcuBP
+        FSp3cIfMykM0DHlD6LNLrG/0eZdHda62Vy080uSduJfp5hPGh48E
+X-Google-Smtp-Source: AA0mqf7nGu1hdcRmaEQRilm++4rBOBHGZLtO0CdDoKzmySMbMnklS5VR/2vo7uuw7LOuqEaCPb632pXxbQ4VGQmEA/g=
+X-Received: by 2002:a9d:685a:0:b0:66c:dd29:813d with SMTP id
+ c26-20020a9d685a000000b0066cdd29813dmr9601285oto.312.1668537478354; Tue, 15
+ Nov 2022 10:37:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-6-sdf@google.com>
- <87h6z0i449.fsf@toke.dk>
-In-Reply-To: <87h6z0i449.fsf@toke.dk>
+References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-4-sdf@google.com>
+ <87k03wi46i.fsf@toke.dk>
+In-Reply-To: <87k03wi46i.fsf@toke.dk>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 15 Nov 2022 10:37:43 -0800
-Message-ID: <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
-Subject: Re: [xdp-hints] [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
+Date:   Tue, 15 Nov 2022 10:37:47 -0800
+Message-ID: <CAKH8qBv0oOnZY3YiXu_SNnRYTgd64KhMgBOgKT2zMmkRiiNHHw@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next 03/11] bpf: Support inlined/unrolled
+ kfuncs for xdp metadata
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -82,14 +82,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 8:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+On Tue, Nov 15, 2022 at 8:16 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
 > Stanislav Fomichev <sdf@google.com> writes:
 >
-> > The goal is to enable end-to-end testing of the metadata
-> > for AF_XDP. Current rx_timestamp kfunc returns current
-> > time which should be enough to exercise this new functionality.
+> > Kfuncs have to be defined with KF_UNROLL for an attempted unroll.
+> > For now, only XDP programs can have their kfuncs unrolled, but
+> > we can extend this later on if more programs would like to use it.
+> >
+> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+> > implements all possible metatada kfuncs. Not all devices have to
+> > implement them. If unrolling is not supported by the target device,
+> > the default implementation is called instead. The default
+> > implementation is unconditionally unrolled to 'return false/0/NULL'
+> > for now.
+> >
+> > Upon loading, if BPF_F_XDP_HAS_METADATA is passed via prog_flags,
+> > we treat prog_index as target device for kfunc unrolling.
+> > net_device_ops gains new ndo_unroll_kfunc which does the actual
+> > dirty work per device.
+> >
+> > The kfunc unrolling itself largely follows the existing map_gen_lookup
+> > unrolling example, so there is nothing new here.
 > >
 > > Cc: John Fastabend <john.fastabend@gmail.com>
 > > Cc: David Ahern <dsahern@gmail.com>
@@ -105,47 +120,284 @@ at.com> wrote:
 > > Cc: netdev@vger.kernel.org
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >  drivers/net/veth.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
+> >  Documentation/bpf/kfuncs.rst   |  8 +++++
+> >  include/linux/bpf.h            |  1 +
+> >  include/linux/btf.h            |  1 +
+> >  include/linux/btf_ids.h        |  4 +++
+> >  include/linux/netdevice.h      |  5 +++
+> >  include/net/xdp.h              | 24 +++++++++++++
+> >  include/uapi/linux/bpf.h       |  5 +++
+> >  kernel/bpf/syscall.c           | 28 ++++++++++++++-
+> >  kernel/bpf/verifier.c          | 65 ++++++++++++++++++++++++++++++++++
+> >  net/core/dev.c                 |  7 ++++
+> >  net/core/xdp.c                 | 39 ++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h |  5 +++
+> >  12 files changed, 191 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> > index 2a4592780141..c626580a2294 100644
-> > --- a/drivers/net/veth.c
-> > +++ b/drivers/net/veth.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/filter.h>
-> >  #include <linux/ptr_ring.h>
-> >  #include <linux/bpf_trace.h>
+> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rs=
+t
+> > index 0f858156371d..1723de2720bb 100644
+> > --- a/Documentation/bpf/kfuncs.rst
+> > +++ b/Documentation/bpf/kfuncs.rst
+> > @@ -169,6 +169,14 @@ rebooting or panicking. Due to this additional res=
+trictions apply to these
+> >  calls. At the moment they only require CAP_SYS_BOOT capability, but mo=
+re can be
+> >  added later.
+> >
+> > +2.4.8 KF_UNROLL flag
+> > +-----------------------
+> > +
+> > +The KF_UNROLL flag is used for kfuncs that the verifier can attempt to=
+ unroll.
+> > +Unrolling is currently implemented only for XDP programs' metadata kfu=
+ncs.
+> > +The main motivation behind unrolling is to remove function call overhe=
+ad
+> > +and allow efficient inlined kfuncs to be generated.
+> > +
+> >  2.5 Registering the kfuncs
+> >  --------------------------
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 798aec816970..bf8936522dd9 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1240,6 +1240,7 @@ struct bpf_prog_aux {
+> >               struct work_struct work;
+> >               struct rcu_head rcu;
+> >       };
+> > +     const struct net_device_ops *xdp_kfunc_ndo;
+> >  };
+> >
+> >  struct bpf_prog {
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index d80345fa566b..950cca997a5a 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -51,6 +51,7 @@
+> >  #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer a=
+rguments */
+> >  #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+> >  #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions=
+ */
+> > +#define KF_UNROLL       (1 << 7) /* kfunc unrolling can be attempted *=
+/
+> >
+> >  /*
+> >   * Return the name of the passed struct, if exists, or halt the build =
+if for
+> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > index c9744efd202f..eb448e9c79bb 100644
+> > --- a/include/linux/btf_ids.h
+> > +++ b/include/linux/btf_ids.h
+> > @@ -195,6 +195,10 @@ asm(                                              =
+       \
+> >  __BTF_ID_LIST(name, local)                           \
+> >  __BTF_SET8_START(name, local)
+> >
+> > +#define BTF_SET8_START_GLOBAL(name)                  \
+> > +__BTF_ID_LIST(name, global)                          \
+> > +__BTF_SET8_START(name, global)
+> > +
+> >  #define BTF_SET8_END(name)                           \
+> >  asm(                                                 \
+> >  ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"    \
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 02a2318da7c7..2096b4f00e4b 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -73,6 +73,8 @@ struct udp_tunnel_info;
+> >  struct udp_tunnel_nic_info;
+> >  struct udp_tunnel_nic;
+> >  struct bpf_prog;
+> > +struct bpf_insn;
+> > +struct bpf_patch;
+> >  struct xdp_buff;
+> >
+> >  void synchronize_net(void);
+> > @@ -1604,6 +1606,9 @@ struct net_device_ops {
+> >       ktime_t                 (*ndo_get_tstamp)(struct net_device *dev,
+> >                                                 const struct skb_shared=
+_hwtstamps *hwtstamps,
+> >                                                 bool cycles);
+> > +     void                    (*ndo_unroll_kfunc)(const struct bpf_prog=
+ *prog,
+> > +                                                 u32 func_id,
+> > +                                                 struct bpf_patch *pat=
+ch);
+> >  };
+> >
+> >  /**
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 55dbc68bfffc..2a82a98f2f9f 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -7,6 +7,7 @@
+> >  #define __LINUX_NET_XDP_H__
+> >
+> >  #include <linux/skbuff.h> /* skb_shared_info */
+> > +#include <linux/btf_ids.h> /* btf_id_set8 */
+> >
+> >  /**
+> >   * DOC: XDP RX-queue information
+> > @@ -409,4 +410,27 @@ void xdp_attachment_setup(struct xdp_attachment_in=
+fo *info,
+> >
+> >  #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+> >
+> > +#define XDP_METADATA_KFUNC_xxx       \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED, \
+> > +                        bpf_xdp_metadata_rx_timestamp_supported) \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
+> > +                        bpf_xdp_metadata_rx_timestamp) \
+> > +
+> > +enum {
+> > +#define XDP_METADATA_KFUNC(name, str) name,
+> > +XDP_METADATA_KFUNC_xxx
+> > +#undef XDP_METADATA_KFUNC
+> > +MAX_XDP_METADATA_KFUNC,
+> > +};
+> > +
+> > +#ifdef CONFIG_DEBUG_INFO_BTF
+> > +extern struct btf_id_set8 xdp_metadata_kfunc_ids;
+> > +static inline u32 xdp_metadata_kfunc_id(int id)
+> > +{
+> > +     return xdp_metadata_kfunc_ids.pairs[id].id;
+> > +}
+> > +#else
+> > +static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
+> > +#endif
+> > +
+> >  #endif /* __LINUX_NET_XDP_H__ */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index fb4c911d2a03..b444b1118c4f 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1156,6 +1156,11 @@ enum bpf_link_type {
+> >   */
+> >  #define BPF_F_XDP_HAS_FRAGS  (1U << 5)
+> >
+> > +/* If BPF_F_XDP_HAS_METADATA is used in BPF_PROG_LOAD command, the loa=
+ded
+> > + * program becomes device-bound but can access it's XDP metadata.
+> > + */
+> > +#define BPF_F_XDP_HAS_METADATA       (1U << 6)
+> > +
+> >  /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+> >   * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+> >   */
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 85532d301124..597c41949910 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -2426,6 +2426,20 @@ static bool is_perfmon_prog_type(enum bpf_prog_t=
+ype prog_type)
+> >  /* last field in 'union bpf_attr' used by this command */
+> >  #define      BPF_PROG_LOAD_LAST_FIELD core_relo_rec_size
+> >
+> > +static int xdp_resolve_netdev(struct bpf_prog *prog, int ifindex)
+> > +{
+> > +     struct net *net =3D current->nsproxy->net_ns;
+> > +     struct net_device *dev;
+> > +
+> > +     for_each_netdev(net, dev) {
+> > +             if (dev->ifindex =3D=3D ifindex) {
+>
+> So this is basically dev_get_by_index(), except you're not doing
+> dev_hold()? Which also means there's no protection against the netdev
+> going away?
+
+Yeah, good point, will use dev_get_by_index here instead with proper refcnt=
+..
+
+> > +                     prog->aux->xdp_kfunc_ndo =3D dev->netdev_ops;
+> > +                     return 0;
+> > +             }
+> > +     }
+>
+> > +     return -EINVAL;
+> > +}
+> > +
+> >  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+> >  {
+> >       enum bpf_prog_type type =3D attr->prog_type;
+> > @@ -2443,7 +2457,8 @@ static int bpf_prog_load(union bpf_attr *attr, bp=
+fptr_t uattr)
+> >                                BPF_F_TEST_STATE_FREQ |
+> >                                BPF_F_SLEEPABLE |
+> >                                BPF_F_TEST_RND_HI32 |
+> > -                              BPF_F_XDP_HAS_FRAGS))
+> > +                              BPF_F_XDP_HAS_FRAGS |
+> > +                              BPF_F_XDP_HAS_METADATA))
+> >               return -EINVAL;
+> >
+> >       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+> > @@ -2531,6 +2546,17 @@ static int bpf_prog_load(union bpf_attr *attr, b=
+pfptr_t uattr)
+> >       prog->aux->sleepable =3D attr->prog_flags & BPF_F_SLEEPABLE;
+> >       prog->aux->xdp_has_frags =3D attr->prog_flags & BPF_F_XDP_HAS_FRA=
+GS;
+> >
+> > +     if (attr->prog_flags & BPF_F_XDP_HAS_METADATA) {
+> > +             /* Reuse prog_ifindex to carry request to unroll
+> > +              * metadata kfuncs.
+> > +              */
+> > +             prog->aux->offload_requested =3D false;
+> > +
+> > +             err =3D xdp_resolve_netdev(prog, attr->prog_ifindex);
+> > +             if (err < 0)
+> > +                     goto free_prog;
+> > +     }
+> > +
+> >       err =3D security_bpf_prog_alloc(prog->aux);
+> >       if (err)
+> >               goto free_prog;
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 07c0259dfc1a..b657ed6eb277 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/types.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/bpf.h>
 > > +#include <linux/bpf_patch.h>
-> >  #include <linux/net_tstamp.h>
-> >
-> >  #define DRV_NAME     "veth"
-> > @@ -1659,6 +1660,18 @@ static int veth_xdp(struct net_device *dev, stru=
-ct netdev_bpf *xdp)
-> >       }
+> >  #include <linux/btf.h>
+> >  #include <linux/bpf_verifier.h>
+> >  #include <linux/filter.h>
+> > @@ -14015,6 +14016,43 @@ static int fixup_call_args(struct bpf_verifier=
+_env *env)
+> >       return err;
 > >  }
 > >
-> > +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id=
-,
-> > +                           struct bpf_patch *patch)
+> > +static int unroll_kfunc_call(struct bpf_verifier_env *env,
+> > +                          struct bpf_insn *insn,
+> > +                          struct bpf_patch *patch)
 > > +{
-> > +     if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TI=
-MESTAMP_SUPPORTED)) {
-> > +             /* return true; */
-> > +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
-> > +     } else if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_METADATA_KFUN=
-C_RX_TIMESTAMP)) {
-> > +             /* return ktime_get_mono_fast_ns(); */
-> > +             bpf_patch_append(patch, BPF_EMIT_CALL(ktime_get_mono_fast=
-_ns));
-> > +     }
-> > +}
+> > +     enum bpf_prog_type prog_type;
+> > +     struct bpf_prog_aux *aux;
+> > +     struct btf *desc_btf;
+> > +     u32 *kfunc_flags;
+> > +     u32 func_id;
+> > +
+> > +     desc_btf =3D find_kfunc_desc_btf(env, insn->off);
+> > +     if (IS_ERR(desc_btf))
+> > +             return PTR_ERR(desc_btf);
+> > +
+> > +     prog_type =3D resolve_prog_type(env->prog);
+> > +     func_id =3D insn->imm;
+> > +
+> > +     kfunc_flags =3D btf_kfunc_id_set_contains(desc_btf, prog_type, fu=
+nc_id);
+> > +     if (!kfunc_flags)
+> > +             return 0;
+> > +     if (!(*kfunc_flags & KF_UNROLL))
+> > +             return 0;
+> > +     if (prog_type !=3D BPF_PROG_TYPE_XDP)
+> > +             return 0;
 >
-> So these look reasonable enough, but would be good to see some examples
-> of kfunc implementations that don't just BPF_CALL to a kernel function
-> (with those helper wrappers we were discussing before).
+> Should this just handle XDP_METADATA_KFUNC_EXPORT_TO_SKB instead of
+> passing that into the driver (to avoid every driver having to
+> reimplement the same call to xdp_metadata_export_to_skb())?
 
-Let's maybe add them if/when needed as we add more metadata support?
-xdp_metadata_export_to_skb has an example, and rfc 1/2 have more
-examples, so it shouldn't be a problem to resurrect them back at some
-point?
+Good idea, will try to move it here.
