@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12DC62AE9B
-	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 23:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6716262AE9C
+	for <lists+bpf@lfdr.de>; Tue, 15 Nov 2022 23:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238577AbiKOWtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 17:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S238371AbiKOWtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 17:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbiKOWtM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 17:49:12 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6511B2037D
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 14:49:11 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id kt23so39890188ejc.7
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 14:49:11 -0800 (PST)
+        with ESMTP id S238211AbiKOWtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 17:49:14 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FF939D
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 14:49:12 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id k2so39907413ejr.2
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 14:49:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9wZepQ6z2xnxig9fx8CxJT/60cd7J9KzXeAajDZAZM=;
-        b=D52TVmKJbeVXRQfEzYLfeqLd8RCG5mnRWiVZhrz+WSZpCLFghN0s/xE4XNmS+T6yiy
-         9Ce2K1M3SkLYo55ADnHRupqc980yIlU5WAsyIaafl702uhz/NFGXX+pzu31uyvNNWe/2
-         c1YEHF3Ceyhp2ElOIEhnD39ncDWGd7PqgG2P7LBWiYePP2ZxbyzMp+LsutqkAq7kMomQ
-         5en5Riih1fh4qCSk9QPTd9ElZzk2FI0BDiB4Zu/QrHuEj/wJb7QctaejA6hBVkhTtzKx
-         oG258mdpl5ri2KtZPPMi7HeubysUG9VVvb5p4LNUfAw7zXykxzA8NQrikxODvrVklQ91
-         ks8w==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8wBKihR/ahpGcyV8LDxIJNI8Si8oH9un5wWftmd2Zvc=;
+        b=a+aIZ4E95naPbiwe+L3gmdpKA6AC7O9Wo6snexMuYfGN9M3gNYA57WRCl8GhHjq39Z
+         kKjg/gHnyFx9pam1t/H9NR0s3U1QoY1e37ekhl/iu+da/HMKbEZ6RIlipVfKoLFVuiFr
+         Mu2WnELLS8zq5sv47A5pmxLPTLmKiqH1m/TvJnZNre9bG6hBsa/h/muvu8A8AHNky/9C
+         SEWEifXoLz4cX+i3uIlHhCoyodNk8Dhk4Ci9QtqlecBHFmKsxEryEPwkKulZKybQSkam
+         hFnQzKdE0UM2fkvEQeV9Lq0jHQKbwiq2BlfIHH57pHNPUnls0VnM6/4efPKSneVKt8mh
+         ZJmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s9wZepQ6z2xnxig9fx8CxJT/60cd7J9KzXeAajDZAZM=;
-        b=6U5cee9xTn/YJV05+/511aX/rYFfFzyRe9n36J2s+eyr6YWIuaMNMLqN8k6/lE1rbA
-         B1fSh+IKI5SjSBJ1nHCx9tMmFi/GJT276rIEgQ4sgfOPaWSnfCGtf1hiXb0Go7QcdUJS
-         Ao92sm6JG67oeLIioL7v09FxBGfOh0ADmll6IvdbW99UCSVc8vBFX3yVpMlbAs7gAuPe
-         lls3iHzdRdsoYwAPxUZiEwJQTtRZnLT0R9P3RBm/4VW4oQYZXqxT03e3DfQmeU//48Nn
-         FVel82iXQEnbhe1+vE4TdLI3S3UeJlwFp4BoLcW1n2JKCtKvcQ6bfqykDleYLlwNc+9M
-         q9Mg==
-X-Gm-Message-State: ANoB5pn0PCKTUvu7x5E52Ma65OU7FhojHrqJ0+23JoLiw++Q8tmXoLqO
-        k3S24miYFiVxY4lqviDBUCFw8pp20BPoo/mw
-X-Google-Smtp-Source: AA0mqf44EwcX3Bsp0GlskEushdi0gV4hIIiT557xmLSYemj5xvYPv28gH5lz8RcqtnUVikZkmV4p1w==
-X-Received: by 2002:a17:906:48d7:b0:78d:cdce:bc52 with SMTP id d23-20020a17090648d700b0078dcdcebc52mr15988119ejt.469.1668552549609;
-        Tue, 15 Nov 2022 14:49:09 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8wBKihR/ahpGcyV8LDxIJNI8Si8oH9un5wWftmd2Zvc=;
+        b=cCWMFGcVAZ4FmwEe1Qb0J6wFAl2f3gUm/0VAj3Dg6zriCxMdAX4j96vQ30EOboidUJ
+         qbuGj8xY3tqRl6tVWVcjOlu10syRXJ+LeYQDnEBPgcX6oQsKxBo9NujZbxL1P9AZfkgV
+         1D1DOq/BEde57wO+ZX3YIiL6Uq9EuDZTmZdXufDYzgP4+t7vPg2UTYOIe5K8aUQY7LBD
+         4/HEZP2qM/859X3pUi8uiLOSJKxipQShL78G3xe/PWfuZ8EEzLma3n7DCHvWi1ickaea
+         SKidgXQK0BOrK4VzQrbuQfNESqljNcAXFC9ZpqsTkFLruOjcPKVbSU2WrJw+NwulzxcO
+         Q7SA==
+X-Gm-Message-State: ANoB5pmBkBjmlCWXbmeCdEn3V0n6iGeJzTEQfQ4Jv0MSkn6JUsep3BuJ
+        h/jyESQD2z5MdNPMo3t9UDFgpJQEf2Xtogwg
+X-Google-Smtp-Source: AA0mqf6VQ4N7255usuPQ8cNEzk9PDS+ze/KbU0KewWtBhdGP4H8JNfKFsyF05wmFU28Udk9n40LEgA==
+X-Received: by 2002:a17:906:e094:b0:78d:48fa:8038 with SMTP id gh20-20020a170906e09400b0078d48fa8038mr15682364ejb.309.1668552551195;
+        Tue, 15 Nov 2022 14:49:11 -0800 (PST)
 Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id y22-20020a056402171600b0046776f98d0csm5461854edu.79.2022.11.15.14.49.08
+        by smtp.gmail.com with ESMTPSA id y22-20020a056402171600b0046776f98d0csm5461854edu.79.2022.11.15.14.49.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 14:49:09 -0800 (PST)
+        Tue, 15 Nov 2022 14:49:10 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, john.fastabend@gmail.com, shung-hsi.yu@suse.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 0/2] propagate nullness information for reg to reg comparisons
-Date:   Wed, 16 Nov 2022 00:48:57 +0200
-Message-Id: <20221115224859.2452988-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 1/2] bpf: propagate nullness information for reg to reg comparisons
+Date:   Wed, 16 Nov 2022 00:48:58 +0200
+Message-Id: <20221115224859.2452988-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221115224859.2452988-1-eddyz87@gmail.com>
+References: <20221115224859.2452988-1-eddyz87@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,13 +72,12 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patchset adds ability to propagates nullness information for
-branches of register to register equality compare instructions. The
-following rules are used:
- - suppose register A maybe null
- - suppose register B is not null
- - for JNE A, B, ... - A is not null in the false branch
- - for JEQ A, B, ... - A is not null in the true branch
+Propagate nullness information for branches of register to register
+equality compare instructions. The following rules are used:
+- suppose register A maybe null
+- suppose register B is not null
+- for JNE A, B, ... - A is not null in the false branch
+- for JEQ A, B, ... - A is not null in the true branch
 
 E.g. for program like below:
 
@@ -89,72 +91,72 @@ E.g. for program like below:
 
 It is safe to dereference r7 at point (c), because of (a) and (b).
 
-The utility of this change came up while working on BPF CLang backend
-issue [1]. Specifically, while debugging issue with selftest
-`test_sk_lookup.c`. This test has the following structure:
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/verifier.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-    int access_ctx_sk(struct bpf_sk_lookup *ctx __CTX__)
-    {
-        struct bpf_sock *sk1 = NULL, *sk2 = NULL;
-        ...
-        sk1 = bpf_map_lookup_elem(&redir_map, &KEY_SERVER_A);
-        if (!sk1)           // (a)
-            goto out;
-        ...
-        if (ctx->sk != sk1) // (b)
-            goto out;
-        ...
-        if (ctx->sk->family != AF_INET ||     // (c)
-            ctx->sk->type != SOCK_STREAM ||
-            ctx->sk->state != BPF_TCP_LISTEN)
-            goto out;
-            ...
-    }
-
-- at (a) `sk1` is checked to be not null;
-- at (b) `ctx->sk` is verified to be equal to `sk1`;
-- at (c) `ctx->sk` is accessed w/o nullness check.
-
-Currently Global Value Numbering pass considers expressions `sk1` and
-`ctx->sk` to be identical at point (c) and replaces `ctx->sk` with
-`sk1` (not expressions themselves but corresponding SSA values).
-Since `sk1` is known to be not null after (b) verifier allows
-execution of the program.
-
-However, such optimization is not guaranteed to happen. When it does
-not happen verifier reports an error.
-
-Changelog:
-v2 -> v3:
- - verifier tests are updated with correct error message for
-   unprivileged mode (pointer comparisons are forbidden in
-   unprivileged mode).
-
-v1 -> v2:
- - after investigation described in [2] as suggested by John, Daniel
-   and Shung-Hsi, function `type_is_pointer` is removed, calls to this
-   function are replaced by `__is_pointer_value(false, src_reg)`.
-   
-RFC -> v1:
- - newly added if block in `check_cond_jmp_op` is moved down to keep
-   `make_ptr_not_null_reg` actions together;
- - tests rewritten to have a single `r0 = 0; exit;` block.
-
-[1]   https://reviews.llvm.org/D131633#3722231
-[2]   https://lore.kernel.org/bpf/bad8be826d088e0d180232628160bf932006de89.camel@gmail.com/
-[RFC] https://lore.kernel.org/bpf/20220822094312.175448-1-eddyz87@gmail.com/
-[v1]  https://lore.kernel.org/bpf/20220826172915.1536914-1-eddyz87@gmail.com/
-[v2]  https://lore.kernel.org/bpf/20221106214921.117631-1-eddyz87@gmail.com/
-
-Eduard Zingerman (2):
-  bpf: propagate nullness information for reg to reg comparisons
-  selftests/bpf: check nullness propagation for reg to reg comparisons
-
- kernel/bpf/verifier.c                         |  35 +++-
- .../bpf/verifier/jeq_infer_not_null.c         | 174 ++++++++++++++++++
- 2 files changed, 207 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index be24774961ab..0312d9ce292f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -10267,6 +10267,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 	struct bpf_verifier_state *other_branch;
+ 	struct bpf_reg_state *regs = this_branch->frame[this_branch->curframe]->regs;
+ 	struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg = NULL;
++	struct bpf_reg_state *eq_branch_regs;
+ 	u8 opcode = BPF_OP(insn->code);
+ 	bool is_jmp32;
+ 	int pred = -1;
+@@ -10376,8 +10377,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 	/* detect if we are comparing against a constant value so we can adjust
+ 	 * our min/max values for our dst register.
+ 	 * this is only legit if both are scalars (or pointers to the same
+-	 * object, I suppose, but we don't support that right now), because
+-	 * otherwise the different base pointers mean the offsets aren't
++	 * object, I suppose, see the PTR_MAYBE_NULL related if block below),
++	 * because otherwise the different base pointers mean the offsets aren't
+ 	 * comparable.
+ 	 */
+ 	if (BPF_SRC(insn->code) == BPF_X) {
+@@ -10426,6 +10427,36 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 		find_equal_scalars(other_branch, &other_branch_regs[insn->dst_reg]);
+ 	}
+ 
++	/* if one pointer register is compared to another pointer
++	 * register check if PTR_MAYBE_NULL could be lifted.
++	 * E.g. register A - maybe null
++	 *      register B - not null
++	 * for JNE A, B, ... - A is not null in the false branch;
++	 * for JEQ A, B, ... - A is not null in the true branch.
++	 */
++	if (!is_jmp32 && BPF_SRC(insn->code) == BPF_X &&
++	    __is_pointer_value(false, src_reg) && __is_pointer_value(false, dst_reg) &&
++	    type_may_be_null(src_reg->type) != type_may_be_null(dst_reg->type)) {
++		eq_branch_regs = NULL;
++		switch (opcode) {
++		case BPF_JEQ:
++			eq_branch_regs = other_branch_regs;
++			break;
++		case BPF_JNE:
++			eq_branch_regs = regs;
++			break;
++		default:
++			/* do nothing */
++			break;
++		}
++		if (eq_branch_regs) {
++			if (type_may_be_null(src_reg->type))
++				mark_ptr_not_null_reg(&eq_branch_regs[insn->src_reg]);
++			else
++				mark_ptr_not_null_reg(&eq_branch_regs[insn->dst_reg]);
++		}
++	}
++
+ 	/* detect if R == 0 where R is returned from bpf_map_lookup_elem().
+ 	 * NOTE: these optimizations below are related with pointer comparison
+ 	 *       which will never be JMP32.
 -- 
 2.34.1
 
