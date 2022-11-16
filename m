@@ -2,121 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367FF62B07B
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 02:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2681662B099
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 02:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbiKPBVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 20:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S230206AbiKPBhw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 20:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbiKPBVK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 20:21:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270922A260
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 17:21:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D6A6DB81B96
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 01:21:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68CC8C43144
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 01:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668561667;
-        bh=HPqSwtnsmvwz/eW+Mmf5+RnJY7HuFktOa5yX14Ed7LM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ogNeepUbx4ycRs7rkijwdNMMjenRJ7ktYqIqBHZ3+8d9pXOYOER27DbiyVxFqzkaf
-         sK7dBRdeyDh5WmW6Z1Msj21RLfC/7JZGgPM1VXOZ3bltDMzZKD+1/5bXOF7REtmqPF
-         nlY69skj6mwy9QcYAX+hvytwqkCV05dfa3Ypp9AA4fvevz6pbC2dRsMqAL31IaV9qZ
-         xT0ReD/xHjIs9uWFLREaWSCSXNEo/EdOZjL4gFUNIVNmOqaCAf9+wSUJtUtqfzFEwn
-         h1roVBjh8rIwxp6+e1Egs2gdcoIPQROw/keNZ/eftt7QJR/tlz/IyBBty/EsfESqOY
-         k2XkjT0JoT7Kw==
-Received: by mail-ed1-f43.google.com with SMTP id u24so24412521edd.13
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 17:21:07 -0800 (PST)
-X-Gm-Message-State: ANoB5pnSFpHvuVY3Muk7B4IWFjqqb++MKnn3smIhQQyyAUoYQ49bcu1S
-        aWyh4PUC2hlIiXAOYIUhMFqf2uAQtHAcXs06Y4Q=
-X-Google-Smtp-Source: AA0mqf7gEknKqMKDRE7Lw2a12ouFxnXF1mlyTLNDq1SQ+e7WcGJ0EcOvuMxWLRCAkNh28uhLFAEQbiIvDlIJX0i3/4A=
-X-Received: by 2002:aa7:c6d9:0:b0:462:2c1c:8791 with SMTP id
- b25-20020aa7c6d9000000b004622c1c8791mr17503929eds.29.1668561665575; Tue, 15
- Nov 2022 17:21:05 -0800 (PST)
+        with ESMTP id S229882AbiKPBhu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 20:37:50 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A86123E91
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 17:37:49 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id f18so7610826ejz.5
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 17:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2FjLAjjbHVSLzrs9BYWAHe9VReAjwoMOzwaJ7GfRQyg=;
+        b=agnXGG/mKssJkO/gcdFqkt31t2V0ns9pkBtlAg2tjmovugYb9qGwQzgbveScQSWZGT
+         dD61LEjhOlY6RlH7plHLxDwjaEAgLCdrEDwFvPQldQlIhwr94q3hjnqYydhs/4lEm3e1
+         9FgYxd1aocL1fcu9QrE3vpZ6CeY2A9+xZghbQdNZ5Ek4rO1NRijSVZftYahG1DzBPyyU
+         kkUla2Aj9TT8JzpdIHwurLWqTQgNxq4MjZcq0TJHON8w0z4QjcwQwOIqKd8ulyJY3ILi
+         J2mw681pZXM0EEX0JXphUYzIYTBlsI1YPVNaSjsVLP1VTRbX84JuqGWvzee9hbfijmU6
+         AoRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2FjLAjjbHVSLzrs9BYWAHe9VReAjwoMOzwaJ7GfRQyg=;
+        b=eNaDRiBDyJTXdNObBEYCIsm1+QI/2eIiqAugbiyN2+ldpwhMKt5jc3xyN25qL7i81s
+         XKl38OePHKQfz4UpQmVsalkimshvG0WNW1rgB8JjEsMjR+jzumuL6oX1vKR4rzDpI7js
+         VPeJq73plMsmSmXAtVh/b2R5LJI5E3/se6Qhb+nx66rwMEPFMRmikMpV1wFdEJ5jPm4i
+         28+HaW3N0hTF2LOi5mV5Ha6ZS3V0K04j5v5CYMy+vSQJO2Ulyjx9eHgostdVxbfffWxN
+         f4mL4DQSeEnJ6nMjK4ar+wTNB3BEUzwokjV+KbStNbdqxPRyrzWJf5he4NUgZVIc9XuF
+         iHvw==
+X-Gm-Message-State: ANoB5pkWtOGxbJXhGqKzeWIcvAXz0etS31AsqdnbW9oq8XjiHU48SEhk
+        67pCKhGHybl3dqLzBdu2LzcrCSsr5OGeBUKNQ7U=
+X-Google-Smtp-Source: AA0mqf4Cw6hsKmjWlLgNVJoITkTmiTBblm8YauCrmgiog6Hb212gVNlB364XpILkWRvjmO8tWbVcs7SJ0vByRNIpHNY=
+X-Received: by 2002:a17:907:a701:b0:78d:9858:e538 with SMTP id
+ vw1-20020a170907a70100b0078d9858e538mr16543965ejc.502.1668562668014; Tue, 15
+ Nov 2022 17:37:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
- <c7e9bbf45b2d52253fec16525645bda0887a9cf9.camel@intel.com>
- <CAPhsuW7H95hUUCGEk9etwTT8kYRCKCtD6Lo+8WxHUyGTKSyEFA@mail.gmail.com> <4bf1a1377ea39f287a4fd438d81f314d261f7d7f.camel@intel.com>
-In-Reply-To: <4bf1a1377ea39f287a4fd438d81f314d261f7d7f.camel@intel.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 15 Nov 2022 17:20:53 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW60U0n-szdD9AO214zk5GHscZ6jnxBoh7_HBcfYw6fdSQ@mail.gmail.com>
-Message-ID: <CAPhsuW60U0n-szdD9AO214zk5GHscZ6jnxBoh7_HBcfYw6fdSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
+References: <20221111063417.1603111-1-houtao@huaweicloud.com>
+ <20221111063417.1603111-2-houtao@huaweicloud.com> <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+In-Reply-To: <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 15 Nov 2022 17:37:36 -0800
+Message-ID: <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 2:14 PM Edgecombe, Rick P
-<rick.p.edgecombe@intel.com> wrote:
+On Tue, Nov 15, 2022 at 11:16 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >
-> On Tue, 2022-11-15 at 13:54 -0800, Song Liu wrote:
-> > On Tue, Nov 15, 2022 at 9:34 AM Edgecombe, Rick P
-> > <rick.p.edgecombe@intel.com> wrote:
-> > >
-> > > On Mon, 2022-11-14 at 17:30 -0800, Song Liu wrote:
-> > > > Currently, I have got the following action items for v3:
-> > > > 1. Add unify API to allocate text memory to motivation;
-> > > > 2. Update Documentation/x86/x86_64/mm.rst;
-> > > > 3. Allow none PMD_SIZE allocation for powerpc.
-> > >
-> > > So what do we think about supporting the fallback mechanism for the
-> > > first version, like:
-> > >
-> > >
-> https://lore.kernel.org/all/9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com/
-> > >
-> > > It helps the (1) story by actually being usable by non-text_poke()
-> > > architectures.
+> On 11/10/22 10:34 PM, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
 > >
-> > I personally think this might be a good idea. We will need this when
-> > we use
-> > execmem_alloc for modules. But I haven't got a chance to look at
-> > module code in
-> > great detail. I was thinking of adding this logic with changes in
-> > module code.
+> > For many bpf iterator (e.g., cgroup iterator), iterator link acquires
+> > the reference of iteration target in .attach_target(), but iterator link
+> > may be closed before or in the middle of iteration, so iterator will
+> > need to acquire the reference of iteration target as well to prevent
+> > potential use-after-free. To avoid doing the acquisition in
+> > .init_seq_private() for each iterator type, just pin iterator link in
+> > iterator.
 >
-> BPF used to have a generic allocator that just called module_alloc().
-> If you had a fallback method could you unify all of BPF to use
-> execmem()?
+> iiuc, a link currently will go away when all its fds closed and pinned file
+> removed.  After this change, the link will stay until the last iter is closed().
+>   Before then, the user space can still "bpftool link show" and even get the
+> link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
+> to explain it in the commit message.
+>
+> and does this new behavior make sense when comparing with other link types?
 
-To clarify, are you suggesting we need this logic in this set? I would
-rather wait until we handle module code. This is because BPF JIT uses
-module_alloc() for archs other than x86_64. So the fall back of
-execmem_alloc() for these archs would be module_alloc() or
-something similar. I think it is really weird to do something like
+One more question to the above...
 
-void *execmem_alloc(size_t size)
-{
-#ifdef CONFIG_SUPPORT_EXECMEM_ALLOC
-    ...
-#else
-    return module_alloc(size);
-#endif
-}
+Does this change mean that pinned cgroup iterator in bpffs
+would prevent cgroup removal?
+So that cgroup cannot even become a dying cgroup ?
 
-WDYT?
+If so we can do that and an approach similar to init_seq_private
+taken for map iterators is necessary here as well.
 
-Thanks,
-Song
+Also pls target this kind of change to bpf-next especially
+when there is a consideration to revert other fixes.
+This kind of questionable fixes are not suitable for bpf tree
+regardless of how long the "bug" was present.
