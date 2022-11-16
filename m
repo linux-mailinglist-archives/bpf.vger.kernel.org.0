@@ -2,200 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5762B3DB
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F8362B3DD
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbiKPHWT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 02:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
+        id S229637AbiKPHYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 02:24:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbiKPHWS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 02:22:18 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1984CA18F
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:22:18 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id y6-20020a25b9c6000000b006c1c6161716so15216971ybj.8
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:22:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NO6Jy27duk4navDIf91BiAlCfPwecqqBj66fQCAI5+k=;
-        b=Pr7mjdcYb4qAEw3uOgulSRygcajgBXTmQtAjMOaT4ntJSmqQPXKpb2/w3lKfSLncYU
-         iJB3rB6o6rbI5+Ulkzx5Vle1i67dxwFL9s45ZSE+3wwN4PQCTR8uR59jgQdpzQtvX3ln
-         9CeyrdspkbVCWBDKJySYuge6+beWXNM61UM6BnQtSL8y7boc8j/X58P071TDKAGD3pJ7
-         esUo7Cudp+Jg4L72D+3gQ2eeI/UxkEUfSkPmPJU7Jvh3zTG1+mlSvI7jspnqocGA/hSZ
-         TYbBphk5VzKjXeQHjL4fvvRAr0aVHQAi8WtOY8wpCklTel+uGRpCJI5S7ZLhekCsnQ56
-         HteA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NO6Jy27duk4navDIf91BiAlCfPwecqqBj66fQCAI5+k=;
-        b=iB/SimcaiEOm0CZV0MhqS6vwoKYExU/8CygfAOSnLZOBmNdUpHuC5DtjbmLfoZr3f4
-         pk4SGAJblp2VXh4jXT0hjXIG1Aka+8dNx5W2IudAkyazbHvQSMCMP0CyOZIIer062wjC
-         sXEHt5H//yd5IGffrNy4ZWY18tPgrVLJphKZmDqKknUWvyD+NnBKiuKiaTDIQ1F8A8qi
-         htneOOnv6v3Nw4FqnbMthGQ5VJqye9IbgzFFf6rtMP29bM6LcYcW1of+ZrkcMM25BMI2
-         F6PbeMk1CSzyNwcdhkoleMlIPZc3rGNiLWwW3hj1GFriqLrr4Zzq2kn1F3C05PhUu6tl
-         eclA==
-X-Gm-Message-State: ANoB5pn1+JtPDfjXayv1OdzVuXh2g3/YSI15OzF4/5eRygXMSwDlD6W1
-        492DEbU8QcjuNQaOtfF3T3u8HZBS/hMV
-X-Google-Smtp-Source: AA0mqf6/s9UDBseMvwO0B9sUanmLV3Smc5IQvElHLCvgzuhy8jQ9dnTHlYJUB2ggKxcTcdYTeeB/U7gLdk9m
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:bf0f:58f3:342e:c1ec])
- (user=irogers job=sendgmr) by 2002:a25:2fd6:0:b0:6bc:738d:65c9 with SMTP id
- v205-20020a252fd6000000b006bc738d65c9mr18993829ybv.521.1668583337411; Tue, 15
- Nov 2022 23:22:17 -0800 (PST)
-Date:   Tue, 15 Nov 2022 23:22:11 -0800
-In-Reply-To: <20221116072211.2837834-1-irogers@google.com>
-Message-Id: <20221116072211.2837834-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20221116072211.2837834-1-irogers@google.com>
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Subject: [PATCH 1/1] perf build: Use tools/lib headers from install path
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        with ESMTP id S229531AbiKPHYw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 02:24:52 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DB2A1BA
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:24:51 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NBvgx2CRGz4f3mSN
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:24:45 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgB3baw8kHRjswZQAg--.166S2;
+        Wed, 16 Nov 2022 15:24:48 +0800 (CST)
+Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
+To:     Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
         Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        John Fastabend <john.fastabend@gmail.com>,
+        Hou Tao <houtao1@huawei.com>
+References: <20221111063417.1603111-1-houtao@huaweicloud.com>
+ <20221111063417.1603111-2-houtao@huaweicloud.com>
+ <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+ <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+ <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <40df1978-19d0-4d60-ba51-4808651f1b96@huaweicloud.com>
+Date:   Wed, 16 Nov 2022 15:24:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgB3baw8kHRjswZQAg--.166S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ary8tr4kZw1xWr18JFWkJFb_yoW8KrWkpF
+        WYqay5K3WkJrW2vF12ya9Fva4YvFyfGr4UAr1fCr18CwnxZryfGr4Ikr4akFyYkFnrA3W2
+        qw4Fk34xZ3sFyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch -I from tools/lib to the install path for the tools/lib
-libraries. Add the include_headers build targets to prepare target, as
-well as pmu-events.c compilation that dependes on libperf.
+Hi,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: bpf@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20221109184914.1357295-15-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Makefile.config |  2 --
- tools/perf/Makefile.perf   | 14 +++++++++++++-
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index a7f6c0669fae..9cc3c48f3288 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -349,7 +349,6 @@ ifeq ($(DEBUG),0)
-   endif
- endif
- 
--INC_FLAGS += -I$(srctree)/tools/lib/perf/include
- INC_FLAGS += -I$(src-perf)/util/include
- INC_FLAGS += -I$(src-perf)/arch/$(SRCARCH)/include
- INC_FLAGS += -I$(srctree)/tools/include/
-@@ -367,7 +366,6 @@ endif
- 
- INC_FLAGS += -I$(src-perf)/util
- INC_FLAGS += -I$(src-perf)
--INC_FLAGS += -I$(srctree)/tools/lib/
- 
- CORE_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
- 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 6c1a2a3ccc38..dd096aba4430 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -305,6 +305,7 @@ LIBTRACEEVENT_INCLUDE = $(LIBTRACEEVENT_DESTDIR)/include
- LIBTRACEEVENT = $(LIBTRACEEVENT_OUTPUT)/libtraceevent.a
- export LIBTRACEEVENT
- LIBTRACEEVENT_DYNAMIC_LIST = $(LIBTRACEEVENT_PLUGINS_OUTPUT)/libtraceevent-dynamic-list
-+CFLAGS += -I$(LIBTRACEEVENT_OUTPUT)/include
- 
- #
- # The static build has no dynsym table, so this does not work for
-@@ -322,6 +323,7 @@ LIBAPI_DESTDIR = $(LIBAPI_OUTPUT)
- LIBAPI_INCLUDE = $(LIBAPI_DESTDIR)/include
- LIBAPI = $(LIBAPI_OUTPUT)/libapi.a
- export LIBAPI
-+CFLAGS += -I$(LIBAPI_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBBPF_OUTPUT = $(abspath $(OUTPUT))/libbpf
-@@ -331,6 +333,7 @@ endif
- LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
- LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
- LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
-+CFLAGS += -I$(LIBBPF_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBSUBCMD_OUTPUT = $(abspath $(OUTPUT))/libsubcmd
-@@ -340,6 +343,7 @@ endif
- LIBSUBCMD_DESTDIR = $(LIBSUBCMD_OUTPUT)
- LIBSUBCMD_INCLUDE = $(LIBSUBCMD_DESTDIR)/include
- LIBSUBCMD = $(LIBSUBCMD_OUTPUT)/libsubcmd.a
-+CFLAGS += -I$(LIBSUBCMD_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBSYMBOL_OUTPUT = $(abspath $(OUTPUT))/libsymbol
-@@ -349,6 +353,7 @@ endif
- LIBSYMBOL_DESTDIR = $(LIBSYMBOL_OUTPUT)
- LIBSYMBOL_INCLUDE = $(LIBSYMBOL_DESTDIR)/include
- LIBSYMBOL = $(LIBSYMBOL_OUTPUT)/libsymbol.a
-+CFLAGS += -I$(LIBSYMBOL_OUTPUT)/include
- 
- ifneq ($(OUTPUT),)
-   LIBPERF_OUTPUT = $(abspath $(OUTPUT))/libperf
-@@ -359,6 +364,7 @@ LIBPERF_DESTDIR = $(LIBPERF_OUTPUT)
- LIBPERF_INCLUDE = $(LIBPERF_DESTDIR)/include
- LIBPERF = $(LIBPERF_OUTPUT)/libperf.a
- export LIBPERF
-+CFLAGS += -I$(LIBPERF_OUTPUT)/include
- 
- # python extension build directories
- PYTHON_EXTBUILD     := $(OUTPUT)python_ext_build/
-@@ -691,7 +697,7 @@ build := -f $(srctree)/tools/build/Makefile.build dir=. obj
- $(PERF_IN): prepare FORCE
- 	$(Q)$(MAKE) $(build)=perf
- 
--$(PMU_EVENTS_IN): FORCE
-+$(PMU_EVENTS_IN): FORCE prepare
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=pmu-events obj=pmu-events
- 
- $(OUTPUT)perf: $(PERFLIBS) $(PERF_IN) $(PMU_EVENTS_IN) $(LIBTRACEEVENT_DYNAMIC_LIST)
-@@ -774,6 +780,12 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
- 	$(rename_flags_array) \
- 	$(arch_errno_name_array) \
- 	$(sync_file_range_arrays) \
-+	$(LIBAPI) \
-+	$(LIBBPF) \
-+	$(LIBPERF) \
-+	$(LIBSUBCMD) \
-+	$(LIBSYMBOL) \
-+	$(LIBTRACEEVENT) \
- 	bpf-skel
- 
- $(OUTPUT)%.o: %.c prepare FORCE
--- 
-2.38.1.431.g37b22c650d-goog
+On 11/16/2022 10:48 AM, Hao Luo wrote:
+> On Tue, Nov 15, 2022 at 5:37 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Tue, Nov 15, 2022 at 11:16 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>> On 11/10/22 10:34 PM, Hou Tao wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> For many bpf iterator (e.g., cgroup iterator), iterator link acquires
+>>>> the reference of iteration target in .attach_target(), but iterator link
+>>>> may be closed before or in the middle of iteration, so iterator will
+>>>> need to acquire the reference of iteration target as well to prevent
+>>>> potential use-after-free. To avoid doing the acquisition in
+>>>> .init_seq_private() for each iterator type, just pin iterator link in
+>>>> iterator.
+>>> iiuc, a link currently will go away when all its fds closed and pinned file
+>>> removed.  After this change, the link will stay until the last iter is closed().
+>>>   Before then, the user space can still "bpftool link show" and even get the
+>>> link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
+>>> to explain it in the commit message.
+>>>
+>>> and does this new behavior make sense when comparing with other link types?
+> I think this is a unique problem in iter link. Because iter link is
+> the only link type that can generate another object.
+>
+>> One more question to the above...
+>>
+>> Does this change mean that pinned cgroup iterator in bpffs
+>> would prevent cgroup removal?
+> Yes, when attaching the program to cgroup, the cgroup iter link gets
+> an extra ref of the cgroup. It puts that ref when detach.
+It seems we can not move the pinning of cgroup into cgroup_iter_seq_init(),
+because the representation of the cgroup could be a fd and the fd will not be
+accessible when iterator link is pinned in bpffs.
+>
+>> So that cgroup cannot even become a dying cgroup ?
+>>
+> No. The cgroup will become offline and its corresponding kernfs node
+> will be removed. The cgroup object is still accessible.
+>
+>> If so we can do that and an approach similar to init_seq_private
+>> taken for map iterators is necessary here as well.
+>>
+>> Also pls target this kind of change to bpf-next especially
+>> when there is a consideration to revert other fixes.
+>> This kind of questionable fixes are not suitable for bpf tree
+>> regardless of how long the "bug" was present.
+> .
 
