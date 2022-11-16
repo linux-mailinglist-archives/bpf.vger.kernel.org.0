@@ -2,93 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A34E62B258
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 05:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86FE62B2BF
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 06:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbiKPEaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 23:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        id S230128AbiKPF14 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 00:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbiKPEaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 23:30:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C07313FA2;
-        Tue, 15 Nov 2022 20:30:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC0166199D;
-        Wed, 16 Nov 2022 04:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 28435C433B5;
-        Wed, 16 Nov 2022 04:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668573016;
-        bh=EU1LfzRE1qzP88BXkl6vs7WBr5H5/7KAwJzENNpOsBs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=m+sHUBCwhpSNhem3afAZHAamLoK1fFlRsibFke9LEpXHQ3XsXO+H8HX7uQBnztybr
-         29m1G1dFG69atnSazArrncF+s/ytyA7HjB9N6GOTDsqeNNgdO0/93uR6Tg7wseX2MD
-         TmUhEeH94FMcsI+7aKSrGZiUcQ/KTFL/PqQS5wGXGSi2sE6It4ZWXZcmSl3vPSkKy6
-         h90CY2XTDNsBod4oXMrtG4FbFPyoOhwr3ru2Fbt+cWtHsy2yEZ+tNgGP49Bn4Zoz8x
-         8w0ZgUtEVFuc9EOdSxF7KaAdsWHKkL1BR07wUydEIQxPINnxi+PolW3S1riS61dV00
-         fScFPa6Bv2Zng==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0EC74C395F8;
-        Wed, 16 Nov 2022 04:30:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229460AbiKPF1z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 00:27:55 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895C32CE26;
+        Tue, 15 Nov 2022 21:27:51 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id f7so24976737edc.6;
+        Tue, 15 Nov 2022 21:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EL5Ik77VRAEzD9VF8LQx7sfi7nDg2jelPrsKNJCLL+w=;
+        b=RqhNsWsyWIbumREbXC1ld3MfXuRCA29JmUASFfBcWaqdmwY4y3nFWIuXfVMDhehp2B
+         eJJm41n3HlyLpUUcXR3jVpSNXc6uGx5o4D750nMltZk7c/4FJ9QKvuOndZEiLj+h8HYT
+         Wg/XUJPU+TW9jnp8KtxHjq5VcGPnoBytrGVrB4F8KF+Djc+8NNzv1ADlVu5b2BG8yPh9
+         CbZymV+cUuPPXiiJUFc6s/UgNiutOumdCZNBeQjyWAuRs1uRprVVTzHOdhoUb46d1sfP
+         Gsn4CNBMKVvvNCx+N26Iq9kOx7Cd/u2K3+vwLEhsE/UEBLejWe4bt2guvh7UzYReO8vH
+         ZClg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EL5Ik77VRAEzD9VF8LQx7sfi7nDg2jelPrsKNJCLL+w=;
+        b=Y6T0iffOkPbAQip5BjLc1XIArHnhfREOcMIKxNyFYGPh3J1e4OOh+nSy+XMzh/yXoN
+         o9+CyIjCDiHcPdrA28nkzRDspMt+o1XEvw/x7ICE8Mva2pFKB9IdaJWH4K96OUJRXGZ9
+         t5wmon+ws4lDnOcnecXZIouOQSKn3KHd6Juq0VaeuR7yFHE4x7p19LFERbZ0ZnPOYWgg
+         S+Jg+M4sXkutBJW1xpVgghXBKBKRgQtjVehkTD7O4ofq97sl5muTDBe6Qwqj/Ob02fcQ
+         csn68WG92SK9CErs6y+bPVHfLxYzyNsRnScQDTj4rcRsFTLhh1PttzmqOqhspNPAH7en
+         n2Mg==
+X-Gm-Message-State: ANoB5pl6spW5mdIxofQO7j7VuncXqOFOjr+JIabspAdc/8iOhcwhjQAB
+        08E/Cn9wlp7Hq2LWHv7GQKk8Qux9wC14GoxoW0lDLcG1
+X-Google-Smtp-Source: AA0mqf4NnbypCcm1Gfuhx0RlRyoJFIOGGWYxd3Xbv/kW3haSdw2e66mNiVvPd+5dDm5QhcrTCR79EYdzLbKsOwG09cQ=
+X-Received: by 2002:a05:6402:344f:b0:461:d726:438f with SMTP id
+ l15-20020a056402344f00b00461d726438fmr17796199edc.333.1668576469950; Tue, 15
+ Nov 2022 21:27:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/4] mtk_eth_soc rx vlan offload improvement + dsa
- hardware untag support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166857301605.26862.16492412273467465968.git-patchwork-notify@kernel.org>
-Date:   Wed, 16 Nov 2022 04:30:16 +0000
-References: <20221114124214.58199-1-nbd@nbd.name>
-In-Reply-To: <20221114124214.58199-1-nbd@nbd.name>
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, matthias.bgg@gmail.com,
-        olteanv@gmail.com, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221114134720.1057939-1-xukuohai@huawei.com> <20221114134720.1057939-2-xukuohai@huawei.com>
+In-Reply-To: <20221114134720.1057939-2-xukuohai@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 15 Nov 2022 21:27:38 -0800
+Message-ID: <CAADnVQLEzrqjuF+qYh2kJz0Q=9G8PySJ6ZwXD2EGoZsBUdwsog@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: Do not copy spin lock field from user in bpf_selem_alloc
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Nov 14, 2022 at 5:31 AM Xu Kuohai <xukuohai@huawei.com> wrote:
+>
+> bpf_selem_alloc function is used by inode_storage, sk_storage and
+> task_storage maps to set map value, for these map types, there may
+> be a spin lock in the map value, so if we use memcpy to copy the whole
+> map value from user, the spin lock field may be initialized incorrectly.
+>
+> Since the spin lock field is zeroed by kzalloc, call copy_map_value
+> instead of memcpy to skip copying the spin lock field to fix it.
+>
+> Fixes: 6ac99e8f23d4 ("bpf: Introduce bpf sk local storage")
 
-This series was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 14 Nov 2022 13:42:10 +0100 you wrote:
-> This series improves rx vlan offloading on mtk_eth_soc and extends it to
-> support hardware DSA untagging where possible.
-> This improves performance by avoiding calls into the DSA tag driver receive
-> function, including mangling of skb->data.
-> 
-> This is split out of a previous series, which added other fixes and
-> multiqueue support
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v4,1/4] net: dsa: add support for DSA rx offloading via metadata dst
-    https://git.kernel.org/netdev/net-next/c/570d0a588dfb
-  - [net-next,v4,2/4] net: ethernet: mtk_eth_soc: pass correct VLAN protocol ID to the network stack
-    https://git.kernel.org/netdev/net-next/c/190487031584
-  - [net-next,v4,3/4] net: ethernet: mtk_eth_soc: add support for configuring vlan rx offload
-    https://git.kernel.org/netdev/net-next/c/08666cbb7dd5
-  - [net-next,v4,4/4] net: ethernet: mtk_eth_soc: enable hardware DSA untagging
-    https://git.kernel.org/netdev/net-next/c/2d7605a72906
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+The tag is wrong. When local storage was introduced it was not
+possible to use spin_locks there.
+Pls resubmit.
