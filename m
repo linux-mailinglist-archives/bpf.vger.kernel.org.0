@@ -2,226 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7711F62CE77
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 00:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE19762CEA9
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 00:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238368AbiKPXEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 18:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        id S234071AbiKPXV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 18:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238244AbiKPXE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 18:04:28 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430EB32066
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:04:27 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 130so348549pgc.5
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:04:27 -0800 (PST)
+        with ESMTP id S233803AbiKPXV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 18:21:26 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1971467118;
+        Wed, 16 Nov 2022 15:21:26 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id kt23so901115ejc.7;
+        Wed, 16 Nov 2022 15:21:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XP941acguvK1ZAkrhvPDttgcSVa1z7xUK43PRl+uio=;
-        b=56syu10yY4F1zazjA7qQqh2STRuHElk9eY+YEZ2JcKVraIu6zSy+d7hqJ6YBhnyKnk
-         1+LuOwiNiju5AdvI9xdh5g/G80aKnuJ11AaNiNKaHFRuda9VJx8tJcobAEuesbGIYHgS
-         tMzqZ7quPD44w/BpPwpIxIYOAHQ0Eu6vcZcGfDNkWyxWllI9JW5MvHxeDqabzek7mvJF
-         lRPHcIEV4pjuGc5AmAsFH4Jf4S3BLYvw3FN1EFQw3CaTcsnQ/rxPpU5CayDHenZMNu9J
-         ZglvH/USVkAoU8iRANLUdGJML73p0sP2EWzu5aiesLr10lbTtOu9kbvOSISR4gHJF93H
-         u1/w==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9v9KjvYMfYuTZZObzWPVSoHalRR1EWtRwEfMTCTaSFo=;
+        b=Qsr5I2XqsW9BwuNUyKdr+xjQLtybgvSw4QYSrd2kpChNRA13MjYRQq80kjhzWi1rL+
+         aG0CT0NDXqbbXBFnATuTZ1DNfoZ1RbfQhJiD4qxpP1JYCHTHEFHEWbH0fmeouYh0IkSF
+         WhNLhi1j6qE17NF6YreyxRv0509zyelSyFuhhxLRpowpjuuA2ovSLDYY4aa3HIiLsreV
+         GWxcegF0eGcakizUrmTiNznMBLudTothyH0ZpSsng+yWjuzvZN4UztmVhvFv7j0tKwXc
+         xC6lWslW9DM/D3bYORhSJ2YA96h2Yi9UhZyEYYcA0EcGsSm5ThOibo3T7D227uSA9gg0
+         /xaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3XP941acguvK1ZAkrhvPDttgcSVa1z7xUK43PRl+uio=;
-        b=D61b02rwmpXSQWN6uMt5WDpgeLKNXlUD1a0M1ZYA/UtiAeYBiAJVVarztuWi/2OPGy
-         wpmgV3uPHoFYOdb/teZlzXQVnT+wtuNF1nYFW5DNoX3BK5WniCR4RirB46c8lFL5f9O7
-         tBTGu2vFhTzMS8ME0dDBU8cMzYFIMqc33b5/NzubLYO3cDrxB5pXfkXhWsgslNBMRP5A
-         cCd01fOq4tqtqqC3RLdE2piydTy32lDcg1X7vfL8UBE8MdYurvauxpeUjwhFCGSXYvk7
-         gSUm9SSwneWV6ehYV3HNoU0yVijvaa7b1uwGrFJQjDMrMiQt2tzaltztm1B5GI+P+5Wu
-         Bbbg==
-X-Gm-Message-State: ANoB5pmZ0V/gF1UzivkljwuakPWJemjtEodZf60FyamJrnd4PSBx/ge+
-        IvBFlvEsBYEUTenqGAe1EVoEQY5KoVLezjkOqw/jokO/zBi5
-X-Google-Smtp-Source: AA0mqf4KnTW/Rs1/rqT5ydHUWbdtFyquLEB9AfGl4n344VRBZodroHoiuUE+EPtZ149p+/6c710BcebRhYhln41jNs4=
-X-Received: by 2002:aa7:9518:0:b0:56c:8c13:24fd with SMTP id
- b24-20020aa79518000000b0056c8c1324fdmr319516pfp.2.1668639866677; Wed, 16 Nov
- 2022 15:04:26 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9v9KjvYMfYuTZZObzWPVSoHalRR1EWtRwEfMTCTaSFo=;
+        b=g9YTHmV4ISYZb2gWE45tcOStP3bjrdY/b2uF3RxUtlG6uV2TaPbL7wxTesG56zyvIR
+         5mHYsW8WxCI+MWIbfh8mkPkmECgwrBIqhu+VUe9RNoPnftgTFf/kFXi402sVVkmS/Z3J
+         w7a+8M8rbNDQfPUTyIjoK57fUdZKhz+7Vp6v+wDu+gPVBXzP3TvOJarFW3Y4xKWYxNPa
+         VtzhqfSAzNc/pmhqJrJc+PbgBEduT2SNhFpF5dmWL/t4j+zctSjHSqqiFjdggoCuuyxA
+         0LvEIGnL0GZlkwJ/RhkwJS4KA6iYnwBtUZzq+l7Wwt0YRze+ZkX3yjBmT6P67UEZ8t8F
+         dtpw==
+X-Gm-Message-State: ANoB5plxbZ4tBM7Rkl1FBid4oaOaKBNp6DqQIpXCkEnHAHjOlglN5Ehs
+        bOgmqgWQEy1oQM3c5o69Gqg=
+X-Google-Smtp-Source: AA0mqf7EhvKSNq/bcK0SzBtcWmHqh6Pt2BmbVJOxVJRVNjJNk8Sl6HYXjh07Z5DDNia+KVvjmb3JMQ==
+X-Received: by 2002:a17:906:19d5:b0:780:93d2:8510 with SMTP id h21-20020a17090619d500b0078093d28510mr37067ejd.457.1668640884478;
+        Wed, 16 Nov 2022 15:21:24 -0800 (PST)
+Received: from skbuf ([188.26.57.53])
+        by smtp.gmail.com with ESMTPSA id n15-20020a17090695cf00b0078c213ad441sm7349252ejy.101.2022.11.16.15.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Nov 2022 15:21:24 -0800 (PST)
+Date:   Thu, 17 Nov 2022 01:21:21 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org
+Subject: Re: [PATCH net 0/2][pull request] Intel Wired LAN Driver Updates
+ 2022-11-14 (i40e)
+Message-ID: <20221116232121.ahaavt3m6wphxuyw@skbuf>
+References: <20221115000324.3040207-1-anthony.l.nguyen@intel.com>
 MIME-Version: 1.0
-References: <20221102000525.gonna.409-kees@kernel.org>
-In-Reply-To: <20221102000525.gonna.409-kees@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 16 Nov 2022 18:04:15 -0500
-Message-ID: <CAHC9VhRh2VSEHSOdiTg-1K0zbpa_oj9iKJHi6ZLYj3Ubt4tGRQ@mail.gmail.com>
-Subject: Re: [PATCH v2] LSM: Better reporting of actual LSMs at boot
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221115000324.3040207-1-anthony.l.nguyen@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 8:05 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Enhance the details reported by "lsm.debug" in several ways:
->
-> - report contents of "security=3D"
-> - report contents of "CONFIG_LSM"
-> - report contents of "lsm=3D"
-> - report any early LSM details
-> - whitespace-align the output of similar phases for easier visual parsing
-> - change "disabled" to more accurate "skipped"
-> - explain what "skipped" and "ignored" mean in a parenthetical
->
-> Upgrade the "security=3D is ignored" warning from pr_info to pr_warn,
-> and include full arguments list to make the cause even more clear.
->
-> Replace static "Security Framework initializing" pr_info with specific
-> list of the resulting order of enabled LSMs.
->
-> For example, if the kernel is built with:
->
-> CONFIG_SECURITY_SELINUX=3Dy
-> CONFIG_SECURITY_APPARMOR=3Dy
-> CONFIG_SECURITY_LOADPIN=3Dy
-> CONFIG_SECURITY_YAMA=3Dy
-> CONFIG_SECURITY_SAFESETID=3Dy
-> CONFIG_SECURITY_LOCKDOWN_LSM=3Dy
-> CONFIG_SECURITY_LANDLOCK=3Dy
-> CONFIG_INTEGRITY=3Dy
-> CONFIG_BPF_LSM=3Dy
-> CONFIG_DEFAULT_SECURITY_APPARMOR=3Dy
-> CONFIG_LSM=3D"landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,=
-smack,tomoyo,apparmor,bpf"
->
-> Booting without options will show:
->
-> LSM: initializing lsm=3Dlockdown,capability,landlock,yama,loadpin,safeset=
-id,integrity,selinux,bpf
-> landlock: Up and running.
-> Yama: becoming mindful.
-> LoadPin: ready to pin (currently not enforcing)
-> SELinux:  Initializing.
-> LSM support for eBPF active
->
-> Boot with "lsm.debug" will show:
->
-> LSM: legacy security=3D *unspecified*
-> LSM: CONFIG_LSM=3Dlandlock,lockdown,yama,loadpin,safesetid,integrity,seli=
-nux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm=3D *unspecified*
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: builtin ordered: landlock (enabled)
-> LSM: builtin ignored: lockdown (not built into kernel)
-> LSM: builtin ordered: yama (enabled)
-> LSM: builtin ordered: loadpin (enabled)
-> LSM: builtin ordered: safesetid (enabled)
-> LSM: builtin ordered: integrity (enabled)
-> LSM: builtin ordered: selinux (enabled)
-> LSM: builtin ignored: smack (not built into kernel)
-> LSM: builtin ignored: tomoyo (not built into kernel)
-> LSM: builtin ordered: apparmor (enabled)
-> LSM: builtin ordered: bpf (enabled)
-> LSM: exclusive chosen:   selinux
-> LSM: exclusive disabled: apparmor
-> LSM: initializing lsm=3Dlockdown,capability,landlock,yama,loadpin,safeset=
-id,integrity,selinux,bpf
-> LSM: cred blob size       =3D 32
-> LSM: file blob size       =3D 16
-> LSM: inode blob size      =3D 72
-> LSM: ipc blob size        =3D 8
-> LSM: msg_msg blob size    =3D 4
-> LSM: superblock blob size =3D 80
-> LSM: task blob size       =3D 8
-> LSM: initializing capability
-> LSM: initializing landlock
-> landlock: Up and running.
-> LSM: initializing yama
-> Yama: becoming mindful.
-> LSM: initializing loadpin
-> LoadPin: ready to pin (currently not enforcing)
-> LSM: initializing safesetid
-> LSM: initializing integrity
-> LSM: initializing selinux
-> SELinux:  Initializing.
-> LSM: initializing bpf
-> LSM support for eBPF active
->
-> And some examples of how the lsm.debug ordering report changes...
->
-> With "lsm.debug security=3Dselinux":
->
-> LSM: legacy security=3Dselinux
-> LSM: CONFIG_LSM=3Dlandlock,lockdown,yama,loadpin,safesetid,integrity,seli=
-nux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm=3D *unspecified*
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: security=3Dselinux disabled: apparmor (only one legacy major LSM)
-> LSM: builtin ordered: landlock (enabled)
-> LSM: builtin ignored: lockdown (not built into kernel)
-> LSM: builtin ordered: yama (enabled)
-> LSM: builtin ordered: loadpin (enabled)
-> LSM: builtin ordered: safesetid (enabled)
-> LSM: builtin ordered: integrity (enabled)
-> LSM: builtin ordered: selinux (enabled)
-> LSM: builtin ignored: smack (not built into kernel)
-> LSM: builtin ignored: tomoyo (not built into kernel)
-> LSM: builtin ordered: apparmor (disabled)
-> LSM: builtin ordered: bpf (enabled)
-> LSM: exclusive chosen:   selinux
-> LSM: initializing lsm=3Dlockdown,capability,landlock,yama,loadpin,safeset=
-id,integrity,selinux,bpf
->
-> With "lsm.debug lsm=3Dintegrity,selinux,loadpin,crabability,bpf,loadpin,l=
-oadpin":
->
-> LSM: legacy security=3D *unspecified*
-> LSM: CONFIG_LSM=3Dlandlock,lockdown,yama,loadpin,safesetid,integrity,seli=
-nux,smack,tomoyo,apparmor,bpf
-> LSM: boot arg lsm=3Dintegrity,selinux,loadpin,capability,bpf,loadpin,load=
-pin
-> LSM:   early started: lockdown (enabled)
-> LSM:   first ordered: capability (enabled)
-> LSM: cmdline ordered: integrity (enabled)
-> LSM: cmdline ordered: selinux (enabled)
-> LSM: cmdline ordered: loadpin (enabled)
-> LSM: cmdline ignored: crabability (not built into kernel)
-> LSM: cmdline ordered: bpf (enabled)
-> LSM: cmdline skipped: apparmor (not in requested order)
-> LSM: cmdline skipped: yama (not in requested order)
-> LSM: cmdline skipped: safesetid (not in requested order)
-> LSM: cmdline skipped: landlock (not in requested order)
-> LSM: exclusive chosen:   selinux
-> LSM: initializing lsm=3Dlockdown,capability,integrity,selinux,loadpin,bpf
->
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: linux-security-module@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2: en/dis-enabled expanded, example output in commit log, use pr_cont.
-> v1: https://lore.kernel.org/lkml/20221018064825.never.323-kees@kernel.org=
-/
-> ---
->  security/security.c | 45 ++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 36 insertions(+), 9 deletions(-)
+Hi,
 
-I tend to agree with Micka=C3=ABl regarding the aligned output, but that's
-not worth worrying too much about for debug stuff.  Merged into
-lsm/next, thanks Kees.
+On Mon, Nov 14, 2022 at 04:03:22PM -0800, Tony Nguyen wrote:
+> This series contains updates to i40e driver only.
+> 
+> Sylwester removes attempted allocation of Rx buffers when AF_XDP is in Tx
+> only mode.
+> 
+> Bartosz adds helper to calculate Rx buffer length so that it can be
+> used when interface is down; before value has been set in struct.
+> 
+> The following are changes since commit ed1fe1bebe18884b11e5536b5ac42e3a48960835:
+>   net: dsa: make dsa_master_ioctl() see through port_hwtstamp_get() shims
+> and are available in the git repository at:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 40GbE
+> 
+> Bartosz Staszewski (1):
+>   i40e: fix xdp_redirect logs error message when testing with MTU=1500
+> 
+> Sylwester Dziedziuch (1):
+>   i40e: Fix failure message when XDP is configured in TX only mode
+> 
+>  drivers/net/ethernet/intel/i40e/i40e_main.c | 48 +++++++++++++++------
+>  1 file changed, 34 insertions(+), 14 deletions(-)
+> 
+> -- 
+> 2.35.1
+> 
 
---=20
-paul-moore.com
+Sorry to interject, but there might be a potential bug I noticed a while
+ago in the i40e driver, and I didn't find the occasion to bring it up,
+but remembered just now.
+
+Is it correct for i40e_run_xdp_zc() to call i40e_xmit_xdp_tx_ring() on
+the XDP_TX action? If I'm reading the code correctly, this will map the
+buffer to DMA before sending it. But since this is a zero-copy RX buffer,
+it has already been mapped to DMA in i40e_xsk_pool_enable().
+
+Since I don't have the hardware, I can't be 100% sure if I'm following
+the code correctly. However if I compare with i40e_xmit_zc(), the latter
+does not map buffers to DMA, so I think neither should the former.
