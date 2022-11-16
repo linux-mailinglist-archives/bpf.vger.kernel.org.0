@@ -2,30 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFAD62B16D
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 03:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA7862B177
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 03:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbiKPCkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 21:40:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S231320AbiKPCs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 21:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbiKPCke (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 21:40:34 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD716B851
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:40:33 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NBnMv65Vgz4f3l2Y
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 10:40:27 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP3 (Coremail) with SMTP id _Ch0CgAXJqKcTXRj+V4zAg--.65391S2;
-        Wed, 16 Nov 2022 10:40:30 +0800 (CST)
+        with ESMTP id S229976AbiKPCs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 21:48:57 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4374F1E72F
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:48:56 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-3704852322fso155234747b3.8
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FW2dbbrYH64Tsisoc9cGF4YSFIsczMSsBOCNDpIILJs=;
+        b=fUfuoBbtrBNliepEJDepKDGRIpvVgLcOaQWGRufRYo5QCTs83sNx3W+sOR6tKewu3g
+         zYF51F4vxdSFYSyiu0X0D6BZPDs2wJaHhAG9X8WkhQPA/1S2GVFsofsGEZ60mQ3Zm6p6
+         OqCKqPC/IxcsgIkbLD86FRpRR7eZFzgw8dMWVYQMnAjTBMACRrYNIFm74TvtykCTkQfx
+         yzwo+HOPngwjO3M/biJG0rEswg3Qs46AFPcXMTohxAt6t4TepMD4rA1svoKTYWs73liR
+         7bPZpjfnOnQlQ3GjErgEHNaxgqYsTJteNq82YnwAmhNFOspSgApbEmTEl8DNBpCwivVm
+         XWWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FW2dbbrYH64Tsisoc9cGF4YSFIsczMSsBOCNDpIILJs=;
+        b=6FD/wy6Eghjz77AjyUkT8KjaT5hrW9WG9toNssvIKEqgN5StBKpleGJi4YB3aDtMbz
+         Ap9ndv8KOEMFAb+Zg85tYCtrJWvDiN1p6EtiAb5Tk8GwQ/H9ZtmgZBECC5FCC+87z1yA
+         LDqTVYazdf9+5Ol3nA6a+aeWDDXPQp7kL2iXO2EOgUym/MGQFxoh20w0nGoXa+qDLhNN
+         ybwnB35E66FjCgVShILF23BQUGvNuVonDI4WEixsiHQSyL1FlPWN16+SJpn45lOG4Bzy
+         0bSf0HwVEOeYrqMz2UcYmCoC361a9s7ThAhuqUvyu6vvLtBUcFstKAbsS3LWvXtDQmDG
+         5I3A==
+X-Gm-Message-State: ANoB5pkDiTa1LpP9kamT+gyelmzTq5Of7zTD/ONzTFTQdhqeOu+DNfyp
+        ORsoZ4yTrR5fVTUWqw7L7bdextkcO27FgHVsmvXmGK0otF8=
+X-Google-Smtp-Source: AA0mqf7F+B0k+pk36z9v7vm/GVbPc/hFFWahwHEB05+4aZCJRkbL/Oe5ZYs4slP9xdZwtf1KMmSQ8WYVaBsFc2qPggc=
+X-Received: by 2002:a81:ae60:0:b0:373:4bf9:626e with SMTP id
+ g32-20020a81ae60000000b003734bf9626emr20616299ywk.173.1668566935361; Tue, 15
+ Nov 2022 18:48:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20221111063417.1603111-1-houtao@huaweicloud.com>
+ <20221111063417.1603111-2-houtao@huaweicloud.com> <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+ <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+In-Reply-To: <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 15 Nov 2022 18:48:44 -0800
+Message-ID: <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
 Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Song Liu <song@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@kernel.org>,
@@ -33,88 +67,64 @@ Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Hou Tao <houtao1@huawei.com>
-References: <20221111063417.1603111-1-houtao@huaweicloud.com>
- <20221111063417.1603111-2-houtao@huaweicloud.com>
- <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
- <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <71933d25-b160-3e19-c544-1e12b934f07f@huaweicloud.com>
-Date:   Wed, 16 Nov 2022 10:40:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: _Ch0CgAXJqKcTXRj+V4zAg--.65391S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw4kCw48KF4rZrW7Ww1Utrb_yoW8KF15pr
-        Z0qa98tr1kArWjvF12ka1jq3WF9FWfGr4UAr4fJr17C3Z8ZryfKFWIyr4SkFyUCFsrJw12
-        qF4Fk34fWrZFyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        xUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 11/16/2022 9:37 AM, Alexei Starovoitov wrote:
+On Tue, Nov 15, 2022 at 5:37 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
 > On Tue, Nov 15, 2022 at 11:16 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->> On 11/10/22 10:34 PM, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> For many bpf iterator (e.g., cgroup iterator), iterator link acquires
->>> the reference of iteration target in .attach_target(), but iterator link
->>> may be closed before or in the middle of iteration, so iterator will
->>> need to acquire the reference of iteration target as well to prevent
->>> potential use-after-free. To avoid doing the acquisition in
->>> .init_seq_private() for each iterator type, just pin iterator link in
->>> iterator.
->> iiuc, a link currently will go away when all its fds closed and pinned file
->> removed.  After this change, the link will stay until the last iter is closed().
->>   Before then, the user space can still "bpftool link show" and even get the
->> link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
->> to explain it in the commit message.
->>
->> and does this new behavior make sense when comparing with other link types?
+> >
+> > On 11/10/22 10:34 PM, Hou Tao wrote:
+> > > From: Hou Tao <houtao1@huawei.com>
+> > >
+> > > For many bpf iterator (e.g., cgroup iterator), iterator link acquires
+> > > the reference of iteration target in .attach_target(), but iterator link
+> > > may be closed before or in the middle of iteration, so iterator will
+> > > need to acquire the reference of iteration target as well to prevent
+> > > potential use-after-free. To avoid doing the acquisition in
+> > > .init_seq_private() for each iterator type, just pin iterator link in
+> > > iterator.
+> >
+> > iiuc, a link currently will go away when all its fds closed and pinned file
+> > removed.  After this change, the link will stay until the last iter is closed().
+> >   Before then, the user space can still "bpftool link show" and even get the
+> > link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
+> > to explain it in the commit message.
+> >
+> > and does this new behavior make sense when comparing with other link types?
+
+I think this is a unique problem in iter link. Because iter link is
+the only link type that can generate another object.
+
+>
 > One more question to the above...
 >
 > Does this change mean that pinned cgroup iterator in bpffs
 > would prevent cgroup removal?
+
+Yes, when attaching the program to cgroup, the cgroup iter link gets
+an extra ref of the cgroup. It puts that ref when detach.
+
 > So that cgroup cannot even become a dying cgroup ?
-No. The pinned cgroup still can be removed by rmdir and it is demonstrated in
-the added test case. Getting an extra reference of cgroup just delays the
-freeing of cgroup. And the change doesn't effect the pinned iterator in bpffs,
-because when pinning the iterator in bpffs, it has already pinned the iterator link.
+>
+
+No. The cgroup will become offline and its corresponding kernfs node
+will be removed. The cgroup object is still accessible.
+
 > If so we can do that and an approach similar to init_seq_private
 > taken for map iterators is necessary here as well.
-Do you mean pinning the cgroup in .init_seq_private() instead of pinning the
-iterator link just like v1 does ?
 >
 > Also pls target this kind of change to bpf-next especially
 > when there is a consideration to revert other fixes.
 > This kind of questionable fixes are not suitable for bpf tree
 > regardless of how long the "bug" was present.
-The reason to post the fix to bpf tree instead bpf-next is that cgroup iterator
-is merged in v6.1 and I think it is better to merge the fix into v6.1 instead of
-v6.2. And patchset v1 is not a questionable fixes, because iterator link has
-already acquired the reference of the start cgroup.
-
