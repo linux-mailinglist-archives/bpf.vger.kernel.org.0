@@ -2,212 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B16862B3E6
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C15262B424
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbiKPH3k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 02:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S232097AbiKPHrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 02:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbiKPH3f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 02:29:35 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4553EB7D7
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:29:33 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id bj12so41872977ejb.13
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K1Y99RO47dfeR0gK8clWXAfbdWlFMBk6bW7ab+0e2TE=;
-        b=BzZ+lZ2wfM+2sUVO6p9glZYjC3zC1wS+H+ZKNXrtSKJHjeSD1zN25j+0sa9wAWYdqY
-         4ULu4x5JUfiTuCPCHMcxcmkfCTxghbKbJPw2wM8J78TnXZv6/OICMlOoPEAr9q/8cc4M
-         GK+qKbl2yJYc7xubaYBDygItKTgieremOl4QCaSTl4Pt5pi9eLiwZglJOVtIIbZEYsMX
-         VSq12S63449p72/9cCJjc+i8fkJU0R2A1EbNH9/Qz2MxoIPy3rtOADUf0P0OSIj43MMX
-         NSoVhsvHl0YfcwaeIXjuR6znMIokHg+xy4irWiFyukH66bGCN/mdn4KL2Vq+f7qN897V
-         yQcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K1Y99RO47dfeR0gK8clWXAfbdWlFMBk6bW7ab+0e2TE=;
-        b=I8lizbns0df1H1A68vWUEk48mt78DC4va61DPgUMLCroAf8TqkNnRpKTpfLIqktZO2
-         Ojum4wQMZw+8hiR6oDvPWIew4R4mtorsDrNRIXwaI0Xv+gm/LivfpeADqxUyd3UIADWK
-         an6qA1vFmMTM0ytbfjJDOc2C8AEn2/bqX4KRSgl2/d8v+JLay9FzZscuzManeMsYyBql
-         KG2U68Qn8jozEx+b13V3QXbUOWnqR1S2U2YQEBVGy7RTxffNJ+PhT4Xu80RRcNvCygG0
-         uvR5Tj1E4YB8xw41gBZJRSHn0UAxkVmBwaILUmqqV2uRQNPu1LC9nddBMZIuAk2jjYKs
-         qO+w==
-X-Gm-Message-State: ANoB5pklRtvGLU6DN1dxxaEcubFgOTGSX/aTYi2XpbSLm0+ri2PpnCLO
-        TpROmoruKmIyBQjGbK/Rp2+asAwjzC6AmQ==
-X-Google-Smtp-Source: AA0mqf40DJtmaOuVVURrWcZVEgASg8S/GEnJ8fxBJL+0F0V/8e5siZGoNj+XTWi2VT5yXIptBv+yRw==
-X-Received: by 2002:a17:906:e241:b0:7ae:e592:6d83 with SMTP id gq1-20020a170906e24100b007aee5926d83mr11859585ejb.699.1668583771626;
-        Tue, 15 Nov 2022 23:29:31 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170906309500b007add62dafbasm6455394ejv.157.2022.11.15.23.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 23:29:31 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 16 Nov 2022 08:29:29 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [RFC bpf-next] bpf: Fix perf bpf event and audit prog id logging
-Message-ID: <Y3SRWVoycV290S16@krava>
-References: <20221115095043.1249776-1-jolsa@kernel.org>
- <4d91b1d3-3ffc-11f9-50a6-bfb503e4b3cd@iogearbox.net>
- <Y3QgJMsknnAvvYqU@krava>
- <CAADnVQLz4BWZM+74mjxeHpr=1-Nx3hnVts-4kxJ-UqtoD54yFw@mail.gmail.com>
+        with ESMTP id S231594AbiKPHrq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 02:47:46 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16106D113;
+        Tue, 15 Nov 2022 23:47:45 -0800 (PST)
+Message-ID: <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1668584863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ed1cg6SvB5gikz9nKb2NT1RQypbDjDrNtRQGfRyCBkA=;
+        b=hwp6jDQMl5G3j8+T+IvdCqSTd926glT68BV4yjsPRXAUSq8QRGOdoP14Sy6p35T6pR5UEi
+        UmpdmyYtBCKyPNktWOOhjCxxRVpBrMeF1cXyxasG7oXnNsTd0CECUdojPJeXca3vwjoTnl
+        7pbMkvK0H4cQ3ZV6EW2YdfUevs/EEJE=
+Date:   Tue, 15 Nov 2022 23:47:38 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLz4BWZM+74mjxeHpr=1-Nx3hnVts-4kxJ-UqtoD54yFw@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
+ metadata for xdp
+Content-Language: en-US
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
+        <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+References: <20221115030210.3159213-1-sdf@google.com>
+ <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
+ <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
+ <8735ajet05.fsf@toke.dk>
+ <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
+ <6374854883b22_5d64b208e3@john.notmuch>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <6374854883b22_5d64b208e3@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 03:34:55PM -0800, Alexei Starovoitov wrote:
-> On Tue, Nov 15, 2022 at 3:26 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Nov 15, 2022 at 01:49:54PM +0100, Daniel Borkmann wrote:
-> > > On 11/15/22 10:50 AM, Jiri Olsa wrote:
-> > > > hi,
-> > > > perf_event_bpf_event and bpf_audit_prog calls currently report zero
-> > > > program id for unload path.
-> > > >
-> > > > It's because of the [1] change moved those audit calls into work queue
-> > > > and they are executed after the id is zeroed in bpf_prog_free_id.
-> > > >
-> > > > I originally made a change that added 'id_audit' field to struct
-> > > > bpf_prog, which would be initialized as id, untouched and used
-> > > > in audit callbacks.
-> > > >
-> > > > Then I realized we might actually not need to zero prog->aux->id
-> > > > in bpf_prog_free_id. It seems to be called just once on release
-> > > > paths. Tests seems ok with that.
-> > > >
-> > > > thoughts?
-> > > >
-> > > > thanks,
-> > > > jirka
-> > > >
-> > > >
-> > > > [1] d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
-> > > > ---
-> > > >   kernel/bpf/syscall.c | 1 -
-> > > >   1 file changed, 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > > index fdbae52f463f..426529355c29 100644
-> > > > --- a/kernel/bpf/syscall.c
-> > > > +++ b/kernel/bpf/syscall.c
-> > > > @@ -1991,7 +1991,6 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
-> > > >             __acquire(&prog_idr_lock);
-> > > >     idr_remove(&prog_idr, prog->aux->id);
-> > > > -   prog->aux->id = 0;
-> > >
-> > > This would trigger a race when offloaded progs are used, see also ad8ad79f4f60 ("bpf:
-> > > offload: free program id when device disappears"). __bpf_prog_offload_destroy() calls
-> > > it, and my read is that later bpf_prog_free_id() then hits the early !prog->aux->id
-> > > return path. Is there a reason for irq context to not defer the bpf_prog_free_id()?
-> >
-> > there's comment saying:
-> >   /* bpf_prog_free_id() must be called first */
-> >
-> > it was added together with the BPF_(PROG|MAP)_GET_NEXT_ID api:
-> >   34ad5580f8f9 bpf: Add BPF_(PROG|MAP)_GET_NEXT_ID command
-> >
-> > Martin, any idea?
-> >
-> > while looking on this I noticed we can remove the do_idr_lock argument
-> > (patch below) because it's always true and I think we need to upgrade
-> > all the prog_idr_lock locks to spin_lock_irqsave because bpf_prog_put
-> > could be called from irq context because of d809e134be7a
+On 11/15/22 10:38 PM, John Fastabend wrote:
+>>>>>> +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
+>>>>>> +                           struct bpf_patch *patch)
+>>>>>> +{
+>>>>>> +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
+>>>>>> +             /* return true; */
+>>>>>> +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
+>>>>>> +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
+>>>>>> +             /* return ktime_get_mono_fast_ns(); */
+>>>>>> +             bpf_patch_append(patch, BPF_EMIT_CALL(ktime_get_mono_fast_ns));
+>>>>>> +     }
+>>>>>> +}
+>>>>>
+>>>>> So these look reasonable enough, but would be good to see some examples
+>>>>> of kfunc implementations that don't just BPF_CALL to a kernel function
+>>>>> (with those helper wrappers we were discussing before).
+>>>>
+>>>> Let's maybe add them if/when needed as we add more metadata support?
+>>>> xdp_metadata_export_to_skb has an example, and rfc 1/2 have more
+>>>> examples, so it shouldn't be a problem to resurrect them back at some
+>>>> point?
+>>>
+>>> Well, the reason I asked for them is that I think having to maintain the
+>>> BPF code generation in the drivers is probably the biggest drawback of
+>>> the kfunc approach, so it would be good to be relatively sure that we
+>>> can manage that complexity (via helpers) before we commit to this :)
+>>
+>> Right, and I've added a bunch of examples in v2 rfc so we can judge
+>> whether that complexity is manageable or not :-)
+>> Do you want me to add those wrappers you've back without any real users?
+>> Because I had to remove my veth tstamp accessors due to John/Jesper
+>> objections; I can maybe bring some of this back gated by some
+>> static_branch to avoid the fastpath cost?
 > 
-> before we dive into rabbit hole let's understand
-> the severity of
-> "perf_event_bpf_event and bpf_audit_prog calls currently report zero
->  program id for unload path"
+> I missed the context a bit what did you mean "would be good to see some
+> examples of kfunc implementations that don't just BPF_CALL to a kernel
+> function"? In this case do you mean BPF code directly without the call?
 > 
-> and why we cannot leave it as-is.
+> Early on I thought we should just expose the rx_descriptor which would
+> be roughly the same right? (difference being code embedded in driver vs
+> a lib) Trouble I ran into is driver code using seqlock_t and mutexs
+> which wasn't as straight forward as the simpler just read it from
+> the descriptor. For example in mlx getting the ts would be easy from
+> BPF with the mlx4_cqe struct exposed
+> 
+> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
+> {
+>          u64 hi, lo;
+>          struct mlx4_ts_cqe *ts_cqe = (struct mlx4_ts_cqe *)cqe;
+> 
+>          lo = (u64)be16_to_cpu(ts_cqe->timestamp_lo);
+>          hi = ((u64)be32_to_cpu(ts_cqe->timestamp_hi) + !lo) << 16;
+> 
+>          return hi | lo;
+> }
+> 
+> but converting that to nsec is a bit annoying,
+> 
+> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
+>                              struct skb_shared_hwtstamps *hwts,
+>                              u64 timestamp)
+> {
+>          unsigned int seq;
+>          u64 nsec;
+> 
+>          do {
+>                  seq = read_seqbegin(&mdev->clock_lock);
+>                  nsec = timecounter_cyc2time(&mdev->clock, timestamp);
+>          } while (read_seqretry(&mdev->clock_lock, seq));
+> 
+>          memset(hwts, 0, sizeof(struct skb_shared_hwtstamps));
+>          hwts->hwtstamp = ns_to_ktime(nsec);
+> }
+> 
+> I think the nsec is what you really want.
+> 
+> With all the drivers doing slightly different ops we would have
+> to create read_seqbegin, read_seqretry, mutex_lock, ... to get
+> at least the mlx and ice drivers it looks like we would need some
+> more BPF primitives/helpers. Looks like some more work is needed
+> on ice driver though to get rx tstamps on all packets.
+> 
+> Anyways this convinced me real devices will probably use BPF_CALL
+> and not BPF insns directly.
 
-I found this because I wanted use perf bpf-event to monitor bpf
-programs loads/unloads.. and I need 'id' on the unload event
+Some of the mlx5 path looks like this:
 
-perf_event_bpf_event is irq safe so quick fix for me would be
-to move it back:
+#define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PER_SEC + ((u64)low))
 
-        if (atomic64_dec_and_test(&aux->refcnt)) {
-+               perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
-                /* bpf_prog_free_id() must be called first */
-                bpf_prog_free_id(prog, do_idr_lock);
+static inline ktime_t mlx5_real_time_cyc2time(struct mlx5_clock *clock,
+                                               u64 timestamp)
+{
+         u64 time = REAL_TIME_TO_NS(timestamp >> 32, timestamp & 0xFFFFFFFF);
 
-FWIW I also used fix below for a while for testing
+         return ns_to_ktime(time);
+}
 
-jirka
+If some hints are harder to get, then just doing a kfunc call is better.
 
+csum may have a better chance to inline?
 
----
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d88e0741b381..6b752d4815e6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1163,6 +1163,7 @@ struct bpf_prog_aux {
- 	u32 max_tp_access;
- 	u32 stack_depth;
- 	u32 id;
-+	u32 id_audit;
- 	u32 func_cnt; /* used by non-func prog as the number of func progs */
- 	u32 func_idx; /* 0 for non-func prog, the index in func array for func prog */
- 	u32 attach_btf_id; /* in-kernel BTF type id to attach to */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index d6081e8336c6..1f4fdf0aaac6 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1930,7 +1930,7 @@ static void bpf_audit_prog(const struct bpf_prog *prog, unsigned int op)
- 	if (unlikely(!ab))
- 		return;
- 	audit_log_format(ab, "prog-id=%u op=%s",
--			 prog->aux->id, bpf_audit_str[op]);
-+			 prog->aux->id_audit, bpf_audit_str[op]);
- 	audit_log_end(ab);
- }
- 
-@@ -1942,7 +1942,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
- 	spin_lock_bh(&prog_idr_lock);
- 	id = idr_alloc_cyclic(&prog_idr, prog, 1, INT_MAX, GFP_ATOMIC);
- 	if (id > 0)
--		prog->aux->id = id;
-+		prog->aux->id = prog->aux->id_audit = id;
- 	spin_unlock_bh(&prog_idr_lock);
- 	idr_preload_end();
- 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 0f0bfcf5adce..32edb3a4360e 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9065,7 +9065,7 @@ void perf_event_bpf_event(struct bpf_prog *prog,
- 			},
- 			.type = type,
- 			.flags = flags,
--			.id = prog->aux->id,
-+			.id = prog->aux->id_audit,
- 		},
- 	};
- 
+Regardless, BPF in-lining is a well solved problem and used in many bpf helpers 
+already, so there are many examples in the kernel.  I don't think it is 
+necessary to block this series because of missing some helper wrappers for 
+inlining.  The driver can always start with the simpler kfunc call first and 
+optimize later if some hints from the drivers allow it.
