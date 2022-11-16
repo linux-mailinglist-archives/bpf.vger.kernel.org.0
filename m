@@ -2,219 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE20D62C783
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 19:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EC862C7A4
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 19:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237845AbiKPSUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 13:20:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58794 "EHLO
+        id S238756AbiKPSaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 13:30:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbiKPSU3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 13:20:29 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA371026;
-        Wed, 16 Nov 2022 10:20:25 -0800 (PST)
-Message-ID: <3e1ac848-cf51-91e6-94b9-7ca8028f9677@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668622823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0+aYWqJwduIcdfUn0eX1FtVAYprjudBJMKtsp16fJ4=;
-        b=rzRxXnsC16qlng92gS4PMnFz1B0VCkjtKud4dS1Io4ZezXwyFdcMJV2bR5hO29oKSXQXXN
-        U0N3s6mUzerT8CxumTB3kmBpy1vreF+M8FO/plFHfvAsTATOVm9WTcp7I7Si6Rf/tGCVCc
-        ECcX5PS0zDAXJ0qSilTVKsuvrwLo3Js=
-Date:   Wed, 16 Nov 2022 10:20:18 -0800
+        with ESMTP id S239164AbiKPSaB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 13:30:01 -0500
+Received: from sonic310-30.consmr.mail.ne1.yahoo.com (sonic310-30.consmr.mail.ne1.yahoo.com [66.163.186.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D814C275
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 10:29:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1668623396; bh=NHUQvpQYr0Qj0gqXyR44REguG8S4rHXrKN2FlhJ3Ibw=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=E9n5D5y3lQXK9qB96r7bg+rGteM4O62mxo7zV8BSjLuHFSlUl6zMWCqVpHBBt77K09cphVqJxfIh8dd6eZ+RougMIpSnxad6z095Vy0l4AXMnm6M9OLrEZXfRAsvDCUe/YoCH6s/Y1o14SebKwa6G/xSOh1c7VsvRZLIPgG/1apvs852dkds0ApuHiTdWiY0zgWVZ9kQ61nuAUCd6+lr/FZ4Y5G8puuf/zzbFSCmOb17EL7SmCj95NYbfzXx/y75x2FkPUhoP1WkwUYbi33N7HzK9TAjBvRvnadbLMJYr3uFMJ1Ee8lcFbg9vE7Dq5tzcKSTASmXUIAIM4k3SdI84A==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1668623396; bh=VR63XfpKqSpEsPvTZ24jmEnVQNKDJhk27deLKbv2c6a=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=kOvD3JWgGztjdDIwK/3BjkPhya4lIHL35yL9f9P0aPOTzydLFYAaT5UnOmsoXvTkNh8NCymXBKSFkEoqzi/0QjD3ZeYadKrzjvY/CVuAy/sKfl8gcPm7PGzvLrk/ayNweh/BnGAaWHWhr9zEnrqK7o3QXgT7PIIc9HCydwBgAzIPpGrIlY+ZBMCmG43kw4p9BGMyQit5h5TSDQe1QmCbmWt4jgNRAPJ9XumYOXFqi3AJjRqgrjA7xlbN6SdzXz6GsizVRdmr6rQupzSwUHoWpY5vfrBluVVIyUEUl/gHvibR3wuK5VuyYnoXq930hxZPy3vnen3TEKN3M72o2qn4Fw==
+X-YMail-OSG: FL1LeRUVM1mGJlmn.3Gqb.MqyKlt0DARDUb7sDut53byJr6O3GT6lvxAQKddjS0
+ tG8iAc0jqqWsBGkzfHczm5OES0CSmrjiFjzXxXyhu7LiDUsMWvIS9ytoq9seb0ujiU6wjnH_kf4Z
+ ReU1ScAJCOWFAwgpILVEWaRLFAozVC98Zk3vwIbUXcZLBvxYdDDLaEE0uzENnxWKRLEZHZid_XAJ
+ 2T4Sv9Wm8f.BXi2M4K.xGt5Z55xTrbEW0b3ONWNAMV.SeW5ppBMP9gS3gtjFLJbBBg20IO5wLfZE
+ yUG8oiOKVzvLRYS4bgOb3TrGUKix9LAqGzceHor7WguGKxoN_bQtJtYKs0GGZ9t6uiSdrgXxAZ1v
+ RTG8Lo.SZbztTkBNI7Sttoc.iXPLe7E2x5zUYrTrKW8bXM6_UjFKP_fwVL2.OgukognTsbj1cRwI
+ uELnyRFDCC0qiEIWI.sy1tD1Ekq_OoMWDBRWL0hQqKSv95H.cwzWKH.WtM2qraHTaFDB9pvceaE.
+ CcI5.R1JjjazuPp16FTYZiFVFdVHSQuwiDrLAHJhf7WbH11LoNV962oO2H9tPebodraNv__67qoj
+ qHk5EHu9yhO33atU0RsW65GUj2jrgveQ5LnzGkTRh9YVCde4q9VXnDI2Cf_s7uh_SJniaRfQzctb
+ bsCHB5HcL6NkHVb8B266udCgKag4_1zjR8h1aQsLLzT1VnhPINfFf6LHJOknNArwjA5T_kyHto3D
+ 78Tp2xs2uD_Jj2gkZHeX1hwKnj2uzr87b8OhqjRogJFrdJCewQXvdPtTZERFPgcuV5g920QOakJn
+ sPeHqdE1VJotiF1fBCNM_6MQMWbmMXH67tsiL6H3S5Fbr49lMaLcG3PfibvF38fGUV.F3J2g9UHk
+ f0Gr9bWXWh38D1q8TO9kHyMHEgLvqxrQVY6IFIDL3jbjqRRULskyRKVg0wItNU1oQmCQOqCG9hbH
+ dnIduZZRbq3Fms3duSMKNmFX1ZWCV3ci1CO64_0fyx_zkkqbw4dCjr53Kfie2BuVcqf9kcJW27vl
+ 1.FUFmhFRPIYsgkEnRXlW6rds9chKOh92ii5jZvn.s9H0HMCCXxbPA1C0OL46WN_RaHCXc_LfQUp
+ 6ng9RntWtN2aPNt0v7J_cG888W1HuU1bDiPaqLmpl7ymKM54vKm3M2eB6HwLwN7efg_k4YutI7Wr
+ E.fEGBe9aq93S9NRr8SZITRVrEO5Dhp2W0jJrx0Ah_KhZ5SjQOVLjcSutxLBgXYS8Flii_JGxq0_
+ TTOQJLXqzUSBTmG_AEdGLdwGeXnSKX0vgG.vFx1d3YY3FguClAeiVF8Y8MKlbubPtIrZfY3tnTD8
+ 3wpuxn7k40cLZARZfsR.FfSXy.2nRg3JzW.0iYbuzoJ2qrSnDdNTjYQ_Qy7mA4wMC6yjMzzR8_xD
+ 9wlJRwkHyEqg1Lyo1orRiaJefE64KEkJBMdXRLyfWw4hROOLfSwydqnxhfWr07cS2OELvQh3QLdN
+ hasS.DaXNRLWYS.xV_aSmTHprMmAvzYgQhAyxanIFpaWV4QVWij3uJTROAxHfuvEPLHVCudy.0tN
+ JMIjHyEn5Fef7hs1lU9BaIg_4oFUC_N1rNA1ETlexuztJE6vxqnqC9mmwp00zLTR0Xvp0x95Yoga
+ rZoh0fnqJwXX0GxU.s2VXoNhjWfB557aN1Uxdu56h5bpu2PHFUiAo_4eI_aCI2vpQRnvT2XT1RSN
+ US7DHw7pj9TvN0.ei1GMtdLzkKR_XbWStOQzc956x.iv4p.iM0wY7FfhCQys9KEF6oQVHQGmiWfo
+ xkWsRYtPTQy9lly3W.l7qIZUgS4iLdPArGmuFVCvJVgU5n4WJ53iljn9AMFBjT.vkiW6RsBhDDD_
+ hjFz1jh6JyD7716Q2XM_JTtBaWWFSY5ug3e2H7CEiBGSnASw_O1tbiN3N3CqRy7iKJ9KXbgDlB5u
+ qgv9bhZ0dkQrbRAj4Uy6V.fC8FVNzdgoVtTf64mMEfwiEryUjqNbtnJHrxLYkjzb.RmNQBDdKbQQ
+ rs.n3EFOGqslWJwj8G4rvk8JICiPCA2HhTalrUqWYaugQNoYcL4cMs8ttZAQPMXbEoDpH2z_gKEN
+ is2gHS9Qkzb_X0qBxn62jc2Yx1ZDMzjC8ANhYVb1buRv5FKD0S94Bbp..QZ9F5yflFnDw88t9E7R
+ ZWUMD52PP8a.yVvVtd2aqxPePTVpJy5qcgNl7EMBqAzbOGgcsvcVuA7gQqsakLB9cab6x5_5wmPE
+ jmF50GAWnm9ziboScX49gdQK9YWZ5fvqLn59UFRj3LFAZSwPLrqoi1ZAnN7518fNWUA--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Wed, 16 Nov 2022 18:29:56 +0000
+Received: by hermes--production-bf1-5878955b5f-kkjj4 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 2101798ae56b406ede834f14ec72bf34;
+          Wed, 16 Nov 2022 18:29:55 +0000 (UTC)
+Message-ID: <2430b157-9ef9-2465-a9e4-d117d421566d@schaufler-ca.com>
+Date:   Wed, 16 Nov 2022 10:29:52 -0800
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PoC][PATCH] bpf: Call return value check function in the JITed
+ code
 Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
- <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk>
- <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch>
- <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev> <878rkbjjnp.fsf@toke.dk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <878rkbjjnp.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        casey@schaufler-ca.com
+References: <700dffccdfeeb3d19c5385550e4c84f08c705e19.camel@huaweicloud.com>
+ <20221116154712.4115929-1-roberto.sassu@huaweicloud.com>
+ <CAADnVQLQswvu3oGyeevLrKMT200yD4hzCbkBUAs=1bKSDVaOQg@mail.gmail.com>
+ <05bf553f795ac93ea3032cfc1b56ca35fd6a920a.camel@huaweicloud.com>
+ <CAADnVQJu7isDCi4+f8s4LfiwcYJbN4kXkvgJ8+ZnsS+QGDVnMw@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAADnVQJu7isDCi4+f8s4LfiwcYJbN4kXkvgJ8+ZnsS+QGDVnMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.20863 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/16/22 2:08 AM, Toke Høiland-Jørgensen wrote:
-> Martin KaFai Lau <martin.lau@linux.dev> writes:
-> 
->> On 11/15/22 10:38 PM, John Fastabend wrote:
->>>>>>>> +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
->>>>>>>> +                           struct bpf_patch *patch)
->>>>>>>> +{
->>>>>>>> +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
->>>>>>>> +             /* return true; */
->>>>>>>> +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
->>>>>>>> +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
->>>>>>>> +             /* return ktime_get_mono_fast_ns(); */
->>>>>>>> +             bpf_patch_append(patch, BPF_EMIT_CALL(ktime_get_mono_fast_ns));
->>>>>>>> +     }
->>>>>>>> +}
->>>>>>>
->>>>>>> So these look reasonable enough, but would be good to see some examples
->>>>>>> of kfunc implementations that don't just BPF_CALL to a kernel function
->>>>>>> (with those helper wrappers we were discussing before).
->>>>>>
->>>>>> Let's maybe add them if/when needed as we add more metadata support?
->>>>>> xdp_metadata_export_to_skb has an example, and rfc 1/2 have more
->>>>>> examples, so it shouldn't be a problem to resurrect them back at some
->>>>>> point?
->>>>>
->>>>> Well, the reason I asked for them is that I think having to maintain the
->>>>> BPF code generation in the drivers is probably the biggest drawback of
->>>>> the kfunc approach, so it would be good to be relatively sure that we
->>>>> can manage that complexity (via helpers) before we commit to this :)
+On 11/16/2022 9:55 AM, Alexei Starovoitov wrote:
+> On Wed, Nov 16, 2022 at 8:41 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+>> On Wed, 2022-11-16 at 08:16 -0800, Alexei Starovoitov wrote:
+>>> On Wed, Nov 16, 2022 at 7:48 AM Roberto Sassu
+>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>> +static bool is_ret_value_allowed(int ret, u32 ret_flags)
+>>>> +{
+>>>> +       if ((ret < 0 && !(ret_flags & LSM_RET_NEG)) ||
+>>>> +           (ret == 0 && !(ret_flags & LSM_RET_ZERO)) ||
+>>>> +           (ret == 1 && !(ret_flags & LSM_RET_ONE)) ||
+>>>> +           (ret > 1 && !(ret_flags & LSM_RET_GT_ONE)))
+>>>> +               return false;
+>>>> +
+>>>> +       return true;
+>>>> +}
+>>>> +
+>>>>  /* For every LSM hook that allows attachment of BPF programs, declare a nop
+>>>>   * function where a BPF program can be attached.
+>>>>   */
+>>>> @@ -30,6 +41,15 @@ noinline RET bpf_lsm_##NAME(__VA_ARGS__)     \
+>>>>  #include <linux/lsm_hook_defs.h>
+>>>>  #undef LSM_HOOK
 >>>>
->>>> Right, and I've added a bunch of examples in v2 rfc so we can judge
->>>> whether that complexity is manageable or not :-)
->>>> Do you want me to add those wrappers you've back without any real users?
->>>> Because I had to remove my veth tstamp accessors due to John/Jesper
->>>> objections; I can maybe bring some of this back gated by some
->>>> static_branch to avoid the fastpath cost?
->>>
->>> I missed the context a bit what did you mean "would be good to see some
->>> examples of kfunc implementations that don't just BPF_CALL to a kernel
->>> function"? In this case do you mean BPF code directly without the call?
->>>
->>> Early on I thought we should just expose the rx_descriptor which would
->>> be roughly the same right? (difference being code embedded in driver vs
->>> a lib) Trouble I ran into is driver code using seqlock_t and mutexs
->>> which wasn't as straight forward as the simpler just read it from
->>> the descriptor. For example in mlx getting the ts would be easy from
->>> BPF with the mlx4_cqe struct exposed
->>>
->>> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
->>> {
->>>           u64 hi, lo;
->>>           struct mlx4_ts_cqe *ts_cqe = (struct mlx4_ts_cqe *)cqe;
->>>
->>>           lo = (u64)be16_to_cpu(ts_cqe->timestamp_lo);
->>>           hi = ((u64)be32_to_cpu(ts_cqe->timestamp_hi) + !lo) << 16;
->>>
->>>           return hi | lo;
->>> }
->>>
->>> but converting that to nsec is a bit annoying,
->>>
->>> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
->>>                               struct skb_shared_hwtstamps *hwts,
->>>                               u64 timestamp)
->>> {
->>>           unsigned int seq;
->>>           u64 nsec;
->>>
->>>           do {
->>>                   seq = read_seqbegin(&mdev->clock_lock);
->>>                   nsec = timecounter_cyc2time(&mdev->clock, timestamp);
->>>           } while (read_seqretry(&mdev->clock_lock, seq));
->>>
->>>           memset(hwts, 0, sizeof(struct skb_shared_hwtstamps));
->>>           hwts->hwtstamp = ns_to_ktime(nsec);
->>> }
->>>
->>> I think the nsec is what you really want.
->>>
->>> With all the drivers doing slightly different ops we would have
->>> to create read_seqbegin, read_seqretry, mutex_lock, ... to get
->>> at least the mlx and ice drivers it looks like we would need some
->>> more BPF primitives/helpers. Looks like some more work is needed
->>> on ice driver though to get rx tstamps on all packets.
->>>
->>> Anyways this convinced me real devices will probably use BPF_CALL
->>> and not BPF insns directly.
+>>>> +#define LSM_HOOK(RET, DEFAULT, RET_FLAGS, NAME, ...)   \
+>>>> +noinline RET bpf_lsm_##NAME##_ret(int ret)     \
+>>>> +{                                              \
+>>>> +       return is_ret_value_allowed(ret, RET_FLAGS) ? ret : DEFAULT; \
+>>>> +}
+>>>> +
+>>>> +#include <linux/lsm_hook_defs.h>
+>>>> +#undef LSM_HOOK
+>>>> +
+>>> because lsm hooks is mess of undocumented return values your
+>>> "solution" is to add hundreds of noninline functions
+>>> and hack the call into them in JITs ?!
+>> I revisited the documentation and checked each LSM hook one by one.
+>> Hopefully, I completed it correctly, but I would review again (others
+>> are also welcome to do it).
 >>
->> Some of the mlx5 path looks like this:
+>> Not sure if there is a more efficient way. Do you have any idea?
+>> Maybe we find a way to use only one check function (by reusing the
+>> address of the attachment point?).
 >>
->> #define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PER_SEC + ((u64)low))
->>
->> static inline ktime_t mlx5_real_time_cyc2time(struct mlx5_clock *clock,
->>                                                 u64 timestamp)
->> {
->>           u64 time = REAL_TIME_TO_NS(timestamp >> 32, timestamp & 0xFFFFFFFF);
->>
->>           return ns_to_ktime(time);
->> }
->>
->> If some hints are harder to get, then just doing a kfunc call is better.
-> 
-> Sure, but if we end up having a full function call for every field in
-> the metadata, that will end up having a significant performance impact
-> on the XDP data path (thinking mostly about the skb metadata case here,
-> which will collect several bits of metadata).
-> 
->> csum may have a better chance to inline?
+>> Regarding the JIT approach, I didn't find a reliable solution for using
+>> just the verifier. As I wrote to you, there could be the case where the
+>> range can include positive values, despite the possible return values
+>> are zero and -EACCES.
+> Didn't you find that there are only 12 or so odd return cases.
+> Maybe refactor some of them to something that the verifier can enforce
+> and denylist the rest ?
 
-It will be useful if the skb_metadata can get at least one more field like csum 
-or vlan.
+Changing security_mumble() often requires changes in either VFS, audit or
+networking code. Even simple changes can require extensive review and
+difficult to obtain Acked-by's. It may be the correct approach, but it
+won't be easy or quick.
 
-> 
-> Yup, I agree. Including that also makes it possible to benchmark this
-> series against Jesper's; which I think we should definitely be doing
-> before merging this.
+> Also denylist those that Casey mentioned like security_secid_to_secctx ?
 
-If the hint needs a lock to obtain it, it is not cheap to begin with regardless 
-of kfunc or not.  Also, there is bpf_xdp_metadata_rx_timestamp_supported() 
-before doing the bpf_xdp_metadata_rx_timestamp().
+Identifying all the hooks that could be "dangerous" isn't an easy chore,
+and some of the "dangerous" hooks are key to implementing classes of policy
+and absolutely necessary for audit support.
 
-This set gives the xdp prog a flexible way to avoid getting all hints (some of 
-them require a lock) if all the xdp prog needs is a csum.  imo, giving this 
-flexibility to the xdp prog is the important thing for this set in terms of 
-performance.
-
-> 
->> Regardless, BPF in-lining is a well solved problem and used in many
->> bpf helpers already, so there are many examples in the kernel. I don't
->> think it is necessary to block this series because of missing some
->> helper wrappers for inlining. The driver can always start with the
->> simpler kfunc call first and optimize later if some hints from the
->> drivers allow it.
-> 
-> Well, "solved" in the sense of "there are a few handfuls of core BPF
-> people who know how to do it". My concern is that we'll end up with
-> either the BPF devs having to maintain all these bits of BPF byte code
-> in all the drivers; or drivers just punting to regular function calls
-> because the inlining is too complicated, with sub-par performance as per
-> the above. I don't think we should just hand-wave this away as "solved",
-> but rather treat this as an integral part of the initial series.
-
-In terms of complexity/maintainability, I don't think the driver needs to inline 
-like hundreds of bpf insn for a hint which is already a good signal that it 
-should just call kfunc.  For a simple hint, xdp_metadata_export_to_skb() is a 
-good example to start with and I am not sure how much a helper wrapper can do to 
-simplify things further since each driver inline code is going to be different.
-
-The community's review will definitely be useful for the first few drivers when 
-the driver changes is posted to the list, and the latter drivers will have 
-easier time to follow like the xdp was initially introduced to the few drivers 
-first.  When there are things to refactor after enough drivers supporting it, 
-that will be a better time to revisit.
