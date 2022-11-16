@@ -2,174 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C15262B424
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FAE62B3DE
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 08:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbiKPHrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 02:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S231270AbiKPHZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 02:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbiKPHrq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 02:47:46 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16106D113;
-        Tue, 15 Nov 2022 23:47:45 -0800 (PST)
-Message-ID: <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668584863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ed1cg6SvB5gikz9nKb2NT1RQypbDjDrNtRQGfRyCBkA=;
-        b=hwp6jDQMl5G3j8+T+IvdCqSTd926glT68BV4yjsPRXAUSq8QRGOdoP14Sy6p35T6pR5UEi
-        UmpdmyYtBCKyPNktWOOhjCxxRVpBrMeF1cXyxasG7oXnNsTd0CECUdojPJeXca3vwjoTnl
-        7pbMkvK0H4cQ3ZV6EW2YdfUevs/EEJE=
-Date:   Tue, 15 Nov 2022 23:47:38 -0800
-MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
-Content-Language: en-US
-To:     John Fastabend <john.fastabend@gmail.com>,
+        with ESMTP id S229531AbiKPHZX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 02:25:23 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E22A1BA
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 23:25:22 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NBvhX4t6rz4f3jZl
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:25:16 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgCXu9hckHRjjPhzAg--.13472S4;
+        Wed, 16 Nov 2022 15:25:18 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
- <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk>
- <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <6374854883b22_5d64b208e3@john.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+Subject: [PATCH bpf-next v3] bpf: Pass map file to .map_update_batch directly
+Date:   Wed, 16 Nov 2022 15:50:58 +0800
+Message-Id: <20221116075059.1551277-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCXu9hckHRjjPhzAg--.13472S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxtFyxJr1xurW3Wr47Cr48WFg_yoWxKrykpF
+        W5KFy7Cr48WrW7Xr4aqw4UWa47Zr4Fg345KrWkKa4FyrnrX34I9Fy8ta97uF1Yvrn8Jr4k
+        Ja12qa48Aw4IyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/15/22 10:38 PM, John Fastabend wrote:
->>>>>> +static void veth_unroll_kfunc(const struct bpf_prog *prog, u32 func_id,
->>>>>> +                           struct bpf_patch *patch)
->>>>>> +{
->>>>>> +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
->>>>>> +             /* return true; */
->>>>>> +             bpf_patch_append(patch, BPF_MOV64_IMM(BPF_REG_0, 1));
->>>>>> +     } else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
->>>>>> +             /* return ktime_get_mono_fast_ns(); */
->>>>>> +             bpf_patch_append(patch, BPF_EMIT_CALL(ktime_get_mono_fast_ns));
->>>>>> +     }
->>>>>> +}
->>>>>
->>>>> So these look reasonable enough, but would be good to see some examples
->>>>> of kfunc implementations that don't just BPF_CALL to a kernel function
->>>>> (with those helper wrappers we were discussing before).
->>>>
->>>> Let's maybe add them if/when needed as we add more metadata support?
->>>> xdp_metadata_export_to_skb has an example, and rfc 1/2 have more
->>>> examples, so it shouldn't be a problem to resurrect them back at some
->>>> point?
->>>
->>> Well, the reason I asked for them is that I think having to maintain the
->>> BPF code generation in the drivers is probably the biggest drawback of
->>> the kfunc approach, so it would be good to be relatively sure that we
->>> can manage that complexity (via helpers) before we commit to this :)
->>
->> Right, and I've added a bunch of examples in v2 rfc so we can judge
->> whether that complexity is manageable or not :-)
->> Do you want me to add those wrappers you've back without any real users?
->> Because I had to remove my veth tstamp accessors due to John/Jesper
->> objections; I can maybe bring some of this back gated by some
->> static_branch to avoid the fastpath cost?
-> 
-> I missed the context a bit what did you mean "would be good to see some
-> examples of kfunc implementations that don't just BPF_CALL to a kernel
-> function"? In this case do you mean BPF code directly without the call?
-> 
-> Early on I thought we should just expose the rx_descriptor which would
-> be roughly the same right? (difference being code embedded in driver vs
-> a lib) Trouble I ran into is driver code using seqlock_t and mutexs
-> which wasn't as straight forward as the simpler just read it from
-> the descriptor. For example in mlx getting the ts would be easy from
-> BPF with the mlx4_cqe struct exposed
-> 
-> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
-> {
->          u64 hi, lo;
->          struct mlx4_ts_cqe *ts_cqe = (struct mlx4_ts_cqe *)cqe;
-> 
->          lo = (u64)be16_to_cpu(ts_cqe->timestamp_lo);
->          hi = ((u64)be32_to_cpu(ts_cqe->timestamp_hi) + !lo) << 16;
-> 
->          return hi | lo;
-> }
-> 
-> but converting that to nsec is a bit annoying,
-> 
-> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
->                              struct skb_shared_hwtstamps *hwts,
->                              u64 timestamp)
-> {
->          unsigned int seq;
->          u64 nsec;
-> 
->          do {
->                  seq = read_seqbegin(&mdev->clock_lock);
->                  nsec = timecounter_cyc2time(&mdev->clock, timestamp);
->          } while (read_seqretry(&mdev->clock_lock, seq));
-> 
->          memset(hwts, 0, sizeof(struct skb_shared_hwtstamps));
->          hwts->hwtstamp = ns_to_ktime(nsec);
-> }
-> 
-> I think the nsec is what you really want.
-> 
-> With all the drivers doing slightly different ops we would have
-> to create read_seqbegin, read_seqretry, mutex_lock, ... to get
-> at least the mlx and ice drivers it looks like we would need some
-> more BPF primitives/helpers. Looks like some more work is needed
-> on ice driver though to get rx tstamps on all packets.
-> 
-> Anyways this convinced me real devices will probably use BPF_CALL
-> and not BPF insns directly.
+From: Hou Tao <houtao1@huawei.com>
 
-Some of the mlx5 path looks like this:
+Currently bpf_map_do_batch() first invokes fdget(batch.map_fd) to get
+the target map file, then it invokes generic_map_update_batch() to do
+batch update. generic_map_update_batch() will get the target map file
+by using fdget(batch.map_fd) again and pass it to
+bpf_map_update_value().
 
-#define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PER_SEC + ((u64)low))
+The problem is map file returned by the second fdget() may be NULL or a
+totally different file compared by map file in bpf_map_do_batch(). The
+reason is that the first fdget() only guarantees the liveness of struct
+file instead of file descriptor and the file description may be released
+by concurrent close() through pick_file().
 
-static inline ktime_t mlx5_real_time_cyc2time(struct mlx5_clock *clock,
-                                               u64 timestamp)
-{
-         u64 time = REAL_TIME_TO_NS(timestamp >> 32, timestamp & 0xFFFFFFFF);
+It doesn't incur any problem as for now, because maps with batch update
+support don't use map file in .map_fd_get_ptr() ops. But it is better to
+fix the potential access of an invalid map file.
 
-         return ns_to_ktime(time);
-}
+Using __bpf_map_get() again in generic_map_update_batch() can not fix
+the problem, because batch.map_fd may be closed and reopened, and the
+returned map file may be different with map file got in
+bpf_map_do_batch(), so just passing the map file directly to
+.map_update_batch() in bpf_map_do_batch().
 
-If some hints are harder to get, then just doing a kfunc call is better.
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+v3:
+ * extend BPF_DO_BATCH by __VA_ARGS__ instead of adding
+   BPF_DO_BATCH_WITH_FILE (suggested by Daniel)
+v2: https://lore.kernel.org/bpf/4317f99a-f466-23e1-366e-890f34624c65@huaweicloud.com
+ * rewrite the commit message to explain the problem and the reasoning.
+v1: https://lore.kernel.org/bpf/20221107075537.1445644-1-houtao@huaweicloud.com
 
-csum may have a better chance to inline?
+ include/linux/bpf.h  |  5 +++--
+ kernel/bpf/syscall.c | 32 ++++++++++++++------------------
+ 2 files changed, 17 insertions(+), 20 deletions(-)
 
-Regardless, BPF in-lining is a well solved problem and used in many bpf helpers 
-already, so there are many examples in the kernel.  I don't think it is 
-necessary to block this series because of missing some helper wrappers for 
-inlining.  The driver can always start with the simpler kfunc call first and 
-optimize later if some hints from the drivers allow it.
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 54462dd28824..e60a5c052473 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -85,7 +85,8 @@ struct bpf_map_ops {
+ 	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+ 					   const union bpf_attr *attr,
+ 					   union bpf_attr __user *uattr);
+-	int (*map_update_batch)(struct bpf_map *map, const union bpf_attr *attr,
++	int (*map_update_batch)(struct bpf_map *map, struct file *map_file,
++				const union bpf_attr *attr,
+ 				union bpf_attr __user *uattr);
+ 	int (*map_delete_batch)(struct bpf_map *map, const union bpf_attr *attr,
+ 				union bpf_attr __user *uattr);
+@@ -1789,7 +1790,7 @@ void bpf_map_init_from_attr(struct bpf_map *map, union bpf_attr *attr);
+ int  generic_map_lookup_batch(struct bpf_map *map,
+ 			      const union bpf_attr *attr,
+ 			      union bpf_attr __user *uattr);
+-int  generic_map_update_batch(struct bpf_map *map,
++int  generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+ 			      const union bpf_attr *attr,
+ 			      union bpf_attr __user *uattr);
+ int  generic_map_delete_batch(struct bpf_map *map,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fdbae52f463f..b078965999e6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -175,8 +175,8 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+ 		synchronize_rcu();
+ }
+ 
+-static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+-				void *value, __u64 flags)
++static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
++				void *key, void *value, __u64 flags)
+ {
+ 	int err;
+ 
+@@ -190,7 +190,7 @@ static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+ 		   map->map_type == BPF_MAP_TYPE_SOCKMAP) {
+ 		return sock_map_update_elem_sys(map, key, value, flags);
+ 	} else if (IS_FD_PROG_ARRAY(map)) {
+-		return bpf_fd_array_map_update_elem(map, f.file, key, value,
++		return bpf_fd_array_map_update_elem(map, map_file, key, value,
+ 						    flags);
+ 	}
+ 
+@@ -205,12 +205,12 @@ static int bpf_map_update_value(struct bpf_map *map, struct fd f, void *key,
+ 						       flags);
+ 	} else if (IS_FD_ARRAY(map)) {
+ 		rcu_read_lock();
+-		err = bpf_fd_array_map_update_elem(map, f.file, key, value,
++		err = bpf_fd_array_map_update_elem(map, map_file, key, value,
+ 						   flags);
+ 		rcu_read_unlock();
+ 	} else if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
+ 		rcu_read_lock();
+-		err = bpf_fd_htab_map_update_elem(map, f.file, key, value,
++		err = bpf_fd_htab_map_update_elem(map, map_file, key, value,
+ 						  flags);
+ 		rcu_read_unlock();
+ 	} else if (map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
+@@ -1410,7 +1410,7 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+ 		goto free_key;
+ 	}
+ 
+-	err = bpf_map_update_value(map, f, key, value, attr->flags);
++	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
+ 
+ 	kvfree(value);
+ free_key:
+@@ -1596,16 +1596,14 @@ int generic_map_delete_batch(struct bpf_map *map,
+ 	return err;
+ }
+ 
+-int generic_map_update_batch(struct bpf_map *map,
++int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+ 			     const union bpf_attr *attr,
+ 			     union bpf_attr __user *uattr)
+ {
+ 	void __user *values = u64_to_user_ptr(attr->batch.values);
+ 	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+ 	u32 value_size, cp, max_count;
+-	int ufd = attr->batch.map_fd;
+ 	void *key, *value;
+-	struct fd f;
+ 	int err = 0;
+ 
+ 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+@@ -1632,7 +1630,6 @@ int generic_map_update_batch(struct bpf_map *map,
+ 		return -ENOMEM;
+ 	}
+ 
+-	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
+ 	for (cp = 0; cp < max_count; cp++) {
+ 		err = -EFAULT;
+ 		if (copy_from_user(key, keys + cp * map->key_size,
+@@ -1640,7 +1637,7 @@ int generic_map_update_batch(struct bpf_map *map,
+ 		    copy_from_user(value, values + cp * value_size, value_size))
+ 			break;
+ 
+-		err = bpf_map_update_value(map, f, key, value,
++		err = bpf_map_update_value(map, map_file, key, value,
+ 					   attr->batch.elem_flags);
+ 
+ 		if (err)
+@@ -1653,7 +1650,6 @@ int generic_map_update_batch(struct bpf_map *map,
+ 
+ 	kvfree(value);
+ 	kvfree(key);
+-	fdput(f);
+ 	return err;
+ }
+ 
+@@ -4446,13 +4442,13 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ 
+ #define BPF_MAP_BATCH_LAST_FIELD batch.flags
+ 
+-#define BPF_DO_BATCH(fn)			\
++#define BPF_DO_BATCH(fn, ...)			\
+ 	do {					\
+ 		if (!fn) {			\
+ 			err = -ENOTSUPP;	\
+ 			goto err_put;		\
+ 		}				\
+-		err = fn(map, attr, uattr);	\
++		err = fn(__VA_ARGS__);		\
+ 	} while (0)
+ 
+ static int bpf_map_do_batch(const union bpf_attr *attr,
+@@ -4486,13 +4482,13 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+ 	}
+ 
+ 	if (cmd == BPF_MAP_LOOKUP_BATCH)
+-		BPF_DO_BATCH(map->ops->map_lookup_batch);
++		BPF_DO_BATCH(map->ops->map_lookup_batch, map, attr, uattr);
+ 	else if (cmd == BPF_MAP_LOOKUP_AND_DELETE_BATCH)
+-		BPF_DO_BATCH(map->ops->map_lookup_and_delete_batch);
++		BPF_DO_BATCH(map->ops->map_lookup_and_delete_batch, map, attr, uattr);
+ 	else if (cmd == BPF_MAP_UPDATE_BATCH)
+-		BPF_DO_BATCH(map->ops->map_update_batch);
++		BPF_DO_BATCH(map->ops->map_update_batch, map, f.file, attr, uattr);
+ 	else
+-		BPF_DO_BATCH(map->ops->map_delete_batch);
++		BPF_DO_BATCH(map->ops->map_delete_batch, map, attr, uattr);
+ err_put:
+ 	if (has_write)
+ 		bpf_map_write_active_dec(map);
+-- 
+2.29.2
+
