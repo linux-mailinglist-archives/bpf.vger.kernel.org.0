@@ -2,99 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FC662C924
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 20:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907A262CB2F
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 21:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbiKPTqh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 14:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S229536AbiKPUiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 15:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbiKPTqg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 14:46:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DDD27CE8;
-        Wed, 16 Nov 2022 11:46:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 561AC61F7C;
-        Wed, 16 Nov 2022 19:46:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52258C433D6;
-        Wed, 16 Nov 2022 19:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668627994;
-        bh=v9i08SgmR4P+otCsZt87j/UxmXP81hkv7DfyvtbixPY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=etZxJrXg1caExsnBfrraleQ96DDGCKVg89i+k3HPpT+zHtHiRivr99b6u0KGPwBvg
-         LpPVx3/U0/9TqKWNh/aAzYP+5tPFwJNiNPsyhyp6mOiH9/rBPfrlQJBnPSAvjqpTme
-         gpud1fuBfFNdcNGpyBVP0cc/nSDl4FqhFi9JvjAZcQNYJIxXvOr0i6Ra1bSFqa90eI
-         Hz8Wq3fEGe/eGE6ipUv/5yHIX7JofhLl1xFdctCPA9CMYE4xucmus2NEbHk5xvlafS
-         78cHppV2Jl9QpttzEf2+8rTy0GtiuZX1U19pRWBkPkyOA2c1qYiwZSFUAFPSqGa11A
-         rrfDSoCSM0jfA==
-Date:   Wed, 16 Nov 2022 11:46:33 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, hawk@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, sdf@google.com
-Subject: Re: [1/2 bpf-next] bpf: expose net_device from xdp for metadata
-Message-ID: <20221116114633.6a297935@kernel.org>
-In-Reply-To: <63728784e2d15_43f25208be@john.notmuch>
-References: <20221109215242.1279993-1-john.fastabend@gmail.com>
-        <20221109215242.1279993-2-john.fastabend@gmail.com>
-        <0697cf41-eaa0-0181-b5c0-7691cb316733@meta.com>
-        <636c5f21d82c1_13fe5e208e9@john.notmuch>
-        <aeb8688f-7848-84d2-9502-fad400b1dcdc@meta.com>
-        <636d82206e7c_154599208b0@john.notmuch>
-        <636d853a8d59_15505d20826@john.notmuch>
-        <86af974c-a970-863f-53f5-c57ebba9754e@meta.com>
-        <637136faa95e5_2c136208dc@john.notmuch>
-        <10b5eb96-5200-0ffe-a1ba-6d8a16ac4ebe@meta.com>
-        <63728784e2d15_43f25208be@john.notmuch>
+        with ESMTP id S233395AbiKPUiX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 15:38:23 -0500
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5C054B25
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 12:38:19 -0800 (PST)
+Message-ID: <b5540340-85a7-6809-5f37-1509bbf9a142@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1668631098;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qf/mHgNvS0KiJWIWsV+6vSt6su8Y3b9J+AP/1lILOLg=;
+        b=aH3eCZhS7JkWt0xyzO2GRbwO17pJLW2GqIYh3tKZWJEjMHXiGFgeRKejcPLBP+7YvDjkZn
+        JYraBA6SdpLSoHtkw9ZoQtFxHVEWxxAKMEQc2zRMIxp9lqE1UzBn74/Ly8nI4K6vqBN7y8
+        8V4YjAqrq8u2ewpyzElRZj/B1HvUufQ=
+Date:   Wed, 16 Nov 2022 12:38:13 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Make sure zero-len skbs
+ aren't redirectable
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org
+References: <20221115031031.3281094-1-sdf@google.com>
+ <20221115031031.3281094-2-sdf@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221115031031.3281094-2-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 14 Nov 2022 10:23:00 -0800 John Fastabend wrote:
-> > > The other piece I would like to get out of the xdp ctx is the
-> > > rx descriptor of the device. I want to use this to pull out info
-> > > about the received buffer for debug mostly, but could also grab
-> > > some fields that are useful for us to track. That we can likely
-> > > do this,
-> > > 
-> > >    ctx->rxdesc  
-> > 
-> > I think it is possible. Adding rxdesc to xdp_buff as
-> >      unsigned char *rxdesc;
-> > or
-> >      void *rxdesc;
+On 11/14/22 7:10 PM, Stanislav Fomichev wrote:
+> LWT_XMIT to test L3 case, TC to test L2 case.
 
-We should avoid having to add fields to structures just to expose 
-them to BPF. Would the approach that Stan uses not work here?
-Having the driver place the desc pointer in a well known location
-on the stack and kfunc or some other magic resolve it?
- 
-> > and using bpf_get_kern_btf_id(kctx->rxdesc, expected_btf_id)
-> > to get a btf id for rxdesc. Here we assume there is
-> > a struct available for rxdesc in vmlinux.h.
-> > Then you can trace through rxdesc with direct memory
-> > access.  
+It will be useful to add more details here to explain which test is testing the 
+skb->len check in __bpf_redirect_no_mac() and __bpf_redirect_common() in patch 1.
+
 > 
-> The trickest part here is that the rxdesc btf_id depends on 
-> what device we are attached to. So would need something to
-> resolve the btf_id from attached device.
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   .../selftests/bpf/prog_tests/empty_skb.c      | 140 ++++++++++++++++++
+>   tools/testing/selftests/bpf/progs/empty_skb.c |  37 +++++
+>   2 files changed, 177 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/empty_skb.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/empty_skb.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
+> new file mode 100644
+> index 000000000000..6e35739babed
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
+> @@ -0,0 +1,140 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include <net/if.h>
+> +#include "empty_skb.skel.h"
+> +
+> +#define SYS(cmd) ({ \
+> +	if (!ASSERT_OK(system(cmd), (cmd))) \
+> +		goto out; \
+> +})
+> +
+> +void test_empty_skb(void)
+> +{
+> +	LIBBPF_OPTS(bpf_test_run_opts, tattr);
+> +	struct empty_skb *bpf_obj = NULL;
+> +	struct nstoken *tok = NULL;
+> +	struct bpf_program *prog;
+> +	char eth_hlen_pp[15];
+> +	char eth_hlen[14];
+> +	int veth_ifindex;
+> +	int ipip_ifindex;
+> +	int err;
+> +	int i;
+> +
+> +	struct {
+> +		const char *msg;
+> +		const void *data_in;
+> +		__u32 data_size_in;
+> +		int *ifindex;
+> +		int err;
+> +		int ret;
+> +		bool success_on_tc;
+> +	} tests[] = {
+> +		/* Empty packets are always rejected. */
+> +
+> +		{
+> +			.msg = "veth empty ingress packet",
+> +			.data_in = NULL,
+> +			.data_size_in = 0,
+> +			.ifindex = &veth_ifindex,
+> +			.err = -EINVAL,
+> +		},
+> +		{
+> +			.msg = "ipip empty ingress packet",
+> +			.data_in = NULL,
+> +			.data_size_in = 0,
+> +			.ifindex = &ipip_ifindex,
+> +			.err = -EINVAL,
+> +		},
 
-Right, driver needs to get involved one way or another, so it can
-return "how to get to the descriptor given a xdp_buff pointer" 
-as well as the btf_id or dynptr params.
 
-(Sorry, I'm only catching up with the xdp hw field discussions
-now so this may have already been discussed elsewhere..)
+> +
+> +		/* ETH_HLEN-sized packets:
+> +		 * - can not be redirected at LWT_XMIT
+> +		 * - can be redirected at TC
+> +		 */
+> +
+> +		{
+> +			.msg = "veth ETH_HLEN packet ingress",
+> +			.data_in = eth_hlen,
+> +			.data_size_in = sizeof(eth_hlen),
+> +			.ifindex = &veth_ifindex,
+> +			.ret = -ERANGE,
+> +			.success_on_tc = true,
+> +		},
+> +		{
+> +			.msg = "ipip ETH_HLEN packet ingress",
+> +			.data_in = eth_hlen,
+> +			.data_size_in = sizeof(eth_hlen),
+> +			.ifindex = &veth_ifindex,
+> +			.ret = -ERANGE,
+> +			.success_on_tc = true,
+> +		},
+
+
+hmm... these two tests don't look right.  They are the same except the ".msg" 
+part.  The latter one should use &ipip_ifindex?
+
+> +
+> +		/* ETH_HLEN+1-sized packet should be redirected. */
+> +
+> +		{
+> +			.msg = "veth ETH_HLEN+1 packet ingress",
+> +			.data_in = eth_hlen_pp,
+> +			.data_size_in = sizeof(eth_hlen_pp),
+> +			.ifindex = &veth_ifindex,
+> +		},
+> +		{
+> +			.msg = "ipip ETH_HLEN+1 packet ingress",
+> +			.data_in = eth_hlen_pp,
+> +			.data_size_in = sizeof(eth_hlen_pp),
+> +			.ifindex = &veth_ifindex,
+> +		},
+
+Same here.
+
