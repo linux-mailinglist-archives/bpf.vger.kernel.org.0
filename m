@@ -2,123 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3364162CD4D
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0367A62CD50
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbiKPWEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 17:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        id S233438AbiKPWEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 17:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbiKPWEC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:04:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DBD25E2
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:04:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EB9661FF1
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:04:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71950C433C1
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668636240;
-        bh=bwpmxQtSrtsqOyNAPxt9ZlaY6Emk95Zlx+kQIcsOSAA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e1NmVpp7FuKV5DsiIzj/9xGdNrLWtZLXaPNDRftQuojcm/WQzV2U16HsgKLY1s0rT
-         NsMUdeNQkNQplFSdW137vywhwbegW5TX3es9TZ23egE5x6mevCaxfF+Yf6ei48Y8SI
-         I40zVEZJW0S8j5PoiD+Leqqn9UDyb1DrKJIXytCYpPG3nqhTbqe1l1VVUG1Ko+wfX5
-         PBLTy3qLZu7FAVWl9IDGaMrk7YEH8u1L2TI6FwSaY6exAhTuDxYMMEFl3Q+BDKAzyv
-         0+0AkEFCDnkiCeJvbDXa3NoUV/maB+zeslDN8mq5jdfQmQ/RDhm4llusAhan0UI6Ac
-         uLWruwAeI5rxA==
-Received: by mail-ed1-f53.google.com with SMTP id x102so13562818ede.0
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:04:00 -0800 (PST)
-X-Gm-Message-State: ANoB5pnfdf+zeq6Zk3iZWaIxkp4SGicXHIurMdqlXn1mgrq+A6PyUm1U
-        W51EVrbLwKgE12f3jqIy6fuGEW2DEYFoQ0oiD5k=
-X-Google-Smtp-Source: AA0mqf7P4Ff+/DhonOZSGTiSY7bUxCW4GolO70BxnS/8sxv6/4l1Nv+QPD+JZD28zcvmQcigaYEG6UGNFJcNCTZbAf0=
-X-Received: by 2002:aa7:c6d9:0:b0:462:2c1c:8791 with SMTP id
- b25-20020aa7c6d9000000b004622c1c8791mr21150173eds.29.1668636238649; Wed, 16
- Nov 2022 14:03:58 -0800 (PST)
+        with ESMTP id S233898AbiKPWEV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:04:21 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CF263B9B
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:04:17 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id u8-20020a17090a5e4800b002106dcdd4a0so3690723pji.1
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:04:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VC1O7rMTvmBYyn1/bWjYQvHGFZmpsPJOUhWzFJ+UDKE=;
+        b=cU1BpRMccZjJWvhPtm4flkwG+K3w6bc1YRQscCaPiee03eI4FDk3Fo3AgHmFQyDtT4
+         ec26P+NTHvD1Ip1nMyiSiaj/XicJI5pgds9PrvbUr+tLRLNZwpp0ozW+CYxq3xz7qVCQ
+         lejMBtbs0AWGr3ApmLrjOFhxxTWjWvnfDPZCUyRyODysJNjbu/9zCAQR5bquDHfbnKHh
+         m+Ht5F9u7ozOEuN012dNaZ+CxCMRNQ3a8IAHI7QQ+KXUKLdbfDNb3/08okbxXRe1uDz2
+         IjS2PqgibVExxo7c2jeXgdgkHsI/vMNQ3z95d524hFGRBaTWye8XUkFoyy6GDQimGEdV
+         qbqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VC1O7rMTvmBYyn1/bWjYQvHGFZmpsPJOUhWzFJ+UDKE=;
+        b=4np/9MAWWtKBgQ16apebb+Fs3/YLx3lInQZiYWzaUuoMunDdnhq/JCOQUVMg+PjFFk
+         cdDIfLLIXDnnZ4Fa9PLfLMP030jk/vcMzA5FaqGfZhyRUuX6ufrY+hLLcJLZE0tXQt11
+         FahgkjTR9LwaGM/cOn6DJUXeqo+1c1CT/QluzUWB0dp93uiWG32ZvvQU75+eEMmq6S8c
+         CBE6bYQAKFryYW+zHL3ZrxtQCo7NauE8Ey6jq0bSrVHh1hdC/TGoaqms4Y19OiNOjldK
+         1gbvIiMzXX9YpNmBaVOGaWIy6t4Zfk0ZYJsMbKDXTCF5jHwE88BqF6uof9cf8Jpe0hmH
+         ky4w==
+X-Gm-Message-State: ANoB5plzYycNHCQ+Up/dwTnnqxKmxmsOj+Chv1nhKoF0N6OeK5umXwuF
+        KC7C4VK7bvy3cT1nqHh7k5DJNQi5dLx23dLJLwgZ
+X-Google-Smtp-Source: AA0mqf5oXxU0ECvnjTunMRmFWA1TxmhY0Ow0+3ziM4fHMNKpMBbH7TE9PAAThMh3ftz2zdNo1g0IW0mEOYT4tG7RXWc=
+X-Received: by 2002:a17:90a:4596:b0:1fd:5b5d:f09d with SMTP id
+ v22-20020a17090a459600b001fd5b5df09dmr5820235pjg.69.1668636256527; Wed, 16
+ Nov 2022 14:04:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
- <c7e9bbf45b2d52253fec16525645bda0887a9cf9.camel@intel.com>
- <CAPhsuW7H95hUUCGEk9etwTT8kYRCKCtD6Lo+8WxHUyGTKSyEFA@mail.gmail.com>
- <4bf1a1377ea39f287a4fd438d81f314d261f7d7f.camel@intel.com>
- <CAPhsuW60U0n-szdD9AO214zk5GHscZ6jnxBoh7_HBcfYw6fdSQ@mail.gmail.com> <a69ceba66135b0713c29a49fe84751274fefd722.camel@intel.com>
-In-Reply-To: <a69ceba66135b0713c29a49fe84751274fefd722.camel@intel.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 16 Nov 2022 14:03:46 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW52hvrHiDx2aKFEbkumD7bYCYOfv97Q0JraJT47y4D8fw@mail.gmail.com>
-Message-ID: <CAPhsuW52hvrHiDx2aKFEbkumD7bYCYOfv97Q0JraJT47y4D8fw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
+References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
+ <20221115175652.3836811-4-roberto.sassu@huaweicloud.com> <CAHC9VhTA7SgFnTFGNxOGW38WSkWu7GSizBmNz=TuazUR4R_jUg@mail.gmail.com>
+ <83cbff40f16a46e733a877d499b904cdf06949b6.camel@huaweicloud.com>
+In-Reply-To: <83cbff40f16a46e733a877d499b904cdf06949b6.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 16 Nov 2022 17:04:05 -0500
+Message-ID: <CAHC9VhRX0J8Z61_fH9T5O1ZpRQWSppQekxP8unJqStHuTwQkLQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 3/4] lsm: Redefine LSM_HOOK() macro to add return
+ value flags as argument
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, revest@chromium.org,
+        jackmanb@chromium.org, jmorris@namei.org, serge@hallyn.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 1:22 PM Edgecombe, Rick P
-<rick.p.edgecombe@intel.com> wrote:
->
-> On Tue, 2022-11-15 at 17:20 -0800, Song Liu wrote:
-> > To clarify, are you suggesting we need this logic in this set? I
-> > would
-> > rather wait until we handle module code. This is because BPF JIT uses
-> > module_alloc() for archs other than x86_64. So the fall back of
-> > execmem_alloc() for these archs would be module_alloc() or
-> > something similar. I think it is really weird to do something like
+On Wed, Nov 16, 2022 at 3:11 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Tue, 2022-11-15 at 21:27 -0500, Paul Moore wrote:
+> > On Tue, Nov 15, 2022 at 12:58 PM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > >
+> > > Define four return value flags (LSM_RET_NEG, LSM_RET_ZERO, LSM_RET_ONE,
+> > > LSM_RET_GT_ONE), one for each interval of interest (< 0, = 0, = 1, > 1).
+> > >
+> > > Redefine the LSM_HOOK() macro to add return value flags as argument, and
+> > > set the correct flags for each LSM hook.
+> > >
+> > > Implementors of new LSM hooks should do the same as well.
+> > >
+> > > Cc: stable@vger.kernel.org # 5.7.x
+> > > Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  include/linux/bpf_lsm.h       |   2 +-
+> > >  include/linux/lsm_hook_defs.h | 779 ++++++++++++++++++++--------------
+> > >  include/linux/lsm_hooks.h     |   9 +-
+> > >  kernel/bpf/bpf_lsm.c          |   5 +-
+> > >  security/bpf/hooks.c          |   2 +-
+> > >  security/security.c           |   4 +-
+> > >  6 files changed, 466 insertions(+), 335 deletions(-)
 > >
-> > void *execmem_alloc(size_t size)
-> > {
-> > #ifdef CONFIG_SUPPORT_EXECMEM_ALLOC
-> >     ...
-> > #else
-> >     return module_alloc(size);
-> > #endif
-> > }
-> >
-> > WDYT?
+> > Just a quick note here that even if we wanted to do something like
+> > this, it is absolutely not -stable kernel material.  No way.
 >
-> Hmm, that is a good point. It looks like it's plugged in backwards.
+> I was unsure about that. We need a proper fix for this issue that needs
+> to be backported to some kernels. I saw this more like a dependency.
+> But I agree with you that it would be unlikely that this patch is
+> applied to stable kernels.
 >
-> Several people in the past have expressed that all the text users
-> calling into *module*_alloc() also is a little wrong. So I think in
-> some finished future, each architecture would have an execmem_alloc()
-> arch breakout of some sort that modules could use instead of it's
-> module_alloc() logic. So basically all the module_alloc() arch
-> specifics details of location and PAGE_FOO would move to execmem.
->
-> I guess the question is how to get there. Calling into module_alloc()
-> does the job but looks wrong. There are a lot of module_alloc()s, but
-> what about implementing an execmem_alloc() for each bpf jit
-> architecture that doesn't match the existing default version. It
-> shouldn't be too much code. I think some of them will work with just
-> the  EXEC_MEM_START/END heuristic and wont need a breakout.
->
-> But if this thing just works for x86 BPF JITs, I'm not sure we can say
-> we have unified anything...
+> For stable kernels, what it would be the proper way? We still need to
+> maintain an allow list of functions that allow a positive return value,
+> at least. Should it be in the eBPF code only?
 
-powerpc BPF JIT is getting bpf_prog_pack soon. [1] And we should
-be able to make ftrace and BPF trampoline to use execmem_alloc
-soon after this set is merged. AFAICT, we don't have to finalize the
-API until we handle module text. I personally think current API is
-good enough for ftrace and BPF trampoline, which already use
-something similar to JIT.
+Ideally the fix for -stable is the same as what is done for Linus'
+kernel (ignoring backport fuzzing), so I would wait and see how that
+ends up first.  However, if the patchset for Linus' tree is
+particularly large and touches a lot of code, you may need to work on
+something a bit more targeted to the specific problem.  I tend to be
+more conservative than most kernel devs when it comes to -stable
+patches, but if you can't backport the main upstream patchset, smaller
+(both in terms of impact and lines changed) is almost always better.
 
-Thanks,
-Song
-
-[1] https://lore.kernel.org/bpf/20221110184303.393179-1-hbathini@linux.ibm.com/
+-- 
+paul-moore.com
