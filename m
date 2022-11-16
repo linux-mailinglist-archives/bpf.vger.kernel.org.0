@@ -2,208 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D705F62CE01
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE4C62CE00
 	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbiKPWrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 17:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
+        id S233973AbiKPWrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 17:47:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238876AbiKPWqw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:46:52 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57796DCDD
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:46:46 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id ci1-20020a17090afc8100b00212e5b4c3afso3887pjb.3
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ECsizzUPW5YOb7oAQXRNb+Xilf4/6y3zdt9/ywk2ZNg=;
-        b=qNC0+/AKAGeX7QXSDmOijuSzD2DiyM9sVGtBjQ1/WbBZTIsLX7UfefxzoDCmh+c0FV
-         kKc+5FpNGTnvySO8PwEYHs/O0o1wL5InFD6wxutOJ3qHyn+G8ABP2WOOLpgW6maSPeez
-         K/ln6bD+PAEyrmoUp3sHHwJ/aho+eRdjcfkYfBlqmco+sQEio9Yz5txQeXR3hSbcDetU
-         nc1vOiKMDCBFO/LfQcRoC7WHtMmYfbK1k9pfB4UuIPj2xZS9qebD8XgvQEoDEu8juXoV
-         /iMZDiObHA4YlXBjtHUtb5UySCVZGgNaU7ke3DjhIdaDWDnzybrAUTwkHZJtvH+maS4S
-         ZAZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ECsizzUPW5YOb7oAQXRNb+Xilf4/6y3zdt9/ywk2ZNg=;
-        b=qkqE+lehBxK/VtCOBEhX3jU12xIqfBh3nDttuWlGPNfGAn4Lp7nfqy71kT7fGP6FJF
-         NF6oav7yhUOn2+NsNyshxtVU8LS4/PVmS6t5CqYk9+z6XDc78abhVL3n72LnOLb/nsqz
-         jLooJL+ac3gJ9+uUDH37mHTr0aKUFUUOVd7RY02Q5AWL36nWIPtBMXzHwtlKW6bPGSfY
-         MDL4Y4yYxwcJ3k8Dc/JyVt1EVfP7yf79VDdar7jSXD2wGV5qnAMOhC3mzNv69asewwF6
-         KnfzJUACGyjZqEbp7OeMLFq6NhDHJro5tXE4KD5Iq1g0ntZTBKgt/kQQplcDaSIFNzNm
-         vLQg==
-X-Gm-Message-State: ANoB5pn7GTDxEgWQuXi/+mzWxapY+ti8kzVb0byRpoJpDhB07rvlb5Fq
-        OS4TckuezL0djcQ+CQjkhbPRXvK2Bc7I
-X-Google-Smtp-Source: AA0mqf6KCza6YCJzHP2PSBWkF/0xN8AVuNgjgtwg5BZnmY6GxKCZQaTel+e7L2cemRPEQEZbcitL1gMfHocZ
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:c14c:6035:5882:8faa])
- (user=irogers job=sendgmr) by 2002:a05:6a00:1696:b0:571:2b7c:6693 with SMTP
- id k22-20020a056a00169600b005712b7c6693mr145885pfc.48.1668638806175; Wed, 16
- Nov 2022 14:46:46 -0800 (PST)
-Date:   Wed, 16 Nov 2022 14:46:31 -0800
-Message-Id: <20221116224631.207631-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Subject: [PATCH] perf build: Fix LIBTRACEEVENT_DYNAMIC
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S239162AbiKPWrK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:47:10 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B1A2B2
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:47:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668638829; x=1700174829;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=q9zI4yjh0fq8Bl8sxDnj94F31htDS6HIgSDhvL/g4iY=;
+  b=J3Gu8/4Hwy0rnOAwGLOA3aVeaf/qc9gKqO05C2Ydesw4Y3rzN2jDHoit
+   zxBPKD6f4l3kcfePwL5kHUbSx/bcg7QGLsaVH/m03fXbGZL39PCnb8SpJ
+   XM9CgRna1/b4kbMppjFsA5biLrzURp0Rff32qPJjNvoQj/rORo2/kVvdb
+   Sb8duuSZVZ/19mm1hjAagG+PzD5Vq9VfbnASKV+X3IJfsppVvuTwImCGI
+   G93hiTt98OvRfpZotbyZMY+G7cIVDht2rKhBfVDKPbHmk8OnDT6D74Cuq
+   +FkoctxCaBAp0BPUIJtl1TKo/kGcAl/yaHHBvjtHrjKQ1R9zKeABLmzpM
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="293084550"
+X-IronPort-AV: E=Sophos;i="5.96,169,1665471600"; 
+   d="scan'208";a="293084550"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2022 14:47:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="590368702"
+X-IronPort-AV: E=Sophos;i="5.96,169,1665471600"; 
+   d="scan'208";a="590368702"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga003.jf.intel.com with ESMTP; 16 Nov 2022 14:47:08 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 16 Nov 2022 14:47:08 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 16 Nov 2022 14:47:07 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Wed, 16 Nov 2022 14:47:07 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Wed, 16 Nov 2022 14:47:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h6pROMQZz7E7upCpi6xMfRfLBjnVMbGbeC9OLlxFtWs5SJZlhS7SWZjsACWgO/jmMz4Ml6JO8WSDcBGJXLGgQstGwK6woe9wt+yiNulSG+5Rig7biSmGHeG1SbJQDvzJrjeM/UBF31G2KKKadhfZN9HObH8+wHqP6jfetlfqF+xVES9XSE2T51ZvffBVXyuZ0DNI8cY/CgOCiEXjWW02MXEpnUBc0Z7GviL/Z0XTfRrS8GGzpEcr4hcwFMJi+flCA/XKIZy5n0T6YICa6WcHehnwoQX+5un8HGMlCS8ubG4pir5bfH7sXEMwYgyaXTOf2jrnqrC0jQFz2bVY94BrYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q9zI4yjh0fq8Bl8sxDnj94F31htDS6HIgSDhvL/g4iY=;
+ b=bVoxrNLlGxqyxjmsfUFsoFdZ4HlJVoaaIzR7SPqRngOUFW/pSa59kU3sf50XUGEKhBz0xiwyUA2fnzME13rHNM1VrwlXmP+rOcaubxhPdEsoNHecqJcWvR6S2eA3cqRu2+HvBvTKSt9BbBx9qgJ6vlZQ2tavPpIo37t8akpy8QuPvHrgQXDVi3GC7OAMWiRyXmX2Q7ehoEfIWzCXbLKwJjF2ph8YCQGK0t6IBBX75U4XdoHlD7VJB5DMcgUAWe9IzeEiaHWojobB0MyK104G0Ed3bsYEWqcEzmHHJzPkWcK+XfOyr0upuUtuSYyvx/0Ad6WjU0rGP7hka6gqeiR21g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com (2603:10b6:300:24::14)
+ by MN2PR11MB4677.namprd11.prod.outlook.com (2603:10b6:208:24e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Wed, 16 Nov
+ 2022 22:47:05 +0000
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::add7:df23:7f86:ecf3]) by MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::add7:df23:7f86:ecf3%5]) with mapi id 15.20.5813.018; Wed, 16 Nov 2022
+ 22:47:04 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "song@kernel.org" <song@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Lu, Aaron" <aaron.lu@intel.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+Thread-Topic: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+Thread-Index: AQHY8vohJKeDurB03UipOT/gu9SMC64/PciAgAFJQwCAABumgIABjkqAgAADwYA=
+Date:   Wed, 16 Nov 2022 22:47:04 +0000
+Message-ID: <cea2f9f81db0a5db9cdc1ed9089454ddbd28541b.camel@intel.com>
+References: <20221107223921.3451913-1-song@kernel.org>
+         <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
+         <Y3P/9DXAjKhmoIvm@bombadil.infradead.org>
+         <CAPhsuW4_aYvPJUfCBkMygKPpHx7Y3xPCV7ewLGGAhyztJq3dhA@mail.gmail.com>
+         <Y3VlQcsiEi273S+n@bombadil.infradead.org>
+In-Reply-To: <Y3VlQcsiEi273S+n@bombadil.infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB1392:EE_|MN2PR11MB4677:EE_
+x-ms-office365-filtering-correlation-id: d346ce04-03e7-41be-7ba3-08dac8247bbe
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o6EJTxJUdca7NNywcRCP6oBxgRWRCW2287xPLJcCww+VNtgVKrTNuY8HndQhKzz5ApAcE0fwMUyTArP0CPt+Lf7DHeVMYtusklwmt40zH2YUsQ+6Z5KTipHSo85cjLsilOSV70+NmASXzzew2VREKa7XjzkvssuZILMLVCx4JVTeqIL6OBa6ijK3keRCO6/nXmTmpMkqzE+rFk4dtgieE261WmW1S8NHESDJXoUu6rtkjqT/hmcyB0t3GrhBNFa12GurMq8gkKa0j4Enecl7sl+I8MvOzlSLQeYTawKnuYKMy2xlOL+IaahxNxnZZ4gKlSqZFr9idVXLGRcPDaAOc14Ae39SN7x+j1aJfT3PJSR/bxAijuj7zU/9ZpjloF9PXx4eeM3VFRRqjdpCqFUaG9kPl6ETA0HHPqVZ6o2ZL+MUR8ff7pJm57E5QGTgHkVnKF1Y/T7XuIsSeTXKNUuOARJGEwhINxWoIUqnE/vlUKMMbUAmK59gK8K9UuIE8kNce37ABY4n4KlkT3FMQWiZqXCSMtATy9yTJAP5IgdHcSwEc2QwOIHRruJ2UREPenDMAJ1T5ySR/hRtfYc7Mg8Z41DTB54c/k+Zg5bjOOltKPogtnDA3I+G+ueGinxCnHyLfet75u/DnV53yHBOsT4WKhO8vJXVnioKsBr6YoE2wK/pBZydMEKTiMqe1WoXUiEZX+1jix0J/hj2MIOwEviOp/mPNh89p4w3xS5secdWgQZvXWCaZ+0egCdO68FS8935VFFFQQ7MxREPR2u8azxuQYnD43KEGpgb3m4bKrIp++5Cxh7pcpCiDE+PLislH7DPi42WQKwD412Jp0zKLVvokw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(396003)(366004)(136003)(346002)(376002)(451199015)(6512007)(66556008)(26005)(316002)(91956017)(66946007)(186003)(76116006)(8936002)(66476007)(66446008)(2616005)(8676002)(64756008)(41300700001)(4326008)(36756003)(110136005)(54906003)(6506007)(4001150100001)(86362001)(2906002)(82960400001)(38070700005)(38100700002)(5660300002)(122000001)(107886003)(966005)(6486002)(71200400001)(478600001)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VWhUT2JjWWxRSGdzSCtHTWlXUjJQdE5WQzhMcUs5b0ZSMXRNV3k3TDhYTHEx?=
+ =?utf-8?B?ZVRFTDUzKzVuUzZTajJhWHlkcUI5ZWcyQVVId28yc3hmVE9QUXpGOWJYM0Fj?=
+ =?utf-8?B?ZGYvRURCeFdvRDFqM0tTYzUzOTVRVzZ6QlVudFN5VzNPN3NQQlZnZHg2NkQ3?=
+ =?utf-8?B?T3l2Z1ROUE52NmIwZGsvSm05SDUreUUrTVFOV2dIMHhUS0ZSbFV4WkNIaW1p?=
+ =?utf-8?B?czYweTVreHJvMWdsbGwwaFdVYlA5L3RBTmh6Z1V2b2JVMmZtY0ttNHgvZGtU?=
+ =?utf-8?B?Ujg4d1VmZjJSelJ6dXF0cGNqLzB0MlJ4TWRWUmpDZTdmT0kyUng5SlhQYUtv?=
+ =?utf-8?B?Y2VzSkp3NU5KQkRidCtSeEdaOUNvYkIxMlVDL2JyY1pTcDVkVzNKQkc0VEVs?=
+ =?utf-8?B?TUF2K24vTzdINDduN1NNZ3NzdDcyaGdnNTEvYlo2Yzc0ZStIUmdNNHA3c0Nu?=
+ =?utf-8?B?QVBMd0lNTEo1SE1pT2pVNHNTTnRpbnhMRDRQZlAydzYremR1VEdwTEVLQjEw?=
+ =?utf-8?B?bFlPbUdTM1dBR09ONjJTUDUxOWlXQjVKc0x1MWpoVmhZMC9tQXc1VU5PWTVp?=
+ =?utf-8?B?aHE2QlhFUm4yOFlJYTB4WVB4OHZ4MWp2YkJ3bGV6ZDIybUZ5YU01TktrSTZP?=
+ =?utf-8?B?bDNUK0JUZDF2SFZ3cE5MSTdONk9QYW5lWGRneEs5Q0pkNWs5dFp5SkNVL1Vj?=
+ =?utf-8?B?R2hsWWgvNkZOWlVIWmNXcmg0UE5QVEhYRHNhVTdWbUpVZ0NTM04zbnFNZk1Z?=
+ =?utf-8?B?TEdCcWR0TzFUb3dnSWROUllBZnY5OVBISXNTbnpkMStETDVhTkxWS2NWMVpx?=
+ =?utf-8?B?bTRKb1BxOHBVSmJQNzVjS05SL1RXMXFJckdsR2ZSYlZzcDZwZU1zVTlHcFZI?=
+ =?utf-8?B?N2RoSmtuK3d0RGh1T280WHJ0Nk5iUFpOMW44UFU0aXZWQlZEL1VBbG0vZVpx?=
+ =?utf-8?B?cVRlWG5STFFVTDErd0JvclkzTDRFcmVVNW1hUm00YjlXeWRQWE5yLzVqUUpx?=
+ =?utf-8?B?Q25uTy9wM2dtNFMzaWtpQUxtTGZON0t2eWhYbGtTaDltNzZqcGdpc21mdDhu?=
+ =?utf-8?B?RUdQcG5WdUZncitZcnVFYlZjS3o0bGpuUFVscUVwbnFoVzNZeXh0d0U4RjU1?=
+ =?utf-8?B?eFNBdUNNS0xWTFg4eVZqZUo5dzR4SG8zR25PNmUwUDNWSHdwMlpvMDArT0Fn?=
+ =?utf-8?B?dnJSYmNnbHlmdHEzNitIUC9iOVd4TlpQaURHZWtRN1BhQ3IrckF2OG5wRTNY?=
+ =?utf-8?B?MVdrOGpYbUd6QzI1Qk03WTYzZ0hFcjdHSWhtditLWmRWelhISy96cEM3VVR3?=
+ =?utf-8?B?TDFtckNOUWNkcGY2cDgxT3F3YVFuT09hZmRIVzJ3T1QvVGNuamIxY1M1ZENt?=
+ =?utf-8?B?WUtNQnAzb3JWQ2xrTGllS09JZlJVMDlaL0N5NTh0UE54ZWRHS1RYK2RsSzh5?=
+ =?utf-8?B?SHNwYWdqbnRZUmFjNjVKK0NJbzdaeWg0N3NVOUFIRXhvTFNVOHdxUjZOY1NP?=
+ =?utf-8?B?VHlRUGZXSE1sdGNsa2VheWpwRkxUZk9qMU1mSEpIYVZzOFpQeXpFWmYxOGZm?=
+ =?utf-8?B?alRVa0FFOU9NZURZWE44bzhDTERXcnBuK3VuU3hCaStDSWluZ3VqWHcxRTY5?=
+ =?utf-8?B?bVhzMmp5K1NiNFRXQnpnY29wcW9FTzc0eHhWK1d1azRLQldCNkVaOFdMTEJB?=
+ =?utf-8?B?bWFoWnJSOGpWOGNmVjhZZ2Vta2tHdmxkZDZHYTFGUVFnc1Bwd2VoajZ6N213?=
+ =?utf-8?B?b0NuZkxXM2twV1JuQk1ZUWJKSnlmSDlpVmY0VG9YOGJ2WEg0YWdjS0NaSEFp?=
+ =?utf-8?B?MVNMTGFvckt0Z2ttMzFDRnRDenJwd1Q4NTd5cDlmZGZTRHRjb1VyK3pKY3hS?=
+ =?utf-8?B?b2M3blc4bHdCbnN6bG01SXdFblFoRGlFYlJpS2xyRk11YXE4aXY2RDk1NnQ2?=
+ =?utf-8?B?UFZweE1WalJ5QzVFTGpyWVN1YTJKNGkzck9JekhDd25rWFVRaWx0NC9BdGc5?=
+ =?utf-8?B?UGFRYm4raE5HZ2l5c3dyVEdzcFpqT0Fqb3ZwcjBURC9KOTZZUngzSFBVQ050?=
+ =?utf-8?B?MHAvMXh6V091Z3FiakZDYkZhdktGYTFjZy9MV2dyN3JZcmhGRE4xOWJkeWZK?=
+ =?utf-8?B?bW0vV2h3Ui9TSzhadDZiakdGUUgyZVhhUmo5R0xkVHVzY3U4VVBCWXZKWGJH?=
+ =?utf-8?Q?T9yFSvdBKlT9C4e8tHIy5jE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A8C55217D0EA144597454ACEF57355BA@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d346ce04-03e7-41be-7ba3-08dac8247bbe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2022 22:47:04.6336
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MD2b5D1hDeZQuEa6QmWLNdKcH4CKSdV5DDLvfufw0Tlr9gdN8uMN8lXM7lwfSFBw9gckTD3HoeBaTRm2xg5vcQgOycf7xQfeeAXnKMOfhts=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4677
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The tools/lib includes fixes break LIBTRACEVENT_DYNAMIC as the
-makefile erroneously had depdendencies on building libtraceevent even
-when not linking with it. This change fixes the issues with
-LIBTRACEEVENT_DYNAMIC by making the built files optional.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Makefile.perf | 25 ++++++++++++++++++++++---
- tools/perf/util/setup.py |  3 ++-
- 2 files changed, 24 insertions(+), 4 deletions(-)
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index dd096aba4430..59c4e8f9b014 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -242,8 +242,10 @@ sub-make: fixdep
- else # force_fixdep
- 
- LIBAPI_DIR      = $(srctree)/tools/lib/api/
-+ifndef LIBTRACEEVENT_DYNAMIC
- LIBTRACEEVENT_DIR = $(srctree)/tools/lib/traceevent/
- LIBTRACEEVENT_PLUGINS_DIR = $(LIBTRACEEVENT_DIR)/plugins
-+endif
- LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
- LIBSUBCMD_DIR   = $(srctree)/tools/lib/subcmd/
- LIBSYMBOL_DIR   = $(srctree)/tools/lib/symbol/
-@@ -293,6 +295,7 @@ SCRIPT_SH += perf-iostat.sh
- grep-libs = $(filter -l%,$(1))
- strip-libs = $(filter-out -l%,$(1))
- 
-+ifndef LIBTRACEEVENT_DYNAMIC
- ifneq ($(OUTPUT),)
-   LIBTRACEEVENT_OUTPUT = $(abspath $(OUTPUT))/libtraceevent
- else
-@@ -306,13 +309,16 @@ LIBTRACEEVENT = $(LIBTRACEEVENT_OUTPUT)/libtraceevent.a
- export LIBTRACEEVENT
- LIBTRACEEVENT_DYNAMIC_LIST = $(LIBTRACEEVENT_PLUGINS_OUTPUT)/libtraceevent-dynamic-list
- CFLAGS += -I$(LIBTRACEEVENT_OUTPUT)/include
--
- #
- # The static build has no dynsym table, so this does not work for
- # static build. Looks like linker starts to scream about that now
- # (in Fedora 26) so we need to switch it off for static build.
- DYNAMIC_LIST_LDFLAGS               = -Xlinker --dynamic-list=$(LIBTRACEEVENT_DYNAMIC_LIST)
- LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DYNAMIC_LIST_LDFLAGS))
-+else
-+LIBTRACEEVENT_DYNAMIC_LIST =
-+LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS =
-+endif
- 
- ifneq ($(OUTPUT),)
-   LIBAPI_OUTPUT = $(abspath $(OUTPUT))/libapi
-@@ -375,7 +381,11 @@ export PYTHON_EXTBUILD_LIB PYTHON_EXTBUILD_TMP
- python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT)python/perf*.so
- 
- PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
-+ifndef LIBTRACEEVENT_DYNAMIC
- PYTHON_EXT_DEPS := util/python-ext-sources util/setup.py $(LIBTRACEEVENT) $(LIBAPI)
-+else
-+PYTHON_EXT_DEPS := util/python-ext-sources util/setup.py $(LIBAPI)
-+endif
- 
- SCRIPTS = $(patsubst %.sh,%,$(SCRIPT_SH))
- 
-@@ -785,9 +795,12 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
- 	$(LIBPERF) \
- 	$(LIBSUBCMD) \
- 	$(LIBSYMBOL) \
--	$(LIBTRACEEVENT) \
- 	bpf-skel
- 
-+ifndef LIBTRACEEVENT_DYNAMIC
-+prepare: $(LIBTRACEEVENT)
-+endif
-+
- $(OUTPUT)%.o: %.c prepare FORCE
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(build-dir) $@
- 
-@@ -843,6 +856,7 @@ endif
- 
- $(patsubst perf-%,%.o,$(PROGRAMS)): $(wildcard */*.h)
- 
-+ifndef LIBTRACEEVENT_DYNAMIC
- LIBTRACEEVENT_FLAGS += plugin_dir=$(plugindir_SQ) 'EXTRA_CFLAGS=$(EXTRA_CFLAGS)' 'LDFLAGS=$(filter-out -static,$(LDFLAGS))'
- 
- $(LIBTRACEEVENT): FORCE | $(LIBTRACEEVENT_OUTPUT)
-@@ -872,6 +886,7 @@ install-traceevent-plugins: libtraceevent_plugins
- 	$(Q)$(MAKE) -C $(LIBTRACEEVENT_PLUGINS_DIR) O=$(LIBTRACEEVENT_PLUGINS_OUTPUT) \
- 		DESTDIR=$(LIBTRACEEVENT_PLUGINS_DESTDIR) prefix= \
- 		$(LIBTRACEEVENT_FLAGS) install
-+endif
- 
- $(LIBAPI): FORCE | $(LIBAPI_OUTPUT)
- 	$(Q)$(MAKE) -C $(LIBAPI_DIR) O=$(LIBAPI_OUTPUT) \
-@@ -1152,7 +1167,7 @@ endif # BUILD_BPF_SKEL
- bpf-skel-clean:
- 	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
- 
--clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean fixdep-clean python-clean bpf-skel-clean tests-coresight-targets-clean libtraceevent_plugins-clean
-+clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean fixdep-clean python-clean bpf-skel-clean tests-coresight-targets-clean
- 	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive $(OUTPUT)perf-iostat $(LANG_BINDINGS)
- 	$(Q)find $(or $(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
- 	$(Q)$(RM) $(OUTPUT).config-detected
-@@ -1192,6 +1207,10 @@ clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clea
- 	$(call QUIET_CLEAN, Documentation) \
- 	$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) clean >/dev/null
- 
-+ifndef LIBTRACEEVENT_DYNAMIC
-+clean:: $(LIBTRACEEVENT)-clean libtraceevent_plugins-clean
-+endif
-+
- #
- # To provide FEATURE-DUMP into $(FEATURE_DUMP_COPY)
- # file if defined, with no further action.
-diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
-index 5b1e6468d5e8..43e7ca40b2ec 100644
---- a/tools/perf/util/setup.py
-+++ b/tools/perf/util/setup.py
-@@ -77,7 +77,8 @@ perf = Extension('perf',
- 		  include_dirs = ['util/include'],
- 		  libraries = extra_libraries,
- 		  extra_compile_args = cflags,
--		  extra_objects = [libtraceevent, libapikfs, libperf],
-+		  extra_objects = [ x for x in [libtraceevent, libapikfs, libperf]
-+                                    if x is not None],
-                  )
- 
- setup(name='perf',
--- 
-2.38.1.431.g37b22c650d-goog
-
+T24gV2VkLCAyMDIyLTExLTE2IGF0IDE0OjMzIC0wODAwLCBMdWlzIENoYW1iZXJsYWluIHdyb3Rl
+Og0KPiBNb3JlIGluIGxpbmVzIHdpdGggd2hhdCBJIHdhcyBob3BpbmcgZm9yLiBDYW4gc29tZXRo
+aW5nIGp1c3QgZG8NCj4gdGhlIHBhcmFsbGVsaXphdGlvbiBmb3IgeW91IGluIG9uZSBzaG90PyBD
+YW4gYmVuY2ggYWxvbmUgZG8gaXQgZm9yDQo+IHlvdT8NCj4gSXMgdGhlcmUgbm8gaW50ZXJlc3Qg
+dG8gaGF2ZSBzb2VtdGhpbmcgd2hpY2ggZ2VuZXJpY2FsbHkgc2hvd2Nhc2VzDQo+IG11bHRpdGhy
+ZWFkaW5nIC8gaGFtbWVyaW5nIGEgc3lzdGVtIHdpdGggdG9ucyBvZiBlQlBGIEpJVHM/IEl0IG1h
+eQ0KPiBwcm92ZSB1c2VmdWwuDQo+IA0KPiBBbmQgYWxzbywgaXQgYmVncyB0aGUgcXVlc3Rpb24s
+IHdoYXQgaWYgeW91IGhhZCBhbm90aGVyIGlUTEIgZ2VuZXJpYw0KPiBiZW5jaG1hcmsgb3IgZ2Vu
+ZWFybCBtZW1vcnkgcHJlc3N1cmUgd29ya2xvYWQgcnVubmluZyAqYXMqIHlvdSBydW4NCj4gdGhl
+DQo+IGFib3ZlPyBJIGFzLCBhcyBpdCB3YXMgbXkgdW5kZXJzdGFuZGluZyB0aGF0IG9uZSBvZiB0
+aGUgaXNzdWVzIHdhcw0KPiB0aGUNCj4gbG9uZyB0ZXJtIHNsb3dkb3duIGNhdXNlZCBieSB0aGUg
+ZGlyZWN0bWFwIGZyYWdtZW50YXRpb24gd2l0aG91dA0KPiBicGZfcHJvZ19wYWNrLCBhbmQgc28g
+c3VjaCBhbiBhcHBsaWNhdGlvbiBzaG91bGQgY3Jhd2wgdG8gaXRzIGtuZWVzDQo+IG92ZXIgdGlt
+ZSwgYW5kIHRoZXJlIHNob3VsZCBiZSBudW1iZXJzIHlvdSBjb3VsZCBzaG93IHRvIHByb3ZlIHRo
+YXQNCj4gdG9vLCBiZWZvcmUgYW5kIGFmdGVyLg0KDQpXZSBkaWQgaGF2ZSBzb21lIGJlbmNobWFy
+a3MgdGhhdCBzaG93ZWQgaWYgeW91ciBkaXJlY3QgbWFwIHdhcyB0b3RhbGx5DQpmcmFnbWVudGVk
+IChzdGFydGVkIGZyb20gYm9vdCBhdCA0ayBwYWdlIHNpemUpIHdoYXQgdGhlIHJlZ3Jlc3Npb24g
+d2FzOg0KDQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW1tLzIxM2I0NTY3LTQ2Y2Ut
+ZjExNi05Y2RmLWJiZDBjODg0ZWIzY0BsaW51eC5pbnRlbC5jb20vDQoNCg==
