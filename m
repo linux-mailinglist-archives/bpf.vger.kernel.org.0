@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816E962B120
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 03:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CB162B13B
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 03:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbiKPCMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Nov 2022 21:12:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
+        id S230343AbiKPCXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Nov 2022 21:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbiKPCL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Nov 2022 21:11:56 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B463A4
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:11:54 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v17so15137353plo.1
-        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:11:54 -0800 (PST)
+        with ESMTP id S230238AbiKPCXP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Nov 2022 21:23:15 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8182FC06
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:23:15 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id m6-20020a17090a5a4600b00212f8dffec9so1080371pji.0
+        for <bpf@vger.kernel.org>; Tue, 15 Nov 2022 18:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KlG4izqruLI+eVPwVb56QneDoxM3cuNDHZ53g4ubPvM=;
-        b=Ak9MCLAvA2GBPRXf0QBz6QKrrowDoM9d1dTD+sXsUAWbcp+kpQheB6n2mD1QlNNrfF
-         FNfgRgVZY6B5+u0zmvXEYLoKORqQZh0IpXnG8CayJQ7ElwlsJOw5J+fGhTJHt9lO5B6G
-         X9skKmfj5EQhfW2pDH63UN37Ub+EphKq4h+3t2sK0+PyIJKn9ICzFwKFwMd0gmdeYehb
-         0WulDrrj+hUyycJkydMEdIpc+y/CkeKcRsCHlOoo96aak/WwMhB/Tn542xGRMx00reEI
-         sJFjrxgOtZS1lemrcrZkR69bdc65tFvLq8CBRUcwXAt8QOEoehFQ9ovUQUcdnnrzIN+O
-         rkpA==
+        bh=J4P5R+pdJzfRaQ+AiQYGJf7nLDcFIhpzWyHRJ4pEd7k=;
+        b=0xeei+KEJma8+7bCjJrBSqZjdASMgcsxxs7iBDy5axKbfmOawgDdQntBJX9iA0y3Ge
+         G6Gy1lMN7tVXY2Erbb76siigFkxaswLs7VYRgoTjaGshahNNjOqjwx5v5wJRytpY8Xd5
+         tVNEa2x58PhBlszKhe0120hr6QLpbK0xrUE9DHxnKTjbryjEExS+/FQTTo2Y+MwW4JxO
+         YmtV7aKAch9dQQBlV4USkMttE26WXWzNrXEvNs0Fpp/ejI47FEjJXb3CdRF93FhNYge2
+         hGhEO1az74j7uWL6nd2Nd1m458v15dGCsAYKs7BvVaZHg8M+3N1enW67CqhgyJLVbLv8
+         SdKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KlG4izqruLI+eVPwVb56QneDoxM3cuNDHZ53g4ubPvM=;
-        b=bLHRH6I/nOJpEb1QMDQU8LC/ejQ1KaEOkf8tfcnbjc5tZegRr9i27Z8Op4atw0kJn8
-         GSrg6AJBoTvXumJH7XZIjd/fgel/P7mxb+8SxdsE/QQyS/KGakxb4BHHGUAioiTW8NjY
-         k44j7xNw4SnfJRZ+3PqV3n/RB2acAOm/sXWFQF2YMw0r9dzAZxBmjn3TWDPQ54vUgukO
-         1HQ8qaOVCNjpfHl4j3Yxo9D/saBERUf91SMUsFxt8dTfXApHnexh1OBlhdXBa931mlyG
-         EEOKanBsdV523Nc6D066AucyjipBqT7DRKs64RwPuRrJptH0Isi4q8SIHzDQXVkllymf
-         HJ+Q==
-X-Gm-Message-State: ANoB5pm9ZXier3cGjRRSsoltZ6Xdcyy6ljY9ALUNSpUoRYCcA51N9LLU
-        MHcjlFdbJ7yjmT04LMXNCJM+XfvtQAjT/qhNNAlH
-X-Google-Smtp-Source: AA0mqf7co3DQZqD8OdQJKEOz+zPQP8Krnul8up1/TRUoFzIhYtr4pGe1QxnzuRC2rDaXkKuBQ9Hkzm6/dN0BeRSPgdo=
+        bh=J4P5R+pdJzfRaQ+AiQYGJf7nLDcFIhpzWyHRJ4pEd7k=;
+        b=bo/7QPYkFi86rpyHoij8NjFglY07ZPHbTMidAQuM0C2b5boEqV/kH13ws0LXnNVXPM
+         pcu4RRVDX2e/IYJgJkKbtjdDZ/kdm7+mgCu9xFOLOhuzUrmr6W6WG4VZSDC6ennmEJ+D
+         8ZPLErAmiH0CNBAP1mepI8drx5zGzNiYKZtqtSF/ydMArMIKnq4J8UAVtlLXREhsIFEl
+         2+8Fl360I/WAbjO5kzDO1Gkj+COg+92I50ZSgDIJcPermi6mrHRx9eov1vBNnEkrTpXq
+         9CbQZa/ighg2gsdTu6753pjDEgGjiXLnTdeDh2haK8OtslgBIiuj+Ke3wuQ4ydRWQR0o
+         +u2A==
+X-Gm-Message-State: ANoB5plkjG3Wn1/otQYRRTN8FalXlD+0IlQbGiKeGSqb4kleoY954HHM
+        nLMoAL+XXWXXsMkN5gluIYBkzipyGAbqeMaxe0m0
+X-Google-Smtp-Source: AA0mqf4tyxqZL6dNinYLGxLglLTMkXwHLPOJ0/bfZpgKfism41nxlS7vrc0NoFjHNkpVYJJZvklKnBS1D73LJ26ZaSs=
 X-Received: by 2002:a17:902:74c1:b0:186:c3b2:56d1 with SMTP id
- f1-20020a17090274c100b00186c3b256d1mr6809971plt.15.1668564714386; Tue, 15 Nov
- 2022 18:11:54 -0800 (PST)
+ f1-20020a17090274c100b00186c3b256d1mr6847477plt.15.1668565394715; Tue, 15 Nov
+ 2022 18:23:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com> <20221115175652.3836811-2-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20221115175652.3836811-2-roberto.sassu@huaweicloud.com>
+References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com> <20221115175652.3836811-3-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20221115175652.3836811-3-roberto.sassu@huaweicloud.com>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 15 Nov 2022 21:11:43 -0500
-Message-ID: <CAHC9VhQjnwbFgAoFgTaLQP7YnNDNyP1i0i8H++HZWj930pW=-A@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/4] lsm: Clarify documentation of vm_enough_memory hook
+Date:   Tue, 15 Nov 2022 21:23:03 -0500
+Message-ID: <CAHC9VhQjtU0DFoVGav-nBh-09QXh+X=Cf8RgJz6nAjvcyNQ-5A@mail.gmail.com>
+Subject: Re: [RFC][PATCH 2/4] lsm: Add missing return values doc in
+ lsm_hooks.h and fix formatting
 To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -76,34 +77,49 @@ On Tue, Nov 15, 2022 at 12:57 PM Roberto Sassu
 >
 > From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> include/linux/lsm_hooks.h reports the result of the LSM infrastructure to
-> the callers, not what LSMs should return to the LSM infrastructure.
+> Ensure that for non-void LSM hooks there is a description of the return
+> values. Also replace spaces with tab for indentation, remove empty lines
+> between the hook description and the list of parameters and add the period
+> at the end of the parameter description.
 >
-> Clarify that and add that returning 1 from the LSMs means calling
-> __vm_enough_memory() with cap_sys_admin set, 0 without.
+> Finally, replace the description of the sb_parse_opts_str hook, which was
+> removed with commit 757cbe597fe8 ("LSM: new method: ->sb_add_mnt_opt()"),
+> with one for the new hook sb_add_mnt_opt.
 >
 > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: KP Singh <kpsingh@kernel.org>
 > ---
->  include/linux/lsm_hooks.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
+>  include/linux/lsm_hooks.h | 123 ++++++++++++++++++++++++++------------
+>  1 file changed, 86 insertions(+), 37 deletions(-)
+
+...
+
 > diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> index 4ec80b96c22e..f40b82ca91e7 100644
+> index f40b82ca91e7..c0c570b7eabd 100644
 > --- a/include/linux/lsm_hooks.h
 > +++ b/include/linux/lsm_hooks.h
-> @@ -1411,7 +1411,9 @@
->   *     Check permissions for allocating a new virtual mapping.
->   *     @mm contains the mm struct it is being added to.
->   *     @pages contains the number of pages.
-> - *     Return 0 if permission is granted.
-> + *     Return 0 if permission is granted by LSMs to the caller. LSMs should
-> + *     return 1 if __vm_enough_memory() should be called with
-> + *     cap_sys_admin set, 0 if not.
+> @@ -176,18 +183,22 @@
+>   *     Set the security relevant mount options used for a superblock
+>   *     @sb the superblock to set security mount options for
+>   *     @opts binary data structure containing all lsm mount data
+> + *     Return 0 on success, error on failure.
+>   * @sb_clone_mnt_opts:
+>   *     Copy all security options from a given superblock to another
+>   *     @oldsb old superblock which contain information to clone
+>   *     @newsb new superblock which needs filled in
+> - * @sb_parse_opts_str:
+> - *     Parse a string of security data filling in the opts structure
+> - *     @options string containing all mount options known by the LSM
+> - *     @opts binary data structure usable by the LSM
+> + *     Return 0 on success, error on failure.
+> + * @add_mnt_opt:
+> + *     Add a new mount option @option with value @val and length @len to the
+> + *     existing mount options @mnt_opts.
+> + *     Return 0 if the option was successfully added, a negative value
+> + *     otherwise.
 
-I think this is a nice addition, but according to the code, any value
-greater than zero will trigger the caller-should-have-CAP_SYS_ADMIN
-behavior, not just 1.  I suggest updating the comment.
+I really appreciate the effort to improve the LSM hook comments/docs,
+but the "sb_add_mnt_opt" hook was removed in 52f982f00b22
+("security,selinux: remove security_add_mnt_opt()").
 
 -- 
 paul-moore.com
