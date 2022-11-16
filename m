@@ -2,170 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907A262CB2F
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 21:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62DB62CB47
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 21:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbiKPUiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 15:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S232557AbiKPUnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 15:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbiKPUiX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 15:38:23 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5C054B25
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 12:38:19 -0800 (PST)
-Message-ID: <b5540340-85a7-6809-5f37-1509bbf9a142@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668631098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qf/mHgNvS0KiJWIWsV+6vSt6su8Y3b9J+AP/1lILOLg=;
-        b=aH3eCZhS7JkWt0xyzO2GRbwO17pJLW2GqIYh3tKZWJEjMHXiGFgeRKejcPLBP+7YvDjkZn
-        JYraBA6SdpLSoHtkw9ZoQtFxHVEWxxAKMEQc2zRMIxp9lqE1UzBn74/Ly8nI4K6vqBN7y8
-        8V4YjAqrq8u2ewpyzElRZj/B1HvUufQ=
-Date:   Wed, 16 Nov 2022 12:38:13 -0800
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Make sure zero-len skbs
- aren't redirectable
-Content-Language: en-US
+        with ESMTP id S232097AbiKPUnB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 15:43:01 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD41D5A;
+        Wed, 16 Nov 2022 12:43:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5D87BB81EB5;
+        Wed, 16 Nov 2022 20:42:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B00CC433C1;
+        Wed, 16 Nov 2022 20:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668631378;
+        bh=2PSaNIlC/i6/awrIB1H4PHloF4KJB1K+tUqNH2kcX+A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yy5A5AFWR6yHlYe6iMP14PABCTzTHsnNYQMiYiDWM+vkG02/S9KzqdLnR75rI32B+
+         CXtvj97rBDdQjs7Y4naiwFkPpJxSFFboIRdSBsewFFidvJN9U9GugT0eSgsX7qrw4e
+         NcgSnwGdDxICrGMrEGs5dnEXmQI2wCLUKyQv+15rOgEEUHOuQXxTTUkAdmyAiLv/op
+         B9lVofNeS2v/pBtaDxvlci766xO/x/zDo2f2umLCLHJCU2IQaC6pcBechR/T3sjt9w
+         +o+wJEmHO/chrwZ54k6NH76eU9AYFrgJ5s3waAWVeWtxk0AFucIdAzWvWbZj7/3Yzr
+         a0SlNku7Tte9w==
+Date:   Wed, 16 Nov 2022 12:42:56 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org
-References: <20221115031031.3281094-1-sdf@google.com>
- <20221115031031.3281094-2-sdf@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221115031031.3281094-2-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 03/11] bpf: Support inlined/unrolled kfuncs for
+ xdp metadata
+Message-ID: <20221116124256.04a75fba@kernel.org>
+In-Reply-To: <20221115030210.3159213-4-sdf@google.com>
+References: <20221115030210.3159213-1-sdf@google.com>
+        <20221115030210.3159213-4-sdf@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/14/22 7:10 PM, Stanislav Fomichev wrote:
-> LWT_XMIT to test L3 case, TC to test L2 case.
+On Mon, 14 Nov 2022 19:02:02 -0800 Stanislav Fomichev wrote:
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 117e830cabb0..a2227f4f4a0b 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -9258,6 +9258,13 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+>  			return -EOPNOTSUPP;
+>  		}
+>  
+> +		if (new_prog &&
+> +		    new_prog->aux->xdp_kfunc_ndo &&
+> +		    new_prog->aux->xdp_kfunc_ndo != dev->netdev_ops) {
+> +			NL_SET_ERR_MSG(extack, "Cannot attach to a different target device");
+> +			return -EINVAL;
+> +		}
 
-It will be useful to add more details here to explain which test is testing the 
-skb->len check in __bpf_redirect_no_mac() and __bpf_redirect_common() in patch 1.
+This chunk can go up into the large
 
-> 
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   .../selftests/bpf/prog_tests/empty_skb.c      | 140 ++++++++++++++++++
->   tools/testing/selftests/bpf/progs/empty_skb.c |  37 +++++
->   2 files changed, 177 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/empty_skb.c
->   create mode 100644 tools/testing/selftests/bpf/progs/empty_skb.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-> new file mode 100644
-> index 000000000000..6e35739babed
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-> @@ -0,0 +1,140 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +#include <net/if.h>
-> +#include "empty_skb.skel.h"
-> +
-> +#define SYS(cmd) ({ \
-> +	if (!ASSERT_OK(system(cmd), (cmd))) \
-> +		goto out; \
-> +})
-> +
-> +void test_empty_skb(void)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, tattr);
-> +	struct empty_skb *bpf_obj = NULL;
-> +	struct nstoken *tok = NULL;
-> +	struct bpf_program *prog;
-> +	char eth_hlen_pp[15];
-> +	char eth_hlen[14];
-> +	int veth_ifindex;
-> +	int ipip_ifindex;
-> +	int err;
-> +	int i;
-> +
-> +	struct {
-> +		const char *msg;
-> +		const void *data_in;
-> +		__u32 data_size_in;
-> +		int *ifindex;
-> +		int err;
-> +		int ret;
-> +		bool success_on_tc;
-> +	} tests[] = {
-> +		/* Empty packets are always rejected. */
-> +
-> +		{
-> +			.msg = "veth empty ingress packet",
-> +			.data_in = NULL,
-> +			.data_size_in = 0,
-> +			.ifindex = &veth_ifindex,
-> +			.err = -EINVAL,
-> +		},
-> +		{
-> +			.msg = "ipip empty ingress packet",
-> +			.data_in = NULL,
-> +			.data_size_in = 0,
-> +			.ifindex = &ipip_ifindex,
-> +			.err = -EINVAL,
-> +		},
+	if (new_prog) {
+		...
 
+list of checks?
 
-> +
-> +		/* ETH_HLEN-sized packets:
-> +		 * - can not be redirected at LWT_XMIT
-> +		 * - can be redirected at TC
-> +		 */
-> +
-> +		{
-> +			.msg = "veth ETH_HLEN packet ingress",
-> +			.data_in = eth_hlen,
-> +			.data_size_in = sizeof(eth_hlen),
-> +			.ifindex = &veth_ifindex,
-> +			.ret = -ERANGE,
-> +			.success_on_tc = true,
-> +		},
-> +		{
-> +			.msg = "ipip ETH_HLEN packet ingress",
-> +			.data_in = eth_hlen,
-> +			.data_size_in = sizeof(eth_hlen),
-> +			.ifindex = &veth_ifindex,
-> +			.ret = -ERANGE,
-> +			.success_on_tc = true,
-> +		},
-
-
-hmm... these two tests don't look right.  They are the same except the ".msg" 
-part.  The latter one should use &ipip_ifindex?
-
-> +
-> +		/* ETH_HLEN+1-sized packet should be redirected. */
-> +
-> +		{
-> +			.msg = "veth ETH_HLEN+1 packet ingress",
-> +			.data_in = eth_hlen_pp,
-> +			.data_size_in = sizeof(eth_hlen_pp),
-> +			.ifindex = &veth_ifindex,
-> +		},
-> +		{
-> +			.msg = "ipip ETH_HLEN+1 packet ingress",
-> +			.data_in = eth_hlen_pp,
-> +			.data_size_in = sizeof(eth_hlen_pp),
-> +			.ifindex = &veth_ifindex,
-> +		},
-
-Same here.
-
+nit: aux->xdp_kfunc_ndo sounds like you're storing the kfunc NDO,
+     not all ndos. Throw in an 's' at the end, or some such?
