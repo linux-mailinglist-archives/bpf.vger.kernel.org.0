@@ -2,46 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0CE62CDBB
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F46262CDBC
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbiKPWdn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 17:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        id S232548AbiKPWeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 17:34:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbiKPWdm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:33:42 -0500
+        with ESMTP id S233898AbiKPWeR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:34:17 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FC29FDD
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:33:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76804D5F3
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:34:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wJuzf5aIsw3Ynd1qAMEVEjPKFsMlYthemldWJg46Gso=; b=Ffrl4uoQKCHOHAzz2U99t1itqk
-        tpGztGsq3REtLKCgG4BohhAHZfm/dIinPj0L9N6TQdSHwwuFrU3xXAPqEyQ9F27fqr5HSa3kaHkEW
-        AwS/mOVzEFDBHID3YoX9RzTi7nEAwNQSmBGijNGlUhx9lXkCmyzT+Mbj/4r67Mc/BK1EY6LyomTlP
-        XGR2f8Js1dwYAtAvBQ21IK2zeNilY7lRJz0QFuB7kTNHA4J9F9hd4aWu8Ad4Q755OGMvvRy6N3064
-        xVKc8L5gWaERzPlVR4BnKOJAQ8iLRBOfzuYtdN2eurcgsEnm9qmnOc7YEkOLgPbDShYI4ahSCIS3x
-        rLLz2cJw==;
+        bh=TSs/h9541uqf1HTxWzDvsef/ZgrLLRZbCCbFUZGOXH0=; b=Q3lO0FlYjsfHxxN9OkYNI6ATLL
+        Oho2D0cTvZvi7wpxPauyY0zeEq/2JdJ/I3dMCjlnoV5bpZIb/mQAZs3SQDPxR9/qytodi2tKqtjLp
+        fd/83AyWv4ynrD/YvHYfnGvIycxb+bGyWFQG/thfITBYO+k5OV0F5edz1J3IEnjd14m/eSUrReoPf
+        MW7RSDy7yC/J4O5xDNOX5IQmXFNyhqbZLFl8hNXqC6AnyA7fCN/fy9usFD5VRCgT6DGx0kDVMGUOU
+        Yh65IKEryi9JvDX7Qim84wetOYUV9rRnN6Twd9haqVhNUV0oEVvj4stzOmhuFffNOXlmzHhFn9PUP
+        A05/D+Eg==;
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ovQyP-008PI1-F2; Wed, 16 Nov 2022 22:33:37 +0000
-Date:   Wed, 16 Nov 2022 14:33:37 -0800
+        id 1ovQyz-008PRr-PD; Wed, 16 Nov 2022 22:34:13 +0000
+Date:   Wed, 16 Nov 2022 14:34:13 -0800
 From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, peterz@infradead.org,
-        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, rppt@kernel.org
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "song@kernel.org" <song@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Lu, Aaron" <aaron.lu@intel.com>
 Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Message-ID: <Y3VlQcsiEi273S+n@bombadil.infradead.org>
+Message-ID: <Y3VlZVZRrFbsTIIq@bombadil.infradead.org>
 References: <20221107223921.3451913-1-song@kernel.org>
- <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
- <Y3P/9DXAjKhmoIvm@bombadil.infradead.org>
- <CAPhsuW4_aYvPJUfCBkMygKPpHx7Y3xPCV7ewLGGAhyztJq3dhA@mail.gmail.com>
+ <Y2o9Iz30A3Nruqs4@kernel.org>
+ <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+ <Y2uMWvmiPlaNXlZz@kernel.org>
+ <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
+ <Y3DITs3J8koEw3Hz@kernel.org>
+ <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
+ <Y3QCNCNW31lB37El@bombadil.infradead.org>
+ <a0bea8c90acc70bc67210eb890447d51fb7315de.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW4_aYvPJUfCBkMygKPpHx7Y3xPCV7ewLGGAhyztJq3dhA@mail.gmail.com>
+In-Reply-To: <a0bea8c90acc70bc67210eb890447d51fb7315de.camel@intel.com>
 Sender: Luis Chamberlain <mcgrof@infradead.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -53,95 +63,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 02:48:05PM -0800, Song Liu wrote:
-> On Tue, Nov 15, 2022 at 1:09 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Mon, Nov 14, 2022 at 05:30:39PM -0800, Song Liu wrote:
-> > > On Mon, Nov 7, 2022 at 2:41 PM Song Liu <song@kernel.org> wrote:
-> > > >
-> > >
-> > > [...]
-> > >
-> > > >
-> > > >
-> > > > This set enables bpf programs and bpf dispatchers to share huge pages with
-> > > > new API:
-> > > >   execmem_alloc()
-> > > >   execmem_alloc()
-> > > >   execmem_fill()
-> > > >
-> > > > The idea is similar to Peter's suggestion in [1].
-> > > >
-> > > > execmem_alloc() manages a set of PMD_SIZE RO+X memory, and allocates these
-> > > > memory to its users. execmem_alloc() is used to free memory allocated by
-> > > > execmem_alloc(). execmem_fill() is used to update memory allocated by
-> > > > execmem_alloc().
-> > >
-> > > Sigh, I just realized this thread made through linux-mm@kvack.org, but got
-> > > dropped by bpf@vger.kernel.org, so I guess I will have to resend v3.
-> >
-> > I don't know what is going on with the bpf list but whatever it is, is silly.
-> > You should Cc the right folks to ensure proper review if the bpf list is
-> > the issue.
-> >
-> > > Currently, I have got the following action items for v3:
-> > > 1. Add unify API to allocate text memory to motivation;
-> > > 2. Update Documentation/x86/x86_64/mm.rst;
-> > > 3. Allow none PMD_SIZE allocation for powerpc.
-> >
-> > - I am really exausted of asking again for real performance tests,
-> >   you keep saying you can't and I keep saying you can, you are not
-> >   trying hard enough. Stop thinking about your internal benchmark which
-> >   you cannot publish. There should be enough crap out which you can use.
-> >
-> > - A new selftest or set of selftests which demonstrates gain in
-> >   performance
+On Tue, Nov 15, 2022 at 09:39:08PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2022-11-15 at 13:18 -0800, Luis Chamberlain wrote:
+> > The main hurdles for modules are:
+> > 
+> >   * x86 needs support for CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC
+> >     to use this properly
+> >   * in light of lack of support for
+> > CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC
+> >     we need a fallback
+> >   * today module_alloc() follows special hanky panky open coded
+> > semantics for
+> >     special page permissions, a unified way to handle this would be
+> >     ideal instead of expecting everyone to get it right.
 > 
-> I didn't mean to not show the result with publically available. I just
-> thought the actual benchmark was better (and we do use that to
-> demonstrate the benefit of a lot of kernel improvement).
-> 
-> For something publically available, how about the following:
-> 
-> Run 100 instances of the following benchmark from bpf selftests:
->   tools/testing/selftests/bpf/bench -w2 -d100 -a trig-kprobe
-> which loads 7 BPF programs, and triggers one of them.
-> 
-> Then use perf to monitor TLB related counters:
->    perf stat -e iTLB-load-misses,itlb_misses.walk_completed_4k, \
->         itlb_misses.walk_completed_2m_4m -a
-> 
-> The following results are from a qemu VM with 32 cores.
-> 
-> Before bpf_prog_pack:
->   iTLB-load-misses: 350k/s
->   itlb_misses.walk_completed_4k: 90k/s
->   itlb_misses.walk_completed_2m_4m: 0.1/s
-> 
-> With bpf_prog_pack (current upstream):
->   iTLB-load-misses: 220k/s
->   itlb_misses.walk_completed_4k: 68k/s
->   itlb_misses.walk_completed_2m_4m: 0.2/s
-> 
-> With execmem_alloc (with this set):
->   iTLB-load-misses: 185k/s
->   itlb_misses.walk_completed_4k: 58k/s
->   itlb_misses.walk_completed_2m_4m: 1/s
-> 
-> Do these address your questions with this?
+> How were you thinking non-text_poke() architectures load their text
+> into the text region without the fallback method?
 
-More in lines with what I was hoping for. Can something just do
-the parallelization for you in one shot? Can bench alone do it for you?
-Is there no interest to have soemthing which generically showcases
-multithreading / hammering a system with tons of eBPF JITs? It may
-prove useful.
-
-And also, it begs the question, what if you had another iTLB generic
-benchmark or genearl memory pressure workload running *as* you run the
-above? I as, as it was my understanding that one of the issues was the
-long term slowdown caused by the directmap fragmentation without
-bpf_prog_pack, and so such an application should crawl to its knees
-over time, and there should be numbers you could show to prove that
-too, before and after.
+Fallbacks are needed for sure. I think you spelled out well what would
+be needed.
 
   Luis
