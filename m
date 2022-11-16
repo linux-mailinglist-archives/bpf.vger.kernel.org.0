@@ -2,98 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CFF62CD5A
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E9662CD60
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbiKPWGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 17:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36100 "EHLO
+        id S233844AbiKPWJG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 17:09:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234375AbiKPWGf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:06:35 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A22657DB
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:06:34 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 136so218597pga.1
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nutEuvim+O03tSTgt7ijJRrnnZDjsohIvb1Cu5fAk68=;
-        b=kvit6qLZvj/H2XpEcE2tQltVzbqvZTUcF7YL96hdze7uhRReeySYAwRj7jEkO95+jT
-         31eKJqCfk3autqs9d6Qe9JcOI9dsEynpATjnrD+WNxnRfPxUZiLMsbsKo0tvPVm67rrl
-         5ph02PC/dm0eahlxTJdGIrg7twRkBQcu8LbKkuf9ocLaZOKi5MoJBk0G4tDOL9H7Adpe
-         eX+qwpauMZLYBshirL5wBYpJU1jXTLNGudyKTtX3PihPZYOfmm9k2G1bpQX82DA32qsQ
-         837X1U4S6NKZAOoIGcvKtoWulmqag5/ZjP6/gA0F6qSP/yDhn0pTmkK2zHGAA96VboH0
-         QQOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nutEuvim+O03tSTgt7ijJRrnnZDjsohIvb1Cu5fAk68=;
-        b=EqzVaNXTAoM2ff8oh1cjOyYjP/d14vFINY8zVGX097jF/RZlk/cBkp9SYRY8iT+e28
-         dOl/mFPOWvUeL5OiuZmbxyF9aSMHINRwEfMEP53vxuUh/jgbhKyDbexAt8JFa1CMG7Bs
-         ttnFly0xw0y5TRXI6b83bXCDlTQFZ4GiD6QKvdAIWATGQF80F7opqp0QJZc0ghTKF3c7
-         SBbsbAgNWEzWDo9ce/aXlVZHq11CfkBAmQRvtb0ibYrqqHJg0OgNsrU/kENUi88J03IG
-         h+cH1Av5W9AYYvLoiZcLnA82dPhBMpdME2YcaK0jXsEjtqzLHJ5pHUic328xjGi3MTzM
-         x/gw==
-X-Gm-Message-State: ANoB5pnSCW6OkG/qIoQODyWbTiSMS4cQg6D4Y9Z6UeFsNW6LK12p8dNM
-        SC8kaHj3KjbpZuT8rv3Rs/B8TQBUIG2Pb8uYrdNE
-X-Google-Smtp-Source: AA0mqf71012OqDg1MufEYPKkE9j6ut4mcod3ENfS5sdsSRfuukb2vkcSQaaqHo0FKnolB7czO+CW7ZUacdcXI83TAIA=
-X-Received: by 2002:a63:5d50:0:b0:460:ec46:3645 with SMTP id
- o16-20020a635d50000000b00460ec463645mr22826460pgm.92.1668636393463; Wed, 16
- Nov 2022 14:06:33 -0800 (PST)
+        with ESMTP id S234384AbiKPWJC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:09:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FAC6A6B8;
+        Wed, 16 Nov 2022 14:09:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C3D0EB81EE1;
+        Wed, 16 Nov 2022 22:08:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 752BCC433D6;
+        Wed, 16 Nov 2022 22:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668636538;
+        bh=BAv4r6eNcyU1DYIdfn/4sCGtHRvGswgoegbRQ/qzZyU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=geVbJAxAyvNHXdIKe73hgeTJRiacFy2PDX9ULvuhTArhtelVuz21DIPxK9TMLUcGN
+         zwqCwR4h0e3fFge4ql4mZ3gzdrN4TKxs1AY8ktnUVgv2+5FMoQSZDwnjFIXSrhHbkZ
+         90/ZpFNcaF+wQuOywzhCqM9ATJv0pnE/v5mVHUBAzLk24W63KDID8hMJzU1pS4JplF
+         266BdiNy1AKxRLt6Hd+HNuM1D1+dHx+OZEbK3IfMhm//lvQ5uxooK4ZrJym9Fyz+3j
+         V3oPaX+la83hJ7SrnfspvMDI4VhP2KH8kysim+HMCNFW9m4qT4s7sA07VcfiM4OSYv
+         S3D5svNVrLgww==
+Date:   Wed, 16 Nov 2022 14:08:57 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        shuah@kernel.org, andrii@kernel.org, mykolal@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev
+Subject: Re: [PATCH v2 2/2] selftests/net: fix opening object file failed
+Message-ID: <Y3VfeXK092oeV+yh@x130.lan>
+References: <1668507800-45450-1-git-send-email-wangyufen@huawei.com>
+ <1668507800-45450-3-git-send-email-wangyufen@huawei.com>
 MIME-Version: 1.0
-References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
- <20221115175652.3836811-5-roberto.sassu@huaweicloud.com> <CAHC9VhQ+fUZfJwJ=oJ9ieszKeicnS7Z-QcJuJVL9HF5F0tcA7Q@mail.gmail.com>
- <700dffccdfeeb3d19c5385550e4c84f08c705e19.camel@huaweicloud.com>
-In-Reply-To: <700dffccdfeeb3d19c5385550e4c84f08c705e19.camel@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 16 Nov 2022 17:06:22 -0500
-Message-ID: <CAHC9VhRzzGt3N+AMxp93Zzq+1tWjd63hNv8AzZx4kppu2J535w@mail.gmail.com>
-Subject: Re: [RFC][PATCH 4/4] security: Enforce limitations on return values
- from LSMs
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, revest@chromium.org,
-        jackmanb@chromium.org, jmorris@namei.org, serge@hallyn.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1668507800-45450-3-git-send-email-wangyufen@huawei.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 9:37 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On Tue, 2022-11-15 at 21:35 -0500, Paul Moore wrote:
-> > If you want to somehow instrument the LSM hook definitions (what I
-> > believe to be the motivation behind patch 3/4) to indicate valid
-> > return values for use by the BPF verifier, I think we could entertain
-> > that, or at least discuss it further, but I'm not inclined to support
-> > any runtime overhead at the LSM layer for a specific LSM.
+On 15 Nov 18:23, Wang Yufen wrote:
+>The program file used in the udpgro_frglist testcase is "../bpf/nat6to4.o",
+>but the actual nat6to4.o file is in "bpf/" not "../bpf".
+>The following error occurs:
+>  Error opening object ../bpf/nat6to4.o: No such file or directory
+>  Cannot initialize ELF context!
+>  Unable to load program
 >
-> Ok, yes. Patches 1-3 would help to keep in sync the LSM infrastructure
-> and eBPF, but it is not strictly needed. I could propose an eBPF-only
-> alternative to declare sets of functions per interval.
+>In addition, all the kernel bpf source files are centred under the
+>subdir "progs" after commit bd4aed0ee73c ("selftests: bpf: centre
+>kernel bpf objects under new subdir "progs""). So mv nat6to4.c to
+                                                   ^^ move :) 
+>"../bpf/progs" and use "../bpf/nat6to4.bpf.o". And also move the
+>test program to selftests/bpf.
 >
-> More or less, I developed an eBPF-based alternative also for patch 4.
-> It is just a proof of concept. Will propose it, to validate the idea.
 
-Thanks, I think that might be the best approach.  Also, please
-resubmit patches 1/4 and 2/4 with those small changes; those are nice
-improvements that just need a couple of small tweaks to be acceptable
-:)
+Can you separate the fix from the mv ?
 
--- 
-paul-moore.com
+>Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
+>Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>---
+> tools/testing/selftests/bpf/Makefile               |   7 +-
+> tools/testing/selftests/bpf/in_netns.sh            |  23 +
+> .../testing/selftests/bpf/progs/nat6to4_egress4.c  | 184 ++++++
+> .../testing/selftests/bpf/progs/nat6to4_ingress6.c | 149 +++++
+> tools/testing/selftests/bpf/test_udpgro_frglist.sh | 110 ++++
+> tools/testing/selftests/bpf/udpgso_bench_rx.c      | 409 ++++++++++++
+> tools/testing/selftests/bpf/udpgso_bench_tx.c      | 712 +++++++++++++++++++++
+> tools/testing/selftests/net/Makefile               |   2 -
+> tools/testing/selftests/net/bpf/Makefile           |  14 -
+> tools/testing/selftests/net/bpf/nat6to4.c          | 285 ---------
+> tools/testing/selftests/net/udpgro_frglist.sh      | 103 ---
+> 11 files changed, 1592 insertions(+), 406 deletions(-)
+> create mode 100755 tools/testing/selftests/bpf/in_netns.sh
+> create mode 100644 tools/testing/selftests/bpf/progs/nat6to4_egress4.c
+> create mode 100644 tools/testing/selftests/bpf/progs/nat6to4_ingress6.c
+> create mode 100755 tools/testing/selftests/bpf/test_udpgro_frglist.sh
+> create mode 100644 tools/testing/selftests/bpf/udpgso_bench_rx.c
+> create mode 100644 tools/testing/selftests/bpf/udpgso_bench_tx.c
+> delete mode 100644 tools/testing/selftests/net/bpf/Makefile
+> delete mode 100644 tools/testing/selftests/net/bpf/nat6to4.c
+> delete mode 100755 tools/testing/selftests/net/udpgro_frglist.sh
+>
+
+created more files than deleted? also moving files should appear as
+rename. Did you do the mv with git mv ? I am surprised how git didn't pick this up
+as "rename".
+
+For next version please use tag [PATCH bpf-next]
