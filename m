@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F44862CDFD
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D705F62CE01
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 23:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239129AbiKPWqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 17:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S234439AbiKPWrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 17:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234029AbiKPWp4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:45:56 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3886B6CA16
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:45:31 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-349423f04dbso1769757b3.13
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:45:31 -0800 (PST)
+        with ESMTP id S238876AbiKPWqw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:46:52 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57796DCDD
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:46:46 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id ci1-20020a17090afc8100b00212e5b4c3afso3887pjb.3
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 14:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=9fahfTN7gQdYGghMf/BqQFGqnV5aYRbsgDQfX2spz1M=;
-        b=J7ejO2+4pPwjvYasRYxGqprxcZToIIQir/+zCv8XJOXAMoIEz5oHnj13Y8NijHrFhl
-         omJb9OhW/gqGpL1NLmRkpbxYcnrraM5LGPZJwFksGnOgQ/DzMb5BTrVy7kM1SmnB7TOZ
-         ochF4Ipzbw6mYxgQRV+7WVG35O5xbVpFHMM+lIfNW2uizI14ZHcnEN6muh/uPbnLch2U
-         wUcrjLJXXvi1Rf2bjwAzb608dtEh7Nn3O+4LPDUG0pKk52Bx7ZPJeXV6kxRD5SRH/AiW
-         37sWLNgegGpwsAPiqmGDEPYburNB4KofqnCAOFjBpivk2rXIBmw7axJX5G0D+ZbvwZ0p
-         z1Ow==
+        bh=ECsizzUPW5YOb7oAQXRNb+Xilf4/6y3zdt9/ywk2ZNg=;
+        b=qNC0+/AKAGeX7QXSDmOijuSzD2DiyM9sVGtBjQ1/WbBZTIsLX7UfefxzoDCmh+c0FV
+         kKc+5FpNGTnvySO8PwEYHs/O0o1wL5InFD6wxutOJ3qHyn+G8ABP2WOOLpgW6maSPeez
+         K/ln6bD+PAEyrmoUp3sHHwJ/aho+eRdjcfkYfBlqmco+sQEio9Yz5txQeXR3hSbcDetU
+         nc1vOiKMDCBFO/LfQcRoC7WHtMmYfbK1k9pfB4UuIPj2xZS9qebD8XgvQEoDEu8juXoV
+         /iMZDiObHA4YlXBjtHUtb5UySCVZGgNaU7ke3DjhIdaDWDnzybrAUTwkHZJtvH+maS4S
+         ZAZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9fahfTN7gQdYGghMf/BqQFGqnV5aYRbsgDQfX2spz1M=;
-        b=i7u0FUJkw8uvGxnW492YWfgGF1edTUmZaN1bHqcFCnaCxKqRfw2iI/TlQlmwY5WlK2
-         R5We2XwHH32ZJKBsIXhfe3Zbnud6GR/4dVYi0ZGsWq97MHsstpOYtm8HRwNxFDH5M6gj
-         /qjcFXaH166QfzBn+7s5eUJD/gRf64WR0/St88OJy/g32hj/qg//E96FUu6KMMBxOFae
-         BWgHjvBxrgd18DN+/0m2/hwEvxd4vK6xsbfVBbUgOHMd43O06sSC5Pu4uxo98yjRl1P8
-         d9wTQQD0U5xLvNfVJzAwqwx7ePZyb0y2b+2ooS6aET/2fsZJ9igBSSmcXUgdU573Y6DF
-         MHgQ==
-X-Gm-Message-State: ANoB5pnsjtrRT1dvsjDTFWyAHR7AqA0xhGhkgresJ22iA9uDwLRKPKQW
-        QsF6FESI821LwG9BbAri70arerFe6IGb
-X-Google-Smtp-Source: AA0mqf4Nb9ngGN3qX4fMKqqiImwtvR4v0w2iedkDOCXier2Uk2gOkfn2P+l1BjX+RTvpu1mgdn+Sr0cKx7BR
+        bh=ECsizzUPW5YOb7oAQXRNb+Xilf4/6y3zdt9/ywk2ZNg=;
+        b=qkqE+lehBxK/VtCOBEhX3jU12xIqfBh3nDttuWlGPNfGAn4Lp7nfqy71kT7fGP6FJF
+         NF6oav7yhUOn2+NsNyshxtVU8LS4/PVmS6t5CqYk9+z6XDc78abhVL3n72LnOLb/nsqz
+         jLooJL+ac3gJ9+uUDH37mHTr0aKUFUUOVd7RY02Q5AWL36nWIPtBMXzHwtlKW6bPGSfY
+         MDL4Y4yYxwcJ3k8Dc/JyVt1EVfP7yf79VDdar7jSXD2wGV5qnAMOhC3mzNv69asewwF6
+         KnfzJUACGyjZqEbp7OeMLFq6NhDHJro5tXE4KD5Iq1g0ntZTBKgt/kQQplcDaSIFNzNm
+         vLQg==
+X-Gm-Message-State: ANoB5pn7GTDxEgWQuXi/+mzWxapY+ti8kzVb0byRpoJpDhB07rvlb5Fq
+        OS4TckuezL0djcQ+CQjkhbPRXvK2Bc7I
+X-Google-Smtp-Source: AA0mqf6KCza6YCJzHP2PSBWkF/0xN8AVuNgjgtwg5BZnmY6GxKCZQaTel+e7L2cemRPEQEZbcitL1gMfHocZ
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:c14c:6035:5882:8faa])
- (user=irogers job=sendgmr) by 2002:a25:55d4:0:b0:6ca:363a:9a1b with SMTP id
- j203-20020a2555d4000000b006ca363a9a1bmr23754825ybb.1.1668638730427; Wed, 16
- Nov 2022 14:45:30 -0800 (PST)
-Date:   Wed, 16 Nov 2022 14:45:11 -0800
-Message-Id: <20221116224511.207235-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6a00:1696:b0:571:2b7c:6693 with SMTP
+ id k22-20020a056a00169600b005712b7c6693mr145885pfc.48.1668638806175; Wed, 16
+ Nov 2022 14:46:46 -0800 (PST)
+Date:   Wed, 16 Nov 2022 14:46:31 -0800
+Message-Id: <20221116224631.207631-1-irogers@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
 Subject: [PATCH] perf build: Fix LIBTRACEEVENT_DYNAMIC
@@ -68,7 +68,7 @@ Cc:     Stephane Eranian <eranian@google.com>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,6 +80,8 @@ The tools/lib includes fixes break LIBTRACEVENT_DYNAMIC as the
 makefile erroneously had depdendencies on building libtraceevent even
 when not linking with it. This change fixes the issues with
 LIBTRACEEVENT_DYNAMIC by making the built files optional.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
  tools/perf/Makefile.perf | 25 ++++++++++++++++++++++---
  tools/perf/util/setup.py |  3 ++-
