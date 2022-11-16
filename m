@@ -2,70 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE19762CEA9
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 00:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B10A62CED4
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 00:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbiKPXV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 18:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S233802AbiKPXiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 18:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbiKPXV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 18:21:26 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1971467118;
-        Wed, 16 Nov 2022 15:21:26 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id kt23so901115ejc.7;
-        Wed, 16 Nov 2022 15:21:26 -0800 (PST)
+        with ESMTP id S233694AbiKPXiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 18:38:20 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF38A68697
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:38:17 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id y203so107580pfb.4
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 15:38:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9v9KjvYMfYuTZZObzWPVSoHalRR1EWtRwEfMTCTaSFo=;
-        b=Qsr5I2XqsW9BwuNUyKdr+xjQLtybgvSw4QYSrd2kpChNRA13MjYRQq80kjhzWi1rL+
-         aG0CT0NDXqbbXBFnATuTZ1DNfoZ1RbfQhJiD4qxpP1JYCHTHEFHEWbH0fmeouYh0IkSF
-         WhNLhi1j6qE17NF6YreyxRv0509zyelSyFuhhxLRpowpjuuA2ovSLDYY4aa3HIiLsreV
-         GWxcegF0eGcakizUrmTiNznMBLudTothyH0ZpSsng+yWjuzvZN4UztmVhvFv7j0tKwXc
-         xC6lWslW9DM/D3bYORhSJ2YA96h2Yi9UhZyEYYcA0EcGsSm5ThOibo3T7D227uSA9gg0
-         /xaQ==
+        h=content-transfer-encoding:in-reply-to:cc:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mkI37tcGPXnSohqzPYqOvLxVUhk0tF8PkG0dnR+tY88=;
+        b=DZGEtK0uqpUGwDQxJ8aBT1LhjQ+dGtH9BBD0IRwZjyicRBwuM1YZurnRzoH7oIOWYB
+         bygqhrdj4lNLSg069hxydAkEkfwBa3pyS9C3aZKN+PgDMzP0knt6b8lkzr3hJsO/+Qdr
+         EAkH2rSi3eaLdj9BDgli9G8ovfkskBUYQZtE5Ii14WTovFEmKLcAqqklamkBNGxBucCv
+         89vvZKce2qWr0Hgwp11v1ihmgzKp0dqTrO8RVqCjzH9JM00NPpg5DRcMqpJvm0Buf2Nq
+         ffZqjKZqNmXJosExJvIWcjGsVnjA5hk/dkvSLYkddWdkGlYH+4A/6fA3i/AxZCDqBrv4
+         l/eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9v9KjvYMfYuTZZObzWPVSoHalRR1EWtRwEfMTCTaSFo=;
-        b=g9YTHmV4ISYZb2gWE45tcOStP3bjrdY/b2uF3RxUtlG6uV2TaPbL7wxTesG56zyvIR
-         5mHYsW8WxCI+MWIbfh8mkPkmECgwrBIqhu+VUe9RNoPnftgTFf/kFXi402sVVkmS/Z3J
-         w7a+8M8rbNDQfPUTyIjoK57fUdZKhz+7Vp6v+wDu+gPVBXzP3TvOJarFW3Y4xKWYxNPa
-         VtzhqfSAzNc/pmhqJrJc+PbgBEduT2SNhFpF5dmWL/t4j+zctSjHSqqiFjdggoCuuyxA
-         0LvEIGnL0GZlkwJ/RhkwJS4KA6iYnwBtUZzq+l7Wwt0YRze+ZkX3yjBmT6P67UEZ8t8F
-         dtpw==
-X-Gm-Message-State: ANoB5plxbZ4tBM7Rkl1FBid4oaOaKBNp6DqQIpXCkEnHAHjOlglN5Ehs
-        bOgmqgWQEy1oQM3c5o69Gqg=
-X-Google-Smtp-Source: AA0mqf7EhvKSNq/bcK0SzBtcWmHqh6Pt2BmbVJOxVJRVNjJNk8Sl6HYXjh07Z5DDNia+KVvjmb3JMQ==
-X-Received: by 2002:a17:906:19d5:b0:780:93d2:8510 with SMTP id h21-20020a17090619d500b0078093d28510mr37067ejd.457.1668640884478;
-        Wed, 16 Nov 2022 15:21:24 -0800 (PST)
-Received: from skbuf ([188.26.57.53])
-        by smtp.gmail.com with ESMTPSA id n15-20020a17090695cf00b0078c213ad441sm7349252ejy.101.2022.11.16.15.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 15:21:24 -0800 (PST)
-Date:   Thu, 17 Nov 2022 01:21:21 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH net 0/2][pull request] Intel Wired LAN Driver Updates
- 2022-11-14 (i40e)
-Message-ID: <20221116232121.ahaavt3m6wphxuyw@skbuf>
-References: <20221115000324.3040207-1-anthony.l.nguyen@intel.com>
+        h=content-transfer-encoding:in-reply-to:cc:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkI37tcGPXnSohqzPYqOvLxVUhk0tF8PkG0dnR+tY88=;
+        b=e1EG09Ivf6Ddq2zrgZbDhgn9nnmaX1wan3+Qt8XTzVET2GeUP9+Bet/4BPVc05yoE9
+         7RxZdgaTdJMj1q/t+bqu1H9GZk5adNWoJtYxs5Qj2oYffE90tmyd9aoBaa2WrpgD6gJg
+         WCQYhTwPmi0BxBzpT10ZIb8qk9dBxLpfoswvs1ErVGOcrEQ+Hgrb/xucIx7T1BS35ykq
+         WFDqcuyM5VbCUbaeIxFoVzOEWuwBFTBZ4rXjfOWQFNXKfq10AXAb8qLPwqXryJjNOjvF
+         hXdoFnpNiOWRXhA9JSsXPzHXDq4diYQnl8oIbu8qDv1q10QJ063EGiwz3HEqGE3aPYtE
+         8oGQ==
+X-Gm-Message-State: ANoB5pklFLdUXWzJuSfN7o44o65nUcBAVt14j4ymKP0G2B1uAuDlWxDf
+        QaubUI99XsacTuwqZ/PS94I=
+X-Google-Smtp-Source: AA0mqf7xBHSB/hdB+tBE1orNllG87IZ004U1RLzj2KxgrtRiWyz5xo0ZA231t92zWNFzo9BMrJiiBA==
+X-Received: by 2002:a63:e401:0:b0:476:c65c:3761 with SMTP id a1-20020a63e401000000b00476c65c3761mr8228343pgi.57.1668641897423;
+        Wed, 16 Nov 2022 15:38:17 -0800 (PST)
+Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id q3-20020a170902a3c300b0017a018221e2sm12779890plb.70.2022.11.16.15.38.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Nov 2022 15:38:16 -0800 (PST)
+Message-ID: <d9dbf747-da63-0fbd-66d2-e5107faf58b4@gmail.com>
+Date:   Thu, 17 Nov 2022 08:38:12 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221115000324.3040207-1-anthony.l.nguyen@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH bpf-next] bpf/docs: Include blank lines between bullet
+ points in bpf_devel_QA.rst
+To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>
+References: <20221116174358.2744613-1-deso@posteo.net>
+Content-Language: en-US
+From:   Akira Yokosawa <akiyks@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com,
+        Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20221116174358.2744613-1-deso@posteo.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,44 +76,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hi Daniel,
 
-On Mon, Nov 14, 2022 at 04:03:22PM -0800, Tony Nguyen wrote:
-> This series contains updates to i40e driver only.
-> 
-> Sylwester removes attempted allocation of Rx buffers when AF_XDP is in Tx
-> only mode.
-> 
-> Bartosz adds helper to calculate Rx buffer length so that it can be
-> used when interface is down; before value has been set in struct.
-> 
-> The following are changes since commit ed1fe1bebe18884b11e5536b5ac42e3a48960835:
->   net: dsa: make dsa_master_ioctl() see through port_hwtstamp_get() shims
-> and are available in the git repository at:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 40GbE
-> 
-> Bartosz Staszewski (1):
->   i40e: fix xdp_redirect logs error message when testing with MTU=1500
-> 
-> Sylwester Dziedziuch (1):
->   i40e: Fix failure message when XDP is configured in TX only mode
-> 
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 48 +++++++++++++++------
->  1 file changed, 34 insertions(+), 14 deletions(-)
-> 
-> -- 
-> 2.35.1
-> 
+On Wed, 16 Nov 2022 17:43:58 +0000, Daniel M=C3=BCller wrote:
+> Commit 26a9b433cf08 ("bpf/docs: Document how to run CI without patch
+> submission") caused a warning to be generated when compiling the
+> documentation:
+>  > bpf_devel_QA.rst:55: WARNING: Unexpected indentation.
+>  > bpf_devel_QA.rst:56: WARNING: Block quote ends without a blank line
+>=20
+> This change fixes the problem by inserting the required blank lines.
+>=20
+> Fixes: 26a9b433cf08 ("bpf/docs: Document how to run CI without patch su=
+bmission")
+> Reported-by: Akira Yokosawa <akiyks@gmail.com>
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  Documentation/bpf/bpf_devel_QA.rst | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf=
+_devel_QA.rst
+> index 08572c7..03d499 100644
+> --- a/Documentation/bpf/bpf_devel_QA.rst
+> +++ b/Documentation/bpf/bpf_devel_QA.rst
+> @@ -51,10 +51,13 @@ While GitHub also provides a CLI that can be used t=
+o accomplish the same
+>  results, here we focus on the UI based workflow.
+> =20
+>  The following steps lay out how to start a CI run for your patches:
+> +
+>  - Create a fork of the aforementioned repository in your own account (=
+one time
+>    action)
+> +
+To be clear, as is mentioned in the reST documentation (quoted below):
 
-Sorry to interject, but there might be a potential bug I noticed a while
-ago in the i40e driver, and I didn't find the occasion to bring it up,
-but remembered just now.
+  - This is the first bullet list item.  The blank line above the
+    first list item is required; blank lines between list items
+    (such as below this paragraph) are optional.
 
-Is it correct for i40e_run_xdp_zc() to call i40e_xmit_xdp_tx_ring() on
-the XDP_TX action? If I'm reading the code correctly, this will map the
-buffer to DMA before sending it. But since this is a zero-copy RX buffer,
-it has already been mapped to DMA in i40e_xsk_pool_enable().
+, this and next blank lines are not required but optional.
 
-Since I don't have the hardware, I can't be 100% sure if I'm following
-the code correctly. However if I compare with i40e_xmit_zc(), the latter
-does not map buffers to DMA, so I think neither should the former.
+Either way,
+
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+
+>  - Clone the fork locally, check out a new branch tracking either the b=
+pf-next
+>    or bpf branch, and apply your to-be-tested patches on top of it
+> +
+>  - Push the local branch to your fork and create a pull request against=
+
+>    kernel-patches/bpf's bpf-next_base or bpf_base branch, respectively
+> =20
