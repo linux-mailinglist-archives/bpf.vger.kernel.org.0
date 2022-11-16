@@ -2,124 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BB662C8F0
-	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 20:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FC662C924
+	for <lists+bpf@lfdr.de>; Wed, 16 Nov 2022 20:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbiKPT2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 14:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S233512AbiKPTqh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 14:46:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234220AbiKPT2A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 14:28:00 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D212D6069E
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 11:27:59 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so3388101pjl.3
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 11:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kB+EGp4efz1Gli9X+UrH3zS99DGscETUAzFGWwtq1Xg=;
-        b=fbEd/BFryc3b2Z/VNsNlHKcMsDEwZ6c+zGxvCyRUnkUoKHAzbvY4rTAYx/LVUwvG4F
-         x3DLpWz6iSvj5BIm1MWHR6xxsZ0aAo0TEVyC4+vuoEB4/d/fra6qLpkilcMZapx3bVk1
-         +RDI4nBFjdgRJIZih4d8WK9S3UaiIsyw6YSMkLpFnwupxg1juYksMhTSwHp0nQo8QHrt
-         v7G7ynPW7WVSXQPwfm0N+09KVY4ROsRn5xioCl+k4m9eYbR+utWhQG6TKSDqvlcMTtC8
-         Vbt7zLlb16dwS70elh1cJBvfsPSHaGtzNR49ajGyNG6zOzEhsTEtwra+tL7a842Grh15
-         nw/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kB+EGp4efz1Gli9X+UrH3zS99DGscETUAzFGWwtq1Xg=;
-        b=m5cs0hMgeZQhYJD1tMtGJe6H1YiAdcB1q4GFK4IWlHatwDH/ve9TWnSJSdYlR8DcNY
-         Fi6zzUX727OQnek1iiV4Zfs13Br++yB94VDMZjhI1PerlAb9W27f3veniyW++ut6oeHi
-         hIWziXdSMvBaEG/akwOA11ATazlIfjN4CuNsJUvPeqiuTABNHyrlUo0NQ+Ht4sK8mVqQ
-         iSBPP3UC15SbUjAbh+Q9fOUkzbkIQabUrximQ4ifUoElqqkbMkVT8G40FWeQ8WSBUQ8V
-         /bOi7OIfqGzEVI0Hzs+1seX7DV5BCMoH+m3tKIV7uq11FWU7CvmFMNqTG0JxuuccTgy9
-         u/zQ==
-X-Gm-Message-State: ANoB5plOgjjt54r4mEa4EsNZaYaJf4gXxO+/ZQZ9pAcEsNkqSN3tb+d9
-        nWAK+gkO7J3ubqzPjiCpP2vGEIYdqCNF4WbNQKFj
-X-Google-Smtp-Source: AA0mqf55uKXEYyGizECPsOHdKj5/mM+Y8oxUfBS+vv/OItr8pFepf98/PVEBpbdjowSWOBiVXMwE30uUHBlf2wvsqnE=
-X-Received: by 2002:a17:90a:4596:b0:1fd:5b5d:f09d with SMTP id
- v22-20020a17090a459600b001fd5b5df09dmr5302996pjg.69.1668626879321; Wed, 16
- Nov 2022 11:27:59 -0800 (PST)
+        with ESMTP id S229724AbiKPTqg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 14:46:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DDD27CE8;
+        Wed, 16 Nov 2022 11:46:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 561AC61F7C;
+        Wed, 16 Nov 2022 19:46:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52258C433D6;
+        Wed, 16 Nov 2022 19:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668627994;
+        bh=v9i08SgmR4P+otCsZt87j/UxmXP81hkv7DfyvtbixPY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=etZxJrXg1caExsnBfrraleQ96DDGCKVg89i+k3HPpT+zHtHiRivr99b6u0KGPwBvg
+         LpPVx3/U0/9TqKWNh/aAzYP+5tPFwJNiNPsyhyp6mOiH9/rBPfrlQJBnPSAvjqpTme
+         gpud1fuBfFNdcNGpyBVP0cc/nSDl4FqhFi9JvjAZcQNYJIxXvOr0i6Ra1bSFqa90eI
+         Hz8Wq3fEGe/eGE6ipUv/5yHIX7JofhLl1xFdctCPA9CMYE4xucmus2NEbHk5xvlafS
+         78cHppV2Jl9QpttzEf2+8rTy0GtiuZX1U19pRWBkPkyOA2c1qYiwZSFUAFPSqGa11A
+         rrfDSoCSM0jfA==
+Date:   Wed, 16 Nov 2022 11:46:33 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Yonghong Song <yhs@meta.com>, hawk@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, sdf@google.com
+Subject: Re: [1/2 bpf-next] bpf: expose net_device from xdp for metadata
+Message-ID: <20221116114633.6a297935@kernel.org>
+In-Reply-To: <63728784e2d15_43f25208be@john.notmuch>
+References: <20221109215242.1279993-1-john.fastabend@gmail.com>
+        <20221109215242.1279993-2-john.fastabend@gmail.com>
+        <0697cf41-eaa0-0181-b5c0-7691cb316733@meta.com>
+        <636c5f21d82c1_13fe5e208e9@john.notmuch>
+        <aeb8688f-7848-84d2-9502-fad400b1dcdc@meta.com>
+        <636d82206e7c_154599208b0@john.notmuch>
+        <636d853a8d59_15505d20826@john.notmuch>
+        <86af974c-a970-863f-53f5-c57ebba9754e@meta.com>
+        <637136faa95e5_2c136208dc@john.notmuch>
+        <10b5eb96-5200-0ffe-a1ba-6d8a16ac4ebe@meta.com>
+        <63728784e2d15_43f25208be@john.notmuch>
 MIME-Version: 1.0
-References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
- <20221115175652.3836811-2-roberto.sassu@huaweicloud.com> <CAHC9VhQjnwbFgAoFgTaLQP7YnNDNyP1i0i8H++HZWj930pW=-A@mail.gmail.com>
- <18e375adfe53f8ce5fb38a6a146ad06eaec71a5e.camel@huaweicloud.com> <CACYkzJ43UZARCkWp6wOQuuEDpOnf33JwAJ=CeZVuW0hffQrmeQ@mail.gmail.com>
-In-Reply-To: <CACYkzJ43UZARCkWp6wOQuuEDpOnf33JwAJ=CeZVuW0hffQrmeQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 16 Nov 2022 14:27:47 -0500
-Message-ID: <CAHC9VhTR1_Yr=jsCVMAMG3qcOP_GT0KbyzHVKD+Ok0NJQmBkdg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/4] lsm: Clarify documentation of vm_enough_memory hook
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, jmorris@namei.org,
-        serge@hallyn.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 2:18 PM KP Singh <kpsingh@kernel.org> wrote:
-> On Wed, Nov 16, 2022 at 9:06 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> >
-> > On Tue, 2022-11-15 at 21:11 -0500, Paul Moore wrote:
-> > > On Tue, Nov 15, 2022 at 12:57 PM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > >
-> > > > include/linux/lsm_hooks.h reports the result of the LSM infrastructure to
-> > > > the callers, not what LSMs should return to the LSM infrastructure.
-> > > >
-> > > > Clarify that and add that returning 1 from the LSMs means calling
-> > > > __vm_enough_memory() with cap_sys_admin set, 0 without.
-> > > >
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > Reviewed-by: KP Singh <kpsingh@kernel.org>
-> > > > ---
-> > > >  include/linux/lsm_hooks.h | 4 +++-
-> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> > > > index 4ec80b96c22e..f40b82ca91e7 100644
-> > > > --- a/include/linux/lsm_hooks.h
-> > > > +++ b/include/linux/lsm_hooks.h
-> > > > @@ -1411,7 +1411,9 @@
-> > > >   *     Check permissions for allocating a new virtual mapping.
-> > > >   *     @mm contains the mm struct it is being added to.
-> > > >   *     @pages contains the number of pages.
-> > > > - *     Return 0 if permission is granted.
-> > > > + *     Return 0 if permission is granted by LSMs to the caller. LSMs should
-> > > > + *     return 1 if __vm_enough_memory() should be called with
-> > > > + *     cap_sys_admin set, 0 if not.
-> > >
-> > > I think this is a nice addition, but according to the code, any value
-> > > greater than zero will trigger the caller-should-have-CAP_SYS_ADMIN
-> > > behavior, not just 1.  I suggest updating the comment.
-> >
-> > Ok, yes. Thanks.
->
-> Also, this is an unrelated patch and you can probably send it
-> independently, especially
-> since the other changes will now land mostly via BPF.
+On Mon, 14 Nov 2022 10:23:00 -0800 John Fastabend wrote:
+> > > The other piece I would like to get out of the xdp ctx is the
+> > > rx descriptor of the device. I want to use this to pull out info
+> > > about the received buffer for debug mostly, but could also grab
+> > > some fields that are useful for us to track. That we can likely
+> > > do this,
+> > > 
+> > >    ctx->rxdesc  
+> > 
+> > I think it is possible. Adding rxdesc to xdp_buff as
+> >      unsigned char *rxdesc;
+> > or
+> >      void *rxdesc;
 
-Yes, the doc/comment changes really have nothing to do with the other
-stuff we are discussing in this patchset.
+We should avoid having to add fields to structures just to expose 
+them to BPF. Would the approach that Stan uses not work here?
+Having the driver place the desc pointer in a well known location
+on the stack and kfunc or some other magic resolve it?
+ 
+> > and using bpf_get_kern_btf_id(kctx->rxdesc, expected_btf_id)
+> > to get a btf id for rxdesc. Here we assume there is
+> > a struct available for rxdesc in vmlinux.h.
+> > Then you can trace through rxdesc with direct memory
+> > access.  
+> 
+> The trickest part here is that the rxdesc btf_id depends on 
+> what device we are attached to. So would need something to
+> resolve the btf_id from attached device.
 
--- 
-paul-moore.com
+Right, driver needs to get involved one way or another, so it can
+return "how to get to the descriptor given a xdp_buff pointer" 
+as well as the btf_id or dynptr params.
+
+(Sorry, I'm only catching up with the xdp hw field discussions
+now so this may have already been discussed elsewhere..)
