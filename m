@@ -2,334 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2C262D15E
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 04:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB8262D191
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 04:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbiKQDAB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 22:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S233842AbiKQDYH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 22:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239108AbiKQC7z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 21:59:55 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADCF4092A;
-        Wed, 16 Nov 2022 18:59:53 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id i21so646164edj.10;
-        Wed, 16 Nov 2022 18:59:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BmM/Ghh+hGvrYtxBIgPpo6ykm/qf83AzcsRNoCXujhg=;
-        b=AtKQ17Edr7peecYZxZUvanH8YWm4B5mMyZ5eu83IaN+nVats82tAYwm4f4uKwWOpqd
-         LJkJ6y+Htu7gZSU06ipqgbP7TKV+vEZOURvvI+UG7bfVWMehBOzW8XXf1UUsathp8cMX
-         s6+k+F94uYDj13xDeY5ZfIbCAVxA1SFVD6meV3S1f0gyod0NTYvBrOKXs4MZUqOT1aMb
-         sXrrlhUq/xFZEF7dUrEMpfJ8xCc3MHNPfGTsAzWciQXnKqX1OjNACZUs/ZbDWYhQTxCV
-         D1tXesJpnDA+02J4swpjwNPj4heuPLFQHOCS80xmkg9IS4iUNOnBUSVGcjRUpd87ZMFD
-         +LKg==
+        with ESMTP id S233958AbiKQDYG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 22:24:06 -0500
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B000EC770;
+        Wed, 16 Nov 2022 19:24:03 -0800 (PST)
+Received: by mail-qv1-f44.google.com with SMTP id o8so407513qvw.5;
+        Wed, 16 Nov 2022 19:24:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BmM/Ghh+hGvrYtxBIgPpo6ykm/qf83AzcsRNoCXujhg=;
-        b=qwFWkB1DmWJ4IyWfxQIAkycESDQqdDs5pkjEUj1osNtba8Ng2tregGrE8T/q+DFTwA
-         4o2LVTz+kWFBzxzwSIOLN6og+puw8iS6Bg2/BUZaDqsINWMh/eP11XT7Xp8hRnVOrvlM
-         CReaQQSZ7xgXY2SHBrgElcx9TrkAJ1km4KfmFFzv3faJlK+z3cc/r/isfYZMl8JStKiD
-         xTq/6Oh0YciJ/sjn+LllWr9hVBsKeNQvnk1csAAjo85nbAvInjrLLYzF+ViGAoDodknj
-         rsye0bNL4c6dvFXoI0W9W2OJRDCs64UE1wxZT660eDUr3H56+wN4EDX2SJzx3CLbTtmC
-         Jd/g==
-X-Gm-Message-State: ANoB5plqeO3Q9afL6q/wairzac14c7IvJDVzQmgzIwO9OFkT4uHEsPqw
-        HZPWuLNMkvpKKdQMfu3vfOFoOcww6CEcKPw5b9I=
-X-Google-Smtp-Source: AA0mqf7GHurn3nrqQassjpbWRDTwfsuweHWIQQ2IxehRveDcfYYrQ7DO3YDdcuVNoiBU6ZdkVH4KKzuPEuyRbDt62Rw=
-X-Received: by 2002:aa7:d604:0:b0:461:d726:438f with SMTP id
- c4-20020aa7d604000000b00461d726438fmr461314edr.333.1668653991978; Wed, 16 Nov
- 2022 18:59:51 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ieG8FEYcPH+W9pEbA1cC8itGyGdZ/0ghqx0HbPxMjkc=;
+        b=2ZWsjlsvfAb72Y1wTGVVBYEp6lWOs/vR2KyF7xwlY2dAhZm6KKsv6f2p7QE0awoOX7
+         DLuYTkYaxj6/9Y+j1xTFGrki9sq//mM7fRsag8B9KETL+xDhiZKJigZ6cozSA7KeVzar
+         CEfWOZJsULL8bY/YyX3jrlUtk2K1J/KV0e6RKUr6kz0wTnhZvKBhuaXuEtAGGR3g5ojH
+         1JemL2n9GBREG1AZMDiVShXulshtZHa+znpRx4KYXwRNJumgiID9mJioKGO+QDIfKe39
+         79+tWNyQwujaGBbMO2XOSMcqb+HQeZAVLf3NuxA4SHAIWzxegIllpp+sKkBhdfdvw3XA
+         wxbA==
+X-Gm-Message-State: ANoB5pmGkYj2qZDoDkkfrXN/7FHrR1DHNbfj+UDexX+cJDDMll+mGz9G
+        tTurB7uZHBdKJMmSCozVTL0cbSVZHuXry2+S
+X-Google-Smtp-Source: AA0mqf5zQpGowaR5AsNw+uBRubVSXP1y/x2mBl7h27fnFaBtNbViqEgw9yHOQa5bGGuIr3ELD5OsKQ==
+X-Received: by 2002:ad4:55ec:0:b0:4af:b3c6:f29c with SMTP id bu12-20020ad455ec000000b004afb3c6f29cmr990147qvb.45.1668655442296;
+        Wed, 16 Nov 2022 19:24:02 -0800 (PST)
+Received: from localhost (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
+        by smtp.gmail.com with ESMTPSA id y23-20020a37f617000000b006fa22f0494bsm11066009qkj.117.2022.11.16.19.24.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Nov 2022 19:24:01 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, memxor@gmail.com, yhs@fb.com,
+        song@kernel.org, sdf@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jolsa@kernel.org, haoluo@google.com,
+        tj@kernel.org, kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v7 0/3] Support storing struct task_struct objects as kptrs
+Date:   Wed, 16 Nov 2022 21:23:59 -0600
+Message-Id: <20221117032402.2356776-1-void@manifault.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-6-sdf@google.com>
- <87h6z0i449.fsf@toke.dk> <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk> <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch> <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev>
- <878rkbjjnp.fsf@toke.dk> <6375340a6c284_66f16208aa@john.notmuch>
- <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
- <637576962dada_8cd03208b0@john.notmuch> <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
- <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com> <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
-In-Reply-To: <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 16 Nov 2022 18:59:40 -0800
-Message-ID: <CAADnVQLBPCh=80RKe_5sgCt02c2Zat4TG66+PNrVD1a2k=4UfA@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        TVD_PH_BODY_ACCOUNTS_PRE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 6:53 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Wed, Nov 16, 2022 at 6:17 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Nov 16, 2022 at 4:19 PM Stanislav Fomichev <sdf@google.com> wro=
-te:
-> > >
-> > > On Wed, Nov 16, 2022 at 3:47 PM John Fastabend <john.fastabend@gmail.=
-com> wrote:
-> > > >
-> > > > Stanislav Fomichev wrote:
-> > > > > On Wed, Nov 16, 2022 at 11:03 AM John Fastabend
-> > > > > <john.fastabend@gmail.com> wrote:
-> > > > > >
-> > > > > > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > > > > > > Martin KaFai Lau <martin.lau@linux.dev> writes:
-> > > > > > >
-> > > > > > > > On 11/15/22 10:38 PM, John Fastabend wrote:
-> > > > > > > >>>>>>> +static void veth_unroll_kfunc(const struct bpf_prog =
-*prog, u32 func_id,
-> > > > > > > >>>>>>> +                           struct bpf_patch *patch)
-> > > > > > > >>>>>>> +{
-> > > > > > > >>>>>>> +     if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_ME=
-TADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-> > > > > > > >>>>>>> +             /* return true; */
-> > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_MOV64_IMM(B=
-PF_REG_0, 1));
-> > > > > > > >>>>>>> +     } else if (func_id =3D=3D xdp_metadata_kfunc_id=
-(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-> > > > > > > >>>>>>> +             /* return ktime_get_mono_fast_ns(); */
-> > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_EMIT_CALL(k=
-time_get_mono_fast_ns));
-> > > > > > > >>>>>>> +     }
-> > > > > > > >>>>>>> +}
-> > > > > > > >>>>>>
-> > > > > > > >>>>>> So these look reasonable enough, but would be good to =
-see some examples
-> > > > > > > >>>>>> of kfunc implementations that don't just BPF_CALL to a=
- kernel function
-> > > > > > > >>>>>> (with those helper wrappers we were discussing before)=
-.
-> > > > > > > >>>>>
-> > > > > > > >>>>> Let's maybe add them if/when needed as we add more meta=
-data support?
-> > > > > > > >>>>> xdp_metadata_export_to_skb has an example, and rfc 1/2 =
-have more
-> > > > > > > >>>>> examples, so it shouldn't be a problem to resurrect the=
-m back at some
-> > > > > > > >>>>> point?
-> > > > > > > >>>>
-> > > > > > > >>>> Well, the reason I asked for them is that I think having=
- to maintain the
-> > > > > > > >>>> BPF code generation in the drivers is probably the bigge=
-st drawback of
-> > > > > > > >>>> the kfunc approach, so it would be good to be relatively=
- sure that we
-> > > > > > > >>>> can manage that complexity (via helpers) before we commi=
-t to this :)
-> > > > > > > >>>
-> > > > > > > >>> Right, and I've added a bunch of examples in v2 rfc so we=
- can judge
-> > > > > > > >>> whether that complexity is manageable or not :-)
-> > > > > > > >>> Do you want me to add those wrappers you've back without =
-any real users?
-> > > > > > > >>> Because I had to remove my veth tstamp accessors due to J=
-ohn/Jesper
-> > > > > > > >>> objections; I can maybe bring some of this back gated by =
-some
-> > > > > > > >>> static_branch to avoid the fastpath cost?
-> > > > > > > >>
-> > > > > > > >> I missed the context a bit what did you mean "would be goo=
-d to see some
-> > > > > > > >> examples of kfunc implementations that don't just BPF_CALL=
- to a kernel
-> > > > > > > >> function"? In this case do you mean BPF code directly with=
-out the call?
-> > > > > > > >>
-> > > > > > > >> Early on I thought we should just expose the rx_descriptor=
- which would
-> > > > > > > >> be roughly the same right? (difference being code embedded=
- in driver vs
-> > > > > > > >> a lib) Trouble I ran into is driver code using seqlock_t a=
-nd mutexs
-> > > > > > > >> which wasn't as straight forward as the simpler just read =
-it from
-> > > > > > > >> the descriptor. For example in mlx getting the ts would be=
- easy from
-> > > > > > > >> BPF with the mlx4_cqe struct exposed
-> > > > > > > >>
-> > > > > > > >> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
-> > > > > > > >> {
-> > > > > > > >>          u64 hi, lo;
-> > > > > > > >>          struct mlx4_ts_cqe *ts_cqe =3D (struct mlx4_ts_cq=
-e *)cqe;
-> > > > > > > >>
-> > > > > > > >>          lo =3D (u64)be16_to_cpu(ts_cqe->timestamp_lo);
-> > > > > > > >>          hi =3D ((u64)be32_to_cpu(ts_cqe->timestamp_hi) + =
-!lo) << 16;
-> > > > > > > >>
-> > > > > > > >>          return hi | lo;
-> > > > > > > >> }
-> > > > > > > >>
-> > > > > > > >> but converting that to nsec is a bit annoying,
-> > > > > > > >>
-> > > > > > > >> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
-> > > > > > > >>                              struct skb_shared_hwtstamps *=
-hwts,
-> > > > > > > >>                              u64 timestamp)
-> > > > > > > >> {
-> > > > > > > >>          unsigned int seq;
-> > > > > > > >>          u64 nsec;
-> > > > > > > >>
-> > > > > > > >>          do {
-> > > > > > > >>                  seq =3D read_seqbegin(&mdev->clock_lock);
-> > > > > > > >>                  nsec =3D timecounter_cyc2time(&mdev->cloc=
-k, timestamp);
-> > > > > > > >>          } while (read_seqretry(&mdev->clock_lock, seq));
-> > > > > > > >>
-> > > > > > > >>          memset(hwts, 0, sizeof(struct skb_shared_hwtstamp=
-s));
-> > > > > > > >>          hwts->hwtstamp =3D ns_to_ktime(nsec);
-> > > > > > > >> }
-> > > > > > > >>
-> > > > > > > >> I think the nsec is what you really want.
-> > > > > > > >>
-> > > > > > > >> With all the drivers doing slightly different ops we would=
- have
-> > > > > > > >> to create read_seqbegin, read_seqretry, mutex_lock, ... to=
- get
-> > > > > > > >> at least the mlx and ice drivers it looks like we would ne=
-ed some
-> > > > > > > >> more BPF primitives/helpers. Looks like some more work is =
-needed
-> > > > > > > >> on ice driver though to get rx tstamps on all packets.
-> > > > > > > >>
-> > > > > > > >> Anyways this convinced me real devices will probably use B=
-PF_CALL
-> > > > > > > >> and not BPF insns directly.
-> > > > > > > >
-> > > > > > > > Some of the mlx5 path looks like this:
-> > > > > > > >
-> > > > > > > > #define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PER_SEC =
-+ ((u64)low))
-> > > > > > > >
-> > > > > > > > static inline ktime_t mlx5_real_time_cyc2time(struct mlx5_c=
-lock *clock,
-> > > > > > > >                                                u64 timestam=
-p)
-> > > > > > > > {
-> > > > > > > >          u64 time =3D REAL_TIME_TO_NS(timestamp >> 32, time=
-stamp & 0xFFFFFFFF);
-> > > > > > > >
-> > > > > > > >          return ns_to_ktime(time);
-> > > > > > > > }
-> > > > > > > >
-> > > > > > > > If some hints are harder to get, then just doing a kfunc ca=
-ll is better.
-> > > > > > >
-> > > > > > > Sure, but if we end up having a full function call for every =
-field in
-> > > > > > > the metadata, that will end up having a significant performan=
-ce impact
-> > > > > > > on the XDP data path (thinking mostly about the skb metadata =
-case here,
-> > > > > > > which will collect several bits of metadata).
-> > > > > > >
-> > > > > > > > csum may have a better chance to inline?
-> > > > > > >
-> > > > > > > Yup, I agree. Including that also makes it possible to benchm=
-ark this
-> > > > > > > series against Jesper's; which I think we should definitely b=
-e doing
-> > > > > > > before merging this.
-> > > > > >
-> > > > > > Good point I got sort of singularly focused on timestamp becaus=
-e I have
-> > > > > > a use case for it now.
-> > > > > >
-> > > > > > Also hash is often sitting in the rx descriptor.
-> > > > >
-> > > > > Ack, let me try to add something else (that's more inline-able) o=
-n the
-> > > > > rx side for a v2.
-> > > >
-> > > > If you go with in-kernel BPF kfunc approach (vs user space side) I =
-think
-> > > > you also need to add CO-RE to be friendly for driver developers? Ot=
-herwise
-> > > > they have to keep that read in sync with the descriptors? Also need=
- to
-> > > > handle versioning of descriptors where depending on specific option=
-s
-> > > > and firmware and chip being enabled the descriptor might be moving
-> > > > around. Of course can push this all to developer, but seems not so
-> > > > nice when we have the machinery to do this and we handle it for all
-> > > > other structures.
-> > > >
-> > > > With CO-RE you can simply do the rx_desc->hash and rx_desc->csum an=
-d
-> > > > expect CO-RE sorts it out based on currently running btf_id of the
-> > > > descriptor. If you go through normal path you get this for free of
-> > > > course.
-> > >
-> > > Doesn't look like the descriptors are as nice as you're trying to
-> > > paint them (with clear hash/csum fields) :-) So not sure how much
-> > > CO-RE would help.
-> > > At least looking at mlx4 rx_csum, the driver consults three different
-> > > sets of flags to figure out the hash_type. Or am I just unlucky with
-> > > mlx4?
-> >
-> > Which part are you talking about ?
-> >         hw_checksum =3D csum_unfold((__force __sum16)cqe->checksum);
-> > is trivial enough for bpf prog to do if it has access to 'cqe' pointer
-> > which is what John is proposing (I think).
->
-> I'm talking about mlx4_en_process_rx_cq, the caller of that check_csum.
-> In particular: if (likely(dev->features & NETIF_F_RXCSUM)) branch
-> I'm assuming we want to have hash_type available to the progs?
->
-> But also, check_csum handles other corner cases:
-> - short_frame: we simply force all those small frames to skip checksum co=
-mplete
-> - get_fixed_ipv6_csum: In IPv6 packets, hw_checksum lacks 6 bytes from
-> IPv6 header
-> - get_fixed_ipv4_csum: Although the stack expects checksum which
-> doesn't include the pseudo header, the HW adds it
+Now that BPF supports adding new kernel functions with kfuncs, and
+storing kernel objects in maps with kptrs, we can add a set of kfuncs
+which allow struct task_struct objects to be stored in maps as
+referenced kptrs.
 
-Of course, but kfunc won't be doing them either.
-We're talking XDP fast path.
-The mlx4 hw is old and incapable.
-No amount of sw can help.
+The possible use cases for doing this are plentiful.  During tracing,
+for example, it would be useful to be able to collect some tasks that
+performed a certain operation, and then periodically summarize who they
+are, which cgroup they're in, how much CPU time they've utilized, etc.
+Doing this now would require storing the tasks' pids along with some
+relevant data to be exported to user space, and later associating the
+pids to tasks in other event handlers where the data is recorded.
+Another useful by-product of this is that it allows a program to pin a
+task in a BPF program, and by proxy therefore also e.g. pin its task
+local storage.
 
-> So it doesn't look like we can just unconditionally use cqe->checksum?
-> The driver does a lot of massaging around that field to make it
-> palatable.
+In order to support this, we'll need to expand KF_TRUSTED_ARGS to
+support receiving trusted, non-refcounted pointers. It currently only
+supports either PTR_TO_CTX pointers, or refcounted pointers. What this
+means in terms of the implementation is that btf_check_func_arg_match()
+would have to add another condition to its logic for checking if
+a ptr needs a refcount to also require that the pointer has at least one
+type modifier, such as a new modifier we're adding called PTR_TRUSTED
+(described below). Note that PTR_UNTRUSTED is insufficient for this
+purpose, as it does not cover all of the possible pointers we need to
+watch out for, though. For example, a pointer obtained from walking a
+struct is considered "trusted" (or at least, not PTR_UNTRUSTED). To
+account for this and enable us to expand KF_TRUSTED_ARGS to include
+allow-listed arguments such as those passed by the kernel to tracepoints
+and struct_ops callbacks, this patch set also introduces a new
+PTR_TRUSTED type flag modifier which records if a pointer was obtained
+passed from the kernel in a trusted context.
 
-Of course we can. cqe->checksum is still usable. the bpf prog
-would need to know what it's reading.
-There should be no attempt to present a unified state of hw bits.
-That's what skb is for. XDP layer should not hide such hw details.
-Otherwise it will become a mini skb layer with all that overhead.
+In closing, this patch set:
+
+1. Adds the new PTR_TRUSTED register type modifier flag, and updates the
+   verifier and existing selftests accordingly.
+2. Expands KF_TRUSTED_ARGS to also include trusted pointers that were
+   not obtained from walking structs. 
+3. Adds a new set of kfuncs that allows struct task_struct* objects to be
+   used as kptrs.
+4. Adds a new selftest suite to validate these new task kfuncs.
+
+--
+Changelog:
+v6 -> v7:
+- Removed the PTR_WALKED type modifier, and instead define a new
+  PTR_TRUSTED type modifier which is set on registers containing
+  pointers passed from trusted contexts (i.e. as tracepoint or
+  struct_ops callback args) (Alexei)
+- Remove the new KF_OWNED_ARGS kfunc flag. This can be accomplished
+  by defining a new type that wraps an existing type, such as with
+  struct nf_conn___init (Alexei)
+- Add a test_task_current_acquire_release testcase which verifies we can
+  acquire a task struct returned from bpf_get_current_task_btf().
+- Make bpf_task_acquire() no longer return NULL, as it can no longer be
+  called with a NULL task.
+- Removed unnecessary is_test_kfunc_task() checks from failure
+  testcases.
+
+v5 -> v6:
+- Add a new KF_OWNED_ARGS kfunc flag which may be used by kfuncs to
+  express that they require trusted, refcounted args (Kumar)
+- Rename PTR_NESTED -> PTR_WALKED in the verifier (Kumar)
+- Convert reg_type_str() prefixes to use snprintf() instead of strncpy()
+  (Kumar)
+- Add PTR_TO_BTF_ID | PTR_WALKED to missing struct btf_reg_type
+  instances -- specifically btf_id_sock_common_types, and
+  percpu_btf_ptr_types.
+- Add a missing PTR_TO_BTF_ID | PTR_WALKED switch case entry in
+  check_func_arg_reg_off(), which is required when validating helper
+  calls (Kumar)
+- Update reg_type_mismatch_ok() to check base types for the registers
+  (i.e. to accommodate type modifiers). Additionally, add a lengthy
+  comment that explains why this is being done (Kumar)
+- Update convert_ctx_accesses() to also issue probe reads for
+  PTR_TO_BTF_ID | PTR_WALKED (Kumar)
+- Update selftests to expect new prefix reg type strings.
+- Rename task_kfunc_acquire_trusted_nested testcase to
+  task_kfunc_acquire_trusted_walked, and fix a comment (Kumar)
+- Remove KF_TRUSTED_ARGS from bpf_task_release(), which already includes
+  KF_RELEASE (Kumar)
+- Add bpf-next in patch subject lines (Kumar)
+
+v4 -> v5:
+- Fix an improperly formatted patch title.
+
+v3 -> v4:
+- Remove an unnecessary check from my repository that I forgot to remove
+  after debugging something.
+
+v2 -> v3:
+- Make bpf_task_acquire() check for NULL, and include KF_RET_NULL
+  (Martin)
+- Include new PTR_NESTED register modifier type flag which specifies
+  whether a pointer was obtained from walking a struct. Use this to
+  expand the meaning of KF_TRUSTED_ARGS to include trusted pointers that
+  were passed from the kernel (Kumar)
+- Add more selftests to the task_kfunc selftest suite which verify that
+  you cannot pass a walked pointer to bpf_task_acquire().
+- Update bpf_task_acquire() to also specify KF_TRUSTED_ARGS.
+
+v1 -> v2:
+- Rename tracing_btf_ids to generic_kfunc_btf_ids, and add the new
+  kfuncs to that list instead of making a separate btf id list (Alexei).
+- Don't run the new selftest suite on s390x, which doesn't appear to
+  support invoking kfuncs.
+- Add a missing __diag_ignore block for -Wmissing-prototypes
+  (lkp@intel.com).
+- Fix formatting on some of the SPDX-License-Identifier tags.
+- Clarified the function header comment a bit on bpf_task_kptr_get().
+
+David Vernet (3):
+  bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
+  bpf: Add kfuncs for storing struct task_struct * as a kptr
+  bpf/selftests: Add selftests for new task kfuncs
+
+ Documentation/bpf/kfuncs.rst                  |  28 +-
+ include/linux/bpf.h                           |  25 ++
+ include/linux/btf.h                           |  66 ++--
+ kernel/bpf/btf.c                              |  44 ++-
+ kernel/bpf/helpers.c                          |  83 ++++-
+ kernel/bpf/verifier.c                         |  45 ++-
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/ipv4/bpf_tcp_ca.c                         |   4 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/task_kfunc.c     | 160 +++++++++
+ .../selftests/bpf/progs/task_kfunc_common.h   |  81 +++++
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 304 ++++++++++++++++++
+ .../selftests/bpf/progs/task_kfunc_success.c  | 127 ++++++++
+ tools/testing/selftests/bpf/verifier/calls.c  |   4 +-
+ .../selftests/bpf/verifier/ref_tracking.c     |   4 +-
+ 15 files changed, 906 insertions(+), 72 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_success.c
+
+-- 
+2.38.1
