@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C23462E19D
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 17:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D722962E19E
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 17:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240392AbiKQQ0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 11:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
+        id S240411AbiKQQ0f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 11:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240409AbiKQQ0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 11:26:17 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE487FF2B
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:48 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so2369227pgb.13
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:48 -0800 (PST)
+        with ESMTP id S240423AbiKQQ0V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 11:26:21 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48277FF3A
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:53 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c203so2230342pfc.11
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0LB9qhJTd7oVL3uqsvJLuNvLsH7Z0bs7/d2iO6QOalE=;
-        b=B3QX++703HwRKTH2dcqhIBJFfdLs3Mvq5gPOvRQnhpE9G2vCTRFRX8OvlIzbEOOsBA
-         NHGMPMi4OYSOBUro1mmg2HypuDHyhLBHkJwjmT2JPGlM23eNXHPfgMJ83cfRrmwLiZnZ
-         eAxtAX56/innZKp4mPwtG7CCCHunwtVaT4yICzKn1q6KZBTQWTaK5o88fGt0I0Z7OWTO
-         KpQwrdldE0b3gWy760FtmPDOpcqKKqGcq3p/6DcQy6iR+2P7ANdNMryDAXISv7h4zRPb
-         4W4/XVU+ZA/BoVLlArvBhPcslWYytOc24AxKThjES4ZWX4kFPnQv7wwUoHsLgMGlmIal
-         9jiA==
+        bh=PdGV3WLq9T0v9xO58ScVcH1xBLJnaoYl5zlkBFTuiek=;
+        b=GZWDQFAzbkTgomFTa0W4Y7DVCu78Nzs6en2bOyhmWv1uEufljh2DOZU605oDnexm0M
+         k5OCqsn1WaDw/f3kddMzOWPi8OizfWNGx9NAN1KP+yf4EMTg3IEp3pr40mz2XBW47uKi
+         ZAlL3jHsdnRaj5C5JuOpVR5N2fh6qItRGQf89XsV19sAjxq1v0f3SC7aGIL7tzND1M6B
+         vVMu/CfQDTYEFBctfLT8nllkdD8+JJLX9g09IbwuuBw/UbfIAh/+nRrCmiKo2P6QJTTc
+         2IFUH/VShLVpvHE5YP4B3chGoU3eV1dt2NwLV3z1aI0Va8BfcsQXDwVWRZFQI+Y0Reab
+         TFmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0LB9qhJTd7oVL3uqsvJLuNvLsH7Z0bs7/d2iO6QOalE=;
-        b=tH71Jk0EJkBtbYczoWpW4a3OJhEG000dDwQ+kuN8pV5AfyJEFwx/ua77KMWp4g75gu
-         2G7x2Ymw2Q3rxYi6txwLllRzynx7EyQ65fxf7qx9EuWZOfnCVRrPr0xow50a5xn8Srkz
-         +a8rK2Ek4bzaxKVpnAqMDZ8SA2MoKqnA6+qeUgmyAFiWxWwaVUGY6xQkd+z8u07vdHVS
-         yfuxmU71Od5G8rYwT09jAs3AsJKuCeAA+QR5GtjWWg4PYomRPbDjvLCetYqNRNR4M2+z
-         O8o+d1or9AETMbIXsYnydxglxkdl9n2UsxsYAMoK4xmeEH29fpo6t6N6lHDwebTglLIL
-         uW6w==
-X-Gm-Message-State: ANoB5pkXocIOXwLzHMLSJSRsk/c1DTm3xLXTBn6hWG3XtW4C4y5l8NsF
-        HDjeXE+US5PwiNB6L8fYd5U1UanI6GQ=
-X-Google-Smtp-Source: AA0mqf6fZBQ/OOsT3WPM9X+bVGTVsjrAy0ZLx4O7m2NtrJM/+Psl50Zr+av0yrqMUTt760By9Y4A9g==
-X-Received: by 2002:a63:a516:0:b0:45f:bf96:771c with SMTP id n22-20020a63a516000000b0045fbf96771cmr2775320pgf.131.1668702287806;
-        Thu, 17 Nov 2022 08:24:47 -0800 (PST)
+        bh=PdGV3WLq9T0v9xO58ScVcH1xBLJnaoYl5zlkBFTuiek=;
+        b=SJ13bRZvNeNdPCpWUzLwsm2byc9KPIc+yNk8srNV/ofW49EejfSJk9WpCX3GOFu09g
+         2dnWUqF5Ut7N20onaKHxF9q7vH/605EAyLi3WuY7V95sd8yLxWQV5avOk4wBMteWxvOV
+         4zW21GZzhYnWsM1YPCjQaXqXUyIXt3vXykWyyVMSBiTwBDEmQot+ckPjkVZ2aCxhRsEB
+         UvJDOnaUwaUJq3wonODYNy2bIV10MdTEv1aLup5lGMfjc+FY6GXEDDxHzX1nY9YpenyP
+         T+FwSXFzPu29MeKT3/x4XfRT+SVvZgLZwe+eKydv/C9MJb+u+EfBI0IYzgBlqKly4yIm
+         4lAw==
+X-Gm-Message-State: ANoB5pmJY2D7cWQpwfcgqN67Muh4XTd8wgeES8pFhRk23rCcAlLOrtze
+        LINaWvWf8N6Fx7h1G2CnuOn8sKG63m8=
+X-Google-Smtp-Source: AA0mqf7CifeirkZCz3DZOqXlqzXMG3sx49S359bcrmFmrdOnDGwDdvi6mZZ/bG2W0Gn33cCoq+eDIA==
+X-Received: by 2002:a63:1f65:0:b0:470:8e8d:44ae with SMTP id q37-20020a631f65000000b004708e8d44aemr2596766pgm.382.1668702292873;
+        Thu, 17 Nov 2022 08:24:52 -0800 (PST)
 Received: from localhost ([103.4.221.252])
-        by smtp.gmail.com with ESMTPSA id y65-20020a626444000000b005627868e27esm1333853pfb.127.2022.11.17.08.24.46
+        by smtp.gmail.com with ESMTPSA id k9-20020a170902ba8900b0018725c2fc46sm1460983pls.303.2022.11.17.08.24.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 08:24:47 -0800 (PST)
+        Thu, 17 Nov 2022 08:24:52 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,14 +56,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>
-Subject: [PATCH bpf-next v8 02/22] bpf: Do btf_record_free outside map_free callback
-Date:   Thu, 17 Nov 2022 21:54:10 +0530
-Message-Id: <20221117162430.1213770-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v8 03/22] bpf: Do btf_record_free for outer maps
+Date:   Thu, 17 Nov 2022 21:54:11 +0530
+Message-Id: <20221117162430.1213770-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221117162430.1213770-1-memxor@gmail.com>
 References: <20221117162430.1213770-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3893; i=memxor@gmail.com; h=from:subject; bh=GGK3XlnC6SdTUhmrTjYYXPKQ7WaZ5TiHqcf8QM1M4bQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjdl7+2Rw03T0emeTlv8e6UDcMsT7XnSv1FvkyfUVr pYHaNMiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3Ze/gAKCRBM4MiGSL8RyvCiEA Cnq9h9t6iyRLm1f1pyGehsF1ZqQKB9BH+Qy/JDdoYDeC4S1DbSJEuN/wNbGc9GjLwxsbZCTORazXPx WsmpUhs+Jp0OO+erMflViEB/DrHR+WOzY+vQO18U8BsBLHzC9a2STtOdlx5oey/D9vigKAE503HYx1 1qd1HFrhA8sln5kER42ORjd7dArnetT9fPyv2HUh5e/BpUaSTB/z+WQv7tIM6IcMIN9pqZ43jN0j8H x1jrEXyHoiO+O+E9Zh1awF5VJ+x5FYwSuTvyLi/X0FJ7vzVIIT/FEIy8cEEOWihYRwfToJu85oeTKH 568YGelwbuycWnACmSaC4IP0/EXgE9z+j24A4/Qxh47pPWgF8w/ApHfT3oBMIJNwIgEhNT1d8Cu/xV 067kbTH/ugf9xOzdqYXMBFCE4gAOKNSy+SnHuQ3pSkJDW7ia/gaPMwfd99EqaGtbY8wMFLcHnrsYS+ MHZU4Umc+fvmYQJvYQ1RYhfUzsl24bW0n0yYsfpKwi66xJXz4QL6csJQD8NWIJTsYdPTFU9bFQKADa Y/qm/rLpUSQPMn8GhroAwTdMQA0kqpghOR3WJsVoTtUmiRPMO40irRxDhzW21csgsmgljOASpyQx5R /AO/BRXCwrgOY2OODYxVHtwmmpRTWYCHlrEK3NdYYJXAgqoLzW+2Z7EIPpJQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2222; i=memxor@gmail.com; h=from:subject; bh=dOJ86OdnShZuSG5H02AhjavEwsfvY7ZpYKeWiUP407A=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjdl7+5lBP/Liq78FQjY4ZV408BNTpOhGXjAOB6Hu7 pCciZsyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3Ze/gAKCRBM4MiGSL8RygwzEA CjDJHeV3ePI7cj/Yu8egU8oTtOZij1lc4l1HQXLKTp9L+zwUZ5ypNOC8PEfEngoBf+6N3BU1Ko7j/w RtkYAsT1Q6ORo6bgTZ3R2EqZyj5B1AL2cxdvuv40msnivtSslIJ8AkONoVIbpzBbADG8EKH9Hp2fIF u6+rgWZDCN4M5cwTNbJDpv9PaKPsbb7vdHzWuWK8NxhtiqZYtIx+u0tu9w9biNQp/0zMynuxSCVj43 y0Fy97DIdAg6yfKaX/ZureTyRpM00IIF2fNCiNzHa8UPBBi/muH7/UDt3A4W4fqCNGzEFaUb7f5tNy 5UxXs6aCUYAJtfHjv7dePgsevfWbylj9xwHPO+soBUQLHYyunANdOiTuyv5Fz/KT1qODAg0EYR2sjs /aRMw3hgGtUhG54noemW6ZzSzIdgy3Ba+KYWNJduUDOhgUpd6mZTYXvB3QipgSb2mIh521VneLkW3O f12WDNyNvypZDhsPU8DjO/sUxQlCsgNdCKiflL4Cbn8pQboFrW3iNSx6+d1rjoaZ/X2WMalaJgGDXQ nB56GTROaYD92641c6humcs2FPIxJLT9lAhkJTroWJGiOvl9ccKrOmXbvfx4kY/e3dCsuvzYt9sHX7 SMKBN3OOiTsZjcJwbK0Pdfba40pJMKwwbQhNu/KpP0xcYqjDHDW9GyGa4TIw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,105 +76,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the commit being fixed, we now miss freeing btf_record for local
-storage maps which will have a btf_record populated in case they have
-bpf_spin_lock element.
+First of all, whenever btf_record_dup fails, we must free inner_map_meta
+that was allocated before.
 
-This was missed because I made the choice of offloading the job to free
-kptr_off_tab (now btf_record) to the map_free callback when adding
-support for kptrs.
+Secondly, outer maps are a bit different than normal maps, since they
+don't have anything to free in the map values when being destructed. The
+inner_map_meta that holds a duplicated btf_record (from the inner map fd
+being used to parameterize the outer map) only exists to serve checks
+during verification, which is why we never populate field_offs in
+inner_map_meta. Hence, in this case, simply take ownership of the
+duplicated btf_record and free it in bpf_map_meta_free.
 
-Revisiting the reason for this decision, there is the possibility that
-the btf_record gets used inside map_free callback (e.g. in case of maps
-embedding kptrs) to iterate over them and free them, hence doing it
-before the map_free callback would be leaking special field memory, and
-do invalid memory access. The btf_record keeps module references which
-is critical to ensure the dtor call made for referenced kptr is safe to
-do.
+This fixes both sources of leaks (in case of errors) during inner map
+creation.
 
-If doing it after map_free callback, the map area is already freed, so
-we cannot access bpf_map structure anymore.
-
-To fix this and prevent such lapses in future, move bpf_map_free_record
-out of the map_free callback, and do it after map_free by remembering
-the btf_record pointer. There is no need to access bpf_map structure in
-that case, and we can avoid missing this case when support for new map
-types is added for other special fields.
-
-Since a btf_record and its btf_field_offs are used together, for
-consistency delay freeing of field_offs as well. While not a problem
-right now, a lot of code assumes that either both record and field_offs
-are set or none at once.
-
-Fixes: db559117828d ("bpf: Consolidate spin_lock, timer management into btf_record")
+Fixes: aa3496accc41 ("bpf: Refactor kptr_off_tab into btf_record")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/arraymap.c   | 1 -
- kernel/bpf/hashtab.c    | 1 -
- kernel/bpf/map_in_map.c | 1 -
- kernel/bpf/syscall.c    | 9 +++++----
- 4 files changed, 5 insertions(+), 7 deletions(-)
+ kernel/bpf/map_in_map.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 672eb17ac421..484706959556 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -430,7 +430,6 @@ static void array_map_free(struct bpf_map *map)
- 			for (i = 0; i < array->map.max_entries; i++)
- 				bpf_obj_free_fields(map->record, array_map_elem_ptr(array, i));
- 		}
--		bpf_map_free_record(map);
- 	}
- 
- 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 50d254cd0709..5aa2b5525f79 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1511,7 +1511,6 @@ static void htab_map_free(struct bpf_map *map)
- 		prealloc_destroy(htab);
- 	}
- 
--	bpf_map_free_record(map);
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
- 	bpf_mem_alloc_destroy(&htab->pcpu_ma);
 diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index 8ca0cca39d49..4caf03eb51ab 100644
+index 4caf03eb51ab..74f91048eee3 100644
 --- a/kernel/bpf/map_in_map.c
 +++ b/kernel/bpf/map_in_map.c
-@@ -78,7 +78,6 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+@@ -52,13 +52,20 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 	inner_map_meta->max_entries = inner_map->max_entries;
+ 	inner_map_meta->record = btf_record_dup(inner_map->record);
+ 	if (IS_ERR(inner_map_meta->record)) {
++		struct bpf_map *err_ptr = ERR_CAST(inner_map_meta->record);
+ 		/* btf_record_dup returns NULL or valid pointer in case of
+ 		 * invalid/empty/valid, but ERR_PTR in case of errors. During
+ 		 * equality NULL or IS_ERR is equivalent.
+ 		 */
++		kfree(inner_map_meta);
+ 		fdput(f);
+-		return ERR_CAST(inner_map_meta->record);
++		return err_ptr;
+ 	}
++	/* It is critical that inner_map btf is set to inner_map_meta btf, as
++	 * the duplicated btf_record's list_head btf_field structs have
++	 * value_rec members which point into the btf_record populated for the
++	 * map btf.
++	 */
+ 	if (inner_map->btf) {
+ 		btf_get(inner_map->btf);
+ 		inner_map_meta->btf = inner_map->btf;
+@@ -78,6 +85,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
  
  void bpf_map_meta_free(struct bpf_map *map_meta)
  {
--	bpf_map_free_record(map_meta);
++	btf_record_free(map_meta->record);
  	btf_put(map_meta->btf);
  	kfree(map_meta);
  }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0b48e2b13021..0621d2f4e38a 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -659,14 +659,15 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
- static void bpf_map_free_deferred(struct work_struct *work)
- {
- 	struct bpf_map *map = container_of(work, struct bpf_map, work);
-+	struct btf_field_offs *foffs = map->field_offs;
-+	struct btf_record *rec = map->record;
- 
- 	security_bpf_map_free(map);
--	kfree(map->field_offs);
- 	bpf_map_release_memcg(map);
--	/* implementation dependent freeing, map_free callback also does
--	 * bpf_map_free_record, if needed.
--	 */
-+	/* implementation dependent freeing */
- 	map->ops->map_free(map);
-+	kfree(foffs);
-+	btf_record_free(rec);
- }
- 
- static void bpf_map_put_uref(struct bpf_map *map)
 -- 
 2.38.1
 
