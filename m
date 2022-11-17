@@ -2,808 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DE562E67D
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 22:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B61D62E74F
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 22:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbiKQVMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 16:12:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        id S239647AbiKQVw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 16:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240766AbiKQVL7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 16:11:59 -0500
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BA86150E
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:11:57 -0800 (PST)
-Received: by mail-qk1-f182.google.com with SMTP id s20so2160566qkg.5
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:11:57 -0800 (PST)
+        with ESMTP id S240810AbiKQVwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 16:52:25 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C33720B0
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:52:24 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id m15so1640397ilq.2
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZIfCf35I7ypehLBPONCdMybY63wBWvIY0HsYk1HXqDc=;
+        b=FwFpT9rEAOzbFMrQ1oETE5w3UkjxJG2IuYVttzZ2dC1284aFmSpcPVRiNVHQZcU+so
+         RrgucbqQmdEoPE/BmvWYhbHRQHWPyDf5Qvn9dPzT3lMDNGYj+bN+l30DNAsICMaWyM5x
+         6MIRb64hzBHkuexsAifzULV9iwNA+Np52/yB+fWncqJtKV1T9GoFBnDfZTl49lNSsyqg
+         Dvj4i3R0dSnj/Dn3tbYWx3lurf0ku4zt9sqxvU1JqtGth1EBIECzDZ4wBfU3ikufzXv5
+         TlsBiS9URvFZUeHMfzBRvbDUv+LoFCQK/5BMahxU49xLbrsDAYeknF3hWxOgB6gATdkk
+         yqZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bqf9xOi4/VcO/b4Ighp7Q5uFA9GJipFJj3giUriFb0M=;
-        b=TzTRRoXQniyLGnKp5z7G2LIBNZcej9/MAr5adQhAajLT1EcYbPVYM4vjMhaBEFcYmK
-         hbsqyAcoEvvBzPvbTijICiDj/fWH5whvt3CrOCnxPqUFDWqU0ugzN4CPgVUkZT9K0UjV
-         mRphwR6YLGYD2EaQW4t6X3xW4P0znmbYRNLYNYgFYlEf/M99Px8OG+MZJdHdFxURw+3l
-         8R09euMME2sZsmk6PLFy4akKaa29HuVH8JmO6ZYD8lLeFrMxfuXdetL7QyJssoNcRRWY
-         Jsz7wMutBe1KJreSDZgpd5Tqowl2inYlgzlFmJlKsqY4AaCPB9l4O6XlUBWm1A4InMVu
-         eN1A==
-X-Gm-Message-State: ANoB5pntj/1MzUSm904XIBQbcHK28JvyIYQGf44rkudYiWSxUfgqq4s2
-        MoPZhFMllWDiAgSr39uOgtWSwdbeyVxptPDu
-X-Google-Smtp-Source: AA0mqf6eA1ku7mBtEPCfjIUFB+FNifBpz09+vGzl56Ov2Iom7xzmQD/cCqccRK/QKgkaPJdtAcpBrA==
-X-Received: by 2002:a05:620a:3cc:b0:6fa:3204:330b with SMTP id r12-20020a05620a03cc00b006fa3204330bmr3415826qkm.114.1668719515683;
-        Thu, 17 Nov 2022 13:11:55 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:8ad4])
-        by smtp.gmail.com with ESMTPSA id bl6-20020a05620a1a8600b006ce9e880c6fsm1122532qkb.111.2022.11.17.13.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 13:11:55 -0800 (PST)
-Date:   Thu, 17 Nov 2022 15:11:57 -0600
-From:   David Vernet <void@manifault.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/7] bpf: Rework process_dynptr_func
-Message-ID: <Y3ajnSVA20j3o/16@maniforge.lan>
-References: <20221115000130.1967465-1-memxor@gmail.com>
- <20221115000130.1967465-4-memxor@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZIfCf35I7ypehLBPONCdMybY63wBWvIY0HsYk1HXqDc=;
+        b=Cv369U5xxd2gqSN8Ougr6PGM4YxeVCuEFX2JmIM26B7lBCf15DmBFLrGKyWz5fS7Il
+         GGrmLgB5tFSCtWkMHfEQaqk0r855mND2NSon94nHOt/4hqaHEywgAIEayDYC57/5vbg5
+         BtK17+TF8xpb/lnhgMHdjiKXeBECIOzEpHpgs1IhECRL+qAftMLWOj8YIV/ukRsM4ATV
+         w3+rQGetIi9IQnerXqSN/fPKFxRdzUxhVLPRgugL0073ZScyWZC2ScoI/wfBi9X74BUF
+         EFS/PppRcDiH0DIVn38r9h5cthqWbGqsZrbRjZDsyJOj4BO02nzHdNf503URP1keUAfc
+         /tWA==
+X-Gm-Message-State: ANoB5pmBwQ+Ntyrjzg7pU642v32f8DRZ53rwTucBy0MN5xwdZ9FRmy8D
+        ejmuYHOMMMxWbO9cZAzFBeJmwewU5kT9D9DEc77D5g==
+X-Google-Smtp-Source: AA0mqf4sHBRBgXFO6vYaegWinsM12EWK6jnEiNEoIlD8jNSI1TQdnDv64G2kvFZuIoVD6UdIdnHz3M94FVFnC+Hfo98=
+X-Received: by 2002:a92:c086:0:b0:2ea:ba31:f2ef with SMTP id
+ h6-20020a92c086000000b002eaba31f2efmr2001158ile.159.1668721943842; Thu, 17
+ Nov 2022 13:52:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221115000130.1967465-4-memxor@gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <tencent_E1424259BD97672AD1AF00A3468858065E08@qq.com>
+In-Reply-To: <tencent_E1424259BD97672AD1AF00A3468858065E08@qq.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 17 Nov 2022 13:52:12 -0800
+Message-ID: <CAKH8qBsAC4qHSQ7TYnkXEMM68rqOz8gxuZJBxVdSkzhpQ8MR-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared
+ identifier 'NF_NAT_MANIP_SRC'
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, dxu@dxuuu.xyz,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, lkp@intel.com, lorenzo@kernel.org,
+        martin.lau@linux.dev, memxor@gmail.com, mykolal@fb.com,
+        rongtao@cestc.cn, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 05:31:26AM +0530, Kumar Kartikeya Dwivedi wrote:
-> Recently, user ringbuf support introduced a PTR_TO_DYNPTR register type
-> for use in callback state, because in case of user ringbuf helpers,
-> there is no dynptr on the stack that is passed into the callback. To
-> reflect such a state, a special register type was created.
-> 
-> However, some checks have been bypassed incorrectly during the addition
-> of this feature. First, for arg_type with MEM_UNINIT flag which
-> initialize a dynptr, they must be rejected for such register type.
-> Secondly, in the future, there are plans to add dynptr helpers that
-> operate on the dynptr itself and may change its offset and other
-> properties.
-> 
-> In all of these cases, PTR_TO_DYNPTR shouldn't be allowed to be passed
-> to such helpers, however the current code simply returns 0.
-> 
-> The rejection for helpers that release the dynptr is already handled.
-> 
-> For fixing this, we take a step back and rework existing code in a way
-> that will allow fitting in all classes of helpers and have a coherent
-> model for dealing with the variety of use cases in which dynptr is used.
-> 
-> First, for ARG_PTR_TO_DYNPTR, it can either be set alone or together
-> with a DYNPTR_TYPE_* constant that denotes the only type it accepts.
-> 
-> Next, helpers which initialize a dynptr use MEM_UNINIT to indicate this
-> fact. To make the distinction clear, use MEM_RDONLY flag to indicate
-> that the helper only operates on the memory pointed to by the dynptr,
-> not the dynptr itself. In C parlance, it would be equivalent to taking
-> the dynptr as a point to const argument.
-> 
-> When either of these flags are not present, the helper is allowed to
-> mutate both the dynptr itself and also the memory it points to.
-> Currently, the read only status of the memory is not tracked in the
-> dynptr, but it would be trivial to add this support inside dynptr state
-> of the register.
-> 
-> With these changes and renaming PTR_TO_DYNPTR to CONST_PTR_TO_DYNPTR to
-> better reflect its usage, it can no longer be passed to helpers that
-> initialize a dynptr, i.e. bpf_dynptr_from_mem, bpf_ringbuf_reserve_dynptr.
-> 
-> A note to reviewers is that in code that does mark_stack_slots_dynptr,
-> and unmark_stack_slots_dynptr, we implicitly rely on the fact that
-> PTR_TO_STACK reg is the only case that can reach that code path, as one
-> cannot pass CONST_PTR_TO_DYNPTR to helpers that don't set MEM_RDONLY. In
-> both cases such helpers won't be setting that flag.
-> 
-> The next patch will add a couple of selftest cases to make sure this
-> doesn't break.
-> 
-> Fixes: 205715673844 ("bpf: Add bpf_user_ringbuf_drain() helper")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Thu, Nov 17, 2022 at 7:17 AM Rong Tao <rtoax@foxmail.com> wrote:
+>
+> From: Rong Tao <rongtao@cestc.cn>
+>
+> commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+> introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+> and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+> kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
+>
+> In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+> is compiled as built-in, this issue occurs just if it is compiled as
+> module. We could use BPF CO-RE and ___suffix rule to avoid this.
+>
+> How to reproduce the error:
+>
+>     $ make -C tools/testing/selftests/bpf/
+>     ...
+>       CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+>       error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+>             bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+>                                                            ^
+>       error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+>             bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+>                                                            ^
+>     2 errors generated.
+>
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 > ---
-
-Overall this LGTM. Left some comments / nits before stamping.
-
->  include/linux/bpf.h                           |   4 +-
->  include/uapi/linux/bpf.h                      |   8 +-
->  kernel/bpf/btf.c                              |   7 +-
->  kernel/bpf/helpers.c                          |  18 +-
->  kernel/bpf/verifier.c                         | 220 +++++++++++++-----
->  scripts/bpf_doc.py                            |   1 +
->  tools/include/uapi/linux/bpf.h                |   8 +-
->  .../selftests/bpf/prog_tests/user_ringbuf.c   |  10 +-
->  8 files changed, 195 insertions(+), 81 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 798aec816970..dfe45f6caa4f 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -709,7 +709,7 @@ enum bpf_reg_type {
->  	PTR_TO_MEM,		 /* reg points to valid memory region */
->  	PTR_TO_BUF,		 /* reg points to a read/write buffer */
->  	PTR_TO_FUNC,		 /* reg points to a bpf program function */
-> -	PTR_TO_DYNPTR,		 /* reg points to a dynptr */
-> +	CONST_PTR_TO_DYNPTR,	 /* reg points to a const struct bpf_dynptr */
->  	__BPF_REG_TYPE_MAX,
->  
->  	/* Extended reg_types. */
-> @@ -2761,7 +2761,7 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
->  		     enum bpf_dynptr_type type, u32 offset, u32 size);
->  void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
->  int bpf_dynptr_check_size(u32 size);
-> -u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr);
-> +u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr);
->  
->  #ifdef CONFIG_BPF_LSM
->  void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index fb4c911d2a03..b7543efd6284 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5290,7 +5290,7 @@ union bpf_attr {
->   *	Return
->   *		Nothing. Always succeeds.
->   *
-> - * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset, u64 flags)
-> + * long bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr *src, u32 offset, u64 flags)
->   *	Description
->   *		Read *len* bytes from *src* into *dst*, starting from *offset*
->   *		into *src*.
-> @@ -5300,7 +5300,7 @@ union bpf_attr {
->   *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
->   *		*flags* is not 0.
->   *
-> - * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
-> + * long bpf_dynptr_write(const struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
->   *	Description
->   *		Write *len* bytes from *src* into *dst*, starting from *offset*
->   *		into *dst*.
-> @@ -5310,7 +5310,7 @@ union bpf_attr {
->   *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
->   *		is a read-only dynptr or if *flags* is not 0.
->   *
-> - * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
-> + * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u32 offset, u32 len)
->   *	Description
->   *		Get a pointer to the underlying dynptr data.
->   *
-> @@ -5411,7 +5411,7 @@ union bpf_attr {
->   *		Drain samples from the specified user ring buffer, and invoke
->   *		the provided callback for each such sample:
->   *
-> - *		long (\*callback_fn)(struct bpf_dynptr \*dynptr, void \*ctx);
-> + *		long (\*callback_fn)(const struct bpf_dynptr \*dynptr, void \*ctx);
->   *
->   *		If **callback_fn** returns 0, the helper will continue to try
->   *		and drain the next sample, up to a maximum of
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index d02ae2f4249b..ba3b50895f6b 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6568,14 +6568,15 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->  				}
->  
->  				if (arg_dynptr) {
-> -					if (reg->type != PTR_TO_STACK) {
-> -						bpf_log(log, "arg#%d pointer type %s %s not to stack\n",
-> +					if (reg->type != PTR_TO_STACK &&
-> +					    reg->type != CONST_PTR_TO_DYNPTR) {
-> +						bpf_log(log, "arg#%d pointer type %s %s not to stack or dynptr\n",
->  							i, btf_type_str(ref_t),
->  							ref_tname);
->  						return -EINVAL;
->  					}
-
-Should we bring this check into process_dynptr_func()? It's kind of
-unfortunate that we have divergent logic between helpers and kfuncs,
-when it comes to checking types. Let's at least be uniform here?
-
-> -					if (process_dynptr_func(env, regno, ARG_PTR_TO_DYNPTR, NULL))
-> +					if (process_dynptr_func(env, regno, ARG_PTR_TO_DYNPTR | MEM_RDONLY, NULL))
->  						return -EINVAL;
->  					continue;
->  				}
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 283f55bbeb70..714f5c9d0c1f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1398,7 +1398,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_proto = {
->  #define DYNPTR_SIZE_MASK	0xFFFFFF
->  #define DYNPTR_RDONLY_BIT	BIT(31)
->  
-> -static bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-> +static bool bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
->  {
->  	return ptr->size & DYNPTR_RDONLY_BIT;
->  }
-> @@ -1408,7 +1408,7 @@ static void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_typ
->  	ptr->size |= type << DYNPTR_TYPE_SHIFT;
->  }
->  
-> -u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
-> +u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
->  {
->  	return ptr->size & DYNPTR_SIZE_MASK;
->  }
-> @@ -1432,7 +1432,7 @@ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
->  	memset(ptr, 0, sizeof(*ptr));
->  }
->  
-> -static int bpf_dynptr_check_off_len(struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
-> +static int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
->  {
->  	u32 size = bpf_dynptr_get_size(ptr);
->  
-> @@ -1477,7 +1477,7 @@ static const struct bpf_func_proto bpf_dynptr_from_mem_proto = {
->  	.arg4_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT,
->  };
->  
-> -BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src,
-> +BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, const struct bpf_dynptr_kern *, src,
->  	   u32, offset, u64, flags)
->  {
->  	int err;
-> @@ -1500,12 +1500,12 @@ static const struct bpf_func_proto bpf_dynptr_read_proto = {
->  	.ret_type	= RET_INTEGER,
->  	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
->  	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
-> -	.arg3_type	= ARG_PTR_TO_DYNPTR,
-> +	.arg3_type	= ARG_PTR_TO_DYNPTR | MEM_RDONLY,
->  	.arg4_type	= ARG_ANYTHING,
->  	.arg5_type	= ARG_ANYTHING,
->  };
->  
-> -BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *, src,
-> +BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynptr_kern *, dst, u32, offset, void *, src,
->  	   u32, len, u64, flags)
->  {
->  	int err;
-> @@ -1526,14 +1526,14 @@ static const struct bpf_func_proto bpf_dynptr_write_proto = {
->  	.func		= bpf_dynptr_write,
->  	.gpl_only	= false,
->  	.ret_type	= RET_INTEGER,
-> -	.arg1_type	= ARG_PTR_TO_DYNPTR,
-> +	.arg1_type	= ARG_PTR_TO_DYNPTR | MEM_RDONLY,
->  	.arg2_type	= ARG_ANYTHING,
->  	.arg3_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
->  	.arg4_type	= ARG_CONST_SIZE_OR_ZERO,
->  	.arg5_type	= ARG_ANYTHING,
->  };
->  
-> -BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
-> +BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
->  {
->  	int err;
->  
-> @@ -1554,7 +1554,7 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
->  	.func		= bpf_dynptr_data,
->  	.gpl_only	= false,
->  	.ret_type	= RET_PTR_TO_DYNPTR_MEM_OR_NULL,
-> -	.arg1_type	= ARG_PTR_TO_DYNPTR,
-> +	.arg1_type	= ARG_PTR_TO_DYNPTR | MEM_RDONLY,
->  	.arg2_type	= ARG_ANYTHING,
->  	.arg3_type	= ARG_CONST_ALLOC_SIZE_OR_ZERO,
->  };
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 41ef7e4b73e4..c484e632b0cd 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -565,7 +565,7 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
->  		[PTR_TO_BUF]		= "buf",
->  		[PTR_TO_FUNC]		= "func",
->  		[PTR_TO_MAP_KEY]	= "map_key",
-> -		[PTR_TO_DYNPTR]		= "dynptr_ptr",
-> +		[CONST_PTR_TO_DYNPTR]	= "dynptr",
->  	};
->  
->  	if (type & PTR_MAYBE_NULL) {
-> @@ -699,6 +699,27 @@ static bool dynptr_type_refcounted(enum bpf_dynptr_type type)
->  	return type == BPF_DYNPTR_TYPE_RINGBUF;
->  }
->  
-> +static void __mark_dynptr_regs(struct bpf_reg_state *reg1,
-> +			       struct bpf_reg_state *reg2,
-> +			       enum bpf_dynptr_type type);
+> v2: use BPF CO-RE and ___suffix rule to avoid this error.
+> v1: https://lore.kernel.org/lkml/tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com/
+> ---
+>  .../testing/selftests/bpf/progs/test_bpf_nf.c | 30 +++++++++++++++++--
+>  1 file changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> index 227e85e85dda..1706984e1a6a 100644
+> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> @@ -2,6 +2,7 @@
+>  #include <vmlinux.h>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_core_read.h>
+>
+>  #define EAFNOSUPPORT 97
+>  #define EPROTO 71
+> @@ -11,6 +12,11 @@
+>
+>  extern unsigned long CONFIG_HZ __kconfig;
+>
+> +enum nf_nat_manip_type___x {
+> +       NF_NAT_MANIP_SRC___x,
+> +       NF_NAT_MANIP_DST___x,
+> +};
 > +
-> +static void __mark_reg_not_init(const struct bpf_verifier_env *env,
-> +				struct bpf_reg_state *reg);
+>  int test_einval_bpf_tuple = 0;
+>  int test_einval_reserved = 0;
+>  int test_einval_netns_id = 0;
+> @@ -58,7 +64,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
+> -                       int port, enum nf_nat_manip_type) __ksym;
+> +                       int port, int type) __ksym;
+>
+>  static __always_inline void
+>  nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+> @@ -151,16 +157,34 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+>                 union nf_inet_addr saddr = {};
+>                 union nf_inet_addr daddr = {};
+>                 struct nf_conn *ct_ins;
+> +               int manip_src;
+> +               int manip_dst;
+> +               enum nf_nat_manip_type___x mapip_type_x;
 > +
-> +static void mark_dynptr_stack_regs(struct bpf_reg_state *sreg1,
-> +				   struct bpf_reg_state *sreg2,
-> +				   enum bpf_dynptr_type type)
-> +{
-> +	__mark_dynptr_regs(sreg1, sreg2, type);
-> +}
+> +               if (!bpf_core_type_exists(enum nf_nat_manip_type)) {
+> +                       bpf_printk("enum nf_nat_manip_type not exist.\n");
+> +                       return;
+> +               }
 > +
-> +static void mark_dynptr_cb_reg(struct bpf_reg_state *reg1,
-> +			       enum bpf_dynptr_type type)
-> +{
-> +	__mark_dynptr_regs(reg1, NULL, type);
-> +}
+> +               if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_SRC___x))
+> +                       manip_src = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_SRC___x);
+> +               else
+> +                       return;
 > +
-> +
->  static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->  				   enum bpf_arg_type arg_type, int insn_idx)
->  {
-> @@ -720,9 +741,8 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
->  	if (type == BPF_DYNPTR_TYPE_INVALID)
->  		return -EINVAL;
->  
-> -	state->stack[spi].spilled_ptr.dynptr.first_slot = true;
-> -	state->stack[spi].spilled_ptr.dynptr.type = type;
-> -	state->stack[spi - 1].spilled_ptr.dynptr.type = type;
-> +	mark_dynptr_stack_regs(&state->stack[spi].spilled_ptr,
-> +			       &state->stack[spi - 1].spilled_ptr, type);
->  
->  	if (dynptr_type_refcounted(type)) {
->  		/* The id is used to track proper releasing */
-> @@ -730,8 +750,8 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
->  		if (id < 0)
->  			return id;
->  
-> -		state->stack[spi].spilled_ptr.id = id;
-> -		state->stack[spi - 1].spilled_ptr.id = id;
-> +		state->stack[spi].spilled_ptr.ref_obj_id = id;
-> +		state->stack[spi - 1].spilled_ptr.ref_obj_id = id;
->  	}
->  
->  	return 0;
-> @@ -753,25 +773,23 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
->  	}
->  
->  	/* Invalidate any slices associated with this dynptr */
-> -	if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type)) {
-> -		release_reference(env, state->stack[spi].spilled_ptr.id);
-> -		state->stack[spi].spilled_ptr.id = 0;
-> -		state->stack[spi - 1].spilled_ptr.id = 0;
-> -	}
-> -
-> -	state->stack[spi].spilled_ptr.dynptr.first_slot = false;
-> -	state->stack[spi].spilled_ptr.dynptr.type = 0;
-> -	state->stack[spi - 1].spilled_ptr.dynptr.type = 0;
-> +	if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type))
-> +		WARN_ON_ONCE(release_reference(env, state->stack[spi].spilled_ptr.ref_obj_id));
->  
-> +	__mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
-> +	__mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
->  	return 0;
->  }
->  
->  static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->  {
->  	struct bpf_func_state *state = func(env, reg);
-> -	int spi = get_spi(reg->off);
-> -	int i;
-> +	int spi, i;
-> +
-> +	if (reg->type == CONST_PTR_TO_DYNPTR)
-> +		return false;
->  
-> +	spi = get_spi(reg->off);
->  	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
->  		return true;
->  
-> @@ -787,9 +805,14 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
->  static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->  {
->  	struct bpf_func_state *state = func(env, reg);
-> -	int spi = get_spi(reg->off);
-> +	int spi;
->  	int i;
->  
-> +	/* This already represents first slot of initialized bpf_dynptr */
-> +	if (reg->type == CONST_PTR_TO_DYNPTR)
-> +		return true;
-> +
-> +	spi = get_spi(reg->off);
->  	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
->  	    !state->stack[spi].spilled_ptr.dynptr.first_slot)
->  		return false;
-> @@ -808,15 +831,19 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
->  {
->  	struct bpf_func_state *state = func(env, reg);
->  	enum bpf_dynptr_type dynptr_type;
-> -	int spi = get_spi(reg->off);
-> +	int spi;
->  
->  	/* ARG_PTR_TO_DYNPTR takes any type of dynptr */
->  	if (arg_type == ARG_PTR_TO_DYNPTR)
->  		return true;
->  
->  	dynptr_type = arg_to_dynptr_type(arg_type);
-> -
-> -	return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
-> +	if (reg->type == CONST_PTR_TO_DYNPTR) {
-> +		return reg->dynptr.type == dynptr_type;
-> +	} else {
-> +		spi = get_spi(reg->off);
-> +		return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
-> +	}
->  }
->  
->  /* The reg state of a pointer or a bounded scalar was saved when
-> @@ -1324,9 +1351,6 @@ static const int caller_saved[CALLER_SAVED_REGS] = {
->  	BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5
->  };
->  
-> -static void __mark_reg_not_init(const struct bpf_verifier_env *env,
-> -				struct bpf_reg_state *reg);
-> -
->  /* This helper doesn't clear reg->id */
->  static void ___mark_reg_known(struct bpf_reg_state *reg, u64 imm)
->  {
-> @@ -1389,6 +1413,26 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
->  	__mark_reg_known_zero(regs + regno);
->  }
->  
-> +static void __mark_dynptr_regs(struct bpf_reg_state *reg1,
-> +			       struct bpf_reg_state *reg2,
-> +			       enum bpf_dynptr_type type)
-> +{
-> +	/* reg->type has no meaning for STACK_DYNPTR, but when we set reg for
-> +	 * callback arguments, it does need to be CONST_PTR_TO_DYNPTR, so simply
-> +	 * set it unconditionally as it is ignored for STACK_DYNPTR anyway.
-> +	 */
-> +	__mark_reg_known_zero(reg1);
-> +	reg1->type = CONST_PTR_TO_DYNPTR;
-> +	reg1->dynptr.type = type;
-> +	reg1->dynptr.first_slot = true;
-> +	if (!reg2)
-> +		return;
-> +	__mark_reg_known_zero(reg2);
-> +	reg2->type = CONST_PTR_TO_DYNPTR;
-> +	reg2->dynptr.type = type;
-> +	reg2->dynptr.first_slot = false;
-> +}
-> +
->  static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
->  {
->  	if (base_type(reg->type) == PTR_TO_MAP_VALUE) {
-> @@ -5692,20 +5736,62 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
->  	return 0;
->  }
->  
-> +/* Implementation details:
+> +               if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_DST___x))
+> +                       manip_dst = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_DST___x);
+> +               else
+> +                       return;
+>
+>                 bpf_ct_set_timeout(ct, 10000);
+>                 ct->mark = 77;
+>
+>                 /* snat */
+>                 saddr.ip = bpf_get_prandom_u32();
+> -               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+> +               bpf_ct_set_nat_info(ct, &saddr, sport, manip_src);
 
-I don't think "Implementation details" is necessary to include in the
-function header (and thank you for adding this header btw).
+I'm not sure these co-re checks are helpful. Can we just hardcode 1/0
+here and below?
 
-> + *
-> + * There are two register types representing a bpf_dynptr, one is PTR_TO_STACK
-> + * which points to a stack slot, and the other is CONST_PTR_TO_DYNPTR.
-> + *
-> + * In both cases we deal with the first 8 bytes, but need to mark the next 8
-> + * bytes as STACK_DYNPTR in case of PTR_TO_STACK. In case of
-> + * CONST_PTR_TO_DYNPTR, we are guaranteed to get the beginning of the object.
-> + *
-> + * Mutability of bpf_dynptr is at two levels, one is at the level of struct
-> + * bpf_dynptr itself, i.e. whether the helper is receiving a pointer to struct
-> + * bpf_dynptr or pointer to const struct bpf_dynptr. In the former case, it can
-> + * mutate the view of the dynptr and also possibly destroy it. In the latter
-> + * case, it cannot mutate the bpf_dynptr itself but it can still mutate the
-> + * memory that dynptr points to.
-> + *
-> + * The verifier will keep track both levels of mutation (bpf_dynptr's in
-> + * reg->type and the memory's in reg->dynptr.type), but there is no support for
-> + * readonly dynptr view yet, hence only the first case is tracked and checked.
-> + *
-> + * This is consistent with how C applies the const modifier to a struct object,
-> + * where the pointer itself inside bpf_dynptr becomes const but not what it
-> + * points to.
-> + *
-> + * Helpers which do not mutate the bpf_dynptr set MEM_RDONLY in their argument
-> + * type, and declare it as 'const struct bpf_dynptr *' in their prototype.
-> + */
->  int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> -			enum bpf_arg_type arg_type,
-> -			struct bpf_call_arg_meta *meta)
-> +			enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta)
->  {
->  	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
->  	int argno = regno - 1;
->  
-> -	/* We only need to check for initialized / uninitialized helper
-> -	 * dynptr args if the dynptr is not PTR_TO_DYNPTR, as the
-> -	 * assumption is that if it is, that a helper function
-> -	 * initialized the dynptr on behalf of the BPF program.
-> +	if ((arg_type & (MEM_UNINIT | MEM_RDONLY)) == (MEM_UNINIT | MEM_RDONLY)) {
-> +		verbose(env, "verifier internal error: misconfigured dynptr helper type flags\n");
-> +		return -EFAULT;
-> +	}
-> +
-> +	/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to a
+bpf_ct_set_nat_info(ct, &saddr, sport, 0 /*NF_NAT_MANIP_SRC*/);
+bpf_ct_set_nat_info(ct, &daddr, dport, 1 /*NF_NAT_MANIP_DST*/);
 
-s/applied to a/applied to an
+But I'm also overall not sure we need to make this test flexible; we
+have a lot of tests that depend on tools/testing/selftests/bpf/config;
+at some point I was trying to make the tests more tolerant to
+different environments, but it went nowhere..
 
-> +	 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
-> +	 *
-> +	 *  MEM_UNINIT - Points to memory that is an appropriate candidate for
-> +	 *		 constructing a mutable bpf_dynptr object.
-> +	 *
-> +	 *		 Currently, this is only possible with PTR_TO_STACK
-> +	 *		 pointing to a region of atleast 16 bytes which doesn't
 
-s/atleast/at least
-
-> +	 *		 contain an existing bpf_dynptr.
-> +	 *
-> +	 *  MEM_RDONLY - Points to a initialized bpf_dynptr that will not be
-> +	 *		 mutated or destroyed. However, the memory it points to
-> +	 *		 may be mutated.
-> +	 *
-> +	 *  None       - Points to a initialized dynptr that can be mutated and
-> +	 *		 destroyed, including mutation of the memory it points
-> +	 *		 to.
->  	 */
-> -	if (base_type(reg->type) == PTR_TO_DYNPTR)
-> -		return 0;
->  	if (arg_type & MEM_UNINIT) {
->  		if (!is_dynptr_reg_valid_uninit(env, reg)) {
->  			verbose(env, "Dynptr has to be an uninitialized dynptr\n");
-
-Not your change, but this is an awkwardly phrased error message. IMO
-"dynptr must be initialized" is more succinct. Feel free to ignore if
-you'd like, I'm happy to submit a separate patch to change it as some
-point.
-
-> @@ -5722,6 +5808,12 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
->  
->  		meta->uninit_dynptr_regno = regno;
->  	} else {
-> +		/* For the reg->type == PTR_TO_STACK case, bpf_dynptr is never const */
-> +		if (reg->type == CONST_PTR_TO_DYNPTR && !(arg_type & MEM_RDONLY)) {
-> +			verbose(env, "cannot pass pointer to const bpf_dynptr, the helper mutates it\n");
-> +			return -EINVAL;
-> +		}
-> +
->  		if (!is_dynptr_reg_valid_init(env, reg)) {
->  			verbose(env,
->  				"Expected an initialized dynptr as arg #%d\n",
-> @@ -5729,6 +5821,8 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
->  			return -EINVAL;
->  		}
->  
-> +		/* Fold MEM_RDONLY, only inspect arg_type */
-> +		arg_type &= ~MEM_RDONLY;
-
-This seems brittle. Can is_dynptr_type_expected() just check the base
-type?
-
->  		if (!is_dynptr_type_expected(env, reg, arg_type)) {
->  			const char *err_extra = "";
->  
-> @@ -5874,7 +5968,7 @@ static const struct bpf_reg_types kptr_types = { .types = { PTR_TO_MAP_VALUE } }
->  static const struct bpf_reg_types dynptr_types = {
->  	.types = {
->  		PTR_TO_STACK,
-> -		PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL,
-> +		CONST_PTR_TO_DYNPTR,
->  	}
->  };
->  
-> @@ -6050,12 +6144,15 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->  	return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
->  }
->  
-> -static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> +static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->  {
->  	struct bpf_func_state *state = func(env, reg);
-> -	int spi = get_spi(reg->off);
-> +	int spi;
->  
-> -	return state->stack[spi].spilled_ptr.id;
-> +	if (reg->type == CONST_PTR_TO_DYNPTR)
-> +		return reg->ref_obj_id;
-> +	spi = get_spi(reg->off);
-> +	return state->stack[spi].spilled_ptr.ref_obj_id;
->  }
->  
->  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> @@ -6119,11 +6216,17 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  	if (arg_type_is_release(arg_type)) {
->  		if (arg_type_is_dynptr(arg_type)) {
->  			struct bpf_func_state *state = func(env, reg);
-> -			int spi = get_spi(reg->off);
-> +			int spi;
->  
-> -			if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
-> -			    !state->stack[spi].spilled_ptr.id) {
-> -				verbose(env, "arg %d is an unacquired reference\n", regno);
-
-Can we add a comment here explaining why only PTR_TO_STACK dynptrs are
-expected to be released? I know we have such comments elsewhere already,
-but if we're going to have logic like this which is hard-coded against
-assumptions of what types of dynptrs can be used in which contexts /
-helpers, I think it is important to be verbose in calling that out as
-it's not obvious from the code itself why this is the case.
-
-> +			if (reg->type == PTR_TO_STACK) {
-> +				spi = get_spi(reg->off);
-> +				if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
-> +				    !state->stack[spi].spilled_ptr.ref_obj_id) {
-> +					verbose(env, "arg %d is an unacquired reference\n", regno);
-> +					return -EINVAL;
-> +				}
-> +			} else {
-> +				verbose(env, "cannot release unowned const bpf_dynptr\n");
->  				return -EINVAL;
->  			}
->  		} else if (!reg->ref_obj_id && !register_is_null(reg)) {
-> @@ -7091,11 +7194,10 @@ static int set_user_ringbuf_callback_state(struct bpf_verifier_env *env,
->  {
->  	/* bpf_user_ringbuf_drain(struct bpf_map *map, void *callback_fn, void
->  	 *			  callback_ctx, u64 flags);
-> -	 * callback_fn(struct bpf_dynptr_t* dynptr, void *callback_ctx);
-> +	 * callback_fn(const struct bpf_dynptr_t* dynptr, void *callback_ctx);
->  	 */
->  	__mark_reg_not_init(env, &callee->regs[BPF_REG_0]);
-> -	callee->regs[BPF_REG_1].type = PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL;
-> -	__mark_reg_known_zero(&callee->regs[BPF_REG_1]);
-> +	mark_dynptr_cb_reg(&callee->regs[BPF_REG_1], BPF_DYNPTR_TYPE_LOCAL);
->  	callee->regs[BPF_REG_2] = caller->regs[BPF_REG_3];
->  
->  	/* unused */
-> @@ -7474,7 +7576,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  
->  	regs = cur_regs(env);
->  
-> +	/* This can only be set for PTR_TO_STACK, as CONST_PTR_TO_DYNPTR cannot
-> +	 * be reinitialized by any dynptr helper. Hence, mark_stack_slots_dynptr
-> +	 * is safe to do directly.
-> +	 */
->  	if (meta.uninit_dynptr_regno) {
-> +		if (WARN_ON_ONCE(regs[meta.uninit_dynptr_regno].type == CONST_PTR_TO_DYNPTR))
-
-I think we tend to do "verifier internal error" logs for situations like
-this rather than WARN_ON_ONCE(), right?
-
-> +			return -EFAULT;
->  		/* we write BPF_DW bits (8 bytes) at a time */
->  		for (i = 0; i < BPF_DYNPTR_SIZE; i += 8) {
->  			err = check_mem_access(env, insn_idx, meta.uninit_dynptr_regno,
-> @@ -7492,15 +7600,22 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  
->  	if (meta.release_regno) {
->  		err = -EINVAL;
-> -		if (arg_type_is_dynptr(fn->arg_type[meta.release_regno - BPF_REG_1]))
-> +		/* This can only be set for PTR_TO_STACK, as CONST_PTR_TO_DYNPTR cannot
-> +		 * be released by any dynptr helper. Hence, unmark_stack_slots_dynptr
-> +		 * is safe to do directly.
-> +		 */
-> +		if (arg_type_is_dynptr(fn->arg_type[meta.release_regno - BPF_REG_1])) {
-> +			if (WARN_ON_ONCE(regs[meta.release_regno].type == CONST_PTR_TO_DYNPTR))
-
-Same here r.e. using verifier log rather than WARN_ON_ONCE(). Also, can
-we bring this comment inside the if statement to match the alignemnt of
-the one you added below?
-
-> +				return -EFAULT;
->  			err = unmark_stack_slots_dynptr(env, &regs[meta.release_regno]);
-> -		else if (meta.ref_obj_id)
-> +		} else if (meta.ref_obj_id) {
->  			err = release_reference(env, meta.ref_obj_id);
-> -		/* meta.ref_obj_id can only be 0 if register that is meant to be
-> -		 * released is NULL, which must be > R0.
-> -		 */
-> -		else if (register_is_null(&regs[meta.release_regno]))
-> +		} else if (register_is_null(&regs[meta.release_regno])) {
-> +			/* meta.ref_obj_id can only be 0 if register that is meant to be
-> +			 * released is NULL, which must be > R0.
-> +			 */
->  			err = 0;
-> +		}
->  		if (err) {
->  			verbose(env, "func %s#%d reference has not been acquired before\n",
->  				func_id_name(func_id), func_id);
-> @@ -7574,11 +7689,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  					return -EFAULT;
->  				}
->  
-> -				if (base_type(reg->type) != PTR_TO_DYNPTR)
-> -					/* Find the id of the dynptr we're
-> -					 * tracking the reference of
-> -					 */
-> -					meta.ref_obj_id = stack_slot_get_id(env, reg);
-> +				/* Find the id of the dynptr we're tracking the reference of */
-
-Not your change, but IMO this comment does not add any value.
-
-> +				meta.ref_obj_id = dynptr_ref_obj_id(env, reg);
->  				break;
->  			}
->  		}
-> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-> index fdb0aff8cb5a..e8d90829f23e 100755
-> --- a/scripts/bpf_doc.py
-> +++ b/scripts/bpf_doc.py
-> @@ -752,6 +752,7 @@ class PrinterHelpers(Printer):
->              'struct bpf_timer',
->              'struct mptcp_sock',
->              'struct bpf_dynptr',
-> +            'const struct bpf_dynptr',
->              'struct iphdr',
->              'struct ipv6hdr',
->      }
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index fb4c911d2a03..b7543efd6284 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -5290,7 +5290,7 @@ union bpf_attr {
->   *	Return
->   *		Nothing. Always succeeds.
->   *
-> - * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset, u64 flags)
-> + * long bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr *src, u32 offset, u64 flags)
->   *	Description
->   *		Read *len* bytes from *src* into *dst*, starting from *offset*
->   *		into *src*.
-> @@ -5300,7 +5300,7 @@ union bpf_attr {
->   *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
->   *		*flags* is not 0.
->   *
-> - * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
-> + * long bpf_dynptr_write(const struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
->   *	Description
->   *		Write *len* bytes from *src* into *dst*, starting from *offset*
->   *		into *dst*.
-> @@ -5310,7 +5310,7 @@ union bpf_attr {
->   *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
->   *		is a read-only dynptr or if *flags* is not 0.
->   *
-> - * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
-> + * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u32 offset, u32 len)
->   *	Description
->   *		Get a pointer to the underlying dynptr data.
->   *
-> @@ -5411,7 +5411,7 @@ union bpf_attr {
->   *		Drain samples from the specified user ring buffer, and invoke
->   *		the provided callback for each such sample:
->   *
-> - *		long (\*callback_fn)(struct bpf_dynptr \*dynptr, void \*ctx);
-> + *		long (\*callback_fn)(const struct bpf_dynptr \*dynptr, void \*ctx);
->   *
->   *		If **callback_fn** returns 0, the helper will continue to try
->   *		and drain the next sample, up to a maximum of
-> diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> index 02b18d018b36..39882580cb90 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> @@ -668,13 +668,13 @@ static struct {
->  	const char *expected_err_msg;
->  } failure_tests[] = {
->  	/* failure cases */
-> -	{"user_ringbuf_callback_bad_access1", "negative offset dynptr_ptr ptr"},
-> -	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr_ptr ptr"},
-> -	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr_ptr'"},
-> +	{"user_ringbuf_callback_bad_access1", "negative offset dynptr ptr"},
-> +	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr ptr"},
-> +	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr'"},
->  	{"user_ringbuf_callback_null_context_write", "invalid mem access 'scalar'"},
->  	{"user_ringbuf_callback_null_context_read", "invalid mem access 'scalar'"},
-> -	{"user_ringbuf_callback_discard_dynptr", "arg 1 is an unacquired reference"},
-> -	{"user_ringbuf_callback_submit_dynptr", "arg 1 is an unacquired reference"},
-> +	{"user_ringbuf_callback_discard_dynptr", "cannot release unowned const bpf_dynptr"},
-> +	{"user_ringbuf_callback_submit_dynptr", "cannot release unowned const bpf_dynptr"},
->  	{"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
->  };
->  
-> -- 
-> 2.38.1
-> 
+>                 /* dnat */
+>                 daddr.ip = bpf_get_prandom_u32();
+> -               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+> +               bpf_ct_set_nat_info(ct, &daddr, dport, manip_dst);
+>
+>                 ct_ins = bpf_ct_insert_entry(ct);
+>                 if (ct_ins) {
+> --
+> 2.31.1
+>
