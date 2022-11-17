@@ -2,146 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DADE262D255
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 05:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D1D62D300
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 06:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239229AbiKQE3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 23:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S233220AbiKQFuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 00:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233900AbiKQE3C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 23:29:02 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDF01FCCF
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:29:01 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2AH0bmWn017546
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:29:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=gn/mpXdzqFUbDxT/p4jEJDcMoK7eHpCVUCOI+zk5JbM=;
- b=nQ6v5gWeh3XMFDeBdp0uZNYzTiMb6sElLZmDE8gxrurzT7WjMqbKWoJ7ca2piEp39Jmy
- +FdOgM/DeSKXIuIpW9Ubu5JxUVTTiIFUuuimSk8WldQFwAm9NNov/vSeNFrlJ2y4hM+1
- aDLpfE3evorUTS+Cq5EUCjfwyAHloEzsgMk= 
-Received: from maileast.thefacebook.com ([163.114.130.3])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3kw33fwhu4-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:29:01 -0800
-Received: from twshared9088.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 16 Nov 2022 20:29:00 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id CA502124860E6; Wed, 16 Nov 2022 20:28:54 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v6 7/7] selftests/bpf: Add rcu_read_lock test to s390x/aarch64 deny lists
-Date:   Wed, 16 Nov 2022 20:28:54 -0800
-Message-ID: <20221117042854.1091570-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221117042818.1086954-1-yhs@fb.com>
-References: <20221117042818.1086954-1-yhs@fb.com>
+        with ESMTP id S239298AbiKQFuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 00:50:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A91A11813;
+        Wed, 16 Nov 2022 21:49:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C19F462085;
+        Thu, 17 Nov 2022 05:49:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC1FEC433D6;
+        Thu, 17 Nov 2022 05:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1668664198;
+        bh=qGKZERLnu8H566XOnqj6FLlWt0eOikd2hAvc/xFshHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D9NNrD2fNtF7I72M6hrNhHhwkE2rhBXmwCdDK8zyAqTTmwRIFYD8KFuG7BWWnwbHO
+         oWYhw9cBKohhzm1BSqMZa60ABglKr+cHH8E6/Kks2Pl8YyevoNX4FPKY196qp0r3a4
+         cv8MWhjq/phiXboDHlQQVjm0Ujb5crZk7pYpUmNg=
+Date:   Thu, 17 Nov 2022 06:49:54 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, revest@chromium.org, jackmanb@chromium.org,
+        jmorris@namei.org, serge@hallyn.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable@vger.kernel.org
+Subject: Re: [RFC][PATCH 3/4] lsm: Redefine LSM_HOOK() macro to add return
+ value flags as argument
+Message-ID: <Y3XLgrYbIEpdW0vy@kroah.com>
+References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
+ <20221115175652.3836811-4-roberto.sassu@huaweicloud.com>
+ <CAHC9VhTA7SgFnTFGNxOGW38WSkWu7GSizBmNz=TuazUR4R_jUg@mail.gmail.com>
+ <83cbff40f16a46e733a877d499b904cdf06949b6.camel@huaweicloud.com>
+ <CAHC9VhRX0J8Z61_fH9T5O1ZpRQWSppQekxP8unJqStHuTwQkLQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ByUDhxqqblKDm_NxoBEBH6eehPJsmvEC
-X-Proofpoint-GUID: ByUDhxqqblKDm_NxoBEBH6eehPJsmvEC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-16_03,2022-11-16_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRX0J8Z61_fH9T5O1ZpRQWSppQekxP8unJqStHuTwQkLQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The new rcu_read_lock test failed on s390x with the following error messa=
-ge:
+On Wed, Nov 16, 2022 at 05:04:05PM -0500, Paul Moore wrote:
+> On Wed, Nov 16, 2022 at 3:11 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > On Tue, 2022-11-15 at 21:27 -0500, Paul Moore wrote:
+> > > On Tue, Nov 15, 2022 at 12:58 PM Roberto Sassu
+> > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > >
+> > > > Define four return value flags (LSM_RET_NEG, LSM_RET_ZERO, LSM_RET_ONE,
+> > > > LSM_RET_GT_ONE), one for each interval of interest (< 0, = 0, = 1, > 1).
+> > > >
+> > > > Redefine the LSM_HOOK() macro to add return value flags as argument, and
+> > > > set the correct flags for each LSM hook.
+> > > >
+> > > > Implementors of new LSM hooks should do the same as well.
+> > > >
+> > > > Cc: stable@vger.kernel.org # 5.7.x
+> > > > Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > ---
+> > > >  include/linux/bpf_lsm.h       |   2 +-
+> > > >  include/linux/lsm_hook_defs.h | 779 ++++++++++++++++++++--------------
+> > > >  include/linux/lsm_hooks.h     |   9 +-
+> > > >  kernel/bpf/bpf_lsm.c          |   5 +-
+> > > >  security/bpf/hooks.c          |   2 +-
+> > > >  security/security.c           |   4 +-
+> > > >  6 files changed, 466 insertions(+), 335 deletions(-)
+> > >
+> > > Just a quick note here that even if we wanted to do something like
+> > > this, it is absolutely not -stable kernel material.  No way.
+> >
+> > I was unsure about that. We need a proper fix for this issue that needs
+> > to be backported to some kernels. I saw this more like a dependency.
+> > But I agree with you that it would be unlikely that this patch is
+> > applied to stable kernels.
+> >
+> > For stable kernels, what it would be the proper way? We still need to
+> > maintain an allow list of functions that allow a positive return value,
+> > at least. Should it be in the eBPF code only?
+> 
+> Ideally the fix for -stable is the same as what is done for Linus'
+> kernel (ignoring backport fuzzing), so I would wait and see how that
+> ends up first.  However, if the patchset for Linus' tree is
+> particularly large and touches a lot of code, you may need to work on
+> something a bit more targeted to the specific problem.  I tend to be
+> more conservative than most kernel devs when it comes to -stable
+> patches, but if you can't backport the main upstream patchset, smaller
+> (both in terms of impact and lines changed) is almost always better.
 
-  ...
-  test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
-  test_local_storage:PASS:skel_open 0 nsec
-  libbpf: prog 'cgrp_succ': failed to find kernel BTF type ID of '__s390x=
-_sys_getpgid': -3
-  libbpf: prog 'cgrp_succ': failed to prepare load attributes: -3
-  libbpf: prog 'cgrp_succ': failed to load: -3
-  libbpf: failed to load object 'rcu_read_lock'
-  libbpf: failed to load BPF skeleton 'rcu_read_lock': -3
-  test_local_storage:FAIL:skel_load unexpected error: -3 (errno 3)
-  ...
+No, the mainline patch (what is in Linus's tree), is almost always
+better and preferred for stable backports.  When you diverge, bugs
+happen, almost every time, and it makes later fixes harder to backport
+as well.
 
-It failed on aarch64 with the following error message due to inadequate
-trampoline support.
+But first work on solving the problem in Linus's tree.  Don't worry
+about stable trees until after the correct solution is merged.
 
-  ...
-  test_rcu_read_lock:PASS:join_cgroup /rcu_read_lock 0 nsec
-  test_local_storage:PASS:skel_open 0 nsec
-  test_local_storage:PASS:skel_load 0 nsec
-  libbpf: prog 'cgrp_succ': failed to attach: ERROR: strerror_r(-524)=3D2=
-2
-  libbpf: prog 'cgrp_succ': failed to auto-attach: -524
-  test_local_storage:FAIL:skel_attach unexpected error: -524 (errno 524)
-  ...
+thanks,
 
-So add the test to s390x and aarch64 deny lists.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/DENYLIST.aarch64 | 1 +
- tools/testing/selftests/bpf/DENYLIST.s390x   | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing=
-/selftests/bpf/DENYLIST.aarch64
-index 09416d5d2e33..2ff8a40ed9dd 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -44,6 +44,7 @@ modify_return                                    # modi=
-fy_return__attach failed
- module_attach                                    # skel_attach skeleton =
-attach failed: -524
- mptcp/base                                       # run_test mptcp unexpe=
-cted error: -524 (errno 524)
- netcnt                                           # packets unexpected pa=
-ckets: actual 10001 !=3D expected 10000
-+rcu_read_lock                                    # failed to attach: ERR=
-OR: strerror_r(-524)=3D22
- recursion                                        # skel_attach unexpecte=
-d error: -524 (errno 524)
- ringbuf                                          # skel_attach skeleton =
-attachment failed: -1
- setget_sockopt                                   # attach_cgroup unexpec=
-ted error: -524
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-index be4e3d47ea3e..dd5db40b5a09 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -41,6 +41,7 @@ module_attach                            # skel_attach =
-skeleton attach failed: -
- mptcp
- netcnt                                   # failed to load BPF skeleton '=
-netcnt_prog': -7                               (?)
- probe_user                               # check_kprobe_res wrong kprobe=
- res from probe read                           (?)
-+rcu_read_lock                            # failed to find kernel BTF typ=
-e ID of '__x64_sys_getpgid': -3                (?)
- recursion                                # skel_attach unexpected error:=
- -524                                          (trampoline)
- ringbuf                                  # skel_load skeleton load faile=
-d                                              (?)
- select_reuseport                         # intermittently fails on new s=
-390x setup
---=20
-2.30.2
-
+greg k-h
