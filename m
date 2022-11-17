@@ -2,70 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB6962E8DE
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 23:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F1D62E94B
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 00:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235086AbiKQW4s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 17:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
+        id S235006AbiKQXBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 18:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239958AbiKQW4o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 17:56:44 -0500
+        with ESMTP id S234959AbiKQXBg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 18:01:36 -0500
 Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6746454C
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 14:56:42 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b21so2980829plc.9
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 14:56:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B8E2DCC
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:01:36 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id w23so2978588ply.12
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XwhI9UjMlgnSaJ4yIwRB3YYhVYaUoO/AJsMpZl09zdI=;
-        b=MWdJEdoop+q7mBtB8LzC9xtrhK8nyauClX+u9HtipH+8eCgUmOqJgCks9pXw3EU+j/
-         IfF9DMD1cy6yehGhaHYQWSdyvl85N10zJ2Q6DIQyVhnDl1enhddzr47Xc79bxZkctBbE
-         ecVww+fhzhRM7xoFX11iKUwhC5cBo+nZkvpTouxRkvZfKduDXkIjOoD+uA+IsGSotBPK
-         iDDYkq1VJb01RH2c5O0KeOqXBhKgtBEVMo47Bi1yyDm5svee3urZDnJDChVJhbZe0cRq
-         9mAmjvl2kKm++A2rd3ZYN7VcMl0QfLtnO/J0WdblTFQ6LSCg8TGad+KbhvF0Osbv29eJ
-         o8Xw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFcqpVoaK7KYsED8VmrauYaqyDMYzCZIsGu9Lgrlw1o=;
+        b=UGzjjKilbb9xe+t+/h+CRXbFfvEVFhufgL1dZursiB+CQBCdp3O4EyjWoyYTFvnSKN
+         rtbs334amsiBWXNvTyAaQ/esWmOQmV4inzdCzcueI3rUIaoNQ/P7309FDOzQSGrmjhLV
+         oFuXWN64Tq1tKeheGtm9wMou8oypHE9I6YRpFj8H+ThEukixteeGz4kH5CXV5Ox722zR
+         9UbMlIH3tYyE0N/FSwvFlauyU94r0rZr0P931PKKMdYItbEltDmrjto+NOOHjZIPcpfu
+         GqYFArqaquJW+PS4sdH21rIXAZmQpxfInk4+AkPcWSJpv/LOmESAWAkJ5YnGKOi9uHAe
+         jaWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XwhI9UjMlgnSaJ4yIwRB3YYhVYaUoO/AJsMpZl09zdI=;
-        b=tzkPEwu8tpUYwGKvfvXHbtpk4fFMfTX3IweWJJ/+4mynQ8fUSofDj2NVlF1qTXKsyF
-         SEk5EcB/HXJow85O6FrrbEBusLuhRUIuelIK1yYR1n4HQPUBeI2IbrpMzIyLa5l1fvQB
-         LpUtczLP4S6VHaU3nAFWLcy7bb/6t9dAkomKdFLBJw5tZWBi7zzaz4C9FzIjQZ16+X8K
-         FgMi/HspGvfCjRcTUdZxGkTROsDuCRPlfpN8UnmIKlMy1hWnwTyVskkoaYokrP1aBBW3
-         08w2ZiWzlNf1kbmNacIwTvndfwJo8CbYa6HCm6SC2t1dFHD0QBo5qk7Evqyzvbj+8dHc
-         tWiQ==
-X-Gm-Message-State: ANoB5pl+ZdwY+2AkuepJ5DCeA0bBb6p99KjDODYW1sypdloNqHEJ21PY
-        +lsyaJQaR+Lbd/vNLPn7VVlq9ZuSEIY=
-X-Google-Smtp-Source: AA0mqf5TdhtytvcEy36sruiDeqjiEWnZ+17pRuICpR3dVIHntb/kL/4Q/pdxShHQx9KneR/hjYGbEw==
-X-Received: by 2002:a17:902:6946:b0:188:5c52:83e1 with SMTP id k6-20020a170902694600b001885c5283e1mr4848914plt.128.1668725801402;
-        Thu, 17 Nov 2022 14:56:41 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HFcqpVoaK7KYsED8VmrauYaqyDMYzCZIsGu9Lgrlw1o=;
+        b=w6h5va0ZtRViDJtJEU8ZHJi8AeWt/3h+aV+WIRWCCiPWZ04kobT4lKS56ZPJiHrWmE
+         dPhUNmRnLqYcjEoCcTnot3xQAKjoivpgM9t1olcGcgyYN23fvWnLnC4X1jcqKGPT9YQQ
+         O7M0Pk/2wMHYVxVXehPrI6bpFTezxfIlCTm+eD4tRawwbIuDQVsqFGrZMA11H8J+CT1+
+         JcYersoi232mvtdtphsZsyadU7O7WZJSLMJdsqjDy/98+21S6TcP6BuoGQhfi73Nw1Rb
+         s2caUk8ZDvoscJPhkypebPbEWJ/2oExxyOP7V79/2/D/jYkndKg5ZniZMlDd4lnHAorQ
+         tspw==
+X-Gm-Message-State: ANoB5pn3GMMqVdYekAlXdm+AV+AFaxD71uuw7W87/YlLlw+zuzxwZNCg
+        vDNX+I+xOIVSdYnpv5yoUbs=
+X-Google-Smtp-Source: AA0mqf5caKDH1sRDu/d5TlxH/L9ShU0467BUbMT/wgAGCkpl5lXNnZK4npRLsd77AwXw/dR+vwDHVQ==
+X-Received: by 2002:a17:90a:4a8f:b0:215:f80c:18e6 with SMTP id f15-20020a17090a4a8f00b00215f80c18e6mr11014641pjh.45.1668726095420;
+        Thu, 17 Nov 2022 15:01:35 -0800 (PST)
 Received: from localhost ([2409:40f4:8:955c:5484:8048:c08:7b3])
-        by smtp.gmail.com with ESMTPSA id a76-20020a621a4f000000b0056203db46ffsm1706087pfa.172.2022.11.17.14.56.40
+        by smtp.gmail.com with ESMTPSA id a9-20020a170902ee8900b00186ffe62502sm1860809pld.254.2022.11.17.15.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 14:56:40 -0800 (PST)
+        Thu, 17 Nov 2022 15:01:35 -0800 (PST)
+Date:   Fri, 18 Nov 2022 04:31:32 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, kernel-team@fb.com,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Subject: [PATCH bpf-next v9 23/23] selftests/bpf: Add BTF sanity tests
-Date:   Fri, 18 Nov 2022 04:25:10 +0530
-Message-Id: <20221117225510.1676785-24-memxor@gmail.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221117225510.1676785-1-memxor@gmail.com>
-References: <20221117225510.1676785-1-memxor@gmail.com>
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Implement bpf_get_kern_btf_id()
+ kfunc
+Message-ID: <20221117230132.frdiksvf3ia6v2ym@apollo>
+References: <20221114162328.622665-1-yhs@fb.com>
+ <20221114162339.625320-1-yhs@fb.com>
+ <20221115194308.ej5lwd2jo6ulebut@MacBook-Pro-5.local.dhcp.thefacebook.com>
+ <20221115200541.bm7xhdurhpxuv54u@apollo>
+ <1f856abf-0161-c560-7941-423c9f8c472e@meta.com>
+ <20221117182404.lgi3nq4jcomjlbvp@apollo>
+ <94f9ec8d-8b54-2873-21d0-948c667e20d8@meta.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=17214; i=memxor@gmail.com; h=from:subject; bh=m6mr5NFhPzJ/0Ot1CEDqx+U9ru5SwrUF5yhiRrCE9Tw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjdrkcr+BrcJbYD7UsjfSKLUkfQgC6fToUU+lmHaWE YhF9B8qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3a5HAAKCRBM4MiGSL8RynsgD/ 42uZZNc8NZVwkt+Q/xavu+2RMfgAoNnvVfiI1cD63V0XUt0iZEA0w2aAdId+5I38/m50LX5BTZnMEX qYZ2KlyLSluc/Hy0CA8mjIjeDPF3s07t4zpFcjE/MY+a8oHwUmkbmrUZh7kYvAxh1YI/hBn8ikAs0+ meduzMI2FU8wSQR4M87BdPg3zbAoffZJpOJbNMAEhZCQIBSyAwme8vsQrVytccpn2A556+JxWM0erV RUZIw2WyrWCUoaZziywvEhHrV/zUjtRM01ldPXElhi5ZHp+hUyBuCPoKNFXdVMrLjUX17eqEn8sL6y D8BER1l4rsakjVrDpTo2QkEbwAuqPA4juYGFUeVe4T76TF0bULvi38qQFgrefKONLL1kX/FIdGevZv yP4Z8yqmst5kpWQBf8LcYHCf7iJ4SIPAAJYEliIxsYXmyLaD3r8nwBi4jRcsEtqLQKimDL6zwyDT6n EI8dExNfVTiop9v+PBmi71A3DWZBdf5uimiLt0mSvekBBtUcIk/aGQORQCHnFiIKhaC5oIGlhiRfVy fK+LR/tbmrfDHw+FGDTGIGpb9EFq0jnpi3VHMQgeRrBolKj0V4BaCqVwLTFX6izJVMWe6WMXtbL92u juGNNM88aNaiunfG7/MLs93kEwJSmdYtkoyQ1Lt0dNIVqQAzYgFw8Ubw7Q8g==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94f9ec8d-8b54-2873-21d0-948c667e20d8@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,525 +83,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Preparing the metadata for bpf_list_head involves a complicated parsing
-step and type resolution for the contained value. Ensure that corner
-cases are tested against and invalid specifications in source are duly
-rejected. Also include tests for incorrect ownership relationships in
-the BTF.
+On Fri, Nov 18, 2022 at 04:22:40AM IST, Yonghong Song wrote:
+>
+>
+> On 11/17/22 10:24 AM, Kumar Kartikeya Dwivedi wrote:
+> > On Wed, Nov 16, 2022 at 01:56:14AM IST, Yonghong Song wrote:
+> > >
+> > >
+> > > On 11/15/22 12:05 PM, Kumar Kartikeya Dwivedi wrote:
+> > > > On Wed, Nov 16, 2022 at 01:13:08AM IST, Alexei Starovoitov wrote:
+> > > > > On Mon, Nov 14, 2022 at 08:23:39AM -0800, Yonghong Song wrote:
+> > > > > > The signature of bpf_get_kern_btf_id() function looks like
+> > > > > >     void *bpf_get_kern_btf_id(obj, expected_btf_id)
+> > > > > > The obj has a pointer type. The expected_btf_id is 0 or
+> > > > > > a btf id to be returned by the kfunc. The function
+> > > > > > currently supports two kinds of obj:
+> > > > > >     - obj: ptr_to_ctx, expected_btf_id: 0
+> > > > > >       return the expected kernel ctx btf id
+> > > > > >     - obj: ptr to char/unsigned char, expected_btf_id: a struct btf id
+> > > > > >       return expected_btf_id
+> > > > > > The second case looks like a type casting, e.g., in kernel we have
+> > > > > >     #define skb_shinfo(SKB) ((struct skb_shared_info *)(skb_end_pointer(SKB)))
+> > > > > > bpf program can get a skb_shared_info btf id ptr with bpf_get_kern_btf_id()
+> > > > > > kfunc.
+> > > > >
+> > > > > Kumar has proposed
+> > > > > bpf_rdonly_cast(any_64bit_value, btf_id) -> PTR_TO_BTF_ID | PTR_UNTRUSTED.
+> > > > > The idea of bpf_get_kern_btf_id(ctx) looks complementary.
+> > > > > The bpf_get_kern_btf_id name is too specific imo.
+> > > > > How about two kfuncs:
+> > > > >
+> > > > > bpf_cast_to_kern_ctx(ctx) -> ptr_to_btf_id | ptr_trusted
+> > > > > bpf_rdonly_cast(any_scalar, btf_id) -> ptr_to_btf_id | ptr_untrusted
+> > >
+> > > Sounds good. Two helpers can make sense as it is indeed true for
+> > > bpf_cast_to_kern_ctx(ctx), the btf_id is not needed.
+> > >
+> > > > >
+> > > > > ptr_trusted flag will have semantics as discsused with David and Kumar in:
+> > > > > https://lore.kernel.org/bpf/CAADnVQ+KZcFZdC=W_qZ3kam9yAjORtpN-9+Ptg_Whj-gRxCZNQ@mail.gmail.com/
+> > > > >
+> > > > > The verifier knows how to cast safe pointer 'ctx' to kernel 'mirror' structure.
+> > > > > No need for additional btf_id argument.
+> > > > > We can express it as ptr_to_btf_id | ptr_trusted and safely pass to kfuncs.
+> > > > > bpf_rdonly_cast() can accept any 64-bit value.
+> > > > > There is no need to limit it to 'char *' arg. Since it's ptr_to_btf_id | ptr_untrusted
+> > > > > it cannot be passed to kfuncs and only rdonly acccess is allowed.
+> > > > > Both kfuncs need to be cap_perfmon gated, of course.
+> > > > > Thoughts?
+> > >
+> > > Currently, we only have SCALAR_VALUE to represent 'void *', 'char *',
+> > > 'unsigned char *'. yes, some pointer might be long and cast to 'struct foo
+> > > *', so the generalization of bpf_rdonly_cast() to all scalar value
+> > > should be fine. Although it is possible the it might be abused and incuring
+> > > some exception handling, but guarding it with cap_perfmon
+> > > should be okay.
+> > >
+> > > >
+> > > > Here is the PoC I wrote when we discussed this:
+> > > > It still uses bpf_unsafe_cast naming, but that was before Alexei suggested the
+> > > > bpf_rdonly_cast name.
+> > > > https://github.com/kkdwivedi/linux/commits/unsafe-cast (see the 2 latest commits)
+> > > > The selftest showcases how it will be useful.
+> > >
+> > > Sounds good. I can redo may patch for bpf_cast_to_kern_ctx(), which should
+> > > cover some of existing cases. Kumar, since you are working on
+> > > bpf_rdonly_cast(), you could work on that later. If you want me to do it,
+> > > just let me know I can incorporate it in my patch set.
+>
+> I just prototyped a little bit with Alexei's suggested interface. It has
+> some differences. I will explain in my next revision.
+>
+> My prototype already added bpf_rdonly_cast(). As you suggested, it is
+> not too hard. I have not done with module btf yet. Will add it
+> as you suggested below.
+>
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/linked_list.c    | 485 ++++++++++++++++++
- 1 file changed, 485 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index 32ff1684a7d3..70241be92714 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <bpf/btf.h>
-+#include <test_btf.h>
-+#include <linux/btf.h>
- #include <test_progs.h>
- #include <network_helpers.h>
- 
-@@ -235,6 +238,487 @@ static void test_linked_list_success(int mode, bool leave_in_map)
- 	linked_list__destroy(skel);
- }
- 
-+#define SPIN_LOCK 2
-+#define LIST_HEAD 3
-+#define LIST_NODE 4
-+
-+static struct btf *init_btf(void)
-+{
-+	int id, lid, hid, nid;
-+	struct btf *btf;
-+
-+	btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "btf__new_empty"))
-+		return NULL;
-+	id = btf__add_int(btf, "int", 4, BTF_INT_SIGNED);
-+	if (!ASSERT_EQ(id, 1, "btf__add_int"))
-+		goto end;
-+	lid = btf__add_struct(btf, "bpf_spin_lock", 4);
-+	if (!ASSERT_EQ(lid, SPIN_LOCK, "btf__add_struct bpf_spin_lock"))
-+		goto end;
-+	hid = btf__add_struct(btf, "bpf_list_head", 16);
-+	if (!ASSERT_EQ(hid, LIST_HEAD, "btf__add_struct bpf_list_head"))
-+		goto end;
-+	nid = btf__add_struct(btf, "bpf_list_node", 16);
-+	if (!ASSERT_EQ(nid, LIST_NODE, "btf__add_struct bpf_list_node"))
-+		goto end;
-+	return btf;
-+end:
-+	btf__free(btf);
-+	return NULL;
-+}
-+
-+static void test_btf(void)
-+{
-+	struct btf *btf = NULL;
-+	int id, err;
-+
-+	while (test__start_subtest("btf: too many locks")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 32, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		err = btf__add_field(btf, "c", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -E2BIG, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing lock")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 16);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_struct foo::a"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: bad offset")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EEXIST, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing contains:")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing struct")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:bar", 5, 1);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:bar"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ENOENT, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: missing node")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 24);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_HEAD, 64, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:c", 5, 1);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:c"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		btf__free(btf);
-+		ASSERT_EQ(err, -ENOENT, "check btf");
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: node incorrect type")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:a"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 4);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", SPIN_LOCK, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: multiple bpf_list_node with name b")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 52);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		err = btf__add_field(btf, "d", SPIN_LOCK, 384, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::d"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -EINVAL, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned AA cycle")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned ABA cycle")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:foo:b", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:foo:b"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:a", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:a"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 16);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, 0, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz:a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, 0, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning | owned -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 36);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar:c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:a", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag contains:baz:a"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 16);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field baz:a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+
-+	while (test__start_subtest("btf: owning -> owning | owned -> owning | owned -> owned")) {
-+		btf = init_btf();
-+		if (!ASSERT_OK_PTR(btf, "init_btf"))
-+			break;
-+		id = btf__add_struct(btf, "foo", 20);
-+		if (!ASSERT_EQ(id, 5, "btf__add_struct foo"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::a"))
-+			break;
-+		err = btf__add_field(btf, "b", SPIN_LOCK, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field foo::b"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bar:b", 5, 0);
-+		if (!ASSERT_EQ(id, 6, "btf__add_decl_tag contains:bar:b"))
-+			break;
-+		id = btf__add_struct(btf, "bar", 36);
-+		if (!ASSERT_EQ(id, 7, "btf__add_struct bar"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:baz:b", 7, 0);
-+		if (!ASSERT_EQ(id, 8, "btf__add_decl_tag"))
-+			break;
-+		id = btf__add_struct(btf, "baz", 36);
-+		if (!ASSERT_EQ(id, 9, "btf__add_struct baz"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_HEAD, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::a"))
-+			break;
-+		err = btf__add_field(btf, "b", LIST_NODE, 128, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::b"))
-+			break;
-+		err = btf__add_field(btf, "c", SPIN_LOCK, 256, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bar::c"))
-+			break;
-+		id = btf__add_decl_tag(btf, "contains:bam:a", 9, 0);
-+		if (!ASSERT_EQ(id, 10, "btf__add_decl_tag contains:bam:a"))
-+			break;
-+		id = btf__add_struct(btf, "bam", 16);
-+		if (!ASSERT_EQ(id, 11, "btf__add_struct bam"))
-+			break;
-+		err = btf__add_field(btf, "a", LIST_NODE, 0, 0);
-+		if (!ASSERT_OK(err, "btf__add_field bam::a"))
-+			break;
-+
-+		err = btf__load_into_kernel(btf);
-+		ASSERT_EQ(err, -ELOOP, "check btf");
-+		btf__free(btf);
-+		break;
-+	}
-+}
-+
- void test_linked_list(void)
- {
- 	int i;
-@@ -245,6 +729,7 @@ void test_linked_list(void)
- 		test_linked_list_fail_prog(linked_list_fail_tests[i].prog_name,
- 					   linked_list_fail_tests[i].err_msg);
- 	}
-+	test_btf();
- 	test_linked_list_success(PUSH_POP, false);
- 	test_linked_list_success(PUSH_POP, true);
- 	test_linked_list_success(PUSH_POP_MULT, false);
--- 
-2.38.1
-
+It's fine to also leave out types in module BTFs for now, atleast as long you
+return a reasonable error message from the verifier. Just relying on btf_vmlinux
+is enough for the FIXMEs in selftests.
