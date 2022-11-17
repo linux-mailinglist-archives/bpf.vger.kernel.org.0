@@ -2,102 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B714562D3A9
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 07:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D223B62D3B0
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 07:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbiKQGzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 01:55:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        id S234614AbiKQG7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 01:59:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbiKQGzY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 01:55:24 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768355CD15;
-        Wed, 16 Nov 2022 22:55:22 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id w15-20020a17090a380f00b0021873113cb4so666261pjb.0;
-        Wed, 16 Nov 2022 22:55:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eTPfYmJJ+/4562uGhVyBkbVQfItqHDIybdxcg+zhh1s=;
-        b=H3ZgWjprxYdofXwpR1fjuLnYsILV3cnkPBQdXjDtY1zwXcEczx33fYZHOLpPdYNnk9
-         MVRsGzEfHqEd3AQsCmtQt1FuWwKbxzB7yslS4ZvhA8PQXuc9CNWtZaTHsnAnZ93S3x01
-         GLfdkdYJ+VN5QsJeZ5ZweBaqOekbD4q6DfYhZ1ex8rqjRvVSMjgLe+Lk/j0R4Bx+gZ31
-         CuB4RsMMnrGyKX6j4M0moOEu1Rb3KaJtwyqNMVdag80xa1sji3UFrn4APaXJWgmnr5kd
-         3jLJb2lm/5hrq+/SYYaf/iQxOGBn0Kj1GGs3E3kW8px5MqTj3gav+sIhC0LyfQXAbZsp
-         ZeFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eTPfYmJJ+/4562uGhVyBkbVQfItqHDIybdxcg+zhh1s=;
-        b=EFUzRTDvOHcTqCJX2CjasKl2nfUEPIl7nPuEQASpDALiOrbMeMWNnP1qBgq/1YKliE
-         NsHRcJr2tE4O5+4Qa9lNnMonO7vYhXoXE7QLX5mwBWn/D5dKeTHWuNvNvMysAPI5zpEt
-         jEN13t/4xq0Xft+UcqZZXg9rr7WxIXN8IUWE/qlJgz4fkSH6WTN0orQbJhEPAJrgwAFn
-         yJ+5inHacvYFPIC6wWSGaWkpPrGwCatad1WH0eMaapr2z90YW0NnRpCLn+FZs4gbVWJ+
-         53WcHoimDzXLn1BwmGRpKZjhVcR6bWVtryrcP+pFTCbJMOPtmrjB5HGfHlQjomqBazuz
-         Dd2Q==
-X-Gm-Message-State: ANoB5plh337CmlQLkUvoPmOdFsMRxxt8/usCvmW/HVMW+soPO09IEDeF
-        AodoF0Dyjy7Llx90yjLFPto=
-X-Google-Smtp-Source: AA0mqf4zJGLhFLiHknGI0DRGMLEEjWjLyqh5xH8+hI/CEvC9Ok/ApTqNDzMsXgtXPmmvG6/Y2BGMsg==
-X-Received: by 2002:a17:902:ce06:b0:17c:5b01:f227 with SMTP id k6-20020a170902ce0600b0017c5b01f227mr1576826plg.3.1668668121730;
-        Wed, 16 Nov 2022 22:55:21 -0800 (PST)
-Received: from localhost ([2605:59c8:47b:5f10:f84c:a7c:cb7a:c7f7])
-        by smtp.gmail.com with ESMTPSA id ij29-20020a170902ab5d00b0017b264a2d4asm393514plb.44.2022.11.16.22.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 22:55:21 -0800 (PST)
-Date:   Wed, 16 Nov 2022 22:55:13 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234430AbiKQG7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 01:59:14 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-eopbgr90072.outbound.protection.outlook.com [40.107.9.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48FC6DCE9
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:59:12 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L3LKF7LnC17WHc5admd88tlQpKKBTK/0MIk4DNwj/L1QoKd4EJI45ZVMFo2Thk+i8QtRFjYZ9Qsn5nwiREfCkm8hoWy/Qzwtakv5p4x9BeUirfFEgpWP0ybuNswR/5HXDNYXHEvT2yoq+01S0ea6pPRYQ9lH2pMN08Bj4ABhsDHDH+3/R7bOnUPY4FfWyXP0ycVvAswFbNH9EIwG+D/Y5qB8nH2jsXxaRn8XXdWd958TOWb985AVZbN+qTlmxhLocJwLaBVngnmWI8dIA9C8cuILNbfjcWwvYx+YuAEuwiDz9TexZAAzNqzNXcmCiAaEiI6l0ssP62drbXL1bBhniQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f6nDvGhKPeOikXoPqtnTPr0DBehpx0qtK+GrwQJXNxA=;
+ b=nzTB2TYyxpUL9B3NM1sX/IAfgKWKRC/Bk3FvnFxdSQdpr54JNShCohPka3Q07GH+jMFxe+iaU2/eSfQWdCh0zSMspcLQAdtbBnsJondOT6n8X860vHRbh4hA+dggtWwZZnljvPZ9CsqcpcadX5w9sBROyDaWEwTeL17AQCvLsDkVVuw2ap1c30K+gRaX4HU8eOrDv4diTHyZY5ERFNeQTxnJSRQgP+CLgJ6QaJzdkCpDJIKkiArM7/vQ66F0HMs6X1O/k4NSISM3Y1Gsxc0+FdnDIQMDsb5QwPasznJT1zi5MRJTCYdZGbrTsdwoAtjmuVF2C/Eo988wjNWI9Kv5dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f6nDvGhKPeOikXoPqtnTPr0DBehpx0qtK+GrwQJXNxA=;
+ b=X9Xf04U/2lVuv2xfYhnzEFn+/vEWprUhyriXSrZhqD3SW4BtullsfOepFfT+Nz2Jpdnp3ThUGnWnFenrnxhucm7GCAlpcaTatxAjlxpt5MCLAOauUCIDGXHzY1pqPcCY0pDAlOaomMP2lBo1ke0vFAoNSJCSA/AwVyI6ljZnMZwx5PnaRzNJO4LVKbp3QMqKDsRvVOO2nVflkknVeiLY/3QFA5dxRkehynSz7wJ9gNM44qFPhdCjqCJ/cl+s3LWhZdMiWBjglBvU+d0E5/+edB7tJr6EL7NA8rCeZVJup9Obmg1hEd+rK8RL0LCInW4cb2XhxXcEd8Ksxham5Knp7Q==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB1563.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Thu, 17 Nov
+ 2022 06:59:09 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::a85b:a9b6:cb36:fa6]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::a85b:a9b6:cb36:fa6%9]) with mapi id 15.20.5813.020; Thu, 17 Nov 2022
+ 06:59:09 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Hari Bathini <hbathini@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Message-ID: <6375dad15f11f_9c882208b5@john.notmuch>
-In-Reply-To: <CAKH8qBvD=mur1YHf1MLxdxqWXOfvZTor+C2LqNMsvp0p6OhM0A@mail.gmail.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-6-sdf@google.com>
- <87h6z0i449.fsf@toke.dk>
- <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk>
- <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch>
- <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev>
- <878rkbjjnp.fsf@toke.dk>
- <6375340a6c284_66f16208aa@john.notmuch>
- <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
- <637576962dada_8cd03208b0@john.notmuch>
- <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
- <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
- <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
- <CAADnVQLBPCh=80RKe_5sgCt02c2Zat4TG66+PNrVD1a2k=4UfA@mail.gmail.com>
- <CAKH8qBvD=mur1YHf1MLxdxqWXOfvZTor+C2LqNMsvp0p6OhM0A@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
+Thread-Topic: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
+Thread-Index: AQHY9TR92HLsIR9PiEOmF5X/4UnXLK45ljcAgATvboCAACzCgIABp7yAgAF1qQCAAOn5gA==
+Date:   Thu, 17 Nov 2022 06:59:09 +0000
+Message-ID: <02496f7a-51d8-4fc0-161d-b29d5e657089@csgroup.eu>
+References: <20221110184303.393179-1-hbathini@linux.ibm.com>
+ <00efe9b1-d9fd-441c-9eb4-cbf25d82baf2@csgroup.eu>
+ <5b59b7df-d2ec-1664-f0fb-764c9b93417c@linux.ibm.com>
+ <bf0af91e-861c-1608-7150-d31578be9b02@csgroup.eu>
+ <e0266414-843f-db48-a56d-1d8a8944726a@csgroup.eu>
+ <6151f5c6-2e64-5f2d-01b1-6f517f4301c0@linux.ibm.com>
+In-Reply-To: <6151f5c6-2e64-5f2d-01b1-6f517f4301c0@linux.ibm.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB1563:EE_
+x-ms-office365-filtering-correlation-id: 3a6d4024-36b1-4d77-5448-08dac8693a08
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7Zs3UtmZof9RUPW6g+5HI46TAYUVeSi/x3ZaamXz6hcm28Cnur25PXjOICr5LTbJGvzNuhMxx6Dh0XrKiZQbdtmy5ZNEEGbacE+XCC3ryZSqMSf4KIySjb5sPIhBp5ew7B6Od04rqzHXxeMtT5iXkY3L+mT/P9dsuuHmKNtPF/J6rQ8ULpkfPFyl1mXnyt3RHBSA9MOfKQUHOLLksyM/Ula/FehPGxl/HsJZoe5JE55+t1n9AWgKPqLtFXn28T1iP9YqL2JI308nSiZwZBvMF27YxqI+24JaorwkcJIjdweibICbcAd7onGvSBm9SiTwau9ZTQLxVQR3PzKNvAqGBlJ2+KmootKsvgAh/avRNZZ5XFHpa647saQl3MjCPmRTmGrgH9VKpjYW+7sTXH+6u7b8l7l+kdx5oDO8TR/+QN+XEga+md8SR3XYnvOy5jbxqRi5tUvSHUyIu50K54CvR06qFthMMxf83SRSa1/w30OoWkExp/aXHQmbFrQEU5h69xuNKYmLk7Hz2ThmTldmcEkDRsG1oF+N+NE1v8KTM0QHKVaLXubpkSbpQI6/WcmjwcJHE/UyPqXkJM1tt+jX0XnB4gITgPjaPgA6V9FnR0FyPKsEMXewzwyRPe7B0Byp79tbvV75sgEArM/Xag0njyNuzLyoT8m5VB/GJQWQGYgRtXwgPhm/vAFfa1rjc6xvQeo/V9J/Kd1r6Z1YF6GWtZeXCedmkQVQT4Jggx7V/S4kbmWIEZUBpZdjJqP4gsHCht07LbVeRlKSNPlHl2D99A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(451199015)(122000001)(38100700002)(54906003)(316002)(66574015)(6506007)(53546011)(2906002)(44832011)(41300700001)(2616005)(36756003)(186003)(5660300002)(38070700005)(26005)(91956017)(6512007)(8936002)(31696002)(86362001)(66556008)(66446008)(8676002)(64756008)(76116006)(66476007)(4326008)(66946007)(31686004)(83380400001)(478600001)(6486002)(110136005)(71200400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Mi9vM1RxL3VPTEpIVTE4VGJDMFllT2FxN2gzczY4VCtxVlZWQjg4ditOVkVm?=
+ =?utf-8?B?bmxsZXBqRFJUQkZPZGJzVDdTQWFxNVlFOW83VnZGNklrOVZBc3VnYmFwcXVZ?=
+ =?utf-8?B?NHcrcjZLVi9qKzJRWHFrNThnbmFMbDRwdlA1USs5ZTNqT2pzbHU1dVlSZkoz?=
+ =?utf-8?B?V0t6eDBSci9WbFEwVC9KejNibTlINjkvNDI1c1RQZStkbU1oQ2tvOW40TzhW?=
+ =?utf-8?B?dk45SE84ZCtOWXVUdWNhb0IzWStieGVsRktiSFBwVG56UThydVFXdndXQjlB?=
+ =?utf-8?B?b1cydWdHVHBKSnhidlh4YXRLNTF5VUJvN3QzczdoVStLMGoxdVI3UURXTU5r?=
+ =?utf-8?B?QlJMQmFlQ25LVWZqLzIreUZCV1JNazNBOUIyYkhUOUN4SkR0Z2l1YlhyQTV5?=
+ =?utf-8?B?eXhjMGtJNVA3Zm9zdlhMNmcrK29QUGY2S0VrbkJWUVhjZHBnaDRsQ2lMYjhJ?=
+ =?utf-8?B?MEl5TTJuNHRmNVptSHpGQ2xjNkRWY2V5eWFPdTdxQ1ZKcUhRVFlpZi9zQUpC?=
+ =?utf-8?B?K3FieVBxc2xoUFZkOHlKZER5a1kydFE1aDJydmkxd0MrZ1NYakEydjQ4NUdm?=
+ =?utf-8?B?TDMxVHAzRUVZaG5jV2dOcGV6dWJPWWRQRzVIWjBzTXl4QUpwZ3g2V0VtNUl3?=
+ =?utf-8?B?dVNCUVpaV3Q3TW1ZRDFsV0RkZDZURVJYcWRsR3RkNzZobkhRVDlxaTIvVXd1?=
+ =?utf-8?B?d2ZiREQ3R0xNVEM3eUh5Q242cll6djAzU2MzTllPMnIzRloxeExqbU9DQ1Fx?=
+ =?utf-8?B?NVc5ZmpOS21tY0hJNFJQTTJNeGhmREFubHo5M0FQVnFvdThJd0UrZ243ZU00?=
+ =?utf-8?B?R0RYT0pGUkZUVGlLODR4NWhHVWk1Q1lvVnRrTGxrNnRFRi83TllIV2N0aVdO?=
+ =?utf-8?B?K29CUTRwYnkzZEN5ZHhDSHRCdml0Q2lLdFdncjNQYXUrbzVRbENiWFN4VStE?=
+ =?utf-8?B?M0RQeGQ0c1hjYzRLS3NUN0RSb0NvQ3dXQUZLYnVHUWlMQlBHd0pQMytnWXhH?=
+ =?utf-8?B?KzExWVE5OTl6V0hqZ25MbStxWWo1amlRbm00Z2p5U1lNcEY4MHJjblJMMW9m?=
+ =?utf-8?B?VzhPdjVubDI2aW5lS3ZDYTM3TzhONk85d2Z6Z05GOEpjU2RTU25kWTM0WnVV?=
+ =?utf-8?B?SFlMV1p4dFdqUFRybjlPVVJRT2t1aWN3NHJNMHRMSkRxOU9Lakl6UCtsbmEv?=
+ =?utf-8?B?QnpjMktwRExTUUFydjVQVm9uNlJsTEE4elRUZGFneHhESzNzRDAzK21BYzlK?=
+ =?utf-8?B?TS9hckJKVm8vSUFnRTZJeFNwbFNlbXgyWWh5QmQ4MHJnaUZWVUNaZTlaNFBv?=
+ =?utf-8?B?MUZnRzJJczBhbm9jOXFBSHBtcG1Za1hjRVJqS083b0YyRXpXMktxVTQ1OUww?=
+ =?utf-8?B?WklvMVR2RmVuWitKeU13RXo5L3Q5MzUrcTF1b3libTE0SmR6UHh1OFNURm44?=
+ =?utf-8?B?N0NNeDdsdGxPWGtNU0FVRzdCd2trZXdwSFA0R3lIZ0xZcnA0czE5TGx0ek5X?=
+ =?utf-8?B?YWNYemNmREkxZW50bU1sdXhyd0xSWko3bTdsOVVzNTdLREgwcnpxNU5mb2RX?=
+ =?utf-8?B?RlRSUDdDVTJXWDZ0ZVM0MEVENlFEVmd0M3I5alRHbDc2Y2hrQ0s2VkZ0NHB5?=
+ =?utf-8?B?T1RzdWx0Tld6WlAxcU5OMmFlY0JUTzFqS1ZDWVBpblRXaFBrSTJDeEkzS1NY?=
+ =?utf-8?B?cDMza0sxbER0anA0Zm9IVmw1dStyV2xDVU5YaGJIMk56QmhCa2g1dlZiMENF?=
+ =?utf-8?B?Qko0NTRjSlNXcFprMzd5WlptZjl5NXVrZ3J1NWRwTGdMM2xVdnBOVzBtMko3?=
+ =?utf-8?B?WFBta1pZQU96em9PdWdZRzJweVJlSnprelY2QjVqK2pjZ3VqMHViRUVaRUFV?=
+ =?utf-8?B?NEx3bG5pUGtzeEFsMTBDVnNGMlhjc1FWeFh6T2tDUjJhanhHcXZIUGZEV2VE?=
+ =?utf-8?B?UndTQ0g2cG4zc3ovcWpZVzlYenV4aE1JeWNyUDJaR00zZllsSnlTSjJ6R0x6?=
+ =?utf-8?B?UTNubzNjUDl1LzBnYy83U094MGgvWHhQM25iK0FFWUNCVlVOVmlvM0l1MWdX?=
+ =?utf-8?B?dVZRWFVDTXNOMjJSZzhSelRtTVp5amU0Mm52aHJ3WGF6aUU5VCt1TlQxeklD?=
+ =?utf-8?B?SFpWcWxwTG45Tk9KWnNBbkJIZ0RZUGVPNkNEakV3dzIrdXVZQ2ZINXJ1Vy9T?=
+ =?utf-8?B?R0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FC0109CB5C5EDD4AAFFB91A015ECFA47@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a6d4024-36b1-4d77-5448-08dac8693a08
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2022 06:59:09.6623
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kjfp7E8d0X9fBhcnodmwJONRKmsUeDvLOyrHUsov4WYREoDmLjZEB0OiS34QX1DglaupkUI2OpdHPQZ2Oe+50Zrz42oZRoLYzA43v1+0Ztw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1563
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,342 +138,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev wrote:
-> On Wed, Nov 16, 2022 at 6:59 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Nov 16, 2022 at 6:53 PM Stanislav Fomichev <sdf@google.com> w=
-rote:
-> > >
-> > > On Wed, Nov 16, 2022 at 6:17 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Nov 16, 2022 at 4:19 PM Stanislav Fomichev <sdf@google.co=
-m> wrote:
-> > > > >
-> > > > > On Wed, Nov 16, 2022 at 3:47 PM John Fastabend <john.fastabend@=
-gmail.com> wrote:
-> > > > > >
-> > > > > > Stanislav Fomichev wrote:
-> > > > > > > On Wed, Nov 16, 2022 at 11:03 AM John Fastabend
-> > > > > > > <john.fastabend@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > > > > > > > > Martin KaFai Lau <martin.lau@linux.dev> writes:
-> > > > > > > > >
-> > > > > > > > > > On 11/15/22 10:38 PM, John Fastabend wrote:
-> > > > > > > > > >>>>>>> +static void veth_unroll_kfunc(const struct bpf=
-_prog *prog, u32 func_id,
-> > > > > > > > > >>>>>>> +                           struct bpf_patch *p=
-atch)
-> > > > > > > > > >>>>>>> +{
-> > > > > > > > > >>>>>>> +     if (func_id =3D=3D xdp_metadata_kfunc_id(=
-XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-> > > > > > > > > >>>>>>> +             /* return true; */
-> > > > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_MOV64=
-_IMM(BPF_REG_0, 1));
-> > > > > > > > > >>>>>>> +     } else if (func_id =3D=3D xdp_metadata_kf=
-unc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-> > > > > > > > > >>>>>>> +             /* return ktime_get_mono_fast_ns(=
-); */
-> > > > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_EMIT_=
-CALL(ktime_get_mono_fast_ns));
-> > > > > > > > > >>>>>>> +     }
-> > > > > > > > > >>>>>>> +}
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> So these look reasonable enough, but would be go=
-od to see some examples
-> > > > > > > > > >>>>>> of kfunc implementations that don't just BPF_CAL=
-L to a kernel function
-> > > > > > > > > >>>>>> (with those helper wrappers we were discussing b=
-efore).
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>> Let's maybe add them if/when needed as we add mor=
-e metadata support?
-> > > > > > > > > >>>>> xdp_metadata_export_to_skb has an example, and rf=
-c 1/2 have more
-> > > > > > > > > >>>>> examples, so it shouldn't be a problem to resurre=
-ct them back at some
-> > > > > > > > > >>>>> point?
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> Well, the reason I asked for them is that I think =
-having to maintain the
-> > > > > > > > > >>>> BPF code generation in the drivers is probably the=
- biggest drawback of
-> > > > > > > > > >>>> the kfunc approach, so it would be good to be rela=
-tively sure that we
-> > > > > > > > > >>>> can manage that complexity (via helpers) before we=
- commit to this :)
-> > > > > > > > > >>>
-> > > > > > > > > >>> Right, and I've added a bunch of examples in v2 rfc=
- so we can judge
-> > > > > > > > > >>> whether that complexity is manageable or not :-)
-> > > > > > > > > >>> Do you want me to add those wrappers you've back wi=
-thout any real users?
-> > > > > > > > > >>> Because I had to remove my veth tstamp accessors du=
-e to John/Jesper
-> > > > > > > > > >>> objections; I can maybe bring some of this back gat=
-ed by some
-> > > > > > > > > >>> static_branch to avoid the fastpath cost?
-> > > > > > > > > >>
-> > > > > > > > > >> I missed the context a bit what did you mean "would =
-be good to see some
-> > > > > > > > > >> examples of kfunc implementations that don't just BP=
-F_CALL to a kernel
-> > > > > > > > > >> function"? In this case do you mean BPF code directl=
-y without the call?
-> > > > > > > > > >>
-> > > > > > > > > >> Early on I thought we should just expose the rx_desc=
-riptor which would
-> > > > > > > > > >> be roughly the same right? (difference being code em=
-bedded in driver vs
-> > > > > > > > > >> a lib) Trouble I ran into is driver code using seqlo=
-ck_t and mutexs
-> > > > > > > > > >> which wasn't as straight forward as the simpler just=
- read it from
-> > > > > > > > > >> the descriptor. For example in mlx getting the ts wo=
-uld be easy from
-> > > > > > > > > >> BPF with the mlx4_cqe struct exposed
-> > > > > > > > > >>
-> > > > > > > > > >> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
-> > > > > > > > > >> {
-> > > > > > > > > >>          u64 hi, lo;
-> > > > > > > > > >>          struct mlx4_ts_cqe *ts_cqe =3D (struct mlx4=
-_ts_cqe *)cqe;
-> > > > > > > > > >>
-> > > > > > > > > >>          lo =3D (u64)be16_to_cpu(ts_cqe->timestamp_l=
-o);
-> > > > > > > > > >>          hi =3D ((u64)be32_to_cpu(ts_cqe->timestamp_=
-hi) + !lo) << 16;
-> > > > > > > > > >>
-> > > > > > > > > >>          return hi | lo;
-> > > > > > > > > >> }
-> > > > > > > > > >>
-> > > > > > > > > >> but converting that to nsec is a bit annoying,
-> > > > > > > > > >>
-> > > > > > > > > >> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev=
-,
-> > > > > > > > > >>                              struct skb_shared_hwtst=
-amps *hwts,
-> > > > > > > > > >>                              u64 timestamp)
-> > > > > > > > > >> {
-> > > > > > > > > >>          unsigned int seq;
-> > > > > > > > > >>          u64 nsec;
-> > > > > > > > > >>
-> > > > > > > > > >>          do {
-> > > > > > > > > >>                  seq =3D read_seqbegin(&mdev->clock_=
-lock);
-> > > > > > > > > >>                  nsec =3D timecounter_cyc2time(&mdev=
-->clock, timestamp);
-> > > > > > > > > >>          } while (read_seqretry(&mdev->clock_lock, s=
-eq));
-> > > > > > > > > >>
-> > > > > > > > > >>          memset(hwts, 0, sizeof(struct skb_shared_hw=
-tstamps));
-> > > > > > > > > >>          hwts->hwtstamp =3D ns_to_ktime(nsec);
-> > > > > > > > > >> }
-> > > > > > > > > >>
-> > > > > > > > > >> I think the nsec is what you really want.
-> > > > > > > > > >>
-> > > > > > > > > >> With all the drivers doing slightly different ops we=
- would have
-> > > > > > > > > >> to create read_seqbegin, read_seqretry, mutex_lock, =
-... to get
-> > > > > > > > > >> at least the mlx and ice drivers it looks like we wo=
-uld need some
-> > > > > > > > > >> more BPF primitives/helpers. Looks like some more wo=
-rk is needed
-> > > > > > > > > >> on ice driver though to get rx tstamps on all packet=
-s.
-> > > > > > > > > >>
-> > > > > > > > > >> Anyways this convinced me real devices will probably=
- use BPF_CALL
-> > > > > > > > > >> and not BPF insns directly.
-> > > > > > > > > >
-> > > > > > > > > > Some of the mlx5 path looks like this:
-> > > > > > > > > >
-> > > > > > > > > > #define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PE=
-R_SEC + ((u64)low))
-> > > > > > > > > >
-> > > > > > > > > > static inline ktime_t mlx5_real_time_cyc2time(struct =
-mlx5_clock *clock,
-> > > > > > > > > >                                                u64 ti=
-mestamp)
-> > > > > > > > > > {
-> > > > > > > > > >          u64 time =3D REAL_TIME_TO_NS(timestamp >> 32=
-, timestamp & 0xFFFFFFFF);
-> > > > > > > > > >
-> > > > > > > > > >          return ns_to_ktime(time);
-> > > > > > > > > > }
-> > > > > > > > > >
-> > > > > > > > > > If some hints are harder to get, then just doing a kf=
-unc call is better.
-> > > > > > > > >
-> > > > > > > > > Sure, but if we end up having a full function call for =
-every field in
-> > > > > > > > > the metadata, that will end up having a significant per=
-formance impact
-> > > > > > > > > on the XDP data path (thinking mostly about the skb met=
-adata case here,
-> > > > > > > > > which will collect several bits of metadata).
-> > > > > > > > >
-> > > > > > > > > > csum may have a better chance to inline?
-> > > > > > > > >
-> > > > > > > > > Yup, I agree. Including that also makes it possible to =
-benchmark this
-> > > > > > > > > series against Jesper's; which I think we should defini=
-tely be doing
-> > > > > > > > > before merging this.
-> > > > > > > >
-> > > > > > > > Good point I got sort of singularly focused on timestamp =
-because I have
-> > > > > > > > a use case for it now.
-> > > > > > > >
-> > > > > > > > Also hash is often sitting in the rx descriptor.
-> > > > > > >
-> > > > > > > Ack, let me try to add something else (that's more inline-a=
-ble) on the
-> > > > > > > rx side for a v2.
-> > > > > >
-> > > > > > If you go with in-kernel BPF kfunc approach (vs user space si=
-de) I think
-> > > > > > you also need to add CO-RE to be friendly for driver develope=
-rs? Otherwise
-> > > > > > they have to keep that read in sync with the descriptors? Als=
-o need to
-> > > > > > handle versioning of descriptors where depending on specific =
-options
-> > > > > > and firmware and chip being enabled the descriptor might be m=
-oving
-> > > > > > around. Of course can push this all to developer, but seems n=
-ot so
-> > > > > > nice when we have the machinery to do this and we handle it f=
-or all
-> > > > > > other structures.
-> > > > > >
-> > > > > > With CO-RE you can simply do the rx_desc->hash and rx_desc->c=
-sum and
-> > > > > > expect CO-RE sorts it out based on currently running btf_id o=
-f the
-> > > > > > descriptor. If you go through normal path you get this for fr=
-ee of
-> > > > > > course.
-> > > > >
-> > > > > Doesn't look like the descriptors are as nice as you're trying =
-to
-> > > > > paint them (with clear hash/csum fields) :-) So not sure how mu=
-ch
-> > > > > CO-RE would help.
-> > > > > At least looking at mlx4 rx_csum, the driver consults three dif=
-ferent
-> > > > > sets of flags to figure out the hash_type. Or am I just unlucky=
- with
-> > > > > mlx4?
-> > > >
-> > > > Which part are you talking about ?
-> > > >         hw_checksum =3D csum_unfold((__force __sum16)cqe->checksu=
-m);
-> > > > is trivial enough for bpf prog to do if it has access to 'cqe' po=
-inter
-> > > > which is what John is proposing (I think).
-
-Yeah this is what I've been considering. If you just get the 'cqe' pointe=
-r
-walking the check_sum and rxhash should be straightforward.
-
-There seems to be a real difference between timestamps and most other =
-
-fields IMO. Timestamps require some extra logic to turn into ns when
-using the NIC hw clock. And the hw clock requires some coordination to
-keep in sync and stop from overflowing and may be done through other
-protocols like PTP in my use case. In some cases I think the clock is
-also shared amongst multiple phys. Seems mlx has a seqlock_t to protect
-it and I'm less sure about this but seems intel nic maybe has a sideband
-control channel.
-
-Then there is everything else that I can think up that is per packet data=
-
-and requires no coordination with the driver. Its just reading fields in
-the completion queue. This would be the csum, check_sum, vlan_header and
-so on. Sure we could kfunc each one of those things, but could also just
-write that directly in BPF and remove some abstractions and kernel
-dependency by doing it directly in the BPF program. If you like that
-abstraction seems to be the point of contention my opinion is the cost
-of kernel depency is high and I can abstract it with a user library
-anyways so burying it in the kernel only causes me support issues and
-backwards compat problems.
-
-Hopefully, my position is more clear.
-
-> > >
-> > > I'm talking about mlx4_en_process_rx_cq, the caller of that check_c=
-sum.
-> > > In particular: if (likely(dev->features & NETIF_F_RXCSUM)) branch
-> > > I'm assuming we want to have hash_type available to the progs?
-> > >
-> > > But also, check_csum handles other corner cases:
-> > > - short_frame: we simply force all those small frames to skip check=
-sum complete
-> > > - get_fixed_ipv6_csum: In IPv6 packets, hw_checksum lacks 6 bytes f=
-rom
-> > > IPv6 header
-> > > - get_fixed_ipv4_csum: Although the stack expects checksum which
-> > > doesn't include the pseudo header, the HW adds it
-> >
-> > Of course, but kfunc won't be doing them either.
-> > We're talking XDP fast path.
-> > The mlx4 hw is old and incapable.
-> > No amount of sw can help.
-
-Doesn't this lend itself to letting the XDP BPF program write the
-BPF code to read it out. Maybe someone cares about these details
-for some cpumap thing, but the rest of us wont care we might just
-want to read check_csum. Maybe we have an IPv6 only network or
-IPv4 network so can make further shortcuts. If a driver dev does
-this they will be forced to do the cactch all version because
-they have no way to know such details.
-
-> >
-> > > So it doesn't look like we can just unconditionally use cqe->checks=
-um?
-> > > The driver does a lot of massaging around that field to make it
-> > > palatable.
-> >
-> > Of course we can. cqe->checksum is still usable. the bpf prog
-> > would need to know what it's reading.
-> > There should be no attempt to present a unified state of hw bits.
-> > That's what skb is for. XDP layer should not hide such hw details.
-> > Otherwise it will become a mini skb layer with all that overhead.
-> =
-
-> I was hoping the kfunc could at least parse the flags and return some
-> pkt_hash_types-like enum to indicate what this csum covers.
-> So the users won't have to find the hardware manuals (not sure they
-> are even available?) to decipher what numbers they've got.
-> Regarding old mlx4: true, but mlx5's mlx5e_handle_csum doesn't look
-> that much different :-(
-
-The driver developers could still provide and ship the BPF libs
-with their drivers. I think if someone is going to use their NIC
-and lots of them and requires XDP it will get done. We could put
-them by the driver code mlx4.bpf or something.
-
-> =
-
-> But going back a bit: I'm probably missing what John has been
-> suggesting. How is CO-RE relevant for kfuncs? kfuncs are already doing
-> a CO-RE-like functionality by rewriting some "public api" (kfunc) into
-> the bytecode to access the relevant data.
-
-This was maybe a bit of an aside. What I was pondering a bit out
-loud perhaps is my recollection is there may be a few different
-descriptor layouts depending features enabled, exact device loaded
-and such. So in this case if I was a driver writer I might not want
-to hardcode the offset of the check_sum field. If I could use CO-RE
-then I don't have to care if in one version is the Nth field and later on=
-
-someone makes it the Mth field just like any normal kernel struct.
-But through the kfunc interface I couldn't see how to get that.
-So instead of having a bunch of kfunc implementations you could just
-have one for all your device classes because you always name the
-field the same thing.=
+DQoNCkxlIDE2LzExLzIwMjIgw6AgMTg6MDEsIEhhcmkgQmF0aGluaSBhIMOpY3JpdMKgOg0KPiAN
+Cj4gDQo+IE9uIDE2LzExLzIyIDEyOjE0IGFtLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4N
+Cj4+DQo+PiBMZSAxNC8xMS8yMDIyIMOgIDE4OjI3LCBDaHJpc3RvcGhlIExlcm95IGEgw6ljcml0
+wqA6DQo+Pj4NCj4+Pg0KPj4+IExlIDE0LzExLzIwMjIgw6AgMTU6NDcsIEhhcmkgQmF0aGluaSBh
+IMOpY3JpdMKgOg0KPj4+PiBIaSBDaHJpc3RvcGhlLA0KPj4+Pg0KPj4+PiBPbiAxMS8xMS8yMiA0
+OjU1IHBtLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4+Pj4gTGUgMTAvMTEvMjAyMiDDoCAx
+OTo0MywgSGFyaSBCYXRoaW5pIGEgw6ljcml0wqA6DQo+Pj4+Pj4gTW9zdCBCUEYgcHJvZ3JhbXMg
+YXJlIHNtYWxsLCBidXQgdGhleSBjb25zdW1lIGEgcGFnZSBlYWNoLiBGb3IgDQo+Pj4+Pj4gc3lz
+dGVtcw0KPj4+Pj4+IHdpdGggYnVzeSB0cmFmZmljIGFuZCBtYW55IEJQRiBwcm9ncmFtcywgdGhp
+cyBtYXkgYWxzbyBhZGQgDQo+Pj4+Pj4gc2lnbmlmaWNhbnQNCj4+Pj4+PiBwcmVzc3VyZSBvbiBp
+bnN0cnVjdGlvbiBUTEIuIEhpZ2ggaVRMQiBwcmVzc3VyZSB1c3VhbGx5IHNsb3dzIGRvd24gDQo+
+Pj4+Pj4gdGhlDQo+Pj4+Pj4gd2hvbGUgc3lzdGVtIGNhdXNpbmcgdmlzaWJsZSBwZXJmb3JtYW5j
+ZSBkZWdyYWRhdGlvbiBmb3IgcHJvZHVjdGlvbg0KPj4+Pj4+IHdvcmtsb2Fkcy4NCj4+Pj4+Pg0K
+Pj4+Pj4+IGJwZl9wcm9nX3BhY2ssIGEgY3VzdG9taXplZCBhbGxvY2F0b3IgdGhhdCBwYWNrcyBt
+dWx0aXBsZSBicGYgDQo+Pj4+Pj4gcHJvZ3JhbXMNCj4+Pj4+PiBpbnRvIHByZWFsbG9jYXRlZCBt
+ZW1vcnkgY2h1bmtzLCB3YXMgcHJvcG9zZWQgWzFdIHRvIGFkZHJlc3MgaXQuIFRoaXMNCj4+Pj4+
+PiBzZXJpZXMgZXh0ZW5kcyB0aGlzIHN1cHBvcnQgb24gcG93ZXJwYy4NCj4+Pj4+Pg0KPj4+Pj4+
+IFBhdGNoZXMgMSAmIDIgYWRkIHRoZSBhcmNoIHNwZWNpZmljIGZ1bmN0aW9ucyBuZWVkZWQgdG8g
+c3VwcG9ydCB0aGlzDQo+Pj4+Pj4gZmVhdHVyZS4gUGF0Y2ggMyBlbmFibGVzIHRoZSBzdXBwb3J0
+IGZvciBwb3dlcnBjLiBUaGUgbGFzdCBwYXRjaA0KPj4+Pj4+IGVuc3VyZXMgY2xlYW51cCBpcyBo
+YW5kbGVkIHJhY2VmdWxseS4NCj4+Pj4+Pg0KPj4+Pg0KPj4+Pj4+IFRlc3RlZCB0aGUgY2hhbmdl
+cyBzdWNjZXNzZnVsbHkgb24gYSBQb3dlclZNLiBwYXRjaF9pbnN0cnVjdGlvbigpLA0KPj4+Pj4+
+IG5lZWRlZCBmb3IgYnBmX2FyY2hfdGV4dF9jb3B5KCksIGlzIGZhaWxpbmcgZm9yIHBwYzMyLiBE
+ZWJ1Z2dpbmcgaXQuDQo+Pj4+Pj4gUG9zdGluZyB0aGUgcGF0Y2hlcyBpbiB0aGUgbWVhbndoaWxl
+IGZvciBmZWVkYmFjayBvbiB0aGVzZSBjaGFuZ2VzLg0KPj4+Pj4NCj4+Pj4+IEkgZGlkIGEgcXVp
+Y2sgdGVzdCBvbiBwcGMzMiwgSSBkb24ndCBnZXQgc3VjaCBhIHByb2JsZW0sIG9ubHkgDQo+Pj4+
+PiBzb21ldGhpbmcNCj4+Pj4+IHdyb25nIGluIHRoZSBkdW1wIHByaW50IGFzIHRyYXBzIGludHJ1
+Y3Rpb25zIG9ubHkgYXJlIGR1bXBlZCwgYnV0DQo+Pj4+PiB0Y3BkdW1wIHdvcmtzIGFzIGV4cGVj
+dGVkOg0KPj4+Pg0KPj4+PiBUaGFua3MgZm9yIHRoZSBxdWljayB0ZXN0LiBDb3VsZCB5b3UgcGxl
+YXNlIHNoYXJlIHRoZSBjb25maWcgeW91IHVzZWQuDQo+Pj4+IEkgYW0gcHJvYmFibHkgbWlzc2lu
+ZyBhIGZldyBrbm9icyBpbiBteSBjb25pZmcuLi4NCj4+Pj4NCj4+Pg0KPj4NCj4+IEkgYWxzbyBt
+YW5hZ2VkIHRvIHRlc3QgaXQgb24gUUVNVS4gVGhlIGNvbmZpZyBpcyBiYXNlZCBvbiANCj4+IHBt
+YWMzMl9kZWZjb25maWcuDQo+IA0KPiBJIGhhZCB0aGUgc2FtZSBjb25maWcgYnV0IGhpdCB0aGlz
+IHByb2JsZW06DQo+IA0KPiAgwqDCoMKgwqAjIGVjaG8gMSA+IC9wcm9jL3N5cy9uZXQvY29yZS9i
+cGZfaml0X2VuYWJsZTsgbW9kcHJvYmUgdGVzdF9icGYNCj4gIMKgwqDCoMKgdGVzdF9icGY6ICMw
+IFRBWA0KPiAgwqDCoMKgwqAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NCj4g
+IMKgwqDCoMKgV0FSTklORzogQ1BVOiAwIFBJRDogOTYgYXQgYXJjaC9wb3dlcnBjL25ldC9icGZf
+aml0X2NvbXAuYzozNjcgDQo+IGJwZl9pbnRfaml0X2NvbXBpbGUrMHg4YTAvMHg5ZjgNCg0KSSBn
+ZXQgbm8gc3VjaCBwcm9ibGVtLCBvbiBRRU1VLCBhbmQgSSBjaGVja2VkIHRoZSAuY29uZmlnIGhh
+czoNCkNPTkZJR19TVFJJQ1RfS0VSTkVMX1JXWD15DQpDT05GSUdfU1RSSUNUX01PRFVMRV9SV1g9
+eQ0KDQpCb290IHN1Y2Nlc3NmdWwuDQovICMgaWZjb25maWcgZXRoMCAxMC4wLjIuMTUNCmUxMDAw
+OiBldGgwIE5JQyBMaW5rIGlzIFVwIDEwMDAgTWJwcyBGdWxsIER1cGxleCwgRmxvdyBDb250cm9s
+OiBSWA0KLyAjIHRmdHAgLWcgMTAuMC4yLjIgLXIgdGVzdF9icGYua28NCi8gIyBlY2hvIDEgPiAv
+cHJvYy9zeXMvbmV0L2NvcmUvYnBmX2ppdF9lbmFibGUNCi8gIyBpbnNtb2QgLi90ZXN0X2JwZi5r
+bw0KdGVzdF9icGY6ICMwIFRBWCBqaXRlZDoxIDIxNiA4NyA4NiBQQVNTDQp0ZXN0X2JwZjogIzEg
+VFhBIGppdGVkOjEgNTcgMjcgMjcgUEFTUw0KdGVzdF9icGY6ICMyIEFERF9TVUJfTVVMX0sgaml0
+ZWQ6MSA1MCBQQVNTDQp0ZXN0X2JwZjogIzMgRElWX01PRF9LWCBqaXRlZDoxIDExMCBQQVNTDQp0
+ZXN0X2JwZjogIzQgQU5EX09SX0xTSF9LIGppdGVkOjEgNjcgMjYgUEFTUw0KdGVzdF9icGY6ICM1
+IExEX0lNTV8wIGppdGVkOjEgNzcgUEFTUw0KLi4uDQoNCkJ5IHRoZSB3YXksIHlvdSBjYW4gbm90
+ZSB0aGF0IGR1cmluZyB0aGUgYm9vdCB5b3UgZ2V0Og0KDQoJVGhpcyBwbGF0Zm9ybSBoYXMgSEFT
+SCBNTVUsIFNUUklDVF9NT0RVTEVfUldYIHdvbid0IHdvcmsNCg0KU2VlIHdoeSBpbiAwNjcwMDEw
+ZjNiMTAgKCJwb3dlcnBjLzMyczogRW5hYmxlIFNUUklDVF9NT0RVTEVfUldYIGZvciB0aGUgDQo2
+MDMgY29yZSIpDQoNCk5ldmVydGhlbGVzcyBpdCBzaG91bGQgcHJldmVudCBwYXRjaF9pbnN0cnVj
+dGlvbigpIHRvIHdvcmsuDQoNCkNvdWxkIHlvdSBoYWQgYSBwcl9lcnIoKSBpbiBfX3BhdGNoX2lu
+c3RydWN0aW9uKCkgaW4gdGhlIGZhaWx1cmUgcGF0aCB0byANCnByaW50IGFuZCBjaGVjayBleGVj
+X2FkZHIgYW5kIHBhdGNoX2FkZHIgPw0KDQoNCg0KPiAgwqDCoMKgwqBqaXRlZDoxDQo+ICDCoMKg
+wqDCoGtlcm5lbCB0cmllZCB0byBleGVjdXRlIGV4ZWMtcHJvdGVjdGVkIHBhZ2UgKGJlODU3MDIw
+KSAtIGV4cGxvaXQgDQo+IGF0dGVtcHQ/ICh1aWQ6IDApDQo+ICDCoMKgwqDCoEJVRzogVW5hYmxl
+IHRvIGhhbmRsZSBrZXJuZWwgaW5zdHJ1Y3Rpb24gZmV0Y2gNCj4gIMKgwqDCoMKgRmF1bHRpbmcg
+aW5zdHJ1Y3Rpb24gYWRkcmVzczogMHhiZTg1NzAyMA0KDQpJJ20gYSBiaXQgc3VycHJpc2VkIG9m
+IHRoaXMuIE9uIGhhc2ggYmFzZWQgYm9vazNzLzMyIHRoZXJlIGlzIG5vIHdheSB0byANCnByb3Rl
+Y3QgcGFnZXMgZm9yIGV4ZWMtcHJvdGVjdGlvbi4gUHJvdGVjdGlvbiBpcyBwZXJmb3JtZWQgYXQg
+c2VnbWVudCANCmxldmVsLCBhbGwga2VybmVsIHNlZ21lbnRzIGhhdmUgdGhlIE5YIGJpdCBzZXQg
+ZXhjZXB0IHRoZSBzZWdtZW50IHVzZWQgDQpmb3IgbW9kdWxlIHRleHQsIHdoaWNoIGlzIGJ5IGRl
+ZmF1bHQgMHhiMDAwMDAwMC0weGJmZmZmZmZmLg0KDQpPciBtYXliZSB0aGlzIGlzIHRoZSBmaXJz
+dCB0aW1lIHRoYXQgYWRkcmVzcyBpcyBhY2Nlc3NlZCwgYW5kIHRoZSBJU0kgDQpoYW5kbGVyIGRv
+ZXMgdGhlIGNoZWNrIGJlZm9yZSBsb2FkaW5nIHRoZSBoYXNoIHRhYmxlID8NCg0KPiANCj4gYnBm
+X2ppdF9iaW5hcnlfcGFja19maW5hbGl6ZSgpIGZ1bmN0aW9uIGZhaWxlZCBkdWUgdG8gDQo+IHBh
+dGNoX2luc3RydWN0aW9uKCkgLi4NCg0KSXMgdGhlcmUgYSB3YXkgdGVsbCBCUEYgY29yZSB0aGF0
+IGppdCBmYWlsZWQgaW4gdGhhdCBjYXNlIHRvIGF2b2lkIHRoYXQgPw0KDQpDaHJpc3RvcGhlDQo=
