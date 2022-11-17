@@ -2,142 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EFF62DFE6
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 16:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E92C62E021
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 16:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbiKQPcB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 10:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S234724AbiKQPkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 10:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbiKQPb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 10:31:56 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4708F583
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 07:31:55 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id e7-20020a17090a77c700b00216928a3917so5708802pjs.4
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 07:31:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YYbyGvr7R4QJ31YRKXqxJVIlaxGSfN/nVPLH9/segYo=;
-        b=bhV42qvhSh6JlAr5LOzLdUDf3KEvgkBFoxSgGMdYhoPh4wNmiNmakO5pya7uYnFNX3
-         9vKnTRjuljBe+GvnX2CkYyrlclqY1/0MWPRPksqKeLO4NhA2lGk5oFt9yTwq7qAyaDQy
-         16zGofSttVBr7KsWP7JC5kJoDoJSMlh/tUIaMbm1gFflZT41h1lXXpfZvGjWMUnexXSC
-         XFbOfhqZ8rRfdbenEkZQfMLMWRZ+KDxBAeflZifNmraa/XKSUNql8j51PuZNSs1hVJDw
-         GmMGb3ZTI2FOYZ7Yes6t/xn8JvLFzyDsxqCyMmVIi3WtCSCO1fEfFREmA+vUGKciNLHl
-         MI8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YYbyGvr7R4QJ31YRKXqxJVIlaxGSfN/nVPLH9/segYo=;
-        b=cqhNdo/3ZlzOFLpcTDJ5e+ETj3VPaokYrLKuSagY8ZwPAtgfHMEnMxWgpbJ7Pht4to
-         iAEpmtkw4ZYUzt6YUulfSuY00p1X+HoBpNCEuVgsmp/K6z1y/uACKLgYg1lIWUuZwyVm
-         hcZgdfdmOc8C+uttrnzYQnYVJsQhM984vWj8v5SS9C8V/CPJGvS1nhAmPI5DRxtLpsfd
-         dX6m+6GGUnPuTOyDsu0toAFtI8HAXXBcSpxrcPWVu7qLLyni096AYvbMlWRJyZIlxu0V
-         j6mh54+DYZSRS1JOTOiqdFyVo2s54qRWX6n4YSnVgvevoYiWLtuSGOVBvqqEd9h7Qlcq
-         HcOw==
-X-Gm-Message-State: ANoB5pmGuf6RejIBBepsAM/aVD/qMTH1XsO14YS9T6hTfxgPnF4FCV53
-        zm7LRE+K/ieT/askQtnEZ69be0IMB3Y0gl5HyTc3mjv6xtTB
-X-Google-Smtp-Source: AA0mqf7PTUB1E6jT7w2n1cqUSGbsHd4TwbTJSD3G3paAWrXk8kz5NT/xoC/cgmw9kA0xw6mqSK8TjJ9No6As8SS+Zq4=
-X-Received: by 2002:a17:902:b097:b0:17b:4ace:b67f with SMTP id
- p23-20020a170902b09700b0017b4aceb67fmr3442926plr.12.1668699115322; Thu, 17
- Nov 2022 07:31:55 -0800 (PST)
+        with ESMTP id S239562AbiKQPkH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 10:40:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5062609;
+        Thu, 17 Nov 2022 07:40:06 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E336F61F86;
+        Thu, 17 Nov 2022 15:40:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C57C433C1;
+        Thu, 17 Nov 2022 15:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668699605;
+        bh=Mc4ySWjClUjGsVC0d00yorexigtt/BL4IyUH3iK7Dms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=esYymimzQxLQyT1zPNhzzNLMA9P11nnWOpGfhtQLbqqh32cB/bCL8RMeYTXChwavj
+         m6D777/MjK1+PH1gMGESslKB28HOG3RkUWpndfXnTwvKVwmorWa85rssjI4He7JrOX
+         XC/T0uRDs7yoIYUuvo4QVJR9VRsfmpdAzECzg0pdqGF/bSm0R3/GpnEpeTfVPmmvtK
+         lWi6jzj5dCx9iz4/Y1lBHmh1uZbOWC8EdPc3hjE6IvyKHZMZjg1vieesWw+8IrPkmz
+         P1wzog4efm6zpl9UzRl4JqsPRZrm6zypANXpCmDa3H4VWWJmMcI6HLwaqmfeyCMWOb
+         5LXb2WH+w7xnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3AF294034E; Thu, 17 Nov 2022 12:40:00 -0300 (-03)
+Date:   Thu, 17 Nov 2022 12:40:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 0/6] Build output clean up
+Message-ID: <Y3ZV0FDW70ADoIYE@kernel.org>
+References: <20221117004356.279422-1-irogers@google.com>
 MIME-Version: 1.0
-References: <20221115175652.3836811-1-roberto.sassu@huaweicloud.com>
- <20221115175652.3836811-4-roberto.sassu@huaweicloud.com> <CAHC9VhTA7SgFnTFGNxOGW38WSkWu7GSizBmNz=TuazUR4R_jUg@mail.gmail.com>
- <83cbff40f16a46e733a877d499b904cdf06949b6.camel@huaweicloud.com>
- <CAHC9VhRX0J8Z61_fH9T5O1ZpRQWSppQekxP8unJqStHuTwQkLQ@mail.gmail.com> <Y3XLgrYbIEpdW0vy@kroah.com>
-In-Reply-To: <Y3XLgrYbIEpdW0vy@kroah.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 17 Nov 2022 10:31:44 -0500
-Message-ID: <CAHC9VhTXegLqVH18AXTYrFPBn1WF0Wu8hbybc1Y5LTr-StFrOw@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/4] lsm: Redefine LSM_HOOK() macro to add return
- value flags as argument
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, revest@chromium.org, jackmanb@chromium.org,
-        jmorris@namei.org, serge@hallyn.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221117004356.279422-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 12:50 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Wed, Nov 16, 2022 at 05:04:05PM -0500, Paul Moore wrote:
-> > On Wed, Nov 16, 2022 at 3:11 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On Tue, 2022-11-15 at 21:27 -0500, Paul Moore wrote:
-> > > > On Tue, Nov 15, 2022 at 12:58 PM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >
-> > > > > Define four return value flags (LSM_RET_NEG, LSM_RET_ZERO, LSM_RET_ONE,
-> > > > > LSM_RET_GT_ONE), one for each interval of interest (< 0, = 0, = 1, > 1).
-> > > > >
-> > > > > Redefine the LSM_HOOK() macro to add return value flags as argument, and
-> > > > > set the correct flags for each LSM hook.
-> > > > >
-> > > > > Implementors of new LSM hooks should do the same as well.
-> > > > >
-> > > > > Cc: stable@vger.kernel.org # 5.7.x
-> > > > > Fixes: 9d3fdea789c8 ("bpf: lsm: Provide attachment points for BPF LSM programs")
-> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > ---
-> > > > >  include/linux/bpf_lsm.h       |   2 +-
-> > > > >  include/linux/lsm_hook_defs.h | 779 ++++++++++++++++++++--------------
-> > > > >  include/linux/lsm_hooks.h     |   9 +-
-> > > > >  kernel/bpf/bpf_lsm.c          |   5 +-
-> > > > >  security/bpf/hooks.c          |   2 +-
-> > > > >  security/security.c           |   4 +-
-> > > > >  6 files changed, 466 insertions(+), 335 deletions(-)
-> > > >
-> > > > Just a quick note here that even if we wanted to do something like
-> > > > this, it is absolutely not -stable kernel material.  No way.
-> > >
-> > > I was unsure about that. We need a proper fix for this issue that needs
-> > > to be backported to some kernels. I saw this more like a dependency.
-> > > But I agree with you that it would be unlikely that this patch is
-> > > applied to stable kernels.
-> > >
-> > > For stable kernels, what it would be the proper way? We still need to
-> > > maintain an allow list of functions that allow a positive return value,
-> > > at least. Should it be in the eBPF code only?
-> >
-> > Ideally the fix for -stable is the same as what is done for Linus'
-> > kernel (ignoring backport fuzzing), so I would wait and see how that
-> > ends up first.  However, if the patchset for Linus' tree is
-> > particularly large and touches a lot of code, you may need to work on
-> > something a bit more targeted to the specific problem.  I tend to be
-> > more conservative than most kernel devs when it comes to -stable
-> > patches, but if you can't backport the main upstream patchset, smaller
-> > (both in terms of impact and lines changed) is almost always better.
->
-> No, the mainline patch (what is in Linus's tree), is almost always
-> better and preferred for stable backports.  When you diverge, bugs
-> happen, almost every time, and it makes later fixes harder to backport
-> as well.
->
-> But first work on solving the problem in Linus's tree.  Don't worry
-> about stable trees until after the correct solution is merged.
+Em Wed, Nov 16, 2022 at 04:43:50PM -0800, Ian Rogers escreveu:
+> Reduce build spam from commands not prefixed with @. Make
+> install_headers targets distinguishable by adding in the library name
+> so:
+> INSTALL headers
+> becomes:
+> INSTALL libapi_headers
+> 
+> Ian Rogers (6):
+>   tools lib api: clean up install_headers
+>   tools lib bpf: Avoid install_headers make warning
+>   tools lib symbol: clean up build output
+>   tools lib perf: Make install_headers clearer
+>   tools lib subcmd: Make install_headers clearer
+>   tools lib traceevent: Make install_headers clearer
 
-Perhaps you missed my very first sentence where I mentioned exactly
-the same things: solve it in Linus' tree first, backports of patches
-in Linus' tree is ideal.
+Andrii, are you ok with that? Can I carry this on my next (perf/core)
+branch?
+
+Testing it now.
+
+- Arnaldo
+ 
+>  tools/lib/api/Makefile        | 4 ++--
+>  tools/lib/bpf/Makefile        | 1 +
+>  tools/lib/perf/Makefile       | 2 +-
+>  tools/lib/subcmd/Makefile     | 2 +-
+>  tools/lib/symbol/Makefile     | 4 ++--
+>  tools/lib/traceevent/Makefile | 4 ++--
+>  6 files changed, 9 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.38.1.431.g37b22c650d-goog
 
 -- 
-paul-moore.com
+
+- Arnaldo
