@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8511E62E19F
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 407F562E1A0
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 17:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240435AbiKQQ0h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 11:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
+        id S240472AbiKQQ0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 11:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240441AbiKQQ0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 11:26:22 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C0F7C037
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:57 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id p21so2077235plr.7
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:24:57 -0800 (PST)
+        with ESMTP id S240462AbiKQQ0X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 11:26:23 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D797C441
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:25:00 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id io19so2070634plb.8
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:25:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4RMgIjgVJe7MVFByUyYDinpCRIIO51b3eQdv64g3mNU=;
-        b=IKcOc1zf+1U4eRg6dkT9svKpohnADu/IbNud6YKzLZGof/HhIfSKvdkW2Pb+Q4SEcc
-         vDEE7/uMedqZHceBXY9AG31GAQp4cgOlEdqxZNIbAHx8HCR9vAPTbR2guMDOqtTGfoIi
-         jDhHlmcR5KVoo0bE6muzu4MFuOHMncYuyYnkckhO1+3HLeAWwSox+9JyAroYTSO+ODYr
-         zn8XMLeWiwL6i625Xab8V3MznuR1gt3n/oZiuC6d1pDeLjN0rj+h0uaA/RMB7VCvW6MQ
-         coo87fLQggTBz4Y46G6eksAawMVyB6IlHxbXWHxkGps/HGg+vvNoFDVRqLd7DCciSgHz
-         N1sA==
+        bh=PWEXkOCkwXXMGqCPYq1KccYYNIXFmgDqg+Pvxcs/nb0=;
+        b=K3XM6StXg30BTtPAfiWC0GTDIAebVGeEWI0M8OGb+NAv0YgZMqCk/gpOro7BkrvKyf
+         U0OFg8fsMHOje7K4PlGp2cLuRkaq59FwD/z02c8YuygTd10ztbvazMrxPm9NDQYhN1IW
+         cpWZiAjJJc1wLYnlyvyuGZD9F9YdRu/I4K/q75Rd2Pk5BABj1dEJrdBuyl6g3ODldTjZ
+         N0W1iUPI3318Gl1xjHSAhMzp+I1qwOXnDSsdmjhNUl1icFimaiM75q/fxS+hrVh4iqiZ
+         Cyu5fdSmMa/dAnY940HCLaUvkEIHv7D3MzyFQVGcXoD9GuWY5BQyHuSd/o6pTlpfUrMq
+         3Yng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4RMgIjgVJe7MVFByUyYDinpCRIIO51b3eQdv64g3mNU=;
-        b=ssFGQNHuTs+VfVPpbR6djxAKDMkJj1iAYElfD0h6QRM6YWeN3IjgHGVdKMP7AldfRu
-         Jz8KqT2qCwaQl32cqIc4iAi1ez0RMH/owJtjP89skowtdzE+xRPpJIqSRZkk/l69kkjV
-         uC+OoKoeHKfKV77cGdX7mLr4DloM/ray7wHoeO3N4XpKfc5Zi9F6iWeO5VDHyFFA7Vvt
-         cMK36F8L56mJQ8/0FPWPwTkQqITm/O1lDxGFTAS/NyqXz5uAER0mNqPnlW9AxzwM7ha7
-         nTMvpQmBkO/T/rrlPpKQVSxk5NJ9FO+fsTBDxHHjIoGcQJ4z8kQCO41SHib4k0TFBguK
-         deTw==
-X-Gm-Message-State: ANoB5plZyuhU6AILRbbH1aD1PaQqwQN0MzAHvbfbii523HtGpIoQibjE
-        Kbx5oCKW8FnSEfTnx1K5OPgKMlc3wVg=
-X-Google-Smtp-Source: AA0mqf4RUb9absyZahX06UATomYK/9lTXwRkVFFcxHPX6fLH8BamzhfBVpAgv9MmtiyeswD8ZI/+Sg==
-X-Received: by 2002:a17:902:7e4a:b0:183:fffb:1c09 with SMTP id a10-20020a1709027e4a00b00183fffb1c09mr3517921pln.69.1668702296682;
-        Thu, 17 Nov 2022 08:24:56 -0800 (PST)
+        bh=PWEXkOCkwXXMGqCPYq1KccYYNIXFmgDqg+Pvxcs/nb0=;
+        b=MI9N7tpejJXhkL/ftQWdrZP1SRaXfR6UYBgcNMF/gtlIFiTeRRQsv5KabSIUum2Hbg
+         1N2PSL/bwtsbkpRMVbb2/k1cS0bV7PAOTUkSa/1V90Kdb35CD4JfNQ4OTjBKJHPDtiqt
+         haxj2wa7e56vlK3G4Qgps0cmaOYBTrzQCjlGm0ScPahUkvBw1d3D4mv9r/6Uf86FRQVJ
+         QyB9nebgUbhdTpyK708B8Aa+WTaY/W3G0JNmemrM3J6MoBt9A0VdhG+N3KfwHuhqbwQD
+         sHpkSJidTwnzRIEU1usKvMg0l3x9gGtmrygYyXkuCc/o3/3caeiOPaRBSMP3yCVcpIyZ
+         P5UQ==
+X-Gm-Message-State: ANoB5pl6c63n9WTg84ZuoopIDN5QujVaHm503JczHVYzVKvxFXFjeIxa
+        Buog18gtdlaU5Gr4CrAuC7wnD0glTbQ=
+X-Google-Smtp-Source: AA0mqf5zATWwnAsSk8GigNC5yrItIN9ZI98D95nKC1yf/S/n7jO/Jg0udee5KCKkeM6+NMHswV5z9Q==
+X-Received: by 2002:a17:902:f10c:b0:176:d217:7e68 with SMTP id e12-20020a170902f10c00b00176d2177e68mr3441360plb.63.1668702300055;
+        Thu, 17 Nov 2022 08:25:00 -0800 (PST)
 Received: from localhost ([103.4.221.252])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b00188c9c11559sm1617929plj.1.2022.11.17.08.24.55
+        by smtp.gmail.com with ESMTPSA id s184-20020a625ec1000000b0056ba7ce4d5asm1360283pfb.52.2022.11.17.08.24.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 08:24:56 -0800 (PST)
+        Thu, 17 Nov 2022 08:24:59 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,14 +56,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>
-Subject: [PATCH bpf-next v8 04/22] bpf: Populate field_offs for inner_map_meta
-Date:   Thu, 17 Nov 2022 21:54:12 +0530
-Message-Id: <20221117162430.1213770-5-memxor@gmail.com>
+Subject: [PATCH bpf-next v8 05/22] bpf: Introduce allocated objects support
+Date:   Thu, 17 Nov 2022 21:54:13 +0530
+Message-Id: <20221117162430.1213770-6-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221117162430.1213770-1-memxor@gmail.com>
 References: <20221117162430.1213770-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4166; i=memxor@gmail.com; h=from:subject; bh=nLZmTSTmmq1SxBwUC/19jz+E+cIA6c+jP3LcRFmypKE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjdl7+OXao4LxJm0sucrh7H+9MfBhu7/4f1VF3iIUl 6fGDXIKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3Ze/gAKCRBM4MiGSL8Ryol+EA CChH4o97sedTtWJK3cCAUkdfTXs9mrjmux8zxwVfRthb98WZWOBcLqdHX1XDEKAzwU/Y+JbcE4uUDx jy8hIg33g8fxx98nPw90GcS+4hlQQQp1VWXRgZJC4iPjw6853agbemd51stuabCDkYFKfIbJSq855x ydtOa0HsxvabH7u4QBGYyKs57fp0EztVGDdIvfTUtpRxCc+w5ZQRhty3di4taAYILphsDM5AIcPGAK MywZAo1kOnLDe3j6530p0MqGRxhhqhXrvtV4Jx2awpZ6I93FckK0TsaRC4M2aKReMZlSa56fRYwwDd vXSXrL4jDRNVqLD5Y9oqCDiygfubwKSVvxpp8dSwlcuQkcDT1TFIIGeTYrJJXkZkVa/mT87QLDnkwF tai1e+BY3yU+hmUBkUgKqcKnGWqt4TbnTdZITJYdo+x7jtj6/T6lTySXqtUNn/39HGwNzlpEjk2P+r idtA2PLuTdohVq/wI6jJR8PWSHYa8cSXK4SD1JlvZv5uKp057mT6EKwj4BqcvfiLWOGy42uHSYZJrs GssoxGCnQ0yMu1wFhXZQd/w8t+hG27xKBvmAoO456u8csKBG0eznfZ6eL3XxU6gtTCNLGaL7jkaH1R xdhqVpCF2OWPI10Hh5R7l8AdGhv1Q18mPfUv+XGuNxV4xtSB+cqhuSIpJ8LA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4893; i=memxor@gmail.com; h=from:subject; bh=CH78Zd/IJvjHgHBfOoFLama9Di30yIFuK7q41JG0EwY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjdl7+vyj8qoLXn8SBnLP6GEcvcJHFXCZz8PQsm62f aOxmK1KJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3Ze/gAKCRBM4MiGSL8RysjHD/ 429vc8a7oiiz4vlvJbcVv1xsY3wLTt1iBRzD8uMRS69pE34ENNzFHM2DrxfDRmsoOdw/FANUSm5qSJ i+kjSK6dat/G1JRTFRQC8yEgCSUI6gzfpD4j0n49n7x+9pG5wkrUVcjS7pvARojmn5+HUM/RJk4TQU Fa3rUIR8cVBBkb+HTlBcAxbaFbB/HuefsA64lcaHQXTjfKbI6kMwSkeZTqTvUAAU7oxDWh74oKNl+5 2eGLyHSaza34sQneGYTRviHkNLz+JhP6WCuXfjnmSWHGFlVvBuun+vBf2pnZHmAD1vx4pHHICczMo8 zJyZUJUalND4/rMsJdHPJCzdN3mUuYvEZzJZhE1RGcYf+rUo2tsnns0pPY4mc9OXmCzgpZUngFCDIY P8qn4/MXCQdzxexymWC4CBhz0/gFg0FIRoZo3EVf+eZpdN9RCi4545kX+Ml5wLiUzmrTTSRd5w3Xm6 jgXIkOUzVCf1U2YkscH7jztZgERz1b0rdQw+4PstO4y63Pid2nsNtJa54kN80DXFodRX3mKpZ8F6Y2 1AlezhU+iuUzDkwi7mDLv6KtWN1VGjAmNMBO6dASZCGLkBvHD9B4BP9naxAhPywRrUEc3yprUDI3Vo o/q6yIH3YJHMg4GzGAfelFSZ8ukORaiJ90J7KvG9w2ct1PPEo+muX5FPktmg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,130 +76,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Far too much code simply assumes that both btf_record and btf_field_offs
-are set to valid pointers together, or both are unset. They go together
-hand in hand as btf_record describes the special fields and
-btf_field_offs is compact representation for runtime copying/zeroing.
+Introduce support for representing pointers to objects allocated by the
+BPF program, i.e. PTR_TO_BTF_ID that point to a type in program BTF.
+This is indicated by the presence of MEM_ALLOC type flag in reg->type to
+avoid having to check btf_is_kernel when trying to match argument types
+in helpers.
 
-It is very difficult to make this clear in the code when the only
-exception to this universal invariant is inner_map_meta which is used
-as reg->map_ptr in the verifier. This is simply a bug waiting to happen,
-as in verifier context we cannot easily distinguish if PTR_TO_MAP_VALUE
-is coming from an inner map, and if we ever end up using field_offs for
-any reason in the future, we will silently ignore the special fields for
-inner map case (as NULL is not an error but unset field_offs).
+Whenever walking such types, any pointers being walked will always yield
+a SCALAR instead of pointer. In the future we might permit kptr inside
+such allocated objects (either kernel or program allocated), and it will
+then form a PTR_TO_BTF_ID of the respective type.
 
-Hence, simply copy field_offs from inner map together with btf_record.
+For now, such allocated objects will always be referenced in verifier
+context, hence ref_obj_id == 0 for them is a bug. It is allowed to write
+to such objects, as long fields that are special are not touched
+(support for which will be added in subsequent patches). Note that once
+such a pointer is marked PTR_UNTRUSTED, it is no longer allowed to write
+to it.
 
-While at it, refactor code to unwind properly on errors with gotos.
+No PROBE_MEM handling is therefore done for loads into this type unless
+PTR_UNTRUSTED is part of the register type, since they can never be in
+an undefined state, and their lifetime will always be valid.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/map_in_map.c | 46 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 34 insertions(+), 12 deletions(-)
+ include/linux/bpf.h   | 11 +++++++++++
+ kernel/bpf/btf.c      |  5 +++++
+ kernel/bpf/verifier.c | 25 +++++++++++++++++++++++--
+ 3 files changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index 74f91048eee3..b3fa03a84334 100644
---- a/kernel/bpf/map_in_map.c
-+++ b/kernel/bpf/map_in_map.c
-@@ -12,6 +12,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 	struct bpf_map *inner_map, *inner_map_meta;
- 	u32 inner_map_meta_size;
- 	struct fd f;
-+	int ret;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 54462dd28824..53c47c8c6230 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -524,6 +524,11 @@ enum bpf_type_flag {
+ 	/* Size is known at compile time. */
+ 	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
  
- 	f = fdget(inner_map_ufd);
- 	inner_map = __bpf_map_get(f);
-@@ -20,18 +21,18 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 
- 	/* Does not support >1 level map-in-map */
- 	if (inner_map->inner_map_meta) {
--		fdput(f);
--		return ERR_PTR(-EINVAL);
-+		ret = -EINVAL;
-+		goto put;
- 	}
- 
- 	if (!inner_map->ops->map_meta_equal) {
--		fdput(f);
--		return ERR_PTR(-ENOTSUPP);
-+		ret = -ENOTSUPP;
-+		goto put;
- 	}
- 
- 	if (btf_record_has_field(inner_map->record, BPF_SPIN_LOCK)) {
--		fdput(f);
--		return ERR_PTR(-ENOTSUPP);
-+		ret = -ENOTSUPP;
-+		goto put;
- 	}
- 
- 	inner_map_meta_size = sizeof(*inner_map_meta);
-@@ -41,8 +42,8 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 
- 	inner_map_meta = kzalloc(inner_map_meta_size, GFP_USER);
- 	if (!inner_map_meta) {
--		fdput(f);
--		return ERR_PTR(-ENOMEM);
-+		ret = -ENOMEM;
-+		goto put;
- 	}
- 
- 	inner_map_meta->map_type = inner_map->map_type;
-@@ -50,17 +51,30 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 	inner_map_meta->value_size = inner_map->value_size;
- 	inner_map_meta->map_flags = inner_map->map_flags;
- 	inner_map_meta->max_entries = inner_map->max_entries;
++	/* MEM is of an allocated object of type in program BTF. This is used to
++	 * tag PTR_TO_BTF_ID allocated using bpf_obj_new.
++	 */
++	MEM_ALLOC		= BIT(11 + BPF_BASE_TYPE_BITS),
 +
- 	inner_map_meta->record = btf_record_dup(inner_map->record);
- 	if (IS_ERR(inner_map_meta->record)) {
--		struct bpf_map *err_ptr = ERR_CAST(inner_map_meta->record);
- 		/* btf_record_dup returns NULL or valid pointer in case of
- 		 * invalid/empty/valid, but ERR_PTR in case of errors. During
- 		 * equality NULL or IS_ERR is equivalent.
- 		 */
--		kfree(inner_map_meta);
--		fdput(f);
--		return err_ptr;
-+		ret = PTR_ERR(inner_map_meta->record);
-+		goto free;
-+	}
+ 	__BPF_TYPE_FLAG_MAX,
+ 	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+ };
+@@ -2791,4 +2796,10 @@ struct bpf_key {
+ 	bool has_ref;
+ };
+ #endif /* CONFIG_KEYS */
 +
-+	if (inner_map_meta->record) {
-+		struct btf_field_offs *field_offs;
-+		/* If btf_record is !IS_ERR_OR_NULL, then field_offs is always
-+		 * valid.
-+		 */
-+		field_offs = kmemdup(inner_map->field_offs, sizeof(*inner_map->field_offs), GFP_KERNEL | __GFP_NOWARN);
-+		if (!field_offs) {
-+			ret = -ENOMEM;
-+			goto free_rec;
++static inline bool type_is_alloc(u32 type)
++{
++	return type & MEM_ALLOC;
++}
++
+ #endif /* _LINUX_BPF_H */
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 875355ff3718..9a596f430558 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6034,6 +6034,11 @@ int btf_struct_access(struct bpf_verifier_log *log,
+ 
+ 		switch (err) {
+ 		case WALK_PTR:
++			/* For local types, the destination register cannot
++			 * become a pointer again.
++			 */
++			if (type_is_alloc(reg->type))
++				return SCALAR_VALUE;
+ 			/* If we found the pointer or scalar on t+off,
+ 			 * we're done.
+ 			 */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0312d9ce292f..49e08c1c2c61 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4687,14 +4687,27 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 		return -EACCES;
+ 	}
+ 
+-	if (env->ops->btf_struct_access) {
++	if (env->ops->btf_struct_access && !type_is_alloc(reg->type)) {
++		if (!btf_is_kernel(reg->btf)) {
++			verbose(env, "verifier internal error: reg->btf must be kernel btf\n");
++			return -EFAULT;
 +		}
-+		inner_map_meta->field_offs = field_offs;
- 	}
+ 		ret = env->ops->btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+ 	} else {
+-		if (atype != BPF_READ) {
++		/* Writes are permitted with default btf_struct_access for
++		 * program allocated objects (which always have ref_obj_id > 0),
++		 * but not for untrusted PTR_TO_BTF_ID | MEM_ALLOC.
++		 */
++		if (atype != BPF_READ && reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
+ 			verbose(env, "only read is supported\n");
+ 			return -EACCES;
+ 		}
+ 
++		if (type_is_alloc(reg->type) && !reg->ref_obj_id) {
++			verbose(env, "verifier internal error: ref_obj_id for allocated object must be non-zero\n");
++			return -EFAULT;
++		}
 +
- 	/* It is critical that inner_map btf is set to inner_map_meta btf, as
- 	 * the duplicated btf_record's list_head btf_field structs have
- 	 * value_rec members which point into the btf_record populated for the
-@@ -81,10 +95,18 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 		ret = btf_struct_access(&env->log, reg, off, size, atype, &btf_id, &flag);
+ 	}
  
- 	fdput(f);
- 	return inner_map_meta;
-+free_rec:
-+	btf_record_free(inner_map_meta->record);
-+free:
-+	kfree(inner_map_meta);
-+put:
-+	fdput(f);
-+	return ERR_PTR(ret);
- }
- 
- void bpf_map_meta_free(struct bpf_map *map_meta)
- {
-+	kfree(map_meta->field_offs);
- 	btf_record_free(map_meta->record);
- 	btf_put(map_meta->btf);
- 	kfree(map_meta);
+@@ -5973,6 +5986,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 	 * fixed offset.
+ 	 */
+ 	case PTR_TO_BTF_ID:
++	case PTR_TO_BTF_ID | MEM_ALLOC:
+ 		/* When referenced PTR_TO_BTF_ID is passed to release function,
+ 		 * it's fixed offset must be 0.	In the other cases, fixed offset
+ 		 * can be non-zero.
+@@ -13690,6 +13704,13 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 			break;
+ 		case PTR_TO_BTF_ID:
+ 		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
++		/* PTR_TO_BTF_ID | MEM_ALLOC always has a valid lifetime, unlike
++		 * PTR_TO_BTF_ID, and an active ref_obj_id, but the same cannot
++		 * be said once it is marked PTR_UNTRUSTED, hence we must handle
++		 * any faults for loads into such types. BPF_WRITE is disallowed
++		 * for this case.
++		 */
++		case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+ 			if (type == BPF_READ) {
+ 				insn->code = BPF_LDX | BPF_PROBE_MEM |
+ 					BPF_SIZE((insn)->code);
 -- 
 2.38.1
 
