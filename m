@@ -2,136 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F5662E990
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 00:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B76562E99A
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 00:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbiKQX2L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 18:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
+        id S235058AbiKQXaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 18:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbiKQX2J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 18:28:09 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98796266C
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:28:08 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AHMbIhY028549;
-        Thu, 17 Nov 2022 15:27:54 -0800
+        with ESMTP id S234999AbiKQXaQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 18:30:16 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A91101
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:30:13 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2AHN8of3022513;
+        Thu, 17 Nov 2022 15:29:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=xSws7b3/kWsm/Ztrw9Iz1mHE6S+LiVoSAXWzvKGbQ+c=;
- b=T1CRl8VGYeXEPV4gmJUgVhUBqUtBOb0MjiFNqSNeg+ctIKfx2/8EXSY6attI8nS7xACZ
- fv04WeFj0+Ith4K/VZy0F5dQ1KAJ8haqRBMY/tL05WZ41gWRYpXgRs+RNkG0mYX7pAeT
- /LU/KMtioezfJwVlgXePiT41RZDwqNfZObcXAZKyQBTEJaWwOoaK4/+6vMwM8/QkY30O
- 5V1h5DkMS0tHC5/M0ONjjQ+TvY9+4HBjVbX1Nj5vJTHeY8s6uzr3pbUO1OSNtQM4Hqdb
- bMYx/XH1ULbD/UyNN+3Hx1csfgU7pcP7DIeEPm1g4MgOyXL5WdQKtOvAQmzL2Xs1aagO lw== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2046.outbound.protection.outlook.com [104.47.73.46])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kwwwf0b4h-1
+ bh=tadWo4rkDX5gv61+Df9dkkOQRAqUQkiVa69iWMAJ40M=;
+ b=dpbtFHK6632o61LnDQlGEJqnUfvkCAIlsByKn4grQwVXqEM8HROtbaa6j24lydHKYY8C
+ Eq8ThGj0aGZQatbmM96ZTotVN+PrHvNtL5NQ3CofJzK5e9BjFXC7qClBg7kVBa6kqWI4
+ RO8jtkM4iL2FpoIvNuTJ6syvNIBoAWEWO6u+Yitk6DYOCVVk5zsDVnGht/ljLOf9cipT
+ SrYsp9AG10KXaAT3vFWuQiEgaMckflP/6ouoVh3xLzVK2D1nJgFCs8JAfwK5Cd9ZR8Pi
+ F0Ud6yXA+FJ2OdTEfwNOUncEYD9mkb7dg3b5tRPPVf4vnVSU6gKuQpMAk0BIN1adV5Bl +A== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3kwxcag4ss-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Nov 2022 15:27:54 -0800
+        Thu, 17 Nov 2022 15:29:58 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QbTDct+FSgwH98Xl+m47o2/pFB6YnpbBb0B5xDuqvRq/lICtOkD2YRhiUknqLbisGH7gTWpF3fEvaMiNmqLlTy8L4YPzb9GjTuvmV6TuiLIC4ZUL9kvPZf5u73Ux7RWVaAYV/b+eojHnbfAiQEancCShRzRZ3w9RpLOlm33ZJ8tlu4ReUhsUm9ETO+wjWhJt4qlzCaiI8wIWQG7d25WC4FVt/kRVFk37Vy3pdwpuvq2zg/LHUxc0zscZM7PG9yIq6AZ6+8FE5D5Fduj0r9e0h8BpLGL/R1pTnzUaF5a+JJdY7//nQ8KZZ4ojQetWCfxmVvnY77e3fZZy5W+0OkdnTA==
+ b=B50Fg/Cfbfrv/p/gCmy7XsiFb9A/wabnHqPFo4ihC/VjkVQKMN0YT7pLf71Icax0dOFQlJBfukjD5ZtHnezTOPG/R1X5FXycK8On5zJq3QGaqSlDlCTWKkS2VUZ9iggfY6i6e0s01srsSajp1p5xpp7tdptxphPD3ILLq6KFDGHA4N3ldBEbm7Oz81Etg50JvZ6bsdldEfzmM/bc6+0xefomLz/aY9pnYHx7+oVuaXIdX0/cpN4OXul6GAsjVYjAjCMXv1fxEp0+62q3OVDFq426jAeEtlSqTdl0VU5gQJqms3XwFYJvF1HxFXT7fQZXi86JtkbbJbwYtim1/eABWA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xSws7b3/kWsm/Ztrw9Iz1mHE6S+LiVoSAXWzvKGbQ+c=;
- b=EOlnATCq22hIl/ZZ69j1/Gl/DlVh/dJR6HoQHvS922DLH9CX8LUg0Z1bZQ+BJUq9N9yoOgcx2IBLqDYAZpvR4PBGUO8vuGMiPRtuVI8dOjgqD8D9D7FX6M6f2fscBkp5slOBi1ynqDv2wB6jIXe3qqip4eHcJnLR1d7damufomS2gdiqrQE/tbEsoYnhEcDnJXPW46gBp37mrUdQfYjWhnVv/7+2asnvHgzobF0J8UyuaqbXy/KxBr/quNUM1SRBXe9V6mpI8UqFLbqmSXSJd/gmyoRRwT/i6bkGA9ECHtYeCP2ySrFqI/vAcVAv4rVBR4YmrFGfUa/Y1YRMrn2hGw==
+ bh=tadWo4rkDX5gv61+Df9dkkOQRAqUQkiVa69iWMAJ40M=;
+ b=FDWEoDjhlS5aB8mZREul3VL/0OIve+j++rRD6yC5g3o51khkggXWaw7E7wHcwQLwmxVvM1IZi+dfrZIB5g2INW0XKEi68DsNTnAG7STzEYo0t9Ai86GC2XZPfhXrO1pMQAy+b4kWduZDFxAgoZpBkvtkgU+1OPivtF4GYZNF9KZUPKQu8pH8AxyC2tFHrXnEybOCDiQ9HY+jELPafhOju9W+nArYDlrkBUSvcrTAZzBOmhpT9ouGivLJmEU688AwVZ/v28s6VRCy4LL5AxIWK3Sma4YxvmvtNXHiX5KJJsE55fIc9BJFYRJrif6UCVtMCHVg98bOJp5f7UYZ13K7uA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by DM5PR15MB1243.namprd15.prod.outlook.com (2603:10b6:3:b3::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5813.16; Thu, 17 Nov 2022 23:27:52 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::fc34:c193:75d9:101c%4]) with mapi id 15.20.5813.019; Thu, 17 Nov 2022
- 23:27:52 +0000
-Message-ID: <e3b2d51e-22ae-b6b3-b618-b410dbdf89ce@meta.com>
-Date:   Thu, 17 Nov 2022 18:27:50 -0500
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DS0PR15MB5469.namprd15.prod.outlook.com (2603:10b6:8:c7::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Thu, 17 Nov
+ 2022 23:29:55 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ac66:fb37:a598:8519]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ac66:fb37:a598:8519%7]) with mapi id 15.20.5813.013; Thu, 17 Nov 2022
+ 23:29:55 +0000
+Message-ID: <d56223f9-483e-fbc1-4564-44c0858a1e3e@meta.com>
+Date:   Thu, 17 Nov 2022 15:29:53 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.0
+ Gecko/20100101 Thunderbird/102.4.2
 Subject: Re: [PATCH bpf-next v9 22/23] selftests/bpf: Add BPF linked list API
  tests
+Content-Language: en-US
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
 References: <20221117225510.1676785-1-memxor@gmail.com>
  <20221117225510.1676785-23-memxor@gmail.com>
  <CAADnVQKHibbQUNkwvd0g3YDK8n7k6g21=_TFd1=ccRFYJWrsOA@mail.gmail.com>
-Content-Language: en-US
-From:   Dave Marchevsky <davemarchevsky@meta.com>
+From:   Yonghong Song <yhs@meta.com>
 In-Reply-To: <CAADnVQKHibbQUNkwvd0g3YDK8n7k6g21=_TFd1=ccRFYJWrsOA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR02CA0107.namprd02.prod.outlook.com
- (2603:10b6:208:51::48) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
-MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: PH0PR07CA0029.namprd07.prod.outlook.com
+ (2603:10b6:510:5::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|DM5PR15MB1243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 60e251a1-54d2-48c1-9879-08dac8f358ef
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS0PR15MB5469:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6aa06d83-dd09-45bf-a6d1-08dac8f3a263
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vB1PlyJWdodZ5tidVacPlAq+P/PwzY5P8tnmsNFVBzcwY9m6EF1EXH1then11wsWDbE08nZNuKR0rDwMvvhXLTY8KuyY3UpEHA+1Jt7sGJQzkghz3305auZVxWmiwN3TF2SzPGP2+zO3Stxo6jtA9xLv32vc8/Tog8zp6q1ZoJb8w77SHH2oAfc5R+yzvP48aySFaKUvEzpJgUXBYGgNELU4a12pNVIsnUAREwOvP6bMULbYMx61ST2qjaIDZI3pBj+/EpsSElS307VSJQcHxfkDx3mnJ7ZkzooWa5GCZSt3sMJzNiaoUvUNurjS+mKsTD6o8M/0vsSBqBLpNm20Piu9E9gOZAYS8gK+3CZF+5K739/g2eoXsvV1kZ4rOb08Ni7CwPQvKZWLpp6nQwidUrA9sd7TewWpRB6ljoRpKzHwBPa6kmBdRNFp/wAU1X5mjY1LMawONzY46m5+iBxjS25QdR1XHPnQmW+8VmE81KkYW1mMPDmpi4e9Mlmp18eqqukkz8xD/LLxJzI4gGxiN+PfltKmhgsQsYH/Er1NhBXdKn+pak/1fSSzdI4qac2khWWjDDb7j8oCosivjN7GMrpK8SB1aHaC0DPb+WBPV84GIk3ExM01PjPbaXnVlWh/M41tEaJbQmJvt3edpWyvDoDPRk2Gk6I9Gy1dZqWPPWgPj06AtAxeP3H2HZCuVwhtnyRc4pLxSwIhWsNSelJL5KS1Ih1fHREPl8UPWXhbw8s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(451199015)(31686004)(2906002)(83380400001)(36756003)(41300700001)(2616005)(8936002)(86362001)(31696002)(38100700002)(6512007)(6506007)(53546011)(54906003)(110136005)(186003)(5660300002)(8676002)(66476007)(4326008)(66946007)(66556008)(316002)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: RFvS3KqwAOTq44LjZ8m/9sa/+X/sTISfx5dNvG+7UoiB0Y7Aju/HockzBTOT3TBNTgaSsJ+Av2cOOj532jne2ARBvYcW1Ic8DIWrdNK9D2o1Qo2kuNgI+SXR3jB+twFT1fGJwaGndTl2vD9ijDntUrNlCo8yUyK0LquDgxMhkOe8jqFVU4LF9GJIq+3xl9Y2Wy6gqmusr8LqO+8afriAGZpVZdOprVauzOxQF0DDmWHAKSnSs9uO6XVy6DAmDHs9+/ecy3tbcerjDvPIozk8CgozVr2QcGPCy54h6TonUxxgMyRKbTf8tt4vpE2SUlZPAiaEVyI7dxBRy707JdnpLAyPeY74RR+Vm2qa1VcTcW+mDyYxy1errw5m9SiygO7qS7r1hC/OUZnzQVPuBCjzsMo+ZGmBMj3U4TzazulCohjMKApiUh+3hxIy02XFxtJLFLM9wi6Jgin8LGzGKaTIGytb4Hpcp+AaqUeLiq/Iurme0S+S+AKKiKM02dVIAuCLAlPdMgbS47e/zWR4Sn61OYr5DEJGyfnaJA7J1wOsk7RvWumRW8BI1LofPk8Q8t3xPcKNtqqd10c5FCDVcgksqFxbJgUlGBBD+gF9PcgnJei2CNoCQ4TdEcW+44ZR/C7NLud3bYPub2wksBiGNoZn0eFYrKZirgIOJOeRn1w9kRgXl2Df/2riTZXw59Hra1DpRzZ9BFcU7BM//PDGML1FAUjEQz9O7kOaPuJfsW7flZajUckp9ZImgIgb3tpNe9v0ao2NaO/a2fGftqFMUeB1gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(451199015)(107886003)(31686004)(6486002)(966005)(478600001)(54906003)(110136005)(41300700001)(4326008)(186003)(30864003)(2906002)(8936002)(38100700002)(6506007)(316002)(53546011)(66946007)(66556008)(66476007)(2616005)(6512007)(8676002)(83380400001)(36756003)(31696002)(5660300002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a3hIODVHR1RsdnpwU3BGaWZyR3RYdkV6TWNGYVdBQm81TEhOVzZIV2U1Nmsz?=
- =?utf-8?B?Q24rR2p2cVpQQTArcTFzcnNvdHF6WGo0cmNxMFFobnY3eFl2cStyV2kxZ0d3?=
- =?utf-8?B?dlpHTS9DUVhQWjBkYkppekRNZjlNQjJjZU5TL0xPZjh6MSt1eUNxODYrM1pq?=
- =?utf-8?B?OXNucGFGMTNQUnY4dTZuQjMyMmxEUEM5ZkhsV3g3bVlUbGlxQXJVSVo5WTUv?=
- =?utf-8?B?Q3laZ1JoWEg0SEFEVEYvcmxhQmtSQmdoK1RnN1MyVFRwMXFBcDJuckx5Ykhh?=
- =?utf-8?B?N0pZWnBPOENtTFVvN2xnU0RtSXA3ZzN6c0UyWXpEQzh0TXVWdk53YlREZ0ZP?=
- =?utf-8?B?Q01XTkNmb1RjRkJaWHd4cENVNTE0c1FpSzFvZUZuYno0TXRxUUhsTnhMa3FW?=
- =?utf-8?B?K2gvQnJMU3hJRFh3QUhNa0hnMTlFSW1oVHNXVzUwRFVZSTJvMC9pUkVhcEFC?=
- =?utf-8?B?WURZWW9wMS9qOTZ3b1NnQTFpSFE2VmgxSjFvTFVCSHpEVmdSVjBGMFNEZzhX?=
- =?utf-8?B?L25wODNQVTlIaTBhaVNBTnBWY09tb2cydWpyNE14TEUva2o3emRIODRJTk9K?=
- =?utf-8?B?MC9NQXB6VTRWMHpKbGVDRU5jdHFONVd2c3IrcGExYmxmcTROcHhaclRrMUUy?=
- =?utf-8?B?RXViQXpsN08xSExIcHN4aFBKKzdtUVRpcjFaaDY4azc4MWJkTll3NFl5U0Y5?=
- =?utf-8?B?SnVNSFF6ODcwTW5aN1pWY2lpMUxuM1V2VUtsWEMyamorOWRpcnpVTUJ3M1ox?=
- =?utf-8?B?R1ZGTUhQTEN0M2ZrV0FIYU1oQTEvdXR1cGV3bFhlaHM5SXU0M1F5V2doOE1Q?=
- =?utf-8?B?dzdKeXhaSjBRbnpQVFp4SUVSTmdvZVYya05TbS8yaFFEa2ZmYy9YTUJmOWVW?=
- =?utf-8?B?emZVR29YY1I4YWJjS2s5bnFnK1ZWOEdrMjRtVWN2bkxqWWNaRXhSM2lqUzkx?=
- =?utf-8?B?UjhBMWFuTnZWVnNGSG1DY0ZRVDkydUw4ZnZCM1RENnkyMHQ3dDJUVHFzZGg1?=
- =?utf-8?B?ZDFKaGMrZElPQndldzl5VVdCTzB3NEtrSkJISVZVdGRJbFlaNnN1eWpyODdG?=
- =?utf-8?B?VnJNL1lLN0Y2OVVBMDBaWVQvaUlNQkMrOWQvYlF2elIwYW94MnhYZmxLMGtL?=
- =?utf-8?B?Y1lBZFJHQkI0ZVh1a3kra21pYmxWdEdCWEpudElHa25QM1RSazR3UlI2cVVE?=
- =?utf-8?B?cVNWK0xtOTNkS1Bnbyt2T1hpYXExOENvb01YVDlFRnkza2t2ZnBpTE53Si9Z?=
- =?utf-8?B?VXF0eWtMVHk3OThQQjB2NWZGdXp4TlQrc001QzBOMi9QbERtMlZEa2M2bWxG?=
- =?utf-8?B?YnRaL2pJdlpsYlJTWEE4anR5VU1ueVl0NFV3eHJmSy9XUFVWR3FOZjZXUlU4?=
- =?utf-8?B?aU52Z0FoUUtVOXR6TWV4UTJ4dDZSSEFEbUppUllZeGU3SkxjOXI1R2drL3VR?=
- =?utf-8?B?TE5ZaHFnVkdDT2M2eW1SbHg1alVRSXN2N1R5YUpiRmozSDAvdlBEbEx2Q1li?=
- =?utf-8?B?eU5qQTZ1ZW9sclRjYTUycXRNdTZMbXlYaFFUVHdHSk45b2xmTDEzRkZjWDJN?=
- =?utf-8?B?d0IvUjl6THc3TjZUbXlwdTZxNXBzTWNMVlhwK1JwQTdNVE1jczd0eDA5VGh2?=
- =?utf-8?B?T0p2S0hWL29TZktKUXRhT2IvK1EydVlLK0hHNXg1RTVaTzZacERhaFFSNDg2?=
- =?utf-8?B?Q2hJR1ZBOVZIaGRrb043aFBiMFIyVzFpb000M28zODZUZ0h1T0FFMGF0dHVi?=
- =?utf-8?B?VUxScUI0cXdFYkxXczZKMms5d2FNaFJaTXlqZ1RqYjNBdXN2Q2wrTjFJK1Bs?=
- =?utf-8?B?YVlhWk5wLzFGcHBCMW9jTWVTMll2bzE0NHVpOEV1NkhrN05yTGMvdmxlY0d0?=
- =?utf-8?B?akJtUHp4OTZXRDJXcEpzNWx5WEo5cVBmUlVpUWFUZGFrVDRZbERnNTNMZHdK?=
- =?utf-8?B?RGo2VTZBaWZCVThwei91SWN0czZJRGtseVBYVytGbTdPeTJuYVdlN3g0NGFr?=
- =?utf-8?B?bEVQNUxkTzdtN2taWm5ySEQrOHZ5eHc3Z1oyTE84OENmMW9aK0tvV3p6U2RZ?=
- =?utf-8?B?Z2hrOURHSVlWYWV2TGEySmI4RVExREZtbVJYM0JyY3VXZlJTZkhxbnVtbnhX?=
- =?utf-8?B?SWFwUkVUSDRUOWd6anhGWHVvNkRtREhxRFdiMWhka0J6YmdqS3lzbmNvMGFi?=
- =?utf-8?Q?soVRo/FJTpIYeyNwZOJ87bo=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d2d3ZDVEU3ZYRU5Bd2gycHFZYm5RMEtPQ3N0cEwwY3c1NFpGVEVYOVpUMUYx?=
+ =?utf-8?B?clQ1ZGVsWjUzTFFITm5qNHFLSWpDWHFLWFFQdmNSd3ZXN0N4QThWRGtrb3ZI?=
+ =?utf-8?B?VGhWSlUzanRVVmF5RmVpVW10cDZvWFFCakVWd0xOa01Ydk4vNzBJMDZUbVR4?=
+ =?utf-8?B?U0d4bTdEcXVWUS9objZhNHZBamFYekgvYW5Na0JUQi9xQ1c3T2NGZEpBL0pH?=
+ =?utf-8?B?UmZaVmF1RjlTc0ZiblVSZmo4Wll5eStXUE5SSnZnekd0KzZOVUt4b0hLUXFH?=
+ =?utf-8?B?QXVjOHNOWnIyUmRZcnhReFkyVk80ZVlRR2pEV2t4KzgveUhTTm9yVnBOTmpl?=
+ =?utf-8?B?SDRnT0N4VUg0ZkNKa2xDVmJDVFphbHdUZFMvcldyN21ucGxCWjlob29EQXZj?=
+ =?utf-8?B?NG13dmplYnJoVVo0LzloNzFVZTlYVmpVa2Q0bnpscGpHZlpIc2I0NFdBdlpJ?=
+ =?utf-8?B?ZEdEeUllclBuZjQyd0x3bTZMYTFMZFEySS9kTThra25PYUpRdTFqSDQyVUto?=
+ =?utf-8?B?TGRURkFyMFVOWVhEaUwwY1hOUko1eUYzeFVMLzBoYUN0WjBYeG5IdGo4SXJM?=
+ =?utf-8?B?SDhMYXdIWVdoQjBiZmVNdURzWWhzRVhJTHFNZDJZdFhwZUE1dzA1aUVXdWNS?=
+ =?utf-8?B?bTlaZm92NmlOUWRrTThka0ZWbTZkZm45enMyT1hwRXh2QjUybzhTUGhVOVZ5?=
+ =?utf-8?B?TlhjTmhpd1hVQlpid1dQNW5icUcyK0pzenRFVi84Mmk5YU5ZcU5nSThnZTJr?=
+ =?utf-8?B?Wm03ODNTdkYwYXdQVWE4cXJqUTFQUlVTRFJaZ3I3TC9JYVBtdzV1bG9mVnNF?=
+ =?utf-8?B?UzM1ZzJPVU1TcDI2eEZtWitiQnN1Z2hxNHBqN2c0eFRYQ0t4TURsS1VmcVI4?=
+ =?utf-8?B?L3pZTHJMM2NCTEFubGtidXhUUnBtVDVnSXF4WkIvNVVvTUtlQmtNTFhsdVFI?=
+ =?utf-8?B?c1hwclpnK2l4eTc1OS90dTRPRm01S2hWZmFiZVN1dWpVTmdCSXBYeUoyQkdF?=
+ =?utf-8?B?eWpDQllvNVRiWGVkL01well6VFdRNmFiZDBwNTZHWGtrb2k0eE1KMnhNM2FX?=
+ =?utf-8?B?dnhjeHVCZWRSdytKc0RNa0cvYnNvMjdlUytFWHJ2d2VPNGFtTFNKdU9DZzJp?=
+ =?utf-8?B?ckxzMlV6M0I5V3doM3BWaTJ0T1dGZ3JiRWo2SEcvYVM1a0tjcFpMOTNiSTNn?=
+ =?utf-8?B?bTY1ckd6OFhGQjUvYTgvdFBFKzRBTkNmYzdPVkxtSDkwNTRDbVNkZTZRWUF0?=
+ =?utf-8?B?Q0lQNjQwZzJsZm00OVRLdjE0WDZINlRWdGFRTlU3bUsvU055VXVjTWE4OWpL?=
+ =?utf-8?B?ejJlZkRsTkNMUzlKeVFmR1QzSHI1NlFtdVRIZE01L24zUGNxdDN5RzA3N283?=
+ =?utf-8?B?YTk5bjY2NjJLT2VveVpRbEg1NzRRYUVPNGdTOHZ1c0NMTWZFNE81emRHSlND?=
+ =?utf-8?B?dzNBelRwczZVVHdIQUFIZ1pCaVV4Ymk2NVJhN2U5aGxTZ1lOUXlTa04xWUtW?=
+ =?utf-8?B?K2dhRWszY3d1L29OSlNsandmSlBadEhXcm1lMC9SdVNmTTVUQmxWakFDUVNR?=
+ =?utf-8?B?b1M5UXI4dHlTemtZNjhZSDJnYkJ0a0Q5RHl0MUtkRzdoYWFYWm0zYnNOL2N2?=
+ =?utf-8?B?bGcvOW9jb3NoaW5xalNEMWhZYVhyMTVJRFhHMVR1VXVXeFRTYVBkUWxMRFI3?=
+ =?utf-8?B?c29YeUJLbHVLckFjclc0Q0d1S0IzM3VIL1ZEa3A5R29zWUYwYVN0L3IwT3VK?=
+ =?utf-8?B?cnQ3ZjVQdDRPbTVjK1hYWDNWWGJWYTk5ZE9wMVZaVHlINGs5NTIrUWZQVUZR?=
+ =?utf-8?B?Tm1pQkIwZng0S0o3U0lJL0lSTGR2dSt6REFtZlBsS3c2TFBsY05YblVvRHY1?=
+ =?utf-8?B?dEZ1dmtQUUlBRDFJbkd5SjAzWXJTUm5wRmZQNWxjaFovbW8wUmYrQVNTMXhz?=
+ =?utf-8?B?andlUG9MZjNLWFhnUWh5NjJ4TWFCclUvcXZKNzY4YTluZnZPRW9IeE13V0U5?=
+ =?utf-8?B?bkhQbSsvSk5IZGoyOHplNG01dCsvNFI2R01zaHV5ZlZlR09ZRXRBUFNBQlVq?=
+ =?utf-8?B?MU9jUktrc1YzYnlkZGFLcmZ0OVV6blJkeS90c0RSMzBSdllMTHQ0Y082OXAz?=
+ =?utf-8?B?QlptWWpPYjBZOGJuTkFaSWZMR3JQUUl2N1JCZzY5eDVwdUZCdUFTQlVuVThB?=
+ =?utf-8?B?c3c9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60e251a1-54d2-48c1-9879-08dac8f358ef
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6aa06d83-dd09-45bf-a6d1-08dac8f3a263
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2022 23:27:52.2301
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2022 23:29:55.4800
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IHe1UvSFBd3ZCZJJDCOLgWZY8eVdEm8LHcvf+YNlmSDzD9T5rnaxQLU3N0m4H5lnVlxaPZpoUMKeYtRQRj5wKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1243
-X-Proofpoint-ORIG-GUID: TMLSGewBkNvKtumrW7R5_i9YUp7edM52
-X-Proofpoint-GUID: TMLSGewBkNvKtumrW7R5_i9YUp7edM52
+X-MS-Exchange-CrossTenant-UserPrincipalName: cGz8ZemctaUbqCML28xTblQG6im+c7dIvLuJkh2zcNQYbUtQJRaK7VOnnpTWqs0R
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR15MB5469
+X-Proofpoint-GUID: YFQXHnSRrqLYBcoyjOaP6XLc2DkhnM7k
+X-Proofpoint-ORIG-GUID: YFQXHnSRrqLYBcoyjOaP6XLc2DkhnM7k
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-17_06,2022-11-17_01,2022-06-22_01
@@ -145,7 +148,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/17/22 6:05 PM, Alexei Starovoitov wrote:
+
+
+On 11/17/22 3:05 PM, Alexei Starovoitov wrote:
 > On Thu, Nov 17, 2022 at 2:56 PM Kumar Kartikeya Dwivedi
 > <memxor@gmail.com> wrote:
 >>
@@ -155,9 +160,669 @@ On 11/17/22 6:05 PM, Alexei Starovoitov wrote:
 >>
 >> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 >> ---
-
-[...]
-
+>>   tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+>>   .../selftests/bpf/prog_tests/linked_list.c    | 255 ++++++++
+>>   .../testing/selftests/bpf/progs/linked_list.c | 370 +++++++++++
+>>   .../testing/selftests/bpf/progs/linked_list.h |  56 ++
+>>   .../selftests/bpf/progs/linked_list_fail.c    | 581 ++++++++++++++++++
+>>   5 files changed, 1263 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_list.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/linked_list.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/linked_list.h
+>>   create mode 100644 tools/testing/selftests/bpf/progs/linked_list_fail.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> index be4e3d47ea3e..072243af93b0 100644
+>> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+>> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> @@ -33,6 +33,7 @@ ksyms_module                             # test_ksyms_module__open_and_load unex
+>>   ksyms_module_libbpf                      # JIT does not support calling kernel function                                (kfunc)
+>>   ksyms_module_lskel                       # test_ksyms_module_lskel__open_and_load unexpected error: -9                 (?)
+>>   libbpf_get_fd_by_id_opts                 # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
+>> +linked_list                             # JIT does not support calling kernel function                                (kfunc)
+> 
+> probably needs it in arm64 denylist as well.
+> 
+>>   lookup_key                               # JIT does not support calling kernel function                                (kfunc)
+>>   lru_bug                                  # prog 'printk': failed to auto-attach: -524
+>>   map_kptr                                 # failed to open_and_load program: -524 (trampoline)
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+>> new file mode 100644
+>> index 000000000000..32ff1684a7d3
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+>> @@ -0,0 +1,255 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +#include <test_progs.h>
+>> +#include <network_helpers.h>
+>> +
+>> +#include "linked_list.skel.h"
+>> +#include "linked_list_fail.skel.h"
+>> +
+>> +static char log_buf[1024 * 1024];
+>> +
+>> +static struct {
+>> +       const char *prog_name;
+>> +       const char *err_msg;
+>> +} linked_list_fail_tests[] = {
+>> +#define TEST(test, off) \
+>> +       { #test "_missing_lock_push_front", \
+>> +         "bpf_spin_lock at off=" #off " must be held for bpf_list_head" }, \
+>> +       { #test "_missing_lock_push_back", \
+>> +         "bpf_spin_lock at off=" #off " must be held for bpf_list_head" }, \
+>> +       { #test "_missing_lock_pop_front", \
+>> +         "bpf_spin_lock at off=" #off " must be held for bpf_list_head" }, \
+>> +       { #test "_missing_lock_pop_back", \
+>> +         "bpf_spin_lock at off=" #off " must be held for bpf_list_head" },
+>> +       TEST(kptr, 32)
+>> +       TEST(global, 16)
+>> +       TEST(map, 0)
+>> +       TEST(inner_map, 0)
+>> +#undef TEST
+>> +#define TEST(test, op) \
+>> +       { #test "_kptr_incorrect_lock_" #op, \
+>> +         "held lock and object are not in the same allocation\n" \
+>> +         "bpf_spin_lock at off=32 must be held for bpf_list_head" }, \
+>> +       { #test "_global_incorrect_lock_" #op, \
+>> +         "held lock and object are not in the same allocation\n" \
+>> +         "bpf_spin_lock at off=16 must be held for bpf_list_head" }, \
+>> +       { #test "_map_incorrect_lock_" #op, \
+>> +         "held lock and object are not in the same allocation\n" \
+>> +         "bpf_spin_lock at off=0 must be held for bpf_list_head" }, \
+>> +       { #test "_inner_map_incorrect_lock_" #op, \
+>> +         "held lock and object are not in the same allocation\n" \
+>> +         "bpf_spin_lock at off=0 must be held for bpf_list_head" },
+>> +       TEST(kptr, push_front)
+>> +       TEST(kptr, push_back)
+>> +       TEST(kptr, pop_front)
+>> +       TEST(kptr, pop_back)
+>> +       TEST(global, push_front)
+>> +       TEST(global, push_back)
+>> +       TEST(global, pop_front)
+>> +       TEST(global, pop_back)
+>> +       TEST(map, push_front)
+>> +       TEST(map, push_back)
+>> +       TEST(map, pop_front)
+>> +       TEST(map, pop_back)
+>> +       TEST(inner_map, push_front)
+>> +       TEST(inner_map, push_back)
+>> +       TEST(inner_map, pop_front)
+>> +       TEST(inner_map, pop_back)
+>> +#undef TEST
+>> +       { "map_compat_kprobe", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "map_compat_kretprobe", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "map_compat_tp", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "map_compat_perf", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "map_compat_raw_tp", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "map_compat_raw_tp_w", "tracing progs cannot use bpf_list_head yet" },
+>> +       { "obj_type_id_oor", "local type ID argument must be in range [0, U32_MAX]" },
+>> +       { "obj_new_no_composite", "bpf_obj_new type ID argument must be of a struct" },
+>> +       { "obj_new_no_struct", "bpf_obj_new type ID argument must be of a struct" },
+>> +       { "obj_drop_non_zero_off", "R1 must have zero offset when passed to release func" },
+>> +       { "new_null_ret", "R0 invalid mem access 'ptr_or_null_'" },
+>> +       { "obj_new_acq", "Unreleased reference id=" },
+>> +       { "use_after_drop", "invalid mem access 'scalar'" },
+>> +       { "ptr_walk_scalar", "type=scalar expected=percpu_ptr_" },
+>> +       { "direct_read_lock", "direct access to bpf_spin_lock is disallowed" },
+>> +       { "direct_write_lock", "direct access to bpf_spin_lock is disallowed" },
+>> +       { "direct_read_head", "direct access to bpf_list_head is disallowed" },
+>> +       { "direct_write_head", "direct access to bpf_list_head is disallowed" },
+>> +       { "direct_read_node", "direct access to bpf_list_node is disallowed" },
+>> +       { "direct_write_node", "direct access to bpf_list_node is disallowed" },
+>> +       { "write_after_push_front", "only read is supported" },
+>> +       { "write_after_push_back", "only read is supported" },
+>> +       { "use_after_unlock_push_front", "invalid mem access 'scalar'" },
+>> +       { "use_after_unlock_push_back", "invalid mem access 'scalar'" },
+>> +       { "double_push_front", "arg#1 expected pointer to allocated object" },
+>> +       { "double_push_back", "arg#1 expected pointer to allocated object" },
+>> +       { "no_node_value_type", "bpf_list_node not found for allocated object\n" },
+>> +       { "incorrect_value_type",
+>> +         "operation on bpf_list_head expects arg#1 bpf_list_node at offset=0 in struct foo, "
+>> +         "but arg is at offset=0 in struct bar" },
+>> +       { "incorrect_node_var_off", "variable ptr_ access var_off=(0x0; 0xffffffff) disallowed" },
+>> +       { "incorrect_node_off1", "bpf_list_node not found at offset=1" },
+>> +       { "incorrect_node_off2", "arg#1 offset=40, but expected bpf_list_node at offset=0 in struct foo" },
+>> +       { "no_head_type", "bpf_list_head not found for allocated object" },
+>> +       { "incorrect_head_var_off1", "R1 doesn't have constant offset" },
+>> +       { "incorrect_head_var_off2", "variable ptr_ access var_off=(0x0; 0xffffffff) disallowed" },
+>> +       { "incorrect_head_off1", "bpf_list_head not found at offset=17" },
+>> +       { "incorrect_head_off2", "bpf_list_head not found at offset=1" },
+>> +       { "pop_front_off",
+>> +         "15: (bf) r1 = r6                      ; R1_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=40,imm=0) "
+>> +         "R6_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=40,imm=0) refs=2,4\n"
+>> +         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=ptr_or_null_ expected=percpu_ptr_" },
+>> +       { "pop_back_off",
+>> +         "15: (bf) r1 = r6                      ; R1_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=40,imm=0) "
+>> +         "R6_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=40,imm=0) refs=2,4\n"
+>> +         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=ptr_or_null_ expected=percpu_ptr_" },
+>> +};
+>> +
+>> +static void test_linked_list_fail_prog(const char *prog_name, const char *err_msg)
+>> +{
+>> +       LIBBPF_OPTS(bpf_object_open_opts, opts, .kernel_log_buf = log_buf,
+>> +                                               .kernel_log_size = sizeof(log_buf),
+>> +                                               .kernel_log_level = 1);
+>> +       struct linked_list_fail *skel;
+>> +       struct bpf_program *prog;
+>> +       int ret;
+>> +
+>> +       skel = linked_list_fail__open_opts(&opts);
+>> +       if (!ASSERT_OK_PTR(skel, "linked_list_fail__open_opts"))
+>> +               return;
+>> +
+>> +       prog = bpf_object__find_program_by_name(skel->obj, prog_name);
+>> +       if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+>> +               goto end;
+>> +
+>> +       bpf_program__set_autoload(prog, true);
+>> +
+>> +       ret = linked_list_fail__load(skel);
+>> +       if (!ASSERT_ERR(ret, "linked_list_fail__load must fail"))
+>> +               goto end;
+>> +
+>> +       if (!ASSERT_OK_PTR(strstr(log_buf, err_msg), "expected error message")) {
+>> +               fprintf(stderr, "Expected: %s\n", err_msg);
+>> +               fprintf(stderr, "Verifier: %s\n", log_buf);
+>> +       }
+>> +
+>> +end:
+>> +       linked_list_fail__destroy(skel);
+>> +}
+>> +
+>> +static void clear_fields(struct bpf_map *map)
+>> +{
+>> +       char buf[24];
+>> +       int key = 0;
+>> +
+>> +       memset(buf, 0xff, sizeof(buf));
+>> +       ASSERT_OK(bpf_map__update_elem(map, &key, sizeof(key), buf, sizeof(buf), 0), "check_and_free_fields");
+>> +}
+>> +
+>> +enum {
+>> +       TEST_ALL,
+>> +       PUSH_POP,
+>> +       PUSH_POP_MULT,
+>> +       LIST_IN_LIST,
+>> +};
+>> +
+>> +static void test_linked_list_success(int mode, bool leave_in_map)
+>> +{
+>> +       LIBBPF_OPTS(bpf_test_run_opts, opts,
+>> +               .data_in = &pkt_v4,
+>> +               .data_size_in = sizeof(pkt_v4),
+>> +               .repeat = 1,
+>> +       );
+>> +       struct linked_list *skel;
+>> +       int ret;
+>> +
+>> +       skel = linked_list__open_and_load();
+>> +       if (!ASSERT_OK_PTR(skel, "linked_list__open_and_load"))
+>> +               return;
+>> +
+>> +       if (mode == LIST_IN_LIST)
+>> +               goto lil;
+>> +       if (mode == PUSH_POP_MULT)
+>> +               goto ppm;
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.map_list_push_pop), &opts);
+>> +       ASSERT_OK(ret, "map_list_push_pop");
+>> +       ASSERT_OK(opts.retval, "map_list_push_pop retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.array_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.inner_map_list_push_pop), &opts);
+>> +       ASSERT_OK(ret, "inner_map_list_push_pop");
+>> +       ASSERT_OK(opts.retval, "inner_map_list_push_pop retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.inner_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.global_list_push_pop), &opts);
+>> +       ASSERT_OK(ret, "global_list_push_pop");
+>> +       ASSERT_OK(opts.retval, "global_list_push_pop retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.data_A);
+>> +
+>> +       if (mode == PUSH_POP)
+>> +               goto end;
+>> +
+>> +ppm:
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.map_list_push_pop_multiple), &opts);
+>> +       ASSERT_OK(ret, "map_list_push_pop_multiple");
+>> +       ASSERT_OK(opts.retval, "map_list_push_pop_multiple retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.array_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.inner_map_list_push_pop_multiple), &opts);
+>> +       ASSERT_OK(ret, "inner_map_list_push_pop_multiple");
+>> +       ASSERT_OK(opts.retval, "inner_map_list_push_pop_multiple retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.inner_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.global_list_push_pop_multiple), &opts);
+>> +       ASSERT_OK(ret, "global_list_push_pop_multiple");
+>> +       ASSERT_OK(opts.retval, "global_list_push_pop_multiple retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.data_A);
+>> +
+>> +       if (mode == PUSH_POP_MULT)
+>> +               goto end;
+>> +
+>> +lil:
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.map_list_in_list), &opts);
+>> +       ASSERT_OK(ret, "map_list_in_list");
+>> +       ASSERT_OK(opts.retval, "map_list_in_list retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.array_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.inner_map_list_in_list), &opts);
+>> +       ASSERT_OK(ret, "inner_map_list_in_list");
+>> +       ASSERT_OK(opts.retval, "inner_map_list_in_list retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.inner_map);
+>> +
+>> +       ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.global_list_in_list), &opts);
+>> +       ASSERT_OK(ret, "global_list_in_list");
+>> +       ASSERT_OK(opts.retval, "global_list_in_list retval");
+>> +       if (!leave_in_map)
+>> +               clear_fields(skel->maps.data_A);
+>> +end:
+>> +       linked_list__destroy(skel);
+>> +}
+>> +
+>> +void test_linked_list(void)
+>> +{
+>> +       int i;
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(linked_list_fail_tests); i++) {
+>> +               if (!test__start_subtest(linked_list_fail_tests[i].prog_name))
+>> +                       continue;
+>> +               test_linked_list_fail_prog(linked_list_fail_tests[i].prog_name,
+>> +                                          linked_list_fail_tests[i].err_msg);
+>> +       }
+>> +       test_linked_list_success(PUSH_POP, false);
+>> +       test_linked_list_success(PUSH_POP, true);
+>> +       test_linked_list_success(PUSH_POP_MULT, false);
+>> +       test_linked_list_success(PUSH_POP_MULT, true);
+>> +       test_linked_list_success(LIST_IN_LIST, false);
+>> +       test_linked_list_success(LIST_IN_LIST, true);
+>> +       test_linked_list_success(TEST_ALL, false);
+>> +}
+>> diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/testing/selftests/bpf/progs/linked_list.c
+>> new file mode 100644
+>> index 000000000000..2c7b615c6d41
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/linked_list.c
+>> @@ -0,0 +1,370 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +#include <vmlinux.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +#include <bpf/bpf_helpers.h>
+>> +#include <bpf/bpf_core_read.h>
+>> +#include "bpf_experimental.h"
+>> +
+>> +#ifndef ARRAY_SIZE
+>> +#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+>> +#endif
+>> +
+>> +#include "linked_list.h"
+>> +
+>> +static __always_inline
+>> +int list_push_pop(struct bpf_spin_lock *lock, struct bpf_list_head *head, bool leave_in_map)
+>> +{
+>> +       struct bpf_list_node *n;
+>> +       struct foo *f;
+>> +
+>> +       f = bpf_obj_new(typeof(*f));
+>> +       if (!f)
+>> +               return 2;
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_front(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               bpf_obj_drop(f);
+>> +               return 3;
+>> +       }
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_back(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               bpf_obj_drop(f);
+>> +               return 4;
+>> +       }
+>> +
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       f->data = 42;
+>> +       bpf_list_push_front(head, &f->node);
+>> +       bpf_spin_unlock(lock);
+>> +       if (leave_in_map)
+>> +               return 0;
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_back(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (!n)
+>> +               return 5;
+>> +       f = container_of(n, struct foo, node);
+>> +       if (f->data != 42) {
+>> +               bpf_obj_drop(f);
+>> +               return 6;
+>> +       }
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       f->data = 13;
+>> +       bpf_list_push_front(head, &f->node);
+>> +       bpf_spin_unlock(lock);
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_front(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (!n)
+>> +               return 7;
+>> +       f = container_of(n, struct foo, node);
+>> +       if (f->data != 13) {
+>> +               bpf_obj_drop(f);
+>> +               return 8;
+>> +       }
+>> +       bpf_obj_drop(f);
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_front(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               return 9;
+>> +       }
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_back(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               return 10;
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +
+>> +static __always_inline
+>> +int list_push_pop_multiple(struct bpf_spin_lock *lock, struct bpf_list_head *head, bool leave_in_map)
+>> +{
+>> +       struct bpf_list_node *n;
+>> +       struct foo *f[8], *pf;
+>> +       int i;
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(f); i++) {
+>> +               f[i] = bpf_obj_new(typeof(**f));
+>> +               if (!f[i])
+>> +                       return 2;
+>> +               f[i]->data = i;
+>> +               bpf_spin_lock(lock);
+>> +               bpf_list_push_front(head, &f[i]->node);
+>> +               bpf_spin_unlock(lock);
+>> +       }
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(f); i++) {
+>> +               bpf_spin_lock(lock);
+>> +               n = bpf_list_pop_front(head);
+>> +               bpf_spin_unlock(lock);
+>> +               if (!n)
+>> +                       return 3;
+>> +               pf = container_of(n, struct foo, node);
+>> +               if (pf->data != (ARRAY_SIZE(f) - i - 1)) {
+>> +                       bpf_obj_drop(pf);
+>> +                       return 4;
+>> +               }
+>> +               bpf_spin_lock(lock);
+>> +               bpf_list_push_back(head, &pf->node);
+>> +               bpf_spin_unlock(lock);
+>> +       }
+>> +
+>> +       if (leave_in_map)
+>> +               return 0;
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(f); i++) {
+>> +               bpf_spin_lock(lock);
+>> +               n = bpf_list_pop_back(head);
+>> +               bpf_spin_unlock(lock);
+>> +               if (!n)
+>> +                       return 5;
+>> +               pf = container_of(n, struct foo, node);
+>> +               if (pf->data != i) {
+>> +                       bpf_obj_drop(pf);
+>> +                       return 6;
+>> +               }
+>> +               bpf_obj_drop(pf);
+>> +       }
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_back(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               return 7;
+>> +       }
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_front(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(container_of(n, struct foo, node));
+>> +               return 8;
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static __always_inline
+>> +int list_in_list(struct bpf_spin_lock *lock, struct bpf_list_head *head, bool leave_in_map)
+>> +{
+>> +       struct bpf_list_node *n;
+>> +       struct bar *ba[8], *b;
+>> +       struct foo *f;
+>> +       int i;
+>> +
+>> +       f = bpf_obj_new(typeof(*f));
+>> +       if (!f)
+>> +               return 2;
+>> +       for (i = 0; i < ARRAY_SIZE(ba); i++) {
+>> +               b = bpf_obj_new(typeof(*b));
+>> +               if (!b) {
+>> +                       bpf_obj_drop(f);
+>> +                       return 3;
+>> +               }
+>> +               b->data = i;
+>> +               bpf_spin_lock(&f->lock);
+>> +               bpf_list_push_back(&f->head, &b->node);
+>> +               bpf_spin_unlock(&f->lock);
+>> +       }
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       f->data = 42;
+>> +       bpf_list_push_front(head, &f->node);
+>> +       bpf_spin_unlock(lock);
+>> +
+>> +       if (leave_in_map)
+>> +               return 0;
+>> +
+>> +       bpf_spin_lock(lock);
+>> +       n = bpf_list_pop_front(head);
+>> +       bpf_spin_unlock(lock);
+>> +       if (!n)
+>> +               return 4;
+>> +       f = container_of(n, struct foo, node);
+>> +       if (f->data != 42) {
+>> +               bpf_obj_drop(f);
+>> +               return 5;
+>> +       }
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(ba); i++) {
+>> +               bpf_spin_lock(&f->lock);
+>> +               n = bpf_list_pop_front(&f->head);
+>> +               bpf_spin_unlock(&f->lock);
+>> +               if (!n) {
+>> +                       bpf_obj_drop(f);
+>> +                       return 6;
+>> +               }
+>> +               b = container_of(n, struct bar, node);
+>> +               if (b->data != i) {
+>> +                       bpf_obj_drop(f);
+>> +                       bpf_obj_drop(b);
+>> +                       return 7;
+>> +               }
+>> +               bpf_obj_drop(b);
+>> +       }
+>> +       bpf_spin_lock(&f->lock);
+>> +       n = bpf_list_pop_front(&f->head);
+>> +       bpf_spin_unlock(&f->lock);
+>> +       if (n) {
+>> +               bpf_obj_drop(f);
+>> +               bpf_obj_drop(container_of(n, struct bar, node));
+>> +               return 8;
+>> +       }
+>> +       bpf_obj_drop(f);
+>> +       return 0;
+>> +}
+>> +
+>> +static __always_inline
+>> +int test_list_push_pop(struct bpf_spin_lock *lock, struct bpf_list_head *head)
+>> +{
+>> +       int ret;
+>> +
+>> +       ret = list_push_pop(lock, head, false);
+>> +       if (ret)
+>> +               return ret;
+>> +       return list_push_pop(lock, head, true);
+>> +}
+>> +
+>> +static __always_inline
+>> +int test_list_push_pop_multiple(struct bpf_spin_lock *lock, struct bpf_list_head *head)
+>> +{
+>> +       int ret;
+>> +
+>> +       ret = list_push_pop_multiple(lock ,head, false);
+>> +       if (ret)
+>> +               return ret;
+>> +       return list_push_pop_multiple(lock, head, true);
+>> +}
+>> +
+>> +static __always_inline
+>> +int test_list_in_list(struct bpf_spin_lock *lock, struct bpf_list_head *head)
+>> +{
+>> +       int ret;
+>> +
+>> +       ret = list_in_list(lock, head, false);
+>> +       if (ret)
+>> +               return ret;
+>> +       return list_in_list(lock, head, true);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int map_list_push_pop(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +
+>> +       v = bpf_map_lookup_elem(&array_map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_push_pop(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int inner_map_list_push_pop(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +       void *map;
+>> +
+>> +       map = bpf_map_lookup_elem(&map_of_maps, &(int){0});
+>> +       if (!map)
+>> +               return 1;
+>> +       v = bpf_map_lookup_elem(map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_push_pop(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int global_list_push_pop(void *ctx)
+>> +{
+>> +       return test_list_push_pop(&glock, &ghead);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int map_list_push_pop_multiple(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +       int ret;
+>> +
+>> +       v = bpf_map_lookup_elem(&array_map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_push_pop_multiple(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int inner_map_list_push_pop_multiple(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +       void *map;
+>> +       int ret;
+>> +
+>> +       map = bpf_map_lookup_elem(&map_of_maps, &(int){0});
+>> +       if (!map)
+>> +               return 1;
+>> +       v = bpf_map_lookup_elem(map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_push_pop_multiple(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int global_list_push_pop_multiple(void *ctx)
+>> +{
+>> +       int ret;
+>> +
+>> +       ret = list_push_pop_multiple(&glock, &ghead, false);
+>> +       if (ret)
+>> +               return ret;
+>> +       return list_push_pop_multiple(&glock, &ghead, true);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int map_list_in_list(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +       int ret;
+>> +
+>> +       v = bpf_map_lookup_elem(&array_map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_in_list(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int inner_map_list_in_list(void *ctx)
+>> +{
+>> +       struct map_value *v;
+>> +       void *map;
+>> +       int ret;
+>> +
+>> +       map = bpf_map_lookup_elem(&map_of_maps, &(int){0});
+>> +       if (!map)
+>> +               return 1;
+>> +       v = bpf_map_lookup_elem(map, &(int){0});
+>> +       if (!v)
+>> +               return 1;
+>> +       return test_list_in_list(&v->lock, &v->head);
+>> +}
+>> +
+>> +SEC("tc")
+>> +int global_list_in_list(void *ctx)
+>> +{
+>> +       return test_list_in_list(&glock, &ghead);
+>> +}
+>> +
+>> +char _license[] SEC("license") = "GPL";
 >> diff --git a/tools/testing/selftests/bpf/progs/linked_list.h b/tools/testing/selftests/bpf/progs/linked_list.h
 >> new file mode 100644
 >> index 000000000000..8db80ed64db1
@@ -230,8 +895,74 @@ On 11/17/22 6:05 PM, Alexei Starovoitov wrote:
 > 
 > Or disable the test for this case for now?
 
-I noticed this in an earlier version of the series.
-Will be submitting a fix to LLVM upstream today.
+This is a known issue and Dave Marchevsky discovered it.
 
-Until that's settled, reverting commit 463da422f019 ("MC: make section classification a bit more thorough")
-in LLVM will fix the issue.
+$ cat t.c
+#define SEC(name) __attribute__((section(name))) 
+ 
+                                      #define private(name) SEC(".data." 
+#name) __attribute__((aligned(8)))
+private(A) int glock; 
+ 
+
+private(A) int ghead; 
+
+$ clang -target bpf -O2 -c t.c 
+ 
+
+fatal error: error in backend: unable to write nop sequence of 4 bytes 
+ 
+
+PLEASE submit a bug report ...
+
+The reason is that we try to add 'glock'/'ghead' into '.data.A' section.
+Since we have alignment 8 requirement. There will be a 4 byte hole
+between two variables.
+
+With upstream patch https://reviews.llvm.org/D133456 (applied to llvm16 
+around late September. The patch classified non-well-known section
+names as .text section. And bpf backend requires multiple 8 counts
+to write a nop.
+
+bool BPFAsmBackend::writeNopData(raw_ostream &OS, uint64_t Count,
+                                  const MCSubtargetInfo *STI) const {
+   if ((Count % 8) != 0)
+     return false;
+
+   for (uint64_t i = 0; i < Count; i += 8)
+     support::endian::write<uint64_t>(OS, 0x15000000, Endian);
+
+   return true;
+}
+
+Since the whole is 4 bytes, and writeNopData will fail and the
+compilation error will happen.
+
+Considering the compiler changing behavior to classify internally
+that all less-well-known sections will be all text section
+and holds will go through BPFAsmBackend::writeNopData(). The best
+strategy probably should be more tolerant on 'Count'.
+If 'Count' is not multiple of 8, we *could* fill remaining with 0.
+Some other arch'es already did this e.g., aarch64, x86, ppc, etc.
+
+bool AArch64AsmBackend::writeNopData(raw_ostream &OS, uint64_t Count,
+                                      const MCSubtargetInfo *STI) const {
+   // If the count is not 4-byte aligned, we must be writing data into 
+the text
+   // section (otherwise we have unaligned instructions, and thus have far
+   // bigger problems), so just write zeros instead.
+   OS.write_zeros(Count % 4);
+
+   // We are properly aligned, so write NOPs as requested.
+   Count /= 4;
+   for (uint64_t i = 0; i != Count; ++i)
+     OS.write("\x1f\x20\x03\xd5", 4);
+   return true;
+}
+So apparently, arm64 does not enforce multiple 4 (insn width 4 bytes).
+
+Alternatively, we might ask upstream to classify section names with 
+'.data.' as data section rather then text section. But this won't
+scale. For example, user might use '.private.' as the prefix.
+
+Dave Marchevsky is looking at this problem as well.
