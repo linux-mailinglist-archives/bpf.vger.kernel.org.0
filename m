@@ -2,194 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B61D62E74F
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 22:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2971E62E754
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 22:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239647AbiKQVw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 16:52:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S240864AbiKQVyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 16:54:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240810AbiKQVwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 16:52:25 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C33720B0
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:52:24 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id m15so1640397ilq.2
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 13:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZIfCf35I7ypehLBPONCdMybY63wBWvIY0HsYk1HXqDc=;
-        b=FwFpT9rEAOzbFMrQ1oETE5w3UkjxJG2IuYVttzZ2dC1284aFmSpcPVRiNVHQZcU+so
-         RrgucbqQmdEoPE/BmvWYhbHRQHWPyDf5Qvn9dPzT3lMDNGYj+bN+l30DNAsICMaWyM5x
-         6MIRb64hzBHkuexsAifzULV9iwNA+Np52/yB+fWncqJtKV1T9GoFBnDfZTl49lNSsyqg
-         Dvj4i3R0dSnj/Dn3tbYWx3lurf0ku4zt9sqxvU1JqtGth1EBIECzDZ4wBfU3ikufzXv5
-         TlsBiS9URvFZUeHMfzBRvbDUv+LoFCQK/5BMahxU49xLbrsDAYeknF3hWxOgB6gATdkk
-         yqZw==
+        with ESMTP id S234821AbiKQVyR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 16:54:17 -0500
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200046BDDC;
+        Thu, 17 Nov 2022 13:54:16 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id w9so2015913qtv.13;
+        Thu, 17 Nov 2022 13:54:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZIfCf35I7ypehLBPONCdMybY63wBWvIY0HsYk1HXqDc=;
-        b=Cv369U5xxd2gqSN8Ougr6PGM4YxeVCuEFX2JmIM26B7lBCf15DmBFLrGKyWz5fS7Il
-         GGrmLgB5tFSCtWkMHfEQaqk0r855mND2NSon94nHOt/4hqaHEywgAIEayDYC57/5vbg5
-         BtK17+TF8xpb/lnhgMHdjiKXeBECIOzEpHpgs1IhECRL+qAftMLWOj8YIV/ukRsM4ATV
-         w3+rQGetIi9IQnerXqSN/fPKFxRdzUxhVLPRgugL0073ZScyWZC2ScoI/wfBi9X74BUF
-         EFS/PppRcDiH0DIVn38r9h5cthqWbGqsZrbRjZDsyJOj4BO02nzHdNf503URP1keUAfc
-         /tWA==
-X-Gm-Message-State: ANoB5pmBwQ+Ntyrjzg7pU642v32f8DRZ53rwTucBy0MN5xwdZ9FRmy8D
-        ejmuYHOMMMxWbO9cZAzFBeJmwewU5kT9D9DEc77D5g==
-X-Google-Smtp-Source: AA0mqf4sHBRBgXFO6vYaegWinsM12EWK6jnEiNEoIlD8jNSI1TQdnDv64G2kvFZuIoVD6UdIdnHz3M94FVFnC+Hfo98=
-X-Received: by 2002:a92:c086:0:b0:2ea:ba31:f2ef with SMTP id
- h6-20020a92c086000000b002eaba31f2efmr2001158ile.159.1668721943842; Thu, 17
- Nov 2022 13:52:23 -0800 (PST)
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sjdY4Kpbu9uYjT7gJokz4DeGk9HCzyYbfyJj+p0YN2k=;
+        b=JboHmYaXgnesOeOWaXqVU5tToRqdI3Jwngo6nZNrH1wTsrWazhHUYTOGIpNUWjfId4
+         gU81gKoFy0TgjkPVldj7NDl0rVKTQrgTtxilY6orW72Gm82a3OvOB9GOKxRfDLoQ84ms
+         tOfbrNlpXLrqWBOStlBWvnbqtEYbAvV9p2NPCiqTpjhaNiJushPJfJJaA+HE2U6LEi+n
+         sbP0Jv+VQ/PIfhV0NGknEZRkPoeJUlKAGDZqoRzhOQ1pURF/hgdPUaYbm/Hnjn+d90Ks
+         v20J+QWd5K0ficWkBWPY5kDBlC0FUjY1h6X4+kWAk6b3ENxeMp/DVBNdEToa1W9LvJPd
+         vVhg==
+X-Gm-Message-State: ANoB5pmYlksY36q17Qd+dJntqvj9Q+8UevKxnnWLn+IridaZibbwkd4T
+        ysaZKNZW7eoQm6t5AX5djsI=
+X-Google-Smtp-Source: AA0mqf64MuWYyFX6xHztdR9C0cB6KvkHg8/ih0oSxbaCMXI68qMkWG0EEqxTbNHzK9Bo06YQWyK4lA==
+X-Received: by 2002:ac8:7444:0:b0:39a:5f99:c7ce with SMTP id h4-20020ac87444000000b0039a5f99c7cemr4190843qtr.621.1668722055095;
+        Thu, 17 Nov 2022 13:54:15 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:8ad4])
+        by smtp.gmail.com with ESMTPSA id fg22-20020a05622a581600b003a580cd979asm1025563qtb.58.2022.11.17.13.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 13:54:14 -0800 (PST)
+Date:   Thu, 17 Nov 2022 15:54:17 -0600
+From:   David Vernet <void@manifault.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
+        yhs@fb.com, song@kernel.org, sdf@google.com, kpsingh@kernel.org,
+        jolsa@kernel.org, haoluo@google.com, tj@kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 0/3] Support storing struct task_struct
+ objects as kptrs
+Message-ID: <Y3atifGs0DM9to8z@maniforge.lan>
+References: <20221117032402.2356776-1-void@manifault.com>
+ <6376a1b12bb4d_4101208d@john.notmuch>
 MIME-Version: 1.0
-References: <tencent_E1424259BD97672AD1AF00A3468858065E08@qq.com>
-In-Reply-To: <tencent_E1424259BD97672AD1AF00A3468858065E08@qq.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 17 Nov 2022 13:52:12 -0800
-Message-ID: <CAKH8qBsAC4qHSQ7TYnkXEMM68rqOz8gxuZJBxVdSkzhpQ8MR-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared
- identifier 'NF_NAT_MANIP_SRC'
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, dxu@dxuuu.xyz,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lkp@intel.com, lorenzo@kernel.org,
-        martin.lau@linux.dev, memxor@gmail.com, mykolal@fb.com,
-        rongtao@cestc.cn, shuah@kernel.org, song@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6376a1b12bb4d_4101208d@john.notmuch>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 7:17 AM Rong Tao <rtoax@foxmail.com> wrote:
->
-> From: Rong Tao <rongtao@cestc.cn>
->
-> commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
-> introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
-> and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
-> kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
->
-> In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
-> is compiled as built-in, this issue occurs just if it is compiled as
-> module. We could use BPF CO-RE and ___suffix rule to avoid this.
->
-> How to reproduce the error:
->
->     $ make -C tools/testing/selftests/bpf/
->     ...
->       CLNG-BPF [test_maps] test_bpf_nf.bpf.o
->       error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
->             bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
->                                                            ^
->       error: use of undeclared identifier 'NF_NAT_MANIP_DST'
->             bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
->                                                            ^
->     2 errors generated.
->
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
-> v2: use BPF CO-RE and ___suffix rule to avoid this error.
-> v1: https://lore.kernel.org/lkml/tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com/
-> ---
->  .../testing/selftests/bpf/progs/test_bpf_nf.c | 30 +++++++++++++++++--
->  1 file changed, 27 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> index 227e85e85dda..1706984e1a6a 100644
-> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> @@ -2,6 +2,7 @@
->  #include <vmlinux.h>
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_core_read.h>
->
->  #define EAFNOSUPPORT 97
->  #define EPROTO 71
-> @@ -11,6 +12,11 @@
->
->  extern unsigned long CONFIG_HZ __kconfig;
->
-> +enum nf_nat_manip_type___x {
-> +       NF_NAT_MANIP_SRC___x,
-> +       NF_NAT_MANIP_DST___x,
-> +};
-> +
->  int test_einval_bpf_tuple = 0;
->  int test_einval_reserved = 0;
->  int test_einval_netns_id = 0;
-> @@ -58,7 +64,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
->  int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
->  int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
->  int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
-> -                       int port, enum nf_nat_manip_type) __ksym;
-> +                       int port, int type) __ksym;
->
->  static __always_inline void
->  nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
-> @@ -151,16 +157,34 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->                 union nf_inet_addr saddr = {};
->                 union nf_inet_addr daddr = {};
->                 struct nf_conn *ct_ins;
-> +               int manip_src;
-> +               int manip_dst;
-> +               enum nf_nat_manip_type___x mapip_type_x;
-> +
-> +               if (!bpf_core_type_exists(enum nf_nat_manip_type)) {
-> +                       bpf_printk("enum nf_nat_manip_type not exist.\n");
-> +                       return;
-> +               }
-> +
-> +               if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_SRC___x))
-> +                       manip_src = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_SRC___x);
-> +               else
-> +                       return;
-> +
-> +               if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_DST___x))
-> +                       manip_dst = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_DST___x);
-> +               else
-> +                       return;
->
->                 bpf_ct_set_timeout(ct, 10000);
->                 ct->mark = 77;
->
->                 /* snat */
->                 saddr.ip = bpf_get_prandom_u32();
-> -               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-> +               bpf_ct_set_nat_info(ct, &saddr, sport, manip_src);
+On Thu, Nov 17, 2022 at 01:03:45PM -0800, John Fastabend wrote:
+> David Vernet wrote:
+> > Now that BPF supports adding new kernel functions with kfuncs, and
+> > storing kernel objects in maps with kptrs, we can add a set of kfuncs
+> > which allow struct task_struct objects to be stored in maps as
+> > referenced kptrs.
+> > 
+> > The possible use cases for doing this are plentiful.  During tracing,
+> > for example, it would be useful to be able to collect some tasks that
+> > performed a certain operation, and then periodically summarize who they
+> > are, which cgroup they're in, how much CPU time they've utilized, etc.
+> > Doing this now would require storing the tasks' pids along with some
+> > relevant data to be exported to user space, and later associating the
+> > pids to tasks in other event handlers where the data is recorded.
+> > Another useful by-product of this is that it allows a program to pin a
+> > task in a BPF program, and by proxy therefore also e.g. pin its task
+> > local storage.
+> 
+> Sorry wasn't obvious to me (late to the party so if it was in some
+> other v* described apologies). Can we say something about the life
+> cycle of this acquired task_structs because they are incrementing
+> the ref cnt on the task struct they have potential to impact system.
 
-I'm not sure these co-re checks are helpful. Can we just hardcode 1/0
-here and below?
+We should probably add an entire docs page which describes how kptrs
+work, and I am happy to do that (ideally in a follow-on patch set if
+that's OK with you). In general I think it would be useful to include
+docs for any general-purpose kfuncs like the ones proposed in this set.
 
-bpf_ct_set_nat_info(ct, &saddr, sport, 0 /*NF_NAT_MANIP_SRC*/);
-bpf_ct_set_nat_info(ct, &daddr, dport, 1 /*NF_NAT_MANIP_DST*/);
+In regards to your specific question about the task lifecycle, nothing
+being proposed in this patch set differs from how kptr lifecycles work
+in general. The idea is that the BPF program:
 
-But I'm also overall not sure we need to make this test flexible; we
-have a lot of tests that depend on tools/testing/selftests/bpf/config;
-at some point I was trying to make the tests more tolerant to
-different environments, but it went nowhere..
+1. Gets a "kptr_ref" kptr from an "acquire" kfunc.
+2. Stores it in a map with bpf_kptr_xchg().
 
+The program can then either later manually extract it from the map
+(again with bpf_kptr_xchg()) and release it, or if the reference is
+never removed from the map, let it be automatically released when the
+map is destroyed. See [0] and [1] for a bit more information.
 
->                 /* dnat */
->                 daddr.ip = bpf_get_prandom_u32();
-> -               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-> +               bpf_ct_set_nat_info(ct, &daddr, dport, manip_dst);
->
->                 ct_ins = bpf_ct_insert_entry(ct);
->                 if (ct_ins) {
-> --
-> 2.31.1
->
+[0]: https://docs.kernel.org/bpf/kfuncs.html?highlight=kptr#kf-acquire-flag
+[1]: https://lwn.net/Articles/900749/
+
+> I know at least we've had a few bugs in our task struct tracking
+> that has led to various bugs where we leak references. In our case
+> we didn't pin the kernel object so the leak is just BPF memory and
+> user space memory, still sort of bad because we would hit memory
+> limits and get OOM'd. Leaking kernel task structs is worse though.
+
+I don't think we need to worry about leaks. The verifier should fail to
+load any program that doesn't properly release a kptr, and if it fails
+to identify programs that improperly hold refcounts, that's a bug that
+needs to be fixed. Similarly, if any map implementation (described
+below) fails to properly free references at the appropriate time (when
+an element or the map itself is destroyed), those are just bugs that
+need to be fixed.
+
+I think the relevant tradeoff here is really the possible side effects
+of keeping a task pinned and avoiding it being reaped. I agree that's an
+important consideration, but I think that would arguably apply to any
+kptr (modulo the size of the object being pinned, which is certainly
+relevant as well). We already have kptrs for e.g. struct nf_conn [2].
+Granted, struct task_struct is significantly larger, but bpf_kptr_xchg()
+is only enabled for privileged programs, so it seems like a reasonable
+operation to allow.
+
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/net/netfilter/nf_conntrack_bpf.c#n253
+
+> quick question. If you put acquired task struct in a map what
+> happens if user side deletes the entry? Presumably this causes the
+> release to happen and the task_struct is good to go. Did I miss
+> the logic? I was thinking you would have something in bpf_map_free_kptrs
+> and a type callback to release() the refcnt?
+
+Someone else can chime in here to correct me if I'm wrong, but AFAIU
+this is handled by the map implementations calling out to
+bpf_obj_free_fields() to invoke the kptr destructor when the element is
+destroyed. See [3] and [4] for examples of where they're called from the
+arraymap and hashmap logic respectively. This is how the destructors are
+similarly invoked when the maps are destroyed.
+
+[3]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/arraymap.c#n431
+[4]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/hashtab.c#n764
+
+[...]
