@@ -2,282 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384B562E9B4
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 00:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8385D62E9D3
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 00:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbiKQXmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 18:42:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        id S231194AbiKQXrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 18:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiKQXmH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 18:42:07 -0500
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5681769F7
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:42:05 -0800 (PST)
-Received: by mail-qv1-f51.google.com with SMTP id e15so2321371qvo.4
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:42:05 -0800 (PST)
+        with ESMTP id S230287AbiKQXrq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 18:47:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E07A446
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:46:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668728812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t4amhDHKsYSMHWw3ZB+fT/YBGFiZSg1p/vLZ6sF81EM=;
+        b=W9ufZfOkWmgJ1aSXqdLZObDb5NGpXqaZbJFc4BV/VJ2TdXY3w1ic2yhwDeJHHgg79qcj5e
+        Vs8MK7g3+KFMJBnukj7owgWPPDoopkue6jht5FJwCeNGXzxiH7NTC6NKgOMYy0fE6FmoWY
+        FkgjqxhbMC9jeCL1Z5OvXF+jgOV6Sh4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-94-J0HNvF8fN06dkMJNDbYIAg-1; Thu, 17 Nov 2022 18:46:51 -0500
+X-MC-Unique: J0HNvF8fN06dkMJNDbYIAg-1
+Received: by mail-ed1-f72.google.com with SMTP id z9-20020a05640235c900b0046358415c4fso2036118edc.9
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 15:46:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B0XZ1sAi1IWebqPFpWsPU0YnwlVTOXegvTBOET6wqzs=;
-        b=WDrOiaGgUOMPpsiniWid4/pX3HgvQAdyJqhIbNBOvglAExZTrZ3ndTgWqqPN+NSWLk
-         OqYVQ475mMz0LPJBNQgRkGv6MxrHLA7i/GA5AkOA/vP1jC4sXtdeuc2DbmqmT6xN39zn
-         UMKDjuVt724QUc/rb98OoJC/KOYs+LumPvRnC0RKHg8mAzR6+MG1kDFzUmqrKXUCGhLy
-         nJOQqcj9K1wY8cR4xWY9hsqjm5NLKDkkUl4pQ1eau7ec5YjD+NTgpjWR6o/239HXNbOB
-         GWh365aN9zTTa/3AkAeyfa7qQasOufAFZz/8iRg5UvzlSyauLgkeGI1QQyE2DovBZqle
-         CooA==
-X-Gm-Message-State: ANoB5pnuTI37/f3NSYurNbEaxnBsjTHaMuvmwC3+1jRiPHY5mzrpg/hi
-        5cE4VCvNQwYuTyCsoo0LDZ8=
-X-Google-Smtp-Source: AA0mqf7ZLSel2DZTofZ7ksw10xBILeqS34fu+++M0+6JlHIjUslF3g3VbO+U0ElTs4y3TY5cTBAoCQ==
-X-Received: by 2002:a05:6214:81:b0:4bb:5931:f949 with SMTP id n1-20020a056214008100b004bb5931f949mr4801050qvr.66.1668728524701;
-        Thu, 17 Nov 2022 15:42:04 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:8ad4])
-        by smtp.gmail.com with ESMTPSA id gb14-20020a05622a598e00b003a5d7b54894sm1129491qtb.31.2022.11.17.15.42.03
+        bh=t4amhDHKsYSMHWw3ZB+fT/YBGFiZSg1p/vLZ6sF81EM=;
+        b=fyznLbl4YG3koqFiOg/0BK0sD+WMxR3fqFM/56nUcMk+hm8RjdvoIEIw/kNXTtqAyQ
+         x83cO4kOmUOUlpbmCtjEfEX3v3OXaLo61lpj8PTkkq380zAcntEl/3OkjfG5vIMLyzW0
+         Zql3MvQxGwzHG1VgUWDwGwxJCy8xQx7yei6DyadtzY68BZQ9YA8JpCQ0jM80CNwfaDgD
+         TR4uaujeKGmE0pwNMQ7c2qCqBtVzxozXm8Kt5nXQdjNyCX+8bl52BfF7w8cDmdKFEGZW
+         chkyTQAkJ8tC0y3mCKggqSF/hzE8dhnrRngE+QXZE0AWvDryY5+PWC2mEeFEt0P9fvqR
+         Za3g==
+X-Gm-Message-State: ANoB5plxYu4L1RShqT0NKFCN7gHai60droVS6EJN3JGzaFViwfrV5KYu
+        +4sENtDXbB1GLA2kRghUzuT/E2GvEXkg4QoPaFU06zSRQHy3svYv/6TQMi4n64GKnOusVmVYz6N
+        T1tkZGGOi9SRp
+X-Received: by 2002:a17:906:791:b0:7ad:14f8:7583 with SMTP id l17-20020a170906079100b007ad14f87583mr4074832ejc.185.1668728810206;
+        Thu, 17 Nov 2022 15:46:50 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5xbcfwM/CIQaQKBLzuqeKKGNTHSR6fYH18SUafOXx+saLrIDVlD+zoA8TAuKC4YfWcmovUKg==
+X-Received: by 2002:a17:906:791:b0:7ad:14f8:7583 with SMTP id l17-20020a170906079100b007ad14f87583mr4074814ejc.185.1668728809728;
+        Thu, 17 Nov 2022 15:46:49 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v10-20020a170906292a00b007ad96726c42sm959726ejd.91.2022.11.17.15.46.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 15:42:04 -0800 (PST)
-Date:   Thu, 17 Nov 2022 17:42:07 -0600
-From:   David Vernet <void@manifault.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Thu, 17 Nov 2022 15:46:48 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id ED9B37A701D; Fri, 18 Nov 2022 00:46:46 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/7] bpf: Rework check_func_arg_reg_off
-Message-ID: <Y3bGz6glidknanpf@maniforge.lan>
-References: <20221115000130.1967465-1-memxor@gmail.com>
- <20221115000130.1967465-5-memxor@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx
+ timestamp metadata for xdp
+In-Reply-To: <CAKH8qBsPinmCO0Ny1hva7kp4+C7XFdxZLPBYEHXQWDjJ5SSoYw@mail.gmail.com>
+References: <20221115030210.3159213-1-sdf@google.com>
+ <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
+ <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
+ <8735ajet05.fsf@toke.dk>
+ <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
+ <6374854883b22_5d64b208e3@john.notmuch>
+ <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev> <878rkbjjnp.fsf@toke.dk>
+ <6375340a6c284_66f16208aa@john.notmuch>
+ <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
+ <637576962dada_8cd03208b0@john.notmuch>
+ <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
+ <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
+ <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
+ <87wn7t4y0g.fsf@toke.dk>
+ <CAADnVQJMvPjXCtKNH+WCryPmukgbWTrJyHqxrnO=2YraZEukPg@mail.gmail.com>
+ <CAKH8qBsPinmCO0Ny1hva7kp4+C7XFdxZLPBYEHXQWDjJ5SSoYw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 18 Nov 2022 00:46:46 +0100
+Message-ID: <874juxywih.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221115000130.1967465-5-memxor@gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 05:31:27AM +0530, Kumar Kartikeya Dwivedi wrote:
-> While check_func_arg_reg_off is the place which performs generic checks
-> needed by various candidates of reg->type, there is some handling for
-> special cases, like ARG_PTR_TO_DYNPTR, OBJ_RELEASE, and
-> ARG_PTR_TO_ALLOC_MEM.
-> 
-> This commit aims to streamline these special cases and instead leave
-> other things up to argument type specific code to handle. The function
-> will be restrictive by default, and cover all possible cases when
-> OBJ_RELEASE is set, without having to update the function again (and
-> missing to do that being a bug).
+Stanislav Fomichev <sdf@google.com> writes:
+
+> On Thu, Nov 17, 2022 at 8:59 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Thu, Nov 17, 2022 at 3:32 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>> >
+>> > Stanislav Fomichev <sdf@google.com> writes:
+>> >
+>> > >> > Doesn't look like the descriptors are as nice as you're trying to
+>> > >> > paint them (with clear hash/csum fields) :-) So not sure how much
+>> > >> > CO-RE would help.
+>> > >> > At least looking at mlx4 rx_csum, the driver consults three diffe=
+rent
+>> > >> > sets of flags to figure out the hash_type. Or am I just unlucky w=
+ith
+>> > >> > mlx4?
+>> > >>
+>> > >> Which part are you talking about ?
+>> > >>         hw_checksum =3D csum_unfold((__force __sum16)cqe->checksum);
+>> > >> is trivial enough for bpf prog to do if it has access to 'cqe' poin=
+ter
+>> > >> which is what John is proposing (I think).
+>> > >
+>> > > I'm talking about mlx4_en_process_rx_cq, the caller of that check_cs=
+um.
+>> > > In particular: if (likely(dev->features & NETIF_F_RXCSUM)) branch
+>> > > I'm assuming we want to have hash_type available to the progs?
+>> >
+>> > I agree we should expose the hash_type, but that doesn't actually look
+>> > to be that complicated, see below.
+>> >
+>> > > But also, check_csum handles other corner cases:
+>> > > - short_frame: we simply force all those small frames to skip checks=
+um complete
+>> > > - get_fixed_ipv6_csum: In IPv6 packets, hw_checksum lacks 6 bytes fr=
+om
+>> > > IPv6 header
+>> > > - get_fixed_ipv4_csum: Although the stack expects checksum which
+>> > > doesn't include the pseudo header, the HW adds it
+>> > >
+>> > > So it doesn't look like we can just unconditionally use cqe->checksu=
+m?
+>> > > The driver does a lot of massaging around that field to make it
+>> > > palatable.
+>> >
+>> > Poking around a bit in the other drivers, AFAICT it's only a subset of
+>> > drivers that support CSUM_COMPLETE at all; for instance, the Intel
+>> > drivers just set CHECKSUM_UNNECESSARY for TCP/UDP/SCTP. I think the
+>> > CHECKSUM_UNNECESSARY is actually the most important bit we'd want to
+>> > propagate?
+>> >
+>> > AFAICT, the drivers actually implementing CHECKSUM_COMPLETE need access
+>> > to other data structures than the rx descriptor to determine the status
+>> > of the checksum (mlx4 looks at priv->flags, mlx5 checks rq->state), so
+>> > just exposing the rx descriptor to BPF as John is suggesting does not
+>> > actually give the XDP program enough information to act on the checksum
+>> > field on its own. We could still have a separate kfunc to just expose
+>> > the hw checksum value (see below), but I think it probably needs to be
+>> > paired with other kfuncs to be useful.
+>> >
+>> > Looking at the mlx4 code, I think the following mapping to kfuncs (in
+>> > pseudo-C) would give the flexibility for XDP to access all the bits it
+>> > needs, while inlining everything except getting the full checksum for
+>> > non-TCP/UDP traffic. An (admittedly cursory) glance at some of the oth=
+er
+>> > drivers (mlx5, ice, i40e) indicates that this would work for those
+>> > drivers as well.
+>> >
+>> >
+>> > bpf_xdp_metadata_rx_hash_supported() {
+>> >   return dev->features & NETIF_F_RXHASH;
+>> > }
+>> >
+>> > bpf_xdp_metadata_rx_hash() {
+>> >   return be32_to_cpu(cqe->immed_rss_invalid);
+>> > }
+>> >
+>> > bpf_xdp_metdata_rx_hash_type() {
+>> >   if (likely(dev->features & NETIF_F_RXCSUM) &&
+>> >       (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_TCP | MLX4_CQE_STATUS=
+_UDP)) &&
+>> >         (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IPOK)) &&
+>> >           cqe->checksum =3D=3D cpu_to_be16(0xffff))
+>> >      return PKT_HASH_TYPE_L4;
+>> >
+>> >    return PKT_HASH_TYPE_L3;
+>> > }
+>> >
+>> > bpf_xdp_metadata_rx_csum_supported() {
+>> >   return dev->features & NETIF_F_RXCSUM;
+>> > }
+>> >
+>> > bpf_xdp_metadata_rx_csum_level() {
+>> >         if ((cqe->status & cpu_to_be16(MLX4_CQE_STATUS_TCP |
+>> >                                        MLX4_CQE_STATUS_UDP)) &&
+>> >             (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IPOK)) &&
+>> >             cqe->checksum =3D=3D cpu_to_be16(0xffff))
+>> >             return CHECKSUM_UNNECESSARY;
+>> >
+>> >         if (!(priv->flags & MLX4_EN_FLAG_RX_CSUM_NON_TCP_UDP &&
+>> >               (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IP_ANY))) &&
+>> >               !short_frame(len))
+>> >             return CHECKSUM_COMPLETE; /* we could also omit this case =
+entirely */
+>> >
+>> >         return CHECKSUM_NONE;
+>> > }
+>> >
+>> > /* this one could be called by the metadata_to_skb code */
+>> > bpf_xdp_metadata_rx_csum_full() {
+>> >   return check_csum() /* BPF_CALL this after refactoring so it is skb-=
+agnostic */
+>> > }
+>> >
+>> > /* this one would be for people like John who want to re-implement
+>> >  * check_csum() themselves */
+>> > bpf_xdp_metdata_rx_csum_raw() {
+>> >   return cqe->checksum;
+>> > }
+>>
+>> Are you proposing a bunch of per-driver kfuncs that bpf prog will call.
+>> If so that works, but bpf prog needs to pass dev and cqe pointers
+>> into these kfuncs, so they need to be exposed to the prog somehow.
+>> Probably through xdp_md ?
+
+No, I didn't mean we should call per-driver kfuncs; the examples above
+were meant to be examples of what the mlx4 driver would unrolls those
+kfuncs to. Sorry that that wasn't clear.
+
+> So far I'm doing:
 >
-> This is done primarily for two reasons: associating back reg->type to
-> its argument leaves room for the list getting out of sync when a new
-> reg->type is supported by an arg_type.
+> struct mlx4_xdp_buff {
+>   struct xdp_buff xdp;
+>   struct mlx4_cqe *cqe;
+>   struct mlx4_en_dev *mdev;
+> }
 >
-> The other case is ARG_PTR_TO_ALLOC_MEM. The problem there is something
-> we already handle, whenever a release argument is expected, it should
-> be passed as the pointer that was received from the acquire function.
-> Hence zero fixed and variable offset.
-> 
-> There is nothing special about ARG_PTR_TO_ALLOC_MEM, where technically
-> its target register type PTR_TO_MEM | MEM_ALLOC can already be passed
-> with non-zero offset to other helper functions, which makes sense.
+> And then the kfuncs get ctx (aka xdp_buff) as a sole argument and can
+> find cqe/mdev via container_of.
+>
+> If we really need these to be exposed to the program, can we use
+> Yonghong's approach from [0]?
 
-Agreed -- just out of curiosity do you know what the rationale was for
-it disallowing offsets in the first place?
+I don't think we should expose them to the BPF program; I like your
+approach of stuffing them next to the CTX pointer and de-referencing
+that. This makes it up to the driver which extra objects it needs, and
+the caller doesn't have to know/care.
 
-> Hence, lift the arg_type_is_release check for reg->off and cover all
-> possible register types, instead of duplicating the same kind of check
-> twice for current OBJ_RELEASE arg_types (alloc_mem and ptr_to_btf_id).
-> 
-> For the release argument, arg_type_is_dynptr is the special case, where
-> we go to actual object being freed through the dynptr, so the offset of
-> the pointer still needs to allow fixed and variable offset and
-> process_dynptr_func will verify them later for the release argument case
-> as well.
-> 
-> This is not specific to ARG_PTR_TO_DYNPTR though, we will need to make
-> this exception for any future object on the stack that needs to be
-> released. In this sense, PTR_TO_STACK as a candidate for object on stack
-> argument is a special case for release offset checks, and they need to
-> be done by the helper releasing the object on stack.
-> 
-> Since the check has been lifted above all register type checks, remove
-> the duplicated check that is being done for PTR_TO_BTF_ID.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/verifier.c                         | 62 ++++++++++++-------
->  .../testing/selftests/bpf/verifier/ringbuf.c  |  2 +-
->  2 files changed, 39 insertions(+), 25 deletions(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c484e632b0cd..34e67d04579b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6092,11 +6092,38 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->  			   const struct bpf_reg_state *reg, int regno,
->  			   enum bpf_arg_type arg_type)
->  {
-> -	enum bpf_reg_type type = reg->type;
-> -	bool fixed_off_ok = false;
-> +	u32 type = reg->type;
->  
-> -	switch ((u32)type) {
-> -	/* Pointer types where reg offset is explicitly allowed: */
-> +	/* When referenced register is passed to release function, it's fixed
+I'm not vehemently opposed to *also* having the rx-desc pointer directly
+accessible (in which case Yonghong's kfunc approach is probably fine).
+However, as mentioned in my previous email, I doubt how useful that
+descriptor itself will be...
 
-s/it's/its
+>> This way we can have both: bpf prog reading cqe fields directly
+>> and using kfuncs to access things.
+>> Inlining of kfuncs should be done generically.
+>> It's not a driver job to convert native asm into bpf asm.
+>
+> Ack. I can replace the unrolling with something that just resolves
+> "generic" kfuncs to the per-driver implementation maybe? That would at
+> least avoid netdev->ndo_kfunc_xxx indirect calls at runtime..
 
-> +	 * offset must be 0.
-> +	 *
-> +	 * We will check arg_type_is_release reg has ref_obj_id when storing
-> +	 * meta->release_regno.
-> +	 */
-> +	if (arg_type_is_release(arg_type)) {
-> +		/* ARG_PTR_TO_DYNPTR with OBJ_RELEASE is a bit special, as it
-> +		 * may not directly point to the object being released, but to
-> +		 * dynptr pointing to such object, which might be at some offset
-> +		 * on the stack. In that case, we simply to fallback to the
-> +		 * default handling.
-> +		 */
+As stated above, I think we should keep the unrolling. If we end up with
+an actual CALL instruction for every piece of metadata that's going to
+suck performance-wise; unrolling is how we keep this fast enough! :)
 
-I personally am not a fan of this. We'd now have an entirely separate
-branch of logic for most OBJ_RELEASE args, but then we fall through to
-default handling for only PTR_TO_STACK specifically? That kind of
-tactical complexity / readability tax is unfortunate, and adds up
-quickly. It's already gotten pretty pervasive in the verifier, and I
-personally would prefer to see us moving away from adding small one-off
-conditional branches like this in the verifier when possible.
+-Toke
 
-It seems to me like the problem we're trying to solve is that both arg
-type and register type are relevant when detecting whether a register is
-allowed to have nonzero offsets. It would be ideal if we could encode
-some of this at build-time, similar to how we statically define and
-compare compatible_reg_types in check_reg_type(). Is there some way for
-us to do this for allowing offsets? Like maybe we can hoist some of the
-build logic for how we define compatible_reg_types into a separate
-table-like header file that can be included in multiple places to
-construct statically-defined, constant arrays where all of this logic is
-encoded? These check-offset / check-type functions could then really
-just be lookups into these const arrays, and e.g. enabling new arg types
-for register types could be captured by adding an entry to that
-header-file table.
-
-Maybe that's overkill for this specific example, but I really feel like
-we need to start to try and move away from these one-off conditional
-branches which collectively create a lot of complexity, and make it
-difficult to reason about high-level correctness in the verifier.
-
-To be clear: I won't block your change on this, but I'd like to hear
-what you think about it as an idea, and I personally would really like
-to see the verifier moving in that direction in general.
-
-> +		if (!arg_type_is_dynptr(arg_type) || type != PTR_TO_STACK) {
-> +			/* Doing check_ptr_off_reg check for the offset will
-> +			 * catch this because fixed_off_ok is false, but
-> +			 * checking here allows us to give the user a better
-> +			 * error message.
-> +			 */
-> +			if (reg->off) {
-> +				verbose(env, "R%d must have zero offset when passed to release func\n",
-> +					regno);
-> +				return -EINVAL;
-> +			}
-
-Why is this check necessary? To get a better error message in the
-verifier if the register offset is nonzero? If so, IMO I don't think
-that's a good enough reason to completely circumvent calling
-__check_ptr_off_reg(). Not for correctness, but because it's
-__check_ptr_off_reg()'s job to look at the register offset (that's what
-the fixed_off_ok arg is for after all), and adding one-off checks like
-which duplicate checks in other functions, it ends up ballooning the
-code and complexity in the verifier. If we want to have a different
-message for testing the offset being zero depending on the arg type,
-that's where it belongs.
-
-> +			return __check_ptr_off_reg(env, reg, regno, false);
-> +		}
-> +		/* Fallback to default handling */
-> +	}
-> +	switch (type) {
-> +	/* Pointer types where both fixed and variable offset is explicitly allowed: */
->  	case PTR_TO_STACK:
->  		if (arg_type_is_dynptr(arg_type) && reg->off % BPF_REG_SIZE) {
->  			verbose(env, "cannot pass in dynptr at an offset\n");
-> @@ -6113,35 +6140,22 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->  	case PTR_TO_BUF:
->  	case PTR_TO_BUF | MEM_RDONLY:
->  	case SCALAR_VALUE:
-> -		/* Some of the argument types nevertheless require a
-> -		 * zero register offset.
-> -		 */
-> -		if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
-> -			return 0;
-
-Doesn't this result in a change of behavior beyond just verifying an
-offset of 0? Before, in addition to checking offset 0, we were also
-verifying that e.g. reg->off was nonnegative for ARG_PTR_TO_ALLOC_MEM.
-Now we only do that if it's OBJ_RELEASE. I'm actually not following why
-we wouldn't want to invoke __check_ptr_offset() for any of these other
-register types.
-
-> -		break;
-> +		return 0;
->  	/* All the rest must be rejected, except PTR_TO_BTF_ID which allows
->  	 * fixed offset.
->  	 */
->  	case PTR_TO_BTF_ID:
->  		/* When referenced PTR_TO_BTF_ID is passed to release function,
->  		 * it's fixed offset must be 0.	In the other cases, fixed offset
-
-Not your change, but while you're here could you please fix s/it's/its
-
-> -		 * can be non-zero.
-> +		 * can be non-zero. This was already checked above. So pass
-> +		 * fixed_off_ok as true to allow fixed offset for all other
-> +		 * cases. var_off always must be 0 for PTR_TO_BTF_ID, hence we
-> +		 * still need to do checks instead of returning.
->  		 */
-> -		if (arg_type_is_release(arg_type) && reg->off) {
-> -			verbose(env, "R%d must have zero offset when passed to release func\n",
-> -				regno);
-> -			return -EINVAL;
-> -		}
-> -		/* For arg is release pointer, fixed_off_ok must be false, but
-> -		 * we already checked and rejected reg->off != 0 above, so set
-> -		 * to true to allow fixed offset for all other cases.
-> -		 */
-> -		fixed_off_ok = true;
-> -		break;
-> +		return __check_ptr_off_reg(env, reg, regno, true);
->  	default:
-> -		break;
-> +		return __check_ptr_off_reg(env, reg, regno, false);
->  	}
-> -	return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
->  }
->  
->  static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> diff --git a/tools/testing/selftests/bpf/verifier/ringbuf.c b/tools/testing/selftests/bpf/verifier/ringbuf.c
-> index b64d33e4833c..92e3f6a61a79 100644
-> --- a/tools/testing/selftests/bpf/verifier/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/verifier/ringbuf.c
-> @@ -28,7 +28,7 @@
->  	},
->  	.fixup_map_ringbuf = { 1 },
->  	.result = REJECT,
-> -	.errstr = "dereference of modified alloc_mem ptr R1",
-> +	.errstr = "R1 must have zero offset when passed to release func",
->  },
->  {
->  	"ringbuf: invalid reservation offset 2",
-> -- 
-> 2.38.1
-> 
