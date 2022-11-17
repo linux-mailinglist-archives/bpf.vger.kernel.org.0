@@ -2,144 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF5A62DF5F
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 16:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F3B62DF8C
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 16:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240601AbiKQPNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 10:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
+        id S239483AbiKQPVa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 10:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240625AbiKQPMf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 10:12:35 -0500
-X-Greylist: delayed 918 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Nov 2022 07:09:09 PST
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E486769F8;
-        Thu, 17 Nov 2022 07:09:08 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1ovgGz-0004A8-3O; Thu, 17 Nov 2022 15:53:49 +0100
-Date:   Thu, 17 Nov 2022 15:53:49 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     netfilter-devel@vger.kernel.org, bpf@vger.kernel.org
-Subject: netfilter bpf-jit patchset: test results
-Message-ID: <Y3ZK/RDJliIqAfQU@strlen.de>
+        with ESMTP id S239976AbiKQPUu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 10:20:50 -0500
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02262EF28
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 07:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1668698219;
+        bh=gqWKlSzLddOrY9k3Jj3HmbY9CYQ+KSWRwr61fcT7li8=;
+        h=From:To:Cc:Subject:Date;
+        b=kjamsL987YNVgPf5g9Zib0dXtJcHASmTRdQu3FOoM5Do/aVImEoLI7iA+VsrbSgjU
+         BuMHqM5gHEJk+Fn1EsTFozdqn1DyAPBDJ+YMwtKbOcwgk81rpa10Jen0RZ6MEiYbez
+         KaSRVorGpWNQkwt0rG/8x8bpomOKeqEYpiBHT5eI=
+Received: from localhost.localdomain ([111.199.191.46])
+        by newxmesmtplogicsvrszc2-1.qq.com (NewEsmtp) with SMTP
+        id 43607CAA; Thu, 17 Nov 2022 23:16:54 +0800
+X-QQ-mid: xmsmtpt1668698214tfpb8kan0
+Message-ID: <tencent_E1424259BD97672AD1AF00A3468858065E08@qq.com>
+X-QQ-XMAILINFO: OR+tS2yJykEIbqqkNkQNYZT45wGcuLVANc/YHVBsiIKDNlbpsxwSCylukFzcoa
+         W70Gjv5kl+YXFUOLthEzgQ0wb5kuRc41ZaUVPNe+qGMZ4U6Vx20IstmbTN+IJnWr8JGbfgj8vqhu
+         zVyu8IIt2goe2ishzW4G0BXs2fHwPTPFuR6SuhN+gX872XyzXgVQgmvUqdqbLEz6MmjUHnejdQZD
+         KI9bxyaTxL5rhU74XQuomNxoxgF9RCqOF4KQOJf3LboAoHYem4Ye1KXhQ9YvSYaEMuZAsfqBvMVb
+         X9PCiSSfS9Rk3FTUv+7/S2lHO4fLTKpVwIqyVkOKPO79cHjGSMmKKe4jE43jFX9RLnzsMsFJFr2Y
+         yAi13XhB9qYu/pDZoxUypnhqNFWVca6gFJD0WYWHWIyMhx3mOa9VKbyUg/SQfUZ8ZgVWcpo4poSr
+         YbyoCTrRK+nBll8zEeLkk6giGYTiV3Q5IJkmVa9amaEdN5/wITr/eD6OgKA/EnaKGL3L/d/PZrqY
+         gkp602g29VmzwzrYgMa2mhFAjxPhiJaFXYolzOh40V/Jtrlnz/IDAV/CmxBn2h2ZSdGHFDfEf3Vk
+         NiIGgNw4Ch1+Ki9srWCX7Q6zh+ZQJ1dANChAloQbJKJ4V7U+rsa6I5+nBJtajYz69cQoN9LpUO3O
+         +qfHaanOklW1wfr8Jj/cGLy/FrE18ubSCkVRvqOwAfoZn6HRhvpJXgl11W/8xMwTVrpF+DnuRCj7
+         SE6JsFCwhH4O56F9bt4gSJ+64rkp+gdDqfpS7Awtn4wMNBLD3HUUhJ3OlfoSW8czjWgZn7MsSuLx
+         KEV1/v4N8Hi6klrOPBKg4qZcn6/FJoSvusY4rwSAb+cCFPkpDpN7g0lGnTWKqBEq+eylFPXd2O64
+         FJ+FXwW1vH6FSOz/RjGLdgC45fvKwm9+2KY3dQI2XfeYAV1xbr6Wdxd9Uu9jG6VEuSxJHn5Abq28
+         C4qpcCHcaQ09FdCI4jmFF9LbDid3jxZPhOKZUItv3WCLgF3NoTdCiAIWUyY52AQT8HdXylllwNhF
+         Gx0CqK/k6RUqDtfGYrrRU9k8nRado=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dxu@dxuuu.xyz, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lkp@intel.com, lorenzo@kernel.org, martin.lau@linux.dev,
+        memxor@gmail.com, mykolal@fb.com, rongtao@cestc.cn,
+        rtoax@foxmail.com, sdf@google.com, shuah@kernel.org,
+        song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared identifier 'NF_NAT_MANIP_SRC'
+Date:   Thu, 17 Nov 2022 23:16:43 +0800
+X-OQ-MSGID: <20221117151645.25101-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As promised back in October I re-ran tests with the netfilter bpf-jit patchset
-in various different forwarding tests and config combinations.
+From: Rong Tao <rongtao@cestc.cn>
 
-Tests were done on a Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHZ machine, 14
-(physical) cores, HT/SMT disabled.
+commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
 
-Kernel config was based on that of Fedora 37; defaults are:
-RETPOLINE=y, RETHUNK=y, Selinux enabled. I used nf-next tree, with HEAD
-d2c806abcf0b582131e1f93589d628da ("netfilter: conntrack: use siphash_4u64").
+In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+is compiled as built-in, this issue occurs just if it is compiled as
+module. We could use BPF CO-RE and ___suffix rule to avoid this.
 
-Test uses pktgen in rx mode, exercising following path:
-prerouting -> forward -> postrouting -> dummy0
-Flows use 64byte udp packets that get forwarded to a dummy device.
+How to reproduce the error:
 
-I ran four test cases:
+    $ make -C tools/testing/selftests/bpf/
+    ...
+      CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+      error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+            bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+                                                           ^
+      error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+            bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+                                                           ^
+    2 errors generated.
 
-1. fwd: Plain forward: Base script, no special config except routing+forward
-   enabled.
-2. nf: same as 1), but there is a forward filter chain with one rule ('meta
-   l4proto udp accept')
-3. ct: same as 2), but there is a forward filter chain with a 'ct state new
-   accept' rule, i.e. this config enables connection tracking.
-   From conntrack point of view, this traffic is ideal: virtually all lookups
-   will find an exisiting entry in the connection tracking table, i.e. this
-   test does not exercise the new/delete conntrack path.
-4. ft (flowtable): same as 3, but flows are added to the flowtable software bypass
-   path.
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v2: use BPF CO-RE and ___suffix rule to avoid this error.
+v1: https://lore.kernel.org/lkml/tencent_29D7ABD1744417031AA1B52C914B61158E07@qq.com/
+---
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 30 +++++++++++++++++--
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-Following table has results for the relevant Kconfig combinations:
-CONFIG_RETPOLINE=y|n, SELinux (on/off), and BPF-JIT (on or off).
-
-'SELinux off' means that I applied a small patch to remove the
-nf_register_net_hooks() in security/selinux/hooks.c, this is NOT
-a Kconfig change.
-BPF-JIT off means I used undmodified nf-next, BPF-JIT on means
-I used the latest version of the BPF-JIT patch set, avaialbe at:
-
-https://git.breakpoint.cc/cgit/fw/nf-next.git/log/?h=nf_hook_jit_bpf_29
-
-The third column shows percentage, with 'plain forward' treated as baseline.
-The fourth column shows percentage with 'RETPOLINE=n SELinux off plain
-forward' as the baseline.
-
-Based on these results I will first work on removing the auto-registration
-of the selinux hooks.  At least in the Fedora case, the default configuration
-doesn't need them to be active as no secmarks or peer labels get added, so the
-nf_register_net_hooks() calls should be delayed until the selinux policy
-in a namespace sees a change that will require the hooks presence.
-
-The BPF-JIT patchset doesn't help for RETPOLINE=n, so I will keep the
-'depends on RETPOLINE' kconfig clause.
-I plan to resubmit it for the *next* development cycle.
-
-Meanhile I can also explore applying the same concept to other indirect calls
-found in the network path, e.g. ndo_ops and see if anything is reusable.
-
-------------------------------------------------------------------
-RETPLINE=y, Selinux: On:
-fwd: 682 Mb/s  1333582 pps    (100%)		( 77.7%)
-nf:  635 Mb/s  1242167 pps    ( 93.1%)		( 72.4%)
-ct:  486 Mb/s   951666 pps    ( 71.3%)		( 55.4%)
-ft: 2952 Mb/s  5767297 pps    (432.8%)		(295.5%)
-
-RETPLINE=y, Selinux: Off:
-fwd: 776 Mb/s  1517938 pps   (100%)		( 88.4%)
-nf:  710 Mb/s  1389293 pps   ( 91.5%)		( 80.9%)
-ct:  520 Mb/s  1017144 pps   ( 67.0%)		( 59.2%)
-ft: 2847 MB/s  5563505 pps   (366.9%)		(324.6%))
-
-RETPLINE=y, Selinux: On, BPF-JIT:
-fwd: 719 Mb/s  1406091 pps  (100%)		( 81.9%)
-nf:  690 Mb/s  1349784 pps  ( 95.9%)		( 78.6%)
-ct:  548 Mb/s  1072139 pps  ( 76.2%)		( 62.4%)
-ft: 3227 Mb/s  6305546 pps  (448%)		(367.9%)
-
-RETPLINE=y, Selinux: Off, BPF-JIT:
-fwd: 777 Mb/s  1519260 pps   (100%)		( 88.5%)
-nf:  727 Mb/s  1421397 pps   ( 93.6%)		( 82.8%)
-ct:  564 Mb/s  1104244 pps   ( 72.5%)		( 64.3%)
-ft: 3183 Mb/s  6218005 pps   (403.8%)		(357.8%)
-
-RETPOLINE=n, Selinux: Off
-fwd: 877 Mb/s  1713897 pps  (100%)		(100%)
-nf:  812 Mb/s  1588642 pps  ( 92.6%)		( 92.5%))
-ct:  629 Mb/s  1230907 pps  ( 71.72)		( 71.7%)
-ft: 3127 Mb/s  6109677 pps			(356.5%)
-
-RETPOLINE=n, Selinux: Off, BPF-JIT ON:
-fwd: 875 Mb/s  1710246 pps  (100%)		( 99.7%)
-nf:  811 Mb/s  1586071 pps  ( 92.6%)		( 92.4%)
-ct:  617 Mb/s  1207447 pps  ( 70.5%)		( 70.3%)
-ft: 3141 MB/s  6136657 pps  (358.9%)		(358.1%)
-
-RETPOLINE=n, Selinux: On
-fwd:  796 Mb/s  1556395 pps 			( 88.2%)
-nf:   757 Mb/s  1479685 ppsi (95.1%)		( 86.3%)
-ct:   603 Mb/s  1179356 pps  (75.7%)		( 68.7%)
-ft:  3148 Mb/s  6150032 pps  (395.4%)		(358.9%)
-
-RETPOLINE=n, Selinux: On, BPF-JIT ON:
-fwd: 774 Mb/s  1514405 pps			( 88.2%)
-nf:  737 Mb/s  1441554 pps  (95.2%)		( 84.0%)
-ct:  600 Mb/s  1174251 pps  (77.5%)		( 68.4%)
-ft: 3104 MB/s  6064567 pps  (401%)		(353.9%)
----------------------------------------------------------------
-
-Let me know if you're interested in more details,
-I can re-create this setup if needed.
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 227e85e85dda..1706984e1a6a 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -2,6 +2,7 @@
+ #include <vmlinux.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
++#include <bpf/bpf_core_read.h>
+ 
+ #define EAFNOSUPPORT 97
+ #define EPROTO 71
+@@ -11,6 +12,11 @@
+ 
+ extern unsigned long CONFIG_HZ __kconfig;
+ 
++enum nf_nat_manip_type___x {
++	NF_NAT_MANIP_SRC___x,
++	NF_NAT_MANIP_DST___x,
++};
++
+ int test_einval_bpf_tuple = 0;
+ int test_einval_reserved = 0;
+ int test_einval_netns_id = 0;
+@@ -58,7 +64,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
+ int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
+ int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
+ int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
+-			int port, enum nf_nat_manip_type) __ksym;
++			int port, int type) __ksym;
+ 
+ static __always_inline void
+ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+@@ -151,16 +157,34 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 		union nf_inet_addr saddr = {};
+ 		union nf_inet_addr daddr = {};
+ 		struct nf_conn *ct_ins;
++		int manip_src;
++		int manip_dst;
++		enum nf_nat_manip_type___x mapip_type_x;
++
++		if (!bpf_core_type_exists(enum nf_nat_manip_type)) {
++			bpf_printk("enum nf_nat_manip_type not exist.\n");
++			return;
++		}
++
++		if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_SRC___x))
++			manip_src = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_SRC___x);
++		else
++			return;
++
++		if (bpf_core_enum_value_exists(mapip_type_x, NF_NAT_MANIP_DST___x))
++			manip_dst = bpf_core_enum_value(mapip_type_x, NF_NAT_MANIP_DST___x);
++		else
++			return;
+ 
+ 		bpf_ct_set_timeout(ct, 10000);
+ 		ct->mark = 77;
+ 
+ 		/* snat */
+ 		saddr.ip = bpf_get_prandom_u32();
+-		bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
++		bpf_ct_set_nat_info(ct, &saddr, sport, manip_src);
+ 		/* dnat */
+ 		daddr.ip = bpf_get_prandom_u32();
+-		bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
++		bpf_ct_set_nat_info(ct, &daddr, dport, manip_dst);
+ 
+ 		ct_ins = bpf_ct_insert_entry(ct);
+ 		if (ct_ins) {
+-- 
+2.31.1
 
