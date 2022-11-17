@@ -2,68 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D0B62DC51
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 14:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6338262DC77
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 14:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239592AbiKQNKn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 08:10:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
+        id S239852AbiKQNRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 08:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239636AbiKQNKn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 08:10:43 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6833F6207F;
-        Thu, 17 Nov 2022 05:10:41 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id l14so3807739wrw.2;
-        Thu, 17 Nov 2022 05:10:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1E16Wg9BwXGQCZzwhn9INR5uQhH9/wEtii6ez7bUawY=;
-        b=e+CHqtO8ETxCRBb7wNGNrIfQ1YF7+xEL6p1wLMy2RW0uS+HNK7fLrwbhDdZfGG7xk1
-         Pf5EZjah0fB768pOnz4xjMwNy4vnnAKMB33I7A49LSEUeS86+seREcI/ob+vrdMP7wY1
-         Rwm5z8/bbp5uP4rCJgCjdoW4rqVastq968AEzUWpkhm+688KaUs4XEnt0J++7GXnP2BF
-         XLdLT6o4z9dpnrJLKG7/qN1q6Xgrre+cMQdKcnxetJ610F35ySs4+EVVKnpFnYuFafTB
-         mhGJMCrzJqJgXOHJ/gQKA4YdIKbEoJMW2lup3EWe5uyRYPRDVtH7tNmML3Flyi1wh1tx
-         EoQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1E16Wg9BwXGQCZzwhn9INR5uQhH9/wEtii6ez7bUawY=;
-        b=Iio1xTp5M8zJXULHTh6QP6Vv3hy/wYn0pxv6xmi3cAAoRw/DWMcUk5Nb8qRfKZUY0A
-         uFJby47bFPmq3NuJyDJ8BJYxHezB3H8a/Jer+S01NlNHxEqndrbK+JEHgMt0uWgGGqkG
-         IU8XaWi7G+H1c49tWa9UpmkIa+rVAN59TtSdOuxuD5S2Ncy8KJ/y5qbckA0RszpKv/VZ
-         VV5ahv6R0ODOujNX8oZzkp72dP3eIvg/Q7hAMMCWADZpwC9XIvU3OGbCf4+TwvlV0mLT
-         d7FrgNPqhlPdyPvgY1lsuKDfS4A+BXigNmy9v7DdEt/iL2BazPDNv1u/l8BlmbsEmYqG
-         rFaA==
-X-Gm-Message-State: ANoB5pkpWhRkFr0WDCSVf35oUte4CxqCk7NQlgfj3e6VRNrLqFP7sLyI
-        wt0bP/+F70vHGp79QPApmjg=
-X-Google-Smtp-Source: AA0mqf4Eu+3ZucUBzS34eIs0cqoipl/MjJ43vILvpKnAi0/BJNEjWr+AAJFb/aGMpqykefCBVA/X3Q==
-X-Received: by 2002:a5d:628e:0:b0:236:5ea4:68c8 with SMTP id k14-20020a5d628e000000b002365ea468c8mr1468576wru.132.1668690639774;
-        Thu, 17 Nov 2022 05:10:39 -0800 (PST)
-Received: from imac ([2a02:8010:60a0:0:2c71:30b9:69c:c340])
-        by smtp.gmail.com with ESMTPSA id c15-20020a05600c0acf00b003c21ba7d7d6sm1157346wmr.44.2022.11.17.05.10.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 05:10:38 -0800 (PST)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     mtahhan@redhat.com
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
-        thoiland@redhat.com, donhunte@redhat.com, magnus.karlsson@gmail.com
-Subject: Re: [PATCH bpf-next v1 1/1] docs: BPF_MAP_TYPE_XSKMAP
-In-Reply-To: <20221117105044.1935488-1-mtahhan@redhat.com>
-        (mtahhan@redhat.com's message of "Thu, 17 Nov 2022 05:50:44 -0500")
-Date:   Thu, 17 Nov 2022 13:10:32 +0000
-Message-ID: <m2cz9lybef.fsf@gmail.com>
-References: <20221117105044.1935488-1-mtahhan@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S239910AbiKQNQw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 08:16:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD786D48A;
+        Thu, 17 Nov 2022 05:16:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC4A461C30;
+        Thu, 17 Nov 2022 13:16:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29FC1C433D6;
+        Thu, 17 Nov 2022 13:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668691008;
+        bh=lhziTn9I/ut9Si1nXsnGazUEDk+a6bSaTXfT6s7utZw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ji4GYoRFx4IF9pZvE2vtJWvZjNTUj7wtVvdgLGgRsmMF7RmbxQRgupbBmAHqXa/xC
+         dCarezrILpBpEw7z2fLsoMTQQW7wMv3NGeaMfbJ2egPHqEq2NPblDO37Iw1IlgKlm+
+         sXXXX5e+QTQTQ9w04Yaqs5+pV2zA3ePTtu/Un4scseClUK9kTxnfQLqVorOvTwJ7P8
+         H+ZYf5VgSwz5WnkyfViPvqWM/lt+AXrtNJJDGwLmVs6kYrfmHXQ/rOZfJdZIj/NAcg
+         eAlzxFuXIE8UesiwSyy3wSAx+UJ8pytIjFApggj/s/qTZktJd4qj778iv+kpa08e1q
+         K8pVgfhxA0zIg==
+Date:   Thu, 17 Nov 2022 22:16:44 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        markowsky@google.com, mark.rutland@arm.com, mhiramat@kernel.org,
+        rostedt@goodmis.org, xukuohai@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Message-Id: <20221117221644.6ab25935efeff604087be7a2@kernel.org>
+In-Reply-To: <20221108220651.24492-1-revest@chromium.org>
+References: <20221108220651.24492-1-revest@chromium.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,217 +57,168 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-mtahhan@redhat.com writes:
+Hi Florent,
 
-> From: Maryam Tahhan <mtahhan@redhat.com>
->
-> Add documentation for BPF_MAP_TYPE_XSKMAP
-> including kernel version introduced, usage
-> and examples.
->
-> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-> ---
->  Documentation/bpf/map_xskmap.rst | 161 +++++++++++++++++++++++++++++++
->  1 file changed, 161 insertions(+)
->  create mode 100644 Documentation/bpf/map_xskmap.rst
->
-> diff --git a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
-> new file mode 100644
-> index 000000000000..5699a89851ef
-> --- /dev/null
-> +++ b/Documentation/bpf/map_xskmap.rst
-> @@ -0,0 +1,161 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
-> +
-> +===================
-> +BPF_MAP_TYPE_XSKMAP
-> +===================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_XSKMAP`` was introduced in kernel version 4.18
-> +
-> +The ``BPF_MAP_TYPE_XSKMAP`` is used as a backend map for XDP BPF helper
-> +call ``bpf_redirect_map()`` and XDP_REDIRECT action, like 'devmap' and 'cpumap'.
+On Tue,  8 Nov 2022 23:06:50 +0100
+Florent Revest <revest@chromium.org> wrote:
 
-``XDP_REDIRECT``
+> Hi!
+> 
+> With this RFC, I'd like to revive the conversation between BPF, ARM and tracing
+> folks on what BPF tracing (fentry/fexit/fmod_ret) could/should look like on
+> arm64.
+> 
+> Current status of BPF tracing
+> =============================
+> 
+> On currently supported architectures (like x86), BPF tracing programs are
+> called from a JITted BPF trampoline, itself called from the ftrace patch site
+> thanks to the ftrace "direct call" API. (or from the end of the ftrace
+> trampoline if a ftrace ops is also tracing that function, but this is
+> transparent to BPF)
+> 
+> Thanks to Xu's work [1], we now have BPF trampolines on arm64 (these can be
+> used for struct ops programs already), but Xu's attempts at getting ftrace
+> direct calls support [2][3] on arm64 have been unsucessful so far so we still
+> do not support BPF tracing programs. This prompted me to try a different
+> approach. I'd like to collect feedback on it here.
+> 
+> Why not direct calls ?
+> ======================
+> 
+> Mark and Steven have not been too keen on getting direct calls on arm64 because:
+> - working around BL instruction's limited range introduces complexity [4]
+> - it's difficult to get reliable stacktraces right with direct calls [5]
+> - direct calls are complex to maintain on the arch/ftrace side [5]
+> 
+> In the absence of ftrace direct calls support, BPF tracing programs would need
+> to be called from an ftrace ops instead. Note that the BPF callback signature
+> would have to be different, so we can't re-use trampolines (direct called
+> callbacks receive arguments in registers whereas ftrace ops callbacks receive
+> arguments in a struct ftrace_regs pointer)
+> 
+> Why fprobe ?
+> ============
+> 
+> Ftrace ops per-se only expose an API to hook before a function. There are two
+> systems built on top of ftrace ops that also allow hooking the function exit:
+> fprobe (using rethook) and the function graph tracer. There are plans from
+> Masami and Steven to unify these two systems but, as they stand, only fprobe
+> gives enough flexibility to implement BPF tracing.
+> 
+> In order not to reinvent the wheel, if direct calls aren't available on the
+> arch, BPF could leverage fprobe to hook before and after the traced function.
+> Note that return hooking is implemented a bit differently than it is in BPF
+> trampolines. Instead of keeping arguments on a stack frame and calling the
+> traced function, rethook saves arguments in a memory pool and returns to the
+> traced function with a hijacked return pointer that will have its ret jump back
+> to the rethook trampoline.
 
-> +This map type redirects raw XDP frames to AF_XDP sockets (XSKs). An AF_XDP socket
-> +binds to a single netdev queue. A mapping of XSKs to queues is shown below:
-> +
-> +.. code-block:: none
-> +
-> +    +---------------------------------------------------+
-> +    |     xsk A      |     xsk B       |      xsk C     |<---+ Userspace
-> +    =========================================================|==========
-> +    |    Queue 0     |     Queue 1     |     Queue 2    |    |  Kernel
-> +    +---------------------------------------------------+    |
-> +    |                  Netdev eth0                      |    |
-> +    +---------------------------------------------------+    |
-> +    |                            +=============+        |    |
-> +    |                            | key |  xsk  |        |    |
-> +    |  +---------+               +=============+        |    |
-> +    |  |         |               |  0  | xsk A |        |    |
-> +    |  |         |               +-------------+        |    |
-> +    |  |         |               |  1  | xsk B |        |    |
-> +    |  | eBPF    |-- redirect -->+-------------+-------------+
-> +    |  | prog    |               |  2  | xsk C |        |
-> +    |  |         |               +-------------+        |
-> +    |  |         |                                      |
-> +    |  |         |                                      |
-> +    |  +---------+                                      |
-> +    |                                                   |
-> +    +---------------------------------------------------+
-> +
-> +.. note::
-> +    An AF_XDP socket that is bound to a certain <netdev/queue_id> will *only*
-> +    accept XDP frames from that <netdev/queue_id>. If an XDP program tries to redirect
-> +    from a <netdev/queue_id> other than what the socket is bound to, the frame will
-> +    not be received on the socket.
-> +
-> +Typically an XSKMAP is created per netdev. This map contains an array of XSK File
-> +Descriptors (FDs). The number of array elements is typically set or adjusted using
-> +the ``max_entries`` map parameter. For AF_XDP ``max_entries`` is equal to the number
-> +of queues supported by the netdev.
+Yeah, that is designed to not change the task's stack, but it makes another
+list-based stack. But it eventually replaced by the per-task shadow stack.
 
-Should it mention that both key and value size must be 4 bytes?
+> 
+> What about performances ?
+> =========================
+> 
+> In its current state, a fprobe callback on arm64 is very expensive because:
+> 1- the ftrace trampoline saves all registers (including many unnecessary ones)
+> 2- it calls ftrace_ops_list_func which iterates over all ops and is very slow
+> 3- the fprobe ops unconditionally hooks a rethook
+> 4- rethook grabs memory from a freelist which is slow under high contention
+> 
+> However, all the above points are currently being addressed:
+> 1- by Mark's series to save argument registers only [6]
+> 2- by Mark's series to call single ops directly [7]
+> 3- by Masami's patch to skip rethooks if not needed [8]
+> 4- Masami said the rethook freelist would be replaced by a per-task stack as
+>    part of its unification with the function graph tracer [9]
+> 
+> I measured the costs of BPF on different approaches on my RPi4 here: [10]
+> tl;dr: the BPF "bench" takes a performance hit of:
+> - 28.6% w/ BPF tracing on direct calls (best case scenario for reference) [11]
+> - 66.8% w/ BPF on kprobe (just for reference)
+> - 62.6% w/ BPF tracing on fprobe without any optimizations (current state) [12]
+> - 34.1% w/ BPF tracing on fprobe with all optimizations (near-future state) [13]
 
-> +
-> +Usage
-> +=====
-> +
-> +Kernel BPF
-> +----------
-> +.. c:function::
-> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
-> +
-> + Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
-> + For ``BPF_MAP_TYPE_XSKMAP`` this map contains references to AF_XDP socket FDs
-> + for sockets attached to a netdev's queues.
-> +
-> + .. note::
-> +    If the map is empty at an index, the packet is dropped. This means that it is
-> +    mandatory to have an XDP program loaded (and one AF_XDP socket in the XSKMAP)
+Great! thanks for measuring that.
 
-mandatory -> necessary
+I've checked your tree[13] and basically it is good for me.
+ - rethook: fprobe: Use ftrace_regs instead of pt_regs
+   This patch may break other arch which is trying to implement rethook,
+   so can you break it down to patches for fprobe, rethook and arch specific
+   one?
 
-'and at least one AF_XDP socket'
+> 
+> On top of Mark's and Masami's existing and planned work, BPF tracing programs
+> called from a fprobe callback become much closer to the performances of direct
+> calls but there's still a hit. If we want to try optimizing even further, we
+> could potentially go even one step further by JITting the fprobe callbacks.
 
-> +    to be able to get any traffic to user space through the socket.
-> +
-> +.. c:function::
-> +    void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> + XSK FD entries can be retrieved using the ``bpf_map_lookup_elem()`` helper.
+Would this mean JITting fprobe or callbacks?
 
-Unless I'm mistaken, it returns a pointer to the ``struct xdp_sock``.
+> This would let us unroll the argument loop and use direct calls instead of
+> indirect calls. However this would introduce quite some complexity and I expect
+> the performance impact should be fairly minimal. (arm64 doesn't have repotlines
+> so it doesn't suffer too much from indirect calls anyway)
+> 
+> Two other performance discrepancies I can think of, that would stay anyway are:
+> 1- the ftrace trampoline saves all argument registers while BPF trampolines can
+>    get away with only saving the number of arguments that are actually used by
+>    that function (thanks to BTF info), consequentially, we need to convert the
+>    ftrace_regs structure into a BPF "ctx" array which inevitably takes some
+>    cycles
 
-> +
-> +Userspace
-> +---------
-> +.. note::
-> +    AF_XDP socket entries can only be updated/deleted from user space and not from
-> +    an eBPF program. Trying to call these functions from a kernel eBPF program will
-> +    result in the program failing to load and a verifier warning.
-> +
-> +.. c:function::
-> +   int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags)
-> +
-> + AF_XDP socket entries can be added or updated using the ``bpf_map_update_elem()``
-> + helper. The ``key`` parameter is equal to the queue_id of the queue the AF_XDP
-> + socket is attaching to. And the ``value`` parameter is the file descriptor (fd))
+Have you checked the root cause by perf? I'm not sure that makes difference
+so much.
 
-Extra ')' at end of line.
+> 2- When a fexit program is attached, going through the rethook trampoline means
+>    that we need to save argument registers a second time while BPF trampolines
+>    can just rely on arguments kept on the stack
 
-> + value of that socket.
-> +
-> + Under the hood, the AF_XDP map update function uses the XSK FD value to retrieve the
-> + associated ``struct xdp_sock`` instance.
-> +
-> + The flags argument can be one of the following:
-> +  - BPF_ANY: Create a new element or update an existing element.
-> +  - BPF_NOEXIST: Create a new element only if it did not exist.
-> +  - BPF_EXIST: Update an existing element.
-> +
-> +.. c:function::
-> +    int bpf_map_lookup_elem(int fd, const void *key, void *value)
-> +
-> + AF_XDP socket entries can be retrieved using the ``bpf_map_lookup_elem()``
-> + helper.
+I think we can make a new trampoline eventually just copying some required
+arguments on the shadow stack.
 
-returns the ``struct xdp_sock`` or negative error in case of failure.
+Thanks!
 
-> +
-> +.. c:function::
-> +    int bpf_map_delete_elem(int fd, const void *key)
-> +
-> + AF_XDP socket entries can be deleted using the ``bpf_map_delete_elem()``
-> + helper. This helper will return 0 on success, or negative error in case of
-> + failure.
+> 
+> How to apply this RFC ?
+> =======================
+> 
+> This RFC only brings up to discussion the eventual patch that would
+> touch the BPF subsystem because the ftrace and fprobe optimizations it
+> is built on are not as controversial and already on the way. However,
+> this patch is meant to apply on top of Mark's and Masami's work. If
+> you'd like to run this patch you can use my branch. [13]
+> 
+> Links
+> =====
+> 
+> 1: https://lore.kernel.org/bpf/20220711144722.2100039-1-xukuohai@huawei.com/
+> 2: https://lore.kernel.org/bpf/20220518131638.3401509-2-xukuohai@huawei.com/
+> 3: https://lore.kernel.org/bpf/20220913162732.163631-1-xukuohai@huaweicloud.com/
+> 4: https://lore.kernel.org/bpf/Yo4xb2w+FHhUtJNw@FVFF77S0Q05N/
+> 5: https://lore.kernel.org/bpf/YzR5WSLux4mmFIXg@FVFF77S0Q05N/
+> 6: https://lore.kernel.org/all/20221103170520.931305-1-mark.rutland@arm.com/
+> 7: https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/ftrace/per-callsite-ops
+> 8: https://lore.kernel.org/all/166792255429.919356.14116090269057513181.stgit@devnote3/T/#m9d43fbdc91f48b03d644be77ac18017963a08df5
+> 9: https://lore.kernel.org/bpf/20221024220008.48780b0f58903afed2dc8d4a@kernel.org/
+> 10: https://paste.debian.net/1260011/
+> 11: https://github.com/FlorentRevest/linux/commits/bpf-direct-calls
+> 12: https://github.com/FlorentRevest/linux/commits/bpf-fprobe-slow
+> 13: https://github.com/FlorentRevest/linux/commits/bpf-fprobe-rfc
+> 
+> Florent Revest (1):
+>   bpf: Invoke tracing progs using fprobe on archs without direct call
+> 
+>  include/linux/bpf.h     |   5 ++
+>  kernel/bpf/trampoline.c | 120 ++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 121 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.38.1.431.g37b22c650d-goog
+> 
 
-Should we note that entries are automatically deleted when the xdp_sock
-is released?
 
-> +
-> +Examples
-> +========
-> +Kernel
-> +------
-> +
-> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_XSKMAP`` called
-> +``xsks_map`` and how to redirect packets to an AF_XDP socket.
-> +
-> +.. code-block:: c
-> +
-> +   struct {
-> +        __uint(type, BPF_MAP_TYPE_XSKMAP);
-> +        __type(key_size, int);
-
-Should be key and __u32
-
-> +        __type(value_size, int);
-
-Should be value and __u32
-
-> +        __uint(max_entries, 64);
-> +    } xsks_map SEC(".maps");
-> +
-> +
-> +    SEC("xdp")
-> +    int xsk_redir_prog(struct xdp_md *ctx)
-> +    {
-> +        int index = ctx->rx_queue_id;
-
-Should be __u32 and ctx->rx_queue_index
-
-> +
-> +        if (bpf_map_lookup_elem(&xsks_map, &index))
-> +            return bpf_redirect_map(&xsks_map, index, 0);
-> +        return XDP_PASS;
-> +    }
-> +
-> +Userspace
-> +---------
-> +
-> +The following code snippet shows how to update an XSK map with an AF_XDP socket
-> +entry.
-> +
-> +.. code-block:: c
-> +
-> +    int update_xsks_map(struct bpf_map *xsks_map, int queue_id, int xsk_fd)
-> +    {
-> +        int ret;
-> +
-> +        ret = bpf_map_update_elem(bpf_map__fd(xsks_map), &queue_id, &xsk_fd, 0);
-> +        if (ret < 0) {
-> +            fprintf(stderr, "Failed to update xsks_map: %s\n",
-> +                strerror(errno));
-> +        }
-> +
-> +        return ret;
-> +    }
-> +
-> +.. note::
-> +    The most comprehensive resource for using XSKMAPs is `libxdp`_.
-> +
-> +.. _libxdp: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
