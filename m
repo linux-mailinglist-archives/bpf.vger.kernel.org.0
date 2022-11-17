@@ -2,102 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB2B62D96D
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 12:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D0B62DC51
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 14:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbiKQLde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 06:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S239592AbiKQNKn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 08:10:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbiKQLdc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 06:33:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244F84B9A6
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 03:32:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668684756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TqGQL7f1VO0oELXAbLB5ugC34/GyGd79wtlJNVZt8i4=;
-        b=AfWJS63HRuee6RQKnnQqTxJD/a1ChM3XLv8GaW0x3XFmcZd5jLj9Seb19UHkLmlzTl5ZUg
-        o8XWbB2hYOqrjmd1y0gvWc+uPQgFD2KXojhUeFMgLLSK1fA5Z44F0zGUFE+RDuhsyX0XE5
-        vrPrhdd9MU+D4rnlPRMPjsfQ0RrM1cc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-493-6BGPQFPsOLyH2ELHFqHqwQ-1; Thu, 17 Nov 2022 06:32:35 -0500
-X-MC-Unique: 6BGPQFPsOLyH2ELHFqHqwQ-1
-Received: by mail-ed1-f70.google.com with SMTP id x18-20020a05640226d200b00461e027f704so1041037edd.7
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 03:32:34 -0800 (PST)
+        with ESMTP id S239636AbiKQNKn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 08:10:43 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6833F6207F;
+        Thu, 17 Nov 2022 05:10:41 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id l14so3807739wrw.2;
+        Thu, 17 Nov 2022 05:10:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1E16Wg9BwXGQCZzwhn9INR5uQhH9/wEtii6ez7bUawY=;
+        b=e+CHqtO8ETxCRBb7wNGNrIfQ1YF7+xEL6p1wLMy2RW0uS+HNK7fLrwbhDdZfGG7xk1
+         Pf5EZjah0fB768pOnz4xjMwNy4vnnAKMB33I7A49LSEUeS86+seREcI/ob+vrdMP7wY1
+         Rwm5z8/bbp5uP4rCJgCjdoW4rqVastq968AEzUWpkhm+688KaUs4XEnt0J++7GXnP2BF
+         XLdLT6o4z9dpnrJLKG7/qN1q6Xgrre+cMQdKcnxetJ610F35ySs4+EVVKnpFnYuFafTB
+         mhGJMCrzJqJgXOHJ/gQKA4YdIKbEoJMW2lup3EWe5uyRYPRDVtH7tNmML3Flyi1wh1tx
+         EoQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqGQL7f1VO0oELXAbLB5ugC34/GyGd79wtlJNVZt8i4=;
-        b=GZTsXDUKQDYVbfHEbuVQpqVvTyn/FDetIWUB0Qjlp5ojmcMYkVrOkQN5+xLdLSqC8v
-         lQY2NQy3ObcgAOh2DjDxivsXEznQdEZAspkKGxyS1W3d/cpbGiiIs22lW8c+6wlNUxPa
-         SRy0ADg8Gt7ry69vb+6DFXGQ3nGYg4I/acLsBAftITlD0IY0fvUJM18lFlgvFCw4mzGH
-         iVJhS1L6vwT9HiAZ8tle8OoH8Bgnht8dBDuR8YXV7jTBBbj6+YmdVG13YagpSsbwlazb
-         H7vc9QYG0/9bCRY6wkOZA9ocBWalGUFltPEHSCPxDxLH4S8M+JQMnfYVAu6g8+3n0r+k
-         0Gcg==
-X-Gm-Message-State: ANoB5pnUp3vOQM9kHPsHa57PEEC7oxuV2bURH+PdaEzn9BRLn0Fmqz/j
-        LxgrrK6n/jUW/4RyZkunMTF8o89dJb8S1nuUuOAXOU1aPrr/VIo57F5JhMcoujTkSYGYXIgpE2q
-        4GKac7/x0MKxV
-X-Received: by 2002:a17:907:7611:b0:7ae:bc3b:d9c6 with SMTP id jx17-20020a170907761100b007aebc3bd9c6mr1633132ejc.770.1668684753727;
-        Thu, 17 Nov 2022 03:32:33 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4FDPSA2bFot9pEEWUNSs2DyZF1gHv0A8iE/vXrtKslN50mPd5zjItty36Nhjk3PExk7IhqkA==
-X-Received: by 2002:a17:907:7611:b0:7ae:bc3b:d9c6 with SMTP id jx17-20020a170907761100b007aebc3bd9c6mr1633108ejc.770.1668684753381;
-        Thu, 17 Nov 2022 03:32:33 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id bw10-20020a170906c1ca00b0078dce9984afsm238635ejb.220.2022.11.17.03.32.32
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1E16Wg9BwXGQCZzwhn9INR5uQhH9/wEtii6ez7bUawY=;
+        b=Iio1xTp5M8zJXULHTh6QP6Vv3hy/wYn0pxv6xmi3cAAoRw/DWMcUk5Nb8qRfKZUY0A
+         uFJby47bFPmq3NuJyDJ8BJYxHezB3H8a/Jer+S01NlNHxEqndrbK+JEHgMt0uWgGGqkG
+         IU8XaWi7G+H1c49tWa9UpmkIa+rVAN59TtSdOuxuD5S2Ncy8KJ/y5qbckA0RszpKv/VZ
+         VV5ahv6R0ODOujNX8oZzkp72dP3eIvg/Q7hAMMCWADZpwC9XIvU3OGbCf4+TwvlV0mLT
+         d7FrgNPqhlPdyPvgY1lsuKDfS4A+BXigNmy9v7DdEt/iL2BazPDNv1u/l8BlmbsEmYqG
+         rFaA==
+X-Gm-Message-State: ANoB5pkpWhRkFr0WDCSVf35oUte4CxqCk7NQlgfj3e6VRNrLqFP7sLyI
+        wt0bP/+F70vHGp79QPApmjg=
+X-Google-Smtp-Source: AA0mqf4Eu+3ZucUBzS34eIs0cqoipl/MjJ43vILvpKnAi0/BJNEjWr+AAJFb/aGMpqykefCBVA/X3Q==
+X-Received: by 2002:a5d:628e:0:b0:236:5ea4:68c8 with SMTP id k14-20020a5d628e000000b002365ea468c8mr1468576wru.132.1668690639774;
+        Thu, 17 Nov 2022 05:10:39 -0800 (PST)
+Received: from imac ([2a02:8010:60a0:0:2c71:30b9:69c:c340])
+        by smtp.gmail.com with ESMTPSA id c15-20020a05600c0acf00b003c21ba7d7d6sm1157346wmr.44.2022.11.17.05.10.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 03:32:32 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 638917A6F66; Thu, 17 Nov 2022 12:32:31 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx
- timestamp metadata for xdp
-In-Reply-To: <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
- <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk>
- <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch>
- <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev> <878rkbjjnp.fsf@toke.dk>
- <6375340a6c284_66f16208aa@john.notmuch>
- <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
- <637576962dada_8cd03208b0@john.notmuch>
- <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
- <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
- <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 17 Nov 2022 12:32:31 +0100
-Message-ID: <87wn7t4y0g.fsf@toke.dk>
+        Thu, 17 Nov 2022 05:10:38 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     mtahhan@redhat.com
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
+        thoiland@redhat.com, donhunte@redhat.com, magnus.karlsson@gmail.com
+Subject: Re: [PATCH bpf-next v1 1/1] docs: BPF_MAP_TYPE_XSKMAP
+In-Reply-To: <20221117105044.1935488-1-mtahhan@redhat.com>
+        (mtahhan@redhat.com's message of "Thu, 17 Nov 2022 05:50:44 -0500")
+Date:   Thu, 17 Nov 2022 13:10:32 +0000
+Message-ID: <m2cz9lybef.fsf@gmail.com>
+References: <20221117105044.1935488-1-mtahhan@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,109 +71,217 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+mtahhan@redhat.com writes:
 
->> > Doesn't look like the descriptors are as nice as you're trying to
->> > paint them (with clear hash/csum fields) :-) So not sure how much
->> > CO-RE would help.
->> > At least looking at mlx4 rx_csum, the driver consults three different
->> > sets of flags to figure out the hash_type. Or am I just unlucky with
->> > mlx4?
->>
->> Which part are you talking about ?
->>         hw_checksum = csum_unfold((__force __sum16)cqe->checksum);
->> is trivial enough for bpf prog to do if it has access to 'cqe' pointer
->> which is what John is proposing (I think).
+> From: Maryam Tahhan <mtahhan@redhat.com>
 >
-> I'm talking about mlx4_en_process_rx_cq, the caller of that check_csum.
-> In particular: if (likely(dev->features & NETIF_F_RXCSUM)) branch
-> I'm assuming we want to have hash_type available to the progs?
-
-I agree we should expose the hash_type, but that doesn't actually look
-to be that complicated, see below.
-
-> But also, check_csum handles other corner cases:
-> - short_frame: we simply force all those small frames to skip checksum complete
-> - get_fixed_ipv6_csum: In IPv6 packets, hw_checksum lacks 6 bytes from
-> IPv6 header
-> - get_fixed_ipv4_csum: Although the stack expects checksum which
-> doesn't include the pseudo header, the HW adds it
+> Add documentation for BPF_MAP_TYPE_XSKMAP
+> including kernel version introduced, usage
+> and examples.
 >
-> So it doesn't look like we can just unconditionally use cqe->checksum?
-> The driver does a lot of massaging around that field to make it
-> palatable.
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+> ---
+>  Documentation/bpf/map_xskmap.rst | 161 +++++++++++++++++++++++++++++++
+>  1 file changed, 161 insertions(+)
+>  create mode 100644 Documentation/bpf/map_xskmap.rst
+>
+> diff --git a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
+> new file mode 100644
+> index 000000000000..5699a89851ef
+> --- /dev/null
+> +++ b/Documentation/bpf/map_xskmap.rst
+> @@ -0,0 +1,161 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +===================
+> +BPF_MAP_TYPE_XSKMAP
+> +===================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_XSKMAP`` was introduced in kernel version 4.18
+> +
+> +The ``BPF_MAP_TYPE_XSKMAP`` is used as a backend map for XDP BPF helper
+> +call ``bpf_redirect_map()`` and XDP_REDIRECT action, like 'devmap' and 'cpumap'.
 
-Poking around a bit in the other drivers, AFAICT it's only a subset of
-drivers that support CSUM_COMPLETE at all; for instance, the Intel
-drivers just set CHECKSUM_UNNECESSARY for TCP/UDP/SCTP. I think the
-CHECKSUM_UNNECESSARY is actually the most important bit we'd want to
-propagate?
+``XDP_REDIRECT``
 
-AFAICT, the drivers actually implementing CHECKSUM_COMPLETE need access
-to other data structures than the rx descriptor to determine the status
-of the checksum (mlx4 looks at priv->flags, mlx5 checks rq->state), so
-just exposing the rx descriptor to BPF as John is suggesting does not
-actually give the XDP program enough information to act on the checksum
-field on its own. We could still have a separate kfunc to just expose
-the hw checksum value (see below), but I think it probably needs to be
-paired with other kfuncs to be useful.
+> +This map type redirects raw XDP frames to AF_XDP sockets (XSKs). An AF_XDP socket
+> +binds to a single netdev queue. A mapping of XSKs to queues is shown below:
+> +
+> +.. code-block:: none
+> +
+> +    +---------------------------------------------------+
+> +    |     xsk A      |     xsk B       |      xsk C     |<---+ Userspace
+> +    =========================================================|==========
+> +    |    Queue 0     |     Queue 1     |     Queue 2    |    |  Kernel
+> +    +---------------------------------------------------+    |
+> +    |                  Netdev eth0                      |    |
+> +    +---------------------------------------------------+    |
+> +    |                            +=============+        |    |
+> +    |                            | key |  xsk  |        |    |
+> +    |  +---------+               +=============+        |    |
+> +    |  |         |               |  0  | xsk A |        |    |
+> +    |  |         |               +-------------+        |    |
+> +    |  |         |               |  1  | xsk B |        |    |
+> +    |  | eBPF    |-- redirect -->+-------------+-------------+
+> +    |  | prog    |               |  2  | xsk C |        |
+> +    |  |         |               +-------------+        |
+> +    |  |         |                                      |
+> +    |  |         |                                      |
+> +    |  +---------+                                      |
+> +    |                                                   |
+> +    +---------------------------------------------------+
+> +
+> +.. note::
+> +    An AF_XDP socket that is bound to a certain <netdev/queue_id> will *only*
+> +    accept XDP frames from that <netdev/queue_id>. If an XDP program tries to redirect
+> +    from a <netdev/queue_id> other than what the socket is bound to, the frame will
+> +    not be received on the socket.
+> +
+> +Typically an XSKMAP is created per netdev. This map contains an array of XSK File
+> +Descriptors (FDs). The number of array elements is typically set or adjusted using
+> +the ``max_entries`` map parameter. For AF_XDP ``max_entries`` is equal to the number
+> +of queues supported by the netdev.
 
-Looking at the mlx4 code, I think the following mapping to kfuncs (in
-pseudo-C) would give the flexibility for XDP to access all the bits it
-needs, while inlining everything except getting the full checksum for
-non-TCP/UDP traffic. An (admittedly cursory) glance at some of the other
-drivers (mlx5, ice, i40e) indicates that this would work for those
-drivers as well.
+Should it mention that both key and value size must be 4 bytes?
 
+> +
+> +Usage
+> +=====
+> +
+> +Kernel BPF
+> +----------
+> +.. c:function::
+> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
+> +
+> + Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
+> + For ``BPF_MAP_TYPE_XSKMAP`` this map contains references to AF_XDP socket FDs
+> + for sockets attached to a netdev's queues.
+> +
+> + .. note::
+> +    If the map is empty at an index, the packet is dropped. This means that it is
+> +    mandatory to have an XDP program loaded (and one AF_XDP socket in the XSKMAP)
 
-bpf_xdp_metadata_rx_hash_supported() {
-  return dev->features & NETIF_F_RXHASH;
-}
+mandatory -> necessary
 
-bpf_xdp_metadata_rx_hash() {
-  return be32_to_cpu(cqe->immed_rss_invalid);
-}
+'and at least one AF_XDP socket'
 
-bpf_xdp_metdata_rx_hash_type() {
-  if (likely(dev->features & NETIF_F_RXCSUM) &&
-      (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_TCP | MLX4_CQE_STATUS_UDP)) &&
-	(cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IPOK)) &&
-	  cqe->checksum == cpu_to_be16(0xffff))
-     return PKT_HASH_TYPE_L4;
+> +    to be able to get any traffic to user space through the socket.
+> +
+> +.. c:function::
+> +    void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> + XSK FD entries can be retrieved using the ``bpf_map_lookup_elem()`` helper.
 
-   return PKT_HASH_TYPE_L3;
-}
+Unless I'm mistaken, it returns a pointer to the ``struct xdp_sock``.
 
-bpf_xdp_metadata_rx_csum_supported() {
-  return dev->features & NETIF_F_RXCSUM;
-}
+> +
+> +Userspace
+> +---------
+> +.. note::
+> +    AF_XDP socket entries can only be updated/deleted from user space and not from
+> +    an eBPF program. Trying to call these functions from a kernel eBPF program will
+> +    result in the program failing to load and a verifier warning.
+> +
+> +.. c:function::
+> +   int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags)
+> +
+> + AF_XDP socket entries can be added or updated using the ``bpf_map_update_elem()``
+> + helper. The ``key`` parameter is equal to the queue_id of the queue the AF_XDP
+> + socket is attaching to. And the ``value`` parameter is the file descriptor (fd))
 
-bpf_xdp_metadata_rx_csum_level() {
-	if ((cqe->status & cpu_to_be16(MLX4_CQE_STATUS_TCP |
-				       MLX4_CQE_STATUS_UDP)) &&
-	    (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IPOK)) &&
-	    cqe->checksum == cpu_to_be16(0xffff))
-            return CHECKSUM_UNNECESSARY;
-            
-	if (!(priv->flags & MLX4_EN_FLAG_RX_CSUM_NON_TCP_UDP &&
-	      (cqe->status & cpu_to_be16(MLX4_CQE_STATUS_IP_ANY))) &&
-              !short_frame(len))
-            return CHECKSUM_COMPLETE; /* we could also omit this case entirely */
+Extra ')' at end of line.
 
-        return CHECKSUM_NONE;
-}
+> + value of that socket.
+> +
+> + Under the hood, the AF_XDP map update function uses the XSK FD value to retrieve the
+> + associated ``struct xdp_sock`` instance.
+> +
+> + The flags argument can be one of the following:
+> +  - BPF_ANY: Create a new element or update an existing element.
+> +  - BPF_NOEXIST: Create a new element only if it did not exist.
+> +  - BPF_EXIST: Update an existing element.
+> +
+> +.. c:function::
+> +    int bpf_map_lookup_elem(int fd, const void *key, void *value)
+> +
+> + AF_XDP socket entries can be retrieved using the ``bpf_map_lookup_elem()``
+> + helper.
 
-/* this one could be called by the metadata_to_skb code */
-bpf_xdp_metadata_rx_csum_full() {
-  return check_csum() /* BPF_CALL this after refactoring so it is skb-agnostic */
-}
+returns the ``struct xdp_sock`` or negative error in case of failure.
 
-/* this one would be for people like John who want to re-implement
- * check_csum() themselves */
-bpf_xdp_metdata_rx_csum_raw() {
-  return cqe->checksum;
-}
+> +
+> +.. c:function::
+> +    int bpf_map_delete_elem(int fd, const void *key)
+> +
+> + AF_XDP socket entries can be deleted using the ``bpf_map_delete_elem()``
+> + helper. This helper will return 0 on success, or negative error in case of
+> + failure.
 
+Should we note that entries are automatically deleted when the xdp_sock
+is released?
 
--Toke
+> +
+> +Examples
+> +========
+> +Kernel
+> +------
+> +
+> +The following code snippet shows how to declare a ``BPF_MAP_TYPE_XSKMAP`` called
+> +``xsks_map`` and how to redirect packets to an AF_XDP socket.
+> +
+> +.. code-block:: c
+> +
+> +   struct {
+> +        __uint(type, BPF_MAP_TYPE_XSKMAP);
+> +        __type(key_size, int);
 
+Should be key and __u32
+
+> +        __type(value_size, int);
+
+Should be value and __u32
+
+> +        __uint(max_entries, 64);
+> +    } xsks_map SEC(".maps");
+> +
+> +
+> +    SEC("xdp")
+> +    int xsk_redir_prog(struct xdp_md *ctx)
+> +    {
+> +        int index = ctx->rx_queue_id;
+
+Should be __u32 and ctx->rx_queue_index
+
+> +
+> +        if (bpf_map_lookup_elem(&xsks_map, &index))
+> +            return bpf_redirect_map(&xsks_map, index, 0);
+> +        return XDP_PASS;
+> +    }
+> +
+> +Userspace
+> +---------
+> +
+> +The following code snippet shows how to update an XSK map with an AF_XDP socket
+> +entry.
+> +
+> +.. code-block:: c
+> +
+> +    int update_xsks_map(struct bpf_map *xsks_map, int queue_id, int xsk_fd)
+> +    {
+> +        int ret;
+> +
+> +        ret = bpf_map_update_elem(bpf_map__fd(xsks_map), &queue_id, &xsk_fd, 0);
+> +        if (ret < 0) {
+> +            fprintf(stderr, "Failed to update xsks_map: %s\n",
+> +                strerror(errno));
+> +        }
+> +
+> +        return ret;
+> +    }
+> +
+> +.. note::
+> +    The most comprehensive resource for using XSKMAPs is `libxdp`_.
+> +
+> +.. _libxdp: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp
