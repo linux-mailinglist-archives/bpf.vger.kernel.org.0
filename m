@@ -2,48 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7909362D251
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 05:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AD862D250
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 05:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbiKQE2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 23:28:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239175AbiKQE2k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S233344AbiKQE2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 16 Nov 2022 23:28:40 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E619209B9
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:39 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AH4BwWf012268
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:39 -0800
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239145AbiKQE2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 23:28:37 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD7F1A813
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:34 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AH0bo1t001816
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:33 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=Nbtmoc9lLSKreYlbRoKrmsrKIDLlzBEi1cQlB9kvHQI=;
- b=PqdqkRg0YyxoVmQ/coudgYgJ81OG2Nd34rn/j5I0Z3QHTYbZvR6PA5PxAxc993GBxD2I
- 4VF9nvr4+6+THvIj8ouyjf8csG2Nb8jRl4bL0ctn2hgwl2zs6sG6bQizzGz4ELaj8uIl
- QcOP8GCUVtGA9NXY3GWSSiglYBZ6QGsXuVs= 
+ bh=Oa+FvLKeePjCM0Bs5FnU6oFps/r/BqeeRojKd+8rWBU=;
+ b=fugs2u8vlWUBpmzzrB27WIAaEh0FpIZdXAIEgcvNjfIHIJT7c6TIoPn8uXf14cw/yU7k
+ A+InTf0tDgloetdxcEFT8kwKsA1mWkptrstmaddZG4Z0IvU9es1U5ost7YPCqNWk2AyC
+ zSwLmw7CwWSGdf0ki7jsJ/R61PGc8k3WjD4= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kwdqa82an-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kwadhs98y-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:39 -0800
-Received: from twshared14438.02.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:33 -0800
+Received: from twshared9088.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 16 Nov 2022 20:28:37 -0800
+ 15.1.2375.31; Wed, 16 Nov 2022 20:28:31 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 56B2712486029; Wed, 16 Nov 2022 20:28:23 -0800 (PST)
+        id 940CE12486071; Wed, 16 Nov 2022 20:28:28 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v6 1/7] compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
-Date:   Wed, 16 Nov 2022 20:28:23 -0800
-Message-ID: <20221117042823.1088167-1-yhs@fb.com>
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v6 2/7] bpf: Abstract out functions to check sleepable helpers
+Date:   Wed, 16 Nov 2022 20:28:28 -0800
+Message-ID: <20221117042828.1089218-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221117042818.1086954-1-yhs@fb.com>
 References: <20221117042818.1086954-1-yhs@fb.com>
@@ -51,8 +50,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: xo7tFJ8vIPv8dyF0-A-0yr2USOPNNU5r
-X-Proofpoint-ORIG-GUID: xo7tFJ8vIPv8dyF0-A-0yr2USOPNNU5r
+X-Proofpoint-GUID: RICV4YQN0aJjJ0Ue027roL8D_57eNzVt
+X-Proofpoint-ORIG-GUID: RICV4YQN0aJjJ0Ue027roL8D_57eNzVt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-16_03,2022-11-16_01,2022-06-22_01
@@ -66,43 +65,189 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, without rcu attribute info in BTF, the verifier treats
-rcu tagged pointer as a normal pointer. This might be a problem
-for sleepable program where rcu_read_lock()/unlock() is not available.
-For example, for a sleepable fentry program, if rcu protected memory
-access is interleaved with a sleepable helper/kfunc, it is possible
-the memory access after the sleepable helper/kfunc might be invalid
-since the object might have been freed then. To prevent such cases,
-introducing rcu tagging for memory accesses in verifier can help
-to reject such programs.
+Abstract out two functions to check whether a particular helper
+is sleepable or not for bpf_lsm and bpf_trace. These two
+functions will be used later to check whether a helper is
+sleepable or not in verifier. There is no functionality
+change.
 
-To enable rcu tagging in BTF, during kernel compilation,
-define __rcu as attribute btf_type_tag("rcu") so __rcu information can
-be preserved in dwarf and btf, and later can be used for bpf prog verific=
-ation.
-
-Acked-by: KP Singh <kpsingh@kernel.org>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- include/linux/compiler_types.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/bpf_lsm.h      |  6 ++++++
+ include/linux/trace_events.h |  8 ++++++++
+ kernel/bpf/bpf_lsm.c         | 20 ++++++++++++++++----
+ kernel/trace/bpf_trace.c     | 22 ++++++++++++++++++----
+ 4 files changed, 48 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_type=
-s.h
-index eb0466236661..7c1afe0f4129 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -49,7 +49,8 @@ static inline void __chk_io_ptr(const volatile void __i=
-omem *ptr) { }
- # endif
- # define __iomem
- # define __percpu	BTF_TYPE_TAG(percpu)
--# define __rcu
-+# define __rcu		BTF_TYPE_TAG(rcu)
+diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+index 4bcf76a9bb06..d99b1caf118e 100644
+--- a/include/linux/bpf_lsm.h
++++ b/include/linux/bpf_lsm.h
+@@ -28,6 +28,7 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 			const struct bpf_prog *prog);
+=20
+ bool bpf_lsm_is_sleepable_hook(u32 btf_id);
++const struct bpf_func_proto *bpf_lsm_sleepable_func_proto(enum bpf_func_=
+id func_id);
+=20
+ static inline struct bpf_storage_blob *bpf_inode(
+ 	const struct inode *inode)
+@@ -50,6 +51,11 @@ static inline bool bpf_lsm_is_sleepable_hook(u32 btf_i=
+d)
+ {
+ 	return false;
+ }
++static inline const struct bpf_func_proto *
++bpf_lsm_sleepable_func_proto(enum bpf_func_id func_id)
++{
++	return NULL;
++}
+=20
+ static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 				      const struct bpf_prog *prog)
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 20749bd9db71..c3eb4fb78ea5 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -9,6 +9,7 @@
+ #include <linux/hardirq.h>
+ #include <linux/perf_event.h>
+ #include <linux/tracepoint.h>
++#include <uapi/linux/bpf.h>
+=20
+ struct trace_array;
+ struct array_buffer;
+@@ -16,6 +17,7 @@ struct tracer;
+ struct dentry;
+ struct bpf_prog;
+ union bpf_attr;
++struct bpf_func_proto;
+=20
+ const char *trace_print_flags_seq(struct trace_seq *p, const char *delim=
+,
+ 				  unsigned long flags,
+@@ -748,6 +750,7 @@ int bpf_get_perf_event_info(const struct perf_event *=
+event, u32 *prog_id,
+ 			    u32 *fd_type, const char **buf,
+ 			    u64 *probe_offset, u64 *probe_addr);
+ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_=
+prog *prog);
++const struct bpf_func_proto *bpf_tracing_sleepable_func_proto(enum bpf_f=
+unc_id func_id);
+ #else
+ static inline unsigned int trace_call_bpf(struct trace_event_call *call,=
+ void *ctx)
+ {
+@@ -794,6 +797,11 @@ bpf_kprobe_multi_link_attach(const union bpf_attr *a=
+ttr, struct bpf_prog *prog)
+ {
+ 	return -EOPNOTSUPP;
+ }
++static inline const struct bpf_func_proto *
++bpf_tracing_sleepable_func_proto(enum bpf_func_id func_id)
++{
++	return NULL;
++}
+ #endif
+=20
+ enum {
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index d6c9b3705f24..2f993a003389 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -192,6 +192,18 @@ static const struct bpf_func_proto bpf_get_attach_co=
+okie_proto =3D {
+ 	.arg1_type	=3D ARG_PTR_TO_CTX,
+ };
+=20
++const struct bpf_func_proto *bpf_lsm_sleepable_func_proto(enum bpf_func_=
+id func_id)
++{
++	switch (func_id) {
++	case BPF_FUNC_ima_inode_hash:
++		return &bpf_ima_inode_hash_proto;
++	case BPF_FUNC_ima_file_hash:
++		return &bpf_ima_file_hash_proto;
++	default:
++		return NULL;
++	}
++}
 +
- # define __chk_user_ptr(x)	(void)0
- # define __chk_io_ptr(x)	(void)0
- /* context/locking */
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog=
+)
+ {
+@@ -203,6 +215,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const s=
+truct bpf_prog *prog)
+ 			return func_proto;
+ 	}
+=20
++	func_proto =3D bpf_lsm_sleepable_func_proto(func_id);
++	if (func_proto)
++		return prog->aux->sleepable ? func_proto : NULL;
++
+ 	switch (func_id) {
+ 	case BPF_FUNC_inode_storage_get:
+ 		return &bpf_inode_storage_get_proto;
+@@ -220,10 +236,6 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const s=
+truct bpf_prog *prog)
+ 		return &bpf_spin_unlock_proto;
+ 	case BPF_FUNC_bprm_opts_set:
+ 		return &bpf_bprm_opts_set_proto;
+-	case BPF_FUNC_ima_inode_hash:
+-		return prog->aux->sleepable ? &bpf_ima_inode_hash_proto : NULL;
+-	case BPF_FUNC_ima_file_hash:
+-		return prog->aux->sleepable ? &bpf_ima_file_hash_proto : NULL;
+ 	case BPF_FUNC_get_attach_cookie:
+ 		return bpf_prog_has_trampoline(prog) ? &bpf_get_attach_cookie_proto : =
+NULL;
+ #ifdef CONFIG_NET
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index f2d8d070d024..7804fa71d3f1 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1383,9 +1383,27 @@ static int __init bpf_key_sig_kfuncs_init(void)
+ late_initcall(bpf_key_sig_kfuncs_init);
+ #endif /* CONFIG_KEYS */
+=20
++const struct bpf_func_proto *bpf_tracing_sleepable_func_proto(enum bpf_f=
+unc_id func_id)
++{
++	switch (func_id) {
++	case BPF_FUNC_copy_from_user:
++		return &bpf_copy_from_user_proto;
++	case BPF_FUNC_copy_from_user_task:
++		return &bpf_copy_from_user_task_proto;
++	default:
++		return NULL;
++	}
++}
++
+ static const struct bpf_func_proto *
+ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
+prog)
+ {
++	const struct bpf_func_proto *func_proto;
++
++	func_proto =3D bpf_tracing_sleepable_func_proto(func_id);
++	if (func_proto)
++		return prog->aux->sleepable ? func_proto : NULL;
++
+ 	switch (func_id) {
+ 	case BPF_FUNC_map_lookup_elem:
+ 		return &bpf_map_lookup_elem_proto;
+@@ -1484,10 +1502,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, c=
+onst struct bpf_prog *prog)
+ 		return &bpf_jiffies64_proto;
+ 	case BPF_FUNC_get_task_stack:
+ 		return &bpf_get_task_stack_proto;
+-	case BPF_FUNC_copy_from_user:
+-		return prog->aux->sleepable ? &bpf_copy_from_user_proto : NULL;
+-	case BPF_FUNC_copy_from_user_task:
+-		return prog->aux->sleepable ? &bpf_copy_from_user_task_proto : NULL;
+ 	case BPF_FUNC_snprintf_btf:
+ 		return &bpf_snprintf_btf_proto;
+ 	case BPF_FUNC_per_cpu_ptr:
 --=20
 2.30.2
 
