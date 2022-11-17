@@ -2,364 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C6662D244
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 05:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4419462D24F
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 05:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbiKQETu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 23:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        id S233477AbiKQE2j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 23:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239300AbiKQETF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 23:19:05 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4650A5B58B
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:19:00 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id g51-20020a9d12b6000000b0066dbea0d203so365043otg.6
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8qSak/qr/jY/us4DUA7PGCyWj/+vy2FzPRrnvD5aqAc=;
-        b=T2Pp7hL70ckpmFZ3cuMkN80lidRix5ZYKaqjpXJKsUHYFZrCOT8OVeHCtt8AqNFWDY
-         jbiQ98asIWLigYladzQDszTzozoFcwmj88lNW5fBH3Uzup7FhDUzilvr1Lk0fnQmBkXX
-         PQB2jAL0gdIw275UKdXGYepw9I4Djv4sHh6JcKkxVn6BlaKZXR+L/pXB5+RDMSdHfblA
-         nc/MmIFzAc9KHMn5qZ/CTjz3byAiVC7Y7FgaTE/M+7vuJ24d3u1mMyZhLAp2ZB8X70Ez
-         PILsjPNCDUQZsSQAd7rB0LEvvkNJOYyIHL/XueVbR52SYN89TOUPKiN8qtCJdQlptn+6
-         T3bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8qSak/qr/jY/us4DUA7PGCyWj/+vy2FzPRrnvD5aqAc=;
-        b=N2NF2u/DR802VGZzGp+Gtd4wRwVAaA8A8uZDkI5jfZ+vupMHzkIiSIGu0B7PuVOctx
-         1Ov5gffVRHyeO3xzFqvpGX97DpiRR4kTGXUTy2dnJptJA2XlwW2iHDcQZtYFuRW1qQPh
-         y807QCkdQiGsPvFiMHZflYTv0aNOUBWEHf00QjO8icZc/3JXlwg3r+2akNzHfCLyfo+v
-         g78CY4D9gNuZus+aetSbin4W7WAhxsKM1DAGMkQYklYhjxeRygG3PyF9Xxda6ezJWlkl
-         YlDueNS8zOJ2Q/oIeUH30L/xGo0VEPIRsRH374rd8U9W2Kbzoc10PBm4cGt9lq6Nw6uD
-         13NQ==
-X-Gm-Message-State: ANoB5pm7aUiEMfPmDjMMB4oUU1zTMTBmsqV2p0bMK8W8uLBE0122ri3G
-        rUEZ8Q9qaji+h4dzJF0pNCd+G4PF6LnN+gj0tqwFMw==
-X-Google-Smtp-Source: AA0mqf6ncvCRE2mYDs+bB28jsz7RdsbRfhFBd9lbZVH5ZzJdl1Sb+V74iWZra428m7j8fehXdF9DdXomUNoC39WfDiw=
-X-Received: by 2002:a05:6830:18d3:b0:66c:dd29:813d with SMTP id
- v19-20020a05683018d300b0066cdd29813dmr596457ote.312.1668658739410; Wed, 16
- Nov 2022 20:18:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-6-sdf@google.com>
- <87h6z0i449.fsf@toke.dk> <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk> <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch> <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev>
- <878rkbjjnp.fsf@toke.dk> <6375340a6c284_66f16208aa@john.notmuch>
- <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
- <637576962dada_8cd03208b0@john.notmuch> <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
- <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
- <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com> <CAADnVQLBPCh=80RKe_5sgCt02c2Zat4TG66+PNrVD1a2k=4UfA@mail.gmail.com>
-In-Reply-To: <CAADnVQLBPCh=80RKe_5sgCt02c2Zat4TG66+PNrVD1a2k=4UfA@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 16 Nov 2022 20:18:48 -0800
-Message-ID: <CAKH8qBvD=mur1YHf1MLxdxqWXOfvZTor+C2LqNMsvp0p6OhM0A@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx timestamp
- metadata for xdp
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S233344AbiKQE2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 23:28:37 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A2917AA9
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:33 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AH0boq9031586
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=8YLpU7m8MmZa1CmVV5F81Xx96cHxHIFlY8PFkR03mKk=;
+ b=S3bdV8DQaHnoM3+7mm2hxfeaEiSjPIx/58z69fgeVq9wqW2Rn0EW3/TJI9B4b823ilEN
+ dU6UNRIzK2zc8UgyxtOxuAouXQa8xBHdkazqOh6L0pWWROa+o+YbP0unSRn0U7Ves5oC
+ vU54J/lLJpOaTUSuC5ackvWNp1paAeq1i8k= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kvx8y05wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 20:28:33 -0800
+Received: from twshared9088.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 16 Nov 2022 20:28:31 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 13EB412486007; Wed, 16 Nov 2022 20:28:18 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v6 0/7] bpf: Add bpf_rcu_read_lock() support
+Date:   Wed, 16 Nov 2022 20:28:18 -0800
+Message-ID: <20221117042818.1086954-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: TCOyRVy5AUEd3wPBTvbxQE0AxVxD1Sz0
+X-Proofpoint-ORIG-GUID: TCOyRVy5AUEd3wPBTvbxQE0AxVxD1Sz0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-16_03,2022-11-16_01,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 6:59 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Nov 16, 2022 at 6:53 PM Stanislav Fomichev <sdf@google.com> wrote=
-:
-> >
-> > On Wed, Nov 16, 2022 at 6:17 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Nov 16, 2022 at 4:19 PM Stanislav Fomichev <sdf@google.com> w=
-rote:
-> > > >
-> > > > On Wed, Nov 16, 2022 at 3:47 PM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
-> > > > >
-> > > > > Stanislav Fomichev wrote:
-> > > > > > On Wed, Nov 16, 2022 at 11:03 AM John Fastabend
-> > > > > > <john.fastabend@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > > > > > > > Martin KaFai Lau <martin.lau@linux.dev> writes:
-> > > > > > > >
-> > > > > > > > > On 11/15/22 10:38 PM, John Fastabend wrote:
-> > > > > > > > >>>>>>> +static void veth_unroll_kfunc(const struct bpf_pro=
-g *prog, u32 func_id,
-> > > > > > > > >>>>>>> +                           struct bpf_patch *patch=
-)
-> > > > > > > > >>>>>>> +{
-> > > > > > > > >>>>>>> +     if (func_id =3D=3D xdp_metadata_kfunc_id(XDP_=
-METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED)) {
-> > > > > > > > >>>>>>> +             /* return true; */
-> > > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_MOV64_IMM=
-(BPF_REG_0, 1));
-> > > > > > > > >>>>>>> +     } else if (func_id =3D=3D xdp_metadata_kfunc_=
-id(XDP_METADATA_KFUNC_RX_TIMESTAMP)) {
-> > > > > > > > >>>>>>> +             /* return ktime_get_mono_fast_ns(); *=
-/
-> > > > > > > > >>>>>>> +             bpf_patch_append(patch, BPF_EMIT_CALL=
-(ktime_get_mono_fast_ns));
-> > > > > > > > >>>>>>> +     }
-> > > > > > > > >>>>>>> +}
-> > > > > > > > >>>>>>
-> > > > > > > > >>>>>> So these look reasonable enough, but would be good t=
-o see some examples
-> > > > > > > > >>>>>> of kfunc implementations that don't just BPF_CALL to=
- a kernel function
-> > > > > > > > >>>>>> (with those helper wrappers we were discussing befor=
-e).
-> > > > > > > > >>>>>
-> > > > > > > > >>>>> Let's maybe add them if/when needed as we add more me=
-tadata support?
-> > > > > > > > >>>>> xdp_metadata_export_to_skb has an example, and rfc 1/=
-2 have more
-> > > > > > > > >>>>> examples, so it shouldn't be a problem to resurrect t=
-hem back at some
-> > > > > > > > >>>>> point?
-> > > > > > > > >>>>
-> > > > > > > > >>>> Well, the reason I asked for them is that I think havi=
-ng to maintain the
-> > > > > > > > >>>> BPF code generation in the drivers is probably the big=
-gest drawback of
-> > > > > > > > >>>> the kfunc approach, so it would be good to be relative=
-ly sure that we
-> > > > > > > > >>>> can manage that complexity (via helpers) before we com=
-mit to this :)
-> > > > > > > > >>>
-> > > > > > > > >>> Right, and I've added a bunch of examples in v2 rfc so =
-we can judge
-> > > > > > > > >>> whether that complexity is manageable or not :-)
-> > > > > > > > >>> Do you want me to add those wrappers you've back withou=
-t any real users?
-> > > > > > > > >>> Because I had to remove my veth tstamp accessors due to=
- John/Jesper
-> > > > > > > > >>> objections; I can maybe bring some of this back gated b=
-y some
-> > > > > > > > >>> static_branch to avoid the fastpath cost?
-> > > > > > > > >>
-> > > > > > > > >> I missed the context a bit what did you mean "would be g=
-ood to see some
-> > > > > > > > >> examples of kfunc implementations that don't just BPF_CA=
-LL to a kernel
-> > > > > > > > >> function"? In this case do you mean BPF code directly wi=
-thout the call?
-> > > > > > > > >>
-> > > > > > > > >> Early on I thought we should just expose the rx_descript=
-or which would
-> > > > > > > > >> be roughly the same right? (difference being code embedd=
-ed in driver vs
-> > > > > > > > >> a lib) Trouble I ran into is driver code using seqlock_t=
- and mutexs
-> > > > > > > > >> which wasn't as straight forward as the simpler just rea=
-d it from
-> > > > > > > > >> the descriptor. For example in mlx getting the ts would =
-be easy from
-> > > > > > > > >> BPF with the mlx4_cqe struct exposed
-> > > > > > > > >>
-> > > > > > > > >> u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
-> > > > > > > > >> {
-> > > > > > > > >>          u64 hi, lo;
-> > > > > > > > >>          struct mlx4_ts_cqe *ts_cqe =3D (struct mlx4_ts_=
-cqe *)cqe;
-> > > > > > > > >>
-> > > > > > > > >>          lo =3D (u64)be16_to_cpu(ts_cqe->timestamp_lo);
-> > > > > > > > >>          hi =3D ((u64)be32_to_cpu(ts_cqe->timestamp_hi) =
-+ !lo) << 16;
-> > > > > > > > >>
-> > > > > > > > >>          return hi | lo;
-> > > > > > > > >> }
-> > > > > > > > >>
-> > > > > > > > >> but converting that to nsec is a bit annoying,
-> > > > > > > > >>
-> > > > > > > > >> void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
-> > > > > > > > >>                              struct skb_shared_hwtstamps=
- *hwts,
-> > > > > > > > >>                              u64 timestamp)
-> > > > > > > > >> {
-> > > > > > > > >>          unsigned int seq;
-> > > > > > > > >>          u64 nsec;
-> > > > > > > > >>
-> > > > > > > > >>          do {
-> > > > > > > > >>                  seq =3D read_seqbegin(&mdev->clock_lock=
-);
-> > > > > > > > >>                  nsec =3D timecounter_cyc2time(&mdev->cl=
-ock, timestamp);
-> > > > > > > > >>          } while (read_seqretry(&mdev->clock_lock, seq))=
-;
-> > > > > > > > >>
-> > > > > > > > >>          memset(hwts, 0, sizeof(struct skb_shared_hwtsta=
-mps));
-> > > > > > > > >>          hwts->hwtstamp =3D ns_to_ktime(nsec);
-> > > > > > > > >> }
-> > > > > > > > >>
-> > > > > > > > >> I think the nsec is what you really want.
-> > > > > > > > >>
-> > > > > > > > >> With all the drivers doing slightly different ops we wou=
-ld have
-> > > > > > > > >> to create read_seqbegin, read_seqretry, mutex_lock, ... =
-to get
-> > > > > > > > >> at least the mlx and ice drivers it looks like we would =
-need some
-> > > > > > > > >> more BPF primitives/helpers. Looks like some more work i=
-s needed
-> > > > > > > > >> on ice driver though to get rx tstamps on all packets.
-> > > > > > > > >>
-> > > > > > > > >> Anyways this convinced me real devices will probably use=
- BPF_CALL
-> > > > > > > > >> and not BPF insns directly.
-> > > > > > > > >
-> > > > > > > > > Some of the mlx5 path looks like this:
-> > > > > > > > >
-> > > > > > > > > #define REAL_TIME_TO_NS(hi, low) (((u64)hi) * NSEC_PER_SE=
-C + ((u64)low))
-> > > > > > > > >
-> > > > > > > > > static inline ktime_t mlx5_real_time_cyc2time(struct mlx5=
-_clock *clock,
-> > > > > > > > >                                                u64 timest=
-amp)
-> > > > > > > > > {
-> > > > > > > > >          u64 time =3D REAL_TIME_TO_NS(timestamp >> 32, ti=
-mestamp & 0xFFFFFFFF);
-> > > > > > > > >
-> > > > > > > > >          return ns_to_ktime(time);
-> > > > > > > > > }
-> > > > > > > > >
-> > > > > > > > > If some hints are harder to get, then just doing a kfunc =
-call is better.
-> > > > > > > >
-> > > > > > > > Sure, but if we end up having a full function call for ever=
-y field in
-> > > > > > > > the metadata, that will end up having a significant perform=
-ance impact
-> > > > > > > > on the XDP data path (thinking mostly about the skb metadat=
-a case here,
-> > > > > > > > which will collect several bits of metadata).
-> > > > > > > >
-> > > > > > > > > csum may have a better chance to inline?
-> > > > > > > >
-> > > > > > > > Yup, I agree. Including that also makes it possible to benc=
-hmark this
-> > > > > > > > series against Jesper's; which I think we should definitely=
- be doing
-> > > > > > > > before merging this.
-> > > > > > >
-> > > > > > > Good point I got sort of singularly focused on timestamp beca=
-use I have
-> > > > > > > a use case for it now.
-> > > > > > >
-> > > > > > > Also hash is often sitting in the rx descriptor.
-> > > > > >
-> > > > > > Ack, let me try to add something else (that's more inline-able)=
- on the
-> > > > > > rx side for a v2.
-> > > > >
-> > > > > If you go with in-kernel BPF kfunc approach (vs user space side) =
-I think
-> > > > > you also need to add CO-RE to be friendly for driver developers? =
-Otherwise
-> > > > > they have to keep that read in sync with the descriptors? Also ne=
-ed to
-> > > > > handle versioning of descriptors where depending on specific opti=
-ons
-> > > > > and firmware and chip being enabled the descriptor might be movin=
-g
-> > > > > around. Of course can push this all to developer, but seems not s=
-o
-> > > > > nice when we have the machinery to do this and we handle it for a=
-ll
-> > > > > other structures.
-> > > > >
-> > > > > With CO-RE you can simply do the rx_desc->hash and rx_desc->csum =
-and
-> > > > > expect CO-RE sorts it out based on currently running btf_id of th=
-e
-> > > > > descriptor. If you go through normal path you get this for free o=
-f
-> > > > > course.
-> > > >
-> > > > Doesn't look like the descriptors are as nice as you're trying to
-> > > > paint them (with clear hash/csum fields) :-) So not sure how much
-> > > > CO-RE would help.
-> > > > At least looking at mlx4 rx_csum, the driver consults three differe=
-nt
-> > > > sets of flags to figure out the hash_type. Or am I just unlucky wit=
-h
-> > > > mlx4?
-> > >
-> > > Which part are you talking about ?
-> > >         hw_checksum =3D csum_unfold((__force __sum16)cqe->checksum);
-> > > is trivial enough for bpf prog to do if it has access to 'cqe' pointe=
-r
-> > > which is what John is proposing (I think).
-> >
-> > I'm talking about mlx4_en_process_rx_cq, the caller of that check_csum.
-> > In particular: if (likely(dev->features & NETIF_F_RXCSUM)) branch
-> > I'm assuming we want to have hash_type available to the progs?
-> >
-> > But also, check_csum handles other corner cases:
-> > - short_frame: we simply force all those small frames to skip checksum =
-complete
-> > - get_fixed_ipv6_csum: In IPv6 packets, hw_checksum lacks 6 bytes from
-> > IPv6 header
-> > - get_fixed_ipv4_csum: Although the stack expects checksum which
-> > doesn't include the pseudo header, the HW adds it
->
-> Of course, but kfunc won't be doing them either.
-> We're talking XDP fast path.
-> The mlx4 hw is old and incapable.
-> No amount of sw can help.
->
-> > So it doesn't look like we can just unconditionally use cqe->checksum?
-> > The driver does a lot of massaging around that field to make it
-> > palatable.
->
-> Of course we can. cqe->checksum is still usable. the bpf prog
-> would need to know what it's reading.
-> There should be no attempt to present a unified state of hw bits.
-> That's what skb is for. XDP layer should not hide such hw details.
-> Otherwise it will become a mini skb layer with all that overhead.
+Currently, without rcu attribute info in BTF, the verifier treats
+rcu tagged pointer as a normal pointer. This might be a problem
+for sleepable program where rcu_read_lock()/unlock() is not available.
+For example, for a sleepable fentry program, if rcu protected memory
+access is interleaved with a sleepable helper/kfunc, it is possible
+the memory access after the sleepable helper/kfunc might be invalid
+since the object might have been freed then. Even without
+a sleepable helper/kfunc, without rcu_read_lock() protection,
+it is possible that the rcu protected object might be release
+in the middle of bpf program execution which may cause incorrect
+result.
 
-I was hoping the kfunc could at least parse the flags and return some
-pkt_hash_types-like enum to indicate what this csum covers.
-So the users won't have to find the hardware manuals (not sure they
-are even available?) to decipher what numbers they've got.
-Regarding old mlx4: true, but mlx5's mlx5e_handle_csum doesn't look
-that much different :-(
+To prevent above cases, enable btf_type_tag("rcu") attributes,
+introduce new bpf_rcu_read_lock/unlock() kfuncs and add verifier support.
 
-But going back a bit: I'm probably missing what John has been
-suggesting. How is CO-RE relevant for kfuncs? kfuncs are already doing
-a CO-RE-like functionality by rewriting some "public api" (kfunc) into
-the bytecode to access the relevant data.
+In the rest of patch set, Patch 1 enabled btf_type_tag for __rcu
+attribute. Patche 2 is a refactoring patch. Patch 3 added new
+bpf_rcu_read_lock/unlock() kfuncs. Patch 4 added verifier support
+and Patch 5 enabled sleepable program support for cgrp local storage.
+Patch 6 added some tests for new helpers and verifier support and
+Patch 7 added new test to the deny list for s390x arch.
+
+Changelogs:
+  v5 -> v6:
+    . fix selftest prog miss_unlock which tested nested locking.
+    . add comments in selftest prog cgrp_succ to explain how to handle
+      nested memory access after rcu memory load.
+  v4 -> v5:
+    . add new test to aarch64 deny list.
+  v3 -> v4:
+    . fix selftest failures when built with gcc. gcc doesn't support
+      btf_type_tag yet and some tests relies on that. skip these
+      tests if vmlinux BTF does not have btf_type_tag("rcu").
+  v2 -> v3:
+    . went back to MEM_RCU approach with invalidate rcu ptr registers
+      at bpf_rcu_read_unlock() place.
+    . remove KF_RCU_LOCK/UNLOCK flag and compare btf_id at verification
+      time instead.
+  v1 -> v2:
+    . use kfunc instead of helper for bpf_rcu_read_lock/unlock.
+    . not use MEM_RCU bpf_type_flag, instead use active_rcu_lock
+      in reg state to identify rcu ptr's.
+    . Add more self tests.
+    . add new test to s390x deny list.
+
+Yonghong Song (7):
+  compiler_types: Define __rcu as __attribute__((btf_type_tag("rcu")))
+  bpf: Abstract out functions to check sleepable helpers
+  bpf: Add kfunc bpf_rcu_read_lock/unlock()
+  bpf: Add bpf_rcu_read_lock() verifier support
+  bpf: Enable sleeptable support for cgrp local storage
+  selftests/bpf: Add tests for bpf_rcu_read_lock()
+  selftests/bpf: Add rcu_read_lock test to s390x/aarch64 deny lists
+
+ include/linux/bpf.h                           |   6 +
+ include/linux/bpf_lsm.h                       |   6 +
+ include/linux/bpf_verifier.h                  |   4 +
+ include/linux/compiler_types.h                |   3 +-
+ include/linux/trace_events.h                  |   8 +
+ kernel/bpf/bpf_lsm.c                          |  20 +-
+ kernel/bpf/btf.c                              |  39 +-
+ kernel/bpf/helpers.c                          |  25 +-
+ kernel/bpf/verifier.c                         | 125 +++++-
+ kernel/trace/bpf_trace.c                      |  22 +-
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  | 166 ++++++++
+ .../selftests/bpf/progs/rcu_read_lock.c       | 366 ++++++++++++++++++
+ 14 files changed, 770 insertions(+), 22 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
+
+--=20
+2.30.2
+
