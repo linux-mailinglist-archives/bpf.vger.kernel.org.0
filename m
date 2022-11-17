@@ -2,118 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0697662D45F
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 08:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1864F62D575
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 09:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbiKQHtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 02:49:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S230114AbiKQIuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 03:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbiKQHtQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 02:49:16 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CAB52895;
-        Wed, 16 Nov 2022 23:49:15 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id m22so2965364eji.10;
-        Wed, 16 Nov 2022 23:49:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Xk1oEmkTU9H7VPwZGQRzWhMrFXqC/l98G+URF+zUWzQ=;
-        b=p3bqfivjdCBVThsXjPyPdiWmaaJ3KVtlPvlz5ibGTO97w+eHWVfn3ztrpX8+02RK7r
-         /n5JnlCLCI05orLqcPnBRJK4R+bPsH9DYMeal9vY8O/vOzLc4mmwCZsA4wliTfZTD/1k
-         PEe15RfyOHC4LfhRlJjzmgGqh361hWndQ7IlH7s8FKh4uPggrazp48fXqGNPgix4TK4o
-         BDKKQojgrChhZSy7opOWSyzmfD7tDHYpsxqrcg8YAGkZUNJjKsmbIVZ0YHQOXERzAL1O
-         BoAEt7xZmV9I6scFQJ2TzP/tB/Ldx1CfxDktxIjwHv4zP90v4Hi+bevI+uQoZIZDbgWC
-         NPug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xk1oEmkTU9H7VPwZGQRzWhMrFXqC/l98G+URF+zUWzQ=;
-        b=61S9ssEEf9YePCY61t2bBrnZcF/OI4bGZNkMCjRvcPbJ8GQU9ftBdC/h/TQb/9z4wA
-         jAmZOrxd5M7waBrgNarrB6Jg+scLDRkdgKPuV5D/45DFj2aoI9UhikyHDnwXhxJJg1kr
-         5OAg8ZUeb9zhWKqsnSpMN+iHELCBZNTYemtyzkP5Uw0OH2nvwE0ZGtkPg3b6je1ocjl2
-         gnHnKLWDQNg2FhArlO+qejDok80LXD/xGDs6W3/R86Emm/OaGX1AHpS4TJoVXruQGwyO
-         4oYjUDfYF74Jaa1AVXChYwkwK33ICr/OBfGtQotypYW21BGnfkyvAmKtxL/f7N9p2oBe
-         85tQ==
-X-Gm-Message-State: ANoB5pmXl7VTAXUs39f11w5UuwY9KiCGkdmPb9BLG79071YtqePq832B
-        PTfX0WmSMbqC+T9GqAQjA8n9AFNDNTo=
-X-Google-Smtp-Source: AA0mqf6j48PnIuhUBdYjPPrRHGMG9asjsCw4Bqww/C899ryKZXZBQZkhjhSprEaQLgVNwgiNzYA7ag==
-X-Received: by 2002:a17:906:a157:b0:7a5:7e25:5b11 with SMTP id bu23-20020a170906a15700b007a57e255b11mr1120322ejb.254.1668671353636;
-        Wed, 16 Nov 2022 23:49:13 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id bk14-20020a170906b0ce00b007ad69e9d34dsm19988ejb.54.2022.11.16.23.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 23:49:13 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 17 Nov 2022 08:49:10 +0100
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf 1/2] selftests/bpf: Explicitly pass RESOLVE_BTFIDS to
- sub-make
-Message-ID: <Y3XndllQ6kmFbztg@krava>
-References: <20221115182051.582962-1-bjorn@kernel.org>
+        with ESMTP id S234595AbiKQIuU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 03:50:20 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB41C7B
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 00:50:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id B8EEFCE1D76
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 08:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B9D1C433D7;
+        Thu, 17 Nov 2022 08:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668675015;
+        bh=0cv6ecQvsQeiZ/g/IAt6E+nml0CMo7hBuCz/4hvUNd4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aXHQWEGDEbSgK4prgoQE6YqukkFtBwSq/vS1PL2LU3UceSDWQodBS44dapBqpLpAm
+         kBqqoXoz4HzSKO/aT9/AV1yzgxWIbH6MMxUxWqgi38fK09mTMHcHMQAteYsF5FmSxn
+         sXnTU1ALae71TKe2L3hCQoQii4JI5TtcViwdnVMf/QS27P/G2kpNMEaQ3KgKNrwVjy
+         14P8+Coq1OTwErtpqMY+mUk5VldjE+g3fdrawl7+g5OE9MghnnO0dFkA3gZiRRTAAh
+         2nLqkv5v1hNMWQ/SCrkQ2144oFm9jpOUc6hiYbWnZo+jgAl3FpOiANqhtA4l3vyvso
+         lCBAoYREfiODQ==
+Date:   Thu, 17 Nov 2022 10:50:00 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "Lu, Aaron" <aaron.lu@intel.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+Message-ID: <Y3X1uHNTLQJxmJnm@kernel.org>
+References: <20221107223921.3451913-1-song@kernel.org>
+ <Y2o9Iz30A3Nruqs4@kernel.org>
+ <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
+ <Y2uMWvmiPlaNXlZz@kernel.org>
+ <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
+ <Y3DITs3J8koEw3Hz@kernel.org>
+ <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221115182051.582962-1-bjorn@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 07:20:50PM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
+On Mon, Nov 14, 2022 at 12:30:49PM -0800, Song Liu wrote:
+> On Sun, Nov 13, 2022 at 2:35 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > My concern is that the proposed execmem_alloc() cannot be used for
+> > centralized handling of loading text. I'm not familiar enough with
+> > modules/ftrace/kprobes/BPF to clearly identify the potential caveats, but
+> > my gut feeling is that the proposed execmem_alloc() won't be an improvement
+> > but rather a hindrance for moving to centralized handling of loading text.
 > 
-> When cross-compiling selftests/bpf, the resolve_btfids binary end up
-> in a different directory, than the regular resolve_btfids
-> builds. Populate RESOLVE_BTFIDS for sub-make, so it can find the
-> binary.
-> 
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+> I don't follow why this could ever be a hindrance. Luis is very excited about
+> this, and I am very sure it works for ftrace, kprobe, and BPF.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Again, it's a gut feeling. But for execmem_alloc() to be a unified place of
+code allocation, it has to work for all architectures. If architectures
+have to override it, then where is the unification?
 
-thanks,
-jirka
+The implementation you propose if great for x86, but to see it as unified
+solution it should be good at least for the major architectures.
 
-> ---
->  tools/testing/selftests/bpf/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > It feels to me that a lot of ground work is needed to get to the point
+> > where we can use centralized handling of loading text.
 > 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index e6cf21fad69f..8f8ede30e94e 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -200,7 +200,7 @@ $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
->  $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
->  	$(call msg,MOD,,$@)
->  	$(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
-> -	$(Q)$(MAKE) $(submake_extras) -C bpf_testmod
-> +	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_testmod
->  	$(Q)cp bpf_testmod/bpf_testmod.ko $@
->  
->  DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
-> 
-> base-commit: 47df8a2f78bc34ff170d147d05b121f84e252b85
-> -- 
-> 2.37.2
-> 
+> Could you please be more specific on what is needed?
+
+The most obvious one to implement Peter's suggestion with VM_TOPDOWN_VMAP
+so that execmem_alloc() can be actually used by modules.
+ 
+> Thanks,
+> Song
+
+-- 
+Sincerely yours,
+Mike.
