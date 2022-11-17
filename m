@@ -2,131 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCE762D38C
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 07:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8373262D396
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 07:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbiKQGlz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 01:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
+        id S234302AbiKQGtE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 01:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234334AbiKQGly (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 01:41:54 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E256B641E
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:41:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78F03620C0
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 06:41:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D77C6C433D7
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 06:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668667312;
-        bh=SnM1FtaUeYJRRujlQeq7IpO09wMHia8NIW6nScFy+Yk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lR2uSQSLMbkLlDIdci5fHU2CqkE26dSgsm53aDbD6ZSbeOtrue123LXuBXxywnpc6
-         306ifrECApgVXR37NGfiJEwbSjk1ZVja+hMoE46LdSDjyH+ZknYaCG0deIDh+d59hm
-         FMXbIz+uDcshbuqKqNr4gP1Zar05W62lkVooSnYdUi1ZeTcSg5s6WNtJJBqWPX/g2J
-         8DVtOoCGsr9grXAEBeO+7lxRJC0lbdHqLkvmT7JS1k1ce4Eink4c0ofypAzbyRCHnS
-         Q+rV/PL8VdMRPD+7gLhh/XiX3/ZRvLNZEX6iyA26i+e8Yd+qHaz09MQXRIgJRcFAzp
-         MvwIN7cSQrvxw==
-Received: by mail-ej1-f46.google.com with SMTP id i10so2706488ejg.6
-        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:41:52 -0800 (PST)
-X-Gm-Message-State: ANoB5pkzoTCcoSQO2RYN2tWNRWyDS8s341sAwXGcYzkJKeF0QHm80DaX
-        TZBUhyk29CUJvQ1xqY07hENcpzWVvdUPAOZmkHo=
-X-Google-Smtp-Source: AA0mqf4bYESblYKqNvg1KhBn6PnowkzN8+8DYXrdRYkkDaK7WC+mrWvXPaKn/zyhLM+LsjdcuzoQ2HrORRyBF/zrMQk=
-X-Received: by 2002:a17:906:348b:b0:78d:9e04:d8c2 with SMTP id
- g11-20020a170906348b00b0078d9e04d8c2mr928422ejb.614.1668667311120; Wed, 16
- Nov 2022 22:41:51 -0800 (PST)
+        with ESMTP id S233023AbiKQGtD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 01:49:03 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09B7532E1
+        for <bpf@vger.kernel.org>; Wed, 16 Nov 2022 22:49:01 -0800 (PST)
+Message-ID: <43bcd243-eea0-6cbe-b24b-640311fa1a83@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1668667739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbFdZqyR/IcbE2815pvpT0gkN9Pqj+nQe3cjmyP0e4s=;
+        b=gfM3Hl6UhOZsf88yQpkkRe7DOVIc37je6lIN/f8Rr8hObRu5CUrhpOBIVC9n6We7suh7RO
+        5MCu5AhqhhpXN1RIj8FyMH6s+pzqH4dJ/e5UgircIKQqLic11vzvRXI2D2T5O6HH0uZTgh
+        bjTYt80797NzZ1VOASdqsyz10uMQXQ8=
+Date:   Wed, 16 Nov 2022 22:48:54 -0800
 MIME-Version: 1.0
-References: <20221117010621.1891711-1-song@kernel.org> <20221117010621.1891711-4-song@kernel.org>
- <Y3WTIdYY7Vsc5QXH@bombadil.infradead.org>
-In-Reply-To: <Y3WTIdYY7Vsc5QXH@bombadil.infradead.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 16 Nov 2022 22:41:39 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW43EXLV4bopzgZa=wFeDqy8GD0P7e=18w30D_X4fLw=fQ@mail.gmail.com>
-Message-ID: <CAPhsuW43EXLV4bopzgZa=wFeDqy8GD0P7e=18w30D_X4fLw=fQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] selftests/vm: extend test_vmalloc to test
- execmem_* APIs
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-        x86@kernel.org, peterz@infradead.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, rppt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
+Content-Language: en-US
+To:     Hao Luo <haoluo@google.com>, Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20221111063417.1603111-1-houtao@huaweicloud.com>
+ <20221111063417.1603111-2-houtao@huaweicloud.com>
+ <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+ <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+ <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 5:49 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Wed, Nov 16, 2022 at 05:06:18PM -0800, Song Liu wrote:
-> > Add logic to test execmem_[alloc|fill|free] in test_vmalloc.c.
-> > No need to change tools/testing/selftests/vm/test_vmalloc.sh.
-> >
-> > Signed-off-by: Song Liu <song@kernel.org>
-> > ---
-> >  lib/test_vmalloc.c | 30 ++++++++++++++++++++++++++++++
-> >  1 file changed, 30 insertions(+)
-> >
-> > diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-> > index cf7780572f5b..6591c4932c3c 100644
-> > --- a/lib/test_vmalloc.c
-> > +++ b/lib/test_vmalloc.c
-> > @@ -50,6 +50,7 @@ __param(int, run_test_mask, INT_MAX,
-> >               "\t\tid: 128,  name: pcpu_alloc_test\n"
-> >               "\t\tid: 256,  name: kvfree_rcu_1_arg_vmalloc_test\n"
-> >               "\t\tid: 512,  name: kvfree_rcu_2_arg_vmalloc_test\n"
-> > +             "\t\tid: 1024, name: execmem_alloc_test\n"
-> >               /* Add a new test case description here. */
-> >  );
-> >
-> > @@ -352,6 +353,34 @@ kvfree_rcu_2_arg_vmalloc_test(void)
-> >       return 0;
-> >  }
-> >
-> > +static int
-> > +execmem_alloc_test(void)
-> > +{
-> > +     void *p, *tmp;
-> > +     int i;
-> > +
-> > +     for (i = 0; i < test_loop_count; i++) {
-> > +             /* allocate variable size, up to 64kB */
-> > +             size_t size = (i % 1024 + 1) * 64;
-> > +
-> > +             p = execmem_alloc(size, 64);
-> > +             if (!p)
-> > +                     return -1;
-> > +
-> > +             tmp = execmem_fill(p, "a", 1);
-> > +             if (tmp != p)
-> > +                     return -1;
-> > +
-> > +             tmp = execmem_fill(p + size - 1, "b", 1);
-> > +             if (tmp != p + size - 1)
-> > +                     return -1;
-> > +
-> > +             execmem_free(p);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
->
-> This is a basic test and it is useful.
->
-> But given all those WARN_ON() and WARN_ON_ONCE() I think the real value
-> test here would be to race 1000 threads doing this at the same time.
+On 11/15/22 6:48 PM, Hao Luo wrote:
+> On Tue, Nov 15, 2022 at 5:37 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Tue, Nov 15, 2022 at 11:16 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>>
+>>> On 11/10/22 10:34 PM, Hou Tao wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> For many bpf iterator (e.g., cgroup iterator), iterator link acquires
+>>>> the reference of iteration target in .attach_target(), but iterator link
+>>>> may be closed before or in the middle of iteration, so iterator will
+>>>> need to acquire the reference of iteration target as well to prevent
+>>>> potential use-after-free. To avoid doing the acquisition in
+>>>> .init_seq_private() for each iterator type, just pin iterator link in
+>>>> iterator.
+>>>
+>>> iiuc, a link currently will go away when all its fds closed and pinned file
+>>> removed.  After this change, the link will stay until the last iter is closed().
+>>>    Before then, the user space can still "bpftool link show" and even get the
+>>> link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
+>>> to explain it in the commit message.
+>>>
+>>> and does this new behavior make sense when comparing with other link types?
+> 
+> I think this is a unique problem in iter link. Because iter link is
+> the only link type that can generate another object.
 
-test_vmalloc supports parallel tests. We can do something like
+Should a similar solution as in the current map iter be used then?
 
-  tools/testing/selftests/vm/test_vmalloc.sh nr_threads=XXX run_test_mask=1024
+I am thinking, after all link fds are closed and its pinned files are removed, 
+if it cannot stop the already created iter, it should at least stop new iter 
+from being created?
 
-Thanks,
-Song
+
