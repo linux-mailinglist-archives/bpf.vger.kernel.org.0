@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4AB62E5C5
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 21:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B3B62E5C6
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 21:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbiKQUXw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Nov 2022 15:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S232126AbiKQUXx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Nov 2022 15:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbiKQUXo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 15:23:44 -0500
+        with ESMTP id S230287AbiKQUXq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 15:23:46 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A6A11800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCF9205F9
         for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 12:23:44 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AHIfVOG024752
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AHHHFHc012051
         for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 12:23:44 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kwtf58tdd-7
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kws7g1kss-7
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 12:23:43 -0800
-Received: from twshared21592.39.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 12:23:44 -0800
+Received: from twshared13940.35.frc1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.31; Thu, 17 Nov 2022 12:23:41 -0800
 Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 4DF2FFF175EF; Thu, 17 Nov 2022 12:23:34 -0800 (PST)
+        id A3641FF17605; Thu, 17 Nov 2022 12:23:36 -0800 (PST)
 From:   Song Liu <song@kernel.org>
 To:     <bpf@vger.kernel.org>, <linux-mm@kvack.org>
 CC:     <akpm@linux-foundation.org>, <x86@kernel.org>,
         <peterz@infradead.org>, <hch@lst.de>, <rick.p.edgecombe@intel.com>,
         <rppt@kernel.org>, <mcgrof@kernel.org>, Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next v4 5/6] vmalloc: introduce register_text_tail_vm()
-Date:   Thu, 17 Nov 2022 12:23:21 -0800
-Message-ID: <20221117202322.944661-6-song@kernel.org>
+Subject: [PATCH bpf-next v4 6/6] x86: use register_text_tail_vm
+Date:   Thu, 17 Nov 2022 12:23:22 -0800
+Message-ID: <20221117202322.944661-7-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221117202322.944661-1-song@kernel.org>
 References: <20221117202322.944661-1-song@kernel.org>
@@ -42,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: k-Nsh64kBTA-VEKOj_ZDoYBMKPEEjvmh
-X-Proofpoint-ORIG-GUID: k-Nsh64kBTA-VEKOj_ZDoYBMKPEEjvmh
+X-Proofpoint-GUID: 9HuRzM3BweLAlClb-ti3d2LQRnjjvXm1
+X-Proofpoint-ORIG-GUID: 9HuRzM3BweLAlClb-ti3d2LQRnjjvXm1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-17_06,2022-11-17_01,2022-06-22_01
@@ -57,96 +57,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow arch code to register some memory to be used by execmem_alloc().
-One possible use case is to allocate PMD pages for kernl text up to
-PMD_ALIGN(_etext), and use (_etext, PMD_ALIGN(_etext)) for
-execmem_alloc. Currently, only one such region is supported.
+Allocate 2MB pages up to round_up(_etext, 2MB), and register memory
+[round_up(_etext, 4kb), round_up(_etext, 2MB)] with register_text_tail_vm
+so that we can use this part of memory for dynamic kernel text (BPF
+programs, etc.).
+
+Here is an example:
+
+[root@eth50-1 ~]# grep _etext /proc/kallsyms
+ffffffff82202a08 T _etext
+
+[root@eth50-1 ~]# grep bpf_prog_ /proc/kallsyms  | tail -n 3
+ffffffff8220f920 t bpf_prog_cc61a5364ac11d93_handle__sched_wakeup       [bpf]
+ffffffff8220fa28 t bpf_prog_cc61a5364ac11d93_handle__sched_wakeup_new   [bpf]
+ffffffff8220fad4 t bpf_prog_3bf73fa16f5e3d92_handle__sched_switch       [bpf]
+
+[root@eth50-1 ~]#  grep 0xffffffff82200000 /sys/kernel/debug/page_tables/kernel
+0xffffffff82200000-0xffffffff82400000     2M     ro   PSE         x  pmd
+
+ffffffff82200000-ffffffff82400000 is a 2MB page, serving kernel text, and
+bpf programs.
+
+Also update Documentation/x86/x86_64/mm.rst to show execmem can be mapped
+to kernel text addresses.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- include/linux/vmalloc.h |  4 ++++
- mm/vmalloc.c            | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ Documentation/x86/x86_64/mm.rst         | 4 ++--
+ arch/x86/include/asm/pgtable_64_types.h | 1 +
+ arch/x86/mm/init_64.c                   | 4 +++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 30aa8c187d40..2babbe3031a5 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -132,11 +132,15 @@ extern void vm_unmap_aliases(void);
- #ifdef CONFIG_MMU
- extern void __init vmalloc_init(void);
- extern unsigned long vmalloc_nr_pages(void);
-+void register_text_tail_vm(unsigned long start, unsigned long end);
- #else
- static inline void vmalloc_init(void)
- {
- }
- static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-+void register_text_tail_vm(unsigned long start, unsigned long end)
-+{
-+}
- #endif
+diff --git a/Documentation/x86/x86_64/mm.rst b/Documentation/x86/x86_64/mm.rst
+index 9798676bb0bf..6ee95e5fa7e9 100644
+--- a/Documentation/x86/x86_64/mm.rst
++++ b/Documentation/x86/x86_64/mm.rst
+@@ -62,7 +62,7 @@ Complete virtual memory map with 4-level page tables
+    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
+    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI region mapping space
+    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
+-   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
++   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping and execmem, mapped to physical address 0
+    ffffffff80000000 |-2048    MB |                  |         |
+    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB | module mapping space
+    ffffffffff000000 |  -16    MB |                  |         |
+@@ -121,7 +121,7 @@ Complete virtual memory map with 5-level page tables
+    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
+    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI region mapping space
+    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
+-   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
++   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping and execmem, mapped to physical address 0
+    ffffffff80000000 |-2048    MB |                  |         |
+    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB | module mapping space
+    ffffffffff000000 |  -16    MB |                  |         |
+diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
+index 04f36063ad54..c0f9cceb109a 100644
+--- a/arch/x86/include/asm/pgtable_64_types.h
++++ b/arch/x86/include/asm/pgtable_64_types.h
+@@ -101,6 +101,7 @@ extern unsigned int ptrs_per_p4d;
+ #define PUD_MASK	(~(PUD_SIZE - 1))
+ #define PGDIR_SIZE	(_AC(1, UL) << PGDIR_SHIFT)
+ #define PGDIR_MASK	(~(PGDIR_SIZE - 1))
++#define PMD_ALIGN(x)	(((unsigned long)(x) + (PMD_SIZE - 1)) & PMD_MASK)
  
- extern void *vmalloc(unsigned long size) __alloc_size(1);
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 75ec8ab24929..31d04ae81cd9 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -77,6 +77,9 @@ static const bool vmap_allow_huge = false;
- #endif
- #define PMD_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PMD_SIZE)
+ /*
+  * See Documentation/x86/x86_64/mm.rst for a description of the memory map.
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index 3f040c6e5d13..5b42fc0c6099 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1373,7 +1373,7 @@ void mark_rodata_ro(void)
+ 	unsigned long start = PFN_ALIGN(_text);
+ 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
+ 	unsigned long end = (unsigned long)__end_rodata_hpage_align;
+-	unsigned long text_end = PFN_ALIGN(_etext);
++	unsigned long text_end = PMD_ALIGN(_etext);
+ 	unsigned long rodata_end = PFN_ALIGN(__end_rodata);
+ 	unsigned long all_end;
  
-+static struct vm_struct text_tail_vm;
-+static struct vmap_area text_tail_va;
-+
- bool is_vmalloc_addr(const void *x)
- {
- 	unsigned long addr = (unsigned long)kasan_reset_tag(x);
-@@ -655,6 +658,8 @@ int is_vmalloc_or_module_addr(const void *x)
- 	unsigned long addr = (unsigned long)kasan_reset_tag(x);
- 	if (addr >= MODULES_VADDR && addr < MODULES_END)
- 		return 1;
-+	if (addr >= text_tail_va.va_start && addr < text_tail_va.va_end)
-+		return 1;
- #endif
- 	return is_vmalloc_addr(x);
- }
-@@ -2439,6 +2444,35 @@ static void vmap_init_free_space(void)
- 	}
+@@ -1414,6 +1414,8 @@ void mark_rodata_ro(void)
+ 				(void *)rodata_end, (void *)_sdata);
+ 
+ 	debug_checkwx();
++	register_text_tail_vm(PFN_ALIGN((unsigned long)_etext),
++			      PMD_ALIGN((unsigned long)_etext));
  }
  
-+/*
-+ * register_text_tail_vm() allows arch code to register memory regions
-+ * for execmem_alloc. Unlike regular memory regions used by execmem_alloc,
-+ * this region is never freed by vfree_exec.
-+ *
-+ * One possible use case is to allocate PMD pages for kernl text up to
-+ * PMD_ALIGN(_etext), and use (_etext, PMD_ALIGN(_etext)) for
-+ * execmem_alloc.
-+ */
-+void register_text_tail_vm(unsigned long start, unsigned long end)
-+{
-+	struct vmap_area *va;
-+
-+	/* only support one region */
-+	if (WARN_ON_ONCE(text_tail_vm.addr))
-+		return;
-+
-+	va = kmem_cache_zalloc(vmap_area_cachep, GFP_NOWAIT);
-+	if (WARN_ON_ONCE(!va))
-+		return;
-+	text_tail_vm.addr = (void *)start;
-+	text_tail_vm.size = end - start;
-+	text_tail_va.va_start = start;
-+	text_tail_va.va_end = end;
-+	text_tail_va.vm = &text_tail_vm;
-+	memcpy(va, &text_tail_va, sizeof(*va));
-+	insert_vmap_area_augment(va, NULL, &free_text_area_root, &free_text_area_list);
-+}
-+
- void __init vmalloc_init(void)
- {
- 	struct vmap_area *va;
+ int kern_addr_valid(unsigned long addr)
 -- 
 2.30.2
 
