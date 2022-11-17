@@ -2,185 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797D262D132
-	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 03:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82CF62D11B
+	for <lists+bpf@lfdr.de>; Thu, 17 Nov 2022 03:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbiKQCll (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Nov 2022 21:41:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        id S234067AbiKQCYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Nov 2022 21:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbiKQClk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Nov 2022 21:41:40 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3199B429BE;
-        Wed, 16 Nov 2022 18:41:39 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id n20so1930888ejh.0;
-        Wed, 16 Nov 2022 18:41:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uKxGBHMAN3UiI7Gqdl3dxWknkRvzMPql8pZxmBidFZU=;
-        b=BEGJMAKm/hxrL5kaJ+kD8XPZyeCYovERo+xVc1w16Xb5gqbIci4ujNMF1DZAlAHe6S
-         MNhIfe+qCqkh6A7ALM2LfcVCoAKvdp00C1AWDlBeoIx9u69raX0AWaF2h2oqZFPoXDJY
-         Q/NT/NkvWuowIWYl2CAyaHevZv2PF0gTdUK5gWVAiAMBfehBT235XJyHTgE90lYWv9Eg
-         c8Fa/37D8kbKdHFEMJEXHK2s+N5sQqb0dsfVvg5kWdGjY6IoV41G/2MPiQDlmmM+ujcF
-         6lchTrZlQ70eWKzwU8BtOZ+OpjUKbGffIE8uVH2WX0V/3AlGP9PPIEeYB0GCO6auE1td
-         D3uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uKxGBHMAN3UiI7Gqdl3dxWknkRvzMPql8pZxmBidFZU=;
-        b=dP316cLdnEyKoMxM5TEdYYA8LdT2rR30qhXgRpgtsBYH3nZG4B6EKAs8W4rde6eUm2
-         CwP2LgGfiW+5pL+ZmyFcZWR12nMn5+Q35XkPFM5Teb8uJvf9gtYZRmK/UZmW5V56Jpl8
-         WAOv8eWL1W/tkn2VvpFXa5Xv3mw7B08tjrPQd+KYGvlK6Z+l/gJVUiGSo9fPneCgZ42L
-         ZalooLzDbbIFPh+ydEP9vDSJQxW5em5eq5/sPpJ6mPnfS3Ns7w+HTq9HfXFZiY81VF38
-         GLERUHdIyhsRz8ILk7HDfiadgzPnsML14I5eW73QsifBsfcJwLS8c8jFxg/fcNRkiWcw
-         uGAg==
-X-Gm-Message-State: ANoB5pkxYJooPrjyVtwinfiaO7HHEzQDQwzS6opYoxdsIuNwsYRNNWZy
-        BDMNfvgiNn6hYsl7ogcYDBOyhvSpwe1/Vus9Qb2LQN8WISo=
-X-Google-Smtp-Source: AA0mqf6EgRAN/j1wXHsoRv/GjI+gQCiHsCp4U9dOlM8xn4VqH7W/TKSXrk66AHJI8X6S3Y3P1z+uWpbuI1/FkL6ty6g=
-X-Received: by 2002:a17:906:1495:b0:7ad:d250:b904 with SMTP id
- x21-20020a170906149500b007add250b904mr480092ejc.633.1668652897745; Wed, 16
- Nov 2022 18:41:37 -0800 (PST)
+        with ESMTP id S233336AbiKQCYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Nov 2022 21:24:51 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E24F6AEC1;
+        Wed, 16 Nov 2022 18:24:49 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NCNyy6PgJzRpNW;
+        Thu, 17 Nov 2022 10:24:26 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 17 Nov 2022 10:24:47 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <kuba@kernel.org>, <shuah@kernel.org>, <pabeni@redhat.com>,
+        <saeed@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
+        Wang Yufen <wangyufen@huawei.com>,
+        =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+Subject: [PATCH net v3] selftests/net: fix missing xdp_dummy
+Date:   Thu, 17 Nov 2022 10:45:03 +0800
+Message-ID: <1668653103-14212-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20221108220651.24492-1-revest@chromium.org>
-In-Reply-To: <20221108220651.24492-1-revest@chromium.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 16 Nov 2022 18:41:26 -0800
-Message-ID: <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
-Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 8, 2022 at 2:07 PM Florent Revest <revest@chromium.org> wrote:
->
-> Hi!
->
-> With this RFC, I'd like to revive the conversation between BPF, ARM and tracing
-> folks on what BPF tracing (fentry/fexit/fmod_ret) could/should look like on
-> arm64.
->
-> Current status of BPF tracing
-> =============================
->
-> On currently supported architectures (like x86), BPF tracing programs are
-> called from a JITted BPF trampoline, itself called from the ftrace patch site
-> thanks to the ftrace "direct call" API. (or from the end of the ftrace
-> trampoline if a ftrace ops is also tracing that function, but this is
-> transparent to BPF)
->
-> Thanks to Xu's work [1], we now have BPF trampolines on arm64 (these can be
-> used for struct ops programs already), but Xu's attempts at getting ftrace
-> direct calls support [2][3] on arm64 have been unsucessful so far so we still
-> do not support BPF tracing programs. This prompted me to try a different
-> approach. I'd like to collect feedback on it here.
->
-> Why not direct calls ?
-> ======================
->
-> Mark and Steven have not been too keen on getting direct calls on arm64 because:
-> - working around BL instruction's limited range introduces complexity [4]
-> - it's difficult to get reliable stacktraces right with direct calls [5]
-> - direct calls are complex to maintain on the arch/ftrace side [5]
->
-> In the absence of ftrace direct calls support, BPF tracing programs would need
-> to be called from an ftrace ops instead. Note that the BPF callback signature
-> would have to be different, so we can't re-use trampolines (direct called
-> callbacks receive arguments in registers whereas ftrace ops callbacks receive
-> arguments in a struct ftrace_regs pointer)
->
-> Why fprobe ?
-> ============
->
-> Ftrace ops per-se only expose an API to hook before a function. There are two
-> systems built on top of ftrace ops that also allow hooking the function exit:
-> fprobe (using rethook) and the function graph tracer. There are plans from
-> Masami and Steven to unify these two systems but, as they stand, only fprobe
-> gives enough flexibility to implement BPF tracing.
->
-> In order not to reinvent the wheel, if direct calls aren't available on the
-> arch, BPF could leverage fprobe to hook before and after the traced function.
-> Note that return hooking is implemented a bit differently than it is in BPF
-> trampolines. Instead of keeping arguments on a stack frame and calling the
-> traced function, rethook saves arguments in a memory pool and returns to the
-> traced function with a hijacked return pointer that will have its ret jump back
-> to the rethook trampoline.
->
-> What about performances ?
-> =========================
->
-> In its current state, a fprobe callback on arm64 is very expensive because:
-> 1- the ftrace trampoline saves all registers (including many unnecessary ones)
-> 2- it calls ftrace_ops_list_func which iterates over all ops and is very slow
-> 3- the fprobe ops unconditionally hooks a rethook
-> 4- rethook grabs memory from a freelist which is slow under high contention
->
-> However, all the above points are currently being addressed:
-> 1- by Mark's series to save argument registers only [6]
-> 2- by Mark's series to call single ops directly [7]
-> 3- by Masami's patch to skip rethooks if not needed [8]
-> 4- Masami said the rethook freelist would be replaced by a per-task stack as
->    part of its unification with the function graph tracer [9]
->
-> I measured the costs of BPF on different approaches on my RPi4 here: [10]
-> tl;dr: the BPF "bench" takes a performance hit of:
-> - 28.6% w/ BPF tracing on direct calls (best case scenario for reference) [11]
-> - 66.8% w/ BPF on kprobe (just for reference)
-> - 62.6% w/ BPF tracing on fprobe without any optimizations (current state) [12]
-> - 34.1% w/ BPF tracing on fprobe with all optimizations (near-future state) [13]
+After commit afef88e65554 ("selftests/bpf: Store BPF object files with
+.bpf.o extension"), we should use xdp_dummy.bpf.o instade of xdp_dummy.o.
 
-Even with all optimization the performance overhead is not acceptable.
-It feels to me that folks are still thinking about bpf trampoline
-as a tracing facility.
-It's a lot more than that. It needs to run 24/7 with zero overhead.
-It needs to replace the kernel functions and be invoked
-millions times a second until the system is rebooted.
-In this environment every nanosecond counts.
+In addition, use the BPF_FILE variable to save the BPF object file name,
+which can be better identified and modified.
 
-Even if the fprobe side was completely free the patch 1 has so much
-overhead in copy of bpf_cookie, regs, etc that it's a non-starter
-for these use cases.
+Fixes: afef88e65554 ("selftests/bpf: Store BPF object files with .bpf.o extension")
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Cc: Daniel Müller <deso@posteo.net>
+---
+ tools/testing/selftests/net/udpgro.sh         |  8 +++++---
+ tools/testing/selftests/net/udpgro_bench.sh   |  8 +++++---
+ tools/testing/selftests/net/udpgro_frglist.sh |  8 +++++---
+ tools/testing/selftests/net/udpgro_fwd.sh     |  3 ++-
+ tools/testing/selftests/net/veth.sh           | 11 ++++++-----
+ 5 files changed, 23 insertions(+), 15 deletions(-)
 
-There are several other fundamental issues in this approach
-because of fprobe/ftrace.
-It has ftrace_test_recursion_trylock and disables preemption.
-Both are deal breakers.
+diff --git a/tools/testing/selftests/net/udpgro.sh b/tools/testing/selftests/net/udpgro.sh
+index 6a443ca..0c74375 100755
+--- a/tools/testing/selftests/net/udpgro.sh
++++ b/tools/testing/selftests/net/udpgro.sh
+@@ -5,6 +5,8 @@
+ 
+ readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
+ 
++BPF_FILE="../bpf/xdp_dummy.bpf.o"
++
+ # set global exit status, but never reset nonzero one.
+ check_err()
+ {
+@@ -34,7 +36,7 @@ cfg_veth() {
+ 	ip -netns "${PEER_NS}" addr add dev veth1 192.168.1.1/24
+ 	ip -netns "${PEER_NS}" addr add dev veth1 2001:db8::1/64 nodad
+ 	ip -netns "${PEER_NS}" link set dev veth1 up
+-	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
++	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
+ }
+ 
+ run_one() {
+@@ -195,8 +197,8 @@ run_all() {
+ 	return $ret
+ }
+ 
+-if [ ! -f ../bpf/xdp_dummy.o ]; then
+-	echo "Missing xdp_dummy helper. Build bpf selftest first"
++if [ ! -f ${BPF_FILE} ]; then
++	echo "Missing ${BPF_FILE}. Build bpf selftest first"
+ 	exit -1
+ fi
+ 
+diff --git a/tools/testing/selftests/net/udpgro_bench.sh b/tools/testing/selftests/net/udpgro_bench.sh
+index 8a1109a..8949728 100755
+--- a/tools/testing/selftests/net/udpgro_bench.sh
++++ b/tools/testing/selftests/net/udpgro_bench.sh
+@@ -5,6 +5,8 @@
+ 
+ readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
+ 
++BPF_FILE="../bpf/xdp_dummy.bpf.o"
++
+ cleanup() {
+ 	local -r jobs="$(jobs -p)"
+ 	local -r ns="$(ip netns list|grep $PEER_NS)"
+@@ -34,7 +36,7 @@ run_one() {
+ 	ip -netns "${PEER_NS}" addr add dev veth1 2001:db8::1/64 nodad
+ 	ip -netns "${PEER_NS}" link set dev veth1 up
+ 
+-	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
++	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
+ 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
+ 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -t ${rx_args} -r &
+ 
+@@ -80,8 +82,8 @@ run_all() {
+ 	run_udp "${ipv6_args}"
+ }
+ 
+-if [ ! -f ../bpf/xdp_dummy.o ]; then
+-	echo "Missing xdp_dummy helper. Build bpf selftest first"
++if [ ! -f ${BPF_FILE} ]; then
++	echo "Missing ${BPF_FILE}. Build bpf selftest first"
+ 	exit -1
+ fi
+ 
+diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
+index 7fe85ba..c9c4b9d 100755
+--- a/tools/testing/selftests/net/udpgro_frglist.sh
++++ b/tools/testing/selftests/net/udpgro_frglist.sh
+@@ -5,6 +5,8 @@
+ 
+ readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
+ 
++BPF_FILE="../bpf/xdp_dummy.bpf.o"
++
+ cleanup() {
+ 	local -r jobs="$(jobs -p)"
+ 	local -r ns="$(ip netns list|grep $PEER_NS)"
+@@ -36,7 +38,7 @@ run_one() {
+ 	ip netns exec "${PEER_NS}" ethtool -K veth1 rx-gro-list on
+ 
+ 
+-	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
++	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
+ 	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
+ 	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
+ 	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
+@@ -81,8 +83,8 @@ run_all() {
+ 	run_udp "${ipv6_args}"
+ }
+ 
+-if [ ! -f ../bpf/xdp_dummy.o ]; then
+-	echo "Missing xdp_dummy helper. Build bpf selftest first"
++if [ ! -f ${BPF_FILE} ]; then
++	echo "Missing ${BPF_FILE}. Build bpf selftest first"
+ 	exit -1
+ fi
+ 
+diff --git a/tools/testing/selftests/net/udpgro_fwd.sh b/tools/testing/selftests/net/udpgro_fwd.sh
+index 1bcd82e..c079565 100755
+--- a/tools/testing/selftests/net/udpgro_fwd.sh
++++ b/tools/testing/selftests/net/udpgro_fwd.sh
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
++BPF_FILE="../bpf/xdp_dummy.bpf.o"
+ readonly BASE="ns-$(mktemp -u XXXXXX)"
+ readonly SRC=2
+ readonly DST=1
+@@ -46,7 +47,7 @@ create_ns() {
+ 		ip -n $BASE$ns addr add dev veth$ns $BM_NET_V4$ns/24
+ 		ip -n $BASE$ns addr add dev veth$ns $BM_NET_V6$ns/64 nodad
+ 	done
+-	ip -n $NS_DST link set veth$DST xdp object ../bpf/xdp_dummy.o section xdp 2>/dev/null
++	ip -n $NS_DST link set veth$DST xdp object ${BPF_FILE} section xdp 2>/dev/null
+ }
+ 
+ create_vxlan_endpoint() {
+diff --git a/tools/testing/selftests/net/veth.sh b/tools/testing/selftests/net/veth.sh
+index 430895d..2d07359 100755
+--- a/tools/testing/selftests/net/veth.sh
++++ b/tools/testing/selftests/net/veth.sh
+@@ -1,6 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+ 
++BPF_FILE="../bpf/xdp_dummy.bpf.o"
+ readonly STATS="$(mktemp -p /tmp ns-XXXXXX)"
+ readonly BASE=`basename $STATS`
+ readonly SRC=2
+@@ -216,8 +217,8 @@ while getopts "hs:" option; do
+ 	esac
+ done
+ 
+-if [ ! -f ../bpf/xdp_dummy.o ]; then
+-	echo "Missing xdp_dummy helper. Build bpf selftest first"
++if [ ! -f ${BPF_FILE} ]; then
++	echo "Missing ${BPF_FILE}. Build bpf selftest first"
+ 	exit 1
+ fi
+ 
+@@ -288,14 +289,14 @@ if [ $CPUS -gt 1 ]; then
+ 	ip netns exec $NS_DST ethtool -L veth$DST rx 1 tx 2 2>/dev/null
+ 	ip netns exec $NS_SRC ethtool -L veth$SRC rx 1 tx 2 2>/dev/null
+ 	printf "%-60s" "bad setting: XDP with RX nr less than TX"
+-	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o \
++	ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} \
+ 		section xdp 2>/dev/null &&\
+ 		echo "fail - set operation successful ?!?" || echo " ok "
+ 
+ 	# the following tests will run with multiple channels active
+ 	ip netns exec $NS_SRC ethtool -L veth$SRC rx 2
+ 	ip netns exec $NS_DST ethtool -L veth$DST rx 2
+-	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o \
++	ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} \
+ 		section xdp 2>/dev/null
+ 	printf "%-60s" "bad setting: reducing RX nr below peer TX with XDP set"
+ 	ip netns exec $NS_DST ethtool -L veth$DST rx 1 2>/dev/null &&\
+@@ -311,7 +312,7 @@ if [ $CPUS -gt 2 ]; then
+ 	chk_channels "setting invalid channels nr" $DST 2 2
+ fi
+ 
+-ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o section xdp 2>/dev/null
++ip -n $NS_DST link set dev veth$DST xdp object ${BPF_FILE} section xdp 2>/dev/null
+ chk_gro_flag "with xdp attached - gro flag" $DST on
+ chk_gro_flag "        - peer gro flag" $SRC off
+ chk_tso_flag "        - tso flag" $SRC off
+-- 
+1.8.3.1
 
-bpf trampoline has to allow recursion in some cases.
-See __bpf_prog_enter*() flavors.
-
-bpf trampoline also has to use migrate_disable instead of preemption
-and rcu_read_lock() in some cases and rcu_read_lock_trace() in others.
-
-bpf trampoline must never allocate memory or grab locks.
-
-All of these mandatory features exclude fprobe, ftrace, rethook
-from possible options.
-
-Let's figure out how to address concerns with direct calls:
-
-> - working around BL instruction's limited range introduces complexity [4]
-> - it's difficult to get reliable stacktraces right with direct calls [5]
-> - direct calls are complex to maintain on the arch/ftrace side [5]
