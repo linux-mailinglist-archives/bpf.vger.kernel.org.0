@@ -2,110 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5980A62EA57
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 01:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5150F62EA6A
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 01:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240496AbiKRAcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 19:32:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S235033AbiKRAig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 19:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240660AbiKRAcN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 19:32:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875614C240
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:31:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668731477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+itpjDcga9mH0LamyY/OkXi7TD9WUdNLP2cV3k9ii9k=;
-        b=X/6NtoYWaMCVuqyOIkbRp5nVzGm2W4v7eY/rE/4H0aQpDz1iAlLZHtCnmEabshSsbNy+Wd
-        A0Nyrlv5TQYL6HUCtxg/u6dLf0rDQcla07JtN2m+dxLxgnOd/CYPr49ssdTj6l0AVf7Ccc
-        fmW2CJnYN3UuKn2IQVamPaJIOD4arOI=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-42-dBSYzIhjMc-aVwJX-ZOD6A-1; Thu, 17 Nov 2022 19:29:19 -0500
-X-MC-Unique: dBSYzIhjMc-aVwJX-ZOD6A-1
-Received: by mail-ej1-f69.google.com with SMTP id ne36-20020a1709077ba400b007aeaf3dcbcaso1967664ejc.6
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:29:18 -0800 (PST)
+        with ESMTP id S234942AbiKRAif (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 19:38:35 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB0C28E17
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:38:33 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id f18so9311072ejz.5
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:38:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TbCH+H8HP4R73zev7jPb6d+6pdGqkhhzFjUW3p9uOLw=;
+        b=GcmdHwMoynjW4Z7rwRMm0rElQ5vbZxXNRLeJ9p57sJii6kkOXzyg+q/dxteHl+BYXD
+         xh29rg4X4YOCfopVbBERpUv6qy4Tv1YhwoMiTlz4R28hq1Q10NrloJaKcZsgmYp8qv1H
+         MOiQmq9Uw8urQV4NmI0Sqm2q7irLVRxthpiDfAd34sNrPEs5oCqxIJYdsh0GcHD11wo/
+         ZdURC5RvSRxendYUFPalfC5CbZGPeNn8XhqPXsSn6seTUkwwJpbj6oXcGW+uDSZO5ThO
+         RSbtrBtEBJlZBWmgcix2BSjLzOMbLk+Vg3cNMPaSp3r/FtNXlmHP3gUMKoM3Wuq6l8WT
+         xZJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+itpjDcga9mH0LamyY/OkXi7TD9WUdNLP2cV3k9ii9k=;
-        b=6gIOYBGkY3iVCSTpKHwDBPE+wgnQEtnC8yn2kzSGWyDvmijRRe10e0gFJFOUsJ3pXY
-         m8U/D4EOJUsQLCnPI4YvQxhK/Mt5VOFdyH87bpLz6nqmTtUq9mskcH2vI/Jr6GpqmymH
-         aot5SBZ5wTzOVEOGUx/nnqlXreJjJ83nKDCzKyxkaysKBEbIrGnAEm9Bis5Clwu/12tP
-         prXD2XEMVb3NHjd5uPeaf3CoegVtjfM0bCdnJgP1pNUbT08B/fZmxC0S2NlnxvsyV3+c
-         skYsPX0rMJ3NMei1ih7taORtXewwUqTtJJ3/peRr7Yz+oQJshL1U7IiOXE2Hpw91P0zb
-         F9EA==
-X-Gm-Message-State: ANoB5pm8p54+5oA7YMe7sVnlI8JSxlQ2JeyXGSWbgCL9dHUUL0Mqrzn6
-        n8TtRs2eqGieieM4VqTHw4I8SQILz9vY0Z54z8pGSZMHvYYmPJPa40VpGzo2u9dBdXEW/MQlFNz
-        +wqIvpkAC+No0
-X-Received: by 2002:a05:6402:e0d:b0:466:4168:6ea7 with SMTP id h13-20020a0564020e0d00b0046641686ea7mr4041703edh.273.1668731357199;
-        Thu, 17 Nov 2022 16:29:17 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7JF1PQRWwlPFnvVEFf83RM2J/Pz35scEZj/jJa/EJHPfBYm4P9LtURCOCKlui+6HqGeE+lxA==
-X-Received: by 2002:a05:6402:e0d:b0:466:4168:6ea7 with SMTP id h13-20020a0564020e0d00b0046641686ea7mr4041673edh.273.1668731356233;
-        Thu, 17 Nov 2022 16:29:16 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id en17-20020a056402529100b00467960d7b62sm1131575edb.35.2022.11.17.16.29.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 16:29:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0F97E7A702D; Fri, 18 Nov 2022 01:29:15 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx
- timestamp metadata for xdp
-In-Reply-To: <CAADnVQJ=MbwUOTtmYb_VmTEBA8SdYXJryfGoYv2W2US3_Es=kA@mail.gmail.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
- <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
- <8735ajet05.fsf@toke.dk>
- <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
- <6374854883b22_5d64b208e3@john.notmuch>
- <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev> <878rkbjjnp.fsf@toke.dk>
- <6375340a6c284_66f16208aa@john.notmuch>
- <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
- <637576962dada_8cd03208b0@john.notmuch>
- <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
- <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
- <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
- <87wn7t4y0g.fsf@toke.dk>
- <CAADnVQJMvPjXCtKNH+WCryPmukgbWTrJyHqxrnO=2YraZEukPg@mail.gmail.com>
- <CAKH8qBsPinmCO0Ny1hva7kp4+C7XFdxZLPBYEHXQWDjJ5SSoYw@mail.gmail.com>
- <874juxywih.fsf@toke.dk>
- <CAADnVQJ=MbwUOTtmYb_VmTEBA8SdYXJryfGoYv2W2US3_Es=kA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 18 Nov 2022 01:29:15 +0100
-Message-ID: <87sfihxfz8.fsf@toke.dk>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TbCH+H8HP4R73zev7jPb6d+6pdGqkhhzFjUW3p9uOLw=;
+        b=SWLi0a80iVRWdgTzpVamv/nfZWPNu3rxhyUCXoqrufaxsebOOUCDvtWIPbruguY588
+         xrYz3OQsvUqH5N5b2RULMl6HkPLyW4lHQKKoPh4eWg1esGWLUl7Jt3KrajRY7Cm2dTZw
+         W4hTbU0QGY4qtRzv9E92zjPsz6DsZEej7nzSGflynYmOQuZ0kFP6Dn3NS9uCKVhNW3Co
+         aygW4Irfmjg+tDOlVEx41ni7FwqSG+3N45CtzYjKrFOBs1Cz7dlqjgb7UEIh65UU+Aos
+         +pU1vX9kp42guM2vjTxv+XBE9Q7so+8s2aLekaxIILAVPxnQ20soahGchCAgaRCEUhOr
+         nzaA==
+X-Gm-Message-State: ANoB5pl0S/Lug1+Y6UkYs7n4hwke4HJXzVsi9iPZtpvp8n+6Ja7T8Tms
+        9ulFiQLUWckwWhcoBrapJ6sbSz0wfEYcP3uixO0=
+X-Google-Smtp-Source: AA0mqf5hiFmuXVwe+JU3znUdiLk91UE1nUO85wfX9TOOUDNf0ZJ0/Rt+1DmGyfOqXAD5d21nYGVmgPKSmuCYf44d0Og=
+X-Received: by 2002:a17:906:584b:b0:7ae:25ba:5e4a with SMTP id
+ h11-20020a170906584b00b007ae25ba5e4amr4148376ejs.745.1668731911580; Thu, 17
+ Nov 2022 16:38:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <CAO658oUrud+RaV4dAWQ+JYkDttgW00xyDmsoa8-vCeknQNjVtg@mail.gmail.com>
+ <91787040-3612-e847-b512-a38a3dae199e@meta.com> <CAO658oXVoDsiNt3NtC0qDECOCA8XnLh+aOb4kR=-HhFvddo1aA@mail.gmail.com>
+In-Reply-To: <CAO658oXVoDsiNt3NtC0qDECOCA8XnLh+aOb4kR=-HhFvddo1aA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Nov 2022 16:38:19 -0800
+Message-ID: <CAEf4BzY4AV9DCVjt-ctUcBNBX-e1HPedcJqega3Rt=qFxeH2qw@mail.gmail.com>
+Subject: Re: Best way to share maps between multiple files/objects?
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@meta.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,27 +67,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Thu, Nov 17, 2022 at 3:46 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> >
->> > Ack. I can replace the unrolling with something that just resolves
->> > "generic" kfuncs to the per-driver implementation maybe? That would at
->> > least avoid netdev->ndo_kfunc_xxx indirect calls at runtime..
->>
->> As stated above, I think we should keep the unrolling. If we end up with
->> an actual CALL instruction for every piece of metadata that's going to
->> suck performance-wise; unrolling is how we keep this fast enough! :)
+On Mon, Nov 14, 2022 at 11:04 AM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
 >
-> Let's start with pure kfuncs without requiring drivers
-> to provide corresponding bpf asm.
-> If pure kfuncs will indeed turn out to be perf limiting
-> then we'll decide on how to optimize them.
+> On Fri, Nov 11, 2022 at 2:34 AM Dave Marchevsky <davemarchevsky@meta.com> wrote:
+> >
+> > On 11/10/22 7:32 PM, Grant Seltzer Richman wrote:
+> > > Hi folks,
+> > >
+> > > I want to organize my BPF programs so that I can load them
+> > > individually. I want this so that if loading one fails (because of
+> > > lack of kernel support for BPF features), I can load a fall-back
+> > > replacement program. To do so, I've organized the BPF programs into
+> > > their own source code files and compiled them individually. Each BPF
+> > > program references what is supposed to be the same ringbuffer. Using
+> > > libbpf I open them and attempt to load each in order.
+> > >
+> > > My question is, how am I supposed to share maps such as ringbuffers
+> > > between them? If I have identical map definitions in each, they have
+> > > their own file descriptors. Is the best way to call
+> > > `bpf_map__reuse_fd()` on each handle of the maps in each BPF object?
+> >
+> > Sounds like each of the source files have the exact same map definitions,
+> > including name? And each is compiled into a separate BPF object?
+> >
+> > If so, adding __uint(pinning, LIBBPF_PIN_BY_NAME); to
+> > each definition will probably be the easiest way to get the map reuse
+> > behavior you want. The first bpf object in the set that successfully loads
+> > will pin its maps by name in /sys/fs/bpf and future objects which load same
+> > maps will reuse them instead of creating new maps.
+>
+> This worked beautifully, thank you for the suggestion!
+>
+> >
+> > selftests/bpf/progs/test_pinning.c demonstrates this behavior.
+> >
+> > I'm curious, though: is this a single BPF program with various fallbacks,
+> > with goal of running only one? Or a set of N programs working together using
+> > same maps, each of which might have fallbacks, with goal of running some
+> > version of all N programs?
+>
+> The latter. We have N programs all sharing M maps. Each program might
+> have fallbacks but some version should be loaded.
+>
+> >
+> > > I'd also take advice on how to better achieve my overall goal of being
+> > > able to load programs individually!
+> >
+> > You can group each program together with its fallbacks in the same
+> > source file / BPF object by disabling autoload for all variants of the
+> > program via SEC("?foobar") syntax. Then in userspace you could turn
+> > autoload on for the first version you'd like to try after opening
+> > the BPF object, try loading the object, try with 2nd variant if that
+> > fails, etc.
+>
+> Thank you for this suggestion as well, but it doesn't seem to work as
+> I get: `load can't be attempted twice`. Is this a potential bug?
+> `obj->loaded` is set to true regardless of success in
+> `bpf_object_load()`
 
-I'm ~90% sure we'll need that optimisation, but OK, we can start from a
-baseline of having them be function calls...
+set_autoload() should be set before bpf_object__load().
+bpf_object__load() can't be loaded twice.
 
--Toke
+I'd do proper detection of what kernel features are available and
+set_autoload() correspondingly. Then do bpf_object__load() once. And
+completely avoid pinning, if I could.
 
+>
+> >
+> > selftests/bpf/progs/dynptr_fail.c + verify_fail function in
+> > selftests/bpf/prog_tests/dynptr.c is an example of this pattern.
+> >
+> > > Thanks so much for your help,
+> > > Grant Seltzer
