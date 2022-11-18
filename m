@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C9F62FC33
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B7E62FC5F
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242500AbiKRSIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 13:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S242647AbiKRSTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 13:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242514AbiKRSI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 13:08:29 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63208E41
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:08:26 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id n20so15108165ejh.0
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:08:26 -0800 (PST)
+        with ESMTP id S242623AbiKRSTE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 13:19:04 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A1E922D9
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:18:56 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-142612a5454so6239264fac.2
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:18:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vu3eNM9O+YyyIP5+0BNuJ+7deTa1ahsgA+9hzr8JCAQ=;
-        b=pglRRk/x3dB9mIy7a41N4tpkgXwv0EXlsi+hMS2+k5BsjzbsCuUhbhAmSpCukR7UW4
-         VNCgy8VrKysxgPEfi30rmsOCua4J3vDUWAMaX6pGCn0ipCj1IRuYrWsUMmuGf8AUVaQS
-         wmYMDw+6NPI9LpK8ygqXgjr0wuQheu8hdX/TindxSBgYjEzbOT2ddV36zgMxPCg7hDA/
-         MGxXhqmbhxZFinQOXysnbN2Cto1k89kwWy50YSvYQmb0G7MIXhfIA/k+/VfJFyRu2mmq
-         UgsMwQtD4TkezW08DKzmOoyiQOR84Yi2fBIf4L1um6yiHQI8etLqiMlnlDEwjYK+z6Z8
-         Aaww==
+        bh=fNnwGanczIlOEoVy4OEmoR/dSYWkyWUH5BAq5Ob+Kiw=;
+        b=gJBrl3WZ97qVM3NI2LxOAIkcLzX+1KjC9HfQrZhs+yxO7EeHBYC0NOA8ndwqQIu9m9
+         MzsuBWsITSp9sLNXnWnwi8naaGOehc9PKEomLULvmyYR0LVTjOgvfoBOwExTadH5bycM
+         ED6yT1CxxGG5yT8Ihb9SmELwyOHU0P7PHFfQpSsH0rSJchYYT5rYPa/qoe7Eg6uKlboE
+         z1T6s7Qdp/DJm3NBAt4hXF16NjB7CW8aAB2kXkctLW1w+x96U0STNaBaAvjnai3NxfiS
+         gIIwlMz9ItIe8AN7iPP/Oa2bPTelXB6lihZ6sqBdThz6xN+JiEbNfe02mmxZjyp8+sBW
+         f0dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vu3eNM9O+YyyIP5+0BNuJ+7deTa1ahsgA+9hzr8JCAQ=;
-        b=Mo0Zl47NiHTzaEl9dP/ysEIPC5bchpnVnP61+dp3yeDx+tpBhG+3Vpvi51tBJ9CoZn
-         W9a0du3kTeL4PzONIkSnn63Hfj8kmsntKNOXoOVpgqCGIjMXzlDQPdbUNXW36HE3PsQr
-         llZYtXFCqeakoeNE8tC8xjKY83oeuGdvIxWQoJqzjWpH7SeUnRV3FhD1XWK0IsL806jQ
-         nm/C3xHeF2OdSJ8j53/2QPbm0xHjCjXRH8shAAFMpuNw1rSqnHid1fJRf0vbme9ZeuV1
-         JblEH27EuKQsCmuIpwK/TmvlvxkCUKuzB0+1ue6b7wavRZLA5qdPM4ymLIVzR66F22xk
-         JBLw==
-X-Gm-Message-State: ANoB5pluHD40fghdjnfud/sO/VJ8p/rholpSBES9TdVcdnXwnyBmvyhL
-        qUzsmCwExSETZMl7G0EdMQdKnAXO0JSSkTN6Wmxo+cQznM0=
-X-Google-Smtp-Source: AA0mqf6C6oUkdBZVtDjq6g1eM43j+O17wXijf5zKHnGWm+kTF/d5M5y5azlYbAulie90kAc4PMkkIsGvp1KXO9re0yk=
-X-Received: by 2002:a17:906:1495:b0:7ad:d250:b904 with SMTP id
- x21-20020a170906149500b007add250b904mr6943450ejc.633.1668794904729; Fri, 18
- Nov 2022 10:08:24 -0800 (PST)
+        bh=fNnwGanczIlOEoVy4OEmoR/dSYWkyWUH5BAq5Ob+Kiw=;
+        b=rA15ri0cuk5BH1T7W9lDh66l4R15hxI14yZF5wryyYYcVvYs0AUtfEcthaSxAP4x6C
+         dYAPNwH5xXBSyqMT7dEkO8Ml9dKO4INF8Oe5BEYDvQlsKdw5SOva8igvJ8CHL4y9jpwC
+         1MY02fO97efaRmcVZCGZtSwN36TglW9hIqs7OaCAIb3PBAIxvXmoyL6Bj9E/HYhnIBEJ
+         MtWBxHm9gYqRBl0j6LFtY3f4GsROc6K+UnZhmUg19MKefmwCZlXS9AoVXUaiSJERYY2O
+         R1+fI+VRxp3A31kpXwVP5pPY/het44Z5HKl2sOmRrlmazY8/Xv1JFz/rQkZdMSZbALyd
+         dp3g==
+X-Gm-Message-State: ANoB5pn1JKjvLziC8cz2K3QYBF00lp+VkoCRjMKkJZPSWMBYslrQmGNW
+        SGD4J7IYbFFehYLw+gtmfpXrYl+M7rE3g4fkscfhoA==
+X-Google-Smtp-Source: AA0mqf5Ar+kY1e8eGdghMnj0xIaR0R7Fv+/GgQjxHkmHfBRbquNZ+pOSQ6UBsy2yKGR7QhNo6JqfeLia+RddEIiT4II=
+X-Received: by 2002:a05:6870:9d95:b0:13b:a163:ca6 with SMTP id
+ pv21-20020a0568709d9500b0013ba1630ca6mr8143380oab.125.1668795535941; Fri, 18
+ Nov 2022 10:18:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20221118015614.2013203-1-memxor@gmail.com> <20221118015614.2013203-12-memxor@gmail.com>
- <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local> <20221118103730.nbai3gzifkjk45eo@apollo>
-In-Reply-To: <20221118103730.nbai3gzifkjk45eo@apollo>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Nov 2022 10:08:13 -0800
-Message-ID: <CAADnVQLYKt5NpUjjEOWzQXYLM7Eo5ogLApRYKk3SAtX6LqeFUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 11/24] bpf: Rewrite kfunc argument handling
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>
+References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-7-sdf@google.com>
+ <e26f75dd-f52f-a69b-6754-54e1fe044a42@redhat.com>
+In-Reply-To: <e26f75dd-f52f-a69b-6754-54e1fe044a42@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 18 Nov 2022 10:18:44 -0800
+Message-ID: <CAKH8qBv8UtHZrgSGzVn3ZJSfkdv1H3kXGbakp9rCFdOABL=3BQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/11] xdp: Carry over xdp metadata into skb context
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,17 +78,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Nov 18, 2022 at 6:05 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> > Pls watch for CI errors and follow up when necessary.
 >
-> Will do.
+> On 15/11/2022 04.02, Stanislav Fomichev wrote:
+> > Implement new bpf_xdp_metadata_export_to_skb kfunc which
+> > prepares compatible xdp metadata for kernel consumption.
+> > This kfunc should be called prior to bpf_redirect
+> > or when XDP_PASS'ing the frame into the kernel (note, the drivers
+> > have to be updated to enable consuming XDP_PASS'ed metadata).
+> >
+> > veth driver is amended to consume this metadata when converting to skb.
+> >
+> > Internally, XDP_FLAGS_HAS_SKB_METADATA flag is used to indicate
+> > whether the frame has skb metadata. The metadata is currently
+> > stored prior to xdp->data_meta. bpf_xdp_adjust_meta refuses
+> > to work after a call to bpf_xdp_metadata_export_to_skb (can lift
+> > this requirement later on if needed, we'd have to memmove
+> > xdp_skb_metadata).
+> >
+>
+> I think it is wrong to refuses using metadata area (bpf_xdp_adjust_meta)
+> when the function bpf_xdp_metadata_export_to_skb() have been called.
+> In my design they were suppose to co-exist, and BPF-prog was expected to
+> access this directly themselves.
+>
+> With this current design, I think it is better to place the struct
+> xdp_skb_metadata (maybe call it xdp_skb_hints) after xdp_frame (in the
+> top of the frame).  This way we don't conflict with metadata and
+> headroom use-cases.  Plus, verifier will keep BPF-prog from accessing
+> this area directly (which seems to be one of the new design goals).
+>
+> By placing it after xdp_frame, I think it would be possible to let veth
+> unroll functions seamlessly access this info for XDP_REDIRECT'ed
+> xdp_frame's.
+>
+> WDYT?
 
-test_progs is failing on s390 with:
+Not everyone seems to be happy with exposing this xdp_skb_metadata via
+uapi though :-(
+So I'll drop this part in the v2 for now. But let's definitely keep
+talking about the future approach.
 
-test_spin_lock_fail_prog:PASS:test_spin_lock_fail__load must fail 0 nsec
-test_spin_lock_fail_prog:FAIL:expected error message unexpected error: -524
+Putting it after xdp_frame SGTM; with this we seem to avoid the need
+to memmove it on adjust_{head,meta}.
 
-I bet it's your change.
-Please take a look.
+But going back to the uapi part, what if we add separate kfunc
+accessors for skb exported metadata?
+
+To export:
+bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx, rx_timestamp)
+bpf_xdp_metadata_export_rx_hash_to_skb(ctx, rx_hash)
+// ^^ these prepare xdp_skb_metadata after xdp_frame, but not expose
+it via uapi/af_xdp/etc
+
+Then bpf_xdp_metadata_export_to_skb can be 'static inline' define in
+the headers:
+
+void bpf_xdp_metadata_export_to_skb(ctx)
+{
+  if (bpf_xdp_metadata_rx_timestamp_supported(ctx))
+    bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx,
+bpf_xdp_metadata_rx_timestamp(ctx));
+  if (bpf_xdp_metadata_rx_hash_supported(ctx))
+    bpf_xdp_metadata_export_rx_hash_to_skb(ctx, bpf_xdp_metadata_rx_hash(ctx));
+}
+
+We can also do the accessors:
+u64 bpf_xdp_metadata_skb_rx_timestamp(ctx)
+u32 bpf_xdp_metadata_skb_rx_hash(ctx)
+
+Hopefully we can unroll at least these, since they are not part of the
+drivers, it should be easier to argue...
+
+The only issue, it seems, is that if the final bpf program would like
+to export this metadata to af_xdp, it has to manually adj_meta and use
+bpf_xdp_metadata_skb_rx_xxx to prepare a custom layout. Not sure
+whether performance would suffer with this extra copy; but we can at
+least try and see..
