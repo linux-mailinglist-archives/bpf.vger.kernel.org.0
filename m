@@ -2,144 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431C162F146
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A504C62F159
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241702AbiKRJeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 04:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
+        id S241411AbiKRJig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 04:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241965AbiKRJeB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 04:34:01 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3097C74E;
-        Fri, 18 Nov 2022 01:33:58 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so3117561wma.1;
-        Fri, 18 Nov 2022 01:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zItZ9cjLCKNwbVcWqZT2DVpSg2RkBqa93OmXRyt9amM=;
-        b=V0Jn1xrOE5ElkZ2kYpJp2yRxQ8CtenJf11LAQqL9pFAo9IPewTZ8XguM0b8G/0BhuQ
-         TCTG6HT90fz1exqyoZm7qPt8i6TW6Q9QEZLSVURJT2al2soZpOuM1VK9Go4i75u28Bpe
-         U5cx2sSdwVSxUlH+HLtn647z4X0AANTFlxc6i4gim9nXN7TGFVksVWFftqmTAu0gUFS+
-         /Jy4YaZSDgMj2ENLUJDd/nGhBdU/EW1QdLJGTHyCT9H6I3mcHGXYAmCGDsNUputEWbQi
-         qNskaWf8qUt3epIg9c67c9AXkg/eAv7FMyQx0UkpdPDzrhx0+aveGr57AoBGyBmVHtAG
-         VKdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zItZ9cjLCKNwbVcWqZT2DVpSg2RkBqa93OmXRyt9amM=;
-        b=ql3eqxKIHFWhCT/B/vOWPJYLDXA5nC1wzJWCgZYDaDHpt40IgCyCEx2N5mWeOTZ2SP
-         A7/Tl8XmJ/lIThF9qIQNzmv9b3ZmeY3CLWDEN39XApEhnXCBCEXVcy0VVtxSpsDuWDU9
-         xwR3vOUqvcdhb131WFMRjn34Jd9aqaGAbfPLn66WFGN0HHei4uyWZ8Cm+jC+8He2xrlF
-         DlwpVzhyri660VD4L5cO63s6UHkhSWgzHSGZgRc7crAbkM2ndSV4WBCgsz0nkZ8QFZ61
-         +WyyNXqDTrBDbtaZab5dvSAjgwowgDaTlFYBn6BTyZwlS4SaOJTtNgr6RDPfDySxD7iv
-         KUZg==
-X-Gm-Message-State: ANoB5pmr+0aY6IoIgbdeDY9BATta5gOdlLS66IANlBm6Zzjh1p+1mrfG
-        aNnngTmbnpk4UYta9I21wsU=
-X-Google-Smtp-Source: AA0mqf7CmdV6z3FuaOw/dSV47sa3iGW71bUKaMq+GRV7QaUr982l97wvigtNDQTuYjz0+GzaArM5hA==
-X-Received: by 2002:a05:600c:1604:b0:3cf:7fb1:e217 with SMTP id m4-20020a05600c160400b003cf7fb1e217mr4342349wmn.92.1668764036538;
-        Fri, 18 Nov 2022 01:33:56 -0800 (PST)
-Received: from imac ([2a02:8010:60a0:0:51ad:9be7:a084:1016])
-        by smtp.gmail.com with ESMTPSA id r3-20020a5d6943000000b002383e977920sm3068675wrw.110.2022.11.18.01.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 01:33:55 -0800 (PST)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     mtahhan@redhat.com, bpf@vger.kernel.org, donhunte@redhat.com,
-        jbrouer@redhat.com, linux-doc@vger.kernel.org,
-        magnus.karlsson@gmail.com, thoiland@redhat.com
-Subject: Re: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_XSKMAP
-In-Reply-To: <8d4899f1-fcd2-edc6-31da-363b13f8049b@gmail.com> (Akira
-        Yokosawa's message of "Fri, 18 Nov 2022 11:36:30 +0900")
-Date:   Fri, 18 Nov 2022 09:33:21 +0000
-Message-ID: <m24juwy5cu.fsf@gmail.com>
-References: <20221117154446.3684330-1-mtahhan@redhat.com>
-        <8d4899f1-fcd2-edc6-31da-363b13f8049b@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
+        with ESMTP id S241546AbiKRJif (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 04:38:35 -0500
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE17EFCFB
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1668764310;
+        bh=L9lq49fnBMKkQ6EuS4f8o+JJ8V25XS/8kzp+eL7tIWE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=vomaaK8om7aXuHPG/6QLlnTsOhG2LOfp1MyQo7vXmVCjQEf5+uK677n15LkBFLJ86
+         JFrohXsDRiOD9dIir6LNznuYWhBnFsqnFEzRw4PBylXhPogt8xmrLFBv8ES6NZ+9T5
+         8eEvVtyJulJFq6NiUGgmv1iEV/UnCayVqIDEruUw=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
+        id 99998261; Fri, 18 Nov 2022 17:38:25 +0800
+X-QQ-mid: xmsmtpt1668764305t267nbr74
+Message-ID: <tencent_4C0B445E0305A18FACA04B4A959B57835107@qq.com>
+X-QQ-XMAILINFO: NkHKfw09D6j8PsoUArMVLcQjYBngMKSICsRNPPynwW4aNwXDhozF5Xfxfozh+U
+         7JZcwTINU7QfSW9nR0uSp2nGEKT2hNFqCSzHVwHeBST3deqAH7PoGgkalzNmjPQ4meuiXLXymvIf
+         EvDNGmMtQs+S7Lxl2CIMK6eKf9QJmjYA0e1kq7x9wiI+Ke/2ZqLMSuJIfOqzXysWMQYG4qp07FHZ
+         V4djqscvuk0rw9UKlIFtUYEDZ4TIDmHXGcOjPhq+soHIQJOrViOEtdWylmVy7WC89SF32WFkBolI
+         B5gDwVFUjydKu/MPb7b01hQkjDuTF05FqvyI+sh5LFw+9TDsgGpmH1NKl+MR1hy2s/0+2maNrWx8
+         JpkBuSdLDZVeAZK3MatCkdkm71xMnqhzPv3e4ogGIhvP2mlIC9/3q6G8/pis/RPfm5oe+DlJf6A7
+         tOQWQ8f/dtraLFXfsFIkKt/nNKB9VemQwTvVqhDm3bTjn0Y/JYtb0gDz0mnzEI7pu0fNG+uIPa5t
+         +4cJGZch4Vs6l2QQE/qQUL3QjlIXyUusSSnvJ8etFcjBOBr6ujiKH1GGTuOEHZCJMrYDsy9bR+l/
+         +T+gPSYQb507fRXMR6JG2cKnjRg4u35FSDlxcpxfbILnvoSO3LQQK3wD/3sVW5gFn/we5ekG749N
+         2frzeyJapq1tb2Jwf1bGwRMw4DP7VVehzmYZ3m2LywiGO1HJLcfymIYNQYkJANDLTUx1GWhQjmdL
+         /HkIehXHA6eMX9irFPaq/GsBG2DRLZfHTcnm6H3ZSoKlZhDC6PCgibe8fvXaDUo+hFzlgZGaxzKm
+         rNsrOKf3HefdZOHE6n7fNrKrglfEsKRKp9/qvEyeYDPuj8m/APIGz6KkN5rS4U2LumP20OvNqbrj
+         HB/IaRCUYYnkOqX6pbKPADXfdPikMzyDx/CNDb4TcNxKOzf1Hx0n2SpBV8OMvQdLsgA5lm9B9g4k
+         Iiy+DPVCK07hGVwcV711u9opps53Cd7d0YhgT9ZECH+oMIGP6N+kAI5efpHC2xnrmyXj3+Kc4=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii.nakryiko@gmail.com, sdf@google.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dxu@dxuuu.xyz, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lkp@intel.com, lorenzo@kernel.org, martin.lau@linux.dev,
+        memxor@gmail.com, mykolal@fb.com, rongtao@cestc.cn,
+        rtoax@foxmail.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared identifier 'NF_NAT_MANIP_SRC'
+Date:   Fri, 18 Nov 2022 17:38:24 +0800
+X-OQ-MSGID: <20221118093824.108797-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAEf4BzZE5=OOp6OesB=P8PE=Ps62fkecDSZ9MzwHCD68=+oN0g@mail.gmail.com>
+References: <CAEf4BzZE5=OOp6OesB=P8PE=Ps62fkecDSZ9MzwHCD68=+oN0g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Akira Yokosawa <akiyks@gmail.com> writes:
->
-> So you have two declarations of bpf_map_lookup_elem() in map_xskmap.rst.
->
-> This will cause "make htmldocs" with Sphinx >=3.1 to emit a warning of:
->
-> /linux/Documentation/bpf/map_xskmap.rst:100: WARNING: Duplicate C declaration, also defined at map_xskmap:71.
-> Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value)'.
->
-> , in addition to a bunch of similar warnings observed at bpf-next:
->
-> /linux/Documentation/bpf/map_cpumap.rst:50: WARNING: Duplicate C declaration, also defined at map_array:43.
-> Declaration is '.. c:function:: int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags);'.
-> /linux/Documentation/bpf/map_cpumap.rst:72: WARNING: Duplicate C declaration, also defined at map_array:35.
-> Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value);'.
-> /linux/Documentation/bpf/map_hash.rst:37: WARNING: Duplicate C declaration, also defined at map_array:43.
-> Declaration is '.. c:function:: long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)'.
-> ... [bunch of similar warnings]
+From: Rong Tao <rongtao@cestc.cn>
 
-That's unfortunate, and I'm responsible for some of those. Not sure how
-we'd know to check for warnings with Sphinx >= 3.1 when
-Documentation/doc-guide/sphinx.rst and
-Documentation/sphinx/requirements.txt both specify version 2.4.4
+commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
 
-> You might want to say you don't care, but they would annoy those
-> who do test "make htmldocs".
->
-> So let me explain why sphinx complains.
->
-> C domain declarations in kernel documentation are for kernel APIs.
-> By default, c:function declarations belong to the top-level namespace,
-> which is intended for kernel APIs.
->
-> IIUC, most APIs described in map*.rst files don't belong to kernel.
-> So I think the way to go is to use the c:namespace directive.
->
-> See: https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#namespacing
->
-> As mentioned there, namespacing works with Sphinx >=3.1.
-> Currently, kernel documentation build scripts support only the
-> "c:namespace" directive, which means you can't switch namespaces in the
-> middle of a .rst file. This limitation comes from the fact that Sphinx
-> 1.7.9 is still in the list for htmldocs at the moment and build scripts
-> emulate namespacing for Sphinx <3.1 in a limited way.
+In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+is compiled as built-in, this issue occurs just if it is compiled as
+module. we just hardcode 1/0 here.
 
-What's the reason for keeping support for Sphinx 1.7.9 and pinning to
-2.4.4 in Documentation/sphinx/requirements.txt if we want to support
-Sphinx >= 3.1? Given that the latest Sphinx release is 5.3.0, and Python
-2 support was dropped in Sphinx 2.0.0 it seems that we need to have a
-higher minimum version and a higher default version.
+How to reproduce the error:
 
-> So please avoid putting function declarations of the same name in
-> a .rst file.
+   $ make -C tools/testing/selftests/bpf/
+   ...
+      CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+      error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+            bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+                                                         ^
+      error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+            bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+                                                         ^
+   2 errors generated.
 
-The same function name, with different signature gets used as a BPF
-helper and as a userspace function. We'd really like to be able to
-document the semantics of both for a given BPF map type, all on the same
-page.
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/testing/selftests/bpf/progs/test_bpf_nf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Is there a better way for us to highlight the function signature,
-without using the c:function:: directive, since they're not really
-function declarations?
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 227e85e85dda..075cd9b31d76 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -157,10 +157,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 
+ 		/* snat */
+ 		saddr.ip = bpf_get_prandom_u32();
+-		bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
++		bpf_ct_set_nat_info(ct, &saddr, sport, 0 /*NF_NAT_MANIP_SRC*/);
+ 		/* dnat */
+ 		daddr.ip = bpf_get_prandom_u32();
+-		bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
++		bpf_ct_set_nat_info(ct, &daddr, dport, 1 /*NF_NAT_MANIP_DST*/);
+ 
+ 		ct_ins = bpf_ct_insert_entry(ct);
+ 		if (ct_ins) {
+-- 
+2.31.1
 
-> The other duplicate warnings shown above can be silenced by the
-> change attached below. It is only as a suggestion and I'm not putting
-> a S-o-b tag.
->
-> Hope this helps,
->
-> Akira
