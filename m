@@ -2,110 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BD362FC2A
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C9F62FC33
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241422AbiKRSGP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 13:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
+        id S242500AbiKRSIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 13:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234351AbiKRSGP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 13:06:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6166679E2F;
-        Fri, 18 Nov 2022 10:06:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 15140B824EB;
-        Fri, 18 Nov 2022 18:06:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDDEBC433D6;
-        Fri, 18 Nov 2022 18:06:09 +0000 (UTC)
-Date:   Fri, 18 Nov 2022 13:06:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Chris Mason <clm@meta.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
-Message-ID: <20221118130608.5ba89bd8@gandalf.local.home>
-In-Reply-To: <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
-References: <20221108220651.24492-1-revest@chromium.org>
-        <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
-        <20221117121617.4e1529d3@gandalf.local.home>
-        <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
-        <20221117174030.0170cd36@gandalf.local.home>
-        <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
-        <20221118114519.2711d890@gandalf.local.home>
-        <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S242514AbiKRSI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 13:08:29 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63208E41
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:08:26 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id n20so15108165ejh.0
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:08:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vu3eNM9O+YyyIP5+0BNuJ+7deTa1ahsgA+9hzr8JCAQ=;
+        b=pglRRk/x3dB9mIy7a41N4tpkgXwv0EXlsi+hMS2+k5BsjzbsCuUhbhAmSpCukR7UW4
+         VNCgy8VrKysxgPEfi30rmsOCua4J3vDUWAMaX6pGCn0ipCj1IRuYrWsUMmuGf8AUVaQS
+         wmYMDw+6NPI9LpK8ygqXgjr0wuQheu8hdX/TindxSBgYjEzbOT2ddV36zgMxPCg7hDA/
+         MGxXhqmbhxZFinQOXysnbN2Cto1k89kwWy50YSvYQmb0G7MIXhfIA/k+/VfJFyRu2mmq
+         UgsMwQtD4TkezW08DKzmOoyiQOR84Yi2fBIf4L1um6yiHQI8etLqiMlnlDEwjYK+z6Z8
+         Aaww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vu3eNM9O+YyyIP5+0BNuJ+7deTa1ahsgA+9hzr8JCAQ=;
+        b=Mo0Zl47NiHTzaEl9dP/ysEIPC5bchpnVnP61+dp3yeDx+tpBhG+3Vpvi51tBJ9CoZn
+         W9a0du3kTeL4PzONIkSnn63Hfj8kmsntKNOXoOVpgqCGIjMXzlDQPdbUNXW36HE3PsQr
+         llZYtXFCqeakoeNE8tC8xjKY83oeuGdvIxWQoJqzjWpH7SeUnRV3FhD1XWK0IsL806jQ
+         nm/C3xHeF2OdSJ8j53/2QPbm0xHjCjXRH8shAAFMpuNw1rSqnHid1fJRf0vbme9ZeuV1
+         JblEH27EuKQsCmuIpwK/TmvlvxkCUKuzB0+1ue6b7wavRZLA5qdPM4ymLIVzR66F22xk
+         JBLw==
+X-Gm-Message-State: ANoB5pluHD40fghdjnfud/sO/VJ8p/rholpSBES9TdVcdnXwnyBmvyhL
+        qUzsmCwExSETZMl7G0EdMQdKnAXO0JSSkTN6Wmxo+cQznM0=
+X-Google-Smtp-Source: AA0mqf6C6oUkdBZVtDjq6g1eM43j+O17wXijf5zKHnGWm+kTF/d5M5y5azlYbAulie90kAc4PMkkIsGvp1KXO9re0yk=
+X-Received: by 2002:a17:906:1495:b0:7ad:d250:b904 with SMTP id
+ x21-20020a170906149500b007add250b904mr6943450ejc.633.1668794904729; Fri, 18
+ Nov 2022 10:08:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221118015614.2013203-1-memxor@gmail.com> <20221118015614.2013203-12-memxor@gmail.com>
+ <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local> <20221118103730.nbai3gzifkjk45eo@apollo>
+In-Reply-To: <20221118103730.nbai3gzifkjk45eo@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 18 Nov 2022 10:08:13 -0800
+Message-ID: <CAADnVQLYKt5NpUjjEOWzQXYLM7Eo5ogLApRYKk3SAtX6LqeFUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 11/24] bpf: Rewrite kfunc argument handling
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 18 Nov 2022 12:44:00 -0500
-Chris Mason <clm@meta.com> wrote:
+On Fri, Nov 18, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> > Pls watch for CI errors and follow up when necessary.
+>
+> Will do.
 
-> > My biggest concern is changing functionality of arbitrary functions by BPF.
-> > I would much rather limit what functions BPF could change with some
-> > annotation.
-> > 
-> > int __bpf_modify foo()
-> > {
-> > 	...
-> > }
-> > 
-> > 
-> > That way if somethings not working, you can see directly in the code that
-> > the function could be modified by a BPF program, instead of getting some
-> > random bug report because a function returned an unexpected result that the
-> > code of that function could never produce.
-> >  
-> 
-> The good news is that BPF generally confines the function replacement
-> through struct ops interfaces.
+test_progs is failing on s390 with:
 
-What struct ops interfaces?
+test_spin_lock_fail_prog:PASS:test_spin_lock_fail__load must fail 0 nsec
+test_spin_lock_fail_prog:FAIL:expected error message unexpected error: -524
 
->  There are also explicit allow lists to
-> limit functions where you can do return value overrides etc, so I think
-
-Where are these lists.
-
-> it's fair to say these concerns are already baked in.  I'm sure they can
-
-How do I know that a function return was modified by BPF? If I'm debugging
-something, is it obvious to the developer that is debugging an issue
-(perhaps unaware of what BPF programs are loaded on the users machine),
-that the return of a function was tweaked by BPF and that could be the
-source of the bug?
-
-> be improved over the long term, but I don't think that's related to this
-> set of functionality on ARM.
-
-I disagree. These issues may have been added to x86, but perhaps we should
-take a deeper look at them again before extending them to other
-architectures.
-
--- Steve
-
+I bet it's your change.
+Please take a look.
