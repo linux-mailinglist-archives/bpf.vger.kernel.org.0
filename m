@@ -2,117 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A504C62F159
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731E862F170
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241411AbiKRJig (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 04:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
+        id S242004AbiKRJkB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 04:40:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241546AbiKRJif (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 04:38:35 -0500
-Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE17EFCFB
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:38:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1668764310;
-        bh=L9lq49fnBMKkQ6EuS4f8o+JJ8V25XS/8kzp+eL7tIWE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=vomaaK8om7aXuHPG/6QLlnTsOhG2LOfp1MyQo7vXmVCjQEf5+uK677n15LkBFLJ86
-         JFrohXsDRiOD9dIir6LNznuYWhBnFsqnFEzRw4PBylXhPogt8xmrLFBv8ES6NZ+9T5
-         8eEvVtyJulJFq6NiUGgmv1iEV/UnCayVqIDEruUw=
-Received: from localhost.localdomain ([39.156.73.13])
-        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
-        id 99998261; Fri, 18 Nov 2022 17:38:25 +0800
-X-QQ-mid: xmsmtpt1668764305t267nbr74
-Message-ID: <tencent_4C0B445E0305A18FACA04B4A959B57835107@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8PsoUArMVLcQjYBngMKSICsRNPPynwW4aNwXDhozF5Xfxfozh+U
-         7JZcwTINU7QfSW9nR0uSp2nGEKT2hNFqCSzHVwHeBST3deqAH7PoGgkalzNmjPQ4meuiXLXymvIf
-         EvDNGmMtQs+S7Lxl2CIMK6eKf9QJmjYA0e1kq7x9wiI+Ke/2ZqLMSuJIfOqzXysWMQYG4qp07FHZ
-         V4djqscvuk0rw9UKlIFtUYEDZ4TIDmHXGcOjPhq+soHIQJOrViOEtdWylmVy7WC89SF32WFkBolI
-         B5gDwVFUjydKu/MPb7b01hQkjDuTF05FqvyI+sh5LFw+9TDsgGpmH1NKl+MR1hy2s/0+2maNrWx8
-         JpkBuSdLDZVeAZK3MatCkdkm71xMnqhzPv3e4ogGIhvP2mlIC9/3q6G8/pis/RPfm5oe+DlJf6A7
-         tOQWQ8f/dtraLFXfsFIkKt/nNKB9VemQwTvVqhDm3bTjn0Y/JYtb0gDz0mnzEI7pu0fNG+uIPa5t
-         +4cJGZch4Vs6l2QQE/qQUL3QjlIXyUusSSnvJ8etFcjBOBr6ujiKH1GGTuOEHZCJMrYDsy9bR+l/
-         +T+gPSYQb507fRXMR6JG2cKnjRg4u35FSDlxcpxfbILnvoSO3LQQK3wD/3sVW5gFn/we5ekG749N
-         2frzeyJapq1tb2Jwf1bGwRMw4DP7VVehzmYZ3m2LywiGO1HJLcfymIYNQYkJANDLTUx1GWhQjmdL
-         /HkIehXHA6eMX9irFPaq/GsBG2DRLZfHTcnm6H3ZSoKlZhDC6PCgibe8fvXaDUo+hFzlgZGaxzKm
-         rNsrOKf3HefdZOHE6n7fNrKrglfEsKRKp9/qvEyeYDPuj8m/APIGz6KkN5rS4U2LumP20OvNqbrj
-         HB/IaRCUYYnkOqX6pbKPADXfdPikMzyDx/CNDb4TcNxKOzf1Hx0n2SpBV8OMvQdLsgA5lm9B9g4k
-         Iiy+DPVCK07hGVwcV711u9opps53Cd7d0YhgT9ZECH+oMIGP6N+kAI5efpHC2xnrmyXj3+Kc4=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     andrii.nakryiko@gmail.com, sdf@google.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dxu@dxuuu.xyz, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        lkp@intel.com, lorenzo@kernel.org, martin.lau@linux.dev,
-        memxor@gmail.com, mykolal@fb.com, rongtao@cestc.cn,
-        rtoax@foxmail.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
-Subject: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared identifier 'NF_NAT_MANIP_SRC'
-Date:   Fri, 18 Nov 2022 17:38:24 +0800
-X-OQ-MSGID: <20221118093824.108797-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <CAEf4BzZE5=OOp6OesB=P8PE=Ps62fkecDSZ9MzwHCD68=+oN0g@mail.gmail.com>
-References: <CAEf4BzZE5=OOp6OesB=P8PE=Ps62fkecDSZ9MzwHCD68=+oN0g@mail.gmail.com>
+        with ESMTP id S241983AbiKRJj7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 04:39:59 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B4818B1E
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:39:58 -0800 (PST)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AI8q6Ic010416;
+        Fri, 18 Nov 2022 09:39:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ApGhgdgxwbo//4e8BI/r7ZLAAUWOn9Ws0+lfryVpQTI=;
+ b=LIlrG51nw5xO8T2SRisyjV5LmPoUwo7QwP4af9F5jrSOe0rWFqvDItbXnbIyR4T/yxAy
+ V/ZITCaAVuyu35wtA7k2Wr6yDMf3xJvOPKo2+LHZly+SB3+EWhIuBNDVCQnUICfqjckI
+ ov9fpII9WPEgiQ04kuog0x0WV/qciA723UorCA4g+mocmK+oWTlIdiR0/icOpBfHtLTH
+ HlCwvETB5Ap4GurYacmkWqcg0HQw2FvixVIFnZ+vIvdB1mrQO3OOjeltWwPNFbVuActa
+ 5tDDREmrBuYOeH8W35Ng9ytYsNjogDi4BBJmqnBaPUN2T04dtsgGxmlEyAB6CycgWzKf VA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kx6wqh0r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Nov 2022 09:39:36 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AI9avF7014616;
+        Fri, 18 Nov 2022 09:39:34 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3kwthe0s6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Nov 2022 09:39:34 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AI9eCEY51904950
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Nov 2022 09:40:12 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3773742042;
+        Fri, 18 Nov 2022 09:39:32 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CBC1642041;
+        Fri, 18 Nov 2022 09:39:28 +0000 (GMT)
+Received: from [9.211.152.48] (unknown [9.211.152.48])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Nov 2022 09:39:28 +0000 (GMT)
+Message-ID: <548de735-52d7-f5bb-5c85-370a1c233a08@linux.ibm.com>
+Date:   Fri, 18 Nov 2022 15:09:26 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20221110184303.393179-1-hbathini@linux.ibm.com>
+ <00efe9b1-d9fd-441c-9eb4-cbf25d82baf2@csgroup.eu>
+ <5b59b7df-d2ec-1664-f0fb-764c9b93417c@linux.ibm.com>
+ <bf0af91e-861c-1608-7150-d31578be9b02@csgroup.eu>
+ <e0266414-843f-db48-a56d-1d8a8944726a@csgroup.eu>
+ <6151f5c6-2e64-5f2d-01b1-6f517f4301c0@linux.ibm.com>
+ <02496f7a-51d8-4fc0-161d-b29d5e657089@csgroup.eu>
+ <9d5c390a-31db-4f93-203d-281b0831d37f@linux.ibm.com>
+ <c651bd44-d0ca-e3cf-0639-6b42b33f4666@csgroup.eu>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <c651bd44-d0ca-e3cf-0639-6b42b33f4666@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1rc3Sq6bJrCr4aKtC77Pj-POMcvAj6AL
+X-Proofpoint-GUID: 1rc3Sq6bJrCr4aKtC77Pj-POMcvAj6AL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-17_06,2022-11-17_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 bulkscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211180057
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
 
-commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
-introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
-and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
-kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
 
-In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
-is compiled as built-in, this issue occurs just if it is compiled as
-module. we just hardcode 1/0 here.
+On 18/11/22 2:21 pm, Christophe Leroy wrote:
+> 
+> 
+> Le 18/11/2022 à 09:39, Hari Bathini a écrit :
+>>
+>>
+>> On 17/11/22 12:29 pm, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 16/11/2022 à 18:01, Hari Bathini a écrit :
+>>>>
+>>>>
+>>>> On 16/11/22 12:14 am, Christophe Leroy wrote:
+>>>>>
+>>>>>
+>>>>> Le 14/11/2022 à 18:27, Christophe Leroy a écrit :
+>>>>>>
+>>>>>>
+>>>>>> Le 14/11/2022 à 15:47, Hari Bathini a écrit :
+>>>>>>> Hi Christophe,
+>>>>>>>
+>>>>>>> On 11/11/22 4:55 pm, Christophe Leroy wrote:
+>>>>>>>> Le 10/11/2022 à 19:43, Hari Bathini a écrit :
+>>>>>>>>> Most BPF programs are small, but they consume a page each. For
+>>>>>>>>> systems
+>>>>>>>>> with busy traffic and many BPF programs, this may also add
+>>>>>>>>> significant
+>>>>>>>>> pressure on instruction TLB. High iTLB pressure usually slows down
+>>>>>>>>> the
+>>>>>>>>> whole system causing visible performance degradation for production
+>>>>>>>>> workloads.
+>>>>>>>>>
+>>>>>>>>> bpf_prog_pack, a customized allocator that packs multiple bpf
+>>>>>>>>> programs
+>>>>>>>>> into preallocated memory chunks, was proposed [1] to address it.
+>>>>>>>>> This
+>>>>>>>>> series extends this support on powerpc.
+>>>>>>>>>
+>>>>>>>>> Patches 1 & 2 add the arch specific functions needed to support
+>>>>>>>>> this
+>>>>>>>>> feature. Patch 3 enables the support for powerpc. The last patch
+>>>>>>>>> ensures cleanup is handled racefully.
+>>>>>>>>>
+>>>>>>>
+>>>>>>>>> Tested the changes successfully on a PowerVM. patch_instruction(),
+>>>>>>>>> needed for bpf_arch_text_copy(), is failing for ppc32. Debugging
+>>>>>>>>> it.
+>>>>>>>>> Posting the patches in the meanwhile for feedback on these changes.
+>>>>>>>>
+>>>>>>>> I did a quick test on ppc32, I don't get such a problem, only
+>>>>>>>> something
+>>>>>>>> wrong in the dump print as traps intructions only are dumped, but
+>>>>>>>> tcpdump works as expected:
+>>>>>>>
+>>>>>>> Thanks for the quick test. Could you please share the config you
+>>>>>>> used.
+>>>>>>> I am probably missing a few knobs in my conifg...
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>> I also managed to test it on QEMU. The config is based on
+>>>>> pmac32_defconfig.
+>>>>
+>>>> I had the same config but hit this problem:
+>>>>
+>>>>        # echo 1 > /proc/sys/net/core/bpf_jit_enable; modprobe test_bpf
+>>>>        test_bpf: #0 TAX
+>>>>        ------------[ cut here ]------------
+>>>>        WARNING: CPU: 0 PID: 96 at arch/powerpc/net/bpf_jit_comp.c:367
+>>>> bpf_int_jit_compile+0x8a0/0x9f8
+>>>
+>>> I get no such problem, on QEMU, and I checked the .config has:
+>>
+>>> CONFIG_STRICT_KERNEL_RWX=y
+>>> CONFIG_STRICT_MODULE_RWX=y
+>>
+>> Yeah. That did the trick.
+> 
+> Interesting. I guess we have to find out why it fails when those config
+> are missing.
+> 
+> Maybe module code plays with RO and NX flags even if
+> CONFIG_STRICT_MODULE_RWX is not selected ?
 
-How to reproduce the error:
+Need to look at the code closely but fwiw, observing same failure on
+64-bit as well with !STRICT_RWX...
 
-   $ make -C tools/testing/selftests/bpf/
-   ...
-      CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-      error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
-            bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-                                                         ^
-      error: use of undeclared identifier 'NF_NAT_MANIP_DST'
-            bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-                                                         ^
-   2 errors generated.
-
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/progs/test_bpf_nf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 227e85e85dda..075cd9b31d76 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -157,10 +157,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 
- 		/* snat */
- 		saddr.ip = bpf_get_prandom_u32();
--		bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-+		bpf_ct_set_nat_info(ct, &saddr, sport, 0 /*NF_NAT_MANIP_SRC*/);
- 		/* dnat */
- 		daddr.ip = bpf_get_prandom_u32();
--		bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-+		bpf_ct_set_nat_info(ct, &daddr, dport, 1 /*NF_NAT_MANIP_DST*/);
- 
- 		ct_ins = bpf_ct_insert_entry(ct);
- 		if (ct_ins) {
--- 
-2.31.1
-
+Thanks
+Hari
