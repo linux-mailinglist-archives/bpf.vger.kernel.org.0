@@ -2,190 +2,378 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D7362F013
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 09:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5C162F082
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241425AbiKRIvn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 03:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S231534AbiKRJHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 04:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241210AbiKRIvj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 03:51:39 -0500
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-eopbgr120075.outbound.protection.outlook.com [40.107.12.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABAB2D1FF
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 00:51:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VNqkq7rLgKDiaHwNWFy7npPDpYblDNFK8fEpa5l1lukM1pZ66gzsLNZy9Vf1KEF8nQfXBtsDTHBI1QKX5780UXrTBQvoywhSrkx47ITA641OInHF6ixyOsM23+N7+pov+P/dcW/1PJud4K5we7uncSSIOAaiOijyBF6i6lqAjLSqtsb3y7ZM4LtXxBJNGnNXz3Bh2573ES2EHZXGk5vi+R3naycTGXPiEPWLCtDMjvfFRBQftSzqwfHqzbGlelgDBYSwJTxdzqNYXzWMPjBIFUIpYyEvDjfRRPPDJbIpkw0kO+lDEN9Sqkrhu1Dpq6pDX7jqrF3JxrjA5uWr6ZKegg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gGn8uhaQtbUVc497XEt+CBFgfyNLq7KojGVa/kwpLjM=;
- b=Nl6rxkRY0etm7fkMhHNkmiaVG4tcfRZAHiQAqONsAOQpI34hgpuQzz1z5Zmn2zwS9zzW164JvWCEurZ666xWpPvslOGyegEs8+0RIkZdQFDv695gD9ZlzdHE6h1YUXcQYJIhQn89l5L9/eyXPEYvc7O29gQ3DVeONwI8lE/pPFXuFm6D6e9itJckEg34rCeygQYCvM4c3+66v8ZQK+fhT27f5GHQMgwM+AQXh4hRY2bDk+0y2GUPv6PyDCX6QVG+TUIfoS7OnnkA+ta68PrWY1dQjH3A/7HVQWcWt5MGbxPsZZo3oSO3cR1OD240zFA7YWhxaBh80V0INK6VMSALyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gGn8uhaQtbUVc497XEt+CBFgfyNLq7KojGVa/kwpLjM=;
- b=degy/qK/0YJsYfGf6Zu2wzxuL2sUgThoidmKEnDPmEwOt45jjS4+9UjwXPm7qPQ6Y3gsUlpDVKGIDALE9QNKWOkruk6VQ85Imxgv6h13PLPWRquehwexG8a0AyDbkaZj8HczOcbngf0Kd2KzWP35KrFKCgfHqWtdojmOPkkibuPanbKG/ymu/dsYfpVWqRhpHOUz9v1UswTm2TyX1mQY3iT73kj5ZDhXqCoZ1jNXVF8M5AjlC4bBlDtiqxH7rR/aj4/7Ouu1CDExWKA0sA3tKZtL/17K2dYjUKbukV6pMymxuSVeRfhX2oCbKAv3z4yDjlj3RK8HTzx7u2aREVxNtA==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB1782.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.9; Fri, 18 Nov
- 2022 08:51:31 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6%9]) with mapi id 15.20.5813.020; Fri, 18 Nov 2022
- 08:51:31 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Hari Bathini <hbathini@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
-Thread-Topic: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
-Thread-Index: AQHY9TR92HLsIR9PiEOmF5X/4UnXLK45ljcAgATvboCAACzCgIABp7yAgAF1qQCAAOn5gIABrkOAgAADd4A=
-Date:   Fri, 18 Nov 2022 08:51:31 +0000
-Message-ID: <c651bd44-d0ca-e3cf-0639-6b42b33f4666@csgroup.eu>
-References: <20221110184303.393179-1-hbathini@linux.ibm.com>
- <00efe9b1-d9fd-441c-9eb4-cbf25d82baf2@csgroup.eu>
- <5b59b7df-d2ec-1664-f0fb-764c9b93417c@linux.ibm.com>
- <bf0af91e-861c-1608-7150-d31578be9b02@csgroup.eu>
- <e0266414-843f-db48-a56d-1d8a8944726a@csgroup.eu>
- <6151f5c6-2e64-5f2d-01b1-6f517f4301c0@linux.ibm.com>
- <02496f7a-51d8-4fc0-161d-b29d5e657089@csgroup.eu>
- <9d5c390a-31db-4f93-203d-281b0831d37f@linux.ibm.com>
-In-Reply-To: <9d5c390a-31db-4f93-203d-281b0831d37f@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB1782:EE_
-x-ms-office365-filtering-correlation-id: 45184633-8295-4d66-9246-08dac94216e2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0Tti3vuNBvjNYAz+DGwV75SnivrQaSXjBCQt1dgfZG8ZfHL5FbBjfVUpL41xdzU2S4MJV71Z1RbkNlTeTej1tzkRhxD+OsMlaN9BLPVyG6xdLoR6Muk/NCbFcFuLUSxgV8L3KJ8AKgqPXUDnJNwV4Hf8el5tl0PxTdf7aoRkkpBSsa+0MdQO7NS3xVAC9A4MP279YUPsfupGXAv21r9eOWBdkr1bPZaUvACzObCL0Qha3r9/AQZxTey2bL5sdcwWO350BKSSSxRXmmQ2yOm5PSWQDBRADEyQvEwWkjO9cyn/QUiknMdOVpvVsKVU3DzlomGrl5nKlVJBKPdT1ff4Lsun2VpXP3WS/WhhHtoxpAUTXxvAYVZbtrxk+yitHKp/Hc0C8Le99FIUXVWSzQ3ZAOhpEIk7F5OlyPUlTP1mghA1xZG3Oh59vU1NagUeG00VUHmsCm8eVDsqzwu+PBzSV0Lve2flTdrxv54+b3w0iXX5oRTwwd19PFnPmeGiMW+zs5kiyl/kjLlXpmRGBzrRrS5sn1dgKKwz5WSPDReKLtO8tFf0r1pQJNGgwkYrUI8BfGISNhUPcDNVZIgh9m+0r6jaOVrj2y0D6OWhQ0F1lG/jT/LwZqkndhFsLcf7CpPWQuSDmQIwStaW1oPY7+m/P4yWEuBC9T6qKO+1cGukvZGpcUaKDiVJNoSHZsia5f/HRa4l0MdVWPrn5QPtPZ2THjnxKVFhsVUQM2E7xpzGIfaHSORTftQ9XkhEnxDkIjdYSC1EJ4fXIWAAQ/x4hbtAIA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(396003)(39850400004)(366004)(136003)(376002)(451199015)(54906003)(53546011)(110136005)(316002)(31686004)(26005)(4326008)(64756008)(8676002)(6512007)(478600001)(6486002)(91956017)(66946007)(66556008)(6506007)(71200400001)(66446008)(76116006)(66476007)(186003)(5660300002)(66574015)(41300700001)(8936002)(2616005)(44832011)(36756003)(2906002)(83380400001)(38100700002)(38070700005)(31696002)(86362001)(122000001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NXJZdHU3OFoyMWpSdFEzK3FUTVZUVTZpeVVVTml3SkdrSkFJeEFwdHA1Rk1G?=
- =?utf-8?B?TGhwNWUzNlczN0hNNklGQncySFRaZ0ltOHpjVzdpeE5lUmx5VVMyY0E3RVlh?=
- =?utf-8?B?ZjZUTXN2eTA3bWF1Qkp5RU5scXJoZng1ZlUxSVRhS2E1MDJYTk1vUkQydmJr?=
- =?utf-8?B?WThFNXh2a3pwakxSZ3crYTBob2ZXYkRzVkJ3T2x2eDFmUC9VdHViTE5FbllE?=
- =?utf-8?B?eVh5RkVzWERXZE5HMUx1SmE0c3dwYThlNXdMWmZmMHRJc0FVNFlvNjJQQ2Vx?=
- =?utf-8?B?SzBqazIwNTNGOC9VakJhb1ZPVU13UWVDZzY0VzlCdFpjMUdjemZNMnBnckZQ?=
- =?utf-8?B?dmhheDhjOEx5Tll5RktKTVpDYmk3Y0NsaEV2czFCbmJLRzlsL0Z3TWo0UFR1?=
- =?utf-8?B?cHNyOUpKL1pweHZtV1ZOMjJqa1BQZ3h0MWxOaldFM1NmWlNhWHB4TkxhME9x?=
- =?utf-8?B?WjJwNEJib2ZhZ295K0NOakkybExsYTYyREhpc012bVlMcHlrU2xKVzBjMkFn?=
- =?utf-8?B?QzVJYk9tNzZhaDZTZ0F5bVBlL0M1czVVWTN5R3BaZVk4WFp6ZnB1L3VQRTI0?=
- =?utf-8?B?WDJib21hekRhSzJjeGM5UDZodk5wZ0NTZVpsQit0NGpnWWNDdVFVRVQwVW5N?=
- =?utf-8?B?WGxnMElCSDFnSVhpc2UrVDMrR0JiYng4SENkbDV4RG9oYm5mZGV0ZmRGdHdX?=
- =?utf-8?B?b0VJQjZ6QWxWWU1zVkJYZWY5NllsaHp6OUk5Z0p6MTBJQ2FsMUNVanpUT2V6?=
- =?utf-8?B?ZFZCOVp1aExZUFlCaE5pbmorQXBOMm1oRHZzWFVaQUpCSE53WWwweEJmSERW?=
- =?utf-8?B?cEIvR1V2eUpCN3U4QitMTjZibHRIamZIeTZmYlZSblhzV1habTkrd0FEZHpQ?=
- =?utf-8?B?ZkQwWjdUWUQya21HNmhRZzJTVVcwWGZlU1FYSU5xSG92bFgxanc3OU53TCtp?=
- =?utf-8?B?S1hPTG9OdzNIRmlIZ0NrZzdCMnhCWVNOVUc2YmdtNkdzT2ZQVFkwVUJRT0ov?=
- =?utf-8?B?RE5BMmdqV0RWNmFYaHJCZ1Bwa01Fa3k0b1B4RWNtTTNSQjV1K0p5bzZOQlAv?=
- =?utf-8?B?TDRJMWNOM1dzM2dGY1pURStoTzZGcDV4YktBamNBMHV5U1Y1V1N1TTNKT05L?=
- =?utf-8?B?K0FFTG43ZUN1TGRTTkdtOG1tWmRST2xCdHM3ak16bm1LZUNJWkVkTmVsWXRn?=
- =?utf-8?B?Y2RZM0NiQVduWi8zS2YwZjViRE54R0F2VHZUWklFZURHb1RWanBjVXJEbW9j?=
- =?utf-8?B?aG41cUFKcnBPb1NrVEJvdVNCQ2wyRFVhemNmaDFFR2FEREFnVkFFelIzSkp4?=
- =?utf-8?B?dnJGWlI1dkwzUDZ3UmZiSWhjL3dLTXR0ZVJBU000SzltUzQ3ZmhkcGpFSitn?=
- =?utf-8?B?bmRqYWYzakZmUVk4SldkM0g1RTMvVFdTWjQvZ1UxaHRVbkVmMTJVSVlHcElW?=
- =?utf-8?B?dFNjV2VmZkZpbm0xWlZLZGhEZHZQZDZYaUhhOUFud250R09GM2NnbElGYmY2?=
- =?utf-8?B?TWhzNUZ0blFiSW1vbFBNU3dmaDN6QzB5aUVMbmN5T0ZoaTJtdnZBRHA5bG5M?=
- =?utf-8?B?d3YvTFRmU1RDQkI4L1hTQXYvTWIvb2pwd1JvaG43ZG84NnZWbVZhcXN4MlRm?=
- =?utf-8?B?cTFhT2lQMVFMV3k4YzlsMFIyNXY4Q0laVGtsRzNDMEVST2VkUDJlSWorUkZP?=
- =?utf-8?B?VVFEMUYxNDRNSGdWcUtDWFoycDNsYmFPU0Y4MWdyM3k2R0FLbVlaV2ZsQmhj?=
- =?utf-8?B?UzB1dnkzRTVRcVljbmRCem5xR21pUGY5c0duYXNOQXFKWS9tRGxVYUl5Sng3?=
- =?utf-8?B?c2JHUkRuMDNUa0VNNHA4VmdqVWFFUEtHZDk0UG5NSGMrdGM1NHZBQTJCYnBu?=
- =?utf-8?B?czdTZ2hYNXZzZUFMazBSQnlPblBPNTZXLy9vc2pjVXpTcG5qWTB1VncxNjdj?=
- =?utf-8?B?SFZHNWVKVFlIdVhKMFBxbUNXaXZKUXZpTWxSdUFPVkNGSjFPdzdxSHNRckpJ?=
- =?utf-8?B?TkhRQmpXcU10T056RnRka2Ewc2NseFJBdVAyUUFkMkJOVmZvVmFrZjR1RElz?=
- =?utf-8?B?Y3FpSXNHK1YwbkFyalQzYlFzT001UjV1V1RZSjVvNEhpSGFOQjUvK2JZcFBF?=
- =?utf-8?Q?VEBiSjjoJfVvL1ZQVr1gvQ0kq?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B725F86474E2104AAF83FA5EBCDCDCF7@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        with ESMTP id S241617AbiKRJHq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 04:07:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0770D8B100
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:06:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668762405;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hr5QQVNLV+xo6djdb5pphhYxpRsXQdhsRF7Y9pLIjMM=;
+        b=dSieaRrwPlWIBA2fpsL3HSN2uf3n/4XoaXfpOOIBDj6d/tJur/LRoJX9yq/XgxWL76HOu4
+        v1KhXrW0FDYfUR4znbfJsmncgKfbWFuru8gHMmHHykGn6HuVdGj0PzkIhnXiYwLLaP6NHm
+        EgxpO3aSppJVKdhMSjB75GE/urwg1ec=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-209-eQWi0JUSN_-hTc4V1WrcHg-1; Fri, 18 Nov 2022 04:06:43 -0500
+X-MC-Unique: eQWi0JUSN_-hTc4V1WrcHg-1
+Received: by mail-wm1-f71.google.com with SMTP id x10-20020a05600c420a00b003cfa33f2e7cso1984630wmh.2
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:06:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hr5QQVNLV+xo6djdb5pphhYxpRsXQdhsRF7Y9pLIjMM=;
+        b=dOAO4CxFVIyzwCKstvua023c3+Zoz2AbfbuaBsqoaNajZmaePefiihSQ3ovLfdFfyE
+         cjTK37cu1fUc2hkIxaTAzcaTzj57kQXsDL5/tI1oGRXE8ue6P5lOBhcRSYp0pI6uk2Fc
+         u8uJF3oRAzw+37qKycqIcVW97stf8adx2BALaaQdZWJMK4qEadKJwEDH53kVx1QVn21J
+         lTfLU9Id98Xm14vY5FIZQVG5qRvI5AwVn9tP7kvo9Y7iAb7/TUPr6VIPKZXyhhPG/Jcr
+         ijSnwspI21uLTwUUIzgkNka5FLmStZ7qS8FJHNTyb3PYU5cLEaK4eKr/5VhviVTtQJSv
+         Q7SA==
+X-Gm-Message-State: ANoB5pkjSxfUFlWoreXlu1yVTQgSQjlZyMXGV2dw3PJiYEh0JeGPqG1r
+        dCLCcxrqXTZXEHmMOphR0+hnsnrziE9+kGaVuY8DPdxWpt4edPljsp2zzlVQvd/3SWs87sZc7Hp
+        tlLVrHo3FuWuR
+X-Received: by 2002:a1c:7504:0:b0:3cf:6b10:ca8d with SMTP id o4-20020a1c7504000000b003cf6b10ca8dmr7991887wmc.44.1668762402651;
+        Fri, 18 Nov 2022 01:06:42 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6B6EnEPNsZRf7I2/qtD7VrCjGl51ZV8jjJP1nI8NNjHgJIqCNkjvZEW/4Sq3PavDJqrHTsnA==
+X-Received: by 2002:a1c:7504:0:b0:3cf:6b10:ca8d with SMTP id o4-20020a1c7504000000b003cf6b10ca8dmr7991864wmc.44.1668762402285;
+        Fri, 18 Nov 2022 01:06:42 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id r5-20020a5d6945000000b00241bfce14e9sm1361829wrw.107.2022.11.18.01.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Nov 2022 01:06:41 -0800 (PST)
+Message-ID: <5ba04a92-d2c7-4e5f-2bfc-5cea4a08cea2@redhat.com>
+Date:   Fri, 18 Nov 2022 10:06:38 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45184633-8295-4d66-9246-08dac94216e2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2022 08:51:31.4850
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BegPjIH+KWuSr+ERhpuDka3PtOCqtd8ZBG37wvjEmITD4v7l2erfRsSybG0AsSwnn88Sbxihtf3pLzIg5MrBtFS+HUZQuW4iT3XqwUdsZM0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB1782
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v5 05/19] iommufd: Document overview of iommufd
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Lixiao Yang <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <5-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <5-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCkxlIDE4LzExLzIwMjIgw6AgMDk6MzksIEhhcmkgQmF0aGluaSBhIMOpY3JpdMKgOg0KPiAN
-Cj4gDQo+IE9uIDE3LzExLzIyIDEyOjI5IHBtLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4N
-Cj4+DQo+PiBMZSAxNi8xMS8yMDIyIMOgIDE4OjAxLCBIYXJpIEJhdGhpbmkgYSDDqWNyaXTCoDoN
-Cj4+Pg0KPj4+DQo+Pj4gT24gMTYvMTEvMjIgMTI6MTQgYW0sIENocmlzdG9waGUgTGVyb3kgd3Jv
-dGU6DQo+Pj4+DQo+Pj4+DQo+Pj4+IExlIDE0LzExLzIwMjIgw6AgMTg6MjcsIENocmlzdG9waGUg
-TGVyb3kgYSDDqWNyaXTCoDoNCj4+Pj4+DQo+Pj4+Pg0KPj4+Pj4gTGUgMTQvMTEvMjAyMiDDoCAx
-NTo0NywgSGFyaSBCYXRoaW5pIGEgw6ljcml0wqA6DQo+Pj4+Pj4gSGkgQ2hyaXN0b3BoZSwNCj4+
-Pj4+Pg0KPj4+Pj4+IE9uIDExLzExLzIyIDQ6NTUgcG0sIENocmlzdG9waGUgTGVyb3kgd3JvdGU6
-DQo+Pj4+Pj4+IExlIDEwLzExLzIwMjIgw6AgMTk6NDMsIEhhcmkgQmF0aGluaSBhIMOpY3JpdMKg
-Og0KPj4+Pj4+Pj4gTW9zdCBCUEYgcHJvZ3JhbXMgYXJlIHNtYWxsLCBidXQgdGhleSBjb25zdW1l
-IGEgcGFnZSBlYWNoLiBGb3INCj4+Pj4+Pj4+IHN5c3RlbXMNCj4+Pj4+Pj4+IHdpdGggYnVzeSB0
-cmFmZmljIGFuZCBtYW55IEJQRiBwcm9ncmFtcywgdGhpcyBtYXkgYWxzbyBhZGQNCj4+Pj4+Pj4+
-IHNpZ25pZmljYW50DQo+Pj4+Pj4+PiBwcmVzc3VyZSBvbiBpbnN0cnVjdGlvbiBUTEIuIEhpZ2gg
-aVRMQiBwcmVzc3VyZSB1c3VhbGx5IHNsb3dzIGRvd24NCj4+Pj4+Pj4+IHRoZQ0KPj4+Pj4+Pj4g
-d2hvbGUgc3lzdGVtIGNhdXNpbmcgdmlzaWJsZSBwZXJmb3JtYW5jZSBkZWdyYWRhdGlvbiBmb3Ig
-cHJvZHVjdGlvbg0KPj4+Pj4+Pj4gd29ya2xvYWRzLg0KPj4+Pj4+Pj4NCj4+Pj4+Pj4+IGJwZl9w
-cm9nX3BhY2ssIGEgY3VzdG9taXplZCBhbGxvY2F0b3IgdGhhdCBwYWNrcyBtdWx0aXBsZSBicGYN
-Cj4+Pj4+Pj4+IHByb2dyYW1zDQo+Pj4+Pj4+PiBpbnRvIHByZWFsbG9jYXRlZCBtZW1vcnkgY2h1
-bmtzLCB3YXMgcHJvcG9zZWQgWzFdIHRvIGFkZHJlc3MgaXQuIA0KPj4+Pj4+Pj4gVGhpcw0KPj4+
-Pj4+Pj4gc2VyaWVzIGV4dGVuZHMgdGhpcyBzdXBwb3J0IG9uIHBvd2VycGMuDQo+Pj4+Pj4+Pg0K
-Pj4+Pj4+Pj4gUGF0Y2hlcyAxICYgMiBhZGQgdGhlIGFyY2ggc3BlY2lmaWMgZnVuY3Rpb25zIG5l
-ZWRlZCB0byBzdXBwb3J0IA0KPj4+Pj4+Pj4gdGhpcw0KPj4+Pj4+Pj4gZmVhdHVyZS4gUGF0Y2gg
-MyBlbmFibGVzIHRoZSBzdXBwb3J0IGZvciBwb3dlcnBjLiBUaGUgbGFzdCBwYXRjaA0KPj4+Pj4+
-Pj4gZW5zdXJlcyBjbGVhbnVwIGlzIGhhbmRsZWQgcmFjZWZ1bGx5Lg0KPj4+Pj4+Pj4NCj4+Pj4+
-Pg0KPj4+Pj4+Pj4gVGVzdGVkIHRoZSBjaGFuZ2VzIHN1Y2Nlc3NmdWxseSBvbiBhIFBvd2VyVk0u
-IHBhdGNoX2luc3RydWN0aW9uKCksDQo+Pj4+Pj4+PiBuZWVkZWQgZm9yIGJwZl9hcmNoX3RleHRf
-Y29weSgpLCBpcyBmYWlsaW5nIGZvciBwcGMzMi4gRGVidWdnaW5nIA0KPj4+Pj4+Pj4gaXQuDQo+
-Pj4+Pj4+PiBQb3N0aW5nIHRoZSBwYXRjaGVzIGluIHRoZSBtZWFud2hpbGUgZm9yIGZlZWRiYWNr
-IG9uIHRoZXNlIGNoYW5nZXMuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IEkgZGlkIGEgcXVpY2sgdGVzdCBv
-biBwcGMzMiwgSSBkb24ndCBnZXQgc3VjaCBhIHByb2JsZW0sIG9ubHkNCj4+Pj4+Pj4gc29tZXRo
-aW5nDQo+Pj4+Pj4+IHdyb25nIGluIHRoZSBkdW1wIHByaW50IGFzIHRyYXBzIGludHJ1Y3Rpb25z
-IG9ubHkgYXJlIGR1bXBlZCwgYnV0DQo+Pj4+Pj4+IHRjcGR1bXAgd29ya3MgYXMgZXhwZWN0ZWQ6
-DQo+Pj4+Pj4NCj4+Pj4+PiBUaGFua3MgZm9yIHRoZSBxdWljayB0ZXN0LiBDb3VsZCB5b3UgcGxl
-YXNlIHNoYXJlIHRoZSBjb25maWcgeW91IA0KPj4+Pj4+IHVzZWQuDQo+Pj4+Pj4gSSBhbSBwcm9i
-YWJseSBtaXNzaW5nIGEgZmV3IGtub2JzIGluIG15IGNvbmlmZy4uLg0KPj4+Pj4+DQo+Pj4+Pg0K
-Pj4+Pg0KPj4+PiBJIGFsc28gbWFuYWdlZCB0byB0ZXN0IGl0IG9uIFFFTVUuIFRoZSBjb25maWcg
-aXMgYmFzZWQgb24NCj4+Pj4gcG1hYzMyX2RlZmNvbmZpZy4NCj4+Pg0KPj4+IEkgaGFkIHRoZSBz
-YW1lIGNvbmZpZyBidXQgaGl0IHRoaXMgcHJvYmxlbToNCj4+Pg0KPj4+IMKgIMKgwqDCoMKgIyBl
-Y2hvIDEgPiAvcHJvYy9zeXMvbmV0L2NvcmUvYnBmX2ppdF9lbmFibGU7IG1vZHByb2JlIHRlc3Rf
-YnBmDQo+Pj4gwqAgwqDCoMKgwqB0ZXN0X2JwZjogIzAgVEFYDQo+Pj4gwqAgwqDCoMKgwqAtLS0t
-LS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NCj4+PiDCoCDCoMKgwqDCoFdBUk5JTkc6
-IENQVTogMCBQSUQ6IDk2IGF0IGFyY2gvcG93ZXJwYy9uZXQvYnBmX2ppdF9jb21wLmM6MzY3DQo+
-Pj4gYnBmX2ludF9qaXRfY29tcGlsZSsweDhhMC8weDlmOA0KPj4NCj4+IEkgZ2V0IG5vIHN1Y2gg
-cHJvYmxlbSwgb24gUUVNVSwgYW5kIEkgY2hlY2tlZCB0aGUgLmNvbmZpZyBoYXM6DQo+IA0KPj4g
-Q09ORklHX1NUUklDVF9LRVJORUxfUldYPXkNCj4+IENPTkZJR19TVFJJQ1RfTU9EVUxFX1JXWD15
-DQo+IA0KPiBZZWFoLiBUaGF0IGRpZCB0aGUgdHJpY2suDQoNCkludGVyZXN0aW5nLiBJIGd1ZXNz
-IHdlIGhhdmUgdG8gZmluZCBvdXQgd2h5IGl0IGZhaWxzIHdoZW4gdGhvc2UgY29uZmlnIA0KYXJl
-IG1pc3NpbmcuDQoNCk1heWJlIG1vZHVsZSBjb2RlIHBsYXlzIHdpdGggUk8gYW5kIE5YIGZsYWdz
-IGV2ZW4gaWYgDQpDT05GSUdfU1RSSUNUX01PRFVMRV9SV1ggaXMgbm90IHNlbGVjdGVkID8NCg0K
-Q2hyaXN0b3BoZQ0K
+Hi,
+
+On 11/16/22 22:00, Jason Gunthorpe wrote:
+> From: Kevin Tian <kevin.tian@intel.com>
+>
+> Add iommufd into the documentation tree, and supply initial documentation.
+> Much of this is linked from code comments by kdoc.
+>
+> Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> Signed-off-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  Documentation/userspace-api/index.rst   |   1 +
+>  Documentation/userspace-api/iommufd.rst | 223 ++++++++++++++++++++++++
+>  2 files changed, 224 insertions(+)
+>  create mode 100644 Documentation/userspace-api/iommufd.rst
+>
+> diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
+> index c78da9ce0ec44e..f16337bdb8520f 100644
+> --- a/Documentation/userspace-api/index.rst
+> +++ b/Documentation/userspace-api/index.rst
+> @@ -25,6 +25,7 @@ place where this information is gathered.
+>     ebpf/index
+>     ioctl/index
+>     iommu
+> +   iommufd
+>     media/index
+>     netlink/index
+>     sysfs-platform_profile
+> diff --git a/Documentation/userspace-api/iommufd.rst b/Documentation/userspace-api/iommufd.rst
+> new file mode 100644
+> index 00000000000000..8b1392fd2e3487
+> --- /dev/null
+> +++ b/Documentation/userspace-api/iommufd.rst
+> @@ -0,0 +1,223 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +=======
+> +IOMMUFD
+> +=======
+> +
+> +:Author: Jason Gunthorpe
+> +:Author: Kevin Tian
+> +
+> +Overview
+> +========
+> +
+> +IOMMUFD is the user API to control the IOMMU subsystem as it relates to managing
+> +IO page tables from userspace using file descriptors. It intends to be general
+> +and consumable by any driver that wants to expose DMA to userspace. These
+> +drivers are eventually expected to deprecate any internal IOMMU logic
+> +they may already/historically implement (e.g. vfio_iommu_type1.c).
+> +
+> +At minimum iommufd provides universal support of managing I/O address spaces and
+> +I/O page tables for all IOMMUs, with room in the design to add non-generic
+> +features to cater to specific hardware functionality.
+> +
+> +In this context the capital letter (IOMMUFD) refers to the subsystem while the
+> +small letter (iommufd) refers to the file descriptors created via /dev/iommu for
+> +use by userspace.
+> +
+> +Key Concepts
+> +============
+> +
+> +User Visible Objects
+> +--------------------
+> +
+> +Following IOMMUFD objects are exposed to userspace:
+> +
+> +- IOMMUFD_OBJ_IOAS, representing an I/O address space (IOAS), allowing map/unmap
+> +  of user space memory into ranges of I/O Virtual Address (IOVA).
+> +
+> +  The IOAS is a functional replacement for the VFIO container, and like the VFIO
+> +  container it copies an IOVA map to a list of iommu_domains held within it.
+> +
+> +- IOMMUFD_OBJ_DEVICE, representing a device that is bound to iommufd by an
+> +  external driver.
+> +
+> +- IOMMUFD_OBJ_HW_PAGETABLE, representing an actual hardware I/O page table
+> +  (i.e. a single struct iommu_domain) managed by the iommu driver.
+> +
+> +  The IOAS has a list of HW_PAGETABLES that share the same IOVA mapping and
+> +  it will synchronize its mapping with each member HW_PAGETABLE.
+> +
+> +All user-visible objects are destroyed via the IOMMU_DESTROY uAPI.
+> +
+> +The diagram below shows relationship between user-visible objects and kernel
+> +datastructures (external to iommufd), with numbers referred to operations
+> +creating the objects and links::
+> +
+> +  _________________________________________________________
+> + |                         iommufd                         |
+> + |       [1]                                               |
+> + |  _________________                                      |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |                                     |
+> + | |                 |        [3]                 [2]      |
+> + | |                 |    ____________         __________  |
+> + | |      IOAS       |<--|            |<------|          | |
+> + | |                 |   |HW_PAGETABLE|       |  DEVICE  | |
+> + | |                 |   |____________|       |__________| |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |                 |         |                   |       |
+> + | |_________________|         |                   |       |
+> + |         |                   |                   |       |
+> + |_________|___________________|___________________|_______|
+> +           |                   |                   |
+> +           |              _____v______      _______v_____
+> +           | PFN storage |            |    |             |
+> +           |------------>|iommu_domain|    |struct device|
+> +                         |____________|    |_____________|
+> +
+> +1. IOMMUFD_OBJ_IOAS is created via the IOMMU_IOAS_ALLOC uAPI. An iommufd can
+> +   hold multiple IOAS objects. IOAS is the most generic object and does not
+> +   expose interfaces that are specific to single IOMMU drivers. All operations
+> +   on the IOAS must operate equally on each of the iommu_domains inside of it.
+> +
+> +2. IOMMUFD_OBJ_DEVICE is created when an external driver calls the IOMMUFD kAPI
+> +   to bind a device to an iommufd. The driver is expected to implement a set of
+> +   ioctls to allow userspace to initiate the binding operation. Successful
+> +   completion of this operation establishes the desired DMA ownership over the
+> +   device. The driver must also set the driver_managed_dma flag and must not
+> +   touch the device until this operation succeeds.
+> +
+> +3. IOMMUFD_OBJ_HW_PAGETABLE is created when an external driver calls the IOMMUFD
+> +   kAPI to attach a bound device to an IOAS. Similarly the external driver uAPI
+> +   allows userspace to initiate the attaching operation. If a compatible
+> +   pagetable already exists then it is reused for the attachment. Otherwise a
+> +   new pagetable object and iommu_domain is created. Successful completion of
+> +   this operation sets up the linkages among IOAS, device and iommu_domain. Once
+> +   this completes the device could do DMA.
+> +
+> +   Every iommu_domain inside the IOAS is also represented to userspace as a
+> +   HW_PAGETABLE object.
+> +
+> +   .. note::
+> +
+> +      Future IOMMUFD updates will provide an API to create and manipulate the
+> +      HW_PAGETABLE directly.
+> +
+> +A device can only bind to an iommufd due to DMA ownership claim and attach to at
+> +most one IOAS object (no support of PASID yet).
+> +
+> +Kernel Datastructure
+> +--------------------
+> +
+> +User visible objects are backed by following datastructures:
+> +
+> +- iommufd_ioas for IOMMUFD_OBJ_IOAS.
+> +- iommufd_device for IOMMUFD_OBJ_DEVICE.
+> +- iommufd_hw_pagetable for IOMMUFD_OBJ_HW_PAGETABLE.
+> +
+> +Several terminologies when looking at these datastructures:
+> +
+> +- Automatic domain - refers to an iommu domain created automatically when
+> +  attaching a device to an IOAS object. This is compatible to the semantics of
+> +  VFIO type1.
+> +
+> +- Manual domain - refers to an iommu domain designated by the user as the
+> +  target pagetable to be attached to by a device. Though currently there are
+> +  no uAPIs to directly create such domain, the datastructure and algorithms
+> +  are ready for handling that use case.
+> +
+> +- In-kernel user - refers to something like a VFIO mdev that is using the
+> +  IOMMUFD access interface to access the IOAS. This starts by creating an
+> +  iommufd_access object that is similar to the domain binding a physical device
+> +  would do. The access object will then allow converting IOVA ranges into struct
+> +  page * lists, or doing direct read/write to an IOVA.
+> +
+> +iommufd_ioas serves as the metadata datastructure to manage how IOVA ranges are
+> +mapped to memory pages, composed of:
+> +
+> +- struct io_pagetable holding the IOVA map
+> +- struct iopt_areas representing populated portions of IOVA
+> +- struct iopt_pages representing the storage of PFNs
+> +- struct iommu_domain representing the IO page table in the IOMMU
+> +- struct iopt_pages_access representing in-kernel users of PFNs
+> +- struct xarray pinned_pfns holding a list of pages pinned by in-kernel users
+> +
+> +Each iopt_pages represents a logical linear array of full PFNs. The PFNs are
+> +ultimately derived from userspave VAs via an mm_struct. Once they have been
+> +pinned the PFNs are stored in IOPTEs of an iommu_domain or inside the pinned_pages
+> +xarray if they have been pinned through an iommufd_access.
+> +
+> +PFN have to be copied between all combinations of storage locations, depending
+> +on what domains are present and what kinds of in-kernel "software access" users
+> +exists. The mechanism ensures that a page is pinned only once.
+> +
+> +An io_pagetable is composed of iopt_areas pointing at iopt_pages, along with a
+> +list of iommu_domains that mirror the IOVA to PFN map.
+> +
+> +Multiple io_pagetable-s, through their iopt_area-s, can share a single
+> +iopt_pages which avoids multi-pinning and double accounting of page
+> +consumption.
+> +
+> +iommufd_ioas is sharable between subsystems, e.g. VFIO and VDPA, as long as
+> +devices managed by different subsystems are bound to a same iommufd.
+> +
+> +IOMMUFD User API
+> +================
+> +
+> +.. kernel-doc:: include/uapi/linux/iommufd.h
+> +
+> +IOMMUFD Kernel API
+> +==================
+> +
+> +The IOMMUFD kAPI is device-centric with group-related tricks managed behind the
+> +scene. This allows the external drivers calling such kAPI to implement a simple
+> +device-centric uAPI for connecting its device to an iommufd, instead of
+> +explicitly imposing the group semantics in its uAPI as VFIO does.
+> +
+> +.. kernel-doc:: drivers/iommu/iommufd/device.c
+> +   :export:
+> +
+> +.. kernel-doc:: drivers/iommu/iommufd/main.c
+> +   :export:
+> +
+> +VFIO and IOMMUFD
+> +----------------
+> +
+> +Connecting a VFIO device to iommufd can be done in two ways.
+> +
+> +First is a VFIO compatible way by directly implementing the /dev/vfio/vfio
+> +container IOCTLs by mapping them into io_pagetable operations. Doing so allows
+> +the use of iommufd in legacy VFIO applications by symlinking /dev/vfio/vfio to
+> +/dev/iommufd or extending VFIO to SET_CONTAINER using an iommufd instead of a
+> +container fd.
+> +
+> +The second approach directly extends VFIO to support a new set of device-centric
+> +user API based on aforementioned IOMMUFD kernel API. It requires userspace
+> +change but better matches the IOMMUFD API semantics and easier to support new
+> +iommufd features when comparing it to the first approach.
+> +
+> +Currently both approaches are still work-in-progress.
+> +
+> +There are still a few gaps to be resolved to catch up with VFIO type1, as
+> +documented in iommufd_vfio_check_extension().
+> +
+> +Future TODOs
+> +============
+> +
+> +Currently IOMMUFD supports only kernel-managed I/O page table, similar to VFIO
+> +type1. New features on the radar include:
+> +
+> + - Binding iommu_domain's to PASID/SSID
+> + - Userspace page tables, for ARM, x86 and S390
+> + - Kernel bypass'd invalidation of user page tables
+> + - Re-use of the KVM page table in the IOMMU
+> + - Dirty page tracking in the IOMMU
+> + - Runtime Increase/Decrease of IOPTE size
+> + - PRI support with faults resolved in userspace
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+
