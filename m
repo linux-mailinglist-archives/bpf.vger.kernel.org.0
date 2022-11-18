@@ -2,218 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 866E462F989
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 16:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506A162F9A4
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 16:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241949AbiKRPk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 10:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S241998AbiKRPpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 10:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242238AbiKRPk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 10:40:58 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2DE748C6
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 07:40:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0D5AFB8244F
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 15:40:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2C91C433D6;
-        Fri, 18 Nov 2022 15:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668786054;
-        bh=7wovpbCN6iri8bpiqnWAMrbiiRxRb+uXy0ogxgWGH3k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugMQiZq6pct+gQVWy25cA7rO6dTr+Z3wr9TGPjBWewj4MFbBSUJuG3Z4tBlOZ/VTd
-         CRTm7L4BfQ7X6XJSAvF+WCsR8E5bWAmNsGga50IoPJpkdeCvw1gf0l9gbV3XCA/w0r
-         odKMG5jbPSCXPndfjaFQ6ZPUoa/mBRRFoOu6F/hiAewGeQ3fVRlQA+F0LPAyhkVQ7g
-         7z6+zmyi7ztEowuKk7wvF3W673NzhkBDVGU3w0wHZ3OU/BaUOUwN+/3y7t4jjucVa0
-         5Ahli7hoicAx/E3BqHKJLRcfmCKUEPn/V6EcD8EWbqKJBwlNpiKcHvHZBSVAN5noER
-         ld2x3Wa2z3/Lg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf-next 2/2] selftests/bpf: Add bpf_vma_build_id_parse kfunc test
-Date:   Fri, 18 Nov 2022 16:40:28 +0100
-Message-Id: <20221118154028.251399-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221118154028.251399-1-jolsa@kernel.org>
-References: <20221118154028.251399-1-jolsa@kernel.org>
+        with ESMTP id S241407AbiKRPp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 10:45:28 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14BA7CBA4;
+        Fri, 18 Nov 2022 07:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1668786325; x=1700322325;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QnYDsjDsDb4h9i3C9BaDBaDNlmHvoV9jV+GgiCQ7Q+A=;
+  b=oY7MI3zRGbx1fp7mzpPwQ7nFry+hg4UcoN/X96vkxJuej9B71hLpgFy4
+   KVRxNOlYaoKezLQNmwnJdM5OUH0tUR42DhhWTOvaK5pem0p2LjT6UdEDu
+   TAh3IPWrorvOyHlJpaO1pZW51rXdN8EpeH5E3xpMwRHvpbEFwEBsVie4Z
+   wAyAcEamb1F2XygPE4vBzhZzQZJVu6ZEkNXDksBN1tcEar2+xy7iWjsHf
+   CrZc+EVBvaurC41YCyBBsqy0bHLen2LwBfcFKHU8bB1Hcwj9UR1TjDoCp
+   ytxeoSqtSx/ttTEmHOR4TSnHRtxkcM5/MiuSTNX6pdRgxRRlVMBh6cMgZ
+   A==;
+X-IronPort-AV: E=Sophos;i="5.96,174,1665471600"; 
+   d="scan'208";a="124098261"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2022 08:45:23 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Fri, 18 Nov 2022 08:45:19 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Fri, 18 Nov 2022 08:45:19 -0700
+Date:   Fri, 18 Nov 2022 16:50:08 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v2 4/5] net: lan966x: Add support for XDP_TX
+Message-ID: <20221118155008.illvc66lrlm4orrx@soft-dev3-1>
+References: <20221115214456.1456856-1-horatiu.vultur@microchip.com>
+ <20221115214456.1456856-5-horatiu.vultur@microchip.com>
+ <20221116153418.3389630-1-alexandr.lobakin@intel.com>
+ <20221116205557.2syftn3jqx357myg@soft-dev3-1>
+ <20221117153116.3447130-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20221117153116.3447130-1-alexandr.lobakin@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test for bpf_vma_build_id_parse kfunc.
+The 11/17/2022 16:31, Alexander Lobakin wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Date: Wed, 16 Nov 2022 21:55:57 +0100
+> 
+> > The 11/16/2022 16:34, Alexander Lobakin wrote:
+> > >
+> > > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > > Date: Tue, 15 Nov 2022 22:44:55 +0100
+> >
+> > Hi Olek,
+> 
+> Hi!
+> 
+> > > For %XDP_REDIRECT, as you don't know the source of the XDP frame,
+> >
+> > Why I don't know the source?
+> > Will it not be from an RX page that is allocated by Page Pool?
+> 
+> Imagine some NIC which does not use Page Pool, for example, it does
+> its own page allocation / splitting / recycling techniques, gets
+> %XDP_REDIRECT when running XDP prog on Rx. devmap says it must
+> redirect the frame to your NIC.
+> Then, your ::ndo_xdp_xmit() will be run on a frame/page not
+> belonging to any Page Pool.
+> The example can be any of Intel drivers (there are plans to switch
+> at least i40e and ice to Page Pool, but they're always deeply in
+> the backlogs (clownface)).
 
-On bpf side the test finds the vma of the test_progs text through the
-test function pointer and reads its build id with the new kfunc.
+Silly me, I was always thinking and trying only from one port of lan966x
+to another port of lan966x. Of course it can come from other NICs.
 
-On user side the test uses readelf to get test_progs build id and
-compares it with the one from bpf side.
+> 
+> >
+> > > you need to unmap it (as it was previously mapped in
+> > > ::ndo_xdp_xmit()), plus call xdp_return_frame{,_bulk} to free the
+> > > XDP frame. Note that _rx_napi() variant is not applicable here.
+> > >
+> > > That description might be confusing, so you can take a look at the
+> > > already existing code[0] to get the idea. I think this piece shows
+> > > the expected logics rather well.
+> >
+> > I think you forgot to write the link to the code.
+> > I looked also at different drivers but I didn't figure it out why the
+> > frame needed to be mapped and where is happening that.
+> 
+> Ooof, really. Pls look at the end of this reply :D
+> On ::ndo_xdp_xmit(), as I explained above, you can receive a frame
+> from any driver or BPF core code (such as cpumap), and BPF prog
+> there could be run on buffer of any kind: Page Pool page, just a
+> page, a kmalloc() chunk and so on.
+> 
+> So, in the code[0], you can see the following set of operations:
+> 
+> * DMA unmap in all cases excluding frame coming from %XDP_TX (then
+>   it was only synced);
+> * updating statistics and freeing skb for skb cases;
+> * xdp_return_frame_rx_napi() for %XDP_TX cases;
+> * xdp_return_frame_bulk() for ::ndo_xdp_xmit() cases.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/bpf_vma_build_id_parse.c   | 88 +++++++++++++++++++
- .../bpf/progs/bpf_vma_build_id_parse.c        | 40 +++++++++
- 2 files changed, 128 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
+Thanks for a detail explanation and for the link :D
+I will update all this in the next version.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c b/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
-new file mode 100644
-index 000000000000..83030a3b2c42
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_vma_build_id_parse.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include "bpf_vma_build_id_parse.skel.h"
-+
-+#define BUILDID_STR_SIZE (BPF_BUILD_ID_SIZE*2 + 1)
-+
-+static int read_buildid(char **build_id)
-+{
-+	char tmp[] = "/tmp/dataXXXXXX";
-+	char buf[200];
-+	int err, fd;
-+	FILE *f;
-+
-+	fd = mkstemp(tmp);
-+	if (fd == -1)
-+		return -1;
-+	close(fd);
-+
-+	snprintf(buf, sizeof(buf),
-+		"readelf -n ./test_progs 2>/dev/null | grep 'Build ID' | awk '{print $3}' > %s",
-+		tmp);
-+
-+	err = system(buf);
-+	if (err)
-+		goto out;
-+
-+	f = fopen(tmp, "r");
-+	if (f) {
-+		if (fscanf(f, "%ms$*\n", build_id) != 1) {
-+			*build_id = NULL;
-+			err = -1;
-+		}
-+		fclose(f);
-+	}
-+
-+out:
-+	unlink(tmp);
-+	return err;
-+}
-+
-+void test_bpf_vma_build_id_parse(void)
-+{
-+	char bpf_build_id[BUILDID_STR_SIZE] = {}, *build_id;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct bpf_vma_build_id_parse *skel;
-+	int i, err, prog_fd;
-+
-+	skel = bpf_vma_build_id_parse__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_vma_build_id_parse__open_and_load"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->addr = (__u64)(uintptr_t)test_bpf_vma_build_id_parse;
-+
-+	err = bpf_vma_build_id_parse__attach(skel);
-+	if (!ASSERT_OK(err, "bpf_vma_build_id_parse__attach"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run_err");
-+	ASSERT_EQ(topts.retval, 0, "test_run_retval");
-+
-+	ASSERT_EQ(skel->data->ret, 0, "ret");
-+
-+	ASSERT_GT(skel->data->size_pass, 0, "size_pass");
-+	ASSERT_EQ(skel->data->size_fail, -EINVAL, "size_fail");
-+
-+	/* Read build id via readelf to compare with build_id. */
-+	if (!ASSERT_OK(read_buildid(&build_id), "read_buildid"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->data->size_pass, strlen(build_id)/2, "build_id_size");
-+
-+	/* Convert bpf build id to string, so we can compare it later. */
-+	for (i = 0; i < skel->data->size_pass; i++) {
-+		sprintf(bpf_build_id + i*2, "%02x",
-+			(unsigned char) skel->bss->build_id[i]);
-+	}
-+	ASSERT_STREQ(bpf_build_id, build_id, "build_id_match");
-+
-+	free(build_id);
-+out:
-+	bpf_vma_build_id_parse__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c b/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
-new file mode 100644
-index 000000000000..8937212207db
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_vma_build_id_parse.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define BPF_BUILD_ID_SIZE 20
-+
-+extern int bpf_vma_build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-+				  size_t build_id__sz) __ksym;
-+
-+pid_t target_pid = 0;
-+__u64 addr = 0;
-+
-+int ret = -1;
-+int size_pass = -1;
-+int size_fail = -1;
-+
-+unsigned char build_id[BPF_BUILD_ID_SIZE];
-+
-+static long check_vma(struct task_struct *task, struct vm_area_struct *vma,
-+		      void *data)
-+{
-+	size_fail = bpf_vma_build_id_parse(vma, build_id, sizeof(build_id)/2);
-+	size_pass = bpf_vma_build_id_parse(vma, build_id, sizeof(build_id));
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test1, int a)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	ret = bpf_find_vma(task, addr, check_vma, NULL, 0);
-+	return 0;
-+}
+> 
+> > > +       ifh = page_address(page) + XDP_PACKET_HEADROOM;
+> > > +       memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
+> > > +       lan966x_ifh_set_bypass(ifh, 1);
+> > > +       lan966x_ifh_set_port(ifh, BIT_ULL(port->chip_port));
+> > > +
+> > > +       dma_addr = page_pool_get_dma_addr(page);
+> > > +       dma_sync_single_for_device(lan966x->dev, dma_addr + XDP_PACKET_HEADROOM,
+> > > +                                  xdpf->len + IFH_LEN_BYTES,
+> > > +                                  DMA_TO_DEVICE);
+> > >
+> > > Also not correct. This page was mapped with %DMA_FROM_DEVICE in the
+> > > Rx code, now you sync it for the opposite.
+> > > Most drivers in case of XDP enabled create Page Pools with ::dma_dir
+> > > set to %DMA_BIDIRECTIONAL. Now you would need only to sync it here
+> > > with the same direction (bidir) and that's it.
+> >
+> > That is a really good catch!
+> > I was wondering why the things were working when I tested this. Because
+> > definitely, I can see the right behaviour.
+> 
+> The reasons can be:
+> 
+> 1) your platform might have a DMA coherence engine, so that all
+>    those DMA sync calls are no-ops;
+> 2) on your platform, DMA writeback (TO_DEVICE) and DMA invalidate
+>    (FROM_DEVICE) invoke the same operation/instruction. Some
+>    hardware is designed that way, that any DMA sync is in fact a
+>    bidir synchronization;
+> 3) if there were no frame modification from the kernel, e.g. you
+>    received it and immediately sent, cache was not polluted with
+>    some pending modifications, so there was no work for writeback;
+> 4) probably something else I might've missed.
+> 
+> >
+> > >
+> > > +
+> > > +       /* Setup next dcb */
+> > > +       lan966x_fdma_tx_setup_dcb(tx, next_to_use, xdpf->len + IFH_LEN_BYTES,
+> > > +                                 dma_addr + XDP_PACKET_HEADROOM);
+> > > +
+> > > +       /* Fill up the buffer */
+> > > +       next_dcb_buf = &tx->dcbs_buf[next_to_use];
+> > > +       next_dcb_buf->skb = NULL;
+> > > +       next_dcb_buf->page = page;
+> > > +       next_dcb_buf->len = xdpf->len + IFH_LEN_BYTES;
+> > > +       next_dcb_buf->dma_addr = dma_addr;
+> > > +       next_dcb_buf->used = true;
+> > > +       next_dcb_buf->ptp = false;
+> > > +       next_dcb_buf->dev = port->dev;
+> > > +
+> > > +       /* Start the transmission */
+> > > +       lan966x_fdma_tx_start(tx, next_to_use);
+> > > +
+> > > +out:
+> > > +       spin_unlock(&lan966x->tx_lock);
+> > > +
+> > > +       return ret;
+> > > +}
+> > > +
+> > >  int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev)
+> > >  {
+> > >         struct lan966x_port *port = netdev_priv(dev);
+> > > @@ -709,6 +776,7 @@ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev)
+> > >         /* Fill up the buffer */
+> > >         next_dcb_buf = &tx->dcbs_buf[next_to_use];
+> > >         next_dcb_buf->skb = skb;
+> > > +       next_dcb_buf->page = NULL;
+> > >         next_dcb_buf->len = skb->len;
+> > >         next_dcb_buf->dma_addr = dma_addr;
+> > >         next_dcb_buf->used = true;
+> > >
+> > > [...]
+> > >
+> > > --
+> > > 2.38.0
+> > >
+> > > Thanks,
+> > > Olek
+> >
+> > --
+> > /Horatiu
+> 
+> [0] https://elixir.bootlin.com/linux/v6.1-rc5/source/drivers/net/ethernet/marvell/mvneta.c#L1882
+> 
+> Thanks,
+> Olek
+
 -- 
-2.38.1
-
+/Horatiu
