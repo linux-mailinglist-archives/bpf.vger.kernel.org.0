@@ -2,254 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A5662FF82
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 22:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D6B62FF96
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 22:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbiKRVoo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 16:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        id S230306AbiKRVrE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 16:47:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbiKRVon (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 16:44:43 -0500
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB115697C6;
-        Fri, 18 Nov 2022 13:44:41 -0800 (PST)
-Received: by mail-qk1-f182.google.com with SMTP id x18so4393017qki.4;
-        Fri, 18 Nov 2022 13:44:41 -0800 (PST)
+        with ESMTP id S231234AbiKRVrB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 16:47:01 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C609FA8163
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 13:46:59 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id c129so6818694oia.0
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 13:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8SwupCC3PnJevqOfbcgELwBkhH/r0fIRZTWdXdXVm8=;
+        b=JoS4FQ3jGIbrUWEiixI+pP/r8BqqyWqF3njCsjlrZGI8kDN2EZjoUz/7J5Mn9sYp2+
+         sjM8pDV9oQ1dwrGSiLHdmbvXWVsYJJw8lv41nwf4uNTMBFTbx6kgbbqz3DIUYkZQbN1b
+         2IPNv7n/8TLBom4VhAwJv0DcAeOp/KELU2IMiz9odN2YgsCPM7qiBZaS9F1x3zGk6hp3
+         XkM+jxZmOXa7PKV73AUS2ZHCO9/IwD3IOgBRBCKvV8ImSzrvBwCwp1Z7XyYG6A09xWby
+         OTfZrI6NDYWRfW5P8LrwlyOajkOTGwM9ppKRYAtYNzDVtU5ajVQsk0DAmIooRwOl61sv
+         dn2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TW8hLDOiOF1kLWptWRos7iSOYDjkGH6QjMVZyxX6h8E=;
-        b=kJhumbGR+qUD+/HKGMzCzgGkzb44pfic3amXkdfHdv8o9lUKbPFMmR0/4yMF7OgSv8
-         s35WiptG0PhHRSBwV8I642Lw0gAV7H+B5uhsBPxGu+gwhxpKTMlEkz41zLNMEm0BhpWP
-         O+cbzdouqTEmlfFpZqN9BCzZwnd2/u4JAN3Le+AymNmhRC72P0YfxHEku/CDux59zGOT
-         mh0+Wl6FknbAJx1NzY1tSXxK209o13hP3dA96j2OTdD1NZbfTujbDM//GIRggIOhZahk
-         inPZTX8ojNZIlfJXHX+MiuTaa78W6SCBErhrzwNa+6NSVRv26dBbUXNlGhsIjnCYR11j
-         2rEw==
-X-Gm-Message-State: ANoB5pmRERs89Z8mLnWQeFCS2UUWKqLvArO8ePyijOyF17elxzm6PmyT
-        VQxo7gWgEUFXs+BySQ5C03Tb16M45u13r40X
-X-Google-Smtp-Source: AA0mqf75yz3S2HeePkjaeSq+tF+w1tbLuET0y4P/l7dQqPV/71B4fQj5am0CJB8buaSHb/N8ZYhgvQ==
-X-Received: by 2002:a37:387:0:b0:6ec:597a:ce01 with SMTP id 129-20020a370387000000b006ec597ace01mr7545183qkd.133.1668807880648;
-        Fri, 18 Nov 2022 13:44:40 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:cf15])
-        by smtp.gmail.com with ESMTPSA id i10-20020a05620a404a00b006bb8b5b79efsm3305396qko.129.2022.11.18.13.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 13:44:40 -0800 (PST)
-Date:   Fri, 18 Nov 2022 15:44:42 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
-        yhs@fb.com, song@kernel.org, sdf@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        haoluo@google.com, tj@kernel.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: Allow trusted pointers to be passed
- to KF_TRUSTED_ARGS kfuncs
-Message-ID: <Y3f8yqhRRBIzrDvH@maniforge.lan>
-References: <20221117032402.2356776-1-void@manifault.com>
- <20221117032402.2356776-2-void@manifault.com>
- <20221118022640.borhn6iy4v2fhl7g@MacBook-Pro-5.local>
- <Y3eamIVUVb6V47LF@maniforge.lan>
- <Y3e2sdqL1E0SKJ5/@maniforge.lan>
- <20221118184500.yshwvcrx2a34xkmc@MacBook-Pro-5.local>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c8SwupCC3PnJevqOfbcgELwBkhH/r0fIRZTWdXdXVm8=;
+        b=hhnXcw/WlDAzUwQIDmdwjewjMZ8YWWBgI13vpMIP9PWCp08Zk6bJzuzKEz1k0JAC+k
+         kLyzn2c6A9sqRJK9nVpsCBdvHbsKB40wW9suFnzMdYCDmZ8UcAOMeQ/pyACwUn53XICp
+         3jH9t50rbq48wPjR2UDCmz5AdNHQe3nfxsTxT/XZNXVvN/5NSw/uyon/6M801eij3vAF
+         ChyS9fPrg/tj594PGmQxvhifUffWKSbFzL1aFBoJ8Vh2Fcu6ntq9aDYIKiW4uEcoc0Q3
+         /IJj6QeQUcpVNEQMcHxg6TOhFipeoBX3iGI6Gcy1y/TRxGE5wxq+ZyesdShms1uErf2y
+         j04Q==
+X-Gm-Message-State: ANoB5pm61N0BzEjTbaa7ZeGS/1vufxZv3kttMooN1yr3eUyvImcNqrcY
+        P13WFUX9SvUDLiNH482QFoe/hWLnxLkFEWWex8SOaw==
+X-Google-Smtp-Source: AA0mqf6cv9dRAqebAhbfTEwCDiEZ4myphsALErZIJDcguXct6tC+6AHPYPCuvs5ID42pEGBlG/jMfh++srMz5k/Wz+o=
+X-Received: by 2002:a05:6808:f09:b0:354:8922:4a1a with SMTP id
+ m9-20020a0568080f0900b0035489224a1amr4378524oiw.181.1668808018993; Fri, 18
+ Nov 2022 13:46:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221118184500.yshwvcrx2a34xkmc@MacBook-Pro-5.local>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20221118183409.give.387-kees@kernel.org>
+In-Reply-To: <20221118183409.give.387-kees@kernel.org>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 18 Nov 2022 13:46:48 -0800
+Message-ID: <CAKH8qBskaeP6BqkNKjZQ0Bvj+48t+yLxYbXcLxCyyEOXQCuJyw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf/verifier: Use kmalloc_size_roundup() to
+ match ksize() usage
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 10:45:00AM -0800, Alexei Starovoitov wrote:
-> On Fri, Nov 18, 2022 at 10:45:37AM -0600, David Vernet wrote:
-> > On Fri, Nov 18, 2022 at 08:45:44AM -0600, David Vernet wrote:
-> > 
-> > [...]
-> > 
-> > > > >  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> > > > >  		    const struct bpf_prog *prog,
-> > > > >  		    struct bpf_insn_access_aux *info)
-> > > > > @@ -5722,6 +5727,9 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> > > > >  	}
-> > > > >  
-> > > > >  	info->reg_type = PTR_TO_BTF_ID;
-> > > > > +	if (prog_type_args_trusted(prog->type))
-> > > > > +		info->reg_type |= PTR_TRUSTED;
-> > > > > +
-> > > > >  	if (tgt_prog) {
-> > > > >  		enum bpf_prog_type tgt_type;
-> > > > >  
-> > > > > @@ -6558,15 +6566,26 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > > >  		/* These register types have special constraints wrt ref_obj_id
-> > > > >  		 * and offset checks. The rest of trusted args don't.
-> > > > >  		 */
-> > > > > -		obj_ptr = reg->type == PTR_TO_CTX || reg->type == PTR_TO_BTF_ID ||
-> > > > > +		obj_ptr = reg->type == PTR_TO_CTX ||
-> > > > > +			  base_type(reg->type) == PTR_TO_BTF_ID ||
-> > > > >  			  reg2btf_ids[base_type(reg->type)];
-> > > > >  
-> > > > >  		/* Check if argument must be a referenced pointer, args + i has
-> > > > >  		 * been verified to be a pointer (after skipping modifiers).
-> > > > >  		 * PTR_TO_CTX is ok without having non-zero ref_obj_id.
-> > > > > +		 *
-> > > > > +		 * All object pointers must be refcounted, other than:
-> > > > > +		 * - PTR_TO_CTX
-> > > > > +		 * - PTR_TRUSTED pointers
-> > > > >  		 */
-> > > > > -		if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
-> > > > > -			bpf_log(log, "R%d must be referenced\n", regno);
-> > > > > +		if (is_kfunc &&
-> > > > > +		    trusted_args &&
-> > > > > +		    obj_ptr &&
-> > > > > +		    base_type(reg->type) != PTR_TO_CTX &&
-> > > > > +		    (!(type_flag(reg->type) & PTR_TRUSTED) ||
-> > > > > +		     (type_flag(reg->type) & ~PTR_TRUSTED)) &&
-> > > > > +		    !reg->ref_obj_id) {
-> > > > 
-> > > > This is pretty hard to read.
-> > > > Is this checking:
-> > > > !(reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> > > > ?
-> > > > 
-> > > > Why not to use the above?
-> > > 
-> > > Agreed this is more readable, I'll do this for v8 (from a helper as you
-> > > suggested).
-> > 
-> > Sorry, my initial response was incorrect. After thinking about this
-> > more, I don't think this conditional would be correct here:
-> > 
-> > 	!(reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> > 
-> > That conditional is saying, "If it's PTR_TO_BTF_ID, and either no
-> > modifiers are set, or PTR_TRUSTED is set". Or in other words, "If
-> > PTR_TO_BTF_ID is set, we don't need a refcount check unless a modifier
-> > other than PTR_TRUSTED is set on the register." This is incorrect, as it
-> > would short-circuit out of the check before !reg->ref_obj_id for
-> > reg->type == PTR_TO_BTF_ID, so we would skip the reference requirement
-> > for normal, unmodified PTR_TO_BTF_ID objects. It would also cause us to
-> > incorrectly _not_ skip the ref_obj_id > 0 check for when a
-> > reg2btf_ids[base_type(reg->type)] register has the PTR_TRUSTED modifier.
-> > 
-> > What we really need is a check that encodes, "Don't require a refcount
-> > if PTR_TRUSTED is present and no other type modifiers are present",
-> > i.e.:
-> > 
-> > 	!(type_flag(reg->type) & PTR_TRUSTED) || (type_flag(reg->type) & ~PTR_TRUSTED)
-> > 
-> > My intention was to be conservative here and say "only trust PTR_TRUSTED
-> > if no other type modifiers are set". I think this is necessary because
-> > other type modifiers such as PTR_UNTRUSTED could theoretically be set on
-> > the register as well. Clearly this code is pretty difficult to reason
-> > about though, so I'm open to suggestions for how to simplify it.
-> > 
-> > I'll point out specifically that it's difficult to reason about when
-> > modifiers are or are not safe to allow. For example, we definitely don't
-> > want to skip the refcount check for OBJ_RELEASE | PTR_TRUSTED, because
-> 
-> OBJ_RELEASE cannot be part of reg flag.
-> It's only in arg_type.
+On Fri, Nov 18, 2022 at 10:34 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> Most allocation sites in the kernel want an explicitly sized allocation
+> (and not "more"), and that dynamic runtime analysis tools (e.g. KASAN,
+> UBSAN_BOUNDS, FORTIFY_SOURCE, etc) are looking for precise bounds checking
+> (i.e. not something that is rounded up). A tiny handful of allocations
+> were doing an implicit alloc/realloc loop that actually depended on
+> ksize(), and didn't actually always call realloc. This has created a
+> long series of bugs and problems over many years related to the runtime
+> bounds checking, so these callers are finally being adjusted to _not_
+> depend on the ksize() side-effect, by doing one of several things:
+>
+> - tracking the allocation size precisely and just never calling ksize()
+>   at all[1].
+>
+> - always calling realloc and not using ksize() at all. (This solution
+>   ends up actually be a subset of the next solution.)
+>
+> - using kmalloc_size_roundup() to explicitly round up the desired
+>   allocation size immediately[2].
+>
+> The bpf/verifier case is this another of this latter case, and is the
+> last outstanding case to be fixed in the kernel.
+>
+> Because some of the dynamic bounds checking depends on the size being an
+> _argument_ to an allocator function (i.e. see the __alloc_size attribute),
+> the ksize() users are rare, and it could waste local variables, it
+> was been deemed better to explicitly separate the rounding up from the
+> allocation itself[3].
+>
+> Round up allocations with kmalloc_size_roundup() so that the verifier's
+> use of ksize() is always accurate.
+>
+> [1] e.g.:
+>     https://git.kernel.org/linus/712f210a457d
+>     https://git.kernel.org/linus/72c08d9f4c72
+>
+> [2] e.g.:
+>     https://git.kernel.org/netdev/net-next/c/12d6c1d3a2ad
+>     https://git.kernel.org/netdev/net-next/c/ab3f7828c979
+>     https://git.kernel.org/netdev/net-next/c/d6dd508080a3
+>
+> [3] https://lore.kernel.org/lkml/0ea1fc165a6c6117f982f4f135093e69cb884930.camel@redhat.com/
+>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
 
-Ah yeah, fair enough. Got confused because it's part of the same
-bpf_type_flag enum. I think the point in general stands though.
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
-> Anyway Kumar's refactoring was applied the code in question looks different now:
-> It would fall into this part:
-
-Great, that's a nice simplification.
-
-> case KF_ARG_PTR_TO_BTF_ID:
->         /* Only base_type is checked, further checks are done here */
->         if (reg->type != PTR_TO_BTF_ID &&
->             (!reg2btf_ids[base_type(reg->type)] || type_flag(reg->type))) {
->                 verbose(env, "arg#%d expected pointer to btf or socket\n", i);
->                 return -EINVAL;
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: bpf@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> v3:
+> - memory leak already taken into -next (daniel)
+> - improve commit log (daniel)
+> - drop optimization patch for now (sdf)
+> v2: https://lore.kernel.org/lkml/20221029024444.gonna.633-kees@kernel.org/
+> v1: https://lore.kernel.org/lkml/20221018090550.never.834-kees@kernel.org/
+> ---
+>  kernel/bpf/verifier.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index beed7e03addc..c596c7c75d25 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1010,9 +1010,9 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+>         if (unlikely(check_mul_overflow(n, size, &bytes)))
+>                 return NULL;
+>
+> -       if (ksize(dst) < bytes) {
+> +       if (ksize(dst) < ksize(src)) {
+>                 kfree(dst);
+> -               dst = kmalloc_track_caller(bytes, flags);
+> +               dst = kmalloc_track_caller(kmalloc_size_roundup(bytes), flags);
+>                 if (!dst)
+>                         return NULL;
 >         }
->         ret = process_kf_arg_ptr_to_btf_id(env, reg, ref_t, ref_tname, ref_id, meta, i);
-> 
-> > if it's a release arg it should always have a refcount on it.
-> > PTR_UNTRUSTED | PTR_TRUSTED would also make no sense. MEM_FIXED_SIZE
-> > though seems fine? In general, I thought it was prudent for us to take
-> > the most conservative possible approach here, which is that PTR_TRUSTED
-> > only applies when no other modifiers are present, and it applies for all
-> > obj_ptr types (other than PTR_TO_CTX which does its own thing).
-> 
-> Probably worth refining when PTR_TRUSTED is cleared.
-> For example adding PTR_UNTRUSTED should definitely clear it.
-
-That makes sense for PTR_UNTRUSTED, what about the other type modifiers
-like PTR_MAYBE_NULL? We set and unset if a ptr is NULL throughout a
-function, so we'd have to record if it was previously trusted in order
-to properly re-OR after a NULL check.
-
-> MEM_ALLOC flag is probably equivalent to PTR_TRUSTED.
-> Maybe the bit:
-> regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
-> should set PTR_TRUSTED as well?
-
-We could, but that changes the meaning of PTR_TRUSTED and IMO makes it
-harder to reason about. Before it was just "the kernel passed this arg
-to the program and promises the program that it was trusted when it was
-first passed". Now it's that plus it could mean that it points to an
-allocated object from bpf_obj_new()". IMO we should keep all of these
-modifiers separate so that the presence of a modifier has a well-defined
-meaning that we can interpret in each context as needed.  In this case,
-we can make trust opt-in, so a KF_TRUSTED_ARGS BTF pointer either of the
-following:
-
-1. reg->ref_obj_id > 0
-2. Either one of PTR_TRUSTED | MEM_ALLOC type modifiers are set, and no
-   others.
-
-Let me know if that sounds OK to you.
-
-> > 
-> > Note as well that this check is different from the one you pointed out
-> > below, which is verifying that PTR_TRUSTED is the only modifier for both
-> > reg2btf_ids[base_type(reg->type)] and base_type(reg->type) ==
-> > PTR_TO_BTF_ID.  Additionally, the check is different than the check in
-> > check_reg_type(), which I'll highlight below where the code is actually
-> > modified.
-> 
-> I'm mainly objecting to logic:
-> !(type_flag(reg->type) & PTR_TRUSTED) || (type_flag(reg->type) & ~PTR_TRUSTED)
-> 
-> which looks like 'catch-all'.
-> Like it will error on MEM_ALLOC which probably not correct.
-> In other words it's 'too conservative'. Meaning it's rejecting valid code.
-
-Agreed that after the rebase this would no longer be correct. I think we
-should make it opt-in, though. PTR_TRUSTED | MEM_ALLOC is fine.
-PTR_TRUSTED | MEM_ALLOC | PTR_MAYBE_NULL would not be.
-
-> 
-> > > > >  
-> > > > >  found:
-> > > > > -	if (reg->type == PTR_TO_BTF_ID) {
-> > > > > +	if (base_type(reg->type) == PTR_TO_BTF_ID && !(type_flag(reg->type) & ~PTR_TRUSTED)) {
-> > 
-> > As mentioned above, this check is different than the one we're doing in
-> > btf_ctx_access() when determining if the reg requires a ref_obj_id > 0.
-> > This check is actually doing what you originally suggested above:
-> > 
-> > if (reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> > 
-> > I think what you wrote is more readable and am happy to apply it to this
-> > check in v8, but unfortunately I don't think we really have an
-> > opportunity to avoid code duplication here with a helper (though a
-> > helper may still improve readability).
-> 
-> ok. forget the helper. open coding all conditions is probably cleaner,
-> since they will be different in every case.
-
-Ack
+> @@ -1029,12 +1029,14 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+>   */
+>  static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
+>  {
+> +       size_t alloc_size;
+>         void *new_arr;
+>
+>         if (!new_n || old_n == new_n)
+>                 goto out;
+>
+> -       new_arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
+> +       alloc_size = kmalloc_size_roundup(size_mul(new_n, size));
+> +       new_arr = krealloc(arr, alloc_size, GFP_KERNEL);
+>         if (!new_arr) {
+>                 kfree(arr);
+>                 return NULL;
+> @@ -2506,9 +2508,11 @@ static int push_jmp_history(struct bpf_verifier_env *env,
+>  {
+>         u32 cnt = cur->jmp_history_cnt;
+>         struct bpf_idx_pair *p;
+> +       size_t alloc_size;
+>
+>         cnt++;
+> -       p = krealloc(cur->jmp_history, cnt * sizeof(*p), GFP_USER);
+> +       alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
+> +       p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
+>         if (!p)
+>                 return -ENOMEM;
+>         p[cnt - 1].idx = env->insn_idx;
+> --
+> 2.34.1
+>
