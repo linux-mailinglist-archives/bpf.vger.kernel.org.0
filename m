@@ -2,110 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFC162EA9B
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 01:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E208862EB25
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 02:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbiKRAyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 19:54:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        id S240907AbiKRBlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 20:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240770AbiKRAyf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 19:54:35 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD0C85EED
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:54:34 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id v17so3221455plo.1
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XvIoWSd0xrw6RZJQp73B+S5uCJ5LMxazrUmMxPfNjuQ=;
-        b=Ywx/QwtKH8VAB4UddTVRkYxOW2k+PyRwVVpR4TEzkhDl4DjNzjqniVbWpNQeGC15uz
-         THTgtgOC2tJtLxcn+N6qnN3Uy3FVT4qmUSr3XOZgiLlJCWs0v/93AF1Vt/H6ei2/0on5
-         d7zw7FPkZM/4CTydhHhG2fL1TGCDWupJAjNhw=
+        with ESMTP id S240975AbiKRBl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 20:41:27 -0500
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B6FEE33;
+        Thu, 17 Nov 2022 17:41:23 -0800 (PST)
+Received: by mail-qk1-f182.google.com with SMTP id v8so2532871qkg.12;
+        Thu, 17 Nov 2022 17:41:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XvIoWSd0xrw6RZJQp73B+S5uCJ5LMxazrUmMxPfNjuQ=;
-        b=3IehGahcdl3hQ9B+WKy/k9fT1Su7htufhzTa811gfOHlKQV7MX4I4IyvX30zpPFy0Y
-         U07FuQ8bEywfoml5HmFsqbgjytBEjI5ALbQLlvntsyqsH0OWNe0GYyWKVRf0Qx+lj5kj
-         8xALspKTfKAVc6IoRbvfMqXR8eALr0fWPSMAmMrbXFHtN3+f2PDEmkZTqVY7Y7Nz0fZ/
-         1RsMMFZZaDK9D3AaaWr6H/YNPs8BH50AL8neX+jtGtFyH4PS76FAmVMJcb3/reeuAGzE
-         QSY96VbygHZBrhCOddEpxD7PtADBbuXcqJ3kd+9J1BQClJUlWMm1biYxoT/l/C/7erM8
-         ujAw==
-X-Gm-Message-State: ANoB5pk5Kk8VJzgkf8hVjvmF8qr38GVtSEMpW51xfZKSl94R+/0LkCZy
-        KIiPUIGtVd1iGg7xxuse2X3mcw==
-X-Google-Smtp-Source: AA0mqf6l8TeoWF0zZxdx0LT95pkl13FOnju8C6AgmTu9j8vNo494eN13cvZRXCxp+hVgpR5ied3LDw==
-X-Received: by 2002:a17:902:c652:b0:186:af8e:7ed4 with SMTP id s18-20020a170902c65200b00186af8e7ed4mr5223346pls.7.1668732874435;
-        Thu, 17 Nov 2022 16:54:34 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j6-20020a17090276c600b00172b87d9770sm2073855plt.81.2022.11.17.16.54.33
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C2iDkgi6Cz8+ghmu1fZWCpIJ9rUZoFg0eD2OPo7Dxik=;
+        b=ArZrnXBUaRzdXxsTX2EHs2qMEvveglT+o+A9kBUf8cfRIwbUXxaZnfK0RjjGG2fB+9
+         tj4bP8BC6zk7fI/EoTvIdP+4lXPpWWN/I3JlZ9E6KAl+eah/7FhUdABstNxjpWfEGq2Q
+         WInMm3FOpILAHSIJdCOhn/F7lrtZcggftelLk6MRMqnWsox6IC1+mOnOe7peDenSPWyy
+         kEiPXdOVNxeyW5CxWOeg3GGezt5gTe0dMOvJgVDuQWqSlo9dgWkepCTC/YYE4qWVzUep
+         lpROnGjxvwUIJYTyv9zY5E07oMc0URaRg0bk3hFN3eTOY+dPVFRDvrS6K41cw+cmdfn4
+         kTfA==
+X-Gm-Message-State: ANoB5pnzjoh15nivJXU1RUQis4Sx5odJgW4Ywaxtll6GsraucWzczv9E
+        gt+O9VxFcsi7cWZqGiR3FcapOGHf+q8MoTfp
+X-Google-Smtp-Source: AA0mqf5lT8GzBiFdNWOWsbIY4ziJuWnF6nVbx8Ri4nv4aA8YHdyYNBoyaOKgZsUMqVsSMCVB+qL9Ag==
+X-Received: by 2002:a05:620a:2795:b0:6ec:51cd:c376 with SMTP id g21-20020a05620a279500b006ec51cdc376mr1352916qkp.300.1668735682302;
+        Thu, 17 Nov 2022 17:41:22 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:8ad4])
+        by smtp.gmail.com with ESMTPSA id q25-20020a05620a2a5900b006ee7923c187sm1480426qkp.42.2022.11.17.17.41.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 16:54:33 -0800 (PST)
-Date:   Thu, 17 Nov 2022 16:54:33 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     sdf@google.com
-Cc:     wangkailong@jari.cn, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] samples/seccomp: fix array_size.cocci warning
-Message-ID: <202211171653.0E3BA8E71B@keescook>
-References: <2b3f2420.130.184706d34e6.Coremail.wangkailong@jari.cn>
- <Y3J3t/ieGaOG8Qjl@google.com>
+        Thu, 17 Nov 2022 17:41:21 -0800 (PST)
+Date:   Thu, 17 Nov 2022 19:41:23 -0600
+From:   David Vernet <void@manifault.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
+        yhs@fb.com, song@kernel.org, sdf@google.com, kpsingh@kernel.org,
+        jolsa@kernel.org, haoluo@google.com, tj@kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 0/3] Support storing struct task_struct
+ objects as kptrs
+Message-ID: <Y3biwxIq8B5oYdOS@maniforge.lan>
+References: <20221117032402.2356776-1-void@manifault.com>
+ <6376a1b12bb4d_4101208d@john.notmuch>
+ <Y3atifGs0DM9to8z@maniforge.lan>
+ <6376b7822f4df_8c7a208f7@john.notmuch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3J3t/ieGaOG8Qjl@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6376b7822f4df_8c7a208f7@john.notmuch>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 09:15:35AM -0800, sdf@google.com wrote:
-> On 11/13, wangkailong@jari.cn wrote:
-> > Fix following coccicheck warning:
+On Thu, Nov 17, 2022 at 02:36:50PM -0800, John Fastabend wrote:
+> David Vernet wrote:
+> > On Thu, Nov 17, 2022 at 01:03:45PM -0800, John Fastabend wrote:
+> > > David Vernet wrote:
+> > > > Now that BPF supports adding new kernel functions with kfuncs, and
+> > > > storing kernel objects in maps with kptrs, we can add a set of kfuncs
+> > > > which allow struct task_struct objects to be stored in maps as
+> > > > referenced kptrs.
+> > > > 
+> > > > The possible use cases for doing this are plentiful.  During tracing,
+> > > > for example, it would be useful to be able to collect some tasks that
+> > > > performed a certain operation, and then periodically summarize who they
+> > > > are, which cgroup they're in, how much CPU time they've utilized, etc.
+> > > > Doing this now would require storing the tasks' pids along with some
+> > > > relevant data to be exported to user space, and later associating the
+> > > > pids to tasks in other event handlers where the data is recorded.
+> > > > Another useful by-product of this is that it allows a program to pin a
+> > > > task in a BPF program, and by proxy therefore also e.g. pin its task
+> > > > local storage.
+> > > 
+> > > Sorry wasn't obvious to me (late to the party so if it was in some
+> > > other v* described apologies). Can we say something about the life
+> > > cycle of this acquired task_structs because they are incrementing
+> > > the ref cnt on the task struct they have potential to impact system.
+> > 
+> > We should probably add an entire docs page which describes how kptrs
+> > work, and I am happy to do that (ideally in a follow-on patch set if
+> > that's OK with you). In general I think it would be useful to include
+> > docs for any general-purpose kfuncs like the ones proposed in this set.
 > 
-> > samples/seccomp/bpf-fancy.c:83:39-40: WARNING: Use ARRAY_SIZE
-> > samples/seccomp/bpf-fancy.c:86:44-45: WARNING: Use ARRAY_SIZE
-> 
-> Not sure this should go via bpf tree. CC'ed Kees
-> 
-> > Signed-off-by: KaiLong Wang <wangkailong@jari.cn>
-> > ---
-> >   samples/seccomp/bpf-fancy.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> > diff --git a/samples/seccomp/bpf-fancy.c b/samples/seccomp/bpf-fancy.c
-> > index 1ccb435025b6..548f038924d6 100644
-> > --- a/samples/seccomp/bpf-fancy.c
-> > +++ b/samples/seccomp/bpf-fancy.c
-> > @@ -80,10 +80,10 @@ int main(int argc, char **argv)
-> >   	};
-> >   	struct sock_fprog prog = {
-> >   		.filter = filter,
-> > -		.len = (unsigned short)(sizeof(filter)/sizeof(filter[0])),
-> > +		.len = (unsigned short)(ARRAY_SIZE(filter)),
-> >   	};
-> >   	ssize_t bytes;
-> > -	bpf_resolve_jumps(&l, filter, sizeof(filter)/sizeof(*filter));
-> > +	bpf_resolve_jumps(&l, filter, ARRAY_SIZE(filter));
+> Sure, I wouldn't require that for your series though fwiw.
 
-Hm, this is the "samples" tree, so this was intentionally avoiding these
-kinds of kernel-isms, but perhaps that doesn't realistically matter?
+Sounds good to me
 
--Kees
+[...]
 
+> > > quick question. If you put acquired task struct in a map what
+> > > happens if user side deletes the entry? Presumably this causes the
+> > > release to happen and the task_struct is good to go. Did I miss
+> > > the logic? I was thinking you would have something in bpf_map_free_kptrs
+> > > and a type callback to release() the refcnt?
+> > 
+> > Someone else can chime in here to correct me if I'm wrong, but AFAIU
+> > this is handled by the map implementations calling out to
+> > bpf_obj_free_fields() to invoke the kptr destructor when the element is
+> > destroyed. See [3] and [4] for examples of where they're called from the
+> > arraymap and hashmap logic respectively. This is how the destructors are
+> > similarly invoked when the maps are destroyed.
 > 
-> >   	if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-> >   		perror("prctl(NO_NEW_PRIVS)");
-> > --
-> > 2.25.1
+> Yep I found the dtor() gets populated in btf.c and apparently needed
+> to repull my local tree because I missed it. Thanks for the detailed
+> response.
+> 
+> And last thing I was checking is because KF_SLEEPABLE is not set
+> this should be blocked from running on sleepable progs which would
+> break the call_rcu in the destructor. Maybe small nit, not sure
+> its worth it but might be nice to annotate the helper description
+> with a note, "will not work on sleepable progs" or something to
+> that effect.
 
--- 
-Kees Cook
+KF_SLEEPABLE is used to indicate whether the kfunc _itself_ may sleep,
+not whether the calling program can be sleepable. call_rcu() doesn't
+block, so no need to mark the kfunc as KF_SLEEPABLE. The key is that if
+a kfunc is sleepable, non-sleepable programs are not able to call it
+(and this is enforced in the verifier).
