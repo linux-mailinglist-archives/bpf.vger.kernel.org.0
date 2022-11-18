@@ -2,141 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA29F62FEA1
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 21:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEF262FEA7
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 21:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbiKRURk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 15:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        id S229510AbiKRUUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 15:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiKRURk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 15:17:40 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7452B31348
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 12:17:38 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id kt23so15684369ejc.7
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 12:17:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iq6V+87kbCrJAtcTBQfAoqSo7/NL0LRgPerUxO+ubmc=;
-        b=Ae0z0UyswiJXCncvDp+o0kCHUwj7cVGE3y6NUit0hnkcTUIzY3Ea4qZccsAQDf9BH8
-         Xps/VyI1O6Es07oRYHSQzut5NYHLfN/CZR+j9eXwnGU7MK74PKX0912YKIRBy9hW1QKO
-         cmL0+YS+fMQeignNW0i+6QmvNeK0JiI19pNW5PtJEv1gkuWG1qT1i/BsoGhsr84wTB/q
-         UG/ESLmP/pV76UiYspJXHGz3oiSfwHP0NAUoPdtH6doE0+kNOuN0yBtu08Lj5PYa4f73
-         glc/zlpU4uET0lmK0NHXYZGOZtx35tgyasRo78z1zOjc2LjTTG6mkxqrSoY/94F2hZGq
-         kaNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Iq6V+87kbCrJAtcTBQfAoqSo7/NL0LRgPerUxO+ubmc=;
-        b=EN+B4K9XB+wAtFey6I+j/a7oqvDN0GMMuYXRKvNcmcgs66CaZEuK1KJ4Xobdag9AIE
-         MReQf3s5XNZ/QATVQvJISJ33dOCVTQV01GxGvSTUokcVuo+G+IEnPJGvsWo8p7Nsq/sc
-         Ugo1vUmtD+HD4JsOtmGBZIMb6bWzM7Wc/OrA3Tp/7jrll/14dwINa/SQqtFvyRSxDvhq
-         i7rFnij5sxPY3IiJbQfkp4uV1kJuZMkV0Gs7IFm40BRRVN6YSYZtwdAwnEcQ08fKM+Oa
-         sE+hAjmJ6CN+Mz85+006rElBnhh38ZUoKTfSbm78iYqFmywBJne6HmUZhNxVZBZZ15cP
-         gZ2Q==
-X-Gm-Message-State: ANoB5plI/pmzAVtfwCWEO0edM7U8ykI2oNNdzy/nna7JMnx33kw0O33V
-        UbKbyxqAGw/wFvSjio7hQD/xhj2BjjfmRD40Ai2vOEOpkO0=
-X-Google-Smtp-Source: AA0mqf7+u8PijULBgnzXYP7RwzewsRV9awHNsmHBH9NoeDtoGx00EvsNbAW//LMT8BzqpMDj3AUTwA/VCNzQqo3zbU0=
-X-Received: by 2002:a17:906:2ac3:b0:7ad:f2f9:2b49 with SMTP id
- m3-20020a1709062ac300b007adf2f92b49mr6899996eje.94.1668802656810; Fri, 18 Nov
- 2022 12:17:36 -0800 (PST)
+        with ESMTP id S230131AbiKRUUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 15:20:19 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF1045EEA
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 12:20:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4BBB0B8251E
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 20:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0766AC433C1;
+        Fri, 18 Nov 2022 20:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668802816;
+        bh=EgUnKlXBwPVDLJvLUlEK+ltZoiu6H9Ez+en40fUIvvA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MAWx9VmppD4MLfYNhEeGnuW/KnHmZIEwLG49mMmQ8WujtjoHW7TlenA1Mpm8r2yn0
+         cBjQ94aRSDG3UWkLFO22hlFMHWR8BsyAPWUUaACs7Y+OQtJB86hi+ssVh5UuUBUPFE
+         SOSqzDH/EONcg4Wm1dU0Kv/9efxJF2tR1swrhDTsYUU7axR6qaDuxXbxgwjyVkYMia
+         Kztb+Ksp27JzIfb3pJZe6/SS+oTrl5StN5Pf/QvMdLRNvIMJ2fwOoTxFboo6K9HwNg
+         ngvavjCJHPHQdZyjFhsZ5Y++rqh5IR4iZD5hT4fJF7xX3ZVBm5dGen19OWnq2O11qH
+         l9O2Nsv4XOXUw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DB735E270F6;
+        Fri, 18 Nov 2022 20:20:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221118185938.2139616-1-memxor@gmail.com> <20221118185938.2139616-2-memxor@gmail.com>
-In-Reply-To: <20221118185938.2139616-2-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Nov 2022 12:17:25 -0800
-Message-ID: <CAADnVQLKwfr_UiLEc-5exQGd3saeuYUX2j8BHzAtBgZovUpCGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Disallow calling bpf_obj_new_impl on
- bpf_mem_alloc_init failure
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1 0/2] Follow ups for bpf-list set
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166880281589.7537.6028248915916238724.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Nov 2022 20:20:15 +0000
+References: <20221118185938.2139616-1-memxor@gmail.com>
+In-Reply-To: <20221118185938.2139616-1-memxor@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 11:00 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Instead of checking bpf_global_ma_set at runtime on each allocation
-> inside bpf_obj_new_impl, simply disallow calling the kfunc in case
-> bpf_global_ma initialization failed during program verification.
->
-> The error generated when bpf_global_ma initialization fails:
-> ...
-> 21: (18) r1 = 0x7                     ; R1_w=7
-> 23: (b7) r2 = 0                       ; R2_w=0
-> 24: (85) call bpf_obj_new_impl#36585
-> bpf_global_ma initialization failed, can't call bpf_obj_new_impl
-> calling kernel function bpf_obj_new_impl is not allowed
->
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/helpers.c  |  2 --
->  kernel/bpf/verifier.c | 13 ++++++++++++-
->  2 files changed, 12 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 212e791d7452..bc02f55adc1f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1760,8 +1760,6 @@ void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
->         u64 size = local_type_id__k;
->         void *p;
->
-> -       if (unlikely(!bpf_global_ma_set))
-> -               return NULL;
->         p = bpf_mem_alloc(&bpf_global_ma, size);
->         if (!p)
->                 return NULL;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 195d24316750..f04bee7934a8 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -8746,6 +8746,17 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->         return 0;
->  }
->
-> +static bool is_kfunc_disabled(struct bpf_verifier_env *env, const struct btf *btf, u32 func_id)
-> +{
-> +       if (btf != btf_vmlinux)
-> +               return false;
-> +       if (!bpf_global_ma_set && func_id == special_kfunc_list[KF_bpf_obj_new_impl]) {
-> +               verbose(env, "bpf_global_ma initialization failed, can't call bpf_obj_new_impl\n");
-> +               return true;
-> +       }
-> +       return false;
-> +}
-> +
+Hello:
 
-This is all just unnecessary code bloat for the case
-that cannot happen.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-When you do:
-meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl]
-just add
-if (!bpf_global_ma_set)
- return -ENOMEM;
+On Sat, 19 Nov 2022 00:29:36 +0530 you wrote:
+> Make a few changes
+>  - Remove bpf_global_ma_set check at runtime, disallow calling bpf_obj_new during verification
+>  - Disable spin lock failure test when JIT does not support kfunc (s390x)
+> 
+> Kumar Kartikeya Dwivedi (2):
+>   bpf: Disallow calling bpf_obj_new_impl on bpf_mem_alloc_init failure
+>   selftests/bpf: Skip spin lock failure test on s390x
+> 
+> [...]
 
-No need for verbose(). The users will never hit it.
+Here is the summary with links:
+  - [bpf-next,v1,1/2] bpf: Disallow calling bpf_obj_new_impl on bpf_mem_alloc_init failure
+    (no matching commit)
+  - [bpf-next,v1,2/2] selftests/bpf: Skip spin lock failure test on s390x
+    https://git.kernel.org/bpf/bpf-next/c/97c11d6e3154
 
-Also please get rid of special_kfunc_set and
-and btf_id_set_contains(&special_kfunc_set, meta.func_id)
-That additional check is unnecessary as well.
-special_kfunc_list is enough.
-I'm going to apply patch 2 to make CI green.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
