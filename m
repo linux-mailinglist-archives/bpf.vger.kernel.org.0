@@ -2,125 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A845F62F2B4
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 11:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D44E962F2B7
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 11:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241348AbiKRKhh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 05:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58374 "EHLO
+        id S235220AbiKRKif (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 05:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbiKRKhg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 05:37:36 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6106593CC8
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 02:37:35 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id j12so4207913plj.5
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 02:37:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdC9OdXaf8rtCDJq2ZR+NC5bExkE/80g/hOu2ZJHyKI=;
-        b=VxSlR5VvPichJB/NM/JV20xvWgEmzpGmVwyZvyODe2LZ1UQ3PYdbC/RtmcCxnIO5m2
-         DHNEqc9JkWVfoPHny6syKlWQ7cQ5PCW9bjEbFgO54cBkqPoEdnxKh2w7ivJooebkGBGW
-         6/FiCrNZ+8xPxB9CEl7vqeS16uvf2GrJ2cJBfoOyUEaHUX+L7PdszUSZnqGlSVkn0MFN
-         GrLY3kvFU2bdXFq70PBlmA2zN+2Aa4DtumxH1BxpQdR47pmVT89Qm9PzDY12POciH5mb
-         5YcQ+IKJmWSziRe0iDEeiuDvf5aTOCfs5eY3mVrdXR1++SG0W9lPx6HXnOFGs7G5wyFu
-         q7+g==
+        with ESMTP id S231534AbiKRKie (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 05:38:34 -0500
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7983E9FFF
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 02:38:32 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id o10-20020a056e02102a00b003006328df7bso3083651ilj.17
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 02:38:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sdC9OdXaf8rtCDJq2ZR+NC5bExkE/80g/hOu2ZJHyKI=;
-        b=TQK9d/fTAalB8EFDFxphRkjhp+tUxdgjg/xZaZNyTd3iWqYTkRNW3fFaC6z+0ZWt3f
-         J+fSfob7InClgkBPm5IEjLvN2VOMe0Kbx9XwXvA/NqbL8xDUAJpjnvjb5oIHWA8As14e
-         SpJPHAaGfPwXH3Vqrdks1siySqLcfbSLoBSvcsHsWluBEDfQg510KWYvIsC5F5nApjrj
-         tomsSNW+JVey+IdGDwWuIg66GeXaDdwTpjCVMtHLvNC0cdMZ8p33dNJMBKhzy+hXC1BV
-         o3LonXyDpKddaW4ZIuKZeZU5E/a85QKh8DNw5S3kGK3Vg986mDZBrujOg0bMifQ0u4m1
-         T7rA==
-X-Gm-Message-State: ANoB5pkC7/nMZvesyfiSeFh6fTI/OTh7N7poiGotlQgyVUg1b78kuVVg
-        Ug1lehG58lAboKnuid9R0hI=
-X-Google-Smtp-Source: AA0mqf5dadbk0fof33CiunEdMw9Am0drVwB5WnsZKGZgOoXWIR5LgBkEV0vnOWTcZiqqIYXm3mZoDw==
-X-Received: by 2002:a17:90a:ae0f:b0:20d:b124:33b1 with SMTP id t15-20020a17090aae0f00b0020db12433b1mr7005606pjq.202.1668767854746;
-        Fri, 18 Nov 2022 02:37:34 -0800 (PST)
-Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id w11-20020a170902ca0b00b001867fdec154sm3173674pld.224.2022.11.18.02.37.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 02:37:34 -0800 (PST)
-Date:   Fri, 18 Nov 2022 16:07:30 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Subject: Re: [PATCH bpf-next v10 11/24] bpf: Rewrite kfunc argument handling
-Message-ID: <20221118103730.nbai3gzifkjk45eo@apollo>
-References: <20221118015614.2013203-1-memxor@gmail.com>
- <20221118015614.2013203-12-memxor@gmail.com>
- <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B7rT5D+HD/NGgTOqEGVfQWh3AC4EcDUMZJA/cRRvNis=;
+        b=QUWaQk0q2iRwpuIfZjOsz6UtHFvtP1nR2tyXbGM1JP/jBHW6MO+NUNN1veMPR4wbJj
+         OnAY3f2YsW8CCZzWya+yIWuSBu+ycfAsHfZDXnwQBZWooafBWNGZQm9pk6zsOweo33E+
+         eI8e0fj8YgeK+BVmG0xP9FD4RHbv/iucawNXImKiLE1MwDWV7RsFJcHFHC24awNF/Zbo
+         L1nE6GU/dmHvOL7r8QZnU0Bv/O41tL0llcQf7cWGLqcWdg8DNjEF7K/Z4FpgKFMVNtwZ
+         kqas/R9Vzgh2Nu6A4w7JmTCFhM4LMIDal7fj7xtzEF4/lIdVuBVxHVIv7QZHdtREADu7
+         r3AQ==
+X-Gm-Message-State: ANoB5pkh09Mt0NC/qn8rvHdvag/H449o+guFoc/C46juRiXj0wQvDarj
+        mwDFH+sGgSAg3DSRhH5mY/lCiGr5qT+xIhAmxRxlEIFsV7+q
+X-Google-Smtp-Source: AA0mqf4JOEguQPyJ2ydkLVLZWq5JhAmNtCDXzMr1MqSY2DNseMpscjjgZ9VATzrrKEMlVDX8MmozUo0fZ2FhavA2UaD2jQa7hX2W
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:4419:b0:375:2b75:93d with SMTP id
+ bp25-20020a056638441900b003752b75093dmr2797008jab.235.1668767911809; Fri, 18
+ Nov 2022 02:38:31 -0800 (PST)
+Date:   Fri, 18 Nov 2022 02:38:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098976a05edbc4ebc@google.com>
+Subject: [syzbot] BUG: corrupted list in __netif_napi_del (3)
+From:   syzbot <syzbot+f39fd41c33711aecf0c1@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 09:04:15AM IST, Alexei Starovoitov wrote:
-> On Fri, Nov 18, 2022 at 07:26:01AM +0530, Kumar Kartikeya Dwivedi wrote:
-> >  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> >  				    const struct btf *btf, u32 func_id,
-> >  				    struct bpf_reg_state *regs,
-> >  				    bool ptr_to_mem_ok,
-> > -				    struct bpf_kfunc_arg_meta *kfunc_meta,
-> >  				    bool processing_call)
->
-> Something odd here.
-> Benjamin added the processing_call flag in
-> commit 95f2f26f3cac ("bpf: split btf_check_subprog_arg_match in two")
-> and we discussed to remove it.
->
-> >  		} else if (ptr_to_mem_ok && processing_call) {
->
-> since kfunc bit is gone from here the processing_call can be removed.
-> ptr_to_mem_ok and processing_call are two bool flags for the same thing, right?
->
+Hello,
 
-I think so, I'll check it out and send a follow up patch.
+syzbot found the following issue on:
 
-> > +static int process_kf_arg_ptr_to_kptr_strong(struct bpf_verifier_env *env,
->
-> I fixed this bit while applying.
->
+HEAD commit:    68d268d08931 Merge branch 'net-try_cmpxchg-conversions'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14299759880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=893a728fb1a6b263
+dashboard link: https://syzkaller.appspot.com/bug?extid=f39fd41c33711aecf0c1
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Thanks.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> > +static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_arg_meta *meta)
->
-> This function looks much better now.
-> The split of kfunc vs helper was long overdue.
-> Thank you for doing this.
->
-> I'm not convinced that KF_ARG_* is necessary, but it's much better than before.
-> So it's a step forward.
->
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/399b143cdec5/disk-68d268d0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cf1a3fd0fc27/vmlinux-68d268d0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5649c9fe4b21/bzImage-68d268d0.xz
 
-Yes. Eventually we should be merging checks for both helpers and kfuncs, but
-that needs more work and would have been out of scope for this set. We can
-probably synthesize a bpf_func_proto for the kfunc from BTF and then offload to
-check_helper_call.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f39fd41c33711aecf0c1@syzkaller.appspotmail.com
 
-> Pls watch for CI errors and follow up when necessary.
+list_del corruption, ffff88804eace160->prev is LIST_POISON2 (dead000000000122)
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:56!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 4247 Comm: syz-executor.4 Not tainted 6.1.0-rc4-syzkaller-01115-g68d268d08931 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:__list_del_entry_valid.cold+0x37/0x72 lib/list_debug.c:56
+Code: e8 d2 62 f0 ff 0f 0b 48 89 ee 48 c7 c7 80 10 a8 8a e8 c1 62 f0 ff 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 40 11 a8 8a e8 ad 62 f0 ff <0f> 0b 48 89 ee 48 c7 c7 20 10 a8 8a e8 9c 62 f0 ff 0f 0b 4c 89 ea
+RSP: 0018:ffffc9000a116ed0 EFLAGS: 00010282
+RAX: 000000000000004e RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff8165772c RDI: fffff52001422dcc
+RBP: ffff88804eace160 R08: 000000000000004e R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000000 R12: dead000000000122
+R13: ffff88804eab6050 R14: ffff88804eace000 R15: ffff88804eace000
+FS:  00007fa8ab74e700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002040f030 CR3: 000000007efb8000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __list_del_entry include/linux/list.h:134 [inline]
+ list_del_rcu include/linux/rculist.h:157 [inline]
+ __netif_napi_del.part.0+0x118/0x530 net/core/dev.c:6458
+ __netif_napi_del+0x40/0x50 net/core/dev.c:6454
+ veth_napi_del_range+0xcd/0x560 drivers/net/veth.c:1041
+ veth_napi_del drivers/net/veth.c:1055 [inline]
+ veth_close+0x164/0x500 drivers/net/veth.c:1385
+ __dev_close_many+0x1b6/0x2e0 net/core/dev.c:1501
+ __dev_close net/core/dev.c:1513 [inline]
+ __dev_change_flags+0x2ce/0x750 net/core/dev.c:8528
+ dev_change_flags+0x97/0x170 net/core/dev.c:8602
+ do_setlink+0x9f1/0x3bb0 net/core/rtnetlink.c:2827
+ rtnl_group_changelink net/core/rtnetlink.c:3344 [inline]
+ __rtnl_newlink+0xb90/0x1840 net/core/rtnetlink.c:3600
+ rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3637
+ rtnetlink_rcv_msg+0x43e/0xca0 net/core/rtnetlink.c:6141
+ netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2564
+ netlink_unicast_kernel net/netlink/af_netlink.c:1330 [inline]
+ netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1356
+ netlink_sendmsg+0x91b/0xe10 net/netlink/af_netlink.c:1932
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xd3/0x120 net/socket.c:734
+ ____sys_sendmsg+0x712/0x8c0 net/socket.c:2476
+ ___sys_sendmsg+0x110/0x1b0 net/socket.c:2530
+ __sys_sendmsg+0xf7/0x1c0 net/socket.c:2559
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fa8aaa8b639
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa8ab74e168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fa8aababf80 RCX: 00007fa8aaa8b639
+RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
+RBP: 00007fa8aaae6ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffe720d839f R14: 00007fa8ab74e300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__list_del_entry_valid.cold+0x37/0x72 lib/list_debug.c:56
+Code: e8 d2 62 f0 ff 0f 0b 48 89 ee 48 c7 c7 80 10 a8 8a e8 c1 62 f0 ff 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 40 11 a8 8a e8 ad 62 f0 ff <0f> 0b 48 89 ee 48 c7 c7 20 10 a8 8a e8 9c 62 f0 ff 0f 0b 4c 89 ea
+RSP: 0018:ffffc9000a116ed0 EFLAGS: 00010282
+RAX: 000000000000004e RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff8165772c RDI: fffff52001422dcc
+RBP: ffff88804eace160 R08: 000000000000004e R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000000 R12: dead000000000122
+R13: ffff88804eab6050 R14: ffff88804eace000 R15: ffff88804eace000
+FS:  00007fa8ab74e700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020513030 CR3: 000000007efb8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Will do.
 
-Thanks!
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
