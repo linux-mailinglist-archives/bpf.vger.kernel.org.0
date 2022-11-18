@@ -2,126 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A1E62FB9D
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 18:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAAE62FBE3
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 18:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbiKRR2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 12:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
+        id S241962AbiKRRpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 12:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbiKRR2x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 12:28:53 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A144186E4
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 09:28:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0C196268C
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 17:28:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F91BC43470
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 17:28:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668792531;
-        bh=BrBTx/whLYhdfKUZp4rrFLy6TDJGr7P0NBlDdxZEro8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=H+DPfDKz2SzQBQW7xTP5n0TMXhy/6PFa+FBO5+OB/qSexTM3/lM/KHlgrLn356ZPd
-         wQ1r7MsDlqvlzRlFmTk3e4K5ExyUx8orPv4DwiWS1u3t+eDl+97iJTT680UBKr/M6U
-         K22dSXUyFx1tXXo/fM4XD1bwIPbTxbM4sYf+QHG9p7BkUAGCx/F0Igptp6y6pcIR+t
-         D2u2g6/OMVbnaxqbUcRr1ZDFO3PpiD1n7eNlla+6Kwn/NNprEjQNs5qFSEFbUhimDA
-         j4fdLsj7ypiasj4r5hr5fucl468Bngnmeo5n6aV/rGcoLLCdXelEn7/k82w27ttxpA
-         X0qSPkXC52jig==
-Received: by mail-ed1-f46.google.com with SMTP id z18so8073314edb.9
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 09:28:51 -0800 (PST)
-X-Gm-Message-State: ANoB5pkGaWu0eJzd5iIFp2OhAdzOK/Ou7AkleWD4GGhPpvpx2rgCwlXr
-        jKvvf6Dj1mdD3X+Bo2+wqUPk62AcgMicItBClhc=
-X-Google-Smtp-Source: AA0mqf4p8aOWIJBSxnm3XmiHGutE2xDSzafmxTzDS/eoIMQmy9xd6H4fPeP3uPf8kDMIjQSMq1P98/9PnldgQZvMj64=
-X-Received: by 2002:a05:6402:538a:b0:458:fbd9:e3b1 with SMTP id
- ew10-20020a056402538a00b00458fbd9e3b1mr6994924edb.6.1668792529510; Fri, 18
- Nov 2022 09:28:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20221110184303.393179-1-hbathini@linux.ibm.com>
- <00efe9b1-d9fd-441c-9eb4-cbf25d82baf2@csgroup.eu> <5b59b7df-d2ec-1664-f0fb-764c9b93417c@linux.ibm.com>
- <bf0af91e-861c-1608-7150-d31578be9b02@csgroup.eu> <e0266414-843f-db48-a56d-1d8a8944726a@csgroup.eu>
- <6151f5c6-2e64-5f2d-01b1-6f517f4301c0@linux.ibm.com> <02496f7a-51d8-4fc0-161d-b29d5e657089@csgroup.eu>
- <9d5c390a-31db-4f93-203d-281b0831d37f@linux.ibm.com> <c651bd44-d0ca-e3cf-0639-6b42b33f4666@csgroup.eu>
- <548de735-52d7-f5bb-5c85-370a1c233a08@linux.ibm.com> <b2a8589d-3272-4c82-8481-9fcb6d8f9bfc@csgroup.eu>
-In-Reply-To: <b2a8589d-3272-4c82-8481-9fcb6d8f9bfc@csgroup.eu>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 18 Nov 2022 09:28:37 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7uytWgsrv+y5qjqbxri-AgvrP9-EMnWyR48z6GhfHgfQ@mail.gmail.com>
-Message-ID: <CAPhsuW7uytWgsrv+y5qjqbxri-AgvrP9-EMnWyR48z6GhfHgfQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] enable bpf_prog_pack allocator for powerpc
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Hari Bathini <hbathini@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S242112AbiKRRoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 12:44:54 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9665B58D;
+        Fri, 18 Nov 2022 09:44:53 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AIH05ip006042;
+        Fri, 18 Nov 2022 09:44:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=KkW6Zh8aGXp6Hj2eR6SGLTqOBGxbVqwPjm2gtTXtg18=;
+ b=DWrsfhAhWDOP9ldeSdz3S93a5ymRHlEscq+KNvLNnXe2rQqnsST2R4xQdeIkSaFoi9gQ
+ pcVt4Mw5WBTUgOd1hNsNBlhmV6wurlbRrBZnlClA+mqSx1OHXLawJeLm3BPglQ7E9sKe
+ VjTZVIJQgeBZg+bMvge/Rq+Xdd2gYMcCOiPM7OTiDEvalufuqYZX733Hb9P3SixlszH3
+ VyZ16CtY5dVWZrS+KLQVK9AigKBg89u97QBTVyuCT03h1ZhmWuIHFqiSeh45zYtmNloQ
+ oVSgL2KeGASq8gbqaQJt7M70Lj33TAWeOyFGlMXT65IUvEwvI3YvvR8V+N3KE0WFlnY1 sg== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kx0w7vux3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Nov 2022 09:44:04 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PyTO1Mzq5wg/DAhfMh42y3CgufDBWF8IpbmXew3pIXsjcKPe7+el0GbLlHoKfNKC9DC1yPuIrqewyNqnwxPD/coaKo8vpovjqEPAWgalADVFI/UiAYyyUsKivKDjf6VyuNy5emfC8VTg1ycRA7fwn6GIMEJxyaUzEmwkZPXzGJzKUOVlnyWNCXR/XW7BCsl7T2tupRZsJaGYhZIFtA98UGNsrEyTjWvkD72cfTSPQOSOhTuutbppqaCj/Zm+2Tia8WamSnKzqmMWTt/xAYHbdMu338NQkPhMT08QWdxZAn7ygLKDoe7yhwDfDibTUX7DEkleERSbqaj9KCfkiCCDrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KkW6Zh8aGXp6Hj2eR6SGLTqOBGxbVqwPjm2gtTXtg18=;
+ b=Lv/+pbsBPJcP/63FvspJsxeFGbxVLxWJU4BPuIarcAi/QpEfJgNakJAbL/pYfJeG+pXQRLj6v+SxwU9kqnv1VC0vRuFfcJiYN3A3AnsgM4CPVaN4YOPLiFECALaBdNh1MzQUfvWAKkxX0Fkzrt+jxZ8UYkaFfjxe2ReS1mF3iCk8OaOteegFJTBGdU5P3kfhT7z1/PAv/JK8bdUdZvzcn0QdRaPZmGyYlGa/BDxffiWAubbqcH/X4HqGNO1lMEIqRaQcW47yLtDt0ItkhONd5qsWe0V2M1/poAuVE9y7uDo3AxUqax4CYjaZDSuQg82gZ1L8YAjf/WC5Rhou94oNOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com (2603:10b6:208:1b6::13)
+ by PH0PR15MB4541.namprd15.prod.outlook.com (2603:10b6:510:86::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.9; Fri, 18 Nov
+ 2022 17:44:02 +0000
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::563a:dd91:dd5:6a8f]) by MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::563a:dd91:dd5:6a8f%7]) with mapi id 15.20.5813.020; Fri, 18 Nov 2022
+ 17:44:02 +0000
+Message-ID: <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
+Date:   Fri, 18 Nov 2022 12:44:00 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.2
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20221108220651.24492-1-revest@chromium.org>
+ <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
+ <20221117121617.4e1529d3@gandalf.local.home>
+ <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
+ <20221117174030.0170cd36@gandalf.local.home>
+ <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
+ <20221118114519.2711d890@gandalf.local.home>
+From:   Chris Mason <clm@meta.com>
+In-Reply-To: <20221118114519.2711d890@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: MN2PR20CA0005.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::18) To MN2PR15MB4287.namprd15.prod.outlook.com
+ (2603:10b6:208:1b6::13)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR15MB4287:EE_|PH0PR15MB4541:EE_
+X-MS-Office365-Filtering-Correlation-Id: d72939f2-3aa0-4913-e3d0-08dac98c7b19
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: crxQhvD5SlIc1dh//aMlRxzRBJDu03nYkj9H3yKHiV3K4XwIRdVwgPKMm2IF9qyYkfH1sbn2RomyyImVEDCh/jzpHdIR4g0To91yeuZvFtOIMXYvMgqUW7j90LhpVqfz9LXiHYMzhpLFVzEZM3/z+rGg4S1QOr5J3TawizqlUaGDCS9QL+REZP5g5KWpHu2KMW64rcGvfzPwc9NfmvpEya5biFDwnyL5BpNvH4m7rfHW39UZQyFER6e+M0Y7v75gEwwz0yme901nOhFVP99cm3PrCoo27LU6jsFEbBUJv/mpvtO2aqEpPAOar1sRTDBc5iktdK9obDd+Z4z6nhUbHCjpz2gL1GmtOzRECsYlxlejrO4ZmfGIhKkzp7to/O/W/gL/b/VFnl4RA5OfzCyEsKrDez7BQIT7PL71V494nP1lMcIbyqyKMh2t60tqV1q9Fx3OYI9NI1WOhicstKywvx9UA7ezmiMgF2E75nKyXorgSINzIYJgluM1uej4unj4K1keX4RPo3vmj+RCMRgZfdQrjYAP9KrPxK33yhKuiey3dK6bHlfHBXT09h7ZikBiiaf58VtdHTi3oXP4/hTnMLZjJCGqWqg8eZtj3u6nLuPhrZUpXB513Jt15GHq4v/Phv6tu4QAgLIt0YS7UrcIUdwUqVQocpt0cwZ3esETTSId8uSVd0NKzgV8wQmICSokYa6NoW4Cmfp9o+9kcbhNF2A3kdNQQHoAY2d/bEpDczSQ6jnHwZwRShbyoISiU6Lh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB4287.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(451199015)(36756003)(31696002)(86362001)(38100700002)(6506007)(54906003)(31686004)(110136005)(53546011)(316002)(966005)(6486002)(478600001)(7416002)(5660300002)(186003)(2616005)(8936002)(83380400001)(2906002)(6512007)(41300700001)(8676002)(4326008)(66476007)(66946007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUZtZ0JkMm5WY0hzNkMzMWVyR1pZeEh6UUw0NFZsWllaYmhPTlZLWnFaUFJV?=
+ =?utf-8?B?S0xPVW1YK2Jmdlc0Z0x5M1doalRHTTZJOUhIcHd2NkVnWENraStZOEVnU0V2?=
+ =?utf-8?B?OCtQeEtQZWMyMU9mK2ZsQ2FHcFEvbTNrb0VFdFhYSG43cEZtU1lCeU1yMzhC?=
+ =?utf-8?B?Y1lJWEN5U1h6RWc2SGIxTFVZVVQwbTNwUzNPK0JJdUlCZUVZMVEzY2pWQlc4?=
+ =?utf-8?B?OFdWVnkvMjhPYmRsdHdPelVUNFBPRk4zYzhwWjFzdTlDTGVVOUhjNytvNE1N?=
+ =?utf-8?B?TGJmalIreVVZV0RyeVVtcmVOeFlTeTg1NEx1NTRDcmhWS05vVkpuWDgxWWUy?=
+ =?utf-8?B?SVF4Z0Z4K01vcjlNdmxkYVVqNmo2cWhyUGhhZXE4dkUyZnNTblBlQlhxOWZL?=
+ =?utf-8?B?eEN3OFZBcWlrZnNLRjBqeVBOS2VBVXF1YVFMTWwvV29ONi9ud3NmVXlmMEJJ?=
+ =?utf-8?B?MmE2N1ZvUFBlYkRUMEhmdit0bDQyb21JdzdyaUJPWFlOS3h0SlJySlkyVjJs?=
+ =?utf-8?B?dUQrMHgvNmNkY2JidmlnMi9mdUI3KzBBRVZ2Zm1nL01TUjRjOFFrZkh2VGtE?=
+ =?utf-8?B?TEtibUZWM1d2bm5hbDlvYlh2UG5oRUdGTTJDRjJSd1VjcHBTVWpYdmkzaHR0?=
+ =?utf-8?B?aWRCNUVZaWlvNFFIZkR5MXkreDlGZVFSRHhtekpuZXYzTkNyNUpyckkzWTZC?=
+ =?utf-8?B?VlFOL0c5dEhhZTBPa3Mya2J2NkJ1MkEyY0xxd3ZvTEZObDdSK1MwdkJMcmNl?=
+ =?utf-8?B?T0hJZ1g3LzlaRW4zMHlHWEE2eExXZUVFNmd4dkF6WWpraThGQkxmLzBESnZn?=
+ =?utf-8?B?R3h3YmNNWHBiWjJLNjBzTWYyZktkNVNqSStXejIwaExxR1JoSGxhSnlnZlpE?=
+ =?utf-8?B?VG9UQTgzUXNXS09CUUpKY3dJbzhTS0Zld0FZamNNNDJZT3M1T3A1WkRYaHFX?=
+ =?utf-8?B?b09mdjhkaXZvczZFdmdNUjc0dVpHVFNnZjdjN3dJNFJrMnJOOWN0elZKUS9s?=
+ =?utf-8?B?UVlrdVVaTEdKc2tyUFMrdzdsb1pDcEl6bnI4VXVaRUFFbFZaTDdSMkMyOCs4?=
+ =?utf-8?B?czFXQnlKejdkQXZabU5BREp3MW1BOEZ0Y01RM09xeTVEN1kzNHgxZUZZQklQ?=
+ =?utf-8?B?Y0xIbTJ1czhyb0U2S1VDT0ozYXdMbm9IenVmbnRpTTZ6NXROeWl4ZmdKejhK?=
+ =?utf-8?B?emJRVjdwR3g4VzZ6b01PQ1FNZ2pMb2lFMW1MMVluRmorVlJpY1VNL2RoR09W?=
+ =?utf-8?B?TEZmc292SmNrbHpKOG1WemJhTFhBc20vM2Z1L0wyOXNmdFpGS29lRUQ5RXZE?=
+ =?utf-8?B?TUdENVNjbW1mMjM0cDY5Y3Z3QzVnZUN5OUdZQi9aYzByYzg3WGVVdTQwZUFP?=
+ =?utf-8?B?ZlFSc1F0OUJGbEVhZHVLamprdk45N09oaE9JOXN1WGlrSmFtWjEzMnpFeTdG?=
+ =?utf-8?B?cG5vbHZrMHgzSFJMWi9mNUtRd1VuTWNzYkZsOGtRQUNtcUhIVnhUV3hTUm9y?=
+ =?utf-8?B?Z1ZzL2ptekRuSVEvc0VoRkltS2Y1SDBCNUhyejJVemVpbUcrUlN6M1pIUUlj?=
+ =?utf-8?B?QXJyZHkxbnNoREFtK2ZEZzh0VUhLaWxVRDJPalZQSHcxQ0JtZFhCeE5reWsv?=
+ =?utf-8?B?bnJZSWM5QWh0cFhrMmR6dFRzckdpdGlmanR1bktnMm83aUdxdzRPd2VjdjhT?=
+ =?utf-8?B?aUI4WHZaQVNBVUdVNVgvZ1JDZFJtbTNPdFRLNlQvVVBDT05BaWNwcm9vSnVS?=
+ =?utf-8?B?QWRaQU5tT0NKem9ZYzhyY3RDYmx3ZVRqMk9qNks4T2RhclZIbkZoRGRBUk43?=
+ =?utf-8?B?RWgxaVNXamUxT2tRcllLSW94bjhNUmplSUN6Y2NqMU5tT1B2ZUpzZk1wbFlP?=
+ =?utf-8?B?cW05MG5OQkRwd1NVWjFocys2cDhsbm9hTEhveEkzTHM4czM4TXdIV1JFWXhL?=
+ =?utf-8?B?N2ZTZ0RtQ2pTSzBjU1pwdTRwb2hBL1orNmZaSzFkaEhpdm5nYWIvS09GeGlN?=
+ =?utf-8?B?MVdjaldFSHZJUHc3VzhLdnlDd0ZTMVYwT2pwM2JxcVFTeW95ek1XaEJXZWFB?=
+ =?utf-8?B?RkgzVE1oRlhvMWFYMHdCS1hUNEt1K21nc0JWWk9QaU5jaENZWFF2TUhlSDJp?=
+ =?utf-8?B?ZGJKSXd5UG1XdXM4QlFXdWtvVnNvdWlqLzJRY2xFS2ZTZWRCZm9JT0hWTWVD?=
+ =?utf-8?B?c0E9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d72939f2-3aa0-4913-e3d0-08dac98c7b19
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB4287.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2022 17:44:02.6120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: on19FzWNIP3x2BRcCwyvse/BUXc+l+eWdI0f5U6saHmOuKSzs7DAC0+BJ/+OOgv7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4541
+X-Proofpoint-ORIG-GUID: Gy-wviDedfuFtxjT78GZdf_iyseylS05
+X-Proofpoint-GUID: Gy-wviDedfuFtxjT78GZdf_iyseylS05
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-18_06,2022-11-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 3:47 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 18/11/2022 =C3=A0 10:39, Hari Bathini a =C3=A9crit :
-> >
-> >
-> > On 18/11/22 2:21 pm, Christophe Leroy wrote: >>>>>
-> >>>>> I had the same config but hit this problem:
-> >>>>>
-> >>>>>        # echo 1 > /proc/sys/net/core/bpf_jit_enable; modprobe test_=
-bpf
-> >>>>>        test_bpf: #0 TAX
-> >>>>>        ------------[ cut here ]------------
-> >>>>>        WARNING: CPU: 0 PID: 96 at arch/powerpc/net/bpf_jit_comp.c:3=
-67
-> >>>>> bpf_int_jit_compile+0x8a0/0x9f8
-> >>>>
-> >>>> I get no such problem, on QEMU, and I checked the .config has:
-> >>>
-> >>>> CONFIG_STRICT_KERNEL_RWX=3Dy
-> >>>> CONFIG_STRICT_MODULE_RWX=3Dy
-> >>>
-> >>> Yeah. That did the trick.
-> >>
-> >> Interesting. I guess we have to find out why it fails when those confi=
-g
-> >> are missing.
-> >>
-> >> Maybe module code plays with RO and NX flags even if
-> >> CONFIG_STRICT_MODULE_RWX is not selected ?
-> >
-> > Need to look at the code closely but fwiw, observing same failure on
-> > 64-bit as well with !STRICT_RWX...
->
-> The problem is in bpf_prog_pack_alloc() and in alloc_new_pack() : They
-> do set_memory_ro() and set_memory_x() without taking into account
-> CONFIG_STRICT_MODULE_RWX.
->
-> When CONFIG_STRICT_MODULE_RWX is selected, powerpc module_alloc()
-> allocates PAGE_KERNEL memory, that is RW memory, and expects the user to
-> call do set_memory_ro() and set_memory_x().
->
-> But when CONFIG_STRICT_MODULE_RWX is not selected, powerpc
-> module_alloc() allocates PAGE_KERNEL_TEXT memory, that is RWX memory,
-> and expects to be able to always write into it.
+On 11/18/22 11:45 AM, Steven Rostedt wrote:
+> On Fri, 18 Nov 2022 16:34:50 +0000
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+>>> Not alarmist, but concern as being able to modify what a kernel function can
+>>> do is not something I take lightly.
+>>
+>> FWIW, given that the aim here seems to be to expose all kernel internals to be
+>> overridden arbitrarily, I'm also concerned that there's a huge surface area for
+>> issues with maintainability, robustness/correctness, and security.
+>>
+>> I really don't want to be stuck in a position where someone argues that all
+>> kernel internal functions are ABI and need to stay around as-is to be hooked by
+>> eBPF, and I hope that we all agree that there are no guarantees on that front.
+> 
 
-Ah, I see. x86_64 requires CONFIG_STRICT_MODULE_RWX, so this hasn't
-been a problem yet.
+For ABI concerns, I don't think we're doing anything fundamentally
+different from x86 here.  So unless our ARM users are substantially more
+exciting than the x86 crowd, it should all fall under the discussion
+from maintainer's summit:
 
-Thanks,
-Song
+https://lwn.net/Articles/908464/
+
+> My biggest concern is changing functionality of arbitrary functions by BPF.
+> I would much rather limit what functions BPF could change with some
+> annotation.
+> 
+> int __bpf_modify foo()
+> {
+> 	...
+> }
+> 
+> 
+> That way if somethings not working, you can see directly in the code that
+> the function could be modified by a BPF program, instead of getting some
+> random bug report because a function returned an unexpected result that the
+> code of that function could never produce.
+>
+
+The good news is that BPF generally confines the function replacement
+through struct ops interfaces.  There are also explicit allow lists to
+limit functions where you can do return value overrides etc, so I think
+it's fair to say these concerns are already baked in.  I'm sure they can
+be improved over the long term, but I don't think that's related to this
+set of functionality on ARM.
+
+-chris
+
