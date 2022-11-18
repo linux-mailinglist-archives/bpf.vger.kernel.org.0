@@ -2,143 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D705C62FD81
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 20:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C162FD8C
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 20:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242596AbiKRTAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 14:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
+        id S242876AbiKRTBY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 14:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242780AbiKRTAc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 14:00:32 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526D92D1C7
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:19 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id u6-20020a17090a5e4600b0021881a8d264so3560364pji.4
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:19 -0800 (PST)
+        with ESMTP id S241915AbiKRTBN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 14:01:13 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DF1218A5;
+        Fri, 18 Nov 2022 11:01:12 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id d13-20020a17090a3b0d00b00213519dfe4aso5908211pjc.2;
+        Fri, 18 Nov 2022 11:01:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8+Jp1cTxEPtM1BXeO8uSCx+LCd2M8aMX65q592YD0d0=;
-        b=YBonu6QEoI3N+QWNkdFOwxF3ItJ9EFU+B5QfjHdU3GBc2ZSnZe5yALtB4jpeLFDc95
-         Ko7GTekdRMQhho0bCqK+AxMp1/j8BB51a/wRI+vy7T+cl7YGRNwm0pb+eQDDA+wfDfpB
-         9FdLLgfncKwQnhaAHnkQK1u8gFKjb1HsP3T3pTa/LqNDKrflro+9zyW4t2iR2AJADJWZ
-         iROyjp+IY4lGBWoV6IPqSgDaztQmSnc3s8+CiSL2zFO/bRE8we3J5ll0YK5KW9Ow2zOj
-         nV+iY3OCRdRb9c+VW18k7zFA79aHjwLJQRbN1GcJcwBih4yUs4blxHGRmx1MEVJFKWEI
-         OlWg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZG45DVCWzpKQix+00S+7v15lsLikdvOFa2L1rhz02E=;
+        b=gu7/79lwAamCIznCAQOwdlvYS7qrs2p/YrBB243/Ap0J8W/HADwP6LTpsB8hFKoLh+
+         ge7dnsjdlbJI0kdiTd20UCBBzR0rG/bmaGSwAhDqNgnPEf2BDcUn80RYU4yfwqjf6Lsn
+         QVA4iU5mBQfR4caKjOteYZPm5WmSxTy3C1/Zmnrqb4UiWWk2TxyRq+Yo5QKn4YtHAwOe
+         tXrU1RNPj9C2OcWynkhuiF1gQuMGasn26mZntKlbo2b+lPsMzuXgpCCkMQs72A1oFlNy
+         QJiGeQZzKJt8OFNXdNVQWDi0CXXAGIKPNgLq/uRPs6OxeFWHN97tCwV2FvX4Aq4RZQ0B
+         5ZRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8+Jp1cTxEPtM1BXeO8uSCx+LCd2M8aMX65q592YD0d0=;
-        b=HaP3BcWc5QPt9hLBa7sgqmua+zcI7IfLQZTdQL2KZ6Ei2EgjYoG+t244zg+IxRzl2o
-         fBRcUQXpc4VUjyHDrUvUVMaZnT6ojKXdZLQW21Bhv41TxwjnpYo+wl0ChZ57LpQTaue7
-         2ZyI14A820E1g2dFW1DwZd3e9pRFQ+PNF8oF6mA+niSABprppPy4tQnWfJd/j/bvmNml
-         YCyCiqb3NxRCdiygA9LaUYTLqbwON7pqDO4bZ2DfOIc+FWUEc/G1bWmWsv6bU/5GhmU2
-         i85D1wFdLVqIaT+zc1Txot5YQcV5/POQLvzdA1QYfrhNXodS6HrAhce3iTnq2h2IWHNK
-         r3AQ==
-X-Gm-Message-State: ANoB5pluIApi9xMkF1iILoqVgGD98WxmUegjWqnN81BpRPwTWe35j4xV
-        tXQ4J17PfolsD8EuriI4s3Q=
-X-Google-Smtp-Source: AA0mqf4KvwQZUbBIb9/SgJVncK1D3esc3Kj06gQubEQWyMB7Kjo12ZCug/JSvq3Y508MTF6QW2Br4A==
-X-Received: by 2002:a17:903:491:b0:17f:73d6:4375 with SMTP id jj17-20020a170903049100b0017f73d64375mr921592plb.24.1668798018733;
-        Fri, 18 Nov 2022 11:00:18 -0800 (PST)
-Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170902ea0f00b00186c3727294sm4034654plg.270.2022.11.18.11.00.17
+        bh=PZG45DVCWzpKQix+00S+7v15lsLikdvOFa2L1rhz02E=;
+        b=kgX1RQme290bgJwA3iXrt89xS0/4Eh8Jp0whF/hDUWfHoU2RxDccn44pLS/Nxf1L5A
+         1YYoWdG00wOI2YzvMuu0bsDq0aleWzc1+4s8Zkf3HIOKZuAxz8fblHki6Gub94cv8dh+
+         QfQ8Ij+CuJ8aqGGsfgZxyu2sy6hmD+4s0hJo6FkyIDIYFYy+I+5DG5v9kgDxC5OW5ygj
+         aGFFXB2Qk1bVHv30uErZIZELs2Hna+GwYDbufmj8pkryNjt6HJlObGzr7MqPmawubZDJ
+         3dhcZR6z16abZQjrhOc0YEZthwzdALUQIXQnw5DHGxsrmNTcmOJ5DHatm4Sb2SRgtADu
+         Rmxw==
+X-Gm-Message-State: ANoB5pktsEx5oLU3WmCmEorKm4uROs3olmelCRJa6r63HrUE7vTNelRJ
+        VCijOVkExvuzvZ0dfdvqY40=
+X-Google-Smtp-Source: AA0mqf4Bztezj9f2y+2p36BvF+DYXQt+bd7bC5bjYeng8ebyzS+a7af+Bvpia1V807T5PIDNuhWpYg==
+X-Received: by 2002:a17:903:2112:b0:188:7dca:6f41 with SMTP id o18-20020a170903211200b001887dca6f41mr838705ple.72.1668798071806;
+        Fri, 18 Nov 2022 11:01:11 -0800 (PST)
+Received: from balhae.corp.google.com ([2620:15c:2c1:200:2f31:8015:7312:9278])
+        by smtp.gmail.com with ESMTPSA id g11-20020a17090a67cb00b0021282014066sm5750994pjm.9.2022.11.18.11.01.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 11:00:18 -0800 (PST)
-Date:   Sat, 19 Nov 2022 00:30:12 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Subject: Re: [PATCH bpf-next v10 11/24] bpf: Rewrite kfunc argument handling
-Message-ID: <20221118190012.cfhavzxw3ssil6nh@apollo>
-References: <20221118015614.2013203-1-memxor@gmail.com>
- <20221118015614.2013203-12-memxor@gmail.com>
- <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local>
- <20221118103730.nbai3gzifkjk45eo@apollo>
- <CAADnVQLxkVKggTwXQJN48yvi4mh9o8qGoF4M4VGifHzygfq+cw@mail.gmail.com>
+        Fri, 18 Nov 2022 11:01:11 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        bpf@vger.kernel.org, Blake Jones <blakejones@google.com>,
+        Chris Li <chriscli@google.com>
+Subject: [PATCH] perf lock contention: Do not use BPF task local storage
+Date:   Fri, 18 Nov 2022 11:01:09 -0800
+Message-Id: <20221118190109.1512674-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLxkVKggTwXQJN48yvi4mh9o8qGoF4M4VGifHzygfq+cw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 11:32:21PM IST, Alexei Starovoitov wrote:
-> On Fri, Nov 18, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Fri, Nov 18, 2022 at 09:04:15AM IST, Alexei Starovoitov wrote:
-> > > On Fri, Nov 18, 2022 at 07:26:01AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > >  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > >                                 const struct btf *btf, u32 func_id,
-> > > >                                 struct bpf_reg_state *regs,
-> > > >                                 bool ptr_to_mem_ok,
-> > > > -                               struct bpf_kfunc_arg_meta *kfunc_meta,
-> > > >                                 bool processing_call)
-> > >
-> > > Something odd here.
-> > > Benjamin added the processing_call flag in
-> > > commit 95f2f26f3cac ("bpf: split btf_check_subprog_arg_match in two")
-> > > and we discussed to remove it.
-> > >
-> > > >             } else if (ptr_to_mem_ok && processing_call) {
-> > >
-> > > since kfunc bit is gone from here the processing_call can be removed.
-> > > ptr_to_mem_ok and processing_call are two bool flags for the same thing, right?
-> > >
-> >
-> > I think so, I'll check it out and send a follow up patch.
-> >
-> > > > +static int process_kf_arg_ptr_to_kptr_strong(struct bpf_verifier_env *env,
-> > >
-> > > I fixed this bit while applying.
-> > >
-> >
-> > Thanks.
-> >
-> > > > +static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_arg_meta *meta)
-> > >
-> > > This function looks much better now.
-> > > The split of kfunc vs helper was long overdue.
-> > > Thank you for doing this.
-> > >
-> > > I'm not convinced that KF_ARG_* is necessary, but it's much better than before.
-> > > So it's a step forward.
-> > >
-> >
-> > Yes. Eventually we should be merging checks for both helpers and kfuncs, but
-> > that needs more work and would have been out of scope for this set. We can
-> > probably synthesize a bpf_func_proto for the kfunc from BTF and then offload to
-> > check_helper_call.
->
-> Yeah. If kfunc BTFs plus KF_ flags can be synthesized to bpf_func_proto
-> that would be the best. If such conversion is possible then it
-> should be possible to do it in resolve_btfid in user space.
->
+It caused some troubles when a lock inside kmalloc is contended
+because task local storage would allocate memory using kmalloc.
+It'd create a recusion and even crash in my system.
 
-Yep. I'll poke at it some more later.
+There could be a couple of workarounds but I think the simplest
+one is to use a pre-allocated hash map.  We could fix the task
+local storage to use the safe BPF allocator, but it takes time
+so let's change this until it happens actually.
 
-> One more thing that I forgot to mention earlier.
-> Could you follow up with a patch to get rid of bpf_global_ma_set
-> check in the run-time and variable itself?
-> If bpf_mem_alloc_init fails the boot fails too.
-> If we're paranoid we can add:
-> special_kfunc_list[KF_bpf_obj_new_impl] = 0;
-> to bpf_mem_alloc_init() to prevent bpf_obj_new to ever be called.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_lock_contention.c         |  1 +
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 34 ++++++++++++-------
+ 2 files changed, 23 insertions(+), 12 deletions(-)
 
-I did it a bit differently, but it does the same thing, and sent it out with the
-s390x fix. PTAL.
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index 0deec1178778..4db9ad3d50c4 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -39,6 +39,7 @@ int lock_contention_prepare(struct lock_contention *con)
+ 	bpf_map__set_value_size(skel->maps.stacks, con->max_stack * sizeof(u64));
+ 	bpf_map__set_max_entries(skel->maps.stacks, con->map_nr_entries);
+ 	bpf_map__set_max_entries(skel->maps.lock_stat, con->map_nr_entries);
++	bpf_map__set_max_entries(skel->maps.tstamp, con->map_nr_entries);
+ 
+ 	if (target__has_cpu(target))
+ 		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 1bb8628e7c9f..9681cb59b0df 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -40,10 +40,10 @@ struct {
+ 
+ /* maintain timestamp at the beginning of contention */
+ struct {
+-	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+-	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__uint(type, BPF_MAP_TYPE_HASH);
+ 	__type(key, int);
+ 	__type(value, struct tstamp_data);
++	__uint(max_entries, MAX_ENTRIES);
+ } tstamp SEC(".maps");
+ 
+ /* actual lock contention statistics */
+@@ -103,18 +103,28 @@ static inline int can_record(void)
+ SEC("tp_btf/contention_begin")
+ int contention_begin(u64 *ctx)
+ {
+-	struct task_struct *curr;
++	__u32 pid;
+ 	struct tstamp_data *pelem;
+ 
+ 	if (!enabled || !can_record())
+ 		return 0;
+ 
+-	curr = bpf_get_current_task_btf();
+-	pelem = bpf_task_storage_get(&tstamp, curr, NULL,
+-				     BPF_LOCAL_STORAGE_GET_F_CREATE);
+-	if (!pelem || pelem->lock)
++	pid = bpf_get_current_pid_tgid();
++	pelem = bpf_map_lookup_elem(&tstamp, &pid);
++	if (pelem && pelem->lock)
+ 		return 0;
+ 
++	if (pelem == NULL) {
++		struct tstamp_data zero = {};
++
++		bpf_map_update_elem(&tstamp, &pid, &zero, BPF_ANY);
++		pelem = bpf_map_lookup_elem(&tstamp, &pid);
++		if (pelem == NULL) {
++			lost++;
++			return 0;
++		}
++	}
++
+ 	pelem->timestamp = bpf_ktime_get_ns();
+ 	pelem->lock = (__u64)ctx[0];
+ 	pelem->flags = (__u32)ctx[1];
+@@ -128,7 +138,7 @@ int contention_begin(u64 *ctx)
+ SEC("tp_btf/contention_end")
+ int contention_end(u64 *ctx)
+ {
+-	struct task_struct *curr;
++	__u32 pid;
+ 	struct tstamp_data *pelem;
+ 	struct contention_key key;
+ 	struct contention_data *data;
+@@ -137,8 +147,8 @@ int contention_end(u64 *ctx)
+ 	if (!enabled)
+ 		return 0;
+ 
+-	curr = bpf_get_current_task_btf();
+-	pelem = bpf_task_storage_get(&tstamp, curr, NULL, 0);
++	pid = bpf_get_current_pid_tgid();
++	pelem = bpf_map_lookup_elem(&tstamp, &pid);
+ 	if (!pelem || pelem->lock != ctx[0])
+ 		return 0;
+ 
+@@ -156,7 +166,7 @@ int contention_end(u64 *ctx)
+ 		};
+ 
+ 		bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST);
+-		pelem->lock = 0;
++		bpf_map_delete_elem(&tstamp, &pid);
+ 		return 0;
+ 	}
+ 
+@@ -169,7 +179,7 @@ int contention_end(u64 *ctx)
+ 	if (data->min_time > duration)
+ 		data->min_time = duration;
+ 
+-	pelem->lock = 0;
++	bpf_map_delete_elem(&tstamp, &pid);
+ 	return 0;
+ }
+ 
+-- 
+2.38.1.584.g0f3c55d4c2-goog
+
