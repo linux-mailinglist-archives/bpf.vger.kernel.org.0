@@ -2,91 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BF662F341
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 12:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC7562F348
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 12:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241561AbiKRLGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 06:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
+        id S241303AbiKRLIP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 06:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241478AbiKRLGH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 06:06:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B8E97A80;
-        Fri, 18 Nov 2022 03:05:45 -0800 (PST)
+        with ESMTP id S235247AbiKRLIO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 06:08:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C178F98243;
+        Fri, 18 Nov 2022 03:08:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4705BB82302;
-        Fri, 18 Nov 2022 11:05:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD98FC433D6;
-        Fri, 18 Nov 2022 11:05:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6783262445;
+        Fri, 18 Nov 2022 11:08:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97123C433C1;
+        Fri, 18 Nov 2022 11:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668769542;
-        bh=SQE37IdYnZXtLDuTKHoXu2mopWX7N9kLALMt1Oc3qj8=;
+        s=k20201202; t=1668769692;
+        bh=a7U9Td57moV6dIsrSQNM+u0ybC2RzlpWe+s9uXaiWpY=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ntYcOXYFouoOVgIUK3a8QDLkw7aa5rNER+b+I/6AFGVGO+oXKObaYJ647Ocmpcjo3
-         ikqCINcK1gp8fFnqTq/bs9kgeZAWm3/ixsfhhiVy9tHB5T3DX7dME9O9JYkhVJHEA0
-         e9ayLALLzH8pb1NJM5VFy+D/sh5FBzIF6TK4FJPpdXWPdxTxzOjT9xiXOaAQo6cN2i
-         j6szvmuqmQUr/GNAZLvsa7PzhlbQskWUqATri9l+ug8yyqNV6QTlAfvSZa4mv9jqE5
-         tnUklwagIcuQa6Z8PjIL3k4QRZSp7tSSKyRzOXlp1K6PjYn8zuckZytRGkiZ+Kx5wo
-         EPmpztA8dog8A==
+        b=eHc8HEcwNzAT221n92/PtkwnIgsRBYxmhZ4OdueqydLXGaNyL5dRh0EAakmCaM2Bm
+         w1/zhcJ/5sVlBcjwnFFhzSOOB7TjgiW1QystlvJMjaS18MFOYymtTqRtonb3N0vZHP
+         Y6YU8zDqdBpuOJWX9hehdcMF/TuC6FIxRlqioFx13DWv5e0xKo1a2sh+hAa69Qa+qh
+         gyhC7vOsUCuNYHt8fDFlDpKtDZslk+UGEhfil2K5zrI46cwEyZIeID3X6AdMewP+Nq
+         Y1ie/swCopE0FaUJao64SLxwqlw0X4/5PQ5Al6eri5Cje+UdLa27tGeEo4qQfbKsEo
+         aXRchAM2qjI8g==
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7554C7A71CE; Fri, 18 Nov 2022 12:05:39 +0100 (CET)
+        id CC1AE7A71D0; Fri, 18 Nov 2022 12:08:09 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc:     Heng Qi <henqqi@linux.alibaba.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] veth: a couple of fixes
-In-Reply-To: <edc73e5d5cdb06460aea9931a6c644daa409da48.camel@redhat.com>
-References: <cover.1668727939.git.pabeni@redhat.com>
- <edc73e5d5cdb06460aea9931a6c644daa409da48.camel@redhat.com>
+To:     Rong Tao <rtoax@foxmail.com>, andrii.nakryiko@gmail.com,
+        sdf@google.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dxu@dxuuu.xyz, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lkp@intel.com, lorenzo@kernel.org, martin.lau@linux.dev,
+        memxor@gmail.com, mykolal@fb.com, rongtao@cestc.cn,
+        rtoax@foxmail.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix error: undeclared
+ identifier 'NF_NAT_MANIP_SRC'
+In-Reply-To: <tencent_4C0B445E0305A18FACA04B4A959B57835107@qq.com>
+References: <CAEf4BzZE5=OOp6OesB=P8PE=Ps62fkecDSZ9MzwHCD68=+oN0g@mail.gmail.com>
+ <tencent_4C0B445E0305A18FACA04B4A959B57835107@qq.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 18 Nov 2022 12:05:39 +0100
-Message-ID: <87pmdky130.fsf@toke.dk>
+Date:   Fri, 18 Nov 2022 12:08:09 +0100
+Message-ID: <87mt8oy0yu.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Paolo Abeni <pabeni@redhat.com> writes:
+Rong Tao <rtoax@foxmail.com> writes:
 
-> On Fri, 2022-11-18 at 00:33 +0100, Paolo Abeni wrote:
->> Recent changes in the veth driver caused a few regressions
->> this series addresses a couple of them, causing oops.
->> 
->> Paolo Abeni (2):
->>   veth: fix uninitialized napi disable
->>   veth: fix double napi enable
->> 
->>  drivers/net/veth.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
+> From: Rong Tao <rongtao@cestc.cn>
 >
-> @Xuan Zhuo: another option would be reverting 2e0de6366ac1 ("veth:
-> Avoid drop packets when xdp_redirect performs") and its follow-up
-> 5e5dc33d5dac ("bpf: veth driver panics when xdp prog attached before
-> veth_open").
+> commit 472caa69183f("netfilter: nat: un-export nf_nat_used_tuple")
+> introduce NF_NAT_MANIP_SRC/DST enum in include/net/netfilter/nf_nat.h,
+> and commit b06b45e82b59("selftests/bpf: add tests for bpf_ct_set_nat_info
+> kfunc") use NF_NAT_MANIP_SRC/DST in test_bpf_nf.c.
 >
-> That option would be possibly safer, because I feel there are other
-> issues with 2e0de6366ac1, and would offer the opportunity to refactor
-> its logic a bit: the napi enable/disable condition is quite complex and
-> not used consistently mixing and alternating the gro/xdp/peer xdp check
-> with the napi ptr dereference.
+> In bpf kself-test config (tools/testing/selftests/bpf/config) nf_nat
+> is compiled as built-in, this issue occurs just if it is compiled as
+> module. we just hardcode 1/0 here.
 >
-> Ideally it would be better to have an helper alike
-> napi_should_be_enabled(), use it everywhere, and pair the new code with
-> some selftests, extending the existing ones.
+> How to reproduce the error:
 >
-> WDYT?
+>    $ make -C tools/testing/selftests/bpf/
+>    ...
+>       CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+>       error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+>             bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+>                                                          ^
+>       error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+>             bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+>                                                          ^
+>    2 errors generated.
+>
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 
-FWIW, the original commit 2e0de6366ac1 was merged very quickly without
-much review; so I'm not terribly surprised it breaks. I would personally
-be OK with just reverting it...
+This will fix the compilation, but the selftest won't actually work when
+nf_nat is compiled as a module (see [0]). Would be better to fix the
+test properly instead of just papering over the compilation issue like
+this. That requires a bit more surgery to the selftests, though...
 
 -Toke
+
+[0] https://lore.kernel.org/r/87leoh372s.fsf@toke.dk
