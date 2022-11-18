@@ -2,75 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B7E62FC5F
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEF262FCD1
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242647AbiKRSTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 13:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        id S235327AbiKRSbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 13:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242623AbiKRSTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 13:19:04 -0500
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A1E922D9
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:18:56 -0800 (PST)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-142612a5454so6239264fac.2
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:18:56 -0800 (PST)
+        with ESMTP id S242489AbiKRSbT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 13:31:19 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD0A1262D;
+        Fri, 18 Nov 2022 10:31:18 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id f3so5718567pgc.2;
+        Fri, 18 Nov 2022 10:31:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNnwGanczIlOEoVy4OEmoR/dSYWkyWUH5BAq5Ob+Kiw=;
-        b=gJBrl3WZ97qVM3NI2LxOAIkcLzX+1KjC9HfQrZhs+yxO7EeHBYC0NOA8ndwqQIu9m9
-         MzsuBWsITSp9sLNXnWnwi8naaGOehc9PKEomLULvmyYR0LVTjOgvfoBOwExTadH5bycM
-         ED6yT1CxxGG5yT8Ihb9SmELwyOHU0P7PHFfQpSsH0rSJchYYT5rYPa/qoe7Eg6uKlboE
-         z1T6s7Qdp/DJm3NBAt4hXF16NjB7CW8aAB2kXkctLW1w+x96U0STNaBaAvjnai3NxfiS
-         gIIwlMz9ItIe8AN7iPP/Oa2bPTelXB6lihZ6sqBdThz6xN+JiEbNfe02mmxZjyp8+sBW
-         f0dg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lEtVt7Ap9gNxP97uEUyKEWe7IDoCnngIOs3vo3ozwnY=;
+        b=J8VX5yeSohiITeAIfpjvi97NQTjhlBBzeyIVWoK9J0T2o2NHCBvwNY7+ru+6U+9mhq
+         F9JmdNbi1gRhyr3hi4dd+6ETUKkmj+sm5rAHMNFHZHwypcV/arPoqggVEqNQr4ApAtlA
+         kEV34Ei6RK4UGAF4KW8yDWZeMubalBPXCUh12/jFlrVaOsRpSfVq2vGitGFbBzm+OklJ
+         Q/mucqC0B8Wvy2aPQCeH9twMLfDCM7OuKLXobgOUj98Pni2ka4GpzlUT3R+nVAqQimvf
+         jaZ0HMXGISiVRgFOseMFEhrr/SkXOvTjK/1b54jzvCaaRvzHnG5jndR5bWgUfjePJSUu
+         1TQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fNnwGanczIlOEoVy4OEmoR/dSYWkyWUH5BAq5Ob+Kiw=;
-        b=rA15ri0cuk5BH1T7W9lDh66l4R15hxI14yZF5wryyYYcVvYs0AUtfEcthaSxAP4x6C
-         dYAPNwH5xXBSyqMT7dEkO8Ml9dKO4INF8Oe5BEYDvQlsKdw5SOva8igvJ8CHL4y9jpwC
-         1MY02fO97efaRmcVZCGZtSwN36TglW9hIqs7OaCAIb3PBAIxvXmoyL6Bj9E/HYhnIBEJ
-         MtWBxHm9gYqRBl0j6LFtY3f4GsROc6K+UnZhmUg19MKefmwCZlXS9AoVXUaiSJERYY2O
-         R1+fI+VRxp3A31kpXwVP5pPY/het44Z5HKl2sOmRrlmazY8/Xv1JFz/rQkZdMSZbALyd
-         dp3g==
-X-Gm-Message-State: ANoB5pn1JKjvLziC8cz2K3QYBF00lp+VkoCRjMKkJZPSWMBYslrQmGNW
-        SGD4J7IYbFFehYLw+gtmfpXrYl+M7rE3g4fkscfhoA==
-X-Google-Smtp-Source: AA0mqf5Ar+kY1e8eGdghMnj0xIaR0R7Fv+/GgQjxHkmHfBRbquNZ+pOSQ6UBsy2yKGR7QhNo6JqfeLia+RddEIiT4II=
-X-Received: by 2002:a05:6870:9d95:b0:13b:a163:ca6 with SMTP id
- pv21-20020a0568709d9500b0013ba1630ca6mr8143380oab.125.1668795535941; Fri, 18
- Nov 2022 10:18:55 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lEtVt7Ap9gNxP97uEUyKEWe7IDoCnngIOs3vo3ozwnY=;
+        b=vIBobITWKbOBnk/bz64G/7Gbreifrl+p7K9xDjvUdVYiWpbVITuCGCm6Q2Z60WO4qj
+         CaywM7/qTZdMtduvpM4GtEbqnJALDn4h8jLvvtt0IPxqkRN1qlwDRSj334/c9vsh4zFD
+         pwMJt83TEwU+eQNvq6fkF6b6brRlZP9F+c2yp3Tl9BsHzZwt74+0iei8PVgTSahbHAxH
+         Uq+rSsOo3iF2cCCDIwj47LPo7neTWUCMen+iVnzrE3ySrtVgXYAjyk9N2TaTnCMJZ9H9
+         irfOIvRY1bqusKqP100t6YNKSzZa5hbP6oOIJLDeEYZN07HW+V5xgAwqREY5nOOe4UJo
+         VeBw==
+X-Gm-Message-State: ANoB5pn86sZlEkkIw/llcv4r0hNYdquESM+HxhsUXdbSVjYj9E6Qjejm
+        FVjwTd+ZgFXRSRuRs5gcqrA=
+X-Google-Smtp-Source: AA0mqf7KtSvnbkWe7mbNo63QoODjpnvMiQrTzC42/RyY61BYHYF6DfLGnHILLxR/E8lL9AAagBztDA==
+X-Received: by 2002:a62:16d4:0:b0:572:6b5f:bdc2 with SMTP id 203-20020a6216d4000000b005726b5fbdc2mr9008621pfw.36.1668796277450;
+        Fri, 18 Nov 2022 10:31:17 -0800 (PST)
+Received: from MacBook-Pro-5.local ([2620:10d:c090:500::4:6663])
+        by smtp.gmail.com with ESMTPSA id w68-20020a627b47000000b0057280487af1sm3431900pfc.206.2022.11.18.10.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 10:31:16 -0800 (PST)
+Date:   Fri, 18 Nov 2022 10:31:13 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Vernet <void@manifault.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, memxor@gmail.com, yhs@fb.com,
+        song@kernel.org, sdf@google.com, kpsingh@kernel.org,
+        jolsa@kernel.org, haoluo@google.com, tj@kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 0/3] Support storing struct task_struct
+ objects as kptrs
+Message-ID: <20221118183113.ftsafchmurs7copl@MacBook-Pro-5.local>
+References: <20221117032402.2356776-1-void@manifault.com>
+ <6376a1b12bb4d_4101208d@john.notmuch>
+ <Y3atifGs0DM9to8z@maniforge.lan>
+ <6376b7822f4df_8c7a208f7@john.notmuch>
+ <Y3biwxIq8B5oYdOS@maniforge.lan>
+ <6377206bed37e_2063d20878@john.notmuch>
+ <Y3ef3Mlzd96iANLm@maniforge.lan>
 MIME-Version: 1.0
-References: <20221115030210.3159213-1-sdf@google.com> <20221115030210.3159213-7-sdf@google.com>
- <e26f75dd-f52f-a69b-6754-54e1fe044a42@redhat.com>
-In-Reply-To: <e26f75dd-f52f-a69b-6754-54e1fe044a42@redhat.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 18 Nov 2022 10:18:44 -0800
-Message-ID: <CAKH8qBv8UtHZrgSGzVn3ZJSfkdv1H3kXGbakp9rCFdOABL=3BQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 06/11] xdp: Carry over xdp metadata into skb context
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y3ef3Mlzd96iANLm@maniforge.lan>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,82 +81,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 6:05 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
-> On 15/11/2022 04.02, Stanislav Fomichev wrote:
-> > Implement new bpf_xdp_metadata_export_to_skb kfunc which
-> > prepares compatible xdp metadata for kernel consumption.
-> > This kfunc should be called prior to bpf_redirect
-> > or when XDP_PASS'ing the frame into the kernel (note, the drivers
-> > have to be updated to enable consuming XDP_PASS'ed metadata).
-> >
-> > veth driver is amended to consume this metadata when converting to skb.
-> >
-> > Internally, XDP_FLAGS_HAS_SKB_METADATA flag is used to indicate
-> > whether the frame has skb metadata. The metadata is currently
-> > stored prior to xdp->data_meta. bpf_xdp_adjust_meta refuses
-> > to work after a call to bpf_xdp_metadata_export_to_skb (can lift
-> > this requirement later on if needed, we'd have to memmove
-> > xdp_skb_metadata).
-> >
->
-> I think it is wrong to refuses using metadata area (bpf_xdp_adjust_meta)
-> when the function bpf_xdp_metadata_export_to_skb() have been called.
-> In my design they were suppose to co-exist, and BPF-prog was expected to
-> access this directly themselves.
->
-> With this current design, I think it is better to place the struct
-> xdp_skb_metadata (maybe call it xdp_skb_hints) after xdp_frame (in the
-> top of the frame).  This way we don't conflict with metadata and
-> headroom use-cases.  Plus, verifier will keep BPF-prog from accessing
-> this area directly (which seems to be one of the new design goals).
->
-> By placing it after xdp_frame, I think it would be possible to let veth
-> unroll functions seamlessly access this info for XDP_REDIRECT'ed
-> xdp_frame's.
->
-> WDYT?
+On Fri, Nov 18, 2022 at 09:08:12AM -0600, David Vernet wrote:
+> On Thu, Nov 17, 2022 at 10:04:27PM -0800, John Fastabend wrote:
+> 
+> [...]
+> 
+> > > > And last thing I was checking is because KF_SLEEPABLE is not set
+> > > > this should be blocked from running on sleepable progs which would
+> > > > break the call_rcu in the destructor. Maybe small nit, not sure
+> > > > its worth it but might be nice to annotate the helper description
+> > > > with a note, "will not work on sleepable progs" or something to
+> > > > that effect.
+> > > 
+> > > KF_SLEEPABLE is used to indicate whether the kfunc _itself_ may sleep,
+> > > not whether the calling program can be sleepable. call_rcu() doesn't
+> > > block, so no need to mark the kfunc as KF_SLEEPABLE. The key is that if
+> > > a kfunc is sleepable, non-sleepable programs are not able to call it
+> > > (and this is enforced in the verifier).
+> > 
+> > OK but should these helpers be allowed in sleepable progs? I think
+> > not. What stops this, (using your helpers):
+> > 
+> >   cpu0                                       cpu1
+> >   ----
+> >   v = insert_lookup_task(task)
+> >   kptr = bpf_kptr_xchg(&v->task, NULL);
+> >   if (!kptr)
+> >     return 0;
+> >                                             map_delete_elem()
+> >                                                put_task()
+> >                                                  rcu_call
+> >   do_something_might_sleep()
+> >                                                     put_task_struct
+> >                                                       ... free  
 
-Not everyone seems to be happy with exposing this xdp_skb_metadata via
-uapi though :-(
-So I'll drop this part in the v2 for now. But let's definitely keep
-talking about the future approach.
+the free won't happen here, because the kptr on cpu0 holds the refcnt.
+bpf side never does direct free of kptr. It only inc/dec refcnt via kfuncs.
 
-Putting it after xdp_frame SGTM; with this we seem to avoid the need
-to memmove it on adjust_{head,meta}.
+> >   kptr->[free'd memory]
+> >  
+> > the insert_lookup_task will bump the refcnt on the acquire on map
+> > insert. But the lookup doesn't do anything to the refcnt and the
 
-But going back to the uapi part, what if we add separate kfunc
-accessors for skb exported metadata?
+lookup from map doesn't touch kptrs in the value.
+just reading v->kptr becomes PTR_UNTRUSTED with probe_mem protection.
 
-To export:
-bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx, rx_timestamp)
-bpf_xdp_metadata_export_rx_hash_to_skb(ctx, rx_hash)
-// ^^ these prepare xdp_skb_metadata after xdp_frame, but not expose
-it via uapi/af_xdp/etc
+> > map_delete_elem will delete it. We have a check for spin_lock
+> > types to stop them from being in sleepable progs. Did I miss a
+> > similar check for these?
+> 
+> So, in your example above, bpf_kptr_xchg(&v->task, NULL) will atomically
+> xchg the kptr from the map, and so the map_delete_elem() call would fail
+> with (something like) -ENOENT. In general, the semantics are similar to
+> std::unique_ptr::swap() in C++.
+> 
+> FWIW, I think KF_KPTR_GET kfuncs are the more complex / racy kfuncs to
+> reason about. The reason is that we're passing a pointer to the map
+> value containing a kptr directly to the kfunc (with the attempt of
+> acquiring an additional reference if a kptr was already present in the
+> map) rather than doing an xchg which atomically gets us the unique
+> pointer if nobody else xchgs it in first. So with KF_KPTR_GET, someone
+> else could come along and delete the kptr from the map while the kfunc
+> is trying to acquire that additional reference. The race looks something
+> like this:
+> 
+>    cpu0                                       cpu1
+>    ----
+>    v = insert_lookup_task(task)
+>    kptr = bpf_task_kptr_get(&v->task);
+>                                              map_delete_elem()
+>                                                 put_task()
+>                                                   rcu_call
+>                                                      put_task_struct
+>                                                        ... free  
+>    if (!kptr)
+>      /* In this race example, this path will be taken. */
+>      return 0;
+> 
+> The difference is that here, we're not doing an atomic xchg of the kptr
+> out of the map. Instead, we're passing a pointer to the map value
+> containing the kptr directly to bpf_task_kptr_get(), which itself tries
+> to acquire an additional reference on the task to return to the program
+> as a kptr. This is still safe, however, as bpf_task_kptr_get() uses RCU
+> and refcount_inc_not_zero() in the bpf_task_kptr_get() kfunc to ensure
+> that it can't hit a UAF, and that it won't return a dying task to the
+> caller:
+> 
+> /**
+>  * bpf_task_kptr_get - Acquire a reference on a struct task_struct kptr. A task
+>  * kptr acquired by this kfunc which is not subsequently stored in a map, must
+>  * be released by calling bpf_task_release().
+>  * @pp: A pointer to a task kptr on which a reference is being acquired.
+>  */
+> __used noinline
+> struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
+> {
+>         struct task_struct *p;
+> 
+>         rcu_read_lock();
+>         p = READ_ONCE(*pp);
+> 
+> 	/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+> 	 * cpu1 could remove the element from the map here, and invoke
+> 	 * put_task_struct_rcu_user(). We're in an RCU read region
+> 	 * though, so the task won't be freed until at the very
+> 	 * earliest, the rcu_read_unlock() below.
+> 	 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> 	 */
+> 
+>         if (p && !refcount_inc_not_zero(&p->rcu_users))
+> 		/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+> 		 * refcount_inc_not_zero() will return false, as cpu1
+> 		 * deleted the element from the map and dropped its last
+> 		 * refcount. So we just return NULL as the task will be
+> 		 * deleted once an RCU gp has elapsed.
+> 		 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> 		 */
+>                 p = NULL;
+>         rcu_read_unlock();
+> 
+>         return p;
+> }
+> 
+> Let me know if that makes sense. This stuff is tricky, and I plan to
+> clearly / thoroughly add it to that kptr docs page once this patch set
+> lands.
 
-Then bpf_xdp_metadata_export_to_skb can be 'static inline' define in
-the headers:
-
-void bpf_xdp_metadata_export_to_skb(ctx)
-{
-  if (bpf_xdp_metadata_rx_timestamp_supported(ctx))
-    bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx,
-bpf_xdp_metadata_rx_timestamp(ctx));
-  if (bpf_xdp_metadata_rx_hash_supported(ctx))
-    bpf_xdp_metadata_export_rx_hash_to_skb(ctx, bpf_xdp_metadata_rx_hash(ctx));
-}
-
-We can also do the accessors:
-u64 bpf_xdp_metadata_skb_rx_timestamp(ctx)
-u32 bpf_xdp_metadata_skb_rx_hash(ctx)
-
-Hopefully we can unroll at least these, since they are not part of the
-drivers, it should be easier to argue...
-
-The only issue, it seems, is that if the final bpf program would like
-to export this metadata to af_xdp, it has to manually adj_meta and use
-bpf_xdp_metadata_skb_rx_xxx to prepare a custom layout. Not sure
-whether performance would suffer with this extra copy; but we can at
-least try and see..
+All correct. Probably worth adding this comment directly in bpf_task_kptr_get.
