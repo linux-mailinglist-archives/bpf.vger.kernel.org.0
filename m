@@ -2,228 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C4D62FCF0
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29AA62FD4E
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbiKRSpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 13:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S242948AbiKRSyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 13:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235453AbiKRSpG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 13:45:06 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510F28F3D4;
-        Fri, 18 Nov 2022 10:45:05 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id k7so5314077pll.6;
-        Fri, 18 Nov 2022 10:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3FC0XJuf4EOjB0UhVhwX8fr+UooJnsmWihJCBqUIz4=;
-        b=EDijdibNtrt0r2PUujqwuKpc5+fxdKcSgLzUrFqiJ+soe4YmUYa37QLundGOwKkeM0
-         xUzkQRVVn6tMZu0lG4qi1n5S103XuHLj5aJ7lD3G808EZnO/DjcC/xjbGO+D4wQlln2V
-         DuDcVo13EXKxw9Q3mNED8NveQfjELbJLfHd7YtDo0j1+H+wVyPrEQ6Pbb7kPmwYZIiE9
-         JoGO62XClWkVYj55WmibHFmh2LhX5NDJjrVZmKPZjQRt58742YGeCV4f3fTmGuAotBpk
-         Yg4MhSeeTizqhNrUxKTi/sHEJpnws7W7Hq0eGhqcRXXAC0+bg7o4327XkZKy4kgPFpsI
-         Nuzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y3FC0XJuf4EOjB0UhVhwX8fr+UooJnsmWihJCBqUIz4=;
-        b=VGObwPk12uKa2mitOMgr9LlUSvDsubp11KfyK2ecwamnknuGXtrRcO+54E+5mj5Y15
-         QZSagsGor86DkxW4dHfU3+b4WNLKboTXJZltnvvP4MK7rbzfkFzbe1w6WNi8Gb7MlKcC
-         Ah5incxnyNFmfSVk4UNsEI8Aene7WW0TSP+BcYVNQOcQUVErXXEOJJ7HZEgYXM+YC8sO
-         6EWNGPkteQ/KK+FMJiFeewKVjKyQwuz84RmU1S3zgR6v3lkvleGhvrv9VDOUVlpsmJ6x
-         5GjSpVOQ/uUyna08yDeZtV+fa+P+KGfZ90QEL1tawpy2Ybzo3IyAQYvZ1VuNTQMe8zx6
-         c0Sg==
-X-Gm-Message-State: ANoB5pmbtmlFUBJQSCZK/YwmNAyBOndYXzKN5yPsYMslA6csyzSVBjsc
-        YMVa2vy5LSMcmF+E/pLkHKMEp+t+9Gc=
-X-Google-Smtp-Source: AA0mqf5vyLSnR7kLaFOH8EJwldNPEbFUubg5+mavZdX+6X6xofMn3D+5Po0moviBFLyceCHDdyV0+A==
-X-Received: by 2002:a17:90b:3547:b0:212:d6ed:cdf5 with SMTP id lt7-20020a17090b354700b00212d6edcdf5mr8740636pjb.142.1668797104655;
-        Fri, 18 Nov 2022 10:45:04 -0800 (PST)
-Received: from MacBook-Pro-5.local ([2620:10d:c090:500::4:6663])
-        by smtp.gmail.com with ESMTPSA id i9-20020a17090332c900b00188a1ae94bbsm4156050plr.23.2022.11.18.10.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 10:45:03 -0800 (PST)
-Date:   Fri, 18 Nov 2022 10:45:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
-        yhs@fb.com, song@kernel.org, sdf@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        haoluo@google.com, tj@kernel.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: Allow trusted pointers to be passed
- to KF_TRUSTED_ARGS kfuncs
-Message-ID: <20221118184500.yshwvcrx2a34xkmc@MacBook-Pro-5.local>
-References: <20221117032402.2356776-1-void@manifault.com>
- <20221117032402.2356776-2-void@manifault.com>
- <20221118022640.borhn6iy4v2fhl7g@MacBook-Pro-5.local>
- <Y3eamIVUVb6V47LF@maniforge.lan>
- <Y3e2sdqL1E0SKJ5/@maniforge.lan>
+        with ESMTP id S242805AbiKRSy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 13:54:27 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1808B9C2A7;
+        Fri, 18 Nov 2022 10:52:48 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AIH9ODE019161;
+        Fri, 18 Nov 2022 10:52:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=6PEm6+kzt7u4soy8QlY0Eo3hg5iQkMEmvHHrtPwvMas=;
+ b=PeBtW3nWO/DcmRjC2BbVtab4Tcg0xYr3FmUBjUN3ayDDv3OntMv1DvHz/4K67LwAmYbj
+ YqlG9C/PPpU522cxKqPTHvP2Xi7PHrgtVQqkJEh15+xWYMBzbNwbEOehie9M5H2o97rI
+ HfC98DJiYpmfKMVQNVqJMloScZOL45kDt7/z4d+faYvHgGuS38WIEZ5jHE07dGfr3pg/
+ 9oaa5DrCT3Lo52ucRzh8xY+Eg+j/w/Ae8EZI7mUBtRiMJUgVvKQKs7fupcw+iaH+hdUP
+ l+Xh+7pVsXwW7KTcWJzq3E3XWbtQxc7cSLwpsaTzSGo9aFcMy5OmC98hqUUHIiUQmufF Pw== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kx0u0dds7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Nov 2022 10:52:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fhw86Cb6ysTDXInaD9+Cy1VddOsYOPrFBfu8O4WonncVRgvE49jN4z764fL+gyzBVgPIAAg8+xrwMdU8Vry3CXSL6djXzjcvC4G60zb5klTb6cDy/0V+Cu1aoSjoNg/uTa3nMOxerWctLEHzYHkSG1Uf6KCrMrHdgH+IE9w0iuekVhXM40brPhkx9Lb0mIM15W0vLNhKx/cyRLnagaypvmvQTMJd1t14PdTwgAKMqzcwqLG71A21zKIeG3yB6UjuHfJBSzLAEMIRZ+VoFBHJcv43kRj728bpplr76MF7sGc+RDYFFFA1dRDW71P+jYIBA177fIklL/yzERalcZHOIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6PEm6+kzt7u4soy8QlY0Eo3hg5iQkMEmvHHrtPwvMas=;
+ b=dyXjYl8WQaJBQkPl87KZVz9ygWG67QRHctaiHwgtO0zrb2rgeeaMYBTfPqstk9DPplFIHmksuEzlTE650ch0G3xDHKDBaWca3NTFwgp1dJSun7Mqb0TasLHl41jsjhtUYCtariZjnuIu3tVX/afNarPBTm+8d7DwwvJ030tmU681C4hqtawpwMw+3ikSzfvD850J7rsije8jDLK3ay8vzq/LB3nhKG+hkIa/v29OCSMmASF2B0a6QinkNK0ZFLHvK6vbi8H4zLylBzIZFZaOyHTUyK9ZEv3UC8/EgNpsGCcRW+Dpn2mnTJf+Fk+gpfbLb3Mu5eKtu4co3t4YYDzmgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com (2603:10b6:208:1b6::13)
+ by DM5PR15MB1212.namprd15.prod.outlook.com (2603:10b6:3:b2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Fri, 18 Nov
+ 2022 18:52:03 +0000
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::563a:dd91:dd5:6a8f]) by MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::563a:dd91:dd5:6a8f%7]) with mapi id 15.20.5813.020; Fri, 18 Nov 2022
+ 18:52:03 +0000
+Message-ID: <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
+Date:   Fri, 18 Nov 2022 13:52:00 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.2
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20221108220651.24492-1-revest@chromium.org>
+ <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
+ <20221117121617.4e1529d3@gandalf.local.home>
+ <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
+ <20221117174030.0170cd36@gandalf.local.home>
+ <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
+ <20221118114519.2711d890@gandalf.local.home>
+ <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
+ <20221118130608.5ba89bd8@gandalf.local.home>
+From:   Chris Mason <clm@meta.com>
+In-Reply-To: <20221118130608.5ba89bd8@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BL1PR13CA0317.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::22) To MN2PR15MB4287.namprd15.prod.outlook.com
+ (2603:10b6:208:1b6::13)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR15MB4287:EE_|DM5PR15MB1212:EE_
+X-MS-Office365-Filtering-Correlation-Id: caf9171f-bd36-489b-574c-08dac995fb98
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hidt1Odyl5VzF+5BlJSm8XOdcXJeFavTA2+K6qbOtbIiDs41LZ2I+rNOXgxJs9S7cMZme9AsFSHGwIzhBzGF6MH0topGDlsDEDSnBB3rHV37ExoXJ6U+ypEPiT2GL1wBRgeQeLgdPPb4JoKergu6o0CjGi8PtXzlFFFcg/1sSPIWkoZO7Y9rJUO+aIyV43GtaDEW10IlV32Sp/9ShfGUHiemn6w5mwpFFWsNemHX3bNrngSlVsAPGaXFOzv6X5gCctylz3fXuTk9A11bPZhPEHs+7UgMRmwGloSnmVxDfYawEHat5R6B3CRArlrJgiXafgfDT5K9r+Y3ExFeMWJp7jihX99RUjrOEexbiSF1IfL4wDX7Te2NMDzhYooRjUu1nV/wnKWXbA7oEz0LAl6+R9nMVUU7tpixY0hrvMGBzAki76BK6imXof8UXHBlvqZHZ679F72NdDyFlqyaPgZurk3fiQLrD1GTB36GCVtUJ2PG2pTJB2CnFPsOaDJ8fyFg9zGzX+t1H+THbFcbl3x61b3GiVbv3BOid0aCeFIngvsWHjLRSDIEBHANbkqldlY5nNCPdRPK9MHRjhWjTwsTUabqIH3+QQXbr2j8auoAJjxADss7pHrO4MDboTdfoenQKuo+Q1DfX2M1DzJLzTBg2dGNo2aBbV4HxNc3++QyiSKBK6Y73W3dispsTrgp7zmV9hJcnIlo/a0NS6xv9nF68ucIklc+I0tN5OA8NucUBClACN6FwombTrezbHyMs1Sm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB4287.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(346002)(376002)(136003)(396003)(451199015)(38100700002)(31696002)(86362001)(8676002)(6512007)(316002)(53546011)(66946007)(36756003)(66476007)(8936002)(2906002)(7416002)(186003)(66556008)(4326008)(83380400001)(41300700001)(5660300002)(2616005)(478600001)(54906003)(31686004)(966005)(6916009)(6486002)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aXZVMkJKUUVpVGxKNUtHbjhmR3o2aW5VTUw1cEFJdThwZTNVNjhqVzM4cUIx?=
+ =?utf-8?B?bU9Nb0FiMTByKys2VnVXVHRwMTRQZldnbTRVY1djbXhHc1pvcUp1amlHNGp4?=
+ =?utf-8?B?T3o0cnpVbU5HMVNsYTEvTFVMUklvMW1KbDU1SmQzTGZvQWc3MlBLeG02M3E3?=
+ =?utf-8?B?Y29KUUFvWXFmU2lwbko4TUUvZkRLY2xnN2ErM01MRHZ4aXZWUVBaWjY4bCtq?=
+ =?utf-8?B?T2FoYXoxYjNrVndudmdOOExYRS9OK1lKMDRsOTMzU1MzUTEreHZvZDd2Yldh?=
+ =?utf-8?B?VzQ2Q2RwbnFnSzJJR0dVZDRZbC9HUnhJMGRsQjRzYWZyQ2tCT2FYcUtHMng2?=
+ =?utf-8?B?NnArZmNzZktKUXFTaXpBeGVxTmE1aGZLcFc0OWpEQmJ6U1F3OGhKdFl2Q3cy?=
+ =?utf-8?B?MWUxTWFwSUxJeW9PcE4xeFpNMGtPcElIalg5bUEzc1ppMmM5aGFJQUQ1eWM1?=
+ =?utf-8?B?U3MvVDhIQjZJbDhTTzdEczI2WGZ2Smh3dWltc0ZJVnFUTmdBdUpaSy92WHcr?=
+ =?utf-8?B?K0VIelp0SGhSem1UcEtwOStDZUJQd29sVS9KVHc2U2ZVbEY5WUZZQnFlTExl?=
+ =?utf-8?B?aWcwem1WTFk5MWlWNGdoVUtyblcxWm85Z3hyMzRva1F5VVo4emNRMHk0WTJJ?=
+ =?utf-8?B?ZDJOVVV5cjNtNWtYVktmdENZeGhFb1ZMbW9Cait4Z0dKQkV6SmlUZzJhYzdj?=
+ =?utf-8?B?RGpmcG9STkszUTFwYjZJd0oxTWNpbE92UGJNVTZWNkNBZnR4TWw0WThpbDFz?=
+ =?utf-8?B?UHVVRFdZVUFQTDFFdmp2NzlET0tjeUFIcUh0S0c4aEgvTytUZzhQNkdkMTdM?=
+ =?utf-8?B?RFdoMEdSekxLcE1aY1c2Z2ZEOENYWURZY1ZyWVNRaHlxZjZOMHdWd3FESGVt?=
+ =?utf-8?B?UVFLZmpCM0Q1UGJYM0svb0R2akhtdUI1aFpsMDgwalpvaDk5M1Y3TUlvOVZx?=
+ =?utf-8?B?b0VQUGJrcUhtNVRWVjRCQ3JkSUxONnczQWY4TGszUk11WWhmMVI5Qlo1c1U3?=
+ =?utf-8?B?enpBSGdweTNSM0Z6NUtTRjVCZXBHVXZ6U1NIbUhKZDh6VSs5MmpHRkFseUsr?=
+ =?utf-8?B?a0NUNkpWdGlFWVBJc1NXeDZlMGNyR0hyM1hSZGxON1ViM21HekdyQnl1NUV3?=
+ =?utf-8?B?NVJKV2hjS2FiUzhLQ1V3Y3JwTHdrbFkzZy9IVVlOTFZsaE1HMW92aVhoM1Jj?=
+ =?utf-8?B?aXBZa2QwYkUvaDF5Y00zKy9ucXY1SFBIeCtZUnQ3YlZvc05Md29QRTVKekhw?=
+ =?utf-8?B?cDZodStLaWlpN0UzQUI4Vko3R3B1N0xoQVZ0d0VVYzFKV2J6Y2ExOXM4RDZF?=
+ =?utf-8?B?bmQ2QlN1dTQwa3RTczkyQnNKaXRadG5lVXRWbG41b1BOeC81ZU5hWCtub0l4?=
+ =?utf-8?B?V0hQbVNuM3JMQndQMEM2UlJzNVc3aWFJeHJwSnUyaEpzL0FlM2I0MHVScHFs?=
+ =?utf-8?B?VTMzb0VOOU5EL1hVdS9nQ0x1VFAxRDhVWWNqdXozSFQ4Wi9tNXBYOGptaHgx?=
+ =?utf-8?B?TVpIN3FtSzRiVEU4bVM2TEV4bDdqajJadllPZ3NCclE3SXNrQ2pmSWtoOFcy?=
+ =?utf-8?B?MXRMWFZRb3BROEMwaWlDWUpnUkJHd3VCRUxGdW9xMWkvdTYrRmNYYmZUdjF3?=
+ =?utf-8?B?NU1JNldwbzZiSGhQS3djZnN3QVR1THhxY3NDd1ZhajUxOStwSWVtTDVtM0xV?=
+ =?utf-8?B?OHYrNjIvVGM1aVRSLzFIU3o0VG1uQWNtWnZOdFlBU1E0YnIyTjJVK1g4TG4r?=
+ =?utf-8?B?V3JWQk96enJYR1JETDNUNk0zd1MreVVWSnpOMXFUNDZ6bVh3aHlKZjRDRjda?=
+ =?utf-8?B?ajU2eWFkYXVHb1pNNmlHTnJkS2FHR1RwSmlERnVJV1Bib2gzc1ZvSTEwTm5m?=
+ =?utf-8?B?TzlURnU4UjROL2hIWlVzclhpUjZ3ZER6Z2g2aFEvNVNSVlBpS1BXcnc0aXNa?=
+ =?utf-8?B?NFM4NFBqL0FBVUk4cG9BanNSaHYyenRyUU5oZFB3bGQ4MURrRE14enMwZjRk?=
+ =?utf-8?B?TllqcU9aeERzdFhIRlJEakJ6aDdqbW9sbnJQdnJiYzl1blRtc0tjY1FkSEFi?=
+ =?utf-8?B?WnJhb2xYRGI0SUxlcHpUQjZWWVVES09YT0dHcWQyWnJwMDdEeHBIYTQ3eXd2?=
+ =?utf-8?B?Z09ZS3BqSVVVT1cwazZabndnN3BvUk03QS80UDM2VDJ3R2ExeDlkYnlTL3ln?=
+ =?utf-8?B?ZHc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: caf9171f-bd36-489b-574c-08dac995fb98
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB4287.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2022 18:52:03.6284
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BbzQIuOLWpsAvwIStGqOuSnPQo4o/WFPLL7IEcExdGhMahhRCBbzYBjmlfRo0WSR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1212
+X-Proofpoint-ORIG-GUID: bALn-VpusLP5vJrv4xwUrR6YvJqStMgO
+X-Proofpoint-GUID: bALn-VpusLP5vJrv4xwUrR6YvJqStMgO
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3e2sdqL1E0SKJ5/@maniforge.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-18_06,2022-11-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 10:45:37AM -0600, David Vernet wrote:
-> On Fri, Nov 18, 2022 at 08:45:44AM -0600, David Vernet wrote:
+On 11/18/22 1:06 PM, Steven Rostedt wrote:
+> On Fri, 18 Nov 2022 12:44:00 -0500
+> Chris Mason <clm@meta.com> wrote:
 > 
-> [...]
+>>> My biggest concern is changing functionality of arbitrary functions by BPF.
+>>> I would much rather limit what functions BPF could change with some
+>>> annotation.
+>>>
+>>> int __bpf_modify foo()
+>>> {
+>>> 	...
+>>> }
+>>>
+>>>
+>>> That way if somethings not working, you can see directly in the code that
+>>> the function could be modified by a BPF program, instead of getting some
+>>> random bug report because a function returned an unexpected result that the
+>>> code of that function could never produce.
+>>>   
+>>
+>> The good news is that BPF generally confines the function replacement
+>> through struct ops interfaces.
 > 
-> > > >  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> > > >  		    const struct bpf_prog *prog,
-> > > >  		    struct bpf_insn_access_aux *info)
-> > > > @@ -5722,6 +5727,9 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> > > >  	}
-> > > >  
-> > > >  	info->reg_type = PTR_TO_BTF_ID;
-> > > > +	if (prog_type_args_trusted(prog->type))
-> > > > +		info->reg_type |= PTR_TRUSTED;
-> > > > +
-> > > >  	if (tgt_prog) {
-> > > >  		enum bpf_prog_type tgt_type;
-> > > >  
-> > > > @@ -6558,15 +6566,26 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > >  		/* These register types have special constraints wrt ref_obj_id
-> > > >  		 * and offset checks. The rest of trusted args don't.
-> > > >  		 */
-> > > > -		obj_ptr = reg->type == PTR_TO_CTX || reg->type == PTR_TO_BTF_ID ||
-> > > > +		obj_ptr = reg->type == PTR_TO_CTX ||
-> > > > +			  base_type(reg->type) == PTR_TO_BTF_ID ||
-> > > >  			  reg2btf_ids[base_type(reg->type)];
-> > > >  
-> > > >  		/* Check if argument must be a referenced pointer, args + i has
-> > > >  		 * been verified to be a pointer (after skipping modifiers).
-> > > >  		 * PTR_TO_CTX is ok without having non-zero ref_obj_id.
-> > > > +		 *
-> > > > +		 * All object pointers must be refcounted, other than:
-> > > > +		 * - PTR_TO_CTX
-> > > > +		 * - PTR_TRUSTED pointers
-> > > >  		 */
-> > > > -		if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
-> > > > -			bpf_log(log, "R%d must be referenced\n", regno);
-> > > > +		if (is_kfunc &&
-> > > > +		    trusted_args &&
-> > > > +		    obj_ptr &&
-> > > > +		    base_type(reg->type) != PTR_TO_CTX &&
-> > > > +		    (!(type_flag(reg->type) & PTR_TRUSTED) ||
-> > > > +		     (type_flag(reg->type) & ~PTR_TRUSTED)) &&
-> > > > +		    !reg->ref_obj_id) {
-> > > 
-> > > This is pretty hard to read.
-> > > Is this checking:
-> > > !(reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> > > ?
-> > > 
-> > > Why not to use the above?
-> > 
-> > Agreed this is more readable, I'll do this for v8 (from a helper as you
-> > suggested).
-> 
-> Sorry, my initial response was incorrect. After thinking about this
-> more, I don't think this conditional would be correct here:
-> 
-> 	!(reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> 
-> That conditional is saying, "If it's PTR_TO_BTF_ID, and either no
-> modifiers are set, or PTR_TRUSTED is set". Or in other words, "If
-> PTR_TO_BTF_ID is set, we don't need a refcount check unless a modifier
-> other than PTR_TRUSTED is set on the register." This is incorrect, as it
-> would short-circuit out of the check before !reg->ref_obj_id for
-> reg->type == PTR_TO_BTF_ID, so we would skip the reference requirement
-> for normal, unmodified PTR_TO_BTF_ID objects. It would also cause us to
-> incorrectly _not_ skip the ref_obj_id > 0 check for when a
-> reg2btf_ids[base_type(reg->type)] register has the PTR_TRUSTED modifier.
-> 
-> What we really need is a check that encodes, "Don't require a refcount
-> if PTR_TRUSTED is present and no other type modifiers are present",
-> i.e.:
-> 
-> 	!(type_flag(reg->type) & PTR_TRUSTED) || (type_flag(reg->type) & ~PTR_TRUSTED)
-> 
-> My intention was to be conservative here and say "only trust PTR_TRUSTED
-> if no other type modifiers are set". I think this is necessary because
-> other type modifiers such as PTR_UNTRUSTED could theoretically be set on
-> the register as well. Clearly this code is pretty difficult to reason
-> about though, so I'm open to suggestions for how to simplify it.
-> 
-> I'll point out specifically that it's difficult to reason about when
-> modifiers are or are not safe to allow. For example, we definitely don't
-> want to skip the refcount check for OBJ_RELEASE | PTR_TRUSTED, because
+> What struct ops interfaces?
 
-OBJ_RELEASE cannot be part of reg flag.
-It's only in arg_type.
-
-Anyway Kumar's refactoring was applied the code in question looks different now:
-It would fall into this part:
-case KF_ARG_PTR_TO_BTF_ID:
-        /* Only base_type is checked, further checks are done here */
-        if (reg->type != PTR_TO_BTF_ID &&
-            (!reg2btf_ids[base_type(reg->type)] || type_flag(reg->type))) {
-                verbose(env, "arg#%d expected pointer to btf or socket\n", i);
-                return -EINVAL;
-        }
-        ret = process_kf_arg_ptr_to_btf_id(env, reg, ref_t, ref_tname, ref_id, meta, i);
-
-> if it's a release arg it should always have a refcount on it.
-> PTR_UNTRUSTED | PTR_TRUSTED would also make no sense. MEM_FIXED_SIZE
-> though seems fine? In general, I thought it was prudent for us to take
-> the most conservative possible approach here, which is that PTR_TRUSTED
-> only applies when no other modifiers are present, and it applies for all
-> obj_ptr types (other than PTR_TO_CTX which does its own thing).
-
-Probably worth refining when PTR_TRUSTED is cleared.
-For example adding PTR_UNTRUSTED should definitely clear it.
-MEM_ALLOC flag is probably equivalent to PTR_TRUSTED.
-Maybe the bit:
-regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
-should set PTR_TRUSTED as well?
+https://lwn.net/Articles/811631/
 
 > 
-> Note as well that this check is different from the one you pointed out
-> below, which is verifying that PTR_TRUSTED is the only modifier for both
-> reg2btf_ids[base_type(reg->type)] and base_type(reg->type) ==
-> PTR_TO_BTF_ID.  Additionally, the check is different than the check in
-> check_reg_type(), which I'll highlight below where the code is actually
-> modified.
-
-I'm mainly objecting to logic:
-!(type_flag(reg->type) & PTR_TRUSTED) || (type_flag(reg->type) & ~PTR_TRUSTED)
-
-which looks like 'catch-all'.
-Like it will error on MEM_ALLOC which probably not correct.
-In other words it's 'too conservative'. Meaning it's rejecting valid code.
-
-> > > >  
-> > > >  found:
-> > > > -	if (reg->type == PTR_TO_BTF_ID) {
-> > > > +	if (base_type(reg->type) == PTR_TO_BTF_ID && !(type_flag(reg->type) & ~PTR_TRUSTED)) {
+>>   There are also explicit allow lists to
+>> limit functions where you can do return value overrides etc, so I think
 > 
-> As mentioned above, this check is different than the one we're doing in
-> btf_ctx_access() when determining if the reg requires a ref_obj_id > 0.
-> This check is actually doing what you originally suggested above:
-> 
-> if (reg->type == PTR_TO_BTF_ID || reg->type == (PTR_TO_BTF_ID | PTR_TRUSTED))
-> 
-> I think what you wrote is more readable and am happy to apply it to this
-> check in v8, but unfortunately I don't think we really have an
-> opportunity to avoid code duplication here with a helper (though a
-> helper may still improve readability).
+> Where are these lists.
 
-ok. forget the helper. open coding all conditions is probably cleaner,
-since they will be different in every case.
+Some of the original features:
+
+https://lwn.net/Articles/811631/
+
+It has changed and expanded since then, but hopefully you get the idea.
+
+> 
+>> it's fair to say these concerns are already baked in.  I'm sure they can
+> 
+> How do I know that a function return was modified by BPF? If I'm debugging
+> something, is it obvious to the developer that is debugging an issue
+> (perhaps unaware of what BPF programs are loaded on the users machine),
+> that the return of a function was tweaked by BPF and that could be the
+> source of the bug?
+> 
+>> be improved over the long term, but I don't think that's related to this
+>> set of functionality on ARM.
+> 
+> I disagree. These issues may have been added to x86, but perhaps we should
+> take a deeper look at them again before extending them to other
+> architectures.
+
+Honestly, I think a large scale architecture review of every BPF feature
+and decision over the last 10 years is just the wrong bar for this patch
+series.
+
+ From my understanding, Mark and Florent have some changes planned
+that'll improve ftrace, livepatching, and bpf.  Lets talk about those,
+and tackle any long term improvements you'd like to make to BPF in other
+patch series.
+
+-chris
 
