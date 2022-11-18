@@ -2,69 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F100E62EA28
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 01:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5980A62EA57
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 01:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbiKRAWB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 19:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S240496AbiKRAcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 19:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbiKRAV4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 19:21:56 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E349663C5
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:21:55 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id n20so9387730ejh.0
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:21:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lleBEqhafl5hxMh2Mpucx88L2dqsFz6P0hkAqJOSiVE=;
-        b=WzqY8bWlCc/tQlDjusoSzRH4SVWghK2+j/7f68CUBgtHYZCnep42TzqRBA775lhIDD
-         HH9ErIN/Ku/Jzh54Y7f9wDh/rpZCl4RBusrILyK/f7i7YoGicMzw4dh9cT6IoDaBW1Bi
-         LXoM3Z6AFZk63JOIhfDWWBgqUZzW/XFWDckV7ZwT5BuzXr0p8/yMx71JAckDPYWD+MUR
-         q2+0HGm5EJEZgYI3JxSdpjykSD647b0Y7vchbH0hK9vzrrcGmJMXvqG2wREB2F0hXBq/
-         4lrT0HkoM98cqL8vf4lktv609vPDMeWxQujdVwpt6Ha6hwTuFcNP0LZo0GIFvXMd4J2C
-         +sEg==
+        with ESMTP id S240660AbiKRAcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 19:32:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875614C240
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668731477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+itpjDcga9mH0LamyY/OkXi7TD9WUdNLP2cV3k9ii9k=;
+        b=X/6NtoYWaMCVuqyOIkbRp5nVzGm2W4v7eY/rE/4H0aQpDz1iAlLZHtCnmEabshSsbNy+Wd
+        A0Nyrlv5TQYL6HUCtxg/u6dLf0rDQcla07JtN2m+dxLxgnOd/CYPr49ssdTj6l0AVf7Ccc
+        fmW2CJnYN3UuKn2IQVamPaJIOD4arOI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-42-dBSYzIhjMc-aVwJX-ZOD6A-1; Thu, 17 Nov 2022 19:29:19 -0500
+X-MC-Unique: dBSYzIhjMc-aVwJX-ZOD6A-1
+Received: by mail-ej1-f69.google.com with SMTP id ne36-20020a1709077ba400b007aeaf3dcbcaso1967664ejc.6
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 16:29:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lleBEqhafl5hxMh2Mpucx88L2dqsFz6P0hkAqJOSiVE=;
-        b=NK3PtvdUSVQjwXA3o856WmknNQo2iG/7uIUWa4NHSCo+sKONgP0PzcyCbmWWg1yQUS
-         BBj7supUCjhjStNPkid/FHUX8CuhwQv0Sf7rRA8uDBb4AypjFZrKS1Xcca4lZB0d8/X6
-         MOIQA0kcD61bU9WALgq5f1e8anmuWLiqIoZxLhJFf7PPCYqJnWM5C0UyDkFmdfxiRyg6
-         +By/Gpn8ME+gq3QUd+0kED03Y7QbwgYi5X010ZVmOsoXH1WelzN7juAVozRkOHdvCvx4
-         IZRDYHsD2MGUU6QoBtqp3oZrns3WdIp7AYcwoY5ksBqUfDnOgxJByaLYDz/FjA2iU2hp
-         VvBg==
-X-Gm-Message-State: ANoB5pmkR6nPJ/RDLgpA4f8S1cq8oa1ncU469GiWe+dWjGABNW7Ss4wU
-        dt8gxkmT/gzPAUKXdFocWnATfxImGvBMtCOPvNDppcQADxI=
-X-Google-Smtp-Source: AA0mqf561Hnl6NzKBsl9979RaAYSeqSZVt8iyFd4kMe7dPOHinOg6iSr0UOB4EXfiuGIWOIU7LuyNtnOhuP5cNQVJUY=
-X-Received: by 2002:a17:906:8055:b0:78d:99ee:4e68 with SMTP id
- x21-20020a170906805500b0078d99ee4e68mr3835305ejw.302.1668730913911; Thu, 17
- Nov 2022 16:21:53 -0800 (PST)
+        bh=+itpjDcga9mH0LamyY/OkXi7TD9WUdNLP2cV3k9ii9k=;
+        b=6gIOYBGkY3iVCSTpKHwDBPE+wgnQEtnC8yn2kzSGWyDvmijRRe10e0gFJFOUsJ3pXY
+         m8U/D4EOJUsQLCnPI4YvQxhK/Mt5VOFdyH87bpLz6nqmTtUq9mskcH2vI/Jr6GpqmymH
+         aot5SBZ5wTzOVEOGUx/nnqlXreJjJ83nKDCzKyxkaysKBEbIrGnAEm9Bis5Clwu/12tP
+         prXD2XEMVb3NHjd5uPeaf3CoegVtjfM0bCdnJgP1pNUbT08B/fZmxC0S2NlnxvsyV3+c
+         skYsPX0rMJ3NMei1ih7taORtXewwUqTtJJ3/peRr7Yz+oQJshL1U7IiOXE2Hpw91P0zb
+         F9EA==
+X-Gm-Message-State: ANoB5pm8p54+5oA7YMe7sVnlI8JSxlQ2JeyXGSWbgCL9dHUUL0Mqrzn6
+        n8TtRs2eqGieieM4VqTHw4I8SQILz9vY0Z54z8pGSZMHvYYmPJPa40VpGzo2u9dBdXEW/MQlFNz
+        +wqIvpkAC+No0
+X-Received: by 2002:a05:6402:e0d:b0:466:4168:6ea7 with SMTP id h13-20020a0564020e0d00b0046641686ea7mr4041703edh.273.1668731357199;
+        Thu, 17 Nov 2022 16:29:17 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7JF1PQRWwlPFnvVEFf83RM2J/Pz35scEZj/jJa/EJHPfBYm4P9LtURCOCKlui+6HqGeE+lxA==
+X-Received: by 2002:a05:6402:e0d:b0:466:4168:6ea7 with SMTP id h13-20020a0564020e0d00b0046641686ea7mr4041673edh.273.1668731356233;
+        Thu, 17 Nov 2022 16:29:16 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id en17-20020a056402529100b00467960d7b62sm1131575edb.35.2022.11.17.16.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 16:29:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0F97E7A702D; Fri, 18 Nov 2022 01:29:15 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next 05/11] veth: Support rx
+ timestamp metadata for xdp
+In-Reply-To: <CAADnVQJ=MbwUOTtmYb_VmTEBA8SdYXJryfGoYv2W2US3_Es=kA@mail.gmail.com>
+References: <20221115030210.3159213-1-sdf@google.com>
+ <20221115030210.3159213-6-sdf@google.com> <87h6z0i449.fsf@toke.dk>
+ <CAKH8qBsEGD3L0XAVzVHcTW6k_RhEt74pfXrPLANuznSAJw7bEg@mail.gmail.com>
+ <8735ajet05.fsf@toke.dk>
+ <CAKH8qBsg4aoFuiajuXmRN3VPKYVJZ-Z5wGzBy9pH3pV5RKCDzQ@mail.gmail.com>
+ <6374854883b22_5d64b208e3@john.notmuch>
+ <34f89a95-a79e-751c-fdd2-93889420bf96@linux.dev> <878rkbjjnp.fsf@toke.dk>
+ <6375340a6c284_66f16208aa@john.notmuch>
+ <CAKH8qBs1rYXf0GGto9hPz-ELLZ9c692cFnKC9JLwAq5b7JRK-A@mail.gmail.com>
+ <637576962dada_8cd03208b0@john.notmuch>
+ <CAKH8qBtOATGBMPkgdE0jZ+76AWMsUWau360u562bB=cGYq+gdQ@mail.gmail.com>
+ <CAADnVQKTXuBvP_2O6coswXL7MSvqVo1d+qXLabeOikcbcbAKPQ@mail.gmail.com>
+ <CAKH8qBvTdnyRYT+ocNS_ZmOfoN+nBEJ5jcBcKcqZ1hx0a5WrSw@mail.gmail.com>
+ <87wn7t4y0g.fsf@toke.dk>
+ <CAADnVQJMvPjXCtKNH+WCryPmukgbWTrJyHqxrnO=2YraZEukPg@mail.gmail.com>
+ <CAKH8qBsPinmCO0Ny1hva7kp4+C7XFdxZLPBYEHXQWDjJ5SSoYw@mail.gmail.com>
+ <874juxywih.fsf@toke.dk>
+ <CAADnVQJ=MbwUOTtmYb_VmTEBA8SdYXJryfGoYv2W2US3_Es=kA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 18 Nov 2022 01:29:15 +0100
+Message-ID: <87sfihxfz8.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20221110144320.1075367-1-eddyz87@gmail.com> <20221110144320.1075367-2-eddyz87@gmail.com>
- <CAEf4Bzbnd2UOT9Mko+0Yf9Kgsn-sGsV43MKExYjEaYbWg0WgZg@mail.gmail.com>
- <3d638bd465fb604ef01c1dc5a5a92617b90482d8.camel@gmail.com>
- <CAEf4BzYZ-oo38ATgv32=0LhFWYciGtwAUcpSeB3Aam8hJ5Yuzg@mail.gmail.com> <d1d5c46e31a9016a7e53e2e7877722af6f1f2027.camel@gmail.com>
-In-Reply-To: <d1d5c46e31a9016a7e53e2e7877722af6f1f2027.camel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Nov 2022 16:21:41 -0800
-Message-ID: <CAEf4BzZ4H-BYFAHZmxCD+0ky495=ZY6Qv4wZOYYPNOd=hjHm8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: __attribute__((btf_decl_tag("...")))
- for btf dump in C format
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,217 +113,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 5:51 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Thu, Nov 17, 2022 at 3:46 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> >
+>> > Ack. I can replace the unrolling with something that just resolves
+>> > "generic" kfuncs to the per-driver implementation maybe? That would at
+>> > least avoid netdev->ndo_kfunc_xxx indirect calls at runtime..
+>>
+>> As stated above, I think we should keep the unrolling. If we end up with
+>> an actual CALL instruction for every piece of metadata that's going to
+>> suck performance-wise; unrolling is how we keep this fast enough! :)
 >
-> On Mon, 2022-11-14 at 11:56 -0800, Andrii Nakryiko wrote:
-> > On Fri, Nov 11, 2022 at 1:30 PM Eduard Zingerman <eddyz87@gmail.com> wr=
-ote:
-> > >
-> > > On Fri, 2022-11-11 at 10:58 -0800, Andrii Nakryiko wrote:
-> > > > On Thu, Nov 10, 2022 at 6:43 AM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
-> > > >
-> > > >
-> > > > [...]
-> > > >
-> > > > >  static int btf_dump_push_decl_stack_id(struct btf_dump *d, __u32=
- id)
-> > > > > @@ -1438,9 +1593,12 @@ static void btf_dump_emit_type_chain(struc=
-t btf_dump *d,
-> > > > >                 }
-> > > > >                 case BTF_KIND_FUNC_PROTO: {
-> > > > >                         const struct btf_param *p =3D btf_params(=
-t);
-> > > > > +                       struct decl_tag_array *decl_tags =3D NULL=
-;
-> > > > >                         __u16 vlen =3D btf_vlen(t);
-> > > > >                         int i;
-> > > > >
-> > > > > +                       hashmap__find(d->decl_tags, id, &decl_tag=
-s);
-> > > > > +
-> > > > >                         /*
-> > > > >                          * GCC emits extra volatile qualifier for
-> > > > >                          * __attribute__((noreturn)) function poi=
-nters. Clang
-> > > >
-> > > > should there be btf_dump_emit_decl_tags(d, decl_tags, -1) somewhere
-> > > > here to emit tags of FUNC_PROTO itself?
-> > >
-> > > Actually, I have not found a way to attach decl tag to a FUNC_PROTO i=
-tself:
-> >
-> > I'll need to check with Yonghong, but I think what happens right now
-> > with decl_tag being attached to FUNC instead of its underlying
-> > FUNC_PROTO might be a bug (or maybe it's by design, but certainly is
-> > quite confusing as FUNC itself doesn't have arguments, so
-> > component_idx !=3D -1 is a bit weird).
-> >
-> > But regardless if Clang allows you to express it in C code today or
-> > not, if we support decl_tags on func proto args, for completeness
-> > let's support it also on func_proto itself (comp_idx =3D=3D -1). You ca=
-n
-> > build BTF manually for test, just like you do it for func_proto args,
-> > right?
->
-> I can construct the BTF manually, but I need a place in C where
-> __decl_tag would be printed for such proto and currently there is no
-> such place.
+> Let's start with pure kfuncs without requiring drivers
+> to provide corresponding bpf asm.
+> If pure kfuncs will indeed turn out to be perf limiting
+> then we'll decide on how to optimize them.
 
-after func prototype definition:
+I'm ~90% sure we'll need that optimisation, but OK, we can start from a
+baseline of having them be function calls...
 
-$ cat t.c
-#include <stdio.h>
+-Toke
 
-typedef int (* ff)(void *arg) __attribute__((nonnull(1)));
-
-static
-int blah(void *x) { return (int)(long)x; }
-
-int main() {
-        int (*f1)(void *arg) __attribute__((nonnull(1))) =3D blah;
-        ff f2 =3D blah;
-
-        blah(NULL);
-        f1(NULL);
-        f2(NULL);
-
-        printf("%lx %lx\n", (long)f1, (long)f2);
-        return 0;
-}
-
-$ cc -g t.c -Wnonnull && ./a.out
-t.c: In function =E2=80=98main=E2=80=99:
-t.c:13:9: warning: argument 1 null where non-null expected [-Wnonnull]
-   13 |         f1(NULL);
-      |         ^~
-t.c:14:9: warning: argument 1 null where non-null expected [-Wnonnull]
-   14 |         f2(NULL);
-      |         ^~
-401126 401126
-
-Note that blah(NULL) doesn't generate a warning, which means nonnull
-attributes are applied only to func_proto.
-
->
-> As Yonghong suggests in a sibling comment there are currently no
-> use-cases for decl tags on functions, function protos or function
-> proto parameters. I suggest to drop these places from the current
-> patch and get back to it when the need arises.
-
-decl_tags for functions and function protos are natural extensions of
-decl_tags for fields/structs/variables, so let's do the proper support
-for all conceivable use cases instead of doing this in a few months
-again. There is not ambiguity here.
-
-
-And btw, we do have decl_tags for FUNCs right now, and that seems
-wrong, because FUNC itself doesn't have arguments, it only points to
-FUNC_PROTO. So it seems like decl_tags should be moved to FUNC_PROTO
-instead anyways?
-
-
->
-> > >
-> > >   typedef void (*fn)(void) __decl_tag("..."); // here tag is attached=
- to typedef
-> > >   struct foo {
-> > >     void (*fn)(void) __decl_tag("..."); // here tag is attached to a =
-foo.fn field
-> > >   }
-> > >   void foo(void (*fn)(void) __decl_tag("...")); // here tag is attach=
-ed to FUNC foo
-> > >                                                 // parameter but shou=
-ld probably
-> > >                                                 // be attached to
-> > >                                                 // FUNC_PROTO paramet=
-er instead.
-> > >
-> > > Also, I think that Yonghong had reservations about decl tags attached=
- to
-> > > FUNC_PROTO parameters.
-> > > Yonghong, could you please comment?
-> >
-> > yep, curious to hear as well
-> >
-> >
-> > >
-> > > >
-> > > > > @@ -1481,6 +1639,7 @@ static void btf_dump_emit_type_chain(struct=
- btf_dump *d,
-> > > > >
-> > > > >                                 name =3D btf_name_of(d, p->name_o=
-ff);
-> > > > >                                 btf_dump_emit_type_decl(d, p->typ=
-e, name, lvl);
-> > > > > +                               btf_dump_emit_decl_tags(d, decl_t=
-ags, i);
-> > > > >                         }
-> > > > >
-> > > > >                         btf_dump_printf(d, ")");
-> > > > > @@ -1896,6 +2055,7 @@ static int btf_dump_var_data(struct btf_dum=
-p *d,
-> > > > >                              const void *data)
-> > > > >  {
-> > > > >         enum btf_func_linkage linkage =3D btf_var(v)->linkage;
-> > > > > +       struct decl_tag_array *decl_tags =3D NULL;
-> > > > >         const struct btf_type *t;
-> > > > >         const char *l;
-> > > > >         __u32 type_id;
-> > > > > @@ -1920,7 +2080,10 @@ static int btf_dump_var_data(struct btf_du=
-mp *d,
-> > > > >         type_id =3D v->type;
-> > > > >         t =3D btf__type_by_id(d->btf, type_id);
-> > > > >         btf_dump_emit_type_cast(d, type_id, false);
-> > > > > -       btf_dump_printf(d, " %s =3D ", btf_name_of(d, v->name_off=
-));
-> > > > > +       btf_dump_printf(d, " %s", btf_name_of(d, v->name_off));
-> > > > > +       hashmap__find(d->decl_tags, id, &decl_tags);
-> > > > > +       btf_dump_emit_decl_tags(d, decl_tags, -1);
-> > > > > +       btf_dump_printf(d, " =3D ");
-> > > > >         return btf_dump_dump_type_data(d, NULL, t, type_id, data,=
- 0, 0);
-> > > > >  }
-> > > > >
-> > > > > @@ -2421,6 +2584,8 @@ int btf_dump__dump_type_data(struct btf_dum=
-p *d, __u32 id,
-> > > > >         d->typed_dump->skip_names =3D OPTS_GET(opts, skip_names, =
-false);
-> > > > >         d->typed_dump->emit_zeroes =3D OPTS_GET(opts, emit_zeroes=
-, false);
-> > > > >
-> > > > > +       btf_dump_assign_decl_tags(d);
-> > > > > +
-> > > >
-> > > > I'm actually not sure we want those tags on binary data dump.
-> > > > Generally data dump is not type definition dump, so this seems
-> > > > unnecessary, it will just distract from data itself. Let's drop it =
-for
-> > > > now? If there would be a need we can add it easily later.
-> > >
-> > > Well, this is the only place where VARs are processed, removing this =
-code
-> > > would make the second patch in a series useless.
-> > > But I like my second patch in a series :) should I just drop it?
-> > > I can extract it as a separate series and simplify some of the existi=
-ng
-> > > data dump tests.
-> >
-> > yep, data dump tests can be completely orthogonal, send them
-> > separately if you are attached to that code ;)
-> >
-> > but for decl_tags on dump_type_data() I'd rather be conservative for
-> > now, unless in practice those decl_tags will turn out to be needed
-> >
-> >
-> > >
-> > > >
-> > > > >         ret =3D btf_dump_dump_type_data(d, NULL, t, id, data, 0, =
-0);
-> > > > >
-> > > > >         d->typed_dump =3D NULL;
-> > > > > --
-> > > > > 2.34.1
-> > > > >
-> > >
->
