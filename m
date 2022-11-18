@@ -2,133 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E208862EB25
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 02:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC7D62EB58
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 02:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240907AbiKRBlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 20:41:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S234380AbiKRBwX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 20:52:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240975AbiKRBl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 20:41:27 -0500
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B6FEE33;
-        Thu, 17 Nov 2022 17:41:23 -0800 (PST)
-Received: by mail-qk1-f182.google.com with SMTP id v8so2532871qkg.12;
-        Thu, 17 Nov 2022 17:41:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C2iDkgi6Cz8+ghmu1fZWCpIJ9rUZoFg0eD2OPo7Dxik=;
-        b=ArZrnXBUaRzdXxsTX2EHs2qMEvveglT+o+A9kBUf8cfRIwbUXxaZnfK0RjjGG2fB+9
-         tj4bP8BC6zk7fI/EoTvIdP+4lXPpWWN/I3JlZ9E6KAl+eah/7FhUdABstNxjpWfEGq2Q
-         WInMm3FOpILAHSIJdCOhn/F7lrtZcggftelLk6MRMqnWsox6IC1+mOnOe7peDenSPWyy
-         kEiPXdOVNxeyW5CxWOeg3GGezt5gTe0dMOvJgVDuQWqSlo9dgWkepCTC/YYE4qWVzUep
-         lpROnGjxvwUIJYTyv9zY5E07oMc0URaRg0bk3hFN3eTOY+dPVFRDvrS6K41cw+cmdfn4
-         kTfA==
-X-Gm-Message-State: ANoB5pnzjoh15nivJXU1RUQis4Sx5odJgW4Ywaxtll6GsraucWzczv9E
-        gt+O9VxFcsi7cWZqGiR3FcapOGHf+q8MoTfp
-X-Google-Smtp-Source: AA0mqf5lT8GzBiFdNWOWsbIY4ziJuWnF6nVbx8Ri4nv4aA8YHdyYNBoyaOKgZsUMqVsSMCVB+qL9Ag==
-X-Received: by 2002:a05:620a:2795:b0:6ec:51cd:c376 with SMTP id g21-20020a05620a279500b006ec51cdc376mr1352916qkp.300.1668735682302;
-        Thu, 17 Nov 2022 17:41:22 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:8ad4])
-        by smtp.gmail.com with ESMTPSA id q25-20020a05620a2a5900b006ee7923c187sm1480426qkp.42.2022.11.17.17.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 17:41:21 -0800 (PST)
-Date:   Thu, 17 Nov 2022 19:41:23 -0600
-From:   David Vernet <void@manifault.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
-        yhs@fb.com, song@kernel.org, sdf@google.com, kpsingh@kernel.org,
-        jolsa@kernel.org, haoluo@google.com, tj@kernel.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 0/3] Support storing struct task_struct
- objects as kptrs
-Message-ID: <Y3biwxIq8B5oYdOS@maniforge.lan>
-References: <20221117032402.2356776-1-void@manifault.com>
- <6376a1b12bb4d_4101208d@john.notmuch>
- <Y3atifGs0DM9to8z@maniforge.lan>
- <6376b7822f4df_8c7a208f7@john.notmuch>
+        with ESMTP id S232050AbiKRBwW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 20:52:22 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6730C1ADB4
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 17:52:20 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ND0CL3VL8z4f3m6c
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 09:52:14 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgCXutdN5XZjNyzaAg--.33147S2;
+        Fri, 18 Nov 2022 09:52:17 +0800 (CST)
+Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Hao Luo <haoluo@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20221111063417.1603111-1-houtao@huaweicloud.com>
+ <20221111063417.1603111-2-houtao@huaweicloud.com>
+ <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
+ <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
+ <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
+ <43bcd243-eea0-6cbe-b24b-640311fa1a83@linux.dev>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <6159bf91-21c7-3fb0-e211-a40e85fd5bdc@huaweicloud.com>
+Date:   Fri, 18 Nov 2022 09:52:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6376b7822f4df_8c7a208f7@john.notmuch>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <43bcd243-eea0-6cbe-b24b-640311fa1a83@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgCXutdN5XZjNyzaAg--.33147S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArWrZFW7Aw18GFy8Gw4xCrg_yoW8uw1xpF
+        WFgay5K3WkArZFvF12yws7Za40yF9xGr1UZrn5Gr1fCF90yry3KrWxKrsIkFy5AF1DZw12
+        vF4jkas7ZanIyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 02:36:50PM -0800, John Fastabend wrote:
-> David Vernet wrote:
-> > On Thu, Nov 17, 2022 at 01:03:45PM -0800, John Fastabend wrote:
-> > > David Vernet wrote:
-> > > > Now that BPF supports adding new kernel functions with kfuncs, and
-> > > > storing kernel objects in maps with kptrs, we can add a set of kfuncs
-> > > > which allow struct task_struct objects to be stored in maps as
-> > > > referenced kptrs.
-> > > > 
-> > > > The possible use cases for doing this are plentiful.  During tracing,
-> > > > for example, it would be useful to be able to collect some tasks that
-> > > > performed a certain operation, and then periodically summarize who they
-> > > > are, which cgroup they're in, how much CPU time they've utilized, etc.
-> > > > Doing this now would require storing the tasks' pids along with some
-> > > > relevant data to be exported to user space, and later associating the
-> > > > pids to tasks in other event handlers where the data is recorded.
-> > > > Another useful by-product of this is that it allows a program to pin a
-> > > > task in a BPF program, and by proxy therefore also e.g. pin its task
-> > > > local storage.
-> > > 
-> > > Sorry wasn't obvious to me (late to the party so if it was in some
-> > > other v* described apologies). Can we say something about the life
-> > > cycle of this acquired task_structs because they are incrementing
-> > > the ref cnt on the task struct they have potential to impact system.
-> > 
-> > We should probably add an entire docs page which describes how kptrs
-> > work, and I am happy to do that (ideally in a follow-on patch set if
-> > that's OK with you). In general I think it would be useful to include
-> > docs for any general-purpose kfuncs like the ones proposed in this set.
-> 
-> Sure, I wouldn't require that for your series though fwiw.
+Hi,
 
-Sounds good to me
+On 11/17/2022 2:48 PM, Martin KaFai Lau wrote:
+> On 11/15/22 6:48 PM, Hao Luo wrote:
+>> On Tue, Nov 15, 2022 at 5:37 PM Alexei Starovoitov
+>> <alexei.starovoitov@gmail.com> wrote:
+>>>
+>>> On Tue, Nov 15, 2022 at 11:16 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>>>
+>>>> On 11/10/22 10:34 PM, Hou Tao wrote:
+>>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>>
+>>>>> For many bpf iterator (e.g., cgroup iterator), iterator link acquires
+>>>>> the reference of iteration target in .attach_target(), but iterator link
+>>>>> may be closed before or in the middle of iteration, so iterator will
+>>>>> need to acquire the reference of iteration target as well to prevent
+>>>>> potential use-after-free. To avoid doing the acquisition in
+>>>>> .init_seq_private() for each iterator type, just pin iterator link in
+>>>>> iterator.
+>>>>
+>>>> iiuc, a link currently will go away when all its fds closed and pinned file
+>>>> removed.  After this change, the link will stay until the last iter is
+>>>> closed().
+>>>>    Before then, the user space can still "bpftool link show" and even get the
+>>>> link back by bpf_link_get_fd_by_id().  If this is the case, it would be useful
+>>>> to explain it in the commit message.
+>>>>
+>>>> and does this new behavior make sense when comparing with other link types?
+>>
+>> I think this is a unique problem in iter link. Because iter link is
+>> the only link type that can generate another object.
+>
+> Should a similar solution as in the current map iter be used then?
+>
+> I am thinking, after all link fds are closed and its pinned files are removed,
+> if it cannot stop the already created iter, it should at least stop new iter
+> from being created?
+Rather than adding the above logic for iterator link, just pinning the start
+cgroup in .init_seq_private() will be much simpler.
 
-[...]
+And Hao worried about the close of iterator link fd will release the attached
+program and cause use-after-free problem, but it is not true, because
+prepare_seq_file() has already acquired an extra reference of the currently
+attached program, so it is OK to read the iterator after the close of iterator
+link fd. So what do you think ?
+>
+>
+>
+> .
 
-> > > quick question. If you put acquired task struct in a map what
-> > > happens if user side deletes the entry? Presumably this causes the
-> > > release to happen and the task_struct is good to go. Did I miss
-> > > the logic? I was thinking you would have something in bpf_map_free_kptrs
-> > > and a type callback to release() the refcnt?
-> > 
-> > Someone else can chime in here to correct me if I'm wrong, but AFAIU
-> > this is handled by the map implementations calling out to
-> > bpf_obj_free_fields() to invoke the kptr destructor when the element is
-> > destroyed. See [3] and [4] for examples of where they're called from the
-> > arraymap and hashmap logic respectively. This is how the destructors are
-> > similarly invoked when the maps are destroyed.
-> 
-> Yep I found the dtor() gets populated in btf.c and apparently needed
-> to repull my local tree because I missed it. Thanks for the detailed
-> response.
-> 
-> And last thing I was checking is because KF_SLEEPABLE is not set
-> this should be blocked from running on sleepable progs which would
-> break the call_rcu in the destructor. Maybe small nit, not sure
-> its worth it but might be nice to annotate the helper description
-> with a note, "will not work on sleepable progs" or something to
-> that effect.
-
-KF_SLEEPABLE is used to indicate whether the kfunc _itself_ may sleep,
-not whether the calling program can be sleepable. call_rcu() doesn't
-block, so no need to mark the kfunc as KF_SLEEPABLE. The key is that if
-a kfunc is sleepable, non-sleepable programs are not able to call it
-(and this is enforced in the verifier).
