@@ -2,176 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59E662F09E
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431C162F146
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 10:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241771AbiKRJKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 04:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S241702AbiKRJeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 04:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240700AbiKRJKg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 04:10:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3C11788B
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668762572;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xeXTZcuI1CLep2o2KomhSyxmx0lROJCn0LGc6rXRQUg=;
-        b=a9ggwPHCMc6NIaabB4Okt2j+I6+Wx6Mk1vrRQMELI6IjtLRYRdDj+yKKYKF9JbtFXDqhTt
-        4vnEtnDv25Rp/8nG8h1C8ki3Q4Cd3d9hCSl2D8pPl95gqpGMnTxmIVY69HZHnsS/96D0Fn
-        Nfnsq7oWK3lRo/5vpgoGCApqEF9HEPg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-68-x6I0ZkQVMYeD8W5-HWsVkA-1; Fri, 18 Nov 2022 04:09:30 -0500
-X-MC-Unique: x6I0ZkQVMYeD8W5-HWsVkA-1
-Received: by mail-wm1-f71.google.com with SMTP id m14-20020a7bcb8e000000b003cfcff0057eso981891wmi.9
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 01:09:30 -0800 (PST)
+        with ESMTP id S241965AbiKRJeB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 04:34:01 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3097C74E;
+        Fri, 18 Nov 2022 01:33:58 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so3117561wma.1;
+        Fri, 18 Nov 2022 01:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zItZ9cjLCKNwbVcWqZT2DVpSg2RkBqa93OmXRyt9amM=;
+        b=V0Jn1xrOE5ElkZ2kYpJp2yRxQ8CtenJf11LAQqL9pFAo9IPewTZ8XguM0b8G/0BhuQ
+         TCTG6HT90fz1exqyoZm7qPt8i6TW6Q9QEZLSVURJT2al2soZpOuM1VK9Go4i75u28Bpe
+         U5cx2sSdwVSxUlH+HLtn647z4X0AANTFlxc6i4gim9nXN7TGFVksVWFftqmTAu0gUFS+
+         /Jy4YaZSDgMj2ENLUJDd/nGhBdU/EW1QdLJGTHyCT9H6I3mcHGXYAmCGDsNUputEWbQi
+         qNskaWf8qUt3epIg9c67c9AXkg/eAv7FMyQx0UkpdPDzrhx0+aveGr57AoBGyBmVHtAG
+         VKdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xeXTZcuI1CLep2o2KomhSyxmx0lROJCn0LGc6rXRQUg=;
-        b=6EbsVqw/HPC/v4KfOcBrLn171Zhxk3DU6oDAtqGylJRC8RCMKWBKdUVseZ8nwWPpIz
-         ZXwP3vbLGHjNnCQ9kLeP5O3dFmRkG4o4KXQWFkNGXGMyNtoMSxBlSHB+MnuiU9Uvv4B8
-         JarWx+Q+A5VzCHNuITbuhjtwXaBP/2qw3SMKubpAQOi/TBiUXpScIAB9tabwYlL5xfAh
-         WuC/orD9gpsFgwbcgtljmOKTQs3rtZLgg0MX1c1AURLxrbkGYCqHdqXyYZJxM1ARHwvi
-         9Vz1vsEuXURzjBHqgsbx/uyFO2aCFXVptkkfSJpfZY41il7bgDUe3TOhlYoe92G3OjnX
-         aqxQ==
-X-Gm-Message-State: ANoB5pmHTfOmhE/FKjGztB5C0g7ZtBLNx/boqNZekCfVOO4iBrYbZ3PI
-        jc3a5IYJKTaSFIcM9JvuQ9HWo9Sftz9gTa6ddGjAhkM992cn8o5S/2OobWhjFTiKgiZnf3ossJG
-        aKgtV716JE87Z
-X-Received: by 2002:a05:600c:1e1a:b0:3cf:7959:d8be with SMTP id ay26-20020a05600c1e1a00b003cf7959d8bemr4452098wmb.85.1668762569745;
-        Fri, 18 Nov 2022 01:09:29 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7jsIC1kyZP02uLsDpFgwzo/jh+9BTiREaq3zKB0f5w8O4mQu6CokrtkacAoWZxpUfLgP9J7g==
-X-Received: by 2002:a05:600c:1e1a:b0:3cf:7959:d8be with SMTP id ay26-20020a05600c1e1a00b003cf7959d8bemr4452051wmb.85.1668762569479;
-        Fri, 18 Nov 2022 01:09:29 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d48c6000000b00241a8a5bc11sm2955443wrs.80.2022.11.18.01.09.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Nov 2022 01:09:28 -0800 (PST)
-Message-ID: <569b4eeb-792a-9ad6-d52e-555f987bc7f7@redhat.com>
-Date:   Fri, 18 Nov 2022 10:09:26 +0100
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zItZ9cjLCKNwbVcWqZT2DVpSg2RkBqa93OmXRyt9amM=;
+        b=ql3eqxKIHFWhCT/B/vOWPJYLDXA5nC1wzJWCgZYDaDHpt40IgCyCEx2N5mWeOTZ2SP
+         A7/Tl8XmJ/lIThF9qIQNzmv9b3ZmeY3CLWDEN39XApEhnXCBCEXVcy0VVtxSpsDuWDU9
+         xwR3vOUqvcdhb131WFMRjn34Jd9aqaGAbfPLn66WFGN0HHei4uyWZ8Cm+jC+8He2xrlF
+         DlwpVzhyri660VD4L5cO63s6UHkhSWgzHSGZgRc7crAbkM2ndSV4WBCgsz0nkZ8QFZ61
+         +WyyNXqDTrBDbtaZab5dvSAjgwowgDaTlFYBn6BTyZwlS4SaOJTtNgr6RDPfDySxD7iv
+         KUZg==
+X-Gm-Message-State: ANoB5pmr+0aY6IoIgbdeDY9BATta5gOdlLS66IANlBm6Zzjh1p+1mrfG
+        aNnngTmbnpk4UYta9I21wsU=
+X-Google-Smtp-Source: AA0mqf7CmdV6z3FuaOw/dSV47sa3iGW71bUKaMq+GRV7QaUr982l97wvigtNDQTuYjz0+GzaArM5hA==
+X-Received: by 2002:a05:600c:1604:b0:3cf:7fb1:e217 with SMTP id m4-20020a05600c160400b003cf7fb1e217mr4342349wmn.92.1668764036538;
+        Fri, 18 Nov 2022 01:33:56 -0800 (PST)
+Received: from imac ([2a02:8010:60a0:0:51ad:9be7:a084:1016])
+        by smtp.gmail.com with ESMTPSA id r3-20020a5d6943000000b002383e977920sm3068675wrw.110.2022.11.18.01.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 01:33:55 -0800 (PST)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     mtahhan@redhat.com, bpf@vger.kernel.org, donhunte@redhat.com,
+        jbrouer@redhat.com, linux-doc@vger.kernel.org,
+        magnus.karlsson@gmail.com, thoiland@redhat.com
+Subject: Re: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_XSKMAP
+In-Reply-To: <8d4899f1-fcd2-edc6-31da-363b13f8049b@gmail.com> (Akira
+        Yokosawa's message of "Fri, 18 Nov 2022 11:36:30 +0900")
+Date:   Fri, 18 Nov 2022 09:33:21 +0000
+Message-ID: <m24juwy5cu.fsf@gmail.com>
+References: <20221117154446.3684330-1-mtahhan@redhat.com>
+        <8d4899f1-fcd2-edc6-31da-363b13f8049b@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 07/19] kernel/user: Allow user::locked_vm to be usable
- for iommufd
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <7-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <7-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
-
-On 11/16/22 22:00, Jason Gunthorpe wrote:
-> Following the pattern of io_uring, perf, skb, and bpf iommfd will use
-> user->locked_vm for accounting pinned pages. Ensure the value is included
-> in the struct and export free_uid() as iommufd is modular.
+Akira Yokosawa <akiyks@gmail.com> writes:
 >
-> user->locked_vm is the good accounting to use for ulimit because it is
-> per-user, and the security sandboxing of locked pages is not supposed to
-> be per-process. Other places (vfio, vdpa and infiniband) have used
-> mm->pinned_vm and/or mm->locked_vm for accounting pinned pages, but this
-> is only per-process and inconsistent with the new FOLL_LONGTERM users in
-> the kernel.
+> So you have two declarations of bpf_map_lookup_elem() in map_xskmap.rst.
 >
-> Concurrent work is underway to try to put this in a cgroup, so everything
-> can be consistent and the kernel can provide a FOLL_LONGTERM limit that
-> actually provides security.
+> This will cause "make htmldocs" with Sphinx >=3.1 to emit a warning of:
 >
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Tested-by: Yi Liu <yi.l.liu@intel.com>
-> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
-> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-
-Eric
-> ---
->  include/linux/sched/user.h | 2 +-
->  kernel/user.c              | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> /linux/Documentation/bpf/map_xskmap.rst:100: WARNING: Duplicate C declaration, also defined at map_xskmap:71.
+> Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value)'.
 >
-> diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
-> index f054d0360a7533..4cc52698e214e2 100644
-> --- a/include/linux/sched/user.h
-> +++ b/include/linux/sched/user.h
-> @@ -25,7 +25,7 @@ struct user_struct {
->  
->  #if defined(CONFIG_PERF_EVENTS) || defined(CONFIG_BPF_SYSCALL) || \
->  	defined(CONFIG_NET) || defined(CONFIG_IO_URING) || \
-> -	defined(CONFIG_VFIO_PCI_ZDEV_KVM)
-> +	defined(CONFIG_VFIO_PCI_ZDEV_KVM) || IS_ENABLED(CONFIG_IOMMUFD)
->  	atomic_long_t locked_vm;
->  #endif
->  #ifdef CONFIG_WATCH_QUEUE
-> diff --git a/kernel/user.c b/kernel/user.c
-> index e2cf8c22b539a7..d667debeafd609 100644
-> --- a/kernel/user.c
-> +++ b/kernel/user.c
-> @@ -185,6 +185,7 @@ void free_uid(struct user_struct *up)
->  	if (refcount_dec_and_lock_irqsave(&up->__count, &uidhash_lock, &flags))
->  		free_user(up, flags);
->  }
-> +EXPORT_SYMBOL_GPL(free_uid);
->  
->  struct user_struct *alloc_uid(kuid_t uid)
->  {
+> , in addition to a bunch of similar warnings observed at bpf-next:
+>
+> /linux/Documentation/bpf/map_cpumap.rst:50: WARNING: Duplicate C declaration, also defined at map_array:43.
+> Declaration is '.. c:function:: int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags);'.
+> /linux/Documentation/bpf/map_cpumap.rst:72: WARNING: Duplicate C declaration, also defined at map_array:35.
+> Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value);'.
+> /linux/Documentation/bpf/map_hash.rst:37: WARNING: Duplicate C declaration, also defined at map_array:43.
+> Declaration is '.. c:function:: long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)'.
+> ... [bunch of similar warnings]
 
+That's unfortunate, and I'm responsible for some of those. Not sure how
+we'd know to check for warnings with Sphinx >= 3.1 when
+Documentation/doc-guide/sphinx.rst and
+Documentation/sphinx/requirements.txt both specify version 2.4.4
+
+> You might want to say you don't care, but they would annoy those
+> who do test "make htmldocs".
+>
+> So let me explain why sphinx complains.
+>
+> C domain declarations in kernel documentation are for kernel APIs.
+> By default, c:function declarations belong to the top-level namespace,
+> which is intended for kernel APIs.
+>
+> IIUC, most APIs described in map*.rst files don't belong to kernel.
+> So I think the way to go is to use the c:namespace directive.
+>
+> See: https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#namespacing
+>
+> As mentioned there, namespacing works with Sphinx >=3.1.
+> Currently, kernel documentation build scripts support only the
+> "c:namespace" directive, which means you can't switch namespaces in the
+> middle of a .rst file. This limitation comes from the fact that Sphinx
+> 1.7.9 is still in the list for htmldocs at the moment and build scripts
+> emulate namespacing for Sphinx <3.1 in a limited way.
+
+What's the reason for keeping support for Sphinx 1.7.9 and pinning to
+2.4.4 in Documentation/sphinx/requirements.txt if we want to support
+Sphinx >= 3.1? Given that the latest Sphinx release is 5.3.0, and Python
+2 support was dropped in Sphinx 2.0.0 it seems that we need to have a
+higher minimum version and a higher default version.
+
+> So please avoid putting function declarations of the same name in
+> a .rst file.
+
+The same function name, with different signature gets used as a BPF
+helper and as a userspace function. We'd really like to be able to
+document the semantics of both for a given BPF map type, all on the same
+page.
+
+Is there a better way for us to highlight the function signature,
+without using the c:function:: directive, since they're not really
+function declarations?
+
+> The other duplicate warnings shown above can be silenced by the
+> change attached below. It is only as a suggestion and I'm not putting
+> a S-o-b tag.
+>
+> Hope this helps,
+>
+> Akira
