@@ -2,79 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A003362FD75
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 19:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF9162FD7E
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 20:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbiKRS7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 13:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        id S235577AbiKRTAs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 14:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbiKRS6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 13:58:14 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4956BF72
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:58:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id io19so5341269plb.8
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 10:58:03 -0800 (PST)
+        with ESMTP id S242861AbiKRTA2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 14:00:28 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CDC29CB2
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:02 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id j12so5353471plj.5
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=41UfXATwMCxVMYr2NMGOXZlLAsgQFrtoXxMLmxu3UVQ=;
-        b=ABDgtA2yCP1w33Lchy4yul8b/hEsbYBtwc9EmbCM0qnBaGMtLWE0Smt+bszqCvPERQ
-         nsFx/lKogp1+ZEMpOX9AFfAzk9le3D2tNNZxXNkJeUvRH5Kt4Agc2RIZZbNTd1my0IEV
-         xrmto/Mst/d4aZymLjRXEWtq7JzjgfyiJZi+NhfQy92gk/PygPGRcWwoLlnqTFeb0+Z9
-         bnHVWUXViTTjeFVEJifMB1rmn4rlOulrVMPhD6wHQuQIXAaM792so4mwvMWPlNdTDyoF
-         sXldKB+W2+7LRfU8ST1ycZS7QBzTk9ETzkg9mznqb8IDavYkiKO6iJ51zFufvnnnpQDq
-         ASzg==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=P89gm69nw6wwqdVHJE6uisz/d4U4qYsA0ojsJOsNWQs=;
+        b=ik3a8jQ1qy+IjvqUGieI9JqK3y5hpwMDSFVbFtmrCRyjOkyRyRQqXEG81syacC+KHs
+         2aOfcuF283ur2CSP8CuF5bmUfV5LpgnwahnpfYx3VWQKNqZzEaKiP22+No38nTuLysmB
+         xdgfB3IP3+mELlNPXULPWKxiLPLUOAqot8Aq8OVY201Q7Ob8Gindcgzaa7Ztdfhc9Mt4
+         jRFYLZuiyLlJPd+LIhPYH1h21cbESw4yloWrHHXlM6hFf7pzhnZBTKuPVvGm5Ug6vFqa
+         /uI5Gc9FSI2AmqqmPw7o4hieFVvNcfcOYF4Amz1iRKFjkl6jppTRsaX4MtoRQVcRQLUo
+         3Q3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=41UfXATwMCxVMYr2NMGOXZlLAsgQFrtoXxMLmxu3UVQ=;
-        b=kQH0ZBq/4wU5yy6+I1z7fWup7VsCDsBqrrDzRPI3y8dTS3jCj8HTVNE1tAhenxA97r
-         4HjrZa5JIoamfdcC6MG2L9sH0//NO6+qreFe3MsBTsJ1HZFuv18u4LtcomTNTVo2C3Bg
-         rmQDEPzE6DO26jWM7HVM4IjwCsAkSDkAmXm3xZOA3lMFvv7iK8Ol80QIpLMccZd4yzUV
-         24l9QOw4QTRAz3mgJQN9Slrdk3kCpwnCu4QcDdKq2BsXtoihulSJ/M8jMucOd1N1+koG
-         5888WUe8rQoo48wN+2ozpD5prcmBXjmfNAZIUKObZfskDw0A9gop4/tRcjNAaOT/EngD
-         AiZg==
-X-Gm-Message-State: ANoB5pnBXNyHMNSDJf7EvWn6D26XfcOPosu0EI0fAJqV17pwNdwDpL+m
-        xjD62xcjAxh1VmmDmRSpby1074BqJfwxe4uCeHshLQ==
-X-Google-Smtp-Source: AA0mqf7Pcput0MLEPQOxHpaW+84SKUvzySwwYel6OKzcYo31XYlr/0yLIJNikHvbiafRqpSCEMnoKzgbWvDmzHB4XZ4=
-X-Received: by 2002:a17:902:70c9:b0:176:a0cc:5eff with SMTP id
- l9-20020a17090270c900b00176a0cc5effmr772395plt.128.1668797883106; Fri, 18 Nov
- 2022 10:58:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20221111063417.1603111-1-houtao@huaweicloud.com>
- <20221111063417.1603111-2-houtao@huaweicloud.com> <33b5fc4e-be12-3aa8-b063-47aa998b951c@linux.dev>
- <CAADnVQ+Mxb8Wj3pODPovh9L1S+VDsj=4ufP3M70LQz4fSBaDww@mail.gmail.com>
- <CA+khW7gA3PgMwX5SmZELRdOATYeKN3XkAN9qKUWpjFU-M6YZjw@mail.gmail.com>
- <43bcd243-eea0-6cbe-b24b-640311fa1a83@linux.dev> <6159bf91-21c7-3fb0-e211-a40e85fd5bdc@huaweicloud.com>
- <339eae51-675d-64a4-eef7-9ff70dba880c@linux.dev>
-In-Reply-To: <339eae51-675d-64a4-eef7-9ff70dba880c@linux.dev>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 18 Nov 2022 10:57:51 -0800
-Message-ID: <CA+khW7j42UAigHPvFcOMLJNJ2wxmuUqzS8xWMO_VqPLrZs0Wfg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/3] bpf: Pin iterator link when opening iterator
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
+        bh=P89gm69nw6wwqdVHJE6uisz/d4U4qYsA0ojsJOsNWQs=;
+        b=AFDDzcqhn4HnkmkLoCmNDzULsFpNVELS0/ctSqMWOa6GD+HNhWDSQGtk9iaoQCGDjh
+         LSbFAlKtuqF5weWyhaSAkNY73G8I1Do4rJmDdCFXC6ZA55wx5a5XxyqwKXJPxhWN1DRR
+         eoohpAm2+idZasee3O+9WlY8qCixFL7AXhk+4dN86Sxq/fOijGEkkBF2g6jjjzPFfkME
+         O/1pnNLiUYEj4wMllmEUk0jzeBfzpxTxXieFx3FD8IFR0QXmdkJ7oQJ6OujK9wbLtnXT
+         Qt5vtYTJODvHJMcPQffDbVw+6vs2zJvJ7JoOflaHA+BgVQBCiF4Vv4txc1wu5foppegj
+         VpxQ==
+X-Gm-Message-State: ANoB5plIh7cS5mi1Db61x7bJeEmJ9ESt76os89XBFbFqSMrFCP+86Tlk
+        FaK4Q1hJkDpegS5491TDtjv5dB2tHaU=
+X-Google-Smtp-Source: AA0mqf664EOFfgNCWSbUvNsi3C9P/8KTiBSZLQsZ8tBpiR7OP+4g/VaFFlnk0BfZH/7q8kt0w05K2A==
+X-Received: by 2002:a17:90a:4049:b0:210:5de0:f3e3 with SMTP id k9-20020a17090a404900b002105de0f3e3mr9003056pjg.61.1668798001397;
+        Fri, 18 Nov 2022 11:00:01 -0800 (PST)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id x12-20020a17090a46cc00b0021877447313sm3401941pjg.24.2022.11.18.11.00.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 11:00:01 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v1 0/2] Follow ups for bpf-list set
+Date:   Sat, 19 Nov 2022 00:29:36 +0530
+Message-Id: <20221118185938.2139616-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.38.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=674; i=memxor@gmail.com; h=from:subject; bh=zRUKWYRYvUG6VgW42zgrRASkYPUuMNy6WdK5/jll+r4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjd9Wi/uWR8s3i5dXGubNyDr5VRrv/dFPv1MdOX0qb hWEFXX6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3fVogAKCRBM4MiGSL8RypjvEA CAw7siJyTjtlVvVPSydSuw15S0jxFhQyeF5QVzr3C+g9CBMyZq++8IFW9efKb6jvkT+eworgAQZHCV m3jkSA8OeMY3jcjJenqXc/s8ypChwf0rfSsUyf3ZaxZeNYUSn3ZQ7p15oWL15fH5ZPZFroVbi0F/4+ 9x4NGdfwC5+7GcmCK07LteVz2h+G5W0gTOeYhuDTXEEmlmdDMBMDQwzPPYwBcEc7udKRIMzcoXvPpF cRvLEBSCpJ1yGzF15RxoFFwNvLNaqgVooWIjjwqhw2SKPJAbLGBBJDKXV/jux3TJVd8yd4OuxU6U41 An+L3h8XVA2RU/1rvD3BkGqlYDzSoG3SfU9t4AkL5VSJ0eXTLPn/S0vfQj0lekA+Vk2ehg0PZZu2uC q+gappZeTYz0oswnmucEGWoPQe8D76EOeS73oY++o2pzxeWWjSR7FBp9X1g7+53GymwGKG39xM+sw2 ED3ssYnBFUfSs3rk+bD2ag04EmnPko5LOG6v1Cyjc6ipcyH/EH+3fQKLKzExvRRFDavISyQiDbHdlY Dcm562GUzcNRXEpHqXYsKArvmBRi+zK0wwSQ1z7jjgHbdO824n2oO8yumRBtMewaFoxlyIaTuak5fa f6jrrZ1dPo6VXrQ3URi8IIukFy25fuM/ATjYrq6JWEX7/Y/5AFAyR+S5fFbw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,33 +72,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 11:34 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 11/17/22 5:52 PM, Hou Tao wrote:
-> > Hi,
-> >
-> > On 11/17/2022 2:48 PM, Martin KaFai Lau wrote:
-<...>
-> > Rather than adding the above logic for iterator link, just pinning the start
-> > cgroup in .init_seq_private() will be much simpler.
->
-> Yeah, it is better to fix the bug without changing the behavior when all the
-> link fds are closed and pinned files are removed.  In particular this will make
-> the link iter works differently from other link types.
->
-> I can see pinning a link inside an iter is a generic solution for all iter types
-> but lets continue to explore other ways to refactor this within the kernel if it
-> is really needed instead of leaking it to the user space.  (not saying this
-> refactoring belongs to the same patch set.  lets fix the current bug first.)
->
-> > prepare_seq_file() has already acquired an extra reference of the currently
-> > attached program, so it is OK to read the iterator after the close of iterator
-> > link fd. So what do you think ?
->
-> Right, it is my understanding also that the prog refcnt has been acquired during
-> the iter creation.
+Make a few changes
+ - Remove bpf_global_ma_set check at runtime, disallow calling bpf_obj_new during verification
+ - Disable spin lock failure test when JIT does not support kfunc (s390x)
 
-Sounds good to me. The fact that the iter holds a reference to the
-program is what I missed in my reply. Both solutions are correct.
-Because of that, I don't have a strong opinion on either of them now.
-:)
+Kumar Kartikeya Dwivedi (2):
+  bpf: Disallow calling bpf_obj_new_impl on bpf_mem_alloc_init failure
+  selftests/bpf: Skip spin lock failure test on s390x
+
+ kernel/bpf/helpers.c                               |  2 --
+ kernel/bpf/verifier.c                              | 13 ++++++++++++-
+ tools/testing/selftests/bpf/prog_tests/spin_lock.c |  6 ++++++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+
+base-commit: db6bf999544c8c8dcae093e91eba4570647874b1
+-- 
+2.38.1
+
