@@ -2,111 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6905162F8EB
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 16:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E032E62F933
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 16:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235243AbiKRPKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 10:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S242222AbiKRPWe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 10:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbiKRPKh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 10:10:37 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-eopbgr140052.outbound.protection.outlook.com [40.107.14.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB43E11A06
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 07:10:32 -0800 (PST)
+        with ESMTP id S241173AbiKRPWa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 10:22:30 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2041.outbound.protection.outlook.com [40.107.94.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FBC2EF09;
+        Fri, 18 Nov 2022 07:22:29 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ewj9BiZhCRdgws416lQ0QkUMlCks6mNR/esLETBszRrbuYiDQ/+Q6do+gfrQ5cwqPCxex09zb4Svg9fInuewQcpSGN7UiQKfRNirWEliWFOtlr4VqLTsAoKoPv4PafteoUuo4oQW9FDO98xwdD/fO2K8iRMkMhtiyURjN4jAfrtxFFP2/AJHZ9BNHNjTZD50mvLoZ3BY23HAqpWLGj2s/x7B6/FNrrW925e6GOZMAIy1jOqlu6BlQmznyYUYz8GPWUMdLyOakAa/9deymH1MaYF/dVSOgS+4+MuD/nOsc9OxQPwxiDboEFydZhJPDj3B4EjWG9fvIwKpxaOwyIKvIA==
+ b=mHRge1wp2FEPJVKOBPFZMtRIUlO9up5j7qDRZ3npFq7sg7JMb1bzzjvmwSkzq6NFkjfr1IAx//WbqqEHqECHLrFIUTYCXwiIIANxZuk/NBFH2TX64r8XMUSws/uOCOZNpz+czl+QV7wLdkJURfNHLUU+tUmcoZ8SXVLs7pqhptInlcO6f0CNljnndiW0/P0a4c+rr2CuSvbySxEsnCgXRJvM57MllUqyxvFp8lDzRMe8AXaqWnpte570ZwwatQgnutFQcPzwUrpVeT9he5/kGteyDKNge5DmmRCG8zAUmv+GKBGnS+jzENAORz5aQ13fjnE/rOXKPG36V7PPmIHStg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h+qYk/7Ehi+oRihIllCYiO9Y7MtKNvDHJFQu7SGXlm0=;
- b=ThxVUQiLp68oaXzP3OnWGMUzBZ2OLbEmGxNhHcWjhS0nnDYYR++SSbuPZYNSgL0Rkly0cX9wAp+kbN1Rc9xYyiTT7K+VmRY7FqWUrL6l/gSVIJ3fGl2P0do//qBsm4L/YtFHL0Uc9+2BisNQoJ19CorvU2Sv2mxcnfVQl3JzCejcV+L5VzRzsmuArdFXOx/aP0ZWxyURkv6tom5NSSvx6/slfCX18lCc9xJvfhOTqM3ICvJI8XpUYUQ2RdK7dSZ6jFY3eKCf46/eFuJ815UrDRIwHhXF7is3FPWxzYaNm1mDZ2jdfD8qGdHFHDLPfX5AXGpKt1cC4fcs6OSMLoUciA==
+ bh=T+baVqr/f0rKzwSRw7T6GMVAPP5qaRkE4RBZGZYCevs=;
+ b=iplGlxlYPV1k7fmLF+qouxO2aIujsNqpQy1BBWdjf//ZypOKn2KuzfksVIKuOXW27nRfJWoWNA0B+WlXvtXCYp/9RsXmAMybEqpweAXJDjJuzO8msk3FYY8fGXP8+xJ6Di/yyQv/OsPN8REuumpumwEWmhizkh7eojKjDRJj3otl7NBoc0lVhTVSMDrJVV0B5MWnblQ2lBdKqV3T9f9RK1yukiX+J4uAnzdBgoLkQLUmG+1KYJARRhsMAPxoxtOIFk6UiMm0s+S6vk1IKDthU4IBN8H6p3AZiMlc0wRBpBuXuImEWyWooCEIZqLovObIx1Yieca1MO4BZ78UECRrZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
- dkim=pass header.d=ericsson.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
- s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h+qYk/7Ehi+oRihIllCYiO9Y7MtKNvDHJFQu7SGXlm0=;
- b=eyTMOW57fHggZYSOsEASkqUwe9TATLqyEE2WL6V+3x5RuwIwOFfUCucprKmZmxPRcPR/e7Js7jiHKDD6C5BmVe6Jp0qOc1gciBwB2fA5IucvuTyJ4v2NeTqEH8yxlgZAnYzOWWGb9ULh7bUs3CLo1W3A/w/Isd5BTyS2yyJSGLg=
-Received: from HE1PR07MB3321.eurprd07.prod.outlook.com (2603:10a6:7:2e::16) by
- DBBPR07MB7642.eurprd07.prod.outlook.com (2603:10a6:10:1ef::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5813.18; Fri, 18 Nov 2022 15:10:29 +0000
-Received: from HE1PR07MB3321.eurprd07.prod.outlook.com
- ([fe80::22cd:6278:c974:5e27]) by HE1PR07MB3321.eurprd07.prod.outlook.com
- ([fe80::22cd:6278:c974:5e27%7]) with mapi id 15.20.5813.018; Fri, 18 Nov 2022
- 15:10:29 +0000
-From:   =?iso-8859-1?Q?Per_Sundstr=F6m_XP?= <per.xp.sundstrom@ericsson.com>
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Sv: Bad padding with bpftool btf dump .. format c
-Thread-Topic: Bad padding with bpftool btf dump .. format c
-Thread-Index: AQHY+zjUZPX3IHWbF0SkGbqCbLQ5N65En92AgAAkm4Y=
-Date:   Fri, 18 Nov 2022 15:10:29 +0000
-Message-ID: <HE1PR07MB3321F2F4C156BCA6EFD3A3DBBD099@HE1PR07MB3321.eurprd07.prod.outlook.com>
-References: <9cfc736f2b45422a50a21b90b94de04b19836682.camel@ericsson.com>
- <Y3d9mYrkWjrkJ9q2@krava>
-In-Reply-To: <Y3d9mYrkWjrkJ9q2@krava>
-Accept-Language: sv-SE, en-US
-Content-Language: sv-SE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=ericsson.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: HE1PR07MB3321:EE_|DBBPR07MB7642:EE_
-x-ms-office365-filtering-correlation-id: fe53406d-9c68-402b-b5a7-08dac97707db
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IOF0p7Bk2JkcrwMvu4DANZrFPZLos3l7dz+M02o+U1qTIhkXm51H06FLlTqIwEcGU/aFCZuS9oEK6cjGq8R/3TnCyUhE5pwtavvepIxIau0iDgYmI8XTc+5W+OUHOQwhwRBWLBfiDr3ZANFt0UkcMSB2AbqdNxhMIOdX58UVjjgcLcejb+nXkvb0dufPbVBDy5WcOHqfBBNjbiqE5GSc0/GsCr/GCI+Mgn8bo0jmNwwCuuAVYs3wXP8VPt+qmHuoz1qhg1Lhh9ibAHjDhuJPKltEdxslPZIn5fVcWNd/erWyuiCd8XU4M6HZgE+ipblcL7J7e2RAF2txqQX6IPC3m5eHDTvxkcGQiuP4CM971TfjNOIVDx78frWz5Hvnh5XFgQhe9NKTsl1SdE8dPxUE8lsPW84BG9KOAGUsslwH+WNwsi4U7D9vKN3UnPmO7t2Q3RHhccz/Ivq8hlrgPXUIkKii6XqJUpfu5XBPz+RSIt8jBQsN+ocVVSjnhMkMyv9uiahDeJgcLDbWdOO/02NZNhDkcJNxquS0aD1H6+p/1Rbm2lPpDib0WRYVU0B/kd5+68uHVddnfu1rbKKkYxzq7c/T0m8jRT1pkW8PafA6czBpCfvlPygpF/jwiRSZpDyW7TBtKGydj5J/FM38+A6Ud3WG8cz0Jbmtixo1M+G6MMzF2vbZbdqFjRwDOVlviVnKMwAP+jrsmgaAwEqjMzuQYtsdFCRC/X2bUny8CSfznQg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3321.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(366004)(396003)(39860400002)(136003)(376002)(451199015)(71200400001)(6506007)(7696005)(110136005)(478600001)(2906002)(52536014)(91956017)(8676002)(41300700001)(66476007)(4326008)(64756008)(26005)(66446008)(9686003)(66574015)(66946007)(5660300002)(316002)(66556008)(55016003)(186003)(33656002)(86362001)(83380400001)(76116006)(122000001)(82960400001)(8936002)(38100700002)(38070700005)(129723003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?F9WXRkELwtRe2mhz1DlKhum/gyPOO8dAew4ZNAwSFQXh522b9H0GNtOos/?=
- =?iso-8859-1?Q?v1MwFqQfJoOc4BlI8m4/grIj/SP4MKPlfHneQBnBobR/P53vVbhj7xJW0q?=
- =?iso-8859-1?Q?V2XhH/4fb+GKtHZ8QUn4UF/oLzSJfkKjgBWNXIen6CLtkwTfVG6uypA7g8?=
- =?iso-8859-1?Q?HM0nX74BZhwpdfAV139R5dP+CxOI2uJNgQM3lMXaMeFnAq0EHu/9jqiDUw?=
- =?iso-8859-1?Q?wzipRToqv7FjZ05Q0TQfFd/ggTq8Bl6SNv9k8PCVcPPM/rybJj1QetwW4x?=
- =?iso-8859-1?Q?ruyQTlKJqdadiAbuzl+4AfulltVPgSwxlJustgeh0pjiixQFuWEeQpTMFN?=
- =?iso-8859-1?Q?d+V2mXCGRfzV9//255BBFlLrcWexBKbzEkGujAOTy8S0HlaLzNILTLzLWZ?=
- =?iso-8859-1?Q?ZjIPDNSQajFYqdsaZ2v9jtiyL7c+f7LS4OmMvfiifYD7gO84Aoawe6ECnx?=
- =?iso-8859-1?Q?0eqDCLdS996eI+cJ1VNreNFIK2g7DPsbTBhiPC4nNnbOGFzpxRK+Epnt2e?=
- =?iso-8859-1?Q?KQT/ab7gRnOdJboIhYyxzWSbXCOUxOkRsEmlQWy46wMhgGXU86eVDCsi8V?=
- =?iso-8859-1?Q?0o5jcrIqOjHNmFGWXyciMbkjW3sC4w/abbW0PqjGjfo9YDeKaxwpCBtdjc?=
- =?iso-8859-1?Q?i/Pg8CBLSUS5VickQzF+93kBBEWUsofVtEvHm9hHivv7YUi4YXVgbaQr5D?=
- =?iso-8859-1?Q?5C4QJJIV6G76QTkfml1eudsroTAoGRLvZDDYHyVIHUcyt9dHAsCCzk2/XR?=
- =?iso-8859-1?Q?bzMVQzcPvd8+4ehwl/CAgNCYLYiW+w4lE3Wd4s9jhnC+uEw0a0GC0aO1oV?=
- =?iso-8859-1?Q?hS+Nq6JU9T9w1snxf0+U2vFzZ6p3cVgg1XSHn0g6UbNuek+Hum3ZM1HXZM?=
- =?iso-8859-1?Q?UD/bTMI7XQmoz7Se0Krg1CfCxjpv4xQevCLHjZ2efIEAS5ur4ps2D0nveK?=
- =?iso-8859-1?Q?Enou3/aepH8MfHrymFJLaVh1VvXHFRfIbsa9V5PAlCYhI6PucLk1LA/26N?=
- =?iso-8859-1?Q?oG7/Xbd4w9nteNVeZ4bioC4ItAYHzGKIf1hmiejR/dBpqLkEwgKH3Ofs+4?=
- =?iso-8859-1?Q?UzSHklpxgct7EtANKVal0EahIKOuao10Nu5qKBlP5+qw/VG8IKcJjOIwqb?=
- =?iso-8859-1?Q?ynKN02WGSIVoy727LxneINlxXO/DS2XIU424gxJsF6/KgspBRVZGUg262e?=
- =?iso-8859-1?Q?nsDSYFzdjM3xwCcR74WoAnfyARyS7VI+LIJgZGZhI1BWhYtNciSX17x8Vj?=
- =?iso-8859-1?Q?gkZceUz7NKRoPuHEYY2pqxQ+wRziktTYcdD3sTDwwJn2v7RycDtpnPEfAW?=
- =?iso-8859-1?Q?pYFi6YDChMK/TVLPa7F/Q6xfplS2Q0U7yv4rMPkgAKHdDnZi83+PAHRsjn?=
- =?iso-8859-1?Q?ml9WAR6pFZdLqaWiveVVTyHeE+KUPTGEAl1cO/4jWnOsYkV2hEkn6Rf8tp?=
- =?iso-8859-1?Q?DJiWfiAWxS6d9spD2ADA/OgsGqOginQzp23srqRvYuPOw3s8dMnZNQnzLi?=
- =?iso-8859-1?Q?aL2sC4d102pfD4mxFFLraY1gguIz5xXKBMjXjoywihGj8naKMjQlvkE3a7?=
- =?iso-8859-1?Q?FU91xSz+VkZdDFJhetm8v5XValrNgs78n0j+MO20/uA2xqnckU/2dyT+VQ?=
- =?iso-8859-1?Q?YLjIi+ZELabEhFq5oG4Azy0u4w6+eoGLOJ?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ bh=T+baVqr/f0rKzwSRw7T6GMVAPP5qaRkE4RBZGZYCevs=;
+ b=n5Ce6S84Nv8nZnVKDZ4RoAPmooq5+4vX1mM4W0S8BK2+o2qr7wV/dAR0VxUlXzaoW02ZYFlEIyFfRnvlQve8i6xaDoODyR6W61q7/c/PN12Ysj0PHMJSHVaQ1J7neph554+OEuE1QYiGlDeqhbt6PkE0xmo9AGyI/+g5ZDmPLfYMdslutzOxHQt+lluNi38deXoOMUhEpth80GAFvSEI9gevi+9ia8wIfORzPJoCxTw44iHm4qOV75+mbnCTXxDCpdss3do9EYGK1Xvwi+UUa7KRhGHODZNm8c3rEfO96uz7AYEo3z7z2Rmvd9qrgScb0VnSm2O1rbtTiY8rS3wI+g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BL1PR12MB5825.namprd12.prod.outlook.com (2603:10b6:208:394::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Fri, 18 Nov
+ 2022 15:22:27 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5813.017; Fri, 18 Nov 2022
+ 15:22:27 +0000
+Date:   Fri, 18 Nov 2022 11:22:25 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Yang, Lixiao" <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v5 15/19] iommufd: vfio container FD ioctl compatibility
+Message-ID: <Y3ejMSTWvJuELQ7K@nvidia.com>
+References: <0-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+ <15-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+ <BN9PR11MB5276B0219008568A30F5A4738C099@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276B0219008568A30F5A4738C099@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MN2PR02CA0021.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::34) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-OriginatorOrg: ericsson.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL1PR12MB5825:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf039254-261f-44d8-c56a-08dac978b340
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +l9LtzHZfwnGEmjxy4cTSPBpsuDrozCx8m53k9FP2bjUSL3N3Jch8rDyof2gEm3v8KP162fJunDY1xbaOjYO8+UNEXMyYdp5kze948h5hk6UNCj6/KnZVjY1DGZ8XNU2zr3oD51hLFM5hEtn5LqrpPLtF7cm503nLRwuAt5SrGvyvbe4dhzj16TUkPHPSiVnVGOG4PnidRZak347vYSe8ombheQgIUeGCRgOAwtWBkdcCixaEwJoJH/hdVUjKfvXAE5G/sa6cNEhsp8Nii83FnV6q7wrv8lgf9OhheYNmeQQikppT7BA203ZOfs0NIqSGzjh7nAYQH8469RKk9jipXIA5F/zTt4nXNbbhUkHt+yGEddxr09OoEsFKnk7QsHqVlX2kews5TCHJ09oPEfXndZxQ/arKl/t6qaER/c5FTXwU7apE/H4BeXKJb53ZgBdcvCWgs4Yxfm0Hm2lHQkcwJ+sEOrOnsJHUU3EDWy/CdO8frwoKJcxbi2WyIcF+fstL/E6p1/UqLj/fmUFqFGOnkvsJSEHx2GFDM6ugvOgQY0fbknc89Q2IcNNHcByNJS7hBkyC6iXFlqXQyUZwOdMrTEcCteFtEIYdQb43UWBgC2ZBsrW7X9BUfre8zn7yqM4uvkQctsFp2sHQW3Er8pRQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(451199015)(38100700002)(26005)(86362001)(6506007)(7416002)(478600001)(6486002)(4326008)(316002)(8676002)(66946007)(6916009)(5660300002)(41300700001)(66476007)(54906003)(4744005)(66556008)(8936002)(2906002)(2616005)(7406005)(6512007)(186003)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9UQdHGUud7qDnuWrnGJkDHAgyo3lqBJX4rRo6WMKaOLmWp/pq7/KdyrJzri3?=
+ =?us-ascii?Q?wK6iXzfQNydMzNWdbmFZF+ObRBtyMdo+IZm89KeI6tg1x8RZW9OYzQ3qqo7u?=
+ =?us-ascii?Q?ChnfYjOsmfzsGvNWopkLXzPGNsfSm5PKGZ90+fq2D8W6/9WIKN9CF3bCfzST?=
+ =?us-ascii?Q?lgJln9P8kkc3OzgV8qCGoG7Tcn+FTssmPu6XO1maxdEkq9t/sFqk07Z2hjLG?=
+ =?us-ascii?Q?+79eXiqtXTSkA8gi119VPqx/0QZA5UpvY7Vbpti0zhR/bcCGpZV0Okc91ada?=
+ =?us-ascii?Q?sJBY9vzS89E9Knm+Pi8VSzFPt6yAogxSFOXm4LfBfVIoJUkMU8GCcHKMSP7/?=
+ =?us-ascii?Q?2pqcfJH4FZ2lZzROmL0IVwqxGyfZR64RPRbdvhxk4Y5GfWb+6AJJhMjHCdzq?=
+ =?us-ascii?Q?ZcR9mWFDGg4Ke0RIOZepJXHwUJbU5MW/egxXxt43U4QDRC0hCk5kXCC3f1dR?=
+ =?us-ascii?Q?tU09kHDHgGaHl6EuRLTxhjJkWBc1rpZUMg+kzZWs7l2Cqb3RGaZOOXLaSwX1?=
+ =?us-ascii?Q?668yjbtKyJC/4YaiIJA9k3FFJyLEvAZM/Pu87DSQ/Vsc0eQcpNZ/ZOXWe5ur?=
+ =?us-ascii?Q?JbO72ysS90svyXfxEOhAOWY3VzGA7GE1JeTtV6y4p1roWDmmtwhfL3We0NP6?=
+ =?us-ascii?Q?q2Q0dIi6fZAv1S2PNRQ/JtTANNE0TKd1PuyIQu8M7758jQI1rXW845azsuE4?=
+ =?us-ascii?Q?1fFaeZ9HXiKUbg6LgIoL5MklJPJ1hJE0BL7vb7WvaruvAgipmu7IsD6eMd42?=
+ =?us-ascii?Q?T+fakbGLXv3s9oilDZTYcXLcHWWSLre3UxqSmhd9QbGKdZvZWb1SvLrkk3na?=
+ =?us-ascii?Q?/bftTwDuej+IInhYVn8FMWkfkvM41rTPi8CTmJ6wa1mSCARi8n254VSXtYiT?=
+ =?us-ascii?Q?EDvqHdZCVqLiuHT8CGciNmCUFaSKFIrEc16zQ3XCGJl1zUWNibn0E3otKp5z?=
+ =?us-ascii?Q?LaXq+OqmXpRNHsYQBmnLbkhd3cPBuC5VTqTwPkt7KqsKv3zcrzJA/oIjM5kh?=
+ =?us-ascii?Q?zxoYsBdZWfyeqhR5qkIG4Dt0Ei4uVNOWI1/397eJggp3aSPhWMwnITqggFMb?=
+ =?us-ascii?Q?gu3SUCmB+iq0wH6DsRK+DbcUXSW6JS/RB+jrjOHX4Wa/j/9+sPz8CUYYjHT9?=
+ =?us-ascii?Q?xKI3N8jNY6Xit0oCsDh3FdqZbojvuqeIIsxESmVv2GaMYQ50u1chiQmgOdKs?=
+ =?us-ascii?Q?IEtRijMV/JRVEugSbeC+UM46f5PMlld67NP7KacHR367HX29Dl1jvwNFczWR?=
+ =?us-ascii?Q?kQbPKg5c6ryiD65FhcrrVAyJFqMRKhuP04juS+IiXRTZmth0XgwWnx9Avlng?=
+ =?us-ascii?Q?0F+i5JWf/pDeUHgmpKs0/aitu3mEce5h4mbJq4bnisvXIA4f9H5Z2lEcWB8V?=
+ =?us-ascii?Q?V8W/0BmxO4n01Wb9EK49E7JCU11H7g5ZMLms/p6TgUXERCLf78647RW66PIs?=
+ =?us-ascii?Q?2nRX50DO2PdUU4vCeWg3i3hxHeuK7MG/dDmndxocM5Ic//bWopLwMWdTqNxE?=
+ =?us-ascii?Q?f9bL7d/O0F8FzLRYNI2XM2hinmg41gcrz5lBN1iRObH4f1SF8fI6CwEa2NoZ?=
+ =?us-ascii?Q?ij+M1TzruXHcL5SswSQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf039254-261f-44d8-c56a-08dac978b340
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3321.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe53406d-9c68-402b-b5a7-08dac97707db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2022 15:10:29.6008
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2022 15:22:27.0876
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oAHS6F2Ey2mUzVgZaj+0vBrqA9VCIKVGpGHsw/m0m0+tS0oj+Khvg5awOQ4z2d1EJoKZhyQzqTu8GS7QnRvC9lUqmMn9WqDqT3iHasisPCI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR07MB7642
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: azPsd+uQQIxgkarJxlHBJsChUHxXMsX546V0gSgcUB/j4bcLMs1nd39hEqcTWna0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5825
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -117,359 +152,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=0A=
-=0A=
-> On Fri, Nov 18, 2022 at 10:30:50AM +0000, Per Sundstr=F6m XP wrote:      =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-      =0A=
->> Hi,                                                                     =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> I don't know if this is the channel for reporting issues with the       =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> "bpftool dump .. format c" function.                                    =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> If this is not the one, please help me find the correct one.            =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> This bash script illustrates a problem where 'bpftool btf dump <file>   =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> format c': produces an incorrect 'h' file.                              =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> I looked into it a bit, and the problem seem to be in the               =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> "libbpf/btfdump.c : btf_dump_emit_bit_padding()" function.              =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> I can dig into it more if you like, but first I want to report it as a  =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> bug.                                                                    =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> Regards,                                                                =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>=A0=A0=A0 /Per                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-          =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> ---- bad_padding bash script ---                                        =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> ----------------------------------------------------                    =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> #                                                                       =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> # Reproduction bash script for wrong offsets                            =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> #                                                                       =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> cat >foo.h <<EOF                                                        =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> #pragma clang attribute push (__attribute__((preserve_access_index)),   =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> apply_to =3D record)                                                    =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-      =0A=
->> struct foo {                                                            =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>=A0=A0=A0 struct {                                                       =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-          =0A=
->>=A0=A0=A0=A0=A0=A0=A0 int=A0 aa;                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                    =0A=
->>=A0=A0=A0=A0=A0=A0=A0 char ab;                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                  =0A=
->>=A0=A0=A0 } a;                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-          =0A=
->>=A0=A0=A0 long=A0=A0 :64;                                                =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-              =0A=
->>=A0=A0=A0 int=A0=A0=A0 :4;                                               =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-                =0A=
->>=A0=A0=A0 char=A0=A0 b;                                                  =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-              =0A=
->>=A0=A0=A0 short=A0 c;                                                    =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-            =0A=
->> };                                                                      =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> #pragma clang attribute pop                                             =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> EOF                                                                     =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->>                                                                         =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> cat >foo.c <<EOF                                                        =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> #include "foo.h"                                                        =
-                                                                           =
-                                                                           =
-                                                                           =
-                                                                           =
-    =0A=
->> =0A=
->> #define offsetof(TYPE, MEMBER) ((long) &((TYPE*)0)->MEMBER) =0A=
->> =0A=
->> long foo() =0A=
->> { =0A=
->>=A0 long ret =3D 0; =0A=
->>=A0 //ret +=3D ((struct foo*)0)->a.ab; =0A=
->>=A0 ret +=3D ((struct foo*)0)->b; =0A=
->>=A0 ret +=3D ((struct foo*)0)->c; =0A=
->>=A0 return ret; =0A=
->> } =0A=
->> EOF =0A=
->> =0A=
->> cat >main.c <<EOF =0A=
->> #include <stdio.h> =0A=
->> #include "foo.h" =0A=
->> =0A=
->> #define offsetof(TYPE, MEMBER) ((long) &((TYPE*)0)->MEMBER) =0A=
->> =0A=
->> void main(){ =0A=
->>=A0 printf("offsetof(struct foo, c)=3D%ld\n", offsetof(struct foo, c)); =
-=0A=
->> } =0A=
->> EOF =0A=
->> =0A=
->> # Vanilla header case =0A=
->> printf "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Vanilla =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D\n" =0A=
->> cat foo.h | awk '/^struct foo/,/^}/' =0A=
->> gcc -O0 -g -I. -o main main.c; ./main =0A=
->> =0A=
->> # Proudce a custom [minimized] header =0A=
->> CFLAGS=3D"-I. -ggdb -gdwarf -O2 -Wall -fpie -target bpf=0A=
->> -D__TARGET_ARCH_x86" =0A=
->> clang $CFLAGS -DBOOTSTRAP -c foo.c -o foo.o =0A=
->> pahole --btf_encode_detached full.btf foo.o =0A=
->> bpftool gen min_core_btf full.btf custom.btf foo.o =0A=
->> bpftool btf dump file custom.btf format c > foo.h =0A=
->> =0A=
->> printf "\n=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D\n" =0A=
->> cat foo.h | awk '/^struct foo/,/^}/' =0A=
->> gcc -O0 -g -I. -o main main.c; ./main =0A=
->> =0A=
->> printf "\n=3D=3D=3D BTF offsets =3D=3D=3D\n" =0A=
->> printf "full=A0=A0 : " =0A=
->> /usr/sbin/bpftool btf dump file full.btf | grep "'c'" =0A=
->> printf "custom : " =0A=
->> /usr/sbin/bpftool btf dump file custom.btf | grep "'c'"=0A=
->> =0A=
->> #---------------------end of script -------------------------------=0A=
->> =0A=
->> =0A=
->> Output of ./bad_padding.sh:=0A=
->> ---=0A=
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Vanilla =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D =0A=
->> struct foo { =0A=
->>=A0=A0=A0 struct { =0A=
->>=A0=A0=A0=A0=A0=A0=A0 int=A0 aa; =0A=
->>=A0=A0=A0=A0=A0=A0=A0 char ab; =0A=
->>=A0=A0=A0 } a; =0A=
->>=A0=A0=A0 long=A0=A0 :64; =0A=
->>=A0=A0=A0 int=A0=A0=A0 :4; =0A=
->>=A0=A0=A0 char=A0=A0 b; =0A=
->>=A0=A0=A0 short=A0 c; =0A=
->> }; =0A=
->> offsetof(struct foo, c)=3D18 =0A=
->> =0A=
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D =0A=
->> struct foo { =0A=
->>=A0=A0=A0=A0=A0=A0=A0 long: 8; =0A=
->>=A0=A0=A0=A0=A0=A0=A0 long: 64; =0A=
->>=A0=A0=A0=A0=A0=A0=A0 long: 64; =0A=
->>=A0=A0=A0=A0=A0=A0=A0 char b; =0A=
->>=A0=A0=A0=A0=A0=A0=A0 short c; =0A=
->> }; =0A=
-> =0A=
-> so I guess the issue is that the first 'long: 8' is padded to full long: =
-64 ?=0A=
-> =0A=
-> looks like btf_dump_emit_bit_padding did not take into accout the gap on =
-the=0A=
-> begining of the struct=0A=
-> =0A=
-> on the other hand you generated that header file from 'min_core_btf' btf =
-data,=0A=
-> which takes away all the unused fields.. it might not beeen considered as=
- a=0A=
-> use case before=0A=
-> =0A=
-> jirka=0A=
-> =0A=
-=0A=
-That could be the case, but I think the 'emit_bit_padding()' will not reall=
-y have a=0A=
-lot to do for the non sparse headers ..=0A=
-  /Per=0A=
-=0A=
-> =0A=
->> offsetof(struct foo, c)=3D26 =0A=
->> =0A=
->> =3D=3D=3D BTF offsets =3D=3D=3D =0A=
->> full=A0=A0 :=A0=A0=A0=A0=A0=A0=A0      'c' type_id=3D6 bits_offset=3D144=
- =0A=
->> custom :=A0=A0=A0=A0=A0=A0=A0 'c' type_id=3D3 bits_offset=3D144=0A=
->> =0A=
+On Fri, Nov 18, 2022 at 02:58:49AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, November 17, 2022 5:01 AM
+> > index ca28a135b9675f..2fdff04000b326 100644
+> > --- a/drivers/iommu/iommufd/Makefile
+> > +++ b/drivers/iommu/iommufd/Makefile
+> > @@ -5,6 +5,7 @@ iommufd-y := \
+> >  	io_pagetable.o \
+> >  	ioas.o \
+> >  	main.o \
+> > -	pages.o
+> > +	pages.o \
+> > +	vfio_compat.o
+> > 
+> 
+> move vfio_compat out of core? it's not required if VFIO
+> is not configured.
+
+We can, but I don't know if we should. Compat ioctls are part of
+/dev/iommu, and technically have nothing to do with VFIO. A native
+iommufd application using VDPA could use them, if it wanted, for
+instance.
+
+Jason
