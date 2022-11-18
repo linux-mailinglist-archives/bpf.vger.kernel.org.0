@@ -2,149 +2,329 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CFF630810
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 01:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62602630829
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 01:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236959AbiKSAnQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 19:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        id S236780AbiKSA5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 19:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238087AbiKSAmT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 19:42:19 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C774ECB969
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 15:45:13 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id kt23so16638251ejc.7
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 15:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eBFL9wq2nZkW7X0Q2zdG9W86tLX7y7ySVfYRMnkhs48=;
-        b=qg1W6BJbQ7TfjJsSAw5toek8vhksnMJ1jgG6vej7bL8BOOH83oGzase0uv0laRqmZe
-         +Fvj+kRLZVkQdtCDoJeDn72AKhHlUeEpwU7JOnO6y2liSx7lqiifPr0labUnLvLnGuh0
-         /pZCurDFYnbez6EqZtyN1s7xe3tDRBjgS7rUhdId6SewHji2w7cQp4j/Wm4POnU+gHKu
-         3bWkbQjI8KrMJUA01apV8WjH36IsJBYt/ROrVcci0b0R18IfoUDI/6ng4JptAoHzRq0A
-         Bz9HpI+QHchljOfwOygiDE396/mWeYvRQBOYGmMSAk0bIam9oqjDVbpg/GsDPP2lD/lD
-         nSaw==
+        with ESMTP id S237714AbiKSA44 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 19:56:56 -0500
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CFD13C71E;
+        Fri, 18 Nov 2022 15:55:40 -0800 (PST)
+Received: by mail-qv1-f53.google.com with SMTP id c8so4400205qvn.10;
+        Fri, 18 Nov 2022 15:55:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eBFL9wq2nZkW7X0Q2zdG9W86tLX7y7ySVfYRMnkhs48=;
-        b=8I5Gkhnx1XKTzjFkW2CMLHVHQX92Y8qqTAUly1BNtz88Gj8VZRt5pAOq0Q7JNlJVvL
-         J3wf7Paw5RMv6WC74sQ8wfWRpU3/5owHUB5dlYuYQ2w/qmqzS8UZW/N0igDCPC1MhCBH
-         g6L7ovTPx6WaGuBJdg2Sg7opECz6GvGcUCEo+Is3enOJH/cuEIn1qf3cT8S9YN9T8F0X
-         sfh6VxVNrZziTEk64YOHNB6ly2SbvT4IM3SPWfdu+gQUtYur04RgpDrz1NVdVVhx+sRB
-         3Q+W0c7ryofIY+3ArL0v1Nldq0dIpwomKI3vo7dtFmlLc0UYfuDZvP6KEZVeDbwRjOT4
-         Cu5w==
-X-Gm-Message-State: ANoB5pmVQ8tubzPRA1KwYKb5v2Rr5Lz9nnvrQ0Un1ml8Lm1qQqyTKah0
-        hSaC9kAhUSyesh60XCGbznHi+Z51kdWofcRYY0Q=
-X-Google-Smtp-Source: AA0mqf5oB9sCs8lqmwqPH0QvpAVN7xoAbcVAZCFWi2/xyL1zCPdhnZHc9Xx46R8Zzz2l0G5ZukEgyibraaSjIlgcqBA=
-X-Received: by 2002:a17:906:4ed9:b0:7ae:664a:a7d2 with SMTP id
- i25-20020a1709064ed900b007ae664aa7d2mr7945943ejv.676.1668815112113; Fri, 18
- Nov 2022 15:45:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20221118154028.251399-1-jolsa@kernel.org> <20221118154028.251399-2-jolsa@kernel.org>
-In-Reply-To: <20221118154028.251399-2-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Nov 2022 15:45:00 -0800
-Message-ID: <CAADnVQLLvwpAFTEwCw+ZdZGtZTrV7nFu3pXKMRW9irRYG9WJXw@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 1/2] bpf: Add bpf_vma_build_id_parse function
- and kfunc
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HHVOM8ZcC+RXXR1+3G0T8DRs+enZvY6gtMzHZbxTHmw=;
+        b=oEONeEVLG7tgPzdjp3J2YLg2gsA33beDR8qMl8Ta3NbfCaSTYKxrKcoH2bqWr2vry4
+         89GIydGj26TydHGsr9mZsWYBNRaLow/fhWjVZdUA4bJhK0fyplN6YlBt/R7MvsPGDfNa
+         ibtg+C1Rw1m64qdr0OuUQdzUWd6WfaisVShcRyqe1tpIcWpmtE8r1MtmSFbUOD+9llBM
+         jXPuiBFJ+yWLQnmXz9pbru96UAT0F0VXMKOLHXD/0KD0uB8Hpoc9bJ0c64HuicUFHvEH
+         XdJrGqVtKSGOajxQsyz6U/70vvad+lhnTlfJGFQ75yUiacQG/9vd/zGlL0cCmGLSMG0F
+         483w==
+X-Gm-Message-State: ANoB5pkUr8EaR1WIrtkCW0Cs5VujuDG3yNavu/zpQDxcMTJqTmj22q25
+        zAp3KE4n0BuWrjbKcBY5YtU=
+X-Google-Smtp-Source: AA0mqf5ucVGwk+Xqb8DlahZTWk/+gW9OqiExEU0/eGKgGTDALXO29fr/Mbwwct0R3Voyvex+nNd7eg==
+X-Received: by 2002:ad4:4482:0:b0:4b1:9daa:b53e with SMTP id m2-20020ad44482000000b004b19daab53emr8954948qvt.79.1668815723253;
+        Fri, 18 Nov 2022 15:55:23 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:cf15])
+        by smtp.gmail.com with ESMTPSA id v10-20020a05620a440a00b006fab416015csm3456854qkp.25.2022.11.18.15.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 15:55:22 -0800 (PST)
+Date:   Fri, 18 Nov 2022 17:55:26 -0600
+From:   David Vernet <void@manifault.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH bpf-next v5] docs/bpf: Add table of BPF program types to
+ libbpf docs
+Message-ID: <Y3gbbqwwL7GUydzb@maniforge.lan>
+References: <20221118152859.69645-1-donald.hunter@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221118152859.69645-1-donald.hunter@gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 7:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding bpf_vma_build_id_parse function to retrieve build id from
-> passed vma object and making it available as bpf kfunc.
->
-> We can't use build_id_parse directly as kfunc, because we would
-> not have control over the build id buffer size provided by user.
->
-> Instead we are adding new bpf_vma_build_id_parse function with
-> 'build_id__sz' argument that instructs verifier to check for the
-> available space in build_id buffer.
->
-> This way  we check that there's  always available memory space
-> behind build_id pointer. We also check that the build_id__sz is
-> at least BUILD_ID_SIZE_MAX so we can place any buildid in.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Fri, Nov 18, 2022 at 03:28:59PM +0000, Donald Hunter wrote:
+> Extend the libbpf documentation with a table of program types,
+> attach points and ELF section names.
+> 
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 > ---
->  include/linux/bpf.h      |  4 ++++
->  kernel/bpf/verifier.c    | 26 ++++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 8b32376ce746..7648188faa2c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2805,4 +2805,8 @@ static inline bool type_is_alloc(u32 type)
->         return type & MEM_ALLOC;
->  }
->
-> +int bpf_vma_build_id_parse(struct vm_area_struct *vma,
-> +                          unsigned char *build_id,
-> +                          size_t build_id__sz);
-> +
->  #endif /* _LINUX_BPF_H */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 195d24316750..e20bad754a3a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -8746,6 +8746,29 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->         return 0;
->  }
->
-> +BTF_ID_LIST_SINGLE(bpf_vma_build_id_parse_id, func, bpf_vma_build_id_parse)
-> +
-> +static int check_kfunc_caller(struct bpf_verifier_env *env, u32 func_id)
-> +{
-> +       struct bpf_func_state *cur;
-> +       struct bpf_insn *insn;
-> +
-> +       /* Allow bpf_vma_build_id_parse only from bpf_find_vma callback */
-> +       if (func_id == bpf_vma_build_id_parse_id[0]) {
-> +               cur = env->cur_state->frame[env->cur_state->curframe];
-> +               if (cur->callsite != BPF_MAIN_FUNC) {
-> +                       insn = &env->prog->insnsi[cur->callsite];
-> +                       if (insn->imm == BPF_FUNC_find_vma)
-> +                               return 0;
-> +               }
-> +               verbose(env, "calling bpf_vma_build_id_parse outside bpf_find_vma "
-> +                       "callback is not allowed\n");
-> +               return -1;
-> +       }
-> +
-> +       return 0;
-> +}
 
-I understand that calling bpf_vma_build_id_parse from find_vma
-is your only use case, but put yourself in the maintainer's shoes.
-We just did an arbitrary restriction and helped a single user.
-How are we going to explain this to other users?
-Let's figure out a more generic way where this call is safe.
-Have you looked at PTR_TRUSTED approach that David is doing
-for task_struct ? Can something like this be used here?
+This looks great, thanks for writing it up. Just left one suggestion
+below.
+
+Acked-by: David Vernet <void@manifault.com>
+
+>  Documentation/bpf/libbpf/index.rst         |   3 +
+>  Documentation/bpf/libbpf/program_types.rst | 203 +++++++++++++++++++++
+>  Documentation/bpf/programs.rst             |   3 +
+>  3 files changed, 209 insertions(+)
+>  create mode 100644 Documentation/bpf/libbpf/program_types.rst
+> 
+> diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbpf/index.rst
+> index 3722537d1384..f9b3b252e28f 100644
+> --- a/Documentation/bpf/libbpf/index.rst
+> +++ b/Documentation/bpf/libbpf/index.rst
+> @@ -1,5 +1,7 @@
+>  .. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+>  
+> +.. _libbpf:
+> +
+>  libbpf
+>  ======
+>  
+> @@ -7,6 +9,7 @@ libbpf
+>     :maxdepth: 1
+>  
+>     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html>
+> +   program_types
+>     libbpf_naming_convention
+>     libbpf_build
+>  
+> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
+> new file mode 100644
+> index 000000000000..544e1597ff5f
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf/program_types.rst
+> @@ -0,0 +1,203 @@
+> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> +
+> +.. _program_types_and_elf:
+> +
+> +Program Types and ELF Sections
+> +==============================
+> +
+> +The table below lists the program types, their attach types where relevant and the ELF section
+> +names supported by libbpf for them. The ELF section names follow these rules:
+> +
+> +- ``type`` is an exact match, e.g. ``SEC("socket")``
+> +- ``type+`` means it can be either exact ``SEC("type")`` or well-formed ``SEC("type/extras")``
+> +  with a '``/``' separator between ``type`` and ``extras``.
+> +
+> +When ``extras`` are specified, they provide details of how to auto-attach the BPF program.  The
+> +format of ``extras`` depends on the program type, e.g. ``SEC("tracepoint/<category>/<name>")``
+> +for tracepoints or ``SEC("usdt/<path>:<provider>:<name>")`` for USDT probes. The extras are
+> +described in more detail in the footnotes.
+> +
+> +
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| Program Type                              | Attach Type                            | ELF Section Name                 | Sleepable |
+> ++===========================================+========================================+==================================+===========+
+> +| ``BPF_PROG_TYPE_CGROUP_DEVICE``           | ``BPF_CGROUP_DEVICE``                  | ``cgroup/dev``                   |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_CGROUP_SKB``              |                                        | ``cgroup/skb``                   |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET_EGRESS``             | ``cgroup_skb/egress``            |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET_INGRESS``            | ``cgroup_skb/ingress``           |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_CGROUP_SOCKOPT``          | ``BPF_CGROUP_GETSOCKOPT``              | ``cgroup/getsockopt``            |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_SETSOCKOPT``              | ``cgroup/setsockopt``            |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_CGROUP_SOCK_ADDR``        | ``BPF_CGROUP_INET4_BIND``              | ``cgroup/bind4``                 |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET4_CONNECT``           | ``cgroup/connect4``              |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET4_GETPEERNAME``       | ``cgroup/getpeername4``          |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET4_GETSOCKNAME``       | ``cgroup/getsockname4``          |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET6_BIND``              | ``cgroup/bind6``                 |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET6_CONNECT``           | ``cgroup/connect6``              |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET6_GETPEERNAME``       | ``cgroup/getpeername6``          |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET6_GETSOCKNAME``       | ``cgroup/getsockname6``          |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_UDP4_RECVMSG``            | ``cgroup/recvmsg4``              |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_UDP4_SENDMSG``            | ``cgroup/sendmsg4``              |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_UDP6_RECVMSG``            | ``cgroup/recvmsg6``              |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_UDP6_SENDMSG``            | ``cgroup/sendmsg6``              |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_CGROUP_SOCK``             | ``BPF_CGROUP_INET4_POST_BIND``         | ``cgroup/post_bind4``            |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET6_POST_BIND``         | ``cgroup/post_bind6``            |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET_SOCK_CREATE``        | ``cgroup/sock_create``           |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``cgroup/sock``                  |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_CGROUP_INET_SOCK_RELEASE``       | ``cgroup/sock_release``          |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_CGROUP_SYSCTL``           | ``BPF_CGROUP_SYSCTL``                  | ``cgroup/sysctl``                |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_EXT``                     |                                        | ``freplace+`` [#fentry]_         |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_FLOW_DISSECTOR``          | ``BPF_FLOW_DISSECTOR``                 | ``flow_dissector``               |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_KPROBE``                  |                                        | ``kprobe+`` [#kprobe]_           |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``kretprobe+`` [#kprobe]_        |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``ksyscall+`` [#ksyscall]_       |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        |  ``kretsyscall+`` [#ksyscall]_   |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``uprobe+`` [#uprobe]_           |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``uprobe.s+`` [#uprobe]_         | Yes       |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``uretprobe+`` [#uprobe]_        |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``uretprobe.s+`` [#uprobe]_      | Yes       |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``usdt+`` [#usdt]_               |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_TRACE_KPROBE_MULTI``             | ``kprobe.multi+`` [#kpmulti]_    |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``kretprobe.multi+`` [#kpmulti]_ |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LIRC_MODE2``              | ``BPF_LIRC_MODE2``                     | ``lirc_mode2``                   |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LSM``                     | ``BPF_LSM_CGROUP``                     | ``lsm_cgroup+``                  |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_LSM_MAC``                        | ``lsm+`` [#lsm]_                 |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``lsm.s+`` [#lsm]_               | Yes       |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LWT_IN``                  |                                        | ``lwt_in``                       |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LWT_OUT``                 |                                        | ``lwt_out``                      |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LWT_SEG6LOCAL``           |                                        | ``lwt_seg6local``                |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_LWT_XMIT``                |                                        | ``lwt_xmit``                     |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_PERF_EVENT``              |                                        | ``perf_event``                   |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE`` |                                        | ``raw_tp.w+`` [#rawtp]_          |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``raw_tracepoint.w+``            |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_RAW_TRACEPOINT``          |                                        | ``raw_tp+`` [#rawtp]_            |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``raw_tracepoint+``              |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SCHED_ACT``               |                                        | ``action``                       |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SCHED_CLS``               |                                        | ``classifier``                   |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``tc``                           |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SK_LOOKUP``               | ``BPF_SK_LOOKUP``                      | ``sk_lookup``                    |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SK_MSG``                  | ``BPF_SK_MSG_VERDICT``                 | ``sk_msg``                       |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SK_REUSEPORT``            | ``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE`` | ``sk_reuseport/migrate``         |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_SK_REUSEPORT_SELECT``            | ``sk_reuseport``                 |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SK_SKB``                  |                                        | ``sk_skb``                       |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_SK_SKB_STREAM_PARSER``           | ``sk_skb/stream_parser``         |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_SK_SKB_STREAM_VERDICT``          | ``sk_skb/stream_verdict``        |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SOCKET_FILTER``           |                                        | ``socket``                       |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SOCK_OPS``                | ``BPF_CGROUP_SOCK_OPS``                | ``sockops``                      |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_STRUCT_OPS``              |                                        | ``struct_ops+``                  |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_SYSCALL``                 |                                        | ``syscall``                      | Yes       |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_TRACEPOINT``              |                                        | ``tp+`` [#tp]_                   |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``tracepoint+`` [#tp]_           |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_TRACING``                 | ``BPF_MODIFY_RETURN``                  | ``fmod_ret+`` [#fentry]_         |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``fmod_ret.s+`` [#fentry]_       | Yes       |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_TRACE_FENTRY``                   | ``fentry+`` [#fentry]_           |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``fentry.s+`` [#fentry]_         | Yes       |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_TRACE_FEXIT``                    | ``fexit+`` [#fentry]_            |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``fexit.s+`` [#fentry]_          | Yes       |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_TRACE_ITER``                     | ``iter+`` [#iter]_               |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``iter.s+`` [#iter]_             | Yes       |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_TRACE_RAW_TP``                   | ``tp_btf+`` [#fentry]_           |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +| ``BPF_PROG_TYPE_XDP``                     | ``BPF_XDP_CPUMAP``                     | ``xdp.frags/cpumap``             |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``xdp/cpumap``                   |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_XDP_DEVMAP``                     | ``xdp.frags/devmap``             |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``xdp/devmap``                   |           |
+> ++                                           +----------------------------------------+----------------------------------+-----------+
+> +|                                           | ``BPF_XDP``                            | ``xdp.frags``                    |           |
+> ++                                           +                                        +----------------------------------+-----------+
+> +|                                           |                                        | ``xdp``                          |           |
+> ++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
+> +
+> +
+> +.. rubric:: Footnotes
+> +
+> +.. [#fentry] The ``fentry`` attach format is ``fentry[.s]/<function>``.
+> +.. [#kprobe] The ``kprobe`` attach format is ``kprobe/<function>[+<offset>]``. Valid
+> +             characters for ``function`` are ``a-zA-Z0-9_.`` and ``offset`` must be a valid
+> +             integer.
+
+Perhaps "nonnegative integer" is slightly more precise here?
+
+> +.. [#ksyscall] The ``ksyscall`` attach format is ``ksyscall/<syscall>``.
+> +.. [#uprobe] The ``uprobe`` attach format is ``uprobe[.s]/<path>:<function>[+<offset>]``.
+> +.. [#usdt] The ``usdt`` attach format is ``usdt/<path>:<provider>:<name>``.
+> +.. [#kpmulti] The ``kprobe.multi`` attach format is ``kprobe.multi/<pattern>`` where ``pattern``
+> +              supports ``*`` and ``?`` wildcards. Valid characters for pattern are
+> +              ``a-zA-Z0-9_.*?``.
+> +.. [#lsm] The ``lsm`` attachment format is ``lsm[.s]/<hook>``.
+> +.. [#rawtp] The ``raw_tp`` attach format is ``raw_tracepoint[.w]/<tracepoint>``.
+> +.. [#tp] The ``tracepoint`` attach format is ``tracepoint/<category>/<name>``.
+> +.. [#iter] The ``iter`` attach format is ``iter[.s]/<struct-name>``.
+> diff --git a/Documentation/bpf/programs.rst b/Documentation/bpf/programs.rst
+> index 620eb667ac7a..c99000ab6d9b 100644
+> --- a/Documentation/bpf/programs.rst
+> +++ b/Documentation/bpf/programs.rst
+> @@ -7,3 +7,6 @@ Program Types
+>     :glob:
+>  
+>     prog_*
+> +
+> +For a list of all program types, see :ref:`program_types_and_elf` in
+> +the :ref:`libbpf` documentation.
+> -- 
+> 2.35.1
+> 
