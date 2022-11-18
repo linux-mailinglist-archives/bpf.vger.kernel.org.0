@@ -2,181 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9353C62EBE9
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 03:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFED262EBFB
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 03:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbiKRC1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 21:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        id S234455AbiKRCgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 21:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbiKRC1d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 21:27:33 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8F117880;
-        Thu, 17 Nov 2022 18:27:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X/drKptvTOZbVtO/vxSelr2ZnF5rjG83TA6MdVAKOsuFRPS5rUAk4MBU1RYVNWPHekN5ADf+DKy0VzEW9LxV+JLYoPJDOxyeTh9iv2mfsjSg0VT3+C9+93VUGIX3QpOxEUaMn3mGBH681hpOP+2vCSGQMsrx1RT8PzFouaK0+Odj7Mnr35te6WcPidq8OLL+jYV/netTTdwHAGT45dWk6gRXcedXtX1Z8XzkEssck//W87QN/v50ZQ7F6WZ86neRQ1DEAbGgm4iTOuPX8KJKStzulNBbk1b55oNAd8XjCiU3ZprSqUpVxv61X2qgJwfUS+II+XYMOCt8f87tEMi2dQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EJW501ICwp2dyy69+ccuWDN4HZ4lium1y7bfZVpwBnE=;
- b=XuqtrK/hHPBzRK4fZ9mVaS8KC0Y4gybFdc6d0AN1jSqKvp0Qj3J9nTIVE/PKfM8SlhF7/1LJt2sPTzccVAvDEJXFqHdNtSHSN0BcIHgLFm6z7XsETtgj7EBdIsxRt1+hDd9hy+ILT7StZ83DKL18h8QEnKMfT4Dy9lYXlOeRjAlzTc1r0N5Rjg6B1NH+1pWXC5oLVJN07TLGeGh0y18r6Vwmq2Fs0b6CNvjmzID3cQTYlLU1F7elVJyW8uTWKbCBx1y6yjskgyrNJZN5hVzqi0aijufWqe/bRJ+6C5GsfIpkHvNyHZGAapemLMhpas1QmQNjT6fMHcFjLnPtpsV2HQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EJW501ICwp2dyy69+ccuWDN4HZ4lium1y7bfZVpwBnE=;
- b=jB9gTUrwdun/i8SrSGT5y9We3vdnPSSRL4s582wrNpTM0x3yl5C+tRBLXxdF1CSGkb4adO79fSD7UoRJb2SFjD87X/+1RtYCvEJOAykxhCjf9DicxXDVo23OeDVJGb6YS0K5L3+LcbdPtGGoSQIRyJm6vZ/aPWydZhhXPKu5ES1Z+PTEUOz8pIeAkV8VFXUszBjAv+WjtvA95ClBo4tviat1z/SARoaYxaHKLmykx2wdWjJXntm95f1bCzZVgPe/CTvO4F5qm4igviDksPdWsBxX+2Vu8ct7kjFMH/b68CuT3Gc2eAV/3n2D+cZSb73a5Srgg2J8lssSqpCdbF2kCQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4910.namprd12.prod.outlook.com (2603:10b6:5:1bb::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.20; Fri, 18 Nov
- 2022 02:27:30 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5813.017; Fri, 18 Nov 2022
- 02:27:30 +0000
-Date:   Thu, 17 Nov 2022 22:27:28 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Yang, Lixiao" <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v5 08/19] iommufd: PFN handling for iopt_pages
-Message-ID: <Y3btkI9kvCLDK0ul@nvidia.com>
-References: <0-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
- <8-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
- <BN9PR11MB527690223B13E5B57AC6636C8C099@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB527690223B13E5B57AC6636C8C099@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR20CA0063.namprd20.prod.outlook.com
- (2603:10b6:208:235::32) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229580AbiKRCgi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 21:36:38 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18918D49F;
+        Thu, 17 Nov 2022 18:36:36 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 6so3816750pgm.6;
+        Thu, 17 Nov 2022 18:36:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dB/GwExgNQFI4Rk5S1Ov/sIbs2yJsQ6ddZM05Pq44Rk=;
+        b=dOc4qm7qTsJ6uxiWcyTY1AYOt/HFK3HOSq1hsivQkxsbbG2VYoV51em0kqRu2nCJOx
+         JqV8M9s80qB58lfSNAdCBfA9WH9HG3GY0oHiNextaye5KjPZV/lI6kCefVMDi2Dv1U2o
+         xj9xOmevOxwv+Js0rcNcHVKBVTmUXAfGew1X0nkQq3lxte6O+AcZc+xnmqlNMUDGq5u2
+         p2pBVo043x8+A7YKNoIGDKcjwKiRL7mLiRQ/OGPC32BFqV4QsMvi85NJ8r18EW29sbEm
+         nPQMqAjJ1tGYkMmFLN6V5b2xYQem0kiuhTgDsPx+hm8xO/MKArynYetjyhARKkjj1xig
+         NiEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dB/GwExgNQFI4Rk5S1Ov/sIbs2yJsQ6ddZM05Pq44Rk=;
+        b=PcMqgFfgtDFk0LutiLoieU9KRaT0yKPfRGaT6e7j1OGTS0YzRfbAy36o9/6qQs23Bo
+         200O/XIm7vA9xS91M0a3CLagEOIBWMZhY9UI3jkkWudRRfEfoOo6BFtg1YRzRLcwVwKX
+         GXKB3a6OK4/iMZ5W2SYBd92+4frWSLc1WdvVHv6koghY3U1Jroo7aoYpeD9Dv7ZS8gUn
+         v1bq7H1fiALH+8assG7W26MoBxvztJDRb7MG8x9T29jthYwCB4P8xLsGyMBWuQeidb3l
+         0cfC9Mw7+bTRCVY8u3r9tOVAyEPNRMM4pSGSB/BHqP52D2fOMuo1zr1MnSc8MQu4i6Dk
+         casQ==
+X-Gm-Message-State: ANoB5pl4QFJgt/+p8oC5LmnbV950q7iHQVUG1/4JPBlOFokpjwe5qlbQ
+        1eJ7wn7kJyV20TIYSyLlzFRO6sHQGS8=
+X-Google-Smtp-Source: AA0mqf7EwIjpEiEJ1XlegIUShbtyy74CMtLPqZ0EzTk8jD4TAeOZ0a09HLIIQikRCOY5mejL3hEHqg==
+X-Received: by 2002:a05:6a00:1d83:b0:56d:c342:ea5e with SMTP id z3-20020a056a001d8300b0056dc342ea5emr5667371pfw.71.1668738996085;
+        Thu, 17 Nov 2022 18:36:36 -0800 (PST)
+Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id x4-20020a1709029a4400b0018853dd8832sm2190409plv.4.2022.11.17.18.36.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Nov 2022 18:36:35 -0800 (PST)
+Message-ID: <8d4899f1-fcd2-edc6-31da-363b13f8049b@gmail.com>
+Date:   Fri, 18 Nov 2022 11:36:30 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4910:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97babe43-699c-49de-1cf2-08dac90c7153
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R6bQeRhGZsFqPyQWyD8RDrwGs+MS8vXp9UGYqm+UWOlmny2n06jZoVv0hoH8jvVwzhtO6HMBlKjxhEZt++HLj5aAAjkbB98+SziXpO+PqxdJQnPYVyvlhAbzlYQFzTYiCMcUv720PJm5jVAFWue5Fd3tKlXvFOwAoPVyYDZap2fYoUYHSabm/qY4MH5ywlH4u4qjUEwEdB4iO0t53mg3x8GwdL/UAdrScRY180wGlBXfJVovEslyF6T9gTumfJMnzdb6ohKx32zXm4HKZamQWT60kyMqM5DXdVU6MHmGtw2U/b7L7bkf8rjvUaSWZdNUovDZ/4FG5iXNRKSTNHwu3XtcYmIHNPewvYtcPWM5VaOJrS/o8AvG+uxmi1yar1zKzqV9VRpZV7Xo57iJiONVon2EK6Lp/fwfFpdb/kCRzD+c/VuXlqGBIS0Zg30Mnbrd78BwuHiA9AuA8tgEj1rYWvd3ISSdMjLapkrNhE15Tjg1m41WM4rQcEhv43Xl8EnwZDUET+57Oi7AKG5N3qLSIZ/eN1Fqd4K64b+Pr/DjRDcm+F6KZBDaAYeqU9JnUfoezH5CbpZHRU6RLXhl05O3wMiNpPLeTHkkdvmQ4YcCewjm5Ogg0xehFdWhz6ESFyP0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(396003)(136003)(39860400002)(376002)(366004)(451199015)(36756003)(38100700002)(66946007)(7416002)(2906002)(4744005)(7406005)(4326008)(8936002)(86362001)(8676002)(316002)(54906003)(186003)(2616005)(6486002)(478600001)(66556008)(66476007)(26005)(5660300002)(41300700001)(6916009)(6506007)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9IwcaOu/RTmrpldGNljJwbzcTen3RzG1yYnM25cYn/t2N1i1MgxzQdfqZ9hI?=
- =?us-ascii?Q?FXsImiKlYUmbAhwCSUPtsPoj7piYnLDnRcVUUPe9uRg/pf4M/3oNaPZWRiJP?=
- =?us-ascii?Q?Yj7QzQQKvYWagv8QZj78B8N4GSGtZJNMvz8IiyY8JtGAPiz1DhJ4ayKD8FeJ?=
- =?us-ascii?Q?2Z4asNur63oufvlMADu1wX7Xdly6Q9cx/Hx7maEKUTENaPIbhWFrXmCuviir?=
- =?us-ascii?Q?aqgr/EPsrgpJ34ZlUp5XOcISrgOYBIgIXbQgkoQwSpNpFfzT8OX4WVaWxns9?=
- =?us-ascii?Q?C5LYmlVz60gGTZfAQA4oQq5V5D1ZpSt/IJ75Qf+z2gQy9galb0xDVi9QruVB?=
- =?us-ascii?Q?9x7tNeIoA4h891o9Vys2KSYfVoBSeoHwrL/nxHEC5SEG1AnzjmBydd4+MSXQ?=
- =?us-ascii?Q?FjnF9R60+SBTlrnTQdCm4ddD18+7ampumAbC0rcG7fDYPtmMUL+T0fr90y6W?=
- =?us-ascii?Q?pJ0UBKaPduXdjdwm2aLuA4mcDOZxh8lUMdb/B3DVw/mU/Mi7Kn0gloDz7Eb9?=
- =?us-ascii?Q?nHmmuuDO4d8Mx0DZ5pWZIFfPtBzI1djXoOM9/xqyoUbfKvY+mwXzRLJCYOgd?=
- =?us-ascii?Q?Zl6cCrltKU5qR7gooS4Kv0biUshJRZTa+9qnud1VJ/xdIB5OuTkZSCq5OqBf?=
- =?us-ascii?Q?hSJqnErYKHk91hQ4y//v064Yjyw+oMGDvTq5y4gxzo7bwDiARKFm2ht0iFMQ?=
- =?us-ascii?Q?3MBXZu0pEqkwh2GMS3uxbrvBxH64xq5s7NfZdJZAdffn7k/HEharwDvGwjX/?=
- =?us-ascii?Q?A9vOBDyUaW+1QHqIj7EABpujr+wLRxnGZJq31/ydG/1yg3JfRFTQAvrHqlMM?=
- =?us-ascii?Q?0SEPJRIBxEG77YP+HYDuQIqwFPp+KmCnGClINYU5izVc00DSqW4z8syoIFkI?=
- =?us-ascii?Q?Elk0U3IkgJ0F1smntwFhQspxgmc2hkHZPQyammR0uFsrM55nkIrIueXMs/QR?=
- =?us-ascii?Q?uMgXWd/ESnZ2zdt9GLEOCRIwdzUa4RFUIP9x0/zPs2DFnmyIgqukjoxVZvcl?=
- =?us-ascii?Q?WUZI6HmF+0qkb7Il1IcRQmWY/wH/q/xEmSQvTf5rmwvusDzgCI8VOS6pGNQX?=
- =?us-ascii?Q?eSXBZy0th30UhxA/7eBpjysB9tAlwQZVtjhU/PNgoZuQX2CskEbuQ8W8ztkE?=
- =?us-ascii?Q?5L0txfxsL+e/kk0hx4fXQc+iEYSG1xRi6i5SUx01IEqED0Z7Q4VZh1ixVdrO?=
- =?us-ascii?Q?4wCqMHchNdbj12RcmT2rNI7uT2oVni1RN2H0mGMO5RIfHUQ4PVVowhIUe7q1?=
- =?us-ascii?Q?tTVYTSVgiQrtMjqsQ6fuO5lGYACfj8fS+c1XUcyVFAjNrtab5aK1hqoTWFW2?=
- =?us-ascii?Q?PKYRBUeUeDi9vNaCBd/OrijhYQQ4rIYtrudUf+3UVDWRoPCJcV9udAutyMzp?=
- =?us-ascii?Q?oHe9+6Fa+FfGLuiurRl24lOODsmaCGeyBNwwYiAdxKtpTVdeg1RU+H8PYmII?=
- =?us-ascii?Q?pXRqa+tqaPvdUkCQR6UPr9fjG0u3+Tf4DW5NFa1C1plSBuSBoISyOdkNC1Od?=
- =?us-ascii?Q?jJrV2gDGnqYaJ+kBnUEyHgTqpAx9775rEQytz582DLiUJnk99/fPZelgAVXQ?=
- =?us-ascii?Q?Z9m7N6kDCC+YpD1yzfc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97babe43-699c-49de-1cf2-08dac90c7153
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2022 02:27:30.6127
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xS1yBG/kYC+jPHIIx4uD6W8MWACyvJG3IAXKDtXNkYWVpYTyHu9q/M7tLgIxxxNq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4910
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+To:     mtahhan@redhat.com
+Cc:     bpf@vger.kernel.org, donhunte@redhat.com, jbrouer@redhat.com,
+        linux-doc@vger.kernel.org, magnus.karlsson@gmail.com,
+        thoiland@redhat.com, Akira Yokosawa <akiyks@gmail.com>
+References: <20221117154446.3684330-1-mtahhan@redhat.com>
+Subject: Re: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_XSKMAP
+Content-Language: en-US
+From:   Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20221117154446.3684330-1-mtahhan@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 02:24:23AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Thursday, November 17, 2022 5:01 AM
-> > +static void batch_skip_carry(struct pfn_batch *batch, unsigned int skip_pfns)
-> > +{
-> > +	if (!batch->total_pfns)
-> > +		return;
-> > +	skip_pfns = min(batch->total_pfns, skip_pfns);
-> > +	batch->pfns[0] += skip_pfns;
-> > +	batch->npfns[0] -= skip_pfns;
-> > +	batch->total_pfns -= skip_pfns;
-> > +}
-> 
-> You forgot to add the assertion which you replied to v4:
-> 
-> @@ -239,6 +239,8 @@ static void batch_skip_carry(struct pfn_batch *batch, unsigned int skip_pfns)
->  {
->         if (!batch->total_pfns)
->                 return;
-> +       if (IS_ENABLED(CONFIG_IOMMUFD_TEST))
-> +               WARN_ON(batch->total_pfns != batch->npfns[0]);
->         skip_pfns = min(batch->total_pfns, skip_pfns);
->
+Hi Maryam,
 
-All the IS_ENABLED assertions are together in a later patch
+On Thu, 17 Nov 2022 10:44:46 -0500, mtahhan@redhat.com wrote:
+> From: Maryam Tahhan <mtahhan@redhat.com>
+> 
+> Add documentation for BPF_MAP_TYPE_XSKMAP
+> including kernel version introduced, usage
+> and examples.
+> 
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+> 
+> ---
+> v2:
+> - Fixed typos + incorrect return type references.
+> - Adjusted examples to use __u32 and fixed references to key_size.
+> - Changed `AF_XDP socket` references to XSK.
+> - Added note re map key and value size.
+> ---
+>  Documentation/bpf/map_xskmap.rst | 167 +++++++++++++++++++++++++++++++
+>  1 file changed, 167 insertions(+)
+>  create mode 100644 Documentation/bpf/map_xskmap.rst
+> 
+> diff --git a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
+> new file mode 100644
+[...]
+> +Kernel BPF
+> +----------
+> +.. c:function::
+> +     long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
+> +
+> + Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
+> + For ``BPF_MAP_TYPE_XSKMAP`` this map contains references to XSK FDs
+> + for sockets attached to a netdev's queues.
+> +
+> + .. note::
+> +    If the map is empty at an index, the packet is dropped. This means that it is
+> +    necessary to have an XDP program loaded with at least one XSK in the
+> +    XSKMAP to be able to get any traffic to user space through the socket.
+> +
+> +.. c:function::
+> +    void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> + XSK entry references of type ``struct xdp_sock *`` can be retrieved using the
+> + ``bpf_map_lookup_elem()`` helper.
+> +
+> +Userspace
+> +---------
+> +.. note::
+> +    XSK entries can only be updated/deleted from user space and not from
+> +    an eBPF program. Trying to call these functions from a kernel eBPF program will
+> +    result in the program failing to load and a verifier warning.
+> +
+> +.. c:function::
+> +	int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags)
+> +
+> + XSK entries can be added or updated using the ``bpf_map_update_elem()``
+> + helper. The ``key`` parameter is equal to the queue_id of the queue the XSK
+> + is attaching to. And the ``value`` parameter is the FD value of that socket.
+> +
+> + Under the hood, the XSKMAP update function uses the XSK FD value to retrieve the
+> + associated ``struct xdp_sock`` instance.
+> +
+> + The flags argument can be one of the following:
+> +
+> +  - BPF_ANY: Create a new element or update an existing element.
+> +  - BPF_NOEXIST: Create a new element only if it did not exist.
+> +  - BPF_EXIST: Update an existing element.
+> +
+> +.. c:function::
+> +    int bpf_map_lookup_elem(int fd, const void *key, void *value)
+> +
+So you have two declarations of bpf_map_lookup_elem() in map_xskmap.rst.
 
-Thanks,
-Jason
+This will cause "make htmldocs" with Sphinx >=3.1 to emit a warning of:
+
+/linux/Documentation/bpf/map_xskmap.rst:100: WARNING: Duplicate C declaration, also defined at map_xskmap:71.
+Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value)'.
+
+, in addition to a bunch of similar warnings observed at bpf-next:
+
+/linux/Documentation/bpf/map_cpumap.rst:50: WARNING: Duplicate C declaration, also defined at map_array:43.
+Declaration is '.. c:function:: int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags);'.
+/linux/Documentation/bpf/map_cpumap.rst:72: WARNING: Duplicate C declaration, also defined at map_array:35.
+Declaration is '.. c:function:: int bpf_map_lookup_elem(int fd, const void *key, void *value);'.
+/linux/Documentation/bpf/map_hash.rst:37: WARNING: Duplicate C declaration, also defined at map_array:43.
+Declaration is '.. c:function:: long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)'.
+... [bunch of similar warnings]
+
+
+You might want to say you don't care, but they would annoy those
+who do test "make htmldocs".
+
+So let me explain why sphinx complains.
+
+C domain declarations in kernel documentation are for kernel APIs.
+By default, c:function declarations belong to the top-level namespace,
+which is intended for kernel APIs.
+
+IIUC, most APIs described in map*.rst files don't belong to kernel.
+So I think the way to go is to use the c:namespace directive.
+
+See: https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#namespacing
+
+As mentioned there, namespacing works with Sphinx >=3.1.
+Currently, kernel documentation build scripts support only the
+"c:namespace" directive, which means you can't switch namespaces in the
+middle of a .rst file. This limitation comes from the fact that Sphinx
+1.7.9 is still in the list for htmldocs at the moment and build scripts
+emulate namespacing for Sphinx <3.1 in a limited way.
+
+So please avoid putting function declarations of the same name in
+a .rst file.
+
+The other duplicate warnings shown above can be silenced by the
+change attached below. It is only as a suggestion and I'm not putting
+a S-o-b tag.
+
+Hope this helps,
+
+Akira
+
+--------
+diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+index 97bb80333254..68545702ca78 100644
+--- a/Documentation/bpf/map_array.rst
++++ b/Documentation/bpf/map_array.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_ARRAY
++
+ ================================================
+ BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+ ================================================
+diff --git a/Documentation/bpf/map_cpumap.rst b/Documentation/bpf/map_cpumap.rst
+index 61a797a86342..25e05d14ec82 100644
+--- a/Documentation/bpf/map_cpumap.rst
++++ b/Documentation/bpf/map_cpumap.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_CPUMAP
++
+ ===================
+ BPF_MAP_TYPE_CPUMAP
+ ===================
+diff --git a/Documentation/bpf/map_hash.rst b/Documentation/bpf/map_hash.rst
+index e85120878b27..3ac93ccf2b0e 100644
+--- a/Documentation/bpf/map_hash.rst
++++ b/Documentation/bpf/map_hash.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_HASH
++
+ ===============================================
+ BPF_MAP_TYPE_HASH, with PERCPU and LRU Variants
+ ===============================================
+diff --git a/Documentation/bpf/map_lpm_trie.rst b/Documentation/bpf/map_lpm_trie.rst
+index 31be1aa7ba2c..c934c3e2bcb7 100644
+--- a/Documentation/bpf/map_lpm_trie.rst
++++ b/Documentation/bpf/map_lpm_trie.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_LPM_TRIE
++
+ =====================
+ BPF_MAP_TYPE_LPM_TRIE
+ =====================
+diff --git a/Documentation/bpf/map_of_maps.rst b/Documentation/bpf/map_of_maps.rst
+index 07212b9227a9..f59cd0e3a72c 100644
+--- a/Documentation/bpf/map_of_maps.rst
++++ b/Documentation/bpf/map_of_maps.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_OF_MAPS
++
+ ========================================================
+ BPF_MAP_TYPE_ARRAY_OF_MAPS and BPF_MAP_TYPE_HASH_OF_MAPS
+ ========================================================
+diff --git a/Documentation/bpf/map_queue_stack.rst b/Documentation/bpf/map_queue_stack.rst
+index f20e31a647b9..abc8ed569900 100644
+--- a/Documentation/bpf/map_queue_stack.rst
++++ b/Documentation/bpf/map_queue_stack.rst
+@@ -1,6 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ .. Copyright (C) 2022 Red Hat, Inc.
+ 
++.. c:namespace:: BPF.MAP_QUEUE_STACK
++
+ =========================================
+ BPF_MAP_TYPE_QUEUE and BPF_MAP_TYPE_STACK
+ =========================================
+-- 
