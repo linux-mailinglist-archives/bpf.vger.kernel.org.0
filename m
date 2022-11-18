@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C76662EB75
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 02:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BEE62EB76
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 02:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240683AbiKRB53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Nov 2022 20:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S240432AbiKRB5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Nov 2022 20:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240496AbiKRB51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Nov 2022 20:57:27 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BB162047
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 17:57:27 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id y4so3330036plb.2
-        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 17:57:27 -0800 (PST)
+        with ESMTP id S240496AbiKRB5c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Nov 2022 20:57:32 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2235373BBF
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 17:57:31 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o13so3751312pgu.7
+        for <bpf@vger.kernel.org>; Thu, 17 Nov 2022 17:57:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=orrU9bkwct7hSaHpeFwTQHPvPh3WfieLrB51Oysef3o=;
-        b=n+Tkq5R8y6IZ80dqavUCcVk7J1+D2NJgSt1Te4drxjtV2F4AMk5kbyhSIyezEbuUl2
-         95kFSX+m7HpYhGtnAOLzaC4fsluALEvvA9p7sQLA3qhM2Q4p8Q3o+KltMf+nDo0Lp1Lp
-         Nolct+0SkG86fqZZGGPSi2JIx0CxPWogKc4unGAQCXnD4IfoEkh52pC3NSuE96rMQbSR
-         dlOTa3JgqckewyNu3NZhHZPwsywDek/mjluxxF7oPRb2A8UM75VmxykQazfzI8186Gme
-         E55pVaoSnAQw/mPpbHlpcaRl1JS4Jgfg7GiwMvzGvZ2+cgdyOeCrNJyhakAPQBb4bQEB
-         t4pg==
+        bh=D5mhxE7t9/w1waItLCLixY08yGr4GoIXj2ByOScU2oQ=;
+        b=KuV8VmyGG1I1/zyc1DfyqWntO0jabxpZHtgDn8rb1dfrLVkBj6fLPBAspb/O1RLxyM
+         Dqct1lcICCLjSMKqi/3+/6Ob22yPOx+aeYGxfHgijgAd1zrVSeeHUE6Q7b7PSMI1pONJ
+         d0UN7Kf+QUPbtY1H7lHcA0wm74lbMaHiOXXnsCeQiGXmNvSPBz2tBKrXVHBa8pZVAB2z
+         yAl8xRGLQMVt0CQJ4tJXOdj/xh5UCdUB48eTVIVJVaNOl8poMfOEVzMz9poHJe0WbmD/
+         jZRbICcJUMCYi057zUzayMoMyhPjJXoBMRPaLS9T9oRL5Fpa/4QYPPrsWIdSRAtm+E2M
+         aT1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=orrU9bkwct7hSaHpeFwTQHPvPh3WfieLrB51Oysef3o=;
-        b=fUPVaEFU4C9UqHiKvj7LzcpcupGfAvg7A8F47EyHDgQGIcoIb1vXpn+x5LVdOUZ857
-         FWeoLtbWCS8vrrArnG+rIviMO2aduSMPROAcBNsir/sqy7lCInsG2j7LFOaUFoVfFLYB
-         QPPAE7NSdjqEceCEf48NxeEvl3wAatxpYbx3pjyrqiFBuDR4qB8TbXICPM1iUYvzFWpD
-         URBFnmFOFl5VXelaqwbJh1srSM3BA1YLwMbnv6n+Dfv2rNKWbVeMbw8Dd6ed6L1VzIPY
-         pF4QJYyc8LJUgESn/wM4L747ZkyAI5IDLCERLrht0RS6JlZadm2QYkIas/REde25upH9
-         zSWw==
-X-Gm-Message-State: ANoB5pmyt5BoaBHK1aSa4bn954CqcTglDrxFGJdY1kMNnAfhEp6f6Igp
-        h2etL8yt2VJLl4RYcA0Mk0WvwrOobOI=
-X-Google-Smtp-Source: AA0mqf5NOVbeh+xrzysqrjRcLI2iQoIottZvQYkfNB2US5fZuFiR/jIcyRj3dmWukCcYyLfr2tdygw==
-X-Received: by 2002:a17:902:f712:b0:178:71f9:b8fc with SMTP id h18-20020a170902f71200b0017871f9b8fcmr5619705plo.44.1668736646541;
-        Thu, 17 Nov 2022 17:57:26 -0800 (PST)
+        bh=D5mhxE7t9/w1waItLCLixY08yGr4GoIXj2ByOScU2oQ=;
+        b=YCKD8QxC5TEpM1YpRiVoChG1yqsvNg4hk5d1tkSIt7YXypsscy8ELN4W5ZAKhRaaTw
+         6zaBi9y7+QhpMf+5NwNFY2M7I3UJkfD3qO8p+y+S9S0MLekPR0RpZQ8wpi+fNiS6zpgc
+         UawF0KbOjsx1XmAA3g5nEk55KwMFKFjCMrlyFKcyOYU/z0bFNZQKhQr2kC/cEV0z38Bx
+         SU2Gbh7yDVFv24sQ+lZNX0VAhS2UyyllAcqbs7mqJ671ahouav9LM8YkgMOlY1R4G0En
+         SXBp+8pWjJ9PQwJx6I3ObpAvlajoZJxB8Ow3J0VF2ABA8FAOTNavGUtiDtk+BlGtluw8
+         cAUg==
+X-Gm-Message-State: ANoB5pm0IK+SN5LtVhUvPoF/bW6/5J9dyVcvsJ/doz7pKZ1uVtMvFQPb
+        eWaMHdkaFu/N2ronQoQv7Pypc21DfLM=
+X-Google-Smtp-Source: AA0mqf7Z9UrbbPXE46rtUWnvJZZuYfhkuQmSF02A7OL0qB57fpjQ7eqeW5EBO3dbtCDevilNZggNbg==
+X-Received: by 2002:a63:902:0:b0:46e:9bb2:f0f7 with SMTP id 2-20020a630902000000b0046e9bb2f0f7mr4643279pgj.203.1668736650414;
+        Thu, 17 Nov 2022 17:57:30 -0800 (PST)
 Received: from localhost ([2409:40f4:8:955c:5484:8048:c08:7b3])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170903120c00b0016be834d54asm2064842plh.306.2022.11.17.17.57.25
+        by smtp.gmail.com with ESMTPSA id d18-20020a63fd12000000b0043c22e926f8sm1679499pgh.84.2022.11.17.17.57.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 17:57:26 -0800 (PST)
+        Thu, 17 Nov 2022 17:57:30 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,14 +56,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>
-Subject: [PATCH bpf-next v10 20/24] selftests/bpf: Update spinlock selftest
-Date:   Fri, 18 Nov 2022 07:26:10 +0530
-Message-Id: <20221118015614.2013203-21-memxor@gmail.com>
+Subject: [PATCH bpf-next v10 21/24] selftests/bpf: Add failure test cases for spin lock pairing
+Date:   Fri, 18 Nov 2022 07:26:11 +0530
+Message-Id: <20221118015614.2013203-22-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221118015614.2013203-1-memxor@gmail.com>
 References: <20221118015614.2013203-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4240; i=memxor@gmail.com; h=from:subject; bh=7VEkgc+BO3uo7sABXUFzym09WvMjkfDkhbTvKZAA/+A=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjduXP4CA2EmruSzd0pkEr5lKkj3lWXgt8hXk7B9gB YUq2/fyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3blzwAKCRBM4MiGSL8RyrkJEA CjC+MkLvBEfJJgqYyPwFMyO8O5wS4SdSnUxm/YOy7rmsjx9hM95PI8oI4QE+Mbdd6KIPWc5zIVULdj 7/IRvii23RGDpdPXRxIwa0L6Wqa4vtTG0FgkRTUxB2ruTT0K7BcCjYZbIyfnSO9Z8TCZ8QVCoeVmfm mRV89WRaYMPD9kYtVv452PZ9A9rMmAVODG3KHM44cufDIwyFPAfUuw3CYDBtaD0O+U2b1o+vik4sGS On+QCk6aL2/F4MYmCns4/z8K/D4WHJEdUxVsf5E+Wtr4QrZClY4dFwUFeFJh1Ezr/b0XgdNdmnSV4g sNh2aAlRX2sOiDvgANZHDVKUJ4KBE6AVbTfNxCGMhRhoyb1cc+LEWaVTXb2qoaveixJbg0BW2X6LDO dA+42Tuq35LdbV/IhmqHd+bYLIgjpXvJ3oebFqlKfasGWOLbxNoLhe89c/73NSA9WF17PN5iVHwO8x kSPuK61giq+mDjyi8+ifeg6oGRJJ5RDnEPLCT+YiM/Bvg102XmQ5Z5aDpifw7UnuhElLTuwb4Q2HFr Xz5CBuEO0RvQtDPw4jhbWeB1N5bdm2fgfQaGhtI5b2l5ipLiJ1ZSIPwBrSVBTbQsen5WjB/Y9vAZnK fCebcIRLCJdOWVe/ZydMPYPvBk94wr1H8wwcl+clnj4bzh5t8H5dUpUvT+gA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10926; i=memxor@gmail.com; h=from:subject; bh=EgO226hLDLT8uUjs61C2Qe2aCLhsrlTx0+w4ds2Mqpc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjduXPgMT9Abs9cB+op+OrrkFyBfHhPTKvNDwLe6tH HY3gwCyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3blzwAKCRBM4MiGSL8RyrV/EA C0KJ0VHeV93zZCPNX3pCiMLxESqPdg2jJGcLNcF0xIWydjva6LaWwJxnGYoZJeACZLm3QnBOTHFYHl pMUctInaMUwN6MLjWIVyCPfaJqjSmdlk0ZA460VgR1QgTu9LGrgwlmqugYZXn7Ee4WPS8vbnZ42esD fhPDOqoMCK4ta0SvphV/nQ77hclOOVnN/8xHtM90ROwVkg1f2dag2kQY2agMch+ACTUlovR7npsgrb eNilillilH3kdIwHnfPQcNhLtZSWqUCmjQP0fkibpdbMYUq3mxKNll9YUdwXa4hc13srJaFKVD9IFc qpOmVlwD7A2sV+ZdWevd0nEnhqBmN8Q+mNoSh9b/3O7m1qLOK7bC9QKiP5UCB/45hiRpP5vYzQfhh/ pVDucNGt8w6LsqbLL55acQP91dGbhenDiUMdAfdpDSOSaFMeCrSCWGGxhh9o2eckdsceq931ym9ykq dDqJcnPgx6SeYSBDNOVLxDtT9c0azcHOFYOrVAc/ouqlFhIhfvJDRQtdDwA9yH81F2lABmF0kTn+lM bth5tRaITpU7EqxdDbkCF2ckmcGotdEBWlP1js+wQ/BtG2oIA977sgaDYFdpE81tEACH1XT3BPr7zG FjSOLMxHFeOqZx0r6wgzBplukL6FD8UQnCKt3m76GWav0kTmLtG75d7v1Tcw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,142 +76,347 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make updates in preparation for adding more test cases to this selftest:
-- Convert from CHECK_ to ASSERT macros.
-- Use BPF skeleton
-- Fix typo sping -> spin
-- Rename spinlock.c -> spin_lock.c
+First, ensure that whenever a bpf_spin_lock is present in an allocation,
+the reg->id is preserved. This won't be true for global variables
+however, since they have a single map value per map, hence the verifier
+harcodes it to 0 (so that multiple pseudo ldimm64 insns can yield the
+same lock object per map at a given offset).
+
+Next, add test cases for all possible combinations (kptr, global, map
+value, inner map value). Since we lifted restriction on locking in inner
+maps, also add test cases for them. Currently, each lookup into an inner
+map gets a fresh reg->id, so even if the reg->map_ptr is same, they will
+be treated as separate allocations and the incorrect unlock pairing will
+be rejected.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../selftests/bpf/prog_tests/spin_lock.c      | 49 +++++++++++++++++++
- .../selftests/bpf/prog_tests/spinlock.c       | 45 -----------------
- .../selftests/bpf/progs/test_spin_lock.c      |  4 +-
- 3 files changed, 51 insertions(+), 47 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/spin_lock.c
- delete mode 100644 tools/testing/selftests/bpf/prog_tests/spinlock.c
+ .../selftests/bpf/prog_tests/spin_lock.c      |  89 +++++++-
+ .../selftests/bpf/progs/test_spin_lock_fail.c | 204 ++++++++++++++++++
+ 2 files changed, 292 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-new file mode 100644
-index 000000000000..fab061e9d77c
---- /dev/null
+index fab061e9d77c..72282e92a78a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
 +++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
+@@ -3,6 +3,79 @@
+ #include <network_helpers.h>
+ 
+ #include "test_spin_lock.skel.h"
++#include "test_spin_lock_fail.skel.h"
 +
-+#include "test_spin_lock.skel.h"
++static char log_buf[1024 * 1024];
 +
-+static void *spin_lock_thread(void *arg)
++static struct {
++	const char *prog_name;
++	const char *err_msg;
++} spin_lock_fail_tests[] = {
++	{ "lock_id_kptr_preserve",
++	  "5: (bf) r1 = r0                       ; R0_w=ptr_foo(id=2,ref_obj_id=2,off=0,imm=0) "
++	  "R1_w=ptr_foo(id=2,ref_obj_id=2,off=0,imm=0) refs=2\n6: (85) call bpf_this_cpu_ptr#154\n"
++	  "R1 type=ptr_ expected=percpu_ptr_" },
++	{ "lock_id_global_zero",
++	  "; R1_w=map_value(off=0,ks=4,vs=4,imm=0)\n2: (85) call bpf_this_cpu_ptr#154\n"
++	  "R1 type=map_value expected=percpu_ptr_" },
++	{ "lock_id_mapval_preserve",
++	  "8: (bf) r1 = r0                       ; R0_w=map_value(id=1,off=0,ks=4,vs=8,imm=0) "
++	  "R1_w=map_value(id=1,off=0,ks=4,vs=8,imm=0)\n9: (85) call bpf_this_cpu_ptr#154\n"
++	  "R1 type=map_value expected=percpu_ptr_" },
++	{ "lock_id_innermapval_preserve",
++	  "13: (bf) r1 = r0                      ; R0=map_value(id=2,off=0,ks=4,vs=8,imm=0) "
++	  "R1_w=map_value(id=2,off=0,ks=4,vs=8,imm=0)\n14: (85) call bpf_this_cpu_ptr#154\n"
++	  "R1 type=map_value expected=percpu_ptr_" },
++	{ "lock_id_mismatch_kptr_kptr", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_kptr_global", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_kptr_mapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_kptr_innermapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_global_global", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_global_kptr", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_global_mapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_global_innermapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_mapval_mapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_mapval_kptr", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_mapval_global", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_mapval_innermapval", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_innermapval_innermapval1", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_innermapval_innermapval2", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_innermapval_kptr", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_innermapval_global", "bpf_spin_unlock of different lock" },
++	{ "lock_id_mismatch_innermapval_mapval", "bpf_spin_unlock of different lock" },
++};
++
++static void test_spin_lock_fail_prog(const char *prog_name, const char *err_msg)
 +{
-+	int err, prog_fd = *(u32 *) arg;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.repeat = 10000,
-+	);
++	LIBBPF_OPTS(bpf_object_open_opts, opts, .kernel_log_buf = log_buf,
++						.kernel_log_size = sizeof(log_buf),
++						.kernel_log_level = 1);
++	struct test_spin_lock_fail *skel;
++	struct bpf_program *prog;
++	int ret;
 +
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_OK(topts.retval, "test_run retval");
-+	pthread_exit(arg);
-+}
-+
-+void test_spinlock(void)
-+{
-+	struct test_spin_lock *skel;
-+	pthread_t thread_id[4];
-+	int prog_fd, i;
-+	void *ret;
-+
-+	skel = test_spin_lock__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_spin_lock__open_and_load"))
++	skel = test_spin_lock_fail__open_opts(&opts);
++	if (!ASSERT_OK_PTR(skel, "test_spin_lock_fail__open_opts"))
 +		return;
-+	prog_fd = bpf_program__fd(skel->progs.bpf_spin_lock_test);
-+	for (i = 0; i < 4; i++) {
-+		int err;
 +
-+		err = pthread_create(&thread_id[i], NULL, &spin_lock_thread, &prog_fd);
-+		if (!ASSERT_OK(err, "pthread_create"))
-+			goto end;
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto end;
++
++	bpf_program__set_autoload(prog, true);
++
++	ret = test_spin_lock_fail__load(skel);
++	if (!ASSERT_ERR(ret, "test_spin_lock_fail__load must fail"))
++		goto end;
++
++	if (!ASSERT_OK_PTR(strstr(log_buf, err_msg), "expected error message")) {
++		fprintf(stderr, "Expected: %s\n", err_msg);
++		fprintf(stderr, "Verifier: %s\n", log_buf);
 +	}
 +
-+	for (i = 0; i < 4; i++) {
-+		if (!ASSERT_OK(pthread_join(thread_id[i], &ret), "pthread_join"))
-+			goto end;
-+		if (!ASSERT_EQ(ret, &prog_fd, "ret == prog_fd"))
-+			goto end;
-+	}
 +end:
-+	test_spin_lock__destroy(skel);
++	test_spin_lock_fail__destroy(skel);
 +}
-diff --git a/tools/testing/selftests/bpf/prog_tests/spinlock.c b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-deleted file mode 100644
-index 15eb1372d771..000000000000
---- a/tools/testing/selftests/bpf/prog_tests/spinlock.c
-+++ /dev/null
-@@ -1,45 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <test_progs.h>
--#include <network_helpers.h>
--
--static void *spin_lock_thread(void *arg)
--{
--	int err, prog_fd = *(u32 *) arg;
--	LIBBPF_OPTS(bpf_test_run_opts, topts,
--		.data_in = &pkt_v4,
--		.data_size_in = sizeof(pkt_v4),
--		.repeat = 10000,
--	);
--
--	err = bpf_prog_test_run_opts(prog_fd, &topts);
--	ASSERT_OK(err, "test_run");
--	ASSERT_OK(topts.retval, "test_run retval");
--	pthread_exit(arg);
--}
--
--void test_spinlock(void)
--{
--	const char *file = "./test_spin_lock.bpf.o";
--	pthread_t thread_id[4];
--	struct bpf_object *obj = NULL;
--	int prog_fd;
--	int err = 0, i;
--	void *ret;
--
--	err = bpf_prog_test_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
--	if (CHECK_FAIL(err)) {
--		printf("test_spin_lock:bpf_prog_test_load errno %d\n", errno);
--		goto close_prog;
--	}
--	for (i = 0; i < 4; i++)
--		if (CHECK_FAIL(pthread_create(&thread_id[i], NULL,
--					      &spin_lock_thread, &prog_fd)))
--			goto close_prog;
--
--	for (i = 0; i < 4; i++)
--		if (CHECK_FAIL(pthread_join(thread_id[i], &ret) ||
--			       ret != (void *)&prog_fd))
--			goto close_prog;
--close_prog:
--	bpf_object__close(obj);
--}
-diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock.c b/tools/testing/selftests/bpf/progs/test_spin_lock.c
-index 7e88309d3229..5bd10409285b 100644
---- a/tools/testing/selftests/bpf/progs/test_spin_lock.c
-+++ b/tools/testing/selftests/bpf/progs/test_spin_lock.c
-@@ -45,8 +45,8 @@ struct {
  
- #define CREDIT_PER_NS(delta, rate) (((delta) * rate) >> 20)
- 
--SEC("tc")
--int bpf_sping_lock_test(struct __sk_buff *skb)
-+SEC("cgroup_skb/ingress")
-+int bpf_spin_lock_test(struct __sk_buff *skb)
+ static void *spin_lock_thread(void *arg)
  {
- 	volatile int credit = 0, max_credit = 100, pkt_len = 64;
- 	struct hmap_elem zero = {}, *val;
+@@ -19,7 +92,7 @@ static void *spin_lock_thread(void *arg)
+ 	pthread_exit(arg);
+ }
+ 
+-void test_spinlock(void)
++void test_spin_lock_success(void)
+ {
+ 	struct test_spin_lock *skel;
+ 	pthread_t thread_id[4];
+@@ -47,3 +120,17 @@ void test_spinlock(void)
+ end:
+ 	test_spin_lock__destroy(skel);
+ }
++
++void test_spin_lock(void)
++{
++	int i;
++
++	test_spin_lock_success();
++
++	for (i = 0; i < ARRAY_SIZE(spin_lock_fail_tests); i++) {
++		if (!test__start_subtest(spin_lock_fail_tests[i].prog_name))
++			continue;
++		test_spin_lock_fail_prog(spin_lock_fail_tests[i].prog_name,
++					 spin_lock_fail_tests[i].err_msg);
++	}
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
+new file mode 100644
+index 000000000000..86cd183ef6dc
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
+@@ -0,0 +1,204 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_experimental.h"
++
++struct foo {
++	struct bpf_spin_lock lock;
++	int data;
++};
++
++struct array_map {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct foo);
++	__uint(max_entries, 1);
++} array_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, int);
++	__array(values, struct array_map);
++} map_of_maps SEC(".maps") = {
++	.values = {
++		[0] = &array_map,
++	},
++};
++
++SEC(".data.A") struct bpf_spin_lock lockA;
++SEC(".data.B") struct bpf_spin_lock lockB;
++
++SEC("?tc")
++int lock_id_kptr_preserve(void *ctx)
++{
++	struct foo *f;
++
++	f = bpf_obj_new(typeof(*f));
++	if (!f)
++		return 0;
++	bpf_this_cpu_ptr(f);
++	return 0;
++}
++
++SEC("?tc")
++int lock_id_global_zero(void *ctx)
++{
++	bpf_this_cpu_ptr(&lockA);
++	return 0;
++}
++
++SEC("?tc")
++int lock_id_mapval_preserve(void *ctx)
++{
++	struct foo *f;
++	int key = 0;
++
++	f = bpf_map_lookup_elem(&array_map, &key);
++	if (!f)
++		return 0;
++	bpf_this_cpu_ptr(f);
++	return 0;
++}
++
++SEC("?tc")
++int lock_id_innermapval_preserve(void *ctx)
++{
++	struct foo *f;
++	int key = 0;
++	void *map;
++
++	map = bpf_map_lookup_elem(&map_of_maps, &key);
++	if (!map)
++		return 0;
++	f = bpf_map_lookup_elem(map, &key);
++	if (!f)
++		return 0;
++	bpf_this_cpu_ptr(f);
++	return 0;
++}
++
++#define CHECK(test, A, B)                                      \
++	SEC("?tc")                                             \
++	int lock_id_mismatch_##test(void *ctx)                 \
++	{                                                      \
++		struct foo *f1, *f2, *v, *iv;                  \
++		int key = 0;                                   \
++		void *map;                                     \
++                                                               \
++		map = bpf_map_lookup_elem(&map_of_maps, &key); \
++		if (!map)                                      \
++			return 0;                              \
++		iv = bpf_map_lookup_elem(map, &key);           \
++		if (!iv)                                       \
++			return 0;                              \
++		v = bpf_map_lookup_elem(&array_map, &key);     \
++		if (!v)                                        \
++			return 0;                              \
++		f1 = bpf_obj_new(typeof(*f1));                 \
++		if (!f1)                                       \
++			return 0;                              \
++		f2 = bpf_obj_new(typeof(*f2));                 \
++		if (!f2) {                                     \
++			bpf_obj_drop(f1);                      \
++			return 0;                              \
++		}                                              \
++		bpf_spin_lock(A);                              \
++		bpf_spin_unlock(B);                            \
++		return 0;                                      \
++	}
++
++CHECK(kptr_kptr, &f1->lock, &f2->lock);
++CHECK(kptr_global, &f1->lock, &lockA);
++CHECK(kptr_mapval, &f1->lock, &v->lock);
++CHECK(kptr_innermapval, &f1->lock, &iv->lock);
++
++CHECK(global_global, &lockA, &lockB);
++CHECK(global_kptr, &lockA, &f1->lock);
++CHECK(global_mapval, &lockA, &v->lock);
++CHECK(global_innermapval, &lockA, &iv->lock);
++
++SEC("?tc")
++int lock_id_mismatch_mapval_mapval(void *ctx)
++{
++	struct foo *f1, *f2;
++	int key = 0;
++
++	f1 = bpf_map_lookup_elem(&array_map, &key);
++	if (!f1)
++		return 0;
++	f2 = bpf_map_lookup_elem(&array_map, &key);
++	if (!f2)
++		return 0;
++
++	bpf_spin_lock(&f1->lock);
++	f1->data = 42;
++	bpf_spin_unlock(&f2->lock);
++
++	return 0;
++}
++
++CHECK(mapval_kptr, &v->lock, &f1->lock);
++CHECK(mapval_global, &v->lock, &lockB);
++CHECK(mapval_innermapval, &v->lock, &iv->lock);
++
++SEC("?tc")
++int lock_id_mismatch_innermapval_innermapval1(void *ctx)
++{
++	struct foo *f1, *f2;
++	int key = 0;
++	void *map;
++
++	map = bpf_map_lookup_elem(&map_of_maps, &key);
++	if (!map)
++		return 0;
++	f1 = bpf_map_lookup_elem(map, &key);
++	if (!f1)
++		return 0;
++	f2 = bpf_map_lookup_elem(map, &key);
++	if (!f2)
++		return 0;
++
++	bpf_spin_lock(&f1->lock);
++	f1->data = 42;
++	bpf_spin_unlock(&f2->lock);
++
++	return 0;
++}
++
++SEC("?tc")
++int lock_id_mismatch_innermapval_innermapval2(void *ctx)
++{
++	struct foo *f1, *f2;
++	int key = 0;
++	void *map;
++
++	map = bpf_map_lookup_elem(&map_of_maps, &key);
++	if (!map)
++		return 0;
++	f1 = bpf_map_lookup_elem(map, &key);
++	if (!f1)
++		return 0;
++	map = bpf_map_lookup_elem(&map_of_maps, &key);
++	if (!map)
++		return 0;
++	f2 = bpf_map_lookup_elem(map, &key);
++	if (!f2)
++		return 0;
++
++	bpf_spin_lock(&f1->lock);
++	f1->data = 42;
++	bpf_spin_unlock(&f2->lock);
++
++	return 0;
++}
++
++CHECK(innermapval_kptr, &iv->lock, &f1->lock);
++CHECK(innermapval_global, &iv->lock, &lockA);
++CHECK(innermapval_mapval, &iv->lock, &v->lock);
++
++#undef CHECK
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.38.1
 
