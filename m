@@ -2,69 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D835262FD80
-	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 20:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D705C62FD81
+	for <lists+bpf@lfdr.de>; Fri, 18 Nov 2022 20:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241759AbiKRTAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 14:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S242596AbiKRTAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 14:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242937AbiKRTAa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 14:00:30 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B382B268
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:09 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id q9so5737564pfg.5
-        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:09 -0800 (PST)
+        with ESMTP id S242780AbiKRTAc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 14:00:32 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526D92D1C7
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:19 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id u6-20020a17090a5e4600b0021881a8d264so3560364pji.4
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 11:00:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dnVNMob24m9mgHfPtleTP0yfbbuXtLElRpSIJwbEj0s=;
-        b=d7RT7grMVwf4OvOE8K5UtldSfszX39OjCZakthlLNrC69We6wTX6Udynuoc9059Qyr
-         umjFZxWV9w3JDn+V9fF2LOOcbW+OUWlS6IStwXh2w/hxgGO36erEvJlgnCk3gWU4eWse
-         A++bSRk/eeId5GDyYTvPUFuicaUznp3aXuCPbFhKWZ0SB35oTt0hX5UpnWYelWYwcvGu
-         oa4gT77k5YoQ5jkYKRy6t2CfMWBuTrMzLWLC1txuZhHZMzw/YkGg3gwaua9QZRcxuAz+
-         mXYRwX/VwrgyNowGBq61ZO5bUO4nT0DvLZyBQiIcmWNjkkdGjUFTspU2ZCAl0QkyYWKp
-         oaRQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8+Jp1cTxEPtM1BXeO8uSCx+LCd2M8aMX65q592YD0d0=;
+        b=YBonu6QEoI3N+QWNkdFOwxF3ItJ9EFU+B5QfjHdU3GBc2ZSnZe5yALtB4jpeLFDc95
+         Ko7GTekdRMQhho0bCqK+AxMp1/j8BB51a/wRI+vy7T+cl7YGRNwm0pb+eQDDA+wfDfpB
+         9FdLLgfncKwQnhaAHnkQK1u8gFKjb1HsP3T3pTa/LqNDKrflro+9zyW4t2iR2AJADJWZ
+         iROyjp+IY4lGBWoV6IPqSgDaztQmSnc3s8+CiSL2zFO/bRE8we3J5ll0YK5KW9Ow2zOj
+         nV+iY3OCRdRb9c+VW18k7zFA79aHjwLJQRbN1GcJcwBih4yUs4blxHGRmx1MEVJFKWEI
+         OlWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dnVNMob24m9mgHfPtleTP0yfbbuXtLElRpSIJwbEj0s=;
-        b=qN1BIJogzGIIff163k+izVlRIBi1QV7RODPvocjdWcOJgIlUIoCM+EkBlsjYYYTUw4
-         14TGjWR8hLXhz5i6ekJdzsoqjqpnTVH6ovmjWaU9DiE6iyqrdcJkwKl2K8263scPMUev
-         EXsVbVTlT4MBJFDCIV0P1P/bTgJqg7uGpXEpJmHEElfQkMPwKUFEvp/1en2bq/of0so1
-         +MAocvSo2rMRZM1GEc0D5ZMWJrGUNB51bXK8bsvIp3WND2J5v7OHVftOWG0OhJTPi6C2
-         QhrwMaY8Wd2rtLsf0WBBKuHx42J/jR4M6ACWVxX2wP9+yndhlDh1Tz83ejgPxpXP+nBX
-         zQCQ==
-X-Gm-Message-State: ANoB5pkQcX6cfC/12OcQ5wm237PM5DizPfu/ezFyvB7HfIiu0KwJhUJy
-        ckcOe4RraFDbvVdQ6TexLSsgu3/AZuE=
-X-Google-Smtp-Source: AA0mqf4WxbDKr+VHzX6B2SifYLDHSJB/VnotKjuJqStLwD3A4Qn94j/DlTvkJQvOfWKWdFM8BI/eTQ==
-X-Received: by 2002:a63:2105:0:b0:476:e987:fcfd with SMTP id h5-20020a632105000000b00476e987fcfdmr7829120pgh.29.1668798007777;
-        Fri, 18 Nov 2022 11:00:07 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8+Jp1cTxEPtM1BXeO8uSCx+LCd2M8aMX65q592YD0d0=;
+        b=HaP3BcWc5QPt9hLBa7sgqmua+zcI7IfLQZTdQL2KZ6Ei2EgjYoG+t244zg+IxRzl2o
+         fBRcUQXpc4VUjyHDrUvUVMaZnT6ojKXdZLQW21Bhv41TxwjnpYo+wl0ChZ57LpQTaue7
+         2ZyI14A820E1g2dFW1DwZd3e9pRFQ+PNF8oF6mA+niSABprppPy4tQnWfJd/j/bvmNml
+         YCyCiqb3NxRCdiygA9LaUYTLqbwON7pqDO4bZ2DfOIc+FWUEc/G1bWmWsv6bU/5GhmU2
+         i85D1wFdLVqIaT+zc1Txot5YQcV5/POQLvzdA1QYfrhNXodS6HrAhce3iTnq2h2IWHNK
+         r3AQ==
+X-Gm-Message-State: ANoB5pluIApi9xMkF1iILoqVgGD98WxmUegjWqnN81BpRPwTWe35j4xV
+        tXQ4J17PfolsD8EuriI4s3Q=
+X-Google-Smtp-Source: AA0mqf4KvwQZUbBIb9/SgJVncK1D3esc3Kj06gQubEQWyMB7Kjo12ZCug/JSvq3Y508MTF6QW2Br4A==
+X-Received: by 2002:a17:903:491:b0:17f:73d6:4375 with SMTP id jj17-20020a170903049100b0017f73d64375mr921592plb.24.1668798018733;
+        Fri, 18 Nov 2022 11:00:18 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id l125-20020a622583000000b0056baca45977sm3535110pfl.21.2022.11.18.11.00.07
+        by smtp.gmail.com with ESMTPSA id s15-20020a170902ea0f00b00186c3727294sm4034654plg.270.2022.11.18.11.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 11:00:07 -0800 (PST)
+        Fri, 18 Nov 2022 11:00:18 -0800 (PST)
+Date:   Sat, 19 Nov 2022 00:30:12 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Skip spin lock failure test on s390x
-Date:   Sat, 19 Nov 2022 00:29:38 +0530
-Message-Id: <20221118185938.2139616-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221118185938.2139616-1-memxor@gmail.com>
-References: <20221118185938.2139616-1-memxor@gmail.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: [PATCH bpf-next v10 11/24] bpf: Rewrite kfunc argument handling
+Message-ID: <20221118190012.cfhavzxw3ssil6nh@apollo>
+References: <20221118015614.2013203-1-memxor@gmail.com>
+ <20221118015614.2013203-12-memxor@gmail.com>
+ <20221118033415.vpy2v2ypb4c2n6cn@MacBook-Pro-5.local>
+ <20221118103730.nbai3gzifkjk45eo@apollo>
+ <CAADnVQLxkVKggTwXQJN48yvi4mh9o8qGoF4M4VGifHzygfq+cw@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1158; i=memxor@gmail.com; h=from:subject; bh=NOuDm6z0AAenll3MGsNv6NfyBuJdubDOkWN+3DsfDtU=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjd9WiLB6fpGrK1l3zQzh5GJJXKKLe4LGrb2dVV+Sp rHYQ6WiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3fVogAKCRBM4MiGSL8RyoAlD/ 9vqSYOr9bf2Os3TRWCls/EWSZudgjvoUYLaSpgjNvh+oNxnew4wVB9JBC52jbU1336LJewmUPSo3B9 GyzQ0dFNbYJfZ+OnY1Rsa0f+zECdPx2F7sQUSrPM+7iq7372d4sS5Ai2NRTP+VY1zKoPhj3QjOzLeV l93S0jBGX9Q0ZxvennsXjT7R6nm0mEe3Tpk746eX/mGKnYUxINJJT959o0MmtkV5G+sfixPkj7wxMC al+dvUuuMaVpdwc2Ls8+DJh9c9FzBMP6BrBQIOr+6RdzqpV/3kN30mdDLc/3PcXoc+Xy8MGLq6ciL8 M6IaE6Kb/VS+0tW6O6fOslw7xWxGWP2Pj/MULLpAMSgyGd4QkoJYLZOkZ+jNNaktpKNRKSEBsWCNU6 HeswKCw0NEBvxbv2UyOpdWANu+xcG3X4gIzEwUofTakH8dRTxtxR8+VIz+9yaTCFNF+Yu9hdkPnjdy 0oYewtNAV03QSnJSs4h4Op8oqy/+2XH1w/ha2RFYHoq4oDcQthsiZxmFgP0PVnj31xHzPsn0jae+O9 83SigT3frNWkSpP5y2xn6dZmCb0cx1XIeMsCrIwAenAi7evSDNOxvOGDvi3dFsEtYn3eai/bp+wnZP WQclPFEt5hZbHs8yeBf+5+3wnyMl7Iqf9cVc60VdjuIRH0SlKGQ6pIzXf7IA==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLxkVKggTwXQJN48yvi4mh9o8qGoF4M4VGifHzygfq+cw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,32 +77,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of adding the whole test to DENYLIST.s390x, which also has
-success test cases that should be run, just skip over failure test
-cases in case the JIT does not support kfuncs.
+On Fri, Nov 18, 2022 at 11:32:21PM IST, Alexei Starovoitov wrote:
+> On Fri, Nov 18, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Fri, Nov 18, 2022 at 09:04:15AM IST, Alexei Starovoitov wrote:
+> > > On Fri, Nov 18, 2022 at 07:26:01AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > >  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > > >                                 const struct btf *btf, u32 func_id,
+> > > >                                 struct bpf_reg_state *regs,
+> > > >                                 bool ptr_to_mem_ok,
+> > > > -                               struct bpf_kfunc_arg_meta *kfunc_meta,
+> > > >                                 bool processing_call)
+> > >
+> > > Something odd here.
+> > > Benjamin added the processing_call flag in
+> > > commit 95f2f26f3cac ("bpf: split btf_check_subprog_arg_match in two")
+> > > and we discussed to remove it.
+> > >
+> > > >             } else if (ptr_to_mem_ok && processing_call) {
+> > >
+> > > since kfunc bit is gone from here the processing_call can be removed.
+> > > ptr_to_mem_ok and processing_call are two bool flags for the same thing, right?
+> > >
+> >
+> > I think so, I'll check it out and send a follow up patch.
+> >
+> > > > +static int process_kf_arg_ptr_to_kptr_strong(struct bpf_verifier_env *env,
+> > >
+> > > I fixed this bit while applying.
+> > >
+> >
+> > Thanks.
+> >
+> > > > +static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_arg_meta *meta)
+> > >
+> > > This function looks much better now.
+> > > The split of kfunc vs helper was long overdue.
+> > > Thank you for doing this.
+> > >
+> > > I'm not convinced that KF_ARG_* is necessary, but it's much better than before.
+> > > So it's a step forward.
+> > >
+> >
+> > Yes. Eventually we should be merging checks for both helpers and kfuncs, but
+> > that needs more work and would have been out of scope for this set. We can
+> > probably synthesize a bpf_func_proto for the kfunc from BTF and then offload to
+> > check_helper_call.
+>
+> Yeah. If kfunc BTFs plus KF_ flags can be synthesized to bpf_func_proto
+> that would be the best. If such conversion is possible then it
+> should be possible to do it in resolve_btfid in user space.
+>
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/spin_lock.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Yep. I'll poke at it some more later.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-index 72282e92a78a..d9270bd3d920 100644
---- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-@@ -68,6 +68,12 @@ static void test_spin_lock_fail_prog(const char *prog_name, const char *err_msg)
- 	if (!ASSERT_ERR(ret, "test_spin_lock_fail__load must fail"))
- 		goto end;
- 
-+	/* Skip check if JIT does not support kfuncs */
-+	if (strstr(log_buf, "JIT does not support calling kernel function")) {
-+		test__skip();
-+		goto end;
-+	}
-+
- 	if (!ASSERT_OK_PTR(strstr(log_buf, err_msg), "expected error message")) {
- 		fprintf(stderr, "Expected: %s\n", err_msg);
- 		fprintf(stderr, "Verifier: %s\n", log_buf);
--- 
-2.38.1
+> One more thing that I forgot to mention earlier.
+> Could you follow up with a patch to get rid of bpf_global_ma_set
+> check in the run-time and variable itself?
+> If bpf_mem_alloc_init fails the boot fails too.
+> If we're paranoid we can add:
+> special_kfunc_list[KF_bpf_obj_new_impl] = 0;
+> to bpf_mem_alloc_init() to prevent bpf_obj_new to ever be called.
 
+I did it a bit differently, but it does the same thing, and sent it out with the
+s390x fix. PTAL.
