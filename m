@@ -2,89 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 706BC630EBA
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 13:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727B7630F52
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 17:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbiKSMca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Nov 2022 07:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        id S229689AbiKSQGC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Nov 2022 11:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbiKSMcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Nov 2022 07:32:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B598A16A
-        for <bpf@vger.kernel.org>; Sat, 19 Nov 2022 04:31:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668861085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l3aCNi/Pba6T1IvMVp0Yu0+UTE16Y1ghfyngfmGFQFQ=;
-        b=fpGmI/PtiFTklFMQqHB34u8NNnAgMCJMzei/dQ3q0TAlDutE4yuAiCfhFqqaXoivcaWDne
-        9MEbwsobdkfVeciLE76QBD9VvNM11pXwIFSPtez8Jy81XVJ7EPtd6FO0UfaJFIXlZckmbW
-        SpbogRkxlT0FSc4LWB5KJXQ9Fke/38I=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-569-smzd_PxfNAqN932oFITpLA-1; Sat, 19 Nov 2022 07:31:23 -0500
-X-MC-Unique: smzd_PxfNAqN932oFITpLA-1
-Received: by mail-ed1-f71.google.com with SMTP id l18-20020a056402255200b004633509768bso4096186edb.12
-        for <bpf@vger.kernel.org>; Sat, 19 Nov 2022 04:31:23 -0800 (PST)
+        with ESMTP id S229635AbiKSQGB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Nov 2022 11:06:01 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7967DCA7;
+        Sat, 19 Nov 2022 08:06:00 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id t85so3801445vkb.7;
+        Sat, 19 Nov 2022 08:06:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GWPkDw+hBBRp3rjO9oe2TksMIp/JW3/H2HSRK6dyKIM=;
+        b=SVQB/mCGGYALj1YQJ10ao7Wzmt5ehbGQ4xI2v36EENVSsxeopuhp/Yc6OrIqsYCS1i
+         PY+CAdBnW80Bql13cG6Y8RPlfRlu1HmwtnMBmV086iWM9lK9xbM5eGSd8LUI7AVdGA/D
+         TC7u+vWV2Wf6bUSw9UlZ6Tj8BSnn08ApfdKs2ECEuHw4FP+QZLJJxNArg3o6iSDtJzaT
+         n3PKfUGM4nxXec5Ye5uZWc23de2CETCkDO1B1oxCr7MO9WwXkUmSUpcf/8vmjX5J0AB2
+         +8nM8/VZZf54CuXdx0aCSn7pvoyiJwPSt5oE+UWeE+WLVi6U7vhmqUW47NqGZFoMdVI/
+         mSrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l3aCNi/Pba6T1IvMVp0Yu0+UTE16Y1ghfyngfmGFQFQ=;
-        b=U2k2Mjoz93BKEhxmFwkRlkz9Ua1lkUAiyTtC73tfvpyC9OsYoKgRCrrWyJKNSfE9Q4
-         gCzdFGN6KoD0kbpBAZDXcEBdTz70zvvtGe7vbGI8TlLcsTnKX8iofexKVjMXfY75qQ6V
-         s1+gVNeBbF9X9Z2YMpIW9bw9lKqcXTi3Oei9urhderpqSrihV0um1NLUIkt+PC6/w7Ea
-         9eiTnDeSYPs5rClLSbLd0BIyEwciXCjLEDwId7Npx/1A7ueLcPkOs8A3lIHCMdWsN2+G
-         IMz8oqOjnMZz1sT21SmzbITtUZCwsok/CS06Ezclo31eq0BgWKC/a6s07xXmb63ME7u7
-         DGnw==
-X-Gm-Message-State: ANoB5pmYXmOm4vFKWk/Eo1yDMTN3rosejXXN0o0Ly/XBGx28hxs9Vc51
-        Hzrdm6ATPl7FksIn14g43ZpCG7g3UWVxS30YfSfvgP+QbS6NcQgo+ax/usxAD18rL1PUuLMF+A8
-        1YQ5lyw+mOoWn
-X-Received: by 2002:a17:906:3385:b0:7a2:b352:a0d3 with SMTP id v5-20020a170906338500b007a2b352a0d3mr9082911eja.399.1668861082357;
-        Sat, 19 Nov 2022 04:31:22 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7nxCM5XBNwLx2zmVae7JCRY2LVz5ERFNHsthxtMg3JXxIyqR8Ilj7lVrFGxNDJZTpAo4rcNQ==
-X-Received: by 2002:a17:906:3385:b0:7a2:b352:a0d3 with SMTP id v5-20020a170906338500b007a2b352a0d3mr9082871eja.399.1668861081770;
-        Sat, 19 Nov 2022 04:31:21 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id d7-20020a170906304700b007b29d292852sm34958ejd.148.2022.11.19.04.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Nov 2022 04:31:21 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 902E07CDFA3; Sat, 19 Nov 2022 13:31:20 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next 06/11] xdp: Carry over xdp
- metadata into skb context
-In-Reply-To: <CAKH8qBv8UtHZrgSGzVn3ZJSfkdv1H3kXGbakp9rCFdOABL=3BQ@mail.gmail.com>
-References: <20221115030210.3159213-1-sdf@google.com>
- <20221115030210.3159213-7-sdf@google.com>
- <e26f75dd-f52f-a69b-6754-54e1fe044a42@redhat.com>
- <CAKH8qBv8UtHZrgSGzVn3ZJSfkdv1H3kXGbakp9rCFdOABL=3BQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 19 Nov 2022 13:31:20 +0100
-Message-ID: <871qpzxh0n.fsf@toke.dk>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GWPkDw+hBBRp3rjO9oe2TksMIp/JW3/H2HSRK6dyKIM=;
+        b=TlTYI5LE2BNBJS+Qih7MjRxGtPFLeFOdhvAqYnKrA9QKeWu5gqIv+0/OCFqFXNkVzW
+         aOi0EjtSJ8t5xcGTJ8c5k8gGuFUcH6Y7AW5MN+i7jquZoHnOY9DkcWyCmCrTpSXtIuoc
+         E4FZC/zHqlrc5moLyAR8K0ZUhJmbhfL3lP38e6oWwusUxWfEmttHrZob9niAqVXWzmyE
+         Aj24XqUo1dLXp9b7yMkMVowmuiEUBXkbg+vPNiB2sUxbcHb2klK295dSBSkSLq1ctwaX
+         xiwHQxbIkHvVv/yO8Gof2evIJyTeucqevOKA1mNXwGSlyU6SPqskr0Ne5KzwLN2iifym
+         3vfQ==
+X-Gm-Message-State: ANoB5plMZ85kTxTT+QKCj7E1bk6SPbl9L+WWDFS4u95LdQVxcsgZDj3m
+        5ai8mxRTQ1h/uZsnhNJlghN+FH0kWyH8Ojkz39eNdB1MmsmnRe9Z
+X-Google-Smtp-Source: AA0mqf4m+RsMguRNAJ0q/NrRtt5cFBlw6tkewY/D1gPrM8dGZkegzclrpmbEumXydDm+Ht7Yvdt2HuJj682yY37VTk4=
+X-Received: by 2002:a1f:21c8:0:b0:3b7:6a89:4530 with SMTP id
+ h191-20020a1f21c8000000b003b76a894530mr816857vkh.37.1668873959512; Sat, 19
+ Nov 2022 08:05:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <20221116064631.16224-1-tegongkang@gmail.com> <CAEf4BzbqKRTzTdhD1Vt-j8NXaqnyqXCRjNgMe9_h56rbt4a9YA@mail.gmail.com>
+In-Reply-To: <CAEf4BzbqKRTzTdhD1Vt-j8NXaqnyqXCRjNgMe9_h56rbt4a9YA@mail.gmail.com>
+From:   Kang Minchul <tegongkang@gmail.com>
+Date:   Sun, 20 Nov 2022 01:05:48 +0900
+Message-ID: <CA+uqrQD58fJj_h1D6kEQKYPF8mRizgf0R7KTfa5YWNTLcu9xqw@mail.gmail.com>
+Subject: Re: [PATCH] samples, bpf: Add duration option D for sampleip
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,108 +74,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+Thanks for your reply.
 
-> On Fri, Nov 18, 2022 at 6:05 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
->>
->>
->> On 15/11/2022 04.02, Stanislav Fomichev wrote:
->> > Implement new bpf_xdp_metadata_export_to_skb kfunc which
->> > prepares compatible xdp metadata for kernel consumption.
->> > This kfunc should be called prior to bpf_redirect
->> > or when XDP_PASS'ing the frame into the kernel (note, the drivers
->> > have to be updated to enable consuming XDP_PASS'ed metadata).
->> >
->> > veth driver is amended to consume this metadata when converting to skb.
->> >
->> > Internally, XDP_FLAGS_HAS_SKB_METADATA flag is used to indicate
->> > whether the frame has skb metadata. The metadata is currently
->> > stored prior to xdp->data_meta. bpf_xdp_adjust_meta refuses
->> > to work after a call to bpf_xdp_metadata_export_to_skb (can lift
->> > this requirement later on if needed, we'd have to memmove
->> > xdp_skb_metadata).
->> >
->>
->> I think it is wrong to refuses using metadata area (bpf_xdp_adjust_meta)
->> when the function bpf_xdp_metadata_export_to_skb() have been called.
->> In my design they were suppose to co-exist, and BPF-prog was expected to
->> access this directly themselves.
->>
->> With this current design, I think it is better to place the struct
->> xdp_skb_metadata (maybe call it xdp_skb_hints) after xdp_frame (in the
->> top of the frame).  This way we don't conflict with metadata and
->> headroom use-cases.  Plus, verifier will keep BPF-prog from accessing
->> this area directly (which seems to be one of the new design goals).
->>
->> By placing it after xdp_frame, I think it would be possible to let veth
->> unroll functions seamlessly access this info for XDP_REDIRECT'ed
->> xdp_frame's.
->>
->> WDYT?
+2022=EB=85=84 11=EC=9B=94 18=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 8:26, =
+Andrii Nakryiko <andrii.nakryiko@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=
+=84=B1:
 >
-> Not everyone seems to be happy with exposing this xdp_skb_metadata via
-> uapi though :-(
-> So I'll drop this part in the v2 for now. But let's definitely keep
-> talking about the future approach.
-
-Jakub was objecting to putting it in the UAPI header, but didn't we
-already agree that this wasn't necessary?
-
-I.e., if we just define
-
-struct xdp_skb_metadata *bpf_xdp_metadata_export_to_skb()
-
-as a kfunc, the xdp_skb_metadata struct won't appear in any UAPI headers
-and will only be accessible via BTF? And we can put the actual data
-wherever we choose, since that bit is nicely hidden behind the kfunc,
-while the returned pointer still allows programs to access it.
-
-We could even make that kfunc smart enough that it checks if the field
-is already populated and just return the pointer to the existing data
-instead of re-populating it int his case (with a flag to override,
-maybe?).
-
-> Putting it after xdp_frame SGTM; with this we seem to avoid the need
-> to memmove it on adjust_{head,meta}.
+> On Tue, Nov 15, 2022 at 10:46 PM Kang Minchul <tegongkang@gmail.com> wrot=
+e:
+> >
+> > Although sampleip program can handle three options,
+> > (-F for frequency, duration, and -h for help)
+> > currently there is no independent option for duration.
 >
-> But going back to the uapi part, what if we add separate kfunc
-> accessors for skb exported metadata?
->
-> To export:
-> bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx, rx_timestamp)
-> bpf_xdp_metadata_export_rx_hash_to_skb(ctx, rx_hash)
-> // ^^ these prepare xdp_skb_metadata after xdp_frame, but not expose
-> it via uapi/af_xdp/etc
->
-> Then bpf_xdp_metadata_export_to_skb can be 'static inline' define in
-> the headers:
->
-> void bpf_xdp_metadata_export_to_skb(ctx)
-> {
->   if (bpf_xdp_metadata_rx_timestamp_supported(ctx))
->     bpf_xdp_metadata_export_rx_timestamp_to_skb(ctx,
-> bpf_xdp_metadata_rx_timestamp(ctx));
->   if (bpf_xdp_metadata_rx_hash_supported(ctx))
->     bpf_xdp_metadata_export_rx_hash_to_skb(ctx, bpf_xdp_metadata_rx_hash(ctx));
-> }
+> Because it's positional argument, which is very clearly documented by
+> usage(). What's wrong with that and why do you want to change this?
+Yes, but I'm not sure why only 'duration' should be a positional argument.
 
-The problem with this is that the BPF programs then have to keep up with
-the kernel. I.e., if the kernel later adds support for a new field that
-is used in the SKB, old XDP programs won't be populating it, which seems
-suboptimal. I think rather the kernel should be in control of the SKB
-metadata, and just allow XDP to consume it (and change individual fields
-as needed).
+I don't think it is 'wrong', but I think it's better to treat
+'duration' just as same as 'frequency' because
+ frequency and duration are two independent things in this case.
+(duration is not dependent on frequency)
 
-> The only issue, it seems, is that if the final bpf program would like
-> to export this metadata to af_xdp, it has to manually adj_meta and use
-> bpf_xdp_metadata_skb_rx_xxx to prepare a custom layout. Not sure
-> whether performance would suffer with this extra copy; but we can at
-> least try and see..
+So I thought making an option for duration like below
 
-If we write the metadata after the packet data, that could still be
-transferred to AF_XDP, couldn't it? Userspace would just have to know
-how to find and read it, like it would  if it's before the metadata.
+$ sudo ./samples/bpf/sampleip -F <Frequecny> -D <Duration>
 
--Toke
+is better than below.
 
+$ sudo ./samples/bpf/sampleip -F <Frequecny> <Duration>
+
+I am not insisting strongly on this, so if I have misunderstood something,
+I'll respect the existing way.
+
+Regards,
+
+Kang Minchul
+> >
+> > This patch adds option -D for duration like below:
+> >
+> > $ sudo ./samples/bpf/sampleip -h
+> > USAGE: sampleip [-F freq] [-D duration]
+> >        -F freq       # sample frequency (Hertz), default 99
+> >        -D duration   # sampling duration (seconds), default 5
+> >
+> > $ sudo ./samples/bpf/sampleip -F 120
+> > Sampling at 120 Hertz for 5 seconds. Ctrl-C also ends.
+> > ADDR                KSYM                          COUNT
+> > ...
+> >
+> > $ sudo ./samples/bpf/sampleip -D 7
+> > Sampling at 99 Hertz for 7 seconds. Ctrl-C also ends.
+> > ADDR                KSYM                          COUNT
+> > ...
+> >
+> > $ sudo ./samples/bpf/sampleip -F 120 -D 7
+> > Sampling at 120 Hertz for 7 seconds. Ctrl-C also ends.
+> > ADDR                KSYM                          COUNT
+> > ...
+> >
+> > Signed-off-by: Kang Minchul <tegongkang@gmail.com>
+> > ---
+> >  samples/bpf/sampleip_user.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/samples/bpf/sampleip_user.c b/samples/bpf/sampleip_user.c
+> > index 921c505bb567..ce6aadd496e1 100644
+> > --- a/samples/bpf/sampleip_user.c
+> > +++ b/samples/bpf/sampleip_user.c
+> > @@ -28,9 +28,9 @@ static int nr_cpus;
+> >
+> >  static void usage(void)
+> >  {
+> > -       printf("USAGE: sampleip [-F freq] [duration]\n");
+> > -       printf("       -F freq    # sample frequency (Hertz), default 9=
+9\n");
+> > -       printf("       duration   # sampling duration (seconds), defaul=
+t 5\n");
+> > +       printf("USAGE: sampleip [-F freq] [-D duration]\n");
+> > +       printf("       -F freq       # sample frequency (Hertz), defaul=
+t 99\n");
+> > +       printf("       -D duration   # sampling duration (seconds), def=
+ault 5\n");
+> >  }
+> >
+> >  static int sampling_start(int freq, struct bpf_program *prog,
+> > @@ -145,19 +145,20 @@ int main(int argc, char **argv)
+> >         char filename[256];
+> >
+> >         /* process arguments */
+> > -       while ((opt =3D getopt(argc, argv, "F:h")) !=3D -1) {
+> > +       while ((opt =3D getopt(argc, argv, "F:D:h")) !=3D -1) {
+> >                 switch (opt) {
+> >                 case 'F':
+> >                         freq =3D atoi(optarg);
+> >                         break;
+> > +               case 'D':
+> > +                       secs =3D atoi(optarg);
+> > +                       break;
+> >                 case 'h':
+> >                 default:
+> >                         usage();
+> >                         return 0;
+> >                 }
+> >         }
+> > -       if (argc - optind =3D=3D 1)
+> > -               secs =3D atoi(argv[optind]);
+> >         if (freq =3D=3D 0 || secs =3D=3D 0) {
+> >                 usage();
+> >                 return 1;
+> > --
+> > 2.34.1
+> >
