@@ -2,216 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE52630F96
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 17:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BED863103D
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 19:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbiKSQtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Nov 2022 11:49:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S233757AbiKSSVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Nov 2022 13:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbiKSQtB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Nov 2022 11:49:01 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E836567;
-        Sat, 19 Nov 2022 08:49:00 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso7363786pjt.0;
-        Sat, 19 Nov 2022 08:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sDpCH/RYTR3ExZASLQBN6xBghE8TDLotiVLs184fTRI=;
-        b=fhajLTpEIrFUUdKsVoFuUYG9DS+lvKfFvzVrXiXFFw0cpp9nNEZzDwZ5kdGkhZaf+8
-         +LnP0ELDm5LKZVkK2TtZpsgBVwaVNAbeOOC7i1r7Ri4H462mMxPNuEOE1vDV++3C1etk
-         hlPb41GIdGpVNJH5ofAPuxmJH7rXX8WNmzJlg5C/A/ng34pxC6vEPRn+t5IXk7GWYSbs
-         qMVn0FAy53tZt3OM4omMNQKVKiakS6Dh8TJ6pMXVxT9/ZLhMB7mT4i4nmLhQ755Lisvg
-         GmZOvTBphVmr5kI98jpbEFMzt3qjItF1EJw+WVkUt0qrnosU1Y+2n6nrW0gS4PTzkbus
-         9yDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sDpCH/RYTR3ExZASLQBN6xBghE8TDLotiVLs184fTRI=;
-        b=AOJY6MhDWQF/hctdXB7lc+5Xn/3TRGrqgs/IV4E0KAmUBH2OUMyV1hUQiNbETJUKhk
-         o7+Z0XVWmAImXY5KAuC43Cej/mVHvNAq6sSW61VP2/AKGDidZBCvMZDAx6H0xALppCCl
-         2kslWphd4SnjNfX5aY05MdNT6oZ9ixubh4Cg7LUkX5lxxpg/T06Va1u5ZKETOqOlgWrj
-         erlmABHPkqI+1IgEFs16v21arpJ7OU399VodtIAi2U0yjcSm/L93z4kCmmZZaMdL8/iY
-         xLKa85a6VRbwWPsuBtZ7lC1YcYtOsWgMU/TVb59WczJ6ukzSzeD2asqXn9o7Km4FM+uR
-         f4DA==
-X-Gm-Message-State: ANoB5pnI4J40WrcpLm7o5DkoSNcUq/NQp8An1HEYeQU9MhMSMxdWGhCE
-        68h1YIQOSmVQCiqA77hRlyQ=
-X-Google-Smtp-Source: AA0mqf4/aPTaYB9Vq3HiJthuVObgHfb7K98pg9UnxSh7HZnAz3xS+CN/rJ9zJzeJ/hJaR+t3WQc13A==
-X-Received: by 2002:a17:902:7242:b0:17c:4ae7:cf23 with SMTP id c2-20020a170902724200b0017c4ae7cf23mr4847084pll.2.1668876540191;
-        Sat, 19 Nov 2022 08:49:00 -0800 (PST)
-Received: from macbook-pro-5.dhcp.thefacebook.com ([2620:10d:c090:400::5:7165])
-        by smtp.gmail.com with ESMTPSA id iz9-20020a170902ef8900b001754cfb5e21sm5963746plb.96.2022.11.19.08.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Nov 2022 08:48:59 -0800 (PST)
-Date:   Sat, 19 Nov 2022 08:48:55 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, memxor@gmail.com,
-        yhs@fb.com, song@kernel.org, sdf@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        haoluo@google.com, tj@kernel.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: Allow trusted pointers to be passed
- to KF_TRUSTED_ARGS kfuncs
-Message-ID: <20221119164855.qvhgdpg5axa7kzey@macbook-pro-5.dhcp.thefacebook.com>
-References: <20221117032402.2356776-1-void@manifault.com>
- <20221117032402.2356776-2-void@manifault.com>
- <20221118022640.borhn6iy4v2fhl7g@MacBook-Pro-5.local>
- <Y3eamIVUVb6V47LF@maniforge.lan>
- <Y3e2sdqL1E0SKJ5/@maniforge.lan>
- <20221118184500.yshwvcrx2a34xkmc@MacBook-Pro-5.local>
- <Y3f8yqhRRBIzrDvH@maniforge.lan>
- <20221119041337.eejp2dfe6w5xqplo@macbook-pro-5.dhcp.thefacebook.com>
- <Y3hmGzncGocT7BuB@maniforge.lan>
+        with ESMTP id S233670AbiKSSVW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Nov 2022 13:21:22 -0500
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4680D13D43;
+        Sat, 19 Nov 2022 10:21:19 -0800 (PST)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4NF2650XQDz9sZd;
+        Sat, 19 Nov 2022 19:21:17 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9dP50iU9p0hz; Sat, 19 Nov 2022 19:21:16 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4NF26460kRz9sZY;
+        Sat, 19 Nov 2022 19:21:16 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AE2AD8B76C;
+        Sat, 19 Nov 2022 19:21:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ZSS9eVuynq4e; Sat, 19 Nov 2022 19:21:16 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.4.152])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A5D48B763;
+        Sat, 19 Nov 2022 19:21:16 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 2AJHJgAl2482924
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 19 Nov 2022 18:19:42 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 2AJHJe3a2482922;
+        Sat, 19 Nov 2022 18:19:40 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] powerpc/bpf/32: Fix Oops on tail call tests
+Date:   Sat, 19 Nov 2022 18:19:35 +0100
+Message-Id: <8a0b9f7e4fe208a8b518c0c4310472f99d9fdb55.1668876211.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3hmGzncGocT7BuB@maniforge.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1668878372; l=6038; s=20211009; h=from:subject:message-id; bh=yCeqy7mTPVbgcrSwBiCurTBvvyery5JpUQSfv916m3k=; b=5WQZbI9f+2gy/zQTO6eMU+RJE/pGup2cXIDkBb5INfBfxelfMRDe5qL5ixybklkhLpOa4D4VBlmw cbraNIixAUs5Nx580UioNSwkJxCM+JbWlo3vN5aHiJ5hWSbqRr1E
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 11:14:03PM -0600, David Vernet wrote:
-> On Fri, Nov 18, 2022 at 08:13:37PM -0800, Alexei Starovoitov wrote:
-> > On Fri, Nov 18, 2022 at 03:44:42PM -0600, David Vernet wrote:
-> > > > > if it's a release arg it should always have a refcount on it.
-> > > > > PTR_UNTRUSTED | PTR_TRUSTED would also make no sense. MEM_FIXED_SIZE
-> > > > > though seems fine? In general, I thought it was prudent for us to take
-> > > > > the most conservative possible approach here, which is that PTR_TRUSTED
-> > > > > only applies when no other modifiers are present, and it applies for all
-> > > > > obj_ptr types (other than PTR_TO_CTX which does its own thing).
-> > > > 
-> > > > Probably worth refining when PTR_TRUSTED is cleared.
-> > > > For example adding PTR_UNTRUSTED should definitely clear it.
-> 
-> 
-> 
-> > > 
-> > > That makes sense for PTR_UNTRUSTED, what about the other type modifiers
-> > > like PTR_MAYBE_NULL? We set and unset if a ptr is NULL throughout a
-> > > function, so we'd have to record if it was previously trusted in order
-> > > to properly re-OR after a NULL check.
-> > 
-> > PTR_MAYBE_NULL is another bit and I don't think it conflicts with PTR_TRUSTED.
-> > PTR_TO_BTF_ID | PTR_TRUSTED is a valid pointer.
-> > PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL is a valid pointer or NULL.
-> > 
-> > PTR_TO_BTF_ID | PTR_MAYBE_NULL is a legacy "valid pointer" or NULL.
-> > That legacy pointer cannot be passed to KF_TRUSTED_ARGS kfuncs.
-> > 
-> > KF_TRUSTED_ARGS kfuncs should not accept PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL.
-> 
-> Indeed -- my point was that I don't think e.g. clearing PTR_TRUSTED when
-> we set PTR_UNTRUSTED will work, at least not yet. It's still too tricky
-> to find all the places where we'd have to &= ~PTR_TRUSTED or |=
-> PTR_TRUSTED when setting specific type modifiers. As described below, we
-> first have to clarify the general workflow to enable the presence of
-> PTR_TRUSTED to be the single source of truth for trust.
+test_bpf tail call tests end up as:
 
-Agree. A reg->type with both PTR_TRUSTED and PTR_UNTRUSTED would be a bug,
-but let's fix it when we get there.
-Even if such bug hits us we can protect from it by make sure that
-we treat PTR_UNTRUSTED as logically stronger flag.
+  test_bpf: #0 Tail call leaf jited:1 85 PASS
+  test_bpf: #1 Tail call 2 jited:1 111 PASS
+  test_bpf: #2 Tail call 3 jited:1 145 PASS
+  test_bpf: #3 Tail call 4 jited:1 170 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 190 PASS
+  test_bpf: #5 Tail call load/store jited:1
+  BUG: Unable to handle kernel data access on write at 0xf1b4e000
+  Faulting instruction address: 0xbe86b710
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  BE PAGE_SIZE=4K MMU=Hash PowerMac
+  Modules linked in: test_bpf(+)
+  CPU: 0 PID: 97 Comm: insmod Not tainted 6.1.0-rc4+ #195
+  Hardware name: PowerMac3,1 750CL 0x87210 PowerMac
+  NIP:  be86b710 LR: be857e88 CTR: be86b704
+  REGS: f1b4df20 TRAP: 0300   Not tainted  (6.1.0-rc4+)
+  MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28008242  XER: 00000000
+  DAR: f1b4e000 DSISR: 42000000
+  GPR00: 00000001 f1b4dfe0 c11d2280 00000000 00000000 00000000 00000002 00000000
+  GPR08: f1b4e000 be86b704 f1b4e000 00000000 00000000 100d816a f2440000 fe73baa8
+  GPR16: f2458000 00000000 c1941ae4 f1fe2248 00000045 c0de0000 f2458030 00000000
+  GPR24: 000003e8 0000000f f2458000 f1b4dc90 3e584b46 00000000 f24466a0 c1941a00
+  NIP [be86b710] 0xbe86b710
+  LR [be857e88] __run_one+0xec/0x264 [test_bpf]
+  Call Trace:
+  [f1b4dfe0] [00000002] 0x2 (unreliable)
+  Instruction dump:
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  ---[ end trace 0000000000000000 ]---
 
-> > It's a job of the prog to do != NULL check.
-> > Otherwise all such != NULL checks would need to move inside kfuncs which is not good.
-> > 
-> > > > MEM_ALLOC flag is probably equivalent to PTR_TRUSTED.
-> > > > Maybe the bit:
-> > > > regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
-> > > > should set PTR_TRUSTED as well?
-> > > 
-> > > We could, but that changes the meaning of PTR_TRUSTED and IMO makes it
-> > > harder to reason about. Before it was just "the kernel passed this arg
-> > > to the program and promises the program that it was trusted when it was
-> > > first passed". Now it's that plus it could mean that it points to an
-> > > allocated object from bpf_obj_new()". IMO we should keep all of these
-> > > modifiers separate so that the presence of a modifier has a well-defined
-> > > meaning that we can interpret in each context as needed.  In this case,
-> > > we can make trust opt-in, so a KF_TRUSTED_ARGS BTF pointer either of the
-> > > following:
-> > > 
-> > > 1. reg->ref_obj_id > 0
-> > > 2. Either one of PTR_TRUSTED | MEM_ALLOC type modifiers are set, and no
-> > >    others.
-> > 
-> > I don't think MEM_ALLOC conflicts with PTR_TRUSTED.
-> > MEM_ALLOC flags means that it came from bpf_obj_new() and that's what
-> > bpf_spin_lock and bpf_obj_drop() want to see.
-> > 
-> > Adding PTR_TRUSTED to MEM_ALLOC looks necessary to me.
-> > It doesn't have to be done right now, but eventually feels right.
-> 
-> I think I agree. MEM_ALLOC should always imply PTR_TRUSTED. Ideally we
-> shouldn't have to check MEM_ALLOC for KF_TRUSTED_ARGS at all, and
-> PTR_TRUSTED should be the only modifier representing if something is
-> safe. 
+This is a tentative to write above the stack. The problem is encoutered
+with tests added by commit 38608ee7b690 ("bpf, tests: Add load store
+test case for tail call")
 
-exactly.
+This happens because tail call is done to a BPF prog with a different
+stack_depth. At the time being, the stack is kept as is when the caller
+tail calls its callee. But at exit, the callee restores the stack based
+on its own properties. Therefore here, at each run, r1 is erroneously
+increased by 32 - 16 = 16 bytes.
 
-> For now I'd prefer to keep them separate until we have a clear
-> plan, especially with respect to clearing PTR_TRUSTED for when something
-> unsafe happens like PTR_UNTRUSTED or PTR_MAYBE_NULL. It's all too
-> muddied still.
+This was done that way in order to pass the tail call count from caller
+to callee through the stack. As powerpc32 doesn't have a red zone in
+the stack, it was necessary the maintain the stack as is for the tail
+call. But it was not anticipated that the BPF frame size could be
+different.
 
-sure. we can do that in the follow up.
-A bit more technical debt to address later.
+Let's take a new approach. Use register r0 to carry the tail call count
+during the tail call, and save it into the stack at function entry if
+required. That's a deviation from the ppc32 ABI, but after all the way
+tail calls are implemented is already not in accordance with the ABI.
 
-> 
-> > I've been thinking whether reg->ref_obj_id > 0 condition should be converted
-> > to PTR_TRUSTED too...
-> > On one side it will simplify the check for KF_TRUSTED_ARGS.
-> > The only thing check_kfunc_args() would need to do is:
-> > is_kfunc_trusted_args(meta)
-> > && type_flag(reg->type) & PTR_TRUSTED
-> > && !(type_flag(reg->type) & PTR_MAYBE_NULL)
-> > 
-> > On the other side fixing all places where we set ref_obj_id
-> > and adding |= PTR_TRUSTED may be too cumbersome ?
-> 
-> I think it's probably too cumbersome now, but yeah, as mentioned above,
-> I think it's the right direction. I think it will require a lot of
-> thought to do it right, though. With the code the way that it is now, I
-> can't convince myself that we wouldn't do something like |= PTR_TRUSTED
-> when we observe ref_obj_id > 0, and then later &= ~PTR_TRUSTED when
-> setting PTR_MAYBE_NULL. I think Kumar's latest patch set is a nice step
-> towards achieving this clearer state. Hopefully we can continue to
-> improve.
-> 
-> > Right now we're saying PTR_TO_CTX is implicitly trusted, but we can OR
-> > PTR_TO_CTX with PTR_TRUSTED to make it explicit and truly generalize the check.
-> 
-> Further agreed, this is the correct longer-term direction.
-> 
-> > > Agreed that after the rebase this would no longer be correct. I think we
-> > > should make it opt-in, though. PTR_TRUSTED | MEM_ALLOC is fine.
-> > > PTR_TRUSTED | MEM_ALLOC | PTR_MAYBE_NULL would not be.
-> > 
-> > to pass into KF_TRUSTED_ARGS kfunc? Agree.
-> > I guess we can tighten the check a bit:
-> > is_kfunc_trusted_args(meta)
-> > && type_flag(reg->type) & PTR_TRUSTED
-> > && !(type_flag(reg->type) & ~(PTR_TRUSTED | MEM_ALLOC))
-> > 
-> > In english: the pointer should have PTR_TRUSTED flag and
-> > no other flags other than PTR_TRUSTED and MEM_ALLOC should be set.
-> 
-> Yeah, I think this is the correct way to model this for now. Later on
-> once we refactor things, the presence of PTR_TRUSTED on its own should
-> be sufficient. A good north star to aim towards.
-> 
-> I'll send this out as v8 tomorrow.
+With the fix, tail call tests are now successfull:
 
-Perfect. Looking forward.
+  test_bpf: #0 Tail call leaf jited:1 53 PASS
+  test_bpf: #1 Tail call 2 jited:1 115 PASS
+  test_bpf: #2 Tail call 3 jited:1 154 PASS
+  test_bpf: #3 Tail call 4 jited:1 165 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 101 PASS
+  test_bpf: #5 Tail call load/store jited:1 141 PASS
+  test_bpf: #6 Tail call error path, max count reached jited:1 994 PASS
+  test_bpf: #7 Tail call count preserved across function calls jited:1 140975 PASS
+  test_bpf: #8 Tail call error path, NULL target jited:1 110 PASS
+  test_bpf: #9 Tail call error path, index out of range jited:1 69 PASS
+  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+
+Fixes: 51c66ad849a7 ("powerpc/bpf: Implement extended BPF on PPC32")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/net/bpf_jit_comp32.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index 43f1c76d48ce..97e75b8181ca 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -115,21 +115,19 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+ 
+ 	/* First arg comes in as a 32 bits pointer. */
+ 	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
+-	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
++	EMIT(PPC_RAW_LI(_R0, 0));
++
++#define BPF_TAILCALL_PROLOGUE_SIZE	8
++
+ 	EMIT(PPC_RAW_STWU(_R1, _R1, -BPF_PPC_STACKFRAME(ctx)));
+ 
+ 	/*
+-	 * Initialize tail_call_cnt in stack frame if we do tail calls.
+-	 * Otherwise, put in NOPs so that it can be skipped when we are
+-	 * invoked through a tail call.
++	 * Save tail_call_cnt in stack frame if we do tail calls.
+ 	 */
+ 	if (ctx->seen & SEEN_TAILCALL)
+-		EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_1) - 1, _R1,
+-				 bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+-	else
+-		EMIT(PPC_RAW_NOP());
++		EMIT(PPC_RAW_STW(_R0, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+-#define BPF_TAILCALL_PROLOGUE_SIZE	16
++	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
+ 
+ 	/*
+ 	 * We need a stack frame, but we don't necessarily need to
+@@ -244,7 +242,6 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
+ 	EMIT(PPC_RAW_ADD(_R3, _R3, b2p_bpf_array));
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_array, ptrs)));
+-	EMIT(PPC_RAW_STW(_R0, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+ 	/*
+ 	 * if (prog == NULL)
+@@ -257,20 +254,20 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_prog, bpf_func)));
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
++		EMIT(PPC_RAW_LWZ(_R5, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
+ 
+ 	EMIT(PPC_RAW_ADDIC(_R3, _R3, BPF_TAILCALL_PROLOGUE_SIZE));
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_MTLR(_R0));
++		EMIT(PPC_RAW_MTLR(_R5));
+ 
+ 	EMIT(PPC_RAW_MTCTR(_R3));
+ 
+-	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_1)));
+-
+ 	/* tear restore NVRs, ... */
+ 	bpf_jit_emit_common_epilogue(image, ctx);
+ 
++	EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME(ctx)));
++
+ 	EMIT(PPC_RAW_BCTR());
+ 
+ 	/* out: */
+-- 
+2.38.1
+
