@@ -2,236 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF6363104C
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 19:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C58631106
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 22:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbiKSShS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Nov 2022 13:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S234167AbiKSVHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Nov 2022 16:07:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbiKSShL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Nov 2022 13:37:11 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE51140B5;
-        Sat, 19 Nov 2022 10:37:03 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id d7so5615264qkk.3;
-        Sat, 19 Nov 2022 10:37:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=erHGU1CnK47F8AJ7fpnd0e87oDzUNmIZBwVyU7/DHk4=;
-        b=ZSMIS55kAaZEvbinqdynt4bnEYN7BPjagw+qAUakJAorgTxjJw4JN+q6B+T/Wbl+rT
-         /Qw9GJXtoFxCToW38xrvBdkumJm0WFIShm+OJRranE0Ofnz5ttPVXSJCtCXlIZdtqEKW
-         ypaaY9SipQZGLwhAMZXHlyTkt6HBky0vyC80FIOi6UnzdpBctWAL0pvAKiJip+MkPMSM
-         UI1I9qjYjZrNpActA5ExXwedLowp2u6OGlDr7rjfuoumlOTfNXap28ZOdpho1wnnA1T2
-         uiGmY9mo+7GAIoSjHScW7UzCJMBKbXvZDalQ4zKcFUDWQY2b2Nw795DTY30IKta20QP4
-         H5wg==
+        with ESMTP id S232491AbiKSVHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Nov 2022 16:07:51 -0500
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446DE165A2;
+        Sat, 19 Nov 2022 13:07:50 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id s4so5262147qtx.6;
+        Sat, 19 Nov 2022 13:07:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=erHGU1CnK47F8AJ7fpnd0e87oDzUNmIZBwVyU7/DHk4=;
-        b=xaRCKRLHZ7tNV+XG9zq5vubTzX5JMvOf7L7+TEt7nm77HUTXUssznqDiLntcwRjXn7
-         1X6KQN5qA1KUtF0OGhxjLeWlaW22f82zQmkFNOcF7SfkJo1/49CQGrXv+I2dPEtMyDDc
-         wo/gtiy606oaBaqmqNhPA1t6+MOM3M0nUA1X2zMRQ69HPCoUllq5Iu14QmbFneczRIq1
-         o50gLUtwCd/pp/py/lbSHzZEv54BTQemB4rjcRSXyFu8iusIJ6VhUOA0nrzNsTlQeplO
-         3AH/4vImlsLIJTMUUAyrap1ikd3BeCAlWuX/SMr+U2aZ6aBdVDxsLx6t5PL2fv5p3nT1
-         D23A==
-X-Gm-Message-State: ANoB5pnYwKattz3jkdoMZeWBApB0iaOsKDZDygjuY5ub4OR/g+/GteVN
-        1ms/1nXIxV7W6tUgcz8U4Z4=
-X-Google-Smtp-Source: AA0mqf54h2kVYFjSfj2RQZr3U3bSm8SOkIVfBI0IRqOqiExwIKse3VEW/MhMTfVPyQ+JCSORVDbHGw==
-X-Received: by 2002:a37:c402:0:b0:6ee:e139:596c with SMTP id d2-20020a37c402000000b006eee139596cmr10820379qki.606.1668883022106;
-        Sat, 19 Nov 2022 10:37:02 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:82fe:d8bd:30c3:4cf8])
-        by smtp.gmail.com with ESMTPSA id bl3-20020a05620a1a8300b006fae7e6204bsm5098124qkb.108.2022.11.19.10.37.00
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ajk56ksnuDEREB9BIEHMkNkC+0nnDWdR8c4K6few/dI=;
+        b=Tgn3FR2IJYzeT6kviddkudwRIW7/3IWHrxksRt9yCMoej0h8R+RP3t79u72FoR7CTY
+         mYTBT+Vc82lw+7QZYL51X88koyPSc00WVc/Sa+6lB1NqS1mKr55AcHi/AaNIMYXbLtKC
+         V6DluKOB8GAVQgwek2gLB/XQkQ4/GsNKVzqectDRT0e8QRPcxd+f+Zgx5RycDRIQRvDd
+         dR5yNsOKFXXHnwoCo47KG2LiDd68EIKs3M8Wh9EYJRRcuUdIzmloZpAvZA5boInCcQ/i
+         DtHK83bJfM3/SlL8vMPTMc3XuCs0kVgE/F0AVjgvRcjmaCeJiNRw9T0Lk9P22TeEfsQc
+         eehg==
+X-Gm-Message-State: ANoB5pko78AOlNiTcaKTuvoFc2oPaDgcgPsz/8Xlgqei56t3A4rD8fgN
+        /+B0oglqqCO0HeX/QVbmgopcuVMg3lS7rH9r
+X-Google-Smtp-Source: AA0mqf5sxbDXQ1a81RlXt3D80AbfX2Nj2Y5gGxzTc/VuB+5MmfQzX/ePr341EoCieuLgJnrblMdBjQ==
+X-Received: by 2002:ac8:488a:0:b0:3a5:8508:16d8 with SMTP id i10-20020ac8488a000000b003a5850816d8mr12029968qtq.415.1668892069154;
+        Sat, 19 Nov 2022 13:07:49 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:6319])
+        by smtp.gmail.com with ESMTPSA id y19-20020a05620a44d300b006bbf85cad0fsm5462883qkp.20.2022.11.19.13.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Nov 2022 10:37:01 -0800 (PST)
-Date:   Sat, 19 Nov 2022 10:37:00 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Cong Wang <cong.wang@bytedance.com>, sdf@google.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Patch bpf] sock_map: convert cancel_work_sync() to cancel_work()
-Message-ID: <Y3kiTNKPawbxsgZh@pop-os.localdomain>
-References: <20221018020258.197333-1-xiyou.wangcong@gmail.com>
- <Y07sxzoS/s6ZBhEx@google.com>
- <87eduxfiik.fsf@cloudflare.com>
- <Y1wqe2ybxxCtIhvL@pop-os.localdomain>
- <87bkprprxf.fsf@cloudflare.com>
- <63617b2434725_2eb7208e1@john.notmuch>
- <87a6574yz0.fsf@cloudflare.com>
- <63643449b978a_204d620851@john.notmuch>
+        Sat, 19 Nov 2022 13:07:48 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        yhs@fb.com, song@kernel.org, sdf@google.com,
+        john.fastabend@gmail.com, haoluo@google.com, jolsa@kernel.org,
+        kpsingh@kernel.org, memxor@gmail.com, tj@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH bpf-next v8 0/3] Support storing struct task_struct objects as kptrs
+Date:   Sat, 19 Nov 2022 15:07:45 -0600
+Message-Id: <20221119210748.3325667-1-void@manifault.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63643449b978a_204d620851@john.notmuch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        TVD_PH_BODY_ACCOUNTS_PRE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 02:36:09PM -0700, John Fastabend wrote:
-> Jakub Sitnicki wrote:
-> > On Tue, Nov 01, 2022 at 01:01 PM -07, John Fastabend wrote:
-> > > Jakub Sitnicki wrote:
-> > >> On Fri, Oct 28, 2022 at 12:16 PM -07, Cong Wang wrote:
-> > >> > On Mon, Oct 24, 2022 at 03:33:13PM +0200, Jakub Sitnicki wrote:
-> > >> >> On Tue, Oct 18, 2022 at 11:13 AM -07, sdf@google.com wrote:
-> > >> >> > On 10/17, Cong Wang wrote:
-> > >> >> >> From: Cong Wang <cong.wang@bytedance.com>
-> > >> >> >
-> > >> >> >> Technically we don't need lock the sock in the psock work, but we
-> > >> >> >> need to prevent this work running in parallel with sock_map_close().
-> > >> >> >
-> > >> >> >> With this, we no longer need to wait for the psock->work synchronously,
-> > >> >> >> because when we reach here, either this work is still pending, or
-> > >> >> >> blocking on the lock_sock(), or it is completed. We only need to cancel
-> > >> >> >> the first case asynchronously, and we need to bail out the second case
-> > >> >> >> quickly by checking SK_PSOCK_TX_ENABLED bit.
-> > >> >> >
-> > >> >> >> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
-> > >> >> >> Reported-by: Stanislav Fomichev <sdf@google.com>
-> > >> >> >> Cc: John Fastabend <john.fastabend@gmail.com>
-> > >> >> >> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > >> >> >> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > >> >> >
-> > >> >> > This seems to remove the splat for me:
-> > >> >> >
-> > >> >> > Tested-by: Stanislav Fomichev <sdf@google.com>
-> > >> >> >
-> > >> >> > The patch looks good, but I'll leave the review to Jakub/John.
-> > >> >> 
-> > >> >> I can't poke any holes in it either.
-> > >> >> 
-> > >> >> However, it is harder for me to follow than the initial idea [1].
-> > >> >> So I'm wondering if there was anything wrong with it?
-> > >> >
-> > >> > It caused a warning in sk_stream_kill_queues() when I actually tested
-> > >> > it (after posting).
-> > >> 
-> > >> We must have seen the same warnings. They seemed unrelated so I went
-> > >> digging. We have a fix for these [1]. They were present since 5.18-rc1.
-> > >> 
-> > >> >> This seems like a step back when comes to simplifying locking in
-> > >> >> sk_psock_backlog() that was done in 799aa7f98d53.
-> > >> >
-> > >> > Kinda, but it is still true that this sock lock is not for sk_socket
-> > >> > (merely for closing this race condition).
-> > >> 
-> > >> I really think the initial idea [2] is much nicer. I can turn it into a
-> > >> patch, if you are short on time.
-> > >> 
-> > >> With [1] and [2] applied, the dead lock and memory accounting warnings
-> > >> are gone, when running `test_sockmap`.
-> > >> 
-> > >> Thanks,
-> > >> Jakub
-> > >> 
-> > >> [1] https://lore.kernel.org/netdev/1667000674-13237-1-git-send-email-wangyufen@huawei.com/
-> > >> [2] https://lore.kernel.org/netdev/Y0xJUc%2FLRu8K%2FAf8@pop-os.localdomain/
-> > >
-> > > Cong, what do you think? I tend to agree [2] looks nicer to me.
-> > >
-> > > @Jakub,
-> > >
-> > > Also I think we could simply drop the proposed cancel_work_sync in
-> > > sock_map_close()?
-> > >
-> > >  }
-> > > @@ -1619,9 +1619,10 @@ void sock_map_close(struct sock *sk, long timeout)
-> > >  	saved_close = psock->saved_close;
-> > >  	sock_map_remove_links(sk, psock);
-> > >  	rcu_read_unlock();
-> > > -	sk_psock_stop(psock, true);
-> > > -	sk_psock_put(sk, psock);
-> > > +	sk_psock_stop(psock);
-> > >  	release_sock(sk);
-> > > +	cancel_work_sync(&psock->work);
-> > > +	sk_psock_put(sk, psock);
-> > >  	saved_close(sk, timeout);
-> > >  }
-> > >
-> > > The sk_psock_put is going to cancel the work before destroying the psock,
-> > >
-> > >  sk_psock_put()
-> > >    sk_psock_drop()
-> > >      queue_rcu_work(system_wq, psock->rwork)
-> > >
-> > > and then in callback we
-> > >
-> > >   sk_psock_destroy()
-> > >     cancel_work_synbc(psock->work)
-> > >
-> > > although it might be nice to have the work cancelled earlier rather than
-> > > latter maybe.
-> > 
-> > Good point.
-> > 
-> > I kinda like the property that once close() returns we know there is no
-> > deferred work running for the socket.
-> > 
-> > I find the APIs where a deferred cleanup happens sometimes harder to
-> > write tests for.
-> > 
-> > But I don't really have a strong opinion here.
-> 
-> I don't either and Cong left it so I'm good with that.
+Now that BPF supports adding new kernel functions with kfuncs, and
+storing kernel objects in maps with kptrs, we can add a set of kfuncs
+which allow struct task_struct objects to be stored in maps as
+referenced kptrs.
 
-It has been there because of the infamous warnings triggered in
-sk_stream_kill_queues(). We have to wait for flying packets, but this
-_may_ be changed after we switch to tcp_read_skb() where we call
-skb_set_owner_sk_safe().
+The possible use cases for doing this are plentiful.  During tracing,
+for example, it would be useful to be able to collect some tasks that
+performed a certain operation, and then periodically summarize who they
+are, which cgroup they're in, how much CPU time they've utilized, etc.
+Doing this now would require storing the tasks' pids along with some
+relevant data to be exported to user space, and later associating the
+pids to tasks in other event handlers where the data is recorded.
+Another useful by-product of this is that it allows a program to pin a
+task in a BPF program, and by proxy therefore also e.g. pin its task
+local storage.
 
+In order to support this, we'll need to expand KF_TRUSTED_ARGS to
+support receiving trusted, non-refcounted pointers. It currently only
+supports either PTR_TO_CTX pointers, or refcounted pointers. What this
+means in terms of the implementation is that check_kfunc_args() would
+have to also check for the PTR_TRUSTED or MEM_ALLOC type modifiers when
+determining if a trusted KF_ARG_PTR_TO_ALLOC_BTF_ID or
+KF_ARG_PTR_TO_BTF_ID pointer requires a refcount.
 
-> 
-> Reviewing backlog logic though I think there is another bug there, but
-> I haven't been able to trigger it in any of our tests.
-> 
-> The sk_psock_backlog() logic is,
-> 
->  sk_psock_backlog(struct work_struct *work)
->    mutex_lock()
->    while (skb = ...)
->    ...
->    do {
->      ret = sk_psock_handle_skb()
->      if (ret <= 0) {
->        if (ret == -EAGAIN) {
->            sk_psock_skb_state()
->            goto  end;
->        } 
->       ...
->    } while (len);
->    ...
->   end:
->    mutex_unlock()
-> 
-> what I'm not seeing is if we get an EAGAIN through sk_psock_handle_skb
-> how do we schedule the backlog again. For egress we would set the
-> SOCK_NOSPACE bit and then get a write space available callback which
-> would do the schedule(). The ingress side could fail with EAGAIN
-> through the alloc_sk_msg(GFP_ATOMIC) call. This is just a kzalloc,
-> 
->    sk_psock_handle_skb()
->     sk_psock_skb_ingress()
->      sk_psock_skb_ingress_self()
->        msg = alloc_sk_msg()
->                kzalloc()          <- this can return NULL
->        if (!msg)
->           return -EAGAIN          <- could we stall now
+Note that PTR_UNTRUSTED is insufficient for this purpose, as it does not
+cover all of the possible types of potentially unsafe pointers. For
+example, a pointer obtained from walking a struct is not PTR_UNTRUSTED.
+To account for this and enable us to expand KF_TRUSTED_ARGS to include
+allow-listed arguments such as those passed by the kernel to tracepoints
+and struct_ops callbacks, this patch set also introduces a new
+PTR_TRUSTED type flag modifier which records if a pointer was obtained
+passed from the kernel in a trusted context.
 
-Returning EAGAIN here makes little sense to me, it should be ENOMEM and
-is not worth retrying.
+Currently, both PTR_TRUSTED and MEM_ALLOC are used to imply that a
+pointer is trusted. Longer term, PTR_TRUSTED should be the sole source
+of truth for whether a pointer is trusted. This requires us to set
+PTR_TRUSTED when appropriate (e.g. when setting MEM_ALLOC), and unset it
+when appropriate (e.g. when setting PTR_UNTRUSTED). We don't do that in
+this patch, as we need to do more clean up before this can be done in a
+clear and well-defined manner.
 
-For other EAGAIN cases, why not just reschedule this work since state is
-already saved in sk_psock_work_state?
+In closing, this patch set:
 
-Thanks.
+1. Adds the new PTR_TRUSTED register type modifier flag, and updates the
+   verifier and existing selftests accordingly. Also expands
+   KF_TRUSTED_ARGS to also include trusted pointers that were not obtained
+   from walking structs. 
+2. Adds a new set of kfuncs that allows struct task_struct* objects to be
+   used as kptrs.
+3. Adds a new selftest suite to validate these new task kfuncs.
+
+--
+Changelog:
+v7 -> v8:
+- Rebased onto Kumar's latest patch set which, adds a new MEM_ALLOC reg
+  type modifier for bpf_obj_new() calls.
+- Added comments to bpf_task_kptr_get() describing some of the subtle
+  races we're protecting against (Alexei and John)
+- Slightly rework process_kf_arg_ptr_to_btf_id(), and add a new
+  reg_has_unsafe_modifiers() function which validates that a register
+  containing a kfunc release arg doesn't have unsafe modifiers. Note
+  that this is slightly different than the check for KF_TRUSTED_ARGS.
+  An alternative here would be to treat KF_RELEASE as implicitly
+  requiring KF_TRUSTED_ARGS.
+- Export inline bpf_type_has_unsafe_modifiers() function from
+  bpf_verifier.h so that it can be used from bpf_tcp_ca.c. Eventually this
+  function should likely be changed to bpf_type_is_trusted(), once
+  PTR_TRUSTED is the real source of truth.
+
+v6 -> v7:
+- Removed the PTR_WALKED type modifier, and instead define a new
+  PTR_TRUSTED type modifier which is set on registers containing
+  pointers passed from trusted contexts (i.e. as tracepoint or
+  struct_ops callback args) (Alexei)
+- Remove the new KF_OWNED_ARGS kfunc flag. This can be accomplished
+  by defining a new type that wraps an existing type, such as with
+  struct nf_conn___init (Alexei)
+- Add a test_task_current_acquire_release testcase which verifies we can
+  acquire a task struct returned from bpf_get_current_task_btf().
+- Make bpf_task_acquire() no longer return NULL, as it can no longer be
+  called with a NULL task.
+- Removed unnecessary is_test_kfunc_task() checks from failure
+  testcases.
+
+v5 -> v6:
+- Add a new KF_OWNED_ARGS kfunc flag which may be used by kfuncs to
+  express that they require trusted, refcounted args (Kumar)
+- Rename PTR_NESTED -> PTR_WALKED in the verifier (Kumar)
+- Convert reg_type_str() prefixes to use snprintf() instead of strncpy()
+  (Kumar)
+- Add PTR_TO_BTF_ID | PTR_WALKED to missing struct btf_reg_type
+  instances -- specifically btf_id_sock_common_types, and
+  percpu_btf_ptr_types.
+- Add a missing PTR_TO_BTF_ID | PTR_WALKED switch case entry in
+  check_func_arg_reg_off(), which is required when validating helper
+  calls (Kumar)
+- Update reg_type_mismatch_ok() to check base types for the registers
+  (i.e. to accommodate type modifiers). Additionally, add a lengthy
+  comment that explains why this is being done (Kumar)
+- Update convert_ctx_accesses() to also issue probe reads for
+  PTR_TO_BTF_ID | PTR_WALKED (Kumar)
+- Update selftests to expect new prefix reg type strings.
+- Rename task_kfunc_acquire_trusted_nested testcase to
+  task_kfunc_acquire_trusted_walked, and fix a comment (Kumar)
+- Remove KF_TRUSTED_ARGS from bpf_task_release(), which already includes
+  KF_RELEASE (Kumar)
+- Add bpf-next in patch subject lines (Kumar)
+
+v4 -> v5:
+- Fix an improperly formatted patch title.
+
+v3 -> v4:
+- Remove an unnecessary check from my repository that I forgot to remove
+  after debugging something.
+
+v2 -> v3:
+- Make bpf_task_acquire() check for NULL, and include KF_RET_NULL
+  (Martin)
+- Include new PTR_NESTED register modifier type flag which specifies
+  whether a pointer was obtained from walking a struct. Use this to
+  expand the meaning of KF_TRUSTED_ARGS to include trusted pointers that
+  were passed from the kernel (Kumar)
+- Add more selftests to the task_kfunc selftest suite which verify that
+  you cannot pass a walked pointer to bpf_task_acquire().
+- Update bpf_task_acquire() to also specify KF_TRUSTED_ARGS.
+
+v1 -> v2:
+- Rename tracing_btf_ids to generic_kfunc_btf_ids, and add the new
+  kfuncs to that list instead of making a separate btf id list (Alexei).
+- Don't run the new selftest suite on s390x, which doesn't appear to
+  support invoking kfuncs.
+- Add a missing __diag_ignore block for -Wmissing-prototypes
+  (lkp@intel.com).
+- Fix formatting on some of the SPDX-License-Identifier tags.
+- Clarified the function header comment a bit on bpf_task_kptr_get().
+
+David Vernet (3):
+  bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
+  bpf: Add kfuncs for storing struct task_struct * as a kptr
+  bpf/selftests: Add selftests for new task kfuncs
+
+ Documentation/bpf/kfuncs.rst                  |  30 +-
+ include/linux/bpf.h                           |  30 ++
+ include/linux/btf.h                           |  65 +++--
+ kernel/bpf/btf.c                              |   9 +
+ kernel/bpf/helpers.c                          |  78 +++++-
+ kernel/bpf/verifier.c                         |  92 +++++--
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/ipv4/bpf_tcp_ca.c                         |   4 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/task_kfunc.c     | 159 +++++++++++
+ .../selftests/bpf/progs/task_kfunc_common.h   |  71 +++++
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 260 ++++++++++++++++++
+ .../selftests/bpf/progs/task_kfunc_success.c  | 149 ++++++++++
+ tools/testing/selftests/bpf/verifier/calls.c  |   2 +-
+ .../selftests/bpf/verifier/ref_tracking.c     |   4 +-
+ 15 files changed, 888 insertions(+), 68 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_success.c
+
+-- 
+2.38.1
+
