@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E06630A5A
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 03:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FFE630A73
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 03:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbiKSCZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Nov 2022 21:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
+        id S233029AbiKSC0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Nov 2022 21:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235693AbiKSCXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Nov 2022 21:23:30 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E102E7FF06;
-        Fri, 18 Nov 2022 18:15:32 -0800 (PST)
+        with ESMTP id S235738AbiKSCZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Nov 2022 21:25:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABA1809BA;
+        Fri, 18 Nov 2022 18:16:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7817162833;
-        Sat, 19 Nov 2022 02:15:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190BBC433D6;
-        Sat, 19 Nov 2022 02:15:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 71243B82677;
+        Sat, 19 Nov 2022 02:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56AB7C433D6;
+        Sat, 19 Nov 2022 02:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668824131;
-        bh=G02EEvcYH5gnTW8yQ8yQBaC17QixYgFD0fZ0pWxC4Qg=;
+        s=k20201202; t=1668824159;
+        bh=eTIar0q5yTH0PjFlwz1Yo2cBoRr9/VhWQ+C9Y1j1S2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HHVZaQrhAJAqleI/XzufJhrtubR8a2RSDUR1PqjKmPpZZnq4ycdJZ6/F9P+0G5AgF
-         urVfOGrdOPlh3k08qLMOZmH0x5hJaZ+l+vBqa7+7/5yVG3y1E6mWwyRY+WUxEI3c5T
-         1rK3izcKnX5NqH83YV8V1xcid96FQhI084ZJzKG9e+IGlxrtzSshFSuRpArrzT9yi/
-         NWh+qTaKZ2KMQ5Nt98uTnvnIZi/o2W7AEUvKncSqlJtcDl+8tw+slU9ojEzXJann0z
-         Xn51qnu1tqt9Lr5RXeS4lCRTd66lvDh+p8vFh+cGaTo++xKHVBKv4SNXrBf8XYDkqE
-         IWT2lK17/CjhA==
+        b=BiRGQSEFpYMd9YQdWWlR6A39q7wbAlYiIEmXZLphLiON5U4wpjpSLoBIWoMGa78Vd
+         HycjrF84GOiU+zvjIm/k4/SVAJ5B8BsNOVjo4pJl15O/6Xpv7bpoIHvfp+iftfhygE
+         lbnZMlYZ5+Oy3DZCrFG3QB3hb4H+rER0wTGp4HLOBrFw7cuq2i23V+OIBYhj4mZXDX
+         ENSvRgMVId1lLqORz/RhJ+jAIl/XDPKXqCiaWgjQYiDLxtOkv2vXBcHnO7/NlYpOGx
+         WCk7TZ1WZR5QIB+l7ZcJROSFgSmTzs3GlNCtUCFKjeO1e4hH+0/MmlaK2ZLPkUGi80
+         sZETXhBGCsgtg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Kuniyuki Iwashima <kuniyu@amazon.com>,
@@ -38,12 +38,12 @@ Cc:     Kuniyuki Iwashima <kuniyu@amazon.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>, will@kernel.org,
         linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 16/18] arm64/syscall: Include asm/ptrace.h in syscall_wrapper header.
-Date:   Fri, 18 Nov 2022 21:14:57 -0500
-Message-Id: <20221119021459.1775052-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 09/11] arm64/syscall: Include asm/ptrace.h in syscall_wrapper header.
+Date:   Fri, 18 Nov 2022 21:15:41 -0500
+Message-Id: <20221119021543.1775315-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221119021459.1775052-1-sashal@kernel.org>
-References: <20221119021459.1775052-1-sashal@kernel.org>
+In-Reply-To: <20221119021543.1775315-1-sashal@kernel.org>
+References: <20221119021543.1775315-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -88,7 +88,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/include/asm/syscall_wrapper.h b/arch/arm64/include/asm/syscall_wrapper.h
-index b383b4802a7b..d30217c21eff 100644
+index 06d880b3526c..43a20888bf19 100644
 --- a/arch/arm64/include/asm/syscall_wrapper.h
 +++ b/arch/arm64/include/asm/syscall_wrapper.h
 @@ -8,7 +8,7 @@
