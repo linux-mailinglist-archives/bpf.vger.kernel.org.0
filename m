@@ -2,219 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FE5630C5C
-	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 07:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8195630C60
+	for <lists+bpf@lfdr.de>; Sat, 19 Nov 2022 07:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbiKSGKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Nov 2022 01:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S230024AbiKSGNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Nov 2022 01:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiKSGKD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Nov 2022 01:10:03 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066DA93CF7;
-        Fri, 18 Nov 2022 22:10:02 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id n17so6767272pgh.9;
-        Fri, 18 Nov 2022 22:10:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NNWPUzqWClcq8YGuZn2xHMN0XYPui4Gcalwq6mVzr6k=;
-        b=ROHX98a67Z2lzG4+rEaA+HZFUdjushZKfgnMy+htaDCZfYKYGqbJbAJZ/JRD+KnDPx
-         2FQRnMPuw5d4etiJNX9UUOK9ApF2V81UKVeK9V40LZR0DHyyYR72rDCoJ3qVQrvSnjyB
-         vJ3isk6AKCXZGCu0w3L8YcAD8sCw1FyfcHoju0PAad8Nz5/F9W5yvZwHLWNUARgNWupJ
-         a/tPjCsbuUDczz+yc4W/w+QfFMi8oUQPCA8KYMSmJc1r6Uep59n5+tlbbjl0zpJGAT2O
-         n6QBHS7qsOpyhQb5rvKki3rL3j/Q0hVqb1FrukI5nmM0+k59+V9qTkAYfcrtNh5o6Rqg
-         BVrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NNWPUzqWClcq8YGuZn2xHMN0XYPui4Gcalwq6mVzr6k=;
-        b=z054LI2XYbGgs2w26ExcEKS44F51mrdTNxkOSpH8Mtaoz8wfVFqjGJZ4yzQBZpeaC2
-         qgcAKKw+pbGb4MEjiBF78RpZBB4YvnA48XYp+dI+Wqm7Xb7CNJS3IG7HivbDgUgVm7qN
-         eDgi/cw0xHQxmksTPxCMMgHVTnzX31Z0OZI+jIp+SUdyZ6+cd6IuOcpgnxSLl5GKF9fl
-         HP1mGpicYbDb/JVtqvKTmkvdajXBkgSPCUH5g7guFk28pomHP5X8tcMdHrRgjsVfof4Q
-         q1XEjqOgsFRPnZ2cA9bd7Q/sV1R3tILf7Zxuj34ndNQ7Hhb/wYQKzxns/qLQxMilUba0
-         kRCw==
-X-Gm-Message-State: ANoB5pnOJVUnTriJ66AJ69lyfFykaZmz40dCYROnAI+XX5sykAYK3BrQ
-        NSgB/SJMPbOyDcwsL05QKeWxdlcU088=
-X-Google-Smtp-Source: AA0mqf4abuPfHqWQGgr+xyPTYwWXh2eVUPCUX1/HFNhZVPUTuLReldXLnkoHzXMGybEcr3NRPb12bw==
-X-Received: by 2002:a62:79c8:0:b0:56e:827d:dcce with SMTP id u191-20020a6279c8000000b0056e827ddccemr11082997pfc.51.1668838201335;
-        Fri, 18 Nov 2022 22:10:01 -0800 (PST)
-Received: from localhost ([2605:59c8:6f:2810:4972:c93:8645:24f2])
-        by smtp.gmail.com with ESMTPSA id s2-20020a632142000000b00460a5c6304dsm3638868pgm.67.2022.11.18.22.10.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 22:10:00 -0800 (PST)
-Date:   Fri, 18 Nov 2022 22:09:59 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Vernet <void@manifault.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, memxor@gmail.com, yhs@fb.com,
-        song@kernel.org, sdf@google.com, kpsingh@kernel.org,
-        jolsa@kernel.org, haoluo@google.com, tj@kernel.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Message-ID: <637873372bf8d_656da2081@john.notmuch>
-In-Reply-To: <20221118183113.ftsafchmurs7copl@MacBook-Pro-5.local>
-References: <20221117032402.2356776-1-void@manifault.com>
- <6376a1b12bb4d_4101208d@john.notmuch>
- <Y3atifGs0DM9to8z@maniforge.lan>
- <6376b7822f4df_8c7a208f7@john.notmuch>
- <Y3biwxIq8B5oYdOS@maniforge.lan>
- <6377206bed37e_2063d20878@john.notmuch>
- <Y3ef3Mlzd96iANLm@maniforge.lan>
- <20221118183113.ftsafchmurs7copl@MacBook-Pro-5.local>
-Subject: Re: [PATCH bpf-next v7 0/3] Support storing struct task_struct
- objects as kptrs
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229836AbiKSGNi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Nov 2022 01:13:38 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B89615723
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 22:13:32 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AJ4nrWi003341
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 22:13:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : mime-version; s=s2048-2021-q4;
+ bh=cvDtEax3CS7K0O5Fuu0wqsJXOis5BksjHqrsVM85qCo=;
+ b=XfAa3wiXb1gitLIhPMZr7gDsz+oRBagL1R3aHA/uqXjnuQadvyPcfIK+26ATMOtiRt6g
+ b+NR05EulEQIsRD0cJz9J+YFzcU6eqjTDYR9WvMsPUaG3+rMTViltTPe8fKBlb52v2tG
+ Zc7TZT6ktMceFHs0tg+p9dNoUK0GfNaBUDIlyHBhl49haqlU7UJUzRmWPOFjxHkhZ1Hh
+ K5NvweXZrfNjTeUAhXEfDDJK8Y1BwUhzM4Edg+rm/m/HLQp81vxGqhNf1D6yF+Jm9MSu
+ kUgk2ZOv5Dfw4rDhPbAqZvyG+dS6S+tH4ZCZdPLI3p7m/OvSsiUwk3siyT73fUqFsigb Ow== 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2170.outbound.protection.outlook.com [104.47.73.170])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxrex0a6g-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 18 Nov 2022 22:13:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kxnLZclb0KSMf5mf/o9JrPxUQSgsYFLw0b03z46LD1fCiDkuckof5XEs1D4V+jtLSFOPFX4IAyk65TXydYdYA9UynrZBemeuqJDHnmTJvSN5wsKSbyYVCB6iu+F8aNFzHBXsgkzrrCO4vNod9yERlGQNz35JxYPhb31tABm1lOh1tcgUG6smu3PXsp4Bt4GzBil0l2Tr/BwTJF3h5QiMS1gLu4hiCz9xt9kj/MGAvWJqES6jz3/dAO6U0YhB1mflupDe1bg8CY/0jku3tZlggJOEenhWNYm8gokwsfxP5LBoRcva/ef+SfM9I76EZF9C3C3NmV4cK2NMTiPEgNK2ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cvDtEax3CS7K0O5Fuu0wqsJXOis5BksjHqrsVM85qCo=;
+ b=HJVpWi/XnGeM/WKwkZblgNwioxnghFJEkzg2RVm/vY2eCPqK+AU/AtXp0Y8NKGY8Ck0oUOSEc1vJrpwmQwAmECTgo6CTPUxba6aML1s0RB/ljMTJ5pyoWLuTE+Q9Yi+HW2jGhNw6KHH61mAcx4WAsKiIc6DgfD97HeH66egjaN+fJFPsIoJtKTEEKYa2GG84rNPCP414hopNQ+XHetnTMeGYsPV3Vfb7pupn3fXVepiJrTaziicr0LHfEGoJ5SIKMSlEVwqlSWQQJMKo41VOgutRdyK07c5LIc98f6Xmo7iQQTxZrKjC7H/QdQRWha2y2EC8jQZ6qxHFcB+N4x7B2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by MWHPR15MB1472.namprd15.prod.outlook.com (2603:10b6:300:bf::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Sat, 19 Nov
+ 2022 06:13:28 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::3c4d:ca9e:8db4:f7b0]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::3c4d:ca9e:8db4:f7b0%3]) with mapi id 15.20.5834.009; Sat, 19 Nov 2022
+ 06:13:27 +0000
+From:   Song Liu <songliubraving@meta.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Song Liu <songliubraving@meta.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin Lau <kafai@meta.com>, Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, David Vernet <void@manifault.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCHv3 bpf-next 1/2] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+Thread-Topic: [PATCHv3 bpf-next 1/2] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+Thread-Index: AQHY+2Qj3ZAAgzp5qEStRAYmgwCJVq5FWMIAgAAWrYCAABYZgIAAP8EA
+Date:   Sat, 19 Nov 2022 06:13:27 +0000
+Message-ID: <F64318AA-9BED-47E1-82B2-5739DE4F7540@fb.com>
+References: <20221118154028.251399-1-jolsa@kernel.org>
+ <20221118154028.251399-2-jolsa@kernel.org>
+ <CAADnVQLLvwpAFTEwCw+ZdZGtZTrV7nFu3pXKMRW9irRYG9WJXw@mail.gmail.com>
+ <E30FFAE3-2BC8-45F5-9CBC-D7A3C7D66B74@fb.com>
+ <CAADnVQK7d-=_GWT++wvrXG9tB=hOEdFgc9Ejh76y4ZLDKd5-Rg@mail.gmail.com>
+In-Reply-To: <CAADnVQK7d-=_GWT++wvrXG9tB=hOEdFgc9Ejh76y4ZLDKd5-Rg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.120.41.1.1)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|MWHPR15MB1472:EE_
+x-ms-office365-filtering-correlation-id: 4f4f8763-06b3-4f39-d9bc-08dac9f52c3b
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rGkpsAqCcA0t4gSUn9VbliSRFkukjc23Mqy5x6z7lMxC/jc+WKl/C+OgRJCe5hZT2ZoX55mrlWC8brPUtCc1OFAHqZq8aKBJXOmoGI4ZRSSV+cBTHCDPuxfIVVKP/gXMG27EMv5UhddrRajJgTwwRASCXPpy7AV2iUvCKX5k74bmDQX4HlrNvKrL39tYl2Bvwm14wT4ncwOxymQM2NJTfmq+ok2xIgOZ6zy+DFFzwsekKOHv9u5yoxp94ip9dlkgpHcMLp8QmFeUeil/zCEvMFuA0ZV4vulzR1+v56y0qFPdxpWaP0LW+/r38F8V0LrCDQVfZD66eA+8vxynJ4TEXxq/r3mbuWfOikYtRC8By1P7PWr7ZgEODCsAliwdYOihpT0eCuxhVG4IeVsxFDwmL8wigy1UzYufljDdZv6MdhN0rkeMusJBnxqfRf1QfCuxMmogQscTB53cWUj2wnvIvquh+wfQXyMeMJz76086fMQG7NaJDxuSXfdlyNcauZ8fvFRQKKH78d2Vm+8iH0owvCEqLF1XfP7clGo2CU2yYerKrUnmkVpu5ccsOf2orw1pvvgPfNx7Q3YeBMG1+KbWWqVa5EELa8KKRHR/F5de4GC1bFHfL1L3kndhP2NM7Va7dwq7Qnnw4o8qQwiX5lnv0TcXMpV784dqPQS8xwLbIrOu/fvrrB4CHSY+Nku/U6i39ZunDM0ZcwKXBOPypV/LMQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(451199015)(478600001)(6486002)(71200400001)(54906003)(6916009)(53546011)(6506007)(38070700005)(66476007)(76116006)(6512007)(66946007)(8676002)(4326008)(36756003)(9686003)(7416002)(66556008)(64756008)(91956017)(5660300002)(8936002)(2906002)(186003)(41300700001)(66446008)(316002)(83380400001)(33656002)(86362001)(38100700002)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7663SoQPUGlQjla5nbTwEhX3ebjoIm21EDOxsip5mUZpDO7VAkHtjHDycqJV?=
+ =?us-ascii?Q?5fezjpWSqF24lsp84BwO5qLq/x4hHZA76APiyvzEaVde0sGOxRVEYDzTOMcz?=
+ =?us-ascii?Q?ZcEcQy3G0XDwmMEGCOb3F9cKTERzTIN0bQxywgmSCthxbA+8vqqd/vqPQXIq?=
+ =?us-ascii?Q?78O+HtQ08gYd6+Cy0Vr3TC+Wks6EN6sNouBv370ihW1XOhkMR/naA7hU8mdJ?=
+ =?us-ascii?Q?N44Lacgm01cp/wu6VVoltjZcZqTp2yE757eAsOvKTr/cVUrlCN4mUaC+eW5g?=
+ =?us-ascii?Q?WEZCGyZf3uDIsSuG9SWYfDPP9Qo663irQ0Bt2o0KZnm0OExaRDyKKPYt+kDg?=
+ =?us-ascii?Q?Pzin8BMiObT1gDLpEIr5FywrVr27jxNEvv4kDVMdlETVMpb5EuKV2dL/zWj1?=
+ =?us-ascii?Q?Z6t8xaGk1y85pdtar1xU1IVj+ftcPFxwL5CYql5drCDoQ3NQwMJvCssushj0?=
+ =?us-ascii?Q?sjDYkdTiKWORElruhE5pXgBb2gtKtraKuYFrwjrYGy4YROVbmwAuNHj0sqIg?=
+ =?us-ascii?Q?NQEgT+5B2jkqnEn4Fdb5trlZrxkkUv0YI1UkPUYe22pG0A8DGAl2KsDXfWfl?=
+ =?us-ascii?Q?xLVcKKOxXBsb4qt2bL/85h7TaDuPq46Y04nojEgRK/KG/nu1IxHWCI0R+uPW?=
+ =?us-ascii?Q?1q80rnraG9a7cHV9AvH70W1KPiFb0akv15dUL6hC9QgIfJqYM8I22a8RGDqm?=
+ =?us-ascii?Q?0TcZqOS8coj5b6AQKJuSM/Tff9T4kgYDLKdLTbNj+dEkeYSozj0HFwoJupHp?=
+ =?us-ascii?Q?+Fv39XqAm3QMUpxmoz3miK7rvKVFFkc41nky2hh/O/HaPXUGJfRNPF8J3Om7?=
+ =?us-ascii?Q?KfIM+MHG6VJlE9j7GS1vH8PV5A4i7tctpAw1eQwRPQ7/5Gcke5iPxig83c+6?=
+ =?us-ascii?Q?eG/d66JdeISL/J3/nci6V4IcrXUVVajvMiT4esL/Le+x2JIk/b285uXHTKWU?=
+ =?us-ascii?Q?e5Acaueg3aGMxR+MEESaw0tV5OpNdNpwEPczhfoHehZINepAzl+PtsIRaLo3?=
+ =?us-ascii?Q?0QkXNaf5vDervCjtAO2n9QJ7eXhF1VHj1LqUJhesJZvfQklDIM+/ppHb5U4G?=
+ =?us-ascii?Q?A2Wc0uYoZFSqCzAVKn5yVSfuwSMfFvr25W6ajvDh0xoDPgP6/FXhCcv/Xn23?=
+ =?us-ascii?Q?RBSFhGCe4JbV6JrrKtWW2kSNzrJwr2SRn0k2llWfZlSuKZZpNA9vmVKXGo/b?=
+ =?us-ascii?Q?epjuHXUfSMBFeN9CyJYBM6JV5md516LvQO1fQqR87OAMrsrSArRS+wRpZtcs?=
+ =?us-ascii?Q?D+LxmqInSlEUurSYpgfRXp6dDJ87safToIqGQIFnqpgmjCuyvWgwEvRTGOin?=
+ =?us-ascii?Q?AqjtDYLrTMi3u8Ar0GnEOHFUgeQk+5vfDtZ2afQL/2Kk9hAtQhqECvGkXzUD?=
+ =?us-ascii?Q?qBic5PVxRvaS0mJaDPzd4R/b1sQyxIbP1T3IyoPtbM5hwsmkMJUAes/X9+R5?=
+ =?us-ascii?Q?R9D4C4QDizVM3Bc7LNC3C/BggrdVrH6uqem+bEZNhSEFbGG7TfMQkJAZtcS7?=
+ =?us-ascii?Q?pcSrKAYzJtNRH0HFR+l5sPdfZ6+AyP6J9X3cTsR6oCX7svGQ4yqvXQk7s59X?=
+ =?us-ascii?Q?W3BVFTdYv/7bCS1DGJ6o0BvUbX5/2mfy498qvQA1I8jcqm0NB1Y7faQLfxbc?=
+ =?us-ascii?Q?/4rI6vRp+LvK1Y2xnj1teWcAQkp4R4QL0Oy/6m66OoJT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6E0A70C2115B704AB98DDA8E80B2650A@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f4f8763-06b3-4f39-d9bc-08dac9f52c3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2022 06:13:27.2324
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 03ZOmxJN2khZzRcu81wVxEaEIU/DsCuiTx3EW61fH3gNKaUqE3qKGWrDHf6JCnoc1UiZxVsTp5o1KShQPPyqVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1472
+X-Proofpoint-GUID: M26WFsqzRLw4Q-xZq2Mga1Ad6Wy4pCQZ
+X-Proofpoint-ORIG-GUID: M26WFsqzRLw4Q-xZq2Mga1Ad6Wy4pCQZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-18_08,2022-11-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Fri, Nov 18, 2022 at 09:08:12AM -0600, David Vernet wrote:
-> > On Thu, Nov 17, 2022 at 10:04:27PM -0800, John Fastabend wrote:
-> > 
-> > [...]
-> > 
-> > > > > And last thing I was checking is because KF_SLEEPABLE is not set
-> > > > > this should be blocked from running on sleepable progs which would
-> > > > > break the call_rcu in the destructor. Maybe small nit, not sure
-> > > > > its worth it but might be nice to annotate the helper description
-> > > > > with a note, "will not work on sleepable progs" or something to
-> > > > > that effect.
-> > > > 
-> > > > KF_SLEEPABLE is used to indicate whether the kfunc _itself_ may sleep,
-> > > > not whether the calling program can be sleepable. call_rcu() doesn't
-> > > > block, so no need to mark the kfunc as KF_SLEEPABLE. The key is that if
-> > > > a kfunc is sleepable, non-sleepable programs are not able to call it
-> > > > (and this is enforced in the verifier).
-> > > 
-> > > OK but should these helpers be allowed in sleepable progs? I think
-> > > not. What stops this, (using your helpers):
-> > > 
-> > >   cpu0                                       cpu1
-> > >   ----
-> > >   v = insert_lookup_task(task)
-> > >   kptr = bpf_kptr_xchg(&v->task, NULL);
-> > >   if (!kptr)
-> > >     return 0;
-> > >                                             map_delete_elem()
-> > >                                                put_task()
-> > >                                                  rcu_call
-> > >   do_something_might_sleep()
-> > >                                                     put_task_struct
-> > >                                                       ... free  
-> 
-> the free won't happen here, because the kptr on cpu0 holds the refcnt.
-> bpf side never does direct free of kptr. It only inc/dec refcnt via kfuncs.
-> 
-> > >   kptr->[free'd memory]
-> > >  
-> > > the insert_lookup_task will bump the refcnt on the acquire on map
-> > > insert. But the lookup doesn't do anything to the refcnt and the
-> 
-> lookup from map doesn't touch kptrs in the value.
-> just reading v->kptr becomes PTR_UNTRUSTED with probe_mem protection.
-> 
-> > > map_delete_elem will delete it. We have a check for spin_lock
-> > > types to stop them from being in sleepable progs. Did I miss a
-> > > similar check for these?
-> > 
-> > So, in your example above, bpf_kptr_xchg(&v->task, NULL) will atomically
-> > xchg the kptr from the map, and so the map_delete_elem() call would fail
-> > with (something like) -ENOENT. In general, the semantics are similar to
-> > std::unique_ptr::swap() in C++.
-> > 
-> > FWIW, I think KF_KPTR_GET kfuncs are the more complex / racy kfuncs to
-> > reason about. The reason is that we're passing a pointer to the map
-> > value containing a kptr directly to the kfunc (with the attempt of
-> > acquiring an additional reference if a kptr was already present in the
-> > map) rather than doing an xchg which atomically gets us the unique
-> > pointer if nobody else xchgs it in first. So with KF_KPTR_GET, someone
-> > else could come along and delete the kptr from the map while the kfunc
-> > is trying to acquire that additional reference. The race looks something
-> > like this:
-> > 
-> >    cpu0                                       cpu1
-> >    ----
-> >    v = insert_lookup_task(task)
-> >    kptr = bpf_task_kptr_get(&v->task);
-> >                                              map_delete_elem()
-> >                                                 put_task()
-> >                                                   rcu_call
-> >                                                      put_task_struct
-> >                                                        ... free  
-> >    if (!kptr)
-> >      /* In this race example, this path will be taken. */
-> >      return 0;
-> > 
-> > The difference is that here, we're not doing an atomic xchg of the kptr
-> > out of the map. Instead, we're passing a pointer to the map value
-> > containing the kptr directly to bpf_task_kptr_get(), which itself tries
-> > to acquire an additional reference on the task to return to the program
-> > as a kptr. This is still safe, however, as bpf_task_kptr_get() uses RCU
-> > and refcount_inc_not_zero() in the bpf_task_kptr_get() kfunc to ensure
-> > that it can't hit a UAF, and that it won't return a dying task to the
-> > caller:
-> > 
-> > /**
-> >  * bpf_task_kptr_get - Acquire a reference on a struct task_struct kptr. A task
-> >  * kptr acquired by this kfunc which is not subsequently stored in a map, must
-> >  * be released by calling bpf_task_release().
-> >  * @pp: A pointer to a task kptr on which a reference is being acquired.
-> >  */
-> > __used noinline
-> > struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
-> > {
-> >         struct task_struct *p;
-> > 
-> >         rcu_read_lock();
-> >         p = READ_ONCE(*pp);
-> > 
-> > 	/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> > 	 * cpu1 could remove the element from the map here, and invoke
-> > 	 * put_task_struct_rcu_user(). We're in an RCU read region
-> > 	 * though, so the task won't be freed until at the very
-> > 	 * earliest, the rcu_read_unlock() below.
-> > 	 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-> > 	 */
-> > 
-> >         if (p && !refcount_inc_not_zero(&p->rcu_users))
-> > 		/* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> > 		 * refcount_inc_not_zero() will return false, as cpu1
-> > 		 * deleted the element from the map and dropped its last
-> > 		 * refcount. So we just return NULL as the task will be
-> > 		 * deleted once an RCU gp has elapsed.
-> > 		 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-> > 		 */
-> >                 p = NULL;
-> >         rcu_read_unlock();
-> > 
-> >         return p;
-> > }
-> > 
-> > Let me know if that makes sense. This stuff is tricky, and I plan to
-> > clearly / thoroughly add it to that kptr docs page once this patch set
-> > lands.
-> 
-> All correct. Probably worth adding this comment directly in bpf_task_kptr_get.
 
-Yes also agree thanks for the details. Spent sometime trying to break
-it this event, but didn't find anything.
 
-Thanks.
+> On Nov 18, 2022, at 6:25 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+> On Fri, Nov 18, 2022 at 5:06 PM Song Liu <songliubraving@meta.com> wrote:
+>> 
+>> 
+>> 
+>>> On Nov 18, 2022, at 3:45 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>> 
+>>> On Fri, Nov 18, 2022 at 7:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>>>> 
+>>>> Adding bpf_vma_build_id_parse function to retrieve build id from
+>>>> passed vma object and making it available as bpf kfunc.
+>>>> 
+>>>> We can't use build_id_parse directly as kfunc, because we would
+>>>> not have control over the build id buffer size provided by user.
+>>>> 
+>>>> Instead we are adding new bpf_vma_build_id_parse function with
+>>>> 'build_id__sz' argument that instructs verifier to check for the
+>>>> available space in build_id buffer.
+>>>> 
+>>>> This way  we check that there's  always available memory space
+>>>> behind build_id pointer. We also check that the build_id__sz is
+>>>> at least BUILD_ID_SIZE_MAX so we can place any buildid in.
+>>>> 
+>>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>>> ---
+>>>> include/linux/bpf.h      |  4 ++++
+>>>> kernel/bpf/verifier.c    | 26 ++++++++++++++++++++++++++
+>>>> kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
+>>>> 3 files changed, 61 insertions(+)
+>>>> 
+>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>>> index 8b32376ce746..7648188faa2c 100644
+>>>> --- a/include/linux/bpf.h
+>>>> +++ b/include/linux/bpf.h
+>>>> @@ -2805,4 +2805,8 @@ static inline bool type_is_alloc(u32 type)
+>>>>       return type & MEM_ALLOC;
+>>>> }
+>>>> 
+>>>> +int bpf_vma_build_id_parse(struct vm_area_struct *vma,
+>>>> +                          unsigned char *build_id,
+>>>> +                          size_t build_id__sz);
+>>>> +
+>>>> #endif /* _LINUX_BPF_H */
+>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>> index 195d24316750..e20bad754a3a 100644
+>>>> --- a/kernel/bpf/verifier.c
+>>>> +++ b/kernel/bpf/verifier.c
+>>>> @@ -8746,6 +8746,29 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>>>>       return 0;
+>>>> }
+>>>> 
+>>>> +BTF_ID_LIST_SINGLE(bpf_vma_build_id_parse_id, func, bpf_vma_build_id_parse)
+>>>> +
+>>>> +static int check_kfunc_caller(struct bpf_verifier_env *env, u32 func_id)
+>>>> +{
+>>>> +       struct bpf_func_state *cur;
+>>>> +       struct bpf_insn *insn;
+>>>> +
+>>>> +       /* Allow bpf_vma_build_id_parse only from bpf_find_vma callback */
+>>>> +       if (func_id == bpf_vma_build_id_parse_id[0]) {
+>>>> +               cur = env->cur_state->frame[env->cur_state->curframe];
+>>>> +               if (cur->callsite != BPF_MAIN_FUNC) {
+>>>> +                       insn = &env->prog->insnsi[cur->callsite];
+>>>> +                       if (insn->imm == BPF_FUNC_find_vma)
+>>>> +                               return 0;
+>>>> +               }
+>>>> +               verbose(env, "calling bpf_vma_build_id_parse outside bpf_find_vma "
+>>>> +                       "callback is not allowed\n");
+>>>> +               return -1;
+>>>> +       }
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>> 
+>>> I understand that calling bpf_vma_build_id_parse from find_vma
+>>> is your only use case, but put yourself in the maintainer's shoes.
+>>> We just did an arbitrary restriction and helped a single user.
+>>> How are we going to explain this to other users?
+>>> Let's figure out a more generic way where this call is safe.
+>>> Have you looked at PTR_TRUSTED approach that David is doing
+>>> for task_struct ? Can something like this be used here?
+>> 
+>> I guess that won't work, as the vma is not refcounted. :( This is
+>> why we have to hold mmap_lock when calling task_vma programs.
+>> 
+>> OTOH, I would image bpf_vma_build_id_parse being quite useful for
+>> task_vma programs.
+> 
+> Of course we cannot increment non-existing refcnt in vma :)
+> I meant that PTR_TRUSTED part of the concept. The kfunc
+> bpf_vma_build_id_parse(struct vm_area_struct *vma, ...)
+> should have KF_TRUSTED_ARGS flag
+> and it will be the job of the verifier to pass a trusted vma pointer.
+> Meaning that the verifier needs to guarantee that
+> the pointer is safe to operate on.
+> That's what I was explaining to Kumar and David earlier
+> about KF_TRUSTED_ARGS semantics.
+> 
+> PTR_TRUSTED doesn't mean that the pointer is refcnted.
+> It means that it won't disappear and we can safely pass it
+> to kfunc or helpers.
+> For bpf_find_vma we can mark vma pointer PTR_TRUSTED on entry
+> into callback bpf prog and the prog will be able to pass it
+> to bpf_vma_build_id_parse() kfunc as long as the prog doesn't
+> add any offset to it.
+> The implementation of bpf_find_vma() guarantees that vma ptr
+> passed into callback_fn is valid.
+> So it's exactly PTR_TRUSTED.
+> 
+> Similarly task_vma programs will be receiving PTR_TRUSTED pointers too
+> and will be able to call bpf_vma_build_id_parse() kfunc as well.
+> Any place where we can guarantee the safety of the pointer
+> we should be marking it as PTR_TRUSTED.
+> 
+> David's series start with marking all tp_btf arguments as PTR_TRUSTED.
+> Doing this for iterators, bpf_find_vma callback
+> will be a continuation of PTR_TRUSTED logic.
+
+I see. So PTR_TRUSTED task_struct is an refcounted task_struct; 
+while PTR_TRUSTED vm_area_struct is a vma with its mm_struct locked. 
+That makes perfect sense. 
+
+Thanks for the explanation!
+
+Song
+
+
