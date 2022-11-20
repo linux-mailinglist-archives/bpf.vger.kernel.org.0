@@ -2,114 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FDE6316DE
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 23:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28C36316F8
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 23:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiKTWe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 17:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S229773AbiKTWsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 17:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiKTWe6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 17:34:58 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3230A222A5
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 14:34:58 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id c203so9721728pfc.11
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 14:34:58 -0800 (PST)
+        with ESMTP id S229735AbiKTWsI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 17:48:08 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFB225EBD
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 14:48:07 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id n12so964879qvr.11
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 14:48:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zj1YTiDYMKN+U/iJe/mExzifsiwf4vYVCerk4Qjccqc=;
-        b=CTbGoV3ga46W8aGNDeoQF7Isc/tVufgNGyUjCTt7mxLjmr4dtjGLb5hBZq0XgR+BBO
-         eVUES3qdlXCz2YupadREAeDB35JzmCc/KqGF/9OAELtAauFDpgo7TDfCn98fRB3jdmGI
-         Mo8zf3YEWaspBxCuhLeg8rx1nU4yuzL8PDFQXSvmNypWXY6jFkGvNwlTZaYegY/9GlDm
-         efe4DdZ8zV6f7iw1452tpL/Iyz+76ujMR2avHD0WgLsrOON48nTCvTpk8hEUZv6tF/lv
-         Gjk6eIyefxlsY3EXYZvvipQ2FwgCC0rmCebM41K8cYsVkI9o14jIl2Ip7szcG38mnV3m
-         bBLA==
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3mjAIW8k5VxoMOnyzgLgWkvKkvapN5NZ0uMRzSPKIns=;
+        b=Vu4fH0kDUePBY5gWNsF0HBh2gQuR5ygWHj0xOfe1DIeSMGHx/9OPUfj6jhEy54bwy/
+         CrqzjsiLFHzK9+Np/gkUhjkBaSQrnmYY5lAJh4wuVp3p/FHAKcjKUbAXhaeiZwkgC+1D
+         T0tBcGlOPlYvMSHVq+uJDklxPCRyrbQewDNFO/iLcSIDJBI6tHr0AzA6ezEDJVXqpRbh
+         CSzZ+JMRkdTNyaS6OcLtbm3/p4JZAGBQNX2k/FjUxRx8XI9v14JSrx1oUsYEGdd6fL1a
+         qpKAFiunvDB9PM2pXiM09d3bAuzp4gUhSS5P0IapQmXYnsIDrZBvbTL5K3u2Eu0qxdX0
+         RTgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zj1YTiDYMKN+U/iJe/mExzifsiwf4vYVCerk4Qjccqc=;
-        b=0IPEqwknrWGIZh2k6qUV0fCcXtQKF8pGWdBphb1PgphAr9976uUowWmuKRDBQx/5iq
-         s9LA/ep4brGlqAcN1OD0alrucbyMy5Lyn2g0BYFI7EphRANtJPlWNBrpiJbCKRggeloh
-         VWnKe/0gqWa2vC2d0zjLDKSm8YSFdTOSyRdvj4Jy7ArOLVH25wCZpCDIAegTDHN9lvAT
-         foYjje8vfeCMlgxCAy1C/CoQwHWDIyZrinnN6ypgG6Zxccca7dYGAhedSWbYP974WnYB
-         kO16JYGFvDoPCI/WZOLlP68yiNrTzbD0Fn0EiyYnAPTPWG0zFelJ+4VhhH0dIe8OPlSa
-         6q/g==
-X-Gm-Message-State: ANoB5pnIKvD98FfZzvQhWwIR45RHHyd/lvd7cpLz6z+p3its77SkMo0Z
-        VVsgEI3WKem9i1RZqVTnsSs=
-X-Google-Smtp-Source: AA0mqf7fuEmQIAPkuMRzBQrG3dRcQanhMRsN/gzaxhb+MByVxYKEb6UbmIEOqz3rUk/dUdAi4YzuRw==
-X-Received: by 2002:a62:f94c:0:b0:56e:174e:efdf with SMTP id g12-20020a62f94c000000b0056e174eefdfmr17257684pfm.29.1668983697635;
-        Sun, 20 Nov 2022 14:34:57 -0800 (PST)
-Received: from macbook-pro-5.dhcp.thefacebook.com ([2620:10d:c090:400::5:7165])
-        by smtp.gmail.com with ESMTPSA id o67-20020a17090a0a4900b00218b3f1b430sm615389pjo.54.2022.11.20.14.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Nov 2022 14:34:57 -0800 (PST)
-Date:   Sun, 20 Nov 2022 14:34:54 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add a kfunc for generic type cast
-Message-ID: <20221120223454.ymzd4oqt7nsrbgkn@macbook-pro-5.dhcp.thefacebook.com>
-References: <20221120195421.3112414-1-yhs@fb.com>
- <20221120195437.3114585-1-yhs@fb.com>
- <CAADnVQ+92vwqUB=J-QJYtrW0Yqvx2HAJJBREkXPJtW0+gyS1mQ@mail.gmail.com>
- <20221120204930.uuinebxndf7vkdwy@apollo>
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3mjAIW8k5VxoMOnyzgLgWkvKkvapN5NZ0uMRzSPKIns=;
+        b=DddzyjFMN7J5TvXDH/FKa0C0Tk8pDaKo28i5tzyaQclRiAytcvgSA/87mRO6rPJbP0
+         zj0M1lubmXjHVUb7ulOLXajc2h94j1BW7YO3bR0LjoRBVTcDCFnFI4wXW3K+o4X2gzm7
+         vYHGDNmeDa7roD056jL7HRvijRwhHlPUik0xeRABlhixibiQZoVVdREu/J/vR7qSIIa3
+         xdkDW6FxSPWh/ztKVDRPZngnICH345UuCa08JfqNYFHizHdzgcGrlsCjxL6X3Sf3jK6j
+         BOuFEvPQ7kHA2Vmw99GB0kULUxUBtzerP5E6VqawlP9TILKQXqDQIPU233+ABFN4TCD9
+         AblQ==
+X-Gm-Message-State: ANoB5plkaq85IKpzVzk8QJoWJ8gK1lu4L5jkvML/Hf3BInsri8hu+RRF
+        36JxnN1GYO2GURlnw3g1hZYK361ftVWYqlHU23k=
+X-Google-Smtp-Source: AA0mqf6R4yrr0ulhMUH9NaDlyhMlruG1dXNvUMAAl90NBSKfG6h48ixZ6grqAvOhhnPBM7UQ6tBS1E0JbEuevMrFC1w=
+X-Received: by 2002:ad4:4f08:0:b0:4c6:8cac:1c24 with SMTP id
+ fb8-20020ad44f08000000b004c68cac1c24mr6421368qvb.56.1668984486417; Sun, 20
+ Nov 2022 14:48:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221120204930.uuinebxndf7vkdwy@apollo>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:622a:44c:b0:3a5:908d:1068 with HTTP; Sun, 20 Nov 2022
+ 14:48:06 -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <zeidaniccc5@gmail.com>
+Date:   Sun, 20 Nov 2022 22:48:06 +0000
+Message-ID: <CAJ2z3_D3iZfTnBeS_baQWxk9y_Y5KB6k7Ds65H+r-NR4YLb3sg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,UNDISC_FREEM,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:f2f listed in]
+        [list.dnswl.org]
+        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0028]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [msbelinaya892[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [zeidaniccc5[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [zeidaniccc5[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.8 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  2.1 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 02:19:30AM +0530, Kumar Kartikeya Dwivedi wrote:
-> On Mon, Nov 21, 2022 at 01:46:04AM IST, Alexei Starovoitov wrote:
-> > On Sun, Nov 20, 2022 at 11:57 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > > @@ -8938,6 +8941,24 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > >                                 regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
-> > >                                 regs[BPF_REG_0].btf = desc_btf;
-> > >                                 regs[BPF_REG_0].btf_id = meta.ret_btf_id;
-> > > +                       } else if (meta.func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
-> > > +                               if (!capable(CAP_PERFMON)) {
-> > > +                                       verbose(env,
-> > > +                                               "kfunc bpf_rdonly_cast requires CAP_PERFMON capability\n");
-> > > +                                       return -EACCES;
-> > > +                               }
-> >
-> > Just realized that bpf_cast_to_kern_ctx() has to be
-> > gated by cap_perfmon as well.
-> >
-> > Also the direct capable(CAP_PERFMON) is not quite correct.
-> > It should at least be perfmon_capable().
-> > But even better to use env->allow_ptr_leaks here.
-> 
-> Based on this, I wonder if this needs to be done for bpf_obj_new as well? It
-> doesn't zero initialize the memory it returns (except special fields, which is
-> required for correctness), so technically it allows leaking kernel addresses
-> with just CAP_BPF (apart from capabilities needed for the specific program types
-> it is available to).
-> 
-> Should that also have a env->allow_ptr_leaks check?
-
-Yeah. Good point.
-My first reaction was to audit everything where the verifier produces
-PTR_TO_BTF_ID and gate it with allow_ptr_leaks.
-But then it looks simpler to gate it once in check_ptr_to_btf_access().
-Then bpf_rdonly_cast and everything wouldn't need those checks.
+4YOb4YOUIOGDqOGDlOGDm+GDneGDkuGDl+GDkOGDleGDkOGDluGDlOGDkeGDlyDhg6nhg5Thg5vh
+g6Eg4YOb4YOU4YOS4YOd4YOR4YOg4YOd4YOR4YOQ4YOhIOGDk+GDkCDhg5Xhg6Thg5jhg6Xhg6Dh
+g53hg5EsIOGDkuGDo+GDmuGDmOGDlyDhg5vhg5jhg5vhg5jhg6bhg5Thg5Hhg5cuIOGDkOGDm+GD
+kOGDnA0K4YOb4YOY4YOR4YOY4YOr4YOS4YOQIOGDk+GDkOGDm+GDlOGDmeGDkOGDleGDqOGDmOGD
+oOGDlOGDkeGDmOGDnOGDkCDhg5Phg5Ag4YOb4YOU4YOc4YOQ4YOu4YOQLCDhg6Dhg53hg5Lhg53h
+g6Ag4YOo4YOU4YOS4YOV4YOY4YOr4YOa4YOY4YOQIOGDoeGDkOGDo+GDmeGDlOGDl+GDlOGDoeGD
+neGDkw0K4YOT4YOQ4YOV4YOU4YOu4YOb4YOQ4YOg4YOd4YOXIOGDlOGDoOGDl+GDm+GDkOGDnOGD
+lOGDl+GDoS4g4YOb4YOUIOGDleGDkOGDoCDhg6Xhg5Dhg5rhg5Hhg5Dhg6Lhg53hg5zhg5gg4YOZ
+4YOd4YOv4YOd4YOV4YOYIOGDsOGDlOGDkuGDkeGDneGDoOGDmCDhg5fhg6Phg6Dhg6Xhg5Thg5fh
+g5jhg5Phg5Dhg5wg4YOT4YOQDQrhg5Xhg5vhg6Phg6jhg5Dhg53hg5Eg4YOh4YOQ4YOb4YOb4YOQ
+4YOg4YOX4YOV4YOU4YOa4YOd4YOhIOGDneGDnuGDlOGDoOGDkOGDquGDmOGDlOGDkeGDmOGDoSDh
+g5vhg5Thg5zhg5Thg6/hg5Thg6Dhg5Dhg5MNClN0YW5kYXJkQk5QIEJhbmsgTGltaXRlZCBUdXJr
+ZXkuIOGDleGDpOGDmOGDpeGDoOGDneGDkSwg4YOm4YOb4YOU4YOg4YOX4YOY4YOhIOGDnOGDlOGD
+keGDkOGDkCwg4YOg4YOd4YObIOGDkOGDruGDmuGDkA0K4YOS4YOY4YOe4YOd4YOV4YOdLiDhg5vh
+g5Qg4YOb4YOQ4YOl4YOV4YOhIOGDm+GDnOGDmOGDqOGDleGDnOGDlOGDmuGDneGDleGDkOGDnOGD
+mCDhg6Hhg5Dhg6Xhg5vhg5jhg5Dhg5zhg5gg4YOT4YOY4YOh4YOZ4YOj4YOh4YOY4YOQLCDhg6Dh
+g53hg5vhg5Thg5rhg5jhg6og4YOb4YOY4YOc4YOT4YOQLg0K4YOS4YOQ4YOS4YOY4YOW4YOY4YOQ
+4YOg4YOU4YOR4YOXIOGDlOGDoOGDl+GDoSwg4YOg4YOd4YOb4YOU4YOa4YOY4YOqIOGDleGDpOGD
+mOGDpeGDoOGDneGDkSDhg5Phg5Dhg5Lhg5Dhg5jhg5zhg6Lhg5Thg6Dhg5Thg6Hhg5Thg5Hhg5cs
+IOGDoOGDkOGDk+GDkuGDkOGDnCDhg5Dhg6Dhg5jhg6ENCg0K4YOZ4YOQ4YOV4YOo4YOY4YOg4YOY
+IOGDl+GDpeGDleGDlOGDnOGDoSDhg5Lhg5Xhg5Dhg6Dhg5fhg5Dhg5wg4YOT4YOQIOGDkOGDm+GD
+mOGDlyDhg5jhg6Hhg5Dhg6Dhg5Lhg5Thg5Hhg5rhg5Thg5Hhg5cuIDIwMTgg4YOs4YOU4YOa4YOh
+LCDhg5fhg6Xhg5Xhg5Thg5zhg5gg4YOh4YOQ4YOu4YOU4YOa4YOY4YOhDQrhg5vhg6Xhg53hg5zh
+g5Qg4YOl4YOV4YOU4YOn4YOc4YOY4YOhIOGDm+GDneGDpeGDkOGDmuGDkOGDpeGDlOGDmywg4YOY
+4YOV4YOQ4YOc4YOb4YOQLCDhg6nhg5Thg5vhg6Eg4YOR4YOQ4YOc4YOZ4YOo4YOYIOGDkuGDkOGD
+k+GDkOGDmeGDlOGDl+GDk+GDkCDhg5Dhg6Dhg5Dhg6Dhg5Thg5bhg5jhg5Phg5Thg5zhg6IgMzYN
+CuGDmeGDkOGDmuGDlOGDnOGDk+GDkOGDoOGDo+GDmuGDmCDhg5fhg5Xhg5jhg6Eg4YOQ4YOc4YOS
+4YOQ4YOg4YOY4YOo4YOW4YOULCDhg6Dhg53hg5vhg5rhg5jhg6Eg4YOm4YOY4YOg4YOU4YOR4YOj
+4YOa4YOU4YOR4YOQ4YOQIMKjOCw0MDAsMDAwLjAwLiDhg5Dhg5sNCuGDk+GDlOGDnuGDneGDluGD
+mOGDouGDmOGDoSDhg67hg5Thg5rhg6jhg5Thg5nhg6Dhg6Phg5rhg5Thg5Hhg5jhg6Eg4YOV4YOQ
+4YOT4YOY4YOhIOGDkuGDkOGDoeGDleGDmuGDmOGDoSDhg5fhg5Dhg6Dhg5jhg6bhg5gg4YOY4YOn
+4YOdIDIwMjEg4YOs4YOa4YOY4YOhIDE2IOGDmOGDkOGDnOGDleGDkOGDoOGDmC4NCuGDoeGDkOGD
+m+GDrOGDo+GDruGDkOGDoOGDneGDkywg4YOY4YOhIOGDmOGDp+GDnSDhg5Hhg53hg5rhg50gMjAx
+OS0yMDIwIOGDrOGDmuGDlOGDkeGDqOGDmCDhg5Lhg5Dhg6Dhg5Phg5Dhg6rhg5Xhg5rhg5jhg5rh
+g5fhg5Ag4YOo4YOd4YOg4YOY4YOhLg0KQ29yb25hVmlydXMgKENvdmlkMTkpIOGDnuGDkOGDnOGD
+k+GDlOGDm+GDmOGDkCwg4YOg4YOd4YOb4YOU4YOa4YOY4YOqIOGDm+GDneGDruGDk+GDkCDhg6nh
+g5jhg5zhg5Thg5fhg6jhg5gsIOGDoeGDkOGDnOGDkOGDmyDhg5vhg5Qg4YOV4YOY4YOn4YOQ4YOV
+4YOYDQrhg5vhg5jhg5Xhg5rhg5jhg5zhg5Thg5Hhg5Dhg6jhg5gsIOGDoOGDneGDm+GDlOGDmuGD
+oeGDkOGDqiDhg6Hhg6Phg5og4YOb4YOq4YOY4YOg4YOUIDY4IDAwMCDhg5Dhg5Phg5Dhg5vhg5jh
+g5Dhg5zhg5gg4YOo4YOU4YOU4YOs4YOY4YOg4YOQLiDhg6nhg5Thg5vhg5gg4YOR4YOQ4YOc4YOZ
+4YOY4YOhDQrhg5vhg5Thg5zhg5Thg6/hg5Thg6Dhg5vhg5Ag4YOT4YOm4YOU4YOb4YOT4YOUIOGD
+kOGDoCDhg5jhg6rhg5jhg6Eg4YOb4YOY4YOh4YOYIOGDkuGDkOGDoOGDk+GDkOGDquGDleGDkOGD
+muGDlOGDkeGDmOGDoSDhg6jhg5Thg6Hhg5Dhg67hg5Thg5EsIOGDleGDmOGDquGDneGDk+GDmCwg
+4YOg4YOQ4YOT4YOS4YOQ4YOcIOGDmOGDoQ0K4YOp4YOU4YOb4YOYIOGDm+GDlOGDkuGDneGDkeGD
+kOGDoOGDmCDhg5jhg6fhg50g4YOT4YOQIOGDm+GDlCDhg5Xhg5jhg6fhg5Dhg5Xhg5gg4YOb4YOY
+4YOh4YOYIOGDkOGDnOGDkuGDkOGDoOGDmOGDqOGDmOGDoSDhg53hg6Thg5jhg6rhg5Thg6Dhg5gs
+IOGDoOGDneGDk+GDlOGDoeGDkOGDqg0K4YOQ4YOc4YOS4YOQ4YOg4YOY4YOo4YOYIOGDkuGDkOGD
+ruGDoeGDnOGDmOGDmuGDmCDhg5jhg6fhg50g4YOp4YOU4YOb4YOhIOGDk+GDkOGDrOGDmOGDnOGD
+kOGDo+GDoOGDlOGDkeGDkOGDm+GDk+GDlC4g4YOX4YOj4YOb4YOq4YOQLCDhg5Et4YOcIOGDmOGD
+leGDkOGDnOGDoSDhg5Dhg6ANCuGDo+GDruGDoeGDlOGDnOGDlOGDkeGDmOGDkCDhg5Dhg67hg5rh
+g50g4YOc4YOQ4YOX4YOU4YOh4YOQ4YOV4YOU4YOR4YOYL+GDm+GDlOGDm+GDmeGDleGDmOGDk+GD
+oOGDlOGDlOGDkeGDmC4g4YOg4YOd4YOT4YOU4YOh4YOQ4YOqIOGDkuGDkOGDruGDoeGDlOGDnOGD
+mOGDlyDhg5Dhg5zhg5Lhg5Dhg6Dhg5jhg6jhg5gg4YOT4YOQDQrhg5Dhg6Ag4YOY4YOn4YOQ4YOV
+4YOY4YOXIOGDk+GDkOGDpeGDneGDoOGDrOGDmOGDnOGDlOGDkeGDo+GDmuGDmCDhg5Dhg5wg4YOo
+4YOV4YOY4YOa4YOU4YOR4YOYLiDhg5Lhg5Dhg6Hhg6Phg5og4YOZ4YOV4YOY4YOg4YOQ4YOhIOGD
+qeGDlOGDm+GDmCDhg5Hhg5Dhg5zhg5nhg5jhg6ENCuGDm+GDlOGDnOGDlOGDr+GDm+GDlOGDnOGD
+ouGDm+GDkCDhg5vhg5fhg67hg53hg5Xhg5Ag4YOb4YOY4YOb4YOU4YOq4YOYIOGDm+GDmOGDl+GD
+mOGDl+GDlOGDkeGDlOGDkeGDmCwg4YOX4YOjIOGDoOGDkCDhg6Phg5zhg5Phg5Ag4YOS4YOQ4YOQ
+4YOZ4YOU4YOX4YOdIOGDqOGDlOGDnOGDoQ0K4YOh4YOQ4YOu4YOh4YOg4YOU4YOR4YOX4YOQ4YOc
+LCDhg5fhg6Mg4YOu4YOU4YOa4YOo4YOU4YOZ4YOg4YOj4YOa4YOU4YOR4YOQ4YOhIOGDkuGDkOGD
+nOGDkOGDkOGDruGDmuGDlOGDkS4g4YOb4YOUIOGDleGDmOGDquGDmCwg4YOg4YOd4YObIOGDlOGD
+oSDhg5vhg53hg67hg5Phg5Thg5Hhg5Ag4YOT4YOQDQrhg5Dhg5vhg5jhg6Lhg53hg5sg4YOV4YOU
+4YOr4YOU4YORIOGDoeGDkOGDqOGDo+GDkOGDmuGDlOGDkeGDlOGDkeGDoSDhg6Hhg5jhg6Lhg6Ph
+g5Dhg6rhg5jhg5jhg6Eg4YOb4YOd4YOh4YOQ4YOS4YOV4YOQ4YOg4YOU4YOR4YOa4YOQ4YOTLCDh
+g6Dhg5Dhg5Phg5Lhg5Dhg5wg4YOX4YOjIOGDqeGDlOGDm+GDmA0K4YOR4YOQ4YOc4YOZ4YOY4YOh
+IOGDk+GDmOGDoOGDlOGDpeGDouGDneGDoOGDlOGDkeGDmCDhg5Lhg5Dhg5jhg5Lhg5Thg5Hhg5Th
+g5wsIOGDoOGDneGDmyDhg5jhg5Xhg5Dhg5zhg5gg4YOS4YOQ4YOg4YOT4YOQ4YOY4YOq4YOV4YOQ
+4YOa4YOQIOGDk+GDkCDhg5vhg5Thg5vhg5nhg5Xhg5jhg5Phg6Dhg5Qg4YOQ4YOgDQrhg7Dhg6fh
+g5Dhg5Xhg6EsIOGDmOGDoeGDmOGDnOGDmCDhg5fhg5Dhg5zhg67hg5Thg5Hhg6Eg4YOQ4YOY4YOm
+4YOU4YOR4YOU4YOcIOGDnuGDmOGDoOGDkOGDk+GDkOGDky4g4YOS4YOQ4YOb4YOd4YOY4YOn4YOU
+4YOc4YOU4YOXIOGDkOGDpeGDlOGDk+GDkOGDnCwg4YOQ4YOb4YOY4YOi4YOd4YObIOGDkOGDoA0K
+4YOb4YOY4YOc4YOT4YOQIOGDlOGDoSDhg5vhg53hg67hg5Phg5Thg6EuIOGDoeGDrOGDneGDoOGD
+lOGDkyDhg5vhg5Dhg6jhg5jhg5wg4YOS4YOc4YOQ4YOu4YOUIOGDkeGDneGDmuGDneGDoS4g4YOh
+4YOQ4YOu4YOU4YOa4YOYLCDhg5Lhg5Dhg5vhg5jhg67hg5Dhg6Dhg5Phg5Ag4YOT4YOQIOGDkOGD
+ruGDmuGDkA0K4YOV4YOY4YOX4YOu4YOd4YOVIOGDl+GDpeGDleGDlOGDnOGDoSDhg5fhg5Dhg5zh
+g5Dhg5vhg6jhg6Dhg53hg5vhg5rhg53hg5Hhg5Dhg6EsIOGDoOGDkOGDl+GDkCDhg6zhg5Dhg6Dh
+g5Xhg5Phg5Lhg5jhg5zhg50g4YOY4YOhLCDhg6Dhg53hg5Lhg53hg6Dhg6og4YOQ4YOc4YOS4YOQ
+4YOg4YOY4YOo4YOY4YOhDQrhg53hg6/hg5Dhg67hg5jhg6Eg4YOs4YOU4YOV4YOg4YOYL+GDm+GD
+lOGDm+GDmeGDleGDmOGDk+GDoOGDlCwg4YOg4YOQ4YOT4YOS4YOQ4YOcIOGDm+GDkOGDlyDhg5Dh
+g6Xhg5Xhg5cg4YOY4YOS4YOY4YOV4YOUIOGDkuGDleGDkOGDoOGDmCwg4YOg4YOQ4YOqIOGDm+GD
+kOGDoSDhg5Phg5Ag4YOp4YOU4YOb4YOYDQrhg6Hhg5Dhg5Hhg5Dhg5zhg5nhg50g4YOd4YOk4YOY
+4YOh4YOYIOGDkuGDkOGDkOGDl+GDkOGDleGDmOGDoeGDo+GDpOGDmuGDlOGDkeGDoSDhg5vhg5jh
+g6Eg4YOQ4YOc4YOS4YOQ4YOg4YOY4YOo4YOhLiDhg5Dhg6Dhg5Dhg5zhg5Dhg5jhg6Dhg5gg4YOg
+4YOY4YOh4YOZ4YOYOyDhg5Lhg5Dhg6Dhg5jhg5Lhg5Thg5Hhg5ANCuGDkuGDkOGDnOGDruGDneGD
+oOGDquGDmOGDlOGDmuGDk+GDlOGDkeGDkCDhg5rhg5Thg5Lhg5jhg6Lhg5jhg5vhg6Phg6Dhg5gg
+4YOo4YOU4YOX4YOQ4YOc4YOu4YOb4YOU4YOR4YOY4YOXDQrhg6Dhg53hg5vhg5Thg5rhg5jhg6og
+4YOT4YOQ4YOS4YOY4YOq4YOQ4YOV4YOXIOGDmeGDkOGDnOGDneGDnOGDmOGDoSDhg5zhg5Thg5Hh
+g5jhg6Hhg5vhg5jhg5Thg6Dhg5gg4YOT4YOQ4YOg4YOm4YOV4YOU4YOV4YOY4YOh4YOS4YOQ4YOc
+LiDhg6/hg53hg5Hhg5jhg5AsIOGDoOGDneGDmyDhg5vhg53hg5Xhg5jhg5fhg67hg53hg5Xhg53h
+g5cNCuGDpOGDo+GDmuGDmCwg4YOg4YOd4YOb4YOU4YOa4YOh4YOQ4YOqIOGDkeGDkOGDnOGDmeGD
+mOGDoSDhg5Phg5jhg6Dhg5Thg6Xhg6Lhg53hg6Dhg5Thg5Hhg6Eg4YOj4YOo4YOV4YOU4YOR4YOU
+4YOcLCDhg6Phg5nhg5Xhg5Qg4YOb4YOT4YOY4YOT4YOg4YOU4YOR4YOYIOGDkOGDoOGDmOGDkOGD
+nC4NCuGDm+GDlCDhg5Dhg6Ag4YOV4YOQ4YOgIOGDruGDkOGDoOGDkeGDmCDhg5Dhg5Phg5Dhg5vh
+g5jhg5Dhg5zhg5gsIOGDkOGDm+GDmOGDouGDneGDmyDhg5Xhg5fhg5Dhg5Xhg5Dhg5bhg53hg5Eg
+4YOX4YOQ4YOc4YOu4YOU4YOR4YOYIOGDl+GDkOGDnOGDkOGDkeGDoOGDkOGDkyDhg5Lhg5Dhg5Xh
+g6fhg53hg5cuDQo1MC81MCUg4YOd4YOg4YOY4YOV4YOUIOGDnOGDkOGDrOGDmOGDmuGDmOGDoeGD
+l+GDleGDmOGDoSwg4YOp4YOU4YOb4YOYIOGDnOGDkOGDrOGDmOGDmuGDmCDhg5Phg5Dhg5vhg5Th
+g67hg5vhg5Dhg6Dhg5Thg5Hhg5Ag4YOh4YOQ4YOZ4YOj4YOX4YOQ4YOg4YOYIOGDmeGDneGDm+GD
+nuGDkOGDnOGDmOGDmOGDoQ0K4YOT4YOQ4YOs4YOn4YOU4YOR4YOQ4YOo4YOYIOGDk+GDkA0K4YOS
+4YOQ4YOb4YOd4YOY4YOn4YOU4YOc4YOU4YOXIOGDoeGDkOGDpeGDleGDlOGDmuGDm+GDneGDpeGD
+m+GDlOGDk+GDnSDhg57hg6Dhg53hg6rhg5Thg5Phg6Phg6Dhg5AsIOGDoOGDneGDm+GDlOGDmuGD
+mOGDqiDhg6nhg5Thg5vhg5gg4YOd4YOq4YOc4YOU4YOR4YOQIOGDmOGDp+GDnS4g4YOS4YOQ4YOb
+4YOQ4YOS4YOU4YOR4YOY4YOc4YOUIOGDqOGDlOGDnOGDmA0K4YOS4YOX4YOu4YOd4YOV4YOXIOGD
+kuGDkOGDmOGDl+GDleGDkOGDmuGDmOGDoeGDrOGDmOGDnOGDneGDlyDhg6nhg5Thg5vhg5gg4YOs
+4YOY4YOc4YOQ4YOT4YOQ4YOT4YOU4YOR4YOQLCDhg5vhg5Qg4YOc4YOQ4YOb4YOT4YOV4YOY4YOa
+4YOQ4YOTIOGDm+GDreGDmOGDoOGDk+GDlOGDkeGDkCDhg5fhg6Xhg5Xhg5Thg5zhg5gNCuGDk+GD
+kOGDruGDm+GDkOGDoOGDlOGDkeGDkCDhg5Dhg5sg4YOS4YOQ4YOg4YOY4YOS4YOU4YOR4YOQ4YOo
+4YOYLg0K4YOb4YOUIOGDkOGDleGDmOGDoOGDqeGDmOGDlCDhg6jhg5Thg5wg4YOT4YOQ4YOh4YOQ
+4YOu4YOb4YOQ4YOg4YOU4YOR4YOa4YOQ4YOTLCDhg5Dhg6Dhg5Ag4YOp4YOU4YOb4YOYIOGDoeGD
+kOGDpeGDm+GDmOGDoSwg4YOQ4YOg4YOQ4YOb4YOU4YOTIOGDpuGDm+GDlOGDoOGDl+GDmOGDoSDh
+g5Lhg5Dhg5vhg50uDQrhg5vhg5jhg5zhg5Phg5Ag4YOY4YOq4YOd4YOT4YOU4YOXLCDhg6Dhg53h
+g5sg4YOQ4YObIOGDmeGDneGDm+GDo+GDnOGDmOGDmeGDkOGDquGDmOGDmOGDoeGDl+GDleGDmOGD
+oSDhg5Phg6Dhg50g4YOS4YOQ4YOb4YOd4YOV4YOX4YOl4YOV4YOYIOGDmuGDneGDquGDleGDkOGD
+qOGDmC4NCuGDoeGDkOGDnOGDkOGDmyDhg5Phg5Dhg5Lhg5jhg5nhg5Dhg5Xhg6jhg5jhg6Dhg5Ph
+g5Thg5Hhg5jhg5csIOGDqOGDlOGDm+GDkOGDouGDp+GDneGDkeGDmOGDnOGDlOGDlyDhg5fhg6Xh
+g5Xhg5Thg5zhg5gg4YOQ4YOW4YOg4YOYIOGDkOGDm+GDmOGDoSDhg6jhg5Thg6Hhg5Dhg67hg5Th
+g5Eg4YOT4YOQIOGDkuGDl+GDruGDneGDleGDlw0K4YOS4YOQ4YOY4YOX4YOV4YOQ4YOa4YOY4YOh
+4YOs4YOY4YOc4YOd4YOXIOGDlOGDoSDhg5jhg5zhg6Thg53hg6Dhg5vhg5Dhg6rhg5jhg5AsIOGD
+oOGDneGDkuGDneGDoOGDqiDhg6Hhg5Dhg5jhg5Phg6Phg5vhg5rhg50uIOGDl+GDpeGDleGDlOGD
+nOGDmCDhg57hg5Dhg6Hhg6Phg67hg5jhg6Eg4YOb4YOY4YOm4YOU4YOR4YOY4YOhDQrhg6jhg5Th
+g5vhg5Phg5Thg5IsIOGDqeGDleGDlOGDnCDhg5vhg5nhg5Dhg6rhg6Dhg5Dhg5MNCuGDqeGDlOGD
+m+GDmCDhg57hg5jhg6Dhg5Dhg5Phg5gg4YOU4YOa4YOU4YOl4YOi4YOg4YOd4YOc4YOj4YOa4YOY
+IOGDpOGDneGDoeGDouGDmOGDoSDhg5vhg5jhg6Hhg5Dhg5vhg5Dhg6Dhg5fhg5jhg6Eg4YOb4YOU
+4YOo4YOV4YOU4YOd4YOR4YOY4YOXLA0KbXNiZWxpbmF5YTg5MkBnbWFpbC5jb20sIOGDm+GDlCDh
+g5vhg53hg5Lhg5Dhg6zhg5Xhg5Phg5jhg5cg4YOi4YOg4YOQ4YOc4YOW4YOQ4YOl4YOq4YOY4YOY
+4YOhIOGDk+GDlOGDouGDkOGDmuGDlOGDkeGDoS4g4YOu4YOd4YOa4YOdDQrhg6Thg53hg5zhg5Ph
+g5jhg6Eg4YOh4YOQ4YOT4YOU4YOe4YOd4YOW4YOY4YOi4YOdIOGDm+GDneGDrOGDm+GDneGDkeGD
+mOGDoSDhg5Dhg6Hhg5rhg5gg4YOT4YOQDQrhg5Dhg6Hhg5Thg5Xhg5Qg4YOk4YOd4YOc4YOY4YOh
+IOGDqOGDlOGDm+GDpeGDm+GDnOGDlOGDmuGDmCDhg5nhg53hg5vhg57hg5Dhg5zhg5jhg5jhg6Eg
+4YOT4YOQ4YOQ4YOg4YOh4YOU4YOR4YOY4YOhIOGDoeGDlOGDoOGDl+GDmOGDpOGDmOGDmeGDkOGD
+ouGDmC4g4YOm4YOb4YOU4YOg4YOX4YOb4YOQDQrhg5Phg5Dhg5Lhg5rhg53hg6rhg53hg5csIOGD
+leGDlOGDmuGDmCDhg5fhg6Xhg5Xhg5Thg5zhg6Eg4YOh4YOQ4YOh4YOs4YOg4YOQ4YOk4YOdIOGD
+nuGDkOGDoeGDo+GDruGDoSwg4YOe4YOQ4YOi4YOY4YOV4YOY4YOh4YOq4YOU4YOb4YOY4YOXIOGD
+peGDkOGDmuGDkeGDkOGDouGDneGDnOGDnS4NCktvZGpvdmkgSGVnYm9yIG1zYmVsaW5heWE4OTJA
+Z21haWwuY29tDQo=
