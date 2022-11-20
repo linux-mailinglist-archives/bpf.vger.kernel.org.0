@@ -2,30 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C255631395
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 12:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324B16313A6
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 12:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbiKTLNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 06:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        id S229713AbiKTL0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 06:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbiKTLNd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 06:13:33 -0500
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CEF15A32
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 03:13:27 -0800 (PST)
-Date:   Sun, 20 Nov 2022 11:13:17 +0000
+        with ESMTP id S229777AbiKTL0B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 06:26:01 -0500
+Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA3C4874F
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 03:25:59 -0800 (PST)
+Date:   Sun, 20 Nov 2022 11:25:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=industrialdiscipline.com; s=protonmail3; t=1668942804;
-        x=1669202004; bh=hTRNh0xd4JCBfoVrUKvn2v79qy90JSZSskwMQRbjjNM=;
+        d=industrialdiscipline.com; s=protonmail3; t=1668943557;
+        x=1669202757; bh=VOwX7yZI71v5MXD+YSRwyPItO8qPemAtnDxzCOZiQ44=;
         h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
          Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=uF6Ika7r/L9kn2pZ77ojXUEpCQ4iUHlUi53DnFVKIoplOeQBXkEjym4PrEe4tTCSa
-         OG01Cp/9MWZCMfP1+qFJDCXJPcA4UTvQeqaD8Q4Eurb4GNwgrZIc+u7xYJjBimXfx/
-         cnLhj77XP2yK6FDYU+zkOW89+BK3UA+3gfZBdWECuMsfL6hRZxfT26INPNMc6kviWA
-         7DS25SEAPCjN0Qnl33bgdZ6AFT2QkouWoNVYpKEidWpHLVCi+1lVp6k1BGQ8PWwaDP
-         eim79l0H2qAcBZYTzUDEtZtck96JPys4pxspTmOHNYz20S3oH3QMv27AeMiuFqEFo5
-         3jNhPXaKQJS1Q==
+        b=PFJZdN0WFPuoHnq0WXXwkHtkbJgfoSgbUiUe8BOvi2g0Na3gRLoD5gQs9eQGH5zYN
+         +BFG8kdq4MFcyo5MwhjLEoZ6G3teQ8d5Nv4FQoOXDCU+BMNGJNQ1SCqD7L/oLnsQxw
+         zTVVDIsOmE0CQPSVBpna8MoUCy6bk+NhNh2OvEnHs8zvwGbM4rPEJ3i0pK9sx9sBgF
+         rh4PaZRk8E3wxNCv6c4JHblcL3DEppnvuRGRAgyn6upe73XFF+nF2eAG7xL4IyOcCg
+         JYXFvf1x/DTh63jQzmfRm/d27LJYz2N9VgyNzal41tzEwsk7S/8tO/K52tgmJysrej
+         SJmNMBuF+UvIw==
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, quentin@isovalent.com, yhs@fb.com
 From:   Sahid Orentino Ferdjaoui 
@@ -36,14 +36,14 @@ Cc:     martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
         Sahid Orentino Ferdjaoui 
         <sahid.ferdjaoui@industrialdiscipline.com>
 Subject: [PATCH bpf-next v4 0/5] clean-up bpftool from legacy support
-Message-ID: <20221120111142.35316-1-sahid.ferdjaoui@industrialdiscipline.com>
+Message-ID: <20221120112515.38165-1-sahid.ferdjaoui@industrialdiscipline.com>
 Feedback-ID: 39921202:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,14 +88,14 @@ Sahid Orentino Ferdjaoui (5):
  tools/bpf/bpftool/btf.c                       | 19 +++++++---------
  tools/bpf/bpftool/btf_dumper.c                |  2 +-
  tools/bpf/bpftool/gen.c                       | 10 ++++-----
- tools/bpf/bpftool/iter.c                      |  9 ++++----
+ tools/bpf/bpftool/iter.c                      | 10 +++++----
  tools/bpf/bpftool/main.c                      | 22 +++----------------
  tools/bpf/bpftool/main.h                      |  3 +--
  tools/bpf/bpftool/map.c                       | 20 ++++++-----------
  tools/bpf/bpftool/prog.c                      | 15 +++++--------
  tools/bpf/bpftool/struct_ops.c                | 22 ++++++++-----------
  .../selftests/bpf/test_bpftool_synctypes.py   |  6 ++---
- 13 files changed, 48 insertions(+), 93 deletions(-)
+ 13 files changed, 49 insertions(+), 93 deletions(-)
 
 --
 2.34.1
