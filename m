@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DC363151B
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 17:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA6F63151D
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 17:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbiKTQPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 11:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S229687AbiKTQQA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 11:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbiKTQPd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 11:15:33 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A56013EAB
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:32 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKELfi1011248
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:31 -0800
+        with ESMTP id S229604AbiKTQQA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 11:16:00 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3660213EAB
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:59 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AK9daGo018209
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:59 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=lzsOMx7huDHmUgcb2yz5rQxzaRS+AJWXQQBdjhkRKqU=;
- b=jhvOXRRLu7qyrjHQo4jlKoHA0IbBajsKjHO+zWc+yXEe2EzCpHfTpgZ2AYXKIqpr7JGF
- Mu0DyU9HtaR6BNJX3leTqKstH+Q/rUIon+FaNvvDmNKOfHNoZnzL249gledDgU7VXzE1
- dQKGoZhbVkfSDwKrGWW/BocCizmkcHYnK5Y= 
-Received: from maileast.thefacebook.com ([163.114.130.3])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxws6q2by-1
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=/poyhUBv44WDR6DnzV/ol4CWxTb1vusQLoNYO/j/Xa0=;
+ b=IIvDrAr6or36reZJ/qnmPdMvA4D5wCIAy7WVwCHiXINGNgwWlYvW+Jb17eFKn05aRqsw
+ 1OMISaFAUokzAkaaQmdQ+JU6rSxoTnY0ugi3Et4u88vtW5iPASW8W3jilZ/TmMhDxwzM
+ piWfVRmX9rPOX3RTa5bt8vv7CYqFxHALyVU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxwqtpw73-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:31 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:58 -0800
+Received: from twshared29133.14.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sun, 20 Nov 2022 08:15:30 -0800
+ 15.1.2375.31; Sun, 20 Nov 2022 08:15:42 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 298261275594B; Sun, 20 Nov 2022 08:15:27 -0800 (PST)
+        id 6D43B1275595A; Sun, 20 Nov 2022 08:15:33 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -42,18 +42,19 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         <kernel-team@fb.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 3/4] bpf: Add a kfunc for generic type cast
-Date:   Sun, 20 Nov 2022 08:15:27 -0800
-Message-ID: <20221120161527.834759-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 4/4] bpf: Add type cast unit tests
+Date:   Sun, 20 Nov 2022 08:15:33 -0800
+Message-ID: <20221120161533.834972-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221120161511.831691-1-yhs@fb.com>
 References: <20221120161511.831691-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: BVeyTA3ojjJiYalyVPsk_Mz8qlnAHjmt
-X-Proofpoint-ORIG-GUID: BVeyTA3ojjJiYalyVPsk_Mz8qlnAHjmt
+X-Proofpoint-ORIG-GUID: fQl_r9r3V3seudB_Vrsv0bNzAGTL5SJF
+X-Proofpoint-GUID: fQl_r9r3V3seudB_Vrsv0bNzAGTL5SJF
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-20_11,2022-11-18_01,2022-06-22_01
@@ -67,141 +68,239 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Implement bpf_rdonly_cast() which tries to cast the object
-to a specified type. This tries to support use case like below:
-  #define skb_shinfo(SKB) ((struct skb_shared_info *)(skb_end_pointer(SKB=
-)))
-where skb_end_pointer(SKB) is a 'unsigned char *' and needs to
-be casted to 'struct skb_shared_info *'.
+Three tests are added. One is from John Fastabend ({1]) which tests
+tracing style access for xdp program from the kernel ctx.
+Another is a tc test to test both kernel ctx tracing style access
+and explicit non-ctx type cast. The third one is for negative tests
+including two tests, a tp_bpf test where the bpf_rdonly_cast()
+returns a untrusted ptr which cannot be used as helper argument,
+and a tracepoint test where the kernel ctx is a u64.
 
-The signature of bpf_rdonly_cast() looks like
-   void *bpf_rdonly_cast(void *obj, __u32 btf_id)
-The function returns the same 'obj' but with PTR_TO_BTF_ID with
-btf_id. The verifier will ensure btf_id being a struct type.
-
-Since the supported type cast may not reflect what the 'obj'
-represents, the returned btf_id is marked as PTR_UNTRUSTED, so
-the return value and subsequent pointer chasing cannot be
-used as helper/kfunc arguments.
+  [1] https://lore.kernel.org/bpf/20221109215242.1279993-1-john.fastabend@g=
+mail.com/
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/helpers.c  |  6 ++++++
- kernel/bpf/verifier.c | 26 ++++++++++++++++++++++++--
- 2 files changed, 30 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/type_cast.c      | 114 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/type_cast.c |  83 +++++++++++++
+ 2 files changed, 197 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/type_cast.c
+ create mode 100644 tools/testing/selftests/bpf/progs/type_cast.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index dc6e994feeb9..9d9b91d2d047 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1829,6 +1829,11 @@ void *bpf_cast_to_kern_ctx(void *obj)
- 	return obj;
- }
-=20
-+void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
+diff --git a/tools/testing/selftests/bpf/prog_tests/type_cast.c b/tools/tes=
+ting/selftests/bpf/prog_tests/type_cast.c
+new file mode 100644
+index 000000000000..9317d5fa2635
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/type_cast.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include <network_helpers.h>
++#include "type_cast.skel.h"
++
++static void test_xdp(void)
 +{
-+	return obj__ign;
++	struct type_cast *skel;
++	int err, prog_fd;
++	char buf[128];
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		.data_in =3D &pkt_v4,
++		.data_size_in =3D sizeof(pkt_v4),
++		.data_out =3D buf,
++		.data_size_out =3D sizeof(buf),
++		.repeat =3D 1,
++	);
++
++	skel =3D type_cast__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.md_xdp, true);
++	err =3D type_cast__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto out;
++
++	prog_fd =3D bpf_program__fd(skel->progs.md_xdp);
++	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(topts.retval, XDP_PASS, "xdp test_run retval");
++
++	ASSERT_EQ(skel->bss->ifindex, 1, "xdp_md ifindex");
++	ASSERT_EQ(skel->bss->ifindex, skel->bss->ingress_ifindex, "xdp_md ingress=
+_ifindex");
++	ASSERT_STREQ(skel->bss->name, "lo", "xdp_md name");
++	ASSERT_NEQ(skel->bss->inum, 0, "xdp_md inum");
++
++out:
++	type_cast__destroy(skel);
 +}
 +
- __diag_pop();
-=20
- BTF_SET8_START(generic_btf_ids)
-@@ -1850,6 +1855,7 @@ static const struct btf_kfunc_id_set generic_kfunc_=
-set =3D {
-=20
- BTF_SET8_START(common_btf_ids)
- BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
-+BTF_ID_FLAGS(func, bpf_rdonly_cast)
- BTF_SET8_END(common_btf_ids)
-=20
- static const struct btf_kfunc_id_set common_kfunc_set =3D {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a18b519c5225..3f1094efdb04 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8119,6 +8119,7 @@ enum special_kfunc_type {
- 	KF_bpf_list_pop_front,
- 	KF_bpf_list_pop_back,
- 	KF_bpf_cast_to_kern_ctx,
-+	KF_bpf_rdonly_cast,
- };
-=20
- BTF_SET_START(special_kfunc_set)
-@@ -8129,6 +8130,7 @@ BTF_ID(func, bpf_list_push_back)
- BTF_ID(func, bpf_list_pop_front)
- BTF_ID(func, bpf_list_pop_back)
- BTF_ID(func, bpf_cast_to_kern_ctx)
-+BTF_ID(func, bpf_rdonly_cast)
- BTF_SET_END(special_kfunc_set)
-=20
- BTF_ID_LIST(special_kfunc_list)
-@@ -8139,6 +8141,7 @@ BTF_ID(func, bpf_list_push_back)
- BTF_ID(func, bpf_list_pop_front)
- BTF_ID(func, bpf_list_pop_back)
- BTF_ID(func, bpf_cast_to_kern_ctx)
-+BTF_ID(func, bpf_rdonly_cast)
-=20
- static enum kfunc_ptr_arg_type
- get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
-@@ -8769,6 +8772,7 @@ static int check_kfunc_call(struct bpf_verifier_env=
- *env, struct bpf_insn *insn,
- 	u32 i, nargs, func_id, ptr_type_id;
- 	int err, insn_idx =3D *insn_idx_p;
- 	const struct btf_param *args;
-+	const struct btf_type *ret_t;
- 	struct btf *desc_btf;
- 	u32 *kfunc_flags;
-=20
-@@ -8848,7 +8852,6 @@ static int check_kfunc_call(struct bpf_verifier_env=
- *env, struct bpf_insn *insn,
-=20
- 		if (meta.btf =3D=3D btf_vmlinux && btf_id_set_contains(&special_kfunc_=
-set, meta.func_id)) {
- 			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_new_impl]) {
--				const struct btf_type *ret_t;
- 				struct btf *ret_btf;
- 				u32 ret_btf_id;
-=20
-@@ -8898,6 +8901,24 @@ static int check_kfunc_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn,
- 				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID;
- 				regs[BPF_REG_0].btf =3D desc_btf;
- 				regs[BPF_REG_0].btf_id =3D meta.arg_constant.value;
-+			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_cast]=
-) {
-+				if (!capable(CAP_PERFMON)) {
-+					verbose(env,
-+						"kfunc bpf_rdonly_cast requires CAP_PERFMON capability\n");
-+					return -EACCES;
-+				}
++static void test_tc(void)
++{
++	struct type_cast *skel;
++	int err, prog_fd;
 +
-+				ret_t =3D btf_type_by_id(desc_btf, meta.arg_constant.value);
-+				if (!ret_t || !btf_type_is_struct(ret_t)) {
-+					verbose(env,
-+						"kfunc bpf_rdonly_cast type ID argument must be of a struct\n");
-+					return -EINVAL;
-+				}
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		.data_in =3D &pkt_v4,
++		.data_size_in =3D sizeof(pkt_v4),
++		.repeat =3D 1,
++	);
 +
-+				mark_reg_known_zero(env, regs, BPF_REG_0);
-+				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID | PTR_UNTRUSTED;
-+				regs[BPF_REG_0].btf =3D desc_btf;
-+				regs[BPF_REG_0].btf_id =3D meta.arg_constant.value;
- 			} else {
- 				verbose(env, "kernel function %s unhandled dynamic return type\n",
- 					meta.func_name);
-@@ -15148,7 +15169,8 @@ static int fixup_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
- 		insn_buf[1] =3D addr[1];
- 		insn_buf[2] =3D *insn;
- 		*cnt =3D 3;
--	} else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_=
-ctx]) {
-+	} else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_=
-ctx] ||
-+		   desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_cast]) {
- 		insn_buf[0] =3D BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
- 		*cnt =3D 1;
- 	}
++	skel =3D type_cast__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.md_skb, true);
++	err =3D type_cast__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto out;
++
++	prog_fd =3D bpf_program__fd(skel->progs.md_skb);
++	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(topts.retval, 0, "tc test_run retval");
++
++	ASSERT_EQ(skel->bss->meta_len, 0, "skb meta_len");
++	ASSERT_EQ(skel->bss->frag0_len, 0, "skb frag0_len");
++	ASSERT_NEQ(skel->bss->kskb_len, 0, "skb len");
++	ASSERT_NEQ(skel->bss->kskb2_len, 0, "skb2 len");
++	ASSERT_EQ(skel->bss->kskb_len, skel->bss->kskb2_len, "skb len compare");
++
++out:
++	type_cast__destroy(skel);
++}
++
++static const char * const negative_tests[] =3D {
++	"untrusted_ptr",
++	"kctx_u64",
++};
++
++static void test_negative(void)
++{
++	struct bpf_program *prog;
++	struct type_cast *skel;
++	int i, err;
++
++	for (i =3D 0; i < ARRAY_SIZE(negative_tests); i++) {
++		skel =3D type_cast__open();
++		if (!ASSERT_OK_PTR(skel, "skel_open"))
++			return;
++
++		prog =3D bpf_object__find_program_by_name(skel->obj, negative_tests[i]);
++		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++			goto out;
++		bpf_program__set_autoload(prog, true);
++		err =3D type_cast__load(skel);
++		ASSERT_ERR(err, "skel_load");
++out:
++		type_cast__destroy(skel);
++	}
++}
++
++void test_type_cast(void)
++{
++	if (test__start_subtest("xdp"))
++		test_xdp();
++	if (test__start_subtest("tc"))
++		test_tc();
++	if (test__start_subtest("negative"))
++		test_negative();
++}
+diff --git a/tools/testing/selftests/bpf/progs/type_cast.c b/tools/testing/=
+selftests/bpf/progs/type_cast.c
+new file mode 100644
+index 000000000000..eb78e6f03129
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/type_cast.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, long);
++} enter_id SEC(".maps");
++
++#define	IFNAMSIZ 16
++
++int ifindex, ingress_ifindex;
++char name[IFNAMSIZ];
++unsigned int inum;
++unsigned int meta_len, frag0_len, kskb_len, kskb2_len;
++
++void *bpf_cast_to_kern_ctx(void *) __ksym;
++void *bpf_rdonly_cast(void *, __u32) __ksym;
++
++SEC("?xdp")
++int md_xdp(struct xdp_md *ctx)
++{
++	struct xdp_buff *kctx =3D bpf_cast_to_kern_ctx(ctx);
++	struct net_device *dev;
++
++	dev =3D kctx->rxq->dev;
++	ifindex =3D dev->ifindex;
++	inum =3D dev->nd_net.net->ns.inum;
++	__builtin_memcpy(name, dev->name, IFNAMSIZ);
++	ingress_ifindex =3D ctx->ingress_ifindex;
++	return XDP_PASS;
++}
++
++SEC("?tc")
++int md_skb(struct __sk_buff *skb)
++{
++	struct sk_buff *kskb =3D bpf_cast_to_kern_ctx(skb);
++	struct skb_shared_info *shared_info;
++	struct sk_buff *kskb2;
++
++	kskb_len =3D kskb->len;
++
++	/* Simulate the following kernel macro:
++	 *   #define skb_shinfo(SKB) ((struct skb_shared_info *)(skb_end_pointer(=
+SKB)))
++	 */
++	shared_info =3D bpf_rdonly_cast(kskb->head + kskb->end,
++		bpf_core_type_id_kernel(struct skb_shared_info));
++	meta_len =3D shared_info->meta_len;
++	frag0_len =3D shared_info->frag_list->len;
++
++	/* kskb2 should be equal to kskb */
++	kskb2 =3D bpf_rdonly_cast(kskb, bpf_core_type_id_kernel(struct sk_buff));
++	kskb2_len =3D kskb2->len;
++	return 0;
++}
++
++SEC("?tp_btf/sys_enter")
++int BPF_PROG(untrusted_ptr, struct pt_regs *regs, long id)
++{
++	struct task_struct *task, *task_dup;
++	long *ptr;
++
++	task =3D bpf_get_current_task_btf();
++	task_dup =3D bpf_rdonly_cast(task, bpf_core_type_id_kernel(struct task_st=
+ruct));
++	(void)bpf_task_storage_get(&enter_id, task_dup, 0, 0);
++	return 0;
++}
++
++SEC("?tracepoint/syscalls/sys_enter_nanosleep")
++int kctx_u64(void *ctx)
++{
++	u64 *kctx =3D bpf_rdonly_cast(ctx, bpf_core_type_id_kernel(u64));
++
++	(void)kctx;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.30.2
 
