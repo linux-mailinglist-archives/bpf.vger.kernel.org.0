@@ -2,31 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9619C6313A7
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 12:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EE86313A8
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 12:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbiKTL0H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 06:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S229572AbiKTL0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 06:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbiKTL0F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 06:26:05 -0500
+        with ESMTP id S229518AbiKTL0N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 06:26:13 -0500
 Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E404874F
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 03:26:04 -0800 (PST)
-Date:   Sun, 20 Nov 2022 11:25:55 +0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6BB4874F
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 03:26:12 -0800 (PST)
+Date:   Sun, 20 Nov 2022 11:26:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=industrialdiscipline.com; s=protonmail3; t=1668943562;
-        x=1669202762; bh=Q2hI8Oa7ngd91niQA5WqTZvvtq1C3lzMVB+W2aWyDAM=;
+        d=industrialdiscipline.com; s=protonmail3; t=1668943571;
+        x=1669202771; bh=+E7ZLX2VIUnegEhBmHeUAvMX+7T3+ziwh1hfqEqGbsI=;
         h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
          Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID:BIMI-Selector;
-        b=WH7ae+ougrjPtB1+ai1nepoADeOxePn3ahPlsnPTp95QoJ9VG2S5HmFvjyOZlOCvZ
-         ZbfvcO7zwNWrUEwJNXpERg6Vy+rTkWxH32+eefiRxg/5zAX9e0IUqzDbxYCJC1tZAq
-         RT9YFAQeIB2nwfE5xmQbfgzgTzwQQzJApxnHosSSqPxK5pwf1C3v6euJyape5Ue8b/
-         MmfMddVOSdj6Febie0lwFI2Uh15IjOwK0AWIscw0K/jTCgvcIi0DZa09i2dWmBJ2Ch
-         HTsPv5aErbU3prHS3rUB5nVv7wYJK89FlgUB77ni/uxEhzN8K2ZP5jW5mdKxLADYMC
-         ZCZSjZLAQ384w==
+        b=qnAlY5kT+AE54qeEWU/s76Ck5MtTmj2j9yfOyhbA44nAaInVv/7BssKkMDaMKiIrL
+         3X6do+c1BDmsD/mkIQV8hG57Z1gKVGB/OhKfF+0DPOSSTVG0nAmqaIPG0w4H7/34Lh
+         ArQgn4/h7wFFGjIZERgydV9HrxTTs0VN+Q3GhjYPVAsHe5dtj8y0jnwyhBhx56hxcT
+         7xtH9U93aKvl2IT8JxG+6qvxxnzLByxxov+tjOTzGng7c2m+Zm2w+ycEn7Vinc+ETf
+         y8w6Ktrk5bLUMsoLkvCnW7KnAxbMRYJERYwAuwqPKijGp2EXw56v9p409wa8zCfyHz
+         x77q01HS4tRZQ==
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, quentin@isovalent.com, yhs@fb.com
 From:   Sahid Orentino Ferdjaoui 
@@ -36,8 +36,8 @@ Cc:     martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
         jolsa@kernel.org,
         Sahid Orentino Ferdjaoui 
         <sahid.ferdjaoui@industrialdiscipline.com>
-Subject: [PATCH bpf-next v4 1/5] bpftool: remove support of --legacy option for bpftool
-Message-ID: <20221120112515.38165-2-sahid.ferdjaoui@industrialdiscipline.com>
+Subject: [PATCH bpf-next v4 2/5] bpftool: replace return value PTR_ERR(NULL) with 0
+Message-ID: <20221120112515.38165-3-sahid.ferdjaoui@industrialdiscipline.com>
 In-Reply-To: <20221120112515.38165-1-sahid.ferdjaoui@industrialdiscipline.com>
 References: <20221120112515.38165-1-sahid.ferdjaoui@industrialdiscipline.com>
 Feedback-ID: 39921202:user:proton
@@ -53,207 +53,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Following:
-  commit bd054102a8c7 ("libbpf: enforce strict libbpf 1.0 behaviors")
-  commit 93b8952d223a ("libbpf: deprecate legacy BPF map definitions")
-
-The --legacy option is no longer relevant as libbpf no longer supports
-it. libbpf_set_strict_mode() is a no-op operation.
+There is no reasons to keep PTR_ERR() when kern_btf=3DNULL, let's just
+return 0.
+This also cleans this part of code from using libbpf_get_error().
 
 Signed-off-by: Sahid Orentino Ferdjaoui <sahid.ferdjaoui@industrialdiscipli=
 ne.com>
 Acked-by: Yonghong Song <yhs@fb.com>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Suggested-by: Quentin Monnet <quentin@isovalent.com>
 ---
- .../bpf/bpftool/Documentation/common_options.rst  |  9 ---------
- tools/bpf/bpftool/Documentation/substitutions.rst |  2 +-
- tools/bpf/bpftool/bash-completion/bpftool         |  2 +-
- tools/bpf/bpftool/main.c                          | 15 ---------------
- tools/bpf/bpftool/main.h                          |  3 +--
- tools/bpf/bpftool/prog.c                          |  5 -----
- .../selftests/bpf/test_bpftool_synctypes.py       |  6 +++---
- 7 files changed, 6 insertions(+), 36 deletions(-)
+ tools/bpf/bpftool/struct_ops.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf=
-/bpftool/Documentation/common_options.rst
-index 05350a1aadf9..30df7a707f02 100644
---- a/tools/bpf/bpftool/Documentation/common_options.rst
-+++ b/tools/bpf/bpftool/Documentation/common_options.rst
-@@ -23,12 +23,3 @@
- =09  Print all logs available, even debug-level information. This includes
- =09  logs from libbpf as well as from the verifier, when attempting to
- =09  load programs.
--
---l, --legacy
--=09  Use legacy libbpf mode which has more relaxed BPF program
--=09  requirements. By default, bpftool has more strict requirements
--=09  about section names, changes pinning logic and doesn't support
--=09  some of the older non-BTF map declarations.
--
--=09  See https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0
--=09  for details.
-diff --git a/tools/bpf/bpftool/Documentation/substitutions.rst b/tools/bpf/=
-bpftool/Documentation/substitutions.rst
-index ccf1ffa0686c..827e3ffb1766 100644
---- a/tools/bpf/bpftool/Documentation/substitutions.rst
-+++ b/tools/bpf/bpftool/Documentation/substitutions.rst
-@@ -1,3 +1,3 @@
- .. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.=
+c
+index e08a6ff2866c..d3cfdfef9b58 100644
+--- a/tools/bpf/bpftool/struct_ops.c
++++ b/tools/bpf/bpftool/struct_ops.c
+@@ -63,10 +63,8 @@ static __s32 get_map_info_type_id(void)
+ =09=09return map_info_type_id;
 
--.. |COMMON_OPTIONS| replace:: { **-j** | **--json** } [{ **-p** | **--pret=
-ty** }] | { **-d** | **--debug** } | { **-l** | **--legacy** }
-+.. |COMMON_OPTIONS| replace:: { **-j** | **--json** } [{ **-p** | **--pret=
-ty** }] | { **-d** | **--debug** }
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/=
-bash-completion/bpftool
-index 2957b42cab67..35f26f7c1124 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -261,7 +261,7 @@ _bpftool()
-     # Deal with options
-     if [[ ${words[cword]} =3D=3D -* ]]; then
-         local c=3D'--version --json --pretty --bpffs --mapcompat --debug \
--=09       --use-loader --base-btf --legacy'
-+=09       --use-loader --base-btf'
-         COMPREPLY=3D( $( compgen -W "$c" -- "$cur" ) )
-         return 0
-     fi
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 337ab7977ea4..c53c553adcac 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -31,7 +31,6 @@ bool block_mount;
- bool verifier_logs;
- bool relaxed_maps;
- bool use_loader;
--bool legacy_libbpf;
- struct btf *base_btf;
- struct hashmap *refs_table;
-
-@@ -160,7 +159,6 @@ static int do_version(int argc, char **argv)
- =09=09jsonw_start_object(json_wtr);=09/* features */
- =09=09jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
- =09=09jsonw_bool_field(json_wtr, "llvm", has_llvm);
--=09=09jsonw_bool_field(json_wtr, "libbpf_strict", !legacy_libbpf);
- =09=09jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
- =09=09jsonw_bool_field(json_wtr, "bootstrap", bootstrap);
- =09=09jsonw_end_object(json_wtr);=09/* features */
-@@ -179,7 +177,6 @@ static int do_version(int argc, char **argv)
- =09=09printf("features:");
- =09=09print_feature("libbfd", has_libbfd, &nb_features);
- =09=09print_feature("llvm", has_llvm, &nb_features);
--=09=09print_feature("libbpf_strict", !legacy_libbpf, &nb_features);
- =09=09print_feature("skeletons", has_skeletons, &nb_features);
- =09=09print_feature("bootstrap", bootstrap, &nb_features);
- =09=09printf("\n");
-@@ -451,7 +448,6 @@ int main(int argc, char **argv)
- =09=09{ "debug",=09no_argument,=09NULL,=09'd' },
- =09=09{ "use-loader",=09no_argument,=09NULL,=09'L' },
- =09=09{ "base-btf",=09required_argument, NULL, 'B' },
--=09=09{ "legacy",=09no_argument,=09NULL,=09'l' },
- =09=09{ 0 }
- =09};
- =09bool version_requested =3D false;
-@@ -524,9 +520,6 @@ int main(int argc, char **argv)
- =09=09case 'L':
- =09=09=09use_loader =3D true;
- =09=09=09break;
--=09=09case 'l':
--=09=09=09legacy_libbpf =3D true;
--=09=09=09break;
- =09=09default:
- =09=09=09p_err("unrecognized option '%s'", argv[optind - 1]);
- =09=09=09if (json_output)
-@@ -536,14 +529,6 @@ int main(int argc, char **argv)
- =09=09}
- =09}
-
--=09if (!legacy_libbpf) {
--=09=09/* Allow legacy map definitions for skeleton generation.
--=09=09 * It will still be rejected if users use LIBBPF_STRICT_ALL
--=09=09 * mode for loading generated skeleton.
--=09=09 */
--=09=09libbpf_set_strict_mode(LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINI=
-TIONS);
+ =09kern_btf =3D get_btf_vmlinux();
+-=09if (libbpf_get_error(kern_btf)) {
+-=09=09map_info_type_id =3D PTR_ERR(kern_btf);
+-=09=09return map_info_type_id;
 -=09}
--
- =09argc -=3D optind;
- =09argv +=3D optind;
- =09if (argc < 0)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index d4e8a1aef787..a84224b6a604 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -57,7 +57,7 @@ static inline void *u64_to_ptr(__u64 ptr)
- #define HELP_SPEC_PROGRAM=09=09=09=09=09=09\
- =09"PROG :=3D { id PROG_ID | pinned FILE | tag PROG_TAG | name PROG_NAME }=
-"
- #define HELP_SPEC_OPTIONS=09=09=09=09=09=09\
--=09"OPTIONS :=3D { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {-l|--lega=
-cy}"
-+=09"OPTIONS :=3D { {-j|--json} [{-p|--pretty}] | {-d|--debug}"
- #define HELP_SPEC_MAP=09=09=09=09=09=09=09\
- =09"MAP :=3D { id MAP_ID | pinned FILE | name MAP_NAME }"
- #define HELP_SPEC_LINK=09=09=09=09=09=09=09\
-@@ -82,7 +82,6 @@ extern bool block_mount;
- extern bool verifier_logs;
- extern bool relaxed_maps;
- extern bool use_loader;
--extern bool legacy_libbpf;
- extern struct btf *base_btf;
- extern struct hashmap *refs_table;
++=09if (!kern_btf)
++=09=09return 0;
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 9d32ffb9f22e..2266958f203f 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1802,11 +1802,6 @@ static int load_with_options(int argc, char **argv, =
-bool first_prog_only)
- =09else
- =09=09bpf_object__unpin_programs(obj, pinfile);
- err_close_obj:
--=09if (!legacy_libbpf) {
--=09=09p_info("Warning: bpftool is now running in libbpf strict mode and ha=
-s more stringent requirements about BPF programs.\n"
--=09=09       "If it used to work for this object file but now doesn't, see=
- --legacy option for more details.\n");
--=09}
--
- =09bpf_object__close(obj);
- err_free_reuse_maps:
- =09for (i =3D 0; i < old_map_fds; i++)
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/=
-testing/selftests/bpf/test_bpftool_synctypes.py
-index 9fe4c9336c6f..0cfece7ff4f8 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -309,11 +309,11 @@ class MainHeaderFileExtractor(SourceFileExtractor):
-         commands), which looks to the lists of options in other source fil=
-es
-         but has different start and end markers:
-
--            "OPTIONS :=3D { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {=
--l|--legacy}"
-+            "OPTIONS :=3D { {-j|--json} [{-p|--pretty}] | {-d|--debug}"
-
-         Return a set containing all options, such as:
-
--            {'-p', '-d', '--legacy', '--pretty', '--debug', '--json', '-l'=
-, '-j'}
-+            {'-p', '-d', '--pretty', '--debug', '--json', '-j'}
-         """
-         start_marker =3D re.compile(f'"OPTIONS :=3D')
-         pattern =3D re.compile('([\w-]+) ?(?:\||}[ }\]"])')
-@@ -336,7 +336,7 @@ class ManSubstitutionsExtractor(SourceFileExtractor):
-
-         Return a set containing all options, such as:
-
--            {'-p', '-d', '--legacy', '--pretty', '--debug', '--json', '-l'=
-, '-j'}
-+            {'-p', '-d', '--pretty', '--debug', '--json', '-j'}
-         """
-         start_marker =3D re.compile('\|COMMON_OPTIONS\| replace:: {')
-         pattern =3D re.compile('\*\*([\w/-]+)\*\*')
+ =09map_info_type_id =3D btf__find_by_name_kind(kern_btf, "bpf_map_info",
+ =09=09=09=09=09=09  BTF_KIND_STRUCT);
 --
 2.34.1
 
