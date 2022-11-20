@@ -2,66 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75277631691
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 22:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A8363169B
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 22:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiKTV0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 16:26:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        id S229526AbiKTVjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 16:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbiKTV0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 16:26:22 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FD922B26
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 13:26:21 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id j12so8935263plj.5
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 13:26:21 -0800 (PST)
+        with ESMTP id S229489AbiKTVjW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 16:39:22 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3477927FED
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 13:39:21 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id m22so24547486eji.10
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 13:39:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ahIz5CSqy8t/7nwtNXmt8bU2pqvl1zSBsr8ynBqzyI=;
-        b=XzNHtjU2icKNlXQzygSbr1hc5GNe0nr5EQOkP/R4bJWoaLWxIt/nuG+0UjLA8j5Wjs
-         e0xdROT9C+mOOij8Z8N8onw6OJc3K/uooH/6I91/+dW2RMMQOW2C+TWY30oRHf/JhnpG
-         Zz2dmAZ3xzpEqFPmi9zSLDKNWwS5FdwuaGRXV/QjUculjCFwObVLPtj0o/7PlqKnmmQE
-         eiyNaUycZM6/Sc3mSKZHyHuE0kPEiHgQ56pn2J8bH3UMqL0zGFFlJ/G/VvnFfdUSL1JX
-         J/ZKi+kFIGN1LGhByrw/4CbMjR/LwO3NQihUkUbeW27VXcG/jl3h8tHIZ0KgnSzmz1ap
-         5A4A==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bzuz9SRmF1vqyzZVdeMVYzpTFSn7+d7O+9mT86nYFjI=;
+        b=LfjcLOrLguHJ/6ZBiHLg4bR8Oy76RDXsJfgPWDQk9DeiAqRzpjzVlCIIOedr7SEPcY
+         1pbmXM0HeHJh5oeWr/88WoI5lYoY1NcNuZyQ8fVIhlSZtdWGJBGGDYSegO/Y+s1BAM0A
+         FGVh0BdCbseOI2TiIuiBDpGvu/SFAMXyP0QNXRYe10yy45rFdAcrpZTSvZNNRUMBjrpW
+         7VKo1bFdV5DQBhj+busdLiQ8cRlNfxAkRVE8SuCFn6mletc6nzrNBea0prmU8Ca5HvCK
+         aaherlq7ZBNdObMGbXLPXsgV6CBJtclAnHpFxt8A3LpG4AKPyAI0Av1hIhzj8jGrrS6+
+         nwaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9ahIz5CSqy8t/7nwtNXmt8bU2pqvl1zSBsr8ynBqzyI=;
-        b=xwN3ZRs5OVUSe7tYV2Tc8MX3an24aI/R7wjPqgpZ0ZaeeKYhm7RVXO5aU4nkfSSjRn
-         pvoL/dj1H5fq7ZXT1wzy3Bch9uxaJKBmdpHgcbUvutNYqTy1/cX+xEUkkIw0igV2D162
-         N6ByqKRzSTmklS6+SwM8mMF82sccFu5eVA0pZnkTYj+jPjVL1ccai73IOdIirXY/ziNe
-         Vf+/8rh3wTU6RMvpHF/3L/MGqA2QbEK+FuTRK7V/GVqV9q3qUPUmB1iXNvLPxPao+r5o
-         u6LhWcmGh/LpTPY3agJZW6RHyXPOIkfTF14QRABJkY0SM7d8PsZDzXRBgnrg1h/x65aZ
-         dhjw==
-X-Gm-Message-State: ANoB5pnLpGdH/hDyo4tRq6FBt38sc/l4tg+8nzyAOR0ak4DIChglG8Rv
-        qp3pBgZNFeF9TdsKwWjkeJfzCxLkLBg=
-X-Google-Smtp-Source: AA0mqf7NYjAB5XAFSdC6U5pxFlJUzHGD/9vjoJWzJmqKMCTYTfLPob71Rabc6h4Qv96khEhgSTV4yw==
-X-Received: by 2002:a17:902:db0c:b0:189:1963:d0d7 with SMTP id m12-20020a170902db0c00b001891963d0d7mr4440423plx.100.1668979581247;
-        Sun, 20 Nov 2022 13:26:21 -0800 (PST)
-Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id w62-20020a628241000000b0056bb7d90f0fsm7035542pfd.182.2022.11.20.13.26.20
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bzuz9SRmF1vqyzZVdeMVYzpTFSn7+d7O+9mT86nYFjI=;
+        b=b1jk/d0MRcVRmNC/wsBZhf49KhMAwznjiTC5790KTe3nf2QLHIJvGgYIax5x/ufWRT
+         3ZYZinJxhyKaXqdcbsrPCvdIuVKFf8NLQJs8NuR+mosl2WUnV8O9XPUngPaxeOpcw+YS
+         Mo7zMZFNc6rKu39Sk7SfBcdX0ajbkaCX4iWxOzDY383HvsWaJAUXA49OCf4+7aA3aO2R
+         ulo53CmIsreFrp51WBSe5yOpdFtYAj4nVXE+YrlEBNjiqNxa/nNA7qpENuw4o4+Hk1Fq
+         bjyOncZ3/tOjwqDBPZ6RIxcCbynkK/mEKaNvxZd97ZzaChS4/HL/2RkpyqoOGEbLaFoP
+         zcPg==
+X-Gm-Message-State: ANoB5pmh/b1eXf2HHfi+e1PhHBvY4xGDiUbLkqPP+Dk6ijZwb0gQA7Yn
+        M8+EeEUH/MN/TWp24BV3xMw=
+X-Google-Smtp-Source: AA0mqf5Tzlu1eXiJASwAcYwOjGFNe+xUBz7sCxGbD9ChHsEQtiEGz1n9jzQw9QgZASHx+08B76d6Mg==
+X-Received: by 2002:a17:906:e2cb:b0:7ad:c35a:ad76 with SMTP id gr11-20020a170906e2cb00b007adc35aad76mr13236600ejb.705.1668980359132;
+        Sun, 20 Nov 2022 13:39:19 -0800 (PST)
+Received: from krava ([83.240.62.198])
+        by smtp.gmail.com with ESMTPSA id g17-20020a170906539100b00734bfab4d59sm4317481ejo.170.2022.11.20.13.39.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Nov 2022 13:26:20 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Sun, 20 Nov 2022 13:39:18 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 20 Nov 2022 22:39:16 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@meta.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] bpf: Disallow bpf_obj_new_impl call when bpf_mem_alloc_init fails
-Date:   Mon, 21 Nov 2022 02:56:10 +0530
-Message-Id: <20221120212610.2361700-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin Lau <kafai@meta.com>, Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, David Vernet <void@manifault.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCHv3 bpf-next 1/2] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+Message-ID: <Y3qehFg38LR0Xpes@krava>
+References: <20221118154028.251399-1-jolsa@kernel.org>
+ <20221118154028.251399-2-jolsa@kernel.org>
+ <CAADnVQLLvwpAFTEwCw+ZdZGtZTrV7nFu3pXKMRW9irRYG9WJXw@mail.gmail.com>
+ <E30FFAE3-2BC8-45F5-9CBC-D7A3C7D66B74@fb.com>
+ <CAADnVQK7d-=_GWT++wvrXG9tB=hOEdFgc9Ejh76y4ZLDKd5-Rg@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1549; i=memxor@gmail.com; h=from:subject; bh=lKpJ6YTk7kMKOH2mLBt8iPlwQkKgvUbvsxkIzV/eiT8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjeplFL+N7uBya+GsZ2IKYTsSvTJq0S5/eXHR+YGdG RD5Z2tuJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY3qZRQAKCRBM4MiGSL8RyoKPD/ wNBmkBSDbl73mpqAomoQaRr2Wo9qgtCuhR3ropQZ2yd159483jlnww1FvU4VCIdhjd/DJurq1nt4W4 7dGlnAFwQFvalzVT9FFY8dfH0D/hCKNno8F95X6rzg7HE8KtjP7FhNSHtpj9vFa+RTfayZdhVG/K+k A3yYI7Rnt5lzj89NeM0YhvvktHeJbUuajACzUO+fNFtCNVrHTJ7lxwIh/69bdtoGJfqS0fNZ3BgJ9H 7wivLwyEW3tc5y352LNa92TlEvfLOsxLRPY3z5dcQo/KVy2r1oFSGI3i5lg6RddQ7ZiGzSQtJF9Au2 nUrOFXtJnoNCK9GvVTspZTlY/8dlRVLMCTdql6bHoHKydiRsvR7TZB/7GdiubBB7ycFVh/YCaG7xNY N4w1kJTenqcKfewDnBMtLC/TNwbZCcljrJ3Qi6cKwGhz0fIsTraXBd2V9Px+H46Akjk58oGJHbehku 3L2/QkaPehb24DM/9x3a9S9oEWWtatYcw55TN2loM609TGqsZdV9m/D8BbKCw26HD8hHpjBfzJc10A 9ZrY9hxtXvWZ8YNiJ8TTST8ZAiO9V6zW8kTc/Cp/ffbGLNdkcKcSrI3c34OSskgPjRbHuNEZ60/WCd uVUi5Y6h2X1cbsBPwe/wSCp/OBYYzE8budCsy84paBAYsJQg9sFK0jerOSyg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQK7d-=_GWT++wvrXG9tB=hOEdFgc9Ejh76y4ZLDKd5-Rg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,48 +84,126 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the unlikely event that bpf_global_ma is not correctly initialized,
-instead of checking the boolean everytime bpf_obj_new_impl is called,
-simply check it while loading the program and return an error if
-bpf_global_ma_set is false.
+On Fri, Nov 18, 2022 at 06:25:15PM -0800, Alexei Starovoitov wrote:
+> On Fri, Nov 18, 2022 at 5:06 PM Song Liu <songliubraving@meta.com> wrote:
+> >
+> >
+> >
+> > > On Nov 18, 2022, at 3:45 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Nov 18, 2022 at 7:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >>
+> > >> Adding bpf_vma_build_id_parse function to retrieve build id from
+> > >> passed vma object and making it available as bpf kfunc.
+> > >>
+> > >> We can't use build_id_parse directly as kfunc, because we would
+> > >> not have control over the build id buffer size provided by user.
+> > >>
+> > >> Instead we are adding new bpf_vma_build_id_parse function with
+> > >> 'build_id__sz' argument that instructs verifier to check for the
+> > >> available space in build_id buffer.
+> > >>
+> > >> This way  we check that there's  always available memory space
+> > >> behind build_id pointer. We also check that the build_id__sz is
+> > >> at least BUILD_ID_SIZE_MAX so we can place any buildid in.
+> > >>
+> > >> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > >> ---
+> > >> include/linux/bpf.h      |  4 ++++
+> > >> kernel/bpf/verifier.c    | 26 ++++++++++++++++++++++++++
+> > >> kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
+> > >> 3 files changed, 61 insertions(+)
+> > >>
+> > >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > >> index 8b32376ce746..7648188faa2c 100644
+> > >> --- a/include/linux/bpf.h
+> > >> +++ b/include/linux/bpf.h
+> > >> @@ -2805,4 +2805,8 @@ static inline bool type_is_alloc(u32 type)
+> > >>        return type & MEM_ALLOC;
+> > >> }
+> > >>
+> > >> +int bpf_vma_build_id_parse(struct vm_area_struct *vma,
+> > >> +                          unsigned char *build_id,
+> > >> +                          size_t build_id__sz);
+> > >> +
+> > >> #endif /* _LINUX_BPF_H */
+> > >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > >> index 195d24316750..e20bad754a3a 100644
+> > >> --- a/kernel/bpf/verifier.c
+> > >> +++ b/kernel/bpf/verifier.c
+> > >> @@ -8746,6 +8746,29 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> > >>        return 0;
+> > >> }
+> > >>
+> > >> +BTF_ID_LIST_SINGLE(bpf_vma_build_id_parse_id, func, bpf_vma_build_id_parse)
+> > >> +
+> > >> +static int check_kfunc_caller(struct bpf_verifier_env *env, u32 func_id)
+> > >> +{
+> > >> +       struct bpf_func_state *cur;
+> > >> +       struct bpf_insn *insn;
+> > >> +
+> > >> +       /* Allow bpf_vma_build_id_parse only from bpf_find_vma callback */
+> > >> +       if (func_id == bpf_vma_build_id_parse_id[0]) {
+> > >> +               cur = env->cur_state->frame[env->cur_state->curframe];
+> > >> +               if (cur->callsite != BPF_MAIN_FUNC) {
+> > >> +                       insn = &env->prog->insnsi[cur->callsite];
+> > >> +                       if (insn->imm == BPF_FUNC_find_vma)
+> > >> +                               return 0;
+> > >> +               }
+> > >> +               verbose(env, "calling bpf_vma_build_id_parse outside bpf_find_vma "
+> > >> +                       "callback is not allowed\n");
+> > >> +               return -1;
+> > >> +       }
+> > >> +
+> > >> +       return 0;
+> > >> +}
+> > >
+> > > I understand that calling bpf_vma_build_id_parse from find_vma
+> > > is your only use case, but put yourself in the maintainer's shoes.
+> > > We just did an arbitrary restriction and helped a single user.
+> > > How are we going to explain this to other users?
+> > > Let's figure out a more generic way where this call is safe.
+> > > Have you looked at PTR_TRUSTED approach that David is doing
+> > > for task_struct ? Can something like this be used here?
+> >
+> > I guess that won't work, as the vma is not refcounted. :( This is
+> > why we have to hold mmap_lock when calling task_vma programs.
+> >
+> > OTOH, I would image bpf_vma_build_id_parse being quite useful for
+> > task_vma programs.
+> 
+> Of course we cannot increment non-existing refcnt in vma :)
+> I meant that PTR_TRUSTED part of the concept. The kfunc
+> bpf_vma_build_id_parse(struct vm_area_struct *vma, ...)
+> should have KF_TRUSTED_ARGS flag
+> and it will be the job of the verifier to pass a trusted vma pointer.
+> Meaning that the verifier needs to guarantee that
+> the pointer is safe to operate on.
+> That's what I was explaining to Kumar and David earlier
+> about KF_TRUSTED_ARGS semantics.
+> 
+> PTR_TRUSTED doesn't mean that the pointer is refcnted.
+> It means that it won't disappear and we can safely pass it
+> to kfunc or helpers.
+> For bpf_find_vma we can mark vma pointer PTR_TRUSTED on entry
+> into callback bpf prog and the prog will be able to pass it
+> to bpf_vma_build_id_parse() kfunc as long as the prog doesn't
+> add any offset to it.
+> The implementation of bpf_find_vma() guarantees that vma ptr
+> passed into callback_fn is valid.
+> So it's exactly PTR_TRUSTED.
+> 
+> Similarly task_vma programs will be receiving PTR_TRUSTED pointers too
+> and will be able to call bpf_vma_build_id_parse() kfunc as well.
+> Any place where we can guarantee the safety of the pointer
+> we should be marking it as PTR_TRUSTED.
+> 
+> David's series start with marking all tp_btf arguments as PTR_TRUSTED.
+> Doing this for iterators, bpf_find_vma callback
+> will be a continuation of PTR_TRUSTED logic.
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- kernel/bpf/helpers.c  | 2 --
- kernel/bpf/verifier.c | 6 ++++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ok, sounds much better.. generic solution for both bpf_find_vma
+and task_vma iterator
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 89a95f3d854c..3d4edd314450 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1760,8 +1760,6 @@ void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
- 	u64 size = local_type_id__k;
- 	void *p;
-
--	if (unlikely(!bpf_global_ma_set))
--		return NULL;
- 	p = bpf_mem_alloc(&bpf_global_ma, size);
- 	if (!p)
- 		return NULL;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5bc9d84d7924..ea36107deee0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8878,6 +8878,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 				struct btf *ret_btf;
- 				u32 ret_btf_id;
-
-+				/* Unlikely, but fail the kfunc call if bpf_global_ma
-+				 * is not initialized.
-+				 */
-+				if (!bpf_global_ma_set)
-+					return -ENOMEM;
-+
- 				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
- 					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
- 					return -EINVAL;
---
-2.38.1
-
+thanks,
+jirka
