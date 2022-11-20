@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC2F6315AC
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 19:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1289A6315AD
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 19:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbiKTShK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 13:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
+        id S229520AbiKTShN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 13:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbiKTShJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 13:37:09 -0500
+        with ESMTP id S229618AbiKTShM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 13:37:12 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0217218A7
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:08 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKGnSxn020097
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:07 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472032188F
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:11 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKHPHeo023862
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:10 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=o4Aykg9aJJ/R7+obUPcjbJM6fpi8T8nKPPUXfvCkXws=;
- b=fcQPrk7n2Yu2sstpv+SqcFoPZ3IBrPAumk7zIbb2PdD7wsid6P94f4M+dGb8bdyC5GFy
- 2aa0mPnUREqwGbA1W8tDBkQDXcD+J6++GlYxffYBt5E1aab1S2U3jNODcLS1ZoIO66rf
- dz0FwrjNlj11ShBSToaJIHPOEfU240WFfTo= 
+ bh=MJq5MNqKQnS+ygbsLU6ia4TDKCfWtckbTTTPspQxXsU=;
+ b=EjuCF3gXpGnm9CsfgTY/kOOOwA41f2gY/k6/DIOGm46bFQ0p1qqZHD9pUvKR23g7sjNO
+ T8cQG3wvFM780JbrCKPjQ05+RXuNOs3mGx7opeI9Q0hp8nkMd0qMjFYidbh9nCgxtgzb
+ O7eO3+X2JVRCt9LuOFg6/ncxOyGFqNHbNvg= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxwj3ynux-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxws6qn8u-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:07 -0800
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 10:37:10 -0800
 Received: from twshared0705.02.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.31; Sun, 20 Nov 2022 10:37:06 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 0D9DB127696A9; Sun, 20 Nov 2022 10:36:57 -0800 (PST)
+        id 57FB1127696B8; Sun, 20 Nov 2022 10:37:02 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -42,9 +42,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         <kernel-team@fb.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 1/4] bpf: Add support for kfunc set with common btf_ids
-Date:   Sun, 20 Nov 2022 10:36:57 -0800
-Message-ID: <20221120183657.2180465-1-yhs@fb.com>
+Subject: [PATCH bpf-next v3 2/4] bpf: Add a kfunc to type cast from bpf uapi ctx to kernel ctx
+Date:   Sun, 20 Nov 2022 10:37:02 -0800
+Message-ID: <20221120183702.2180724-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221120183651.2180232-1-yhs@fb.com>
 References: <20221120183651.2180232-1-yhs@fb.com>
@@ -52,8 +52,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: TyUEY4YJxU0xvGOWiwICRxNWX6BVtN8f
-X-Proofpoint-ORIG-GUID: TyUEY4YJxU0xvGOWiwICRxNWX6BVtN8f
+X-Proofpoint-GUID: RpTmAXcefSGnAZZFDmEqiUUEmhxeI_x_
+X-Proofpoint-ORIG-GUID: RpTmAXcefSGnAZZFDmEqiUUEmhxeI_x_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-20_13,2022-11-18_01,2022-06-22_01
@@ -67,94 +67,194 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Later on, we will introduce kfuncs bpf_cast_to_kern_ctx() and
-bpf_rdonly_cast() which apply to all program types. Currently kfunc set
-only supports individual prog types. This patch added support for kfunc
-applying to all program types.
+Implement bpf_cast_to_kern_ctx() kfunc which does a type cast
+of a uapi ctx object to the corresponding kernel ctx. Previously
+if users want to access some data available in kctx but not
+in uapi ctx, bpf_probe_read_kernel() helper is needed.
+The introduction of bpf_cast_to_kern_ctx() allows direct
+memory access which makes code simpler and easier to understand.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/btf.c     |  8 ++++++++
- kernel/bpf/helpers.c | 12 +++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+ include/linux/btf.h   |  5 +++++
+ kernel/bpf/btf.c      | 25 +++++++++++++++++++++++++
+ kernel/bpf/helpers.c  |  6 ++++++
+ kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+ 4 files changed, 57 insertions(+)
 
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index d38aa4251c28..9ed00077db6e 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -487,6 +487,7 @@ const struct btf_member *
+ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *bt=
+f,
+ 		      const struct btf_type *t, enum bpf_prog_type prog_type,
+ 		      int arg);
++int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type=
+ prog_type);
+ bool btf_types_are_same(const struct btf *btf1, u32 id1,
+ 			const struct btf *btf2, u32 id2);
+ #else
+@@ -531,6 +532,10 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, =
+const struct btf *btf,
+ {
+ 	return NULL;
+ }
++static inline int get_kern_ctx_btf_id(struct bpf_verifier_log *log,
++				      enum bpf_prog_type prog_type) {
++	return -EINVAL;
++}
+ static inline bool btf_types_are_same(const struct btf *btf1, u32 id1,
+ 				      const struct btf *btf2, u32 id2)
+ {
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index d52054ec69c9..1c78d4df9e18 100644
+index 1c78d4df9e18..3c662b00d54a 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -199,6 +199,7 @@ DEFINE_IDR(btf_idr);
- DEFINE_SPINLOCK(btf_idr_lock);
-=20
- enum btf_kfunc_hook {
-+	BTF_KFUNC_HOOK_COMMON,
- 	BTF_KFUNC_HOOK_XDP,
- 	BTF_KFUNC_HOOK_TC,
- 	BTF_KFUNC_HOOK_STRUCT_OPS,
-@@ -7531,6 +7532,8 @@ static u32 *__btf_kfunc_id_set_contains(const struc=
-t btf *btf,
- static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
- {
- 	switch (prog_type) {
-+	case BPF_PROG_TYPE_UNSPEC:
-+		return BTF_KFUNC_HOOK_COMMON;
- 	case BPF_PROG_TYPE_XDP:
- 		return BTF_KFUNC_HOOK_XDP;
- 	case BPF_PROG_TYPE_SCHED_CLS:
-@@ -7559,6 +7562,11 @@ u32 *btf_kfunc_id_set_contains(const struct btf *b=
-tf,
- 			       u32 kfunc_btf_id)
- {
- 	enum btf_kfunc_hook hook;
-+	u32 *kfunc_flags;
-+
-+	kfunc_flags =3D __btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON,=
- kfunc_btf_id);
-+	if (kfunc_flags)
-+		return kfunc_flags;
-=20
- 	hook =3D bpf_prog_type_to_kfunc_hook(prog_type);
- 	return __btf_kfunc_id_set_contains(btf, hook, kfunc_btf_id);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 89a95f3d854c..6b2de097b950 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1903,10 +1903,19 @@ static const struct btf_kfunc_id_set generic_kfun=
-c_set =3D {
- 	.set   =3D &generic_btf_ids,
- };
-=20
-+
- BTF_ID_LIST(generic_dtor_ids)
- BTF_ID(struct, task_struct)
- BTF_ID(func, bpf_task_release)
-=20
-+BTF_SET8_START(common_btf_ids)
-+BTF_SET8_END(common_btf_ids)
-+
-+static const struct btf_kfunc_id_set common_kfunc_set =3D {
-+	.owner =3D THIS_MODULE,
-+	.set   =3D &common_btf_ids,
-+};
-+
- static int __init kfunc_init(void)
- {
- 	int ret;
-@@ -1920,9 +1929,10 @@ static int __init kfunc_init(void)
- 	ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &generic_kfunc=
-_set);
- 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &gene=
-ric_kfunc_set);
- 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &gen=
-eric_kfunc_set);
--	return ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
-+	ret =3D ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
- 						  ARRAY_SIZE(generic_dtors),
- 						  THIS_MODULE);
-+	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_k=
-func_set);
+@@ -5603,6 +5603,31 @@ static int btf_translate_to_vmlinux(struct bpf_ver=
+ifier_log *log,
+ 	return kern_ctx_type->type;
  }
 =20
- late_initcall(kfunc_init);
++int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type=
+ prog_type)
++{
++	const struct btf_member *kctx_member;
++	const struct btf_type *conv_struct;
++	const struct btf_type *kctx_type;
++	u32 kctx_type_id;
++
++	conv_struct =3D bpf_ctx_convert.t;
++	if (!conv_struct) {
++		bpf_log(log, "btf_vmlinux is malformed\n");
++		return -EINVAL;
++	}
++
++	/* get member for kernel ctx type */
++	kctx_member =3D btf_type_member(conv_struct) + bpf_ctx_convert_map[prog=
+_type] * 2 + 1;
++	kctx_type_id =3D kctx_member->type;
++	kctx_type =3D btf_type_by_id(btf_vmlinux, kctx_type_id);
++	if (!btf_type_is_struct(kctx_type)) {
++		bpf_log(log, "kern ctx type id %u is not a struct\n", kctx_type_id);
++		return -EINVAL;
++	}
++
++	return kctx_type_id;
++}
++
+ BTF_ID_LIST(bpf_ctx_convert_btf_id)
+ BTF_ID(struct, bpf_ctx_convert)
+=20
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 6b2de097b950..a4b9cfcecb00 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1881,6 +1881,11 @@ void bpf_task_release(struct task_struct *p)
+ 	put_task_struct_rcu_user(p);
+ }
+=20
++void *bpf_cast_to_kern_ctx(void *obj)
++{
++	return obj;
++}
++
+ __diag_pop();
+=20
+ BTF_SET8_START(generic_btf_ids)
+@@ -1909,6 +1914,7 @@ BTF_ID(struct, task_struct)
+ BTF_ID(func, bpf_task_release)
+=20
+ BTF_SET8_START(common_btf_ids)
++BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
+ BTF_SET8_END(common_btf_ids)
+=20
+ static const struct btf_kfunc_id_set common_kfunc_set =3D {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5bc9d84d7924..2e58b137ad45 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8151,6 +8151,7 @@ enum special_kfunc_type {
+ 	KF_bpf_list_push_back,
+ 	KF_bpf_list_pop_front,
+ 	KF_bpf_list_pop_back,
++	KF_bpf_cast_to_kern_ctx,
+ };
+=20
+ BTF_SET_START(special_kfunc_set)
+@@ -8160,6 +8161,7 @@ BTF_ID(func, bpf_list_push_front)
+ BTF_ID(func, bpf_list_push_back)
+ BTF_ID(func, bpf_list_pop_front)
+ BTF_ID(func, bpf_list_pop_back)
++BTF_ID(func, bpf_cast_to_kern_ctx)
+ BTF_SET_END(special_kfunc_set)
+=20
+ BTF_ID_LIST(special_kfunc_list)
+@@ -8169,6 +8171,7 @@ BTF_ID(func, bpf_list_push_front)
+ BTF_ID(func, bpf_list_push_back)
+ BTF_ID(func, bpf_list_pop_front)
+ BTF_ID(func, bpf_list_pop_back)
++BTF_ID(func, bpf_cast_to_kern_ctx)
+=20
+ static enum kfunc_ptr_arg_type
+ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+@@ -8182,6 +8185,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env=
+,
+ 	struct bpf_reg_state *reg =3D &regs[regno];
+ 	bool arg_mem_size =3D false;
+=20
++	if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_ctx])
++		return KF_ARG_PTR_TO_CTX;
++
+ 	/* In this function, we verify the kfunc's BTF as per the argument type=
+,
+ 	 * leaving the rest of the verification with respect to the register
+ 	 * type to our caller. When a set of conditions hold in the BTF type of
+@@ -8668,6 +8674,13 @@ static int check_kfunc_args(struct bpf_verifier_en=
+v *env, struct bpf_kfunc_call_
+ 				verbose(env, "arg#%d expected pointer to ctx, but got %s\n", i, btf_=
+type_str(t));
+ 				return -EINVAL;
+ 			}
++
++			if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_ctx])=
+ {
++				ret =3D get_kern_ctx_btf_id(&env->log, resolve_prog_type(env->prog))=
+;
++				if (ret < 0)
++					return -EINVAL;
++				meta->arg_constant.value =3D ret;
++			}
+ 			break;
+ 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+ 			if (reg->type !=3D (PTR_TO_BTF_ID | MEM_ALLOC)) {
+@@ -8919,6 +8932,11 @@ static int check_kfunc_call(struct bpf_verifier_en=
+v *env, struct bpf_insn *insn,
+ 				regs[BPF_REG_0].btf =3D field->list_head.btf;
+ 				regs[BPF_REG_0].btf_id =3D field->list_head.value_btf_id;
+ 				regs[BPF_REG_0].off =3D field->list_head.node_offset;
++			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern=
+_ctx]) {
++				mark_reg_known_zero(env, regs, BPF_REG_0);
++				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID;
++				regs[BPF_REG_0].btf =3D desc_btf;
++				regs[BPF_REG_0].btf_id =3D meta.arg_constant.value;
+ 			} else {
+ 				verbose(env, "kernel function %s unhandled dynamic return type\n",
+ 					meta.func_name);
+@@ -15172,6 +15190,9 @@ static int fixup_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+ 		insn_buf[1] =3D addr[1];
+ 		insn_buf[2] =3D *insn;
+ 		*cnt =3D 3;
++	} else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_=
+ctx]) {
++		insn_buf[0] =3D BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
++		*cnt =3D 1;
+ 	}
+ 	return 0;
+ }
 --=20
 2.30.2
 
