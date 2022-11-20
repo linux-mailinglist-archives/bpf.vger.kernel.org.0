@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED501631519
+	by mail.lfdr.de (Postfix) with ESMTP id 6E643631518
 	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 17:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbiKTQPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229572AbiKTQPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Sun, 20 Nov 2022 11:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiKTQPV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229587AbiKTQPV (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sun, 20 Nov 2022 11:15:21 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845B1233AB
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B7E1B7A3
         for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:20 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKEjEMs010355
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:19 -0800
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKDbVOb021359
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:20 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=n/k1+iJibzhsWgJRCIYXIFS+XD8rdzAkXarklrgdanA=;
- b=bKzMWgcScVgSVIj7Y1F9Uc2tRsNqg/1Eh6IJCASZ5xC0MPUFEsFMLTNKLIJuz1FMyyz/
- 1mPgylttWCXyIbyI2j9K/EMm7GshW4lNK2YRswN+5cNpPHMdtUMFZoC7HG13mJIeuomA
- MvaccKT56VxHpQ4KaALKtsjBfPkQtS+rzZ0= 
-Received: from maileast.thefacebook.com ([163.114.130.3])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxwj3y3px-3
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=S3W75C8gHyzu/9wEnsmuToL5y6VP0ZKvYifnlw69OFs=;
+ b=Hh5uM3CIizM8j5qbmJD2noOMi/FL3IyKvLsgWS8C7QhhQP8eRsrpJ9OLjobwe5pi1qJm
+ Yt3szc+9izZK4vk1zET3UP6YGU5L6BkG/wdNZaNGxbtSUh7BrIVp+eAvtRuSKEffsE5H
+ 9wKWK338WNkJcgcof4NSjNHV6Gb6EOpLIaI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxv2qy8sf-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:19 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:20 -0800
+Received: from twshared16963.27.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sun, 20 Nov 2022 08:15:18 -0800
+ 15.1.2375.31; Sun, 20 Nov 2022 08:15:19 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id D8270127558A3; Sun, 20 Nov 2022 08:15:11 -0800 (PST)
+        id 2BA9A127558B6; Sun, 20 Nov 2022 08:15:17 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -41,17 +42,18 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         <kernel-team@fb.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 0/4] bpf: Implement two type cast kfuncs
-Date:   Sun, 20 Nov 2022 08:15:11 -0800
-Message-ID: <20221120161511.831691-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 1/4] bpf: Add support for kfunc set with common btf_ids
+Date:   Sun, 20 Nov 2022 08:15:17 -0800
+Message-ID: <20221120161517.832281-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221120161511.831691-1-yhs@fb.com>
+References: <20221120161511.831691-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: o7GECc6iWvcxKaHkmzxZboU8VRRIsBs6
-X-Proofpoint-ORIG-GUID: o7GECc6iWvcxKaHkmzxZboU8VRRIsBs6
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: JJ9NJ1yvJYZ_lGlmflxIPSCSlvD9qiXu
+X-Proofpoint-GUID: JJ9NJ1yvJYZ_lGlmflxIPSCSlvD9qiXu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-20_11,2022-11-18_01,2022-06-22_01
@@ -65,68 +67,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currenty, a non-tracing bpf program typically has a single 'context' argume=
-nt
-with predefined uapi struct type. Following these uapi struct, user is able
-to access other fields defined in uapi header. Inside the kernel, the
-user-seen 'context' argument is replaced with 'kernel context' (or 'kctx'
-in short) which can access more information than what uapi header provides.
-To access other info not in uapi header, people typically do two things:
-  (1). extend uapi to access more fields rooted from 'context'.
-  (2). use bpf_probe_read_kernl() helper to read particular field based on
-    kctx.
-Using (1) needs uapi change and using (2) makes code more complex since
-direct memory access is not allowed.
+Later on, we will introduce kfuncs bpf_cast_to_kern_ctx() and
+bpf_rdonly_cast() which apply to all program types. Currently kfunc set
+only supports individual prog types. This patch added support for kfunc
+applying to all program types.
 
-There are already a few instances trying to access more information from
-kctx:=20=20=20=20=20=20=20
-  . trying to access some fields from perf_event kctx ([1]).
-  . trying to access some fields from xdp kctx ([2]).
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c     |  8 ++++++++
+ kernel/bpf/helpers.c | 13 ++++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
-This patch set tried to allow direct memory access for kctx fields
-by introducing bpf_cast_to_kern_ctx() kfunc.
-
-Martin mentioned a use case like type casting below:
-  #define skb_shinfo(SKB) ((struct skb_shared_info *)(skb_end_pointer(SKB)))
-basically a 'unsigned char *" casted to 'struct skb_shared_info *'. This pa=
-tch
-set tries to support such a use case as well with bpf_rdonly_cast().
-
-For the patch series, Patch 1 added support for a kfunc available to all
-prog types. Patch 2 added bpf_cast_to_kern_ctx() kfunc. Patch 3 added
-bpf_rdonly_cast() kfunc. Patch 4 added a few positive and negative tests.
-
-  [1] https://lore.kernel.org/bpf/ad15b398-9069-4a0e-48cb-4bb651ec3088@meta=
-.com/
-  [2] https://lore.kernel.org/bpf/20221109215242.1279993-1-john.fastabend@g=
-mail.com/
-
-Changelog:
-  rfcv1 -> v2:
-    - break original one kfunc into two.
-    - add missing error checks and error logs.
-    - adapt to the new conventions in
-      https://lore.kernel.org/all/20221118015614.2013203-1-memxor@gmail.com/
-      for example, with __ign and __k suffix.
-    - added support in fixup_kfunc_call() to replace kfunc calls with a sin=
-gle mov.
-
-Yonghong Song (4):
-  bpf: Add support for kfunc set with common btf_ids
-  bpf: Add a kfunc to type cast from bpf uapi ctx to kernel ctx
-  bpf: Add a kfunc for generic type cast
-  bpf: Add type cast unit tests
-
- include/linux/btf.h                           |   5 +
- kernel/bpf/btf.c                              |  33 +++++
- kernel/bpf/helpers.c                          |  25 +++-
- kernel/bpf/verifier.c                         |  45 ++++++-
- .../selftests/bpf/prog_tests/type_cast.c      | 114 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/type_cast.c |  83 +++++++++++++
- 6 files changed, 303 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/type_cast.c
- create mode 100644 tools/testing/selftests/bpf/progs/type_cast.c
-
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index f7d5fab61535..0a3abbe56c5d 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -199,6 +199,7 @@ DEFINE_IDR(btf_idr);
+ DEFINE_SPINLOCK(btf_idr_lock);
+=20
+ enum btf_kfunc_hook {
++	BTF_KFUNC_HOOK_COMMON,
+ 	BTF_KFUNC_HOOK_XDP,
+ 	BTF_KFUNC_HOOK_TC,
+ 	BTF_KFUNC_HOOK_STRUCT_OPS,
+@@ -7523,6 +7524,8 @@ static u32 *__btf_kfunc_id_set_contains(const struc=
+t btf *btf,
+ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+ {
+ 	switch (prog_type) {
++	case BPF_PROG_TYPE_UNSPEC:
++		return BTF_KFUNC_HOOK_COMMON;
+ 	case BPF_PROG_TYPE_XDP:
+ 		return BTF_KFUNC_HOOK_XDP;
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+@@ -7551,6 +7554,11 @@ u32 *btf_kfunc_id_set_contains(const struct btf *b=
+tf,
+ 			       u32 kfunc_btf_id)
+ {
+ 	enum btf_kfunc_hook hook;
++	u32 *kfunc_flags;
++
++	kfunc_flags =3D __btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON,=
+ kfunc_btf_id);
++	if (kfunc_flags)
++		return kfunc_flags;
+=20
+ 	hook =3D bpf_prog_type_to_kfunc_hook(prog_type);
+ 	return __btf_kfunc_id_set_contains(btf, hook, kfunc_btf_id);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 212e791d7452..eaae7f474eda 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1843,6 +1843,14 @@ static const struct btf_kfunc_id_set generic_kfunc=
+_set =3D {
+ 	.set   =3D &generic_btf_ids,
+ };
+=20
++BTF_SET8_START(common_btf_ids)
++BTF_SET8_END(common_btf_ids)
++
++static const struct btf_kfunc_id_set common_kfunc_set =3D {
++	.owner =3D THIS_MODULE,
++	.set   =3D &common_btf_ids,
++};
++
+ static int __init kfunc_init(void)
+ {
+ 	int ret;
+@@ -1850,7 +1858,10 @@ static int __init kfunc_init(void)
+ 	ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &generic_kfunc=
+_set);
+ 	if (ret)
+ 		return ret;
+-	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &generic_kfun=
+c_set);
++	ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &generic_kfu=
+nc_set);
++	if (ret)
++		return ret;
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_se=
+t);
+ }
+=20
+ late_initcall(kfunc_init);
 --=20
 2.30.2
 
