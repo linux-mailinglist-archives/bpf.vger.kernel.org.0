@@ -2,132 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 571DA63176E
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 00:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C14863176F
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 00:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiKTXrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 18:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S229610AbiKTXuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 18:50:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiKTXrW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 18:47:22 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0465B167FE
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 15:47:21 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id bj12so24892210ejb.13
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 15:47:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0cLYuWcXGQrxkYedw83rwJZatfjz3oXDPletNaba4g=;
-        b=mGw/bc58bPcY6Skh0aTxHNGC38yBPdEifOWLYyqtYk7+uIm2tf5Hs7As9kr3IRmEIX
-         fOfiM0sB/4kwDfta7bhfmb8fZwNSaVy7OwLh9ssGsMGO3d7rrdNfr2FonrCES/RMg+Z4
-         iyRxC9K4CBFGNBRETB5ZNGiGo8Cjo3TdayfQvTLurCzQpyKFnG038igt5GW/5s6Rpkjc
-         U2FywA/XB2y7DUACy0wy2W+xmUGA2cLb0P+nXCELDawHGUFZ1+wtwjf0VDBJzI7tWGfX
-         AWaDmGCBFSFNscLpHbUnzoQtjV8uL6GC1w4WXIDiOfVLiZkD3zhv/wYnc0HiOmeVLf8N
-         MTOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y0cLYuWcXGQrxkYedw83rwJZatfjz3oXDPletNaba4g=;
-        b=27PTZClOdI70KHxTJ0J2VEa5sA9EEU3tkBV8ZNSVC0B23uBiRQEc2V3G1bJkAkI7vU
-         BxTZ4qz108fBWd3+VEkWtZoxbzPmQVue47HKLgm96F8LGPvJYkhTp7XpcY45v44rr5DK
-         3fKC+vdsL5XefB0PnpX2tLGQUOMXkBG+gmSpofV3dWmW4bgyyCRBT1NKoGhr/5TqdDdG
-         WPHtgwjNkE1xql9tq8B4i1AqlDG+tASb7RQLugmL2J4asOmBoU4TyA9SE2dMQZfx3LcV
-         d7m4y1uMpHmKK7Hu1jGOtxPrQmWYcRUqG2+WVvIfbcjV+xqu8Itk6Yh0XkjRLIaAmUeN
-         GuDw==
-X-Gm-Message-State: ANoB5pmDyOs0dgwxg9aFds3TJUsK2fRaupGQ005vzL+R4epRA4ZfsSDQ
-        RF6T8YH1G+Qhy2cnYVT/htOaaqO7aYxFOMjbvh0=
-X-Google-Smtp-Source: AA0mqf5Yan3r1oQG4WWHQj2tw/cELlI6D1NMDQZkydPQf+eK2SizlmGRIoKtEqSj471bKcTH/zXB0GDdeahkaJU8LX8=
-X-Received: by 2002:a17:906:4351:b0:78d:513d:f447 with SMTP id
- z17-20020a170906435100b0078d513df447mr13865272ejm.708.1668988039414; Sun, 20
- Nov 2022 15:47:19 -0800 (PST)
+        with ESMTP id S229551AbiKTXuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 18:50:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D962228D
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 15:50:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DC9D60DBE
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 23:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D9029C433D7;
+        Sun, 20 Nov 2022 23:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668988215;
+        bh=Skrr+yZ327S0LDEKCXV0PkNmFSsT4yBo8yXuXHBjQLo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SqepesMF8au5rpZzp6Y61y+rK6GrWVO6SWAY1xQ37eblsOS5KAG3ipMopcKz4omqM
+         CNG4nM8d3PdoOJMGKIDtSqtH6I5llYqHJDominZgDxvIH2OGiDQt6ODu+Z5ijPKuX/
+         kV1JCmvEQHfMxMriQd0u5jUOIO4j18p+LijTUpVxsyTSnkgfFUEDfdxJiURgp6DyTc
+         WLH4rV79xR6X9iMSPc0nn12s6gjW3yZCOuQEUagzZArcTvPRj3U+8eC+PWjf9IEvzq
+         7MaJdX3DJzxJJstxgxlRIJAI6yaxk8BoAqLVmQyIFRTvTCulzwg6Lahrfw/LEuJEkl
+         gsDUp0AYvSuqw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BD088E21EFF;
+        Sun, 20 Nov 2022 23:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221120195421.3112414-1-yhs@fb.com> <20221120195437.3114585-1-yhs@fb.com>
- <CAADnVQ+92vwqUB=J-QJYtrW0Yqvx2HAJJBREkXPJtW0+gyS1mQ@mail.gmail.com>
- <20221120204930.uuinebxndf7vkdwy@apollo> <20221120223454.ymzd4oqt7nsrbgkn@macbook-pro-5.dhcp.thefacebook.com>
- <CAADnVQLMi-5Avxxd89+wpWksZnxGkCxzjDHrBLzuGUoVmp1Azw@mail.gmail.com>
-In-Reply-To: <CAADnVQLMi-5Avxxd89+wpWksZnxGkCxzjDHrBLzuGUoVmp1Azw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 20 Nov 2022 15:47:08 -0800
-Message-ID: <CAADnVQJ3U=R7qtbgdMDpnn41PvMREFECjGTfgFcP81TUDe_89g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add a kfunc for generic type cast
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Disallow bpf_obj_new_impl call when
+ bpf_mem_alloc_init fails
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166898821576.32599.1173796530789763639.git-patchwork-notify@kernel.org>
+Date:   Sun, 20 Nov 2022 23:50:15 +0000
+References: <20221120212610.2361700-1-memxor@gmail.com>
+In-Reply-To: <20221120212610.2361700-1-memxor@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 20, 2022 at 3:32 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Nov 20, 2022 at 2:34 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Nov 21, 2022 at 02:19:30AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > On Mon, Nov 21, 2022 at 01:46:04AM IST, Alexei Starovoitov wrote:
-> > > > On Sun, Nov 20, 2022 at 11:57 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > >
-> > > > > @@ -8938,6 +8941,24 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > > > >                                 regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
-> > > > >                                 regs[BPF_REG_0].btf = desc_btf;
-> > > > >                                 regs[BPF_REG_0].btf_id = meta.ret_btf_id;
-> > > > > +                       } else if (meta.func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
-> > > > > +                               if (!capable(CAP_PERFMON)) {
-> > > > > +                                       verbose(env,
-> > > > > +                                               "kfunc bpf_rdonly_cast requires CAP_PERFMON capability\n");
-> > > > > +                                       return -EACCES;
-> > > > > +                               }
-> > > >
-> > > > Just realized that bpf_cast_to_kern_ctx() has to be
-> > > > gated by cap_perfmon as well.
-> > > >
-> > > > Also the direct capable(CAP_PERFMON) is not quite correct.
-> > > > It should at least be perfmon_capable().
-> > > > But even better to use env->allow_ptr_leaks here.
-> > >
-> > > Based on this, I wonder if this needs to be done for bpf_obj_new as well? It
-> > > doesn't zero initialize the memory it returns (except special fields, which is
-> > > required for correctness), so technically it allows leaking kernel addresses
-> > > with just CAP_BPF (apart from capabilities needed for the specific program types
-> > > it is available to).
-> > >
-> > > Should that also have a env->allow_ptr_leaks check?
-> >
-> > Yeah. Good point.
-> > My first reaction was to audit everything where the verifier produces
-> > PTR_TO_BTF_ID and gate it with allow_ptr_leaks.
-> > But then it looks simpler to gate it once in check_ptr_to_btf_access().
-> > Then bpf_rdonly_cast and everything wouldn't need those checks.
->
-> Noticed that check_ptr_to_map_access is doing
-> "Simulate access to a PTR_TO_BTF_ID"
-> and has weird allow_ptr_to_map_access bool
-> which is the same as allow_ptr_leaks.
-> So I'm thinking we can remove allow_ptr_to_map_access
-> and add allow_ptr_leaks check to btf_struct_access()
-> which will cover all these cases.
->
-> Also since bpf_cast_to_kern_ctx() is expected to be used out of
-> networking progs and those progs are not always GPL we should add
-> env->prog->gpl_compatible to btf_struct_access() too.
+Hello:
 
-Since that follow up will cover bpf_rdonly_cast too
-I've removed cap_perfmon check from this commit and will push
-this series shortly.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Mon, 21 Nov 2022 02:56:10 +0530 you wrote:
+> In the unlikely event that bpf_global_ma is not correctly initialized,
+> instead of checking the boolean everytime bpf_obj_new_impl is called,
+> simply check it while loading the program and return an error if
+> bpf_global_ma_set is false.
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: Disallow bpf_obj_new_impl call when bpf_mem_alloc_init fails
+    https://git.kernel.org/bpf/bpf-next/c/e181d3f143f7
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
