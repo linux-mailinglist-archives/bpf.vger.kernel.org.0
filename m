@@ -2,101 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3856314EC
-	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 16:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED501631519
+	for <lists+bpf@lfdr.de>; Sun, 20 Nov 2022 17:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbiKTPfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 10:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S229587AbiKTQPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 11:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiKTPfv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 10:35:51 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92A72CE08
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 07:35:50 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id j6so6556439qvn.12
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 07:35:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fpwqVOW797gAFKaMlFf8rbbV9ogLoKN+pyL9Kzxq/Hw=;
-        b=ZOYD2TgVj7T0xPjQ+jIUtjU+vq3fPR84XpXCvebYPPYI/9fbZ/LXfWaRbovc0z8xhF
-         T92nk65v1UW8rGSGTU0kq/sd+X3cK+yxmdLeYUnNazHqzDUwruJW1OHmfKfx2IVWIpsM
-         W/R7inVlGR6fgSXZ0p9DUkEuURjiCjmyt68bxxWIbuX0Z44vYEQllW2OWh928+1v0Al9
-         t1fPpjX3Mrr0pzMHvhvP7GxJEHcFQEDdWS5lRyKW/j2f4xDgZQS205INk4CaYjgIjpnN
-         3cRMBLdCnmlOxuMZX/CPyrlVkEZvMzwwbvksujODSQCmhyhNPhSvUDT1ZDcMyvumN7JY
-         7suA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fpwqVOW797gAFKaMlFf8rbbV9ogLoKN+pyL9Kzxq/Hw=;
-        b=ENDk0tqkAwNfsIETkARamqBPlk4AeR8fjbsJW+3JL1di6jF91fGkW0DsMONBpUephs
-         VN1dHdQIuKlL0x1ADXbBGu24H/9BKe7hcR1Wz85gSliXvkUyr3lus2tTb6toGfE8KxXG
-         zFblvz6WOn9Au7DKknmxJ+rUAtUYVlrHfEXr8aKeoPDuz1SQmw/MGxP1HMdgcvpzDHSb
-         LvZohKBX2xC5eAyfSbrjYK3v6SHWsuU3YLzmvV3DOzJ/j97/6Oruse7VVEcum27b1jkd
-         8a93Pj6xd4V11ggIH7Kqr7BFZ2xIOZ2LZ0q35a3vSO1NgiRAsIFtQUC40iFOygkA/1VM
-         CL8g==
-X-Gm-Message-State: ANoB5pkV+7PCqjuvoFZJshszXVQwCZP8fSRfe3hzBlNeOtELLtZjSLni
-        KElMFw5kG2KRijH9r4SlvOXf3Y2sxGsBT/RCtqqISA==
-X-Google-Smtp-Source: AA0mqf77324nlIUY+wS5UtR45efI3byUqSKuoV/Lx7tqebN/IvrA3fZ+8rxnGBBVRkUUFdRiGdp5ovZSRIghWZJ4pXs=
-X-Received: by 2002:a0c:914d:0:b0:4b1:af7a:7f67 with SMTP id
- q71-20020a0c914d000000b004b1af7a7f67mr14190954qvq.67.1668958549981; Sun, 20
- Nov 2022 07:35:49 -0800 (PST)
+        with ESMTP id S229604AbiKTQPV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 11:15:21 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845B1233AB
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:20 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AKEjEMs010355
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=n/k1+iJibzhsWgJRCIYXIFS+XD8rdzAkXarklrgdanA=;
+ b=bKzMWgcScVgSVIj7Y1F9Uc2tRsNqg/1Eh6IJCASZ5xC0MPUFEsFMLTNKLIJuz1FMyyz/
+ 1mPgylttWCXyIbyI2j9K/EMm7GshW4lNK2YRswN+5cNpPHMdtUMFZoC7HG13mJIeuomA
+ MvaccKT56VxHpQ4KaALKtsjBfPkQtS+rzZ0= 
+Received: from maileast.thefacebook.com ([163.114.130.3])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxwj3y3px-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 08:15:19 -0800
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sun, 20 Nov 2022 08:15:18 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id D8270127558A3; Sun, 20 Nov 2022 08:15:11 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <kernel-team@fb.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v2 0/4] bpf: Implement two type cast kfuncs
+Date:   Sun, 20 Nov 2022 08:15:11 -0800
+Message-ID: <20221120161511.831691-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: o7GECc6iWvcxKaHkmzxZboU8VRRIsBs6
+X-Proofpoint-ORIG-GUID: o7GECc6iWvcxKaHkmzxZboU8VRRIsBs6
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20221120112515.38165-1-sahid.ferdjaoui@industrialdiscipline.com>
-In-Reply-To: <20221120112515.38165-1-sahid.ferdjaoui@industrialdiscipline.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Sun, 20 Nov 2022 15:35:38 +0000
-Message-ID: <CACdoK4+0_q_6T5gF_TGhceVTcq5+77qYOY-sC3Di8kqQkGXWBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/5] clean-up bpftool from legacy support
-To:     Sahid Orentino Ferdjaoui 
-        <sahid.ferdjaoui@industrialdiscipline.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, yhs@fb.com, martin.lau@linux.dev,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-20_11,2022-11-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 20 Nov 2022 at 11:25, Sahid Orentino Ferdjaoui
-<sahid.ferdjaoui@industrialdiscipline.com> wrote:
->
-> As part of commit 93b8952d223a ("libbpf: deprecate legacy BPF map
-> definitions") and commit bd054102a8c7 ("libbpf: enforce strict libbpf
-> 1.0 behaviors") The --legacy option is not relevant anymore. #1 is
-> removing it. #4 is cleaning the code from using libbpf_get_error().
->
-> About patches #2 and #3 They are changes discovered while working on
-> this series (credits to Quentin Monnet). #2 is cleaning-up usage of an
-> unnecessary PTR_ERR(NULL), finally #3 is fixing an invalid value
-> passed to strerror().
->
-> v1 -> v2:
->    - Addressed review comments from Yonghong Song on patch #4
->    - Added a patch #5 that removes unwanted function noticed by
->      Yonghong Song
-> v2 -> v3
->    - Addressed review comments from Andrii Nakryiko on patch #2, #3, #4
->      * clean-up usage of libbpf_get_error() (#2, #3)
->      * fix possible return of an uninitialized local variable err
->      * fix returned errors using errno
-> v3 -> v4
->    - Addressed review comments from Quentin Monnet
->      * fix line moved from patch #2 to patch #3
->      * fix missing returned errors using errno
->      * fix some returned values to errno instead of -1
+Currenty, a non-tracing bpf program typically has a single 'context' argume=
+nt
+with predefined uapi struct type. Following these uapi struct, user is able
+to access other fields defined in uapi header. Inside the kernel, the
+user-seen 'context' argument is replaced with 'kernel context' (or 'kctx'
+in short) which can access more information than what uapi header provides.
+To access other info not in uapi header, people typically do two things:
+  (1). extend uapi to access more fields rooted from 'context'.
+  (2). use bpf_probe_read_kernl() helper to read particular field based on
+    kctx.
+Using (1) needs uapi change and using (2) makes code more complex since
+direct memory access is not allowed.
 
-For the series:
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+There are already a few instances trying to access more information from
+kctx:=20=20=20=20=20=20=20
+  . trying to access some fields from perf_event kctx ([1]).
+  . trying to access some fields from xdp kctx ([2]).
 
-Thanks for this work!
+This patch set tried to allow direct memory access for kctx fields
+by introducing bpf_cast_to_kern_ctx() kfunc.
+
+Martin mentioned a use case like type casting below:
+  #define skb_shinfo(SKB) ((struct skb_shared_info *)(skb_end_pointer(SKB)))
+basically a 'unsigned char *" casted to 'struct skb_shared_info *'. This pa=
+tch
+set tries to support such a use case as well with bpf_rdonly_cast().
+
+For the patch series, Patch 1 added support for a kfunc available to all
+prog types. Patch 2 added bpf_cast_to_kern_ctx() kfunc. Patch 3 added
+bpf_rdonly_cast() kfunc. Patch 4 added a few positive and negative tests.
+
+  [1] https://lore.kernel.org/bpf/ad15b398-9069-4a0e-48cb-4bb651ec3088@meta=
+.com/
+  [2] https://lore.kernel.org/bpf/20221109215242.1279993-1-john.fastabend@g=
+mail.com/
+
+Changelog:
+  rfcv1 -> v2:
+    - break original one kfunc into two.
+    - add missing error checks and error logs.
+    - adapt to the new conventions in
+      https://lore.kernel.org/all/20221118015614.2013203-1-memxor@gmail.com/
+      for example, with __ign and __k suffix.
+    - added support in fixup_kfunc_call() to replace kfunc calls with a sin=
+gle mov.
+
+Yonghong Song (4):
+  bpf: Add support for kfunc set with common btf_ids
+  bpf: Add a kfunc to type cast from bpf uapi ctx to kernel ctx
+  bpf: Add a kfunc for generic type cast
+  bpf: Add type cast unit tests
+
+ include/linux/btf.h                           |   5 +
+ kernel/bpf/btf.c                              |  33 +++++
+ kernel/bpf/helpers.c                          |  25 +++-
+ kernel/bpf/verifier.c                         |  45 ++++++-
+ .../selftests/bpf/prog_tests/type_cast.c      | 114 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/type_cast.c |  83 +++++++++++++
+ 6 files changed, 303 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/type_cast.c
+ create mode 100644 tools/testing/selftests/bpf/progs/type_cast.c
+
+--=20
+2.30.2
+
