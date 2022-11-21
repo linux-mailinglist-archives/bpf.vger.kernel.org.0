@@ -2,178 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78A3631A01
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 08:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD570631AA9
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 08:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiKUHJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 02:09:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        id S229907AbiKUHww (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 02:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiKUHJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 02:09:09 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E7028E0F
-        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 23:09:07 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NFz5V1wBDz4f3m7M
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 15:09:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgC329gLJHtjFJKWAw--.51545S7;
-        Mon, 21 Nov 2022 15:09:05 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
+        with ESMTP id S229826AbiKUHwt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 02:52:49 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60ECB865
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 23:52:46 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so10551567pjl.3
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 23:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6WjVfFYLcTfewafnon3KVt0ktJTiMVy1KnjVKkT5rpE=;
+        b=b79/fyAq/YHmS0tOjEAtCmJdzJ1Ua36rMCUO8ivApIafNLtN6kTGfwicRGJWxwKqJH
+         lJqTjXKFQSETXnz1A4FO28qxJns3MyYYipxX7PqKjsNMbL6scsAern/+29y+tK3yRLiz
+         Y3LRr9VjVmgT1PnZ6dOgikEtWkRy25Ry0OuR/0PI2mEoOSrjuzFBXMfg1jtCepGjgbqy
+         UgvpV52e2CQo+J9euy+0nkAgV5wY/EDEiHyK4PfX08gIIZEqnh4jFb5OUx/HeIQ2hpfV
+         EUnU/V/yKi6jiFZsTr6ubsWvFNhGJSlwWY2QQHqL7Vi0pVoCKYzysbYlKNYGskbqywlQ
+         3SLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6WjVfFYLcTfewafnon3KVt0ktJTiMVy1KnjVKkT5rpE=;
+        b=oUfsXNYFXn0g3zoe2sXMlsIXE9xsVyne+tTa19O/Q3DxQNRRrm2N4W+Ie9OeJmKu2j
+         2x1Lr+CggT5zrlLwUNFKAJjHOByz+0dGvSVfC35k1V7knILUHNs6NCG3JiwtEDUy6sP9
+         HV+8zo87k52t3AEMa9yRhssZvq8iu4cKj8NVYyN/OOeIfZ9YOd3wzySUDihklXtLvHhz
+         gegAICLjYFDxJlVqHVPNSPjZZ+IKnEyIk/8TYuAUPjwsHkcYgtV03w1dP0ZBSLNA4hOM
+         ku1k0i4QA1gikbbkKCSehXmDSWXZfk9P0xc8OdALzFU15pnoTwkBmNC6IuAWgsmEwFTe
+         5QBA==
+X-Gm-Message-State: ANoB5pnXfuoyScXRtZ93vsBorb6Vy8nbGfmbHoy+oojIxJCvTu7o9qoR
+        3CvrBuog8ReOCEDKqbNKeJnCLQ==
+X-Google-Smtp-Source: AA0mqf5nMvHnG2tzrfyG/pKaCg//dI3l1l5t28l8zrVad0SYYerVDasQyvTv7S7qhLyrX4NgNp1FzQ==
+X-Received: by 2002:a17:902:ec8a:b0:188:640f:f400 with SMTP id x10-20020a170902ec8a00b00188640ff400mr1182661plg.143.1669017165937;
+        Sun, 20 Nov 2022 23:52:45 -0800 (PST)
+Received: from leoy-huangpu.lan (211-75-219-204.hinet-ip.hinet.net. [211.75.219.204])
+        by smtp.gmail.com with ESMTPSA id h31-20020a63575f000000b0047696938911sm7006277pgm.74.2022.11.20.23.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Nov 2022 23:52:45 -0800 (PST)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add test for cgroup iterator on a dead cgroup
-Date:   Mon, 21 Nov 2022 15:34:40 +0800
-Message-Id: <20221121073440.1828292-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221121073440.1828292-1-houtao@huaweicloud.com>
-References: <20221121073440.1828292-1-houtao@huaweicloud.com>
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v1 0/5] perf trace: Cleanup and remove unused bpf map
+Date:   Mon, 21 Nov 2022 07:52:32 +0000
+Message-Id: <20221121075237.127706-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgC329gLJHtjFJKWAw--.51545S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4kAr13Zw18Ww17GrWUCFg_yoW5tFW5pF
-        ykJ34Yyw1rXr45ur48t3yY9FWFyF48Zw1UZrWxJrW5ArnxZw129w1IkFyFyFnxCF9Fvr1a
-        vr1YyayrCF10vFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+The initial purpose of this series is to cleanup the unused bpf map
+'syscalls' in the eBPF program augmented_raw_syscalls and perf trace
+tool.  The relality is perf trace tool initializes system call table
+based on map 'syscalls' and wrongly returns syscall pointer for
+non-existed system calls based on the previous initialization.
 
-The test closes both iterator link fd and cgroup fd, and removes the
-cgroup file to make a dead cgroup before reading from cgroup iterator.
-It also uses kern_sync_rcu() and usleep() to wait for the release of
-start cgroup. If the start cgroup is not pinned by cgroup iterator,
-reading from iterator fd will trigger use-after-free.
+So the patch set firstly addresses the issue for handling non-existed
+system calls, then it removes unused local variable and bpf map in
+augmented_raw_syscalls.c.
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Hao Luo <haoluo@google.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/cgroup_iter.c    | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
+Patch 01 is a minor refactoring to use macro to replace number, patch 02
+is to return error if a system call doesn't exist, especially when we
+cannot find corresponding trace point in sysfs node, patch 03 is to fix
+the issue that trace__syscall_info() returns a syscall pointer even the
+system call doesn't exist, the corrected result is to always return NULL
+pointer for non-existed system call.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-index c4a2adb38da1..e02feb5fae97 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-@@ -189,6 +189,80 @@ static void test_walk_self_only(struct cgroup_iter *skel)
- 			      BPF_CGROUP_ITER_SELF_ONLY, "self_only");
- }
- 
-+static void test_walk_dead_self_only(struct cgroup_iter *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	char expected_output[128], buf[128];
-+	const char *cgrp_name = "/dead";
-+	union bpf_iter_link_info linfo;
-+	int len, cgrp_fd, iter_fd;
-+	struct bpf_link *link;
-+	size_t left;
-+	char *p;
-+
-+	cgrp_fd = create_and_get_cgroup(cgrp_name);
-+	if (!ASSERT_GE(cgrp_fd, 0, "create cgrp"))
-+		return;
-+
-+	/* The cgroup will be dead during read() iteration, so it only has
-+	 * epilogue in the output
-+	 */
-+	snprintf(expected_output, sizeof(expected_output), EPILOGUE);
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.cgroup.cgroup_fd = cgrp_fd;
-+	linfo.cgroup.order = BPF_CGROUP_ITER_SELF_ONLY;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_iter"))
-+		goto close_cgrp;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
-+		goto free_link;
-+
-+	/* Close link fd and cgroup fd */
-+	bpf_link__destroy(link);
-+	close(cgrp_fd);
-+
-+	/* Remove cgroup to mark it as dead */
-+	remove_cgroup(cgrp_name);
-+
-+	/* Two kern_sync_rcu() and usleep() pairs are used to wait for the
-+	 * releases of cgroup css, and the last kern_sync_rcu() and usleep()
-+	 * pair is used to wait for the free of cgroup itself.
-+	 */
-+	kern_sync_rcu();
-+	usleep(8000);
-+	kern_sync_rcu();
-+	usleep(8000);
-+	kern_sync_rcu();
-+	usleep(1000);
-+
-+	memset(buf, 0, sizeof(buf));
-+	left = ARRAY_SIZE(buf);
-+	p = buf;
-+	while ((len = read(iter_fd, p, left)) > 0) {
-+		p += len;
-+		left -= len;
-+	}
-+
-+	ASSERT_STREQ(buf, expected_output, "dead cgroup output");
-+
-+	/* read() after iter finishes should be ok. */
-+	if (len == 0)
-+		ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
-+
-+	close(iter_fd);
-+	return;
-+free_link:
-+	bpf_link__destroy(link);
-+close_cgrp:
-+	close(cgrp_fd);
-+}
-+
- void test_cgroup_iter(void)
- {
- 	struct cgroup_iter *skel = NULL;
-@@ -217,6 +291,8 @@ void test_cgroup_iter(void)
- 		test_early_termination(skel);
- 	if (test__start_subtest("cgroup_iter__self_only"))
- 		test_walk_self_only(skel);
-+	if (test__start_subtest("cgroup_iter__dead_self_only"))
-+		test_walk_dead_self_only(skel);
- out:
- 	cgroup_iter__destroy(skel);
- 	cleanup_cgroups();
+The last two patches remove the unused local variable and bpf map
+'syscalls'.
+
+This patch set has been tested with mainline kernel on Arm64 Ampere
+Altra platform.
+
+Leo Yan (5):
+  perf trace: Use macro RAW_SYSCALL_ARGS_NUM to replace number
+  perf trace: Return error if a system call doesn't exist
+  perf trace: Handle failure when trace point folder is missed
+  perf augmented_raw_syscalls: Remove unused variable 'syscall'
+  perf trace: Remove unused bpf map 'syscalls'
+
+ tools/perf/builtin-trace.c                    | 131 +++---------------
+ .../examples/bpf/augmented_raw_syscalls.c     |  18 ---
+ 2 files changed, 18 insertions(+), 131 deletions(-)
+
 -- 
-2.29.2
+2.34.1
 
