@@ -2,95 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDAC6329FF
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 17:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C4D632A45
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 18:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbiKUQuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 11:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S229964AbiKURFc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 12:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbiKUQuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 11:50:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093455BD6F
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 08:50:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 907EB6132E
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 16:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EB84EC433D6;
-        Mon, 21 Nov 2022 16:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669049416;
-        bh=F5y43aei7454lMIhWh9LlcVKdSGbBXxyvLIVb64VsjI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=F5GWotr0BiOzmG2nVw1PDfJpaCqF+pibhhziwRrnZku4gBDyFx73hJrP3D9ARVzRH
-         eH/i8RoYZlcKUTDrHc45uYMvRqS6ymUqwBBWSwJ33mCq4/Xmiq6uQbwQjdyrhyW8yS
-         gzqWDoe7bm8Q4guE23egutusTVYQguwqOlRtBy2x6nj2IiGA1TRaf7k9ybFUvuzEFG
-         y0ew0pppdbwN4BEcGV49DGw8sZm3Ni/9Yc2oY4I6OaqLI+4+1ChQSlbIjWm0YvA7r/
-         2BFpZICTIEO6zklg2/wYwUJuIlM/xGjqXQAiotTWCcG0LGyk4C/9USIMMm7yqkiimG
-         UcGvP3+31e+uQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BE65BE270C7;
-        Mon, 21 Nov 2022 16:50:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229952AbiKURF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 12:05:29 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24931CB6B9
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:28 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id x17so7359093wrn.6
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uAhMDGyM6Mu00oQqbenfJR6XolkWxTwD70LEM2vZY50=;
+        b=j8h40C0M7V/jU09PjuZo0L21V/WuiMTtk+xlVnA4+qWUUpaML5vGeXPw916ROtRQbg
+         sUNF4KMq9dxCgz12UzP7I5/cwvPF03PfMLeb9Sq25BPp5yOw/Qc8qv080MAkSJT6FryY
+         6vlYcd8LJ9drK17/4RojiNE9S/5VJt6e+HgqzwV3R3MRONl12pEUCXiQdmOYMpWMOcuP
+         EJE+NPArPbyGmU32+SFTnq3YpNCMQcNvo+4g5wnxtvkJ7V3Kv5mqmjoSp/ernX92mnsG
+         0lPuDH0bo1mU4nsJoAzIjXr3GjzJOlwRzxm75atXjSr0eWVAnovtN8U1l6FRjkklqY1A
+         xRcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uAhMDGyM6Mu00oQqbenfJR6XolkWxTwD70LEM2vZY50=;
+        b=jEyVIhf+URiJkSZou3mVAuoL0j/98L+rE7i/wPRAiJuboIoGpPMDMVC9zHYH9APue8
+         4saA6Euldd3K8fHBJL9iVAVXRu7As8V8Dk29pW96rhrNfYJAcc6A4XRlACfFdVZFN4f8
+         V00ZueN3NLNC+uGmnJL9uGVjIkW1PZ+uswkbgk1CKQjs4BXdhBifTfNXb3Y86HkaaSkM
+         QFyEO3JorCqGJVfIJWr5TEEz6ONI4/zMOQyPAHI3FYKBkwbGCxlLZeC6JB2wpO8S8O3q
+         PlVOYxjHmEBZa1qX0kPYVxyegASf2jwV3CwMObeWzDpuFVWHOlxncKPT/cm1bNY4/7Bd
+         0UlA==
+X-Gm-Message-State: ANoB5pmWlFuKvhXPmDVj+E1j3d1rV4chZx36np58EXpD1t3GwkGkU4DE
+        NIpjUN1fhyAjZdWHVuepNRjhrFK7XG1ACGmZOQtO9Q==
+X-Google-Smtp-Source: AA0mqf4FeQf6K8LNzD3P2zmQIxzZUbCH+yD5d8P8GvWxDHPnexp/cnQU+5z1w1kK0h9Q2DaUtfEE45Swq90ibr8FFcU=
+X-Received: by 2002:a5d:6747:0:b0:22e:34ee:c67d with SMTP id
+ l7-20020a5d6747000000b0022e34eec67dmr1128924wrw.300.1669050326395; Mon, 21
+ Nov 2022 09:05:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/3] bpf: Pin the start cgroup for cgroup iterator
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166904941577.16961.4100589791651140735.git-patchwork-notify@kernel.org>
-Date:   Mon, 21 Nov 2022 16:50:15 +0000
-References: <20221121073440.1828292-1-houtao@huaweicloud.com>
-In-Reply-To: <20221121073440.1828292-1-houtao@huaweicloud.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, haoluo@google.com,
-        yhs@fb.com, andrii@kernel.org, song@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, john.fastabend@gmail.com, houtao1@huawei.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221121075237.127706-1-leo.yan@linaro.org>
+In-Reply-To: <20221121075237.127706-1-leo.yan@linaro.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 21 Nov 2022 09:05:14 -0800
+Message-ID: <CAP-5=fVHpzT1Q0U=e_svzQ2+a0iSoYppL8hRmOTAHZ0_nk2Z_g@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] perf trace: Cleanup and remove unused bpf map
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon, 21 Nov 2022 15:34:37 +0800 you wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> The patchset tries to fix the potential use-after-free problem in cgroup
-> iterator. The problem is similar with the UAF problem fixed in map
-> iterator and the fix is also similar: pinning the iterated resource in
-> .init_seq_private() and unpinning it in .fini_seq_private(). An
-> alternative fix is pinning iterator link when opening iterator fd, but
-> it will make iterator link still being visible after the close of
-> iterator link fd and the behavior is different with other link types, so
-> just fixing the bug alone by pinning the start cgroup when creating
-> cgroup iterator. Also adding a selftests to demonstrate the UAF problem
-> when iterating a dead cgroup.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v3,1/3] bpf: Pin the start cgroup in cgroup_iter_seq_init()
-    https://git.kernel.org/bpf/bpf-next/c/1a5160d4d8fe
-  - [bpf-next,v3,2/3] selftests/bpf: Add cgroup helper remove_cgroup()
-    https://git.kernel.org/bpf/bpf-next/c/2a42461a8831
-  - [bpf-next,v3,3/3] selftests/bpf: Add test for cgroup iterator on a dead cgroup
-    https://git.kernel.org/bpf/bpf-next/c/8589e92675aa
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+On Sun, Nov 20, 2022 at 11:52 PM Leo Yan <leo.yan@linaro.org> wrote:
+>
+> The initial purpose of this series is to cleanup the unused bpf map
+> 'syscalls' in the eBPF program augmented_raw_syscalls and perf trace
+> tool.  The relality is perf trace tool initializes system call table
+> based on map 'syscalls' and wrongly returns syscall pointer for
+> non-existed system calls based on the previous initialization.
+>
+> So the patch set firstly addresses the issue for handling non-existed
+> system calls, then it removes unused local variable and bpf map in
+> augmented_raw_syscalls.c.
+>
+> Patch 01 is a minor refactoring to use macro to replace number, patch 02
+> is to return error if a system call doesn't exist, especially when we
+> cannot find corresponding trace point in sysfs node, patch 03 is to fix
+> the issue that trace__syscall_info() returns a syscall pointer even the
+> system call doesn't exist, the corrected result is to always return NULL
+> pointer for non-existed system call.
+>
+> The last two patches remove the unused local variable and bpf map
+> 'syscalls'.
+>
+> This patch set has been tested with mainline kernel on Arm64 Ampere
+> Altra platform.
+>
+> Leo Yan (5):
+>   perf trace: Use macro RAW_SYSCALL_ARGS_NUM to replace number
+>   perf trace: Return error if a system call doesn't exist
+>   perf trace: Handle failure when trace point folder is missed
+>   perf augmented_raw_syscalls: Remove unused variable 'syscall'
+>   perf trace: Remove unused bpf map 'syscalls'
 
 
+Acked-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+>  tools/perf/builtin-trace.c                    | 131 +++---------------
+>  .../examples/bpf/augmented_raw_syscalls.c     |  18 ---
+>  2 files changed, 18 insertions(+), 131 deletions(-)
+>
+> --
+> 2.34.1
+>
