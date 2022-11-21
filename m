@@ -2,148 +2,333 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E629F63283B
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8696A632841
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbiKUPbt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 10:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S232473AbiKUPdB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 10:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbiKUPb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 10:31:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB48BE257
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 07:30:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9850FB81091
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 15:30:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47ED0C43150
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 15:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669044608;
-        bh=aFTolxzt0R2H3SpbdBNTNqc5USoDLvTFgxXSFnvJ4ts=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cLN2HXPqBvynej0YnscnFIDytdgN6QcOf1rw3DvzdDg+afZGJENgxIcHdq+j4nHS0
-         3vBxF7NqUyZ7PFCcKzEW88y2zqga3L21rQS1Ox3a5Rq4CdUtzQHgR/YUFlkXrI2jF2
-         V1/F/qALui/Dfszu2aPViNJVu7shr3O1ECNK4/Ipe5wiXVXRndtRZ/DgJROdvBMa/L
-         2Tr926igsLYuzQ7GrsX2GU7nwdPqkO6khu5K5ZFsh1mYbfOH1a00lYjJ5fD09G05+e
-         9ab/vg3eOlZCUwH7+kn60/1aR0cM8L7zFC75GHFqLyPd7uSk8XdkwcxAGce8CRXWqG
-         OMZZSDD83GucA==
-Received: by mail-lf1-f49.google.com with SMTP id d6so19352874lfs.10
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 07:30:08 -0800 (PST)
-X-Gm-Message-State: ANoB5pmN42a1kR+umvZaodG9Jd3DOMJptsaeIbhdddoFO0qCxUscgiP8
-        IPwg+lPpdtUzgrTp5HggVN7Roa7BEtNCqgAogqQOTQ==
-X-Google-Smtp-Source: AA0mqf6v2VbUAN2Mjgc3JnBIdXL9SwjFTGzeZLpiteg3s5FrpXpb9Ee6tkQSyim1rWABBRXNjIsPlkQhix6mDckTWGU=
-X-Received: by 2002:a19:5049:0:b0:4b4:661a:1ce1 with SMTP id
- z9-20020a195049000000b004b4661a1ce1mr3765485lfj.136.1669044606050; Mon, 21
- Nov 2022 07:30:06 -0800 (PST)
+        with ESMTP id S231732AbiKUPch (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 10:32:37 -0500
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCFDD2982;
+        Mon, 21 Nov 2022 07:31:13 -0800 (PST)
+Received: by mail-qv1-f48.google.com with SMTP id c8so8183987qvn.10;
+        Mon, 21 Nov 2022 07:31:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=REnLetKzAh9a3Kk0LcmnYoIt8FX0TxEIRG9oyHEqkz0=;
+        b=fK58YKGZWN/F6keDXZEH0s/QO6a+Um0yVi5Pm4Rd0fkc9QDsaC9xyZYzuEqAWhP6dD
+         BQtnBcfyGuDuK4AdBCj+60Jjw15FU5Jcp6ksugkZcbxoaVo728WqsGNmGL+O7cCBhC1k
+         2+9sC94e6NLhR0lQ4a3IETRtiCvFkKMBLdNGhB+nGQqQMyJt+2N+KJTQjg1IeYdbPgsC
+         V9d16UH/aJBxV129oBl6eU4O3qP22E4cser0ex2WiSEIFnh0FD8+uGbz1QUK5+0f0f8+
+         AnuKmAaCH/DWGq0nF83Kr7Q+VT2jtiDgdRsyRWrFPEoPcrmM/g2OpNCadpeNIGNX/G+1
+         GUOw==
+X-Gm-Message-State: ANoB5pktJCbJh1hA9DvPdIfCLK4s4DDZ36YU3iDIqhya5ZWG6QyHpy2G
+        AtT61BdIrNeA8p4gOL0vVhw=
+X-Google-Smtp-Source: AA0mqf63xlz6ekq6fFaDllnxAMEvEo8EgI23MgA1QPnykZ8VK+CQMze0zbzWboMh2T1AT1KN/HnJCg==
+X-Received: by 2002:ad4:5005:0:b0:4b1:8547:9788 with SMTP id s5-20020ad45005000000b004b185479788mr17929120qvo.60.1669044671893;
+        Mon, 21 Nov 2022 07:31:11 -0800 (PST)
+Received: from maniforge.lan (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
+        by smtp.gmail.com with ESMTPSA id y11-20020a37f60b000000b006ce1bfbd603sm8134925qkj.124.2022.11.21.07.31.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Nov 2022 07:31:11 -0800 (PST)
+Date:   Mon, 21 Nov 2022 09:31:16 -0600
+From:   David Vernet <void@manifault.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, yhs@fb.com, song@kernel.org, sdf@google.com,
+        john.fastabend@gmail.com, haoluo@google.com, jolsa@kernel.org,
+        kpsingh@kernel.org, tj@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v9 2/4] bpf: Allow trusted pointers to be passed
+ to KF_TRUSTED_ARGS kfuncs
+Message-ID: <Y3uZxDcEw0TzZDo7@maniforge.lan>
+References: <20221120051004.3605026-1-void@manifault.com>
+ <20221120051004.3605026-3-void@manifault.com>
+ <20221120194548.g76fytbyxhi7xqcu@apollo>
 MIME-Version: 1.0
-References: <20221108220651.24492-1-revest@chromium.org> <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
- <20221117121617.4e1529d3@gandalf.local.home> <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
- <20221117174030.0170cd36@gandalf.local.home> <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
- <20221118114519.2711d890@gandalf.local.home> <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
- <20221118130608.5ba89bd8@gandalf.local.home> <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
- <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com> <20221121101537.674f5aca@gandalf.local.home>
-In-Reply-To: <20221121101537.674f5aca@gandalf.local.home>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 21 Nov 2022 16:29:54 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6n-9rH7hCeFVtFYFQ9+6MOuQ+J6LwR4PJ6zUN7w3zQhA@mail.gmail.com>
-Message-ID: <CACYkzJ6n-9rH7hCeFVtFYFQ9+6MOuQ+J6LwR4PJ6zUN7w3zQhA@mail.gmail.com>
-Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Chris Mason <clm@meta.com>, Mark Rutland <mark.rutland@arm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221120194548.g76fytbyxhi7xqcu@apollo>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 4:15 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 21 Nov 2022 14:47:10 +0100
-> KP Singh <kpsingh@kernel.org> wrote:
->
-> > This annotation already exists, i.e. ALLOW_ERROR_INJECTION
+On Mon, Nov 21, 2022 at 01:15:48AM +0530, Kumar Kartikeya Dwivedi wrote:
+> On Sun, Nov 20, 2022 at 10:40:02AM IST, David Vernet wrote:
+> > Kfuncs currently support specifying the KF_TRUSTED_ARGS flag to signal
+> > to the verifier that it should enforce that a BPF program passes it a
+> > "safe", trusted pointer. Currently, "safe" means that the pointer is
+> > either PTR_TO_CTX, or is refcounted. There may be cases, however, where
+> > the kernel passes a BPF program a safe / trusted pointer to an object
+> > that the BPF program wishes to use as a kptr, but because the object
+> > does not yet have a ref_obj_id from the perspective of the verifier, the
+> > program would be unable to pass it to a KF_ACQUIRE | KF_TRUSTED_ARGS
+> > kfunc.
 > >
-> > Users, with CONFIG_FUNCTION_ERROR_INJECTION, can already modify return
-> > values of kernel functions using kprobes and the failure injection
-> > framework [1] for functions annotated with ALLOW_ERROR_INJECTION.
+> > The solution is to expand the set of pointers that are considered
+> > trusted according to KF_TRUSTED_ARGS, so that programs can invoke kfuncs
+> > with these pointers without getting rejected by the verifier.
 > >
-> > BPF just provides another way to do the same thing with "modify
-> > return" programs and this also respects the error injection list [2]
-> > and users can *only* attach these programs to the functions annotated
-> > with ALLOW_ERROR_INJECTION.
->
-> WAIT!
->
-> Looking at the Kconfigs, I see
->
-> CONFIG_FUNCTION_ERROR_INJECTION is set when
-> CONFIG_HAVE_FUNCTION_ERROR_INJECTION is set, and when CONFIG_KPROBES is set.
->
-> And ALLOW_ERROR_INJECTION() is set when CONFIG_FUNCTION_ERROR_INJECTION is.
->
-> There's no way to turn it off on x86 except by disabling kprobes!
->
-> WTF!
->
-> I don't want a kernel that can add error injection just because kprobes is
-> enabled. There's two kinds of kprobes. One that is for visibility only (for
-> tracing) and one that can be used for functional changes. I want the
-> visibility without the ability to change the kernel. The visibility portion
-> is very useful for security, where as the modifying one can be used to
-> circumvent security.
+> > There is already a PTR_UNTRUSTED flag that is set in some scenarios,
+> > such as when a BPF program reads a kptr directly from a map
+> > without performing a bpf_kptr_xchg() call. These pointers of course can
+> > and should be rejected by the verifier. Unfortunately, however,
+> > PTR_UNTRUSTED does not cover all the cases for safety that need to
+> > be addressed to adequately protect kfuncs. Specifically, pointers
+> > obtained by a BPF program "walking" a struct are _not_ considered
+> > PTR_UNTRUSTED according to BPF. For example, say that we were to add a
+> > kfunc called bpf_task_acquire(), with KF_ACQUIRE | KF_TRUSTED_ARGS, to
+> > acquire a struct task_struct *. If we only used PTR_UNTRUSTED to signal
+> > that a task was unsafe to pass to a kfunc, the verifier would mistakenly
+> > allow the following unsafe BPF program to be loaded:
+> >
+> > SEC("tp_btf/task_newtask")
+> > int BPF_PROG(unsafe_acquire_task,
+> >              struct task_struct *task,
+> >              u64 clone_flags)
+> > {
+> >         struct task_struct *acquired, *nested;
+> >
+> >         nested = task->last_wakee;
+> >
+> >         /* Would not be rejected by the verifier. */
+> >         acquired = bpf_task_acquire(nested);
+> >         if (!acquired)
+> >                 return 0;
+> >
+> >         bpf_task_release(acquired);
+> >         return 0;
+> > }
+> >
+> > To address this, this patch defines a new type flag called PTR_TRUSTED
+> > which tracks whether a PTR_TO_BTF_ID pointer is safe to pass to a
+> > KF_TRUSTED_ARGS kfunc or a BPF helper function. PTR_TRUSTED pointers are
+> > passed directly from the kernel as a tracepoint or struct_ops callback
+> > argument. Any nested pointer that is obtained from walking a PTR_TRUSTED
+> > pointer is no longer PTR_TRUSTED. From the example above, the struct
+> > task_struct *task argument is PTR_TRUSTED, but the 'nested' pointer
+> > obtained from 'task->last_wakee' is not PTR_TRUSTED.
+> >
+> > A subsequent patch will add kfuncs for storing a task kfunc as a kptr,
+> > and then another patch will add selftests to validate.
+> >
+> > Signed-off-by: David Vernet <void@manifault.com>
+> > ---
+> 
+> Sorry that I couldn't look at it earlier.
+> 
+> > [...]
+> > @@ -5884,8 +5889,18 @@ static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
+> >  static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
+> >  static const struct bpf_reg_types ringbuf_mem_types = { .types = { PTR_TO_MEM | MEM_RINGBUF } };
+> >  static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
+> > -static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
+> > -static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_BTF_ID | MEM_PERCPU } };
+> > +static const struct bpf_reg_types btf_ptr_types = {
+> > +	.types = {
+> > +		PTR_TO_BTF_ID,
+> > +		PTR_TO_BTF_ID | PTR_TRUSTED,
+> > +	},
+> > +};
+> > +static const struct bpf_reg_types percpu_btf_ptr_types = {
+> > +	.types = {
+> > +		PTR_TO_BTF_ID | MEM_PERCPU,
+> > +		PTR_TO_BTF_ID | MEM_PERCPU | PTR_TRUSTED,
+> 
+> Where is PTR_TRUSTED set for MEM_PERCPU?
 
-I am not sure how they can circumvent security since this needs root /
-root equivalent permissions. Fault injection is actually a very useful
-debugging tool.
+We set PTR_TRUSTED in btf_ctx_access() for all PTR_TO_BTF_ID regs for
+BPF_PROG_TYPE_TRACING and BPF_PROG_TYPE_STRUCT_OPS. See [0]. Let me know
+if I've misunderstood anything.
 
->
-> As kprobes are set in most production environments, so is error injection.
-> Do we really want error injection enabled on production environments?
-> I don't.
->
-> I think we need this patch ASAP!
->
-> -- Steve
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index c3c0b077ade3..9ee72d8860c3 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1874,8 +1874,14 @@ config NETDEV_NOTIFIER_ERROR_INJECT
->           If unsure, say N.
->
->  config FUNCTION_ERROR_INJECTION
-> -       def_bool y
-> +       bool "Fault-injections of functions"
->         depends on HAVE_FUNCTION_ERROR_INJECTION && KPROBES
-> +       help
-> +         Add fault injections into various functions that are annotated with
-> +         ALLOW_ERROR_INJECTION() in the kernel. BPF may also modify the return
-> +         value of theses functions. This is useful to test error paths of code.
-> +
-> +         If unsure, say N
->
->  config FAULT_INJECTION
->         bool "Fault-injection framework"
+[0]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/btf.c#n5972
+
+> > +	}
+> > +};
+> >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+> >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+> >  static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
+> > @@ -5973,7 +5988,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> >  	return -EACCES;
+> >
+> >  found:
+> > -	if (reg->type == PTR_TO_BTF_ID) {
+> > +	if (reg->type == PTR_TO_BTF_ID || reg->type & PTR_TRUSTED) {
+> 
+> Now, earlier MEM_ALLOC was supposed to not enter this branch. If your patch
+> allows MEM_ALLOC | PTR_TRUSTED (but I don't think it does), it will enter this
+> branch. I think it is better to just be explicit and say PTR_TO_BTF_ID ||
+> PTR_TO_BTF_ID | PTR_TRUSTED.
+
+Currently I don't believe we set PTR_TRUSTED | MEM_ALLOC, so this won't
+happen. I originally had this code doing:
+
+	if (reg->type == PTR_TO_BTF_ID || reg->type & BPF_REG_TRUSTED_MODIFIERS) {
+
+and it caused a bunch of the linked list tests to fail with:
+
+verifier internal error: R0 has non-overwritten BPF_PTR_POISON type
+
+Checking just PTR_TRUSTED avoids this (which I assume is what you were
+worried about?). I'm happy to respin a patch that applies your
+suggestion to do || PTR_TO_BTF_ID | PTR_TRUSTED, but to be honest I
+don't think it buys us anything. That whole codepath where we take it
+only in the event of no modifiers is kind of sketchy. Consider, e.g.,
+that we're skipping this check if we don't take that path:
+
+	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+				  btf_vmlinux, *arg_btf_id,
+				  strict_type_match)) {
+		verbose(env, "R%d is of type %s but %s is expected\n",
+			regno, kernel_type_name(reg->btf, reg->btf_id),
+			kernel_type_name(btf_vmlinux, *arg_btf_id));
+		return -EACCES;
+	}
+
+I know we check it elsewhere such as in map_kptr_match_type() and
+process_kf_arg_ptr_to_list_node(), but it feels pretty brittle to say:
+"Check it only if there are no modifiers set, else check it later in
+some helper-specific logic". I'd prefer to keep the check as broad as
+possible for now, and then refactor and clean this up. Lmk if you
+disagree.
+
+> 
+> >  		/* For bpf_sk_release, it needs to match against first member
+> >  		 * 'struct sock_common', hence make an exception for it. This
+> >  		 * allows bpf_sk_release to work for multiple socket types.
+> > @@ -6055,6 +6070,8 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+> >  	 */
+> >  	case PTR_TO_BTF_ID:
+> >  	case PTR_TO_BTF_ID | MEM_ALLOC:
+> > +	case PTR_TO_BTF_ID | PTR_TRUSTED:
+> > +	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED:
+> 
+> This and the one below:
+> 
+> > @@ -8366,6 +8402,7 @@ static int check_reg_allocation_locked(struct bpf_verifier_env *env, struct bpf_
+> >  		ptr = reg->map_ptr;
+> >  		break;
+> >  	case PTR_TO_BTF_ID | MEM_ALLOC:
+> > +	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED:
+> 
+> I think this will never be set, based on my reading of the code.
+> Is the case with MEM_ALLOC | PTR_TRUSTED ever possible?
+> And if this is needed here, why not update btf_struct_access?
+> And KF_ARG_PTR_TO_ALLOC_BTF_ID is not updated either?
+> Let me know if I missed something.
+
+These are all reasonable observations, but we went into them
+intentionally. Eventually the goal is to have PTR_TRUSTED be the single
+source of truth for whether a pointer is trusted or not. See [1] for the
+thread with the discussions.
+
+I agree that I don't believe that MEM_ALLOC | PTR_TRUSTED can be set
+together yet, but eventually they should and will be. Conceptually, the
+behavior of check_func_arg_reg_off() should be the same for
+PTR_TO_BTF_ID, PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED, PTR_TO_BTF_ID |
+PTR_TRUSTED, etc, so IMO it's correct to add that case to
+check_func_arg_reg_off() even if it's not yet used. Not adding it
+because no callers currently happen to require it is IMO a bit brittle.
+
+[1]: https://lore.kernel.org/all/20221119164855.qvhgdpg5axa7kzey@macbook-pro-5.dhcp.thefacebook.com/
+
+> >  		/* When referenced PTR_TO_BTF_ID is passed to release function,
+> >  		 * it's fixed offset must be 0.	In the other cases, fixed offset
+> >  		 * can be non-zero.
+> > @@ -7939,6 +7956,25 @@ static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int arg)
+> >  	return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
+> >  }
+> >
+> > +static bool is_trusted_reg(const struct bpf_reg_state *reg)
+> > +{
+> > +	/* A referenced register is always trusted. */
+> > +	if (reg->ref_obj_id)
+> > +		return true;
+> > +
+> > +	/* If a register is not referenced, it is trusted if it has either the
+> > +	 * MEM_ALLOC or PTR_TRUSTED type modifiers, and no others. Some of the
+> > +	 * other type modifiers may be safe, but we elect to take an opt-in
+> > +	 * approach here as some (e.g. PTR_UNTRUSTED and PTR_MAYBE_NULL) are
+> > +	 * not.
+> > +	 *
+> > +	 * Eventually, we should make PTR_TRUSTED the single source of truth
+> > +	 * for whether a register is trusted.
+> > +	 */
+> > +	return type_flag(reg->type) & BPF_REG_TRUSTED_MODIFIERS &&
+> > +	       !bpf_type_has_unsafe_modifiers(reg->type);
+> > +}
+> > +
+> >  static bool __kfunc_param_match_suffix(const struct btf *btf,
+> >  				       const struct btf_param *arg,
+> >  				       const char *suffix)
+> > @@ -8220,7 +8256,7 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
+> >  	const char *reg_ref_tname;
+> >  	u32 reg_ref_id;
+> >
+> > -	if (reg->type == PTR_TO_BTF_ID) {
+> > +	if (base_type(reg->type) == PTR_TO_BTF_ID) {
+> >  		reg_btf = reg->btf;
+> >  		reg_ref_id = reg->btf_id;
+> >  	} else {
+> >  		ptr = reg->btf;
+> >  		break;
+> >  	default:
+> > @@ -8596,8 +8633,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >  		case KF_ARG_PTR_TO_BTF_ID:
+> >  			if (!is_kfunc_trusted_args(meta))
+> >  				break;
+> > -			if (!reg->ref_obj_id) {
+> > -				verbose(env, "R%d must be referenced\n", regno);
+> > +
+> > +			if (!is_trusted_reg(reg)) {
+> > +				verbose(env, "R%d must be referenced or trusted\n", regno);
+> >  				return -EINVAL;
+> >  			}
+> >  			fallthrough;
+> > @@ -8702,9 +8740,13 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >  			break;
+> >  		case KF_ARG_PTR_TO_BTF_ID:
+> >  			/* Only base_type is checked, further checks are done here */
+> > -			if (reg->type != PTR_TO_BTF_ID &&
+> > -			    (!reg2btf_ids[base_type(reg->type)] || type_flag(reg->type))) {
+> > -				verbose(env, "arg#%d expected pointer to btf or socket\n", i);
+> > +			if ((base_type(reg->type) != PTR_TO_BTF_ID ||
+> > +			     bpf_type_has_unsafe_modifiers(reg->type)) &&
+> > +			    !reg2btf_ids[base_type(reg->type)]) {
+> > +				verbose(env, "arg#%d is %s ", i, reg_type_str(env, reg->type));
+> > +				verbose(env, "expected %s or socket\n",
+> > +					reg_type_str(env, base_type(reg->type) |
+> > +							  (type_flag(reg->type) & BPF_REG_TRUSTED_MODIFIERS)));
+> >  				return -EINVAL;
+> >  			}
+> >  			ret = process_kf_arg_ptr_to_btf_id(env, reg, ref_t, ref_tname, ref_id, meta, i);
+> > @@ -14713,6 +14755,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+> >  			break;
+> >  		case PTR_TO_BTF_ID:
+> >  		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
+> > +		case PTR_TO_BTF_ID | PTR_TRUSTED:
+> >  		/* PTR_TO_BTF_ID | MEM_ALLOC always has a valid lifetime, unlike
+> >  		 * PTR_TO_BTF_ID, and an active ref_obj_id, but the same cannot
+> >  		 * be said once it is marked PTR_UNTRUSTED, hence we must handle
+> > @@ -14720,6 +14763,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+> >  		 * for this case.
+> >  		 */
+> >  		case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+> > +		case PTR_TO_BTF_ID | PTR_UNTRUSTED | PTR_TRUSTED:
+> 
+> I feel this is confusing. What do we mean with PTR_UNTRUSTED | PTR_TRUSTED?
+
+100% agreed. There are plans to clean this up, see the link above.
