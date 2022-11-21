@@ -2,95 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5A5632566
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 15:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79C7632577
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 15:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbiKUORz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 09:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        id S230074AbiKUOUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 09:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbiKUOR2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 09:17:28 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49725E2D;
-        Mon, 21 Nov 2022 06:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EMCl5oMpuM9wnhlFxFjEmmZ528S5z63LS0hMgcGZHmk=; b=M69cgxbdLRliIML9yojGFTMxmC
-        0YAcv+2L0fAKvbtNm6X/YNgoSrZttGWKCYIznxjkBN9FEIneyU7+xW3++eB5/Wq7+ZNBWQpH/+zIu
-        FaqQEF7Y9ycVEsIzALqF4Eg2UDyFpPd3+T6pUtfFSTRtadPYBTbxHpfcl86pJfkMZR+iwpBsrDJnu
-        +Hg6o0hlif6PXUmAKQxnwfEFLbB6Faq+Mt0jb/ErHx271JdMCZ3AzF+u1fbMVNLTw5IQnJLraClcg
-        f+wjEmK44Va1Qty1+/rK5T5uZ3z6F+Quj1bzGVuf34NvbVAj2MrK/vrKZngvR1c49uHbz26gr661a
-        56AjpqjA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ox7bT-0038SQ-VA; Mon, 21 Nov 2022 14:16:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7268300244;
-        Mon, 21 Nov 2022 15:16:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8CB112D412ED1; Mon, 21 Nov 2022 15:16:54 +0100 (CET)
-Date:   Mon, 21 Nov 2022 15:16:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Chris Mason <clm@meta.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
-Message-ID: <Y3uIVknDWTS0bMTT@hirez.programming.kicks-ass.net>
-References: <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
- <20221117121617.4e1529d3@gandalf.local.home>
- <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
- <20221117174030.0170cd36@gandalf.local.home>
- <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
- <20221118114519.2711d890@gandalf.local.home>
- <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
- <20221118130608.5ba89bd8@gandalf.local.home>
- <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
- <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com>
+        with ESMTP id S230271AbiKUOUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 09:20:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9709038A6;
+        Mon, 21 Nov 2022 06:20:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1C5F6126C;
+        Mon, 21 Nov 2022 14:20:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 32C17C433C1;
+        Mon, 21 Nov 2022 14:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669040416;
+        bh=X9ahzx6QOLG7vlYDgeNpixkQvDQMZlf4eg6Lylxp+SA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BD3cb/mtADpfWvoUqv7DaMRW3jScXHegfyNfkCHKLKH55leaK2X5/qxF4UZkQnYL9
+         bqdUZnShGytI5xUIekIGpFakVT/YkanSMTAX+4Yc2wI3wCAI9J7WPGOAhoUuoUd7pT
+         kDhlImfi7mItcmqaafYdPtdKpJK7GG20HX/pAeVN98siPmzXXBqZO9uox2b1Sl/Pd9
+         nwbUoaw4cf34d2ateBL685cNeccLU0hJZAInxTZJQzYYW0nn1AsZnlwhSvEvVQTZQe
+         U/WkBo4SmIlIiX2XqyzLRgiovzedTTu1AT/XO5uFZSwsZ2n/Apo7GZ2k1DB/drj+O+
+         dOjWTv6460d1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 14089C395FF;
+        Mon, 21 Nov 2022 14:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3] bpf/verifier: Use kmalloc_size_roundup() to match
+ ksize() usage
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166904041607.17586.16719074912703775400.git-patchwork-notify@kernel.org>
+Date:   Mon, 21 Nov 2022 14:20:16 +0000
+References: <20221118183409.give.387-kees@kernel.org>
+In-Reply-To: <20221118183409.give.387-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 02:47:10PM +0100, KP Singh wrote:
+Hello:
 
-> > > How do I know that a function return was modified by BPF? If I'm debugging
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Fri, 18 Nov 2022 10:34:14 -0800 you wrote:
+> Most allocation sites in the kernel want an explicitly sized allocation
+> (and not "more"), and that dynamic runtime analysis tools (e.g. KASAN,
+> UBSAN_BOUNDS, FORTIFY_SOURCE, etc) are looking for precise bounds checking
+> (i.e. not something that is rounded up). A tiny handful of allocations
+> were doing an implicit alloc/realloc loop that actually depended on
+> ksize(), and didn't actually always call realloc. This has created a
+> long series of bugs and problems over many years related to the runtime
+> bounds checking, so these callers are finally being adjusted to _not_
+> depend on the ksize() side-effect, by doing one of several things:
 > 
-> You can list the BPF programs that are loaded in the kernel with
-> 
-> # bpftool prog list
+> [...]
 
-Only when you have access to the machine; most cases it's people sending
-random splats by email.
+Here is the summary with links:
+  - [bpf-next,v3] bpf/verifier: Use kmalloc_size_roundup() to match ksize() usage
+    https://git.kernel.org/bpf/bpf-next/c/ceb35b666d42
 
-> Also, the BPF programs show up in call stacks when you are debugging.
-
-Only when it splats inside the BPF part, not when it splats after
-because BPF changed semantics of a function.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
