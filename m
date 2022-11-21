@@ -2,105 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B60632785
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CC06327AF
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbiKUPND (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 10:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
+        id S231888AbiKUPTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 10:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbiKUPMK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 10:12:10 -0500
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616A7C6D21;
-        Mon, 21 Nov 2022 07:06:17 -0800 (PST)
-Received: by mail-qk1-f173.google.com with SMTP id z17so8145198qki.11;
-        Mon, 21 Nov 2022 07:06:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CupXU2YxQxlgExJK8f3HdC36BFYNv+p0Rq++hKAm9D8=;
-        b=Sx++5u0zoyXf8X1W7k8bacATk2PzKbwB7KBy78cmD7BOyK55s7gwb/SX5ENFmW3dDh
-         Zqq1mLpEW3NSgqKTpZEZnVXCtWPivGmCUFAzzTsd1/wjT3ofycDFXKb1RlOQcn0JoqBn
-         4M3Fvbn+9OEGbPfQirOkgJtUmERzsUq9pKnDhN8eXlTPxXFfIzq9FFqc9zJ75ZXICzR1
-         N4p5ucsktCWuPwb2RiaiNXKZOsZK4u5GEL7hvp0NAxy/Gk0x8XBoWKQhbhW2GCE7nJZ7
-         C8HL5RtIg92h3PJXbYYjuhrs97/y753TEzd0V/zBJDEoaxcMXmKDDSbPLQXMj8tSSsf3
-         h7KQ==
-X-Gm-Message-State: ANoB5pnuw+dw3ft9D7xf5hVJut6ybXe+k8IwZIPaaHhQlRVTH/As9Rr6
-        IZzHQBn0GjL8GsrGYI2Bd10=
-X-Google-Smtp-Source: AA0mqf5b4jDAHm/CLmo93tkGxrH6/0Rjf2Z1b3IxtiV1wPcgTrZ1YOirbk+P97yG6VO9eVy6mS/ZfQ==
-X-Received: by 2002:ae9:d844:0:b0:6fa:b570:2da7 with SMTP id u65-20020ae9d844000000b006fab5702da7mr1090738qkf.597.1669043176150;
-        Mon, 21 Nov 2022 07:06:16 -0800 (PST)
-Received: from maniforge.lan (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05620a29d300b006cfc9846594sm8430169qkp.93.2022.11.21.07.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 07:06:15 -0800 (PST)
-Date:   Mon, 21 Nov 2022 09:06:20 -0600
-From:   David Vernet <void@manifault.com>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        corbet@lwn.net, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, rongtao@cestc.cn, sdf@google.com,
-        song@kernel.org, yhs@fb.com
-Subject: Re: [PATCH bpf-next v3] docs/bpf: Update btf selftests program and
- add link
-Message-ID: <Y3uT7KfjF3OcbjMG@maniforge.lan>
-References: <tencent_C597352AB3AF24A35A88CC06A3421E590B08@qq.com>
+        with ESMTP id S230081AbiKUPTD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 10:19:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66509C903C;
+        Mon, 21 Nov 2022 07:15:43 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 01081612BC;
+        Mon, 21 Nov 2022 15:15:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B49C433D6;
+        Mon, 21 Nov 2022 15:15:40 +0000 (UTC)
+Date:   Mon, 21 Nov 2022 10:15:37 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Chris Mason <clm@meta.com>, Mark Rutland <mark.rutland@arm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Message-ID: <20221121101537.674f5aca@gandalf.local.home>
+In-Reply-To: <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com>
+References: <20221108220651.24492-1-revest@chromium.org>
+        <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
+        <20221117121617.4e1529d3@gandalf.local.home>
+        <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
+        <20221117174030.0170cd36@gandalf.local.home>
+        <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
+        <20221118114519.2711d890@gandalf.local.home>
+        <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
+        <20221118130608.5ba89bd8@gandalf.local.home>
+        <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
+        <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_C597352AB3AF24A35A88CC06A3421E590B08@qq.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 10:02:39PM +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> commit c64779e24e88("selftests/bpf: Merge most of test_btf into
-> test_progs") rename selftests/bpf btf test from 'test_btf.c' to
-> 'prog_tests/btf.c'.
-> 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
-> v3: v2 -> v3
->     s/Kernel bpf selftest/The kernel BPF selftest
->     s/provides extensive/provides an extensive
-> v2: https://lore.kernel.org/lkml/tencent_114656E8259D0AEA2BDB6810E29241995006@qq.com/
-> v1: https://lore.kernel.org/lkml/tencent_7F84D04F96EBE594CAD5EBD12815A2B00106@qq.com/
-> ---
->  Documentation/bpf/btf.rst | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index cf8722f96090..681416c86e81 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -1062,4 +1062,9 @@ format.::
->  7. Testing
->  ==========
->  
-> -Kernel bpf selftest `test_btf.c` provides extensive set of BTF-related tests.
-> +The kernel bpf selftest `tools/testing/selftests/bpf/prog_tests/btf.c`_
+On Mon, 21 Nov 2022 14:47:10 +0100
+KP Singh <kpsingh@kernel.org> wrote:
 
-s/bpf/BPF
-
-> +provides an extensive set of BTF-related tests.
-> +
-> +.. Links
-> +.. _tools/testing/selftests/bpf/prog_tests/btf.c:
-> +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/btf.c
-> -- 
-> 2.38.1
+> This annotation already exists, i.e. ALLOW_ERROR_INJECTION
 > 
+> Users, with CONFIG_FUNCTION_ERROR_INJECTION, can already modify return
+> values of kernel functions using kprobes and the failure injection
+> framework [1] for functions annotated with ALLOW_ERROR_INJECTION.
+> 
+> BPF just provides another way to do the same thing with "modify
+> return" programs and this also respects the error injection list [2]
+> and users can *only* attach these programs to the functions annotated
+> with ALLOW_ERROR_INJECTION.
+
+WAIT!
+
+Looking at the Kconfigs, I see
+
+CONFIG_FUNCTION_ERROR_INJECTION is set when
+CONFIG_HAVE_FUNCTION_ERROR_INJECTION is set, and when CONFIG_KPROBES is set.
+
+And ALLOW_ERROR_INJECTION() is set when CONFIG_FUNCTION_ERROR_INJECTION is.
+
+There's no way to turn it off on x86 except by disabling kprobes!
+
+WTF!
+
+I don't want a kernel that can add error injection just because kprobes is
+enabled. There's two kinds of kprobes. One that is for visibility only (for
+tracing) and one that can be used for functional changes. I want the
+visibility without the ability to change the kernel. The visibility portion
+is very useful for security, where as the modifying one can be used to
+circumvent security.
+
+As kprobes are set in most production environments, so is error injection.
+Do we really want error injection enabled on production environments?
+I don't.
+
+I think we need this patch ASAP!
+
+-- Steve
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index c3c0b077ade3..9ee72d8860c3 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1874,8 +1874,14 @@ config NETDEV_NOTIFIER_ERROR_INJECT
+ 	  If unsure, say N.
+ 
+ config FUNCTION_ERROR_INJECTION
+-	def_bool y
++	bool "Fault-injections of functions"
+ 	depends on HAVE_FUNCTION_ERROR_INJECTION && KPROBES
++	help
++	  Add fault injections into various functions that are annotated with
++	  ALLOW_ERROR_INJECTION() in the kernel. BPF may also modify the return
++	  value of theses functions. This is useful to test error paths of code.
++
++	  If unsure, say N
+ 
+ config FAULT_INJECTION
+ 	bool "Fault-injection framework"
