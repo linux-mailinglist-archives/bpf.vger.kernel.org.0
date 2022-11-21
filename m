@@ -2,87 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DA6631CEB
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 10:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC03631DCD
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 11:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbiKUJf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 04:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S230210AbiKUKJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 05:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiKUJf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 04:35:58 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD98108D
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 01:35:57 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id n21so27063709ejb.9
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 01:35:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=IyooFSLHyzBVtDODdJTSmVvlmW1AmledHA60alrj2cU=;
-        b=xvxzO7ApTWWEjpNekFxXdD/x7q5Z7RnNvqBX9v2pX+BBXQAT5sDvTa5mo5Sc4prg1c
-         JeJJ5TVKqi7Isr30jzH//v/TNEY1eA1YkQ+9KtvMkvTFJ4HKeZj3c+7G/Ujob78/qKu2
-         InV4rh/cl6Vd18+KGNrWpJWr9dPeju2XuCZ6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IyooFSLHyzBVtDODdJTSmVvlmW1AmledHA60alrj2cU=;
-        b=dwsng4FpPun/wfQgqyKrt6Foj6nkJzZChQf+RSa/dKarvukZPQleyNiWyRrfzfs7aG
-         3lrVuP/oJmBfVQkirCHeN80VSOaMVCCcb+SewXLkSLykoUZvBM0yEZQcvBpEf/vEn4hK
-         VNKW8+oHsRItGdwsz4lJ8OcGTms0Pr+lrnpdi8hhRfv8p+qsE5zHiyQVm1Ibo0Piv/e2
-         XJccL9Fv0S1e37BPBB4xfEmFKijx5cXZoSBC8dcfnydD/Bmo0bxWqkdJaLerI+sCyPJ/
-         qUcJ4vIFiSnE9coPOc76ZK5FtUBR/PhjE3SaPEwA1pDiOk7hva8KQ27R3+yBa/X00bJU
-         ewWA==
-X-Gm-Message-State: ANoB5pkt626YEp5lDSXVMPj9wqvgijqAlM8yBJ+69UAjxmuTJiPm6NWr
-        OivnONkNUDJTvaC5hqSV9FAqVSCv40d3sg==
-X-Google-Smtp-Source: AA0mqf5XZ/fvk4UKrjocbkxMTT0FxICvnHmzqJGXP6tF1+hGsjdnuaJ3JDy9syVNTGG9zJo+VZ04hw==
-X-Received: by 2002:a17:906:d797:b0:7ae:37a9:b8f2 with SMTP id pj23-20020a170906d79700b007ae37a9b8f2mr8921800ejb.398.1669023356052;
-        Mon, 21 Nov 2022 01:35:56 -0800 (PST)
-Received: from cloudflare.com (79.184.204.15.ipv4.supernova.orange.pl. [79.184.204.15])
-        by smtp.gmail.com with ESMTPSA id eg51-20020a05640228b300b0045b4b67156fsm5014377edb.45.2022.11.21.01.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 01:35:55 -0800 (PST)
-References: <1668598161-15455-1-git-send-email-yangpc@wangsu.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Pengcheng Yang <yangpc@wangsu.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 0/4] bpf, sockmap: Fix some issues with using
- apply_bytes
-Date:   Mon, 21 Nov 2022 10:35:34 +0100
-In-reply-to: <1668598161-15455-1-git-send-email-yangpc@wangsu.com>
-Message-ID: <87k03o7ipx.fsf@cloudflare.com>
+        with ESMTP id S231253AbiKUKJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 05:09:55 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2982C67;
+        Mon, 21 Nov 2022 02:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/aiZzvyQ2GY8KI94llazD/tfmZ49/mZuXgZkC4dcxLY=; b=NZpSrhocPOpVEIzvEEu1r4IaU0
+        A1L9Xa2NdSCU+3XTGRM2PMPbA7wJpAY+EoXEVzWaUPzmj0R/NNxyLFRqxZCzAw3DSg1FGn23mInX0
+        UNKvxqzGNOqk5Z7gqutCPwBDR1ymYgiw4UDZ0j+Z8KX40M6hD/6iYckEM+LogGB0Y3HJ/bunEybZi
+        SlEITeLvwmU1jfka5ilUxkFujg4o7QEHhji1ygTRCqxyaQDwXx3af6uRHCFaIFzDj8kWNlSQ56BR5
+        2hcX2Kgbn1R3iUm1Tup890mQ+FlNJk3tHN6mW215hG8LU3P0RhV6r+gZ0nKj9CzSGZH7rn360zJ3h
+        qwt3wRig==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ox3jw-0034mk-UW; Mon, 21 Nov 2022 10:09:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FC4830022D;
+        Mon, 21 Nov 2022 11:09:22 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0DBBC203A8986; Mon, 21 Nov 2022 11:09:22 +0100 (CET)
+Date:   Mon, 21 Nov 2022 11:09:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Chris Mason <clm@meta.com>, Mark Rutland <mark.rutland@arm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Message-ID: <Y3tOUcOjEDJrm7w6@hirez.programming.kicks-ass.net>
+References: <20221108220651.24492-1-revest@chromium.org>
+ <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
+ <20221117121617.4e1529d3@gandalf.local.home>
+ <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
+ <20221117174030.0170cd36@gandalf.local.home>
+ <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
+ <20221118114519.2711d890@gandalf.local.home>
+ <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
+ <20221118130608.5ba89bd8@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221118130608.5ba89bd8@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 07:29 PM +08, Pengcheng Yang wrote:
-> Patch 0001~0003 fixes three issues with using apply_bytes when redirecting.
-> Patch 0004 adds ingress tests for txmsg with apply_bytes in selftests.
->
-> Pengcheng Yang (4):
->   bpf, sockmap: Fix repeated calls to sock_put() when msg has more_data
->   bpf, sockmap: Fix missing BPF_F_INGRESS flag when using apply_bytes
->   bpf, sockmap: Fix data loss caused by using apply_bytes on ingress
->     redirect
->   selftests/bpf: Add ingress tests for txmsg with apply_bytes
->
->  include/linux/skmsg.h                      |  1 +
->  net/core/skmsg.c                           |  1 +
->  net/ipv4/tcp_bpf.c                         |  9 +++++++--
->  net/tls/tls_sw.c                           |  1 +
->  tools/testing/selftests/bpf/test_sockmap.c | 18 ++++++++++++++++++
->  5 files changed, 28 insertions(+), 2 deletions(-)
+On Fri, Nov 18, 2022 at 01:06:08PM -0500, Steven Rostedt wrote:
+> How do I know that a function return was modified by BPF? If I'm debugging
+> something, is it obvious to the developer that is debugging an issue
+> (perhaps unaware of what BPF programs are loaded on the users machine),
+> that the return of a function was tweaked by BPF and that could be the
+> source of the bug?
 
-Thanks for the patches. I need a bit more time to review them.
+Have it taint the kernel if something is overridden ;-) Then we can all
+ignore the report until it comes back without taint.
