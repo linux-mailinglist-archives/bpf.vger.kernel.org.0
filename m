@@ -2,140 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C24631BE3
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 09:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DA6631CEB
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 10:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbiKUIwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 03:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
+        id S229555AbiKUJf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 04:35:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbiKUIwE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 03:52:04 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F782217;
-        Mon, 21 Nov 2022 00:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669020721; x=1700556721;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PRZcPQKEh9lZYS6k17IpBGFrKOu26GUNvPvApWrz/lc=;
-  b=h2xPBvv6bNCoJlna2SRRXh4LmTgnNuMLJpOaf4C5CFsEB0R3LlCjLEuc
-   mvmP20HCxKj8XCDEXAOA6Bf2/DSMBcc5q8e1RDsjaC1GKKKbqiNYJgxem
-   ZJpNX5HVpxWB1VNYzrjjViQatWXIpn6CjoXqRPcdTtmGznZvQF3cf2+tP
-   d2F+hsOsPPsER7e0QmYBluGc13V57JEbkyMAaJWruJGiVXzIz3NbPQUbT
-   OoMN2BAiuSqKv1PgyCCUKKwkp9c6vlPI3uYCL/KEvr+NFaRlhkAJtvUAj
-   HcmSPApBanNPWXwz8h0sKqqqNadrVrTQ34Z+KbDZIznFn7Gma4BGfdTLx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10537"; a="313536858"
-X-IronPort-AV: E=Sophos;i="5.96,180,1665471600"; 
-   d="scan'208";a="313536858"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2022 00:52:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10537"; a="709730243"
-X-IronPort-AV: E=Sophos;i="5.96,180,1665471600"; 
-   d="scan'208";a="709730243"
-Received: from a0cec8d9c8fc.jf.intel.com ([10.45.77.137])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Nov 2022 00:51:46 -0800
-From:   Chen Hu <hu1.chen@intel.com>
-Cc:     hu1.chen@intel.com, jpoimboe@kernel.org, memxor@gmail.com,
-        bpf@vger.kernel.org, Pengfei Xu <pengfei.xu@intel.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        with ESMTP id S229552AbiKUJf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 04:35:58 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD98108D
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 01:35:57 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id n21so27063709ejb.9
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 01:35:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=IyooFSLHyzBVtDODdJTSmVvlmW1AmledHA60alrj2cU=;
+        b=xvxzO7ApTWWEjpNekFxXdD/x7q5Z7RnNvqBX9v2pX+BBXQAT5sDvTa5mo5Sc4prg1c
+         JeJJ5TVKqi7Isr30jzH//v/TNEY1eA1YkQ+9KtvMkvTFJ4HKeZj3c+7G/Ujob78/qKu2
+         InV4rh/cl6Vd18+KGNrWpJWr9dPeju2XuCZ6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IyooFSLHyzBVtDODdJTSmVvlmW1AmledHA60alrj2cU=;
+        b=dwsng4FpPun/wfQgqyKrt6Foj6nkJzZChQf+RSa/dKarvukZPQleyNiWyRrfzfs7aG
+         3lrVuP/oJmBfVQkirCHeN80VSOaMVCCcb+SewXLkSLykoUZvBM0yEZQcvBpEf/vEn4hK
+         VNKW8+oHsRItGdwsz4lJ8OcGTms0Pr+lrnpdi8hhRfv8p+qsE5zHiyQVm1Ibo0Piv/e2
+         XJccL9Fv0S1e37BPBB4xfEmFKijx5cXZoSBC8dcfnydD/Bmo0bxWqkdJaLerI+sCyPJ/
+         qUcJ4vIFiSnE9coPOc76ZK5FtUBR/PhjE3SaPEwA1pDiOk7hva8KQ27R3+yBa/X00bJU
+         ewWA==
+X-Gm-Message-State: ANoB5pkt626YEp5lDSXVMPj9wqvgijqAlM8yBJ+69UAjxmuTJiPm6NWr
+        OivnONkNUDJTvaC5hqSV9FAqVSCv40d3sg==
+X-Google-Smtp-Source: AA0mqf5XZ/fvk4UKrjocbkxMTT0FxICvnHmzqJGXP6tF1+hGsjdnuaJ3JDy9syVNTGG9zJo+VZ04hw==
+X-Received: by 2002:a17:906:d797:b0:7ae:37a9:b8f2 with SMTP id pj23-20020a170906d79700b007ae37a9b8f2mr8921800ejb.398.1669023356052;
+        Mon, 21 Nov 2022 01:35:56 -0800 (PST)
+Received: from cloudflare.com (79.184.204.15.ipv4.supernova.orange.pl. [79.184.204.15])
+        by smtp.gmail.com with ESMTPSA id eg51-20020a05640228b300b0045b4b67156fsm5014377edb.45.2022.11.21.01.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Nov 2022 01:35:55 -0800 (PST)
+References: <1668598161-15455-1-git-send-email-yangpc@wangsu.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Pengcheng Yang <yangpc@wangsu.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH bpf] selftests/bpf: Fix "missing ENDBR" BUG for destructor kfunc
-Date:   Mon, 21 Nov 2022 00:51:13 -0800
-Message-Id: <20221121085113.611504-1-hu1.chen@intel.com>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH bpf 0/4] bpf, sockmap: Fix some issues with using
+ apply_bytes
+Date:   Mon, 21 Nov 2022 10:35:34 +0100
+In-reply-to: <1668598161-15455-1-git-send-email-yangpc@wangsu.com>
+Message-ID: <87k03o7ipx.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
-following BUG:
+On Wed, Nov 16, 2022 at 07:29 PM +08, Pengcheng Yang wrote:
+> Patch 0001~0003 fixes three issues with using apply_bytes when redirecting.
+> Patch 0004 adds ingress tests for txmsg with apply_bytes in selftests.
+>
+> Pengcheng Yang (4):
+>   bpf, sockmap: Fix repeated calls to sock_put() when msg has more_data
+>   bpf, sockmap: Fix missing BPF_F_INGRESS flag when using apply_bytes
+>   bpf, sockmap: Fix data loss caused by using apply_bytes on ingress
+>     redirect
+>   selftests/bpf: Add ingress tests for txmsg with apply_bytes
+>
+>  include/linux/skmsg.h                      |  1 +
+>  net/core/skmsg.c                           |  1 +
+>  net/ipv4/tcp_bpf.c                         |  9 +++++++--
+>  net/tls/tls_sw.c                           |  1 +
+>  tools/testing/selftests/bpf/test_sockmap.c | 18 ++++++++++++++++++
+>  5 files changed, 28 insertions(+), 2 deletions(-)
 
-  traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
-  ------------[ cut here ]------------
-  kernel BUG at arch/x86/kernel/traps.c:254!
-  invalid opcode: 0000 [#1] PREEMPT SMP
-  <TASK>
-   asm_exc_control_protection+0x26/0x50
-  RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
-  Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
-	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
-       <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
-   bpf_map_free_kptrs+0x2e/0x70
-   array_map_free+0x57/0x140
-   process_one_work+0x194/0x3a0
-   worker_thread+0x54/0x3a0
-   ? rescuer_thread+0x390/0x390
-   kthread+0xe9/0x110
-   ? kthread_complete_and_exit+0x20/0x20
-
-This is because there are no compile-time references to the destructor
-kfuncs, bpf_kfunc_call_test_release() for example. So objtool marked
-them sealable and ENDBR in the functions were sealed (converted to NOP)
-by apply_ibt_endbr().
-
-This fix creates dummy compile-time references to destructor kfuncs so
-ENDBR stay there.
-
-Signed-off-by: Chen Hu <hu1.chen@intel.com>
-Tested-by: Pengfei Xu <pengfei.xu@intel.com>
----
- include/linux/btf_ids.h | 7 +++++++
- net/bpf/test_run.c      | 2 ++
- 2 files changed, 9 insertions(+)
-
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index 2aea877d644f..6c6b520ea58f 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -266,4 +266,11 @@ MAX_BTF_TRACING_TYPE,
- 
- extern u32 btf_tracing_ids[];
- 
-+#if defined(CONFIG_X86_KERNEL_IBT) && !defined(__DISABLE_EXPORTS)
-+#define BTF_IBT_NOSEAL(name)					\
-+	asm(IBT_NOSEAL(#name));
-+#else
-+#define BTF_IBT_NOSEAL(name)
-+#endif /* CONFIG_X86_KERNEL_IBT */
-+
- #endif
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 13d578ce2a09..465952e5de11 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -1653,6 +1653,8 @@ BTF_ID(struct, prog_test_ref_kfunc)
- BTF_ID(func, bpf_kfunc_call_test_release)
- BTF_ID(struct, prog_test_member)
- BTF_ID(func, bpf_kfunc_call_memb_release)
-+BTF_IBT_NOSEAL(bpf_kfunc_call_test_release)
-+BTF_IBT_NOSEAL(bpf_kfunc_call_memb_release)
- 
- static int __init bpf_prog_test_run_init(void)
- {
--- 
-2.34.1
-
+Thanks for the patches. I need a bit more time to review them.
