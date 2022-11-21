@@ -2,133 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE627632745
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B60632785
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbiKUPEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 10:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
+        id S232168AbiKUPND (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 10:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbiKUPEK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 10:04:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460C52EF61
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 06:52:31 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3D5D0B81088
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 14:52:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C4EEC43144
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 14:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669042346;
-        bh=1NpqYHTbeVShPEPEVlR21hf3+Bgbo/clIJ92F4nCKL0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tCwz64VxR1lUvhF/F4n7wwsQ+zPTHvMegsUftKJ13YNRHii7kvt5M1fDeH+JTRJmY
-         L9oqNWQ/R3dfZlFy0/iWtwlfrQOCZg/M4cCkvqUCJNvca7SmoIWrBNx89tdarwOOKG
-         sSrhGEOB3nYGVwBUzks2oGS8u9MUTBRNUBlsi4/V0OoGWGOMsggYEJr6h9+64xwZlu
-         PL146feXLfWY7J1mTf0uVlTZ0VUz7hFtpE36DHUP81DnnywmvQSR6EoCoSpRY9PP0i
-         eXqQEnifDXIEcPtSiYbS/S2ydO9knCmLX9Al8+C1duaL3cyzX2eJIp9BY6K885l11z
-         YfYN2FZmhIyvw==
-Received: by mail-ej1-f49.google.com with SMTP id ft34so29014526ejc.12
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 06:52:25 -0800 (PST)
-X-Gm-Message-State: ANoB5pkhWg7tNUpZnnZdEFr7O5z3iER2SoAkpzvHFAd5AAWSM2VOU0Kg
-        7gIovdL8wjRXUeC0uzvDmxVsMKZRTZW+kOk7bK8=
-X-Google-Smtp-Source: AA0mqf4/CR5tEsPR5HXixifxoixQz3KKsUdB0XZlZbEJMncSS2DbWUVu0lSGcgANJX/qAKQ1DQI7mPQKMjJqWr1jNNI=
-X-Received: by 2002:a17:906:fa06:b0:7ae:72ae:264b with SMTP id
- lo6-20020a170906fa0600b007ae72ae264bmr15607931ejb.301.1669042344250; Mon, 21
- Nov 2022 06:52:24 -0800 (PST)
+        with ESMTP id S231728AbiKUPMK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 10:12:10 -0500
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616A7C6D21;
+        Mon, 21 Nov 2022 07:06:17 -0800 (PST)
+Received: by mail-qk1-f173.google.com with SMTP id z17so8145198qki.11;
+        Mon, 21 Nov 2022 07:06:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CupXU2YxQxlgExJK8f3HdC36BFYNv+p0Rq++hKAm9D8=;
+        b=Sx++5u0zoyXf8X1W7k8bacATk2PzKbwB7KBy78cmD7BOyK55s7gwb/SX5ENFmW3dDh
+         Zqq1mLpEW3NSgqKTpZEZnVXCtWPivGmCUFAzzTsd1/wjT3ofycDFXKb1RlOQcn0JoqBn
+         4M3Fvbn+9OEGbPfQirOkgJtUmERzsUq9pKnDhN8eXlTPxXFfIzq9FFqc9zJ75ZXICzR1
+         N4p5ucsktCWuPwb2RiaiNXKZOsZK4u5GEL7hvp0NAxy/Gk0x8XBoWKQhbhW2GCE7nJZ7
+         C8HL5RtIg92h3PJXbYYjuhrs97/y753TEzd0V/zBJDEoaxcMXmKDDSbPLQXMj8tSSsf3
+         h7KQ==
+X-Gm-Message-State: ANoB5pnuw+dw3ft9D7xf5hVJut6ybXe+k8IwZIPaaHhQlRVTH/As9Rr6
+        IZzHQBn0GjL8GsrGYI2Bd10=
+X-Google-Smtp-Source: AA0mqf5b4jDAHm/CLmo93tkGxrH6/0Rjf2Z1b3IxtiV1wPcgTrZ1YOirbk+P97yG6VO9eVy6mS/ZfQ==
+X-Received: by 2002:ae9:d844:0:b0:6fa:b570:2da7 with SMTP id u65-20020ae9d844000000b006fab5702da7mr1090738qkf.597.1669043176150;
+        Mon, 21 Nov 2022 07:06:16 -0800 (PST)
+Received: from maniforge.lan (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
+        by smtp.gmail.com with ESMTPSA id s19-20020a05620a29d300b006cfc9846594sm8430169qkp.93.2022.11.21.07.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Nov 2022 07:06:15 -0800 (PST)
+Date:   Mon, 21 Nov 2022 09:06:20 -0600
+From:   David Vernet <void@manifault.com>
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        corbet@lwn.net, daniel@iogearbox.net, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, rongtao@cestc.cn, sdf@google.com,
+        song@kernel.org, yhs@fb.com
+Subject: Re: [PATCH bpf-next v3] docs/bpf: Update btf selftests program and
+ add link
+Message-ID: <Y3uT7KfjF3OcbjMG@maniforge.lan>
+References: <tencent_C597352AB3AF24A35A88CC06A3421E590B08@qq.com>
 MIME-Version: 1.0
-References: <20221107223921.3451913-1-song@kernel.org> <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
- <Y2uMWvmiPlaNXlZz@kernel.org> <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
- <Y3DITs3J8koEw3Hz@kernel.org> <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
- <Y3X1uHNTLQJxmJnm@kernel.org> <CAPhsuW51j8P+DNXvFh4uf5Mem7=egHyYMVK7-Zq2qeFoArYREQ@mail.gmail.com>
- <Y3oEXP3UqHd1L6Z9@kernel.org>
-In-Reply-To: <Y3oEXP3UqHd1L6Z9@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Nov 2022 07:52:12 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4ZBShuBf39TLmich0ts07zWGFuHvfAB0Jbg_bG-fjjWw@mail.gmail.com>
-Message-ID: <CAPhsuW4ZBShuBf39TLmich0ts07zWGFuHvfAB0Jbg_bG-fjjWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_C597352AB3AF24A35A88CC06A3421E590B08@qq.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 20, 2022 at 3:41 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Thu, Nov 17, 2022 at 10:36:43AM -0800, Song Liu wrote:
-> > On Thu, Nov 17, 2022 at 12:50 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > On Mon, Nov 14, 2022 at 12:30:49PM -0800, Song Liu wrote:
-> > > > On Sun, Nov 13, 2022 at 2:35 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > > >
-> > > > > My concern is that the proposed execmem_alloc() cannot be used for
-> > > > > centralized handling of loading text. I'm not familiar enough with
-> > > > > modules/ftrace/kprobes/BPF to clearly identify the potential caveats, but
-> > > > > my gut feeling is that the proposed execmem_alloc() won't be an improvement
-> > > > > but rather a hindrance for moving to centralized handling of loading text.
-> > > >
-> > > > I don't follow why this could ever be a hindrance. Luis is very excited about
-> > > > this, and I am very sure it works for ftrace, kprobe, and BPF.
-> > >
-> > > Again, it's a gut feeling. But for execmem_alloc() to be a unified place of
-> > > code allocation, it has to work for all architectures. If architectures
-> > > have to override it, then where is the unification?
-> > >
-> > > The implementation you propose if great for x86, but to see it as unified
-> > > solution it should be good at least for the major architectures.
-> >
-> > As I mentioned earlier, folks are working on using bpf_prog_pack for BPF
-> > JIT on powerpc. We will also work on something similar for ARM.
->
-> Does "something similar" mean that it won't use execmem_alloc() as is?
+On Mon, Nov 21, 2022 at 10:02:39PM +0800, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> commit c64779e24e88("selftests/bpf: Merge most of test_btf into
+> test_progs") rename selftests/bpf btf test from 'test_btf.c' to
+> 'prog_tests/btf.c'.
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> ---
+> v3: v2 -> v3
+>     s/Kernel bpf selftest/The kernel BPF selftest
+>     s/provides extensive/provides an extensive
+> v2: https://lore.kernel.org/lkml/tencent_114656E8259D0AEA2BDB6810E29241995006@qq.com/
+> v1: https://lore.kernel.org/lkml/tencent_7F84D04F96EBE594CAD5EBD12815A2B00106@qq.com/
+> ---
+>  Documentation/bpf/btf.rst | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index cf8722f96090..681416c86e81 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -1062,4 +1062,9 @@ format.::
+>  7. Testing
+>  ==========
+>  
+> -Kernel bpf selftest `test_btf.c` provides extensive set of BTF-related tests.
+> +The kernel bpf selftest `tools/testing/selftests/bpf/prog_tests/btf.c`_
 
-"Something similar" means it will use execmem_alloc as is. We still need
-changes to the ARM JIT code, just like we need it for powerpc and x86.
+s/bpf/BPF
 
->
-> > I guess these are good enough for major architectures?
->
-> Sorry if I wasn't clear, I referred for unified solution for all code
-> allocations, not only BPF, so that execmem_alloc() will eventually replace
-> module_alloc(). And that means it has to be able to deal with with
-> architecture specific requirements at least on ARM and powerpc, probably
-> others as well.
->
-> > > > > It feels to me that a lot of ground work is needed to get to the point
-> > > > > where we can use centralized handling of loading text.
-> > > >
-> > > > Could you please be more specific on what is needed?
-> > >
-> > > The most obvious one to implement Peter's suggestion with VM_TOPDOWN_VMAP
-> > > so that execmem_alloc() can be actually used by modules.
-> >
-> > Current implementation is an alternative to VM_TOPDOWN_VMAP. I am
-> > very sure it works for modules just like VM_TOPDOWN_VMAP solution.
->
-> It might, but it still does not. And until they do I consider these
-> patches as an optimization for BFP rather than unification of code
-> allocations.
-
-We haven't got module to use execmem_alloc yet, that's true. But
-this has nothing to do with VM_TOPDOWN_VMAP at all.
-
-Thanks,
-Song
+> +provides an extensive set of BTF-related tests.
+> +
+> +.. Links
+> +.. _tools/testing/selftests/bpf/prog_tests/btf.c:
+> +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/btf.c
+> -- 
+> 2.38.1
+> 
