@@ -2,76 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F601632BB3
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 19:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57155632C07
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 19:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbiKUSFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 13:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        id S229727AbiKUSZ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 13:25:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiKUSFD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 13:05:03 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BAD5CD1C
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 10:05:02 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id bp15so19977834lfb.13
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 10:05:02 -0800 (PST)
+        with ESMTP id S229489AbiKUSZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 13:25:57 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B5FCFEA4
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 10:25:54 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id p1-20020a17090a2c4100b00212733d7aaaso6317438pjm.4
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 10:25:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DLuxvrtTwLpjQCdZkBOlAPtT4PuOt7o3XUb4SWGRYeY=;
-        b=aFl4qsh1pGzsrB406jGVgetKTU5dHR/Yq4nfmSbaVP4IJ1WK5efBe9YoThLjFNtyI2
-         Kz8nEj/i+1EgGIpQsRaXzp2sEuQpAUpu1tPFClSGrYfMlU0ibiYxwfaP38uUXTpBx1q5
-         KiV95QITskZLsLOVy3VVImbnkrR4AxBvE163uTw9abOsM/VfZ+mUcm0D/aBMZiaS+UfB
-         ZateLKdD28RTb6oAfK1Z2JdlN8o2opqCu2lsHOb71D6jQ+NinskCXZ3gIsB6nubx7+Gz
-         hBMm8gVnEQ3l1l7vHu3V7P0QfKPMTuzg/fpnBBNtaOlhXwpF+putLsOCKdPfs5A1Ljv6
-         JzNQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=neyclIYmG2MJG0dCgBX3z1WFmjD9qCZi8nD0qNfRZRU=;
+        b=YbJPFsOK1XLIQ5fT/xSiHlNBomXbIsycXsSxoWDiNeEgRNXmMvMjF9knrQ77sUE9s9
+         k08aLCK0GAenX9iZv9vu3+6Dzj/1CnGh2sJd+vRqbTG10RgtdpWUHjj+4PNLlZ1+ycRc
+         n9Kt+xuryiKGNWWYo+fK9/KPpFaBKRvo/uNVuGytj68vT7fIxSn/sicXHKTH3if3PO/t
+         wZ7NsaFYzzJ5kSPjRdjewIPDReexUHIqR/qxfHVvXJHWzQHgpHIfsDAtb2uqQP2UIjo+
+         s9NAZmGTMVMCsWInsr01nknMm2S4i3z7PWwXWTMB6ed74iBAL7qbDHAYXWVWo7YUxE5x
+         zTlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DLuxvrtTwLpjQCdZkBOlAPtT4PuOt7o3XUb4SWGRYeY=;
-        b=DLUhfvm5G2RXiWWGmcJX5Vvct27TklhcSsgi/YmtyjqDg7+5aFposlXn7M3pUpfbRZ
-         KriXYYTvZA2SnqyboOTfAYODqRdrPEA+2ZQBiuXWbaZKnkBfHTLyOLnuCs6CRIwz4bdz
-         /vslfEEsAzUcVMvwGU6PUDZalENs+7kjGH+p/ZrEipkPNoQJvp+7lKzPSz2DtH6v72qi
-         dXmibd9CUkHkOnxzdnGgvjdUPuIHTA7n8XxfSYRZ2SP9XyRirKdQ1qDEdhTTbNnRiwBv
-         J0Hl3s+1NlfA9xrQORmAZJmbQTDxTOWCkEQfsfNXoFXpBKL7Kr+bGWC/2wcsM70uMv1x
-         G3yA==
-X-Gm-Message-State: ANoB5pmrzhH5Loni81bT0Mdy4t4K1rz0SborsUdOCUn9vvD7+iOJiJGO
-        DIrw9fDJBzIODmKUth6PgWa1Xh2m2G7QwDGIBuI=
-X-Google-Smtp-Source: AA0mqf4QjDkacLxuBSfOOnfpkyLOdYLO3J5hU1KhS5YQ4l1ixnRMdoKHYpAUjlU6GllIxGiRi4Sb84jBDVzDQ2jTeTA=
-X-Received: by 2002:a05:6512:36d0:b0:494:79b6:c7a2 with SMTP id
- e16-20020a05651236d000b0049479b6c7a2mr643405lfs.513.1669053901075; Mon, 21
- Nov 2022 10:05:01 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a2e:7005:0:0:0:0:0 with HTTP; Mon, 21 Nov 2022 10:05:00
- -0800 (PST)
-Reply-To: thajxoa@gmail.com
-From:   Thaj Xoa <rw5455090@gmail.com>
-Date:   Mon, 21 Nov 2022 18:05:00 +0000
-Message-ID: <CAFXnTB2frY_QoBoVVKavJcx6frJhLk4e5oNVsiF1UnsfqmZ3Hg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=neyclIYmG2MJG0dCgBX3z1WFmjD9qCZi8nD0qNfRZRU=;
+        b=seXonl5uTH/bGDpq8r6yWbqql2ua6xzOcUsiDReQh+9epaOQeLN2x2h63mh4M/pj94
+         OD85TDe+CaFv9/M9dsqZCQMNcuG/JZtn8UuM8oPwOVgo0biN+xCDMp1EggyuoWZ48C2X
+         5oWXquVYc9bqSzknzBq5NXJ3EVkNH3Ql/FntHnBOfLwUOxv/qJnvtQMM6xnaqGw3Fda1
+         PNKVu8w9JsmQ5MtKr1Is1LoHHGiZ3bjVQPQ9gEP0UC7CWxsN+qkdU4nCU16tzaOlHT9G
+         Dy3Ff86fcH/w0QN5CqlgrcIihUs+z6jRy4zzZMace866LM6a6kWdvZYcvJ9yZ0POkyKc
+         tWyg==
+X-Gm-Message-State: ANoB5pkPlwMR5AAZSlxRQlPeWNAbA2EkZxqOtKS9hp44je4EG6T7E+9V
+        vDKG7h9pczBJe1a49cAEdiYGe/mGVXcG+S3M0FejKPMVR0GiXYmvzo9orDYiHVAv7oVE4aMz9Cs
+        0zg/C46acoi4puAMjUQmunhZjzerTkKhm1lQ9UR0SaauSJ0VnHA==
+X-Google-Smtp-Source: AA0mqf42La1ts4Pi84zycQoiDeWxQo7HER3f6PUKjfK6gBRvLd0L4veQzAa8AuF2uk9BG+d3UIeZFOQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:eac2:b0:186:b91b:17ec with SMTP id
+ p2-20020a170902eac200b00186b91b17ecmr12951852pld.10.1669055154167; Mon, 21
+ Nov 2022 10:25:54 -0800 (PST)
+Date:   Mon, 21 Nov 2022 10:25:44 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
+Message-ID: <20221121182552.2152891-1-sdf@google.com>
+Subject: [PATCH bpf-next v2 0/8] xdp: hints via kfuncs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Please see the first patch in the series for the overall
+design and use-cases.
+
+Changes since v1:
+
+- Drop xdp->skb metadata path (Jakub)
+
+  No consensus yet on exposing xdp_skb_metadata in UAPI. Exploring
+  whether everyone would be ok with kfunc to access that part..
+  Will follow up separately.
+
+- Drop kfunc unrolling (Alexei)
+
+  Starting with simple code to resolve per-device ndo kfuncs.
+  We can always go back to unrolling and keep the same kfuncs
+  interface in the future.
+
+- Add rx hash metadata (Toke)
+
+  Not adding the rest (csum/hash_type/etc), I'd like us to agree on
+  the framework.
+
+- use dev_get_by_index and add proper refcnt (Toke)
+
+Changes since last RFC:
+
+- drop ice/bnxt example implementation (Alexander)
+
+  -ENOHARDWARE to test
+
+- fix/test mlx4 implementation
+
+  Confirmed that I get reasonable looking timestamp.
+  The last patch in the series is the small xsk program that can
+  be used to dump incoming metadata.
+
+- bpf_push64/bpf_pop64 (Alexei)
+
+  x86_64+arm64(untested)+disassembler
+
+- struct xdp_to_skb_metadata -> struct xdp_skb_metadata (Toke)
+
+  s/xdp_to_skb/xdp_skb/
+
+- Documentation/bpf/xdp-rx-metadata.rst
+
+  Documents functionality, assumptions and limitations.
+
+- bpf_xdp_metadata_export_to_skb returns true/false (Martin)
+
+  Plus xdp_md->skb_metadata field to access it.
+
+- BPF_F_XDP_HAS_METADATA flag (Toke/Martin)
+
+  Drop magic, use the flag instead.
+
+- drop __randomize_layout
+
+  Not sure it's possible to sanely expose it via UAPI. Because every
+  .o potentially gets its own randomized layout, test_progs
+  refuses to link.
+
+- remove __net_timestamp in veth driver (John/Jesper)
+
+  Instead, calling ktime_get from the kfunc; enough for the selftests.
+
+Future work on RX side:
+
+- Support more devices besides veth and mlx4
+- Support more metadata besides RX timestamp.
+- Convert skb_metadata_set() callers to xdp_convert_skb_metadata()
+  which handles extra xdp_skb_metadata
+
+Prior art (to record pros/cons for different approaches):
+
+- Stable UAPI approach:
+  https://lore.kernel.org/bpf/20220628194812.1453059-1-alexandr.lobakin@intel.com/
+- Metadata+BTF_ID appoach:
+  https://lore.kernel.org/bpf/166256538687.1434226.15760041133601409770.stgit@firesoul/
+- v1:
+  https://lore.kernel.org/bpf/20221115030210.3159213-1-sdf@google.com/T/#t
+- kfuncs v2 RFC:
+  https://lore.kernel.org/bpf/20221027200019.4106375-1-sdf@google.com/
+- kfuncs v1 RFC:
+  https://lore.kernel.org/bpf/20221104032532.1615099-1-sdf@google.com/
+
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (8):
+  bpf: Document XDP RX metadata
+  bpf: XDP metadata RX kfuncs
+  veth: Introduce veth_xdp_buff wrapper for xdp_buff
+  veth: Support RX XDP metadata
+  selftests/bpf: Verify xdp_metadata xdp->af_xdp path
+  mlx4: Introduce mlx4_xdp_buff wrapper for xdp_buff
+  mxl4: Support RX XDP metadata
+  selftests/bpf: Simple program to dump XDP RX metadata
+
+ Documentation/bpf/xdp-rx-metadata.rst         |  90 ++++
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  10 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  78 +++-
+ drivers/net/veth.c                            |  88 ++--
+ include/linux/bpf.h                           |   1 +
+ include/linux/mlx4/device.h                   |   7 +
+ include/linux/netdevice.h                     |   5 +
+ include/net/xdp.h                             |  20 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/core.c                             |   1 +
+ kernel/bpf/syscall.c                          |  17 +-
+ kernel/bpf/verifier.c                         |  33 ++
+ net/core/dev.c                                |   5 +
+ net/core/xdp.c                                |  52 +++
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   8 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 365 ++++++++++++++++
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  93 ++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  57 +++
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 405 ++++++++++++++++++
+ tools/testing/selftests/bpf/xdp_metadata.h    |   7 +
+ 22 files changed, 1311 insertions(+), 42 deletions(-)
+ create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_metadata.h
+
 -- 
-Dear Friend,
+2.38.1.584.g0f3c55d4c2-goog
 
-I have an important message for you.
-
-Sincerely,
-
-Mr thaj xoa
-Deputy Financial State Securities Commission (SSC)
-Hanoi-Vietnam
