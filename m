@@ -2,262 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BA46328A8
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ACD6328B9
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 16:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbiKUPwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 10:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S230254AbiKUPzD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 10:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiKUPwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 10:52:35 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD2D5FFC
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 07:52:33 -0800 (PST)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ox95t-0005Ge-HV; Mon, 21 Nov 2022 16:52:25 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ox95t-0008La-7S; Mon, 21 Nov 2022 16:52:25 +0100
-Subject: Re: [PATCH bpf-next v4 1/6] vmalloc: introduce execmem_alloc,
- execmem_free, and execmem_fill
-To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, x86@kernel.org, peterz@infradead.org,
-        hch@lst.de, rick.p.edgecombe@intel.com, rppt@kernel.org,
-        mcgrof@kernel.org
-References: <20221117202322.944661-1-song@kernel.org>
- <20221117202322.944661-2-song@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <882e2964-932e-0113-d3cd-344281add3a1@iogearbox.net>
-Date:   Mon, 21 Nov 2022 16:52:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230244AbiKUPzD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 10:55:03 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EA0CB957;
+        Mon, 21 Nov 2022 07:55:02 -0800 (PST)
+Received: from zn.tnic (p200300ea9733e725329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:9733:e725:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B6F91EC02FE;
+        Mon, 21 Nov 2022 16:55:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1669046101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UyKSm8LByFQQ4ea49JOIi/zjiryCptZFG1qVymkz4fk=;
+        b=mG0v63uszAei7x6+lIFQlQrnUgG1Py0j6xVysRGxoyzAosiUbIdEeVEQhHT6yoem9ClbcH
+        j1mMFyDmuH34uao8SHkD3nQGwxt0ywHOMGX8mEB/LMFR7vPvAdyDcr0t/I4ApJfMCR8jMO
+        lA5fV6PXoG9ksW7SEx19dS4DB9/XkIQ=
+Date:   Mon, 21 Nov 2022 16:55:00 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Chris Mason <clm@meta.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
+Message-ID: <Y3ufVKT0+gjNR7VV@zn.tnic>
+References: <20221117174030.0170cd36@gandalf.local.home>
+ <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
+ <20221118114519.2711d890@gandalf.local.home>
+ <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
+ <20221118130608.5ba89bd8@gandalf.local.home>
+ <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
+ <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com>
+ <20221121101537.674f5aca@gandalf.local.home>
+ <CAADnVQJzRTEWkJoB3B4tgFLtoVRHWnsUvB5ZKSfBsswV3ck1zw@mail.gmail.com>
+ <20221121104548.4a7aa3de@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20221117202322.944661-2-song@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26727/Mon Nov 21 09:50:51 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20221121104548.4a7aa3de@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/17/22 9:23 PM, Song Liu wrote:
-> execmem_alloc is used to allocate memory to host dynamic kernel text
-> (modules, BPF programs, etc.) with huge pages. This is similar to the
-> proposal by Peter in [1].
-[...]
+On Mon, Nov 21, 2022 at 10:45:48AM -0500, Steven Rostedt wrote:
+> And speak for yourself! Just because you want it in production, does not
+> mean that everyone else is forced to do so too.
 
-Looks like the series needs a rebase, meanwhile just few nits:
+Yes, I don't want it enabled in my enterprise kernels either because I
+don't want bug reports for stuff which people should clearly not do in
+production.
 
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 214c70e1d059..e3039fd4f65b 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -371,6 +371,18 @@ int vm_map_pages_zero(struct vm_area_struct *vma, struct page **pages,
->   }
->   EXPORT_SYMBOL(vm_map_pages_zero);
->   
-> +void *execmem_alloc(unsigned long size, unsigned long align)
-> +{
-> +	return NULL;
-> +}
-> +
-> +void *execmem_fill(void *dst, void *src, size_t len)
-> +{
-> +	return ERR_PTR(-EOPNOTSUPP);
-> +}
+It is as simple as that.
 
-Don't they need EXPORT_SYMBOL_GPL, too?
+-- 
+Regards/Gruss,
+    Boris.
 
-> +
-> +void execmem_free(const void *addr) { }
-> +
->   /*
->    *  sys_brk() for the most part doesn't need the global kernel
->    *  lock, except when an application is doing something nasty
-[...]
-> +
-> +/**
-> + * execmem_alloc - allocate virtually contiguous RO+X memory
-> + * @size:    allocation size
-
-nit: @align missing in kdoc
-
-> + *
-> + * This is used to allocate dynamic kernel text, such as module text, BPF
-> + * programs, etc. User need to use text_poke to update the memory allocated
-> + * by execmem_alloc.
-> + *
-> + * Return: pointer to the allocated memory or %NULL on error
-> + */
-> +void *execmem_alloc(unsigned long size, unsigned long align)
-> +{
-> +	struct vmap_area *va, *tmp;
-> +	unsigned long addr;
-> +	enum fit_type type;
-> +	int ret;
-> +
-> +	va = kmem_cache_alloc_node(vmap_area_cachep, GFP_KERNEL, NUMA_NO_NODE);
-> +	if (unlikely(!va))
-> +		return NULL;
-> +
-> +again:
-> +	preload_this_cpu_lock(&free_text_area_lock, GFP_KERNEL, NUMA_NO_NODE);
-> +	tmp = find_vmap_lowest_match(&free_text_area_root, size, align, 1, false);
-> +
-> +	if (!tmp) {
-> +		unsigned long alloc_size;
-> +		void *ptr;
-> +
-> +		spin_unlock(&free_text_area_lock);
-> +
-> +		/*
-> +		 * Not enough continuous space in free_text_area_root, try
-> +		 * allocate more memory. The memory is first added to
-> +		 * vmap_area_root, and then moved to free_text_area_root.
-> +		 */
-> +		alloc_size = roundup(size, PMD_SIZE * num_online_nodes());
-> +		ptr = __vmalloc_node_range(alloc_size, PMD_SIZE, EXEC_MEM_START,
-> +					   EXEC_MEM_END, GFP_KERNEL, PAGE_KERNEL,
-> +					   VM_ALLOW_HUGE_VMAP | VM_NO_GUARD,
-> +					   NUMA_NO_NODE, __builtin_return_address(0));
-> +		if (unlikely(!ptr))
-> +			goto err_out;
-> +
-> +		move_vmap_to_free_text_tree(ptr);
-> +		goto again;
-> +	}
-> +
-> +	addr = roundup(tmp->va_start, align);
-> +	type = classify_va_fit_type(tmp, addr, size);
-> +	if (WARN_ON_ONCE(type == NOTHING_FIT))
-> +		goto err_out_unlock;
-
-Isn't this already covered in adjust_va_to_fit_type()?
-
-> +	ret = adjust_va_to_fit_type(&free_text_area_root, &free_text_area_list,
-> +				    tmp, addr, size);
-
-nit:
-
-	spin_unlock(&free_text_area_lock);
-	if (ret)
-		goto err_out;
-
-> +	if (ret)
-> +		goto err_out_unlock;
-> +
-> +	spin_unlock(&free_text_area_lock);
-> +
-> +	va->va_start = addr;
-> +	va->va_end = addr + size;
-> +	va->vm = NULL;
-> +
-> +	spin_lock(&vmap_area_lock);
-> +	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
-> +	spin_unlock(&vmap_area_lock);
-> +
-> +	return (void *)addr;
-> +
-> +err_out_unlock:
-> +	spin_unlock(&free_text_area_lock);
-> +err_out:
-> +	kmem_cache_free(vmap_area_cachep, va);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(execmem_alloc);
-> +
-> +void __weak *arch_fill_execmem(void *dst, void *src, size_t len)
-> +{
-> +	return ERR_PTR(-EOPNOTSUPP);
-> +}
-> +
-> +int __weak arch_invalidate_execmem(void *ptr, size_t len)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +/**
-> + * execmem_fill - Copy text to RO+X memory allocated by execmem_alloc()
-> + * @dst:  pointer to memory allocated by execmem_alloc()
-> + * @src:  pointer to data being copied from
-> + * @len:  number of bytes to be copied
-> + *
-> + * execmem_fill() will only update memory allocated by a single execmem_fill()
-> + * call. If dst + len goes beyond the boundary of one allocation,
-> + * execmem_fill() is aborted.
-> + *
-> + * If @addr is NULL, no operation is performed.
-> + */
-> +void *execmem_fill(void *dst, void *src, size_t len)
-> +{
-> +	struct vmap_area *va;
-> +
-> +	spin_lock(&vmap_area_lock);
-> +	va = __find_vmap_area((unsigned long)dst, &vmap_area_root);
-> +
-> +	/*
-> +	 * If no va, or va has a vm attached, this memory is not allocated
-> +	 * by execmem_alloc().
-> +	 */
-> +	if (WARN_ON_ONCE(!va))
-> +		goto err_out;
-> +	if (WARN_ON_ONCE(va->vm))
-> +		goto err_out;
-> +
-> +	/* Disallow filling across execmem_alloc boundaries */
-> +	if (WARN_ON_ONCE((unsigned long)dst + len > va->va_end))
-> +		goto err_out;
-> +
-> +	spin_unlock(&vmap_area_lock);
-> +
-> +	return arch_fill_execmem(dst, src, len);
-> +
-> +err_out:
-> +	spin_unlock(&vmap_area_lock);
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +EXPORT_SYMBOL_GPL(execmem_fill);
-> +
-> +static struct vm_struct *find_and_unlink_text_vm(unsigned long start, unsigned long end)
-> +{
-> +	struct vm_struct *vm, *prev_vm;
-> +
-> +	lockdep_assert_held(&free_text_area_lock);
-> +
-> +	vm = all_text_vm;
-> +	while (vm) {
-> +		unsigned long vm_addr = (unsigned long)vm->addr;
-> +
-> +		/* vm is within this free space, we can free it */
-> +		if ((vm_addr >= start) && ((vm_addr + vm->size) <= end))
-> +			goto unlink_vm;
-> +		vm = vm->next;
-> +	}
-> +	return NULL;
-> +
-> +unlink_vm:
-> +	if (all_text_vm == vm) {
-> +		all_text_vm = vm->next;
-> +	} else {
-> +		prev_vm = all_text_vm;
-> +		while (prev_vm->next != vm)
-> +			prev_vm = prev_vm->next;
-> +		prev_vm->next = vm->next;
-> +	}
-> +	return vm;
-> +}
-> +
-[...]
+https://people.kernel.org/tglx/notes-about-netiquette
