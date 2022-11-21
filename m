@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E326F632A4B
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 18:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AB0632A4D
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 18:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbiKURFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 12:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S230368AbiKURF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 12:05:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbiKURFh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 12:05:37 -0500
+        with ESMTP id S230380AbiKURFp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 12:05:45 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A78C8C93
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACD8CB949
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:41 -0800 (PST)
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2ALCSF69015990
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:35 -0800
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2ALCSEA2015926
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:41 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=Xshkg9kV5a0R9n5QcK2kyQnRPkBrADl5KAxXHNaeW6w=;
- b=o7gO7/ir053UrrHolG5QbD7dbLnKV1NYgtI/IApuq4boP+qcWbasMK+eLhTxCybTD35G
- FPenUi/3l2KMlB+wBJOrJrLk1qshTkAjdSVF/jqCOx1rsjXCM1IVQn7KlFpHnhTp3QVR
- fBWOhMJ0p65JCs4Al+puMi9lDEuBQdpg2YA= 
+ bh=L1Ha21rW6HuIxnnqQcXIHkz8fES1C09ioL+HsinoyV4=;
+ b=eP1aZB20eKXRBqfd7ojMzueWc3sHCX9BOd9pG+E/D6U/7f0l2hIZe5xR0ukAwq9ujxry
+ WoM7MnSaP42Ys6TLJh3Icaf52SHPt14V0C+l4RN/GG+13UaQHAdycdlqFbvcvPFPI1Rb
+ K5px0XUeqvgD/oNXOweNCeG/lSAll9uv+ao= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxw4xx8da-5
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3kxw4xx8e7-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:35 -0800
-Received: from twshared41876.03.ash8.facebook.com (2620:10d:c085:108::8) by
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 09:05:41 -0800
+Received: from twshared13940.35.frc1.facebook.com (2620:10d:c085:108::4) by
  mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 21 Nov 2022 09:05:34 -0800
+ 15.1.2375.31; Mon, 21 Nov 2022 09:05:40 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id E7E9F1282A5B8; Mon, 21 Nov 2022 09:05:30 -0800 (PST)
+        id 3DE981282A606; Mon, 21 Nov 2022 09:05:36 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v7 3/4] bpf: Add kfunc bpf_rcu_read_lock/unlock()
-Date:   Mon, 21 Nov 2022 09:05:30 -0800
-Message-ID: <20221121170530.1196341-1-yhs@fb.com>
+Subject: [PATCH bpf-next v7 4/4] selftests/bpf: Add tests for bpf_rcu_read_lock()
+Date:   Mon, 21 Nov 2022 09:05:36 -0800
+Message-ID: <20221121170536.1198240-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221121170515.1193967-1-yhs@fb.com>
 References: <20221121170515.1193967-1-yhs@fb.com>
@@ -50,8 +50,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: _4Eh75WfXTCyouMfwD0xSnbJVWfcKnHJ
-X-Proofpoint-ORIG-GUID: _4Eh75WfXTCyouMfwD0xSnbJVWfcKnHJ
+X-Proofpoint-GUID: krT1dc4jbeFQ0rCgEwWYRKpw6x3XCjIZ
+X-Proofpoint-ORIG-GUID: krT1dc4jbeFQ0rCgEwWYRKpw6x3XCjIZ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-21_14,2022-11-18_01,2022-06-22_01
@@ -65,506 +65,559 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add two kfunc's bpf_rcu_read_lock() and bpf_rcu_read_unlock(). These two =
-kfunc's
-can be used for all program types. The following is an example about how
-rcu pointer are used w.r.t. bpf_rcu_read_lock()/bpf_rcu_read_unlock().
-
-  struct task_struct {
-    ...
-    struct task_struct              *last_wakee;
-    struct task_struct __rcu        *real_parent;
-    ...
-  };
-
-Let us say prog does 'task =3D bpf_get_current_task_btf()' to get a
-'task' pointer. The basic rules are:
-  - 'real_parent =3D task->real_parent' should be inside bpf_rcu_read_loc=
-k
-    region.  this is to simulate rcu_dereference() operation.
-  - 'last_wakee =3D real_parent->last_wakee' should be iinside bpf_rcu_re=
-ad_lock
-    region since it tries to access rcu protected memory.
-  - the ptr 'last_wakee' will be marked as PTR_UNTRUSTED since in general
-    it is not clear whether the object pointed by 'last_wakee' is valid o=
-r
-    not even inside bpf_rcu_read_lock region.
-
-Note that for non-sleepable progs, it is permitted that rcu pointer load
-and accessing rcu protected memory can be outside rcu read lock region.
-But verification will be reported for sleepable progs.
-
-To prevent rcu pointer leaks outside the rcu read lock region.
-The verifier will clear all rcu pointer register state to unknown, i.e.,
-scalar_value, so later dereference becomes impossible.
+Add a few positive/negative tests to test bpf_rcu_read_lock()
+and its corresponding verifier support. The new test will fail
+on s390x and aarch64, so an entry is added to each of their
+respective deny lists.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- include/linux/bpf.h          |   3 +
- include/linux/bpf_verifier.h |   2 +
- kernel/bpf/btf.c             |   3 +
- kernel/bpf/helpers.c         |  12 +++
- kernel/bpf/verifier.c        | 156 ++++++++++++++++++++++++++++++++---
- 5 files changed, 165 insertions(+), 11 deletions(-)
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  | 153 +++++++++
+ .../selftests/bpf/progs/rcu_read_lock.c       | 325 ++++++++++++++++++
+ 4 files changed, 480 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c9eafa67f2a2..d0fbb7f0f13b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -572,6 +572,9 @@ enum bpf_type_flag {
- 	 */
- 	PTR_TRUSTED		=3D BIT(12 + BPF_BASE_TYPE_BITS),
-=20
-+	/* MEM is tagged with rcu and memory access needs rcu_read_lock protect=
-ion. */
-+	MEM_RCU			=3D BIT(13 + BPF_BASE_TYPE_BITS),
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing=
+/selftests/bpf/DENYLIST.aarch64
+index affc5aebbf0f..8e77515d56f6 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -45,6 +45,7 @@ modify_return                                    # modi=
+fy_return__attach failed
+ module_attach                                    # skel_attach skeleton =
+attach failed: -524
+ mptcp/base                                       # run_test mptcp unexpe=
+cted error: -524 (errno 524)
+ netcnt                                           # packets unexpected pa=
+ckets: actual 10001 !=3D expected 10000
++rcu_read_lock                                    # failed to attach: ERR=
+OR: strerror_r(-524)=3D22
+ recursion                                        # skel_attach unexpecte=
+d error: -524 (errno 524)
+ ringbuf                                          # skel_attach skeleton =
+attachment failed: -1
+ setget_sockopt                                   # attach_cgroup unexpec=
+ted error: -524
+diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
+elftests/bpf/DENYLIST.s390x
+index 12cf2159975e..77aabc4dc64c 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.s390x
++++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+@@ -42,6 +42,7 @@ module_attach                            # skel_attach =
+skeleton attach failed: -
+ mptcp
+ netcnt                                   # failed to load BPF skeleton '=
+netcnt_prog': -7                               (?)
+ probe_user                               # check_kprobe_res wrong kprobe=
+ res from probe read                           (?)
++rcu_read_lock                            # failed to find kernel BTF typ=
+e ID of '__x64_sys_getpgid': -3                (?)
+ recursion                                # skel_attach unexpected error:=
+ -524                                          (trampoline)
+ ringbuf                                  # skel_load skeleton load faile=
+d                                              (?)
+ select_reuseport                         # intermittently fails on new s=
+390x setup
+diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/too=
+ls/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+new file mode 100644
+index 000000000000..58d5fe3da223
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates.*/
 +
- 	__BPF_TYPE_FLAG_MAX,
- 	__BPF_TYPE_LAST_FLAG	=3D __BPF_TYPE_FLAG_MAX - 1,
- };
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 545152ac136c..748431578902 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -344,6 +344,7 @@ struct bpf_verifier_state {
- 		u32 id;
- 	} active_lock;
- 	bool speculative;
-+	bool active_rcu_lock;
-=20
- 	/* first and last insn idx of this verifier state */
- 	u32 first_insn_idx;
-@@ -445,6 +446,7 @@ struct bpf_insn_aux_data {
- 	u32 seen; /* this insn was processed by the verifier at env->pass_cnt *=
-/
- 	bool sanitize_stack_spill; /* subject to Spectre v4 sanitation */
- 	bool zext_dst; /* this insn zero extends dst reg */
-+	bool storage_get_func_atomic; /* bpf_*_storage_get() with atomic memory=
- alloc */
- 	u8 alu_state; /* used in combination with alu_limit */
-=20
- 	/* below fields are initialized once */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1a59cc7ad730..68df0df27302 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6237,6 +6237,9 @@ static int btf_struct_walk(struct bpf_verifier_log =
-*log, const struct btf *btf,
- 				/* check __percpu tag */
- 				if (strcmp(tag_value, "percpu") =3D=3D 0)
- 					tmp_flag =3D MEM_PERCPU;
-+				/* check __rcu tag */
-+				if (strcmp(tag_value, "rcu") =3D=3D 0)
-+					tmp_flag =3D MEM_RCU;
- 			}
-=20
- 			stype =3D btf_type_skip_modifiers(btf, mtype->type, &id);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9e8a5557ea8d..3268be36a319 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1889,6 +1889,16 @@ void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__=
-k)
- 	return obj__ign;
- }
-=20
-+void bpf_rcu_read_lock(void)
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
++#include <test_progs.h>
++#include <bpf/btf.h>
++#include "rcu_read_lock.skel.h"
++#include "cgroup_helpers.h"
++
++static unsigned long long cgroup_id;
++
++static void test_local_storage(void)
 +{
-+	rcu_read_lock();
++	struct rcu_read_lock *skel;
++	int err;
++
++	skel =3D rcu_read_lock__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	skel->bss->target_pid =3D syscall(SYS_gettid);
++
++	bpf_program__set_autoload(skel->progs.get_cgroup_id, true);
++	bpf_program__set_autoload(skel->progs.task_succ, true);
++	bpf_program__set_autoload(skel->progs.two_regions, true);
++	bpf_program__set_autoload(skel->progs.non_sleepable_1, true);
++	bpf_program__set_autoload(skel->progs.non_sleepable_2, true);
++	err =3D rcu_read_lock__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto done;
++
++	err =3D rcu_read_lock__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto done;
++
++	syscall(SYS_getpgid);
++
++	ASSERT_EQ(skel->bss->task_storage_val, 2, "task_storage_val");
++	ASSERT_EQ(skel->bss->cgroup_id, cgroup_id, "cgroup_id");
++done:
++	rcu_read_lock__destroy(skel);
 +}
 +
-+void bpf_rcu_read_unlock(void)
++static void test_runtime_diff_rcu_tag(void)
 +{
-+	rcu_read_unlock();
++	struct rcu_read_lock *skel;
++	int err;
++
++	skel =3D rcu_read_lock__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.dump_ipv6_route, true);
++	err =3D rcu_read_lock__load(skel);
++	ASSERT_OK(err, "skel_load");
++	rcu_read_lock__destroy(skel);
 +}
 +
- __diag_pop();
-=20
- BTF_SET8_START(generic_btf_ids)
-@@ -1919,6 +1929,8 @@ BTF_ID(func, bpf_task_release)
- BTF_SET8_START(common_btf_ids)
- BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
- BTF_ID_FLAGS(func, bpf_rdonly_cast)
-+BTF_ID_FLAGS(func, bpf_rcu_read_lock)
-+BTF_ID_FLAGS(func, bpf_rcu_read_unlock)
- BTF_SET8_END(common_btf_ids)
-=20
- static const struct btf_kfunc_id_set common_kfunc_set =3D {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9528a066cfa5..d39ab0e969dd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23,6 +23,7 @@
- #include <linux/error-injection.h>
- #include <linux/bpf_lsm.h>
- #include <linux/btf_ids.h>
-+#include <linux/trace_events.h>
- #include <linux/poison.h>
-=20
- #include "disasm.h"
-@@ -527,6 +528,14 @@ static bool is_callback_calling_function(enum bpf_fu=
-nc_id func_id)
- 	       func_id =3D=3D BPF_FUNC_user_ringbuf_drain;
- }
-=20
-+static bool is_storage_get_function(enum bpf_func_id func_id)
++static const char * const inproper_region_tests[] =3D {
++	"miss_lock",
++	"miss_unlock",
++	"non_sleepable_rcu_mismatch",
++	"inproper_sleepable_helper",
++	"inproper_sleepable_kfunc",
++	"nested_rcu_region",
++};
++
++static void test_inproper_region(void)
 +{
-+	return func_id =3D=3D BPF_FUNC_sk_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_inode_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_task_storage_get ||
-+	       func_id =3D=3D BPF_FUNC_cgrp_storage_get;
++	struct rcu_read_lock *skel;
++	struct bpf_program *prog;
++	int i, err;
++
++	for (i =3D 0; i < ARRAY_SIZE(inproper_region_tests); i++) {
++		skel =3D rcu_read_lock__open();
++		if (!ASSERT_OK_PTR(skel, "skel_open"))
++			return;
++
++		prog =3D bpf_object__find_program_by_name(skel->obj, inproper_region_t=
+ests[i]);
++		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++			goto out;
++		bpf_program__set_autoload(prog, true);
++		err =3D rcu_read_lock__load(skel);
++		ASSERT_ERR(err, "skel_load");
++out:
++		rcu_read_lock__destroy(skel);
++	}
 +}
 +
- static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
- 					const struct bpf_map *map)
- {
-@@ -589,11 +598,12 @@ static const char *reg_type_str(struct bpf_verifier=
-_env *env,
- 			strncpy(postfix, "_or_null", 16);
- 	}
-=20
--	snprintf(prefix, sizeof(prefix), "%s%s%s%s%s%s",
-+	snprintf(prefix, sizeof(prefix), "%s%s%s%s%s%s%s",
- 		 type & MEM_RDONLY ? "rdonly_" : "",
- 		 type & MEM_RINGBUF ? "ringbuf_" : "",
- 		 type & MEM_USER ? "user_" : "",
- 		 type & MEM_PERCPU ? "percpu_" : "",
-+		 type & MEM_RCU ? "rcu_" : "",
- 		 type & PTR_UNTRUSTED ? "untrusted_" : "",
- 		 type & PTR_TRUSTED ? "trusted_" : ""
- 	);
-@@ -1220,6 +1230,7 @@ static int copy_verifier_state(struct bpf_verifier_=
-state *dst_state,
- 		dst_state->frame[i] =3D NULL;
- 	}
- 	dst_state->speculative =3D src->speculative;
-+	dst_state->active_rcu_lock =3D src->active_rcu_lock;
- 	dst_state->curframe =3D src->curframe;
- 	dst_state->active_lock.ptr =3D src->active_lock.ptr;
- 	dst_state->active_lock.id =3D src->active_lock.id;
-@@ -4704,6 +4715,15 @@ static int check_ptr_to_btf_access(struct bpf_veri=
-fier_env *env,
- 		return -EACCES;
- 	}
-=20
-+	/* Access rcu protected memory */
-+	if ((reg->type & MEM_RCU) && env->prog->aux->sleepable &&
-+	    !env->cur_state->active_rcu_lock) {
-+		verbose(env,
-+			"R%d is ptr_%s access rcu-protected memory with off=3D%d, not rcu pro=
-tected\n",
-+			regno, tname, off);
-+		return -EACCES;
-+	}
++static const char * const rcuptr_misuse_tests[] =3D {
++	"task_untrusted_ptr",
++	"task_incorrect_rcu_region1",
++	"task_incorrect_rcu_region2",
++	"cross_rcu_region",
++};
 +
- 	if (env->ops->btf_struct_access && !type_is_alloc(reg->type)) {
- 		if (!btf_is_kernel(reg->btf)) {
- 			verbose(env, "verifier internal error: reg->btf must be kernel btf\n"=
-);
-@@ -4731,12 +4751,27 @@ static int check_ptr_to_btf_access(struct bpf_ver=
-ifier_env *env,
- 	if (ret < 0)
- 		return ret;
-=20
-+	/* The value is a rcu pointer. The load needs to be in a rcu lock regio=
-n,
-+	 * similar to rcu_dereference().
-+	 */
-+	if ((flag & MEM_RCU) && env->prog->aux->sleepable && !env->cur_state->a=
-ctive_rcu_lock) {
-+		verbose(env,
-+			"R%d is rcu dereference ptr_%s with off=3D%d, not in rcu_read_lock re=
-gion\n",
-+			regno, tname, off);
-+		return -EACCES;
-+	}
-+
- 	/* If this is an untrusted pointer, all pointers formed by walking it
- 	 * also inherit the untrusted flag.
- 	 */
- 	if (type_flag(reg->type) & PTR_UNTRUSTED)
- 		flag |=3D PTR_UNTRUSTED;
-=20
-+	/* Mark the pointee of the rcu protected memory access as PTR_UNTRUSTED=
- */
-+	if (env->cur_state->active_rcu_lock && !(flag & PTR_UNTRUSTED) &&
-+	    (reg->type & MEM_RCU) && !(flag & MEM_RCU))
-+		flag |=3D PTR_UNTRUSTED;
-+
- 	/* Any pointer obtained from walking a trusted pointer is no longer tru=
-sted. */
- 	flag &=3D ~PTR_TRUSTED;
-=20
-@@ -5896,6 +5931,7 @@ static const struct bpf_reg_types const_map_ptr_typ=
-es =3D { .types =3D { CONST_PTR_T
- static const struct bpf_reg_types btf_ptr_types =3D {
- 	.types =3D {
- 		PTR_TO_BTF_ID,
-+		PTR_TO_BTF_ID | MEM_RCU,
- 		PTR_TO_BTF_ID | PTR_TRUSTED,
- 	},
- };
-@@ -5976,6 +6012,20 @@ static int check_reg_type(struct bpf_verifier_env =
-*env, u32 regno,
- 	if (arg_type & PTR_MAYBE_NULL)
- 		type &=3D ~PTR_MAYBE_NULL;
-=20
-+	/* If the reg type is marked as MEM_RCU, ensure the usage is in the rcu=
-_read_lock
-+	 * region, and remove MEM_RCU from the type since the arg_type won't en=
-code
-+	 * MEM_RCU.
-+	 */
-+	if (type & MEM_RCU) {
-+		if (env->prog->aux->sleepable && !env->cur_state->active_rcu_lock) {
-+			verbose(env,
-+				"R%d is arg type %s needs rcu protection\n",
-+				regno, reg_type_str(env, reg->type));
-+			return -EACCES;
-+		}
-+		type &=3D ~MEM_RCU;
-+	}
-+
- 	for (i =3D 0; i < ARRAY_SIZE(compatible->types); i++) {
- 		expected =3D compatible->types[i];
- 		if (expected =3D=3D NOT_INIT)
-@@ -5992,7 +6042,8 @@ static int check_reg_type(struct bpf_verifier_env *=
-env, u32 regno,
- 	return -EACCES;
-=20
- found:
--	if (reg->type =3D=3D PTR_TO_BTF_ID || reg->type & PTR_TRUSTED) {
-+	/* reg is already protected by rcu_read_lock(). Peel off MEM_RCU from r=
-eg->type. */
-+	if ((reg->type & ~MEM_RCU) =3D=3D PTR_TO_BTF_ID || reg->type & PTR_TRUS=
-TED) {
- 		/* For bpf_sk_release, it needs to match against first member
- 		 * 'struct sock_common', hence make an exception for it. This
- 		 * allows bpf_sk_release to work for multiple socket types.
-@@ -6073,6 +6124,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env =
-*env,
- 	 * fixed offset.
- 	 */
- 	case PTR_TO_BTF_ID:
-+	case PTR_TO_BTF_ID | MEM_RCU:
- 	case PTR_TO_BTF_ID | MEM_ALLOC:
- 	case PTR_TO_BTF_ID | PTR_TRUSTED:
- 	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED:
-@@ -7534,6 +7586,18 @@ static int check_helper_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn
- 		return err;
- 	}
-=20
-+	if (env->cur_state->active_rcu_lock) {
-+		if (bpf_lsm_sleepable_func_proto(func_id) ||
-+		    bpf_tracing_sleepable_func_proto(func_id)) {
-+			verbose(env, "sleepable helper %s#%din rcu_read_lock region\n",
-+				func_id_name(func_id), func_id);
-+			return -EINVAL;
-+		}
-+
-+		if (env->prog->aux->sleepable && is_storage_get_function(func_id))
-+			env->insn_aux_data[insn_idx].storage_get_func_atomic =3D true;
-+	}
-+
- 	meta.func_id =3D func_id;
- 	/* check args */
- 	for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-@@ -8158,6 +8222,8 @@ enum special_kfunc_type {
- 	KF_bpf_list_pop_back,
- 	KF_bpf_cast_to_kern_ctx,
- 	KF_bpf_rdonly_cast,
-+	KF_bpf_rcu_read_lock,
-+	KF_bpf_rcu_read_unlock,
- };
-=20
- BTF_SET_START(special_kfunc_set)
-@@ -8180,6 +8246,18 @@ BTF_ID(func, bpf_list_pop_front)
- BTF_ID(func, bpf_list_pop_back)
- BTF_ID(func, bpf_cast_to_kern_ctx)
- BTF_ID(func, bpf_rdonly_cast)
-+BTF_ID(func, bpf_rcu_read_lock)
-+BTF_ID(func, bpf_rcu_read_unlock)
-+
-+static bool is_kfunc_bpf_rcu_read_lock(struct bpf_kfunc_call_arg_meta *m=
-eta)
++static void test_rcuptr_misuse(void)
 +{
-+	return meta->func_id =3D=3D special_kfunc_list[KF_bpf_rcu_read_lock];
++	struct rcu_read_lock *skel;
++	struct bpf_program *prog;
++	struct btf *vmlinux_btf;
++	int i, err, type_id;
++
++	vmlinux_btf =3D btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
++		return;
++
++	/* skip the test if btf_type_tag("rcu") is not present in vmlinux */
++	type_id =3D btf__find_by_name_kind(vmlinux_btf, "rcu", BTF_KIND_TYPE_TA=
+G);
++	if (type_id < 0) {
++		test__skip();
++		return;
++	}
++
++	for (i =3D 0; i < ARRAY_SIZE(rcuptr_misuse_tests); i++) {
++		skel =3D rcu_read_lock__open();
++		if (!ASSERT_OK_PTR(skel, "skel_open"))
++			return;
++
++		prog =3D bpf_object__find_program_by_name(skel->obj, rcuptr_misuse_tes=
+ts[i]);
++		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++			goto out;
++		bpf_program__set_autoload(prog, true);
++		err =3D rcu_read_lock__load(skel);
++		ASSERT_ERR(err, "skel_load");
++out:
++		rcu_read_lock__destroy(skel);
++	}
 +}
 +
-+static bool is_kfunc_bpf_rcu_read_unlock(struct bpf_kfunc_call_arg_meta =
-*meta)
++void test_rcu_read_lock(void)
 +{
-+	return meta->func_id =3D=3D special_kfunc_list[KF_bpf_rcu_read_unlock];
++	int cgroup_fd;
++
++	cgroup_fd =3D test__join_cgroup("/rcu_read_lock");
++	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /rcu_read_lock"))
++		return;
++
++	cgroup_id =3D get_cgroup_id("/rcu_read_lock");
++	if (test__start_subtest("local_storage"))
++		test_local_storage();
++	if (test__start_subtest("runtime_diff_rcu_tag"))
++		test_runtime_diff_rcu_tag();
++	if (test__start_subtest("negative_tests_inproper_region"))
++		test_inproper_region();
++	if (test__start_subtest("negative_tests_rcuptr_misuse"))
++		test_rcuptr_misuse();
++
++	close(cgroup_fd);
 +}
-=20
- static enum kfunc_ptr_arg_type
- get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
-@@ -8812,6 +8890,7 @@ static int check_kfunc_call(struct bpf_verifier_env=
- *env, struct bpf_insn *insn,
- 	const struct btf_type *t, *func, *func_proto, *ptr_type;
- 	struct bpf_reg_state *regs =3D cur_regs(env);
- 	const char *func_name, *ptr_type_name;
-+	bool sleepable, rcu_lock, rcu_unlock;
- 	struct bpf_kfunc_call_arg_meta meta;
- 	u32 i, nargs, func_id, ptr_type_id;
- 	int err, insn_idx =3D *insn_idx_p;
-@@ -8853,11 +8932,38 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
- 		return -EACCES;
- 	}
-=20
--	if (is_kfunc_sleepable(&meta) && !env->prog->aux->sleepable) {
-+	sleepable =3D is_kfunc_sleepable(&meta);
-+	if (sleepable && !env->prog->aux->sleepable) {
- 		verbose(env, "program must be sleepable to call sleepable kfunc %s\n",=
- func_name);
- 		return -EACCES;
- 	}
-=20
-+	rcu_lock =3D is_kfunc_bpf_rcu_read_lock(&meta);
-+	rcu_unlock =3D is_kfunc_bpf_rcu_read_unlock(&meta);
-+	if (env->cur_state->active_rcu_lock) {
-+		struct bpf_func_state *state;
-+		struct bpf_reg_state *reg;
+diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
+sting/selftests/bpf/progs/rcu_read_lock.c
+new file mode 100644
+index 000000000000..add30d1becb1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
+@@ -0,0 +1,325 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
 +
-+		if (rcu_lock) {
-+			verbose(env, "nested rcu read lock (kernel function %s)\n", func_name=
-);
-+			return -EINVAL;
-+		} else if (rcu_unlock) {
-+			bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
-+				if (reg->type & MEM_RCU)
-+					__mark_reg_unknown(env, reg);
-+			}));
-+			env->cur_state->active_rcu_lock =3D false;
-+		} else if (sleepable) {
-+			verbose(env, "kernel func %s is sleepable within rcu_read_lock region=
-\n", func_name);
-+			return -EACCES;
-+		}
-+	} else if (rcu_lock) {
-+		env->cur_state->active_rcu_lock =3D true;
-+	} else if (rcu_unlock) {
-+		verbose(env, "unmatched rcu read unlock (kernel function %s)\n", func_=
-name);
-+		return -EINVAL;
-+	}
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_tracing_net.h"
++#include "bpf_misc.h"
 +
- 	/* Check the arguments */
- 	err =3D check_kfunc_args(env, &meta);
- 	if (err < 0)
-@@ -11749,6 +11855,11 @@ static int check_ld_abs(struct bpf_verifier_env =
-*env, struct bpf_insn *insn)
- 		return -EINVAL;
- 	}
-=20
-+	if (env->prog->aux->sleepable && env->cur_state->active_rcu_lock) {
-+		verbose(env, "BPF_LD_[ABS|IND] cannot be used inside bpf_rcu_read_lock=
--ed region\n");
-+		return -EINVAL;
-+	}
++char _license[] SEC("license") =3D "GPL";
 +
- 	if (regs[ctx_reg].type !=3D PTR_TO_CTX) {
- 		verbose(env,
- 			"at the time of BPF_LD_ABS|IND R6 !=3D pointer to skb\n");
-@@ -13014,6 +13125,9 @@ static bool states_equal(struct bpf_verifier_env =
-*env,
- 	    old->active_lock.id !=3D cur->active_lock.id)
- 		return false;
-=20
-+	if (old->active_rcu_lock !=3D cur->active_rcu_lock)
-+		return false;
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, long);
++} map_a SEC(".maps");
 +
- 	/* for states to be equal callsites have to be the same
- 	 * and all frame states need to be equivalent
- 	 */
-@@ -13427,6 +13541,11 @@ static bool reg_type_mismatch(enum bpf_reg_type =
-src, enum bpf_reg_type prev)
- 			       !reg_type_mismatch_ok(prev));
- }
-=20
-+static bool reg_type_mismatch_ignore_rcu(enum bpf_reg_type src, enum bpf=
-_reg_type prev)
++__u32 user_data, key_serial, target_pid =3D 0;
++__u64 flags, task_storage_val, cgroup_id;
++
++struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
++void bpf_key_put(struct bpf_key *key) __ksym;
++void bpf_rcu_read_lock(void) __ksym;
++void bpf_rcu_read_unlock(void) __ksym;
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int get_cgroup_id(void *ctx)
 +{
-+	return reg_type_mismatch(src & ~MEM_RCU, prev & ~MEM_RCU);
++	struct task_struct *task;
++
++	task =3D bpf_get_current_task_btf();
++	if (task->pid !=3D target_pid)
++		return 0;
++
++	/* simulate bpf_get_current_cgroup_id() helper */
++	bpf_rcu_read_lock();
++	cgroup_id =3D task->cgroups->dfl_cgrp->kn->id;
++	bpf_rcu_read_unlock();
++	return 0;
 +}
 +
- static int do_check(struct bpf_verifier_env *env)
- {
- 	bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
-@@ -13552,6 +13671,17 @@ static int do_check(struct bpf_verifier_env *env=
-)
-=20
- 			prev_src_type =3D &env->insn_aux_data[env->insn_idx].ptr_type;
-=20
-+			/* For code like below,
-+			 *   struct foo *f;
-+			 *   if (...)
-+			 *     f =3D ...; // f with MEM_RCU type tag.
-+			 *   else
-+			 *     f =3D ...; // f without MEM_RCU type tag.
-+			 *   ... f ...  // Here f could be with/without MEM_RCU
-+			 *
-+			 * It is safe to ignore MEM_RCU type tag here since
-+			 * base types are the same.
-+			 */
- 			if (*prev_src_type =3D=3D NOT_INIT) {
- 				/* saw a valid insn
- 				 * dst_reg =3D *(u32 *)(src_reg + off)
-@@ -13559,7 +13689,7 @@ static int do_check(struct bpf_verifier_env *env)
- 				 */
- 				*prev_src_type =3D src_reg_type;
-=20
--			} else if (reg_type_mismatch(src_reg_type, *prev_src_type)) {
-+			} else if (reg_type_mismatch_ignore_rcu(src_reg_type, *prev_src_type)=
-) {
- 				/* ABuser program is trying to use the same insn
- 				 * dst_reg =3D *(u32*) (src_reg + off)
- 				 * with different pointer types:
-@@ -13701,6 +13831,11 @@ static int do_check(struct bpf_verifier_env *env=
-)
- 					return -EINVAL;
- 				}
-=20
-+				if (env->cur_state->active_rcu_lock) {
-+					verbose(env, "bpf_rcu_read_unlock is missing\n");
-+					return -EINVAL;
-+				}
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int task_succ(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++	long init_val =3D 2;
++	long *ptr;
 +
- 				/* We must do check_reference_leak here before
- 				 * prepare_func_exit to handle the case when
- 				 * state->curframe > 0, it may be a callback
-@@ -14795,6 +14930,7 @@ static int convert_ctx_accesses(struct bpf_verifi=
-er_env *env)
- 			convert_ctx_access =3D bpf_xdp_sock_convert_ctx_access;
- 			break;
- 		case PTR_TO_BTF_ID:
-+		case PTR_TO_BTF_ID | MEM_RCU:
- 		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
- 		case PTR_TO_BTF_ID | PTR_TRUSTED:
- 		/* PTR_TO_BTF_ID | MEM_ALLOC always has a valid lifetime, unlike
-@@ -15489,14 +15625,12 @@ static int do_misc_fixups(struct bpf_verifier_e=
-nv *env)
- 			goto patch_call_imm;
- 		}
-=20
--		if (insn->imm =3D=3D BPF_FUNC_task_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_sk_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_inode_storage_get ||
--		    insn->imm =3D=3D BPF_FUNC_cgrp_storage_get) {
--			if (env->prog->aux->sleepable)
--				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
--			else
-+		if (is_storage_get_function(insn->imm)) {
-+			if (!env->prog->aux->sleepable ||
-+			    env->insn_aux_data[i + delta].storage_get_func_atomic)
- 				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
-+			else
-+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
- 			insn_buf[1] =3D *insn;
- 			cnt =3D 2;
-=20
++	task =3D bpf_get_current_task_btf();
++	if (task->pid !=3D target_pid)
++		return 0;
++
++	bpf_rcu_read_lock();
++	/* region including helper using rcu ptr real_parent */
++	real_parent =3D task->real_parent;
++	ptr =3D bpf_task_storage_get(&map_a, real_parent, &init_val,
++				   BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!ptr)
++		goto out;
++	ptr =3D bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	if (!ptr)
++		goto out;
++	task_storage_val =3D *ptr;
++out:
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
++int two_regions(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	/* two regions */
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_lock();
++	bpf_rcu_read_unlock();
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry/" SYS_PREFIX "sys_getpgid")
++int non_sleepable_1(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	task =3D bpf_get_current_task_btf();
++
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry/" SYS_PREFIX "sys_getpgid")
++int non_sleepable_2(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	bpf_rcu_read_lock();
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_unlock();
++
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?iter.s/ipv6_route")
++int dump_ipv6_route(struct bpf_iter__ipv6_route *ctx)
++{
++	struct seq_file *seq =3D ctx->meta->seq;
++	struct fib6_info *rt =3D ctx->rt;
++	const struct net_device *dev;
++	struct fib6_nh *fib6_nh;
++	unsigned int flags;
++	struct nexthop *nh;
++
++	if (rt =3D=3D (void *)0)
++		return 0;
++
++	/* fib6_nh is not a rcu ptr */
++	fib6_nh =3D &rt->fib6_nh[0];
++	flags =3D rt->fib6_flags;
++
++	nh =3D rt->nh;
++	bpf_rcu_read_lock();
++	if (rt->nh)
++		/* fib6_nh is a rcu ptr */
++		fib6_nh =3D &nh->nh_info->fib6_nh;
++
++	/* fib6_nh could be a rcu or non-rcu ptr */
++	if (fib6_nh->fib_nh_gw_family) {
++		flags |=3D RTF_GATEWAY;
++		BPF_SEQ_PRINTF(seq, "%pi6 ", &fib6_nh->fib_nh_gw6);
++	} else {
++		BPF_SEQ_PRINTF(seq, "00000000000000000000000000000000 ");
++	}
++
++	dev =3D fib6_nh->fib_nh_dev;
++	bpf_rcu_read_unlock();
++	if (dev)
++		BPF_SEQ_PRINTF(seq, "%08x %08x %08x %08x %8s\n", rt->fib6_metric,
++			       rt->fib6_ref.refs.counter, 0, flags, dev->name);
++	else
++		BPF_SEQ_PRINTF(seq, "%08x %08x %08x %08x\n", rt->fib6_metric,
++			       rt->fib6_ref.refs.counter, 0, flags);
++
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int miss_lock(void *ctx)
++{
++	struct task_struct *task;
++	struct css_set *cgroups;
++	struct cgroup *dfl_cgrp;
++
++	/* missing bpf_rcu_read_lock() */
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_lock();
++	(void)bpf_task_storage_get(&map_a, task, 0, 0);
++	bpf_rcu_read_unlock();
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int miss_unlock(void *ctx)
++{
++	struct task_struct *task;
++	struct css_set *cgroups;
++	struct cgroup *dfl_cgrp;
++
++	/* missing bpf_rcu_read_unlock() */
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_lock();
++	(void)bpf_task_storage_get(&map_a, task, 0, 0);
++	return 0;
++}
++
++SEC("?fentry/" SYS_PREFIX "sys_getpgid")
++int non_sleepable_rcu_mismatch(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	task =3D bpf_get_current_task_btf();
++
++	/* non-sleepable: missing bpf_rcu_read_unlock() in one path */
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	if (real_parent)
++		bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int inproper_sleepable_helper(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++	struct pt_regs *regs;
++	__u32 value =3D 0;
++	void *ptr;
++
++	task =3D bpf_get_current_task_btf();
++
++	/* sleepable helper in rcu read lock region */
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	regs =3D (struct pt_regs *)bpf_task_pt_regs(real_parent);
++	if (!regs) {
++		bpf_rcu_read_unlock();
++		return 0;
++	}
++
++	ptr =3D (void *)PT_REGS_IP(regs);
++	(void)bpf_copy_from_user_task(&value, sizeof(uint32_t), ptr, task, 0);
++	user_data =3D value;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?lsm.s/bpf")
++int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, un=
+signed int size)
++{
++	struct bpf_key *bkey;
++
++	/* sleepable kfunc in rcu read lock region */
++	bpf_rcu_read_lock();
++	bkey =3D bpf_lookup_user_key(key_serial, flags);
++	bpf_rcu_read_unlock();
++	if (!bkey)
++		return -1;
++	bpf_key_put(bkey);
++
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
++int nested_rcu_region(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	/* nested rcu read lock regions */
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_lock();
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int task_untrusted_ptr(void *ctx)
++{
++	struct task_struct *task, *last_wakee;
++
++	task =3D bpf_get_current_task_btf();
++
++	bpf_rcu_read_lock();
++	/* the pointer last_wakee marked as untrusted */
++	last_wakee =3D task->real_parent->last_wakee;
++	(void)bpf_task_storage_get(&map_a, last_wakee, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int task_incorrect_rcu_region1(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	task =3D bpf_get_current_task_btf();
++
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	bpf_rcu_read_unlock();
++	/* helper use of rcu ptr outside the rcu read lock region */
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int task_incorrect_rcu_region2(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	task =3D bpf_get_current_task_btf();
++
++	/* missing bpf_rcu_read_unlock() in one path */
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	if (real_parent)
++		bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
++int cross_rcu_region(void *ctx)
++{
++	struct task_struct *task, *real_parent;
++
++	/* rcu ptr define/use in different regions */
++	task =3D bpf_get_current_task_btf();
++	bpf_rcu_read_lock();
++	real_parent =3D task->real_parent;
++	bpf_rcu_read_unlock();
++	bpf_rcu_read_lock();
++	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
 --=20
 2.30.2
 
