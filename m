@@ -2,127 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85375631827
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 02:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB54631880
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 03:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbiKUB13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Nov 2022 20:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        id S229598AbiKUCHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Nov 2022 21:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbiKUB11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Nov 2022 20:27:27 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9C81A3B4;
-        Sun, 20 Nov 2022 17:27:11 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4NFqW06L00z4x1V;
-        Mon, 21 Nov 2022 12:27:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1668994029;
-        bh=HerYTWiDjrKgErD/W+bw3Gvh7wqbDTpztgWNxqrNuo4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G6VBGpLwCaGsdy/1h/JWjvRpjbJzHZqLzww+yjhQioE3bmnn2QW9dhY0YfdpnqpQw
-         XZaqDytpGawypuyV8sRl9BDyhnFaGZ3QFtBddeq7rvdHnNhtbBpzuEaZDULDcece3D
-         7dCzGH6lJpZm6XCoRxlAV3SuV3RHxpiln43mjlIKUwrzghsSH8z65LqqDMr6He3dLq
-         dP2sAyZnLb45uJ9TJsVGrAgpkfjdPGALG9kmLWWrgeZBhMtbAxKRWLSH7HBjyuI5c2
-         tm2fRBcjoxYcRd+r30DnCf/iudYQlIUkOH5iwfWpGoAEeZYF8hBgtNLVDrmNuVimZf
-         nIHAzsJESgW1w==
-Date:   Mon, 21 Nov 2022 12:27:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Hou Tao <houtao1@huawei.com>,
-        Kang Minchul <tegongkang@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
-Message-ID: <20221121122707.44d1446a@canb.auug.org.au>
+        with ESMTP id S229518AbiKUCHr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Nov 2022 21:07:47 -0500
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB83D18B10
+        for <bpf@vger.kernel.org>; Sun, 20 Nov 2022 18:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1668996461;
+        bh=ysg/xE0/jB77a1d48gs8ohec4NWgPszsHFjZvUt7cfc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Li1YsYqRmbsjWjv7Br5bcCvpD2QwrGqLJP6QaIt7pptSVgRkVe5RO767zQ4O/ifFA
+         r3BXmg6tMLFCMtFtEPCaDZWY8ZvQiY1OIiifd0IsdUVj8AntJe6hjYqpXzxKlSSIil
+         24nZ1MRi9f78zieo1IOV8DtztwqaLAGpmk+gpfZ0=
+Received: from rtoax.. ([111.199.191.46])
+        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
+        id 1E48CEB0; Mon, 21 Nov 2022 10:07:36 +0800
+X-QQ-mid: xmsmtpt1668996456ts4u9u6od
+Message-ID: <tencent_A24996F06584CAF86BC2A822E2A2C1BA1006@qq.com>
+X-QQ-XMAILINFO: M7uElAZZZMmF6Oo5VlGWjFJ8jVcfwmDl11vVfqT7M/4lcZM+EGoSmgCgmClyT4
+         VoJRMz5vn8lCzLVFWSHkhdsm61bAd1qCe7BIWIhnSAFxkx4YORGIWet+W6Xeh0+FRrl40ElL5WKh
+         y0RcASU2nli806o1fHQriEQS4GQTpg0x3TYAcKw8V1wrVXj1C8Ddk2YB0R63MEZwr9be2qJhu7Pd
+         zLaMFAetT5YvdtoZkEY4gEfQVCWzfPZ1wtYlQvJKaPiVD5287nrtdW8F1eRH8TQp2WksO8UnDD4W
+         Udac2bVksfRItmUeFw/OTRYYGWEQLpe05c/Kf/eaC7gMkU2h9NDia3LHngGZ0Z21XPGMyAqrIOv8
+         bSs19rv/SByNkjxkNJr3tFSPg/kxfGcKEYvXG6acLQ0G6aW1J7QMC/9aOcWyDi6pzjLSU8N+GeWm
+         1X/t+nKPrPnylX9VBE//Y6cF6hIu2Hn5Q5j2gmbBDex6JJPX+jUh1kbz/SauJl8nfh8W8SpjixE7
+         +ok4yyU62A6W07ZXKmAMBWmO7Q3UNyj1cyINnLTnWP4Tgd05NxOlUHmvzsNBboHLa9c7vIyIk2lj
+         StD9qDnBtoyphBXMg8TP/whuXC5Llnxz3s3C0zPsJ1tMF4B5Hw4A4QERN8+pdYiFlCWAN3fQ4VNH
+         YRrxJHu+qN9fU/f1wF6vUk6FN4AOb/kI6sz5KYh6yqp30Fv/L8/6tcT3JUsrcP662oXCml9FrktJ
+         JQAnPDsQ4vDvDV3hoD2KKgokLBk8/lwN8wz4yFKVwGAO+n9sb4wYVsHsTWF0HoBNR8ZbxP19QDOE
+         bXUDKnSXex46irQ3xp8/9zckuDVyvhzSkFMkwUk0z9b5+i/tI2iBhJ9M/qotc/4aW23q3z2R2XjI
+         RoNz7IO2ciGyrqAevSXmij6Vp+XzoiR10sK94vivyR1giOL1iJL4iImMs9Y2mrEJxqFI8VWVJojj
+         orC1kXi5LEexiYJIepOHiv5NSiJGoZBTOavItgDzO0PYS/pVM3VmZIAI0X3wiY
+From:   Rong Tao <rtoax@foxmail.com>
+To:     void@manifault.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        corbet@lwn.net, daniel@iogearbox.net, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next] docs/bpf: Update btf selftests program and add link
+Date:   Mon, 21 Nov 2022 10:07:34 +0800
+X-OQ-MSGID: <20221121020734.5246-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <Y3pj9FCI5SOEHZXz@maniforge.lan>
+References: <Y3pj9FCI5SOEHZXz@maniforge.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X6VBSmPQXqhsNkiUe4x65gI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/X6VBSmPQXqhsNkiUe4x65gI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Rong Tao <rongtao@cestc.cn>
 
-Hi all,
+commit c64779e24e88("selftests/bpf: Merge most of test_btf into
+test_progs") rename selftests/bpf btf test from 'test_btf.c' to
+'prog_tests/btf.c'.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ Documentation/bpf/btf.rst | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-  tools/lib/bpf/ringbuf.c
+diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+index cf8722f96090..dca0b0e9dd35 100644
+--- a/Documentation/bpf/btf.rst
++++ b/Documentation/bpf/btf.rst
+@@ -1062,4 +1062,9 @@ format.::
+ 7. Testing
+ ==========
+ 
+-Kernel bpf selftest `test_btf.c` provides extensive set of BTF-related tests.
++Kernel bpf selftest `tools/testing/selftests/bpf/prog_tests/btf.c`_ provides
++extensive set of BTF-related tests.
++
++.. Links
++.. _tools/testing/selftests/bpf/prog_tests/btf.c:
++   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/btf.c
+-- 
+2.38.1
 
-between commit:
-
-  927cbb478adf ("libbpf: Handle size overflow for ringbuf mmap")
-
-from the bpf tree and commit:
-
-  b486d19a0ab0 ("libbpf: checkpatch: Fixed code alignments in ringbuf.c")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/lib/bpf/ringbuf.c
-index 6af142953a94,51808c5f0014..000000000000
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@@ -128,13 -128,9 +128,13 @@@ int ring_buffer__add(struct ring_buffe
-  	/* Map read-only producer page and data pages. We map twice as big
-  	 * data size to allow simple reading of samples that wrap around the
-  	 * end of a ring buffer. See kernel implementation for details.
-- 	 * */
-+ 	 */
- -	tmp =3D mmap(NULL, rb->page_size + 2 * info.max_entries, PROT_READ,
- -		   MAP_SHARED, map_fd, rb->page_size);
- +	mmap_sz =3D rb->page_size + 2 * (__u64)info.max_entries;
- +	if (mmap_sz !=3D (__u64)(size_t)mmap_sz) {
- +		pr_warn("ringbuf: ring buffer size (%u) is too big\n", info.max_entries=
-);
- +		return libbpf_err(-E2BIG);
- +	}
- +	tmp =3D mmap(NULL, (size_t)mmap_sz, PROT_READ, MAP_SHARED, map_fd, rb->p=
-age_size);
-  	if (tmp =3D=3D MAP_FAILED) {
-  		err =3D -errno;
-  		ringbuf_unmap_ring(rb, r);
-
---Sig_/X6VBSmPQXqhsNkiUe4x65gI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmN60+sACgkQAVBC80lX
-0Gz1hQf/c0ZKzIjRRzagDvsnuBXW3BurfQsJXye+LzneX3vZheR7vIpmy1f7GKE4
-jwgZwTArbIGnktRzD6/KilY/WM1TJTrSLqO5NBLJygET7aIyBe5NlURIR1kTLKVD
-o3yGTEptzvmNh2q3fpfvb1MQAyLZ8QF0btXiFAFJ71RpH/OqvlaRzu636RsQySX4
-MhvQuFIalZ7vzSqC9fS89dwQJDVk63gUcVEetA+icGJnjp455zxotC7I/Xs20n0z
-z8cuMmBcy4o3cjoOw44IeBvjS1nJaJ/quN6iXoBFlcwRaM4V4sC1+MZ4kaK5pV+H
-6xV0W7ox3vaXgzEuBX84BCCpccmayw==
-=unmT
------END PGP SIGNATURE-----
-
---Sig_/X6VBSmPQXqhsNkiUe4x65gI--
