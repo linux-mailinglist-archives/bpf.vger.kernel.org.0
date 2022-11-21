@@ -2,356 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E46E632EC7
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 22:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4BA632ED8
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 22:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbiKUVZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 16:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S229991AbiKUVbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 16:31:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbiKUVZL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 16:25:11 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA40C72F6;
-        Mon, 21 Nov 2022 13:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1669065900; x=1700601900;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6X6bJA+LO8mXgNhUxY9CSUIxQwuQkqML7X9qDygf0eE=;
-  b=WDnQkhnSHCMkxApF7HjBpEv56PvXQO1I7uhjLTCRo5f5YGVuQPd7bvrS
-   V/P91nz/yb7OSi/KEMFglQ66h1a3ZTbm+2aRjiAl8bNQvxfCA27RWz9z4
-   TweAbfr72HTy2NmytFs2joafsvTmqp+L9YeVAYMBlAGNNylFdZ2bZsj74
-   X2nQJQRMJHVnI/05MuxoId4WXrllMDO4ORS64EQJhWTUhQ0Hja82+elIb
-   5X2qxO/nZ+zcAxoQtyuhH1xIvzRD/SpwBZ5AJD9/aclNQmG8uUBf7et2e
-   ZtmJT8ZesNaWDB/xrxOC+ZFROj6hIFNar330zu18Ux5la8WzQhFaD9+DC
-   A==;
-X-IronPort-AV: E=Sophos;i="5.96,182,1665471600"; 
-   d="scan'208";a="188029033"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Nov 2022 14:24:59 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Mon, 21 Nov 2022 14:24:52 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.12 via Frontend Transport; Mon, 21 Nov 2022 14:24:49 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <UNGLinuxDriver@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v3 7/7] net: lan966x: Add support for XDP_REDIRECT
-Date:   Mon, 21 Nov 2022 22:28:50 +0100
-Message-ID: <20221121212850.3212649-8-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
+        with ESMTP id S231148AbiKUVbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 16:31:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C576868B
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 13:31:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A403AB81626
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 21:31:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DDDC433C1;
+        Mon, 21 Nov 2022 21:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669066289;
+        bh=RqG9DaZR04IZ9HzzX4gcdWr+eedlrfE+FhyX28OY3JM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XgtUcyExZ0N0sh9BWnI+RO4CRBnieZHwbnR75hFVGZOhCBOHSf3Jd5XGSZJI1xxEP
+         LpLYwSL+JM3WvZ2WrJZADnH653xKE+VqRYN60A6EYjV1cbgEVokxN3qqsDD5nYeTLT
+         ABvOo9jjud/woKzAUoiZxqa5WboYEoNV4TuH35yMtQbL6dM2RHm3eUyFG8zj+oKrYS
+         2MYklxeZyoRnqII+HCpGz0uNbQ1Wj98RxaxR7lP0uiEudVp28eGfp7GYAnF2Vm2jBm
+         ngomPiMdoavs5enC//kn/LkLb8Q49EASTxh55dmlMMbtk2ilSzuSLIqsi0pJQoxccp
+         n6iz1GEUMETbQ==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some tracepoints
+Date:   Mon, 21 Nov 2022 22:31:23 +0100
+Message-Id: <20221121213123.1373229-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FUZZY_VPILL,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend lan966x XDP support with the action XDP_REDIRECT. This is similar
-with the XDP_TX, so a lot of functionality can be reused.
+We hit following issues [1] [2] when we attach bpf program that calls
+bpf_trace_printk helper to the contention_begin tracepoint.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+As described in [3] with multiple bpf programs that call bpf_trace_printk
+helper attached to the contention_begin might result in exhaustion of
+printk buffer or cause a deadlock [2].
+
+There's also another possible deadlock when multiple bpf programs attach
+to bpf_trace_printk tracepoint and call one of the printk bpf helpers.
+
+This change denies the attachment of bpf program to contention_begin
+and bpf_trace_printk tracepoints if the bpf program calls one of the
+printk bpf helpers.
+
+Adding also verifier check for tb_btf programs, so this can be cought
+in program loading time with error message like:
+
+  Can't attach program with bpf_trace_printk#6 helper to contention_begin tracepoint.
+
+[1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+[3] https://lore.kernel.org/bpf/Y2j6ivTwFmA0FtvY@krava/
+
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../ethernet/microchip/lan966x/lan966x_fdma.c | 83 +++++++++++++++----
- .../ethernet/microchip/lan966x/lan966x_main.c |  1 +
- .../ethernet/microchip/lan966x/lan966x_main.h | 10 ++-
- .../ethernet/microchip/lan966x/lan966x_xdp.c  | 31 ++++++-
- 4 files changed, 109 insertions(+), 16 deletions(-)
+ include/linux/bpf.h          |  1 +
+ include/linux/bpf_verifier.h |  2 ++
+ kernel/bpf/syscall.c         |  3 +++
+ kernel/bpf/verifier.c        | 46 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 52 insertions(+)
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-index b14fdb8e15e22..81dc27d8f8963 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index c9eafa67f2a2..3ccabede0f50 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1319,6 +1319,7 @@ struct bpf_prog {
+ 				enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
+ 				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
+ 				call_get_func_ip:1, /* Do we call get_func_ip() */
++				call_printk:1, /* Do we call trace_printk/trace_vprintk  */
+ 				tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
+ 	enum bpf_prog_type	type;		/* Type of BPF program */
+ 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 545152ac136c..7118c2fda59d 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -618,6 +618,8 @@ bool is_dynptr_type_expected(struct bpf_verifier_env *env,
+ 			     struct bpf_reg_state *reg,
+ 			     enum bpf_arg_type arg_type);
  
- #include <linux/bpf.h>
-+#include <linux/filter.h>
- 
- #include "lan966x_main.h"
- 
-@@ -391,11 +392,14 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- {
- 	struct lan966x_tx *tx = &lan966x->tx;
- 	struct lan966x_tx_dcb_buf *dcb_buf;
-+	struct xdp_frame_bulk bq;
- 	struct lan966x_db *db;
- 	unsigned long flags;
- 	bool clear = false;
- 	int i;
- 
-+	xdp_frame_bulk_init(&bq);
++int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog);
 +
- 	spin_lock_irqsave(&lan966x->tx_lock, flags);
- 	for (i = 0; i < FDMA_DCB_MAX; ++i) {
- 		dcb_buf = &tx->dcbs_buf[i];
-@@ -421,12 +425,24 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- 				dev_kfree_skb_any(dcb_buf->skb);
- 		}
- 
--		if (dcb_buf->xdpf)
--			xdp_return_frame_rx_napi(dcb_buf->xdpf);
-+		if (dcb_buf->xdpf) {
-+			if (dcb_buf->xdp_ndo)
-+				dma_unmap_single(lan966x->dev,
-+						 dcb_buf->dma_addr,
-+						 dcb_buf->len,
-+						 DMA_TO_DEVICE);
-+
-+			if (dcb_buf->xdp_ndo)
-+				xdp_return_frame_bulk(dcb_buf->xdpf, &bq);
-+			else
-+				xdp_return_frame_rx_napi(dcb_buf->xdpf);
-+		}
- 
- 		clear = true;
+ /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
+ static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
+ 					     struct btf *btf, u32 btf_id)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 35972afb6850..9a69bda7d62b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3329,6 +3329,9 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
+ 		return -EINVAL;
  	}
  
-+	xdp_flush_frame_bulk(&bq);
++	if (bpf_check_tp_printk_denylist(tp_name, prog))
++		return -EACCES;
 +
- 	if (clear)
- 		lan966x_fdma_wakeup_netdev(lan966x);
- 
-@@ -533,6 +549,7 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 	int dcb_reload = rx->dcb_index;
- 	struct lan966x_rx_dcb *old_dcb;
- 	struct lan966x_db *db;
-+	bool redirect = false;
- 	struct sk_buff *skb;
- 	struct page *page;
- 	int counter = 0;
-@@ -558,6 +575,10 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 		case FDMA_TX:
- 			lan966x_fdma_rx_advance_dcb(rx);
- 			continue;
-+		case FDMA_REDIRECT:
-+			lan966x_fdma_rx_advance_dcb(rx);
-+			redirect = true;
-+			continue;
- 		case FDMA_DROP:
- 			lan966x_fdma_rx_free_page(rx);
- 			lan966x_fdma_rx_advance_dcb(rx);
-@@ -594,6 +615,9 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
- 	if (counter < weight && napi_complete_done(napi, counter))
- 		lan_wr(0xff, lan966x, FDMA_INTR_DB_ENA);
- 
-+	if (redirect)
-+		xdp_do_flush();
-+
- 	return counter;
+ 	btp = bpf_get_raw_tracepoint(tp_name);
+ 	if (!btp)
+ 		return -ENOENT;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f07bec227fef..b662bc851e1c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7472,6 +7472,47 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
+ 				 state->callback_subprogno == subprogno);
  }
  
-@@ -681,7 +705,8 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
- 
- int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 			   struct xdp_frame *xdpf,
--			   struct page *page)
-+			   struct page *page,
-+			   bool dma_map)
- {
- 	struct lan966x *lan966x = port->lan966x;
- 	struct lan966x_tx_dcb_buf *next_dcb_buf;
-@@ -702,24 +727,53 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 	}
- 
- 	/* Generate new IFH */
--	ifh = page_address(page) + XDP_PACKET_HEADROOM;
--	memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
--	lan966x_ifh_set_bypass(ifh, 1);
--	lan966x_ifh_set_port(ifh, BIT_ULL(port->chip_port));
-+	if (dma_map) {
-+		if (xdpf->headroom < IFH_LEN_BYTES) {
-+			ret = NETDEV_TX_OK;
-+			goto out;
-+		}
- 
--	dma_addr = page_pool_get_dma_addr(page);
--	dma_sync_single_for_device(lan966x->dev, dma_addr + XDP_PACKET_HEADROOM,
--				   xdpf->len + IFH_LEN_BYTES,
--				   DMA_TO_DEVICE);
-+		ifh = xdpf->data - IFH_LEN_BYTES;
-+		memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
-+		lan966x_ifh_set_bypass(ifh, 1);
-+		lan966x_ifh_set_port(ifh, BIT_ULL(port->chip_port));
-+
-+		dma_addr = dma_map_single(lan966x->dev,
-+					  xdpf->data - IFH_LEN_BYTES,
-+					  xdpf->len + IFH_LEN_BYTES,
-+					  DMA_TO_DEVICE);
-+		if (dma_mapping_error(lan966x->dev, dma_addr)) {
-+			ret = NETDEV_TX_OK;
-+			goto out;
-+		}
- 
--	/* Setup next dcb */
--	lan966x_fdma_tx_setup_dcb(tx, next_to_use, xdpf->len + IFH_LEN_BYTES,
--				  dma_addr + XDP_PACKET_HEADROOM);
-+		/* Setup next dcb */
-+		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
-+					  xdpf->len + IFH_LEN_BYTES,
-+					  dma_addr);
-+	} else {
-+		ifh = page_address(page) + XDP_PACKET_HEADROOM;
-+		memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
-+		lan966x_ifh_set_bypass(ifh, 1);
-+		lan966x_ifh_set_port(ifh, BIT_ULL(port->chip_port));
-+
-+		dma_addr = page_pool_get_dma_addr(page);
-+		dma_sync_single_for_device(lan966x->dev,
-+					   dma_addr + XDP_PACKET_HEADROOM,
-+					   xdpf->len + IFH_LEN_BYTES,
-+					   DMA_TO_DEVICE);
-+
-+		/* Setup next dcb */
-+		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
-+					  xdpf->len + IFH_LEN_BYTES,
-+					  dma_addr + XDP_PACKET_HEADROOM);
-+	}
- 
- 	/* Fill up the buffer */
- 	next_dcb_buf = &tx->dcbs_buf[next_to_use];
- 	next_dcb_buf->skb = NULL;
- 	next_dcb_buf->xdpf = xdpf;
-+	next_dcb_buf->xdp_ndo = dma_map;
- 	next_dcb_buf->len = xdpf->len + IFH_LEN_BYTES;
- 	next_dcb_buf->dma_addr = dma_addr;
- 	next_dcb_buf->used = true;
-@@ -792,6 +846,7 @@ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev)
- 	next_dcb_buf = &tx->dcbs_buf[next_to_use];
- 	next_dcb_buf->skb = skb;
- 	next_dcb_buf->xdpf = NULL;
-+	next_dcb_buf->xdp_ndo = false;
- 	next_dcb_buf->len = skb->len;
- 	next_dcb_buf->dma_addr = dma_addr;
- 	next_dcb_buf->used = true;
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-index 0b7707306da26..0aed244826d39 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-@@ -469,6 +469,7 @@ static const struct net_device_ops lan966x_port_netdev_ops = {
- 	.ndo_eth_ioctl			= lan966x_port_ioctl,
- 	.ndo_setup_tc			= lan966x_tc_setup,
- 	.ndo_bpf			= lan966x_xdp,
-+	.ndo_xdp_xmit			= lan966x_xdp_xmit,
- };
- 
- bool lan966x_netdevice_check(const struct net_device *dev)
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index e303a12daf88a..ed4adeae553d3 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -106,12 +106,14 @@ enum macaccess_entry_type {
-  * FDMA_ERROR, something went wrong, stop getting more frames
-  * FDMA_DROP, frame is dropped, but continue to get more frames
-  * FDMA_TX, frame is given to TX, but continue to get more frames
-+ * FDMA_REDIRECT, frame is given to TX, but continue to get more frames
-  */
- enum lan966x_fdma_action {
- 	FDMA_PASS = 0,
- 	FDMA_ERROR,
- 	FDMA_DROP,
- 	FDMA_TX,
-+	FDMA_REDIRECT,
- };
- 
- struct lan966x_port;
-@@ -178,6 +180,7 @@ struct lan966x_tx_dcb_buf {
- 	struct net_device *dev;
- 	struct sk_buff *skb;
- 	struct xdp_frame *xdpf;
-+	bool xdp_ndo;
- 	int len;
- 	dma_addr_t dma_addr;
- 	bool used;
-@@ -467,7 +470,8 @@ int lan966x_ptp_gettime64(struct ptp_clock_info *ptp, struct timespec64 *ts);
- int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
- int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 			   struct xdp_frame *frame,
--			   struct page *page);
-+			   struct page *page,
-+			   bool dma_map);
- int lan966x_fdma_change_mtu(struct lan966x *lan966x);
- void lan966x_fdma_netdev_init(struct lan966x *lan966x, struct net_device *dev);
- void lan966x_fdma_netdev_deinit(struct lan966x *lan966x, struct net_device *dev);
-@@ -565,6 +569,10 @@ int lan966x_xdp(struct net_device *dev, struct netdev_bpf *xdp);
- int lan966x_xdp_run(struct lan966x_port *port,
- 		    struct page *page,
- 		    u32 data_len);
-+int lan966x_xdp_xmit(struct net_device *dev,
-+		     int n,
-+		     struct xdp_frame **frames,
-+		     u32 flags);
- bool lan966x_xdp_present(struct lan966x *lan966x);
- static inline bool lan966x_xdp_port_present(struct lan966x_port *port)
- {
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-index 5fd2f3b01e179..9f363316115ae 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-@@ -50,6 +50,30 @@ int lan966x_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- 	}
- }
- 
-+int lan966x_xdp_xmit(struct net_device *dev,
-+		     int n,
-+		     struct xdp_frame **frames,
-+		     u32 flags)
++int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog)
 +{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	int i, nxmit = 0;
++	static const char * const denylist[] = {
++		"contention_begin",
++		"bpf_trace_printk",
++	};
++	int i;
 +
-+	for (i = 0; i < n; ++i) {
-+		struct xdp_frame *xdpf = frames[i];
-+		int err;
++	/* Do not allow attachment to denylist[] tracepoints,
++	 * if the program calls some of the printk helpers,
++	 * because there's possibility of deadlock.
++	 */
++	if (!prog->call_printk)
++		return 0;
 +
-+		err = lan966x_fdma_xmit_xdpf(port, xdpf,
-+					     virt_to_head_page(xdpf->data),
-+					     true);
-+		if (err)
-+			break;
-+
-+		nxmit++;
++	for (i = 0; i < ARRAY_SIZE(denylist); i++) {
++		if (!strcmp(denylist[i], name))
++			return 1;
 +	}
-+
-+	return nxmit;
++	return 0;
 +}
 +
- int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- {
- 	struct bpf_prog *xdp_prog = port->xdp_prog;
-@@ -72,8 +96,13 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- 		if (!xdpf)
- 			return FDMA_DROP;
- 
--		return lan966x_fdma_xmit_xdpf(port, xdpf, page) ?
-+		return lan966x_fdma_xmit_xdpf(port, xdpf, page, false) ?
- 		       FDMA_DROP : FDMA_TX;
-+	case XDP_REDIRECT:
-+		if (xdp_do_redirect(port->dev, &xdp, xdp_prog))
-+			return FDMA_DROP;
++static int check_tp_printk_denylist(struct bpf_verifier_env *env, int func_id)
++{
++	struct bpf_prog *prog = env->prog;
 +
-+		return FDMA_REDIRECT;
- 	default:
- 		bpf_warn_invalid_xdp_action(port->dev, xdp_prog, act);
- 		fallthrough;
++	if (prog->type != BPF_PROG_TYPE_TRACING ||
++	    prog->expected_attach_type != BPF_TRACE_RAW_TP)
++		return 0;
++
++	if (WARN_ON_ONCE(!prog->aux->attach_func_name))
++		return -EINVAL;
++
++	if (!bpf_check_tp_printk_denylist(prog->aux->attach_func_name, prog))
++		return 0;
++
++	verbose(env, "Can't attach program with %s#%d helper to %s tracepoint.\n",
++		func_id_name(func_id), func_id, prog->aux->attach_func_name);
++	return -EACCES;
++}
++
+ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			     int *insn_idx_p)
+ {
+@@ -7675,6 +7716,11 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
+ 					set_user_ringbuf_callback_state);
+ 		break;
++	case BPF_FUNC_trace_printk:
++	case BPF_FUNC_trace_vprintk:
++		env->prog->call_printk = 1;
++		err = check_tp_printk_denylist(env, func_id);
++		break;
+ 	}
+ 
+ 	if (err)
 -- 
-2.38.0
+2.38.1
 
