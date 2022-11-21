@@ -2,102 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E744B63259B
-	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 15:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA026325E9
+	for <lists+bpf@lfdr.de>; Mon, 21 Nov 2022 15:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbiKUOXe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 09:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        id S230261AbiKUOdG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 09:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbiKUOXS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 09:23:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CFD14D3D
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 06:23:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74A06B81056
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 14:23:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D69C43155
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 14:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669040594;
-        bh=t75YIu+UPAu41yPDuzOhCo6W2uJLeqXvu5pM58UviwA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YzH3M4U40FihLZiXVb/AOeaQTFwQ0QZvTk8jwZ/IBI0hX4SuxomAYnUddYbJ/ziRk
-         L/OvXQK2O8geJ7Ax/Kb5HbbqKfAcNCy8RBvhMuOsYpMnVlcx3tmXVbK4beiZTBcosO
-         VjvGSWmfBpIqlXckGfiJfcy80F5Tb5FyAhvf61JYUuSsN9OIFsnh44FnY3+gAA0KeD
-         Jgsnem/ON4kcTlruRIl35ZvtvPLH5Nb320Cc7SmPJ7bpjhvbSbQB4h2cmioq71GMDx
-         oKQHrfpU6XT2Zu33L+nMuXzPmUMg5Pklq3/ClLCihySmZj8RapaEPiKFECjQMs9H9X
-         /aseua7z6aTKg==
-Received: by mail-lf1-f49.google.com with SMTP id d6so19049002lfs.10
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 06:23:13 -0800 (PST)
-X-Gm-Message-State: ANoB5pm6KgssSingJKbPqM0gPAByNhP9Sv3wJ93xTckXZDT+LICBMqIK
-        PlEW+HmkTp0VsAYyyz8EsAWo+y2q5F5qSgj0RvGcVA==
-X-Google-Smtp-Source: AA0mqf6BRE+r8TLVvNfPooaiywM831JQ6tLdkl/vISK9vwNLCanj9H8Q7lCcIDVpW0Mm2pTUkQFMOUaD03Ry+yYcHJA=
-X-Received: by 2002:a19:6755:0:b0:4ac:3f87:151f with SMTP id
- e21-20020a196755000000b004ac3f87151fmr6631422lfj.398.1669040591780; Mon, 21
- Nov 2022 06:23:11 -0800 (PST)
-MIME-Version: 1.0
-References: <CAADnVQ+BWpzqOV8dGCR=A3dR3u60CkBkqSXEQHe2kVqFzsgnHw@mail.gmail.com>
- <20221117121617.4e1529d3@gandalf.local.home> <d24cded7-87b1-89f5-fc2a-5346669f6d57@meta.com>
- <20221117174030.0170cd36@gandalf.local.home> <Y3e0KtnQrudxiZbz@FVFF77S0Q05N.cambridge.arm.com>
- <20221118114519.2711d890@gandalf.local.home> <43d5d1f5-c01d-c0db-b421-386331c2b8c1@meta.com>
- <20221118130608.5ba89bd8@gandalf.local.home> <2ab2b854-723a-5f15-8c18-0b5730d1b535@meta.com>
- <CACYkzJ613nhXViBpDuGWeEWzjfSJjbB1=KNpYtNDC6Xn7yizbw@mail.gmail.com> <Y3uIVknDWTS0bMTT@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y3uIVknDWTS0bMTT@hirez.programming.kicks-ass.net>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 21 Nov 2022 15:23:00 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7S_Oz5ExCS0bjreUfDVQ_CFHZPtOOVZ2_4s1v8RFa55w@mail.gmail.com>
-Message-ID: <CACYkzJ7S_Oz5ExCS0bjreUfDVQ_CFHZPtOOVZ2_4s1v8RFa55w@mail.gmail.com>
-Subject: Re: [RFC 0/1] BPF tracing for arm64 using fprobe
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chris Mason <clm@meta.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230457AbiKUOc4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 09:32:56 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E817A12093;
+        Mon, 21 Nov 2022 06:32:53 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id cl5so20144931wrb.9;
+        Mon, 21 Nov 2022 06:32:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMxdVkeJC7Qwe+UUVslk9eQ8uzs6tVkGa4HBt7gnyb4=;
+        b=ZOjpOzhQo2ic2GJnJkbCH5xkCL0Sdr8XTsqnc9P1S69AWNxuW8W32NyDAWWIeRCJ7r
+         /40w2NhsNbLANSx2XQepOwvXjNZkqof8uynIDVGTElF+zTlFpvMs9Hk1aCiZkw+//hnc
+         e/5tazEjfXiQ17cLxZ12U4YIZhleuHgBGpv+sAQgHLa+0kYgpc2Wzp1xuE4t1npC7iMx
+         anm/z7kT08j8Bo941QLRZ4D7MuaBPu4P26wEXsH9Pe7NOG+UWnKL+BuJnHRcwFvP2UEj
+         mH7bp5SsfQcTZUOEdur0iy25nwlBsbqbev+ykA5TnQeBaOC24DRo86K355Vs1+MKec0t
+         Odgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oMxdVkeJC7Qwe+UUVslk9eQ8uzs6tVkGa4HBt7gnyb4=;
+        b=w0Is6LSjGMW8c+z6IbwV+QA3VI7vtBPkUaMWwI7GTa6p6fcfgY+pBartOXYrtA55ar
+         m1vkufv5Qya8/yKj8M98f/scZW0OCfc6t4kYlA170ZnebU2xOSlZBV/pVf6JJM3MUJ1c
+         L5HsAjNc+XBBAHR8P+6NkgULZ+Kf2ZBAGtU4Hl1LAH55EPeKsqDiR9lRHj3gO2PvYC/V
+         IWB2eLdaMonmUKqX/myCRnFaKHxMciFtpH8xX+gVP6hUyt7c0t+8F8qNv869njgDGU36
+         4miQBAktfbdVzRQzrORjF0uSd5Y6mEFxhz91LTN8rItd9CqtSJLg/dmut3pKhsVy941o
+         T/NQ==
+X-Gm-Message-State: ANoB5pnDldJtSih/o0WtAIOBXWweJJsmjvwOAreAHFpQQXNJNxb0RQDd
+        F7lm3YLqi7enZt/L1UAxUWU=
+X-Google-Smtp-Source: AA0mqf76+QGXGrfSvNDhsW0eKQIaujeQqyDpknKfxZrImyFR+63eC+B87mOQlqZFTqTF/e12bEN8ow==
+X-Received: by 2002:a5d:6a08:0:b0:241:da26:bddf with SMTP id m8-20020a5d6a08000000b00241da26bddfmr2160381wru.591.1669041172361;
+        Mon, 21 Nov 2022 06:32:52 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id z11-20020a05600c0a0b00b003c6f1732f65sm20663146wmp.38.2022.11.21.06.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Nov 2022 06:32:51 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 21 Nov 2022 15:32:49 +0100
+To:     Chen Hu <hu1.chen@intel.com>
+Cc:     jpoimboe@kernel.org, memxor@gmail.com, bpf@vger.kernel.org,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>, markowsky@google.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH bpf] selftests/bpf: Fix "missing ENDBR" BUG for
+ destructor kfunc
+Message-ID: <Y3uMEdvKVl7nSrgD@krava>
+References: <20221121085113.611504-1-hu1.chen@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221121085113.611504-1-hu1.chen@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 3:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Nov 21, 2022 at 02:47:10PM +0100, KP Singh wrote:
->
-> > > > How do I know that a function return was modified by BPF? If I'm debugging
-> >
-> > You can list the BPF programs that are loaded in the kernel with
-> >
-> > # bpftool prog list
->
-> Only when you have access to the machine; most cases it's people sending
-> random splats by email.
+On Mon, Nov 21, 2022 at 12:51:13AM -0800, Chen Hu wrote:
+> With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
+> following BUG:
+> 
+>   traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
+>   ------------[ cut here ]------------
+>   kernel BUG at arch/x86/kernel/traps.c:254!
+>   invalid opcode: 0000 [#1] PREEMPT SMP
+>   <TASK>
+>    asm_exc_control_protection+0x26/0x50
+>   RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
+>   Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
+> 	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
+>        <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
+>    bpf_map_free_kptrs+0x2e/0x70
+>    array_map_free+0x57/0x140
+>    process_one_work+0x194/0x3a0
+>    worker_thread+0x54/0x3a0
+>    ? rescuer_thread+0x390/0x390
+>    kthread+0xe9/0x110
+>    ? kthread_complete_and_exit+0x20/0x20
+> 
+> This is because there are no compile-time references to the destructor
+> kfuncs, bpf_kfunc_call_test_release() for example. So objtool marked
+> them sealable and ENDBR in the functions were sealed (converted to NOP)
+> by apply_ibt_endbr().
 
-Good point, What about having information about loaded BPF programs in the
-kernel stack traces and sharing bytecode, somehow, like in crash dumps?
+nice :) thanks for the fix, some suggestions below
 
->
-> > Also, the BPF programs show up in call stacks when you are debugging.
->
-> Only when it splats inside the BPF part, not when it splats after
-> because BPF changed semantics of a function.
->
->
+> 
+> This fix creates dummy compile-time references to destructor kfuncs so
+> ENDBR stay there.
+> 
+> Signed-off-by: Chen Hu <hu1.chen@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>  include/linux/btf_ids.h | 7 +++++++
+>  net/bpf/test_run.c      | 2 ++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 2aea877d644f..6c6b520ea58f 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -266,4 +266,11 @@ MAX_BTF_TRACING_TYPE,
+>  
+>  extern u32 btf_tracing_ids[];
+>  
+> +#if defined(CONFIG_X86_KERNEL_IBT) && !defined(__DISABLE_EXPORTS)
+> +#define BTF_IBT_NOSEAL(name)					\
+> +	asm(IBT_NOSEAL(#name));
+> +#else
+> +#define BTF_IBT_NOSEAL(name)
+> +#endif /* CONFIG_X86_KERNEL_IBT */
+
+this is not BTF or BTF ID specific, instead should we add some generic macro like:
+
+  FUNC_IBT_NOSEAL(...)
+
+> +
+>  #endif
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 13d578ce2a09..465952e5de11 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -1653,6 +1653,8 @@ BTF_ID(struct, prog_test_ref_kfunc)
+>  BTF_ID(func, bpf_kfunc_call_test_release)
+>  BTF_ID(struct, prog_test_member)
+>  BTF_ID(func, bpf_kfunc_call_memb_release)
+> +BTF_IBT_NOSEAL(bpf_kfunc_call_test_release)
+> +BTF_IBT_NOSEAL(bpf_kfunc_call_memb_release)
+
+same here, it looks like it's part of the list above, I think this would be better
+after function body like:
+
+  noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+  {
+  }
+  FUNC_IBT_NOSEAL(bpf_kfunc_call_memb_release)
+
+
+thanks,
+jirka
