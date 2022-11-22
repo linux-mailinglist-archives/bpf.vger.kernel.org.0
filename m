@@ -2,232 +2,444 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95272633433
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 04:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E2633449
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 05:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbiKVDuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 22:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        id S231318AbiKVEBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 23:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbiKVDup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 22:50:45 -0500
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3332B187;
-        Mon, 21 Nov 2022 19:50:44 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VVQOr8T_1669089041;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VVQOr8T_1669089041)
-          by smtp.aliyun-inc.com;
-          Tue, 22 Nov 2022 11:50:41 +0800
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        John Fastabend <john.fastabend@gmail.com>, toke@kernel.org
-Subject: [PATCH 2/2] Revert "veth: Avoid drop packets when xdp_redirect performs"
-Date:   Tue, 22 Nov 2022 11:50:15 +0800
-Message-Id: <20221122035015.19296-3-hengqi@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20221122035015.19296-1-hengqi@linux.alibaba.com>
-References: <20221122035015.19296-1-hengqi@linux.alibaba.com>
+        with ESMTP id S229553AbiKVEB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 23:01:28 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA302317C;
+        Mon, 21 Nov 2022 20:01:26 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NGVt01Q5FzRpGg;
+        Tue, 22 Nov 2022 12:00:56 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 12:01:23 +0800
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <20221121100521.56601-1-xiangxia.m.yue@gmail.com>
+ <20221121100521.56601-2-xiangxia.m.yue@gmail.com>
+ <7ed2f531-79a3-61fe-f1c2-b004b752c3f7@huawei.com>
+ <CAMDZJNUiPOcnpNg8tM4xCoJABJz_3=AaXLTm5ofQg64mGDkB_A@mail.gmail.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <9278cf3f-dfb6-78eb-8862-553545dac7ed@huawei.com>
+Date:   Tue, 22 Nov 2022 12:01:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAMDZJNUiPOcnpNg8tM4xCoJABJz_3=AaXLTm5ofQg64mGDkB_A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This reverts commit 2e0de6366ac16ab4d0abb2aaddbc8a1eba216d11.
+Hi,
 
-Based on the issues reported by John and Paolo and their comments,
-this patch and the corresponding fix 5e5dc33d5da are reverted, and
-we'll remake it.
+On 11/22/2022 11:12 AM, Tonghao Zhang wrote:
+> .
+>
+> On Tue, Nov 22, 2022 at 9:16 AM Hou Tao <houtao1@huawei.com> wrote:
+>> Hi,
+>>
+>> On 11/21/2022 6:05 PM, xiangxia.m.yue@gmail.com wrote:
+>>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+>>>
+>>> The commit 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked"),
+>>> try to fix deadlock, but in some case, the deadlock occurs:
+>>>
+>>> * CPUn in task context with K1, and taking lock.
+>>> * CPUn interrupted by NMI context, with K2.
+>>> * They are using the same bucket, but different map_locked.
+>> It is possible when n_buckets is less than HASHTAB_MAP_LOCK_COUNT (e.g.,
+>> n_bucket=4). If using hash & min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1) as the
+>> index of map_locked, I think the deadlock will be gone.
+> Yes, but for saving memory, HASHTAB_MAP_LOCK_MASK should not be too
+> large(now this value is 8-1).
+> if user define n_bucket ,e.g 8192, the part of bucket only are
+> selected via hash & min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1).
+SNIP
+>
+>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>>> index 22855d6ff6d3..429acd97c869 100644
+>>> --- a/kernel/bpf/hashtab.c
+>>> +++ b/kernel/bpf/hashtab.c
+>>> @@ -80,9 +80,6 @@ struct bucket {
+>>>       raw_spinlock_t raw_lock;
+>>>  };
+>>>
+>>> -#define HASHTAB_MAP_LOCK_COUNT 8
+>>> -#define HASHTAB_MAP_LOCK_MASK (HASHTAB_MAP_LOCK_COUNT - 1)
+>>> -
+>>>  struct bpf_htab {
+>>>       struct bpf_map map;
+>>>       struct bpf_mem_alloc ma;
+>>> @@ -104,7 +101,6 @@ struct bpf_htab {
+>>>       u32 elem_size;  /* size of each element in bytes */
+>>>       u32 hashrnd;
+>>>       struct lock_class_key lockdep_key;
+>>> -     int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+>>>  };
+>>>
+>>>  /* each htab element is struct htab_elem + key + value */
+>>> @@ -146,35 +142,26 @@ static void htab_init_buckets(struct bpf_htab *htab)
+>>>       }
+>>>  }
+>>>
+>>> -static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>>> -                                struct bucket *b, u32 hash,
+>>> +static inline int htab_lock_bucket(struct bucket *b,
+>>>                                  unsigned long *pflags)
+>>>  {
+>>>       unsigned long flags;
+>>>
+>>> -     hash = hash & HASHTAB_MAP_LOCK_MASK;
+>>> -
+>>> -     preempt_disable();
+>>> -     if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+>>> -             __this_cpu_dec(*(htab->map_locked[hash]));
+>>> -             preempt_enable();
+>>> -             return -EBUSY;
+>>> +     if (in_nmi()) {
+>>> +             if (!raw_spin_trylock_irqsave(&b->raw_lock, flags))
+>>> +                     return -EBUSY;
+>>> +     } else {
+>>> +             raw_spin_lock_irqsave(&b->raw_lock, flags);
+>>>       }
+>>>
+>>> -     raw_spin_lock_irqsave(&b->raw_lock, flags);
+>>>       *pflags = flags;
+>>> -
+>>>       return 0;
+>>>  }
+>> map_locked is also used to prevent the re-entrance of htab_lock_bucket() on the
+>> same CPU, so only check in_nmi() is not enough.
+> NMI, IRQ, and preempt may interrupt the task context.
+> In htab_lock_bucket, raw_spin_lock_irqsave disable the preempt and
+> irq. so only NMI may interrupt the codes, right ?
+The re-entrance here means the nesting of bpf programs as show below:
 
-Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/veth.c | 88 +++++++---------------------------------------
- 1 file changed, 12 insertions(+), 76 deletions(-)
+bpf_prog A
+update map X
+    htab_lock_bucket
+        raw_spin_lock_irqsave()
+    lookup_elem_raw()
+        // bpf prog B is attached on lookup_elem_raw()
+        bpf prog B
+            update map X again and update the element
+                htab_lock_bucket()
+                    // dead-lock
+                    raw_spinlock_irqsave()
+.
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index b1ed5a93b6c5..ac7c0653695f 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1119,14 +1119,10 @@ static void veth_disable_xdp_range(struct net_device *dev, int start, int end,
- 
- static int veth_enable_xdp(struct net_device *dev)
- {
-+	bool napi_already_on = veth_gro_requested(dev) && (dev->flags & IFF_UP);
- 	struct veth_priv *priv = netdev_priv(dev);
--	bool napi_already_on;
--	struct veth_rq *rq;
- 	int err, i;
- 
--	rq = &priv->rq[0];
--	napi_already_on = (dev->flags & IFF_UP) && rcu_access_pointer(rq->napi);
--
- 	if (!xdp_rxq_info_is_reg(&priv->rq[0].xdp_rxq)) {
- 		err = veth_enable_xdp_range(dev, 0, dev->real_num_rx_queues, napi_already_on);
- 		if (err)
-@@ -1327,28 +1323,18 @@ static int veth_set_channels(struct net_device *dev,
- 
- static int veth_open(struct net_device *dev)
- {
--	struct veth_priv *peer_priv, *priv = netdev_priv(dev);
-+	struct veth_priv *priv = netdev_priv(dev);
- 	struct net_device *peer = rtnl_dereference(priv->peer);
--	struct veth_rq *peer_rq;
- 	int err;
- 
- 	if (!peer)
- 		return -ENOTCONN;
- 
--	peer_priv = netdev_priv(peer);
--	peer_rq = &peer_priv->rq[0];
--
- 	if (priv->_xdp_prog) {
- 		err = veth_enable_xdp(dev);
- 		if (err)
- 			return err;
--		/* refer to the logic in veth_xdp_set() */
--		if (!rtnl_dereference(peer_rq->napi)) {
--			err = veth_napi_enable(peer);
--			if (err)
--				return err;
--		}
--	} else if (veth_gro_requested(dev) || peer_priv->_xdp_prog) {
-+	} else if (veth_gro_requested(dev)) {
- 		err = veth_napi_enable(dev);
- 		if (err)
- 			return err;
-@@ -1364,29 +1350,17 @@ static int veth_open(struct net_device *dev)
- 
- static int veth_close(struct net_device *dev)
- {
--	struct veth_priv *peer_priv, *priv = netdev_priv(dev);
-+	struct veth_priv *priv = netdev_priv(dev);
- 	struct net_device *peer = rtnl_dereference(priv->peer);
--	struct veth_rq *peer_rq;
- 
- 	netif_carrier_off(dev);
--	if (peer) {
--		peer_priv = netdev_priv(peer);
--		peer_rq = &peer_priv->rq[0];
--	}
-+	if (peer)
-+		netif_carrier_off(peer);
- 
--	if (priv->_xdp_prog) {
-+	if (priv->_xdp_prog)
- 		veth_disable_xdp(dev);
--		/* refer to the logic in veth_xdp_set */
--		if (peer && rtnl_dereference(peer_rq->napi)) {
--			if (!veth_gro_requested(peer) && !peer_priv->_xdp_prog)
--				veth_napi_del(peer);
--		}
--	} else if (veth_gro_requested(dev) || (peer && peer_priv->_xdp_prog)) {
-+	else if (veth_gro_requested(dev))
- 		veth_napi_del(dev);
--	}
--
--	if (peer)
--		netif_carrier_off(peer);
- 
- 	return 0;
- }
-@@ -1496,21 +1470,17 @@ static int veth_set_features(struct net_device *dev,
- {
- 	netdev_features_t changed = features ^ dev->features;
- 	struct veth_priv *priv = netdev_priv(dev);
--	struct veth_rq *rq = &priv->rq[0];
- 	int err;
- 
- 	if (!(changed & NETIF_F_GRO) || !(dev->flags & IFF_UP) || priv->_xdp_prog)
- 		return 0;
- 
- 	if (features & NETIF_F_GRO) {
--		if (!rtnl_dereference(rq->napi)) {
--			err = veth_napi_enable(dev);
--			if (err)
--				return err;
--		}
-+		err = veth_napi_enable(dev);
-+		if (err)
-+			return err;
- 	} else {
--		if (rtnl_dereference(rq->napi))
--			veth_napi_del(dev);
-+		veth_napi_del(dev);
- 	}
- 	return 0;
- }
-@@ -1542,19 +1512,14 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			struct netlink_ext_ack *extack)
- {
- 	struct veth_priv *priv = netdev_priv(dev);
--	struct veth_priv *peer_priv;
- 	struct bpf_prog *old_prog;
--	struct veth_rq *peer_rq;
- 	struct net_device *peer;
--	bool napi_already_off;
- 	unsigned int max_mtu;
--	bool noreq_napi;
- 	int err;
- 
- 	old_prog = priv->_xdp_prog;
- 	priv->_xdp_prog = prog;
- 	peer = rtnl_dereference(priv->peer);
--	peer_priv = netdev_priv(peer);
- 
- 	if (prog) {
- 		if (!peer) {
-@@ -1591,24 +1556,6 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			}
- 		}
- 
--		if (peer && (peer->flags & IFF_UP)) {
--			peer_rq = &peer_priv->rq[0];
--
--			/* If the peer hasn't enabled GRO and loaded xdp,
--			 * then we enable napi automatically if its napi
--			 * is not ready.
--			 */
--			napi_already_off = !rtnl_dereference(peer_rq->napi);
--			if (napi_already_off) {
--				err = veth_napi_enable(peer);
--				if (err) {
--					NL_SET_ERR_MSG_MOD(extack,
--							   "Failed to automatically enable napi of peer");
--					goto err;
--				}
--			}
--		}
--
- 		if (!old_prog) {
- 			peer->hw_features &= ~NETIF_F_GSO_SOFTWARE;
- 			peer->max_mtu = max_mtu;
-@@ -1623,17 +1570,6 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			if (peer) {
- 				peer->hw_features |= NETIF_F_GSO_SOFTWARE;
- 				peer->max_mtu = ETH_MAX_MTU;
--				peer_rq = &peer_priv->rq[0];
--
--				/* If the peer doesn't has its xdp and enabled
--				 * GRO, then we disable napi if its napi is ready;
--				 */
--				if (rtnl_dereference(peer_rq->napi)) {
--					noreq_napi = !veth_gro_requested(peer) &&
--						     !peer_priv->_xdp_prog;
--					if (noreq_napi && (peer->flags & IFF_UP))
--						veth_napi_del(peer);
--				}
- 			}
- 		}
- 		bpf_prog_put(old_prog);
--- 
-2.19.1.6.gb485710b
+>>> -static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>>> -                                   struct bucket *b, u32 hash,
+>>> +static inline void htab_unlock_bucket(struct bucket *b,
+>>>                                     unsigned long flags)
+>>>  {
+>>> -     hash = hash & HASHTAB_MAP_LOCK_MASK;
+>>>       raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+>>> -     __this_cpu_dec(*(htab->map_locked[hash]));
+>>> -     preempt_enable();
+>>>  }
+>>>
+>>>  static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
+>>> @@ -467,7 +454,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>>>       bool percpu_lru = (attr->map_flags & BPF_F_NO_COMMON_LRU);
+>>>       bool prealloc = !(attr->map_flags & BPF_F_NO_PREALLOC);
+>>>       struct bpf_htab *htab;
+>>> -     int err, i;
+>>> +     int err;
+>>>
+>>>       htab = bpf_map_area_alloc(sizeof(*htab), NUMA_NO_NODE);
+>>>       if (!htab)
+>>> @@ -513,15 +500,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>>>       if (!htab->buckets)
+>>>               goto free_htab;
+>>>
+>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++) {
+>>> -             htab->map_locked[i] = bpf_map_alloc_percpu(&htab->map,
+>>> -                                                        sizeof(int),
+>>> -                                                        sizeof(int),
+>>> -                                                        GFP_USER);
+>>> -             if (!htab->map_locked[i])
+>>> -                     goto free_map_locked;
+>>> -     }
+>>> -
+>>>       if (htab->map.map_flags & BPF_F_ZERO_SEED)
+>>>               htab->hashrnd = 0;
+>>>       else
+>>> @@ -549,13 +527,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>>>       if (htab->use_percpu_counter) {
+>>>               err = percpu_counter_init(&htab->pcount, 0, GFP_KERNEL);
+>>>               if (err)
+>>> -                     goto free_map_locked;
+>>> +                     goto free_buckets;
+>>>       }
+>>>
+>>>       if (prealloc) {
+>>>               err = prealloc_init(htab);
+>>>               if (err)
+>>> -                     goto free_map_locked;
+>>> +                     goto free_buckets;
+>>>
+>>>               if (!percpu && !lru) {
+>>>                       /* lru itself can remove the least used element, so
+>>> @@ -568,12 +546,12 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>>>       } else {
+>>>               err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
+>>>               if (err)
+>>> -                     goto free_map_locked;
+>>> +                     goto free_buckets;
+>>>               if (percpu) {
+>>>                       err = bpf_mem_alloc_init(&htab->pcpu_ma,
+>>>                                                round_up(htab->map.value_size, 8), true);
+>>>                       if (err)
+>>> -                             goto free_map_locked;
+>>> +                             goto free_buckets;
+>>>               }
+>>>       }
+>>>
+>>> @@ -581,11 +559,10 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>>>
+>>>  free_prealloc:
+>>>       prealloc_destroy(htab);
+>>> -free_map_locked:
+>>> +free_buckets:
+>>>       if (htab->use_percpu_counter)
+>>>               percpu_counter_destroy(&htab->pcount);
+>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
+>>> -             free_percpu(htab->map_locked[i]);
+>>> +
+>>>       bpf_map_area_free(htab->buckets);
+>>>       bpf_mem_alloc_destroy(&htab->pcpu_ma);
+>>>       bpf_mem_alloc_destroy(&htab->ma);
+>>> @@ -782,7 +759,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+>>>       b = __select_bucket(htab, tgt_l->hash);
+>>>       head = &b->head;
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, tgt_l->hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return false;
+>>>
+>>> @@ -793,7 +770,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+>>>                       break;
+>>>               }
+>>>
+>>> -     htab_unlock_bucket(htab, b, tgt_l->hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>
+>>>       return l == tgt_l;
+>>>  }
+>>> @@ -1107,7 +1084,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>>>                */
+>>>       }
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1152,7 +1129,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>>>       }
+>>>       ret = 0;
+>>>  err:
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       return ret;
+>>>  }
+>>>
+>>> @@ -1198,7 +1175,7 @@ static int htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value,
+>>>       copy_map_value(&htab->map,
+>>>                      l_new->key + round_up(map->key_size, 8), value);
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1219,7 +1196,7 @@ static int htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value,
+>>>       ret = 0;
+>>>
+>>>  err:
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>
+>>>       if (ret)
+>>>               htab_lru_push_free(htab, l_new);
+>>> @@ -1255,7 +1232,7 @@ static int __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+>>>       b = __select_bucket(htab, hash);
+>>>       head = &b->head;
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1280,7 +1257,7 @@ static int __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+>>>       }
+>>>       ret = 0;
+>>>  err:
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       return ret;
+>>>  }
+>>>
+>>> @@ -1321,7 +1298,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+>>>                       return -ENOMEM;
+>>>       }
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1345,7 +1322,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+>>>       }
+>>>       ret = 0;
+>>>  err:
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       if (l_new)
+>>>               bpf_lru_push_free(&htab->lru, &l_new->lru_node);
+>>>       return ret;
+>>> @@ -1384,7 +1361,7 @@ static int htab_map_delete_elem(struct bpf_map *map, void *key)
+>>>       b = __select_bucket(htab, hash);
+>>>       head = &b->head;
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1397,7 +1374,7 @@ static int htab_map_delete_elem(struct bpf_map *map, void *key)
+>>>               ret = -ENOENT;
+>>>       }
+>>>
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       return ret;
+>>>  }
+>>>
+>>> @@ -1420,7 +1397,7 @@ static int htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+>>>       b = __select_bucket(htab, hash);
+>>>       head = &b->head;
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +     ret = htab_lock_bucket(b, &flags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1431,7 +1408,7 @@ static int htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+>>>       else
+>>>               ret = -ENOENT;
+>>>
+>>> -     htab_unlock_bucket(htab, b, hash, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       if (l)
+>>>               htab_lru_push_free(htab, l);
+>>>       return ret;
+>>> @@ -1494,7 +1471,6 @@ static void htab_map_free_timers(struct bpf_map *map)
+>>>  static void htab_map_free(struct bpf_map *map)
+>>>  {
+>>>       struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+>>> -     int i;
+>>>
+>>>       /* bpf_free_used_maps() or close(map_fd) will trigger this map_free callback.
+>>>        * bpf_free_used_maps() is called after bpf prog is no longer executing.
+>>> @@ -1517,10 +1493,10 @@ static void htab_map_free(struct bpf_map *map)
+>>>       bpf_map_area_free(htab->buckets);
+>>>       bpf_mem_alloc_destroy(&htab->pcpu_ma);
+>>>       bpf_mem_alloc_destroy(&htab->ma);
+>>> +
+>>>       if (htab->use_percpu_counter)
+>>>               percpu_counter_destroy(&htab->pcount);
+>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
+>>> -             free_percpu(htab->map_locked[i]);
+>>> +
+>>>       lockdep_unregister_key(&htab->lockdep_key);
+>>>       bpf_map_area_free(htab);
+>>>  }
+>>> @@ -1564,7 +1540,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+>>>       b = __select_bucket(htab, hash);
+>>>       head = &b->head;
+>>>
+>>> -     ret = htab_lock_bucket(htab, b, hash, &bflags);
+>>> +     ret = htab_lock_bucket(b, &bflags);
+>>>       if (ret)
+>>>               return ret;
+>>>
+>>> @@ -1602,7 +1578,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+>>>                       free_htab_elem(htab, l);
+>>>       }
+>>>
+>>> -     htab_unlock_bucket(htab, b, hash, bflags);
+>>> +     htab_unlock_bucket(b, bflags);
+>>>
+>>>       if (is_lru_map && l)
+>>>               htab_lru_push_free(htab, l);
+>>> @@ -1720,7 +1696,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>>>       head = &b->head;
+>>>       /* do not grab the lock unless need it (bucket_cnt > 0). */
+>>>       if (locked) {
+>>> -             ret = htab_lock_bucket(htab, b, batch, &flags);
+>>> +             ret = htab_lock_bucket(b, &flags);
+>>>               if (ret) {
+>>>                       rcu_read_unlock();
+>>>                       bpf_enable_instrumentation();
+>>> @@ -1743,7 +1719,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>>>               /* Note that since bucket_cnt > 0 here, it is implicit
+>>>                * that the locked was grabbed, so release it.
+>>>                */
+>>> -             htab_unlock_bucket(htab, b, batch, flags);
+>>> +             htab_unlock_bucket(b, flags);
+>>>               rcu_read_unlock();
+>>>               bpf_enable_instrumentation();
+>>>               goto after_loop;
+>>> @@ -1754,7 +1730,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>>>               /* Note that since bucket_cnt > 0 here, it is implicit
+>>>                * that the locked was grabbed, so release it.
+>>>                */
+>>> -             htab_unlock_bucket(htab, b, batch, flags);
+>>> +             htab_unlock_bucket(b, flags);
+>>>               rcu_read_unlock();
+>>>               bpf_enable_instrumentation();
+>>>               kvfree(keys);
+>>> @@ -1815,7 +1791,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>>>               dst_val += value_size;
+>>>       }
+>>>
+>>> -     htab_unlock_bucket(htab, b, batch, flags);
+>>> +     htab_unlock_bucket(b, flags);
+>>>       locked = false;
+>>>
+>>>       while (node_to_free) {
+>
 
