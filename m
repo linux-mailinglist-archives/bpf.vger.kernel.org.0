@@ -2,69 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9EC63491F
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0C63490D
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbiKVVXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 16:23:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
+        id S234936AbiKVVSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 16:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbiKVVXW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 16:23:22 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59C523BE9
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 13:23:21 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id c7so11881814iof.13
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 13:23:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=io661+dNfxoEO20qUW/6J+6nYl2fudHXUp0XJ6CzRak=;
-        b=rcn5Ssf6R9mCT4CzmKOXenY+pbjaS92fqt2NvtqqkmlAadHSvRkAMAYdSrfUfIwK5/
-         vvFdgrWUY/TpsHqBTVKNHJgbrtVOqGVhEsrW202OSXK0WzyfFil/cA7+XwW7MO5F57CP
-         b0SopjqTUfk16jHO7iUpcUOyy5+k3AFma6MGzbjbNuJ7UJ1/UrQpi6dO/J2dHCrLOr+V
-         cOA1GbZ+WjVAMBeKONYIaL1nzqGJ+HFoGjlixnLpeo05BVGBnfI8tTzIWCugDwDv+xWW
-         gCM/OeN4tP0JUbqUwD7K7yBbDnrOu5Kt7ZhHoT3JtRZcx92Clbcnamf6wgiC8DaGMlnE
-         rHKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=io661+dNfxoEO20qUW/6J+6nYl2fudHXUp0XJ6CzRak=;
-        b=NW4Jdjs1RByM+6UD8clivBND/slT/RWeR/eiaswxuFdGbOcEtPlw40xB1FgiVHXjfL
-         YHchuAntqjHLY8pL+y9jX9MWDJERUI8vK9betZtqgFgyOkZL3MqGhQJNxFODEcUKIwGh
-         IrW9ax0Oyv4ZR/u1/nj6/GKPNOaN+e4eFcRwQG6YqME9uevzUq2BEjCzm54gkBzYpYWT
-         Z802yKZNi6OdzjX1WkmgW7kbICXrgAERIsynKyYC4VD/+e/lbqbDZGdkpQhjS90dNytC
-         vrrQG6Pon4wPsdO/7wgmQ6Sme99kSAg7pnuQTMTG7Qj72+J+SP+bacQP6JGuKzrZ5HSC
-         zesQ==
-X-Gm-Message-State: ANoB5pnVveQHdrm71dJOgzEpqzJjmUwaPKWb5Q47sIFzxTEH1pw1Qdw8
-        y+cpmZ3aFCwXgs1ePjD2F75I+zlLgs2CiucCu6Iiuw==
-X-Google-Smtp-Source: AA0mqf6j27rtk5QqfpU1n2G7f0HKRuEXryQzebEWQwgQKaNiSIdYcrTiMD+WuvwIC+GwzdJAlIKU/J1aJVvLyUVGoyQ=
-X-Received: by 2002:a02:7115:0:b0:36f:a831:4497 with SMTP id
- n21-20020a027115000000b0036fa8314497mr11958860jac.209.1669152201047; Tue, 22
- Nov 2022 13:23:21 -0800 (PST)
+        with ESMTP id S234906AbiKVVSj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:18:39 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457BC8F3C5;
+        Tue, 22 Nov 2022 13:18:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1669151914; x=1700687914;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LThJ1ttg1CyFpkPz/PkEmhwyOX/XhzArLbbxws3J7f8=;
+  b=ipvmtCfbksG9BdcFrqBr1cgBp+4ILfjMqcDkkBZfFqziFfb+nQXiaCa+
+   YRkLo/2b8sUJ+E/Cjgz8R5aSVGqENoFsjwRILt8//9emwr412sj3NW9GL
+   Ad5VGMpcyt6oq7V89fxEA7JCDsn67SfpONUeWBnEdpo/hI8iLtiY3eNNO
+   UqTc4LFZEY/z0Wysy8e0vT3gnH1GSuSbpMPwnP/r7Nh2dwm//jjGPrFHn
+   CX9TfMuMH5Ip1q8/rb6gn1FzJmqcfWLwIYYbnPAfsj678tVValtjGwqc8
+   QgelXwhE80jJT8KJelQvcV4P44sKibJ2v+9fbtsKUSHI66NfBIZ5vA9vZ
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
+   d="scan'208";a="190169312"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Nov 2022 14:18:31 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Tue, 22 Nov 2022 14:18:25 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Tue, 22 Nov 2022 14:18:25 -0700
+Date:   Tue, 22 Nov 2022 22:23:16 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v3 4/7] net: lan966x: Update rxq memory model
+Message-ID: <20221122212316.vqsynpwkrghxewi3@soft-dev3-1>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
+ <20221121212850.3212649-5-horatiu.vultur@microchip.com>
+ <20221122113851.418993-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-References: <20221122021536.1629178-1-drosen@google.com> <20221122021536.1629178-5-drosen@google.com>
- <CAOQ4uxiVqR_HxCytweO_uKR=gdRHTjGG9SgHaNTFb1+5b6ucGQ@mail.gmail.com>
-In-Reply-To: <CAOQ4uxiVqR_HxCytweO_uKR=gdRHTjGG9SgHaNTFb1+5b6ucGQ@mail.gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Tue, 22 Nov 2022 13:23:09 -0800
-Message-ID: <CA+PiJmR4rtSHveW_wntt5X2g6zOwarSg3mseRUyo9mSD8ZfyRg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 04/21] fuse: Add fuse-bpf, a stacked fs extension
- for FUSE
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@android.com,
-        Paul Lawrence <paullawrence@google.com>,
-        Alessio Balsini <balsini@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20221122113851.418993-1-alexandr.lobakin@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,21 +65,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 2:19 AM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> I hope there is a better way than this macro...
-> Haven't studied the patches enough to be able to suggest one.
->
-> Thanks,
-> Amir.
+The 11/22/2022 12:38, Alexander Lobakin wrote:
+> 
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Date: Mon, 21 Nov 2022 22:28:47 +0100
+> 
+> > By default the rxq memory model is MEM_TYPE_PAGE_SHARED but to be able
+> > to reuse pages on the TX side, when the XDP action XDP_TX it is required
+> > to update the memory model to PAGE_POOL.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../net/ethernet/microchip/lan966x/lan966x_fdma.c  | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > index 384ed34197d58..483d1470c8362 100644
+> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > @@ -78,8 +78,22 @@ static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
+> >               .max_len = rx->max_mtu -
+> >                          SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
+> >       };
+> > +     struct lan966x_port *port;
+> > +     int i;
+> >
+> >       rx->page_pool = page_pool_create(&pp_params);
+> > +
+> > +     for (i = 0; i < lan966x->num_phys_ports; ++i) {
+> > +             if (!lan966x->ports[i])
+> > +                     continue;
+> > +
+> > +             port = lan966x->ports[i];
+> > +
+> > +             xdp_rxq_info_unreg_mem_model(&port->xdp_rxq);
+> 
+> xdp_rxq_info_unreg_mem_model() can emit a splat if currently the
+> corresponding xdp_rxq_info is not registered[0]. Can't we face it
+> here if called from lan966x_fdma_init()?
 
-I'm certainly open to suggestions there. Currently the main thing
-stopping us from moving away from that macro are the four
-functions/var args we pass in. We've thought about alternatives there,
-but we haven't found one we like so far. Since we've refactored all
-the uses of the macro into function calls, we can avoid most of it
-now. The ugliest bit would be moving the var args into a struct and
-passing it in as a void*. Then we could have all the function
-signatures match and pass them as function pointers. The remaining
-things we use the macro for could either be pushed into the struct, or
-extra boilerplate around the function call.
+We will not face that issue here because before lan966x_fdma_init is
+called, we call lan966x_xdp_port_init which registers xdp_rxq_info.
+
+> 
+> > +             xdp_rxq_info_reg_mem_model(&port->xdp_rxq, MEM_TYPE_PAGE_POOL,
+> > +                                        rx->page_pool);
+> > +     }
+> > +
+> >       return PTR_ERR_OR_ZERO(rx->page_pool);
+> >  }
+> >
+> > --
+> > 2.38.0
+> 
+> Thanks,
+> Olek
+
+-- 
+/Horatiu
