@@ -2,265 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443B66338F2
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 10:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ACC6339BE
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 11:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbiKVJsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 04:48:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        id S233326AbiKVKVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 05:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbiKVJsI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 04:48:08 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E48633D;
-        Tue, 22 Nov 2022 01:48:07 -0800 (PST)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AM7SX5l005059;
-        Tue, 22 Nov 2022 09:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=NFAyZLaovr/F9jGI1O5jH8acNqLSRKi2iVgWNogMCMM=;
- b=MKDf1CqY+5vgoitedVZG9koxje4nuV7gN1eeMfSI8QOgtzX5gBzbpvY2H9MrERoUZZh4
- ZIRnZe1oW6qQ54JH3d+Q8lV4M+2uPz7DlMx384fQO4UP+fXFCpzle9arZEtyqpZVL/Yp
- a/lev6uXl8t1h95j9rpmtlBj2UV18mTRB0xtbPS8Vff053Py7t9+LceEVOd1jx3s35ar
- 3MvApEg5ip8J38zrEEEQtpc3hnqjouk31sb6cS9dwS1Vh2hatK0kqkw8b6OxbhAom4Ne
- J0vFm7IRz3Ky1OUx/q5LP/wriPJB4hdjPVpaZpRoBlh0tdPZCkWw5lXSTWaWdtDQcPq3 qQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m0t2mu2vb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Nov 2022 09:47:34 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AM9Zn6R013339;
-        Tue, 22 Nov 2022 09:47:33 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m0t2mu2um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Nov 2022 09:47:33 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AM9atqp003789;
-        Tue, 22 Nov 2022 09:47:30 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3kxps8uwke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Nov 2022 09:47:30 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AM9m9Zp36569348
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Nov 2022 09:48:09 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57E4A11C050;
-        Tue, 22 Nov 2022 09:47:28 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDD3111C04C;
-        Tue, 22 Nov 2022 09:47:27 +0000 (GMT)
-Received: from localhost (unknown [9.43.65.119])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Nov 2022 09:47:27 +0000 (GMT)
-Date:   Tue, 22 Nov 2022 15:17:26 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc/bpf/32: Fix Oops on tail call tests
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>,
-        Song Liu <song@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
-References: <8a0b9f7e4fe208a8b518c0c4310472f99d9fdb55.1668876211.git.christophe.leroy@csgroup.eu>
-        <1669101940.sfs1m92svc.naveen@linux.ibm.com>
-        <f333e28c-a4ff-62eb-4b75-ee301e5ea53f@csgroup.eu>
-In-Reply-To: <f333e28c-a4ff-62eb-4b75-ee301e5ea53f@csgroup.eu>
+        with ESMTP id S233129AbiKVKVR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 05:21:17 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BEF5BD43;
+        Tue, 22 Nov 2022 02:19:36 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id t14so13967037vsr.9;
+        Tue, 22 Nov 2022 02:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e8p9ZQ/UmpLjcFqjZPlNuCFs77ZDkwn/7XdgpymOLrg=;
+        b=asa+IPR7AAsj8nVdOvUGA9cCy6FoCH7gqyZ7Fyd14OPV1NfWqJIBxGnh+luw13+Rvt
+         2aKGWWagmWeODzAXtKpmPlvGS155M6d+TbAtWc1FmsFP0KDrnqMAp4sLawrKlq5seA4p
+         a2thLlsJ1BiRkKOF7ZUcIENv6WrnXA0RMxvAJvXrZmkbudEumBe35Ig5Eea3pec7RexW
+         8S4Lo+Hlcng6gHLNXfz2TFTLmQyXF5jN1yKQcbMkYFhYbia0c3kQ2gr+fJ+/3lyizCFL
+         d7XHK83LLvutNjB/Z2y5K5W6aqbsT0aB45KtYgpD4THa+32hailJg9iZin3oBBYJN2rI
+         t0gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e8p9ZQ/UmpLjcFqjZPlNuCFs77ZDkwn/7XdgpymOLrg=;
+        b=xPscTeUc5lfw+OecV0PeyRJR2QOAkxoc/tmjLQJRdr4S20nnOsDvDhi7pZxy88XvgE
+         70j5B4f3lP8dB1TPArdXZDwCuowyGzx6cawugDF76EwBN5XO7l0IuFQSszCAUF0hPdpe
+         kJCFxfkDyCGhNsIa8BELcY7I0KLAiOt0Qd6Ayqnq/AEl02t/Sqy6evyCPOENXgZXJ3Pd
+         hJiut9OyuXQ07pq9s+0ujiWdDnKzh4v2Ei9ZQhkQtMOCLAa2NV2luELA5Gi8jDpFMch5
+         tVPiGKU0hswVi+dE6Lt98jTzRXT9oot9QxoCQMq4RzHMCZ/1r4Qhvi6xczgZY0WdbW0u
+         K/+g==
+X-Gm-Message-State: ANoB5plOuEES7IezxGuUZhusfrqjtKhe6j0ugAoiTPQpNSGV+6gSRU7V
+        sErVz4ZHKUAXF5DyDlYsh09U5ruccRARRPmlMo/BMVd5
+X-Google-Smtp-Source: AA0mqf4+k6Ltt0LobrDMTg+yyfabacfVSb84QqqAWuB842avg9qXFmtK8YA40EBNP42QoyTa/E95DXD3l/lOYqi0dLg=
+X-Received: by 2002:a05:6102:1009:b0:3aa:13b1:86e6 with SMTP id
+ q9-20020a056102100900b003aa13b186e6mr12991442vsp.36.1669112375533; Tue, 22
+ Nov 2022 02:19:35 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1669108894.f58czzpqdm.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jHemxqz0CGp1WxzXj0t_JLVmJmXGJ5QV
-X-Proofpoint-GUID: udMV-6y-Z86dG3q5UpnvMUfvpzVDnbiN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-22_04,2022-11-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211220070
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221122021536.1629178-1-drosen@google.com> <20221122021536.1629178-5-drosen@google.com>
+In-Reply-To: <20221122021536.1629178-5-drosen@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 22 Nov 2022 12:19:23 +0200
+Message-ID: <CAOQ4uxiVqR_HxCytweO_uKR=gdRHTjGG9SgHaNTFb1+5b6ucGQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 04/21] fuse: Add fuse-bpf, a stacked fs extension
+ for FUSE
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@android.com,
+        Paul Lawrence <paullawrence@google.com>,
+        Alessio Balsini <balsini@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christophe Leroy wrote:
->=20
->=20
-> Le 22/11/2022 =C3=A0 08:33, Naveen N. Rao a =C3=A9crit=C2=A0:
->> Christophe Leroy wrote:
->>>
->>> This is a tentative to write above the stack. The problem is encoutered
->>> with tests added by commit 38608ee7b690 ("bpf, tests: Add load store
->>> test case for tail call")
->>>
->>> This happens because tail call is done to a BPF prog with a different
->>> stack_depth. At the time being, the stack is kept as is when the caller
->>> tail calls its callee. But at exit, the callee restores the stack based
->>> on its own properties. Therefore here, at each run, r1 is erroneously
->>> increased by 32 - 16 =3D 16 bytes.
->>>
->>> This was done that way in order to pass the tail call count from caller
->>> to callee through the stack. As powerpc32 doesn't have a red zone in
->>> the stack, it was necessary the maintain the stack as is for the tail
->>> call. But it was not anticipated that the BPF frame size could be
->>> different.
->>>
->>> Let's take a new approach. Use register r0 to carry the tail call count
->>> during the tail call, and save it into the stack at function entry if
->>> required. That's a deviation from the ppc32 ABI, but after all the way
->>> tail calls are implemented is already not in accordance with the ABI.
->>=20
->> Can we pass the tail call count in r4 instead?
->=20
-> It's a bit tricky.
->=20
-> When entering the function through the normal entry point, the input=20
-> parameter is a 32 bits pointer and is in r3.
-> But at the begining of the function it gets moved to r4 and r3 is=20
-> cleared because it becomes a 64 bits parameter.
->=20
-> When using the tailcall entry point, it is already in r4, and until now=20
-> r3 was containing garbage, with this patch r3 gets cleared as well.
->=20
-> We could move the input pointer back into r3 for the tailcall as well,=20
-> but it would mean unnecessary register move.
->=20
-> Or we can use r3 for the tailcall counter.
+On Tue, Nov 22, 2022 at 4:16 AM Daniel Rosenberg <drosen@google.com> wrote:
+>
+> Fuse-bpf provides a short circuit path for Fuse implementations that act
+> as a stacked filesystem. For cases that are directly unchanged,
+> operations are passed directly to the backing filesystem. Small
+> adjustments can be handled by bpf prefilters or postfilters, with the
+> option to fall back to userspace as needed.
+>
+> Fuse implementations may supply backing node information, as well as bpf
+> programs via an optional add on to the lookup structure.
+>
+> This has been split over the next set of patches for readability.
+> Clusters of fuse ops have been split into their own patches, as well as
+> the actual bpf calls and userspace calls for filters.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Signed-off-by: Paul Lawrence <paullawrence@google.com>
+> Signed-off-by: Alessio Balsini <balsini@google.com>
+> ---
+>  fs/fuse/Kconfig   |   8 +
+>  fs/fuse/Makefile  |   1 +
+>  fs/fuse/backing.c | 392 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/fuse/dev.c     |  41 ++++-
+>  fs/fuse/dir.c     | 187 +++++++++++++++++-----
+>  fs/fuse/file.c    |  25 ++-
+>  fs/fuse/fuse_i.h  |  99 +++++++++++-
+>  fs/fuse/inode.c   | 189 +++++++++++++++++-----
+>  fs/fuse/ioctl.c   |   2 +-
+>  9 files changed, 861 insertions(+), 83 deletions(-)
+>  create mode 100644 fs/fuse/backing.c
+>
+> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+> index 038ed0b9aaa5..3a64fa73e591 100644
+> --- a/fs/fuse/Kconfig
+> +++ b/fs/fuse/Kconfig
+> @@ -52,3 +52,11 @@ config FUSE_DAX
+>
+>           If you want to allow mounting a Virtio Filesystem with the "dax"
+>           option, answer Y.
+> +
+> +config FUSE_BPF
+> +       bool "Adds BPF to fuse"
+> +       depends on FUSE_FS
+> +       depends on BPF
+> +       help
+> +         Extends FUSE by adding BPF to prefilter calls and potentially pass to a
+> +         backing file system
+> diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
+> index 0c48b35c058d..a0853c439db2 100644
+> --- a/fs/fuse/Makefile
+> +++ b/fs/fuse/Makefile
+> @@ -9,5 +9,6 @@ obj-$(CONFIG_VIRTIO_FS) += virtiofs.o
+>
+>  fuse-y := dev.o dir.o file.o inode.o control.o xattr.o acl.o readdir.o ioctl.o
+>  fuse-$(CONFIG_FUSE_DAX) += dax.o
+> +fuse-$(CONFIG_FUSE_BPF) += backing.o
+>
+>  virtiofs-y := virtio_fs.o
+> diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
+> new file mode 100644
+> index 000000000000..5a59a8963d52
+> --- /dev/null
+> +++ b/fs/fuse/backing.c
+> @@ -0,0 +1,392 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * FUSE-BPF: Filesystem in Userspace with BPF
+> + * Copyright (c) 2021 Google LLC
+> + */
+> +
+> +#include "fuse_i.h"
+> +
+> +#include <linux/fdtable.h>
+> +#include <linux/file.h>
+> +#include <linux/fs_stack.h>
+> +#include <linux/namei.h>
+> +
+> +/*
+> + * expression statement to wrap the backing filter logic
+> + * struct inode *inode: inode with bpf and backing inode
+> + * typedef io: (typically complex) type whose components fuse_args can point to.
+> + *     An instance of this type is created locally and passed to initialize
+> + * void initialize_in(struct fuse_args *fa, io *in_out, args...): function that sets
+> + *     up fa and io based on args
+> + * void initialize_out(struct fuse_args *fa, io *in_out, args...): function that sets
+> + *     up fa and io based on args
+> + * int backing(struct fuse_bpf_args_internal *fa, args...): function that actually performs
+> + *     the backing io operation
+> + * void *finalize(struct fuse_bpf_args *, args...): function that performs any final
+> + *     work needed to commit the backing io
+> + */
+> +#define fuse_bpf_backing(inode, io, out, initialize_in, initialize_out,        \
+> +                        backing, finalize, args...)                    \
+> +({                                                                     \
+> +       struct fuse_inode *fuse_inode = get_fuse_inode(inode);          \
+> +       struct fuse_args fa = { 0 };                                    \
+> +       bool initialized = false;                                       \
+> +       bool handled = false;                                           \
+> +       ssize_t res;                                                    \
+> +       io feo = { 0 };                                                 \
+> +       int error = 0;                                                  \
+> +                                                                       \
+> +       do {                                                            \
+> +               if (!fuse_inode || !fuse_inode->backing_inode)          \
+> +                       break;                                          \
+> +                                                                       \
+> +               handled = true;                                         \
+> +               error = initialize_in(&fa, &feo, args);                 \
+> +               if (error)                                              \
+> +                       break;                                          \
+> +                                                                       \
+> +               error = initialize_out(&fa, &feo, args);                \
+> +               if (error)                                              \
+> +                       break;                                          \
+> +                                                                       \
+> +               initialized = true;                                     \
+> +                                                                       \
+> +               error = backing(&fa, out, args);                        \
+> +               if (error < 0)                                          \
+> +                       fa.error_in = error;                            \
+> +                                                                       \
+> +       } while (false);                                                \
+> +                                                                       \
+> +       if (initialized && handled) {                                   \
+> +               res = finalize(&fa, out, args);                         \
+> +               if (res)                                                \
+> +                       error = res;                                    \
+> +       }                                                               \
+> +                                                                       \
+> +       *out = error ? _Generic((*out),                                 \
+> +                       default :                                       \
+> +                               error,                                  \
+> +                       struct dentry * :                               \
+> +                               ERR_PTR(error),                         \
+> +                       const char * :                                  \
+> +                               ERR_PTR(error)                          \
+> +                       ) : (*out);                                     \
+> +       handled;                                                        \
+> +})
+> +
 
-Regarding zero'ing out r5, you're right -- we don't use the second=20
-parameter for a tail call, so that should be fine.
+I hope there is a better way than this macro...
+Haven't studied the patches enough to be able to suggest one.
 
-Using r3 will be difficult since it is used when you come in first.
-My suggestion was something like the below (untested). Using r5 might be=20
-fine too.
-
-- Naveen
-
---
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_c=
-omp32.c
-index 43f1c76d48cea9..6319283ce4ef01 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -113,24 +113,19 @@ void bpf_jit_build_prologue(u32 *image, struct codege=
-n_context *ctx)
- {
- 	int i;
-=20
-+	/* Initialize tail_call_cnt, to be skipped if we do tail calls. */
-+	EMIT(PPC_RAW_LI(_R4, 0));
-+
-+#define BPF_TAILCALL_PROLOGUE_SIZE	4
-+
-+	if (ctx->seen & SEEN_TAILCALL)
-+		EMIT(PPC_RAW_STW(_R4, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
-+
- 	/* First arg comes in as a 32 bits pointer. */
- 	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
- 	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
- 	EMIT(PPC_RAW_STWU(_R1, _R1, -BPF_PPC_STACKFRAME(ctx)));
-=20
--	/*
--	 * Initialize tail_call_cnt in stack frame if we do tail calls.
--	 * Otherwise, put in NOPs so that it can be skipped when we are
--	 * invoked through a tail call.
--	 */
--	if (ctx->seen & SEEN_TAILCALL)
--		EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_1) - 1, _R1,
--				 bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
--	else
--		EMIT(PPC_RAW_NOP());
--
--#define BPF_TAILCALL_PROLOGUE_SIZE	16
--
- 	/*
- 	 * We need a stack frame, but we don't necessarily need to
- 	 * save/restore LR unless we call other functions
-@@ -170,24 +165,24 @@ static void bpf_jit_emit_common_epilogue(u32 *image, =
-struct codegen_context *ctx
- 	for (i =3D BPF_PPC_NVR_MIN; i <=3D 31; i++)
- 		if (bpf_is_seen_register(ctx, i))
- 			EMIT(PPC_RAW_LWZ(i, _R1, bpf_jit_stack_offsetof(ctx, i)));
--}
--
--void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
--{
--	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
--
--	bpf_jit_emit_common_epilogue(image, ctx);
--
--	/* Tear down our stack frame */
-=20
- 	if (ctx->seen & SEEN_FUNC)
- 		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
-=20
-+	/* Tear down our stack frame */
- 	EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME(ctx)));
-=20
- 	if (ctx->seen & SEEN_FUNC)
- 		EMIT(PPC_RAW_MTLR(_R0));
-=20
-+}
-+
-+void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
-+{
-+	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
-+
-+	bpf_jit_emit_common_epilogue(image, ctx);
-+
- 	EMIT(PPC_RAW_BLR());
- }
-=20
-@@ -244,7 +239,6 @@ static int bpf_jit_emit_tail_call(u32 *image, struct co=
-degen_context *ctx, u32 o
- 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
- 	EMIT(PPC_RAW_ADD(_R3, _R3, b2p_bpf_array));
- 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_array, ptrs)));
--	EMIT(PPC_RAW_STW(_R0, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
-=20
- 	/*
- 	 * if (prog =3D=3D NULL)
-@@ -255,18 +249,11 @@ static int bpf_jit_emit_tail_call(u32 *image, struct =
-codegen_context *ctx, u32 o
-=20
- 	/* goto *(prog->bpf_func + prologue_size); */
- 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_prog, bpf_func)));
--
--	if (ctx->seen & SEEN_FUNC)
--		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
--
- 	EMIT(PPC_RAW_ADDIC(_R3, _R3, BPF_TAILCALL_PROLOGUE_SIZE));
--
--	if (ctx->seen & SEEN_FUNC)
--		EMIT(PPC_RAW_MTLR(_R0));
--
- 	EMIT(PPC_RAW_MTCTR(_R3));
-=20
- 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_1)));
-+	EMIT(PPC_RAW_MR(_R4, _R0));
-=20
- 	/* tear restore NVRs, ... */
- 	bpf_jit_emit_common_epilogue(image, ctx);
+Thanks,
+Amir.
