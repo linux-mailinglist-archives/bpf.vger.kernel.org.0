@@ -2,125 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96989633AFC
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 12:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10BD633B7F
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 12:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbiKVLPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 06:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        id S232867AbiKVLg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 06:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbiKVLP1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 06:15:27 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109425BD41;
-        Tue, 22 Nov 2022 03:13:47 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id t14so14085767vsr.9;
-        Tue, 22 Nov 2022 03:13:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ctwvpJ4WmLw8p9CFeleB7Pgd59LFpS1OykmA2+lU2U=;
-        b=b6gPC3FpAAoIsTrR/GjtWKbzKFsmS3SYe7WsW32gCahQi1HxOvCju2+tL83BVRwwG0
-         0nEFRgiiYSbd8tu4OiovxpIUT2VydWFiloCnps2GHxHiskGDzTcqJ+C7e6pjssUU4+4I
-         45MlrD7dxprQUpOvpPH4w1obxKoJqsPIkxjHe85bMFuekTi5c6jJ3+wQ2I/mH9I7k+iZ
-         5NV6LNcHggfuQcqEz/4CZM4pkh0EjvrysF98WHT5V56TOLx9EIiujHaDkR8TSZw4aQUX
-         QItzPMSSeejDkdIiKGFq6CnnbXwBaSmUDuvzj3ktAPddAkBZJotJHooi4VwA6GXdBMdf
-         WAmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7ctwvpJ4WmLw8p9CFeleB7Pgd59LFpS1OykmA2+lU2U=;
-        b=I51GSTN5BZ2Ee6/kxYlTjwZQyegZPSHmFbbpJ5tv9CtamoVqaBPJ4n/ImIKURr0pgT
-         8Ar2xoQ5KcPNEO1s1e3GQEXBvbdnDwvYyzWyK8mmR910EVt57tXsH+QRYg+EnRxNn6B6
-         6XCt3/i52e8DUs4SwXZuT8LwSwxRZbSk7eY8zdszpEijEdE5knEPKvV0KvdT2/ajAcdq
-         rN3L5x/SMrDnj344/56xJLNPkwvGkGz+qnMr/p77O7zEFD8/ou8wEk/pqA+u6PWWVHNC
-         OlcxcPLm4BW5tZe1qKjWTcvqPZam8/1xjgfNJ7p/+Tm1zV37BqrNjSrvTnuRtuD0vQqR
-         mtig==
-X-Gm-Message-State: ANoB5pn1x/TUzNvlPi6akHNU8XdqQMbLHGydsNvMMF2TV/UczvA2z6q9
-        arWjMy142bwG2em/ThBwI0bDJb2MDZ1UTDHsSWF1gpEhmCk=
-X-Google-Smtp-Source: AA0mqf74RvZ9FOqf4Ak0ELFEqSpBYvkzZ3F8GxTEFa5nqLuTAn7Lk0xRxiTrgc/F38UyOU7gm4M4xAVNRxC0H2jJvW8=
-X-Received: by 2002:a05:6102:3bc1:b0:3a7:9b8c:2e4c with SMTP id
- a1-20020a0561023bc100b003a79b8c2e4cmr1731318vsv.72.1669115626788; Tue, 22 Nov
- 2022 03:13:46 -0800 (PST)
+        with ESMTP id S232887AbiKVLgF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 06:36:05 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7BD17078;
+        Tue, 22 Nov 2022 03:30:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669116628; x=1700652628;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EUs3v5zzG9DDU2IR/ERFhdsdv5DgY0vpIZcHgBcJ/j4=;
+  b=iojumDoB1ETExG4r4D6bD56/+roag8EF22rQGKcgJ8Gyb/P+pRKCLO2r
+   4Udkrvi2EsKYYKUM+2MPwoDN7z4jLcb9C084cczvlQ0Z60S5g6a99/zjX
+   /vysPbbkoFHCYAFZkej59ZqR3gmUMJWFfEV1kqNWzTrQLTkAxd8vJmM3F
+   K7aw78QFl6GIT6Gvpcf/uubxcH3ydw+HTUJuWFeij5nyk/ASqSg2Ee9Du
+   KUbBdO/42qYc4BTo/1EfPgQEOs71MehnSby5iz3uGykDlLcl9rQwwGevy
+   eaMblYuUNB2BEPJXtyobb2Vx7JQtBeYJLHt0QhOX7db7Eu4LLj3aNpNNo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="294184542"
+X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
+   d="scan'208";a="294184542"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 03:30:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="674320405"
+X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
+   d="scan'208";a="674320405"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga001.jf.intel.com with ESMTP; 22 Nov 2022 03:30:25 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMBUNAB001561;
+        Tue, 22 Nov 2022 11:30:23 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v3 3/7] net: lan966x: Add len field to lan966x_tx_dcb_buf
+Date:   Tue, 22 Nov 2022 12:30:22 +0100
+Message-Id: <20221122113022.418632-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221121212850.3212649-4-horatiu.vultur@microchip.com>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-4-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-References: <20221122021536.1629178-1-drosen@google.com>
-In-Reply-To: <20221122021536.1629178-1-drosen@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 22 Nov 2022 13:13:35 +0200
-Message-ID: <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 4:15 AM Daniel Rosenberg <drosen@google.com> wrote:
->
-> These patches extend FUSE to be able to act as a stacked filesystem. This
-> allows pure passthrough, where the fuse file system simply reflects the lower
-> filesystem, and also allows optional pre and post filtering in BPF and/or the
-> userspace daemon as needed. This can dramatically reduce or even eliminate
-> transitions to and from userspace.
->
-> For this patch set, I have removed the code related to the bpf side of things
-> since that is undergoing some large reworks to get it in line with the more
-> recent BPF developements. This set of patches implements direct passthrough to
-> the lower filesystem with no alteration. Looking at the v1 code should give a
-> pretty good idea of what the general shape of the bpf calls will look like.
-> Without the bpf side, it's like a less efficient bind mount. Not very useful
-> on its own, but still useful to get eyes on it since the backing calls will be
-> larglely the same when bpf is in the mix.
->
-> This changes the format of adding a backing file/bpf slightly from v1. It's now
-> a bit more modular. You add a block of data at the end of a lookup response to
-> give the bpf fd and backing id, but there is now a type header to both blocks,
-> and a reserved value for future additions. In the future, we may allow for
-> multiple bpfs or backing files, and this will allow us to extend it without any
-> UAPI breaking changes. Multiple BPFs would be useful for combining fuse-bpf
-> implementations without needing to manually combine bpf fragments. Multiple
-> backing files would allow implementing things like a limited overlayfs.
-> In this patch set, this is only a single block, with only backing supported,
-> although I've left the definitions reflecting the BPF case as well.
-> For bpf, the plan is to have two blocks, with the bpf one coming first.
-> Any further extensions are currently just speculative.
->
-> You can run this without needing to set up a userspace daemon by adding these
-> mount options: root_dir=[fd],no_daemon where fd is an open file descriptor
-> pointing to the folder you'd like to use as the root directory. The fd can be
-> immediately closed after mounting. This is useful for running various fs tests.
->
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+Date: Mon, 21 Nov 2022 22:28:46 +0100
 
-Which tests did you run?
+> Currently when a frame was transmitted, it is required to unamp the
+> frame that was transmitted. The length of the frame was taken from the
+> transmitted skb. In the future we might not have an skb, therefore store
+> the length skb directly in the lan966x_tx_dcb_buf and use this one to
+> unamp the frame.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c | 5 +++--
+>  drivers/net/ethernet/microchip/lan966x/lan966x_main.h | 1 +
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> index 94c720e59caee..384ed34197d58 100644
+> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> @@ -391,12 +391,12 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
+>  			continue;
+>  
+>  		dcb_buf->dev->stats.tx_packets++;
+> -		dcb_buf->dev->stats.tx_bytes += dcb_buf->skb->len;
+> +		dcb_buf->dev->stats.tx_bytes += dcb_buf->len;
+>  
+>  		dcb_buf->used = false;
+>  		dma_unmap_single(lan966x->dev,
+>  				 dcb_buf->dma_addr,
+> -				 dcb_buf->skb->len,
+> +				 dcb_buf->len,
+>  				 DMA_TO_DEVICE);
+>  		if (!dcb_buf->ptp)
+>  			dev_kfree_skb_any(dcb_buf->skb);
+> @@ -709,6 +709,7 @@ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev)
+>  	/* Fill up the buffer */
+>  	next_dcb_buf = &tx->dcbs_buf[next_to_use];
+>  	next_dcb_buf->skb = skb;
+> +	next_dcb_buf->len = skb->len;
+>  	next_dcb_buf->dma_addr = dma_addr;
+>  	next_dcb_buf->used = true;
+>  	next_dcb_buf->ptp = false;
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> index bc93051aa0798..7bb9098496f60 100644
+> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> @@ -175,6 +175,7 @@ struct lan966x_rx {
+>  struct lan966x_tx_dcb_buf {
+>  	struct net_device *dev;
+>  	struct sk_buff *skb;
+> +	int len;
 
-My recommendation (if you haven't done that already):
-Add a variant to libfuse test_passthrough (test_examples.py):
-@pytest.mark.parametrize("name", ('passthrough', 'passthrough_plus',
-                           'passthrough_fh', 'passthrough_ll',
-'passthrough_bpf'))
+Nit: perhaps you can define it as `u32` since fram length can't be
+negative?
 
-and compose the no_daemon cmdline for the 'passthrough_bpf' mount.
+>  	dma_addr_t dma_addr;
 
-This gives pretty good basic test coverage for FUSE passthrough operations.
+Oh, also, on platforms with 64-bit addressing, `int len` placed in
+between ::skb and ::dma_addr would create a 4-byte hole in the
+structure. Placing `len` after ::dma_addr would make it holeless on
+any architercture.
 
-I've extended test_passthrough_hp() for my libfuse_passthrough patches [1],
-but it's the same principle.
+>  	bool used;
+>  	bool ptp;
+> -- 
+> 2.38.0
 
 Thanks,
-Amir.
-
-[1] https://github.com/amir73il/libfuse/commits/fuse_passthrough
-* 'passthrough_module' uses 'libfuse_passthrough' which enables
-   Allesio's FUSE_DEV_IOC_PASSTHROUGH_OPEN by default.
+Olek
