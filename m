@@ -2,49 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F143E634929
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38394634918
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbiKVVYS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 16:24:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49078 "EHLO
+        id S234298AbiKVVUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 16:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234338AbiKVVYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 16:24:16 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88147CBB3;
-        Tue, 22 Nov 2022 13:24:12 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4NGy1l09gGz4xN5;
-        Wed, 23 Nov 2022 08:24:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1669152251;
-        bh=sbRuO2aFOs+wXOry96RCRNP5VBQqIMMgw80/mKrVywo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qrRu75Uyzu+ZNbGm0UAzl+PTpGKfjb/HrW+Dt8x+XuD1uDsTMy3IyrP0LoQLUPrIP
-         tV/Zaxo9bZ2zeD/4F1vixjwjKRE0YtCBBGvkwVhBHi21wx6pewGB+d7jssIVczh6FW
-         1DTYu18agjwNlXkHNlUVyS9kwQiWF+p+7Y5Zy7RdoJI6Lgqz9VQp5zjRHn8fjFzY5h
-         wzEsco4oiyWiXcTr3a0r78tgiX/LF1NY51qTbjd28EvGg2KwKHrQvapBruWg1HirVm
-         DudNwNfEt6Os4jXbKTNVYczJl/N6R7o/GsFF+nueeKsGq9eJji89CmeXMiP8ieeDev
-         GOyoVGfupYUlw==
-Date:   Wed, 23 Nov 2022 08:24:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the bpf-next tree
-Message-ID: <20221123082409.51f63598@canb.auug.org.au>
+        with ESMTP id S233174AbiKVVUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:20:21 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EC18F3C3;
+        Tue, 22 Nov 2022 13:20:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1669152017; x=1700688017;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ads2cVRvZI8k8jJJ/EENd7OUJlc/7SM5FY/+3wbCKkk=;
+  b=RbwD1C3BA7JaRZqFrOM/Ty1NNyWBKb4cMJM6DBscm3k6rG6z5FcyggF+
+   JYxJ6YhtZOYq4nAyXEhC/H1jD15LuM8gKj+NTNszABb6KWq2ijk9c963u
+   BCZWsb6aPxBuZhbXHGsZGHJYgoGg7Qhow/bTIM5bTbd9gBsZHoF76z7WX
+   qZSYMFzFmXeFAmjtCyp+/HEJmVnOiBVRgZ5WGeef9XbIG64c81ka84BXU
+   XTIio4mS26CiPH1sN0mdj0+OWg5gOxWXDfkvOZIxvKg9IE6raDzYqIKxg
+   iShtMwfCguKHL9XyuHPvGaE2ePz0RhZ4Z3XLYrjzF7ceISZKhPpbEWVTt
+   A==;
+X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
+   d="scan'208";a="190134967"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Nov 2022 14:20:17 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Tue, 22 Nov 2022 14:20:14 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Tue, 22 Nov 2022 14:20:14 -0700
+Date:   Tue, 22 Nov 2022 22:25:04 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v3 5/7] net: lan966x: Update dma_dir of
+ page_pool_params
+Message-ID: <20221122212504.nrwaucgab3lqqxpo@soft-dev3-1>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
+ <20221121212850.3212649-6-horatiu.vultur@microchip.com>
+ <20221122114339.419188-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BDiR4qN_2FHzqABGC/b4gPx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20221122114339.419188-1-alexandr.lobakin@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,39 +66,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/BDiR4qN_2FHzqABGC/b4gPx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The 11/22/2022 12:43, Alexander Lobakin wrote:
+> 
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Date: Mon, 21 Nov 2022 22:28:48 +0100
+> 
+> > To add support for XDP_TX it is required to be able to write to the DMA
+> > area therefore it is required that the pages will be mapped using
+> > DMA_BIDIRECTIONAL flag.
+> > Therefore check if there are any xdp programs on the interfaces and in
+> > that case set DMA_BIDRECTIONAL otherwise use DMA_FROM_DEVICE.
+> > Therefore when a new XDP program is added it is required to redo the
+> > page_pool.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 29 ++++++++++++++----
+> >  .../ethernet/microchip/lan966x/lan966x_main.h |  2 ++
+> >  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 30 +++++++++++++++++++
+> >  3 files changed, 55 insertions(+), 6 deletions(-)
+> 
+> [...]
+> 
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > index 8ebde1eb6a09c..05c5a28206558 100644
+> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > @@ -11,6 +11,8 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
+> >       struct lan966x_port *port = netdev_priv(dev);
+> >       struct lan966x *lan966x = port->lan966x;
+> >       struct bpf_prog *old_prog;
+> > +     bool old_xdp, new_xdp;
+> > +     int err;
+> >
+> >       if (!lan966x->fdma) {
+> >               NL_SET_ERR_MSG_MOD(xdp->extack,
+> > @@ -18,7 +20,20 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
+> >               return -EOPNOTSUPP;
+> >       }
+> >
+> > +     old_xdp = lan966x_xdp_present(lan966x);
+> >       old_prog = xchg(&port->xdp_prog, xdp->prog);
+> > +     new_xdp = lan966x_xdp_present(lan966x);
+> > +
+> > +     if (old_xdp != new_xdp)
+> > +             goto out;
+> 
+> Shouldn't it be the other way around? E.g. when there's no prog and
+> you're installing it or there is a prog and we're removing it from
+> the interface, DMA dir must be changed, so we reload the Pools, but
+> if `old_xdp == new_xdp` we should just hotswap them and goto out?
 
-Hi all,
+Argh! Yes, it needs to be the other way around.
+> 
+> > +
+> > +     err = lan966x_fdma_reload_page_pool(lan966x);
+> > +     if (err) {
+> > +             xchg(&port->xdp_prog, old_prog);
+> > +             return err;
+> > +     }
+> > +
+> > +out:
+> >       if (old_prog)
+> >               bpf_prog_put(old_prog);
+> >
+> 
+> [...]
+> 
+> > --
+> > 2.38.0
+> 
+> Thanks,
+> Olek
 
-Commit
-
-  6caf7a275b42 ("Revert "selftests/bpf: Temporarily disable linked list tes=
-ts"")
-
-is missing a Signed-off-by from its author and committer.
-
-Reverts are commits too.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BDiR4qN_2FHzqABGC/b4gPx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmN9PfkACgkQAVBC80lX
-0GwcVwf6At5YSPn+GZla7NgKUtrbBVczmtiQbZrBFSDJUjQDVUcTtZQe68o0oYoU
-RGwQsevkZwHoVBX2kP8shl6QbX//IqqRIp8+hrxQNrZ4uDKTpWJnZ228pGTjoetQ
-mrKIe66hnMIW6coT/ZxiXRiVzVXUkldtBkmt9cJeV9Bf3kalU5gPfJkrnC16LVeH
-WWcJ8nGUMsxJ5V1kI6LCr/NsAdxFd/qYdM+Gox7G/wemGZ75pl7qN5/f/56BPW0y
-MTeZ0ADcF5TOGB7LJWtk6AZ/ObXpso8wFRTzd4VpZ3p3PKRZtBbNarcv7+DTmfbG
-2vIXiZnNaD4hhGTnC5gHaKATSktFEw==
-=tZbP
------END PGP SIGNATURE-----
-
---Sig_/BDiR4qN_2FHzqABGC/b4gPx--
+-- 
+/Horatiu
