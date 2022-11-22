@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10BD633B7F
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 12:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86744633B98
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 12:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbiKVLg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 06:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S229497AbiKVLmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 06:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbiKVLgF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 06:36:05 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7BD17078;
-        Tue, 22 Nov 2022 03:30:28 -0800 (PST)
+        with ESMTP id S232938AbiKVLlw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 06:41:52 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A3015FE9;
+        Tue, 22 Nov 2022 03:39:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669116628; x=1700652628;
+  t=1669117150; x=1700653150;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EUs3v5zzG9DDU2IR/ERFhdsdv5DgY0vpIZcHgBcJ/j4=;
-  b=iojumDoB1ETExG4r4D6bD56/+roag8EF22rQGKcgJ8Gyb/P+pRKCLO2r
-   4Udkrvi2EsKYYKUM+2MPwoDN7z4jLcb9C084cczvlQ0Z60S5g6a99/zjX
-   /vysPbbkoFHCYAFZkej59ZqR3gmUMJWFfEV1kqNWzTrQLTkAxd8vJmM3F
-   K7aw78QFl6GIT6Gvpcf/uubxcH3ydw+HTUJuWFeij5nyk/ASqSg2Ee9Du
-   KUbBdO/42qYc4BTo/1EfPgQEOs71MehnSby5iz3uGykDlLcl9rQwwGevy
-   eaMblYuUNB2BEPJXtyobb2Vx7JQtBeYJLHt0QhOX7db7Eu4LLj3aNpNNo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="294184542"
+  bh=q88Eu4PK7R3MLGJthijzTE5pAxdoXj6Hqb2J6jRm7T4=;
+  b=A90p6j67BeXKtFGWt72zk0027CDdanMCtEn0vKF96QqC4tZNZ8VUII7E
+   +Qd11wR3hQhBfogdsqdw4p/5jAjwBEQjRtKDJy2xopNRmUPR36O4laUp8
+   VcMEfCHDMpnsFZX4RZlzftqredB5vRgcQ7LUiGRTSFgMtVK3GnJ90PPoM
+   23CbcTTaMKstMFA+nAMJM4CNc4HLlj1KJ55Xus1mMHvJG0JBZLJsQdlXo
+   k1jR0FE8MbBm/UfjsP2JyyaL1rx4IJGzMBH5qCy7eD1DE7yxb+mzHPjab
+   dJ+VNTYvzgmZwDW+ae7dyzdYWHXHVY2hhQHI6i/AP67kmAdMvSeqV/Pc+
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="314944044"
 X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="294184542"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 03:30:28 -0800
+   d="scan'208";a="314944044"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 03:39:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="674320405"
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="730366358"
 X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="674320405"
+   d="scan'208";a="730366358"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 22 Nov 2022 03:30:25 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Nov 2022 03:39:06 -0800
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMBUNAB001561;
-        Tue, 22 Nov 2022 11:30:23 GMT
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMBd5vt002861;
+        Tue, 22 Nov 2022 11:39:05 GMT
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Horatiu Vultur <horatiu.vultur@microchip.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -49,18 +49,19 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
         daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
         UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v3 3/7] net: lan966x: Add len field to lan966x_tx_dcb_buf
-Date:   Tue, 22 Nov 2022 12:30:22 +0100
-Message-Id: <20221122113022.418632-1-alexandr.lobakin@intel.com>
+Subject: Re: [PATCH net-next v3 4/7] net: lan966x: Update rxq memory model
+Date:   Tue, 22 Nov 2022 12:38:51 +0100
+Message-Id: <20221122113851.418993-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221121212850.3212649-4-horatiu.vultur@microchip.com>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-4-horatiu.vultur@microchip.com>
+In-Reply-To: <20221121212850.3212649-5-horatiu.vultur@microchip.com>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-5-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,69 +69,49 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 From: Horatiu Vultur <horatiu.vultur@microchip.com>
-Date: Mon, 21 Nov 2022 22:28:46 +0100
+Date: Mon, 21 Nov 2022 22:28:47 +0100
 
-> Currently when a frame was transmitted, it is required to unamp the
-> frame that was transmitted. The length of the frame was taken from the
-> transmitted skb. In the future we might not have an skb, therefore store
-> the length skb directly in the lan966x_tx_dcb_buf and use this one to
-> unamp the frame.
+> By default the rxq memory model is MEM_TYPE_PAGE_SHARED but to be able
+> to reuse pages on the TX side, when the XDP action XDP_TX it is required
+> to update the memory model to PAGE_POOL.
 > 
 > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > ---
->  drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c | 5 +++--
->  drivers/net/ethernet/microchip/lan966x/lan966x_main.h | 1 +
->  2 files changed, 4 insertions(+), 2 deletions(-)
+>  .../net/ethernet/microchip/lan966x/lan966x_fdma.c  | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
 > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> index 94c720e59caee..384ed34197d58 100644
+> index 384ed34197d58..483d1470c8362 100644
 > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
 > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> @@ -391,12 +391,12 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
->  			continue;
+> @@ -78,8 +78,22 @@ static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
+>  		.max_len = rx->max_mtu -
+>  			   SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
+>  	};
+> +	struct lan966x_port *port;
+> +	int i;
 >  
->  		dcb_buf->dev->stats.tx_packets++;
-> -		dcb_buf->dev->stats.tx_bytes += dcb_buf->skb->len;
-> +		dcb_buf->dev->stats.tx_bytes += dcb_buf->len;
+>  	rx->page_pool = page_pool_create(&pp_params);
+> +
+> +	for (i = 0; i < lan966x->num_phys_ports; ++i) {
+> +		if (!lan966x->ports[i])
+> +			continue;
+> +
+> +		port = lan966x->ports[i];
+> +
+> +		xdp_rxq_info_unreg_mem_model(&port->xdp_rxq);
+
+xdp_rxq_info_unreg_mem_model() can emit a splat if currently the
+corresponding xdp_rxq_info is not registered[0]. Can't we face it
+here if called from lan966x_fdma_init()?
+
+> +		xdp_rxq_info_reg_mem_model(&port->xdp_rxq, MEM_TYPE_PAGE_POOL,
+> +					   rx->page_pool);
+> +	}
+> +
+>  	return PTR_ERR_OR_ZERO(rx->page_pool);
+>  }
 >  
->  		dcb_buf->used = false;
->  		dma_unmap_single(lan966x->dev,
->  				 dcb_buf->dma_addr,
-> -				 dcb_buf->skb->len,
-> +				 dcb_buf->len,
->  				 DMA_TO_DEVICE);
->  		if (!dcb_buf->ptp)
->  			dev_kfree_skb_any(dcb_buf->skb);
-> @@ -709,6 +709,7 @@ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev)
->  	/* Fill up the buffer */
->  	next_dcb_buf = &tx->dcbs_buf[next_to_use];
->  	next_dcb_buf->skb = skb;
-> +	next_dcb_buf->len = skb->len;
->  	next_dcb_buf->dma_addr = dma_addr;
->  	next_dcb_buf->used = true;
->  	next_dcb_buf->ptp = false;
-> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-> index bc93051aa0798..7bb9098496f60 100644
-> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-> @@ -175,6 +175,7 @@ struct lan966x_rx {
->  struct lan966x_tx_dcb_buf {
->  	struct net_device *dev;
->  	struct sk_buff *skb;
-> +	int len;
-
-Nit: perhaps you can define it as `u32` since fram length can't be
-negative?
-
->  	dma_addr_t dma_addr;
-
-Oh, also, on platforms with 64-bit addressing, `int len` placed in
-between ::skb and ::dma_addr would create a 4-byte hole in the
-structure. Placing `len` after ::dma_addr would make it holeless on
-any architercture.
-
->  	bool used;
->  	bool ptp;
 > -- 
 > 2.38.0
 
