@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0F0633BAF
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 12:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22604633C03
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 13:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbiKVLpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 06:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S232626AbiKVMEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 07:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbiKVLou (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 06:44:50 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037BA2F5;
-        Tue, 22 Nov 2022 03:43:52 -0800 (PST)
+        with ESMTP id S232588AbiKVMEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 07:04:44 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4E9DFA0;
+        Tue, 22 Nov 2022 04:04:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669117433; x=1700653433;
+  t=1669118684; x=1700654684;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fV6MbCTXgRneefHxLzFbEthfpU8gb9LywWsgmtPBDV8=;
-  b=YSm/uOLV9fkjLy/gWQj0LZWObx3ofBZfkBetr96MpcVRqNJ6YizYbxBy
-   tCz/ykUVv1QWQcBojRpm3JW1TmDZ/AFjJ6GfCfRQmSS6pkKFJ7yGsxIcR
-   +SbXUAHMafKQxdfC06xHVgdDzOwtHioJhQRReGjs3RGJHMN3zmaCVm2zp
-   Br85J4hCrZzu4eK8Dve8uFXvzD9CngQaH0LhLFxJOnLUQB20cl9+LoSyK
-   g7s7gDJ2MKVsogcBRepY0b6vzjz5YaP9pHR9PLXaitDZECDAmJmy1Sfr3
-   3+oIu/qPmfYt2He0gl21PAdvNlB7QmcsGoa/4V5GAbkp4eCZaMRUcOvLo
+  bh=xXOIRoWcqoS8ZJRdI+BWXomNeXdYk9vkQVnJJZI58wo=;
+  b=eDRTCtUPgM3oHmkFJ9oozNUOG0kfbGHyw4nByX4RIlzLM1xcU78w0wzK
+   HJ4+Cl+R7v1d1hSu8FkIoeAolEBD/ZhNtHfO1K4b6oKn+LBumVVqRIzWL
+   T/E9rnvD59p0JJQDEVsUQSKd8MfpITuxiHvuRVOGTO+AHKvGHoZxsm3Rt
+   tvdATN4ibTqW3XOAmXV21OPdlXxF/P4FKmPmrZoGbc5HMjU42W/fsbzcs
+   YmXO7Edv+W6ywBmW3784NfUX8NQLKWwNKgGzFB6nZ69xmOSApzu0wDpJh
+   aIUiCY47YZlBmvHAO+MOr5lO5PqEKIPaMnZdG/pLmlTCOwppawo4Hpu0Y
    Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="400084491"
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="313828788"
 X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="400084491"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 03:43:52 -0800
+   d="scan'208";a="313828788"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 04:04:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="643693740"
+X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="730371133"
 X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="643693740"
+   d="scan'208";a="730371133"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Nov 2022 03:43:49 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Nov 2022 04:04:41 -0800
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMBhlEG003863;
-        Tue, 22 Nov 2022 11:43:48 GMT
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMC4dJ6007708;
+        Tue, 22 Nov 2022 12:04:39 GMT
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Horatiu Vultur <horatiu.vultur@microchip.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -49,17 +49,17 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
         daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
         UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v3 5/7] net: lan966x: Update dma_dir of page_pool_params
-Date:   Tue, 22 Nov 2022 12:43:39 +0100
-Message-Id: <20221122114339.419188-1-alexandr.lobakin@intel.com>
+Subject: Re: [PATCH net-next v3 7/7] net: lan966x: Add support for XDP_REDIRECT
+Date:   Tue, 22 Nov 2022 13:04:30 +0100
+Message-Id: <20221122120430.419770-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221121212850.3212649-6-horatiu.vultur@microchip.com>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-6-horatiu.vultur@microchip.com>
+In-Reply-To: <20221121212850.3212649-8-horatiu.vultur@microchip.com>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-8-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,65 +68,80 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 From: Horatiu Vultur <horatiu.vultur@microchip.com>
-Date: Mon, 21 Nov 2022 22:28:48 +0100
+Date: Mon, 21 Nov 2022 22:28:50 +0100
 
-> To add support for XDP_TX it is required to be able to write to the DMA
-> area therefore it is required that the pages will be mapped using
-> DMA_BIDIRECTIONAL flag.
-> Therefore check if there are any xdp programs on the interfaces and in
-> that case set DMA_BIDRECTIONAL otherwise use DMA_FROM_DEVICE.
-> Therefore when a new XDP program is added it is required to redo the
-> page_pool.
+> Extend lan966x XDP support with the action XDP_REDIRECT. This is similar
+> with the XDP_TX, so a lot of functionality can be reused.
 > 
 > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > ---
->  .../ethernet/microchip/lan966x/lan966x_fdma.c | 29 ++++++++++++++----
->  .../ethernet/microchip/lan966x/lan966x_main.h |  2 ++
->  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 30 +++++++++++++++++++
->  3 files changed, 55 insertions(+), 6 deletions(-)
+>  .../ethernet/microchip/lan966x/lan966x_fdma.c | 83 +++++++++++++++----
+>  .../ethernet/microchip/lan966x/lan966x_main.c |  1 +
+>  .../ethernet/microchip/lan966x/lan966x_main.h | 10 ++-
+>  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 31 ++++++-
+>  4 files changed, 109 insertions(+), 16 deletions(-)
 
 [...]
 
-> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> index 8ebde1eb6a09c..05c5a28206558 100644
-> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> @@ -11,6 +11,8 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
->  	struct lan966x_port *port = netdev_priv(dev);
->  	struct lan966x *lan966x = port->lan966x;
->  	struct bpf_prog *old_prog;
-> +	bool old_xdp, new_xdp;
-> +	int err;
->  
->  	if (!lan966x->fdma) {
->  		NL_SET_ERR_MSG_MOD(xdp->extack,
-> @@ -18,7 +20,20 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
->  		return -EOPNOTSUPP;
->  	}
->  
-> +	old_xdp = lan966x_xdp_present(lan966x);
->  	old_prog = xchg(&port->xdp_prog, xdp->prog);
-> +	new_xdp = lan966x_xdp_present(lan966x);
-> +
-> +	if (old_xdp != new_xdp)
-> +		goto out;
+> @@ -558,6 +575,10 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
+>  		case FDMA_TX:
+>  			lan966x_fdma_rx_advance_dcb(rx);
+>  			continue;
+> +		case FDMA_REDIRECT:
+> +			lan966x_fdma_rx_advance_dcb(rx);
+> +			redirect = true;
+> +			continue;
 
-Shouldn't it be the other way around? E.g. when there's no prog and
-you're installing it or there is a prog and we're removing it from
-the interface, DMA dir must be changed, so we reload the Pools, but
-if `old_xdp == new_xdp` we should just hotswap them and goto out?
+I think you can save a couple lines here and avoid small code dup:
 
-> +
-> +	err = lan966x_fdma_reload_page_pool(lan966x);
-> +	if (err) {
-> +		xchg(&port->xdp_prog, old_prog);
-> +		return err;
-> +	}
-> +
-> +out:
->  	if (old_prog)
->  		bpf_prog_put(old_prog);
->  
++		case FDMA_REDIRECT:
++			redirect = true;
++			fallthrough;
+ 		case FDMA_TX:
+ 			lan966x_fdma_rx_advance_dcb(rx);
+ 			continue;
+
+The logics stays the same.
+
+>  		case FDMA_DROP:
+>  			lan966x_fdma_rx_free_page(rx);
+>  			lan966x_fdma_rx_advance_dcb(rx);
+
+[...]
+
+> @@ -178,6 +180,7 @@ struct lan966x_tx_dcb_buf {
+>  	struct net_device *dev;
+>  	struct sk_buff *skb;
+>  	struct xdp_frame *xdpf;
+> +	bool xdp_ndo;
+
+I suggest carefully inspecting this struct with pahole (or by just
+printkaying its layout/sizes/offsets at runtime) and see if there's
+any holes and how it could be optimized.
+Also, it's just my personal preference, but it's not that unpopular:
+I don't trust bools inside structures as they may surprise with
+their sizes or alignment depending on the architercture. Considering
+all the blah I wrote, I'd define it as:
+
+struct lan966x_tx_dcb_buf {
+	dma_addr_t dma_addr;		// can be 8 bytes on 32-bit plat
+	struct net_device *dev;		// ensure natural alignment
+	struct sk_buff *skb;
+	struct xdp_frame *xdpf;
+	u32 len;
+	u32 xdp_ndo:1;			// put all your booleans here in
+	u32 used:1;			// one u32
+	...
+};
+
+BTW, we usually do union { skb, xdpf } since they're mutually
+exclusive. And to distinguish between XDP and regular Tx you can use
+one more bit/bool. This can also come handy later when you add XSk
+support (you will be adding it, right? Please :P).
+
+>  	int len;
+>  	dma_addr_t dma_addr;
+>  	bool used;
 
 [...]
 
