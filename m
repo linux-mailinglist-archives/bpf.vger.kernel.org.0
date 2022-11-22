@@ -2,67 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F9D634958
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747CE634953
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbiKVVfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 16:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        id S235081AbiKVVcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 16:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbiKVVfO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 16:35:14 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13336BEAFC;
-        Tue, 22 Nov 2022 13:35:13 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id e13so22426849edj.7;
-        Tue, 22 Nov 2022 13:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWvFlRLFU7LxrYn/RLpYUbjQ3plVi0tJneW/bVBsyxw=;
-        b=LLRKmHZJ1FLrE+Q7xD9f28XFkVSJaJpFTSHzIMu/jCX2IqoRBzKgqByPmZmfJniTCV
-         mYUoY0OKqq3VxFluJK6DATs4r3DEwG5lUM54yi+u5aLVdoyUl2mbSTAOjKFjazkmcoQj
-         iGyM386wFl1/DXAFiiOsgrWk4cq3hJHcv5vyYk4caEbrQC/4rQ29QCT15ilDbcYAUdSZ
-         gzZ3fySLeXQq3UrTilnyVf2SMc+Jsr6cfSJUKpaveYbZKzDGr599z6nCiZ1wfCOlgmFb
-         r/mo/V19UFi206+KpcyWKWEBdpq9miwfWRGfC2p//E7+1Fuofzb+ODezJCWTciDMgT4Z
-         /Hvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cWvFlRLFU7LxrYn/RLpYUbjQ3plVi0tJneW/bVBsyxw=;
-        b=jmeJM+h0pF8Ckk0t+MZKWNDYh3A/QaIsXAaKvDvIEdgKur2KOvaDjCJ2npHlVxgNYF
-         SmbzSqUETAua+8ecTz0nTQGHG/tk69qkX1IKnOhGDG/xJ7hrzjiuJShDNUNzn1f8n6+t
-         z9xbIqjtQmDcjLvadD8Kktq7e7JfYp82gLWQ+wdQ8yGwb+p1GuSglIcVSzowzmkS4Ysx
-         Ndu/yHImb8R266aSBUU3P/Hsg918FfR3EhJbUyRET9nvJ4ZU25mFmXGNuily5RpL1wdk
-         d75axnYKbuASU4LrzESVbOz4wGf2M12lIgj4bz6pw9A3EArbgmZSPuXv/YG3rtTMdluK
-         63xQ==
-X-Gm-Message-State: ANoB5pl2e9HkF5Oxjp9pf5wZ/6hPlhv/yHi7INEf/Y2lnpEFifsJtqp+
-        MiZzkCxdh3RFW9TggBM2PuoIh2Y45aZnVWJFrkilsXyR
-X-Google-Smtp-Source: AA0mqf798oCyCTmC7/hNZb1PoaevfH2dXyc5dL93XgeOtgwyFtilBdL3o+96iXAGdWGth+nYeYqk8nGIi0/iOnHrJvY=
-X-Received: by 2002:a05:6402:5289:b0:462:70ee:fdb8 with SMTP id
- en9-20020a056402528900b0046270eefdb8mr23224297edb.66.1669152911428; Tue, 22
- Nov 2022 13:35:11 -0800 (PST)
+        with ESMTP id S235069AbiKVVcq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:32:46 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6B67640;
+        Tue, 22 Nov 2022 13:32:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1669152757; x=1700688757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ISteiEafnpwfxSB+bh7FKbXTjSTCofLvMskNHi+6Jts=;
+  b=niki0MW8zySgQId4KQJ0TaRx7tzE3ydkYA3Aeph16YmJsCLQSuu0etg+
+   nggM0G4A/sXdu19qPQIv+mlixWjsJTtPxWmof39W1NW37c+/WwLbRuzZL
+   qfHEdZ3rY9RogWk+HufSt9TvmXKgP0PERhWnm48bEvECo/9/C90y3ld6k
+   uylANtJljdfHocqWuXuo1A5wWO5rTY0ACBO6rEs1rzT2N4aRr4ZMj4sW9
+   Lf7WAOHReo7vrrh9V9RA8BegLgdax5oNfRWpv96oCkHTslE6+8qGedyr0
+   4i+LxBRTBJLP08PlblfHvS2ZzdBK3PTQOLWJhxNofIk3IphADRL3jj7s4
+   A==;
+X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
+   d="scan'208";a="190136597"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Nov 2022 14:32:34 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Tue, 22 Nov 2022 14:32:33 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Tue, 22 Nov 2022 14:32:33 -0700
+Date:   Tue, 22 Nov 2022 22:37:24 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v3 7/7] net: lan966x: Add support for
+ XDP_REDIRECT
+Message-ID: <20221122213724.exqdhdxujvgtojxq@soft-dev3-1>
+References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
+ <20221121212850.3212649-8-horatiu.vultur@microchip.com>
+ <20221122120430.419770-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-References: <20221123082409.51f63598@canb.auug.org.au>
-In-Reply-To: <20221123082409.51f63598@canb.auug.org.au>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 22 Nov 2022 13:35:00 -0800
-Message-ID: <CAADnVQLEeeu5qyjqGFfQLEed8b2_LwZccyAkPKidyO4Yb+yPBw@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the bpf-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20221122120430.419770-1-alexandr.lobakin@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,16 +66,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 1:24 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commit
->
->   6caf7a275b42 ("Revert "selftests/bpf: Temporarily disable linked list tests"")
->
-> is missing a Signed-off-by from its author and committer.
->
-> Reverts are commits too.
+The 11/22/2022 13:04, Alexander Lobakin wrote:
+> 
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Date: Mon, 21 Nov 2022 22:28:50 +0100
+> 
+> > Extend lan966x XDP support with the action XDP_REDIRECT. This is similar
+> > with the XDP_TX, so a lot of functionality can be reused.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 83 +++++++++++++++----
+> >  .../ethernet/microchip/lan966x/lan966x_main.c |  1 +
+> >  .../ethernet/microchip/lan966x/lan966x_main.h | 10 ++-
+> >  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 31 ++++++-
+> >  4 files changed, 109 insertions(+), 16 deletions(-)
+> 
+> [...]
+> 
+> > @@ -558,6 +575,10 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
+> >               case FDMA_TX:
+> >                       lan966x_fdma_rx_advance_dcb(rx);
+> >                       continue;
+> > +             case FDMA_REDIRECT:
+> > +                     lan966x_fdma_rx_advance_dcb(rx);
+> > +                     redirect = true;
+> > +                     continue;
+> 
+> I think you can save a couple lines here and avoid small code dup:
+> 
+> +               case FDMA_REDIRECT:
+> +                       redirect = true;
+> +                       fallthrough;
+>                 case FDMA_TX:
+>                         lan966x_fdma_rx_advance_dcb(rx);
+>                         continue;
 
-Ahh. Fixed and force pushed.
+I will save only a line but I will add this change in the next version
+as I like it more than what I wrote.
+
+> 
+> The logics stays the same.
+> 
+> >               case FDMA_DROP:
+> >                       lan966x_fdma_rx_free_page(rx);
+> >                       lan966x_fdma_rx_advance_dcb(rx);
+> 
+> [...]
+> 
+> > @@ -178,6 +180,7 @@ struct lan966x_tx_dcb_buf {
+> >       struct net_device *dev;
+> >       struct sk_buff *skb;
+> >       struct xdp_frame *xdpf;
+> > +     bool xdp_ndo;
+> 
+> I suggest carefully inspecting this struct with pahole (or by just
+> printkaying its layout/sizes/offsets at runtime) and see if there's
+> any holes and how it could be optimized.
+> Also, it's just my personal preference, but it's not that unpopular:
+> I don't trust bools inside structures as they may surprise with
+> their sizes or alignment depending on the architercture. Considering
+> all the blah I wrote, I'd define it as:
+> 
+> struct lan966x_tx_dcb_buf {
+>         dma_addr_t dma_addr;            // can be 8 bytes on 32-bit plat
+>         struct net_device *dev;         // ensure natural alignment
+>         struct sk_buff *skb;
+>         struct xdp_frame *xdpf;
+>         u32 len;
+>         u32 xdp_ndo:1;                  // put all your booleans here in
+>         u32 used:1;                     // one u32
+>         ...
+> };
+
+Thanks for the suggestion. I make sure not that this struct will not
+have any holes.
+Can it be a rule of thumb, that every time when a new member is added to
+a struct, to make sure that it doesn't introduce any holes?
+
+> 
+> BTW, we usually do union { skb, xdpf } since they're mutually
+> exclusive. And to distinguish between XDP and regular Tx you can use
+> one more bit/bool. This can also come handy later when you add XSk
+> support (you will be adding it, right? Please :P).
+
+I think I will take this battle at later point when I will add XSK :)
+After I finish with this patch series, I will need to focus on some VCAP
+support for lan966x.
+And maybe after that I will be able to add XSK. Because I need to look
+more at this XSK topic as I have looked too much on it before but I heard
+a lot of great things about it :)
+
+> 
+> >       int len;
+> >       dma_addr_t dma_addr;
+> >       bool used;
+> 
+> [...]
+> 
+> > --
+> > 2.38.0
+> 
+> Thanks,
+> Olek
+
+-- 
+/Horatiu
