@@ -2,63 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38394634918
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F9D634958
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbiKVVUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 16:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        id S232852AbiKVVfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 16:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233174AbiKVVUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 16:20:21 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EC18F3C3;
-        Tue, 22 Nov 2022 13:20:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1669152017; x=1700688017;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ads2cVRvZI8k8jJJ/EENd7OUJlc/7SM5FY/+3wbCKkk=;
-  b=RbwD1C3BA7JaRZqFrOM/Ty1NNyWBKb4cMJM6DBscm3k6rG6z5FcyggF+
-   JYxJ6YhtZOYq4nAyXEhC/H1jD15LuM8gKj+NTNszABb6KWq2ijk9c963u
-   BCZWsb6aPxBuZhbXHGsZGHJYgoGg7Qhow/bTIM5bTbd9gBsZHoF76z7WX
-   qZSYMFzFmXeFAmjtCyp+/HEJmVnOiBVRgZ5WGeef9XbIG64c81ka84BXU
-   XTIio4mS26CiPH1sN0mdj0+OWg5gOxWXDfkvOZIxvKg9IE6raDzYqIKxg
-   iShtMwfCguKHL9XyuHPvGaE2ePz0RhZ4Z3XLYrjzF7ceISZKhPpbEWVTt
-   A==;
-X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
-   d="scan'208";a="190134967"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Nov 2022 14:20:17 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Tue, 22 Nov 2022 14:20:14 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
- Transport; Tue, 22 Nov 2022 14:20:14 -0700
-Date:   Tue, 22 Nov 2022 22:25:04 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v3 5/7] net: lan966x: Update dma_dir of
- page_pool_params
-Message-ID: <20221122212504.nrwaucgab3lqqxpo@soft-dev3-1>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
- <20221121212850.3212649-6-horatiu.vultur@microchip.com>
- <20221122114339.419188-1-alexandr.lobakin@intel.com>
+        with ESMTP id S232572AbiKVVfO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:35:14 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13336BEAFC;
+        Tue, 22 Nov 2022 13:35:13 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id e13so22426849edj.7;
+        Tue, 22 Nov 2022 13:35:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWvFlRLFU7LxrYn/RLpYUbjQ3plVi0tJneW/bVBsyxw=;
+        b=LLRKmHZJ1FLrE+Q7xD9f28XFkVSJaJpFTSHzIMu/jCX2IqoRBzKgqByPmZmfJniTCV
+         mYUoY0OKqq3VxFluJK6DATs4r3DEwG5lUM54yi+u5aLVdoyUl2mbSTAOjKFjazkmcoQj
+         iGyM386wFl1/DXAFiiOsgrWk4cq3hJHcv5vyYk4caEbrQC/4rQ29QCT15ilDbcYAUdSZ
+         gzZ3fySLeXQq3UrTilnyVf2SMc+Jsr6cfSJUKpaveYbZKzDGr599z6nCiZ1wfCOlgmFb
+         r/mo/V19UFi206+KpcyWKWEBdpq9miwfWRGfC2p//E7+1Fuofzb+ODezJCWTciDMgT4Z
+         /Hvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cWvFlRLFU7LxrYn/RLpYUbjQ3plVi0tJneW/bVBsyxw=;
+        b=jmeJM+h0pF8Ckk0t+MZKWNDYh3A/QaIsXAaKvDvIEdgKur2KOvaDjCJ2npHlVxgNYF
+         SmbzSqUETAua+8ecTz0nTQGHG/tk69qkX1IKnOhGDG/xJ7hrzjiuJShDNUNzn1f8n6+t
+         z9xbIqjtQmDcjLvadD8Kktq7e7JfYp82gLWQ+wdQ8yGwb+p1GuSglIcVSzowzmkS4Ysx
+         Ndu/yHImb8R266aSBUU3P/Hsg918FfR3EhJbUyRET9nvJ4ZU25mFmXGNuily5RpL1wdk
+         d75axnYKbuASU4LrzESVbOz4wGf2M12lIgj4bz6pw9A3EArbgmZSPuXv/YG3rtTMdluK
+         63xQ==
+X-Gm-Message-State: ANoB5pl2e9HkF5Oxjp9pf5wZ/6hPlhv/yHi7INEf/Y2lnpEFifsJtqp+
+        MiZzkCxdh3RFW9TggBM2PuoIh2Y45aZnVWJFrkilsXyR
+X-Google-Smtp-Source: AA0mqf798oCyCTmC7/hNZb1PoaevfH2dXyc5dL93XgeOtgwyFtilBdL3o+96iXAGdWGth+nYeYqk8nGIi0/iOnHrJvY=
+X-Received: by 2002:a05:6402:5289:b0:462:70ee:fdb8 with SMTP id
+ en9-20020a056402528900b0046270eefdb8mr23224297edb.66.1669152911428; Tue, 22
+ Nov 2022 13:35:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20221122114339.419188-1-alexandr.lobakin@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham
+References: <20221123082409.51f63598@canb.auug.org.au>
+In-Reply-To: <20221123082409.51f63598@canb.auug.org.au>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 22 Nov 2022 13:35:00 -0800
+Message-ID: <CAADnVQLEeeu5qyjqGFfQLEed8b2_LwZccyAkPKidyO4Yb+yPBw@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,78 +70,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 11/22/2022 12:43, Alexander Lobakin wrote:
-> 
-> From: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Date: Mon, 21 Nov 2022 22:28:48 +0100
-> 
-> > To add support for XDP_TX it is required to be able to write to the DMA
-> > area therefore it is required that the pages will be mapped using
-> > DMA_BIDIRECTIONAL flag.
-> > Therefore check if there are any xdp programs on the interfaces and in
-> > that case set DMA_BIDRECTIONAL otherwise use DMA_FROM_DEVICE.
-> > Therefore when a new XDP program is added it is required to redo the
-> > page_pool.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 29 ++++++++++++++----
-> >  .../ethernet/microchip/lan966x/lan966x_main.h |  2 ++
-> >  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 30 +++++++++++++++++++
-> >  3 files changed, 55 insertions(+), 6 deletions(-)
-> 
-> [...]
-> 
-> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> > index 8ebde1eb6a09c..05c5a28206558 100644
-> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-> > @@ -11,6 +11,8 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
-> >       struct lan966x_port *port = netdev_priv(dev);
-> >       struct lan966x *lan966x = port->lan966x;
-> >       struct bpf_prog *old_prog;
-> > +     bool old_xdp, new_xdp;
-> > +     int err;
-> >
-> >       if (!lan966x->fdma) {
-> >               NL_SET_ERR_MSG_MOD(xdp->extack,
-> > @@ -18,7 +20,20 @@ static int lan966x_xdp_setup(struct net_device *dev, struct netdev_bpf *xdp)
-> >               return -EOPNOTSUPP;
-> >       }
-> >
-> > +     old_xdp = lan966x_xdp_present(lan966x);
-> >       old_prog = xchg(&port->xdp_prog, xdp->prog);
-> > +     new_xdp = lan966x_xdp_present(lan966x);
-> > +
-> > +     if (old_xdp != new_xdp)
-> > +             goto out;
-> 
-> Shouldn't it be the other way around? E.g. when there's no prog and
-> you're installing it or there is a prog and we're removing it from
-> the interface, DMA dir must be changed, so we reload the Pools, but
-> if `old_xdp == new_xdp` we should just hotswap them and goto out?
+On Tue, Nov 22, 2022 at 1:24 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commit
+>
+>   6caf7a275b42 ("Revert "selftests/bpf: Temporarily disable linked list tests"")
+>
+> is missing a Signed-off-by from its author and committer.
+>
+> Reverts are commits too.
 
-Argh! Yes, it needs to be the other way around.
-> 
-> > +
-> > +     err = lan966x_fdma_reload_page_pool(lan966x);
-> > +     if (err) {
-> > +             xchg(&port->xdp_prog, old_prog);
-> > +             return err;
-> > +     }
-> > +
-> > +out:
-> >       if (old_prog)
-> >               bpf_prog_put(old_prog);
-> >
-> 
-> [...]
-> 
-> > --
-> > 2.38.0
-> 
-> Thanks,
-> Olek
-
--- 
-/Horatiu
+Ahh. Fixed and force pushed.
