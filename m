@@ -2,57 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC66633396
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 03:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EBA633398
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 03:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiKVCzU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Nov 2022 21:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        id S230237AbiKVC4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Nov 2022 21:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbiKVCzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Nov 2022 21:55:19 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B78178B2
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 18:55:18 -0800 (PST)
+        with ESMTP id S231652AbiKVC4M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Nov 2022 21:56:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434CF17A8A
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 18:56:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CEACEB81603
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 02:55:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BAFC433D6
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 02:55:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F29DFB81603
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 02:56:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1B4BC433D6
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 02:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669085715;
-        bh=y87F50pgoXn/vExBQVCL5ei/ZfSRdM8VAn2jZcONyS0=;
+        s=k20201202; t=1669085768;
+        bh=Xg4CfovBwHPfcEYY/0bJg7qhGA+G8rcFhnJbVLO6f7A=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UCwlBnf5hBHM8hAHvs/UUi8opNokYQFnS/O0IqClDXowoH8br6cGEbz7Ikt+qqdF0
-         D+Q4pWK+28b0RFE2HJpUB2pPeTdsYAY+HabC95bdKvlWOHSlfVLzjpv53iyrtO45p/
-         PJ/uEhtm/qxsPPFnpFO5Fo8FwiIyoQc00soN+MFgchwjgDudsIxT3+lK+FjyQ+jMsr
-         CseK9NbogsyGn04zJtqa3HsqAgTfpsh02dZiGMV6WiDyUc/9tVf5R3cMB197oMDu/f
-         g8YnuDAKCvV0EuYvmmNNIcX19LMmWXaDAi1taio3Gs6X51rs4fzEuIcC9ASJ7WTEi5
-         eSLcZjwSlIu9w==
-Received: by mail-ej1-f48.google.com with SMTP id me22so16179923ejb.8
-        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 18:55:15 -0800 (PST)
-X-Gm-Message-State: ANoB5pkb5hxLVrypYonJvQYo7OzDCG6/d46ItLto4cMDmbbNueiMzw/p
-        jScQDFpIMtasIwPRmY7iC2JBoO7CqPOtDMwbNkI=
-X-Google-Smtp-Source: AA0mqf4Fr50DSq7OxTYj2C5VwJm+YBbb7DwZ5Pnkup+zdJ0j80WfsM5Be0e3eIx8FA5Ex/xjC0le/sy/ZMo2nc4tEIE=
-X-Received: by 2002:a17:906:c34f:b0:78e:17ad:ba62 with SMTP id
- ci15-20020a170906c34f00b0078e17adba62mr17968858ejb.719.1669085713590; Mon, 21
- Nov 2022 18:55:13 -0800 (PST)
+        b=KzHwEXKmiRTZh57vql2GBr79b6ZnyVHtr0KV62S+gLWBJbg9ymaSOP1F/+DI3ypb3
+         11eYxbwYcwBmHhHqJtV7fSDHKCaBiv6Md2eOk7l4agvx3b+9yh0xX6bKy1kL+wTMSX
+         FHtRu1ISW47RLb8IeLbbrf+MxD28jfi3TM83jsvKnm2EIIPIC46m0yrXgXxz2iYJ7A
+         vpjOsYzeowpjgZc5RfwHq5DeHjLI4V21FDXs5DpAvXujuaCo6eIQLVYI9wqu6f7WuM
+         lFWaCaEkVHX1Hiwc5+UVZR8lZwwmB7ZQxxlp8yv1ESZxUazfttMEOo+gn654h5UcmQ
+         AvmGgvCHBAEHw==
+Received: by mail-ed1-f52.google.com with SMTP id y24so13792767edi.10
+        for <bpf@vger.kernel.org>; Mon, 21 Nov 2022 18:56:08 -0800 (PST)
+X-Gm-Message-State: ANoB5plGheMPSqJbF5Sov+tPC/OXbEXghhr6skDHC9ln5yzU8TpC1V9B
+        r2pGgs7xYV2VnnAbfivzcvd/FpGWbijs0NxojBs=
+X-Google-Smtp-Source: AA0mqf4VFAdDOsQZGrBWiCDJ0Nmkm2LY51fkwE9aqWr9IiYlKOYmhWGHCWcgFuOHJKxCkoJ4QKHQYruWhnaWQM3/ayE=
+X-Received: by 2002:aa7:d653:0:b0:469:afb9:d14c with SMTP id
+ v19-20020aa7d653000000b00469afb9d14cmr4537784edr.387.1669085766996; Mon, 21
+ Nov 2022 18:56:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20221117202322.944661-1-song@kernel.org> <Y3vbwMptiNP6aJDh@bombadil.infradead.org>
-In-Reply-To: <Y3vbwMptiNP6aJDh@bombadil.infradead.org>
+References: <20221117202322.944661-1-song@kernel.org> <20221117202322.944661-2-song@kernel.org>
+ <882e2964-932e-0113-d3cd-344281add3a1@iogearbox.net> <20221121155542.GA27879@lst.de>
+ <CAPhsuW7M3rAa=d4G5kzBCPofgSvKz8+Zcxg7u3+2MLMs2FTX+w@mail.gmail.com> <Y3vXorejgjSCXtt3@bombadil.infradead.org>
+In-Reply-To: <Y3vXorejgjSCXtt3@bombadil.infradead.org>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Nov 2022 19:55:01 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4353BfXu05npveQg9MiKRTHFNrL_owFZ19EbAx1Rigbw@mail.gmail.com>
-Message-ID: <CAPhsuW4353BfXu05npveQg9MiKRTHFNrL_owFZ19EbAx1Rigbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/6] execmem_alloc for BPF programs
-To:     Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        peterz@infradead.org, hch@lst.de, rick.p.edgecombe@intel.com,
-        rppt@kernel.org, willy@infradead.org, dave@stgolabs.net,
-        a.manzanares@samsung.com
+Date:   Mon, 21 Nov 2022 19:55:55 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7crSUpjRbWMT6KDTXDEbJRA8YMm2akOKF6QBHP8vt5VA@mail.gmail.com>
+Message-ID: <CAPhsuW7crSUpjRbWMT6KDTXDEbJRA8YMm2akOKF6QBHP8vt5VA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/6] vmalloc: introduce execmem_alloc,
+ execmem_free, and execmem_fill
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        peterz@infradead.org, rick.p.edgecombe@intel.com, rppt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -63,49 +65,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 1:12 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Mon, Nov 21, 2022 at 12:55 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
-> On Thu, Nov 17, 2022 at 12:23:16PM -0800, Song Liu wrote:
-
-[...]
-
-> > 5. Introduce a unified API to allocate memory with special permissions.
+> On Mon, Nov 21, 2022 at 09:29:20AM -0700, Song Liu wrote:
+> > On Mon, Nov 21, 2022 at 8:55 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > On Mon, Nov 21, 2022 at 04:52:24PM +0100, Daniel Borkmann wrote:
+> > > >> +void *execmem_fill(void *dst, void *src, size_t len)
+> > > >> +{
+> > > >> +    return ERR_PTR(-EOPNOTSUPP);
+> > > >> +}
+> > > >
+> > > > Don't they need EXPORT_SYMBOL_GPL, too?
+> > >
+> > > None of these should be exported.  Modular code has absolutely no
+> > > business creating executable mappings.
 > >
-> > This will help get rid of set_vm_flush_reset_perms calls from users of
-> > vmalloc, module_alloc, etc.
+> > I added these exports for test_vmalloc.ko. Is there a way to only export
+> > them to test_vmalloc.ko but nothing else?
 >
-> And *this* is one of the reasons I'm so eager to see a proper solution
-> drawn up. This would be a huge win for modules, however since some of
-> the complexities in special permissions with modules lies in all the
-> cross architecture hanky panky, I'd prefer to see this through merged
-> *iff* we have modules converted as well as it would give us a clearer
-> picture if the solution covers the bases. And we'd get proper testing
-> on this. Rather than it being a special thing for BPF.
+> See EXPORT_SYMBOL_NS_GPL()
 
-Module code is clearly the most difficult to migrate. (It has to work on
-almost all archs, and it contains 3 allocations: core, data, init.) If we
-want actionable path towards fixing all these, I don't think we should
-use module code as the bar for the very first set. (Of course, if
-Andrew or Linus insists that way, I will rethink about this).
+Thanks! I will take a look at this later (vacation this week).
 
-PS: I don't quite understand why there is a strong concern in adding
-this to core mm API, especially that there is also an argument that
-this is only for BPF.
-
-IIUC, the real concern comes for a core API that is
-   1. easy to use, and have many users;
-   2. has a horrible internal implementation (maybe bpf_prog_pack
-      falls in here, but it is not easy to use).
-
-Such API will cause a lot of problems, and it is also so hard to
-remove. execmem_* APIs are quite the opposite. It is hard to use,
-and it has a decent internal implementation (at least better than
-bpf_prog_pack).
-
-In 4/5 of the set, we easily reverted all the code bpf_prog_pack
-and used execmem_* instead. If execmem_* turn out to be
-horrible, and only useful for BPF, we can easily migrate it to the
-next good API, right?
-
-Thanks,
 Song
