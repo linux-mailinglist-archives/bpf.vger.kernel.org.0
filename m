@@ -2,267 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0764633E91
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 15:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFB6633E9D
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 15:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbiKVOLS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 09:11:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S233435AbiKVOOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 09:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbiKVOLA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 09:11:00 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9152CC8D;
-        Tue, 22 Nov 2022 06:10:12 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id z4so10299972wrr.3;
-        Tue, 22 Nov 2022 06:10:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s2sxIMALN/jhAgeTyHOyVZJuD3alMnqSzP+eykVYVtQ=;
-        b=TmSTQdGRgXfA19BTGoTn31F++Na6tUYPeVbjhIwBzeVX0LZ+F3CC3I0piMXG8DDDre
-         9vveTuZys31wOl0wwRxaSH26yOc1SFbEk9GPFlpiAc2H/WbWixK7HE6wxVVi3T5Gusn4
-         7arJVAyGnHHn7I4nrhlseUy2Sidij00Z4Nr5NH+B0OvA6j0wjlU95i06sbZhuHUqS1ix
-         ayF9CArPmNTTX32Vfs1VJl6gRO1FD0zN2XcsatfDWgvacVxwjQsFFEqozzZjCD7bMt7d
-         A5JwdHxfqU+C6nXwFAEU0UGnyH1jU8kwgfpBv2tX7er6PCEM4Eb5XmCochE9GZbJjZQo
-         2Y0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s2sxIMALN/jhAgeTyHOyVZJuD3alMnqSzP+eykVYVtQ=;
-        b=T3C44hCauu0RlPI4FZ2/mgnS9fUBwuzeCzpDhIXWqRdTLV+pbsmflPtTlimWT+S+BW
-         opEPfxk/K0M+Fe9JyOv1PD2t9yMC8vUWlcCfT4QE8zM5NpeR7uZHNPzOSx4PQLvQJ3b/
-         JBEPbA5lJWRwQmuq20pbzGWKciW+nmrMiOy1KtJBVbviN4FtWP/i/OAbBIsmH5t/ODht
-         iWb+st0spXLVhsT9p2xOehI9KLtnFRDtfDuFXYTRSw6qsXuwFONBruakrqDxSYM7k/MV
-         b4nSmaIMR2F66A04S5Q0WJcX9cO0zEbWVYxRNdfyHCvfBf9ClB7IkbyzSQvabhruLs76
-         j6Dg==
-X-Gm-Message-State: ANoB5pkGhyBhDwsfIbpNgoeBGEiq6xEv6DrKcomMxEBvPE7sGt8xM4OW
-        xQYmA9/Iz3BCbRLDi+2+oxBheB6J4X9qpg==
-X-Google-Smtp-Source: AA0mqf5anA48MSpp2rcykGtBfXwPOv2BN5tX5Xn68Bg+uzHZskS35OxENBzK5NQXtIQ+HWYD1uc0pw==
-X-Received: by 2002:adf:f086:0:b0:22e:3725:8acc with SMTP id n6-20020adff086000000b0022e37258accmr6216318wro.330.1669126210228;
-        Tue, 22 Nov 2022 06:10:10 -0800 (PST)
-Received: from imac.fritz.box ([2a02:8010:60a0:0:986c:3a9f:58a6:a738])
-        by smtp.gmail.com with ESMTPSA id bg21-20020a05600c3c9500b003b497138093sm19530441wmb.47.2022.11.22.06.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Nov 2022 06:10:09 -0800 (PST)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231993AbiKVOOt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 09:14:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D214F2CE39;
+        Tue, 22 Nov 2022 06:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fPPV6bHHJk7Bs+EMqqf8ix0CTVkJxWliUb6bnx5zXTg=; b=HdO+Bn2qho/Fg02s5a+yFi5L/z
+        s0NtsK38g/aax/ZAJqb3zpsAMqYq7+Q7tadhZHCFcDv1F8NGUS7eMrvUVi6gO0Se6McQOvAq3EGvL
+        2kViVT7V7FMmfwuik/UpbfWf7ZfBgB0Sd8aBtzOA1ZGU4sFgBdRLOLdVIpDDIBDRCL0BgV3NB5s8H
+        VKjVRBdnpccjyfxP0D+XRHZnKynxW/A+W7CgX/YFu2injmmqoGzfKseis/z+POMQ258gzMv/SBjZb
+        vxn2zgiGmmQ5uxX+zUys8Q1Tg/lPY+AiXkiTSXv5kRITvA/tjn3PL2mSG0brgGwDC2ZTeZl0fGh8O
+        RnnjkvdA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oxU2k-006RC4-4S; Tue, 22 Nov 2022 14:14:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DDB44300322;
+        Tue, 22 Nov 2022 15:14:26 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 885B22D69A8AA; Tue, 22 Nov 2022 15:14:26 +0100 (CET)
+Date:   Tue, 22 Nov 2022 15:14:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Chen Hu <hu1.chen@intel.com>, jpoimboe@kernel.org,
+        memxor@gmail.com, bpf@vger.kernel.org,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Donald Hunter <donald.hunter@gmail.com>
-Subject: [PATCH bpf-next v2] bpf, docs: Document BPF_MAP_TYPE_BLOOM_FILTER
-Date:   Tue, 22 Nov 2022 14:08:24 +0000
-Message-Id: <20221122140824.89305-1-donald.hunter@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf v2] selftests/bpf: Fix "missing ENDBR" BUG for
+ destructor kfunc
+Message-ID: <Y3zZQpHNQ8cRjKQY@hirez.programming.kicks-ass.net>
+References: <20221122073244.21279-1-hu1.chen@intel.com>
+ <Y3zTF0CjQFt/dR2M@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y3zTF0CjQFt/dR2M@krava>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add documentation for BPF_MAP_TYPE_BLOOM_FILTER including
-kernel BPF helper usage, userspace usage and examples.
+On Tue, Nov 22, 2022 at 02:48:07PM +0100, Jiri Olsa wrote:
+> On Mon, Nov 21, 2022 at 11:32:43PM -0800, Chen Hu wrote:
+> > With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
+> > following BUG:
+> > 
+> >   traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
+> >   ------------[ cut here ]------------
+> >   kernel BUG at arch/x86/kernel/traps.c:254!
+> >   invalid opcode: 0000 [#1] PREEMPT SMP
+> >   <TASK>
+> >    asm_exc_control_protection+0x26/0x50
+> >   RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
+> >   Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
+> > 	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
+> >        <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
+> >    bpf_map_free_kptrs+0x2e/0x70
+> >    array_map_free+0x57/0x140
+> >    process_one_work+0x194/0x3a0
+> >    worker_thread+0x54/0x3a0
+> >    ? rescuer_thread+0x390/0x390
+> >    kthread+0xe9/0x110
+> >    ? kthread_complete_and_exit+0x20/0x20
+> > 
+> > This is because there are no compile-time references to the destructor
+> > kfuncs, bpf_kfunc_call_test_release() for example. So objtool marked
+> > them sealable and ENDBR in the functions were sealed (converted to NOP)
+> > by apply_ibt_endbr().
 
-Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
----
-v1 -> v2:
-- Fix sphinx warnings for sphinx >= 3.1
-
- Documentation/bpf/map_bloom_filter.rst | 174 +++++++++++++++++++++++++
- 1 file changed, 174 insertions(+)
- create mode 100644 Documentation/bpf/map_bloom_filter.rst
-
-diff --git a/Documentation/bpf/map_bloom_filter.rst b/Documentation/bpf/map_bloom_filter.rst
-new file mode 100644
-index 000000000000..b96fd5f13e1f
---- /dev/null
-+++ b/Documentation/bpf/map_bloom_filter.rst
-@@ -0,0 +1,174 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2022 Red Hat, Inc.
-+
-+=========================
-+BPF_MAP_TYPE_BLOOM_FILTER
-+=========================
-+
-+.. note::
-+   - ``BPF_MAP_TYPE_BLOOM_FILTER`` was introduced in kernel version 5.16
-+
-+``BPF_MAP_TYPE_BLOOM_FILTER`` provides a BPF bloom filter map. Bloom
-+filters are a space-efficient probabilistic data structure used to
-+quickly test whether an element exists in a set. In a bloom filter,
-+false positives are possible whereas false negatives are not.
-+
-+The bloom filter map does not have keys, only values. When the bloom
-+filter map is created, it must be created with a ``key_size`` of 0.  The
-+bloom filter map supports two operations:
-+
-+- push: adding an element to the map
-+- peek: determining whether an element is present in the map
-+
-+BPF programs must use ``bpf_map_push_elem`` to add an element to the
-+bloom filter map and ``bpf_map_peek_elem`` to query the map. These
-+operations are exposed to userspace applications using the existing
-+``bpf`` syscall in the following way:
-+
-+- ``BPF_MAP_UPDATE_ELEM`` -> push
-+- ``BPF_MAP_LOOKUP_ELEM`` -> peek
-+
-+The ``max_entries`` size that is specified at map creation time is used
-+to approximate a reasonable bitmap size for the bloom filter, and is not
-+otherwise strictly enforced. If the user wishes to insert more entries
-+into the bloom filter than ``max_entries``, this may lead to a higher
-+false positive rate.
-+
-+The number of hashes to use for the bloom filter is configurable using
-+the lower 4 bits of ``map_extra`` in ``union bpf_attr`` at map creation
-+time. If no number is specified, the default used will be 5 hash
-+functions. In general, using more hashes decreases both the false
-+positive rate and the speed of a lookup.
-+
-+It is not possible to delete elements from a bloom filter map. A bloom
-+filter map may be used as an inner map. The user is responsible for
-+synchronising concurrent updates and lookups to ensure no false negative
-+lookups occur.
-+
-+Usage
-+=====
-+
-+Kernel BPF
-+----------
-+
-+bpf_map_push_elem()
-+~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: c
-+
-+   long bpf_map_push_elem(struct bpf_map *map, const void *value, u64 flags)
-+
-+A ``value`` can be added to a bloom filter using the
-+``bpf_map_push_elem()`` helper. The ``flags`` parameter must be set to
-+``BPF_ANY`` when adding an entry to the bloom filter. This helper
-+returns ``0`` on success, or negative error in case of failure.
-+
-+bpf_map_peek_elem()
-+~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: c
-+
-+   long bpf_map_peek_elem(struct bpf_map *map, void *value)
-+
-+The ``bpf_map_peek_elem()`` helper is used to determine whether
-+``value`` is present in the bloom filter map. This helper returns ``0``
-+if ``value`` is probably present in the map, or ``-ENOENT`` if ``value``
-+is definitely not present in the map.
-+
-+Userspace
-+---------
-+
-+bpf_map_update_elem()
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: c
-+
-+   int bpf_map_update_elem (int fd, const void *key, const void *value, __u64 flags)
-+
-+A userspace program can add a ``value`` to a bloom filter using libbpf's
-+``bpf_map_update_elem`` function. The ``key`` parameter must be set to
-+``NULL`` and ``flags`` must be set to ``BPF_ANY``. Returns ``0`` on
-+success, or negative error in case of failure.
-+
-+bpf_map_lookup_elem()
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: c
-+
-+   int bpf_map_lookup_elem (int fd, const void *key, void *value)
-+
-+A userspace program can determine the presence of ``value`` in a bloom
-+filter using libbpf's ``bpf_map_lookup_elem`` function. The ``key``
-+parameter must be set to ``NULL``. Returns ``0`` if ``value`` is
-+probably present in the map, or ``-ENOENT`` if ``value`` is definitely
-+not present in the map.
-+
-+Examples
-+========
-+
-+Kernel BPF
-+----------
-+
-+This snippet shows how to declare a bloom filter in a BPF program:
-+
-+.. code-block:: c
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_BLOOM_FILTER);
-+            __type(value, __u32);
-+            __uint(max_entries, 1000);
-+            __uint(map_extra, 3);
-+    } bloom_filter SEC(".maps");
-+
-+This snippet shows how to determine presence of a value in a bloom
-+filter in a BPF program:
-+
-+.. code-block:: c
-+
-+    void *lookup(__u32 key)
-+    {
-+            if (bpf_map_peek_elem(&bloom_filter, &key) == 0) {
-+                    /* Verify not a false positive and fetch an associated
-+                     * value using a secondary lookup, e.g. in a hash table
-+                     */
-+                    return bpf_map_lookup_elem(&hash_table, &key);
-+            }
-+            return 0;
-+    }
-+
-+Userspace
-+---------
-+
-+This snippet shows how to use libbpf to create a bloom filter map from
-+userspace:
-+
-+.. code-block:: c
-+
-+    int create_bloom()
-+    {
-+            LIBBPF_OPTS(bpf_map_create_opts, opts,
-+                        .map_extra = 3);             /* number of hashes */
-+
-+            return bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER,
-+                                  "ipv6_bloom",      /* name */
-+                                  0,                 /* key size, must be zero */
-+                                  sizeof(ipv6_addr), /* value size */
-+                                  10000,             /* max entries */
-+                                  &opts);            /* create options */
-+    }
-+
-+This snippet shows how to add an element to a bloom filter from
-+userspace:
-+
-+.. code-block:: c
-+
-+    int add_element(__u32 value)
-+    {
-+            return bpf_map_update_elem(bloom_fd, 0, &value, BPF_ANY);
-+    }
-+
-+
-+References
-+==========
-+
-+https://lwn.net/ml/bpf/20210831225005.2762202-1-joannekoong@fb.com/
--- 
-2.38.1
+If there is no compile time reference to it, what stops an LTO linker
+from throwing it out in the first place?
 
