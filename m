@@ -2,124 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B0C63490D
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8BA634923
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 22:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbiKVVSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 16:18:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S234964AbiKVVXq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 16:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234906AbiKVVSj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 16:18:39 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457BC8F3C5;
-        Tue, 22 Nov 2022 13:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1669151914; x=1700687914;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LThJ1ttg1CyFpkPz/PkEmhwyOX/XhzArLbbxws3J7f8=;
-  b=ipvmtCfbksG9BdcFrqBr1cgBp+4ILfjMqcDkkBZfFqziFfb+nQXiaCa+
-   YRkLo/2b8sUJ+E/Cjgz8R5aSVGqENoFsjwRILt8//9emwr412sj3NW9GL
-   Ad5VGMpcyt6oq7V89fxEA7JCDsn67SfpONUeWBnEdpo/hI8iLtiY3eNNO
-   UqTc4LFZEY/z0Wysy8e0vT3gnH1GSuSbpMPwnP/r7Nh2dwm//jjGPrFHn
-   CX9TfMuMH5Ip1q8/rb6gn1FzJmqcfWLwIYYbnPAfsj678tVValtjGwqc8
-   QgelXwhE80jJT8KJelQvcV4P44sKibJ2v+9fbtsKUSHI66NfBIZ5vA9vZ
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
-   d="scan'208";a="190169312"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Nov 2022 14:18:31 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Tue, 22 Nov 2022 14:18:25 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
- Transport; Tue, 22 Nov 2022 14:18:25 -0700
-Date:   Tue, 22 Nov 2022 22:23:16 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v3 4/7] net: lan966x: Update rxq memory model
-Message-ID: <20221122212316.vqsynpwkrghxewi3@soft-dev3-1>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com>
- <20221121212850.3212649-5-horatiu.vultur@microchip.com>
- <20221122113851.418993-1-alexandr.lobakin@intel.com>
+        with ESMTP id S234922AbiKVVXp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:23:45 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C584199E;
+        Tue, 22 Nov 2022 13:23:41 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 024923200962;
+        Tue, 22 Nov 2022 16:23:38 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 22 Nov 2022 16:23:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1669152218; x=
+        1669238618; bh=uIR9dk1OF+2PZRsUTj/ptcMPoZCuHHWt4csJMKZd7Kg=; b=U
+        vvgMVGSje05hUnxOvsk8JRVTCyR8dj23dDwlxETL0bvJ8x/u22DQB5s/gEyTVcCT
+        G1FxUoK5m3KAgXaJf5dRMYK4pftWwlybxvfVzCYRbnsgT9m3T736W9Ybgiz7Zmtn
+        voEy/jsa0QpZSal91XQ9utfRw+aB6K1JYzuO1YBabZaEKFn4x36VJzN5d5Zx3keU
+        OBUShm2Nhu9p1xSN/vSF2ECzxTETREUZUdJFH1s+18MW0nW3gVF2C8XSM2s7Q51M
+        QffjwyuvmY+rWSJi/rqZUVWaLbgc43p+ie/xgsJ74MXgsY3GoG/8hlvMGZaKDiqR
+        BTNUClPzRULJc4vOWhbpg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1669152218; x=
+        1669238618; bh=uIR9dk1OF+2PZRsUTj/ptcMPoZCuHHWt4csJMKZd7Kg=; b=h
+        JbsEQofi0nUHo6b2IyxgT/XfJhhGrtUr2QpFQeixFbzDB7bj9/ppmFI2Ibn0IZ7H
+        WSS20aMWS/0Dh9Hloy6BtFAf5saPVMcFJ+RF5SM8qknhkUFJDZQO33Tj2mpQuWgD
+        PZgb/EnwwaMJKg321V3JmIczD3BA8rby9vKgonv6o3QsNq8gmskDA3U6PaJRTinp
+        vUuWOI/FfTEV8bnbpaWMofoBu4dORVjSIZT/W2rWXg5MfVd+eOolinjCkux84LeT
+        3wQsVhcZ9AJI9zVwRUmh0zSf1kOYXe2YzOd3XpYWrnUBcf8yaLV23fzVP059pSnY
+        aBXV86O6nQiRjEpoOBNcw==
+X-ME-Sender: <xms:2j19Y3JrigSXFCdotpMUUYgRDMRBawK9eF3OqtZMBJevtNYvJ8JM9A>
+    <xme:2j19Y7JHhnx93vfhRQP7-PtPqU3hws8UL5ikHNBLTHlaPG3isVK-Z2twvVCEBVlRH
+    6X8C7rF51p0kdPK>
+X-ME-Received: <xmr:2j19Y_vKDhVJgCHuXcxKU-n7IPOotUXebwbeSGp5jIvvGIGXYj26eKl4KDUJj8vI9JP1ok0U2NnLbBDnO4VDoDG4Qppa1tDxjXrSNf-4TBJWsxSOQM0c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrheelgdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeeuvghr
+    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
+    hlrdhfmheqnecuggftrfgrthhtvghrnhepuedukeehleekjeehvddvieeftdeuleeiiedu
+    tdelhfevueeludfgleejveeitdfgnecuffhomhgrihhnpehgihhthhhusgdrtghomhenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrnhgu
+    rdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhfmh
+X-ME-Proxy: <xmx:2j19YwZb8U9EijRe6aGI01Ws8wI-mXFLGRRa4YsgrkwlZ7zcg4mVkA>
+    <xmx:2j19Y-bpVjvD7kYwexH4NnwqXqzt8eLvR_PZziuLHUZQjG60SUQvbw>
+    <xmx:2j19Y0DXFO_w_5M_nXnfdangmTAxuOr0Uv08BinOZ2cBUvb7dfdX4Q>
+    <xmx:2j19YzOREVdWlAFHMSZFYodzCTgVcg0L53YZIjNUDYNmrsFOMWJfxA>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 22 Nov 2022 16:23:37 -0500 (EST)
+Message-ID: <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
+Date:   Tue, 22 Nov 2022 22:23:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20221122113851.418993-1-alexandr.lobakin@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for
+ FUSE
+Content-Language: de-CH, en-US
+To:     Daniel Rosenberg <drosen@google.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@android.com
+References: <20221122021536.1629178-1-drosen@google.com>
+ <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
+ <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 11/22/2022 12:38, Alexander Lobakin wrote:
-> 
-> From: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Date: Mon, 21 Nov 2022 22:28:47 +0100
-> 
-> > By default the rxq memory model is MEM_TYPE_PAGE_SHARED but to be able
-> > to reuse pages on the TX side, when the XDP action XDP_TX it is required
-> > to update the memory model to PAGE_POOL.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../net/ethernet/microchip/lan966x/lan966x_fdma.c  | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > index 384ed34197d58..483d1470c8362 100644
-> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > @@ -78,8 +78,22 @@ static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
-> >               .max_len = rx->max_mtu -
-> >                          SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
-> >       };
-> > +     struct lan966x_port *port;
-> > +     int i;
-> >
-> >       rx->page_pool = page_pool_create(&pp_params);
-> > +
-> > +     for (i = 0; i < lan966x->num_phys_ports; ++i) {
-> > +             if (!lan966x->ports[i])
-> > +                     continue;
-> > +
-> > +             port = lan966x->ports[i];
-> > +
-> > +             xdp_rxq_info_unreg_mem_model(&port->xdp_rxq);
-> 
-> xdp_rxq_info_unreg_mem_model() can emit a splat if currently the
-> corresponding xdp_rxq_info is not registered[0]. Can't we face it
-> here if called from lan966x_fdma_init()?
 
-We will not face that issue here because before lan966x_fdma_init is
-called, we call lan966x_xdp_port_init which registers xdp_rxq_info.
 
-> 
-> > +             xdp_rxq_info_reg_mem_model(&port->xdp_rxq, MEM_TYPE_PAGE_POOL,
-> > +                                        rx->page_pool);
-> > +     }
-> > +
-> >       return PTR_ERR_OR_ZERO(rx->page_pool);
-> >  }
-> >
-> > --
-> > 2.38.0
-> 
-> Thanks,
-> Olek
+On 11/22/22 21:56, Daniel Rosenberg wrote:
+> I've been running the generic xfstests against it, with some
+> modifications to do things like mount/unmount the lower and upper fs
+> at once. Most of the failures I see there are related to missing
+> opcodes, like FUSE_SETLK, FUSE_GETLK, and FUSE_IOCTL. The main failure
+> I have been seeing is generic/126, which is happening due to some
+> additional checks we're doing in fuse_open_backing. I figured at some
+> point we'd add some tests into libfuse, and that sounds like a good
+> place to start.
 
--- 
-/Horatiu
+
+Here is a branch of xfstests that should work with fuse and should not 
+run "rm -fr /" (we are going to give it more testing this week).
+
+https://github.com/hbirth/xfstests
+
+
+Bernd
