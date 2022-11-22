@@ -2,151 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22604633C03
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 13:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CA5633E0A
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 14:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbiKVMEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 07:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
+        id S233110AbiKVNsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 08:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbiKVMEo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 07:04:44 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4E9DFA0;
-        Tue, 22 Nov 2022 04:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669118684; x=1700654684;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xXOIRoWcqoS8ZJRdI+BWXomNeXdYk9vkQVnJJZI58wo=;
-  b=eDRTCtUPgM3oHmkFJ9oozNUOG0kfbGHyw4nByX4RIlzLM1xcU78w0wzK
-   HJ4+Cl+R7v1d1hSu8FkIoeAolEBD/ZhNtHfO1K4b6oKn+LBumVVqRIzWL
-   T/E9rnvD59p0JJQDEVsUQSKd8MfpITuxiHvuRVOGTO+AHKvGHoZxsm3Rt
-   tvdATN4ibTqW3XOAmXV21OPdlXxF/P4FKmPmrZoGbc5HMjU42W/fsbzcs
-   YmXO7Edv+W6ywBmW3784NfUX8NQLKWwNKgGzFB6nZ69xmOSApzu0wDpJh
-   aIUiCY47YZlBmvHAO+MOr5lO5PqEKIPaMnZdG/pLmlTCOwppawo4Hpu0Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="313828788"
-X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="313828788"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 04:04:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10538"; a="730371133"
-X-IronPort-AV: E=Sophos;i="5.96,183,1665471600"; 
-   d="scan'208";a="730371133"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by FMSMGA003.fm.intel.com with ESMTP; 22 Nov 2022 04:04:41 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 2AMC4dJ6007708;
-        Tue, 22 Nov 2022 12:04:39 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v3 7/7] net: lan966x: Add support for XDP_REDIRECT
-Date:   Tue, 22 Nov 2022 13:04:30 +0100
-Message-Id: <20221122120430.419770-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221121212850.3212649-8-horatiu.vultur@microchip.com>
-References: <20221121212850.3212649-1-horatiu.vultur@microchip.com> <20221121212850.3212649-8-horatiu.vultur@microchip.com>
+        with ESMTP id S229639AbiKVNsN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 08:48:13 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171CB5801F;
+        Tue, 22 Nov 2022 05:48:12 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z18so20679245edb.9;
+        Tue, 22 Nov 2022 05:48:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gFTU+Fx2dMdGbkWxtpQ34MMYPindEk62yGei1gUT+Zk=;
+        b=E4RMTH853dz0Tye1ZcgFRagMcChD0SCWSg5Eudbl4gmsjXGZZtqZHWz9BWZjjqYDJU
+         Jp83NumjGXOawKibk24psIn4ndfDO+kn0AnfGAny2yZZRBaENEUkuxlQs+nKwTin1Yvw
+         OfqMBz7CglTxxXUVRnSDEnXEU+CozbU/dNwMVfB9IH5d9T6fuweYwj8bGFWn4XEdf7Hb
+         2TszkEeerHWlvGaDudgHUkR/gsMzYHNItEskq2FzYd8BAlPSSdOSAoZzGFyFSp2gfXmZ
+         +kQbQq8ZohAlPu1VoHzfqW/etuUTtNUW48kmS7q/j0ZasH3mEQdcBE27dIS2rzWU+AJM
+         EAPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gFTU+Fx2dMdGbkWxtpQ34MMYPindEk62yGei1gUT+Zk=;
+        b=1P3PWAZmxCLmCBRaYuz0A8deWdcpI/4o80+DeYdORq+9ObskHABoupZxd93SlbhKWr
+         BlOiayr0TRF+qh10j923YPBK6sJVZQEqjlvmprCP3r8YHBfPLFe543nFoFiZfbzyLRzB
+         1cKUc3gFN5yKbKE8UGQa9d3f84kwVk4q2ZcQR5N+ihJh0+RUFpoFM9Wi8OUae7Ztjc+6
+         EH3DUxOhQ8qSNXLWSPv9vgoROjmNWdHoCmn2IJCyqlRDvkFaHIFS32ZezSCjS+OoHBpZ
+         VWOEF/e7bJ8H8+wqAVyiH2xzns2sZKL0DYjFk3rZdzgtDqFTS/5T/waycVsFqC+LPxCc
+         DeYA==
+X-Gm-Message-State: ANoB5plZjQ12K4R9lyruVx5HNQjP7tYacdfSzHDcBfPtBWs0gpv7Bykg
+        fDydnFLWeAfQomRqdjRnoxk=
+X-Google-Smtp-Source: AA0mqf7Q5cH/cuUJFJXJBFxknUJ2e9+YpSp0dMjvYnLf1Mk6pu3Rmna/5STT8ZV2GgmZ78ebbbGLFg==
+X-Received: by 2002:a05:6402:3785:b0:461:e598:e0bb with SMTP id et5-20020a056402378500b00461e598e0bbmr21422348edb.21.1669124890435;
+        Tue, 22 Nov 2022 05:48:10 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id la1-20020a170907780100b00787f91a6b16sm6048721ejc.26.2022.11.22.05.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 05:48:09 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 22 Nov 2022 14:48:07 +0100
+To:     Chen Hu <hu1.chen@intel.com>
+Cc:     jpoimboe@kernel.org, memxor@gmail.com, bpf@vger.kernel.org,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH bpf v2] selftests/bpf: Fix "missing ENDBR" BUG for
+ destructor kfunc
+Message-ID: <Y3zTF0CjQFt/dR2M@krava>
+References: <20221122073244.21279-1-hu1.chen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122073244.21279-1-hu1.chen@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-Date: Mon, 21 Nov 2022 22:28:50 +0100
-
-> Extend lan966x XDP support with the action XDP_REDIRECT. This is similar
-> with the XDP_TX, so a lot of functionality can be reused.
+On Mon, Nov 21, 2022 at 11:32:43PM -0800, Chen Hu wrote:
+> With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
+> following BUG:
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+>   traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
+>   ------------[ cut here ]------------
+>   kernel BUG at arch/x86/kernel/traps.c:254!
+>   invalid opcode: 0000 [#1] PREEMPT SMP
+>   <TASK>
+>    asm_exc_control_protection+0x26/0x50
+>   RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
+>   Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
+> 	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
+>        <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
+>    bpf_map_free_kptrs+0x2e/0x70
+>    array_map_free+0x57/0x140
+>    process_one_work+0x194/0x3a0
+>    worker_thread+0x54/0x3a0
+>    ? rescuer_thread+0x390/0x390
+>    kthread+0xe9/0x110
+>    ? kthread_complete_and_exit+0x20/0x20
+> 
+> This is because there are no compile-time references to the destructor
+> kfuncs, bpf_kfunc_call_test_release() for example. So objtool marked
+> them sealable and ENDBR in the functions were sealed (converted to NOP)
+> by apply_ibt_endbr().
+> 
+> This fix creates dummy compile-time references to destructor kfuncs so
+> ENDBR stay there.
+> 
+> Fixes: 05a945deefaa ("selftests/bpf: Add verifier tests for kptr")
+> Signed-off-by: Chen Hu <hu1.chen@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 > ---
->  .../ethernet/microchip/lan966x/lan966x_fdma.c | 83 +++++++++++++++----
->  .../ethernet/microchip/lan966x/lan966x_main.c |  1 +
->  .../ethernet/microchip/lan966x/lan966x_main.h | 10 ++-
->  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 31 ++++++-
->  4 files changed, 109 insertions(+), 16 deletions(-)
+> v2:
+> - Use generic macro name and place the macro after function body as
+> - suggested by Jiri Olsa
+> 
+> v1: https://lore.kernel.org/all/20221121085113.611504-1-hu1.chen@intel.com/
+> 
+>  include/linux/btf_ids.h | 7 +++++++
+>  net/bpf/test_run.c      | 4 ++++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 2aea877d644f..db02691b506d 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -266,4 +266,11 @@ MAX_BTF_TRACING_TYPE,
+>  
+>  extern u32 btf_tracing_ids[];
+>  
+> +#if defined(CONFIG_X86_KERNEL_IBT) && !defined(__DISABLE_EXPORTS)
+> +#define FUNC_IBT_NOSEAL(name)					\
+> +	asm(IBT_NOSEAL(#name));
+> +#else
+> +#define FUNC_IBT_NOSEAL(name)
+> +#endif /* CONFIG_X86_KERNEL_IBT */
 
-[...]
+hum, IBT_NOSEAL is x86 specific, so this will probably fail build
+on other archs.. I think we could ifdef it with CONFIG_X86, but
+it should go to some IBT related header? surely not to btf_ids.h
 
-> @@ -558,6 +575,10 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
->  		case FDMA_TX:
->  			lan966x_fdma_rx_advance_dcb(rx);
->  			continue;
-> +		case FDMA_REDIRECT:
-> +			lan966x_fdma_rx_advance_dcb(rx);
-> +			redirect = true;
-> +			continue;
+cc-ing Peter and Josh
 
-I think you can save a couple lines here and avoid small code dup:
+thanks,
+jirka
 
-+		case FDMA_REDIRECT:
-+			redirect = true;
-+			fallthrough;
- 		case FDMA_TX:
- 			lan966x_fdma_rx_advance_dcb(rx);
- 			continue;
 
-The logics stays the same.
-
->  		case FDMA_DROP:
->  			lan966x_fdma_rx_free_page(rx);
->  			lan966x_fdma_rx_advance_dcb(rx);
-
-[...]
-
-> @@ -178,6 +180,7 @@ struct lan966x_tx_dcb_buf {
->  	struct net_device *dev;
->  	struct sk_buff *skb;
->  	struct xdp_frame *xdpf;
-> +	bool xdp_ndo;
-
-I suggest carefully inspecting this struct with pahole (or by just
-printkaying its layout/sizes/offsets at runtime) and see if there's
-any holes and how it could be optimized.
-Also, it's just my personal preference, but it's not that unpopular:
-I don't trust bools inside structures as they may surprise with
-their sizes or alignment depending on the architercture. Considering
-all the blah I wrote, I'd define it as:
-
-struct lan966x_tx_dcb_buf {
-	dma_addr_t dma_addr;		// can be 8 bytes on 32-bit plat
-	struct net_device *dev;		// ensure natural alignment
-	struct sk_buff *skb;
-	struct xdp_frame *xdpf;
-	u32 len;
-	u32 xdp_ndo:1;			// put all your booleans here in
-	u32 used:1;			// one u32
-	...
-};
-
-BTW, we usually do union { skb, xdpf } since they're mutually
-exclusive. And to distinguish between XDP and regular Tx you can use
-one more bit/bool. This can also come handy later when you add XSk
-support (you will be adding it, right? Please :P).
-
->  	int len;
->  	dma_addr_t dma_addr;
->  	bool used;
-
-[...]
-
+> +
+>  #endif
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 13d578ce2a09..07263b7cc12d 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -597,10 +597,14 @@ noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+>  	refcount_dec(&p->cnt);
+>  }
+>  
+> +FUNC_IBT_NOSEAL(bpf_kfunc_call_test_release)
+> +
+>  noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+>  {
+>  }
+>  
+> +FUNC_IBT_NOSEAL(bpf_kfunc_call_memb_release)
+> +
+>  noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
+>  {
+>  	WARN_ON_ONCE(1);
 > -- 
-> 2.38.0
-
-Thanks,
-Olek
+> 2.34.1
+> 
