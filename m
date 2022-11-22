@@ -2,81 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48712634A2E
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 23:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD54E634AA2
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 00:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbiKVWoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 17:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S230009AbiKVXAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 18:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbiKVWoQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 17:44:16 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A48B97C1;
-        Tue, 22 Nov 2022 14:44:14 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id f3so15284125pgc.2;
-        Tue, 22 Nov 2022 14:44:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A7QwrVpaHP+ARj4TelpCmRFDWtNrt1GA5zbr41rCHDo=;
-        b=OeCkJ5JDqe9091oZ+PsiWtr5DntRwkyWH1UKBvVVwBeg4eoxfPKLnk1PBieGZ0vRRM
-         2j0tZIMN1oXSXfp9+oqtdr+F9PJcbeTBy/8HNPQCyhoySu66QlGmSQg19YRni39q/jJr
-         CncshkdAjwTvp81VdLBIED5iiePstDrp9PfhYSMovs1f3L1swkJWF5DZvC2bbdUYePjU
-         QorfPjNlCBrQKkyRbHznWdnVzpcDsL9moeAgDG9NIPUa/iHk8ivJWTY/zdZrH2iK4cs3
-         yvwLVrztkZJrm70W3guQv9VYeSjqgUGxOKEWz0Xm+BQxw+gG7jMqeWdYfCLsvfxvQJw1
-         gEMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A7QwrVpaHP+ARj4TelpCmRFDWtNrt1GA5zbr41rCHDo=;
-        b=NvnIIjFoF5Yvgg1uv+f9odDYvraztUsthMfjdVvpX6fwDdFE+6syVTIZ5AzZWIyEVt
-         9H62sDylJLmVgbA3t2KSd0Og2riCR/p2/jG84b/UiCDcuOSQ35jBPdieAo5BHx09p8VE
-         HZQrIEmXM3uKqa1y1+sL3e1CY9gz/n+k9r5sDF1OVOvmkd+a0+BNhUpPK/GwG0F/ZViI
-         s4hxndaPTVd6xxoB0maQC82+/Rl+ZpIJu+Wxa9Ohp1DYm9cerV3q38nTycfWiyKzgpin
-         RrUok4BPvV9JKoivvecNm8EE+WLCFTb3vF9btkBPsNbdYBja7kG04GyXTCioaL4b8sg5
-         KnLw==
-X-Gm-Message-State: ANoB5pk/Radz4z/OV87pHaHlkY7278rsxByE6zYX94R0nV3qVxbW9S0C
-        Eu8ZmywlPIDySiOeJmSsfjo=
-X-Google-Smtp-Source: AA0mqf46U0ekKGfqGRyjktGmlBF2/+vH7FzAXfBD71SUaspKv4p6zLuYGeVvzZ0fWGPJ+aZ5zw9zgQ==
-X-Received: by 2002:a62:1812:0:b0:56c:afe:e8bf with SMTP id 18-20020a621812000000b0056c0afee8bfmr6100174pfy.51.1669157054025;
-        Tue, 22 Nov 2022 14:44:14 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:bb3])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902e54900b00172e19c2fa9sm11998309plf.9.2022.11.22.14.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Nov 2022 14:44:13 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Nov 2022 12:44:12 -1000
-From:   Tejun Heo <tj@kernel.org>
+        with ESMTP id S229728AbiKVXAV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 18:00:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52386240BC;
+        Tue, 22 Nov 2022 15:00:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF8196193E;
+        Tue, 22 Nov 2022 23:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 284AEC433D7;
+        Tue, 22 Nov 2022 23:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669158017;
+        bh=hDp7z6c183qc/dv5dfSlL+UMP/F5g0Wo+l1qAFqWm6k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oOoOUiGvKEOcVv25z8utcdrvycZKqqlIvpOakpdlYJpJcDQdmwdsLHeeyGQ1brhMB
+         w8j2mv7nWwgmQV+Vwbjf45JulqTS+Lcq203hMq9n9RADjWfPGRD62hqVwEZHLmEVmc
+         Gt5YpxpR2NmBeF3ONKdUY8b3I9I2Hvm6so7N+NEy+IxJvf1yRy2sJ9iorGV7fj1iZY
+         IdTKa5A8Wx0m4aaWmURYDXzi5QEN2D4TgoWJsSB7zsv6Xz1zO+A39ZbU2X1eJkXKQt
+         odER13BvL7UWs1V2b3NodK8HGetWZgU93HL6SSgFZYxTyAY4eqVoqKpiqD2Gi4LgZD
+         bZFX2CeXoLg9A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 04E08E270E3;
+        Tue, 22 Nov 2022 23:00:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/4] Support storing struct cgroup * objects as kptrs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166915801701.32558.522988930386371911.git-patchwork-notify@kernel.org>
+Date:   Tue, 22 Nov 2022 23:00:17 +0000
+References: <20221122055458.173143-1-void@manifault.com>
+In-Reply-To: <20221122055458.173143-1-void@manifault.com>
 To:     David Vernet <void@manifault.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, martin.lau@linux.dev, yhs@fb.com,
         song@kernel.org, sdf@google.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, jolsa@kernel.org, haoluo@google.com,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/4] Support storing struct cgroup * objects as
- kptrs
-Message-ID: <Y31QvDkccnIosZCP@slm.duckdns.org>
-References: <20221122055458.173143-1-void@manifault.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221122055458.173143-1-void@manifault.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        tj@kernel.org, kernel-team@fb.com, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 11:54:54PM -0600, David Vernet wrote:
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Mon, 21 Nov 2022 23:54:54 -0600 you wrote:
 > In [0], we added support for storing struct task_struct * objects as
 > kptrs. This patch set extends this effort to also include storing struct
 > cgroup * object as kptrs.
@@ -86,19 +73,21 @@ On Mon, Nov 21, 2022 at 11:54:54PM -0600, David Vernet wrote:
 > statistics such as PSI averages, or tracking which tasks are migrating
 > to and from the cgroup.
 > 
-> [0]: https://lore.kernel.org/all/20221120051004.3605026-1-void@manifault.com/
-> 
-> David Vernet (4):
->   bpf: Enable cgroups to be used as kptrs
->   selftests/bpf: Add cgroup kfunc / kptr selftests
->   bpf: Add bpf_cgroup_ancestor() kfunc
->   selftests/bpf: Add selftests for bpf_cgroup_ancestor() kfunc
+> [...]
 
-From cgroup POV:
+Here is the summary with links:
+  - [bpf-next,1/4] bpf: Enable cgroups to be used as kptrs
+    https://git.kernel.org/bpf/bpf-next/c/fda01efc6160
+  - [bpf-next,2/4] selftests/bpf: Add cgroup kfunc / kptr selftests
+    https://git.kernel.org/bpf/bpf-next/c/f583ddf15e57
+  - [bpf-next,3/4] bpf: Add bpf_cgroup_ancestor() kfunc
+    https://git.kernel.org/bpf/bpf-next/c/5ca786707829
+  - [bpf-next,4/4] selftests/bpf: Add selftests for bpf_cgroup_ancestor() kfunc
+    https://git.kernel.org/bpf/bpf-next/c/227a89cf5041
 
- Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
+You are awesome, thank you!
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
