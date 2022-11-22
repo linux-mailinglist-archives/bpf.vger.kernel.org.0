@@ -2,90 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF98D634268
-	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 18:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A78634269
+	for <lists+bpf@lfdr.de>; Tue, 22 Nov 2022 18:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbiKVRYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Nov 2022 12:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S232763AbiKVRZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 12:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbiKVRYV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 12:24:21 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AEA7C020
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 09:24:20 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id s12so21569770edd.5
-        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 09:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5J9yUBX7x/qSYZwJEC6rDipkmTiKFn9M0g2cw52BFuA=;
-        b=qRqBuvZNr5rrUn1s2KaqmG+2rttbdOtsyZlQiF3f5J2T5cXf82cSyx4QEqxph1y3UY
-         OHG+yf3vAPclPQif984HjzCVVWA1s021uYtPbO96/ek9d59Rsv9xIMGS+h7nKwSJdBk/
-         Z0to+HcetrEUzNANnAioMsiUr2Ar5HytnjpOvqdA9Tzm+d7Z7X8JBMzSqyugylDnKeBi
-         4jggUQzXIMrl1Zl4vPRIgiX3rFdiJZfjX5hvi+RkahyUDw32NyipAWORVDF7AQnaM71T
-         qh1F6Ko7ij5cesjO0iFLXBKSwgkYXh6NETh/B7e+wLfqQNViQI+nKOJslsmmio3L/jfE
-         uhUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5J9yUBX7x/qSYZwJEC6rDipkmTiKFn9M0g2cw52BFuA=;
-        b=JvzXMfrkXmGyAjHQeFGAnwwhKZOARQ3tpGixsEjT2tGgGOA8fk/+UOmV3AvDpOhwbt
-         NQrj5GQWkFwgJySKafCWU21lnQV0faUvRDIydODC54Cat0FmRTgyMNUL4YSNbmxfd35e
-         bn6N6U3UjWXbgOkXqTjmZhlBc8Db6z+5YLgwuhhOHLmTL2n8IcwC9bADnQBNV1gLivqk
-         C7n3ALX7ZVG2RBruChkmrk8yD2jNhZDCI8vlsINVwcWMKRHKdxFxtiS9rMr7wQ04CQcn
-         +4wO6VaExFZZXtVOSUIhBbMHy2DquVwDHscxzLWc+NEPI/8GSWLXcnBuvANJLTlYYoGS
-         Zgjg==
-X-Gm-Message-State: ANoB5pk71yMNMjQXlZbu3AQaa0oqK2KReIA7JhaXCul8x9GQ6OxP6HIb
-        4NKPq5ALlPgp4BcZzPon33ThhKoSenXGaPHrCVQ=
-X-Google-Smtp-Source: AA0mqf4en8Y3JskrZP+NIqsLVy8fw3Ix4WoCMhYAPxOTSdFu3DQsk8fVU4K8TQta0gEav+8KL2UVBAddkeggI64dmRc=
-X-Received: by 2002:a05:6402:538a:b0:458:fbd9:e3b1 with SMTP id
- ew10-20020a056402538a00b00458fbd9e3b1mr13545010edb.6.1669137858913; Tue, 22
- Nov 2022 09:24:18 -0800 (PST)
+        with ESMTP id S231842AbiKVRZe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 12:25:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5F27AF7A
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 09:25:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA03F617FB
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 17:25:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D5CC43141
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 17:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669137933;
+        bh=VM9i9Sod3WvClpx7R7d+pIh0KgJHYrQCQolQpWbO6wY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jiH5WHaXdwt+bcX8DvZqltEievfFJ/q9fJflcGNJcsyRN4kd8u/Xo8amsxs8vJygV
+         jPa/K3ffFnHuDBQsDDTp4STiXyEDTwlYz2rWdLcAM84dbvoH0Y8S7HQoJY7lg5ymgg
+         TZi3SpF55QRSkTanVE32bI5Jss8c35IZ2EvSp+/wpq+OV8VAYtq4vo64RT8G809fI6
+         UXbiaWbKqpFHh9IE0uZa/Is/LgIFHLtYAqCk5zKjwnLdhb4xJE+z749pf8JthpurRJ
+         Kxbh+UD+xfc0S8OiUiphkc2dqN8mLXhbj0kzVIobQ9S2mzL8JD/yj5N7k27Dqx38MG
+         TQsy0NSMHmc9A==
+Received: by mail-ed1-f51.google.com with SMTP id z18so21572309edb.9
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 09:25:32 -0800 (PST)
+X-Gm-Message-State: ANoB5pna/pS53HpQRKc5Ma1KMwIQopfavlGnQW3RUWcwRgFj54I/i/W2
+        idaufTSnpZIYvKQVDAYOBQQ0QNSpnpnmtg/c0AA=
+X-Google-Smtp-Source: AA0mqf5U4VZ/cBhf7Y1g/KApCfEeUxJUOaXhC6k8PmqXpJvzm9Po3V+AtvIIc2RVxVmMpQADCGVXwgAE/y0fjLOk4UQ=
+X-Received: by 2002:a50:ff08:0:b0:461:dbcc:5176 with SMTP id
+ a8-20020a50ff08000000b00461dbcc5176mr9778489edu.53.1669137931301; Tue, 22 Nov
+ 2022 09:25:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20221118015614.2013203-1-memxor@gmail.com> <20221118015614.2013203-25-memxor@gmail.com>
-In-Reply-To: <20221118015614.2013203-25-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 22 Nov 2022 09:24:07 -0800
-Message-ID: <CAADnVQ+RnGA8_=29rbJr8vKCTiriMmfTKVZpYtSL=rgED9o0xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 24/24] selftests/bpf: Temporarily disable
- linked list tests
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Yonghong Song <yhs@meta.com>
+References: <20221117202322.944661-1-song@kernel.org> <20221117202322.944661-2-song@kernel.org>
+ <882e2964-932e-0113-d3cd-344281add3a1@iogearbox.net> <20221121155542.GA27879@lst.de>
+ <CAPhsuW7M3rAa=d4G5kzBCPofgSvKz8+Zcxg7u3+2MLMs2FTX+w@mail.gmail.com>
+ <Y3vXorejgjSCXtt3@bombadil.infradead.org> <20221122061323.GA14204@lst.de>
+In-Reply-To: <20221122061323.GA14204@lst.de>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 22 Nov 2022 10:25:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7AcBtLKd8hpBdsroGtfZ1UbbUE=xsE6WDZD-ZFHK4idQ@mail.gmail.com>
+Message-ID: <CAPhsuW7AcBtLKd8hpBdsroGtfZ1UbbUE=xsE6WDZD-ZFHK4idQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/6] vmalloc: introduce execmem_alloc,
+ execmem_free, and execmem_fill
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        peterz@infradead.org, rick.p.edgecombe@intel.com, rppt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 5:57 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Nov 21, 2022 at 11:13 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> The latest clang nightly as of writing crashes with the given test case
-> for BPF linked lists wherever global glock, ghead, glock2 are used,
-> hence comment out the parts that cause the crash, and prepare this commit
-> so that it can be reverted when the fix has been made. More context in [0].
+> On Mon, Nov 21, 2022 at 11:55:14AM -0800, Luis Chamberlain wrote:
+> > > I added these exports for test_vmalloc.ko. Is there a way to only export
+> > > them to test_vmalloc.ko but nothing else?
+> >
+> > See EXPORT_SYMBOL_NS_GPL()
 >
->  [0]: https://lore.kernel.org/bpf/d56223f9-483e-fbc1-4564-44c0858a1e3e@meta.com
+> No, that is in no way limiting who uses it, it just makes them go
+> through extra hoops.
 >
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> The funtionality to allocate exectuable memory is highly dangerous
+> and absolutely must be limited to built-in code.
+>
+> So the tests should just be forced to be built-in here as well.
 
-Hi All,
+I guess we can use some debug macro similar to
+DEBUG_AUGMENT_LOWEST_MATCH_CHECK to gate
+test_vmalloc.ko?
 
-While looking at Dave's llvm fix I realized that there is a
-trivial workaround.
-So I've reverted this commit and pushed a workaround:
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=59b9bdd725bc39a1e1a408a6aaffce8fdfd44366
+Otherwise, we can just drop the changes to test_vmalloc.c.
+
+Thanks,
+Song
