@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC836369B1
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FD36369BC
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239801AbiKWTOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 14:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
+        id S236286AbiKWTRa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 14:17:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239796AbiKWTOh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 14:14:37 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF77A8152;
-        Wed, 23 Nov 2022 11:14:36 -0800 (PST)
+        with ESMTP id S239946AbiKWTRR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 14:17:17 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D80FC5611;
+        Wed, 23 Nov 2022 11:17:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 200BECE264A;
-        Wed, 23 Nov 2022 19:14:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929C3C433C1;
-        Wed, 23 Nov 2022 19:14:32 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0BCAAB81F28;
+        Wed, 23 Nov 2022 19:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FEBC433D6;
+        Wed, 23 Nov 2022 19:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669230873;
-        bh=KbrG34cmabGhC68gT1YoUcErf4n0xzOwCvNVvok0PiI=;
+        s=k20201202; t=1669231033;
+        bh=RdOWIKFgH2np1ctDV/eZoQ+NtT5Cm6zsg4hnh0svOto=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FQ3vf9Yt/Tqn291D7wwpELSG8JKOA34K8tluIpaiJn5Mqb2sX9jb7Dy0WZmPtFAm9
-         ggumioiygzhDro/VU74pJOJInsUJXa9LeTDt25ipb92OLGeEQxZIL8tJm021oclbS+
-         +iT7d9OCNwS5e4UuNYq/IEoo0IXSjaQIwr4RLQT+HXwzE/jTNU/PS1grcY6NJ5/Zxi
-         YpBf2YB1cZHkwtl7wwP3TzNVknTtC6dtsvWDnAnRNy9UYnhdq7QhUTZq/7NqCPXHWN
-         q+/EX7kviPpHFA7vXjHdGM/6I4/WHLQpSuF27YqxpdtOSq+LDxbGR5HVQH/n9FZwcQ
-         inkC8LYvJUpVg==
-Date:   Wed, 23 Nov 2022 11:14:31 -0800
+        b=WVEWPdZR8K0svlzOZbXCh/Y1XOO16xVJL2NPgX/6EOSQQ5iHwkS0oouOF80dS2c64
+         IMKOlrE8WEvM1zlADtaHBsJjFepLxg8kyXFSaodXu3mqAGvO9wPG+Zo26uCQzsAcJX
+         apQu3tUvqIf+vwkRNIM/bJgChEM2h8DaXJDPaOx5aq+t3wd2VPQE/HDbRBJGvtTk6H
+         jfh5Fn/F8xpr1zXmHTtobRsM0oKo8ib51cD4IsRuymzy6vCogkyrNuV3FP1oXJhpSP
+         U2Erw9AU/fcNTu+VR6uzQ0qRyDQQ+ZYiAsPyy1GmKaIT5FT7cytQod8pZwGIzRzNc9
+         HU5GY0Z4R4MEg==
+Date:   Wed, 23 Nov 2022 11:17:12 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
@@ -39,7 +39,6 @@ Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         haoluo@google.com, jolsa@kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>,
         David Ahern <dsahern@gmail.com>,
         Willem de Bruijn <willemb@google.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
@@ -48,14 +47,14 @@ Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
         netdev@vger.kernel.org
-Subject: Re: [xdp-hints] [PATCH bpf-next v2 6/8] mlx4: Introduce
- mlx4_xdp_buff wrapper for xdp_buff
-Message-ID: <20221123111431.7b54668e@kernel.org>
-In-Reply-To: <CAKH8qBuF_1UoUPzh_X6FMrJ61zCNDroqSuc-Pp2uH7Q4azmN8Q@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next v2 8/8] selftests/bpf: Simple
+ program to dump XDP RX metadata
+Message-ID: <20221123111712.1da24f54@kernel.org>
+In-Reply-To: <CAKH8qBsSFg+3ULN-+aqabXZJRVwPtq9P71d0VZCuT2tMrx4DHw@mail.gmail.com>
 References: <20221121182552.2152891-1-sdf@google.com>
-        <20221121182552.2152891-7-sdf@google.com>
-        <874jupviyc.fsf@toke.dk>
-        <CAKH8qBuF_1UoUPzh_X6FMrJ61zCNDroqSuc-Pp2uH7Q4azmN8Q@mail.gmail.com>
+        <20221121182552.2152891-9-sdf@google.com>
+        <877czlvj9x.fsf@toke.dk>
+        <CAKH8qBsSFg+3ULN-+aqabXZJRVwPtq9P71d0VZCuT2tMrx4DHw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -68,35 +67,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 23 Nov 2022 10:26:41 -0800 Stanislav Fomichev wrote:
-> > This embedding trick works for drivers that put xdp_buff on the stack,
-> > but mlx5 supports XSK zerocopy, which uses the xsk_buff_pool for
-> > allocating them. This makes it a bit awkward to do the same thing there;
-> > and since it's probably going to be fairly common to do something like
-> > this, how about we just add a 'void *drv_priv' pointer to struct
-> > xdp_buff that the drivers can use? The xdp_buff already takes up a full
-> > cache line anyway, so any data stuffed after it will spill over to a new
-> > one; so I don't think there's much difference performance-wise.  
+On Wed, 23 Nov 2022 10:29:23 -0800 Stanislav Fomichev wrote:
+> > return ch.rx_count ?: ch.combined_count;
+> >
+> > works though :)  
 > 
-> I guess the alternative is to extend xsk_buff_pool with some new
-> argument for xdp_buff tailroom? (so it can kmalloc(sizeof(xdp_buff) +
-> xdp_buff_tailroom))
-> But it seems messy because there is no way of knowing what the target
-> device's tailroom is, so it has to be a user setting :-/
-> I've started with a priv pointer in xdp_buff initially, it seems fine
-> to go back. I'll probably convert veth/mlx4 to the same mode as well
-> to avoid having different approaches in different places..
+> Perfect, will do the same :-) Thank you for running and testing!
 
-Can we not do this please? Add 16B of "private driver space" after
-the xdp_buff in xdp_buff_xsk (we have 16B to full cacheline), the
-drivers decide how they use it. Drivers can do BUILD_BUG_ON() for their
-expected size and cast that to whatever struct they want. This is how
-various offloads work, the variable size tailroom would be an over
-design IMO.
+The correct value is ch.rx_count + ch.combined_count
 
-And this way non XSK paths can keep its normal typing.
-
-> > I'll send my patch to add support to mlx5 (using the drv_priv pointer
-> > approach) separately.  
-> 
-> Saw them, thanks! Will include them in v3+.
+We've been over this many times, I thought it was coded up in libbpf
+but I don't see it now :S
