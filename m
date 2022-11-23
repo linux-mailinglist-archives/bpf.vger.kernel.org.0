@@ -2,129 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FB2636A39
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6B9636A60
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 21:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238816AbiKWTzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 14:55:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
+        id S235215AbiKWUBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 15:01:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238866AbiKWTzX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 14:55:23 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8131478D43;
-        Wed, 23 Nov 2022 11:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1669233258; x=1700769258;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9IaGz3nksRi+gF01rW+BvME2pa7n+X6zBZlnddfrqbk=;
-  b=KWMeqo2FiDHbxNJlvSOWdDrNO+l2jgknDLNwXOeL5DvU/qsFDWrO99jt
-   sVOSo2eySRQpgnbFtNPC8Y/7AbEmQ9u3Y6NagIGibHUnNU02EIbj+XVTL
-   FXUvXA4Wq+uxd5MkOnc6BDQP4IKfY7NctImiJYIL9CknMQWJKjPI+pl1N
-   mrLs0YWYM8F8/MMOM5SfqWEm2CO6rUBxGfNOW921JTcXGw7bOjrAH3hq6
-   +w4bMIrVFYJ3JGL2xo+DsZZFigqLxsMVgcCmbKR9Qa2mo6w7gtyX0wy9y
-   SJdeDhNyoyoBQNlHOw59jZ3CU1iwxcHYNBPt1iDl7JsfACRBjJZI8FXJO
-   A==;
-X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
-   d="scan'208";a="184915519"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2022 12:54:17 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Wed, 23 Nov 2022 12:54:09 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
- Transport; Wed, 23 Nov 2022 12:54:09 -0700
-Date:   Wed, 23 Nov 2022 20:59:00 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <alexandr.lobakin@intel.com>,
-        <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v4 4/7] net: lan966x: Update rxq memory model
-Message-ID: <20221123195900.wvql3v3mnmtixccs@soft-dev3-1>
-References: <20221122214413.3446006-1-horatiu.vultur@microchip.com>
- <20221122214413.3446006-5-horatiu.vultur@microchip.com>
- <Y31GsPEhDOsCB70i@boxer>
-MIME-Version: 1.0
+        with ESMTP id S239064AbiKWUA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 15:00:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217972084;
+        Wed, 23 Nov 2022 12:00:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B46F761EEB;
+        Wed, 23 Nov 2022 20:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1824CC433D7;
+        Wed, 23 Nov 2022 20:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669233617;
+        bh=/rn1PzmD7jbMZAzucVrrjH77YxRrb54TP7UDsr2ApnY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Nq6nXsT+mcnFq58GaYBeHy+bw708f/70jWl47X7vPl/oRAefbNTcdtj8GMzFUkGZa
+         HLk0QEBtnbWwDl1Y5SlIevCuUaa7NCAbigHlwU/o+hn3Ot2wM1Zh7C17f3jq29ztH9
+         ghhR3ytldx7L2IPW89IBCZlv+jJ25wfmeeveZOqfRme3GSlE4guv7Z1FHgyeyu/h+s
+         T1w9NxmFME/BUtdcBZGrflayxK/fCFfTbpUPANKN/ebyNwVkWuc2ERhr7q9lG63ID9
+         3DgPYxhDn8uzf97Et2Q2WJvLVE9JykTrKv1RmlyWnHWvEqc+QuJhUKsZUPRRApkzdQ
+         ks5WRix51fbqQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ED919C395ED;
+        Wed, 23 Nov 2022 20:00:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <Y31GsPEhDOsCB70i@boxer>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Don't use idx variable when registering kfunc
+ dtors
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166923361696.21034.18352770057506612392.git-patchwork-notify@kernel.org>
+Date:   Wed, 23 Nov 2022 20:00:16 +0000
+References: <20221123135253.637525-1-void@manifault.com>
+In-Reply-To: <20221123135253.637525-1-void@manifault.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, yhs@fb.com,
+        song@kernel.org, sdf@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jolsa@kernel.org, haoluo@google.com,
+        tj@kernel.org, kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        lkp@intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 11/22/2022 23:01, Maciej Fijalkowski wrote:
-> 
-> On Tue, Nov 22, 2022 at 10:44:10PM +0100, Horatiu Vultur wrote:
-> > By default the rxq memory model is MEM_TYPE_PAGE_SHARED but to be able
-> > to reuse pages on the TX side, when the XDP action XDP_TX it is required
-> > to update the memory model to PAGE_POOL.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../net/ethernet/microchip/lan966x/lan966x_fdma.c  | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > index 384ed34197d58..483d1470c8362 100644
-> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > @@ -78,8 +78,22 @@ static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
-> >               .max_len = rx->max_mtu -
-> >                          SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
-> >       };
-> > +     struct lan966x_port *port;
-> 
-> port can be scoped only for the loop below?
+Hello:
 
-Yes, I will change this.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
+On Wed, 23 Nov 2022 07:52:53 -0600 you wrote:
+> In commit fda01efc6160 ("bpf: Enable cgroups to be used as kptrs"), I
+> added an 'int idx' variable to kfunc_init() which was meant to
+> dynamically set the index of the btf id entries of the
+> 'generic_dtor_ids' array. This was done to make the code slightly less
+> brittle as the struct cgroup * kptr kfuncs such as bpf_cgroup_aquire()
+> are compiled out if CONFIG_CGROUPS is not defined. This, however, causes
+> an lkp build warning:
 > 
-> > +     int i;
-> >
-> >       rx->page_pool = page_pool_create(&pp_params);
-> > +
-> > +     for (i = 0; i < lan966x->num_phys_ports; ++i) {
-> 
-> Quoting Alex from some other thread:
-> 
-> "Since we're on -std=gnu11 for a bunch of releases already, all new
-> loops are expected to go with the iterator declarations inside them."
-> 
-> TBH I wasn't aware of that personally :)
+> [...]
 
-Me neither, I will update this and all the other lops introduced in this
-series.
+Here is the summary with links:
+  - [bpf-next] bpf: Don't use idx variable when registering kfunc dtors
+    https://git.kernel.org/bpf/bpf-next/c/2fcc6081a7bf
 
-> 
-> > +             if (!lan966x->ports[i])
-> > +                     continue;
-> > +
-> > +             port = lan966x->ports[i];
-> > +
-> > +             xdp_rxq_info_unreg_mem_model(&port->xdp_rxq);
-> > +             xdp_rxq_info_reg_mem_model(&port->xdp_rxq, MEM_TYPE_PAGE_POOL,
-> > +                                        rx->page_pool);
-> > +     }
-> > +
-> >       return PTR_ERR_OR_ZERO(rx->page_pool);
-> >  }
-> >
-> > --
-> > 2.38.0
-> >
-
+You are awesome, thank you!
 -- 
-/Horatiu
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
