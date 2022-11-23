@@ -2,126 +2,340 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 294DF635662
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 10:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55870635CB5
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 13:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237688AbiKWJ2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 04:28:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        id S235823AbiKWMX0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 07:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237691AbiKWJ14 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 04:27:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA577D2F5
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 01:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669195561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aWhU23UNuHjn5XhvzKRuF61gM+AgJzpn5aG6dSB9wLQ=;
-        b=SE7MKaI/K1pvq+vuT+dJr8o5qTaU5p+Roqh7bDqgNuaiEIkj1YiyEejH8EcKZY62FOHRCE
-        0MngLvJXHOMfbxjQsEl0IrY+lL3GswKdG9Zz78UFlyQK10jY8pmOY0DqX+dSQyZoStVIbv
-        z0wVuPajomgKeVTvKq/sD6MM9iujIlY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-148-v1l7BHQGM9mXsbFJiBPf8w-1; Wed, 23 Nov 2022 04:26:00 -0500
-X-MC-Unique: v1l7BHQGM9mXsbFJiBPf8w-1
-Received: by mail-wm1-f72.google.com with SMTP id ay19-20020a05600c1e1300b003cf758f1617so799308wmb.5
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 01:25:59 -0800 (PST)
+        with ESMTP id S236606AbiKWMXH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 07:23:07 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006D595A1
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 04:23:03 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id e11so16220011wru.8
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 04:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ns25ATzjLB941UUppT3JuAVyU+HwsxlUNnNXXyQ94c=;
+        b=AJGOu6aaLuezpgX8JiBmZh3hGcl3YMWCvQMvMgo25TZVwbsZCtM9sXrP3iU75WIhs6
+         /u1Fvr/BWjXCWPmtAw+Hmp9EMXlPi+xgYr4JpsKoJudj8XxyXQVCFCw3FD+UwjMsdM//
+         1kJrZYz7fD/BlCcFcj7QtGzR+VN6LrYXlgJNHGsySYc1re3lNFiMdqVAtKKxvn1/5N7o
+         eQHNhDJvYXUY2Nt1VarWtihfFUpSIT0QsmoiPnXDHddxAqoEdAdzi17+fJwlgQfpcFQr
+         zCByz/3nLAT5Yi70hmSbYZEJmU0Qr0oJ0APBBMEe4xPDqXUcmL3ZwpffQGL2q77obPpk
+         48Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWhU23UNuHjn5XhvzKRuF61gM+AgJzpn5aG6dSB9wLQ=;
-        b=lUZto14hirg9ycDGgGvLdbvTTsGVZ5xEXqPEvVygHFwfvEjKCusyaW+xFx2cxrYsYM
-         LWGthwDxGsLi0JZgOUSJieBDrvqZcdUoTy0ypCasKZ3K6Mnc6hsaEliWXikl9fYWE+x4
-         bhCrHBOcrXfCIpy3i/TKAE+/JHUtTFOUAjRaDzIOkSpFX46Ys1uiDE6cgs/rr0EpDCS6
-         kWQvbQryCqpu/eXQWctOTSL0pCXRfGp6VwnNIlT8taqxcNFqTzL1gRM459IZvh0JGls1
-         r4NWRYNTS+stggsaWivQywkmC5hyYQMaMrOHo8dgLou/TIDn4SMTY83PRBsMYHYPwI1W
-         FRqA==
-X-Gm-Message-State: ANoB5pkhtOZHEDj64N4s3+xR+XpiKlMHn7I0pEGtQd+vC0PVsC4TjKNY
-        5XcOrx5/p1ZuO/qM10/24N9GvH6Kui9JAbRgAfIATzyRxOs9i4Juom0UZLlmlPrLSgrYHRT97PN
-        TOBJq8MlsHFTK
-X-Received: by 2002:adf:f78e:0:b0:241:e8cc:f79b with SMTP id q14-20020adff78e000000b00241e8ccf79bmr2447180wrp.384.1669195558967;
-        Wed, 23 Nov 2022 01:25:58 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf66Kk2UFRyhTXzicBsx8MDTzS2YL40MtWyR0jSc5K4O3DpR6tlO7oAubsG5Fo4JDhnbCu5/wQ==
-X-Received: by 2002:adf:f78e:0:b0:241:e8cc:f79b with SMTP id q14-20020adff78e000000b00241e8ccf79bmr2447167wrp.384.1669195558767;
-        Wed, 23 Nov 2022 01:25:58 -0800 (PST)
-Received: from [192.168.0.4] ([78.19.107.254])
-        by smtp.gmail.com with ESMTPSA id t23-20020adfa2d7000000b0023662d97130sm16402085wra.20.2022.11.23.01.25.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Nov 2022 01:25:58 -0800 (PST)
-Message-ID: <20278f74-ea4a-021f-d184-cb1c4439e65f@redhat.com>
-Date:   Wed, 23 Nov 2022 09:25:57 +0000
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ns25ATzjLB941UUppT3JuAVyU+HwsxlUNnNXXyQ94c=;
+        b=TuQaf6KHCyP6o2LlXTLTZVAaKjQmjg1wQHTTZTxPKU4enNBcLBxdt8E0E5KlffW7yV
+         7iAcw/bHl2hCqfqse+RjSzJG7IBCUzq6k2IeTEcZMa1QThoGclM/oPgH3k78Of/0ZZCw
+         +K+0/y12qRO7ue0qCHB0GCJsCIQPEP2BjbeYPnqUoEl0qMhSuxrcCKalmaSl7Zl07jJX
+         Jr4Q4jhUT7KRfsevo0pAULzPDhLRzrP803+VM7oxRPQnBx8e4Hbev5oZViSFUg2qpByy
+         MKjY0t6Cgu4kkVTuA5Gg5jLW3IZ5kZy+FyQ8YFou9PcHYGU5ZDVb5HhKiReHpOHec0y9
+         O0iw==
+X-Gm-Message-State: ANoB5pkU/LKkSPkIfV4zXji06qutVVizpPPcrOrV+Dtkw03M7T2kQRIt
+        xYMAapiyxinC1Am2SNbrpSI=
+X-Google-Smtp-Source: AA0mqf4uzXfya49LzhGKwrf8/rAIFtgLoeWpeCZn3dGxBXHK9tmOClIYW7qnUKqiMR2EoO5nPGJ4BQ==
+X-Received: by 2002:a5d:4845:0:b0:241:c1bd:9c75 with SMTP id n5-20020a5d4845000000b00241c1bd9c75mr8907848wrs.422.1669206182314;
+        Wed, 23 Nov 2022 04:23:02 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id u14-20020a05600c19ce00b003b3307fb98fsm2447680wmq.24.2022.11.23.04.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Nov 2022 04:23:01 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 23 Nov 2022 13:23:00 +0100
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Make sure zero-len skbs
+ aren't redirectable
+Message-ID: <Y34QpET78/KX9JLh@krava>
+References: <20221121180340.1983627-1-sdf@google.com>
+ <20221121180340.1983627-2-sdf@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.0
-Subject: Re: [PATCH bpf-next v1 0/2] docs: fix sphinx warnings for cpu+dev
- maps
-Content-Language: en-US
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20221122103738.65980-1-mtahhan@redhat.com>
- <bf664150-a544-76f8-b61f-98e6472dbebb@gmail.com>
-From:   Maryam Tahhan <mtahhan@redhat.com>
-In-Reply-To: <bf664150-a544-76f8-b61f-98e6472dbebb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221121180340.1983627-2-sdf@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23/11/2022 03:13, Akira Yokosawa wrote:
-> Hi,
+On Mon, Nov 21, 2022 at 10:03:40AM -0800, Stanislav Fomichev wrote:
+> LWT_XMIT to test L3 case, TC to test L2 case.
 > 
-> On Tue, 22 Nov 2022 10:37:36 +0000, mtahhan@redhat.com wrote:
->> From: Maryam Tahhan <mtahhan@redhat.com>
->>
->> Sphinx version >=3.3 warns about duplicate function delcarations in the
+> v2:
+> - s/veth_ifindex/ipip_ifindex/ in two places (Martin)
+> - add comment about which condition triggers the rejection (Martin)
 > 
-> As far as I see, Sphinx >=3.1 complains of these duplicates.
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-I will update
+hi,
+I'm getting selftest fails and it looks like it's because of this test:
 
-> 
->> CPUMAP and DEVMAP documentation. This is because the function name is the
->> same for Kernel and Userspace BPF progs but the parameters and return types
->> they take is what differs. This patch moves from using the ``c:function::``
->> directive to using the ``code-block:: c`` directive. The patches also fix
->> the indentation for the text associated with the "new" code block delcarations.
-> I would mention that the missing support of c:namespace-push:: and
-> c:namespace-pop:: directives by helper scripts for kernel documentation
-> prevented you from using the c:function:: directive with proper namespacing.
+	[root@qemu bpf]# ./test_progs -n 62,98 
+	#62      empty_skb:OK
+	execute_one_variant:PASS:skel_open 0 nsec
+	execute_one_variant:PASS:my_pid_map_update 0 nsec
+	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
+	libbpf: prog 'handle_legacy': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
+	libbpf: prog 'handle_legacy': failed to auto-attach: -2
+	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+	test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
+	execute_one_variant:PASS:skel_open 0 nsec
+	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
+	libbpf: prog 'handle_modern': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
+	libbpf: prog 'handle_modern': failed to auto-attach: -2
+	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+	#98      legacy_printk:FAIL
 
-I will add the note. Thank you.
+	All error logs:
+	execute_one_variant:PASS:skel_open 0 nsec
+	execute_one_variant:PASS:my_pid_map_update 0 nsec
+	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
+	libbpf: prog 'handle_legacy': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
+	libbpf: prog 'handle_legacy': failed to auto-attach: -2
+	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+	test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
+	execute_one_variant:PASS:skel_open 0 nsec
+	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
+	libbpf: prog 'handle_modern': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
+	libbpf: prog 'handle_modern': failed to auto-attach: -2
+	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+	#98      legacy_printk:FAIL
+	Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
 
-> 
-> Either way, for the series,
-> 
-> Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
-> 
->>
->> Maryam Tahhan (2):
->>    docs: fix sphinx warnings for cpumap
->>    docs: fix sphinx warnings for devmap
->>
->>   Documentation/bpf/map_cpumap.rst | 41 +++++++++++++-----------
->>   Documentation/bpf/map_devmap.rst | 54 +++++++++++++++++---------------
->>   2 files changed, 52 insertions(+), 43 deletions(-)
->>
->> --
->> 2.34.1
->>
-> 
+when I run separately it passes:
 
+	[root@qemu bpf]# ./test_progs -n 98 
+	#98      legacy_printk:OK
+	Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+
+
+it seems that the open_netns/close_netns does not work properly,
+and screw up access to tracefs for following tests
+
+if I comment out all the umounts in setns_by_fd, it does not fail
+
+jirka
+
+
+> ---
+>  .../selftests/bpf/prog_tests/empty_skb.c      | 146 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/empty_skb.c |  37 +++++
+>  2 files changed, 183 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/empty_skb.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/empty_skb.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
+> new file mode 100644
+> index 000000000000..32dd731e9070
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include <net/if.h>
+> +#include "empty_skb.skel.h"
+> +
+> +#define SYS(cmd) ({ \
+> +	if (!ASSERT_OK(system(cmd), (cmd))) \
+> +		goto out; \
+> +})
+> +
+> +void test_empty_skb(void)
+> +{
+> +	LIBBPF_OPTS(bpf_test_run_opts, tattr);
+> +	struct empty_skb *bpf_obj = NULL;
+> +	struct nstoken *tok = NULL;
+> +	struct bpf_program *prog;
+> +	char eth_hlen_pp[15];
+> +	char eth_hlen[14];
+> +	int veth_ifindex;
+> +	int ipip_ifindex;
+> +	int err;
+> +	int i;
+> +
+> +	struct {
+> +		const char *msg;
+> +		const void *data_in;
+> +		__u32 data_size_in;
+> +		int *ifindex;
+> +		int err;
+> +		int ret;
+> +		bool success_on_tc;
+> +	} tests[] = {
+> +		/* Empty packets are always rejected. */
+> +
+> +		{
+> +			/* BPF_PROG_RUN ETH_HLEN size check */
+> +			.msg = "veth empty ingress packet",
+> +			.data_in = NULL,
+> +			.data_size_in = 0,
+> +			.ifindex = &veth_ifindex,
+> +			.err = -EINVAL,
+> +		},
+> +		{
+> +			/* BPF_PROG_RUN ETH_HLEN size check */
+> +			.msg = "ipip empty ingress packet",
+> +			.data_in = NULL,
+> +			.data_size_in = 0,
+> +			.ifindex = &ipip_ifindex,
+> +			.err = -EINVAL,
+> +		},
+> +
+> +		/* ETH_HLEN-sized packets:
+> +		 * - can not be redirected at LWT_XMIT
+> +		 * - can be redirected at TC to non-tunneling dest
+> +		 */
+> +
+> +		{
+> +			/* __bpf_redirect_common */
+> +			.msg = "veth ETH_HLEN packet ingress",
+> +			.data_in = eth_hlen,
+> +			.data_size_in = sizeof(eth_hlen),
+> +			.ifindex = &veth_ifindex,
+> +			.ret = -ERANGE,
+> +			.success_on_tc = true,
+> +		},
+> +		{
+> +			/* __bpf_redirect_no_mac
+> +			 *
+> +			 * lwt: skb->len=0 <= skb_network_offset=0
+> +			 * tc: skb->len=14 <= skb_network_offset=14
+> +			 */
+> +			.msg = "ipip ETH_HLEN packet ingress",
+> +			.data_in = eth_hlen,
+> +			.data_size_in = sizeof(eth_hlen),
+> +			.ifindex = &ipip_ifindex,
+> +			.ret = -ERANGE,
+> +		},
+> +
+> +		/* ETH_HLEN+1-sized packet should be redirected. */
+> +
+> +		{
+> +			.msg = "veth ETH_HLEN+1 packet ingress",
+> +			.data_in = eth_hlen_pp,
+> +			.data_size_in = sizeof(eth_hlen_pp),
+> +			.ifindex = &veth_ifindex,
+> +		},
+> +		{
+> +			.msg = "ipip ETH_HLEN+1 packet ingress",
+> +			.data_in = eth_hlen_pp,
+> +			.data_size_in = sizeof(eth_hlen_pp),
+> +			.ifindex = &ipip_ifindex,
+> +		},
+> +	};
+> +
+> +	SYS("ip netns add empty_skb");
+> +	tok = open_netns("empty_skb");
+> +	SYS("ip link add veth0 type veth peer veth1");
+> +	SYS("ip link set dev veth0 up");
+> +	SYS("ip link set dev veth1 up");
+> +	SYS("ip addr add 10.0.0.1/8 dev veth0");
+> +	SYS("ip addr add 10.0.0.2/8 dev veth1");
+> +	veth_ifindex = if_nametoindex("veth0");
+> +
+> +	SYS("ip link add ipip0 type ipip local 10.0.0.1 remote 10.0.0.2");
+> +	SYS("ip link set ipip0 up");
+> +	SYS("ip addr add 192.168.1.1/16 dev ipip0");
+> +	ipip_ifindex = if_nametoindex("ipip0");
+> +
+> +	bpf_obj = empty_skb__open_and_load();
+> +	if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
+> +		goto out;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> +		bpf_object__for_each_program(prog, bpf_obj->obj) {
+> +			char buf[128];
+> +			bool at_tc = !strncmp(bpf_program__section_name(prog), "tc", 2);
+> +
+> +			tattr.data_in = tests[i].data_in;
+> +			tattr.data_size_in = tests[i].data_size_in;
+> +
+> +			tattr.data_size_out = 0;
+> +			bpf_obj->bss->ifindex = *tests[i].ifindex;
+> +			bpf_obj->bss->ret = 0;
+> +			err = bpf_prog_test_run_opts(bpf_program__fd(prog), &tattr);
+> +			sprintf(buf, "err: %s [%s]", tests[i].msg, bpf_program__name(prog));
+> +
+> +			if (at_tc && tests[i].success_on_tc)
+> +				ASSERT_GE(err, 0, buf);
+> +			else
+> +				ASSERT_EQ(err, tests[i].err, buf);
+> +			sprintf(buf, "ret: %s [%s]", tests[i].msg, bpf_program__name(prog));
+> +			if (at_tc && tests[i].success_on_tc)
+> +				ASSERT_GE(bpf_obj->bss->ret, 0, buf);
+> +			else
+> +				ASSERT_EQ(bpf_obj->bss->ret, tests[i].ret, buf);
+> +		}
+> +	}
+> +
+> +out:
+> +	if (bpf_obj)
+> +		empty_skb__destroy(bpf_obj);
+> +	if (tok)
+> +		close_netns(tok);
+> +	system("ip netns del empty_skb");
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/empty_skb.c b/tools/testing/selftests/bpf/progs/empty_skb.c
+> new file mode 100644
+> index 000000000000..4b0cd6753251
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/empty_skb.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +int ifindex;
+> +int ret;
+> +
+> +SEC("lwt_xmit")
+> +int redirect_ingress(struct __sk_buff *skb)
+> +{
+> +	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
+> +	return 0;
+> +}
+> +
+> +SEC("lwt_xmit")
+> +int redirect_egress(struct __sk_buff *skb)
+> +{
+> +	ret = bpf_clone_redirect(skb, ifindex, 0);
+> +	return 0;
+> +}
+> +
+> +SEC("tc")
+> +int tc_redirect_ingress(struct __sk_buff *skb)
+> +{
+> +	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
+> +	return 0;
+> +}
+> +
+> +SEC("tc")
+> +int tc_redirect_egress(struct __sk_buff *skb)
+> +{
+> +	ret = bpf_clone_redirect(skb, ifindex, 0);
+> +	return 0;
+> +}
+> -- 
+> 2.38.1.584.g0f3c55d4c2-goog
+> 
