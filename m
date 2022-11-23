@@ -2,178 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D41E634EE7
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 05:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F66634EF0
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 05:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbiKWEWb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 22 Nov 2022 23:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S235673AbiKWEc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Nov 2022 23:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbiKWEVh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Nov 2022 23:21:37 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70973F4190;
-        Tue, 22 Nov 2022 20:17:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A3ACDB81E51;
-        Wed, 23 Nov 2022 04:17:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D5FC433D6;
-        Wed, 23 Nov 2022 04:17:11 +0000 (UTC)
-Date:   Tue, 22 Nov 2022 23:17:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <mhiramat@kernel.org>, <yujie.liu@intel.com>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing: Optimize event type allocation with IDA
-Message-ID: <20221122231710.4315f890@rorschach.local.home>
-In-Reply-To: <20221122223258.10faaf4e@rorschach.local.home>
-References: <20221111234137.90d9ec624497a7e1f5cb5003@kernel.org>
-        <20221123031806.735511-1-zhengyejian1@huawei.com>
-        <20221122223258.10faaf4e@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S235109AbiKWEcX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Nov 2022 23:32:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3E47FF13
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 20:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669177888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VQl9ff+pm3Bk3aH204X24mZs6zyamDTWXwNuFP1xLlU=;
+        b=ioS4y6udGto6FdbJOCjiDvPuEcBJbFV86tIH60H4nWp0VAyPjYItmegP1pzJkpbvUP4ysv
+        s+t37dIUrYzUTYwNIuvWzMyi3Zus+BI6cUsMpk5GgeRlaLJE56HwvUnxrpSom1G+fpw6go
+        nS9H9fqIYUPF9yeTZWnd5n8hys5teaY=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-515-tTmVk9SVO6uNbK_QMoXI2A-1; Tue, 22 Nov 2022 23:31:27 -0500
+X-MC-Unique: tTmVk9SVO6uNbK_QMoXI2A-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-13cbfc38be2so8023634fac.0
+        for <bpf@vger.kernel.org>; Tue, 22 Nov 2022 20:31:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VQl9ff+pm3Bk3aH204X24mZs6zyamDTWXwNuFP1xLlU=;
+        b=XxFLgImvYBeI4Fn1owEkEMrMQ3Cihxs9rxHHO9Ar2cqY5uOF2aCuFKp9aK5ppwW25/
+         tqXZ+UFCQ7CAZbCj5xa4nGZoJPmZKCn9sI6NyAu5Gm2dgG6RJ779aPo4Q8wyFLHsvNuE
+         QS+X76iPK4C2u7PJ55Q5jdpiwzC/Koa3jWi7uDjwGUf3OgpuaRNE7K5ioj7pS2cNPfJb
+         TSmj1+kw6+e/MMGi3134gkmPwQtGl37P1wFJPdSIfwCiOPIhzVpx4wB+2pFfYaO5VryO
+         kUonmx/KiwUrmVo9M4VoaGd9B3lBPtSLTQPLs165/DUIxl7kzWvYrFcstEIy6700GyOx
+         Fa1g==
+X-Gm-Message-State: ANoB5pmgaOTCn6+qGJkfaJ5uQfOBJUuKTfyDSPAOw9PgFsukdaNDO/gT
+        58tNpTVEuEbXLBSZ4dQu2HPPGHomgBpWAvPQPi8oXMv3oFQxhMwVV49qEVeXBT+3PhKc+/vZTma
+        xr0Y5prUxbWEc7ys5P0rNdViDhseo
+X-Received: by 2002:a4a:94a9:0:b0:480:8f4a:7062 with SMTP id k38-20020a4a94a9000000b004808f4a7062mr3093735ooi.57.1669177886412;
+        Tue, 22 Nov 2022 20:31:26 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5p+2/kgwNtkcV/tZnRU73FzLwSP/0hnFdBUnffLOt1Eb3cLSA1SD07EWvhtzopVZbm5DQMqgdOyOqC6G2YoCA=
+X-Received: by 2002:a4a:94a9:0:b0:480:8f4a:7062 with SMTP id
+ k38-20020a4a94a9000000b004808f4a7062mr3093711ooi.57.1669177886199; Tue, 22
+ Nov 2022 20:31:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <0-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com> <15-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+ <BN9PR11MB5276B0219008568A30F5A4738C099@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <Y3ejMSTWvJuELQ7K@nvidia.com> <BN9PR11MB5276939555C1460EFBFD15A68C0C9@BN9PR11MB5276.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB5276939555C1460EFBFD15A68C0C9@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 23 Nov 2022 12:31:15 +0800
+Message-ID: <CACGkMEumUoHfWE0NkdmNbnx-nmgXrm3ZL6Jrj6x+M=wSXQK32g@mail.gmail.com>
+Subject: Re: [PATCH v5 15/19] iommufd: vfio container FD ioctl compatibility
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Yang, Lixiao" <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 22 Nov 2022 22:32:58 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Nov 23, 2022 at 9:33 AM Tian, Kevin <kevin.tian@intel.com> wrote:
+>
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Friday, November 18, 2022 11:22 PM
+> >
+> > On Fri, Nov 18, 2022 at 02:58:49AM +0000, Tian, Kevin wrote:
+> > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Sent: Thursday, November 17, 2022 5:01 AM
+> > > > index ca28a135b9675f..2fdff04000b326 100644
+> > > > --- a/drivers/iommu/iommufd/Makefile
+> > > > +++ b/drivers/iommu/iommufd/Makefile
+> > > > @@ -5,6 +5,7 @@ iommufd-y := \
+> > > >   io_pagetable.o \
+> > > >   ioas.o \
+> > > >   main.o \
+> > > > - pages.o
+> > > > + pages.o \
+> > > > + vfio_compat.o
+> > > >
+> > >
+> > > move vfio_compat out of core? it's not required if VFIO
+> > > is not configured.
+> >
+> > We can, but I don't know if we should. Compat ioctls are part of
+> > /dev/iommu, and technically have nothing to do with VFIO. A native
+> > iommufd application using VDPA could use them, if it wanted, for
+> > instance.
+> >
+>
+> I'm not sure whether that requires further VDPA support. Be safe
+> I'd like VDPA to explicitly select vfio_compact when that new
+> mixed scheme is supported.
+>
 
-> To explain this better, let's look at the following scenario:
-> 
->  echo 'p:foo val=$arg1:u64' > kprobe_events
->  echo 1 > events/kprobes/foo/enable
->  sleep 1
->  echo 0 > events/kprobes/foo/enable
-> 
->  echo 'p:bar val=+0($arg1):string' > kprobe_events
-> 
->  # foo kprobe is deleted and bar is created and
->  # with IDA, bar has the same number for type as foo
-> 
->  cat trace
-> 
-> When you read the trace, it will see a binary blob representing an
-> event and marked with a type. Although the event was foo, it will now
-> map it to bar. And it will read foo's $arg1:u64 as bar's
-> +0($arg1):string, and will crash.
+This sounds strange. If I don't misunderstand the code, it tries to
+provide ioctl compatibility with the VFIO container. I don't see how
+it can be used for vDPA, the ioctls used by vDPA is not compatible
+with VFIO.
 
-I just tested my theory, and it proved it:
-
- # cd /sys/kernel/tracing
- # echo 'p:kprobes/foo do_sys_openat2 $arg1:u32' > kprobe_events
- # echo 1 > events/kprobes/foo/enable
- # cat /etc/passwd
- # echo 0 > events/kprobes/foo/enable
- # echo 'p:kprobes/foo do_sys_openat2 +0($arg2):string' > kprobe_events
- # cat trace
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 14/14   #P:8
-#
-#                                _-----=> irqs-off/BH-disabled
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-        sendmail-1942    [002] .....   530.136320: foo: (do_sys_openat2+0x0/0x240) arg1=             cat-2046    [004] .....   530.930817: foo: (do_sys_openat2+0x0/0x240) arg1="������������������������������������������������������������������������������������������������"
-             cat-2046    [004] .....   530.930961: foo: (do_sys_openat2+0x0/0x240) arg1="������������������������������������������������������������������������������������������������"
-             cat-2046    [004] .....   530.934278: foo: (do_sys_openat2+0x0/0x240) arg1="������������������������������������������������������������������������������������������������"
-             cat-2046    [004] .....   530.934563: foo: (do_sys_openat2+0x0/0x240) arg1="������������������������������������������������������������������������������������������������"
-            bash-1515    [007] .....   534.299093: foo: (do_sys_openat2+0x0/0x240) arg1="kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk���������@��4Z����;Y�����U
-
-And dmesg has:
-
-[  558.504698] ==================================================================
-[  558.511925] BUG: KASAN: use-after-free in string+0xd4/0x1c0
-[  558.517501] Read of size 1 at addr ffff88805fdbbfa0 by task cat/2049
-
-[  558.525348] CPU: 0 PID: 2049 Comm: cat Not tainted 6.1.0-rc6-test+ #641
-[  558.531959] Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
-[  558.540909] Call Trace:
-[  558.543360]  <TASK>
-[  558.545465]  dump_stack_lvl+0x5b/0x77
-[  558.549132]  print_report+0x17f/0x47b
-[  558.552805]  ? __virt_addr_valid+0xd9/0x160
-[  558.556998]  ? string+0xd4/0x1c0
-[  558.560229]  ? string+0xd4/0x1c0
-[  558.563462]  kasan_report+0xad/0x130
-[  558.567042]  ? string+0xd4/0x1c0
-[  558.570274]  string+0xd4/0x1c0
-[  558.573332]  ? ip6_addr_string_sa+0x3e0/0x3e0
-[  558.577690]  ? format_decode+0xa2/0x690
-[  558.581531]  ? simple_strtoul+0x10/0x10
-[  558.585378]  vsnprintf+0x500/0x840
-[  558.588785]  ? pointer+0x740/0x740
-[  558.592190]  ? pointer+0x740/0x740
-[  558.595594]  seq_buf_vprintf+0x62/0xc0
-[  558.599346]  trace_seq_printf+0x10e/0x1e0
-[  558.603359]  ? trace_seq_bitmask+0x130/0x130
-[  558.607632]  ? memcpy+0x38/0x60
-[  558.610774]  ? seq_buf_putmem+0x6e/0xa0
-[  558.614616]  print_type_string+0x90/0xa0
-[  558.618539]  ? print_type_symbol+0x80/0x80
-[  558.622640]  print_kprobe_event+0x16b/0x290
-[  558.626830]  print_trace_line+0x451/0x8e0
-[  558.630847]  ? tracing_buffers_read+0x3f0/0x3f0
-[  558.635380]  ? preempt_count_sub+0xb7/0x100
-[  558.639566]  ? _raw_spin_unlock_irqrestore+0x28/0x50
-[  558.644532]  ? trace_find_next_entry_inc+0xa7/0xe0
-[  558.649325]  s_show+0x72/0x1f0
-[  558.652386]  seq_read_iter+0x58e/0x750
-[  558.656147]  seq_read+0x115/0x160
-[  558.659475]  ? seq_read_iter+0x750/0x750
-[  558.663401]  ? __mod_lruvec_page_state+0x123/0x280
-[  558.668199]  ? tracer_preempt_on+0x74/0x1d0
-[  558.672386]  ? preempt_count_sub+0xb7/0x100
-[  558.676573]  ? fsnotify_perm.part.0+0xa0/0x250
-[  558.681025]  vfs_read+0x11d/0x460
-[  558.684344]  ? kernel_read+0xc0/0xc0
-[  558.687922]  ? __fget_light+0x1b0/0x200
-[  558.691763]  ksys_read+0xa9/0x130
-[  558.695082]  ? __ia32_sys_pwrite64+0x120/0x120
-[  558.699528]  ? trace_hardirqs_on+0x2c/0x110
-[  558.703715]  do_syscall_64+0x3a/0x90
-[  558.707304]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  558.712356] RIP: 0033:0x7fc2e972ade2
-[  558.715934] Code: c0 e9 b2 fe ff ff 50 48 8d 3d b2 3f 0a 00 e8 05 f0 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
-[  558.734684] RSP: 002b:00007ffc64e687c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[  558.742257] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007fc2e972ade2
-[  558.749388] RDX: 0000000000020000 RSI: 00007fc2e980d000 RDI: 0000000000000003
-[  558.756520] RBP: 00007fc2e980d000 R08: 00007fc2e980c010 R09: 0000000000000000
-[  558.763652] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000020f00
-[  558.770785] R13: 0000000000000003 R14: 0000000000020000 R15: 0000000000020000
-[  558.777920]  </TASK>
-
-[  558.781609] The buggy address belongs to the physical page:
-[  558.787182] page:ffffea00017f6ec0 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x5fdbb
-[  558.796483] flags: 0xfffffc0000000(node=0|zone=1|lastcpupid=0x1fffff)
-[  558.802925] raw: 000fffffc0000000 0000000000000000 ffffea00017f6ec8 0000000000000000
-[  558.810663] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[  558.818400] page dumped because: kasan: bad access detected
-
-[  558.825465] Memory state around the buggy address:
-[  558.830258]  ffff88805fdbbe80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[  558.837479]  ffff88805fdbbf00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[  558.844699] >ffff88805fdbbf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[  558.851917]                                ^
-[  558.856190]  ffff88805fdbc000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[  558.863409]  ffff88805fdbc080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[  558.870628] ==================================================================
-
-Look familiar?
-
--- Steve
+Thanks
 
