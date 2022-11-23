@@ -2,340 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55870635CB5
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 13:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80796635D29
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 13:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbiKWMX0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 07:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
+        id S237076AbiKWMmm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 07:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236606AbiKWMXH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 07:23:07 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006D595A1
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 04:23:03 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id e11so16220011wru.8
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 04:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ns25ATzjLB941UUppT3JuAVyU+HwsxlUNnNXXyQ94c=;
-        b=AJGOu6aaLuezpgX8JiBmZh3hGcl3YMWCvQMvMgo25TZVwbsZCtM9sXrP3iU75WIhs6
-         /u1Fvr/BWjXCWPmtAw+Hmp9EMXlPi+xgYr4JpsKoJudj8XxyXQVCFCw3FD+UwjMsdM//
-         1kJrZYz7fD/BlCcFcj7QtGzR+VN6LrYXlgJNHGsySYc1re3lNFiMdqVAtKKxvn1/5N7o
-         eQHNhDJvYXUY2Nt1VarWtihfFUpSIT0QsmoiPnXDHddxAqoEdAdzi17+fJwlgQfpcFQr
-         zCByz/3nLAT5Yi70hmSbYZEJmU0Qr0oJ0APBBMEe4xPDqXUcmL3ZwpffQGL2q77obPpk
-         48Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3ns25ATzjLB941UUppT3JuAVyU+HwsxlUNnNXXyQ94c=;
-        b=TuQaf6KHCyP6o2LlXTLTZVAaKjQmjg1wQHTTZTxPKU4enNBcLBxdt8E0E5KlffW7yV
-         7iAcw/bHl2hCqfqse+RjSzJG7IBCUzq6k2IeTEcZMa1QThoGclM/oPgH3k78Of/0ZZCw
-         +K+0/y12qRO7ue0qCHB0GCJsCIQPEP2BjbeYPnqUoEl0qMhSuxrcCKalmaSl7Zl07jJX
-         Jr4Q4jhUT7KRfsevo0pAULzPDhLRzrP803+VM7oxRPQnBx8e4Hbev5oZViSFUg2qpByy
-         MKjY0t6Cgu4kkVTuA5Gg5jLW3IZ5kZy+FyQ8YFou9PcHYGU5ZDVb5HhKiReHpOHec0y9
-         O0iw==
-X-Gm-Message-State: ANoB5pkU/LKkSPkIfV4zXji06qutVVizpPPcrOrV+Dtkw03M7T2kQRIt
-        xYMAapiyxinC1Am2SNbrpSI=
-X-Google-Smtp-Source: AA0mqf4uzXfya49LzhGKwrf8/rAIFtgLoeWpeCZn3dGxBXHK9tmOClIYW7qnUKqiMR2EoO5nPGJ4BQ==
-X-Received: by 2002:a5d:4845:0:b0:241:c1bd:9c75 with SMTP id n5-20020a5d4845000000b00241c1bd9c75mr8907848wrs.422.1669206182314;
-        Wed, 23 Nov 2022 04:23:02 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id u14-20020a05600c19ce00b003b3307fb98fsm2447680wmq.24.2022.11.23.04.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 04:23:01 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 23 Nov 2022 13:23:00 +0100
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Make sure zero-len skbs
- aren't redirectable
-Message-ID: <Y34QpET78/KX9JLh@krava>
-References: <20221121180340.1983627-1-sdf@google.com>
- <20221121180340.1983627-2-sdf@google.com>
+        with ESMTP id S236736AbiKWMlz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 07:41:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62376A753;
+        Wed, 23 Nov 2022 04:41:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6E90BB81F40;
+        Wed, 23 Nov 2022 12:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3554BC433B5;
+        Wed, 23 Nov 2022 12:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669207289;
+        bh=w3ngGpxStBi/7HEA93UBxPea0xJCi3aEJB67Ef7ELqk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jMJGr+iWt5XqwRTY7cCPGVlMDqIG31uuE8B5FF7elBiK8zpRZmlviPcbyOImxLfup
+         zH7aSWWfvPyAKBlIArnV+teORrhOjXcE/x9O9CuhnbgUqU9AU9wqqpjmM16B8TiYRh
+         OApzL2Lr0wQunfUaq3+rNUlfCM3T/XoTSa3B+JTA4Z5J0uI+pl5yjNGfWiuhideUul
+         AoVmeRdZGO5qFWjVdbg1o+u+2ASlorOqt7QBAc+G2goQSOe98ckMSDHEpYUlOLBKGK
+         ixxOalxhLXIucQQy6YQuVgiQesvfyLkXSzJ3sZYU4834xkRIZAso+Ajbeu0YCk0dZV
+         wHThU9ohzSD6w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.0 13/44] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
+Date:   Wed, 23 Nov 2022 07:40:22 -0500
+Message-Id: <20221123124057.264822-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221123124057.264822-1-sashal@kernel.org>
+References: <20221123124057.264822-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221121180340.1983627-2-sdf@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 10:03:40AM -0800, Stanislav Fomichev wrote:
-> LWT_XMIT to test L3 case, TC to test L2 case.
-> 
-> v2:
-> - s/veth_ifindex/ipip_ifindex/ in two places (Martin)
-> - add comment about which condition triggers the rejection (Martin)
-> 
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-hi,
-I'm getting selftest fails and it looks like it's because of this test:
+[ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
 
-	[root@qemu bpf]# ./test_progs -n 62,98 
-	#62      empty_skb:OK
-	execute_one_variant:PASS:skel_open 0 nsec
-	execute_one_variant:PASS:my_pid_map_update 0 nsec
-	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
-	libbpf: prog 'handle_legacy': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
-	libbpf: prog 'handle_legacy': failed to auto-attach: -2
-	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-	test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
-	execute_one_variant:PASS:skel_open 0 nsec
-	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
-	libbpf: prog 'handle_modern': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
-	libbpf: prog 'handle_modern': failed to auto-attach: -2
-	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-	#98      legacy_printk:FAIL
+The dispatcher function is currently abusing the ftrace __fentry__
+call location for its own purposes -- this obviously gives trouble
+when the dispatcher and ftrace are both in use.
 
-	All error logs:
-	execute_one_variant:PASS:skel_open 0 nsec
-	execute_one_variant:PASS:my_pid_map_update 0 nsec
-	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
-	libbpf: prog 'handle_legacy': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
-	libbpf: prog 'handle_legacy': failed to auto-attach: -2
-	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-	test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
-	execute_one_variant:PASS:skel_open 0 nsec
-	libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' perf event ID: No such file or directory
-	libbpf: prog 'handle_modern': failed to create tracepoint 'raw_syscalls/sys_enter' perf event: No such file or directory
-	libbpf: prog 'handle_modern': failed to auto-attach: -2
-	execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-	#98      legacy_printk:FAIL
-	Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
+A previous solution tried using __attribute__((patchable_function_entry()))
+which works, except it is GCC-8+ only, breaking the build on the
+earlier still supported compilers. Instead use static_call() -- which
+has its own annotations and does not conflict with ftrace -- to
+rewrite the dispatch function.
 
-when I run separately it passes:
+By using: return static_call()(ctx, insni, bpf_func) you get a perfect
+forwarding tail call as function body (iow a single jmp instruction).
+By having the default static_call() target be bpf_dispatcher_nop_func()
+it retains the default behaviour (an indirect call to the argument
+function). Only once a dispatcher program is attached is the target
+rewritten to directly call the JIT'ed image.
 
-	[root@qemu bpf]# ./test_progs -n 98 
-	#98      legacy_printk:OK
-	Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Björn Töpel <bjorn@kernel.org>
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Björn Töpel <bjorn@kernel.org>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Link: https://lkml.kernel.org/r/Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net
+Link: https://lore.kernel.org/bpf/20221103120647.796772565@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/bpf.h     | 39 ++++++++++++++++++++++++++++++++++++++-
+ kernel/bpf/dispatcher.c | 22 ++++++++--------------
+ 2 files changed, 46 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 80fc8a88c610..0466aa9cd46c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -27,6 +27,7 @@
+ #include <linux/bpfptr.h>
+ #include <linux/btf.h>
+ #include <linux/rcupdate_trace.h>
++#include <linux/static_call.h>
+ 
+ struct bpf_verifier_env;
+ struct bpf_verifier_log;
+@@ -894,6 +895,10 @@ struct bpf_dispatcher {
+ 	void *rw_image;
+ 	u32 image_off;
+ 	struct bpf_ksym ksym;
++#ifdef CONFIG_HAVE_STATIC_CALL
++	struct static_call_key *sc_key;
++	void *sc_tramp;
++#endif
+ };
+ 
+ static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
+@@ -911,6 +916,34 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ 					  struct bpf_attach_target_info *tgt_info);
+ void bpf_trampoline_put(struct bpf_trampoline *tr);
+ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_funcs);
++
++/*
++ * When the architecture supports STATIC_CALL replace the bpf_dispatcher_fn
++ * indirection with a direct call to the bpf program. If the architecture does
++ * not have STATIC_CALL, avoid a double-indirection.
++ */
++#ifdef CONFIG_HAVE_STATIC_CALL
++
++#define __BPF_DISPATCHER_SC_INIT(_name)				\
++	.sc_key = &STATIC_CALL_KEY(_name),			\
++	.sc_tramp = STATIC_CALL_TRAMP_ADDR(_name),
++
++#define __BPF_DISPATCHER_SC(name)				\
++	DEFINE_STATIC_CALL(bpf_dispatcher_##name##_call, bpf_dispatcher_nop_func)
++
++#define __BPF_DISPATCHER_CALL(name)				\
++	static_call(bpf_dispatcher_##name##_call)(ctx, insnsi, bpf_func)
++
++#define __BPF_DISPATCHER_UPDATE(_d, _new)			\
++	__static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
++
++#else
++#define __BPF_DISPATCHER_SC_INIT(name)
++#define __BPF_DISPATCHER_SC(name)
++#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
++#define __BPF_DISPATCHER_UPDATE(_d, _new)
++#endif
++
+ #define BPF_DISPATCHER_INIT(_name) {				\
+ 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
+ 	.func = &_name##_func,					\
+@@ -922,25 +955,29 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
+ 		.name  = #_name,				\
+ 		.lnode = LIST_HEAD_INIT(_name.ksym.lnode),	\
+ 	},							\
++	__BPF_DISPATCHER_SC_INIT(_name##_call)			\
+ }
+ 
+ #define DEFINE_BPF_DISPATCHER(name)					\
++	__BPF_DISPATCHER_SC(name);					\
+ 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
+ 		const void *ctx,					\
+ 		const struct bpf_insn *insnsi,				\
+ 		bpf_func_t bpf_func)					\
+ 	{								\
+-		return bpf_func(ctx, insnsi);				\
++		return __BPF_DISPATCHER_CALL(name);			\
+ 	}								\
+ 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
+ 	struct bpf_dispatcher bpf_dispatcher_##name =			\
+ 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
++
+ #define DECLARE_BPF_DISPATCHER(name)					\
+ 	unsigned int bpf_dispatcher_##name##_func(			\
+ 		const void *ctx,					\
+ 		const struct bpf_insn *insnsi,				\
+ 		bpf_func_t bpf_func);					\
+ 	extern struct bpf_dispatcher bpf_dispatcher_##name;
++
+ #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
+ #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
+ void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
+diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
+index fa64b80b8bca..7dfb8d0d5202 100644
+--- a/kernel/bpf/dispatcher.c
++++ b/kernel/bpf/dispatcher.c
+@@ -4,6 +4,7 @@
+ #include <linux/hash.h>
+ #include <linux/bpf.h>
+ #include <linux/filter.h>
++#include <linux/static_call.h>
+ 
+ /* The BPF dispatcher is a multiway branch code generator. The
+  * dispatcher is a mechanism to avoid the performance penalty of an
+@@ -104,17 +105,11 @@ static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image, void *b
+ 
+ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
+ {
+-	void *old, *new, *tmp;
+-	u32 noff;
+-	int err;
+-
+-	if (!prev_num_progs) {
+-		old = NULL;
+-		noff = 0;
+-	} else {
+-		old = d->image + d->image_off;
++	void *new, *tmp;
++	u32 noff = 0;
++
++	if (prev_num_progs)
+ 		noff = d->image_off ^ (PAGE_SIZE / 2);
+-	}
+ 
+ 	new = d->num_progs ? d->image + noff : NULL;
+ 	tmp = d->num_progs ? d->rw_image + noff : NULL;
+@@ -128,11 +123,10 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
+ 			return;
+ 	}
+ 
+-	err = bpf_arch_text_poke(d->func, BPF_MOD_JUMP, old, new);
+-	if (err || !new)
+-		return;
++	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
+ 
+-	d->image_off = noff;
++	if (new)
++		d->image_off = noff;
+ }
+ 
+ void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
+-- 
+2.35.1
 
-it seems that the open_netns/close_netns does not work properly,
-and screw up access to tracefs for following tests
-
-if I comment out all the umounts in setns_by_fd, it does not fail
-
-jirka
-
-
-> ---
->  .../selftests/bpf/prog_tests/empty_skb.c      | 146 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/empty_skb.c |  37 +++++
->  2 files changed, 183 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/empty_skb.c
->  create mode 100644 tools/testing/selftests/bpf/progs/empty_skb.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-> new file mode 100644
-> index 000000000000..32dd731e9070
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-> @@ -0,0 +1,146 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +#include <net/if.h>
-> +#include "empty_skb.skel.h"
-> +
-> +#define SYS(cmd) ({ \
-> +	if (!ASSERT_OK(system(cmd), (cmd))) \
-> +		goto out; \
-> +})
-> +
-> +void test_empty_skb(void)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, tattr);
-> +	struct empty_skb *bpf_obj = NULL;
-> +	struct nstoken *tok = NULL;
-> +	struct bpf_program *prog;
-> +	char eth_hlen_pp[15];
-> +	char eth_hlen[14];
-> +	int veth_ifindex;
-> +	int ipip_ifindex;
-> +	int err;
-> +	int i;
-> +
-> +	struct {
-> +		const char *msg;
-> +		const void *data_in;
-> +		__u32 data_size_in;
-> +		int *ifindex;
-> +		int err;
-> +		int ret;
-> +		bool success_on_tc;
-> +	} tests[] = {
-> +		/* Empty packets are always rejected. */
-> +
-> +		{
-> +			/* BPF_PROG_RUN ETH_HLEN size check */
-> +			.msg = "veth empty ingress packet",
-> +			.data_in = NULL,
-> +			.data_size_in = 0,
-> +			.ifindex = &veth_ifindex,
-> +			.err = -EINVAL,
-> +		},
-> +		{
-> +			/* BPF_PROG_RUN ETH_HLEN size check */
-> +			.msg = "ipip empty ingress packet",
-> +			.data_in = NULL,
-> +			.data_size_in = 0,
-> +			.ifindex = &ipip_ifindex,
-> +			.err = -EINVAL,
-> +		},
-> +
-> +		/* ETH_HLEN-sized packets:
-> +		 * - can not be redirected at LWT_XMIT
-> +		 * - can be redirected at TC to non-tunneling dest
-> +		 */
-> +
-> +		{
-> +			/* __bpf_redirect_common */
-> +			.msg = "veth ETH_HLEN packet ingress",
-> +			.data_in = eth_hlen,
-> +			.data_size_in = sizeof(eth_hlen),
-> +			.ifindex = &veth_ifindex,
-> +			.ret = -ERANGE,
-> +			.success_on_tc = true,
-> +		},
-> +		{
-> +			/* __bpf_redirect_no_mac
-> +			 *
-> +			 * lwt: skb->len=0 <= skb_network_offset=0
-> +			 * tc: skb->len=14 <= skb_network_offset=14
-> +			 */
-> +			.msg = "ipip ETH_HLEN packet ingress",
-> +			.data_in = eth_hlen,
-> +			.data_size_in = sizeof(eth_hlen),
-> +			.ifindex = &ipip_ifindex,
-> +			.ret = -ERANGE,
-> +		},
-> +
-> +		/* ETH_HLEN+1-sized packet should be redirected. */
-> +
-> +		{
-> +			.msg = "veth ETH_HLEN+1 packet ingress",
-> +			.data_in = eth_hlen_pp,
-> +			.data_size_in = sizeof(eth_hlen_pp),
-> +			.ifindex = &veth_ifindex,
-> +		},
-> +		{
-> +			.msg = "ipip ETH_HLEN+1 packet ingress",
-> +			.data_in = eth_hlen_pp,
-> +			.data_size_in = sizeof(eth_hlen_pp),
-> +			.ifindex = &ipip_ifindex,
-> +		},
-> +	};
-> +
-> +	SYS("ip netns add empty_skb");
-> +	tok = open_netns("empty_skb");
-> +	SYS("ip link add veth0 type veth peer veth1");
-> +	SYS("ip link set dev veth0 up");
-> +	SYS("ip link set dev veth1 up");
-> +	SYS("ip addr add 10.0.0.1/8 dev veth0");
-> +	SYS("ip addr add 10.0.0.2/8 dev veth1");
-> +	veth_ifindex = if_nametoindex("veth0");
-> +
-> +	SYS("ip link add ipip0 type ipip local 10.0.0.1 remote 10.0.0.2");
-> +	SYS("ip link set ipip0 up");
-> +	SYS("ip addr add 192.168.1.1/16 dev ipip0");
-> +	ipip_ifindex = if_nametoindex("ipip0");
-> +
-> +	bpf_obj = empty_skb__open_and_load();
-> +	if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
-> +		goto out;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> +		bpf_object__for_each_program(prog, bpf_obj->obj) {
-> +			char buf[128];
-> +			bool at_tc = !strncmp(bpf_program__section_name(prog), "tc", 2);
-> +
-> +			tattr.data_in = tests[i].data_in;
-> +			tattr.data_size_in = tests[i].data_size_in;
-> +
-> +			tattr.data_size_out = 0;
-> +			bpf_obj->bss->ifindex = *tests[i].ifindex;
-> +			bpf_obj->bss->ret = 0;
-> +			err = bpf_prog_test_run_opts(bpf_program__fd(prog), &tattr);
-> +			sprintf(buf, "err: %s [%s]", tests[i].msg, bpf_program__name(prog));
-> +
-> +			if (at_tc && tests[i].success_on_tc)
-> +				ASSERT_GE(err, 0, buf);
-> +			else
-> +				ASSERT_EQ(err, tests[i].err, buf);
-> +			sprintf(buf, "ret: %s [%s]", tests[i].msg, bpf_program__name(prog));
-> +			if (at_tc && tests[i].success_on_tc)
-> +				ASSERT_GE(bpf_obj->bss->ret, 0, buf);
-> +			else
-> +				ASSERT_EQ(bpf_obj->bss->ret, tests[i].ret, buf);
-> +		}
-> +	}
-> +
-> +out:
-> +	if (bpf_obj)
-> +		empty_skb__destroy(bpf_obj);
-> +	if (tok)
-> +		close_netns(tok);
-> +	system("ip netns del empty_skb");
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/empty_skb.c b/tools/testing/selftests/bpf/progs/empty_skb.c
-> new file mode 100644
-> index 000000000000..4b0cd6753251
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/empty_skb.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +int ifindex;
-> +int ret;
-> +
-> +SEC("lwt_xmit")
-> +int redirect_ingress(struct __sk_buff *skb)
-> +{
-> +	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
-> +	return 0;
-> +}
-> +
-> +SEC("lwt_xmit")
-> +int redirect_egress(struct __sk_buff *skb)
-> +{
-> +	ret = bpf_clone_redirect(skb, ifindex, 0);
-> +	return 0;
-> +}
-> +
-> +SEC("tc")
-> +int tc_redirect_ingress(struct __sk_buff *skb)
-> +{
-> +	ret = bpf_clone_redirect(skb, ifindex, BPF_F_INGRESS);
-> +	return 0;
-> +}
-> +
-> +SEC("tc")
-> +int tc_redirect_egress(struct __sk_buff *skb)
-> +{
-> +	ret = bpf_clone_redirect(skb, ifindex, 0);
-> +	return 0;
-> +}
-> -- 
-> 2.38.1.584.g0f3c55d4c2-goog
-> 
