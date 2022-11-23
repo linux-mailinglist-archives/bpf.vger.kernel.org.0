@@ -2,179 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C71636A9C
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 21:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A1C636AA7
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 21:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiKWUOD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 15:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
+        id S237323AbiKWUPL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 15:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235486AbiKWUOC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 15:14:02 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF09BCAB;
-        Wed, 23 Nov 2022 12:14:00 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id ha10so8884260ejb.3;
-        Wed, 23 Nov 2022 12:14:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1UyFy5Drye4uBDXMkB6oFaPbJiRKFehIbLKezTRaZmo=;
-        b=YI9BrK5aA2o9y1J1/iG3EG/zL3T4BSwOkjW6ukianRmlbfo5q2KxX4JjrPoB2lGwl9
-         LDJ+tfuSRb5TkXE6GtBss6dczu8GwJW6SL2cGRgt3jCacyMnEkAFGj2MF7pmG/LsPOhD
-         9oQh6Vmr8MEKECg8EkbXP4ruUgzilW04RmyFPp5ZZu6eWQ/DDXG9ocqHvmD8UXfVhoGE
-         FKzf3UPvLfX93hdtFVb7mz50/aAdT1urRA6RVyfMFMbfRSVuhGRt4nldKUIgsbKxE9+G
-         enWGg+o4A1D6GblcUaik6+DZrB83Wos6McYxFqiiyQ9BWVC27qtfZCIGk6R8zQQARuAY
-         CIpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1UyFy5Drye4uBDXMkB6oFaPbJiRKFehIbLKezTRaZmo=;
-        b=bgNlZz0xqKTpCAw8MYaI2G1oMK4b0AFmGJwK6KaiknLnaZ1JNaQumoqzN+ki5LsIso
-         8rpYvH5iseRsZXCxLoQgUpv/+EXfsaa4QQ+3Cgd9kxZLSxVlbkLV8IUtcvO/SBwKUZkM
-         nCyY49qb/Odx3BU5U5txbnWZSg0bLrIIWB65gW/6jXPCmggPUzLWQ+aYTpg4Gy03rDEh
-         yybZ+KkmxXyCPJJlbB5U4j6Ia3cnVVkFTe17C0Ovau59eU/PIzup8qpXo1xUkU/z9AfJ
-         O+31LJipMGy1cnvMxHio9mPpGBNy2kn2PCtNyOcGOvhq8aBXe+FYq7ASAtIK/lthdmmq
-         LvDg==
-X-Gm-Message-State: ANoB5plZHVEmlyM9plw4CAIfbQp0Ul/U1OCvhZFh83lX9YeHcluzEac+
-        xDZideSwyNNwZOk7nQ8QmBBPkRlz8tmKmgARzOk=
-X-Google-Smtp-Source: AA0mqf5F17GGSffbGy3BvG2UOX3tDyNGk+5NF7l+Uw4Yk21/CigF6vqJPyNaUknoNsP+323hIcxGpEu2k2WMxgoPnGA=
-X-Received: by 2002:a17:906:34d0:b0:78d:c16e:dfc9 with SMTP id
- h16-20020a17090634d000b0078dc16edfc9mr25447270ejb.327.1669234438938; Wed, 23
- Nov 2022 12:13:58 -0800 (PST)
+        with ESMTP id S237546AbiKWUPL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 15:15:11 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A3556EC8;
+        Wed, 23 Nov 2022 12:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1669234508; x=1700770508;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eSntQzF4q26wzrEFVAJywooKAOI3AAj+06yfqsfV9sw=;
+  b=WJgxBiNOlToKBNACKH2VOi1WzQFZOLv+G6el085K3U7OfMW63xXpbgJJ
+   IeUgaX48GQo+A+AKzgzr7X/LZhU1d9m1jHt3n5X/QmoaLXZGPsplRyCQq
+   qbJeFjfV4H8ClAL4P+JiNO9PsxvNcyO2Wzn5Ff4Cm0tYC7aA+fieVWsS6
+   nrf4TYgTG41JMxaORfGOc4iDNibNEUomuf943E85Tc3KgjsKwCTGKNijD
+   DxkEQ9MOI+z1e7yuewAh65dmy+J39jrTEJOvCV1XwfYKa/llolLi/4kOr
+   5hm2/7Tm+EwKjrIxy1ocicganBjNkCmYk9yZ8Z/6e9X9EKaEymASihDj2
+   g==;
+X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
+   d="scan'208";a="184920813"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2022 13:15:06 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Wed, 23 Nov 2022 13:15:05 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Wed, 23 Nov 2022 13:15:04 -0700
+Date:   Wed, 23 Nov 2022 21:19:55 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <alexandr.lobakin@intel.com>,
+        <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v4 6/7] net: lan966x: Add support for XDP_TX
+Message-ID: <20221123201955.koaobohzf6kcm4ho@soft-dev3-1>
+References: <20221122214413.3446006-1-horatiu.vultur@microchip.com>
+ <20221122214413.3446006-7-horatiu.vultur@microchip.com>
+ <Y31Mu/hAxrmbn7Ws@boxer>
 MIME-Version: 1.0
-References: <20221103155756.687789-1-benjamin.tissoires@redhat.com>
- <20221103155756.687789-4-benjamin.tissoires@redhat.com> <ff1a0b34-71f2-cebe-a6ef-675936b276eb@nvidia.com>
- <CAO-hwJJZxgeTT8mLwFrYynSVASva=o7qL9Kr4xOywV3KDUu2GA@mail.gmail.com>
-In-Reply-To: <CAO-hwJJZxgeTT8mLwFrYynSVASva=o7qL9Kr4xOywV3KDUu2GA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 23 Nov 2022 12:13:47 -0800
-Message-ID: <CAADnVQ+kE+EJ9LAfwge9ksC0LR8r+ShQNYi5g-MDajufXq8Yxw@mail.gmail.com>
-Subject: Re: [PATCH hid v12 03/15] HID: initial BPF implementation
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <Y31Mu/hAxrmbn7Ws@boxer>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 6:53 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> Hi Jon,
->
-> On Wed, Nov 23, 2022 at 2:25 PM Jon Hunter <jonathanh@nvidia.com> wrote:
+The 11/22/2022 23:27, Maciej Fijalkowski wrote:
+> 
+> On Tue, Nov 22, 2022 at 10:44:12PM +0100, Horatiu Vultur wrote:
+> > Extend lan966x XDP support with the action XDP_TX. In this case when the
+> > received buffer needs to execute XDP_TX, the buffer will be moved to the
+> > TX buffers. So a new RX buffer will be allocated.
+> > When the TX finish with the frame, it would give back the buffer to the
+> > page pool.
 > >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+...
 > >
-> > On 03/11/2022 15:57, Benjamin Tissoires wrote:
-> > > Declare an entry point that can use fmod_ret BPF programs, and
-> > > also an API to access and change the incoming data.
-> > >
-> > > A simpler implementation would consist in just calling
-> > > hid_bpf_device_event() for any incoming event and let users deal
-> > > with the fact that they will be called for any event of any device.
-> > >
-> > > The goal of HID-BPF is to partially replace drivers, so this situation
-> > > can be problematic because we might have programs which will step on
-> > > each other toes.
-> > >
-> > > For that, we add a new API hid_bpf_attach_prog() that can be called
-> > > from a syscall and we manually deal with a jump table in hid-bpf.
-> > >
-> > > Whenever we add a program to the jump table (in other words, when we
-> > > attach a program to a HID device), we keep the number of time we added
-> > > this program in the jump table so we can release it whenever there are
-> > > no other users.
-> > >
-> > > HID devices have an RCU protected list of available programs in the
-> > > jump table, and those programs are called one after the other thanks
-> > > to bpf_tail_call().
-> > >
-> > > To achieve the detection of users losing their fds on the programs we
-> > > attached, we add 2 tracing facilities on bpf_prog_release() (for when
-> > > a fd is closed) and bpf_free_inode() (for when a pinned program gets
-> > > unpinned).
-> > >
-> > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> >
-> > ...
-> >
-> > > +static int __init hid_bpf_init(void)
-> > > +{
-> > > +     int err;
-> > > +
-> > > +     /* Note: if we exit with an error any time here, we would entirely break HID, which
-> > > +      * is probably not something we want. So we log an error and return success.
-> > > +      *
-> > > +      * This is not a big deal: the syscall allowing to attach a BPF program to a HID device
-> > > +      * will not be available, so nobody will be able to use the functionality.
-> > > +      */
-> > > +
-> > > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
-> > > +     if (err) {
-> > > +             pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
-> > > +             return 0;
-> > > +     }
-> > > +
-> > > +     err = hid_bpf_preload_skel();
-> > > +     if (err) {
-> > > +             pr_warn("error while preloading HID BPF dispatcher: %d", err);
-> > > +             return 0;
-> > > +     }
-> > > +
-> > > +     /* register syscalls after we are sure we can load our preloaded bpf program */
-> > > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &hid_bpf_syscall_kfunc_set);
-> > > +     if (err) {
-> > > +             pr_warn("error while setting HID BPF syscall kfuncs: %d", err);
-> > > +             return 0;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> >
-> >
-> > We have a kernel test that checks for new warning and error messages on
-> > boot and with this change I am now seeing the following error message on
-> > our Tegra platforms ...
-> >
-> >   WARNING KERN hid_bpf: error while preloading HID BPF dispatcher: -13
-> >
-> > I have a quick look at the code, but I can't say I am familiar with
-> > this. So I wanted to ask if a way to fix this or avoid this? I see the
-> > code returns 0, so one option would be to make this an informational or
-> > debug print.
->
-> I am not in favor of debug in that case, because I suspect it'll hide
-> too much when getting a bug report. Informational could do, yes.
->
-> However, before that, I'd like to dig a little bit more on why it is
-> failing. I thought arm64 now has support of tracing bpf programs, so I
-> would not expect this to fail.
+> >  struct lan966x_port;
+> > @@ -176,6 +178,7 @@ struct lan966x_tx_dcb_buf {
+> >       dma_addr_t dma_addr;
+> >       struct net_device *dev;
+> >       struct sk_buff *skb;
+> > +     struct xdp_frame *xdpf;
+> 
+> Couldn't you make an union out of skb and xdpf? I'd say these two are
+> mutually exclusive, no? I believe this would simplify some things.
 
-Unfortunately the patches to add support for such tracing bpf progs got stuck.
-Florent/Mark can probably share the latest status.
+Yes, skb and xdpf are mutually exclusive.
+Also Alexander Lobakin mention something similar and I was not sure.
+Now that I have tried it I can see it that is more clear that skb and
+xdpf are mutually exclusive and also reduce the size of the struct.
+So I will update this in the next series.
+
+> 
+> >       u32 len;
+> >       u32 used : 1;
+> >       u32 ptp : 1;
+> > @@ -360,6 +363,8 @@ bool lan966x_hw_offload(struct lan966x *lan966x, u32 port, struct sk_buff *skb);
+> >
+> >  void lan966x_ifh_get_src_port(void *ifh, u64 *src_port);
+> >  void lan966x_ifh_get_timestamp(void *ifh, u64 *timestamp);
+> > +void lan966x_ifh_set_bypass(void *ifh, u64 bypass);
+> > +void lan966x_ifh_set_port(void *ifh, u64 bypass);
+> >
+> >  void lan966x_stats_get(struct net_device *dev,
+> >                      struct rtnl_link_stats64 *stats);
+> > @@ -460,6 +465,9 @@ u32 lan966x_ptp_get_period_ps(void);
+> >  int lan966x_ptp_gettime64(struct ptp_clock_info *ptp, struct timespec64 *ts);
+> >
+> >  int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
+> > +int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+> > +                        struct xdp_frame *frame,
+> > +                        struct page *page);
+> >  int lan966x_fdma_change_mtu(struct lan966x *lan966x);
+> >  void lan966x_fdma_netdev_init(struct lan966x *lan966x, struct net_device *dev);
+> >  void lan966x_fdma_netdev_deinit(struct lan966x *lan966x, struct net_device *dev);
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > index a99657154cca4..e7998fef7048c 100644
+> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+> > @@ -54,6 +54,7 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
+> >  {
+> >       struct bpf_prog *xdp_prog = port->xdp_prog;
+> >       struct lan966x *lan966x = port->lan966x;
+> > +     struct xdp_frame *xdpf;
+> >       struct xdp_buff xdp;
+> >       u32 act;
+> >
+> > @@ -66,6 +67,13 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
+> >       switch (act) {
+> >       case XDP_PASS:
+> >               return FDMA_PASS;
+> > +     case XDP_TX:
+> > +             xdpf = xdp_convert_buff_to_frame(&xdp);
+> > +             if (!xdpf)
+> > +                     return FDMA_DROP;
+> 
+> I would generally challenge the need for xdp_frame in XDP_TX path. You
+> probably would be good to go with calling directly
+> page_pool_put_full_page() on cleaning side. This frame is not going to be
+> redirected so I don't see the need for carrying additional info. I'm
+> bringing this up as I was observing performance improvement on ice driver
+> when I decided to operate directly on xdp_buff for XDP_TX.
+
+Thanks for suggestion. I definetly see your point.
+I would prefer for now to keep this like it is. Because I think in the
+near future I should do a proper investigation to see where the
+performance of the FDMA can be improved. And this will
+definetly be on the TODO.
+> 
+> But it's of course up to you.
+
+> 
+> > +
+> > +             return lan966x_fdma_xmit_xdpf(port, xdpf, page) ?
+> > +                    FDMA_DROP : FDMA_TX;
+> >       default:
+> >               bpf_warn_invalid_xdp_action(port->dev, xdp_prog, act);
+> >               fallthrough;
+> > --
+> > 2.38.0
+> >
+
+-- 
+/Horatiu
