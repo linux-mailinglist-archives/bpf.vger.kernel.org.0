@@ -2,89 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D2263623B
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 15:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B17B63625B
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 15:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbiKWOrt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 09:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
+        id S237579AbiKWOtx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 09:49:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236859AbiKWOrq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 09:47:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714E553ED2
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 06:46:51 -0800 (PST)
+        with ESMTP id S237611AbiKWOtv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 09:49:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C0E6E546
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 06:48:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669214810;
+        s=mimecast20190719; t=1669214933;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xz+km6/Hwl8oAosXhHMDgdK+wl//qFcWr7SigG5fMGI=;
-        b=Y5DufcHpV+ONscMG28HLaa99ZVhp3yYPakMBZlp1Sq5UTraWjgjJFuNKHgpHArL14k2g49
-        iD86qF9hFlsBqDcfMoVur0+OhodpT9VpGTR8N/ntRkWgt5izEIJkJvwVar2QIfPxF684YL
-        sa+1E0UzLowXRi8zB9MTOuzMoAUWdng=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=XVwsHMkeuOJlctKFKAb4Da/8dTubU4VpbLh+0BeUA34=;
+        b=XHcWS4/sHyXelC1GCNqeIT/Yp/tY7Xh0S73ueC/xdqQB2mUoUNcMb0QaO8YH+IJG9dCUT+
+        4CM919R4Gw29+6HMSOdQ0Thv+G9s69OCHrIqVwoPD+A9e56NTPH7AueYthNOoiy1gvVqLQ
+        PyPKptfkkdb4PPx8R/Sj2L4QoE+TGFk=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-31-pEHc7rmCOoKJybYbgAvI9Q-1; Wed, 23 Nov 2022 09:46:49 -0500
-X-MC-Unique: pEHc7rmCOoKJybYbgAvI9Q-1
-Received: by mail-ed1-f72.google.com with SMTP id e15-20020a056402190f00b00461b0576620so10410356edz.2
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 06:46:49 -0800 (PST)
+ us-mta-190-Ag4_FCSWMUmTnSWqRFS-TA-1; Wed, 23 Nov 2022 09:48:51 -0500
+X-MC-Unique: Ag4_FCSWMUmTnSWqRFS-TA-1
+Received: by mail-il1-f199.google.com with SMTP id d2-20020a056e020be200b00300ecc7e0d4so12995409ilu.5
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 06:48:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xz+km6/Hwl8oAosXhHMDgdK+wl//qFcWr7SigG5fMGI=;
-        b=a+drlwiKCXdMuUVRmp9ruhu5li/v/ESHmJHRH/lB0kmoVl7TqOVInNiOeAYrpJ6E74
-         8NRMwsSf1/6xB/wQGpW0/fi+kO/HjYYP3xltZOpvSOJqvjb2EzASpc64fwEazX2rUe5v
-         ZTAU20x81SCZYi/tvbqgDy3NXNIxNx7rn5G038orY8KKoHaeqE1dkIuAolsgn1ryQyi5
-         vN36082DipZdXVTIytUiLPxCfOC/71AjKaz7JN1cV3yxRZ1G33MVVOdwYoe9qPQUswvP
-         vOEZ0PB4gS34eCXCiuQC/OsIBTn0YMUWtDKVVq/yh1YOqO94J6KL7h+kRSn8Rfm9wgC1
-         oDVQ==
-X-Gm-Message-State: ANoB5pnuooOpX+bKuIC+wvP2ADkItwb5qmYpO637dkMMJ2Tcggkjm7ex
-        wlBc477NevzMA6FHST0cYarM2up8MYZ2+l4ITJJ2BNfulqn+UMnvI+XBl/Oe70L4mfBSXAozGs5
-        lnHAc8DG35UqW
-X-Received: by 2002:a17:906:160b:b0:78d:dddb:3974 with SMTP id m11-20020a170906160b00b0078ddddb3974mr23674877ejd.411.1669214807923;
-        Wed, 23 Nov 2022 06:46:47 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7gzrrwlJ97t9gbAltHqOq94T5Eij3iYI7xoXgpdWePyqrT1+AnkNTuxRdJZ1WEi3DXUCAAxQ==
-X-Received: by 2002:a17:906:160b:b0:78d:dddb:3974 with SMTP id m11-20020a170906160b00b0078ddddb3974mr23674846ejd.411.1669214807480;
-        Wed, 23 Nov 2022 06:46:47 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id mm27-20020a170906cc5b00b007ae693cd265sm7266907ejb.150.2022.11.23.06.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 06:46:47 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 61E197D5122; Wed, 23 Nov 2022 15:46:46 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] mlx5: Support XDP RX metadata
-Date:   Wed, 23 Nov 2022 15:46:41 +0100
-Message-Id: <20221123144641.339138-2-toke@redhat.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221123144641.339138-1-toke@redhat.com>
-References: <20221121182552.2152891-1-sdf@google.com>
- <20221123144641.339138-1-toke@redhat.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XVwsHMkeuOJlctKFKAb4Da/8dTubU4VpbLh+0BeUA34=;
+        b=eDtAlgX6jB/wS/C5yv1ZNz/LIw4/cRoMPdgtoH+DLrWH7g1/iCILV9LUuEPeyvyPgD
+         LAc5IAb5My26s//P5Z8DJetYzko4LDFDE1W5/PmiO5VtTHpubAL85XWBRVBeejJUlLb4
+         vPSjvvllJboVwF7FtR05qGIew+5kFO4EuHlhHwoVzZEdl2N1AB4OtHUfOaZGuBCxIJe2
+         XBZhwLMZJJAHUwLJXqaQ9GnMlbmZc0a1lwda82k6FW0J5zPoW6SMjoXNI6lr2jQj1U8K
+         qfwsuSwQcwP/7cdYUGO9H6cVXeWRXM0MUsC7MMF1xEEAgj679OItni6JVFV9NzULrOkT
+         wlBA==
+X-Gm-Message-State: ANoB5pmfEg5fVAsn9epTJd/TRhfwV8W+H7yovfmJxdGK/fwagaJB8hIw
+        8NoMmwwU2Py7qWmI9ecLHzQYjh1pP4CwOvnyDNA3t13o7H90HLod3x8FBlhc1tcUsFLu3SNbkf+
+        HVSNlxeWTbjqJsLIq/nHC8TC+JiSK
+X-Received: by 2002:a92:c691:0:b0:302:75c9:5d55 with SMTP id o17-20020a92c691000000b0030275c95d55mr4126273ilg.34.1669214931052;
+        Wed, 23 Nov 2022 06:48:51 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7t6tBPN8sYXy8dh8uHxD1HawZPKG6isYlau3hUqFJFGOIk/LhU7kZ8leId0LJjjgLzaxuDzjr+0sIG2p/qtrU=
+X-Received: by 2002:a92:c691:0:b0:302:75c9:5d55 with SMTP id
+ o17-20020a92c691000000b0030275c95d55mr4126263ilg.34.1669214930760; Wed, 23
+ Nov 2022 06:48:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20221103155756.687789-1-benjamin.tissoires@redhat.com>
+ <20221103155756.687789-4-benjamin.tissoires@redhat.com> <ff1a0b34-71f2-cebe-a6ef-675936b276eb@nvidia.com>
+In-Reply-To: <ff1a0b34-71f2-cebe-a6ef-675936b276eb@nvidia.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 23 Nov 2022 15:48:39 +0100
+Message-ID: <CAO-hwJJZxgeTT8mLwFrYynSVASva=o7qL9Kr4xOywV3KDUu2GA@mail.gmail.com>
+Subject: Re: [PATCH hid v12 03/15] HID: initial BPF implementation
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,265 +80,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support RX hash and timestamp metadata kfuncs. We need to pass in the cqe
-pointer to the mlx5e_skb_from* functions so it can be retrieved from the
-XDP ctx to do this.
+Hi Jon,
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Maryam Tahhan <mtahhan@redhat.com>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: xdp-hints@xdp-project.net
-Cc: netdev@vger.kernel.org
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
-This goes on top of Stanislav's series, obvioulsy. Verified that it works using
-the xdp_hw_metadata utility; going to do ome benchmarking and follow up with the
-results, but figured I'd send this out straight away in case others wanted to
-play with it.
+On Wed, Nov 23, 2022 at 2:25 PM Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+>
+> On 03/11/2022 15:57, Benjamin Tissoires wrote:
+> > Declare an entry point that can use fmod_ret BPF programs, and
+> > also an API to access and change the incoming data.
+> >
+> > A simpler implementation would consist in just calling
+> > hid_bpf_device_event() for any incoming event and let users deal
+> > with the fact that they will be called for any event of any device.
+> >
+> > The goal of HID-BPF is to partially replace drivers, so this situation
+> > can be problematic because we might have programs which will step on
+> > each other toes.
+> >
+> > For that, we add a new API hid_bpf_attach_prog() that can be called
+> > from a syscall and we manually deal with a jump table in hid-bpf.
+> >
+> > Whenever we add a program to the jump table (in other words, when we
+> > attach a program to a HID device), we keep the number of time we added
+> > this program in the jump table so we can release it whenever there are
+> > no other users.
+> >
+> > HID devices have an RCU protected list of available programs in the
+> > jump table, and those programs are called one after the other thanks
+> > to bpf_tail_call().
+> >
+> > To achieve the detection of users losing their fds on the programs we
+> > attached, we add 2 tracing facilities on bpf_prog_release() (for when
+> > a fd is closed) and bpf_free_inode() (for when a pinned program gets
+> > unpinned).
+> >
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>
+> ...
+>
+> > +static int __init hid_bpf_init(void)
+> > +{
+> > +     int err;
+> > +
+> > +     /* Note: if we exit with an error any time here, we would entirely break HID, which
+> > +      * is probably not something we want. So we log an error and return success.
+> > +      *
+> > +      * This is not a big deal: the syscall allowing to attach a BPF program to a HID device
+> > +      * will not be available, so nobody will be able to use the functionality.
+> > +      */
+> > +
+> > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
+> > +     if (err) {
+> > +             pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
+> > +             return 0;
+> > +     }
+> > +
+> > +     err = hid_bpf_preload_skel();
+> > +     if (err) {
+> > +             pr_warn("error while preloading HID BPF dispatcher: %d", err);
+> > +             return 0;
+> > +     }
+> > +
+> > +     /* register syscalls after we are sure we can load our preloaded bpf program */
+> > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &hid_bpf_syscall_kfunc_set);
+> > +     if (err) {
+> > +             pr_warn("error while setting HID BPF syscall kfuncs: %d", err);
+> > +             return 0;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+>
+>
+> We have a kernel test that checks for new warning and error messages on
+> boot and with this change I am now seeing the following error message on
+> our Tegra platforms ...
+>
+>   WARNING KERN hid_bpf: error while preloading HID BPF dispatcher: -13
+>
+> I have a quick look at the code, but I can't say I am familiar with
+> this. So I wanted to ask if a way to fix this or avoid this? I see the
+> code returns 0, so one option would be to make this an informational or
+> debug print.
 
-Stanislav, feel free to fold it into the next version of your series if you
-want!
+I am not in favor of debug in that case, because I suspect it'll hide
+too much when getting a bug report. Informational could do, yes.
 
--Toke
+However, before that, I'd like to dig a little bit more on why it is
+failing. I thought arm64 now has support of tracing bpf programs, so I
+would not expect this to fail.
 
+Would you mind sending me your .config so I can check in it if you are
+missing anything? I am thinking that maybe I need to also depend on
+BPF_JIT.
 
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |  7 +++-
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 32 +++++++++++++++++++
- .../net/ethernet/mellanox/mlx5/core/en/xdp.h  | 10 ++++++
- .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  3 ++
- .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |  3 +-
- .../net/ethernet/mellanox/mlx5/core/en_main.c |  4 +++
- .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 19 +++++------
- 7 files changed, 65 insertions(+), 13 deletions(-)
+Cheers,
+Benjamin
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index ff5b302531d5..960404027f0b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -629,7 +629,7 @@ typedef struct sk_buff *
- 			       u16 cqe_bcnt, u32 head_offset, u32 page_idx);
- typedef struct sk_buff *
- (*mlx5e_fp_skb_from_cqe)(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
--			 u32 cqe_bcnt);
-+			 struct mlx5_cqe64 *cqe, u32 cqe_bcnt);
- typedef bool (*mlx5e_fp_post_rx_wqes)(struct mlx5e_rq *rq);
- typedef void (*mlx5e_fp_dealloc_wqe)(struct mlx5e_rq*, u16);
- typedef void (*mlx5e_fp_shampo_dealloc_hd)(struct mlx5e_rq*, u16, u16, bool);
-@@ -1035,6 +1035,11 @@ int mlx5e_vlan_rx_kill_vid(struct net_device *dev, __always_unused __be16 proto,
- 			   u16 vid);
- void mlx5e_timestamp_init(struct mlx5e_priv *priv);
- 
-+static inline bool mlx5e_rx_hw_stamp(struct hwtstamp_config *config)
-+{
-+	return config->rx_filter == HWTSTAMP_FILTER_ALL;
-+}
-+
- struct mlx5e_xsk_param;
- 
- struct mlx5e_rq_param;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 20507ef2f956..604c8cdfde02 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -156,6 +156,38 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct mlx5e_rq *rq,
- 	return true;
- }
- 
-+bool mlx5e_xdp_rx_timestamp_supported(const struct xdp_md *ctx)
-+{
-+	const struct xdp_buff *xdp = (void *)ctx;
-+	struct mlx5_xdp_ctx *mctx = xdp->drv_priv;
-+
-+	return mlx5e_rx_hw_stamp(mctx->rq->tstamp);
-+}
-+
-+u64 mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx)
-+{
-+	const struct xdp_buff *xdp = (void *)ctx;
-+	struct mlx5_xdp_ctx *mctx = xdp->drv_priv;
-+
-+	return mlx5e_cqe_ts_to_ns(mctx->rq->ptp_cyc2time,
-+				  mctx->rq->clock, get_cqe_ts(mctx->cqe));
-+}
-+
-+bool mlx5e_xdp_rx_hash_supported(const struct xdp_md *ctx)
-+{
-+	const struct xdp_buff *xdp = (void *)ctx;
-+
-+	return xdp->rxq->dev->features & NETIF_F_RXHASH;
-+}
-+
-+u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
-+{
-+	const struct xdp_buff *xdp = (void *)ctx;
-+	struct mlx5_xdp_ctx *mctx = xdp->drv_priv;
-+
-+	return be32_to_cpu(mctx->cqe->rss_hash_result);
-+}
-+
- /* returns true if packet was consumed by xdp */
- bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct page *page,
- 		      struct bpf_prog *prog, struct xdp_buff *xdp)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
-index bc2d9034af5b..07d80d0446ff 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
-@@ -44,6 +44,11 @@
- 	(MLX5E_XDP_INLINE_WQE_MAX_DS_CNT * MLX5_SEND_WQE_DS - \
- 	 sizeof(struct mlx5_wqe_inline_seg))
- 
-+struct mlx5_xdp_ctx {
-+	struct mlx5_cqe64 *cqe;
-+	struct mlx5e_rq *rq;
-+};
-+
- struct mlx5e_xsk_param;
- int mlx5e_xdp_max_mtu(struct mlx5e_params *params, struct mlx5e_xsk_param *xsk);
- bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct page *page,
-@@ -56,6 +61,11 @@ void mlx5e_xdp_rx_poll_complete(struct mlx5e_rq *rq);
- int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		   u32 flags);
- 
-+bool mlx5e_xdp_rx_hash_supported(const struct xdp_md *ctx);
-+u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx);
-+bool mlx5e_xdp_rx_timestamp_supported(const struct xdp_md *ctx);
-+u64 mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx);
-+
- INDIRECT_CALLABLE_DECLARE(bool mlx5e_xmit_xdp_frame_mpwqe(struct mlx5e_xdpsq *sq,
- 							  struct mlx5e_xmit_data *xdptxd,
- 							  struct skb_shared_info *sinfo,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-index c91b54d9ff27..c6715cb23d45 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-@@ -283,8 +283,10 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
- 
- struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
- 					      struct mlx5e_wqe_frag_info *wi,
-+					      struct mlx5_cqe64 *cqe,
- 					      u32 cqe_bcnt)
- {
-+	struct mlx5_xdp_ctx mlctx = { .cqe = cqe, .rq = rq };
- 	struct xdp_buff *xdp = wi->au->xsk;
- 	struct bpf_prog *prog;
- 
-@@ -298,6 +300,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
- 	xsk_buff_set_size(xdp, cqe_bcnt);
- 	xsk_buff_dma_sync_for_cpu(xdp, rq->xsk_pool);
- 	net_prefetch(xdp->data);
-+	xdp->drv_priv = &mlctx;
- 
- 	prog = rcu_dereference(rq->xdp_prog);
- 	if (likely(prog && mlx5e_xdp_handle(rq, NULL, prog, xdp)))
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
-index 087c943bd8e9..9198f137f48f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
-@@ -18,6 +18,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
- 						    u32 page_idx);
- struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
- 					      struct mlx5e_wqe_frag_info *wi,
--					      u32 cqe_bcnt);
-+                                              struct mlx5_cqe64 *cqe,
-+                                              u32 cqe_bcnt);
- 
- #endif /* __MLX5_EN_XSK_RX_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 14bd86e368d5..015bfe891458 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -4890,6 +4890,10 @@ const struct net_device_ops mlx5e_netdev_ops = {
- 	.ndo_tx_timeout          = mlx5e_tx_timeout,
- 	.ndo_bpf		 = mlx5e_xdp,
- 	.ndo_xdp_xmit            = mlx5e_xdp_xmit,
-+	.ndo_xdp_rx_timestamp_supported = mlx5e_xdp_rx_timestamp_supported,
-+	.ndo_xdp_rx_timestamp    = mlx5e_xdp_rx_timestamp,
-+	.ndo_xdp_rx_hash_supported = mlx5e_xdp_rx_hash_supported,
-+	.ndo_xdp_rx_hash         = mlx5e_xdp_rx_hash,
- 	.ndo_xsk_wakeup          = mlx5e_xsk_wakeup,
- #ifdef CONFIG_MLX5_EN_ARFS
- 	.ndo_rx_flow_steer	 = mlx5e_rx_flow_steer,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index b1ea0b995d9c..1d6600441e74 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -76,11 +76,6 @@ const struct mlx5e_rx_handlers mlx5e_rx_handlers_nic = {
- 	.handle_rx_cqe_mpwqe_shampo = mlx5e_handle_rx_cqe_mpwrq_shampo,
- };
- 
--static inline bool mlx5e_rx_hw_stamp(struct hwtstamp_config *config)
--{
--	return config->rx_filter == HWTSTAMP_FILTER_ALL;
--}
--
- static inline void mlx5e_read_cqe_slot(struct mlx5_cqwq *wq,
- 				       u32 cqcc, void *data)
- {
-@@ -1573,7 +1568,7 @@ static void mlx5e_fill_xdp_buff(struct mlx5e_rq *rq, void *va, u16 headroom,
- 
- static struct sk_buff *
- mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
--			  u32 cqe_bcnt)
-+			  struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
- {
- 	union mlx5e_alloc_unit *au = wi->au;
- 	u16 rx_headroom = rq->buff.headroom;
-@@ -1595,7 +1590,8 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
- 
- 	prog = rcu_dereference(rq->xdp_prog);
- 	if (prog) {
--		struct xdp_buff xdp;
-+		struct mlx5_xdp_ctx mlctx = { .cqe = cqe, .rq = rq };
-+		struct xdp_buff xdp = { .drv_priv = &mlctx };
- 
- 		net_prefetchw(va); /* xdp_frame data area */
- 		mlx5e_fill_xdp_buff(rq, va, rx_headroom, cqe_bcnt, &xdp);
-@@ -1619,16 +1615,17 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
- 
- static struct sk_buff *
- mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
--			     u32 cqe_bcnt)
-+			     struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
- {
- 	struct mlx5e_rq_frag_info *frag_info = &rq->wqe.info.arr[0];
-+	struct mlx5_xdp_ctx mlctx = { .cqe = cqe, .rq = rq };
-+	struct xdp_buff xdp = { .drv_priv = &mlctx };
- 	struct mlx5e_wqe_frag_info *head_wi = wi;
- 	union mlx5e_alloc_unit *au = wi->au;
- 	u16 rx_headroom = rq->buff.headroom;
- 	struct skb_shared_info *sinfo;
- 	u32 frag_consumed_bytes;
- 	struct bpf_prog *prog;
--	struct xdp_buff xdp;
- 	struct sk_buff *skb;
- 	dma_addr_t addr;
- 	u32 truesize;
-@@ -1766,7 +1763,7 @@ static void mlx5e_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
- 			      mlx5e_skb_from_cqe_linear,
- 			      mlx5e_skb_from_cqe_nonlinear,
- 			      mlx5e_xsk_skb_from_cqe_linear,
--			      rq, wi, cqe_bcnt);
-+			      rq, wi, cqe, cqe_bcnt);
- 	if (!skb) {
- 		/* probably for XDP */
- 		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
-@@ -2575,7 +2572,7 @@ static void mlx5e_trap_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe
- 		goto free_wqe;
- 	}
- 
--	skb = mlx5e_skb_from_cqe_nonlinear(rq, wi, cqe_bcnt);
-+	skb = mlx5e_skb_from_cqe_nonlinear(rq, wi, cqe, cqe_bcnt);
- 	if (!skb)
- 		goto free_wqe;
- 
--- 
-2.38.1
+>
+> Thanks
+> Jon
+>
+> --
+> nvpublic
+>
 
