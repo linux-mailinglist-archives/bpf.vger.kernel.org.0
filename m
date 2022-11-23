@@ -2,283 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 645D3636948
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 19:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55778636993
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237976AbiKWSvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 13:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
+        id S239823AbiKWTIN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 14:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237068AbiKWSvD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 13:51:03 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEE78EB72;
-        Wed, 23 Nov 2022 10:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669229462; x=1700765462;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a94ZuOr1a3BDU/5tknAQVsqV5j/uIl/nH/Xt8mhCCsk=;
-  b=Y4C+DKa9fYLwvK70yBIC1i4cdkuBsTWezoBI/esy7qCMSNCjb2F/HI18
-   ZjLFkcbD+mA8ko1+uTUp2/UxrO+H6lenu/EhKRsZT/8EcnjevorGr9snR
-   TO6UVrkam+uPz3LMQwRl3b1WD7QZkfOciGdNbP8Z1n3SYUiEaoxwvJQ49
-   FO2xcvzfzCprN1VzXQ3pqqO8PdJtZSVrgUd/wg9niHfTJqUOra9s+ffXc
-   SDcSgBc8oWBdq8DijuTUfr84gqxbKf7L5bNWFcP7GRwDwBHQvjmqFMnFc
-   xugXrPgWCcrcf7YOqsOz27XNIqHVAtZbhg9tH71F+j0NdmpySFe/BudLt
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="294526145"
-X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
-   d="scan'208";a="294526145"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 10:50:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="672976270"
-X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
-   d="scan'208";a="672976270"
-Received: from lkp-server01.sh.intel.com (HELO 64a2d449c951) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2022 10:50:32 -0800
-Received: from kbuild by 64a2d449c951 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oxupL-00030W-2a;
-        Wed, 23 Nov 2022 18:50:31 +0000
-Date:   Thu, 24 Nov 2022 02:50:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     nouveau@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 736b6d81d93cf61a0601af90bd552103ef997b3f
-Message-ID: <637e6b75.HPuMW2npIkhdyeaX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S239697AbiKWTHx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 14:07:53 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA9687A50
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 11:07:44 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2ANHsHif030562;
+        Wed, 23 Nov 2022 11:07:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=BasOAdm/7BvtyUugC+X/b3Ypc2tJZCNcc+R9I1oE5xI=;
+ b=FSpLs8cm6EHM+pZOfz2jpcs0F9tO1uKK/oMPjtQB/UTFoUntlgDscytdATSYOdRJ8/su
+ QqQemlvnb7CsHDPpFnpI8pdCjvlSxy0bi9iCTnEa+MIWztaIKU1myYWIfRSO+WWi3TJh
+ HisUwcOhWkr0Dkijg1P+gfdrsIbzejYJhACSXoRmM2Qa/xXurE3eZr1C5OOimn2HkyiO
+ YIDLrGwzYf+hinI2cjKcMkMCVphlgOFHmIRCbgQ/CnyufbA3zWC1P1VeXOdf92JZm0K7
+ XCXOYrg2eDyoNCY2zUfAcaVpPdWpYuqXMrPHB00j/AgC/3CVMez+eAImmt/XbIEMKJ+P oA== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3m1c7rd7kp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Nov 2022 11:07:26 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lPd/iZP/edpGhiX9yhPsKjn7YBDY9BUFUozInvqhBTpF/2RmhaqRK6O+qnBFTIA5dOD5xwTf7GS7vgccUChjopTIyfMHK2f9RrZrpinMqG64EZqfSlIfi46r+omlFL7BfLDHry5swee3KIEUhtW+hgDO+fu0mtQWd7lasOqUpc3eddrQUSlUi7+7LPN8q3+eAOKzO2HBRGdh790xDaJRWL55JQUD8IECjHoUcGlQ8J2sePe8w8NkPnwCYkmOZ1tilD/wNoE/60/w8YWMExhcYvU2xkLZKXEqlVUoYVScUPuyzhnXgT/649bDnGgli71/jazkp889yHfEIC5PyXRtRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BasOAdm/7BvtyUugC+X/b3Ypc2tJZCNcc+R9I1oE5xI=;
+ b=cPcY5JP8ZuGF4S5K1eFmhKflyKlnIgsB4N52dwNXNHZuIwPjotNTB7x5R0kd4+9UPF/8ilNDRX9RNxEeCr5Bgy0stFOkk8glONfXC1z5Oua+dt9RlNW/+s830/OP/9DlulDtV/tao7okCS9qUy7+qiIyhxrIUTHPqLcqQVf6HWVpozPVdhsYCLojpOOweUJwiGBm32GHGnosrW2IONYvNnFMgkXBq/UPR1WClBarFDVdTKAhjASOcwe9rtlT6UW7j6aEpMWbgvxEGxO673zr1leplc7evL4MK7neXYoKmKsZjkWiX07KYDra6cOvzoH6Mb+cUbLdZcixE7dSQ2zWfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MW2PR1501MB2170.namprd15.prod.outlook.com (2603:10b6:302:e::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.9; Wed, 23 Nov
+ 2022 19:07:23 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ac66:fb37:a598:8519]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ac66:fb37:a598:8519%7]) with mapi id 15.20.5834.011; Wed, 23 Nov 2022
+ 19:07:23 +0000
+Message-ID: <63b85917-a2ea-8e35-620c-808560910819@meta.com>
+Date:   Wed, 23 Nov 2022 11:07:18 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.0
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Make sure zero-len skbs
+ aren't redirectable
+Content-Language: en-US
+To:     sdf@google.com
+Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com
+References: <20221121180340.1983627-1-sdf@google.com>
+ <20221121180340.1983627-2-sdf@google.com> <Y34QpET78/KX9JLh@krava>
+ <34cb2b2f-ac3b-65c4-c479-0c4ed3dda096@meta.com> <Y35VrXvKBFg2RJ7y@google.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <Y35VrXvKBFg2RJ7y@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BY5PR17CA0004.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW2PR1501MB2170:EE_
+X-MS-Office365-Filtering-Correlation-Id: 95e89d14-7c90-4175-b4dd-08dacd85f3cf
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uW9x8g68Qf3Whos4Quq1V5ANfC1h2ObLKBl5Rhkkx4WZgNEPntSUpDDM6YiR9udGD1AExYNhH65wNT5WTL7mrHNQx7Wp0t2R6pvUKQ5MGuz4Da7Tv5dyrYxzXfPAolAHiJtvaCx3maZsV5g8ymECuyHKuljwNW2GK7HFfMbK8yaaPk3Gsi5vRYxmXPxVNzi0CqKDNQAuT1KO5bX3ubbXE8BfVVL79Paz27Dj3J4RqC4ghlXTXqaFTGBvYmZzj5sWjKV1FNNgledwUMtaFA+rIoO8S51ztxVXOR72lZBMu4TCd9HDXJmea/RsAoTfin0DXgswYe4VbfPXJQZU9I7zgMzCGJmskn29h0/65qzjs4VODpcclL5/svokHWECwfQik9A8IAB8HmtcP3a+LoGml7t953OAdJLsXLsfBSkqJKHbqgkcNUzqL8W9A6W5irGmkmseps1XYpmBEZV7IGw6YStfgUgV4OZp5SMCazB2WCsmn+dIf9DX2L8/DeZeo4JiqQ6zGPbTF0gnuD1XtpoDUKIRhPRTajuwsvoE5US8voXthWb9wvxqZt+NFc0BL+/uOpNLuHnIbmMPH14jK2/FMIp4OdtKwyP7FqK+uTirq5yCCInIiTyru5PvV2TAJ63awAY2t2mVdq+sCa00vjMbR2bT0r9oPmbqB3Qh4LxStXsNrxZIkl3lcLjRqFYYDPHhgEeFlDWezjy4yBgoKUgfGr7RuTV4zz2RfREfl+yRb+Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(451199015)(2906002)(31686004)(36756003)(38100700002)(41300700001)(83380400001)(66476007)(31696002)(6512007)(86362001)(8676002)(66556008)(66946007)(4326008)(6486002)(186003)(6916009)(5660300002)(6506007)(7416002)(8936002)(316002)(2616005)(6666004)(478600001)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVFVdGdZVnJwckRxNnRCSDJ2ckdwaHJxY3M2Z0hUTVArT1plOTQvaFBEanlh?=
+ =?utf-8?B?dnJhdkRxcUI5WjBUdGdKZ3p5bmRpWEJHR1N0V1V5dSs2Z0ZSOUVnTWs5cEZU?=
+ =?utf-8?B?OEVrcDN2UlUramRmaVZZNjBSQzRWL2NEelhQNEZDeUorRXdDTm9CSzJUL1dh?=
+ =?utf-8?B?S0EvTjBLelMyMnJwaWdvZmhoREwwS201eVhXRkFEYnJkR0dXd3RqM0lOemRi?=
+ =?utf-8?B?YWpjUzdobDc1aHFuMHQ0QS9pemNNbHhJRzNoUUxjUUR4Ly9EY2xVcmNFVkVU?=
+ =?utf-8?B?U05lSmx3cE5MajhERDVZUG4xQ29oQjFsMlJ3NFM2c2hLbnZMNlNLZEVvVlNB?=
+ =?utf-8?B?Wm5LaEEyZXZDWHpiVWtaUjh0UEhkUG5uaUtua0IyY3ZOS0d6Mnk5WHFCYk5w?=
+ =?utf-8?B?SCtkMTVuN1dmbFpxQWsxSVUyeHM5WUhKTFFwTnhjUUk2Qm1ySGI1cmI3Ti9x?=
+ =?utf-8?B?U1VhejVOelhpNmlsQWRGRDdqL1BWTnhBU1l0bjlxSk5GOU5naDZieHBHd3RF?=
+ =?utf-8?B?eWQrbzFPQTkydllvMzBXZ2VlQUR0YVg1MnJwQUwxaWVzT2Jwa01qeDJpRG8y?=
+ =?utf-8?B?VzE3UmI3cEoyblpRMk5vdnBlTldFUTFLbGNtT2FSVFJUc1ArSVVJMFNIZ0xx?=
+ =?utf-8?B?Um9QSkg5QU5XSUlDcEZBS0JKeWQ5U3crSC9uNWQ4NWcvbFRwNE5qdzBtS2Q4?=
+ =?utf-8?B?N2JsWVMxendkSWlaTjA2Y0RqYjhnbEVycWEyRTZZblZmVFQ5dGluVTQyNkhs?=
+ =?utf-8?B?eFVEQ01leUR6R2lVNUt4VFMzM3RNaFVlOUQrR1hxdU0vUjBYWUpoc21BR3M3?=
+ =?utf-8?B?ZnA0dGc5aUl3eDBJa1pqZ0k3SnNXMTJsbVFndmxVRnpJTDJGd0JnVDZvaHRQ?=
+ =?utf-8?B?bjNxZGtqYTRJNm5aak40elJkekc2SmZ2VWJMWXM2R2wvT2JhY3dSV1hBRXZ2?=
+ =?utf-8?B?VTFMVmFjZzQ1RFZvRlkrV3JwRy9RRnNRK28rU3ZkVVZUMnZsSFNGKytzZzEy?=
+ =?utf-8?B?SURvaWhPNjVINmRzSGRBdlh2VHB5aXpjQzV4b1p5Rm44dUhrbm9Dc2pvZ29E?=
+ =?utf-8?B?MkxrUnJOTTI2cFk1cHZ0WGU5UnZWVDczWmVCVVh1Mkp4ZVFtTHZyTmxxRU4z?=
+ =?utf-8?B?S1gwTzE0eVl0ZnNlcWZYYkszZnVwUERPTHhROC9QbDdEMTRTZEtvTnM5VGVN?=
+ =?utf-8?B?cnA4ck9ub3Q5MHQrak9rTThqOC9rK3IxWkV3OU9jbllFVmFLWlU0TW1NNXZ1?=
+ =?utf-8?B?aDNLbzducmRLZS9NVi84NVZoTDdQVlNzUjdSS3RDWjVac0Q2ZUF1QkxiUU52?=
+ =?utf-8?B?ankweThhaDVZaENhdS81SkVkam9CNUNYZzQwMENndmpySEdralpoUm1XVnJD?=
+ =?utf-8?B?emVoSElaUFI1OFZVbGphbW1SUUtvSzdDdkFPMHFFVUF2QitCOWt3YndZcU9F?=
+ =?utf-8?B?aVR5d0IzZGR3aCtteWR3VDNCTHRqMFpmNGwrWjdHYTFYWHN4VnBZSFNsN0ha?=
+ =?utf-8?B?OElyM290NGk1dm1kZjNzR1F6RE5pbW5mdXkwbm5ha1M1ckVWS2Z0VUhMMWp0?=
+ =?utf-8?B?cjkxQUlDNFpOU0lxbm5rdXZjWVNlc3kvckM1NVJWYTVFbk1OUHgrN1I5a0Vu?=
+ =?utf-8?B?S21YS0haTXpSKzVZNldpVmhRV0ZoYzVqZllIbHRxcDJTMEtWR0NtMHFqZVVo?=
+ =?utf-8?B?aktDUUUwbE1teEJtSWNEdVdtR1llaVUrZGcwOFh1QTFXR09sUVp4YmV5eHc0?=
+ =?utf-8?B?NXFaMTUyR2gxMnZZU3ZtbnV2Wnc0QkZ3Wnczd3ZtOGFrQ011TEd3N1NmT2Nv?=
+ =?utf-8?B?dWN1TFcrUE1RMThrL1ZNRm1jclJGS3hIR2ZEOW9MamNId2hVOWdpWjMyUDNT?=
+ =?utf-8?B?OUdONFN0dXBlYkFFcmliZFlCWmtUMUI1dktzSGtKT1V5cnpsQm80anhNaTJQ?=
+ =?utf-8?B?M3JzV2tBL004SWhuQjRTclJrZis0UHhza1pHY3pTWjVKK0JSSXkwMytJNjll?=
+ =?utf-8?B?UVpCdzBTVE1ubVZJcDlOTjhzdStFYkVrMXBMOTlQelJGcG82K2RtUDU2R2lj?=
+ =?utf-8?B?V2VYQlVxdURvR1BNTCtBMzQrWkF3TGVicitLWWtYNWJ6ODd5NW1JVzFaRVFH?=
+ =?utf-8?B?Q1JJVjJ0anJTeU0zOWRQNzZFajE1UkdiRnBRaG5uWldqU2hNd2ljOFdwN04x?=
+ =?utf-8?B?K2c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95e89d14-7c90-4175-b4dd-08dacd85f3cf
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2022 19:07:23.2572
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M/2dR85zdp/vXAzqAEHHNjKPpSxoBNRZDoWJm96vEt29pzD7uN37PHOxo2VLGhHV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2170
+X-Proofpoint-GUID: pqFozWyPAqBNfUBp6J3p8c6BIfCJYM-6
+X-Proofpoint-ORIG-GUID: pqFozWyPAqBNfUBp6J3p8c6BIfCJYM-6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-23_11,2022-11-23_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 736b6d81d93cf61a0601af90bd552103ef997b3f  Add linux-next specific files for 20221123
 
-Error/Warning reports:
 
-https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202211231611.bcjNMNY4-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202211231857.0DmUeoa1-lkp@intel.com
+On 11/23/22 9:17 AM, sdf@google.com wrote:
+> On 11/23, Yonghong Song wrote:
+> 
+> 
+>> On 11/23/22 4:23 AM, Jiri Olsa wrote:
+>> > On Mon, Nov 21, 2022 at 10:03:40AM -0800, Stanislav Fomichev wrote:
+>> > > LWT_XMIT to test L3 case, TC to test L2 case.
+>> > >
+>> > > v2:
+>> > > - s/veth_ifindex/ipip_ifindex/ in two places (Martin)
+>> > > - add comment about which condition triggers the rejection (Martin)
+>> > >
+>> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>> >
+>> > hi,
+>> > I'm getting selftest fails and it looks like it's because of this test:
+>> >
+>> >     [root@qemu bpf]# ./test_progs -n 62,98
+>> >     #62      empty_skb:OK
+>> >     execute_one_variant:PASS:skel_open 0 nsec
+>> >     execute_one_variant:PASS:my_pid_map_update 0 nsec
+>> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' 
+>> perf event ID: No such file or directory
+>> >     libbpf: prog 'handle_legacy': failed to create tracepoint 
+>> 'raw_syscalls/sys_enter' perf event: No such file or directory
+>> >     libbpf: prog 'handle_legacy': failed to auto-attach: -2
+>> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+>> >     test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
+>> >     execute_one_variant:PASS:skel_open 0 nsec
+>> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' 
+>> perf event ID: No such file or directory
+>> >     libbpf: prog 'handle_modern': failed to create tracepoint 
+>> 'raw_syscalls/sys_enter' perf event: No such file or directory
+>> >     libbpf: prog 'handle_modern': failed to auto-attach: -2
+>> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+>> >     #98      legacy_printk:FAIL
+>> >
+>> >     All error logs:
+>> >     execute_one_variant:PASS:skel_open 0 nsec
+>> >     execute_one_variant:PASS:my_pid_map_update 0 nsec
+>> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' 
+>> perf event ID: No such file or directory
+>> >     libbpf: prog 'handle_legacy': failed to create tracepoint 
+>> 'raw_syscalls/sys_enter' perf event: No such file or directory
+>> >     libbpf: prog 'handle_legacy': failed to auto-attach: -2
+>> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+>> >     test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
+>> >     execute_one_variant:PASS:skel_open 0 nsec
+>> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter' 
+>> perf event ID: No such file or directory
+>> >     libbpf: prog 'handle_modern': failed to create tracepoint 
+>> 'raw_syscalls/sys_enter' perf event: No such file or directory
+>> >     libbpf: prog 'handle_modern': failed to auto-attach: -2
+>> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
+>> >     #98      legacy_printk:FAIL
+>> >     Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
+>> >
+>> > when I run separately it passes:
+>> >
+>> >     [root@qemu bpf]# ./test_progs -n 98
+>> >     #98      legacy_printk:OK
+>> >     Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>> >
+>> >
+>> > it seems that the open_netns/close_netns does not work properly,
+>> > and screw up access to tracefs for following tests
+>> >
+>> > if I comment out all the umounts in setns_by_fd, it does not fail
+> 
+>> Agreed with the above observations.
+>> With the current bpf-next, I can easily hit the above perf event ID 
+>> issue.
+> 
+>> But if I backout the following two patches:
+>> 68f8e3d4b916531ea3bb8b83e35138cf78f2fce5 selftests/bpf: Make sure 
+>> zero-len
+>> skbs aren't redirectable
+>> 114039b342014680911c35bd6b72624180fd669a bpf: Move skb->len == 0 
+>> checks into
+>> __bpf_redirect
+> 
+> 
+>> and run a few times with './test_progs -j' and I didn't hit any issues.
+> 
+> My guess would be that we need to remount debugfs in setns_by_fd?
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c 
+> b/tools/testing/selftests/bpf/network_helpers.c
+> index bec15558fd93..1f37adff7632 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -426,6 +426,10 @@ static int setns_by_fd(int nsfd)
+>       if (!ASSERT_OK(err, "mount /sys/fs/bpf"))
+>           return err;
+> 
+> +    err = mount("debugfs", "/sys/kernel/debug", "debugfs", 0, NULL);
+> +    if (!ASSERT_OK(err, "mount /sys/kernel/debug"))
+> +        return err;
+> +
+>       return 0;
+>   }
 
-Error/Warning: (recently discovered and may have been fixed)
-
-arch/arm/mach-s3c/devs.c:32:10: fatal error: linux/platform_data/dma-s3c24xx.h: No such file or directory
-drivers/clk/clk.c:1022:5: error: redefinition of 'clk_prepare'
-drivers/clk/clk.c:1268:6: error: redefinition of 'clk_is_enabled_when_prepared'
-drivers/clk/clk.c:941:6: error: redefinition of 'clk_unprepare'
-drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:4968: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:5075:24: warning: implicit conversion from 'enum <anonymous>' to 'enum dc_status' [-Wenum-conversion]
-drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:40:20: warning: no previous prototype for 'to_dal_irq_source_dcn201' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/gf100.c:451:1: warning: no previous prototype for 'gf100_fifo_nonstall_block' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/runl.c:34:1: warning: no previous prototype for 'nvkm_engn_cgrp_get' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c:210:1: warning: no previous prototype for 'tu102_gr_load' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/nvfw/acr.c:49:1: warning: no previous prototype for 'wpr_generic_header_dump' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:21: warning: variable 'loc' set but not used [-Wunused-but-set-variable]
-drivers/media/i2c/tc358746.c:816:13: warning: 'm_best' is used uninitialized [-Wuninitialized]
-drivers/media/i2c/tc358746.c:817:13: warning: 'p_best' is used uninitialized [-Wuninitialized]
-kernel/bpf/helpers.c:2005:40: warning: multiple unsequenced modifications to 'idx' [-Wunsequenced]
-kernel/bpf/helpers.c:2025:40: warning: multiple unsequenced modifications to 'idx' [-Wunsequenced]
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-ERROR: modpost: "usb_disabled" [drivers/usb/fotg210/fotg210.ko] undefined!
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/usb/usb251xb.txt
-drivers/gpu/drm/nouveau/include/nvkm/core/memory.h:90:13: warning: use of uninitialized value 'hdr.wpr.lsb_offset' [CWE-457] [-Wanalyzer-use-of-uninitialized-value]
-drivers/gpu/drm/nouveau/nvkm/subdev/acr/ga102.c:43:48: warning: use of uninitialized value 'hdr.wpr.falcon_id' [CWE-457] [-Wanalyzer-use-of-uninitialized-value]
-kernel/bpf/verifier.c:15220 fixup_kfunc_call() error: buffer overflow 'special_kfunc_list' 5 <= 6
-kernel/bpf/verifier.c:8200 get_kfunc_ptr_arg_type() error: buffer overflow 'special_kfunc_list' 5 <= 6
-kernel/bpf/verifier.c:8690 check_kfunc_args() error: buffer overflow 'special_kfunc_list' 5 <= 6
-lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
-lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arc-randconfig-m041-20221122
-|   |-- kernel-bpf-verifier.c-check_kfunc_args()-error:buffer-overflow-special_kfunc_list
-|   |-- kernel-bpf-verifier.c-fixup_kfunc_call()-error:buffer-overflow-special_kfunc_list
-|   |-- kernel-bpf-verifier.c-get_kfunc_ptr_arg_type()-error:buffer-overflow-special_kfunc_list
-|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|-- arc-randconfig-r003-20221121
-|   |-- drivers-media-i2c-tc358746.c:warning:m_best-is-used-uninitialized
-|   `-- drivers-media-i2c-tc358746.c:warning:p_best-is-used-uninitialized
-|-- arm-allyesconfig
-|   |-- arch-arm-mach-s3c-devs.c:fatal-error:linux-platform_data-dma-s3c24xx.h:No-such-file-or-directory
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arm-defconfig
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arm-randconfig-c002-20221115
-|   |-- drivers-gpu-drm-nouveau-include-nvkm-core-memory.h:warning:use-of-uninitialized-value-hdr.wpr.lsb_offset-CWE
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-ga102.c:warning:use-of-uninitialized-value-hdr.wpr.falcon_id-CWE
-|-- arm64-allyesconfig
-clang_recent_errors
-|-- arm-randconfig-r015-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- hexagon-randconfig-r041-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- hexagon-randconfig-r045-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a001-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a002-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a003-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a004-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a005-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-a006-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- i386-randconfig-r001-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- s390-randconfig-r022-20221120
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a001-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a002-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a003-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a004-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a005-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-|-- x86_64-randconfig-a006-20221121
-|   `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-`-- x86_64-rhel-8.3-rust
-    `-- kernel-bpf-helpers.c:warning:multiple-unsequenced-modifications-to-idx
-
-elapsed time: 721m
-
-configs tested: 70
-configs skipped: 2
-
-gcc tested configs:
-i386                 randconfig-a011-20221121
-i386                 randconfig-a013-20221121
-i386                 randconfig-a012-20221121
-i386                 randconfig-a016-20221121
-i386                 randconfig-a014-20221121
-i386                 randconfig-a015-20221121
-um                             i386_defconfig
-um                           x86_64_defconfig
-arm                                 defconfig
-i386                                defconfig
-x86_64               randconfig-a011-20221121
-x86_64               randconfig-a013-20221121
-riscv                randconfig-r042-20221121
-x86_64                          rhel-8.3-func
-x86_64               randconfig-a014-20221121
-x86_64                              defconfig
-x86_64               randconfig-a016-20221121
-x86_64                    rhel-8.3-kselftests
-x86_64               randconfig-a012-20221121
-arm                              allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a015-20221121
-ia64                             allmodconfig
-arc                                 defconfig
-arc                  randconfig-r043-20221121
-powerpc                          allmodconfig
-arm64                            allyesconfig
-s390                             allmodconfig
-alpha                               defconfig
-x86_64                           rhel-8.3-syz
-s390                                defconfig
-sh                               allmodconfig
-s390                 randconfig-r044-20221121
-x86_64                               rhel-8.3
-mips                             allyesconfig
-s390                             allyesconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-m68k                          sun3x_defconfig
-sh                        edosk7760_defconfig
-arm64                            alldefconfig
-sh                 kfr2r09-romimage_defconfig
-arc                              alldefconfig
-mips                           ip32_defconfig
-mips                          rb532_defconfig
-sh                           se7705_defconfig
-sh                             shx3_defconfig
-
-clang tested configs:
-x86_64               randconfig-a004-20221121
-hexagon              randconfig-r041-20221121
-hexagon              randconfig-r045-20221121
-x86_64               randconfig-a001-20221121
-x86_64               randconfig-a003-20221121
-x86_64               randconfig-a002-20221121
-x86_64               randconfig-a005-20221121
-x86_64               randconfig-a006-20221121
-i386                 randconfig-a001-20221121
-i386                 randconfig-a003-20221121
-i386                 randconfig-a005-20221121
-i386                 randconfig-a002-20221121
-i386                 randconfig-a004-20221121
-i386                 randconfig-a006-20221121
-x86_64                          rhel-8.3-rust
-mips                     cu1000-neo_defconfig
-powerpc                 mpc832x_rdb_defconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Ya, this does fix the problem. Could you craft a patch for this?
