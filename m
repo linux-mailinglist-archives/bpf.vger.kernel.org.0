@@ -2,182 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83382636A45
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FB2636A39
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 20:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbiKWTzy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 14:55:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S238816AbiKWTzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 14:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238799AbiKWTz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 14:55:26 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1159C559C
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 11:54:43 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id v81so20150656oie.5
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 11:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eQl93HEhRmcc+8LTIdGNUusyREPeMDHDu6DRujzaCG0=;
-        b=Q6fDIV1lSS5ZOfmdya8zwmVEVtif6Jifbx8zP/r8kQMv5WJJTZcDn6DMHuJWWgSusX
-         trHqMUhcFipzLVFSi2OqytNqNK51xTjtP0KviNU5YbXX88kyHezFkVvAtX1LFhJ3LFhX
-         Fn+i7NdeCsQzwxRv+KBkNuE4zYHYqpMTpFVjBmXDlUncsVEbZBFwmER64IGQMbxUsqRV
-         VVZVm0QahLST99zs5UrpCr0tlw40vNPAoMUsh0Ovvl9YgOguOyhj+D++KsqDNRJitKI2
-         mFefcpb+WbKYsHSwp4DpeYoQBpXGUPpJQ+2sGgeN5jsChMCrTEr4mspGYoo0BuTxscyD
-         Z0cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eQl93HEhRmcc+8LTIdGNUusyREPeMDHDu6DRujzaCG0=;
-        b=e1qO1K7EeSBjlO8XkOctNaZKUZuuKCC+Wh/M+M+bnzo15j+spdnMQIWkKJy41IHNvj
-         IitvY7REkqtDYgk74oUl34O78xUbitQWAfmGPUyywRD3nqkySz7U7rPoXYSQSgxQK4YG
-         ssmWx2+XIepnQQi8Ud6SEA0KTGRwsRQd+AyDLgP4DRbIy+Lqkp3TiKKHjP0R8cRWQ8D5
-         l5lYHfVw206xJIggraRsV6vMw0dfgNXMUrYqigP6zm81DgKoa2PxOIZ0lAS+XLbs4xxE
-         xmSxpBiG/lnpSpc0NyNXQtV1j6+x439wogb2vAlpO7ApJ7aoODyDuXRXaABhAPu+SPvu
-         dhIg==
-X-Gm-Message-State: ANoB5pkjcZ+Gr9mUzV4QsMAXgmCMdQmTBW8RBd1paYp5gtvfeGPdw7Jx
-        ZRJdZXc5WGqIYnKoELPRKNHwSmhdGSed/7Ki9YeDUA==
-X-Google-Smtp-Source: AA0mqf6WmcjvmwTSaoqaXCB2AQL4HovLythZstxlN8MyIxgcXujQXzUYC8KpyhbnqbhLloe9gp36GY8M/WU9YH89yzo=
-X-Received: by 2002:aca:674c:0:b0:35b:79ca:2990 with SMTP id
- b12-20020aca674c000000b0035b79ca2990mr1938505oiy.125.1669233282262; Wed, 23
- Nov 2022 11:54:42 -0800 (PST)
+        with ESMTP id S238866AbiKWTzX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 14:55:23 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8131478D43;
+        Wed, 23 Nov 2022 11:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1669233258; x=1700769258;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9IaGz3nksRi+gF01rW+BvME2pa7n+X6zBZlnddfrqbk=;
+  b=KWMeqo2FiDHbxNJlvSOWdDrNO+l2jgknDLNwXOeL5DvU/qsFDWrO99jt
+   sVOSo2eySRQpgnbFtNPC8Y/7AbEmQ9u3Y6NagIGibHUnNU02EIbj+XVTL
+   FXUvXA4Wq+uxd5MkOnc6BDQP4IKfY7NctImiJYIL9CknMQWJKjPI+pl1N
+   mrLs0YWYM8F8/MMOM5SfqWEm2CO6rUBxGfNOW921JTcXGw7bOjrAH3hq6
+   +w4bMIrVFYJ3JGL2xo+DsZZFigqLxsMVgcCmbKR9Qa2mo6w7gtyX0wy9y
+   SJdeDhNyoyoBQNlHOw59jZ3CU1iwxcHYNBPt1iDl7JsfACRBjJZI8FXJO
+   A==;
+X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
+   d="scan'208";a="184915519"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Nov 2022 12:54:17 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12; Wed, 23 Nov 2022 12:54:09 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.12 via Frontend
+ Transport; Wed, 23 Nov 2022 12:54:09 -0700
+Date:   Wed, 23 Nov 2022 20:59:00 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <alexandr.lobakin@intel.com>,
+        <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v4 4/7] net: lan966x: Update rxq memory model
+Message-ID: <20221123195900.wvql3v3mnmtixccs@soft-dev3-1>
+References: <20221122214413.3446006-1-horatiu.vultur@microchip.com>
+ <20221122214413.3446006-5-horatiu.vultur@microchip.com>
+ <Y31GsPEhDOsCB70i@boxer>
 MIME-Version: 1.0
-References: <20221121180340.1983627-1-sdf@google.com> <20221121180340.1983627-2-sdf@google.com>
- <Y34QpET78/KX9JLh@krava> <34cb2b2f-ac3b-65c4-c479-0c4ed3dda096@meta.com>
- <Y35VrXvKBFg2RJ7y@google.com> <63b85917-a2ea-8e35-620c-808560910819@meta.com>
-In-Reply-To: <63b85917-a2ea-8e35-620c-808560910819@meta.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 23 Nov 2022 11:54:31 -0800
-Message-ID: <CAKH8qBsdzj=4k5jR3n2mncxRZAwB-qqNWLFTfGWS5EPun-0XjQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Make sure zero-len skbs
- aren't redirectable
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <Y31GsPEhDOsCB70i@boxer>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 11:07 AM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 11/23/22 9:17 AM, sdf@google.com wrote:
-> > On 11/23, Yonghong Song wrote:
+The 11/22/2022 23:01, Maciej Fijalkowski wrote:
+> 
+> On Tue, Nov 22, 2022 at 10:44:10PM +0100, Horatiu Vultur wrote:
+> > By default the rxq memory model is MEM_TYPE_PAGE_SHARED but to be able
+> > to reuse pages on the TX side, when the XDP action XDP_TX it is required
+> > to update the memory model to PAGE_POOL.
 > >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../net/ethernet/microchip/lan966x/lan966x_fdma.c  | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
 > >
-> >> On 11/23/22 4:23 AM, Jiri Olsa wrote:
-> >> > On Mon, Nov 21, 2022 at 10:03:40AM -0800, Stanislav Fomichev wrote:
-> >> > > LWT_XMIT to test L3 case, TC to test L2 case.
-> >> > >
-> >> > > v2:
-> >> > > - s/veth_ifindex/ipip_ifindex/ in two places (Martin)
-> >> > > - add comment about which condition triggers the rejection (Martin)
-> >> > >
-> >> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >> >
-> >> > hi,
-> >> > I'm getting selftest fails and it looks like it's because of this test:
-> >> >
-> >> >     [root@qemu bpf]# ./test_progs -n 62,98
-> >> >     #62      empty_skb:OK
-> >> >     execute_one_variant:PASS:skel_open 0 nsec
-> >> >     execute_one_variant:PASS:my_pid_map_update 0 nsec
-> >> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter'
-> >> perf event ID: No such file or directory
-> >> >     libbpf: prog 'handle_legacy': failed to create tracepoint
-> >> 'raw_syscalls/sys_enter' perf event: No such file or directory
-> >> >     libbpf: prog 'handle_legacy': failed to auto-attach: -2
-> >> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-> >> >     test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
-> >> >     execute_one_variant:PASS:skel_open 0 nsec
-> >> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter'
-> >> perf event ID: No such file or directory
-> >> >     libbpf: prog 'handle_modern': failed to create tracepoint
-> >> 'raw_syscalls/sys_enter' perf event: No such file or directory
-> >> >     libbpf: prog 'handle_modern': failed to auto-attach: -2
-> >> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-> >> >     #98      legacy_printk:FAIL
-> >> >
-> >> >     All error logs:
-> >> >     execute_one_variant:PASS:skel_open 0 nsec
-> >> >     execute_one_variant:PASS:my_pid_map_update 0 nsec
-> >> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter'
-> >> perf event ID: No such file or directory
-> >> >     libbpf: prog 'handle_legacy': failed to create tracepoint
-> >> 'raw_syscalls/sys_enter' perf event: No such file or directory
-> >> >     libbpf: prog 'handle_legacy': failed to auto-attach: -2
-> >> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-> >> >     test_legacy_printk:FAIL:legacy_case unexpected error: -2 (errno 2)
-> >> >     execute_one_variant:PASS:skel_open 0 nsec
-> >> >     libbpf: failed to determine tracepoint 'raw_syscalls/sys_enter'
-> >> perf event ID: No such file or directory
-> >> >     libbpf: prog 'handle_modern': failed to create tracepoint
-> >> 'raw_syscalls/sys_enter' perf event: No such file or directory
-> >> >     libbpf: prog 'handle_modern': failed to auto-attach: -2
-> >> >     execute_one_variant:FAIL:skel_attach unexpected error: -2 (errno 2)
-> >> >     #98      legacy_printk:FAIL
-> >> >     Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
-> >> >
-> >> > when I run separately it passes:
-> >> >
-> >> >     [root@qemu bpf]# ./test_progs -n 98
-> >> >     #98      legacy_printk:OK
-> >> >     Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> >> >
-> >> >
-> >> > it seems that the open_netns/close_netns does not work properly,
-> >> > and screw up access to tracefs for following tests
-> >> >
-> >> > if I comment out all the umounts in setns_by_fd, it does not fail
-> >
-> >> Agreed with the above observations.
-> >> With the current bpf-next, I can easily hit the above perf event ID
-> >> issue.
-> >
-> >> But if I backout the following two patches:
-> >> 68f8e3d4b916531ea3bb8b83e35138cf78f2fce5 selftests/bpf: Make sure
-> >> zero-len
-> >> skbs aren't redirectable
-> >> 114039b342014680911c35bd6b72624180fd669a bpf: Move skb->len == 0
-> >> checks into
-> >> __bpf_redirect
-> >
-> >
-> >> and run a few times with './test_progs -j' and I didn't hit any issues.
-> >
-> > My guess would be that we need to remount debugfs in setns_by_fd?
-> >
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.c
-> > b/tools/testing/selftests/bpf/network_helpers.c
-> > index bec15558fd93..1f37adff7632 100644
-> > --- a/tools/testing/selftests/bpf/network_helpers.c
-> > +++ b/tools/testing/selftests/bpf/network_helpers.c
-> > @@ -426,6 +426,10 @@ static int setns_by_fd(int nsfd)
-> >       if (!ASSERT_OK(err, "mount /sys/fs/bpf"))
-> >           return err;
-> >
-> > +    err = mount("debugfs", "/sys/kernel/debug", "debugfs", 0, NULL);
-> > +    if (!ASSERT_OK(err, "mount /sys/kernel/debug"))
-> > +        return err;
-> > +
-> >       return 0;
-> >   }
->
-> Ya, this does fix the problem. Could you craft a patch for this?
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > index 384ed34197d58..483d1470c8362 100644
+> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+> > @@ -78,8 +78,22 @@ static int lan966x_fdma_rx_alloc_page_pool(struct lan966x_rx *rx)
+> >               .max_len = rx->max_mtu -
+> >                          SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
+> >       };
+> > +     struct lan966x_port *port;
+> 
+> port can be scoped only for the loop below?
 
-Sure, give me a second..
+Yes, I will change this.
+
+> 
+> > +     int i;
+> >
+> >       rx->page_pool = page_pool_create(&pp_params);
+> > +
+> > +     for (i = 0; i < lan966x->num_phys_ports; ++i) {
+> 
+> Quoting Alex from some other thread:
+> 
+> "Since we're on -std=gnu11 for a bunch of releases already, all new
+> loops are expected to go with the iterator declarations inside them."
+> 
+> TBH I wasn't aware of that personally :)
+
+Me neither, I will update this and all the other lops introduced in this
+series.
+
+> 
+> > +             if (!lan966x->ports[i])
+> > +                     continue;
+> > +
+> > +             port = lan966x->ports[i];
+> > +
+> > +             xdp_rxq_info_unreg_mem_model(&port->xdp_rxq);
+> > +             xdp_rxq_info_reg_mem_model(&port->xdp_rxq, MEM_TYPE_PAGE_POOL,
+> > +                                        rx->page_pool);
+> > +     }
+> > +
+> >       return PTR_ERR_OR_ZERO(rx->page_pool);
+> >  }
+> >
+> > --
+> > 2.38.0
+> >
+
+-- 
+/Horatiu
