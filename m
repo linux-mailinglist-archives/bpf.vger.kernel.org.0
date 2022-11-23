@@ -2,188 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5315B6352A8
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 09:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A26A63540E
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 10:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbiKWIaN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 03:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S236892AbiKWJBu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 04:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236117AbiKWIaK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 03:30:10 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA8923160;
-        Wed, 23 Nov 2022 00:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669192208; x=1700728208;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DjE5/pslN1u524wSHVRPCq4BGpnC8c90AidlOQKvGVw=;
-  b=TBLE7iImFqWcJv0gmh5bpzE/Li0lufIGl6poIKlv7HJZNjthkNmGDq/a
-   qP0GyCKu+dSAFLYp6ahbed3ho2QWAl4Wcu4Ovfffg0D0AunjlilRT3+we
-   tVa27AbiIeywzchZeJWRhKNpwMrdiJyyKd+M7Mj+i+R6ID1Um3CmrYSSE
-   QoTOISaEAJBWLUu1Fy/N9kRRe5ifCwVMBG6xbJFrkVzI5mwieK2A8eOiE
-   dHdwgvP69FaOXbFL3YJD6rkAcT8PFFZv1rsvKR+QA6Cknvud4LC1W/76Y
-   MgawvLUQBIKKiN0nwtVZyD1dugdRoj5dXsYwui2b07y13uLWCLTyCOmC/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="312713374"
-X-IronPort-AV: E=Sophos;i="5.96,186,1665471600"; 
-   d="scan'208";a="312713374"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 00:30:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="766631962"
-X-IronPort-AV: E=Sophos;i="5.96,186,1665471600"; 
-   d="scan'208";a="766631962"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga004.jf.intel.com with ESMTP; 23 Nov 2022 00:30:07 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 00:30:07 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 00:30:06 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Wed, 23 Nov 2022 00:30:06 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Wed, 23 Nov 2022 00:30:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fzD7ZSqdIs830JN0XdQ8Y9dK0xKlXXsgM2Sm85WaL5lgnLUIwDAWVmPzAZFqC/btYDpbxl6LmW29pAER+UJqwOx/BOQ/o6HxUbZfXZap89aXSPnICQyWQdSsaLKQIltqCMyWvjrYOsE1ZsZ3hmZhSMeT6DAXhQVREtxLWlWKmOEqJcC0OlaMD5twaIo6PqEYuQEtpe+Y8YTIz3KURTBu2OEtmKsI+ydDZ4fFEZPRkBkXPnBOspRkuDqTeMFtT9ZQ5rkNHjvD0hntZ9aNyho6smoHCxNiTIoKGIHuajeYfKX5AS7QzVsziK22n7ZO0OBxME8XCrw04sfvgz6OIvR1Bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/HTKdX7G3yYq1JHjamVXkOgECqujF4SGrAKrXcFTaAw=;
- b=kVNzgWpShaipoqk4h6oR3YAVtv0FUOinljUSC/G2FlHLSr6mZd9k0ToBcCallWXLyxhSchu1/xHvZlDJL8qBLwHRQWeQWoyZO8eoxCCtwQ5ooA96dWE2TbQZp/b6eDImTiW7hSskYsrYq8crf4X6xHdD8mp8vgiitygKOHiXueUiMDiLWQueojdolb0NYqBtYlmbd8SBmbHu4I2dtv1AhGabL/3+75P1ig2eE89W2VkbCs8y7RT/XLzjVtgSxeKoHBZbQ9h3Bdhf0YTupdN90z4wZ9+YgGiGo0rKtvJvLBccojUldh5GoH08k4ULMMfzEkQkntX4J+9x3SnU0eOUTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by CO1PR11MB5187.namprd11.prod.outlook.com (2603:10b6:303:94::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.15; Wed, 23 Nov
- 2022 08:29:58 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::61c3:c221:e785:ce13]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::61c3:c221:e785:ce13%6]) with mapi id 15.20.5834.015; Wed, 23 Nov 2022
- 08:29:57 +0000
-Message-ID: <da5dffaf-3e75-9681-8e0d-4b7402b05b1f@intel.com>
-Date:   Wed, 23 Nov 2022 16:30:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v5 01/19] iommu: Add IOMMU_CAP_ENFORCE_CACHE_COHERENCY
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>, <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, <linux-doc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-CC:     Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        <kvm@vger.kernel.org>, Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        "Shameerali Kolothum Thodi" <shameerali.kolothum.thodi@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <1-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <1-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0160.apcprd04.prod.outlook.com (2603:1096:4::22)
- To DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+        with ESMTP id S236898AbiKWJBt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 04:01:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A51ECCE8
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 01:00:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669194049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E6EIJ5w+PIWfz/dZ3wzqsgofUxnU4yeG1t+4ayq90mM=;
+        b=Pxlfd6iO9qWs8p3ZK9HEWtPpUfwNhfEQBd73CLfDDRSz8zGMvX91QgnUZTEtSTOYOxPLZK
+        hW+wWmnFu2cLl/NR6Xgw3OOXT3D/c4TXfvz0jpwoQoJowTNg55fXziGS+p4V0xSkL9xSsN
+        QhmDljIovf/THELGIiDwA4ChVPlbQP0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-84-RElBYvLUO3mz1DjIkKvIqA-1; Wed, 23 Nov 2022 04:00:48 -0500
+X-MC-Unique: RElBYvLUO3mz1DjIkKvIqA-1
+Received: by mail-wm1-f71.google.com with SMTP id e8-20020a05600c218800b003cf634f5280so567066wme.8
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 01:00:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E6EIJ5w+PIWfz/dZ3wzqsgofUxnU4yeG1t+4ayq90mM=;
+        b=hp6woVU/98zCg/k++1fnwTNC5pkxNkN0sVH38QNHe4vMkOMlyPK7dla9YBsP29l2uL
+         1Jd3iyNfMoJL5c11nGBwi06Nrx8W771ZfbQXiw9m464Bm0qKRTyVeNYRW6pYgKxGSTnJ
+         z3TdFD2b92V2SgK3EY27mlsEhjqmU+l9znEX6b/BsHPpsVu8C9kIVWH4A8OXG0RZyh7I
+         7HDIKIABwh6uH7RyLE4yPPxChIY4Q6066T2mkgExLwG7vw4TFBt3zDSJKEj0fjL6IcaL
+         LSfVUvD08no14ODQ6H0UoJrAo6OuIdvsgdG7ubmQpK14OCBAIc8xywqET5aZICi96dyW
+         C6KQ==
+X-Gm-Message-State: ANoB5pmfZNw/Wx2GupnMuRd9bqHimFZAsmj4haqWHiQixGpclZ55IeAq
+        O7N62DAH3RpKe7rVHxPmbHtYxjuT/P0CGg2uVdOPFK3I0EZiQi5otExN9YGsJie/v+cwVF4E0Qk
+        5VpxEQAOI2S1XQOWBh03OSUfcYJSHg6TDYdGtUW8Er9Z+qO3sILmYUjrTLac18xw=
+X-Received: by 2002:a7b:c00a:0:b0:3cf:e8f0:ad11 with SMTP id c10-20020a7bc00a000000b003cfe8f0ad11mr23181586wmb.65.1669194046984;
+        Wed, 23 Nov 2022 01:00:46 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4zOjgsuRGPiS63Tp8xZsHmidooWDTcdbUcP1B+oIto3jBpIOtS2Y8FrHWBSGgwpNTU2W5NaQ==
+X-Received: by 2002:a7b:c00a:0:b0:3cf:e8f0:ad11 with SMTP id c10-20020a7bc00a000000b003cfe8f0ad11mr23181534wmb.65.1669194046374;
+        Wed, 23 Nov 2022 01:00:46 -0800 (PST)
+Received: from localhost.localdomain ([78.19.107.254])
+        by smtp.gmail.com with ESMTPSA id e9-20020a5d5949000000b0022e344a63c7sm15947773wri.92.2022.11.23.01.00.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Nov 2022 01:00:45 -0800 (PST)
+From:   mtahhan@redhat.com
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
+        magnus.karlsson@gmail.com, akiyks@gmail.com,
+        Maryam Tahhan <mtahhan@redhat.com>
+Subject: [PATCH bpf-next v5 1/1] docs: BPF_MAP_TYPE_XSKMAP
+Date:   Wed, 23 Nov 2022 09:00:43 +0000
+Message-Id: <20221123090043.83945-1-mtahhan@redhat.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CO1PR11MB5187:EE_
-X-MS-Office365-Filtering-Correlation-Id: de01f7c7-e584-44cc-3f47-08dacd2ce6f4
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Aq8X53UHIyQKeQVOCMT9vKPHKuEo6OWRqNKqyibUQe0iw8uKAE3oTWULAnYe20oQasrOG40Q1L+w+qjjQAY4e9tUBv66106atxf+OmvceCgNCaUtpWKmp55tHwfiPGT9OxHuJSjPlvdoHjp9PwzqJy7i/aKzUf5BNC58L7Rm/KQaYXI6mY37FOQWcdCSw5Gvy+7/TCDwmDM4a8n1UWG60qJ32DT5c21pONVSDfggze1zwMbJmBWzueCROjSTK3xf4FsbI+6xuFnAzG1Mrwro3YQvGumGLzSfYxgQd8haYFaOK9VxVXRXtpBhNkQSTzyTEpUN3wyGECJE5M2LcOvgnOXHSENheJAyfcqM1nkaUJBRON/VhhG2Af4KThPeGzMlw6BZG00KMrkZTi/DFsfQCpz0PFq6OQRF2LVuvTlUiNF8148dw+CyMGdVuPWn+k/H/H9fiElUdLFd2iJYBZpUdDJojQIgJDNhGgv/dpgaO1BjxjhQEDEAKcXup9VdbaL636E6j7PVMN+PiUrWj+9EvkPcIw38UUrRc2rBDtsqtFpZ7SgjgvoAhOdTEHZq4i+lpITgoSd/99GMzwG5mB1ClRlKR7CJ5hQ0Mt54WB4gVmnJk23XwCMWC/mhCEqf0YGCNsfvmlNnRq41nePfrEdM3E+f6Uv4vAaL4IMxM7/+HfhVTm4cFT19bJ1qQf1auhHRMNXQE3moEN05uqi5l0SNXowJfpibpcA+CZWVzgQsQ406gwomVm2sgA1zGA2ZMqOMDqw9wRR7U8XD7GdD+3dHDQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(346002)(39860400002)(366004)(376002)(396003)(451199015)(2906002)(31686004)(2616005)(66946007)(53546011)(41300700001)(36756003)(31696002)(86362001)(66556008)(110136005)(921005)(83380400001)(6506007)(54906003)(82960400001)(38100700002)(4326008)(6486002)(8936002)(8676002)(6666004)(5660300002)(66476007)(186003)(6512007)(966005)(45080400002)(7406005)(26005)(7416002)(478600001)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVdVYU9kbTNVNlRZMTMvQnk2OVpLNzB0dmJSRHltVkhmb0ZLSGc3bGpZV1V2?=
- =?utf-8?B?RWNNYkRBb1RZaFF2ajVkcDd4SmpPWkdHaENzbXY1R200RzI3aXRvMXNDRFc3?=
- =?utf-8?B?RktOQmRDYkdBZE9pWVVNK1FmSGNmb0RqREJkbjkwSWdDZWVsOEZCdjh3Ykg5?=
- =?utf-8?B?RkZpdEEzZVgyK1RNcCtIemU1QXNHMnY0ZHF1alBEaGRtdjNPdDNTS0JzRU1C?=
- =?utf-8?B?TDU1MldXdEtRNjNFQURObzJqNVpLMW1PMzc2K1dKcmExZldwTVpYTm40MkVB?=
- =?utf-8?B?RTZZWWxjTDBzcURORGlEd1pXd0pmNXBwUTZCdjAyM0RMeEVrL3NsZm9yclFQ?=
- =?utf-8?B?WjFpcnoxYUdmRjZPTjhYR1pOMSttNnUvd1dUVlNuemNkTGt1by83bGUwcUt5?=
- =?utf-8?B?REpzSmh3NlVoVG9OL1FWeWE4RTlIdkl5MXB0SlJuZHhMblQwUmdlQjhqQVhl?=
- =?utf-8?B?QVkvSUhhMVBZNXBKY2JzR3EvUmJpN3d0K2hxN1JjbkVSb2FHTHJFZHprZEVJ?=
- =?utf-8?B?NWFxODdSSzJ2MDhNYXlUcS8rUFdaOExvSmZWNStDUmx6b09hblFzbTdIUVlW?=
- =?utf-8?B?TzNsbCtzREZ0YWtJVHVkOUFrNm93TnFkVlQ4K0NhV3RSeGQ5TmlCSlVDMUNJ?=
- =?utf-8?B?QUpUS2FhUm9IWndwRm1URXowbGVRekUwOXBoa1JCYTNvM2Q3eG16RDAyYTN6?=
- =?utf-8?B?aUplWGZ4KzA1VGFGWmQ0S2c1a21NNVZIYWxwejJPdG8zc1lJck5nZ2VYRGxC?=
- =?utf-8?B?OExBNHovcWF5cklKcERxM3JFZ0lES1VMaTZNd3AxdDlTTDhtMUowRFY3aDJK?=
- =?utf-8?B?YXZldkp0Wlg4VXgwZGNzQm4wazFpWFZTL25UZ2xlN3N0NkIzdFlubVFHSG9i?=
- =?utf-8?B?UGdSNGF3RFcyVGRFbjVGUC93dERQV1ViSTkwMG8yaW9qZ2U5cjhQbzVOaVBZ?=
- =?utf-8?B?V0J2Z1NLMHZmc01BZm8ycHVOR0p0QzZZYjYwdURSRHlDcFFPTHdDVmNRZnlC?=
- =?utf-8?B?b0ticXl6aC81V3RNUkZQeHZZRkVlVVBROGd6NlpFRnZrRWR3SnhDcWNnOVhs?=
- =?utf-8?B?Qmh2QjhTQi9uWHQyYXJURytpNWZYZk83dmsxWmdsMEhPODBxb3MxNFJRSkhX?=
- =?utf-8?B?aHJrdklCRUNQMU5zSk1VMFV3eEY3VUgzc3pUbkZ2QTU5MGNLbEliWVRzdWt5?=
- =?utf-8?B?bXZObDNoUHVmN3kraTBNRTNrYzVFWVRkYWtVcEJkK3A2cDE1VWo0WWh2WkVl?=
- =?utf-8?B?Ky9UNHhVYkJkV0k5d0xkclVTOCtBYUVKU3c3RlJDZm1DNDU3bFplNFc2MndR?=
- =?utf-8?B?djZURldaVGhwMzZSY2VUMWxRbUM4QlhjdDdSZlA4VXdlRE9zNk1GWlhwUHcy?=
- =?utf-8?B?cDZmYTRMdkFmdkM4cmJaT2U1bkxUb3FnRTlDbkVNYW8wRlpkMEV3amhleVpw?=
- =?utf-8?B?N2tIa1RsR2VoMDRoZ1l5eVAvaVZEWDFWTGczbnJ4cG5WYnpBbm1jS3FDb1JL?=
- =?utf-8?B?V0VMZ29ra05paVByU2lxSmg4bVRpc05ndlAya0xmazl0WEdjY01CQTNZVzFw?=
- =?utf-8?B?b0FHUVFoRC80c1l3RmwyOWU5amEzOXA0R3Z4TDJLT2pXYnFFS21CL0VlT25C?=
- =?utf-8?B?Vy93OCtZZlhSUXFIbmxyOG1JRDJLY2l2bElOaWFEOE9wUm0yZlV0aTZhZ1JR?=
- =?utf-8?B?dnNKN2s1RnI5TnlUZHg2RVh0NU52dGQ4aktPditZdks2NkdaUDVtOEU1d3pw?=
- =?utf-8?B?RTZJenY3amRBbkxIaUxLYkdUVGtPdEM5OXdaMEwxZjZwTmNJVm1MWENPTW45?=
- =?utf-8?B?dUc5MTBpM29Dc2RnT0MzOW1DZUZwWEJWNDVWZDVaMTBoeUJkZDNnblBHczNx?=
- =?utf-8?B?RVU0OWt5VVlQdkxqT0Q1UHhBZkRaZ2NsMUJrcnFSZHdWd2YrUHNSSUF5bXZu?=
- =?utf-8?B?L2NSb25QUXB6a3FSNUZCZmJTWGtNV0ZjbEl3eWtFQWdRRlNrSlNCN1NWckc0?=
- =?utf-8?B?RTRBa0xZR0FEVGNYRkdZdHZ3dEJObEx1dmgwcG5CZXN0ZDFuWTUzVGNFQzFp?=
- =?utf-8?B?WEpacU0wam9Cc0orUzl2N0xXc2ZLOEd2S3ZJMjBMNVJmYU1RKzl5S1RMU1dP?=
- =?utf-8?Q?4H5dsZMIAEyRxuSFDzoz2V9s6?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: de01f7c7-e584-44cc-3f47-08dacd2ce6f4
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2022 08:29:57.7115
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LJTGtwHYsUi48z/UP1FtNuLnX9XpFjgGxdXBysi8l06gNgDtQAtx5PXbgIuDhlpu3L+1osazq3VD8ceHeX3qiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5187
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -191,92 +75,236 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/11/17 05:00, Jason Gunthorpe wrote:
-> This queries if a domain linked to a device should expect to support
-> enforce_cache_coherency() so iommufd can negotiate the rules for when a
-> domain should be shared or not.
-> 
-> For iommufd a device that declares IOMMU_CAP_ENFORCE_CACHE_COHERENCY will
-> not be attached to a domain that does not support it.
-> 
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Tested-by: Yi Liu <yi.l.liu@intel.com>
-> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
-> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
+From: Maryam Tahhan <mtahhan@redhat.com>
 
-looks like Yu He's test-by was missed. :-) She has given it in below link.
+Add documentation for BPF_MAP_TYPE_XSKMAP
+including kernel version introduced, usage
+and examples.
 
-https://lore.kernel.org/kvm/DM6PR11MB268429C4986C7808760CCE72E0049@DM6PR11MB2684.namprd11.prod.outlook.com/
+Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->   drivers/iommu/amd/iommu.c   |  2 ++
->   drivers/iommu/intel/iommu.c | 16 +++++++++++-----
->   include/linux/iommu.h       |  5 +++++
->   3 files changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index 45299eb7e8e306..240c535e317cc7 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -2278,6 +2278,8 @@ static bool amd_iommu_capable(struct device *dev, enum iommu_cap cap)
->   		return false;
->   	case IOMMU_CAP_PRE_BOOT_PROTECTION:
->   		return amdr_ivrs_remap_support;
-> +	case IOMMU_CAP_ENFORCE_CACHE_COHERENCY:
-> +		return true;
->   	default:
->   		break;
->   	}
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index f298e51d5aa67a..157c9727411076 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4450,14 +4450,20 @@ static bool intel_iommu_enforce_cache_coherency(struct iommu_domain *domain)
->   
->   static bool intel_iommu_capable(struct device *dev, enum iommu_cap cap)
->   {
-> -	if (cap == IOMMU_CAP_CACHE_COHERENCY)
-> +	struct device_domain_info *info = dev_iommu_priv_get(dev);
-> +
-> +	switch (cap) {
-> +	case IOMMU_CAP_CACHE_COHERENCY:
->   		return true;
-> -	if (cap == IOMMU_CAP_INTR_REMAP)
-> +	case IOMMU_CAP_INTR_REMAP:
->   		return irq_remapping_enabled == 1;
-> -	if (cap == IOMMU_CAP_PRE_BOOT_PROTECTION)
-> +	case IOMMU_CAP_PRE_BOOT_PROTECTION:
->   		return dmar_platform_optin();
-> -
-> -	return false;
-> +	case IOMMU_CAP_ENFORCE_CACHE_COHERENCY:
-> +		return ecap_sc_support(info->iommu->ecap);
-> +	default:
-> +		return false;
-> +	}
->   }
->   
->   static struct iommu_device *intel_iommu_probe_device(struct device *dev)
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 68d7d304cdb761..a09fd32d8cc273 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -124,6 +124,11 @@ enum iommu_cap {
->   	IOMMU_CAP_NOEXEC,		/* IOMMU_NOEXEC flag */
->   	IOMMU_CAP_PRE_BOOT_PROTECTION,	/* Firmware says it used the IOMMU for
->   					   DMA protection and we should too */
-> +	/*
-> +	 * Per-device flag indicating if enforce_cache_coherency() will work on
-> +	 * this device.
-> +	 */
-> +	IOMMU_CAP_ENFORCE_CACHE_COHERENCY,
->   };
->   
->   /* These are the possible reserved region types */
+---
+v5:
+- Fixed references to user space
 
+v4:
+- Add more details about AF_XDP sockets and where to find
+  relevant info.
+- Fixup typos.
+- Remove ``c:function::`` block directives.
+- Replace spaces with tabs in code blocks.
+
+v3:
+- Fixed duplicate function warnings from Sphinx >= 3.3.
+
+v2:
+- Fixed typos + incorrect return type references.
+- Adjusted examples to use __u32 and fixed references to key_size.
+- Changed `AF_XDP socket` references to XSK.
+- Added note re map key and value size.
+---
+ Documentation/bpf/map_xskmap.rst | 192 +++++++++++++++++++++++++++++++
+ 1 file changed, 192 insertions(+)
+ create mode 100644 Documentation/bpf/map_xskmap.rst
+
+diff --git a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
+new file mode 100644
+index 000000000000..7093b8208451
+--- /dev/null
++++ b/Documentation/bpf/map_xskmap.rst
+@@ -0,0 +1,192 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++.. Copyright (C) 2022 Red Hat, Inc.
++
++===================
++BPF_MAP_TYPE_XSKMAP
++===================
++
++.. note::
++   - ``BPF_MAP_TYPE_XSKMAP`` was introduced in kernel version 4.18
++
++The ``BPF_MAP_TYPE_XSKMAP`` is used as a backend map for XDP BPF helper
++call ``bpf_redirect_map()`` and ``XDP_REDIRECT`` action, like 'devmap' and 'cpumap'.
++This map type redirects raw XDP frames to `AF_XDP`_ sockets (XSKs), a new type of
++address family in the kernel that allows redirection of frames from a driver to
++user space without having to traverse the full network stack. An AF_XDP socket
++binds to a single netdev queue. A mapping of XSKs to queues is shown below:
++
++.. code-block:: none
++
++    +---------------------------------------------------+
++    |     xsk A      |     xsk B       |      xsk C     |<---+ User space
++    =========================================================|==========
++    |    Queue 0     |     Queue 1     |     Queue 2    |    |  Kernel
++    +---------------------------------------------------+    |
++    |                  Netdev eth0                      |    |
++    +---------------------------------------------------+    |
++    |                            +=============+        |    |
++    |                            | key |  xsk  |        |    |
++    |  +---------+               +=============+        |    |
++    |  |         |               |  0  | xsk A |        |    |
++    |  |         |               +-------------+        |    |
++    |  |         |               |  1  | xsk B |        |    |
++    |  | BPF     |-- redirect -->+-------------+-------------+
++    |  | prog    |               |  2  | xsk C |        |
++    |  |         |               +-------------+        |
++    |  |         |                                      |
++    |  |         |                                      |
++    |  +---------+                                      |
++    |                                                   |
++    +---------------------------------------------------+
++
++.. note::
++    An AF_XDP socket that is bound to a certain <netdev/queue_id> will *only*
++    accept XDP frames from that <netdev/queue_id>. If an XDP program tries to redirect
++    from a <netdev/queue_id> other than what the socket is bound to, the frame will
++    not be received on the socket.
++
++Typically an XSKMAP is created per netdev. This map contains an array of XSK File
++Descriptors (FDs). The number of array elements is typically set or adjusted using
++the ``max_entries`` map parameter. For AF_XDP ``max_entries`` is equal to the number
++of queues supported by the netdev.
++
++.. note::
++    Both the map key and map value size must be 4 bytes.
++
++Usage
++=====
++
++Kernel BPF
++----------
++bpf_redirect_map()
++^^^^^^^^^^^^^^^^^^
++.. code-block:: c
++
++    long bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
++
++Redirect the packet to the endpoint referenced by ``map`` at index ``key``.
++For ``BPF_MAP_TYPE_XSKMAP`` this map contains references to XSK FDs
++for sockets attached to a netdev's queues.
++
++.. note::
++    If the map is empty at an index, the packet is dropped. This means that it is
++    necessary to have an XDP program loaded with at least one XSK in the
++    XSKMAP to be able to get any traffic to user space through the socket.
++
++bpf_map_lookup_elem()
++^^^^^^^^^^^^^^^^^^^^^
++.. code-block:: c
++
++    void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
++
++XSK entry references of type ``struct xdp_sock *`` can be retrieved using the
++``bpf_map_lookup_elem()`` helper.
++
++User space
++----------
++.. note::
++    XSK entries can only be updated/deleted from user space and not from
++    a BPF program. Trying to call these functions from a kernel BPF program will
++    result in the program failing to load and a verifier warning.
++
++bpf_map_update_elem()
++^^^^^^^^^^^^^^^^^^^^^
++.. code-block:: c
++
++	int bpf_map_update_elem(int fd, const void *key, const void *value, __u64 flags)
++
++XSK entries can be added or updated using the ``bpf_map_update_elem()``
++helper. The ``key`` parameter is equal to the queue_id of the queue the XSK
++is attaching to. And the ``value`` parameter is the FD value of that socket.
++
++Under the hood, the XSKMAP update function uses the XSK FD value to retrieve the
++associated ``struct xdp_sock`` instance.
++
++The flags argument can be one of the following:
++
++- BPF_ANY: Create a new element or update an existing element.
++- BPF_NOEXIST: Create a new element only if it did not exist.
++- BPF_EXIST: Update an existing element.
++
++bpf_map_lookup_elem()
++^^^^^^^^^^^^^^^^^^^^^
++.. code-block:: c
++
++    int bpf_map_lookup_elem(int fd, const void *key, void *value)
++
++Returns ``struct xdp_sock *`` or negative error in case of failure.
++
++bpf_map_delete_elem()
++^^^^^^^^^^^^^^^^^^^^^
++.. code-block:: c
++
++    int bpf_map_delete_elem(int fd, const void *key)
++
++XSK entries can be deleted using the ``bpf_map_delete_elem()``
++helper. This helper will return 0 on success, or negative error in case of
++failure.
++
++.. note::
++    When `libxdp`_ deletes an XSK it also removes the associated socket
++    entry from the XSKMAP.
++
++Examples
++========
++Kernel
++------
++
++The following code snippet shows how to declare a ``BPF_MAP_TYPE_XSKMAP`` called
++``xsks_map`` and how to redirect packets to an XSK.
++
++.. code-block:: c
++
++	struct {
++		__uint(type, BPF_MAP_TYPE_XSKMAP);
++		__type(key, __u32);
++		__type(value, __u32);
++		__uint(max_entries, 64);
++	} xsks_map SEC(".maps");
++
++
++	SEC("xdp")
++	int xsk_redir_prog(struct xdp_md *ctx)
++	{
++		__u32 index = ctx->rx_queue_index;
++
++		if (bpf_map_lookup_elem(&xsks_map, &index))
++			return bpf_redirect_map(&xsks_map, index, 0);
++		return XDP_PASS;
++	}
++
++User space
++----------
++
++The following code snippet shows how to update an XSKMAP with an XSK entry.
++
++.. code-block:: c
++
++	int update_xsks_map(struct bpf_map *xsks_map, int queue_id, int xsk_fd)
++	{
++		int ret;
++
++		ret = bpf_map_update_elem(bpf_map__fd(xsks_map), &queue_id, &xsk_fd, 0);
++		if (ret < 0)
++			fprintf(stderr, "Failed to update xsks_map: %s\n", strerror(errno));
++
++		return ret;
++	}
++
++For an example on how create AF_XDP sockets, please see the AF_XDP-example and
++AF_XDP-forwarding programs in the `bpf-examples`_ directory in the `libxdp`_ repository.
++For a detailed explaination of the AF_XDP interface please see:
++
++- `libxdp-readme`_.
++- `AF_XDP`_ kernel documentation.
++
++.. note::
++    The most comprehensive resource for using XSKMAPs and AF_XDP is `libxdp`_.
++
++.. _libxdp: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp
++.. _AF_XDP: https://www.kernel.org/doc/html/latest/networking/af_xdp.html
++.. _bpf-examples: https://github.com/xdp-project/bpf-examples
++.. _libxdp-readme: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp#using-af_xdp-sockets
 -- 
-Regards,
-Yi Liu
+2.34.1
+
