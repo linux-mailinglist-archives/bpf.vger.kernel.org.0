@@ -2,125 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02D0636D11
-	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 23:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1021636D62
+	for <lists+bpf@lfdr.de>; Wed, 23 Nov 2022 23:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbiKWW3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 17:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S229698AbiKWWjH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 17:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbiKWW3n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 17:29:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29A21C908;
-        Wed, 23 Nov 2022 14:29:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 955A7B82544;
-        Wed, 23 Nov 2022 22:29:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA3CC433D6;
-        Wed, 23 Nov 2022 22:29:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669242579;
-        bh=cH9nHeYLvsFLUPXg0Ojh1J6f4FowOk1ddzAiez/0fDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DmmnChB6g81EqGDriHV4aoCQ98VlVoIyVw9WUJE0KSHyH2uQRT1uUnKrsjl8z+g/e
-         3itadwVQd4oV/FiGdXsZjeqkhEQVP7YkHCMqEuvgh1nIxyjRYB/Aic1+CdM83fIG5G
-         HTX+q1LxQi7wB6oX+88lc4xbJIqoYERcM5fG3XBF9+fu0M5kUM6RRl3AoywkcrzBiD
-         fqK3yrhTZabXDccfal9ZnKmU52MpUESfuZzUdj4V1ojw45tysRMymsCzgfdATM88Vb
-         oGCofBXA0kVpQMxLaGms7UkiIYY48yT1RZzOBhMcqLwFpobyby3n6l1HHJbKe8aMDV
-         gXd/kGhtV6cpQ==
-Date:   Wed, 23 Nov 2022 14:29:37 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] [PATCH bpf-next 2/2] mlx5: Support XDP RX metadata
-Message-ID: <Y36e0Qt9eLtLZXmO@x130.lan>
-References: <20221121182552.2152891-1-sdf@google.com>
- <20221123144641.339138-1-toke@redhat.com>
- <20221123144641.339138-2-toke@redhat.com>
+        with ESMTP id S229526AbiKWWjF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 17:39:05 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2CA92B5D
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 14:39:04 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id p8-20020a056830130800b0066bb73cf3bcso12109476otq.11
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 14:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GgMLFLts+LrHqYdbPwazLqaNgD7hTCtQViG2uYPV3T4=;
+        b=NxA3l6kA4wXiZQlZu192lF0+uYCph3r9zMZolHUD4JSAVcYBFJBTolQaoaaG7wkQsv
+         2G7kpHiLJgVGC+E532UlKCtY9TK8kZ8DPZC+Eg3PFL06fVuXmzsC4bM/C6oMxVDSRNBX
+         +6QoSUc5GTdfMsVVfgrh4vBUnvB9NrnVlv9IPEkFtvYpreCmZz1W+xj3xHlTkZh7rMF9
+         jDWwNO4E/pQQ6nJrj3lklZolqeoBsZzOFAdkuR5MEiybODC+AfLzLIXYBBXxcxZ2bdky
+         dEX8RRsFbC9nNBImktR41CHJe3uh57rJfL+acQBg7s2VKc3yt73Nv4c9zcvTRd9uecB4
+         qLFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GgMLFLts+LrHqYdbPwazLqaNgD7hTCtQViG2uYPV3T4=;
+        b=fAhMMMDg4v76eIN46/nILs+VHx96irwYk18Rz6wcq/7JsAXMnzPSOupQLTaV0QLJ3R
+         odFCF+iL9oZ/TvNxs9p488PeMYMDPKCeSuhxsCzJgUzquHoJy1b2CJjU+IG3eO93e8YE
+         xPQ+FFFoJld/nvAevZeOV+b8LZwNwjP7BkbpXx6fuiGK24z3btreBusaaqudz7rNY45/
+         s+Wp3bRxYLi4mCIhJGURhBFaZjucfO0E35FCWzIlzOTsUBMPlynbVEs+Z3h5zLmoo99j
+         0Te31SzRbmeRnRwtgy/YTSquRsjFyIB6Emrdg5+rZESZaCsy5lImkUzrLtbUP3HOnZbC
+         Zmzw==
+X-Gm-Message-State: ANoB5plx5Twc9p741Ixg0niiW+EudbdqbRLFQ5/QawBUfpTByKIRFMH7
+        kSkYF4YbBOZfTX09NPW0sxadc3EGO+IjxIAKBR7UMw==
+X-Google-Smtp-Source: AA0mqf6Uv+B3faegPeGa6GHGMlPbueg5lXVF6MayeuFlMnyocuOxjyt0qpXYVvtQJd1aaJ/N1RqJoufRj22HYQgfI2w=
+X-Received: by 2002:a9d:282:0:b0:66c:794e:f8c6 with SMTP id
+ 2-20020a9d0282000000b0066c794ef8c6mr16071149otl.343.1669243143258; Wed, 23
+ Nov 2022 14:39:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221123144641.339138-2-toke@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221123200829.2226254-1-sdf@google.com> <CAADnVQ+dauPf-BhcmM4O7qSqzZFLK2+56N3djzR6zRPB_yawsA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+dauPf-BhcmM4O7qSqzZFLK2+56N3djzR6zRPB_yawsA@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 23 Nov 2022 14:38:52 -0800
+Message-ID: <CAKH8qBt9Fp2q54=EGeLjpyEz2BeZ9zkEmF0z+e4xohejxxwcBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Mount debugfs in setns_by_fd
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23 Nov 15:46, Toke Høiland-Jørgensen wrote:
->Support RX hash and timestamp metadata kfuncs. We need to pass in the cqe
->pointer to the mlx5e_skb_from* functions so it can be retrieved from the
->XDP ctx to do this.
+On Wed, Nov 23, 2022 at 12:39 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->Cc: John Fastabend <john.fastabend@gmail.com>
->Cc: David Ahern <dsahern@gmail.com>
->Cc: Martin KaFai Lau <martin.lau@linux.dev>
->Cc: Jakub Kicinski <kuba@kernel.org>
->Cc: Willem de Bruijn <willemb@google.com>
->Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->Cc: Anatoly Burakov <anatoly.burakov@intel.com>
->Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
->Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
->Cc: Maryam Tahhan <mtahhan@redhat.com>
->Cc: Stanislav Fomichev <sdf@google.com>
->Cc: xdp-hints@xdp-project.net
->Cc: netdev@vger.kernel.org
->Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->---
->This goes on top of Stanislav's series, obvioulsy. Verified that it works using
->the xdp_hw_metadata utility; going to do ome benchmarking and follow up with the
->results, but figured I'd send this out straight away in case others wanted to
->play with it.
+> On Wed, Nov 23, 2022 at 12:08 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Jiri reports broken test_progs after recent commit 68f8e3d4b916
+> > ("selftests/bpf: Make sure zero-len skbs aren't redirectable").
+> > Apparently we don't remount debugfs when we switch back networking namespace.
+> > Let's explicitly mount /sys/kernel/debug.
+> >
+> > 0: https://lore.kernel.org/bpf/63b85917-a2ea-8e35-620c-808560910819@meta.com/T/#ma66ca9c92e99eee0a25e40f422489b26ee0171c1
+> >
+> > Fixes: a30338840fa5 ("selftests/bpf: Move open_netns() and close_netns() into network_helpers.c")
+> > Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/network_helpers.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> > index bec15558fd93..1f37adff7632 100644
+> > --- a/tools/testing/selftests/bpf/network_helpers.c
+> > +++ b/tools/testing/selftests/bpf/network_helpers.c
+> > @@ -426,6 +426,10 @@ static int setns_by_fd(int nsfd)
+> >         if (!ASSERT_OK(err, "mount /sys/fs/bpf"))
+> >                 return err;
+> >
+> > +       err = mount("debugfs", "/sys/kernel/debug", "debugfs", 0, NULL);
+> > +       if (!ASSERT_OK(err, "mount /sys/kernel/debug"))
+> > +               return err;
+> > +
+> >         return 0;
+> >  }
 >
->Stanislav, feel free to fold it into the next version of your series if you
->want!
+> Thanks.
+> It fixes part of it but it's still racy.
+> I see:
+> do_read:FAIL:open open /sys/fs/bpf/bpf_iter_test1 failed: No such file
+> or directory
 >
+> I suspect it happens when iter tests are running while test_empty_skb
+> is cleaning the netns.
+>
+> So I've added:
+> -void test_empty_skb(void)
+> +void serial_test_empty_skb(void)
+> -void test_xdp_do_redirect(void)
+> +void serial_test_xdp_do_redirect(void)
+> -void test_xdp_synproxy(void)
+> +void serial_test_xdp_synproxy(void)
+>
+> to stop the bleeding and applied.
 
-[...]
-
-> #endif /* __MLX5_EN_XSK_RX_H__ */
->diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->index 14bd86e368d5..015bfe891458 100644
->--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->@@ -4890,6 +4890,10 @@ const struct net_device_ops mlx5e_netdev_ops = {
-> 	.ndo_tx_timeout          = mlx5e_tx_timeout,
-> 	.ndo_bpf		 = mlx5e_xdp,
-> 	.ndo_xdp_xmit            = mlx5e_xdp_xmit,
->+	.ndo_xdp_rx_timestamp_supported = mlx5e_xdp_rx_timestamp_supported,
->+	.ndo_xdp_rx_timestamp    = mlx5e_xdp_rx_timestamp,
->+	.ndo_xdp_rx_hash_supported = mlx5e_xdp_rx_hash_supported,
->+	.ndo_xdp_rx_hash         = mlx5e_xdp_rx_hash,
-
-I hope i am not late to the party.
-but I already expressed my feelings regarding using kfunc for xdp hints,
-@LPC and @netdevconf.
-
-I think it's wrong to use indirect calls, and for many usecases the
-overhead will be higher than just calculating the metadata on the spot.
-
-so you will need two indirect calls per packet per hint.. 
-some would argue on some systems calculating the hash would be much faster.
-and one major reason to have the hints is to accelerate xdp edge and
-security programs with the hw provided hints.
-
-what happened with just asking the driver to place the data in a specific
-location on the headroom? 
+Not sure I understand where the race is coming from and no luck
+reproducing locally :-(
+Looks like we run the tests in the forked workers, so that
+unshare(mountns) shouldn't theoretically affect the rest, but
+obviously I'm missing something..
