@@ -2,94 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7270A636EA2
-	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 01:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0D5636EA6
+	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 01:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbiKXAAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Nov 2022 19:00:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        id S229531AbiKXACQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Nov 2022 19:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiKXAAU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Nov 2022 19:00:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668628F3DB
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 16:00:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1B789B82573
-        for <bpf@vger.kernel.org>; Thu, 24 Nov 2022 00:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C56E7C433D7;
-        Thu, 24 Nov 2022 00:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669248016;
-        bh=X/wn/wO4p44Y2/euGRuJGxZlhqpHnGaCj+XjLOqB5qM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YqfshLDA81qRawLcLpf41g9Rp0t4usi8G/exuYtQ1f4xR42Bs8pMk1NkWkD7Q8evS
-         WsOg+PAQo4KS0I89NMyR9aBERb0/n1AeCBKIUyhveJAB0sNnUhd9EhbOzbP/08PsKd
-         6h9dnV28WLO5IiheM3Py3SDOJkA+Pd+ABbrEE4th/dnDFNmtd8/DRkQCpZ5uzd3oKL
-         jSiurlVRcHJnxqm6GKeq+GsJfj2dtH5/qeoCzjlvYk0idm+PwDyNzLnmVjq+1sEBuv
-         icNvgHFLQKns+7lRtxP32kc+A3JprVzVt8Db645AQDQOY7gN09FMa3NC1q8illNEd9
-         B/82IAxiRJf5w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AC367C395EE;
-        Thu, 24 Nov 2022 00:00:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Add reproducer for decl_tag in
- func_proto argument
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166924801670.22285.7312876485034854827.git-patchwork-notify@kernel.org>
-Date:   Thu, 24 Nov 2022 00:00:16 +0000
+        with ESMTP id S229452AbiKXACN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Nov 2022 19:02:13 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C1F8FB3C
+        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 16:02:12 -0800 (PST)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oxzgw-000NtC-8t; Thu, 24 Nov 2022 01:02:10 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oxzgv-000Cxu-TP; Thu, 24 Nov 2022 01:02:09 +0100
+Subject: Re: [PATCH bpf-next 2/2] bpf: prevent decl_tag from being referenced
+ in func_proto arg
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        syzbot+8dd0551dda6020944c5d@syzkaller.appspotmail.com
 References: <20221123035422.872531-1-sdf@google.com>
-In-Reply-To: <20221123035422.872531-1-sdf@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <20221123035422.872531-2-sdf@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <384163f2-0f33-6db5-3b48-92b47f8fb5e6@iogearbox.net>
+Date:   Thu, 24 Nov 2022 01:02:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20221123035422.872531-2-sdf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26729/Wed Nov 23 09:18:01 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 22 Nov 2022 19:54:21 -0800 you wrote:
-> It should trigger a WARN_ON_ONCE in btf_type_id_size.
+On 11/23/22 4:54 AM, Stanislav Fomichev wrote:
+> Syzkaller managed to hit anoher decl_tag issue:
 > 
->     RIP: 0010:btf_type_id_size+0x8bd/0x940 kernel/bpf/btf.c:1952
->     btf_func_proto_check kernel/bpf/btf.c:4506 [inline]
->     btf_check_all_types kernel/bpf/btf.c:4734 [inline]
->     btf_parse_type_sec+0x1175/0x1980 kernel/bpf/btf.c:4763
->     btf_parse kernel/bpf/btf.c:5042 [inline]
->     btf_new_fd+0x65a/0xb00 kernel/bpf/btf.c:6709
->     bpf_btf_load+0x6f/0x90 kernel/bpf/syscall.c:4342
->     __sys_bpf+0x50a/0x6c0 kernel/bpf/syscall.c:5034
->     __do_sys_bpf kernel/bpf/syscall.c:5093 [inline]
->     __se_sys_bpf kernel/bpf/syscall.c:5091 [inline]
->     __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5091
->     do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
+>   btf_func_proto_check kernel/bpf/btf.c:4506 [inline]
+>   btf_check_all_types kernel/bpf/btf.c:4734 [inline]
+>   btf_parse_type_sec+0x1175/0x1980 kernel/bpf/btf.c:4763
+>   btf_parse kernel/bpf/btf.c:5042 [inline]
+>   btf_new_fd+0x65a/0xb00 kernel/bpf/btf.c:6709
+>   bpf_btf_load+0x6f/0x90 kernel/bpf/syscall.c:4342
+>   __sys_bpf+0x50a/0x6c0 kernel/bpf/syscall.c:5034
+>   __do_sys_bpf kernel/bpf/syscall.c:5093 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5091 [inline]
+>   __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5091
+>   do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
 > 
-> [...]
+> This seems similar to commit ea68376c8bed ("bpf: prevent decl_tag from
+> being referenced in func_proto") but for the argument.
+> 
+> Reported-by: syzbot+8dd0551dda6020944c5d@syzkaller.appspotmail.com
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   kernel/bpf/btf.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 1a59cc7ad730..cb43cb842e16 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -4792,6 +4792,11 @@ static int btf_func_proto_check(struct btf_verifier_env *env,
+>   			break;
+>   		}
+>   
+> +		if (btf_type_is_resolve_source_only(arg_type)) {
+> +			btf_verifier_log_type(env, t, "Invalid arg#%u", i + 1);
+> +			return -EINVAL;
+> +		}
+> +
 
-Here is the summary with links:
-  - [bpf-next,1/2] selftests/bpf: Add reproducer for decl_tag in func_proto argument
-    https://git.kernel.org/bpf/bpf-next/c/8e898aaa733e
-  - [bpf-next,2/2] bpf: prevent decl_tag from being referenced in func_proto arg
-    https://git.kernel.org/bpf/bpf-next/c/f17472d45996
+Applied, could you do a small follow-up cleanup: most of the error cases in the loop in
+btf_func_proto_check() bail out with err = -EINVAL + break and the above now deviates
+from that, but rightfully so given there's no good reason as we just return err anyway.
+Would be good to make this consistent with return -EINVAL / return err also for the other
+cases.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>   		if (args[i].name_off &&
+>   		    (!btf_name_offset_valid(btf, args[i].name_off) ||
+>   		     !btf_name_valid_identifier(btf, args[i].name_off))) {
+> 
 
-
+Thanks,
+Daniel
