@@ -2,139 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DEB6378C5
-	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 13:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A534F63797A
+	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 13:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiKXMYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Nov 2022 07:24:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
+        id S229664AbiKXM6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Nov 2022 07:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiKXMYp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Nov 2022 07:24:45 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-eopbgr90057.outbound.protection.outlook.com [40.107.9.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871ECD53B2;
-        Thu, 24 Nov 2022 04:24:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=euW3KDDMQvAsFmRfqEy6vCRbsr9kZcREb6QpZ0XHKVdSzQN8x6wPBuDO3oY1nj6ohztA58QThjW8rKYUBJodLR1u/jiMtWcnvVg97GERSVMdITQbojin1Hqa+//cZafkjH3wANbVsJ4xqdGxnSkGK+BHgbKHUAYN3yvxvN34jMy1/qysff9MKKDAhPKvbs+6feSuz9z2kF9uWE+2BSAIPdT905YIyq3zK8BqoCZt0TOPH+soTXrX7/l9IY3OJEfLOyKG+FvG/CxNnTMwJd9kmHL89XrJKN/5sEa8JBSuvJqCCXntuQx0WkTVosdPtf5bDeu+IK9ZwepBN8DfCH46lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3TgDfMsBZn/QLbFUqGM/xo1UrJTPuLSc0hZzpJxVoq4=;
- b=K5lKCt7WpL3JtJuaqg+ZGAouUz24LqNzJe6EU0F7QU2G1n900T4HgNW9P/AVJAbzkNGK9XtC9pTRJWpIe7Z8yEZOgZXOIyKRuGXrZfrflYp3PvxPU10MpyTKqLomXEqw5LlBuqHpP0oPPd2I4TyvxMknmcn87M3Cpbnm1m9EoFESb7JFeG3AvdpBcHp17hiMVU5d/yn5b1z8mU4gJtcI3wumlvn38AP94svLGta0JGcm+z73sU3pBmQ+lw2/ia0Z98i3iad8eoPN7JT/yDgWyjRAbyXb6EqRslM0ZlmKG2nXlDfA1oMqe+8C1NUir47pQCkTARvxRzY1hLTC5lq/YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3TgDfMsBZn/QLbFUqGM/xo1UrJTPuLSc0hZzpJxVoq4=;
- b=VegD0zDFny8LMiszdSlfpa1zQ1gaiFrvFSbZ/brC1Ier0XX9Px2wUBJLTd/rIgAZQYz+qAF2prVHLGxFqTAH8g4OMgc4zUQkFixvrO9uB1BUvjIp3VlexMWWHvlQF2S7KuF8UNKNKmYyQCXjpni/+PTFOWNzVvRmyWjLkCTl87TG1nxQ+QXJvkO0mQ29egR1FgQIoFj4kjdwC6GkfZzXudyyQ7iiGoln2qVfv7Oq126zCxsOmciuYxPhd/GBSvkSLQ2jY1RMywE3W5/w6uwtPeL5qu/QAReOnk76G6qEqVaTzET7P32thM2NwaEHNOUNubTn/dygrjUFrfZu/SjzqA==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB2091.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.19; Thu, 24 Nov
- 2022 12:24:40 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::a85b:a9b6:cb36:fa6%9]) with mapi id 15.20.5834.015; Thu, 24 Nov 2022
- 12:24:40 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-CC:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH] powerpc/bpf: Only update ldimm64 during extra pass when
- it is an address
-Thread-Topic: [PATCH] powerpc/bpf: Only update ldimm64 during extra pass when
- it is an address
-Thread-Index: AQHY/+BWf7gs5QKIpkuwfOKyhRUrWq5N2yQAgAAkjgA=
-Date:   Thu, 24 Nov 2022 12:24:40 +0000
-Message-ID: <9f17237f-94da-f58f-4f4b-0068851b4123@csgroup.eu>
-References: <3f6d302a2068d9e357efda2d92c8da99a0f2d0b2.1669278892.git.christophe.leroy@csgroup.eu>
- <1669284441.66eunvaboi.naveen@linux.ibm.com>
-In-Reply-To: <1669284441.66eunvaboi.naveen@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB2091:EE_
-x-ms-office365-filtering-correlation-id: c9116359-99c4-4de8-4700-08dace16dc11
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1tmIq5CmZfaknpu/aAoI7PH+p+d69f2JCyixkbUZC1l5WYZNFkcsRJrYhjkOz92nkXlo7rVOQIpCSxsCRVvEmN9PEjGTm5hoBtt7u7n7kfMbZE9mG+XuB9YytYSwQPcxBVBwUjGfKH9A5x05xi4C8tQbvKGST1zf2CMuifT4D2Lek8VaffVK3ApsT/sGJCnYVHSKEo4D11iJY6EGpcmOaiiuSLIwuE6XTR5g+N7mrXw5ZC0xidnksoUD8YDO6nC/2zpQdb5yXbIG/0GvGjvrzeraVwK1MAIDjpZoj4G+oUaI08g0U8miXAeNMK0461wCMzICGzhKIPl7b5wK3wUAMzrEEgyxT7QNKNbaOgj5FjpgBoUS49q0HpJ8Pd/UHBrppsC3xp5niWyh/2USm1JnFNOsZILWp0OsTcfHl2PYDj5MFADFOltu3+l1RGprEc73p8s3UGDwDEujwTfhw5qhQi4dB/f2I5Mi+v2ddCnzpr6ruZdzuLJWtCU2eKku7CFIlPsu6+hP3IOakBovtn1XHzkdTyN8X18v0WP+MwOaZP8IBTGo+LbpP4AvAbbBChVaXZAnirZfzomwJGE/GaYvg9Rv73/driwwlXYPG7rLakFSXEJ1bpqN7KJDpB1WhdJ+Q3HnFwhnQmNwWSrKRyjhOX45N15sROdcLwasJdUcjsfLyXulNH6zg47dzLlYz8iX1wy5mXCx/zBiOkiFFxDcbFUyzNYxNESP6e2eSB164W4eIwQNv2CaK9K6Jfy/Yw8agx3T/hmd/uoiH9j7qQpN7w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(376002)(396003)(346002)(136003)(39850400004)(451199015)(2616005)(186003)(66574015)(44832011)(36756003)(5660300002)(38070700005)(8936002)(7416002)(6506007)(6512007)(41300700001)(26005)(31696002)(86362001)(316002)(54906003)(110136005)(66476007)(8676002)(66556008)(6486002)(71200400001)(66446008)(66946007)(4326008)(64756008)(91956017)(478600001)(76116006)(38100700002)(2906002)(31686004)(122000001)(15650500001)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S1loYW9wQXNObVRubi93dml1MjlKN29JbEdWSytHL2Z2UnZrOXVrTWFzQ1BD?=
- =?utf-8?B?eWJIWjNKTmNZZGpQVkpZQWlMYW05QkljMWJyRkR3N1pGQWY4SExiSTJORkZC?=
- =?utf-8?B?RTJRbVgxQnBmbkRlaWpOVmQ5N01NWmFoaFc1OHY5aFZyamtQU0V2QnQ0REJO?=
- =?utf-8?B?MUo1VTFIZFI5U0RPcGtwQUdaOExHVWVOOThVZStKMVRTVUNwUGFjU0dJZzJU?=
- =?utf-8?B?QXBNd0FRVi9Cei8vZXlFSkVGTTQ5Vm1RNHM2ZXIyUmRrNjhtQjA3bjFuSXZ1?=
- =?utf-8?B?NEZqY3c5Y2RsSEZHamxyQWVuTUtRTFA5ZkhCclRTUmlsenYzVnNiMnkyQVI1?=
- =?utf-8?B?bUI2RUpQZFFBQnpxOGR6cDdLVnM3RzIxRDMvOC8wZ3lSQitKWTFvM3RWYXZa?=
- =?utf-8?B?eW03UTNOeGp3bldYa090ak9lUkwrUmJVV1hFZzJpZEF5NjNaUEYvc1FJT1R6?=
- =?utf-8?B?Z2tVNGIvMTJJZUdrRnhqTFlSWFplczhxakpOaCtuUnU5NVI3eE9odmpvY1hr?=
- =?utf-8?B?Y2ZEWHAxaXk1c2xJNVNQakprblRtdGVKb3FOa0thak5zcDRFcDlEbnBzYktu?=
- =?utf-8?B?cjJUUUdRUTNySWJLVVEwdy80am1QOGdyQVh0d3FIWURKQmJ6bWxtK2s3ajhz?=
- =?utf-8?B?Wk9HZXpwYXJCY2RULzF2WU4xbUNjUlZQVmVsTFFEcDhuNVBjZjZXRGtINUd6?=
- =?utf-8?B?aFQwTlFDK0VCbndNWmR0cUZpWUFUWVpXTUhXdm5aNXBza1pYM21VUzNPV1Qz?=
- =?utf-8?B?VHlGQnIrTFpGcWJIcjV4TFN2NnRVWWo0NzFGVnFFVjIvekRJb2U3TGlLbFRM?=
- =?utf-8?B?c3lzQ24xSkZZWnhLbmRqZHBwM2hsUXA1eXdtWEJaUnFwdGlpK3N5enpJR3Jy?=
- =?utf-8?B?Z3l5RGFSUTZxQ0IyaGtNVDN4aGxnR3BrQ2Rub2JaekkxaVhWZ3hnV3BFbXBG?=
- =?utf-8?B?Z0hPd2FidjJIRU00cTVkWGNTSVhlOU9CTlZZenFQKzNPUERuc1RJc3I2UDRF?=
- =?utf-8?B?RHpicUx5d0pnVmJrdFBRR2RRamJPUzdxb09mNzJoL0hwTWQ0b2NaZ011ODZ5?=
- =?utf-8?B?eGlZRFljRHg3ZnJFOEJqRGtzbkV5ZHBoRHc5US9qdUlpeE1vbGh2Y002NThm?=
- =?utf-8?B?YVJRY2UzZWRFeVptdHd1emkwbm9PcTFRU01XeUNiTWk0RWovWHFSekJqL3Ey?=
- =?utf-8?B?OXNvOXVid2tUUTBhQzd0UzJnVDRSVFJwMlR6clRiVkl2WnJJNzhYQnBaY1hX?=
- =?utf-8?B?d2tSNmJFenhoQmE5c3NGaVMyeENwMzZiVkJJbmd0OCtPWG5taGdqTWRFWWl6?=
- =?utf-8?B?Z2Q2bkFUMmFHYjk1Y1p5NjBjUHRVQ0NuT0hVbzJnN0Q0MDVqaHRkMzVacGJU?=
- =?utf-8?B?Tm51c0d1bk9yak1GQjczR25na21hVjZlRkNZM1Y5aUdDRWNpcDVzNlhoMkhm?=
- =?utf-8?B?TzdnWVQwZ0RVMWdPQS9RVEdOZFE5VXpuTU1leSsvOW9lQ0Z6ZzlMeC9nT1Y2?=
- =?utf-8?B?bGIyS0M2NHRrRG1tS1ZTZmNXM1lFa1R0b2lzZU04akJzUEEvcGhxRndRbW5G?=
- =?utf-8?B?bit2K1lEZy9saCtNNk9xTVFpcmVWVWhHWkpmUWs2RGhmZmdkOC9ib2hUWksr?=
- =?utf-8?B?dGpsUWh4bGJZTW1vVjlMQlB2T1MzN0ZacVpoeGdubkZhVGJrbkZTUUI5R0dX?=
- =?utf-8?B?MnI0VW94TXhEdjFTWlNsV05PVU10eGdRSXpOZlVyS2c0QW15OEZ4RnNvMVVY?=
- =?utf-8?B?RnpwVGNVRXB5bGxNdkFZZG9NMUlQdFgwT3NYeDN6T3lpMTFLWis4QmFMY1ht?=
- =?utf-8?B?T1hwR1BEYkV1Nzl6OTZORCsraDlkaDMvRml0b2IyWVpvTHpTZVM0UVo3SGxn?=
- =?utf-8?B?eERBNjFyMEd3R09CVVhPSkc5ZXhNSnp5Mk5Fdjg0Y1JqQjZ5SGY4U3JNY3JS?=
- =?utf-8?B?WmJ4SmRFSThYaVNXb1FFTUQ3VmcxOGhuMEdMaGVxWTdSVWZ4V0ozL29TaVF3?=
- =?utf-8?B?c1VwSzFVemt0QnJEYWRCc1ljcWlHWHl6Zmhxc21neThJZmZWbGlKU3BmZ3Mw?=
- =?utf-8?B?d2Nsek5Dak52YjlPOGpBTU4xWFhjeEtHVk1iQjdDeml1V0VXUSs5ZUR0RER6?=
- =?utf-8?Q?4X3j7MbcHNAHz0bBP7WMGVwXc?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E0DDB26DF6C3884A82861D8B209CB340@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229903AbiKXM6I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Nov 2022 07:58:08 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E0488B60;
+        Thu, 24 Nov 2022 04:58:05 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id l39-20020a05600c1d2700b003cf93c8156dso1186281wms.4;
+        Thu, 24 Nov 2022 04:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUKXTRGWkZvy33LWexufhZpcbTxeI8565DJ+o09pLwU=;
+        b=US4JzUz1rJ15fOTpsVOIFFvz2Q7pLsp2fMKhwe1Yhv/0x7jVEOGAjkVIxo4DGRcCN5
+         9ROb/WZdYAJsh+QbReHXOxRfl++Poblc39VuIxFBr763blDgNLNY4rJP5q//y/4fwGGE
+         kso6EMWEdItljLQShmxpQ8CN+sr47TORcCnwvOZNnDu8uNemKLDwbYsmoajXAPlFHjZT
+         bh9XVv01bPIt3jemjtLuTT/H3wFocOFryXqJJAPWRIKGS9Za1vzhAjtPWzq9maRobweB
+         YTUpfLNsN2fXPr829F9R2Qblsykm4FrtS7m1fOZkBtEzCfH5Rqv/ST7Qo/gCfuvjOyc3
+         WvRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NUKXTRGWkZvy33LWexufhZpcbTxeI8565DJ+o09pLwU=;
+        b=PgFUtxn8XMusLTkWgNJhJEiyb6I6Dohr+OpM18p0RQUwIW43gwjy8yscMPbzCxFSDh
+         PeltQrEiWWtauvg9FT5Wn80LthHp+s8aCdUO97VcNK8KfLmpZgpYYc+OqvrFc0MSMr0Z
+         6az2+MKQC0uYv+OKNeXnG3P2bwX7U6/QMd89iq1w5sqIkMBiNDu1dQATJ+mXdjualJJY
+         3ocA/81UXmYbmOyBXBtM42SkGju2m8bvdTDJvkMhsr9qx4RxbTHdpaIirL3mUQNw71u6
+         1Mnafi0pruzuq32dHxbYqVY39TEibtC/UdnVm6PNHn84uMDEmXlblNYyYg+bkrLW7oMI
+         h9/Q==
+X-Gm-Message-State: ANoB5plFX3LtdCDtVPt+UY6HXbAbcbKFsePWYYKGa2BoZ2HErjplna2l
+        vZB7q2WWbRs/T/0G5/7kF03EZ3TXbt9qQc8PP9FqG+WsLE0=
+X-Google-Smtp-Source: AA0mqf4yEpdFnK+0gDlvcTcfYZPiAtsUqb4EOeK9BAe7y0n8viNx/p9GGChearvg+kqKlxxXWjCvIJmNU0M59b/yjfc=
+X-Received: by 2002:a05:600c:4f45:b0:3cf:9be3:8d26 with SMTP id
+ m5-20020a05600c4f4500b003cf9be38d26mr15753786wmq.185.1669294683640; Thu, 24
+ Nov 2022 04:58:03 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9116359-99c4-4de8-4700-08dace16dc11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2022 12:24:40.2600
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LncGPwBvqOHCIHYh06K8bksVXxBgSh5Mc2Zhr3qV6TsSRFXjKnBpOm1DonZyRDnuj+VFp08HMOa+zjRMkGldPTp6eRLU6fiQ2DNmYp/nBk4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB2091
+References: <20221121100521.56601-1-xiangxia.m.yue@gmail.com>
+ <20221121100521.56601-2-xiangxia.m.yue@gmail.com> <7ed2f531-79a3-61fe-f1c2-b004b752c3f7@huawei.com>
+ <CAMDZJNUiPOcnpNg8tM4xCoJABJz_3=AaXLTm5ofQg64mGDkB_A@mail.gmail.com>
+ <9278cf3f-dfb6-78eb-8862-553545dac7ed@huawei.com> <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+In-Reply-To: <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Date:   Thu, 24 Nov 2022 20:57:25 +0800
+Message-ID: <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -142,29 +77,403 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCkxlIDI0LzExLzIwMjIgw6AgMTE6MTMsIE5hdmVlbiBOLiBSYW8gYSDDqWNyaXTCoDoNCj4g
-Q2hyaXN0b3BoZSBMZXJveSB3cm90ZToNCj4+IGxkaW1tNjQgaXMgbm90IG9ubHkgdXNlZCBmb3Ig
-bG9hZGluZyBmdW5jdGlvbiBhZGRyZXNzZXMsIGFuZA0KPiANCj4gVGhhdCdzIHByb2JhYmx5IHRy
-dWUgdG9kYXksIGJ1dCBJIHdvcnJ5IHRoYXQgdGhhdCBjYW4gY2hhbmdlIHVwc3RyZWFtIA0KPiBh
-bmQgd2UgbWF5IG5vdCBub3RpY2UgYXQgYWxsLg0KDQpOb3Qgc3VyZSB3aGF0IHlvdSBtZWFuLg0K
-DQpUb2RheSBQT1dFUlBDIGNvbnNpZGVycyB0aGF0IGxkaW1tNjQgaXMgX2Fsd2F5c18gbG9hZGlu
-ZyBhIGZ1bmN0aW9uIA0KYWRkcmVzcyB3aGVyZWFzIHVwc3RyZWFtIEJQRiBjb25zaWRlcnMgdGhh
-dCBsZGltbTY0IGlzIGEgZnVuY3Rpb24gb25seSANCndoZW4gaXQgaXMgZmxhZ2dlZCBCUEZfUFNF
-VURPX0ZVTkMuDQoNCkluIHdoYXQgZGlyZWN0aW9uIGNvdWxkIHRoYXQgY2hhbmdlIGluIHRoZSBm
-dXR1cmUgPw0KDQpGb3IgbWUgaWYgdGhleSBjaGFuZ2UgdGhhdCBpdCBiZWNvbWVzIGFuIEFQSSBj
-aGFuZ2UuDQoNCkNocmlzdG9waGUNCg0KDQo+IA0KPj4gdGhlIE5PUHMgYWRkZWQgZm9yIHBhZGRp
-bmcgYXJlIGltcGFjdGluZyBwZXJmb3JtYW5jZSwgc28gYXZvaWQNCj4+IHRoZW0gd2hlbiBub3Qg
-bmVjZXNzYXJ5Lg0KPj4NCj4+IE9uIFFFTVUgbWFjOTksIHdpdGggdGhlIHBhdGNoOg0KPj4NCj4+
-IHRlc3RfYnBmOiAjODI5IEFMVTY0X01PVl9LOiBhbGwgaW1tZWRpYXRlIHZhbHVlIG1hZ25pdHVk
-ZXMgaml0ZWQ6MSANCj4+IDE2NzQzNjgxMCBQQVNTDQo+PiB0ZXN0X2JwZjogIzgzMSBBTFU2NF9P
-Ul9LOiBhbGwgaW1tZWRpYXRlIHZhbHVlIG1hZ25pdHVkZXMgaml0ZWQ6MSANCj4+IDE3MDcwMjk0
-MCBQQVNTDQo+Pg0KPj4gV2l0aG91dCB0aGUgcGF0Y2g6DQo+Pg0KPj4gdGVzdF9icGY6ICM4Mjkg
-QUxVNjRfTU9WX0s6IGFsbCBpbW1lZGlhdGUgdmFsdWUgbWFnbml0dWRlcyBqaXRlZDoxIA0KPj4g
-MTczMDEyMzYwIFBBU1MNCj4+IHRlc3RfYnBmOiAjODMxIEFMVTY0X09SX0s6IGFsbCBpbW1lZGlh
-dGUgdmFsdWUgbWFnbml0dWRlcyBqaXRlZDoxIA0KPj4gMTc2NDI0MDkwIFBBU1MNCj4+DQo+PiBU
-aGF0J3MgYSAzLjUlIHBlcmZvcm1hbmNlIGltcHJvdmVtZW50Lg0KPiANCj4gQSBiZXR0ZXIgYXBw
-cm9hY2ggd291bGQgYmUgdG8gZG8gYSBmdWxsIEpJVCBkdXJpbmcgdGhlIGV4dHJhIHBhc3MuIA0K
-PiBUaGF0J3Mgd2hhdCBtb3N0IG90aGVyIGFyY2hpdGVjdHVyZXMgZG8gdG9kYXkuIEFuZCwgYXMg
-bG9uZyBhcyB3ZSBjYW4gDQo+IGVuc3VyZSB0aGF0IHRoZSBKSVQnZWQgcHJvZ3JhbSBzaXplIGNh
-biBuZXZlciBpbmNyZWFzZSBkdXJpbmcgdGhlIGV4dHJhIA0KPiBwYXNzLCB3ZSBzaG91bGQgYmUg
-b2sgdG8gZG8gYSBzaW5nbGUgZXh0cmEgcGFzcy4NCj4gDQo+IA0KPiAtIE5hdmVlbg0K
+On Tue, Nov 22, 2022 at 12:06 PM Hou Tao <houtao1@huawei.com> wrote:
+>
+> Hi,
+>
+> On 11/22/2022 12:01 PM, Hou Tao wrote:
+> > Hi,
+> >
+> > On 11/22/2022 11:12 AM, Tonghao Zhang wrote:
+> >> .
+> >>
+> >> On Tue, Nov 22, 2022 at 9:16 AM Hou Tao <houtao1@huawei.com> wrote:
+> >>> Hi,
+> >>>
+> >>> On 11/21/2022 6:05 PM, xiangxia.m.yue@gmail.com wrote:
+> >>>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> >>>>
+> >>>> The commit 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked"),
+> >>>> try to fix deadlock, but in some case, the deadlock occurs:
+> >>>>
+> >>>> * CPUn in task context with K1, and taking lock.
+> >>>> * CPUn interrupted by NMI context, with K2.
+> >>>> * They are using the same bucket, but different map_locked.
+> >>> It is possible when n_buckets is less than HASHTAB_MAP_LOCK_COUNT (e.g.,
+> >>> n_bucket=4). If using hash & min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1) as the
+> >>> index of map_locked, I think the deadlock will be gone.
+> >> Yes, but for saving memory, HASHTAB_MAP_LOCK_MASK should not be too
+> >> large(now this value is 8-1).
+> >> if user define n_bucket ,e.g 8192, the part of bucket only are
+> >> selected via hash & min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1).
+> I don't mean to extend map_locked. Using hash & min(HASHTAB_MAP_LOCK_MASK,
+> n_bucket - 1) as index of map_locked  can guarantee the same map_locked will be
+> used if different update processes are using the same bucket lock.
+Thanks, I got it. but I tried it using the hash = hash &
+min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1) in
+htab_lock_bucket/htab_unlock_bucket.
+But the warning occur again.
+  > > SNIP
+> >>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> >>>> index 22855d6ff6d3..429acd97c869 100644
+> >>>> --- a/kernel/bpf/hashtab.c
+> >>>> +++ b/kernel/bpf/hashtab.c
+> >>>> @@ -80,9 +80,6 @@ struct bucket {
+> >>>>       raw_spinlock_t raw_lock;
+> >>>>  };
+> >>>>
+> >>>> -#define HASHTAB_MAP_LOCK_COUNT 8
+> >>>> -#define HASHTAB_MAP_LOCK_MASK (HASHTAB_MAP_LOCK_COUNT - 1)
+> >>>> -
+> >>>>  struct bpf_htab {
+> >>>>       struct bpf_map map;
+> >>>>       struct bpf_mem_alloc ma;
+> >>>> @@ -104,7 +101,6 @@ struct bpf_htab {
+> >>>>       u32 elem_size;  /* size of each element in bytes */
+> >>>>       u32 hashrnd;
+> >>>>       struct lock_class_key lockdep_key;
+> >>>> -     int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+> >>>>  };
+> >>>>
+> >>>>  /* each htab element is struct htab_elem + key + value */
+> >>>> @@ -146,35 +142,26 @@ static void htab_init_buckets(struct bpf_htab *htab)
+> >>>>       }
+> >>>>  }
+> >>>>
+> >>>> -static inline int htab_lock_bucket(const struct bpf_htab *htab,
+> >>>> -                                struct bucket *b, u32 hash,
+> >>>> +static inline int htab_lock_bucket(struct bucket *b,
+> >>>>                                  unsigned long *pflags)
+> >>>>  {
+> >>>>       unsigned long flags;
+> >>>>
+> >>>> -     hash = hash & HASHTAB_MAP_LOCK_MASK;
+> >>>> -
+> >>>> -     preempt_disable();
+> >>>> -     if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+> >>>> -             __this_cpu_dec(*(htab->map_locked[hash]));
+> >>>> -             preempt_enable();
+> >>>> -             return -EBUSY;
+> >>>> +     if (in_nmi()) {
+> >>>> +             if (!raw_spin_trylock_irqsave(&b->raw_lock, flags))
+> >>>> +                     return -EBUSY;
+> >>>> +     } else {
+> >>>> +             raw_spin_lock_irqsave(&b->raw_lock, flags);
+> >>>>       }
+> >>>>
+> >>>> -     raw_spin_lock_irqsave(&b->raw_lock, flags);
+> >>>>       *pflags = flags;
+> >>>> -
+> >>>>       return 0;
+> >>>>  }
+> >>> map_locked is also used to prevent the re-entrance of htab_lock_bucket() on the
+> >>> same CPU, so only check in_nmi() is not enough.
+> >> NMI, IRQ, and preempt may interrupt the task context.
+> >> In htab_lock_bucket, raw_spin_lock_irqsave disable the preempt and
+> >> irq. so only NMI may interrupt the codes, right ?
+> > The re-entrance here means the nesting of bpf programs as show below:
+> >
+> > bpf_prog A
+> > update map X
+> >     htab_lock_bucket
+> >         raw_spin_lock_irqsave()
+> >     lookup_elem_raw()
+> >         // bpf prog B is attached on lookup_elem_raw()
+I am confused, bpf_prog A disables preempt and irq with
+raw_spin_lock_irqsave. Why bpf prog B run here?
+> >         bpf prog B
+> >             update map X again and update the element
+> >                 htab_lock_bucket()
+> >                     // dead-lock
+> >                     raw_spinlock_irqsave()
+> > .
+> >
+> >>>> -static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+> >>>> -                                   struct bucket *b, u32 hash,
+> >>>> +static inline void htab_unlock_bucket(struct bucket *b,
+> >>>>                                     unsigned long flags)
+> >>>>  {
+> >>>> -     hash = hash & HASHTAB_MAP_LOCK_MASK;
+> >>>>       raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+> >>>> -     __this_cpu_dec(*(htab->map_locked[hash]));
+> >>>> -     preempt_enable();
+> >>>>  }
+> >>>>
+> >>>>  static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
+> >>>> @@ -467,7 +454,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >>>>       bool percpu_lru = (attr->map_flags & BPF_F_NO_COMMON_LRU);
+> >>>>       bool prealloc = !(attr->map_flags & BPF_F_NO_PREALLOC);
+> >>>>       struct bpf_htab *htab;
+> >>>> -     int err, i;
+> >>>> +     int err;
+> >>>>
+> >>>>       htab = bpf_map_area_alloc(sizeof(*htab), NUMA_NO_NODE);
+> >>>>       if (!htab)
+> >>>> @@ -513,15 +500,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >>>>       if (!htab->buckets)
+> >>>>               goto free_htab;
+> >>>>
+> >>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++) {
+> >>>> -             htab->map_locked[i] = bpf_map_alloc_percpu(&htab->map,
+> >>>> -                                                        sizeof(int),
+> >>>> -                                                        sizeof(int),
+> >>>> -                                                        GFP_USER);
+> >>>> -             if (!htab->map_locked[i])
+> >>>> -                     goto free_map_locked;
+> >>>> -     }
+> >>>> -
+> >>>>       if (htab->map.map_flags & BPF_F_ZERO_SEED)
+> >>>>               htab->hashrnd = 0;
+> >>>>       else
+> >>>> @@ -549,13 +527,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >>>>       if (htab->use_percpu_counter) {
+> >>>>               err = percpu_counter_init(&htab->pcount, 0, GFP_KERNEL);
+> >>>>               if (err)
+> >>>> -                     goto free_map_locked;
+> >>>> +                     goto free_buckets;
+> >>>>       }
+> >>>>
+> >>>>       if (prealloc) {
+> >>>>               err = prealloc_init(htab);
+> >>>>               if (err)
+> >>>> -                     goto free_map_locked;
+> >>>> +                     goto free_buckets;
+> >>>>
+> >>>>               if (!percpu && !lru) {
+> >>>>                       /* lru itself can remove the least used element, so
+> >>>> @@ -568,12 +546,12 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >>>>       } else {
+> >>>>               err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
+> >>>>               if (err)
+> >>>> -                     goto free_map_locked;
+> >>>> +                     goto free_buckets;
+> >>>>               if (percpu) {
+> >>>>                       err = bpf_mem_alloc_init(&htab->pcpu_ma,
+> >>>>                                                round_up(htab->map.value_size, 8), true);
+> >>>>                       if (err)
+> >>>> -                             goto free_map_locked;
+> >>>> +                             goto free_buckets;
+> >>>>               }
+> >>>>       }
+> >>>>
+> >>>> @@ -581,11 +559,10 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >>>>
+> >>>>  free_prealloc:
+> >>>>       prealloc_destroy(htab);
+> >>>> -free_map_locked:
+> >>>> +free_buckets:
+> >>>>       if (htab->use_percpu_counter)
+> >>>>               percpu_counter_destroy(&htab->pcount);
+> >>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
+> >>>> -             free_percpu(htab->map_locked[i]);
+> >>>> +
+> >>>>       bpf_map_area_free(htab->buckets);
+> >>>>       bpf_mem_alloc_destroy(&htab->pcpu_ma);
+> >>>>       bpf_mem_alloc_destroy(&htab->ma);
+> >>>> @@ -782,7 +759,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+> >>>>       b = __select_bucket(htab, tgt_l->hash);
+> >>>>       head = &b->head;
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, tgt_l->hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return false;
+> >>>>
+> >>>> @@ -793,7 +770,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+> >>>>                       break;
+> >>>>               }
+> >>>>
+> >>>> -     htab_unlock_bucket(htab, b, tgt_l->hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>
+> >>>>       return l == tgt_l;
+> >>>>  }
+> >>>> @@ -1107,7 +1084,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >>>>                */
+> >>>>       }
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1152,7 +1129,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >>>>       }
+> >>>>       ret = 0;
+> >>>>  err:
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       return ret;
+> >>>>  }
+> >>>>
+> >>>> @@ -1198,7 +1175,7 @@ static int htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >>>>       copy_map_value(&htab->map,
+> >>>>                      l_new->key + round_up(map->key_size, 8), value);
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1219,7 +1196,7 @@ static int htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >>>>       ret = 0;
+> >>>>
+> >>>>  err:
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>
+> >>>>       if (ret)
+> >>>>               htab_lru_push_free(htab, l_new);
+> >>>> @@ -1255,7 +1232,7 @@ static int __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+> >>>>       b = __select_bucket(htab, hash);
+> >>>>       head = &b->head;
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1280,7 +1257,7 @@ static int __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+> >>>>       }
+> >>>>       ret = 0;
+> >>>>  err:
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       return ret;
+> >>>>  }
+> >>>>
+> >>>> @@ -1321,7 +1298,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+> >>>>                       return -ENOMEM;
+> >>>>       }
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1345,7 +1322,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+> >>>>       }
+> >>>>       ret = 0;
+> >>>>  err:
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       if (l_new)
+> >>>>               bpf_lru_push_free(&htab->lru, &l_new->lru_node);
+> >>>>       return ret;
+> >>>> @@ -1384,7 +1361,7 @@ static int htab_map_delete_elem(struct bpf_map *map, void *key)
+> >>>>       b = __select_bucket(htab, hash);
+> >>>>       head = &b->head;
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1397,7 +1374,7 @@ static int htab_map_delete_elem(struct bpf_map *map, void *key)
+> >>>>               ret = -ENOENT;
+> >>>>       }
+> >>>>
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       return ret;
+> >>>>  }
+> >>>>
+> >>>> @@ -1420,7 +1397,7 @@ static int htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+> >>>>       b = __select_bucket(htab, hash);
+> >>>>       head = &b->head;
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &flags);
+> >>>> +     ret = htab_lock_bucket(b, &flags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1431,7 +1408,7 @@ static int htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+> >>>>       else
+> >>>>               ret = -ENOENT;
+> >>>>
+> >>>> -     htab_unlock_bucket(htab, b, hash, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       if (l)
+> >>>>               htab_lru_push_free(htab, l);
+> >>>>       return ret;
+> >>>> @@ -1494,7 +1471,6 @@ static void htab_map_free_timers(struct bpf_map *map)
+> >>>>  static void htab_map_free(struct bpf_map *map)
+> >>>>  {
+> >>>>       struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> >>>> -     int i;
+> >>>>
+> >>>>       /* bpf_free_used_maps() or close(map_fd) will trigger this map_free callback.
+> >>>>        * bpf_free_used_maps() is called after bpf prog is no longer executing.
+> >>>> @@ -1517,10 +1493,10 @@ static void htab_map_free(struct bpf_map *map)
+> >>>>       bpf_map_area_free(htab->buckets);
+> >>>>       bpf_mem_alloc_destroy(&htab->pcpu_ma);
+> >>>>       bpf_mem_alloc_destroy(&htab->ma);
+> >>>> +
+> >>>>       if (htab->use_percpu_counter)
+> >>>>               percpu_counter_destroy(&htab->pcount);
+> >>>> -     for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
+> >>>> -             free_percpu(htab->map_locked[i]);
+> >>>> +
+> >>>>       lockdep_unregister_key(&htab->lockdep_key);
+> >>>>       bpf_map_area_free(htab);
+> >>>>  }
+> >>>> @@ -1564,7 +1540,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+> >>>>       b = __select_bucket(htab, hash);
+> >>>>       head = &b->head;
+> >>>>
+> >>>> -     ret = htab_lock_bucket(htab, b, hash, &bflags);
+> >>>> +     ret = htab_lock_bucket(b, &bflags);
+> >>>>       if (ret)
+> >>>>               return ret;
+> >>>>
+> >>>> @@ -1602,7 +1578,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+> >>>>                       free_htab_elem(htab, l);
+> >>>>       }
+> >>>>
+> >>>> -     htab_unlock_bucket(htab, b, hash, bflags);
+> >>>> +     htab_unlock_bucket(b, bflags);
+> >>>>
+> >>>>       if (is_lru_map && l)
+> >>>>               htab_lru_push_free(htab, l);
+> >>>> @@ -1720,7 +1696,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> >>>>       head = &b->head;
+> >>>>       /* do not grab the lock unless need it (bucket_cnt > 0). */
+> >>>>       if (locked) {
+> >>>> -             ret = htab_lock_bucket(htab, b, batch, &flags);
+> >>>> +             ret = htab_lock_bucket(b, &flags);
+> >>>>               if (ret) {
+> >>>>                       rcu_read_unlock();
+> >>>>                       bpf_enable_instrumentation();
+> >>>> @@ -1743,7 +1719,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> >>>>               /* Note that since bucket_cnt > 0 here, it is implicit
+> >>>>                * that the locked was grabbed, so release it.
+> >>>>                */
+> >>>> -             htab_unlock_bucket(htab, b, batch, flags);
+> >>>> +             htab_unlock_bucket(b, flags);
+> >>>>               rcu_read_unlock();
+> >>>>               bpf_enable_instrumentation();
+> >>>>               goto after_loop;
+> >>>> @@ -1754,7 +1730,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> >>>>               /* Note that since bucket_cnt > 0 here, it is implicit
+> >>>>                * that the locked was grabbed, so release it.
+> >>>>                */
+> >>>> -             htab_unlock_bucket(htab, b, batch, flags);
+> >>>> +             htab_unlock_bucket(b, flags);
+> >>>>               rcu_read_unlock();
+> >>>>               bpf_enable_instrumentation();
+> >>>>               kvfree(keys);
+> >>>> @@ -1815,7 +1791,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> >>>>               dst_val += value_size;
+> >>>>       }
+> >>>>
+> >>>> -     htab_unlock_bucket(htab, b, batch, flags);
+> >>>> +     htab_unlock_bucket(b, flags);
+> >>>>       locked = false;
+> >>>>
+> >>>>       while (node_to_free) {
+> > .
+>
+
+
+-- 
+Best regards, Tonghao
