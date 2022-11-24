@@ -2,594 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA11E6371CE
-	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 06:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3221763742B
+	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 09:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiKXFci (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Nov 2022 00:32:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        id S230046AbiKXIiL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Nov 2022 03:38:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiKXFch (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Nov 2022 00:32:37 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1509D3A8
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 21:32:34 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2ANHsOAu025441
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 21:32:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=5gwChrIbfP99hP2LYdlyBmaloPjgOQyjEQQAEcA4yLk=;
- b=nfk3R5+m6XhTHL9cYWorh4I4tkYwF7qv7AfCVKskKf/lByXly9dJa5qKd5diPClKxQqY
- YKd2rszZ4q2v04bBH3CZebITFCGbXeOCCletaOY4UYvzpt50LTCr3oC0jifueRwtTaVi
- 4EU6LxmfiQi6T9LeZRX9VseCDdG2Oi25zM8= 
-Received: from maileast.thefacebook.com ([163.114.130.8])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m0m1a1w69-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 23 Nov 2022 21:32:33 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 21:32:32 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 66DD512A41A68; Wed, 23 Nov 2022 21:32:22 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230059AbiKXIhs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Nov 2022 03:37:48 -0500
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD86427CED;
+        Thu, 24 Nov 2022 00:37:44 -0800 (PST)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4NHrwQ1pCtz9shv;
+        Thu, 24 Nov 2022 09:37:42 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id G6KG9rd6xw5r; Thu, 24 Nov 2022 09:37:42 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4NHrwQ0lSGz9shP;
+        Thu, 24 Nov 2022 09:37:42 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 04F408B78B;
+        Thu, 24 Nov 2022 09:37:42 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id k1nd9GEy5u-2; Thu, 24 Nov 2022 09:37:41 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA7908B763;
+        Thu, 24 Nov 2022 09:37:41 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 2AO8bYAc3220875
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 24 Nov 2022 09:37:35 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 2AO8bY4R3220874;
+        Thu, 24 Nov 2022 09:37:34 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v10 4/4] selftests/bpf: Add tests for bpf_rcu_read_lock()
-Date:   Wed, 23 Nov 2022 21:32:22 -0800
-Message-ID: <20221124053222.2374650-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221124053201.2372298-1-yhs@fb.com>
-References: <20221124053201.2372298-1-yhs@fb.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] powerpc/bpf/32: Fix Oops on tail call tests
+Date:   Thu, 24 Nov 2022 09:37:27 +0100
+Message-Id: <757acccb7fbfc78efa42dcf3c974b46678198905.1669278887.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: fPitlSEIYPdPmFItBOD2XaX00gNpFhDX
-X-Proofpoint-GUID: fPitlSEIYPdPmFItBOD2XaX00gNpFhDX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-24_03,2022-11-23_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1669279046; l=7402; s=20211009; h=from:subject:message-id; bh=YzdHtYIsX7vEzA4IEMpmiDsUpCiw/v9VxIjI3qTsVSs=; b=z34aTIrI9igWgams38omKQDk/w/FKhIvfN5lguWSpyehPRHuGJH2rpP+jN9fOZlSNQq5axP2i8z+ iNTCxbCxA/GLxX5AjyM1MtPiiItOLWevgRVPBTUPJGiUtaBk2qzH
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a few positive/negative tests to test bpf_rcu_read_lock()
-and its corresponding verifier support. The new test will fail
-on s390x and aarch64, so an entry is added to each of their
-respective deny lists.
+test_bpf tail call tests end up as:
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
+  test_bpf: #0 Tail call leaf jited:1 85 PASS
+  test_bpf: #1 Tail call 2 jited:1 111 PASS
+  test_bpf: #2 Tail call 3 jited:1 145 PASS
+  test_bpf: #3 Tail call 4 jited:1 170 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 190 PASS
+  test_bpf: #5 Tail call load/store jited:1
+  BUG: Unable to handle kernel data access on write at 0xf1b4e000
+  Faulting instruction address: 0xbe86b710
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  BE PAGE_SIZE=4K MMU=Hash PowerMac
+  Modules linked in: test_bpf(+)
+  CPU: 0 PID: 97 Comm: insmod Not tainted 6.1.0-rc4+ #195
+  Hardware name: PowerMac3,1 750CL 0x87210 PowerMac
+  NIP:  be86b710 LR: be857e88 CTR: be86b704
+  REGS: f1b4df20 TRAP: 0300   Not tainted  (6.1.0-rc4+)
+  MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28008242  XER: 00000000
+  DAR: f1b4e000 DSISR: 42000000
+  GPR00: 00000001 f1b4dfe0 c11d2280 00000000 00000000 00000000 00000002 00000000
+  GPR08: f1b4e000 be86b704 f1b4e000 00000000 00000000 100d816a f2440000 fe73baa8
+  GPR16: f2458000 00000000 c1941ae4 f1fe2248 00000045 c0de0000 f2458030 00000000
+  GPR24: 000003e8 0000000f f2458000 f1b4dc90 3e584b46 00000000 f24466a0 c1941a00
+  NIP [be86b710] 0xbe86b710
+  LR [be857e88] __run_one+0xec/0x264 [test_bpf]
+  Call Trace:
+  [f1b4dfe0] [00000002] 0x2 (unreliable)
+  Instruction dump:
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  ---[ end trace 0000000000000000 ]---
+
+This is a tentative to write above the stack. The problem is encoutered
+with tests added by commit 38608ee7b690 ("bpf, tests: Add load store
+test case for tail call")
+
+This happens because tail call is done to a BPF prog with a different
+stack_depth. At the time being, the stack is kept as is when the caller
+tail calls its callee. But at exit, the callee restores the stack based
+on its own properties. Therefore here, at each run, r1 is erroneously
+increased by 32 - 16 = 16 bytes.
+
+This was done that way in order to pass the tail call count from caller
+to callee through the stack. As powerpc32 doesn't have a red zone in
+the stack, it was necessary the maintain the stack as is for the tail
+call. But it was not anticipated that the BPF frame size could be
+different.
+
+Let's take a new approach. Use register r4 to carry the tail call count
+during the tail call, and save it into the stack at function entry if
+required. This means the input parameter must be in r3, which is more
+correct as it is a 32 bits parameter, then tail call better match with
+normal BPF function entry, the down side being that we move that input
+parameter back and forth between r3 and r4. That can be optimised later.
+
+Doing that also has the advantage of maximising the common parts between
+tail calls and a normal function exit.
+
+With the fix, tail call tests are now successfull:
+
+  test_bpf: #0 Tail call leaf jited:1 53 PASS
+  test_bpf: #1 Tail call 2 jited:1 115 PASS
+  test_bpf: #2 Tail call 3 jited:1 154 PASS
+  test_bpf: #3 Tail call 4 jited:1 165 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 101 PASS
+  test_bpf: #5 Tail call load/store jited:1 141 PASS
+  test_bpf: #6 Tail call error path, max count reached jited:1 994 PASS
+  test_bpf: #7 Tail call count preserved across function calls jited:1 140975 PASS
+  test_bpf: #8 Tail call error path, NULL target jited:1 110 PASS
+  test_bpf: #9 Tail call error path, index out of range jited:1 69 PASS
+  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+
+Suggested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Fixes: 51c66ad849a7 ("powerpc/bpf: Implement extended BPF on PPC32")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
- tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
- .../selftests/bpf/prog_tests/rcu_read_lock.c  | 158 ++++++++++
- .../selftests/bpf/progs/rcu_read_lock.c       | 290 ++++++++++++++++++
- 4 files changed, 450 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_read_lock.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_read_lock.c
+v2: Using r4 for tcc as suggested by Naveen.
+---
+ arch/powerpc/net/bpf_jit_comp32.c | 52 +++++++++++++------------------
+ 1 file changed, 21 insertions(+), 31 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing=
-/selftests/bpf/DENYLIST.aarch64
-index affc5aebbf0f..8e77515d56f6 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -45,6 +45,7 @@ modify_return                                    # modi=
-fy_return__attach failed
- module_attach                                    # skel_attach skeleton =
-attach failed: -524
- mptcp/base                                       # run_test mptcp unexpe=
-cted error: -524 (errno 524)
- netcnt                                           # packets unexpected pa=
-ckets: actual 10001 !=3D expected 10000
-+rcu_read_lock                                    # failed to attach: ERR=
-OR: strerror_r(-524)=3D22
- recursion                                        # skel_attach unexpecte=
-d error: -524 (errno 524)
- ringbuf                                          # skel_attach skeleton =
-attachment failed: -1
- setget_sockopt                                   # attach_cgroup unexpec=
-ted error: -524
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-index b9a3d80204c6..648a8a1b6b78 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -43,6 +43,7 @@ module_attach                            # skel_attach =
-skeleton attach failed: -
- mptcp
- netcnt                                   # failed to load BPF skeleton '=
-netcnt_prog': -7                               (?)
- probe_user                               # check_kprobe_res wrong kprobe=
- res from probe read                           (?)
-+rcu_read_lock                            # failed to find kernel BTF typ=
-e ID of '__x64_sys_getpgid': -3                (?)
- recursion                                # skel_attach unexpected error:=
- -524                                          (trampoline)
- ringbuf                                  # skel_load skeleton load faile=
-d                                              (?)
- select_reuseport                         # intermittently fails on new s=
-390x setup
-diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/too=
-ls/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-new file mode 100644
-index 000000000000..447d8560ecb6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates.*/
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index 43f1c76d48ce..a379b0ce19ff 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -113,23 +113,19 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+ {
+ 	int i;
+ 
+-	/* First arg comes in as a 32 bits pointer. */
+-	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
+-	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
++	/* Initialize tail_call_cnt, to be skipped if we do tail calls. */
++	EMIT(PPC_RAW_LI(_R4, 0));
 +
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "rcu_read_lock.skel.h"
-+#include "cgroup_helpers.h"
++#define BPF_TAILCALL_PROLOGUE_SIZE	4
 +
-+static unsigned long long cgroup_id;
-+
-+static void test_success(void)
-+{
-+	struct rcu_read_lock *skel;
-+	int err;
-+
-+	skel =3D rcu_read_lock__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->target_pid =3D syscall(SYS_gettid);
-+
-+	bpf_program__set_autoload(skel->progs.get_cgroup_id, true);
-+	bpf_program__set_autoload(skel->progs.task_succ, true);
-+	bpf_program__set_autoload(skel->progs.no_lock, true);
-+	bpf_program__set_autoload(skel->progs.two_regions, true);
-+	bpf_program__set_autoload(skel->progs.non_sleepable_1, true);
-+	bpf_program__set_autoload(skel->progs.non_sleepable_2, true);
-+	err =3D rcu_read_lock__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto out;
-+
-+	err =3D rcu_read_lock__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	syscall(SYS_getpgid);
-+
-+	ASSERT_EQ(skel->bss->task_storage_val, 2, "task_storage_val");
-+	ASSERT_EQ(skel->bss->cgroup_id, cgroup_id, "cgroup_id");
-+out:
-+	rcu_read_lock__destroy(skel);
+ 	EMIT(PPC_RAW_STWU(_R1, _R1, -BPF_PPC_STACKFRAME(ctx)));
+ 
+-	/*
+-	 * Initialize tail_call_cnt in stack frame if we do tail calls.
+-	 * Otherwise, put in NOPs so that it can be skipped when we are
+-	 * invoked through a tail call.
+-	 */
+ 	if (ctx->seen & SEEN_TAILCALL)
+-		EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_1) - 1, _R1,
+-				 bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+-	else
+-		EMIT(PPC_RAW_NOP());
++		EMIT(PPC_RAW_STW(_R4, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+-#define BPF_TAILCALL_PROLOGUE_SIZE	16
++	/* First arg comes in as a 32 bits pointer. */
++	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
++	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
+ 
+ 	/*
+ 	 * We need a stack frame, but we don't necessarily need to
+@@ -170,24 +166,24 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
+ 	for (i = BPF_PPC_NVR_MIN; i <= 31; i++)
+ 		if (bpf_is_seen_register(ctx, i))
+ 			EMIT(PPC_RAW_LWZ(i, _R1, bpf_jit_stack_offsetof(ctx, i)));
+-}
+-
+-void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
+-{
+-	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
+-
+-	bpf_jit_emit_common_epilogue(image, ctx);
+-
+-	/* Tear down our stack frame */
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+ 		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
+ 
++	/* Tear down our stack frame */
+ 	EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME(ctx)));
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+ 		EMIT(PPC_RAW_MTLR(_R0));
+ 
 +}
 +
-+static void test_rcuptr_acquire(void)
++void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
 +{
-+	struct rcu_read_lock *skel;
-+	int err;
++	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
 +
-+	skel =3D rcu_read_lock__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
++	bpf_jit_emit_common_epilogue(image, ctx);
 +
-+	skel->bss->target_pid =3D syscall(SYS_gettid);
+ 	EMIT(PPC_RAW_BLR());
+ }
+ 
+@@ -244,7 +240,6 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
+ 	EMIT(PPC_RAW_ADD(_R3, _R3, b2p_bpf_array));
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_array, ptrs)));
+-	EMIT(PPC_RAW_STW(_R0, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+ 	/*
+ 	 * if (prog == NULL)
+@@ -255,19 +250,14 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 
+ 	/* goto *(prog->bpf_func + prologue_size); */
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_prog, bpf_func)));
+-
+-	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
+-
+ 	EMIT(PPC_RAW_ADDIC(_R3, _R3, BPF_TAILCALL_PROLOGUE_SIZE));
+-
+-	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_MTLR(_R0));
+-
+ 	EMIT(PPC_RAW_MTCTR(_R3));
+ 
+ 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_1)));
+ 
++	/* Put tail_call_cnt in r4 */
++	EMIT(PPC_RAW_MR(_R4, _R0));
 +
-+	bpf_program__set_autoload(skel->progs.task_acquire, true);
-+	err =3D rcu_read_lock__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto out;
-+
-+	err =3D rcu_read_lock__attach(skel);
-+	ASSERT_OK(err, "skel_attach");
-+out:
-+	rcu_read_lock__destroy(skel);
-+}
-+
-+static const char * const inproper_region_tests[] =3D {
-+	"miss_lock",
-+	"miss_unlock",
-+	"non_sleepable_rcu_mismatch",
-+	"inproper_sleepable_helper",
-+	"inproper_sleepable_kfunc",
-+	"nested_rcu_region",
-+};
-+
-+static void test_inproper_region(void)
-+{
-+	struct rcu_read_lock *skel;
-+	struct bpf_program *prog;
-+	int i, err;
-+
-+	for (i =3D 0; i < ARRAY_SIZE(inproper_region_tests); i++) {
-+		skel =3D rcu_read_lock__open();
-+		if (!ASSERT_OK_PTR(skel, "skel_open"))
-+			return;
-+
-+		prog =3D bpf_object__find_program_by_name(skel->obj, inproper_region_t=
-ests[i]);
-+		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+			goto out;
-+		bpf_program__set_autoload(prog, true);
-+		err =3D rcu_read_lock__load(skel);
-+		ASSERT_ERR(err, "skel_load");
-+out:
-+		rcu_read_lock__destroy(skel);
-+	}
-+}
-+
-+static const char * const rcuptr_misuse_tests[] =3D {
-+	"task_untrusted_non_rcuptr",
-+	"task_untrusted_rcuptr",
-+	"cross_rcu_region",
-+};
-+
-+static void test_rcuptr_misuse(void)
-+{
-+	struct rcu_read_lock *skel;
-+	struct bpf_program *prog;
-+	int i, err;
-+
-+	for (i =3D 0; i < ARRAY_SIZE(rcuptr_misuse_tests); i++) {
-+		skel =3D rcu_read_lock__open();
-+		if (!ASSERT_OK_PTR(skel, "skel_open"))
-+			return;
-+
-+		prog =3D bpf_object__find_program_by_name(skel->obj, rcuptr_misuse_tes=
-ts[i]);
-+		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+			goto out;
-+		bpf_program__set_autoload(prog, true);
-+		err =3D rcu_read_lock__load(skel);
-+		ASSERT_ERR(err, "skel_load");
-+out:
-+		rcu_read_lock__destroy(skel);
-+	}
-+}
-+
-+void test_rcu_read_lock(void)
-+{
-+	struct btf *vmlinux_btf;
-+	int cgroup_fd;
-+
-+	vmlinux_btf =3D btf__load_vmlinux_btf();
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
-+		return;
-+	if (btf__find_by_name_kind(vmlinux_btf, "rcu", BTF_KIND_TYPE_TAG) < 0) =
-{
-+		test__skip();
-+		goto out;
-+	}
-+
-+	cgroup_fd =3D test__join_cgroup("/rcu_read_lock");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /rcu_read_lock"))
-+		goto out;
-+
-+	cgroup_id =3D get_cgroup_id("/rcu_read_lock");
-+	if (test__start_subtest("success"))
-+		test_success();
-+	if (test__start_subtest("rcuptr_acquire"))
-+		test_rcuptr_acquire();
-+	if (test__start_subtest("negative_tests_inproper_region"))
-+		test_inproper_region();
-+	if (test__start_subtest("negative_tests_rcuptr_misuse"))
-+		test_rcuptr_misuse();
-+	close(cgroup_fd);
-+out:
-+	btf__free(vmlinux_btf);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
-sting/selftests/bpf/progs/rcu_read_lock.c
-new file mode 100644
-index 000000000000..94a970076b98
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -0,0 +1,290 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tracing_net.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_a SEC(".maps");
-+
-+__u32 user_data, key_serial, target_pid;
-+__u64 flags, task_storage_val, cgroup_id;
-+
-+struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
-+void bpf_key_put(struct bpf_key *key) __ksym;
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int get_cgroup_id(void *ctx)
-+{
-+	struct task_struct *task;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	/* simulate bpf_get_current_cgroup_id() helper */
-+	bpf_rcu_read_lock();
-+	cgroup_id =3D task->cgroups->dfl_cgrp->kn->id;
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int task_succ(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+	long init_val =3D 2;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+	/* region including helper using rcu ptr real_parent */
-+	real_parent =3D task->real_parent;
-+	ptr =3D bpf_task_storage_get(&map_a, real_parent, &init_val,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		goto out;
-+	ptr =3D bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	if (!ptr)
-+		goto out;
-+	task_storage_val =3D *ptr;
-+out:
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int no_lock(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	/* no bpf_rcu_read_lock(), old code still works */
-+	task =3D bpf_get_current_task_btf();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int two_regions(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	/* two regions */
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	bpf_rcu_read_unlock();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_getpgid")
-+int non_sleepable_1(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_getpgid")
-+int non_sleepable_2(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	bpf_rcu_read_lock();
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_unlock();
-+
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int task_acquire(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	/* acquire a reference which can be used outside rcu read lock region *=
-/
-+	real_parent =3D bpf_task_acquire(real_parent);
-+	bpf_rcu_read_unlock();
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_task_release(real_parent);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int miss_lock(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+
-+	/* missing bpf_rcu_read_lock() */
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	(void)bpf_task_storage_get(&map_a, task, 0, 0);
-+	bpf_rcu_read_unlock();
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int miss_unlock(void *ctx)
-+{
-+	struct task_struct *task;
-+	struct css_set *cgroups;
-+	struct cgroup *dfl_cgrp;
-+
-+	/* missing bpf_rcu_read_unlock() */
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	(void)bpf_task_storage_get(&map_a, task, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_getpgid")
-+int non_sleepable_rcu_mismatch(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+	/* non-sleepable: missing bpf_rcu_read_unlock() in one path */
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	if (real_parent)
-+		bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int inproper_sleepable_helper(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+	struct pt_regs *regs;
-+	__u32 value =3D 0;
-+	void *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	/* sleepable helper in rcu read lock region */
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	regs =3D (struct pt_regs *)bpf_task_pt_regs(real_parent);
-+	if (!regs) {
-+		bpf_rcu_read_unlock();
-+		return 0;
-+	}
-+
-+	ptr =3D (void *)PT_REGS_IP(regs);
-+	(void)bpf_copy_from_user_task(&value, sizeof(uint32_t), ptr, task, 0);
-+	user_data =3D value;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?lsm.s/bpf")
-+int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, un=
-signed int size)
-+{
-+	struct bpf_key *bkey;
-+
-+	/* sleepable kfunc in rcu read lock region */
-+	bpf_rcu_read_lock();
-+	bkey =3D bpf_lookup_user_key(key_serial, flags);
-+	bpf_rcu_read_unlock();
-+	if (!bkey)
-+		return -1;
-+	bpf_key_put(bkey);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int nested_rcu_region(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	/* nested rcu read lock regions */
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int task_untrusted_non_rcuptr(void *ctx)
-+{
-+	struct task_struct *task, *last_wakee;
-+
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	/* the pointer last_wakee marked as untrusted */
-+	last_wakee =3D task->real_parent->last_wakee;
-+	(void)bpf_task_storage_get(&map_a, last_wakee, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int task_untrusted_rcuptr(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	bpf_rcu_read_unlock();
-+	/* helper use of rcu ptr outside the rcu read lock region */
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int cross_rcu_region(void *ctx)
-+{
-+	struct task_struct *task, *real_parent;
-+
-+	/* rcu ptr define/use in different regions */
-+	task =3D bpf_get_current_task_btf();
-+	bpf_rcu_read_lock();
-+	real_parent =3D task->real_parent;
-+	bpf_rcu_read_unlock();
-+	bpf_rcu_read_lock();
-+	(void)bpf_task_storage_get(&map_a, real_parent, 0, 0);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
---=20
-2.30.2
+ 	/* tear restore NVRs, ... */
+ 	bpf_jit_emit_common_epilogue(image, ctx);
+ 
+-- 
+2.38.1
 
