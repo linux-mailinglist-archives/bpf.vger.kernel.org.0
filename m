@@ -2,137 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FA5637846
-	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 13:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DEB6378C5
+	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 13:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbiKXMBB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Nov 2022 07:01:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        id S229570AbiKXMYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Nov 2022 07:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiKXMBA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Nov 2022 07:01:00 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A673B9607;
-        Thu, 24 Nov 2022 04:00:59 -0800 (PST)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oyAuX-0007HF-2K; Thu, 24 Nov 2022 13:00:57 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oyAuW-000Ueg-Rz; Thu, 24 Nov 2022 13:00:56 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Subject: FOSDEM: 2023 CFP for Kernel Devroom
-To:     linux-kernel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, brauner@kernel.org,
-        stgraber@ubuntu.com
-Message-ID: <365c4da0-202b-a96e-0476-b17cd6f9c8b6@iogearbox.net>
-Date:   Thu, 24 Nov 2022 13:00:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229379AbiKXMYp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Nov 2022 07:24:45 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-eopbgr90057.outbound.protection.outlook.com [40.107.9.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871ECD53B2;
+        Thu, 24 Nov 2022 04:24:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=euW3KDDMQvAsFmRfqEy6vCRbsr9kZcREb6QpZ0XHKVdSzQN8x6wPBuDO3oY1nj6ohztA58QThjW8rKYUBJodLR1u/jiMtWcnvVg97GERSVMdITQbojin1Hqa+//cZafkjH3wANbVsJ4xqdGxnSkGK+BHgbKHUAYN3yvxvN34jMy1/qysff9MKKDAhPKvbs+6feSuz9z2kF9uWE+2BSAIPdT905YIyq3zK8BqoCZt0TOPH+soTXrX7/l9IY3OJEfLOyKG+FvG/CxNnTMwJd9kmHL89XrJKN/5sEa8JBSuvJqCCXntuQx0WkTVosdPtf5bDeu+IK9ZwepBN8DfCH46lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3TgDfMsBZn/QLbFUqGM/xo1UrJTPuLSc0hZzpJxVoq4=;
+ b=K5lKCt7WpL3JtJuaqg+ZGAouUz24LqNzJe6EU0F7QU2G1n900T4HgNW9P/AVJAbzkNGK9XtC9pTRJWpIe7Z8yEZOgZXOIyKRuGXrZfrflYp3PvxPU10MpyTKqLomXEqw5LlBuqHpP0oPPd2I4TyvxMknmcn87M3Cpbnm1m9EoFESb7JFeG3AvdpBcHp17hiMVU5d/yn5b1z8mU4gJtcI3wumlvn38AP94svLGta0JGcm+z73sU3pBmQ+lw2/ia0Z98i3iad8eoPN7JT/yDgWyjRAbyXb6EqRslM0ZlmKG2nXlDfA1oMqe+8C1NUir47pQCkTARvxRzY1hLTC5lq/YQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3TgDfMsBZn/QLbFUqGM/xo1UrJTPuLSc0hZzpJxVoq4=;
+ b=VegD0zDFny8LMiszdSlfpa1zQ1gaiFrvFSbZ/brC1Ier0XX9Px2wUBJLTd/rIgAZQYz+qAF2prVHLGxFqTAH8g4OMgc4zUQkFixvrO9uB1BUvjIp3VlexMWWHvlQF2S7KuF8UNKNKmYyQCXjpni/+PTFOWNzVvRmyWjLkCTl87TG1nxQ+QXJvkO0mQ29egR1FgQIoFj4kjdwC6GkfZzXudyyQ7iiGoln2qVfv7Oq126zCxsOmciuYxPhd/GBSvkSLQ2jY1RMywE3W5/w6uwtPeL5qu/QAReOnk76G6qEqVaTzET7P32thM2NwaEHNOUNubTn/dygrjUFrfZu/SjzqA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB2091.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.19; Thu, 24 Nov
+ 2022 12:24:40 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::a85b:a9b6:cb36:fa6]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::a85b:a9b6:cb36:fa6%9]) with mapi id 15.20.5834.015; Thu, 24 Nov 2022
+ 12:24:40 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH] powerpc/bpf: Only update ldimm64 during extra pass when
+ it is an address
+Thread-Topic: [PATCH] powerpc/bpf: Only update ldimm64 during extra pass when
+ it is an address
+Thread-Index: AQHY/+BWf7gs5QKIpkuwfOKyhRUrWq5N2yQAgAAkjgA=
+Date:   Thu, 24 Nov 2022 12:24:40 +0000
+Message-ID: <9f17237f-94da-f58f-4f4b-0068851b4123@csgroup.eu>
+References: <3f6d302a2068d9e357efda2d92c8da99a0f2d0b2.1669278892.git.christophe.leroy@csgroup.eu>
+ <1669284441.66eunvaboi.naveen@linux.ibm.com>
+In-Reply-To: <1669284441.66eunvaboi.naveen@linux.ibm.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB2091:EE_
+x-ms-office365-filtering-correlation-id: c9116359-99c4-4de8-4700-08dace16dc11
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1tmIq5CmZfaknpu/aAoI7PH+p+d69f2JCyixkbUZC1l5WYZNFkcsRJrYhjkOz92nkXlo7rVOQIpCSxsCRVvEmN9PEjGTm5hoBtt7u7n7kfMbZE9mG+XuB9YytYSwQPcxBVBwUjGfKH9A5x05xi4C8tQbvKGST1zf2CMuifT4D2Lek8VaffVK3ApsT/sGJCnYVHSKEo4D11iJY6EGpcmOaiiuSLIwuE6XTR5g+N7mrXw5ZC0xidnksoUD8YDO6nC/2zpQdb5yXbIG/0GvGjvrzeraVwK1MAIDjpZoj4G+oUaI08g0U8miXAeNMK0461wCMzICGzhKIPl7b5wK3wUAMzrEEgyxT7QNKNbaOgj5FjpgBoUS49q0HpJ8Pd/UHBrppsC3xp5niWyh/2USm1JnFNOsZILWp0OsTcfHl2PYDj5MFADFOltu3+l1RGprEc73p8s3UGDwDEujwTfhw5qhQi4dB/f2I5Mi+v2ddCnzpr6ruZdzuLJWtCU2eKku7CFIlPsu6+hP3IOakBovtn1XHzkdTyN8X18v0WP+MwOaZP8IBTGo+LbpP4AvAbbBChVaXZAnirZfzomwJGE/GaYvg9Rv73/driwwlXYPG7rLakFSXEJ1bpqN7KJDpB1WhdJ+Q3HnFwhnQmNwWSrKRyjhOX45N15sROdcLwasJdUcjsfLyXulNH6zg47dzLlYz8iX1wy5mXCx/zBiOkiFFxDcbFUyzNYxNESP6e2eSB164W4eIwQNv2CaK9K6Jfy/Yw8agx3T/hmd/uoiH9j7qQpN7w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(376002)(396003)(346002)(136003)(39850400004)(451199015)(2616005)(186003)(66574015)(44832011)(36756003)(5660300002)(38070700005)(8936002)(7416002)(6506007)(6512007)(41300700001)(26005)(31696002)(86362001)(316002)(54906003)(110136005)(66476007)(8676002)(66556008)(6486002)(71200400001)(66446008)(66946007)(4326008)(64756008)(91956017)(478600001)(76116006)(38100700002)(2906002)(31686004)(122000001)(15650500001)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S1loYW9wQXNObVRubi93dml1MjlKN29JbEdWSytHL2Z2UnZrOXVrTWFzQ1BD?=
+ =?utf-8?B?eWJIWjNKTmNZZGpQVkpZQWlMYW05QkljMWJyRkR3N1pGQWY4SExiSTJORkZC?=
+ =?utf-8?B?RTJRbVgxQnBmbkRlaWpOVmQ5N01NWmFoaFc1OHY5aFZyamtQU0V2QnQ0REJO?=
+ =?utf-8?B?MUo1VTFIZFI5U0RPcGtwQUdaOExHVWVOOThVZStKMVRTVUNwUGFjU0dJZzJU?=
+ =?utf-8?B?QXBNd0FRVi9Cei8vZXlFSkVGTTQ5Vm1RNHM2ZXIyUmRrNjhtQjA3bjFuSXZ1?=
+ =?utf-8?B?NEZqY3c5Y2RsSEZHamxyQWVuTUtRTFA5ZkhCclRTUmlsenYzVnNiMnkyQVI1?=
+ =?utf-8?B?bUI2RUpQZFFBQnpxOGR6cDdLVnM3RzIxRDMvOC8wZ3lSQitKWTFvM3RWYXZa?=
+ =?utf-8?B?eW03UTNOeGp3bldYa090ak9lUkwrUmJVV1hFZzJpZEF5NjNaUEYvc1FJT1R6?=
+ =?utf-8?B?Z2tVNGIvMTJJZUdrRnhqTFlSWFplczhxakpOaCtuUnU5NVI3eE9odmpvY1hr?=
+ =?utf-8?B?Y2ZEWHAxaXk1c2xJNVNQakprblRtdGVKb3FOa0thak5zcDRFcDlEbnBzYktu?=
+ =?utf-8?B?cjJUUUdRUTNySWJLVVEwdy80am1QOGdyQVh0d3FIWURKQmJ6bWxtK2s3ajhz?=
+ =?utf-8?B?Wk9HZXpwYXJCY2RULzF2WU4xbUNjUlZQVmVsTFFEcDhuNVBjZjZXRGtINUd6?=
+ =?utf-8?B?aFQwTlFDK0VCbndNWmR0cUZpWUFUWVpXTUhXdm5aNXBza1pYM21VUzNPV1Qz?=
+ =?utf-8?B?VHlGQnIrTFpGcWJIcjV4TFN2NnRVWWo0NzFGVnFFVjIvekRJb2U3TGlLbFRM?=
+ =?utf-8?B?c3lzQ24xSkZZWnhLbmRqZHBwM2hsUXA1eXdtWEJaUnFwdGlpK3N5enpJR3Jy?=
+ =?utf-8?B?Z3l5RGFSUTZxQ0IyaGtNVDN4aGxnR3BrQ2Rub2JaekkxaVhWZ3hnV3BFbXBG?=
+ =?utf-8?B?Z0hPd2FidjJIRU00cTVkWGNTSVhlOU9CTlZZenFQKzNPUERuc1RJc3I2UDRF?=
+ =?utf-8?B?RHpicUx5d0pnVmJrdFBRR2RRamJPUzdxb09mNzJoL0hwTWQ0b2NaZ011ODZ5?=
+ =?utf-8?B?eGlZRFljRHg3ZnJFOEJqRGtzbkV5ZHBoRHc5US9qdUlpeE1vbGh2Y002NThm?=
+ =?utf-8?B?YVJRY2UzZWRFeVptdHd1emkwbm9PcTFRU01XeUNiTWk0RWovWHFSekJqL3Ey?=
+ =?utf-8?B?OXNvOXVid2tUUTBhQzd0UzJnVDRSVFJwMlR6clRiVkl2WnJJNzhYQnBaY1hX?=
+ =?utf-8?B?d2tSNmJFenhoQmE5c3NGaVMyeENwMzZiVkJJbmd0OCtPWG5taGdqTWRFWWl6?=
+ =?utf-8?B?Z2Q2bkFUMmFHYjk1Y1p5NjBjUHRVQ0NuT0hVbzJnN0Q0MDVqaHRkMzVacGJU?=
+ =?utf-8?B?Tm51c0d1bk9yak1GQjczR25na21hVjZlRkNZM1Y5aUdDRWNpcDVzNlhoMkhm?=
+ =?utf-8?B?TzdnWVQwZ0RVMWdPQS9RVEdOZFE5VXpuTU1leSsvOW9lQ0Z6ZzlMeC9nT1Y2?=
+ =?utf-8?B?bGIyS0M2NHRrRG1tS1ZTZmNXM1lFa1R0b2lzZU04akJzUEEvcGhxRndRbW5G?=
+ =?utf-8?B?bit2K1lEZy9saCtNNk9xTVFpcmVWVWhHWkpmUWs2RGhmZmdkOC9ib2hUWksr?=
+ =?utf-8?B?dGpsUWh4bGJZTW1vVjlMQlB2T1MzN0ZacVpoeGdubkZhVGJrbkZTUUI5R0dX?=
+ =?utf-8?B?MnI0VW94TXhEdjFTWlNsV05PVU10eGdRSXpOZlVyS2c0QW15OEZ4RnNvMVVY?=
+ =?utf-8?B?RnpwVGNVRXB5bGxNdkFZZG9NMUlQdFgwT3NYeDN6T3lpMTFLWis4QmFMY1ht?=
+ =?utf-8?B?T1hwR1BEYkV1Nzl6OTZORCsraDlkaDMvRml0b2IyWVpvTHpTZVM0UVo3SGxn?=
+ =?utf-8?B?eERBNjFyMEd3R09CVVhPSkc5ZXhNSnp5Mk5Fdjg0Y1JqQjZ5SGY4U3JNY3JS?=
+ =?utf-8?B?WmJ4SmRFSThYaVNXb1FFTUQ3VmcxOGhuMEdMaGVxWTdSVWZ4V0ozL29TaVF3?=
+ =?utf-8?B?c1VwSzFVemt0QnJEYWRCc1ljcWlHWHl6Zmhxc21neThJZmZWbGlKU3BmZ3Mw?=
+ =?utf-8?B?d2Nsek5Dak52YjlPOGpBTU4xWFhjeEtHVk1iQjdDeml1V0VXUSs5ZUR0RER6?=
+ =?utf-8?Q?4X3j7MbcHNAHz0bBP7WMGVwXc?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E0DDB26DF6C3884A82861D8B209CB340@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26730/Thu Nov 24 09:18:49 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9116359-99c4-4de8-4700-08dace16dc11
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2022 12:24:40.2600
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LncGPwBvqOHCIHYh06K8bksVXxBgSh5Mc2Zhr3qV6TsSRFXjKnBpOm1DonZyRDnuj+VFp08HMOa+zjRMkGldPTp6eRLU6fiQ2DNmYp/nBk4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB2091
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey everyone,
-
-We are pleased to announce the Call for Participation (CFP) for the FOSDEM 2023
-Kernel Devroom.
-
-FOSDEM 2023 will be over the weekend of the 4th and 5th of February in Brussels,
-Belgium. FOSDEM is a free and non-commercial event organized by the community for
-the community. The goal is to provide free and open source software developers and
-communities a place to meet to:
-
-* Get in touch with other developers and projects;
-* Be informed about the latest developments in the free software world;
-* Be informed about the latest developments in the open source world;
-* Attend interesting talks and presentations on various topics by project leaders
-   and committers;
-* To promote the development and benefits of free software and open source solutions.
-* Participation and attendance is totally free, though the organizers gratefully
-   accept donations and sponsorship.
-
-## Format
-
-The Kernel Devroom will be running all day on Sunday, 5 February, starting at 9am
-and finishing at 5pm.
-
-We're looking for talk or demo proposals in one of the following 4 sizes:
-
-   10 minutes (e.g., a short demo)
-   20 minutes (e.g., a project update)
-   30 minutes (e.g., introduction to a new technology or a deep dive on a complex feature)
-   40 minutes (e.g., a deep dive on a complex feature)
-
-In all cases, please allow for at least 5 minutes of questions (10 min preferred for
-the 30 min slots). In general, shorter content will be more likely to get approved as
-we want to cover a wide range of topics.
-
-## Proposals
-
-Proposals should be sent through the FOSDEM scheduling system at:
-https://penta.fosdem.org/submission/FOSDEM23/ Note that if you submitted a proposal to
-FOSDEM in the past, you can and should re-use your existing account rather than register
-a new one. If you have no account yet please create a new one. Make sure to fill in your
-speaker bio.
-
-Please select the "Kernel" as the track and ensure you include the following information
-when submitting a proposal:
-
-| Section | Field	| Notes                                                                           |
-| ------- | ----------- | ------------------------------------------------------------------------------- |
-| Person  | Name(s)	| Your first, last and public names.                                              |
-| Person  | Abstract	| A short bio.                                                                    |
-| Person  | Photo	| Please provide a photo.                                                         |
-| Event	  | Event Title	| This is the title of your talk - please be descriptive to encourage attendance. |
-| Event	  | Abstract	| Short abstract of one or two paragraphs.                                        |
-| Event	  | Duration	| Please indicate the length of your talk; 10 min, 20 min, 30, or 40 min          |
-
-The CFP deadline is Saturday, 10 December 2022.
-
-## Topics
-
-The Kernel Devroom aims to cover a wide range of different topics so don't be shy. The following
-list should just serve as an inspiration:
-
-   * Filesystems and Storage
-   * io_uring
-   * Tracing
-   * eBPF
-   * Fuzzing
-   * System Boot
-   * Security
-   * Networking
-   * Namespaces and Cgroups
-   * Virtualization
-   * Rust in the Linux Kernel
-
-## Code of Conduct
-
-We'd like to remind all speakers and attendees that all of the presentations and discussions in
-our devroom are held under the guidelines set in the FOSDEM Code of Conduct and we expect attendees,
-speakers, and volunteers to follow the CoC at all times.
-
-If you submit a proposal and it is accepted, you will be required to confirm that you accept the
-FOSDEM CoC. If you have any questions about the CoC or wish to have one of the devroom organizers
-review your presentation slides or any other content for CoC compliance, please email us and we will
-do our best to assist you.
-
-Thanks!
-Christian Brauner
-Stéphane Graber
-Daniel Borkmann
+DQoNCkxlIDI0LzExLzIwMjIgw6AgMTE6MTMsIE5hdmVlbiBOLiBSYW8gYSDDqWNyaXTCoDoNCj4g
+Q2hyaXN0b3BoZSBMZXJveSB3cm90ZToNCj4+IGxkaW1tNjQgaXMgbm90IG9ubHkgdXNlZCBmb3Ig
+bG9hZGluZyBmdW5jdGlvbiBhZGRyZXNzZXMsIGFuZA0KPiANCj4gVGhhdCdzIHByb2JhYmx5IHRy
+dWUgdG9kYXksIGJ1dCBJIHdvcnJ5IHRoYXQgdGhhdCBjYW4gY2hhbmdlIHVwc3RyZWFtIA0KPiBh
+bmQgd2UgbWF5IG5vdCBub3RpY2UgYXQgYWxsLg0KDQpOb3Qgc3VyZSB3aGF0IHlvdSBtZWFuLg0K
+DQpUb2RheSBQT1dFUlBDIGNvbnNpZGVycyB0aGF0IGxkaW1tNjQgaXMgX2Fsd2F5c18gbG9hZGlu
+ZyBhIGZ1bmN0aW9uIA0KYWRkcmVzcyB3aGVyZWFzIHVwc3RyZWFtIEJQRiBjb25zaWRlcnMgdGhh
+dCBsZGltbTY0IGlzIGEgZnVuY3Rpb24gb25seSANCndoZW4gaXQgaXMgZmxhZ2dlZCBCUEZfUFNF
+VURPX0ZVTkMuDQoNCkluIHdoYXQgZGlyZWN0aW9uIGNvdWxkIHRoYXQgY2hhbmdlIGluIHRoZSBm
+dXR1cmUgPw0KDQpGb3IgbWUgaWYgdGhleSBjaGFuZ2UgdGhhdCBpdCBiZWNvbWVzIGFuIEFQSSBj
+aGFuZ2UuDQoNCkNocmlzdG9waGUNCg0KDQo+IA0KPj4gdGhlIE5PUHMgYWRkZWQgZm9yIHBhZGRp
+bmcgYXJlIGltcGFjdGluZyBwZXJmb3JtYW5jZSwgc28gYXZvaWQNCj4+IHRoZW0gd2hlbiBub3Qg
+bmVjZXNzYXJ5Lg0KPj4NCj4+IE9uIFFFTVUgbWFjOTksIHdpdGggdGhlIHBhdGNoOg0KPj4NCj4+
+IHRlc3RfYnBmOiAjODI5IEFMVTY0X01PVl9LOiBhbGwgaW1tZWRpYXRlIHZhbHVlIG1hZ25pdHVk
+ZXMgaml0ZWQ6MSANCj4+IDE2NzQzNjgxMCBQQVNTDQo+PiB0ZXN0X2JwZjogIzgzMSBBTFU2NF9P
+Ul9LOiBhbGwgaW1tZWRpYXRlIHZhbHVlIG1hZ25pdHVkZXMgaml0ZWQ6MSANCj4+IDE3MDcwMjk0
+MCBQQVNTDQo+Pg0KPj4gV2l0aG91dCB0aGUgcGF0Y2g6DQo+Pg0KPj4gdGVzdF9icGY6ICM4Mjkg
+QUxVNjRfTU9WX0s6IGFsbCBpbW1lZGlhdGUgdmFsdWUgbWFnbml0dWRlcyBqaXRlZDoxIA0KPj4g
+MTczMDEyMzYwIFBBU1MNCj4+IHRlc3RfYnBmOiAjODMxIEFMVTY0X09SX0s6IGFsbCBpbW1lZGlh
+dGUgdmFsdWUgbWFnbml0dWRlcyBqaXRlZDoxIA0KPj4gMTc2NDI0MDkwIFBBU1MNCj4+DQo+PiBU
+aGF0J3MgYSAzLjUlIHBlcmZvcm1hbmNlIGltcHJvdmVtZW50Lg0KPiANCj4gQSBiZXR0ZXIgYXBw
+cm9hY2ggd291bGQgYmUgdG8gZG8gYSBmdWxsIEpJVCBkdXJpbmcgdGhlIGV4dHJhIHBhc3MuIA0K
+PiBUaGF0J3Mgd2hhdCBtb3N0IG90aGVyIGFyY2hpdGVjdHVyZXMgZG8gdG9kYXkuIEFuZCwgYXMg
+bG9uZyBhcyB3ZSBjYW4gDQo+IGVuc3VyZSB0aGF0IHRoZSBKSVQnZWQgcHJvZ3JhbSBzaXplIGNh
+biBuZXZlciBpbmNyZWFzZSBkdXJpbmcgdGhlIGV4dHJhIA0KPiBwYXNzLCB3ZSBzaG91bGQgYmUg
+b2sgdG8gZG8gYSBzaW5nbGUgZXh0cmEgcGFzcy4NCj4gDQo+IA0KPiAtIE5hdmVlbg0K
