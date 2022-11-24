@@ -2,196 +2,248 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAF1637D3F
-	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 16:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3A4637D7E
+	for <lists+bpf@lfdr.de>; Thu, 24 Nov 2022 17:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiKXPvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Nov 2022 10:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        id S229611AbiKXQL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Nov 2022 11:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiKXPvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Nov 2022 10:51:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893B612E20E
-        for <bpf@vger.kernel.org>; Thu, 24 Nov 2022 07:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669305023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RY55+mI/DdVynf6mJobax2x0nouP9gB/94T/eEnCQ84=;
-        b=JhC5IsXvX2RUOh60Vb+22q02Kc/unNt7IEGDy/tw9Q5mNNFqSzrP20w/3NGXXnSWx3ek/0
-        AHWiJ7sLFy6miJ7CsBI4SzL8+kQjcQWYeeSrTw4IYvqs7PylO3g3tfsJ+h43MEwSmW3vQf
-        hhMFMwndpX5olYvtIsRFFUDDKHp3C2A=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-522-0Z97QfsIP4eL7TFBC11OqA-1; Thu, 24 Nov 2022 10:50:22 -0500
-X-MC-Unique: 0Z97QfsIP4eL7TFBC11OqA-1
-Received: by mail-io1-f70.google.com with SMTP id w16-20020a6b4a10000000b006a5454c789eso999791iob.20
-        for <bpf@vger.kernel.org>; Thu, 24 Nov 2022 07:50:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RY55+mI/DdVynf6mJobax2x0nouP9gB/94T/eEnCQ84=;
-        b=04Uh22GeoyCY3N+MhPHdmSYrG6y7LemonSHgeV2ZFD3Jce9RGoC56RdktscZ3QyfJc
-         Et/fEv4k7SEqK1DjcXZI0i1A2nNMvJCWyRpiiS+NYzBVm3Q59rOnkEnpLpneCH3TbB8g
-         vq2oNwQlpB9TsegA0NnEL7FI99JjtoaWjVnD9WrpxgOCuCmwF8c/9YqnK7V0RWOGR8yw
-         mzz59z6ZOwOO1+wqbitWEbBShQDcVc190w2o1nbJBsDfLIzP7ZVHmRCA5a0pm4Hgm+1Q
-         WLY2Sit2Q0Nu6K61qlpND5QwCggkdktSAresbLU+K3n2ANWb1c32d6Lqgno0mAgwm4wH
-         wjuQ==
-X-Gm-Message-State: ANoB5pmhOWUcbusKeS11T5sa4H+/BhMCAoMqqXraQzbdb9mtjm4sXra4
-        RAJhAhxEXtnC0PwvKl0OufeIKzXxFuAiuf2ZpxklCE0Prl27pM/ObDeBxzhxVpzBrv9oHdZCXRa
-        rhxgIXxCyJN8+1TprlNbeaJcKq3rb
-X-Received: by 2002:a05:6e02:12c2:b0:302:e38e:761b with SMTP id i2-20020a056e0212c200b00302e38e761bmr2982582ilm.61.1669305021742;
-        Thu, 24 Nov 2022 07:50:21 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf50DvoaFAAKrDAN6ynBtlfajIpvDYjTyVfoAXhh1Q93IuTagRMPKBRzK4dRjX385fP/AwgqliXF5ra1BppOhJk=
-X-Received: by 2002:a05:6e02:12c2:b0:302:e38e:761b with SMTP id
- i2-20020a056e0212c200b00302e38e761bmr2982569ilm.61.1669305021479; Thu, 24 Nov
- 2022 07:50:21 -0800 (PST)
+        with ESMTP id S229670AbiKXQL5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Nov 2022 11:11:57 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E8614F50F;
+        Thu, 24 Nov 2022 08:11:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669306316; x=1700842316;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=9qCKpSybO4dji0KuQ+/yMiuK3k8aF2Fup7Sk+B7ippg=;
+  b=AQvsaHyqDK+D8EEd10DTrlwZ/b0jBcWGrujCjYazFTQ5/pwh/ek11h0l
+   B3vAbOzaJHK0Jkpo5A3XinYDKT+Y3fu5KY2wq+KpRRvKUAyhCuM9AV9Lj
+   Lhc5LIAYn9HfNRwNj6SH3ytrLwOLyXIwra9uZvCmR4Wh8pXJF9davVMLc
+   gAwEEmwM3M4RTKMFnIwaEKDRJLKYaN7wVeUYrt32CYTTY9FmQ1T8EIost
+   bI+0eZpxN+EC+/500u4rtrYRL/d8nx8xzP+4x8Je3l+Ms9xU8auM4gAdC
+   kqQS4Wc/hTlE5ty797u9oK4nsfuQ7Y3x5UoVynWhIVu/br0FdIvEkXF9F
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10541"; a="294033080"
+X-IronPort-AV: E=Sophos;i="5.96,190,1665471600"; 
+   d="scan'208";a="294033080"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2022 08:11:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10541"; a="620078633"
+X-IronPort-AV: E=Sophos;i="5.96,190,1665471600"; 
+   d="scan'208";a="620078633"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP; 24 Nov 2022 08:11:53 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 24 Nov 2022 08:11:53 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Thu, 24 Nov 2022 08:11:53 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Thu, 24 Nov 2022 08:11:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U2ipqDWFb+OwPoiQ5z2iLWxZR2UH/2xnivDIjrijmh6CuJRFC9u/1gXLVtEhirtBzQAR431oK1SH/FKDFyTjrh1mKQuz0xzY5Tocb+jf/1R+vK8TEK9ObWG+ffk02qKSyLVE9EBh5gJzcwegf2gGg+0fyGZEkAGdXTD8BZum8tQ78VSA3cDIX0RtRy2va5DIPJUNkWkubIFl5+LnNZgkCqoraK3W1vhiydA/ttN9mrTm4Gj8FCbrqkBDEwujGG4yi5bNKp2Qu9A4PiJdh7i9WwLes8Qc3JToPqjLt5t0dbS1/o2usRrF3dq97rlyjFp+hBpbOFJyLW61o0IpXOL6XQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BRm3UaxG3D+GF/zoLDNW51T3SEWzLqpzHk9Jt6WIBC4=;
+ b=UtQRfRgOegPOPPNepMTcGzqbdRkj4z78y0vLYfWTCyJkK0X4HNnMz6bvZvCeiskG3CTjOMaoAbeeBN5hb27ZGJRdmfwyksVQxf7+qWq4o1K/H/JX2rAPDK+zkgF8RsJmdDP0udrF4T3TKGcL5TxK9tSiV/kbb9C3Fu1o4nkWE42Kpj9+ZwLSLjp4TMgEM0aCdX4bLrNfshmhCwUyDFUjxevDyBA0KxvxVo9jmzspPU6qJzsg0p539J2MqZaGO9yy2TM9qqX6ynzA1FM0gVYk3VBgUzM7ZRO8GMrj9yPW9uWc011KtT8NohK/0pGRCa4kZoXIkd1CHsWhjjBYhpVf+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ CY8PR11MB7033.namprd11.prod.outlook.com (2603:10b6:930:53::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5857.19; Thu, 24 Nov 2022 16:11:49 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5f39:1ef:13a5:38b6]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5f39:1ef:13a5:38b6%6]) with mapi id 15.20.5834.009; Thu, 24 Nov 2022
+ 16:11:49 +0000
+Date:   Thu, 24 Nov 2022 17:11:34 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, <sdf@google.com>,
+        <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <haoluo@google.com>, <jolsa@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>,
+        <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v2 6/8] mlx4: Introduce
+ mlx4_xdp_buff wrapper for xdp_buff
+Message-ID: <Y3+XtkkIh0o++Dgr@boxer>
+References: <20221121182552.2152891-1-sdf@google.com>
+ <20221121182552.2152891-7-sdf@google.com>
+ <874jupviyc.fsf@toke.dk>
+ <CAKH8qBuF_1UoUPzh_X6FMrJ61zCNDroqSuc-Pp2uH7Q4azmN8Q@mail.gmail.com>
+ <20221123111431.7b54668e@kernel.org>
+ <Y3557Ecr80Y9ZD2z@google.com>
+ <871qptuyie.fsf@toke.dk>
+ <20221123174746.418920e5@kernel.org>
+ <87edts2z8n.fsf@toke.dk>
+ <Y3+K7dJLFX7gRQp+@boxer>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Y3+K7dJLFX7gRQp+@boxer>
+X-ClientProxiedBy: FR2P281CA0056.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:93::7) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 MIME-Version: 1.0
-References: <20221103155756.687789-1-benjamin.tissoires@redhat.com>
- <20221103155756.687789-4-benjamin.tissoires@redhat.com> <ff1a0b34-71f2-cebe-a6ef-675936b276eb@nvidia.com>
- <CAO-hwJJZxgeTT8mLwFrYynSVASva=o7qL9Kr4xOywV3KDUu2GA@mail.gmail.com> <CAADnVQ+kE+EJ9LAfwge9ksC0LR8r+ShQNYi5g-MDajufXq8Yxw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+kE+EJ9LAfwge9ksC0LR8r+ShQNYi5g-MDajufXq8Yxw@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 24 Nov 2022 16:50:10 +0100
-Message-ID: <CAO-hwJJGxvrLRGSt7g0T1rYiuCCigVzQ-L6yKLM1-44EpYqmsQ@mail.gmail.com>
-Subject: Re: [PATCH hid v12 03/15] HID: initial BPF implementation
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CY8PR11MB7033:EE_
+X-MS-Office365-Filtering-Correlation-Id: c52c222e-629e-484f-8e13-08dace369775
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GoDLPTjaU8jGndFFerAKxV3LbaJvPqFwKChsvedbBfQYkQd4CbzloMutvdc5XT7M72zYyEyToVL2kpVvqcUeQR20vMLwuMfQtoXblkoWURRUGpUWWqg3pxXNGEk0JOMGPctpM8rWb+jnmGWXAIdgEksIHZdx2ofyJzwgUPdBON9+kIHzlyimkDCvKycu4QKDnxDlj8k2B+phpMoUAUaUQjffjb5CBneI9EjvMGlgk4tr6Z1hxFyhDH632A0I0R9wki7+cBaABeyQCMC9ocSdzxCcGH/6mCc/VMuNegD0F6juv1rc3vr5mp3MPkxFYigOMAu0Hu0d+CBywVJ67v9yHvZRoXmqP6XylkQ/flVqXGN2/UhKmPHfcK+tANH867FU6tgnYhfMh8pXS4AEGFKQbohkbccv29Dogu1OfCsyqkbJcQlDVI0qClPxMrbBZqv+Pjvc6XlG22Za+GzDHW4NXsGvI14rIfX0mmp1sQvKD3bN2gl2oJjLvFAwCUJ4nTYOPOtijQk0jI3vjTo5qk0P+ziBfYLzW7mG/pn5b2XMNagG3Sf2Lr9eAhYoMdMN01EyiYtXgMO0OPG2XHGqCrwwNOytKdgtBBUt5QF0OQXAcNU5QUc560ZYBjPPDAOn+amEJUY86/2owraQIXQhqxDZfw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(7916004)(39860400002)(376002)(396003)(136003)(346002)(366004)(451199015)(66946007)(66556008)(478600001)(6486002)(66476007)(4326008)(54906003)(8676002)(6916009)(316002)(83380400001)(82960400001)(38100700002)(33716001)(26005)(6512007)(9686003)(6666004)(6506007)(86362001)(66574015)(186003)(5660300002)(8936002)(7416002)(44832011)(2906002)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?HrquS9uiLuAgpV38ek0YBtdXdw6e7EmWv6GzZLuWE1ioQW1KTdaxDvIws9?=
+ =?iso-8859-1?Q?oLW553PLcslov2CzBPLTy+VREx2SXmSM3pWYPa7qquHoHnyN+sDiA9cZFR?=
+ =?iso-8859-1?Q?L8O4XQQyq68dEfwUeEI0z2YroPanfCEJ8Oh9SwfuxwJpVpgXorvdxFlFAh?=
+ =?iso-8859-1?Q?Zkonu42kvAAt6BsPKa3Il/NKFAVcbRat9aqb+TwML84fK1zEnu8bg7fzmn?=
+ =?iso-8859-1?Q?6VR+UltvTUvaD8F3V7JnIbU5R481XUQVgKlJ5IEdmYgDfbmYS3R+8mxbep?=
+ =?iso-8859-1?Q?WdorB/ZP0uFf3ydXt/i0ES5XHo3UIoJR5tRKqTbBbbk6q7qUwgHqwSo75Y?=
+ =?iso-8859-1?Q?FZ9Rh6Uq253Mkvw46ziU23AJilTMBoOubLY9PYbA6lLu0gwa9nv+EPnm3u?=
+ =?iso-8859-1?Q?TvfR74ENkRmFJBpvRbh8Kyi0WKBnK/Gdt0uAHsMuDs/mY5oyS/qYb2bIEm?=
+ =?iso-8859-1?Q?ch72h2E7TqZHjCL8QrEP3JoFqzl7DfqGbDtFlmOTEi2p6OG88v2OpiCQsC?=
+ =?iso-8859-1?Q?Y4Swwx1ZTVK3quic8lpsmuwuuy7EYMMsU09QbI+voG8SuOtHVmTFmCVFkg?=
+ =?iso-8859-1?Q?JVxWE4+PMFTq6a+yxQijHirpS8IWZMfKlCaFadKuG6nvsM+BOcmJcbP5hX?=
+ =?iso-8859-1?Q?XtnGjEndQMqpykEAZ/oq/hapELgIT/m8tyr526qKhBteVEkS0KrTVdjo7D?=
+ =?iso-8859-1?Q?ZYa6CXSelWPwhwK9xPGNq45D+2iMW9COGMbq6fqnx7cI70zbUWjgVZzdm+?=
+ =?iso-8859-1?Q?M/Vd5ReH+S6EANmGb69mMc+DDTewpjChxxFuJQVtXY/WaA8SmDKCX4dSpu?=
+ =?iso-8859-1?Q?LHYlr21OozN4TonrmNplysHigVbctW95+ohWbe4hygnrmdDg+b5h3T7GZC?=
+ =?iso-8859-1?Q?9Extb6J5KuJ9hOB4QdLd7EgHJDvkquAUwHxAh5KlxnlQgnhDFAJwtNKYFG?=
+ =?iso-8859-1?Q?z5CF50J97Xl3nQoKp3Vwi1spdgGfSmwCe6cNsQShQBmThur1623ZNFp+jT?=
+ =?iso-8859-1?Q?2CkeZkSXf193l/CKulvl2Qtrh5xpbgd+brjm6JGxibPtS9fTozLuof7Zie?=
+ =?iso-8859-1?Q?Iuwt9pMI88KexnkjhKWupFvcGmriw9qbZQxdQrfMuCE62ElD15rOC0uPfj?=
+ =?iso-8859-1?Q?/a7MVxhcdeY2YtiXT+K7Ljb8R46vHzSgDqFFEvhP2hrLARngOHAeg27BPj?=
+ =?iso-8859-1?Q?EI1byfbNT8JZ0p81fBFzXmtz1gO+0OnBrDZt+WiOVtvf12I+y9Yum7q3p2?=
+ =?iso-8859-1?Q?PDSTH4uJZNhI251Fn5sRkK/E4joapc0e3v0cbf/QK3ugowoMsH0THcyRnw?=
+ =?iso-8859-1?Q?W5wEKHAsEvXis+K/TJE5bxa4qbPfsERlkhtf/8u7MJHIYoXdiLcHjIkGcK?=
+ =?iso-8859-1?Q?66prFAbiGuGauPl5PqCCkKqFadooG6Y3VRCcEH/FybM0enjqXU2+/QrIzZ?=
+ =?iso-8859-1?Q?4GWFIlE3Ixuj0hSpK4eJF6NzvJNXAKKB/25mUHlbsFKNbcYGCGZmjZ5eF5?=
+ =?iso-8859-1?Q?A3BUtkSc+vnqiekxb8CmBKrTPvpEIWUyltJpyh/Ue6BuoMeLWJFzdWbcRt?=
+ =?iso-8859-1?Q?FCmCeCIpbZXnWfyduOTmzPZJFq6n3nddrL+3l9s+ABJBy23tIZBnOBWniG?=
+ =?iso-8859-1?Q?ifHwnimE+K+RiAea7WjaKbP6sH0qffnYuhQ56dXsHgZ6gwTCeHqg3zmg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c52c222e-629e-484f-8e13-08dace369775
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2022 16:11:49.2528
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TlH1ULxZbNJuyvOo3V8wEuLEYVVLBs4tKpt1GbzpTKlvx5viyVaz2iKhhk7XX1TiPA9QquVW1gJ2wyE/WBVYSVXh3s3yPR9kR6aVTSEoQEs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7033
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 9:14 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Nov 23, 2022 at 6:53 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > Hi Jon,
-> >
-> > On Wed, Nov 23, 2022 at 2:25 PM Jon Hunter <jonathanh@nvidia.com> wrote:
+On Thu, Nov 24, 2022 at 04:17:01PM +0100, Maciej Fijalkowski wrote:
+> On Thu, Nov 24, 2022 at 03:39:20PM +0100, Toke Høiland-Jørgensen wrote:
+> > Jakub Kicinski <kuba@kernel.org> writes:
+> > 
+> > > On Wed, 23 Nov 2022 22:55:21 +0100 Toke Høiland-Jørgensen wrote:
+> > >> > Good idea, prototyped below, lmk if it that's not what you had in mind.
+> > >> >
+> > >> > struct xdp_buff_xsk {
+> > >> > 	struct xdp_buff            xdp;                  /*     0    56 */
+> > >> > 	u8                         cb[16];               /*    56    16 */
+> > >> > 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */  
+> > >> 
+> > >> As pahole helpfully says here, xdp_buff is actually only 8 bytes from
+> > >> being a full cache line. I thought about adding a 'cb' field like this
+> > >> to xdp_buff itself, but figured that since there's only room for a
+> > >> single pointer, why not just add that and let the driver point it to
+> > >> where it wants to store the extra context data?
 > > >
-> > >
-> > > On 03/11/2022 15:57, Benjamin Tissoires wrote:
-> > > > Declare an entry point that can use fmod_ret BPF programs, and
-> > > > also an API to access and change the incoming data.
-> > > >
-> > > > A simpler implementation would consist in just calling
-> > > > hid_bpf_device_event() for any incoming event and let users deal
-> > > > with the fact that they will be called for any event of any device.
-> > > >
-> > > > The goal of HID-BPF is to partially replace drivers, so this situation
-> > > > can be problematic because we might have programs which will step on
-> > > > each other toes.
-> > > >
-> > > > For that, we add a new API hid_bpf_attach_prog() that can be called
-> > > > from a syscall and we manually deal with a jump table in hid-bpf.
-> > > >
-> > > > Whenever we add a program to the jump table (in other words, when we
-> > > > attach a program to a HID device), we keep the number of time we added
-> > > > this program in the jump table so we can release it whenever there are
-> > > > no other users.
-> > > >
-> > > > HID devices have an RCU protected list of available programs in the
-> > > > jump table, and those programs are called one after the other thanks
-> > > > to bpf_tail_call().
-> > > >
-> > > > To achieve the detection of users losing their fds on the programs we
-> > > > attached, we add 2 tracing facilities on bpf_prog_release() (for when
-> > > > a fd is closed) and bpf_free_inode() (for when a pinned program gets
-> > > > unpinned).
-> > > >
-> > > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > >
-> > > ...
-> > >
-> > > > +static int __init hid_bpf_init(void)
-> > > > +{
-> > > > +     int err;
-> > > > +
-> > > > +     /* Note: if we exit with an error any time here, we would entirely break HID, which
-> > > > +      * is probably not something we want. So we log an error and return success.
-> > > > +      *
-> > > > +      * This is not a big deal: the syscall allowing to attach a BPF program to a HID device
-> > > > +      * will not be available, so nobody will be able to use the functionality.
-> > > > +      */
-> > > > +
-> > > > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
-> > > > +     if (err) {
-> > > > +             pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
-> > > > +             return 0;
-> > > > +     }
-> > > > +
-> > > > +     err = hid_bpf_preload_skel();
-> > > > +     if (err) {
-> > > > +             pr_warn("error while preloading HID BPF dispatcher: %d", err);
-> > > > +             return 0;
-> > > > +     }
-> > > > +
-> > > > +     /* register syscalls after we are sure we can load our preloaded bpf program */
-> > > > +     err = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &hid_bpf_syscall_kfunc_set);
-> > > > +     if (err) {
-> > > > +             pr_warn("error while setting HID BPF syscall kfuncs: %d", err);
-> > > > +             return 0;
-> > > > +     }
-> > > > +
-> > > > +     return 0;
-> > > > +}
-> > >
-> > >
-> > > We have a kernel test that checks for new warning and error messages on
-> > > boot and with this change I am now seeing the following error message on
-> > > our Tegra platforms ...
-> > >
-> > >   WARNING KERN hid_bpf: error while preloading HID BPF dispatcher: -13
-> > >
-> > > I have a quick look at the code, but I can't say I am familiar with
-> > > this. So I wanted to ask if a way to fix this or avoid this? I see the
-> > > code returns 0, so one option would be to make this an informational or
-> > > debug print.
-> >
-> > I am not in favor of debug in that case, because I suspect it'll hide
-> > too much when getting a bug report. Informational could do, yes.
-> >
-> > However, before that, I'd like to dig a little bit more on why it is
-> > failing. I thought arm64 now has support of tracing bpf programs, so I
-> > would not expect this to fail.
->
-> Unfortunately the patches to add support for such tracing bpf progs got stuck.
-> Florent/Mark can probably share the latest status.
->
+> > > What if the driver wants to store multiple pointers or an integer or
+> > > whatever else? The single pointer seems quite arbitrary and not
+> > > strictly necessary.
+> > 
+> > Well, then you allocate a separate struct and point to that? Like I did
+> > in mlx5:
+> > 
+> > 
+> > +	struct mlx5_xdp_ctx mlctx = { .cqe = cqe, .rq = rq };
+> > +	struct xdp_buff xdp = { .drv_priv = &mlctx };
+> > 
+> > but yeah, this does give an extra pointer deref on access. I'm not
+> > really opposed to the cb field either, I just think it's a bit odd to
+> > put it in struct xdp_buff_xsk; that basically requires the driver to
+> > keep the layouts in sync.
+> > 
+> > Instead, why not but a cb field into xdp_buff itself so it can be used
+> > for both the XSK and the non-XSK paths? Then the driver can just
+> > typecast the xdp_buff into its own struct that has whatever data it
+> > wants in place of the cb field?
+> 
+> Why can't you simply have a pointer to xdp_buff in driver specific
+> xdp_buff container which would point to xdp_buff that is stack based (or
+> whatever else memory that will back it up - I am about to push a change
+> that makes ice driver embed xdp_buff within a struct that represents Rx
+> ring) for XDP path and for ZC the pointer to xdp_buff that you get from
+> xsk_buff_pool ? This would satisfy both sides I believe and would let us
+> keep the same container struct.
+> 
+> struct mlx4_xdp_buff {
+> 	struct xdp_buff *xdp;
+> 	struct mlx4_cqe *cqe;
+> 	struct mlx4_en_dev *mdev;
+> 	struct mlx4_en_rx_ring *ring;
+> 	struct net_device *dev;
+> };
 
-Oh... I noticed Jon's config was lacking CONFIG_FTRACE. So should I
-also add a depends on CONFIG_FTRACE to enable HID-BPF?
+Nah this won't work from kfunc POV, probably no way to retrieve the
+mlx4_xdp_buff based on xdp_buff ptr that needs to be used as an arg.
 
-Cheers,
-Benjamin
+Sorry I'll think more about it, in the meantime let's hear more voices
+whether we should keep Stan's original approach + modify xdp_buff_xsk or
+go with Toke's proposal.
 
+> 
+> (...)
+> 
+> 	struct mlx4_xdp_buff mxbuf;
+> 	struct xdp_buff xdp;
+> 
+> 	mxbuf.xdp = &xdp;
+> 	xdp_init_buff(mxbuf.xdp, priv->frag_info[0].frag_stride, &ring->xdp_rxq);
+> 
+> Also these additional things
+> 
+> +			mxbuf.cqe = cqe;
+> +			mxbuf.mdev = priv->mdev;
+> +			mxbuf.ring = ring;
+> +			mxbuf.dev = dev;
+> 
+> could be assigned once at a setup time or in worse case once per NAPI. So
+> maybe mlx4_xdp_buff shouldn't be stack based?
