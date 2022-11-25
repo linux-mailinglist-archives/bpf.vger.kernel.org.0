@@ -2,291 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE5563865C
-	for <lists+bpf@lfdr.de>; Fri, 25 Nov 2022 10:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC436387B6
+	for <lists+bpf@lfdr.de>; Fri, 25 Nov 2022 11:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiKYJfs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Nov 2022 04:35:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        id S229693AbiKYKmJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Nov 2022 05:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKYJfr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Nov 2022 04:35:47 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB81127FC0
-        for <bpf@vger.kernel.org>; Fri, 25 Nov 2022 01:35:45 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id kt23so9035330ejc.7
-        for <bpf@vger.kernel.org>; Fri, 25 Nov 2022 01:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0AYMr4shGVSs4hO3U4UudNto7QE7pOUHI5qFZ9A6RYE=;
-        b=jwxaZgmW+NLkFGxtbBONhkFUhwOF2UcbqcCND7iHB6tswKuflo6cbh+woKNjs3gQd5
-         goiI0HEYxJHKe4dGmD2eNhWDsVfGV0fwDoE0Y7fnjeN6qVPbsaJOFoj+wy90G6xBv/vt
-         MYHe/lf2xZIcGOx3MJYYkgb7rYEFslYuXVf0X3sMS4RdUv5jO2O7Vbs+pBG6c49/fe4k
-         fPH92CHrsthT7dvrQZFJuvLSdNXZEfGG9N9S14S8SaDxQk8ur+DAjUbCdI+15Ypmt26z
-         XHhKeIc1lCkKOFV971AXCe4i0aqzYCRhTnV42bO/xJTTWkmQK503246P9ercnUXSNhLk
-         IiwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0AYMr4shGVSs4hO3U4UudNto7QE7pOUHI5qFZ9A6RYE=;
-        b=PAMnri+79Msxc96XA5qtYFZ6EQh87SK/E7BmbTXKfa9CF+OoOy7GsEju8bo9+6fnil
-         EkVAHrRBG/Lt3K3Bm7M42UB3TBf1fWSY4HmqRWSAJLap7Td4FUJjEbYAXmP0aDkdFYH7
-         f5uJN1yJoR7sY6Hj2wBib5vcqGLW08hoxBOh/ruaOsV+S9RqZNMAQoYPfbWMTwIMA/Xi
-         NBwCWnLbn0eoiPwzxwl+H3/8ugjN7ji/3AVEjC4TSS+oLHMKU6Dibenzpjvnko8MTHLA
-         j3O0b4hEuRekO2v5U4yFy9NKSwBG8mTnYMTuVneUlb0NIbo/eW/6fwyQaXpD4ZvQTMSS
-         GgBQ==
-X-Gm-Message-State: ANoB5plrRxzv1YQ8JXrL6ZGvw4tkn3MBTEuzpqTZikqrTK3VdyKunwL8
-        xcb791pLoVhW/tLq3ySngs0CEAHNWh/Jjw==
-X-Google-Smtp-Source: AA0mqf6aXw0k4hHZ3AWb352YZ0+0EZRY3BrBKmI3ktaJ1wRBGfS1+RiOwTh/fPkkPj+/gACRKYcpdw==
-X-Received: by 2002:a17:906:404:b0:781:f54c:1947 with SMTP id d4-20020a170906040400b00781f54c1947mr18182003eja.69.1669368943972;
-        Fri, 25 Nov 2022 01:35:43 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a14-20020aa7d90e000000b004611c230bd0sm1564885edr.37.2022.11.25.01.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Nov 2022 01:35:43 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 25 Nov 2022 10:35:41 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
- tracepoints
-Message-ID: <Y4CMbTeVud0WfPtK@krava>
-References: <20221121213123.1373229-1-jolsa@kernel.org>
- <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
- <Y388m6wOktvZo1d4@krava>
- <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
+        with ESMTP id S229529AbiKYKmH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Nov 2022 05:42:07 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410FC4664F;
+        Fri, 25 Nov 2022 02:42:07 -0800 (PST)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2APARASg028857;
+        Fri, 25 Nov 2022 10:41:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KdosrhN5XdljozFCn1bQZylSOF7bQ1SODAs6gTMeRWE=;
+ b=EVc8j9PvPdNdRALd3lCx9cKJab0la9RUYkg94ZEseXvw2CkcD5RjeRT0cuMNC6G/MGq6
+ j7KXYO8VXI07z5CjoKWg/vSxtgO/lsyU8J8qzhxLCDXsQxVi7EeUkcgVDfuDxuINmamy
+ cftqr22Xsz8C+AyX9JGckTgAVF0ZtCGfe0qLcni+tJ1ej3mTPmr9XihosBUIsaM11k6J
+ wZAuQyN+TmFsjp9nIs6AG89o3ORQ4D+kVQcXANSpzaVWhnajhJiYCZj5JAaR9/Ys2pNh
+ CfEDD6sjGZvY1cm2bMfP72xhKe7HCbMGAWu10pzEtzxDwLgRXokhTx1Ac4LthsFhmPZP 6Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m2uye896n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Nov 2022 10:41:45 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2APATqh2006474;
+        Fri, 25 Nov 2022 10:41:45 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m2uye895p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Nov 2022 10:41:45 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2APAZKKr016784;
+        Fri, 25 Nov 2022 10:41:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3kxps91dwx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Nov 2022 10:41:42 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2APAZLaQ3474136
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Nov 2022 10:35:21 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62E99AE051;
+        Fri, 25 Nov 2022 10:41:40 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6010AE045;
+        Fri, 25 Nov 2022 10:41:38 +0000 (GMT)
+Received: from li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com (unknown [9.171.94.96])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 25 Nov 2022 10:41:38 +0000 (GMT)
+Date:   Fri, 25 Nov 2022 11:41:37 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf build: Fix LIBTRACEEVENT_DYNAMIC
+Message-ID: <Y4Cb4feK/9q+Wzmt@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+References: <20221116224631.207631-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221116224631.207631-1-irogers@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WpKiEY4QRQZXaJx4X4kt9_r6cj_vRYGz
+X-Proofpoint-ORIG-GUID: BsZ2JV9HYOBMmRIcXbMrEUDl7AyMnV7A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-25_02,2022-11-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211250083
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 24, 2022 at 09:17:22AM -0800, Alexei Starovoitov wrote:
-> On Thu, Nov 24, 2022 at 1:42 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Thu, Nov 24, 2022 at 01:41:23AM +0100, Daniel Borkmann wrote:
-> > > On 11/21/22 10:31 PM, Jiri Olsa wrote:
-> > > > We hit following issues [1] [2] when we attach bpf program that calls
-> > > > bpf_trace_printk helper to the contention_begin tracepoint.
-> > > >
-> > > > As described in [3] with multiple bpf programs that call bpf_trace_printk
-> > > > helper attached to the contention_begin might result in exhaustion of
-> > > > printk buffer or cause a deadlock [2].
-> > > >
-> > > > There's also another possible deadlock when multiple bpf programs attach
-> > > > to bpf_trace_printk tracepoint and call one of the printk bpf helpers.
-> > > >
-> > > > This change denies the attachment of bpf program to contention_begin
-> > > > and bpf_trace_printk tracepoints if the bpf program calls one of the
-> > > > printk bpf helpers.
-> > > >
-> > > > Adding also verifier check for tb_btf programs, so this can be cought
-> > > > in program loading time with error message like:
-> > > >
-> > > >    Can't attach program with bpf_trace_printk#6 helper to contention_begin tracepoint.
-> > > >
-> > > > [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
-> > > > [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
-> > > > [3] https://lore.kernel.org/bpf/Y2j6ivTwFmA0FtvY@krava/
-> > > >
-> > > > Reported-by: Hao Sun <sunhao.th@gmail.com>
-> > > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >   include/linux/bpf.h          |  1 +
-> > > >   include/linux/bpf_verifier.h |  2 ++
-> > > >   kernel/bpf/syscall.c         |  3 +++
-> > > >   kernel/bpf/verifier.c        | 46 ++++++++++++++++++++++++++++++++++++
-> > > >   4 files changed, 52 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index c9eafa67f2a2..3ccabede0f50 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -1319,6 +1319,7 @@ struct bpf_prog {
-> > > >                             enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
-> > > >                             call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
-> > > >                             call_get_func_ip:1, /* Do we call get_func_ip() */
-> > > > +                           call_printk:1, /* Do we call trace_printk/trace_vprintk  */
-> > > >                             tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
-> > > >     enum bpf_prog_type      type;           /* Type of BPF program */
-> > > >     enum bpf_attach_type    expected_attach_type; /* For some prog types */
-> > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > > > index 545152ac136c..7118c2fda59d 100644
-> > > > --- a/include/linux/bpf_verifier.h
-> > > > +++ b/include/linux/bpf_verifier.h
-> > > > @@ -618,6 +618,8 @@ bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> > > >                          struct bpf_reg_state *reg,
-> > > >                          enum bpf_arg_type arg_type);
-> > > > +int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog);
-> > > > +
-> > > >   /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
-> > > >   static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-> > > >                                          struct btf *btf, u32 btf_id)
-> > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > > index 35972afb6850..9a69bda7d62b 100644
-> > > > --- a/kernel/bpf/syscall.c
-> > > > +++ b/kernel/bpf/syscall.c
-> > > > @@ -3329,6 +3329,9 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
-> > > >             return -EINVAL;
-> > > >     }
-> > > > +   if (bpf_check_tp_printk_denylist(tp_name, prog))
-> > > > +           return -EACCES;
-> > > > +
-> > > >     btp = bpf_get_raw_tracepoint(tp_name);
-> > > >     if (!btp)
-> > > >             return -ENOENT;
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index f07bec227fef..b662bc851e1c 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -7472,6 +7472,47 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
-> > > >                              state->callback_subprogno == subprogno);
-> > > >   }
-> > > > +int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog)
-> > > > +{
-> > > > +   static const char * const denylist[] = {
-> > > > +           "contention_begin",
-> > > > +           "bpf_trace_printk",
-> > > > +   };
-> > > > +   int i;
-> > > > +
-> > > > +   /* Do not allow attachment to denylist[] tracepoints,
-> > > > +    * if the program calls some of the printk helpers,
-> > > > +    * because there's possibility of deadlock.
-> > > > +    */
-> > >
-> > > What if that prog doesn't but tail calls into another one which calls printk helpers?
-> >
-> > right, I'll deny that for all BPF_PROG_TYPE_RAW_TRACEPOINT* programs,
-> > because I don't see easy way to check on that
-> >
-> > we can leave printk check for tracing BPF_TRACE_RAW_TP programs,
-> > because verifier known the exact tracepoint already
-> 
-> This is all fragile and merely a stop gap.
-> Doesn't sound that the issue is limited to bpf_trace_printk
+On Wed, Nov 16, 2022 at 02:46:31PM -0800, Ian Rogers wrote:
 
-hm, I don't have a better idea how to fix that.. I can't deny
-contention_begin completely, because we use it in perf via
-tp_btf/contention_begin (perf lock contention) and I don't
-think there's another way for perf to do that
+Hi Ian,
 
-fwiw the last version below denies BPF_PROG_TYPE_RAW_TRACEPOINT
-programs completely and tracing BPF_TRACE_RAW_TP with printks
+> The tools/lib includes fixes break LIBTRACEVENT_DYNAMIC as the
+> makefile erroneously had depdendencies on building libtraceevent even
+> when not linking with it. This change fixes the issues with
+> LIBTRACEEVENT_DYNAMIC by making the built files optional.
 
-with selftest:
-  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=bpf/tp_deny_list&id=9a44d23187a699e6cd088d397f6801a1078361bc
+It kernel-next on s390 somehow libtraceevent seems to be bypassed, which leads 
+to make -C tools/perf install-bin failure. While it does not hit in every
+envoronment, could you please hint what could be a reason for that?
 
-we can add global tracepoint deny list if we see other issues in future
-
-jirka
+...
+make FIXDEP=1 -f Makefile.perf install-bin
+Makefile.config:1030: No numa.h found, disables 'perf bench numa mem' benchmark, please install numactl-devel/libnuma-devel/libnuma-dev
+Auto-detecting system features:
+...                                   dwarf: [ on  ]
+...                      dwarf_getlocations: [ on  ]
+...                                   glibc: [ on  ]
+...                                  libbfd: [ on  ]
+...                          libbfd-buildid: [ on  ]
+...                                  libcap: [ on  ]
+...                                  libelf: [ on  ]
+...                                 libnuma: [ OFF ]
+...                  numa_num_possible_cpus: [ OFF ]
+...                                 libperl: [ on  ]
+...                               libpython: [ on  ]
+...                               libcrypto: [ on  ]
+...                               libunwind: [ OFF ]
+...                      libdw-dwarf-unwind: [ on  ]
+...                                    zlib: [ on  ]
+...                                    lzma: [ on  ]
+...                               get_cpuid: [ OFF ]
+...                                     bpf: [ on  ]
+...                                  libaio: [ on  ]
+...                                 libzstd: [ on  ]
+$(:)
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/lib/api/ O=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libapi \
+ DESTDIR=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libapi prefix= \
+ /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libapi/libapi.a install_headers
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/lib/perf/ O=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libperf \
+ DESTDIR=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libperf prefix= \
+ /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libperf/libperf.a install_headers
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/lib/subcmd/ O=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsubcmd \
+ DESTDIR=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsubcmd prefix= \
+ /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsubcmd/libsubcmd.a install_headers
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/lib/symbol/ O=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsymbol \
+ DESTDIR=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsymbol prefix= \
+ /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libsymbol/libsymbol.a install_headers
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/lib/bpf/ FEATURES_DUMP=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/FEATURE-DUMP \
+ O= OUTPUT=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libbpf/ DESTDIR=/builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libbpf prefix= \
+ /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/libbpf/libbpf.a install_headers
+/bin/sh util/PERF-VERSION-GEN
+make -C /builddir/build/BUILD/kernel-6.0.fc36/linux-6.0/tools/perf/tests/shell/coresight
+make[2]: *** No rule to make target 'install-traceevent-plugins', needed by 'install-bin'.  Stop.
 
 
----
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 545152ac136c..7118c2fda59d 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -618,6 +618,8 @@ bool is_dynptr_type_expected(struct bpf_verifier_env *env,
- 			     struct bpf_reg_state *reg,
- 			     enum bpf_arg_type arg_type);
- 
-+int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog);
-+
- /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
- static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
- 					     struct btf *btf, u32 btf_id)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 35972afb6850..0ef1aaaf7a45 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3324,6 +3324,9 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
- 			return -EFAULT;
- 		buf[sizeof(buf) - 1] = 0;
- 		tp_name = buf;
-+
-+		if (bpf_check_tp_printk_denylist(tp_name, prog))
-+			return -EACCES;
- 		break;
- 	default:
- 		return -EINVAL;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9528a066cfa5..847fdaa8a67b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7476,6 +7476,40 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
- 				 state->callback_subprogno == subprogno);
- }
- 
-+int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog)
-+{
-+	static const char * const denylist[] = {
-+		"contention_begin",
-+		"bpf_trace_printk",
-+	};
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(denylist); i++) {
-+		if (!strcmp(denylist[i], name))
-+			return 1;
-+	}
-+	return 0;
-+}
-+
-+static int check_tp_printk_denylist(struct bpf_verifier_env *env, int func_id)
-+{
-+	struct bpf_prog *prog = env->prog;
-+
-+	if (prog->type != BPF_PROG_TYPE_TRACING ||
-+	    prog->expected_attach_type != BPF_TRACE_RAW_TP)
-+		return 0;
-+
-+	if (WARN_ON_ONCE(!prog->aux->attach_func_name))
-+		return -EINVAL;
-+
-+	if (!bpf_check_tp_printk_denylist(prog->aux->attach_func_name, prog))
-+		return 0;
-+
-+	verbose(env, "Can't attach program with %s#%d helper to %s tracepoint.\n",
-+		func_id_name(func_id), func_id, prog->aux->attach_func_name);
-+	return -EACCES;
-+}
-+
- static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			     int *insn_idx_p)
- {
-@@ -7679,6 +7713,10 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
- 					set_user_ringbuf_callback_state);
- 		break;
-+	case BPF_FUNC_trace_printk:
-+	case BPF_FUNC_trace_vprintk:
-+		err = check_tp_printk_denylist(env, func_id);
-+		break;
- 	}
- 
- 	if (err)
+Thanks!
