@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 135716389C5
+	by mail.lfdr.de (Postfix) with ESMTP id 691606389C6
 	for <lists+bpf@lfdr.de>; Fri, 25 Nov 2022 13:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbiKYM3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Nov 2022 07:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S229733AbiKYM3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Nov 2022 07:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbiKYM3f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Nov 2022 07:29:35 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A33C46648;
-        Fri, 25 Nov 2022 04:29:33 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id b62so3882879pgc.0;
-        Fri, 25 Nov 2022 04:29:33 -0800 (PST)
+        with ESMTP id S229681AbiKYM3h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Nov 2022 07:29:37 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903CE4A5B0;
+        Fri, 25 Nov 2022 04:29:36 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id w23so3854634ply.12;
+        Fri, 25 Nov 2022 04:29:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6GmQ7BjLoCmFrUUEJVAI/nRPPy9EKlpRrKIvp2Rfiow=;
-        b=icmAY7cFlJaqJGQGc01npRhRFtZ7qKc80BCB+W48FQLHHl2v8eZckLEacFz1L2qcQR
-         AVY3CsavJZbbsVYFsI4YQsYyYq3eur+b1W4kexnYsqAC10NtAGppqNZgRqjYikh1b4fQ
-         FkTakprNCco+xrZm+6rQJnF/J8jud6bDhY6kI4qVx3dymqfGW2O6c71RSebLzJtb1bKZ
-         fQbANqU0ixtw+tRZvT0Y+LbEg0y1H05OJWgv4gkMnsfJGTT9I+7wpcrqEQhhPhswZtHM
-         020iOZ2Q0HOzjfCcx/dc1hPMP9FF0H964WSZBt5RStKv9rFbVLwsuSGZ1/pr11+TqI6A
-         G7JA==
+        bh=7xh9LbtZzqm4dkobqZjAtGb2NHj8Qkn7BN/d8Dnlu+8=;
+        b=BogLWBOfmrcP4qPaqILrhcroXBtG0tR+l9DpJGue32XeB3EKciXk/QuakkdtV33589
+         91HOrREnWQDErMiWy20/isCohmyRDBbXjfMvV0XDy7vv3b5z9DWtjRSCL1f0JMsY+MHD
+         qWxSooxQPPCIp6L11tAlikcy+MfieG6QIymf15GDz/aSdxhfdtZZ8ewQYlwKMi1q7IaC
+         IUT0/0rnSChMlFy0h9TwOZRy45IdNGXemXCKvzRolR038Fq83C6OY2OiGLvsY4vkJvfl
+         3hWkVCkTJvYaDjra+MaF1/++zgS1RmRNbgmYVh2Hh7r4EROmGuKxL9Url+Jj1nGGbeQO
+         hhGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6GmQ7BjLoCmFrUUEJVAI/nRPPy9EKlpRrKIvp2Rfiow=;
-        b=h8bTIvjwjBl5s5L5OPQU6UcKUQ3KtNnJoVihcz2rAopKaWw0anOCbWlcmjtGUPeQ5F
-         kIbmXvI9/wfXwXM+QJgVr5L843XZReRz7QikSloJIj5010iSAh4pzmgV407c1aRGA0Nr
-         9VyGhmX2jWnaw5saQqGBhgPBZZrSLJrMM/7yDzNxjS1/+m2cRSyYLSJYJ2TL0fwMdpv0
-         s78yiTHIb3KKY5jbkS2dZHHm+kU40iUaUVDrHJJCrQlR1bFL8cwPJGetZUPt4MvJs/fE
-         +XeAN/JuCEuoBFi6qnWiXZw7lovG42DPxpXFDBMgzsc+ecD9XCSdS61+5Dbwc91XZ4VB
-         YM5Q==
-X-Gm-Message-State: ANoB5pmIR0YQZ2ajouG+5Ab0ZPhHt6i8oKW2oc7x8r6WbiV5HL1vdmwo
-        90G31L89zm19LAAkq8rTjVq8kO9VNY57
-X-Google-Smtp-Source: AA0mqf5AN5atYKi0OTLDisR49lELfPQUfrtDWpwU5RzZy+dgzGkYpnT0HzL2t/IvFw2zGRuXd5trqA==
-X-Received: by 2002:a63:5d62:0:b0:477:2263:a5d with SMTP id o34-20020a635d62000000b0047722630a5dmr24532980pgm.536.1669379372493;
-        Fri, 25 Nov 2022 04:29:32 -0800 (PST)
+        bh=7xh9LbtZzqm4dkobqZjAtGb2NHj8Qkn7BN/d8Dnlu+8=;
+        b=j0k/zuorYMSGYeAofE9dKxuhu1IJD7IN4VLcYuMoHgJrvLCNi0sl0MMZF78m/sxXBY
+         E/ciep0AxYmyidmIqGy7blPsIymxicBn2CyiBkKwbYE6mwrucekqTTBq0C7leBsbkXSB
+         /we5PhuFokHk/lTONviSJllLjp1iA84C+PZGsYzW/71+0lSDrLNz3FODkYXpIkUXiDGa
+         /m1tUhLBA2l6rG3LICCwUaTw7Pp+SGTd6cG2rILnoWVsMexUEUltArNbcGCvX9FgHx6N
+         y3yQ9kxIFw7HmqN7ZBsLtgmq5HGbQ1GXF5Q9XCGidzOoKI2ude/sZWOED5SKvcTrDNvm
+         Jktw==
+X-Gm-Message-State: ANoB5pm5I7osrGg+iYC9dyF1VzPGqo8lTLt1tc1xHLhWCiSVR2omMRjR
+        L5ImG/Nnr6sLJsW2nWr7zGTLbNFoUenQ
+X-Google-Smtp-Source: AA0mqf6HCT7Hp6y2mnKkyvWCRquS9hGVIlKeWmYQlQkdhYseADgJDjmFIZJzGzpsEYZnO5kytOBBtA==
+X-Received: by 2002:a17:90b:3c42:b0:218:8186:ef9b with SMTP id pm2-20020a17090b3c4200b002188186ef9bmr37685657pjb.10.1669379375701;
+        Fri, 25 Nov 2022 04:29:35 -0800 (PST)
 Received: from localhost.localdomain ([144.214.0.6])
-        by smtp.gmail.com with ESMTPSA id x14-20020a170902a38e00b0018912c37c8fsm117009pla.129.2022.11.25.04.29.29
+        by smtp.gmail.com with ESMTPSA id x14-20020a170902a38e00b0018912c37c8fsm117009pla.129.2022.11.25.04.29.32
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 25 Nov 2022 04:29:31 -0800 (PST)
+        Fri, 25 Nov 2022 04:29:35 -0800 (PST)
 From:   Hao Sun <sunhao.th@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
@@ -56,9 +56,9 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
         jolsa@kernel.org, davem@davemloft.net,
         linux-kernel@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH bpf-next v3 2/3] bpf: Sanitize LDX in jited BPF progs with KASAN
-Date:   Fri, 25 Nov 2022 20:29:11 +0800
-Message-Id: <20221125122912.54709-3-sunhao.th@gmail.com>
+Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add tests for LDX/STX/ST sanitize
+Date:   Fri, 25 Nov 2022 20:29:12 +0800
+Message-Id: <20221125122912.54709-4-sunhao.th@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20221125122912.54709-1-sunhao.th@gmail.com>
 References: <20221125122912.54709-1-sunhao.th@gmail.com>
@@ -66,7 +66,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,94 +74,343 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make the verifier sanitize LDX insns in jited BPF programs. Saved
-all the scratch regs to the extended stack first, skip backing up
-of R0 if it is the dst_reg, then save checking addr to R1. Finally
-the checking funcs are inserted, and regs are restored then.
+Add tests for LDX/STX/ST instrumentation in each possible case.
+Five cases for STX/ST, nice cases for LDX. All new/existing
+selftests can pass.
+
+A slab-out-of-bounds read report is also availble, which is
+achieved by exploiting CVE-2022-23222 and can be reproduced
+in Linux v5.10: https://pastebin.com/raw/Ee1Cw492
 
 Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 ---
- kernel/bpf/verifier.c | 60 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ .../selftests/bpf/verifier/sanitize_st_ldx.c  | 317 ++++++++++++++++++
+ 1 file changed, 317 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/sanitize_st_ldx.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7a31fceee370..b3b6855a9756 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15345,6 +15345,18 @@ BPF_ASAN_STORE(16);
- BPF_ASAN_STORE(32);
- BPF_ASAN_STORE(64);
- 
-+#define BPF_ASAN_LOAD(n)                          \
-+	notrace u64 bpf_asan_load##n(u##n *addr); \
-+	notrace u64 bpf_asan_load##n(u##n *addr)  \
-+	{                                         \
-+		return *addr;                     \
-+	}
+diff --git a/tools/testing/selftests/bpf/verifier/sanitize_st_ldx.c b/tools/testing/selftests/bpf/verifier/sanitize_st_ldx.c
+new file mode 100644
+index 000000000000..dfd53f97eb95
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/sanitize_st_ldx.c
+@@ -0,0 +1,317 @@
++#ifdef CONFIG_BPF_PROG_KASAN
 +
-+BPF_ASAN_LOAD(8);
-+BPF_ASAN_LOAD(16);
-+BPF_ASAN_LOAD(32);
-+BPF_ASAN_LOAD(64);
++#define __BACKUP_REG(n) \
++	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_##n, INSN_OFF_MASK)
++#define BACKUP_SCRATCH_REGS                                                 \
++	__BACKUP_REG(1), __BACKUP_REG(2), __BACKUP_REG(3), __BACKUP_REG(4), \
++		__BACKUP_REG(5)
 +
- #endif
- 
- /* Do various post-verification rewrites in a single program pass.
-@@ -15567,6 +15579,54 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			insn = new_prog->insnsi + i + delta;
- 			continue;
- 		}
++#define __RESTORE_REG(n) \
++	BPF_LDX_MEM(BPF_DW, BPF_REG_##n, BPF_REG_10, INSN_OFF_MASK)
++#define RESTORE_SCRATCH_REGS                                  \
++	__RESTORE_REG(1), __RESTORE_REG(2), __RESTORE_REG(3), \
++		__RESTORE_REG(4), __RESTORE_REG(5)
 +
-+		/* Sanitize LDX operation*/
-+		if (BPF_CLASS(insn->code) == BPF_LDX) {
-+			struct bpf_insn sanitize_fn;
-+			struct bpf_insn *patch = &insn_buf[0];
-+
-+			if (in_patch_use_ax || insn->src_reg == BPF_REG_10)
-+				continue;
-+
-+			switch (BPF_SIZE(insn->code)) {
-+			case BPF_B:
-+				sanitize_fn = BPF_EMIT_CALL(bpf_asan_load8);
-+				break;
-+			case BPF_H:
-+				sanitize_fn = BPF_EMIT_CALL(bpf_asan_load16);
-+				break;
-+			case BPF_W:
-+				sanitize_fn = BPF_EMIT_CALL(bpf_asan_load32);
-+				break;
-+			case BPF_DW:
-+				sanitize_fn = BPF_EMIT_CALL(bpf_asan_load64);
-+				break;
-+			}
-+
-+			BACKUP_SCRATCH_REGS;
-+			/* Skip R0, if it is dst but not src */
-+			if (insn->dst_reg != BPF_REG_0 || insn->src_reg == BPF_REG_0)
-+				*patch++ = BPF_MOV64_REG(BPF_REG_AX, BPF_REG_0);
-+			if (insn->src_reg != BPF_REG_1)
-+				*patch++ = BPF_MOV64_REG(BPF_REG_1, insn->src_reg);
-+			if (insn->off != 0)
-+				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, insn->off);
-+			*patch++ = sanitize_fn;
-+			RESTORE_SCRATCH_REGS;
-+			if (insn->dst_reg != BPF_REG_0 || insn->src_reg == BPF_REG_0)
-+				*patch++ = BPF_MOV64_REG(BPF_REG_0, BPF_REG_AX);
-+			*patch++ = *insn;
-+			cnt = patch - insn_buf;
-+
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn = new_prog->insnsi + i + delta;
-+			continue;
-+		}
- #endif
- 
- 		if (insn->code != (BPF_JMP | BPF_CALL))
++{
++	"sanitize stx: dst is R1, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 1),
++	},
++},
++{
++	"sanitize stx: dst is R1",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, -8, 1),
++	},
++},
++{
++	"sanitize stx: dst is other regs, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 1),
++	},
++},
++{
++	"sanitize stx: dst is other regs",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, -8, 1),
++	},
++},
++{
++	"sanitize stx: dst is R10",
++	.insns = {
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.unexpected_insns = {
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	},
++},
++{
++	"sanitize ldx: src is R1, dst is R0, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, 0),
++	},
++},
++{
++	"sanitize ldx: src is R1, dst is R0",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	},
++},
++{
++	"sanitize ldx: src is R1, dst is others, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0),
++	},
++},
++{
++	"sanitize ldx: src is R1, dst is others",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, -8),
++	},
++},
++{
++	"sanitize ldx: src is others, dst is R0, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0),
++	},
++},
++{
++	"sanitize ldx: src is others, dst is R0",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, -8),
++	},
++},
++{
++	"sanitize ldx: src is others, dst is others, off is zero",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, 0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, 0),
++	},
++},
++{
++	"sanitize ldx: src is others, dst is others",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ST_MEM(BPF_DW, BPF_REG_2, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.expected_insns = {
++	BACKUP_SCRATCH_REGS,
++	BPF_MOV64_REG(MAX_BPF_REG, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	RESTORE_SCRATCH_REGS,
++	BPF_MOV64_REG(BPF_REG_0, MAX_BPF_REG),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, -8),
++	},
++},
++{
++	"sanitize LDX: SRC is R10",
++	.insns = {
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.retval = 1,
++	.unexpected_insns = {
++	BPF_EMIT_CALL(INSN_IMM_MASK),
++	},
++},
++#endif /* CONFIG_BPF_PROG_KASAN */
 -- 
 2.38.1
 
