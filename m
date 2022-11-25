@@ -2,41 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE538638DF3
-	for <lists+bpf@lfdr.de>; Fri, 25 Nov 2022 16:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC72A638E06
+	for <lists+bpf@lfdr.de>; Fri, 25 Nov 2022 17:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbiKYP5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Nov 2022 10:57:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
+        id S229661AbiKYQCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Nov 2022 11:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbiKYP5a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Nov 2022 10:57:30 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0ED394;
-        Fri, 25 Nov 2022 07:57:25 -0800 (PST)
-Received: (Authenticated sender: nicolas.bouchinet@clip-os.org)
-        by mail.gandi.net (Postfix) with ESMTPSA id D8761FF80C;
-        Fri, 25 Nov 2022 15:57:16 +0000 (UTC)
-Date:   Fri, 25 Nov 2022 16:57:15 +0100
-From:   Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-To:     linux-integrity@vger.kernel.org
-Cc:     philippe.trebuchet@ssi.gouv.fr, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, casey@schaufler-ca.com, davem@davemloft.net,
-        lucien.xin@gmail.com, vgoyal@redhat.com, omosnace@redhat.com,
-        mortonm@chromium.org, nicolas.bouchinet@ssi.gouv.fr,
-        mic@digikod.net, cgzones@googlemail.com,
-        linux-security-module@vger.kernel.org, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, bpf@vger.kernel.org,
-        roberto.sassu@huaweicloud.com
-Subject: [PATCH v5] evm: Correct inode_init_security hooks behaviors
-Message-ID: <Y4Dl2yjVRkJvBflq@archlinux>
+        with ESMTP id S229888AbiKYQCR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Nov 2022 11:02:17 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63F74C246;
+        Fri, 25 Nov 2022 08:02:15 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id x5so7425309wrt.7;
+        Fri, 25 Nov 2022 08:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KKCIyGYe2B04hHRAA+9pCehsp638foIx0kXyLI5UAfQ=;
+        b=NTffmuAfj2QPMOPrHbxTDZVfsJIrmH2LL9ZiWrQ//0iPQo/wrYCyt+eT1wDA+L6M+c
+         gE1OHmXoFYgpODSz7+10gXr0DLUqYtN4gs+vYTMzlHe1ZtWZdpb8bUFSY0ZKBbXMOFHB
+         hRLZLrmuj7UJ1K8Ey8Hkr17xR9L0SZVIB4gzE9a76j/Tuthf5JjrdsAZC++/b44vFbQw
+         aVoiC6+UI01bZCktun8t1JeH8WGl7qZJ7U2WYXC0r6X3v5wl2fJBAQvhjPxdcFwyCVEy
+         FZeOA9i1h2IvnLqT72m8sl49Jpc41N15W8UJ94bqicOVU/GxtPfxmdlvLoPyl8faPj0a
+         G0VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KKCIyGYe2B04hHRAA+9pCehsp638foIx0kXyLI5UAfQ=;
+        b=Ia7gaaJ7RiAse1frccbY5QBLd5VvyD2qI7OryBT6FmaDKjmaUOKjGIgz1yFgqD5PlQ
+         SMamgIgljZDLXExZyEbH6PqBb04rvWU7FZFs26wHqaoxS2iKGcGDWliMp38esMPO9X9O
+         gblucKAhIxfLaWTj+vwmMnvaMBeQptY2FgDovmcnugLX2NNGCMaScOt+Gzprx+q822xz
+         eYqboye7RcbFrShbiMluGydEl7GHmAfbGIc6hyYuv2hdn+9s5sB5dz/UD6pImbp29EsA
+         V5aPCX6L2ebsMgDlE8IjPjDOzE99Y9hM5Rs7WoL6EchuF93kXV7T+WuFR/YjiEAHF+o+
+         SRcg==
+X-Gm-Message-State: ANoB5pk46QNhVBXu05pTIAnyFxv61DNRikFdUXST54p6YUmYKXpo5LjG
+        IN0LVHeY+BFam4ug9d+kDZI=
+X-Google-Smtp-Source: AA0mqf4alMEKuBqPz8nkcT7Lg+E5iQzvCKlEuOJnILKNzFNN81kLJBQiE9KvCl6HVaSGVb8f//MynQ==
+X-Received: by 2002:a5d:680f:0:b0:241:e593:443f with SMTP id w15-20020a5d680f000000b00241e593443fmr11614024wru.294.1669392133683;
+        Fri, 25 Nov 2022 08:02:13 -0800 (PST)
+Received: from suse.localnet (host-79-55-110-244.retail.telecomitalia.it. [79.55.110.244])
+        by smtp.gmail.com with ESMTPSA id 10-20020a05600c228a00b003c6b70a4d69sm5241020wmf.42.2022.11.25.08.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Nov 2022 08:02:07 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RESEND PATCH] fs/sysv: Replace kmap() with kmap_local_page()
+Date:   Fri, 25 Nov 2022 17:02:06 +0100
+Message-ID: <4105108.1IzOArtZ34@suse>
+In-Reply-To: <20221016164636.8696-1-fmdefrancesco@gmail.com>
+References: <20221016164636.8696-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,242 +73,510 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+On domenica 16 ottobre 2022 18:46:36 CET Fabio M. De Francesco wrote:
+> kmap() is being deprecated in favor of kmap_local_page().
+>=20
+> There are two main problems with kmap(): (1) It comes with an overhead as
+> the mapping space is restricted and protected by a global lock for
+> synchronization and (2) it also requires global TLB invalidation when the
+> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
+lly
+> utilized until a slot becomes available.
+>=20
+> With kmap_local_page() the mappings are per thread, CPU local, can take
+> page faults, and can be called from any context (including interrupts).
+> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+> the tasks can be preempted and, when they are scheduled to run again, the
+> kernel virtual addresses are restored and still valid.
+>=20
+> Since its use in fs/sysv is safe everywhere, it should be preferred.
+>=20
+> Therefore, replace kmap() with kmap_local_page() in fs/sysv. kunmap_local=
+()
+> requires the mapping address, so return that address from dir_get_page()
+> to be used in dir_put_page().
+>=20
+> Cc: "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>=20
+> I'm resending this patch adding a review tag from Ira. No changes to the
+> code. It's also a friendly ping, since first submission was on Aug 26th.
+>=20
+> This code is not tested. I have no means to create an SysV filesystem.
+> Despite nothing here seems to break the strict rules about the use of
+> kmap_local_page(), any help with testing will be much appreciated :-)
+>=20
+>  fs/sysv/dir.c   | 83 ++++++++++++++++++++++---------------------------
+>  fs/sysv/namei.c | 26 +++++++++-------
+>  fs/sysv/sysv.h  | 19 ++++++++---
+>  3 files changed, 65 insertions(+), 63 deletions(-)
 
-Fixes a NULL pointer dereference occurring in the
-`evm_protected_xattr_common` function of the EVM LSM. The bug is
-triggered if a `inode_init_security` hook returns 0 without initializing
-the given `struct xattr` fields (which is the case of BPF) and if no
-other LSM overrides thoses fields after. This also leads to memory
-leaks.
+Cristoph, Christian,
 
-The `call_int_hook_xattr` macro has been inlined into the
-`security_inode_init_security` hook in order to check hooks return
-values and skip ones who doesn't init `xattrs`.
+I'm again here to gently ping and remind this patch to both of you. I have =
+no=20
+idea about why it didn't yet deserve any reply. Is there anything I'm still=
+=20
+missing?
 
-Modify `evm_init_hmac` function to init the EVM hmac using every
-entry of the given xattr array.
+I'm looking forward to hear from you.
 
-The `MAX_LSM_EVM_XATTR` value is now based on the security modules
-compiled in, which gives room for SMACK, SELinux, Apparmor, BPF and
-IMA/EVM security attributes.
+Thanks,
 
-Changes the default return value of the `inode_init_security` hook
-definition to `-EOPNOTSUPP`.
+=46abio
 
-Changes the hook documentation to match the behavior of the LSMs using
-it (only xattr->value is initialised with kmalloc and thus is the only
-one that should be kfreed by the caller).
+> diff --git a/fs/sysv/dir.c b/fs/sysv/dir.c
+> index 88e38cd8f5c9..130350fde106 100644
+> --- a/fs/sysv/dir.c
+> +++ b/fs/sysv/dir.c
+> @@ -28,12 +28,6 @@ const struct file_operations sysv_dir_operations =3D {
+>  	.fsync		=3D generic_file_fsync,
+>  };
+>=20
+> -static inline void dir_put_page(struct page *page)
+> -{
+> -	kunmap(page);
+> -	put_page(page);
+> -}
+> -
+>  static int dir_commit_chunk(struct page *page, loff_t pos, unsigned len)
+>  {
+>  	struct address_space *mapping =3D page->mapping;
+> @@ -52,12 +46,12 @@ static int dir_commit_chunk(struct page *page, loff_t=
+=20
+pos,
+> unsigned len) return err;
+>  }
+>=20
+> -static struct page * dir_get_page(struct inode *dir, unsigned long n)
+> +static struct page *dir_get_page(struct inode *dir, unsigned long n, void
+> **page_addr) {
+>  	struct address_space *mapping =3D dir->i_mapping;
+>  	struct page *page =3D read_mapping_page(mapping, n, NULL);
+>  	if (!IS_ERR(page))
+> -		kmap(page);
+> +		*page_addr =3D kmap_local_page(page);
+>  	return page;
+>  }
+>=20
+> @@ -80,11 +74,10 @@ static int sysv_readdir(struct file *file, struct
+> dir_context *ctx) for ( ; n < npages; n++, offset =3D 0) {
+>  		char *kaddr, *limit;
+>  		struct sysv_dir_entry *de;
+> -		struct page *page =3D dir_get_page(inode, n);
+> +		struct page *page =3D dir_get_page(inode, n, (void=20
+**)&kaddr);
+>=20
+>  		if (IS_ERR(page))
+>  			continue;
+> -		kaddr =3D (char *)page_address(page);
+>  		de =3D (struct sysv_dir_entry *)(kaddr+offset);
+>  		limit =3D kaddr + PAGE_SIZE - SYSV_DIRSIZE;
+>  		for ( ;(char*)de <=3D limit; de++, ctx->pos +=3D sizeof(*de))=20
+{
+> @@ -96,11 +89,11 @@ static int sysv_readdir(struct file *file, struct
+> dir_context *ctx) if (!dir_emit(ctx, name, strnlen(name,SYSV_NAMELEN),
+>  					fs16_to_cpu(SYSV_SB(sb), de-
+>inode),
+>  					DT_UNKNOWN)) {
+> -				dir_put_page(page);
+> +				dir_put_page(page, kaddr);
+>  				return 0;
+>  			}
+>  		}
+> -		dir_put_page(page);
+> +		dir_put_page(page, kaddr);
+>  	}
+>  	return 0;
+>  }
+> @@ -124,7 +117,8 @@ static inline int namecompare(int len, int maxlen,
+>   * itself (as a parameter - res_dir). It does NOT read the inode of the
+>   * entry - you'll have to do that yourself if you want to.
+>   */
+> -struct sysv_dir_entry *sysv_find_entry(struct dentry *dentry, struct page
+> **res_page) +struct sysv_dir_entry *sysv_find_entry(struct dentry *dentry,
+> +				       struct page **res_page, void=20
+**res_page_addr)
+>  {
+>  	const char * name =3D dentry->d_name.name;
+>  	int namelen =3D dentry->d_name.len;
+> @@ -133,8 +127,10 @@ struct sysv_dir_entry *sysv_find_entry(struct dentry
+> *dentry, struct page **res_ unsigned long npages =3D dir_pages(dir);
+>  	struct page *page =3D NULL;
+>  	struct sysv_dir_entry *de;
+> +	char *kaddr;
+>=20
+>  	*res_page =3D NULL;
+> +	*res_page_addr =3D NULL;
+>=20
+>  	start =3D SYSV_I(dir)->i_dir_start_lookup;
+>  	if (start >=3D npages)
+> @@ -142,10 +138,8 @@ struct sysv_dir_entry *sysv_find_entry(struct dentry
+> *dentry, struct page **res_ n =3D start;
+>=20
+>  	do {
+> -		char *kaddr;
+> -		page =3D dir_get_page(dir, n);
+> +		page =3D dir_get_page(dir, n, (void **)&kaddr);
+>  		if (!IS_ERR(page)) {
+> -			kaddr =3D (char*)page_address(page);
+>  			de =3D (struct sysv_dir_entry *) kaddr;
+>  			kaddr +=3D PAGE_SIZE - SYSV_DIRSIZE;
+>  			for ( ; (char *) de <=3D kaddr ; de++) {
+> @@ -155,7 +149,7 @@ struct sysv_dir_entry *sysv_find_entry(struct dentry
+> *dentry, struct page **res_ name, de->name))
+>  					goto found;
+>  			}
+> -			dir_put_page(page);
+> +			dir_put_page(page, kaddr);
+>  		}
+>=20
+>  		if (++n >=3D npages)
+> @@ -167,6 +161,7 @@ struct sysv_dir_entry *sysv_find_entry(struct dentry
+> *dentry, struct page **res_ found:
+>  	SYSV_I(dir)->i_dir_start_lookup =3D n;
+>  	*res_page =3D page;
+> +	*res_page_addr =3D kaddr;
+>  	return de;
+>  }
+>=20
+> @@ -176,6 +171,7 @@ int sysv_add_link(struct dentry *dentry, struct inode
+> *inode) const char * name =3D dentry->d_name.name;
+>  	int namelen =3D dentry->d_name.len;
+>  	struct page *page =3D NULL;
+> +	void *page_addr =3D NULL;
+>  	struct sysv_dir_entry * de;
+>  	unsigned long npages =3D dir_pages(dir);
+>  	unsigned long n;
+> @@ -185,11 +181,11 @@ int sysv_add_link(struct dentry *dentry, struct ino=
+de
+> *inode)
+>=20
+>  	/* We take care of directory expansion in the same loop */
+>  	for (n =3D 0; n <=3D npages; n++) {
+> -		page =3D dir_get_page(dir, n);
+> +		page =3D dir_get_page(dir, n, &page_addr);
+>  		err =3D PTR_ERR(page);
+>  		if (IS_ERR(page))
+>  			goto out;
+> -		kaddr =3D (char*)page_address(page);
+> +		kaddr =3D page_addr;
+>  		de =3D (struct sysv_dir_entry *)kaddr;
+>  		kaddr +=3D PAGE_SIZE - SYSV_DIRSIZE;
+>  		while ((char *)de <=3D kaddr) {
+> @@ -200,14 +196,13 @@ int sysv_add_link(struct dentry *dentry, struct ino=
+de
+> *inode) goto out_page;
+>  			de++;
+>  		}
+> -		dir_put_page(page);
+> +		dir_put_page(page, page_addr);
+>  	}
+>  	BUG();
+>  	return -EINVAL;
+>=20
+>  got_it:
+> -	pos =3D page_offset(page) +
+> -			(char*)de - (char*)page_address(page);
+> +	pos =3D page_offset(page) + (char *)de - (char *)page_addr;
+>  	lock_page(page);
+>  	err =3D sysv_prepare_chunk(page, pos, SYSV_DIRSIZE);
+>  	if (err)
+> @@ -219,7 +214,7 @@ int sysv_add_link(struct dentry *dentry, struct inode
+> *inode) dir->i_mtime =3D dir->i_ctime =3D current_time(dir);
+>  	mark_inode_dirty(dir);
+>  out_page:
+> -	dir_put_page(page);
+> +	dir_put_page(page, page_addr);
+>  out:
+>  	return err;
+>  out_unlock:
+> @@ -227,10 +222,9 @@ int sysv_add_link(struct dentry *dentry, struct inode
+> *inode) goto out_page;
+>  }
+>=20
+> -int sysv_delete_entry(struct sysv_dir_entry *de, struct page *page)
+> +int sysv_delete_entry(struct sysv_dir_entry *de, struct page *page, char
+> *kaddr) {
+>  	struct inode *inode =3D page->mapping->host;
+> -	char *kaddr =3D (char*)page_address(page);
+>  	loff_t pos =3D page_offset(page) + (char *)de - kaddr;
+>  	int err;
+>=20
+> @@ -239,7 +233,7 @@ int sysv_delete_entry(struct sysv_dir_entry *de, stru=
+ct
+> page *page) BUG_ON(err);
+>  	de->inode =3D 0;
+>  	err =3D dir_commit_chunk(page, pos, SYSV_DIRSIZE);
+> -	dir_put_page(page);
+> +	dir_put_page(page, kaddr);
+>  	inode->i_ctime =3D inode->i_mtime =3D current_time(inode);
+>  	mark_inode_dirty(inode);
+>  	return err;
+> @@ -259,19 +253,15 @@ int sysv_make_empty(struct inode *inode, struct ino=
+de
+> *dir) unlock_page(page);
+>  		goto fail;
+>  	}
+> -	kmap(page);
+> -
+> -	base =3D (char*)page_address(page);
+> +	base =3D kmap_local_page(page);
+>  	memset(base, 0, PAGE_SIZE);
+> -
+>  	de =3D (struct sysv_dir_entry *) base;
+>  	de->inode =3D cpu_to_fs16(SYSV_SB(inode->i_sb), inode->i_ino);
+>  	strcpy(de->name,".");
+>  	de++;
+>  	de->inode =3D cpu_to_fs16(SYSV_SB(inode->i_sb), dir->i_ino);
+>  	strcpy(de->name,"..");
+> -
+> -	kunmap(page);
+> +	kunmap_local(base);
+>  	err =3D dir_commit_chunk(page, 0, 2 * SYSV_DIRSIZE);
+>  fail:
+>  	put_page(page);
+> @@ -286,16 +276,15 @@ int sysv_empty_dir(struct inode * inode)
+>  	struct super_block *sb =3D inode->i_sb;
+>  	struct page *page =3D NULL;
+>  	unsigned long i, npages =3D dir_pages(inode);
+> +	char *kaddr;
+>=20
+>  	for (i =3D 0; i < npages; i++) {
+> -		char *kaddr;
+>  		struct sysv_dir_entry * de;
+> -		page =3D dir_get_page(inode, i);
+> +		page =3D dir_get_page(inode, i, (void **)&kaddr);
+>=20
+>  		if (IS_ERR(page))
+>  			continue;
+>=20
+> -		kaddr =3D (char *)page_address(page);
+>  		de =3D (struct sysv_dir_entry *)kaddr;
+>  		kaddr +=3D PAGE_SIZE-SYSV_DIRSIZE;
+>=20
+> @@ -314,22 +303,21 @@ int sysv_empty_dir(struct inode * inode)
+>  			if (de->name[1] !=3D '.' || de->name[2])
+>  				goto not_empty;
+>  		}
+> -		dir_put_page(page);
+> +		dir_put_page(page, kaddr);
+>  	}
+>  	return 1;
+>=20
+>  not_empty:
+> -	dir_put_page(page);
+> +	dir_put_page(page, kaddr);
+>  	return 0;
+>  }
+>=20
+>  /* Releases the page */
+>  void sysv_set_link(struct sysv_dir_entry *de, struct page *page,
+> -	struct inode *inode)
+> +		   void *page_addr, struct inode *inode)
+>  {
+>  	struct inode *dir =3D page->mapping->host;
+> -	loff_t pos =3D page_offset(page) +
+> -			(char *)de-(char*)page_address(page);
+> +	loff_t pos =3D page_offset(page) + (char *)de - (char *)page_addr;
+>  	int err;
+>=20
+>  	lock_page(page);
+> @@ -337,19 +325,21 @@ void sysv_set_link(struct sysv_dir_entry *de, struct
+> page *page, BUG_ON(err);
+>  	de->inode =3D cpu_to_fs16(SYSV_SB(inode->i_sb), inode->i_ino);
+>  	err =3D dir_commit_chunk(page, pos, SYSV_DIRSIZE);
+> -	dir_put_page(page);
+> +	dir_put_page(page, page_addr);
+>  	dir->i_mtime =3D dir->i_ctime =3D current_time(dir);
+>  	mark_inode_dirty(dir);
+>  }
+>=20
+> -struct sysv_dir_entry * sysv_dotdot (struct inode *dir, struct page **p)
+> +struct sysv_dir_entry *sysv_dotdot(struct inode *dir, struct page **p, v=
+oid
+> **pa) {
+> -	struct page *page =3D dir_get_page(dir, 0);
+> +	void *page_addr;
+> +	struct page *page =3D dir_get_page(dir, 0, &page_addr);
+>  	struct sysv_dir_entry *de =3D NULL;
+>=20
+>  	if (!IS_ERR(page)) {
+> -		de =3D (struct sysv_dir_entry*) page_address(page) + 1;
+> +		de =3D (struct sysv_dir_entry *)page_addr + 1;
+>  		*p =3D page;
+> +		*pa =3D page_addr;
+>  	}
+>  	return de;
+>  }
+> @@ -357,12 +347,13 @@ struct sysv_dir_entry * sysv_dotdot (struct inode=20
+*dir,
+> struct page **p) ino_t sysv_inode_by_name(struct dentry *dentry)
+>  {
+>  	struct page *page;
+> -	struct sysv_dir_entry *de =3D sysv_find_entry (dentry, &page);
+> +	void *page_addr;
+> +	struct sysv_dir_entry *de =3D sysv_find_entry(dentry, &page,=20
+&page_addr);
+>  	ino_t res =3D 0;
+>=20
+>  	if (de) {
+>  		res =3D fs16_to_cpu(SYSV_SB(dentry->d_sb), de->inode);
+> -		dir_put_page(page);
+> +		dir_put_page(page, page_addr);
+>  	}
+>  	return res;
+>  }
+> diff --git a/fs/sysv/namei.c b/fs/sysv/namei.c
+> index b2e6abc06a2d..1371980ec5fb 100644
+> --- a/fs/sysv/namei.c
+> +++ b/fs/sysv/namei.c
+> @@ -152,14 +152,15 @@ static int sysv_unlink(struct inode * dir, struct=20
+dentry
+> * dentry) {
+>  	struct inode * inode =3D d_inode(dentry);
+>  	struct page * page;
+> +	void *page_addr;
+>  	struct sysv_dir_entry * de;
+>  	int err =3D -ENOENT;
+>=20
+> -	de =3D sysv_find_entry(dentry, &page);
+> +	de =3D sysv_find_entry(dentry, &page, &page_addr);
+>  	if (!de)
+>  		goto out;
+>=20
+> -	err =3D sysv_delete_entry (de, page);
+> +	err =3D sysv_delete_entry(de, page, page_addr);
+>  	if (err)
+>  		goto out;
+>=20
+> @@ -196,26 +197,29 @@ static int sysv_rename(struct user_namespace
+> *mnt_userns, struct inode *old_dir, struct inode * old_inode =3D
+> d_inode(old_dentry);
+>  	struct inode * new_inode =3D d_inode(new_dentry);
+>  	struct page * dir_page =3D NULL;
+> +	void *dir_page_addr;
+>  	struct sysv_dir_entry * dir_de =3D NULL;
+>  	struct page * old_page;
+> +	void *old_page_addr;
+>  	struct sysv_dir_entry * old_de;
+>  	int err =3D -ENOENT;
+>=20
+>  	if (flags & ~RENAME_NOREPLACE)
+>  		return -EINVAL;
+>=20
+> -	old_de =3D sysv_find_entry(old_dentry, &old_page);
+> +	old_de =3D sysv_find_entry(old_dentry, &old_page, &old_page_addr);
+>  	if (!old_de)
+>  		goto out;
+>=20
+>  	if (S_ISDIR(old_inode->i_mode)) {
+>  		err =3D -EIO;
+> -		dir_de =3D sysv_dotdot(old_inode, &dir_page);
+> +		dir_de =3D sysv_dotdot(old_inode, &dir_page,=20
+&dir_page_addr);
+>  		if (!dir_de)
+>  			goto out_old;
+>  	}
+>=20
+>  	if (new_inode) {
+> +		void *new_page_addr;
+>  		struct page * new_page;
+>  		struct sysv_dir_entry * new_de;
+>=20
+> @@ -224,10 +228,10 @@ static int sysv_rename(struct user_namespace
+> *mnt_userns, struct inode *old_dir, goto out_dir;
+>=20
+>  		err =3D -ENOENT;
+> -		new_de =3D sysv_find_entry(new_dentry, &new_page);
+> +		new_de =3D sysv_find_entry(new_dentry, &new_page,=20
+&new_page_addr);
+>  		if (!new_de)
+>  			goto out_dir;
+> -		sysv_set_link(new_de, new_page, old_inode);
+> +		sysv_set_link(new_de, new_page, new_page_addr, old_inode);
+>  		new_inode->i_ctime =3D current_time(new_inode);
+>  		if (dir_de)
+>  			drop_nlink(new_inode);
+> @@ -240,23 +244,21 @@ static int sysv_rename(struct user_namespace
+> *mnt_userns, struct inode *old_dir, inode_inc_link_count(new_dir);
+>  	}
+>=20
+> -	sysv_delete_entry(old_de, old_page);
+> +	sysv_delete_entry(old_de, old_page, old_page_addr);
+>  	mark_inode_dirty(old_inode);
+>=20
+>  	if (dir_de) {
+> -		sysv_set_link(dir_de, dir_page, new_dir);
+> +		sysv_set_link(dir_de, dir_page, dir_page_addr, new_dir);
+>  		inode_dec_link_count(old_dir);
+>  	}
+>  	return 0;
+>=20
+>  out_dir:
+>  	if (dir_de) {
+> -		kunmap(dir_page);
+> -		put_page(dir_page);
+> +		dir_put_page(dir_page, dir_page_addr);
+>  	}
+>  out_old:
+> -	kunmap(old_page);
+> -	put_page(old_page);
+> +	dir_put_page(old_page, old_page_addr);
+>  out:
+>  	return err;
+>  }
+> diff --git a/fs/sysv/sysv.h b/fs/sysv/sysv.h
+> index 99ddf033da4f..b0631ea6b506 100644
+> --- a/fs/sysv/sysv.h
+> +++ b/fs/sysv/sysv.h
+> @@ -119,6 +119,11 @@ static inline void dirty_sb(struct super_block *sb)
+>  		mark_buffer_dirty(sbi->s_bh2);
+>  }
+>=20
+> +static inline void dir_put_page(struct page *page, void *page_addr)
+> +{
+> +	kunmap_local(page_addr);
+> +	put_page(page);
+> +}
+>=20
+>  /* ialloc.c */
+>  extern struct sysv_inode *sysv_raw_inode(struct super_block *, unsigned,
+> @@ -148,14 +153,18 @@ extern void sysv_destroy_icache(void);
+>=20
+>=20
+>  /* dir.c */
+> -extern struct sysv_dir_entry *sysv_find_entry(struct dentry *, struct pa=
+ge
+> **); +extern struct sysv_dir_entry *sysv_find_entry(struct dentry *dir,
+> +					      struct page=20
+**res_page,
+> +					      void **res_page_addr);
+>  extern int sysv_add_link(struct dentry *, struct inode *);
+> -extern int sysv_delete_entry(struct sysv_dir_entry *, struct page *);
+> +extern int sysv_delete_entry(struct sysv_dir_entry *dir, struct page *pa=
+ge,
+> +			     char *kaddr);
+>  extern int sysv_make_empty(struct inode *, struct inode *);
+>  extern int sysv_empty_dir(struct inode *);
+> -extern void sysv_set_link(struct sysv_dir_entry *, struct page *,
+> -			struct inode *);
+> -extern struct sysv_dir_entry *sysv_dotdot(struct inode *, struct page **=
+);
+> +extern void sysv_set_link(struct sysv_dir_entry *de, struct page *page,
+> +			  void *page_addr, struct inode *inode);
+> +extern struct sysv_dir_entry *sysv_dotdot(struct inode *inode,
+> +					  struct page **page, void=20
+**page_addr);
+>  extern ino_t sysv_inode_by_name(struct dentry *);
+>=20
+>=20
+> --
+> 2.37.2
 
-Cc: roberto.sassu@huaweicloud.com
-Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
----
-Changes since v4:
-https://lore.kernel.org/linux-integrity/Y1lElHVQGT%2F1Pa6O@archlinux/
-* Updated the `security_inode_init_security()` hook documentation.
-* Moved the NULL pointer dereference check from `evm_protected_xattr_common()`
-  inside the LSM hook calls loop of the `security_inode_init_security()`
-  function (as suggested by Roberto Sassu).
-* Fixes the error return conditions of the `hlist_for_each_entry()`
-  loop in the `security_inode_init_security()` function (as suggested by Roberto Sassu).
-* Fixes the `evm_xattr` pointer calculation before the `evm_inode_init_security()`
-  call (as suggested by Roberto Sassu).
 
-Changes since v3:
-https://lore.kernel.org/linux-integrity/Y1fu4jofqLHVDprT@archlinux/
-* Fixes compilation error reported by the kernel test robot.
 
-Changes since v2:
-https://lore.kernel.org/linux-integrity/Y1K3bf+dtNnVe7DG@archlinux/
-* The `evm_init_hmacs` has been merged with `evm_init_hmac`
-  (as suggested by Mimi Zohar).
-* The commit message has been updated to match the patch changes.
-
-Changes since v1:
-https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@archlinux/
-* The `call_int_hook_xattr` macro has been inlined into the
-  `security_inode_init_security` hook (as suggested by Paul Moor,
-  Mickaël Salaün and Casey Schaufler).
-* The MAX_LSM_EVM_XATTR value is processed based on compiled LSMs (as
-  proposed by Casey Schaufler).
-* Various typos and cosmetic changes has been fixed (as suggested by
-  Mickaël Salaün)
-* A MAX_LSM_EVM_XATTR test has been wrapped in a WARN_ON_ONCE macro (as
-  suggested by Mickaël Salaün).
----
- include/linux/lsm_hook_defs.h       |  2 +-
- include/linux/lsm_hooks.h           |  6 ++---
- security/integrity/evm/evm.h        |  1 +
- security/integrity/evm/evm_crypto.c |  9 +++++--
- security/integrity/evm/evm_main.c   |  5 ++--
- security/security.c                 | 39 ++++++++++++++++++++++-------
- 6 files changed, 44 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index ec119da1d89b4..0ba396f08c4f1 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -111,7 +111,7 @@ LSM_HOOK(int, 0, path_notify, const struct path *path, u64 mask,
- 	 unsigned int obj_type)
- LSM_HOOK(int, 0, inode_alloc_security, struct inode *inode)
- LSM_HOOK(void, LSM_RET_VOID, inode_free_security, struct inode *inode)
--LSM_HOOK(int, 0, inode_init_security, struct inode *inode,
-+LSM_HOOK(int, -EOPNOTSUPP, inode_init_security, struct inode *inode,
- 	 struct inode *dir, const struct qstr *qstr, const char **name,
- 	 void **value, size_t *len)
- LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 4ec80b96c22e7..8a2762f7e75f5 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -229,15 +229,15 @@
-  *	This hook is called by the fs code as part of the inode creation
-  *	transaction and provides for atomic labeling of the inode, unlike
-  *	the post_create/mkdir/... hooks called by the VFS.  The hook function
-- *	is expected to allocate the name and value via kmalloc, with the caller
-- *	being responsible for calling kfree after using them.
-+ *	is expected to allocate the value via kmalloc, with the caller
-+ *	being responsible for calling kfree after using it.
-  *	If the security module does not use security attributes or does
-  *	not wish to put a security attribute on this particular inode,
-  *	then it should return -EOPNOTSUPP to skip this processing.
-  *	@inode contains the inode structure of the newly created inode.
-  *	@dir contains the inode structure of the parent directory.
-  *	@qstr contains the last path component of the new object
-- *	@name will be set to the allocated name suffix (e.g. selinux).
-+ *	@name will be set to a name suffix (e.g. selinux).
-  *	@value will be set to the allocated attribute value.
-  *	@len will be set to the length of the value.
-  *	Returns 0 if @name and @value have been successfully set,
-diff --git a/security/integrity/evm/evm.h b/security/integrity/evm/evm.h
-index f8b8c5004fc7c..6d9628ca7c246 100644
---- a/security/integrity/evm/evm.h
-+++ b/security/integrity/evm/evm.h
-@@ -61,5 +61,6 @@ int evm_calc_hash(struct dentry *dentry, const char *req_xattr_name,
- int evm_init_hmac(struct inode *inode, const struct xattr *xattr,
- 		  char *hmac_val);
- int evm_init_secfs(void);
-+int evm_protected_xattr(const char *req_xattr_name);
- 
- #endif
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 708de9656bbd2..06639f3cfb383 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -385,7 +385,7 @@ int evm_update_evmxattr(struct dentry *dentry, const char *xattr_name,
- 	return rc;
- }
- 
--int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
-+int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattrs,
- 		  char *hmac_val)
- {
- 	struct shash_desc *desc;
-@@ -396,7 +396,12 @@ int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
- 		return PTR_ERR(desc);
- 	}
- 
--	crypto_shash_update(desc, lsm_xattr->value, lsm_xattr->value_len);
-+	for (int i = 0; lsm_xattrs[i].value != NULL; i++) {
-+		if (evm_protected_xattr(lsm_xattrs[i].name))
-+			crypto_shash_update(desc,
-+					    lsm_xattrs[i].value,
-+					    lsm_xattrs[i].value_len);
-+	}
- 	hmac_add_misc(desc, inode, EVM_XATTR_HMAC, hmac_val);
- 	kfree(desc);
- 	return 0;
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index 23d484e05e6f2..35a060a6124c5 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -305,7 +305,7 @@ static int evm_protected_xattr_common(const char *req_xattr_name,
- 	return found;
- }
- 
--static int evm_protected_xattr(const char *req_xattr_name)
-+int evm_protected_xattr(const char *req_xattr_name)
- {
- 	return evm_protected_xattr_common(req_xattr_name, false);
- }
-@@ -852,8 +852,7 @@ int evm_inode_init_security(struct inode *inode,
- 	struct evm_xattr *xattr_data;
- 	int rc;
- 
--	if (!(evm_initialized & EVM_INIT_HMAC) ||
--	    !evm_protected_xattr(lsm_xattr->name))
-+	if (!(evm_initialized & EVM_INIT_HMAC))
- 		return 0;
- 
- 	xattr_data = kzalloc(sizeof(*xattr_data), GFP_NOFS);
-diff --git a/security/security.c b/security/security.c
-index 79d82cb6e4696..6cdd3fdc08fbc 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -30,7 +30,11 @@
- #include <linux/msg.h>
- #include <net/flow.h>
- 
--#define MAX_LSM_EVM_XATTR	2
-+#define MAX_LSM_EVM_XATTR                                \
-+	((IS_ENABLED(CONFIG_EVM) ? 1 : 0) +              \
-+	 (IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
-+	 (IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) +   \
-+	 (IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
- 
- /* How many LSMs were built into the kernel? */
- #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
-@@ -1093,9 +1097,11 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 				 const struct qstr *qstr,
- 				 const initxattrs initxattrs, void *fs_data)
- {
-+	int initialized_lsms = 0;
-+	int ret = -EOPNOTSUPP;
- 	struct xattr new_xattrs[MAX_LSM_EVM_XATTR + 1];
- 	struct xattr *lsm_xattr, *evm_xattr, *xattr;
--	int ret;
-+	struct security_hook_list *hook_ptr;
- 
- 	if (unlikely(IS_PRIVATE(inode)))
- 		return 0;
-@@ -1105,15 +1111,30 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 				     dir, qstr, NULL, NULL, NULL);
- 	memset(new_xattrs, 0, sizeof(new_xattrs));
- 	lsm_xattr = new_xattrs;
--	ret = call_int_hook(inode_init_security, -EOPNOTSUPP, inode, dir, qstr,
--						&lsm_xattr->name,
--						&lsm_xattr->value,
--						&lsm_xattr->value_len);
--	if (ret)
-+	hlist_for_each_entry(hook_ptr, &security_hook_heads.inode_init_security,
-+			     list) {
-+		ret = hook_ptr->hook.inode_init_security(inode, dir, qstr,
-+				&lsm_xattr->name,
-+				&lsm_xattr->value,
-+				&lsm_xattr->value_len);
-+		if (ret == -EOPNOTSUPP)
-+			continue;
-+		if (ret != 0)
-+			goto out;
-+		if (WARN_ON_ONCE(initialized_lsms >= MAX_LSM_EVM_XATTR ||
-+						     !lsm_xattr->name ||
-+						     !lsm_xattr->value)) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		lsm_xattr++;
-+		initialized_lsms++;
-+	}
-+	if (!initialized_lsms)
- 		goto out;
- 
--	evm_xattr = lsm_xattr + 1;
--	ret = evm_inode_init_security(inode, lsm_xattr, evm_xattr);
-+	evm_xattr = lsm_xattr;
-+	ret = evm_inode_init_security(inode, new_xattrs, evm_xattr);
- 	if (ret)
- 		goto out;
- 	ret = initxattrs(inode, new_xattrs, fs_data);
--- 
-2.38.1
 
