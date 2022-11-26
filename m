@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B5363958A
-	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 11:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC53063958B
+	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 11:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiKZKyE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Nov 2022 05:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S229513AbiKZKyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Nov 2022 05:54:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbiKZKyD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Nov 2022 05:54:03 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFCC19284
-        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:03 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id o5-20020a17090a678500b00218cd5a21c9so6191976pjj.4
-        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:03 -0800 (PST)
+        with ESMTP id S229480AbiKZKyQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Nov 2022 05:54:16 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F246B19284
+        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:15 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id g10so6010422plo.11
+        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YSYDlKL3Z1/BGWaIJQOht5oxOtXn/1L0eMJQR1ocH+c=;
-        b=EifM15TcBTfVY8sEc5KLPETlc1+jDyCY7bqPd1/NdOXcKEqfYx6uTaiEtwDAhcDt/L
-         77KJ/cWF9UXYQ9aBReyu82AfffTChgi1w3g3NopLt3SS930lidXzCFh3zm+oFuBiphzD
-         kb3qxygTwxe6pRIprkwqceyslRJRPCfP2nsOZj3AhIrw/2ZZLy3EKiMNC8FBbsQAfNxK
-         MDzkAhvjS4T19PZFRBjfPgLxpjBBwlX/TuT4p+A7Fb2pzZSI00OqAJB75TDLzx8IUtUh
-         ItpiCRso8vPmBIspQ5KDWrQTNbYtU1qGpiFq+l0tL1RuOWH4U++ik0QFaQkhpCtxZ474
-         b0dQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WLdaMJYFMRdixiJx9gQFW3gfc6DJNc59TlD4HEW2hj4=;
+        b=eKNaMZyz9RjOhHKnrAEsIdExsHnr1wY5X4PSfbnRZTzFfOqaTQ4ip1NPPKDEH96qDO
+         N6eJcPaokzZofwMBmOSaYWZev5mgSZwHWB3Qm8sXM3Oy+NMc+iyup61dbu0FBgiwkSIs
+         GtP5WgaICO/4FdoTyXVIOE6dxyqWz+0BBiwc080C9bruicVA+KRz7vrNRRbohi3WKIsq
+         baxGE62gyjujlB/3DANgud/sV+RpbQfedREvKKlcucQhhKU+HkBEY3U8tUey2r5W+JhM
+         Szu4gWwGYtjOXp/D+oRX0fI+OHLqZyEtxgEM/F7gORsd7Ll/lZwcUP/XVPy7+acsHBMF
+         t07Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YSYDlKL3Z1/BGWaIJQOht5oxOtXn/1L0eMJQR1ocH+c=;
-        b=ixyA7iQcnvWZdWEhXBYGEeRhC4qu/V3mmNsnWvhU25AThgDMX2qMalnyLuhOlBSMRU
-         9JcUTlNZMB9CLyFU2m2YISTLNZZ0QU91xHwAS54NJtzwpJeZqObpadETnhpp3X0I9vT8
-         QUuoJeJG9YdErRg5ZW0Q0zO7KDUJGSXT+j2TT/4E+nFOwu3DFt8jeicXV1YxG+1Zq7tP
-         M1WcOsS8SQAK6NUL+HEYT6KECsS235Jaq2+Tu7WxFMtidZ2Lo4Rb2KL5+3QbYei+RcRN
-         V6gukhqHzMRW1pf+reyOBF2+QQO+g9ZwsuikumR68pJKeUShNWLpljpQ1mzI1LT+G5tF
-         +jMQ==
-X-Gm-Message-State: ANoB5pk6K/NBPrpZhFWCKXKDMbdSFsJSPERSOdkYWd8QlVYKWqTYaekz
-        JH/lD7rYyLeSBMBNPgsXmAj4dSZvleI=
-X-Google-Smtp-Source: AA0mqf6K0q4GUKePBr5knLRdDX8xzxaw2irUgh9NcBvV+sle0LgGD0PKzDo3qsqXdac13ensimJf4Q==
-X-Received: by 2002:a17:90a:9f03:b0:211:59c6:6133 with SMTP id n3-20020a17090a9f0300b0021159c66133mr45171533pjp.238.1669460042637;
-        Sat, 26 Nov 2022 02:54:02 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WLdaMJYFMRdixiJx9gQFW3gfc6DJNc59TlD4HEW2hj4=;
+        b=uOw2q2ueJhMnyQJJ94VMv7mi32z9eN11yniEx0TjP9LnrPVtJfGvm2uXMTortsOgbe
+         xW3AEc+rOCBRC3vtR3k7+miyOC8B+NQHH0LZVEXGA/eb9LXIdvRdL63K7sq3TJQrKDev
+         29i2CvfEkw+igJoKhG7uowV8lfsZuCw5jbTGG80f2Dh3IB6W4JJVuE+J2pCCPaXNSrWI
+         vH80y53Eeiv7qd6pJz0NYeQkPDZJjfftIQyIL12zCrsSRH/TjoGV6HEK6SVqanF+0F/q
+         1puMdIs8Qu1oQexg/7/sCJsDjd2KwnIsdQrU6P1ce+8P8RgPyZb8BMTaQlszBSM0GKUl
+         GrrA==
+X-Gm-Message-State: ANoB5pmM+cGRmNUUsY+lRazIpwZPyCjTROpu/zeNyEVpkq2zXHRMAXCy
+        6SLoyV5G7V4BfefBO1RaBKGtnAq6tXE=
+X-Google-Smtp-Source: AA0mqf5YyUQPeRycRHZClomlkjVsk9Nlt6apgjIW9I4o8lKGNyE8K3WXFOzUE0zWIaWc7t2pdJc+Aw==
+X-Received: by 2002:a17:902:e74f:b0:186:61fd:7446 with SMTP id p15-20020a170902e74f00b0018661fd7446mr32288998plf.150.1669460055320;
+        Sat, 26 Nov 2022 02:54:15 -0800 (PST)
 Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id z14-20020a1709027e8e00b00188fdae6e0esm5079904pla.44.2022.11.26.02.54.00
+        by smtp.gmail.com with ESMTPSA id z14-20020a1709027e8e00b00188fdae6e0esm5079904pla.44.2022.11.26.02.54.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Nov 2022 02:54:02 -0800 (PST)
+        Sat, 26 Nov 2022 02:54:14 -0800 (PST)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com, toke@redhat.com,
         hengqi.chen@gmail.com
-Subject: [PATCH bpf 0/2] Check timer_off for map_in_map only when map value has timer
-Date:   Sat, 26 Nov 2022 18:53:49 +0800
-Message-Id: <20221126105351.2578782-1-hengqi.chen@gmail.com>
+Subject: [PATCH bpf 1/2] bpf: Check timer_off for map_in_map only when map value have timer
+Date:   Sat, 26 Nov 2022 18:53:50 +0800
+Message-Id: <20221126105351.2578782-2-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221126105351.2578782-1-hengqi.chen@gmail.com>
+References: <20221126105351.2578782-1-hengqi.chen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,51 +73,46 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 The timer_off value could be -EINVAL or -ENOENT when map value of
-inner map is struct and contains no bpf_timer.
+inner map is struct and contains no bpf_timer. The EINVAL case happens
+when the map is created without BTF key/value info, map->timer_off
+is set to -EINVAL in map_create(). The ENOENT case happens when
+the map is created with BTF key/value info (e.g. from BPF skeleton),
+map->timer_off is set to -ENOENT as what btf_find_timer() returns.
+In bpf_map_meta_equal(), we expect timer_off to be equal even if
+map value does not contains bpf_timer. This rejects map_in_map created
+with BTF key/value info to be updated using inner map without BTF
+key/value info in case inner map value is struct. This commit lifts
+such restriction.
 
-The EINVAL case happens when the map is created without BTF key/value
-info, map->timer_off is set to -EINVAL in map_create(). For example:
+Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ kernel/bpf/map_in_map.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-    map_fd = bpf_map_create(BPF_MAP_TYPE_LRU_HASH, NULL, 4, 4, 1, NULL);
-
-The ENOENT case happens when the map is created with BTF key/value
-info (e.g. from BPF skeleton), map->timer_off is set to -ENOENT as
-what btf_find_timer() returns. For example, map created from BPF skeleton:
-
-    struct inner_key {
-    	__u32 x;
-    };
-
-    struct inner_value {
-    	__u32 y;
-    };
-
-    struct inner {
-    	__uint(type, BPF_MAP_TYPE_LRU_HASH);
-    	__uint(max_entries, 1);
-    	__type(key, struct inner_key);
-    	__type(value, struct inner_value);
-    } inner SEC(".maps");
-
-    struct {
-    	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-    	__uint(max_entries, 1);
-    	__type(key, __u32);
-    	__array(values, struct inner);
-    } outer SEC(".maps");
-
-Since timer_off is different, the map_in_map outer in the above case
-can NOT be updated using map_fd in the first case. This patch tries
-to fix such restriction.
-
-Hengqi Chen (2):
-  bpf: Check timer_off for map_in_map only when map value have timer
-  selftests/bpf: Update map_in_map using map without BTF key/value info
-
- kernel/bpf/map_in_map.c                       |  9 ++++++-
- .../selftests/bpf/prog_tests/btf_map_in_map.c | 27 +++++++++++++++++++
- .../selftests/bpf/progs/test_btf_map_in_map.c | 22 +++++++++++++++
- 3 files changed, 57 insertions(+), 1 deletion(-)
-
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index 135205d0d560..0840872de486 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -80,11 +80,18 @@ void bpf_map_meta_free(struct bpf_map *map_meta)
+ bool bpf_map_meta_equal(const struct bpf_map *meta0,
+ 			const struct bpf_map *meta1)
+ {
++	bool timer_off_equal;
++
++	if (!map_value_has_timer(meta0) && !map_value_has_timer(meta1))
++		timer_off_equal = true;
++	else
++		timer_off_equal = meta0->timer_off == meta1->timer_off;
++
+ 	/* No need to compare ops because it is covered by map_type */
+ 	return meta0->map_type == meta1->map_type &&
+ 		meta0->key_size == meta1->key_size &&
+ 		meta0->value_size == meta1->value_size &&
+-		meta0->timer_off == meta1->timer_off &&
++		timer_off_equal &&
+ 		meta0->map_flags == meta1->map_flags &&
+ 		bpf_map_equal_kptr_off_tab(meta0, meta1);
+ }
 --
 2.34.1
