@@ -2,160 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD86A63958C
-	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 11:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F686395A0
+	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 12:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbiKZKyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Nov 2022 05:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        id S229464AbiKZLN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Nov 2022 06:13:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiKZKyW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Nov 2022 05:54:22 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C471E724
-        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:21 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id 4so6052150pli.0
-        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 02:54:21 -0800 (PST)
+        with ESMTP id S229450AbiKZLNZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Nov 2022 06:13:25 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1276B17E02;
+        Sat, 26 Nov 2022 03:13:25 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b13-20020a17090a5a0d00b0021906102d05so4752767pjd.5;
+        Sat, 26 Nov 2022 03:13:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Xt0FLthwIokZ4Vyletmr7akfC9js//XyjR4Hp8AOj0=;
-        b=bLORgx6dd9bGzTiObXKgqW5UlXo/DzrHq3rS18hN+9EvoRccRnPOEKKrNCev2zF2cq
-         gsttUv6XpMdx20yS1149fu9twk/qum9pmS/c3E4LxtUmOr68Q3gKYoeupLaclnMXi7aZ
-         +n9qQrVf2fMQkJftBxg+h/9kSbiPYAb1GUoQ+qhy36bemRnj3aUHg8xQZpIkcjGvfTBs
-         YfMeQRnMATmP4zj2zvbPR5xOYv4IhKJ0QnFmBjPhTpIM/kPSBcSw4Trby9/fjdm9GKy6
-         97DZ3bJvoDuNrTZNpBrAHv88hJYPM9/AEZu0883diToio5uAc79eznxI5slrrUkf3PA9
-         h9RA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wgpVMC8bvZTlVaXHEo2lO+7RGlkj48k53uTj/gB9BCs=;
+        b=dWThtiiKNBg5x2ryV+rTL8GPxB4T+txtD78vZMjaEmKoHmpFR2YpON19SSHeaItbAF
+         OaUjP2df/qi2zy8CoukO4z4CSrsYgeWOKtLbzjPhnm1c6qeVLyur+Y+8QfE/SzYvl9Ru
+         fb0EMXbbkoRE7LwQLeGBLKWjAiuH8BmiCWxKe8LCdrJGlluw0kqOPbWLqDf4PHISwfoQ
+         xDO10hDu0PFMQ5J5bm6rUoLIWZYVfjDhVP9OVPff4C5YPvZgXYJgbb/5L+Fvv67Yc7AP
+         HufSP3ZfjJ0eMhgxV+xqdn5lDCTTk+89ZEmXOlpsKHfECHsEf16P0p8PUI5nh7Wyqk5J
+         nA2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Xt0FLthwIokZ4Vyletmr7akfC9js//XyjR4Hp8AOj0=;
-        b=o5cVXQJ/UAcgu02viB0aAbJIaFZXBkmumUDOy/JM/E+Mu0S2fsjy0yzD2U2WHhX2Ko
-         PKpBniO0y8S2JX8oM8Q53ZltDslVv5gJqdjFeb5PGfgx4ieRK8ddensvABTlv5TiFAVR
-         aVfX9B0u2RzllViCjB6A7p6lY7vZYse77WzeqNzqhxoLUaJUhW/fU5u3hgVQTFYxfGOw
-         tl/Pb1e1Sis9sVVLwk65WUDxMUnS0gjHjKshCuahWEmWpBq35u50QkMQI6nTONmnsZUc
-         Bpq8VDg3F3JhYi0E+TlYirau+JVJwYw9XDJWO5acOOhPW+n/1LquuvVLex4MVSAJ9c2I
-         eDRg==
-X-Gm-Message-State: ANoB5pnx47LXVD4nshE0Kq/pc0JBFmjcEdZLb+0dsiNLKPylitt3FKCZ
-        yBJwl4YHvXyNLBHSb6tDgDu7ZA1DB3Q=
-X-Google-Smtp-Source: AA0mqf40mGjSmrqGi9Jus8BBuKDjPxRUZEEphpNJ6CGO6UT91fvoNisxlYx+dnO1uXvGxTOZsE2kIg==
-X-Received: by 2002:a17:902:934b:b0:189:78db:12be with SMTP id g11-20020a170902934b00b0018978db12bemr1219247plp.8.1669460060477;
-        Sat, 26 Nov 2022 02:54:20 -0800 (PST)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id z14-20020a1709027e8e00b00188fdae6e0esm5079904pla.44.2022.11.26.02.54.18
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wgpVMC8bvZTlVaXHEo2lO+7RGlkj48k53uTj/gB9BCs=;
+        b=A16/3YT9D1tndMp8uKb5xhvkFxiANELT0W3sXD/N2/uTjcJ7GQFz1gv4Cvp0n1CDOn
+         kAsCmDzGFb1hxOJ1t2TMJODMsTYzmk/A5BD8SY/9LEhfJHxWNcJNGBsTqKS2tQ26S0Iy
+         SPzpe5YxbfHMLRZA3rTT7fmyKvBkpy5IH8PuszNN7EvarM1mdc7jaNdPXDaR0xfOMshd
+         NgSFbczzAabg+s7eJ5R+k4EhKHhSkDVPEKS3cyVG3koIzDupZtjKcsYYubfrhRREFFEv
+         CMtzLEYeD+i6VrW/M6DAH2yZhUxIft+nHZfOm2uIJIHJQX4d500RiTlLzxXcsjGhBWa0
+         EGyA==
+X-Gm-Message-State: ANoB5plgHQbJHJGYSstrjAIe52YkfJ7H6uyL9HH9AaVyew2GTE6H6kvU
+        oyLPBQOLW1U5lVlsH0m/GtM=
+X-Google-Smtp-Source: AA0mqf7fCEIjOQBE5SGQST3jU4rWrs2OdbQjaTmUtD/8qr8kil9aTcd9lbwAn9QMhT4Lv0q+EdXuxQ==
+X-Received: by 2002:a17:90a:460b:b0:218:8a84:aeca with SMTP id w11-20020a17090a460b00b002188a84aecamr38895752pjg.63.1669461204167;
+        Sat, 26 Nov 2022 03:13:24 -0800 (PST)
+Received: from WRT-WX9.. ([103.135.102.183])
+        by smtp.gmail.com with ESMTPSA id c194-20020a621ccb000000b0056a93838606sm4555639pfc.58.2022.11.26.03.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Nov 2022 02:54:20 -0800 (PST)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com, toke@redhat.com,
-        hengqi.chen@gmail.com
-Subject: [PATCH bpf 2/2] selftests/bpf: Update map_in_map using map without BTF key/value info
-Date:   Sat, 26 Nov 2022 18:53:51 +0800
-Message-Id: <20221126105351.2578782-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221126105351.2578782-1-hengqi.chen@gmail.com>
-References: <20221126105351.2578782-1-hengqi.chen@gmail.com>
+        Sat, 26 Nov 2022 03:13:23 -0800 (PST)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH 0/2] bpftool: improve error handing for missing .BTF section
+Date:   Sat, 26 Nov 2022 19:11:45 +0800
+Message-Id: <20221126111147.199366-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a selftest to ensure that inner map without BTF key/value info
-can coexist with inner map with BTF key/value info in the same map_in_map.
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- .../selftests/bpf/prog_tests/btf_map_in_map.c | 27 +++++++++++++++++++
- .../selftests/bpf/progs/test_btf_map_in_map.c | 22 +++++++++++++++
- 2 files changed, 49 insertions(+)
+Changbin Du (2):
+  libbpf: show more info about missing ".BTF" section
+  makefiles: do not generate empty vmlinux.h
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-index eb90a6b8850d..d34d91d6d9ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-@@ -154,6 +154,30 @@ static void test_diff_size(void)
- 	test_btf_map_in_map__destroy(skel);
- }
+ samples/bpf/Makefile                 |  2 +-
+ tools/bpf/bpftool/Makefile           |  2 +-
+ tools/bpf/runqslower/Makefile        |  2 +-
+ tools/lib/bpf/btf.c                  | 12 ++++++++++++
+ tools/perf/Makefile.perf             |  2 +-
+ tools/testing/selftests/bpf/Makefile |  2 +-
+ 6 files changed, 17 insertions(+), 5 deletions(-)
 
-+static void test_btf_key_value(void)
-+{
-+	struct test_btf_map_in_map *skel;
-+	int err, map_fd1, map_fd2, zero = 0;
-+
-+	skel = test_btf_map_in_map__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open&load skeleton\n"))
-+		return;
-+
-+	map_fd1 = bpf_map__fd(skel->maps.inner);
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.outer), &zero, &map_fd1, 0);
-+	CHECK(err, "update map_in_map using map with BTF key/value info",
-+	      "cannot use inner map with BTF key/value info\n");
-+
-+	map_fd2 = bpf_map_create(BPF_MAP_TYPE_LRU_HASH, NULL, 4, 4, 1, NULL);
-+	CHECK(map_fd2 < 0, "create map without BTF key/value info", "cannot create map\n");
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.outer), &zero, &map_fd2, 0);
-+	CHECK(err, "update map_in_map using map without BTF key/value info",
-+	      "cannot use inner map without BTF key/value info\n");
-+
-+	close(map_fd2);
-+	test_btf_map_in_map__destroy(skel);
-+}
-+
- void test_btf_map_in_map(void)
- {
- 	if (test__start_subtest("lookup_update"))
-@@ -161,4 +185,7 @@ void test_btf_map_in_map(void)
+-- 
+2.37.2
 
- 	if (test__start_subtest("diff_size"))
- 		test_diff_size();
-+
-+	if (test__start_subtest("btf_key_value"))
-+		test_btf_key_value();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c b/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c
-index c218cf8989a9..8f7ca70496f2 100644
---- a/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c
-@@ -118,6 +118,28 @@ struct outer_sockarr_sz1 {
- 	.values = { (void *)&sockarr_sz1 },
- };
-
-+struct inner_key {
-+	__u32 x;
-+};
-+
-+struct inner_value {
-+	__u32 y;
-+};
-+
-+struct inner {
-+	__uint(type, BPF_MAP_TYPE_LRU_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, struct inner_key);
-+	__type(value, struct inner_value);
-+} inner SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct inner);
-+} outer SEC(".maps");
-+
- int input = 0;
-
- SEC("raw_tp/sys_enter")
---
-2.34.1
