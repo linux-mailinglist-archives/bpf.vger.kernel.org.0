@@ -2,172 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3758C6395A8
-	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 12:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B8639648
+	for <lists+bpf@lfdr.de>; Sat, 26 Nov 2022 15:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbiKZLOH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Nov 2022 06:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S229453AbiKZOMV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Nov 2022 09:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbiKZLNr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Nov 2022 06:13:47 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029291B1DA;
-        Sat, 26 Nov 2022 03:13:46 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id mv18so5591802pjb.0;
-        Sat, 26 Nov 2022 03:13:45 -0800 (PST)
+        with ESMTP id S229436AbiKZOMV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Nov 2022 09:12:21 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442AB1FF8C;
+        Sat, 26 Nov 2022 06:12:20 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id p16so5392556wmc.3;
+        Sat, 26 Nov 2022 06:12:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7wXxHwlliB9k9y/zRVSVfdaJjEK9h41TVLmU74Ql4mM=;
-        b=Az5eaU6yt/A/9EC16A5mgH5D+UhNxILaYesE0vaILZ41HUY0H0EcrKI190CwWnHlva
-         EXRB9mqds4P/vTNnGQg7YIWQHGxxy4rLja4l7HFjLh+xPTQmDug3UqLnYCBSwRb4OnFR
-         td+HpnkaCwdIwsKLWuIDT/+/983Dja5Dnkjcwn7l69ufK4v3lQ9eRyxXcBvE+vG0o2ZU
-         B7pUk+wC4UHYJrw71hTnsZKRWdr/UfG0sCH8mKtMm9i41WM05y5xUGmMbxlMFniZrXQn
-         82gU94ss0lWMN2ElU1tahDVhU4fILxrUBPUEiuptI3nsv+xUeD4LabOjkE9mzsmXxY+4
-         CnLQ==
+        bh=/mP0jQyPa/WPgNondQxR1aqMRo1/9+aoHgpIr8lZMUQ=;
+        b=aOVOmwdAaahnaO9K5sR9Os63SuX6ti1w8q3DaF02HA/Q/eifGYgkU8s0g4MzJL0i9B
+         YLt3rD+8e5eVR/hxqucOk8bld3quh9E2IzYpErFZINgztMWyROTBzGfP79IUTcjs5Db9
+         S7zZbaSFxOkxblLZDNtmmdrdih5hKKsekN+q0i+JJU71B2jdfXBzi996VkDLoOVmr+eD
+         4zeTGdEZbrcYzGCA4mHrLS1PXmGDrTIpmooS5Hq6m1y7LLVDSQqiOp0GBSE9s2+fOJlP
+         eOTl/RE4VQJBo/3IcckwAnQsjKaOrTMyEwGud7HJ9NMMB14tmRUX0AEYynKonUIfI1kk
+         pNJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7wXxHwlliB9k9y/zRVSVfdaJjEK9h41TVLmU74Ql4mM=;
-        b=ETisHak7yZaVwnFqdzUePVIlflzx4x7UMke0HbXSVogI1L2KtdZQT6FHME3FHS4uRo
-         3TZreymeCJ4zmjd+GOGfCcdFWuGLP600fvY0enFlzmOcB7vJu4KNExUu5rxXzj7E/uWv
-         mXgqQNhp9amsbcMBf0OmqO2p+4Sr49BKZavHiuXFCv99oTOSVFOHDBx5bvqnFj4u3Z58
-         43rV4l+gCYL9me8LUr+OJrNN1ZJaIsgHqh28LH21AGGs5c8WLuILS1qGHbN5QFFmVv+J
-         rl8PDf1AuNOpADIdpHt2YL01Mn8wTi5seiuNxKMhhx/dN7Of9m3MMwDaziG9FRoyonhl
-         JJUg==
-X-Gm-Message-State: ANoB5pm2juBX3egqsvGAvH4o1lKdCEXE9vcfCD/vQTirfPEMKs4C6OWa
-        ropDKkJh8Z2x+sUfLGxjDTo=
-X-Google-Smtp-Source: AA0mqf4bjAQLyAOUkGVkFZ7QeA5U2FbfawVL8N5Pl0UJnzhCMcX/K+w/Q3lJasx/E4aU1n8l6Pjukg==
-X-Received: by 2002:a17:902:e807:b0:186:fb90:5774 with SMTP id u7-20020a170902e80700b00186fb905774mr23432978plg.137.1669461225418;
-        Sat, 26 Nov 2022 03:13:45 -0800 (PST)
-Received: from WRT-WX9.. ([103.135.102.183])
-        by smtp.gmail.com with ESMTPSA id c194-20020a621ccb000000b0056a93838606sm4555639pfc.58.2022.11.26.03.13.36
+        bh=/mP0jQyPa/WPgNondQxR1aqMRo1/9+aoHgpIr8lZMUQ=;
+        b=16t8VzFTtFdz/g+o+/jZUgSkfXvgQuEYw3SxnM0Vdc24pznjCBQHcX3j7C3P97xkhY
+         3XSoEX3UsbMLJFBNNWyeCj9+sENy7HChl5GgilmgzQ6U+SyjiUQWsK85L8Ll9q1lHshd
+         zakBRbPshaUy+1XlpzHIPcrzTjJJ/Wglztl5TivJzFHk0a2mZva5qaIJRekcE4t18dCu
+         /U+43b/Iop0qemMQysoa4uIWTBMChARffJR17sSoIxj2TooT9kkDKkT1sYUrU6ry4l6j
+         +XJruQzxpIZ8/eOM7+1l06JQiBZHm5FK/5nHn+v6oi2DPYofS9SMe0P0SjxSCj3k71Xc
+         GYvw==
+X-Gm-Message-State: ANoB5pkO8oXNpaX6lrtAMcRO4qkMa2YW1XraDeudkw/fGHs4sdy/oPMC
+        kwrma/x7d9Xo+8HJAmhqXPw=
+X-Google-Smtp-Source: AA0mqf6W2A96Yp+3IpF3gNdgNV8Kyd6By66H/QbebR2FvXf2wOh1fGTxI0r+vSsgrOFA8RPxOnNn0g==
+X-Received: by 2002:a05:600c:1c9d:b0:3cf:69ec:9628 with SMTP id k29-20020a05600c1c9d00b003cf69ec9628mr32055376wms.79.1669471938450;
+        Sat, 26 Nov 2022 06:12:18 -0800 (PST)
+Received: from suse.localnet (host-79-55-110-244.retail.telecomitalia.it. [79.55.110.244])
+        by smtp.gmail.com with ESMTPSA id j29-20020a5d6e5d000000b00241b371d73esm6188413wrz.77.2022.11.26.06.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Nov 2022 03:13:44 -0800 (PST)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH 2/2] makefiles: do not generate empty vmlinux.h
-Date:   Sat, 26 Nov 2022 19:11:47 +0800
-Message-Id: <20221126111147.199366-3-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20221126111147.199366-1-changbin.du@gmail.com>
-References: <20221126111147.199366-1-changbin.du@gmail.com>
+        Sat, 26 Nov 2022 06:12:17 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RESEND PATCH v4] fs/ufs: Replace kmap() with kmap_local_page()
+Date:   Sat, 26 Nov 2022 15:12:16 +0100
+Message-ID: <2188828.irdbgypaU6@suse>
+In-Reply-To: <Y4FG0O7VWTTng5yh@ZenIV>
+References: <20221016163855.8173-1-fmdefrancesco@gmail.com> <Y4E++JERgUMoqfjG@ZenIV> <Y4FG0O7VWTTng5yh@ZenIV>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the empty vmlinux.h if bpftool failed to dump btf info.
-The emptry vmlinux.h can hide real error when reading output
-of make.
+On venerd=EC 25 novembre 2022 23:50:56 CET Al Viro wrote:
+> On Fri, Nov 25, 2022 at 10:17:28PM +0000, Al Viro wrote:
+> > The bottom line:
+> > 	* teach your ufs_put_page() to accept any address within the page
+> > 	* flip the ways you return page and address in ufs_get_page()
+> > 	* use offset_in_page(addr) instead of these addr -=20
+page_address(page)
+> >=20
+> > and you'll get a much smaller patch, with a lot less noise in it.
+> > What's more, offset_in_page() part can be carved out into a separate
+> > commit - it's valid on its own, and it makes both halves easier to
+> > follow.
+> >=20
+> > AFAICS, similar observations apply in your sysvfs patch; the point about
+> > calling conventions for ufs_get_page() definitely applies there, and
+> > stronger than for ufs - those casts are eye-watering...
+>=20
+> As the matter of fact, I'd probably split it into 3 steps:
+> 	1) switch the calling conventions of ufs_get_page() - callers follow
+> it with something like kaddr =3D page_address(page); and that change makes
+> sense on its own.  Isolated and easy to follow.
+> 	2) offset_in_page() changes.  Again, separate, stands on its own and
+> is easy to follow.
+> 	3) kmap_local() switch itself - pass address to ufs_put_page(), etc.
+> Considerably smaller and less cluttered than your current variant.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- samples/bpf/Makefile                 | 2 +-
- tools/bpf/bpftool/Makefile           | 2 +-
- tools/bpf/runqslower/Makefile        | 2 +-
- tools/perf/Makefile.perf             | 2 +-
- tools/testing/selftests/bpf/Makefile | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Al, thanks for taking the time to answer in such detail although I can beli=
+eve=20
+that, to spot the mistakes in my patch and then write your email, it probab=
+ly=20
+took you 10 minutes or so :-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 727da3c5879b..ab4788b4883e 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -362,7 +362,7 @@ ifeq ($(VMLINUX_BTF),)
- 	$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)",\
- 		build the kernel or set VMLINUX_BTF or VMLINUX_H variable)
- endif
--	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-+	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@ || { rm $@; exit 1; }
- else
- 	$(Q)cp "$(VMLINUX_H)" $@
- endif
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 4a95c017ad4c..d9d6f890884c 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -177,7 +177,7 @@ BUILD_BPF_SKELS := 1
- 
- $(OUTPUT)vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL_BOOTSTRAP)
- ifeq ($(VMLINUX_H),)
--	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) btf dump file $< format c > $@
-+	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) btf dump file $< format c > $@ || { rm $@; exit 1; }
- else
- 	$(Q)cp "$(VMLINUX_H)" $@
- endif
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index 8b3d87b82b7a..2d7911f4666b 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -77,7 +77,7 @@ ifeq ($(VMLINUX_H),)
- 			"specify its location." >&2;			       \
- 		exit 1;\
- 	fi
--	$(QUIET_GEN)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
-+	$(QUIET_GEN)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@ || { rm $@; exit 1; }
- else
- 	$(Q)cp "$(VMLINUX_H)" $@
- endif
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index a432e59afc42..0546d408aa4e 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1064,7 +1064,7 @@ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
- 
- $(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
- ifeq ($(VMLINUX_H),)
--	$(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
-+	$(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@ || { rm $@; exit 1; }
- else
- 	$(Q)cp "$(VMLINUX_H)" $@
- endif
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e6cf21fad69f..9aa2475b4ac6 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -284,7 +284,7 @@ endif
- $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
- ifeq ($(VMLINUX_H),)
- 	$(call msg,GEN,,$@)
--	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-+	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@ || { rm $@; exit 1; }
- else
- 	$(call msg,CP,,$@)
- 	$(Q)cp "$(VMLINUX_H)" $@
--- 
-2.37.2
+Instead I had to read two or three times to make sense of it all. I will do=
+ my=20
+best to first rewrite these kmap_local_page() conversions in fs/ufs by=20
+separating the work into three patches, as you recommended.
+
+I'm pretty sure that the next attempt won't be applicable yet, because I mi=
+ght=20
+not fully understand your suggestions or I might not be able to implement t=
+hem=20
+correctly. I'm afraid I addressed something that, as it stands, is a little=
+=20
+beyond my knowledge and experience, so I hope you'll want to chime in and=20
+comment on the next version as well.
+
+When the changes to fs/ufs will be done I will also rewrite the patch for f=
+s/
+sysv which (as you pointed out) needs to be worked out according to the sam=
+e=20
+requirements.
+
+I am sincerely grateful to you also because it seemed to me that I would ne=
+ver=20
+get any feedback regarding these two old patches.
+
+Regards,
+
+=46abio
+
+
 
