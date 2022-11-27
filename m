@@ -2,691 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9CB639D2E
-	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 22:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A606D639D6E
+	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 22:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiK0VPF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Nov 2022 16:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S229558AbiK0V66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Nov 2022 16:58:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiK0VPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Nov 2022 16:15:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE0DC761
-        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 13:14:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669583646;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fwHdMOhgpstrFbXaSBg5O1UOHJMFYkpZCAOqe3coWHQ=;
-        b=BGTmNatM+hd3KBWqFar3p/vqWzh9h1EKivKbAA/wSb1LO1unq2mT2TpBqO75dKrAJmDWYU
-        pmwZbUjg+g4/xgAd2EvlJrRH2EXCsaCYsVwJ1xqyoCv4K1p6ws9U4NiCL2I8kqR17zesrv
-        UomC6aZ/UtjILG3RhXWCWIReiFtR6kI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-55-Jx5tayURP8a2sMoIUc7OlQ-1; Sun, 27 Nov 2022 16:14:05 -0500
-X-MC-Unique: Jx5tayURP8a2sMoIUc7OlQ-1
-Received: by mail-qv1-f72.google.com with SMTP id on28-20020a056214449c00b004bbf12d7976so10613960qvb.18
-        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 13:14:05 -0800 (PST)
+        with ESMTP id S229533AbiK0V65 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Nov 2022 16:58:57 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F4DEC3;
+        Sun, 27 Nov 2022 13:58:53 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id e27so21591562ejc.12;
+        Sun, 27 Nov 2022 13:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8WneuvovqJg9O54n9ZaZ83gW6x83/1EomKDZIjrUe/Q=;
+        b=FXWtEyuDhgZAe8OekCGTjgcEK9JHPsAU2Ewi1jlAKgz/AlEl2FdMJWLyVxeWD+e+1L
+         0VjxCqYde0X3bGvSe/dUjOaKav0I2lr7EpdInOem10LIHUZuCrcPGQgSco4jqd0Tbz44
+         B+I+veATLc3P5VgTArIjey7wqlFc/fxr3vvZK9BEfHsOOs1+GKFwFBd8i28K+NgwSD29
+         eEY7Ch0P1nCAz0bxH2DcSO3M33cXXoQ1YpLgWydryESU0A/ZsN8D4tlUt3rKb4GY3+Nd
+         uw4dilTVXDdGrFOD+l3GNZ32sKDem5LCRnquJqsDbbJXeenfa86N3RQbGbgY+RnP/Eek
+         lbDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fwHdMOhgpstrFbXaSBg5O1UOHJMFYkpZCAOqe3coWHQ=;
-        b=NBVZ3QBbVXuSTKzyKOsZdqUhfbI+53TOzdEgTV1Fq976G38z/7666QJtsuy8V+JD0M
-         5N5yuPb9vYXrYpcRq9jdeKP9Ag+4YoTVTn+KKmxgVwuhQBDQLAJG+YFGwqzqOK3YLcXu
-         35qa5r2eSMjtmRgaE83PIdbr0GH21SI9ATO6fOCFSNkzFbybp2z0kk5uCjgmr4uzMOon
-         oXBaJX6Fby/KbnB3zgAQkNjVy5HqGytu+SeWXQBiai3Km0hoTvgo5cN+Dw6v/BJJvSIb
-         dqSpF5iqKbBFJ3Z8Wt4D7jdojui6ZZlOm2/sntAqYzyexK8jdBc/9xQXctwJkJWDY0oq
-         C7SA==
-X-Gm-Message-State: ANoB5pl0VEB0O5nNEIXddoTFjghWktj5lr4XwSUiDEoglbPN5RMlQI8T
-        4bevb2USGk4ZB2rRPfrNsbbJiACEsRw+Mjx6LEF2JRhX/w+St2VnelHws0Aids4JSSF/CLEhraP
-        fTbkJBp56E0L2
-X-Received: by 2002:ac8:5ece:0:b0:3a5:6f39:4bd8 with SMTP id s14-20020ac85ece000000b003a56f394bd8mr45629544qtx.228.1669583644430;
-        Sun, 27 Nov 2022 13:14:04 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6/FfZ+2iJt6LS6WXc0FH8xBWqOf6iKFlr58RsPnBjaNS7MA0xQPKHlGLZOSp1uvcoQYmmMeg==
-X-Received: by 2002:ac8:5ece:0:b0:3a5:6f39:4bd8 with SMTP id s14-20020ac85ece000000b003a56f394bd8mr45629480qtx.228.1669583643884;
-        Sun, 27 Nov 2022 13:14:03 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id f14-20020ac8464e000000b003a5612c3f28sm5793726qto.56.2022.11.27.13.13.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Nov 2022 13:14:02 -0800 (PST)
-Message-ID: <4c429c36-146e-e2b2-0cb4-d256ca659280@redhat.com>
-Date:   Sun, 27 Nov 2022 22:13:55 +0100
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8WneuvovqJg9O54n9ZaZ83gW6x83/1EomKDZIjrUe/Q=;
+        b=TbFUmgkDvEnWF8UlybvOOhfZZS16FChqriDr56H65SbhEZcufQCQ07565kwT4Elaah
+         AdALshiLtWoydaCyoBm/n6rX1jQQDEEmAVSZWeG6gUZQMLFHH7g/fIFgKsY+JI1YNrPe
+         K7tobnwHcJdJmmJHCr2EeoYk0V6MlqDCmbmLCR9NjatiTDSb0HWpiHl3Jrn9DhUAEzs/
+         mAtHSigwKcueDsjmy95CQQHzjmoP0rQyvHXaXlq5is9LWU9HX50VL07rAcTBX6wa9Q/k
+         g/SBpGFHoCRyYbRuva+hCq0BJx8rEn0rJepthDQccSvi53CCHGvYg77Abf/DfhUCdAlN
+         un7A==
+X-Gm-Message-State: ANoB5pnx4UYDBELONBBdSF8gahpWa5N1+f5uKKirJ5XgFHb6XT1QyIga
+        jCyuDJLLOaViVssTCd1MNXE=
+X-Google-Smtp-Source: AA0mqf45+B5sWvm4HmZAO5OMdIe0piAHeByCaWfJcvQ9DyS0F6soA3YocepiFka+DNgoC1L1NYbZTw==
+X-Received: by 2002:a17:906:49d0:b0:79f:e0b3:3b9b with SMTP id w16-20020a17090649d000b0079fe0b33b9bmr24003074ejv.378.1669586331938;
+        Sun, 27 Nov 2022 13:58:51 -0800 (PST)
+Received: from krava ([83.240.61.69])
+        by smtp.gmail.com with ESMTPSA id d25-20020a50fe99000000b004588ef795easm4428671edt.34.2022.11.27.13.58.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Nov 2022 13:58:51 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 27 Nov 2022 22:58:48 +0100
+To:     "Chen, Hu1" <hu1.chen@intel.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, jpoimboe@kernel.org,
+        memxor@gmail.com, bpf@vger.kernel.org,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH bpf v2] selftests/bpf: Fix "missing ENDBR" BUG for
+ destructor kfunc
+Message-ID: <Y4PdmHlCqqVHRDUJ@krava>
+References: <20221122073244.21279-1-hu1.chen@intel.com>
+ <Y3zTF0CjQFt/dR2M@krava>
+ <8b57320c-df41-a19f-e433-07782a709a5c@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 13/19] iommufd: Add kAPI toward external drivers for
- physical devices
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <13-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <13-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b57320c-df41-a19f-e433-07782a709a5c@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
+On Fri, Nov 25, 2022 at 09:28:28PM +0800, Chen, Hu1 wrote:
+> On 11/22/2022 9:48 PM, Jiri Olsa wrote:
+> > On Mon, Nov 21, 2022 at 11:32:43PM -0800, Chen Hu wrote:
+> >> With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
+> >> following BUG:
+> >>
+> >>   traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
+> >>   ------------[ cut here ]------------
+> >>   kernel BUG at arch/x86/kernel/traps.c:254!
+> >>   invalid opcode: 0000 [#1] PREEMPT SMP
+> >>   <TASK>
+> >>    asm_exc_control_protection+0x26/0x50
+> >>   RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
+> >>   Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
+> >> 	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
+> >>        <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
+> >>    bpf_map_free_kptrs+0x2e/0x70
+> >>    array_map_free+0x57/0x140
+> >>    process_one_work+0x194/0x3a0
+> >>    worker_thread+0x54/0x3a0
+> >>    ? rescuer_thread+0x390/0x390
+> >>    kthread+0xe9/0x110
+> >>    ? kthread_complete_and_exit+0x20/0x20
+> >>
+> >> This is because there are no compile-time references to the destructor
+> >> kfuncs, bpf_kfunc_call_test_release() for example. So objtool marked
+> >> them sealable and ENDBR in the functions were sealed (converted to NOP)
+> >> by apply_ibt_endbr().
+> >>
+> >> This fix creates dummy compile-time references to destructor kfuncs so
+> >> ENDBR stay there.
+> >>
+> >> Fixes: 05a945deefaa ("selftests/bpf: Add verifier tests for kptr")
+> >> Signed-off-by: Chen Hu <hu1.chen@intel.com>
+> >> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> >> ---
+> >> v2:
+> >> - Use generic macro name and place the macro after function body as
+> >> - suggested by Jiri Olsa
+> >>
+> >> v1: https://lore.kernel.org/all/20221121085113.611504-1-hu1.chen@intel.com/
+> >>
+> >>  include/linux/btf_ids.h | 7 +++++++
+> >>  net/bpf/test_run.c      | 4 ++++
+> >>  2 files changed, 11 insertions(+)
+> >>
+> >> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> >> index 2aea877d644f..db02691b506d 100644
+> >> --- a/include/linux/btf_ids.h
+> >> +++ b/include/linux/btf_ids.h
+> >> @@ -266,4 +266,11 @@ MAX_BTF_TRACING_TYPE,
+> >>  
+> >>  extern u32 btf_tracing_ids[];
+> >>  
+> >> +#if defined(CONFIG_X86_KERNEL_IBT) && !defined(__DISABLE_EXPORTS)
+> >> +#define FUNC_IBT_NOSEAL(name)					\
+> >> +	asm(IBT_NOSEAL(#name));
+> >> +#else
+> >> +#define FUNC_IBT_NOSEAL(name)
+> >> +#endif /* CONFIG_X86_KERNEL_IBT */
+> > 
+> > hum, IBT_NOSEAL is x86 specific, so this will probably fail build
+> > on other archs.. I think we could ifdef it with CONFIG_X86, but
+> > it should go to some IBT related header? surely not to btf_ids.h
+> > 
+> > cc-ing Peter and Josh
+> > 
+> > thanks,
+> > jirka
+> >
+> 
+> The lkp reports build success because X86_KERNEL_IBT alredy depends on
+> X86_64.
 
-On 11/16/22 22:00, Jason Gunthorpe wrote:
-> Add the four functions external drivers need to connect physical DMA to
-> the IOMMUFD:
->
-> iommufd_device_bind() / iommufd_device_unbind()
->   Register the device with iommufd and establish security isolation.
->
-> iommufd_device_attach() / iommufd_device_detach()
->   Connect a bound device to a page table
->
-> Binding a device creates a device object ID in the uAPI, however the
-> generic API provides no IOCTLs to manipulate them.
-(yet)
->
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Tested-by: Yi Liu <yi.l.liu@intel.com>
-> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
-> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/iommu/iommufd/Makefile          |   1 +
->  drivers/iommu/iommufd/device.c          | 417 ++++++++++++++++++++++++
->  drivers/iommu/iommufd/iommufd_private.h |   5 +
->  drivers/iommu/iommufd/main.c            |   3 +
->  include/linux/iommufd.h                 |  13 +
->  5 files changed, 439 insertions(+)
->  create mode 100644 drivers/iommu/iommufd/device.c
->
-> diff --git a/drivers/iommu/iommufd/Makefile b/drivers/iommu/iommufd/Makefile
-> index e13e971aa28c60..ca28a135b9675f 100644
-> --- a/drivers/iommu/iommufd/Makefile
-> +++ b/drivers/iommu/iommufd/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  iommufd-y := \
-> +	device.o \
->  	hw_pagetable.o \
->  	io_pagetable.o \
->  	ioas.o \
-> diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-> new file mode 100644
-> index 00000000000000..a71f5740773f84
-> --- /dev/null
-> +++ b/drivers/iommu/iommufd/device.c
-> @@ -0,0 +1,417 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2021-2022, NVIDIA CORPORATION & AFFILIATES
-> + */
-> +#include <linux/iommufd.h>
-> +#include <linux/slab.h>
-> +#include <linux/iommu.h>
-> +#include <linux/irqdomain.h>
-> +
-> +#include "iommufd_private.h"
-> +
-> +/*
-> + * A iommufd_device object represents the binding relationship between a
-> + * consuming driver and the iommufd. These objects are created/destroyed by
-> + * external drivers, not by userspace.
-> + */
-> +struct iommufd_device {
-> +	struct iommufd_object obj;
-> +	struct iommufd_ctx *ictx;
-> +	struct iommufd_hw_pagetable *hwpt;
-> +	/* Head at iommufd_hw_pagetable::devices */
-> +	struct list_head devices_item;
-> +	/* always the physical device */
-> +	struct device *dev;
-> +	struct iommu_group *group;
-> +	bool enforce_cache_coherency;
-> +};
-> +
-> +void iommufd_device_destroy(struct iommufd_object *obj)
-> +{
-> +	struct iommufd_device *idev =
-> +		container_of(obj, struct iommufd_device, obj);
-> +
-> +	iommu_device_release_dma_owner(idev->dev);
-> +	iommu_group_put(idev->group);
-> +	iommufd_ctx_put(idev->ictx);
-> +}
-> +
-> +/**
-> + * iommufd_device_bind - Bind a physical device to an iommu fd
-> + * @ictx: iommufd file descriptor
-> + * @dev: Pointer to a physical PCI device struct
-not a PCI dev anymore
-> + * @id: Output ID number to return to userspace for this device
-> + *
-> + * A successful bind establishes an ownership over the device and returns
-> + * struct iommufd_device pointer, otherwise returns error pointer.
-> + *
-> + * A driver using this API must set driver_managed_dma and must not touch
-> + * the device until this routine succeeds and establishes ownership.
-> + *
-> + * Binding a PCI device places the entire RID under iommufd control.
-> + *
-> + * The caller must undo this with iommufd_device_unbind()
-> + */
-> +struct iommufd_device *iommufd_device_bind(struct iommufd_ctx *ictx,
-> +					   struct device *dev, u32 *id)
-> +{
-> +	struct iommufd_device *idev;
-> +	struct iommu_group *group;
-> +	int rc;
-> +
-> +	/*
-> +	 * iommufd always sets IOMMU_CACHE because we offer no way for userspace
-> +	 * to restore cache coherency.
-> +	 */
-> +	if (!device_iommu_capable(dev, IOMMU_CAP_CACHE_COHERENCY))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	group = iommu_group_get(dev);
-> +	if (!group)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	rc = iommu_device_claim_dma_owner(dev, ictx);
-> +	if (rc)
-> +		goto out_group_put;
-> +
-> +	idev = iommufd_object_alloc(ictx, idev, IOMMUFD_OBJ_DEVICE);
-> +	if (IS_ERR(idev)) {
-> +		rc = PTR_ERR(idev);
-> +		goto out_release_owner;
-> +	}
-> +	idev->ictx = ictx;
-> +	iommufd_ctx_get(ictx);
-> +	idev->dev = dev;
-> +	idev->enforce_cache_coherency =
-> +		device_iommu_capable(dev, IOMMU_CAP_ENFORCE_CACHE_COHERENCY);
-> +	/* The calling driver is a user until iommufd_device_unbind() */
-> +	refcount_inc(&idev->obj.users);
-> +	/* group refcount moves into iommufd_device */
-> +	idev->group = group;
-> +
-> +	/*
-> +	 * If the caller fails after this success it must call
-> +	 * iommufd_unbind_device() which is safe since we hold this refcount.
-> +	 * This also means the device is a leaf in the graph and no other object
-> +	 * can take a reference on it.
-> +	 */
-> +	iommufd_object_finalize(ictx, &idev->obj);
-> +	*id = idev->obj.id;
-> +	return idev;
-> +
-> +out_release_owner:
-> +	iommu_device_release_dma_owner(dev);
-> +out_group_put:
-> +	iommu_group_put(group);
-> +	return ERR_PTR(rc);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(iommufd_device_bind, IOMMUFD);
-> +
-> +/**
-> + * iommufd_device_unbind - Undo iommufd_device_bind()
-> + * @idev: Device returned by iommufd_device_bind()
-> + *
-> + * Release the device from iommufd control. The DMA ownership will return back
-> + * to unowned with DMA controlled by the DMA API. This invalidates the
-> + * iommufd_device pointer, other APIs that consume it must not be called
-> + * concurrently.
-> + */
-> +void iommufd_device_unbind(struct iommufd_device *idev)
-> +{
-> +	bool was_destroyed;
-> +
-> +	was_destroyed = iommufd_object_destroy_user(idev->ictx, &idev->obj);
-> +	WARN_ON(!was_destroyed);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(iommufd_device_unbind, IOMMUFD);
-> +
-> +static int iommufd_device_setup_msi(struct iommufd_device *idev,
-> +				    struct iommufd_hw_pagetable *hwpt,
-> +				    phys_addr_t sw_msi_start,
-> +				    unsigned int flags)
-> +{
-> +	int rc;
-> +
-> +	/*
-> +	 * IOMMU_CAP_INTR_REMAP means that the platform is isolating MSI, and it
-rather means that the *IOMMU* implements IRQ remapping.
+ah right, so please just move it to some other header
 
-irq_domain_check_msi_remap() instead means the MSI controller implements that functionality (a given device id is able to trigger MSI #n and this #n gets translated into actual MSI #m)
-So what you want is to prevent an assigned device from being able to DMA into an MSI doorbell that is not protected by either the IOMMU or the MSI controller. If this happens this means the DMA can generate any kind of MSI traffic that can jeopardize the host or other VMs
+jirka
 
-To me this is independent on the the fact that the IOMMU translates MSI write requests (targetting the @ where the MSI message is written), so independent on the fact a SW MSI reserved region is exposed. 
-
-That's why in the vfio_iommu_type.c the msi_recap capability is first checked:
-
-        msi_remap = irq_domain_check_msi_remap() ||
-                    iommu_group_for_each_dev(iommu_group, (void *)IOMMU_CAP_INTR_REMAP,
-                                             vfio_iommu_device_capable);
-
-        if (!vfio_allow_unsafe_interrupts && !msi_remap) {
-                pr_warn("%s: No interrupt remapping support.  Use the module param \"allow_unsafe_interrupts\" to enable VFIO IOMMU support on this platform\n",
-                       __func__);
-                ret = -EPERM;
-                goto out_detach;
-        }
-
-
-and afterwards resv_msi is checked to see if we need to create the so-called msi cookie.
-This msi cookie tells the MSI writes are translated by the IOMMU and somebody must create a mapping for those transactions.
-
-> +	 * creates the MSI window by default in the iommu domain. Nothing
-> +	 * further to do.
-> +	 */
-> +	if (device_iommu_capable(idev->dev, IOMMU_CAP_INTR_REMAP))
-> +		return 0;
-> +
-> +	/*
-> +	 * On ARM systems that set the global IRQ_DOMAIN_FLAG_MSI_REMAP every
-> +	 * allocated iommu_domain will block interrupts by default and this
-It sounds there is a confusion between IRQ remapping and the fact MSI
-writes are not bypassed by the IOMMU.
-> +	 * special flow is needed to turn them back on. iommu_dma_prepare_msi()
-> +	 * will install pages into our domain after request_irq() to make this
-> +	 * work.
-> +	 *
-> +	 * FIXME: This is conceptually broken for iommufd since we want to allow
-> +	 * userspace to change the domains, eg switch from an identity IOAS to a
-> +	 * DMA IOAS. There is currently no way to create a MSI window that
-> +	 * matches what the IRQ layer actually expects in a newly created
-> +	 * domain.
-> +	 */
-> +	if (irq_domain_check_msi_remap()) {
-> +		if (WARN_ON(!sw_msi_start))
-> +			return -EPERM;
-> +		/*
-> +		 * iommu_get_msi_cookie() can only be called once per domain,
-> +		 * it returns -EBUSY on later calls.
-> +		 */
-> +		if (hwpt->msi_cookie)
-> +			return 0;
-> +		rc = iommu_get_msi_cookie(hwpt->domain, sw_msi_start);
-> +		if (rc)
-> +			return rc;
-> +		hwpt->msi_cookie = true;
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * Otherwise the platform has a MSI window that is not isolated. For
-> +	 * historical compat with VFIO allow a module parameter to ignore the
-> +	 * insecurity.
-> +	 */
-> +	if (!(flags & IOMMUFD_ATTACH_FLAGS_ALLOW_UNSAFE_INTERRUPT))
-> +		return -EPERM;
-> +
-> +	dev_warn(
-> +		idev->dev,
-> +		"Device interrupts cannot be isolated by the IOMMU, this platform in insecure. Use an \"allow_unsafe_interrupts\" module parameter to override\n");
-> +	return 0;
-> +}
-> +
-> +static bool iommufd_hw_pagetable_has_group(struct iommufd_hw_pagetable *hwpt,
-> +					   struct iommu_group *group)
-> +{
-> +	struct iommufd_device *cur_dev;
-> +
-> +	list_for_each_entry(cur_dev, &hwpt->devices, devices_item)
-> +		if (cur_dev->group == group)
-> +			return true;
-> +	return false;
-> +}
-> +
-> +static int iommufd_device_do_attach(struct iommufd_device *idev,
-> +				    struct iommufd_hw_pagetable *hwpt,
-> +				    unsigned int flags)
-> +{
-> +	phys_addr_t sw_msi_start = 0;
-> +	int rc;
-> +
-> +	mutex_lock(&hwpt->devices_lock);
-> +
-> +	/*
-> +	 * Try to upgrade the domain we have, it is an iommu driver bug to
-> +	 * report IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail
-> +	 * enforce_cache_coherency when there are no devices attached to the
-> +	 * domain.
-> +	 */
-> +	if (idev->enforce_cache_coherency && !hwpt->enforce_cache_coherency) {
-> +		if (hwpt->domain->ops->enforce_cache_coherency)
-> +			hwpt->enforce_cache_coherency =
-> +				hwpt->domain->ops->enforce_cache_coherency(
-> +					hwpt->domain);
-> +		if (!hwpt->enforce_cache_coherency) {
-> +			WARN_ON(list_empty(&hwpt->devices));
-> +			rc = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +	}
-> +
-> +	rc = iopt_table_enforce_group_resv_regions(&hwpt->ioas->iopt, idev->dev,
-> +						   idev->group, &sw_msi_start);
-> +	if (rc)
-> +		goto out_unlock;
-> +
-so in the case of any IOMMU_RESV_MSI, iommufd_device_setup_msi() will be
-called with *sw_msi_start = 0 which will return -EPERM?
-I don't think this is what we want. In that case I think we want the
-RESV_MSI region to be taken into account as a RESV region but we don't
-need the MSI cookie.
-> +	rc = iommufd_device_setup_msi(idev, hwpt, sw_msi_start, flags);
-> +	if (rc)
-> +		goto out_iova;
-> +
-> +	/*
-> +	 * FIXME: Hack around missing a device-centric iommu api, only attach to
-> +	 * the group once for the first device that is in the group.
-> +	 */
-> +	if (!iommufd_hw_pagetable_has_group(hwpt, idev->group)) {
-> +		rc = iommu_attach_group(hwpt->domain, idev->group);
-> +		if (rc)
-> +			goto out_iova;
-> +
-> +		if (list_empty(&hwpt->devices)) {
-> +			rc = iopt_table_add_domain(&hwpt->ioas->iopt,
-> +						   hwpt->domain);
-> +			if (rc)
-> +				goto out_detach;
-> +		}
-> +	}
-> +
-> +	idev->hwpt = hwpt;
-> +	refcount_inc(&hwpt->obj.users);
-> +	list_add(&idev->devices_item, &hwpt->devices);
-> +	mutex_unlock(&hwpt->devices_lock);
-> +	return 0;
-> +
-> +out_detach:
-> +	iommu_detach_group(hwpt->domain, idev->group);
-> +out_iova:
-> +	iopt_remove_reserved_iova(&hwpt->ioas->iopt, idev->dev);
-> +out_unlock:
-> +	mutex_unlock(&hwpt->devices_lock);
-> +	return rc;
-> +}
-> +
-> +/*
-> + * When automatically managing the domains we search for a compatible domain in
-> + * the iopt and if one is found use it, otherwise create a new domain.
-> + * Automatic domain selection will never pick a manually created domain.
-> + */
-> +static int iommufd_device_auto_get_domain(struct iommufd_device *idev,
-> +					  struct iommufd_ioas *ioas,
-> +					  unsigned int flags)
-> +{
-> +	struct iommufd_hw_pagetable *hwpt;
-> +	int rc;
-> +
-> +	/*
-> +	 * There is no differentiation when domains are allocated, so any domain
-> +	 * that is willing to attach to the device is interchangeable with any
-> +	 * other.
-> +	 */
-> +	mutex_lock(&ioas->mutex);
-> +	list_for_each_entry(hwpt, &ioas->hwpt_list, hwpt_item) {
-> +		if (!hwpt->auto_domain)
-> +			continue;
-> +
-> +		rc = iommufd_device_do_attach(idev, hwpt, flags);
-> +
-> +		/*
-> +		 * -EINVAL means the domain is incompatible with the device.
-> +		 * Other error codes should propagate to userspace as failure.
-> +		 * Success means the domain is attached.
-> +		 */
-> +		if (rc == -EINVAL)
-> +			continue;
-> +		goto out_unlock;
-> +	}
-> +
-> +	hwpt = iommufd_hw_pagetable_alloc(idev->ictx, ioas, idev->dev);
-> +	if (IS_ERR(hwpt)) {
-> +		rc = PTR_ERR(hwpt);
-> +		goto out_unlock;
-> +	}
-> +	hwpt->auto_domain = true;
-> +
-> +	rc = iommufd_device_do_attach(idev, hwpt, flags);
-> +	if (rc)
-> +		goto out_abort;
-> +	list_add_tail(&hwpt->hwpt_item, &ioas->hwpt_list);
-> +
-> +	mutex_unlock(&ioas->mutex);
-> +	iommufd_object_finalize(idev->ictx, &hwpt->obj);
-> +	return 0;
-> +
-> +out_abort:
-> +	iommufd_object_abort_and_destroy(idev->ictx, &hwpt->obj);
-> +out_unlock:
-> +	mutex_unlock(&ioas->mutex);
-> +	return rc;
-> +}
-> +
-> +/**
-> + * iommufd_device_attach - Connect a device to an iommu_domain
-> + * @idev: device to attach
-> + * @pt_id: Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HW_PAGETABLE
-> + *         Output the IOMMUFD_OBJ_HW_PAGETABLE ID
-> + * @flags: Optional flags
-> + *
-> + * This connects the device to an iommu_domain, either automatically or manually
-> + * selected. Once this completes the device could do DMA.
-> + *
-> + * The caller should return the resulting pt_id back to userspace.
-> + * This function is undone by calling iommufd_device_detach().
-> + */
-> +int iommufd_device_attach(struct iommufd_device *idev, u32 *pt_id,
-> +			  unsigned int flags)
-> +{
-> +	struct iommufd_object *pt_obj;
-> +	int rc;
-> +
-> +	pt_obj = iommufd_get_object(idev->ictx, *pt_id, IOMMUFD_OBJ_ANY);
-> +	if (IS_ERR(pt_obj))
-> +		return PTR_ERR(pt_obj);
-> +
-> +	switch (pt_obj->type) {
-> +	case IOMMUFD_OBJ_HW_PAGETABLE: {
-> +		struct iommufd_hw_pagetable *hwpt =
-> +			container_of(pt_obj, struct iommufd_hw_pagetable, obj);
-> +
-> +		rc = iommufd_device_do_attach(idev, hwpt, flags);
-> +		if (rc)
-> +			goto out_put_pt_obj;
-> +
-> +		mutex_lock(&hwpt->ioas->mutex);
-> +		list_add_tail(&hwpt->hwpt_item, &hwpt->ioas->hwpt_list);
-> +		mutex_unlock(&hwpt->ioas->mutex);
-> +		break;
-> +	}
-> +	case IOMMUFD_OBJ_IOAS: {
-> +		struct iommufd_ioas *ioas =
-> +			container_of(pt_obj, struct iommufd_ioas, obj);
-> +
-> +		rc = iommufd_device_auto_get_domain(idev, ioas, flags);
-> +		if (rc)
-> +			goto out_put_pt_obj;
-> +		break;
-> +	}
-> +	default:
-> +		rc = -EINVAL;
-> +		goto out_put_pt_obj;
-> +	}
-> +
-> +	refcount_inc(&idev->obj.users);
-> +	*pt_id = idev->hwpt->obj.id;
-> +	rc = 0;
-> +
-> +out_put_pt_obj:
-> +	iommufd_put_object(pt_obj);
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(iommufd_device_attach, IOMMUFD);
-> +
-> +/**
-> + * iommufd_device_detach - Disconnect a device to an iommu_domain
-from
-> + * @idev: device to detach
-> + *
-> + * Undo iommufd_device_attach(). This disconnects the idev from the previously
-> + * attached pt_id. The device returns back to a blocked DMA translation.
-> + */
-> +void iommufd_device_detach(struct iommufd_device *idev)
-> +{
-> +	struct iommufd_hw_pagetable *hwpt = idev->hwpt;
-> +
-> +	mutex_lock(&hwpt->ioas->mutex);
-> +	mutex_lock(&hwpt->devices_lock);
-> +	list_del(&idev->devices_item);
-> +	if (!iommufd_hw_pagetable_has_group(hwpt, idev->group)) {
-> +		if (list_empty(&hwpt->devices)) {
-> +			iopt_table_remove_domain(&hwpt->ioas->iopt,
-> +						 hwpt->domain);
-> +			list_del(&hwpt->hwpt_item);
-> +		}
-> +		iommu_detach_group(hwpt->domain, idev->group);
-> +	}
-> +	iopt_remove_reserved_iova(&hwpt->ioas->iopt, idev->dev);
-> +	mutex_unlock(&hwpt->devices_lock);
-> +	mutex_unlock(&hwpt->ioas->mutex);
-> +
-> +	if (hwpt->auto_domain)
-> +		iommufd_object_destroy_user(idev->ictx, &hwpt->obj);
-> +	else
-> +		refcount_dec(&hwpt->obj.users);
-> +
-> +	idev->hwpt = NULL;
-> +
-> +	refcount_dec(&idev->obj.users);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(iommufd_device_detach, IOMMUFD);
-> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-> index bb5cbd8f4e5991..73345886d969e5 100644
-> --- a/drivers/iommu/iommufd/iommufd_private.h
-> +++ b/drivers/iommu/iommufd/iommufd_private.h
-> @@ -103,6 +103,7 @@ static inline int iommufd_ucmd_respond(struct iommufd_ucmd *ucmd,
->  enum iommufd_object_type {
->  	IOMMUFD_OBJ_NONE,
->  	IOMMUFD_OBJ_ANY = IOMMUFD_OBJ_NONE,
-> +	IOMMUFD_OBJ_DEVICE,
->  	IOMMUFD_OBJ_HW_PAGETABLE,
->  	IOMMUFD_OBJ_IOAS,
->  };
-> @@ -229,6 +230,8 @@ struct iommufd_hw_pagetable {
->  	struct iommufd_ioas *ioas;
->  	struct iommu_domain *domain;
->  	bool auto_domain : 1;
-> +	bool enforce_cache_coherency : 1;
-> +	bool msi_cookie : 1;
->  	/* Head at iommufd_ioas::hwpt_list */
->  	struct list_head hwpt_item;
->  	struct mutex devices_lock;
-> @@ -240,6 +243,8 @@ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
->  			   struct device *dev);
->  void iommufd_hw_pagetable_destroy(struct iommufd_object *obj);
->  
-> +void iommufd_device_destroy(struct iommufd_object *obj);
-> +
->  struct iommufd_access {
->  	unsigned long iova_alignment;
->  	u32 iopt_access_list_id;
-> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-> index 3eab714b8e12a3..8a114ddbdfcde2 100644
-> --- a/drivers/iommu/iommufd/main.c
-> +++ b/drivers/iommu/iommufd/main.c
-> @@ -352,6 +352,9 @@ void iommufd_ctx_put(struct iommufd_ctx *ictx)
->  EXPORT_SYMBOL_NS_GPL(iommufd_ctx_put, IOMMUFD);
->  
->  static const struct iommufd_object_ops iommufd_object_ops[] = {
-> +	[IOMMUFD_OBJ_DEVICE] = {
-> +		.destroy = iommufd_device_destroy,
-> +	},
->  	[IOMMUFD_OBJ_IOAS] = {
->  		.destroy = iommufd_ioas_destroy,
->  	},
-> diff --git a/include/linux/iommufd.h b/include/linux/iommufd.h
-> index 26e09d539737bb..31efacd8a46cce 100644
-> --- a/include/linux/iommufd.h
-> +++ b/include/linux/iommufd.h
-> @@ -9,10 +9,23 @@
->  #include <linux/types.h>
->  #include <linux/errno.h>
->  #include <linux/err.h>
-> +#include <linux/device.h>
->  
-> +struct iommufd_device;
->  struct iommufd_ctx;
->  struct file;
->  
-> +struct iommufd_device *iommufd_device_bind(struct iommufd_ctx *ictx,
-> +					   struct device *dev, u32 *id);
-> +void iommufd_device_unbind(struct iommufd_device *idev);
-> +
-> +enum {
-> +	IOMMUFD_ATTACH_FLAGS_ALLOW_UNSAFE_INTERRUPT = 1 << 0,
-> +};
-> +int iommufd_device_attach(struct iommufd_device *idev, u32 *pt_id,
-> +			  unsigned int flags);
-> +void iommufd_device_detach(struct iommufd_device *idev);
-> +
->  enum {
->  	IOMMUFD_ACCESS_RW_READ = 0,
->  	IOMMUFD_ACCESS_RW_WRITE = 1 << 0,
-Thanks
-
-Eric
-
+> 
+> Currently, arch/x86/include/asm/ibt.h which defines macro IBT_NOSEAL is
+> x86 specific. How about we just put asm at test_run.c directly (ugly?):
+> 
+> #if defined(CONFIG_X86_KERNEL_IBT) && !defined(__DISABLE_EXPORTS)
+> asm(IBT_NOSEAL("bpf_kfunc_call_test_release"));
+> asm(IBT_NOSEAL("bpf_kfunc_call_memb_release"));
+> #endif
+> 
+> thanks
+> Chen Hu
+> 
+> > 
+> >> +
+> >>  #endif
+> >> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> >> index 13d578ce2a09..07263b7cc12d 100644
+> >> --- a/net/bpf/test_run.c
+> >> +++ b/net/bpf/test_run.c
+> >> @@ -597,10 +597,14 @@ noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+> >>  	refcount_dec(&p->cnt);
+> >>  }
+> >>  
+> >> +FUNC_IBT_NOSEAL(bpf_kfunc_call_test_release)
+> >> +
+> >>  noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+> >>  {
+> >>  }
+> >>  
+> >> +FUNC_IBT_NOSEAL(bpf_kfunc_call_memb_release)
+> >> +
+> >>  noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
+> >>  {
+> >>  	WARN_ON_ONCE(1);
+> >> -- 
+> >> 2.34.1
+> >>
