@@ -2,209 +2,333 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0991F63993D
-	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 04:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F819639B7F
+	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 16:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiK0D13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Nov 2022 22:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
+        id S229595AbiK0PNX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Nov 2022 10:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiK0D11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Nov 2022 22:27:27 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2074.outbound.protection.outlook.com [40.92.74.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE41EBF8;
-        Sat, 26 Nov 2022 19:27:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Uask4IVPYmGO+P/4WIq0mx+qgqG00ILb58MXVIytkkaH18tbcB/Nf4y4ezlfLlSp8lfJobClgtFVF855rn4/kvKPCekumweENZInH0sb6qhnmGf/LDc3I/uBObahy83ZrPpG/HPjlH0PzOGYQ1DRlmK0Q252PAQb/hEMbUlwpPo/cTQReQ4C4kombNMXgD+Yr6DQ1nrrlfJdKbLWAhWQ+4yoH6qnNEVCauworYmUVMKzGWfP42O/W8fn1s5iGNCbgXYXwaLpxbH3h/5FB6IwMnVk/6WULYug0QB8nQckJ5Qr4brS91yiozQ0vqjx3mjYmGKLUfUIAAXo5gBPm/Kflw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ackfQM7fexNTvC5EUOCA2cWH3piiALQb7mJBhabm118=;
- b=WhebDmMnLDeReZfp3F/pGketaHdGb+4injcUP8w3DSPjEiqCghdncSsCLKvvO/xrVunMsl0CfDeCXbiItUIXHY9FrIo6FuvUUrsoPbC1P0sDAp/QU6sIeZ60B5YtDayacdd0Lyf7MB30caRapfV2cH2k+WMwNT6nq/qqFquJqw7gXamhaJeaW1pNZ4Thm1Aou5pCptWgcZ3IPHrEL5F5vol3Vrc9qCGZG/oVAOKx7cm2lvsMlPHZe2a1SlUsCNbshYHIRulyx377FcIFVXoqCZRamGDYmUp8uU++gZIx8CZsuVecAPcUcuZrD1NeSBH7YDJqG6GYXXAGO+O76IhwPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ackfQM7fexNTvC5EUOCA2cWH3piiALQb7mJBhabm118=;
- b=Z+1ad5ZOTBRJNzAJr7aHvmud4eGUdeLVytin58OsNO+WiNaiSztaWI/+oz812jBlYl79PiIDREQlbHF43xflIO26SOOsi+lRiCdtF/5kVQqe7oE/8efkJInmbi+wtfMqfOimQdwH+VjJV8cMD8ohf6csL/VRmp+Yoq/6lwnlT4uATEuArpQQK9GTZge/5u7BoWF0WXiwyNI7pjqiHrDDHXaAkbxchJyFub09VGlljGAntd0Rv/JF9gG+WHjULbG6WLqaw/ZGkywoO9yoFLaR9eVGto9GD8JuKiFxUVvAidYkHRveWY+ZscZsXVMyoAH8+9oS0LfijSOvTt7tgVZ95g==
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
- by AM7P192MB0817.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:14f::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.22; Sun, 27 Nov
- 2022 03:27:24 +0000
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b%7]) with mapi id 15.20.5857.021; Sun, 27 Nov 2022
- 03:27:24 +0000
-Message-ID: <DU0P192MB15474DA29DF17452DC3E95A9D6109@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
-Date:   Sun, 27 Nov 2022 11:27:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH bpf v2] bpf: Update bpf_{g,s}etsockopt() documentation
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, joannelkoong@gmail.com,
-        kuifeng@fb.com, lorenzo@kernel.org, maximmi@nvidia.com,
-        quentin@isovalent.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <DU0P192MB15479B86200B1216EC90E162D6099@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
- <0977584d-8aff-624d-4cf8-a6e4868958c5@iogearbox.net>
- <6fbd8c35-04de-c379-5062-a0b9d4a8ebbe@linux.dev>
-From:   Ji Rongfeng <SikoJobs@outlook.com>
-In-Reply-To: <6fbd8c35-04de-c379-5062-a0b9d4a8ebbe@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [r+AFiboAZLtjZOeeWFFUHdwdAkZMotz/]
-X-ClientProxiedBy: SI2PR04CA0012.apcprd04.prod.outlook.com
- (2603:1096:4:197::14) To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:10:34b::15)
-X-Microsoft-Original-Message-ID: <7ede0b02-6fe6-f51e-eb3c-bf6dab63aa21@outlook.com>
+        with ESMTP id S229495AbiK0PNW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Nov 2022 10:13:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C060AA
+        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 07:12:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669561947;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J0wiRNFjSfwxayhwReKk2HhCdJf+ke5EttJUm2mT+i4=;
+        b=IV3moYcI7JTQClftDzRdbKqYJdkrpX7kJNbW2QliL5Y+sMsB1YfwD/EhrxRJff1QiC8OH5
+        ML4MtkDjRblRHDoeFgusAG9q1oYhDE+0t7wXdQm5UHiFNsFlsNXVLKvd4YBbheoqqXFBrN
+        DqJMlq+x+5TDApixzsh7dVA5aI6CdAM=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-101-_p--pv27OFGgfQ2bTLQI8Q-1; Sun, 27 Nov 2022 10:12:20 -0500
+X-MC-Unique: _p--pv27OFGgfQ2bTLQI8Q-1
+Received: by mail-qk1-f199.google.com with SMTP id y22-20020a05620a25d600b006fc49e06062so12617098qko.4
+        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 07:12:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J0wiRNFjSfwxayhwReKk2HhCdJf+ke5EttJUm2mT+i4=;
+        b=z3CO91pZ2Qo7qbA+BeglX/Us0IcvplWsPsCD6lLA3ljqD9tUvYGGuOfsrS1YW5V7w0
+         RIs6/94hviNc54hj4KxQmJkj8BwuZeKoFwEgDYilbNKfoQC3rFG5BGk2dlzRf5peMZzp
+         pso0z/jXt5P4AhP6zyCduoD8CQzF9XJ6MXPA/BFz/Y1ucQRyuAHL5x2Ye048mnj4EQNE
+         sqF09nHTHOS2du8WwoydH78CAfwFUWAwTm2z4SW0G2I3ZoLRfXRD5iRACnum+LrPq2Nz
+         RWH7yTC6bZ567ekBQTOGxMLWWqGWMXtsNhPWJ6ONaY9unvsdTv655XQxY72UAqtPv6+T
+         OvUA==
+X-Gm-Message-State: ANoB5plXQbOAJVQlV3fBrwcZ5iEtERX2lEIz+7xzcrkwxXqciKdNhvol
+        wxYavrAFX0QWf2t5bM2gFMTwFfhD7Ap8Um7ZRVsxskeby5WbvPggUENVpaHXPUwaruvmKwWbVmb
+        fEA/peahlt+WB
+X-Received: by 2002:ac8:41ca:0:b0:3a5:6d50:7f39 with SMTP id o10-20020ac841ca000000b003a56d507f39mr43685454qtm.520.1669561940381;
+        Sun, 27 Nov 2022 07:12:20 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5FIGBQMs4mdaEfvQ4YaXsydmwTyqPu/CYEBG9rDFeez+Q924zAUFLRipm1jW/U1yXVCME7aQ==
+X-Received: by 2002:ac8:41ca:0:b0:3a5:6d50:7f39 with SMTP id o10-20020ac841ca000000b003a56d507f39mr43685406qtm.520.1669561940087;
+        Sun, 27 Nov 2022 07:12:20 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id w30-20020a05620a0e9e00b006faaf6dc55asm6458946qkm.22.2022.11.27.07.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Nov 2022 07:12:18 -0800 (PST)
+Message-ID: <84c2c942-055b-b500-f209-5f8839113ef0@redhat.com>
+Date:   Sun, 27 Nov 2022 16:12:11 +0100
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|AM7P192MB0817:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff57024e-8f28-45e5-8150-08dad0274d0a
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gYrycaXG9SEVa1zDXoMZd3yQK+4RI8LBP+dk9i3RYZvDrR5XNFWd56+LCQWiBBItB+0yeK6XWrLbUisWpc00XWVr+iAT1NBWLI4ec3kw/R0EVHusK4YaLiKneimmYBVBJ27edNTA/nye+pu44nTZdjuZFWr9Pug1CHaeCwvOPsrDEweFob7H/+W5gtswpf/l8f5YPEdV892mg9aN1uvijweWfcdp8GPJCq03LYmovt8iDngUOC/2TqHMxXCjkxfd5xFiGQYLvSt7Mh/Pqgl8pBl09fTN3g2lsoaFlP4ZsEqj2+hUhTM/5vRAYPpSl4f5ldwitLyIGDerF3xfBrzH2r58lqE4Qwt1LGUeIPCxxXWfPmBmVw4bSFnuXA055MEYTHZYYoGN3DwXBY2Feb2ctp5P/ACMxSq7GB9FZzAtGZEyjbbLWWz26y2EjS11nYLe2MmCyIu1ytf43Y7QI/XaOokeq2aSN5Jdak/WxYZrfT5R75FIv7zUnUkjV73aOn0gF5v1z5J07wTEnBFkjF85A9ejby019eHEXl14tpu+niNSV0SkcOK4I+0o3qBeufWUnO29dF2/VZAXnFv9Kn1OagAjYLgPfIe/BwWQqDnBG3op71ReCbw85cpB+oQ/j3tVeh7LDhg3Aq5EwGSBGw3Z6A==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c2Q4UjRFNEYveUF0YnNUMHlmZndnRk5IOFZWcnJVSUxXQ0N0Y1BrSGxsdkZQ?=
- =?utf-8?B?Z0FPQ1NPSU9SVkprWmt3Mi9RQkszcWJ2UjJpa0N1bUxaMXFMWFlqMlVzOHRZ?=
- =?utf-8?B?NVFPV3JqNTV5Q1RmSDg5bldmc1dpQ0pGMzh2b0s2bXZYQ3g0Wjg1VEJ0ZWxI?=
- =?utf-8?B?RVk2dmtPVkIyc0RjdDFGaEl4SEE5QWtmYjhWTkxDWTFlMXNqSXZhNnh4eHpJ?=
- =?utf-8?B?eHQrdlFNV005TXhicHlyeVRxbHJ3dTM1QndRYm9zL05nZGVkZk5rMjRyZ0Qy?=
- =?utf-8?B?amptQkVUUDhDWVZ6VDVySDZBUnNQcndPZk5KSEhTQ3VOMngycmxZQU1sTHEy?=
- =?utf-8?B?bzQvUVUralg0cnRGSzQzc2xUTW5Gemk0NXE5TFd3NW5KdzBnRHdGak92ZmhO?=
- =?utf-8?B?WkhvSHV2eEY0K25Ua0g5Y3pFMStmenFsdzhWZnhmRUxna0krVW5YSmxIZGhp?=
- =?utf-8?B?dFRPamZtZ2liT29lVlJwWWQ0WXJoNU9KVExYNnFYbUdWYU01R1I1bTFSbkh2?=
- =?utf-8?B?MVpWTllvQWNoT2FyVjlsd0MzT3l4Q1JBUkxGQ1loL25NSnZXaTNUaWRHcThN?=
- =?utf-8?B?MzM0QVQ5K3BwcCtITVVpTWs0Sm1uVmFPRE56S3FuN3ViWlViRmZtb1lwQ01Q?=
- =?utf-8?B?a2lQdEUxRmpzQ1NuRit3MTNTbkxVL0trQUxXYWNRMGVvTndQUENlNnRqckd0?=
- =?utf-8?B?NGxxb2NPbDMwMHJCWFZ3WVN3aTVleUxDanQ2UzhHVzByb0xQdUc5WDFzOVk2?=
- =?utf-8?B?ZHdpanVhNysrZWl5SVRQeHM1dmd5L1ZJeFQzVTQvcitiTGlwNmU3R3MzNDZn?=
- =?utf-8?B?VTg2M2dmaUFxczB3WG5DYjRhdllOMVl6YldXSWJrb1VrbW5EUE1IaHVnSzRO?=
- =?utf-8?B?bVZzaDdSUUt2dzRUR3h1elVmUUZqWjBxeE11V1c5ODV2MHhad3BKbFJoTzVo?=
- =?utf-8?B?RUNybEZxTXlvcERMeHJMT21wZ2RhWTY1LzVmZmxIYkJBVS9vS3J6cEE5Ukkv?=
- =?utf-8?B?YTZqZWdRRzBhWk42ZUVzNmRjV3ZlQVR4MmdjbTczQSt3L1htWks4K29vamMr?=
- =?utf-8?B?QjVQWmUrcEk0eFNOVnhRaW9ieXk0bUNOTENVajBkMHdRVFJwcTdUNHU0N0N4?=
- =?utf-8?B?cnNONVo0dHpCZTlKK0J5TFhoVkVQMDFrcmszcVYzdVRiUnBhZTJZYUVhME1W?=
- =?utf-8?B?SytkNThsaHE3VGRPMFEwYlUyZ0RVWUJ0QURPbVZHOFZQMWt3NUgvQXVHUFZY?=
- =?utf-8?B?c3NmOGZrYWZOTC91R0RYaHQyajNOaWZxeHVjbWcrZ2szMVdsZ3MwWitHTU5I?=
- =?utf-8?B?UmdzS2V0cDJFRDd3eUNkSitET1FBYTdMM0xsNWFHMHByMVZnRytobkp0QTVB?=
- =?utf-8?B?YW0rTStBK05YNjJ5eDdSWW5xaXl4MGdFUW1BVmJ1V1BObDkwTkxPRWFZMGJy?=
- =?utf-8?B?eGhucXNKL21rd2p5NnlSeUVXdVhrSUgyQzBtWElCaWtMTlEvZkdKbkh2OG9x?=
- =?utf-8?B?RnRwa0xyYnBRcXh6OXoyajRKc2hsOXNIMFpmWUdMZFNuZ0pta0tzU2R4ZEEx?=
- =?utf-8?B?OTgyV1E0ZWQ0YkZqYmh1L29BQ2ZwNENwM0FHSzRmelJGTkljQkoyWGI0a3lT?=
- =?utf-8?B?TG01NkNuNHNtTkJVVUlTSkxBOGZxNDBCSUl6RGh5cm1TYUFpSnZnQ1JndU0x?=
- =?utf-8?B?dzkzViticktwSE8wSVRaVWdSNlJCaGVHRkV2QWhaUVRCRmkzUWE0S3lBPT0=?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff57024e-8f28-45e5-8150-08dad0274d0a
-X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2022 03:27:24.7118
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7P192MB0817
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v5 12/19] iommufd: Add a HW pagetable object
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Lixiao Yang <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <12-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <12-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/11/24 8:40, Martin KaFai Lau wrote:
-> On 11/23/22 4:18 PM, Daniel Borkmann wrote:
->> On 11/18/22 9:18 AM, Ji Rongfeng wrote:
->>> * append missing optnames to the end
->>> * simplify bpf_getsockopt()'s doc
->>>
->>> Signed-off-by: Ji Rongfeng <SikoJobs@outlook.com>
->>> ---
->>>   include/uapi/linux/bpf.h       | 20 ++++++++++++--------
->>>   tools/include/uapi/linux/bpf.h | 20 ++++++++++++--------
->>>   2 files changed, 24 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->>> index 51b9aa640ad2..14f29d95ea71 100644
->>> --- a/include/uapi/linux/bpf.h
->>> +++ b/include/uapi/linux/bpf.h
->>> @@ -2576,14 +2576,19 @@ union bpf_attr {
->>>    *         * **SOL_SOCKET**, which supports the following 
->>> *optname*\ s:
->>>    *           **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
->>>    *           **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
->>> - *           **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
->>> + *           **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
->>> + *           **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
->>>    *         * **IPPROTO_TCP**, which supports the following 
->>> *optname*\ s:
->>>    *           **TCP_CONGESTION**, **TCP_BPF_IW**,
->>>    *           **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
->>>    *           **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
->>> - *          **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, 
->>> **TCP_NOTSENT_LOWAT**.
->>> + *           **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, 
->>> **TCP_NOTSENT_LOWAT**,
->>> + *           **TCP_NODELAY**, **TCP_MAXSEG**, **TCP_WINDOW_CLAMP**,
->>> + *           **TCP_THIN_LINEAR_TIMEOUTS**, **TCP_BPF_DELACK_MAX**,
->>> + *           **TCP_BPF_RTO_MIN**.
->>>    *         * **IPPROTO_IP**, which supports *optname* **IP_TOS**.
->>> - *         * **IPPROTO_IPV6**, which supports *optname* 
->>> **IPV6_TCLASS**.
->>> + *         * **IPPROTO_IPV6**, which supports the following 
->>> *optname*\ s:
->>> + *           **IPV6_TCLASS**, **IPV6_AUTOFLOWLABEL**.
->>>    *     Return
->>>    *         0 on success, or a negative error in case of failure.
->>>    *
->>> @@ -2800,12 +2805,11 @@ union bpf_attr {
->>>    *           and **BPF_CGROUP_INET6_CONNECT**.
->>>    *
->>>    *         This helper actually implements a subset of 
->>> **getsockopt()**.
->>> - *         It supports the following *level*\ s:
->>> + *         It supports the same set of *optname*\ s that supported by
->>
->> nit: that is supported by
->>
->>> + *         **bpf_setsockopt**\ () helper with a few exceptions:
->>>    *
->>> - *         * **IPPROTO_TCP**, which supports *optname*
->>> - *           **TCP_CONGESTION**.
->>> - *         * **IPPROTO_IP**, which supports *optname* **IP_TOS**.
->>> - *         * **IPPROTO_IPV6**, which supports *optname* 
->>> **IPV6_TCLASS**.
->>> + *         * **bpf_setsockopt**\ () helper only: **TCP_BPF_***.
->>> + *         * **bpf_getsockopt**\ () helper only: **TCP_SAVED_SYNC**.
->>
->> I think from a user PoV the above is a bit hard to follow, maybe take 
->> Martin's
->> earlier feedback into account and add a proper sentence; it will be 
->> much easier
->> to understand.
+Hi Jason,
+
+On 11/16/22 22:00, Jason Gunthorpe wrote:
+> The hw_pagetable object exposes the internal struct iommu_domain's to
+> userspace. An iommu_domain is required when any DMA device attaches to an
+> IOAS to control the io page table through the iommu driver.
 >
-> +1  Made the change and also fixed TCP_SAVED_SYNC with s/SYNC/SYN/ 
-> while applying.  Thanks!
+> For compatibility with VFIO the hw_pagetable is automatically created when
+> a DMA device is attached to the IOAS. If a compatible iommu_domain already
+> exists then the hw_pagetable associated with it is used for the
+> attachment.
+>
+> In the initial series there is no iommufd uAPI for the hw_pagetable
+> object. The next patch provides driver facing APIs for IO page table
+> attachment that allows drivers to accept either an IOAS or a hw_pagetable
+> ID and for the driver to return the hw_pagetable ID that was auto-selected
+> from an IOAS. The expectation is the driver will provide uAPI through its
+> own FD for attaching its device to iommufd. This allows userspace to learn
+> the mapping of devices to iommu_domains and to override the automatic
+> attachment.
+>
+> The future HW specific interface will allow userspace to create
+> hw_pagetable objects using iommu_domains with IOMMU driver specific
+> parameters. This infrastructure will allow linking those domains to IOAS's
+> and devices.
+>
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Tested-by: Yi Liu <yi.l.liu@intel.com>
+> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
+> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/iommu/iommufd/Makefile          |  1 +
+>  drivers/iommu/iommufd/hw_pagetable.c    | 57 +++++++++++++++++++++++++
+>  drivers/iommu/iommufd/ioas.c            |  3 ++
+>  drivers/iommu/iommufd/iommufd_private.h | 33 ++++++++++++++
+>  drivers/iommu/iommufd/main.c            |  3 ++
+>  5 files changed, 97 insertions(+)
+>  create mode 100644 drivers/iommu/iommufd/hw_pagetable.c
+>
+> diff --git a/drivers/iommu/iommufd/Makefile b/drivers/iommu/iommufd/Makefile
+> index 2b4f36f1b72f9d..e13e971aa28c60 100644
+> --- a/drivers/iommu/iommufd/Makefile
+> +++ b/drivers/iommu/iommufd/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  iommufd-y := \
+> +	hw_pagetable.o \
+>  	io_pagetable.o \
+>  	ioas.o \
+>  	main.o \
+> diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+> new file mode 100644
+> index 00000000000000..43d473989a0667
+> --- /dev/null
+> +++ b/drivers/iommu/iommufd/hw_pagetable.c
+> @@ -0,0 +1,57 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021-2022, NVIDIA CORPORATION & AFFILIATES
+> + */
+> +#include <linux/iommu.h>
+> +
+> +#include "iommufd_private.h"
+> +
+> +void iommufd_hw_pagetable_destroy(struct iommufd_object *obj)
+> +{
+> +	struct iommufd_hw_pagetable *hwpt =
+> +		container_of(obj, struct iommufd_hw_pagetable, obj);
+> +
+> +	WARN_ON(!list_empty(&hwpt->devices));
+> +
+> +	iommu_domain_free(hwpt->domain);
+> +	refcount_dec(&hwpt->ioas->obj.users);
+> +	mutex_destroy(&hwpt->devices_lock);
+> +}
+> +
+> +/**
+> + * iommufd_hw_pagetable_alloc() - Get an iommu_domain for a device
+> + * @ictx: iommufd context
+> + * @ioas: IOAS to associate the domain with
+> + * @dev: Device to get an iommu_domain for
+> + *
+> + * Allocate a new iommu_domain and return it as a hw_pagetable.
+> + */
+> +struct iommufd_hw_pagetable *
+> +iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+> +			   struct device *dev)
+> +{
+> +	struct iommufd_hw_pagetable *hwpt;
+> +	int rc;
+> +
+> +	hwpt = iommufd_object_alloc(ictx, hwpt, IOMMUFD_OBJ_HW_PAGETABLE);
+> +	if (IS_ERR(hwpt))
+> +		return hwpt;
+> +
+> +	hwpt->domain = iommu_domain_alloc(dev->bus);
+> +	if (!hwpt->domain) {
+> +		rc = -ENOMEM;
+> +		goto out_abort;
+> +	}
+> +
+> +	INIT_LIST_HEAD(&hwpt->devices);
+> +	INIT_LIST_HEAD(&hwpt->hwpt_item);
+> +	mutex_init(&hwpt->devices_lock);
+> +	/* Pairs with iommufd_hw_pagetable_destroy() */
+> +	refcount_inc(&ioas->obj.users);
+> +	hwpt->ioas = ioas;
+> +	return hwpt;
+> +
+> +out_abort:
+> +	iommufd_object_abort(ictx, &hwpt->obj);
+> +	return ERR_PTR(rc);
+> +}
+> diff --git a/drivers/iommu/iommufd/ioas.c b/drivers/iommu/iommufd/ioas.c
+> index 7671456e86413a..64e6d0f73e39aa 100644
+> --- a/drivers/iommu/iommufd/ioas.c
+> +++ b/drivers/iommu/iommufd/ioas.c
+> @@ -17,6 +17,7 @@ void iommufd_ioas_destroy(struct iommufd_object *obj)
+>  	rc = iopt_unmap_all(&ioas->iopt, NULL);
+>  	WARN_ON(rc && rc != -ENOENT);
+>  	iopt_destroy_table(&ioas->iopt);
+> +	mutex_destroy(&ioas->mutex);
+>  }
+>  
+>  struct iommufd_ioas *iommufd_ioas_alloc(struct iommufd_ctx *ictx)
+> @@ -28,6 +29,8 @@ struct iommufd_ioas *iommufd_ioas_alloc(struct iommufd_ctx *ictx)
+>  		return ioas;
+>  
+>  	iopt_init_table(&ioas->iopt);
+> +	INIT_LIST_HEAD(&ioas->hwpt_list);
+> +	mutex_init(&ioas->mutex);
+>  	return ioas;
+>  }
+>  
+> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+> index 6721332dbbba03..bb5cbd8f4e5991 100644
+> --- a/drivers/iommu/iommufd/iommufd_private.h
+> +++ b/drivers/iommu/iommufd/iommufd_private.h
+> @@ -103,6 +103,7 @@ static inline int iommufd_ucmd_respond(struct iommufd_ucmd *ucmd,
+>  enum iommufd_object_type {
+>  	IOMMUFD_OBJ_NONE,
+>  	IOMMUFD_OBJ_ANY = IOMMUFD_OBJ_NONE,
+> +	IOMMUFD_OBJ_HW_PAGETABLE,
+>  	IOMMUFD_OBJ_IOAS,
+>  };
+>  
+> @@ -181,10 +182,20 @@ struct iommufd_object *_iommufd_object_alloc(struct iommufd_ctx *ictx,
+>   * io_pagetable object. It is a user controlled mapping of IOVA -> PFNs. The
+>   * mapping is copied into all of the associated domains and made available to
+>   * in-kernel users.
+> + *
+> + * Every iommu_domain that is created is wrapped in a iommufd_hw_pagetable
+> + * object. When we go to attach a device to an IOAS we need to get an
+> + * iommu_domain and wrapping iommufd_hw_pagetable for it.
+> + *
+> + * An iommu_domain & iommfd_hw_pagetable will be automatically selected
+> + * for a device based on the hwpt_list. If no suitable iommu_domain
+> + * is found a new iommu_domain will be created.
+>   */
+>  struct iommufd_ioas {
+>  	struct iommufd_object obj;
+>  	struct io_pagetable iopt;
+> +	struct mutex mutex;+	struct list_head hwpt_list;
+>  };
+>  
+>  static inline struct iommufd_ioas *iommufd_get_ioas(struct iommufd_ucmd *ucmd,
+> @@ -207,6 +218,28 @@ int iommufd_ioas_option(struct iommufd_ucmd *ucmd);
+>  int iommufd_option_rlimit_mode(struct iommu_option *cmd,
+>  			       struct iommufd_ctx *ictx);
+>  
+> +/*
+> + * A HW pagetable is called an iommu_domain inside the kernel. This user object
+> + * allows directly creating and inspecting the domains. Domains that have kernel
+> + * owned page tables will be associated with an iommufd_ioas that provides the
+> + * IOVA to PFN map.
+> + */
+> +struct iommufd_hw_pagetable {
+> +	struct iommufd_object obj;
+> +	struct iommufd_ioas *ioas;
+> +	struct iommu_domain *domain;
+> +	bool auto_domain : 1;
+> +	/* Head at iommufd_ioas::hwpt_list */
+> +	struct list_head hwpt_item;
+> +	struct mutex devices_lock;
+> +	struct list_head devices;
+> +};
+> +
+> +struct iommufd_hw_pagetable *
+> +iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+> +			   struct device *dev);
+> +void iommufd_hw_pagetable_destroy(struct iommufd_object *obj);
+> +
+>  struct iommufd_access {
+>  	unsigned long iova_alignment;
+>  	u32 iopt_access_list_id;
+> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+> index 266109045537ed..3eab714b8e12a3 100644
+> --- a/drivers/iommu/iommufd/main.c
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -355,6 +355,9 @@ static const struct iommufd_object_ops iommufd_object_ops[] = {
+>  	[IOMMUFD_OBJ_IOAS] = {
+>  		.destroy = iommufd_ioas_destroy,
+>  	},
+> +	[IOMMUFD_OBJ_HW_PAGETABLE] = {
+> +		.destroy = iommufd_hw_pagetable_destroy,
+> +	},
+>  };
+>  
+>  static struct miscdevice iommu_misc_dev = {
 
-Thanks for the helpful reviews. I chose the form of lists was because we 
-could
-append more optnames easily in the future. But I believe it's not late 
-to apply
-that form when we really need it : )
 
-In my opinion, this patch doesn't contain any new feature, but just a 
-kind of fix
-to the documentation, according to the corresponding code in the bpf tree,
-which hasn't been modified yet in the bpf-next tree. So I targeted the 
-former,
-as this patch could be useful there. Please let me know if there's any 
-customary
-rules outside bpf_devel_QA. Thanks!
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+
