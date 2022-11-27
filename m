@@ -2,333 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F819639B7F
-	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 16:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB75639BAA
+	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 17:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbiK0PNX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Nov 2022 10:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        id S229538AbiK0QPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Nov 2022 11:15:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiK0PNW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Nov 2022 10:13:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C060AA
-        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 07:12:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669561947;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J0wiRNFjSfwxayhwReKk2HhCdJf+ke5EttJUm2mT+i4=;
-        b=IV3moYcI7JTQClftDzRdbKqYJdkrpX7kJNbW2QliL5Y+sMsB1YfwD/EhrxRJff1QiC8OH5
-        ML4MtkDjRblRHDoeFgusAG9q1oYhDE+0t7wXdQm5UHiFNsFlsNXVLKvd4YBbheoqqXFBrN
-        DqJMlq+x+5TDApixzsh7dVA5aI6CdAM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-101-_p--pv27OFGgfQ2bTLQI8Q-1; Sun, 27 Nov 2022 10:12:20 -0500
-X-MC-Unique: _p--pv27OFGgfQ2bTLQI8Q-1
-Received: by mail-qk1-f199.google.com with SMTP id y22-20020a05620a25d600b006fc49e06062so12617098qko.4
-        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 07:12:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J0wiRNFjSfwxayhwReKk2HhCdJf+ke5EttJUm2mT+i4=;
-        b=z3CO91pZ2Qo7qbA+BeglX/Us0IcvplWsPsCD6lLA3ljqD9tUvYGGuOfsrS1YW5V7w0
-         RIs6/94hviNc54hj4KxQmJkj8BwuZeKoFwEgDYilbNKfoQC3rFG5BGk2dlzRf5peMZzp
-         pso0z/jXt5P4AhP6zyCduoD8CQzF9XJ6MXPA/BFz/Y1ucQRyuAHL5x2Ye048mnj4EQNE
-         sqF09nHTHOS2du8WwoydH78CAfwFUWAwTm2z4SW0G2I3ZoLRfXRD5iRACnum+LrPq2Nz
-         RWH7yTC6bZ567ekBQTOGxMLWWqGWMXtsNhPWJ6ONaY9unvsdTv655XQxY72UAqtPv6+T
-         OvUA==
-X-Gm-Message-State: ANoB5plXQbOAJVQlV3fBrwcZ5iEtERX2lEIz+7xzcrkwxXqciKdNhvol
-        wxYavrAFX0QWf2t5bM2gFMTwFfhD7Ap8Um7ZRVsxskeby5WbvPggUENVpaHXPUwaruvmKwWbVmb
-        fEA/peahlt+WB
-X-Received: by 2002:ac8:41ca:0:b0:3a5:6d50:7f39 with SMTP id o10-20020ac841ca000000b003a56d507f39mr43685454qtm.520.1669561940381;
-        Sun, 27 Nov 2022 07:12:20 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5FIGBQMs4mdaEfvQ4YaXsydmwTyqPu/CYEBG9rDFeez+Q924zAUFLRipm1jW/U1yXVCME7aQ==
-X-Received: by 2002:ac8:41ca:0:b0:3a5:6d50:7f39 with SMTP id o10-20020ac841ca000000b003a56d507f39mr43685406qtm.520.1669561940087;
-        Sun, 27 Nov 2022 07:12:20 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id w30-20020a05620a0e9e00b006faaf6dc55asm6458946qkm.22.2022.11.27.07.12.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Nov 2022 07:12:18 -0800 (PST)
-Message-ID: <84c2c942-055b-b500-f209-5f8839113ef0@redhat.com>
-Date:   Sun, 27 Nov 2022 16:12:11 +0100
+        with ESMTP id S229475AbiK0QPh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Nov 2022 11:15:37 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9CB63B8;
+        Sun, 27 Nov 2022 08:15:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n5m9TdhS9W2Ahe7LJqsvvjnZ4x8/D63jAOgfmSmnpco=; b=ZuI2nfG7NIqdVnL7/igP9qj3cP
+        mdbItmAXyhGNnkeRsv4T2I7ww71lYLriXqEV5rRi0jg57AcSrH0619DGK/M1Lxmeo8iGT43A2NAH/
+        8l9Jpo3KuU8OnkarUC7xrBKnervzGxNk1Q1jw3jMNlDZYWU4UlwWCEHwni7p3MgD2ip4+fN0Ax+Tz
+        eWupSk/s8c/y25V3wfPoyMIsDOV8UhEvmh87CBk/dkUozYIUhsxTXObPyMxxAU9hSCA+kfOQOxCSP
+        wFpTApd16QsBEEDL+jRtciXLnltprGHB0N2fj4L4ExNjdV8yIRAS3g97e4UomcOdVLU154398jB9X
+        8Wtu2+uw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1ozKJU-0079wc-2A;
+        Sun, 27 Nov 2022 16:15:28 +0000
+Date:   Sun, 27 Nov 2022 16:15:28 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RESEND PATCH v4] fs/ufs: Replace kmap() with kmap_local_page()
+Message-ID: <Y4ONIFJatIGsVNpf@ZenIV>
+References: <20221016163855.8173-1-fmdefrancesco@gmail.com>
+ <Y4E++JERgUMoqfjG@ZenIV>
+ <Y4FG0O7VWTTng5yh@ZenIV>
+ <2188828.irdbgypaU6@suse>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 12/19] iommufd: Add a HW pagetable object
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <12-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <12-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2188828.irdbgypaU6@suse>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
+On Sat, Nov 26, 2022 at 03:12:16PM +0100, Fabio M. De Francesco wrote:
 
-On 11/16/22 22:00, Jason Gunthorpe wrote:
-> The hw_pagetable object exposes the internal struct iommu_domain's to
-> userspace. An iommu_domain is required when any DMA device attaches to an
-> IOAS to control the io page table through the iommu driver.
->
-> For compatibility with VFIO the hw_pagetable is automatically created when
-> a DMA device is attached to the IOAS. If a compatible iommu_domain already
-> exists then the hw_pagetable associated with it is used for the
-> attachment.
->
-> In the initial series there is no iommufd uAPI for the hw_pagetable
-> object. The next patch provides driver facing APIs for IO page table
-> attachment that allows drivers to accept either an IOAS or a hw_pagetable
-> ID and for the driver to return the hw_pagetable ID that was auto-selected
-> from an IOAS. The expectation is the driver will provide uAPI through its
-> own FD for attaching its device to iommufd. This allows userspace to learn
-> the mapping of devices to iommu_domains and to override the automatic
-> attachment.
->
-> The future HW specific interface will allow userspace to create
-> hw_pagetable objects using iommu_domains with IOMMU driver specific
-> parameters. This infrastructure will allow linking those domains to IOAS's
-> and devices.
->
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Tested-by: Yi Liu <yi.l.liu@intel.com>
-> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
-> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/iommu/iommufd/Makefile          |  1 +
->  drivers/iommu/iommufd/hw_pagetable.c    | 57 +++++++++++++++++++++++++
->  drivers/iommu/iommufd/ioas.c            |  3 ++
->  drivers/iommu/iommufd/iommufd_private.h | 33 ++++++++++++++
->  drivers/iommu/iommufd/main.c            |  3 ++
->  5 files changed, 97 insertions(+)
->  create mode 100644 drivers/iommu/iommufd/hw_pagetable.c
->
-> diff --git a/drivers/iommu/iommufd/Makefile b/drivers/iommu/iommufd/Makefile
-> index 2b4f36f1b72f9d..e13e971aa28c60 100644
-> --- a/drivers/iommu/iommufd/Makefile
-> +++ b/drivers/iommu/iommufd/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  iommufd-y := \
-> +	hw_pagetable.o \
->  	io_pagetable.o \
->  	ioas.o \
->  	main.o \
-> diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-> new file mode 100644
-> index 00000000000000..43d473989a0667
-> --- /dev/null
-> +++ b/drivers/iommu/iommufd/hw_pagetable.c
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2021-2022, NVIDIA CORPORATION & AFFILIATES
-> + */
-> +#include <linux/iommu.h>
-> +
-> +#include "iommufd_private.h"
-> +
-> +void iommufd_hw_pagetable_destroy(struct iommufd_object *obj)
-> +{
-> +	struct iommufd_hw_pagetable *hwpt =
-> +		container_of(obj, struct iommufd_hw_pagetable, obj);
-> +
-> +	WARN_ON(!list_empty(&hwpt->devices));
-> +
-> +	iommu_domain_free(hwpt->domain);
-> +	refcount_dec(&hwpt->ioas->obj.users);
-> +	mutex_destroy(&hwpt->devices_lock);
-> +}
-> +
-> +/**
-> + * iommufd_hw_pagetable_alloc() - Get an iommu_domain for a device
-> + * @ictx: iommufd context
-> + * @ioas: IOAS to associate the domain with
-> + * @dev: Device to get an iommu_domain for
-> + *
-> + * Allocate a new iommu_domain and return it as a hw_pagetable.
-> + */
-> +struct iommufd_hw_pagetable *
-> +iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
-> +			   struct device *dev)
-> +{
-> +	struct iommufd_hw_pagetable *hwpt;
-> +	int rc;
-> +
-> +	hwpt = iommufd_object_alloc(ictx, hwpt, IOMMUFD_OBJ_HW_PAGETABLE);
-> +	if (IS_ERR(hwpt))
-> +		return hwpt;
-> +
-> +	hwpt->domain = iommu_domain_alloc(dev->bus);
-> +	if (!hwpt->domain) {
-> +		rc = -ENOMEM;
-> +		goto out_abort;
-> +	}
-> +
-> +	INIT_LIST_HEAD(&hwpt->devices);
-> +	INIT_LIST_HEAD(&hwpt->hwpt_item);
-> +	mutex_init(&hwpt->devices_lock);
-> +	/* Pairs with iommufd_hw_pagetable_destroy() */
-> +	refcount_inc(&ioas->obj.users);
-> +	hwpt->ioas = ioas;
-> +	return hwpt;
-> +
-> +out_abort:
-> +	iommufd_object_abort(ictx, &hwpt->obj);
-> +	return ERR_PTR(rc);
-> +}
-> diff --git a/drivers/iommu/iommufd/ioas.c b/drivers/iommu/iommufd/ioas.c
-> index 7671456e86413a..64e6d0f73e39aa 100644
-> --- a/drivers/iommu/iommufd/ioas.c
-> +++ b/drivers/iommu/iommufd/ioas.c
-> @@ -17,6 +17,7 @@ void iommufd_ioas_destroy(struct iommufd_object *obj)
->  	rc = iopt_unmap_all(&ioas->iopt, NULL);
->  	WARN_ON(rc && rc != -ENOENT);
->  	iopt_destroy_table(&ioas->iopt);
-> +	mutex_destroy(&ioas->mutex);
->  }
->  
->  struct iommufd_ioas *iommufd_ioas_alloc(struct iommufd_ctx *ictx)
-> @@ -28,6 +29,8 @@ struct iommufd_ioas *iommufd_ioas_alloc(struct iommufd_ctx *ictx)
->  		return ioas;
->  
->  	iopt_init_table(&ioas->iopt);
-> +	INIT_LIST_HEAD(&ioas->hwpt_list);
-> +	mutex_init(&ioas->mutex);
->  	return ioas;
->  }
->  
-> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-> index 6721332dbbba03..bb5cbd8f4e5991 100644
-> --- a/drivers/iommu/iommufd/iommufd_private.h
-> +++ b/drivers/iommu/iommufd/iommufd_private.h
-> @@ -103,6 +103,7 @@ static inline int iommufd_ucmd_respond(struct iommufd_ucmd *ucmd,
->  enum iommufd_object_type {
->  	IOMMUFD_OBJ_NONE,
->  	IOMMUFD_OBJ_ANY = IOMMUFD_OBJ_NONE,
-> +	IOMMUFD_OBJ_HW_PAGETABLE,
->  	IOMMUFD_OBJ_IOAS,
->  };
->  
-> @@ -181,10 +182,20 @@ struct iommufd_object *_iommufd_object_alloc(struct iommufd_ctx *ictx,
->   * io_pagetable object. It is a user controlled mapping of IOVA -> PFNs. The
->   * mapping is copied into all of the associated domains and made available to
->   * in-kernel users.
-> + *
-> + * Every iommu_domain that is created is wrapped in a iommufd_hw_pagetable
-> + * object. When we go to attach a device to an IOAS we need to get an
-> + * iommu_domain and wrapping iommufd_hw_pagetable for it.
-> + *
-> + * An iommu_domain & iommfd_hw_pagetable will be automatically selected
-> + * for a device based on the hwpt_list. If no suitable iommu_domain
-> + * is found a new iommu_domain will be created.
->   */
->  struct iommufd_ioas {
->  	struct iommufd_object obj;
->  	struct io_pagetable iopt;
-> +	struct mutex mutex;+	struct list_head hwpt_list;
->  };
->  
->  static inline struct iommufd_ioas *iommufd_get_ioas(struct iommufd_ucmd *ucmd,
-> @@ -207,6 +218,28 @@ int iommufd_ioas_option(struct iommufd_ucmd *ucmd);
->  int iommufd_option_rlimit_mode(struct iommu_option *cmd,
->  			       struct iommufd_ctx *ictx);
->  
-> +/*
-> + * A HW pagetable is called an iommu_domain inside the kernel. This user object
-> + * allows directly creating and inspecting the domains. Domains that have kernel
-> + * owned page tables will be associated with an iommufd_ioas that provides the
-> + * IOVA to PFN map.
-> + */
-> +struct iommufd_hw_pagetable {
-> +	struct iommufd_object obj;
-> +	struct iommufd_ioas *ioas;
-> +	struct iommu_domain *domain;
-> +	bool auto_domain : 1;
-> +	/* Head at iommufd_ioas::hwpt_list */
-> +	struct list_head hwpt_item;
-> +	struct mutex devices_lock;
-> +	struct list_head devices;
-> +};
-> +
-> +struct iommufd_hw_pagetable *
-> +iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
-> +			   struct device *dev);
-> +void iommufd_hw_pagetable_destroy(struct iommufd_object *obj);
-> +
->  struct iommufd_access {
->  	unsigned long iova_alignment;
->  	u32 iopt_access_list_id;
-> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-> index 266109045537ed..3eab714b8e12a3 100644
-> --- a/drivers/iommu/iommufd/main.c
-> +++ b/drivers/iommu/iommufd/main.c
-> @@ -355,6 +355,9 @@ static const struct iommufd_object_ops iommufd_object_ops[] = {
->  	[IOMMUFD_OBJ_IOAS] = {
->  		.destroy = iommufd_ioas_destroy,
->  	},
-> +	[IOMMUFD_OBJ_HW_PAGETABLE] = {
-> +		.destroy = iommufd_hw_pagetable_destroy,
-> +	},
->  };
->  
->  static struct miscdevice iommu_misc_dev = {
+> Al, thanks for taking the time to answer in such detail although I can believe 
+> that, to spot the mistakes in my patch and then write your email, it probably 
+> took you 10 minutes or so :-)
 
+FWIW, it's generally useful to ask yourself if patch can be made less noisy -
+are there any regular parts that could be carved out of it, how much is due to
+calling conventions changes and can those be done differently, etc.
 
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+If it can be decomposed into simpler parts, it becomes easier to review (and
+that includes debugging - when bisect points to a commit and you need to find
+what's wrong with it, splitting that change into several steps is often
+a useful approach; if nothing else, you get a chance to bisect that and
+narrow the area to look into, but often enough you'll spot the bug while
+carving the change up).
 
-Eric
+Below is what I'd actually done when reviewing that thing (and it took more
+than 10 minutes):
 
+What happens in this patch?
+	1) switch from kmap/kunmap to kmap_local_page/kunmap_local; that's
+in ufs_get_page() and ufs_put_page().  OK, so ufs_put_page() needs to be
+supplied with the virtual address in addition to page.  And callers of
+ufs_get_page() need the virtual address to access, not just the page.
+
+	2) pages fed to ufs_put_page() ultimately come from earlier
+ufs_get_page(), so presumably virtual address could be propagated along
+the same path.  OK...
+
+	3) change in ufs_inode_by_name() seems to fit the above -
+ufs_find_entry() used to return page, now it returns page and address;
+that address is fed to ufs_put_page().
+	So what has ufs_find_entry() become?  2 "in" arguments (directory
+inode and entry name), 2 "out" arguments (page and virtual address of the
+first byte in that page) and return value - pointer to directory entry.
+So basically we are passing directory and name and get a triple -
+	* pointer to directory entry
+	* page reference that need to be held so we could access that
+directory entry
+	* pointer to the first byte of the page that contains directory
+entry...
+	Looks redundant - the 3rd component is simply the 1st one rounded
+down to page size...
+
+	And it seems that at least some of the affected functions are
+in the same situation - they are already working in terms of <pointer to
+directory entry, pointer to page> pairs, and with those adding the
+virtual address is redundant.  Let's see...
+
+	4) functions with changed calling conventions are
+		ufs_put_page()
+		ufs_set_link()
+		ufs_check_page()
+		ufs_get_page()
+		ufs_dotdot()
+		ufs_find_entry()
+		ufs_delete_entry()
+	Out of those, ufs_put_page() and ufs_get_page() are consumer and
+producer of the virtual address, and ufs_check_page() needs the address
+as well, but other four all seem to be in the same boat -
+pair <pointer to directory entry, page> becomes a triple
+<pointer to directory entry, page, pointer to the first byte of page>
+and that's redundant.
+	ufs_set_link() and ufs_delete_entry() have that triple passed
+to them; ufs_find_entry() and ufs_dotdot() return such triple to the
+caller.
+	Looks like we could replace e.g.
+	de = ufs_dotdot(inode, &page, &addr);
+	if (de) {
+		...
+		ufs_put_page(page, addr);
+	}
+with
+	de = ufs_dotdot(inode, &page);
+	if (de) {
+		addr = <round de down>
+		...
+		ufs_put_page(page, addr);
+	}
+	That would return the call to what it used to be; whether it's a win
+or not, depends upon the things we use addr for.  Let's check...
+
+	5) ufs_set_link(inode, de, page, addr, ...) always gets de, page and
+addr coming from the same ufs_find_entry() or ufs_dotdot() call.  I.e.
+in all cases addr is rounded-down de; could as well find that value inside
+ufs_set_link(), returning the callers to original state.
+
+	6) ufs_delete_entry(dir, de, page, addr) - same story; de, page and
+addr come from the same call of ufs_find_entry(), so we can reconstruct
+addr by de inside ufs_delete_entry(); no need to pass it down, returning
+those callers to original state.
+
+	7) ufs_find_entry() - 4 callers, address is passed to ufs_put_page(),
+ufs_delete_entry(), ufs_set_link().  The last two don't really need that
+argument, so we are left with "need to round down for passing to ufs_put_page()".
+
+	8) ufs_dotdot() - address is passed to ufs_put_page() or ufs_set_link().
+The latter doesn't need that argument, so we are again left with "need to round
+down for passing to ufs_put_page()".
+
+	9) So ufs_put_page() gets rounded-down pointer to directory entry here...
+Might be worth a helper that would take a page + address and do ufs_put_page()
+for page and rounded down address...  But do we even need that to be separate
+from ufs_put_page()?  After all, the addresses we are currently passing to
+ufs_put_page() are page-aligned, so rounding any of them down to page size
+is a no-op.  Might as well change ufs_put_page() from "takes page reference
+and virtual address of beginning of the page" to "takes page reference and
+virtual address anywhere within the page"; if nothing else, it would reduce
+the clutter in fs/ufs/namei.c parts and it might be useful in fs/ufs/dir.c
+part as well.  OK, the intermediate plan:
+	* ufs_put_page() rounds the address down to page size
+	* ufs_set_link() and ufs_delete_entry() do not get page_addr passed
+to them; reconstruct it as rounded-down directory entry pointer.  Calling
+conventions are back to original.
+	* ufs_find_entry() and ufs_dotdot() do not bother returning page_addr.
+Calling conventions are back to original.
+	* callers of ufs_put_page() in fs/ufs/namei.c give it directory entry
+instead of page_addr.  Same for ufs_inode_by_name(), that got us started in
+that direction.
+
+	10) ufs_set_link() uses page_addr for two things - finding location
+in file (page_offset() + difference between de and page_addr) and feeding it
+to ufs_put_page().  The latter can be given de, as we do in other places;
+the former would become "difference between de and de rounded down to page
+size"... wait a sec - that's just the address modulo page size, aka.
+offset_in_page(de).  OK, we don't even need to reconstruct page_addr in
+there.  Win...
+
+	11) for ufs_get_page() we want the virtual address returned.  Looking
+through the callers, though, shows that calling conventions are clumsy -
+we have page = ufs_get_page(dir, n, &page_addr) followed by casting
+page_addr to various pointer types, assigning it to various pointer
+variables or, in one case, even ufs_get_page(dir, n, (void **)&char_pointer_var)
+Ouch...  We have 2 "in" arguments (directory and page number) and
+2 values to return to caller - page reference and pointer to beginning of
+the page.  The type of the first component is always the same (struct page *),
+but the second... depending upon the caller, it may be void *, char *
+or struct ufs_dir_entry *.  Passing it out via "out" argument is painful -
+return value is much more suitable for that; there we can return void *
+and have the assignment in callers convert it as needed.  Page reference,
+OTOH, is well-suited for passing out via "out" argument - same type in
+all cases.
+	So it looks like we want addr = ufs_get_page(dir, n, &page);
+as calling conventions.  Callers need to check IS_ERR(addr) instead of
+IS_ERR(page), but that's about it.  *AND* they might be able to cut
+down on assignments - just store the return value directly in variable
+they would copy it into.
+
+	12) ufs_dotdot() needs not bother with returning page_address.
+With new calling conventions for ufs_get_page() it doesn't need
+'page' or 'page_addr' at all - we want the value of
+	ufs_get_page(dir, 0, p)
+but we only want it converted to struct ufs_dir_entry *.  And we already
+have a variable of just that type declared right there, so we can do
+simply
+	struct ufs_dir_entry *de = ufs_get_page(dir, 0, p);
+The rest becomes
+	if (!IS_ERR(de)) {
+		de = ufs_next_entry(dir->i_sb, de);
+	} else {
+		de = NULL;
+	}
+	return de;
+or, better yet, 
+	if (!IS_ERR(de))
+		return ufs_next_entry(dir->i_sb, de);
+	else
+		return NULL;
+Makes sense - ".." is the second entry in directory, so we ask for the
+first page, treat its beginning as entry pointer and return the next
+entry...  And yes, it looks like ufs_get_page() callers are happier
+with such calling conventions.
+
+	13) ufs_find_entry() - getting rid of res_page_addr argument
+is obvious, so's adjusting the calling conventions for ufs_get_page().
+Surprisingly subtle question is whether we can get rid of 'page_addr'
+there; now that we don't store it in *res_page_addr the only thing
+we use it for is ufs_put_page().  With ufs_get_page() calling
+conventions change we'd get
+	page_addr = ufs_get_page(dir, n, &page);
+	if (!IS_ERR(page_addr)) {
+		kaddr = page_addr;
+		de = (struct ufs_dir_entry *) kaddr;
+		kaddr += ufs_last_byte(dir, n) - reclen;
+		while ((char *) de <= kaddr) {
+		       if (ufs_match(sb, namelen, name, de))
+				goto found;
+			de = ufs_next_entry(sb, de);
+		}
+		ufs_put_page(page, page_addr);
+	}
+We have a couple of other pointers around - kaddr and de.  kaddr is
+set to page_addr + something, then de iterates through the entries
+starting at page_addr until it gets past kaddr, looking for the match.
+So we get to the end of loop if we have *not* found a match within
+this page, and de is not guaranteed to point within the same page when
+we leave the loop.  Not suitable for passing to ufs_put_page(), then.
+kaddr, OTOH, would better be pointing into the same page - we use
+de <= kaddr as permission to dereference de, and we'd better not run
+out of page.  A look at ufs_last_byte() shows that its return value
+is always no greater than PAGE_SIZE, so kaddr is guaranteed to point
+within the same page.  Good.  So we can turn that into
+	kaddr = ufs_get_page(dir, n, &page);
+	if (!IS_ERR(kaddr)) {
+		de = (struct ufs_dir_entry *) kaddr;
+		kaddr += ufs_last_byte(dir, n) - reclen;
+		....
+		ufs_put_page(page, kaddr);
+	}
+and page_addr bites the dust.	
+
+	14) ufs_add_link() - similar adjustment to new calling conventions
+for ufs_get_page().  Uses of page_addr: fed to ufs_put_page() (same as
+in ufs_find_entry() kaddr is guaranteed to point into the same page and
+thus can be used instead) and calculation of position in directory, same
+as we'd seen in ufs_set_link().  The latter becomes page_offset(page) +
+offset_in_page(de), killing page_addr off.  BTW, we get
+		kaddr = ufs_get_page(dir, n, &page);
+		err = PTR_ERR(kaddr);
+		if (IS_ERR(kaddr))
+			goto out;
+with out: being just 'return err;', which suggests
+		kaddr = ufs_get_page(dir, n, &page);
+		if (IS_ERR(kaddr))
+			return ERR_PTR(kaddr);
+instead (and that was the only goto out; so the label can be removed).
+The value stored in err in case !IS_ERR(kaddr) is (thankfully) never
+used - would've been a bug otherwise.  So this is an equivalent transformation.
+
+	15) ufs_readdir() - trivial modifications to deal with ufs_get_page()
+calling conventions change; an ugly cast goes away.
+
+	16) ufs_delete_entry() - kaddr argument is dropped, we make it a local
+variable initialized with rounded down dir.  Incidentally, 'dir - kaddr' can
+be replaced with offset_in_page(dir) in there and similar for (char *)pde - kaddr.
+
+	17) ufs_empty_dir() - we adjust to ufs_get_page() calling conventions
+change, page_addr can be dropped same as in ufs_find_entry().  Need to lift
+kaddr out of loop to deal with not_empty: part (hadn't noticed when writing
+original reply, but compiler would've caught that)
+
+	18) fs/ufs/namei.c parts do shrink down to pretty much just 'pass
+the right directory entry to ufs_put_page()' (and most of ufs.h changes
+disapper).  ufs_get_page() calling conventions change is actually the bulk
+of what remains of this patch after that massage.  Other than that we have
+several 'use offset_in_page()' local changes and extra argument of
+ufs_put_page().  Hmm...  offset_in_page() actually counts as a valid (and
+trivially safe) optimization, independent of anything kmap-related.
+Worth carving out as the first step in series.  Come to think of that,
+ufs_get_page() calling conventions change *also* can be done without
+the kmap_local_page() switchover; we would do kmap() and return page_address(page).
+Callers would be happier with such calling conventions, and carving that
+part out would reduce the patch to just the 'switch ufs_get_page() to
+kmap_local_page(), switch ufs_put_page() to kunmap_local() and supply it
+with a pointer into the page in question'.  Which is much smaller and
+easier to review.
