@@ -2,195 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BECED63993B
-	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 04:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0991F63993D
+	for <lists+bpf@lfdr.de>; Sun, 27 Nov 2022 04:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiK0DVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Nov 2022 22:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        id S229548AbiK0D13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Nov 2022 22:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiK0DVg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Nov 2022 22:21:36 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C961111441
-        for <bpf@vger.kernel.org>; Sat, 26 Nov 2022 19:21:35 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AR3L7P7026937;
-        Sat, 26 Nov 2022 19:21:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=V+12CArCOxfOiiCtvEi+tmmBN8s2ysLAQSZ6kZ6AnIc=;
- b=Zvpev2MmgYYpSzeySEcdWqycikuTh/RS0tEvhajq1qUswGyxOGbF59UgnPSDG7dioc+q
- 7gjnHsLbhUV4VIEMdZ6dcZsTYiByiiWI6+8MOYo4cJN9/4d/z0sUqTM21vOnn/h568zm
- ILhMfai5hyGcVp/lFMji0uFvf2CUc/q981KYSOX29mY6C074Ogj9bL6IhDX5RpyE7JiH
- xxKfxhD5A9OSHH4UpHN0RRp5CGnR9TV6es1AoL6TRBEqpEZ9hwY35vUNDE/PNGCapHto
- cpnJqpfY1ev4H1GqpbmtaF0+YTFNv+NnSU53LzR/R5xWj2rWbYAvG58mbZorfNMcrDD9 7g== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m3gsymnuk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Nov 2022 19:21:13 -0800
+        with ESMTP id S229480AbiK0D11 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Nov 2022 22:27:27 -0500
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2074.outbound.protection.outlook.com [40.92.74.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE41EBF8;
+        Sat, 26 Nov 2022 19:27:26 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4TRtjofTmJudvPCF2o1SWs5FPN5P62JWndfd4yson6Tw1uvV1U3MCUcxGhfxfpmB63lgDfltjnAA/Jps6Bw6M6PqKfbYJ0J4GGbCPZDHAwR9/I0cgLiYnzgKvPHNl35sVIRrwCl+R02Ihh+mnIZQ6w1Y8BD5zRssk7UJncR2g98tXorgYSDCp+MUXR0NITH0C/60uz3OJqboH2YxswdQ1o72FtiE9L0uprdxvvfDEo3fW/Eh42PHCfhBXx5RO5MYogWNyPUkX7WNXz1E6f+erUzTw1mhZ/jFiWwKnxcvBnEoY3mrKOELEz5P8toLQRXvflRYuH+IBtr5LDHY5Vobg==
+ b=Uask4IVPYmGO+P/4WIq0mx+qgqG00ILb58MXVIytkkaH18tbcB/Nf4y4ezlfLlSp8lfJobClgtFVF855rn4/kvKPCekumweENZInH0sb6qhnmGf/LDc3I/uBObahy83ZrPpG/HPjlH0PzOGYQ1DRlmK0Q252PAQb/hEMbUlwpPo/cTQReQ4C4kombNMXgD+Yr6DQ1nrrlfJdKbLWAhWQ+4yoH6qnNEVCauworYmUVMKzGWfP42O/W8fn1s5iGNCbgXYXwaLpxbH3h/5FB6IwMnVk/6WULYug0QB8nQckJ5Qr4brS91yiozQ0vqjx3mjYmGKLUfUIAAXo5gBPm/Kflw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V+12CArCOxfOiiCtvEi+tmmBN8s2ysLAQSZ6kZ6AnIc=;
- b=EeWP8fuF/qWMyixW50uKt9poopK1nYym8z61zxQBCc6rwZ3uyoLtt8b2n7jdepedtqAgVJcKdfShdW2KOvgMtNtHT5X02CLx8e/lpH0d+Dx9sKrqmd0R2XjMxjL5n7Cihgrcy2Gws+zl7mZhSZ/VkMSf/TrnimTiVkBk7tw0a5g4Oabrk+PBAgCaJaybg0kHG8SArsPvBx1HIawE7pQeI/Jx6vgFJoPOtZJZb4I4LEvOEj19lAf+1zy/w9butEpAN3g0CFIw2sygLyP4g2Y96/m02m6FVJgv2ZO6xJPcRvPrXgShWf9v0qaX+Dok8Tk7stLfVY85GM/Lx9rFxVhpRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB4736.namprd15.prod.outlook.com (2603:10b6:510:9b::15) with
+ bh=ackfQM7fexNTvC5EUOCA2cWH3piiALQb7mJBhabm118=;
+ b=WhebDmMnLDeReZfp3F/pGketaHdGb+4injcUP8w3DSPjEiqCghdncSsCLKvvO/xrVunMsl0CfDeCXbiItUIXHY9FrIo6FuvUUrsoPbC1P0sDAp/QU6sIeZ60B5YtDayacdd0Lyf7MB30caRapfV2cH2k+WMwNT6nq/qqFquJqw7gXamhaJeaW1pNZ4Thm1Aou5pCptWgcZ3IPHrEL5F5vol3Vrc9qCGZG/oVAOKx7cm2lvsMlPHZe2a1SlUsCNbshYHIRulyx377FcIFVXoqCZRamGDYmUp8uU++gZIx8CZsuVecAPcUcuZrD1NeSBH7YDJqG6GYXXAGO+O76IhwPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ackfQM7fexNTvC5EUOCA2cWH3piiALQb7mJBhabm118=;
+ b=Z+1ad5ZOTBRJNzAJr7aHvmud4eGUdeLVytin58OsNO+WiNaiSztaWI/+oz812jBlYl79PiIDREQlbHF43xflIO26SOOsi+lRiCdtF/5kVQqe7oE/8efkJInmbi+wtfMqfOimQdwH+VjJV8cMD8ohf6csL/VRmp+Yoq/6lwnlT4uATEuArpQQK9GTZge/5u7BoWF0WXiwyNI7pjqiHrDDHXaAkbxchJyFub09VGlljGAntd0Rv/JF9gG+WHjULbG6WLqaw/ZGkywoO9yoFLaR9eVGto9GD8JuKiFxUVvAidYkHRveWY+ZscZsXVMyoAH8+9oS0LfijSOvTt7tgVZ95g==
+Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
+ by AM7P192MB0817.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:14f::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.19; Sun, 27 Nov
- 2022 03:21:08 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d665:7e05:61d1:aebf]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d665:7e05:61d1:aebf%7]) with mapi id 15.20.5857.019; Sun, 27 Nov 2022
- 03:21:08 +0000
-Message-ID: <ca360165-2473-abaf-40ba-cc54345f74ec@meta.com>
-Date:   Sat, 26 Nov 2022 19:21:05 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.0
-Subject: Re: [PATCH bpf 1/2] bpf: Check timer_off for map_in_map only when map
- value have timer
-To:     Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com, toke@redhat.com
-References: <20221126105351.2578782-1-hengqi.chen@gmail.com>
- <20221126105351.2578782-2-hengqi.chen@gmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.22; Sun, 27 Nov
+ 2022 03:27:24 +0000
+Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+ ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+ ([fe80::a67b:5da2:88f8:f28b%7]) with mapi id 15.20.5857.021; Sun, 27 Nov 2022
+ 03:27:24 +0000
+Message-ID: <DU0P192MB15474DA29DF17452DC3E95A9D6109@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+Date:   Sun, 27 Nov 2022 11:27:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH bpf v2] bpf: Update bpf_{g,s}etsockopt() documentation
 Content-Language: en-US
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221126105351.2578782-2-hengqi.chen@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, joannelkoong@gmail.com,
+        kuifeng@fb.com, lorenzo@kernel.org, maximmi@nvidia.com,
+        quentin@isovalent.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <DU0P192MB15479B86200B1216EC90E162D6099@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+ <0977584d-8aff-624d-4cf8-a6e4868958c5@iogearbox.net>
+ <6fbd8c35-04de-c379-5062-a0b9d4a8ebbe@linux.dev>
+From:   Ji Rongfeng <SikoJobs@outlook.com>
+In-Reply-To: <6fbd8c35-04de-c379-5062-a0b9d4a8ebbe@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0028.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+Content-Transfer-Encoding: 8bit
+X-TMN:  [r+AFiboAZLtjZOeeWFFUHdwdAkZMotz/]
+X-ClientProxiedBy: SI2PR04CA0012.apcprd04.prod.outlook.com
+ (2603:1096:4:197::14) To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:10:34b::15)
+X-Microsoft-Original-Message-ID: <7ede0b02-6fe6-f51e-eb3c-bf6dab63aa21@outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH0PR15MB4736:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f295795-1833-4383-58fa-08dad0266d36
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|AM7P192MB0817:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff57024e-8f28-45e5-8150-08dad0274d0a
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qlLshJbxe7TKHOj3g0xSjqhIlfYomDB1PpMhApxFuU1exBk/l1NEybB9CBmWfD/BdVJVwhhydwdalNEV1R7GP98IhSRieG+s1sdP6oYfkv7RAp1VIUKTrOQYdxWuCfPZwLQjiBvYRH1N27IW2wEEYCKhBOnhKVfVcMEdDWGryd3L/hvVNzgAAFFNTI2xaRFMaeLfhElDeJWyY7Aar7oeAKYitPPyW8xBkg3wskrBTE3kexQIgAULY/9lrjPznbL84TfuEnZoAT9q/9IhVCXaEZ8JO8qJauaZHHZXcvWdk8SZVHmISzsGdV2dJPswN6HaYeauDxPhZv8N7UqQAPD/OI/NKiTnvp8gq2xXnlw3WOzQCR6NEGwdMSMPvwhYBlG1N6LKF/vHpJ10XHeATpiAnHFzg01D6Qen8vzRXVRFjSQr/1R5LTOxd7hO/pPUul904tELzI3Pb3mJtlZEJ+lp1z717DvRpY1UiGBnqgWXGGa9qGJnMgmRFeSjlPs0Ehu/80CL5PaROT+FyNIqA8VxxDKJxE/CGQ2oszRx7cv5L4O9R+oi1a/SSO9Cgwe8uI1HlX04fQoPCTG+dBlwc2K2KPEFEPfzJ/VcM2BRRlWkoBWmaT2lJFohNShM2/vSa1BQK4SNU6mk6oRk0zP/i/Q3LGntbHsy5DmWDca06pY/v+H/+aVwPtsiZU9OKTXRKyWc9BeUToZetO//ubdlJ2cZ3B/VrB3ggGoqM0+WPtrNp/o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(396003)(136003)(346002)(376002)(451199015)(36756003)(186003)(66946007)(41300700001)(8936002)(4326008)(66476007)(53546011)(6512007)(66556008)(6666004)(8676002)(478600001)(2616005)(6486002)(31696002)(6506007)(86362001)(83380400001)(2906002)(31686004)(316002)(38100700002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: gYrycaXG9SEVa1zDXoMZd3yQK+4RI8LBP+dk9i3RYZvDrR5XNFWd56+LCQWiBBItB+0yeK6XWrLbUisWpc00XWVr+iAT1NBWLI4ec3kw/R0EVHusK4YaLiKneimmYBVBJ27edNTA/nye+pu44nTZdjuZFWr9Pug1CHaeCwvOPsrDEweFob7H/+W5gtswpf/l8f5YPEdV892mg9aN1uvijweWfcdp8GPJCq03LYmovt8iDngUOC/2TqHMxXCjkxfd5xFiGQYLvSt7Mh/Pqgl8pBl09fTN3g2lsoaFlP4ZsEqj2+hUhTM/5vRAYPpSl4f5ldwitLyIGDerF3xfBrzH2r58lqE4Qwt1LGUeIPCxxXWfPmBmVw4bSFnuXA055MEYTHZYYoGN3DwXBY2Feb2ctp5P/ACMxSq7GB9FZzAtGZEyjbbLWWz26y2EjS11nYLe2MmCyIu1ytf43Y7QI/XaOokeq2aSN5Jdak/WxYZrfT5R75FIv7zUnUkjV73aOn0gF5v1z5J07wTEnBFkjF85A9ejby019eHEXl14tpu+niNSV0SkcOK4I+0o3qBeufWUnO29dF2/VZAXnFv9Kn1OagAjYLgPfIe/BwWQqDnBG3op71ReCbw85cpB+oQ/j3tVeh7LDhg3Aq5EwGSBGw3Z6A==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S2RMTFpHZ05qaGd4bWhlZWhqekN2SkZPNytGWDB0SU1Fa291VlZFREszcjIw?=
- =?utf-8?B?Q0pZMGhibUh1SkQ2b2NNSGNYSUtVWnZFMlRqUDhBOEw1UlVmWFJXRTV6OEh0?=
- =?utf-8?B?cWlmaWd3WEx0QnZsN3MwcVV2czltT3Q4akVkN1VRZ1BEL2ZDeVNIbThLTXBT?=
- =?utf-8?B?RUM1WXY1aWM1R2J0cUZmeFlkbWdTSVA3b2Z3MlJ1NXFmeWVEWFNYVDQ0cEh3?=
- =?utf-8?B?V01uUEZzaUNic2FhemNYNDRZaEV1QjR2RU5EUituTjBFYXdHcHd0cWRVcDlt?=
- =?utf-8?B?WGxVZnZmanFBNUIvbWRtR3RxQmFHRWdpQWRmMFBYbFdja0tNeFd6MnJkdlF0?=
- =?utf-8?B?U0Jqays5N0IvNjhtQ3FJaEpXT2lsejBNKzFpcjREbEFxOXBhRFR1YWFNSzBv?=
- =?utf-8?B?MFJ5UXdYbGdzNlNwampyQ0FwOEpPWWZpQnI0U2pOVHJ4OGxBYW1tN3JyZ3hI?=
- =?utf-8?B?MXkrUlhGNEx5cTUxb1BqWktJMHpoS3ZEQ0hmbnl1M0ZyUW9uZWQ4U0QzZlV6?=
- =?utf-8?B?NHNRNzRlNG9uS0N1UHRhTnp1NmQ2U3hCYTRxRjFrWWU4U0M1WnI4cEFNZVJF?=
- =?utf-8?B?SkZTWWdWOGdYMkJyc2MxYStEeGFLUGFXbm1KTnlXaklzNmRqazlNY2wrMWIw?=
- =?utf-8?B?ek9XYWszekFUOVh1akRaMUcyalRRTVNuRTgrcXV3Tnk2SnN3YnpXOU5hcy9W?=
- =?utf-8?B?cklKeTBWZUtzR2FmN3NBQk9aL2ZvL09oeTl1NkFXbXE2Y1Y5NzJYWnk4VzA0?=
- =?utf-8?B?YXFTRkY2TlFLa1VDN3diZlhzeG5MZHdWQitSbnk0NU5ReGhrWHJiQjZjanJ6?=
- =?utf-8?B?VGFEZUtBUVVsZHZsdjEvQ1BzUmJieit5OU8rRTdLbTFVT3hXL2wyRis5ankx?=
- =?utf-8?B?eHdzZWFXQ1dIQ2tFQXNzenV5dGNUK3MyS1M5TlFNc2ZJdnlNM25aNkF2T2p1?=
- =?utf-8?B?M2F6Q3d2anU2YmpqeDZSYWNxVlRldzZLdEdwTmRwMmVuVmoxU2gvQ0EvOTFR?=
- =?utf-8?B?N0s1Mzc3RjhTL2x3NjJWVG8wdE1OZXd5SHNrK01VN1R5bjVhRVlRbVcrY3hh?=
- =?utf-8?B?NkM3dlRZVHkzMXJvbWJjMXJLTlVYeXpjZUlEZFN3QUJ0RDQvSGovcU9BL2M2?=
- =?utf-8?B?elJicU1JYUVjUitweXBJUVM3cnZQSHJWZGV1WGpiN1drSWM0cGRWcW9vRi9D?=
- =?utf-8?B?YWhleVV5QWQyeWZOZHNheEJmVWM4M3YxLzBGWUtLUzlNN1c5U01iakpoZTlI?=
- =?utf-8?B?cXc3ekhNL0NkNk5Rd2RZODEzSnplSm9weVZiSVlNWWZUcW5jQWhoWEdyTmpG?=
- =?utf-8?B?OU91bXhXVG5nV0hhOUMybGhMNUJSN2RxZkVWZHVIaWNLYjBrbzExNGZialBI?=
- =?utf-8?B?YzVJRVQ0eHp1dDJoaEdCalhEQ3pYVGVHZEZqMDh3bDBrSENVRFdma3l2SDYx?=
- =?utf-8?B?QjZkZkpRYUR6Rk5PcEhqSktRckRMTU9zcGYzd3hoOFhJVjRjV0UvTFhCc2Zl?=
- =?utf-8?B?K3FubTIwUnFlVlFJOWF6SFdwcDNWdi9rRGpNYjJBaEZZbU05UG5sUi9xaG9X?=
- =?utf-8?B?eVhPQnNZS2NiY3k1UWJWU09FbmFDbE9sUng1ZElFaStjWVVSRG8ySUVrVkl0?=
- =?utf-8?B?b0hHekt5ZjZUNSt5Z20wcEdQcW01cGRqdFNDUEdRYTNSZnE5SVA1NzZ2Q3dQ?=
- =?utf-8?B?UDNUeHhIeHp5MGxRV3JOS1ZDUjBDNGxoN0cwMEI1STRDV1JRT1hzQy9QZFNT?=
- =?utf-8?B?Mnp4K0NtajBjV0VIY1Y4aGNJa2Q3TmlOV0dlaEZ0Qlp4dHgrRW81YTh4bDhC?=
- =?utf-8?B?Z0lKMlNIOEVKNTFWelArRXRFTmg1QlduWFZSWlVtRm9aUC9CbytIVWp1YmRq?=
- =?utf-8?B?YktsTi8wOHR0UFpPL0IzbC9xSnhYYzIvNnNxalVOaFpGOW1PQnNQRHFzYzBX?=
- =?utf-8?B?b3BXSWJCYVJHWFpuUUlncG9wcVhDeTdTb3ZZcm9GSUttU0JEL0t3VWppMGhN?=
- =?utf-8?B?bjlDYmFZelhKdDVxMFdXSXk1bEZvYjFPVzhaeXZxZi9scjErNXdsTlJiV0dI?=
- =?utf-8?B?RVFwa3Uva1MxQXpaU3dGVTJYOEl1QW5oTEhNVlVZcEZCblBGKy9wZTc0QnQ2?=
- =?utf-8?B?UEZhRTcvWXJuR3dsVzNFYmFKRDBpeW5NL1ZmZDBXaU1xeXN6R2lvTUptYkNX?=
- =?utf-8?B?dVE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f295795-1833-4383-58fa-08dad0266d36
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c2Q4UjRFNEYveUF0YnNUMHlmZndnRk5IOFZWcnJVSUxXQ0N0Y1BrSGxsdkZQ?=
+ =?utf-8?B?Z0FPQ1NPSU9SVkprWmt3Mi9RQkszcWJ2UjJpa0N1bUxaMXFMWFlqMlVzOHRZ?=
+ =?utf-8?B?NVFPV3JqNTV5Q1RmSDg5bldmc1dpQ0pGMzh2b0s2bXZYQ3g0Wjg1VEJ0ZWxI?=
+ =?utf-8?B?RVk2dmtPVkIyc0RjdDFGaEl4SEE5QWtmYjhWTkxDWTFlMXNqSXZhNnh4eHpJ?=
+ =?utf-8?B?eHQrdlFNV005TXhicHlyeVRxbHJ3dTM1QndRYm9zL05nZGVkZk5rMjRyZ0Qy?=
+ =?utf-8?B?amptQkVUUDhDWVZ6VDVySDZBUnNQcndPZk5KSEhTQ3VOMngycmxZQU1sTHEy?=
+ =?utf-8?B?bzQvUVUralg0cnRGSzQzc2xUTW5Gemk0NXE5TFd3NW5KdzBnRHdGak92ZmhO?=
+ =?utf-8?B?WkhvSHV2eEY0K25Ua0g5Y3pFMStmenFsdzhWZnhmRUxna0krVW5YSmxIZGhp?=
+ =?utf-8?B?dFRPamZtZ2liT29lVlJwWWQ0WXJoNU9KVExYNnFYbUdWYU01R1I1bTFSbkh2?=
+ =?utf-8?B?MVpWTllvQWNoT2FyVjlsd0MzT3l4Q1JBUkxGQ1loL25NSnZXaTNUaWRHcThN?=
+ =?utf-8?B?MzM0QVQ5K3BwcCtITVVpTWs0Sm1uVmFPRE56S3FuN3ViWlViRmZtb1lwQ01Q?=
+ =?utf-8?B?a2lQdEUxRmpzQ1NuRit3MTNTbkxVL0trQUxXYWNRMGVvTndQUENlNnRqckd0?=
+ =?utf-8?B?NGxxb2NPbDMwMHJCWFZ3WVN3aTVleUxDanQ2UzhHVzByb0xQdUc5WDFzOVk2?=
+ =?utf-8?B?ZHdpanVhNysrZWl5SVRQeHM1dmd5L1ZJeFQzVTQvcitiTGlwNmU3R3MzNDZn?=
+ =?utf-8?B?VTg2M2dmaUFxczB3WG5DYjRhdllOMVl6YldXSWJrb1VrbW5EUE1IaHVnSzRO?=
+ =?utf-8?B?bVZzaDdSUUt2dzRUR3h1elVmUUZqWjBxeE11V1c5ODV2MHhad3BKbFJoTzVo?=
+ =?utf-8?B?RUNybEZxTXlvcERMeHJMT21wZ2RhWTY1LzVmZmxIYkJBVS9vS3J6cEE5Ukkv?=
+ =?utf-8?B?YTZqZWdRRzBhWk42ZUVzNmRjV3ZlQVR4MmdjbTczQSt3L1htWks4K29vamMr?=
+ =?utf-8?B?QjVQWmUrcEk0eFNOVnhRaW9ieXk0bUNOTENVajBkMHdRVFJwcTdUNHU0N0N4?=
+ =?utf-8?B?cnNONVo0dHpCZTlKK0J5TFhoVkVQMDFrcmszcVYzdVRiUnBhZTJZYUVhME1W?=
+ =?utf-8?B?SytkNThsaHE3VGRPMFEwYlUyZ0RVWUJ0QURPbVZHOFZQMWt3NUgvQXVHUFZY?=
+ =?utf-8?B?c3NmOGZrYWZOTC91R0RYaHQyajNOaWZxeHVjbWcrZ2szMVdsZ3MwWitHTU5I?=
+ =?utf-8?B?UmdzS2V0cDJFRDd3eUNkSitET1FBYTdMM0xsNWFHMHByMVZnRytobkp0QTVB?=
+ =?utf-8?B?YW0rTStBK05YNjJ5eDdSWW5xaXl4MGdFUW1BVmJ1V1BObDkwTkxPRWFZMGJy?=
+ =?utf-8?B?eGhucXNKL21rd2p5NnlSeUVXdVhrSUgyQzBtWElCaWtMTlEvZkdKbkh2OG9x?=
+ =?utf-8?B?RnRwa0xyYnBRcXh6OXoyajRKc2hsOXNIMFpmWUdMZFNuZ0pta0tzU2R4ZEEx?=
+ =?utf-8?B?OTgyV1E0ZWQ0YkZqYmh1L29BQ2ZwNENwM0FHSzRmelJGTkljQkoyWGI0a3lT?=
+ =?utf-8?B?TG01NkNuNHNtTkJVVUlTSkxBOGZxNDBCSUl6RGh5cm1TYUFpSnZnQ1JndU0x?=
+ =?utf-8?B?dzkzViticktwSE8wSVRaVWdSNlJCaGVHRkV2QWhaUVRCRmkzUWE0S3lBPT0=?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff57024e-8f28-45e5-8150-08dad0274d0a
+X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2022 03:21:08.7834
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2022 03:27:24.7118
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CRn/2+xTQTQ8mnxKvTyPcHcUH1KodHilJMHdiYsFZ9HVNWvKj1uPS7sc+y+1Igv+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4736
-X-Proofpoint-GUID: 2HyzPrah348u3FRtLv0V1UpsrIrTk4b1
-X-Proofpoint-ORIG-GUID: 2HyzPrah348u3FRtLv0V1UpsrIrTk4b1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-26_16,2022-11-25_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7P192MB0817
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2022/11/24 8:40, Martin KaFai Lau wrote:
+> On 11/23/22 4:18 PM, Daniel Borkmann wrote:
+>> On 11/18/22 9:18 AM, Ji Rongfeng wrote:
+>>> * append missing optnames to the end
+>>> * simplify bpf_getsockopt()'s doc
+>>>
+>>> Signed-off-by: Ji Rongfeng <SikoJobs@outlook.com>
+>>> ---
+>>>   include/uapi/linux/bpf.h       | 20 ++++++++++++--------
+>>>   tools/include/uapi/linux/bpf.h | 20 ++++++++++++--------
+>>>   2 files changed, 24 insertions(+), 16 deletions(-)
+>>>
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index 51b9aa640ad2..14f29d95ea71 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -2576,14 +2576,19 @@ union bpf_attr {
+>>>    *         * **SOL_SOCKET**, which supports the following 
+>>> *optname*\ s:
+>>>    *           **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
+>>>    *           **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
+>>> - *           **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
+>>> + *           **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
+>>> + *           **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
+>>>    *         * **IPPROTO_TCP**, which supports the following 
+>>> *optname*\ s:
+>>>    *           **TCP_CONGESTION**, **TCP_BPF_IW**,
+>>>    *           **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
+>>>    *           **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
+>>> - *          **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, 
+>>> **TCP_NOTSENT_LOWAT**.
+>>> + *           **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, 
+>>> **TCP_NOTSENT_LOWAT**,
+>>> + *           **TCP_NODELAY**, **TCP_MAXSEG**, **TCP_WINDOW_CLAMP**,
+>>> + *           **TCP_THIN_LINEAR_TIMEOUTS**, **TCP_BPF_DELACK_MAX**,
+>>> + *           **TCP_BPF_RTO_MIN**.
+>>>    *         * **IPPROTO_IP**, which supports *optname* **IP_TOS**.
+>>> - *         * **IPPROTO_IPV6**, which supports *optname* 
+>>> **IPV6_TCLASS**.
+>>> + *         * **IPPROTO_IPV6**, which supports the following 
+>>> *optname*\ s:
+>>> + *           **IPV6_TCLASS**, **IPV6_AUTOFLOWLABEL**.
+>>>    *     Return
+>>>    *         0 on success, or a negative error in case of failure.
+>>>    *
+>>> @@ -2800,12 +2805,11 @@ union bpf_attr {
+>>>    *           and **BPF_CGROUP_INET6_CONNECT**.
+>>>    *
+>>>    *         This helper actually implements a subset of 
+>>> **getsockopt()**.
+>>> - *         It supports the following *level*\ s:
+>>> + *         It supports the same set of *optname*\ s that supported by
+>>
+>> nit: that is supported by
+>>
+>>> + *         **bpf_setsockopt**\ () helper with a few exceptions:
+>>>    *
+>>> - *         * **IPPROTO_TCP**, which supports *optname*
+>>> - *           **TCP_CONGESTION**.
+>>> - *         * **IPPROTO_IP**, which supports *optname* **IP_TOS**.
+>>> - *         * **IPPROTO_IPV6**, which supports *optname* 
+>>> **IPV6_TCLASS**.
+>>> + *         * **bpf_setsockopt**\ () helper only: **TCP_BPF_***.
+>>> + *         * **bpf_getsockopt**\ () helper only: **TCP_SAVED_SYNC**.
+>>
+>> I think from a user PoV the above is a bit hard to follow, maybe take 
+>> Martin's
+>> earlier feedback into account and add a proper sentence; it will be 
+>> much easier
+>> to understand.
+>
+> +1  Made the change and also fixed TCP_SAVED_SYNC with s/SYNC/SYN/ 
+> while applying.  Thanks!
 
+Thanks for the helpful reviews. I chose the form of lists was because we 
+could
+append more optnames easily in the future. But I believe it's not late 
+to apply
+that form when we really need it : )
 
-On 11/26/22 2:53 AM, Hengqi Chen wrote:
-> The timer_off value could be -EINVAL or -ENOENT when map value of
-> inner map is struct and contains no bpf_timer. The EINVAL case happens
-> when the map is created without BTF key/value info, map->timer_off
-> is set to -EINVAL in map_create(). The ENOENT case happens when
-> the map is created with BTF key/value info (e.g. from BPF skeleton),
-> map->timer_off is set to -ENOENT as what btf_find_timer() returns.
-> In bpf_map_meta_equal(), we expect timer_off to be equal even if
-> map value does not contains bpf_timer. This rejects map_in_map created
-> with BTF key/value info to be updated using inner map without BTF
-> key/value info in case inner map value is struct. This commit lifts
-> such restriction.
-> 
-> Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->   kernel/bpf/map_in_map.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-> index 135205d0d560..0840872de486 100644
-> --- a/kernel/bpf/map_in_map.c
-> +++ b/kernel/bpf/map_in_map.c
-> @@ -80,11 +80,18 @@ void bpf_map_meta_free(struct bpf_map *map_meta)
->   bool bpf_map_meta_equal(const struct bpf_map *meta0,
->   			const struct bpf_map *meta1)
->   {
-> +	bool timer_off_equal;
-> +
-> +	if (!map_value_has_timer(meta0) && !map_value_has_timer(meta1))
-> +		timer_off_equal = true;
-> +	else
-> +		timer_off_equal = meta0->timer_off == meta1->timer_off;
-> +
-
-Is it possible we assign -1 to meta->timer_off directly instead of
--EINVAL or -ENOENT, to indicate it does not exist? This will make
-this and possible other future timer_off comparison much easier?
-
->   	/* No need to compare ops because it is covered by map_type */
->   	return meta0->map_type == meta1->map_type &&
->   		meta0->key_size == meta1->key_size &&
->   		meta0->value_size == meta1->value_size &&
-> -		meta0->timer_off == meta1->timer_off &&
-> +		timer_off_equal &&
->   		meta0->map_flags == meta1->map_flags &&
->   		bpf_map_equal_kptr_off_tab(meta0, meta1);
->   }
-> --
-> 2.34.1
+In my opinion, this patch doesn't contain any new feature, but just a 
+kind of fix
+to the documentation, according to the corresponding code in the bpf tree,
+which hasn't been modified yet in the bpf-next tree. So I targeted the 
+former,
+as this patch could be useful there. Please let me know if there's any 
+customary
+rules outside bpf_devel_QA. Thanks!
