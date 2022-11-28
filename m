@@ -2,275 +2,398 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C83163B141
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 19:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C038463B15A
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 19:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbiK1S0f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 13:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        id S232046AbiK1ScN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 13:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbiK1S0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 13:26:17 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3052A722;
-        Mon, 28 Nov 2022 10:18:37 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id q1so10655367pgl.11;
-        Mon, 28 Nov 2022 10:18:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jl9LwyzvZGZ+R8ZUT6uj3txcdq+TRbDdiFqFW3GqqXs=;
-        b=DRQhAljFH7gaI7GHMcW092eFfDr099fwQ42CbREAtfmOskpRzjuBYvGT5cz2wCb+3Q
-         xgjKPZJqwhD2EjUraea10Sn3RR//okjrTmuO6/ozeCQih6N1RhC/GkIr2hn+maOYU/LX
-         BErTSL38j9/N668vm2mL0QdIMsZibv6cLVV98m4TvrgvWNKw7jsmSh+lKBKGB04zrqU7
-         /9HizJq3Z6e+QCN99Vd173Xdpm0dq/hI77XkGsMg7gdtgSMV9AT7pZoOfgN2t8ilhbeX
-         h6Ui8RAiyJpsgGG3+/dT1Z2eduBhWOy79OiRXNikmemVJge0WRuD0PwG07aacCZ+yt8p
-         AF2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Jl9LwyzvZGZ+R8ZUT6uj3txcdq+TRbDdiFqFW3GqqXs=;
-        b=jwGYboa0wkLQqYsKoWgZjUS+1HSqI04LqBsriBgEaXI4kEfIGegKxwaEhroQGJ3gzU
-         mx8+DrsKOAmj9B87zZCzVJ5isTIxgKhE2YkvW2hxBrL3I3S8nuGdEOAojtXf2ldxq33v
-         EGszm6Klcx+OzxkDO8Je+5iWiFmMZTDdD6pUUqmOZFOOkmR+KcsM2t8E47xgFNthZZRn
-         fd56eXdcnTZiFa1A0Iv5xZgULnpuJJnXBfEKuL9mvWCNVDDVEyNIcKxLe2M8N+XaJ2ht
-         Ov2nD/OQKUClGzcyrZLtcN7naXwY9+7poYs8NsUtDQPCvlx74yVCwKQtFXoZINPDZ/uX
-         l2Vw==
-X-Gm-Message-State: ANoB5pkzAZQ4zW0j67Bdg7dBq4bj8ebaWlwinH+UsBwam8uqrqdmjFvz
-        sPxzrd10mU5cx7v19qwYibzzMQSa2bk=
-X-Google-Smtp-Source: AA0mqf65GLsr7aElacw+Ek+fcYL8sVgCAt5lX9pGnAKQ65xdyTGCopW6DvDftmzjwjlY/ayNFhjthA==
-X-Received: by 2002:a63:d556:0:b0:46b:158f:6265 with SMTP id v22-20020a63d556000000b0046b158f6265mr28357549pgi.193.1669659517079;
-        Mon, 28 Nov 2022 10:18:37 -0800 (PST)
-Received: from localhost ([2605:59c8:6f:2810:7d97:f259:85c:a462])
-        by smtp.gmail.com with ESMTPSA id i15-20020a62870f000000b005754f96f89fsm1543443pfe.76.2022.11.28.10.18.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 10:18:36 -0800 (PST)
-Date:   Mon, 28 Nov 2022 10:18:33 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Pengcheng Yang <yangpc@wangsu.com>
-Cc:     'John Fastabend' <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, 'Daniel Borkmann' <daniel@iogearbox.net>,
-        'Lorenz Bauer' <lmb@cloudflare.com>
-Message-ID: <6384fb79f28f0_59da0208e7@john.notmuch>
-In-Reply-To: <87cz97cnz8.fsf@cloudflare.com>
-References: <1669082309-2546-1-git-send-email-yangpc@wangsu.com>
- <1669082309-2546-3-git-send-email-yangpc@wangsu.com>
- <637d8d5bd4e27_2b649208eb@john.notmuch>
- <000001d8ff01$053529d0$0f9f7d70$@wangsu.com>
- <87cz97cnz8.fsf@cloudflare.com>
-Subject: Re: [PATCH RESEND bpf 2/4] bpf, sockmap: Fix missing BPF_F_INGRESS
- flag when using apply_bytes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232364AbiK1Sb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 13:31:26 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2088.outbound.protection.outlook.com [40.107.244.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3851F63D6;
+        Mon, 28 Nov 2022 10:27:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gcZgN9aXL4I9q1mu3I/5iLQiKQsORgBqpJ88ZU3PxXVNV69bPa8wEWv3c/kXat1ihLIKjzJtcEg6q8YxfGL2kPHlNoGrMVuD0gplCljS9lWgkU6PbKrzgjWXcxycrDSeI1KiUQioHFx+JVvsV1tZdT1AqJp87RWPtFQPEScMrA82GskJ8pUYt0xTEF69JDRc4e2age/5DQarHuhOIWDvKx6BTENvcahIi+BNwyfuIZmQuvIbSc36IGYL3gtRJo79653l/+yjWYtdevKCyhCVD+gSTVxE5u4tB+LskOfzm2ipz19YkHF3bJNIQXsxnX99USJdnelh7qN/33Ui2qcbsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U7sokgwrKdEuVeNtRG6nIVGjXGqNiXBqIszq1bddvG8=;
+ b=dyLHPL/iVxGANDcvivHSa456YN9zbcPT6h9inbyhuau5Ps2LndMI8SzLYB+3necKVAxCH8g1MDMA7f+IUOFSSWkOlUqbXsMKXj2PUjnL8nUzQTEBZQRYNsrvWXQYyk+k+oz4xVFKbQmX3D24bqdkZo2NiaUJyI+xfRc8y6280EenDTX4ip2uk5ZE7O0ADbjLytKfZAp0vkW+5dBRmpZsdjRMHif72l97lYINSVPyB0hpixBP5jttkBFziRt6Xfy1T88Ic1NEiC38fe/dCMdG8O9QVB+ZohpyBUxz8ZpIDZOCv8ztJiovvVWMdMbkNey4+QUNEcTUvHESmPt/27Z9dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7sokgwrKdEuVeNtRG6nIVGjXGqNiXBqIszq1bddvG8=;
+ b=cjEOpfWUmdjxwKe81sCxnQV3EyzMxlR5GGuyMz/4aeOkF6Gc73AA8WjuJCKzg0S1V7OIKFY07jKihmnfhiwwxJuEGIuw7hXJT6zJ54aXsWcdmczwDFyIaLcPQIlk2VOky/Xsusrc/w6uTAE3ttbHL8Wq7ybj4YpUdZzZWSq3rdwl3nZ1D6+LRkki1qf877HBXYPYYGPxBfQStwuFa7QiD8ROh2QpWal48oB4eNxMbbJbPgyNBlBnRpbWVBzbbURji+4i3Ow/qmyvOO5swUFqR378ch/zkLH9eIURsqs71am2H5GK3Rtyhw6Oa5pM1VTSf2mfiQsZWlPIq6F6DE2bZQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM6PR12MB4960.namprd12.prod.outlook.com (2603:10b6:5:1bc::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Mon, 28 Nov
+ 2022 18:27:07 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5857.021; Mon, 28 Nov 2022
+ 18:27:07 +0000
+Date:   Mon, 28 Nov 2022 14:27:06 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Lixiao Yang <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH v5 11/19] iommufd: IOCTLs for the io_pagetable
+Message-ID: <Y4T9ejjPETS3TPx7@nvidia.com>
+References: <11-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+ <16bcfd63-2803-8000-7725-b42cd05061fa@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <16bcfd63-2803-8000-7725-b42cd05061fa@redhat.com>
+X-ClientProxiedBy: MN2PR15CA0007.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::20) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4960:EE_
+X-MS-Office365-Filtering-Correlation-Id: 13a2b62d-dbeb-41b9-be64-08dad16e27ae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RclUn3Vosr7xWEruGKYWNiHlpfvllOMymwHkUrD6m0iPH6Dfo3O6xHGsZeAYFa9803dyFKLb087m+RhbbEpLhZ5qEkIE5x98+mjn305bTRTo7Bje91mYJEYJnNsCiXtt95D681PeJ1mdhz3rUc/i7UvCjyDIh+0ef/+YFcXUbCThyozIm4Akuoj3zxOsPwrd4XGI7N66pPgeKrVj3NlBe8folsZVYhS79mp/ol77NneGBxiCHnkLM2pk4dybOEK+oFyUQyGHxXp0wdp6UawJdNHh3w1xbqndD1enMJ0AWssOEVp6S5bRdBn0TkgzA/6cQHE6NDzl3D1pni6Zz3H7Ih/vwiw+hw/vaF923A6KoY8L/idZYuNHn2UeicDqDBeLKiPKm8pQfvnQN9Bk9ViioGHAPSkHV8ZlWVlSVi/quUo8Ujz5d97jHBuNho/Gm1UTEe5GLPmMamfBa3/Xef+MG5MSssllmUY2Sq3A9N/OMQsU8pfUs1ia3D52cok3C8UexB9EmvZ25FtMKl9qT070jsuNJMtOd8tHD8VkCZ4iF3TVxvm8Qd7/c6JhS3C1mpjeITWJpsjy3ssT3ehU6662Ph2LM/bh4b9r9BGrKIF0oUTLg42tbN31rKlyzdv+/hB1G89GSauxcsusATsImqnYnw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(451199015)(5660300002)(7406005)(7416002)(41300700001)(8936002)(8676002)(66476007)(66556008)(4326008)(6486002)(54906003)(6916009)(36756003)(478600001)(316002)(66946007)(2906002)(86362001)(6512007)(6506007)(26005)(186003)(2616005)(83380400001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEhJVWhXbFd4WG5aZXkrYk9rWndQWTF0OFpVcGw3cDlHRlExZjM5cmMrcDBP?=
+ =?utf-8?B?cGtGN1JSRlp4LzNKcnkrR3AzRzBTekJXMTQrclFwVXBzaHVnd2tSVGlVUkxR?=
+ =?utf-8?B?Vi9ScDlCZyt6VndYYTRhS1k4Tlp6d3hhVW9sWDJTNWdiQlZVSXNlQzl4eWlS?=
+ =?utf-8?B?RmgwbzdxYmEySVBxZ0pXQktjU2FxeVVaM3lyVXNQYVQ0ZEhQWGllY0pSRVlh?=
+ =?utf-8?B?NmlIbzFFMThIU2wwZFdRaEVwY3ErWCsvVzVnZSswOGtrbWptWHQ0T0RUNG5P?=
+ =?utf-8?B?d1pGeEpCYXIzMW9ER1l3Rkl1Vkgrem42OHY1cUY0bHMxbW1RMlVXZWFHMjdo?=
+ =?utf-8?B?ZUdrN3VxdlV6Mk1ualdoQXJmUWhjUWlvNW9lSWwrTkx6Q3N1dFhiNTlrK0Vx?=
+ =?utf-8?B?bE5VWlYxUlZGSFpGYUVWN0tQa1RxMVZwREpLZk5RYXNGTzZKS0VWRjBNRVk4?=
+ =?utf-8?B?eS9QRnNsOFg5UURKelh4bXBIYzl1U1JHcXd0Q0dtYkxJU3JmNFdKYnZWSytk?=
+ =?utf-8?B?amZ5VTRLbjdnaVI0b3Awcm1sSnBCblQ4aWFLMFMwUWtjMWNiN2pEYjhudkg5?=
+ =?utf-8?B?ZUxEY0lnTDYwT0JnTWQxYXVKTjdYNnJuOURST3FsN0huanhCeE00dDEvYWZn?=
+ =?utf-8?B?MUQvdWpBL1VQTFNMdVF3bEM5OHcxbFpYbmNuUjFNK3VLRW9YT3RCb0FHaytw?=
+ =?utf-8?B?My9WVFlwVi9JSkNsdUc3aVJjZmtsYnZFL0ZLNGoyY1dCSURvd3ZYeXMyNmt4?=
+ =?utf-8?B?cG5wcDl0cHlqT0xYMWhUQjlYSlFJSGIzT2FvUFFRdkx6dmxOZU43aGVzZzlp?=
+ =?utf-8?B?RmR0T0VBakhjRlN2NlB5Y29yOGNBWVh0Q2lQTE5RdEFqdXR2MUtBQ0l4Tmht?=
+ =?utf-8?B?eGRKbWhLSFQ0a0x2SVRaQStBa2NybGRRWTFIRXFqOHVhajZTN29iUm5zQTN4?=
+ =?utf-8?B?UVFTTHZuc1BnSkd1WVpHdHN3NHlIZi9obE1UeU4xYmF4Y2dzOUcwdUwyWUVH?=
+ =?utf-8?B?L3VNSXJWYXU0cW40dURJVllHbmlmTFE1aU5pNzIySWRHUHZuejF1bkpGaG5a?=
+ =?utf-8?B?OFBOeTM0QVJta1dGYW9DaE14cGtRUU5iUVY1dmFkVjhjVkpNZS9BWlg0RWZ6?=
+ =?utf-8?B?akZweWVqRVdoenY5S3ZkRXR1Tmxwc3RZOXhYT0ZHZ1dkVEtibXZraG9OdW1D?=
+ =?utf-8?B?VktlVlM5T3BBWXlTMkZMOFlQaWc3ODgxaE1KOGhocjh1YUVPVDJSK2hydTNK?=
+ =?utf-8?B?MzJVdlk2TGlVRmRUbHIvbkx6WlJieHVmblBoV1hMQWZQSW5WTElvQzRyNWh5?=
+ =?utf-8?B?NEs1Rkh3Z3dFRG1vb1U4TURhaS93TkpqZzZlWTE0WFFXelVlOTl2alkvNkxO?=
+ =?utf-8?B?SWVYMzBLdm9aM1NyNFVSN09ETGN4MjZwdVhKL004SW4zNGxRQU8xZkNYM1BJ?=
+ =?utf-8?B?OWpueGpLOHJQN0ZkeW52V0t6UVo0OE1xMXUwbnIzaFJZQWZVSUdBbzUxaTFB?=
+ =?utf-8?B?ZkFoR1ZtOGd4d1lRL21tdEhaZ01vbGdUUDc4MzkxRWJFRExpbFVWN2lMNEND?=
+ =?utf-8?B?aTBMQ0JORXJKNk9BWnB1b2s5cnFvYVkvMXRuZmIwRTV5YWlLSDJsQkVlbjhq?=
+ =?utf-8?B?K1Z3dHZOV1Fyamlud0JkUjJSVW5EOVc4NlM1VUVXQkNEbTV0emdORkpnS3Fr?=
+ =?utf-8?B?djNxRXJUV1FGN2kvS2dDQ0tVSG1FOCtEWlB2Ync0djZ0WVpmbVRKaGUwdmxk?=
+ =?utf-8?B?ekgyejZacUJvUkV4WXRNZmdoK240QnhSeHlLWVFpb1g2M3hMa21vdTVHbDJa?=
+ =?utf-8?B?Zys2YnY3ZDY1LzZXM2JrcTRidVQ5ZFhDVE01QTdPQ3AwL1U1NlQ2WUIwRkQz?=
+ =?utf-8?B?eHhUTklLOXJRQzhHWWVwbGRyYXdzNjhXaHJWOWVhdUg5WXdGK1lzaU5IcVBq?=
+ =?utf-8?B?ZFoyY1RBMHZpbDJVRmsvUmVhN3l4Ymw4T3l4QzNvb2FwUkM4dkRVWXVFVEEy?=
+ =?utf-8?B?TjBQRWNSOXV5aFQ3ckp0bzZiQUVTdzNaRDNoUTFQRkNzMi9HSDBublBxSzlq?=
+ =?utf-8?B?aFpraWIxc3ZxaldVdXJzdG9QK1o2a2NNNGsvcGU1emtWU1lUVTFTWTNRTEp6?=
+ =?utf-8?Q?N04k=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13a2b62d-dbeb-41b9-be64-08dad16e27ae
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2022 18:27:07.2792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PIn6nOhFXTkMap2zqDclZmhxvdBvlTABbunbA+K9zs5AspQPlSMfgN4w6hRMxPCx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4960
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Wed, Nov 23, 2022 at 02:01 PM +08, Pengcheng Yang wrote:
-> > John Fastabend <john.fastabend@gmail.com> wrote:
-> >> 
-> >> Pengcheng Yang wrote:
-> >> > When redirecting, we use sk_msg_to_ingress() to get the BPF_F_INGRESS
-> >> > flag from the msg->flags. If apply_bytes is used and it is larger than
-> >> > the current data being processed, sk_psock_msg_verdict() will not be
-> >> > called when sendmsg() is called again. At this time, the msg->flags is 0,
-> >> > and we lost the BPF_F_INGRESS flag.
-> >> >
-> >> > So we need to save the BPF_F_INGRESS flag in sk_psock and assign it to
-> >> > msg->flags before redirection.
-> >> >
-> >> > Fixes: 8934ce2fd081 ("bpf: sockmap redirect ingress support")
-> >> > Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
-> >> > ---
-> >> >  include/linux/skmsg.h | 1 +
-> >> >  net/core/skmsg.c      | 1 +
-> >> >  net/ipv4/tcp_bpf.c    | 1 +
-> >> >  net/tls/tls_sw.c      | 1 +
-> >> >  4 files changed, 4 insertions(+)
-> >> >
-> >> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> >> > index 48f4b64..e1d463f 100644
-> >> > --- a/include/linux/skmsg.h
-> >> > +++ b/include/linux/skmsg.h
-> >> > @@ -82,6 +82,7 @@ struct sk_psock {
-> >> >  	u32				apply_bytes;
-> >> >  	u32				cork_bytes;
-> >> >  	u32				eval;
-> >> > +	u32				flags;
-> >> >  	struct sk_msg			*cork;
-> >> >  	struct sk_psock_progs		progs;
-> >> >  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> >> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> >> > index 188f855..ab2f8f3 100644
-> >> > --- a/net/core/skmsg.c
-> >> > +++ b/net/core/skmsg.c
-> >> > @@ -888,6 +888,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
-> >> >  		if (psock->sk_redir)
-> >> >  			sock_put(psock->sk_redir);
-> >> >  		psock->sk_redir = msg->sk_redir;
-> >> > +		psock->flags = msg->flags;
-> >> >  		if (!psock->sk_redir) {
-> >> >  			ret = __SK_DROP;
-> >> >  			goto out;
-> >> > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> >> > index ef5de4f..1390d72 100644
-> >> > --- a/net/ipv4/tcp_bpf.c
-> >> > +++ b/net/ipv4/tcp_bpf.c
-> >> > @@ -323,6 +323,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
-> >> >  		break;
-> >> >  	case __SK_REDIRECT:
-> >> >  		sk_redir = psock->sk_redir;
-> >> > +		msg->flags = psock->flags;
-> >> >  		sk_msg_apply_bytes(psock, tosend);
-> >> >  		if (!psock->apply_bytes) {
-> >> >  			/* Clean up before releasing the sock lock. */
-> >>                  ^^^^^^^^^^^^^^^
-> >> In this block reposted here with the rest of the block
-> >> 
-> >> 
-> >> 		if (!psock->apply_bytes) {
-> >> 			/* Clean up before releasing the sock lock. */
-> >> 			eval = psock->eval;
-> >> 			psock->eval = __SK_NONE;
-> >> 			psock->sk_redir = NULL;
-> >> 		}
-> >> 
-> >> Now that we have a psock->flags we should clera that as
-> >> well right?
-> >
-> > According to my understanding, it is not necessary (but can) to clear
-> > psock->flags here, because psock->flags will be overwritten by msg->flags
-> > at the beginning of each redirection (in sk_psock_msg_verdict()).
-> 
-> 1. We should at least document that psock->flags value can be garbage
->    (undefined) if psock->sk_redir is null.
+On Sun, Nov 27, 2022 at 06:49:29PM +0100, Eric Auger wrote:
 
-Per v2 I think we should not have garbage flags. Just zero the flags
-field no point in saving a single insn here IMO.
+> > +static int iommufd_ioas_load_iovas(struct rb_root_cached *itree,
+> > +				   struct iommu_iova_range __user *ranges,
+> > +				   u32 num)
+> > +{
+> > +	u32 i;
+> > +
+> > +	for (i = 0; i != num; i++) {
 
-> 
-> 2. 'flags' is amiguous (flags for what?). I'd suggest to rename to
->    something like redir_flags.
-> 
->    Also, since we don't care about all flags, but just the ingress bit,
->    we should store just that. It's not about size. Less state passed
->    around is easier to reason about. See patch below.
+> shouldn't it be < ?
 
-rename makes sense to me.
+It is logically equivalent
 
-> 
-> 3. Alternatively, I'd turn psock->sk_redir into a tagged pointer, like
->    skb->_sk_redir is. This way all state (pointer & flags) is bundled
->    and managed together. It would be a bigger change. Would have to be
->    split out from this patch set.
-> 
-> --8<--
-> 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 70d6cb94e580..84f787416a54 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -82,6 +82,7 @@ struct sk_psock {
->  	u32				apply_bytes;
->  	u32				cork_bytes;
->  	u32				eval;
-> +	bool				redir_ingress; /* undefined if sk_redir is null */
->  	struct sk_msg			*cork;
->  	struct sk_psock_progs		progs;
->  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 14d45661a84d..5b70b241ce71 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2291,8 +2291,8 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
->  void tcp_bpf_clone(const struct sock *sk, struct sock *newsk);
->  #endif /* CONFIG_BPF_SYSCALL */
->  
-> -int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg, u32 bytes,
-> -			  int flags);
-> +int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
-> +			  struct sk_msg *msg, u32 bytes, int flags);
->  #endif /* CONFIG_NET_SOCK_MSG */
->  
->  #if !defined(CONFIG_BPF_SYSCALL) || !defined(CONFIG_NET_SOCK_MSG)
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index e6b9ced3eda8..53d0251788aa 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -886,13 +886,16 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
->  	ret = sk_psock_map_verd(ret, msg->sk_redir);
->  	psock->apply_bytes = msg->apply_bytes;
->  	if (ret == __SK_REDIRECT) {
-> -		if (psock->sk_redir)
-> +		if (psock->sk_redir) {
->  			sock_put(psock->sk_redir);
-> -		psock->sk_redir = msg->sk_redir;
-> -		if (!psock->sk_redir) {
-> +			psock->sk_redir = NULL;
-> +		}
-> +		if (!msg->sk_redir) {
->  			ret = __SK_DROP;
->  			goto out;
->  		}
-> +		psock->redir_ingress = sk_msg_to_ingress(msg);
-> +		psock->sk_redir = msg->sk_redir;
->  		sock_hold(psock->sk_redir);
->  	}
->  out:
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index cf9c3e8f7ccb..490b359dc814 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -131,10 +131,9 @@ static int tcp_bpf_push_locked(struct sock *sk, struct sk_msg *msg,
->  	return ret;
->  }
->  
-> -int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
-> -			  u32 bytes, int flags)
-> +int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
-> +			  struct sk_msg *msg, u32 bytes, int flags)
->  {
-> -	bool ingress = sk_msg_to_ingress(msg);
->  	struct sk_psock *psock = sk_psock_get(sk);
->  	int ret;
->  
-> @@ -337,7 +336,8 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
->  		release_sock(sk);
->  
->  		origsize = msg->sg.size;
-> -		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
-> +		ret = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
-> +					    msg, tosend, flags);
->  		sent = origsize - msg->sg.size;
->  
->  		if (eval == __SK_REDIRECT)
-> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> index 264cf367e265..b22d97610b9a 100644
-> --- a/net/tls/tls_sw.c
-> +++ b/net/tls/tls_sw.c
-> @@ -846,7 +846,8 @@ static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
->  		sk_msg_return_zero(sk, msg, send);
->  		msg->sg.size -= send;
->  		release_sock(sk);
-> -		err = tcp_bpf_sendmsg_redir(sk_redir, &msg_redir, send, flags);
-> +		err = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
-> +					    &msg_redir, send, flags);
->  		lock_sock(sk);
->  		if (err < 0) {
->  			*copied -= sk_msg_free_nocharge(sk, &msg_redir);
+> > +int iommufd_ioas_allow_iovas(struct iommufd_ucmd *ucmd)
+> > +{
+> > +	struct iommu_ioas_allow_iovas *cmd = ucmd->cmd;
+> > +	struct rb_root_cached allowed_iova = RB_ROOT_CACHED;
+> > +	struct interval_tree_node *node;
+> > +	struct iommufd_ioas *ioas;
+> > +	struct io_pagetable *iopt;
+> > +	int rc = 0;
+> > +
+> > +	if (cmd->__reserved)
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	ioas = iommufd_get_ioas(ucmd, cmd->ioas_id);
+> > +	if (IS_ERR(ioas))
+> > +		return PTR_ERR(ioas);
+> > +	iopt = &ioas->iopt;
+> > +
+> > +	rc = iommufd_ioas_load_iovas(&allowed_iova,
+> > +				     u64_to_user_ptr(cmd->allowed_iovas),
+> > +				     cmd->num_iovas);
+> > +	if (rc)
+> > +		goto out_free;
+> > +
+> > +	rc = iopt_set_allow_iova(iopt, &allowed_iova);
+> Please can you add a comment about why you need to proceed in 2 steps,
+> ie. add the ranges in a first tree and then 'swap' to the
+> iopt->allowed_tree (and eventually delete the first tree)?
+
+Sure
+
+	/*
+	 * We want the allowed tree update to be atomic, so we have to keep the
+	 * original nodes around, and keep track of the new nodes as we allocate
+	 * memory for them. The simplest solution is to have a new/old tree and
+	 * then swap new for old. On success we free the old tree, on failure we
+	 * free the new tree.
+	 */
+
+> > +static int conv_iommu_prot(u32 map_flags)
+> > +{
+> > +	int iommu_prot;
+> > +
+> > +	/*
+> > +	 * We provide no manual cache coherency ioctls to userspace and most
+> > +	 * architectures make the CPU ops for cache flushing privileged.
+> > +	 * Therefore we require the underlying IOMMU to support CPU coherent
+> > +	 * operation. Support for IOMMU_CACHE is enforced by the
+> > +	 * IOMMU_CAP_CACHE_COHERENCY test during bind.
+> > +	 */
+> > +	iommu_prot = IOMMU_CACHE;
+> at init?
+
+done
+
+> > +int iommufd_ioas_map(struct iommufd_ucmd *ucmd)
+> > +{
+> > +	struct iommu_ioas_map *cmd = ucmd->cmd;
+> > +	struct iommufd_ioas *ioas;
+> > +	unsigned int flags = 0;
+> > +	unsigned long iova;
+> > +	int rc;
+> > +
+> > +	if ((cmd->flags &
+> > +	     ~(IOMMU_IOAS_MAP_FIXED_IOVA | IOMMU_IOAS_MAP_WRITEABLE |
+> > +	       IOMMU_IOAS_MAP_READABLE)) ||
+> > +	    cmd->__reserved)
+> > +		return -EOPNOTSUPP;
+> > +	if (cmd->iova >= ULONG_MAX || cmd->length >= ULONG_MAX)
+> > +		return -EOVERFLOW;
+> > +
+> > +	ioas = iommufd_get_ioas(ucmd, cmd->ioas_id);
+> > +	if (IS_ERR(ioas))
+> > +		return PTR_ERR(ioas);
+> > +
+> > +	if (!(cmd->flags & IOMMU_IOAS_MAP_FIXED_IOVA))
+> > +		flags = IOPT_ALLOC_IOVA;
+> > +	iova = cmd->iova;
+> can be done either at initialization or only if MAP_FIXED_IOVA.
+
+Done
 
 
+> > +int iommufd_option_rlimit_mode(struct iommu_option *cmd,
+> > +			       struct iommufd_ctx *ictx)
+> > +{
+> *object_id  and __reserved should be checked as per the uapi doc*
+
+Ohh, yes, thanks:
+
+@@ -317,6 +322,9 @@ int iommufd_ioas_unmap(struct iommufd_ucmd *ucmd)
+ int iommufd_option_rlimit_mode(struct iommu_option *cmd,
+                               struct iommufd_ctx *ictx)
+ {
++       if (cmd->object_id)
++               return -EOPNOTSUPP;
++
+        if (cmd->op == IOMMU_OPTION_OP_GET) {
+                cmd->val64 = ictx->account_mode == IOPT_PAGES_ACCOUNT_MM;
+                return 0;
+diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+index de5cc01023c0c5..bcb463e581009c 100644
+--- a/drivers/iommu/iommufd/main.c
++++ b/drivers/iommu/iommufd/main.c
+@@ -215,6 +215,9 @@ static int iommufd_option(struct iommufd_ucmd *ucmd)
+        struct iommu_option *cmd = ucmd->cmd;
+        int rc;
+ 
++       if (cmd->__reserved)
++               return -EOPNOTSUPP;
++
+        switch (cmd->option_id) {
+        case IOMMU_OPTION_RLIMIT_MODE:
+                rc = iommufd_option_rlimit_mode(cmd, ucmd->ictx);
+
+> > +/**
+> > + * struct iommu_ioas_iova_ranges - ioctl(IOMMU_IOAS_IOVA_RANGES)
+> > + * @size: sizeof(struct iommu_ioas_iova_ranges)
+> > + * @ioas_id: IOAS ID to read ranges from
+> > + * @num_iovas: Input/Output total number of ranges in the IOAS
+> > + * @__reserved: Must be 0
+> > + * @allowed_iovas: Pointer to the output array of struct iommu_iova_range
+> > + * @out_iova_alignment: Minimum alignment required for mapping IOVA
+> > + *
+> > + * Query an IOAS for ranges of allowed IOVAs. Mapping IOVA outside these ranges
+> > + * is not allowed. num_iovas will be set to the total number of iovas and
+> > + * the allowed_iovas[] will be filled in as space permits.
+> > + *
+> > + * The allowed ranges are dependent on the HW path the DMA operation takes, and
+> > + * can change during the lifetime of the IOAS. A fresh empty IOAS will have a
+> > + * full range, and each attached device will narrow the ranges based on that
+> > + * device's HW restrictions. Detatching a device can widen the ranges. Userspace
+> detaching
+> > + * should query ranges after every attach/detatch to know what IOVAs are valid
+> detach
+
+Done
+
+> > + * for mapping.
+> > + *
+> > + * On input num_iovas is the length of the allowed_iovas array. On output it is
+> > + * the total number of iovas filled in. The ioctl will return -EMSGSIZE and set
+> > + * num_iovas to the required value if num_iovas is too small. In this case the
+> > + * caller should allocate a larger output array and re-issue the ioctl.
+> > + */
+> > +struct iommu_ioas_iova_ranges {
+> > +	__u32 size;
+> > +	__u32 ioas_id;
+> > +	__u32 num_iovas;
+> > +	__u32 __reserved;
+> > +	__aligned_u64 allowed_iovas;
+> > +	__aligned_u64 out_iova_alignment;
+> document @out_iova_alignment?
+
+ * out_iova_alignment returns the minimum IOVA alignment that can be given
+ * to IOMMU_IOAS_MAP/COPY. IOVA's must satisfy:
+ *   starting_iova % out_iova_alignment == 0
+ *   (starting_iova + length) % out_iova_alignment == 0
+ * out_iova_alignment can be 1 indicating any IOVA is allowed. It cannot
+ * be higher than the system PAGE_SIZE.
+
+> > +/**
+> > + * struct iommu_ioas_map - ioctl(IOMMU_IOAS_MAP)
+> > + * @size: sizeof(struct iommu_ioas_map)
+> > + * @flags: Combination of enum iommufd_ioas_map_flags
+> > + * @ioas_id: IOAS ID to change the mapping of
+> > + * @__reserved: Must be 0
+> > + * @user_va: Userspace pointer to start mapping from
+> > + * @length: Number of bytes to map
+> > + * @iova: IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is set
+> > + *        then this must be provided as input.
+> > + *
+> > + * Set an IOVA mapping from a user pointer. If FIXED_IOVA is specified then the
+> > + * mapping will be established at iova, otherwise a suitable location based on
+> > + * the reserved and allowed lists will be automatically selected and returned in
+> > + * iova.
+> You do not mention anything about the fact the IOCTL cannot be called
+> twice for a given @user_va w/ FIXED_IOVA
+> Refering to VFIO_DMA_MAP_FLAG_VADDR.
+
+ * If IOMMU_IOAS_MAP_FIXED_IOVA is specified then the iova range must currently
+ * be unused, existing IOVA cannot be replaced.
+
+> > +/**
+> > + * struct iommu_ioas_copy - ioctl(IOMMU_IOAS_COPY)
+> > + * @size: sizeof(struct iommu_ioas_copy)
+> > + * @flags: Combination of enum iommufd_ioas_map_flags
+> > + * @dst_ioas_id: IOAS ID to change the mapping of
+> > + * @src_ioas_id: IOAS ID to copy from
+> > + * @length: Number of bytes to copy and map
+> > + * @dst_iova: IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is
+> > + *            set then this must be provided as input.
+> > + * @src_iova: IOVA to start the copy
+> > + *
+> > + * Copy an already existing mapping from src_ioas_id and establish it in
+> > + * dst_ioas_id. The src iova/length must exactly match a range used with
+> > + * IOMMU_IOAS_MAP.
+> > + *
+> > + * This may be used to efficiently clone a subset of an IOAS to another, or as a
+> > + * kind of 'cache' to speed up mapping. Copy has an effciency advantage over
+> efficiency
+> > + * establishing equivalent new mappings, as internal resources are shared, and
+> > + * the kernel will pin the user memory only once.
+> > + */
+> > +struct iommu_ioas_copy {
+> > +	__u32 size;
+> > +	__u32 flags;
+> > +	__u32 dst_ioas_id;
+> > +	__u32 src_ioas_id;
+> is src_ioas_id == dst_ioas_id allowed?
+
+Yes
+
+> > +/**
+> > + * struct iommu_option - iommu option multiplexer
+> > + * @size: sizeof(struct iommu_option)
+> > + * @option_id: One of enum iommufd_option
+> > + * @op: One of enum iommufd_option_ops
+> > + * @__reserved: Must be 0
+> > + * @object_id: ID of the object if required
+> > + * @val64: Option value to set or value returned on get
+> > + *
+> > + * Change a simple option value. This multiplexor allows controlling a options
+> s/a options/options
+
+Done
+
+Thanks,
+Jason
