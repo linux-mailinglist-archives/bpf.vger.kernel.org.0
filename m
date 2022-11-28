@@ -2,193 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8EB63B4C8
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 23:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8210163B578
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 00:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbiK1W0Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 17:26:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        id S232919AbiK1XDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 18:03:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbiK1W0X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 17:26:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63BA15A0C
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 14:25:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669674328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=esifUvS4rY25Js6P1Az3k3jokEJ6OjEKTAKMI9a6KbM=;
-        b=QBLveBDSR0COGGlaG10rCLLi0xLFLG13dTJsOFNNifHT/ZGcabhrz4kn9zOfRytJyE4pmL
-        xbz1A7Q1xKD2sRK+kXFoygaiC/28UrPMtLT3S3UmbAokGwTXKfLaIml7r5IDvMy+CeH8j9
-        ogRiNrpvxoU0QXEKztAr7uNBLUOG90g=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-369-pCS1fu3jMHG2D054-LFibQ-1; Mon, 28 Nov 2022 17:25:27 -0500
-X-MC-Unique: pCS1fu3jMHG2D054-LFibQ-1
-Received: by mail-ej1-f71.google.com with SMTP id sd31-20020a1709076e1f00b007ae63b8d66aso5110674ejc.3
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 14:25:26 -0800 (PST)
+        with ESMTP id S231598AbiK1XDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 18:03:18 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1B42BB31
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 15:03:17 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id n12so8495817qvr.11
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 15:03:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Robu8nmUKTiKQlMhDxt0GuMaQhgSeZWzrSFCOi0NpI=;
+        b=HHflKt+THv9OY/GIgjE5v0xPgupcT0GXslgFF8T0VTrHj5z7mWEqIwyD2UFst52vGx
+         EVm7/6mH/x5UpBPjFKEl30bYsfYtMvbabF32aQj0TJrkkPVk9QTO8qxy6MYLzC6Syhuz
+         x35MnrmfKnhY0VeBJssE3Ngj43cChWTDcNtmDqwVy7rCe3EcPSBoGO+kR/yNRdcytpVU
+         Xa3WCnbt3M3hZURo/dFzB7591imZIjSQYNIWPWbWl0pV0KLsibdlOs0Z1gsUYLkyA58S
+         dKS+7is3dQpMY5smprFnLyWBsRBkxpOSfQhYyAWn3NcsuCL4j0E1hrSAFWX5oq1hcvsT
+         hh+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=esifUvS4rY25Js6P1Az3k3jokEJ6OjEKTAKMI9a6KbM=;
-        b=C3old1NQlx3aU/kNpjMeQhlZSTZtKQ6IbGIsqrVgqGfzwdNaorudNACqaXBaTs5zpJ
-         4i5O3m3MfbN1uJvCQtN4gj5Pn/luudTmbJHWp9kq6StR0nB9MFPSaccbugvPV9t9JHIv
-         FlyYvvx8NzWU0zabPLgnZc7NzuowbNFLGEUOIJ0UJXWlWx2NCvmhYx+eHNsd9BD4OyxD
-         Vg67BT+mvI4IVeLP8aybEJnp2m5mvqRd2r6O2c/O0w1nItfRPJokulT9fORZHep5UyDK
-         c2sCgknhyuguuNsfCSNDA95tT3c/QUKES1cYboDyLSdSY/Ppsq0d3vkEzVyTUdqFG4mz
-         GBYw==
-X-Gm-Message-State: ANoB5pldZE4fAqAMeOxMIhqe+W5OIdOMknA8fY/zDm6JIY9yv4iPaful
-        zKfIwmkmqxYCP6+mOtqF/MEScGPuOh6iJ4lp+dIdiB3enQfIwvr0/S58SHRrrg71rLXeDPEPGJQ
-        bw4PISbEVLWZ9
-X-Received: by 2002:a17:906:6892:b0:78d:ab48:bc84 with SMTP id n18-20020a170906689200b0078dab48bc84mr9183527ejr.22.1669674325028;
-        Mon, 28 Nov 2022 14:25:25 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6OCJ/Pgejoyv/p1k+ImioFvemvLHuM7p17Mrwjj7a0VNSDVjrd/Xmy9cF9wmodsOZsxMEB0g==
-X-Received: by 2002:a17:906:6892:b0:78d:ab48:bc84 with SMTP id n18-20020a170906689200b0078dab48bc84mr9183466ejr.22.1669674323990;
-        Mon, 28 Nov 2022 14:25:23 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id n17-20020a05640206d100b00459f4974128sm5581663edy.50.2022.11.28.14.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 14:25:23 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 04F0D7EBEA3; Mon, 28 Nov 2022 23:25:23 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] [PATCH bpf-next v2 2/8] bpf: XDP metadata RX kfuncs
-In-Reply-To: <CAKH8qBvp+4MjRpwMeG3G_duC6RCoJurswMFuC9ynf-F9-is0+g@mail.gmail.com>
-References: <20221121182552.2152891-1-sdf@google.com>
- <20221121182552.2152891-3-sdf@google.com> <87mt8e2a69.fsf@toke.dk>
- <CAKH8qBvmgx0Lr7efP0ucdZMEzZM-jzDKcAW9YPBqADWVsHb9cA@mail.gmail.com>
- <CAKH8qBvp+4MjRpwMeG3G_duC6RCoJurswMFuC9ynf-F9-is0+g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 28 Nov 2022 23:25:22 +0100
-Message-ID: <87y1ruzpgt.fsf@toke.dk>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0Robu8nmUKTiKQlMhDxt0GuMaQhgSeZWzrSFCOi0NpI=;
+        b=TWOKB10J7vEgcKh5ErX3rkbeM8t7w1D/0sdu7Kop8orYC7B2NX41Oovu836f4A4At6
+         2KNTnr6fn3SLHcAgzQIzpwMBFmONYU50bUwSzMAyXHcCFKhCjqIK42vLhj51P8NAHc6B
+         L8uMAKTXDXz3liFeu2i14hF1hn5dVdfKDDNYCObXKY+PMW0Yk8s9h4q9OLxcH/EOgf6J
+         Wl7z15UW4D9nFrmF7rqb6p26YJOEhvg2Rnk7VKMwVGzwsS5cosrdzNtjKlgZi2krmg5i
+         5rjSpaOfVzuYajaWouUVE7+up5Fgvg7F+mLxHrFH2jAl7DrOnG81vUeDEGBVpWBHwEyH
+         TBvA==
+X-Gm-Message-State: ANoB5pkOq1MTS5kneStjHurqrylE6x2CypzJINzJZdBDCWWYh7YERUyn
+        WcsukJ4SDVqlS78inIR+Z5bZ4jZkRhsO278taGpD4A==
+X-Google-Smtp-Source: AA0mqf4OiAWyyIEEmsi5bKKFM6ACFPviKV2T7jtJwZhCHGqoALp8BMwVUSZhtu+66bveKV3VPHGv2+Mh/aOFMTjpVDk=
+X-Received: by 2002:a0c:c3cc:0:b0:4c6:a05d:f67e with SMTP id
+ p12-20020a0cc3cc000000b004c6a05df67emr32481992qvi.4.1669676596112; Mon, 28
+ Nov 2022 15:03:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20221105025146.238209-1-horenchuang@bytedance.com>
+ <CAADnVQK5t0YWGgdWmjiWX6vA0SjANrnf5x=yzu7PtDKpoK6cJQ@mail.gmail.com> <CAAYibXiHRg3C3tk=wbiHdaUgJD6AfJf7gX3w0gTJ2nsJ=DnY4g@mail.gmail.com>
+In-Reply-To: <CAAYibXiHRg3C3tk=wbiHdaUgJD6AfJf7gX3w0gTJ2nsJ=DnY4g@mail.gmail.com>
+From:   "Hao Xiang ." <hao.xiang@bytedance.com>
+Date:   Mon, 28 Nov 2022 15:03:05 -0800
+Message-ID: <CAAYibXgiCOOEY9NvLXbY4ve7pH8xWrZjnczrj6SHy3x_TtOU1g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v1 0/4] Add BPF htab map's used
+ size for monitoring
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Punit Agrawal <punit.agrawal@bytedance.com>,
+        Yifei Ma <yifeima@bytedance.com>,
+        Xiaoning Ding <xiaoning.ding@bytedance.com>,
+        bpf <bpf@vger.kernel.org>, Ho-Ren Chuang <horenc@vt.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+Hi Alexei, we can use the existing switch bpf_stats_enabled around the
+added overhead. The switch is turned off by default so I believe there
+will be no extra overhead once we do that. Can you please have a
+second thought on this?
 
-> On Mon, Nov 28, 2022 at 10:53 AM Stanislav Fomichev <sdf@google.com> wrot=
-e:
->>
->>  s
->>
->> On Fri, Nov 25, 2022 at 9:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->> >
->> > Stanislav Fomichev <sdf@google.com> writes:
->> >
->> > > There is an ndo handler per kfunc, the verifier replaces a call to t=
-he
->> > > generic kfunc with a call to the per-device one.
->> > >
->> > > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
->> > > implements all possible metatada kfuncs. Not all devices have to
->> > > implement them. If kfunc is not supported by the target device,
->> > > the default implementation is called instead.
->> >
->> > BTW, this "the default implementation is called instead" bit is not
->> > included in this version... :)
->>
->> fixup_xdp_kfunc_call should return 0 when the device doesn't have a
->> kfunc defined and should fallback to the default kfunc implementation,
->> right?
->> Or am I missing something?
->>
->> > [...]
->> >
->> > > +#ifdef CONFIG_DEBUG_INFO_BTF
->> > > +BTF_SET8_START(xdp_metadata_kfunc_ids)
->> > > +#define XDP_METADATA_KFUNC(name, str) BTF_ID_FLAGS(func, str, 0)
->> > > +XDP_METADATA_KFUNC_xxx
->> > > +#undef XDP_METADATA_KFUNC
->> > > +BTF_SET8_END(xdp_metadata_kfunc_ids)
->> > > +
->> > > +static const struct btf_kfunc_id_set xdp_metadata_kfunc_set =3D {
->> > > +     .owner =3D THIS_MODULE,
->> > > +     .set   =3D &xdp_metadata_kfunc_ids,
->> > > +};
->> > > +
->> > > +u32 xdp_metadata_kfunc_id(int id)
->> > > +{
->> > > +     return xdp_metadata_kfunc_ids.pairs[id].id;
->> > > +}
->> > > +EXPORT_SYMBOL_GPL(xdp_metadata_kfunc_id);
->> >
->> > So I was getting some really weird values when testing (always getting=
- a
->> > timestamp value of '1'), and it turns out to be because this way of
->> > looking up the ID doesn't work: The set is always sorted by the BTF ID,
->> > not the order it was defined. Which meant that the mapping code got the
->> > functions mixed up, and would call a different one instead (so the
->> > timestamp value I was getting was really the return value of
->> > rx_hash_enabled()).
->> >
->> > I fixed it by building a secondary lookup table as below; feel free to
->> > incorporate that (or if you can come up with a better way, go ahead!).
->>
->> Interesting, will take a closer look. I took this pattern from
->> BTF_SOCK_TYPE_xxx, which means that 'sorting by btf-id' is something
->> BTF_SET8_START specific...
->> But if it's sorted, probably easier to do a bsearch over this table
->> than to build another one?
+On Mon, Nov 7, 2022 at 4:30 PM Hao Xiang . <hao.xiang@bytedance.com> wrote:
 >
-> Ah, I see, there is no place to store an index :-( Maybe the following
-> is easier still?
+> Hi Alexei,
 >
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index e43f7d4ef4cf..8240805bfdb7 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -743,9 +743,15 @@ static const struct btf_kfunc_id_set
-> xdp_metadata_kfunc_set =3D {
->         .set   =3D &xdp_metadata_kfunc_ids,
->  };
+> We understand the concern on added performance overhead. We had some
+> discussion about this while working on the patch and decided to give
+> it a try (my bad).
 >
-> +BTF_ID_LIST(xdp_metadata_kfunc_ids_unsorted)
-> +#define XDP_METADATA_KFUNC(name, str) BTF_ID(func, str)
-> +XDP_METADATA_KFUNC_xxx
-> +#undef XDP_METADATA_KFUNC
-> +
->  u32 xdp_metadata_kfunc_id(int id)
->  {
-> -       return xdp_metadata_kfunc_ids.pairs[id].id;
-> +       /* xdp_metadata_kfunc_ids is sorted and can't be used */
-> +       return xdp_metadata_kfunc_ids_unsorted[id];
->  }
->  EXPORT_SYMBOL_GPL(xdp_metadata_kfunc_id);
-
-Right, as long as having that extra list isn't problematic (does it make
-things show up twice somewhere or something like that? not really sure
-how that works), that is certainly simpler than what I came up with :)
-
--Toke
-
+> Adding some more context. We are leveraging the BPF_OBJ_GET_INFO_BY_FD
+> syscall to trace CPU usage per prog and memory usage per map. We would
+> like to use this patch to add an interface for map types to return its
+> internal "count". For instance, we are thinking of having the below
+> map types to report the "count" and those won't add overhead to the
+> hot path.
+> 1. ringbuf to return its "count" by calculating the distance between
+> producer_pos and consumer_pos
+> 2. queue and stack to return its "count" from the head's position
+> 3. dev map hash to returns its "count" from items
+>
+> There are other map types, similar to the hashtab pre-allocation case,
+> will introduce overhead in the hot path in order to count the stats. I
+> think we can find alternative solutions for those (eg, iterate the map
+> and count, count only if bpf_stats_enabled switch is on, etc). There
+> are cases where this can't be done at the application level because
+> applications don't see the internal stats in order to do the right
+> counting.
+>
+> We can remove the counting for the pre-allocated case in this patch.
+> Please let us know what you think.
+>
+> Thanks, Hao
+>
+> On Sat, Nov 5, 2022 at 9:20 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Nov 4, 2022 at 7:52 PM Ho-Ren (Jack) Chuang
+> > <horenchuang@bytedance.com> wrote:
+> > >
+> > > Hello everyone,
+> > >
+> > > We have prepared patches to address an issue from a previous discussion.
+> > > The previous discussion email thread is here: https://lore.kernel.org/all/CAADnVQLBt0snxv4bKwg1WKQ9wDFbaDCtZ03v1-LjOTYtsKPckQ@mail.gmail.com/
+> >
+> > Rephrasing what was said earlier.
+> > We're not keeping the count of elements in a preallocated hash map
+> > and we are not going to add one.
+> > The bpf prog needs to do the accounting on its own if it needs
+> > this kind of statistics.
+> > Keeping the count for non-prealloc is already significant performance
+> > overhead. We don't trade performance for stats.
