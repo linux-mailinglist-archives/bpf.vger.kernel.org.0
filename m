@@ -2,771 +2,654 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2539263AB65
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 15:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D26C63ACF4
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 16:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbiK1Onh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 09:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
+        id S232010AbiK1PuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 10:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232695AbiK1OnV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 09:43:21 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20260B0B;
-        Mon, 28 Nov 2022 06:43:18 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4NLShy0NHgz9xGX3;
-        Mon, 28 Nov 2022 22:36:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwC3oG3iyIRjL9qiAA--.42928S4;
-        Mon, 28 Nov 2022 15:43:00 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     paul@paul-moore.com, casey@schaufler-ca.com, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org
-Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and fix formatting
-Date:   Mon, 28 Nov 2022 15:42:40 +0100
-Message-Id: <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
-References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
+        with ESMTP id S230234AbiK1PuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 10:50:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A45C6586
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 07:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669650546;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u5ZfUzZZc2FyojyjTgLqS30nPeorAL7IAXyWwmpu3eM=;
+        b=dwfQXqgAML+L2+jKyWYWdQRGsYgxWLxvdqlP90Zbi86HmJHyeuPLg8o6BsGyUO1zxP2yiV
+        9TAEbC/qZFV3c1rtA0uRt/PBKtD2EfdPmvisB0Hm3AHCJ3nP5/rDZrevZktbXFfPqmNE30
+        WfzyEMluPjhsjocC6dmesPOAsgLlPhE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-494-Gjv6mtXlMGqewA3gbeKCjw-1; Mon, 28 Nov 2022 10:49:04 -0500
+X-MC-Unique: Gjv6mtXlMGqewA3gbeKCjw-1
+Received: by mail-wr1-f70.google.com with SMTP id q13-20020adfab0d000000b002420132f543so1946731wrc.19
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 07:49:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u5ZfUzZZc2FyojyjTgLqS30nPeorAL7IAXyWwmpu3eM=;
+        b=huPztj+SLD0PHwaWCTbcaEE51ibYopwa0BIcoof7o/yImEobbXJAhPJDfbcaPWTBe3
+         hZRJ5FQ+8HKD/WLmriCgVxo2VEZxGQmwoBH4/Hx6e66vCJm6aTElpZJLfp3+C42bh+YV
+         sVw/qDIy/WbMZUDyoG93FoABxlkXs8CC3gYbkhpTDW68HG7cFmwFERjbrAxJIjvJkPhw
+         FHMgq0Ow8po0tLwu6qnU7n630KccWD62fz0AYj/v5tu6RXoGYiKmWYriLY8j2RYWWE4Z
+         UaTI5klukx2kiF8Bvp0a6eA0SVVNqyupSrCUnuyB9440EMGB36eSNYCrV1W0y1rMM9jZ
+         leaA==
+X-Gm-Message-State: ANoB5pmUMLVA3izIoZ2p4kEJKHo8Atmq4kwTAeXwp//Oiw4st+jvpjqM
+        f86qvLUo9X2VyJHXyU7N1uKISn7ghvFEgg4ednDRMdcLi6ELzOuk0pskLS+oGmu5jKze2yf+2RS
+        iVQv3uOOlS2xq
+X-Received: by 2002:a5d:6503:0:b0:22e:35e8:382d with SMTP id x3-20020a5d6503000000b0022e35e8382dmr31930161wru.475.1669650543079;
+        Mon, 28 Nov 2022 07:49:03 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6OfcZs6sT9fX61XTqe3FiVtwJd0KXxNgBBmSYQp6FBWUHsIHrqBOLBwttYYDAFpHwjTJ8yXg==
+X-Received: by 2002:a5d:6503:0:b0:22e:35e8:382d with SMTP id x3-20020a5d6503000000b0022e35e8382dmr31930142wru.475.1669650542735;
+        Mon, 28 Nov 2022 07:49:02 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id u18-20020adfdd52000000b002421db5f279sm1049471wrm.78.2022.11.28.07.48.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Nov 2022 07:49:02 -0800 (PST)
+Message-ID: <44ea1bad-500c-b4a5-c2a5-e7bc79de2394@redhat.com>
+Date:   Mon, 28 Nov 2022 16:48:58 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwC3oG3iyIRjL9qiAA--.42928S4
-X-Coremail-Antispam: 1UD129KBjvAXoWftFWDtryDJF1xWFykKF4rXwb_yoW5Ww1xXo
-        WF9w42qw17Kr17CF4vk3s7Ga9xu3Z5uF48ArZYq3s0kFnaqryUWay3A3W7Xa13Ar48KFyD
-        X34kAa40vF4Ut3Wfn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYp7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr
-        yl82xGYIkIc2x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-        Av7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
-        6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jfJ5rUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAKBF1jj4H80gAAsS
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v5 14/19] iommufd: Add kAPI toward external drivers for
+ kernel access
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Lixiao Yang <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <14-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <14-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Hi Jason,
 
-Ensure that for non-void LSM hooks there is a description of the return
-values.
+On 11/16/22 22:00, Jason Gunthorpe wrote:
+> Kernel access is the mode that VFIO "mdevs" use. In this case there is no
+> struct device and no IOMMU connection. iommufd acts as a record keeper for
+> accesses and returns the actual struct pages back to the caller to use
+> however they need. eg with kmap or the DMA API.
+>
+> Each caller must create a struct iommufd_access with
+> iommufd_access_create(), similar to how iommufd_device_bind() works. Using
+> this struct the caller can access blocks of IOVA using
+> iommufd_access_pin_pages() or iommufd_access_rw().
+>
+> Callers must provide a callback that immediately unpins any IOVA being
+> used within a range. This happens if userspace unmaps the IOVA under the
+> pin.
+>
+> The implementation forwards the access requests directly to the iopt
+> infrastructure that manages the iopt_pages_access.
+>
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Tested-by: Yi Liu <yi.l.liu@intel.com>
+> Tested-by: Lixiao Yang <lixiao.yang@intel.com>
+> Tested-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/iommu/iommufd/device.c          | 314 ++++++++++++++++++++++++
+>  drivers/iommu/iommufd/io_pagetable.c    |   8 +-
+>  drivers/iommu/iommufd/iommufd_private.h |  10 +
+>  drivers/iommu/iommufd/main.c            |   3 +
+>  include/linux/iommufd.h                 |  43 +++-
+>  5 files changed, 375 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+> index a71f5740773f84..522469ae7b5770 100644
+> --- a/drivers/iommu/iommufd/device.c
+> +++ b/drivers/iommu/iommufd/device.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/iommu.h>
+>  #include <linux/irqdomain.h>
+>  
+> +#include "io_pagetable.h"
+>  #include "iommufd_private.h"
+>  
+>  /*
+> @@ -415,3 +416,316 @@ void iommufd_device_detach(struct iommufd_device *idev)
+>  	refcount_dec(&idev->obj.users);
+>  }
+>  EXPORT_SYMBOL_NS_GPL(iommufd_device_detach, IOMMUFD);
+> +
+> +void iommufd_access_destroy_object(struct iommufd_object *obj)
+> +{
+> +	struct iommufd_access *access =
+> +		container_of(obj, struct iommufd_access, obj);
+> +
+> +	iopt_remove_access(&access->ioas->iopt, access);
+> +	iommufd_ctx_put(access->ictx);
+> +	refcount_dec(&access->ioas->obj.users);
+> +}
+> +
+> +/**
+> + * iommufd_access_create - Create an iommufd_access
+> + * @ictx: iommufd file descriptor
+> + * @ioas_id: ID for a IOMMUFD_OBJ_IOAS
+> + * @ops: Driver's ops to associate with the access
+> + * @data: Opaque data to pass into ops functions
+> + *
+> + * An iommufd_access allows a driver to read/write to the IOAS without using
+> + * DMA. The underlying CPU memory can be accessed using the
+> + * iommufd_access_pin_pages() or iommufd_access_rw() functions.
+> + *
+> + * The provided ops are required to use iommufd_access_pin_pages().
+> + */
+> +struct iommufd_access *
+> +iommufd_access_create(struct iommufd_ctx *ictx, u32 ioas_id,
+> +		      const struct iommufd_access_ops *ops, void *data)
+> +{
+> +	struct iommufd_access *access;
+> +	struct iommufd_object *obj;
+> +	int rc;
+> +
+> +	/*
+> +	 * There is no uAPI for the access object, but to keep things symmetric
+> +	 * use the object infrastructure anyhow.
+> +	 */
+> +	access = iommufd_object_alloc(ictx, access, IOMMUFD_OBJ_ACCESS);
+> +	if (IS_ERR(access))
+> +		return access;
+> +
+> +	access->data = data;
+> +	access->ops = ops;
+> +
+> +	obj = iommufd_get_object(ictx, ioas_id, IOMMUFD_OBJ_IOAS);
+> +	if (IS_ERR(obj)) {
+> +		rc = PTR_ERR(obj);
+> +		goto out_abort;
+> +	}
+> +	access->ioas = container_of(obj, struct iommufd_ioas, obj);
+> +	iommufd_ref_to_users(obj);
+> +
+> +	if (ops->needs_pin_pages)
+> +		access->iova_alignment = PAGE_SIZE;
+> +	else
+> +		access->iova_alignment = 1;
+> +	rc = iopt_add_access(&access->ioas->iopt, access);
+> +	if (rc)
+> +		goto out_put_ioas;
+> +
+> +	/* The calling driver is a user until iommufd_access_destroy() */
+> +	refcount_inc(&access->obj.users);
+> +	access->ictx = ictx;
+> +	iommufd_ctx_get(ictx);
+> +	iommufd_object_finalize(ictx, &access->obj);
+> +	return access;
+> +out_put_ioas:
+> +	refcount_dec(&access->ioas->obj.users);
+> +out_abort:
+> +	iommufd_object_abort(ictx, &access->obj);
+> +	return ERR_PTR(rc);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommufd_access_create, IOMMUFD);
+> +
+> +/**
+> + * iommufd_access_destroy - Destroy an iommufd_access
+> + * @access: The access to destroy
+> + *
+> + * The caller must stop using the access before destroying it.
+> + */
+> +void iommufd_access_destroy(struct iommufd_access *access)
+> +{
+> +	bool was_destroyed;
+> +
+> +	was_destroyed = iommufd_object_destroy_user(access->ictx, &access->obj);
+> +	WARN_ON(!was_destroyed);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommufd_access_destroy, IOMMUFD);
+> +
+> +/**
+> + * iommufd_access_notify_unmap - Notify users of an iopt to stop using it
+> + * @iopt: iopt to work on
+> + * @iova: Starting iova in the iopt
+> + * @length: Number of bytes
+> + *
+> + * After this function returns there should be no users attached to the pages
+> + * linked to this iopt that intersect with iova,length. Anyone that has attached
+> + * a user through iopt_access_pages() needs to detatch it through
+detach
+> + * iommufd_access_unpin_pages() before this function returns.
+> + *
+> + * The unmap callback may not call or wait for a iommufd_access_destroy() to
+> + * complete. Once iommufd_access_destroy() returns no ops are running and no
+> + * future ops will be called.
+I don't understand the above sentence. Is that related to the
 
-Also, replace spaces with tab for indentation, remove empty lines between
-the hook description and the list of parameters, adjust semicolons and add
-the period at the end of the parameter description.
++		if (!iommufd_lock_obj(&access->obj))
++			continue;
 
-Finally, move the description of gfp parameter of the
-xfrm_policy_alloc_security hook together with the others.
+where is the unmap() called in that case?
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- include/linux/lsm_hooks.h | 221 ++++++++++++++++++++++++--------------
- 1 file changed, 138 insertions(+), 83 deletions(-)
-
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index c35e260efd8c..6502a1bea93a 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -92,13 +92,17 @@
-  *	is initialised to NULL by the caller.
-  *	@fc indicates the new filesystem context.
-  *	@src_fc indicates the original filesystem context.
-+ *	Return 0 on success or a negative error code on failure.
-  * @fs_context_parse_param:
-  *	Userspace provided a parameter to configure a superblock.  The LSM may
-  *	reject it with an error and may use it for itself, in which case it
-  *	should return 0; otherwise it should return -ENOPARAM to pass it on to
-  *	the filesystem.
-  *	@fc indicates the filesystem context.
-- *	@param The parameter
-+ *	@param The parameter.
-+ *	Return 0 to indicate that the parameter should be passed on to the
-+ *	filesystem, 1 to indicate that the parameter should be discarded or an
-+ *	error to indicate that the parameter should be rejected.
-  *
-  * Security hooks for filesystem operations.
-  *
-@@ -118,6 +122,7 @@
-  * 	Free memory associated with @mnt_ops.
-  * @sb_eat_lsm_opts:
-  * 	Eat (scan @orig options) and save them in @mnt_opts.
-+ *	Return 0 on success, negative values on failure.
-  * @sb_statfs:
-  *	Check permission before obtaining filesystem statistics for the @mnt
-  *	mountpoint.
-@@ -139,19 +144,21 @@
-  * @sb_mnt_opts_compat:
-  *	Determine if the new mount options in @mnt_opts are allowed given
-  *	the existing mounted filesystem at @sb.
-- *	@sb superblock being compared
-- *	@mnt_opts new mount options
-+ *	@sb superblock being compared.
-+ *	@mnt_opts new mount options.
-  *	Return 0 if options are compatible.
-  * @sb_remount:
-  *	Extracts security system specific mount options and verifies no changes
-  *	are being made to those options.
-- *	@sb superblock being remounted
-+ *	@sb superblock being remounted.
-  *	@data contains the filesystem-specific data.
-  *	Return 0 if permission is granted.
-  * @sb_kern_mount:
-- * 	Mount this @sb if allowed by permissions.
-+ *	Mount this @sb if allowed by permissions.
-+ *	Return 0 if permission is granted.
-  * @sb_show_options:
-  * 	Show (print on @m) mount options for this @sb.
-+ *	Return 0 on success, negative values on failure.
-  * @sb_umount:
-  *	Check permission before the @mnt file system is unmounted.
-  *	@mnt contains the mounted file system.
-@@ -165,27 +172,31 @@
-  *	Return 0 if permission is granted.
-  * @sb_set_mnt_opts:
-  *	Set the security relevant mount options used for a superblock
-- *	@sb the superblock to set security mount options for
-- *	@opts binary data structure containing all lsm mount data
-+ *	@sb the superblock to set security mount options for.
-+ *	@opts binary data structure containing all lsm mount data.
-+ *	Return 0 on success, error on failure.
-  * @sb_clone_mnt_opts:
-  *	Copy all security options from a given superblock to another
-- *	@oldsb old superblock which contain information to clone
-- *	@newsb new superblock which needs filled in
-+ *	@oldsb old superblock which contain information to clone.
-+ *	@newsb new superblock which needs filled in.
-+ *	Return 0 on success, error on failure.
-  * @move_mount:
-  *	Check permission before a mount is moved.
-  *	@from_path indicates the mount that is going to be moved.
-  *	@to_path indicates the mountpoint that will be mounted upon.
-+ *	Return 0 if permission is granted.
-  * @dentry_init_security:
-  *	Compute a context for a dentry as the inode is not yet available
-  *	since NFSv4 has no label backed by an EA anyway.
-  *	@dentry dentry to use in calculating the context.
-  *	@mode mode used to determine resource type.
-- *	@name name of the last path component used to create file
-+ *	@name name of the last path component used to create file.
-  *	@xattr_name pointer to place the pointer to security xattr name.
-  *		    Caller does not have to free the resulting pointer. Its
-  *		    a pointer to static string.
-  *	@ctx pointer to place the pointer to the resulting context in.
-  *	@ctxlen point to place the length of the resulting context.
-+ *	Return 0 on success, negative values on failure.
-  * @dentry_create_files_as:
-  *	Compute a context for a dentry as the inode is not yet available
-  *	and set that context in passed in creds so that new files are
-@@ -193,9 +204,10 @@
-  *	passed in creds and not the creds of the caller.
-  *	@dentry dentry to use in calculating the context.
-  *	@mode mode used to determine resource type.
-- *	@name name of the last path component used to create file
-- *	@old creds which should be used for context calculation
-- *	@new creds to modify
-+ *	@name name of the last path component used to create file.
-+ *	@old creds which should be used for context calculation.
-+ *	@new creds to modify.
-+ *	Return 0 on success, error on failure.
-  *
-  *
-  * Security hooks for inode operations.
-@@ -223,7 +235,7 @@
-  *	then it should return -EOPNOTSUPP to skip this processing.
-  *	@inode contains the inode structure of the newly created inode.
-  *	@dir contains the inode structure of the parent directory.
-- *	@qstr contains the last path component of the new object
-+ *	@qstr contains the last path component of the new object.
-  *	@name will be set to the allocated name suffix (e.g. selinux).
-  *	@value will be set to the allocated attribute value.
-  *	@len will be set to the length of the value.
-@@ -234,9 +246,9 @@
-  *      Set up the incore security field for the new anonymous inode
-  *      and return whether the inode creation is permitted by the security
-  *      module or not.
-- *      @inode contains the inode structure
-- *      @name name of the anonymous inode class
-- *      @context_inode optional related inode
-+ *      @inode contains the inode structure.
-+ *      @name name of the anonymous inode class.
-+ *      @context_inode optional related inode.
-  *	Returns 0 on success, -EACCES if the security module denies the
-  *	creation of this inode, or another -errno upon other errors.
-  * @inode_create:
-@@ -352,7 +364,7 @@
-  *	mode is specified in @mode.
-  *	@path contains the path structure of the file to change the mode.
-  *	@mode contains the new DAC's permission, which is a bitmask of
-- *	constants from <include/uapi/linux/stat.h>
-+ *	constants from <include/uapi/linux/stat.h>.
-  *	Return 0 if permission is granted.
-  * @path_chown:
-  *	Check for permission to change owner/group of a file or directory.
-@@ -367,6 +379,7 @@
-  * @path_notify:
-  *	Check permissions before setting a watch on events as defined by @mask,
-  *	on an object at @path, whose type is defined by @obj_type.
-+ *	Return 0 if permission is granted.
-  * @inode_readlink:
-  *	Check the permission to read the symbolic link.
-  *	@dentry contains the dentry structure for the file link.
-@@ -374,7 +387,7 @@
-  * @inode_follow_link:
-  *	Check permission to follow a symbolic link when looking up a pathname.
-  *	@dentry contains the dentry structure for the link.
-- *	@inode contains the inode, which itself is not stable in RCU-walk
-+ *	@inode contains the inode, which itself is not stable in RCU-walk.
-  *	@rcu indicates whether we are in RCU-walk mode.
-  *	Return 0 if permission is granted.
-  * @inode_permission:
-@@ -426,9 +439,9 @@
-  *	Retrieve a copy of the extended attribute representation of the
-  *	security label associated with @name for @inode via @buffer.  Note that
-  *	@name is the remainder of the attribute name after the security prefix
-- *	has been removed. @alloc is used to specify of the call should return a
-- *	value via the buffer or just the value length Return size of buffer on
-- *	success.
-+ *	has been removed. @alloc is used to specify if the call should return a
-+ *	value via the buffer or just the value length.
-+ *	Return size of buffer on success.
-  * @inode_setsecurity:
-  *	Set the security label associated with @name for @inode from the
-  *	extended attribute value @value.  @size indicates the size of the
-@@ -451,7 +464,7 @@
-  * @inode_killpriv:
-  *	The setuid bit is being removed.  Remove similar security labels.
-  *	Called with the dentry->d_inode->i_mutex held.
-- *	@mnt_userns: user namespace of the mount
-+ *	@mnt_userns: user namespace of the mount.
-  *	@dentry is the dentry being changed.
-  *	Return 0 on success.  If error is returned, then the operation
-  *	causing setuid bit removal is failed.
-@@ -478,20 +491,22 @@
-  *	to abort the copy up. Note that the caller is responsible for reading
-  *	and writing the xattrs as this hook is merely a filter.
-  * @d_instantiate:
-- * 	Fill in @inode security information for a @dentry if allowed.
-+ *	Fill in @inode security information for a @dentry if allowed.
-  * @getprocattr:
-- * 	Read attribute @name for process @p and store it into @value if allowed.
-+ *	Read attribute @name for process @p and store it into @value if allowed.
-+ *	Return the length of @value on success, a negative value otherwise.
-  * @setprocattr:
-- * 	Write (set) attribute @name to @value, size @size if allowed.
-+ *	Write (set) attribute @name to @value, size @size if allowed.
-+ *	Return written bytes on success, a negative value otherwise.
-  *
-  * Security hooks for kernfs node operations
-  *
-  * @kernfs_init_security:
-  *	Initialize the security context of a newly created kernfs node based
-  *	on its own and its parent's attributes.
-- *
-- *	@kn_dir the parent kernfs node
-- *	@kn the new child kernfs node
-+ *	@kn_dir the parent kernfs node.
-+ *	@kn the new child kernfs node.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for file operations
-  *
-@@ -530,11 +545,11 @@
-  *	simple integer value.  When @arg represents a user space pointer, it
-  *	should never be used by the security module.
-  *	Return 0 if permission is granted.
-- * @mmap_addr :
-+ * @mmap_addr:
-  *	Check permissions for a mmap operation at @addr.
-  *	@addr contains virtual address that will be used for the operation.
-  *	Return 0 if permission is granted.
-- * @mmap_file :
-+ * @mmap_file:
-  *	Check permissions for a mmap operation.  The @file may be NULL, e.g.
-  *	if mapping anonymous memory.
-  *	@file contains the file structure for file to map (may be NULL).
-@@ -589,6 +604,7 @@
-  *	Save open-time permission checking state for later use upon
-  *	file_permission, and recheck access if anything has changed
-  *	since inode_permission.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for task operations.
-  *
-@@ -606,6 +622,7 @@
-  *	@gfp indicates the atomicity of any memory allocations.
-  *	Only allocate sufficient memory and attach to @cred such that
-  *	cred_transfer() will not get ENOMEM.
-+ *	Return 0 on success, negative values on failure.
-  * @cred_free:
-  *	@cred points to the credentials.
-  *	Deallocate and clear the cred->security field in a set of credentials.
-@@ -614,6 +631,7 @@
-  *	@old points to the original credentials.
-  *	@gfp indicates the atomicity of any memory allocations.
-  *	Prepare a new set of credentials by copying the data from the old set.
-+ *	Return 0 on success, negative values on failure.
-  * @cred_transfer:
-  *	@new points to the new credentials.
-  *	@old points to the original credentials.
-@@ -625,7 +643,7 @@
-  * @kernel_act_as:
-  *	Set the credentials for a kernel service to act as (subjective context).
-  *	@new points to the credentials to be modified.
-- *	@secid specifies the security ID to be set
-+ *	@secid specifies the security ID to be set.
-  *	The current task must be the one that nominated @secid.
-  *	Return 0 if successful.
-  * @kernel_create_files_as:
-@@ -638,19 +656,19 @@
-  * @kernel_module_request:
-  *	Ability to trigger the kernel to automatically upcall to userspace for
-  *	userspace to load a kernel module with the given name.
-- *	@kmod_name name of the module requested by the kernel
-+ *	@kmod_name name of the module requested by the kernel.
-  *	Return 0 if successful.
-  * @kernel_load_data:
-  *	Load data provided by userspace.
-- *	@id kernel load data identifier
-+ *	@id kernel load data identifier.
-  *	@contents if a subsequent @kernel_post_load_data will be called.
-  *	Return 0 if permission is granted.
-  * @kernel_post_load_data:
-  *	Load data provided by a non-file source (usually userspace buffer).
-  *	@buf pointer to buffer containing the data contents.
-  *	@size length of the data contents.
-- *	@id kernel load data identifier
-- *	@description a text description of what was loaded, @id-specific
-+ *	@id kernel load data identifier.
-+ *	@description a text description of what was loaded, @id-specific.
-  *	Return 0 if permission is granted.
-  *	This must be paired with a prior @kernel_load_data call that had
-  *	@contents set to true.
-@@ -658,7 +676,7 @@
-  *	Read a file specified by userspace.
-  *	@file contains the file structure pointing to the file being read
-  *	by the kernel.
-- *	@id kernel read file identifier
-+ *	@id kernel read file identifier.
-  *	@contents if a subsequent @kernel_post_read_file will be called.
-  *	Return 0 if permission is granted.
-  * @kernel_post_read_file:
-@@ -667,7 +685,7 @@
-  *	by the kernel.
-  *	@buf pointer to buffer containing the file contents.
-  *	@size length of the file contents.
-- *	@id kernel read file identifier
-+ *	@id kernel read file identifier.
-  *	This must be paired with a prior @kernel_read_file call that had
-  *	@contents set to true.
-  *	Return 0 if permission is granted.
-@@ -677,7 +695,7 @@
-  *	indicates which of the set*uid system calls invoked this hook.  If
-  *	@new is the set of credentials that will be installed.  Modifications
-  *	should be made to this rather than to @current->cred.
-- *	@old is the set of credentials that are being replaces
-+ *	@old is the set of credentials that are being replaces.
-  *	@flags contains one of the LSM_SETID_* values.
-  *	Return 0 on success.
-  * @task_fix_setgid:
-@@ -729,7 +747,7 @@
-  * @task_setioprio:
-  *	Check permission before setting the ioprio value of @p to @ioprio.
-  *	@p contains the task_struct of process.
-- *	@ioprio contains the new ioprio value
-+ *	@ioprio contains the new ioprio value.
-  *	Return 0 if permission is granted.
-  * @task_getioprio:
-  *	Check permission before getting the ioprio value of @p.
-@@ -860,6 +878,7 @@
-  *	@type contains the requested communications type.
-  *	@protocol contains the requested protocol.
-  *	@kern set to 1 if a kernel socket.
-+ *	Return 0 if permission is granted.
-  * @socket_socketpair:
-  *	Check permissions before creating a fresh pair of sockets.
-  *	@socka contains the first socket structure.
-@@ -943,6 +962,7 @@
-  *	Must not sleep inside this hook because some callers hold spinlocks.
-  *	@sk contains the sock (not socket) associated with the incoming sk_buff.
-  *	@skb contains the incoming network data.
-+ *	Return 0 if permission is granted.
-  * @socket_getpeersec_stream:
-  *	This hook allows the security module to provide peer socket security
-  *	state for unix or connected tcp sockets to userspace via getsockopt
-@@ -970,6 +990,7 @@
-  * @sk_alloc_security:
-  *	Allocate and attach a security structure to the sk->sk_security field,
-  *	which is used to copy security attributes between local stream sockets.
-+ *	Return 0 on success, error on failure.
-  * @sk_free_security:
-  *	Deallocate security structure.
-  * @sk_clone_security:
-@@ -982,17 +1003,19 @@
-  * @inet_conn_request:
-  *	Sets the openreq's sid to socket's sid with MLS portion taken
-  *	from peer sid.
-+ *	Return 0 if permission is granted.
-  * @inet_csk_clone:
-  *	Sets the new child socket's sid to the openreq sid.
-  * @inet_conn_established:
-  *	Sets the connection's peersid to the secmark on skb.
-  * @secmark_relabel_packet:
-- *	check if the process should be allowed to relabel packets to
-- *	the given secid
-+ *	Check if the process should be allowed to relabel packets to
-+ *	the given secid.
-+ *	Return 0 if permission is granted.
-  * @secmark_refcount_inc:
-- *	tells the LSM to increment the number of secmark labeling rules loaded
-+ *	Tells the LSM to increment the number of secmark labeling rules loaded.
-  * @secmark_refcount_dec:
-- *	tells the LSM to decrement the number of secmark labeling rules loaded
-+ *	Tells the LSM to decrement the number of secmark labeling rules loaded.
-  * @req_classify_flow:
-  *	Sets the flow's sid to the openreq sid.
-  * @tun_dev_alloc_security:
-@@ -1003,21 +1026,25 @@
-  * @tun_dev_free_security:
-  *	This hook allows a module to free the security structure for a TUN
-  *	device.
-- *	@security pointer to the TUN device's security structure
-+ *	@security pointer to the TUN device's security structure.
-  * @tun_dev_create:
-  *	Check permissions prior to creating a new TUN device.
-+ *	Return 0 if permission is granted.
-  * @tun_dev_attach_queue:
-  *	Check permissions prior to attaching to a TUN device queue.
-  *	@security pointer to the TUN device's security structure.
-+ *	Return 0 if permission is granted.
-  * @tun_dev_attach:
-  *	This hook can be used by the module to update any security state
-  *	associated with the TUN device's sock structure.
-  *	@sk contains the existing sock structure.
-  *	@security pointer to the TUN device's security structure.
-+ *	Return 0 if permission is granted.
-  * @tun_dev_open:
-  *	This hook can be used by the module to update any security state
-  *	associated with the TUN device's security structure.
-  *	@security pointer to the TUN devices's security structure.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for SCTP
-  *
-@@ -1050,6 +1077,7 @@
-  *	to the security module.
-  *	@asoc pointer to sctp association structure.
-  *	@skb pointer to skbuff of association packet.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for Infiniband
-  *
-@@ -1058,15 +1086,17 @@
-  *	@subnet_prefix the subnet prefix of the port being used.
-  *	@pkey the pkey to be accessed.
-  *	@sec pointer to a security structure.
-+ *	Return 0 if permission is granted.
-  * @ib_endport_manage_subnet:
-  *	Check permissions to send and receive SMPs on a end port.
-  *	@dev_name the IB device name (i.e. mlx4_0).
-  *	@port_num the port number.
-  *	@sec pointer to a security structure.
-+ *	Return 0 if permission is granted.
-  * @ib_alloc_security:
-  *	Allocate a security structure for Infiniband objects.
-  *	@sec pointer to a security structure pointer.
-- *	Returns 0 on success, non-zero on failure
-+ *	Returns 0 on success, non-zero on failure.
-  * @ib_free_security:
-  *	Deallocate an Infiniband security structure.
-  *	@sec contains the security structure to be freed.
-@@ -1078,10 +1108,11 @@
-  *	Database used by the XFRM system.
-  *	@sec_ctx contains the security context information being provided by
-  *	the user-level policy update program (e.g., setkey).
-+ *	@gfp is to specify the context for the allocation.
-  *	Allocate a security structure to the xp->security field; the security
-  *	field is initialized to NULL when the xfrm_policy is allocated.
-- *	Return 0 if operation was successful (memory to allocate, legal context)
-- *	@gfp is to specify the context for the allocation
-+ *	Return 0 if operation was successful (memory to allocate, legal
-+ *	context).
-  * @xfrm_policy_clone_security:
-  *	@old_ctx contains an existing xfrm_sec_ctx.
-  *	@new_ctxp contains a new xfrm_sec_ctx being cloned from old.
-@@ -1089,11 +1120,12 @@
-  *	information from the old_ctx structure.
-  *	Return 0 if operation was successful (memory to allocate).
-  * @xfrm_policy_free_security:
-- *	@ctx contains the xfrm_sec_ctx
-+ *	@ctx contains the xfrm_sec_ctx.
-  *	Deallocate xp->security.
-  * @xfrm_policy_delete_security:
-  *	@ctx contains the xfrm_sec_ctx.
-  *	Authorize deletion of xp->security.
-+ *	Return 0 if permission is granted.
-  * @xfrm_state_alloc:
-  *	@x contains the xfrm_state being added to the Security Association
-  *	Database by the XFRM system.
-@@ -1119,6 +1151,7 @@
-  * @xfrm_state_delete_security:
-  *	@x contains the xfrm_state.
-  *	Authorize deletion of x->security.
-+ *	Return 0 if permission is granted.
-  * @xfrm_policy_lookup:
-  *	@ctx contains the xfrm_sec_ctx for which the access control is being
-  *	checked.
-@@ -1147,7 +1180,7 @@
-  *	Permit allocation of a key and assign security data. Note that key does
-  *	not have a serial number assigned at this point.
-  *	@key points to the key.
-- *	@flags is the allocation flags
-+ *	@flags is the allocation flags.
-  *	Return 0 if permission is granted, -ve error otherwise.
-  * @key_free:
-  *	Notification of destruction; free security data.
-@@ -1177,8 +1210,8 @@
-  *
-  * @ipc_permission:
-  *	Check permissions for access to IPC
-- *	@ipcp contains the kernel IPC permission structure
-- *	@flag contains the desired (requested) permission set
-+ *	@ipcp contains the kernel IPC permission structure.
-+ *	@flag contains the desired (requested) permission set.
-  *	Return 0 if permission is granted.
-  * @ipc_getsecid:
-  *	Get the secid associated with the ipc object.
-@@ -1323,15 +1356,18 @@
-  *	to @to.
-  *	@from contains the struct cred for the sending process.
-  *	@to contains the struct cred for the receiving process.
-+ *	Return 0 if permission is granted.
-  * @binder_transfer_binder:
-  *	Check whether @from is allowed to transfer a binder reference to @to.
-  *	@from contains the struct cred for the sending process.
-  *	@to contains the struct cred for the receiving process.
-+ *	Return 0 if permission is granted.
-  * @binder_transfer_file:
-  *	Check whether @from is allowed to transfer @file to @to.
-  *	@from contains the struct cred for the sending process.
-  *	@file contains the struct file being transferred.
-  *	@to contains the struct cred for the receiving process.
-+ *	Return 0 if permission is granted.
-  *
-  * @ptrace_access_check:
-  *	Check permission before allowing the current process to trace the
-@@ -1373,26 +1409,29 @@
-  *	Check whether the @tsk process has the @cap capability in the indicated
-  *	credentials.
-  *	@cred contains the credentials to use.
-- *	@ns contains the user namespace we want the capability in
-+ *	@ns contains the user namespace we want the capability in.
-  *	@cap contains the capability <include/linux/capability.h>.
-- *	@opts contains options for the capable check <include/linux/security.h>
-+ *	@opts contains options for the capable check <include/linux/security.h>.
-  *	Return 0 if the capability is granted for @tsk.
-  * @quotactl:
-- * 	Check whether the quotactl syscall is allowed for this @sb.
-+ *	Check whether the quotactl syscall is allowed for this @sb.
-+ *	Return 0 if permission is granted.
-  * @quota_on:
-- * 	Check whether QUOTAON is allowed for this @dentry.
-+ *	Check whether QUOTAON is allowed for this @dentry.
-+ *	Return 0 if permission is granted.
-  * @syslog:
-  *	Check permission before accessing the kernel message ring or changing
-  *	logging to the console.
-  *	See the syslog(2) manual page for an explanation of the @type values.
-- *	@type contains the SYSLOG_ACTION_* constant from <include/linux/syslog.h>
-+ *	@type contains the SYSLOG_ACTION_* constant from
-+ *	<include/linux/syslog.h>.
-  *	Return 0 if permission is granted.
-  * @settime:
-  *	Check permission to change the system time.
-  *	struct timespec64 is defined in <include/linux/time64.h> and timezone
-  *	is defined in <include/linux/time.h>
-- *	@ts contains new time
-- *	@tz contains new timezone
-+ *	@ts contains new time.
-+ *	@tz contains new timezone.
-  *	Return 0 if permission is granted.
-  * @vm_enough_memory:
-  *	Check permissions for allocating a new virtual mapping.
-@@ -1420,11 +1459,13 @@
-  *	@secid contains the security ID.
-  *	@secdata contains the pointer that stores the converted security
-  *	context.
-- *	@seclen pointer which contains the length of the data
-+ *	@seclen pointer which contains the length of the data.
-+ *	Return 0 on success, error on failure.
-  * @secctx_to_secid:
-  *	Convert security context to secid.
-  *	@secid contains the pointer to the generated security ID.
-  *	@secdata contains the security context.
-+ *	Return 0 on success, error on failure.
-  *
-  * @release_secctx:
-  *	Release the security context.
-@@ -1461,7 +1502,7 @@
-  * @audit_rule_free:
-  *	Deallocate the LSM audit rule structure previously allocated by
-  *	audit_rule_init.
-- *	@lsmrule contains the allocated rule
-+ *	@lsmrule contains the allocated rule.
-  *
-  * @inode_invalidate_secctx:
-  *	Notify the security module that it must revalidate the security context
-@@ -1478,6 +1519,7 @@
-  *	@inode we wish to set the security context of.
-  *	@ctx contains the string which we wish to set in the inode.
-  *	@ctxlen contains the length of @ctx.
-+ *	Return 0 on success, error on failure.
-  *
-  * @inode_setsecctx:
-  *	Change the security context of an inode.  Updates the
-@@ -1491,6 +1533,7 @@
-  *	@dentry contains the inode we wish to set the security context of.
-  *	@ctx contains the string which we wish to set in the inode.
-  *	@ctxlen contains the length of @ctx.
-+ *	Return 0 on success, error on failure.
-  *
-  * @inode_getsecctx:
-  *	On success, returns 0 and fills out @ctx and @ctxlen with the security
-@@ -1498,6 +1541,7 @@
-  *	@inode we wish to get the security context of.
-  *	@ctx is a pointer in which to place the allocated security context.
-  *	@ctxlen points to the place to put the length of @ctx.
-+ *	Return 0 on success, error on failure.
-  *
-  * Security hooks for the general notification queue:
-  *
-@@ -1505,13 +1549,15 @@
-  *	Check to see if a watch notification can be posted to a particular
-  *	queue.
-  *	@w_cred: The credentials of the whoever set the watch.
-- *	@cred: The event-triggerer's credentials
-- *	@n: The notification being posted
-+ *	@cred: The event-triggerer's credentials.
-+ *	@n: The notification being posted.
-+ *	Return 0 if permission is granted.
-  *
-  * @watch_key:
-  *	Check to see if a process is allowed to watch for event notifications
-  *	from a key or keyring.
-  *	@key: The key to watch.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for using the eBPF maps and programs functionalities through
-  * eBPF syscalls.
-@@ -1520,65 +1566,74 @@
-  *	Do a initial check for all bpf syscalls after the attribute is copied
-  *	into the kernel. The actual security module can implement their own
-  *	rules to check the specific cmd they need.
-+ *	Return 0 if permission is granted.
-  *
-  * @bpf_map:
-  *	Do a check when the kernel generate and return a file descriptor for
-  *	eBPF maps.
-- *
-- *	@map: bpf map that we want to access
-- *	@mask: the access flags
-+ *	@map: bpf map that we want to access.
-+ *	@mask: the access flags.
-+ *	Return 0 if permission is granted.
-  *
-  * @bpf_prog:
-  *	Do a check when the kernel generate and return a file descriptor for
-  *	eBPF programs.
-- *
-  *	@prog: bpf prog that userspace want to use.
-+ *	Return 0 if permission is granted.
-  *
-  * @bpf_map_alloc_security:
-  *	Initialize the security field inside bpf map.
-+ *	Return 0 on success, error on failure.
-  *
-  * @bpf_map_free_security:
-  *	Clean up the security information stored inside bpf map.
-  *
-  * @bpf_prog_alloc_security:
-  *	Initialize the security field inside bpf program.
-+ *	Return 0 on success, error on failure.
-  *
-  * @bpf_prog_free_security:
-  *	Clean up the security information stored inside bpf prog.
-  *
-  * @locked_down:
-- *     Determine whether a kernel feature that potentially enables arbitrary
-- *     code execution in kernel space should be permitted.
-- *
-- *     @what: kernel feature being accessed
-+ *	Determine whether a kernel feature that potentially enables arbitrary
-+ *	code execution in kernel space should be permitted.
-+ *	@what: kernel feature being accessed.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for perf events
-  *
-  * @perf_event_open:
-- * 	Check whether the @type of perf_event_open syscall is allowed.
-+ *	Check whether the @type of perf_event_open syscall is allowed.
-+ *	Return 0 if permission is granted.
-  * @perf_event_alloc:
-- * 	Allocate and save perf_event security info.
-+ *	Allocate and save perf_event security info.
-+ *	Return 0 on success, error on failure.
-  * @perf_event_free:
-- * 	Release (free) perf_event security info.
-+ *	Release (free) perf_event security info.
-  * @perf_event_read:
-- * 	Read perf_event security info if allowed.
-+ *	Read perf_event security info if allowed.
-+ *	Return 0 if permission is granted.
-  * @perf_event_write:
-- * 	Write perf_event security info if allowed.
-+ *	Write perf_event security info if allowed.
-+ *	Return 0 if permission is granted.
-  *
-  * Security hooks for io_uring
-  *
-  * @uring_override_creds:
-- *      Check if the current task, executing an io_uring operation, is allowed
-- *      to override it's credentials with @new.
-- *
-- *      @new: the new creds to use
-+ *	Check if the current task, executing an io_uring operation, is allowed
-+ *	to override it's credentials with @new.
-+ *	@new: the new creds to use.
-+ *	Return 0 if permission is granted.
-  *
-  * @uring_sqpoll:
-- *      Check whether the current task is allowed to spawn a io_uring polling
-- *      thread (IORING_SETUP_SQPOLL).
-+ *	Check whether the current task is allowed to spawn a io_uring polling
-+ *	thread (IORING_SETUP_SQPOLL).
-+ *	Return 0 if permission is granted.
-  *
-  * @uring_cmd:
-- *      Check whether the file_operations uring_cmd is allowed to run.
-+ *	Check whether the file_operations uring_cmd is allowed to run.
-+ *	Return 0 if permission is granted.
-  *
-  */
- union security_list_options {
--- 
-2.25.1
+> + */
+> +void iommufd_access_notify_unmap(struct io_pagetable *iopt, unsigned long iova,
+> +				 unsigned long length)
+> +{
+> +	struct iommufd_ioas *ioas =
+> +		container_of(iopt, struct iommufd_ioas, iopt);
+> +	struct iommufd_access *access;
+> +	unsigned long index;
+> +
+> +	xa_lock(&ioas->iopt.access_list);
+> +	xa_for_each(&ioas->iopt.access_list, index, access) {
+> +		if (!iommufd_lock_obj(&access->obj))
+> +			continue;
+> +		xa_unlock(&ioas->iopt.access_list);
+> +
+> +		access->ops->unmap(access->data, iova, length);
+> +
+> +		iommufd_put_object(&access->obj);
+> +		xa_lock(&ioas->iopt.access_list);
+> +	}
+> +	xa_unlock(&ioas->iopt.access_list);
+> +}
+> +
+> +/**
+> + * iommufd_access_unpin_pages() - Undo iommufd_access_pin_pages
+> + * @access: IOAS access to act on
+> + * @iova: Starting IOVA
+> + * @length:- Number of bytes to access
+s/-//
+> + *
+> + * Return the struct page's. The caller must stop accessing them before calling
+> + * this. The iova/length must exactly match the one provided to access_pages.
+> + */
+> +void iommufd_access_unpin_pages(struct iommufd_access *access,
+> +				unsigned long iova, unsigned long length)
+> +{
+> +	struct io_pagetable *iopt = &access->ioas->iopt;
+> +	struct iopt_area_contig_iter iter;
+> +	unsigned long last_iova;
+> +	struct iopt_area *area;
+> +
+> +	if (WARN_ON(!length) ||
+> +	    WARN_ON(check_add_overflow(iova, length - 1, &last_iova)))
+> +		return;
+> +
+> +	down_read(&iopt->iova_rwsem);
+> +	iopt_for_each_contig_area(&iter, area, iopt, iova, last_iova)
+> +		iopt_area_remove_access(
+> +			area, iopt_area_iova_to_index(area, iter.cur_iova),
+> +			iopt_area_iova_to_index(
+> +				area,
+> +				min(last_iova, iopt_area_last_iova(area))));
+> +	up_read(&iopt->iova_rwsem);
+> +	WARN_ON(!iopt_area_contig_done(&iter));
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommufd_access_unpin_pages, IOMMUFD);
+> +
+> +static bool iopt_area_contig_is_aligned(struct iopt_area_contig_iter *iter)
+> +{
+> +	if (iopt_area_start_byte(iter->area, iter->cur_iova) % PAGE_SIZE)
+> +		return false;
+> +
+> +	if (!iopt_area_contig_done(iter) &&
+> +	    (iopt_area_start_byte(iter->area, iopt_area_last_iova(iter->area)) %
+> +	     PAGE_SIZE) != (PAGE_SIZE - 1))
+> +		return false;
+> +	return true;
+> +}
+> +
+> +static bool check_area_prot(struct iopt_area *area, unsigned int flags)
+> +{
+> +	if (flags & IOMMUFD_ACCESS_RW_WRITE)
+> +		return area->iommu_prot & IOMMU_WRITE;
+> +	return area->iommu_prot & IOMMU_READ;
+> +}
+> +
+> +/**
+> + * iommufd_access_pin_pages() - Return a list of pages under the iova
+> + * @access: IOAS access to act on
+> + * @iova: Starting IOVA
+> + * @length: Number of bytes to access
+> + * @out_pages: Output page list
+> + * @flags: IOPMMUFD_ACCESS_RW_* flags
+> + *
+> + * Reads @length bytes starting at iova and returns the struct page * pointers.
+> + * These can be kmap'd by the caller for CPU access.
+> + *
+> + * The caller must perform iopt_unaccess_pages() when done to balance this.
+this function does not exist
+> + *
+> + * This API always requires a page aligned iova. This happens naturally if the
+> + * ioas alignment is >= PAGE_SIZE and the iova is PAGE_SIZE aligned. However
+> + * smaller alignments have corner cases where this API can fail on otherwise
+> + * aligned iova.
+> + */
+> +int iommufd_access_pin_pages(struct iommufd_access *access, unsigned long iova,
+> +			     unsigned long length, struct page **out_pages,
+> +			     unsigned int flags)
+> +{
+> +	struct io_pagetable *iopt = &access->ioas->iopt;
+> +	struct iopt_area_contig_iter iter;
+> +	unsigned long last_iova;
+> +	struct iopt_area *area;
+> +	int rc;
+> +
+> +	if (!length)
+> +		return -EINVAL;
+> +	if (check_add_overflow(iova, length - 1, &last_iova))
+> +		return -EOVERFLOW;
+> +
+> +	down_read(&iopt->iova_rwsem);
+> +	iopt_for_each_contig_area(&iter, area, iopt, iova, last_iova) {
+> +		unsigned long last = min(last_iova, iopt_area_last_iova(area));
+> +		unsigned long last_index = iopt_area_iova_to_index(area, last);
+> +		unsigned long index =
+> +			iopt_area_iova_to_index(area, iter.cur_iova);
+> +
+> +		if (area->prevent_access ||
+> +		    !iopt_area_contig_is_aligned(&iter)) {
+> +			rc = -EINVAL;
+> +			goto err_remove;
+> +		}
+> +
+> +		if (!check_area_prot(area, flags)) {
+> +			rc = -EPERM;
+> +			goto err_remove;
+> +		}
+> +
+> +		rc = iopt_area_add_access(area, index, last_index, out_pages,
+> +					  flags);
+> +		if (rc)
+> +			goto err_remove;
+> +		out_pages += last_index - index + 1;
+> +	}
+> +	if (!iopt_area_contig_done(&iter)) {
+> +		rc = -ENOENT;
+> +		goto err_remove;
+> +	}
+> +
+> +	up_read(&iopt->iova_rwsem);
+> +	return 0;
+> +
+> +err_remove:
+> +	if (iova < iter.cur_iova) {
+> +		last_iova = iter.cur_iova - 1;
+> +		iopt_for_each_contig_area(&iter, area, iopt, iova, last_iova)
+> +			iopt_area_remove_access(
+> +				area,
+> +				iopt_area_iova_to_index(area, iter.cur_iova),
+> +				iopt_area_iova_to_index(
+> +					area, min(last_iova,
+> +						  iopt_area_last_iova(area))));
+> +	}
+> +	up_read(&iopt->iova_rwsem);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommufd_access_pin_pages, IOMMUFD);
+> +
+> +/**
+> + * iommufd_access_rw - Read or write data under the iova
+> + * @access: IOAS access to act on
+> + * @iova: Starting IOVA
+> + * @data: Kernel buffer to copy to/from
+> + * @length: Number of bytes to access
+> + * @flags: IOMMUFD_ACCESS_RW_* flags
+> + *
+> + * Copy kernel to/from data into the range given by IOVA/length. If flags
+> + * indicates IOMMUFD_ACCESS_RW_KTHREAD then a large copy can be optimized
+> + * by changing it into copy_to/from_user().
+> + */
+> +int iommufd_access_rw(struct iommufd_access *access, unsigned long iova,
+> +		      void *data, size_t length, unsigned int flags)
+> +{
+> +	struct io_pagetable *iopt = &access->ioas->iopt;
+> +	struct iopt_area_contig_iter iter;
+> +	struct iopt_area *area;
+> +	unsigned long last_iova;
+> +	int rc;
+> +
+> +	if (!length)
+> +		return -EINVAL;
+> +	if (check_add_overflow(iova, length - 1, &last_iova))
+> +		return -EOVERFLOW;
+> +
+> +	down_read(&iopt->iova_rwsem);
+> +	iopt_for_each_contig_area(&iter, area, iopt, iova, last_iova) {
+> +		unsigned long last = min(last_iova, iopt_area_last_iova(area));
+> +		unsigned long bytes = (last - iter.cur_iova) + 1;
+> +
+> +		if (area->prevent_access) {
+> +			rc = -EINVAL;
+> +			goto err_out;
+> +		}
+> +
+> +		if (!check_area_prot(area, flags)) {
+> +			rc = -EPERM;
+> +			goto err_out;
+> +		}
+> +
+> +		rc = iopt_pages_rw_access(
+> +			area->pages, iopt_area_start_byte(area, iter.cur_iova),
+> +			data, bytes, flags);
+> +		if (rc)
+> +			goto err_out;
+> +		data += bytes;
+> +	}
+> +	if (!iopt_area_contig_done(&iter))
+> +		rc = -ENOENT;
+> +err_out:
+> +	up_read(&iopt->iova_rwsem);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommufd_access_rw, IOMMUFD);
+> diff --git a/drivers/iommu/iommufd/io_pagetable.c b/drivers/iommu/iommufd/io_pagetable.c
+> index 756d347948f0ec..4f4a9d9aac570e 100644
+> --- a/drivers/iommu/iommufd/io_pagetable.c
+> +++ b/drivers/iommu/iommufd/io_pagetable.c
+> @@ -458,6 +458,7 @@ static int iopt_unmap_iova_range(struct io_pagetable *iopt, unsigned long start,
+>  	 * is NULL. This prevents domain attach/detatch from running
+>  	 * concurrently with cleaning up the area.
+>  	 */
+> +again:
+>  	down_read(&iopt->domains_rwsem);
+>  	down_write(&iopt->iova_rwsem);
+>  	while ((area = iopt_area_iter_first(iopt, start, last))) {
+> @@ -486,8 +487,11 @@ static int iopt_unmap_iova_range(struct io_pagetable *iopt, unsigned long start,
+>  			area->prevent_access = true;
+>  			up_write(&iopt->iova_rwsem);
+>  			up_read(&iopt->domains_rwsem);
+> -			/* Later patch calls back to drivers to unmap */
+> -			return -EBUSY;
+> +			iommufd_access_notify_unmap(iopt, area_first,
+> +						    iopt_area_length(area));
+> +			if (WARN_ON(READ_ONCE(area->num_accesses)))
+> +				return -EDEADLOCK;
+> +			goto again;
+>  		}
+>  
+>  		pages = area->pages;
+> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+> index 73345886d969e5..e1653b2276dac9 100644
+> --- a/drivers/iommu/iommufd/iommufd_private.h
+> +++ b/drivers/iommu/iommufd/iommufd_private.h
+> @@ -65,6 +65,8 @@ int iopt_unmap_iova(struct io_pagetable *iopt, unsigned long iova,
+>  		    unsigned long length, unsigned long *unmapped);
+>  int iopt_unmap_all(struct io_pagetable *iopt, unsigned long *unmapped);
+>  
+> +void iommufd_access_notify_unmap(struct io_pagetable *iopt, unsigned long iova,
+> +				 unsigned long length);
+>  int iopt_table_add_domain(struct io_pagetable *iopt,
+>  			  struct iommu_domain *domain);
+>  void iopt_table_remove_domain(struct io_pagetable *iopt,
+> @@ -106,6 +108,7 @@ enum iommufd_object_type {
+>  	IOMMUFD_OBJ_DEVICE,
+>  	IOMMUFD_OBJ_HW_PAGETABLE,
+>  	IOMMUFD_OBJ_IOAS,
+> +	IOMMUFD_OBJ_ACCESS,
+>  };
+>  
+>  /* Base struct for all objects with a userspace ID handle. */
+> @@ -246,6 +249,11 @@ void iommufd_hw_pagetable_destroy(struct iommufd_object *obj);
+>  void iommufd_device_destroy(struct iommufd_object *obj);
+>  
+>  struct iommufd_access {
+> +	struct iommufd_object obj;
+> +	struct iommufd_ctx *ictx;
+> +	struct iommufd_ioas *ioas;
+> +	const struct iommufd_access_ops *ops;
+> +	void *data;
+>  	unsigned long iova_alignment;
+>  	u32 iopt_access_list_id;
+>  };
+> @@ -253,4 +261,6 @@ struct iommufd_access {
+>  int iopt_add_access(struct io_pagetable *iopt, struct iommufd_access *access);
+>  void iopt_remove_access(struct io_pagetable *iopt,
+>  			struct iommufd_access *access);
+> +void iommufd_access_destroy_object(struct iommufd_object *obj);
+> +
+>  #endif
+> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+> index 8a114ddbdfcde2..c8cc0953dea13a 100644
+> --- a/drivers/iommu/iommufd/main.c
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -352,6 +352,9 @@ void iommufd_ctx_put(struct iommufd_ctx *ictx)
+>  EXPORT_SYMBOL_NS_GPL(iommufd_ctx_put, IOMMUFD);
+>  
+>  static const struct iommufd_object_ops iommufd_object_ops[] = {
+> +	[IOMMUFD_OBJ_ACCESS] = {
+> +		.destroy = iommufd_access_destroy_object,
+> +	},
+>  	[IOMMUFD_OBJ_DEVICE] = {
+>  		.destroy = iommufd_device_destroy,
+>  	},
+> diff --git a/include/linux/iommufd.h b/include/linux/iommufd.h
+> index 31efacd8a46cce..fb9a4c275cca86 100644
+> --- a/include/linux/iommufd.h
+> +++ b/include/linux/iommufd.h
+> @@ -9,10 +9,12 @@
+>  #include <linux/types.h>
+>  #include <linux/errno.h>
+>  #include <linux/err.h>
+> -#include <linux/device.h>
+>  
+> +struct device;
+>  struct iommufd_device;
+> +struct page;
+>  struct iommufd_ctx;
+> +struct iommufd_access;
+>  struct file;
+>  
+>  struct iommufd_device *iommufd_device_bind(struct iommufd_ctx *ictx,
+> @@ -26,6 +28,11 @@ int iommufd_device_attach(struct iommufd_device *idev, u32 *pt_id,
+>  			  unsigned int flags);
+>  void iommufd_device_detach(struct iommufd_device *idev);
+>  
+> +struct iommufd_access_ops {
+> +	u8 needs_pin_pages : 1;
+> +	void (*unmap)(void *data, unsigned long iova, unsigned long length);
+> +};
+> +
+>  enum {
+>  	IOMMUFD_ACCESS_RW_READ = 0,
+>  	IOMMUFD_ACCESS_RW_WRITE = 1 << 0,
+> @@ -33,11 +40,24 @@ enum {
+>  	IOMMUFD_ACCESS_RW_KTHREAD = 1 << 1,
+>  };
+>  
+> +struct iommufd_access *
+> +iommufd_access_create(struct iommufd_ctx *ictx, u32 ioas_id,
+> +		      const struct iommufd_access_ops *ops, void *data);
+> +void iommufd_access_destroy(struct iommufd_access *access);
+> +
+>  void iommufd_ctx_get(struct iommufd_ctx *ictx);
+>  
+>  #if IS_ENABLED(CONFIG_IOMMUFD)
+>  struct iommufd_ctx *iommufd_ctx_from_file(struct file *file);
+>  void iommufd_ctx_put(struct iommufd_ctx *ictx);
+> +
+> +int iommufd_access_pin_pages(struct iommufd_access *access, unsigned long iova,
+> +			     unsigned long length, struct page **out_pages,
+> +			     unsigned int flags);
+> +void iommufd_access_unpin_pages(struct iommufd_access *access,
+> +				unsigned long iova, unsigned long length);
+> +int iommufd_access_rw(struct iommufd_access *access, unsigned long iova,
+> +		      void *data, size_t len, unsigned int flags);
+>  #else /* !CONFIG_IOMMUFD */
+>  static inline struct iommufd_ctx *iommufd_ctx_from_file(struct file *file)
+>  {
+> @@ -47,5 +67,26 @@ static inline struct iommufd_ctx *iommufd_ctx_from_file(struct file *file)
+>  static inline void iommufd_ctx_put(struct iommufd_ctx *ictx)
+>  {
+>  }
+> +
+> +static inline int iommufd_access_pin_pages(struct iommufd_access *access,
+> +					   unsigned long iova,
+> +					   unsigned long length,
+> +					   struct page **out_pages,
+> +					   unsigned int flags)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static inline void iommufd_access_unpin_pages(struct iommufd_access *access,
+> +					      unsigned long iova,
+> +					      unsigned long length)
+> +{
+> +}
+> +
+> +static inline int iommufd_access_rw(struct iommufd_access *access, unsigned long iova,
+> +		      void *data, size_t len, unsigned int flags)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+>  #endif /* CONFIG_IOMMUFD */
+>  #endif
+Eric
 
