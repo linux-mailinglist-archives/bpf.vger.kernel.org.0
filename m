@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A83C63A1F6
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 08:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B162C63A1F8
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 08:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbiK1H1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 02:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
+        id S229968AbiK1H1w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 02:27:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbiK1H1i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 02:27:38 -0500
+        with ESMTP id S229895AbiK1H1t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 02:27:49 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6E4A463
-        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 23:26:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D1BE02B
+        for <bpf@vger.kernel.org>; Sun, 27 Nov 2022 23:26:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669620406;
+        s=mimecast20190719; t=1669620413;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6zK6dP0XpiEvbMh+MStSVKQQA+Ww92c90Z58azKzrgE=;
-        b=SzM3zGMFDcFA9pOuvWH86DbE2rj0QNAsCVA/NrKJZHNv0QD9wMMp3BoIovOEGFKVqNWPT3
-        zqWsOWc186CfCvFHlKS1DYhGs7wY4jxxLkm9niMxZS7ImguCFZ/PbbbJgMIhEFYipT7+Z3
-        7wyOs3tZnMGnkLFTJnNk5e4o4vJOqPU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=e8ytY21q/YryZwHknqopljYvoEmkOAdNAqVplN7LiC8=;
+        b=IKyEsktFaTU0rNiv7Qk5uAc0SaY2XkZhZzYAECBLdNlK7QPTfXzMVDvx6fm3hb5GMvU5L4
+        zCnj3zwIO3z0CCxcsMZ7AjbUgIINkT/JSjna6iAR2Gr7plJiZ3uUeX5KI023/+/fk0IX7a
+        +6eVb7Vd8+n4NT/etmpXOxgyetNcn1Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-308-UDWKSn34O86X-WCGqCa-1g-1; Mon, 28 Nov 2022 02:26:45 -0500
-X-MC-Unique: UDWKSn34O86X-WCGqCa-1g-1
+ us-mta-58-XwUahPz2Mxa8tW-AgZzjHA-1; Mon, 28 Nov 2022 02:26:48 -0500
+X-MC-Unique: XwUahPz2Mxa8tW-AgZzjHA-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5DDF929AA3B5;
-        Mon, 28 Nov 2022 07:26:44 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 610D1811E67;
+        Mon, 28 Nov 2022 07:26:47 +0000 (UTC)
 Received: from ovpn-192-85.brq.redhat.com (ovpn-192-85.brq.redhat.com [10.40.192.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 620EC1415100;
-        Mon, 28 Nov 2022 07:26:41 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE9A11415100;
+        Mon, 28 Nov 2022 07:26:44 +0000 (UTC)
 From:   Viktor Malik <vmalik@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -49,9 +49,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
-Date:   Mon, 28 Nov 2022 08:26:29 +0100
-Message-Id: <2ec861621e283ba2a54f7e939eafed1c29f77bf4.1669216157.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next 2/2] bpf/selftests: Test fentry attachment to shadowed functions
+Date:   Mon, 28 Nov 2022 08:26:30 +0100
+Message-Id: <bc324e55558563ccb34f563d86d12c881c31ce9c.1669216157.git.vmalik@redhat.com>
 In-Reply-To: <cover.1669216157.git.vmalik@redhat.com>
 References: <cover.1669216157.git.vmalik@redhat.com>
 MIME-Version: 1.0
@@ -67,75 +67,186 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When attaching fentry/fexit/fmod_ret/lsm to a function located in a
-module without specifying the target program, the verifier tries to find
-the address to attach to in kallsyms. This is always done by searching
-the entire kallsyms, not respecting the module in which the function is
-located.
+Adds a new test that tries to attach a program to fentry of two
+functions of the same name, one located in vmlinux and the other in
+bpf_testmod.
 
-This approach causes an incorrect attachment address to be computed if
-the function to attach to is shadowed by a function of the same name
-located earlier in kallsyms.
+To avoid conflicts with existing tests, a new function
+"bpf_fentry_shadow_test" was created both in vmlinux and in bpf_testmod.
 
-Since the attachment must contain the BTF of the program to attach to,
-we may extract the module name from it (if the attach target is a
-module) and search for the function address in the correct module.
+The previous commit fixed a bug which caused this test to fail. The
+verifier would always use the vmlinux function's address as the target
+trampoline address, hence trying to attach two programs to the same
+trampoline.
 
 Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
- include/linux/btf.h   | 1 +
- kernel/bpf/btf.c      | 5 +++++
- kernel/bpf/verifier.c | 9 ++++++++-
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ net/bpf/test_run.c                            |   5 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   7 +
+ .../bpf/prog_tests/module_attach_shadow.c     | 120 ++++++++++++++++++
+ 3 files changed, 132 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 9ed00077db6e..bdbf3eb7083d 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -187,6 +187,7 @@ u32 btf_obj_id(const struct btf *btf);
- bool btf_is_kernel(const struct btf *btf);
- bool btf_is_module(const struct btf *btf);
- struct module *btf_try_get_module(const struct btf *btf);
-+const char *btf_module_name(const struct btf *btf);
- u32 btf_nr_types(const struct btf *btf);
- bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
- 			   const struct btf_member *m,
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1a59cc7ad730..211fcbb7649d 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7192,6 +7192,11 @@ bool btf_is_module(const struct btf *btf)
- 	return btf->kernel_btf && strcmp(btf->name, "vmlinux") != 0;
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 6fba440efc40..c60e46b1e768 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -536,6 +536,11 @@ int noinline bpf_modify_return_test(int a, int *b)
+ 	return a + *b;
  }
  
-+const char *btf_module_name(const struct btf *btf)
++int noinline bpf_fentry_shadow_test(int a)
 +{
-+	return btf->name;
++	return a + 1;
 +}
 +
- enum {
- 	BTF_MODULE_F_LIVE = (1 << 0),
+ u64 noinline bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
+ {
+ 	return a + b + c + d;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 5085fea3cac5..d23127a5ec68 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -229,6 +229,13 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
+ 	.set   = &bpf_testmod_check_kfunc_ids,
  };
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9528a066cfa5..acbe62a73559 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -16343,7 +16343,14 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			else
- 				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
- 		} else {
--			addr = kallsyms_lookup_name(tname);
-+			if (btf_is_module(btf)) {
-+				char tmodname[MODULE_NAME_LEN + KSYM_NAME_LEN + 1];
-+				snprintf(tmodname, sizeof(tmodname), "%s:%s",
-+					 btf_module_name(btf), tname);
-+				addr = module_kallsyms_lookup_name(tmodname);
-+			}
-+			else
-+				addr = kallsyms_lookup_name(tname);
- 			if (!addr) {
- 				bpf_log(log,
- 					"The address of function %s cannot be found\n",
+ 
++noinline int bpf_fentry_shadow_test(int a)
++{
++	return a + 2;
++}
++EXPORT_SYMBOL_GPL(bpf_fentry_shadow_test);
++ALLOW_ERROR_INJECTION(bpf_fentry_shadow_test, ERRNO);
++
+ extern int bpf_fentry_test1(int a);
+ 
+ static int bpf_testmod_init(void)
+diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+new file mode 100644
+index 000000000000..0c604a0f22ca
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Red Hat */
++#include <test_progs.h>
++#include <bpf/btf.h>
++#include "bpf/libbpf_internal.h"
++#include "cgroup_helpers.h"
++
++static const char *module_name = "bpf_testmod";
++static const char *symbol_name = "bpf_fentry_shadow_test";
++
++int get_bpf_testmod_btf_fd(void)
++{
++	struct bpf_btf_info info;
++	char name[64];
++	__u32 id, len;
++	int err, fd;
++
++	while (true) {
++		err = bpf_btf_get_next_id(id, &id);
++		if (err) {
++			log_err("failed to iterate BTF objects");
++			return err;
++		}
++
++		fd = bpf_btf_get_fd_by_id(id);
++		if (fd < 0) {
++			err = -errno;
++			log_err("failed to get FD for BTF object #%d", id);
++			return err;
++		}
++
++		len = sizeof(info);
++		memset(&info, 0, sizeof(info));
++		info.name = ptr_to_u64(name);
++		info.name_len = sizeof(name);
++
++		err = bpf_obj_get_info_by_fd(fd, &info, &len);
++		if (err) {
++			err = -errno;
++			log_err("failed to get info for BTF object #%d", id);
++			close(fd);
++			return err;
++		}
++
++		if (strcmp(name, module_name) == 0)
++			return fd;
++
++		close(fd);
++	}
++	return -ENOENT;
++}
++
++void test_module_fentry_shadow(void)
++{
++	struct btf *vmlinux_btf, *mod_btf;
++	int err, i;
++	int btf_fd[2] = {};
++	int prog_fd[2] = {};
++	int link_fd[2] = {};
++	__s32 btf_id[2] = {};
++
++	const struct bpf_insn trace_program[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	};
++
++	LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
++		.expected_attach_type = BPF_TRACE_FENTRY,
++	);
++
++	LIBBPF_OPTS(bpf_test_run_opts, test_opts);
++
++	vmlinux_btf = btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(vmlinux_btf, "load_vmlinux_btf"))
++		return;
++
++	btf_fd[1] = get_bpf_testmod_btf_fd();
++	if (!ASSERT_GT(btf_fd[1], 0, "get_bpf_testmod_btf_fd"))
++		return;
++
++	mod_btf = btf_get_from_fd(btf_fd[1], vmlinux_btf);
++	if (!ASSERT_OK_PTR(mod_btf, "btf_get_from_fd"))
++		goto out;
++
++	btf_id[0] = btf__find_by_name(vmlinux_btf, symbol_name);
++	if (!ASSERT_GT(btf_id[0], 0, "btf_find_by_name"))
++		goto out;
++
++	btf_id[1] = btf__find_by_name(mod_btf, symbol_name);
++	if (!ASSERT_GT(btf_id[1], 0, "btf_find_by_name"))
++		goto out;
++
++	for (i = 0; i < 2; i++) {
++		load_opts.attach_btf_id = btf_id[i];
++		load_opts.attach_btf_obj_fd = btf_fd[i];
++		prog_fd[i] = bpf_prog_load(BPF_PROG_TYPE_TRACING, NULL, "GPL",
++					   trace_program,
++					   sizeof(trace_program) / sizeof(struct bpf_insn),
++					   &load_opts);
++		if (!ASSERT_GE(prog_fd[i], 0, "bpf_prog_load"))
++			goto out;
++
++		link_fd[i] = bpf_link_create(prog_fd[i], 0, BPF_TRACE_FENTRY, NULL);
++		if (!ASSERT_GE(link_fd[i], 0, "bpf_link_create"))
++			goto out;
++	}
++
++	err = bpf_prog_test_run_opts(prog_fd[0], &test_opts);
++	ASSERT_OK(err, "running test");
++
++out:
++	for (i = 0; i < 2; i++) {
++		if (btf_fd[i])
++			close(btf_fd[i]);
++		if (prog_fd[i])
++			close(prog_fd[i]);
++		if (link_fd[i])
++			close(link_fd[i]);
++	}
++}
 -- 
 2.38.1
 
