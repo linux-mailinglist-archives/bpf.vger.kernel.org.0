@@ -2,304 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0113E63A677
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 11:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA6D63A73B
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 12:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiK1K4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 05:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
+        id S230171AbiK1Ldw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 06:33:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbiK1K4q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 05:56:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C532317412
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 02:55:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669632953;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QhYdHOX1qbSelyQF1n2caoyOhYaSnNc+Zc/+zPUkQ+s=;
-        b=XsDY6+Dd+4bC4ZLPRa6HpO4w+vI1fVpdNiT7o+B3k2KoeBE70m3qLnQ3S2wplo+0qQhvC0
-        H5FFtvZSWDG65idN5IFHR17NsBLXIFm8SAo+8kx6pyK7xCxS5hxX9jA/krQdpSyRqjSiUt
-        8xxH7iS3dNAsI0htnh4TEAS/NAugHR4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-258-drPbDSpLMb2mq67mBqBsSQ-1; Mon, 28 Nov 2022 05:55:51 -0500
-X-MC-Unique: drPbDSpLMb2mq67mBqBsSQ-1
-Received: by mail-qt1-f200.google.com with SMTP id u31-20020a05622a199f00b003a51fa90654so14211385qtc.19
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 02:55:50 -0800 (PST)
+        with ESMTP id S230036AbiK1Ldv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 06:33:51 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C1012754
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 03:33:50 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id n21so24973350ejb.9
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 03:33:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=n/0AR+XUvHAQpL1RlhgVd3/YWU5WZhXuH/csAwCA6p8=;
+        b=UysEO1M59eAgxnBRAF4Pm7UxLxvG4QmnLsWEvcSLP5PrRart7cG69oQ0kbvvUiLI3F
+         RF9RTGmGFy7fM728a7n3VH2HTSr9kPyD4rnYH5PYdiOCl4dMTGf32wofx8zfFCMuJOpU
+         SwtXl/j0061xTV1tZ2GKXlwSBl03YO0EHqs4E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QhYdHOX1qbSelyQF1n2caoyOhYaSnNc+Zc/+zPUkQ+s=;
-        b=46paCtuDP6F88OFWCVklpSZW7T7+mFB286S/d0Tmp1/CM/IqTjAPPjM0vBeZttlUko
-         77rfSH1gLWem+nLYiSzGFQPHLXzSDYf4DxG8AfXjAIvK2lh/80a9gU6TmtnNvtBD2zGb
-         eAOjkseqiXGkjKcCLOJtxNpOhefw9YAF1XhoP6CaPA7nBBuX5+dtvW5pq8NzjUIuTfhs
-         ZCVZ8MOhnMZ+gAdCoX8a/GNOoeaebOe5AHAseWwUIyfrGeD2XLIXRosK8f1ITZ4RJ447
-         M1PIHvogH6Bpezt99drHg8mRL+CYlJ4aRLQ7B7FthXZh4igQgw101H8DQN4hQ2SheEud
-         5FoQ==
-X-Gm-Message-State: ANoB5pkTJt7Ev9AxZW6BfS7BIlfc+f8qr/rfOT0p9KUG2l8puzUdcv29
-        dc6iADwFC+YvyzbYAXsSXXlU2pyC/AN3u1RNVWkhLO1QauGh5OJV95X2MPMjRbcH30cv+cRcy8s
-        x7dwgMDd2PCTG
-X-Received: by 2002:a05:6214:5504:b0:4c6:9399:9335 with SMTP id mb4-20020a056214550400b004c693999335mr41468319qvb.12.1669632950409;
-        Mon, 28 Nov 2022 02:55:50 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6R1JyULPFe65HEgSq/X9lfxRMMZgXu5jvkRqbYJFnB6yxrk1GeFdc2izLM+ws6kfHPBGer7g==
-X-Received: by 2002:a05:6214:5504:b0:4c6:9399:9335 with SMTP id mb4-20020a056214550400b004c693999335mr41468274qvb.12.1669632950103;
-        Mon, 28 Nov 2022 02:55:50 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id z1-20020ac84541000000b003a530a32f67sm6703684qtn.65.2022.11.28.02.55.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 02:55:49 -0800 (PST)
-Message-ID: <94e6034a-c4c1-be0a-ea8c-f5934dbadd4c@redhat.com>
-Date:   Mon, 28 Nov 2022 11:55:41 +0100
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n/0AR+XUvHAQpL1RlhgVd3/YWU5WZhXuH/csAwCA6p8=;
+        b=ypurDMwLT88HY8qsHxe38FwxZ03qnKZHua0Yxh6TQo44r0QCXVd8UkrNcG9Jaa/Zyj
+         9ocNfb5guZmbXL2XZpjvWOV1YJCR+R11qsDFZlGY17co7lX5nL1GNkIi9CmRmIY5JUIo
+         qP20eIjwtjn0liQt5TgvOINLOLm5Q5rHSoTz5jGSrFIWjHv3jPwZBnSkTGHSM3AiQXmD
+         UVSnnqtNmib3yvg9IHDrz5hHulDfgVtOA1cwIIDX4iU4vFWHz4rUr+rF9qGLk8035M5/
+         gqclNldsGAnGioKlFI8iw9MS5prHD8N0OT53VL5cDIfuE/cDdFTL7FdVQcLpnbcWeWoO
+         hJ1Q==
+X-Gm-Message-State: ANoB5pkOoq7MbwJiTe/B63TTU2IAgv3ISXjnKEv3koeR6Zv033YTNynY
+        XsPY/sitaFer4kkI7RVI/3uIjA==
+X-Google-Smtp-Source: AA0mqf54aDrJEQlrysClgRz1HTez+VgioM/ddgWxF9nLRhhfROR1NHyj6n8Z324bF+Dbcn92QwWzuQ==
+X-Received: by 2002:a17:907:8c8e:b0:78d:4167:cf08 with SMTP id td14-20020a1709078c8e00b0078d4167cf08mr9200822ejc.337.1669635229033;
+        Mon, 28 Nov 2022 03:33:49 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac1:5bc0:40::49:10a])
+        by smtp.gmail.com with ESMTPSA id la21-20020a170907781500b007c03fa39c33sm924736ejc.71.2022.11.28.03.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Nov 2022 03:33:48 -0800 (PST)
+References: <1669082309-2546-1-git-send-email-yangpc@wangsu.com>
+ <1669082309-2546-3-git-send-email-yangpc@wangsu.com>
+ <637d8d5bd4e27_2b649208eb@john.notmuch>
+ <000001d8ff01$053529d0$0f9f7d70$@wangsu.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Pengcheng Yang <yangpc@wangsu.com>
+Cc:     'John Fastabend' <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, 'Daniel Borkmann' <daniel@iogearbox.net>,
+        'Lorenz Bauer' <lmb@cloudflare.com>
+Subject: Re: [PATCH RESEND bpf 2/4] bpf, sockmap: Fix missing BPF_F_INGRESS
+ flag when using apply_bytes
+Date:   Mon, 28 Nov 2022 12:22:20 +0100
+In-reply-to: <000001d8ff01$053529d0$0f9f7d70$@wangsu.com>
+Message-ID: <87cz97cnz8.fsf@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 13/19] iommufd: Add kAPI toward external drivers for
- physical devices
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <13-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
- <4c429c36-146e-e2b2-0cb4-d256ca659280@redhat.com>
- <Y4P9VzpCv/DyHeaD@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <Y4P9VzpCv/DyHeaD@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
+On Wed, Nov 23, 2022 at 02:01 PM +08, Pengcheng Yang wrote:
+> John Fastabend <john.fastabend@gmail.com> wrote:
+>> 
+>> Pengcheng Yang wrote:
+>> > When redirecting, we use sk_msg_to_ingress() to get the BPF_F_INGRESS
+>> > flag from the msg->flags. If apply_bytes is used and it is larger than
+>> > the current data being processed, sk_psock_msg_verdict() will not be
+>> > called when sendmsg() is called again. At this time, the msg->flags is 0,
+>> > and we lost the BPF_F_INGRESS flag.
+>> >
+>> > So we need to save the BPF_F_INGRESS flag in sk_psock and assign it to
+>> > msg->flags before redirection.
+>> >
+>> > Fixes: 8934ce2fd081 ("bpf: sockmap redirect ingress support")
+>> > Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
+>> > ---
+>> >  include/linux/skmsg.h | 1 +
+>> >  net/core/skmsg.c      | 1 +
+>> >  net/ipv4/tcp_bpf.c    | 1 +
+>> >  net/tls/tls_sw.c      | 1 +
+>> >  4 files changed, 4 insertions(+)
+>> >
+>> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+>> > index 48f4b64..e1d463f 100644
+>> > --- a/include/linux/skmsg.h
+>> > +++ b/include/linux/skmsg.h
+>> > @@ -82,6 +82,7 @@ struct sk_psock {
+>> >  	u32				apply_bytes;
+>> >  	u32				cork_bytes;
+>> >  	u32				eval;
+>> > +	u32				flags;
+>> >  	struct sk_msg			*cork;
+>> >  	struct sk_psock_progs		progs;
+>> >  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+>> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+>> > index 188f855..ab2f8f3 100644
+>> > --- a/net/core/skmsg.c
+>> > +++ b/net/core/skmsg.c
+>> > @@ -888,6 +888,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+>> >  		if (psock->sk_redir)
+>> >  			sock_put(psock->sk_redir);
+>> >  		psock->sk_redir = msg->sk_redir;
+>> > +		psock->flags = msg->flags;
+>> >  		if (!psock->sk_redir) {
+>> >  			ret = __SK_DROP;
+>> >  			goto out;
+>> > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+>> > index ef5de4f..1390d72 100644
+>> > --- a/net/ipv4/tcp_bpf.c
+>> > +++ b/net/ipv4/tcp_bpf.c
+>> > @@ -323,6 +323,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>> >  		break;
+>> >  	case __SK_REDIRECT:
+>> >  		sk_redir = psock->sk_redir;
+>> > +		msg->flags = psock->flags;
+>> >  		sk_msg_apply_bytes(psock, tosend);
+>> >  		if (!psock->apply_bytes) {
+>> >  			/* Clean up before releasing the sock lock. */
+>>                  ^^^^^^^^^^^^^^^
+>> In this block reposted here with the rest of the block
+>> 
+>> 
+>> 		if (!psock->apply_bytes) {
+>> 			/* Clean up before releasing the sock lock. */
+>> 			eval = psock->eval;
+>> 			psock->eval = __SK_NONE;
+>> 			psock->sk_redir = NULL;
+>> 		}
+>> 
+>> Now that we have a psock->flags we should clera that as
+>> well right?
+>
+> According to my understanding, it is not necessary (but can) to clear
+> psock->flags here, because psock->flags will be overwritten by msg->flags
+> at the beginning of each redirection (in sk_psock_msg_verdict()).
 
-On 11/28/22 01:14, Jason Gunthorpe wrote:
-> On Sun, Nov 27, 2022 at 10:13:55PM +0100, Eric Auger wrote:
->>> +static int iommufd_device_setup_msi(struct iommufd_device *idev,
->>> +				    struct iommufd_hw_pagetable *hwpt,
->>> +				    phys_addr_t sw_msi_start,
->>> +				    unsigned int flags)
->>> +{
->>> +	int rc;
->>> +
->>> +	/*
->>> +	 * IOMMU_CAP_INTR_REMAP means that the platform is isolating MSI, and it
->> rather means that the *IOMMU* implements IRQ remapping.
-> Not really. The name is a mess, but as it is implemented, it means the
-> platform is implementing MSI security. How exactly that is done is not
-> really defined, and it doesn't really belong as an iommu property.
-> However the security is being created is done in a way that is
-> transparent to the iommu_domain user.
-Some 'ARM platforms' implement what you call MSI security but they do
-not advertise IOMMU_CAP_INTR_REMAP
+1. We should at least document that psock->flags value can be garbage
+   (undefined) if psock->sk_redir is null.
 
-Besides refering to include/linux/iommu.h:
-IOMMU_CAP_INTR_REMAP,           /* IOMMU supports interrupt isolation */
+2. 'flags' is amiguous (flags for what?). I'd suggest to rename to
+   something like redir_flags.
 
->
-> MSI security means that the originating device (eg the RID for PCI) is
-> validated when the MSI is processed. RIDs can only use MSIs they are
-> authorized to use.
-agreed this is what I described below.
->
-> It doesn't matter how it is done, if it remapping HW, fancy
-> iommu_domain tricks, or built into the MSI controller. Set this flag
-> if the platform is secure and doesn't need the code triggered by
-> irq_domain_check_msi_remap().
-this is not what is implemented as of now. If the IOMMU does support
-interrupt isolation, it advertises IOMMU_CAP_INTR_REMAP. On ARM this
-feature is implemented by the ITS MSI controller instead and the only
-way to retrieve the info whether the device MSIs are directed to that
-kind of MSI controller is to use irq_domain_check_msi_remap().
->
->> irq_domain_check_msi_remap() instead means the MSI controller
->> implements that functionality (a given device id is able to trigger
-> Not quite, it means that MSI isolation is available, however it is not
-> transparent and the iommu_domain user must do the little dance that
-> follows.
-No I do not agree on that point. The 'little dance' is needed because
-the SMMU does not bypass MSI writes as done on Intel. And someone must
-take care of the MSI transaction mapping. This is the role of the MSI
-cookie stuff. To me this is independent on the above discussion whether
-MSI isolation is implemented.
->
-> It does not mean the MSI controller implements the security
-> functionality because it is not set on x86.
->
-> Logically on x86 we should consider the remapping logic as part of the
-> MSI controller even if x86 makes them separated for historical
-> reasons.
->
->> MSI #n and this #n gets translated into actual MSI #m) So what you
->> want is to prevent an assigned device from being able to DMA into an
->> MSI doorbell that is not protected by either the IOMMU or the MSI
->> controller. If this happens this means the DMA can generate any kind
->> of MSI traffic that can jeopardize the host or other VMs
-> I don't know of any real systems that work like this. ARM standard GIC
-> uses a shared ITS page, the IOMMU does nothing to provide MSI
-> security. MSI security is built into the GIC because it validates the
-> device ID as part of processing the MSI. The IOMMU is only involved
-> to grant access to the shared ITS page.
+   Also, since we don't care about all flags, but just the ingress bit,
+   we should store just that. It's not about size. Less state passed
+   around is easier to reason about. See patch below.
 
-?? Yeah that's what I said. The SMMU does nothing about MSI security.
-The ITS does.
->
-> Intel is similar, it provides security through the MSI controller's
-> remapping logic, the only difference is that on Intel the MSI window
-> is always present in every iommu_domain (becuase it occures before the
-> IOMMU), and in ARM you have to do the little dance.
-On Intel the MSI window [FEE0_0000h - FEF0_000h] is bypassed by the
-IOMMU. On ARM MSI transactions are translated except in case of HW MSI
-RESV regions (I think).
->
-> Even if the iommu is to be involved it is all hidden from this layer.
->
->> and afterwards resv_msi is checked to see if we need to create the
->> so-called msi cookie.  This msi cookie tells the MSI writes are
->> translated by the IOMMU and somebody must create a mapping for those
->> transactions.
-> The cookie is always necessary if we are going to use the
-> non-transparent mode. That is what makes it the non transparent
-> mode. We have to supply the reserved IOVA range from one part of the
-> iommu driver to another part.
->
->>> +	 * creates the MSI window by default in the iommu domain. Nothing
->>> +	 * further to do.
->>> +	 */
->>> +	if (device_iommu_capable(idev->dev, IOMMU_CAP_INTR_REMAP))
->>> +		return 0;
->>> +
->>> +	/*
->>> +	 * On ARM systems that set the global IRQ_DOMAIN_FLAG_MSI_REMAP every
->>> +	 * allocated iommu_domain will block interrupts by default and this
->> It sounds there is a confusion between IRQ remapping and the fact MSI
->> writes are not bypassed by the IOMMU.
-> I don't think I'm confused :)
-As soon as there is an SW MSI_RESV region and only in that case you need
-to put in place the msi cookie (because it indicates the IOMMU
-translates MSI transactions).
+3. Alternatively, I'd turn psock->sk_redir into a tagged pointer, like
+   skb->_sk_redir is. This way all state (pointer & flags) is bundled
+   and managed together. It would be a bigger change. Would have to be
+   split out from this patch set.
 
-The fact the platform provides MSI security (through IOMMU or MSI
-controller) looks orthogonal to me.
->
->>> +static int iommufd_device_do_attach(struct iommufd_device *idev,
->>> +				    struct iommufd_hw_pagetable *hwpt,
->>> +				    unsigned int flags)
->>> +{
->>> +	phys_addr_t sw_msi_start = 0;
->>> +	int rc;
->>> +
->>> +	mutex_lock(&hwpt->devices_lock);
->>> +
->>> +	/*
->>> +	 * Try to upgrade the domain we have, it is an iommu driver bug to
->>> +	 * report IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail
->>> +	 * enforce_cache_coherency when there are no devices attached to the
->>> +	 * domain.
->>> +	 */
->>> +	if (idev->enforce_cache_coherency && !hwpt->enforce_cache_coherency) {
->>> +		if (hwpt->domain->ops->enforce_cache_coherency)
->>> +			hwpt->enforce_cache_coherency =
->>> +				hwpt->domain->ops->enforce_cache_coherency(
->>> +					hwpt->domain);
->>> +		if (!hwpt->enforce_cache_coherency) {
->>> +			WARN_ON(list_empty(&hwpt->devices));
->>> +			rc = -EINVAL;
->>> +			goto out_unlock;
->>> +		}
->>> +	}
->>> +
->>> +	rc = iopt_table_enforce_group_resv_regions(&hwpt->ioas->iopt, idev->dev,
->>> +						   idev->group, &sw_msi_start);
->>> +	if (rc)
->>> +		goto out_unlock;
->>> +
->> so in the case of any IOMMU_RESV_MSI, iommufd_device_setup_msi() will be
->> called with *sw_msi_start = 0 which will return -EPERM?
->> I don't think this is what we want. In that case I think we want the
->> RESV_MSI region to be taken into account as a RESV region but we don't
->> need the MSI cookie.
-> This was sort of sloppy copied from VFIO - we should just delete
-> it. The is no driver that sets both, and once the platform asserts
-> irq_domain_check_msi_remap() it is going down the non-transparent path
-> anyhow and must set a cookie to work. [again the names doesn't make
-> any sense for the functionality]
->
-> Failing with EPERM is probably not so bad since the platform is using
-> an invalid configuration. I'm kind of inclined to leave this for right
-I don't understand why it is invalid? HW MSI RESV region is a valid
-config and not sure you tested with that kind of setup, did you?
-> now since it has all be tested and I don't want to make a
-> regression. But I can try to send a patch to tidy it a bit more, maybe
-> add an appropriate WARN_ON.
->
-> The whole thing is actually backwards. The IOMMU_CAP_INTR_REMAP should
-> have been some global irq_has_secure_msi() and everything with
-> interrupt remapping, and ARM should set it.
-You are revisiting this IOMMU_CAP_INTR_REMAP definition ... this is not
-what is documented in the header file.
+--8<--
 
->
-> Then the domain should have had a domain cap
-> IOMUU_CAP_REQUIRE_MSI_WINDOW_SETUP to do the little dance ARM drivers
-> need.
->
-> And even better would have been to not have the little dance in the
-> first place, as we don't really need the iommu_domain user to convey
-> the fixed MSI window from one part of the iommu driver to another.
->
-> We may try to fix this up when we get to doing nesting on ARM, or
-> maybe just leave the confusing sort of working thing as-is. I don't
-> know.
->
-> Jason
->
-Eric
-
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 70d6cb94e580..84f787416a54 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -82,6 +82,7 @@ struct sk_psock {
+ 	u32				apply_bytes;
+ 	u32				cork_bytes;
+ 	u32				eval;
++	bool				redir_ingress; /* undefined if sk_redir is null */
+ 	struct sk_msg			*cork;
+ 	struct sk_psock_progs		progs;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 14d45661a84d..5b70b241ce71 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2291,8 +2291,8 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+ void tcp_bpf_clone(const struct sock *sk, struct sock *newsk);
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+-int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg, u32 bytes,
+-			  int flags);
++int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
++			  struct sk_msg *msg, u32 bytes, int flags);
+ #endif /* CONFIG_NET_SOCK_MSG */
+ 
+ #if !defined(CONFIG_BPF_SYSCALL) || !defined(CONFIG_NET_SOCK_MSG)
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index e6b9ced3eda8..53d0251788aa 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -886,13 +886,16 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+ 	ret = sk_psock_map_verd(ret, msg->sk_redir);
+ 	psock->apply_bytes = msg->apply_bytes;
+ 	if (ret == __SK_REDIRECT) {
+-		if (psock->sk_redir)
++		if (psock->sk_redir) {
+ 			sock_put(psock->sk_redir);
+-		psock->sk_redir = msg->sk_redir;
+-		if (!psock->sk_redir) {
++			psock->sk_redir = NULL;
++		}
++		if (!msg->sk_redir) {
+ 			ret = __SK_DROP;
+ 			goto out;
+ 		}
++		psock->redir_ingress = sk_msg_to_ingress(msg);
++		psock->sk_redir = msg->sk_redir;
+ 		sock_hold(psock->sk_redir);
+ 	}
+ out:
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index cf9c3e8f7ccb..490b359dc814 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -131,10 +131,9 @@ static int tcp_bpf_push_locked(struct sock *sk, struct sk_msg *msg,
+ 	return ret;
+ }
+ 
+-int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
+-			  u32 bytes, int flags)
++int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
++			  struct sk_msg *msg, u32 bytes, int flags)
+ {
+-	bool ingress = sk_msg_to_ingress(msg);
+ 	struct sk_psock *psock = sk_psock_get(sk);
+ 	int ret;
+ 
+@@ -337,7 +336,8 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+ 		release_sock(sk);
+ 
+ 		origsize = msg->sg.size;
+-		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
++		ret = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
++					    msg, tosend, flags);
+ 		sent = origsize - msg->sg.size;
+ 
+ 		if (eval == __SK_REDIRECT)
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 264cf367e265..b22d97610b9a 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -846,7 +846,8 @@ static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
+ 		sk_msg_return_zero(sk, msg, send);
+ 		msg->sg.size -= send;
+ 		release_sock(sk);
+-		err = tcp_bpf_sendmsg_redir(sk_redir, &msg_redir, send, flags);
++		err = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
++					    &msg_redir, send, flags);
+ 		lock_sock(sk);
+ 		if (err < 0) {
+ 			*copied -= sk_msg_free_nocharge(sk, &msg_redir);
