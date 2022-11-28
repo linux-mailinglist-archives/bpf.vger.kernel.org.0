@@ -2,214 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B449063AABB
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 15:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299C263AB62
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 15:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbiK1OSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 09:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S231384AbiK1Ond (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 09:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbiK1OSh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 09:18:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3D5222AB
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 06:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669645040;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jCazpTTy+F7fa4dxFepBnOElkUnDE1h7gUS6HgFedPY=;
-        b=OCkxvK7L1zjcU8P6bg4pxXbUXT7vXz0NTRsLKl5bzpooGH1KFL9no+RI+YNHxWcoMa88ed
-        y8u0Z42Y7fOCdcwmc2z5bw1nkMwHZg4LoOQvRZPfMkeNrL8Ap65sgMrGZs9+IFKSQIzUdG
-        4yN1+xiV3I/ZQ4UD/EWa7hHUteywV3U=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-360-pz5HNpaHPfmAMdHd5UV6NQ-1; Mon, 28 Nov 2022 09:17:19 -0500
-X-MC-Unique: pz5HNpaHPfmAMdHd5UV6NQ-1
-Received: by mail-qk1-f197.google.com with SMTP id j13-20020a05620a410d00b006e08208eb31so20340625qko.3
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 06:17:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jCazpTTy+F7fa4dxFepBnOElkUnDE1h7gUS6HgFedPY=;
-        b=tdpGG54y7gGHYRdFwYuDb9jiQKzRr4VM2hHve+ZZy7EGyLsTHIK1BxxOEVs7fp58qi
-         97gpq+5Wg5v+8z20TMejGOT25cCjpZknBZf0WThemoWne8vLIi8yI4E7gzxL3i67E/qh
-         qsqfhj/4G8u9CuGpVqbeWo0ZTAovbBnedcRWaZBKk7UminRm2ieMBDTm0O/L5o8aBXIz
-         yFBCTj0AXixzUJ7jZLxYttzH60zLcPHLMHz27VL+HpzffFPTXnN8wAbcpqlbPFT37ieL
-         Fka7fIb/qjo+BKBvdojmmggOeD2QAaSX52MGVfejqN0hbqTDtElLX6Q/0alULKXsHVy6
-         a25w==
-X-Gm-Message-State: ANoB5pmLd06ZhVKnuOQ4/SSZevXrHMxtwFrVAGOfWJVJBwIxWXvdB0oU
-        mWnLS2mfIpE0YGEl51b0H7oILAS4r7PFZaOsQ2XdVzwFa+/NgJMRSgYSz2WMWWbtx1NuJ3FQmWF
-        EFIKf7TsknD80
-X-Received: by 2002:a05:620a:15f4:b0:6fc:5e75:8452 with SMTP id p20-20020a05620a15f400b006fc5e758452mr12348121qkm.565.1669645038415;
-        Mon, 28 Nov 2022 06:17:18 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7v1fq7/cmmRa8boL0KEKgHvn1ntFy91sfTcqo+21QKxMb9e0oyQ5n2B68KMni02H2rUIIZ6Q==
-X-Received: by 2002:a05:620a:15f4:b0:6fc:5e75:8452 with SMTP id p20-20020a05620a15f400b006fc5e758452mr12348062qkm.565.1669645038027;
-        Mon, 28 Nov 2022 06:17:18 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05620a254600b006cbc6e1478csm8423957qko.57.2022.11.28.06.17.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 06:17:17 -0800 (PST)
-Message-ID: <722b8767-daf9-f5b8-8ad7-0d9cb22d4b7d@redhat.com>
-Date:   Mon, 28 Nov 2022 15:17:09 +0100
+        with ESMTP id S232616AbiK1OnL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 09:43:11 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4226AF3D;
+        Mon, 28 Nov 2022 06:43:09 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4NLShl3G7Cz9xGXF;
+        Mon, 28 Nov 2022 22:36:39 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwC3oG3iyIRjL9qiAA--.42928S2;
+        Mon, 28 Nov 2022 15:42:49 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     paul@paul-moore.com, casey@schaufler-ca.com, omosnace@redhat.com,
+        john.johansen@canonical.com, kpsingh@kernel.org
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/2] lsm: Improve LSM hooks documentation
+Date:   Mon, 28 Nov 2022 15:42:38 +0100
+Message-Id: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 13/19] iommufd: Add kAPI toward external drivers for
- physical devices
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <13-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
- <4c429c36-146e-e2b2-0cb4-d256ca659280@redhat.com>
- <Y4P9VzpCv/DyHeaD@nvidia.com>
- <94e6034a-c4c1-be0a-ea8c-f5934dbadd4c@redhat.com>
- <Y4S1hYFm9HaP0KdR@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <Y4S1hYFm9HaP0KdR@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwC3oG3iyIRjL9qiAA--.42928S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4DXw43JF45WF1DAw4UXFb_yoW8XF47pa
+        yrGw45JryrAr1xurs3Kw48A3yFyFWrGF1DJrW7Grn5urWjyr1Fkr4Skw1Fgas8CF9xKa4q
+        qF12vry5urnrA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jzQ6JUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAKBF1jj4X7EgABsT
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
+The recent discussion about return values from LSM hooks, available here:
 
-On 11/28/22 14:20, Jason Gunthorpe wrote:
-> On Mon, Nov 28, 2022 at 11:55:41AM +0100, Eric Auger wrote:
->
->>> Not really. The name is a mess, but as it is implemented, it means the
->>> platform is implementing MSI security. How exactly that is done is not
->>> really defined, and it doesn't really belong as an iommu property.
->>> However the security is being created is done in a way that is
->>> transparent to the iommu_domain user.
->> Some 'ARM platforms' implement what you call MSI security but they do
->> not advertise IOMMU_CAP_INTR_REMAP
-> Sounds like a bug.
->  
->> Besides refering to include/linux/iommu.h:
->> IOMMU_CAP_INTR_REMAP,           /* IOMMU supports interrupt isolation */
-> Documentation doesn't match code.
->
->>> It doesn't matter how it is done, if it remapping HW, fancy
->>> iommu_domain tricks, or built into the MSI controller. Set this flag
->>> if the platform is secure and doesn't need the code triggered by
->>> irq_domain_check_msi_remap().
->> this is not what is implemented as of now. If the IOMMU does support
->> interrupt isolation, it advertises IOMMU_CAP_INTR_REMAP. On ARM this
->> feature is implemented by the ITS MSI controller instead and the only
->> way to retrieve the info whether the device MSIs are directed to that
->> kind of MSI controller is to use irq_domain_check_msi_remap().
-> It is important to keep the Linux design seperated from what the
-> architecture papers describes. In Linux the IOMMU is represented by
-> the iommu_domain and the iommu_ops. On x86 neither of these objects
-> play any role in interrupt delivery. Yes, the x86 architecture papers
-> place some of the interrupt logic inside what they consider the iommu
-> block, but that is just some historical stuff and shouldn't impact the
-> SW design.
->
-> If we had put the IRTE bits inside the irqchip layer instead of in the
-> iommu driver, it would have made a lot more sense.
->
-> The fact that ARM was allowed to be different (or rather the x86 mess
-> wasn't cleaned up before the ARM mess was overlayed on top) is why
-> this is so confusing. They are doing the same things, just in
-> unnecessarily different ways.
+https://lore.kernel.org/bpf/20221115175652.3836811-1-roberto.sassu@huaweicloud.com/
 
-fair enough. But that's a separate discussion that needs to happen with
-iommu and irqchip maintainers I think. At the moment things are
-implemented that way.
->
->>>> irq_domain_check_msi_remap() instead means the MSI controller
->>>> implements that functionality (a given device id is able to trigger
->>> Not quite, it means that MSI isolation is available, however it is not
->>> transparent and the iommu_domain user must do the little dance that
->>> follows.
->> No I do not agree on that point. The 'little dance' is needed because
->> the SMMU does not bypass MSI writes as done on Intel. And someone must
->> take care of the MSI transaction mapping. This is the role of the MSI
->> cookie stuff. To me this is independent on the above discussion whether
->> MSI isolation is implemented.
-> OK, so you are worried about someone who sets
-> allow_unsafe_interrupts=1 they will not get the iommu_get_msi_cookie()
-> call done even though they still need it? That does seem wrong.
-yes
->
->>> This was sort of sloppy copied from VFIO - we should just delete
->>> it. The is no driver that sets both, and once the platform asserts
->>> irq_domain_check_msi_remap() it is going down the non-transparent path
->>> anyhow and must set a cookie to work. [again the names doesn't make
->>> any sense for the functionality]
->>>
->>> Failing with EPERM is probably not so bad since the platform is using
->>> an invalid configuration. I'm kind of inclined to leave this for
->>> right
->> I don't understand why it is invalid? HW MSI RESV region is a valid
->> config and not sure you tested with that kind of setup, did you?
-> Why would it be a valid config? No driver sets both..
->
-> HW MSI RESV should set IOMMU_CAP_INTR_REMAP like Intel does.
->
-> irq_domain_check_msi_remap() is only for SW MSI RESV regions.
-In theory no. Nothing prevents from having an MSI isolation capable
-controller (such as the ITS) with an IOMMU HW which wouldn't translate
-MSIs. In the past there has been such kind of problematic I think for
-HiSilicon HW
-https://lore.kernel.org/all/20171006140450.89652-1-shameerali.kolothum.thodi@huawei.com/
-This was eventually addressed differently but Shameer may precise ... 
+motivated revisiting the documentation in include/linux/lsm_hooks.h, to
+ensure that it is complete and accurate. It was also a good occasion to fix
+discovered formatting issues.
 
-Eric
+Changelog:
 
->
-> This is what the code implements, and yes it makes no sense.
->
-> Jason
->
+v1 (security: Ensure LSMs return expected values):
+- A positive value, not only 1 can cause cap_set_admin to be set when
+  calling __vm_enough_memory() (reported by Paul)
+- Improve description of the vm_enough_memory hook
+- Remove documentation of the sb_add_mnt_opt hook, as it was removed
+  (reported by Paul)
+- Add more periods in the parameters description
+- Adjust mmap_addr and mmap_file semicolon
+- Move description of gfp parameter of xfrm_policy_alloc_security together
+  with the others
+- Add missing return value description for binder_transaction,
+  binder_transfer_binder, binder_transfer_file, quotactl and quota_on
+- Improve return value description for sb_eat_lsm_opts, sb_show_options,
+  dentry_init_security, dentry_create_files_as and sctp_assoc_established
+
+Roberto Sassu (2):
+  lsm: Clarify documentation of vm_enough_memory hook
+  lsm: Add/fix return values in lsm_hooks.h and fix formatting
+
+ include/linux/lsm_hooks.h | 227 ++++++++++++++++++++++++--------------
+ 1 file changed, 143 insertions(+), 84 deletions(-)
+
+-- 
+2.25.1
 
