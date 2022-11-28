@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DC063ADE1
+	by mail.lfdr.de (Postfix) with ESMTP id CB01663ADE2
 	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 17:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbiK1QfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229961AbiK1QfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 28 Nov 2022 11:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbiK1QfH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 11:35:07 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F2320F6B
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 08:35:06 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id vp12so25983027ejc.8
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 08:35:06 -0800 (PST)
+        with ESMTP id S231542AbiK1QfI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 11:35:08 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670D820F64
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 08:35:07 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id vv4so27282621ejc.2
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 08:35:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lbz+FlGjq3WM9TxEKakN6lgmPncv25OUne2OVBd22hY=;
-        b=UMWpvAPgXsFyzgFat6sDsR0YA1Wn7Ifi3zdHmmqNVmE97vO01bhgrJ9jubGyuOONFp
-         XN/L6jfGNaI6Eh6MO2Z86L2Z3ow1tvfCN6q4DadEkhSllzCoyv3aIbMLE5j8w+mLUYw7
-         XtZRJhZepy9W5L4zBuvOf7lbEU3BfxT/v1ngiMLRnioVFVKauXYn0ym5evmpXtd70lmq
-         lzVlV0AHP9nKYhQGr/YuJjnuQrXVs02/P48ZZmUt1Jyc9i4RKOTgCca/CLsE2PmBmkRW
-         JNM3E2YkwTnw97nB99/esgqsvbUudwmfwA93xdRXyAW/UDx3n2X4WTVYphVlCUe243Ud
-         Gr6g==
+        bh=pPDyoJ9xhlYxM9/Z0G/mChvXBKKhvySIujD90Cc9Obo=;
+        b=avsttkrY5Akc5WBmOjzIsKthIbWuIEWmlZu5TovQKjWEKBAm47ufwe3eiRl4Zaiu+m
+         m7EeN80QS7L3zwm/jfoWtMbvdf5DqFtb39sz4tFYVIeqlUxAt0ofltJ6DavR5MuQs+FV
+         Y6DXONm/LZVAa/TWTg1isARRARh6VVx7sVTXxtGloMLg9XBysw0d728BxT/FrxLmfDfc
+         uYFT9Z18+X3JaZdDNszol4RMofLqC65i3QBbdaNasxsAYnmSdl9AvZtUGS/k8suISiMW
+         fjyLxCyAkGGej1whbB7xPhVE7/75CjgwdUM46fuSYt5D4W50sMr9Mj/Uy777oDPnNyzU
+         iBOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lbz+FlGjq3WM9TxEKakN6lgmPncv25OUne2OVBd22hY=;
-        b=driwM4kOH69wJcz1uqfstUz9M6CBs+2/44IX9N5sLqgAv6zLH/cQHGPRdxDwwtUaYf
-         +sdpOm7H1q5nYxn6J15jCTMAqFeM13UspS1UHXJAeRaJheGi7EwnPXoGX4nv7Zg6xAFJ
-         viWp/piRNyfZSpcjAKnoY37m9m7Ycd/YjCVjkiVzUn1qB4yr1YLOmL4E4V45ORNuj5p4
-         wLK5vnSuVECHKo4FgiBzsxBWEFi5iPl5FFYcKFqHaEGvwnDvMY5B92vDj7y631vRDCUS
-         s/mEg5NWt5GGz5Gg7zhvBu4/Lk8xhCyveuAL6ALAdgG7brmvQuQQg15+Y1SeksUsvgrf
-         P/qw==
-X-Gm-Message-State: ANoB5pn1mj58PLa5QpEOoXjUEgMY0kcNp9e/gFHEVyvUAJFgKwDG8abq
-        5PWgOYZmPrApA95s4p19f5FZ5ChXIxI=
-X-Google-Smtp-Source: AA0mqf7FgFLkRXARwjRRyfPMzB9x092LA12kHF0ifuufi9wsZYUzyqIElJJZyhVXtRNZItLWGlbGWA==
-X-Received: by 2002:a17:906:4889:b0:7bc:42f6:372e with SMTP id v9-20020a170906488900b007bc42f6372emr15620135ejq.662.1669653304584;
-        Mon, 28 Nov 2022 08:35:04 -0800 (PST)
+        bh=pPDyoJ9xhlYxM9/Z0G/mChvXBKKhvySIujD90Cc9Obo=;
+        b=jqJipzs19hCZg0ybpeV4hR029oeDXAw+ZBYxcHfC9bYY3sjbiUf4fybJ00Z5l7mLH3
+         HxMctm42To5Sih+BTP25Cz7Bz1QBNDtPkJmaU+x86nH/nayqCyi+jVDRVOaizKF9a/TD
+         dnRFuTh4lbagL7ZleBrjNzoOATBr6WMTuG1bl6hGMcEoDzeLqfG+bKDQ/ZYqcwTaJV3E
+         //2EErVyz4imFAToIbZ11nJpXrTlPSOyw2tEi2W9neJ2fj94OgLl0Gfh0biqY5Ep8qQd
+         sr5qiyMHO2ucMH6K6MXsJq4huEHQ/7quhK5WR0aKqAeW7/EAVAhCZ/iPSoR2PLKYYjhY
+         Mqvw==
+X-Gm-Message-State: ANoB5pk8zQMb9YYP1+tRZfz7yypikXzD34HVlyEbNfil74/ezapkJV0Y
+        iqQesFmXaqQ8Aekrv+VI9fyEOuSyOQ0=
+X-Google-Smtp-Source: AA0mqf75D16ySSV1hFYgRAYoTz0XaI4i0LbGgMaYG272ydufCiWx2WdC1mOGRYRN7GzBXGoJIUHbpQ==
+X-Received: by 2002:a17:906:168e:b0:7c0:78c8:1487 with SMTP id s14-20020a170906168e00b007c078c81487mr3444202ejd.340.1669653305791;
+        Mon, 28 Nov 2022 08:35:05 -0800 (PST)
 Received: from pluto.. (178-133-113-180.mobile.vf-ua.net. [178.133.113.180])
-        by smtp.gmail.com with ESMTPSA id kv7-20020a17090778c700b007417041fb2bsm5145605ejc.116.2022.11.28.08.35.03
+        by smtp.gmail.com with ESMTPSA id kv7-20020a17090778c700b007417041fb2bsm5145605ejc.116.2022.11.28.08.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 08:35:04 -0800 (PST)
+        Mon, 28 Nov 2022 08:35:05 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next 1/2] bpf: verify scalar ids mapping in regsafe() using check_ids()
-Date:   Mon, 28 Nov 2022 18:34:41 +0200
-Message-Id: <20221128163442.280187-2-eddyz87@gmail.com>
+Subject: [RFC bpf-next 2/2] selftests/bpf: verify that check_ids() is used for scalars in regsafe()
+Date:   Mon, 28 Nov 2022 18:34:42 +0200
+Message-Id: <20221128163442.280187-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221128163442.280187-1-eddyz87@gmail.com>
 References: <20221128163442.280187-1-eddyz87@gmail.com>
@@ -71,170 +71,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prior to this commit the following unsafe example passed verification:
+Verify that the following example is rejected by verifier:
 
-1: r9 = ... some pointer with range X ...
-2: r6 = ... unbound scalar ID=a ...
-3: r7 = ... unbound scalar ID=b ...
-4: if (r6 > r7) goto +1
-5: r6 = r7
-6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created here
-7: r9 += r7
-8: *(u64 *)r9 = Y
-
-This example is unsafe because not all execution paths verify r7 range.
-Because of the jump at (4) the verifier would arrive at (6) in two states:
-I.  r6{.id=b}, r7{.id=b} via path 1-6;
-II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
-
-Currently regsafe() does not call check_ids() for scalar registers,
-thus from POV of regsafe() states (I) and (II) are identical. If the
-path 1-6 is taken by verifier first and checkpoint is created at (6)
-the path 1-4, 6 would be considered safe.
-
-This commit makes the following changes:
-- a call to check_ids() is added in regsafe() for scalar registers case;
-- a function mark_equal_scalars_as_read() is added to ensure that
-  registers with identical IDs are preserved in the checkpoint states
-  in case when find_equal_scalars() updates register range for several
-  registers sharing the same ID.
+r9 = ... some pointer with range X ...
+r6 = ... unbound scalar ID=a ...
+r7 = ... unbound scalar ID=b ...
+if (r6 > r7) goto +1
+r6 = r7
+if (r6 > X) goto exit
+r9 += r7
+*(u64 *)r9 = Y
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 87 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 85 insertions(+), 2 deletions(-)
+ .../selftests/bpf/verifier/scalar_ids.c       | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/scalar_ids.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6599d25dae38..8a5b7192514a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10638,10 +10638,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 				/* case: R1 = R2
- 				 * copy register state to dest reg
- 				 */
--				if (src_reg->type == SCALAR_VALUE && !src_reg->id)
-+				if (src_reg->type == SCALAR_VALUE && !src_reg->id &&
-+				    !tnum_is_const(src_reg->var_off))
- 					/* Assign src and dst registers the same ID
- 					 * that will be used by find_equal_scalars()
- 					 * to propagate min/max range.
-+					 * Skip constants to avoid allocation of useless ID.
- 					 */
- 					src_reg->id = ++env->id_gen;
- 				*dst_reg = *src_reg;
-@@ -11446,16 +11448,86 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
- 	return true;
- }
- 
-+/* Scalar ID generation in check_alu_op() and logic of
-+ * find_equal_scalars() make the following pattern possible:
-+ *
-+ * 1: r9 = ... some pointer with range X ...
-+ * 2: r6 = ... unbound scalar ID=a ...
-+ * 3: r7 = ... unbound scalar ID=b ...
-+ * 4: if (r6 > r7) goto +1
-+ * 5: r6 = r7
-+ * 6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created here
-+ * 7: r9 += r7
-+ * 8: *(u64 *)r9 = Y
-+ *
-+ * Because of the jump at (4) the verifier would arrive at (6) in two states:
-+ * I.  r6{.id=b}, r7{.id=b}
-+ * II. r6{.id=a}, r7{.id=b}
-+ *
-+ * Relevant facts:
-+ * - regsafe() matches ID mappings for scalars using check_ids(), this makes
-+ *   states (I) and (II) non-equal;
-+ * - clean_func_state() removes registers not marked as REG_LIVE_READ from
-+ *   checkpoint states;
-+ * - mark_reg_read() modifies reg->live for reg->parent (and it's parents);
-+ * - when r6 = r7 is process the bpf_reg_state is copied in full, meaning
-+ *   that parent pointers are copied as well.
-+ *
-+ * Thus, for execution path 1-6:
-+ * - both r6->parent and r7->parent point to the same register in the parent state (r7);
-+ * - only *one* register in the checkpoint state would receive REG_LIVE_READ mark;
-+ * - clean_func_state() would remove r6 from checkpoint state (mark it NOT_INIT).
-+ *
-+ * Consequently, when execution path 1-4, 6 reaches (6) in state (II)
-+ * regsafe() won't be able to see a mismatch in ID mappings.
-+ *
-+ * To avoid this issue mark_equal_scalars_as_read() conservatively
-+ * marks all registers with matching ID as REG_LIVE_READ, thus
-+ * preserving r6 and r7 in the checkpoint state for the example above.
+diff --git a/tools/testing/selftests/bpf/verifier/scalar_ids.c b/tools/testing/selftests/bpf/verifier/scalar_ids.c
+new file mode 100644
+index 000000000000..38a6959c93e5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/scalar_ids.c
+@@ -0,0 +1,61 @@
++/* Test cases for verifier.c:find_equal_scalars() and Co */
++
++/* Use a map lookup as a way to get a pointer to some valid memory
++ * location with size known to verifier.
 + */
-+static void mark_equal_scalars_as_read(struct bpf_verifier_state *vstate, int id)
++#define MAKE_POINTER_TO_48_BYTES(reg)			\
++	BPF_MOV64_IMM(BPF_REG_0, 0),			\
++	BPF_LD_MAP_FD(BPF_REG_1, 0),			\
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),		\
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),		\
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),		\
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),	\
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),		\
++	BPF_EXIT_INSN(),				\
++	BPF_MOV64_REG((reg), BPF_REG_0)
++
++/* See comment in verifier.c:mark_equal_scalars_as_read().
++ *
++ * r9 = ... some pointer with range X ...
++ * r6 = ... unbound scalar ID=a ...
++ * r7 = ... unbound scalar ID=b ...
++ * if (r6 > r7) goto +1
++ * r6 = r7
++ * if (r6 > X) goto exit
++ * r9 += r7
++ * *(u64 *)r9 = Y
++ */
 +{
-+	struct bpf_verifier_state *st;
-+	struct bpf_func_state *state;
-+	struct bpf_reg_state *reg;
-+	bool move_up;
-+	int i = 0;
++	"scalar ids: ID mapping in regsafe()",
++	.insns = {
++	MAKE_POINTER_TO_48_BYTES(BPF_REG_9),
++	/* r7 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	/* r6 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
++	/* if r6 > r7 goto +1 */
++	BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
++	/* r6 = r7 */
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_7),
++	/* a noop to get to add new parent state */
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_0),
++	/* if r6 >= 10 exit(0) */
++	BPF_JMP_IMM(BPF_JGT, BPF_REG_6, 10, 2),
++	/* r9[r7] = 42 */
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_9, BPF_REG_7),
++	BPF_ST_MEM(BPF_DW, BPF_REG_9, 0, 42),
++	/* exit(0) */
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 1 },
++	.flags = BPF_F_TEST_STATE_FREQ,
++	.errstr_unpriv = "register with unbounded min value",
++	.result_unpriv = REJECT,
++	.errstr = "register with unbounded min value",
++	.result = REJECT,
++},
 +
-+	for (st = vstate, move_up = true; st && move_up; st = st->parent) {
-+		move_up = false;
-+		bpf_for_each_reg_in_vstate(st, state, reg, ({
-+			if (reg->type == SCALAR_VALUE && reg->id == id &&
-+			    !(reg->live & REG_LIVE_READ)) {
-+				reg->live |= REG_LIVE_READ;
-+				move_up = true;
-+			}
-+			++i;
-+		}));
-+	}
-+}
-+
- static void find_equal_scalars(struct bpf_verifier_state *vstate,
- 			       struct bpf_reg_state *known_reg)
- {
- 	struct bpf_func_state *state;
- 	struct bpf_reg_state *reg;
-+	int count = 0;
- 
- 	bpf_for_each_reg_in_vstate(vstate, state, reg, ({
--		if (reg->type == SCALAR_VALUE && reg->id == known_reg->id)
-+		if (reg->type == SCALAR_VALUE && reg->id == known_reg->id) {
- 			*reg = *known_reg;
-+			++count;
-+		}
- 	}));
-+
-+	/* Count equal to 1 means that find_equal_scalars have not
-+	 * found any registers with the same ID (except self), thus
-+	 * the range knowledge have not been transferred and there is
-+	 * no need to preserve registers with the same ID in a parent
-+	 * state.
-+	 */
-+	if (count > 1)
-+		mark_equal_scalars_as_read(vstate->parent, known_reg->id);
- }
- 
- static int check_cond_jmp_op(struct bpf_verifier_env *env,
-@@ -12878,6 +12950,12 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		 */
- 		return equal && rold->frameno == rcur->frameno;
- 
-+	/* even if two registers are identical the id mapping might diverge
-+	 * e.g. rold{.id=1}, rcur{.id=1}, idmap{1->2}
-+	 */
-+	if (equal && rold->type == SCALAR_VALUE && rold->id)
-+		return check_ids(rold->id, rcur->id, idmap);
-+
- 	if (equal)
- 		return true;
- 
-@@ -12891,6 +12969,11 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		if (env->explore_alu_limits)
- 			return false;
- 		if (rcur->type == SCALAR_VALUE) {
-+			/* id relations must be preserved, see comment in
-+			 * mark_equal_scalars_as_read() for SCALAR_VALUE example.
-+			 */
-+			if (rold->id && !check_ids(rold->id, rcur->id, idmap))
-+				return false;
- 			if (!rold->precise)
- 				return true;
- 			/* new val must satisfy old val knowledge */
++#undef MAKE_POINTER_TO_48_BYTES
 -- 
 2.34.1
 
