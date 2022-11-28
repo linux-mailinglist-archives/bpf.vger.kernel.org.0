@@ -2,70 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 492A163B48D
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 22:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21ADE63B4A6
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 23:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbiK1V6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 16:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S234436AbiK1WLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 17:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232280AbiK1V6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 16:58:34 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF05D1B1D7
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 13:58:31 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id e205so13143131oif.11
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 13:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aLDdh0gmgrkHvlbt0Qk6LQBk7G7QNAMnu/OlUpnhiaY=;
-        b=pmFNOhjDJ3S/9UxkucZH8qV/+mFGOTZRfZfty5m6BnMywRIVs4duQ9zeB4cVW4N2ey
-         AizJNb/312o1Dfy2i1nTZfKnjA2tERK4H8P+KLAkW8kXOoXnBdigBDlfK6l85mvVyeUV
-         sTmIX6LP3FVrbycLqFVHWxUrr+pNUeVIlR8AUCbBKcETp6FEgjAaceyuwpbpPDPYPbip
-         mMzntF4GN4ncVtsGJcq0mD0YB46e6cOwvWgG7bg9xLS+xPGz7ZMz/ga9uaRjgJV9K7rG
-         0ZWf7lHs4y7o7G71XWvaozlk+kYnDpDdbOEI0l0f/bgePC2UiKbHT+pro1YhydXj4VbD
-         DcjA==
+        with ESMTP id S234148AbiK1WLK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 17:11:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E8724BDE
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 14:10:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669673415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vJAfrSiLBZ1GH3+ALah4IS7MdEjQe3AC2nBRfXse76c=;
+        b=BZggZHzwZz0K8ECXZBTQ/CJ0/lLpqdBU4RjEmcp6dvXaXp5iCJ556J8KzBPBr5PocbmaB3
+        3lLxf1IKLXO8Ox2BZcRoJsvKOG8Txm6FlmbMIdtlSK5MXEoPJVA15HOlU8ZKXw7jz1WCe4
+        fbvOI/8V3RGjHTnn7gW8ni2Y0JAq8HQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-581-yRXYLuY4M8qw8G2CgOhs0w-1; Mon, 28 Nov 2022 17:10:13 -0500
+X-MC-Unique: yRXYLuY4M8qw8G2CgOhs0w-1
+Received: by mail-ej1-f72.google.com with SMTP id hb35-20020a170907162300b007ae6746f240so5097967ejc.12
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 14:10:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aLDdh0gmgrkHvlbt0Qk6LQBk7G7QNAMnu/OlUpnhiaY=;
-        b=QN88f/ADIe8lac0EvnySwK1Q0IzlpRgvlHxTXlqDrAfj5OBgDVkAgC6Ud8bC0ozUeu
-         pZxrW9ilO/9b3PAWsPOHGYtI06ptgHFlxGLXts3CkYDTQhQ2ggCd+NRHo5nLVc2COEPG
-         3sPmNBa0tCa9Gf8aUbsE23w6LfIDpuYwVwr9JLxCg+HuD3xpqgOs88RWXjc4ZLsj4Exs
-         j2JowG7kctrZWkyC9LCQwT+xz+82bDSnrMbUyQBrEFf5dxE9+6KL2iQGoTa87JPX2li6
-         CL0AYL9p+YiQZKYv05HJ2cXaetr9h9rnY1IV+d/ndgehjWhKQlr49WZRIXPiauj3Do+c
-         p5XQ==
-X-Gm-Message-State: ANoB5pkStDRlSqzpEs5v/P5PU0XpQhFi6ezM6OMPr5aj7xSs2leDMX7M
-        doEsgPyjc6YaqVigb3JT69DqtkDiHIjL+LxKBYQknp8FP0WMG/6B
-X-Google-Smtp-Source: AA0mqf4SyYwhb5aXxQg20tTnSaMO0WzbAk/x8Qc3aJFzEDnvety1XxuMhmJYXqcEeyz8MKX7zmGFTQRCqXi4VTomwsA=
-X-Received: by 2002:aca:674c:0:b0:35b:79ca:2990 with SMTP id
- b12-20020aca674c000000b0035b79ca2990mr13366020oiy.125.1669672710977; Mon, 28
- Nov 2022 13:58:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20221121182552.2152891-1-sdf@google.com> <20221121182552.2152891-7-sdf@google.com>
- <874jupviyc.fsf@toke.dk> <CAKH8qBuF_1UoUPzh_X6FMrJ61zCNDroqSuc-Pp2uH7Q4azmN8Q@mail.gmail.com>
- <20221123111431.7b54668e@kernel.org> <Y3557Ecr80Y9ZD2z@google.com>
- <871qptuyie.fsf@toke.dk> <20221123174746.418920e5@kernel.org>
- <87edts2z8n.fsf@toke.dk> <Y3+K7dJLFX7gRQp+@boxer> <Y3+XtkkIh0o++Dgr@boxer> <874jun3m58.fsf@toke.dk>
-In-Reply-To: <874jun3m58.fsf@toke.dk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 28 Nov 2022 13:58:19 -0800
-Message-ID: <CAKH8qBvbYuCq-iiXnMw1QxFbfLFhorpF1+GGqU1yVzX2LhoUzQ@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v2 6/8] mlx4: Introduce
- mlx4_xdp_buff wrapper for xdp_buff
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, Tariq Toukan <tariqt@nvidia.com>,
+        bh=vJAfrSiLBZ1GH3+ALah4IS7MdEjQe3AC2nBRfXse76c=;
+        b=yTsIRYNPXjNKY/aIzLD7mMk2mLg+WZ9ovri/lMykHI1PjEWTTKjRBiN0v8kTU42lTN
+         y6yXdd0Z6U/wfilzjdPZwSkjPbjjfiGiZJVRz6KHBUHIDZ7tj/ol/zQ7TDxCJvqesDQO
+         mJYFaHjKTdawg/peWD4Y+lwJpaALXB03IG12u9qxbKpVhIeD3BPN7USOpirucj4kh2Hj
+         tGGMu6oagKKFq14kkTcNO/aZnC+tSEuz/8bvJiFaxLxlmrVzff2BAwElt0vuGye0vMLm
+         Xf/q52C0zB5iQ2UeLrHuJcYxBhUr2OhzB3fuft7LMOI/lCSxiBW4L0keRWB1GwGt0Sue
+         BMIQ==
+X-Gm-Message-State: ANoB5pm0jL1vSppszwn/CGjFv4fQ54sYjsAkGTeBCduPNCJRNggAhLPL
+        0dBcuIsL+FUl2Sft3XKVJ9lo9sDT+BpZqoofCWWiVw+A+bBwGU7+JOAnd9ZJT9WpnoavRf5G5jo
+        Nsukk39+Sc3IQ
+X-Received: by 2002:a17:906:df47:b0:7c0:747a:1e0d with SMTP id if7-20020a170906df4700b007c0747a1e0dmr4682884ejc.224.1669673411823;
+        Mon, 28 Nov 2022 14:10:11 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf425gA6m8pgpUvpIT8KHNPMAzGFBEXZEVPOH9JlVG4aiPoCzI4HDFBWqcj759365DVU9Cme3w==
+X-Received: by 2002:a17:906:df47:b0:7c0:747a:1e0d with SMTP id if7-20020a170906df4700b007c0747a1e0dmr4682862ejc.224.1669673411347;
+        Mon, 28 Nov 2022 14:10:11 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 11-20020a170906300b00b007aee947ce9esm5417641ejz.138.2022.11.28.14.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Nov 2022 14:10:10 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3B5057EBE9C; Mon, 28 Nov 2022 23:10:10 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
         David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Anatoly Burakov <anatoly.burakov@intel.com>,
@@ -73,12 +72,21 @@ Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
         netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v2 2/8] bpf: XDP metadata RX
+ kfuncs
+In-Reply-To: <CAKH8qBvmgx0Lr7efP0ucdZMEzZM-jzDKcAW9YPBqADWVsHb9cA@mail.gmail.com>
+References: <20221121182552.2152891-1-sdf@google.com>
+ <20221121182552.2152891-3-sdf@google.com> <87mt8e2a69.fsf@toke.dk>
+ <CAKH8qBvmgx0Lr7efP0ucdZMEzZM-jzDKcAW9YPBqADWVsHb9cA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 28 Nov 2022 23:10:10 +0100
+Message-ID: <874jui20jh.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,101 +94,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 24, 2022 at 4:36 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->
-> > On Thu, Nov 24, 2022 at 04:17:01PM +0100, Maciej Fijalkowski wrote:
-> >> On Thu, Nov 24, 2022 at 03:39:20PM +0100, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
-> >> > Jakub Kicinski <kuba@kernel.org> writes:
-> >> >
-> >> > > On Wed, 23 Nov 2022 22:55:21 +0100 Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> >> > >> > Good idea, prototyped below, lmk if it that's not what you had =
-in mind.
-> >> > >> >
-> >> > >> > struct xdp_buff_xsk {
-> >> > >> >       struct xdp_buff            xdp;                  /*     0=
-    56 */
-> >> > >> >       u8                         cb[16];               /*    56=
-    16 */
-> >> > >> >       /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --=
-- */
-> >> > >>
-> >> > >> As pahole helpfully says here, xdp_buff is actually only 8 bytes =
-from
-> >> > >> being a full cache line. I thought about adding a 'cb' field like=
- this
-> >> > >> to xdp_buff itself, but figured that since there's only room for =
-a
-> >> > >> single pointer, why not just add that and let the driver point it=
- to
-> >> > >> where it wants to store the extra context data?
-> >> > >
-> >> > > What if the driver wants to store multiple pointers or an integer =
-or
-> >> > > whatever else? The single pointer seems quite arbitrary and not
-> >> > > strictly necessary.
-> >> >
-> >> > Well, then you allocate a separate struct and point to that? Like I =
-did
-> >> > in mlx5:
-> >> >
-> >> >
-> >> > +  struct mlx5_xdp_ctx mlctx =3D { .cqe =3D cqe, .rq =3D rq };
-> >> > +  struct xdp_buff xdp =3D { .drv_priv =3D &mlctx };
-> >> >
-> >> > but yeah, this does give an extra pointer deref on access. I'm not
-> >> > really opposed to the cb field either, I just think it's a bit odd t=
-o
-> >> > put it in struct xdp_buff_xsk; that basically requires the driver to
-> >> > keep the layouts in sync.
-> >> >
-> >> > Instead, why not but a cb field into xdp_buff itself so it can be us=
-ed
-> >> > for both the XSK and the non-XSK paths? Then the driver can just
-> >> > typecast the xdp_buff into its own struct that has whatever data it
-> >> > wants in place of the cb field?
+Stanislav Fomichev <sdf@google.com> writes:
 
-Agreed, maybe having an explicit cb field in the xdp_buff is a nice
-compromise (assuming, over time, most devices will use it).
-
-> >> Why can't you simply have a pointer to xdp_buff in driver specific
-> >> xdp_buff container which would point to xdp_buff that is stack based (=
-or
-> >> whatever else memory that will back it up - I am about to push a chang=
-e
-> >> that makes ice driver embed xdp_buff within a struct that represents R=
-x
-> >> ring) for XDP path and for ZC the pointer to xdp_buff that you get fro=
-m
-> >> xsk_buff_pool ? This would satisfy both sides I believe and would let =
-us
-> >> keep the same container struct.
-> >>
-> >> struct mlx4_xdp_buff {
-> >>      struct xdp_buff *xdp;
-> >>      struct mlx4_cqe *cqe;
-> >>      struct mlx4_en_dev *mdev;
-> >>      struct mlx4_en_rx_ring *ring;
-> >>      struct net_device *dev;
-> >> };
-> >
-> > Nah this won't work from kfunc POV, probably no way to retrieve the
-> > mlx4_xdp_buff based on xdp_buff ptr that needs to be used as an arg.
-> >
-> > Sorry I'll think more about it, in the meantime let's hear more voices
-> > whether we should keep Stan's original approach + modify xdp_buff_xsk o=
-r
-> > go with Toke's proposal.
+>  s
 >
-> OK, so I played around with the mlx5 code a bit more, and I think the
-> "wrapping struct + cb area" can be made to work without too many ugly
-> casts; I'll send an updated version of the mlx5 patches with this
-> incorporated tomorrow, after I've run some tests...
+> On Fri, Nov 25, 2022 at 9:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Stanislav Fomichev <sdf@google.com> writes:
+>>
+>> > There is an ndo handler per kfunc, the verifier replaces a call to the
+>> > generic kfunc with a call to the per-device one.
+>> >
+>> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+>> > implements all possible metatada kfuncs. Not all devices have to
+>> > implement them. If kfunc is not supported by the target device,
+>> > the default implementation is called instead.
+>>
+>> BTW, this "the default implementation is called instead" bit is not
+>> included in this version... :)
+>
+> fixup_xdp_kfunc_call should return 0 when the device doesn't have a
+> kfunc defined and should fallback to the default kfunc implementation,
+> right?
+> Or am I missing something?
 
-I'll probably send a v3 sometime tomorrow (PST), so maybe wait for me
-to make sure we are working on the same base?
-Or LMK if you prefer to do it differently..
+Ohh, right. Maybe add a comment stating this (as I obviously missed it :))
+
+-Toke
+
