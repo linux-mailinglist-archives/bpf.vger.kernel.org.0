@@ -2,171 +2,356 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA76563B2BC
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 21:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12BC63B2C8
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 21:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbiK1UHB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 15:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S233441AbiK1UKt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 15:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbiK1UHA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 15:07:00 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CEC18385
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:06:59 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-3b56782b3f6so117059867b3.13
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tUzQ4KaIHOjqwhDOxJh13yBt112/zgSWI/lmDL6J0J0=;
-        b=GN5K8bNojvYXgrx+MfQI0sJfBlgPUhBS5WL3YaSI99Hoih5DbBoXEm460JXv/7oM0e
-         tu6YNhdYhDsZPgOMvSPfB7Yrm8wxhg70+B5/q8wFSQW1ZaVdTj0pjNgARv4ARqSSbLhj
-         zB2K00rNqJLH9bpRn+86q0nzSY+K5MJSfKEMb3G3nKFH73GgGOGuV6Msu09rEknIX3B2
-         RlKLZwxzVMtp9IitNlaHC5Ln0R2vBZN3Y/n53YeDXKALBqVMgq1wwkp2cZzIbR+dcFCQ
-         GzyEBb+ztp/v+X2cAhnWIc7pFsYsXEedELS73XV6rTkz5HltnMOlp3TfLeVGMlyevyOO
-         CRGQ==
+        with ESMTP id S231251AbiK1UKs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 15:10:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63132314C
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669666188;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4sF220u/GkyApiKYoqCxqyjsl0v/0IP+GvFHvvXQNpo=;
+        b=OBkMKL5EUb5CqffSBGWHn49A7hp3nn3N2a2dJFLHsgvKY301Nv6GOUAmbYSi821Sc9ay1M
+        ypK62jcSggJad/o312WVxG1ofd7pPQDzTo8+xD6cKay1blZcZd8On/HUVqtmT48kJ0vgEH
+        mGQm1+UJWo36yjotd5Ajd0o9m3MMo9Q=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-98-PgFoh9QWM5uBm4J2wC-AJA-1; Mon, 28 Nov 2022 15:09:47 -0500
+X-MC-Unique: PgFoh9QWM5uBm4J2wC-AJA-1
+Received: by mail-qt1-f200.google.com with SMTP id n12-20020ac85a0c000000b003a5849497f9so16804598qta.20
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:09:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tUzQ4KaIHOjqwhDOxJh13yBt112/zgSWI/lmDL6J0J0=;
-        b=CAdrma8AWZJ+FrQ3qBkjc+en5uuVrh6Cbv3L2WZCF4blhYdnfG8nspyikrMNRgZSW9
-         oGtvN3ODng4ZM7ybzLhPdV9ZLtmbDZ4I6mOOymfqZFjNNFsZckrPgqUxKhNz8y3qSQQ2
-         cXe83DXYyN5jJhDVeSPVzCRxOK8KiYBOpY+WQ9DDt3wBukRa8KKRlv4sMylXpV2KfH9l
-         8wT5eBGu/CT8Af9d7cappkjbeA2VmE8wsJFI9Dybp9Kq3iH7i8OAyoygYi5sYM5oFdw5
-         D8XKlN5uBqY6SUoKiun9n611Hd1RRXnRYvnClM3n918rvhdo8+IZiBQuPJgrkz99lBXt
-         2HhA==
-X-Gm-Message-State: ANoB5pmthlveMb/x/bMuahxkin3qrvM2D1aLbh/rNVEhdLRG1RrxGLFd
-        Rx7ZCmrm9IAf48EnygBloFBLWSPHGfiXYECMALp3nA5Ewsi/wqEV
-X-Google-Smtp-Source: AA0mqf4S11RcP3EfhKOIhYJWGMomg5Eevy7a3UXHb/5pOESyc7+3hCYwHe2yEGZ6CdbvNFuXvzYfD6Kl6m6fnqu5vj4=
-X-Received: by 2002:a81:4f54:0:b0:3c0:d2aa:baac with SMTP id
- d81-20020a814f54000000b003c0d2aabaacmr10908609ywb.391.1669666018173; Mon, 28
- Nov 2022 12:06:58 -0800 (PST)
+        bh=4sF220u/GkyApiKYoqCxqyjsl0v/0IP+GvFHvvXQNpo=;
+        b=Lb4u9c51puPqBU6fd7HDl4CSAzzOx7oVx4JaxTRO+Ke6tWDsY3VKbfHZBPvlRTaotr
+         ppE9yib4hobrmMUdLyB2klbnv77y33CNHDiwCgg3ZWm1JYv0jnogmZgltOy20b39AvPg
+         1U77r86Bd1aNXfGGDNFPKJw60zgBzWZxW8M53y1y/NkC/iJdR9otRU8D3Pmr/bWfCluF
+         N4UJfvS2mlPy57B+sfRWUiIPeoDBg/A5vIRi/GNz8Pbr5S95ziBx/AZzLZWq+TOUKyUy
+         BSvcxIH3anRH16QhrZPQljElFPSxREd11C+TuTjuQamNLcECY6oCg3F8o1n2s5WkRdyQ
+         l5nw==
+X-Gm-Message-State: ANoB5pl2eyzhkt0ykMeZdDJpv6gDdIzqi7QUjXSA1JajQDp7rKqVnuCn
+        +70DbCmiueeIntgKzVTlPBsDW/Dr3lvQWxdzJszptJ0FjlDnziEugoMmhi/aL/y0HEE3GmCNX3w
+        CU0/5wKIvwPZI
+X-Received: by 2002:a05:622a:1f97:b0:3a6:39c4:dc6 with SMTP id cb23-20020a05622a1f9700b003a639c40dc6mr41636334qtb.515.1669666186705;
+        Mon, 28 Nov 2022 12:09:46 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7WtjBWnjX0FjlsU8UH/MTtCvhMvsduqeQ0qoYF/zgpc5CFEHGvVu63Ai3dEq+pdE2AWlQz5w==
+X-Received: by 2002:a05:622a:1f97:b0:3a6:39c4:dc6 with SMTP id cb23-20020a05622a1f9700b003a639c40dc6mr41636300qtb.515.1669666186370;
+        Mon, 28 Nov 2022 12:09:46 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id r5-20020ac867c5000000b003a56796a764sm7398874qtp.25.2022.11.28.12.09.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Nov 2022 12:09:45 -0800 (PST)
+Message-ID: <18b8f84b-170c-a353-f8cb-e8021f31db02@redhat.com>
+Date:   Mon, 28 Nov 2022 21:09:36 +0100
 MIME-Version: 1.0
-References: <cover.1669216157.git.vmalik@redhat.com> <2ec861621e283ba2a54f7e939eafed1c29f77bf4.1669216157.git.vmalik@redhat.com>
- <Y4R6ZfrhVxsHBD22@krava>
-In-Reply-To: <Y4R6ZfrhVxsHBD22@krava>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 28 Nov 2022 12:06:47 -0800
-Message-ID: <CA+khW7j8ijn6rrZz=YjpfWhP0xqPOZXTKVm-N7eqCpVQnbYAPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm
- to modules
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v5 11/19] iommufd: IOCTLs for the io_pagetable
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
+        Anthony Krowiak <akrowiak@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Farman <farman@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Lixiao Yang <lixiao.yang@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
+References: <11-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
+ <16bcfd63-2803-8000-7725-b42cd05061fa@redhat.com>
+ <Y4T9ejjPETS3TPx7@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <Y4T9ejjPETS3TPx7@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 1:07 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Mon, Nov 28, 2022 at 08:26:29AM +0100, Viktor Malik wrote:
-> > When attaching fentry/fexit/fmod_ret/lsm to a function located in a
-> > module without specifying the target program, the verifier tries to find
-> > the address to attach to in kallsyms. This is always done by searching
-> > the entire kallsyms, not respecting the module in which the function is
-> > located.
-> >
-> > This approach causes an incorrect attachment address to be computed if
-> > the function to attach to is shadowed by a function of the same name
-> > located earlier in kallsyms.
-> >
-> > Since the attachment must contain the BTF of the program to attach to,
-> > we may extract the module name from it (if the attach target is a
-> > module) and search for the function address in the correct module.
-> >
-> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> > ---
-> >  include/linux/btf.h   | 1 +
-> >  kernel/bpf/btf.c      | 5 +++++
-> >  kernel/bpf/verifier.c | 9 ++++++++-
-> >  3 files changed, 14 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 9ed00077db6e..bdbf3eb7083d 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -187,6 +187,7 @@ u32 btf_obj_id(const struct btf *btf);
-> >  bool btf_is_kernel(const struct btf *btf);
-> >  bool btf_is_module(const struct btf *btf);
-> >  struct module *btf_try_get_module(const struct btf *btf);
-> > +const char *btf_module_name(const struct btf *btf);
-> >  u32 btf_nr_types(const struct btf *btf);
-> >  bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
-> >                          const struct btf_member *m,
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 1a59cc7ad730..211fcbb7649d 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -7192,6 +7192,11 @@ bool btf_is_module(const struct btf *btf)
-> >       return btf->kernel_btf && strcmp(btf->name, "vmlinux") != 0;
-> >  }
-> >
-> > +const char *btf_module_name(const struct btf *btf)
-> > +{
-> > +     return btf->name;
-> > +}
-> > +
-> >  enum {
-> >       BTF_MODULE_F_LIVE = (1 << 0),
-> >  };
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 9528a066cfa5..acbe62a73559 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -16343,7 +16343,14 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> >                       else
-> >                               addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
-> >               } else {
-> > -                     addr = kallsyms_lookup_name(tname);
-> > +                     if (btf_is_module(btf)) {
-> > +                             char tmodname[MODULE_NAME_LEN + KSYM_NAME_LEN + 1];
->
-> looks good.. would be nice to have module_kallsyms lookup function that
-> takes module name and symbol separately so we won't waste stack on that..
->
-> especially when module_kallsyms_lookup_name just separates it back again
-> and does module lookup.. but not sure how much pain it'd be
->
-> jirka
->
-> > +                             snprintf(tmodname, sizeof(tmodname), "%s:%s",
-> > +                                      btf_module_name(btf), tname);
-> > +                             addr = module_kallsyms_lookup_name(tmodname);
-> > +                     }
-> > +                     else
-> > +                             addr = kallsyms_lookup_name(tname);
 
-In addition to what Jiri suggested, we should also have brackets in
-the 'else' branch.
 
-if (...) {
-  ...
-} else {
-  ...
-}
+On 11/28/22 19:27, Jason Gunthorpe wrote:
+> On Sun, Nov 27, 2022 at 06:49:29PM +0100, Eric Auger wrote:
+>
+>>> +static int iommufd_ioas_load_iovas(struct rb_root_cached *itree,
+>>> +				   struct iommu_iova_range __user *ranges,
+>>> +				   u32 num)
+>>> +{
+>>> +	u32 i;
+>>> +
+>>> +	for (i = 0; i != num; i++) {
+>> shouldn't it be < ?
+> It is logically equivalent
+damn. That sometimes happens to me when staring at so much code ;-)
+>
+>>> +int iommufd_ioas_allow_iovas(struct iommufd_ucmd *ucmd)
+>>> +{
+>>> +	struct iommu_ioas_allow_iovas *cmd = ucmd->cmd;
+>>> +	struct rb_root_cached allowed_iova = RB_ROOT_CACHED;
+>>> +	struct interval_tree_node *node;
+>>> +	struct iommufd_ioas *ioas;
+>>> +	struct io_pagetable *iopt;
+>>> +	int rc = 0;
+>>> +
+>>> +	if (cmd->__reserved)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	ioas = iommufd_get_ioas(ucmd, cmd->ioas_id);
+>>> +	if (IS_ERR(ioas))
+>>> +		return PTR_ERR(ioas);
+>>> +	iopt = &ioas->iopt;
+>>> +
+>>> +	rc = iommufd_ioas_load_iovas(&allowed_iova,
+>>> +				     u64_to_user_ptr(cmd->allowed_iovas),
+>>> +				     cmd->num_iovas);
+>>> +	if (rc)
+>>> +		goto out_free;
+>>> +
+>>> +	rc = iopt_set_allow_iova(iopt, &allowed_iova);
+>> Please can you add a comment about why you need to proceed in 2 steps,
+>> ie. add the ranges in a first tree and then 'swap' to the
+>> iopt->allowed_tree (and eventually delete the first tree)?
+> Sure
+>
+> 	/*
+> 	 * We want the allowed tree update to be atomic, so we have to keep the
+> 	 * original nodes around, and keep track of the new nodes as we allocate
+> 	 * memory for them. The simplest solution is to have a new/old tree and
+> 	 * then swap new for old. On success we free the old tree, on failure we
+> 	 * free the new tree.
+> 	 */
+>
+>>> +static int conv_iommu_prot(u32 map_flags)
+>>> +{
+>>> +	int iommu_prot;
+>>> +
+>>> +	/*
+>>> +	 * We provide no manual cache coherency ioctls to userspace and most
+>>> +	 * architectures make the CPU ops for cache flushing privileged.
+>>> +	 * Therefore we require the underlying IOMMU to support CPU coherent
+>>> +	 * operation. Support for IOMMU_CACHE is enforced by the
+>>> +	 * IOMMU_CAP_CACHE_COHERENCY test during bind.
+>>> +	 */
+>>> +	iommu_prot = IOMMU_CACHE;
+>> at init?
+> done
+>
+>>> +int iommufd_ioas_map(struct iommufd_ucmd *ucmd)
+>>> +{
+>>> +	struct iommu_ioas_map *cmd = ucmd->cmd;
+>>> +	struct iommufd_ioas *ioas;
+>>> +	unsigned int flags = 0;
+>>> +	unsigned long iova;
+>>> +	int rc;
+>>> +
+>>> +	if ((cmd->flags &
+>>> +	     ~(IOMMU_IOAS_MAP_FIXED_IOVA | IOMMU_IOAS_MAP_WRITEABLE |
+>>> +	       IOMMU_IOAS_MAP_READABLE)) ||
+>>> +	    cmd->__reserved)
+>>> +		return -EOPNOTSUPP;
+>>> +	if (cmd->iova >= ULONG_MAX || cmd->length >= ULONG_MAX)
+>>> +		return -EOVERFLOW;
+>>> +
+>>> +	ioas = iommufd_get_ioas(ucmd, cmd->ioas_id);
+>>> +	if (IS_ERR(ioas))
+>>> +		return PTR_ERR(ioas);
+>>> +
+>>> +	if (!(cmd->flags & IOMMU_IOAS_MAP_FIXED_IOVA))
+>>> +		flags = IOPT_ALLOC_IOVA;
+>>> +	iova = cmd->iova;
+>> can be done either at initialization or only if MAP_FIXED_IOVA.
+> Done
+>
+>
+>>> +int iommufd_option_rlimit_mode(struct iommu_option *cmd,
+>>> +			       struct iommufd_ctx *ictx)
+>>> +{
+>> *object_id  and __reserved should be checked as per the uapi doc*
+> Ohh, yes, thanks:
+>
+> @@ -317,6 +322,9 @@ int iommufd_ioas_unmap(struct iommufd_ucmd *ucmd)
+>  int iommufd_option_rlimit_mode(struct iommu_option *cmd,
+>                                struct iommufd_ctx *ictx)
+>  {
+> +       if (cmd->object_id)
+> +               return -EOPNOTSUPP;
+> +
+>         if (cmd->op == IOMMU_OPTION_OP_GET) {
+>                 cmd->val64 = ictx->account_mode == IOPT_PAGES_ACCOUNT_MM;
+>                 return 0;
+> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+> index de5cc01023c0c5..bcb463e581009c 100644
+> --- a/drivers/iommu/iommufd/main.c
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -215,6 +215,9 @@ static int iommufd_option(struct iommufd_ucmd *ucmd)
+>         struct iommu_option *cmd = ucmd->cmd;
+>         int rc;
+>  
+> +       if (cmd->__reserved)
+> +               return -EOPNOTSUPP;
+> +
+>         switch (cmd->option_id) {
+>         case IOMMU_OPTION_RLIMIT_MODE:
+>                 rc = iommufd_option_rlimit_mode(cmd, ucmd->ictx);
+>
+>>> +/**
+>>> + * struct iommu_ioas_iova_ranges - ioctl(IOMMU_IOAS_IOVA_RANGES)
+>>> + * @size: sizeof(struct iommu_ioas_iova_ranges)
+>>> + * @ioas_id: IOAS ID to read ranges from
+>>> + * @num_iovas: Input/Output total number of ranges in the IOAS
+>>> + * @__reserved: Must be 0
+>>> + * @allowed_iovas: Pointer to the output array of struct iommu_iova_range
+>>> + * @out_iova_alignment: Minimum alignment required for mapping IOVA
+>>> + *
+>>> + * Query an IOAS for ranges of allowed IOVAs. Mapping IOVA outside these ranges
+>>> + * is not allowed. num_iovas will be set to the total number of iovas and
+>>> + * the allowed_iovas[] will be filled in as space permits.
+>>> + *
+>>> + * The allowed ranges are dependent on the HW path the DMA operation takes, and
+>>> + * can change during the lifetime of the IOAS. A fresh empty IOAS will have a
+>>> + * full range, and each attached device will narrow the ranges based on that
+>>> + * device's HW restrictions. Detatching a device can widen the ranges. Userspace
+>> detaching
+>>> + * should query ranges after every attach/detatch to know what IOVAs are valid
+>> detach
+> Done
+>
+>>> + * for mapping.
+>>> + *
+>>> + * On input num_iovas is the length of the allowed_iovas array. On output it is
+>>> + * the total number of iovas filled in. The ioctl will return -EMSGSIZE and set
+>>> + * num_iovas to the required value if num_iovas is too small. In this case the
+>>> + * caller should allocate a larger output array and re-issue the ioctl.
+>>> + */
+>>> +struct iommu_ioas_iova_ranges {
+>>> +	__u32 size;
+>>> +	__u32 ioas_id;
+>>> +	__u32 num_iovas;
+>>> +	__u32 __reserved;
+>>> +	__aligned_u64 allowed_iovas;
+>>> +	__aligned_u64 out_iova_alignment;
+>> document @out_iova_alignment?
+>  * out_iova_alignment returns the minimum IOVA alignment that can be given
+>  * to IOMMU_IOAS_MAP/COPY. IOVA's must satisfy:
+>  *   starting_iova % out_iova_alignment == 0
+>  *   (starting_iova + length) % out_iova_alignment == 0
+>  * out_iova_alignment can be 1 indicating any IOVA is allowed. It cannot
+>  * be higher than the system PAGE_SIZE.
+>
+>>> +/**
+>>> + * struct iommu_ioas_map - ioctl(IOMMU_IOAS_MAP)
+>>> + * @size: sizeof(struct iommu_ioas_map)
+>>> + * @flags: Combination of enum iommufd_ioas_map_flags
+>>> + * @ioas_id: IOAS ID to change the mapping of
+>>> + * @__reserved: Must be 0
+>>> + * @user_va: Userspace pointer to start mapping from
+>>> + * @length: Number of bytes to map
+>>> + * @iova: IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is set
+>>> + *        then this must be provided as input.
+>>> + *
+>>> + * Set an IOVA mapping from a user pointer. If FIXED_IOVA is specified then the
+>>> + * mapping will be established at iova, otherwise a suitable location based on
+>>> + * the reserved and allowed lists will be automatically selected and returned in
+>>> + * iova.
+>> You do not mention anything about the fact the IOCTL cannot be called
+>> twice for a given @user_va w/ FIXED_IOVA
+>> Refering to VFIO_DMA_MAP_FLAG_VADDR.
+>  * If IOMMU_IOAS_MAP_FIXED_IOVA is specified then the iova range must currently
+>  * be unused, existing IOVA cannot be replaced.
+>
+>>> +/**
+>>> + * struct iommu_ioas_copy - ioctl(IOMMU_IOAS_COPY)
+>>> + * @size: sizeof(struct iommu_ioas_copy)
+>>> + * @flags: Combination of enum iommufd_ioas_map_flags
+>>> + * @dst_ioas_id: IOAS ID to change the mapping of
+>>> + * @src_ioas_id: IOAS ID to copy from
+>>> + * @length: Number of bytes to copy and map
+>>> + * @dst_iova: IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is
+>>> + *            set then this must be provided as input.
+>>> + * @src_iova: IOVA to start the copy
+>>> + *
+>>> + * Copy an already existing mapping from src_ioas_id and establish it in
+>>> + * dst_ioas_id. The src iova/length must exactly match a range used with
+>>> + * IOMMU_IOAS_MAP.
+>>> + *
+>>> + * This may be used to efficiently clone a subset of an IOAS to another, or as a
+>>> + * kind of 'cache' to speed up mapping. Copy has an effciency advantage over
+>> efficiency
+>>> + * establishing equivalent new mappings, as internal resources are shared, and
+>>> + * the kernel will pin the user memory only once.
+>>> + */
+>>> +struct iommu_ioas_copy {
+>>> +	__u32 size;
+>>> +	__u32 flags;
+>>> +	__u32 dst_ioas_id;
+>>> +	__u32 src_ioas_id;
+>> is src_ioas_id == dst_ioas_id allowed?
+> Yes
+>
+>>> +/**
+>>> + * struct iommu_option - iommu option multiplexer
+>>> + * @size: sizeof(struct iommu_option)
+>>> + * @option_id: One of enum iommufd_option
+>>> + * @op: One of enum iommufd_option_ops
+>>> + * @__reserved: Must be 0
+>>> + * @object_id: ID of the object if required
+>>> + * @val64: Option value to set or value returned on get
+>>> + *
+>>> + * Change a simple option value. This multiplexor allows controlling a options
+>> s/a options/options
+> Done
+>
+> Thanks,
+> Jason
+>
+Eric
 
-> >                       if (!addr) {
-> >                               bpf_log(log,
-> >                                       "The address of function %s cannot be found\n",
-> > --
-> > 2.38.1
-> >
