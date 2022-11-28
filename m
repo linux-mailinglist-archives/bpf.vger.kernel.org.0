@@ -2,244 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2A963B3B6
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 21:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2F363B40B
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 22:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbiK1UzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 15:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        id S234358AbiK1VOb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 16:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbiK1UzV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 15:55:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12BA2AE09
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669668867;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mk+d/rFoCYdetXFV05zVEMLzTOsjcYxe9wmFRI7Nhmk=;
-        b=atI6k6iDz0MObPILQ+0s1r8d8RbwB5U2i+8jnSccMxT3+xTG4HwadR8dm3G9XUIFgUkAKK
-        zsO+cB4ArrqndAamRGzMqDqiZwbJ8CPLxcT4f6ptMz9qYJDTxoDwgEPoYSSiIPJQdXjDIB
-        JAmSiptn9E4uloQf6BDLKplmmhPePIY=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-595-4U6R4FiMPJSi9qSMGXHxdg-1; Mon, 28 Nov 2022 15:54:26 -0500
-X-MC-Unique: 4U6R4FiMPJSi9qSMGXHxdg-1
-Received: by mail-qk1-f198.google.com with SMTP id v7-20020a05620a0f0700b006faffce43b2so22477494qkl.9
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 12:54:26 -0800 (PST)
+        with ESMTP id S229929AbiK1VOa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 16:14:30 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A7815724
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 13:14:29 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id h193so11076534pgc.10
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 13:14:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJRA9FCDRavUYFI7by3yzKVeT1ghN1Puv2XV3+n07Vw=;
+        b=cAwGflSSgDrT6knZFijAgJJnr7Yug52EFqBZ2tvYo3IxWJ9F1X2lokwmnBYbesk1DC
+         uNYEE1fYrVKXjtwrxnI4NvqBz4Cc9nU0Beq43/jAQNmBa1wrjUmVHx16UQ5Gs4vQYz49
+         W0sf5N5h5goPTEu5jn4RaHI5BBHAIOTtjqh43vrACOyI08c6jGgm4sSS2do9OIEJNPxC
+         Rk26zlEJD+FxbCwVDniS1ILUYIaAsZWcjDll8SUpuBHNZiZf7TmNRJQT6KS+GCCECfPY
+         btFQp/qA/TC1Y5FhKs879Ebmp3vIhgiVbjNN5XHNKHi6qlMY5iybvN1kSySweBWC4ugL
+         rleg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mk+d/rFoCYdetXFV05zVEMLzTOsjcYxe9wmFRI7Nhmk=;
-        b=D4V2BS6kp8jfx/3V3wmT3yktogfDWRqytBUdS7t6T2O4ZLZ6OjQBBrCmdGJ2p3FrKz
-         sF8FXCKtBszu6vH9Vz4KWoebbCqP8Npmwvj85LLq+OciZBhxlKJjrw74P4aQaaIIBSy5
-         dcJAQ0U0G3Gm3wH9YHDyU1oLq2fZy6NWWBjBxfxA1xQjPnKZbv4svc61dfIIArp2i2eT
-         dgZp7O/FyzS3ueh239iuH8Fq12uSZxABVSk8QtAYnEOWuR5VuijSRgZlWv9VJOCmK/Tt
-         nJG/5Tp4PEA+9kQFs30WTzTpvgSsR0Ea/7/NFjxuHUG3guJ0c/eXyNe/yyWCKlUD4/d2
-         p/0g==
-X-Gm-Message-State: ANoB5pm7dWFwen/1RNQ3yQ2ipDOV0JGSumY0xp4MgekvOh5dw423D9aH
-        mdX5gi8Ol3DTkW39cca25P2vqfsTPh7g9IP8Uyy01UNhu6eF59HNG/Pd3EFQxh3M/QpLeLJ7QEo
-        oi6TXM/AmQQV+
-X-Received: by 2002:a05:6214:80c:b0:4c6:c6b5:1188 with SMTP id df12-20020a056214080c00b004c6c6b51188mr25489142qvb.13.1669668865285;
-        Mon, 28 Nov 2022 12:54:25 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6adcRSfyKR21I2fxnpGfrzzGKRaVH1wA0cwJsYkdX3ndgETdx+KZHJZih2LovlXvvfBOZy0g==
-X-Received: by 2002:a05:6214:80c:b0:4c6:c6b5:1188 with SMTP id df12-20020a056214080c00b004c6c6b51188mr25489104qvb.13.1669668865045;
-        Mon, 28 Nov 2022 12:54:25 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id ay39-20020a05620a17a700b006f7ee901674sm9247466qkb.2.2022.11.28.12.54.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 12:54:23 -0800 (PST)
-Message-ID: <2a0a70e7-be3b-6c7d-2649-d24d06be9855@redhat.com>
-Date:   Mon, 28 Nov 2022 21:54:16 +0100
+        bh=sJRA9FCDRavUYFI7by3yzKVeT1ghN1Puv2XV3+n07Vw=;
+        b=w6LCXu3mrSdAy+owRXUY2H4LrcJDE4fXbVVXWrHxR8zyD3Rd8dsVQnMltv6wBs36M1
+         PeC3KPABKJMxRvw1t89jeAp+hTZj4byfMz6SWLGYW4XCcG2IAyMjwg116WBQ9L0wNKSk
+         LvNfKTAu+uVhs1AbpDclvmx3NSrBQR6mvZNoiWxJ2zQaaGG2SArKB/S3b+tvJ44zjeH4
+         +cOzUveFlAMwHJsxsk1fIx5+CuZYHNanyI2Tulw4PI53GeTqI02n9kSBfkhu2YdL02c5
+         l2EdtfvIg7wiccnLMPYLXnwvyoSOgya2SnAi8FIIs+PlGqN26kbUoJJoY2Bp4Vt+WW5G
+         zbmw==
+X-Gm-Message-State: ANoB5pkzbF4GSFmlem/8kJF+tgH+cXshqTndbFZI9FCM6Lh65zjz8z80
+        dTFYAnI6fSVxromYZAfQkp9hi2KUlyO9yNMV6ORrb6gVIQrSTg==
+X-Google-Smtp-Source: AA0mqf5xeQ4Hw6fZFL+Mhd0YJMnPhuHNQh7MtpSf4tJ5AH+UHFqRi8pvov6NDlHUps2UUvT/g0480EzagYU+oxDJ6io=
+X-Received: by 2002:a63:1302:0:b0:439:e030:3fa8 with SMTP id
+ i2-20020a631302000000b00439e0303fa8mr29573667pgl.554.1669670068796; Mon, 28
+ Nov 2022 13:14:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v5 15/19] iommufd: vfio container FD ioctl compatibility
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     bpf@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux.dev,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Anthony Krowiak <akrowiak@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        Lixiao Yang <lixiao.yang@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Yi Liu <yi.l.liu@intel.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <15-v5-4001c2997bd0+30c-iommufd_jgg@nvidia.com>
- <81f898b6-e40f-be72-78d4-b5d836981d8f@redhat.com>
- <Y4UN4qVpNqTP/JEF@nvidia.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <Y4UN4qVpNqTP/JEF@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1669216157.git.vmalik@redhat.com> <bc324e55558563ccb34f563d86d12c881c31ce9c.1669216157.git.vmalik@redhat.com>
+In-Reply-To: <bc324e55558563ccb34f563d86d12c881c31ce9c.1669216157.git.vmalik@redhat.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 28 Nov 2022 13:14:17 -0800
+Message-ID: <CA+khW7ipecor86hNYdDfQe1FDjOQ6ddN7f7YQP_64Ms-VVzCXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf/selftests: Test fentry attachment to
+ shadowed functions
+To:     Viktor Malik <vmalik@redhat.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 11/28/22 20:37, Jason Gunthorpe wrote:
-> On Mon, Nov 28, 2022 at 06:53:12PM +0100, Eric Auger wrote:
+On Sun, Nov 27, 2022 at 11:26 PM Viktor Malik <vmalik@redhat.com> wrote:
 >
->>> +static int iommufd_vfio_map_dma(struct iommufd_ctx *ictx, unsigned int cmd,
->>> +				void __user *arg)
->>> +{
->>> +	u32 supported_flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE;
->>> +	size_t minsz = offsetofend(struct vfio_iommu_type1_dma_map, size);
->>> +	struct vfio_iommu_type1_dma_map map;
->>> +	int iommu_prot = IOMMU_CACHE;
->>> +	struct iommufd_ioas *ioas;
->>> +	unsigned long iova;
->>> +	int rc;
->>> +
->>> +	if (copy_from_user(&map, arg, minsz))
->>> +		return -EFAULT;
->>> +
->>> +	if (map.argsz < minsz || map.flags & ~supported_flags)
->>> +		return -EINVAL;
->>> +
->>> +	if (map.flags & VFIO_DMA_MAP_FLAG_READ)
->>> +		iommu_prot |= IOMMU_READ;
->>> +	if (map.flags & VFIO_DMA_MAP_FLAG_WRITE)
->>> +		iommu_prot |= IOMMU_WRITE;
->>> +
->>> +	ioas = get_compat_ioas(ictx);
->>> +	if (IS_ERR(ioas))
->>> +		return PTR_ERR(ioas);
->>> +
->>> +	/*
->>> +	 * Maps created through the legacy interface always use VFIO compatible
->>> +	 * rlimit accounting. If the user wishes to use the faster user based
->>> +	 * rlimit accounting then they must use the new interface.
->> s/they/he
-> "they" has become a common neutral singular pronoun in English.
-
-Oh OK.
+> Adds a new test that tries to attach a program to fentry of two
+> functions of the same name, one located in vmlinux and the other in
+> bpf_testmod.
 >
->>> +static int iommufd_vfio_unmap_dma(struct iommufd_ctx *ictx, unsigned int cmd,
->>> +				  void __user *arg)
->>> +{
->>> +	size_t minsz = offsetofend(struct vfio_iommu_type1_dma_unmap, size);
->>> +	/*
->>> +	 * VFIO_DMA_UNMAP_FLAG_GET_DIRTY_BITMAP is obsoleted by the new
->>> +	 * dirty tracking direction:
->>> +	 *  https://lore.kernel.org/kvm/20220731125503.142683-1-yishaih@nvidia.com/
->>> +	 *  https://lore.kernel.org/kvm/20220428210933.3583-1-joao.m.martins@oracle.com/
->>> +	 */
->>> +	u32 supported_flags = VFIO_DMA_UNMAP_FLAG_ALL;
->>> +	struct vfio_iommu_type1_dma_unmap unmap;
->>> +	unsigned long unmapped = 0;
->>> +	struct iommufd_ioas *ioas;
->>> +	int rc;
->>> +
->>> +	if (copy_from_user(&unmap, arg, minsz))
->>> +		return -EFAULT;
->>> +
->>> +	if (unmap.argsz < minsz || unmap.flags & ~supported_flags)
->>> +		return -EINVAL;
->>> +
->>> +	ioas = get_compat_ioas(ictx);
->>> +	if (IS_ERR(ioas))
->>> +		return PTR_ERR(ioas);
->>> +
->>> +	if (unmap.flags & VFIO_DMA_UNMAP_FLAG_ALL) {
->>> +		if (unmap.iova != 0 || unmap.size != 0) {
->>> +			rc = -EINVAL;
->>> +			goto err_put;
->>> +		}
->>> +		rc = iopt_unmap_all(&ioas->iopt, &unmapped);
->>> +	} else {
->>> +		if (READ_ONCE(ioas->iopt.disable_large_pages)) {
->>> +			unsigned long iovas[] = { unmap.iova + unmap.size - 1,
->>> +						  unmap.iova - 1 };
->>> +
->>> +			rc = iopt_cut_iova(&ioas->iopt, iovas,
->>> +					   unmap.iova ? 2 : 1);
->> please can you add a comment to explain what this is supposed to do?
-> iova -1 when iova == 0 will underflow and becomes garbage
+> To avoid conflicts with existing tests, a new function
+> "bpf_fentry_shadow_test" was created both in vmlinux and in bpf_testmod.
 >
-> 			/*
-> 			 * Create cuts at the start and last of the requested
-> 			 * range. If the start IOVA is 0 then it doesn't need to
-> 			 * be cut.
-> 			 */
-
-OK thanks
+> The previous commit fixed a bug which caused this test to fail. The
+> verifier would always use the vmlinux function's address as the target
+> trampoline address, hence trying to attach two programs to the same
+> trampoline.
 >
->>> +static int iommufd_vfio_set_iommu(struct iommufd_ctx *ictx, unsigned long type)
->>> +{
->>> +	struct iommufd_ioas *ioas = NULL;
->>> +	int rc = 0;
->>> +
->>> +	if (type != VFIO_TYPE1_IOMMU && type != VFIO_TYPE1v2_IOMMU)
->>> +		return -EINVAL;
->>> +
->>> +	/* VFIO fails the set_iommu if there is no group */
->>> +	ioas = get_compat_ioas(ictx);
->>> +	if (IS_ERR(ioas))
->>> +		return PTR_ERR(ioas);
->>> +	if (type == VFIO_TYPE1_IOMMU)
->>> +		rc = iopt_disable_large_pages(&ioas->iopt);
->> please can you document/explain this setting?
-> 	/*
-> 	 * The difference between TYPE1 and TYPE1v2 is the ability to unmap in
-> 	 * the middle of mapped ranges. This is complicated by huge page support
-> 	 * which creates single large IOPTEs that cannot be split by the iommu
-> 	 * driver. TYPE1 is very old at this point and likely nothing uses it,
-> 	 * however it is simple enough to emulate by simply disabling the
-> 	 * problematic large IOPTEs. Then we can safely unmap within any range.
-OK makes sense. That's helpful
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+<...>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+> new file mode 100644
+> index 000000000000..0c604a0f22ca
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+> @@ -0,0 +1,120 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Red Hat */
+> +#include <test_progs.h>
+> +#include <bpf/btf.h>
+> +#include "bpf/libbpf_internal.h"
+> +#include "cgroup_helpers.h"
+> +
+> +static const char *module_name = "bpf_testmod";
+> +static const char *symbol_name = "bpf_fentry_shadow_test";
+> +
+> +int get_bpf_testmod_btf_fd(void)
+> +{
+> +       struct bpf_btf_info info;
+> +       char name[64];
+> +       __u32 id, len;
 
-with those additions,
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+We need to initialize 'id'.
 
-Eric
+> +       int err, fd;
+<...>
+> +}
+> +
+> +void test_module_fentry_shadow(void)
+> +{
+<...>
+> +
+> +       btf_id[0] = btf__find_by_name(vmlinux_btf, symbol_name);
+> +       if (!ASSERT_GT(btf_id[0], 0, "btf_find_by_name"))
+> +               goto out;
+> +
+> +       btf_id[1] = btf__find_by_name(mod_btf, symbol_name);
 
+btf__find_by_name_kind() may be better. It skips the name comparison
+if the kind doesn't match.
 
-> 	 */
+> +       if (!ASSERT_GT(btf_id[1], 0, "btf_find_by_name"))
+> +               goto out;
+> +
+<...>
+> +       err = bpf_prog_test_run_opts(prog_fd[0], &test_opts);
+> +       ASSERT_OK(err, "running test");
+> +
+> +out:
+
+We also need to btf__free vmlinux_btf and mod_btf.
+
+> +       for (i = 0; i < 2; i++) {
+> +               if (btf_fd[i])
+> +                       close(btf_fd[i]);
+> +               if (prog_fd[i])
+> +                       close(prog_fd[i]);
+> +               if (link_fd[i])
+> +                       close(link_fd[i]);
+> +       }
+> +}
+> --
+> 2.38.1
 >
-> Thanks,
-> Jason
->
-
