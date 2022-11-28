@@ -2,71 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE7563B18A
-	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 19:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE4C63B1AA
+	for <lists+bpf@lfdr.de>; Mon, 28 Nov 2022 19:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbiK1Snx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 13:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        id S232917AbiK1Sxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 13:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbiK1Snv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 13:43:51 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B07D132
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 10:43:49 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id gu23so9954144ejb.10
-        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 10:43:49 -0800 (PST)
+        with ESMTP id S232908AbiK1Sxu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 13:53:50 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0CD1E3E3
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 10:53:49 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id p27-20020a056830319b00b0066d7a348e20so7571222ots.8
+        for <bpf@vger.kernel.org>; Mon, 28 Nov 2022 10:53:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yBBHhpyBYLPQgMLfH/zJ3o5fSQv64gI73TYzfu4ReJ4=;
-        b=DGnKqOhM1n0MtfTlZG4a/b0Sim0nnRXxLgpZ4Tr3wFn/2jG5XU0wgcZGO4Pieyiuun
-         hRxTRlGZH1RHjRM+Qv1YkrvKR1R/lqfNMqOGlJXBwthbYeLbEfbhG9LsnUqLrNNKbj8n
-         taY5gxiKznBQUYlPpkAU0A9JAIdUhcEyq0s5b3PY8C1ahjDq0LXMVtK758axiZGGXsaJ
-         TPvxVgjmzMZvjvSMDhcBX2wBdY9uQcwv9Dk+To0fmLPnlxwZ79jMy0XHGhMDZNSm4A/2
-         zW47Lj2OCaSZ8lm91Yp3byyCM4JAS0ENryE8JX2yeznKIy4/vLBi87WYeBlq1H5mKr3n
-         zTmQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MOXrMjEVKIxZNa+pLydBF32oQSzpQAdTCEg3fN16wT8=;
+        b=PckAFB5PFpXQUDESVABVKy3zs2Id9PAFlVBXsAjtcpsq1psBaKG1tC9MHJ5pxkAsGD
+         YiqJAs0NLPYvOIkzhuo0xmkgE7lUCXDgsnjZzOU/cqz50IFuMaIH0jRsfVnD1nwhReXQ
+         cQRGzlowpK/GjcWoIVlwR6sYynuLVA4ODxsOBV+6ZcNZLhpkTicuO9pQYE1sOL3tpUh4
+         +KgtnfLQ9UqK3zvrhR5MO+s6/hZt0AZ8GyUIm+KpV7jTale3AKLpRh+vJXJKKY4bj0A7
+         qAY3Jc529kiTPZ045l/DjLkA+M5IbBTe3ZT786UxMewTBLef0tcCO00geRZVcTaU+b08
+         dEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yBBHhpyBYLPQgMLfH/zJ3o5fSQv64gI73TYzfu4ReJ4=;
-        b=JtU1p1bMv+1/ieF4rUMqICIHj7VauZP7zh/XCF59WxQENHPF+jZ8d1AOROGmwgpsV4
-         raC4LFU7siwvOKSPpIRPT89B3CEeBsy3pzBx/YeIdWFlmEHNjYSwMqf93mOKgmdYLw25
-         1d25lvDpXSx49P/7b3BJkFuPV46oqAr/O4bxCKL6pa9WXstqhTHEIE70mcmOtMKPns06
-         ffqS0Y1gx2tDAtT9molsu3Uu6BcgI8tOcALIbEQAvHNMwPYHHXgJCdunkBmUShBHI3f4
-         wwE32677p5STH23g9jZVBrGO1QFSr1M3hpY0H3gWHew0Hjq5uZGwTxwfgu5Zp0TFhSYB
-         lrjQ==
-X-Gm-Message-State: ANoB5pmMmyfrFI8zX68UD/Hy7FNmalkg9QpR2QiydT5yEZN63jai+I4y
-        ubGArdRgXK+MStioHwkhW0pKiEGEVXnre/PHBEA=
-X-Google-Smtp-Source: AA0mqf7PQzDw8IX+G/5DYyX4W1cNWq30IogGZylA1itHuoe8alfaInQhjfiAe7zg+avXacMcsZUfR2TEsyQ7dq+0pWk=
-X-Received: by 2002:a17:906:4ed9:b0:7ae:664a:a7d2 with SMTP id
- i25-20020a1709064ed900b007ae664aa7d2mr45564319ejv.676.1669661027819; Mon, 28
- Nov 2022 10:43:47 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MOXrMjEVKIxZNa+pLydBF32oQSzpQAdTCEg3fN16wT8=;
+        b=RH6vXG5a1H9nZ5oYAlkVERdjnVLmTy4hJ8SYN5vjybCCITPdyFcVKVsJ+eLq7IE6F5
+         hNR0SgMFJN4LhcY1bEh3oxdioVxI8ATOm20LnDfXTXMfofCXnSsb2Br478SN8dQVgBcY
+         YXVeDRUKJvZTju497AhxL4PBkXcjJCLm/rpGt2AK8I5K9FU4vtXc/ulXhfvNiYndI4rv
+         O3Oyl6TGDHm86PmTuJznyhG/u8Gu4T3aRy5IP+A0Jqpcc/pCyi8v5owPSBXCrdsiYKMC
+         IFSczXnSI07yIR0RDDjA2zVKuh9a8o/hykW2ugcZCdxA1vleEfMCgB0gAa48b4bT6hyU
+         H/jg==
+X-Gm-Message-State: ANoB5pnWoPY/NDtW/5BzvvdyPMVYApx0Wxj/p+iJudQ8ra/vZBGPCC+h
+        B3XMJxfc2fPv6OxfO6dfJ19o1CN68smAkL7TAoBbk4RaMeT3XHla
+X-Google-Smtp-Source: AA0mqf6gVf52njEkd3Vl5baB3313MSFTcJkMjZ869zEwckaWM2otoMMph/0bgnJ3qK+z/YsxbGKh9kmf4qa1jCtBsAc=
+X-Received: by 2002:a05:6830:18d3:b0:66c:dd29:813d with SMTP id
+ v19-20020a05683018d300b0066cdd29813dmr17968578ote.312.1669661628835; Mon, 28
+ Nov 2022 10:53:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20221128132915.141211-1-jolsa@kernel.org> <20221128132915.141211-2-jolsa@kernel.org>
-In-Reply-To: <20221128132915.141211-2-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 28 Nov 2022 10:43:36 -0800
-Message-ID: <CAADnVQKED=Ue_s88Ru25s1UQ+xe2eWXTq_02v_h=qiuxXTck=g@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 1/4] bpf: Mark vma objects as trusted for
- task_vma iter and find_vma callback
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
+References: <20221121182552.2152891-1-sdf@google.com> <20221121182552.2152891-3-sdf@google.com>
+ <87mt8e2a69.fsf@toke.dk>
+In-Reply-To: <87mt8e2a69.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 28 Nov 2022 10:53:38 -0800
+Message-ID: <CAKH8qBvmgx0Lr7efP0ucdZMEzZM-jzDKcAW9YPBqADWVsHb9cA@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next v2 2/8] bpf: XDP metadata RX kfuncs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,37 +81,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 5:29 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Marking following vma objects as trusted so they can be used
-> as arguments for kfunc function added in following changes:
->
->   - vma object argument in find_vma callback function
->   - vma object in context of task_vma iterator program
->
-> Both places lock vma object so it can't go away while running
-> the bpf program.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/bpf/task_iter.c | 2 +-
->  kernel/bpf/verifier.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index c2a2182ce570..cd67b3cadd91 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -755,7 +755,7 @@ static struct bpf_iter_reg task_vma_reg_info = {
->                 { offsetof(struct bpf_iter__task_vma, task),
->                   PTR_TO_BTF_ID_OR_NULL },
->                 { offsetof(struct bpf_iter__task_vma, vma),
-> -                 PTR_TO_BTF_ID_OR_NULL },
-> +                 PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+ s
 
-Yonghong, Song,
+On Fri, Nov 25, 2022 at 9:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > There is an ndo handler per kfunc, the verifier replaces a call to the
+> > generic kfunc with a call to the per-device one.
+> >
+> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+> > implements all possible metatada kfuncs. Not all devices have to
+> > implement them. If kfunc is not supported by the target device,
+> > the default implementation is called instead.
+>
+> BTW, this "the default implementation is called instead" bit is not
+> included in this version... :)
 
-Do you remember when task or vma is NULL here?
-Maybe we can do: if (!task || !vma) skip prog run
-in __task_vma_seq_show()
-and make both pointers as PTR_TO_BTF_ID | PTR_TRUSTED?
+fixup_xdp_kfunc_call should return 0 when the device doesn't have a
+kfunc defined and should fallback to the default kfunc implementation,
+right?
+Or am I missing something?
+
+> [...]
+>
+> > +#ifdef CONFIG_DEBUG_INFO_BTF
+> > +BTF_SET8_START(xdp_metadata_kfunc_ids)
+> > +#define XDP_METADATA_KFUNC(name, str) BTF_ID_FLAGS(func, str, 0)
+> > +XDP_METADATA_KFUNC_xxx
+> > +#undef XDP_METADATA_KFUNC
+> > +BTF_SET8_END(xdp_metadata_kfunc_ids)
+> > +
+> > +static const struct btf_kfunc_id_set xdp_metadata_kfunc_set =3D {
+> > +     .owner =3D THIS_MODULE,
+> > +     .set   =3D &xdp_metadata_kfunc_ids,
+> > +};
+> > +
+> > +u32 xdp_metadata_kfunc_id(int id)
+> > +{
+> > +     return xdp_metadata_kfunc_ids.pairs[id].id;
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdp_metadata_kfunc_id);
+>
+> So I was getting some really weird values when testing (always getting a
+> timestamp value of '1'), and it turns out to be because this way of
+> looking up the ID doesn't work: The set is always sorted by the BTF ID,
+> not the order it was defined. Which meant that the mapping code got the
+> functions mixed up, and would call a different one instead (so the
+> timestamp value I was getting was really the return value of
+> rx_hash_enabled()).
+>
+> I fixed it by building a secondary lookup table as below; feel free to
+> incorporate that (or if you can come up with a better way, go ahead!).
+
+Interesting, will take a closer look. I took this pattern from
+BTF_SOCK_TYPE_xxx, which means that 'sorting by btf-id' is something
+BTF_SET8_START specific...
+But if it's sorted, probably easier to do a bsearch over this table
+than to build another one?
+
+> -Toke
+>
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index e43f7d4ef4cf..dc0a9644dacc 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -738,6 +738,15 @@ XDP_METADATA_KFUNC_xxx
+>  #undef XDP_METADATA_KFUNC
+>  BTF_SET8_END(xdp_metadata_kfunc_ids)
+>
+> +static struct xdp_metadata_kfunc_map {
+> +       const char *fname;
+> +       u32 btf_id;
+> +} xdp_metadata_kfunc_lookup_map[MAX_XDP_METADATA_KFUNC] =3D {
+> +#define XDP_METADATA_KFUNC(name, str) { .fname =3D __stringify(str) },
+> +XDP_METADATA_KFUNC_xxx
+> +#undef XDP_METADATA_KFUNC
+> +};
+> +
+>  static const struct btf_kfunc_id_set xdp_metadata_kfunc_set =3D {
+>         .owner =3D THIS_MODULE,
+>         .set   =3D &xdp_metadata_kfunc_ids,
+> @@ -745,13 +754,41 @@ static const struct btf_kfunc_id_set xdp_metadata_k=
+func_set =3D {
+>
+>  u32 xdp_metadata_kfunc_id(int id)
+>  {
+> -       return xdp_metadata_kfunc_ids.pairs[id].id;
+> +       return xdp_metadata_kfunc_lookup_map[id].btf_id;
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_metadata_kfunc_id);
+>
+>  static int __init xdp_metadata_init(void)
+>  {
+> -       return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata=
+_kfunc_set);
+> +       const struct btf *btf;
+> +       int i, j, ret;
+> +
+> +       ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadat=
+a_kfunc_set);
+> +       if (ret)
+> +               return ret;
+> +
+> +       btf =3D bpf_get_btf_vmlinux();
+> +
+> +       for (i =3D 0; i < MAX_XDP_METADATA_KFUNC; i++) {
+> +               u32 btf_id =3D xdp_metadata_kfunc_ids.pairs[i].id;
+> +               const struct btf_type *t;
+> +               const char *name;
+> +
+> +               t =3D btf_type_by_id(btf, btf_id);
+> +               if (WARN_ON_ONCE(!t || !t->name_off))
+> +                       continue;
+> +
+> +               name =3D btf_name_by_offset(btf, t->name_off);
+> +
+> +               for (j =3D 0; j < MAX_XDP_METADATA_KFUNC; j++) {
+> +                       if (!strcmp(name, xdp_metadata_kfunc_lookup_map[j=
+].fname)) {
+> +                               xdp_metadata_kfunc_lookup_map[j].btf_id =
+=3D btf_id;
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +
+> +       return 0;
+>  }
+>  late_initcall(xdp_metadata_init);
+>  #else /* CONFIG_DEBUG_INFO_BTF */
+>
