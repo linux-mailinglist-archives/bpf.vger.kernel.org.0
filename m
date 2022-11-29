@@ -2,137 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F085563BA4E
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 08:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EBA63BADD
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 08:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbiK2HJp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 02:09:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        id S229847AbiK2Hmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 02:42:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbiK2HJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 02:09:32 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF4E55AB0;
-        Mon, 28 Nov 2022 23:09:24 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1669705762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nfQe8leo1x+sS0p7Ddc9oQNJBqu3FJUxK4SNyCHsigg=;
-        b=FE8RaqluIqsuhwKUmPEw9q1VqNnJAthLy799He7Oh5BBdHdbOXxPMM/LdG1dmKWN6rmA0U
-        CYYKSFpI5zVqSfrGeQpAUxaynsZyK+dC7vS7/H/BGdaEiTEKTce7rCDd6H+J5fv1Z20nVL
-        ERqILQ4zY1sB8yESjCUFAZBm/ArrBbY=
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-To:     bpf@vger.kernel.org
-Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
-        'Andrii Nakryiko ' <andrii@kernel.org>,
-        'Daniel Borkmann ' <daniel@iogearbox.net>,
-        netdev@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Avoid pinning prog when attaching to tc ingress in btf_skc_cls_ingress
-Date:   Mon, 28 Nov 2022 23:09:00 -0800
-Message-Id: <20221129070900.3142427-8-martin.lau@linux.dev>
-In-Reply-To: <20221129070900.3142427-1-martin.lau@linux.dev>
-References: <20221129070900.3142427-1-martin.lau@linux.dev>
+        with ESMTP id S229900AbiK2Hmt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 02:42:49 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052491FF87;
+        Mon, 28 Nov 2022 23:42:41 -0800 (PST)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NLvMy1HqCznV3Q;
+        Tue, 29 Nov 2022 15:38:38 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 29 Nov 2022 15:42:39 +0800
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 29 Nov
+ 2022 15:42:38 +0800
+From:   Xin Liu <liuxin350@huawei.com>
+To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yanan@huawei.com>, <wuchangye@huawei.com>,
+        <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+        <liuxin350@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH] Improved usability of the Makefile in libbpf
+Date:   Tue, 29 Nov 2022 15:42:35 +0800
+Message-ID: <20221129074235.116969-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+Current libbpf Makefile does not contain the help command, which
+is inconvenient to use. A help command is provided to list the
+commands supported by libbpf make and the functions of the commands.
 
-This patch removes the need to pin prog when attaching to tc ingress
-in the btf_skc_cls_ingress test.  Instead, directly use the
-bpf_tc_hook_create() and bpf_tc_attach().  The qdisc clsact
-will go away together with the netns, so no need to
-bpf_tc_hook_destroy().
-
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
 ---
- .../bpf/prog_tests/btf_skc_cls_ingress.c      | 25 ++++++++-----------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+ tools/lib/bpf/Makefile | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-index 7a277035c275..ef4d6a3ae423 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-@@ -9,6 +9,7 @@
- #include <string.h>
- #include <errno.h>
- #include <sched.h>
-+#include <net/if.h>
- #include <linux/compiler.h>
- #include <bpf/libbpf.h>
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 4c904ef0b47e..c86e05df4711 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -286,3 +286,37 @@ tags:
  
-@@ -20,10 +21,12 @@ static struct test_btf_skc_cls_ingress *skel;
- static struct sockaddr_in6 srv_sa6;
- static __u32 duration;
- 
--#define PROG_PIN_FILE "/sys/fs/bpf/btf_skc_cls_ingress"
--
- static int prepare_netns(void)
- {
-+	LIBBPF_OPTS(bpf_tc_hook, qdisc_lo, .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_tc_opts, tc_attach,
-+		    .prog_fd = bpf_program__fd(skel->progs.cls_ingress));
+ # Delete partially updated (corrupted) files on error
+ .DELETE_ON_ERROR:
 +
- 	if (CHECK(unshare(CLONE_NEWNET), "create netns",
- 		  "unshare(CLONE_NEWNET): %s (%d)",
- 		  strerror(errno), errno))
-@@ -33,12 +36,12 @@ static int prepare_netns(void)
- 		  "ip link set dev lo up", "failed\n"))
- 		return -1;
- 
--	if (CHECK(system("tc qdisc add dev lo clsact"),
--		  "tc qdisc add dev lo clsact", "failed\n"))
-+	qdisc_lo.ifindex = if_nametoindex("lo");
-+	if (!ASSERT_OK(bpf_tc_hook_create(&qdisc_lo), "qdisc add dev lo clsact"))
- 		return -1;
- 
--	if (CHECK(system("tc filter add dev lo ingress bpf direct-action object-pinned " PROG_PIN_FILE),
--		  "install tc cls-prog at ingress", "failed\n"))
-+	if (!ASSERT_OK(bpf_tc_attach(&qdisc_lo, &tc_attach),
-+		       "filter add dev lo ingress"))
- 		return -1;
- 
- 	/* Ensure 20 bytes options (i.e. in total 40 bytes tcp header) for the
-@@ -195,19 +198,12 @@ static struct test tests[] = {
- 
- void test_btf_skc_cls_ingress(void)
- {
--	int i, err;
-+	int i;
- 
- 	skel = test_btf_skc_cls_ingress__open_and_load();
- 	if (CHECK(!skel, "test_btf_skc_cls_ingress__open_and_load", "failed\n"))
- 		return;
- 
--	err = bpf_program__pin(skel->progs.cls_ingress, PROG_PIN_FILE);
--	if (CHECK(err, "bpf_program__pin",
--		  "cannot pin bpf prog to %s. err:%d\n", PROG_PIN_FILE, err)) {
--		test_btf_skc_cls_ingress__destroy(skel);
--		return;
--	}
--
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		if (!test__start_subtest(tests[i].desc))
- 			continue;
-@@ -221,6 +217,5 @@ void test_btf_skc_cls_ingress(void)
- 		reset_test();
- 	}
- 
--	bpf_program__unpin(skel->progs.cls_ingress, PROG_PIN_FILE);
- 	test_btf_skc_cls_ingress__destroy(skel);
- }
++help:
++	@echo 'Default targets:'
++	@echo '  all               - Run all_cmd'
++	@echo '  all_cmd           - Build library and pkgconfig, check abi and version info'
++	@echo ''
++	@echo 'Cleaning targets:'
++	@echo '  clean             - Remove all generated files'
++	@echo ''
++	@echo 'Build targets:'
++	@echo '  libbpf.so         - Build the dynamic library'
++	@echo '  libbpf.a          - Build the static library'
++	@echo '  libbpf.pc         - Build the pkgconfig file'
++	@echo ''
++	@echo 'Install targets:'
++	@echo '  install           - Install all headers, library and pkgconfig file to'
++	@echo '                      DESTDIR(default: /) with prefix(default: /usr/local)'
++	@echo '  install_lib       - Install only library'
++	@echo '  install_headers   - Install only headers'
++	@echo '  install_pkgconfig - Install only pkgconfig file'
++	@echo ''
++	@echo 'Other generic targets:'
++	@echo '  cscope            - Generate cscope index'
++	@echo '  tags              - Generate tags file for editors'
++	@echo '  check             - Check abi and version info'
++	@echo '  check_abi         - Check versioned symbols'
++	@echo '  check_version     - Check whether the libbpf version defined in libbpf_version.h'
++	@echo '                      is the same as that defined in libbpf.map'
++	@echo ''
++	@echo '  make V=0|1             [targets] 0 => quiet build (default), 1 => verbose build'
++	@echo '  make DESTDIR=/root     [install targets] use DESTDIR for installing'
++	@echo '                                           into a different root directory'
++	@echo '  make prefix=/path      [install targets] use prefix for installing'
++	@echo '                                           into a user defined prefix path'
 -- 
-2.30.2
+2.33.0
 
