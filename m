@@ -2,116 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4580263C7B4
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 20:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4505A63C7E9
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 20:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236553AbiK2TBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 14:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S236139AbiK2TQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 14:16:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236474AbiK2TBK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 14:01:10 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AFC6579
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 11:00:03 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id b6-20020a170902d50600b00189a5536820so639102plg.16
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 11:00:03 -0800 (PST)
+        with ESMTP id S235356AbiK2TQG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 14:16:06 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4892F663FA
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 11:16:04 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id m19so19898203edj.8
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 11:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YrIwK5afTQO/qKn0v/ZglneBEpq38VdgdU3mQcxlua4=;
-        b=EBjGumsrY5Y5QyAnSraQ55klyb/pQXqKTxNShaOM1O5rJik2ldrYH4KRR8RH+E4JCo
-         gAvD8Qeb/he2WS8XgAb6peWZHaP34pqdV46cv9RUDaZ6cHxVC3y8of9uRM51QB7ce0jJ
-         eHoJDAZH0L5MYqb1AfKTtFKxYR7W/w8aMZy/Mi4dsg2mGIYZUGzAbE4e/g7fEUebpOrE
-         yc9o+cOJMT2+BeBOajcj5XPbcF6eBJyfv4qN6IzcQxJLBTlmBoiNPjOSzMecrIthAJrv
-         kFpJMp4v6u8YH84d124t5XA0+9ogrVIHdLD62SIDe59KHo9IerPTk1G51CLaDbuopb7m
-         y7qw==
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=dwsQzcBdlmI4KU3eGwWFX7d4xF2xW2v1ajXtD5reG0o=;
+        b=pZ89gKFj5tEtphwmaAp2ST/mZOHsblyS5BwqbMkPSC9QjDNdUz1ZnLjtSsmeqYkqXm
+         eMY+jLOYTadXAEIGqadM9VU1gHLMDgMhdszV5tuULC/TejIkPDeB/8tikEmD3dXgtkCo
+         uHQkl6DeYIdsEUZoWUe8pQxWUg5m0PVkZJshg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YrIwK5afTQO/qKn0v/ZglneBEpq38VdgdU3mQcxlua4=;
-        b=lBdTa1Vgs8xwpBJDf/qALSL/Hh8RmlWsYYkp8wWq/tBO3chSLSzqUHrkEhuHMcjHj9
-         cnVJJgcSvMuZyEB/6xIu2G8b22baL8H0NBXlz5ytwqdVIq06q7JEofgGYJuZrpLTUP/X
-         n1CvqlGf5rUjpqXpS3TaO+nA3/gye4EWWBNCPn+vOPZzsUcCzKpEa4BOS1x3Y0LeraQM
-         GaKBDCTuI2bHVwoQ5vgAw+ejXPH2x5Oa+dkn2LBJqLUzXw1Ui21qqkf0htubO/XWoW+J
-         YX5HIQBJydZB46Bxc0SeOQ+NAtPFo+HEjwdk1FZWaXafB4SO5jyrUWfV8cMfHYzQEGf0
-         SbdQ==
-X-Gm-Message-State: ANoB5plJmKv+km8JdcktFbwMQiKyoZ3wj3e6Z2jqSp81iluKWD8Iv8Gq
-        Tto4AYDR2g8aqKLH6E7rvgiCL2s=
-X-Google-Smtp-Source: AA0mqf6yaLWhuR8bIayxNbDI4HnwARh6uJn9P5nMloOp9WGH7Slq6WE/y5Au7kTMPq7oL4gy269oPxw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:ce90:b0:187:19c4:373a with SMTP id
- f16-20020a170902ce9000b0018719c4373amr50967842plg.163.1669748402714; Tue, 29
- Nov 2022 11:00:02 -0800 (PST)
-Date:   Tue, 29 Nov 2022 11:00:01 -0800
-In-Reply-To: <20221129070900.3142427-1-martin.lau@linux.dev>
-Mime-Version: 1.0
-References: <20221129070900.3142427-1-martin.lau@linux.dev>
-Message-ID: <Y4ZWsXKTKgm/e7P8@google.com>
-Subject: Re: [PATCH bpf-next 0/7] selftests/bpf: Remove unnecessary
- mount/umount dance
-From:   sdf@google.com
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, "'Alexei Starovoitov '" <ast@kernel.org>,
-        "'Andrii Nakryiko '" <andrii@kernel.org>,
-        "'Daniel Borkmann '" <daniel@iogearbox.net>,
-        netdev@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dwsQzcBdlmI4KU3eGwWFX7d4xF2xW2v1ajXtD5reG0o=;
+        b=NZblxdXCOR05wjCfm+ddCUK0Ma/i2w5Q13Q9gGXMlz1oeYLneVx2bE5JRWyh9gLE2f
+         qjV2ksN0+e6gHjspcy3wywSLhwagveHcEuarQiVzLUGokfAkTvnPEadx33yZMqTkXL7/
+         DHiPmp1i6i681coIIjCaRx2oNf3+f3wNjRlY8+oIWv2xtxp8fSbDAq8X8XZ8xYlzcpm2
+         SY/cAhPwKKXnjd9ELk4mMsZMX2lbqSCrN7ypU176XqbOgrMhrnvjlu8y3PVyZ89CUeDB
+         5C6IUGbzlRUU1/oq4Ss9ZrjtgpvQhHH8ZXw09YrBzxIt4Il0Menoc5hyuipLoFiPgNRl
+         r9XQ==
+X-Gm-Message-State: ANoB5pkgeDKkAdZDDmfu6s+kZUshdWyVspZbtqWf09Jt8xeWzHeV/Lsk
+        RgJQyWRVtrVUk0x4MecM4lPdcw==
+X-Google-Smtp-Source: AA0mqf57Zfsxv7Yntq1v7DjQpEFTnIFLzUIHYLDtFw9BF/CCjxFSVtFtrF+07RnpP6R3oIy6i7uMPQ==
+X-Received: by 2002:aa7:cb09:0:b0:463:ff10:4ff with SMTP id s9-20020aa7cb09000000b00463ff1004ffmr42371180edt.290.1669749362627;
+        Tue, 29 Nov 2022 11:16:02 -0800 (PST)
+Received: from cloudflare.com (79.184.216.98.ipv4.supernova.orange.pl. [79.184.216.98])
+        by smtp.gmail.com with ESMTPSA id gw15-20020a170906f14f00b0073c8d4c9f38sm6479143ejb.177.2022.11.29.11.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 11:16:02 -0800 (PST)
+References: <1669718441-2654-1-git-send-email-yangpc@wangsu.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Pengcheng Yang <yangpc@wangsu.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf v3 0/4] bpf, sockmap: Fix some issues with using
+ apply_bytes
+Date:   Tue, 29 Nov 2022 20:14:45 +0100
+In-reply-to: <1669718441-2654-1-git-send-email-yangpc@wangsu.com>
+Message-ID: <87v8mxa7wv.fsf@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/28, Martin KaFai Lau wrote:
-> From: Martin KaFai Lau <martin.lau@kernel.org>
+On Tue, Nov 29, 2022 at 06:40 PM +08, Pengcheng Yang wrote:
+> Patch 1~3 fixes three issues with using apply_bytes when redirecting.
+> Patch 4 adds ingress tests for txmsg with apply_bytes in selftests.
+>
+> Thanks to John Fastabend and Jakub Sitnicki for correct solution.
+>
+> ---
+> Changes in v3:
+> *Patch 2: Rename 'flags', modify based on Jakub Sitnicki's patch
+>
+> Changes in v2:
+> *Patch 2: Clear psock->flags explicitly before releasing the sock lock
+>
+> Pengcheng Yang (4):
+>   bpf, sockmap: Fix repeated calls to sock_put() when msg has more_data
+>   bpf, sockmap: Fix missing BPF_F_INGRESS flag when using apply_bytes
+>   bpf, sockmap: Fix data loss caused by using apply_bytes on ingress
+>     redirect
+>   selftests/bpf: Add ingress tests for txmsg with apply_bytes
+>
+>  include/linux/skmsg.h                      |  1 +
+>  include/net/tcp.h                          |  4 ++--
+>  net/core/skmsg.c                           |  9 ++++++---
+>  net/ipv4/tcp_bpf.c                         | 19 ++++++++++++-------
+>  net/tls/tls_sw.c                           |  6 ++++--
+>  tools/testing/selftests/bpf/test_sockmap.c | 18 ++++++++++++++++++
+>  6 files changed, 43 insertions(+), 14 deletions(-)
 
-> Some of the tests do mount/umount dance when switching netns.
-> It is error-prone like  
-> https://lore.kernel.org/bpf/20221123200829.2226254-1-sdf@google.com/
+Thanks for the fixes, Pengcheng.
 
-> Another issue is, there are many left over after running some of the  
-> tests:
-> #> mount | egrep sysfs | wc -l
-> 19
+For the series:
 
-> Instead of further debugging this dance,  this set is to avoid the needs  
-> to
-> do this remounting altogether.  It will then allow those tests to be run
-> in parallel again.
-
-Looks great, thank you for taking care of this! Since I'm partly to
-blame for the mess, took a quick look at the series:
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-
-> Martin KaFai Lau (7):
->    selftests/bpf: Use if_nametoindex instead of reading the
->      /sys/net/class/*/ifindex
->    selftests/bpf: Avoid pinning bpf prog in the tc_redirect_dtime test
->    selftests/bpf: Avoid pinning bpf prog in the tc_redirect_peer_l3 test
->    selftests/bpf: Avoid pinning bpf prog in the netns_load_bpf() callers
->    selftests/bpf: Remove the "/sys" mount and umount dance in
->      {open,close}_netns
->    selftests/bpf: Remove serial from tests using {open,close}_netns
->    selftests/bpf: Avoid pinning prog when attaching to tc ingress in
->      btf_skc_cls_ingress
-
->   tools/testing/selftests/bpf/network_helpers.c |  51 +--
->   .../bpf/prog_tests/btf_skc_cls_ingress.c      |  25 +-
->   .../selftests/bpf/prog_tests/empty_skb.c      |   2 +-
->   .../selftests/bpf/prog_tests/tc_redirect.c    | 314 +++++++++---------
->   .../selftests/bpf/prog_tests/test_tunnel.c    |   2 +-
->   .../bpf/prog_tests/xdp_do_redirect.c          |   2 +-
->   .../selftests/bpf/prog_tests/xdp_synproxy.c   |   2 +-
->   7 files changed, 178 insertions(+), 220 deletions(-)
-
-> --
-> 2.30.2
-
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
