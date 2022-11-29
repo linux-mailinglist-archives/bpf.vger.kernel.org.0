@@ -2,120 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981E963C9DF
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 21:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E20663CA62
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 22:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbiK2Uv4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 15:51:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S236865AbiK2VO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 16:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236315AbiK2Uvs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 15:51:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD17D21249
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 12:50:20 -0800 (PST)
+        with ESMTP id S236771AbiK2VOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 16:14:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F357A2BB28
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 13:13:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669755019;
+        s=mimecast20190719; t=1669756424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e6YTHm9ddj51ycKVd3tWvOmE8DsgiVPRbFrXrJ2j+a4=;
-        b=OathOnIi+xWptZDPkLWGv/jeZYm5s472Hh8sfFpHi7CMbZxeX/z4WPqsHWn9gxcgMb8NS9
-        GPofrrYtSXcem7zBLAguUOulpgVbtKjnizHQg/4W8gNAktq/T9hmzRp4ny/56gxfUcgOU7
-        k/lMnJe3u6dq97j1IiU67s8FwTFbsFw=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-34-jewVqFYgPie557yID4WB0A-1; Tue, 29 Nov 2022 15:50:17 -0500
-X-MC-Unique: jewVqFYgPie557yID4WB0A-1
-Received: by mail-ed1-f72.google.com with SMTP id z16-20020a05640235d000b0046a31abc500so8755038edc.8
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 12:50:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e6YTHm9ddj51ycKVd3tWvOmE8DsgiVPRbFrXrJ2j+a4=;
-        b=snoJKgOClF6R/7lsjQFD/4gJshsKOrpk8H2N+JKmO/ksU99gylwY7B6ksfJf6AobvB
-         dxQYiSRebbVw53DchY7mGqeiwQGiE/LgSit9QqpnwvY50JFm+bqD6vnw/sVxdc8DTqh2
-         ssa7irBcTDz28rZ6A/avv1BXQUwOMd5QU2ZsuApHxQrYVMm8pMT32So+62Ad9vzYMQij
-         JNjCA30qZ1sUk0Vkd1OjECzzhiRI1akwWtvOz6UY1PR+Iy7NqlANRHJP6sfhZYOl9/wR
-         MEO8CAALQdI1Wvq7UbXWILrwjNDhBMuWnvLppsy6gUYYd+YKz3Ds9lhGYgtGFS9/GpFX
-         AzZw==
-X-Gm-Message-State: ANoB5plZgAAW+RducLlOgEVo0ySf+vhTH1KdcZmuPxHpE4UlixnAE/iF
-        83IPQ8nas9SI7WnUDUq6RlxnzukeIIZ7d/sW+TWBpMPHvU9DPcuYpEUWVKPKUe6Kqzuct/QbZEF
-        jCK+LjkMtjqFw
-X-Received: by 2002:aa7:d34b:0:b0:46a:914c:9bc9 with SMTP id m11-20020aa7d34b000000b0046a914c9bc9mr24782783edr.418.1669755016271;
-        Tue, 29 Nov 2022 12:50:16 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4DSLtw0a3VL6pY53w8JHaW41rE+NRi4z6GaxNcoLERHT5Jw0Sx+mhZnhws5hbpWWpqEYQARQ==
-X-Received: by 2002:aa7:d34b:0:b0:46a:914c:9bc9 with SMTP id m11-20020aa7d34b000000b0046a914c9bc9mr24782750edr.418.1669755015914;
-        Tue, 29 Nov 2022 12:50:15 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id e1-20020a170906c00100b00787f91a6b16sm6560571ejz.26.2022.11.29.12.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 12:50:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0E92780AC52; Tue, 29 Nov 2022 21:50:14 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] [PATCH bpf-next v3 00/11] xdp: hints via kfuncs
-In-Reply-To: <20221129193452.3448944-1-sdf@google.com>
-References: <20221129193452.3448944-1-sdf@google.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 29 Nov 2022 21:50:14 +0100
-Message-ID: <8735a1zdrt.fsf@toke.dk>
+        bh=d30QTxTORkW1N9eKwj6M+zoNiUdizDE1AT68blPInq4=;
+        b=V3fXR2vsmu6dP/sN09EHHruQE+B8tSK/reUc4EDY1oY+TK1gtdqZoWFWM/5+knuLD7EoXf
+        hllBut8c1Pb3Kz/CbU+AnzbKkKfvcR1WY2sOudTfqXByTo+Mqmem8BaX4yTByZS8EMNgjo
+        NKyQSC4Li/AhAh+hTwgOy22nTQ9pP+Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-517-aiGqA2bEOSuJ6sHhQ3xVHg-1; Tue, 29 Nov 2022 16:13:39 -0500
+X-MC-Unique: aiGqA2bEOSuJ6sHhQ3xVHg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4C94802314;
+        Tue, 29 Nov 2022 21:13:38 +0000 (UTC)
+Received: from [10.22.17.30] (unknown [10.22.17.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E4E640C83AA;
+        Tue, 29 Nov 2022 21:13:37 +0000 (UTC)
+Message-ID: <51c23d0e-9f00-4433-f2e8-95113f0b2a9d@redhat.com>
+Date:   Tue, 29 Nov 2022 16:13:35 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+Content-Language: en-US
+To:     Hao Luo <haoluo@google.com>, Boqun Feng <boqun.feng@gmail.com>
+Cc:     Hou Tao <houtao@huaweicloud.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "houtao1@huawei.com" <houtao1@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+ <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+ <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com>
+ <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
+ <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+ <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com>
+ <CAMDZJNUTaiXMe460P7a7NfK1_bbaahpvi3Q9X85o=G7v9x-w=g@mail.gmail.com>
+ <59fc54b7-c276-2918-6741-804634337881@huaweicloud.com>
+ <541aa740-dcf3-35f5-9f9b-e411978eaa06@redhat.com>
+ <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local>
+ <Y4ZCKaQFqDY3aLTy@Boquns-Mac-mini.local>
+ <CA+khW7hkQRFcC1QgGxEK_NeaVvCe3Hbe_mZ-_UkQKaBaqnOLEQ@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CA+khW7hkQRFcC1QgGxEK_NeaVvCe3Hbe_mZ-_UkQKaBaqnOLEQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
 
-> Please see the first patch in the series for the overall
-> design and use-cases.
+On 11/29/22 14:36, Hao Luo wrote:
+> On Tue, Nov 29, 2022 at 9:32 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+>> Just to be clear, I meant to refactor htab_lock_bucket() into a try
+>> lock pattern. Also after a second thought, the below suggestion doesn't
+>> work. I think the proper way is to make htab_lock_bucket() as a
+>> raw_spin_trylock_irqsave().
+>>
+>> Regards,
+>> Boqun
+>>
+> The potential deadlock happens when the lock is contended from the
+> same cpu. When the lock is contended from a remote cpu, we would like
+> the remote cpu to spin and wait, instead of giving up immediately. As
+> this gives better throughput. So replacing the current
+> raw_spin_lock_irqsave() with trylock sacrifices this performance gain.
 >
-> Changes since v2:
->
-> - Rework bpf_prog_aux->xdp_netdev refcnt (Martin)
->
->   Switched to dropping the count early, after loading / verification is
->   done. At attach time, the pointer value is used only for comparing
->   the actual netdev at attach vs netdev at load.
+> I suspect the source of the problem is the 'hash' that we used in
+> htab_lock_bucket(). The 'hash' is derived from the 'key', I wonder
+> whether we should use a hash derived from 'bucket' rather than from
+> 'key'. For example, from the memory address of the 'bucket'. Because,
+> different keys may fall into the same bucket, but yield different
+> hashes. If the same bucket can never have two different 'hashes' here,
+> the map_locked check should behave as intended. Also because
+> ->map_locked is per-cpu, execution flows from two different cpus can
+> both pass.
 
-So if we're not holding the netdev reference, we'll end up with a BPF
-program with hard-coded CALL instructions calling into a module that
-could potentially be unloaded while that BPF program is still alive,
-right?
+I would suggest that you add a in_nmi() check and if true use trylock to 
+get the lock. You can continue to use raw_spin_lock_irqsave() in all 
+other cases.
 
-I suppose that since we're checking that the attach iface is the same
-that the program should not be able to run after the module is unloaded,
-but it still seems a bit iffy. And we should definitely block
-BPF_PROG_RUN invocations of programs with a netdev set (but we should do
-that anyway).
-
->   (potentially can be a problem if the same slub slot is reused
->   for another netdev later on?)
-
-Yeah, this would be bad as well, obviously. I guess this could happen?
-
--Toke
+Cheers,
+Longman
 
