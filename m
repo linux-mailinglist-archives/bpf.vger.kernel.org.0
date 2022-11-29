@@ -2,105 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D993063BD7C
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 11:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A0963BDE6
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 11:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiK2KGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 05:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        id S231226AbiK2KYC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 05:24:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbiK2KGO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 05:06:14 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7945D6A6
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 02:06:13 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id w15so8026790wrl.9
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 02:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d347PGicPnHnSxrHiUKliUhsEGwWWeTMGutskcoO1f8=;
-        b=EQZnEFyV6mFuWYFQuEzwyqMFNjQs5N9crFahKpo7263Zh2Nd3ZsoGQxxnHwkT7pEen
-         76EdLhcmC+3Ro6CSIHl13rw7Xhu6djlkChnF//XJGsydrFDOIiMEQy56S17I3xZEuFp7
-         ZDdICQR0I/7uUIeVP0de6tCQH1LL5uhimWLYHYTvbv6AFPorP1RX5+r3zV19rm9sGXER
-         vnsXA20bG1rvRXfXbY8UIuIhgaZI/BNxv1S3dZDFeHLrn7RTpMHGrrsHueHxh0IKe9s/
-         xZSUBig4tyAf+xbinrPYxpZqVarHionIOD1W1U1zzgL+oT2p6cbH8Wrya3K+XgVpNk+N
-         7oHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d347PGicPnHnSxrHiUKliUhsEGwWWeTMGutskcoO1f8=;
-        b=LX1/mGZ/ls64bnq1E+XkpkbMSdTSFaLjFdfFIyS+aahfGbUjceSnlgeLD4vG+zizPB
-         QXIn5PDRGzD0nFM48QQxPwo5RjZ9mCkkvMp4t6gKYMzNPC33FIp132mw0DpmToGgtbr9
-         p59TMe4gpLAc+BrURgWaH2OTnKoGWAdpw1vCmyncDoFTull5Z7tfsj0dUKMo7RVkw0Qz
-         wk5sDZ/+bxkWQkcNhpfTA5FCWgH0Ny0OXg42dpRI+IVg1Q4JmpymQ3mPr15BLjjuE9KW
-         XTW8Xq+bB0sVuvUZ6Be+VNxlCGSeC9MTiKsGbJu1XJCuc4JZjEk+8GFHQGNJV+UiIOXG
-         lI8Q==
-X-Gm-Message-State: ANoB5pk0qBvtVpmgDb73kWf0RCpf6xi/GimKTiGYxYCdmJkUSPLqx0tY
-        IjupoNoDLXgHrujaoJCtjns9vQ==
-X-Google-Smtp-Source: AA0mqf7uqmv4AbHgFCGUCfF/aINhYFGb6bNTPlW8AYXWDL6hu+2EPxT8e41XcOLKCYyw6vOEEc9eTg==
-X-Received: by 2002:a5d:628b:0:b0:242:26f0:d395 with SMTP id k11-20020a5d628b000000b0024226f0d395mr200276wru.510.1669716371830;
-        Tue, 29 Nov 2022 02:06:11 -0800 (PST)
-Received: from lavr ([81.6.34.132])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05600c4e9200b003c6c182bef9sm1978757wmq.36.2022.11.29.02.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 02:06:11 -0800 (PST)
-Date:   Tue, 29 Nov 2022 11:06:09 +0100
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 5/8] selftests/bpf: Verify xdp_metadata
- xdp->af_xdp path
-Message-ID: <Y4XZkZJHVvLgTIk9@lavr>
-References: <20221121182552.2152891-1-sdf@google.com>
- <20221121182552.2152891-6-sdf@google.com>
+        with ESMTP id S232271AbiK2KXl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 05:23:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4FC64DA
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 02:23:19 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1669717397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=znPXvxz3kz6ID7zX6kCLMH9Eop2P9SgAGV/kZSx6/e0=;
+        b=V027JSBo5uFP6TX3Lf8rRrU22Mn2Pjay+3rXWjG0eexUWUDu2eAXFntcSOGMPMkLdmp54q
+        C+NoyFUyKQ3fOjwmodIrCXckYziK7RMeuI20yHuygajK8VPtuMiAEaW4H5abRBP13IrZZl
+        uCWwuNmJqBCB3v+T29EteeyL+yes0sj14iOiQQu0LQjSIlhMdFJAEbXBADoBbwS3masNmh
+        m5lnuqb5YA+wk2iGi2SjpIiF+YnD5oAZoiXoT7zJzgtmKYKQakscZ5LkzSdVYKhQqTeYxK
+        Iu9ictSeTcQ3gCd/QgSXJrSVjtMrCXEMGDyD+1H2lWvVSf/6AqzyrjT23u5qzQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1669717397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=znPXvxz3kz6ID7zX6kCLMH9Eop2P9SgAGV/kZSx6/e0=;
+        b=01fI197c3emeb97I5YstKIxQJ1dj0jh1u5z0sZBrc2ZfJ/vrmxeSbjCXlHzikUdSdDznoC
+        vteyR0edggT5pUAw==
+To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, peterz@infradead.org, akpm@linux-foundation.org
+Cc:     x86@kernel.org, hch@lst.de, rick.p.edgecombe@intel.com,
+        aaron.lu@intel.com, rppt@kernel.org, mcgrof@kernel.org
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+In-Reply-To: <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
+References: <20221107223921.3451913-1-song@kernel.org>
+ <CAPhsuW5pq+hzS87Rb3pyoD3z8WH+R7EOAGkTkh-KwEKt9HV_mA@mail.gmail.com>
+Date:   Tue, 29 Nov 2022 11:23:15 +0100
+Message-ID: <87lenuukj0.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221121182552.2152891-6-sdf@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 22/11/21 10:25, Stanislav Fomichev wrote:
+On Mon, Nov 14 2022 at 17:30, Song Liu wrote:
+> On Mon, Nov 7, 2022 at 2:41 PM Song Liu <song@kernel.org> wrote:
+> Currently, I have got the following action items for v3:
+> 1. Add unify API to allocate text memory to motivation;
+> 2. Update Documentation/x86/x86_64/mm.rst;
+> 3. Allow none PMD_SIZE allocation for powerpc.
 >
-> [...]
+> 1 and 2 are relatively simple. We can probably do 3 in a follow up patch
+> (as I don't have powerpc environments for testing). Did I miss anything?
 >
-> +
-> +	if (bpf_xdp_metadata_rx_timestamp_supported(ctx))
-> +		meta->rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
-> +
-> +	if (bpf_xdp_metadata_rx_hash_supported(ctx))
-> +		meta->rx_hash = bpf_xdp_metadata_rx_hash(ctx);
+> Besides these, does this set look reasonable? Andrew and Peter, could
+> you please share your comments on this?
 
-Is there a case when F_supported and F are not called in a sequence? If not,
-then you can join them:
+This is a step into the right direction, but is it a solution which has
+a broader benefit? I don't think so.
 
-	bool (*ndo_xdp_rx_timestamp)(const struct xdp_md *ctx, u64 *timestamp);
+While you are so concerned about (i)TLB usage for BPF, I'm way more
+concerned about modules. Just from a random server class workstation:
 
-so that a calling XDP program does one indirect call instead of two for one
-field
+Total module memory:	12.4609 MB
+Number of 4k PTEs:         3190
 
-	if (bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp)) {
-		/* ... couldn't get the timestamp */
-	}
+The above would nicely fit into 7 or 8 2M mappings.
+
+Guess how much memory is occupied by BPF on that machine and how much
+BPF contributes to iTLB pressure? In comparison to the above very close
+to zero.
+
+Modules have exactly the same problem as BPF, just an order of magnitude
+larger.
+
+So we don't need a "works" for BPF solution which comes with the
+handwaving assumption that it could be used for modules too. We need
+something which demonstrates that it solves the entire problem class.
+
+Modules are the obvious starting point. Once that is solved pretty much
+everything else falls into place including BPF.
+
+Without modules support this whole exercise is pointless and not going
+anywhere near x86.
+
+Thanks,
+
+        tglx
