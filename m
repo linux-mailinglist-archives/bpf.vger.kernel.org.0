@@ -2,157 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFDB63BC66
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 09:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35F63BC73
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 10:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbiK2I7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 03:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
+        id S229585AbiK2JCx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 04:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbiK2I7h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 03:59:37 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5680350D5B;
-        Tue, 29 Nov 2022 00:59:36 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id w23so12749949ply.12;
-        Tue, 29 Nov 2022 00:59:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Lmpq7VrBSREoxRAFIm/Yh9qhesF+CF91NiSA6vujoc=;
-        b=OskYZlSflhIt6iflBqWJVsqxBguXuMSrwLVYUmvYGiI5MWRxY1jkRrg1x/hcA0QiQS
-         dZjwItWPM1bfRncH7kJBVLVnJo/CY8jERFsLFS0X4r9Igx/Aakh3XTEsWwLCh/2WvRCd
-         Mo9oMma9+EeTLXdbOS9nrUxATEZokhF+/yctHpX2dLxrMeXLc0rMalp+niprF3IRgO3s
-         e+kt21As4P3GKCOXwVE/ca7E3dKITN92mfPseJl+DZvYGkE7fxFr3GyZGcwwykmndhDd
-         WKRFoa4fQv9EgFTtFr2GJT00OKKlAU/5f+EM2dGzx/4OOshpiT/Cu/to4UGh5sNS26a9
-         P+tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Lmpq7VrBSREoxRAFIm/Yh9qhesF+CF91NiSA6vujoc=;
-        b=CEF9Tk8Re9KfTl2dMzC/gRvRy/O1eAt3jYNuC6mqICcnDdQaiEwePOqniIPSCT8IDM
-         Lpyp2Z/UXj7zBSNCsNooR0mUm7VW4nJR4vlgDJKDcobFMlr+gTlJqmLTGeqtrGlwm5gQ
-         z08xEWqMjKFNRalXUkFOeP77vSb5/4diLfpXKS4uvG/wjnOEqrOM0sgvbTTvU+EJKYH9
-         iyqtyV1Y092C9rKOdVJkv9OH7lLUmWl8xKQ9+yepuePHL/NNeXM0iAt+Kww0iiAVzzuU
-         NAWDl73MEd5Q++c0p+Q3Crt8EHJNQVgqWsiVs4Bk+ZHqWNdFgmOOSky3bnIL58VrlNME
-         4gDA==
-X-Gm-Message-State: ANoB5pmbIi0Rf6PfkXV8mpTWW6+xhsNc1Zuo0dIGeKgyhALjhnKLxlT6
-        TfgdOnTQX3Ym5bpygSLuqLU=
-X-Google-Smtp-Source: AA0mqf6RP25gcvllBnCRd/6OgKNlnW1j7lzdLoel7mq3RzQUGfVotrIeEuyU/LOekhqwsIazO1DLKQ==
-X-Received: by 2002:a17:903:2350:b0:189:9004:cf1f with SMTP id c16-20020a170903235000b001899004cf1fmr7514243plh.154.1669712375807;
-        Tue, 29 Nov 2022 00:59:35 -0800 (PST)
-Received: from mail.google.com ([103.135.102.183])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b00188f8badbcdsm10268152plg.137.2022.11.29.00.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 00:59:34 -0800 (PST)
-Date:   Tue, 29 Nov 2022 16:59:22 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] libbpf: show more info about missing ".BTF" section
-Message-ID: <20221129085922.yad7lefg472vgl5z@mail.google.com>
-References: <20221126111147.199366-1-changbin.du@gmail.com>
- <20221126111147.199366-2-changbin.du@gmail.com>
- <CAEf4BzYt7MhKjWfdxKUe10mUxDoCYeWNHYr1-ruCxMEmNqJqqA@mail.gmail.com>
+        with ESMTP id S230500AbiK2JCv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 04:02:51 -0500
+Received: from mail.groupteam.pl (mail.groupteam.pl [51.75.73.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B95E2C0
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 01:02:47 -0800 (PST)
+Received: by mail.groupteam.pl (Postfix, from userid 1002)
+        id C709CA78B4; Tue, 29 Nov 2022 09:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=groupteam.pl; s=mail;
+        t=1669712462; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
+        h=Date:From:To:Subject:From;
+        b=euyElbld1GCWsd/bOQY211FxB+0OGKt44mK1Wpq7sWuYAD64RO+UJVE5vFNVJyGRV
+         e7hKUri3CAEQM+t0FeRpH9PosynuIg09JSWViW9pgLG4Whk7sWvnE2D4su+FS6qGiY
+         TbNQ10i8LnEZzJw97oVovW9gMBGQ42BvueR+uXlKfKoG1kXYCDdJuIdIQUNFInMGHC
+         +nYLKaKtgujbZ/Zv30TQv3UJicS5fCo7vcesh+MQT7u4cXvhBRm9AJ6d44hTXP5zjB
+         nDhYoIW/HJLlLDig7RU5orAHlfZ05iNFYSjmK1zVqGtvtW2TiM0io1lm3enldjfMag
+         WkKEVsys8hM/g==
+Received: by mail.groupteam.pl for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 09:00:06 GMT
+Message-ID: <20221129074500-0.1.6x.2j5m2.0.uxsar9r94x@groupteam.pl>
+Date:   Tue, 29 Nov 2022 09:00:06 GMT
+From:   "Krzysztof Maj" <krzysztof.maj@groupteam.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Biznesowy angielski
+X-Mailer: mail.groupteam.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYt7MhKjWfdxKUe10mUxDoCYeWNHYr1-ruCxMEmNqJqqA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,
+        URIBL_DBL_SPAM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
+        *      blocklist
+        *      [URIs: groupteam.pl]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [51.75.73.133 listed in zen.spamhaus.org]
+        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
+        *      blocklist
+        *      [URIs: groupteam.pl]
+        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [51.75.73.133 listed in bl.score.senderscore.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 09:59:00PM -0800, Andrii Nakryiko wrote:
-> On Sat, Nov 26, 2022 at 3:13 AM Changbin Du <changbin.du@gmail.com> wrote:
-> >
-> > Show more information about why failed instead of just saying "No such file or
-> > directory".
-> >
-> > Now will print below info:
-> > libbpf: can not find '.BTF' section
-> > libbpf: is CONFIG_DEBUG_INFO_BTF enabled for kernel?
-> > Error: failed to load BTF from /home/changbin/work/linux/vmlinux: No such file or directory
-> >
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index d88647da2c7f..3f661d991808 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -906,6 +906,15 @@ struct btf *btf__new(const void *data, __u32 size)
-> >         return libbpf_ptr(btf_new(data, size, NULL));
-> >  }
-> >
-> > +static bool is_vmlinux(const char *path)
-> > +{
-> > +       size_t path_len = strlen(path);
-> > +       size_t suffix_len = strlen("vmlinux");
-> > +
-> > +       return (path_len >= suffix_len) &&
-> > +              (!memcmp(path + path_len - suffix_len, "vmlinux", suffix_len));
-> > +}
-> > +
-> >  static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> >                                  struct btf_ext **btf_ext)
-> >  {
-> > @@ -990,6 +999,9 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> >         err = 0;
-> >
-> >         if (!btf_data) {
-> > +               pr_warn("can not find '%s' section\n", BTF_ELF_SEC);
-> > +               if (is_vmlinux(path))
-> > +                       pr_warn("is CONFIG_DEBUG_INFO_BTF enabled for kernel?\n");
-> 
-> this is generic piece of BTF loading code in libbpf, it knows nothing
-> and should know nothing about vmlinux and CONFIG_DEBUG_INFO_BTF, this
-> is not the right place to add such suggestions.
-> 
-> Check bpf_object__load_vmlinux_btf(), libbpf emits vmlinux-specific
-> error there: "Error loading vmlinux BTF". If we need to mention
-> CONFIG_DEBUG_INFO_BTF anywhere, that would be the place to do that.
->
-Agreed. I think adding "can not find '.BTF' section" is enough to diagnose the problem.
-The standalone error msg "No such file or directory" is really weird.
+Dzie=C5=84 dobry,=20
 
-> >                 err = -ENOENT;
-> >                 goto done;
-> >         }
-> > --
-> > 2.37.2
-> >
+czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
+swoich pracownik=C3=B3w?
 
--- 
-Cheers,
-Changbin Du
+Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
+w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
+ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
+=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
+
+Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
+=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
+re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
+o=C5=BCliwo=C5=9Bci biznesowe.=20
+
+Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
+ kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
+za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
+=2E
+
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
+w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
+
+
+Pozdrawiam
+Krzysztof Maj
