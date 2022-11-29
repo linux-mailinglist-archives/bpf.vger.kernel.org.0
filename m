@@ -2,184 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4278C63BB2B
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 09:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225ED63BB9A
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 09:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbiK2IDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 03:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
+        id S230315AbiK2Iai (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 03:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbiK2IC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 03:02:58 -0500
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.232.28.96])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 5ACE427CD4;
-        Tue, 29 Nov 2022 00:02:50 -0800 (PST)
-Received: from XMCDN1207038 (unknown [59.61.78.232])
-        by app2 (Coremail) with SMTP id SyJltACnh+SovIVjDH8AAA--.610S2;
-        Tue, 29 Nov 2022 16:02:48 +0800 (CST)
-From:   "Pengcheng Yang" <yangpc@wangsu.com>
-To:     "'Jakub Sitnicki'" <jakub@cloudflare.com>
-Cc:     "'John Fastabend'" <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        "'Daniel Borkmann'" <daniel@iogearbox.net>,
-        "'Lorenz Bauer'" <lmb@cloudflare.com>
-References: <1669082309-2546-1-git-send-email-yangpc@wangsu.com> <1669082309-2546-3-git-send-email-yangpc@wangsu.com> <637d8d5bd4e27_2b649208eb@john.notmuch> <000001d8ff01$053529d0$0f9f7d70$@wangsu.com> <87cz97cnz8.fsf@cloudflare.com>
-In-Reply-To: <87cz97cnz8.fsf@cloudflare.com>
-Subject: Re: [PATCH RESEND bpf 2/4] bpf, sockmap: Fix missing BPF_F_INGRESS flag when using apply_bytes
-Date:   Tue, 29 Nov 2022 16:02:48 +0800
-Message-ID: <000001d903c8$f8d2d710$ea788530$@wangsu.com>
+        with ESMTP id S229580AbiK2I3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 03:29:51 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A933654B24
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 00:29:35 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id bs21so20845731wrb.4
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 00:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8COySKZpQAvzS/lyewaIOf440tgTZqOib36puKtDvQ=;
+        b=huV7ApZYr05PgU3I3IiA5RuwzbRN0sfFTFMdBxV1TOj2kk6gHQ9YI64HuBH3aHCymn
+         gJ2PFiImDBwIlDPbZoCU+ggKj3PM9zbXN3p2EiewKRov/Bj3Kzdm9RlFjiXOqjMbPP2Y
+         vBnL0+fOCytIwQT/Oj3ALfIoIVw3bLOvWF9JmRSns7EBECLEVylxkC6JDFbJgZw1vkgz
+         WQk4jVkqfi5+3jJxoutcC1OiQK9nubVxE4Ws7tZMIDUzcaW4UAJnaE0k05hu4ME05jhz
+         UyXrOkhyvF4nLP5b0z0Cd+VGz20knCDzl7VWZW88+jX3L5OZxThniGHfoQHw/BK66T0x
+         YJEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+8COySKZpQAvzS/lyewaIOf440tgTZqOib36puKtDvQ=;
+        b=kN33UXir0oNhfXyxuJSCY9knBBRdTCBSPuyrjdK/kysX58DoR+BFpli+m5SgzenkEu
+         WAh38vfn+YrkHFBDp/HbRYCz2x76uP90BogT7aqwBjLiWNk0i1zshuTB7qYbSIcTTpPQ
+         FumOpC05yHy763LPOTPlprwjqknT40Mg/2xhz0UIK7k+ma5O/1QLOPdGgutrD8GS4+8p
+         jv64Yr82UmUODucCok41Ekebfx9jGmoLyLNZD/cEiM5axR7bsydn/eyJhII52ByYGMvo
+         Fr1k0+wDudBMBrJgGaSEcGrQI5/bV+xjWbCYWQ4xstbx5U4X/AYKDQSymyyqe18hYX83
+         xXWw==
+X-Gm-Message-State: ANoB5plmvXIgZBD1ZRVdPd8iKcfFx/SAIdylEbRti4n3tFnkapB9GCAQ
+        SP5GY2UIMQIPj3W3uo7Etac=
+X-Google-Smtp-Source: AA0mqf6VVjAd7bqqAhU9piXmeljX5xcCBd8+2x4J2+47f4gervY/QbKHSaG56OVnCbK9vXNomAcctw==
+X-Received: by 2002:a5d:6e84:0:b0:22d:6ad5:bc0f with SMTP id k4-20020a5d6e84000000b0022d6ad5bc0fmr34870214wrz.115.1669710574041;
+        Tue, 29 Nov 2022 00:29:34 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id he10-20020a05600c540a00b003cfa80443a0sm1169837wmb.35.2022.11.29.00.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 00:29:33 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 29 Nov 2022 09:29:31 +0100
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCHv4 bpf-next 4/4] selftests/bpf: Add bpf_vma_build_id_parse
+ task vma iterator test
+Message-ID: <Y4XC6wxSflQUz9/p@krava>
+References: <20221128132915.141211-1-jolsa@kernel.org>
+ <20221128132915.141211-5-jolsa@kernel.org>
+ <CA+khW7h_4GGGsyszYVfSKtbv0nnUSKc-_oCqXgsj=JQ9RaVy7A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGntG3gSsG5fexUwyK4ofUjVybadQE5HE+MAYsC+QACkhU0QQGEqlaWroE5o8A=
-Content-Language: zh-cn
-X-CM-TRANSID: SyJltACnh+SovIVjDH8AAA--.610S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr1kKr48CF18Kw4DXr1xAFb_yoW7JF15pF
-        s0ya1rCF4jkrWUWw4SqF48WF4I934rtF1jkF1UAw1fKwsrKr18JFn5KFy5ZFn5tr4kCa1a
-        qr4IgFW5GFnrZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
-X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+khW7h_4GGGsyszYVfSKtbv0nnUSKc-_oCqXgsj=JQ9RaVy7A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> On Wed, Nov 23, 2022 at 02:01 PM +08, Pengcheng Yang wrote:
-> > John Fastabend <john.fastabend@gmail.com> wrote:
-> >>
-> >> 		if (!psock->apply_bytes) {
-> >> 			/* Clean up before releasing the sock lock. */
-> >> 			eval = psock->eval;
-> >> 			psock->eval = __SK_NONE;
-> >> 			psock->sk_redir = NULL;
-> >> 		}
-> >>
-> >> Now that we have a psock->flags we should clera that as
-> >> well right?
+On Mon, Nov 28, 2022 at 11:21:30AM -0800, Hao Luo wrote:
+> On Mon, Nov 28, 2022 at 5:30 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > According to my understanding, it is not necessary (but can) to clear
-> > psock->flags here, because psock->flags will be overwritten by msg->flags
-> > at the beginning of each redirection (in sk_psock_msg_verdict()).
+> > Adding tests for using new bpf_vma_build_id_parse kfunc in task_vma
+> > iterator program.
+> >
+> > On bpf program side the iterator filters test proccess and proper
+> > vma by provided function pointer and reads its build id with the
+> > new kfunc.
+> >
+> > On user side the test uses readelf to get test_progs build id and
+> > compares it with the one read from iterator.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../selftests/bpf/prog_tests/bpf_iter.c       | 44 +++++++++++++++++++
+> >  .../selftests/bpf/progs/bpf_iter_build_id.c   | 41 +++++++++++++++++
+> >  2 files changed, 85 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_build_id.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > index 6f8ed61fc4b4..b2cad9f70b32 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > @@ -33,6 +33,9 @@
+> <...>
+> >
+> > +static void test_task_vma_build_id(void)
+> > +{
+> > +       struct bpf_iter_build_id *skel;
+> > +       char buf[BUILDID_STR_SIZE] = {};
 > 
-> 1. We should at least document that psock->flags value can be garbage
->    (undefined) if psock->sk_redir is null.
-> 
-> 2. 'flags' is amiguous (flags for what?). I'd suggest to rename to
->    something like redir_flags.
-> 
->    Also, since we don't care about all flags, but just the ingress bit,
->    we should store just that. It's not about size. Less state passed
->    around is easier to reason about. See patch below.
-> 
-> 3. Alternatively, I'd turn psock->sk_redir into a tagged pointer, like
->    skb->_sk_redir is. This way all state (pointer & flags) is bundled
->    and managed together. It would be a bigger change. Would have to be
->    split out from this patch set.
-> 
-> --8<--
-> 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 70d6cb94e580..84f787416a54 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -82,6 +82,7 @@ struct sk_psock {
->  	u32				apply_bytes;
->  	u32				cork_bytes;
->  	u32				eval;
-> +	bool				redir_ingress; /* undefined if sk_redir is null */
->  	struct sk_msg			*cork;
->  	struct sk_psock_progs		progs;
->  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 14d45661a84d..5b70b241ce71 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2291,8 +2291,8 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
->  void tcp_bpf_clone(const struct sock *sk, struct sock *newsk);
->  #endif /* CONFIG_BPF_SYSCALL */
-> 
-> -int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg, u32 bytes,
-> -			  int flags);
-> +int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
-> +			  struct sk_msg *msg, u32 bytes, int flags);
->  #endif /* CONFIG_NET_SOCK_MSG */
-> 
->  #if !defined(CONFIG_BPF_SYSCALL) || !defined(CONFIG_NET_SOCK_MSG)
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index e6b9ced3eda8..53d0251788aa 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -886,13 +886,16 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
->  	ret = sk_psock_map_verd(ret, msg->sk_redir);
->  	psock->apply_bytes = msg->apply_bytes;
->  	if (ret == __SK_REDIRECT) {
-> -		if (psock->sk_redir)
-> +		if (psock->sk_redir) {
->  			sock_put(psock->sk_redir);
-> -		psock->sk_redir = msg->sk_redir;
-> -		if (!psock->sk_redir) {
-> +			psock->sk_redir = NULL;
-> +		}
-> +		if (!msg->sk_redir) {
->  			ret = __SK_DROP;
->  			goto out;
->  		}
-> +		psock->redir_ingress = sk_msg_to_ingress(msg);
-> +		psock->sk_redir = msg->sk_redir;
->  		sock_hold(psock->sk_redir);
->  	}
->  out:
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index cf9c3e8f7ccb..490b359dc814 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -131,10 +131,9 @@ static int tcp_bpf_push_locked(struct sock *sk, struct sk_msg *msg,
->  	return ret;
->  }
-> 
-> -int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
-> -			  u32 bytes, int flags)
-> +int tcp_bpf_sendmsg_redir(struct sock *sk, bool ingress,
-> +			  struct sk_msg *msg, u32 bytes, int flags)
->  {
-> -	bool ingress = sk_msg_to_ingress(msg);
->  	struct sk_psock *psock = sk_psock_get(sk);
->  	int ret;
-> 
-> @@ -337,7 +336,8 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
->  		release_sock(sk);
-> 
->  		origsize = msg->sg.size;
-> -		ret = tcp_bpf_sendmsg_redir(sk_redir, msg, tosend, flags);
-> +		ret = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
-                                       ^^^^^^^
-Thanks for such detailed advice.
-Here it looks like we need to pre-save the redir_ingress before
-setting psock->sk_redir to NULL and release_sock.
+> Jiri, do you mean buf[BUILDID_STR_SIZE + 1]? I see you have
+> buf[BUILDID_STR_SIZE] = 0; below.
 
-> +					    msg, tosend, flags);
->  		sent = origsize - msg->sg.size;
-> 
->  		if (eval == __SK_REDIRECT)
-> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> index 264cf367e265..b22d97610b9a 100644
-> --- a/net/tls/tls_sw.c
-> +++ b/net/tls/tls_sw.c
-> @@ -846,7 +846,8 @@ static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
->  		sk_msg_return_zero(sk, msg, send);
->  		msg->sg.size -= send;
->  		release_sock(sk);
-> -		err = tcp_bpf_sendmsg_redir(sk_redir, &msg_redir, send, flags);
-> +		err = tcp_bpf_sendmsg_redir(sk_redir, psock->redir_ingress,
-> +					    &msg_redir, send, flags);
->  		lock_sock(sk);
->  		if (err < 0) {
->  			*copied -= sk_msg_free_nocharge(sk, &msg_redir);
+ugh, that plus one ended up in the BUILDID_STR_SIZE define, will fix
 
+> 
+> > +       int iter_fd, len;
+> > +       char *build_id;
+> <...>
+> > +
+> > +       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> > +               ;
+> 
+> I think you need to pass 'buf + len' to read(), otherwise the last
+> iteration will overwrite the content read from the previous
+> iterations.
+
+ok
+
+> 
+> > +       buf[BUILDID_STR_SIZE] = 0;
+> > +
+> > +       /* Read build_id via readelf to compare with iterator buf. */
+> > +       if (!ASSERT_OK(read_self_buildid(&build_id), "read_buildid"))
+> > +               goto exit;
+> 
+> We need to close iter_fd before going to exit.
+
+right, will fix
+
+thanks,
+jirka
+
+> 
+> > +
+> > +       ASSERT_STREQ(buf, build_id, "build_id_match");
+> > +       ASSERT_GT(skel->data->size, 0, "size");
+> > +
+> > +       free(build_id);
+> > +       close(iter_fd);
+> > +exit:
+> > +       bpf_iter_build_id__destroy(skel);
+> > +}
+> > +
+> <...>
+> > --
+> > 2.38.1
+> >
