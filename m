@@ -2,102 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5058663BD44
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 10:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D993063BD7C
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 11:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbiK2JuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 04:50:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S229932AbiK2KGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 05:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbiK2JuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 04:50:07 -0500
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBCA2A97B;
-        Tue, 29 Nov 2022 01:50:05 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 18E7220199;
-        Tue, 29 Nov 2022 10:50:03 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HVnSnlaNbPSm; Tue, 29 Nov 2022 10:50:02 +0100 (CET)
-Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 916CF20489;
-        Tue, 29 Nov 2022 10:50:02 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout1.secunet.com (Postfix) with ESMTP id 8A3AA80004A;
-        Tue, 29 Nov 2022 10:50:02 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 29 Nov 2022 10:50:02 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 29 Nov
- 2022 10:50:02 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id B63D03182F22; Tue, 29 Nov 2022 10:50:01 +0100 (CET)
-Date:   Tue, 29 Nov 2022 10:50:01 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-CC:     Eyal Birger <eyal.birger@gmail.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <herbert@gondor.apana.org.au>,
-        <andrii@kernel.org>, <daniel@iogearbox.net>,
-        <nicolas.dichtel@6wind.com>, <razor@blackwall.org>,
-        <mykolal@fb.com>, <ast@kernel.org>, <song@kernel.org>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-        <shuah@kernel.org>
-Subject: Re: [PATCH ipsec-next 2/3] xfrm: interface: Add unstable helpers for
- setting/getting XFRM metadata from TC-BPF
-Message-ID: <20221129095001.GV704954@gauss3.secunet.de>
-References: <20221128160501.769892-1-eyal.birger@gmail.com>
- <20221128160501.769892-3-eyal.birger@gmail.com>
- <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
+        with ESMTP id S229820AbiK2KGO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 05:06:14 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7945D6A6
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 02:06:13 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id w15so8026790wrl.9
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 02:06:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d347PGicPnHnSxrHiUKliUhsEGwWWeTMGutskcoO1f8=;
+        b=EQZnEFyV6mFuWYFQuEzwyqMFNjQs5N9crFahKpo7263Zh2Nd3ZsoGQxxnHwkT7pEen
+         76EdLhcmC+3Ro6CSIHl13rw7Xhu6djlkChnF//XJGsydrFDOIiMEQy56S17I3xZEuFp7
+         ZDdICQR0I/7uUIeVP0de6tCQH1LL5uhimWLYHYTvbv6AFPorP1RX5+r3zV19rm9sGXER
+         vnsXA20bG1rvRXfXbY8UIuIhgaZI/BNxv1S3dZDFeHLrn7RTpMHGrrsHueHxh0IKe9s/
+         xZSUBig4tyAf+xbinrPYxpZqVarHionIOD1W1U1zzgL+oT2p6cbH8Wrya3K+XgVpNk+N
+         7oHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d347PGicPnHnSxrHiUKliUhsEGwWWeTMGutskcoO1f8=;
+        b=LX1/mGZ/ls64bnq1E+XkpkbMSdTSFaLjFdfFIyS+aahfGbUjceSnlgeLD4vG+zizPB
+         QXIn5PDRGzD0nFM48QQxPwo5RjZ9mCkkvMp4t6gKYMzNPC33FIp132mw0DpmToGgtbr9
+         p59TMe4gpLAc+BrURgWaH2OTnKoGWAdpw1vCmyncDoFTull5Z7tfsj0dUKMo7RVkw0Qz
+         wk5sDZ/+bxkWQkcNhpfTA5FCWgH0Ny0OXg42dpRI+IVg1Q4JmpymQ3mPr15BLjjuE9KW
+         XTW8Xq+bB0sVuvUZ6Be+VNxlCGSeC9MTiKsGbJu1XJCuc4JZjEk+8GFHQGNJV+UiIOXG
+         lI8Q==
+X-Gm-Message-State: ANoB5pk0qBvtVpmgDb73kWf0RCpf6xi/GimKTiGYxYCdmJkUSPLqx0tY
+        IjupoNoDLXgHrujaoJCtjns9vQ==
+X-Google-Smtp-Source: AA0mqf7uqmv4AbHgFCGUCfF/aINhYFGb6bNTPlW8AYXWDL6hu+2EPxT8e41XcOLKCYyw6vOEEc9eTg==
+X-Received: by 2002:a5d:628b:0:b0:242:26f0:d395 with SMTP id k11-20020a5d628b000000b0024226f0d395mr200276wru.510.1669716371830;
+        Tue, 29 Nov 2022 02:06:11 -0800 (PST)
+Received: from lavr ([81.6.34.132])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05600c4e9200b003c6c182bef9sm1978757wmq.36.2022.11.29.02.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 02:06:11 -0800 (PST)
+Date:   Tue, 29 Nov 2022 11:06:09 +0100
+From:   Anton Protopopov <aspsk@isovalent.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 5/8] selftests/bpf: Verify xdp_metadata
+ xdp->af_xdp path
+Message-ID: <Y4XZkZJHVvLgTIk9@lavr>
+References: <20221121182552.2152891-1-sdf@google.com>
+ <20221121182552.2152891-6-sdf@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221121182552.2152891-6-sdf@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 05:58:23PM -0800, Martin KaFai Lau wrote:
-> On 11/28/22 8:05 AM, Eyal Birger wrote:
-> > This change adds xfrm metadata helpers using the unstable kfunc call
-> > interface for the TC-BPF hooks. This allows steering traffic towards
-> > different IPsec connections based on logic implemented in bpf programs.
-> > 
-> > This object is built based on the availabilty of BTF debug info.
-> > 
-> > The metadata percpu dsts used on TX take ownership of the original skb
-> > dsts so that they may be used as part of the xfrm transmittion logic -
-> > e.g.  for MTU calculations.
-> 
-> A few quick comments and questions:
-> 
-> > 
-> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-> > ---
-> >   include/net/dst_metadata.h     |  1 +
-> >   include/net/xfrm.h             | 20 ++++++++
-> >   net/core/dst.c                 |  4 ++
-> >   net/xfrm/Makefile              |  6 +++
-> >   net/xfrm/xfrm_interface_bpf.c  | 92 ++++++++++++++++++++++++++++++++++
-> 
-> Please tag for bpf-next
+On 22/11/21 10:25, Stanislav Fomichev wrote:
+>
+> [...]
+>
+> +
+> +	if (bpf_xdp_metadata_rx_timestamp_supported(ctx))
+> +		meta->rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
+> +
+> +	if (bpf_xdp_metadata_rx_hash_supported(ctx))
+> +		meta->rx_hash = bpf_xdp_metadata_rx_hash(ctx);
 
-This is a change to xfrm ipsec, so it should go
-through the ipsec-next tree, unless there is
-a good reason for handling that different.
+Is there a case when F_supported and F are not called in a sequence? If not,
+then you can join them:
+
+	bool (*ndo_xdp_rx_timestamp)(const struct xdp_md *ctx, u64 *timestamp);
+
+so that a calling XDP program does one indirect call instead of two for one
+field
+
+	if (bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp)) {
+		/* ... couldn't get the timestamp */
+	}
