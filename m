@@ -2,95 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B35F63BC73
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 10:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5058663BD44
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 10:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiK2JCx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 04:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S229558AbiK2JuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 04:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbiK2JCv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 04:02:51 -0500
-Received: from mail.groupteam.pl (mail.groupteam.pl [51.75.73.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B95E2C0
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 01:02:47 -0800 (PST)
-Received: by mail.groupteam.pl (Postfix, from userid 1002)
-        id C709CA78B4; Tue, 29 Nov 2022 09:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=groupteam.pl; s=mail;
-        t=1669712462; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
-        h=Date:From:To:Subject:From;
-        b=euyElbld1GCWsd/bOQY211FxB+0OGKt44mK1Wpq7sWuYAD64RO+UJVE5vFNVJyGRV
-         e7hKUri3CAEQM+t0FeRpH9PosynuIg09JSWViW9pgLG4Whk7sWvnE2D4su+FS6qGiY
-         TbNQ10i8LnEZzJw97oVovW9gMBGQ42BvueR+uXlKfKoG1kXYCDdJuIdIQUNFInMGHC
-         +nYLKaKtgujbZ/Zv30TQv3UJicS5fCo7vcesh+MQT7u4cXvhBRm9AJ6d44hTXP5zjB
-         nDhYoIW/HJLlLDig7RU5orAHlfZ05iNFYSjmK1zVqGtvtW2TiM0io1lm3enldjfMag
-         WkKEVsys8hM/g==
-Received: by mail.groupteam.pl for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 09:00:06 GMT
-Message-ID: <20221129074500-0.1.6x.2j5m2.0.uxsar9r94x@groupteam.pl>
-Date:   Tue, 29 Nov 2022 09:00:06 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@groupteam.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Biznesowy angielski
-X-Mailer: mail.groupteam.pl
+        with ESMTP id S229611AbiK2JuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 04:50:07 -0500
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBCA2A97B;
+        Tue, 29 Nov 2022 01:50:05 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 18E7220199;
+        Tue, 29 Nov 2022 10:50:03 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HVnSnlaNbPSm; Tue, 29 Nov 2022 10:50:02 +0100 (CET)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 916CF20489;
+        Tue, 29 Nov 2022 10:50:02 +0100 (CET)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id 8A3AA80004A;
+        Tue, 29 Nov 2022 10:50:02 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 29 Nov 2022 10:50:02 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 29 Nov
+ 2022 10:50:02 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id B63D03182F22; Tue, 29 Nov 2022 10:50:01 +0100 (CET)
+Date:   Tue, 29 Nov 2022 10:50:01 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+CC:     Eyal Birger <eyal.birger@gmail.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <herbert@gondor.apana.org.au>,
+        <andrii@kernel.org>, <daniel@iogearbox.net>,
+        <nicolas.dichtel@6wind.com>, <razor@blackwall.org>,
+        <mykolal@fb.com>, <ast@kernel.org>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <shuah@kernel.org>
+Subject: Re: [PATCH ipsec-next 2/3] xfrm: interface: Add unstable helpers for
+ setting/getting XFRM metadata from TC-BPF
+Message-ID: <20221129095001.GV704954@gauss3.secunet.de>
+References: <20221128160501.769892-1-eyal.birger@gmail.com>
+ <20221128160501.769892-3-eyal.birger@gmail.com>
+ <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,
-        URIBL_DBL_SPAM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: groupteam.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [51.75.73.133 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: groupteam.pl]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [51.75.73.133 listed in bl.score.senderscore.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: *****
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+On Mon, Nov 28, 2022 at 05:58:23PM -0800, Martin KaFai Lau wrote:
+> On 11/28/22 8:05 AM, Eyal Birger wrote:
+> > This change adds xfrm metadata helpers using the unstable kfunc call
+> > interface for the TC-BPF hooks. This allows steering traffic towards
+> > different IPsec connections based on logic implemented in bpf programs.
+> > 
+> > This object is built based on the availabilty of BTF debug info.
+> > 
+> > The metadata percpu dsts used on TX take ownership of the original skb
+> > dsts so that they may be used as part of the xfrm transmittion logic -
+> > e.g.  for MTU calculations.
+> 
+> A few quick comments and questions:
+> 
+> > 
+> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> > ---
+> >   include/net/dst_metadata.h     |  1 +
+> >   include/net/xfrm.h             | 20 ++++++++
+> >   net/core/dst.c                 |  4 ++
+> >   net/xfrm/Makefile              |  6 +++
+> >   net/xfrm/xfrm_interface_bpf.c  | 92 ++++++++++++++++++++++++++++++++++
+> 
+> Please tag for bpf-next
 
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
-
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
-
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
-
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
-
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
-
-
-Pozdrawiam
-Krzysztof Maj
+This is a change to xfrm ipsec, so it should go
+through the ipsec-next tree, unless there is
+a good reason for handling that different.
