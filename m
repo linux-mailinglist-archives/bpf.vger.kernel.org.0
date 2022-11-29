@@ -2,69 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1022063BBCF
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 09:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E670463BBEF
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 09:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbiK2Iie (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 03:38:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
+        id S229757AbiK2Ips (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 03:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbiK2IiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 03:38:00 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1EA5ADF1;
-        Tue, 29 Nov 2022 00:36:43 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-3bfd998fa53so78739827b3.5;
-        Tue, 29 Nov 2022 00:36:43 -0800 (PST)
+        with ESMTP id S229733AbiK2Ipq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 03:45:46 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B97B24F18
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 00:45:45 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id h11so13609226wrw.13
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 00:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pfkOEndp/yx+JRjSBn9cHN5l3i+pxuuJ2RW6geOPhYw=;
-        b=ZR+jEz0dzvk6xpPXj53lxM8aL/yM5BPKAlEKuEb2t2ZaMZ1JH83eYMMAMZehcWRpmG
-         kw46HaFKI48cro0faLI2xks648p73ZPWsjxjhNeVUov/LMYm/F1W8r3tUSmgufoRvcZw
-         Q+PxLywuZwFkwAjfImeVfX9QTz75wNwFWAP74bf84Sp24JPHIBxl2YJj4dsJGIVkEblU
-         PoDQZjAcp0pERxMYnggb5Potc6S9sL4Odyxb5PGnBNz6J+y1WHDdhCNlTsvNugvLf3UZ
-         i52QonMdSY/eGGRGj5v+zu9PVsy4/7tm04ktjA/bK5jzszlseIK5aBL/jDtBmozyKaDr
-         LnKw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nYOiFh0O5fHhs5PivAYynaFc3zdwIOfw8CsMjTkTsdo=;
+        b=Qo+ACEzwAY/0Bhr4LKc8ZeGHXsg0xOXLnotVO9LoEvIBXlcG5rhFO7uVKWwnhq+k8m
+         dE4/G46DdvOWNfukovTuvHVDSAYTWZGE00QR/yIWP6fKhMRdkxgIWBzfqgR1euLyAtfs
+         SqADAkwmrFliU4Mux9RzWvEqPVBa8krLLWVMQFGz3T70RZkx4xSNgcC6jfAdMzsjYad3
+         AYpxkq1dYOOok46gjB3n5s/V+rH2GH+YS46RFnaBylnE40OLIN6Ztj1r7Y1bP1PxnNHh
+         ZNFehiPunTZ5dHt/E4cyUELf3DCq4xR36hgqlUVArjl84RSk5QS2rZ8PiEZkmxwnikef
+         hsyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pfkOEndp/yx+JRjSBn9cHN5l3i+pxuuJ2RW6geOPhYw=;
-        b=zudvzIqIQfn2s590F1ALKkI2n5DaqI8kGGy9DVXDRdBfzfkvtKQy9YrPfEDS4hWGYd
-         RJbbikj2bOmzj0z9HXdr8dHRDkanoZqbWfGVqiQjz0rRGGhJRAvwftSGxCXrda1v6cef
-         VGWOQ7icuPtxzk0TCXKQc29ctP0A+bKuORTiv8Wq1EKiFOWWe66Du2+eME9YPnLfpy0+
-         KzArG0eej9NkaVervM7ifyamPClrEoS0xr12c73ULu5YIvdX0S6rLRsfwCH3oDkdwvMA
-         Fk6Z7kCmfkKKtzG6w5b6IMRzYhdoVDML4X+iN7Y05vhGa5QvIspVG5eC3LsodYwlPyAy
-         RUZQ==
-X-Gm-Message-State: ANoB5pl5Kk1F+xCha25QRJvgWZlXgtjR+qlXcm4rMtKYwrIBhasWregj
-        i/gqcE1diQn/NJOedW/VA2UZJq34c156IxzoaYbFh52oGA10tg==
-X-Google-Smtp-Source: AA0mqf4DCk0ParghyE4fj9eZZvvy0WbsGmVGy4yuDDXlIYdulWkpQwpmAj3+HsVlzh+fSws2ifKlC2iPCo+5pyrHq5c=
-X-Received: by 2002:a81:9bc6:0:b0:373:45d9:2263 with SMTP id
- s189-20020a819bc6000000b0037345d92263mr52738017ywg.507.1669711002850; Tue, 29
- Nov 2022 00:36:42 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nYOiFh0O5fHhs5PivAYynaFc3zdwIOfw8CsMjTkTsdo=;
+        b=pIru9hOBP3/7H+u1u/wVnfl4D1OgvnwJe5vdocEX542yEf+fQHNhI9nQme6f0bOSeD
+         FjlGMoRyFtF/pdGx6pWhOXxTiec40IUIheniueQsf871K19fxIfGwBZHNvuypFyVLuU8
+         lWlq1DvdeBljRGqLMNeezfPo3KgsI6IRz9+BgLD0uXoAAhwc0LU3TrQjI4jcTlHbqedy
+         wG2WR0DGU3J+Uvzj6D4ymzTyLr3Mxb4XAgf5SegAQVrGMApQRlxiuPmLrvLTZqgqj5t2
+         OTqGc36Qu1tW4WhpcqVuyIDjVE0F7G8oyEwQNPAKS42/d1nI3umcYO5RxZwB/ZMiIGca
+         8txg==
+X-Gm-Message-State: ANoB5pmPPrZa4FHRAG6HGxVWSyFxiqkd94MYRtcHI7o5x2GvgthNHasg
+        oWXbUMfGdLLLa4H/faInAj0=
+X-Google-Smtp-Source: AA0mqf7uIx8NYB6xzQWr0AekWPq+SJifdqOz7KZHvnqDxHHHgK7KDfFpLVfytgG0qzfwUTXunz5LKg==
+X-Received: by 2002:a5d:5914:0:b0:236:57f3:c9e6 with SMTP id v20-20020a5d5914000000b0023657f3c9e6mr33622981wrd.21.1669711543567;
+        Tue, 29 Nov 2022 00:45:43 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id i9-20020adfdec9000000b00228dbf15072sm12585334wrn.62.2022.11.29.00.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 00:45:43 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 29 Nov 2022 09:45:41 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCHv4 bpf-next 2/4] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+Message-ID: <Y4XGtR9OkHSZumnI@krava>
+References: <20221128132915.141211-1-jolsa@kernel.org>
+ <20221128132915.141211-3-jolsa@kernel.org>
+ <CAADnVQLD0s07y=K1cEisnwFDgFEVw0egbLhx-PzVHTDQ9SOmdg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20221128160501.769892-1-eyal.birger@gmail.com>
- <20221128160501.769892-3-eyal.birger@gmail.com> <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
-In-Reply-To: <c8a2d940-ff85-c952-74d0-25ad2c33c1af@linux.dev>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Tue, 29 Nov 2022 10:36:31 +0200
-Message-ID: <CAHsH6Gtfe-nPTpquN=25gWuGL3ZGg9tBeQ=nFJGmtPNbMM0ghQ@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next 2/3] xfrm: interface: Add unstable helpers for
- setting/getting XFRM metadata from TC-BPF
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
-        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLD0s07y=K1cEisnwFDgFEVw0egbLhx-PzVHTDQ9SOmdg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,195 +81,105 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(sent again in plain text, sorry for the noise).
-
-Hi Martin.
-
-On Tue, Nov 29, 2022 at 3:58 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 11/28/22 8:05 AM, Eyal Birger wrote:
-> > This change adds xfrm metadata helpers using the unstable kfunc call
-> > interface for the TC-BPF hooks. This allows steering traffic towards
-> > different IPsec connections based on logic implemented in bpf programs.
+On Mon, Nov 28, 2022 at 01:36:03PM -0800, Alexei Starovoitov wrote:
+> On Mon, Nov 28, 2022 at 5:29 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > This object is built based on the availabilty of BTF debug info.
+> > Adding bpf_vma_build_id_parse function to retrieve build id from
+> > passed vma object and making it available as bpf kfunc.
 > >
-> > The metadata percpu dsts used on TX take ownership of the original skb
-> > dsts so that they may be used as part of the xfrm transmittion logic -
-> > e.g.  for MTU calculations.
->
-> A few quick comments and questions:
-
-Thanks for your comments!
-
->
+> > We can't use build_id_parse directly as kfunc, because we would
+> > not have control over the build id buffer size provided by user.
 > >
-> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> > Instead we are adding new bpf_vma_build_id_parse function with
+> > 'build_id__sz' argument that instructs verifier to check for the
+> > available space in build_id buffer.
+> >
+> > This way we check that there's always available memory space
+> > behind build_id pointer. We also check that the build_id__sz is
+> > at least BUILD_ID_SIZE_MAX so we can place any buildid in.
+> >
+> > The bpf_vma_build_id_parse kfunc is marked as KF_TRUSTED_ARGS,
+> > so it can be only called with trusted vma objects. These are
+> > currently provided only by find_vma callback function and
+> > task_vma iterator program.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >   include/net/dst_metadata.h     |  1 +
-> >   include/net/xfrm.h             | 20 ++++++++
-> >   net/core/dst.c                 |  4 ++
-> >   net/xfrm/Makefile              |  6 +++
-> >   net/xfrm/xfrm_interface_bpf.c  | 92 ++++++++++++++++++++++++++++++++++
->
-> Please tag for bpf-next
-Sure. I wasn't totally sure which tree this belongs to.
-
->
-> >   net/xfrm/xfrm_interface_core.c | 15 ++++++
-> >   6 files changed, 138 insertions(+)
-> >   create mode 100644 net/xfrm/xfrm_interface_bpf.c
+> >  include/linux/bpf.h      |  4 ++++
+> >  kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
+> >  2 files changed, 35 insertions(+)
 > >
-> > diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
-> > index a454cf4327fe..1b7fae4c6b24 100644
-> > --- a/include/net/dst_metadata.h
-> > +++ b/include/net/dst_metadata.h
-> > @@ -26,6 +26,7 @@ struct macsec_info {
-> >   struct xfrm_md_info {
-> >       u32 if_id;
-> >       int link;
-> > +     struct dst_entry *dst_orig;
-> >   };
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index c6aa6912ea16..359c8fe11779 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -2839,4 +2839,8 @@ static inline bool type_is_alloc(u32 type)
+> >         return type & MEM_ALLOC;
+> >  }
 > >
-> >   struct metadata_dst {
->
-> [ ... ]
->
-> > diff --git a/net/core/dst.c b/net/core/dst.c
-> > index bc9c9be4e080..4c2eb7e56dab 100644
-> > --- a/net/core/dst.c
-> > +++ b/net/core/dst.c
-> > @@ -315,6 +315,8 @@ void metadata_dst_free(struct metadata_dst *md_dst)
-> >   #ifdef CONFIG_DST_CACHE
-> >       if (md_dst->type == METADATA_IP_TUNNEL)
-> >               dst_cache_destroy(&md_dst->u.tun_info.dst_cache);
-> > +     else if (md_dst->type == METADATA_XFRM)
-> > +             dst_release(md_dst->u.xfrm_info.dst_orig);
->
-> Why only release dst_orig under CONFIG_DST_CACHE?
-It's a relic from a previous version where I'd used dst cache.
-Will move out of this ifdef.
-
->
-> >   #endif
-> >       kfree(md_dst);
-> >   }
-> > @@ -348,6 +350,8 @@ void metadata_dst_free_percpu(struct metadata_dst __percpu *md_dst)
+> > +int bpf_vma_build_id_parse(struct vm_area_struct *vma,
+> > +                          unsigned char *build_id,
+> > +                          size_t build_id__sz);
+> > +
+> >  #endif /* _LINUX_BPF_H */
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 3bbd3f0c810c..7340de74531a 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -23,6 +23,7 @@
+> >  #include <linux/sort.h>
+> >  #include <linux/key.h>
+> >  #include <linux/verification.h>
+> > +#include <linux/buildid.h>
 > >
-> >               if (one_md_dst->type == METADATA_IP_TUNNEL)
-> >                       dst_cache_destroy(&one_md_dst->u.tun_info.dst_cache);
-> > +             else if (one_md_dst->type == METADATA_XFRM)
-> > +                     dst_release(one_md_dst->u.xfrm_info.dst_orig);
->
-> Same here.
-
-Likewise.
-
->
-> [ ... ]
->
-> > diff --git a/net/xfrm/xfrm_interface_bpf.c b/net/xfrm/xfrm_interface_bpf.c
-> > new file mode 100644
-> > index 000000000000..d3997ab7cc28
-> > --- /dev/null
-> > +++ b/net/xfrm/xfrm_interface_bpf.c
-> > @@ -0,0 +1,92 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Unstable XFRM Helpers for TC-BPF hook
-> > + *
-> > + * These are called from SCHED_CLS BPF programs. Note that it is
-> > + * allowed to break compatibility for these functions since the interface they
-> > + * are exposed through to BPF programs is explicitly unstable.
-> > + */
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <linux/btf_ids.h>
-> > +
-> > +#include <net/dst_metadata.h>
-> > +#include <net/xfrm.h>
-> > +
-> > +struct bpf_xfrm_info {
-> > +     u32 if_id;
-> > +     int link;
-> > +};
-> > +
-> > +static struct metadata_dst __percpu *xfrm_md_dst;
-> > +__diag_push();
-> > +__diag_ignore_all("-Wmissing-prototypes",
-> > +               "Global functions as their definitions will be in xfrm_interface BTF");
-> > +
-> > +__used noinline
-> > +int bpf_skb_get_xfrm_info(struct __sk_buff *skb_ctx, struct bpf_xfrm_info *to)
+> >  #include <net/bpf_sk_storage.h>
+> >
+> > @@ -1383,6 +1384,36 @@ static int __init bpf_key_sig_kfuncs_init(void)
+> >  late_initcall(bpf_key_sig_kfuncs_init);
+> >  #endif /* CONFIG_KEYS */
+> >
+> > +int bpf_vma_build_id_parse(struct vm_area_struct *vma,
+> > +                          unsigned char *build_id,
+> > +                          size_t build_id__sz)
 > > +{
-> > +     struct sk_buff *skb = (struct sk_buff *)skb_ctx;
-> > +     struct xfrm_md_info *info;
+> > +       __u32 size;
+> > +       int err;
 > > +
-> > +     memset(to, 0, sizeof(*to));
+> > +       if (build_id__sz < BUILD_ID_SIZE_MAX)
+> > +               return -EINVAL;
 > > +
-> > +     info = skb_xfrm_md_info(skb);
-> > +     if (!info)
-> > +             return -EINVAL;
-> > +
-> > +     to->if_id = info->if_id;
-> > +     to->link = info->link;
-> > +     return 0;
+> > +       err = build_id_parse(vma, build_id, &size);
+> > +       return err ?: (int) size;
+> 
+> if err is positive the caller won't be able
+> to distinguish it vs size.
+
+that should not happen, build_id_parse returns either < 0 for error, or 0 for success
+
+> 
 > > +}
 > > +
-> > +__used noinline
-> > +int bpf_skb_set_xfrm_info(struct __sk_buff *skb_ctx,
-> > +                       const struct bpf_xfrm_info *from)
-> > +{
-> > +     struct sk_buff *skb = (struct sk_buff *)skb_ctx;
-> > +     struct metadata_dst *md_dst;
-> > +     struct xfrm_md_info *info;
+> > +BTF_SET8_START(tracing_btf_ids)
+> > +BTF_ID_FLAGS(func, bpf_vma_build_id_parse, KF_TRUSTED_ARGS)
+> > +BTF_SET8_END(tracing_btf_ids)
 > > +
-> > +     if (unlikely(skb_metadata_dst(skb)))
-> > +             return -EINVAL;
-> > +
-> > +     md_dst = this_cpu_ptr(xfrm_md_dst);
-> > +
-> > +     info = &md_dst->u.xfrm_info;
-> > +     memset(info, 0, sizeof(*info));
-> > +
-> > +     info->if_id = from->if_id;
-> > +     info->link = from->link;
-> > +     info->dst_orig = skb_dst(skb);
-> However, the dst_orig init is not done under CONFIG_DST_CACHE though...
->
-> Also, is it possible that skb->_skb_refdst has SKB_DST_NOREF set and later below
-> ... (contd)
-Nice catch! will force dst is refcounted.
-
->
-> > +
-> > +     dst_hold((struct dst_entry *)md_dst);
-> > +     skb_dst_set(skb, (struct dst_entry *)md_dst);
-> > +     return 0;
-> > +}
-> > +
-> > +__diag_pop()
-> > +
-> > +BTF_SET8_START(xfrm_ifc_kfunc_set)
-> > +BTF_ID_FLAGS(func, bpf_skb_get_xfrm_info)
-> > +BTF_ID_FLAGS(func, bpf_skb_set_xfrm_info)
-> > +BTF_SET8_END(xfrm_ifc_kfunc_set)
-> > +
-> > +static const struct btf_kfunc_id_set xfrm_interface_kfunc_set = {
-> > +     .owner = THIS_MODULE,
-> > +     .set   = &xfrm_ifc_kfunc_set,
+> > +static const struct btf_kfunc_id_set tracing_kfunc_set = {
+> > +       .owner = THIS_MODULE,
+> > +       .set   = &tracing_btf_ids,
 > > +};
 > > +
-> > +int __init register_xfrm_interface_bpf(void)
+> > +static int __init kfunc_tracing_init(void)
 > > +{
-> > +     xfrm_md_dst = metadata_dst_alloc_percpu(0, METADATA_XFRM,
-> > +                                             GFP_KERNEL);
-> > +     if (!xfrm_md_dst)
-> > +             return -ENOMEM;
-> > +     return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
-> > +                                      &xfrm_interface_kfunc_set);
->
-> Will cleanup_xfrm_interface_bpf() be called during error ?
-No. Will fix in v2.
+> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &tracing_kfunc_set);
+> > +}
+> > +
+> > +late_initcall(kfunc_tracing_init);
+> 
+> Its own btf_id set and its own late_initcall just for one kfunc?
+> Please reduce this boilerplate code.
+> Move it to kernel/bpf/helpers.c ?
 
-Thanks!
-Eyal.
+ok, will move it
+
+thanks,
+jirka
