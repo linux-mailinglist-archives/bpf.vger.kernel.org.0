@@ -2,158 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C0563C0AF
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 14:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD5763C0DE
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 14:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbiK2NNL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 08:13:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
+        id S232428AbiK2NVc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 08:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbiK2NMj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 08:12:39 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FE861BB7;
-        Tue, 29 Nov 2022 05:11:23 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4NM2b870fsz9yHSc;
-        Tue, 29 Nov 2022 21:03:48 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDnGvexBIZjFeWlAA--.44616S2;
-        Tue, 29 Nov 2022 14:10:22 +0100 (CET)
-Message-ID: <b01474bc5f19e98ff30ddc16a5d783c84ed1a486.camel@huaweicloud.com>
-Subject: Re: [PATCH v5] evm: Correct inode_init_security hooks behaviors
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        philippe.trebuchet@ssi.gouv.fr, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        casey@schaufler-ca.com, davem@davemloft.net, lucien.xin@gmail.com,
-        vgoyal@redhat.com, omosnace@redhat.com, mortonm@chromium.org,
-        nicolas.bouchinet@ssi.gouv.fr, mic@digikod.net,
-        cgzones@googlemail.com, linux-security-module@vger.kernel.org,
-        kpsingh@kernel.org, revest@chromium.org, jackmanb@chromium.org,
-        bpf@vger.kernel.org
-Date:   Tue, 29 Nov 2022 14:10:06 +0100
-In-Reply-To: <Y4YCElqX9jp5r8sO@archlinux>
-References: <Y4Dl2yjVRkJvBflq@archlinux>
-         <086b6d26895b84ad4086ac9f191ede6f705f9b6b.camel@linux.ibm.com>
-         <Y4YCElqX9jp5r8sO@archlinux>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S231599AbiK2NVa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 08:21:30 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9512E6AA;
+        Tue, 29 Nov 2022 05:21:29 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ud5so33728856ejc.4;
+        Tue, 29 Nov 2022 05:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BEXWF8wgzcW7ZxjWPkx8+f4d2FRc8kR6F94i8AKGlUg=;
+        b=HK/K2+2FWyjoqylZx2+vJVjnkw1p19ppDmICsC1ofo5sLP3pBdzAd53N7Nnos/UxGx
+         lqoPx63RqsxGc27X3QJbvWN6EhGuGlTam88Pht0puI8VI3FzYn7ACSpVh3ltZeMIMHfq
+         ClKTPuMNTb21oCLjT4AC2thFqyM9oHWbEiO2C+nvR6T9Csu5Q0YcA8NIkgqmjv95vKY3
+         2LWcbybG8S063IHIFERLvBKl6pLKjkI7DUZgF2GcCK4ItO074s/HbG1jVAo3Z1ZS648N
+         FYqW2b0k30dZIkjQbPZPrEZl26YadVRHlxTipuedQ1P2hZstWKYBJKpBiYv+/0MDaVM8
+         GQIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BEXWF8wgzcW7ZxjWPkx8+f4d2FRc8kR6F94i8AKGlUg=;
+        b=g37hgP1aEO5aNLfsCKLaLBWYHVY4LrYQhigkMMQ4ChYQcUYMV1rosF8zlIscCv01y3
+         iw4/7PS9PJOwJnnGUkMGPfazm27NEzIdNV8+LGvu17gt3sr9U8eWqamj3nBLI7hVzEXc
+         B30+xnqZIHZ8GxcLHNwKK3I2E2ma2EmXv1xzXpl/1+6FgR4PTbBMN5/54ebPnT3iRcW8
+         fkVfernDSiS6AeXCgya3HbmfushAOIZnjuUdpiDGtwfZ8ekVGTcSNKC+gLMPms35q5WN
+         AceZ+9jY9uR6TP9Mc5bqw8gfbrE8QjrdgC73JhovbM619i6NEwVC99q1k5CVT3xBhkyy
+         EV3g==
+X-Gm-Message-State: ANoB5pmyBaMBbFN4Z8U9Et1D/mnC82hVckc9rIeS8k+yb3XPvGT3XQJ8
+        JftE2UDVtcLBQ49/6kstxaM=
+X-Google-Smtp-Source: AA0mqf6RtGGkq6T8Wnu1E/U7OSSnj6Hov/AcUY+iag3ZCepKSrzMTbng17pYZEAnBUOf4iOa6neuXQ==
+X-Received: by 2002:a17:906:c18c:b0:7b2:8a6e:c569 with SMTP id g12-20020a170906c18c00b007b28a6ec569mr48548337ejz.582.1669728087975;
+        Tue, 29 Nov 2022 05:21:27 -0800 (PST)
+Received: from jimi.localdomain ([213.57.189.88])
+        by smtp.gmail.com with ESMTPSA id v25-20020aa7d9d9000000b00458a03203b1sm6252632eds.31.2022.11.29.05.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 05:21:27 -0800 (PST)
+From:   Eyal Birger <eyal.birger@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, andrii@kernel.org,
+        daniel@iogearbox.net, nicolas.dichtel@6wind.com,
+        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Eyal Birger <eyal.birger@gmail.com>
+Subject: [PATCH ipsec-next,v2 0/3] xfrm: interface: Add unstable helpers for XFRM metadata
+Date:   Tue, 29 Nov 2022 15:20:15 +0200
+Message-Id: <20221129132018.985887-1-eyal.birger@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwDnGvexBIZjFeWlAA--.44616S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr18KFWUJrW8uw17GFW7Jwb_yoW5Aw4DpF
-        W3tasIkr4DtF48WrW3tF4UZw4SkrWSgrWDWFn7C34jvas8Kr1xtrWSvF4Y9Fyfur4FkFyq
-        qF12y3W3Zwn8A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj4YGrQABsT
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-11-29 at 13:58 +0100, Nicolas Bouchinet wrote:
-> Hi Mimi,
-> 
-> On Tue, Nov 29, 2022 at 06:28:09AM -0500, Mimi Zohar wrote:
-> > On Fri, 2022-11-25 at 16:57 +0100, Nicolas Bouchinet wrote:
-> > > From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
-> > > 
-> > > Fixes a NULL pointer dereference occurring in the
-> > > `evm_protected_xattr_common` function of the EVM LSM. The bug is
-> > > triggered if a `inode_init_security` hook returns 0 without initializing
-> > > the given `struct xattr` fields (which is the case of BPF) and if no
-> > > other LSM overrides thoses fields after. This also leads to memory
-> > > leaks.
-> > > 
-> > > The `call_int_hook_xattr` macro has been inlined into the
-> > > `security_inode_init_security` hook in order to check hooks return
-> > > values and skip ones who doesn't init `xattrs`.
-> > > 
-> > > Modify `evm_init_hmac` function to init the EVM hmac using every
-> > > entry of the given xattr array.
-> > > 
-> > > The `MAX_LSM_EVM_XATTR` value is now based on the security modules
-> > > compiled in, which gives room for SMACK, SELinux, Apparmor, BPF and
-> > > IMA/EVM security attributes.
-> > > 
-> > > Changes the default return value of the `inode_init_security` hook
-> > > definition to `-EOPNOTSUPP`.
-> > > 
-> > > Changes the hook documentation to match the behavior of the LSMs using
-> > > it (only xattr->value is initialised with kmalloc and thus is the only
-> > > one that should be kfreed by the caller).
-> > > 
-> > > Cc: roberto.sassu@huaweicloud.com
-> > > Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
-> > 
-> > What  is the relationship between this patch and Roberto's patch set? 
-> > Roberto, if there is an overlap, then at minimum there should be a
-> > Reported-by tag indicating that your patch set addresses a bug reported
-> > by Nicolas.
-> 
-> This patch fixes the EVM NULL pointer dereference I have reported, and additionally
-> improves the stackability of this LSM hook. This latter improvement was originally
-> addressed by Roberto's patchset, and thus I see no problem for my fix to be merged
-> within his patchset.
+This patch series adds xfrm metadata helpers using the unstable kfunc
+call interface for the TC-BPF hooks.
 
-+       if (!num_filled_xattrs)
-                goto out;
- 
--       evm_xattr = lsm_xattr + 1;
--       ret = evm_inode_init_security(inode, lsm_xattr, evm_xattr);
-+       ret = evm_inode_init_security(inode, new_xattrs,
-+                                     new_xattrs + num_filled_xattrs);
+This allows steering traffic towards different IPsec connections based
+on logic implemented in bpf programs.
 
-This part of patch 4 should be enough to fix the issue, until EVM is
-outside the LSM infrastructure.
+The helpers are integrated into the xfrm_interface module. For this
+purpose the main functionality of this module is moved to
+xfrm_interface_core.c.
 
-It prevents EVM from being called if there are no xattrs filled (the
-panic occurred due to xattr->name being NULL).
+Eyal Birger (3):
+  xfrm: interface: rename xfrm_interface.c to xfrm_interface_core.c
+  xfrm: interface: Add unstable helpers for setting/getting XFRM
+    metadata from TC-BPF
+  selftests/bpf: add xfrm_info tests
 
-Then, this part of patch 6:
+ include/net/dst_metadata.h                    |   1 +
+ include/net/xfrm.h                            |  20 +
+ net/core/dst.c                                |   8 +-
+ net/xfrm/Makefile                             |   8 +
+ net/xfrm/xfrm_interface_bpf.c                 | 100 +++++
+ ...xfrm_interface.c => xfrm_interface_core.c} |  15 +
+ tools/testing/selftests/bpf/config            |   2 +
+ .../selftests/bpf/prog_tests/test_xfrm_info.c | 343 ++++++++++++++++++
+ .../selftests/bpf/progs/test_xfrm_info_kern.c |  74 ++++
+ 9 files changed, 569 insertions(+), 2 deletions(-)
+ create mode 100644 net/xfrm/xfrm_interface_bpf.c
+ rename net/xfrm/{xfrm_interface.c => xfrm_interface_core.c} (98%)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_xfrm_info.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xfrm_info_kern.c
 
-+       for (xattr = xattrs; xattr->value != NULL; xattr++) {
-+               if (evm_protected_xattr(xattr->name))
-+                       evm_protected_xattrs = true;
-+       }
-+
-+       /* EVM xattr not needed. */
-+       if (!evm_protected_xattrs)
-+               return -EOPNOTSUPP;
-
-should be sufficient for when EVM is managed by the LSM infrastructure.
-
-security_check_compact_filled_xattrs() ensures that if xattr->value is
-not NULL, xattr->name is not NULL too.
-
-Roberto
-
-> > -- 
-> > thanks,
-> > 
-> > Mimi
-> > 
-> 
-> Thanks for your time,
-> 
-> Nicolas Bouchinet
+-- 
+2.34.1
 
