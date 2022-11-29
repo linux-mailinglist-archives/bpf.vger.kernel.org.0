@@ -2,139 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB33263B915
-	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 05:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B23663B91F
+	for <lists+bpf@lfdr.de>; Tue, 29 Nov 2022 05:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbiK2EUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Nov 2022 23:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S234875AbiK2EcU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Nov 2022 23:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234994AbiK2EUn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Nov 2022 23:20:43 -0500
+        with ESMTP id S234005AbiK2EcT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Nov 2022 23:32:19 -0500
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D675A63E4;
-        Mon, 28 Nov 2022 20:20:41 -0800 (PST)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NLpym6sVnzmWDk;
-        Tue, 29 Nov 2022 12:20:00 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
- (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 29 Nov
- 2022 12:20:39 +0800
-From:   Zhengchao Shao <shaozhengchao@huawei.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>,
-        <syzkaller-bugs@googlegroups.com>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <shaozhengchao@huawei.com>
-Subject: [PATCH bpf-next] bpf, test_run: fix alignment problem in bpf_test_init()
-Date:   Tue, 29 Nov 2022 12:26:44 +0800
-Message-ID: <20221129042644.231816-1-shaozhengchao@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6115B2649B;
+        Mon, 28 Nov 2022 20:32:17 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NLqD83gK9zmWGm;
+        Tue, 29 Nov 2022 12:31:36 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 29 Nov 2022 12:32:14 +0800
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Hao Luo <haoluo@google.com>
+References: <20221121100521.56601-1-xiangxia.m.yue@gmail.com>
+ <20221121100521.56601-2-xiangxia.m.yue@gmail.com>
+ <7ed2f531-79a3-61fe-f1c2-b004b752c3f7@huawei.com>
+ <CAMDZJNUiPOcnpNg8tM4xCoJABJz_3=AaXLTm5ofQg64mGDkB_A@mail.gmail.com>
+ <9278cf3f-dfb6-78eb-8862-553545dac7ed@huawei.com>
+ <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+ <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+ <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com>
+ <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
+ <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com>
+Date:   Tue, 29 Nov 2022 12:32:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500026.china.huawei.com (7.185.36.106)
+In-Reply-To: <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The problem reported by syz is as follows:
-BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x230/0x330
-Write of size 32 at addr ffff88807ec6b2c0 by task bpf_repo/6711
-Call Trace:
-<TASK>
-dump_stack_lvl+0x8e/0xd1
-print_report+0x155/0x454
-kasan_report+0xba/0x1f0
-kasan_check_range+0x35/0x1b0
-memset+0x20/0x40
-__build_skb_around+0x230/0x330
-build_skb+0x4c/0x260
-bpf_prog_test_run_skb+0x2fc/0x1ce0
-__sys_bpf+0x1798/0x4b60
-__x64_sys_bpf+0x75/0xb0
-do_syscall_64+0x35/0x80
-entry_SYSCALL_64_after_hwframe+0x46/0xb0
-</TASK>
+Hi,
 
-Allocated by task 6711:
-kasan_save_stack+0x1e/0x40
-kasan_set_track+0x21/0x30
-__kasan_kmalloc+0xa1/0xb0
-__kmalloc+0x4e/0xb0
-bpf_test_init.isra.0+0x77/0x100
-bpf_prog_test_run_skb+0x219/0x1ce0
-__sys_bpf+0x1798/0x4b60
-__x64_sys_bpf+0x75/0xb0
-do_syscall_64+0x35/0x80
-entry_SYSCALL_64_after_hwframe+0x46/0xb0
+On 11/29/2022 5:55 AM, Hao Luo wrote:
+> On Sun, Nov 27, 2022 at 7:15 PM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
+> Hi Tonghao,
+>
+> With a quick look at the htab_lock_bucket() and your problem
+> statement, I agree with Hou Tao that using hash &
+> min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1) to index in map_locked seems
+> to fix the potential deadlock. Can you actually send your changes as
+> v2 so we can take a look and better help you? Also, can you explain
+> your solution in your commit message? Right now, your commit message
+> has only a problem statement and is not very clear. Please include
+> more details on what you do to fix the issue.
+>
+> Hao
+It would be better if the test case below can be rewritten as a bpf selftests.
+Please see comments below on how to improve it and reproduce the deadlock.
+>
+>> Hi
+>> only a warning from lockdep.
+Thanks for your details instruction.  I can reproduce the warning by using your
+setup. I am not a lockdep expert, it seems that fixing such warning needs to set
+different lockdep class to the different bucket. Because we use map_locked to
+protect the acquisition of bucket lock, so I think we can define  lock_class_key
+array in bpf_htab (e.g., lockdep_key[HASHTAB_MAP_LOCK_COUNT]) and initialize the
+bucket lock accordingly.
 
-The process is as follows:
-bpf_prog_test_run_skb()
-	bpf_test_init()
-		data = kzalloc()	//The length of input is 576.
-					//The actual allocated memory
-					//size is 1024.
-	build_skb()
-		__build_skb_around()
-			size = ksize(data)//size = 1024
-			size -= SKB_DATA_ALIGN(
-					sizeof(struct skb_shared_info));
-					//size = 704
-			skb_set_end_offset(skb, size);
-			shinfo = skb_shinfo(skb);//shinfo = data + 704
-			memset(shinfo...)	//Write out of bounds
+>> 1. the kernel .config
+>> #
+>> # Debug Oops, Lockups and Hangs
+>> #
+>> CONFIG_PANIC_ON_OOPS=y
+>> CONFIG_PANIC_ON_OOPS_VALUE=1
+>> CONFIG_PANIC_TIMEOUT=0
+>> CONFIG_LOCKUP_DETECTOR=y
+>> CONFIG_SOFTLOCKUP_DETECTOR=y
+>> # CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
+>> CONFIG_HARDLOCKUP_DETECTOR_PERF=y
+>> CONFIG_HARDLOCKUP_CHECK_TIMESTAMP=y
+>> CONFIG_HARDLOCKUP_DETECTOR=y
+>> CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
+>> CONFIG_DETECT_HUNG_TASK=y
+>> CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=120
+>> # CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
+>> # CONFIG_WQ_WATCHDOG is not set
+>> # CONFIG_TEST_LOCKUP is not set
+>> # end of Debug Oops, Lockups and Hangs
+>>
+>> 2. bpf.c, the map size is 2.
+>> struct {
+>> __uint(type, BPF_MAP_TYPE_HASH);
+Adding __uint(map_flags, BPF_F_ZERO_SEED); to ensure there will be no seed for
+hash calculation, so we can use key=4 and key=20 to construct the case that
+these two keys have the same bucket index but have different map_locked index.
+>> __uint(max_entries, 2);
+>> __uint(key_size, sizeof(unsigned int));
+>> __uint(value_size, sizeof(unsigned int));
+>> } map1 SEC(".maps");
+>>
+>> static int bpf_update_data()
+>> {
+>> unsigned int val = 1, key = 0;
+key = 20
+>>
+>> return bpf_map_update_elem(&map1, &key, &val, BPF_ANY);
+>> }
+>>
+>> SEC("kprobe/ip_rcv")
+>> int bpf_prog1(struct pt_regs *regs)
+>> {
+>> bpf_update_data();
+>> return 0;
+>> }
+kprobe on ip_rcv is unnecessary, you can just remove it.
+>>
+>> SEC("tracepoint/nmi/nmi_handler")
+>> int bpf_prog2(struct pt_regs *regs)
+>> {
+>> bpf_update_data();
+>> return 0;
+>> }
+Please use SEC("fentry/nmi_handle") instead of SEC("tracepoint") and unfold
+bpf_update_data(), because the running of bpf program on tracepoint will be
+blocked by bpf_prog_active which will be increased bpf_map_update_elem through
+bpf_disable_instrumentation().
+>>
+>> char _license[] SEC("license") = "GPL";
+>> unsigned int _version SEC("version") = LINUX_VERSION_CODE;
+>>
+>> 3. bpf loader.
+>> #include "kprobe-example.skel.h"
+>>
+>> #include <unistd.h>
+>> #include <errno.h>
+>>
+>> #include <bpf/bpf.h>
+>>
+>> int main()
+>> {
+>> struct kprobe_example *skel;
+>> int map_fd, prog_fd;
+>> int i;
+>> int err = 0;
+>>
+>> skel = kprobe_example__open_and_load();
+>> if (!skel)
+>> return -1;
+>>
+>> err = kprobe_example__attach(skel);
+>> if (err)
+>> goto cleanup;
+>>
+>> /* all libbpf APIs are usable */
+>> prog_fd = bpf_program__fd(skel->progs.bpf_prog1);
+>> map_fd = bpf_map__fd(skel->maps.map1);
+>>
+>> printf("map_fd: %d\n", map_fd);
+>>
+>> unsigned int val = 0, key = 0;
+>>
+>> while (1) {
+>> bpf_map_delete_elem(map_fd, &key);
+No needed neither. Only do bpf_map_update_elem() is OK. Also change key=0 from
+key=4, so it will have the same bucket index as key=20 but have different
+map_locked index.
+>> bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
+>> }
+Also need to pin the process on a specific CPU (e.g., CPU 0)
+>>
+>> cleanup:
+>> kprobe_example__destroy(skel);
+>> return err;
+>> }
+>>
+>> 4. run the bpf loader and perf record for nmi interrupts.  the warming occurs
+For perf event, you can reference prog_tests/find_vma.c on how to using
+perf_event_open to trigger a perf nmi interrupt. The perf event also needs to
+pin on a specific CPU as the caller of bpf_map_update_elem() does.
 
-In bpf_test_init(), the accessible space allocated to data is 576 bytes,
-and the memory allocated to data is 1024 bytes. In __build_skb_around(),
-shinfo indicates the offset of 704 bytes of data, which triggers the issue
-of writing out of bounds.
-
-Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
-Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
----
- net/bpf/test_run.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index fcb3e6c5e03c..fbd5337b8f68 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -766,6 +766,8 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 			   u32 size, u32 headroom, u32 tailroom)
- {
- 	void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
-+	unsigned int true_size;
-+	void *true_data;
- 	void *data;
- 
- 	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
-@@ -779,6 +781,14 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 	if (!data)
- 		return ERR_PTR(-ENOMEM);
- 
-+	true_size = ksize(data);
-+	if (size + headroom + tailroom < true_size) {
-+		true_data = krealloc(data, true_size, GFP_USER | __GFP_ZERO);
-+			if (!true_data)
-+				return ERR_PTR(-ENOMEM);
-+		data = true_data;
-+	}
-+
- 	if (copy_from_user(data + headroom, data_in, user_size)) {
- 		kfree(data);
- 		return ERR_PTR(-EFAULT);
--- 
-2.17.1
+>>
+>> --
+>> Best regards, Tonghao
+> .
 
