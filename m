@@ -2,71 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6EA63E3A6
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 23:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1163363E42A
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 00:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiK3WtV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 17:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        id S229635AbiK3XCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 18:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiK3WtS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 17:49:18 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D2F1FF90
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 14:49:17 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id n20so211860ejh.0
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 14:49:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2CSodoJaEfeWmkTB3orskmmd9qnROdHdtrmDVeTqNbM=;
-        b=J9yf8jlfUcWGYALQ3m+3HUwyHMTJ/+8dtXtAvTnkq52JziOAbFbzA3zR7PeTraykmS
-         rK1Couh0MOmfzdVT9CPww9e9I8hc0OFZVi/0hPCm1uuMwirK732oIU5bGftyJltwUFQY
-         YPwe8b/X8wsCMeIXfkK5O60jEzzwKmRAUbaHDeAHTB7ejdp15WkzN39YYY/0J8mDv32+
-         3r6aG4r+20Uc16zTS4WW9ulqGw014cEInmpFtXAWVk26o8pKG+pqOxPtHgNwfMn8XNmj
-         7x76f1TVa7lZ/VBWvJhMM62t9eEiVh5RRMkAcRXMOy1SvbE9Es95EhYG3G3IjDidY6ar
-         LzEQ==
+        with ESMTP id S229468AbiK3XCB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 18:02:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D74556EE2
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 15:01:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669849267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WtPoW3uGxrDpE4M8rJV3W7KqyYEeMHbReVLlNL7JOzU=;
+        b=c+V9fWlLlWqsDJZCBtI6D45GHHF0+n2+KzaEovAzCKbhJXdG/4+rl1L+W0ONLZJ324qIp7
+        GwC3lMB0bvHHrAqeRl5II6G/Jatdq/4++6xy5tDSOFCW4DX02lJkyFZ9vZYKgNR4/38oBt
+        LVeuVHqO94iK5YnYB1z2rC6F6U1kAhc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-572-mjFIqqO_NJCRc7fJxJBhiw-1; Wed, 30 Nov 2022 18:01:05 -0500
+X-MC-Unique: mjFIqqO_NJCRc7fJxJBhiw-1
+Received: by mail-ed1-f70.google.com with SMTP id t4-20020a056402524400b004620845ba7bso30105edd.4
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 15:01:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2CSodoJaEfeWmkTB3orskmmd9qnROdHdtrmDVeTqNbM=;
-        b=6a/iPmzP9MwU2bj8/exMoxqsCy5dIXYwUErw8cPHBGpj1GcKMxm5JZF7wl59Q963mH
-         lFyr+vRs6ly9bysQE4HxcEgnswc1J9nHEXBJQY4BEFSTEyRoA1jaJXTAM+9Ic428xYqK
-         wpiX7vdBRT2pYmGLeXYj32U+NPxVZyCgTn7G/PKYlGhctsjYLde/vv5PpZIoHchS6Bn/
-         fzpZZ0wSmY/nPMDIkUwxTeLs+PY+k9lKTAcJU9HGhxoSmsMfMj90Bi7KX6QIYpmpv0aZ
-         gGRbtouvbVBNM8RnwzoQfrtWsq1gKhjjLXPwcIz3Aq0n/uuBdJ3qAvAHZUdKoiaWtmwm
-         +Dpg==
-X-Gm-Message-State: ANoB5pmbfDhkGBjxqxkgYgfr1vbP9nBWC9x0gTv8/2eF0de04zzUlZN5
-        swcKlruFlAcg1DSPTanvqgF8n9Mx17i/VW2SPiA=
-X-Google-Smtp-Source: AA0mqf7J2HrbZb/HDgqXE5DKYpcZ4RGdSKNCgQGVeM0dvh8nS6K5MKk4EAW136EzP3vrcK2ffT6sRs3xEpVOKQ5lH1E=
-X-Received: by 2002:a17:906:94e:b0:7ba:4617:3f17 with SMTP id
- j14-20020a170906094e00b007ba46173f17mr31550294ejd.226.1669848555724; Wed, 30
- Nov 2022 14:49:15 -0800 (PST)
+        bh=WtPoW3uGxrDpE4M8rJV3W7KqyYEeMHbReVLlNL7JOzU=;
+        b=brpm8+fZVvoH74Oe1sbz9W40+d+JRgE0aX3aS3zfPdgA7TTaPCTNqgojE8JFDhovyk
+         x6615OxQoZx0uGwtsH2i+/vjuwOMckcksiclSsL/2jJXeqvsRjVyYpjqAX1bC7ODvpNj
+         fM3E+CA1fs4rS3nKpDKuDE6fKR/6tX7qcShjx0mPn7WiJLzR/yjEan7foF2CzMp84w8r
+         fmKWPgt7r8tE3m3R93hMt+AXALh3DtsOcA4HIOaPvSKGSDClbrTT7twxhow3lZQLK2QX
+         7ItFV6oAJo6OWkbGLvSopLwms89sMKPWjeOb3Kz9mXukZ0XzqjTkZ5qtCKx+wpaHm01i
+         f1rg==
+X-Gm-Message-State: ANoB5plcgYneYxHxa15crNc7AV7aTvu4guIP/d/FNe3OuJuPB7g9kHkM
+        XSm01j5zeHQdOgLP7ihhFQGnURUkd6nmwnGwvjfey+jDGZpvYCW7pqnFO61RYhH97Fk2irQ5LPi
+        t1uCxOovOfNrJ
+X-Received: by 2002:aa7:c690:0:b0:46a:e2b8:1be9 with SMTP id n16-20020aa7c690000000b0046ae2b81be9mr21743365edq.182.1669849263491;
+        Wed, 30 Nov 2022 15:01:03 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6Pc+jVN4AQZ2o6WxZy7QkFFj3Om63BsCTurb6PVOF/KZQtd5aZyoH2jGxdINcJJODRqBRQ4w==
+X-Received: by 2002:aa7:c690:0:b0:46a:e2b8:1be9 with SMTP id n16-20020aa7c690000000b0046ae2b81be9mr21743294edq.182.1669849262349;
+        Wed, 30 Nov 2022 15:01:02 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id g18-20020a17090604d200b0078d9b967962sm1099598eja.65.2022.11.30.15.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Nov 2022 15:01:01 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D688480AE89; Thu,  1 Dec 2022 00:01:00 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 00/11] xdp: hints via kfuncs
+In-Reply-To: <CAKH8qBsTNEZcyLq8EsZhsBHsLNe7831r23YdwZfDsbXo06FTBg@mail.gmail.com>
+References: <20221129193452.3448944-1-sdf@google.com>
+ <8735a1zdrt.fsf@toke.dk>
+ <CAKH8qBsTNEZcyLq8EsZhsBHsLNe7831r23YdwZfDsbXo06FTBg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 01 Dec 2022 00:01:00 +0100
+Message-ID: <87o7soxd1v.fsf@toke.dk>
 MIME-Version: 1.0
-References: <9cfc736f2b45422a50a21b90b94de04b19836682.camel@ericsson.com>
- <Y3d9mYrkWjrkJ9q2@krava> <HE1PR07MB3321F2F4C156BCA6EFD3A3DBBD099@HE1PR07MB3321.eurprd07.prod.outlook.com>
- <b529c3fa5946537f96430d679b9e8a4280f03e4b.camel@ericsson.com>
- <CAEf4Bza8c59wH05pRaBL2hHznFVs0_yWpVy1GHexURu3Ln-a=g@mail.gmail.com>
- <c4a265caf1653412ac88b8e6c56a694a0d50879c.camel@gmail.com>
- <CAEf4BzZt0VCEf-PVK0=aKBzqHHS4EBDiRc0tA23rrC7_amnxDQ@mail.gmail.com> <a95d7cae1ba418bac8d024c2590c34849a73472a.camel@gmail.com>
-In-Reply-To: <a95d7cae1ba418bac8d024c2590c34849a73472a.camel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Nov 2022 14:49:03 -0800
-Message-ID: <CAEf4BzbsxV63=-wET7eXS-He3eKkWnHtokzCak59ctztGn4kqQ@mail.gmail.com>
-Subject: Re: Sv: Bad padding with bpftool btf dump .. format c
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     =?UTF-8?Q?Per_Sundstr=C3=B6m_XP?= <per.xp.sundstrom@ericsson.com>,
-        "olsajiri@gmail.com" <olsajiri@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,219 +93,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 6:29 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Tue, 2022-11-29 at 16:27 -0800, Andrii Nakryiko wrote:
-> > On Tue, Nov 29, 2022 at 9:38 AM Eduard Zingerman <eddyz87@gmail.com> wr=
-ote:
-> > >
-> > > On Wed, 2022-11-23 at 18:37 -0800, Andrii Nakryiko wrote:
-> > > > On Fri, Nov 18, 2022 at 9:26 AM Per Sundstr=C3=B6m XP
-> > > > <per.xp.sundstrom@ericsson.com> wrote:
-> > > > >
-> > > > >
-> > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Vanilla =3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> > > > > > > struct foo {
-> > > > > > >     struct {
-> > > > > > >         int  aa;
-> > > > > > >         char ab;
-> > > > > > >     } a;
-> > > > > > >     long   :64;
-> > > > > > >     int    :4;
-> > > > > > >     char   b;
-> > > > > > >     short  c;
-> > > > > > > };
-> > > > > > > offsetof(struct foo, c)=3D18
-> > > > > > >
-> > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> > > > > > > struct foo {
-> > > > > > >         long: 8;
-> > > > > > >         long: 64;
-> > > > > > >         long: 64;
-> > > > > > >         char b;
-> > > > > > >         short c;
-> > > > > > > };
-> > > > > >
-> > > > > > so I guess the issue is that the first 'long: 8' is padded to f=
-ull
-> > > > > > long: 64 ?
-> > > > > >
-> > > > > > looks like btf_dump_emit_bit_padding did not take into accout t=
-he gap
-> > > > > > on the
-> > > > > > begining of the struct
-> > > > > >
-> > > > > > on the other hand you generated that header file from 'min_core=
-_btf'
-> > > > > > btf data,
-> > > > > > which takes away all the unused fields.. it might not beeen
-> > > > > > considered as a
-> > > > > > use case before
-> > > > > >
-> > > > > > jirka
-> > > > > >
-> > > > >
-> > > > > > That could be the case, but I think the 'emit_bit_padding()' wi=
-ll not
-> > > > > > really have a
-> > > > > > lot to do for the non sparse headers ..
-> > > > > >   /Per
-> > > > >
-> > > > >
-> > > > > Looks like something like this makes tings a lot better:
-> > > >
-> > > > yep, this helps, though changes output with padding to more verbose
-> > > > version, quite often unnecessarily. I need to thing a bit more on
-> > > > this, but the way we currently calculate alignment of a type is not
-> > > > always going to be correct. E.g., just because there is an int fiel=
-d,
-> > > > doesn't mean that struct actually has 4-byte alignment.
-> > > >
-> > > > We must take into account natural alignment, but also actual
-> > > > alignment, which might be different due to __attribute__((packed)).
-> > > >
-> > > > Either way, thanks for reporting!
-> > >
-> > > Hi everyone,
-> > >
-> > > I think the fix is simpler:
-> > >
-> > > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> > > index deb2bc9a0a7b..23a00818854b 100644
-> > > --- a/tools/lib/bpf/btf_dump.c
-> > > +++ b/tools/lib/bpf/btf_dump.c
-> > > @@ -860,7 +860,7 @@ static bool btf_is_struct_packed(const struct btf=
- *btf, __u32 id,
-> > >
-> > >  static int chip_away_bits(int total, int at_most)
-> > >  {
-> > > -       return total % at_most ? : at_most;
-> > > +       return total > at_most ? at_most : total;
-> > >  }
-> > >
-> > > It changes the order in which btf_dump_emit_bit_padding() prints fiel=
-d
-> > > sizes. Right now it returns the division remainder on a first call an=
-d
-> > > full 'at_most' values at subsequent calls. For this particular exampl=
-e
-> > > the bit offset of 'b' is 136, so the output looks as follows:
-> > >
-> > > struct foo {
-> > >         long: 8;    // first call pad_bits =3D 136 % 64 ? : 64; off_d=
-iff -=3D 8;
-> > >         long: 64;   // second call pad_bits =3D 128 % 64 ? : 64; off_=
-diff -=3D 64; ...
-> > >         long: 64;
-> > >         char b;
-> > >         short c;
-> > > };
-> > >
-> > > This is incorrect, because compiler would always add padding between
-> > > the first and second members to account for the second member alignme=
-nt.
-> > >
-> > > However, my change inverts the order, which avoids the accidental
-> > > padding and gets the desired output:
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > > struct foo {
-> > >         long: 64;
-> > >         long: 64;
-> > >         char: 8;
-> > >         char b;
-> > >         short c;
-> > > };
-> > > offsetof(struct foo, c)=3D18
-> > >
-> > > =3D=3D=3D BTF offsets =3D=3D=3D
-> > > full   :        'c' type_id=3D6 bits_offset=3D144
-> > > custom :        'c' type_id=3D3 bits_offset=3D144
-> > >
-> > > wdyt?
-> >
-> > There were at least two issues I realized when I was thinking about
-> > fixing this, and I think you are missing at least one of them.
-> >
-> > 1. Adding `long :xxx` as padding makes struct at least 8-byte aligned.
-> > If the struct originally had a smaller alignment requirement, you are
-> > now potentially breaking the struct layout by changing its layout.
-> >
-> > 2. The way btf__align_of() is calculating alignment doesn't work
-> > correctly for __attribute__((packed)) structs.
->
-> Missed these point, sorry.
-> On the other hand isn't this information lost in the custom.btf?
->
-> $ bpftool btf dump file custom.btf
-> [1] STRUCT 'foo' size=3D20 vlen=3D2
->         'b' type_id=3D2 bits_offset=3D136
->         'c' type_id=3D3 bits_offset=3D144
-> [2] INT 'char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DSIGNED
-> [3] INT 'short' size=3D2 bits_offset=3D0 nr_bits=3D16 encoding=3DSIGNED
->
-> This has no info that 'foo' had fields of size 'long'. It does not
-> matter for structs used inside BTF because 'bits_offset' is specified
-> everywhere, but would matter if STRUCT 'foo' is used as a member of a
-> non-BTF struct.
+Stanislav Fomichev <sdf@google.com> writes:
 
-Yes, the latter is important, though, right?
-
-So I think ideally we determine "maximum allowable alignment" and use
-that to determine what's the allowable set of padding types is. WDYT?
-
+> On Tue, Nov 29, 2022 at 12:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>>
+>> Stanislav Fomichev <sdf@google.com> writes:
+>>
+>> > Please see the first patch in the series for the overall
+>> > design and use-cases.
+>> >
+>> > Changes since v2:
+>> >
+>> > - Rework bpf_prog_aux->xdp_netdev refcnt (Martin)
+>> >
+>> >   Switched to dropping the count early, after loading / verification is
+>> >   done. At attach time, the pointer value is used only for comparing
+>> >   the actual netdev at attach vs netdev at load.
+>>
+>> So if we're not holding the netdev reference, we'll end up with a BPF
+>> program with hard-coded CALL instructions calling into a module that
+>> could potentially be unloaded while that BPF program is still alive,
+>> right?
+>>
+>> I suppose that since we're checking that the attach iface is the same
+>> that the program should not be able to run after the module is unloaded,
+>> but it still seems a bit iffy. And we should definitely block
+>> BPF_PROG_RUN invocations of programs with a netdev set (but we should do
+>> that anyway).
 >
-> >
-> > So we need to fix btf__align_of() first. What btf__align_of() is
-> > calculating right now is a natural alignment requirement if we ignore
-> > actual field offsets. This might be useful (at the very least to
-> > determine if the struct is packed or not), so maybe we should have a
-> > separate btf__natural_align_of() or something along those lines?
-> >
-> > And then we need to fix btf_dump_emit_bit_padding() to better handle
-> > alignment and padding rules. This is what Per Sundstr=C3=B6m is trying =
-to
-> > do, I believe, but I haven't carefully thought about his latest code
-> > suggestion.
-> >
-> > In general, the most obvious solution would be to pad with `char :8;`
-> > everywhere, but that's very ugly and I'd prefer us to have as
-> > "natural" output as possible. That is, only emit strictly necessary
-> > padding fields and rely on natural alignment otherwise.
-> >
-> > >
-> > >
-> > > >
-> > > > >
-> > > > > diff --git a/src/btf_dump.c b/src/btf_dump.c
-> > > > > index 12f7039..a8bd52a 100644
-> > > > > --- a/src/btf_dump.c
-> > > > > +++ b/src/btf_dump.c
-> > > > > @@ -881,13 +881,13 @@ static void btf_dump_emit_bit_padding(const
-> > > > > struct btf_dump *d,
-> > > > >                 const char *pad_type;
-> > > > >                 int pad_bits;
-> > > > >
-> > > > > -               if (ptr_bits > 32 && off_diff > 32) {
-> > > > > +               if (align > 4 && ptr_bits > 32 && off_diff > 32) =
-{
-> > > > >                         pad_type =3D "long";
-> > > > >                         pad_bits =3D chip_away_bits(off_diff, ptr=
-_bits);
-> > > > > -               } else if (off_diff > 16) {
-> > > > > +               } else if (align > 2 && off_diff > 16) {
-> > > > >                         pad_type =3D "int";
-> > > > >                         pad_bits =3D chip_away_bits(off_diff, 32)=
-;
-> > > > > -               } else if (off_diff > 8) {
-> > > > > +               } else if (align > 1 && off_diff > 8) {
-> > > > >                         pad_type =3D "short";
-> > > > >                         pad_bits =3D chip_away_bits(off_diff, 16)=
-;
-> > > > >                 } else {
-> > > > >   /Per
-> > >
+> Ugh, good point about BPF_PROG_RUN, seems like it should be blocked
+> regardless of the locking scheme though, right?
+> Since our mlx4/mlx5 changes expect something after the xdp_buff, we
+> can't use those per-netdev programs with our generic
+> bpf_prog_test_run_xdp...
+
+Yup, I think we should just block it for now; maybe it can be enabled
+later if it turns out to be useful (and we find a way to resolve the
+kfuncs for this case).
+
+Also, speaking of things we need to disable, tail calls is another one.
+And for freplace program attachment we need to add a check that the
+target interfaces match as well.
+
+>> >   (potentially can be a problem if the same slub slot is reused
+>> >   for another netdev later on?)
+>>
+>> Yeah, this would be bad as well, obviously. I guess this could happen?
 >
+> Not sure, that's why I'm raising it here to see what others think :-)
+> Seems like this has to be actively exploited to happen? (and it's a
+> privileged operation)
+>
+> Alternatively, we can go back to the original version where the prog
+> holds the device.
+> Matin mentioned in the previous version that if we were to hold a
+> netdev refcnt, we'd have to drop it also from unregister_netdevice.
+
+Yeah; I guess we could keep a list of "bound" XDP programs in struct
+net_device and clear each one on unregister? Also, bear in mind that the
+"unregister" callback is also called when a netdev moves between
+namespaces; which is probably not what we want in this case?
+
+> It feels like beyond that extra dev_put, we'd need to reset our
+> aux->xdp_netdev and/or add some flag or something else to indicate
+> that this bpf program is "orphaned" and can't be attached anywhere
+> anymore (since the device is gone; netdev_run_todo should free the
+> netdev it seems).
+
+You could add a flag, and change the check to:
+
++		if (new_prog->aux->xdp_has_netdev &&
++		    new_prog->aux->xdp_netdev !=3D dev) {
++			NL_SET_ERR_MSG(extack, "Cannot attach to a different target device");
++			return -EINVAL;
++		}
+
+That way the check will always fail if xdp_netdev is reset to NULL
+(while keeping the flag) on dereg?
+
+> That should address this potential issue with reusing the same addr
+> for another netdev, but is a bit more complicated code-wise.
+> Thoughts?
+
+I'd be in favour of adding this tracking; I worry that we'll end up with
+some very subtle and hard-to-debug bugs if we somehow do end up
+executing the wrong kfuncs...
+
+-Toke
+
