@@ -2,66 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B9463CD7F
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 03:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB38B63CDAE
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 04:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbiK3Csc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 21:48:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        id S231489AbiK3DHx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 22:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232385AbiK3Cs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 21:48:29 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9C56CA1D;
-        Tue, 29 Nov 2022 18:48:28 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id q7so24115426wrr.8;
-        Tue, 29 Nov 2022 18:48:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TtkyVa2IrpwnujLbAlvNXcH3WzrDZO7fZhfeo5ojqx4=;
-        b=Yys8xeVioelna9iNWiERvl5crZc+mVVlT+/OZm1LNnG4J2rCxTB+EJIklMMegkuscc
-         lSsPxMzna89c6M//ei9tMuP1ATGqyC3dtCL3IquQxuTokBHVfGQNifV+4NriXFtI2X17
-         fszP4brWR/Hx+1/LnduzDEDWLG2bW2wn+YiLZznjK3Bl6yjsYFGNitQ1NCRBg6VsdwA3
-         mdvc/0pCR4hmvzoA9KsE/aXTinG4WlUei5trUCNevQehnnAyVeIxHs/rrX9R1ViLAbSq
-         ugV0pwm7w1LorCZ+BNVB/yXIdQa79D+iw5qhGFXmZxo5o6Ez23tqKsvpa3jdwq/RxNVs
-         BinQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TtkyVa2IrpwnujLbAlvNXcH3WzrDZO7fZhfeo5ojqx4=;
-        b=4Q8gpUOG4ZS0u6BnZFgHhNs1Kp4k9IZ9oSILavaATvPoMwXWRSl+nZdtzVNjcpxeM0
-         jMIflimS3goU7RNYmluXJ8GQhkjmbArxJEWsK/shlBJMnwjk13sO6n8DWjoj5UYsrkh9
-         QcUsSA0m6qaQ8/6AnwKFH7nlvXFc4BSLBzz6DeL/BHoVB+/yzhX+AXYdQBD+3f43aA++
-         MJDHlh7Src1ud4fKPLQlh0x7CKTKhrMFjpSt8zv9C89WQgYT4rF6s9Enl4KsSeAl/BAi
-         ByBvOy2kuxXzGkblJ4p0N2ZR7j74T3fuO0d8m/rQC+s0np/c78Fe/wxN+eFWpSuqGhP0
-         nr5w==
-X-Gm-Message-State: ANoB5pmjLwPTQpd63w83pxxNMw8mJRgTghTzgDULghZRP+MWCTnG+UMs
-        mUVN7lx6BjFSblcnUp2xGyZDyr61SWisMo252jE=
-X-Google-Smtp-Source: AA0mqf7oM1xVfPZeEBeXoHPoEIp2eTKZPeY+uxONWEAQpo3ShqFa81+F9spvkCRBBnSaiGYb573NrE1KoDjO7rmL9G0=
-X-Received: by 2002:adf:e68a:0:b0:242:1926:7838 with SMTP id
- r10-20020adfe68a000000b0024219267838mr7357388wrm.200.1669776506939; Tue, 29
- Nov 2022 18:48:26 -0800 (PST)
+        with ESMTP id S229775AbiK3DHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 22:07:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0265E3D1
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 19:07:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669777619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=05YZUrxC9fujgNfFDXzVRk/CJWC6WegjsSO4HrBVROk=;
+        b=TrKL3pXcqEys5lFtJtpv0UiqnEOBVQ6jioeadf+GUq69pBjAAeoMl6zZnhEzusagl6jyz3
+        1xpuSulyDGoT+XgOw8k9CX7G3yHSZ9R3udw5wDQWpAcjMLBwrtgFPfAYqmCPcDNbHgDF0H
+        nEsS/6eGisdAL8g6ThsVKuQ1OiLJp2k=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-294-1eJOFMpnNLeWBdN-Lc-Zfw-1; Tue, 29 Nov 2022 22:06:56 -0500
+X-MC-Unique: 1eJOFMpnNLeWBdN-Lc-Zfw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 858DF1C051AC;
+        Wed, 30 Nov 2022 03:06:55 +0000 (UTC)
+Received: from [10.22.17.30] (unknown [10.22.17.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 444F42166B26;
+        Wed, 30 Nov 2022 03:06:54 +0000 (UTC)
+Message-ID: <9455ff51-098c-87f0-dc83-2303921032a2@redhat.com>
+Date:   Tue, 29 Nov 2022 22:06:52 -0500
 MIME-Version: 1.0
-References: <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
- <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
- <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com> <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
- <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
- <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com> <CAMDZJNUTaiXMe460P7a7NfK1_bbaahpvi3Q9X85o=G7v9x-w=g@mail.gmail.com>
- <59fc54b7-c276-2918-6741-804634337881@huaweicloud.com> <541aa740-dcf3-35f5-9f9b-e411978eaa06@redhat.com>
- <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local> <Y4ZCKaQFqDY3aLTy@Boquns-Mac-mini.local>
- <CA+khW7hkQRFcC1QgGxEK_NeaVvCe3Hbe_mZ-_UkQKaBaqnOLEQ@mail.gmail.com> <23b5de45-1a11-b5c9-d0d3-4dbca0b7661e@huaweicloud.com>
-In-Reply-To: <23b5de45-1a11-b5c9-d0d3-4dbca0b7661e@huaweicloud.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Wed, 30 Nov 2022 10:47:50 +0800
-Message-ID: <CAMDZJNWtyanKtXtAxYGwvJ0LTgYLf=5iYFm63pbvvJLPE8oHSQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
 Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Hao Luo <haoluo@google.com>, Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+Content-Language: en-US
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Hou Tao <houtao@huaweicloud.com>
+Cc:     Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -75,95 +60,110 @@ Cc:     Hao Luo <haoluo@google.com>, Waiman Long <longman@redhat.com>,
         "houtao1@huawei.com" <houtao1@huawei.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+ <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+ <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com>
+ <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
+ <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+ <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com>
+ <CAMDZJNUTaiXMe460P7a7NfK1_bbaahpvi3Q9X85o=G7v9x-w=g@mail.gmail.com>
+ <59fc54b7-c276-2918-6741-804634337881@huaweicloud.com>
+ <541aa740-dcf3-35f5-9f9b-e411978eaa06@redhat.com>
+ <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local>
+ <Y4ZCKaQFqDY3aLTy@Boquns-Mac-mini.local>
+ <CA+khW7hkQRFcC1QgGxEK_NeaVvCe3Hbe_mZ-_UkQKaBaqnOLEQ@mail.gmail.com>
+ <23b5de45-1a11-b5c9-d0d3-4dbca0b7661e@huaweicloud.com>
+ <CAMDZJNWtyanKtXtAxYGwvJ0LTgYLf=5iYFm63pbvvJLPE8oHSQ@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAMDZJNWtyanKtXtAxYGwvJ0LTgYLf=5iYFm63pbvvJLPE8oHSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 9:50 AM Hou Tao <houtao@huaweicloud.com> wrote:
+On 11/29/22 21:47, Tonghao Zhang wrote:
+> On Wed, Nov 30, 2022 at 9:50 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi Hao,
+>>
+>> On 11/30/2022 3:36 AM, Hao Luo wrote:
+>>> On Tue, Nov 29, 2022 at 9:32 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+>>>> Just to be clear, I meant to refactor htab_lock_bucket() into a try
+>>>> lock pattern. Also after a second thought, the below suggestion doesn't
+>>>> work. I think the proper way is to make htab_lock_bucket() as a
+>>>> raw_spin_trylock_irqsave().
+>>>>
+>>>> Regards,
+>>>> Boqun
+>>>>
+>>> The potential deadlock happens when the lock is contended from the
+>>> same cpu. When the lock is contended from a remote cpu, we would like
+>>> the remote cpu to spin and wait, instead of giving up immediately. As
+>>> this gives better throughput. So replacing the current
+>>> raw_spin_lock_irqsave() with trylock sacrifices this performance gain.
+>>>
+>>> I suspect the source of the problem is the 'hash' that we used in
+>>> htab_lock_bucket(). The 'hash' is derived from the 'key', I wonder
+>>> whether we should use a hash derived from 'bucket' rather than from
+>>> 'key'. For example, from the memory address of the 'bucket'. Because,
+>>> different keys may fall into the same bucket, but yield different
+>>> hashes. If the same bucket can never have two different 'hashes' here,
+>>> the map_locked check should behave as intended. Also because
+>>> ->map_locked is per-cpu, execution flows from two different cpus can
+>>> both pass.
+>> The warning from lockdep is due to the reason the bucket lock A is used in a
+>> no-NMI context firstly, then the same bucke lock is used a NMI context, so
+> Yes, I tested lockdep too, we can't use the lock in NMI(but only
+> try_lock work fine) context if we use them no-NMI context. otherwise
+> the lockdep prints the warning.
+> * for the dead-lock case: we can use the
+> 1. hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1)
+> 2. or hash bucket address.
 >
-> Hi Hao,
+> * for lockdep warning, we should use in_nmi check with map_locked.
 >
-> On 11/30/2022 3:36 AM, Hao Luo wrote:
-> > On Tue, Nov 29, 2022 at 9:32 AM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >> Just to be clear, I meant to refactor htab_lock_bucket() into a try
-> >> lock pattern. Also after a second thought, the below suggestion doesn't
-> >> work. I think the proper way is to make htab_lock_bucket() as a
-> >> raw_spin_trylock_irqsave().
-> >>
-> >> Regards,
-> >> Boqun
-> >>
-> > The potential deadlock happens when the lock is contended from the
-> > same cpu. When the lock is contended from a remote cpu, we would like
-> > the remote cpu to spin and wait, instead of giving up immediately. As
-> > this gives better throughput. So replacing the current
-> > raw_spin_lock_irqsave() with trylock sacrifices this performance gain.
-> >
-> > I suspect the source of the problem is the 'hash' that we used in
-> > htab_lock_bucket(). The 'hash' is derived from the 'key', I wonder
-> > whether we should use a hash derived from 'bucket' rather than from
-> > 'key'. For example, from the memory address of the 'bucket'. Because,
-> > different keys may fall into the same bucket, but yield different
-> > hashes. If the same bucket can never have two different 'hashes' here,
-> > the map_locked check should behave as intended. Also because
-> > ->map_locked is per-cpu, execution flows from two different cpus can
-> > both pass.
-> The warning from lockdep is due to the reason the bucket lock A is used in a
-> no-NMI context firstly, then the same bucke lock is used a NMI context, so
-Yes, I tested lockdep too, we can't use the lock in NMI(but only
-try_lock work fine) context if we use them no-NMI context. otherwise
-the lockdep prints the warning.
-* for the dead-lock case: we can use the
-1. hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1)
-2. or hash bucket address.
-
-* for lockdep warning, we should use in_nmi check with map_locked.
-
-BTW, the patch doesn't work, so we can remove the lock_key
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c50eb518e262fa06bd334e6eec172eaf5d7a5bd9
-
-static inline int htab_lock_bucket(const struct bpf_htab *htab,
-                                   struct bucket *b, u32 hash,
-                                   unsigned long *pflags)
-{
-        unsigned long flags;
-
-        hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
-
-        preempt_disable();
-        if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
-                __this_cpu_dec(*(htab->map_locked[hash]));
-                preempt_enable();
-                return -EBUSY;
-        }
-
-        if (in_nmi()) {
-                if (!raw_spin_trylock_irqsave(&b->raw_lock, flags))
-                        return -EBUSY;
-        } else {
-                raw_spin_lock_irqsave(&b->raw_lock, flags);
-        }
-
-        *pflags = flags;
-        return 0;
-}
-
-
-> lockdep deduces that may be a dead-lock. I have already tried to use the same
-> map_locked for keys with the same bucket, the dead-lock is gone, but still got
-> lockdep warning.
-> >
-> > Hao
-> > .
+> BTW, the patch doesn't work, so we can remove the lock_key
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c50eb518e262fa06bd334e6eec172eaf5d7a5bd9
 >
+> static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>                                     struct bucket *b, u32 hash,
+>                                     unsigned long *pflags)
+> {
+>          unsigned long flags;
+>
+>          hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+>
+>          preempt_disable();
+>          if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+>                  __this_cpu_dec(*(htab->map_locked[hash]));
+>                  preempt_enable();
+>                  return -EBUSY;
+>          }
+>
+>          if (in_nmi()) {
+>                  if (!raw_spin_trylock_irqsave(&b->raw_lock, flags))
+>                          return -EBUSY;
+That is not right. You have to do the same step as above by decrementing 
+the percpu count and enable preemption. So you may want to put all these 
+busy_out steps after the return 0 and use "goto busy_out;" to jump there.
+>          } else {
+>                  raw_spin_lock_irqsave(&b->raw_lock, flags);
+>          }
+>
+>          *pflags = flags;
+>          return 0;
+> }
 
+BTW, with that change, I believe you can actually remove all the percpu 
+map_locked count code.
 
--- 
-Best regards, Tonghao
+Cheers,
+Longman
+
