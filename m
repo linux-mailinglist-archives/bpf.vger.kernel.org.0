@@ -2,128 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1533563D284
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 10:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BE763D2EB
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 11:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbiK3Jxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 04:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        id S235720AbiK3KM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 05:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiK3Jxd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 04:53:33 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6773621810
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 01:53:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9FA5FCE1847
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 09:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 030EEC433D6;
-        Wed, 30 Nov 2022 09:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669802008;
-        bh=8LDAH5jowxJdqYzypcXmz8TIH3y51pjOj93bPJGjblc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VlIjuvV5EafTOoAIfX60xMoCjWT7vKPKVPwGMDrj8m4otGJoxz1Kbi/ZwjtxmU5Dk
-         FWgtEnIY20plDJPmPBa5Ekf+owWSA9n7WD38DywXpuxpX6w+fFEq0ZT/2SUw+f8FiN
-         qPDeIAZZGMBTCYgcxBZD8MlXE8azTO1maWV88badkcqZMt3nDU12Ms6bR8jPlsjiXA
-         uRZhrt9w4FmKUPnXc5Odv55zVe49ozFlAiHA4/GGXDnUNSs8wey86sWdmF513BIVVE
-         VIj17/Ym3L4UW4bZGuawYM/D2ALlLNGCdtC35KcYDEo05lJgxMJ0n8LriarKG0B3C/
-         yB4LnfBvtinnA==
-Date:   Wed, 30 Nov 2022 11:53:09 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        tglx@linutronix.de, bpf@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, x86@kernel.org, peterz@infradead.org,
-        hch@lst.de, rick.p.edgecombe@intel.com, willy@infradead.org,
-        dave@stgolabs.net, a.manzanares@samsung.com,
-        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
-        anton@ozlabs.org, colin.i.king@gmail.com
-Subject: Re: [PATCH bpf-next v4 0/6] execmem_alloc for BPF programs
-Message-ID: <Y4coBTe08HiZFMFC@kernel.org>
-References: <20221117202322.944661-1-song@kernel.org>
- <Y3vbwMptiNP6aJDh@bombadil.infradead.org>
- <CAPhsuW7AfwpV6G8U7VRXMcjBEUf7OCOY5eR7eagEoXVK-AmBRg@mail.gmail.com>
- <Y31ngcvzHCzWTg1f@bombadil.infradead.org>
- <CAPhsuW5g02Ahub+OX5WomzP24E74-T4K_x8pr1rkiC3uba2QBw@mail.gmail.com>
+        with ESMTP id S235740AbiK3KMW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 05:12:22 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD7231DF0;
+        Wed, 30 Nov 2022 02:12:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669803142; x=1701339142;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gkLkJR8RE36XG9BI0LgN87G1MnvrwDX8Iwn1/fvXg/U=;
+  b=V4x8Six4JXLpmprvqJntS6w7bbIKKj/HSn7BGYTvxlvvde2rRn7UNP43
+   tXSUt+p07FdJJ374nVYneE8FKH12Teur29W6dqn1KD/byuSM44OAC6Yl+
+   n8IvNrD70oJ6u1Fp53D1STqz8xIrczI7LzUdmXiBkxsbU4GpQT8LXNhmP
+   Lu7nRgsgMDIPCQJsQUXJ/9Eiz4oH44qwMEoFqNiC39cPwRAHgXcsyLfLF
+   uSEt8xkyeDVMEcpcYfprIJ+D1BiI3dFxJVUoMq0m0kR6GKycDRschA27i
+   oWxphPAAKOgy3v+rL4sciqcu0FmDO6J2pMoNj0iTUFPN1taZduPHIjnIQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="316511239"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="316511239"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 02:12:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="818575930"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="818575930"
+Received: from b49691a74bf0.jf.intel.com ([10.165.59.99])
+  by orsmga005.jf.intel.com with ESMTP; 30 Nov 2022 02:12:20 -0800
+From:   Chen Hu <hu1.chen@intel.com>
+Cc:     hu1.chen@intel.com, jpoimboe@kernel.org, memxor@gmail.com,
+        bpf@vger.kernel.org, Pengfei Xu <pengfei.xu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf v3] selftests/bpf: Fix "missing ENDBR" BUG for destructor kfunc
+Date:   Wed, 30 Nov 2022 02:11:31 -0800
+Message-Id: <20221130101135.26806-1-hu1.chen@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW5g02Ahub+OX5WomzP24E74-T4K_x8pr1rkiC3uba2QBw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 10:06:06PM -0700, Song Liu wrote:
-> On Tue, Nov 22, 2022 at 5:21 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Mon, Nov 21, 2022 at 07:28:36PM -0700, Song Liu wrote:
-> > > On Mon, Nov 21, 2022 at 1:12 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > >
-> [...]
-> > > fixes a bug that splits the page table (from 2MB to 4kB) for the WHOLE kernel
-> > > text. The bug stayed in the kernel for almost a year. None of all the available
-> > > open source benchmark had caught it before this specific benchmark.
-> >
-> > That doesn't mean enterpise level testing would not have caught it, and
-> > enteprise kernels run on ancient kernels so they would not catch up that
-> > fast. RHEL uses even more ancient kernels than SUSE so let's consider
-> > where SUSE was during this regression. The commit you mentioned the fix
-> > 7af0145067bc went upstream on v5.3-rc7~4^2, and that was in August 2019.
-> > The bug was introduced through commit 585948f4f695 ("x86/mm/cpa: Avoid
-> > the 4k pages check completely") and that was on v4.20-rc1~159^2~41
-> > around September 2018. Around September 2018, the time the regression was
-> > committed, the most bleeding edge Enterprise Linux kernel in the industry was
-> > that on SLE15 and so v4.12 and so there is no way in hell the performance
-> > team at SUSE for instance would have even come close to evaluating code with
-> > that regression. In fact, they wouldn't come accross it in testing until
-> > SLE15-SP2 on the v5.3 kernel but by then the regression would have been fixed.
-> 
-> Can you refer me to one enterprise performance report with open source
-> benchmark that shows ~1% performance regression? If it is available, I am
-> more than happy to try it out. Note that, we need some BPF programs to show
-> the benefit of this set. In most production hosts, network related BPF programs
-> are the busiest. Therefore, single host benchmarks will not show the benefit.
-> 
-> Thanks,
-> Song
-> 
-> PS: Data in [1] if full of noise:
-> 
-> """
-> 2. For each benchmark/system combination, the 1G mapping had the highest
-> performance for 45% of the tests, 2M for ~30%, and 4k for~20%.
-> 
-> 3. From the average delta, among 1G/2M/4K, 4K gets the lowest
-> performance in all the 4 test machines, while 1G gets the best
-> performance on 2 test machines and 2M gets the best performance on the
-> other 2 machines.
-> """
+With CONFIG_X86_KERNEL_IBT enabled, the test_verifier triggers the
+following BUG:
 
-I don't think it's noise. IMO, this means that performance degradation
-caused by the fragmentation of the direct map highly depends on workload
-and microarchitecture.
+  traps: Missing ENDBR: bpf_kfunc_call_test_release+0x0/0x30
+  ------------[ cut here ]------------
+  kernel BUG at arch/x86/kernel/traps.c:254!
+  invalid opcode: 0000 [#1] PREEMPT SMP
+  <TASK>
+   asm_exc_control_protection+0x26/0x50
+  RIP: 0010:bpf_kfunc_call_test_release+0x0/0x30
+  Code: 00 48 c7 c7 18 f2 e1 b4 e8 0d ca 8c ff 48 c7 c0 00 f2 e1 b4 c3
+	0f 1f 44 00 00 66 0f 1f 00 0f 1f 44 00 00 0f 0b 31 c0 c3 66 90
+       <66> 0f 1f 00 0f 1f 44 00 00 48 85 ff 74 13 4c 8d 47 18 b8 ff ff ff
+   bpf_map_free_kptrs+0x2e/0x70
+   array_map_free+0x57/0x140
+   process_one_work+0x194/0x3a0
+   worker_thread+0x54/0x3a0
+   ? rescuer_thread+0x390/0x390
+   kthread+0xe9/0x110
+   ? kthread_complete_and_exit+0x20/0x20
+
+It turns out that ENDBR in bpf_kfunc_call_test_release() is converted to
+NOP by apply_ibt_endbr().
+
+The only text references to this function from kernel side are:
+
+  $ grep -r bpf_kfunc_call_test_release
+  net/bpf/test_run.c:noinline void bpf_kfunc_call_test_release(...)
+  net/bpf/test_run.c:BTF_ID_FLAGS(func, bpf_kfunc_call_test_release, ...)
+  net/bpf/test_run.c:BTF_ID(func, bpf_kfunc_call_test_release)
+
+but it may be called from bpf program as kfunc. (no other caller from
+kernel)
+
+This fix creates dummy references to destructor kfuncs so ENDBR stay
+there.
+
+Also modify macro XXX_NOSEAL slightly:
+- ASM_IBT_NOSEAL now stands for pure asm
+- IBT_NOSEAL can be used directly in C
+
+Signed-off-by: Chen Hu <hu1.chen@intel.com>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+---
+v3:
+- Macro go to IBT related header as suggested by Jiri Olsa
+- Describe reference to the func clearly in commit message as suggested
+  by Peter Zijlstra and Jiri Olsa
  
-> There is no way we can get consistent result of 1% performance improvement
-> from experiments like those.
+v2: https://lore.kernel.org/all/20221122073244.21279-1-hu1.chen@intel.com/
 
-Experiments like those show how a change in the kernel behaviour affects
-different workloads and not a single benchmark. Having a performance
-improvement in a single benchmark does necessarily not mean other
-benchmarks won't regress.
+v1: https://lore.kernel.org/all/20221121085113.611504-1-hu1.chen@intel.com/
+
+ arch/x86/include/asm/ibt.h | 6 +++++-
+ arch/x86/kvm/emulate.c     | 2 +-
+ net/bpf/test_run.c         | 5 +++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/ibt.h b/arch/x86/include/asm/ibt.h
+index 9b08082a5d9f..be86dc31661c 100644
+--- a/arch/x86/include/asm/ibt.h
++++ b/arch/x86/include/asm/ibt.h
+@@ -36,11 +36,14 @@
+  * the function as needing to be "sealed" (i.e. ENDBR converted to NOP by
+  * apply_ibt_endbr()).
+  */
+-#define IBT_NOSEAL(fname)				\
++#define ASM_IBT_NOSEAL(fname)				\
+ 	".pushsection .discard.ibt_endbr_noseal\n\t"	\
+ 	_ASM_PTR fname "\n\t"				\
+ 	".popsection\n\t"
  
-> [1] https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
-
++#define IBT_NOSEAL(name)				\
++	asm(ASM_IBT_NOSEAL(#name))
++
+ static inline __attribute_const__ u32 gen_endbr(void)
+ {
+ 	u32 endbr;
+@@ -94,6 +97,7 @@ extern __noendbr void ibt_restore(u64 save);
+ #ifndef __ASSEMBLY__
+ 
+ #define ASM_ENDBR
++#define ASM_IBT_NOSEAL(name)
+ #define IBT_NOSEAL(name)
+ 
+ #define __noendbr
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 4a43261d25a2..d870c8bb5831 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -327,7 +327,7 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
+ 	".type " name ", @function \n\t" \
+ 	name ":\n\t" \
+ 	ASM_ENDBR \
+-	IBT_NOSEAL(name)
++	ASM_IBT_NOSEAL(name)
+ 
+ #define FOP_FUNC(name) \
+ 	__FOP_FUNC(#name)
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index fcb3e6c5e03c..9e9c8e8d50d7 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -601,6 +601,11 @@ noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+ {
+ }
+ 
++#ifdef CONFIG_X86_KERNEL_IBT
++IBT_NOSEAL(bpf_kfunc_call_test_release);
++IBT_NOSEAL(bpf_kfunc_call_memb_release);
++#endif
++
+ noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
+ {
+ 	WARN_ON_ONCE(1);
 -- 
-Sincerely yours,
-Mike.
+2.34.1
+
