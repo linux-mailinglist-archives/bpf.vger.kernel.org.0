@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377B163D066
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7639863D068
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbiK3IYY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 03:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S234851AbiK3IY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 03:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234785AbiK3IXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 03:23:55 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273605C748;
-        Wed, 30 Nov 2022 00:23:49 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 140so16160474pfz.6;
-        Wed, 30 Nov 2022 00:23:49 -0800 (PST)
+        with ESMTP id S234820AbiK3IX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 03:23:56 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521DE65E4B;
+        Wed, 30 Nov 2022 00:23:51 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id io19so15943802plb.8;
+        Wed, 30 Nov 2022 00:23:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U2/8JQ+FgnnSuHcjXh2J3RCUAB76b7QNPLT1f/A9xug=;
-        b=BSi9n9GXOiYxxRJdC4TPmhxPiqB0MHRHFnvILrIVFCYNPVdtJrRTEsrU8HbTLbTtTE
-         xiVeIMW9m9gb4SOO9kRP0RitBzzv0K+RNYaOHUShGlNlSvjXp38qVFKwEIPPm34dCt0y
-         65FmagfmqDP+Da7yyQuLDjhMRltDlcxl3FzDLJEctobX0NijYoU8gFDXAZ3Pp8VE2kQ+
-         n62V8Ac4nlzIjFW7Nk04UGSgWF52Ip/AN06Tj0+Z0rEYvUVErZxXyLirXNBP5nVCI0l/
-         BfXzfJlV7DKtLbFY2WBlp1JIrngzB41hM5NELWpB7fPKmC7ydK5KhZm6cIC/j1HF2zH0
-         agQA==
+        bh=pluDkz1LDp7E7JUyCCPK7UNMM5NVNT0Y38yg2BcWmFs=;
+        b=mCDeRUH4Ouwb2Jm6I9rgWHU8YyNp0l8cxQUrHnc6pIUDmdnyIaRxVbglSNYJesOXjT
+         a3jpT1uJwSVTiSg7uJ3o+DKPignfb01PwxD4ho+WhlbTFgyoihvVg5szIGRJEmGU8c5G
+         OFOPA4cOMnLCxUDVe4QtmoBc+YjrMXCcBayKmWcITnCHCG3xI3r5S49PZY8iuXVXA/ZC
+         W2SY2yB2E+tPupuH+k5vxHwfLxOMmE8sOakTzkLCMKGHnysYTtXO88GH5KBPQeSV2mj0
+         o++mVg7UVuO6XV74dveJtzRvpPevpqmiqH1y1JUDnIFyXOs6sxRk5YsKyJvm62ZUGuBu
+         iFrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=U2/8JQ+FgnnSuHcjXh2J3RCUAB76b7QNPLT1f/A9xug=;
-        b=GgDyjKUmJj5IepmHj0Cv6E1mTDJ/vwNGFcIEy85tDXGAArSREhF80RnVC3edOTiQlB
-         rArZbyaZEsSl6HPiTyS6D0bK2pdOI6ec+U0Z7BKs54Ty37TpN+bHJ6rIGjaQ/4T5I8ir
-         /tJnjFki2uDSBhCQLqq5xH2SMfr43e+F/FQBlnZ4+/h8gXUY1am9QMvQ/K+/4zFlpenB
-         p1VF+PyzfTNc8CekzBmdU1dWk1cU44/VTyHWB/aLEV90ZEiPQG/OdEVpS7GD7t8ANtRu
-         YvAFO6ufVC+FxWjiWgdFaDIvBtD1sSd/GuFqDi47CirkRkEjhCLJ4jVx0Okct+Sr5irS
-         H/dQ==
-X-Gm-Message-State: ANoB5pnRb8pVmKBCiX6qN7Uw9GodHygTOPImA/i5byqQ7P2P4RYDvjQo
-        1rPPfLzsORO9DMRuITXECAk=
-X-Google-Smtp-Source: AA0mqf7rsSp9lcZ5WgoCYorTanlglI0Qu4SNRXJjk7DZQxDZxxscIehc8TZmXxMJ/k7hasLfjXXE5g==
-X-Received: by 2002:a05:6a00:1d25:b0:562:5f71:d188 with SMTP id a37-20020a056a001d2500b005625f71d188mr42805390pfx.57.1669796628479;
-        Wed, 30 Nov 2022 00:23:48 -0800 (PST)
+        bh=pluDkz1LDp7E7JUyCCPK7UNMM5NVNT0Y38yg2BcWmFs=;
+        b=SjyV5CV77eMCv/jwCwNq9TOFnlBrMOJU0KchZjy37/xDEBIqwldNl5eef6E4814I3U
+         BSAWG+lskYvhNKoP+zOt8UfZU7XQFhr3zqI0prHUp7fAaDYwtCXWh9PzMh+CW1tNj4mm
+         MuPpA3WMyMXhz0P+p90Dy4a+BGbnUV4fsfokmbYHvCGrp4lGA3NcBq3rRo2ADBRboW+w
+         6hg5P2szSg4uJgh8T5z+FD1Oov29KpJHyIrof4wxWd7tMHPcBXUUDePMOFq/UaxUGzXQ
+         wnN3+lpS+whRay8I2oK5mcUTdh3SudR+P2+7tIWkE/OBulp/WetPJWMyP19WH6MwpN0K
+         N1rQ==
+X-Gm-Message-State: ANoB5pm5AUSlqAlIjkAJUCSGiji+C9mkKaRotUx9bMOs+OH//4EEx7j7
+        cBb7Is3UAVVF4ZSfTadp44Y=
+X-Google-Smtp-Source: AA0mqf5wRcUWJx9QjxiJGhLEm2Uj2g8fv4bUSgks58qS+LVh+MEtmoofSaMC/e1gZ0tSHDiC1kCwWg==
+X-Received: by 2002:a17:902:d395:b0:189:58a9:14aa with SMTP id e21-20020a170902d39500b0018958a914aamr30172508pld.22.1669796630448;
+        Wed, 30 Nov 2022 00:23:50 -0800 (PST)
 Received: from localhost ([2600:380:4a00:1415:d028:b547:7d35:7b0b])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001837b19ebb8sm739977plf.244.2022.11.30.00.23.47
+        by smtp.gmail.com with ESMTPSA id s3-20020a625e03000000b0056bf29c9ba3sm819636pfb.146.2022.11.30.00.23.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 00:23:48 -0800 (PST)
+        Wed, 30 Nov 2022 00:23:50 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 05/31] sched: Add sched_class->reweight_task()
-Date:   Tue, 29 Nov 2022 22:22:47 -1000
-Message-Id: <20221130082313.3241517-6-tj@kernel.org>
+Subject: [PATCH 06/31] sched: Add sched_class->switching_to() and expose check_class_changing/changed()
+Date:   Tue, 29 Nov 2022 22:22:48 -1000
+Message-Id: <20221130082313.3241517-7-tj@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221130082313.3241517-1-tj@kernel.org>
 References: <20221130082313.3241517-1-tj@kernel.org>
@@ -80,17 +80,17 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, during a task weight change, sched core directly calls
-reweight_task() defined in fair.c if @p is on CFS. Let's make it a proper
-sched_class operation instead. CFS's reweight_task() is renamed to
-reweight_task_fair() and now called through sched_class.
+When a task switches to a new sched_class, the prev and new classes are
+notified through ->switched_from() and ->switched_to(), respectively, after
+the switching is done. However, a new sched_class needs to prepare the task
+state before it is enqueued on the new class for the first time.
 
-While it turns a direct call into an indirect one, set_load_weight() isn't
-called from a hot path and this change shouldn't cause any noticeable
-difference. This will be used to implement reweight_task for other scheduler
-classes.
+This patch adds ->switching_to() which is called during sched_class switch
+through check_class_changing() before the task is restored and exposes
+check_class_changing/changed() in kernel/sched/sched.h.
 
-This will be used by a new sched_class to track weight changes.
+This is a prep patch and doesn't cause any behavior changes. The new
+operation and exposed functions aren't used yet.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -98,69 +98,87 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/core.c  | 4 ++--
- kernel/sched/fair.c  | 3 ++-
- kernel/sched/sched.h | 4 ++--
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ kernel/sched/core.c  | 20 +++++++++++++++++---
+ kernel/sched/sched.h |  7 +++++++
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 85eb82ad2ffd..70ec74dbb45a 100644
+index 70ec74dbb45a..d2247e8144e3 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1275,8 +1275,8 @@ static void set_load_weight(struct task_struct *p, bool update_load)
- 	 * SCHED_OTHER tasks have to update their load when changing their
- 	 * weight
- 	 */
--	if (update_load && p->sched_class == &fair_sched_class) {
--		reweight_task(p, prio);
-+	if (update_load && p->sched_class->reweight_task) {
-+		p->sched_class->reweight_task(task_rq(p), p, prio);
- 	} else {
- 		load->weight = scale_load(sched_prio_to_weight[prio]);
- 		load->inv_weight = sched_prio_to_wmult[prio];
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e4a0b8bd941c..78263cef1ea8 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3330,7 +3330,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 
+@@ -2151,6 +2151,17 @@ inline int task_curr(const struct task_struct *p)
+ 	return cpu_curr(task_cpu(p)) == p;
  }
  
--void reweight_task(struct task_struct *p, int prio)
-+static void reweight_task_fair(struct rq *rq, struct task_struct *p, int prio)
++/*
++ * ->switching_to() is called with the pi_lock and rq_lock held and must not
++ * mess with locking.
++ */
++void check_class_changing(struct rq *rq, struct task_struct *p,
++			  const struct sched_class *prev_class)
++{
++	if (prev_class != p->sched_class && p->sched_class->switching_to)
++		p->sched_class->switching_to(rq, p);
++}
++
+ /*
+  * switched_from, switched_to and prio_changed must _NOT_ drop rq->lock,
+  * use the balance_callback list if you want balancing.
+@@ -2158,9 +2169,9 @@ inline int task_curr(const struct task_struct *p)
+  * this means any call to check_class_changed() must be followed by a call to
+  * balance_callback().
+  */
+-static inline void check_class_changed(struct rq *rq, struct task_struct *p,
+-				       const struct sched_class *prev_class,
+-				       int oldprio)
++void check_class_changed(struct rq *rq, struct task_struct *p,
++			 const struct sched_class *prev_class,
++			 int oldprio)
  {
- 	struct sched_entity *se = &p->se;
- 	struct cfs_rq *cfs_rq = cfs_rq_of(se);
-@@ -12176,6 +12176,7 @@ DEFINE_SCHED_CLASS(fair) = {
- 	.task_tick		= task_tick_fair,
- 	.task_fork		= task_fork_fair,
+ 	if (prev_class != p->sched_class) {
+ 		if (prev_class->switched_from)
+@@ -6974,6 +6985,7 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
+ 	}
  
-+	.reweight_task		= reweight_task_fair,
- 	.prio_changed		= prio_changed_fair,
- 	.switched_from		= switched_from_fair,
- 	.switched_to		= switched_to_fair,
+ 	__setscheduler_prio(p, prio);
++	check_class_changing(rq, p, prev_class);
+ 
+ 	if (queued)
+ 		enqueue_task(rq, p, queue_flag);
+@@ -7603,6 +7615,8 @@ static int __sched_setscheduler(struct task_struct *p,
+ 	}
+ 	__setscheduler_uclamp(p, attr);
+ 
++	check_class_changing(rq, p, prev_class);
++
+ 	if (queued) {
+ 		/*
+ 		 * We enqueue to tail when the priority of a task is
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a4a20046e586..08799b2a566e 100644
+index 08799b2a566e..3f98773d66dd 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2193,6 +2193,8 @@ struct sched_class {
+@@ -2191,6 +2191,7 @@ struct sched_class {
+ 	 * cannot assume the switched_from/switched_to pair is serialized by
+ 	 * rq->lock. They are however serialized by p->pi_lock.
  	 */
++	void (*switching_to) (struct rq *this_rq, struct task_struct *task);
  	void (*switched_from)(struct rq *this_rq, struct task_struct *task);
  	void (*switched_to)  (struct rq *this_rq, struct task_struct *task);
-+	void (*reweight_task)(struct rq *this_rq, struct task_struct *task,
-+			      int newprio);
- 	void (*prio_changed) (struct rq *this_rq, struct task_struct *task,
- 			      int oldprio);
+ 	void (*reweight_task)(struct rq *this_rq, struct task_struct *task,
+@@ -2427,6 +2428,12 @@ static inline void sub_nr_running(struct rq *rq, unsigned count)
+ extern void activate_task(struct rq *rq, struct task_struct *p, int flags);
+ extern void deactivate_task(struct rq *rq, struct task_struct *p, int flags);
  
-@@ -2345,8 +2347,6 @@ extern void init_sched_dl_class(void);
- extern void init_sched_rt_class(void);
- extern void init_sched_fair_class(void);
++extern void check_class_changing(struct rq *rq, struct task_struct *p,
++				 const struct sched_class *prev_class);
++extern void check_class_changed(struct rq *rq, struct task_struct *p,
++				const struct sched_class *prev_class,
++				int oldprio);
++
+ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
  
--extern void reweight_task(struct task_struct *p, int prio);
--
- extern void resched_curr(struct rq *rq);
- extern void resched_cpu(int cpu);
- 
+ #ifdef CONFIG_PREEMPT_RT
 -- 
 2.38.1
 
