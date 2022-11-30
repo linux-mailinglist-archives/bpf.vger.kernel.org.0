@@ -2,29 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF3163CDE2
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 04:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864D363CE30
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 05:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbiK3Dhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 22:37:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        id S232762AbiK3EIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 23:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbiK3Dh2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 22:37:28 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A276D73BBF;
-        Tue, 29 Nov 2022 19:37:25 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NMPz41THGz4f3mS4;
-        Wed, 30 Nov 2022 11:37:20 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP2 (Coremail) with SMTP id Syh0CgBHXrnyz4ZjLguABQ--.10963S2;
-        Wed, 30 Nov 2022 11:37:22 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229579AbiK3EIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 23:08:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989ED2EF41
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 20:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669781241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7dVxXAZufrpSRVdfUpGT875/FvocolhoDTU8t05kbp8=;
+        b=jIvuO6qdUI6mHKC5ma08YlPWTmUQa1KvVYBn2Xo4NznwF3+p20VJpM24TQytlUjMRUbvNw
+        NTNwZ2QwpIbNpmOOKoaFOB4bat2lgxsKb3LyhsrjOmNQF1/WpjtBmNtSBJJbxPVDtr8GGL
+        4iHjyULzVZ/OymSBqXuNnwOZ7+i4Ovw=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-499-tCXDdzctOgqdSuZOCqFYUA-1; Tue, 29 Nov 2022 23:07:18 -0500
+X-MC-Unique: tCXDdzctOgqdSuZOCqFYUA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B67A1C05EAA;
+        Wed, 30 Nov 2022 04:07:17 +0000 (UTC)
+Received: from [10.22.17.30] (unknown [10.22.17.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F5722024CBE;
+        Wed, 30 Nov 2022 04:07:16 +0000 (UTC)
+Message-ID: <fb7e9567-6452-7ccc-d2d5-697eb06ac251@redhat.com>
+Date:   Tue, 29 Nov 2022 23:07:13 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+Content-Language: en-US
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Hou Tao <houtao1@huawei.com>
+Cc:     Hou Tao <houtao@huaweicloud.com>, Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -32,109 +57,138 @@ Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf] riscv, bpf: Emit fixed-length imm64 for BPF_PSEUDO_FUNC
-Date:   Wed, 30 Nov 2022 11:38:06 +0800
-Message-Id: <20221130033806.2967822-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgBHXrnyz4ZjLguABQ--.10963S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy5AFyxuryDur4UCF1DAwb_yoW8tFy5pr
-        WUKr4fCFZ2qr1S9rnxtr1rXr15CF40qFsIgry3Way5Ga12qrsF93WDKw4Yka98ZFy8Gr15
-        XFyUKF9xua4Dt3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fUF0eHDUUUU
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+ <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+ <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com>
+ <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
+ <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+ <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com>
+ <CAMDZJNUTaiXMe460P7a7NfK1_bbaahpvi3Q9X85o=G7v9x-w=g@mail.gmail.com>
+ <59fc54b7-c276-2918-6741-804634337881@huaweicloud.com>
+ <541aa740-dcf3-35f5-9f9b-e411978eaa06@redhat.com>
+ <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local>
+ <Y4ZCKaQFqDY3aLTy@Boquns-Mac-mini.local>
+ <CA+khW7hkQRFcC1QgGxEK_NeaVvCe3Hbe_mZ-_UkQKaBaqnOLEQ@mail.gmail.com>
+ <23b5de45-1a11-b5c9-d0d3-4dbca0b7661e@huaweicloud.com>
+ <CAMDZJNWtyanKtXtAxYGwvJ0LTgYLf=5iYFm63pbvvJLPE8oHSQ@mail.gmail.com>
+ <9455ff51-098c-87f0-dc83-2303921032a2@redhat.com>
+ <CAMDZJNUdE7BKL6COF3xZD04iPn_4n5ZFmmoNB-y566QSVrct5w@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAMDZJNUdE7BKL6COF3xZD04iPn_4n5ZFmmoNB-y566QSVrct5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+On 11/29/22 22:32, Tonghao Zhang wrote:
+> On Wed, Nov 30, 2022 at 11:07 AM Waiman Long <longman@redhat.com> wrote:
+>> On 11/29/22 21:47, Tonghao Zhang wrote:
+>>> On Wed, Nov 30, 2022 at 9:50 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> Hi Hao,
+>>>>
+>>>> On 11/30/2022 3:36 AM, Hao Luo wrote:
+>>>>> On Tue, Nov 29, 2022 at 9:32 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+>>>>>> Just to be clear, I meant to refactor htab_lock_bucket() into a try
+>>>>>> lock pattern. Also after a second thought, the below suggestion doesn't
+>>>>>> work. I think the proper way is to make htab_lock_bucket() as a
+>>>>>> raw_spin_trylock_irqsave().
+>>>>>>
+>>>>>> Regards,
+>>>>>> Boqun
+>>>>>>
+>>>>> The potential deadlock happens when the lock is contended from the
+>>>>> same cpu. When the lock is contended from a remote cpu, we would like
+>>>>> the remote cpu to spin and wait, instead of giving up immediately. As
+>>>>> this gives better throughput. So replacing the current
+>>>>> raw_spin_lock_irqsave() with trylock sacrifices this performance gain.
+>>>>>
+>>>>> I suspect the source of the problem is the 'hash' that we used in
+>>>>> htab_lock_bucket(). The 'hash' is derived from the 'key', I wonder
+>>>>> whether we should use a hash derived from 'bucket' rather than from
+>>>>> 'key'. For example, from the memory address of the 'bucket'. Because,
+>>>>> different keys may fall into the same bucket, but yield different
+>>>>> hashes. If the same bucket can never have two different 'hashes' here,
+>>>>> the map_locked check should behave as intended. Also because
+>>>>> ->map_locked is per-cpu, execution flows from two different cpus can
+>>>>> both pass.
+>>>> The warning from lockdep is due to the reason the bucket lock A is used in a
+>>>> no-NMI context firstly, then the same bucke lock is used a NMI context, so
+>>> Yes, I tested lockdep too, we can't use the lock in NMI(but only
+>>> try_lock work fine) context if we use them no-NMI context. otherwise
+>>> the lockdep prints the warning.
+>>> * for the dead-lock case: we can use the
+>>> 1. hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1)
+>>> 2. or hash bucket address.
+>>>
+>>> * for lockdep warning, we should use in_nmi check with map_locked.
+>>>
+>>> BTW, the patch doesn't work, so we can remove the lock_key
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c50eb518e262fa06bd334e6eec172eaf5d7a5bd9
+>>>
+>>> static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>>>                                      struct bucket *b, u32 hash,
+>>>                                      unsigned long *pflags)
+>>> {
+>>>           unsigned long flags;
+>>>
+>>>           hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+>>>
+>>>           preempt_disable();
+>>>           if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+>>>                   __this_cpu_dec(*(htab->map_locked[hash]));
+>>>                   preempt_enable();
+>>>                   return -EBUSY;
+>>>           }
+>>>
+>>>           if (in_nmi()) {
+>>>                   if (!raw_spin_trylock_irqsave(&b->raw_lock, flags))
+>>>                           return -EBUSY;
+>> That is not right. You have to do the same step as above by decrementing
+>> the percpu count and enable preemption. So you may want to put all these
+>> busy_out steps after the return 0 and use "goto busy_out;" to jump there.
+> Yes, thanks Waiman, I should add the busy_out label.
+>>>           } else {
+>>>                   raw_spin_lock_irqsave(&b->raw_lock, flags);
+>>>           }
+>>>
+>>>           *pflags = flags;
+>>>           return 0;
+>>> }
+>> BTW, with that change, I believe you can actually remove all the percpu
+>> map_locked count code.
+> there are some case, for example, we run the bpf_prog A B in task
+> context on the same cpu.
+> bpf_prog A
+> update map X
+>      htab_lock_bucket
+>          raw_spin_lock_irqsave()
+>      lookup_elem_raw()
+>          // bpf prog B is attached on lookup_elem_raw()
+>          bpf prog B
+>              update map X again and update the element
+>                  htab_lock_bucket()
+>                      // dead-lock
+>                      raw_spinlock_irqsave()
 
-For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
-correct addresses of bpf_calls and then run last pass of JIT.
-Since the emit_imm of RV64 is variable-length, which will emit
-appropriate length instructions accorroding to the imm, it may
-broke ctx->offset, and lead to unpredictable problem, such as
-inaccurate jump. So let's fix it with fixed-length imm64 insns.
+I see, so nested locking is possible in this case. Beside using the 
+percpu map_lock, another way is to have cpumask associated with each 
+bucket lock and use each bit in the cpumask for to control access using 
+test_and_set_bit() for each cpu. That will allow more concurrency and 
+you can actually find out how contended is the lock. Anyway, it is just 
+a thought.
 
-Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+Cheers,
+Longman
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index eb99df41fa33..f984d5fa014b 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -139,6 +139,30 @@ static bool in_auipc_jalr_range(s64 val)
- 		val < ((1L << 31) - (1L << 11));
- }
- 
-+/* Emit fixed-length instructions for 32-bit imm */
-+static void emit_fixed_imm32(u8 rd, s32 val, struct rv_jit_context *ctx)
-+{
-+	s32 upper = (val + (1U << 11)) >> 12;
-+	s32 lower = ((val & 0xfff) << 20) >> 20;
-+
-+	emit(rv_lui(rd, upper), ctx);
-+	emit(rv_addi(rd, rd, lower), ctx);
-+}
-+
-+/* Emit fixed-length instructions for 64-bit imm */
-+static void emit_fixed_imm64(u8 rd, s64 val, struct rv_jit_context *ctx)
-+{
-+	/* Compensation for sign-extension of rv_addi */
-+	s32 imm_hi = (val + (1U << 31)) >> 32;
-+	s32 imm_lo = val;
-+
-+	emit_fixed_imm32(rd, imm_hi, ctx);
-+	emit_fixed_imm32(RV_REG_T1, imm_lo, ctx);
-+	emit(rv_slli(rd, rd, 32), ctx);
-+	emit(rv_add(rd, rd, RV_REG_T1), ctx);
-+}
-+
-+/* Emit variable-length instructions for 32-bit and 64-bit imm */
- static void emit_imm(u8 rd, s64 val, struct rv_jit_context *ctx)
- {
- 	/* Note that the immediate from the add is sign-extended,
-@@ -1053,7 +1077,12 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		u64 imm64;
- 
- 		imm64 = (u64)insn1.imm << 32 | (u32)imm;
--		emit_imm(rd, imm64, ctx);
-+		if (bpf_pseudo_func(insn))
-+			/* fixed-length insns for extra jit pass */
-+			emit_fixed_imm64(rd, imm64, ctx);
-+		else
-+			emit_imm(rd, imm64, ctx);
-+
- 		return 1;
- 	}
- 
--- 
-2.25.1
 
