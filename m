@@ -2,94 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2B263D235
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 10:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4F263D28E
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 10:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbiK3Jkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 04:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        id S234952AbiK3JzJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 04:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235061AbiK3Jkc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 04:40:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15B1663D0
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 01:40:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 69C6F61AB3
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 09:40:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57F6FC433D6;
-        Wed, 30 Nov 2022 09:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669801204;
-        bh=j4pbxURSkB/qMAGKhX3c71/EfzCnkVfnezE1/DTusgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qWusOV3BBSkYy7rrN42u80HXQwwdVYZOFUGbiEihPaSrqL2ILGP8e1vaCHK2E2lTZ
-         S7WkLtjnjui8RQQW3//nhppG3vhYZOhtZS4ibsuCM68bewY08jB8YrelFxVN46yITz
-         6vBdiV5AtEMGKWlOCjeKkk2fL4F+1N432YCxdLHjLWEuH/rTiMLDUYma1AAL15yOTh
-         oGi83OUsyDR/N3bh/pm1v8RdKaGX4cLTw0eEfBYq9pG3oMXVUHdCvNSSaxVU35H5HJ
-         1WjylIAn3qadSUyNbO9ut3S0ZagD+OrfQ4XjAgTkRVil1dYQnhLJ660Nfs1gQ2HmPn
-         Su0xPK1NkLdJA==
-Date:   Wed, 30 Nov 2022 11:39:47 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hch@lst.de" <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-Message-ID: <Y4ck40Wv3n5Q5ByK@kernel.org>
-References: <Y2o9Iz30A3Nruqs4@kernel.org>
- <9e59a4e8b6f071cf380b9843cdf1e9160f798255.camel@intel.com>
- <Y2uMWvmiPlaNXlZz@kernel.org>
- <bcdc5a31570f87267183496f06963ac58b41bfe1.camel@intel.com>
- <Y3DITs3J8koEw3Hz@kernel.org>
- <CAPhsuW4zKABHC_Stwnkac05Lvww4C_tz-T4JfALDcQusRmsCEw@mail.gmail.com>
- <Y3X1uHNTLQJxmJnm@kernel.org>
- <CAPhsuW51j8P+DNXvFh4uf5Mem7=egHyYMVK7-Zq2qeFoArYREQ@mail.gmail.com>
- <Y3oEXP3UqHd1L6Z9@kernel.org>
- <CAPhsuW4ZBShuBf39TLmich0ts07zWGFuHvfAB0Jbg_bG-fjjWw@mail.gmail.com>
+        with ESMTP id S231821AbiK3JzI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 04:55:08 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB6428E1E;
+        Wed, 30 Nov 2022 01:55:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669802107; x=1701338107;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pNLXsxeNGGkHQ/txi5YKruCJGisFk3qEwRDZxwc6iG0=;
+  b=Rp5qP5Nh4tJgUpOfH6wkd+W7S5ImgGBTqPC+okV7eHQ/rmrlQS5wE2jO
+   r4bT7LQ37YeUHuxCe7wNzRKgY/xzbBSIEyLN9EvCeVq4KuqRZgwd4LlIA
+   379WqxLmLxyDtfiIYXgF86NYLelKco7nAjCN2f43VT3SVFBgwyTrclRVG
+   zAUQJYSwBpask3ept7/gYxRZmCm3qFqiUerWphwv2+7n3ZoS0O0WSY1Z5
+   f7rDZInIY/XIJsfeUSYK3Jl4EapZtpp4ycR1TFzY9ZkquqoBjzM7KZjHU
+   IsLdZQOGMLP3dgvBO/6y8x6V1EBinIZjTON2ICuPsP3VNboTKTa02CYZd
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="314047836"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="314047836"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 01:55:07 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="621823959"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="621823959"
+Received: from unknown (HELO paamrpdk12-S2600BPB.aw.intel.com) ([10.228.151.145])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 01:55:06 -0800
+From:   Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+To:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] selftests: xsk: changes for setting up NICs to run xsk self-tests
+Date:   Wed, 30 Nov 2022 15:11:42 +0530
+Message-Id: <20221130094142.545051-1-tirthendu.sarkar@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW4ZBShuBf39TLmich0ts07zWGFuHvfAB0Jbg_bG-fjjWw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 07:52:12AM -0700, Song Liu wrote:
-> On Sun, Nov 20, 2022 at 3:41 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > >
-> > > > The most obvious one to implement Peter's suggestion with VM_TOPDOWN_VMAP
-> > > > so that execmem_alloc() can be actually used by modules.
-> > >
-> > > Current implementation is an alternative to VM_TOPDOWN_VMAP. I am
-> > > very sure it works for modules just like VM_TOPDOWN_VMAP solution.
-> >
-> > It might, but it still does not. And until they do I consider these
-> > patches as an optimization for BFP rather than unification of code
-> > allocations.
-> 
-> We haven't got module to use execmem_alloc yet, that's true. But
-> this has nothing to do with VM_TOPDOWN_VMAP at all.
+ETH devies need to be set up for running xsk self-tests, like enable
+loopback, set promiscuous mode, MTU etc. This patch adds those settings
+before running xsk self-tests and reverts them back once done.
 
-The point is that Peter suggested a way to make module_alloc() use 2M
-pages, so that all code allocations could benefit from it. Your
-execmem_alloc() isn't anywhere near this.
+Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+---
+ tools/testing/selftests/bpf/test_xsk.sh | 27 ++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+index d821fd098504..e7a5c5fc4f71 100755
+--- a/tools/testing/selftests/bpf/test_xsk.sh
++++ b/tools/testing/selftests/bpf/test_xsk.sh
+@@ -106,7 +106,11 @@ MTU=1500
+ trap ctrl_c INT
  
-> Thanks,
-> Song
-
+ function ctrl_c() {
+-        cleanup_exit ${VETH0} ${VETH1} ${NS1}
++	if [ ! -z $ETH ]; then
++		cleanup_exit ${VETH0} ${VETH1} ${NS1}
++	else
++		cleanup_eth
++	fi
+ 	exit 1
+ }
+ 
+@@ -138,9 +142,28 @@ setup_vethPairs() {
+ 	ip link set ${VETH0} up
+ }
+ 
++setup_eth() {
++       sudo ethtool -L ${ETH} combined 1
++       sudo ethtool -K ${ETH} loopback on
++       sudo ip link set ${ETH} promisc on
++       sudo ip link set ${ETH} mtu ${MTU}
++       sudo ip link set ${ETH} up
++       IPV6_DISABLE_CMD="sudo sysctl -n net.ipv6.conf.${ETH}.disable_ipv6"
++       IPV6_DISABLE=`$IPV6_DISABLE_CMD 2> /dev/null`
++       [[ $IPV6_DISABLE == "0" ]] && $IPV6_DISABLE_CMD=1
++       sleep 1
++}
++
++cleanup_eth() {
++       [[ $IPV6_DISABLE == "0" ]] && $IPV6_DISABLE_CMD=0
++       sudo ethtool -K ${ETH} loopback off
++       sudo ip link set ${ETH} promisc off
++}
++
+ if [ ! -z $ETH ]; then
+ 	VETH0=${ETH}
+ 	VETH1=${ETH}
++	setup_eth
+ 	NS1=""
+ else
+ 	validate_root_exec
+@@ -191,6 +214,8 @@ exec_xskxceiver
+ 
+ if [ -z $ETH ]; then
+ 	cleanup_exit ${VETH0} ${VETH1} ${NS1}
++else
++	cleanup_eth
+ fi
+ 
+ failures=0
 -- 
-Sincerely yours,
-Mike.
+2.34.1
+
