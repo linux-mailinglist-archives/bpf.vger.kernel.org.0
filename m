@@ -2,59 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E32663D760
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 14:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74E863D7DB
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 15:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbiK3N6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 08:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        id S229737AbiK3ONl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 09:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiK3N6m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 08:58:42 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C3A1D33D
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 05:58:41 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-3c21d6e2f3aso111384067b3.10
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 05:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xNz3TeUIxix6PUHiU4vUYWYXAMGqRHEQQYOh5WSfUP8=;
-        b=Erl9t01h6oeUfWXRbBMywYnHDZnCXU3eP8prHMy8z0FJbNHizvUwm7IUuYD7BLZa/Z
-         UYJcBgVyoe8BuUsFHiaeTtcwIKkB/7Td7PA2EBSIPsLrl7hjeOB0qwmM+mHE6Qs0rVhc
-         Bm8YYvogwOmcKUDZGzqQBAPHAlI5CHf0cU9Nd2AKvL/wtvllpG7YAUpFuD389wBZQwEx
-         52BfaiNP/RQdgAWXrCTmcrZW0UbR0uRHPtzZG148tyYM/iLdPuwZIFDkkbKouQ7S69c+
-         MPJvmBDWPIvkkDXbTsLNxgOmSEWRAexresa7F4d1llgonVt0pK61RVsPa7uAV5TYkET5
-         rPdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNz3TeUIxix6PUHiU4vUYWYXAMGqRHEQQYOh5WSfUP8=;
-        b=OWI3Or0W/fxz2inhbmbXvTxsujNFFUM18IsbsmoqyN8B0x/uc3j1fERqZnXbx8AXc8
-         +0xvjCDHAPkOtbWyes3gTQMbHHpnaHgOKrg0R8gmvGd/+EHeaABzqbHuhipwF7j6eZSk
-         qxxf1/Ybb6imo96oXch5AsN4E7cJcmmvNyOPxnaDGERyGsbzeWg39n6eZj8FYCvM398X
-         xjPZ00npCXGNbhDekgTqIxyuUrL/4hLCcD6VwQ5d+RJfq/7pCAVw9ZUjIpOqlAyueHX8
-         dOdwiCACQL8P9/qygGTnAdKhabReR7pHSoXjyFh/B9yslUk4lEacwSWz/MLnhAt3YbOH
-         tzgA==
-X-Gm-Message-State: ANoB5pnsrM5JMmM9wmIvFXnCiK1vkHbyN+H3BLQGj0t3AGox2IYUNMhG
-        yJZvaWzZOyaoYzK+wtrOZrFxGytmiaCDTFNxHxG5u6/UWtZ9n/ev
-X-Google-Smtp-Source: AA0mqf4bS2g08nRNKSCY9wEzAUBF7foKp68o1hAmSbp4z84Q8Dzyncpv921RrKkSiCYQqhZQsUV21E0gSQwaHWhbVZo=
-X-Received: by 2002:a05:690c:828:b0:3d7:b184:9885 with SMTP id
- by8-20020a05690c082800b003d7b1849885mr1027000ywb.125.1669816720250; Wed, 30
- Nov 2022 05:58:40 -0800 (PST)
-MIME-Version: 1.0
-Reply-To: tjcw@cantab.net
-From:   Chris Ward <tjcw01@gmail.com>
-Date:   Wed, 30 Nov 2022 13:58:29 +0000
-Message-ID: <CAC=wTOhR-YTjuGu7mreQccx1o+nWgWZ4+V=URpj3jfCB3gipTA@mail.gmail.com>
-Subject: Per CPU map not being transferred to user space
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S229743AbiK3ON0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 09:13:26 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDAE1759A;
+        Wed, 30 Nov 2022 06:12:48 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AUDTxx8011736;
+        Wed, 30 Nov 2022 14:12:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2022-7-12;
+ bh=81Gw5jnCL8waFzPfYwJgsHW4IkKTk/GT8Ct4LdrMODM=;
+ b=CQdwj51p6KRg4NWqvuKl1Hv4vPpEIVw0gYMdr3gBmYVR6ycsgP6goucwGAxYOt6A4Mkw
+ P6D7cPW1CwdfjS4GTkroRbZfZabn4EMQYJBHQ1/t9i8lqxqYmRDuQqcZ0WMu/KlcjIA8
+ Cx6lT7bqIvJkMnZ6GitMdCmi2wGIHQk2YoI1xi9RmD64KPZ/0cr1Ly+INrBXSmYbfqyr
+ 5Fe7ZYyADG3mX4K1noaVIBUwd5MP0RoHleNZE8aVgyHAthNCUivgGaMYJYX+IU97V4/1
+ oqgG1YxdDM8h5jZc1c5tJFijTXsL49OsSDInDqSbRV5FoFoJ/afql/YgpYv7Nu6QrbdO lA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3m40y414v3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Nov 2022 14:12:38 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2AUE6ojL000587;
+        Wed, 30 Nov 2022 14:12:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3m398ff6gk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Nov 2022 14:12:36 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AUECa9P000944;
+        Wed, 30 Nov 2022 14:12:36 GMT
+Received: from dhcp-10-152-13-169.usdhcp.oraclecorp.com.com (dhcp-10-152-13-169.usdhcp.oraclecorp.com [10.152.13.169])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3m398ff6b5-1;
+        Wed, 30 Nov 2022 14:12:36 +0000
+From:   George Kennedy <george.kennedy@oracle.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     george.kennedy@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] net: check for dev pointer being NULL in dev_hard_header() to avoid GPF
+Date:   Wed, 30 Nov 2022 09:11:52 -0500
+Message-Id: <1669817512-4560-1-git-send-email-george.kennedy@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-30_04,2022-11-30_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211300099
+X-Proofpoint-GUID: O52LZs4KDTyVMXOkO-BKiWXxxRYPyoWW
+X-Proofpoint-ORIG-GUID: O52LZs4KDTyVMXOkO-BKiWXxxRYPyoWW
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,36 +71,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I have a test case similar to code in xdp-project/xdp-tutorial/ which
-maintains a statistic map in a per-cpu array, and user-space code
-which displays the statistics periodically.
+The dev pointer can be NULL in dev_hard_header(). Add check for dev being
+NULL in dev_hard_header() to avoid GPF.
 
-When I run this, the user space code always displays zeros. I have
-instrumented my eBPF kernel code with bpf_trace_printk and it appears
-to be putting the correct values into the map. The user code is
-iterating over all possible CPUs, but is always finding zeros in the
-per-cpu array slots.
+general protection fault, probably for non-canonical address
+    0xdffffc0000000046: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000230-0x0000000000000237]
+CPU: 1 PID: 45 Comm: kworker/1:1 Not tainted 6.1.0-rc7+ #2
+Hardware name: Red Hat KVM, BIOS 1.15.0-2.module+el8.6.0+20659+3dcf7c70
+Workqueue: mld mld_ifc_work
+RIP: 0010:macvlan_hard_header (./include/linux/netdevice.h:3057
+    (discriminator 4) drivers/net/macvlan.c:594 (discriminator 4))
+RSP: 0018:ffff888103d377d0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: ffff88801cf1a000 RCX: 0000000000000000
+RDX: 0000000000000046 RSI: 0000000000000000 RDI: 0000000000000230
+RBP: ffff88801e8ef328 R08: 0000000000000000 R09: 0000000000000060
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88801f0497c0
+R13: 0000000000000000 R14: ffff888045187c98 R15: 0000000000000060
+FS:  0000000000000000(0000) GS:ffff888106c80000(0000)
+    knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbf3f1c1840 CR3: 0000000014e36000 CR4: 00000000000006e0
+Call Trace:
+ <TASK>
+neigh_connected_output (./include/linux/netdevice.h:3060
+    net/core/neighbour.c:1595)
+ip6_finish_output2 (./include/net/neighbour.h:546
+    net/ipv6/ip6_output.c:134)
+ip6_finish_output (net/ipv6/ip6_output.c:195 net/ipv6/ip6_output.c:206)
+ip6_output (./include/linux/netfilter.h:291 net/ipv6/ip6_output.c:227)
+NF_HOOK.constprop.0 (./include/net/dst.h:445
+    ./include/linux/netfilter.h:302)
+mld_sendpack (net/ipv6/mcast.c:1824)
+mld_send_cr (net/ipv6/mcast.c:2122)
+mld_ifc_work (net/ipv6/mcast.c:2655)
+process_one_work (kernel/workqueue.c:2294)
+worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2437)
+kthread (kernel/kthread.c:376)
+ret_from_fork (arch/x86/entry/entry_64.S:312)
+ </TASK>
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 0000000000000000 ]---
 
-Can anybody tell me what is going wrong ?
+Fixes: 0c4e85813d0a ("[NET]: Wrap netdevice hardware header creation.")
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+---
+ include/linux/netdevice.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-My test case is here
-https://github.com/tjcw/bpf-examples/tree/tjcw-integration-1.2-ebpftrace/AF_XDP-filter
-; af_xdp_kern.c is the eBPF code, af_xdp_user.c is the userspace code
-which drives the eBPF code, and filter-xdp_stats.c is the code which
-should display the statistics. It all builds with 'make' in that
-directory, and there is a run script which I use with
-tjcw@r28b29-n10:~/workspace/bpf-examples/AF_XDP-filter/netperf-namespace$
-sudo FILTER=af_xdp_kern ./run.sh
-to run the user code and eBPF code with data being transferred between
-2 network namespaces on the machine.
-While it is running,
-tjcw@r28b29-n10:~/workspace/bpf-examples/AF_XDP-filter$ sudo
-./filter-xdp_stats
-should display statistics, but in fact displays zeros.
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index eddf8ee270e7..9b25a6301fa5 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3054,7 +3054,7 @@ static inline int dev_hard_header(struct sk_buff *skb, struct net_device *dev,
+ 				  const void *daddr, const void *saddr,
+ 				  unsigned int len)
+ {
+-	if (!dev->header_ops || !dev->header_ops->create)
++	if (!dev || !dev->header_ops || !dev->header_ops->create)
+ 		return 0;
+ 
+ 	return dev->header_ops->create(skb, dev, type, daddr, saddr, len);
+-- 
+2.31.1
 
-My test case is coded to the '1.0' BPF interface, where the code in
-xdp-tutorial is coded to the pre-release BPF interface.
-
-Thanks for all the help you can give !
-
-Chris Ward, IBM
