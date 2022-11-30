@@ -2,66 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7F963CC7E
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 01:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CF163CC84
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 01:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbiK3A1V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 19:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40198 "EHLO
+        id S229512AbiK3Af2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 19:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbiK3A1R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 19:27:17 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448D36DCF3
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 16:27:16 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id z20so21996309edc.13
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 16:27:16 -0800 (PST)
+        with ESMTP id S230273AbiK3Af0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 19:35:26 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6D44A9C4
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 16:35:21 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id a16so547158edb.9
+        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 16:35:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4kcLmdyWPz4HDlDl+dcOQM64LaNWRLhz5Cue7G7DCLQ=;
-        b=AsBhk6A3U1jIbV3dWfVsgXG8WCcOMLSIyrN4DoopG2yJ3dSyTgEZE9bt48/4Tn7iS9
-         mscIzJl0IgU88/xpWjAHhdQcB4BInbrHmZ9kM7AUEgG1ccSzew4lhGD9v4HpBNQzPAmd
-         +DSClR9YJ9BBVYE/XYAc3Z/gkNk7hm8uvJj/FT8ga4NyAPUUbK3IDznJZlIJ0GH2MdEB
-         jjoA02g2E/lqh71tnEwvAUez4AknK/4UDZYnkRehOPHWr2YlfHuuIEU/qbVq/eKM+1an
-         JZCPtOOIF6n6FGM7TfcPHSrZm9xvyeKNRXTxMxvBFEwPGAWrlir1zdjPKZzM4qEw/pX5
-         RnqQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZDbuuf2b5Szkr+2ehM4rLFxHMCGLYuKB0dkx4VosbYs=;
+        b=htdVjgKhY9ETWTwmIwvSLvsfdXgxI3q86LRMnGDYDrmCVXTHgbKSkXWOiV2lBZpSZS
+         1aUt4mbuOSyuYl/K1iv1/QtIFNV12PXDcNl8SaXhvU0/OLw3bmIWx1swZIC3juI2yixG
+         /b2026CJ3teVsv2NczzsrjLXKCMQFSsSfItO5Qlu/swVAYI+Ifb1SW+npSXwED+9ACY4
+         FGCZcRiyZlTrxfeEIinYwwnUCcO1uam8LaRFesCo3FrF5ZDl5W1ga0PlZxm5+hFChG8E
+         0iYG3NsbqxhGWQ38BXS0HhKIGVaVovxB4ve4rwfY+OOHsp5dJQFiFvHsCuH7PfHf5XP5
+         Pzew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4kcLmdyWPz4HDlDl+dcOQM64LaNWRLhz5Cue7G7DCLQ=;
-        b=EOjfrTFmAqqFEd4tSlGZjLpPijvhDJwcQADfYSQDjshH4qWighIzU6ZYx1SQeYOxQk
-         6t4rHvwa12i/awivcp0BojtDZ3lL6srQR9zts95PgopQJsHYie46p4A0IeiBIPrhby8j
-         eXWgta8nFxM9UqrS7w++e7uW6JGVFO+0GFNqJzWty0abuMijZ/BQiMq7FdGPHz5d0DqU
-         4xd//KmG8rqUPqAdmney2WjYgbb2WhjQHDZ9nw3ec74DsMDq8zIpZbNxqPBoWtBL8LV7
-         MfwZE6dAAAGzqL/X9QSVlhoUwB95JEl4KoaDxsh9xK7qRvM6Z0QsGNWjibVU0oeeJNWe
-         1WAw==
-X-Gm-Message-State: ANoB5pnVp7iudU/ILP1rcM7ZzYMmY8o2+MZVu3eEUdf1bC8+1NDkw1IQ
-        dtvneLwo8aqAVo8uGbTDFB0QedJ2tHIWU6wOJ44BnT4bYSI=
-X-Google-Smtp-Source: AA0mqf5vNtUukeSYOu4INlAYqadNSY6LcmXyQ4GrDahG8SjwvdRDiL2RN3+Fr3LhTTFHpPPR0ip9IxTnS1XFdwIu8aI=
-X-Received: by 2002:a05:6402:4008:b0:458:dd63:e339 with SMTP id
- d8-20020a056402400800b00458dd63e339mr35255379eda.81.1669768034621; Tue, 29
- Nov 2022 16:27:14 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZDbuuf2b5Szkr+2ehM4rLFxHMCGLYuKB0dkx4VosbYs=;
+        b=vME2bl989L4PIgdmcWCcbA8Kki2FgvN7S84XQYc20LhjIKV8dAztgbxbWp+r/RtTXk
+         okFy40AkOeS1hdpaH90TuIcVMnjIRyYFSn7KgPcl1hZcPJrgbFEK+vGDC0f2Pu0zH91r
+         ESECh2yT/UQsCgMN5hqwfacZ4oLudowoMKANJGmStI2eApkznhu6DvciH78YR7VPv1Hq
+         etqz3tDaqhlEymrDGxC2P19g2MwE++0zZMnbH7TcMB10hXwX03j0LjvPe1hp4WYGH64s
+         0jvTtEJvpG1hzGHsoClIez9Niih79Oi4QgCu/WSjbRFUfAziHxNrBf7LyGQC8uq5snKl
+         Ew/g==
+X-Gm-Message-State: ANoB5pmov1kcHD/Bq8H8UfJrp6+ygSDJn89DfLBqD4XcQ0zNjpM/0KfD
+        Tqj1TQXl5L9wd+t/kNuhzvps6Xv7qHVY+R+4sA+euOmB
+X-Google-Smtp-Source: AA0mqf6hrFBL27sbbyqUdIvdvDFGe2SEfl31g/YpFfQ0CgBplZcf5BTjrYvM2hQvnTqX9vkT3/RJgQx9q5hNBA7OAfs=
+X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id
+ t33-20020a056402242100b00461524fa8f4mr53415545eda.260.1669768520302; Tue, 29
+ Nov 2022 16:35:20 -0800 (PST)
 MIME-Version: 1.0
-References: <9cfc736f2b45422a50a21b90b94de04b19836682.camel@ericsson.com>
- <Y3d9mYrkWjrkJ9q2@krava> <HE1PR07MB3321F2F4C156BCA6EFD3A3DBBD099@HE1PR07MB3321.eurprd07.prod.outlook.com>
- <b529c3fa5946537f96430d679b9e8a4280f03e4b.camel@ericsson.com>
- <CAEf4Bza8c59wH05pRaBL2hHznFVs0_yWpVy1GHexURu3Ln-a=g@mail.gmail.com> <c4a265caf1653412ac88b8e6c56a694a0d50879c.camel@gmail.com>
-In-Reply-To: <c4a265caf1653412ac88b8e6c56a694a0d50879c.camel@gmail.com>
+References: <20221128132915.141211-1-jolsa@kernel.org> <20221128132915.141211-3-jolsa@kernel.org>
+ <CAEf4BzaZCUoxN_X2ALXwQeFTCwtL17R4P_B_-hUCcidfyO2xyQ@mail.gmail.com> <CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com>
+In-Reply-To: <CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 29 Nov 2022 16:27:02 -0800
-Message-ID: <CAEf4BzZt0VCEf-PVK0=aKBzqHHS4EBDiRc0tA23rrC7_amnxDQ@mail.gmail.com>
-Subject: Re: Sv: Bad padding with bpftool btf dump .. format c
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     =?UTF-8?Q?Per_Sundstr=C3=B6m_XP?= <per.xp.sundstrom@ericsson.com>,
-        "olsajiri@gmail.com" <olsajiri@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Date:   Tue, 29 Nov 2022 16:35:08 -0800
+Message-ID: <CAEf4Bza6R2uedPiKi_FXMPOVe-WGS5LO-EbBzpqK9T-xCybS5Q@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 2/4] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+To:     Hao Luo <haoluo@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,182 +74,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 9:38 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Mon, Nov 28, 2022 at 10:20 PM Hao Luo <haoluo@google.com> wrote:
 >
-> On Wed, 2022-11-23 at 18:37 -0800, Andrii Nakryiko wrote:
-> > On Fri, Nov 18, 2022 at 9:26 AM Per Sundstr=C3=B6m XP
-> > <per.xp.sundstrom@ericsson.com> wrote:
-> > >
-> > >
-> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Vanilla =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> > > > > struct foo {
-> > > > >     struct {
-> > > > >         int  aa;
-> > > > >         char ab;
-> > > > >     } a;
-> > > > >     long   :64;
-> > > > >     int    :4;
-> > > > >     char   b;
-> > > > >     short  c;
-> > > > > };
-> > > > > offsetof(struct foo, c)=3D18
-> > > > >
-> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > > > > struct foo {
-> > > > >         long: 8;
-> > > > >         long: 64;
-> > > > >         long: 64;
-> > > > >         char b;
-> > > > >         short c;
-> > > > > };
-> > > >
-> > > > so I guess the issue is that the first 'long: 8' is padded to full
-> > > > long: 64 ?
-> > > >
-> > > > looks like btf_dump_emit_bit_padding did not take into accout the g=
-ap
-> > > > on the
-> > > > begining of the struct
-> > > >
-> > > > on the other hand you generated that header file from 'min_core_btf=
-'
-> > > > btf data,
-> > > > which takes away all the unused fields.. it might not beeen
-> > > > considered as a
-> > > > use case before
-> > > >
-> > > > jirka
-> > > >
-> > >
-> > > > That could be the case, but I think the 'emit_bit_padding()' will n=
-ot
-> > > > really have a
-> > > > lot to do for the non sparse headers ..
-> > > >   /Per
-> > >
-> > >
-> > > Looks like something like this makes tings a lot better:
+> On Mon, Nov 28, 2022 at 5:15 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > yep, this helps, though changes output with padding to more verbose
-> > version, quite often unnecessarily. I need to thing a bit more on
-> > this, but the way we currently calculate alignment of a type is not
-> > always going to be correct. E.g., just because there is an int field,
-> > doesn't mean that struct actually has 4-byte alignment.
+> > On Mon, Nov 28, 2022 at 5:29 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding bpf_vma_build_id_parse function to retrieve build id from
+> > > passed vma object and making it available as bpf kfunc.
 > >
-> > We must take into account natural alignment, but also actual
-> > alignment, which might be different due to __attribute__((packed)).
+> > As a completely different way of solving this problem of retrieving
+> > build_id for tracing needs, can we teach kernel itself to parse and
+> > store build_id (probably gated behind Kconfig option) in struct file
+> > (ideally)? On exec() and when mmap()'ing with executable permissions,
+> > Linux kernel will try to fetch build_id from ELF file and if
+> > successful store it in struct file. Given build_id can be up to 20
+> > bytes (currently) and not each struct file points to executable, we
+> > might want to only add a pointer field to `struct file` itself, which,
+> > if build_id is present, will point to
 > >
-> > Either way, thanks for reporting!
+> > struct build_id {
+> >     char sz;
+> >     char data[];
+> > };
+> >
+> > This way we don't increase `struct file` by much.
+> >
+> > And then any BPF program would be able to easily probe_read_kernel
+> > such build_id from vma_area_struct->vm_file->build_id?
+> >
+> > I'm sure I'm oversimplifying, but this seems like a good solution for
+> > all kinds of profiling BPF programs without the need to maintain all
+> > these allowlists and adding new helpers/kfuncs?
+> >
+> > I know Hao was looking at the problem of getting build_id, I'm curious
+> > if something like this would work for their use cases as well?
+> >
 >
-> Hi everyone,
+> This helps a little. We would like to get build_id reliably. There are
+> two problems we encountered.
 >
-> I think the fix is simpler:
->
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index deb2bc9a0a7b..23a00818854b 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -860,7 +860,7 @@ static bool btf_is_struct_packed(const struct btf *bt=
-f, __u32 id,
->
->  static int chip_away_bits(int total, int at_most)
->  {
-> -       return total % at_most ? : at_most;
-> +       return total > at_most ? at_most : total;
->  }
->
-> It changes the order in which btf_dump_emit_bit_padding() prints field
-> sizes. Right now it returns the division remainder on a first call and
-> full 'at_most' values at subsequent calls. For this particular example
-> the bit offset of 'b' is 136, so the output looks as follows:
->
-> struct foo {
->         long: 8;    // first call pad_bits =3D 136 % 64 ? : 64; off_diff =
--=3D 8;
->         long: 64;   // second call pad_bits =3D 128 % 64 ? : 64; off_diff=
- -=3D 64; ...
->         long: 64;
->         char b;
->         short c;
-> };
->
-> This is incorrect, because compiler would always add padding between
-> the first and second members to account for the second member alignment.
->
-> However, my change inverts the order, which avoids the accidental
-> padding and gets the desired output:
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Custom =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> struct foo {
->         long: 64;
->         long: 64;
->         char: 8;
->         char b;
->         short c;
-> };
-> offsetof(struct foo, c)=3D18
->
-> =3D=3D=3D BTF offsets =3D=3D=3D
-> full   :        'c' type_id=3D6 bits_offset=3D144
-> custom :        'c' type_id=3D3 bits_offset=3D144
->
-> wdyt?
+> First, sometimes we need to get build_id from an atomic context. We
+> fail to get build_id if the page that contains the build_id has been
+> evicted from pagecache. Storing the build_id in `struct file` or
+> `struct inode` is a good and natural solution. But, this problem can
+> also be solved by using mlock to pin the page in memory. We are using
+> mlock, it seems to be working well right now.
 
-There were at least two issues I realized when I was thinking about
-fixing this, and I think you are missing at least one of them.
-
-1. Adding `long :xxx` as padding makes struct at least 8-byte aligned.
-If the struct originally had a smaller alignment requirement, you are
-now potentially breaking the struct layout by changing its layout.
-
-2. The way btf__align_of() is calculating alignment doesn't work
-correctly for __attribute__((packed)) structs.
-
-So we need to fix btf__align_of() first. What btf__align_of() is
-calculating right now is a natural alignment requirement if we ignore
-actual field offsets. This might be useful (at the very least to
-determine if the struct is packed or not), so maybe we should have a
-separate btf__natural_align_of() or something along those lines?
-
-And then we need to fix btf_dump_emit_bit_padding() to better handle
-alignment and padding rules. This is what Per Sundstr=C3=B6m is trying to
-do, I believe, but I haven't carefully thought about his latest code
-suggestion.
-
-In general, the most obvious solution would be to pad with `char :8;`
-everywhere, but that's very ugly and I'd prefer us to have as
-"natural" output as possible. That is, only emit strictly necessary
-padding fields and rely on natural alignment otherwise.
+This is hardly a generic solution, as it requires instrumenting every
+application to do this, right? So what I'm proposing is exactly to
+avoid having each individual application do something special just to
+allow profiling tools to capture build_id.
 
 >
+> The other problem we encountered may be very specific to our own use
+> case. Sometimes we execute code that is mapped in an anonymous page
+> (not backed by file). In that case, we can't get build_id either. What
+> we are doing right now is writing the build_id into the
+> vm_area_struct->anon_name field and teach build_id_parse to try
+> parsing from there, when seeing an anonymous page. I can send this
+> with upstream if there are other users who have the same problem.
 >
+
+Is this due to remapping some binary onto huge pages?
+
+But regardless, your custom BPF applications can fetch this build_id
+from vm_area_struct->anon_name in pure BPF code, can't it? Why do you
+need to modify in-kernel build_id_parse implementation?
+
 > >
 > > >
-> > > diff --git a/src/btf_dump.c b/src/btf_dump.c
-> > > index 12f7039..a8bd52a 100644
-> > > --- a/src/btf_dump.c
-> > > +++ b/src/btf_dump.c
-> > > @@ -881,13 +881,13 @@ static void btf_dump_emit_bit_padding(const
-> > > struct btf_dump *d,
-> > >                 const char *pad_type;
-> > >                 int pad_bits;
+> > > We can't use build_id_parse directly as kfunc, because we would
+> > > not have control over the build id buffer size provided by user.
 > > >
-> > > -               if (ptr_bits > 32 && off_diff > 32) {
-> > > +               if (align > 4 && ptr_bits > 32 && off_diff > 32) {
-> > >                         pad_type =3D "long";
-> > >                         pad_bits =3D chip_away_bits(off_diff, ptr_bit=
-s);
-> > > -               } else if (off_diff > 16) {
-> > > +               } else if (align > 2 && off_diff > 16) {
-> > >                         pad_type =3D "int";
-> > >                         pad_bits =3D chip_away_bits(off_diff, 32);
-> > > -               } else if (off_diff > 8) {
-> > > +               } else if (align > 1 && off_diff > 8) {
-> > >                         pad_type =3D "short";
-> > >                         pad_bits =3D chip_away_bits(off_diff, 16);
-> > >                 } else {
-> > >   /Per
->
+> > > Instead we are adding new bpf_vma_build_id_parse function with
+> > > 'build_id__sz' argument that instructs verifier to check for the
+> > > available space in build_id buffer.
+> > >
+> > > This way we check that there's always available memory space
+> > > behind build_id pointer. We also check that the build_id__sz is
+> > > at least BUILD_ID_SIZE_MAX so we can place any buildid in.
+> > >
+> > > The bpf_vma_build_id_parse kfunc is marked as KF_TRUSTED_ARGS,
+> > > so it can be only called with trusted vma objects. These are
+> > > currently provided only by find_vma callback function and
+> > > task_vma iterator program.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h      |  4 ++++
+> > >  kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
+> > >  2 files changed, 35 insertions(+)
+> > >
+> >
+> > [...]
