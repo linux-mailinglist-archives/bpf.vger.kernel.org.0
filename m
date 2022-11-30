@@ -2,200 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF8563D538
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 13:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB37F63D54B
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 13:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbiK3MIh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 07:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S234231AbiK3MOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 07:14:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233510AbiK3MIf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 07:08:35 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82A01EECF;
-        Wed, 30 Nov 2022 04:08:09 -0800 (PST)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AUAKop2027405;
-        Wed, 30 Nov 2022 04:08:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : mime-version; s=s2048-2021-q4;
- bh=7xJD/cejjWxC5vbuDPxPZsic/EGS8IpYIXahGFDby50=;
- b=E5hGyJ/F9jhSkxHh3B9AaXANZovUVrdLMdcxZk4WXzgW4C1zkPIvjNaMvC+keuvQMvjA
- /ifvnoUc7BDEkw7OYDDmHslIsIKVAH/P0S2uvr4nKBRHQ06ZLQ9P7TCEAePeOpWqa2Fw
- bqxc9f4vTGL7eyQDZ/2GksRyfhAN/TRzS1IbtIVcGUX/Bu1Y8ZBNZUsKKilWjxZnqgsK
- SNoRFXrKqfOT4vuOPYO6cfLjhTeUQs4Ez0aL6TwBO0ETEJVRdj8Behj7zGdH6+FzOk4Y
- jW0DKZxguxyorhgNJ4G3chCJ4g0MAyeKSGSbUzSN1tcxUgJWOT4pScrqvsRBxpgbxkNo 1g== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m65bcgrux-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Nov 2022 04:08:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QRtP9KQB28CuB4+pXV2bTzNY054sLMkaSVrj1X3Tq82UIaNMdGIIzfEaSAlRWPRQX4NcAPSvvrrJkeDf6cE7q+qTewGHT8K0ODHiqgbxy9KEwoXwEbnNUTjPSnFKeIl64UnViURe4vbwIQEaTkWj3kLYzxKHalX2hYB6TPJ8Hk4Iqm3BFkbWZdDcU0IspmfPp8smxBBIbEJjDfiIgSfR9+Pi/A+yWGl4bRJ7ooUm7+2pWCWEPFBWWH0K+J//ol/3zsZpuWEk6bkgazrdXZr4paC5n313vJQ1e2o1DnJJcm0L+A6+rLkhkakS5lVrvOcE7UR0+325pKFuoJ5vMbY9Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7xJD/cejjWxC5vbuDPxPZsic/EGS8IpYIXahGFDby50=;
- b=JSnet/4cByS53NJIeePfyHmQaWLpCaIHvUyd8xXMF02XYjN/Z8k+Swbq15swD8lQGq439ljVH5rEcIK2egMwHvEKj4bkq4bhQ27eCWC9jQPW2OHi22ZX27gnytvu9Doxcwnyag9Y9qzkd84nQvCsLfLbLZk7YZLfFCFZruquxf0Dh2Jc48CTAghCtZMjnPuSeCYnKLQdrEPK8U6IbQrGRGHoKRN8/i+coZapl2EWJ0OpyTZVl/6mpfRb4pud6lInoTdVbKyVzEZnsnJ8mst5VaR/v1L0t+KKW8HIpKZugL8P3C12ttIDlF+78eD271EJxg9dyoXizJdFSs0e4de9Mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from PH0PR15MB5191.namprd15.prod.outlook.com (2603:10b6:510:14c::12)
- by MWHPR15MB1711.namprd15.prod.outlook.com (2603:10b6:301:4d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.20; Wed, 30 Nov
- 2022 12:08:05 +0000
-Received: from PH0PR15MB5191.namprd15.prod.outlook.com
- ([fe80::d410:da8a:ad1b:a6bc]) by PH0PR15MB5191.namprd15.prod.outlook.com
- ([fe80::d410:da8a:ad1b:a6bc%7]) with mapi id 15.20.5857.023; Wed, 30 Nov 2022
- 12:08:05 +0000
-From:   Tomislav Novak <tnovak@meta.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Alexei Starovoitov <ast@kernel.org>, Will Deacon <will@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH] hw_breakpoint: fix single-stepping when using
- bpf_overflow_handler
-Thread-Topic: [PATCH] hw_breakpoint: fix single-stepping when using
- bpf_overflow_handler
-Thread-Index: AQHYz4xNSRmGp4l1PUKwAHNo0kfo465AaXSAgBQ5MQCAAxHJAIAAFUKA
-Date:   Wed, 30 Nov 2022 12:08:05 +0000
-Message-ID: <Y4dHocXjElVzTOms@tnovak-mbp.dhcp.thefacebook.com>
-References: <20220923203644.2731604-1-tnovak@fb.com>
- <Y3OrsU9M+X2UUcRG@arm.com> <Y4SiohG4P7nX0GWb@tnovak-mbp.dhcp.thefacebook.com>
- <Y4c1zOZYi3sCxzo9@arm.com>
-In-Reply-To: <Y4c1zOZYi3sCxzo9@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR15MB5191:EE_|MWHPR15MB1711:EE_
-x-ms-office365-filtering-correlation-id: 15739534-1f9d-4ce3-d296-08dad2cb89a3
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: T0Idj9HwulHjORUiT0L5gtOvwNeJAOaI+sWQ+3N6djZ1myPwjOFHOVvrTYmo7vAcPaP0I6FElC5eyT6YsLa0hj+W/bvxPSXnJUfz6rWv1FpkY/hEWejsyhApOHuwMUbEX0xUPYKf82FwRBCjsOSGJqDM0ZJWa8fChbwqG6wi8JNpqv+CIeYaiKoLInItGoeVquipGOj5uxtoBCEQKTzwp20XR9hftDoc1TDVfRar35+BD4TfFWhXwM+DHkGt2vzr/Wgb4qLequfgJp3mnP6MJCld95kpVKfcxuOIsYV9iollmJ1zJO9s9YE85wSq/ztbnrPe7osXXfVZHjYCFuwUPDpNUZFGGlFY1Wcr1eeIcgDeLSosUc2d/WsNfwgqvIWkOAzE2973xsfpHHuX5nN+SzLcCryM/BMkUQ2ucSe0Ljy/OtoOoTA6ox1j1+VlOh7tbSFWTtiEpN36NMXgTyGzrpJ2zF0ONQqUxrCR+yux13foraSIdL7QhtznmKaevZMGcUpAgNWCH0B2nvfAGZPDbjrjVY8sU4ewyWYdy8dtvbmMOyuIzNE0z8FFzzAkrbyraJyn1Uw2rB6a6F/zHXbZ3fP+X9BdRlO6QZyGY6UO9n+hA6ljnLkKRRIPq69z1PfBJwxjJ2XgwEXd7fX7Pp1/R9rzrZfkS0HlAbpXwyrCxTNeQo6ytXmGLGOLcnjMNtiH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5191.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(396003)(136003)(376002)(346002)(451199015)(26005)(316002)(122000001)(9686003)(86362001)(71200400001)(54906003)(6916009)(6506007)(38100700002)(6512007)(83380400001)(2906002)(66446008)(4326008)(8676002)(64756008)(66556008)(76116006)(91956017)(66476007)(5660300002)(8936002)(66946007)(41300700001)(186003)(66899015)(6486002)(478600001)(38070700005)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0hvGsWffbitqHW7L6ypV7mBJVIKtp5jrwa3kkVeDiLtWI/r2Is68cSDXJUIQ?=
- =?us-ascii?Q?QN9LyCnUrVvja8zho9qmSxL7KnDiMOvggpCmckl1MLRqRpG04+oslYi4uYyi?=
- =?us-ascii?Q?N1iDxgz728j0mY8vrQZVLkAXnLYZUybBbDdC58TzLUf9EO4SrIG3Eu+23sYo?=
- =?us-ascii?Q?aPho3+pF3AbScEmITFp3BPbwBQ37ftB282fobixwOLfJ6ysdGH/llcjjHP1e?=
- =?us-ascii?Q?AAlZdBYoZHsUxWGD8rL6OxUasrNgy9eJ7v+OrTzlbRgJ5ZHfNolp4C1UAqdF?=
- =?us-ascii?Q?sao6eyqqL47qIy+nVYn19JzpixQNkeOhQuBLD+2+eta93f7Y5K0d8ULZDQwf?=
- =?us-ascii?Q?3dks2FLB3yzuvHVZfZjvOSXIwO8IJh1YIXCgpYC4YmmGkEC80tmOf3ZvJmjx?=
- =?us-ascii?Q?PCQzGqdPlGWvl8YfnEWiodavIxCKWwY2q7mLLvVLTWw5Fen+madpWjySkK+c?=
- =?us-ascii?Q?lAQLA3JWquMfShm5Ail8R42yFySyU7E0OOiv/RurRC/u5M73SJiKwBz2QXkj?=
- =?us-ascii?Q?8jMSgLmIXbomd3wj9y8+EqnoV4bs04n/4n6LM8teCrqeVETKrhUzL/gnlUhg?=
- =?us-ascii?Q?46aUB9YCxViNPgQVUpUL7EZFVSb5hZyrXjNtyW+F31PLIRAKfuBv9wew+p+A?=
- =?us-ascii?Q?NmiSGbf3gi9EqiWlN/n43/Ck9PDU5q18sn5BIOdtB19DjLHnldoAInj6G011?=
- =?us-ascii?Q?UPZ54D5vzMUmS+SkEG1ZFjsehyIXN3MMeBdoJBPywB68HGNMYvDfvXv1OcX2?=
- =?us-ascii?Q?q4AAU+dqmdQnVcX4He+DIgMrP6vrSlgAFlhrGO7Y9bhvGChXn91EB0CoqWmU?=
- =?us-ascii?Q?APHROT/0ugYo7lM1IHGG+LEJiC00MF6ROyG21vYKztOf37PxWdbR1LVuNKWP?=
- =?us-ascii?Q?3BTY0dOblQMIjJJANWFU1d/qaa1o7pzStAlbE+B3FZWapNMDoeqCVsc6EOWR?=
- =?us-ascii?Q?xNEiJ1Rluri5KtPLcKwRZknQjOArBrtPRJKoTGyf2XmrJRQZ/t3KW4dl/Mdw?=
- =?us-ascii?Q?u/t2ZSTqNuq+DtSQfja8YIN7SWHzbWZxx7vx0guUXLNjJlnGROxyHLF38VfT?=
- =?us-ascii?Q?QgxPc7sHZ205cA00Chxnhl5hSEOvfrvIQGlzOfAtOOEcS210NS1Upp2TcsqD?=
- =?us-ascii?Q?BUjFKflTmSsw5rR7yVaZ16RVwSACFXMdyzyfa2/ShdejiYcwEK5G0tqTlfEa?=
- =?us-ascii?Q?NrMbOuRuoxc1LM3DJmwYcQTqRf7eHBWIL++hc+rzqWeMi+YFQFj58XYvJjd+?=
- =?us-ascii?Q?CJ3tUEbxvbAZICzSfQqXJIR5UQzJaZEmKkLA8hby3TkEA0iFxcZ/GN/EV33/?=
- =?us-ascii?Q?nzzlwReLjTrIKSgJ0dcCIwP7SGHj8i2xbmGykVkksS4VftpyLJr39Bxlj5E1?=
- =?us-ascii?Q?d7dgwBFXB/VPDWivP9mc47qLgpOfsUQTTj6NWznyxLQNU3nK3Y32NIZ+Whfl?=
- =?us-ascii?Q?YXifcIFQpxSUpyKwtVftL2ElRFz/g1LwOYiBsQUcYD+Ugg5JPXY0JpNsSzjA?=
- =?us-ascii?Q?NkRazafgbqb+ZQSawmGbspDlTzre8SjfpG4wanDxlxad1SLKqo4Vrlfd3MzK?=
- =?us-ascii?Q?vVO9/t+et7Mm1b/4whR0DbdsKZw4AeVWs9F168Q1?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <769DAE826B69074EA165DF465CAE5966@namprd15.prod.outlook.com>
+        with ESMTP id S231322AbiK3MOG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 07:14:06 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EAF2B600;
+        Wed, 30 Nov 2022 04:14:05 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id vv4so40874752ejc.2;
+        Wed, 30 Nov 2022 04:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lj97Y0Fj3f0GUlUBEVb57/dPo/1vC2s+z47mWfenrC4=;
+        b=Ds3z99e+jksFhw9iEbhhn7cdIkXy9v/AM/890kB0niF9tib84ZTwZLFhcXXqr4H55r
+         RCavPP4imf5xYpIkNb19Nt+OVfVY+2/F5zZp5xK41/nuwuaUy/RF3VEAhtuIIdl0bNsY
+         57z/ZzOu0n6JMN0/Bg7CCxfdbVH09BVf1h4yFWwiUzkw7Rl7hR1Z6mTvnMGkyaeSOYc7
+         gLKR6CQvsaHTaDrWQpRYfAKpeiQtHEF8JUBT77A2FyR4loy1YDtSEdlaTjW/Cpqx1Yyt
+         7g7zVzp11AZGltdw9KiZl+XhiVvcyDtrbnYcCqnItqqLxzuGwDS2Bb/tKq1IQV2FrVQY
+         4LgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lj97Y0Fj3f0GUlUBEVb57/dPo/1vC2s+z47mWfenrC4=;
+        b=NsruYpBzGXcANW8Tl1StrnFFHmmeWiS6eCs7wucIk9aH6tgD+1CaHfBQdx2kt+n6An
+         3C1JIO0Xm0enoRTS2B/1nCaS2FzxSsQN/hZORVUCVhy8QngfZpG0y17aKbFxkCBR4axR
+         XAWzJzpSNueMgAtPpseQaQEmdpNlkwz6ka27yYYzFyvGykmCBNrJbHWlfpj+hjkEF82u
+         nZ8NRlwvUMmwgx00vJxQ9smnXNFWM8HPrTXx6wJUGL+AjXow9izrAYNIoWIJQ24j16T2
+         2BXUG1Aj67sUEtGQZw0CJk5ZKd+v8uhBoslHCV0wTiq3/BhuCNMHtlMWzEIAg+rlEy5c
+         7jzA==
+X-Gm-Message-State: ANoB5pkA/Q49D9GJiDZnDUPwBkxc/NTDzLtZJL7I7Z+jL393XY9waltA
+        KudDJuQxzFk9fZROY2LfcbLDIJF6793UoNvWCQs=
+X-Google-Smtp-Source: AA0mqf7i+NfB9VUtrTSB4fToW5A8P322CGH2MvHw+TfTtlVnDCtKRglPhu63+YzcUkq3/kBHBfzUYA2WcWuOvWTfPr4=
+X-Received: by 2002:a17:907:8e09:b0:7bc:420d:709f with SMTP id
+ th9-20020a1709078e0900b007bc420d709fmr23849641ejc.658.1669810444111; Wed, 30
+ Nov 2022 04:14:04 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5191.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15739534-1f9d-4ce3-d296-08dad2cb89a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2022 12:08:05.5130
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fbtDyFeYS4Movh6RiHPfd7ExHW3FtGIP7YYyt/7yaU1XL5L8YblggYYaVI0obIC6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1711
-X-Proofpoint-GUID: bq5bkCpqx1EOFG2oTVxqTN2pJW0YiPW5
-X-Proofpoint-ORIG-GUID: bq5bkCpqx1EOFG2oTVxqTN2pJW0YiPW5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-30_04,2022-11-30_02,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221130094142.545051-1-tirthendu.sarkar@intel.com> <Y4dFR9oR3AAIcPlB@boxer>
+In-Reply-To: <Y4dFR9oR3AAIcPlB@boxer>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 30 Nov 2022 13:13:52 +0100
+Message-ID: <CAJ8uoz0Fogd9RTMGy1ktqnM5UR==o9nHLst4O+na_gP4kfgmpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests: xsk: changes for setting up NICs to
+ run xsk self-tests
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>
+Cc:     Tirthendu Sarkar <tirthendu.sarkar@intel.com>, bjorn@kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 10:51:56AM +0000, Catalin Marinas wrote:
-> On Mon, Nov 28, 2022 at 11:59:37AM +0000, Tomislav Novak wrote:
-> > On Tue, Nov 15, 2022 at 03:09:37PM +0000, Catalin Marinas wrote:
-> > > > On ARM platforms is_default_overflow_handler() is used to determine if
-> > > > hw_breakpoint code should single-step over the watchpoint trigger or
-> > > > let the custom handler deal with it.
-> > > > 
-> > > > Attaching a BPF program to a watchpoint replaces the handler with
-> > > > bpf_overflow_handler, which isn't recognized as a default handler so we
-> > > > never step over the instruction triggering the data abort exception (the
-> > > > watchpoint keeps firing):
-> > > > 
-> > > >   # bpftrace -e 'watchpoint:0x10000000:4:w { printf("hit\n"); }' ./wp_test
-> > > >   Attaching 1 probe...
-> > > >   hit
-> > > >   hit
-> > > >   hit
-> > > >   [...]
-> > > > 
-> > > > (wp_test performs a single 4-byte store to address 0x10000000)
-> > > > 
-> > > > This patch replaces the check with uses_default_overflow_handler(), which
-> > > > accounts for the bpf_overflow_handler() case by also testing if the handler
-> > > > invokes one of the perf_event_output functions via orig_default_handler.
-> > > > 
-> > > > Signed-off-by: Tomislav Novak <tnovak@fb.com>
-> > > > Tested-by: Samuel Gosselin <sgosselin@fb.com> # arm64
-> > > > ---
-> > > >  arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
-> > > >  arch/arm64/kernel/hw_breakpoint.c |  4 ++--
-> > > >  include/linux/perf_event.h        | 22 +++++++++++++++++++---
-> > > >  3 files changed, 25 insertions(+), 9 deletions(-)
-> > > 
-> > > It looks like this slipped through the cracks. I'm fine with the patch
-> > > but could you split the arm and arm64 parts in separate patches? Unless
-> > > rmk acks it and we can take the patch through the arm64 (or perf) tree.
-> > 
-> > Thanks for reviewing!
-> > 
-> > Given the changes in the arch-independent perf_event.h, I think merging it
-> > as a single commit may be easiest (assuming rmk acks it).
-> > 
-> > Alternatively I could move arm changes into a separate patch, keeping arm64
-> > and perf_event.h in this one (possibly splitting out the latter into its own
-> > commit). One that's merged, the arm patch could be submitted to linux-arm.
-> > What would you prefer?
-> 
-> Actually, arch/arm*/kernel/hw_breakpoint.c come under the ARM PMU
-> profiling, so no need to split the patch. It may need an ack from the
-> generic perf maintainers for include/linux/perf.h.
+On Wed, Nov 30, 2022 at 1:09 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Wed, Nov 30, 2022 at 03:11:42PM +0530, Tirthendu Sarkar wrote:
+> > ETH devies need to be set up for running xsk self-tests, like enable
+> > loopback, set promiscuous mode, MTU etc. This patch adds those settings
+> > before running xsk self-tests and reverts them back once done.
+> >
+> > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > ---
+> >  tools/testing/selftests/bpf/test_xsk.sh | 27 ++++++++++++++++++++++++-
+> >  1 file changed, 26 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+> > index d821fd098504..e7a5c5fc4f71 100755
+> > --- a/tools/testing/selftests/bpf/test_xsk.sh
+> > +++ b/tools/testing/selftests/bpf/test_xsk.sh
+> > @@ -106,7 +106,11 @@ MTU=1500
+> >  trap ctrl_c INT
+> >
+> >  function ctrl_c() {
+> > -        cleanup_exit ${VETH0} ${VETH1} ${NS1}
+> > +     if [ ! -z $ETH ]; then
+> > +             cleanup_exit ${VETH0} ${VETH1} ${NS1}
+> > +     else
+> > +             cleanup_eth
+> > +     fi
+> >       exit 1
+> >  }
+> >
+> > @@ -138,9 +142,28 @@ setup_vethPairs() {
+> >       ip link set ${VETH0} up
+> >  }
+> >
+> > +setup_eth() {
+> > +       sudo ethtool -L ${ETH} combined 1
+>
+> what if particular device has a different way of configuring single
+> channel? like
+>
+> $ sudo ethtool -L ${ETH} tx 1 rx 1
+>
+> I am not sure if we want to proceed with settings that are specific to
+> Intel devices. What if mlx5 will this in a much different way?
 
-Good point! I realized I've neglected to CC perf_event maintainers (sorry!),
-doing so now.
+Adding Saeed as he will know. How does Mellanox set the number of
+channels to 1 and how do you enable loopback mode? At least the rest
+should be the same.
 
--- 
-T.
+> > +       sudo ethtool -K ${ETH} loopback on
+> > +       sudo ip link set ${ETH} promisc on
+> > +       sudo ip link set ${ETH} mtu ${MTU}
+> > +       sudo ip link set ${ETH} up
+> > +       IPV6_DISABLE_CMD="sudo sysctl -n net.ipv6.conf.${ETH}.disable_ipv6"
+> > +       IPV6_DISABLE=`$IPV6_DISABLE_CMD 2> /dev/null`
+> > +       [[ $IPV6_DISABLE == "0" ]] && $IPV6_DISABLE_CMD=1
+> > +       sleep 1
+> > +}
+> > +
+> > +cleanup_eth() {
+> > +       [[ $IPV6_DISABLE == "0" ]] && $IPV6_DISABLE_CMD=0
+> > +       sudo ethtool -K ${ETH} loopback off
+> > +       sudo ip link set ${ETH} promisc off
+> > +}
+> > +
+> >  if [ ! -z $ETH ]; then
+> >       VETH0=${ETH}
+> >       VETH1=${ETH}
+> > +     setup_eth
+> >       NS1=""
+> >  else
+> >       validate_root_exec
+> > @@ -191,6 +214,8 @@ exec_xskxceiver
+> >
+> >  if [ -z $ETH ]; then
+> >       cleanup_exit ${VETH0} ${VETH1} ${NS1}
+> > +else
+> > +     cleanup_eth
+> >  fi
+> >
+> >  failures=0
+> > --
+> > 2.34.1
+> >
