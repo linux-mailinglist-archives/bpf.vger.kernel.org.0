@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B55C63D05D
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D6163D060
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbiK3IXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 03:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        id S234733AbiK3IXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 03:23:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234607AbiK3IXn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 03:23:43 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E275CD20;
-        Wed, 30 Nov 2022 00:23:41 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id f9so15373680pgf.7;
-        Wed, 30 Nov 2022 00:23:41 -0800 (PST)
+        with ESMTP id S234763AbiK3IXr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 03:23:47 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C4243AEB;
+        Wed, 30 Nov 2022 00:23:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id k79so1631136pfd.7;
+        Wed, 30 Nov 2022 00:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=07zmtYwtZNHOeI0n4lVsdVba4Oqv1PX4InXOLTY/bBE=;
-        b=J44k0xFxvr3pbIt2/0+Dhckp3Yq5cPLDBa9WgYLjhNVHUxkt1cMmipofxaglV+YHyr
-         DDMh3rOhxcK9n4xVLsLz/UIDCdGKpw6QjIbXXj/eof3wAdmOxlURJTP34vLoYIyeXApR
-         Z/VBSuaKv/oDGxvBJ/W6EyzgGuk3QVMZ7MPaTRaAu2MbmRw+Tlhbx4G1qDV66xjPUOlS
-         stsYqEO7hOHJUEPaALhk+kxKppdXtzaNExPenwCHoGtFGUEgkRU/4op7LugP53ND8YBp
-         IzTQ56+BTSFadSHKSuD3pOndeemQlksi7I/OByOQdM40VFN7fmiqk0RaoL/M1kvK11wR
-         VMjw==
+        bh=K1j0A0QkOym5FfXdZ+NvM9qS4irkehDZAEMG1X/6jxM=;
+        b=p031m+vQzbLBfL8ozACACJHzwZiZlwGL0XEKWMgbJLqVECiC1DzktHz+wtua/s/rpd
+         AjEk+8BWWSxQrhJ06FGwz2hOwDKJxQWjrpbXQTDvzvlGDXku5XthSMzZgxZ2zVRK71Vt
+         2nQVXHgOs1LKMyZGCjUoIeuPkoFmvtAnYQAlwZ9EPnTnRs2tBO7EBPRc/MAFvhZFEFC4
+         BKW/hpV0Y4aJtSgp8tbhBre80DsR9sNf2JridkuIgJ0S2kcTX2RoNA306iBnG3crXmnH
+         5Xv/BvTYnnL1IAAudSfqREYp0EJpQ8mWtLd73RvYkhT5WMaa2R28iaL3UiD6PH88HXlC
+         R+oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=07zmtYwtZNHOeI0n4lVsdVba4Oqv1PX4InXOLTY/bBE=;
-        b=IO/OhCxYDeHWSc1ABlU/cG67w9kMNVG9VThsvX0pIC6mvCEqmfOjH59m5iRWdjXlwS
-         3RGpJ7y9e9Osx1mOyklqh6SGhpTcmB0li7nrrvKoDf2GUnLtwNzE7VPMJO9hRKC12aaF
-         NXyXD6YcIuP4mUCH7if8CCD+qvkDd3f/T517scMPRX48XpcB9qmswP5dmAoBNw7tJuHq
-         be+ZCqW026Ixk8TgQAhYsf5Qly9KL/TAvjJ5iEHrGXh202PZ123JbmXhXoZfoJ+79Gy9
-         TAsbJtqib2CW5BuS8oUwHJRYvkxyN3/FIVPcNEOpiMP/U6awFge8H5ALkIJZflCTIc5P
-         4z6g==
-X-Gm-Message-State: ANoB5plzUyo2kbGq5a8DG55XhaI3ApHxAqeb4sEo2ADhIceiLZ7ZZs7F
-        GMOQxCA8Z+oV6rH1tmprfCc=
-X-Google-Smtp-Source: AA0mqf4ZGiPXyblarl8VUJWZ2zKl8vFsW0DkgV3YCcylRX9sizJiI5IpJ4q3MTh4W/5a06oTVYpa0Q==
-X-Received: by 2002:a63:d48:0:b0:474:6739:6a09 with SMTP id 8-20020a630d48000000b0047467396a09mr43063850pgn.292.1669796620340;
-        Wed, 30 Nov 2022 00:23:40 -0800 (PST)
+        bh=K1j0A0QkOym5FfXdZ+NvM9qS4irkehDZAEMG1X/6jxM=;
+        b=Kq8I50sPCW1UaBkBOG4J7FB1PxhhMI5acoIMzgxmJ61ktAlUT3w/9VXKL9qdA3OgYh
+         LPMBm/q1Qn7yE44GOjamKjk3Ma4+L7NX4yWuWOBx/jBublCVrhVT7Gs95B5SDElS0gCV
+         9eb4sN1Onhk3WzEl9jCtMBzmoiVdgQkBmlrWEIqJe13YOUzi0BJnDPRdASbx4viI/rRZ
+         HsGh7bQH7RfHANyWCt7bpO0lmbLLSNl0n5rzGc8OUgHqbciGVShnGtEEQZdkuaLO6C3D
+         WKvBIEG4ErHbPXO3J/4nmRTMuIBkKka+rZrAwzTrwqykebfxPvKjwk2tcBk+/oYvizMj
+         NOWg==
+X-Gm-Message-State: ANoB5pkgS76Mkc3oyarxzRntK1Z+L+y36CazwDg1ohaeiQmlBFoZaEaw
+        Z0NBVS5dqn0n8aiQ0ba+IoI=
+X-Google-Smtp-Source: AA0mqf4lIvT/nRGCo9RyXdTNb2HH4H5ipD+ppktOrDLuv65JRw9ceUvN1RH8I9d7NzciEPnb4jvAig==
+X-Received: by 2002:a63:fa49:0:b0:476:f92f:885b with SMTP id g9-20020a63fa49000000b00476f92f885bmr42322828pgk.31.1669796622606;
+        Wed, 30 Nov 2022 00:23:42 -0800 (PST)
 Received: from localhost ([2600:380:4a00:1415:d028:b547:7d35:7b0b])
-        by smtp.gmail.com with ESMTPSA id 4-20020a621404000000b005743cdde1b8sm795302pfu.127.2022.11.30.00.23.39
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902c1ca00b0018991f3bfb2sm776692plc.3.2022.11.30.00.23.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 00:23:40 -0800 (PST)
+        Wed, 30 Nov 2022 00:23:42 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 01/31] rhashtable: Allow rhashtable to be used from irq-safe contexts
-Date:   Tue, 29 Nov 2022 22:22:43 -1000
-Message-Id: <20221130082313.3241517-2-tj@kernel.org>
+Subject: [PATCH 02/31] cgroup: Implement cgroup_show_cftypes()
+Date:   Tue, 29 Nov 2022 22:22:44 -1000
+Message-Id: <20221130082313.3241517-3-tj@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221130082313.3241517-1-tj@kernel.org>
 References: <20221130082313.3241517-1-tj@kernel.org>
@@ -80,9 +80,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-rhashtable currently only does bh-safe synchronization making it impossible
-to use from irq-safe contexts. Switch it to use irq-safe synchronization to
-remove the restriction.
+Implement cgroup_show_cftypes() which shows and hides all cgroup files
+associated with the specified set of cgroup file types. CFTYPE_HIDDEN flag
+is added so that files can be created hidden from the get-go.
+
+cgroup_show_cftypes() can be used whether the cftypes are added or not. It
+also combines with cgroup_show_file() so that a given file is visible iff
+both its cftype and cfile are visible.
+
+This will be used by a new sched_class to selectively show and hide CPU
+controller interface files depending on whether they're supported.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -90,271 +97,191 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- include/linux/rhashtable.h | 51 ++++++++++++++++++++++----------------
- lib/rhashtable.c           | 16 +++++++-----
- 2 files changed, 39 insertions(+), 28 deletions(-)
+ include/linux/cgroup-defs.h |  8 +++
+ include/linux/cgroup.h      |  1 +
+ kernel/cgroup/cgroup.c      | 97 ++++++++++++++++++++++++++++++++++---
+ 3 files changed, 99 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
-index 68dab3e08aad..785fba3464f2 100644
---- a/include/linux/rhashtable.h
-+++ b/include/linux/rhashtable.h
-@@ -324,28 +324,31 @@ static inline struct rhash_lock_head __rcu **rht_bucket_insert(
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 8a0d5466c7be..8af1e7d487cb 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -127,12 +127,18 @@ enum {
+ 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
+ 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
+ 
++	CFTYPE_HIDDEN		= (1 << 6),	/* file type hidden, see cgroup_show_cftypes() */
++
+ 	/* internal flags, do not use outside cgroup core proper */
+ 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
+ 	__CFTYPE_NOT_ON_DFL	= (1 << 17),	/* not on default hierarchy */
+ 	__CFTYPE_ADDED		= (1 << 18),
+ };
+ 
++enum cfile_flags {
++	CFILE_HIDDEN		= (1 << 0),	/* file instance hidden */
++};
++
+ /*
+  * cgroup_file is the handle for a file instance created in a cgroup which
+  * is used, for example, to generate file changed notifications.  This can
+@@ -140,7 +146,9 @@ enum {
   */
+ struct cgroup_file {
+ 	/* do not access any fields from outside cgroup core */
++	struct cftype *cft;
+ 	struct kernfs_node *kn;
++	unsigned int flags;
+ 	unsigned long notified_at;
+ 	struct timer_list notify_timer;
+ };
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 528bd44b59e2..14fd0902bd8b 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -114,6 +114,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
+ int cgroup_add_dfl_cftypes(struct cgroup_subsys *ss, struct cftype *cfts);
+ int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype *cfts);
+ int cgroup_rm_cftypes(struct cftype *cfts);
++void cgroup_show_cftype(struct cftype *cft, bool show);
+ void cgroup_file_notify(struct cgroup_file *cfile);
+ void cgroup_file_show(struct cgroup_file *cfile, bool show);
  
- static inline void rht_lock(struct bucket_table *tbl,
--			    struct rhash_lock_head __rcu **bkt)
-+			    struct rhash_lock_head __rcu **bkt,
-+			    unsigned long *flags)
- {
--	local_bh_disable();
-+	local_irq_save(*flags);
- 	bit_spin_lock(0, (unsigned long *)bkt);
- 	lock_map_acquire(&tbl->dep_map);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index f1e6058089f5..bbfc9388bd7d 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4192,10 +4192,13 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
+ 		return ret;
+ 	}
+ 
++	kernfs_show(kn, !(cft->flags & CFTYPE_HIDDEN));
++
+ 	if (cft->file_offset) {
+ 		struct cgroup_file *cfile = (void *)css + cft->file_offset;
+ 
+ 		timer_setup(&cfile->notify_timer, cgroup_file_notify_timer, 0);
++		cfile->cft = cft;
+ 
+ 		spin_lock_irq(&cgroup_file_kn_lock);
+ 		cfile->kn = kn;
+@@ -4474,6 +4477,24 @@ void cgroup_file_notify(struct cgroup_file *cfile)
+ 	spin_unlock_irqrestore(&cgroup_file_kn_lock, flags);
  }
  
- static inline void rht_lock_nested(struct bucket_table *tbl,
- 				   struct rhash_lock_head __rcu **bucket,
--				   unsigned int subclass)
-+				   unsigned int subclass,
-+				   unsigned long *flags)
++static struct kernfs_node *cfile_kn_get(struct cgroup_file *cfile)
++{
++	struct kernfs_node *kn;
++
++	spin_lock_irq(&cgroup_file_kn_lock);
++	kn = cfile->kn;
++	kernfs_get(kn);
++	spin_unlock_irq(&cgroup_file_kn_lock);
++
++	return kn;
++}
++
++static bool cfile_visible(struct cgroup_file *cfile)
++{
++	return !(cfile->cft->flags & CFTYPE_HIDDEN) &&
++		!(cfile->flags & CFILE_HIDDEN);
++}
++
+ /**
+  * cgroup_file_show - show or hide a hidden cgroup file
+  * @cfile: target cgroup_file obtained by setting cftype->file_offset
+@@ -4483,15 +4504,20 @@ void cgroup_file_show(struct cgroup_file *cfile, bool show)
  {
--	local_bh_disable();
-+	local_irq_save(*flags);
- 	bit_spin_lock(0, (unsigned long *)bucket);
- 	lock_acquire_exclusive(&tbl->dep_map, subclass, 0, NULL, _THIS_IP_);
- }
+ 	struct kernfs_node *kn;
  
- static inline void rht_unlock(struct bucket_table *tbl,
--			      struct rhash_lock_head __rcu **bkt)
-+			      struct rhash_lock_head __rcu **bkt,
-+			      unsigned long *flags)
- {
- 	lock_map_release(&tbl->dep_map);
- 	bit_spin_unlock(0, (unsigned long *)bkt);
--	local_bh_enable();
-+	local_irq_restore(*flags);
- }
+-	spin_lock_irq(&cgroup_file_kn_lock);
+-	kn = cfile->kn;
+-	kernfs_get(kn);
+-	spin_unlock_irq(&cgroup_file_kn_lock);
++	mutex_lock(&cgroup_mutex);
  
- static inline struct rhash_head *__rht_ptr(
-@@ -393,7 +396,8 @@ static inline void rht_assign_locked(struct rhash_lock_head __rcu **bkt,
+-	if (kn)
+-		kernfs_show(kn, show);
++	if (show)
++		cfile->flags &= ~CFILE_HIDDEN;
++	else
++		cfile->flags |= CFILE_HIDDEN;
  
- static inline void rht_assign_unlock(struct bucket_table *tbl,
- 				     struct rhash_lock_head __rcu **bkt,
--				     struct rhash_head *obj)
-+				     struct rhash_head *obj,
-+				     unsigned long *flags)
- {
- 	if (rht_is_a_nulls(obj))
- 		obj = NULL;
-@@ -401,7 +405,7 @@ static inline void rht_assign_unlock(struct bucket_table *tbl,
- 	rcu_assign_pointer(*bkt, (void *)obj);
- 	preempt_enable();
- 	__release(bitlock);
--	local_bh_enable();
-+	local_irq_restore(*flags);
+-	kernfs_put(kn);
++	kn = cfile_kn_get(cfile);
++	if (kn) {
++		kernfs_show(kn, cfile_visible(cfile));
++		kernfs_put(kn);
++	}
++
++	mutex_unlock(&cgroup_mutex);
  }
  
  /**
-@@ -706,6 +710,7 @@ static inline void *__rhashtable_insert_fast(
- 	struct rhash_head __rcu **pprev;
- 	struct bucket_table *tbl;
- 	struct rhash_head *head;
-+	unsigned long flags;
- 	unsigned int hash;
- 	int elasticity;
- 	void *data;
-@@ -720,11 +725,11 @@ static inline void *__rhashtable_insert_fast(
- 	if (!bkt)
- 		goto out;
- 	pprev = NULL;
--	rht_lock(tbl, bkt);
-+	rht_lock(tbl, bkt, &flags);
- 
- 	if (unlikely(rcu_access_pointer(tbl->future_tbl))) {
- slow_path:
--		rht_unlock(tbl, bkt);
-+		rht_unlock(tbl, bkt, &flags);
- 		rcu_read_unlock();
- 		return rhashtable_insert_slow(ht, key, obj);
- 	}
-@@ -756,9 +761,9 @@ static inline void *__rhashtable_insert_fast(
- 		RCU_INIT_POINTER(list->rhead.next, head);
- 		if (pprev) {
- 			rcu_assign_pointer(*pprev, obj);
--			rht_unlock(tbl, bkt);
-+			rht_unlock(tbl, bkt, &flags);
- 		} else
--			rht_assign_unlock(tbl, bkt, obj);
-+			rht_assign_unlock(tbl, bkt, obj, &flags);
- 		data = NULL;
- 		goto out;
- 	}
-@@ -785,7 +790,7 @@ static inline void *__rhashtable_insert_fast(
- 	}
- 
- 	atomic_inc(&ht->nelems);
--	rht_assign_unlock(tbl, bkt, obj);
-+	rht_assign_unlock(tbl, bkt, obj, &flags);
- 
- 	if (rht_grow_above_75(ht, tbl))
- 		schedule_work(&ht->run_work);
-@@ -797,7 +802,7 @@ static inline void *__rhashtable_insert_fast(
- 	return data;
- 
- out_unlock:
--	rht_unlock(tbl, bkt);
-+	rht_unlock(tbl, bkt, &flags);
- 	goto out;
+@@ -5505,6 +5531,63 @@ static void offline_css(struct cgroup_subsys_state *css)
+ 	wake_up_all(&css->cgroup->offline_waitq);
  }
  
-@@ -991,6 +996,7 @@ static inline int __rhashtable_remove_fast_one(
- 	struct rhash_lock_head __rcu **bkt;
- 	struct rhash_head __rcu **pprev;
- 	struct rhash_head *he;
-+	unsigned long flags;
- 	unsigned int hash;
- 	int err = -ENOENT;
- 
-@@ -999,7 +1005,7 @@ static inline int __rhashtable_remove_fast_one(
- 	if (!bkt)
- 		return -ENOENT;
- 	pprev = NULL;
--	rht_lock(tbl, bkt);
-+	rht_lock(tbl, bkt, &flags);
- 
- 	rht_for_each_from(he, rht_ptr(bkt, tbl, hash), tbl, hash) {
- 		struct rhlist_head *list;
-@@ -1043,14 +1049,14 @@ static inline int __rhashtable_remove_fast_one(
- 
- 		if (pprev) {
- 			rcu_assign_pointer(*pprev, obj);
--			rht_unlock(tbl, bkt);
-+			rht_unlock(tbl, bkt, &flags);
- 		} else {
--			rht_assign_unlock(tbl, bkt, obj);
-+			rht_assign_unlock(tbl, bkt, obj, &flags);
- 		}
- 		goto unlocked;
- 	}
- 
--	rht_unlock(tbl, bkt);
-+	rht_unlock(tbl, bkt, &flags);
- unlocked:
- 	if (err > 0) {
- 		atomic_dec(&ht->nelems);
-@@ -1143,6 +1149,7 @@ static inline int __rhashtable_replace_fast(
- 	struct rhash_lock_head __rcu **bkt;
- 	struct rhash_head __rcu **pprev;
- 	struct rhash_head *he;
-+	unsigned long flags;
- 	unsigned int hash;
- 	int err = -ENOENT;
- 
-@@ -1158,7 +1165,7 @@ static inline int __rhashtable_replace_fast(
- 		return -ENOENT;
- 
- 	pprev = NULL;
--	rht_lock(tbl, bkt);
-+	rht_lock(tbl, bkt, &flags);
- 
- 	rht_for_each_from(he, rht_ptr(bkt, tbl, hash), tbl, hash) {
- 		if (he != obj_old) {
-@@ -1169,15 +1176,15 @@ static inline int __rhashtable_replace_fast(
- 		rcu_assign_pointer(obj_new->next, obj_old->next);
- 		if (pprev) {
- 			rcu_assign_pointer(*pprev, obj_new);
--			rht_unlock(tbl, bkt);
-+			rht_unlock(tbl, bkt, &flags);
- 		} else {
--			rht_assign_unlock(tbl, bkt, obj_new);
-+			rht_assign_unlock(tbl, bkt, obj_new, &flags);
- 		}
- 		err = 0;
- 		goto unlocked;
- 	}
- 
--	rht_unlock(tbl, bkt);
-+	rht_unlock(tbl, bkt, &flags);
- 
- unlocked:
- 	return err;
-diff --git a/lib/rhashtable.c b/lib/rhashtable.c
-index e12bbfb240b8..9781572b2f31 100644
---- a/lib/rhashtable.c
-+++ b/lib/rhashtable.c
-@@ -231,6 +231,7 @@ static int rhashtable_rehash_one(struct rhashtable *ht,
- 	struct rhash_head *head, *next, *entry;
- 	struct rhash_head __rcu **pprev = NULL;
- 	unsigned int new_hash;
-+	unsigned long flags;
- 
- 	if (new_tbl->nest)
- 		goto out;
-@@ -253,13 +254,14 @@ static int rhashtable_rehash_one(struct rhashtable *ht,
- 
- 	new_hash = head_hashfn(ht, new_tbl, entry);
- 
--	rht_lock_nested(new_tbl, &new_tbl->buckets[new_hash], SINGLE_DEPTH_NESTING);
-+	rht_lock_nested(new_tbl, &new_tbl->buckets[new_hash],
-+			SINGLE_DEPTH_NESTING, &flags);
- 
- 	head = rht_ptr(new_tbl->buckets + new_hash, new_tbl, new_hash);
- 
- 	RCU_INIT_POINTER(entry->next, head);
- 
--	rht_assign_unlock(new_tbl, &new_tbl->buckets[new_hash], entry);
-+	rht_assign_unlock(new_tbl, &new_tbl->buckets[new_hash], entry, &flags);
- 
- 	if (pprev)
- 		rcu_assign_pointer(*pprev, next);
-@@ -276,18 +278,19 @@ static int rhashtable_rehash_chain(struct rhashtable *ht,
- {
- 	struct bucket_table *old_tbl = rht_dereference(ht->tbl, ht);
- 	struct rhash_lock_head __rcu **bkt = rht_bucket_var(old_tbl, old_hash);
-+	unsigned long flags;
- 	int err;
- 
- 	if (!bkt)
- 		return 0;
--	rht_lock(old_tbl, bkt);
-+	rht_lock(old_tbl, bkt, &flags);
- 
- 	while (!(err = rhashtable_rehash_one(ht, bkt, old_hash)))
- 		;
- 
- 	if (err == -ENOENT)
- 		err = 0;
--	rht_unlock(old_tbl, bkt);
-+	rht_unlock(old_tbl, bkt, &flags);
- 
- 	return err;
- }
-@@ -590,6 +593,7 @@ static void *rhashtable_try_insert(struct rhashtable *ht, const void *key,
- 	struct bucket_table *new_tbl;
- 	struct bucket_table *tbl;
- 	struct rhash_lock_head __rcu **bkt;
-+	unsigned long flags;
- 	unsigned int hash;
- 	void *data;
- 
-@@ -607,7 +611,7 @@ static void *rhashtable_try_insert(struct rhashtable *ht, const void *key,
- 			new_tbl = rht_dereference_rcu(tbl->future_tbl, ht);
- 			data = ERR_PTR(-EAGAIN);
- 		} else {
--			rht_lock(tbl, bkt);
-+			rht_lock(tbl, bkt, &flags);
- 			data = rhashtable_lookup_one(ht, bkt, tbl,
- 						     hash, key, obj);
- 			new_tbl = rhashtable_insert_one(ht, bkt, tbl,
-@@ -615,7 +619,7 @@ static void *rhashtable_try_insert(struct rhashtable *ht, const void *key,
- 			if (PTR_ERR(new_tbl) != -EEXIST)
- 				data = ERR_CAST(new_tbl);
- 
--			rht_unlock(tbl, bkt);
-+			rht_unlock(tbl, bkt, &flags);
- 		}
- 	} while (!IS_ERR_OR_NULL(new_tbl));
- 
++/**
++ * cgroup_show_cftype - show or hide a cgroup file type
++ * @cft: cftype to show or hide
++ * @show: whether to show or hide
++ *
++ * Sets %CFTYPE_HIDDEN and shows/hides the matching files according to @show.
++ * @cft may or may not be added at the time of this call. After hiding, it's
++ * guaranteed that there are no in-flight operations on the hidden files.
++ */
++void cgroup_show_cftype(struct cftype *cft, bool show)
++{
++	struct cgroup_subsys *ss = cft->ss;
++	struct cgroup *root = ss ? &ss->root->cgrp : &cgrp_dfl_root.cgrp;
++	struct cgroup_subsys_state *css;
++
++	mutex_lock(&cgroup_mutex);
++
++	if (show)
++		cft->flags &= ~CFTYPE_HIDDEN;
++	else
++		cft->flags |= CFTYPE_HIDDEN;
++
++	if (!(cft->flags & __CFTYPE_ADDED))
++		goto out_unlock;
++
++	css_for_each_descendant_pre(css, cgroup_css(root, ss)) {
++		struct cgroup *cgrp = css->cgroup;
++		struct kernfs_node *kn;
++
++		if (!(css->flags & CSS_VISIBLE))
++			continue;
++
++		if (cft->file_offset) {
++			struct cgroup_file *cfile =
++				(void *)css + cft->file_offset;
++
++			kn = cfile_kn_get(cfile);
++			if (kn) {
++				kernfs_show(kn, cfile_visible(cfile));
++				kernfs_put(kn);
++			}
++		} else {
++			char buf[CGROUP_FILE_NAME_MAX];
++
++			kn = kernfs_find_and_get(cgrp->kn,
++					cgroup_file_name(cgrp, cft, buf));
++			if (kn) {
++				kernfs_show(kn, show);
++				kernfs_put(kn);
++			}
++		}
++	}
++
++out_unlock:
++	mutex_unlock(&cgroup_mutex);
++}
++
+ /**
+  * css_create - create a cgroup_subsys_state
+  * @cgrp: the cgroup new css will be associated with
 -- 
 2.38.1
 
