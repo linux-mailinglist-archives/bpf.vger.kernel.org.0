@@ -2,52 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25B063E114
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 21:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AC963E1C6
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 21:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiK3UAX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 30 Nov 2022 15:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
+        id S229997AbiK3UV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 15:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiK3UAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 15:00:23 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301458C6B0
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 12:00:22 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AUJWFGu009806
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 12:00:21 -0800
-Received: from maileast.thefacebook.com ([163.114.130.8])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m5w6agx75-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 12:00:21 -0800
-Received: from twshared21592.39.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 30 Nov 2022 12:00:19 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 0AA9222AFC7FA; Wed, 30 Nov 2022 12:00:17 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: make sure enum-less bpf_enable_stats() API works in C++ mode
-Date:   Wed, 30 Nov 2022 12:00:13 -0800
-Message-ID: <20221130200013.2997831-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221130200013.2997831-1-andrii@kernel.org>
-References: <20221130200013.2997831-1-andrii@kernel.org>
+        with ESMTP id S230017AbiK3UVA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 15:21:00 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643A223E90
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 12:17:51 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id o66so144411oih.5
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 12:17:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lf9T1oLTLGP7W1nyGzAWDJnXj7/p/jhbbGGie8srQTE=;
+        b=oyjPOqyvujryB0noATPgxFc1sZrUuyqCS42aJvokKs436/eoSp+6+rX5OnvbD/yudk
+         V4iUo/Vniin/nJ/YbejysoUYCSCNFrm2tr2Z6r3quoycxz9Er1VHsCEflLBrCgbUlwDS
+         T5hMQ69PojAo5M1RCFf7Adfgt31nFng5t1rPIBBTWwTzD72JVPXkOWztq0BHsZFYDD+u
+         9fZoJ+eLrQRK86s5hN34vPDG1190r1SkDHKB6JixGV2EwoaNeLsqH0beSMFQGQw7qJNd
+         xfSzNQYPtYnWhhf4EFvcAP2oOcF0lItBfNJYqM6YiZsl7Mz4rJXxDc+9yKmDhsQMZV/d
+         Q/xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lf9T1oLTLGP7W1nyGzAWDJnXj7/p/jhbbGGie8srQTE=;
+        b=2hxmTnQnRhf6zTbZAZI86BVwdGyhWCxVWMi6Cbhd3JGzdG9aUg0PsrQ5wxt7HWz71w
+         OBj91wjpSgrpE8/i3JRYi9ygQzZnQtfNZZZFGXok3GH7SrpKeIW2ZzVj6zFD84uhBzo4
+         /BgjZRx7/BQnKW/S9AL/Grif7LcPmHpV1BH5FxlW4QRXWHdn3ymnkHUGV4du8nwFTWay
+         7FtHk+GKMP2KViqQxbisxVQC93HdfMEytDYo3FUU9ccWMQMlHQzA6DPFkFJpeH8INojg
+         pTgBiHJ2JaAxs5M+UM9cK9SeG0XApXgdnvZsn+HGteG8b0z2zNKL7v0LurOGCNigMA1d
+         9/TA==
+X-Gm-Message-State: ANoB5plhF+K1gRu9gyp10ZSkvzDBxwZHA3hqaxM5cMX8wtk5cMgjtNQ1
+        KN30OimpIRr1qjA1l/Qbf6TthUeMC5cQggvqbKYx8w==
+X-Google-Smtp-Source: AA0mqf58r7hvvVKvPt+x5p4U9j23auwntSydB7vAJx+mEf6lB9a3wE0iSXe0uiA5Oj5jDTqA693mK202zDElOVGC9bM=
+X-Received: by 2002:aca:d01:0:b0:35b:d6f7:c569 with SMTP id
+ 1-20020aca0d01000000b0035bd6f7c569mr1552485oin.125.1669839470579; Wed, 30 Nov
+ 2022 12:17:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: GMd6cQX9RCZNouo-ZUR2pTDy_lT_CC6X
-X-Proofpoint-GUID: GMd6cQX9RCZNouo-ZUR2pTDy_lT_CC6X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-30_04,2022-11-30_02,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20221121182552.2152891-1-sdf@google.com> <20221121182552.2152891-3-sdf@google.com>
+ <Y4eRtJOPWBOCKe1Q@lincoln> <CAKH8qBtseOmsWmeprdRsvz0T=vAObYE_CpsYQOX0CsLR_iXNFA@mail.gmail.com>
+In-Reply-To: <CAKH8qBtseOmsWmeprdRsvz0T=vAObYE_CpsYQOX0CsLR_iXNFA@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 30 Nov 2022 12:17:39 -0800
+Message-ID: <CAKH8qBstSJEN5wvcPAcrnD0at8fNeyLNwijiT4wv=wD9eAd1TA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/8] bpf: XDP metadata RX kfuncs
+To:     Larysa Zaremba <larysa.zaremba@intel.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,52 +79,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Just a simple test to make sure we don't introduce unwanted compiler
-warnings and API still supports passing enums as input argument.
+On Wed, Nov 30, 2022 at 11:06 AM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Wed, Nov 30, 2022 at 9:38 AM Larysa Zaremba <larysa.zaremba@intel.com> wrote:
+> >
+> > On Mon, Nov 21, 2022 at 10:25:46AM -0800, Stanislav Fomichev wrote:
+> >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 9528a066cfa5..315876fa9d30 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -15171,6 +15171,25 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+> > >       return err;
+> > >  }
+> > >
+> > > +static int fixup_xdp_kfunc_call(struct bpf_verifier_env *env, u32 func_id)
+> > > +{
+> > > +     struct bpf_prog_aux *aux = env->prog->aux;
+> > > +     void *resolved = NULL;
+> >
+> > First I would like to say I really like the kfunc hints impementation.
+> >
+> > I am currently trying to test possible performace benefits of the unrolled
+> > version in the ice driver. I was working on top of the RFC v2,
+> > when I noticed a problem that also persists in this newer version.
+> >
+> > For debugging purposes, I have put the following logs in this place in code.
+> >
+> > printk(KERN_ERR "func_id=%u\n", func_id);
+> > printk(KERN_ERR "XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED=%u\n",
+> >        xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED));
+> > printk(KERN_ERR "XDP_METADATA_KFUNC_RX_TIMESTAMP=%u\n",
+> >        xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP));
+> > printk(KERN_ERR "XDP_METADATA_KFUNC_RX_HASH_SUPPORTED=%u\n",
+> >        xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED));
+> > printk(KERN_ERR "XDP_METADATA_KFUNC_RX_HASH=%u\n",
+> >        xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH));
+> >
+> > Loading the program, which uses bpf_xdp_metadata_rx_timestamp_supported()
+> > and bpf_xdp_metadata_rx_timestamp(), has resulted in such messages:
+> >
+> > [  412.611888] func_id=108131
+> > [  412.611891] XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED=108126
+> > [  412.611892] XDP_METADATA_KFUNC_RX_TIMESTAMP=108128
+> > [  412.611892] XDP_METADATA_KFUNC_RX_HASH_SUPPORTED=108130
+> > [  412.611893] XDP_METADATA_KFUNC_RX_HASH=108131
+> > [  412.611894] func_id=108130
+> > [  412.611894] XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED=108126
+> > [  412.611895] XDP_METADATA_KFUNC_RX_TIMESTAMP=108128
+> > [  412.611895] XDP_METADATA_KFUNC_RX_HASH_SUPPORTED=108130
+> > [  412.611895] XDP_METADATA_KFUNC_RX_HASH=108131
+> >
+> > As you can see, I've got 108131 and 108130 IDs in program,
+> > while 108126 and 108128 would be more reasonable.
+> > It's hard to proceed with the implementation, when IDs cannot be sustainably
+> > compared.
+>
+> Thanks for the report!
+> Toke has reported a similar issue in [0], have you tried his patch?
+> I've also tried to address it in v3 [1], could you retry on top of it?
+> I'll try to insert your printk in my local build to see what happens
+> with btf ids on my side. Will get back to you..
+>
+> 0: https://lore.kernel.org/bpf/87mt8e2a69.fsf@toke.dk/
+> 1: https://lore.kernel.org/bpf/20221129193452.3448944-3-sdf@google.com/T/#u
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/test_cpp.cpp | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Nope, even if I go back to v2, I still can't reproduce locally.
+Somehow in my setup they are sorted properly :-/
+Would appreciate it if you can test the v3 patch and confirm whether
+it's fixed on your side or not.
 
-diff --git a/tools/testing/selftests/bpf/test_cpp.cpp b/tools/testing/selftests/bpf/test_cpp.cpp
-index 19ad172036da..0bd9990e83fa 100644
---- a/tools/testing/selftests/bpf/test_cpp.cpp
-+++ b/tools/testing/selftests/bpf/test_cpp.cpp
-@@ -1,9 +1,9 @@
- /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
- #include <iostream>
--#pragma GCC diagnostic push
--#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-+#include <unistd.h>
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
- #include <bpf/libbpf.h>
--#pragma GCC diagnostic pop
- #include <bpf/bpf.h>
- #include <bpf/btf.h>
- #include "test_core_extern.skel.h"
-@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
- 	struct btf_dump_opts opts = { };
- 	struct test_core_extern *skel;
- 	struct btf *btf;
-+	int fd;
- 
- 	try_skeleton_template();
- 
-@@ -117,6 +118,12 @@ int main(int argc, char *argv[])
- 	skel = test_core_extern__open_and_load();
- 	test_core_extern__destroy(skel);
- 
-+	fd = bpf_enable_stats(BPF_STATS_RUN_TIME);
-+	if (fd < 0)
-+		std::cout << "FAILED to enable stats: " << fd << std::endl;
-+	else
-+		::close(fd);
-+
- 	std::cout << "DONE!" << std::endl;
- 
- 	return 0;
--- 
-2.30.2
-
+> > Furthermore, dumped vmlinux BTF shows the IDs is in the exactly reversed
+> > order:
+> >
+> > [108126] FUNC 'bpf_xdp_metadata_rx_hash' type_id=108125 linkage=static
+> > [108128] FUNC 'bpf_xdp_metadata_rx_hash_supported' type_id=108127 linkage=static
+> > [108130] FUNC 'bpf_xdp_metadata_rx_timestamp' type_id=108129 linkage=static
+> > [108131] FUNC 'bpf_xdp_metadata_rx_timestamp_supported' type_id=108127 linkage=static
+> >
+> > > +
+> > > +     if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED))
+> > > +             resolved = aux->xdp_netdev->netdev_ops->ndo_xdp_rx_timestamp_supported;
+> > > +     else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
+> > > +             resolved = aux->xdp_netdev->netdev_ops->ndo_xdp_rx_timestamp;
+> > > +     else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED))
+> > > +             resolved = aux->xdp_netdev->netdev_ops->ndo_xdp_rx_hash_supported;
+> > > +     else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
+> > > +             resolved = aux->xdp_netdev->netdev_ops->ndo_xdp_rx_hash;
+> > > +
+> > > +     if (resolved)
+> > > +             return BPF_CALL_IMM(resolved);
+> > > +     return 0;
+> > > +}
+> > > +
+> >
+> > My working tree (based on this version) is available on github [0]. Situation
+> > is also described in the last commit message.
+> > I would be great, if you could check, whether this behaviour can be reproduced
+> > on your setup.
+> >
+> > [0] https://github.com/walking-machine/linux/tree/hints-v2
