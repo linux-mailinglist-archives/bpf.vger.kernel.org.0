@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1480E63D082
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D8A63D086
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 09:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbiK3I0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 03:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S235343AbiK3I0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 03:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbiK3IZX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 03:25:23 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024DD6F807;
-        Wed, 30 Nov 2022 00:24:18 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so1194547pje.5;
-        Wed, 30 Nov 2022 00:24:18 -0800 (PST)
+        with ESMTP id S234861AbiK3IZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 03:25:24 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF4B43AEB;
+        Wed, 30 Nov 2022 00:24:21 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id q1so15362119pgl.11;
+        Wed, 30 Nov 2022 00:24:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TeRxkUtMHLuUFqMgF18Iov3Mm0w03j8sOh2D0fkG7OA=;
-        b=g9whwIlDXn1gAn57uP4ayQTIZ3MxO29p26WHIkTYhqXN0IbpiDCF+mEdhTWoghYZ8N
-         OkxSP2pE6rvgdR/iELyZXC0pKsC6gJvixv940sey3X8shr915VlvYN1itzp6TzWEVwBY
-         OHoHUn/0bPuL36ql//W3BHrB0hGaeLEQ1hD5qgVUtE8VNu20iu6LXQknEYuyGpZGF64X
-         Qf+EYt5RYOgyePeftfpU9i+OmLjTkxFmq8D47KBfwzg3FQctawGt3Bm9pMD+4Kl4KJ+P
-         rPC2ICIucZHJEDBGDV10EMeZhFyKssPlJ1/u5DRPr4s7h74HuEovmgSLGoBrI2ZVH5Qs
-         1Trg==
+        bh=3xNLbIsa5gtviYtGbS0XJgTqtP9STFkn3KhLBxJlSY0=;
+        b=EQR4AeKgF7dwfmXpdNFKVBnWmW+pCUqxeTtRwXRJ0+4LEYOg8snYX1U2aIR53pm2GN
+         p8svxnC6OYcJxckHdlLkVzjt69Waao3KPNuqZhTs7FGt7RWAHbaqj+l8TBzeogJNmsn+
+         mammGiPEkAwPtVELXSq8Rs88LCdIq5gttHc6QbYS6L3s2aPD0yyeiQBECSRRUwJK2wck
+         FZC776aaw2nQbLtwW1uDPTejQ6kUHsXIMgR7dLQ61QjcSCXx7iIcJMts5ncRBeNWsQWJ
+         /XVXd8CgSWlxOTNRiejilc+YTJkzI9qMLGAu8GWNuaeKVrDx02eXKM7SasmXGZASwvKr
+         XdWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=TeRxkUtMHLuUFqMgF18Iov3Mm0w03j8sOh2D0fkG7OA=;
-        b=Lz0i7nMPro+6SrOKGfjgZ9FnrLPrW6koqTip+3LCG5a4qGP6r4ltLGJa2mUwwpZ2Qc
-         HA/tn7SV+2rWaHYF1Tayzs4tlgD3KyCHuECsyloiE4MXo+OneClJPfXXNJOwCJisHcNI
-         HpsV+jO9Z0YvdHWv2fxBEogm7W9rHpGiH/ACSY/UG1iFyo12fwQkjg59zz4gF0JPWqjc
-         DahIlQPR3NFSgVMQ3521CdiOhssjRrAST0obO5jltUwyGq76aSG90JTM783vbO6asob9
-         60lnDWImfmL4wj59CNnVFkRpbHieZRQqM6cRrMmvu+DJwifCgpINFk2Lt6iiRzIQCgKe
-         XvPg==
-X-Gm-Message-State: ANoB5pkc53DxMTnGVOKXaDLitgYvdpmxGVIJ6iJ7D8HVPWPba1XTVLoL
-        JV0Cp+RO1zc2Ux+9snSQSHg=
-X-Google-Smtp-Source: AA0mqf6mefq6GpDFMq05Kn+XBObUaj8OK0h0LXJbfOCd4ac/a8nw3NHFz5iV18RMVmHoXFAtXBm/VA==
-X-Received: by 2002:a17:90b:784:b0:218:fa11:5f87 with SMTP id l4-20020a17090b078400b00218fa115f87mr32105256pjz.25.1669796658265;
-        Wed, 30 Nov 2022 00:24:18 -0800 (PST)
+        bh=3xNLbIsa5gtviYtGbS0XJgTqtP9STFkn3KhLBxJlSY0=;
+        b=Thg7bjgkFC7ktYw/33ybMjYoZd4vuAJx6vAGUjJ55DK20WQNG5hRMqGrNN9Lx8VpNR
+         LQo2emkbmuL1MFpqHXi1Du0UGlmZ80k+wti1uLk8sh01soF6Mnsrhs2rbU1C3j4VWXtI
+         8UuKxPm6f0TwUlLokW1QGlOj74PAFC7TIIOajSM+FKagNX3G3y2k67SSAcr4ceS2BE8y
+         I+BMA5wQk/IPem5xNTM6A3rSiueqoTYpFSW/KTxGBJMOqvIxUOH+x15nDo0uU/uJOJk4
+         HxfT4HQOVtLWyivIZz/vH5YFodIHjUJ72sTnl30K2xuf0ITkn8HfL8o9ca+kB0wNdcqg
+         5adw==
+X-Gm-Message-State: ANoB5pnsP4sV3b07xPlsCA62CR8zp7XfDdsFO78FtIjuffFUgSSrLtVc
+        /jPb2g46qxfT9pA3KtfhL/Y=
+X-Google-Smtp-Source: AA0mqf52p+ZRo0BmR4ZL/XEv1sKhOHpYfvNqaOh/EtAiX1D/HZyRqbODM6vn6qrOJxKDoS/21Ztu/A==
+X-Received: by 2002:a63:114b:0:b0:46a:e00b:ada0 with SMTP id 11-20020a63114b000000b0046ae00bada0mr38704577pgr.409.1669796660212;
+        Wed, 30 Nov 2022 00:24:20 -0800 (PST)
 Received: from localhost ([2600:380:4a00:1415:d028:b547:7d35:7b0b])
-        by smtp.gmail.com with ESMTPSA id f131-20020a623889000000b00574ebfdc721sm837329pfa.16.2022.11.30.00.24.17
+        by smtp.gmail.com with ESMTPSA id s3-20020a625e03000000b0056bf29c9ba3sm820774pfb.146.2022.11.30.00.24.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 00:24:17 -0800 (PST)
+        Wed, 30 Nov 2022 00:24:19 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 19/31] sched_ext: Allow BPF schedulers to disallow specific tasks from joining SCHED_EXT
-Date:   Tue, 29 Nov 2022 22:23:01 -1000
-Message-Id: <20221130082313.3241517-20-tj@kernel.org>
+Subject: [PATCH 20/31] sched_ext: Allow BPF schedulers to switch all eligible tasks into sched_ext
+Date:   Tue, 29 Nov 2022 22:23:02 -1000
+Message-Id: <20221130082313.3241517-21-tj@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221130082313.3241517-1-tj@kernel.org>
 References: <20221130082313.3241517-1-tj@kernel.org>
@@ -80,33 +80,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF schedulers might not want to schedule certain tasks - e.g. kernel
-threads. This patch adds p->scx.disallow which can be set by BPF schedulers
-in such cases. The field can be changed anytime and setting it in
-ops.prep_enable() guarantees that the task can never be scheduled by
-sched_ext.
+Currently, to use sched_ext, each task has to be put into sched_ext using
+sched_setscheduler(2). However, some BPF schedulers and use cases might
+prefer to service all eligible tasks.
 
-scx_example_qmap is updated with the -d option to disallow a specific PID:
+This patch adds a new kfunc helper, scx_bpf_switch_all(), that BPF
+schedulers can call from ops.init() to switch all SCHED_NORMAL, SCHED_BATCH
+and SCHED_IDLE tasks into sched_ext. This has the benefit that the scheduler
+swaps are transparent to the users and applications. As we know that CFS is
+not being used when scx_bpf_switch_all() is used, we can also disable hot
+path entry points with static_branches.
 
-  # echo $$
-  1092
-  # egrep '(policy)|(ext\.enabled)' /proc/self/sched
-  policy                                       :                    0
-  ext.enabled                                  :                    0
-  # ./set-scx 1092
-  # egrep '(policy)|(ext\.enabled)' /proc/self/sched
-  policy                                       :                    7
-  ext.enabled                                  :                    0
-
-Run "scx_example_qmap -d 1092" in another terminal.
-
-  # grep rejected /sys/kernel/debug/sched/ext
-  nr_rejected                   : 1
-  # egrep '(policy)|(ext\.enabled)' /proc/self/sched
-  policy                                       :                    0
-  ext.enabled                                  :                    0
-  # ./set-scx 1092
-  setparam failed for 1092 (Permission denied)
+Both the dummy and qmap example schedulers are updated with the '-a' option
+which enables the switch_all behavior.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Suggested-by: Barret Rhoden <brho@google.com>
@@ -115,196 +101,325 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- include/linux/sched/ext.h              | 12 ++++++++
- kernel/sched/core.c                    |  4 +++
- kernel/sched/ext.c                     | 38 ++++++++++++++++++++++++++
- kernel/sched/ext.h                     |  3 ++
- tools/sched_ext/scx_example_qmap.bpf.c |  4 +++
- tools/sched_ext/scx_example_qmap.c     |  8 +++++-
- 6 files changed, 68 insertions(+), 1 deletion(-)
+ kernel/sched/core.c                     |  8 +++--
+ kernel/sched/ext.c                      | 42 +++++++++++++++++++++++++
+ kernel/sched/ext.h                      |  5 +++
+ tools/sched_ext/scx_common.bpf.h        |  1 +
+ tools/sched_ext/scx_example_dummy.bpf.c | 11 +++++++
+ tools/sched_ext/scx_example_dummy.c     |  8 +++--
+ tools/sched_ext/scx_example_qmap.bpf.c  |  9 ++++++
+ tools/sched_ext/scx_example_qmap.c      |  7 +++--
+ 8 files changed, 84 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 1a57945abea0..82dcbecfcfb9 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -397,6 +397,18 @@ struct sched_ext_entity {
- 	 */
- 	u64			slice;
- 
-+	/*
-+	 * If set, reject future sched_setscheduler(2) calls updating the policy
-+	 * to %SCHED_EXT with -%EACCES.
-+	 *
-+	 * If set from ops.prep_enable() and the task's policy is already
-+	 * %SCHED_EXT, which can happen while the BPF scheduler is being loaded
-+	 * or by inhering the parent's policy during fork, the task's policy is
-+	 * rejected and forcefully reverted to %SCHED_NORMAL. The number of such
-+	 * events are reported through /sys/kernel/debug/sched_ext::nr_rejected.
-+	 */
-+	bool			disallow;	/* reject switching into SCX */
-+
- 	/* cold fields */
- 	struct list_head	tasks_node;
- };
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 39d9ccb64f40..3404277fed30 100644
+index 3404277fed30..20536957840d 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7552,6 +7552,10 @@ static int __sched_setscheduler(struct task_struct *p,
- 		goto unlock;
- 	}
+@@ -1204,7 +1204,7 @@ bool sched_can_stop_tick(struct rq *rq)
+ 	 * if there's more than one we need the tick for involuntary
+ 	 * preemption.
+ 	 */
+-	if (rq->nr_running > 1)
++	if (!scx_switched_all() && rq->nr_running > 1)
+ 		return false;
  
-+	retval = scx_check_setscheduler(p, policy);
-+	if (retval)
-+		goto unlock;
-+
- 	/*
- 	 * If not changing anything there's no need to proceed further,
- 	 * but store a possible modification of reset_on_fork.
+ 	return true;
+@@ -5520,8 +5520,10 @@ void scheduler_tick(void)
+ 	perf_event_task_tick();
+ 
+ #ifdef CONFIG_SMP
+-	rq->idle_balance = idle_cpu(cpu);
+-	trigger_load_balance(rq);
++	if (!scx_switched_all()) {
++		rq->idle_balance = idle_cpu(cpu);
++		trigger_load_balance(rq);
++	}
+ #endif
+ }
+ 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 030175f2b1d6..ddd5aa4a8bca 100644
+index ddd5aa4a8bca..ba0a7a9ea5f2 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -1509,6 +1509,8 @@ static int scx_ops_prepare_task(struct task_struct *p, struct task_group *tg)
- 
- 	WARN_ON_ONCE(p->scx.flags & SCX_TASK_OPS_PREPPED);
- 
-+	p->scx.disallow = false;
+@@ -73,6 +73,10 @@ static DEFINE_MUTEX(scx_ops_enable_mutex);
+ DEFINE_STATIC_KEY_FALSE(__scx_ops_enabled);
+ DEFINE_STATIC_PERCPU_RWSEM(scx_fork_rwsem);
+ static atomic_t scx_ops_enable_state_var = ATOMIC_INIT(SCX_OPS_DISABLED);
++static bool scx_switch_all_req;
++static bool scx_switching_all;
++DEFINE_STATIC_KEY_FALSE(__scx_switched_all);
 +
- 	if (SCX_HAS_OP(prep_enable)) {
- 		struct scx_enable_args args = { };
+ static struct sched_ext_ops scx_ops;
+ static bool warned_zero_slice;
  
-@@ -1519,6 +1521,27 @@ static int scx_ops_prepare_task(struct task_struct *p, struct task_group *tg)
- 		}
+@@ -1844,6 +1848,8 @@ bool task_on_scx(struct task_struct *p)
+ {
+ 	if (!scx_enabled() || scx_ops_disabling())
+ 		return false;
++	if (READ_ONCE(scx_switching_all))
++		return true;
+ 	return p->policy == SCHED_EXT;
+ }
+ 
+@@ -1982,6 +1988,9 @@ static void scx_ops_disable_workfn(struct kthread_work *work)
+ 	 */
+ 	mutex_lock(&scx_ops_enable_mutex);
+ 
++	static_branch_disable(&__scx_switched_all);
++	WRITE_ONCE(scx_switching_all, false);
++
+ 	/* avoid racing against fork */
+ 	cpus_read_lock();
+ 	percpu_down_write(&scx_fork_rwsem);
+@@ -2159,6 +2168,7 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ 	 */
+ 	cpus_read_lock();
+ 
++	scx_switch_all_req = false;
+ 	if (scx_ops.init) {
+ 		ret = scx_ops.init();
+ 
+@@ -2281,6 +2291,8 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ 	 * transitions here are synchronized against sched_ext_free() through
+ 	 * scx_tasks_lock.
+ 	 */
++	WRITE_ONCE(scx_switching_all, scx_switch_all_req);
++
+ 	scx_task_iter_init(&sti);
+ 	while ((p = scx_task_iter_next_filtered_locked(&sti))) {
+ 		if (READ_ONCE(p->__state) != TASK_DEAD) {
+@@ -2312,6 +2324,9 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ 		goto err_disable_unlock;
  	}
  
-+	if (p->scx.disallow) {
-+		struct rq *rq;
-+		struct rq_flags rf;
++	if (scx_switch_all_req)
++		static_branch_enable_cpuslocked(&__scx_switched_all);
 +
-+		rq = task_rq_lock(p, &rf);
-+
-+		/*
-+		 * We're either in fork or load path and @p->policy will be
-+		 * applied right after. Reverting @p->policy here and rejecting
-+		 * %SCHED_EXT transitions from scx_check_setscheduler()
-+		 * guarantees that if ops.prep_enable() sets @p->disallow, @p
-+		 * can never be in SCX.
-+		 */
-+		if (p->policy == SCHED_EXT) {
-+			p->policy = SCHED_NORMAL;
-+			atomic64_inc(&scx_nr_rejected);
-+		}
-+
-+		task_rq_unlock(rq, p, &rf);
-+	}
-+
- 	p->scx.flags |= (SCX_TASK_OPS_PREPPED | SCX_TASK_WATCHDOG_RESET);
- 	return 0;
- }
-@@ -1664,6 +1687,18 @@ static void switching_to_scx(struct rq *rq, struct task_struct *p)
- static void check_preempt_curr_scx(struct rq *rq, struct task_struct *p,int wake_flags) {}
- static void switched_to_scx(struct rq *rq, struct task_struct *p) {}
+ 	cpus_read_unlock();
+ 	mutex_unlock(&scx_ops_enable_mutex);
  
-+int scx_check_setscheduler(struct task_struct *p, int policy)
+@@ -2346,6 +2361,9 @@ static int scx_debug_show(struct seq_file *m, void *v)
+ 	mutex_lock(&scx_ops_enable_mutex);
+ 	seq_printf(m, "%-30s: %s\n", "ops", scx_ops.name);
+ 	seq_printf(m, "%-30s: %ld\n", "enabled", scx_enabled());
++	seq_printf(m, "%-30s: %d\n", "switching_all",
++		   READ_ONCE(scx_switching_all));
++	seq_printf(m, "%-30s: %ld\n", "switched_all", scx_switched_all());
+ 	seq_printf(m, "%-30s: %s\n", "enable_state",
+ 		   scx_ops_enable_state_str[scx_ops_enable_state()]);
+ 	seq_printf(m, "%-30s: %llu\n", "nr_rejected",
+@@ -2586,6 +2604,28 @@ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
+ 
++/**
++ * scx_bpf_switch_all - Switch all tasks into SCX
++ * @into_scx: switch direction
++ *
++ * If @into_scx is %true, all existing and future non-dl/rt tasks are switched
++ * to SCX. If %false, only tasks which have %SCHED_EXT explicitly set are put on
++ * SCX. The actual switching is asynchronous. Can be called from ops.init().
++ */
++void scx_bpf_switch_all(void)
 +{
-+	lockdep_assert_rq_held(task_rq(p));
++	scx_switch_all_req = true;
++}
 +
-+	/* if disallow, reject transitioning into SCX */
-+	if (scx_enabled() && READ_ONCE(p->scx.disallow) &&
-+	    p->policy != policy && policy == SCHED_EXT)
-+		return -EACCES;
++BTF_SET8_START(scx_kfunc_ids_init)
++BTF_ID_FLAGS(func, scx_bpf_switch_all)
++BTF_SET8_END(scx_kfunc_ids_init)
 +
++static const struct btf_kfunc_id_set scx_kfunc_set_init = {
++	.owner			= THIS_MODULE,
++	.set			= &scx_kfunc_ids_init,
++};
++
+ /**
+  * scx_bpf_create_dsq - Create a dsq
+  * @dsq_id: dsq to attach
+@@ -3015,6 +3055,8 @@ static int __init register_ext_kfuncs(void)
+ 	 * allow all kfuncs for everybody.
+ 	 */
+ 	if ((ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
++					     &scx_kfunc_set_init)) ||
++	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+ 					     &scx_kfunc_set_sleepable)) ||
+ 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+ 					    &scx_kfunc_set_dispatch)) ||
+diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
+index 0743a0536560..142dce30764d 100644
+--- a/kernel/sched/ext.h
++++ b/kernel/sched/ext.h
+@@ -71,7 +71,9 @@ extern unsigned long task_runnable_timeout_ms;
+ extern unsigned long last_timeout_check;
+ 
+ DECLARE_STATIC_KEY_FALSE(__scx_ops_enabled);
++DECLARE_STATIC_KEY_FALSE(__scx_switched_all);
+ #define scx_enabled()		static_branch_unlikely(&__scx_ops_enabled)
++#define scx_switched_all()	static_branch_unlikely(&__scx_switched_all)
+ 
+ bool task_on_scx(struct task_struct *p);
+ void scx_pre_fork(struct task_struct *p);
+@@ -108,6 +110,8 @@ static inline void scx_notify_sched_tick(void)
+ static inline const struct sched_class *next_active_class(const struct sched_class *class)
+ {
+ 	class++;
++	if (scx_switched_all() && class == &fair_sched_class)
++		class++;
+ 	if (!scx_enabled() && class == &ext_sched_class)
+ 		class++;
+ 	return class;
+@@ -130,6 +134,7 @@ static inline const struct sched_class *next_active_class(const struct sched_cla
+ #else	/* CONFIG_SCHED_CLASS_EXT */
+ 
+ #define scx_enabled()		false
++#define scx_switched_all()	false
+ 
+ static inline void scx_pre_fork(struct task_struct *p) {}
+ static inline int scx_fork(struct task_struct *p) { return 0; }
+diff --git a/tools/sched_ext/scx_common.bpf.h b/tools/sched_ext/scx_common.bpf.h
+index 4cfbbee38d9a..212cb934db2d 100644
+--- a/tools/sched_ext/scx_common.bpf.h
++++ b/tools/sched_ext/scx_common.bpf.h
+@@ -48,6 +48,7 @@ void ___scx_bpf_error_format_checker(const char *fmt, ...) {}
+ 	___scx_bpf_error_format_checker(fmt, ##args);				\
+ })
+ 
++extern void scx_bpf_switch_all(void) __ksym;
+ extern s32 scx_bpf_create_dsq(u64 dsq_id, s32 node) __ksym;
+ extern bool scx_bpf_consume(u64 dsq_id) __ksym;
+ extern u32 scx_bpf_dispatch_nr_slots(void) __ksym;
+diff --git a/tools/sched_ext/scx_example_dummy.bpf.c b/tools/sched_ext/scx_example_dummy.bpf.c
+index ac7b490b5a39..28251373d1c3 100644
+--- a/tools/sched_ext/scx_example_dummy.bpf.c
++++ b/tools/sched_ext/scx_example_dummy.bpf.c
+@@ -7,6 +7,7 @@
+  *
+  * - Statistics tracking how many are queued to local and global dsq's.
+  * - Termination notification for userspace.
++ * - Support for switch_all.
+  *
+  * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
+  * Copyright (c) 2022 Tejun Heo <tj@kernel.org>
+@@ -16,6 +17,8 @@
+ 
+ char _license[] SEC("license") = "GPL";
+ 
++const volatile bool switch_all;
++
+ struct user_exit_info uei;
+ 
+ struct {
+@@ -32,6 +35,13 @@ static void stat_inc(u32 idx)
+ 		(*cnt_p)++;
+ }
+ 
++s32 BPF_STRUCT_OPS(dummy_init)
++{
++	if (switch_all)
++		scx_bpf_switch_all();
 +	return 0;
 +}
 +
- /*
-  * Omitted operations:
-  *
-@@ -2367,6 +2402,9 @@ static int bpf_scx_btf_struct_access(struct bpf_verifier_log *log,
- 		if (off >= offsetof(struct task_struct, scx.slice) &&
- 		    off + size <= offsetofend(struct task_struct, scx.slice))
- 			return SCALAR_VALUE;
-+		if (off >= offsetof(struct task_struct, scx.disallow) &&
-+		    off + size <= offsetofend(struct task_struct, scx.disallow))
-+			return SCALAR_VALUE;
- 	}
- 
- 	if (atype == BPF_READ)
-diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
-index bda1d9c11486..0743a0536560 100644
---- a/kernel/sched/ext.h
-+++ b/kernel/sched/ext.h
-@@ -79,6 +79,7 @@ int scx_fork(struct task_struct *p);
- void scx_post_fork(struct task_struct *p);
- void scx_cancel_fork(struct task_struct *p);
- int balance_scx(struct rq *rq, struct task_struct *prev, struct rq_flags *rf);
-+int scx_check_setscheduler(struct task_struct *p, int policy);
- void init_sched_ext_class(void);
- 
- __printf(2, 3) void scx_ops_error_type(enum scx_exit_type type,
-@@ -136,6 +137,8 @@ static inline void scx_post_fork(struct task_struct *p) {}
- static inline void scx_cancel_fork(struct task_struct *p) {}
- static inline int balance_scx(struct rq *rq, struct task_struct *prev,
- 			      struct rq_flags *rf) { return 0; }
-+static inline int scx_check_setscheduler(struct task_struct *p,
-+					 int policy) { return 0; }
- static inline void init_sched_ext_class(void) {}
- static inline void scx_notify_sched_tick(void) {}
- 
-diff --git a/tools/sched_ext/scx_example_qmap.bpf.c b/tools/sched_ext/scx_example_qmap.bpf.c
-index 9e0b6519c8a4..b6febc5dadbf 100644
---- a/tools/sched_ext/scx_example_qmap.bpf.c
-+++ b/tools/sched_ext/scx_example_qmap.bpf.c
-@@ -24,6 +24,7 @@ char _license[] SEC("license") = "GPL";
- const volatile u64 slice_ns = SCX_SLICE_DFL;
- const volatile u32 stall_user_nth;
- const volatile u32 stall_kernel_nth;
-+const volatile s32 disallow_tgid;
- 
- u32 test_error_cnt;
- 
-@@ -208,6 +209,9 @@ void BPF_STRUCT_OPS(qmap_dispatch, s32 cpu, struct task_struct *prev)
- s32 BPF_STRUCT_OPS(qmap_prep_enable, struct task_struct *p,
- 		   struct scx_enable_args *args)
+ void BPF_STRUCT_OPS(dummy_enqueue, struct task_struct *p, u64 enq_flags)
  {
-+	if (p->tgid == disallow_tgid)
-+		p->scx.disallow = true;
-+
- 	/*
- 	 * @p is new. Let's ensure that its task_ctx is available. We can sleep
- 	 * in this function and the following will automatically use GFP_KERNEL.
-diff --git a/tools/sched_ext/scx_example_qmap.c b/tools/sched_ext/scx_example_qmap.c
-index 34c764c38e19..99cc7169bd90 100644
---- a/tools/sched_ext/scx_example_qmap.c
-+++ b/tools/sched_ext/scx_example_qmap.c
-@@ -20,12 +20,13 @@ const char help_fmt[] =
+ 	if (enq_flags & SCX_ENQ_LOCAL) {
+@@ -51,6 +61,7 @@ void BPF_STRUCT_OPS(dummy_exit, struct scx_exit_info *ei)
+ SEC(".struct_ops")
+ struct sched_ext_ops dummy_ops = {
+ 	.enqueue		= (void *)dummy_enqueue,
++	.init			= (void *)dummy_init,
+ 	.exit			= (void *)dummy_exit,
+ 	.name			= "dummy",
+ };
+diff --git a/tools/sched_ext/scx_example_dummy.c b/tools/sched_ext/scx_example_dummy.c
+index 72881c881830..9229973e8698 100644
+--- a/tools/sched_ext/scx_example_dummy.c
++++ b/tools/sched_ext/scx_example_dummy.c
+@@ -19,8 +19,9 @@ const char help_fmt[] =
  "\n"
  "See the top-level comment in .bpf.c for more details.\n"
  "\n"
--"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT]\n"
-+"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-d PID]\n"
+-"Usage: %s\n"
++"Usage: %s [-a]\n"
  "\n"
- "  -s SLICE_US   Override slice duration\n"
- "  -e COUNT      Trigger scx_bpf_error() after COUNT enqueues\n"
- "  -t COUNT      Stall every COUNT'th user thread\n"
- "  -T COUNT      Stall every COUNT'th kernel thread\n"
-+"  -d PID        Disallow a process from switching into SCHED_EXT (-1 for self)\n"
++"  -a            Switch all tasks\n"
  "  -h            Display this help and exit\n";
  
  static volatile int exit_req;
-@@ -63,6 +64,11 @@ int main(int argc, char **argv)
- 		case 'T':
- 			skel->rodata->stall_kernel_nth = strtoul(optarg, NULL, 0);
- 			break;
-+		case 'd':
-+			skel->rodata->disallow_tgid = strtol(optarg, NULL, 0);
-+			if (skel->rodata->disallow_tgid < 0)
-+				skel->rodata->disallow_tgid = getpid();
+@@ -64,8 +65,11 @@ int main(int argc, char **argv)
+ 	skel = scx_example_dummy__open();
+ 	assert(skel);
+ 
+-	while ((opt = getopt(argc, argv, "h")) != -1) {
++	while ((opt = getopt(argc, argv, "ah")) != -1) {
+ 		switch (opt) {
++		case 'a':
++			skel->rodata->switch_all = true;
 +			break;
  		default:
  			fprintf(stderr, help_fmt, basename(argv[0]));
  			return opt != 'h';
+diff --git a/tools/sched_ext/scx_example_qmap.bpf.c b/tools/sched_ext/scx_example_qmap.bpf.c
+index b6febc5dadbf..bde8cd339935 100644
+--- a/tools/sched_ext/scx_example_qmap.bpf.c
++++ b/tools/sched_ext/scx_example_qmap.bpf.c
+@@ -22,6 +22,7 @@
+ char _license[] SEC("license") = "GPL";
+ 
+ const volatile u64 slice_ns = SCX_SLICE_DFL;
++const volatile bool switch_all;
+ const volatile u32 stall_user_nth;
+ const volatile u32 stall_kernel_nth;
+ const volatile s32 disallow_tgid;
+@@ -223,6 +224,13 @@ s32 BPF_STRUCT_OPS(qmap_prep_enable, struct task_struct *p,
+ 		return -ENOMEM;
+ }
+ 
++s32 BPF_STRUCT_OPS(qmap_init)
++{
++	if (switch_all)
++		scx_bpf_switch_all();
++	return 0;
++}
++
+ void BPF_STRUCT_OPS(qmap_exit, struct scx_exit_info *ei)
+ {
+ 	uei_record(&uei, ei);
+@@ -238,6 +246,7 @@ struct sched_ext_ops qmap_ops = {
+ 	 */
+ 	.dispatch		= (void *)qmap_dispatch,
+ 	.prep_enable		= (void *)qmap_prep_enable,
++	.init			= (void *)qmap_init,
+ 	.exit			= (void *)qmap_exit,
+ 	.timeout_ms		= 5000U,
+ 	.name			= "qmap",
+diff --git a/tools/sched_ext/scx_example_qmap.c b/tools/sched_ext/scx_example_qmap.c
+index 99cc7169bd90..52a44269508b 100644
+--- a/tools/sched_ext/scx_example_qmap.c
++++ b/tools/sched_ext/scx_example_qmap.c
+@@ -20,7 +20,7 @@ const char help_fmt[] =
+ "\n"
+ "See the top-level comment in .bpf.c for more details.\n"
+ "\n"
+-"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-d PID]\n"
++"Usage: %s [-a] [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-d PID]\n"
+ "\n"
+ "  -s SLICE_US   Override slice duration\n"
+ "  -e COUNT      Trigger scx_bpf_error() after COUNT enqueues\n"
+@@ -50,8 +50,11 @@ int main(int argc, char **argv)
+ 	skel = scx_example_qmap__open();
+ 	assert(skel);
+ 
+-	while ((opt = getopt(argc, argv, "hs:e:t:T:d:")) != -1) {
++	while ((opt = getopt(argc, argv, "ahs:e:t:T:d:")) != -1) {
+ 		switch (opt) {
++		case 'a':
++			skel->rodata->switch_all = true;
++			break;
+ 		case 's':
+ 			skel->rodata->slice_ns = strtoull(optarg, NULL, 0) * 1000;
+ 			break;
 -- 
 2.38.1
 
