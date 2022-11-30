@@ -2,100 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F1E63CCCF
-	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 02:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E5463CCE2
+	for <lists+bpf@lfdr.de>; Wed, 30 Nov 2022 02:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbiK3B1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Nov 2022 20:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S230160AbiK3BhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Nov 2022 20:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbiK3B1m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Nov 2022 20:27:42 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E8610FDE
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 17:27:40 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id o127so4287973yba.5
-        for <bpf@vger.kernel.org>; Tue, 29 Nov 2022 17:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Vqii2pGYCt6X71oB8dXqVlQ8VTHgANSwMXKIAHG2Hs=;
-        b=WKE4aDjgxcqYT/uQyQVhtC3ENgm2ATKkH3eekesgSr0oc1wJL5R1QRjJXN93eHwhLy
-         /Sc6mff8ACZjBO+eREXT92FbN2+gvsI3CQCVr5WEsH3s4KoKJgfOG/pZC0U4hCTVbNqP
-         u89Ofzn9td9ND7ylEwW33XfRtPYTeISOkA3dzEXqiJNlcch34UUkHyYGx9o+MR0rzj9x
-         pJq1/6rYQss7aGaC/IVET4H33b/9iuzKL0FL21xJDG3Ca3RYtfeT3onvjC7HjiJlx8Y+
-         gK73cP3VqHtNFg7uyBMmIYmMbX+H3/LGADcmb+WVjBcReGz6gmyoEblYGdZJ8DuzbkBI
-         nVjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Vqii2pGYCt6X71oB8dXqVlQ8VTHgANSwMXKIAHG2Hs=;
-        b=7dRpqLUX+YXAFtUAP+K6ZEBKvXIjm+rm8ysBa2K9JGWVHIeUjWIF7YBkawrxeJuK62
-         4fz8zbWlvVhDDlOYlyLNYkJ7XuDZWjPxnAKK9sWbhCYAfrq7uxmqGxefsQItMMyo7IAW
-         CLpz49eL8cbRqlqbnOVqCyIsUjIxBdJ8nfVvnrFHRn6J4wm6xhTbipcl0sDphUsfm2BH
-         mhx8sGRfQqDpqjyCWpRTIjWDJoIaufD1CFVJTJybNw1Wztrr70I9bAtD78FV/8Bz28y9
-         TXdf/vR6ZV9NNYEsZ48lbupEhkKDENw/5Xoti8ISZM03G8fRytF4QGNnga7bAp2ImNAQ
-         XRWQ==
-X-Gm-Message-State: ANoB5pkHXXhri4IinhXj4tc/NYdO0HiL1H8dUE4cia/GDXdoE/B3/e8q
-        EwMnoD0/njliPl7p0xxjGdGZORLxnRid0NUvtUZwrA==
-X-Google-Smtp-Source: AA0mqf5aBOBLKSbPCYquOgnN8txbKoLXuL+cTp7rtoLM7hSVFv+p1qqRH6kiLJxByVg/A8RRQ0gxwa3EeooNzCTiqZA=
-X-Received: by 2002:a25:50f:0:b0:6f0:9351:486a with SMTP id
- 15-20020a25050f000000b006f09351486amr33201906ybf.198.1669771659636; Tue, 29
- Nov 2022 17:27:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20221128132915.141211-1-jolsa@kernel.org> <20221128132915.141211-3-jolsa@kernel.org>
- <CAEf4BzaZCUoxN_X2ALXwQeFTCwtL17R4P_B_-hUCcidfyO2xyQ@mail.gmail.com>
- <CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com> <CAEf4Bza6R2uedPiKi_FXMPOVe-WGS5LO-EbBzpqK9T-xCybS5Q@mail.gmail.com>
-In-Reply-To: <CAEf4Bza6R2uedPiKi_FXMPOVe-WGS5LO-EbBzpqK9T-xCybS5Q@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 29 Nov 2022 17:27:28 -0800
-Message-ID: <CA+khW7jLegurLPiUkWx5-gVnS3rywB1NTO0dy5qDWSY+-R1mgA@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 2/4] bpf: Add bpf_vma_build_id_parse function
- and kfunc
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229579AbiK3BhN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Nov 2022 20:37:13 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7D96D4A5;
+        Tue, 29 Nov 2022 17:37:11 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NMMJK3rSGz4f3p1G;
+        Wed, 30 Nov 2022 09:37:05 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgBHOai+s4ZjTag9BQ--.41614S2;
+        Wed, 30 Nov 2022 09:37:05 +0800 (CST)
+Subject: Re: [net-next] bpf: avoid hashtab deadlock with try_lock
+To:     Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>
+Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        "houtao1@huawei.com" <houtao1@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <9278cf3f-dfb6-78eb-8862-553545dac7ed@huawei.com>
+ <41eda0ea-0ed4-1ffb-5520-06fda08e5d38@huawei.com>
+ <CAMDZJNVSv3Msxw=5PRiXyO8bxNsA-4KyxU8BMCVyHxH-3iuq2Q@mail.gmail.com>
+ <fdb3b69c-a29c-2d5b-a122-9d98ea387fda@huawei.com>
+ <CAMDZJNWTry2eF_n41a13tKFFSSLFyp3BVKakOOWhSDApdp0f=w@mail.gmail.com>
+ <CA+khW7jgsyFgBqU7hCzZiSSANE7f=A+M-0XbcKApz6Nr-ZnZDg@mail.gmail.com>
+ <07a7491e-f391-a9b2-047e-cab5f23decc5@huawei.com>
+ <CAMDZJNUTaiXMe460P7a7NfK1_bbaahpvi3Q9X85o=G7v9x-w=g@mail.gmail.com>
+ <59fc54b7-c276-2918-6741-804634337881@huaweicloud.com>
+ <541aa740-dcf3-35f5-9f9b-e411978eaa06@redhat.com>
+ <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <db6293a9-8739-7970-d1e0-a027afa935de@huaweicloud.com>
+Date:   Wed, 30 Nov 2022 09:37:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <Y4ZABpDSs4/uRutC@Boquns-Mac-mini.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgBHOai+s4ZjTag9BQ--.41614S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF48Aw1UAF1xGFyxGw17Jrb_yoW3GF47pr
+        93GFZ7Ar15Ja1xuFyjgryUGF1jv3W7G3Zrur1kGw1kJFsrZr17Ww40gw1qgFy2vrWxCFn3
+        tF4Yq34Sv34UZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 4:35 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> This is hardly a generic solution, as it requires instrumenting every
-> application to do this, right? So what I'm proposing is exactly to
-> avoid having each individual application do something special just to
-> allow profiling tools to capture build_id.
+Hi,
 
-I agree. Because the mlock approach is working, we didn't look further
-or try improving it. But an upstreamable and generic solution would be
-nice. I think Jiri has started looking at it, I am happy to help
-there.
+On 11/30/2022 1:23 AM, Boqun Feng wrote:
+> On Tue, Nov 29, 2022 at 11:06:51AM -0500, Waiman Long wrote:
+>> On 11/29/22 07:45, Hou Tao wrote:
+>>> Hi,
+>>>
+>>> On 11/29/2022 2:06 PM, Tonghao Zhang wrote:
+>>>> On Tue, Nov 29, 2022 at 12:32 PM Hou Tao <houtao1@huawei.com> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 11/29/2022 5:55 AM, Hao Luo wrote:
+>>>>>> On Sun, Nov 27, 2022 at 7:15 PM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
+>>>>>> Hi Tonghao,
+>>>>>>
+>>>>>> With a quick look at the htab_lock_bucket() and your problem
+>>>>>> statement, I agree with Hou Tao that using hash &
+>>>>>> min(HASHTAB_MAP_LOCK_MASK, n_bucket - 1) to index in map_locked seems
+>>>>>> to fix the potential deadlock. Can you actually send your changes as
+>>>>>> v2 so we can take a look and better help you? Also, can you explain
+>>>>>> your solution in your commit message? Right now, your commit message
+>>>>>> has only a problem statement and is not very clear. Please include
+>>>>>> more details on what you do to fix the issue.
+>>>>>>
+>>>>>> Hao
+>>>>> It would be better if the test case below can be rewritten as a bpf selftests.
+>>>>> Please see comments below on how to improve it and reproduce the deadlock.
+>>>>>>> Hi
+>>>>>>> only a warning from lockdep.
+>>>>> Thanks for your details instruction.  I can reproduce the warning by using your
+>>>>> setup. I am not a lockdep expert, it seems that fixing such warning needs to set
+>>>>> different lockdep class to the different bucket. Because we use map_locked to
+>>>>> protect the acquisition of bucket lock, so I think we can define  lock_class_key
+>>>>> array in bpf_htab (e.g., lockdep_key[HASHTAB_MAP_LOCK_COUNT]) and initialize the
+>>>>> bucket lock accordingly.
+>>> The proposed lockdep solution doesn't work. Still got lockdep warning after
+>>> that, so cc +locking expert +lkml.org for lockdep help.
+>>>
+>>> Hi lockdep experts,
+>>>
+>>> We are trying to fix the following lockdep warning from bpf subsystem:
+>>>
+>>> [   36.092222] ================================
+>>> [   36.092230] WARNING: inconsistent lock state
+>>> [   36.092234] 6.1.0-rc5+ #81 Tainted: G            E
+>>> [   36.092236] --------------------------------
+>>> [   36.092237] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+>>> [   36.092238] perf/1515 [HC1[1]:SC0[0]:HE0:SE1] takes:
+>>> [   36.092242] ffff888341acd1a0 (&htab->lockdep_key){....}-{2:2}, at:
+>>> htab_lock_bucket+0x4d/0x58
+>>> [   36.092253] {INITIAL USE} state was registered at:
+>>> [   36.092255]   mark_usage+0x1d/0x11d
+>>> [   36.092262]   __lock_acquire+0x3c9/0x6ed
+>>> [   36.092266]   lock_acquire+0x23d/0x29a
+>>> [   36.092270]   _raw_spin_lock_irqsave+0x43/0x7f
+>>> [   36.092274]   htab_lock_bucket+0x4d/0x58
+>>> [   36.092276]   htab_map_delete_elem+0x82/0xfb
+>>> [   36.092278]   map_delete_elem+0x156/0x1ac
+>>> [   36.092282]   __sys_bpf+0x138/0xb71
+>>> [   36.092285]   __do_sys_bpf+0xd/0x15
+>>> [   36.092288]   do_syscall_64+0x6d/0x84
+>>> [   36.092291]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>> [   36.092295] irq event stamp: 120346
+>>> [   36.092296] hardirqs last  enabled at (120345): [<ffffffff8180b97f>]
+>>> _raw_spin_unlock_irq+0x24/0x39
+>>> [   36.092299] hardirqs last disabled at (120346): [<ffffffff81169e85>]
+>>> generic_exec_single+0x40/0xb9
+>>> [   36.092303] softirqs last  enabled at (120268): [<ffffffff81c00347>]
+>>> __do_softirq+0x347/0x387
+>>> [   36.092307] softirqs last disabled at (120133): [<ffffffff810ba4f0>]
+>>> __irq_exit_rcu+0x67/0xc6
+>>> [   36.092311]
+>>> [   36.092311] other info that might help us debug this:
+>>> [   36.092312]  Possible unsafe locking scenario:
+>>> [   36.092312]
+>>> [   36.092313]        CPU0
+>>> [   36.092313]        ----
+>>> [   36.092314]   lock(&htab->lockdep_key);
+>>> [   36.092315]   <Interrupt>
+>>> [   36.092316]     lock(&htab->lockdep_key);
+>>> [   36.092318]
+>>> [   36.092318]  *** DEADLOCK ***
+>>> [   36.092318]
+>>> [   36.092318] 3 locks held by perf/1515:
+>>> [   36.092320]  #0: ffff8881b9805cc0 (&cpuctx_mutex){+.+.}-{4:4}, at:
+>>> perf_event_ctx_lock_nested+0x8e/0xba
+>>> [   36.092327]  #1: ffff8881075ecc20 (&event->child_mutex){+.+.}-{4:4}, at:
+>>> perf_event_for_each_child+0x35/0x76
+>>> [   36.092332]  #2: ffff8881b9805c20 (&cpuctx_lock){-.-.}-{2:2}, at:
+>>> perf_ctx_lock+0x12/0x27
+>>> [   36.092339]
+>>> [   36.092339] stack backtrace:
+>>> [   36.092341] CPU: 0 PID: 1515 Comm: perf Tainted: G            E
+>>> 6.1.0-rc5+ #81
+>>> [   36.092344] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>>> rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+>>> [   36.092349] Call Trace:
+>>> [   36.092351]  <NMI>
+>>> [   36.092354]  dump_stack_lvl+0x57/0x81
+>>> [   36.092359]  lock_acquire+0x1f4/0x29a
+>>> [   36.092363]  ? handle_pmi_common+0x13f/0x1f0
+>>> [   36.092366]  ? htab_lock_bucket+0x4d/0x58
+>>> [   36.092371]  _raw_spin_lock_irqsave+0x43/0x7f
+>>> [   36.092374]  ? htab_lock_bucket+0x4d/0x58
+>>> [   36.092377]  htab_lock_bucket+0x4d/0x58
+>>> [   36.092379]  htab_map_update_elem+0x11e/0x220
+>>> [   36.092386]  bpf_prog_f3a535ca81a8128a_bpf_prog2+0x3e/0x42
+>>> [   36.092392]  trace_call_bpf+0x177/0x215
+>>> [   36.092398]  perf_trace_run_bpf_submit+0x52/0xaa
+>>> [   36.092403]  ? x86_pmu_stop+0x97/0x97
+>>> [   36.092407]  perf_trace_nmi_handler+0xb7/0xe0
+>>> [   36.092415]  nmi_handle+0x116/0x254
+>>> [   36.092418]  ? x86_pmu_stop+0x97/0x97
+>>> [   36.092423]  default_do_nmi+0x3d/0xf6
+>>> [   36.092428]  exc_nmi+0xa1/0x109
+>>> [   36.092432]  end_repeat_nmi+0x16/0x67
+>>> [   36.092436] RIP: 0010:wrmsrl+0xd/0x1b
+>> So the lock is really taken in a NMI context. In general, we advise again
+>> using lock in a NMI context unless it is a lock that is used only in that
+>> context. Otherwise, deadlock is certainly a possibility as there is no way
+>> to mask off again NMI.
+>>
+> I think here they use a percpu counter as an "outer lock" to make the
+> accesses to the real lock exclusive:
+>
+> 	preempt_disable();
+> 	a = __this_cpu_inc(->map_locked);
+> 	if (a != 1) {
+> 		__this_cpu_dec(->map_locked);
+> 		preempt_enable();
+> 		return -EBUSY;
+> 	}
+> 	preempt_enable();
+> 		return -EBUSY;
+> 	
+> 	raw_spin_lock_irqsave(->raw_lock);
+>
+> and lockdep is not aware that ->map_locked acts as a lock.
+>
+> However, I feel this may be just a reinvented try_lock pattern, Hou Tao,
+> could you see if this can be refactored with a try_lock? Otherwise, you
+> may need to introduce a virtual lockclass for ->map_locked.
+As said by Hao Luo, the problem of using trylock in nmi context is that it can
+not distinguish between dead-lock and lock with high-contention. And map_locked
+is still needed even trylock is used in NMI because htab_map_update_elem() may
+be reentered in a normal context through attaching a bpf program to one function
+called after taken the lock. So introducing a virtual lockclass for ->map_locked
+is a better idea.
 
-> Is this due to remapping some binary onto huge pages?
+Thanks,
+Tao
+> Regards,
+> Boqun
+>
+>> Cheers,
+>> Longman
+>>
+> .
 
-I think so, but I'm not sure.
-
-> But regardless, your custom BPF applications can fetch this build_id
-> from vm_area_struct->anon_name in pure BPF code, can't it? Why do you
-> need to modify in-kernel build_id_parse implementation?
-
-The user is using bpf_get_stack() to collect stack traces. They don't
-implement walking the stack and fetching build_id from vma in their
-BPF code.
