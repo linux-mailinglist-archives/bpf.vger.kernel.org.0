@@ -2,121 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 256BB63EA07
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 07:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD8863EA1C
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 08:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbiLAG5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 01:57:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
+        id S229604AbiLAHGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 02:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiLAG5a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 01:57:30 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20E977401;
-        Wed, 30 Nov 2022 22:57:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5360DB81DA5;
-        Thu,  1 Dec 2022 06:57:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC70AC433D6;
-        Thu,  1 Dec 2022 06:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669877847;
-        bh=BaMgJwUiCoBEvSeqAqOxE4cJJS5gWcuzwMHMoycHemA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HrvNrrwsCHIR+VOhcph/ADMxgw6TU79tSXgLD74kurH6jlxVx9XTYE9kWzZzxvyCZ
-         htajgwAl5PROnnZCCK2IqOJJmdsaayfbhRGszVeM6Qa5cGkVgx0lYZYSyq6Q1CkUy1
-         mFVUjUkgrixuPhl+6ib2u3DKY8vX9ZDy8+ZFnqcZ5AJhAhSnojcPZEIw4MFiUtMc9O
-         yuCK5wb0+/itgtxcNLTXbmgDozPRRHZCVCsr2NA0jpOIznu3GTwelwYPXrFi6QTkRI
-         2Kqf3Y3MRx7jQCwX/94ID8USoPCUEZaalc5fmjHoM9fE7HBp5DS7+x27lMLkpUrV+q
-         wF9lH8sFyP52g==
-Date:   Wed, 30 Nov 2022 23:57:24 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, bpf <bpf@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH 6.0 000/289] 6.0.11-rc1 review
-Message-ID: <Y4hQVCBYfwU0abvO@dev-arch.thelio-3990X>
-References: <20221130180544.105550592@linuxfoundation.org>
- <CA+G9fYuJVxhKbeN9OGCr2_zyfa1k3j4DS1gAoTW0P89Eyz2FHg@mail.gmail.com>
+        with ESMTP id S229548AbiLAHGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 02:06:02 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08958DFD4
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 23:05:59 -0800 (PST)
+Message-ID: <d46efd51-e6f5-dbb5-ab38-238b6d2ea314@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1669878358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KSbVxa9fS5aBURbJbuUoITW8arY0T1CIEbrktS2+BU=;
+        b=IYonLZMcpgfUb0ZjPBMbAs77UILRWJnH38aSqCMXXmhpMoHc7voL5ttVxBWyJMZn3CfSBr
+        rwH0P5JvzhgraNmcwFRAfQH/iVA1Ku6vqLOK7IP5GpJZ2+yimwHPLZk2EeOMia53uACqmf
+        3wNjKZpBGw8Mur5AxxAIKHogjjAwXxI=
+Date:   Wed, 30 Nov 2022 23:05:53 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuJVxhKbeN9OGCr2_zyfa1k3j4DS1gAoTW0P89Eyz2FHg@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next] bpf: Handle MEM_RCU type properly
+Content-Language: en-US
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+References: <20221129023713.2216451-1-yhs@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221129023713.2216451-1-yhs@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 01, 2022 at 11:44:53AM +0530, Naresh Kamboju wrote:
-> On Thu, 1 Dec 2022 at 00:13, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 6.0.11 release.
-> > There are 289 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 02 Dec 2022 18:05:05 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.0.11-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.0.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro's test farm.
-> Regressions found on x86_64:
-> 
->     - build-clang-15-allmodconfig-x86_64
->     - build-clang-nightly-allmodconfig-x86_64
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
->     bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
->     [ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
-> 
-> Causing the following build warnings / errors with clang-15 allmodconfig
-> on x86_64,
-> 
-> Build error:
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/build LLVM=1 LLVM_IAS=1
-> ARCH=x86_64 SRCARCH=x86 CROSS_COMPILE=x86_64-linux-gnu-
-> 'HOSTCC=sccache clang' 'CC=sccache clang'
-> kernel/bpf/dispatcher.c:126:33: error: pointer type mismatch ('void *'
-> and 'unsigned int (*)(const void *, const struct bpf_insn *,
-> bpf_func_t)' (aka 'unsigned int (*)(const void *, const struct
-> bpf_insn *, unsigned int (*)(const void *, const struct bpf_insn
-> *))')) [-Werror,-Wpointer-type-mismatch]
->         __BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
->                                    ~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/bpf.h:938:54: note: expanded from macro '__BPF_DISPATCHER_UPDATE'
->         __static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
->                                                             ^~~~
-> 1 error generated.
+On 11/28/22 6:37 PM, Yonghong Song wrote:
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index c05aa6e1f6f5..6f192dd9025e 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -683,7 +683,7 @@ static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
+>   	}
+>   }
+>   
+> -#define BPF_REG_TRUSTED_MODIFIERS (MEM_ALLOC | MEM_RCU | PTR_TRUSTED)
+> +#define BPF_REG_TRUSTED_MODIFIERS (MEM_ALLOC | PTR_TRUSTED)
 
-Thanks for the report! This is fixed with upstream commit a679120edfcf
-("bpf: Add explicit cast to 'void *' for __BPF_DISPATCHER_UPDATE()"),
-which was marked as a fix for c86df29d11df.
+[ ... ]
 
-Cheers,
-Nathan
+> +static bool is_rcu_reg(const struct bpf_reg_state *reg)
+> +{
+> +	return reg->type & MEM_RCU;
+> +}
+> +
+>   static int check_pkt_ptr_alignment(struct bpf_verifier_env *env,
+>   				   const struct bpf_reg_state *reg,
+>   				   int off, int size, bool strict)
+> @@ -4775,12 +4780,10 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>   		/* Mark value register as MEM_RCU only if it is protected by
+>   		 * bpf_rcu_read_lock() and the ptr reg is trusted. MEM_RCU
+>   		 * itself can already indicate trustedness inside the rcu
+> -		 * read lock region. Also mark it as PTR_TRUSTED.
+> +		 * read lock region.
+>   		 */
+>   		if (!env->cur_state->active_rcu_lock || !is_trusted_reg(reg))
+>   			flag &= ~MEM_RCU;
+
+How about dereferencing a PTR_TO_BTF_ID | MEM_RCU, like:
+
+	/* parent: PTR_TO_BTF_ID | MEM_RCU */
+	parent = current->real_parent;
+	/* gparent: PTR_TO_BTF_ID */
+	gparent = parent->real_parent;
+
+Should "gparent" have MEM_RCU also?
+
+Also, should PTR_MAYBE_NULL be added to "parent"?
+	
+> -		else
+> -			flag |= PTR_TRUSTED;
+>   	} else if (reg->type & MEM_RCU) {
+>   		/* ptr (reg) is marked as MEM_RCU, but the struct field is not tagged
+>   		 * with __rcu. Mark the flag as PTR_UNTRUSTED conservatively.
+> @@ -5945,7 +5948,7 @@ static const struct bpf_reg_types btf_ptr_types = {
+>   	.types = {
+>   		PTR_TO_BTF_ID,
+>   		PTR_TO_BTF_ID | PTR_TRUSTED,
+> -		PTR_TO_BTF_ID | MEM_RCU | PTR_TRUSTED,
+> +		PTR_TO_BTF_ID | MEM_RCU,
+>   	},
+>   };
+>   static const struct bpf_reg_types percpu_btf_ptr_types = {
+> @@ -6124,7 +6127,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>   	case PTR_TO_BTF_ID:
+>   	case PTR_TO_BTF_ID | MEM_ALLOC:
+>   	case PTR_TO_BTF_ID | PTR_TRUSTED:
+> -	case PTR_TO_BTF_ID | MEM_RCU | PTR_TRUSTED:
+> +	case PTR_TO_BTF_ID | MEM_RCU:
+>   	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED:
+>   		/* When referenced PTR_TO_BTF_ID is passed to release function,
+>   		 * it's fixed offset must be 0.	In the other cases, fixed offset
+> @@ -8022,6 +8025,11 @@ static bool is_kfunc_destructive(struct bpf_kfunc_call_arg_meta *meta)
+>   	return meta->kfunc_flags & KF_DESTRUCTIVE;
+>   }
+>   
+> +static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
+> +{
+> +	return meta->kfunc_flags & KF_RCU;
+> +}
+> +
+>   static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int arg)
+>   {
+>   	return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
+> @@ -8706,13 +8714,19 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>   		switch (kf_arg_type) {
+>   		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+>   		case KF_ARG_PTR_TO_BTF_ID:
+> -			if (!is_kfunc_trusted_args(meta))
+> +			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
+>   				break;
+>   
+> -			if (!is_trusted_reg(reg)) {
+> -				verbose(env, "R%d must be referenced or trusted\n", regno);
+> +			if (!is_trusted_reg(reg) && !is_rcu_reg(reg)) {
+> +				verbose(env, "R%d must be referenced, trusted or rcu\n", regno);
+>   				return -EINVAL;
+>   			}
+> +
+> +			if (is_kfunc_rcu(meta) != is_rcu_reg(reg)) {
+
+I think is_trusted_reg(reg) should also be acceptable to bpf_task_acquire_rcu().
+
+nit. bpf_task_acquire_not_zero() may be a better kfunc name.
+
+> +				verbose(env, "R%d does not match kf arg rcu tagging\n", regno);
+> +				return -EINVAL;
+> +			}
+> +
+>   			fallthrough;
+>   		case KF_ARG_PTR_TO_CTX:
+>   			/* Trusted arguments have the same offset checks as release arguments */
+> @@ -8823,7 +8837,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>   		case KF_ARG_PTR_TO_BTF_ID:
+>   			/* Only base_type is checked, further checks are done here */
+>   			if ((base_type(reg->type) != PTR_TO_BTF_ID ||
+> -			     bpf_type_has_unsafe_modifiers(reg->type)) &&
+> +			     (bpf_type_has_unsafe_modifiers(reg->type) && !is_rcu_reg(reg))) &&
+>   			    !reg2btf_ids[base_type(reg->type)]) {
+>   				verbose(env, "arg#%d is %s ", i, reg_type_str(env, reg->type));
+>   				verbose(env, "expected %s or socket\n",
+> @@ -8938,7 +8952,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>   		} else if (rcu_unlock) {
+>   			bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
+>   				if (reg->type & MEM_RCU) {
+> -					reg->type &= ~(MEM_RCU | PTR_TRUSTED);
+> +					reg->type &= ~MEM_RCU;
+>   					reg->type |= PTR_UNTRUSTED;
+>   				}
+>   			}));
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> index 973f0c5af965..5fbd9edd2c4c 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> @@ -93,10 +93,10 @@ static struct {
+>   	const char *prog_name;
+>   	const char *expected_err_msg;
+>   } failure_tests[] = {
+> -	{"cgrp_kfunc_acquire_untrusted", "R1 must be referenced or trusted"},
+> +	{"cgrp_kfunc_acquire_untrusted", "R1 must be referenced, trusted or rcu"},
+>   	{"cgrp_kfunc_acquire_fp", "arg#0 pointer type STRUCT cgroup must point"},
+>   	{"cgrp_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0 function"},
+> -	{"cgrp_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted"},
+> +	{"cgrp_kfunc_acquire_trusted_walked", "R1 must be referenced, trusted or rcu"},
+>   	{"cgrp_kfunc_acquire_null", "arg#0 pointer type STRUCT cgroup must point"},
+>   	{"cgrp_kfunc_acquire_unreleased", "Unreleased reference"},
+>   	{"cgrp_kfunc_get_non_kptr_param", "arg#0 expected pointer to map value"},
+> diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> index ffd8ef4303c8..80708c073de6 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> @@ -87,10 +87,10 @@ static struct {
+>   	const char *prog_name;
+>   	const char *expected_err_msg;
+>   } failure_tests[] = {
+> -	{"task_kfunc_acquire_untrusted", "R1 must be referenced or trusted"},
+> +	{"task_kfunc_acquire_untrusted", "R1 must be referenced, trusted or rcu"},
+>   	{"task_kfunc_acquire_fp", "arg#0 pointer type STRUCT task_struct must point"},
+>   	{"task_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0 function"},
+> -	{"task_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted"},
+> +	{"task_kfunc_acquire_trusted_walked", "R1 must be referenced, trusted or rcu"},
+
+hmm... why this description is changed here?  The bpf_task_acquire kfunc-flags 
+has not changed.
+
