@@ -2,64 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D2D63E677
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B73563E68A
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiLAA1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 19:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S229727AbiLAAdC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 19:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbiLAA1O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 19:27:14 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F3E5803E
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:27:13 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id o13so554649ejm.1
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:27:12 -0800 (PST)
+        with ESMTP id S229595AbiLAAc7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 19:32:59 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F97C45EC9
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:32:56 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id m204so422046oib.6
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:32:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=f9L2/o4DjNvsKtf4vJyCxsV908nQ9XgkKjPkf2rPK7g=;
-        b=fjoL8uNkizLG4UtR5nwUFrXvqJ06CZswl34ol87rFPVFJB9YF9UEtCBkBww+RBeKo1
-         Fdu65xZCSlXqMRA7vvTtdrQ9Cw6RwlVY4QZhsON7QK8CIFjLitWsbcFdBt2Twy3foNg4
-         DXVmjgQpRyFvZAxLRf8zE+dqLdJvDJQ5Mq0mR9y5bX6TX5SKcpCglDD1pORZacXoXQTu
-         ekne6fkmXUzeZIUAkcAuCrr1uOL3vqy4kJ5jmHfNAdwZJ9VUo2IRNOf9bOaSy+4XQWlU
-         rWTZYVqUmaH9k2JuuWVEDLCx51JlViMUCxhXYOuhVNWWNOb7vh/vIvvKMdHqk3q2zjyP
-         2aEQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qf/BMEs9bgR379g3kVf+2jSNyHJ0315hhT9d1N7WzYU=;
+        b=BL2TqVq0b1vLdrW8in8KaMpSdTqJPAQOimTS6oBexCA09t525q1m/RRfBvVwC0MRAO
+         cpwlKoLiQpj9gvdq1W2COPSn/b220e4mB025docvuJdQJxqNlURnJqm0uaGh4l1tE4MV
+         bs2jyH0KZiCP4r/ImYlnvT7LqM3Gv5/BL8mNESjT1w1cLpSK3S0KrupvD5H8dIiW9/92
+         9bI8FVcY6Z3bbMAlXfPdhgNJVJ1Qlco1yxEG7XMH7jIphSiWgXT8a1Y2lUfiY01aCMbn
+         d41Xpay/JBoGUZB3ggjQJSFktgkFiSBMX/0pX4Kndg0i3+7e1GqcuUr/HRciEZQCuvir
+         qvDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f9L2/o4DjNvsKtf4vJyCxsV908nQ9XgkKjPkf2rPK7g=;
-        b=UqA6WUtx95fSXpf6DC4/cyTJal/kt0M9AV7H7fpfzGvMrViCukUZWBoA0/Q+1i3jJi
-         RreNC7Kidd32FnQ8/pdHKoaNWJaH16HjgV7F/ZX5I0Lnu+T6qHjnCFGqARhfaJADzSj9
-         7G8Ou2pQKQ2mSzorAKwXLPyhKRQd+HO5c2wmE7hb0kpkjjS6TqEarsb6k4br8XTrEKGt
-         K6Y5Lk4J62RM9+BsSIzt3UlwGIZrvxYPEbnKxO8zuHP6kWQJdZpnwRDZaIMt92NwzHta
-         /qPYU6uZAFQcSGxpJqOXF3zJLRE3wjjVnVhYHRlWYi5aMdcb/QBzRd3B6ewWTUL7f5U6
-         cajw==
-X-Gm-Message-State: ANoB5pk0zjXaoGt7TFigh++jNiaEuPBjwAlQfI4eQe/FlIMVHWDhFgin
-        T7YOhQcif86SYseLURmwhMuHA4DuG0/VMNYxQOg=
-X-Google-Smtp-Source: AA0mqf623ezpfhxD1LtSQUEQ+7xuUol9cxNZ+mDrpnZ8BUGG4uDDKZ/KDobNLkWtATi0jmQ+gFT65eaydBoyrpPM6Uo=
-X-Received: by 2002:a17:906:30c1:b0:7b7:eaa9:c1cb with SMTP id
- b1-20020a17090630c100b007b7eaa9c1cbmr39524381ejb.745.1669854431414; Wed, 30
- Nov 2022 16:27:11 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qf/BMEs9bgR379g3kVf+2jSNyHJ0315hhT9d1N7WzYU=;
+        b=McoBjySM5FyGsUl03mdkfMj2dgZPmS/TVxzFcDvkTq/DvbsSfGfzWRDob2qbqLn5Vb
+         UdocMa+WvHR8NzY0OoRtPMCtCMLHdyTgp1yFVbmQN2t3T6V8YyPHidbnMxh3/pX7bgjs
+         rlcE/6pkr44uAMA14YtYX8+D+i6kKkExXRQhGfB3b6Efu/Twptng3+TGJ5Ib7/pvonM4
+         wxtA67C646y/qtg+ufj9dqr7qaAj5K8RN3J6CqEt2S4EZBEviMyYaWu7guiWxY0qy63h
+         jqRQWgc0STelt3+d/mIisdtW3uOJXLPhX9bM4anTkGefMRq7/NcQZQuYshJS/H/Y6ZUL
+         0OUw==
+X-Gm-Message-State: ANoB5pm6jzB8NXwIvzqfj0CVFN4tKU24JxjYmsgfvVDFP71IKr8E58C9
+        M9Gj8s3nRY5jwTCjZOkUZoGfYucrD0U4hF3EeiR5aA==
+X-Google-Smtp-Source: AA0mqf4HQxLdf1XvZmFeToHXrxubXKog8HmFrkwcba231TZQR8oI84iISFXiQSdzK1q8YzFrEINs6w3bC9i71atZCiM=
+X-Received: by 2002:a05:6808:a90:b0:35b:aa33:425a with SMTP id
+ q16-20020a0568080a9000b0035baa33425amr9696615oij.181.1669854775273; Wed, 30
+ Nov 2022 16:32:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20221128163442.280187-1-eddyz87@gmail.com> <20221128163442.280187-2-eddyz87@gmail.com>
-In-Reply-To: <20221128163442.280187-2-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Nov 2022 16:26:59 -0800
-Message-ID: <CAEf4BzZBYQ2EXH4Rj8kmTFb08SkRpnpesjpj6X-AKAtsJnuV6g@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/2] bpf: verify scalar ids mapping in regsafe()
- using check_ids()
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+References: <20221129193452.3448944-1-sdf@google.com> <8735a1zdrt.fsf@toke.dk>
+ <CAKH8qBsTNEZcyLq8EsZhsBHsLNe7831r23YdwZfDsbXo06FTBg@mail.gmail.com> <87o7soxd1v.fsf@toke.dk>
+In-Reply-To: <87o7soxd1v.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 30 Nov 2022 16:32:44 -0800
+Message-ID: <CAKH8qBsJSJoVJGg3j_JxeM_10BRyYTt6kQvbSMWT016jyUOu6w@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 00/11] xdp: hints via kfuncs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,210 +81,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 8:35 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Wed, Nov 30, 2022 at 3:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> Prior to this commit the following unsafe example passed verification:
+> Stanislav Fomichev <sdf@google.com> writes:
 >
-> 1: r9 = ... some pointer with range X ...
-> 2: r6 = ... unbound scalar ID=a ...
-> 3: r7 = ... unbound scalar ID=b ...
-> 4: if (r6 > r7) goto +1
-> 5: r6 = r7
-> 6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created here
-> 7: r9 += r7
-> 8: *(u64 *)r9 = Y
+> > On Tue, Nov 29, 2022 at 12:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >>
+> >> Stanislav Fomichev <sdf@google.com> writes:
+> >>
+> >> > Please see the first patch in the series for the overall
+> >> > design and use-cases.
+> >> >
+> >> > Changes since v2:
+> >> >
+> >> > - Rework bpf_prog_aux->xdp_netdev refcnt (Martin)
+> >> >
+> >> >   Switched to dropping the count early, after loading / verification=
+ is
+> >> >   done. At attach time, the pointer value is used only for comparing
+> >> >   the actual netdev at attach vs netdev at load.
+> >>
+> >> So if we're not holding the netdev reference, we'll end up with a BPF
+> >> program with hard-coded CALL instructions calling into a module that
+> >> could potentially be unloaded while that BPF program is still alive,
+> >> right?
+> >>
+> >> I suppose that since we're checking that the attach iface is the same
+> >> that the program should not be able to run after the module is unloade=
+d,
+> >> but it still seems a bit iffy. And we should definitely block
+> >> BPF_PROG_RUN invocations of programs with a netdev set (but we should =
+do
+> >> that anyway).
+> >
+> > Ugh, good point about BPF_PROG_RUN, seems like it should be blocked
+> > regardless of the locking scheme though, right?
+> > Since our mlx4/mlx5 changes expect something after the xdp_buff, we
+> > can't use those per-netdev programs with our generic
+> > bpf_prog_test_run_xdp...
 >
-> This example is unsafe because not all execution paths verify r7 range.
-> Because of the jump at (4) the verifier would arrive at (6) in two states:
-> I.  r6{.id=b}, r7{.id=b} via path 1-6;
-> II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
+> Yup, I think we should just block it for now; maybe it can be enabled
+> later if it turns out to be useful (and we find a way to resolve the
+> kfuncs for this case).
 >
-> Currently regsafe() does not call check_ids() for scalar registers,
-> thus from POV of regsafe() states (I) and (II) are identical. If the
-> path 1-6 is taken by verifier first and checkpoint is created at (6)
-> the path 1-4, 6 would be considered safe.
+> Also, speaking of things we need to disable, tail calls is another one.
+> And for freplace program attachment we need to add a check that the
+> target interfaces match as well.
+
+Agreed, thanks!
+
+> >> >   (potentially can be a problem if the same slub slot is reused
+> >> >   for another netdev later on?)
+> >>
+> >> Yeah, this would be bad as well, obviously. I guess this could happen?
+> >
+> > Not sure, that's why I'm raising it here to see what others think :-)
+> > Seems like this has to be actively exploited to happen? (and it's a
+> > privileged operation)
+> >
+> > Alternatively, we can go back to the original version where the prog
+> > holds the device.
+> > Matin mentioned in the previous version that if we were to hold a
+> > netdev refcnt, we'd have to drop it also from unregister_netdevice.
 >
-> This commit makes the following changes:
-> - a call to check_ids() is added in regsafe() for scalar registers case;
-> - a function mark_equal_scalars_as_read() is added to ensure that
->   registers with identical IDs are preserved in the checkpoint states
->   in case when find_equal_scalars() updates register range for several
->   registers sharing the same ID.
+> Yeah; I guess we could keep a list of "bound" XDP programs in struct
+> net_device and clear each one on unregister? Also, bear in mind that the
+> "unregister" callback is also called when a netdev moves between
+> namespaces; which is probably not what we want in this case?
 >
-
-Fixes tag missing?
-
-These are tricky changes with subtle details. Let's split check_ids()
-change and all the liveness manipulations into separate patches? They
-are conceptually completely independent, right?
-
-
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 87 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 85 insertions(+), 2 deletions(-)
+> > It feels like beyond that extra dev_put, we'd need to reset our
+> > aux->xdp_netdev and/or add some flag or something else to indicate
+> > that this bpf program is "orphaned" and can't be attached anywhere
+> > anymore (since the device is gone; netdev_run_todo should free the
+> > netdev it seems).
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 6599d25dae38..8a5b7192514a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10638,10 +10638,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
->                                 /* case: R1 = R2
->                                  * copy register state to dest reg
->                                  */
-> -                               if (src_reg->type == SCALAR_VALUE && !src_reg->id)
-> +                               if (src_reg->type == SCALAR_VALUE && !src_reg->id &&
-> +                                   !tnum_is_const(src_reg->var_off))
->                                         /* Assign src and dst registers the same ID
->                                          * that will be used by find_equal_scalars()
->                                          * to propagate min/max range.
-> +                                        * Skip constants to avoid allocation of useless ID.
->                                          */
->                                         src_reg->id = ++env->id_gen;
->                                 *dst_reg = *src_reg;
-> @@ -11446,16 +11448,86 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
->         return true;
->  }
+> You could add a flag, and change the check to:
 >
-> +/* Scalar ID generation in check_alu_op() and logic of
-> + * find_equal_scalars() make the following pattern possible:
-> + *
-> + * 1: r9 = ... some pointer with range X ...
-> + * 2: r6 = ... unbound scalar ID=a ...
-> + * 3: r7 = ... unbound scalar ID=b ...
-> + * 4: if (r6 > r7) goto +1
-> + * 5: r6 = r7
-> + * 6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created here
-> + * 7: r9 += r7
-> + * 8: *(u64 *)r9 = Y
-> + *
-> + * Because of the jump at (4) the verifier would arrive at (6) in two states:
-> + * I.  r6{.id=b}, r7{.id=b}
-> + * II. r6{.id=a}, r7{.id=b}
-> + *
-> + * Relevant facts:
-> + * - regsafe() matches ID mappings for scalars using check_ids(), this makes
-> + *   states (I) and (II) non-equal;
-> + * - clean_func_state() removes registers not marked as REG_LIVE_READ from
-> + *   checkpoint states;
-> + * - mark_reg_read() modifies reg->live for reg->parent (and it's parents);
-> + * - when r6 = r7 is process the bpf_reg_state is copied in full, meaning
-> + *   that parent pointers are copied as well.
-
-not too familiar with liveness handling, but is this correct and
-expected? Should this be fixed instead of REG_LIVE_READ manipulations?
-
-> + *
-> + * Thus, for execution path 1-6:
-> + * - both r6->parent and r7->parent point to the same register in the parent state (r7);
-> + * - only *one* register in the checkpoint state would receive REG_LIVE_READ mark;
-
-I'm trying to understand this. Clearly both r6 and r7 are read. r6 for
-if (r6 > X) check, r7 for r9 manipulations. Why do we end up not
-marking one of them as read using a normal logic?
-
-I have this bad feeling I'm missing something very important here or
-we have some bug somewhere else. So please help me understand which
-one it is. This special liveness manipulation seems wrong.
-
-My concern is that if I have some code like
-
-r6 = r7;
-r9 += r6;
-
-and I never use r7 anymore after that, then we should be able to
-forget r7 and treat it as NOT_INIT. But you are saying it's unsafe
-right now and that doesn't make much sense to me.
-
-
-> + * - clean_func_state() would remove r6 from checkpoint state (mark it NOT_INIT).
-> + *
-> + * Consequently, when execution path 1-4, 6 reaches (6) in state (II)
-> + * regsafe() won't be able to see a mismatch in ID mappings.
-> + *
-> + * To avoid this issue mark_equal_scalars_as_read() conservatively
-> + * marks all registers with matching ID as REG_LIVE_READ, thus
-> + * preserving r6 and r7 in the checkpoint state for the example above.
-> + */
-> +static void mark_equal_scalars_as_read(struct bpf_verifier_state *vstate, int id)
-> +{
-> +       struct bpf_verifier_state *st;
-> +       struct bpf_func_state *state;
-> +       struct bpf_reg_state *reg;
-> +       bool move_up;
-> +       int i = 0;
-> +
-> +       for (st = vstate, move_up = true; st && move_up; st = st->parent) {
-> +               move_up = false;
-> +               bpf_for_each_reg_in_vstate(st, state, reg, ({
-> +                       if (reg->type == SCALAR_VALUE && reg->id == id &&
-> +                           !(reg->live & REG_LIVE_READ)) {
-> +                               reg->live |= REG_LIVE_READ;
-> +                               move_up = true;
-> +                       }
-> +                       ++i;
-> +               }));
-> +       }
-> +}
-> +
->  static void find_equal_scalars(struct bpf_verifier_state *vstate,
->                                struct bpf_reg_state *known_reg)
->  {
->         struct bpf_func_state *state;
->         struct bpf_reg_state *reg;
-> +       int count = 0;
->
->         bpf_for_each_reg_in_vstate(vstate, state, reg, ({
-> -               if (reg->type == SCALAR_VALUE && reg->id == known_reg->id)
-> +               if (reg->type == SCALAR_VALUE && reg->id == known_reg->id) {
->                         *reg = *known_reg;
-> +                       ++count;
+> +               if (new_prog->aux->xdp_has_netdev &&
+> +                   new_prog->aux->xdp_netdev !=3D dev) {
+> +                       NL_SET_ERR_MSG(extack, "Cannot attach to a differ=
+ent target device");
+> +                       return -EINVAL;
 > +               }
->         }));
-> +
-> +       /* Count equal to 1 means that find_equal_scalars have not
-> +        * found any registers with the same ID (except self), thus
-> +        * the range knowledge have not been transferred and there is
-> +        * no need to preserve registers with the same ID in a parent
-> +        * state.
-> +        */
-> +       if (count > 1)
-> +               mark_equal_scalars_as_read(vstate->parent, known_reg->id);
->  }
 >
->  static int check_cond_jmp_op(struct bpf_verifier_env *env,
-> @@ -12878,6 +12950,12 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
->                  */
->                 return equal && rold->frameno == rcur->frameno;
->
-> +       /* even if two registers are identical the id mapping might diverge
-> +        * e.g. rold{.id=1}, rcur{.id=1}, idmap{1->2}
-> +        */
-> +       if (equal && rold->type == SCALAR_VALUE && rold->id)
-> +               return check_ids(rold->id, rcur->id, idmap);
+> That way the check will always fail if xdp_netdev is reset to NULL
+> (while keeping the flag) on dereg?
 
-nit: let's teach check_ids() to handle the id == 0 case properly
-instead of guarding everything with `if (rold->id)`?
+Something like that, yeah. I'll also take a closer look at offload.c
+as Martin points out. I should probably leverage it instead of trying
+to add more custom handling here..
 
-but also I think this applies not just to SCALARs, right? the memcmp()
-check above has to be augmented with check_ids() for id and ref_obj_id
+> > That should address this potential issue with reusing the same addr
+> > for another netdev, but is a bit more complicated code-wise.
+> > Thoughts?
+>
+> I'd be in favour of adding this tracking; I worry that we'll end up with
+> some very subtle and hard-to-debug bugs if we somehow do end up
+> executing the wrong kfuncs...
 
-> +
->         if (equal)
->                 return true;
->
-> @@ -12891,6 +12969,11 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
->                 if (env->explore_alu_limits)
->                         return false;
->                 if (rcur->type == SCALAR_VALUE) {
-> +                       /* id relations must be preserved, see comment in
-> +                        * mark_equal_scalars_as_read() for SCALAR_VALUE example.
-> +                        */
-> +                       if (rold->id && !check_ids(rold->id, rcur->id, idmap))
-> +                               return false;
->                         if (!rold->precise)
->                                 return true;
->                         /* new val must satisfy old val knowledge */
-> --
-> 2.34.1
->
+SG, will try to address soon!
