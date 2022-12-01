@@ -2,395 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4339663E6F8
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8983463E6FA
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiLABOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 20:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S229595AbiLABQn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 20:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbiLABOP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 20:14:15 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBEA97039
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:14:14 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id n20so795587ejh.0
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j+bq1BjmJM7IeUtHEwWA1vgtVxS30D5p9FrGwDGzzJ4=;
-        b=CQlJoGY9fNw9YwWJqh3KhZcO+NJ4uaL5cl5ABxfHEg0H/ihkEEMzQdfPAgeGV8ALpx
-         nH23H9bF7aBX3IWhZGtRhwT/rse8iQ7DDNDkO/0WGR/S5qnKZz0PDhXnsM4A57aNuUo1
-         L4YHYrfqkOWQw+mKgcP+dsCBFdqM9StyZs6uNnhGccKvg9ajuVfKZ+msYFpvHcDfXERp
-         yTN4lqE9sHNyMEJ2hMgvA1dRnHlnLwlxAsQEOWSltxYnY3yBy4niKfSKrtsm141/9u+4
-         kp1wp1O/I6GbHuJgoLlnilaOxwxzeASW92UM2h+nYxI8Zl1Cg0TdFMQKGyVMeSuUa56F
-         QXzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j+bq1BjmJM7IeUtHEwWA1vgtVxS30D5p9FrGwDGzzJ4=;
-        b=fOsUjAP1Uc2iWyCcswpWOK8i1eMBFUnjzIglAOrp5l7TdazSG1DGV+ZV+jOe2HGBFS
-         aPpMWqTlc8IPJEU48T396j2CR5OcACvrf5RZvUFhJVhtGJKY6eSsGnZmCo3K8f38aR6H
-         4DHSpK0ZkT4Lgte+pFM0cDAPGPs+5TNQrcycj4VIKwlytBRey2zJiT5FcTIMaQl1IEyb
-         llP4ZnwOtypfCdLGxW+aMfpP4JLqjHEn6+tm347ug3bdA12uU7CoQGt+9uKPg/l8wgTA
-         oRUlmDtFAVNUCad+twvX165V9qMo5YRIsztBLMsrje6UdFV3LXZFw0IZ+guoiQX8k9di
-         e/1w==
-X-Gm-Message-State: ANoB5pkjgRh2zX07dzSfpvfC+G+YXzSvJ3qldLOYPH3nrWpdOfq+BUzP
-        C7lX37OxEhMzDSBJAHfm0Ro=
-X-Google-Smtp-Source: AA0mqf5ZMqTjJfj9gzfnBbN44k+Vnzb3yViyEcgOeO8ovw7TL8T7Q04PGMoRDRsu/tcG74aQkK8wJQ==
-X-Received: by 2002:a17:907:d412:b0:7bc:68cc:7913 with SMTP id vi18-20020a170907d41200b007bc68cc7913mr25721458ejc.589.1669857252518;
-        Wed, 30 Nov 2022 17:14:12 -0800 (PST)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id 7-20020a170906318700b007c0aefd9339sm164122ejy.175.2022.11.30.17.14.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 17:14:12 -0800 (PST)
-Message-ID: <859d531ef1e2b4dab103d316e6f109958f3f1bad.camel@gmail.com>
-Subject: Re: [RFC bpf-next 1/2] bpf: verify scalar ids mapping in regsafe()
- using check_ids()
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
-Date:   Thu, 01 Dec 2022 03:14:11 +0200
-In-Reply-To: <CAEf4BzZBYQ2EXH4Rj8kmTFb08SkRpnpesjpj6X-AKAtsJnuV6g@mail.gmail.com>
-References: <20221128163442.280187-1-eddyz87@gmail.com>
-         <20221128163442.280187-2-eddyz87@gmail.com>
-         <CAEf4BzZBYQ2EXH4Rj8kmTFb08SkRpnpesjpj6X-AKAtsJnuV6g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S229591AbiLABQl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 20:16:41 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CB3975F6;
+        Wed, 30 Nov 2022 17:16:36 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AUJW1hE008932;
+        Wed, 30 Nov 2022 17:16:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=Ib0S2vpiIoAOO5E3YN/Vuoh6pp3hSVd2NTahFO+l7A4=;
+ b=ZbowZ4LkZGq4z534JpN7Is67+ydfyJTb4YPX2pvaLB6ANHhZy4STqhNenTd2skdU3xB0
+ XuYr6ss6kXFmsELd3jmQw1gtE40LGkrSyFCwhQMTmRYbv3MXlQ5z2EHkkTxI5mUHDOnI
+ C2LUZ2KVCHcUnfJ2Izo8tNnLnNSzsAuenhoqbohPK9mw5hfa2X1YgowiNFm03T4OVfOM
+ fxcSqzDnz7F/RpgqKUC+VLFcapOCekXc602L9bTIZsiY7CKMRQG2y5gDrxAQG3thu6eL
+ 7yuFdIKST/vj1WKQRGn+LBhd0n39XTzNzouatd0eVBRd2P+1G6qF992YjU01h7/0nnmM rw== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m5w6akgg4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Nov 2022 17:16:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GrTksy9ufskcVxrw/e2JHINs6Jyu2r2WESeaBXXGuvZhrduiGnApQ/w+28P7acJkPB3iUK61OSR8TT43FzbBYmtfpPNBjrwSXN24A08Ukr2OyXXwH6iQ9Le2ORuqOWfqGgAvesSEkEeQYTmxquQPivkAUHHX6SYFexDbs1CF/79IXt8ML+29liar2+RaRRdEzdftst2wxm4ALtj4tq0ZOB0g65Y3Ht0XhXOiW/pOgZc66t1xl/ju4JxiR69JWB3aQdtl2Nz6JB84F5tMcHUj4A8SCV4S4MyUn85Rbtu2076AasAGCnM6kZWKJQnXG59fnSLzsJag82X4VNhQIZ03Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ib0S2vpiIoAOO5E3YN/Vuoh6pp3hSVd2NTahFO+l7A4=;
+ b=LKLWBOfeMP2bclq6DIzgZ1FJzGTemfGo++xCtQ2oBj2Er4HQuwt7DClOzWJMHijdErIu1SDcISSn45mOfK4Y8icpbr7GzMS5zDI6m2LdcVNq5IcpLX5eF965+0kfkwGMcsT4ee6fvJuiVKzlI719loQhEPoHCGF4ZJExIO1NruyQJwOiJzfGGKtoEkGy+hLEQVv+47qnj8igh4t32wvkeEAyJVSE0zzFkQ9OgEyieirAFmD3+qxatQrMytUhvuVlbhxwpVV5WDQRHDOIZFxNUyLh2xql4ArsbuMDl2j63Q9n249xuf/9Tx0jn+JfzNk5FMrdZA8R9KMs/ax23b1cow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BL0PR1501MB2178.namprd15.prod.outlook.com (2603:10b6:207:35::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Thu, 1 Dec
+ 2022 01:16:09 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d665:7e05:61d1:aebf]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d665:7e05:61d1:aebf%7]) with mapi id 15.20.5857.023; Thu, 1 Dec 2022
+ 01:16:09 +0000
+Message-ID: <b075ae0a-2829-310d-ec34-f5706520c435@meta.com>
+Date:   Wed, 30 Nov 2022 17:16:06 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.0
+Subject: Re: [PATCH bpf 1/2] bpf: Add dummy type reference to nf_conn___init
+ to fix type deduplication
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20221130144240.603803-1-toke@redhat.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221130144240.603803-1-toke@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BY5PR20CA0023.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::36) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BL0PR1501MB2178:EE_
+X-MS-Office365-Filtering-Correlation-Id: f32b1409-418d-46d1-13f1-08dad339a0eb
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mc0JZPUxSQ4zXhm441tmMYSVCbdlblSR6Jj6w01MoPQKsSJtdQZ8qNgin+elr7SPJ2gMlJB/jMSUQ8HhnE/Scw8BGrESJcxLrNL6BUasGQ0Za8baIwSL4LSYDHFLi4lriaqG+Eg4yOROrbLQzXrbH+Ooz8b2jzAnXWXCUrIxdprme/ZoRZjC/Ip7stRyVSh7x5NTH4BMNqgRUkFzw7V66u6OvYHotEj2wFA1LAJfEIcVn4lLHkVF0tf2+J4gaKZdvquWlfho+Ym9I4dInPP54AJIPpH0bDRdcLO/E6Eeoa3JdLayCJM3VMos/EVRNEI1jpTHoIBc/no6nROpW/XCiJbQtkO14nUNRYZXSLZuu5oOficnAvzKdQCUEwmykf4fOY+E57GBMxoz8tbatslcuRl85rH67uP15EuokPH/rMBbBQnAkOWBu4zYcn/a9OgEerkAD9PEglsXTQCuVxTR0HHTpwNOmdqemD23z3Js0XggaikgMNLhEx6ADY1cHNUJ3hjdGHB2lNXt1N5OieDplAe77lE7W3RH2j0VN2NnBaFEepZcNRhN9NwucahKqZCMgdf2BVkZTWl3vOZRuJijEoPlS00Ab5bbwfKF2h8Qht16NACjVGeqv6uOjhOtYo8gKuxYCizO5gl6D63nP5gENYbce0uqwrPheNjDv98FcbAc69VMQwVE9HlPdY/HcLMhBieS1+PDM9N9901+OEcZU0+kjzlX6miKNxKv8O/zwYJXMO2Mp+bPWVOmracTUfa2x4v/EANIlYQVOPZNlUwfIi3M/VlrCfhZHhKH8o5V+Ew=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(451199015)(2906002)(31686004)(2616005)(41300700001)(66946007)(186003)(36756003)(921005)(86362001)(31696002)(38100700002)(6512007)(110136005)(54906003)(8936002)(5660300002)(7416002)(478600001)(4326008)(8676002)(66556008)(66476007)(53546011)(6486002)(966005)(316002)(6506007)(6666004)(101420200003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akJMTzJ0TThsb0dhbjRpaFp4SThtUVdtRlphSEp5ZDNwZ3kzY0pNaXFJbnBR?=
+ =?utf-8?B?SXM0ZDJ2SFNwenp3cDFuOHB6TU56elg5UFE1L0VTMnA5ZjRCc2xRMXFCUmRv?=
+ =?utf-8?B?SDY2SmZlU1kwbkwwT0pYZTU1cW8vaExVbnhsa1Y2dE9jcjhXWUhsV3VFNzBQ?=
+ =?utf-8?B?QjZjdmlaTUhkL25zanRvejBHNWxpVEJQdGlvRk55dnlKZXZJaEFwRVRIT0Jn?=
+ =?utf-8?B?V0RsY0lQeWM0VEszeXRmNDVKMS9HYmVqcGlXQ1grVXZxcXcyWnBid1RRMWFo?=
+ =?utf-8?B?RGZ6UndObXl5QUtEaWpTdjlLc2VBN2d2SG1pZEhBeGNJSE1VRzl2ODZaalll?=
+ =?utf-8?B?Mll6RWo1YkZFcTMrQ3M1RHA2SVlqZHVzVi8vTU5nUE9NcWozMjJYNEZiRmJ3?=
+ =?utf-8?B?UUw4cEJTclFFdUkwOUFZbzZlRXpPVmN2WWdRbk1hQUUzcTl1aXBOR25lZktm?=
+ =?utf-8?B?ZHYxV3o2cW1zRk1PQVFBWDJ4cTQxclNDOHlLNTZrWEtQWXkxOGkvaStoUjBo?=
+ =?utf-8?B?b3dOeE10YVVwM3hjNGRxWXdYZExjQ2xDMStidVBYYmVHMGdSeDRrSCtYc1Jr?=
+ =?utf-8?B?S2VDV3VUMS8zbzZPdXJoMStpeDNQKzl1eFh3VUpKenNzaEk0U0V5TkxxZXVp?=
+ =?utf-8?B?UzMzS21HNlJrdmpFTTdhSlJGR3BVK1owRWc2TmQ1MFZpZ1pOeTdRVTRXWThF?=
+ =?utf-8?B?ZTdZRkxRN005a1JwcHlyUElzNDQrenV2cEVGRm1Va0ttYlhTbm5oaGh6aERL?=
+ =?utf-8?B?VFdmZXBYRnBtcjNBQlZLNTNLZkxLZ1JHeHBRTFhSV0tvUTBvRHo5aGlIbVpX?=
+ =?utf-8?B?V0prMUs0TVJkd3dLNUx3clhNMHpVblR0bDROWjlKdmllT1BXRlBra0xjQThm?=
+ =?utf-8?B?REJxL3cvK0JodGtoOGVram13Nm1QTHJDWm40dno4aExPY1g0UjVDbFRYYmt4?=
+ =?utf-8?B?K1hDMDc2K3hCMGVSUkVFdnplVCtKeHltajRjOXV0RmFNMnFJUEJoaGR0TmdQ?=
+ =?utf-8?B?aWxFcmdCaFliazdKR2JmaWJ1Y1RSRjBZWDNPaytYc09Vdm9OSVJoZGduUi9z?=
+ =?utf-8?B?Z3FmVFQ1NkMzVjIwS0RQc1crbjlaYVc2YTA2clVyY29oK2UwT3hlai9KM3BH?=
+ =?utf-8?B?VlFLRzFyVitNYkdaVkloOHdlTFdOdFcxZDMvOUk2SnB1MnlOaFpiaDh1bEh1?=
+ =?utf-8?B?cis1R1ZkSWpGL0RDUjVTV0gyS1UybmF5VzJVeVM3TmZYZE5ZRjRCMFNWdHkv?=
+ =?utf-8?B?cnJncithMDkxSGRxaTRmNUlBQk42MkRWNXltdWxtYXJmaHh2T2VpbW5uODNP?=
+ =?utf-8?B?U2ZjRUtIQ0ZWd3VGUVdkRkdRNzJhbENKdkZYZlMrSzFwM1lET283bTZCcmpQ?=
+ =?utf-8?B?OXJ6d2xXd1Z6Nk82MEtiUUd6L01XR01jTjZvaUkvckxTaVB0YWIzNko3bDY0?=
+ =?utf-8?B?QXZtWlpoMEFaYURnRytQaXJWMFY0aGV1MWVLTU5IOGpYNFFaV1RKYW03QzRI?=
+ =?utf-8?B?cjVKSzgzN0lnOXZ5Yk8vV3BxWU1SL05kek0vdUJWWmpaOUhvdnNiYkl6QzFB?=
+ =?utf-8?B?ZkcvTlV0cWdJUS9TZ09QWmxwMllCaDhkd1NMV2hXSTdMVDR5VGhhR1hwSVQ4?=
+ =?utf-8?B?dDA1TlZVMjZVN3J5c1lhQ3M0N2FRbTlEZVpIbjVVc1JZcXZkeHRuazcrLzd0?=
+ =?utf-8?B?UWZ0NXJwVkE5UGw5S1VPUERkcEc5RHVoNWo5OWRLMXBOYWRKZDNRaVFVNFVP?=
+ =?utf-8?B?RVFFQ0djMGFFQ3BTSGJlcXU0TkgwaThna0FJNlRic2tvVUM5QkdvRk15ZjdI?=
+ =?utf-8?B?a2xDbC9HRjJzYmJ0RHBzSWFHdVhlQmhxNU81NldFdS92a2YrczVrNmduVWZB?=
+ =?utf-8?B?ZkNFbSt3dXVveU9TNzl4aGYzOHhJdDYxQTRMQzVtRVBvbDFMaUYvWFk3dzhv?=
+ =?utf-8?B?YTdQNjREbHYyWjFKbnJXNjNpa1hvYUtuMkFFalZnTTh3c3EwYUNSS0pJaGJk?=
+ =?utf-8?B?OEo2bzBycGlQUVRpcHEwQUFzWTRBb1pZWlRmbHpnVDJ3R0Vmd0VTUkl0L1dN?=
+ =?utf-8?B?VWlTR0xoVVdPQlNkQWV6Mnd4UGNYTlQ3RG5wRkl0Y1hsMFMyWXJZNG1vb3Bp?=
+ =?utf-8?B?ZnFXZ2tVeHl3WWtwQitXN2ptRm1PVEpxWWg4cnltQ1BoV05qT2dhZVF1dTRy?=
+ =?utf-8?B?cUE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f32b1409-418d-46d1-13f1-08dad339a0eb
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2022 01:16:09.4422
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i8ng13BmZPHTFdsuPH6ouNHL9M0PfGUfINMFKP9rUL1UimQ8NEaeb3SuBYIX3yjr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1501MB2178
+X-Proofpoint-ORIG-GUID: Qy5LfPVVUskCU2lYfTht26xjCRBGk-LA
+X-Proofpoint-GUID: Qy5LfPVVUskCU2lYfTht26xjCRBGk-LA
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-30_04,2022-11-30_02,2022-06-22_01
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-11-30 at 16:26 -0800, Andrii Nakryiko wrote:
-> On Mon, Nov 28, 2022 at 8:35 AM Eduard Zingerman <eddyz87@gmail.com> wrot=
-e:
-> >=20
-> > Prior to this commit the following unsafe example passed verification:
-> >=20
-> > 1: r9 =3D ... some pointer with range X ...
-> > 2: r6 =3D ... unbound scalar ID=3Da ...
-> > 3: r7 =3D ... unbound scalar ID=3Db ...
-> > 4: if (r6 > r7) goto +1
-> > 5: r6 =3D r7
-> > 6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created her=
-e
-> > 7: r9 +=3D r7
-> > 8: *(u64 *)r9 =3D Y
-> >=20
-> > This example is unsafe because not all execution paths verify r7 range.
-> > Because of the jump at (4) the verifier would arrive at (6) in two stat=
-es:
-> > I.  r6{.id=3Db}, r7{.id=3Db} via path 1-6;
-> > II. r6{.id=3Da}, r7{.id=3Db} via path 1-4, 6.
-> >=20
-> > Currently regsafe() does not call check_ids() for scalar registers,
-> > thus from POV of regsafe() states (I) and (II) are identical. If the
-> > path 1-6 is taken by verifier first and checkpoint is created at (6)
-> > the path 1-4, 6 would be considered safe.
-> >=20
-> > This commit makes the following changes:
-> > - a call to check_ids() is added in regsafe() for scalar registers case=
-;
-> > - a function mark_equal_scalars_as_read() is added to ensure that
-> >   registers with identical IDs are preserved in the checkpoint states
-> >   in case when find_equal_scalars() updates register range for several
-> >   registers sharing the same ID.
-> >=20
->=20
-> Fixes tag missing?
->=20
-> These are tricky changes with subtle details. Let's split check_ids()
-> change and all the liveness manipulations into separate patches? They
-> are conceptually completely independent, right?
->=20
->=20
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 87 ++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 85 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 6599d25dae38..8a5b7192514a 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -10638,10 +10638,12 @@ static int check_alu_op(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn)
-> >                                 /* case: R1 =3D R2
-> >                                  * copy register state to dest reg
-> >                                  */
-> > -                               if (src_reg->type =3D=3D SCALAR_VALUE &=
-& !src_reg->id)
-> > +                               if (src_reg->type =3D=3D SCALAR_VALUE &=
-& !src_reg->id &&
-> > +                                   !tnum_is_const(src_reg->var_off))
-> >                                         /* Assign src and dst registers=
- the same ID
-> >                                          * that will be used by find_eq=
-ual_scalars()
-> >                                          * to propagate min/max range.
-> > +                                        * Skip constants to avoid allo=
-cation of useless ID.
-> >                                          */
-> >                                         src_reg->id =3D ++env->id_gen;
-> >                                 *dst_reg =3D *src_reg;
-> > @@ -11446,16 +11448,86 @@ static bool try_match_pkt_pointers(const stru=
-ct bpf_insn *insn,
-> >         return true;
-> >  }
-> >=20
-> > +/* Scalar ID generation in check_alu_op() and logic of
-> > + * find_equal_scalars() make the following pattern possible:
-> > + *
-> > + * 1: r9 =3D ... some pointer with range X ...
-> > + * 2: r6 =3D ... unbound scalar ID=3Da ...
-> > + * 3: r7 =3D ... unbound scalar ID=3Db ...
-> > + * 4: if (r6 > r7) goto +1
-> > + * 5: r6 =3D r7
-> > + * 6: if (r6 > X) goto ...   ; <-- suppose checkpoint state is created=
- here
-> > + * 7: r9 +=3D r7
-> > + * 8: *(u64 *)r9 =3D Y
-> > + *
-> > + * Because of the jump at (4) the verifier would arrive at (6) in two =
-states:
-> > + * I.  r6{.id=3Db}, r7{.id=3Db}
-> > + * II. r6{.id=3Da}, r7{.id=3Db}
-> > + *
-> > + * Relevant facts:
-> > + * - regsafe() matches ID mappings for scalars using check_ids(), this=
- makes
-> > + *   states (I) and (II) non-equal;
-> > + * - clean_func_state() removes registers not marked as REG_LIVE_READ =
-from
-> > + *   checkpoint states;
-> > + * - mark_reg_read() modifies reg->live for reg->parent (and it's pare=
-nts);
-> > + * - when r6 =3D r7 is process the bpf_reg_state is copied in full, me=
-aning
-> > + *   that parent pointers are copied as well.
->=20
-> not too familiar with liveness handling, but is this correct and
-> expected? Should this be fixed instead of REG_LIVE_READ manipulations?
 
-Well, that's what I wanted to ask, actually :)
-Here is how current logic works:
-- is_state_visited() has the following two loops in the end:
 
-	for (j =3D 0; j <=3D cur->curframe; j++) {
-		for (i =3D j < cur->curframe ? BPF_REG_6 : 0; i < BPF_REG_FP; i++)
-			cur->frame[j]->regs[i].parent =3D &new->frame[j]->regs[i];
-		for (i =3D 0; i < BPF_REG_FP; i++)
-			cur->frame[j]->regs[i].live =3D REG_LIVE_NONE;
-	}
+On 11/30/22 6:42 AM, Toke Høiland-Jørgensen wrote:
+> The bpf_ct_set_nat_info() kfunc is defined in the nf_nat.ko module, and
+> takes as a parameter the nf_conn___init struct, which is allocated through
+> the bpf_xdp_ct_alloc() helper defined in the nf_conntrack.ko module.
+> However, because kernel modules can't deduplicate BTF types between each
+> other, and the nf_conn___init struct is not referenced anywhere in vmlinux
+> BTF, this leads to two distinct BTF IDs for the same type (one in each
+> module). This confuses the verifier, as described here:
+> 
+> https://lore.kernel.org/all/87leoh372s.fsf@toke.dk/
 
-	/* all stack frames are accessible from callee, clear them all */
-	for (j =3D 0; j <=3D cur->curframe; j++) {
-		struct bpf_func_state *frame =3D cur->frame[j];
-		struct bpf_func_state *newframe =3D new->frame[j];
+We might have similar issues later for other types.
+Not sure whether the root cause is in libbpf or verifier. But we know
+the kfunc from (module, btf_id), so for arguments, we could first
+search the corresponding module and then vmlinux for btf_id matching?
+This way we might fix potential other cases?
 
-		for (i =3D 0; i < frame->allocated_stack / BPF_REG_SIZE; i++) {
-			frame->stack[i].spilled_ptr.live =3D REG_LIVE_NONE;
-			frame->stack[i].spilled_ptr.parent =3D
-						&newframe->stack[i].spilled_ptr;
-		}
-	}
-
-  These connect the bpf_reg_state members of the new state with
-  corresponding (index-wise) members of the parent state.
-- find_equal_scalars() looks as follows:
-  static void find_equal_scalars(struct bpf_verifier_state *vstate,
-                               struct bpf_reg_state *known_reg)
-  {
-	struct bpf_func_state *state;
-	struct bpf_reg_state *reg;
-
-	bpf_for_each_reg_in_vstate(vstate, state, reg, ({
-		if (reg->type =3D=3D SCALAR_VALUE && reg->id =3D=3D known_reg->id)
-			*reg =3D *known_reg;  // <--- full copy, incl. parent pointer
-	}));
-  }
-- mark_reg_read() updates the ->live field of the *parent* register
-  when called only if ->live field of the *current* register is not
-  marked as written.
-- in case if register is overwritten it's ->live field is marked as
-  written, e.g. see check_stack_read_fixed_off().
- =20
-Suppose we have an example:
-
----- checkpoint ----
-r1 =3D r0               ; now r1.parent =3D=3D &checkpoint->regs[0]
-r2 =3D r1               ; now r2.parent =3D=3D &checkpoint->regs[0]
-if (r1 =3D=3D 0) goto +42
-...
-
-Given the above logic only &checkpoint->regs[0] would receive read
-marks. Although I'm not the original author but this behavior seem to
-make sense.
-
->=20
-> > + *
-> > + * Thus, for execution path 1-6:
-> > + * - both r6->parent and r7->parent point to the same register in the =
-parent state (r7);
-> > + * - only *one* register in the checkpoint state would receive REG_LIV=
-E_READ mark;
->=20
-> I'm trying to understand this. Clearly both r6 and r7 are read. r6 for
-> if (r6 > X) check, r7 for r9 manipulations. Why do we end up not
-> marking one of them as read using a normal logic?
-
-When (r6 > X) is processed find_equal_scalars() updates parent
-pointers for all registers with the same ID as r6, in this case only
-for r7. So, after find_equal_scalars() is done both current state r6
-and r7 ->parent point to the r6 of the latest checkpoint state.
-
->=20
-> I have this bad feeling I'm missing something very important here or
-> we have some bug somewhere else. So please help me understand which
-> one it is. This special liveness manipulation seems wrong.
->=20
-> My concern is that if I have some code like
->=20
-> r6 =3D r7;
-> r9 +=3D r6;
->=20
-> and I never use r7 anymore after that, then we should be able to
-> forget r7 and treat it as NOT_INIT. But you are saying it's unsafe
-> right now and that doesn't make much sense to me.
-
-It is unsafe because of the "spooky action at a distance" produced by
-a combination of:
-- allocation of scalar IDs for moves, see check_alu_op() case for
-  64-bit move;
-- find_equal_scalars() that propagates range, this one is only
-  executed for conditional jumps.
-
->=20
->=20
-> > + * - clean_func_state() would remove r6 from checkpoint state (mark it=
- NOT_INIT).
-> > + *
-> > + * Consequently, when execution path 1-4, 6 reaches (6) in state (II)
-> > + * regsafe() won't be able to see a mismatch in ID mappings.
-> > + *
-> > + * To avoid this issue mark_equal_scalars_as_read() conservatively
-> > + * marks all registers with matching ID as REG_LIVE_READ, thus
-> > + * preserving r6 and r7 in the checkpoint state for the example above.
-> > + */
-> > +static void mark_equal_scalars_as_read(struct bpf_verifier_state *vsta=
-te, int id)
-> > +{
-> > +       struct bpf_verifier_state *st;
-> > +       struct bpf_func_state *state;
-> > +       struct bpf_reg_state *reg;
-> > +       bool move_up;
-> > +       int i =3D 0;
-> > +
-> > +       for (st =3D vstate, move_up =3D true; st && move_up; st =3D st-=
->parent) {
-> > +               move_up =3D false;
-> > +               bpf_for_each_reg_in_vstate(st, state, reg, ({
-> > +                       if (reg->type =3D=3D SCALAR_VALUE && reg->id =
-=3D=3D id &&
-> > +                           !(reg->live & REG_LIVE_READ)) {
-> > +                               reg->live |=3D REG_LIVE_READ;
-> > +                               move_up =3D true;
-> > +                       }
-> > +                       ++i;
-> > +               }));
-> > +       }
-> > +}
-> > +
-> >  static void find_equal_scalars(struct bpf_verifier_state *vstate,
-> >                                struct bpf_reg_state *known_reg)
-> >  {
-> >         struct bpf_func_state *state;
-> >         struct bpf_reg_state *reg;
-> > +       int count =3D 0;
-> >=20
-> >         bpf_for_each_reg_in_vstate(vstate, state, reg, ({
-> > -               if (reg->type =3D=3D SCALAR_VALUE && reg->id =3D=3D kno=
-wn_reg->id)
-> > +               if (reg->type =3D=3D SCALAR_VALUE && reg->id =3D=3D kno=
-wn_reg->id) {
-> >                         *reg =3D *known_reg;
-> > +                       ++count;
-> > +               }
-> >         }));
-> > +
-> > +       /* Count equal to 1 means that find_equal_scalars have not
-> > +        * found any registers with the same ID (except self), thus
-> > +        * the range knowledge have not been transferred and there is
-> > +        * no need to preserve registers with the same ID in a parent
-> > +        * state.
-> > +        */
-> > +       if (count > 1)
-> > +               mark_equal_scalars_as_read(vstate->parent, known_reg->i=
-d);
-> >  }
-> >=20
-> >  static int check_cond_jmp_op(struct bpf_verifier_env *env,
-> > @@ -12878,6 +12950,12 @@ static bool regsafe(struct bpf_verifier_env *e=
-nv, struct bpf_reg_state *rold,
-> >                  */
-> >                 return equal && rold->frameno =3D=3D rcur->frameno;
-> >=20
-> > +       /* even if two registers are identical the id mapping might div=
-erge
-> > +        * e.g. rold{.id=3D1}, rcur{.id=3D1}, idmap{1->2}
-> > +        */
-> > +       if (equal && rold->type =3D=3D SCALAR_VALUE && rold->id)
-> > +               return check_ids(rold->id, rcur->id, idmap);
->=20
-> nit: let's teach check_ids() to handle the id =3D=3D 0 case properly
-> instead of guarding everything with `if (rold->id)`?
->=20
-> but also I think this applies not just to SCALARs, right? the memcmp()
-> check above has to be augmented with check_ids() for id and ref_obj_id
-
-Yes, it is the same issue as described in [1] as you pointed out.
-I'll updated it for other branches, but I want the main issue to
-be sorted out first.
-
-[1] https://lore.kernel.org/bpf/CAEf4BzbFB5g4oUfyxk9rHy-PJSLQ3h8q9mV=3DrVoX=
-fr_JVm8+1Q@mail.gmail.com/
-
->=20
-> > +
-> >         if (equal)
-> >                 return true;
-> >=20
-> > @@ -12891,6 +12969,11 @@ static bool regsafe(struct bpf_verifier_env *e=
-nv, struct bpf_reg_state *rold,
-> >                 if (env->explore_alu_limits)
-> >                         return false;
-> >                 if (rcur->type =3D=3D SCALAR_VALUE) {
-> > +                       /* id relations must be preserved, see comment =
-in
-> > +                        * mark_equal_scalars_as_read() for SCALAR_VALU=
-E example.
-> > +                        */
-> > +                       if (rold->id && !check_ids(rold->id, rcur->id, =
-idmap))
-> > +                               return false;
-> >                         if (!rold->precise)
-> >                                 return true;
-> >                         /* new val must satisfy old val knowledge */
-> > --
-> > 2.34.1
-> >=20
-
+> 
+> As a workaround, add a dummy pointer to the type in net/filter.c, so the
+> type definition gets included in vmlinux BTF. This way, both modules can
+> refer to the same type ID (as they both build on top of vmlinux BTF), and
+> the verifier is no longer confused.
+> 
+> Fixes: 820dc0523e05 ("net: netfilter: move bpf_ct_set_nat_info kfunc in nf_nat_bpf.c")
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>   net/core/filter.c | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index bb0136e7a8e4..1bdf9efe8593 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -80,6 +80,7 @@
+>   #include <net/tls.h>
+>   #include <net/xdp.h>
+>   #include <net/mptcp.h>
+> +#include <net/netfilter/nf_conntrack_bpf.h>
+>   
+>   static const struct bpf_func_proto *
+>   bpf_sk_base_func_proto(enum bpf_func_id func_id);
+> @@ -11531,3 +11532,17 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
+>   
+>   	return func;
+>   }
+> +
+> +#if IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)
+> +/* The nf_conn___init type is used in the NF_CONNTRACK kfuncs. The kfuncs are
+> + * defined in two different modules, and we want to be able to use them
+> + * interchangably with the same BTF type ID. Because modules can't de-duplicate
+> + * BTF IDs between each other, we need the type to be referenced in the vmlinux
+> + * BTF or the verifier will get confused about the different types. So we add
+> + * this dummy pointer to serve as a type reference which will be included in
+> + * vmlinux BTF, allowing both modules to refer to the same type ID.
+> + *
+> + * We use a pointer as that is smaller than an instance of the struct.
+> + */
+> +const struct nf_conn___init *ctinit;
+> +#endif
