@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C04663E68C
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC02D63E695
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbiLAAdC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 19:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S229853AbiLAAiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 19:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiLAAc7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 19:32:59 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24AF532EA
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:32:58 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id n205so446555oib.1
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:32:58 -0800 (PST)
+        with ESMTP id S229840AbiLAAiG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 19:38:06 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2953AC20
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:38:05 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id hd14-20020a17090b458e00b0021909875bccso3051212pjb.1
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 16:38:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lN9JwId4tiOiae0xE/P7QQ4kvD0YngnrPqvp/M5Dfwg=;
-        b=LVy0wqAJnY3VNQt12119+LCZMGKEGZ4EZUpcDF8EAoT4pmN0KnCQU55BD8KghUPtIz
-         ZsT8L+j+0sUolshFFwaUdBMQt4DGYv65Q49zXJCc3UdtV//RlNncelI034mQRlVKY+83
-         Usk1Kn7mUIVEENTh0Bydb+XC96fHUi61pBOK2wk/LJhu9lQXZHwG1PpmBFGFDGMLHnwW
-         fDm17V+un9o+gaMu8s7TnWPKJuBYkZ4LXTezcYWwysJKVnrBDc/kdlV3cmRU9fJWU5BG
-         AaBNCGUQ1GBrxhyAtgvrZopjh3Oz8lEyV/GjE4qNPyxq7vY7hBSkcL3FeA36SbLRaHHv
-         XT7g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kf4u8STDIJ7ZPXurhpY615u2XnKVugK+E2ClxYkVvn0=;
+        b=H17vMOj2c2NXEyrlpFYzVNyarbSq4Yd6YQeNCsJ9altJCky+Fn4o0nrVMALycw6mAR
+         9Sz2QJHenlYOU+UkSUto63SdkZOheoh/7oQzuFxjdTUrIQPF4ppeTbIYZOgY4vIw7JSK
+         JrB/N8PxzRb4JndkERh5rAXK/qZ3dZGsFL4Cx9e1vOKxS6qvrA6SVjv35YVZg6q8xfqe
+         V/ZbSIfKBcuoEsk5QVk+kQvRUFbrmaTidiGGk9zVOsFHxXvTDk+7Hv6wA4typI9rQhcZ
+         JX8uVHYkwu14/Oai590ev3muaoZ+24B73lrVa1JbFpCx3fLxR9CnvS3L57qwvEieqAaL
+         CSNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lN9JwId4tiOiae0xE/P7QQ4kvD0YngnrPqvp/M5Dfwg=;
-        b=6imTHy8M6Gr15XXbp5LfF3kSfMTMAE4q3D6NiKr23BleMh/YNXej1zs7QZlfpww91E
-         JdY6VYDpCXvrBDlbfwtrIyd91rQMYU11bncLIkDIWg0/Zcaypc5IbtFz/AtkZH88rCjh
-         yhhGIwz/EhD1Htpme/0I1cJMikQaQtn0F+5ErGOeVzosvzW90d0kh5yc5zebcfaXFSnk
-         /71XrN+Svyn1wLhUV7aKC6aL2lQYy2K67dNynIZN27YBet4ywlaEOKBQzeDaRvHuUZVA
-         Y7/NnSJZ+Vehj7FjddTACY6HaMly+bbc/oRhZvOtrOtEVrLj8A8Tgx2Yn8369Dp2+QmT
-         NgPw==
-X-Gm-Message-State: ANoB5pl2bONLYsE78kbGwcba4eW/Dy5jgOMeMmtm/xv3L9D30PdQxQ5O
-        Os3VOKZF7LrKQUWjR21wZQmoFxtExiYWzjhjZccV1w==
-X-Google-Smtp-Source: AA0mqf530DwVXRBjyS1VDdG0iUR9zIZ+cLsrFMslgltcHCQTdc4+KU6TyFgLBaQ7cGl5k9xwLyZmJYMAb7AgD0mCR/o=
-X-Received: by 2002:aca:d01:0:b0:35b:d6f7:c569 with SMTP id
- 1-20020aca0d01000000b0035bd6f7c569mr1985835oin.125.1669854778144; Wed, 30 Nov
- 2022 16:32:58 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kf4u8STDIJ7ZPXurhpY615u2XnKVugK+E2ClxYkVvn0=;
+        b=WZAsnmDkRBELbbNRKzcYhi6AAHqDOF9cNnEtUb6iN1GUg61EyA9uhL2A6R/MesVRjG
+         e/0rLTSE/4qE/65dYWsTelo41dKs4sFKCm9CPQtBUgDAXKjbx5k7+Db1/ahIaPCzyCWV
+         77GRmpKLt/NnQaWsVRz21qOSdXYhzpclfV4eHrewF9Vw1ecakoY+ww+C4m2SirCJqsRe
+         NhJhEJuJM3i7b2lMAc8Y0vxTZSY8vPqY2PYf1xin0ubigAIxM7C476a4+UMpQsKR2MO9
+         TKBOF+42CpzpUOfObmzdj9lKHbEBJSqCCwXwMMHzr1iNv+1oSXdBPinO6THyw92OedRO
+         NOWw==
+X-Gm-Message-State: ANoB5pngrKwmzQBIIB2K+l0C6oA6z5Ix5ceBD+gymOouUWAZd72xnKD1
+        hX25y1jKk3ZROFB1/MepF2/Y8wV2ufKkhi0H3Qcy9w==
+X-Google-Smtp-Source: AA0mqf5ewTDJM0MBBEk7PsgHmnfYFgvAYaYYHxXH80bhWCZoI2kuCT2HLyzklQfVDHhaOzfXZyWOh/i4suv/jNrVSwg=
+X-Received: by 2002:a17:902:70c9:b0:176:a0cc:5eff with SMTP id
+ l9-20020a17090270c900b00176a0cc5effmr54321264plt.128.1669855084558; Wed, 30
+ Nov 2022 16:38:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20221129193452.3448944-1-sdf@google.com> <8735a1zdrt.fsf@toke.dk>
- <CAKH8qBsTNEZcyLq8EsZhsBHsLNe7831r23YdwZfDsbXo06FTBg@mail.gmail.com>
- <87o7soxd1v.fsf@toke.dk> <07db58dd-0752-e148-8d89-e22b8d7769f0@linux.dev>
-In-Reply-To: <07db58dd-0752-e148-8d89-e22b8d7769f0@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 30 Nov 2022 16:32:47 -0800
-Message-ID: <CAKH8qBtw-xpEm_5srzCP9FoJYeE5M-yEVMBOrXufxB4iVEV3Vw@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 00/11] xdp: hints via kfuncs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20221129161612.45765-1-laoar.shao@gmail.com> <CA+khW7jjfQOLnx6-4UyJ8sYTj12qzp_NmiZJ-uiSwGU754hbXg@mail.gmail.com>
+ <CALOAHbCGSigE9vjvw6DczLbRF=TaQ3vmh6SHvMvoAChM_6Mdfg@mail.gmail.com> <CAPhsuW7B1fM=JYG0OeHPZU7isv+O2_OPc22EBsdC6ZNEWusqXA@mail.gmail.com>
+In-Reply-To: <CAPhsuW7B1fM=JYG0OeHPZU7isv+O2_OPc22EBsdC6ZNEWusqXA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 30 Nov 2022 16:37:53 -0800
+Message-ID: <CA+khW7gLUrBYLoCKPAOO8evofNjr97crX=Gw59FpZu-gM8FTHQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Allow get bpf object with CAP_BPF
+To:     Song Liu <song@kernel.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -82,41 +71,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 4:16 PM Martin KaFai Lau <martin.lau@linux.dev> wro=
-te:
+On Wed, Nov 30, 2022 at 10:07 AM Song Liu <song@kernel.org> wrote:
 >
-> On 11/30/22 3:01 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> It feels like beyond that extra dev_put, we'd need to reset our
-> >> aux->xdp_netdev and/or add some flag or something else to indicate
-> >> that this bpf program is "orphaned" and can't be attached anywhere
-> >> anymore (since the device is gone; netdev_run_todo should free the
-> >> netdev it seems).
+> On Wed, Nov 30, 2022 at 3:59 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> [...]
+> > I understand that allowing ID->FD transition for CAP_SYS_ADMIN only is
+> > for security.
+> > But it also prevents the user from transiting its own bpf object ID,
+> > that is a problem.
+> >
+> > > From the commit message, I'm not clear how BPF is debugged in
+> > > containers in your use case. Maybe the debugging process should be
+> > > required to have CAP_SYS_ADMIN?
+> > >
+> >
+> > Some container users will run bpf programs in their container,
+> > sometimes they want to check the bpf objects created by themselves  by
+> > using bpftool or read/write the bpf maps with their own tools. But if
+> > the bpf objects are not pinned, the only way to get these bpf objects
+> > is via SCM_RIGHTS.
+> > There should be a general way to get the FD of their own objects when
+> > CAP_BPF is enabled.
+> > With CAP_SYS_ADMIN, the container user can do almost anything, which
+> > is very dangerous.
+> > While with CAP_BPF, the risk can be kept within BPF.
+> >
+> > I think we should improve this situation by allowing the user to
+> > transit its own bpf object IDs.
+> > There are some possible solutions,
+> > 1. introduce BPF_ID namespace
+> >     Let's use namespace to isolate the bpf object ID instead of
+> > preventing them from reading all IDs.
+> > 2. introduce a global sysctl knob to allow users to do the ID->FD transition
+> >     for example, introduce a new value into unprivileged_bpf_disabled.
+> >     -0 Unprivileged calls to ``bpf()`` are enabled
+> >    +0 Unprivileged calls to ``bpf()`` are enabled except the calls
+> >    +  which explicitly requires ``CAP_BPF`` or ``CAP_SYS_ADMIN``
+> >     1 Unprivileged calls to ``bpf()`` are disabled without recovery
+> >     2 Unprivileged calls to ``bpf()`` are disabled
+> >   +3 All unprivileged calls to ``bpf()`` are enabled
+> >
+> > WDYT ?
 >
-> imo, orphan the prog and not able to attach again is ok.  Finding the nex=
-t
-> compatible netdev would be nice but not a must to begin with.  Regardless=
-, it
-> needs a bpf_prog<->netdev decoupling approach which allows to unregister =
-netdev
-> gracefully instead of getting the "unregister_netdevice: waiting for xyz =
-to
-> become free...".
+> Personally, I think some namespace might be the solution we need.
+> But adding a namespace is a lot of work, so we need to make sure to
+> do it correctly.
 >
-> fwiw, offload.c has solved a similar problem and it keeps its own list of=
- prog
-> depending on a particular netdev.  Whatever approach makes more sense her=
-e.
-> Ideally, other non-NIC HW kfunc can reuse a similar approach in the futur=
-e.
+> This might be a good topic to discuss in the BPF office hour.
+>
 
-Makes sense. Let me take a closer look. I glanced at it last week and
-decided that maybe it's easier to not hold the device at all..
+I think namespace is more preferable. A discussion in the BPF office
+hour sounds good.
 
-Maybe we should have something like this:
+Following are my thoughts:
 
-- bpf_prog_is_dev_bound() - prog is dev bound but not offloaded
-(currently bpf_prog_is_dev_bound =3D=3D fully offloaded)
-- bpf_prog_is_offloaded() - prog is dev bound and offloaded
+1. What does the BPF_ID namespace look like? Will it be like the PID
+namespace, remapping IDs in each namespace? or just restricting the
+object IDs visible to the users?
 
-So hopefully I can leverage some/most existing bpf_prog_is_dev_bound
-call sites (+ add some more to reject prog_run/etc).
+2. What's wrong with passing FD? Is it really necessary to introduce a
+namespace for this purpose?
+
+3. IIRC, Song proposed introducing a namespace for BPF isolation, not
+just isolating IDs [1]. How does it relate to the BPF_ID namespace?
+
+[1] https://lore.kernel.org/all/CAPhsuW6c17p3XkzSxxo7YBW9LHjqerOqQvt7C1+S--8C9omeng@mail.gmail.com/
