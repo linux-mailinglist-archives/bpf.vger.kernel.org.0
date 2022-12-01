@@ -2,125 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35E863F78B
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 19:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC9863F7F0
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 20:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbiLASf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 13:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        id S229667AbiLATK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 14:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbiLASf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 13:35:26 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697FDB847F
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 10:35:16 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B1IZ8Mr015936
-        for <bpf@vger.kernel.org>; Thu, 1 Dec 2022 10:35:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=c21/RxjJ+X/zCJbYrlHYzEi17+2XCtf38q7aL5Vgz00=;
- b=Sht788IMeurSYcibrkHKlXvvI4V+oukmKlhanba3HBH9IyXMaFvOk451QvCvRJkzPT4G
- PO8VNGz9N9USlpHJbSi4nc79ICPSxikPLsvQMt5+lKW/yDK0HMmM6DDyLuh8nG+t//K/
- 39f18yLnx5CmVhW7vSONL3EKUrc4tuxjVQk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m6mbeemgx-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 10:35:15 -0800
-Received: from twshared2003.08.ash9.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 10:34:18 -0800
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id A81CA11BCBE46; Thu,  1 Dec 2022 10:34:10 -0800 (PST)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230244AbiLATKs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 14:10:48 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8878C5E04;
+        Thu,  1 Dec 2022 11:10:47 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id fz10so2121966qtb.3;
+        Thu, 01 Dec 2022 11:10:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8lBn7HA8s73zkhGBNG3m4Sb/6k6XYlgLSYhUWX2vb1I=;
+        b=R1N6Q+6EHAvFNQV7/6IZX3Aixg6UnmIt/9PjjzdEbOApqMebnO6IX1H7Mb50Gm02gz
+         VXdj+LWNboN0dcXgELaAg69k6+dZ4o68EkPz+PyNYIIo2VN1SQo89z8JZtKnvL9057it
+         leOaMYglJnV+FUMHAgoarShMntNo1M1DLtf34CvYeOjRmsXWyjkoZFYOM570hcHsHqGJ
+         xpMlzjuNgXuC0ILwBMhTPAsg9vA6a7InK0DJmlHmuCPCY8GgUKwob5zyBYaJHdTKBEF1
+         6N9919eAfx3ZqrhGhRfecNzr7v13/YbmRVEyYbhbdqqSc1SX6k+JorAXSrFE3d5DDvMd
+         3EIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8lBn7HA8s73zkhGBNG3m4Sb/6k6XYlgLSYhUWX2vb1I=;
+        b=okGilCwvprJ5/rkBpGExkY+Sgm3fvsF/dnwKYWsa2hMFbeGmrx/Km/mn/cWXTUgK3m
+         +FVAVs6Boz5rJnVccVaY0TBe2mA5VBP6CHAXSGjNXhcwBIsP2peuk+y9iRCGHKp0IArg
+         SMPi6nupN0JYt6RaZhITGhgD4633GIp4danywS54rR5Bvpw0TsDmVB8PRIBwfSLYL6og
+         SkmZZxqFMoMZctPiOBjEy8uF5AxO50PSgH/GCznmfYPMU/UZlOGmtwa+6y2YN+yU2gpM
+         mp9AcerXncv3t3wrpGVhvZJLHb2hmigjJPgyaO4vxWOZC0OqCnsNwlbdhLNjGTs3YOBF
+         UGiA==
+X-Gm-Message-State: ANoB5plw8vh+h/cprNjwE3GiE+Nlxa1quiu8wGE3hzqa3lT17j2YnxvF
+        QWEDB6VYu78264gPyq4nUeb1mPxrXYm+mn1R
+X-Google-Smtp-Source: AA0mqf4KtmNIsiq/zeXOvH+tkCJJ6Gmy0Ia5DiailXwqblPE+ac8gkWv7sEJwtKzv1A5t2Ns4XyLOQ==
+X-Received: by 2002:a37:be45:0:b0:6fb:f7a0:987d with SMTP id o66-20020a37be45000000b006fbf7a0987dmr48096466qkf.191.1669921846406;
+        Thu, 01 Dec 2022 11:10:46 -0800 (PST)
+Received: from james-x399.localdomain (71-33-132-231.hlrn.qwest.net. [71.33.132.231])
+        by smtp.gmail.com with ESMTPSA id bs17-20020a05620a471100b006bbc3724affsm4006972qkb.45.2022.12.01.11.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Dec 2022 11:10:45 -0800 (PST)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        David Faust <david.faust@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@meta.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Validate multiple ref release_on_unlock logic
-Date:   Thu, 1 Dec 2022 10:34:06 -0800
-Message-ID: <20221201183406.1203621-2-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221201183406.1203621-1-davemarchevsky@fb.com>
-References: <20221201183406.1203621-1-davemarchevsky@fb.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] selftests/bpf: add GCC compatible builtins to bpf_legacy.h
+Date:   Thu,  1 Dec 2022 12:09:39 -0700
+Message-Id: <20221201190939.3230513-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 2vegnSQ_Qo4L78W0dDOzLqgsXRqTeP8I
-X-Proofpoint-GUID: 2vegnSQ_Qo4L78W0dDOzLqgsXRqTeP8I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-01_12,2022-12-01_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Modify list_push_pop_multiple to alloc and insert nodes 2-at-a-time.
-Without the previous patch's fix, this block of code:
+The bpf_legacy.h header uses llvm specific load functions, add
+GCC compatible variants as well to fix tests using these functions
+under GCC.
 
-  bpf_spin_lock(lock);
-  bpf_list_push_front(head, &f[i]->node);
-  bpf_list_push_front(head, &f[i + 1]->node);
-  bpf_spin_unlock(lock);
-
-would fail check_reference_leak check as release_on_unlock logic would mi=
-ss
-a ref that should've been released.
-
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
+Cc: David Faust <david.faust@oracle.com>
 ---
- tools/testing/selftests/bpf/progs/linked_list.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/bpf_legacy.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/test=
-ing/selftests/bpf/progs/linked_list.c
-index 2c7b615c6d41..4ad88da5cda2 100644
---- a/tools/testing/selftests/bpf/progs/linked_list.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list.c
-@@ -99,13 +99,28 @@ int list_push_pop_multiple(struct bpf_spin_lock *lock=
-, struct bpf_list_head *hea
- 	struct foo *f[8], *pf;
- 	int i;
-=20
--	for (i =3D 0; i < ARRAY_SIZE(f); i++) {
-+	/* Loop following this check adds nodes 2-at-a-time in order to
-+	 * validate multiple release_on_unlock release logic
-+	 */
-+	if (ARRAY_SIZE(f) % 2)
-+		return 10;
-+
-+	for (i =3D 0; i < ARRAY_SIZE(f); i +=3D 2) {
- 		f[i] =3D bpf_obj_new(typeof(**f));
- 		if (!f[i])
- 			return 2;
- 		f[i]->data =3D i;
-+
-+		f[i + 1] =3D bpf_obj_new(typeof(**f));
-+		if (!f[i + 1]) {
-+			bpf_obj_drop(f[i]);
-+			return 9;
-+		}
-+		f[i + 1]->data =3D i + 1;
-+
- 		bpf_spin_lock(lock);
- 		bpf_list_push_front(head, &f[i]->node);
-+		bpf_list_push_front(head, &f[i + 1]->node);
- 		bpf_spin_unlock(lock);
- 	}
-=20
---=20
-2.30.2
+diff --git a/tools/testing/selftests/bpf/bpf_legacy.h b/tools/testing/selftests/bpf/bpf_legacy.h
+index 845209581440..256c2a90aa20 100644
+--- a/tools/testing/selftests/bpf/bpf_legacy.h
++++ b/tools/testing/selftests/bpf/bpf_legacy.h
+@@ -2,6 +2,15 @@
+ #ifndef __BPF_LEGACY__
+ #define __BPF_LEGACY__
+ 
++#if __GNUC__ && !__clang__
++/* Functions to emit BPF_LD_ABS and BPF_LD_IND instructions.  We
++ * provide the "standard" names as synonyms of the corresponding GCC
++ * builtins.  Note how the SKB argument is ignored.
++ */
++#define load_byte(skb,off) __builtin_bpf_load_byte((off))
++#define load_half(skb,off) __builtin_bpf_load_half((off))
++#define load_word(skb,off) __builtin_bpf_load_word((off))
++#else
+ /* llvm builtin functions that eBPF C program may use to
+  * emit BPF_LD_ABS and BPF_LD_IND instructions
+  */
+@@ -11,6 +20,7 @@ unsigned long long load_half(void *skb,
+ 			     unsigned long long off) asm("llvm.bpf.load.half");
+ unsigned long long load_word(void *skb,
+ 			     unsigned long long off) asm("llvm.bpf.load.word");
++#endif
+ 
+ #endif
+ 
+-- 
+2.34.1
 
