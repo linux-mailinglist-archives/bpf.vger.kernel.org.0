@@ -2,160 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D604963F0B5
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 13:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059D063F15D
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 14:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbiLAMks (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 07:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S231130AbiLANQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 08:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbiLAMkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 07:40:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92FE5801F
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 04:39:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669898386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BiLcuwdykxQHUsBJJDQZY+ubuEhuur97TWUisetHAcA=;
-        b=Ajkv5171zz9bPkbPslrvXIMgvueWsglPYFwXf91MO47+7Fq9B/xsvrue3P3jsSvDFWR8rG
-        cjHsboW4f6YVpTxuEvyqb7o/nNz7LuxKkVyKyhSLXiAu0wOvuv+AnmKNaTSw9IJAC10NID
-        1PqZE9TxcEUtHpI6tL6AzyTo1vrBqFQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-269-bRiJcFMLPcuNSef8pbjGVw-1; Thu, 01 Dec 2022 07:39:45 -0500
-X-MC-Unique: bRiJcFMLPcuNSef8pbjGVw-1
-Received: by mail-ed1-f71.google.com with SMTP id v18-20020a056402349200b004622e273bbbso811693edc.14
-        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 04:39:45 -0800 (PST)
+        with ESMTP id S229631AbiLANQf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 08:16:35 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECFE9E475
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 05:16:34 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id l67so2005891ybl.1
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 05:16:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fPtTUe4GLZGngJUGDmU50iTo2oEHSZWlXODcFcOrTk=;
+        b=btBHQ4FhoJag7wVKh/jg/TpvW2r4aZ4nrp1++nOpW1DbP1dG12mnTyc6aCbEyuV8Fu
+         OIZRMqYMw6XWrcekOqtKQclDRybZK+Y/XpJ+YSyA2C3O45qkd4n9qL0qWS2wyvBc1qG3
+         04k3M1UlodYstss7EGKaI7Z7Ps+9Q/XIBhU0k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BiLcuwdykxQHUsBJJDQZY+ubuEhuur97TWUisetHAcA=;
-        b=OBfFBfBLtAn7yoRTzWgOyKG3En7uAoqL20/Yh0Yv1B2suCne5YFLwHOuOZyILIhAfu
-         W/I1aOLdwqdJCBW22ipWoGIJJ509WprzYSF/q0CkPccdtDt40/SZGCLPmSv9RbO3d960
-         37eJ+EhQhB7RXxFrKRpkwkNpUzNeOXbrRkF/J1U0stG2GuFEnNIHbSvCOrlwjSyO7T+H
-         VdT0H+KP7I0slXdp+BU/Tikp7D+1JG7dopdr6YqFAhgm2/F515X14FBmYpitqr87KTFR
-         CsxXG2Pzb6AHEcKMwlyhbvxFp1VDa9q2tohWpWwtmliFUfi4kAJuhtWL+PIyTPHTIbXE
-         iu2A==
-X-Gm-Message-State: ANoB5pm3Bi87mvP+chSy+OTwQPx5Zbut2iBBH3FhUBb7zvtieCEGvgLt
-        aHRqMWjczhbDPGkK4D/OKzzmath73r+GkuexIoHnG8ZQjvmZxNCaDm8+nBHgHxKUvNi8dVwSkOg
-        01BStGUAlBVu0
-X-Received: by 2002:a05:6402:1013:b0:463:f3a:32ce with SMTP id c19-20020a056402101300b004630f3a32cemr44127228edu.366.1669898383744;
-        Thu, 01 Dec 2022 04:39:43 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4mjodQUpSWl/gZ4SZKA6+N7I6lL1AEojQs0WGNyVEY2unZEh/L4x46xJBSeCfsEmnGiYP76g==
-X-Received: by 2002:a05:6402:1013:b0:463:f3a:32ce with SMTP id c19-20020a056402101300b004630f3a32cemr44127136edu.366.1669898382097;
-        Thu, 01 Dec 2022 04:39:42 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id p4-20020a056402074400b0046267f8150csm1698066edy.19.2022.12.01.04.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Dec 2022 04:39:41 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 842C180AFEE; Thu,  1 Dec 2022 13:39:40 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf v2] bpf: Add dummy type reference to nf_conn___init to fix type deduplication
-Date:   Thu,  1 Dec 2022 13:39:39 +0100
-Message-Id: <20221201123939.696558-1-toke@redhat.com>
-X-Mailer: git-send-email 2.38.1
+        bh=5fPtTUe4GLZGngJUGDmU50iTo2oEHSZWlXODcFcOrTk=;
+        b=HbThW+DB/80vm2gZ2KmRXsmRirleEJSGRguO4kH+NbDlDoQQPrZEDjl7X78ZozPBQu
+         b/IKlQS+2sonEcXhhB7f1fKLZhpWuAkbCfiv6kct3X4KTLF4po/gGYUUFwoBVVpz/eaU
+         g1nz8AxIX1G1pdVkK9V5uNjWND31BHe3ZfeZo1NQ9LaVGWrWltI6Nj5BBpTOCNNFWsGM
+         V3id3OlNW0VKA1Asf2S3TL1qkmxqU7ZbWppsLI3852pUf61aj+Fdtjyqc3E98XztyUl+
+         eorLpb/cRfHuDVXtMqyLn1YST/+pI0SRy9D+y7JkqAXpecTCKaxUhpzms9s3Up99Uvlz
+         bwoQ==
+X-Gm-Message-State: ANoB5pkD7pLx44oa5sV4OoWiz2zffExbIQjCl0du1/UGu7xXMLcM/kd2
+        Xfys2EZuZ5a6iooKCRiWWQfb5nHa20PM/avojKE6rw==
+X-Google-Smtp-Source: AA0mqf634rChlBV+hDJz6XqHfF4SbCN+5E3/VFtWye4wZq0lmYRzzczfmNd219kHAzLnsHYFUiDCMJop/CvXn+6NAxc=
+X-Received: by 2002:a25:9e8a:0:b0:6cc:54cb:71ff with SMTP id
+ p10-20020a259e8a000000b006cc54cb71ffmr63212521ybq.339.1669900593228; Thu, 01
+ Dec 2022 05:16:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1669817512-4560-1-git-send-email-george.kennedy@oracle.com>
+In-Reply-To: <1669817512-4560-1-git-send-email-george.kennedy@oracle.com>
+From:   Pavan Chebbi <pavan.chebbi@broadcom.com>
+Date:   Thu, 1 Dec 2022 18:46:22 +0530
+Message-ID: <CALs4sv2ZfT1SAYY0oOYhrBBCjsG_th5g=QtSsbKJnPbW8faQ+w@mail.gmail.com>
+Subject: Re: [PATCH] net: check for dev pointer being NULL in
+ dev_hard_header() to avoid GPF
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        harshit.m.mogalapalli@oracle.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000b181ee05eec407e0"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_ct_set_nat_info() kfunc is defined in the nf_nat.ko module, and
-takes as a parameter the nf_conn___init struct, which is allocated through
-the bpf_xdp_ct_alloc() helper defined in the nf_conntrack.ko module.
-However, because kernel modules can't deduplicate BTF types between each
-other, and the nf_conn___init struct is not referenced anywhere in vmlinux
-BTF, this leads to two distinct BTF IDs for the same type (one in each
-module). This confuses the verifier, as described here:
+--000000000000b181ee05eec407e0
+Content-Type: text/plain; charset="UTF-8"
 
-https://lore.kernel.org/all/87leoh372s.fsf@toke.dk/
+On Wed, Nov 30, 2022 at 7:43 PM George Kennedy
+<george.kennedy@oracle.com> wrote:
+>
+> The dev pointer can be NULL in dev_hard_header(). Add check for dev being
+> NULL in dev_hard_header() to avoid GPF.
+>
+> general protection fault, probably for non-canonical address
+>     0xdffffc0000000046: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> KASAN: null-ptr-deref in range [0x0000000000000230-0x0000000000000237]
+> CPU: 1 PID: 45 Comm: kworker/1:1 Not tainted 6.1.0-rc7+ #2
+> Hardware name: Red Hat KVM, BIOS 1.15.0-2.module+el8.6.0+20659+3dcf7c70
+> Workqueue: mld mld_ifc_work
+> RIP: 0010:macvlan_hard_header (./include/linux/netdevice.h:3057
+>     (discriminator 4) drivers/net/macvlan.c:594 (discriminator 4))
+> RSP: 0018:ffff888103d377d0 EFLAGS: 00010212
+> RAX: dffffc0000000000 RBX: ffff88801cf1a000 RCX: 0000000000000000
+> RDX: 0000000000000046 RSI: 0000000000000000 RDI: 0000000000000230
+> RBP: ffff88801e8ef328 R08: 0000000000000000 R09: 0000000000000060
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88801f0497c0
+> R13: 0000000000000000 R14: ffff888045187c98 R15: 0000000000000060
+> FS:  0000000000000000(0000) GS:ffff888106c80000(0000)
+>     knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fbf3f1c1840 CR3: 0000000014e36000 CR4: 00000000000006e0
+> Call Trace:
+>  <TASK>
+> neigh_connected_output (./include/linux/netdevice.h:3060
+>     net/core/neighbour.c:1595)
+> ip6_finish_output2 (./include/net/neighbour.h:546
+>     net/ipv6/ip6_output.c:134)
+> ip6_finish_output (net/ipv6/ip6_output.c:195 net/ipv6/ip6_output.c:206)
+> ip6_output (./include/linux/netfilter.h:291 net/ipv6/ip6_output.c:227)
+> NF_HOOK.constprop.0 (./include/net/dst.h:445
+>     ./include/linux/netfilter.h:302)
+> mld_sendpack (net/ipv6/mcast.c:1824)
+> mld_send_cr (net/ipv6/mcast.c:2122)
+> mld_ifc_work (net/ipv6/mcast.c:2655)
+> process_one_work (kernel/workqueue.c:2294)
+> worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2437)
+> kthread (kernel/kthread.c:376)
+> ret_from_fork (arch/x86/entry/entry_64.S:312)
+>  </TASK>
+> Modules linked in:
+> Dumping ftrace buffer:
+>    (ftrace buffer empty)
+> ---[ end trace 0000000000000000 ]---
+>
+> Fixes: 0c4e85813d0a ("[NET]: Wrap netdevice hardware header creation.")
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> ---
+>  include/linux/netdevice.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index eddf8ee270e7..9b25a6301fa5 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3054,7 +3054,7 @@ static inline int dev_hard_header(struct sk_buff *skb, struct net_device *dev,
+>                                   const void *daddr, const void *saddr,
+>                                   unsigned int len)
+>  {
+> -       if (!dev->header_ops || !dev->header_ops->create)
+> +       if (!dev || !dev->header_ops || !dev->header_ops->create)
+>                 return 0;
 
-As a workaround, add an explicit BTF_TYPE_EMIT for the type in
-net/filter.c, so the type definition gets included in vmlinux BTF. This
-way, both modules can refer to the same type ID (as they both build on top
-of vmlinux BTF), and the verifier is no longer confused.
+net_device being NULL during eth header construction? seems like a
+more serious issue?
+If it indeed is a genuine scenario I think a better description is needed...
 
-v2:
+>
+>         return dev->header_ops->create(skb, dev, type, daddr, saddr, len);
+> --
+> 2.31.1
+>
 
-- Use BTF_TYPE_EMIT (which is a statement so it has to be inside a function
-  definition; use xdp_func_proto() for this, since this is mostly
-  xdp-related).
+--000000000000b181ee05eec407e0
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Fixes: 820dc0523e05 ("net: netfilter: move bpf_ct_set_nat_info kfunc in nf_nat_bpf.c")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
-Dropping the selftest fix for now, will follow up with a separate series
-adding kfunc-in-modules support to selftests (since a quick fix doesn't
-appear to do the trick).
-
- net/core/filter.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index bb0136e7a8e4..9cfa0b5cb723 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -80,6 +80,7 @@
- #include <net/tls.h>
- #include <net/xdp.h>
- #include <net/mptcp.h>
-+#include <net/netfilter/nf_conntrack_bpf.h>
- 
- static const struct bpf_func_proto *
- bpf_sk_base_func_proto(enum bpf_func_id func_id);
-@@ -7983,6 +7984,19 @@ xdp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	default:
- 		return bpf_sk_base_func_proto(func_id);
- 	}
-+
-+#if IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)
-+	/* The nf_conn___init type is used in the NF_CONNTRACK kfuncs. The
-+	 * kfuncs are defined in two different modules, and we want to be able
-+	 * to use them interchangably with the same BTF type ID. Because modules
-+	 * can't de-duplicate BTF IDs between each other, we need the type to be
-+	 * referenced in the vmlinux BTF or the verifier will get confused about
-+	 * the different types. So we add this dummy type reference which will
-+	 * be included in vmlinux BTF, allowing both modules to refer to the
-+	 * same type ID.
-+	 */
-+	BTF_TYPE_EMIT(struct nf_conn___init);
-+#endif
- }
- 
- const struct bpf_func_proto bpf_sock_map_update_proto __weak;
--- 
-2.38.1
-
+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
+OltyqaGBuzv+bJTUL+bmV7E4QBLIqGt4jVr1R9hJdH6KxXwJdyfHZ9C6qXmoe2NQhiFUyBOJ0wgk
+dB9Z1IU7nCwvNKYg2JMoJs93tIgbhPJg/D7pqW8gabkCAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZcGF2YW4uY2hlYmJpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEV6y/89alKPoFbKUaJXsvWu5
+fdowDQYJKoZIhvcNAQELBQADggEBAEHSIB6g652wVb+r2YCmfHW47Jo+5TuCBD99Hla8PYhaWGkd
+9HIyD3NPhb6Vb6vtMWJW4MFGQF42xYRrAS4LZj072DuMotr79rI09pbOiWg0FlRRFt6R9vgUgebu
+pWSH7kmwVXcPtY94XSMMak4b7RSKig2mKbHDpD4bC7eGlwl5RxzYkgrHtMNRmHmQor5Nvqe52cFJ
+25Azqtwvjt5nbrEd81iBmboNTEnLaKuxbbCtLaMEP8xKeDjAKnNOqHUMps0AsQT8c0EGq39YHpjp
+Wn1l67VU0rMShbEFsiUf9WYgE677oinpdm0t2mdCjxr35tryxptoTZXKHDxr/Yy6l6ExggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwV/XkICjVscn4SNZMw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICOxZVKDCs83BghAQJfrXQGrIdUo9dpx
+XVk7QLaGCPQKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMTIw
+MTEzMTYzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQCdesEI6liHnREmarUKE5SjXxOkMxbTwhakhYSHs8PrfMKp7iya
+35jm5PqaeME5DRmjpvugmFxJeNu/ob225f13G00Apc0jRm9PvhfwtH+NP4aLE+MkJf+AXB07ujyu
+u0KnRtt5Oz3mEaMDaCg1eqpg5w6VLz4BM4slQi1EFwqDkeSjll6OwbzGF41JAqfCnKHfihwUxJcg
+fbY8GzQ+2i78u6J683VF19CdJICTkgcNCCbBoHYL76EEZSvECcdoQztwHe7Q7Li12A5cqkUUdyEn
+93smOZ72bya+E9n7gLM/lEhirEjQ0187xAo0atE0WXUFFX4n6rnYpv310w4DgjFB
+--000000000000b181ee05eec407e0--
