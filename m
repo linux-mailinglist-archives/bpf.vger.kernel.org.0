@@ -2,64 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9279963EF08
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 12:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD1663EF31
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 12:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbiLALLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 06:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        id S230453AbiLALRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 06:17:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbiLALLF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 06:11:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058A4C6E59
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 03:06:25 -0800 (PST)
+        with ESMTP id S229631AbiLALQp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 06:16:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8610DA85D5
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 03:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669892785;
+        s=mimecast20190719; t=1669892980;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YyFMoLGbYvLkJTYxwwpaklfGNak+P0HaQDsYqV4zhZE=;
-        b=NSlY5Mv2tuDdBj+ycFvRor4UPvYJCB40IPQS3nZVTwC/R3iEGyvYcshdb55BkQ1VN/7SmP
-        MGGnJG9K46gQYnrRSYfIFyl61QZIUlwN8X3IL3CD05VizsQJpuF1UnVQ5DVMKIA7jb4U8Q
-        QBNcRdS2GuGicJ9fCBSP4ztXjNQvm/0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=qU2TuWd+0O3otFPfr6vlmRP+YxZG5HKjhLnoTy3E3L4=;
+        b=PFaCHR6P8MUPeRx9uiofgUrCRrcGRwMTvF895CAhct8UPQz+z6h01irWI5OranRghRmvNh
+        PBazbnDprTGIyD56gji+o6PMhB/VPnkEVWn0EFWXICeIvWUkhtYMIrAHmCwOLQA67CaijI
+        o8pDWgpS5+BxgTXDovDF58RYw5od7jk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-633-Mbg2EA5BMDOcrVaEhqmKtg-1; Thu, 01 Dec 2022 06:06:24 -0500
-X-MC-Unique: Mbg2EA5BMDOcrVaEhqmKtg-1
-Received: by mail-ed1-f69.google.com with SMTP id g14-20020a056402090e00b0046790cd9082so691626edz.21
-        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 03:06:24 -0800 (PST)
+ us-mta-554-QEd1yfkXNha3nEpVzq2VOg-1; Thu, 01 Dec 2022 06:09:40 -0500
+X-MC-Unique: QEd1yfkXNha3nEpVzq2VOg-1
+Received: by mail-ed1-f70.google.com with SMTP id b6-20020a056402278600b0046bb01fb9c0so699059ede.3
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 03:09:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YyFMoLGbYvLkJTYxwwpaklfGNak+P0HaQDsYqV4zhZE=;
-        b=HYotuTjEP7m2d/yQ2UYIcZo8Pa8Zmn4nihJW9GLAPK0vwDUA++pTF6yYozTtnzS9yx
-         fXhJWLo+dtb/d1Uwv2gZ35+U3gqHViQYVitaybqd4sQFBNQvMpDX9qTStrcP4n7QNTaY
-         LhU63uUYngq2kATNflM21Jfueobis4l4oME+KEMhjT/Zbr3L6/aELFnkfzQ6I6EGFQdL
-         jPtwKtCj6YzX4vk171LGVjdXBZ3+kL1alzWtRZMKluf1hYi/XJt1oyNONPTttvI2bgbN
-         q9gnXoLKz0X+cPSx7d04ds1X73nCnace0m4kXE2rhL16nkjaH4lxm/qki6Oey97CZSrs
-         SxDw==
-X-Gm-Message-State: ANoB5pnxcNNj8+LDvVTyQM5FrkdQ2BzzHFWIoodSSlQDQiVC/05uhmFE
-        D9yms1KzF5ZG6ucWrJ2KkKpkDm3A/EjMiz38513nfK+280TGIqzZ/MD4u1rUiC8aBljFUCE5su5
-        u41wu0GXt1pos
-X-Received: by 2002:a17:906:392:b0:7b5:a9df:d83e with SMTP id b18-20020a170906039200b007b5a9dfd83emr45040828eja.358.1669892781709;
-        Thu, 01 Dec 2022 03:06:21 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5dNAxQNgTxqAeWdCeke+Ll3q75+mrvpFjBA/NeFS3y1WND2ICroxDrX9/uOId71zkcNOdu4g==
-X-Received: by 2002:a17:906:392:b0:7b5:a9df:d83e with SMTP id b18-20020a170906039200b007b5a9dfd83emr45040686eja.358.1669892779152;
-        Thu, 01 Dec 2022 03:06:19 -0800 (PST)
+        bh=qU2TuWd+0O3otFPfr6vlmRP+YxZG5HKjhLnoTy3E3L4=;
+        b=swxfsQsd2aQj1DFKoUXTvIOLeJpc5G9a3y87JZp57AYgTCF6jEwb8k2UXqgkdyl+hy
+         05ZLiz9NKZFDwh+Mnna43wC9mjr0JiC5cghfMaZK80lL+uVn+b2UUgRaak59j6wFa1E8
+         +nL7fySZhpD8Inou9JRTjPCX4qCFX+8nXAPPT/axNxjlKj3SueqJfjCCqZcuVEASpvpt
+         z7afqC7iPagJ2QSYh5yDpC/d+O5UelzSGp5sawEecdzPfzorBqHNUcUNzn21WXQJcfCX
+         aQ0ADKdpe5D5oXGZGrBZpNGTVvc5KS4lcHUJ3l2VeujYjQ+TA0yJn2mfI73kfty4Zh0s
+         q+rQ==
+X-Gm-Message-State: ANoB5plyWtBfYHx17gio5iAxQSeExacI8ZyemaHjnULRA1AXt5Zvpn9c
+        +2eJz3i9vXuEDxqpGF3sWnBVsMvHfrYOhyfu8CY2JZ6LRI5PB0ZW54yQCaFTI87VcJdCp6fROuc
+        SyfmWTOMSMIQ9
+X-Received: by 2002:a17:907:76cb:b0:7c0:870b:3dda with SMTP id kf11-20020a17090776cb00b007c0870b3ddamr10519330ejc.676.1669892976158;
+        Thu, 01 Dec 2022 03:09:36 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7R9xh8S7sMRLkqaPcdUYpWRxgVpHJKcuACb499YCJZddWDmO8d5RaNAO6dt37hbP3eIw6HsA==
+X-Received: by 2002:a17:907:76cb:b0:7c0:870b:3dda with SMTP id kf11-20020a17090776cb00b007c0870b3ddamr10519167ejc.676.1669892973636;
+        Thu, 01 Dec 2022 03:09:33 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q20-20020aa7da94000000b00458947539desm1595165eds.78.2022.12.01.03.06.18
+        by smtp.gmail.com with ESMTPSA id l9-20020a1709063d2900b0079dbf06d558sm1629787ejf.184.2022.12.01.03.09.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Dec 2022 03:06:18 -0800 (PST)
+        Thu, 01 Dec 2022 03:09:33 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DE09380AFCE; Thu,  1 Dec 2022 12:06:17 +0100 (CET)
+        id 977FF80AFD0; Thu,  1 Dec 2022 12:09:32 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -68,29 +71,24 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 1/2] bpf: Add dummy type reference to nf_conn___init
- to fix type deduplication
-In-Reply-To: <CAEf4BzafebzBTVqtTHotRcySXPafF5JK11Svpirtnvz7c9O7uQ@mail.gmail.com>
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add local definition of enum
+ nf_nat_manip_type to bpf_nf test
+In-Reply-To: <CAEf4Bzb+Vg0QGb40f2z4UrhNhzcH6sEvzoVjvvM=uVHXFRchpw@mail.gmail.com>
 References: <20221130144240.603803-1-toke@redhat.com>
- <CAEf4BzafebzBTVqtTHotRcySXPafF5JK11Svpirtnvz7c9O7uQ@mail.gmail.com>
+ <20221130144240.603803-2-toke@redhat.com>
+ <CAEf4BzaXbNkx85pBAB=gSshQvdGySkuZzw+HJ9KmDDA1JuheNQ@mail.gmail.com>
+ <CAEf4Bzb+Vg0QGb40f2z4UrhNhzcH6sEvzoVjvvM=uVHXFRchpw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 01 Dec 2022 12:06:17 +0100
-Message-ID: <87fsdzxu1i.fsf@toke.dk>
+Date:   Thu, 01 Dec 2022 12:09:32 +0100
+Message-ID: <87cz93xtw3.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,82 +98,60 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Wed, Nov 30, 2022 at 6:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
+> On Wed, Nov 30, 2022 at 5:18 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 >>
->> The bpf_ct_set_nat_info() kfunc is defined in the nf_nat.ko module, and
->> takes as a parameter the nf_conn___init struct, which is allocated throu=
-gh
->> the bpf_xdp_ct_alloc() helper defined in the nf_conntrack.ko module.
->> However, because kernel modules can't deduplicate BTF types between each
->> other, and the nf_conn___init struct is not referenced anywhere in vmlin=
-ux
->> BTF, this leads to two distinct BTF IDs for the same type (one in each
->> module). This confuses the verifier, as described here:
+>> On Wed, Nov 30, 2022 at 6:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>> >
+>> > The bpf_nf selftest calls the bpf_ct_set_nat_info() kfunc, which takes=
+ a
+>> > parameter of type enum nf_nat_manip_type. However, if the nf_nat code =
+is
+>> > compiled as a module, that enum is not defined in vmlinux BTF, and
+>> > compilation of the selftest fails.
+>> >
+>> > A previous patch suggested just hard-coding the enum values:
+>> >
+>> > https://lore.kernel.org/r/tencent_4C0B445E0305A18FACA04B4A959B57835107=
+@qq.com
+>> >
+>> > However, this doesn't work as the compiler then complains about an
+>> > incomplete type definition in the function prototype. Instead, just ad=
+d a
+>> > local definition of the enum to the selftest code.
+>> >
+>> > Fixes: b06b45e82b59 ("selftests/bpf: add tests for bpf_ct_set_nat_info=
+ kfunc")
+>> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> > ---
+>> >  tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+>> >  1 file changed, 5 insertions(+)
+>> >
+>> > diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/t=
+esting/selftests/bpf/progs/test_bpf_nf.c
+>> > index 227e85e85dda..6350d11ec6f6 100644
+>> > --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>> > +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>> > @@ -43,6 +43,11 @@ struct bpf_ct_opts___local {
+>> >         u8 reserved[3];
+>> >  } __attribute__((preserve_access_index));
+>> >
+>> > +enum nf_nat_manip_type {
+>> > +       NF_NAT_MANIP_SRC,
+>> > +       NF_NAT_MANIP_DST
+>> > +};
+>> > +
 >>
+>> and enum redefinition error if vmlinux.h already defines it?...
 >
-> Argh, shouldn't have wasted writing [1], but oh well.
 >
->   [1] https://lore.kernel.org/bpf/CAEf4Bza2xDZ45kxxa3dg1C_RWE=3DUB5UFYEuF=
-p6rbXgX=3DLRHv-A@mail.gmail.com/
-
-Ah, yeah, crossed streams; as you can see I came to the same conclusion
-wrt types being conceptually independent.
-
->> https://lore.kernel.org/all/87leoh372s.fsf@toke.dk/
->>
->> As a workaround, add a dummy pointer to the type in net/filter.c, so the
->> type definition gets included in vmlinux BTF. This way, both modules can
->> refer to the same type ID (as they both build on top of vmlinux BTF), and
->> the verifier is no longer confused.
->>
->> Fixes: 820dc0523e05 ("net: netfilter: move bpf_ct_set_nat_info kfunc in =
-nf_nat_bpf.c")
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  net/core/filter.c | 15 +++++++++++++++
->>  1 file changed, 15 insertions(+)
->>
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index bb0136e7a8e4..1bdf9efe8593 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -80,6 +80,7 @@
->>  #include <net/tls.h>
->>  #include <net/xdp.h>
->>  #include <net/mptcp.h>
->> +#include <net/netfilter/nf_conntrack_bpf.h>
->>
->>  static const struct bpf_func_proto *
->>  bpf_sk_base_func_proto(enum bpf_func_id func_id);
->> @@ -11531,3 +11532,17 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
->>
->>         return func;
->>  }
->> +
->> +#if IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_=
-MODULES)
->> +/* The nf_conn___init type is used in the NF_CONNTRACK kfuncs. The kfun=
-cs are
->> + * defined in two different modules, and we want to be able to use them
->> + * interchangably with the same BTF type ID. Because modules can't de-d=
-uplicate
->> + * BTF IDs between each other, we need the type to be referenced in the=
- vmlinux
->> + * BTF or the verifier will get confused about the different types. So =
-we add
->> + * this dummy pointer to serve as a type reference which will be includ=
-ed in
->> + * vmlinux BTF, allowing both modules to refer to the same type ID.
->> + *
->> + * We use a pointer as that is smaller than an instance of the struct.
->> + */
->> +const struct nf_conn___init *ctinit;
->> +#endif
+> ... which is apparently proven by our CI already:
 >
-> Use BTF_TYPE_EMIT() instead maybe?
+>   [0] https://github.com/kernel-patches/bpf/actions/runs/3584446939/jobs/=
+6031141757
 
-Ah, TIL about that macro; thanks, will fix!
+Doh *facepalm*! Will fix...
 
 -Toke
 
