@@ -2,55 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0188F63E6F0
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5835763E6F1
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbiLABLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 20:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
+        id S229760AbiLABLx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 20:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbiLABLt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 20:11:49 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B4489312
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:48 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id j19-20020a056a00175300b00574ceff570bso444199pfc.9
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:48 -0800 (PST)
+        with ESMTP id S229566AbiLABLw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 20:11:52 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C073D89312
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:51 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3b5da1b3130so2379337b3.5
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ttUA9nApBEqatu7CA82K6Y/coidqsTr3aSq7VlryGug=;
-        b=Kv4V4+ydkjvHL8x5MjhlgrWTngAj3XLb9aW3wi8n3RUkyJyAK8Mc8gIawx9qfOuqRQ
-         PfO0C+ZEumTD+A4THKjzYzp0jJGBGImT1vV7eZKNUHPPXBOz9cKzheiQEtmGXnwLjv00
-         vUXGFdVQkq/wx67WqO2Lr8Y2PpCso279nFvrvLn8BE96j3fVzZLZceBdKYnlH0qa9idz
-         IqBNgthEIctD/lGjdiZMNexS+OUZrPSCNOJ9s6Qd/7UDfzKBt0h81585I0+Cs0a3N5v7
-         tvx1fb2y9BQByQIg5IkzU7KC1yhE+ciq5pPSsOQlAV1YFAI7J3fomYc98PKGIhMkAO4t
-         DT1A==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y3fJc9TKulHWMBNbVAiUgZeFm6RMMVoPZ7UAn1Qm6Jg=;
+        b=i9G07n7bN7uXCT5koczjUAlMV/9nrAMTJUvx8kz7lUjDUFtte2hsJQURqy5D0H3diz
+         SR9u1+pBg9GG9s5LM3jCqtbzZROWcufJRjUoCuyrGCHtT5S3yaNwYvtdkke8T0C793i+
+         ijp4naqIFMrNLfSxmnNVjenlTMgi608uNwdEKncIPJshsQV/gQ+zbF2pzOhNAvILZQ6j
+         s3bULlwUQam9fiL8qcTrxhscrTRlO83H2kQ9bGwUxEsR4qT1hXTkDNJkD7LAdCw/1YWS
+         sYrExGcN9gaPLdUWVDGas9iU2oDy4ffs3TBba/dv03zKbtMv6Q90u+g1sMc4ramKYtji
+         Qw8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ttUA9nApBEqatu7CA82K6Y/coidqsTr3aSq7VlryGug=;
-        b=ICp/CX26zPQ7MRYnx0go4vZQGRKRSrZR8LLTBTFV0lp+nmx2OQRq6+9PmjELS5IUGh
-         AuhxJs3NMKWfwyciusGebYeJh2qJcEfL9Z00Yf7ZrPhCkjJzHH+vt1YSF9dMayD5effM
-         urlk0M1eRp9tyGQWTM0llIrl/qC+8rnrr3OOavFHNHVyBO2Mc9x8qzJ9ZIzsvKNDJJbK
-         UYV4UaaTuUt9glWLPGN4rzKCwYJ0RozOspt0U5UYHSMa0Bnx+iHzsFlBLlt+9lDEfpXa
-         G1wYG8fpQLNlh3gFYYxIqTmPMhPD4SDYJWMuLOPnqq5r1lQh3DzqDQLPQxc+RuPXXVh6
-         WSSg==
-X-Gm-Message-State: ANoB5pmii74t/EN4+wm/SS4X46e5s0oW0LskUc3v9i5ph7b31A/ai2Gd
-        OWeh7FCW1hT3damEqhaXoDH7etNeRo/5iVT7Hs6IsZCYFhP24tVG5wW8qr8mrWCHGWvWpI+3fhB
-        TwGkhMtdBQUTEPJ1cxPVt1z/8753tAOKaxWGJfA0GY1LSyD4fGBdcdpMvQrTyLELNYByB
-X-Google-Smtp-Source: AA0mqf5GFvahQI5oTsvrWM2RwXHSCuCIJD8X2/fgOXrKJPHF7qEw7MlHS50YJgWK9qe0HOxoV4eFKAzB1DNALXo6
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y3fJc9TKulHWMBNbVAiUgZeFm6RMMVoPZ7UAn1Qm6Jg=;
+        b=rxU0OOP0uDljUrr49i+/W3TIV5Z85tCjvSaR/8LAnTxtRS1X8vK1GnMGnRQQcRkiam
+         2rajZXURjF9UQQnlsvJe2RT9hdvCeXxu9pep5HQglz4S5nqnVwTDd6T85QWgqgpNgIXm
+         w0FdbZAskvxe+C/Dv6PpjCjnJZQQZhUCf/LGYqssspf40ALg72gNuYeXspb7HbFNeGdC
+         SxThiijPKZLlNqb74o9zo62sVyDS2qyZFIk3PUpd0NLSbNazoxWRhcKmMEkq8Ybii+4e
+         /5KaWkYl68+DHf6NJgGTqv3GGM7ody1EOh4dqbxZlTDra0cEBhw0ZfrswCTq3Ps8QxMK
+         xpZA==
+X-Gm-Message-State: ANoB5pkVnjaLBXOoBXPbFiTtOfsWDe9qtFpaERdVZeS2M6U745nUUp1J
+        vnx/Ev2N7nnQZ0BAu7vrJKrgKGmkOkBj9DNzKTLuZcn9PxBDNI5uMxeCz2kOQVWl8ZpazjxzB8v
+        kqEtYDqXlUmxnX4QFuV7d5BMxRJQxx0PuUiT6uo9eYFDPmWePM/7guCXmaSteW5pMbtfn
+X-Google-Smtp-Source: AA0mqf7vOIWz6RLET7YI53wD6w1BnDXtG/oOfR33J/LHP2YP9qS8hC26SVgePVfCbzHZ39JwSDN3jorQc8Thu+1B
 X-Received: from pnaduthota.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4e5])
- (user=pnaduthota job=sendgmr) by 2002:a05:6a00:1892:b0:572:b324:bbe9 with
- SMTP id x18-20020a056a00189200b00572b324bbe9mr45540026pfh.57.1669857107709;
- Wed, 30 Nov 2022 17:11:47 -0800 (PST)
-Date:   Thu,  1 Dec 2022 01:11:33 +0000
+ (user=pnaduthota job=sendgmr) by 2002:a81:6c93:0:b0:3c8:f270:70bb with SMTP
+ id h141-20020a816c93000000b003c8f27070bbmr16601869ywc.79.1669857110999; Wed,
+ 30 Nov 2022 17:11:50 -0800 (PST)
+Date:   Thu,  1 Dec 2022 01:11:34 +0000
+In-Reply-To: <20221201011135.1589838-1-pnaduthota@google.com>
 Mime-Version: 1.0
+References: <20221201011135.1589838-1-pnaduthota@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221201011135.1589838-1-pnaduthota@google.com>
-Subject: [PATCH net-next v2 0/2] Fix pinning devmaps
+Message-ID: <20221201011135.1589838-2-pnaduthota@google.com>
+Subject: [PATCH net-next v2 1/2] Ignore RDONLY_PROG for devmaps in libbpf to
+ allow re-loading of pinned devmaps
 From:   Pramukh Naduthota <pnaduthota@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -69,33 +72,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix devmap pinning and reloading. The kernel adds BPF_F_RDONLY_PROG to
-all devmaps when created, but libbpf checks that user flags match pinned
-map flags when using LIBBPF_PIN_BY_NAME, so reusing pinned devmaps
-doesn't work, failing with an error like:
+Ignore BPF_F_RDONLY_PROG when checking for compatibility for devmaps. The
+kernel adds the flag to all devmap creates, and this breaks pinning
+behavior, as libbpf will then check the actual vs user supplied flags and
+see this difference. Work around this by adding RDONLY_PROG to the
+users's flags when testing against the pinned map
 
-    libbpf: couldn't reuse pinned map at '/sys/fs/bpf/dev_map':
-    parameter mismatch
+Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
+Signed-off-by: Pramukh Naduthota <pnaduthota@google.com>
+---
+ tools/lib/bpf/libbpf.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Work around this by ignoring RDONLY_PROG in the compat check in libbpf.
-
-Changes since v1:
-- Fixed a broken import
-- Fixed style issues
-
-
-Pramukh Naduthota (2):
-  Ignore RDONLY_PROG for devmaps in libbpf to allow re-loading of pinned
-    devmaps
-  Add a selftest for devmap pinning.
-
- tools/lib/bpf/libbpf.c                        |  8 +++++++-
- .../testing/selftests/bpf/prog_tests/devmap.c | 20 +++++++++++++++++++
- .../selftests/bpf/progs/test_pinned_devmap.c  | 17 ++++++++++++++++
- 3 files changed, 44 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/devmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_pinned_devmap.c
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 50d41815f431..a3dae26d82d6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4818,6 +4818,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+ 	char msg[STRERR_BUFSIZE];
+ 	__u32 map_info_len;
+ 	int err;
++	unsigned int effective_flags = map->def.map_flags;
+ 
+ 	map_info_len = sizeof(map_info);
+ 
+@@ -4830,11 +4831,16 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+ 		return false;
+ 	}
+ 
++	/* The kernel adds RDONLY_PROG to devmaps */
++	if (map->def.type == BPF_MAP_TYPE_DEVMAP ||
++	   map->def.type == BPF_MAP_TYPE_DEVMAP_HASH)
++		effective_flags |= BPF_F_RDONLY_PROG;
++
+ 	return (map_info.type == map->def.type &&
+ 		map_info.key_size == map->def.key_size &&
+ 		map_info.value_size == map->def.value_size &&
+ 		map_info.max_entries == map->def.max_entries &&
+-		map_info.map_flags == map->def.map_flags &&
++		map_info.map_flags == effective_flags &&
+ 		map_info.map_extra == map->map_extra);
+ }
+ 
 -- 
 2.30.2
 
