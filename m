@@ -2,77 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97EF63F2BD
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 15:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F019F63F2F5
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 15:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbiLAOYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 09:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S229968AbiLAOes (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 09:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbiLAOX7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 09:23:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70174AFCF9
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 06:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669904582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SR3PJdSecGTlAfxSaOagL/vi51rfippLgIgBQ/FaDaE=;
-        b=TdRUtLzJ8kmn9uV9XrY1kWPSxLBm8vITm1qRgwKEUdbUH35Vz+TD+TIH0uhtUu6u9n42Vu
-        j65NdaDHB+o8LElSl2gHdUX1RaCu5uy7iArPEdlPjkw5JiBUztzCffLmWgP8vBJFJkW527
-        NnxjSpV+BMgQnWCQTfnSaZ1sUb6RL0g=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-592-U3ghGLXBPWGlxbGDIGizgg-1; Thu, 01 Dec 2022 09:23:01 -0500
-X-MC-Unique: U3ghGLXBPWGlxbGDIGizgg-1
-Received: by mail-il1-f198.google.com with SMTP id q6-20020a056e020c2600b00302664fc72cso2076179ilg.14
-        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 06:23:01 -0800 (PST)
+        with ESMTP id S230338AbiLAOer (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 09:34:47 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27AE5AE04
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 06:34:45 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id j16so2745072lfe.12
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 06:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iezh4JJ5mFvbKg6O6m5Uisn1msWAWI7+/FJBtcFEyFQ=;
+        b=E9ZpWTk8wLTmLGA6XfuZaRbVxyWJ1EO+Bo7HQaIquEKFmq5xXr3UOOJmUu2aDk6mwO
+         tpmO+7hZrGjP0NKqE1x6BG3D9x6sq8LZ2PHEF1KN1XDlvJSvepvOv+NIJST9kP6zuD1s
+         vpMg9Vo7LrCpXUlc6B1WhLA52wCpNiKapRH3uis3H6E+S6xdVnrymveCJR+jArRAeCHj
+         pXqIwLUIaTrkaA53Hxc1X7t299CcJaI4wicXA8x9KfsRCTrBcGtx8dz5xIy9onI7Pk7c
+         om74QwsC/qR24j7Tcx1ceMAFkqqO+3upQ765sUDoDvATE8lnXWqYYK9+N//QQDUsKmC6
+         QeHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SR3PJdSecGTlAfxSaOagL/vi51rfippLgIgBQ/FaDaE=;
-        b=YYr0Q1s+mfhk57QWaZFZkGnSIWy3B+h+CfIBh28bLEgXYDdXWxCMz14zOjgJzgE1Bw
-         RTJkiFt3YhpZ/4vyrFKT8Owsgip9AE5YHhnrOVzqjlFezOoTOCQYuMyj6ByGy4Kj1T4t
-         y6KraaWNft/RNu/dFrz+9/tOBKyhtKUvN/Zh36KYtUfh1NkymWyLQYh3QQIFX6fr/S0z
-         R/4IOlpba39m7SKUBBFvLkBHNWXvWxDSw7Gl4ROk1kSJp58hCQXHPllc2l8SEC9SnWeP
-         xV2DU1vPHnAe0aSIy6kr3is7nX1nGOR/xq+X2bkTucpVMu9gDqzROnSXN/8mSDauDOQJ
-         yEmg==
-X-Gm-Message-State: ANoB5pm0QtLKH6CFIPhd+vmbL8kNxKbcdxeVYwGOkeJd+tQE55zVkBfq
-        a5EcggOV47PwK0yYtubmy86RO60WEEwMvtdWvY1VrA6Yt7CHJ+V8SwvcuUGjk7THXLqr82IfVf5
-        kx0EkORl9fxd+W9MqNcIQoJDWc7qk
-X-Received: by 2002:a5e:a50c:0:b0:6d6:3d7e:1592 with SMTP id 12-20020a5ea50c000000b006d63d7e1592mr23083924iog.37.1669904580888;
-        Thu, 01 Dec 2022 06:23:00 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6UOMtL67lyuuojepWXWGsO32EdrrACTmKXZEWXhiFXcsj1p4iedeexv7JjuuFnyi1+VrfIaSAHk9jJ5rYarS0=
-X-Received: by 2002:a5e:a50c:0:b0:6d6:3d7e:1592 with SMTP id
- 12-20020a5ea50c000000b006d63d7e1592mr23083910iog.37.1669904580642; Thu, 01
- Dec 2022 06:23:00 -0800 (PST)
+        bh=iezh4JJ5mFvbKg6O6m5Uisn1msWAWI7+/FJBtcFEyFQ=;
+        b=pl5Koig9iFEoeu6dsQJgVND0gDcmpoiRo2wvPTj5E8G+rSEmzKD7538WwRNOQlPHWH
+         NWQeT5F6qssc2P+xmJLVvuiIjSbfkN7P/Vm7d9KZfoNGnqFkAVMWUPz4n5/8zbnOs0yD
+         8F7DWGP+PgoAgHLCbDQ87UQHzvK8F1TgAAcKNJmq073TVbayyd5kWQZvj2HMfUS95W11
+         mqMDaAaI5vIK+1xtEMatAESz4+jL8emOWIfaZ3JozFuDqfiIIAkaCds2NAHIil8hYgDc
+         2HF95OHPDEJ29YiB7kv1ihmlIPi230QEfOkPW0Gkn1pGyBnu7RTQgOV1wNe1grMQdQE0
+         OzPA==
+X-Gm-Message-State: ANoB5pkTEoGsRnhg9HCbt/OSCdjfuxK79W2yD1pxWDSpEYMzPiefSbzG
+        8akyXLBB2K8GYs5KHeaX9IBBDMkHK/Iacq+rlOg=
+X-Google-Smtp-Source: AA0mqf4bFMSjPXX079cLLs25D4kL1Ucc9nxwM9iB87Dw80YzGDSsNyUaT48l/ebHe2cL2VMPtC0AGVRgH+MNsLvi3wE=
+X-Received: by 2002:a19:ca02:0:b0:4a4:434e:1e07 with SMTP id
+ a2-20020a19ca02000000b004a4434e1e07mr21488299lfg.172.1669905283971; Thu, 01
+ Dec 2022 06:34:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20221124151603.807536-1-benjamin.tissoires@redhat.com>
- <20221124151603.807536-2-benjamin.tissoires@redhat.com> <CAEf4Bzaq3QfhzqQK=BqCkzNcoS3A5L-ntJ5vj16uMc=jS4bxkw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzaq3QfhzqQK=BqCkzNcoS3A5L-ntJ5vj16uMc=jS4bxkw@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 1 Dec 2022 15:22:49 +0100
-Message-ID: <CAO-hwJKwDWJ6ZKK=+BjrDhjfyG00VKFznJ+HO-0MV1AQ1U8D-Q@mail.gmail.com>
-Subject: Re: [RFC hid v1 01/10] bpftool: generate json output of skeletons
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20221129161612.45765-1-laoar.shao@gmail.com> <CA+khW7jjfQOLnx6-4UyJ8sYTj12qzp_NmiZJ-uiSwGU754hbXg@mail.gmail.com>
+ <CALOAHbCGSigE9vjvw6DczLbRF=TaQ3vmh6SHvMvoAChM_6Mdfg@mail.gmail.com> <CAPhsuW7B1fM=JYG0OeHPZU7isv+O2_OPc22EBsdC6ZNEWusqXA@mail.gmail.com>
+In-Reply-To: <CAPhsuW7B1fM=JYG0OeHPZU7isv+O2_OPc22EBsdC6ZNEWusqXA@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 1 Dec 2022 22:34:07 +0800
+Message-ID: <CALOAHbC1+v_xT5Jc+CN0rC27TZOaHcMA1sz5s0iJbJ368wEzPA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Allow get bpf object with CAP_BPF
+To:     Song Liu <song@kernel.org>
+Cc:     Hao Luo <haoluo@google.com>, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,153 +69,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 1, 2022 at 12:06 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Dec 1, 2022 at 2:07 AM Song Liu <song@kernel.org> wrote:
 >
-> On Thu, Nov 24, 2022 at 7:16 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
+> On Wed, Nov 30, 2022 at 3:59 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > >
-> > So we can then build light skeletons with loaders in any language.
+> [...]
+> > I understand that allowing ID->FD transition for CAP_SYS_ADMIN only is
+> > for security.
+> > But it also prevents the user from transiting its own bpf object ID,
+> > that is a problem.
 > >
+> > > From the commit message, I'm not clear how BPF is debugged in
+> > > containers in your use case. Maybe the debugging process should be
+> > > required to have CAP_SYS_ADMIN?
+> > >
+> >
+> > Some container users will run bpf programs in their container,
+> > sometimes they want to check the bpf objects created by themselves  by
+> > using bpftool or read/write the bpf maps with their own tools. But if
+> > the bpf objects are not pinned, the only way to get these bpf objects
+> > is via SCM_RIGHTS.
+> > There should be a general way to get the FD of their own objects when
+> > CAP_BPF is enabled.
+> > With CAP_SYS_ADMIN, the container user can do almost anything, which
+> > is very dangerous.
+> > While with CAP_BPF, the risk can be kept within BPF.
+> >
+> > I think we should improve this situation by allowing the user to
+> > transit its own bpf object IDs.
+> > There are some possible solutions,
+> > 1. introduce BPF_ID namespace
+> >     Let's use namespace to isolate the bpf object ID instead of
+> > preventing them from reading all IDs.
+> > 2. introduce a global sysctl knob to allow users to do the ID->FD transition
+> >     for example, introduce a new value into unprivileged_bpf_disabled.
+> >     -0 Unprivileged calls to ``bpf()`` are enabled
+> >    +0 Unprivileged calls to ``bpf()`` are enabled except the calls
+> >    +  which explicitly requires ``CAP_BPF`` or ``CAP_SYS_ADMIN``
+> >     1 Unprivileged calls to ``bpf()`` are disabled without recovery
+> >     2 Unprivileged calls to ``bpf()`` are disabled
+> >   +3 All unprivileged calls to ``bpf()`` are enabled
+> >
+> > WDYT ?
 >
-> It would be useful to include an example generated JSON. Other than
-> that the overall idea makes sense. Kind of machine-friendly "BPF
-> object schema" to allow automation.
->
-
-Great :)
-I'll add the generated example in v2 then.
-
-However, I have problems figuring out how I can hit the
-"codegen_datasecs()" path. I think that's the only code path I am not
-duplicating from the do_skeleton() function, but I don't know what
-kind of .bpf.c program will trigger that part.
-
-Also, should I add some tests for it in tools/testing/selftests/bpf?
-
-Cheers,
-Benjamin
-
-> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > ---
-> >  tools/bpf/bpftool/gen.c | 95 +++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 95 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index cf8b4e525c88..818a5209b3ac 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -904,6 +904,96 @@ codegen_progs_skeleton(struct bpf_object *obj, size_t prog_cnt, bool populate_li
-> >         }
-> >  }
-> >
-> > +static int gen_json(struct bpf_object *obj, const char *obj_name, size_t file_sz, uint8_t *obj_data)
-> > +{
-> > +       struct bpf_program *prog;
-> > +       struct bpf_map *map;
-> > +       char ident[256];
-> > +
-> > +       jsonw_start_object(json_wtr);   /* root object */
-> > +
-> > +       jsonw_string_field(json_wtr, "name", obj_name);
-> > +
-> > +       jsonw_bool_field(json_wtr, "use_loader", use_loader);
-> > +
-> > +       /* print all maps */
-> > +       jsonw_name(json_wtr, "maps");
-> > +       jsonw_start_array(json_wtr);
-> > +       bpf_object__for_each_map(map, obj) {
-> > +               if (!get_map_ident(map, ident, sizeof(ident))) {
-> > +                       p_err("ignoring unrecognized internal map '%s'...",
-> > +                             bpf_map__name(map));
-> > +                       continue;
-> > +               }
-> > +
-> > +               jsonw_start_object(json_wtr);   /* map object */
-> > +               jsonw_string_field(json_wtr, "ident", ident);
-> > +               jsonw_string_field(json_wtr, "name", bpf_map__name(map));
-> > +
-> > +               /* print mmap data value */
-> > +               if (is_internal_mmapable_map(map, ident, sizeof(ident))) {
-> > +                       const void *mmap_data = NULL;
-> > +                       size_t mmap_size = 0;
-> > +
-> > +                       mmap_data = bpf_map__initial_value(map, &mmap_size);
-> > +
-> > +                       jsonw_uint_field(json_wtr, "size", mmap_size);
-> > +                       jsonw_uint_field(json_wtr, "mmap_sz", bpf_map_mmap_sz(map));
-> > +                       jsonw_name(json_wtr, "data");
-> > +                       print_hex_data_json((uint8_t *)mmap_data, mmap_size);
-> > +
-> > +               }
-> > +               jsonw_end_object(json_wtr);     /* map object */
-> > +       }
-> > +       jsonw_end_array(json_wtr);
-> > +
-> > +       /* print all progs */
-> > +       jsonw_name(json_wtr, "progs");
-> > +       jsonw_start_array(json_wtr);
-> > +       bpf_object__for_each_program(prog, obj) {
-> > +               jsonw_start_object(json_wtr);   /* prog object */
-> > +               jsonw_string_field(json_wtr, "name", bpf_program__name(prog));
-> > +               jsonw_string_field(json_wtr, "sec", bpf_program__section_name(prog));
-> > +               jsonw_end_object(json_wtr);     /* prog object */
-> > +       }
-> > +       jsonw_end_array(json_wtr);
-> > +
-> > +       /* print object data */
-> > +       if (use_loader) {
-> > +               DECLARE_LIBBPF_OPTS(gen_loader_opts, opts);
-> > +               int err = 0;
-> > +
-> > +               err = bpf_object__gen_loader(obj, &opts);
-> > +               if (err)
-> > +                       return err;
-> > +
-> > +               err = bpf_object__load(obj);
-> > +               if (err) {
-> > +                       p_err("failed to load object file");
-> > +                       return err;
-> > +               }
-> > +               /* If there was no error during load then gen_loader_opts
-> > +                * are populated with the loader program.
-> > +                */
-> > +
-> > +               jsonw_uint_field(json_wtr, "data_sz", opts.data_sz);
-> > +               jsonw_name(json_wtr, "data");
-> > +               print_hex_data_json((uint8_t *)opts.data, opts.data_sz);
-> > +
-> > +               jsonw_uint_field(json_wtr, "insns_sz", opts.insns_sz);
-> > +               jsonw_name(json_wtr, "insns");
-> > +               print_hex_data_json((uint8_t *)opts.insns, opts.insns_sz);
-> > +
-> > +       } else {
-> > +               jsonw_name(json_wtr, "data");
-> > +               print_hex_data_json(obj_data, file_sz);
-> > +       }
-> > +
-> > +       jsonw_end_object(json_wtr);     /* root object */
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static int do_skeleton(int argc, char **argv)
-> >  {
-> >         char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SKEL_H__")];
-> > @@ -986,6 +1076,11 @@ static int do_skeleton(int argc, char **argv)
-> >                 goto out;
-> >         }
-> >
-> > +       if (json_output) {
-> > +               err = gen_json(obj, obj_name, file_sz, (uint8_t *)obj_data);
-> > +               goto out;
-> > +       }
-> > +
-> >         bpf_object__for_each_map(map, obj) {
-> >                 if (!get_map_ident(map, ident, sizeof(ident))) {
-> >                         p_err("ignoring unrecognized internal map '%s'...",
-> > --
-> > 2.38.1
-> >
+> Personally, I think some namespace might be the solution we need.
+> But adding a namespace is a lot of work, so we need to make sure to
+> do it correctly.
 >
 
+Right, lots of code to write. I will think about it carefully.
+
+> This might be a good topic to discuss in the BPF office hour.
+>
+
+Once I figure out a workable solution, I will post a proposal.
+
+--
+Regards
+Yafang
