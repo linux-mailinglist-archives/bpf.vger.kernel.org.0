@@ -2,64 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F143763E6A3
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6EB63E6B5
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 01:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbiLAAm1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 19:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S229448AbiLAAw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 19:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiLAAm1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 19:42:27 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EB1865A0;
-        Wed, 30 Nov 2022 16:42:23 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id f7so322312edc.6;
-        Wed, 30 Nov 2022 16:42:23 -0800 (PST)
+        with ESMTP id S229614AbiLAAw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 19:52:26 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CFC7B4F9;
+        Wed, 30 Nov 2022 16:52:25 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id bj12so542747ejb.13;
+        Wed, 30 Nov 2022 16:52:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zpvp+e+s7oTSiRyeUBaqCfKwUhXwNEbaOAQ5dW3BcZQ=;
-        b=bFBZ1HikjoF4dFXhG6yjahMXb1nQK6oOG2SpOZRmNi+vwtLpqLcTAX3KssS6plvFbS
-         /wPqg9IEGexDMUEn3c3NfRkLDXMxWFJ7OEuhJBFXiydyXMHZuh5VCY/CvEX4p68uNorc
-         VZiiJqDCCZWnxDsjq1NYgQvB0jYEmQZLDtC2QJSM2ksQTieyv4EfVl21IatwdTIgF3Dk
-         tuQJOUSpiHvgT2mD8WoQ8Je+2pHZ708advnMF/pUyH7i3gi6HCKWSgrttlKcZ31fJucV
-         wqDUetN9s+m2iMl78jkGw3s/QCXHLQWYXL3pnPC6NTLFenJ6BFgJpUVNkQgRB7ZA4Flt
-         MUsg==
+        bh=EcYtG8fJSEFaCTYWXfq8R84dSZ3VnLHvz4JUlumXUv0=;
+        b=JmfG+COHj9Da/GW0CY8kh7AJfSJyMm9+YNe16nEaUflGBG6szpdDdtghgAIiqIxHtq
+         R7u81kK2IxZyx0MmKk2Dy3kunXIwYV4HlgjYGhOqa6za8zpbMwZ3fteFGHcfAmAD5CbI
+         g1OV7jCWgVse0lMZF1RSqZf3E20f1mo5mg4gqeZf8b6gL3jqwyuA4A4fe7k0E2tK/QDA
+         tdOJLRZfkXO+PCWZ5wlaO61EBzzPw4PvEaD/0/53fAUuVxi4Y8smSCK7jKN5/nLqhDGm
+         S/oH1QtsjA53QdtF8+yloWmnBLr8L3xo8nEZErqUZiflzgOz2DzsdE8zPgUW1YKRwJro
+         giaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Zpvp+e+s7oTSiRyeUBaqCfKwUhXwNEbaOAQ5dW3BcZQ=;
-        b=0rkuraj1ujzta7txX882q5RAT3z3R5+BnRCrlAlE1AkEc8gSBEa338DRXKhYffvt4c
-         0VYSruOOaYCg2U3NjXql8B5VhJ98qxsy+taBbAg2vPCM/K01G3DMaXSvwhxtCqa9fE6/
-         e66UHPio2sVXZI9Jju+QX2p85VlnZIhX/IMAmK9Wm8ukX4LU8q52fWWpOtpLFwcMMPeS
-         qDrA5+iAp4l9WUhQtDhAq0tGr0xUSJHUpDylRIzEAdefzK2EcnJZpVbqiz3A+VvPDUpm
-         tbe3tUNEiA+//G7EOBsKNlBOYDyVbB4oXWKHBSsDFWasjVYshanM8C9FmOY0/zYVAYYb
-         FFTQ==
-X-Gm-Message-State: ANoB5plKDcgZSFWMmcgLqu7u8b2KjXnCacy5FMHFCUiLZHFMBtp9Fg9p
-        7ZTPvYl5Rq8IY0GTQUGLEssVqzvev2reA6EImW0=
-X-Google-Smtp-Source: AA0mqf5Ol3JhINeqqhj1Mw4fgAe2dW5aqG/dyvBEGluIiXmicdpTjveGJzwxJ4GWmiF2S3uJYh08epa9wLeCENx/FWw=
-X-Received: by 2002:a50:ed90:0:b0:46a:e6e3:b3cf with SMTP id
- h16-20020a50ed90000000b0046ae6e3b3cfmr21317903edr.333.1669855341893; Wed, 30
- Nov 2022 16:42:21 -0800 (PST)
+        bh=EcYtG8fJSEFaCTYWXfq8R84dSZ3VnLHvz4JUlumXUv0=;
+        b=RMT0L8pEG5vksa24zi5eGTWyfY83MHY7Lz5ZcCpnPJOHSKEEPjfEQghNMxSkmMP4xg
+         lHay6xW0GPs/TVga/NBRW97DL7r3UTuo5aGPezKCSpOUPccYUmnR+Wy8dn0Ty+O9eO5L
+         xzYAqb4bIWqmq7lhJMQQqvFnw6DJntCvir/X8M64DMtZSyDcdvZxk5onvP2Dade+89se
+         S4kPrsOV75IYEAwfmTnvcCf3QY7hrWVCTyCLJ1EJb9770WQG1gycWS9Rg1ie4LRB4IFV
+         ICd+nNZK8PYEKFBFZqrnPUhrZwXctFZgxAm2FOc4SsxgIylmOvpbY0bsLKGBFD+DTZ7L
+         003g==
+X-Gm-Message-State: ANoB5pkp2SHbC1HMO52cbvfZ6wLtUJJMnSCy14f8ajX458sdDMqO5dSt
+        i2XK1byiMKGcZjzJw8Avjec4diTIknyFHi8seto=
+X-Google-Smtp-Source: AA0mqf6dDvYisUlUN1Gsr07MRUCfV4BhoiCvKwdt+tl2x5lYg06ZyMUT9ehXEzASQCkZ66ZQYbfL6pluykPBul1Ep5k=
+X-Received: by 2002:a17:906:414c:b0:7a9:ecc1:2bd2 with SMTP id
+ l12-20020a170906414c00b007a9ecc12bd2mr42513746ejk.545.1669855943871; Wed, 30
+ Nov 2022 16:52:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20221129074235.116969-1-liuxin350@huawei.com>
-In-Reply-To: <20221129074235.116969-1-liuxin350@huawei.com>
+References: <20221129134217.52767-1-changbin.du@gmail.com> <20221129134217.52767-3-changbin.du@gmail.com>
+In-Reply-To: <20221129134217.52767-3-changbin.du@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Nov 2022 16:42:09 -0800
-Message-ID: <CAEf4BzZ8z9yKwkbQthaNPR9HJDqq77EJwHaEqqwQ3qYjKWTRAQ@mail.gmail.com>
-Subject: Re: [PATCH] Improved usability of the Makefile in libbpf
-To:     Xin Liu <liuxin350@huawei.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com,
-        kongweibin2@huawei.com, zhangmingyi5@huawei.com
+Date:   Wed, 30 Nov 2022 16:52:11 -0800
+Message-ID: <CAEf4BzZPZeeGJTZC3NSm+Km4RZirGrwr8d8dXepLmBLTiUn8Hg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] bpf: makefiles: do not generate empty vmlinux.h
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,73 +84,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 11:42 PM Xin Liu <liuxin350@huawei.com> wrote:
+On Tue, Nov 29, 2022 at 5:42 AM Changbin Du <changbin.du@gmail.com> wrote:
 >
-> Current libbpf Makefile does not contain the help command, which
-> is inconvenient to use. A help command is provided to list the
-> commands supported by libbpf make and the functions of the commands.
+> Remove the empty vmlinux.h if bpftool failed to dump btf info.
+> The emptry vmlinux.h can hide real error when reading output
+
+typo: empty
+
+> of make.
 >
-> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> This is done by adding .DELETE_ON_ERROR special target in related
+> makefiles.
+>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 > ---
->  tools/lib/bpf/Makefile | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>  tools/bpf/bpftool/Makefile           | 3 +++
+>  tools/perf/Makefile.perf             | 2 ++
+>  tools/testing/selftests/bpf/Makefile | 3 +++
+>  3 files changed, 8 insertions(+)
 >
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index 4c904ef0b47e..c86e05df4711 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -286,3 +286,37 @@ tags:
->
->  # Delete partially updated (corrupted) files on error
->  .DELETE_ON_ERROR:
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 4a95c017ad4c..f6b1e65085db 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -265,3 +265,6 @@ FORCE:
+>  .PHONY: all FORCE bootstrap clean install-bin install uninstall
+>  .PHONY: doc doc-clean doc-install doc-uninstall
+>  .DEFAULT_GOAL := all
 > +
-> +help:
-> +       @echo 'Default targets:'
-> +       @echo '  all               - Run all_cmd'
-> +       @echo '  all_cmd           - Build library and pkgconfig, check abi and version info'
-> +       @echo ''
-> +       @echo 'Cleaning targets:'
-> +       @echo '  clean             - Remove all generated files'
-> +       @echo ''
-> +       @echo 'Build targets:'
-> +       @echo '  libbpf.so         - Build the dynamic library'
-> +       @echo '  libbpf.a          - Build the static library'
-> +       @echo '  libbpf.pc         - Build the pkgconfig file'
-> +       @echo ''
-> +       @echo 'Install targets:'
-> +       @echo '  install           - Install all headers, library and pkgconfig file to'
-> +       @echo '                      DESTDIR(default: /) with prefix(default: /usr/local)'
-> +       @echo '  install_lib       - Install only library'
-> +       @echo '  install_headers   - Install only headers'
-> +       @echo '  install_pkgconfig - Install only pkgconfig file'
-> +       @echo ''
-> +       @echo 'Other generic targets:'
-> +       @echo '  cscope            - Generate cscope index'
-> +       @echo '  tags              - Generate tags file for editors'
-> +       @echo '  check             - Check abi and version info'
-> +       @echo '  check_abi         - Check versioned symbols'
-> +       @echo '  check_version     - Check whether the libbpf version defined in libbpf_version.h'
-> +       @echo '                      is the same as that defined in libbpf.map'
-> +       @echo ''
-> +       @echo '  make V=0|1             [targets] 0 => quiet build (default), 1 => verbose build'
-> +       @echo '  make DESTDIR=/root     [install targets] use DESTDIR for installing'
-> +       @echo '                                           into a different root directory'
-> +       @echo '  make prefix=/path      [install targets] use prefix for installing'
-> +       @echo '                                           into a user defined prefix path'
+> +# Delete partially updated (corrupted) files on error
+> +.DELETE_ON_ERROR:
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index a432e59afc42..265254fc641a 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -1149,3 +1149,5 @@ FORCE:
+>  .PHONY: libtraceevent_plugins archheaders
+>
+>  endif # force_fixdep
+> +
+> +.DELETE_ON_ERROR:
 
+please split out perf changes, they should go through perf tree
 
-I'm a bit hesitant about adding all this. Most of those targets are
-not intended to be used directly, only "all", "clean", and "install"
-are supposed to be used by end-users (maybe also "install_headers").
-And those seems to be pretty typical and straightforward targets.
-
-I actually didn't even know about `make help`, but I checked perf's
-`make help` and it's way more succinct, let's try modeling it here?
-
-Also, please use [PATCH bpf-next] (with v2 in between them) for next
-submission to point that this is meant for bpf-next tree.
-
-
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index e6cf21fad69f..f41c4b011221 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -617,3 +617,6 @@ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)      \
+>                                liburandom_read.so)
+>
+>  .PHONY: docs docs-clean
+> +
+> +# Delete partially updated (corrupted) files on error
+> +.DELETE_ON_ERROR:
 > --
-> 2.33.0
+> 2.37.2
 >
