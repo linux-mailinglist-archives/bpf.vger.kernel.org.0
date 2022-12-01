@@ -2,68 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A392163E6F2
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C62263E6F4
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 02:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbiLABL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Nov 2022 20:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S229535AbiLABMP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Nov 2022 20:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiLABLz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Nov 2022 20:11:55 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF7C934CA
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:54 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-39afd53dcdbso2273607b3.8
-        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:11:54 -0800 (PST)
+        with ESMTP id S229595AbiLABMO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Nov 2022 20:12:14 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638219077D
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:12:13 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id n21so658987ejb.9
+        for <bpf@vger.kernel.org>; Wed, 30 Nov 2022 17:12:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFSiCLMztxmBrlKciOzd82krEOdHrodzMvizxq5cjHs=;
-        b=WfNADfu2A09ZAZR95Fo09dv3M34iWn+WVpYddQA5XqJmWj/iXj+uxB4dzxGVkichxS
-         yaButpPPFnBUnXKGWpbRfWM+vIFPf1XyyO8w9cmnj6YIdYirB1wjjGoM+DkgmtoUwnZE
-         vf7C1936q/r2gC3d8Jb0EcRV5NoUlw+yab1n0hKZloESXA4h0Tp6hTa45bIEn7O323D4
-         g4eMQLGBW4kjfeYXuTPO4Hk4NAFqiM3/+7ZSq3wDvAOlZjzrN0qZR4U+mvZCutdm8oMX
-         DIwMkNPYYZcaqSRy/JnNC6XYsC/U4iM+H/8w8JjlIkJ1Pp55xQGRE2F1LV+Q6KFl4tUY
-         RSrw==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mnOHlSbgWNGlTuLSKAr9w/gQTxjdszaO70yB5kKXlk4=;
+        b=QuSDkEa4HdkznoUsvXDNpo23RguQRuL35fOKGW52e+ZSloQREOwiK9MayPsTV56XmT
+         ID85fGnp8Sg8Pfj1VITOArNq8dFvNM7ap6EKsRStLU1f3XqgxV+M6xWOaTf+vPO6nhU8
+         zSUq4fbroV8jwHq7EqiS+xbuj409HhkirFNplYWR8g1vbzsrqtX3XGfg3wWzagDQo6U4
+         XMm0BVI7t85g0DdWaU0QreedAneMXxEcZWE08z2wAAKz6Zqg6/XYqkndKa7mKKbicExv
+         tcjCF2ay32hq0/T180PCBCI/11U1/1dQ3tM/p8YQ1kXOD+XPEwIw239QChbbB3zrwCOM
+         /WYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFSiCLMztxmBrlKciOzd82krEOdHrodzMvizxq5cjHs=;
-        b=JprnDTKxWWLhsZMy6KMj3iIxkGTQgO9q9thYDGDwEeYusNgQfa3Vcj0ixGFUx/jppg
-         Jtw7PTFcTNTvjlWegi6EP6c+87u7M3+lXty+2izLYvJ1z13o5u4KOFDsobRZJ4zT5DHz
-         MmXucRm8IsF1yBFSBZsS1+DppDW7kdn9vIMnbwwVHwCeY0uyZNGs77Thz7sUxlaQObK9
-         JCHafsaKyDt1UQRfYsp1VSDMH5rOe5a1eDfaMSlOTowh/DqgOwZwhdWxhEnl4zHi61H9
-         hk5iwjOBsdanXvySR/mv3UcOdGbOkKQ5geOspyg7ji5+VXXDqdwIUTeoZNByiMkwFhvt
-         vglA==
-X-Gm-Message-State: ANoB5pleNtaUvV/ICl1hdAIyqFwP7PsGMoiC4beGX14pbeBV4sS5nhp2
-        E4X96SNiYM4vRAQfYytwvTRKhVafN6YLRvjJpvwxknqURUxZ4T6WCxUtGSDsSqM9EeSWc0Dz9zw
-        SMGjro8ibAP5dTKiLAvofVbTfxifARWj6UZpAu9GGq0pu2Rp4bta7IYGR4vtoqZdUUwt4
-X-Google-Smtp-Source: AA0mqf6ZbkLrSnUIbgeq5/RLmSPSofz6SBQLtGHwMohMSnPH3We2ism/qqJZnqhWdGZpsfiBHw0Qc519BXXKoEkl
-X-Received: from pnaduthota.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4e5])
- (user=pnaduthota job=sendgmr) by 2002:a25:d089:0:b0:6f2:e321:6368 with SMTP
- id h131-20020a25d089000000b006f2e3216368mr29095812ybg.318.1669857113599; Wed,
- 30 Nov 2022 17:11:53 -0800 (PST)
-Date:   Thu,  1 Dec 2022 01:11:35 +0000
-In-Reply-To: <20221201011135.1589838-1-pnaduthota@google.com>
-Mime-Version: 1.0
-References: <20221201011135.1589838-1-pnaduthota@google.com>
-X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221201011135.1589838-3-pnaduthota@google.com>
-Subject: [PATCH net-next v2 2/2] Add a selftest for devmap pinning.
-From:   Pramukh Naduthota <pnaduthota@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        Pramukh Naduthota <pnaduthota@google.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mnOHlSbgWNGlTuLSKAr9w/gQTxjdszaO70yB5kKXlk4=;
+        b=vkbfAUL3brWmGA2NklzKxew6h1E+fE30QiNepgFKO21Av+wU0Cy3B+cmbMblHTBZEC
+         mdVSOOxjshy4wGTkYBMDm6Ba1rUwS9TageI/6G3lLHy85Y1iWGyjR0Sy/KrDPWLFjZru
+         zA4hdBSZH+tMkSQkJMrHRf2G6T7U/MGphBhihXcbbkspf7vOquMdPaSvj6AzZJXpA8/P
+         Xuck08yGGiaHxdGnYWh94OOiRLmddDm1nW87Zm3/WPPFAk+ImKUgUITLDbwtqFkh5UfM
+         YAg48a+gGOJx8uqKBk37xli+CDZrjswU95d8A/i+oKX+rGA0pRC0O2TX7uZVs1Ur4Z2r
+         kdEA==
+X-Gm-Message-State: ANoB5pmtzT4v+veRrkF6rqSDJ7h9M9l5wyGKkgbNB57+xv4BH8S6WD2z
+        LRrjqv+3GrX/qAtjUofNNcahZzdULlkUmgctZQ280V4f
+X-Google-Smtp-Source: AA0mqf68M1X8P3b3/q+7+bKx1Gs2/3DxFwckrJ6eySp4x1iD7Ea+qNc7BUQvujGbtf0020hGOT7txGOBXeZCYynOnLE=
+X-Received: by 2002:a17:906:30c1:b0:7b7:eaa9:c1cb with SMTP id
+ b1-20020a17090630c100b007b7eaa9c1cbmr39639842ejb.745.1669857131892; Wed, 30
+ Nov 2022 17:12:11 -0800 (PST)
+MIME-Version: 1.0
+References: <20221128132915.141211-1-jolsa@kernel.org> <20221128132915.141211-3-jolsa@kernel.org>
+ <CAEf4BzaZCUoxN_X2ALXwQeFTCwtL17R4P_B_-hUCcidfyO2xyQ@mail.gmail.com>
+ <CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com>
+ <CAEf4Bza6R2uedPiKi_FXMPOVe-WGS5LO-EbBzpqK9T-xCybS5Q@mail.gmail.com> <CA+khW7jLegurLPiUkWx5-gVnS3rywB1NTO0dy5qDWSY+-R1mgA@mail.gmail.com>
+In-Reply-To: <CA+khW7jLegurLPiUkWx5-gVnS3rywB1NTO0dy5qDWSY+-R1mgA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 30 Nov 2022 17:11:59 -0800
+Message-ID: <CAEf4BzaMjF1fZDO3qSBrVybov5yPVgTC9CBaVnQ0oRv9RfwKgw@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 2/4] bpf: Add bpf_vma_build_id_parse function
+ and kfunc
+To:     Hao Luo <haoluo@google.com>, Song Liu <songliubraving@fb.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,65 +75,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a selftest
+On Tue, Nov 29, 2022 at 5:27 PM Hao Luo <haoluo@google.com> wrote:
+>
+> On Tue, Nov 29, 2022 at 4:35 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > This is hardly a generic solution, as it requires instrumenting every
+> > application to do this, right? So what I'm proposing is exactly to
+> > avoid having each individual application do something special just to
+> > allow profiling tools to capture build_id.
+>
+> I agree. Because the mlock approach is working, we didn't look further
+> or try improving it. But an upstreamable and generic solution would be
+> nice. I think Jiri has started looking at it, I am happy to help
+> there.
+>
 
-Signed-off-by: Pramukh Naduthota <pnaduthota@google.com>
----
- .../testing/selftests/bpf/prog_tests/devmap.c | 20 +++++++++++++++++++
- .../selftests/bpf/progs/test_pinned_devmap.c  | 17 ++++++++++++++++
- 2 files changed, 37 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/devmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_pinned_devmap.c
+Ok, cool, it would be great to have this work reliably and not rely on
+user-space apps doing something special here.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/devmap.c b/tools/testing/selftests/bpf/prog_tests/devmap.c
-new file mode 100644
-index 000000000000..50c5006c1416
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/devmap.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Google */
-+#include "testing_helpers.h"
-+#include "test_progs.h"
-+#include "test_pinned_devmap.skel.h"
-+
-+void test_devmap_pinning(void)
-+{
-+	struct test_pinned_devmap *ptr;
-+
-+	ptr = test_pinned_devmap__open_and_load()
-+	ASSERT_OK_PTR(ptr, "first load");
-+	test_pinned_devmap__destroy(ptr);
-+	ASSERT_OK_PTR(test_pinned_devmap__open_and_load(), "re-load");
-+}
-+
-+void test_devmap(void)
-+{
-+	test_devmap_pinning();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_pinned_devmap.c b/tools/testing/selftests/bpf/progs/test_pinned_devmap.c
-new file mode 100644
-index 000000000000..2e9b25fe657c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_pinned_devmap.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Google */
-+#include <stddef.h>
-+#include <linux/bpf.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
-+	__uint(max_entries, 32);
-+	__type(key, int);
-+	__type(value, int);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);
-+} repinned_dev_map SEC(".maps");
-+
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+> > Is this due to remapping some binary onto huge pages?
+>
+> I think so, but I'm not sure.
+>
 
+We used to have this problem, but then Song added some in-kernel
+support that we now preserve the original file information. Song, do
+you mind providing details?
+
+> > But regardless, your custom BPF applications can fetch this build_id
+> > from vm_area_struct->anon_name in pure BPF code, can't it? Why do you
+> > need to modify in-kernel build_id_parse implementation?
+>
+> The user is using bpf_get_stack() to collect stack traces. They don't
+> implement walking the stack and fetching build_id from vma in their
+> BPF code.
+
+Ah, I see. Let's figure out why Song's approach doesn't work in your
+case, because this anon_name hack is just that -- hack.
