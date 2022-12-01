@@ -2,69 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9914063F967
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 21:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6AC63F99E
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 22:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbiLAUsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 15:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
+        id S229873AbiLAVOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 16:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiLAUsw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 15:48:52 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479B42FFE8;
-        Thu,  1 Dec 2022 12:48:48 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id d131so225757ybh.4;
-        Thu, 01 Dec 2022 12:48:48 -0800 (PST)
+        with ESMTP id S229629AbiLAVOf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 16:14:35 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84E6BF66F;
+        Thu,  1 Dec 2022 13:14:34 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id ja4-20020a05600c556400b003cf6e77f89cso3831097wmb.0;
+        Thu, 01 Dec 2022 13:14:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N1ZEAITnlnIL0uo/MUd+4DILu+xpsXxa/BaZ4ECfnM8=;
-        b=WyGkdNpHa5CRQ5od0hODlgB8PdqXLsW8QvZyb/PaoclhgigeVtDOtN3/X+MjBBohPg
-         fAJKbCobXRt3kSOEwjShwxBMNCPezV9rp4jM/kmfzc7b2Kso9dzEd2GjJ4+k4TqzbDXn
-         ozHUKBovZ6ntjxxLR1pV0xur7Dffp4PLACtNFsBUzWrvDrYYYLYcmeaar6OaIPUwnoP+
-         vS2K7SzKVUydrVDxUaSB0Rt7Y1BxY1qOPkiVrDwtSCKir5Bc2kdzy+htVqDfWiHKLkqt
-         +YvUdaRoOmkfsSTIDs21vTleziVaktQZe8p5el78FMqxdiRP9Es1xch6rk8FzLv5vCLs
-         f4rw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=arGJugZXKuegCy+b2Wy748udH7dyCPYLgoQysJN9/+E=;
+        b=G8I3r0UFOmARwoPh8BwqG3XgTzilTOCk8MXuobDoiBD7EaZA2kag7KurO9gpBh9/xP
+         uSR1EztpspRtCkwrbNRGBRNBSR47ze8b1l0+lgwr8w2HbULTK6yueiUhMAzkwI4xBTBe
+         s4XA8ReFVa+PNNG3MK4uA2X2RrY+TIafn36iZFZ2D7Kw1UjZxXz39/ejXAXm9Eewk6gl
+         cht1EbbMZH484vH70ma10+T0qeW4taPBiFUr5h8IAk5KW6uh6ck9DhkBegEDvl3HRVq4
+         qFyESQ1nq11PvnjcSGtxNyM25auaOIqTirxYfV+qAzcut3QIaciMaooW8bRjKirPDzZh
+         78Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N1ZEAITnlnIL0uo/MUd+4DILu+xpsXxa/BaZ4ECfnM8=;
-        b=YlFbJolxQgY/Vcoqha2jjI2+/yJ7y3Bz9h4ajNINnN7MS+ZEszoMXUmkH8hBS7ITUn
-         aFs2orqRTLqp8MNI3Sr0Pdn1ZIaLOMVGELzId5Iu6DaC+l4gzjzMX2CgsocSgfa9o8Rv
-         ZEbxs+0sTuTpcLAspWPTw8xnQfyWfxpHDtH3wc5d53GACI9Z50/YvMh8hIZNYrUqxQsH
-         3IIjSBMKf3As4AGkiIs3hlDvsnlA2BxIKXye4v+21IvYXqYQE3t9P5lw+4xyrBRdZldH
-         GbjkFvidb1Hj9K154hMiny0AO7JYD97WARSd3lgqR2kHgC+vNSbaBxRHoZT7NK0yZKZ8
-         u3nw==
-X-Gm-Message-State: ANoB5pl7MkfyPm8sdSeb0MN8SVA6MZ2iQ4UkTI9Ve1zPuuYthmmZhyf/
-        s6IRHsXabHNWZJENGj4JoG+OfFJZ4v2HJKEmt/I=
-X-Google-Smtp-Source: AA0mqf7P2XR9ZGUdtibT6H1IotM1KHS20VYF48xyhV/t4p4fXyyfUbMrklp5zCu94hmcsSe0Hctv2TNHJldLsNDIvw8=
-X-Received: by 2002:a25:401:0:b0:6fa:8a4b:40b6 with SMTP id
- 1-20020a250401000000b006fa8a4b40b6mr8671751ybe.230.1669927727147; Thu, 01 Dec
- 2022 12:48:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20221129132018.985887-1-eyal.birger@gmail.com>
- <20221129132018.985887-4-eyal.birger@gmail.com> <ba1a8717-7d9a-9a78-d80a-ad95bb902085@linux.dev>
- <CAHsH6Gvb94O6ir-emzop1FoDsbHh7QNVFrtDuohzvXpVe0S4Vg@mail.gmail.com> <917db515-072c-31d5-1cd2-b28bc40f7bd4@linux.dev>
-In-Reply-To: <917db515-072c-31d5-1cd2-b28bc40f7bd4@linux.dev>
+        bh=arGJugZXKuegCy+b2Wy748udH7dyCPYLgoQysJN9/+E=;
+        b=lXRlXNXbthGXFnwqrP3CJPcA1L7nmQ5uZJhqgzedycNzaySjX5JvVYjdoNthZZtPxX
+         e/LFtV6hTMrj/c84AL/jE5TYWVqKQKrnAV6VtFkL6+gE3wYDlajrZyyjJQWkmcW3I7+H
+         NzRH9K36ojMZm5LqBq8aDGjjDfbsqohymeMRbmJwMdX1VTWt1XcVvKWFpAXH/eG35f9A
+         3MktCIPBBsWfFYoQtNTF3P70WZJKxduMv9OEtZCsrplKBTg2sH4JRXtJxsaHe5fJ/Q3x
+         vgZtSE5CjPHkp+9/IGLbyZor0AMY9LATFQ89VteFdCBPV5K7irj2C0yhoa1m2AFmz/oc
+         H2ew==
+X-Gm-Message-State: ANoB5pk647nZrZ9D4qKJzxx2xRrmvKVOY7DyjLRVCb1YbWtKXFjlvaBN
+        ScD1nMxsOmd9IFXsdq3NmRE=
+X-Google-Smtp-Source: AA0mqf7xIdmNr/IVA6wau15GjaiOh2J7K5KuHpMOHdbdrU0DZ6nCVr3UT/wYVLP1hqD2ohBVk4dp6Q==
+X-Received: by 2002:a05:600c:1e89:b0:3cf:774b:ce6f with SMTP id be9-20020a05600c1e8900b003cf774bce6fmr6367406wmb.133.1669929272979;
+        Thu, 01 Dec 2022 13:14:32 -0800 (PST)
+Received: from localhost.localdomain ([213.57.189.88])
+        by smtp.gmail.com with ESMTPSA id m35-20020a05600c3b2300b003b50428cf66sm7508708wms.33.2022.12.01.13.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Dec 2022 13:14:32 -0800 (PST)
 From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 1 Dec 2022 22:48:35 +0200
-Message-ID: <CAHsH6GsDmw5qNv-9u-DfOXaUgtaGhOesEveOvX5cVcnYmjtonA@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next,v2 3/3] selftests/bpf: add xfrm_info tests
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, andrii@kernel.org,
+        daniel@iogearbox.net, nicolas.dichtel@6wind.com,
         razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        liuhangbin@gmail.com, lixiaoyan@google.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Eyal Birger <eyal.birger@gmail.com>
+Subject: [PATCH bpf-next,v3 0/4] xfrm: interface: Add unstable helpers for XFRM metadata
+Date:   Thu,  1 Dec 2022 23:14:21 +0200
+Message-Id: <20221201211425.1528197-1-eyal.birger@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,27 +77,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 1, 2022 at 10:26 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 11/30/22 9:34 PM, Eyal Birger wrote:
-> >>> +
-> >>> +struct {
-> >>> +     __uint(type, BPF_MAP_TYPE_ARRAY);
-> >>> +     __uint(max_entries, 2);
-> >>> +     __type(key, __u32);
-> >>> +     __type(value, __u32);
-> >>> +} dst_if_id_map SEC(".maps");
-> >>
-> >> It is easier to use global variables instead of a map.
-> >
-> > Would these be available for read/write from the test application (as the
-> > map is currently populated/read from userspace)?
->
-> Yes, through the skel->bss->...
-> selftests/bpf/prog_tests/ has examples.
+This patch series adds xfrm metadata helpers using the unstable kfunc
+call interface for the TC-BPF hooks.
 
-Oh this is very useful! I tested and indeed this works perfectly.
-WIll use in v3.
+This allows steering traffic towards different IPsec connections based
+on logic implemented in bpf programs.
 
-Thanks!
-Eyal.
+The helpers are integrated into the xfrm_interface module. For this
+purpose the main functionality of this module is moved to
+xfrm_interface_core.c.
+
+---
+
+Series changes in v3:
+  - tag bpf-next tree instead of ipsec-next
+  - add IFLA_XFRM_COLLECT_METADATA sync patch
+
+Eyal Birger (4):
+  xfrm: interface: rename xfrm_interface.c to xfrm_interface_core.c
+  xfrm: interface: Add unstable helpers for setting/getting XFRM
+    metadata from TC-BPF
+  tools: add IFLA_XFRM_COLLECT_METADATA to uapi/linux/if_link.h
+  selftests/bpf: add xfrm_info tests
+
+ include/net/dst_metadata.h                    |   1 +
+ include/net/xfrm.h                            |  20 +
+ net/core/dst.c                                |   8 +-
+ net/xfrm/Makefile                             |   8 +
+ net/xfrm/xfrm_interface_bpf.c                 |  99 +++++
+ ...xfrm_interface.c => xfrm_interface_core.c} |  15 +
+ tools/include/uapi/linux/if_link.h            |   1 +
+ tools/testing/selftests/bpf/config            |   2 +
+ .../selftests/bpf/prog_tests/xfrm_info.c      | 365 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/xfrm_info.c |  40 ++
+ 10 files changed, 557 insertions(+), 2 deletions(-)
+ create mode 100644 net/xfrm/xfrm_interface_bpf.c
+ rename net/xfrm/{xfrm_interface.c => xfrm_interface_core.c} (98%)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xfrm_info.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xfrm_info.c
+
+-- 
+2.34.1
+
