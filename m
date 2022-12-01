@@ -2,86 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C442E63EA59
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 08:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED54363EA9C
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 08:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbiLAHdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 02:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        id S229852AbiLAH5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 02:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiLAHde (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 02:33:34 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAB231230;
-        Wed, 30 Nov 2022 23:33:32 -0800 (PST)
-Message-ID: <add18909-4e5c-26e7-a96d-5715aba18219@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1669880010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7xOWjrGJdu4hvkFdo0cPlYtYhb6xXTXgIgC4dUMR8PA=;
-        b=sgUWZobPQqtJgkJ/YNfh3z1l9pB9LL5dPuAYf9iiDD1VcMUKbcKNzDaGyuRkKiCyovmHvx
-        iqaBzsXBqBbXEGsF1VzHOM3btc+G44pmGWFx2L4E0v7e9OjCQpO7StzkT3bziT/WNKV4n+
-        kUq49xB8wYm90LI33IkQYd+XW21kAjQ=
-Date:   Wed, 30 Nov 2022 23:33:21 -0800
+        with ESMTP id S229709AbiLAH5A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 02:57:00 -0500
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFAA52158;
+        Wed, 30 Nov 2022 23:56:58 -0800 (PST)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4NN7h83gxDz9sZb;
+        Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id e49hW9rQN97v; Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4NN7h82T17z9sXw;
+        Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4195E8B780;
+        Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ybp9-llyLvPx; Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 138308B763;
+        Thu,  1 Dec 2022 08:56:56 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 2B17unOY130791
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 1 Dec 2022 08:56:49 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 2B17umb4130779;
+        Thu, 1 Dec 2022 08:56:48 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v1 01/10] powerpc/bpf/32: Fix Oops on tail call tests
+Date:   Thu,  1 Dec 2022 08:56:26 +0100
+Message-Id: <fa025537f584599c0271fc129c5cf4f57fbe7505.1669881248.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Subject: Re: [PATCH ipsec-next,v2 3/3] selftests/bpf: add xfrm_info tests
-Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
-        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org
-References: <20221129132018.985887-1-eyal.birger@gmail.com>
- <20221129132018.985887-4-eyal.birger@gmail.com>
- <ba1a8717-7d9a-9a78-d80a-ad95bb902085@linux.dev>
- <CAHsH6Gvb94O6ir-emzop1FoDsbHh7QNVFrtDuohzvXpVe0S4Vg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAHsH6Gvb94O6ir-emzop1FoDsbHh7QNVFrtDuohzvXpVe0S4Vg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1669881390; l=7581; s=20211009; h=from:subject:message-id; bh=mTdJVaQfMyXbnPuQ7zaafwCQVYscHE9YBgdQhOwKvMM=; b=kxBgTIRCPz6IPZjtyYFofoT48bO9f5x0Jgv7ZxGlGeAC9MxadoQueJ/Rjap1eMPbkPEwOWkABrN4 Dc4Ko9t+A+wpyR+sbyAkGeeQ/hD1SgGUcsf+6fW6n4ekJFR5MmMC
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/30/22 9:34 PM, Eyal Birger wrote:
->>> +static int probe_iproute2(void)
->>> +{
->>> +     if (SYS_NOFAIL("ip link add type xfrm help 2>&1 | "
->>> +                    "grep external > /dev/null")) {
->>> +             fprintf(stdout, "%s:SKIP: iproute2 with xfrm external support needed for this test\n", __func__);
->>
->> Unfortunately, the BPF CI iproute2 does not have this support also :(
->> I am worry it will just stay SKIP for some time and rot.  Can you try to
->> directly use netlink here?
-> 
-> Yeah, I wasn't sure if adding a libmnl (or alternative) dependency
-> was ok here, and also didn't want to copy all that nl logic here.
-> So I figured it would get there eventually.
-> 
-> I noticed libmnl is used by the nf tests, so maybe its inclusion isn't too
-> bad. Unless there's a better approach.
+test_bpf tail call tests end up as:
 
-I wasn't thinking about including the libmnl.  I am thinking about something 
-lightweight like the bpf_tc_hook_create() used in this test. 
-bpf_tc_hook_create() is in libbpf's netlink.c.  Not sure if this netlink 
-link-add helper belongs to libbpf though, so it will be better just stay here in 
-this selftest for now.  If it is too complicated without libmnl, leave it as 
-SKIP for now is an option and I will try to run it manually first with a newer 
-iproute2.
+  test_bpf: #0 Tail call leaf jited:1 85 PASS
+  test_bpf: #1 Tail call 2 jited:1 111 PASS
+  test_bpf: #2 Tail call 3 jited:1 145 PASS
+  test_bpf: #3 Tail call 4 jited:1 170 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 190 PASS
+  test_bpf: #5 Tail call load/store jited:1
+  BUG: Unable to handle kernel data access on write at 0xf1b4e000
+  Faulting instruction address: 0xbe86b710
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  BE PAGE_SIZE=4K MMU=Hash PowerMac
+  Modules linked in: test_bpf(+)
+  CPU: 0 PID: 97 Comm: insmod Not tainted 6.1.0-rc4+ #195
+  Hardware name: PowerMac3,1 750CL 0x87210 PowerMac
+  NIP:  be86b710 LR: be857e88 CTR: be86b704
+  REGS: f1b4df20 TRAP: 0300   Not tainted  (6.1.0-rc4+)
+  MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28008242  XER: 00000000
+  DAR: f1b4e000 DSISR: 42000000
+  GPR00: 00000001 f1b4dfe0 c11d2280 00000000 00000000 00000000 00000002 00000000
+  GPR08: f1b4e000 be86b704 f1b4e000 00000000 00000000 100d816a f2440000 fe73baa8
+  GPR16: f2458000 00000000 c1941ae4 f1fe2248 00000045 c0de0000 f2458030 00000000
+  GPR24: 000003e8 0000000f f2458000 f1b4dc90 3e584b46 00000000 f24466a0 c1941a00
+  NIP [be86b710] 0xbe86b710
+  LR [be857e88] __run_one+0xec/0x264 [test_bpf]
+  Call Trace:
+  [f1b4dfe0] [00000002] 0x2 (unreliable)
+  Instruction dump:
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+  ---[ end trace 0000000000000000 ]---
 
-will reply other comments tomorrow.
+This is a tentative to write above the stack. The problem is encoutered
+with tests added by commit 38608ee7b690 ("bpf, tests: Add load store
+test case for tail call")
+
+This happens because tail call is done to a BPF prog with a different
+stack_depth. At the time being, the stack is kept as is when the caller
+tail calls its callee. But at exit, the callee restores the stack based
+on its own properties. Therefore here, at each run, r1 is erroneously
+increased by 32 - 16 = 16 bytes.
+
+This was done that way in order to pass the tail call count from caller
+to callee through the stack. As powerpc32 doesn't have a red zone in
+the stack, it was necessary the maintain the stack as is for the tail
+call. But it was not anticipated that the BPF frame size could be
+different.
+
+Let's take a new approach. Use register r4 to carry the tail call count
+during the tail call, and save it into the stack at function entry if
+required. This means the input parameter must be in r3, which is more
+correct as it is a 32 bits parameter, then tail call better match with
+normal BPF function entry, the down side being that we move that input
+parameter back and forth between r3 and r4. That can be optimised later.
+
+Doing that also has the advantage of maximising the common parts between
+tail calls and a normal function exit.
+
+With the fix, tail call tests are now successfull:
+
+  test_bpf: #0 Tail call leaf jited:1 53 PASS
+  test_bpf: #1 Tail call 2 jited:1 115 PASS
+  test_bpf: #2 Tail call 3 jited:1 154 PASS
+  test_bpf: #3 Tail call 4 jited:1 165 PASS
+  test_bpf: #4 Tail call load/store leaf jited:1 101 PASS
+  test_bpf: #5 Tail call load/store jited:1 141 PASS
+  test_bpf: #6 Tail call error path, max count reached jited:1 994 PASS
+  test_bpf: #7 Tail call count preserved across function calls jited:1 140975 PASS
+  test_bpf: #8 Tail call error path, NULL target jited:1 110 PASS
+  test_bpf: #9 Tail call error path, index out of range jited:1 69 PASS
+  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+
+Suggested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Fixes: 51c66ad849a7 ("powerpc/bpf: Implement extended BPF on PPC32")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/757acccb7fbfc78efa42dcf3c974b46678198905.1669278887.git.christophe.leroy@csgroup.eu
+---
+ arch/powerpc/net/bpf_jit_comp32.c | 52 +++++++++++++------------------
+ 1 file changed, 21 insertions(+), 31 deletions(-)
+
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index 43f1c76d48ce..a379b0ce19ff 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -113,23 +113,19 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+ {
+ 	int i;
+ 
+-	/* First arg comes in as a 32 bits pointer. */
+-	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
+-	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
++	/* Initialize tail_call_cnt, to be skipped if we do tail calls. */
++	EMIT(PPC_RAW_LI(_R4, 0));
++
++#define BPF_TAILCALL_PROLOGUE_SIZE	4
++
+ 	EMIT(PPC_RAW_STWU(_R1, _R1, -BPF_PPC_STACKFRAME(ctx)));
+ 
+-	/*
+-	 * Initialize tail_call_cnt in stack frame if we do tail calls.
+-	 * Otherwise, put in NOPs so that it can be skipped when we are
+-	 * invoked through a tail call.
+-	 */
+ 	if (ctx->seen & SEEN_TAILCALL)
+-		EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_1) - 1, _R1,
+-				 bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+-	else
+-		EMIT(PPC_RAW_NOP());
++		EMIT(PPC_RAW_STW(_R4, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+-#define BPF_TAILCALL_PROLOGUE_SIZE	16
++	/* First arg comes in as a 32 bits pointer. */
++	EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_1), _R3));
++	EMIT(PPC_RAW_LI(bpf_to_ppc(BPF_REG_1) - 1, 0));
+ 
+ 	/*
+ 	 * We need a stack frame, but we don't necessarily need to
+@@ -170,24 +166,24 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
+ 	for (i = BPF_PPC_NVR_MIN; i <= 31; i++)
+ 		if (bpf_is_seen_register(ctx, i))
+ 			EMIT(PPC_RAW_LWZ(i, _R1, bpf_jit_stack_offsetof(ctx, i)));
+-}
+-
+-void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
+-{
+-	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
+-
+-	bpf_jit_emit_common_epilogue(image, ctx);
+-
+-	/* Tear down our stack frame */
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+ 		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
+ 
++	/* Tear down our stack frame */
+ 	EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME(ctx)));
+ 
+ 	if (ctx->seen & SEEN_FUNC)
+ 		EMIT(PPC_RAW_MTLR(_R0));
+ 
++}
++
++void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
++{
++	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_0)));
++
++	bpf_jit_emit_common_epilogue(image, ctx);
++
+ 	EMIT(PPC_RAW_BLR());
+ }
+ 
+@@ -244,7 +240,6 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
+ 	EMIT(PPC_RAW_ADD(_R3, _R3, b2p_bpf_array));
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_array, ptrs)));
+-	EMIT(PPC_RAW_STW(_R0, _R1, bpf_jit_stack_offsetof(ctx, BPF_PPC_TC)));
+ 
+ 	/*
+ 	 * if (prog == NULL)
+@@ -255,19 +250,14 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 
+ 	/* goto *(prog->bpf_func + prologue_size); */
+ 	EMIT(PPC_RAW_LWZ(_R3, _R3, offsetof(struct bpf_prog, bpf_func)));
+-
+-	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_LWZ(_R0, _R1, BPF_PPC_STACKFRAME(ctx) + PPC_LR_STKOFF));
+-
+ 	EMIT(PPC_RAW_ADDIC(_R3, _R3, BPF_TAILCALL_PROLOGUE_SIZE));
+-
+-	if (ctx->seen & SEEN_FUNC)
+-		EMIT(PPC_RAW_MTLR(_R0));
+-
+ 	EMIT(PPC_RAW_MTCTR(_R3));
+ 
+ 	EMIT(PPC_RAW_MR(_R3, bpf_to_ppc(BPF_REG_1)));
+ 
++	/* Put tail_call_cnt in r4 */
++	EMIT(PPC_RAW_MR(_R4, _R0));
++
+ 	/* tear restore NVRs, ... */
+ 	bpf_jit_emit_common_epilogue(image, ctx);
+ 
+-- 
+2.38.1
+
