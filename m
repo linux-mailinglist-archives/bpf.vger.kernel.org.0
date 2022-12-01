@@ -2,37 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9913663FA47
-	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 23:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6A063FAA4
+	for <lists+bpf@lfdr.de>; Thu,  1 Dec 2022 23:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbiLAWF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 17:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S230323AbiLAWfH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 17:35:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiLAWF1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 17:05:27 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B39BC582
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 14:05:26 -0800 (PST)
-Message-ID: <71f4d953-fbfd-902f-bc8d-3894b7562eeb@linux.dev>
-Date:   Thu, 1 Dec 2022 14:05:21 -0800
+        with ESMTP id S231386AbiLAWfA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 17:35:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ED785672
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 14:34:59 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1669934097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NQ3l/8iPHJrE4lXKcSUZU6jnY9bc7FNJ5TKI/6vTgGA=;
+        b=IRR/xyts6kOonxpsMaiU6T/O5xt31MgiyF46ryrFDvRwkSdjhqvecw8s1IWhk8X1qpi2y+
+        /AyGu9sKkh53xbPjjNlKOSD1dJvBo/6+gJoVc46o2FFO5zI/lv0MwscmKCRo5YqoJ0HXzX
+        3LvlVZXid6e8kvpNTzm5OGd7zAXBlum6Iu0cybPxLwRbsp94JIUPxrnKQAKuLQbqOO+Gb7
+        yFGaaDseYJU05KJrUuXT/69mCFtBAwRONUNUSeAGPnIGNEjw5XEwJ7cyFYgyWkqWB9ReeI
+        zIaw/WgLofHY52R4wCrbmfdyjsPpU4JbnKBmc1FgM4viyfvs1u5YxBL6aDIIig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1669934097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NQ3l/8iPHJrE4lXKcSUZU6jnY9bc7FNJ5TKI/6vTgGA=;
+        b=69s2aBBM19lrmXJ4LMiY+TRz0Zup152ougrxGaYiZR5QmJgMwJcMgz4MTGWqaZhM1IFRmO
+        lP8U2qALBWgIiyBw==
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, peterz@infradead.org,
+        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
+        rick.p.edgecombe@intel.com, aaron.lu@intel.com, mcgrof@kernel.org
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+In-Reply-To: <Y4kNMpRgvEN2KrkD@kernel.org>
+References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
+ <87v8mvsd8d.ffs@tglx> <Y4kNMpRgvEN2KrkD@kernel.org>
+Date:   Thu, 01 Dec 2022 23:34:57 +0100
+Message-ID: <87mt86rbvy.ffs@tglx>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Handle MEM_RCU type properly
-Content-Language: en-US
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
-References: <20221129023713.2216451-1-yhs@fb.com>
- <d46efd51-e6f5-dbb5-ab38-238b6d2ea314@linux.dev>
- <1a534022-5629-8f98-c8ad-f1c335652af5@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1a534022-5629-8f98-c8ad-f1c335652af5@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,150 +56,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/1/22 9:47 AM, Yonghong Song wrote:
-> 
-> 
-> On 11/30/22 11:05 PM, Martin KaFai Lau wrote:
->> On 11/28/22 6:37 PM, Yonghong Song wrote:
->>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->>> index c05aa6e1f6f5..6f192dd9025e 100644
->>> --- a/include/linux/bpf_verifier.h
->>> +++ b/include/linux/bpf_verifier.h
->>> @@ -683,7 +683,7 @@ static inline bool bpf_prog_check_recur(const struct 
->>> bpf_prog *prog)
->>>       }
->>>   }
->>> -#define BPF_REG_TRUSTED_MODIFIERS (MEM_ALLOC | MEM_RCU | PTR_TRUSTED)
->>> +#define BPF_REG_TRUSTED_MODIFIERS (MEM_ALLOC | PTR_TRUSTED)
->>
->> [ ... ]
->>
->>> +static bool is_rcu_reg(const struct bpf_reg_state *reg)
->>> +{
->>> +    return reg->type & MEM_RCU;
->>> +}
->>> +
->>>   static int check_pkt_ptr_alignment(struct bpf_verifier_env *env,
->>>                      const struct bpf_reg_state *reg,
->>>                      int off, int size, bool strict)
->>> @@ -4775,12 +4780,10 @@ static int check_ptr_to_btf_access(struct 
->>> bpf_verifier_env *env,
->>>           /* Mark value register as MEM_RCU only if it is protected by
->>>            * bpf_rcu_read_lock() and the ptr reg is trusted. MEM_RCU
->>>            * itself can already indicate trustedness inside the rcu
->>> -         * read lock region. Also mark it as PTR_TRUSTED.
->>> +         * read lock region.
->>>            */
->>>           if (!env->cur_state->active_rcu_lock || !is_trusted_reg(reg))
->>>               flag &= ~MEM_RCU;
->>
->> How about dereferencing a PTR_TO_BTF_ID | MEM_RCU, like:
->>
->>      /* parent: PTR_TO_BTF_ID | MEM_RCU */
->>      parent = current->real_parent;
->>      /* gparent: PTR_TO_BTF_ID */
->>      gparent = parent->real_parent;
->>
->> Should "gparent" have MEM_RCU also?
-> 
-> Currently, no. We have logic in the code like
-> 
->          if (flag & MEM_RCU) {
->                  /* Mark value register as MEM_RCU only if it is protected by
->                   * bpf_rcu_read_lock() and the ptr reg is trusted. MEM_RCU
->                   * itself can already indicate trustedness inside the rcu
->                   * read lock region.
->                   */
->                  if (!env->cur_state->active_rcu_lock || !is_trusted_reg(reg))
->                          flag &= ~MEM_RCU;
->          }
-> 
-> Since 'parent' is not trusted, so it will not be marked as MEM_RCU.
-> It can be marked as MEM_RCU if we do (based on the current patch)
+Mike!
 
-or adding a is_rcu_trusted_reg() to consider both is_trusted_reg and MEM_RCU 
-before cleaning ~MEM_RCU here.  It seems the check_kfunc_args() below will need 
-a similar is_rcu_trusted_reg() test also.
+On Thu, Dec 01 2022 at 22:23, Mike Rapoport wrote:
+> On Thu, Dec 01, 2022 at 10:08:18AM +0100, Thomas Gleixner wrote:
+>> On Wed, Nov 30 2022 at 08:18, Song Liu wrote:
+>> The symptom is iTLB pressure. The root cause is the way how module
+>> memory is allocated, which in turn causes the fragmentation into
+>> 4k PTEs. That's the same problem for anything which uses module_alloc()
+>> to get space for text allocated, e.g. kprobes, tracing....
+>
+> There's also dTLB pressure caused by the fragmentation of the direct map.
+> The memory allocated with module_alloc() is a priori mapped with 4k PTEs,
+> but setting RO in the malloc address space also updates the direct map
+> alias and this causes splits of large pages.
+>
+> It's not clear what causes more performance improvement: avoiding splits of
+> large pages in the direct map or reducing iTLB pressure by backing text
+> memory with 2M pages.
 
-> 
->      parent = current->real_parent;
->      parent2 = bpf_task_acquire_rcu(parent);
->      if (!parent2) goto out;
->      gparent = parent2->real_parent;
-> 
-> Now gparent will be marked as MEM_RCU.
-> 
->>
->> Also, should PTR_MAYBE_NULL be added to "parent"?
-> 
-> I think we might need to do this. Although from kernel code,
-> task->real_parent, current->cgroups seem not NULL. But for sure
-> there are cases where the rcu ptr could be NULL. This might
-> be conservative for some cases, and if it is absolutely
-> performance critical, we later could tag related __rcu member
-> with btf_decl_tag to indicate its non-null status.
-> 
->>
->>> -        else
->>> -            flag |= PTR_TRUSTED;
->>>       } else if (reg->type & MEM_RCU) {
->>>           /* ptr (reg) is marked as MEM_RCU, but the struct field is not tagged
->>>            * with __rcu. Mark the flag as PTR_UNTRUSTED conservatively.
->>> @@ -5945,7 +5948,7 @@ static const struct bpf_reg_types btf_ptr_types = {
->>>       .types = {
->>>           PTR_TO_BTF_ID,
->>>           PTR_TO_BTF_ID | PTR_TRUSTED,
->>> -        PTR_TO_BTF_ID | MEM_RCU | PTR_TRUSTED,
->>> +        PTR_TO_BTF_ID | MEM_RCU,
->>>       },
->>>   };
->>>   static const struct bpf_reg_types percpu_btf_ptr_types = {
->>> @@ -6124,7 +6127,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->>>       case PTR_TO_BTF_ID:
->>>       case PTR_TO_BTF_ID | MEM_ALLOC:
->>>       case PTR_TO_BTF_ID | PTR_TRUSTED:
->>> -    case PTR_TO_BTF_ID | MEM_RCU | PTR_TRUSTED:
->>> +    case PTR_TO_BTF_ID | MEM_RCU:
->>>       case PTR_TO_BTF_ID | MEM_ALLOC | PTR_TRUSTED:
->>>           /* When referenced PTR_TO_BTF_ID is passed to release function,
->>>            * it's fixed offset must be 0.    In the other cases, fixed offset
->>> @@ -8022,6 +8025,11 @@ static bool is_kfunc_destructive(struct 
->>> bpf_kfunc_call_arg_meta *meta)
->>>       return meta->kfunc_flags & KF_DESTRUCTIVE;
->>>   }
->>> +static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
->>> +{
->>> +    return meta->kfunc_flags & KF_RCU;
->>> +}
->>> +
->>>   static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int 
->>> arg)
->>>   {
->>>       return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
->>> @@ -8706,13 +8714,19 @@ static int check_kfunc_args(struct bpf_verifier_env 
->>> *env, struct bpf_kfunc_call_
->>>           switch (kf_arg_type) {
->>>           case KF_ARG_PTR_TO_ALLOC_BTF_ID:
->>>           case KF_ARG_PTR_TO_BTF_ID:
->>> -            if (!is_kfunc_trusted_args(meta))
->>> +            if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
->>>                   break;
->>> -            if (!is_trusted_reg(reg)) {
->>> -                verbose(env, "R%d must be referenced or trusted\n", regno);
->>> +            if (!is_trusted_reg(reg) && !is_rcu_reg(reg)) {
->>> +                verbose(env, "R%d must be referenced, trusted or rcu\n", 
->>> regno);
->>>                   return -EINVAL;
->>>               }
->>> +
->>> +            if (is_kfunc_rcu(meta) != is_rcu_reg(reg)) {
->>
->> I think is_trusted_reg(reg) should also be acceptable to bpf_task_acquire_rcu().
-> 
-> Yes, good point. trusted is a super set of rcu.
-> 
->>
->> nit. bpf_task_acquire_not_zero() may be a better kfunc name.
-> 
-> Will use this one.
+From our experiments when doing the first version of the SKX retbleed
+mitigation, the main improvement came from reducing iTLB pressure simply
+because the iTLB cache is really small.
 
+The kernel text placement is way beyond suboptimal. If you really do a
+hotpath analysis and (manually) place all hot code into one or two 2M
+pages, then you can achieve massive performance improvements way above
+the 10% range.
+
+We currently have a master student investigating this, but it will take
+some time until usable results materialize.
+
+> If the major improvement comes from keeping direct map intact, it's
+> might be possible to mix data and text in the same 2M page.
+
+No. That can't work.
+
+    text = RX
+    data = RW or RO
+
+If you mix this, then you end up with RWX for the whole 2M page. Not an
+option really as you lose _all_ protections in one go.
+
+That's why I said:
+
+>>      As a logical next step we make that three blocks and allocate text,
+>>      data and rodata separately, which will preserve the large mappings for
+>>      text and data. rodata still needs to be split because we need a space to
+>>      accomodate ro_after_init data.
+
+The point is, that rodata and ro_after_init_data is a pretty small
+portion of modules as far as my limited analysis of a distro build
+shows.
+
+The bulk is in text and data. So if we preserve 2M pages for text and
+for RW data and bite the bullet to split one 2M page for
+ro[_after_init_]data, we get the maximum benefit for the least
+complexity.
+
+>> But at the end we want an allocation mechanism which:
+>> 
+>>   - preserves large mappings
+>>   - handles a distinct address range
+>>   - is mapping type aware
+>> 
+>> That solves _all_ the issues of modules, kprobes, tracing, bpf in one
+>> go. See?
+>
+> There is also
+>
+>     - handles kaslr
+>
+> and at least for arm and powerpc we'd also need 
+>
+>     - handles architecture specific range restrictions and fallbacks
+
+Good points.
+
+kaslr should be fairly trivial.
+
+The architecture specific restrictions and fallbacks are not really hard
+to solve either. If done right then the allocator just falls back to 4k
+maps during initialization in early boot which brings it back to the
+status quo. But we can provide consistent semantics for the three types
+which are required for modules and the text only usage for kprobes,
+tracing, bpf...
+
+Thanks,
+
+        tglx
