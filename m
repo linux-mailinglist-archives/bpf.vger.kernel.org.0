@@ -2,315 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017BD640198
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 09:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BB86401E3
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 09:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbiLBIKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 03:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        id S232889AbiLBITS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 03:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbiLBIKF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 03:10:05 -0500
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856E7AE4E8
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 00:10:03 -0800 (PST)
-Message-ID: <cb1d8ee5-c5b4-261b-7cbb-459dbbe700b9@linux.dev>
-Date:   Fri, 2 Dec 2022 00:09:53 -0800
+        with ESMTP id S232771AbiLBISe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 03:18:34 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA89FD1C;
+        Fri,  2 Dec 2022 00:17:40 -0800 (PST)
+Received: from dggpeml500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NNm0s0MDszqSMX;
+        Fri,  2 Dec 2022 16:13:33 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 2 Dec
+ 2022 16:17:37 +0800
+From:   Xin Liu <liuxin350@huawei.com>
+To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yanan@huawei.com>, <wuchangye@huawei.com>,
+        <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+        <liuxin350@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH bpf-next v2] libbpf:Improved usability of the Makefile in libbpf
+Date:   Fri, 2 Dec 2022 16:17:38 +0800
+Message-ID: <20221202081738.128513-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next,v3 4/4] selftests/bpf: add xfrm_info tests
-Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
-        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org, liuhangbin@gmail.com,
-        lixiaoyan@google.com
-References: <20221201211425.1528197-1-eyal.birger@gmail.com>
- <20221201211425.1528197-5-eyal.birger@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221201211425.1528197-5-eyal.birger@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/1/22 1:14 PM, Eyal Birger wrote:
-> Test the xfrm_info kfunc helpers.
-> 
-> Note: the tests require support for xfrmi "external" mode in iproute2.
+Current libbpf Makefile does not contain the help command, which
+is inconvenient to use. Similar to the Makefile help command of the
+perf, a help command is provided to list the commands supported by
+libbpf make and the functions of the commands.
 
-Not needed now. Please update the commit message.
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+---
 
-The test is failing on platform that has no kfunc support yet.  Please check the 
-BPF CI result in patchwork after posting to ensure the tests run well:
-https://patchwork.kernel.org/project/netdevbpf/patch/20221201211425.1528197-5-eyal.birger@gmail.com/
+v2: Simplified display. Some unused commands are displayed in the help command. 
 
-This test needs to be added to the DENYLIST.<arch> for the not yet supported 
-platform.  Please refer to selftests/bpf/README.rst for details.
+v1: https://lore.kernel.org/bpf/20221129074235.116969-1-liuxin350@huawei.com/
 
-[ ... ]
+ tools/lib/bpf/Makefile | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-> +#define SYS_NOFAIL(fmt, ...)					\
-> +	({							\
-> +		char cmd[1024];					\
-> +		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-> +		system(cmd);					\
-> +	})
-> +
-> +static int attach_tc_prog(struct bpf_tc_hook *hook, int igr_fd, int egr_fd)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts1, .handle = 1,
-> +			    .priority = 1, .prog_fd = igr_fd);
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts2, .handle = 1,
-> +			    .priority = 1, .prog_fd = egr_fd);
-
-s/DECLARE_LIBBPF_OPTS/LIBBPF_OPTS/
-
-DECLARE_ is a legacy naming in libbpf_legacy.h
-
-[ ... ]
-
-> +static int setup_xfrmi_external_dev(const char *ns)
-> +{
-> +	struct {
-> +		struct nlmsghdr nh;
-> +		struct ifinfomsg info;
-> +		unsigned char data[128];
-> +	} req;
-> +	struct rtattr *link_info, *info_data;
-> +	struct nstoken *nstoken;
-> +	int ret = -1, sock = 0;
-
-sock = -1;
-
-> +	struct nlmsghdr *nh;
-> +
-> +	memset(&req, 0, sizeof(req));
-> +	nh = &req.nh;
-> +	nh->nlmsg_len = NLMSG_LENGTH(sizeof(req.info));
-> +	nh->nlmsg_type = RTM_NEWLINK;
-> +	nh->nlmsg_flags |= NLM_F_CREATE | NLM_F_REQUEST;
-> +
-> +	rtattr_add_str(nh, IFLA_IFNAME, "ipsec0");
-> +	link_info = rtattr_begin(nh, IFLA_LINKINFO);
-> +	rtattr_add_str(nh, IFLA_INFO_KIND, "xfrm");
-> +	info_data = rtattr_begin(nh, IFLA_INFO_DATA);
-> +	rtattr_add(nh, IFLA_XFRM_COLLECT_METADATA, 0);
-> +	rtattr_end(nh, info_data);
-> +	rtattr_end(nh, link_info);
-> +
-> +	nstoken = open_netns(ns);
-
-Please check error.
-
-> +
-> +	sock = socket(AF_NETLINK, SOCK_RAW | SOCK_CLOEXEC, NETLINK_ROUTE);
-> +	if (!ASSERT_GT(sock, 0, "netlink socket"))
-
-s/_GT/_GE/
-
-> +		goto Exit;
-
-Please run checkpatch.pl...
-
-CHECK: Avoid CamelCase: <Exit>
-#301: FILE: tools/testing/selftests/bpf/prog_tests/xfrm_info.c:250:
-+		goto Exit;
-
-> +	ret = send(sock, nh, nh->nlmsg_len, 0);
-> +	if (!ASSERT_EQ(ret, nh->nlmsg_len, "netlink send length"))
-> +		goto Exit;
-> +
-> +	ret = 0;
-> +Exit:
-> +	if (sock)
-
-if (sock != -1) ...
-
-> +		close(sock);
-> +	close_netns(nstoken);
-> +	return ret;
-> +}
-> +
-> +static int config_overlay(void)
-> +{
-> +	if (setup_xfrm_tunnel(NS0, NS1, IP4_ADDR_VETH01, IP4_ADDR_VETH10,
-> +			      IF_ID_0_TO_1, IF_ID_1))
-> +		goto fail;
-> +	if (setup_xfrm_tunnel(NS0, NS2, IP4_ADDR_VETH02, IP4_ADDR_VETH20,
-> +			      IF_ID_0_TO_2, IF_ID_2))
-> +		goto fail;
-> +
-> +	/* Older iproute2 doesn't support this option */
-> +	if (!ASSERT_OK(setup_xfrmi_external_dev(NS0), "xfrmi"))
-> +		goto fail;
-> +
-> +	SYS("ip -net " NS0 " addr add 192.168.1.100/24 dev ipsec0");
-> +	SYS("ip -net " NS0 " link set dev ipsec0 up");
-> +
-> +	SYS("ip -net " NS1 " link add ipsec0 type xfrm if_id %d", IF_ID_1);
-> +	SYS("ip -net " NS1 " addr add 192.168.1.200/24 dev ipsec0");
-> +	SYS("ip -net " NS1 " link set dev ipsec0 up");
-> +
-> +	SYS("ip -net " NS2 " link add ipsec0 type xfrm if_id %d", IF_ID_2);
-> +	SYS("ip -net " NS2 " addr add 192.168.1.200/24 dev ipsec0");
-> +	SYS("ip -net " NS2 " link set dev ipsec0 up");
-> +
-> +	return 0;
-> +fail:
-> +	return -1;
-> +}
-> +
-> +static int test_ping(int family, const char *addr)
-> +{
-> +	SYS("%s %s %s > /dev/null", ping_command(family), PING_ARGS, addr);
-> +	return 0;
-> +fail:
-> +	return -1;
-> +}
-> +
-> +static int test_xfrm_ping(struct xfrm_info *skel, u32 if_id)
-> +{
-> +	skel->bss->req_if_id = if_id;
-> +
-> +	if (test_ping(AF_INET, "192.168.1.200"))
-
-nit. Directly do SYS() here to avoid another reading detour to test_ping() which 
-is almost a one liner and only used once here.
-
-> +		return -1;
-> +
-> +	if (!ASSERT_EQ(skel->bss->resp_if_id, if_id, "if_id"))
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
-> +static void _test_xfrm_info(void)
-> +{
-> +	int get_xfrm_info_prog_fd, set_xfrm_info_prog_fd;
-> +	struct xfrm_info *skel = NULL;
-> +	struct nstoken *nstoken = NULL;
-> +	int ifindex = -1;
-
-nit. Unnecessary init.  Nonthing to cleanup at the label "done:" and it is not a 
-return value also.  will be easier to review.
-
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> +			    .attach_point = BPF_TC_INGRESS);
-> +
-> +	/* load and attach bpf progs to ipsec dev tc hook point */
-> +	skel = xfrm_info__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "xfrm_info__open_and_load"))
-> +		goto done;
-> +	nstoken = open_netns(NS0);
-
-Check error.
-
-> +	ifindex = if_nametoindex("ipsec0");
-> +	if (!ASSERT_NEQ(ifindex, 0, "ipsec0 ifindex"))
-> +		goto done;
-> +	tc_hook.ifindex = ifindex;
-> +	set_xfrm_info_prog_fd = bpf_program__fd(skel->progs.set_xfrm_info);
-> +	get_xfrm_info_prog_fd = bpf_program__fd(skel->progs.get_xfrm_info);
-> +	if (!ASSERT_GE(set_xfrm_info_prog_fd, 0, "bpf_program__fd"))
-> +		goto done;
-> +	if (!ASSERT_GE(get_xfrm_info_prog_fd, 0, "bpf_program__fd"))
-> +		goto done;
-> +	if (attach_tc_prog(&tc_hook, get_xfrm_info_prog_fd,
-> +			   set_xfrm_info_prog_fd))
-> +		goto done;
-> +	if (!ASSERT_EQ(test_xfrm_ping(skel, IF_ID_0_TO_1), 0, "ping " NS1))
-> +		goto done;
-> +	if (!ASSERT_EQ(test_xfrm_ping(skel, IF_ID_0_TO_2), 0, "ping " NS2))
-> +		goto done;
-> +
-> +done:
-> +	if (nstoken)
-> +		close_netns(nstoken);
-> +	if (skel)
-> +		xfrm_info__destroy(skel);
-> +}
-> +
-> +void test_xfrm_info(void)
-> +{
-> +	cleanup();
-> +
-> +	if (!ASSERT_OK(config_underlay(), "config_underlay"))
-
-cleanup() is needed on error.
-
-> +		return;
-> +	if (!ASSERT_OK(config_overlay(), "config_overlay"))
-
-Same here.
-
-> +		return;
-> +
-> +	if (test__start_subtest("xfrm_info"))
-> +		_test_xfrm_info();
-> +
-> +	cleanup();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/xfrm_info.c b/tools/testing/selftests/bpf/progs/xfrm_info.c
-> new file mode 100644
-> index 000000000000..908579310bf9
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xfrm_info.c
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <linux/pkt_cls.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +__u32 req_if_id;
-> +__u32 resp_if_id;
-> +
-> +struct bpf_xfrm_info {
-> +	__u32 if_id;
-> +	int link;
-> +} __attribute__((preserve_access_index));
-> +
-> +int bpf_skb_set_xfrm_info(struct __sk_buff *skb_ctx,
-> +			  const struct bpf_xfrm_info *from) __ksym;
-> +int bpf_skb_get_xfrm_info(struct __sk_buff *skb_ctx,
-> +			  struct bpf_xfrm_info *to) __ksym;
-> +
-> +SEC("tc")
-> +int set_xfrm_info(struct __sk_buff *skb)
-> +{
-> +	struct bpf_xfrm_info info = { .if_id = req_if_id };
-> +
-> +	return bpf_skb_set_xfrm_info(skb, &info) ? TC_ACT_SHOT : TC_ACT_UNSPEC;
-
-Add these TC_ACT_* to bpf_tracing_net.h and then vmlinux.h can be used.  Take a 
-look at some of the bpf_tracing_net.h in selftests.
-
-> +}
-> +
-> +SEC("tc")
-> +int get_xfrm_info(struct __sk_buff *skb)
-> +{
-> +	struct bpf_xfrm_info info = {};
-> +
-> +	if (bpf_skb_get_xfrm_info(skb, &info) < 0)
-> +		return TC_ACT_SHOT;
-> +
-> +	resp_if_id = info.if_id;
-> +
-> +	return TC_ACT_UNSPEC;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 4c904ef0b47e..ae523e4cce05 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -286,3 +286,22 @@ tags:
+ 
+ # Delete partially updated (corrupted) files on error
+ .DELETE_ON_ERROR:
++
++help:
++	@echo 'libbpf default targets:'
++	@echo '  HINT: use "V=1" to enable verbose build'
++	@echo '  all     - build librarys and pkgconfig'
++	@echo ''
++	@echo 'libbpf install targets:'
++	@echo '  HINT: use "prefix"(default "/usr/local") or "DESTDIR"(default "/")'
++	@echo '        to install to a particular path like "make prefix=/usr/local install"'
++	@echo '  install          - build and install all headers, librarys and pkgconfig'
++	@echo '  install_headers  - install only headers to include/bpf'
++	@echo ''
++	@echo 'libbpf make targets:'
++	@echo '  tags    - use ctags to make tag information for source browsing'
++	@echo '  cscope  - use cscope to make interactive browsing database'
++	@echo ''
++	@echo 'libbpf maintainer targets:'
++	@echo '  clean   - remove all generated files'
++	@echo '  check   - check abi and version info'
+-- 
+2.33.0
 
