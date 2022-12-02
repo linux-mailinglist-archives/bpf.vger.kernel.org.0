@@ -2,90 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 599FE640091
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 07:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD522640100
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 08:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbiLBGdT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 01:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        id S232438AbiLBHZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 02:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbiLBGdS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 01:33:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012A991350;
-        Thu,  1 Dec 2022 22:33:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8930361263;
-        Fri,  2 Dec 2022 06:33:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 569D4C433D6;
-        Fri,  2 Dec 2022 06:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1669962794;
-        bh=Yv0oeZfvoloe2s8/P9d5XMpUMasrNBnv39bbXAx17jI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p41ZSnI7xof4Vfjd+ZhXN99ojeePR16sjvm0Vhl1AqeofeJRfiS7hV4g2MITSZUfl
-         OjzFphelA+l10EJRKjdLGQlYZqpmp7iW5w0tmofh2XCWg0EvYylrSK0UsqcWY9d3uO
-         0n0+/JhA2IxxqvqmaUs41Aq+qTCbf/bsJTJyndUQ=
-Date:   Fri, 2 Dec 2022 07:33:11 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@meta.com>
-Subject: Re: [PATCH] panic: Taint kernel if fault injection has been used
-Message-ID: <Y4mcJ61TPBgvBEWr@kroah.com>
-References: <166995635931.455067.17768077948832448089.stgit@devnote3>
+        with ESMTP id S230094AbiLBHZe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 02:25:34 -0500
+X-Greylist: delayed 39994 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 01 Dec 2022 23:25:33 PST
+Received: from out-99.mta0.migadu.com (out-99.mta0.migadu.com [IPv6:2001:41d0:1004:224b::63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98C1AC6FB
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 23:25:33 -0800 (PST)
+Message-ID: <55c5d250-f3c4-84e0-c56f-cd554ee05482@linux.dev>
+Date:   Thu, 1 Dec 2022 23:25:22 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <166995635931.455067.17768077948832448089.stgit@devnote3>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next,v3 2/4] xfrm: interface: Add unstable helpers for
+ setting/getting XFRM metadata from TC-BPF
+Content-Language: en-US
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
+        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, liuhangbin@gmail.com,
+        lixiaoyan@google.com
+References: <20221201211425.1528197-1-eyal.birger@gmail.com>
+ <20221201211425.1528197-3-eyal.birger@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221201211425.1528197-3-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 01:45:59PM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On 12/1/22 1:14 PM, Eyal Birger wrote:
+> This change adds xfrm metadata helpers using the unstable kfunc call
+> interface for the TC-BPF hooks. This allows steering traffic towards
+> different IPsec connections based on logic implemented in bpf programs.
 > 
-> Since the function error injection framework in the fault injection
-> subsystem can change the function code flow forcibly, it may cause
-> unexpected behavior (and that is the purpose of this feature) even
-> if it is applied to the ALLOW_ERROR_INJECTION functions.
-> So this feature must be used only for debugging or testing purpose.
-> 
-> To identify this in the kernel oops message, add a new taint flag
-> for the fault injection. This taint flag will be set by either
-> function error injection is used or the BPF use the kprobe_override
-> on error injectable functions (identified by ALLOW_ERROR_INJECTION).
-> 
-> Link: https://lore.kernel.org/all/20221121104403.1545f9b5@gandalf.local.home/T/#u
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Documentation/admin-guide/tainted-kernels.rst |    5 +++++
->  include/linux/panic.h                         |    3 ++-
->  kernel/fail_function.c                        |    2 ++
->  kernel/panic.c                                |    1 +
->  kernel/trace/bpf_trace.c                      |    2 ++
->  5 files changed, 12 insertions(+), 1 deletion(-)
+> This object is built based on the availabilty of BTF debug info.
 
-I think you forgot to also update tools/debugging/kernel-chktaint with
-this new entry :(
+s/availabilty/availability/
+
+> 
+> The metadata percpu dsts used on TX take ownership of the original skb
+> dsts so that they may be used as part of the xfrm transmittion logic -
+
+s/transmittion/transmission/
+
+[ ... ]
+
+> diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> index 08a2870fdd36..cd47f88921f5 100644
+> --- a/net/xfrm/Makefile
+> +++ b/net/xfrm/Makefile
+> @@ -5,6 +5,12 @@
+>   
+>   xfrm_interface-$(CONFIG_XFRM_INTERFACE) += xfrm_interface_core.o
+>   
+> +ifeq ($(CONFIG_XFRM_INTERFACE),m)
+> +xfrm_interface-$(CONFIG_DEBUG_INFO_BTF_MODULES) += xfrm_interface_bpf.o
+> +else ifeq ($(CONFIG_XFRM_INTERFACE),y)
+> +xfrm_interface-$(CONFIG_DEBUG_INFO_BTF) += xfrm_interface_bpf.o
+> +endif
+> +
+>   obj-$(CONFIG_XFRM) := xfrm_policy.o xfrm_state.o xfrm_hash.o \
+>   		      xfrm_input.o xfrm_output.o \
+>   		      xfrm_sysctl.o xfrm_replay.o xfrm_device.o
+> diff --git a/net/xfrm/xfrm_interface_bpf.c b/net/xfrm/xfrm_interface_bpf.c
+> new file mode 100644
+> index 000000000000..7938bf6cbb32
+> --- /dev/null
+> +++ b/net/xfrm/xfrm_interface_bpf.c
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Unstable XFRM Helpers for TC-BPF hook
+> + *
+> + * These are called from SCHED_CLS BPF programs. Note that it is
+> + * allowed to break compatibility for these functions since the interface they
+> + * are exposed through to BPF programs is explicitly unstable.
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +
+> +#include <net/dst_metadata.h>
+> +#include <net/xfrm.h>
+> +
+> +struct bpf_xfrm_info {
+
+Documentation is needed here and...
+
+> +	u32 if_id;
+> +	int link;
+> +};
+> +
+> +static struct metadata_dst __percpu *xfrm_md_dst;
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +		  "Global functions as their definitions will be in xfrm_interface BTF");
+> +
+> +__used noinline
+> +int bpf_skb_get_xfrm_info(struct __sk_buff *skb_ctx, struct bpf_xfrm_info *to)
+
+... also this get and the following set kfunc.
+
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct xfrm_md_info *info;
+> +
+> +	memset(to, 0, sizeof(*to));
+> +
+> +	info = skb_xfrm_md_info(skb);
+> +	if (!info)
+> +		return -EINVAL;
+> +
+> +	to->if_id = info->if_id;
+> +	to->link = info->link;
+> +	return 0;
+> +}
+> +
+> +__used noinline
+> +int bpf_skb_set_xfrm_info(struct __sk_buff *skb_ctx,
+> +			  const struct bpf_xfrm_info *from)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct metadata_dst *md_dst;
+> +	struct xfrm_md_info *info;
+> +
+> +	if (unlikely(skb_metadata_dst(skb)))
+> +		return -EINVAL;
+> +
+> +	md_dst = this_cpu_ptr(xfrm_md_dst);
+> +
+> +	info = &md_dst->u.xfrm_info;
+> +
+> +	info->if_id = from->if_id;
+> +	info->link = from->link;
+> +	skb_dst_force(skb);
+> +	info->dst_orig = skb_dst(skb);
+> +
+> +	dst_hold((struct dst_entry *)md_dst);
+> +	skb_dst_set(skb, (struct dst_entry *)md_dst);
+> +	return 0;
+> +}
+> +
+> +__diag_pop()
+> +
+> +BTF_SET8_START(xfrm_ifc_kfunc_set)
+> +BTF_ID_FLAGS(func, bpf_skb_get_xfrm_info)
+> +BTF_ID_FLAGS(func, bpf_skb_set_xfrm_info)
+> +BTF_SET8_END(xfrm_ifc_kfunc_set)
+> +
+> +static const struct btf_kfunc_id_set xfrm_interface_kfunc_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &xfrm_ifc_kfunc_set,
+> +};
+> +
+> +int __init register_xfrm_interface_bpf(void)
+> +{
+> +	int err;
+> +
+> +	xfrm_md_dst = metadata_dst_alloc_percpu(0, METADATA_XFRM,
+> +						GFP_KERNEL);
+> +	if (!xfrm_md_dst)
+> +		return -ENOMEM;
+> +	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+> +					&xfrm_interface_kfunc_set);
+> +	if (err < 0) {
+> +		cleanup_xfrm_interface_bpf();
+
+
+nit. Directly call metadata_dst_free_percpu(xfrm_md_dst), easier to read.
+> +		return err;
+> +	}
+> +	return 0;
+> +}
+> +
+> +void cleanup_xfrm_interface_bpf(void)
+> +{
+> +	metadata_dst_free_percpu(xfrm_md_dst);
+> +}
 
