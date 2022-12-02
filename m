@@ -2,65 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DC264097C
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 16:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E11640AC9
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 17:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbiLBPjI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 10:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        id S234112AbiLBQaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 11:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233765AbiLBPjH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 10:39:07 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A609BE6B3;
-        Fri,  2 Dec 2022 07:39:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.ch; s=s31663417;
-        t=1669995523; bh=ldG0fzm6Qem0Pfa6GXvE+somhuAXUV/Lz5s/EE/u7EU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=FwbQ27KZcoVQ67aMcSqdAPD+8ALJiPA+vNIE2krhZB0EuucO6VfV7+wVGMkq0Oq2M
-         Y9esfsDr91p3srfVAQ0/3eYQ5q98qsfnbrWJ0HsGPKvnGruvcLFq1ZEqN6nlgv97OM
-         2pDTzcDdpD5eLvbKl9Odlt5ccqVW7znk4ZLSyfFR4KNTh9VI85kNZMnBmnQLbCVFWh
-         qp+A65OmvVhRktZ9mEXvsF0ug3naIJ8iJ7jxHs3Xl5Jaq96joqyLuvAT9eC6dKQQ5s
-         +MbIvrYuU9rK0jNpsGwVgmFLeirudl6IzxesHH6a8dlnvej2RoYrNpE49pu9hOLVSP
-         s2hvlEGy/d4SQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from x1c6.fritz.box ([185.76.96.75]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mqs4f-1ofYxe2J61-00muzS; Fri, 02
- Dec 2022 16:38:43 +0100
-From:   Timo Hunziker <timo.hunziker@gmx.ch>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@google.com, linux-kernel@vger.kernel.org,
-        Timo Hunziker <timo.hunziker@gmx.ch>
-Subject: [PATCH bpf-next] libbpf: parse usdt args without offset on x86 (e.g. 8@(%rsp))
-Date:   Fri,  2 Dec 2022 16:38:16 +0100
-Message-Id: <20221202153816.1180450-1-timo.hunziker@gmx.ch>
+        with ESMTP id S234135AbiLBQaX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 11:30:23 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC59E368B;
+        Fri,  2 Dec 2022 08:29:12 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id q1so4760364pgl.11;
+        Fri, 02 Dec 2022 08:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=acpzyOeZw6sYRPpn3989BmT54E7u3z+H4u+6EjuyQA0=;
+        b=iOgA1ZOrh3PEuuR9D272sCYvElipPKe3w+HPmvUgBDilSHN9Q2JFoHZRHvSDlVSpXN
+         eDgczsrdK2HUGMNyNR3zQypSJdQ93RCZRrzGpYZrvvYjUgI9jkC2Ti8sZzYrs7g5hh2J
+         RQM9ycR9bTJb6Yxp9lWkdzYQ5fZ+EM8i+zk8r6fYIoQ120kMfG+JPlT+uU1o/ciZvjFG
+         ANe1g74h1luXy4pdp1LpnpfGmlhTwBjT/IZWxVJLcDM5rAP8RUe2jbVKiA1M/D05cqu7
+         bjmjJxL/WoWyw0N3vbt7Ly+GpfRf2ukMyOzuOWPz7VXJn2hAgOytGMZ/oRRc1KK7vao9
+         U7nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=acpzyOeZw6sYRPpn3989BmT54E7u3z+H4u+6EjuyQA0=;
+        b=sb3bHIOx351uLTA2IideIuwhsnqctnWJQjYjQRmYJKartlVXiHHNsdAaJt4nEHuKP5
+         GJFPyttiOw3rDZxclV8QD2EDblXrLo6Pi2G0oWjEdc0ueV7QrS7Mm47ZSY+g6N/Gpo7j
+         ImX2qEDrKrZ3l3OuGJgo7aQiomYiBdwUGZTjgt95+2WRentJzz3s+473FN3e2CXoTgs2
+         U6QFRv5hFQ0Fb9SD7N0DX3gKUjb4OLqwiqkjwxbB3Jm+0MWr6zYkctJ0zgTqPm1XHt9V
+         S3+WELVoWAYflm0v0veSXRIqEWtcmM26GHlJztd6lfPebi2F7myvVxmvAS0Kfjf3ByBt
+         8N1A==
+X-Gm-Message-State: ANoB5pkPupn3Rl6UkXJZN/DpdPQ85zEyw/cYZuBmNUgOU3N9UE24JHB1
+        mdVfYgteMGm6Sf58KL3zUUt/9Ml22Q==
+X-Google-Smtp-Source: AA0mqf5fQADGE40zm69RZ8G1PW8BsW4CoP80+gkBWRUiCv7jfAegLNGkOo2SkNOn7kj9doTtlOsHNw==
+X-Received: by 2002:a63:5b44:0:b0:46f:c9e8:5752 with SMTP id l4-20020a635b44000000b0046fc9e85752mr46198325pgm.157.1669998551450;
+        Fri, 02 Dec 2022 08:29:11 -0800 (PST)
+Received: from WDIR.. ([182.209.58.45])
+        by smtp.gmail.com with ESMTPSA id g3-20020aa79f03000000b00565c8634e55sm5300123pfr.135.2022.12.02.08.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Dec 2022 08:29:10 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] samples: bpf: fix broken behavior of tracex2 write_size count
+Date:   Sat,  3 Dec 2022 01:29:07 +0900
+Message-Id: <20221202162907.26721-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iHEIR/r7nBpuEQBqpUIq+/Y5by8Fmo14yoHvLmB2k7rtJJNeMIx
- glfIQ9h8LYddQqnoX/WTe9YZ6H+lQxxKrpgBoEa/GfneQK2Nw+bgm8ZUIWUwQzY/YKfgDe+
- 2xD2GdG8HahVd+pDY/PFDjFQA1MaFFzoNmsfiRVZoCzl1s5Vf3ijw5sc87w4iThmngEDX2p
- 3HUwG1a1ol5DZ3nU/z3gA==
-UI-OutboundReport: notjunk:1;M01:P0:8shPd3u1qR0=;z5Myn1tE+QAb72nrUcKTqW+liYq
- ucRGQlRe4QaHCQWXCLKUWMGqqBVfYn+Da96FO+hQjozzgJvDEPx3LVDCXjBfygnNxp4xMsr8x
- YXiX89jApej6HZl+DRvlA5DCU8S1YjiTavDyR+qb4luWGp5MQ8lnXMSUZkIe7YRRdSKqoHn5+
- AWizaJGDkgQWvuvAXwdCMAxDJWkT9tWwieLl31D6S61HjmgT62p511edlT7z9YGSqDB5Zvpju
- S2xoUdTK8y4Z78u0Na1R7Jf2/zC87rQJRqwjT8XM1AVsH/pLN9ayUpgZj8dX/o/aMLiSEbzsV
- LabclslBOgHGzOwfLD9vpjuqyBPA99TriD/U5/ZoEImO60Qmpn+YUA2G0MmWogaumkGvY1uKq
- cjBGNbO4wlgUq27ThNcEw5JJXx4dKHTsKoFRG7AD50TIZUm5gZt3DJBwanOAvwK0tENYTj328
- cNAa5akFBeu9jaCpvRAcbmGqcnIDuN1kxpH1d3futiRZvHkoJrof9J3Y2puvQKJRj6kXS4zLh
- V0+WehPmuy+vx2YZ+2PITZ0GQ9JNQAuNlckRwAfzTGntQV3QdFV3A+XnXeRYYqPfaY0jQIDQA
- MjZEuv32wFgUbWqqYdIsU+E8W1Q1hBQYMtM0Hf7JW+FX13+eXRV7h0wgb7opdpv+kxJr6eKG8
- b4Pfhnjpm3j2erLK6aB7DlckqI6GSEdsgtCVAZ2Jgu28xaDGYZwl4ybiSn4gicuesP1mReBXE
- VWQLElGkiNzXDKzOLWMroPEE7ZzdleQ5NZhxwvBTP8w+tW5o4VGSQMCYs3VhwKeba1Nujn3gg
- X/QgFZVv4veyIwGSqDiqsa1Gr4JvfW8e4+x9IlBTugeCH4ldFpQf1AbuVc90hKoF4g7CP46ut
- tbkKcYlrUuskNHM5F4HmtdJnLt7EfWismnAj+9OKvoSSobFfl2j73qkfQcEjplEhxfrz54mA1
- WbPgnJX98ljEa233twKCCxforig=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,48 +69,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Parse USDT arguments like "8@(%rsp)" on x86. These are emmited by
-systemtap. The syntax is a mixture between the "memory dereference
-case" and the "register read case" as the offset is zero but the
-register is wrapped in parentheses. We treat them the same as the
-the "register read case".
+Currently, there is a problem with tracex2, as it doesn't print the
+histogram properly and the results are misleading. (all results report
+as 0)
 
-I've tested that this fixes the "unrecognized arg #N spec: 8@(%rsp).."
-error I've run into when attaching to a probe with such an argument.
-Attaching and reading the arguments works.
+The problem is caused by a change in arguments of the function to which
+the kprobe connects. This tracex2 bpf program uses kprobe (attached
+to __x64_sys_write) to figure out the size of the write system call. In
+order to achieve this, the third argument 'count' must be intact.
 
-Something similar might be needed for the other supported
-architectures.
+The following is a prototype of the sys_write variant. (checked with
+pfunct)
 
-ref: https://github.com/libbpf/libbpf/issues/559
+    ~/git/linux$ pfunct -P fs/read_write.o | grep sys_write
+    ssize_t ksys_write(unsigned int fd, const char  * buf, size_t count);
+    long int __x64_sys_write(const struct pt_regs  * regs);
+    ... cross compile with s390x ...
+    long int __s390_sys_write(struct pt_regs * regs);
 
-Signed-off-by: Timo Hunziker <timo.hunziker@gmx.ch>
-=2D--
- tools/lib/bpf/usdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Since the __x64_sys_write (or s390x also) doesn't have the proper
+argument, changing the kprobe event to ksys_write will fix the problem.
 
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index b8daae265f99..5e7ec7ad8ad7 100644
-=2D-- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -1233,6 +1233,14 @@ static int parse_usdt_arg(const char *arg_str, int =
-arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off =3D reg_off;
-+	} else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", &arg_sz, reg_name, =
-&len) =3D=3D 2) {
-+		/* Register read case with parentheses, e.g., 8@(%rsp) */
-+		arg->arg_type =3D USDT_ARG_REG;
-+		arg->val_off =3D 0;
-+		reg_off =3D calc_pt_regs_off(reg_name);
-+		if (reg_off < 0)
-+			return reg_off;
-+		arg->reg_off =3D reg_off;
- 	} else if (sscanf(arg_str, " %d @ %%%15s %n", &arg_sz, reg_name, &len) =
-=3D=3D 2) {
- 		/* Register read case, e.g., -4@%eax */
- 		arg->arg_type =3D USDT_ARG_REG;
-=2D-
-2.36.2
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+---
+ samples/bpf/tracex2_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+index 93e0b7680b4f..fc65c589e87f 100644
+--- a/samples/bpf/tracex2_kern.c
++++ b/samples/bpf/tracex2_kern.c
+@@ -78,7 +78,7 @@ struct {
+ 	__uint(max_entries, 1024);
+ } my_hist_map SEC(".maps");
+ 
+-SEC("kprobe/" SYSCALL(sys_write))
++SEC("kprobe/ksys_write")
+ int bpf_prog3(struct pt_regs *ctx)
+ {
+ 	long write_size = PT_REGS_PARM3(ctx);
+-- 
+2.34.1
 
