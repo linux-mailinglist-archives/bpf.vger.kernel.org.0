@@ -2,46 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB2063FF91
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 05:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5956763FFA0
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 05:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbiLBEuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 23:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
+        id S232168AbiLBE6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 23:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbiLBEuh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 23:50:37 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D817CC86B7;
-        Thu,  1 Dec 2022 20:50:35 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VWBVp5d_1669956631;
-Received: from 30.221.147.159(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VWBVp5d_1669956631)
-          by smtp.aliyun-inc.com;
-          Fri, 02 Dec 2022 12:50:33 +0800
-Message-ID: <1b95612c-a38b-90e2-cbe3-211d8129fb9f@linux.alibaba.com>
-Date:   Fri, 2 Dec 2022 12:50:30 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0)
- Gecko/20100101 Thunderbird/107.0
-Subject: Re: [RFC PATCH 0/9] virtio_net: support multi buffer xdp
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20221122074348.88601-1-hengqi@linux.alibaba.com>
-In-Reply-To: <20221122074348.88601-1-hengqi@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        with ESMTP id S231575AbiLBE6B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 23:58:01 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDA92B258
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 20:57:59 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-352e29ff8c2so38528247b3.21
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 20:57:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0BZrtu6a4uY0PQiXNtiOGBfNeRj9TpPw09DbPuRe0Eg=;
+        b=X4m7nIQ+QvDHeTb0ha5tBcYbrBQDFWJW2lsYSWb+uqOeXSfgqk77lGCxeuIMXLwMlT
+         q/4vMEZeFJSlLF2ADUr2StBpjojZUi+QvA/YbVuEUxKO21f72Ck/EqwOMQv3YELK2UWX
+         T+Z4sgXOrcSVxRTgD0iZSbG0sPIExiR3lVyDNrzH3qaj2+amwE662AQONkaie/Ww8qob
+         8sqcdhZyAJj3vDbUax8l28/BdoqMKcSpSpp/aQlmUR0Lf+Uq7kP45MgqtlwvQqzdS4Je
+         ++SZ5gIIaCcyDn0SiNgUSUyXoQKqNZhNWvVFoiCzjONvbiVV5lk4UTwNm+y/zuz1qLXt
+         /YZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0BZrtu6a4uY0PQiXNtiOGBfNeRj9TpPw09DbPuRe0Eg=;
+        b=aLt2JYaLHilwrLX11NxcX+2upxfCphb5ymsudyqbP5BEcXwQfQirdkMRdi7TBp/mTP
+         yexuPZPAXxzQRzXNngIlGZ5vhA6HX5l0MHdwk2akTaLL8wIhUMwe+gs9jCkwJHiUtem5
+         LlKxOHx7GB2oQW7djhhFDRVV95jCIQnAs4F8OmzvAdPytlYIV9soxeJT7K98ztUFwfrt
+         c04vQ/HTUl9dGwdYFIwERpBf0X6iZpxYJkWh/Hj7SGjzP6p18U1F9BEKJvQtXCDlyETL
+         VPG7d45HWp8jEHIO8SIC0TvmLTpq+ruM+K2CMMFTdPv51pJM9yRDTixL9rEgn646GM5i
+         ejLg==
+X-Gm-Message-State: ANoB5plY8AAABrlFRZsUHWzfCZ3oSXuX383HTUIXvV7Ix1l89Mo14O13
+        ZqvXIwvsDxjICDhMWgJNDDfUiAjI3RSY
+X-Google-Smtp-Source: AA0mqf5o0BmDUnUrinpRrQas0w4b7hDEpgBGbb2aeFzVqUVBfV1v1tX10UCBeoqIbKr4DRhNsSULBK0wW7Gd
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:e3b0:e3d1:6040:add2])
+ (user=irogers job=sendgmr) by 2002:a25:ba8a:0:b0:6cc:6a92:7a17 with SMTP id
+ s10-20020a25ba8a000000b006cc6a927a17mr48131719ybg.282.1669957078446; Thu, 01
+ Dec 2022 20:57:58 -0800 (PST)
+Date:   Thu,  1 Dec 2022 20:57:38 -0800
+Message-Id: <20221202045743.2639466-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.rc0.267.gcb52ba06e7-goog
+Subject: [PATCH 0/5] Improvements to incremental builds
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,42 +79,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Jason.
+Switching to using install_headers caused incremental builds to always
+rebuild most targets. This was caused by the headers always being
+reinstalled and then getting new timestamps causing dependencies to be
+rebuilt. Follow the convention in libbpf where the install targets are
+separated and trigger when the target isn't present or is out-of-date.
 
-Do you have any comments on this series?
+Further, fix an issue in the perf build with libpython where
+python/perf.so was also regenerated as the target name was incorrect.
 
-Thanks.
+Ian Rogers (5):
+  tools lib api: Add dependency test to install_headers
+  tools lib perf: Add dependency test to install_headers
+  tools lib subcmd: Add dependency test to install_headers
+  tools lib symbol: Add dependency test to install_headers
+  perf build: Fix python/perf.so library's name
 
-在 2022/11/22 下午3:43, Heng Qi 写道:
-> Currently, virtio net only supports xdp for single-buffer packets
-> or linearized multi-buffer packets. This patchset supports xdp for
-> multi-buffer packets, then GRO_HW related features can be
-> negotiated, and do not affect the processing of single-buffer xdp.
->
-> In order to build multi-buffer xdp neatly, we integrated the code
-> into virtnet_build_xdp_buff() for xdp. The first buffer is used
-> for prepared xdp buff, and the rest of the buffers are added to
-> its skb_shared_info structure. This structure can also be
-> conveniently converted during XDP_PASS to get the corresponding skb.
->
-> Since virtio net uses comp pages, and bpf_xdp_frags_increase_tail()
-> is based on the assumption of the page pool,
-> (rxq->frag_size - skb_frag_size(frag) - skb_frag_off(frag))
-> is negative in most cases. So we didn't set xdp_rxq->frag_size in
-> virtnet_open() to disable the tail increase.
->
-> Heng Qi (9):
->    virtio_net: disable the hole mechanism for xdp
->    virtio_net: set up xdp for multi buffer packets
->    virtio_net: update bytes calculation for xdp_frame
->    virtio_net: remove xdp related info from page_to_skb()
->    virtio_net: build xdp_buff with multi buffers
->    virtio_net: construct multi-buffer xdp in mergeable
->    virtio_net: build skb from multi-buffer xdp
->    virtio_net: transmit the multi-buffer xdp
->    virtio_net: support multi-buffer xdp
->
->   drivers/net/virtio_net.c | 356 ++++++++++++++++++++++++---------------
->   1 file changed, 219 insertions(+), 137 deletions(-)
->
+ tools/lib/api/Makefile     | 38 ++++++++++++++++++++++-----------
+ tools/lib/perf/Makefile    | 43 +++++++++++++++++++-------------------
+ tools/lib/subcmd/Makefile  | 23 +++++++++++---------
+ tools/lib/symbol/Makefile  | 21 ++++++++++++-------
+ tools/perf/Makefile.config |  4 +++-
+ tools/perf/Makefile.perf   |  2 +-
+ 6 files changed, 79 insertions(+), 52 deletions(-)
+
+-- 
+2.39.0.rc0.267.gcb52ba06e7-goog
 
