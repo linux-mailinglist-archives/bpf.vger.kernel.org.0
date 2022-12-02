@@ -2,124 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338AA640CC2
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 19:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3824E640E33
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 20:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbiLBSBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 13:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        id S234339AbiLBTIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 14:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbiLBSBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 13:01:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FCCE61CF;
-        Fri,  2 Dec 2022 10:01:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id k2-20020a17090a4c8200b002187cce2f92so9008747pjh.2;
-        Fri, 02 Dec 2022 10:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=unq15Boqc5fQcQaBlgiNBwM4n1cI6lL/XfwEmSxwwuQ=;
-        b=SYBc4wuTywgBZjryabalnIcwN5pNfyFGYrJ48kdRRb82LZSmJN38+HcpMu/nuegPkB
-         r3HwbRDHpCnzR+H3GPhNIcmZ51dVpodLL7adEX/SeBI9VBGLwnuyUh1ojbnJvK/OnCee
-         yzPySqGihsvwMFr6W8CASyrwELoqST8mJMEjI/DhZR0zHpysh8DSM8HOArxTD/qA+2HZ
-         eVZVmGkbjcGA3biw8dUUJkxLFoqCXh3RGubsx7UGAqqqAxp+oD2xewinbolh5Pogo6Sk
-         wWEy1HVKvQ8F4t386WXj+C9VvG9PyHVCMGtIep9TpigTBMJCSNPE5DPjX25UKrkCG5yI
-         mA0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=unq15Boqc5fQcQaBlgiNBwM4n1cI6lL/XfwEmSxwwuQ=;
-        b=64/Q2DAOmIw804JwhHUHTpEFXcZf1ikFNic5vcqCF0JnIAwE9WGiWmCwo15ns+lCzQ
-         8kQNwCJhEEWpbLCf7w7Y9BuA9pTmxmVZTRMCPmV9VYowR8h7iPNTN1ZUB4iZVgAfnL0R
-         dIImUiTeJu+4oQgIWJV8w+ZX8twGMLXL+e03DuJ5erZzVm7gkAxdsrOkEQatZzXJpgL0
-         gNF5IpXjer9Z6rgqOY96Extyn5BCSPzIc8bqVEC4or/1cJkj8j5txbOFu1KIXiQ0QYrI
-         jUS76JHGeUEUbqAHy9LkbqZEgxTeeSBzeyZRf8FxdhdSM0WLhjwiU6wmW3nyv4xjghYf
-         s/ig==
-X-Gm-Message-State: ANoB5plbxrhFkhYFr1HWDZ+Ds1k4jIJSjG3D0qOaaPCC6weh9FuRKdHt
-        ErhFkVwbNeWEHxAh2YRZnoo=
-X-Google-Smtp-Source: AA0mqf6KTArSjxNx6RNy+FpOtO0BMt5uhy0fFQB1V1qK3d6ls63iE18vzLlUqkGZ0KgA5LuiVtiuUA==
-X-Received: by 2002:a17:903:251:b0:189:78d9:fe3c with SMTP id j17-20020a170903025100b0018978d9fe3cmr32814026plh.101.1670004099551;
-        Fri, 02 Dec 2022 10:01:39 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79723000000b0057409583c09sm5359383pfg.163.2022.12.02.10.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 10:01:39 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 2 Dec 2022 08:01:37 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Barret Rhoden <brho@google.com>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <Y4o9gV2v8eyI1arK@slm.duckdns.org>
-References: <20221130082313.3241517-1-tj@kernel.org>
- <20221130082313.3241517-15-tj@kernel.org>
- <8d146099-a12a-c5a1-4829-dec95497fdca@google.com>
+        with ESMTP id S234187AbiLBTIl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 14:08:41 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203A393827;
+        Fri,  2 Dec 2022 11:08:39 -0800 (PST)
+Message-ID: <6d0e13eb-63e0-a777-2a27-7f2e02867a13@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1670008117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVok47OFBEZZM7DL3MNnIdvx1TzDy010/6cy/h3x/YM=;
+        b=Cv84JwblirIlBeGmvJp+pyOJUtd7PNeAtvNQXv4BWm3lJ/F8l1lsDSFSfLUZ2W5wcm1xbN
+        fsDLDv9GJXouc2SrZIvI9pmGGHbrLKr79q6gSZmZajo3mzY35W8ghKD4sPnRxC04w4sYr1
+        YOiePl1314oyCF2tttdcBhndDFdVNno=
+Date:   Fri, 2 Dec 2022 11:08:29 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d146099-a12a-c5a1-4829-dec95497fdca@google.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next,v4 2/4] xfrm: interface: Add unstable helpers for
+ setting/getting XFRM metadata from TC-BPF
+Content-Language: en-US
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
+        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, liuhangbin@gmail.com,
+        lixiaoyan@google.com
+References: <20221202095920.1659332-1-eyal.birger@gmail.com>
+ <20221202095920.1659332-3-eyal.birger@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221202095920.1659332-3-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 12/2/22 1:59 AM, Eyal Birger wrote:
+> +__used noinline
+> +int bpf_skb_set_xfrm_info(struct __sk_buff *skb_ctx,
+> +			  const struct bpf_xfrm_info *from)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct metadata_dst *md_dst;
+> +	struct xfrm_md_info *info;
+> +
+> +	if (unlikely(skb_metadata_dst(skb)))
+> +		return -EINVAL;
+> +
+> +	md_dst = this_cpu_ptr(xfrm_md_dst);
+> +
+> +	info = &md_dst->u.xfrm_info;
+> +
+> +	info->if_id = from->if_id;
+> +	info->link = from->link;
+> +	skb_dst_force(skb);
+> +	info->dst_orig = skb_dst(skb);
+> +
+> +	dst_hold((struct dst_entry *)md_dst);
+> +	skb_dst_set(skb, (struct dst_entry *)md_dst);
 
-On Fri, Dec 02, 2022 at 12:08:27PM -0500, Barret Rhoden wrote:
-> you might be able to avoid the double_lock_balance() by using
-> move_queued_task(), which internally hands off the old rq lock and returns
-> with the new rq lock.
-> 
-> the pattern for consume_dispatch_q() would be something like:
-> 
-> - kfunc from bpf, with this_rq lock held
-> - notice p isn't on this_rq, goto remote_rq:
-> - do sched_ext accounting, like the this_rq->dsq->nr--
-> - unlock this_rq
-> - p_rq = task_rq_lock(p)
-> - double_check p->rq didn't change to this_rq during that unlock
-> - new_rq = move_queued_task(p_rq, rf, p, new_cpu)
-> - do sched_ext accounting like new_rq->dsq->nr++
-> - unlock new_rq
-> - relock the original this_rq
-> - return to bpf
-> 
-> you still end up grabbing both locks, but just not at the same time.
 
-Yeah, this probably would look better than the current double lock dancing,
-especially in the finish_dispatch() path.
+I may be missed something obvious and this just came to my mind,
 
-> plus, task_rq_lock() takes the guesswork out of whether you're getting p's
-> rq lock or not.  it looks like you're using the holding_cpu to handle the
-> race where p moves cpus after you read task_rq(p) but before you lock that
-> task_rq.  maybe you can drop the whole concept of the holding_cpu?
+What stops cleanup_xfrm_interface_bpf() being run while skb is still holding the 
+md_dst?
 
-->holding_cpu is there to basically detect intervening dequeues, so if we
-lock them out with TASK_ON_RQ_MIGRATING, we might be able to drop it. I need
-to look into it more tho. Things get pretty subtle around there, so I could
-easily be missing something. I'll try this and let you know how it goes.
+[ ... ]
 
-Thanks.
+> +static const struct btf_kfunc_id_set xfrm_interface_kfunc_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &xfrm_ifc_kfunc_set,
+> +};
+> +
+> +int __init register_xfrm_interface_bpf(void)
+> +{
+> +	int err;
+> +
+> +	xfrm_md_dst = metadata_dst_alloc_percpu(0, METADATA_XFRM,
+> +						GFP_KERNEL);
+> +	if (!xfrm_md_dst)
+> +		return -ENOMEM;
+> +	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+> +					&xfrm_interface_kfunc_set);
+> +	if (err < 0) {
+> +		metadata_dst_free_percpu(xfrm_md_dst);
+> +		return err;
+> +	}
+> +	return 0;
+> +}
+> +
+> +void cleanup_xfrm_interface_bpf(void)
+> +{
+> +	metadata_dst_free_percpu(xfrm_md_dst);
+> +}
 
--- 
-tejun
