@@ -2,56 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE05640334
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CF76403B2
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbiLBJXg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 04:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S232453AbiLBJr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 04:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbiLBJXP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 04:23:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2683BBD898
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 01:22:06 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1669972924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jN/FnY85dfL2uWBcKIUq9YWjB9CWbQK73JR0ADLNweY=;
-        b=tNwNfn2BoTpguFlNmMcCGmQZ57f7O5ptYfE84121JapxyM2IJS6BE1wxmO2v5OD+4hIId3
-        j30CY9V70/llWqEDMevzxkyi3b/xUrUGErjYEpt4SosVrzw5D17UDthk5VGf/Ah5klEsTR
-        BDjNlTy7+AtXsodKffEhS2UaniGsh8N8VEb9Lv8EaRrw8ioXllujlA/xs9slSAvChPrD2U
-        xGlq4QE0E0zLwxHnmX5Jt7xJCEREBFIwkanT/MfjSMGCF4t1L3xGcOiorD4PFZuItCkvjF
-        NO4cqd38O9swBp+D0Hiq5q5ccKgc+v7Fn5jOQUAV51+vkS1+LOiB4nkTq7vNNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1669972924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jN/FnY85dfL2uWBcKIUq9YWjB9CWbQK73JR0ADLNweY=;
-        b=mJcGxkkoiGFDkLQsDp4UFhcfjGwFIXBUDGVyb1LS6iaseGGipALH6oQ6ZGIsm5oaxAeixh
-        RHi5kyqdadQ6p2Cw==
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, peterz@infradead.org,
-        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, rppt@kernel.org,
-        mcgrof@kernel.org
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-In-Reply-To: <CAPhsuW592J1+Z1e_g_1YPn9KcyX65WFfbbBx6hjyuj0wgN4_XQ@mail.gmail.com>
-References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
- <87v8mvsd8d.ffs@tglx>
- <CAPhsuW5g45D+CFHBYR53nR17zG3dJ=3UJem-GCJwT0v6YCsxwg@mail.gmail.com>
- <87k03ar3e3.ffs@tglx>
- <CAPhsuW592J1+Z1e_g_1YPn9KcyX65WFfbbBx6hjyuj0wgN4_XQ@mail.gmail.com>
-Date:   Fri, 02 Dec 2022 10:22:04 +0100
-Message-ID: <878rjqqhxf.ffs@tglx>
+        with ESMTP id S231831AbiLBJr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 04:47:56 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E834012D27;
+        Fri,  2 Dec 2022 01:47:54 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NNp5c33Zzz4f3pFM;
+        Fri,  2 Dec 2022 17:47:48 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP4 (Coremail) with SMTP id gCh0CgAXidbGyYlj7LYVBg--.50134S2;
+        Fri, 02 Dec 2022 17:47:51 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf v2] riscv, bpf: Emit fixed-length instructions for BPF_PSEUDO_FUNC
+Date:   Fri,  2 Dec 2022 17:48:37 +0800
+Message-Id: <20221202094837.3872444-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAXidbGyYlj7LYVBg--.50134S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFy5AFyxuryDur4UAryxZrb_yoW8Cw43pF
+        ZxGry3CFWvqr1S9F13tr12qr4SkFsYqay7Kry7G3y5G3WaqwsF93Z8Gw4Yyas8ZFW8Gr15
+        XFWjkrn8ua4qv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UQvtAUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,58 +72,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song!
+From: Pu Lehui <pulehui@huawei.com>
 
-On Fri, Dec 02 2022 at 00:38, Song Liu wrote:
-> Thanks for all these suggestions!
+For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
+correct addresses of bpf_calls and then run last pass of JIT.
+Since the emit_imm of RV64 is variable-length, which will emit
+appropriate length instructions accorroding to the imm, it may
+broke ctx->offset, and lead to unpredictable problem, such as
+inaccurate jump. So let's fix it with fixed-length instructions.
 
-Welcome.
+Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Suggested-by: Björn Töpel <bjorn@rivosinc.com>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-> On Thu, Dec 1, 2022 at 5:38 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->> You have to be aware, that the rodata space needs to be page granular
->> while text and data can really aggregate below the page alignment, but
->> again might have different alignment requirements.
->
-> I don't quite follow why rodata space needs to be page granular. If text can
-> go below page granular, rodata should also do that, no?
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index eb99df41fa33..9723f34f7a06 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -139,6 +139,19 @@ static bool in_auipc_jalr_range(s64 val)
+ 		val < ((1L << 31) - (1L << 11));
+ }
+ 
++/* Emit fixed-length instructions for address */
++static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
++{
++	u64 ip = (u64)(ctx->insns + ctx->ninsns);
++	s64 off = addr - ip;
++	s64 upper = (off + (1 << 11)) >> 12;
++	s64 lower = ((off & 0xfff) << 52) >> 52;
++
++	emit(rv_auipc(rd, upper), ctx);
++	emit(rv_addi(rd, rd, lower), ctx);
++}
++
++/* Emit variable-length instructions for 32-bit and 64-bit imm */
+ static void emit_imm(u8 rd, s64 val, struct rv_jit_context *ctx)
+ {
+ 	/* Note that the immediate from the add is sign-extended,
+@@ -1053,7 +1066,12 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		u64 imm64;
+ 
+ 		imm64 = (u64)insn1.imm << 32 | (u32)imm;
+-		emit_imm(rd, imm64, ctx);
++		if (bpf_pseudo_func(insn))
++			/* fixed-length insns for extra jit pass */
++			emit_addr(rd, imm64, ctx);
++		else
++			emit_imm(rd, imm64, ctx);
++
+ 		return 1;
+ 	}
+ 
+-- 
+2.25.1
 
-Of course it can, except for the case of ro_after_init_data, because
-that needs to be RW during module_init() and is then switched to RO when
-module_init() returns success. So for that you need page granular maps
-per module, right?
-
-Sure you can have a separate space for rodata and ro_after_init_data,
-but as I said to Mike:
-
-  "The point is, that rodata and ro_after_init_data is a pretty small
-   portion of modules as far as my limited analysis of a distro build
-   shows.
-
-   The bulk is in text and data. So if we preserve 2M pages for text and
-   for RW data and bite the bullet to split one 2M page for
-   ro[_after_init_]data, we get the maximum benefit for the least
-   complexity."
-
-So under the assumption that rodata is small, it's questionable whether
-the split of rodata and ro_after_init_data makes a lot of difference. It
-might, but that needs to be investigated.
-
-That's not a fundamental conceptual problem because adding a 4th type to
-the concept we outlined so far is straight forward, right?
-
-> I guess I will do my homework, and come back with as much information
-> as possible for #1 + #2 + #3. Then, we can discuss whether it makes
-> sense at all.
-
-Correct. Please have a close look at the 11 architecture specific
-module_alloc() variants so you can see what kind of tweaks and magic
-they need, which lets you better specify the needs for the
-initialization parameter set required.
-
-> Does this sound like the right approach?
-
-Very much so.
-
-Thanks,
-
-        tglx
