@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0684263FFA2
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 05:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63BB63FFA4
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 05:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbiLBE6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 23:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S232279AbiLBE62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 23:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232218AbiLBE6M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 23:58:12 -0500
+        with ESMTP id S232238AbiLBE6R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 23:58:17 -0500
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCE6A4313
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 20:58:07 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id e185-20020a2569c2000000b006f28dd5da75so4022467ybc.19
-        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 20:58:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5F9A1C3A
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 20:58:14 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id e202-20020a2550d3000000b006f9d739c724so3986100ybb.6
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 20:58:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jGokNFaqiWO8B2J/T6MZZ4ADWJYF/iSbGD5+uCgO7sc=;
-        b=gL8o14UrQviMjz6ojWwVm9joeKIp5dL9zqvEgl2iI/RpvbLfvzb/sOzg1Xl/ZpCenS
-         lcAhj5PIsQgKEfWWxPPNjoSNJRH4u2Dovx3VEp6Jr5HtV0Tcm58LsJeJcggxHlp/cPbZ
-         6YeaiNKyJNPW3kujOi+DMFUiwbGcs2V4J0/qKcXQ+2/TrB69zNZT5hHSPYqgyV4v1JZu
-         9vCvjBMVHDD5YEaHwXI3ll3jUOcSFG3OozsCxyyAOg9AgImeDl1zuXJdhZ0Sk7aGS7Rr
-         TIv1777uLKu6IwikLYMY9ozGV7d+CbAc1fPwyqSNXBhB7q/s0jobbK7pM1pfJYjqx8vl
-         IgVQ==
+        bh=5iWxq/u3wHgDjVSNkc7auJpnDIRbf8fSfDG5v5JG7J0=;
+        b=p5G2cwctgiaHhOcKEGfHNn3gkiZX+7RGSihGS9CjLhPobraLLQn/xF4fLzjZFXt/66
+         0W7AeLNNPkWL3AjPRBR7m5+YjiguiI3aRQLD7By6QccvylAS8F+Ppio/3BN+HMetCk7s
+         d9tU9f7dFgGC03PLjmZ4wUm6/NrAe29aVLu9qabVlcNXZBWSE3GDYGYqdOuldZt2oe5e
+         cPABFaPehhIn3cYz98skSYGWVGrLW5jk3HR9jFJwR3icauA41Qa+LwrJBHdARW1atu38
+         KB3kw9ZyAPwPxE+oHsfjXMJfWj16JeX+7UepBi42JfVxnvOLeFgTTpzqg+V07F20tfZg
+         LYrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jGokNFaqiWO8B2J/T6MZZ4ADWJYF/iSbGD5+uCgO7sc=;
-        b=rBOF1mFNEeG3idnGBOEZKMFKYGPXnasiEeFodQQBwBE+eaE7gDn1LftoAdlqovjuug
-         GH4TCVRRFE/n0QeR9VSDkUlZW6igq6fT2yAfjlBJ68WrZ8/q5/j4wfY02v1ZED/4CxY3
-         B2avFDVQn8icpj2jM/PbVTOthEhiq/HMMqA8rtbuQGNy9paHyCxsVw8RBzwIa4oBoVie
-         xxUMP3YOWbYWpdVKSbwFsgjjAZ4HT5z76ToYkrLVabLM1UfOrdY2uL4KrBwIhc3DgZDT
-         LmigyStl5nFzP1qRd2TT+PQitpVtTDCYsA9K3pjlbnmbl6Gmomskb5a16B7HpRl/p2QK
-         733Q==
-X-Gm-Message-State: ANoB5pnuORxSUPKTzKQpxfLRYBJf3IqJJxUIYPZ96KhiYm3nmWApmdYk
-        v2biNjQ3K1F7N1xC52pk8bEEGhJ1iU9U
-X-Google-Smtp-Source: AA0mqf6z9fKITJHvlB/H9vw43T/f3pHyeTs+f7lE9UyAISJ4rgD5H4TeWp1z3V1R1NpqhZblvkMdNlmwjEvO
+        bh=5iWxq/u3wHgDjVSNkc7auJpnDIRbf8fSfDG5v5JG7J0=;
+        b=XSr2kyla/XAev28litSmJe3iNHdfohdYzUvVJFe1cmFEB9EysajhggVlBlW8c1n11X
+         LGdMi9LAnyezwUZ1IukDEbt6vZ0CwVhSSjP61SMDGA/s57fxec8A30L/0zpEFBB51ORk
+         EA5nItSGEQFCCWG3q/TcA1QNdnAJlhkGxKMYfI/J8yQHU53Y3m/zIF2D80URKMfv3YaV
+         lgfHcu+95k3xi4YaoKxjxC8h7xdfL2X1y1/DMhmQniy3Kgn5fHxh47fJpewh2LIQCq1V
+         YzTnJqda3pOuETUuo1IUNO79QHhAxaF/fDwecjHDfvIh6UJA14aiywWsnY8ecmXA3aZy
+         TTTg==
+X-Gm-Message-State: ANoB5pn+dkqhQeMcWda4hj3LTUsSwMBbDUtkJ01llmZVz3cbcDBEwkGR
+        IFIeRGADD9eBt4PhzWt3MDmiHTewk9Go
+X-Google-Smtp-Source: AA0mqf6Txc45owdcurSb9SkQpULmrEIO3kNLEV9vM2kVhF6t85yIOOogSM+LeckRANUQOiP9fRxokITuZ0eS
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:e3b0:e3d1:6040:add2])
- (user=irogers job=sendgmr) by 2002:a25:ca58:0:b0:6f4:3ced:f7f8 with SMTP id
- a85-20020a25ca58000000b006f43cedf7f8mr28634915ybg.489.1669957086560; Thu, 01
- Dec 2022 20:58:06 -0800 (PST)
-Date:   Thu,  1 Dec 2022 20:57:39 -0800
+ (user=irogers job=sendgmr) by 2002:a25:7042:0:b0:6f1:8895:e769 with SMTP id
+ l63-20020a257042000000b006f18895e769mr37756823ybc.390.1669957094634; Thu, 01
+ Dec 2022 20:58:14 -0800 (PST)
+Date:   Thu,  1 Dec 2022 20:57:40 -0800
 In-Reply-To: <20221202045743.2639466-1-irogers@google.com>
-Message-Id: <20221202045743.2639466-2-irogers@google.com>
+Message-Id: <20221202045743.2639466-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20221202045743.2639466-1-irogers@google.com>
 X-Mailer: git-send-email 2.39.0.rc0.267.gcb52ba06e7-goog
-Subject: [PATCH 1/5] tools lib api: Add dependency test to install_headers
+Subject: [PATCH 2/5] tools lib perf: Add dependency test to install_headers
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,7 +73,7 @@ Cc:     Stephane Eranian <eranian@google.com>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,14 +88,14 @@ then causes files that depend on the header to be rebuilt.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/api/Makefile | 38 ++++++++++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+ tools/lib/perf/Makefile | 43 +++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 21 deletions(-)
 
-diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
-index 3649c7f7ea65..044860ac1ed1 100644
---- a/tools/lib/api/Makefile
-+++ b/tools/lib/api/Makefile
-@@ -88,10 +88,10 @@ define do_install_mkdir
+diff --git a/tools/lib/perf/Makefile b/tools/lib/perf/Makefile
+index a90fb8c6bed4..30b7f91e7147 100644
+--- a/tools/lib/perf/Makefile
++++ b/tools/lib/perf/Makefile
+@@ -176,10 +176,10 @@ define do_install_mkdir
  endef
  
  define do_install
@@ -109,44 +109,49 @@ index 3649c7f7ea65..044860ac1ed1 100644
 +	$(INSTALL) $1 $(if $3,-m $3,) '$2'
  endef
  
- install_lib: $(LIBFILE)
-@@ -99,14 +99,28 @@ install_lib: $(LIBFILE)
+ install_lib: libs
+@@ -187,23 +187,24 @@ install_lib: libs
  		$(call do_install_mkdir,$(libdir_SQ)); \
- 		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
+ 		cp -fpR $(LIBPERF_ALL) $(DESTDIR)$(libdir_SQ)
  
 -install_headers:
--	$(call QUIET_INSTALL, libapi_headers) \
--		$(call do_install,cpu.h,$(prefix)/include/api,644); \
--		$(call do_install,debug.h,$(prefix)/include/api,644); \
--		$(call do_install,io.h,$(prefix)/include/api,644); \
--		$(call do_install,fd/array.h,$(prefix)/include/api/fd,644); \
--		$(call do_install,fs/fs.h,$(prefix)/include/api/fs,644); \
--		$(call do_install,fs/tracing_path.h,$(prefix)/include/api/fs,644);
-+HDRS := cpu.h debug.h io.h
-+FD_HDRS := fd/array.h
-+FS_HDRS := fs/fs.h fs/tracing_path.h
-+INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
-+INSTALL_HDRS := $(addprefix $(INSTALL_HDRS_PFX)/, $(HDRS))
-+INSTALL_FD_HDRS := $(addprefix $(INSTALL_HDRS_PFX)/, $(FD_HDRS))
-+INSTALL_FS_HDRS := $(addprefix $(INSTALL_HDRS_PFX)/, $(FS_HDRS))
+-	$(call QUIET_INSTALL, libperf_headers) \
+-		$(call do_install,include/perf/bpf_perf.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/core.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/cpumap.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/threadmap.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/evlist.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/evsel.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/event.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/perf/mmap.h,$(prefix)/include/perf,644); \
+-		$(call do_install,include/internal/cpumap.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/evlist.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/evsel.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/lib.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/mmap.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/threadmap.h,$(prefix)/include/internal,644); \
+-		$(call do_install,include/internal/xyarray.h,$(prefix)/include/internal,644);
++HDRS := bpf_perf.h core.h cpumap.h threadmap.h evlist.h evsel.h event.h mmap.h
++INTERNAL_HDRS := cpumap.h evlist.h evsel.h lib.h mmap.h threadmap.h xyarray.h
 +
-+$(INSTALL_HDRS): $(INSTALL_HDRS_PFX)/%.h: %.h
++INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/perf
++INSTALL_HDRS := $(addprefix $(INSTALL_HDRS_PFX)/, $(HDRS))
++INSTALL_INTERNAL_HDRS_PFX := $(DESTDIR)$(prefix)/include/internal
++INSTALL_INTERNAL_HDRS := $(addprefix $(INSTALL_INTERNAL_HDRS_PFX)/, $(INTERNAL_HDRS))
++
++$(INSTALL_HDRS): $(INSTALL_HDRS_PFX)/%.h: include/perf/%.h
 +	$(call QUIET_INSTALL, $@) \
 +		$(call do_install,$<,$(INSTALL_HDRS_PFX)/,644)
 +
-+$(INSTALL_FD_HDRS): $(INSTALL_HDRS_PFX)/fd/%.h: fd/%.h
++$(INSTALL_INTERNAL_HDRS): $(INSTALL_INTERNAL_HDRS_PFX)/%.h: include/internal/%.h
 +	$(call QUIET_INSTALL, $@) \
-+		$(call do_install,$<,$(INSTALL_HDRS_PFX)/fd/,644)
++		$(call do_install,$<,$(INSTALL_INTERNAL_HDRS_PFX)/,644)
 +
-+$(INSTALL_FS_HDRS): $(INSTALL_HDRS_PFX)/fs/%.h: fs/%.h
-+	$(call QUIET_INSTALL, $@) \
-+		$(call do_install,$<,$(INSTALL_HDRS_PFX)/fs/,644)
-+
-+install_headers: $(INSTALL_HDRS) $(INSTALL_FD_HDRS) $(INSTALL_FS_HDRS)
-+	$(call QUIET_INSTALL, libapi_headers)
++install_headers: $(INSTALL_HDRS) $(INSTALL_INTERNAL_HDRS)
++	$(call QUIET_INSTALL, libperf_headers)
  
- install: install_lib install_headers
- 
+ install_pkgconfig: $(LIBPERF_PC)
+ 	$(call QUIET_INSTALL, $(LIBPERF_PC)) \
 -- 
 2.39.0.rc0.267.gcb52ba06e7-goog
 
