@@ -2,284 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9163D640C4D
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 18:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65541640C5C
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 18:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbiLBRjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 12:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S233786AbiLBRn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 12:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbiLBRjb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 12:39:31 -0500
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2079.outbound.protection.outlook.com [40.92.49.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179CED827E;
-        Fri,  2 Dec 2022 09:39:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ImZJTIGBjAgHSH+eAnWReGW+lDoSCHqSUzrdRsdLa/eCy5KkVRf8rcDWypJqUoPZThEXGgIu6yLdF43FQ8dIH3vIMIqjhQLptApKF6W0m+IbMOt0VKobaY5p0c9LQxFpN3cj1XXhFNfKSqBpAoI/7Ks88qpfwVLiM65u4Fl5KOcJ0HlAQXaeQQUkeUO2FWJvvC+YqoEy+QU52ZdWZ7MM4FGjQGQMfr0OO1bqkQ5rwM2ZikHZq6IsH6IGVnKrmlBeOeLqiW6kh/EZ32nNA9JliUcnrRLYfQo+I/uw/gLysOa+2c43gctdJdVPnt7XKF8KdTQecN7ogQ4YoIMwCuX9Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gB3WI+kY2EdrfAsx3eK7GyxVFSRbYxd1mNrRaZIuIO4=;
- b=na5OITDPXj3GaRVr16am8hDj5tt6fUbEaLBTlsa1yWyCS1QkgxkTQgBzX/iGCj4MvD/CoabZqNYNeoVkMq5r9MMhBc7ss2J3UJyCGRCqMJrbtqYcqXu3IJMdThPIeqfwlg8LXuUXGfhtqQLEAWz9GoebClYokdiRsdEsWONlLWx+LUeDg5gQSA7fPMJxHDC1Gg4m2CuFZ7GR4SIuzWhA9RVMqsR0Oqlp4UDi5TXfjQP3ifCX8Yk5VslAEuC1F0IezPWKGOlMlDkST8oBLLDeura6auXQTUxbjrgsM+eDhH1n5nZDIlzt1aYkX33gn9Pfet5wWVf8Slx41244uycMPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gB3WI+kY2EdrfAsx3eK7GyxVFSRbYxd1mNrRaZIuIO4=;
- b=OYrsRjc0Q7NXjQRHX310bKoF+iWgVbIWP5R391K25D2d0sz7r8Kt57s9Aa8twk7NabwJyKa9RZGXQ0N6y60r95yB5DcyDZtoBxDGbilpAkUDm0mmDUeNS+rx6h1I8UNYcllzojJZ1y1tdV4728LcWPCb8wtWoIoZECU3vn1eAdW0/B+36jijLfqHdcksArJoGpcpa7wkY7rYUtUS7gkMPPXqHBhWF2aJJ9jjAdgJEwjTojOAocg8lxUg3x27xqXUsiE8z/MUtjQNuhfw47jFgBwhS/3Jh9ztJOr4WEsMnaHT4RyXkfD9cBybAR2DS2Nk1bkSbsU51euPhgO63ue/GA==
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
- by PR3P192MB0571.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:43::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.10; Fri, 2 Dec
- 2022 17:39:27 +0000
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b%9]) with mapi id 15.20.5857.023; Fri, 2 Dec 2022
- 17:39:27 +0000
-From:   Ji Rongfeng <SikoJobs@outlook.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     martin.lau@linux.dev, daniel@iogearbox.net,
-        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        Ji Rongfeng <SikoJobs@outlook.com>
-Subject: [PATCH bpf-next v2] bpf: Upgrade bpf_{g,s}etsockopt return values
-Date:   Sat,  3 Dec 2022 01:39:10 +0800
-Message-ID: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [DnY83tEvg6Pw9ly1i7loIYJ9eCexNFj/]
-X-ClientProxiedBy: SG2PR06CA0190.apcprd06.prod.outlook.com (2603:1096:4:1::22)
- To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
-X-Microsoft-Original-Message-ID: <20221202173910.11601-1-SikoJobs@outlook.com>
+        with ESMTP id S233151AbiLBRn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 12:43:57 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FF22F390
+        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 09:43:56 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1670003035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hw2IcvB/DAxzATKFNjZzen0qSXdeIAQcVISV0zMHhRs=;
+        b=vqme40fhzHor+wxF288mCsnY/rm6HPnwOtK75h/AeGYp4SFl6C/3snqM9dT0eV3WQmSdsT
+        VfjwQCE0VBa+/DFXJrs79iydgOg8RaMVGRQe7AxhMRhDbMhM901pecVQ8quvcvBgSucYCO
+        6tyLkb9TENNC3eqAxQgghambuYEplJSKQmyshoEE9oQpoJQD9z969tSvYzn3BXyNuhVzdW
+        c2byKk68jrgUaAwQuE0nwW+YvTNHEglVSW0CCy26zZ17G+VFO0S74pcfemmdqzoaP/fn8b
+        iUaRUFkRhaHiPcht1fPOQE/zYqppMouty6V8MvZukGQAUbkTebm0pOyu90oAKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1670003035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hw2IcvB/DAxzATKFNjZzen0qSXdeIAQcVISV0zMHhRs=;
+        b=XWZ8S6H/jSo4nTycZl9+k8Sdnrgh80/yWstyPolb2XirRQQQ1dTKWKS7njbVcaks4RAc9v
+        oEa7doqyBKP0EMAQ==
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <song@kernel.org>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hch@lst.de" <hch@lst.de>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "aaron.lu@intel.com" <aaron.lu@intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+In-Reply-To: <5fb21965-48c8-e795-632a-fa190470abe8@csgroup.eu>
+References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
+ <87v8mvsd8d.ffs@tglx>
+ <CAPhsuW5g45D+CFHBYR53nR17zG3dJ=3UJem-GCJwT0v6YCsxwg@mail.gmail.com>
+ <87k03ar3e3.ffs@tglx> <5fb21965-48c8-e795-632a-fa190470abe8@csgroup.eu>
+Date:   Fri, 02 Dec 2022 18:43:54 +0100
+Message-ID: <87ilitpup1.ffs@tglx>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|PR3P192MB0571:EE_
-X-MS-Office365-Filtering-Correlation-Id: a11e5515-d7e6-4637-1bdb-08dad48c28d8
-X-MS-Exchange-SLBlob-MailProps: 70qbaZjg4ms0xzfAGVOuKXynl8t5bcZkmjml5R49hQJeKseRJSf+ksbNRryIv/WNfr88IhuSzMaEf+Abh2HsSlfgxYwRjPRYRe2audmJyEuA7vFdmxZuKlWVBFn1ofBDvtqYphmYehbznu7g0Pko7A3WbtlK1zRc2Tm+cco+h5HP7GVp+TxdUP4RDOnGWEbBv7OgBZY9c6an8dAjbS3bouA3R/bi0+puU9c+x7hO7OEtJLpBUDx+pzJnfIlIfnQIBuLle3th3Z1jbTaRN0O9dgoMVmxAitIrBQD5PvQJJN0lQ/e0ASUjMjomgjr7wLsf4byyy/tNquBLs9yvPOmFxvkh4TsSofE6h0IVMOUwYeedHIl0bEBddLtmhu9KYyZqihOUEHM52JfVvKlz4dEuBdgeZkHmRn5w4DVnW7xyYNhdlvPVP/MecKO9Dfq0pmWuGOej+4gYzLU89mFv7Tv+zClwdyVjvVbJZNQ0ENwO0dj9JMp/GjilsE2+IHVwc1NpwUsA12Slny96krGNmSz8EvPIqD6B3OGTJRu0HAaTqupJpbDMpJM9ZF6XFJYVwHQ+LVI2Sr4JVpJrP5dpNd9NMJEy93nVQuwBNjrbQIM/A4neA+AIjrYRJvUd+h/x7Tl3oj0QyH67n2YbL+iawgEXBJGc6cliQZR9XEHwJRC19otGqZW06SOnfRzWYOcBB1hiQeESqlH/G1zGFPLU1hg3xmAsLxbR+QcF9ynFXQbzHh7wy4DoJ3vsIQ==
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZwinNcKySa5+I23QwAsaamHtCJ+Ln2j5rMIqJLTr0WV6fs0q+q7JjD0bqwy7Egz0oma3UokmP/RvZbAWHvyeLeG5bfPeEKulqKuXe0cDD4WDFkNELCCPTHNEaBy3C9WrnMaW3NlDO3OYh/Y8/ncKA+sehFtn83sC39WkXq6yq9PlzUn/6XBuqMseZXyReCdiLBzrCY/wbLwVQ0jEetHxvR0f4q6N4fDxjYi2ZjoiGGUn9EQBuXGxz1L5KgtE2ksy+miulHtnFOUp+SJM2js3tYQd1tsGB/wkuwWlZs8C8CA2tlP4Jfq9w2YU3H44aZJzVWKGhhsaTMkOfoEoECdmA/TmHzFvoyZTCcNuwuK4QT1vfw0dLrIz0Te9RjI5RKsmdqVUBzHgHjPXak/6iux3ISCIZQ77w7kF5LykWKWflJaUSEEDMSoQ4cIR4+R5S4ywd2Fyjp3Rdso8rit7kbo4egtQYH7KgVpi6dfw9LBjuYIoKNeO5eGthe5HuAn2kqVO1Twnl8sfZeUecgNxRB0B8qagDwZVG0L4zHE7nCn/NVO45Nw6A0MOzxf7Ots7BvQeI208jsR2HobG7cB6CnkJyMbC3azarHtgbHSm9BqSjMAEBMKjJBJtx8t08/ZiCMaSKtZoANQ0KR4rG53G5LJFSQ==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OxrWzM4jyEb/Jx3dKk1ZhttIKCk+gJuTkAPws84lIEd9IF2BgFOF9JD9H8RU?=
- =?us-ascii?Q?FhgnXUWZDjLlWyGLxxK64BKIJ/TVvXVAGQtTfDOVvMFbUhp0eUDbJeQ2n4KN?=
- =?us-ascii?Q?BQHe73iJpnmjuwlviSb6t1wUN0n1KRCGEn6AoRWw6RVXDEbIJpwSfO6D3Vy9?=
- =?us-ascii?Q?5rwyVT7+1AQAzMxwNYvjbbD19AK3WBNEOI+hpTs0p+8x2LQuEJlOeaeqGvRb?=
- =?us-ascii?Q?eMv4TkypL7EB42K6rHQe9FULCffD4dyOEYVsTQHZ1vgBqOcczAD1fAYFdSq4?=
- =?us-ascii?Q?fFZs6zix546L+1GcLa1N5hAqjq4RJ30g/uGNZ6oO+wItT74GKh+NRCXHh4Lu?=
- =?us-ascii?Q?MKTPj4DI534x6OewaLXT/H0g13bNzylFA/+zT23uJy7F1S5ohgcWP/ozhiSR?=
- =?us-ascii?Q?c3r8MzR84hpfXstGOmMK+7yYLq69OTfN8yqmvR2S+0D1vdgW0kFQXYjIRGPB?=
- =?us-ascii?Q?o8wESUB+UCQAHVW9HQMA69w9BRIvfvWJqPF821ZGLycVPyCEAw0JgRCZ0Yrw?=
- =?us-ascii?Q?AM2GtB+PJAJGdi2EjWtzGKvFmRPwCooealAJPS4FrLFslSP5yMuMTIFHwKVd?=
- =?us-ascii?Q?8jwGT8Cx7GimDWKcRxxiZ0ahFObXPYA/cBoaB7St8ALv1ICOpns6adFGiTg7?=
- =?us-ascii?Q?t12hp/UX/nd9iJiP3eyRM9rvdJlXRFCAGoeEYR8KX4OJOJBB2pHvm9XCQ2TI?=
- =?us-ascii?Q?zWtuR4NMZJxF2FK9NTr2pEG7ioXw0BR7L8+zVJm7JfKgW4ep6UOPeO0EqC/2?=
- =?us-ascii?Q?Xp/JN1FYIheQzrJiHvrS9FoUd0CK40klkwGfHpsyU/7EC+RKRul363tBFsGi?=
- =?us-ascii?Q?B1RWvyP3ZkyRt0at4HxQYpVEd+6/cIwnDnIgX0mXlu+kuCxhvN9biGWyQwHV?=
- =?us-ascii?Q?HUD15jcehTzupne95jXxWTVDQ4feyT/QeTCv54OzaxwyaiZ3scUcugE5vZRq?=
- =?us-ascii?Q?c8/nvDICjnWRsKEBJzHKWj6yNNAsGu2WG1lLLT6u7xj2ZH8UiYmqjHpX3faa?=
- =?us-ascii?Q?YNQPaT6xjwI0Iz+JoJD6n4c+PYiw+rKSR8IHrbTRV+LMVk8IZaNBvXPCJGKp?=
- =?us-ascii?Q?OKW5zMZP9B+jhRAvE6u1uNbLLjXxGRYKkQiObwFLdZn8RfWDqrOlWqYmUArB?=
- =?us-ascii?Q?M6ow+G3Fe8oTc16Yd6cPHP966Tfg8oLImOXSiGh7jly/+OX49N7OHHhyJkZu?=
- =?us-ascii?Q?BbnHCkeFgqUqXjhiwBp4ADEKHfvylkawZ7SUQ4p4sihlEy1dKv6NqVfxX3pW?=
- =?us-ascii?Q?+qLLeBgUm2erDgPJu9qCSUJdW6q0c70zrXjrYCJdJg=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a11e5515-d7e6-4637-1bdb-08dad48c28d8
-X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2022 17:39:27.5718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P192MB0571
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Returning -EINVAL almost all the time when error occurs is not very
-helpful for the bpf prog to figure out what is wrong. This patch
-upgrades some return values so that they will be much more helpful.
+On Fri, Dec 02 2022 at 10:46, Christophe Leroy wrote:
+> Le 02/12/2022 =C3=A0 02:38, Thomas Gleixner a =C3=A9crit=C2=A0:
+>> Even modules can benefit from that. The fact that modules have all
+>> sections (text, data, rodata) page aligned and page granular is not due
+>> to an requirement of modules, it's so because that's how module_alloc()
+>> works and the module layout has been adopted to it.
+>
+> Sections are page aligned only when STRICT_MODULE_RWX is selected.
 
-* return -ENOPROTOOPT when optname is unsupported
+Correct, but without strict permission separation we would not debate
+this at all. Everything would be RWX and fine.
 
-  The same as {g,s}etsockopt() syscall does. Before this patch,
-  bpf_setsockopt(TCP_SAVED_SYN) already returns -ENOPROTOOPT, which
-  may confuse the user, as -EINVAL is returned on other unsupported
-  optnames. This patch also rejects TCP_SAVED_SYN right in
-  sol_tcp_sockopt() when getopt is false, since do_tcp_setsockopt()
-  is just the executor and it's not its duty to discover such error
-  in bpf. We should maintain a precise allowlist to control whether
-  an optname is supported and allowed to enter the executor or not.
-  Functions like do_tcp_setsockopt(), their behaviour are not fully
-  controllable by bpf. Imagine we let an optname pass, expecting
-  -ENOPROTOOPT will be returned, but someday that optname is
-  actually processed and unfortunately causes deadlock when calling
-  from bpf. Thus, precise access control is essential.
+For separation my point still stands that the problem is that
+module_alloc() is just doing an en-bloc allocation, which needs to be
+split into RX, RW, RO afterwards and that consequently splits the large
+mappings apart. Which in turn means text, data, rodata have to be page
+aligned and page granular.
 
-* return -EOPNOTSUPP on level-related errors
+The typed approach and having a mechanism to preserve the underlying
+large page mappings is the broadest scope we have to cover.
 
-  In do_ip_getsockopt(), -EOPNOTSUPP will be returned if level !=
-  SOL_IP. In ipv6_getsockopt(), -ENOPROTOOPT will be returned if
-  level != SOL_IPV6. To be distinguishable, the former is chosen.
+An RWX only architecture is just the most trivial case of such an
+infrastructure. The types become all the same, the underlying page size
+does not matter, but it's just a configuration variant.
 
-* return -EBADFD when sk is not a full socket
+Architectures which support strict separation, but only small pages are
+a configuration variant too.
 
-  -EPERM or -EBUSY was an option, but in many cases one of them
-  will be returned, especially under level SOL_TCP. -EBADFD is the
-  better choice, since it is hardly returned in all cases. The bpf
-  prog will be able to recognize it and decide what to do next.
+All of them can use the same infrastructure and the same API to
+alloc/free and write/update the allocated memory. The configuration will
+take care to pick the appropriate mechanisms.
 
-Signed-off-by: Ji Rongfeng <SikoJobs@outlook.com>
+No?
 
-From my point of view, changing these return values is acceptable,
-because most of them are designed to be shown to the bpf prog
-developer only and rarely shown in production environment.
+Thanks,
 
-I'll send another patch to update documentation in a proper way
-after this patch is accepted, and add some tests if necessary.
----
- net/core/filter.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+        tglx
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 37baaa6b8fc3..44440b7d430c 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5050,12 +5050,12 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
- 	case SO_BINDTODEVICE:
- 		break;
- 	default:
--		return -EINVAL;
-+		return -ENOPROTOOPT;
- 	}
- 
- 	if (getopt) {
- 		if (optname == SO_BINDTODEVICE)
--			return -EINVAL;
-+			return -ENOPROTOOPT;
- 		return sk_getsockopt(sk, SOL_SOCKET, optname,
- 				     KERNEL_SOCKPTR(optval),
- 				     KERNEL_SOCKPTR(optlen));
-@@ -5105,7 +5105,7 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
- 		inet_csk(sk)->icsk_rto_min = timeout;
- 		break;
- 	default:
--		return -EINVAL;
-+		return -ENOPROTOOPT;
- 	}
- 
- 	return 0;
-@@ -5169,7 +5169,7 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
- 			   bool getopt)
- {
- 	if (sk->sk_prot->setsockopt != tcp_setsockopt)
--		return -EINVAL;
-+		return -EOPNOTSUPP;
- 
- 	switch (optname) {
- 	case TCP_NODELAY:
-@@ -5194,7 +5194,7 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
- 		break;
- 	default:
- 		if (getopt)
--			return -EINVAL;
-+			return -ENOPROTOOPT;
- 		return bpf_sol_tcp_setsockopt(sk, optname, optval, *optlen);
- 	}
- 
-@@ -5215,6 +5215,9 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
- 		return do_tcp_getsockopt(sk, SOL_TCP, optname,
- 					 KERNEL_SOCKPTR(optval),
- 					 KERNEL_SOCKPTR(optlen));
-+	} else {
-+		if (optname == TCP_SAVED_SYN)
-+			return -ENOPROTOOPT;
- 	}
- 
- 	return do_tcp_setsockopt(sk, SOL_TCP, optname,
-@@ -5226,7 +5229,7 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
- 			  bool getopt)
- {
- 	if (sk->sk_family != AF_INET)
--		return -EINVAL;
-+		return -EOPNOTSUPP;
- 
- 	switch (optname) {
- 	case IP_TOS:
-@@ -5234,7 +5237,7 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
- 			return -EINVAL;
- 		break;
- 	default:
--		return -EINVAL;
-+		return -ENOPROTOOPT;
- 	}
- 
- 	if (getopt)
-@@ -5251,7 +5254,7 @@ static int sol_ipv6_sockopt(struct sock *sk, int optname,
- 			    bool getopt)
- {
- 	if (sk->sk_family != AF_INET6)
--		return -EINVAL;
-+		return -EOPNOTSUPP;
- 
- 	switch (optname) {
- 	case IPV6_TCLASS:
-@@ -5260,7 +5263,7 @@ static int sol_ipv6_sockopt(struct sock *sk, int optname,
- 			return -EINVAL;
- 		break;
- 	default:
--		return -EINVAL;
-+		return -ENOPROTOOPT;
- 	}
- 
- 	if (getopt)
-@@ -5276,7 +5279,7 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
- 			    char *optval, int optlen)
- {
- 	if (!sk_fullsock(sk))
--		return -EINVAL;
-+		return -EBADFD;
- 
- 	if (level == SOL_SOCKET)
- 		return sol_socket_sockopt(sk, optname, optval, &optlen, false);
-@@ -5287,7 +5290,7 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
- 	else if (IS_ENABLED(CONFIG_INET) && level == SOL_TCP)
- 		return sol_tcp_sockopt(sk, optname, optval, &optlen, false);
- 
--	return -EINVAL;
-+	return -EOPNOTSUPP;
- }
- 
- static int _bpf_setsockopt(struct sock *sk, int level, int optname,
-@@ -5304,7 +5307,7 @@ static int __bpf_getsockopt(struct sock *sk, int level, int optname,
- 	int err, saved_optlen = optlen;
- 
- 	if (!sk_fullsock(sk)) {
--		err = -EINVAL;
-+		err = -EBADFD;
- 		goto done;
- 	}
- 
-@@ -5317,7 +5320,7 @@ static int __bpf_getsockopt(struct sock *sk, int level, int optname,
- 	else if (IS_ENABLED(CONFIG_IPV6) && level == SOL_IPV6)
- 		err = sol_ipv6_sockopt(sk, optname, optval, &optlen, true);
- 	else
--		err = -EINVAL;
-+		err = -EOPNOTSUPP;
- 
- done:
- 	if (err)
--- 
-2.30.2
-
+=20
