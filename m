@@ -2,86 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779BB63FF41
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 04:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0171863FF63
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 05:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbiLBDuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Dec 2022 22:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        id S230211AbiLBELw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Dec 2022 23:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbiLBDuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Dec 2022 22:50:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3176ACCFF5
-        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 19:50:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8378621EF
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 03:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 17DE2C433D7;
-        Fri,  2 Dec 2022 03:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669953016;
-        bh=LnS/AiZHj9N0L9piPnOfqf9oHgnl6QzCHnFA4zjdio8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ekgm2TijvYXHUY0qS5K+Syvqu9MOmdPUpCSaxSq+0y3pe84Hs31rZ4tmE3UqT3YdW
-         XhXVulwZEcnAHWE7KbVVt+4m1FmV/gYfAzfXbygWujZ8ClCdZ8/goUx8AdD7uAkN1L
-         aIAhDeE7xzHUpz0FYctbOaQlP2l3vPyguVTVBTVeBgN0ileFbKevo5mwUgBSo7cDzn
-         z+8f/7dAz7aUkA4PMAeM/he7WkuEZhPNN1/0ShpK2Eywi/hM8gN6t1HbSgsnipdsH3
-         mbxzhdXne74hFCkYQoIx7fBXuiK020WYZV15PKS2fSVd7omQ5/3kMDELsWpMgi1sBQ
-         TIo5crw1a2kKA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F2141C395EC;
-        Fri,  2 Dec 2022 03:50:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231245AbiLBELt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Dec 2022 23:11:49 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48A7D11DA
+        for <bpf@vger.kernel.org>; Thu,  1 Dec 2022 20:11:48 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id y135so94627yby.12
+        for <bpf@vger.kernel.org>; Thu, 01 Dec 2022 20:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qsLZ9QinNJ5AzcCVDj65lKVRt2q6QVkrs/mM5EuxNrg=;
+        b=TnZDrkbdoVV/k8MLXd4HqS3nDGVgQlltXR3BGEz/poNjNWBa7YcHHQG2DsJ2FEaGOO
+         rsJI7FGEoVg+9pyS1CRAuWNg0SVEiflBRLRhZypltUyyBKZT+JjUC+g2KsxkX5zC+OzU
+         P/01s67yI9VM2/u8+J/GA6i6iiHhmqgfYNW8/9yj60cJVNe83Q4waOmUVJSP6TwG/K4b
+         Ns2IwPcivfVqu008GC1i1WkRqF/XFoqoXhAv+bRvOkRDMBLlVBDoISuCcoaOlPIXRY/9
+         R1Au42ujcBhV+hGd99Rwk+fd0gcCAl7pGBI8E4WqcrtjIU3VRN5exTviQxkOwNjEu9bb
+         ruDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qsLZ9QinNJ5AzcCVDj65lKVRt2q6QVkrs/mM5EuxNrg=;
+        b=os5faENqxHwHilzdcQsWiHSf94II7v75d7D8Q6vOyBoMc+USZwLSoFY7wlj25lI2Sz
+         jb1QddsFHBL07mmxXLgmjT3NHyrDiA4J1jOQddeTRGs9Q2F0NuntL3sePOlUUa+7HWLz
+         m+Mkt3lB1w4VRldaRtbXc1ZRoAq6Y8iB3SktXD+xQk6pyJFD3KKEg/JdWyCuFWeCyWcT
+         Dz+0qh/Qc7mxXWGPg0NQPR62QFcMrLfVet2BrNOyRTEX610nKjJFOb+ncbrVUsGXya9e
+         ppXoFtdZe1Cx1FRQeA3xtJRpI8pnr4u1uj6wh+drHry23v0HLN/yY8M04l+FpgvCYhK1
+         CCAw==
+X-Gm-Message-State: ANoB5pnyaPTqXZ3vwVB+aBO52m1B//6UqMSit8YoAb1D5aVEj6ta2S3o
+        xxXkfDGJvTmI+ll9kheJOsEmUqerK6dcT/0JHM7Urg==
+X-Google-Smtp-Source: AA0mqf4Pu+uoaoe/rykm9fS3616W670EnDT64BWobgwiXPf8xRmmv3lgh154rHDL/QPe40vpvKBzRZ57j6TsEeF23zo=
+X-Received: by 2002:a25:2546:0:b0:6f0:b332:f35e with SMTP id
+ l67-20020a252546000000b006f0b332f35emr40284066ybl.55.1669954307781; Thu, 01
+ Dec 2022 20:11:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix release_on_unlock release logic for
- multiple refs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166995301598.8499.11538019809348261735.git-patchwork-notify@kernel.org>
-Date:   Fri, 02 Dec 2022 03:50:15 +0000
-References: <20221201183406.1203621-1-davemarchevsky@fb.com>
-In-Reply-To: <20221201183406.1203621-1-davemarchevsky@fb.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, yhs@meta.com, yhs@fb.com,
-        memxor@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <1669817512-4560-1-git-send-email-george.kennedy@oracle.com>
+ <CALs4sv2ZfT1SAYY0oOYhrBBCjsG_th5g=QtSsbKJnPbW8faQ+w@mail.gmail.com>
+ <CANn89iL9obgd==tdp9DgdxXk78UvzF6D4J1OeihB1kx9_U4oZw@mail.gmail.com> <99adf483-ae89-8010-4689-fd50a77ff023@oracle.com>
+In-Reply-To: <99adf483-ae89-8010-4689-fd50a77ff023@oracle.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 2 Dec 2022 05:11:36 +0100
+Message-ID: <CANn89iL18gPus7YWMMX_UFg9PSxAv0SkWTjLYCPhncOCEKrWuQ@mail.gmail.com>
+Subject: Re: [PATCH] net: check for dev pointer being NULL in
+ dev_hard_header() to avoid GPF
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Pavan Chebbi <pavan.chebbi@broadcom.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        harshit.m.mogalapalli@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Dec 1, 2022 at 9:44 PM George Kennedy <george.kennedy@oracle.com> wrote:
+>
+>
+>
+> On 12/1/2022 2:25 PM, Eric Dumazet wrote:
+> > On Thu, Dec 1, 2022 at 2:16 PM Pavan Chebbi <pavan.chebbi@broadcom.com> wrote:
+> >> On Wed, Nov 30, 2022 at 7:43 PM George Kennedy
+> >> <george.kennedy@oracle.com> wrote:
+> >>> The dev pointer can be NULL in dev_hard_header(). Add check for dev being
+> >>> NULL in dev_hard_header() to avoid GPF.
+> >>>
+> >>> general protection fault, probably for non-canonical address
+> >>>      0xdffffc0000000046: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> >>> KASAN: null-ptr-deref in range [0x0000000000000230-0x0000000000000237]
+> >>> CPU: 1 PID: 45 Comm: kworker/1:1 Not tainted 6.1.0-rc7+ #2
+> >>> Hardware name: Red Hat KVM, BIOS 1.15.0-2.module+el8.6.0+20659+3dcf7c70
+> >>> Workqueue: mld mld_ifc_work
+> >>> RIP: 0010:macvlan_hard_header (./include/linux/netdevice.h:3057
+> >>>      (discriminator 4) drivers/net/macvlan.c:594 (discriminator 4))
+> >>> RSP: 0018:ffff888103d377d0 EFLAGS: 00010212
+> >>> RAX: dffffc0000000000 RBX: ffff88801cf1a000 RCX: 0000000000000000
+> >>> RDX: 0000000000000046 RSI: 0000000000000000 RDI: 0000000000000230
+> >>> RBP: ffff88801e8ef328 R08: 0000000000000000 R09: 0000000000000060
+> >>> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88801f0497c0
+> >>> R13: 0000000000000000 R14: ffff888045187c98 R15: 0000000000000060
+> >>> FS:  0000000000000000(0000) GS:ffff888106c80000(0000)
+> >>>      knlGS:0000000000000000
+> >>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>> CR2: 00007fbf3f1c1840 CR3: 0000000014e36000 CR4: 00000000000006e0
+> >>> Call Trace:
+> >>>   <TASK>
+> >>> neigh_connected_output (./include/linux/netdevice.h:3060
+> >>>      net/core/neighbour.c:1595)
+> >>> ip6_finish_output2 (./include/net/neighbour.h:546
+> >>>      net/ipv6/ip6_output.c:134)
+> >>> ip6_finish_output (net/ipv6/ip6_output.c:195 net/ipv6/ip6_output.c:206)
+> >>> ip6_output (./include/linux/netfilter.h:291 net/ipv6/ip6_output.c:227)
+> >>> NF_HOOK.constprop.0 (./include/net/dst.h:445
+> >>>      ./include/linux/netfilter.h:302)
+> >>> mld_sendpack (net/ipv6/mcast.c:1824)
+> >>> mld_send_cr (net/ipv6/mcast.c:2122)
+> >>> mld_ifc_work (net/ipv6/mcast.c:2655)
+> >>> process_one_work (kernel/workqueue.c:2294)
+> >>> worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2437)
+> >>> kthread (kernel/kthread.c:376)
+> >>> ret_from_fork (arch/x86/entry/entry_64.S:312)
+> >>>   </TASK>
+> >>> Modules linked in:
+> >>> Dumping ftrace buffer:
+> >>>     (ftrace buffer empty)
+> >>> ---[ end trace 0000000000000000 ]---
+> >>>
+> >>> Fixes: 0c4e85813d0a ("[NET]: Wrap netdevice hardware header creation.")
+> >>> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> >>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> >>> ---
+> >>>   include/linux/netdevice.h | 2 +-
+> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> >>> index eddf8ee270e7..9b25a6301fa5 100644
+> >>> --- a/include/linux/netdevice.h
+> >>> +++ b/include/linux/netdevice.h
+> >>> @@ -3054,7 +3054,7 @@ static inline int dev_hard_header(struct sk_buff *skb, struct net_device *dev,
+> >>>                                    const void *daddr, const void *saddr,
+> >>>                                    unsigned int len)
+> >>>   {
+> >>> -       if (!dev->header_ops || !dev->header_ops->create)
+> >>> +       if (!dev || !dev->header_ops || !dev->header_ops->create)
+> > Do  you have a repro ?
+> See syzkaller repros attached.
+>
+> > This patch will not prevent a crash later I think.
+>
+> The repro ran overnight without failure with the patch applied.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Thu, 1 Dec 2022 10:34:05 -0800 you wrote:
-> Consider a verifier state with three acquired references, all with
-> release_on_unlock = true:
-> 
->             idx  0 1 2
->   state->refs = [2 4 6]
-> 
-> (with 2, 4, and 6 being the ref ids).
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,bpf-next,1/2] bpf: Fix release_on_unlock release logic for multiple refs
-    https://git.kernel.org/bpf/bpf-next/c/1f82dffc10ff
-  - [v2,bpf-next,2/2] selftests/bpf: Validate multiple ref release_on_unlock logic
-    https://git.kernel.org/bpf/bpf-next/c/78b037bd402d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Yes, but the patch is hiding a potential bug that might show up with
+other 'repros'
 
 
+
+>
+> >
+> > Please fix the root cause, thanks !
+>
+> Will try.
+
+Thanks, having a repro definitely should help to find the real bug.
+
+I took a look at macvlan , and could not see how vlan->lowerdev  could
+be NULL in the first place.
+
+>
+> Thanks,
+> George
+> >
+> >>>                  return 0;
+> >> net_device being NULL during eth header construction? seems like a
+> >> more serious issue?
+> >> If it indeed is a genuine scenario I think a better description is needed...
+> >>
+> >>>          return dev->header_ops->create(skb, dev, type, daddr, saddr, len);
+> >>> --
+> >>> 2.31.1
+> >>>
