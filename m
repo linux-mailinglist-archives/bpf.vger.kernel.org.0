@@ -2,162 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70925640607
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 12:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DC264097C
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 16:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbiLBLrN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 06:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
+        id S230357AbiLBPjI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 10:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbiLBLrM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 06:47:12 -0500
-Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AE6D4AFC
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 03:47:10 -0800 (PST)
-Date:   Fri, 02 Dec 2022 11:47:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=industrialdiscipline.com; s=protonmail3; t=1669981628;
-        x=1670240828; bh=34f55ETXeWR9gstPboEDhFjx4HdRa9dhuPUbOzATjfo=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=Tw8FAa+xoa5tKjrPco4LJnhIb0RezFaqvUDSwDkOtSjL+Ao3MvR+yOKCQlRWZsrvU
-         PpzcZTiKMaPHPx8jEyMNw35jxvDYS6pdaRHWeMs8HIgdvpqiPdbrEhajG72kJ2sLqV
-         D1BKIV2oRT5dMELzIUPRT99XKAyPyaHmXpn/q/6U4VDWtt8aaJnBtPHT0XPmFCIuNg
-         SJ9n2CytgFtDnlbRJb5ILOR/bnZb1sfs+BKqIeOzMp6vlV0Wnrcasko9YYSgYy3XjI
-         BhUxPjPLWpvyQ6gNEBqoYxqpRe6Mq9sT0pZbgf2fZmOkQV72ZY33u+4K5Aut+J5xvS
-         LozKz9uj6gsLg==
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-From:   Sahid Orentino Ferdjaoui 
-        <sahid.ferdjaoui@industrialdiscipline.com>
-Subject: [Q/A][ICMP Unreach need-to-frag] Forwarded packets and IP fragmentation
-Message-ID: <Y4nlslrmQBa6Lqf3@system76-pc.localdomain>
-Feedback-ID: 39921202:user:proton
+        with ESMTP id S233765AbiLBPjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 10:39:07 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A609BE6B3;
+        Fri,  2 Dec 2022 07:39:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.ch; s=s31663417;
+        t=1669995523; bh=ldG0fzm6Qem0Pfa6GXvE+somhuAXUV/Lz5s/EE/u7EU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=FwbQ27KZcoVQ67aMcSqdAPD+8ALJiPA+vNIE2krhZB0EuucO6VfV7+wVGMkq0Oq2M
+         Y9esfsDr91p3srfVAQ0/3eYQ5q98qsfnbrWJ0HsGPKvnGruvcLFq1ZEqN6nlgv97OM
+         2pDTzcDdpD5eLvbKl9Odlt5ccqVW7znk4ZLSyfFR4KNTh9VI85kNZMnBmnQLbCVFWh
+         qp+A65OmvVhRktZ9mEXvsF0ug3naIJ8iJ7jxHs3Xl5Jaq96joqyLuvAT9eC6dKQQ5s
+         +MbIvrYuU9rK0jNpsGwVgmFLeirudl6IzxesHH6a8dlnvej2RoYrNpE49pu9hOLVSP
+         s2hvlEGy/d4SQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from x1c6.fritz.box ([185.76.96.75]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mqs4f-1ofYxe2J61-00muzS; Fri, 02
+ Dec 2022 16:38:43 +0100
+From:   Timo Hunziker <timo.hunziker@gmx.ch>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@google.com, linux-kernel@vger.kernel.org,
+        Timo Hunziker <timo.hunziker@gmx.ch>
+Subject: [PATCH bpf-next] libbpf: parse usdt args without offset on x86 (e.g. 8@(%rsp))
+Date:   Fri,  2 Dec 2022 16:38:16 +0100
+Message-Id: <20221202153816.1180450-1-timo.hunziker@gmx.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:iHEIR/r7nBpuEQBqpUIq+/Y5by8Fmo14yoHvLmB2k7rtJJNeMIx
+ glfIQ9h8LYddQqnoX/WTe9YZ6H+lQxxKrpgBoEa/GfneQK2Nw+bgm8ZUIWUwQzY/YKfgDe+
+ 2xD2GdG8HahVd+pDY/PFDjFQA1MaFFzoNmsfiRVZoCzl1s5Vf3ijw5sc87w4iThmngEDX2p
+ 3HUwG1a1ol5DZ3nU/z3gA==
+UI-OutboundReport: notjunk:1;M01:P0:8shPd3u1qR0=;z5Myn1tE+QAb72nrUcKTqW+liYq
+ ucRGQlRe4QaHCQWXCLKUWMGqqBVfYn+Da96FO+hQjozzgJvDEPx3LVDCXjBfygnNxp4xMsr8x
+ YXiX89jApej6HZl+DRvlA5DCU8S1YjiTavDyR+qb4luWGp5MQ8lnXMSUZkIe7YRRdSKqoHn5+
+ AWizaJGDkgQWvuvAXwdCMAxDJWkT9tWwieLl31D6S61HjmgT62p511edlT7z9YGSqDB5Zvpju
+ S2xoUdTK8y4Z78u0Na1R7Jf2/zC87rQJRqwjT8XM1AVsH/pLN9ayUpgZj8dX/o/aMLiSEbzsV
+ LabclslBOgHGzOwfLD9vpjuqyBPA99TriD/U5/ZoEImO60Qmpn+YUA2G0MmWogaumkGvY1uKq
+ cjBGNbO4wlgUq27ThNcEw5JJXx4dKHTsKoFRG7AD50TIZUm5gZt3DJBwanOAvwK0tENYTj328
+ cNAa5akFBeu9jaCpvRAcbmGqcnIDuN1kxpH1d3futiRZvHkoJrof9J3Y2puvQKJRj6kXS4zLh
+ V0+WehPmuy+vx2YZ+2PITZ0GQ9JNQAuNlckRwAfzTGntQV3QdFV3A+XnXeRYYqPfaY0jQIDQA
+ MjZEuv32wFgUbWqqYdIsU+E8W1Q1hBQYMtM0Hf7JW+FX13+eXRV7h0wgb7opdpv+kxJr6eKG8
+ b4Pfhnjpm3j2erLK6aB7DlckqI6GSEdsgtCVAZ2Jgu28xaDGYZwl4ybiSn4gicuesP1mReBXE
+ VWQLElGkiNzXDKzOLWMroPEE7ZzdleQ5NZhxwvBTP8w+tW5o4VGSQMCYs3VhwKeba1Nujn3gg
+ X/QgFZVv4veyIwGSqDiqsa1Gr4JvfW8e4+x9IlBTugeCH4ldFpQf1AbuVc90hKoF4g7CP46ut
+ tbkKcYlrUuskNHM5F4HmtdJnLt7EfWismnAj+9OKvoSSobFfl2j73qkfQcEjplEhxfrz54mA1
+ WbPgnJX98ljEa233twKCCxforig=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Parse USDT arguments like "8@(%rsp)" on x86. These are emmited by
+systemtap. The syntax is a mixture between the "memory dereference
+case" and the "register read case" as the offset is zero but the
+register is wrapped in parentheses. We treat them the same as the
+the "register read case".
 
-I have question regarding design. The point is to handle ICMP Error
-Unreach need-to-fragment.
+I've tested that this fixes the "unrecognized arg #N spec: 8@(%rsp).."
+error I've run into when attaching to a probe with such an argument.
+Attaching and reading the arguments works.
 
-Specifically and to share a bit more of context. The idea is to make
-Cilium handling ICMP Error Unreach need-to-fragment with service
-NodePort.
+Something similar might be needed for the other supported
+architectures.
 
-I understand that Cilium is not Linux but for that particular case we
-are in the middle of both.
+ref: https://github.com/libbpf/libbpf/issues/559
 
-Initially the question that I had was, does Linux do packet
-fragmentation from a host that is forwarding traffic. That when it has
-a route for that traffic which indicates a smaller MTU than the
-traffic comming from. Will the traffic be fragmented during egressing?
+Signed-off-by: Timo Hunziker <timo.hunziker@gmx.ch>
+=2D--
+ tools/lib/bpf/usdt.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-But then I was considering to discuss what I have experienced and
-ideas since I may be wrong on my way to implement it.
-
-Also that I have noticed the option `ip_forward_use_pmtu` But probably
-not for thise case, I have enabled it but no luck.
-
-
-Pod-X      : 172.10.0.10
-NodePort-X : 192.168.39.23
-Router-X   : 192.168.39.1
-Client-X   : 10.1.0.100
-
-
-                                  +------------+
-                                  | Pod-X      |
-                                  +------+-----+
-   Cilium Host-Y                         |
-            ------+-------------+--------+-------------------
-                  ||
-                  || VxLan
-                  ||
-                  ||               +------------+
-                  ||               | NodePort-X |  192.168.39.0/24 dev eth0
-                  ||               +------+-----+
-   Cilium Host-X  ||                      |
-            ------++------------+---------+-------------------
-                                |
-   World                        |
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                   |  ^
-                   |  | ICMP Error Router-Y to NodePort
-                   |  |   192.168.39.1/192.168.39.23
-                   |  |      with in Payload 192.168.39.23/10.1.0.100
-            +-------------+
-            | Router-X    |
-            +-------------+
-                   |
-   ----------------+-------+--------
-                           |
-                         Client-X
-
-
-Routes
-------
-10.1.0.100 via 192.168.39.1 MTU 800
-
-
-For a given Pod behind a service Nodeport delivery contents that is
-exceeding MTU of one of the networking equipment in the path between
-cluster and client. In that situation the networking equipment will
-return to Cluster (NodePort) an ICMP Error Unreach need-to-fragment.
-
-* Forwarding the packet to the Pod would not work since the Pod only
-  has a view of the path between the node that is hosting the service
-  NodePort and the backend node that is hosting the Pod, and we don=
-=E2=80=99t
-  want to reduce the MTU for that path.
-
-Saying all of that I=E2=80=99m struggling to find the right approach.
-
-I have experimented some:
-
-1/ Having the host that is hosting the service Nodeport handling (as
-   opposite to forward it to Pod) the ICMP Error message (currently
-   dropped). The expected state would be to have the route table of
-   the host that is hosting service NodePort be updated accordingly
-   the ICMP Error.  But that does not look possible at that point in
-   Linux since there are some checks to validate that the ICMP Error
-   has been received for a response of a packet emit [0]. In context
-   of Cilium we bypass netfilter during egressing, right?
-
-=09sk =3D __inet_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-=09=09=09=09       iph->daddr, th->dest, iph->saddr,
-=09=09=09=09       ntohs(th->source), inet_iif(skb), 0);
-=09if (!sk) {
-=09=09__ICMP_INC_STATS(net, ICMP_MIB_INERRORS);
-=09=09return -ENOENT;
-=09}
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/n=
-et/ipv4/tcp_ipv4.c#n487
-
-
-2/ Having service NodePort itself updating the route table of the host
-   to instruct the new route with MTU based on the ICMP Error Unreach
-   need-to-frag.  In that situation It may be expect that the packets
-   get fragmented by the host during egressing. But based on my tests
-   that does not look to work, I'm nore sure if Linux handle that case
-   of forwarding/fragmenting?
-
-3/ Having service NodePort handling the full implementation of ICMP
-   Error Unreach need-to-fragement;
-   - For a ICMP Error received the service would maintaining a MAP
-     with routes and MTU.
-   - For a packet leaving, the service would fragment packets if
-     needed.
-
-
-s.
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index b8daae265f99..5e7ec7ad8ad7 100644
+=2D-- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -1233,6 +1233,14 @@ static int parse_usdt_arg(const char *arg_str, int =
+arg_num, struct usdt_arg_spec
+ 		if (reg_off < 0)
+ 			return reg_off;
+ 		arg->reg_off =3D reg_off;
++	} else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", &arg_sz, reg_name, =
+&len) =3D=3D 2) {
++		/* Register read case with parentheses, e.g., 8@(%rsp) */
++		arg->arg_type =3D USDT_ARG_REG;
++		arg->val_off =3D 0;
++		reg_off =3D calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off =3D reg_off;
+ 	} else if (sscanf(arg_str, " %d @ %%%15s %n", &arg_sz, reg_name, &len) =
+=3D=3D 2) {
+ 		/* Register read case, e.g., -4@%eax */
+ 		arg->arg_type =3D USDT_ARG_REG;
+=2D-
+2.36.2
 
