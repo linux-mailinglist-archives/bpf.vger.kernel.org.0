@@ -2,82 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9BE640BC5
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 18:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9163D640C4D
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 18:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbiLBRIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 12:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
+        id S233199AbiLBRjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 12:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbiLBRIe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 12:08:34 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74169CB21E
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 09:08:30 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id fz10so6029578qtb.3
-        for <bpf@vger.kernel.org>; Fri, 02 Dec 2022 09:08:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ijOKz8foluJ3i9Qm1oJ9IBp26bq+WaSPlqT8hTWxtV0=;
-        b=YjE8l/XLABJabG+MbrNIKMporuqCCJXq9OxoKQAhTn3vy8sXljxVYu+mGGu5N0M5Nb
-         x8GKTwyLsZt5qEv9LAttCXY+8SQ9pnaCk5/brVhdee7W0b0H6jx2XaAqmmxZf/m3MCIJ
-         wllLpSOlER6qjdRH4HPejMUXHFzRuDor/6YeQbHY70nVr3Wcqy891t0upjZcm+HK5I4S
-         Cza/ZjriXje6CnYhCvaa/dfnXlMDqcXpWdLUivJ5t5Gp1XnAHv055LZ3XT3WJ4k9RgOC
-         ss2NUJr+VK1ZmTwIgu/AesP9ufnGEi3idAy6QDmfXHp4t3mQcig7Ky37IcEzUEdv2IcV
-         L/4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ijOKz8foluJ3i9Qm1oJ9IBp26bq+WaSPlqT8hTWxtV0=;
-        b=geOpa8n/ZzTR4Zx59PcHdEx5g/NA5QLAhwZLhvKqUaQqdU7DdYm+G8dx4JRE1UnUhG
-         9QNMrRoc8BtQtBssVG4ubWJRCeBNloLSCYLdtb9mVIE1ayTgQrs+Yk4w3/cPRaJL5yEv
-         cXUHZUGx+QcLJjnUPh+lapx6kSRBU7sIL0wVo6k64AZimfoIFORifIKbf3luXA5F5BEW
-         sqeK/ldW2rcUfNKjh3pHUYuZUpyHrO0VKVuv9gKnVQPxTg9ztFO8B6phImFNJ+QXB/UU
-         NuUh5eUdy8EMPODH/MXTWlsQ1j6in5w3gVY8uS7Wjn9oFefBaRy7sJLq6zDhd8S0pEbc
-         QWEA==
-X-Gm-Message-State: ANoB5pkI1XRtPseIp+EXyQU0bFcjodsFzjeJiCuSXnT2P325IxpMoDUp
-        jcCEw7YAxdhC5ZYG48XC1nwCvQ==
-X-Google-Smtp-Source: AA0mqf4h7uhYKeeaEd4CL1ukDcn287yUwTC3NimzxXhpwcJi51og7aL4TE0nKoepn9D9ljldF7tqEA==
-X-Received: by 2002:a05:622a:260d:b0:3a5:829a:7e92 with SMTP id ci13-20020a05622a260d00b003a5829a7e92mr51804046qtb.528.1670000909654;
-        Fri, 02 Dec 2022 09:08:29 -0800 (PST)
-Received: from [192.168.1.31] (d-216-10-177-134.nh.cpe.atlanticbb.net. [216.10.177.134])
-        by smtp.gmail.com with ESMTPSA id de7-20020a05620a370700b006b615cd8c13sm5895455qkb.106.2022.12.02.09.08.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Dec 2022 09:08:29 -0800 (PST)
-Message-ID: <8d146099-a12a-c5a1-4829-dec95497fdca@google.com>
-Date:   Fri, 2 Dec 2022 12:08:27 -0500
+        with ESMTP id S232993AbiLBRjb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 12:39:31 -0500
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2079.outbound.protection.outlook.com [40.92.49.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179CED827E;
+        Fri,  2 Dec 2022 09:39:30 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ImZJTIGBjAgHSH+eAnWReGW+lDoSCHqSUzrdRsdLa/eCy5KkVRf8rcDWypJqUoPZThEXGgIu6yLdF43FQ8dIH3vIMIqjhQLptApKF6W0m+IbMOt0VKobaY5p0c9LQxFpN3cj1XXhFNfKSqBpAoI/7Ks88qpfwVLiM65u4Fl5KOcJ0HlAQXaeQQUkeUO2FWJvvC+YqoEy+QU52ZdWZ7MM4FGjQGQMfr0OO1bqkQ5rwM2ZikHZq6IsH6IGVnKrmlBeOeLqiW6kh/EZ32nNA9JliUcnrRLYfQo+I/uw/gLysOa+2c43gctdJdVPnt7XKF8KdTQecN7ogQ4YoIMwCuX9Xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gB3WI+kY2EdrfAsx3eK7GyxVFSRbYxd1mNrRaZIuIO4=;
+ b=na5OITDPXj3GaRVr16am8hDj5tt6fUbEaLBTlsa1yWyCS1QkgxkTQgBzX/iGCj4MvD/CoabZqNYNeoVkMq5r9MMhBc7ss2J3UJyCGRCqMJrbtqYcqXu3IJMdThPIeqfwlg8LXuUXGfhtqQLEAWz9GoebClYokdiRsdEsWONlLWx+LUeDg5gQSA7fPMJxHDC1Gg4m2CuFZ7GR4SIuzWhA9RVMqsR0Oqlp4UDi5TXfjQP3ifCX8Yk5VslAEuC1F0IezPWKGOlMlDkST8oBLLDeura6auXQTUxbjrgsM+eDhH1n5nZDIlzt1aYkX33gn9Pfet5wWVf8Slx41244uycMPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gB3WI+kY2EdrfAsx3eK7GyxVFSRbYxd1mNrRaZIuIO4=;
+ b=OYrsRjc0Q7NXjQRHX310bKoF+iWgVbIWP5R391K25D2d0sz7r8Kt57s9Aa8twk7NabwJyKa9RZGXQ0N6y60r95yB5DcyDZtoBxDGbilpAkUDm0mmDUeNS+rx6h1I8UNYcllzojJZ1y1tdV4728LcWPCb8wtWoIoZECU3vn1eAdW0/B+36jijLfqHdcksArJoGpcpa7wkY7rYUtUS7gkMPPXqHBhWF2aJJ9jjAdgJEwjTojOAocg8lxUg3x27xqXUsiE8z/MUtjQNuhfw47jFgBwhS/3Jh9ztJOr4WEsMnaHT4RyXkfD9cBybAR2DS2Nk1bkSbsU51euPhgO63ue/GA==
+Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
+ by PR3P192MB0571.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:43::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.10; Fri, 2 Dec
+ 2022 17:39:27 +0000
+Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+ ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+ ([fe80::a67b:5da2:88f8:f28b%9]) with mapi id 15.20.5857.023; Fri, 2 Dec 2022
+ 17:39:27 +0000
+From:   Ji Rongfeng <SikoJobs@outlook.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.lau@linux.dev, daniel@iogearbox.net,
+        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        Ji Rongfeng <SikoJobs@outlook.com>
+Subject: [PATCH bpf-next v2] bpf: Upgrade bpf_{g,s}etsockopt return values
+Date:   Sat,  3 Dec 2022 01:39:10 +0800
+Message-ID: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [DnY83tEvg6Pw9ly1i7loIYJ9eCexNFj/]
+X-ClientProxiedBy: SG2PR06CA0190.apcprd06.prod.outlook.com (2603:1096:4:1::22)
+ To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
+X-Microsoft-Original-Message-ID: <20221202173910.11601-1-SikoJobs@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.0
-Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-References: <20221130082313.3241517-1-tj@kernel.org>
- <20221130082313.3241517-15-tj@kernel.org>
-From:   Barret Rhoden <brho@google.com>
-In-Reply-To: <20221130082313.3241517-15-tj@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|PR3P192MB0571:EE_
+X-MS-Office365-Filtering-Correlation-Id: a11e5515-d7e6-4637-1bdb-08dad48c28d8
+X-MS-Exchange-SLBlob-MailProps: 70qbaZjg4ms0xzfAGVOuKXynl8t5bcZkmjml5R49hQJeKseRJSf+ksbNRryIv/WNfr88IhuSzMaEf+Abh2HsSlfgxYwRjPRYRe2audmJyEuA7vFdmxZuKlWVBFn1ofBDvtqYphmYehbznu7g0Pko7A3WbtlK1zRc2Tm+cco+h5HP7GVp+TxdUP4RDOnGWEbBv7OgBZY9c6an8dAjbS3bouA3R/bi0+puU9c+x7hO7OEtJLpBUDx+pzJnfIlIfnQIBuLle3th3Z1jbTaRN0O9dgoMVmxAitIrBQD5PvQJJN0lQ/e0ASUjMjomgjr7wLsf4byyy/tNquBLs9yvPOmFxvkh4TsSofE6h0IVMOUwYeedHIl0bEBddLtmhu9KYyZqihOUEHM52JfVvKlz4dEuBdgeZkHmRn5w4DVnW7xyYNhdlvPVP/MecKO9Dfq0pmWuGOej+4gYzLU89mFv7Tv+zClwdyVjvVbJZNQ0ENwO0dj9JMp/GjilsE2+IHVwc1NpwUsA12Slny96krGNmSz8EvPIqD6B3OGTJRu0HAaTqupJpbDMpJM9ZF6XFJYVwHQ+LVI2Sr4JVpJrP5dpNd9NMJEy93nVQuwBNjrbQIM/A4neA+AIjrYRJvUd+h/x7Tl3oj0QyH67n2YbL+iawgEXBJGc6cliQZR9XEHwJRC19otGqZW06SOnfRzWYOcBB1hiQeESqlH/G1zGFPLU1hg3xmAsLxbR+QcF9ynFXQbzHh7wy4DoJ3vsIQ==
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZwinNcKySa5+I23QwAsaamHtCJ+Ln2j5rMIqJLTr0WV6fs0q+q7JjD0bqwy7Egz0oma3UokmP/RvZbAWHvyeLeG5bfPeEKulqKuXe0cDD4WDFkNELCCPTHNEaBy3C9WrnMaW3NlDO3OYh/Y8/ncKA+sehFtn83sC39WkXq6yq9PlzUn/6XBuqMseZXyReCdiLBzrCY/wbLwVQ0jEetHxvR0f4q6N4fDxjYi2ZjoiGGUn9EQBuXGxz1L5KgtE2ksy+miulHtnFOUp+SJM2js3tYQd1tsGB/wkuwWlZs8C8CA2tlP4Jfq9w2YU3H44aZJzVWKGhhsaTMkOfoEoECdmA/TmHzFvoyZTCcNuwuK4QT1vfw0dLrIz0Te9RjI5RKsmdqVUBzHgHjPXak/6iux3ISCIZQ77w7kF5LykWKWflJaUSEEDMSoQ4cIR4+R5S4ywd2Fyjp3Rdso8rit7kbo4egtQYH7KgVpi6dfw9LBjuYIoKNeO5eGthe5HuAn2kqVO1Twnl8sfZeUecgNxRB0B8qagDwZVG0L4zHE7nCn/NVO45Nw6A0MOzxf7Ots7BvQeI208jsR2HobG7cB6CnkJyMbC3azarHtgbHSm9BqSjMAEBMKjJBJtx8t08/ZiCMaSKtZoANQ0KR4rG53G5LJFSQ==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OxrWzM4jyEb/Jx3dKk1ZhttIKCk+gJuTkAPws84lIEd9IF2BgFOF9JD9H8RU?=
+ =?us-ascii?Q?FhgnXUWZDjLlWyGLxxK64BKIJ/TVvXVAGQtTfDOVvMFbUhp0eUDbJeQ2n4KN?=
+ =?us-ascii?Q?BQHe73iJpnmjuwlviSb6t1wUN0n1KRCGEn6AoRWw6RVXDEbIJpwSfO6D3Vy9?=
+ =?us-ascii?Q?5rwyVT7+1AQAzMxwNYvjbbD19AK3WBNEOI+hpTs0p+8x2LQuEJlOeaeqGvRb?=
+ =?us-ascii?Q?eMv4TkypL7EB42K6rHQe9FULCffD4dyOEYVsTQHZ1vgBqOcczAD1fAYFdSq4?=
+ =?us-ascii?Q?fFZs6zix546L+1GcLa1N5hAqjq4RJ30g/uGNZ6oO+wItT74GKh+NRCXHh4Lu?=
+ =?us-ascii?Q?MKTPj4DI534x6OewaLXT/H0g13bNzylFA/+zT23uJy7F1S5ohgcWP/ozhiSR?=
+ =?us-ascii?Q?c3r8MzR84hpfXstGOmMK+7yYLq69OTfN8yqmvR2S+0D1vdgW0kFQXYjIRGPB?=
+ =?us-ascii?Q?o8wESUB+UCQAHVW9HQMA69w9BRIvfvWJqPF821ZGLycVPyCEAw0JgRCZ0Yrw?=
+ =?us-ascii?Q?AM2GtB+PJAJGdi2EjWtzGKvFmRPwCooealAJPS4FrLFslSP5yMuMTIFHwKVd?=
+ =?us-ascii?Q?8jwGT8Cx7GimDWKcRxxiZ0ahFObXPYA/cBoaB7St8ALv1ICOpns6adFGiTg7?=
+ =?us-ascii?Q?t12hp/UX/nd9iJiP3eyRM9rvdJlXRFCAGoeEYR8KX4OJOJBB2pHvm9XCQ2TI?=
+ =?us-ascii?Q?zWtuR4NMZJxF2FK9NTr2pEG7ioXw0BR7L8+zVJm7JfKgW4ep6UOPeO0EqC/2?=
+ =?us-ascii?Q?Xp/JN1FYIheQzrJiHvrS9FoUd0CK40klkwGfHpsyU/7EC+RKRul363tBFsGi?=
+ =?us-ascii?Q?B1RWvyP3ZkyRt0at4HxQYpVEd+6/cIwnDnIgX0mXlu+kuCxhvN9biGWyQwHV?=
+ =?us-ascii?Q?HUD15jcehTzupne95jXxWTVDQ4feyT/QeTCv54OzaxwyaiZ3scUcugE5vZRq?=
+ =?us-ascii?Q?c8/nvDICjnWRsKEBJzHKWj6yNNAsGu2WG1lLLT6u7xj2ZH8UiYmqjHpX3faa?=
+ =?us-ascii?Q?YNQPaT6xjwI0Iz+JoJD6n4c+PYiw+rKSR8IHrbTRV+LMVk8IZaNBvXPCJGKp?=
+ =?us-ascii?Q?OKW5zMZP9B+jhRAvE6u1uNbLLjXxGRYKkQiObwFLdZn8RfWDqrOlWqYmUArB?=
+ =?us-ascii?Q?M6ow+G3Fe8oTc16Yd6cPHP966Tfg8oLImOXSiGh7jly/+OX49N7OHHhyJkZu?=
+ =?us-ascii?Q?BbnHCkeFgqUqXjhiwBp4ADEKHfvylkawZ7SUQ4p4sihlEy1dKv6NqVfxX3pW?=
+ =?us-ascii?Q?+qLLeBgUm2erDgPJu9qCSUJdW6q0c70zrXjrYCJdJg=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a11e5515-d7e6-4637-1bdb-08dad48c28d8
+X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2022 17:39:27.5718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P192MB0571
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,100 +107,179 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi -
+Returning -EINVAL almost all the time when error occurs is not very
+helpful for the bpf prog to figure out what is wrong. This patch
+upgrades some return values so that they will be much more helpful.
 
-On 11/30/22 03:22, Tejun Heo wrote:
-[...]
-> +static bool consume_dispatch_q(struct rq *rq, struct rq_flags *rf,
-> +			       struct scx_dispatch_q *dsq)
-> +{
-> +	struct scx_rq *scx_rq = &rq->scx;
-> +	struct task_struct *p;
-> +	struct rq *task_rq;
-> +	bool moved = false;
-> +retry:
-> +	if (list_empty(&dsq->fifo))
-> +		return false;
-> +
-> +	raw_spin_lock(&dsq->lock);
-> +	list_for_each_entry(p, &dsq->fifo, scx.dsq_node) {
-> +		task_rq = task_rq(p);
-> +		if (rq == task_rq)
-> +			goto this_rq;
-> +		if (likely(rq->online) && !is_migration_disabled(p) &&
-> +		    cpumask_test_cpu(cpu_of(rq), p->cpus_ptr))
-> +			goto remote_rq;
-> +	}
-> +	raw_spin_unlock(&dsq->lock);
-> +	return false;
-> +
-> +this_rq:
-> +	/* @dsq is locked and @p is on this rq */
-> +	WARN_ON_ONCE(p->scx.holding_cpu >= 0);
-> +	list_move_tail(&p->scx.dsq_node, &scx_rq->local_dsq.fifo);
-> +	dsq->nr--;
-> +	scx_rq->local_dsq.nr++;
-> +	p->scx.dsq = &scx_rq->local_dsq;
-> +	raw_spin_unlock(&dsq->lock);
-> +	return true;
-> +
-> +remote_rq:
-> +#ifdef CONFIG_SMP
-> +	/*
-> +	 * @dsq is locked and @p is on a remote rq. @p is currently protected by
-> +	 * @dsq->lock. We want to pull @p to @rq but may deadlock if we grab
-> +	 * @task_rq while holding @dsq and @rq locks. As dequeue can't drop the
-> +	 * rq lock or fail, do a little dancing from our side. See
-> +	 * move_task_to_local_dsq().
-> +	 */
-> +	WARN_ON_ONCE(p->scx.holding_cpu >= 0);
-> +	list_del_init(&p->scx.dsq_node);
-> +	dsq->nr--;
-> +	p->scx.holding_cpu = raw_smp_processor_id();
-> +	raw_spin_unlock(&dsq->lock);
-> +
-> +	rq_unpin_lock(rq, rf);
-> +	double_lock_balance(rq, task_rq);
-> +	rq_repin_lock(rq, rf);
-> +
-> +	moved = move_task_to_local_dsq(rq, p);
+* return -ENOPROTOOPT when optname is unsupported
 
-you might be able to avoid the double_lock_balance() by using 
-move_queued_task(), which internally hands off the old rq lock and 
-returns with the new rq lock.
+  The same as {g,s}etsockopt() syscall does. Before this patch,
+  bpf_setsockopt(TCP_SAVED_SYN) already returns -ENOPROTOOPT, which
+  may confuse the user, as -EINVAL is returned on other unsupported
+  optnames. This patch also rejects TCP_SAVED_SYN right in
+  sol_tcp_sockopt() when getopt is false, since do_tcp_setsockopt()
+  is just the executor and it's not its duty to discover such error
+  in bpf. We should maintain a precise allowlist to control whether
+  an optname is supported and allowed to enter the executor or not.
+  Functions like do_tcp_setsockopt(), their behaviour are not fully
+  controllable by bpf. Imagine we let an optname pass, expecting
+  -ENOPROTOOPT will be returned, but someday that optname is
+  actually processed and unfortunately causes deadlock when calling
+  from bpf. Thus, precise access control is essential.
 
-the pattern for consume_dispatch_q() would be something like:
+* return -EOPNOTSUPP on level-related errors
 
-- kfunc from bpf, with this_rq lock held
-- notice p isn't on this_rq, goto remote_rq:
-- do sched_ext accounting, like the this_rq->dsq->nr--
-- unlock this_rq
-- p_rq = task_rq_lock(p)
-- double_check p->rq didn't change to this_rq during that unlock
-- new_rq = move_queued_task(p_rq, rf, p, new_cpu)
-- do sched_ext accounting like new_rq->dsq->nr++
-- unlock new_rq
-- relock the original this_rq
-- return to bpf
+  In do_ip_getsockopt(), -EOPNOTSUPP will be returned if level !=
+  SOL_IP. In ipv6_getsockopt(), -ENOPROTOOPT will be returned if
+  level != SOL_IPV6. To be distinguishable, the former is chosen.
 
-you still end up grabbing both locks, but just not at the same time.
+* return -EBADFD when sk is not a full socket
 
-plus, task_rq_lock() takes the guesswork out of whether you're getting 
-p's rq lock or not.  it looks like you're using the holding_cpu to 
-handle the race where p moves cpus after you read task_rq(p) but before 
-you lock that task_rq.  maybe you can drop the whole concept of the 
-holding_cpu?
+  -EPERM or -EBUSY was an option, but in many cases one of them
+  will be returned, especially under level SOL_TCP. -EBADFD is the
+  better choice, since it is hardly returned in all cases. The bpf
+  prog will be able to recognize it and decide what to do next.
 
-thanks,
-barret
+Signed-off-by: Ji Rongfeng <SikoJobs@outlook.com>
 
+From my point of view, changing these return values is acceptable,
+because most of them are designed to be shown to the bpf prog
+developer only and rarely shown in production environment.
 
-> +
-> +	double_unlock_balance(rq, task_rq);
-> +#endif /* CONFIG_SMP */
-> +	if (likely(moved))
-> +		return true;
-> +	goto retry;
-> +}
+I'll send another patch to update documentation in a proper way
+after this patch is accepted, and add some tests if necessary.
+---
+ net/core/filter.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 37baaa6b8fc3..44440b7d430c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5050,12 +5050,12 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+ 	case SO_BINDTODEVICE:
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return -ENOPROTOOPT;
+ 	}
+ 
+ 	if (getopt) {
+ 		if (optname == SO_BINDTODEVICE)
+-			return -EINVAL;
++			return -ENOPROTOOPT;
+ 		return sk_getsockopt(sk, SOL_SOCKET, optname,
+ 				     KERNEL_SOCKPTR(optval),
+ 				     KERNEL_SOCKPTR(optlen));
+@@ -5105,7 +5105,7 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
+ 		inet_csk(sk)->icsk_rto_min = timeout;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return -ENOPROTOOPT;
+ 	}
+ 
+ 	return 0;
+@@ -5169,7 +5169,7 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
+ 			   bool getopt)
+ {
+ 	if (sk->sk_prot->setsockopt != tcp_setsockopt)
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 
+ 	switch (optname) {
+ 	case TCP_NODELAY:
+@@ -5194,7 +5194,7 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
+ 		break;
+ 	default:
+ 		if (getopt)
+-			return -EINVAL;
++			return -ENOPROTOOPT;
+ 		return bpf_sol_tcp_setsockopt(sk, optname, optval, *optlen);
+ 	}
+ 
+@@ -5215,6 +5215,9 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
+ 		return do_tcp_getsockopt(sk, SOL_TCP, optname,
+ 					 KERNEL_SOCKPTR(optval),
+ 					 KERNEL_SOCKPTR(optlen));
++	} else {
++		if (optname == TCP_SAVED_SYN)
++			return -ENOPROTOOPT;
+ 	}
+ 
+ 	return do_tcp_setsockopt(sk, SOL_TCP, optname,
+@@ -5226,7 +5229,7 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
+ 			  bool getopt)
+ {
+ 	if (sk->sk_family != AF_INET)
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 
+ 	switch (optname) {
+ 	case IP_TOS:
+@@ -5234,7 +5237,7 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
+ 			return -EINVAL;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return -ENOPROTOOPT;
+ 	}
+ 
+ 	if (getopt)
+@@ -5251,7 +5254,7 @@ static int sol_ipv6_sockopt(struct sock *sk, int optname,
+ 			    bool getopt)
+ {
+ 	if (sk->sk_family != AF_INET6)
+-		return -EINVAL;
++		return -EOPNOTSUPP;
+ 
+ 	switch (optname) {
+ 	case IPV6_TCLASS:
+@@ -5260,7 +5263,7 @@ static int sol_ipv6_sockopt(struct sock *sk, int optname,
+ 			return -EINVAL;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return -ENOPROTOOPT;
+ 	}
+ 
+ 	if (getopt)
+@@ -5276,7 +5279,7 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
+ 			    char *optval, int optlen)
+ {
+ 	if (!sk_fullsock(sk))
+-		return -EINVAL;
++		return -EBADFD;
+ 
+ 	if (level == SOL_SOCKET)
+ 		return sol_socket_sockopt(sk, optname, optval, &optlen, false);
+@@ -5287,7 +5290,7 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
+ 	else if (IS_ENABLED(CONFIG_INET) && level == SOL_TCP)
+ 		return sol_tcp_sockopt(sk, optname, optval, &optlen, false);
+ 
+-	return -EINVAL;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+@@ -5304,7 +5307,7 @@ static int __bpf_getsockopt(struct sock *sk, int level, int optname,
+ 	int err, saved_optlen = optlen;
+ 
+ 	if (!sk_fullsock(sk)) {
+-		err = -EINVAL;
++		err = -EBADFD;
+ 		goto done;
+ 	}
+ 
+@@ -5317,7 +5320,7 @@ static int __bpf_getsockopt(struct sock *sk, int level, int optname,
+ 	else if (IS_ENABLED(CONFIG_IPV6) && level == SOL_IPV6)
+ 		err = sol_ipv6_sockopt(sk, optname, optval, &optlen, true);
+ 	else
+-		err = -EINVAL;
++		err = -EOPNOTSUPP;
+ 
+ done:
+ 	if (err)
+-- 
+2.30.2
 
