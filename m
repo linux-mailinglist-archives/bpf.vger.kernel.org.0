@@ -2,108 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE966403D4
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDBB6403DB
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232723AbiLBJz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 04:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S232769AbiLBJ6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 04:58:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbiLBJzY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 04:55:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6646BCA7A9
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 01:54:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669974865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z0aJyBJ5pA14fenx25kvzt6VogtkX8oCBQc7dpQax/I=;
-        b=SIyq8CCfITW2jg35C3NStTqAF15hK8oThy3R1MG0U9Di+RIu1WSGnpyF7MlLvkbnN48E4f
-        ev4+WodUaY3cYPLrzkjM5cvuyOa0GgRxxbW+e8SStlyAp60/olmdD89REv/dKLK09LfIai
-        mrejgN8deTNkPD4qZnMdolb2fnx4mwU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-668-hjB6H7kVOCSc_Ijcqlvcmg-1; Fri, 02 Dec 2022 04:54:24 -0500
-X-MC-Unique: hjB6H7kVOCSc_Ijcqlvcmg-1
-Received: by mail-wr1-f70.google.com with SMTP id r17-20020adfb1d1000000b002421ae7fd46so945349wra.10
-        for <bpf@vger.kernel.org>; Fri, 02 Dec 2022 01:54:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z0aJyBJ5pA14fenx25kvzt6VogtkX8oCBQc7dpQax/I=;
-        b=rfibKU3mAfU1YmzhCdHh5O2f0WdugUvusqo1uu5EcMln4Xih1aLZoFg7APWdsp+BRK
-         gvRylmYsZorDClisKbctTdARLTITZ8RElH+X+NIOcjXp6Np/ixHEX9CfDjRg3x6iwSEJ
-         ZAWTIL20IcTRNqNy6LepkPhT4Xz4Io5Rs8fbzVTnLx7dnGCNOSOZOqhsJDBHe/E2asjo
-         /D9FHJ433Pdoq6k8vkUssdLPIizYhptiqMvrLapl22FKsdk6OJINdfDTJ9wwpGQfAAFr
-         5nZ7pDR8GpKuarhuwoJyrSV59OlNnlFP+E1NZLSRHIv8p3sn743LGqpJCz6wsJwrRK0E
-         YBzQ==
-X-Gm-Message-State: ANoB5pldCkEtrVPxAPs5lHWl5X3AlAa5Cq6Fi1KAdhzZ8uGLyPddkTAZ
-        S5zuKU1FSnK7nfFf4G68jxHsl26AlMBdd2RyYSaTiYSlW6dN6IkNwMd4hrbTOmtaKZkaoNO80zY
-        mJe9DSULlQB+i
-X-Received: by 2002:a5d:6d47:0:b0:230:3652:205 with SMTP id k7-20020a5d6d47000000b0023036520205mr31082858wri.322.1669974862805;
-        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4LLi1uitwBarAh4GKhzvBRHZY/KzlIK4u4CzijY+hwD6+971nsU5Jj2jm6GI5+pmm4gZ5Kiw==
-X-Received: by 2002:a5d:6d47:0:b0:230:3652:205 with SMTP id k7-20020a5d6d47000000b0023036520205mr31082847wri.322.1669974862583;
-        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
-Received: from [192.168.0.4] ([78.16.131.111])
-        by smtp.gmail.com with ESMTPSA id n12-20020a1c720c000000b003c64c186206sm7685171wmc.16.2022.12.02.01.54.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
-Message-ID: <552ef30f-2331-52c3-b364-8171f42d86ff@redhat.com>
-Date:   Fri, 2 Dec 2022 09:54:20 +0000
+        with ESMTP id S232214AbiLBJ6K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 04:58:10 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94177DA51;
+        Fri,  2 Dec 2022 01:58:08 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NNpKQ3nBCz4f3rVZ;
+        Fri,  2 Dec 2022 17:58:02 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+        by APP2 (Coremail) with SMTP id Syh0CgCXrLcrzIljyuECBg--.34797S2;
+        Fri, 02 Dec 2022 17:58:05 +0800 (CST)
+Message-ID: <85c21f52-2059-f6bb-bbc1-d610cb107995@huaweicloud.com>
+Date:   Fri, 2 Dec 2022 17:58:03 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.0
-Subject: Re: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf] riscv, bpf: Emit fixed-length imm64 for
+ BPF_PSEUDO_FUNC
 Content-Language: en-US
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
-        thoiland@redhat.com, donhunte@redhat.com, john.fastabend@gmail.com
-References: <20221201151352.34810-1-mtahhan@redhat.com>
- <Y4ld1BsRrXaPtz0L@debian.me>
-From:   Maryam Tahhan <mtahhan@redhat.com>
-In-Reply-To: <Y4ld1BsRrXaPtz0L@debian.me>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>
+References: <20221130033806.2967822-1-pulehui@huaweicloud.com>
+ <87h6yg1xlo.fsf@all.your.base.are.belong.to.us>
+From:   Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87h6yg1xlo.fsf@all.your.base.are.belong.to.us>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgCXrLcrzIljyuECBg--.34797S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw15ZF4xKry3WrWUXF1xGrg_yoW5XF13pF
+        WUKw4fCF4kXr1xKr1aqr4Yqr1YyF40qF47Wr1aqay5Kryj9Fn29F1DKws8KasxZry8GF13
+        JFyjgrnxCa4DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/12/2022 02:07, Bagas Sanjaya wrote:
-> On Thu, Dec 01, 2022 at 03:13:52PM +0000, mtahhan@redhat.com wrote:
->> +When these maps are created BPF programs are attached to them. The list of
->> +allowed programs is shown below:
-> Automatically attached BPF programs?
 
 
-I will rephrase to indicate that the user typically attaches the 
-programs to the maps. and fix the rest of the comments in a respin.
+On 2022/11/30 19:38, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
+> 
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
+>> correct addresses of bpf_calls and then run last pass of JIT.
+>> Since the emit_imm of RV64 is variable-length, which will emit
+>> appropriate length instructions accorroding to the imm, it may
+>> broke ctx->offset, and lead to unpredictable problem, such as
+>> inaccurate jump. So let's fix it with fixed-length imm64 insns.
+> 
+> Ah, nice one! So, the the invariant doesn't hold (the image grow in the
+> last pass).
+> 
+>> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+> 
+> This is odd? This can't be the right Fixes-tag...
+> 
 
-Thanks.
+Only BPF_PSEUDO_FUNC instruction need extra jit pass after refill imm in 
+jit_subprogs. Others, like bpf helper call, will update ctx->offset in 
+jit iterations. So the fixes-tag is 69c087ba6225.
 
->
-> Also, "The allowed programs are:"
->
->> +.. note::
->> +	For more details of the socket callbacks that get replaced please see:
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> ---
+>>   arch/riscv/net/bpf_jit_comp64.c | 31 ++++++++++++++++++++++++++++++-
+>>   1 file changed, 30 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+>> index eb99df41fa33..f984d5fa014b 100644
+>> --- a/arch/riscv/net/bpf_jit_comp64.c
+>> +++ b/arch/riscv/net/bpf_jit_comp64.c
+>> @@ -139,6 +139,30 @@ static bool in_auipc_jalr_range(s64 val)
+>>   		val < ((1L << 31) - (1L << 11));
+>>   }
+>>   
+>> +/* Emit fixed-length instructions for 32-bit imm */
+>> +static void emit_fixed_imm32(u8 rd, s32 val, struct rv_jit_context *ctx)
+>> +{
+>> +	s32 upper = (val + (1U << 11)) >> 12;
+>> +	s32 lower = ((val & 0xfff) << 20) >> 20;
 >> +
->> +	- TCP BPF functions: ``net/ipv4/tcp_bpf.c``
->> +	- UDP BPF functions: ``net/ipv4/udp_bpf.c``
-> "... please see ``net/ipv4/tcp_bpf.c`` and ``net/ipv4/udp_bpf.c`` for
-> TCP and UDP functions, respectively"
->
-> Otherwise LGTM.
->
+>> +	emit(rv_lui(rd, upper), ctx);
+>> +	emit(rv_addi(rd, rd, lower), ctx);
+>> +}
+>> +
+>> +/* Emit fixed-length instructions for 64-bit imm */
+>> +static void emit_fixed_imm64(u8 rd, s64 val, struct rv_jit_context *ctx)
+>> +{
+>> +	/* Compensation for sign-extension of rv_addi */
+>> +	s32 imm_hi = (val + (1U << 31)) >> 32;
+>> +	s32 imm_lo = val;
+>> +
+>> +	emit_fixed_imm32(rd, imm_hi, ctx);
+>> +	emit_fixed_imm32(RV_REG_T1, imm_lo, ctx);
+>> +	emit(rv_slli(rd, rd, 32), ctx);
+>> +	emit(rv_add(rd, rd, RV_REG_T1), ctx);
+>> +}
+> 
+> Hmm, will this really be fixed? We can end up with compressed
+> instructions, which can then be a non-compressed in the last pass, and
+> we have the same problem?
+> 
+> The range of valid address for RV64 (sv39 to sv57) are
+> 0xffffffff00000000 to 0xffffffffffffffff, so I think we can do better
+> than 6 insn, no? My gut feeling (I need to tinker a bit) is that 4
+> should be sufficient.
+> 
+> Note that worst case for a imm64 load are 8 instructions, but this is
+> not the general case.
+> 
+> 
+> Björn
 
