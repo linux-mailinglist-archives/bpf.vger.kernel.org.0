@@ -2,155 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDBB6403DB
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B116403E3
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbiLBJ6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 04:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        id S233147AbiLBJ7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 04:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbiLBJ6K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 04:58:10 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94177DA51;
-        Fri,  2 Dec 2022 01:58:08 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NNpKQ3nBCz4f3rVZ;
-        Fri,  2 Dec 2022 17:58:02 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-        by APP2 (Coremail) with SMTP id Syh0CgCXrLcrzIljyuECBg--.34797S2;
-        Fri, 02 Dec 2022 17:58:05 +0800 (CST)
-Message-ID: <85c21f52-2059-f6bb-bbc1-d610cb107995@huaweicloud.com>
-Date:   Fri, 2 Dec 2022 17:58:03 +0800
+        with ESMTP id S232696AbiLBJ7e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 04:59:34 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C095BD8AC;
+        Fri,  2 Dec 2022 01:59:33 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id f18so7013481wrj.5;
+        Fri, 02 Dec 2022 01:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UTPrzoP+SGh03HmopNhpASmjnce6kJFYd8daB4Hq44k=;
+        b=dWNeN3Y0oPlCIUgSBFx8GW/Ql6s3KxAxFhykMmbkE3STNifQY6qf9lHOxXwMxWhFqc
+         b/j8GDO7D8TzoSTFmlkQXD8XkVA6jEJfPvWnGO8HGZTC2+YULheWuTkIhnsJYhy4MbEx
+         qQmCPamdemAZ8red5Dn7c2syo0haTu5SBlyPRFq+xJeHkMb3hNqe+PTWsWlEOTDyzCBu
+         BWRj1u3fiN+XVYnj0ClTWNyy5FJTbAkLIK8tFd4l44kxsOZQiQ9vrgliKr/cCtAROh/m
+         Ogjc8DPEVJjn2YaIujZ1gXdb1IKI7YJG0LqGAwvXeIAc/v7Q52iMcQnFEk4i6tRW/YRU
+         h+6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UTPrzoP+SGh03HmopNhpASmjnce6kJFYd8daB4Hq44k=;
+        b=UmyHw3zZDE5OvWjTRjbUz/j2+hozqI5KcEQA9JqNn0yQRvLFdIAsm8j451GY939KX5
+         lqfhH32+e7KyKbrptHFWYM3TJDUWUiHzCkdfTansjnizepwWSguoAWCEcFRXTuRES8zB
+         L8XTH/D9fJjeEacNy2k1dijOs+w2ZVimW8UKgcBmQru/5Hm5JvBf12jHYTl7JVePy3yx
+         D887gjWR60ciesf8WLFdC0OnzH+18eNZ4Xx8hfxa+3fmmpUgrynKQrHUan9Rn0LlLDpb
+         LMhuzg/IhnXsgM3/d32OvHd3ULBk7iuVXUvLHem12euShvqQ4y+p44HROUCAloH6Yv9M
+         580A==
+X-Gm-Message-State: ANoB5pnJgz/AsJ5rKNCtWEpJY0OIJ8s3LEPYjk9ADTHea+RaoRE8iyaf
+        E6voTlkPTJvR4T+0WRaLE84=
+X-Google-Smtp-Source: AA0mqf5JNyIxpO047SssifwoiMQqHBpwCbrswENFnMYaNs5Nk//LWEVpKaquqXTd4GbhqwQIZRpBxQ==
+X-Received: by 2002:a5d:4dd0:0:b0:241:fa43:d982 with SMTP id f16-20020a5d4dd0000000b00241fa43d982mr26246364wru.134.1669975171806;
+        Fri, 02 Dec 2022 01:59:31 -0800 (PST)
+Received: from localhost.localdomain ([213.57.189.88])
+        by smtp.gmail.com with ESMTPSA id s1-20020adfdb01000000b002420a2cdc96sm6517851wri.70.2022.12.02.01.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Dec 2022 01:59:31 -0800 (PST)
+From:   Eyal Birger <eyal.birger@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, andrii@kernel.org,
+        daniel@iogearbox.net, nicolas.dichtel@6wind.com,
+        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        liuhangbin@gmail.com, lixiaoyan@google.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Eyal Birger <eyal.birger@gmail.com>
+Subject: [PATCH bpf-next,v4 0/4] xfrm: interface: Add unstable helpers for XFRM metadata
+Date:   Fri,  2 Dec 2022 11:59:16 +0200
+Message-Id: <20221202095920.1659332-1-eyal.birger@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf] riscv, bpf: Emit fixed-length imm64 for
- BPF_PSEUDO_FUNC
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>
-References: <20221130033806.2967822-1-pulehui@huaweicloud.com>
- <87h6yg1xlo.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <87h6yg1xlo.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCXrLcrzIljyuECBg--.34797S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw15ZF4xKry3WrWUXF1xGrg_yoW5XF13pF
-        WUKw4fCF4kXr1xKr1aqr4Yqr1YyF40qF47Wr1aqay5Kryj9Fn29F1DKws8KasxZry8GF13
-        JFyjgrnxCa4DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch series adds xfrm metadata helpers using the unstable kfunc
+call interface for the TC-BPF hooks.
 
+This allows steering traffic towards different IPsec connections based
+on logic implemented in bpf programs.
 
-On 2022/11/30 19:38, Björn Töpel wrote:
-> Pu Lehui <pulehui@huaweicloud.com> writes:
-> 
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
->> correct addresses of bpf_calls and then run last pass of JIT.
->> Since the emit_imm of RV64 is variable-length, which will emit
->> appropriate length instructions accorroding to the imm, it may
->> broke ctx->offset, and lead to unpredictable problem, such as
->> inaccurate jump. So let's fix it with fixed-length imm64 insns.
-> 
-> Ah, nice one! So, the the invariant doesn't hold (the image grow in the
-> last pass).
-> 
->> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-> 
-> This is odd? This can't be the right Fixes-tag...
-> 
+The helpers are integrated into the xfrm_interface module. For this
+purpose the main functionality of this module is moved to
+xfrm_interface_core.c.
 
-Only BPF_PSEUDO_FUNC instruction need extra jit pass after refill imm in 
-jit_subprogs. Others, like bpf helper call, will update ctx->offset in 
-jit iterations. So the fixes-tag is 69c087ba6225.
+---
 
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>   arch/riscv/net/bpf_jit_comp64.c | 31 ++++++++++++++++++++++++++++++-
->>   1 file changed, 30 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->> index eb99df41fa33..f984d5fa014b 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -139,6 +139,30 @@ static bool in_auipc_jalr_range(s64 val)
->>   		val < ((1L << 31) - (1L << 11));
->>   }
->>   
->> +/* Emit fixed-length instructions for 32-bit imm */
->> +static void emit_fixed_imm32(u8 rd, s32 val, struct rv_jit_context *ctx)
->> +{
->> +	s32 upper = (val + (1U << 11)) >> 12;
->> +	s32 lower = ((val & 0xfff) << 20) >> 20;
->> +
->> +	emit(rv_lui(rd, upper), ctx);
->> +	emit(rv_addi(rd, rd, lower), ctx);
->> +}
->> +
->> +/* Emit fixed-length instructions for 64-bit imm */
->> +static void emit_fixed_imm64(u8 rd, s64 val, struct rv_jit_context *ctx)
->> +{
->> +	/* Compensation for sign-extension of rv_addi */
->> +	s32 imm_hi = (val + (1U << 31)) >> 32;
->> +	s32 imm_lo = val;
->> +
->> +	emit_fixed_imm32(rd, imm_hi, ctx);
->> +	emit_fixed_imm32(RV_REG_T1, imm_lo, ctx);
->> +	emit(rv_slli(rd, rd, 32), ctx);
->> +	emit(rv_add(rd, rd, RV_REG_T1), ctx);
->> +}
-> 
-> Hmm, will this really be fixed? We can end up with compressed
-> instructions, which can then be a non-compressed in the last pass, and
-> we have the same problem?
-> 
-> The range of valid address for RV64 (sv39 to sv57) are
-> 0xffffffff00000000 to 0xffffffffffffffff, so I think we can do better
-> than 6 insn, no? My gut feeling (I need to tinker a bit) is that 4
-> should be sufficient.
-> 
-> Note that worst case for a imm64 load are 8 instructions, but this is
-> not the general case.
-> 
-> 
-> Björn
+Series changes in v3:
+  - tag bpf-next tree instead of ipsec-next
+  - add IFLA_XFRM_COLLECT_METADATA sync patch
+
+Eyal Birger (4):
+  xfrm: interface: rename xfrm_interface.c to xfrm_interface_core.c
+  xfrm: interface: Add unstable helpers for setting/getting XFRM
+    metadata from TC-BPF
+  tools: add IFLA_XFRM_COLLECT_METADATA to uapi/linux/if_link.h
+  selftests/bpf: add xfrm_info tests
+
+ include/net/dst_metadata.h                    |   1 +
+ include/net/xfrm.h                            |  20 +
+ net/core/dst.c                                |   8 +-
+ net/xfrm/Makefile                             |   8 +
+ net/xfrm/xfrm_interface_bpf.c                 | 123 ++++++
+ ...xfrm_interface.c => xfrm_interface_core.c} |  15 +
+ tools/include/uapi/linux/if_link.h            |   1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ tools/testing/selftests/bpf/config            |   2 +
+ .../selftests/bpf/prog_tests/xfrm_info.c      | 365 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   3 +
+ tools/testing/selftests/bpf/progs/xfrm_info.c |  35 ++
+ 12 files changed, 580 insertions(+), 2 deletions(-)
+ create mode 100644 net/xfrm/xfrm_interface_bpf.c
+ rename net/xfrm/{xfrm_interface.c => xfrm_interface_core.c} (98%)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xfrm_info.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xfrm_info.c
+
+-- 
+2.34.1
 
