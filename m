@@ -2,107 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65541640C5C
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 18:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338AA640CC2
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 19:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233786AbiLBRn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 12:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
+        id S234033AbiLBSBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 13:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbiLBRn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 12:43:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FF22F390
-        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 09:43:56 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1670003035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hw2IcvB/DAxzATKFNjZzen0qSXdeIAQcVISV0zMHhRs=;
-        b=vqme40fhzHor+wxF288mCsnY/rm6HPnwOtK75h/AeGYp4SFl6C/3snqM9dT0eV3WQmSdsT
-        VfjwQCE0VBa+/DFXJrs79iydgOg8RaMVGRQe7AxhMRhDbMhM901pecVQ8quvcvBgSucYCO
-        6tyLkb9TENNC3eqAxQgghambuYEplJSKQmyshoEE9oQpoJQD9z969tSvYzn3BXyNuhVzdW
-        c2byKk68jrgUaAwQuE0nwW+YvTNHEglVSW0CCy26zZ17G+VFO0S74pcfemmdqzoaP/fn8b
-        iUaRUFkRhaHiPcht1fPOQE/zYqppMouty6V8MvZukGQAUbkTebm0pOyu90oAKA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1670003035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hw2IcvB/DAxzATKFNjZzen0qSXdeIAQcVISV0zMHhRs=;
-        b=XWZ8S6H/jSo4nTycZl9+k8Sdnrgh80/yWstyPolb2XirRQQQ1dTKWKS7njbVcaks4RAc9v
-        oEa7doqyBKP0EMAQ==
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <song@kernel.org>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "x86@kernel.org" <x86@kernel.org>, "hch@lst.de" <hch@lst.de>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "aaron.lu@intel.com" <aaron.lu@intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-In-Reply-To: <5fb21965-48c8-e795-632a-fa190470abe8@csgroup.eu>
-References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
- <87v8mvsd8d.ffs@tglx>
- <CAPhsuW5g45D+CFHBYR53nR17zG3dJ=3UJem-GCJwT0v6YCsxwg@mail.gmail.com>
- <87k03ar3e3.ffs@tglx> <5fb21965-48c8-e795-632a-fa190470abe8@csgroup.eu>
-Date:   Fri, 02 Dec 2022 18:43:54 +0100
-Message-ID: <87ilitpup1.ffs@tglx>
+        with ESMTP id S234152AbiLBSBl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 13:01:41 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FCCE61CF;
+        Fri,  2 Dec 2022 10:01:40 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id k2-20020a17090a4c8200b002187cce2f92so9008747pjh.2;
+        Fri, 02 Dec 2022 10:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=unq15Boqc5fQcQaBlgiNBwM4n1cI6lL/XfwEmSxwwuQ=;
+        b=SYBc4wuTywgBZjryabalnIcwN5pNfyFGYrJ48kdRRb82LZSmJN38+HcpMu/nuegPkB
+         r3HwbRDHpCnzR+H3GPhNIcmZ51dVpodLL7adEX/SeBI9VBGLwnuyUh1ojbnJvK/OnCee
+         yzPySqGihsvwMFr6W8CASyrwELoqST8mJMEjI/DhZR0zHpysh8DSM8HOArxTD/qA+2HZ
+         eVZVmGkbjcGA3biw8dUUJkxLFoqCXh3RGubsx7UGAqqqAxp+oD2xewinbolh5Pogo6Sk
+         wWEy1HVKvQ8F4t386WXj+C9VvG9PyHVCMGtIep9TpigTBMJCSNPE5DPjX25UKrkCG5yI
+         mA0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=unq15Boqc5fQcQaBlgiNBwM4n1cI6lL/XfwEmSxwwuQ=;
+        b=64/Q2DAOmIw804JwhHUHTpEFXcZf1ikFNic5vcqCF0JnIAwE9WGiWmCwo15ns+lCzQ
+         8kQNwCJhEEWpbLCf7w7Y9BuA9pTmxmVZTRMCPmV9VYowR8h7iPNTN1ZUB4iZVgAfnL0R
+         dIImUiTeJu+4oQgIWJV8w+ZX8twGMLXL+e03DuJ5erZzVm7gkAxdsrOkEQatZzXJpgL0
+         gNF5IpXjer9Z6rgqOY96Extyn5BCSPzIc8bqVEC4or/1cJkj8j5txbOFu1KIXiQ0QYrI
+         jUS76JHGeUEUbqAHy9LkbqZEgxTeeSBzeyZRf8FxdhdSM0WLhjwiU6wmW3nyv4xjghYf
+         s/ig==
+X-Gm-Message-State: ANoB5plbxrhFkhYFr1HWDZ+Ds1k4jIJSjG3D0qOaaPCC6weh9FuRKdHt
+        ErhFkVwbNeWEHxAh2YRZnoo=
+X-Google-Smtp-Source: AA0mqf6KTArSjxNx6RNy+FpOtO0BMt5uhy0fFQB1V1qK3d6ls63iE18vzLlUqkGZ0KgA5LuiVtiuUA==
+X-Received: by 2002:a17:903:251:b0:189:78d9:fe3c with SMTP id j17-20020a170903025100b0018978d9fe3cmr32814026plh.101.1670004099551;
+        Fri, 02 Dec 2022 10:01:39 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79723000000b0057409583c09sm5359383pfg.163.2022.12.02.10.01.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Dec 2022 10:01:39 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 2 Dec 2022 08:01:37 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Barret Rhoden <brho@google.com>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, pjt@google.com, derkling@google.com,
+        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+        dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <Y4o9gV2v8eyI1arK@slm.duckdns.org>
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <20221130082313.3241517-15-tj@kernel.org>
+ <8d146099-a12a-c5a1-4829-dec95497fdca@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d146099-a12a-c5a1-4829-dec95497fdca@google.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 02 2022 at 10:46, Christophe Leroy wrote:
-> Le 02/12/2022 =C3=A0 02:38, Thomas Gleixner a =C3=A9crit=C2=A0:
->> Even modules can benefit from that. The fact that modules have all
->> sections (text, data, rodata) page aligned and page granular is not due
->> to an requirement of modules, it's so because that's how module_alloc()
->> works and the module layout has been adopted to it.
->
-> Sections are page aligned only when STRICT_MODULE_RWX is selected.
+Hello,
 
-Correct, but without strict permission separation we would not debate
-this at all. Everything would be RWX and fine.
+On Fri, Dec 02, 2022 at 12:08:27PM -0500, Barret Rhoden wrote:
+> you might be able to avoid the double_lock_balance() by using
+> move_queued_task(), which internally hands off the old rq lock and returns
+> with the new rq lock.
+> 
+> the pattern for consume_dispatch_q() would be something like:
+> 
+> - kfunc from bpf, with this_rq lock held
+> - notice p isn't on this_rq, goto remote_rq:
+> - do sched_ext accounting, like the this_rq->dsq->nr--
+> - unlock this_rq
+> - p_rq = task_rq_lock(p)
+> - double_check p->rq didn't change to this_rq during that unlock
+> - new_rq = move_queued_task(p_rq, rf, p, new_cpu)
+> - do sched_ext accounting like new_rq->dsq->nr++
+> - unlock new_rq
+> - relock the original this_rq
+> - return to bpf
+> 
+> you still end up grabbing both locks, but just not at the same time.
 
-For separation my point still stands that the problem is that
-module_alloc() is just doing an en-bloc allocation, which needs to be
-split into RX, RW, RO afterwards and that consequently splits the large
-mappings apart. Which in turn means text, data, rodata have to be page
-aligned and page granular.
+Yeah, this probably would look better than the current double lock dancing,
+especially in the finish_dispatch() path.
 
-The typed approach and having a mechanism to preserve the underlying
-large page mappings is the broadest scope we have to cover.
+> plus, task_rq_lock() takes the guesswork out of whether you're getting p's
+> rq lock or not.  it looks like you're using the holding_cpu to handle the
+> race where p moves cpus after you read task_rq(p) but before you lock that
+> task_rq.  maybe you can drop the whole concept of the holding_cpu?
 
-An RWX only architecture is just the most trivial case of such an
-infrastructure. The types become all the same, the underlying page size
-does not matter, but it's just a configuration variant.
+->holding_cpu is there to basically detect intervening dequeues, so if we
+lock them out with TASK_ON_RQ_MIGRATING, we might be able to drop it. I need
+to look into it more tho. Things get pretty subtle around there, so I could
+easily be missing something. I'll try this and let you know how it goes.
 
-Architectures which support strict separation, but only small pages are
-a configuration variant too.
+Thanks.
 
-All of them can use the same infrastructure and the same API to
-alloc/free and write/update the allocated memory. The configuration will
-take care to pick the appropriate mechanisms.
-
-No?
-
-Thanks,
-
-        tglx
-
-=20
+-- 
+tejun
