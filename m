@@ -2,130 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CF76403B2
-	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE966403D4
+	for <lists+bpf@lfdr.de>; Fri,  2 Dec 2022 10:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbiLBJr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 04:47:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S232723AbiLBJz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 04:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbiLBJr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 04:47:56 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E834012D27;
-        Fri,  2 Dec 2022 01:47:54 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NNp5c33Zzz4f3pFM;
-        Fri,  2 Dec 2022 17:47:48 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP4 (Coremail) with SMTP id gCh0CgAXidbGyYlj7LYVBg--.50134S2;
-        Fri, 02 Dec 2022 17:47:51 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf v2] riscv, bpf: Emit fixed-length instructions for BPF_PSEUDO_FUNC
-Date:   Fri,  2 Dec 2022 17:48:37 +0800
-Message-Id: <20221202094837.3872444-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233139AbiLBJzY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 04:55:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6646BCA7A9
+        for <bpf@vger.kernel.org>; Fri,  2 Dec 2022 01:54:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669974865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z0aJyBJ5pA14fenx25kvzt6VogtkX8oCBQc7dpQax/I=;
+        b=SIyq8CCfITW2jg35C3NStTqAF15hK8oThy3R1MG0U9Di+RIu1WSGnpyF7MlLvkbnN48E4f
+        ev4+WodUaY3cYPLrzkjM5cvuyOa0GgRxxbW+e8SStlyAp60/olmdD89REv/dKLK09LfIai
+        mrejgN8deTNkPD4qZnMdolb2fnx4mwU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-668-hjB6H7kVOCSc_Ijcqlvcmg-1; Fri, 02 Dec 2022 04:54:24 -0500
+X-MC-Unique: hjB6H7kVOCSc_Ijcqlvcmg-1
+Received: by mail-wr1-f70.google.com with SMTP id r17-20020adfb1d1000000b002421ae7fd46so945349wra.10
+        for <bpf@vger.kernel.org>; Fri, 02 Dec 2022 01:54:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z0aJyBJ5pA14fenx25kvzt6VogtkX8oCBQc7dpQax/I=;
+        b=rfibKU3mAfU1YmzhCdHh5O2f0WdugUvusqo1uu5EcMln4Xih1aLZoFg7APWdsp+BRK
+         gvRylmYsZorDClisKbctTdARLTITZ8RElH+X+NIOcjXp6Np/ixHEX9CfDjRg3x6iwSEJ
+         ZAWTIL20IcTRNqNy6LepkPhT4Xz4Io5Rs8fbzVTnLx7dnGCNOSOZOqhsJDBHe/E2asjo
+         /D9FHJ433Pdoq6k8vkUssdLPIizYhptiqMvrLapl22FKsdk6OJINdfDTJ9wwpGQfAAFr
+         5nZ7pDR8GpKuarhuwoJyrSV59OlNnlFP+E1NZLSRHIv8p3sn743LGqpJCz6wsJwrRK0E
+         YBzQ==
+X-Gm-Message-State: ANoB5pldCkEtrVPxAPs5lHWl5X3AlAa5Cq6Fi1KAdhzZ8uGLyPddkTAZ
+        S5zuKU1FSnK7nfFf4G68jxHsl26AlMBdd2RyYSaTiYSlW6dN6IkNwMd4hrbTOmtaKZkaoNO80zY
+        mJe9DSULlQB+i
+X-Received: by 2002:a5d:6d47:0:b0:230:3652:205 with SMTP id k7-20020a5d6d47000000b0023036520205mr31082858wri.322.1669974862805;
+        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4LLi1uitwBarAh4GKhzvBRHZY/KzlIK4u4CzijY+hwD6+971nsU5Jj2jm6GI5+pmm4gZ5Kiw==
+X-Received: by 2002:a5d:6d47:0:b0:230:3652:205 with SMTP id k7-20020a5d6d47000000b0023036520205mr31082847wri.322.1669974862583;
+        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
+Received: from [192.168.0.4] ([78.16.131.111])
+        by smtp.gmail.com with ESMTPSA id n12-20020a1c720c000000b003c64c186206sm7685171wmc.16.2022.12.02.01.54.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Dec 2022 01:54:22 -0800 (PST)
+Message-ID: <552ef30f-2331-52c3-b364-8171f42d86ff@redhat.com>
+Date:   Fri, 2 Dec 2022 09:54:20 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXidbGyYlj7LYVBg--.50134S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy5AFyxuryDur4UAryxZrb_yoW8Cw43pF
-        ZxGry3CFWvqr1S9F13tr12qr4SkFsYqay7Kry7G3y5G3WaqwsF93Z8Gw4Yyas8ZFW8Gr15
-        XFWjkrn8ua4qv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UQvtAUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.0
+Subject: Re: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
+        thoiland@redhat.com, donhunte@redhat.com, john.fastabend@gmail.com
+References: <20221201151352.34810-1-mtahhan@redhat.com>
+ <Y4ld1BsRrXaPtz0L@debian.me>
+From:   Maryam Tahhan <mtahhan@redhat.com>
+In-Reply-To: <Y4ld1BsRrXaPtz0L@debian.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+On 02/12/2022 02:07, Bagas Sanjaya wrote:
+> On Thu, Dec 01, 2022 at 03:13:52PM +0000, mtahhan@redhat.com wrote:
+>> +When these maps are created BPF programs are attached to them. The list of
+>> +allowed programs is shown below:
+> Automatically attached BPF programs?
 
-For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
-correct addresses of bpf_calls and then run last pass of JIT.
-Since the emit_imm of RV64 is variable-length, which will emit
-appropriate length instructions accorroding to the imm, it may
-broke ctx->offset, and lead to unpredictable problem, such as
-inaccurate jump. So let's fix it with fixed-length instructions.
 
-Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
-Suggested-by: Björn Töpel <bjorn@rivosinc.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+I will rephrase to indicate that the user typically attaches the 
+programs to the maps. and fix the rest of the comments in a respin.
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index eb99df41fa33..9723f34f7a06 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -139,6 +139,19 @@ static bool in_auipc_jalr_range(s64 val)
- 		val < ((1L << 31) - (1L << 11));
- }
- 
-+/* Emit fixed-length instructions for address */
-+static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
-+{
-+	u64 ip = (u64)(ctx->insns + ctx->ninsns);
-+	s64 off = addr - ip;
-+	s64 upper = (off + (1 << 11)) >> 12;
-+	s64 lower = ((off & 0xfff) << 52) >> 52;
-+
-+	emit(rv_auipc(rd, upper), ctx);
-+	emit(rv_addi(rd, rd, lower), ctx);
-+}
-+
-+/* Emit variable-length instructions for 32-bit and 64-bit imm */
- static void emit_imm(u8 rd, s64 val, struct rv_jit_context *ctx)
- {
- 	/* Note that the immediate from the add is sign-extended,
-@@ -1053,7 +1066,12 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		u64 imm64;
- 
- 		imm64 = (u64)insn1.imm << 32 | (u32)imm;
--		emit_imm(rd, imm64, ctx);
-+		if (bpf_pseudo_func(insn))
-+			/* fixed-length insns for extra jit pass */
-+			emit_addr(rd, imm64, ctx);
-+		else
-+			emit_imm(rd, imm64, ctx);
-+
- 		return 1;
- 	}
- 
--- 
-2.25.1
+Thanks.
+
+>
+> Also, "The allowed programs are:"
+>
+>> +.. note::
+>> +	For more details of the socket callbacks that get replaced please see:
+>> +
+>> +	- TCP BPF functions: ``net/ipv4/tcp_bpf.c``
+>> +	- UDP BPF functions: ``net/ipv4/udp_bpf.c``
+> "... please see ``net/ipv4/tcp_bpf.c`` and ``net/ipv4/udp_bpf.c`` for
+> TCP and UDP functions, respectively"
+>
+> Otherwise LGTM.
+>
 
