@@ -2,102 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C842664187C
-	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 19:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FC564189C
+	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 20:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiLCSqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Dec 2022 13:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S229503AbiLCTno (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Dec 2022 14:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbiLCSqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Dec 2022 13:46:24 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E752017E1E
-        for <bpf@vger.kernel.org>; Sat,  3 Dec 2022 10:46:23 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B3GIkeq016998
-        for <bpf@vger.kernel.org>; Sat, 3 Dec 2022 10:46:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=/foy6PqlTpOiEcU5FFzaizzuHD4PNOXkAahnvgbR6Cw=;
- b=exS2JdeGpC8X7u88Ds/OptqUZn1GECRlkm99xEJpfTEQo2CY7cttBWwsJzGUHUxnqQpZ
- G5ThW3JRkJAL+wjZEVW+vaAyVIKCmrinpLqEawathcwJvhyTuJmfyC4TCF2N6S0k3b+k
- y/bVhzxZYnZKzlPVKIWhO6fWHUpjeZCMyPI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m82ntaxqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 03 Dec 2022 10:46:23 -0800
-Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
- snc-exhub102.TheFacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 3 Dec 2022 10:46:23 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 3 Dec 2022 10:46:22 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 14B6C1320E743; Sat,  3 Dec 2022 10:46:13 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        "Martin KaFai Lau" <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 3/3] docs/bpf: Add KF_RCU documentation
-Date:   Sat, 3 Dec 2022 10:46:13 -0800
-Message-ID: <20221203184613.478967-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221203184557.476871-1-yhs@fb.com>
-References: <20221203184557.476871-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: s8IFNyaoqy53bSFBEZ-dwrnbYiyizUby
-X-Proofpoint-GUID: s8IFNyaoqy53bSFBEZ-dwrnbYiyizUby
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-03_10,2022-12-01_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229469AbiLCTnn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Dec 2022 14:43:43 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91C06552;
+        Sat,  3 Dec 2022 11:43:42 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id f9so7092990pgf.7;
+        Sat, 03 Dec 2022 11:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Wip7VNHAeBJSUz4o+dzo5yQSZVeZvNE2xd3eHUcNhY=;
+        b=PWwLZI2D9kN6A8HKAB8NLpg0bDYcB2DMyxEWLe4Yc/L9IjMgAGcRQO6TUQHZHCK9/V
+         xEyadl424A2eS+YxwzzZQUw/VpgyaZ3EB2K12wkGYA3rluLCjaLluQ079Ah0nicQyLnS
+         urRNeVaRWvSoDt7I5jCpyZVIGS7sOH/c37XQbXQ16K0fBTiXeIBBReoaTFJCzhT9XdEq
+         UxMj3DocCSrSOpCiEX/E9nRM8VeePDgld00JmO3plLbNli+vPjiIg80DqLfm/CHMS6Pl
+         uMPXSrFRCe3f1nyHMuLTgIt6M6Ym4DqRVN/74skOCI513efv3W9xU+DREL8Nd1ReBBG/
+         xmXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8Wip7VNHAeBJSUz4o+dzo5yQSZVeZvNE2xd3eHUcNhY=;
+        b=Ww8mcsqQ5lmmVp3m+L75srmymNn+RT2jJf8djbdr8ygc8qJMdM8X4gpl8YD3CgNfaD
+         RJ6M9tZKbE92jRgP5x49pybSSVqpldEZMqffBph1uxdBt5KJxwtkz9OTNQ4xTIC3Ii2H
+         drlPlEukof3/sJ2gwvaCvS5F2v7oqMcNn2PXhtcoC/J4LwsM2ToC+HkFipr8cusED6Ia
+         qql1UHoQCsYqmmoR5VI0tfsSU2lqGsNPrzV8hTX88AtIWK3AdZVFepQr1wPPMGRLYxH6
+         ZDRPQCTC9/WlWdxxePKZjQYWUTGkBlMv5WVhVlUWXPVSRr5K5OqzcRCu6cTIaxSE2s/J
+         WteQ==
+X-Gm-Message-State: ANoB5pkas1XAyLPZbvYdw602KGeQWIrJwfpWi5PhyDWUWaHMeOvWu07Y
+        N7ohGns3ypxPoRXGZb7CLsZQ3+s9Jls=
+X-Google-Smtp-Source: AA0mqf6YU/p50wfEksJKwYy4ZuwSHxhLVxeZI4DoJs6Ew7clCncgr7tET8iILz3aeKqWh1EW2tEx3Q==
+X-Received: by 2002:aa7:9e1a:0:b0:576:cd93:98cf with SMTP id y26-20020aa79e1a000000b00576cd9398cfmr394653pfq.53.1670096622136;
+        Sat, 03 Dec 2022 11:43:42 -0800 (PST)
+Received: from localhost ([129.95.228.55])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170903404d00b00189548573a2sm7716396pla.161.2022.12.03.11.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Dec 2022 11:43:41 -0800 (PST)
+Date:   Sat, 03 Dec 2022 11:43:40 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     mtahhan@redhat.com, bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     jbrouer@redhat.com, thoiland@redhat.com, donhunte@redhat.com,
+        john.fastabend@gmail.com, Maryam Tahhan <mtahhan@redhat.com>
+Message-ID: <638ba6ecadfaf_16f042086c@john.notmuch>
+In-Reply-To: <20221201151352.34810-1-mtahhan@redhat.com>
+References: <20221201151352.34810-1-mtahhan@redhat.com>
+Subject: RE: [PATCH bpf-next v2 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add proper KF_RCU documentation in kfuncs.rst.
+mtahhan@ wrote:
+> From: Maryam Tahhan <mtahhan@redhat.com>
+> 
+> Add documentation for BPF_MAP_TYPE_SOCK[MAP|HASH]
+> including kernel versions introduced, usage
+> and examples.
+> 
+> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/kfuncs.rst | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Thanks Maryam. LGTM.
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index 90774479ab7a..b027fe16ee66 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -191,6 +191,15 @@ rebooting or panicking. Due to this additional restr=
-ictions apply to these
- calls. At the moment they only require CAP_SYS_BOOT capability, but more=
- can be
- added later.
-=20
-+2.4.8 KF_RCU flag
-+-----------------
-+
-+The KF_RCU flag is used for kfuncs which have a rcu ptr as its argument.
-+When used together with KF_ACQUIRE, it indicates the kfunc should have a
-+single argument which must be a trusted argument or a MEM_RCU pointer.
-+The argument may have reference count of 0 and the kfunc must take this
-+into consideration.
-+
- 2.5 Registering the kfuncs
- --------------------------
-=20
---=20
-2.30.2
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
