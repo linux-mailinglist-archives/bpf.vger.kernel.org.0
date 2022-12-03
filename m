@@ -2,72 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D50464132A
-	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 03:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8246413DA
+	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 03:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbiLCCPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 21:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
+        id S235033AbiLCC6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 21:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235088AbiLCCPG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 21:15:06 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E638DB6BB;
-        Fri,  2 Dec 2022 18:15:05 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 6so5809023pgm.6;
-        Fri, 02 Dec 2022 18:15:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Vep6IUB7ai0bh6PtCGcGOQtXg6nOVxsrlqgL1oOPeU=;
-        b=QjJKYcAp71jYjH4LMC4sjaEQdEw8hjlQZUbKHprV4EF3K0JxbZXPOJtgDD9w3wI+ej
-         z6x9n/lysIDW9OR9mYvCJVo2jz4hx0VNd2O9nIe669j5xpLGrSvzRx1GiNKDiRLdYkxm
-         0I+BS3GdYyOjw0hqkNJgJb69JJJ+h8+PgptBcqiQ28wVM6Bf3d5XI3pFd6upzrmAd4+X
-         X64eZ0OjyYYCdHBAve2Q77Qj+Zi6Hzem0X2HQLvjcNFwiziqW0oays7TewHYU6lXdl72
-         JlxXvSftzd4EpOJGspPyzhQN9cQ4d9Z+b4mxcwEtKuH0IuasEIeY1p52oUHl8ZUi8pvD
-         spcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Vep6IUB7ai0bh6PtCGcGOQtXg6nOVxsrlqgL1oOPeU=;
-        b=AK2AmLycdFL4fKC/TpMJYd0zKQFQ2Yu4Fm02sGvv0bY8rsxEEBQdZBk+p2d0+PBJKV
-         tuzJfIKVcPDW2B/ifxylSgj+lIF7iExVfRlRAxpUXyZIR1z11VQmKafrfPQLZ6IgJD1D
-         eUNUk7WjJp6zEFYcqIpUs6PIFiI85SwseUDeDM3hx3KGVZG1j9D5MJhOY/v65up/EIMV
-         wzLI7uWDllP0XNF5dV5UoupVufTRoDqOqTcUNgeo+PSrd1khPUioH1JkU4oW/dmi44sK
-         qNp9hL2da9tflLF6ip+iCF61ZRkgLdacz5UlOQo1IaTiMpE3BBbNBS5yXmKMfyJB5Gbv
-         Ha1A==
-X-Gm-Message-State: ANoB5plcdd6CoqjwoIeJKuOm4xhZdNBzl0Qx8Yk3DSWhU4l9p/YvJ7w5
-        gbmRPWcvm6nVtpOrCLacSk8=
-X-Google-Smtp-Source: AA0mqf71q0dRxzym4uE3tTAA0mBcKI/VX/vAi8u7TAuKmz865r33xWXiycgLr2Ax95mjo24fnn8Eow==
-X-Received: by 2002:a63:4908:0:b0:477:e0b4:3f5 with SMTP id w8-20020a634908000000b00477e0b403f5mr34585532pga.265.1670033704604;
-        Fri, 02 Dec 2022 18:15:04 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:c181])
-        by smtp.gmail.com with ESMTPSA id w22-20020a1709026f1600b001872999f58esm6194253plk.189.2022.12.02.18.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 18:15:03 -0800 (PST)
-Date:   Fri, 2 Dec 2022 18:15:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 1/2] bpf/docs: Document struct task_struct *
- kfuncs
-Message-ID: <20221203021500.okerdcfwhgykrxxg@macbook-pro-6.dhcp.thefacebook.com>
-References: <20221202220736.521227-1-void@manifault.com>
- <20221202220736.521227-2-void@manifault.com>
+        with ESMTP id S234876AbiLCC6u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 21:58:50 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570AEEE94D;
+        Fri,  2 Dec 2022 18:58:48 -0800 (PST)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NPDyK1nTszFprd;
+        Sat,  3 Dec 2022 10:58:01 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 3 Dec 2022 10:58:44 +0800
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: Adapt 32-bit return value kfunc for
+ 32-bit ARM when zext extension
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        <colin.i.king@gmail.com>, Artem Savkov <asavkov@redhat.com>,
+        Delyan Kratunov <delyank@fb.com>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20221126094530.226629-1-yangjihong1@huawei.com>
+ <20221126094530.226629-2-yangjihong1@huawei.com>
+ <20221128015758.aekybr3qlahfopwq@MacBook-Pro-5.local>
+ <dc9d1823-80f2-e2d9-39a8-c39b6f52dec5@huawei.com>
+ <CAADnVQJPRCnESmJ92W39bo-btqNbYaNsGQO0is6FD3JLU_mSjQ@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <8cb54255-4dce-6d50-d6f0-ac9af0e56f37@huawei.com>
+Date:   Sat, 3 Dec 2022 10:58:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221202220736.521227-2-void@manifault.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <CAADnVQJPRCnESmJ92W39bo-btqNbYaNsGQO0is6FD3JLU_mSjQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,215 +77,175 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 04:07:35PM -0600, David Vernet wrote:
-> bpf_task_acquire(), bpf_task_release(), bpf_task_kptr_get(), and
-> bpf_task_from_pid() are kfuncs that were recently added to
-> kernel/bpf/helpers.c. These are "core" kfuncs in that they're available
-> for use for any tracepoint or struct_ops BPF program. Though they have
-> no ABI stability guarantees, we should still document them. This patch
-> adds a new Core kfuncs section to the BPF kfuncs doc, and adds entries
-> for all of these task kfuncs.
+
+
+On 2022/11/29 0:41, Alexei Starovoitov wrote:
+> On Mon, Nov 28, 2022 at 4:40 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2022/11/28 9:57, Alexei Starovoitov wrote:
+>>> On Sat, Nov 26, 2022 at 05:45:27PM +0800, Yang Jihong wrote:
+>>>> For ARM32 architecture, if data width of kfunc return value is 32 bits,
+>>>> need to do explicit zero extension for high 32-bit, insn_def_regno should
+>>>> return dst_reg for BPF_JMP type of BPF_PSEUDO_KFUNC_CALL. Otherwise,
+>>>> opt_subreg_zext_lo32_rnd_hi32 returns -EFAULT, resulting in BPF failure.
+>>>>
+>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>> ---
+>>>>    kernel/bpf/verifier.c | 44 ++++++++++++++++++++++++++++++++++++++++---
+>>>>    1 file changed, 41 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>> index 264b3dc714cc..193ea927aa69 100644
+>>>> --- a/kernel/bpf/verifier.c
+>>>> +++ b/kernel/bpf/verifier.c
+>>>> @@ -1927,6 +1927,21 @@ find_kfunc_desc(const struct bpf_prog *prog, u32 func_id, u16 offset)
+>>>>                      sizeof(tab->descs[0]), kfunc_desc_cmp_by_id_off);
+>>>>    }
+>>>>
+>>>> +static int kfunc_desc_cmp_by_imm(const void *a, const void *b);
+>>>> +
+>>>> +static const struct bpf_kfunc_desc *
+>>>> +find_kfunc_desc_by_imm(const struct bpf_prog *prog, s32 imm)
+>>>> +{
+>>>> +    struct bpf_kfunc_desc desc = {
+>>>> +            .imm = imm,
+>>>> +    };
+>>>> +    struct bpf_kfunc_desc_tab *tab;
+>>>> +
+>>>> +    tab = prog->aux->kfunc_tab;
+>>>> +    return bsearch(&desc, tab->descs, tab->nr_descs,
+>>>> +                   sizeof(tab->descs[0]), kfunc_desc_cmp_by_imm);
+>>>> +}
+>>>> +
+>>>>    static struct btf *__find_kfunc_desc_btf(struct bpf_verifier_env *env,
+>>>>                                        s16 offset)
+>>>>    {
+>>>> @@ -2342,6 +2357,13 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>                        */
+>>>>                       if (insn->src_reg == BPF_PSEUDO_CALL)
+>>>>                               return false;
+>>>> +
+>>>> +                    /* Kfunc call will reach here because of insn_has_def32,
+>>>> +                     * conservatively return TRUE.
+>>>> +                     */
+>>>> +                    if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL)
+>>>> +                            return true;
+>>>> +
+>>>>                       /* Helper call will reach here because of arg type
+>>>>                        * check, conservatively return TRUE.
+>>>>                        */
+>>>> @@ -2405,10 +2427,26 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>    }
+>>>>
+>>>>    /* Return the regno defined by the insn, or -1. */
+>>>> -static int insn_def_regno(const struct bpf_insn *insn)
+>>>> +static int insn_def_regno(struct bpf_verifier_env *env, const struct bpf_insn *insn)
+>>>>    {
+>>>>       switch (BPF_CLASS(insn->code)) {
+>>>>       case BPF_JMP:
+>>>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>>> +                    const struct bpf_kfunc_desc *desc;
+>>>> +
+>>>> +                    /* The value of desc cannot be NULL */
+>>>> +                    desc = find_kfunc_desc_by_imm(env->prog, insn->imm);
+>>>> +
+>>>> +                    /* A kfunc can return void.
+>>>> +                     * The btf type of the kfunc's return value needs
+>>>> +                     * to be checked against "void" first
+>>>> +                     */
+>>>> +                    if (desc->func_model.ret_size == 0)
+>>>> +                            return -1;
+>>>> +                    else
+>>>> +                            return insn->dst_reg;
+>>>> +            }
+>>>> +            fallthrough;
+>>>
+>>> I cannot make any sense of this patch.
+>>> insn->dst_reg above is 0.
+>>> The kfunc call doesn't define a register from insn_def_regno() pov.
+>>>
+>>> Are you hacking insn_def_regno() to return 0 so that
+>>> if (WARN_ON(load_reg == -1)) {
+>>>     verbose(env, "verifier bug. zext_dst is set, but no reg is defined\n");
+>>>     return -EFAULT;
+>>> }
+>>> in opt_subreg_zext_lo32_rnd_hi32() doesn't trigger ?
+>>>
+>>> But this verifier message should have been a hint that you need
+>>> to analyze why zext_dst is set on this kfunc call.
+>>> Maybe it shouldn't ?
+>>> Did you analyze the logic of mark_btf_func_reg_size() ?
+>> make r0 zext is not caused by mark_btf_func_reg_size.
+>>
+>> This problem occurs when running the kfunc_call_test_ref_btf_id test
+>> case in the 32-bit ARM environment.
 > 
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->  Documentation/bpf/kfuncs.rst | 148 +++++++++++++++++++++++++++++++++++
->  kernel/bpf/helpers.c         |   8 +-
->  2 files changed, 152 insertions(+), 4 deletions(-)
+> Why is it not failing on x86-32 ?
+Use the latest mainline kernel code to test on the x86_32 machine. The 
+test also fails:
+
+   # ./test_progs -t kfunc_call/kfunc_call_test_ref_btf_id
+   Failed to load bpf_testmod.ko into the kernel: -8
+   WARNING! Selftests relying on bpf_testmod.ko will be skipped.
+   libbpf: prog 'kfunc_call_test_ref_btf_id': BPF program load failed: 
+Bad address
+   libbpf: prog 'kfunc_call_test_ref_btf_id': -- BEGIN PROG LOAD LOG --
+   processed 25 insns (limit 1000000) max_states_per_insn 0 total_states 
+2 peak_states 2 mark_read 1
+   -- END PROG LOAD LOG --
+   libbpf: prog 'kfunc_call_test_ref_btf_id': failed to load: -14
+   libbpf: failed to load object 'kfunc_call_test'
+   libbpf: failed to load BPF skeleton 'kfunc_call_test': -14
+   verify_success:FAIL:skel unexpected error: -14
+
+Therefore, this problem also exists on x86_32:
+"verifier bug. zext_dst is set, but no reg is defined"
+
 > 
-> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> index 90774479ab7a..b0c35ad6fad4 100644
-> --- a/Documentation/bpf/kfuncs.rst
-> +++ b/Documentation/bpf/kfuncs.rst
-> @@ -213,3 +213,151 @@ type. An example is shown below::
->                  return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_task_kfunc_set);
->          }
->          late_initcall(init_subsystem);
-> +
-> +3. Core kfuncs
-> +==============
-> +
-> +The BPF subsystem provides a number of "core" kfuncs that are potentially
-> +applicable to a wide variety of different possible use cases and programs.
-> +Those kfuncs are documented here.
-> +
-> +3.1 struct task_struct * kfuncs
-> +-------------------------------
-> +
-> +There are a number of kfuncs that allow ``struct task_struct *`` objects to be
-> +used as kptrs:
-> +
-> +.. kernel-doc:: kernel/bpf/helpers.c
-> +   :identifiers: bpf_task_acquire bpf_task_release
-> +
-> +These kfuncs are useful when you want to acquire or release a reference to a
-> +``struct task_struct *`` that was passed as e.g. a tracepoint arg, or a
-> +struct_ops callback arg. For example:
-> +
-> +.. code-block:: c
-> +
-> +	/**
-> +	 * A trivial example tracepoint program that shows how to
-> +	 * acquire and release a struct task_struct * pointer.
-> +	 */
-> +	SEC("tp_btf/task_newtask")
-> +	int BPF_PROG(task_acquire_release_example, struct task_struct *task, u64 clone_flags)
-> +	{
-> +		struct task_struct *acquired;
-> +
-> +		acquired = bpf_task_acquire(task);
-> +
-> +		/*
-> +		 * In a typical program you'd do something like store
-> +		 * the task in a map. Here, we just release it.
-
-There is a sentence later in this patch about what happens with the pointer
-that was stored in a map, but I would add some part of it here as well. Like:
-
- * In a typical program you'd do something like store
- * the task in a map and the map will automatically release it later.
- * Here, we release it manually.
-
-> +		 */
-> +		bpf_task_release(acquired);
-> +		return 0;
-> +	}
-> +
-> +If you want to acquire a reference to a ``struct task_struct`` kptr that's
-> +already stored in a map, you can use bpf_task_kptr_get():
-> +
-> +.. kernel-doc:: kernel/bpf/helpers.c
-> +   :identifiers: bpf_task_kptr_get
-> +
-> +Here's an example of how it can be used:
-> +
-> +.. code-block:: c
-> +
-> +	/* struct containing the struct task_struct kptr which is actually stored in the map. */
-> +	struct __tasks_kfunc_map_value {
-> +		struct task_struct __kptr_ref * task;
-> +	};
-> +
-> +	/* The map containing struct __tasks_kfunc_map_value entries. */
-> +	struct hash_map {
-> +		__uint(type, BPF_MAP_TYPE_HASH);
-> +		__type(key, int);
-> +		__type(value, struct __tasks_kfunc_map_value);
-> +		__uint(max_entries, 1);
-> +	} __tasks_kfunc_map SEC(".maps");
-> +
-> +	/* ... */
-> +
-> +	/**
-> +	 * A simple example tracepoint program showing how a
-> +	 * struct task_struct kptr that is stored in a map can
-> +	 * be acquired using the bpf_task_kptr_get() kfunc.
-> +	 */
-> +	 SEC("tp_btf/task_newtask")
-> +	 int BPF_PROG(task_kptr_get_example, struct task_struct *task, u64 clone_flags)
-> +	 {
-> +		struct task_struct *kptr;
-> +		struct __tasks_kfunc_map_value *v;
-> +		s32 pid;
-> +		long status;
-> +
-> +		status = bpf_probe_read_kernel(&pid, sizeof(pid), &task->pid);
-
-why use the slow bpf_probe_read_kernel() here?
-I think the example should follow modern coding practices.
-Just: pid = task->pid; instead ?
-
-> +		if (status)
-> +			return status;
-> +
-> +		/* Assume a task kptr was previously stored in the map. */
-> +		v = bpf_map_lookup_elem(&__tasks_kfunc_map, &pid);
-> +		if (!v)
-> +			return -ENOENT;
-> +
-> +		/* Acquire a reference to the task kptr that's already stored in the map. */
-> +		kptr = bpf_task_kptr_get(&v->task);
-> +		if (!kptr)
-> +			/* If no task was present in the map, it's because
-> +			 * we're racing with another CPU that removed it with
-> +			 * bpf_kptr_xchg() between the bpf_map_lookup_elem()
-> +			 * above, and our call to bpf_task_kptr_get().
-> +			 * bpf_task_kptr_get() internally safely handles this
-> +			 * race, and will return NULL if the task is no longer
-> +			 * present in the map by the time we invoke the kfunc.
-> +			 */
-> +			return -EBUSY;
-> +
-> +		/* Free the reference we just took above. Note that the
-> +		 * original struct task_struct kptr is still in the map.
-> +		 * It will be freed either at a later time if another
-> +		 * context deletes it from the map, or automatically by
-> +		 * the BPF subsystem if it's still present when the map
-> +		 * is destroyed.
-> +		 */
-> +		bpf_task_release(kptr);
-> +
-> +		return 0;
-> +        }
-> +
-> +Finally, a BPF program can also look up a task from a pid. This can be useful
-> +if the caller doesn't have a trusted pointer to a ``struct task_struct *``
-> +object that it can acquire a reference on with bpf_task_acquire().
-> +
-> +.. kernel-doc:: kernel/bpf/helpers.c
-> +   :identifiers: bpf_task_from_pid
-> +
-> +Here is an example of it being used:
-> +
-> +.. code-block:: c
-> +
-> +	SEC("tp_btf/task_newtask")
-> +	int BPF_PROG(task_get_pid_example, struct task_struct *task, u64 clone_flags)
-> +	{
-> +		struct task_struct *lookup;
-> +
-> +		lookup = bpf_task_from_pid(task->pid);
-> +		if (!lookup)
-> +			/* A task should always be found, as %task is a tracepoint arg. */
-> +			return -ENOENT;
-> +
-> +		if (lookup->pid != task->pid) {
-> +			/* The pid of the lookup task should be the same as the input task. */
-
-I suspect both "errors" are actually possible in practice,
-since bpf_task_from_pid is using init_pid_ns.
-But this taskd might be in different pid_ns. See task_active_pid_ns.
-Probably worth mentioning this aspect of bpf_task_from_pid.
-
-> +			bpf_task_release(lookup);
-> +			return -EINVAL;
-> +		}
-> +
-> +		/* bpf_task_from_pid() returns an acquired reference,
-> +		 * so it must be dropped before returning from the
-> +		 * tracepoint handler.
-> +		 */
-> +		bpf_task_release(lookup);
-> +		return 0;
-> +	}
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index a5a511430f2a..004afbc14bbf 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1868,10 +1868,10 @@ struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
->  }
->  
->  /**
-> - * bpf_task_release - Release the reference acquired on a struct task_struct *.
-> - * If this kfunc is invoked in an RCU read region, the task_struct is
-> - * guaranteed to not be freed until the current grace period has ended, even if
-> - * its refcount drops to 0.
-> + * bpf_task_release - Release the reference acquired on a task.  If this kfunc
-> + * is invoked in an RCU read region, the task_struct is guaranteed to not be
-> + * freed until the current grace period has ended, even if its refcount drops
-> + * to 0.
->   * @p: The task on which a reference is being released.
->   */
->  void bpf_task_release(struct task_struct *p)
-> -- 
-> 2.38.1
+>> The bpf prog is as follows:
+>> int kfunc_call_test_ref_btf_id(struct __sk_buff *skb)
+>> {
+>> struct prog_test_ref_kfunc *pt;
+>> unsigned long s = 0;
+>> int ret = 0;
+>>
+>> pt = bpf_kfunc_call_test_acquire(&s);
+>> if (pt) {
+>>        // here, do_check clears the upper 32bits of r0 through:
+>>        // check_alu_op
+>>        //   ->check_reg_arg
+>>        //    ->mark_insn_zext
+>> if (pt->a != 42 || pt->b != 108)
+>> ret = -1;
+>> bpf_kfunc_call_test_release(pt);
+>> }
+>> return ret;
+>> }
+>>
+>>>
+>>> Before producing any patches please understand the logic fully.
+>>> Your commit log
+>>> "insn_def_regno should
+>>>    return dst_reg for BPF_JMP type of BPF_PSEUDO_KFUNC_CALL."
+>>>
+>>> Makes no sense to me, since dst_reg is unused in JMP insn.
+>>> There is no concept of a src or dst register in a JMP insn.
+>>>
+>>> 32-bit x86 supports calling kfuncs. See emit_kfunc_call().
+>>> And we don't have this "verifier bug. zext_dst is set" issue there, right?
+>>> But what you're saying in the commit log:
+>>> "if data width of kfunc return value is 32 bits"
+>>> should have been applicable to x86-32 as well.
+>>> So please start with a test that demonstrates the issue on x86-32 and
+>>> then we can discuss the way to fix it.
+>>>
+>>> The patch 2 sort-of makes sense.
+>>>
+>>> For patch 3 pls add new test funcs to bpf_testmod.
+>>> We will move all of them from net/bpf/test_run.c to bpf_testmod eventually.
+>>> .
+>>>
+> .
 > 
