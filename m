@@ -2,89 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF39641205
-	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 01:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C8664120E
+	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 01:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbiLCAaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Dec 2022 19:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
+        id S234880AbiLCAea (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Dec 2022 19:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbiLCAaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Dec 2022 19:30:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1ECEF8BA;
-        Fri,  2 Dec 2022 16:30:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8056D6244C;
-        Sat,  3 Dec 2022 00:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CECFDC433B5;
-        Sat,  3 Dec 2022 00:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670027415;
-        bh=ZXVmMePkvpHJsIJDejrE8iTiyBEvakKNE5IpvElaWKs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FRdA+C65UcFDCpsRw4UqXPa1XJdFqB/KpkKn7yKWTeUQLg3dCH1k8oRFQLyeCmk0W
-         PBWvDMC6MXoTrzLPawZPGi16CO7M+1iMCj9IqaGhcLIKnKLKwA/Hp1oqYBubfW2pb+
-         1sYtERPWwXl6kuJT3riJaqnPEC/hiqOjobHgdvFwr5t/ioG+Oih85/iLmPx+pHbnjK
-         +W1vr6lA//owOONVEFGNhvNvf/6OtywVye/ETK5J/Elu4v9xsqhvTpJAt3wNpbeO2F
-         d0i8g03uu1GBewmnDHPVHS8Z43svQdsuZ+l/46omNY3DdI7mwVA4lyTaceFBp09fqH
-         BXQ5tL/d+XPXg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B407BC395EC;
-        Sat,  3 Dec 2022 00:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233795AbiLCAe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Dec 2022 19:34:28 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F88F4EA4;
+        Fri,  2 Dec 2022 16:34:27 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id n21so15092086ejb.9;
+        Fri, 02 Dec 2022 16:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TGHVH3pDO6axbkayaCjLfkjmfpFC/+0djZm5DEEDwlY=;
+        b=SS8ByqTMje2eh02K3Q1E4SgeXnrXr7+d/aLm3C27tn9w3GHI351NvAjwfWH3o/7K8h
+         MHxSXEwAWcGhjqNxKEzIJ6DhOXTaH1+qAgZCyPDMyIX3OdCUhT84HdRq3jOtvNr0xkkC
+         GtNbCuWztMVu27Q6ZcrRDe4ztrcOfH6rq4rQ1r82ZToSwJID6ird94s6bciRkiiMsL4b
+         cdf8ylZGc544zh+9fY4rhooIeLnx+pIXySwtNrAlVPEc51B0t2S9V5oSHKEoTqvCJ92u
+         OJ/Y7+IlT5uFnhsPnGqJQfLsMYISfDh0sDiyJW9vqYy7wY96MrU2bOgIVSnwAuCA3IkB
+         JALw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TGHVH3pDO6axbkayaCjLfkjmfpFC/+0djZm5DEEDwlY=;
+        b=HJFXsbx9JcrpXyqBy5BJfZq2rl2DS0KsS5XrCIEu/D3mEiZtHYe9hih/nyIcF2yHfP
+         vUWiu8edX4mqxlwvJV1g99AGGLyzYbStzIlSTAJZLG+I4cea9aW2aL7TEyKxhvrXrlMf
+         YyxjetMtaHz4b2W1Nm+QqmnQGd354ivaGIznVRbPiQ1xJ49PtgxuxOPhlfzgLleeMs65
+         mAl854FwGE3jI/ADZPdvFZs6X00XrXA5XGTbiamoRpe9Un1N67LifespqybxvTh1UG3n
+         OlaH6hUp0eiS7Uk1ZXJcgQWGhNX/5LAbN1N2H4mZH3uN8ahajfwLhxsqSrSTeislCjse
+         xMrg==
+X-Gm-Message-State: ANoB5pkVvUqSDD9UcAnKEKsHWPXPr0YW9Kc9gHEhXfptlHQ7WR5TiF8b
+        ptg31ItQTZRAtTvkdpNddKKGvr+0xFveoK/XLRbkanRTGz4=
+X-Google-Smtp-Source: AA0mqf4wHBA2snzBH3txMm7XtyxVxG5S0nr0rdj8h0sxfQLxh8x3dqGYLNYO3mrZoz1E3IgdjHR+LL6ffK6edyZprks=
+X-Received: by 2002:a17:906:30c1:b0:7b7:eaa9:c1cb with SMTP id
+ b1-20020a17090630c100b007b7eaa9c1cbmr47850586ejb.745.1670027666019; Fri, 02
+ Dec 2022 16:34:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests/bpf: add GCC compatible builtins to bpf_legacy.h
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167002741573.2136.10563307574147228383.git-patchwork-notify@kernel.org>
-Date:   Sat, 03 Dec 2022 00:30:15 +0000
-References: <20221201190939.3230513-1-james.hilliard1@gmail.com>
-In-Reply-To: <20221201190939.3230513-1-james.hilliard1@gmail.com>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, jose.marchesi@oracle.com,
-        david.faust@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        mykolal@fb.com, shuah@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221202162907.26721-1-danieltimlee@gmail.com>
+In-Reply-To: <20221202162907.26721-1-danieltimlee@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 2 Dec 2022 16:34:14 -0800
+Message-ID: <CAEf4BzZbcvj+PLj+aGpHJ=1TvZCxXYUqa5Q6xyD2zhH0iTTXLA@mail.gmail.com>
+Subject: Re: [PATCH] samples: bpf: fix broken behavior of tracex2 write_size count
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Dec 2, 2022 at 8:29 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+>
+> Currently, there is a problem with tracex2, as it doesn't print the
+> histogram properly and the results are misleading. (all results report
+> as 0)
+>
+> The problem is caused by a change in arguments of the function to which
+> the kprobe connects. This tracex2 bpf program uses kprobe (attached
+> to __x64_sys_write) to figure out the size of the write system call. In
+> order to achieve this, the third argument 'count' must be intact.
+>
+> The following is a prototype of the sys_write variant. (checked with
+> pfunct)
+>
+>     ~/git/linux$ pfunct -P fs/read_write.o | grep sys_write
+>     ssize_t ksys_write(unsigned int fd, const char  * buf, size_t count);
+>     long int __x64_sys_write(const struct pt_regs  * regs);
+>     ... cross compile with s390x ...
+>     long int __s390_sys_write(struct pt_regs * regs);
+>
+> Since the __x64_sys_write (or s390x also) doesn't have the proper
+> argument, changing the kprobe event to ksys_write will fix the problem.
+>
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/tracex2_kern.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+> index 93e0b7680b4f..fc65c589e87f 100644
+> --- a/samples/bpf/tracex2_kern.c
+> +++ b/samples/bpf/tracex2_kern.c
+> @@ -78,7 +78,7 @@ struct {
+>         __uint(max_entries, 1024);
+>  } my_hist_map SEC(".maps");
+>
+> -SEC("kprobe/" SYSCALL(sys_write))
+> +SEC("kprobe/ksys_write")
+>  int bpf_prog3(struct pt_regs *ctx)
+>  {
+>         long write_size = PT_REGS_PARM3(ctx);
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
 
-On Thu,  1 Dec 2022 12:09:39 -0700 you wrote:
-> The bpf_legacy.h header uses llvm specific load functions, add
-> GCC compatible variants as well to fix tests using these functions
-> under GCC.
-> 
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: David Faust <david.faust@oracle.com>
-> 
-> [...]
+use
 
-Here is the summary with links:
-  - selftests/bpf: add GCC compatible builtins to bpf_legacy.h
-    https://git.kernel.org/bpf/bpf-next/c/f16a7aa5c2be
+SEC("ksyscall/write")
+int BPF_KSYSCALL(bpf_prog3, unsigned int fd, const char *buf, size_t count)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+instead?
+
+And maybe let's update other samples to use SEC("ksyscall") and
+BPF_KSYSCALL() macro as well?
 
 
+> --
+> 2.34.1
+>
