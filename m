@@ -2,69 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29009641923
-	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 21:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC49641975
+	for <lists+bpf@lfdr.de>; Sat,  3 Dec 2022 23:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbiLCU6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Dec 2022 15:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S229512AbiLCWYg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Dec 2022 17:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbiLCU6l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Dec 2022 15:58:41 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6FE1B9F7
-        for <bpf@vger.kernel.org>; Sat,  3 Dec 2022 12:58:39 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1670101117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=BqfCLn7bZHOUBcGvmtVJYpLj50IzdShCNo2WG6T9+CY=;
-        b=yH/7vUcXfCU05YGuuFIV3X3YgjG0in+XcrSW1/enJSKobPMdsjxhRRyZmUVtOES9NXZ4t6
-        3n9W/366mj/Zlwxau8W8Qh8bu/VF/O6JuYzo/d9PU8peZaI4GN3DhFrDoRIkdCIVMmzoxE
-        Bqz/zZ22wWoQ3PhmR7h9u9sgD/Ct1gqPaMfCZy1/ydBtfKXRqtzJqXB9/Q8K5wXflv5OD0
-        t0DSv4zaPVIeO6kd6PpNUCfCLw4QzoBtOzva8DMQSeloL9+PPwr5vmjtNt5NKovut2rVnH
-        tQwkW/rEXZUMMVsGdp5ScbiedA7Xl+gm3BZaKVrPIyz7nBUkLU1JJ2Nm84AmVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1670101117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=BqfCLn7bZHOUBcGvmtVJYpLj50IzdShCNo2WG6T9+CY=;
-        b=gJVJzxFT2vA+2YS53faI0fsq1CMcOc45zmMQdCUlmu5eG0DEvr7Jr+a4q6IgTNdoMCAIOr
-        dq/h8Y5XaJHwzwBg==
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, peterz@infradead.org,
-        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
-        rick.p.edgecombe@intel.com, aaron.lu@intel.com, mcgrof@kernel.org
-Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
-In-Reply-To: <Y4thNkNW30x8Wcx8@kernel.org>
-Date:   Sat, 03 Dec 2022 21:58:36 +0100
-Message-ID: <871qpggq6b.ffs@tglx>
+        with ESMTP id S229472AbiLCWYf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Dec 2022 17:24:35 -0500
+Received: from mx01lb.world4you.com (mx01lb.world4you.com [81.19.149.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C785015A1C;
+        Sat,  3 Dec 2022 14:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RbdhlXXoe5aVhZ+1+W4Zdbyv2o4f8zympuEgxFctAV8=; b=QMxghBxPYh2tkjQEQmY/oPbR97
+        fnBYMqmkxvBE6WoLyp2RtTmVu1cZluJ0RtdxKUZ1jpSOk1hdDg7OHwlmyOIycs+fSPWc5O0/I7RtT
+        Xw0JGCH4pq0oCO5wNdO+n0llE5bZCPSQOYu5gL7TSPp2vk+TiSvDxoUVI3U4ZWO1FTVA=;
+Received: from [88.117.56.227] (helo=hornet.engleder.at)
+        by mx01lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1p1aSr-0003Ir-6Q; Sat, 03 Dec 2022 22:54:29 +0100
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        Gerhard Engleder <gerhard@engleder-embedded.com>
+Subject: [PATCH net-next 0/6] tsnep: XDP support
+Date:   Sat,  3 Dec 2022 22:54:10 +0100
+Message-Id: <20221203215416.13465-1-gerhard@engleder-embedded.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 03 2022 at 16:46, Mike Rapoport wrote:
-> On Thu, Dec 01, 2022 at 11:34:57PM +0100, Thomas Gleixner wrote:
->> If you mix this, then you end up with RWX for the whole 2M page. Not an
->> option really as you lose _all_ protections in one go.
->
-> I meant to take one 2M page from the direct map and split it to 4K in the
-> module address space. Then the protection could be done at PTE level after
-> relocations etc and it would save the dance with text poking.
+Implement XDP support for tsnep driver. I tried to follow existing
+drivers like igb/igc as far as possible. Some prework was already done
+in previous patch series, so in this series only actual XDP stuff is
+included.
 
-I see what you meant.
+Thanks for the NetDev 0x14 slides "Add XDP support on a NIC driver".
 
-> But if mapping the code with 2M pages gives massive performance
-> improvements, it's surely better to keep 2M pages in the modules
-> space.
+Gerhard Engleder (6):
+  tsnep: Add adapter down state
+  tsnep: Add XDP TX support
+  tsnep: Support XDP BPF program setup
+  tsnep: Prepare RX buffer for XDP support
+  tsnep: Add RX queue info for XDP support
+  tsnep: Add XDP RX support
 
-Yes.
+ drivers/net/ethernet/engleder/Makefile     |   2 +-
+ drivers/net/ethernet/engleder/tsnep.h      |  31 +-
+ drivers/net/ethernet/engleder/tsnep_main.c | 424 +++++++++++++++++++--
+ drivers/net/ethernet/engleder/tsnep_xdp.c  |  27 ++
+ 4 files changed, 454 insertions(+), 30 deletions(-)
+ create mode 100644 drivers/net/ethernet/engleder/tsnep_xdp.c
+
+-- 
+2.30.2
+
