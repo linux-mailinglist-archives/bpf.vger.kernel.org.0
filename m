@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D98164291C
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 14:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F3E64291D
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 14:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbiLENRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 08:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S232111AbiLENRI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 08:17:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbiLENQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 08:16:51 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D74E1BE9D
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 05:16:45 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id w15so18508390wrl.9
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 05:16:45 -0800 (PST)
+        with ESMTP id S232130AbiLENQx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 08:16:53 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518D21BEB6
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 05:16:46 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id ay40so1979886wmb.2
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 05:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IifO2YWxrxsA8Kbl8/x2hIyP8xhy79sLALVNORQ9+so=;
-        b=IRFrnP0FnrogtpDDCdzVQUDGMI6I4oaatZHIM1uF6JU6QpNHM4DrNQqCWpgLZVlm4o
-         DR/hIH8bKU6/dYgkiVbnPrOCsMPZDAlxCdE87AfngUqlbt1EjmnzEwPJ8RJcU46jMGO8
-         WzqrhL/3EYWE7P32RNEhak3TRxRYeMhSpbN37axLYeWUJ4FnryPb/tX592sePOmIgGeJ
-         N2MYQYUtGyxBigkAuM+kXM0LvUDhrwa3zOuCkkvqyzyIsar1UJUNnuU+7WlgKqAcxQDW
-         41W/Uf8JdCc69O9znNJpxVSZDg3xXaqVkcdufJZLYu+TlT2uGau621H6yykQadHIaR2T
-         2RCQ==
+        bh=mdZuj82BZT6mPlDHtQ+58LTPmT/m/OiCbGS1ws3X7Xg=;
+        b=QgOJNN30hBPkomjzW8VSUTHCuxDK5ynAc2oTApihykC4XVEdD9WG/0c9gdRU/72OG0
+         x9nnI7m8fGdUfoDRvCZHij6PAhxEIxUbitgr4jGGGKBtwGRvRKXM+wQ/2y7huIAxiCrh
+         gbD6pP0d9bOhjLWs+8/JALFRlEecTd5gqlg445cN5sCRHfjEZQegp+f2qsZ8k6Kc5e9j
+         O8dTCqcHB4MjrSs1a/+vLi10u8tkPYPh1AVlP+C97Aj2IP4je+obUd1RXdD/GEicm7ih
+         qvGFy4Hq5nLTulbFGAGwtskL30M/WsEqgzRry7aTz5hvIAiAbA8QDKzmCphStjo8aX2q
+         BNtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IifO2YWxrxsA8Kbl8/x2hIyP8xhy79sLALVNORQ9+so=;
-        b=pVZpcgqzYWUALOcH52ohS9gLJh2eY3Rg0BGda97TK1ukDmOKO9tuC85OhTK8sAAb25
-         ihRdonbT6vdoO380Q5cJHexkKR+zxhTnsIKaRAfkJX3qxfMQnSbJirnrQEuDKHg3FyMh
-         WLj7Ezd+fMPg3KS+Hz7nCJH39H+0EjRtAsiLBW3llMnCECL3FuRKvPSTRktddcRg5Bpt
-         610SV5pvVzIKwusp2WaR/LvohbXYrU59r/IPbjM0I5Lba1E/e7ofuGKsE32tkNqVBC00
-         NDh0BoUpnU8smSqLOKioHgGfYyjxXhmTmoDAMjcaleQNf5jte39d8Yfb1m78iBnoaMF8
-         SWRg==
-X-Gm-Message-State: ANoB5pm3ns/F4TwW0wzQpUQBQhrgRR0KpBUsy0TeoDpHajX/LV6CyAra
-        bMw/RAxWnxdh9LEkQXnlICemBYLr902f0WhW
-X-Google-Smtp-Source: AA0mqf71F+oLXx2XnnaJwZzi6cLEb/4gbtTJQW6yC4RqjYSbKQ2m09nViuxRDDNbRWsXV/cnN7/ldw==
-X-Received: by 2002:a5d:5a12:0:b0:22e:c2a6:d00d with SMTP id bq18-20020a5d5a12000000b0022ec2a6d00dmr44054549wrb.29.1670246203477;
-        Mon, 05 Dec 2022 05:16:43 -0800 (PST)
+        bh=mdZuj82BZT6mPlDHtQ+58LTPmT/m/OiCbGS1ws3X7Xg=;
+        b=BhbHd6SL+crFxGgIMMDGJvIRVIO+rn/iJO9j+Zwf4+gBot4Fv0MvBiGVPu4E8GpZv0
+         myTbDMl9+ZolmRUbBXDqHzM7o8G/Rutt62qioTn/S0mwdlTbGtPEAZHZByw8VGUSAQGh
+         Xb013wtQNg6EWMXUYa8dNfqca86m+kzlsCa0goUzukZLnfuR224kBBZrmlbZWPbWhQsg
+         3EhQA4l0KKiMUoZ/aI+CBtgwtzhyarn3k+UxWPsNN8WTCvc4gTecoWz3Go8BR39tGi8G
+         G8kOFy3CkbOjjQ8U2Z2woSElAWOiLp7uyP/y8iIW3ONlFLCz/9hMtlfKB7GjC/5Rs8Pe
+         WEjw==
+X-Gm-Message-State: ANoB5pl61DE+bEU97F+PTrC+JDqsmGvwvezepLzyTSKHw3IiIc6w3ZLk
+        DETKJ0JuVzt14ASwCsmv6e/z4woof+X0erdV
+X-Google-Smtp-Source: AA0mqf6jTTYNBbHgLGiUwsjSlT2b3a5s6Ig2zu7XAnYNrGHT+0P5l+VIigTrR45YuXfm/jF6rFs/5Q==
+X-Received: by 2002:a05:600c:5254:b0:3d0:75d5:c64b with SMTP id fc20-20020a05600c525400b003d075d5c64bmr16671611wmb.12.1670246204553;
+        Mon, 05 Dec 2022 05:16:44 -0800 (PST)
 Received: from daandemeyer-fedora-PC1EV17T.thefacebook.com ([2620:10d:c092:400::5:48e0])
-        by smtp.googlemail.com with ESMTPSA id fc13-20020a05600c524d00b003d04e4ed873sm24710492wmb.22.2022.12.05.05.16.42
+        by smtp.googlemail.com with ESMTPSA id fc13-20020a05600c524d00b003d04e4ed873sm24710492wmb.22.2022.12.05.05.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Dec 2022 05:16:42 -0800 (PST)
+        Mon, 05 Dec 2022 05:16:44 -0800 (PST)
 From:   Daan De Meyer <daan.j.demeyer@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Daan De Meyer <daan.j.demeyer@gmail.com>
-Subject: [PATCH bpf-next 1/3] selftests/bpf: Install all required files to run selftests
-Date:   Mon,  5 Dec 2022 14:16:16 +0100
-Message-Id: <20221205131618.1524337-2-daan.j.demeyer@gmail.com>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: Use "is not set" instead of "=n"
+Date:   Mon,  5 Dec 2022 14:16:17 +0100
+Message-Id: <20221205131618.1524337-3-daan.j.demeyer@gmail.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221205131618.1524337-1-daan.j.demeyer@gmail.com>
 References: <20221205131618.1524337-1-daan.j.demeyer@gmail.com>
@@ -70,33 +70,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When installing the selftests using
-"make -C tools/testing/selftests install", we need to make sure
-all the required files to run the selftests are installed. Let's
-make sure this is the case.
+"=n" is not valid kconfig syntax. Use "is not set" instead to indicate
+the option should be disabled.
 
 Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
 ---
- tools/testing/selftests/bpf/Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/config | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 6a0f043dc410..f6b8ffdde16f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -532,8 +532,10 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
- 		       $(OUTPUT)/sign-file				\
--		       ima_setup.sh verify_sig_setup.sh			\
--		       $(wildcard progs/btf_dump_test_case_*.c)
-+		       $(realpath ima_setup.sh) 			\
-+		       $(realpath verify_sig_setup.sh)			\
-+		       $(wildcard progs/btf_dump_test_case_*.c)		\
-+		       $(wildcard progs/*.bpf.o)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_TESTS
- $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index f9034ea00bc9..3cbdbf57a403 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -8,7 +8,7 @@ CONFIG_BPF_LIRC_MODE2=y
+ CONFIG_BPF_LSM=y
+ CONFIG_BPF_STREAM_PARSER=y
+ CONFIG_BPF_SYSCALL=y
+-CONFIG_BPF_UNPRIV_DEFAULT_OFF=n
++# CONFIG_BPF_UNPRIV_DEFAULT_OFF is not set
+ CONFIG_CGROUP_BPF=y
+ CONFIG_CRYPTO_HMAC=y
+ CONFIG_CRYPTO_SHA256=y
 -- 
 2.38.1
 
