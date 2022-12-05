@@ -2,78 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47601642CAB
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 17:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC15642DD7
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 17:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbiLEQTe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 11:19:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        id S233313AbiLEQv0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 11:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbiLEQTd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 11:19:33 -0500
-Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DC61D0C2
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 08:19:33 -0800 (PST)
-Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-1445ca00781so7428280fac.1
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 08:19:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
-        b=HFkrIq0moJZmzClqyLY3vKOBtHX1vx+c9Lmz3PVuRFus0dgIh3p+1+r+57xwgIvxGJ
-         u6wSKxd7geaSqAqrlKDJ7OlDUTwSip0ilZpoDh4rKUFvdN1qA4+s65omj0mqhkwbYhoR
-         nPG9Q8Hz4/WJOLgzP53toTdXQa4jhHLRwsIJB/Khf1rQ6Vhx3WHmxLDiWLfKu7n7tjP/
-         ETDWhwqRw54QubQ916G9PVdV35ShsHaPIbuZIM5lWMxXiCrdTZeVg+ZuXNchYHGfzvJW
-         Nz05EwYx4GMnh5StSVpj6RAnokd7Za2v/oXFLVAbjsF29emXjBYLMp8MwfZZzGoHmKbS
-         9sEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
-        b=i6k/Mem+T/RLGkgv0EXMY5DouW8NeOeBakm1AkNk6gf3aGmmOwC8SVAkBL04+zQ6O1
-         YQ0ABkZQWX2aI1Fr4zvzGQYq40gWfa3cSubFNgpIu/vZ8Chp5GmCyF128Lkg24nq3sHq
-         V+/+7XOTtaoP3K3pIG08ot4XF59jkjDsWruMNNHJzk9our4cgNZ7tY+H9gsS6NMChL2b
-         V4ca9HpsFdK2D1Ht8lAv0QFu3I4/Ylz02TkJ8VT1YuNvKesszSmQnNfdAM55xE7zda7G
-         Ts5hy5F6qZRlBiovf9OaVuA7IE6zmV8pQ62pW4JL8q055UYp99llbTWjNAE0ZeGcrmQ3
-         hOBw==
-X-Gm-Message-State: ANoB5pn+kNYfOonXA2jbdTlM6SgmlcmRibZz2QZsb3f9itH/xNqQEwIA
-        scerAkK86Wn44blY/S5ppg6NxuQorqIiW0lsCZk=
-X-Google-Smtp-Source: AA0mqf6lhwBOaMZdn0XLh7k0l28F2jsvVN7Nz5AzJJRK6dvtxt7XY+EQi2p39luxNA8ti8bOr7GvxRLJHKXK0oeLU1E=
-X-Received: by 2002:a05:6870:d608:b0:144:b4d9:4a37 with SMTP id
- a8-20020a056870d60800b00144b4d94a37mr1224059oaq.117.1670257172601; Mon, 05
- Dec 2022 08:19:32 -0800 (PST)
+        with ESMTP id S231375AbiLEQuv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 11:50:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2DAC2C
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 08:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670258946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bsnqQAP9mq9bp37v+PtTYRzX/Oieujg8IWjQ8JkmFYE=;
+        b=Z5q7nJ9CLQ5+zmpi6Ys1oErpAxSqyOmYGESczrD7N3Ei2kin2H2T7+AJHmpDzH7/Kb3mI8
+        zC1yaVuA/Wxl4/yiqun/5KZbcyCdjAzBa7Zf6+qgdeRP+jPGynMsj0QSBA6G4m2e60+/Vb
+        WxSQhHB04UjrJstw/fdVnnKxDhBhm/Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-562-wBQ1drpcOHalFETe-pWhnA-1; Mon, 05 Dec 2022 11:49:03 -0500
+X-MC-Unique: wBQ1drpcOHalFETe-pWhnA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 265FB185A794;
+        Mon,  5 Dec 2022 16:49:03 +0000 (UTC)
+Received: from plouf.redhat.com (unknown [10.39.194.203])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BA30141511A;
+        Mon,  5 Dec 2022 16:49:01 +0000 (UTC)
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH HID for-next v2 0/4] HID: bpf: remove the need for ALLOW_ERROR_INJECTION and Kconfig fixes
+Date:   Mon,  5 Dec 2022 17:48:52 +0100
+Message-Id: <20221205164856.705656-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6870:5ccc:b0:143:84e0:abae with HTTP; Mon, 5 Dec 2022
- 08:19:32 -0800 (PST)
-Reply-To: phmanu212@hotmail.com
-From:   Philip Manul <phmanu005@gmail.com>
-Date:   Mon, 5 Dec 2022 08:19:32 -0800
-Message-ID: <CAFKg=dbnbvTXMp7SoCeKJ8m5vdUGsz5_fZTZmLfwfeda9vuULQ@mail.gmail.com>
-Subject: REP:
-To:     in <in@proposal.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Guten tag,
-Mein Name ist Philip Manul. Ich bin von Beruf Rechtsanwalt. Ich habe
-einen verstorbenen Kunden, der zuf=C3=A4llig denselben Namen mit Ihnen
-teilt. Ich habe alle Papierdokumente in meinem Besitz. Ihr Verwandter,
-mein verstorbener Kunde, hat hier in meinem Land einen nicht
-beanspruchten Fonds zur=C3=BCckgelassen. Ich warte auf Ihre Antwort zum
-Verfahren.
-Philip Manul.
+Hi,
+
+So this patch series aims at solving both [0] and [1].
+
+The first one is bpf related and concerns the ALLOW_ERROR_INJECTION API.
+It is considered as a hack to begin with, so introduce a proper kernel
+API to declare when a BPF hook can have its return value changed.
+
+The second one is related to the fact that
+DYNAMIC_FTRACE_WITH_DIRECT_CALLS is currently not enabled on arm64, and
+that means that the current HID-BPF implementation doesn't work there
+for now.
+
+The first patch actually touches the bpf core code, but it would be
+easier if we could merge it through the hid tree in the for-6.2/hid-bpf
+branch once we get the proper acks.
+
+Cheers,
+Benjamin
+
+[0] https://lore.kernel.org/all/20221121104403.1545f9b5@gandalf.local.home/
+[1] https://lore.kernel.org/r/CABRcYmKyRchQhabi1Vd9RcMQFCcb=EtWyEbFDFRTc-L-U8WhgA@mail.gmail.com
+
+Benjamin Tissoires (4):
+  bpf: do not rely on ALLOW_ERROR_INJECTION for fmod_ret
+  HID: bpf: do not rely on ALLOW_ERROR_INJECTION
+  HID: bpf: enforce HID_BPF dependencies
+  selftests: hid: ensures we have the proper requirements in config
+
+ drivers/hid/bpf/Kconfig             |  3 ++-
+ drivers/hid/bpf/hid_bpf_dispatch.c  | 20 ++++++++++++--
+ drivers/hid/bpf/hid_bpf_jmp_table.c |  1 -
+ include/linux/btf.h                 |  3 +++
+ kernel/bpf/btf.c                    | 41 +++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c               | 17 ++++++++++--
+ net/bpf/test_run.c                  | 14 +++++++---
+ tools/testing/selftests/hid/config  |  1 +
+ 8 files changed, 91 insertions(+), 9 deletions(-)
+
+-- 
+2.38.1
+
