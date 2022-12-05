@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6471D642BBB
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 16:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C13642BBE
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 16:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbiLEP2j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 10:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
+        id S232713AbiLEP3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 10:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbiLEP2T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 10:28:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F836147
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 07:26:24 -0800 (PST)
+        with ESMTP id S232717AbiLEP2u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 10:28:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EEA1EADB
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 07:26:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670253984;
+        s=mimecast20190719; t=1670253990;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qEKiaerBTgxeA+iQRDpxjwc3UIUz5FP4iUyhE5eUv28=;
-        b=ZpUHkmHgyrERIIIDDabAzLH9Qp9WuMeN/hDZwhYotIel3uYLXLlLShPCRQtzaJZS4xnEcd
-        0igF85ezWRmLIoQJ4u7fOyoNWM1F/G6J5Ud8ruVIdRebXe1vCo0fzDRqPi767t4cfnfC2r
-        gsXIEbJJOYfGLdiJVFMr/7PhwfmvhmI=
+        bh=8dqUbyDZlyGg8DVT9UBDOU6EHVP5CrdcsfuouIr9/4Q=;
+        b=FcriGVIpIEqWbm81sk2ADwvlXYmAC36A1ZIgJBXQN2ZGjhYwMqyIhBsSKOkTwZYS/jgxCw
+        BOvZJ+tzLtMEU2GhokkvQsY/+uK+mOxTyjmtYV89iKkJ48YkcK0G3eMlwPFU55jLoDFwDQ
+        NI76kv346uCAJPFyfQAKr+AhFYYV1gs=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-173-8uT96WGBMOqEa9FGmoZw5g-1; Mon, 05 Dec 2022 10:26:22 -0500
-X-MC-Unique: 8uT96WGBMOqEa9FGmoZw5g-1
+ us-mta-206-qNVVoELHPzWfB2lHhX6QDg-1; Mon, 05 Dec 2022 10:26:25 -0500
+X-MC-Unique: qNVVoELHPzWfB2lHhX6QDg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC637383328E;
-        Mon,  5 Dec 2022 15:26:21 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C100C3C0F22E;
+        Mon,  5 Dec 2022 15:26:24 +0000 (UTC)
 Received: from ovpn-193-115.brq.redhat.com (ovpn-193-115.brq.redhat.com [10.40.193.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9555540C6EC3;
-        Mon,  5 Dec 2022 15:26:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1657C40C6EC3;
+        Mon,  5 Dec 2022 15:26:21 +0000 (UTC)
 From:   Viktor Malik <vmalik@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -49,9 +49,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v3 1/3] kallsyms: add space-efficient lookup in one module
-Date:   Mon,  5 Dec 2022 16:26:04 +0100
-Message-Id: <8831f08b909c7c670e547240368276af73e552d2.1670249590.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next v3 2/3] bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+Date:   Mon,  5 Dec 2022 16:26:05 +0100
+Message-Id: <c4f71d66eff216097b63d8a73ac203cb689567b4.1670249590.git.vmalik@redhat.com>
 In-Reply-To: <cover.1670249590.git.vmalik@redhat.com>
 References: <cover.1670249590.git.vmalik@redhat.com>
 MIME-Version: 1.0
@@ -67,73 +67,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Until now, the only way to look up a symbol in kallsyms of a particular
-module was using the "module_kallsyms_lookup_name" function with the
-"module:symbol" string passed as a parameter. This syntax often requires
-to build the parameter string on stack, needlessly wasting space.
+When attaching fentry/fexit/fmod_ret/lsm to a function located in a
+module without specifying the target program, the verifier tries to find
+the address to attach to in kallsyms. This is always done by searching
+the entire kallsyms, not respecting the module in which the function is
+located.
 
-This commit introduces function "kallsyms_lookup_name_in_module" which
-takes the module and the symbol names as separate parameters and
-therefore allows more space-efficient lookup.
+This approach causes an incorrect attachment address to be computed if
+the function to attach to is shadowed by a function of the same name
+located earlier in kallsyms.
+
+Since the attachment must contain the BTF of the program to attach to,
+we may extract the module name from it (if the attach target is a
+module) and search for the function address in the correct module.
 
 Signed-off-by: Viktor Malik <vmalik@redhat.com>
+Acked-by: Hao Luo <haoluo@google.com>
 ---
- include/linux/module.h   |  7 +++++++
- kernel/module/kallsyms.c | 16 ++++++++++++++++
- 2 files changed, 23 insertions(+)
+ include/linux/btf.h   | 1 +
+ kernel/bpf/btf.c      | 5 +++++
+ kernel/bpf/verifier.c | 5 ++++-
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 35876e89eb93..a06fbcc4013c 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -605,6 +605,7 @@ struct module *find_module(const char *name);
- int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
- 			char *name, char *module_name, int *exported);
- 
-+unsigned long kallsyms_lookup_name_in_module(const char *module_name, const char *name);
- /* Look for this name: can be of form module:name. */
- unsigned long module_kallsyms_lookup_name(const char *name);
- 
-@@ -783,6 +784,12 @@ static inline int module_get_kallsym(unsigned int symnum, unsigned long *value,
- 	return -ERANGE;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index cbd6e4096f8c..b7b791d1f3d6 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -188,6 +188,7 @@ u32 btf_obj_id(const struct btf *btf);
+ bool btf_is_kernel(const struct btf *btf);
+ bool btf_is_module(const struct btf *btf);
+ struct module *btf_try_get_module(const struct btf *btf);
++const char *btf_module_name(const struct btf *btf);
+ u32 btf_nr_types(const struct btf *btf);
+ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+ 			   const struct btf_member *m,
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index c80bd8709e69..f78e8060efa6 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -7208,6 +7208,11 @@ bool btf_is_module(const struct btf *btf)
+ 	return btf->kernel_btf && strcmp(btf->name, "vmlinux") != 0;
  }
  
-+static inline unsigned long kallsyms_lookup_name_in_module(const char *module_name,
-+							   const char *name)
++const char *btf_module_name(const struct btf *btf)
 +{
-+	return 0;
++	return btf->name;
 +}
 +
- static inline unsigned long module_kallsyms_lookup_name(const char *name)
- {
- 	return 0;
-diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
-index 4523f99b0358..c6c8227c7a45 100644
---- a/kernel/module/kallsyms.c
-+++ b/kernel/module/kallsyms.c
-@@ -482,6 +482,22 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
- 	return 0;
- }
- 
-+unsigned long kallsyms_lookup_name_in_module(const char *module_name, const char *name)
-+{
-+	unsigned long ret;
-+	struct module *mod;
-+
-+	preempt_disable();
-+	mod = find_module_all(module_name, strlen(module_name), false);
-+	if (mod)
-+		ret = find_kallsyms_symbol_value(mod, name);
-+	else
-+		ret = 0;
-+	preempt_enable();
-+	return ret;
-+
-+}
-+
- /* Look for this name: can be of form module:name. */
- unsigned long module_kallsyms_lookup_name(const char *name)
- {
+ enum {
+ 	BTF_MODULE_F_LIVE = (1 << 0),
+ };
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1d51bd9596da..0c533db51f92 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16483,7 +16483,10 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			else
+ 				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
+ 		} else {
+-			addr = kallsyms_lookup_name(tname);
++			if (btf_is_module(btf))
++				addr = kallsyms_lookup_name_in_module(btf_module_name(btf), tname);
++			else
++				addr = kallsyms_lookup_name(tname);
+ 			if (!addr) {
+ 				bpf_log(log,
+ 					"The address of function %s cannot be found\n",
 -- 
 2.38.1
 
