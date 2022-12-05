@@ -2,107 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7D96426D2
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 11:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5376A6427A2
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 12:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbiLEKiW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 05:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        id S231277AbiLELhw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 06:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbiLEKiO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 05:38:14 -0500
-X-Greylist: delayed 1577 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Dec 2022 02:38:09 PST
-Received: from smtp-out.cvt.stuba.sk (smtp-out.cvt.stuba.sk [147.175.1.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C903120A3
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 02:38:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=stuba.sk;
-        s=20180406; h=Content-Transfer-Encoding:Content-Type:From:Subject:To:
-        MIME-Version:Date:Message-ID; bh=O0asCsN6BdHsqtktdXlPEelrlKhkpuIcISMGMItnDvA=
-        ; t=1670236689; x=1670668689; b=fyzplMfJp8XrzrRBsy1rXJZnf7/4R/Et3cKAM8vMg+8oc
-        VhFvJ8KAIoZNLr41ca00sRk2yMspR7DcapVyTmnJ+OGV9I5eEeAwvgi3pZUOeirEkFhWfZVcaON6d
-        W2TIea7OTbUHnztorr0YpYrr1cYFDTBFVa0HJ2osclc9G4JSyploZxfvbEMBLPXqKTHiuHy/KJYzz
-        cRFxy2vphhnBbd961XhaPyk5uFk3uMKkQUZ29JBSHnW1zPKnDteF3O2ZHjtJK5zJeGu9N1k1ASWJm
-        rNSKktQtv4/5pMNZntUq1DoW3XoVBelWlxk42D7c6ACbHtAksmekeoqh3A0WptLtwQ==;
-X-STU-Diag: 7e4d5b0da15a19f0 (auth)
-Received: from ellyah.uim.fei.stuba.sk ([147.175.106.89])
-        by mx1.stuba.sk (Exim4) with esmtpsa (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (envelope-from <matus.jokay@stuba.sk>)
-        id 1p28Rw-00078i-8G; Mon, 05 Dec 2022 11:11:48 +0100
-Message-ID: <52f31c6f-7adb-78a4-dec5-8da524b4efa6@stuba.sk>
-Date:   Mon, 5 Dec 2022 11:11:47 +0100
+        with ESMTP id S229970AbiLELhk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 06:37:40 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACE7DF9;
+        Mon,  5 Dec 2022 03:37:38 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NQhN063dVzRplN;
+        Mon,  5 Dec 2022 19:36:48 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 5 Dec
+ 2022 19:37:36 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     <stable-commits@vger.kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <sashal@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH 5.10] libbpf: Handle size overflow for ringbuf mmap
+Date:   Mon, 5 Dec 2022 19:37:26 +0800
+Message-ID: <20221205113726.2208063-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-To:     void@manifault.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kernel-team@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        memxor@gmail.com, sdf@google.com, song@kernel.org, tj@kernel.org,
-        yhs@fb.com, "Ploszek, Roderik" <roderik.ploszek@stuba.sk>
-References: <20221120051004.3605026-4-void@manifault.com>
-Subject: Re: [PATCH bpf-next v9 3/4] bpf: Add kfuncs for storing struct
- task_struct * as a kptr
-Content-Language: en-US
-From:   Matus Jokay <matus.jokay@stuba.sk>
-In-Reply-To: <20221120051004.3605026-4-void@manifault.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello David,
+[ Upstream commit 927cbb478adf917e0a142b94baa37f06279cc466 ]
 
-Your idea behind this patch is cool, but I'm afraid that the
-implementation is incorrect.
+The maximum size of ringbuf is 2GB on x86-64 host, so 2 * max_entries
+will overflow u32 when mapping producer page and data pages. Only
+casting max_entries to size_t is not enough, because for 32-bits
+application on 64-bits kernel the size of read-only mmap region
+also could overflow size_t.
 
-As you can see, the task_struct:rcu_users member shares the same memory
-area with the task_struct:rcu (the head of an RCU CB).
-Consequence: *violated invariant* that the reference counter will
-remain zero after reaching zero!!!
-After reaching zero the task_struct:rcu head is set, so further attempts
-to access the task_struct:rcu_users may lead to a non-zero value.
-For more information see
-https://lore.kernel.org/lkml/CAHk-=wjT6LG6sDaZtfeT80B9RaMP-y7RNRM4F5CX2v2Z=o8e=A@mail.gmail.com/
-In my opinion, the decision about task_struct:rcu and
-task_struct:rcu_users union is very bad, but you should probably consult
-the memory separation with authors of the actual implementation.
+So fixing it by casting the size of read-only mmap region into a __u64
+and checking whether or not there will be overflow during mmap.
 
-For now, in our project, we use the following approach:
+Fixes: bf99c936f947 ("libbpf: Add BPF ring buffer support")
+[houtao: return error directly and don't use libbpf_err()]
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20221116072351.1168938-3-houtao@huaweicloud.com
+---
+Hi Greg,
 
-1) get a reference to a valid task within RCU read-side with
-   get_task_struct()
-2) in the release function:
-    2.1) enter RCU read-side
-    2.2) if the task state is not TASK_DEAD: use put_task_struct()
-         Note: In the case of a race with an exiting task it's OK to
-         call put_task_struct(), because task_struct will be freed
-         *after* the current RCU GP thanks to the task_struct:rcu_users
-         mechanism.
-    2.3) otherwise if test_and_set(my_cb_flag): call_rcu(my_cb)
-         Note1: With respect to the RCU CB API you should guarantee that
-         your CB will be installed only once within a given RCU GP. For
-         that purpose we use my_cb_flag.
-         Note2: This code will race with the task_struct:rcu_users
-         mechanism [delayed_put_task_struct()], but it's OK. Either the
-         delayed_put_task_struct() or my_cb() can be the last to call
-         final put_task_struct() after the current RCU GP.
-    2.4) otherwise: call put_task_struct()
-         Note: The my_cb() is already installed, so within the current
-         RCU GP we can invoke put_task_struct() and the ref counter of
-         the task_struct will not reach zero.
-    2.5) release the RCU read-side
-3) The RCU CB my_cb() should set the my_cb_flag to False and call
-put_task_struct().
+Upstream commit 927cbb478adf ("libbpf: Handle size overflow for ringbuf
+mmap") uses libbpf_err(), but the helper is not available for v5.10 and
+picking it directly will lead to build failure as reported by kernel
+test robot, so unfolding libbpf_err(). And considering libbpf in v5.10
+doesn't set errno directly, so removing the setting of errno and just
+returning -E2BIG.
 
-If the release function is called within RCU read-side, the task_struct
-is guaranteed to remain valid until the end of the current RCU GP.
+ tools/lib/bpf/ringbuf.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Good luck,
-mY
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 86c31c787fb9..5e242be45206 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -59,6 +59,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 	__u32 len = sizeof(info);
+ 	struct epoll_event *e;
+ 	struct ring *r;
++	__u64 mmap_sz;
+ 	void *tmp;
+ 	int err;
+ 
+@@ -97,8 +98,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 	r->mask = info.max_entries - 1;
+ 
+ 	/* Map writable consumer page */
+-	tmp = mmap(NULL, rb->page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
+-		   map_fd, 0);
++	tmp = mmap(NULL, rb->page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map_fd, 0);
+ 	if (tmp == MAP_FAILED) {
+ 		err = -errno;
+ 		pr_warn("ringbuf: failed to mmap consumer page for map fd=%d: %d\n",
+@@ -111,8 +111,12 @@ int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 	 * data size to allow simple reading of samples that wrap around the
+ 	 * end of a ring buffer. See kernel implementation for details.
+ 	 * */
+-	tmp = mmap(NULL, rb->page_size + 2 * info.max_entries, PROT_READ,
+-		   MAP_SHARED, map_fd, rb->page_size);
++	mmap_sz = rb->page_size + 2 * (__u64)info.max_entries;
++	if (mmap_sz != (__u64)(size_t)mmap_sz) {
++		pr_warn("ringbuf: ring buffer size (%u) is too big\n", info.max_entries);
++		return -E2BIG;
++	}
++	tmp = mmap(NULL, (size_t)mmap_sz, PROT_READ, MAP_SHARED, map_fd, rb->page_size);
+ 	if (tmp == MAP_FAILED) {
+ 		err = -errno;
+ 		ringbuf_unmap_ring(rb, r);
+-- 
+2.29.2
+
