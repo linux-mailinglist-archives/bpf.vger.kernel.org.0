@@ -2,115 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFEB6421B0
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 03:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F19B6421BF
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 04:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbiLECur (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Dec 2022 21:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S231161AbiLEDAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Dec 2022 22:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbiLECup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Dec 2022 21:50:45 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B43910576
-        for <bpf@vger.kernel.org>; Sun,  4 Dec 2022 18:50:45 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id f9so9289812pgf.7
-        for <bpf@vger.kernel.org>; Sun, 04 Dec 2022 18:50:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oNPZAxJlRQhNTySwkKjnN/AI/Aeneyj9Y3IU2cqYsZY=;
-        b=SskYsPGsnAAxNQJoRIW2YCNt+1xrkWZIp5cp1NUk6qW27Tn0sjQEF+xwju75a9syQc
-         +V9731RdCuZM8Yv62VFEYm3Ykrt3CZaaS6k/AnNsW4EzXOV50YjJJYxnYvrFhXOgS7OX
-         LI/diuFq1PXxMCS566gihkM/iLXKCN422qkWnJaRYTm1UwlYLLD4jELwxjtV5lowMzyN
-         aj20i+bBA5OrVyDlkynL138+XtZTyC0buBTEe/Mt/klzMCcwNq8UFy/lgN02WSIsMaNO
-         quue4pbAvR82aDBYc8GexQ99h88+gxCtYHOsDDMV+gzTzGr+l6tgQX/gjiI4dCV1n+CA
-         eGJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oNPZAxJlRQhNTySwkKjnN/AI/Aeneyj9Y3IU2cqYsZY=;
-        b=uXzKfVbiHmy0g0KP1RUozdAAokIH0umGiSt7dJlgMJA7nEo2JuuI1G+fT6W7UodYTH
-         +w67MXFoRuob1z+frJ90NPKmw/q32mmLltHdHnDLqxtqfyNPLgqZGQU76dl/lJbo/JAC
-         bjo5QU9O9KAxb7ubLbmyUsD6bJMBZGIz4kHtHZvEa6XH7sp/WwhCF3dc4Y1t23T139tT
-         wqV8nom3eNxtZ6DuNFxvIj0/FYfpWI/KsUCjgRQ8cF5BWEE6j76cHZT+KgzBfl+67Ds8
-         8cXVX6qhu2RG+aF0bffBP1KVcE2nIcUaorkYt40y8oi2Ju6qyhsZBMEe1C+1HjJ54jnu
-         YuBw==
-X-Gm-Message-State: ANoB5pn7vZ89iSWZDLQ+ptQo6d7JdpEDNMNKXfVNuJqVS94iEizM/eHb
-        yitwphQJhEmbIbXZuKe6NGlMX9J4sZs=
-X-Google-Smtp-Source: AA0mqf6ttATFlA4WM0qauJHJxgEc2ERMEuTt1KdYvnOQIOZvJFBchLWtj86AHCW9i9K9owyVfvcEcg==
-X-Received: by 2002:a05:6a00:3204:b0:574:31bb:a576 with SMTP id bm4-20020a056a00320400b0057431bba576mr58503264pfb.46.1670208644215;
-        Sun, 04 Dec 2022 18:50:44 -0800 (PST)
-Received: from apollo.hsd1.ca.comcast.net ([2601:646:9181:1cf0::d00])
-        by smtp.gmail.com with ESMTPSA id c9-20020a63ef49000000b0046feca0883fsm7158770pgk.64.2022.12.04.18.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Dec 2022 18:50:43 -0800 (PST)
-From:   Khem Raj <raj.khem@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Khem Raj <raj.khem@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH] libbpf: Fix build warning on ref_ctr_off
-Date:   Sun,  4 Dec 2022 18:50:39 -0800
-Message-Id: <20221205025039.149139-1-raj.khem@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S230307AbiLEDAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Dec 2022 22:00:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7B910FF4;
+        Sun,  4 Dec 2022 19:00:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C50260F58;
+        Mon,  5 Dec 2022 03:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 72F7FC433D6;
+        Mon,  5 Dec 2022 03:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670209215;
+        bh=1OfbOLGGbUDZppu1Hn+ZXHMAyYCp14mQCqYYAC9x3HM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=R/j2Yq4OeyGi/pv+PN62/JoZ+JmpALM/oLvXz28dOfCwvoZpB0d+5t4wImSZKrHl2
+         ceyLNdRVvQY7TbiIujXIRDTTIW+Y0NJ0xQr+lmXsr62IiDHZnPFHRwHylzXMeZPnqi
+         znyeGlqHhxSjAz+TizHBH1qnJ1w3SdrdPnaQgsw7G1EI/pLAAVUSVpukwk1WstQ0bE
+         goNrHAGhUg4cKiWZKrzZuSf+wdBuRCadg3K5AQTRaMnuyqjQEu5lgCVfu8Q0JBL0Km
+         jltNtUp/eo3hUuoe3+hdl71KChRBc9+GSlxIj5qY4vLjsIchiufKh/wd2Ay9p6rIlu
+         4HBE5y18zrEKg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4AA70E49BBF;
+        Mon,  5 Dec 2022 03:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf v2] bpf: Add dummy type reference to nf_conn___init to fix
+ type deduplication
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167020921530.5137.9042058313238429858.git-patchwork-notify@kernel.org>
+Date:   Mon, 05 Dec 2022 03:00:15 +0000
+References: <20221201123939.696558-1-toke@redhat.com>
+In-Reply-To: <20221201123939.696558-1-toke@redhat.com>
+To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, lorenzo@kernel.org,
+        memxor@gmail.com, jbenc@redhat.com, edumazet@google.com,
+        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Clang warns on 32-bit ARM on this comparision
+Hello:
 
-libbpf.c:10497:18: error: result of comparison of constant 4294967296 with expression of type 'size_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
-            ~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Check for platform long int to be larger than 32-bits before enabling
-this check, it false on 32bit anyways.
+On Thu,  1 Dec 2022 13:39:39 +0100 you wrote:
+> The bpf_ct_set_nat_info() kfunc is defined in the nf_nat.ko module, and
+> takes as a parameter the nf_conn___init struct, which is allocated through
+> the bpf_xdp_ct_alloc() helper defined in the nf_conntrack.ko module.
+> However, because kernel modules can't deduplicate BTF types between each
+> other, and the nf_conn___init struct is not referenced anywhere in vmlinux
+> BTF, this leads to two distinct BTF IDs for the same type (one in each
+> module). This confuses the verifier, as described here:
+> 
+> [...]
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
+Here is the summary with links:
+  - [bpf,v2] bpf: Add dummy type reference to nf_conn___init to fix type deduplication
+    https://git.kernel.org/bpf/bpf-next/c/578ce69ffda4
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 91b7106a4a73..65cb70cdc22b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9837,7 +9837,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
- 	char errmsg[STRERR_BUFSIZE];
- 	int type, pfd;
- 
--	if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
-+	if (BITS_PER_LONG > 32 && ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
- 		return -EINVAL;
- 
- 	memset(&attr, 0, attr_sz);
+You are awesome, thank you!
 -- 
-2.38.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
