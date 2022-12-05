@@ -2,76 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB85C642105
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 02:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFEB6421B0
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 03:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbiLEBTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Dec 2022 20:19:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
+        id S231239AbiLECur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Dec 2022 21:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbiLEBTp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Dec 2022 20:19:45 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5EE12AF5;
-        Sun,  4 Dec 2022 17:19:43 -0800 (PST)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NQQg26jXFzmVRP;
-        Mon,  5 Dec 2022 09:18:54 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 5 Dec 2022 09:19:40 +0800
-Subject: Re: [PATCH bpf-next v3 1/4] bpf: Adapt 32-bit return value kfunc for
- 32-bit ARM when zext extension
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230307AbiLECup (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Dec 2022 21:50:45 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B43910576
+        for <bpf@vger.kernel.org>; Sun,  4 Dec 2022 18:50:45 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id f9so9289812pgf.7
+        for <bpf@vger.kernel.org>; Sun, 04 Dec 2022 18:50:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oNPZAxJlRQhNTySwkKjnN/AI/Aeneyj9Y3IU2cqYsZY=;
+        b=SskYsPGsnAAxNQJoRIW2YCNt+1xrkWZIp5cp1NUk6qW27Tn0sjQEF+xwju75a9syQc
+         +V9731RdCuZM8Yv62VFEYm3Ykrt3CZaaS6k/AnNsW4EzXOV50YjJJYxnYvrFhXOgS7OX
+         LI/diuFq1PXxMCS566gihkM/iLXKCN422qkWnJaRYTm1UwlYLLD4jELwxjtV5lowMzyN
+         aj20i+bBA5OrVyDlkynL138+XtZTyC0buBTEe/Mt/klzMCcwNq8UFy/lgN02WSIsMaNO
+         quue4pbAvR82aDBYc8GexQ99h88+gxCtYHOsDDMV+gzTzGr+l6tgQX/gjiI4dCV1n+CA
+         eGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oNPZAxJlRQhNTySwkKjnN/AI/Aeneyj9Y3IU2cqYsZY=;
+        b=uXzKfVbiHmy0g0KP1RUozdAAokIH0umGiSt7dJlgMJA7nEo2JuuI1G+fT6W7UodYTH
+         +w67MXFoRuob1z+frJ90NPKmw/q32mmLltHdHnDLqxtqfyNPLgqZGQU76dl/lJbo/JAC
+         bjo5QU9O9KAxb7ubLbmyUsD6bJMBZGIz4kHtHZvEa6XH7sp/WwhCF3dc4Y1t23T139tT
+         wqV8nom3eNxtZ6DuNFxvIj0/FYfpWI/KsUCjgRQ8cF5BWEE6j76cHZT+KgzBfl+67Ds8
+         8cXVX6qhu2RG+aF0bffBP1KVcE2nIcUaorkYt40y8oi2Ju6qyhsZBMEe1C+1HjJ54jnu
+         YuBw==
+X-Gm-Message-State: ANoB5pn7vZ89iSWZDLQ+ptQo6d7JdpEDNMNKXfVNuJqVS94iEizM/eHb
+        yitwphQJhEmbIbXZuKe6NGlMX9J4sZs=
+X-Google-Smtp-Source: AA0mqf6ttATFlA4WM0qauJHJxgEc2ERMEuTt1KdYvnOQIOZvJFBchLWtj86AHCW9i9K9owyVfvcEcg==
+X-Received: by 2002:a05:6a00:3204:b0:574:31bb:a576 with SMTP id bm4-20020a056a00320400b0057431bba576mr58503264pfb.46.1670208644215;
+        Sun, 04 Dec 2022 18:50:44 -0800 (PST)
+Received: from apollo.hsd1.ca.comcast.net ([2601:646:9181:1cf0::d00])
+        by smtp.gmail.com with ESMTPSA id c9-20020a63ef49000000b0046feca0883fsm7158770pgk.64.2022.12.04.18.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Dec 2022 18:50:43 -0800 (PST)
+From:   Khem Raj <raj.khem@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Khem Raj <raj.khem@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        <colin.i.king@gmail.com>, Artem Savkov <asavkov@redhat.com>,
-        Delyan Kratunov <delyank@fb.com>, bpf <bpf@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20221126094530.226629-1-yangjihong1@huawei.com>
- <20221126094530.226629-2-yangjihong1@huawei.com>
- <20221128015758.aekybr3qlahfopwq@MacBook-Pro-5.local>
- <dc9d1823-80f2-e2d9-39a8-c39b6f52dec5@huawei.com>
- <CAADnVQJPRCnESmJ92W39bo-btqNbYaNsGQO0is6FD3JLU_mSjQ@mail.gmail.com>
- <8cb54255-4dce-6d50-d6f0-ac9af0e56f37@huawei.com>
- <CAADnVQJXr6XxpG2E-AkO7__qg-sujrhyO+JWWa1iwYmAO4S0Pw@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <4a2b8cd5-78c4-360a-6eb0-33fcf689d26a@huawei.com>
-Date:   Mon, 5 Dec 2022 09:19:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Jiri Olsa <jolsa@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH] libbpf: Fix build warning on ref_ctr_off
+Date:   Sun,  4 Dec 2022 18:50:39 -0800
+Message-Id: <20221205025039.149139-1-raj.khem@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJXr6XxpG2E-AkO7__qg-sujrhyO+JWWa1iwYmAO4S0Pw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,153 +74,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Clang warns on 32-bit ARM on this comparision
 
+libbpf.c:10497:18: error: result of comparison of constant 4294967296 with expression of type 'size_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
+            ~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On 2022/12/4 0:40, Alexei Starovoitov wrote:
-> On Fri, Dec 2, 2022 at 6:58 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->>
->>
->> On 2022/11/29 0:41, Alexei Starovoitov wrote:
->>> On Mon, Nov 28, 2022 at 4:40 AM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2022/11/28 9:57, Alexei Starovoitov wrote:
->>>>> On Sat, Nov 26, 2022 at 05:45:27PM +0800, Yang Jihong wrote:
->>>>>> For ARM32 architecture, if data width of kfunc return value is 32 bits,
->>>>>> need to do explicit zero extension for high 32-bit, insn_def_regno should
->>>>>> return dst_reg for BPF_JMP type of BPF_PSEUDO_KFUNC_CALL. Otherwise,
->>>>>> opt_subreg_zext_lo32_rnd_hi32 returns -EFAULT, resulting in BPF failure.
->>>>>>
->>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>>>> ---
->>>>>>     kernel/bpf/verifier.c | 44 ++++++++++++++++++++++++++++++++++++++++---
->>>>>>     1 file changed, 41 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>>>> index 264b3dc714cc..193ea927aa69 100644
->>>>>> --- a/kernel/bpf/verifier.c
->>>>>> +++ b/kernel/bpf/verifier.c
->>>>>> @@ -1927,6 +1927,21 @@ find_kfunc_desc(const struct bpf_prog *prog, u32 func_id, u16 offset)
->>>>>>                       sizeof(tab->descs[0]), kfunc_desc_cmp_by_id_off);
->>>>>>     }
->>>>>>
->>>>>> +static int kfunc_desc_cmp_by_imm(const void *a, const void *b);
->>>>>> +
->>>>>> +static const struct bpf_kfunc_desc *
->>>>>> +find_kfunc_desc_by_imm(const struct bpf_prog *prog, s32 imm)
->>>>>> +{
->>>>>> +    struct bpf_kfunc_desc desc = {
->>>>>> +            .imm = imm,
->>>>>> +    };
->>>>>> +    struct bpf_kfunc_desc_tab *tab;
->>>>>> +
->>>>>> +    tab = prog->aux->kfunc_tab;
->>>>>> +    return bsearch(&desc, tab->descs, tab->nr_descs,
->>>>>> +                   sizeof(tab->descs[0]), kfunc_desc_cmp_by_imm);
->>>>>> +}
->>>>>> +
->>>>>>     static struct btf *__find_kfunc_desc_btf(struct bpf_verifier_env *env,
->>>>>>                                         s16 offset)
->>>>>>     {
->>>>>> @@ -2342,6 +2357,13 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>>>>                         */
->>>>>>                        if (insn->src_reg == BPF_PSEUDO_CALL)
->>>>>>                                return false;
->>>>>> +
->>>>>> +                    /* Kfunc call will reach here because of insn_has_def32,
->>>>>> +                     * conservatively return TRUE.
->>>>>> +                     */
->>>>>> +                    if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL)
->>>>>> +                            return true;
->>>>>> +
->>>>>>                        /* Helper call will reach here because of arg type
->>>>>>                         * check, conservatively return TRUE.
->>>>>>                         */
->>>>>> @@ -2405,10 +2427,26 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>>>>     }
->>>>>>
->>>>>>     /* Return the regno defined by the insn, or -1. */
->>>>>> -static int insn_def_regno(const struct bpf_insn *insn)
->>>>>> +static int insn_def_regno(struct bpf_verifier_env *env, const struct bpf_insn *insn)
->>>>>>     {
->>>>>>        switch (BPF_CLASS(insn->code)) {
->>>>>>        case BPF_JMP:
->>>>>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->>>>>> +                    const struct bpf_kfunc_desc *desc;
->>>>>> +
->>>>>> +                    /* The value of desc cannot be NULL */
->>>>>> +                    desc = find_kfunc_desc_by_imm(env->prog, insn->imm);
->>>>>> +
->>>>>> +                    /* A kfunc can return void.
->>>>>> +                     * The btf type of the kfunc's return value needs
->>>>>> +                     * to be checked against "void" first
->>>>>> +                     */
->>>>>> +                    if (desc->func_model.ret_size == 0)
->>>>>> +                            return -1;
->>>>>> +                    else
->>>>>> +                            return insn->dst_reg;
->>>>>> +            }
->>>>>> +            fallthrough;
->>>>>
->>>>> I cannot make any sense of this patch.
->>>>> insn->dst_reg above is 0.
->>>>> The kfunc call doesn't define a register from insn_def_regno() pov.
->>>>>
->>>>> Are you hacking insn_def_regno() to return 0 so that
->>>>> if (WARN_ON(load_reg == -1)) {
->>>>>      verbose(env, "verifier bug. zext_dst is set, but no reg is defined\n");
->>>>>      return -EFAULT;
->>>>> }
->>>>> in opt_subreg_zext_lo32_rnd_hi32() doesn't trigger ?
->>>>>
->>>>> But this verifier message should have been a hint that you need
->>>>> to analyze why zext_dst is set on this kfunc call.
->>>>> Maybe it shouldn't ?
->>>>> Did you analyze the logic of mark_btf_func_reg_size() ?
->>>> make r0 zext is not caused by mark_btf_func_reg_size.
->>>>
->>>> This problem occurs when running the kfunc_call_test_ref_btf_id test
->>>> case in the 32-bit ARM environment.
->>>
->>> Why is it not failing on x86-32 ?
->> Use the latest mainline kernel code to test on the x86_32 machine. The
->> test also fails:
->>
->>     # ./test_progs -t kfunc_call/kfunc_call_test_ref_btf_id
->>     Failed to load bpf_testmod.ko into the kernel: -8
->>     WARNING! Selftests relying on bpf_testmod.ko will be skipped.
->>     libbpf: prog 'kfunc_call_test_ref_btf_id': BPF program load failed:
->> Bad address
->>     libbpf: prog 'kfunc_call_test_ref_btf_id': -- BEGIN PROG LOAD LOG --
->>     processed 25 insns (limit 1000000) max_states_per_insn 0 total_states
->> 2 peak_states 2 mark_read 1
->>     -- END PROG LOAD LOG --
->>     libbpf: prog 'kfunc_call_test_ref_btf_id': failed to load: -14
->>     libbpf: failed to load object 'kfunc_call_test'
->>     libbpf: failed to load BPF skeleton 'kfunc_call_test': -14
->>     verify_success:FAIL:skel unexpected error: -14
->>
->> Therefore, this problem also exists on x86_32:
->> "verifier bug. zext_dst is set, but no reg is defined"
-> 
-> The kernel returns -14 == EFAULT.
-> That's a completely different issue.
-It's the same problem. The opt_subreg_zext_lo32_rnd_hi32 function fails 
-to check here and returns -EFAULT
+Check for platform long int to be larger than 32-bits before enabling
+this check, it false on 32bit anyways.
 
-opt_subreg_zext_lo32_rnd_hi32 {
-   ...
-    if (WARN_ON(load_reg == -1)) { 
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
 
-            verbose(env, "verifier bug. zext_dst is set, but no reg is 
-defined\n");
-            return -EFAULT; 
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    }
-   ...
-} 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 91b7106a4a73..65cb70cdc22b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9837,7 +9837,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 	char errmsg[STRERR_BUFSIZE];
+ 	int type, pfd;
+ 
+-	if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
++	if (BITS_PER_LONG > 32 && ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
+ 		return -EINVAL;
+ 
+ 	memset(&attr, 0, attr_sz);
+-- 
+2.38.1
 
-> .
-> 
