@@ -2,255 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BB0642BBF
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 16:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D910642C8D
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 17:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbiLEP3Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 10:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59490 "EHLO
+        id S230450AbiLEQKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 11:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbiLEP3F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 10:29:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2031EAFC
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 07:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670253993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uKvjKCdmkZB6NQ/bdjjalHt9P1pJFFM/EqdFh8BTkbY=;
-        b=Yf8bEIReKVn6O/sTik0nSjhRZytoRXVgT917y3swtcmn0uZTF/mLVrngvPhvHkf2kqVNm2
-        yBvpqV4se9sIuqDeeJhFDBlQybuMF6wYi9bceJ1UcVBWLmer4Jm6Gnqrqo394p+iqLlF/K
-        DV4I84RQwLK4qqSo+zyZPL0W3N8FABE=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-221-Kwxs43jeO1SsU25OnBblNw-1; Mon, 05 Dec 2022 10:26:29 -0500
-X-MC-Unique: Kwxs43jeO1SsU25OnBblNw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C4231C05149;
-        Mon,  5 Dec 2022 15:26:27 +0000 (UTC)
-Received: from ovpn-193-115.brq.redhat.com (ovpn-193-115.brq.redhat.com [10.40.193.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 275E040C6EC3;
-        Mon,  5 Dec 2022 15:26:24 +0000 (UTC)
-From:   Viktor Malik <vmalik@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v3 3/3] bpf/selftests: Test fentry attachment to shadowed functions
-Date:   Mon,  5 Dec 2022 16:26:06 +0100
-Message-Id: <db2560ea17db7c207a4de31fb84f0ccd5435245f.1670249590.git.vmalik@redhat.com>
-In-Reply-To: <cover.1670249590.git.vmalik@redhat.com>
-References: <cover.1670249590.git.vmalik@redhat.com>
+        with ESMTP id S229999AbiLEQKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 11:10:18 -0500
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006A11D0C6;
+        Mon,  5 Dec 2022 08:10:16 -0800 (PST)
+Received: by mail-qv1-f54.google.com with SMTP id i12so8507608qvs.2;
+        Mon, 05 Dec 2022 08:10:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sAHDMv10mwaXywsSbTClOPAW5tc+W/UH4dCDoxz59Vs=;
+        b=oCBdhVcTfx7X3XxhLclvvQXBlqiWY3rrcFvvvqdpI5px7qm3NcbNE/+SN9+XIg/uSs
+         NQe06cW/vYjBG5xkE+rWSmOnUk0bjamsBnvmZ5vDbZN5/Cr51YIEN9ZnCftmm2xME7cb
+         9L+EJbCYtsPSlTyV8KIlo5jDSa6kqh6V4glC1gIt10BmS+rdkNjihut+qTMN2EXLKrmF
+         nffQqAJ7v7g2VrNQhZ0lEtZCki0Wj+rm0RRyd3+5sefTEH0lkbvK8wdg9Tt6GPgH5Z1S
+         z45LJpr7WRMBooRDAq1f7EAcU+xyjLtKo00Yb1U0dQkcGn3O3EcwX754KkTVxqnGPv5y
+         iLsA==
+X-Gm-Message-State: ANoB5pnd3TLVNUr24lgiqfuOHZbMUWxwOXmSyCuk2tH7c1g2b9WFrZnK
+        5+C4/2B1tOJfx/cqF9jr7xAttD84VH2ISiz5
+X-Google-Smtp-Source: AA0mqf7wXslcZUOiK+xbKXG5qb9s4ioNMJalcASEf1F78mzZeUdDcM+PdHW4tsX/7jOiuNCMq5y1Iw==
+X-Received: by 2002:a05:6214:c6d:b0:4c7:557c:35de with SMTP id t13-20020a0562140c6d00b004c7557c35demr9007338qvj.120.1670256615854;
+        Mon, 05 Dec 2022 08:10:15 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:b2ee])
+        by smtp.gmail.com with ESMTPSA id u15-20020a05620a0c4f00b006bb2cd2f6d1sm12682052qki.127.2022.12.05.08.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Dec 2022 08:10:15 -0800 (PST)
+Date:   Mon, 5 Dec 2022 10:10:14 -0600
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, F@maniforge.lan
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 1/2] bpf/docs: Document struct task_struct *
+ kfuncs
+Message-ID: <Y44X5uQ0tJoCvQ96@maniforge.lan>
+References: <20221202220736.521227-1-void@manifault.com>
+ <20221202220736.521227-2-void@manifault.com>
+ <20221203021500.okerdcfwhgykrxxg@macbook-pro-6.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221203021500.okerdcfwhgykrxxg@macbook-pro-6.dhcp.thefacebook.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds a new test that tries to attach a program to fentry of two
-functions of the same name, one located in vmlinux and the other in
-bpf_testmod.
+On Fri, Dec 02, 2022 at 06:15:00PM -0800, Alexei Starovoitov wrote:
 
-To avoid conflicts with existing tests, a new function
-"bpf_fentry_shadow_test" was created both in vmlinux and in bpf_testmod.
+[...]
 
-The previous commit fixed a bug which caused this test to fail. The
-verifier would always use the vmlinux function's address as the target
-trampoline address, hence trying to attach two programs to the same
-trampoline.
+> > +.. code-block:: c
+> > +
+> > +	/**
+> > +	 * A trivial example tracepoint program that shows how to
+> > +	 * acquire and release a struct task_struct * pointer.
+> > +	 */
+> > +	SEC("tp_btf/task_newtask")
+> > +	int BPF_PROG(task_acquire_release_example, struct task_struct *task, u64 clone_flags)
+> > +	{
+> > +		struct task_struct *acquired;
+> > +
+> > +		acquired = bpf_task_acquire(task);
+> > +
+> > +		/*
+> > +		 * In a typical program you'd do something like store
+> > +		 * the task in a map. Here, we just release it.
+> 
+> There is a sentence later in this patch about what happens with the pointer
+> that was stored in a map, but I would add some part of it here as well. Like:
+> 
+>  * In a typical program you'd do something like store
+>  * the task in a map and the map will automatically release it later.
+>  * Here, we release it manually.
 
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
----
- net/bpf/test_run.c                            |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   7 +
- .../bpf/prog_tests/module_attach_shadow.c     | 124 ++++++++++++++++++
- 3 files changed, 136 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+Will do
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 6094ef7cffcd..71e36a85573b 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -536,6 +536,11 @@ int noinline bpf_modify_return_test(int a, int *b)
- 	return a + *b;
- }
- 
-+int noinline bpf_fentry_shadow_test(int a)
-+{
-+	return a + 1;
-+}
-+
- u64 noinline bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
- {
- 	return a + b + c + d;
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 5085fea3cac5..d23127a5ec68 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -229,6 +229,13 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
- 
-+noinline int bpf_fentry_shadow_test(int a)
-+{
-+	return a + 2;
-+}
-+EXPORT_SYMBOL_GPL(bpf_fentry_shadow_test);
-+ALLOW_ERROR_INJECTION(bpf_fentry_shadow_test, ERRNO);
-+
- extern int bpf_fentry_test1(int a);
- 
- static int bpf_testmod_init(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-new file mode 100644
-index 000000000000..bf511e61ec1f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Red Hat */
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "bpf/libbpf_internal.h"
-+#include "cgroup_helpers.h"
-+
-+static const char *module_name = "bpf_testmod";
-+static const char *symbol_name = "bpf_fentry_shadow_test";
-+
-+int get_bpf_testmod_btf_fd(void)
-+{
-+	struct bpf_btf_info info;
-+	char name[64];
-+	__u32 id = 0, len;
-+	int err, fd;
-+
-+	while (true) {
-+		err = bpf_btf_get_next_id(id, &id);
-+		if (err) {
-+			log_err("failed to iterate BTF objects");
-+			return err;
-+		}
-+
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0) {
-+			err = -errno;
-+			log_err("failed to get FD for BTF object #%d", id);
-+			return err;
-+		}
-+
-+		len = sizeof(info);
-+		memset(&info, 0, sizeof(info));
-+		info.name = ptr_to_u64(name);
-+		info.name_len = sizeof(name);
-+
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			err = -errno;
-+			log_err("failed to get info for BTF object #%d", id);
-+			close(fd);
-+			return err;
-+		}
-+
-+		if (strcmp(name, module_name) == 0)
-+			return fd;
-+
-+		close(fd);
-+	}
-+	return -ENOENT;
-+}
-+
-+void test_module_fentry_shadow(void)
-+{
-+	struct btf *vmlinux_btf = NULL, *mod_btf = NULL;
-+	int err, i;
-+	int btf_fd[2] = {};
-+	int prog_fd[2] = {};
-+	int link_fd[2] = {};
-+	__s32 btf_id[2] = {};
-+
-+	const struct bpf_insn trace_program[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+
-+	LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
-+		.expected_attach_type = BPF_TRACE_FENTRY,
-+	);
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, test_opts);
-+
-+	vmlinux_btf = btf__load_vmlinux_btf();
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "load_vmlinux_btf"))
-+		return;
-+
-+	btf_fd[1] = get_bpf_testmod_btf_fd();
-+	if (!ASSERT_GT(btf_fd[1], 0, "get_bpf_testmod_btf_fd"))
-+		goto out;
-+
-+	mod_btf = btf_get_from_fd(btf_fd[1], vmlinux_btf);
-+	if (!ASSERT_OK_PTR(mod_btf, "btf_get_from_fd"))
-+		goto out;
-+
-+	btf_id[0] = btf__find_by_name_kind(vmlinux_btf, symbol_name, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(btf_id[0], 0, "btf_find_by_name"))
-+		goto out;
-+
-+	btf_id[1] = btf__find_by_name_kind(mod_btf, symbol_name, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(btf_id[1], 0, "btf_find_by_name"))
-+		goto out;
-+
-+	for (i = 0; i < 2; i++) {
-+		load_opts.attach_btf_id = btf_id[i];
-+		load_opts.attach_btf_obj_fd = btf_fd[i];
-+		prog_fd[i] = bpf_prog_load(BPF_PROG_TYPE_TRACING, NULL, "GPL",
-+					   trace_program,
-+					   sizeof(trace_program) / sizeof(struct bpf_insn),
-+					   &load_opts);
-+		if (!ASSERT_GE(prog_fd[i], 0, "bpf_prog_load"))
-+			goto out;
-+
-+		link_fd[i] = bpf_link_create(prog_fd[i], 0, BPF_TRACE_FENTRY, NULL);
-+		if (!ASSERT_GE(link_fd[i], 0, "bpf_link_create"))
-+			goto out;
-+	}
-+
-+	err = bpf_prog_test_run_opts(prog_fd[0], &test_opts);
-+	ASSERT_OK(err, "running test");
-+
-+out:
-+	if (vmlinux_btf)
-+		btf__free(vmlinux_btf);
-+	if (mod_btf)
-+		btf__free(mod_btf);
-+	for (i = 0; i < 2; i++) {
-+		if (btf_fd[i])
-+			close(btf_fd[i]);
-+		if (prog_fd[i])
-+			close(prog_fd[i]);
-+		if (link_fd[i])
-+			close(link_fd[i]);
-+	}
-+}
--- 
-2.38.1
+> > +		 */
+> > +		bpf_task_release(acquired);
+> > +		return 0;
+> > +	}
+> > +
+> > +If you want to acquire a reference to a ``struct task_struct`` kptr that's
+> > +already stored in a map, you can use bpf_task_kptr_get():
+> > +
+> > +.. kernel-doc:: kernel/bpf/helpers.c
+> > +   :identifiers: bpf_task_kptr_get
+> > +
+> > +Here's an example of how it can be used:
+> > +
+> > +.. code-block:: c
+> > +
+> > +	/* struct containing the struct task_struct kptr which is actually stored in the map. */
+> > +	struct __tasks_kfunc_map_value {
+> > +		struct task_struct __kptr_ref * task;
+> > +	};
+> > +
+> > +	/* The map containing struct __tasks_kfunc_map_value entries. */
+> > +	struct hash_map {
+> > +		__uint(type, BPF_MAP_TYPE_HASH);
+> > +		__type(key, int);
+> > +		__type(value, struct __tasks_kfunc_map_value);
+> > +		__uint(max_entries, 1);
+> > +	} __tasks_kfunc_map SEC(".maps");
+> > +
+> > +	/* ... */
+> > +
+> > +	/**
+> > +	 * A simple example tracepoint program showing how a
+> > +	 * struct task_struct kptr that is stored in a map can
+> > +	 * be acquired using the bpf_task_kptr_get() kfunc.
+> > +	 */
+> > +	 SEC("tp_btf/task_newtask")
+> > +	 int BPF_PROG(task_kptr_get_example, struct task_struct *task, u64 clone_flags)
+> > +	 {
+> > +		struct task_struct *kptr;
+> > +		struct __tasks_kfunc_map_value *v;
+> > +		s32 pid;
+> > +		long status;
+> > +
+> > +		status = bpf_probe_read_kernel(&pid, sizeof(pid), &task->pid);
+> 
+> why use the slow bpf_probe_read_kernel() here?
+> I think the example should follow modern coding practices.
+> Just: pid = task->pid; instead ?
 
+Yeah, I'll fix this.
+
+[...]
+
+> > +		if (status)
+> > +			return status;
+> > +
+> > +		/* Assume a task kptr was previously stored in the map. */
+> > +		v = bpf_map_lookup_elem(&__tasks_kfunc_map, &pid);
+> > +		if (!v)
+> > +			return -ENOENT;
+> > +
+> > +		/* Acquire a reference to the task kptr that's already stored in the map. */
+> > +		kptr = bpf_task_kptr_get(&v->task);
+> > +		if (!kptr)
+> > +			/* If no task was present in the map, it's because
+> > +			 * we're racing with another CPU that removed it with
+> > +			 * bpf_kptr_xchg() between the bpf_map_lookup_elem()
+> > +			 * above, and our call to bpf_task_kptr_get().
+> > +			 * bpf_task_kptr_get() internally safely handles this
+> > +			 * race, and will return NULL if the task is no longer
+> > +			 * present in the map by the time we invoke the kfunc.
+> > +			 */
+> > +			return -EBUSY;
+> > +
+> > +		/* Free the reference we just took above. Note that the
+> > +		 * original struct task_struct kptr is still in the map.
+> > +		 * It will be freed either at a later time if another
+> > +		 * context deletes it from the map, or automatically by
+> > +		 * the BPF subsystem if it's still present when the map
+> > +		 * is destroyed.
+> > +		 */
+> > +		bpf_task_release(kptr);
+> > +
+> > +		return 0;
+> > +        }
+> > +
+> > +Finally, a BPF program can also look up a task from a pid. This can be useful
+> > +if the caller doesn't have a trusted pointer to a ``struct task_struct *``
+> > +object that it can acquire a reference on with bpf_task_acquire().
+> > +
+> > +.. kernel-doc:: kernel/bpf/helpers.c
+> > +   :identifiers: bpf_task_from_pid
+> > +
+> > +Here is an example of it being used:
+> > +
+> > +.. code-block:: c
+> > +
+> > +	SEC("tp_btf/task_newtask")
+> > +	int BPF_PROG(task_get_pid_example, struct task_struct *task, u64 clone_flags)
+> > +	{
+> > +		struct task_struct *lookup;
+> > +
+> > +		lookup = bpf_task_from_pid(task->pid);
+> > +		if (!lookup)
+> > +			/* A task should always be found, as %task is a tracepoint arg. */
+> > +			return -ENOENT;
+> > +
+> > +		if (lookup->pid != task->pid) {
+> > +			/* The pid of the lookup task should be the same as the input task. */
+> 
+> I suspect both "errors" are actually possible in practice,
+> since bpf_task_from_pid is using init_pid_ns.
+> But this taskd might be in different pid_ns. See task_active_pid_ns.
+> Probably worth mentioning this aspect of bpf_task_from_pid.
+
+Yep, agreed. Will add
+
+[...]
+
+Thanks,
+David
