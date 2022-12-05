@@ -2,53 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A18642FA9
-	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 19:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDB164353E
+	for <lists+bpf@lfdr.de>; Mon,  5 Dec 2022 21:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbiLESPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 13:15:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        id S232180AbiLEUF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 15:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231812AbiLESPu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 13:15:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F312037D;
-        Mon,  5 Dec 2022 10:15:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3DFEBB80E6F;
-        Mon,  5 Dec 2022 18:15:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF15BC433C1;
-        Mon,  5 Dec 2022 18:15:45 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="LcEqgcPK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1670264143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=o5wurk9n+fhcKuPqAijagg/yKq0yv8nKTRp/gYVfZpE=;
-        b=LcEqgcPK1W7vppIkpae14KX5IfmybWNqDaUyvcKm6QKriYbpy0739/kPRoBnGNSpp8fQ/U
-        Hz/oilo0ZwAb/Ewhd1CUDoHmZHqIx3fNs3Cv3q1woQZrEe66pHJB8F3zVpuWlhFPc27XE2
-        WVHBM7SY9OgiIWDXQdweg/im7C+HyGg=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 7d501ee1 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 5 Dec 2022 18:15:43 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S232272AbiLEUFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 15:05:22 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577C11EEEF;
+        Mon,  5 Dec 2022 12:05:19 -0800 (PST)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1p2Hi9-0004RO-UX; Mon, 05 Dec 2022 21:05:10 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1p2Hi9-000GPh-Ee; Mon, 05 Dec 2022 21:05:09 +0100
+Subject: Re: [PATCH] bpftool: Fix memory leak in do_build_table_cb
+To:     Miaoqian Lin <linmq006@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Subject: [PATCH] bpf: call get_random_u32() for random integers
-Date:   Mon,  5 Dec 2022 19:15:34 +0100
-Message-Id: <20221205181534.612702-1-Jason@zx2c4.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221205081300.561974-1-linmq006@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8d7ac47d-5d76-eaf1-7c1e-a4418d80dac5@iogearbox.net>
+Date:   Mon, 5 Dec 2022 21:05:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20221205081300.561974-1-linmq006@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26741/Mon Dec  5 09:16:09 2022)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,99 +58,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since BPF's bpf_user_rnd_u32() was introduced, there have been three
-significant developments in the RNG: 1) get_random_u32() returns the
-same types of bytes as /dev/urandom, eliminating the distinction between
-"kernel random bytes" and "userspace random bytes", 2) get_random_u32()
-operates mostly locklessly over percpu state, 3) get_random_u32() has
-become quite fast.
+On 12/5/22 9:13 AM, Miaoqian Lin wrote:
+> strdup() allocates memory for path. We need to release the memory in
+> the following error paths. Add free() to avoid memory leak.
+> 
+> Fixes: 8f184732b60b ("bpftool: Switch to libbpf's hashmap for pinned paths of BPF objects")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+> ---
+>   tools/bpf/bpftool/common.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index 0cdb4f711510..8a820356525e 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -499,9 +499,11 @@ static int do_build_table_cb(const char *fpath, const struct stat *sb,
+>   	if (err) {
+>   		p_err("failed to append entry to hashmap for ID %u, path '%s': %s",
+>   		      pinned_info.id, path, strerror(errno));
+> -		goto out_close;
+> +		goto out_free;
+>   	}
+>   
+> +out_free:
+> +	free(path);
 
-So rather than using the old clunky Tausworthe prandom code, just call
-get_random_u32(), which should fit BPF uses perfectly.
+It would be ok if you were to add the free(path) into the err condition, but here you
+also cause the !err to be freed which would trigger as UAF. See the hashmap_insert()
+where just set the pointer entry->value = <path>.. how was this tested before submission?
 
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- include/linux/bpf.h   |  1 -
- kernel/bpf/core.c     | 17 +----------------
- kernel/bpf/verifier.c |  2 --
- net/core/filter.c     |  1 -
- 4 files changed, 1 insertion(+), 20 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 0566705c1d4e..aae89318789a 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2554,7 +2554,6 @@ const struct bpf_func_proto *tracing_prog_func_proto(
-   enum bpf_func_id func_id, const struct bpf_prog *prog);
- 
- /* Shared helpers among cBPF and eBPF. */
--void bpf_user_rnd_init_once(void);
- u64 bpf_user_rnd_u32(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 38159f39e2af..2cc28d63d761 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2579,14 +2579,6 @@ void bpf_prog_free(struct bpf_prog *fp)
- }
- EXPORT_SYMBOL_GPL(bpf_prog_free);
- 
--/* RNG for unpriviledged user space with separated state from prandom_u32(). */
--static DEFINE_PER_CPU(struct rnd_state, bpf_user_rnd_state);
--
--void bpf_user_rnd_init_once(void)
--{
--	prandom_init_once(&bpf_user_rnd_state);
--}
--
- BPF_CALL_0(bpf_user_rnd_u32)
- {
- 	/* Should someone ever have the rather unwise idea to use some
-@@ -2595,14 +2587,7 @@ BPF_CALL_0(bpf_user_rnd_u32)
- 	 * transformations. Register assignments from both sides are
- 	 * different, f.e. classic always sets fn(ctx, A, X) here.
- 	 */
--	struct rnd_state *state;
--	u32 res;
--
--	state = &get_cpu_var(bpf_user_rnd_state);
--	res = prandom_u32_state(state);
--	put_cpu_var(bpf_user_rnd_state);
--
--	return res;
-+	return get_random_u32();
- }
- 
- BPF_CALL_0(bpf_get_raw_cpu_id)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 225666307bba..75a1a6526165 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14045,8 +14045,6 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 
- 		if (insn->imm == BPF_FUNC_get_route_realm)
- 			prog->dst_needed = 1;
--		if (insn->imm == BPF_FUNC_get_prandom_u32)
--			bpf_user_rnd_init_once();
- 		if (insn->imm == BPF_FUNC_override_return)
- 			prog->kprobe_override = 1;
- 		if (insn->imm == BPF_FUNC_tail_call) {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index bb0136e7a8e4..7a595ac0028d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -443,7 +443,6 @@ static bool convert_bpf_extensions(struct sock_filter *fp,
- 			break;
- 		case SKF_AD_OFF + SKF_AD_RANDOM:
- 			*insn = BPF_EMIT_CALL(bpf_user_rnd_u32);
--			bpf_user_rnd_init_once();
- 			break;
- 		}
- 		break;
--- 
-2.38.1
+>   out_close:
+>   	close(fd);
+>   out_ret:
+> 
 
