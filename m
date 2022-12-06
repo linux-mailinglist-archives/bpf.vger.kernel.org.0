@@ -2,85 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89663643F04
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 09:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29208643F58
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 10:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbiLFIt6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 03:49:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S233486AbiLFJIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 04:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbiLFItp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 03:49:45 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A41AA471;
-        Tue,  6 Dec 2022 00:49:44 -0800 (PST)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NRDbp4lPNz15N9g;
-        Tue,  6 Dec 2022 16:48:54 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 6 Dec 2022 16:49:41 +0800
-Message-ID: <db4c483d-d798-fcfa-1791-856f61decfd7@huawei.com>
-Date:   Tue, 6 Dec 2022 16:49:41 +0800
+        with ESMTP id S231866AbiLFJIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 04:08:54 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B590A1CFD9;
+        Tue,  6 Dec 2022 01:08:52 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id o5so22534504wrm.1;
+        Tue, 06 Dec 2022 01:08:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3o4QtSJ7c4P7HZT5L+mxX3DZ2HgHpAgbZ1YjOIxIeqo=;
+        b=W1Pl3qLLo8V/jqatIoiVw0zMU1rjeZ0r9FRnKMEPCgYg9B8ftTCu2MgVxiQ+RjVAqh
+         olqJJnbBDXVBoJL76h/W0VtKIxfUV2MAF3Pcf9VXVewzvIi/lN/46VzApIiKf6O5oHdh
+         dDeyd+UlS8CF3URb3QuYgDIXlgG9+cpOBVQUaxywIykfiOZl5Z75cULOwgCSWz2QTI/y
+         WA08Lmo7EAThvfk6W/KoLqxyYPhV74K9hdJ8GqcseuOOyhCMt7Cy0erLiUojSjXPR/Zc
+         y6YDAiMSfh6s1PboVTjkQb/w46k4sdGuOkcdHM3xZ5zSFBsfF63JxePCUKUQF9c/9i/G
+         McrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3o4QtSJ7c4P7HZT5L+mxX3DZ2HgHpAgbZ1YjOIxIeqo=;
+        b=WYd0J3Lg1nCR/zTPeC6oCwogZOMy3+i06Ykw+D5ElF1vdJTnLc4C4YL/N+XyKLRI7E
+         YVFFkwQkdF2FpgbKdMIfJUHHOyQX95BPnFENzlOo2DZa05CjwnxMM/dApjmorLUV6O6r
+         8P4e0qzwadFhDEdUI84CI25bD51vmQvzTNpaQNkd2qeVZUqoKcIGz/X0xS8wwmCUKzEv
+         oZM7T4tSGPIl3I5Mq0W6MbJuBlSUqB5aLa/JKhFWa/YFfLOuCdLVzDg0d4+E5J1ZFc5f
+         Ialtme5kM1ab0wOs5Cxe8KonNc9DBmF+cC4rwULtEHxeD7ckoWPXA9ihpgMkmoDgljpb
+         D2Bg==
+X-Gm-Message-State: ANoB5pkpTd9FRlaixEXahe+d1FVGPwpHRLnWraAhDdITNw/+WhSQz4jE
+        itw4z3P5bR9fZ3LkjA3DWVk=
+X-Google-Smtp-Source: AA0mqf5z43eL/Ti+R8aAu7XmWjpYxhXUGtqtwzVO5G+zimMKzNd+ZXDMUDuqs7sPS2byceA4PsRrfQ==
+X-Received: by 2002:a05:6000:50f:b0:241:ee78:b109 with SMTP id a15-20020a056000050f00b00241ee78b109mr34460979wrf.203.1670317730976;
+        Tue, 06 Dec 2022 01:08:50 -0800 (PST)
+Received: from localhost.localdomain (c-5eea761b-74736162.cust.telenor.se. [94.234.118.27])
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b003cf57329221sm25065690wms.14.2022.12.06.01.08.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Dec 2022 01:08:50 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, bpf@vger.kernel.org, yhs@fb.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        jonathan.lemon@gmail.com
+Subject: [PATCH bpf-next 00/15] selftests/xsk: speed-ups, fixes, and new XDP programs
+Date:   Tue,  6 Dec 2022 10:08:11 +0100
+Message-Id: <20221206090826.2957-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf v2] riscv, bpf: Emit fixed-length instructions for
- BPF_PSEUDO_FUNC
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20221202094837.3872444-1-pulehui@huaweicloud.com>
- <87y1rq848x.fsf@all.your.base.are.belong.to.us>
- <0ade59ea-6863-4d68-607c-22e4b9405a0d@huaweicloud.com>
- <87359t3r0h.fsf@all.your.base.are.belong.to.us>
- <0620000f-4d06-de15-09d9-24b5b0c47410@huaweicloud.com>
- <87359szzw3.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <87359szzw3.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This is a patch set of various performance improvements, fixes and the
+introduction of more than one XDP program to the xsk selftests
+framework so we can test more things in the future such as upcoming
+multi-buffer and metadata support for AF_XDP. The new programs just
+reuses the framework that all the other eBPF selftests use. The new
+feature is used to implement one new test that does XDP_DROP on every
+other packet. More tests using this will be added in future commits.
+
+Contents:
+
+* The run-time of the test suite is cut by 10x when executing the
+  tests on a real NIC, by only attaching the XDP program once per mode
+  we test, instead of once per test program.
+
+* Over 700 lines of code have been removed. The xsk.c control file was
+  moved straight over from libbpf when the xsk support was deprecated
+  there. As it is now not used as library code that has to work with
+  all kinds of versions of Linux, a lot of code could be dropped or
+  simplified.
+
+* Add a new command line option "-d" that can be used when a test
+  fails and you want to debug it with gdb or some other debugger. The
+  option creates the two veth netdevs and prints them to the screen
+  without deleting them afterwards. This way these veth netdevs can be
+  used when running xskxceiver in a debugger.
+
+* Implemented the possibility to load external XDP programs so we can
+  have more than the default one. This feature is used to implement a
+  test where every other packet is dropped. Good exercise for the
+  recycling mechanism of the xsk buffer pool used in zero-copy mode.
+
+* Various clean-ups and small fixes in patches 1 to 5. None of these
+  fixes has any impact on the correct execution of the tests when they
+  pass, though they can be irritating when a test fails. IMHO, they do
+  not need to go to bpf as they will not fix anything there. The first
+  version of patches 1, 2, and 4 where previously sent to bpf, but has
+  now been included here.
+
+Patches:
+1-5:   Small fixes and clean-ups
+6:     New convenient debug option when using a debugger such as gdb
+7-8:   Removal of unnecessary code
+9:     Add the ability to load external XDP programs
+10-11: Removal of more unnecessary code
+12:    Implement a new test where every other packet is XDP_DROP:ed
+13:    Unify the thread dispatching code
+14-15: Simplify the way tests are written when using custom packet_streams
+       or custom XDP programs
+
+Thanks: Magnus
+
+Magnus Karlsson (15):
+  selftests/xsk: print correct payload for packet dump
+  selftests/xsk: do not close unused file descriptors
+  selftests/xsk: submit correct number of frames in populate_fill_ring
+  selftests/xsk: print correct error codes when exiting
+  selftests/xsk: remove unused variable outstanding_tx
+  selftests/xsk: add debug option for creating netdevs
+  selftests/xsk: get rid of asm store/release implementations
+  selftests/xsk: remove namespaces
+  selftests/xsk: load and attach XDP program only once per mode
+  selftests/xsk: remove unnecessary code in control path
+  selftests/xsk: get rid of built-in XDP program
+  selftests/xsk: add test when some packets are XDP_DROPed
+  selftests/xsk: merge dual and single thread dispatchers
+  selftests/xsk: automatically restore packet stream
+  selftests/xsk: automatically switch XDP programs
+
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/progs/xsk_def_prog.c        |  19 +
+ .../selftests/bpf/progs/xsk_xdp_drop.c        |  25 +
+ tools/testing/selftests/bpf/test_xsk.sh       |  42 +-
+ tools/testing/selftests/bpf/xsk.c             | 674 +-----------------
+ tools/testing/selftests/bpf/xsk.h             |  97 +--
+ tools/testing/selftests/bpf/xsk_prereqs.sh    |  12 +-
+ tools/testing/selftests/bpf/xskxceiver.c      | 376 +++++-----
+ tools/testing/selftests/bpf/xskxceiver.h      |  19 +-
+ 9 files changed, 333 insertions(+), 933 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/xsk_def_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xsk_xdp_drop.c
 
 
-On 2022/12/6 16:42, Björn Töpel wrote:
-> Pu Lehui <pulehui@huaweicloud.com> writes:
-> 
->>> Wouldn't that work?
->>>
->>
->> It definitely works. But auipc+addi may be some holes, while
->> lui+addi+slli support all the address of kernel and module. And this
->> might be help for the future feature porting.
-> 
-> We're already using auipc/jalr for calls, and I'd say it *very* unlikely
-> that we'll hit the non-covered range. I'd say go with auipc/addi +
-> error, and we can change if this really is a problem.
-
-Well, thank you for your patience, will send new soon.
+base-commit: 08388efe593106d2fcd6ddf7a269db58a62a5dda
+--
+2.34.1
