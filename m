@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D82644F5E
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 00:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D589F644F5A
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 00:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiLFXKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 18:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S229523AbiLFXK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 18:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbiLFXKa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 18:10:30 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7914F4299E
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 15:10:28 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B6LhBct005482
-        for <bpf@vger.kernel.org>; Tue, 6 Dec 2022 15:10:27 -0800
+        with ESMTP id S229621AbiLFXK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 18:10:26 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7EF4298E
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 15:10:25 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B6LhJ5d032730
+        for <bpf@vger.kernel.org>; Tue, 6 Dec 2022 15:10:25 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=NPr5g30TzpiKBwCbkbTwiLeOFyeqeIkDi9luyr0QAp0=;
- b=nhQWbdiLjXiAotMeBbHIQdjqOPwe5GrnXh4p9u7g1ph8QB1BiN4XAuQhXWljG+FyBdkB
- wy037mvODqjqMUSFiz9x796164QNFSey9FJ3M01PSrVcg/RHvy+zEkWlOP2XGMuIFkcO
- 7WCJA6ndBC62SAkDl7yMBmO5s1lRYGetGwA= 
+ bh=DgcPGFT4Kqc9QQP4cTSX7FDCFdBcJdilQ//tNgqCojo=;
+ b=LbyMGD//xK2dhmIDeHFrEFaqo1e6bkbqSDJYM/Ek+hrHqvZr1CUHJ5IjcOyBv+OSfyq0
+ 3mQsKJZLaJJ6mmRZE9FPB5uIxAiB2SAJTbHbpqQGayk+MsmeTsLpzQJ5qNSS4skZzJEU
+ 56cKJDK2+SO4+tY780gvZ4nZALPEKM0qqAQ= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ma9dxtxf8-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m9x70xv4w-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 15:10:27 -0800
-Received: from twshared8047.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 15:10:25 -0800
+Received: from twshared26225.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 6 Dec 2022 15:10:26 -0800
+ 15.1.2375.34; Tue, 6 Dec 2022 15:10:21 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 6744E120B3785; Tue,  6 Dec 2022 15:10:06 -0800 (PST)
+        id D728D120B3788; Tue,  6 Dec 2022 15:10:06 -0800 (PST)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -43,9 +43,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Tejun Heo <tj@kernel.org>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 08/13] bpf: Add callback validation to kfunc verifier logic
-Date:   Tue, 6 Dec 2022 15:09:55 -0800
-Message-ID: <20221206231000.3180914-9-davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 09/13] bpf: Special verifier handling for bpf_rbtree_{remove, first}
+Date:   Tue, 6 Dec 2022 15:09:56 -0800
+Message-ID: <20221206231000.3180914-10-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221206231000.3180914-1-davemarchevsky@fb.com>
 References: <20221206231000.3180914-1-davemarchevsky@fb.com>
@@ -53,8 +53,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: RLr6fhFUPPAW5FP-wJVPfiY_DuF0JMFI
-X-Proofpoint-ORIG-GUID: RLr6fhFUPPAW5FP-wJVPfiY_DuF0JMFI
+X-Proofpoint-ORIG-GUID: ZEOe3eBegH9NTIsFrSvVS8Bri8aQynY3
+X-Proofpoint-GUID: ZEOe3eBegH9NTIsFrSvVS8Bri8aQynY3
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-06_12,2022-12-06_01,2022-06-22_01
@@ -68,307 +68,218 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some BPF helpers take a callback function which the helper calls. For
-each helper that takes such a callback, there's a special call to
-__check_func_call with a callback-state-setting callback that sets up
-verifier bpf_func_state for the callback's frame.
+Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
+that require handling in the verifier:
 
-kfuncs don't have any of this infrastructure yet, so let's add it in
-this patch, following existing helper pattern as much as possible. To
-validate functionality of this added plumbing, this patch adds
-callback handling for the bpf_rbtree_add kfunc and hopes to lay
-groundwork for future next-gen datastructure callbacks.
+  * both bpf_rbtree_remove and bpf_rbtree_first return the type containin=
+g
+    the bpf_rb_node field, with the offset set to that field's offset,
+    instead of a struct bpf_rb_node *
+    * Generalized existing next-gen list verifier handling for this
+      as mark_reg_datastructure_node helper
 
-In the "general plumbing" category we have:
+  * Unlike other functions, which set release_on_unlock on one of their
+    args, bpf_rbtree_first takes no arguments, rather setting
+    release_on_unlock on its return value
 
-  * check_kfunc_call doing callback verification right before clearing
-    CALLER_SAVED_REGS, exactly like check_helper_call
-  * recognition of func_ptr BTF types in kfunc args as
-    KF_ARG_PTR_TO_CALLBACK + propagation of subprogno for this arg type
+  * bpf_rbtree_remove's node input is a node that's been inserted
+    in the tree. Only non-owning references (PTR_UNTRUSTED +
+    release_on_unlock) refer to such nodes, but kfuncs don't take
+    PTR_UNTRUSTED args
+    * Added special carveout for bpf_rbtree_remove to take PTR_UNTRUSTED
+    * Since node input already has release_on_unlock set, don't set
+      it again
 
-In the "rbtree_add / next-gen datastructure-specific plumbing" category:
-
-  * Since bpf_rbtree_add must be called while the spin_lock associated
-    with the tree is held, don't complain when callback's func_state
-    doesn't unlock it by frame exit
-  * Mark rbtree_add callback's args PTR_UNTRUSTED to prevent rbtree
-    api functions from being called in the callback
+This patch, along with the previous one, complete special verifier
+handling for all rbtree API functions added in this series.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- kernel/bpf/verifier.c | 136 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 130 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 89 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 73 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 652112007b2c..9ad8c0b264dc 100644
+index 9ad8c0b264dc..29983e2c27df 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -1448,6 +1448,16 @@ static void mark_ptr_not_null_reg(struct bpf_reg_s=
-tate *reg)
- 	reg->type &=3D ~PTR_MAYBE_NULL;
- }
-=20
-+static void mark_reg_datastructure_node(struct bpf_reg_state *regs, u32 =
-regno,
-+					struct btf_field_datastructure_head *ds_head)
-+{
-+	__mark_reg_known_zero(&regs[regno]);
-+	regs[regno].type =3D PTR_TO_BTF_ID | MEM_ALLOC;
-+	regs[regno].btf =3D ds_head->btf;
-+	regs[regno].btf_id =3D ds_head->value_btf_id;
-+	regs[regno].off =3D ds_head->node_offset;
-+}
-+
- static bool reg_is_pkt_pointer(const struct bpf_reg_state *reg)
- {
- 	return type_is_pkt_pointer(reg->type);
-@@ -4771,7 +4781,8 @@ static int check_ptr_to_btf_access(struct bpf_verif=
-ier_env *env,
- 			return -EACCES;
- 		}
-=20
--		if (type_is_alloc(reg->type) && !reg->ref_obj_id) {
-+		if (type_is_alloc(reg->type) && !reg->ref_obj_id &&
-+		    !cur_func(env)->in_callback_fn) {
- 			verbose(env, "verifier internal error: ref_obj_id for allocated objec=
-t must be non-zero\n");
- 			return -EFAULT;
- 		}
-@@ -6952,6 +6963,8 @@ static int set_callee_state(struct bpf_verifier_env=
- *env,
- 			    struct bpf_func_state *caller,
- 			    struct bpf_func_state *callee, int insn_idx);
-=20
-+static bool is_callback_calling_kfunc(u32 btf_id);
-+
- static int __check_func_call(struct bpf_verifier_env *env, struct bpf_in=
-sn *insn,
- 			     int *insn_idx, int subprog,
- 			     set_callee_state_fn set_callee_state_cb)
-@@ -7006,10 +7019,18 @@ static int __check_func_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn
- 	 * interested in validating only BPF helpers that can call subprogs as
- 	 * callbacks
- 	 */
--	if (set_callee_state_cb !=3D set_callee_state && !is_callback_calling_f=
-unction(insn->imm)) {
--		verbose(env, "verifier bug: helper %s#%d is not marked as callback-cal=
-ling\n",
--			func_id_name(insn->imm), insn->imm);
--		return -EFAULT;
-+	if (set_callee_state_cb !=3D set_callee_state) {
-+		if (bpf_pseudo_kfunc_call(insn) &&
-+		    !is_callback_calling_kfunc(insn->imm)) {
-+			verbose(env, "verifier bug: kfunc %s#%d not marked as callback-callin=
-g\n",
-+				func_id_name(insn->imm), insn->imm);
-+			return -EFAULT;
-+		} else if (!bpf_pseudo_kfunc_call(insn) &&
-+			   !is_callback_calling_function(insn->imm)) { /* helper */
-+			verbose(env, "verifier bug: helper %s#%d not marked as callback-calli=
-ng\n",
-+				func_id_name(insn->imm), insn->imm);
-+			return -EFAULT;
-+		}
- 	}
-=20
- 	if (insn->code =3D=3D (BPF_JMP | BPF_CALL) &&
-@@ -7275,6 +7296,67 @@ static int set_user_ringbuf_callback_state(struct =
-bpf_verifier_env *env,
+@@ -6122,6 +6122,23 @@ static int check_reg_type(struct bpf_verifier_env =
+*env, u32 regno,
  	return 0;
  }
 =20
-+static int set_rbtree_add_callback_state(struct bpf_verifier_env *env,
-+					 struct bpf_func_state *caller,
-+					 struct bpf_func_state *callee,
-+					 int insn_idx)
++static bool
++func_arg_reg_rb_node_offset(const struct bpf_reg_state *reg, s32 off)
 +{
-+	/* void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *no=
-de,
-+	 *                     bool (less)(struct bpf_rb_node *a, const struct =
-bpf_rb_node *b));
-+	 *
-+	 * 'struct bpf_rb_node *node' arg to bpf_rbtree_add is the same PTR_TO_=
-BTF_ID w/ offset
-+	 * that 'less' callback args will be receiving. However, 'node' arg was=
- release_reference'd
-+	 * by this point, so look at 'root'
-+	 */
-+	struct btf_field *field;
 +	struct btf_record *rec;
++	struct btf_field *field;
 +
-+	rec =3D reg_btf_record(&caller->regs[BPF_REG_1]);
++	rec =3D reg_btf_record(reg);
 +	if (!rec)
-+		return -EFAULT;
-+
-+	field =3D btf_record_find(rec, caller->regs[BPF_REG_1].off, BPF_RB_ROOT=
-);
-+	if (!field || !field->datastructure_head.value_btf_id)
-+		return -EFAULT;
-+
-+	mark_reg_datastructure_node(callee->regs, BPF_REG_1, &field->datastruct=
-ure_head);
-+	callee->regs[BPF_REG_1].type |=3D PTR_UNTRUSTED;
-+	mark_reg_datastructure_node(callee->regs, BPF_REG_2, &field->datastruct=
-ure_head);
-+	callee->regs[BPF_REG_2].type |=3D PTR_UNTRUSTED;
-+
-+	__mark_reg_not_init(env, &callee->regs[BPF_REG_3]);
-+	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
-+	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
-+	callee->in_callback_fn =3D true;
-+	callee->callback_ret_range =3D tnum_range(0, 1);
-+	return 0;
-+}
-+
-+static bool is_rbtree_lock_required_kfunc(u32 btf_id);
-+
-+/* Are we currently verifying the callback for a rbtree helper that must
-+ * be called with lock held? If so, no need to complain about unreleased
-+ * lock
-+ */
-+static bool in_rbtree_lock_required_cb(struct bpf_verifier_env *env)
-+{
-+	struct bpf_verifier_state *state =3D env->cur_state;
-+	struct bpf_insn *insn =3D env->prog->insnsi;
-+	struct bpf_func_state *callee;
-+	int kfunc_btf_id;
-+
-+	if (!state->curframe)
 +		return false;
 +
-+	callee =3D state->frame[state->curframe];
-+
-+	if (!callee->in_callback_fn)
-+		return false;
-+
-+	kfunc_btf_id =3D insn[callee->callsite].imm;
-+	return is_rbtree_lock_required_kfunc(kfunc_btf_id);
-+}
-+
- static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx=
-)
- {
- 	struct bpf_verifier_state *state =3D env->cur_state;
-@@ -8007,6 +8089,7 @@ struct bpf_kfunc_call_arg_meta {
- 	bool r0_rdonly;
- 	u32 ret_btf_id;
- 	u64 r0_size;
-+	u32 subprogno;
- 	struct {
- 		u64 value;
- 		bool found;
-@@ -8185,6 +8268,18 @@ static bool is_kfunc_arg_rbtree_node(const struct =
-btf *btf, const struct btf_par
- 	return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_RB_NODE_ID);
- }
-=20
-+static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, const st=
-ruct btf *btf,
-+				  const struct btf_param *arg)
-+{
-+	const struct btf_type *t;
-+
-+	t =3D btf_type_resolve_func_ptr(btf, arg->type, NULL);
-+	if (!t)
++	field =3D btf_record_find(rec, off, BPF_RB_NODE);
++	if (!field)
 +		return false;
 +
 +	return true;
 +}
 +
- /* Returns true if struct is composed of scalars, 4 levels of nesting al=
-lowed */
- static bool __btf_type_is_scalar_struct(struct bpf_verifier_env *env,
- 					const struct btf *btf,
-@@ -8244,6 +8339,7 @@ enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_BTF_ID,	     /* Also covers reg2btf_ids conversions */
- 	KF_ARG_PTR_TO_MEM,
- 	KF_ARG_PTR_TO_MEM_SIZE,	     /* Size derived from next argument, skip i=
-t */
-+	KF_ARG_PTR_TO_CALLBACK,
- 	KF_ARG_PTR_TO_RB_ROOT,
- 	KF_ARG_PTR_TO_RB_NODE,
- };
-@@ -8368,6 +8464,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env=
-,
- 		return KF_ARG_PTR_TO_BTF_ID;
+ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 			   const struct bpf_reg_state *reg, int regno,
+ 			   enum bpf_arg_type arg_type)
+@@ -6176,6 +6193,13 @@ int check_func_arg_reg_off(struct bpf_verifier_env=
+ *env,
+ 		 */
+ 		fixed_off_ok =3D true;
+ 		break;
++	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
++		/* Currently only bpf_rbtree_remove accepts a PTR_UNTRUSTED
++		 * bpf_rb_node. Fixed off of the node type is OK
++		 */
++		if (reg->off && func_arg_reg_rb_node_offset(reg, reg->off))
++			fixed_off_ok =3D true;
++		break;
+ 	default:
+ 		break;
  	}
-=20
-+	if (is_kfunc_arg_callback(env, meta->btf, &args[argno]))
-+		return KF_ARG_PTR_TO_CALLBACK;
+@@ -8875,26 +8899,44 @@ __process_kf_arg_ptr_to_datastructure_node(struct=
+ bpf_verifier_env *env,
+ 			btf_name_by_offset(field->datastructure_head.btf, et->name_off));
+ 		return -EINVAL;
+ 	}
+-	/* Set arg#1 for expiration after unlock */
+-	return ref_set_release_on_unlock(env, reg->ref_obj_id);
 +
- 	if (argno + 1 < nargs && is_kfunc_arg_mem_size(meta->btf, &args[argno +=
- 1], &regs[regno + 1]))
- 		arg_mem_size =3D true;
-=20
-@@ -8585,6 +8684,16 @@ static bool is_bpf_datastructure_api_kfunc(u32 btf=
-_id)
- 	return is_bpf_list_api_kfunc(btf_id) || is_bpf_rbtree_api_kfunc(btf_id)=
-;
++	return 0;
  }
 =20
-+static bool is_callback_calling_kfunc(u32 btf_id)
-+{
-+	return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add];
-+}
+ static int process_kf_arg_ptr_to_list_node(struct bpf_verifier_env *env,
+ 					   struct bpf_reg_state *reg, u32 regno,
+ 					   struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	return __process_kf_arg_ptr_to_datastructure_node(env, reg, regno, meta=
+,
+-							  BPF_LIST_HEAD, BPF_LIST_NODE,
+-							  &meta->arg_list_head.field);
++	int err;
 +
-+static bool is_rbtree_lock_required_kfunc(u32 btf_id)
-+{
-+	return is_bpf_rbtree_api_kfunc(btf_id);
-+}
++	err =3D __process_kf_arg_ptr_to_datastructure_node(env, reg, regno, met=
+a,
++							 BPF_LIST_HEAD, BPF_LIST_NODE,
++							 &meta->arg_list_head.field);
++	if (err)
++		return err;
 +
- static bool check_kfunc_is_datastructure_head_api(struct bpf_verifier_en=
-v *env,
- 						  enum btf_field_type head_field_type,
- 						  u32 kfunc_btf_id)
-@@ -8920,6 +9029,7 @@ static int check_kfunc_args(struct bpf_verifier_env=
++	return ref_set_release_on_unlock(env, reg->ref_obj_id);
+ }
+=20
+ static int process_kf_arg_ptr_to_rbtree_node(struct bpf_verifier_env *en=
+v,
+ 					     struct bpf_reg_state *reg, u32 regno,
+ 					     struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	return __process_kf_arg_ptr_to_datastructure_node(env, reg, regno, meta=
+,
+-							  BPF_RB_ROOT, BPF_RB_NODE,
+-							  &meta->arg_rbtree_root.field);
++	int err;
++
++	err =3D __process_kf_arg_ptr_to_datastructure_node(env, reg, regno, met=
+a,
++							 BPF_RB_ROOT, BPF_RB_NODE,
++							 &meta->arg_rbtree_root.field);
++	if (err)
++		return err;
++
++	/* bpf_rbtree_remove's node parameter is a non-owning reference to
++	 * a bpf_rb_node, so release_on_unlock is already set
++	 */
++	if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_remove])
++		return 0;
++
++	return ref_set_release_on_unlock(env, reg->ref_obj_id);
+ }
+=20
+ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfu=
+nc_call_arg_meta *meta)
+@@ -8902,7 +8944,7 @@ static int check_kfunc_args(struct bpf_verifier_env=
  *env, struct bpf_kfunc_call_
+ 	const char *func_name =3D meta->func_name, *ref_tname;
+ 	const struct btf *btf =3D meta->btf;
+ 	const struct btf_param *args;
+-	u32 i, nargs;
++	u32 i, nargs, check_type;
+ 	int ret;
+=20
+ 	args =3D (const struct btf_param *)(meta->func_proto + 1);
+@@ -9141,7 +9183,13 @@ static int check_kfunc_args(struct bpf_verifier_en=
+v *env, struct bpf_kfunc_call_
+ 				return ret;
+ 			break;
  		case KF_ARG_PTR_TO_RB_NODE:
- 		case KF_ARG_PTR_TO_MEM:
- 		case KF_ARG_PTR_TO_MEM_SIZE:
-+		case KF_ARG_PTR_TO_CALLBACK:
- 			/* Trusted by default */
- 			break;
- 		default:
-@@ -9078,6 +9188,9 @@ static int check_kfunc_args(struct bpf_verifier_env=
- *env, struct bpf_kfunc_call_
- 			/* Skip next '__sz' argument */
- 			i++;
- 			break;
-+		case KF_ARG_PTR_TO_CALLBACK:
-+			meta->subprogno =3D reg->subprogno;
-+			break;
- 		}
- 	}
-=20
-@@ -9193,6 +9306,16 @@ static int check_kfunc_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn,
- 		}
- 	}
-=20
-+	if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add]) {
-+		err =3D __check_func_call(env, insn, insn_idx_p, meta.subprogno,
-+					set_rbtree_add_callback_state);
-+		if (err) {
-+			verbose(env, "kfunc %s#%d failed callback verification\n",
-+				func_name, func_id);
-+			return err;
-+		}
-+	}
+-			if (reg->type !=3D (PTR_TO_BTF_ID | MEM_ALLOC)) {
++			if (meta->btf =3D=3D btf_vmlinux &&
++			    meta->func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_remove])
++				check_type =3D (PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED);
++			else
++				check_type =3D (PTR_TO_BTF_ID | MEM_ALLOC);
 +
- 	for (i =3D 0; i < CALLER_SAVED_REGS; i++)
- 		mark_reg_not_init(env, regs, caller_saved[i]);
++			if (reg->type !=3D check_type) {
+ 				verbose(env, "arg#%d expected pointer to allocated object\n", i);
+ 				return -EINVAL;
+ 			}
+@@ -9380,11 +9428,14 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+ 				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back]) {
+ 				struct btf_field *field =3D meta.arg_list_head.field;
 =20
-@@ -14023,7 +14146,8 @@ static int do_check(struct bpf_verifier_env *env)
- 					return -EINVAL;
- 				}
-=20
--				if (env->cur_state->active_lock.ptr) {
-+				if (env->cur_state->active_lock.ptr &&
-+				    !in_rbtree_lock_required_cb(env)) {
- 					verbose(env, "bpf_spin_unlock is missing\n");
- 					return -EINVAL;
- 				}
+-				mark_reg_known_zero(env, regs, BPF_REG_0);
+-				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID | MEM_ALLOC;
+-				regs[BPF_REG_0].btf =3D field->datastructure_head.btf;
+-				regs[BPF_REG_0].btf_id =3D field->datastructure_head.value_btf_id;
+-				regs[BPF_REG_0].off =3D field->datastructure_head.node_offset;
++				mark_reg_datastructure_node(regs, BPF_REG_0,
++							    &field->datastructure_head);
++			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_remov=
+e] ||
++				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_first]) {
++				struct btf_field *field =3D meta.arg_rbtree_root.field;
++
++				mark_reg_datastructure_node(regs, BPF_REG_0,
++							    &field->datastructure_head);
+ 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern=
+_ctx]) {
+ 				mark_reg_known_zero(env, regs, BPF_REG_0);
+ 				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID | PTR_TRUSTED;
+@@ -9450,6 +9501,9 @@ static int check_kfunc_call(struct bpf_verifier_env=
+ *env, struct bpf_insn *insn,
+ 			if (is_kfunc_ret_null(&meta))
+ 				regs[BPF_REG_0].id =3D id;
+ 			regs[BPF_REG_0].ref_obj_id =3D id;
++
++			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_first])
++				ref_set_release_on_unlock(env, regs[BPF_REG_0].ref_obj_id);
+ 		}
+ 		if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].i=
+d)
+ 			regs[BPF_REG_0].id =3D ++env->id_gen;
+@@ -11636,8 +11690,11 @@ static void mark_ptr_or_null_reg(struct bpf_func=
+_state *state,
+ 		 */
+ 		if (WARN_ON_ONCE(reg->smin_value || reg->smax_value || !tnum_equals_co=
+nst(reg->var_off, 0)))
+ 			return;
+-		if (reg->type !=3D (PTR_TO_BTF_ID | MEM_ALLOC | PTR_MAYBE_NULL) && WAR=
+N_ON_ONCE(reg->off))
++		if (reg->type !=3D (PTR_TO_BTF_ID | MEM_ALLOC | PTR_MAYBE_NULL) &&
++		    reg->type !=3D (PTR_TO_BTF_ID | MEM_ALLOC | PTR_MAYBE_NULL | PTR_U=
+NTRUSTED) &&
++		    WARN_ON_ONCE(reg->off)) {
+ 			return;
++		}
+ 		if (is_null) {
+ 			reg->type =3D SCALAR_VALUE;
+ 			/* We don't need id and ref_obj_id from this point
 --=20
 2.30.2
 
