@@ -2,126 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3871643D78
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 08:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65695643D7B
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 08:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbiLFHNY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 02:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S233929AbiLFHOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 02:14:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiLFHNX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 02:13:23 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C8C14000;
-        Mon,  5 Dec 2022 23:13:22 -0800 (PST)
-Message-ID: <1892a6ce-bbad-20af-20b4-cc23fb7a6206@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1670310800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QyALjt60Qi+vXADvlWHNeABSReSlCiteUK32rWt9Xwk=;
-        b=jZUQkv6WLmtF+hrG0RndBm76BNpFrr5y3177yAadKPfFVwYX8yZUp71uZWRhOmeWBD1Cs5
-        8QMgY21jrAq4CEcn51mzPf2Ges+CatUtm+TRD8JtknvvQHix7ptd/ApG/cNH9p7PQBHkw1
-        wi76R2sCwxKeYtt1Uxkmm3riv5Kxq0M=
-Date:   Mon, 5 Dec 2022 23:13:12 -0800
+        with ESMTP id S231530AbiLFHOr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 02:14:47 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3451C14D04;
+        Mon,  5 Dec 2022 23:14:47 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id jn7so13080223plb.13;
+        Mon, 05 Dec 2022 23:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AwV+aQezPrqmBi+1p608TRrRU2Dd7rb+QPCbuqXm00Y=;
+        b=Io1NM++sncn5eRES2/jZKZmNDFCuHxRqdNKbdkNpigNzh7SEoBIzImpXdIPsY+havC
+         CZJhgEnmVdHYPoLotanDGcdPmMeW1NA1r4YBo4d8juIQSW5H0iGPrHKFLYWa/L1c0Kkw
+         PmZvdPrdiTIhQogbicWB7Xr7P3iPZh3WJXQLwIEIz1DpERD8mbiTHFoAuMUZHVlj8y9Y
+         WURfOT55kx/+dqp+wwdGjyTZZjFQelCGkul6W7AG4mLzQnG64wJtO62f/7v+KWUuD+2c
+         xQWugvy/kzhVboqUEzoMRz/5Kc6FaXSp7J0EkteABUTP6CzWr3kyYC7Bee6IWugnH5/0
+         bhVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AwV+aQezPrqmBi+1p608TRrRU2Dd7rb+QPCbuqXm00Y=;
+        b=t7ep6CpNbv58f2UptR/3bHtPjYCuw10d0LneNRa4M+dWjqExHsVSoZT85AjuO0r+hb
+         u1eo2OvFQysbpP+1inXbbsO/9QkjaVNyVSZX/a1qm/7WzcSskec7MhNX3elBTEDW+lur
+         xjJnVRIovfX1o6n/BgY2DfOVWiOcwezbNO2oN8X0guGe6fok33Rx1vFDQudnvy+UE1IG
+         qLM6giDHUnElAHtvvFD+vK1uCFmfCnyXqN9ZOXwOLNcUB/T3CxTwdAk9EfN+DOUkh7Vd
+         e7Nv1hdjoPDn0ZZ7YKsIIUyV9gsApgQkgh1AQ84of/QPMy8NQQw6BSrvJPqA9bDp3lMU
+         DZjg==
+X-Gm-Message-State: ANoB5pktTyErNvDo3hYaKjXNrOIlPPHogJju6oLOSDyabKXoAje6OSuW
+        Mu+caOOWi58J1yO+nBlShjFIRyFYU8TBxQ==
+X-Google-Smtp-Source: AA0mqf5njaIFBPQ0FAuyk01o8a5QFgvF/4emMR4KG5ol+LRQkLvgFF0RC6vHDP2XDLJ9vRuYRSzhxQ==
+X-Received: by 2002:a17:902:d1d2:b0:189:d637:cc63 with SMTP id g18-20020a170902d1d200b00189d637cc63mr8638266plb.92.1670310886580;
+        Mon, 05 Dec 2022 23:14:46 -0800 (PST)
+Received: from [192.168.1.5] ([180.171.235.177])
+        by smtp.gmail.com with ESMTPSA id m13-20020a170902f64d00b001891ea4d133sm11753590plg.12.2022.12.05.23.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Dec 2022 23:14:45 -0800 (PST)
+Message-ID: <59dd6dba-cabf-bd80-dc1e-87da9cdd1671@gmail.com>
+Date:   Tue, 6 Dec 2022 15:14:38 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next,v6 4/4] selftests/bpf: add xfrm_info tests
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] bpftool: Fix memory leak in do_build_table_cb
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221205081300.561974-1-linmq006@gmail.com>
+ <8d7ac47d-5d76-eaf1-7c1e-a4418d80dac5@iogearbox.net>
 Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        andrii@kernel.org, daniel@iogearbox.net, nicolas.dichtel@6wind.com,
-        razor@blackwall.org, mykolal@fb.com, ast@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org, liuhangbin@gmail.com,
-        lixiaoyan@google.com, jtoppins@redhat.com, kuniyu@amazon.co.jp
-References: <20221203084659.1837829-1-eyal.birger@gmail.com>
- <20221203084659.1837829-5-eyal.birger@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221203084659.1837829-5-eyal.birger@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Miaoqian Lin <linmq006@gmail.com>
+In-Reply-To: <8d7ac47d-5d76-eaf1-7c1e-a4418d80dac5@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/3/22 12:46 AM, Eyal Birger wrote:
-> +#define PING_ARGS "-i 0.01 -c 3 -w 10 -q"
+Hi, Daniel
 
-Applied with a few changes.
+On 2022/12/6 4:05, Daniel Borkmann wrote:
+> On 12/5/22 9:13 AM, Miaoqian Lin wrote:
+>> strdup() allocates memory for path. We need to release the memory in
+>> the following error paths. Add free() to avoid memory leak.
+>>
+>> Fixes: 8f184732b60b ("bpftool: Switch to libbpf's hashmap for pinned paths of BPF objects")
+>> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+>> ---
+>>   tools/bpf/bpftool/common.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+>> index 0cdb4f711510..8a820356525e 100644
+>> --- a/tools/bpf/bpftool/common.c
+>> +++ b/tools/bpf/bpftool/common.c
+>> @@ -499,9 +499,11 @@ static int do_build_table_cb(const char *fpath, const struct stat *sb,
+>>       if (err) {
+>>           p_err("failed to append entry to hashmap for ID %u, path '%s': %s",
+>>                 pinned_info.id, path, strerror(errno));
+>> -        goto out_close;
+>> +        goto out_free;
+>>       }
+>>   +out_free:
+>> +    free(path);
+>
+> It would be ok if you were to add the free(path) into the err condition, but here you
+> also cause the !err to be freed which would trigger as UAF. See the hashmap_insert()
+> where just set the pointer entry->value = <path>.. how was this tested before submission?
+>
+Thanks for your review. You're right. Sorry for the mistake, I meant to free it in the error path.
 
-PING_ARGS is removed because it is unused.
+I'll send v2 to fix this. I spotted it with static detection tool.
 
-[ ... ]
-
-> +static int test_xfrm_ping(struct xfrm_info *skel, u32 if_id)
-> +{
-> +	skel->bss->req_if_id = if_id;
-> +
-> +	SYS("ping -i 0.01 -c 3 -w 10 -q 192.168.1.200 > /dev/null");
-> +
-> +	if (!ASSERT_EQ(skel->bss->resp_if_id, if_id, "if_id"))
-> +		goto fail;
-> +
-> +	return 0;
-> +fail:
-> +	return -1;
-> +}
-> +
-> +static void _test_xfrm_info(void)
-> +{
-> +	LIBBPF_OPTS(bpf_tc_hook, tc_hook, .attach_point = BPF_TC_INGRESS);
-> +	int get_xfrm_info_prog_fd, set_xfrm_info_prog_fd;
-> +	struct xfrm_info *skel = NULL;
-> +	struct nstoken *nstoken = NULL;
-> +	int ifindex;
-> +
-> +	/* load and attach bpf progs to ipsec dev tc hook point */
-> +	skel = xfrm_info__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "xfrm_info__open_and_load"))
-> +		goto done;
-> +	nstoken = open_netns(NS0);
-> +	if (!ASSERT_OK_PTR(nstoken, "setns " NS0))
-> +		goto done;
-> +	ifindex = if_nametoindex("ipsec0");
-> +	if (!ASSERT_NEQ(ifindex, 0, "ipsec0 ifindex"))
-> +		goto done;
-> +	tc_hook.ifindex = ifindex;
-> +	set_xfrm_info_prog_fd = bpf_program__fd(skel->progs.set_xfrm_info);
-> +	get_xfrm_info_prog_fd = bpf_program__fd(skel->progs.get_xfrm_info);
-> +	if (!ASSERT_GE(set_xfrm_info_prog_fd, 0, "bpf_program__fd"))
-> +		goto done;
-> +	if (!ASSERT_GE(get_xfrm_info_prog_fd, 0, "bpf_program__fd"))
-> +		goto done;
-> +	if (attach_tc_prog(&tc_hook, get_xfrm_info_prog_fd,
-> +			   set_xfrm_info_prog_fd))
-> +		goto done;
-> +
-> +	/* perform test */
-> +	if (!ASSERT_EQ(test_xfrm_ping(skel, IF_ID_0_TO_1), 0, "ping " NS1))
-> +		goto done;
-> +	if (!ASSERT_EQ(test_xfrm_ping(skel, IF_ID_0_TO_2), 0, "ping " NS2))
-> +		goto done;
-> +
-> +done:
-> +	if (nstoken)
-> +		close_netns(nstoken);
-> +	if (skel)
-
-NULL check is removed.  xfrm_info__destroy() can handle NULL.
-
-> +		xfrm_info__destroy(skel);
-> +}
-
+>>   out_close:
+>>       close(fd);
+>>   out_ret:
+>>
+>
