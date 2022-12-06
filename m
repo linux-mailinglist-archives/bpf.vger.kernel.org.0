@@ -2,102 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24762644D77
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 21:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B69644D9E
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 22:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiLFUsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 15:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S229770AbiLFVAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 16:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbiLFUsB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 15:48:01 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A4C2614;
-        Tue,  6 Dec 2022 12:47:59 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id fc4so9221686ejc.12;
-        Tue, 06 Dec 2022 12:47:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GAFKa0B2H6/6w0dZm7aNy9JXnPwcNQKFrtyaRPOt4YU=;
-        b=cG23+e+VAgZFD5pniBKKHjKlAS5M0vzmeBJ41ucPyhDlJYTX4Hf4aeq2rKXZcEuZxN
-         aUu3KcITn/NFEA0V+nIHXAlaiFc9ZkhA55pdNlnbLq+9mgitglmcXYip8KUWzodPb+iD
-         aopk7bBZaDs97BcSnMQPqx3ZH2w/bdjOB+zDYxRNOrIzPxacx29gY2GRc+5selB0ULbD
-         gzmqmrOvN96mVCjlBcBjUyxiX8HeZhi7UanP6BfyMQpTzBmfqerYe8WVYpMrh3SUoya9
-         8VZvdr4BtdJWIhF4+XoM833QkrQEPbGXgwnUavHnisi8WyPUsoQh/PLc2wgg2KVfRdfO
-         nmKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GAFKa0B2H6/6w0dZm7aNy9JXnPwcNQKFrtyaRPOt4YU=;
-        b=Obtj5tNcZk5xiQE4XnwedPOTDU9UYauUFKAe+APKJWnchCtkZWgotTATb5mdr+6I9e
-         k71yGPURmT+huhUd7kUTiXPhbbyCFFTPy59cevO+pES+ilsarvKNKYOHp8QhHxo/0yaJ
-         ZNGZ9CJhyRBNLFjPksWDG6NSityyo+x3BFNA0tT1Dz6xoSdgFKe/Yg85pXf7GZJebVlq
-         H6sgGUtGwFhd6yW/lfBq1ztgqnv5XoYFxlqpwa/tsmHv+6SPsGH2QEMZswjhF+N4PUlH
-         YOQuma9MoCqjdKUX/1RFceSxfoBcZcRl2/DwOchtids/BZ0fnDerEVoB5YaSO7reEKn5
-         RMyQ==
-X-Gm-Message-State: ANoB5pnlSTHb2K5Vx2K5gBdJDcI/51HxgoVOGbA6b4AU/3oQzB6pGSS8
-        AJagitBuZUuQCUgt23xfo1AD67WiRP7+0lHsvNE=
-X-Google-Smtp-Source: AA0mqf5/CzGdIF2RvANNjyLWBnuvFbiOFe/om863zc7GXRF8WqatzYmvTX1GkO6cT99Qc/xoyAliP5jsh880a3rjtS8=
-X-Received: by 2002:a17:906:fc5:b0:7c0:8b4c:e30f with SMTP id
- c5-20020a1709060fc500b007c08b4ce30fmr29322582ejk.502.1670359678327; Tue, 06
- Dec 2022 12:47:58 -0800 (PST)
+        with ESMTP id S229456AbiLFVAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 16:00:19 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6094509A;
+        Tue,  6 Dec 2022 13:00:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0FC85B81B55;
+        Tue,  6 Dec 2022 21:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9DFB2C433D7;
+        Tue,  6 Dec 2022 21:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670360415;
+        bh=oV+o4VDUwO9ki3r4H2TbVxbKKiSddhCM13yZyTZaaog=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CFAeTPcOY6XMFjrAUooJoI5ddRabUNoDeyGwUDWyaGuf0QvA2Of7tQF8PEWhTI0u5
+         lEmyP9zEJqXxueqXjclLi43nK6eoCb4yMa7aLCZ06X36zO9rgaX87KCO+yK+nqO3vN
+         ZEjXet8rayi7FtrIs6Ik4TRjDW7YxkbNUweTeWtkaY8fO6q0Lh7ZdkLgY9rCjM9jhu
+         PfPRhXsy5sE3uPs7pvzxTsaIqJlKOlPRM/wMVXfzIh3EKVDrOoUO4oJQRRlix86xg6
+         Ez7de1/EYDdkFrPmr2x6yWcUYlhREav/BtfKadMJVxbawomeL1H5GM9pLMj5b3lAGn
+         dn8txbXJ9EZFQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7FF9FE56AA0;
+        Tue,  6 Dec 2022 21:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221206145936.922196-1-benjamin.tissoires@redhat.com> <20221206145936.922196-2-benjamin.tissoires@redhat.com>
-In-Reply-To: <20221206145936.922196-2-benjamin.tissoires@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 6 Dec 2022 12:47:47 -0800
-Message-ID: <CAADnVQKTQMo3wvJWajQSgT5fTsH-rNsz1z8n9yeM3fx+015-jA@mail.gmail.com>
-Subject: Re: [PATCH HID for-next v3 1/5] bpf: do not rely on
- ALLOW_ERROR_INJECTION for fmod_ret
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Allow building bpf tests with
+ CONFIG_XFRM_INTERFACE=[m|n]
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167036041551.30610.2678929954116630234.git-patchwork-notify@kernel.org>
+Date:   Tue, 06 Dec 2022 21:00:15 +0000
+References: <20221206193554.1059757-1-martin.lau@linux.dev>
+In-Reply-To: <20221206193554.1059757-1-martin.lau@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@meta.com,
+        eyal.birger@gmail.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 6, 2022 at 6:59 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> The current way of expressing that a non-bpf kernel component is willing
-> to accept that bpf programs can be attached to it and that they can change
-> the return value is to abuse ALLOW_ERROR_INJECTION.
-> This is debated in the link below, and the result is that it is not a
-> reasonable thing to do.
->
-> Reuse the kfunc declaration structure to also tag the kernel functions
-> we want to be fmodret. This way we can control from any subsystem which
-> functions are being modified by bpf without touching the verifier.
->
->
-> Link: https://lore.kernel.org/all/20221121104403.1545f9b5@gandalf.local.home/
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Hello:
 
-BPF CI couldn't do its job because of a merge conflict.
-CI only tries to apply the whole series.
-But I tested the patch 1 manually.
-Everything is green on x86-64 and the patch looks good.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+On Tue,  6 Dec 2022 11:35:54 -0800 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> It is useful to use vmlinux.h in the xfrm_info test like other kfunc
+> tests do.  In particular, it is common for kfunc bpf prog that requires
+> to use other core kernel structures in vmlinux.h
+> 
+> Although vmlinux.h is preferred, it needs a ___local flavor of
+> struct bpf_xfrm_info in order to build the bpf selftests
+> when CONFIG_XFRM_INTERFACE=[m|n].
+> 
+> [...]
 
-Please send the set during the merge window.
-If not we can take just this patch,
-since the series from Viktor Malik would need this patch too.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Allow building bpf tests with CONFIG_XFRM_INTERFACE=[m|n]
+    https://git.kernel.org/bpf/bpf-next/c/aa67961f3243
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
