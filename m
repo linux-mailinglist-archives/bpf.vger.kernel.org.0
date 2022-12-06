@@ -2,111 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718C9644BB0
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 19:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48594644BEE
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 19:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbiLFSYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 13:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S229479AbiLFSjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 13:39:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbiLFSXg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 13:23:36 -0500
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B957429A2
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 10:21:21 -0800 (PST)
-Received: by mail-io1-f52.google.com with SMTP id e189so10273031iof.1
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 10:21:20 -0800 (PST)
+        with ESMTP id S229548AbiLFSjs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 13:39:48 -0500
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46192F3BD
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 10:39:47 -0800 (PST)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-144b21f5e5fso6513159fac.12
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 10:39:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KqUAYb/fXjf+DnnONFt9R7wczdlGsDniuWCIhYP8EcQ=;
+        b=TNO6BxsIVU6eCOU2Do84isXfsLDc0DgZ8a10aCZhInQH6K7nuMPuT3blwZdef3Xzhm
+         9wtnCP+z5u02o9pxfWhXV7P0UeDUWn2R85ZUTA261U3VpMRCbpUKdlN8wYox6DkUk/JR
+         Xr3fAkNmZJpL/Me3+wknDBYGuZNhx15gLdTCY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zNsrgktQf590sYBrNYcupAeuiRqMUo7PmRbZTzg2EYA=;
-        b=Ik534o+EiJUrpShJ1G/jaUl+A6JiRbnzwlNgN3hG3JUrcbojFHknf6tBwKw5cdAfNZ
-         bj4TppBN1OgGEGPFNljd9KDkdg3xhkl647ML48tBZHBpiFbED1MsKxhVW7pqwsmec5QK
-         ZY5S3ruBFXeJdGvcawTpVkNAnf+uMpvCJsE/+QZLnkfSoLobjROB7PiHDnFxQ0pLMFHK
-         s3LgYmUvW7bpZku5Y5LsBAw4PRq6x6g+fOBjCpeTj0E3r4euT8aXuf60Sfs6keAZA5a3
-         od1Z80I/NrebUnlRDLT24GMq7QTDURVf63sqsIeF3/vlhwc/uDJmR6v0a8NdLnNWpQxc
-         zcyQ==
-X-Gm-Message-State: ANoB5pmzO/exRLP3pnRMnGRIo9daUHXyAY1ry/B3vShyCxNzA8XemXQF
-        1xx4/NosmKik8idRFkvJmv2fBF3KuO5hvJ6HQYw=
-X-Google-Smtp-Source: AA0mqf7b8NsYyS0azJ+OAqwQyezasHpys2zrEqJg8dJOILMc5CurjKjJt3I9mjC0S1RYLtY957kAnBEOyUf5xcNawbw=
-X-Received: by 2002:a5d:87c8:0:b0:6e0:1ddd:7da6 with SMTP id
- q8-20020a5d87c8000000b006e01ddd7da6mr3300859ios.145.1670350839722; Tue, 06
- Dec 2022 10:20:39 -0800 (PST)
+        bh=KqUAYb/fXjf+DnnONFt9R7wczdlGsDniuWCIhYP8EcQ=;
+        b=jDEwu9p28eqdNEv2k2vQwtzp6MOH2FAaNUXazeyJBPN9UJz1ZCrtvWGXJND7S8m8Lg
+         XkdWBD30Sa5P5WwNzEzs5R8AfOA+KqHTBtoz+78g/3WLbYuqXULIm+yYHfhEALGkCgcn
+         /L5Zq3Bme198h7qKTC7w94axAOceP+IA/Z02fxP1VYUMOrQoKn6lTWJp4uNhFq0CdzCX
+         enbKBabiPDhIAM8yG4bHbJgIcxO9bpHjyrfeRGLoGt6V/7uVr43S5iVUb1C9Qy1oc0p4
+         1PAv7JGj7uGJK8NuQOE2l7GKs2yt90DZFB8tlGokqHJT2Ofdw5H9bBEBZku04P0z4oP4
+         izGQ==
+X-Gm-Message-State: ANoB5pnElDlYYudeE3HvaPP1xewB4cHQRUhUYAT9modZmasZ5oi7U+cS
+        /vjvuTdyltdIkIffHoaKzWNhO8gm29kd+GE8wE4=
+X-Google-Smtp-Source: AA0mqf4GyWKFzxZZwkfIZGLaqF/XUDDM+FqfH4UKi1w1awOaxn+nyzCqtkRRk6p7+7F2R/Hjei+28A==
+X-Received: by 2002:a05:6871:a691:b0:143:c3bf:be6d with SMTP id wh17-20020a056871a69100b00143c3bfbe6dmr21387035oab.103.1670351986703;
+        Tue, 06 Dec 2022 10:39:46 -0800 (PST)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
+        by smtp.gmail.com with ESMTPSA id i6-20020a9d53c6000000b0066cacb8343bsm9487172oth.41.2022.12.06.10.39.46
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Dec 2022 10:39:46 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id m6-20020a9d7e86000000b0066ec505ae93so4274215otp.9
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 10:39:46 -0800 (PST)
+X-Received: by 2002:a81:8644:0:b0:3c7:3c2b:76b5 with SMTP id
+ w65-20020a818644000000b003c73c2b76b5mr39379193ywf.22.1670351506938; Tue, 06
+ Dec 2022 10:31:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20221121213123.1373229-1-jolsa@kernel.org> <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
- <Y388m6wOktvZo1d4@krava> <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
- <Y4CMbTeVud0WfPtK@krava> <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y4uOSrXBxVwnxZkX@google.com> <Y43j3IGvLKgshuhR@krava> <CAM9d7cj2QGH2x=J=7LVEEOfcDUYLU0Cmd_O7KEHZM-9FRmX3OA@mail.gmail.com>
- <Y4750mbd7XEzue0r@krava>
-In-Reply-To: <Y4750mbd7XEzue0r@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 6 Dec 2022 10:20:28 -0800
-Message-ID: <CAM9d7cj-QRCk-1TnHj0YGteRupjPR4-=pCMO-dDNya_M3X38cw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some tracepoints
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+References: <000000000000fa798505ee880a25@google.com> <ac0d8823-e7b3-4524-8864-89b4c85315b5n@googlegroups.com>
+ <CACT4Y+bz-z9s+sDh916rfw9ezW0XROkAKfMDvdVi-wDuf849MQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+bz-z9s+sDh916rfw9ezW0XROkAKfMDvdVi-wDuf849MQ@mail.gmail.com>
+From:   Kees Cook <keescook@chromium.org>
+Date:   Tue, 6 Dec 2022 10:31:10 -0800
+X-Gmail-Original-Message-ID: <CAGXu5jLCdfVLz9PLVs4XkyOY3=V=W8x7WF=E+yRUnsE=425vAw@mail.gmail.com>
+Message-ID: <CAGXu5jLCdfVLz9PLVs4XkyOY3=V=W8x7WF=E+yRUnsE=425vAw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in __build_skb_around
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     pepsipu <soopthegoop@gmail.com>,
+        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
+        bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, martin.lau@linux.dev,
+        netdev <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 6, 2022 at 12:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Mon, Dec 5, 2022 at 12:04 AM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> On Mon, Dec 05, 2022 at 08:00:16PM -0800, Namhyung Kim wrote:
-> > On Mon, Dec 5, 2022 at 4:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Sat, Dec 03, 2022 at 09:58:34AM -0800, Namhyung Kim wrote:
-> > > > What about contention_begin?  I wonder if we can disallow recursions
-> > > > for those in the deny list like using bpf_prog_active..
-> > >
-> > > I was testing change below which allows to check recursion just
-> > > for contention_begin tracepoint
-> > >
-> > > for the reported issue we might be ok with the change that Andrii
-> > > suggested, but we could have the change below as extra precaution
+> On Sun, 4 Dec 2022 at 19:16, pepsipu <soopthegoop@gmail.com> wrote:
 > >
-> > Looks ok to me.  But it seems it'd add the recursion check to every
+> > I believe this is a KASAN bug.
+> >
+> > I made an easier to read version that still triggers KASAN:
+> >
+> > #define _GNU_SOURCE
+> >
+> > #include <stdio.h>
+> > #include <stdlib.h>
+> > #include <string.h>
+> > #include <sys/syscall.h>
+> > #include <sys/types.h>
+> > #include <linux/bpf.h>
+> > #include <unistd.h>
+> >
+> > #include "bpf.h"
+> >
+> > int main(void)
+> > {
+> >     __u64 insns[] = {
+> >         (BPF_CALL | BPF_JMP) | ((__u64)0x61 << 32),
+> >         (BPF_AND | BPF_ALU),
+> >         (BPF_EXIT | BPF_JMP),
+> >     };
+> >     bpf_load_attr_t load_attr = {
+> >         .prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+> >         .insn_cnt = sizeof(insns) / sizeof(__u64),
+> >         .insns = (__u64)insns,
+> >         .license = (__u64) "GPL",
+> >     };
+> >     long prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &load_attr, sizeof(bpf_load_attr_t));
+> >     if (prog_fd == -1)
+> >     {
+> >         printf("could not load bpf prog");
+> >         exit(-1);
+> >     }
+> >     bpf_trun_attr_t trun_attr = {
+> >         .prog_fd = prog_fd,
+> >         .data_size_in = 0x81,
+> >         .data_size_out = -1,
+> >         .data_in = (__u64) "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+> >     };
+> >
+> >     syscall(__NR_bpf, BPF_PROG_TEST_RUN, &trun_attr, sizeof(bpf_trun_attr_t));
+> >     return 0;
+> > }
+> >
+> > It looks like KASAN believes the tail access of SKB's backing buffer, the SKB shared info struct, allocated by bpf_test_init is out-of-bounds.
+> > This is likely because when the SKB is setup, in build_skb, the tail is calculated as "data + ksize(data) - sizeof(skb_shared_info)". ksize returns the size of the slab, not the allocation, so the tail is much further past the allocation.
+> > However, KASAN is usually supposed to correct for ksize calls by unpoisioning the entire slab it's called on... I'm not sure why this is happening.
 >
-> hm, it should allocate recursion variable just for the contention_begin
-> tracepoint, rest should see NULL pointer
-
-Oh, right.  I meant the NULL check.
-
+> Hi,
 >
-> > tracepoint.  Can we just change the affected tracepoints only by
-> > using a kind of wrapped btp->bpf_func with some macro magic? ;-)
+> [+orignal CC list, please keep it in replies, almost none of relevant
+> receivers read syzkaller-bugs@ mailing list]
 >
-> I tried that and the only other ways I found are:
+> Also +Kees and kasan-dev for ksize.
 >
->   - add something like TRACE_EVENT_FLAGS macro and have __init call
->     for specific tracepoint that sets the flag
+> After the following patch the behavior has changed and KASAN does not
+> unpoison the fail of the object:
 >
->   - add extra new 'bpf_func' that checks the re-entry, but that'd mean
->     around 1000 extra mostly unused small functions
+> mm: Make ksize() a reporting-only function
+> https://lore.kernel.org/all/20221118035656.gonna.698-kees@kernel.org/
+>
+> Kees, is this bpf case is a remaining ksize() use that needs to be fixed?
+>
 
-Hmm.. ok, that's not what I want.  I'm fine with the patch then.
-With the 'likely' change,
+Hi, yes, this seems like a missed ksize() usage. I will take a look at
+it -- nothing should be using ksize() to resize the allocation any
+more: it should either fully allocate the bucket at the start, or use
+krealloc().
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+-Kees
 
-Thanks,
-Namhyung
+> > On Monday, November 28, 2022 at 5:42:31 AM UTC-8 syzbot wrote:
+> >>
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit: c35bd4e42885 Add linux-next specific files for 20221124
+> >> git tree: linux-next
+> >> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e5d7e5880000
+> >> kernel config: https://syzkaller.appspot.com/x/.config?x=11e19c740a0b2926
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=fda18eaa8c12534ccb3b
+> >> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> >> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=1096f205880000
+> >> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=10b2d68d880000
+> >>
+> >> Downloadable assets:
+> >> disk image: https://storage.googleapis.com/syzbot-assets/968fee464d14/disk-c35bd4e4.raw.xz
+> >> vmlinux: https://storage.googleapis.com/syzbot-assets/4f46fe801b5b/vmlinux-c35bd4e4.xz
+> >> kernel image: https://storage.googleapis.com/syzbot-assets/c2cdf8fb264e/bzImage-c35bd4e4.xz
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+fda18e...@syzkaller.appspotmail.com
+> >>
+> >> ==================================================================
+> >> BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
+> >> Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
+> >>
+> >> CPU: 0 PID: 5295 Comm: syz-executor413 Not tainted 6.1.0-rc6-next-20221124-syzkaller #0
+> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> >> Call Trace:
+> >> <TASK>
+> >> __dump_stack lib/dump_stack.c:88 [inline]
+> >> dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
+> >> print_address_description mm/kasan/report.c:253 [inline]
+> >> print_report+0x15e/0x45d mm/kasan/report.c:364
+> >> kasan_report+0xbf/0x1f0 mm/kasan/report.c:464
+> >> check_region_inline mm/kasan/generic.c:183 [inline]
+> >> kasan_check_range+0x141/0x190 mm/kasan/generic.c:189
+> >> memset+0x24/0x50 mm/kasan/shadow.c:44
+> >> __build_skb_around+0x235/0x340 net/core/skbuff.c:294
+> >> __build_skb+0x4f/0x60 net/core/skbuff.c:328
+> >> build_skb+0x22/0x280 net/core/skbuff.c:340
+> >> bpf_prog_test_run_skb+0x343/0x1e10 net/bpf/test_run.c:1131
+> >> bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
+> >> __sys_bpf+0x1599/0x4ff0 kernel/bpf/syscall.c:4997
+> >> __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+> >> __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
+> >> __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
+> >> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >> do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> >> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >> RIP: 0033:0x7f30de9aad19
+> >> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> >> RSP: 002b:00007ffeaee34318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> >> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f30de9aad19
+> >> RDX: 0000000000000028 RSI: 0000000020000180 RDI: 000000000000000a
+> >> RBP: 00007f30de96eec0 R08: 0000000000000000 R09: 0000000000000000
+> >> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f30de96ef50
+> >> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> >> </TASK>
+> >>
+> >> Allocated by task 5295:
+> >> kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+> >> kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+> >> ____kasan_kmalloc mm/kasan/common.c:376 [inline]
+> >> ____kasan_kmalloc mm/kasan/common.c:335 [inline]
+> >> __kasan_kmalloc+0xa5/0xb0 mm/kasan/common.c:385
+> >> kasan_kmalloc include/linux/kasan.h:212 [inline]
+> >> __do_kmalloc_node mm/slab_common.c:955 [inline]
+> >> __kmalloc+0x5a/0xd0 mm/slab_common.c:968
+> >> kmalloc include/linux/slab.h:575 [inline]
+> >> kzalloc include/linux/slab.h:711 [inline]
+> >> bpf_test_init.isra.0+0xa5/0x150 net/bpf/test_run.c:778
+> >> bpf_prog_test_run_skb+0x22e/0x1e10 net/bpf/test_run.c:1097
+> >> bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
+> >> __sys_bpf+0x1599/0x4ff0 kernel/bpf/syscall.c:4997
+> >> __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+> >> __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
+> >> __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
+> >> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >> do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> >> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-- 
+Kees Cook
