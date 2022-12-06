@@ -2,108 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200D1643C42
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 05:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C343643C6F
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 05:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbiLFE36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 23:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        id S231530AbiLFEkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 23:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbiLFE35 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 23:29:57 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F8B2670
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 20:29:55 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NR6rs4hg6z4f3tbr
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 12:29:49 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgDXSNY7xY5jzaDzBg--.51441S6;
-        Tue, 06 Dec 2022 12:29:52 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Subject: [PATCH bpf-next 2/2] bpf: Skip rcu_barrier() if rcu_trace_implies_rcu_gp() is true
-Date:   Tue,  6 Dec 2022 12:29:46 +0800
-Message-Id: <20221206042946.686847-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221206042946.686847-1-houtao@huaweicloud.com>
-References: <20221206042946.686847-1-houtao@huaweicloud.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDXSNY7xY5jzaDzBg--.51441S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1xCFW7CF47tw15Jr4fXwb_yoW8Gw43pa
-        1avFyUtr15CF4UK3Z3tr1xA3yUAr9Yga17t3s7Wry8ZrnIyryDWrZFyry3WF1YvrZ5Ca4a
-        yrsI9r15t3WUXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231497AbiLFEja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 23:39:30 -0500
+Received: from mx07-001d1705.pphosted.com (mx07-001d1705.pphosted.com [185.132.183.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E124F2717A
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 20:39:12 -0800 (PST)
+Received: from pps.filterd (m0209329.ppops.net [127.0.0.1])
+        by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B64aZuW012528;
+        Tue, 6 Dec 2022 04:39:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
+ subject : date : message-id; s=S1;
+ bh=l+PlveErNgHq0DSbEl7ni0TSU9l54Ed6U4IjPimZkoY=;
+ b=eMMGa//4TTu1CfXUAtZ96HOmNo2RlXWQIlmEQ7I5p6bfKfXlwybr0mhDEqEu3pIEWa02
+ Q1860bj493hdkWc2+sz6gtouPeICTf+hc7AyYunN4VwISqY0ITnlTuHzDal6LO1h9xtV
+ H2ZuXNw8uVyNMxZfrEuaZo8+joKFUC906Tz8DtCmZHvSo+x9QAH6Yzi3GkOppoArgcUv
+ 825qqOLkLYyKZXpZkcNUB2DgCOEbXXpMfHDF2oiSoAq18/Pdh9ZAaOjiIHYrFpKEaHkL
+ y59ZXW+FgFAsnUHGGge4XmOAlh1C3xek88jTje9HBagqZan6iL5r3LIRnQy20F7yZNpI cQ== 
+Received: from usculxsntmt02v.am.sony.com (usculxsntmt02v.am.sony.com [160.33.194.234])
+        by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3m7ybgjfe7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 06 Dec 2022 04:39:10 +0000
+Received: from pps.filterd (USCULXSNTMT02v.am.sony.com [127.0.0.1])
+        by USCULXSNTMT02v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2B647voT009703;
+        Tue, 6 Dec 2022 04:39:09 GMT
+Received: from usculxsnt11v.am.sony.com ([146.215.230.185])
+        by USCULXSNTMT02v.am.sony.com (PPS) with ESMTPS id 3m7x99xxcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Dec 2022 04:39:09 +0000
+Received: from pps.filterd (USCULXSNT11v.am.sony.com [127.0.0.1])
+        by USCULXSNT11v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2B64cmFB006018;
+        Tue, 6 Dec 2022 04:39:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by USCULXSNT11v.am.sony.com (PPS) with ESMTPS id 3m7wqfu8sr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 06 Dec 2022 04:39:08 +0000
+Received: from USCULXSNT11v.am.sony.com (USCULXSNT11v.am.sony.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2B64d8QE006289;
+        Tue, 6 Dec 2022 04:39:08 GMT
+Received: from prime ([10.10.10.214])
+        by USCULXSNT11v.am.sony.com (PPS) with ESMTP id 3m7wqfu8sk-1;
+        Tue, 06 Dec 2022 04:39:08 +0000
+From:   Chethan Suresh <chethan.suresh@sony.com>
+To:     quentin@isovalent.com, bpf@vger.kernel.org
+Cc:     Chethan Suresh <chethan.suresh@sony.com>,
+        Kenta Tada <Kenta.Tada@sony.com>
+Subject: [PATCH bpf-next] bpftool: fix output for skipping kernel config check
+Date:   Tue,  6 Dec 2022 10:05:01 +0530
+Message-Id: <20221206043501.5249-1-chethan.suresh@sony.com>
+X-Mailer: git-send-email 2.17.1
+X-Sony-BusinessRelay-GUID: vl9C1-C1e1U7Pcb2vUX473moGVYLBRwx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
+X-Sony-EdgeRelay-GUID: 7kg1oUTmd9bAfgwHGNTcqys6nc7OVy-W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
+X-Proofpoint-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
+X-Proofpoint-ORIG-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
+X-Sony-Outbound-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+When bpftool feature does not find kernel config files
+under default path, do not output CONFIG_XYZ is not set.
+Skip kernel config check and continue.
 
-If there are pending rcu callback, free_mem_alloc() will use
-rcu_barrier_tasks_trace() and rcu_barrier() to wait for the pending
-__free_rcu_tasks_trace() and __free_rcu() callback.
-
-If rcu_trace_implies_rcu_gp() is true, there will be no pending
-__free_rcu(), so it will be OK to skip rcu_barrier() as well.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Chethan Suresh <chethan.suresh@sony.com>
+Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
 ---
- kernel/bpf/memalloc.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/feature.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 7daf147bc8f6..d43991fafc4f 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -464,9 +464,17 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
- {
- 	/* waiting_for_gp lists was drained, but __free_rcu might
- 	 * still execute. Wait for it now before we freeing percpu caches.
-+	 *
-+	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
-+	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-+	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
-+	 * so if call_rcu(head, __free_rcu) is skipped due to
-+	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
-+	 * using rcu_trace_implies_rcu_gp() as well.
- 	 */
- 	rcu_barrier_tasks_trace();
--	rcu_barrier();
-+	if (!rcu_trace_implies_rcu_gp())
-+		rcu_barrier();
- 	free_mem_alloc_no_barrier(ma);
+diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+index 36cf0f1517c9..316c4a01bdb7 100644
+--- a/tools/bpf/bpftool/feature.c
++++ b/tools/bpf/bpftool/feature.c
+@@ -487,14 +487,14 @@ static void probe_kernel_image_config(const char *define_prefix)
+ 	}
+ 
+ end_parse:
+-	if (file)
++	if (file) {
+ 		gzclose(file);
+-
+-	for (i = 0; i < ARRAY_SIZE(options); i++) {
+-		if (define_prefix && !options[i].macro_dump)
+-			continue;
+-		print_kernel_option(options[i].name, values[i], define_prefix);
+-		free(values[i]);
++		for (i = 0; i < ARRAY_SIZE(options); i++) {
++			if (define_prefix && !options[i].macro_dump)
++				continue;
++			print_kernel_option(options[i].name, values[i], define_prefix);
++			free(values[i]);
++		}
+ 	}
  }
  
 -- 
-2.29.2
+2.17.1
 
