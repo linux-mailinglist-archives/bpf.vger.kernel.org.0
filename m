@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2B5643CA1
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 06:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EA3643CAF
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 06:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbiLFFWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 00:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
+        id S232284AbiLFFbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 00:31:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbiLFFWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 00:22:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96539220D0
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 21:21:06 -0800 (PST)
+        with ESMTP id S232976AbiLFFax (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 00:30:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D6D220DB
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 21:29:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670304065;
+        s=mimecast20190719; t=1670304595;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KRACJ5x8yLje2KPJIBBBoJLn6lBedOJvNjahTYfPLk0=;
-        b=GR707WFe90zIIN+vIWdpmK+mMfdRTL9Ew0Jlp3Q+1ECBMoLh/H6sWlUibydnoPXBUGbALc
-        x4aXZd53pqBbmjimbjzzGNwqswIFV1oW/4us4g5Ogp3uMjdcIx78Bu08T0881vi8cRXbtc
-        ZfVAINspLx81fVU2Wm1+bBnXZMcKjfI=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UrdaxmIkU9R3lSKqzN+skDpzAUuGekW0ctr0930cr/A=;
+        b=fhhtzOdddSvEqF9iG0seQy3/kWw4OH8HQIWza7jzbrlfJbLDEO43Ly9IJnYlO5jtdt+5Dd
+        t9hNCAHikqZGM9ul8vyz4ky76V5QrABTcxhGsD9NpJ6CIYTD1OrQj60Pq31EUReD4+lYi/
+        R8z013ob8jMYiL65MbJ9wK7cZPOX+Vg=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-112-6snFdQ0KN-yzl4s3ojfuMw-1; Tue, 06 Dec 2022 00:21:01 -0500
-X-MC-Unique: 6snFdQ0KN-yzl4s3ojfuMw-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-144a21f5c25so2171365fac.2
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 21:21:01 -0800 (PST)
+ us-mta-249-cQVbf32DME6f7ht_ilGziQ-1; Tue, 06 Dec 2022 00:29:53 -0500
+X-MC-Unique: cQVbf32DME6f7ht_ilGziQ-1
+Received: by mail-oo1-f71.google.com with SMTP id m23-20020a4a3917000000b004a08a7cca84so4980260ooa.1
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 21:29:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KRACJ5x8yLje2KPJIBBBoJLn6lBedOJvNjahTYfPLk0=;
-        b=VVjaISqtsfIKYCn2soWfxE769XzQVuSed4Dn7rISOCPjXw15x9A9M4rlCzTXZuP7Po
-         EmmturtPdY76hDMv5DTKC4Mbo04u1Mm+j3xq2nzj71kHh8T3aISnwsdtx6/Chl+q2awo
-         k+FfkLE/AzSeG81eS8nQ9JeuLpnXbB2GAuxLNqjCsNY7Lgpje/4gqfRL9l9G477bIXyo
-         vULlkz9nK9A6UlvVp8YjBKWfOaS+gdeQ01NvNsiC59l3VLlHKTsZwXMmaR/F9d7RhKNr
-         +S4PqawNqLEpEDBcozbRbOUHgGKH0/tGUy/ab8ye027/FfHHfH+4O702GvpIhhKgwZYH
-         a6Uw==
-X-Gm-Message-State: ANoB5pmvCje/dTfABQlc0zMrPzT/H3wReUpY/q1Je2LaLPtpobxxJtrM
-        6ZhFzzURAJ1WbeWpkOmmVhIZHMs3MHZec/6d4jZo8CcAoStqnEN4ZphZWzsrexLH2H+2jNA0B9N
-        yx6y74QvEK6haliT+8oXAaI0XKsw0
-X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id a18-20020aca1a12000000b0035c303dfe37mr4024651oia.35.1670304061224;
-        Mon, 05 Dec 2022 21:21:01 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7yQi8cnUumH6KXlDIcpmSaQ8JhCuasF5uUEjFok4iCPzJ6njUk3h2o7PQ6i2Ty8KPNoNL0qL2JYkOM55lE07w=
+        bh=UrdaxmIkU9R3lSKqzN+skDpzAUuGekW0ctr0930cr/A=;
+        b=jNbIldspU/MBVy0/MTvMsUtOkNO0qZs8Pwh7n7B7fzbh5rj2QxD4QswHhGFRXPu59x
+         5rpve7ioRH/BKX3PZOuAyNfgdVEUMxuR7iHF7HSbZ5JPKjKbVX4zJyCU9ClboPcxfLX4
+         zJPUIIUIJlFrtPlcprhDd6sGCdl/DiPHZpF0QRc9ODi6ghvDItutwJjjlu2LW6Y/72/T
+         uJtH3zLpLxH0/ZUU2SxHkT+CosQdy3sM6+gXx+WHd49TVhy9vxAb+amF714vigcAttuc
+         mCrH3v8Mfss3TnGaU1D4uOaaz+pIDgfYC5lbQ57XBqrOVVhuvuWD8jnfL8x+mG4HLXNG
+         ssTQ==
+X-Gm-Message-State: ANoB5pnMqt+ibIONdJQHPE3Tqu8odmYEH59cA5YpN1LVMJEpvu/QaHcY
+        fZv15ZoLSn/nKTnH7K9DscaTg4/PE4Svkx9nX72jnQe1ale6d3th7+xr4jvzj0Msw5CX2CjPk/6
+        HG2IkdIiaLGiQhWignfj1AyEge35q
+X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id a18-20020aca1a12000000b0035c303dfe37mr4032013oia.35.1670304593136;
+        Mon, 05 Dec 2022 21:29:53 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6l9v2aYuxnEBGmCEsIj8zQk1K2aSin0sjamhXhP/Yt985bXk8FjhcMHR1OvJvvG6gC8ksK1A2vuriXQ64EZrw=
 X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id
- a18-20020aca1a12000000b0035c303dfe37mr4024648oia.35.1670304061044; Mon, 05
- Dec 2022 21:21:01 -0800 (PST)
+ a18-20020aca1a12000000b0035c303dfe37mr4032006oia.35.1670304592948; Mon, 05
+ Dec 2022 21:29:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20221122074348.88601-1-hengqi@linux.alibaba.com> <20221122074348.88601-2-hengqi@linux.alibaba.com>
-In-Reply-To: <20221122074348.88601-2-hengqi@linux.alibaba.com>
+References: <20221122074348.88601-1-hengqi@linux.alibaba.com> <20221122074348.88601-3-hengqi@linux.alibaba.com>
+In-Reply-To: <20221122074348.88601-3-hengqi@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 6 Dec 2022 13:20:49 +0800
-Message-ID: <CACGkMEvLbpNry+ROQof=tPOoX0W3-qths6493uvjBpb0nNinBQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/9] virtio_net: disable the hole mechanism for xdp
+Date:   Tue, 6 Dec 2022 13:29:42 +0800
+Message-ID: <CACGkMEsaU1Ogytfmy4rVYx6U2Rkd3HcLMjuULZPvR-JJHeRkgA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/9] virtio_net: set up xdp for multi buffer packets
 To:     Heng Qi <hengqi@linux.alibaba.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         "Michael S. Tsirkin" <mst@redhat.com>,
@@ -81,48 +81,78 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
 >
-> XDP core assumes that the frame_size of xdp_buff and the length of
-> the frag are PAGE_SIZE. But before xdp is set, the length of the prefilled
-> buffer may exceed PAGE_SIZE, which may cause the processing of xdp to fail,
-> so we disable the hole mechanism when xdp is loaded.
+> When the xdp program sets xdp.frags, which means it can process
+> multi-buffer packets, so we continue to open xdp support when
+> features such as GRO_HW are negotiated.
 >
 > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
 > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > ---
->  drivers/net/virtio_net.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/net/virtio_net.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
 >
 > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 9cce7dec7366..c5046d21b281 100644
+> index c5046d21b281..8f7d207d58d6 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -1419,8 +1419,11 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
->                 /* To avoid internal fragmentation, if there is very likely not
->                  * enough space for another buffer, add the remaining space to
->                  * the current buffer.
-> +                * XDP core assumes that frame_size of xdp_buff and the length
-> +                * of the frag are PAGE_SIZE, so we disable the hole mechanism.
->                  */
-> -               len += hole;
-> +               if (!vi->xdp_enabled)
+> @@ -3080,14 +3080,21 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>         u16 xdp_qp = 0, curr_qp;
+>         int i, err;
+>
+> -       if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS)
+> -           && (virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+> -               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+> -               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+> -               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+> -               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
+> -               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+> -               return -EOPNOTSUPP;
+> +       if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS)) {
+> +               if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM)) {
+> +                       NL_SET_ERR_MSG_MOD(extack, "Can't set XDP without frags while guest is implementing GUEST_CSUM");
+> +                       return -EOPNOTSUPP;
+> +               }
+> +
+> +               if (prog && !prog->aux->xdp_has_frags) {
+> +                       if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+> +                           virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+> +                           virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+> +                           virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO)) {
+> +                               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP without frags while guest is implementing GUEST_GRO_HW");
+> +                               return -EOPNOTSUPP;
+> +                       }
+> +               }
+>         }
+>
+>         if (vi->mergeable_rx_bufs && !vi->any_header_sg) {
+> @@ -3095,8 +3102,8 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>                 return -EINVAL;
+>         }
+>
+> -       if (dev->mtu > max_sz) {
+> -               NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
+> +       if (prog && !prog->aux->xdp_has_frags && dev->mtu > max_sz) {
+> +               NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP without frags");
+>                 netdev_warn(dev, "XDP requires MTU less than %lu\n", max_sz);
+>                 return -EINVAL;
+>         }
+> @@ -3218,9 +3225,6 @@ static int virtnet_set_features(struct net_device *dev,
+>         int err;
+>
+>         if ((dev->features ^ features) & NETIF_F_GRO_HW) {
+> -               if (vi->xdp_enabled)
+> -                       return -EBUSY;
 
-How is this synchronized with virtnet_xdp_set()?
-
-I think we need to use headroom here since it did:
-
-static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
-{
-        return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
-}
-
-Otherwise xdp_enabled could be re-read which may lead bugs.
+This seems suspicious, GRO_HW could be re-enabled accidentally even if
+it was disabled when attaching an XDP program that is not capable of
+doing multi-buffer XDP?
 
 Thanks
 
-> +                       len += hole;
->                 alloc_frag->offset += hole;
->         }
->
+> -
+>                 if (features & NETIF_F_GRO_HW)
+>                         offloads = vi->guest_offloads_capable;
+>                 else
 > --
 > 2.19.1.6.gb485710b
 >
