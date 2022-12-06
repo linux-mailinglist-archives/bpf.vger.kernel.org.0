@@ -2,77 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AE2643B82
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 03:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A62643BD7
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 04:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbiLFCrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 21:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        id S233874AbiLFDVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 22:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbiLFCqd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 21:46:33 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119D125E8A
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 18:46:19 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id d3-20020a056a0010c300b005728633819aso11986941pfu.8
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 18:46:18 -0800 (PST)
+        with ESMTP id S233889AbiLFDVo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 22:21:44 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C272610A
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 19:21:43 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id e141so17049849ybh.3
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 19:21:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iWEV2FSd948IQZv7GHoH4TBIO8fDVx1LHWdbxVHerjE=;
-        b=V/G+BLpSZyhZDYM9n7vB3MdXQEPPD8do+MVv7MtXqL63c0co4Va4LPtcjwzJjEI2yp
-         wBaivFp0VFI7CygA/TmCslafFL81wv3hBYFlvkqGmBoZrUMaU0CyXycuz3cpR7n2C507
-         nsG0D0enthjEqxApek863nv3uPSGCSoiticJz5/YraoAMK6mgkzVLCNCb7Oywfw6sAhL
-         ii1vkg0YQo9KrEk8wRoziCRvt0SPmpF2x2czYxcwvYWMz++WsbLkMwn36ubOdhdXZclF
-         TzqF4nXsg/fX6+iwMC8OS0gkvnyF3jFkR6mNN83I0zIVcI02bVoX9NW7zmTnLO69fnVr
-         OHKQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L0rThEAGpgTOyn17zGhI/zm1G/vnQGsdtcnyo/9H9BA=;
+        b=nNZc+wIjDrFq8+W5tMuzccBqAOZsun3xycLU00kiE/tUDoF6VUGJhkvDZRi4FgaNO4
+         EbnvDBzUBRmL6SEnejnlh89ho4B6nr9Vj3z1fbgAq9Lz6Y2OE8gwyRHD/RJBSO3/C8GE
+         Aawh77F5YTX/M2BWfLyZ/kKDVrwx1G8tqWSORrWpj/nT6rMStGG4pNoG2w2GtpYy9v2y
+         YG2x4djqMD+6so3fckQIjLBLPpjFatwpp4cV73l2sjF0JERBpRBL7LzMTIYgQBY4GWgJ
+         +u8HsPIt0f0chuvxry5bc1JVQGDopoAtjHEp6H09etyXgf/ptETXXO8ZK2xMTiSVyvZ+
+         JwXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iWEV2FSd948IQZv7GHoH4TBIO8fDVx1LHWdbxVHerjE=;
-        b=G8BLP/0h9F70/nAGpdMy4pycOZoK6X3jsuq5xUxnPTwfdZ6zYG1qAswp9AUnMT8Cc/
-         zqhLu2XbTiql36O9QyYy+DfjpkX9qXuFswGgbxHEBPkQrbwBzyHcQi7hcj2IrLHHN073
-         Z5GPXP7L4tmywQ1n8aqKNPoaYFWH7/3Qqd7740GaUHVO3kgMuuWElKLpmoUmJBT16gWS
-         P1rU4Tfjn7GmB/V2TYhjEMAu75d1ojhwFqfgIEE0Rjf61ZDYUqfOQWQPVWy9RM3seJ2C
-         CeUBotuWUXO6BHW7ukpzLA6fdfxs9TN8gRf5BSws3h+/3M4i1grjTqMOT5/FktvUCY6q
-         Tv5w==
-X-Gm-Message-State: ANoB5plOZH1bPJQfF+7m4dDBG9R1VXoud0P+/Z3QrKYxf2wK/SrGfBPH
-        PzWVZvN9z9yvP/mIejWgVEB9Jn+hECgeg1B1edDHkNxuKpVeYvWdVSRG47YhgYr01hLL34nzDsG
-        hWee05cnOMYOcVtqGDT7PRPuHYPPpRmzZzmpCVGQ9Y9Coi3YSow==
-X-Google-Smtp-Source: AA0mqf5tQG3qArVaSoPJbRH3XBlKtVaBvnaK+cZ2XyZiwC/jynx5l6ZHKoy6KCAEGXVPvOx+AXL6Wdc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:d086:b0:219:227d:d91f with SMTP id
- k6-20020a17090ad08600b00219227dd91fmr4694456pju.0.1670294777022; Mon, 05 Dec
- 2022 18:46:17 -0800 (PST)
-Date:   Mon,  5 Dec 2022 18:45:54 -0800
-In-Reply-To: <20221206024554.3826186-1-sdf@google.com>
-Mime-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com>
-X-Mailer: git-send-email 2.39.0.rc0.267.gcb52ba06e7-goog
-Message-ID: <20221206024554.3826186-13-sdf@google.com>
-Subject: [PATCH bpf-next v3 12/12] selftests/bpf: Simple program to dump XDP
- RX metadata
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L0rThEAGpgTOyn17zGhI/zm1G/vnQGsdtcnyo/9H9BA=;
+        b=CAEvnui2bay+9oAYMJCkOyfjj3XE8YaQZAhLcNN6jd144ncZ1lVyOLnY2JvhdqyZZK
+         ElEcKeUcAvpCXRrQuYMWpXg4V+s/4qNw8m6S1GBccThOacoL29RgeUTEyPx3zDZekqmJ
+         /JUixAhj4GM53hwf9KZl5C+Wcaleo654TYfAijTJdBXeB7+S16S28ND2YUZ3HPun96+M
+         e81+D+Dah2T7z/shacCAwEvcJdP+UFmV6rSk6i69i0EpW8ucRyNven0TNwgQpIX0H7qS
+         tzjCD+h0q2pHr4zoOMuiytSzrPSg4Nza1DhYELnP7Sx0pM1p2E93xiUJDZ8iwSJemega
+         36Iw==
+X-Gm-Message-State: ANoB5pmlBFoABrImQwSGyXmICAxFKGgYENNm368mXKcYYhkn47wFM30t
+        B2NOw8YRaZuCdKg4MySOJiauH9FNFUknhzmtdBN9Rw==
+X-Google-Smtp-Source: AA0mqf62+7uNMlNgurIXTWE7Zz21Vi6swSdHe74CT0hwHyy/bY8WqsERd6t7hN//zfEZvRKcaqI33O+x5RXPdyKk12I=
+X-Received: by 2002:a25:d197:0:b0:703:4bfd:3986 with SMTP id
+ i145-20020a25d197000000b007034bfd3986mr1052241ybg.407.1670296902643; Mon, 05
+ Dec 2022 19:21:42 -0800 (PST)
+MIME-Version: 1.0
+References: <1669817512-4560-1-git-send-email-george.kennedy@oracle.com>
+ <CALs4sv2ZfT1SAYY0oOYhrBBCjsG_th5g=QtSsbKJnPbW8faQ+w@mail.gmail.com>
+ <CANn89iL9obgd==tdp9DgdxXk78UvzF6D4J1OeihB1kx9_U4oZw@mail.gmail.com>
+ <99adf483-ae89-8010-4689-fd50a77ff023@oracle.com> <CANn89iL18gPus7YWMMX_UFg9PSxAv0SkWTjLYCPhncOCEKrWuQ@mail.gmail.com>
+ <ae736328-56de-7985-8a9a-0279a123544f@oracle.com>
+In-Reply-To: <ae736328-56de-7985-8a9a-0279a123544f@oracle.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 6 Dec 2022 04:21:31 +0100
+Message-ID: <CANn89iKsGrTw31_yQ8DqdFeDYG0OABUKuWd5i9t+HbwAS7ZbsQ@mail.gmail.com>
+Subject: Re: [PATCH] net: check for dev pointer being NULL in
+ dev_hard_header() to avoid GPF
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Pavan Chebbi <pavan.chebbi@broadcom.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        harshit.m.mogalapalli@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,616 +74,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To be used for verification of driver implementations. Note that
-the skb path is gone from the series, but I'm still keeping the
-implementation for any possible future work.
+On Tue, Dec 6, 2022 at 2:11 AM George Kennedy <george.kennedy@oracle.com> wrote:
+>
+> Hi Eric,
+>
+> More info...
+>
+> On 12/1/2022 11:11 PM, Eric Dumazet wrote:
+> > On Thu, Dec 1, 2022 at 9:44 PM George Kennedy <george.kennedy@oracle.com> wrote:
+> >>
+> >>
+> >> On 12/1/2022 2:25 PM, Eric Dumazet wrote:
+> >>> On Thu, Dec 1, 2022 at 2:16 PM Pavan Chebbi <pavan.chebbi@broadcom.com> wrote:
+> >>>> On Wed, Nov 30, 2022 at 7:43 PM George Kennedy
+> >>>> <george.kennedy@oracle.com> wrote:
+> >>>>> The dev pointer can be NULL in dev_hard_header(). Add check for dev being
+> >>>>> NULL in dev_hard_header() to avoid GPF.
+> >>>>>
+> >>>>> general protection fault, probably for non-canonical address
+> >>>>>       0xdffffc0000000046: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> >>>>> KASAN: null-ptr-deref in range [0x0000000000000230-0x0000000000000237]
+> >>>>> CPU: 1 PID: 45 Comm: kworker/1:1 Not tainted 6.1.0-rc7+ #2
+> >>>>> Hardware name: Red Hat KVM, BIOS 1.15.0-2.module+el8.6.0+20659+3dcf7c70
+> >>>>> Workqueue: mld mld_ifc_work
+> >>>>> RIP: 0010:macvlan_hard_header (./include/linux/netdevice.h:3057
+> >>>>>       (discriminator 4) drivers/net/macvlan.c:594 (discriminator 4))
+> >>>>> RSP: 0018:ffff888103d377d0 EFLAGS: 00010212
+> >>>>> RAX: dffffc0000000000 RBX: ffff88801cf1a000 RCX: 0000000000000000
+> >>>>> RDX: 0000000000000046 RSI: 0000000000000000 RDI: 0000000000000230
+> >>>>> RBP: ffff88801e8ef328 R08: 0000000000000000 R09: 0000000000000060
+> >>>>> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88801f0497c0
+> >>>>> R13: 0000000000000000 R14: ffff888045187c98 R15: 0000000000000060
+> >>>>> FS:  0000000000000000(0000) GS:ffff888106c80000(0000)
+> >>>>>       knlGS:0000000000000000
+> >>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>>> CR2: 00007fbf3f1c1840 CR3: 0000000014e36000 CR4: 00000000000006e0
+> >>>>> Call Trace:
+> >>>>>    <TASK>
+> >>>>> neigh_connected_output (./include/linux/netdevice.h:3060
+> >>>>>       net/core/neighbour.c:1595)
+> >>>>> ip6_finish_output2 (./include/net/neighbour.h:546
+> >>>>>       net/ipv6/ip6_output.c:134)
+> >>>>> ip6_finish_output (net/ipv6/ip6_output.c:195 net/ipv6/ip6_output.c:206)
+> >>>>> ip6_output (./include/linux/netfilter.h:291 net/ipv6/ip6_output.c:227)
+> >>>>> NF_HOOK.constprop.0 (./include/net/dst.h:445
+> >>>>>       ./include/linux/netfilter.h:302)
+> >>>>> mld_sendpack (net/ipv6/mcast.c:1824)
+> >>>>> mld_send_cr (net/ipv6/mcast.c:2122)
+> >>>>> mld_ifc_work (net/ipv6/mcast.c:2655)
+> >>>>> process_one_work (kernel/workqueue.c:2294)
+> >>>>> worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2437)
+> >>>>> kthread (kernel/kthread.c:376)
+> >>>>> ret_from_fork (arch/x86/entry/entry_64.S:312)
+> >>>>>    </TASK>
+> >>>>> Modules linked in:
+> >>>>> Dumping ftrace buffer:
+> >>>>>      (ftrace buffer empty)
+> >>>>> ---[ end trace 0000000000000000 ]---
+> >>>>>
+> >>>>> Fixes: 0c4e85813d0a ("[NET]: Wrap netdevice hardware header creation.")
+> >>>>> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> >>>>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> >>>>> ---
+> >>>>>    include/linux/netdevice.h | 2 +-
+> >>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>
+> >>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> >>>>> index eddf8ee270e7..9b25a6301fa5 100644
+> >>>>> --- a/include/linux/netdevice.h
+> >>>>> +++ b/include/linux/netdevice.h
+> >>>>> @@ -3054,7 +3054,7 @@ static inline int dev_hard_header(struct sk_buff *skb, struct net_device *dev,
+> >>>>>                                     const void *daddr, const void *saddr,
+> >>>>>                                     unsigned int len)
+> >>>>>    {
+> >>>>> -       if (!dev->header_ops || !dev->header_ops->create)
+> >>>>> +       if (!dev || !dev->header_ops || !dev->header_ops->create)
+> >>> Do  you have a repro ?
+> >> See syzkaller repros attached.
+> >>
+> >>> This patch will not prevent a crash later I think.
+> >> The repro ran overnight without failure with the patch applied.
+> > Yes, but the patch is hiding a potential bug that might show up with
+> > other 'repros'
+> The repro fails when these devices are configured (seem like small mtu):
+>
+> 20: vxcan0@vxcan1: <NOARP,UP,LOWER_UP> mtu 72 qdisc noqueue state UP group default qlen 1000
+>      link/can
+>      inet 172.20.20.38/24 scope global vxcan0
+>         valid_lft forever preferred_lft forever
+> 21: vxcan1@vxcan0: <NOARP,UP,LOWER_UP> mtu 72 qdisc noqueue state UP group default qlen 1000
+>      link/can
+>      inet 172.20.20.39/24 scope global vxcan1
+>         valid_lft forever preferred_lft forever
+>
+>
+> # diff ../config.fail .config
+> 3325c3325
+> < CONFIG_CAN_VXCAN=y
+> ---
+> > # CONFIG_CAN_VXCAN is not set
+>
+> Thanks,
+> George
 
-$ xdp_hw_metadata <ifname>
+Small MTU has caused numerous issues in the past.
 
-On the other machine:
-
-$ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
-$ echo -n skb | nc -u -q1 <target> 9092 # for skb
-
-Sample output:
-
-  # xdp
-  xsk_ring_cons__peek: 1
-  0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-  rx_timestamp_supported: 1
-  rx_timestamp: 1667850075063948829
-  0x19f9090: complete idx=8 addr=8000
-
-  # skb
-  found skb hwtstamp = 1668314052.854274681
-
-Decoding:
-  # xdp
-  rx_timestamp=1667850075.063948829
-
-  $ date -d @1667850075
-  Mon Nov  7 11:41:15 AM PST 2022
-  $ date
-  Mon Nov  7 11:42:05 AM PST 2022
-
-  # skb
-  $ date -d @1668314052
-  Sat Nov 12 08:34:12 PM PST 2022
-  $ date
-  Sat Nov 12 08:37:06 PM PST 2022
-
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Maryam Tahhan <mtahhan@redhat.com>
-Cc: xdp-hints@xdp-project.net
-Cc: netdev@vger.kernel.org
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |   6 +-
- .../selftests/bpf/progs/xdp_hw_metadata.c     |  93 ++++
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 405 ++++++++++++++++++
- 4 files changed, 504 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
- create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
-
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 07d2d0a8c5cb..01e3baeefd4f 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -46,3 +46,4 @@ test_cpp
- xskxceiver
- xdp_redirect_multi
- xdp_synproxy
-+xdp_hw_metadata
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 4eed22fa3681..189b39b0e5d0 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -83,7 +83,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
- TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
--	xskxceiver xdp_redirect_multi xdp_synproxy veristat
-+	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata
- 
- TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
- TEST_GEN_FILES += liburandom_read.so
-@@ -241,6 +241,9 @@ $(OUTPUT)/test_maps: $(TESTING_HELPERS)
- $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
- $(OUTPUT)/xsk.o: $(BPFOBJ)
- $(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o
-+$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/xsk.o $(OUTPUT)/xdp_hw_metadata.skel.h
-+$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/network_helpers.o
-+$(OUTPUT)/xdp_hw_metadata: LDFLAGS += -static
- 
- BPFTOOL ?= $(DEFAULT_BPFTOOL)
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
-@@ -383,6 +386,7 @@ linked_maps.skel.h-deps := linked_maps1.bpf.o linked_maps2.bpf.o
- test_subskeleton.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o test_subskeleton.bpf.o
- test_subskeleton_lib.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o
- test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
-+xdp_hw_metadata.skel.h-deps := xdp_hw_metadata.bpf.o
- 
- LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
- 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-new file mode 100644
-index 000000000000..0ae409094883
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/in.h>
-+#include <linux/udp.h>
-+#include <stdbool.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#include "xdp_metadata.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_XSKMAP);
-+	__uint(max_entries, 256);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} xsk SEC(".maps");
-+
-+extern bool bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx) __ksym;
-+extern __u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx) __ksym;
-+extern bool bpf_xdp_metadata_rx_hash_supported(const struct xdp_md *ctx) __ksym;
-+extern __u32 bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx) __ksym;
-+
-+SEC("xdp")
-+int rx(struct xdp_md *ctx)
-+{
-+	void *data, *data_meta, *data_end;
-+	struct ipv6hdr *ip6h = NULL;
-+	struct ethhdr *eth = NULL;
-+	struct udphdr *udp = NULL;
-+	struct iphdr *iph = NULL;
-+	struct xdp_meta *meta;
-+	int ret;
-+
-+	data = (void *)(long)ctx->data;
-+	data_end = (void *)(long)ctx->data_end;
-+	eth = data;
-+	if (eth + 1 < data_end) {
-+		if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+			iph = (void *)(eth + 1);
-+			if (iph + 1 < data_end && iph->protocol == IPPROTO_UDP)
-+				udp = (void *)(iph + 1);
-+		}
-+		if (eth->h_proto == bpf_htons(ETH_P_IPV6)) {
-+			ip6h = (void *)(eth + 1);
-+			if (ip6h + 1 < data_end && ip6h->nexthdr == IPPROTO_UDP)
-+				udp = (void *)(ip6h + 1);
-+		}
-+		if (udp && udp + 1 > data_end)
-+			udp = NULL;
-+	}
-+
-+	if (!udp)
-+		return XDP_PASS;
-+
-+	if (udp->dest != bpf_htons(9091))
-+		return XDP_PASS;
-+
-+	bpf_printk("forwarding UDP:9091 to AF_XDP");
-+
-+	ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
-+	if (ret != 0) {
-+		bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
-+		return XDP_PASS;
-+	}
-+
-+	data = (void *)(long)ctx->data;
-+	data_meta = (void *)(long)ctx->data_meta;
-+	meta = data_meta;
-+
-+	if (meta + 1 > data) {
-+		bpf_printk("bpf_xdp_adjust_meta doesn't appear to work");
-+		return XDP_PASS;
-+	}
-+
-+	if (bpf_xdp_metadata_rx_timestamp_supported(ctx)) {
-+		meta->rx_timestamp = bpf_xdp_metadata_rx_timestamp(ctx);
-+		bpf_printk("populated rx_timestamp with %u", meta->rx_timestamp);
-+	}
-+
-+	if (bpf_xdp_metadata_rx_hash_supported(ctx)) {
-+		meta->rx_hash = bpf_xdp_metadata_rx_hash(ctx);
-+		bpf_printk("populated rx_hash with %u", meta->rx_hash);
-+	}
-+
-+	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-new file mode 100644
-index 000000000000..29f9d01c1da1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -0,0 +1,405 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* Reference program for verifying XDP metadata on real HW. Functional test
-+ * only, doesn't test the performance.
-+ *
-+ * RX:
-+ * - UDP 9091 packets are diverted into AF_XDP
-+ * - Metadata verified:
-+ *   - rx_timestamp
-+ *   - rx_hash
-+ *
-+ * TX:
-+ * - TBD
-+ */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "xdp_hw_metadata.skel.h"
-+#include "xsk.h"
-+
-+#include <error.h>
-+#include <linux/errqueue.h>
-+#include <linux/if_link.h>
-+#include <linux/net_tstamp.h>
-+#include <linux/udp.h>
-+#include <linux/sockios.h>
-+#include <sys/mman.h>
-+#include <net/if.h>
-+#include <poll.h>
-+
-+#include "xdp_metadata.h"
-+
-+#define UMEM_NUM 16
-+#define UMEM_FRAME_SIZE XSK_UMEM__DEFAULT_FRAME_SIZE
-+#define UMEM_SIZE (UMEM_FRAME_SIZE * UMEM_NUM)
-+#define XDP_FLAGS (XDP_FLAGS_DRV_MODE | XDP_FLAGS_REPLACE)
-+
-+struct xsk {
-+	void *umem_area;
-+	struct xsk_umem *umem;
-+	struct xsk_ring_prod fill;
-+	struct xsk_ring_cons comp;
-+	struct xsk_ring_prod tx;
-+	struct xsk_ring_cons rx;
-+	struct xsk_socket *socket;
-+};
-+
-+struct xdp_hw_metadata *bpf_obj;
-+struct xsk *rx_xsk;
-+const char *ifname;
-+int ifindex;
-+int rxq;
-+
-+void test__fail(void) { /* for network_helpers.c */ }
-+
-+static int open_xsk(const char *ifname, struct xsk *xsk, __u32 queue_id)
-+{
-+	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-+	const struct xsk_socket_config socket_config = {
-+		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD,
-+		.xdp_flags = XDP_FLAGS,
-+		.bind_flags = XDP_COPY,
-+	};
-+	const struct xsk_umem_config umem_config = {
-+		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
-+		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
-+		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
-+	};
-+	__u32 idx;
-+	u64 addr;
-+	int ret;
-+	int i;
-+
-+	xsk->umem_area = mmap(NULL, UMEM_SIZE, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-+	if (xsk->umem_area == MAP_FAILED)
-+		return -ENOMEM;
-+
-+	ret = xsk_umem__create(&xsk->umem,
-+			       xsk->umem_area, UMEM_SIZE,
-+			       &xsk->fill,
-+			       &xsk->comp,
-+			       &umem_config);
-+	if (ret)
-+		return ret;
-+
-+	ret = xsk_socket__create(&xsk->socket, ifname, queue_id,
-+				 xsk->umem,
-+				 &xsk->rx,
-+				 &xsk->tx,
-+				 &socket_config);
-+	if (ret)
-+		return ret;
-+
-+	/* First half of umem is for TX. This way address matches 1-to-1
-+	 * to the completion queue index.
-+	 */
-+
-+	for (i = 0; i < UMEM_NUM / 2; i++) {
-+		addr = i * UMEM_FRAME_SIZE;
-+		printf("%p: tx_desc[%d] -> %lx\n", xsk, i, addr);
-+	}
-+
-+	/* Second half of umem is for RX. */
-+
-+	ret = xsk_ring_prod__reserve(&xsk->fill, UMEM_NUM / 2, &idx);
-+	for (i = 0; i < UMEM_NUM / 2; i++) {
-+		addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
-+		printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
-+		*xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
-+	}
-+	xsk_ring_prod__submit(&xsk->fill, ret);
-+
-+	return 0;
-+}
-+
-+static void close_xsk(struct xsk *xsk)
-+{
-+	if (xsk->umem)
-+		xsk_umem__delete(xsk->umem);
-+	if (xsk->socket)
-+		xsk_socket__delete(xsk->socket);
-+	munmap(xsk->umem, UMEM_SIZE);
-+}
-+
-+static void refill_rx(struct xsk *xsk, __u64 addr)
-+{
-+	__u32 idx;
-+
-+	if (xsk_ring_prod__reserve(&xsk->fill, 1, &idx) == 1) {
-+		printf("%p: complete idx=%u addr=%llx\n", xsk, idx, addr);
-+		*xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
-+		xsk_ring_prod__submit(&xsk->fill, 1);
-+	}
-+}
-+
-+static void verify_xdp_metadata(void *data)
-+{
-+	struct xdp_meta *meta;
-+
-+	meta = data - sizeof(*meta);
-+
-+	printf("rx_timestamp: %llu\n", meta->rx_timestamp);
-+	printf("rx_hash: %u\n", meta->rx_hash);
-+}
-+
-+static void verify_skb_metadata(int fd)
-+{
-+	char cmsg_buf[1024];
-+	char packet_buf[128];
-+
-+	struct scm_timestamping *ts;
-+	struct iovec packet_iov;
-+	struct cmsghdr *cmsg;
-+	struct msghdr hdr;
-+
-+	memset(&hdr, 0, sizeof(hdr));
-+	hdr.msg_iov = &packet_iov;
-+	hdr.msg_iovlen = 1;
-+	packet_iov.iov_base = packet_buf;
-+	packet_iov.iov_len = sizeof(packet_buf);
-+
-+	hdr.msg_control = cmsg_buf;
-+	hdr.msg_controllen = sizeof(cmsg_buf);
-+
-+	if (recvmsg(fd, &hdr, 0) < 0)
-+		error(-1, errno, "recvmsg");
-+
-+	for (cmsg = CMSG_FIRSTHDR(&hdr); cmsg != NULL;
-+	     cmsg = CMSG_NXTHDR(&hdr, cmsg)) {
-+
-+		if (cmsg->cmsg_level != SOL_SOCKET)
-+			continue;
-+
-+		switch (cmsg->cmsg_type) {
-+		case SCM_TIMESTAMPING:
-+			ts = (struct scm_timestamping *)CMSG_DATA(cmsg);
-+			if (ts->ts[2].tv_sec || ts->ts[2].tv_nsec) {
-+				printf("found skb hwtstamp = %lu.%lu\n",
-+				       ts->ts[2].tv_sec, ts->ts[2].tv_nsec);
-+				return;
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	printf("skb hwtstamp is not found!\n");
-+}
-+
-+static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd)
-+{
-+	const struct xdp_desc *rx_desc;
-+	struct pollfd fds[rxq + 1];
-+	__u64 comp_addr;
-+	__u64 addr;
-+	__u32 idx;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < rxq; i++) {
-+		fds[i].fd = xsk_socket__fd(rx_xsk[i].socket);
-+		fds[i].events = POLLIN;
-+		fds[i].revents = 0;
-+	}
-+
-+	fds[rxq].fd = server_fd;
-+	fds[rxq].events = POLLIN;
-+	fds[rxq].revents = 0;
-+
-+	while (true) {
-+		errno = 0;
-+		ret = poll(fds, rxq + 1, 1000);
-+		printf("poll: %d (%d)\n", ret, errno);
-+		if (ret < 0)
-+			break;
-+		if (ret == 0)
-+			continue;
-+
-+		if (fds[rxq].revents)
-+			verify_skb_metadata(server_fd);
-+
-+		for (i = 0; i < rxq; i++) {
-+			if (fds[i].revents == 0)
-+				continue;
-+
-+			struct xsk *xsk = &rx_xsk[i];
-+
-+			ret = xsk_ring_cons__peek(&xsk->rx, 1, &idx);
-+			printf("xsk_ring_cons__peek: %d\n", ret);
-+			if (ret != 1)
-+				continue;
-+
-+			rx_desc = xsk_ring_cons__rx_desc(&xsk->rx, idx);
-+			comp_addr = xsk_umem__extract_addr(rx_desc->addr);
-+			addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
-+			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
-+			       xsk, idx, rx_desc->addr, addr, comp_addr);
-+			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr));
-+			xsk_ring_cons__release(&xsk->rx, 1);
-+			refill_rx(xsk, comp_addr);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+struct ethtool_channels {
-+	__u32	cmd;
-+	__u32	max_rx;
-+	__u32	max_tx;
-+	__u32	max_other;
-+	__u32	max_combined;
-+	__u32	rx_count;
-+	__u32	tx_count;
-+	__u32	other_count;
-+	__u32	combined_count;
-+};
-+
-+#define ETHTOOL_GCHANNELS	0x0000003c /* Get no of channels */
-+
-+static int rxq_num(const char *ifname)
-+{
-+	struct ethtool_channels ch = {
-+		.cmd = ETHTOOL_GCHANNELS,
-+	};
-+
-+	struct ifreq ifr = {
-+		.ifr_data = (void *)&ch,
-+	};
-+	strcpy(ifr.ifr_name, ifname);
-+	int fd, ret;
-+
-+	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		error(-1, errno, "socket");
-+
-+	ret = ioctl(fd, SIOCETHTOOL, &ifr);
-+	if (ret < 0)
-+		error(-1, errno, "socket");
-+
-+	close(fd);
-+
-+	return ch.rx_count + ch.combined_count;
-+}
-+
-+static void cleanup(void)
-+{
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-+	int ret;
-+	int i;
-+
-+	if (bpf_obj) {
-+		opts.old_prog_fd = bpf_program__fd(bpf_obj->progs.rx);
-+		if (opts.old_prog_fd >= 0) {
-+			printf("detaching bpf program....\n");
-+			ret = bpf_xdp_detach(ifindex, XDP_FLAGS, &opts);
-+			if (ret)
-+				printf("failed to detach XDP program: %d\n", ret);
-+		}
-+	}
-+
-+	for (i = 0; i < rxq; i++)
-+		close_xsk(&rx_xsk[i]);
-+
-+	if (bpf_obj)
-+		xdp_hw_metadata__destroy(bpf_obj);
-+}
-+
-+static void handle_signal(int sig)
-+{
-+	/* interrupting poll() is all we need */
-+}
-+
-+static void timestamping_enable(int fd, int val)
-+{
-+	int ret;
-+
-+	ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, sizeof(val));
-+	if (ret < 0)
-+		error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int server_fd = -1;
-+	int ret;
-+	int i;
-+
-+	struct bpf_program *prog;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "pass device name\n");
-+		return -1;
-+	}
-+
-+	ifname = argv[1];
-+	ifindex = if_nametoindex(ifname);
-+	rxq = rxq_num(ifname);
-+
-+	printf("rxq: %d\n", rxq);
-+
-+	rx_xsk = malloc(sizeof(struct xsk) * rxq);
-+	if (!rx_xsk)
-+		error(-1, ENOMEM, "malloc");
-+
-+	for (i = 0; i < rxq; i++) {
-+		printf("open_xsk(%s, %p, %d)\n", ifname, &rx_xsk[i], i);
-+		ret = open_xsk(ifname, &rx_xsk[i], i);
-+		if (ret)
-+			error(-1, -ret, "open_xsk");
-+
-+		printf("xsk_socket__fd() -> %d\n", xsk_socket__fd(rx_xsk[i].socket));
-+	}
-+
-+	printf("open bpf program...\n");
-+	bpf_obj = xdp_hw_metadata__open();
-+	if (libbpf_get_error(bpf_obj))
-+		error(-1, libbpf_get_error(bpf_obj), "xdp_hw_metadata__open");
-+
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_HAS_METADATA);
-+
-+	printf("load bpf program...\n");
-+	ret = xdp_hw_metadata__load(bpf_obj);
-+	if (ret)
-+		error(-1, -ret, "xdp_hw_metadata__load");
-+
-+	printf("prepare skb endpoint...\n");
-+	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
-+	if (server_fd < 0)
-+		error(-1, errno, "start_server");
-+	timestamping_enable(server_fd,
-+			    SOF_TIMESTAMPING_SOFTWARE |
-+			    SOF_TIMESTAMPING_RAW_HARDWARE);
-+
-+	printf("prepare xsk map...\n");
-+	for (i = 0; i < rxq; i++) {
-+		int sock_fd = xsk_socket__fd(rx_xsk[i].socket);
-+		__u32 queue_id = i;
-+
-+		printf("map[%d] = %d\n", queue_id, sock_fd);
-+		ret = bpf_map_update_elem(bpf_map__fd(bpf_obj->maps.xsk), &queue_id, &sock_fd, 0);
-+		if (ret)
-+			error(-1, -ret, "bpf_map_update_elem");
-+	}
-+
-+	printf("attach bpf program...\n");
-+	ret = bpf_xdp_attach(ifindex,
-+			     bpf_program__fd(bpf_obj->progs.rx),
-+			     XDP_FLAGS, NULL);
-+	if (ret)
-+		error(-1, -ret, "bpf_xdp_attach");
-+
-+	signal(SIGINT, handle_signal);
-+	ret = verify_metadata(rx_xsk, rxq, server_fd);
-+	close(server_fd);
-+	cleanup();
-+	if (ret)
-+		error(-1, -ret, "verify_metadata");
-+}
--- 
-2.39.0.rc0.267.gcb52ba06e7-goog
-
+I am pretty sure we miss some READ_ONCE(dev->mtu) and other safety checks.
