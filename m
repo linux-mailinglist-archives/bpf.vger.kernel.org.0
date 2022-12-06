@@ -2,120 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C343643C6F
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 05:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2B5643CA1
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 06:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbiLFEkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 23:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        id S232198AbiLFFWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 00:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbiLFEja (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 23:39:30 -0500
-Received: from mx07-001d1705.pphosted.com (mx07-001d1705.pphosted.com [185.132.183.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E124F2717A
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 20:39:12 -0800 (PST)
-Received: from pps.filterd (m0209329.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B64aZuW012528;
-        Tue, 6 Dec 2022 04:39:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id; s=S1;
- bh=l+PlveErNgHq0DSbEl7ni0TSU9l54Ed6U4IjPimZkoY=;
- b=eMMGa//4TTu1CfXUAtZ96HOmNo2RlXWQIlmEQ7I5p6bfKfXlwybr0mhDEqEu3pIEWa02
- Q1860bj493hdkWc2+sz6gtouPeICTf+hc7AyYunN4VwISqY0ITnlTuHzDal6LO1h9xtV
- H2ZuXNw8uVyNMxZfrEuaZo8+joKFUC906Tz8DtCmZHvSo+x9QAH6Yzi3GkOppoArgcUv
- 825qqOLkLYyKZXpZkcNUB2DgCOEbXXpMfHDF2oiSoAq18/Pdh9ZAaOjiIHYrFpKEaHkL
- y59ZXW+FgFAsnUHGGge4XmOAlh1C3xek88jTje9HBagqZan6iL5r3LIRnQy20F7yZNpI cQ== 
-Received: from usculxsntmt02v.am.sony.com (usculxsntmt02v.am.sony.com [160.33.194.234])
-        by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3m7ybgjfe7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 06 Dec 2022 04:39:10 +0000
-Received: from pps.filterd (USCULXSNTMT02v.am.sony.com [127.0.0.1])
-        by USCULXSNTMT02v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2B647voT009703;
-        Tue, 6 Dec 2022 04:39:09 GMT
-Received: from usculxsnt11v.am.sony.com ([146.215.230.185])
-        by USCULXSNTMT02v.am.sony.com (PPS) with ESMTPS id 3m7x99xxcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Dec 2022 04:39:09 +0000
-Received: from pps.filterd (USCULXSNT11v.am.sony.com [127.0.0.1])
-        by USCULXSNT11v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2B64cmFB006018;
-        Tue, 6 Dec 2022 04:39:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by USCULXSNT11v.am.sony.com (PPS) with ESMTPS id 3m7wqfu8sr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 06 Dec 2022 04:39:08 +0000
-Received: from USCULXSNT11v.am.sony.com (USCULXSNT11v.am.sony.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2B64d8QE006289;
-        Tue, 6 Dec 2022 04:39:08 GMT
-Received: from prime ([10.10.10.214])
-        by USCULXSNT11v.am.sony.com (PPS) with ESMTP id 3m7wqfu8sk-1;
-        Tue, 06 Dec 2022 04:39:08 +0000
-From:   Chethan Suresh <chethan.suresh@sony.com>
-To:     quentin@isovalent.com, bpf@vger.kernel.org
-Cc:     Chethan Suresh <chethan.suresh@sony.com>,
-        Kenta Tada <Kenta.Tada@sony.com>
-Subject: [PATCH bpf-next] bpftool: fix output for skipping kernel config check
-Date:   Tue,  6 Dec 2022 10:05:01 +0530
-Message-Id: <20221206043501.5249-1-chethan.suresh@sony.com>
-X-Mailer: git-send-email 2.17.1
-X-Sony-BusinessRelay-GUID: vl9C1-C1e1U7Pcb2vUX473moGVYLBRwx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
-X-Sony-EdgeRelay-GUID: 7kg1oUTmd9bAfgwHGNTcqys6nc7OVy-W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
-X-Proofpoint-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
-X-Proofpoint-ORIG-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
-X-Sony-Outbound-GUID: R_M8IfoP5XWQjgN3yvDUh64i7acd_qe_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-06_03,2022-12-05_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230293AbiLFFWD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 00:22:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96539220D0
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 21:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670304065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRACJ5x8yLje2KPJIBBBoJLn6lBedOJvNjahTYfPLk0=;
+        b=GR707WFe90zIIN+vIWdpmK+mMfdRTL9Ew0Jlp3Q+1ECBMoLh/H6sWlUibydnoPXBUGbALc
+        x4aXZd53pqBbmjimbjzzGNwqswIFV1oW/4us4g5Ogp3uMjdcIx78Bu08T0881vi8cRXbtc
+        ZfVAINspLx81fVU2Wm1+bBnXZMcKjfI=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-112-6snFdQ0KN-yzl4s3ojfuMw-1; Tue, 06 Dec 2022 00:21:01 -0500
+X-MC-Unique: 6snFdQ0KN-yzl4s3ojfuMw-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-144a21f5c25so2171365fac.2
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 21:21:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KRACJ5x8yLje2KPJIBBBoJLn6lBedOJvNjahTYfPLk0=;
+        b=VVjaISqtsfIKYCn2soWfxE769XzQVuSed4Dn7rISOCPjXw15x9A9M4rlCzTXZuP7Po
+         EmmturtPdY76hDMv5DTKC4Mbo04u1Mm+j3xq2nzj71kHh8T3aISnwsdtx6/Chl+q2awo
+         k+FfkLE/AzSeG81eS8nQ9JeuLpnXbB2GAuxLNqjCsNY7Lgpje/4gqfRL9l9G477bIXyo
+         vULlkz9nK9A6UlvVp8YjBKWfOaS+gdeQ01NvNsiC59l3VLlHKTsZwXMmaR/F9d7RhKNr
+         +S4PqawNqLEpEDBcozbRbOUHgGKH0/tGUy/ab8ye027/FfHHfH+4O702GvpIhhKgwZYH
+         a6Uw==
+X-Gm-Message-State: ANoB5pmvCje/dTfABQlc0zMrPzT/H3wReUpY/q1Je2LaLPtpobxxJtrM
+        6ZhFzzURAJ1WbeWpkOmmVhIZHMs3MHZec/6d4jZo8CcAoStqnEN4ZphZWzsrexLH2H+2jNA0B9N
+        yx6y74QvEK6haliT+8oXAaI0XKsw0
+X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id a18-20020aca1a12000000b0035c303dfe37mr4024651oia.35.1670304061224;
+        Mon, 05 Dec 2022 21:21:01 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7yQi8cnUumH6KXlDIcpmSaQ8JhCuasF5uUEjFok4iCPzJ6njUk3h2o7PQ6i2Ty8KPNoNL0qL2JYkOM55lE07w=
+X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id
+ a18-20020aca1a12000000b0035c303dfe37mr4024648oia.35.1670304061044; Mon, 05
+ Dec 2022 21:21:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20221122074348.88601-1-hengqi@linux.alibaba.com> <20221122074348.88601-2-hengqi@linux.alibaba.com>
+In-Reply-To: <20221122074348.88601-2-hengqi@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 6 Dec 2022 13:20:49 +0800
+Message-ID: <CACGkMEvLbpNry+ROQof=tPOoX0W3-qths6493uvjBpb0nNinBQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/9] virtio_net: disable the hole mechanism for xdp
+To:     Heng Qi <hengqi@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When bpftool feature does not find kernel config files
-under default path, do not output CONFIG_XYZ is not set.
-Skip kernel config check and continue.
+On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>
+> XDP core assumes that the frame_size of xdp_buff and the length of
+> the frag are PAGE_SIZE. But before xdp is set, the length of the prefilled
+> buffer may exceed PAGE_SIZE, which may cause the processing of xdp to fail,
+> so we disable the hole mechanism when xdp is loaded.
+>
+> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 9cce7dec7366..c5046d21b281 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1419,8 +1419,11 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+>                 /* To avoid internal fragmentation, if there is very likely not
+>                  * enough space for another buffer, add the remaining space to
+>                  * the current buffer.
+> +                * XDP core assumes that frame_size of xdp_buff and the length
+> +                * of the frag are PAGE_SIZE, so we disable the hole mechanism.
+>                  */
+> -               len += hole;
+> +               if (!vi->xdp_enabled)
 
-Signed-off-by: Chethan Suresh <chethan.suresh@sony.com>
-Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
----
- tools/bpf/bpftool/feature.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+How is this synchronized with virtnet_xdp_set()?
 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 36cf0f1517c9..316c4a01bdb7 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -487,14 +487,14 @@ static void probe_kernel_image_config(const char *define_prefix)
- 	}
- 
- end_parse:
--	if (file)
-+	if (file) {
- 		gzclose(file);
--
--	for (i = 0; i < ARRAY_SIZE(options); i++) {
--		if (define_prefix && !options[i].macro_dump)
--			continue;
--		print_kernel_option(options[i].name, values[i], define_prefix);
--		free(values[i]);
-+		for (i = 0; i < ARRAY_SIZE(options); i++) {
-+			if (define_prefix && !options[i].macro_dump)
-+				continue;
-+			print_kernel_option(options[i].name, values[i], define_prefix);
-+			free(values[i]);
-+		}
- 	}
- }
- 
--- 
-2.17.1
+I think we need to use headroom here since it did:
+
+static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+{
+        return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+}
+
+Otherwise xdp_enabled could be re-read which may lead bugs.
+
+Thanks
+
+> +                       len += hole;
+>                 alloc_frag->offset += hole;
+>         }
+>
+> --
+> 2.19.1.6.gb485710b
+>
 
