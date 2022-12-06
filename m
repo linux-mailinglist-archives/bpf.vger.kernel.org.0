@@ -2,254 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48594644BEE
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 19:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FB6644BDA
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 19:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbiLFSjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 13:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
+        id S229613AbiLFSgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 13:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiLFSjs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 13:39:48 -0500
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46192F3BD
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 10:39:47 -0800 (PST)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-144b21f5e5fso6513159fac.12
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 10:39:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KqUAYb/fXjf+DnnONFt9R7wczdlGsDniuWCIhYP8EcQ=;
-        b=TNO6BxsIVU6eCOU2Do84isXfsLDc0DgZ8a10aCZhInQH6K7nuMPuT3blwZdef3Xzhm
-         9wtnCP+z5u02o9pxfWhXV7P0UeDUWn2R85ZUTA261U3VpMRCbpUKdlN8wYox6DkUk/JR
-         Xr3fAkNmZJpL/Me3+wknDBYGuZNhx15gLdTCY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KqUAYb/fXjf+DnnONFt9R7wczdlGsDniuWCIhYP8EcQ=;
-        b=jDEwu9p28eqdNEv2k2vQwtzp6MOH2FAaNUXazeyJBPN9UJz1ZCrtvWGXJND7S8m8Lg
-         XkdWBD30Sa5P5WwNzEzs5R8AfOA+KqHTBtoz+78g/3WLbYuqXULIm+yYHfhEALGkCgcn
-         /L5Zq3Bme198h7qKTC7w94axAOceP+IA/Z02fxP1VYUMOrQoKn6lTWJp4uNhFq0CdzCX
-         enbKBabiPDhIAM8yG4bHbJgIcxO9bpHjyrfeRGLoGt6V/7uVr43S5iVUb1C9Qy1oc0p4
-         1PAv7JGj7uGJK8NuQOE2l7GKs2yt90DZFB8tlGokqHJT2Ofdw5H9bBEBZku04P0z4oP4
-         izGQ==
-X-Gm-Message-State: ANoB5pnElDlYYudeE3HvaPP1xewB4cHQRUhUYAT9modZmasZ5oi7U+cS
-        /vjvuTdyltdIkIffHoaKzWNhO8gm29kd+GE8wE4=
-X-Google-Smtp-Source: AA0mqf4GyWKFzxZZwkfIZGLaqF/XUDDM+FqfH4UKi1w1awOaxn+nyzCqtkRRk6p7+7F2R/Hjei+28A==
-X-Received: by 2002:a05:6871:a691:b0:143:c3bf:be6d with SMTP id wh17-20020a056871a69100b00143c3bfbe6dmr21387035oab.103.1670351986703;
-        Tue, 06 Dec 2022 10:39:46 -0800 (PST)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
-        by smtp.gmail.com with ESMTPSA id i6-20020a9d53c6000000b0066cacb8343bsm9487172oth.41.2022.12.06.10.39.46
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Dec 2022 10:39:46 -0800 (PST)
-Received: by mail-ot1-f45.google.com with SMTP id m6-20020a9d7e86000000b0066ec505ae93so4274215otp.9
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 10:39:46 -0800 (PST)
-X-Received: by 2002:a81:8644:0:b0:3c7:3c2b:76b5 with SMTP id
- w65-20020a818644000000b003c73c2b76b5mr39379193ywf.22.1670351506938; Tue, 06
- Dec 2022 10:31:46 -0800 (PST)
+        with ESMTP id S229775AbiLFSg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 13:36:28 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B404DD65;
+        Tue,  6 Dec 2022 10:36:26 -0800 (PST)
+Message-ID: <deb77161-3091-a134-4b82-78fef06efe85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1670351785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vVTQ+Ap4e/KZs2xYUNBsyqF85aC6jCpJzIZ0LtrQ85k=;
+        b=glcRjbZtMXKskaTlgnihbci7XEeagGKW4gAqUbiZx/A22Q9dduxcNX3r9oZe563RaXN7zP
+        +rSMcc9XOIjJ7+Y9PEBekdgpwjzC/SZSfRlkBIhLrX2H6ax3iLTeYIEhVvDV5FGoN7CJ+n
+        rPDMlG4x+XxRJfJYErvZusj5Toa0bks=
+Date:   Tue, 6 Dec 2022 10:36:20 -0800
 MIME-Version: 1.0
-References: <000000000000fa798505ee880a25@google.com> <ac0d8823-e7b3-4524-8864-89b4c85315b5n@googlegroups.com>
- <CACT4Y+bz-z9s+sDh916rfw9ezW0XROkAKfMDvdVi-wDuf849MQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+bz-z9s+sDh916rfw9ezW0XROkAKfMDvdVi-wDuf849MQ@mail.gmail.com>
-From:   Kees Cook <keescook@chromium.org>
-Date:   Tue, 6 Dec 2022 10:31:10 -0800
-X-Gmail-Original-Message-ID: <CAGXu5jLCdfVLz9PLVs4XkyOY3=V=W8x7WF=E+yRUnsE=425vAw@mail.gmail.com>
-Message-ID: <CAGXu5jLCdfVLz9PLVs4XkyOY3=V=W8x7WF=E+yRUnsE=425vAw@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in __build_skb_around
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     pepsipu <soopthegoop@gmail.com>,
-        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, martin.lau@linux.dev,
-        netdev <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH bpf-next v2] bpf: Upgrade bpf_{g,s}etsockopt return values
+Content-Language: en-US
+To:     Ji Rongfeng <SikoJobs@outlook.com>
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 5, 2022 at 12:04 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Sun, 4 Dec 2022 at 19:16, pepsipu <soopthegoop@gmail.com> wrote:
-> >
-> > I believe this is a KASAN bug.
-> >
-> > I made an easier to read version that still triggers KASAN:
-> >
-> > #define _GNU_SOURCE
-> >
-> > #include <stdio.h>
-> > #include <stdlib.h>
-> > #include <string.h>
-> > #include <sys/syscall.h>
-> > #include <sys/types.h>
-> > #include <linux/bpf.h>
-> > #include <unistd.h>
-> >
-> > #include "bpf.h"
-> >
-> > int main(void)
-> > {
-> >     __u64 insns[] = {
-> >         (BPF_CALL | BPF_JMP) | ((__u64)0x61 << 32),
-> >         (BPF_AND | BPF_ALU),
-> >         (BPF_EXIT | BPF_JMP),
-> >     };
-> >     bpf_load_attr_t load_attr = {
-> >         .prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-> >         .insn_cnt = sizeof(insns) / sizeof(__u64),
-> >         .insns = (__u64)insns,
-> >         .license = (__u64) "GPL",
-> >     };
-> >     long prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &load_attr, sizeof(bpf_load_attr_t));
-> >     if (prog_fd == -1)
-> >     {
-> >         printf("could not load bpf prog");
-> >         exit(-1);
-> >     }
-> >     bpf_trun_attr_t trun_attr = {
-> >         .prog_fd = prog_fd,
-> >         .data_size_in = 0x81,
-> >         .data_size_out = -1,
-> >         .data_in = (__u64) "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-> >     };
-> >
-> >     syscall(__NR_bpf, BPF_PROG_TEST_RUN, &trun_attr, sizeof(bpf_trun_attr_t));
-> >     return 0;
-> > }
-> >
-> > It looks like KASAN believes the tail access of SKB's backing buffer, the SKB shared info struct, allocated by bpf_test_init is out-of-bounds.
-> > This is likely because when the SKB is setup, in build_skb, the tail is calculated as "data + ksize(data) - sizeof(skb_shared_info)". ksize returns the size of the slab, not the allocation, so the tail is much further past the allocation.
-> > However, KASAN is usually supposed to correct for ksize calls by unpoisioning the entire slab it's called on... I'm not sure why this is happening.
->
-> Hi,
->
-> [+orignal CC list, please keep it in replies, almost none of relevant
-> receivers read syzkaller-bugs@ mailing list]
->
-> Also +Kees and kasan-dev for ksize.
->
-> After the following patch the behavior has changed and KASAN does not
-> unpoison the fail of the object:
->
-> mm: Make ksize() a reporting-only function
-> https://lore.kernel.org/all/20221118035656.gonna.698-kees@kernel.org/
->
-> Kees, is this bpf case is a remaining ksize() use that needs to be fixed?
->
+On 12/2/22 9:39 AM, Ji Rongfeng wrote:
+> Returning -EINVAL almost all the time when error occurs is not very
+> helpful for the bpf prog to figure out what is wrong. This patch
+> upgrades some return values so that they will be much more helpful.
+> 
+> * return -ENOPROTOOPT when optname is unsupported
+> 
+>    The same as {g,s}etsockopt() syscall does. Before this patch,
+>    bpf_setsockopt(TCP_SAVED_SYN) already returns -ENOPROTOOPT, which
+>    may confuse the user, as -EINVAL is returned on other unsupported
+>    optnames. This patch also rejects TCP_SAVED_SYN right in
+>    sol_tcp_sockopt() when getopt is false, since do_tcp_setsockopt()
+>    is just the executor and it's not its duty to discover such error
+>    in bpf. We should maintain a precise allowlist to control whether
+>    an optname is supported and allowed to enter the executor or not.
+>    Functions like do_tcp_setsockopt(), their behaviour are not fully
+>    controllable by bpf. Imagine we let an optname pass, expecting
+>    -ENOPROTOOPT will be returned, but someday that optname is
+>    actually processed and unfortunately causes deadlock when calling
+>    from bpf. Thus, precise access control is essential.
 
-Hi, yes, this seems like a missed ksize() usage. I will take a look at
-it -- nothing should be using ksize() to resize the allocation any
-more: it should either fully allocate the bucket at the start, or use
-krealloc().
+Please leave the current -EINVAL to distinguish between optnames rejected by bpf 
+and optnames rejected by the do_*_{get,set}sockopt().
 
--Kees
+> 
+> * return -EOPNOTSUPP on level-related errors
+> 
+>    In do_ip_getsockopt(), -EOPNOTSUPP will be returned if level !=
+>    SOL_IP. In ipv6_getsockopt(), -ENOPROTOOPT will be returned if
+>    level != SOL_IPV6. To be distinguishable, the former is chosen.
 
-> > On Monday, November 28, 2022 at 5:42:31 AM UTC-8 syzbot wrote:
-> >>
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit: c35bd4e42885 Add linux-next specific files for 20221124
-> >> git tree: linux-next
-> >> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e5d7e5880000
-> >> kernel config: https://syzkaller.appspot.com/x/.config?x=11e19c740a0b2926
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=fda18eaa8c12534ccb3b
-> >> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> >> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=1096f205880000
-> >> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=10b2d68d880000
-> >>
-> >> Downloadable assets:
-> >> disk image: https://storage.googleapis.com/syzbot-assets/968fee464d14/disk-c35bd4e4.raw.xz
-> >> vmlinux: https://storage.googleapis.com/syzbot-assets/4f46fe801b5b/vmlinux-c35bd4e4.xz
-> >> kernel image: https://storage.googleapis.com/syzbot-assets/c2cdf8fb264e/bzImage-c35bd4e4.xz
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+fda18e...@syzkaller.appspotmail.com
-> >>
-> >> ==================================================================
-> >> BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
-> >> Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
-> >>
-> >> CPU: 0 PID: 5295 Comm: syz-executor413 Not tainted 6.1.0-rc6-next-20221124-syzkaller #0
-> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> >> Call Trace:
-> >> <TASK>
-> >> __dump_stack lib/dump_stack.c:88 [inline]
-> >> dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
-> >> print_address_description mm/kasan/report.c:253 [inline]
-> >> print_report+0x15e/0x45d mm/kasan/report.c:364
-> >> kasan_report+0xbf/0x1f0 mm/kasan/report.c:464
-> >> check_region_inline mm/kasan/generic.c:183 [inline]
-> >> kasan_check_range+0x141/0x190 mm/kasan/generic.c:189
-> >> memset+0x24/0x50 mm/kasan/shadow.c:44
-> >> __build_skb_around+0x235/0x340 net/core/skbuff.c:294
-> >> __build_skb+0x4f/0x60 net/core/skbuff.c:328
-> >> build_skb+0x22/0x280 net/core/skbuff.c:340
-> >> bpf_prog_test_run_skb+0x343/0x1e10 net/bpf/test_run.c:1131
-> >> bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
-> >> __sys_bpf+0x1599/0x4ff0 kernel/bpf/syscall.c:4997
-> >> __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
-> >> __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
-> >> __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
-> >> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >> do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >> entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >> RIP: 0033:0x7f30de9aad19
-> >> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> >> RSP: 002b:00007ffeaee34318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> >> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f30de9aad19
-> >> RDX: 0000000000000028 RSI: 0000000020000180 RDI: 000000000000000a
-> >> RBP: 00007f30de96eec0 R08: 0000000000000000 R09: 0000000000000000
-> >> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f30de96ef50
-> >> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> >> </TASK>
-> >>
-> >> Allocated by task 5295:
-> >> kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
-> >> kasan_set_track+0x25/0x30 mm/kasan/common.c:52
-> >> ____kasan_kmalloc mm/kasan/common.c:376 [inline]
-> >> ____kasan_kmalloc mm/kasan/common.c:335 [inline]
-> >> __kasan_kmalloc+0xa5/0xb0 mm/kasan/common.c:385
-> >> kasan_kmalloc include/linux/kasan.h:212 [inline]
-> >> __do_kmalloc_node mm/slab_common.c:955 [inline]
-> >> __kmalloc+0x5a/0xd0 mm/slab_common.c:968
-> >> kmalloc include/linux/slab.h:575 [inline]
-> >> kzalloc include/linux/slab.h:711 [inline]
-> >> bpf_test_init.isra.0+0xa5/0x150 net/bpf/test_run.c:778
-> >> bpf_prog_test_run_skb+0x22e/0x1e10 net/bpf/test_run.c:1097
-> >> bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
-> >> __sys_bpf+0x1599/0x4ff0 kernel/bpf/syscall.c:4997
-> >> __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
-> >> __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
-> >> __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
-> >> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >> do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+I would leave this one as is also.  Are you sure the do_ip_*sockopt cannot 
+handle sk_family == AF_INET6?  afaict, bpf is rejecting those optnames instead.
 
--- 
-Kees Cook
+> 
+> * return -EBADFD when sk is not a full socket
+> 
+>    -EPERM or -EBUSY was an option, but in many cases one of them
+>    will be returned, especially under level SOL_TCP. -EBADFD is the
+>    better choice, since it is hardly returned in all cases. The bpf
+>    prog will be able to recognize it and decide what to do next.
+
+This one makes sense and is useful.
+
