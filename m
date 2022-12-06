@@ -2,291 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEB9643E32
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 09:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6840643E53
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 09:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbiLFIOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 03:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        id S233661AbiLFIR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 03:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbiLFIOQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 03:14:16 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0E415FD7
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 00:14:14 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id r7-20020a1c4407000000b003d1e906ca23so120111wma.3
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 00:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fa85Q0WaQWHiSDsi8ePXPLUczhw+tg1kaQkvudFWGUA=;
-        b=CBBDsWyHjg3epKuD6pJ0YI3HspbjUGRazMAoOkttGbLpMShmjs53PXLkDynOoKxxlA
-         ha4j4W+R9U/DbCIakO42XEzKV9aAd4A6/WfijMzueYQvTUqUkewZwgavJ9JXoyBkA9/2
-         oTU2+s2qXHy9xqVPKuD0Br9r6kTS4YS1P3Mmy5ULzg3LLX68IlnKdEvwT6fDu+8OIkku
-         qaZ8fR9BM6Ozv1zI1Z2dM5q/7bxdwfRVajc2vSDvdgtcnOxZ6Xq1Vdyns5xP5Bms7Hwm
-         2ND+//ClTidZ3BmKk4CsExJk0XzkZncHus6Q7qaSGB8ybq82dULmvcsQA3Z0qMlXWHSn
-         UJ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fa85Q0WaQWHiSDsi8ePXPLUczhw+tg1kaQkvudFWGUA=;
-        b=MUO+Z/t/EFuFzEl7/jW3AZgxBKJ8wHTESHuuLNveWbxR/fLy/6IeNR46DPBdHWadBP
-         jChRa1mIT6bbmPZOJFq3hfU38VdrXHJBhunxxVCXXulEP/mTujDW1OEqUF8sqpXMNGhX
-         FoHjd9SCDCXfa8G4oDi97eBc9FdxyvwRnIZiCi2CxKrz0nxCN0d44EDDgOk8IhqtAdvy
-         cUkRJ4BI6RMf+68TZTqiA1PW7T9txEHEYTE5kGM43+nY7EedmCTAbQ8SRGeaYv4zyaLa
-         DZImboOfLlSPuGUdq+UJtTMSFQmZp8hqGMiSnvDQmxfdOXE6pfGu/zsFS+hlJ1BkICXo
-         /9tg==
-X-Gm-Message-State: ANoB5pk/GxldODecGKNErMofGZChMi2UpV9+1vgeme3Y2ONzIraQrICw
-        p16r5p37oPykQKQ1UTgDmzY=
-X-Google-Smtp-Source: AA0mqf57xjks149jfYIA2OPwhm5ylMPkLJEdzZUh5dgJkz6c3XVcMbEPthWWAjVrv/hjkcpc8am6rg==
-X-Received: by 2002:a05:600c:34d1:b0:3d0:878b:d003 with SMTP id d17-20020a05600c34d100b003d0878bd003mr11864813wmq.132.1670314453021;
-        Tue, 06 Dec 2022 00:14:13 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id v5-20020adfebc5000000b00241c6729c2bsm15934636wrn.26.2022.12.06.00.14.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 00:14:12 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 6 Dec 2022 09:14:10 +0100
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
- tracepoints
-Message-ID: <Y4750mbd7XEzue0r@krava>
-References: <20221121213123.1373229-1-jolsa@kernel.org>
- <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
- <Y388m6wOktvZo1d4@krava>
- <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
- <Y4CMbTeVud0WfPtK@krava>
- <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y4uOSrXBxVwnxZkX@google.com>
- <Y43j3IGvLKgshuhR@krava>
- <CAM9d7cj2QGH2x=J=7LVEEOfcDUYLU0Cmd_O7KEHZM-9FRmX3OA@mail.gmail.com>
+        with ESMTP id S233659AbiLFIRL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 03:17:11 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6841CB0F;
+        Tue,  6 Dec 2022 00:16:20 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NRCt56JbHz4f3nTX;
+        Tue,  6 Dec 2022 16:16:13 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+        by APP4 (Coremail) with SMTP id gCh0CgCXutdP+o5jHLL8Bg--.18286S2;
+        Tue, 06 Dec 2022 16:16:16 +0800 (CST)
+Message-ID: <0620000f-4d06-de15-09d9-24b5b0c47410@huaweicloud.com>
+Date:   Tue, 6 Dec 2022 16:16:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cj2QGH2x=J=7LVEEOfcDUYLU0Cmd_O7KEHZM-9FRmX3OA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf v2] riscv, bpf: Emit fixed-length instructions for
+ BPF_PSEUDO_FUNC
+Content-Language: en-US
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>
+References: <20221202094837.3872444-1-pulehui@huaweicloud.com>
+ <87y1rq848x.fsf@all.your.base.are.belong.to.us>
+ <0ade59ea-6863-4d68-607c-22e4b9405a0d@huaweicloud.com>
+ <87359t3r0h.fsf@all.your.base.are.belong.to.us>
+From:   Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87359t3r0h.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCXutdP+o5jHLL8Bg--.18286S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw15Gw1DXrWkZFW7GrWxJFb_yoW5ZF13pF
+        W5Krn3Cayvqr4IvFnrtw15tF4Yyr1vvayIk345G34vkanFqFyIkF1DKw4Ykas5ZrW8Kr17
+        JF4q9r4ak390yaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 08:00:16PM -0800, Namhyung Kim wrote:
-> On Mon, Dec 5, 2022 at 4:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Sat, Dec 03, 2022 at 09:58:34AM -0800, Namhyung Kim wrote:
-> > > On Wed, Nov 30, 2022 at 03:29:39PM -0800, Andrii Nakryiko wrote:
-> > > > On Fri, Nov 25, 2022 at 1:35 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Nov 24, 2022 at 09:17:22AM -0800, Alexei Starovoitov wrote:
-> > > > > > On Thu, Nov 24, 2022 at 1:42 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Nov 24, 2022 at 01:41:23AM +0100, Daniel Borkmann wrote:
-> > > > > > > > On 11/21/22 10:31 PM, Jiri Olsa wrote:
-> > > > > > > > > We hit following issues [1] [2] when we attach bpf program that calls
-> > > > > > > > > bpf_trace_printk helper to the contention_begin tracepoint.
-> > > > > > > > >
-> > > > > > > > > As described in [3] with multiple bpf programs that call bpf_trace_printk
-> > > > > > > > > helper attached to the contention_begin might result in exhaustion of
-> > > > > > > > > printk buffer or cause a deadlock [2].
-> > > > > > > > >
-> > > > > > > > > There's also another possible deadlock when multiple bpf programs attach
-> > > > > > > > > to bpf_trace_printk tracepoint and call one of the printk bpf helpers.
-> > > > > > > > >
-> > > > > > > > > This change denies the attachment of bpf program to contention_begin
-> > > > > > > > > and bpf_trace_printk tracepoints if the bpf program calls one of the
-> > > > > > > > > printk bpf helpers.
-> > > > > > > > >
-> > > > > > > > > Adding also verifier check for tb_btf programs, so this can be cought
-> > > > > > > > > in program loading time with error message like:
-> > > > > > > > >
-> > > > > > > > >    Can't attach program with bpf_trace_printk#6 helper to contention_begin tracepoint.
-> > > > > > > > >
-> > > > > > > > > [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
-> > > > > > > > > [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
-> > > > > > > > > [3] https://lore.kernel.org/bpf/Y2j6ivTwFmA0FtvY@krava/
-> > > > > > > > >
-> > > > > > > > > Reported-by: Hao Sun <sunhao.th@gmail.com>
-> > > > > > > > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > > > > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > > > > ---
-> > > > > > > > >   include/linux/bpf.h          |  1 +
-> > > > > > > > >   include/linux/bpf_verifier.h |  2 ++
-> > > > > > > > >   kernel/bpf/syscall.c         |  3 +++
-> > > > > > > > >   kernel/bpf/verifier.c        | 46 ++++++++++++++++++++++++++++++++++++
-> > > > > > > > >   4 files changed, 52 insertions(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > > > > > > index c9eafa67f2a2..3ccabede0f50 100644
-> > > > > > > > > --- a/include/linux/bpf.h
-> > > > > > > > > +++ b/include/linux/bpf.h
-> > > > > > > > > @@ -1319,6 +1319,7 @@ struct bpf_prog {
-> > > > > > > > >                             enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
-> > > > > > > > >                             call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
-> > > > > > > > >                             call_get_func_ip:1, /* Do we call get_func_ip() */
-> > > > > > > > > +                           call_printk:1, /* Do we call trace_printk/trace_vprintk  */
-> > > > > > > > >                             tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
-> > > > > > > > >     enum bpf_prog_type      type;           /* Type of BPF program */
-> > > > > > > > >     enum bpf_attach_type    expected_attach_type; /* For some prog types */
-> > > > > > > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > > > > > > > > index 545152ac136c..7118c2fda59d 100644
-> > > > > > > > > --- a/include/linux/bpf_verifier.h
-> > > > > > > > > +++ b/include/linux/bpf_verifier.h
-> > > > > > > > > @@ -618,6 +618,8 @@ bool is_dynptr_type_expected(struct bpf_verifier_env *env,
-> > > > > > > > >                          struct bpf_reg_state *reg,
-> > > > > > > > >                          enum bpf_arg_type arg_type);
-> > > > > > > > > +int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog);
-> > > > > > > > > +
-> > > > > > > > >   /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
-> > > > > > > > >   static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-> > > > > > > > >                                          struct btf *btf, u32 btf_id)
-> > > > > > > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > > > > > > > index 35972afb6850..9a69bda7d62b 100644
-> > > > > > > > > --- a/kernel/bpf/syscall.c
-> > > > > > > > > +++ b/kernel/bpf/syscall.c
-> > > > > > > > > @@ -3329,6 +3329,9 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
-> > > > > > > > >             return -EINVAL;
-> > > > > > > > >     }
-> > > > > > > > > +   if (bpf_check_tp_printk_denylist(tp_name, prog))
-> > > > > > > > > +           return -EACCES;
-> > > > > > > > > +
-> > > > > > > > >     btp = bpf_get_raw_tracepoint(tp_name);
-> > > > > > > > >     if (!btp)
-> > > > > > > > >             return -ENOENT;
-> > > > > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > > > > > index f07bec227fef..b662bc851e1c 100644
-> > > > > > > > > --- a/kernel/bpf/verifier.c
-> > > > > > > > > +++ b/kernel/bpf/verifier.c
-> > > > > > > > > @@ -7472,6 +7472,47 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
-> > > > > > > > >                              state->callback_subprogno == subprogno);
-> > > > > > > > >   }
-> > > > > > > > > +int bpf_check_tp_printk_denylist(const char *name, struct bpf_prog *prog)
-> > > > > > > > > +{
-> > > > > > > > > +   static const char * const denylist[] = {
-> > > > > > > > > +           "contention_begin",
-> > > > > > > > > +           "bpf_trace_printk",
-> > > > > > > > > +   };
-> > > > > > > > > +   int i;
-> > > > > > > > > +
-> > > > > > > > > +   /* Do not allow attachment to denylist[] tracepoints,
-> > > > > > > > > +    * if the program calls some of the printk helpers,
-> > > > > > > > > +    * because there's possibility of deadlock.
-> > > > > > > > > +    */
-> > > > > > > >
-> > > > > > > > What if that prog doesn't but tail calls into another one which calls printk helpers?
-> > > > > > >
-> > > > > > > right, I'll deny that for all BPF_PROG_TYPE_RAW_TRACEPOINT* programs,
-> > > > > > > because I don't see easy way to check on that
-> > > > > > >
-> > > > > > > we can leave printk check for tracing BPF_TRACE_RAW_TP programs,
-> > > > > > > because verifier known the exact tracepoint already
-> > > > > >
-> > > > > > This is all fragile and merely a stop gap.
-> > > > > > Doesn't sound that the issue is limited to bpf_trace_printk
-> > > > >
-> > > > > hm, I don't have a better idea how to fix that.. I can't deny
-> > > > > contention_begin completely, because we use it in perf via
-> > > > > tp_btf/contention_begin (perf lock contention) and I don't
-> > > > > think there's another way for perf to do that
-> > > > >
-> > > > > fwiw the last version below denies BPF_PROG_TYPE_RAW_TRACEPOINT
-> > > > > programs completely and tracing BPF_TRACE_RAW_TP with printks
-> > > > >
-> > > >
-> > > > I think disabling bpf_trace_printk() tracepoint for any BPF program is
-> > > > totally fine. This tracepoint was never intended to be attached to.
-> > > >
-> > > > But as for the general bpf_trace_printk() deadlocking. Should we
-> > > > discuss how to make it not deadlock instead of starting to denylist
-> > > > things left and right?
-> > > >
-> > > > Do I understand that we take trace_printk_lock only to protect that
-> > > > static char buf[]? Can we just make this buf per-CPU and do a trylock
-> > > > instead? We'll only fail to bpf_trace_printk() something if we have
-> > > > nested BPF programs (rare) or NMI (also rare).
-> > > >
-> > > > And it's a printk(), it's never mission-critical, so if we drop some
-> > > > message in rare case it's totally fine.
-> > >
-> > > What about contention_begin?  I wonder if we can disallow recursions
-> > > for those in the deny list like using bpf_prog_active..
-> >
-> > I was testing change below which allows to check recursion just
-> > for contention_begin tracepoint
-> >
-> > for the reported issue we might be ok with the change that Andrii
-> > suggested, but we could have the change below as extra precaution
+
+
+On 2022/12/6 15:55, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
 > 
-> Looks ok to me.  But it seems it'd add the recursion check to every
+>> Sorry for replying so late. For BPF_PSEUDO_FUNC instruction, verifier
+>> will set insn[0].imm and insn[1].imm to 1 that make addr to 0x100000001
+>> before extra pass, and also ctx->insns is NULL in iteration stage, all
+>> of these make off out of range of AUIPC-ADDI range, and return failed.
+>> We could add some special handling at different stages, but that seems a
+>> little weird. By the way, I do not really like emit_addr function with
+>> return value.
+> 
+> My rational is that *if* for some reason the jit is passed an address
+> that auipc/addi can't represent, we'd like to catch that and not emit
+> broken code.
+> 
+>> While a proper address is at least 2B alignment, and the valid address
+>> is from 0xffffffff00000000 to 0xffffffffffffffff, we can make address
+>> shifed 1 place to right, and addr >> 1 will always in the range of
+>> AUIPC-ADDI range. We can get rid of the range detection. The
+>> implementation is as follows:
+>>
+>> static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
+>> {
+>>            s64 imm = addr >> 1;
+>>            s64 upper = (imm + (1 << 11)) >> 12;
+>>            s64 lower = imm & 0xfff;
+>>
+>>            emit(rv_lui(rd, upper), ctx);
+>>            emit(rv_addi(rd, rd, lower), ctx);
+>>            emit(rv_slli(rd, rd, 1), ctx);
+>> }
+>>
+>> What do you think?
+> 
+> That's a code generation penalty, instead of catching it at code
+> gen. Don't like! :-) I much prefer the auipc/addi version.
+> 
+> What do you think about the diff (on-top of your work) below?
+> 
+> --8<--
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+> index aa9410eef77c..7acaf28cb3be 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -137,15 +137,21 @@ static bool in_auipc_jalr_range(s64 val)
+>   }
+>   
+>   /* Emit fixed-length instructions for address */
+> -static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
+> +static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct rv_jit_context *ctx)
+>   {
+>   	u64 ip = (u64)(ctx->insns + ctx->ninsns);
+>   	s64 off = addr - ip;
+>   	s64 upper = (off + (1 << 11)) >> 12;
+>   	s64 lower = ((off & 0xfff) << 52) >> 52;
+>   
+> +	if (extra_pass && !in_auipc_jalr_range(off)) {
+> +		pr_err("bpf-jit: target offset 0x%llx is out of range\n", off);
+> +		return -ERANGE;
+> +	}
+> +
+>   	emit(rv_auipc(rd, upper), ctx);
+>   	emit(rv_addi(rd, rd, lower), ctx);
+> +	return 0;
+>   }
+>   
+>   /* Emit variable-length instructions for 32-bit and 64-bit imm */
+> @@ -1061,13 +1067,17 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>   	{
+>   		struct bpf_insn insn1 = insn[1];
+>   		u64 imm64;
+> +		int ret;
+>   
+>   		imm64 = (u64)insn1.imm << 32 | (u32)imm;
+> -		if (bpf_pseudo_func(insn))
+> +		if (bpf_pseudo_func(insn)) {
+>   			/* fixed-length insns for extra jit pass */
+> -			emit_addr(rd, imm64, ctx);
+> -		else
+> +			ret = emit_addr(rd, imm64, extra_pass, ctx);
+> +			if (ret)
+> +				return ret;
+> +		} else {
+>   			emit_imm(rd, imm64, ctx);
+> +		}
+>   
+>   		return 1;
+>   	}
+> 
+> --8<--
+> 
+> Wouldn't that work?
+> 
 
-hm, it should allocate recursion variable just for the contention_begin
-tracepoint, rest should see NULL pointer
-
-> tracepoint.  Can we just change the affected tracepoints only by
-> using a kind of wrapped btp->bpf_func with some macro magic? ;-)
-
-I tried that and the only other ways I found are:
-
-  - add something like TRACE_EVENT_FLAGS macro and have __init call
-    for specific tracepoint that sets the flag
-
-  - add extra new 'bpf_func' that checks the re-entry, but that'd mean
-    around 1000 extra mostly unused small functions
+It definitely works. But auipc+addi may be some holes, while 
+lui+addi+slli support all the address of kernel and module. And this 
+might be help for the future feature porting.
 
 > 
-> >
-> > ---
-> 
-> [SNIP]
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 3bbd3f0c810c..d27b7dc77894 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2252,9 +2252,8 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
-> >  }
-> >
-> >  static __always_inline
-> > -void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
-> > +void __bpf_trace_prog_run(struct bpf_prog *prog, u64 *args)
-> >  {
-> > -       cant_sleep();
-> >         if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> >                 bpf_prog_inc_misses_counter(prog);
-> >                 goto out;
-> > @@ -2266,6 +2265,22 @@ void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
-> >         this_cpu_dec(*(prog->active));
-> >  }
-> >
-> > +static __always_inline
-> > +void __bpf_trace_run(struct bpf_raw_event_data *data, u64 *args)
-> > +{
-> > +       struct bpf_prog *prog = data->prog;
-> > +
-> > +       cant_sleep();
-> > +       if (unlikely(!data->recursion))
-> 
-> likely ?
+> Björn
 
-right, thanks
-
-jirka
