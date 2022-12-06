@@ -2,280 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7681643D0F
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 07:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C33643D27
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 07:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbiLFGQs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 01:16:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        id S233904AbiLFGfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 01:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbiLFGQo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 01:16:44 -0500
+        with ESMTP id S233889AbiLFGfE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 01:35:04 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA08A2717A
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 22:15:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8212229A
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 22:34:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670307351;
+        s=mimecast20190719; t=1670308447;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OqyDyiUY/57MQH0Vr9UzZ8IBstQlbSI6OL55RTcT56o=;
-        b=HUZSihEYzJZLoJcznsNLNM3VYear2RMyZAUIwHXdN2b4vcWYkEE60UWRnVlY9w9fCuF00U
-        7zkWNqRnkMeem/9pSqDEQnH6oQI9PNvhQTy5Dv6upsDyRn4v0TD1OVy3BOp3lmDiUbmd0t
-        vFb5DQERu0P+DsnmDwSYEPOT3+sL+Y0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=SVXC2/3NVWe3p2txzbLaPDbYFhPcwOduZ4bfkAoxu2s=;
+        b=CzEAf2r4DBE/6SPuP69ySsGySQxdrMsLafz92f8qXH7QN6lcfkQln6CJaZzMdIJ6HWuFYh
+        By7EBOlYd4FRP6pz/GvZgp4Aaiq2N1x+GwZlEGpk9rzgScR90QoaSKCa+KIC8S1SV1hZ2q
+        JO3AR1TDdKfcEgVXg9NSROjFoS2SjBQ=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-50-rB_Nsql3MSqaIwNMBSts1A-1; Tue, 06 Dec 2022 01:15:49 -0500
-X-MC-Unique: rB_Nsql3MSqaIwNMBSts1A-1
-Received: by mail-ej1-f72.google.com with SMTP id qa30-20020a170907869e00b007c106529379so890223ejc.8
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 22:15:49 -0800 (PST)
+ us-mta-470-sdU18iRtMc2QpQhDG6h2ag-1; Tue, 06 Dec 2022 01:34:05 -0500
+X-MC-Unique: sdU18iRtMc2QpQhDG6h2ag-1
+Received: by mail-ot1-f70.google.com with SMTP id x26-20020a9d629a000000b0066ea531ed32so4144948otk.6
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 22:34:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OqyDyiUY/57MQH0Vr9UzZ8IBstQlbSI6OL55RTcT56o=;
-        b=agaICt4w50bViFUb0o8Uw+muY0ZOyoK6IjplHb/O1np4p7RvsBLi/tFaWnJEg4EyBJ
-         e3TXhzE3heoPaiIPC+5KJl47V3b9dH+VgFtGpRBHKcUYCq/b8hwLoaAOC0nEo+bQBcGj
-         YR60I+IwOYA3Suv4wpAFDki/7R2wwbYtgzI29T/fkbA08VTPYYrmuyYcXYAzIvmY8UUt
-         BbqIboY4Dm2uR2lFHiNH4nFfaJFVkGVsCrdaRFHSfcAXnOCD7cRTR/KwB4NjwdGE6XCV
-         Sjh3PgCvddnkj//n2t2msJmG0K0wAXvCMgYLQZsFgZLdD+xHlvC6v4N8Gpwus17lVJZT
-         g/HQ==
-X-Gm-Message-State: ANoB5pntxblGOR5z8/S2USgxq9rKnles3QCx0Q1yz0BaUDSrnoGmgK/m
-        bwasBQ7hFDGX9+UWDs8k8X1Lrn6vIZsaQZnao0c2iOWpx9+RIaDX0F3ewK8rnCeqdYSCIy4UC3Q
-        pREGEaUwTd18=
-X-Received: by 2002:a50:ff0d:0:b0:461:c6e8:452e with SMTP id a13-20020a50ff0d000000b00461c6e8452emr66153717edu.298.1670307348446;
-        Mon, 05 Dec 2022 22:15:48 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5OfeoJwBR46FUtl+fAKP5FspXvPWJIRsItaaylduyq3uJJoi9GhHtJIFU7UDQRBf/o2eCU5g==
-X-Received: by 2002:a50:ff0d:0:b0:461:c6e8:452e with SMTP id a13-20020a50ff0d000000b00461c6e8452emr66153700edu.298.1670307348115;
-        Mon, 05 Dec 2022 22:15:48 -0800 (PST)
-Received: from [192.168.0.111] (185-219-167-248-static.vivo.cz. [185.219.167.248])
-        by smtp.gmail.com with ESMTPSA id gf16-20020a170906e21000b007815ca7ae57sm6954473ejb.212.2022.12.05.22.15.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Dec 2022 22:15:47 -0800 (PST)
-Message-ID: <20260124-ba1b-7bfe-95e6-f3c107b04fc3@redhat.com>
-Date:   Tue, 6 Dec 2022 07:15:46 +0100
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SVXC2/3NVWe3p2txzbLaPDbYFhPcwOduZ4bfkAoxu2s=;
+        b=mSDNu84BEKgn6d17JfocFXwQK6NEGnaiRsSvp2CgmPso0lojHdx2JcaKTZmzWRS9x1
+         RkrASqFkzYRrqbL9bsFCQWxKrvbdlPcX0ZvJk2Xs5quDWqSb08de/lZZi0kLNqN7VrLG
+         qDGF/wzhY8WYKv25xXx8AGw7s0pCW32uZ+GJbivZstrUOhr2Kh+CO5pb8VL9f+AR9B2s
+         16z4euVkB1rVzBImDDJrGYO5cbgqW4J0xgHa+dQW6UPMwqVYMK36LYv708ubGz9EfEAd
+         FqyOCgR93e5ZF/voUmQhP8Su8870WY5W+7g0Z106Q/46xrvO8D64KpF8uO7p7ldOiOyV
+         rTKg==
+X-Gm-Message-State: ANoB5pns81waNp02HOIUYYIl+Qo2G8SgNa/QJF/e7uUgg1lWZtTVajDu
+        ujDTtU4TBlTL6KfDyLmGd9y8DjJdp+Q3gJA9RIIxMAf9QIderG+N2AXWbRg/zbPxENRHPa2QOr1
+        +XGm+f3ZFXbF/T1yDA5JEOmNiTXGF
+X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id a18-20020aca1a12000000b0035c303dfe37mr4094548oia.35.1670308444588;
+        Mon, 05 Dec 2022 22:34:04 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf78MRjj4k7smT46pJ2ai7qosDZgSEsi6VkAHGp7m2rbQsPEnwX0x94MzoslMYbbO/4M3e01ktrOHGZxRaJT6vI=
+X-Received: by 2002:aca:1a12:0:b0:35c:303d:fe37 with SMTP id
+ a18-20020aca1a12000000b0035c303dfe37mr4094536oia.35.1670308444309; Mon, 05
+ Dec 2022 22:34:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: [PATCH bpf-next v3 3/3] bpf/selftests: Test fentry attachment to
- shadowed functions
-Content-Language: en-US
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+References: <20221122074348.88601-1-hengqi@linux.alibaba.com> <20221122074348.88601-7-hengqi@linux.alibaba.com>
+In-Reply-To: <20221122074348.88601-7-hengqi@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 6 Dec 2022 14:33:53 +0800
+Message-ID: <CACGkMEsbX8w1wuU+954zVwNT5JvCHX7a9baKRytVb641UmNsuw@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/9] virtio_net: construct multi-buffer xdp in mergeable
+To:     Heng Qi <hengqi@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-References: <cover.1670249590.git.vmalik@redhat.com>
- <db2560ea17db7c207a4de31fb84f0ccd5435245f.1670249590.git.vmalik@redhat.com>
- <Y45ZTDBNR/NiWMPn@krava>
-From:   Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <Y45ZTDBNR/NiWMPn@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/5/22 21:49, Jiri Olsa wrote:
-> On Mon, Dec 05, 2022 at 04:26:06PM +0100, Viktor Malik wrote:
->> Adds a new test that tries to attach a program to fentry of two
->> functions of the same name, one located in vmlinux and the other in
->> bpf_testmod.
->>
->> To avoid conflicts with existing tests, a new function
->> "bpf_fentry_shadow_test" was created both in vmlinux and in bpf_testmod.
->>
->> The previous commit fixed a bug which caused this test to fail. The
->> verifier would always use the vmlinux function's address as the target
->> trampoline address, hence trying to attach two programs to the same
->> trampoline.
-> 
-> hi
-> looks good, few nits below
-> 
->>
->> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->> ---
->>   net/bpf/test_run.c                            |   5 +
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   7 +
->>   .../bpf/prog_tests/module_attach_shadow.c     | 124 ++++++++++++++++++
->>   3 files changed, 136 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
->>
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index 6094ef7cffcd..71e36a85573b 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -536,6 +536,11 @@ int noinline bpf_modify_return_test(int a, int *b)
->>   	return a + *b;
->>   }
->>   
->> +int noinline bpf_fentry_shadow_test(int a)
->> +{
->> +	return a + 1;
->> +}
->> +
->>   u64 noinline bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
->>   {
->>   	return a + b + c + d;
->> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> index 5085fea3cac5..d23127a5ec68 100644
->> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> @@ -229,6 +229,13 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
->>   	.set   = &bpf_testmod_check_kfunc_ids,
->>   };
->>   
->> +noinline int bpf_fentry_shadow_test(int a)
->> +{
->> +	return a + 2;
->> +}
->> +EXPORT_SYMBOL_GPL(bpf_fentry_shadow_test);
->> +ALLOW_ERROR_INJECTION(bpf_fentry_shadow_test, ERRNO);
-> 
-> why marked as ALLOW_ERROR_INJECTION?
+On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>
+> Build multi-buffer xdp using virtnet_build_xdp_buff() in mergeable.
+>
+> For the prefilled buffer before xdp is set, vq reset can be
+> used to clear it, but most devices do not support it at present.
+> In order not to bother users who are using xdp normally, we do
+> not use vq reset for the time being.
 
-Right, not necessary, will remove.
+I guess to tweak the part to say we will probably use vq reset in the future.
 
-> 
->> +
->>   extern int bpf_fentry_test1(int a);
->>   
->>   static int bpf_testmod_init(void)
->> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
->> new file mode 100644
->> index 000000000000..bf511e61ec1f
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
->> @@ -0,0 +1,124 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (c) 2022 Red Hat */
->> +#include <test_progs.h>
->> +#include <bpf/btf.h>
->> +#include "bpf/libbpf_internal.h"
->> +#include "cgroup_helpers.h"
->> +
->> +static const char *module_name = "bpf_testmod";
->> +static const char *symbol_name = "bpf_fentry_shadow_test";
->> +
->> +int get_bpf_testmod_btf_fd(void)
-> 
-> should be static?
+> At the same time, virtio
+> net currently uses comp pages, and bpf_xdp_frags_increase_tail()
+> needs to calculate the tailroom of the last frag, which will
+> involve the offset of the corresponding page and cause a negative
+> value, so we disable tail increase by not setting xdp_rxq->frag_size.
+>
+> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 67 +++++++++++++++++++++++-----------------
+>  1 file changed, 38 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 20784b1d8236..83e6933ae62b 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -994,6 +994,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>                                          unsigned int *xdp_xmit,
+>                                          struct virtnet_rq_stats *stats)
+>  {
+> +       unsigned int tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>         struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+>         u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>         struct page *page = virt_to_head_page(buf);
+> @@ -1024,53 +1025,50 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>         rcu_read_lock();
+>         xdp_prog = rcu_dereference(rq->xdp_prog);
+>         if (xdp_prog) {
+> +               unsigned int xdp_frags_truesz = 0;
+> +               struct skb_shared_info *shinfo;
+>                 struct xdp_frame *xdpf;
+>                 struct page *xdp_page;
+>                 struct xdp_buff xdp;
+>                 void *data;
+>                 u32 act;
+> +               int i;
+>
+> -               /* Transient failure which in theory could occur if
+> -                * in-flight packets from before XDP was enabled reach
+> -                * the receive path after XDP is loaded.
+> -                */
+> -               if (unlikely(hdr->hdr.gso_type))
+> -                       goto err_xdp;
 
-Yes, I believe.
+Two questions:
 
-> 
->> +{
->> +	struct bpf_btf_info info;
->> +	char name[64];
->> +	__u32 id = 0, len;
->> +	int err, fd;
->> +
->> +	while (true) {
->> +		err = bpf_btf_get_next_id(id, &id);
->> +		if (err) {
->> +			log_err("failed to iterate BTF objects");
->> +			return err;
->> +		}
->> +
->> +		fd = bpf_btf_get_fd_by_id(id);
->> +		if (fd < 0) {
-> 
-> I was checking how's libbpf doing this and found load_module_btfs,
-> which seems similar.. and it has one additional check in here:
-> 
->                          if (errno == ENOENT)
->                                  continue; /* expected race: BTF was unloaded */
-> 
-> I guess it's not likely, but it's better to have it
+1) should we keep this check for the XDP program that can't deal with XDP frags?
+2) how could we guarantee that the vnet header (gso_type/csum_start
+etc) is still valid after XDP (where XDP program can choose to
+override the header)?
 
-Sure, will add it. You're right, the implementation is mostly taken from
-libbpf's load_module_btfs.
+> -
+> -               /* Buffers with headroom use PAGE_SIZE as alloc size,
+> -                * see add_recvbuf_mergeable() + get_mergeable_buf_len()
+> +               /* Now XDP core assumes frag size is PAGE_SIZE, but buffers
+> +                * with headroom may add hole in truesize, which
+> +                * make their length exceed PAGE_SIZE. So we disabled the
+> +                * hole mechanism for xdp. See add_recvbuf_mergeable().
+>                  */
+>                 frame_sz = headroom ? PAGE_SIZE : truesize;
+>
+> -               /* This happens when rx buffer size is underestimated
+> -                * or headroom is not enough because of the buffer
+> -                * was refilled before XDP is set. This should only
+> -                * happen for the first several packets, so we don't
+> -                * care much about its performance.
+> +               /* This happens when headroom is not enough because
+> +                * of the buffer was prefilled before XDP is set.
+> +                * This should only happen for the first several packets.
+> +                * In fact, vq reset can be used here to help us clean up
+> +                * the prefilled buffers, but many existing devices do not
+> +                * support it, and we don't want to bother users who are
+> +                * using xdp normally.
+>                  */
+> -               if (unlikely(num_buf > 1 ||
+> -                            headroom < virtnet_get_headroom(vi))) {
+> -                       /* linearize data for XDP */
+> -                       xdp_page = xdp_linearize_page(rq, &num_buf,
+> -                                                     page, offset,
+> -                                                     VIRTIO_XDP_HEADROOM,
+> -                                                     &len);
+> -                       frame_sz = PAGE_SIZE;
+> +               if (unlikely(headroom < virtnet_get_headroom(vi))) {
+> +                       if ((VIRTIO_XDP_HEADROOM + len + tailroom) > PAGE_SIZE)
+> +                               goto err_xdp;
+>
+> +                       xdp_page = alloc_page(GFP_ATOMIC);
+>                         if (!xdp_page)
+>                                 goto err_xdp;
+> +
+> +                       memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
+> +                              page_address(page) + offset, len);
+> +                       frame_sz = PAGE_SIZE;
 
-> 
-> 
-> SNIP
-> 
->> +	btf_id[0] = btf__find_by_name_kind(vmlinux_btf, symbol_name, BTF_KIND_FUNC);
->> +	if (!ASSERT_GT(btf_id[0], 0, "btf_find_by_name"))
->> +		goto out;
->> +
->> +	btf_id[1] = btf__find_by_name_kind(mod_btf, symbol_name, BTF_KIND_FUNC);
->> +	if (!ASSERT_GT(btf_id[1], 0, "btf_find_by_name"))
->> +		goto out;
->> +
->> +	for (i = 0; i < 2; i++) {
->> +		load_opts.attach_btf_id = btf_id[i];
->> +		load_opts.attach_btf_obj_fd = btf_fd[i];
->> +		prog_fd[i] = bpf_prog_load(BPF_PROG_TYPE_TRACING, NULL, "GPL",
->> +					   trace_program,
->> +					   sizeof(trace_program) / sizeof(struct bpf_insn),
->> +					   &load_opts);
->> +		if (!ASSERT_GE(prog_fd[i], 0, "bpf_prog_load"))
->> +			goto out;
->> +
->> +		link_fd[i] = bpf_link_create(prog_fd[i], 0, BPF_TRACE_FENTRY, NULL);
->> +		if (!ASSERT_GE(link_fd[i], 0, "bpf_link_create"))
->> +			goto out;
-> 
-> so IIUC the issue is that without the previous fix this will create
-> 2 separate trampolines pointing to single address.. and we can have
-> just one trampoline for address.. so the 2nd trampoline update will
-> fail, because the trampoline location is already changed/taken ?
-> 
-> could you please put some description like that in the comment or
-> changelog?
+How can we know a single page is sufficient here? (before XDP is set,
+we reserve neither headroom nor tailroom).
 
-The description is already in the commit message and in the series
-changelog, although it may be a bit inaccurate (stating that two
-programs are attached to the same trampoline rather that two trampolines
-attached to the same address).
+>                         offset = VIRTIO_XDP_HEADROOM;
 
-I'll fix it and add it to the comment, it could be useful to have it
-there as well.
+I think we should still try to do linearization for the XDP program
+that doesn't support XDP frags.
 
-Thanks!
-Viktor
+Thanks
 
-> 
-> thanks,
-> jirka
-> 
->> +	}
->> +
->> +	err = bpf_prog_test_run_opts(prog_fd[0], &test_opts);
->> +	ASSERT_OK(err, "running test");
->> +
->> +out:
->> +	if (vmlinux_btf)
->> +		btf__free(vmlinux_btf);
->> +	if (mod_btf)
->> +		btf__free(mod_btf);
->> +	for (i = 0; i < 2; i++) {
->> +		if (btf_fd[i])
->> +			close(btf_fd[i]);
->> +		if (prog_fd[i])
->> +			close(prog_fd[i]);
->> +		if (link_fd[i])
->> +			close(link_fd[i]);
->> +	}
->> +}
->> -- 
->> 2.38.1
->>
-> 
+>                 } else {
+>                         xdp_page = page;
+>                 }
+> -
+> -               /* Allow consuming headroom but reserve enough space to push
+> -                * the descriptor on if we get an XDP_TX return code.
+> -                */
+>                 data = page_address(xdp_page) + offset;
+> -               xdp_init_buff(&xdp, frame_sz - vi->hdr_len, &rq->xdp_rxq);
+> -               xdp_prepare_buff(&xdp, data - VIRTIO_XDP_HEADROOM + vi->hdr_len,
+> -                                VIRTIO_XDP_HEADROOM, len - vi->hdr_len, true);
+> +               err = virtnet_build_xdp_buff(dev, vi, rq, &xdp, data, len, frame_sz,
+> +                                            &num_buf, &xdp_frags_truesz, stats);
+> +               if (unlikely(err))
+> +                       goto err_xdp_frags;
+>
+>                 act = bpf_prog_run_xdp(xdp_prog, &xdp);
+>                 stats->xdp_packets++;
+> @@ -1164,6 +1162,17 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>                                 __free_pages(xdp_page, 0);
+>                         goto err_xdp;
+>                 }
+> +err_xdp_frags:
+> +               shinfo = xdp_get_shared_info_from_buff(&xdp);
+> +
+> +               if (unlikely(xdp_page != page))
+> +                       __free_pages(xdp_page, 0);
+> +
+> +               for (i = 0; i < shinfo->nr_frags; i++) {
+> +                       xdp_page = skb_frag_page(&shinfo->frags[i]);
+> +                       put_page(xdp_page);
+> +               }
+> +               goto err_xdp;
+>         }
+>         rcu_read_unlock();
+>
+> --
+> 2.19.1.6.gb485710b
+>
 
