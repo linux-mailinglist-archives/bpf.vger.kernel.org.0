@@ -2,81 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6610643B3C
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 03:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2EE643B6A
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 03:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbiLFCRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 21:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S232825AbiLFCp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 21:45:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbiLFCRF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 21:17:05 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD4A1D0FD;
-        Mon,  5 Dec 2022 18:17:05 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id x66so13238988pfx.3;
-        Mon, 05 Dec 2022 18:17:05 -0800 (PST)
+        with ESMTP id S231923AbiLFCp5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 21:45:57 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8475D19C23
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 18:45:56 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id r7-20020a25c107000000b006ff55ac0ee7so7066002ybf.15
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 18:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LcP8NKIZlYUePwBhMMJRQewkzTKwifvCi6pycP1f6GM=;
-        b=M4ZhPc6YO6HttK4ywN3HPaaww0bQbW6IqEAKMTrjp/IMfsfO8+xnm2+YJop6UyTrEK
-         7VVccYUVV506+O298iOMvIR930wlw/moGT8lQVHtwmLaUJROtCslAwhPkofA99kTq2m4
-         3megxLBRZGC8slz4vdO/Ka4wgaIgD5DLiKQpFvd9ORxhsd/AXaSYJolf6lrLQg4D1Nmh
-         Tx6vmvvFQh2Q43WyaXTabKB0HMCxp5GNmnVcX5M0wDlegxWpB/3IWSKTMv+2xtlTaSLz
-         QbWszRnOyJC4lju4I/te/UBIIXfsbDqIpJgzUE01sX1HrlO3OKAslvxpKiOR2+DgOzy6
-         eHGQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WVqzTJK/MBFUSO8hAqhMz7njH7WeU2V0OYyjLQcQhCc=;
+        b=lNpw428R0hgYF5AbXK0z3+148FBHky/sODJuqvE+XaaLJOqDurD4Db5xDuTnlX/l7W
+         h1Hp6deGlkdMaGPPVefDIQNE0zp3KXx4hHslOYEyYvY+g7mFEEK86WIgHVW90Re0Bgsl
+         bPwgqAqvIeMOLSmUFAOKdHM6LRlUykFyWLK0laIM26CHUsur/nPhYPEo97mYOdUKd/dY
+         CXssEXIvTzxedhdPwI2ClNxw/rHw0+TPvlP8/lGI998+DkEgQtmpzXNGtZdZUYqtyBOe
+         2Uj/mG3BIa/TdbUjRaQHrNspiGoJUxItS554sHd5QAspv0c/YCqb4J/AWttJWtr74Gs4
+         JEUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LcP8NKIZlYUePwBhMMJRQewkzTKwifvCi6pycP1f6GM=;
-        b=mk1Lrvuk6tx4+hp4PosMhOqQ/ar/pBJaMGarLsUWa6brSzn9l0BTSQi7XXj1AAmrtg
-         sJvifAmeWGJGSMXqDJ+ImLJb1/v70A8EGTtANYR1fqqJ/Jot2k18NVGAMI8XFHFjy0sk
-         xL2c5UOpD/Vmfn83WIKLflcJFEE5EHprlNpZwiA1+HNHf5BcKJAqhmIfVxGi8sNsHPX6
-         lr1I643/ZtxNxnCntnkfAuBh+pwgdte64fNlJHd4MsV6GyPSP7mxrW+Yu+9QGUcZ4zpi
-         zqgTx9whQqW1ZutbTJbrapTTfcEasgyX2EpGoABS+pveWmFlw2iUvoV21WMj9Rlem7KS
-         OMfA==
-X-Gm-Message-State: ANoB5pnIQabuFw1sRX7oF/V1HVSeP9trjRkceNohTzCiy6vYe72hS4XK
-        yO+Y4OyypdsmHbz+XPQXB64=
-X-Google-Smtp-Source: AA0mqf4CQ3OBT41PKIEho/5N2NtvXuHvpJK+I3Pn6WJT0jq2MJyqN50dy29mBI8Gr+upaZ1fQvXD5g==
-X-Received: by 2002:a05:6a00:21c8:b0:562:e0fb:3c79 with SMTP id t8-20020a056a0021c800b00562e0fb3c79mr67299904pfj.39.1670293024432;
-        Mon, 05 Dec 2022 18:17:04 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
-        by smtp.gmail.com with ESMTPSA id v129-20020a622f87000000b005761c4754e7sm8901215pfv.144.2022.12.05.18.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Dec 2022 18:17:03 -0800 (PST)
-Date:   Mon, 5 Dec 2022 18:17:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@meta.com>
-Subject: Re: [PATCH v2] panic: Taint kernel if fault injection has been used
-Message-ID: <20221206021700.oryt26otos7vpxjh@macbook-pro-6.dhcp.thefacebook.com>
-References: <167019256481.3792653.4369637751468386073.stgit@devnote3>
- <20221204223001.6wea7cgkofjsiy2z@macbook-pro-6.dhcp.thefacebook.com>
- <20221205075921.02edfe6b54abc5c2f9831875@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221205075921.02edfe6b54abc5c2f9831875@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        bh=WVqzTJK/MBFUSO8hAqhMz7njH7WeU2V0OYyjLQcQhCc=;
+        b=6p6fGox4YryEdAW4tB7lKk339ROnRvFSsC1QiK0+TJ6h03b8QgyvwQTUXSl/7MS998
+         4vYL0QSbVLVgoMTWFV0UE/nXQzus4J7d1XBGarDHiyyU8WurU+qUDS/kVLirfTesTJNo
+         37piIOoyiI4KLk7RPTziExROKVS0kHcuGLXVrK2QmtKOZY1LJPYFsYnJPsraNzbVXxDF
+         icTHJRC/f5SX2dzXdlfZ3caSWdAgPid5RgiNndnUANQco1Tvo42efNAcCqG8QxyGzf/r
+         aUnLmV7Y5uF9gqnPmaaeCwWdvETSQHbeg7Mr0IK65tPS5QM0R11rPILQCHIXiRcD74Fq
+         lL6g==
+X-Gm-Message-State: ANoB5pm3Wz6+UQtuSdWy9+J3qOb31USjK/Uvez0geEcMeu+89YdTXhmi
+        VfdnvS8d7/Eq0WMO/RLF8+UWEAa85ObJRgYKx2v/p04B7MvNNw2jrQE0myhsW2KN98jeagyCnUd
+        DzRbVvFtjjiJ569VsPIACCLmZ/VUGfROVzmIARWiZEtWcGxAdUw==
+X-Google-Smtp-Source: AA0mqf7tTfa0QwZVgPzwhmTqtexxWiJmQVjzbIQt0CK61/Bs5Q/mF6NTUAVzCwTGakzTn1CQjoVTz0Y=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:72d:b0:702:84b2:afc7 with SMTP id
+ l13-20020a056902072d00b0070284b2afc7mr3515268ybt.388.1670294755722; Mon, 05
+ Dec 2022 18:45:55 -0800 (PST)
+Date:   Mon,  5 Dec 2022 18:45:42 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.rc0.267.gcb52ba06e7-goog
+Message-ID: <20221206024554.3826186-1-sdf@google.com>
+Subject: [PATCH bpf-next v3 00/12] xdp: hints via kfuncs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,66 +79,219 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 07:59:21AM +0900, Masami Hiramatsu wrote:
-> On Sun, 4 Dec 2022 14:30:01 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > On Mon, Dec 05, 2022 at 07:22:44AM +0900, Masami Hiramatsu (Google) wrote:
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > Since the function error injection framework in the fault injection
-> > > subsystem can change the function code flow forcibly, it may cause
-> > > unexpected behavior (and that is the purpose of this feature) even
-> > > if it is applied to the ALLOW_ERROR_INJECTION functions.
-> > > So this feature must be used only for debugging or testing purpose.
-> > 
-> > The whole idea of tainting for kernel debugging is questionable.
-> > There are many other *inject* kconfigs and other debug flags
-> > for link lists, RCU, sleeping, etc.
-> > None of them taint the kernel.
-> > 
-> > > To identify this in the kernel oops message, add a new taint flag
-> > 
-> > Have you ever seen a single oops message because of this particular
-> > error injection?
-> 
-> No, but there is no guarantee that the FEI doesn't cause any issue
-> in the future too. If it happens, we need to know the precise
-> information about what FEI/bpf does.
-> FEI is a kind of temporal Livepatch for testing. If Livepatch taints
-> the kernel, why doesn't the FEI taint it too?
+Please see the first patch in the series for the overall
+design and use-cases.
 
-Live patching can replace an arbitrary function and the kernel has
-no visibility into what KLP module is doing.
-While 'bpf error injection' is predictable.
-The functions marked with [BPF_]ALLOW_ERROR_INJECTION can return errors
-in the normal execution. So the callers of these functions have to deal with errors.
+Changes since v3:
 
-If kernel panics on such injected error it potentially would have paniced
-on it anyway. At this point crash dump might be necessary to debug.
-Whether oops happened because of bpf, kprobe or normal execution
-doesn't matter much. The bug is in the caller that wasn't prepared
-to deal with that error.
+- Rework prog->bound_netdev refcounting (Jakub/Marin)
 
-One can still walk all bpf progs from crash dump with tool "drgn"
-(it has nice scripts to examine the dumps) or "crash" or other tools.
+  Now it's based on the offload.c framework. It mostly fits, except
+  I had to automatically insert a HT entry for the netdev. In the
+  offloaded case, the netdev is added via a call to
+  bpf_offload_dev_netdev_register from the driver init path; with
+  a dev-bound programs, we have to manually add (and remove) the entry.
 
-> > 
-> > > for the fault injection. This taint flag will be set by either
-> > > function error injection is used or the BPF use the kprobe_override
-> > > on error injectable functions (identified by ALLOW_ERROR_INJECTION).
-> > 
-> > ...
-> > 
-> > >  	/* set the new array to event->tp_event and set event->prog */
-> > > +	if (prog->kprobe_override)
-> > > +		add_taint(TAINT_FAULT_INJECTED, LOCKDEP_NOW_UNRELIABLE);
-> > 
-> > Nack for bpf bits.
-> 
-> I think this is needed especially for bpf bits. If we see this flag,
-> we can ask reporters to share the bpf programs which they used.
+  As suggested by Toke, I'm also prohibiting putting dev-bound programs
+  into prog-array map; essentially prohibiting tail calling into it.
+  I'm also disabling freplace of the dev-bound programs. Both of those
+  restrictions can be loosened up eventually.
+  Note that we don't require maps to be dev-bound when the program is
+  dev-bound.
 
-You can ask reporters to share bpf progs, but you can repro
-the oops just as well without bpf. It's not bpf to blame, but the
-bug in the caller that you should worry about.
+  Confirmed with the test_offload.py that the existing parts are still
+  operational.
+
+- Fix compile issues with CONFIG_NET=3Dn and mlx5 driver (lkp@intel.com)
+
+Changes since v2:
+
+- Rework bpf_prog_aux->xdp_netdev refcnt (Martin)
+
+  Switched to dropping the count early, after loading / verification is
+  done. At attach time, the pointer value is used only for comparing
+  the actual netdev at attach vs netdev at load.
+
+  (potentially can be a problem if the same slub slot is reused
+  for another netdev later on?)
+
+- Use correct RX queue number in xdp_hw_metadata (Toke / Jakub)
+
+- Fix wrongly placed '*cnt=3D0' in fixup_kfunc_call after merge (Toke)
+
+- Fix sorted BTF_SET8_START (Toke)
+
+  Introduce old-school unsorted BTF_ID_LIST for lookup purposes.
+
+- Zero-initialize mlx4_xdp_buff (Tariq)
+
+- Separate common timestamp handling into mlx4_en_get_hwtstamp (Tariq)
+
+- mlx5 patches (Toke)
+
+  Note, I've renamed the following for consistency with the rest:
+  - s/mlx5_xdp_ctx/mlx5_xdp_buff/
+  - s/mctx/mxbuf/
+
+Changes since v1:
+
+- Drop xdp->skb metadata path (Jakub)
+
+  No consensus yet on exposing xdp_skb_metadata in UAPI. Exploring
+  whether everyone would be ok with kfunc to access that part..
+  Will follow up separately.
+
+- Drop kfunc unrolling (Alexei)
+
+  Starting with simple code to resolve per-device ndo kfuncs.
+  We can always go back to unrolling and keep the same kfuncs
+  interface in the future.
+
+- Add rx hash metadata (Toke)
+
+  Not adding the rest (csum/hash_type/etc), I'd like us to agree on
+  the framework.
+
+- use dev_get_by_index and add proper refcnt (Toke)
+
+Changes since last RFC:
+
+- drop ice/bnxt example implementation (Alexander)
+
+  -ENOHARDWARE to test
+
+- fix/test mlx4 implementation
+
+  Confirmed that I get reasonable looking timestamp.
+  The last patch in the series is the small xsk program that can
+  be used to dump incoming metadata.
+
+- bpf_push64/bpf_pop64 (Alexei)
+
+  x86_64+arm64(untested)+disassembler
+
+- struct xdp_to_skb_metadata -> struct xdp_skb_metadata (Toke)
+
+  s/xdp_to_skb/xdp_skb/
+
+- Documentation/bpf/xdp-rx-metadata.rst
+
+  Documents functionality, assumptions and limitations.
+
+- bpf_xdp_metadata_export_to_skb returns true/false (Martin)
+
+  Plus xdp_md->skb_metadata field to access it.
+
+- BPF_F_XDP_HAS_METADATA flag (Toke/Martin)
+
+  Drop magic, use the flag instead.
+
+- drop __randomize_layout
+
+  Not sure it's possible to sanely expose it via UAPI. Because every
+  .o potentially gets its own randomized layout, test_progs
+  refuses to link.
+
+- remove __net_timestamp in veth driver (John/Jesper)
+
+  Instead, calling ktime_get from the kfunc; enough for the selftests.
+
+Future work on RX side:
+
+- Support more devices besides veth and mlx4
+- Support more metadata besides RX timestamp.
+- Convert skb_metadata_set() callers to xdp_convert_skb_metadata()
+  which handles extra xdp_skb_metadata
+
+Prior art (to record pros/cons for different approaches):
+
+- Stable UAPI approach:
+  https://lore.kernel.org/bpf/20220628194812.1453059-1-alexandr.lobakin@int=
+el.com/
+- Metadata+BTF_ID appoach:
+  https://lore.kernel.org/bpf/166256538687.1434226.15760041133601409770.stg=
+it@firesoul/
+- v1:
+  https://lore.kernel.org/bpf/20221115030210.3159213-1-sdf@google.com/T/#t
+- kfuncs v2 RFC:
+  https://lore.kernel.org/bpf/20221027200019.4106375-1-sdf@google.com/
+- kfuncs v1 RFC:
+  https://lore.kernel.org/bpf/20221104032532.1615099-1-sdf@google.com/
+
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (9):
+  bpf: Document XDP RX metadata
+  bpf: Rename bpf_{prog,map}_is_dev_bound to is_offloaded
+  bpf: XDP metadata RX kfuncs
+  veth: Introduce veth_xdp_buff wrapper for xdp_buff
+  veth: Support RX XDP metadata
+  selftests/bpf: Verify xdp_metadata xdp->af_xdp path
+  mlx4: Introduce mlx4_xdp_buff wrapper for xdp_buff
+  mxl4: Support RX XDP metadata
+  selftests/bpf: Simple program to dump XDP RX metadata
+
+Toke H=C3=B8iland-J=C3=B8rgensen (3):
+  xsk: Add cb area to struct xdp_buff_xsk
+  mlx5: Introduce mlx5_xdp_buff wrapper for xdp_buff
+  mlx5: Support RX XDP metadata
+
+ Documentation/bpf/xdp-rx-metadata.rst         |  90 ++++
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c |  13 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  10 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  68 ++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  11 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  32 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  13 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  35 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |   2 +
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   4 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  98 ++---
+ drivers/net/veth.c                            |  88 ++--
+ include/linux/bpf.h                           |  26 +-
+ include/linux/mlx4/device.h                   |   7 +
+ include/linux/netdevice.h                     |   5 +
+ include/net/xdp.h                             |  29 ++
+ include/net/xsk_buff_pool.h                   |   5 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/arraymap.c                         |  17 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/offload.c                          | 162 +++++--
+ kernel/bpf/syscall.c                          |  25 +-
+ kernel/bpf/verifier.c                         |  42 +-
+ net/core/dev.c                                |   7 +-
+ net/core/filter.c                             |   2 +-
+ net/core/xdp.c                                |  58 +++
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   8 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 394 +++++++++++++++++
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  93 ++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  70 +++
+ .../selftests/bpf/progs/xdp_metadata2.c       |  15 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 405 ++++++++++++++++++
+ tools/testing/selftests/bpf/xdp_metadata.h    |   7 +
+ 36 files changed, 1688 insertions(+), 167 deletions(-)
+ create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata2.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_metadata.h
+
+--=20
+2.39.0.rc0.267.gcb52ba06e7-goog
+
