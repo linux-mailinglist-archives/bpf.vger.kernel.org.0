@@ -2,66 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DA6643A86
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 02:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E1F643A8B
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 02:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbiLFBK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 20:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        id S230182AbiLFBMP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 5 Dec 2022 20:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiLFBKz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 20:10:55 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BA2B7FF
-        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 17:10:54 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id o18-20020a170902d4d200b00189d4c25568so4304482plg.13
-        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 17:10:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eE5QWKLcAG3L+QQNdNqzOExJZK6SuWw0RxbpYZ6+G80=;
-        b=qD+H+l7ckmn1QdifKtWk8Lzo5WwOZ4MSo2HXtvGnZqY8mYYR8dY07bqgl4j0Ha989j
-         u6FO584lp1iXRDuVY38EMVRHRDOywUwNPmdWPQoRx5/WkTc0O7Y+j88PGJOrffWuLpDm
-         ZxkpPdc1B35+thiREp7qsj0Z9/atZuD+X9nFZZky6LKqJ0RAD2WO8rHqjU7pFJjLOUdN
-         HS11YVDMoY6up3ngwj+DBBAAJSn9+JdbZErEV25Bmtef8vVNAF1d6telzk0cNoIT6Xd+
-         EjDmhF6VRO+9z5liypztl793e7ShGky86LCRbtCzi2eQjZz874St1EaNC0OV0TGiq2ll
-         FKTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eE5QWKLcAG3L+QQNdNqzOExJZK6SuWw0RxbpYZ6+G80=;
-        b=3WaypUbN76McBmLPKY3g1snQiv47Znf6GI146S6CmxTe/kGpQGyvx1lAzGIuR1Mphk
-         6MPN2RR8DirWnMXLGc+bBhfKiZXKeCevLgjJXalJg6XH8ADtsVuh0bRhwuMmrHpJC5Ly
-         Ap+K9OSPvvYzw4frwRJ6QWRnKn9gr4rbc6uGIdQi0d+pGRXYYVXM1fJvJJw2JwfY6qWE
-         ZR1Nc7WEa3CrG3my+6aGCJep2/C/TE2f+7JPJal1Cr/DtC//9R4o4fwH8BiUK3eKLZj2
-         LdeeaQfW0zGYJwOHbP7es2D0VwJcuBBJhSOUyw78ablPVWyRHP0rJoy8CUjbFm+iqNOK
-         z6bg==
-X-Gm-Message-State: ANoB5pmP0aOX1UNP8uK+f1/hTmbicdA7tzePerld/BNeFD2IUrUEFvWO
-        VIVBoBk1B7R9N1akyEzyZF7oeBoynSFYWz3G70awpR4mh4pTfObXK17b5CM0cgSaLkU06nIkJcV
-        SkCrMOngW69SRAJtUr3/+zO+1fCwbOQofb9VuZGAcXUlAAfro+A==
-X-Google-Smtp-Source: AA0mqf4gSvuOfmqApfHJ4oQn/y7J0dSXdwSvfMaeXpNC3pHXzdoKHxWj0gl8CKB2mFlvYBl1TmjssyQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:6d62:b0:219:4ee5:ccc9 with SMTP id
- z89-20020a17090a6d6200b002194ee5ccc9mr35988593pjj.63.1670289054333; Mon, 05
- Dec 2022 17:10:54 -0800 (PST)
-Date:   Mon,  5 Dec 2022 17:10:52 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.0.rc0.267.gcb52ba06e7-goog
-Message-ID: <20221206011052.3099563-1-sdf@google.com>
-Subject: [PATCH bpf-next] selftests/bpf: Bring test_offload.py back to life
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        with ESMTP id S229471AbiLFBMO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 20:12:14 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82FDDF6C
+        for <bpf@vger.kernel.org>; Mon,  5 Dec 2022 17:12:12 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B5L7p9F001760
+        for <bpf@vger.kernel.org>; Mon, 5 Dec 2022 17:12:12 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3m9r9hh8dg-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 05 Dec 2022 17:12:12 -0800
+Received: from twshared9179.35.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 5 Dec 2022 17:12:10 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 25C8122F7FD0F; Mon,  5 Dec 2022 17:12:00 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 1/2] selftests/bpf: add generic BPF program verification tester
+Date:   Mon, 5 Dec 2022 17:11:58 -0800
+Message-ID: <20221206011159.1208452-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: lZK2b6qjxw0XPR9DdVbZxPwM7ihxyGcH
+X-Proofpoint-GUID: lZK2b6qjxw0XPR9DdVbZxPwM7ihxyGcH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-05_01,2022-12-05_01,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,114 +53,384 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit ccc3f56918f6 ("selftests/bpf: convert remaining legacy map
-definitions") converted sample_map_ret0.c to modern BTF map format.
-However, it doesn't looks like iproute2 part that attaches XDP
-supports this format. Let's use bpftool to load the obj file
-instead of iproute2; iproute2 will only attach a pinned program.
+It's become a common pattern to have a collection of small BPF programs
+in one BPF object file, each representing one test case. On user-space
+side of such tests we maintain a table of program names and expected
+failure or success, along with optional expected verifier log message.
 
-Some other related issues:
-* bpftool has new extra libbpf_det_bind probing map we need to exclude
-* skip trying to load netdevsim modules if it's already loaded (builtin)
+This works, but each set of tests reimplement this mundane code over and
+over again, which is a waste of time for anyone trying to add a new set
+of tests. Furthermore, it's quite error prone as it's way too easy to miss
+some entries in these manually maintained test tables (as evidences by
+dynptr_fail tests, in which ringbuf_release_uninit_dynptr subtest was
+accidentally missed; this is fixed in next patch).
 
-Cc: Jakub Kicinski <kuba@kernel.org>
-Fixes: ccc3f56918f6 ("selftests/bpf: convert remaining legacy map definitions")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+So this patch implements generic verification_tester, which accepts
+skeleton name and handles the rest of details: opens and loads BPF
+object file, making sure each program is tested in isolation. Optionally
+each test case can specify expected BPF verifier log message. In case of
+failure, tester makes sure to report verifier log, but it also reports
+verifier log in verbose mode unconditionally.
+
+Now, the interesting deviation from existing custom implementations is
+the use of btf_decl_tag attribute to specify expected-to-fail vs
+expected-to-succeed markers and, optionally, expected log message
+directly next to BPF program source code, eliminating the need to
+manually create and update table of tests.
+
+We define few macros wrapping btf_decl_tag with a convention that all
+values of btf_decl_tag start with "comment:" prefix, and then utilizing
+a very simple "just_some_text_tag" or "some_key_name=<value>" pattern to
+define things like expected success/failure, expected verifier message,
+extra verifier log level (if necessary). This approach is demonstrated
+by next patch in which two existing sets of failure tests are converted.
+
+Tester supports both expected-to-fail and expected-to-succeed programs,
+though this patch set didn't convert any existing expected-to-succeed
+programs yet, as existing tests couple BPF program loading with their
+further execution through attach or test_prog_run. One way to allow
+testing scenarios like this would be ability to specify custom callback,
+executed for each successfully loaded BPF program. This is left for
+follow up patches, after some more analysis of existing test cases.
+
+This verification_tester is, hopefully, a start of a test_verifier
+runner, which allows much better "user experience" of defining low-level
+verification types that can take advantage of all the libbpf-provided
+nicety features on BPF side: global variables, declarative maps, etc.
+All while having a choice of defining it in C or as BPF assembly
+(through __attribute__((naked)) functions and using embedded asm). This
+will be explored in follow up patches as well.
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/test_offload.py | 33 ++++++++++++++++-----
- 1 file changed, 25 insertions(+), 8 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   5 +
+ tools/testing/selftests/bpf/test_progs.h      |  33 +++
+ tools/testing/selftests/bpf/verifier_tester.c | 233 ++++++++++++++++++
+ 4 files changed, 272 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier_tester.c
 
-diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index 7fc15e0d24a9..9718140c13fa 100755
---- a/tools/testing/selftests/bpf/test_offload.py
-+++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -769,12 +769,14 @@ skip(ret != 0, "bpftool not installed")
- base_progs = progs
- _, base_maps = bpftool("map")
- base_map_names = [
--    'pid_iter.rodata' # created on each bpftool invocation
-+    'pid_iter.rodata', # created on each bpftool invocation
-+    'libbpf_det_bind', # created on each bpftool invocation
- ]
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 6a0f043dc410..526cb6a6b90a 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -527,7 +527,7 @@ TRUNNER_BPF_PROGS_DIR := progs
+ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+ 			 network_helpers.c testing_helpers.c		\
+ 			 btf_helpers.c flow_dissector_load.h		\
+-			 cap_helpers.c
++			 cap_helpers.c verifier_tester.c
+ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
+ 		       $(OUTPUT)/liburandom_read.so			\
+ 		       $(OUTPUT)/xdp_synproxy				\
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 5bb11fe595a4..4a01ea9113bf 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -2,6 +2,11 @@
+ #ifndef __BPF_MISC_H__
+ #define __BPF_MISC_H__
  
- # Check netdevsim
--ret, out = cmd("modprobe netdevsim", fail=False)
--skip(ret != 0, "netdevsim module could not be loaded")
-+if not os.path.isdir("/sys/bus/netdevsim/"):
-+    ret, out = cmd("modprobe netdevsim", fail=False)
-+    skip(ret != 0, "netdevsim module could not be loaded")
- 
- # Check debugfs
- _, out = cmd("mount")
-@@ -1169,9 +1171,12 @@ netns = []
- 
-     simdev = NetdevSimDev()
-     sim, = simdev.nsims
--    map_obj = bpf_obj("sample_map_ret0.bpf.o")
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/offload",
-+                      dev=sim['ifname'])
-+    offload = bpf_pinned("/sys/fs/bpf/offload")
++#define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" msg)))
++#define __failure		__attribute__((btf_decl_tag("comment:test_expect_failure")))
++#define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
++#define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
 +
-     start_test("Test loading program with maps...")
--    sim.set_xdp(map_obj, "offload", JSON=False) # map fixup msg breaks JSON
-+    sim.set_xdp(offload, "offload", JSON=False) # map fixup msg breaks JSON
+ #if defined(__TARGET_ARCH_x86)
+ #define SYSCALL_WRAPPER 1
+ #define SYS_PREFIX "__x64_"
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index b090996daee5..fd355b54dc24 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -1,4 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __TEST_PROGS_H
++#define __TEST_PROGS_H
++
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <errno.h>
+@@ -210,6 +213,12 @@ int test__join_cgroup(const char *path);
+ #define CHECK_ATTR(condition, tag, format...) \
+ 	_CHECK(condition, tag, tattr.duration, format)
  
-     start_test("Test bpftool bound info reporting (own ns)...")
-     check_dev_info(False, "")
-@@ -1191,6 +1196,7 @@ netns = []
-     prog_file, _ = pin_prog("/sys/fs/bpf/tmp_prog")
-     map_file, _ = pin_map("/sys/fs/bpf/tmp_map", idx=1, expected=2)
-     simdev.remove()
-+    rm("/sys/fs/bpf/offload")
++#define ASSERT_FAIL(fmt, args...) ({					\
++	static int duration = 0;					\
++	CHECK(false, "", fmt"\n", ##args);				\
++	false;								\
++})
++
+ #define ASSERT_TRUE(actual, name) ({					\
+ 	static int duration = 0;					\
+ 	bool ___ok = (actual);						\
+@@ -397,3 +406,27 @@ int write_sysctl(const char *sysctl, const char *value);
+ #endif
  
-     start_test("Test bpftool bound info reporting (removed dev)...")
-     check_dev_info_removed(prog_file=prog_file, map_file=map_file)
-@@ -1203,7 +1209,10 @@ netns = []
-     sim, = simdev.nsims
- 
-     start_test("Test map update (no flags)...")
--    sim.set_xdp(map_obj, "offload", JSON=False) # map fixup msg breaks JSON
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/offload",
-+                      dev=sim['ifname'])
-+    offload = bpf_pinned("/sys/fs/bpf/offload")
-+    sim.set_xdp(offload, "offload", JSON=False) # map fixup msg breaks JSON
-     maps = bpftool_map_list(expected=2)
-     array = maps[0] if maps[0]["type"] == "array" else maps[1]
-     htab = maps[0] if maps[0]["type"] == "hash" else maps[1]
-@@ -1280,23 +1289,31 @@ netns = []
- 
-     start_test("Test map remove...")
-     sim.unset_xdp("offload")
-+    rm("/sys/fs/bpf/offload")
-     bpftool_map_list_wait(expected=0)
-     simdev.remove()
- 
-     simdev = NetdevSimDev()
-     sim, = simdev.nsims
--    sim.set_xdp(map_obj, "offload", JSON=False) # map fixup msg breaks JSON
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/offload",
-+                      dev=sim['ifname'])
-+    offload = bpf_pinned("/sys/fs/bpf/offload")
-+    sim.set_xdp(offload, "offload", JSON=False) # map fixup msg breaks JSON
-+    rm("/sys/fs/bpf/offload")
-     simdev.remove()
-     bpftool_map_list_wait(expected=0)
- 
-     start_test("Test map creation fail path...")
-     simdev = NetdevSimDev()
-     sim, = simdev.nsims
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nooffload")
-+    nooffload = bpf_pinned("/sys/fs/bpf/nooffload")
-     sim.dfs["bpf_map_accept"] = "N"
--    ret, _ = sim.set_xdp(map_obj, "offload", JSON=False, fail=False)
-+    ret, _ = sim.set_xdp(nooffload, "offload", JSON=False, fail=False)
-     fail(ret == 0,
-          "netdevsim didn't refuse to create a map with offload disabled")
- 
-+    rm("/sys/fs/bpf/nooffload")
-     simdev.remove()
- 
-     start_test("Test multi-dev ASIC program reuse...")
+ #define BPF_TESTMOD_TEST_FILE "/sys/kernel/bpf_testmod"
++
++struct verification_tester {
++	char *log_buf;
++	size_t log_buf_sz;
++
++	struct bpf_object *obj;
++};
++
++typedef const void *(*skel_elf_bytes_fn)(size_t *sz);
++
++extern void verification_tester__run_subtests(struct verification_tester *tester,
++					      const char *skel_name,
++					      skel_elf_bytes_fn elf_bytes_factory);
++
++extern void tester_fini(struct verification_tester *tester);
++
++#define RUN_VERIFICATION_TESTS(skel) ({					       \
++	struct verification_tester tester = {};				       \
++									       \
++	verification_tester__run_subtests(&tester, #skel, skel##__elf_bytes);  \
++	tester_fini(&tester);						       \
++})
++
++#endif /* __TEST_PROGS_H */
+diff --git a/tools/testing/selftests/bpf/verifier_tester.c b/tools/testing/selftests/bpf/verifier_tester.c
+new file mode 100644
+index 000000000000..8aa28c2a6f31
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier_tester.c
+@@ -0,0 +1,233 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++#include <stdlib.h>
++#include <test_progs.h>
++#include <bpf/btf.h>
++
++#define str_has_pfx(str, pfx) \
++	(strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1 : strlen(pfx)) == 0)
++
++#define VERIFICATION_TESTER_LOG_BUF_SZ 1048576
++
++#define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
++#define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
++#define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
++#define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
++
++struct test_spec {
++	const char *name;
++	bool expect_failure;
++	const char *expect_msg;
++	int log_level;
++};
++
++static int tester_init(struct verification_tester *tester)
++{
++	if (!tester->log_buf) {
++		tester->log_buf_sz = VERIFICATION_TESTER_LOG_BUF_SZ;
++		tester->log_buf = malloc(tester->log_buf_sz);
++		if (!ASSERT_OK_PTR(tester->log_buf, "tester_log_buf"))
++			return -ENOMEM;
++	}
++
++	return 0;
++}
++
++void tester_fini(struct verification_tester *tester)
++{
++	if (!tester)
++		return;
++
++	free(tester->log_buf);
++}
++
++static int parse_test_spec(struct verification_tester *tester,
++			   struct bpf_object *obj,
++			   struct bpf_program *prog,
++			   struct test_spec *spec)
++{
++	struct btf *btf;
++	int func_id, i;
++
++	memset(spec, 0, sizeof(*spec));
++
++	spec->name = bpf_program__name(prog);
++
++	btf = bpf_object__btf(obj);
++	if (!btf) {
++		ASSERT_FAIL("BPF object has no BTF");
++		return -EINVAL;
++	}
++
++	func_id = btf__find_by_name_kind(btf, spec->name, BTF_KIND_FUNC);
++	if (func_id < 0) {
++		ASSERT_FAIL("failed to find FUNC BTF type for '%s'", spec->name);
++		return -EINVAL;
++	}
++
++	for (i = 1; i < btf__type_cnt(btf); i++) {
++		const struct btf_type *t;
++		const char *s;
++
++		t = btf__type_by_id(btf, i);
++		if (!btf_is_decl_tag(t))
++			continue;
++
++		if (t->type != func_id || btf_decl_tag(t)->component_idx != -1)
++			continue;
++
++		s = btf__str_by_offset(btf, t->name_off);
++		if (strcmp(s, TEST_TAG_EXPECT_FAILURE) == 0) {
++			spec->expect_failure = true;
++		} else if (strcmp(s, TEST_TAG_EXPECT_SUCCESS) == 0) {
++			spec->expect_failure = false;
++		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
++			spec->expect_msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
++		} else if (str_has_pfx(s, TEST_TAG_LOG_LEVEL_PFX)) {
++			errno = 0;
++			spec->log_level = strtol(s + sizeof(TEST_TAG_LOG_LEVEL_PFX) - 1, NULL, 0);
++			if (errno) {
++				ASSERT_FAIL("failed to parse test log level from '%s'", s);
++				return -EINVAL;
++			}
++		}
++	}
++
++	return 0;
++}
++
++static void prepare_case(struct verification_tester *tester,
++			 struct test_spec *spec,
++			 struct bpf_object *obj,
++			 struct bpf_program *prog)
++{
++	int min_log_level = 0;
++
++	if (env.verbosity > VERBOSE_NONE)
++		min_log_level = 1;
++	if (env.verbosity > VERBOSE_VERY)
++		min_log_level = 2;
++
++	bpf_program__set_log_buf(prog, tester->log_buf, tester->log_buf_sz);
++
++	/* Make sure we set at least minimal log level, unless test requirest
++	 * even higher level already. Make sure to preserve independent log
++	 * level 4 (verifier stats), though.
++	 */
++	if ((spec->log_level & 3) < min_log_level)
++		bpf_program__set_log_level(prog, (spec->log_level & 4) | min_log_level);
++	else
++		bpf_program__set_log_level(prog, spec->log_level);
++
++	tester->log_buf[0] = '\0';
++}
++
++static void emit_verifier_log(const char *log_buf, bool force)
++{
++	if (!force && env.verbosity == VERBOSE_NONE)
++		return;
++	fprintf(stdout, "VERIFIER LOG:\n=============\n%s=============\n", log_buf);
++}
++
++static void validate_case(struct verification_tester *tester,
++			  struct test_spec *spec,
++			  struct bpf_object *obj,
++			  struct bpf_program *prog,
++			  int load_err)
++{
++	if (spec->expect_msg) {
++		char *match;
++
++		match = strstr(tester->log_buf, spec->expect_msg);
++		if (!ASSERT_OK_PTR(match, "expect_msg")) {
++			/* if we are in verbose mode, we've already emitted log */
++			if (env.verbosity == VERBOSE_NONE)
++				emit_verifier_log(tester->log_buf, true /*force*/);
++			fprintf(stderr, "EXPECTED MSG: '%s'\n", spec->expect_msg);
++			return;
++		}
++	}
++}
++
++/* this function is forced noinline and has short generic name to look better
++ * in test_progs output (in case of a failure)
++ */
++static noinline
++void run_subtest(struct verification_tester *tester,
++		 const char *skel_name,
++		 skel_elf_bytes_fn elf_bytes_factory)
++{
++	LIBBPF_OPTS(bpf_object_open_opts, open_opts, .object_name = skel_name);
++	struct bpf_object *obj = NULL, *tobj;
++	struct bpf_program *prog, *tprog;
++	const void *obj_bytes;
++	size_t obj_byte_cnt;
++	int err;
++
++	if (tester_init(tester) < 0)
++		return; /* failed to initialize tester */
++
++	obj_bytes = elf_bytes_factory(&obj_byte_cnt);
++	obj = bpf_object__open_mem(obj_bytes, obj_byte_cnt, &open_opts);
++	if (!ASSERT_OK_PTR(obj, "obj_open_mem"))
++		return;
++
++	bpf_object__for_each_program(prog, obj) {
++		const char *prog_name = bpf_program__name(prog);
++		struct test_spec spec;
++
++		if (!test__start_subtest(prog_name))
++			continue;
++
++		/* if we can't derive test specification, go to the next test */
++		err = parse_test_spec(tester, obj, prog, &spec);
++		if (!ASSERT_OK(err, "parse_test_spec"))
++			continue;
++
++		tobj = bpf_object__open_mem(obj_bytes, obj_byte_cnt, &open_opts);
++		if (!ASSERT_OK_PTR(tobj, "obj_open_mem")) /* shouldn't happen */
++			continue;
++
++		bpf_object__for_each_program(tprog, tobj)
++			bpf_program__set_autoload(tprog, false);
++
++		bpf_object__for_each_program(tprog, tobj) {
++			/* only load specified program */
++			if (strcmp(bpf_program__name(tprog), prog_name) == 0) {
++				bpf_program__set_autoload(tprog, true);
++				break;
++			}
++		}
++
++		prepare_case(tester, &spec, tobj, tprog);
++
++		err = bpf_object__load(tobj);
++		if (spec.expect_failure) {
++			if (!ASSERT_ERR(err, "unexpected_load_success")) {
++				emit_verifier_log(tester->log_buf, false /*force*/);
++				goto tobj_cleanup;
++			}
++		} else {
++			if (!ASSERT_OK(err, "unexpected_load_failure")) {
++				emit_verifier_log(tester->log_buf, true /*force*/);
++				goto tobj_cleanup;
++			}
++		}
++
++		emit_verifier_log(tester->log_buf, false /*force*/);
++		validate_case(tester, &spec, tobj, tprog, err);
++
++tobj_cleanup:
++		bpf_object__close(tobj);
++	}
++
++	bpf_object__close(obj);
++}
++
++void verification_tester__run_subtests(struct verification_tester *tester,
++				       const char *skel_name,
++				       skel_elf_bytes_fn elf_bytes_factory)
++{
++	/* see comment in run_subtest() for why we do this function nesting */
++	run_subtest(tester, skel_name, elf_bytes_factory);
++}
 -- 
-2.39.0.rc0.267.gcb52ba06e7-goog
+2.30.2
 
