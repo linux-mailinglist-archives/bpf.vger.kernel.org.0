@@ -2,222 +2,308 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EDE6447D8
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 16:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861776448F3
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 17:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbiLFPUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 10:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
+        id S235493AbiLFQOc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 11:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235201AbiLFPT6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 10:19:58 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EA263A7;
-        Tue,  6 Dec 2022 07:18:19 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id bx10so23995449wrb.0;
-        Tue, 06 Dec 2022 07:18:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tVN3fMG+6cD2s/6OLI+89I+1PSP3ud/CsbhzNc4apwM=;
-        b=dnZ99HXkwT/9RLfB4GwVErS33uLQn27GT+0d1Uf6eEtxEEbw07hvT74JRqH6QeCIvU
-         7A8uArJjFNOrXGCpr6Cz8VA39kwQ/n7rP06MfTX8HlHWw5WqAUW57EvZlbKY6huRa9bZ
-         NpW+FKvEstwZu9PJu9vZE+BXhfscF8yLrRENh7zoZmsAz4pozuUd/pt6ukC1Px9Ydfwn
-         jDDx6sWLb6h9GcR2Eyic/+T1kDqs5tXin17OOey+i7mDvWr9z42xPuuy5A5KlfXCDbNg
-         PCVk1xHxIktbNwIsHHNrKZfMYZ3QwWBLrsAj3Bwhgsq7sd+ZZVvE7ZHfCn/4L/UrY+z9
-         +d9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tVN3fMG+6cD2s/6OLI+89I+1PSP3ud/CsbhzNc4apwM=;
-        b=uI2nSxLj7DFiiN7AwRk6t+001vjIqL1+kXmXoTq6Zk+5gV3XC6iFcq9nsM3b0Dr0rh
-         dEwIdU32Lt8cpRj3hfkI9wPtzs9OQ1HEkt9jLVyGjyP4nd/SpYku+YtneJKToqe0DFv1
-         7fUcHf0/8YrC6qpfvIBGZxjxpCUmbMYM3iKQavdUp6S7ZmvK2pKNofqN3JSKhEZFVdac
-         Ki29ieM+rDAyPHKYW502yTq6glMEZnldf5wbk2re/mcKfS2nLzgy+6t/jDeA9m2FJfNQ
-         5ZQPNx9WJy90PFILHfbTRYjvPQu0HFYdsX6cBn3OpdG8SEbdfdY0tU1yLfy8f2UFMmPy
-         H8Lw==
-X-Gm-Message-State: ANoB5pmtUaf1Yq+/IGJSu8vaAAaX8HJl+RS/+Csh4zfNi1PfQO63fbS0
-        iNAkv9Qh3q1SO3ULK/cOgGs=
-X-Google-Smtp-Source: AA0mqf7zKxeKxK7Qa3b87XO0sls9S4QyOxvL+iqAIZpJxnpkuxq42gYIg8NNDwgeWdTzMaWmBlBqQA==
-X-Received: by 2002:adf:fd01:0:b0:235:83aa:a6ed with SMTP id e1-20020adffd01000000b0023583aaa6edmr50887987wrr.543.1670339897777;
-        Tue, 06 Dec 2022 07:18:17 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id hg6-20020a05600c538600b003a6125562e1sm21333257wmb.46.2022.12.06.07.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 07:18:17 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 6 Dec 2022 16:18:09 +0100
-To:     Hao Sun <sunhao.th@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-Message-ID: <Y49dMUsX2YgHK0J+@krava>
-References: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
- <CACkBjsbD4SWoAmhYFR2qkP1b6JHO3Og0Vyve0=FO-Jb2JGGRfw@mail.gmail.com>
+        with ESMTP id S235376AbiLFQNz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 11:13:55 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43B337209;
+        Tue,  6 Dec 2022 08:08:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670342918; x=1701878918;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2mfC+49Zrk6yU1xCCdQmj+99niP/bcoQaPMPKBsQNWE=;
+  b=BuxMTt2LU083av4SZ9ZacreX/SC6j7DsIcI+upEluol3bVh643eoLslE
+   ngNZhPjhxapMFZi1SGUoPENqp2+/OcqDSHHg6LLyxzgGenQgtsVWFzy69
+   TaZtOV7Btp9hxfqVjpTOA/cnFnqaDIV6GKvzbinel64/fHDOadHkY04Zb
+   weWc075GMsO+x4yZWqU95qfoCPt59CyljSgJVnensBNavqXEY4CaPiPvW
+   cuVXYSxdocW36uCZZhDLzZxkeMIwWtzHz7zLWeafSurl9fXFbJnTg2KqF
+   9yXpaRPffzSyO3sGNF9mhEOVkT75wVK9OrAerPDE1LgX1LXUmQUqXa/vv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10553"; a="300077756"
+X-IronPort-AV: E=Sophos;i="5.96,222,1665471600"; 
+   d="scan'208";a="300077756"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2022 08:06:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10553"; a="678797228"
+X-IronPort-AV: E=Sophos;i="5.96,222,1665471600"; 
+   d="scan'208";a="678797228"
+Received: from lkp-server01.sh.intel.com (HELO b3c45e08cbc1) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 06 Dec 2022 08:06:09 -0800
+Received: from kbuild by b3c45e08cbc1 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p2aSP-00012q-0F;
+        Tue, 06 Dec 2022 16:06:09 +0000
+Date:   Wed, 07 Dec 2022 00:06:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 5d562c48a21eeb029a8fd3f18e1b31fd83660474
+Message-ID: <638f686e.w2vVDS/ig/YhejNK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsbD4SWoAmhYFR2qkP1b6JHO3Og0Vyve0=FO-Jb2JGGRfw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 06, 2022 at 02:46:43PM +0800, Hao Sun wrote:
-> Hao Sun <sunhao.th@gmail.com> 于2022年12月6日周二 11:28写道：
-> >
-> > Hi,
-> >
-> > The following crash can be triggered with the BPF prog provided.
-> > It seems the verifier passed some invalid progs. I will try to simplify
-> > the C reproducer, for now, the following can reproduce this:
-> >
-> > HEAD commit: ab0350c743d5 selftests/bpf: Fix conflicts with built-in
-> > functions in bpf_iter_ksym
-> > git tree: bpf-next
-> > console log: https://pastebin.com/raw/87RCSnCs
-> > kernel config: https://pastebin.com/raw/rZdWLcgK
-> > Syz reproducer: https://pastebin.com/raw/4kbwhdEv
-> > C reproducer: https://pastebin.com/raw/GFfDn2Gk
-> >
-> 
-> Simplified C reproducer: https://pastebin.com/raw/aZgLcPvW
-> 
-> Only two syscalls are required to reproduce this, seems it's an issue
-> in XDP test run. Essentially, the reproducer just loads a very simple
-> prog and tests run repeatedly and concurrently:
-> 
-> r0 = bpf$PROG_LOAD(0x5, &(0x7f0000000640)=@base={0x6, 0xb,
-> &(0x7f0000000500)}, 0x80)
-> bpf$BPF_PROG_TEST_RUN(0xa, &(0x7f0000000140)={r0, 0x0, 0x0, 0x0, 0x0,
-> 0x0, 0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0}, 0x48)
-> 
-> Loaded prog:
->    0: (18) r0 = 0x0
->    2: (18) r6 = 0x0
->    4: (18) r7 = 0x0
->    6: (18) r8 = 0x0
->    8: (18) r9 = 0x0
->   10: (95) exit
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 5d562c48a21eeb029a8fd3f18e1b31fd83660474  Add linux-next specific files for 20221206
 
-hi,
-I can reproduce with your config.. it seems related to the
-recent static call change:
-  c86df29d11df bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
+Error/Warning reports:
 
-I can't reproduce when I revert that commit.. Peter, any idea?
+https://lore.kernel.org/oe-kbuild-all/202211231857.0DmUeoa1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202211242120.MzZVGULn-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202211290656.VHeDfThu-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202211301840.y7rROb13-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212020520.0OkMIno3-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212032205.IeHBbyyp-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212060700.NjMecjxS-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061249.U0bAsqZk-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061341.GNALCbX6-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061455.6GE7y0jg-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061633.U9qHpe62-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061758.tlPQNuof-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061918.W5IUPcyA-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212062250.tR0otHcz-lkp@intel.com
 
-thanks,
-jirka
+Error/Warning: (recently discovered and may have been fixed)
 
-> 
-> > wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-> > IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-> > wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-> > wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-> > IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-> > BUG: unable to handle page fault for address: 000000000fe0840f
-> > #PF: supervisor write access in kernel mode
-> > #PF: error_code(0x0002) - not-present page
-> > PGD 2ebe3067 P4D 2ebe3067 PUD 1dd9b067 PMD 0
-> > Oops: 0002 [#1] PREEMPT SMP KASAN
-> > CPU: 0 PID: 7536 Comm: a.out Not tainted
-> > 6.1.0-rc7-01489-gab0350c743d5-dirty #118
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux
-> > 1.16.1-1-1 04/01/2014
-> > RIP: 0010:bpf_dispatcher_xdp+0x24/0x1000
-> > Code: cc cc cc cc cc cc 48 81 fa e8 55 00 a0 0f 8f 63 00 00 00 48 81
-> > fa d8 54 00 a0 7f 2a 48 81 fa 4c 53 00 a0 7f 11 48 81 fa 4c 53 <00> a0
-> > 0f 84 e0 0f 00 00 ff e2 66 90 48 81 fa d8 54 00 a0 0f 84 5b
-> > RSP: 0018:ffffc900029df908 EFLAGS: 00010246
-> > RAX: 0000000000000000 RBX: ffffc900028b9000 RCX: 0000000000000000
-> > RDX: ffffffffa000534c RSI: ffffc900028b9048 RDI: ffffc900029dfb70
-> > RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> > R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
-> > R13: 0000000000000001 R14: ffffc900028b9030 R15: ffffc900029dfb50
-> > FS:  00007ff249efc700(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 000000000fe0840f CR3: 000000002e0ba000 CR4: 0000000000750ef0
-> > PKRU: 55555554
-> > Call Trace:
-> >  <TASK>
-> >  ? __bpf_prog_run include/linux/filter.h:600 [inline]
-> >  ? bpf_prog_run_xdp include/linux/filter.h:775 [inline]
-> >  ? bpf_test_run+0x2ce/0x990 net/bpf/test_run.c:400
-> >  ? bpf_test_timer_continue+0x3d0/0x3d0 net/bpf/test_run.c:79
-> >  ? bpf_dispatcher_xdp+0x800/0x1000
-> >  ? bpf_dispatcher_xdp+0x800/0x1000
-> >  ? bpf_dispatcher_xdp+0x800/0x1000
-> >  ? _copy_from_user+0x5f/0x180 lib/usercopy.c:21
-> >  ? bpf_test_init.isra.0+0x111/0x150 net/bpf/test_run.c:772
-> >  ? bpf_prog_test_run_xdp+0xbde/0x1400 net/bpf/test_run.c:1389
-> >  ? bpf_prog_test_run_skb+0x1dd0/0x1dd0 include/linux/skbuff.h:2594
-> >  ? rcu_lock_release include/linux/rcupdate.h:321 [inline]
-> >  ? rcu_read_unlock include/linux/rcupdate.h:783 [inline]
-> >  ? __fget_files+0x283/0x3e0 fs/file.c:914
-> >  ? fput+0x30/0x1a0 fs/file_table.c:371
-> >  ? ____bpf_prog_get kernel/bpf/syscall.c:2206 [inline]
-> >  ? __bpf_prog_get+0x9a/0x2e0 kernel/bpf/syscall.c:2270
-> >  ? bpf_prog_test_run_skb+0x1dd0/0x1dd0 include/linux/skbuff.h:2594
-> >  ? bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
-> >  ? __sys_bpf+0x1293/0x5840 kernel/bpf/syscall.c:4997
-> >  ? futex_wait_setup+0x230/0x230 kernel/futex/waitwake.c:625
-> >  ? bpf_perf_link_attach+0x520/0x520 kernel/bpf/syscall.c:2720
-> >  ? instrument_atomic_read include/linux/instrumented.h:72 [inline]
-> >  ? atomic_read include/linux/atomic/atomic-instrumented.h:27 [inline]
-> >  ? queued_spin_is_locked include/asm-generic/qspinlock.h:57 [inline]
-> >  ? debug_spin_unlock kernel/locking/spinlock_debug.c:100 [inline]
-> >  ? do_raw_spin_unlock+0x53/0x230 kernel/locking/spinlock_debug.c:140
-> >  ? futex_wake+0x15b/0x4a0 kernel/futex/waitwake.c:161
-> >  ? do_futex+0x130/0x350 kernel/futex/syscalls.c:122
-> >  ? __ia32_sys_get_robust_list+0x3b0/0x3b0 kernel/futex/syscalls.c:72
-> >  ? __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
-> >  ? __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
-> >  ? __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5081
-> >  ? syscall_enter_from_user_mode+0x26/0xb0 kernel/entry/common.c:111
-> >  ? do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  ? do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-> >  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >  </TASK>
-> > Modules linked in:
-> > Dumping ftrace buffer:
-> >    (ftrace buffer empty)
-> > CR2: 000000000fe0840f
-> > ---[ end trace 0000000000000000 ]---
-> > RIP: 0010:bpf_dispatcher_xdp+0x24/0x1000
-> > Code: cc cc cc cc cc cc 48 81 fa e8 55 00 a0 0f 8f 63 00 00 00 48 81
-> > fa d8 54 00 a0 7f 2a 48 81 fa 4c 53 00 a0 7f 11 48 81 fa 4c 53 <00> a0
-> > 0f 84 e0 0f 00 00 ff e2 66 90 48 81 fa d8 54 00 a0 0f 84 5b
-> > RSP: 0018:ffffc900029df908 EFLAGS: 00010246
-> > RAX: 0000000000000000 RBX: ffffc900028b9000 RCX: 0000000000000000
-> > RDX: ffffffffa000534c RSI: ffffc900028b9048 RDI: ffffc900029dfb70
-> > RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> > R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
-> > R13: 0000000000000001 R14: ffffc900028b9030 R15: ffffc900029dfb50
-> > FS:  00007ff249efc700(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 000000000fe0840f CR3: 000000002e0ba000 CR4: 0000000000750ef0
-> > PKRU: 55555554
+Error: failed to load BTF from vmlinux: No such file or directory
+arch/loongarch/kernel/asm-offsets.c:262:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
+arch/loongarch/power/hibernate.c:14:6: warning: no previous prototype for 'save_processor_state' [-Wmissing-prototypes]
+arch/loongarch/power/hibernate.c:26:6: warning: no previous prototype for 'restore_processor_state' [-Wmissing-prototypes]
+arch/loongarch/power/hibernate.c:38:5: warning: no previous prototype for 'pfn_is_nosave' [-Wmissing-prototypes]
+arch/loongarch/power/hibernate.c:48:5: warning: no previous prototype for 'swsusp_arch_suspend' [-Wmissing-prototypes]
+arch/loongarch/power/hibernate.c:56:5: warning: no previous prototype for 'swsusp_arch_resume' [-Wmissing-prototypes]
+arch/powerpc/kernel/kvm_emul.o: warning: objtool: kvm_template_end(): can't find starting instruction
+arch/powerpc/kernel/optprobes_head.o: warning: objtool: optprobe_template_end(): can't find starting instruction
+arch/riscv/kernel/crash_core.c:12:57: warning: format specifies type 'unsigned long' but the argument has type 'int' [-Wformat]
+arch/riscv/kernel/crash_core.c:14:57: error: use of undeclared identifier 'VMEMMAP_START'
+arch/riscv/kernel/crash_core.c:15:55: error: use of undeclared identifier 'VMEMMAP_END'; did you mean 'MEMREMAP_ENC'?
+arch/riscv/kernel/crash_core.c:17:57: error: use of undeclared identifier 'MODULES_VADDR'
+arch/riscv/kernel/crash_core.c:18:55: error: use of undeclared identifier 'MODULES_END'
+arch/riscv/kernel/crash_core.c:8:20: error: use of undeclared identifier 'VA_BITS'
+clang-16: error: no such file or directory: 'liburandom_read.so'
+drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:40:20: warning: no previous prototype for 'to_dal_irq_source_dcn201' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c:353:5: warning: no previous prototype for 'amdgpu_mcbp_scan' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c:373:5: warning: no previous prototype for 'amdgpu_mcbp_trigger_preempt' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/fifo/gf100.c:451:1: warning: no previous prototype for 'gf100_fifo_nonstall_block' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/fifo/gf100.c:451:1: warning: no previous prototype for function 'gf100_fifo_nonstall_block' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/fifo/runl.c:34:1: warning: no previous prototype for 'nvkm_engn_cgrp_get' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/fifo/runl.c:34:1: warning: no previous prototype for function 'nvkm_engn_cgrp_get' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c:210:1: warning: no previous prototype for 'tu102_gr_load' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c:210:1: warning: no previous prototype for function 'tu102_gr_load' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/nvfw/acr.c:49:1: warning: no previous prototype for 'wpr_generic_header_dump' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/nvfw/acr.c:49:1: warning: no previous prototype for function 'wpr_generic_header_dump' [-Wmissing-prototypes]
+drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:21: warning: variable 'loc' set but not used [-Wunused-but-set-variable]
+drivers/media/i2c/tc358746.c:816:13: warning: 'm_best' is used uninitialized [-Wuninitialized]
+drivers/media/i2c/tc358746.c:817:13: warning: 'p_best' is used uninitialized [-Wuninitialized]
+drivers/media/platform/renesas/rzg2l-cru/rzg2l-csi2.c:445:7: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+drivers/mmc/host/sdhci-brcmstb.c:182:34: warning: unused variable 'sdhci_brcm_of_match' [-Wunused-const-variable]
+drivers/regulator/tps65219-regulator.c:310:32: warning: parameter 'dev' set but not used [-Wunused-but-set-parameter]
+drivers/regulator/tps65219-regulator.c:310:60: warning: parameter 'dev' set but not used [-Wunused-but-set-parameter]
+drivers/regulator/tps65219-regulator.c:370:26: warning: ordered comparison of pointer with integer zero [-Wextra]
+error: unable to open output file 'kselftest/net/bpf/nat6to4.o': 'No such file or directory'
+fs/btrfs/btrfs.o: warning: objtool: __btrfs_map_block+0x1c67: unreachable instruction
+hugetlb-madvise.c:20: warning: "__USE_GNU" redefined
+kismet: WARNING: unmet direct dependencies detected for MUX_MMIO when selected by PHY_AM654_SERDES
+kismet: WARNING: unmet direct dependencies detected for MUX_MMIO when selected by SPI_DW_BT1
+ld.lld: error: .btf.vmlinux.bin.o: unknown file type
+make[4]: *** No rule to make target 'scripts/module.lds', needed by 'tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko'.
+mount_setattr_test.c:107:8: error: redefinition of 'struct mount_attr'
+pahole: .tmp_vmlinux.btf: No such file or directory
+thermal_nl.h:6:10: fatal error: netlink/netlink.h: No such file or directory
+thermometer.c:21:10: fatal error: libconfig.h: No such file or directory
+tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:131:14: warning: no previous prototype for 'bpf_testmod_fentry_test1' [-Wmissing-prototypes]
+tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:136:14: warning: no previous prototype for 'bpf_testmod_fentry_test2' [-Wmissing-prototypes]
+tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:141:14: warning: no previous prototype for 'bpf_testmod_fentry_test3' [-Wmissing-prototypes]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
+|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- alpha-randconfig-r002-20221205
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
+|-- alpha-randconfig-r003-20221204
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
+|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
+|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arc-randconfig-r036-20221204
+|   |-- drivers-media-i2c-tc358746.c:warning:m_best-is-used-uninitialized
+|   `-- drivers-media-i2c-tc358746.c:warning:p_best-is-used-uninitialized
+|-- arc-randconfig-r043-20221204
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
+|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+clang_recent_errors
+|-- arm-randconfig-r046-20221205
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-function-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-function-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-function-tu102_gr_load
+|   `-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-function-wpr_generic_header_dump
+|-- arm64-randconfig-r016-20221206
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-function-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-function-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-function-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-function-wpr_generic_header_dump
+|   `-- drivers-media-platform-renesas-rzg2l-cru-rzg2l-csi2.c:warning:variable-ret-is-used-uninitialized-whenever-if-condition-is-true
+|-- arm64-randconfig-r032-20221205
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-function-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-function-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-function-tu102_gr_load
+|   `-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-function-wpr_generic_header_dump
+|-- hexagon-randconfig-r015-20221206
+|   `-- drivers-mmc-host-sdhci-brcmstb.c:warning:unused-variable-sdhci_brcm_of_match
+|-- hexagon-randconfig-r041-20221204
+|   |-- ld.lld:error:.btf.vmlinux.bin.o:unknown-file-type
+|   `-- pahole:.tmp_vmlinux.btf:No-such-file-or-directory
+|-- powerpc-randconfig-r014-20221206
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-function-gf100_fifo_nonstall_block
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-function-nvkm_engn_cgrp_get
+|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-function-tu102_gr_load
+|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-function-wpr_generic_header_dump
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+`-- riscv-randconfig-r014-20221206
+    |-- arch-riscv-kernel-crash_core.c:error:use-of-undeclared-identifier-MODULES_END
+    |-- arch-riscv-kernel-crash_core.c:error:use-of-undeclared-identifier-MODULES_VADDR
+    |-- arch-riscv-kernel-crash_core.c:error:use-of-undeclared-identifier-VA_BITS
+    |-- arch-riscv-kernel-crash_core.c:error:use-of-undeclared-identifier-VMEMMAP_END
+    |-- arch-riscv-kernel-crash_core.c:error:use-of-undeclared-identifier-VMEMMAP_START
+    `-- arch-riscv-kernel-crash_core.c:warning:format-specifies-type-unsigned-long-but-the-argument-has-type-int
+
+elapsed time: 723m
+
+configs tested: 65
+configs skipped: 3
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+arc                                 defconfig
+i386                                defconfig
+alpha                               defconfig
+x86_64                              defconfig
+sh                               allmodconfig
+arm                                 defconfig
+powerpc                          allmodconfig
+x86_64                               rhel-8.3
+x86_64               randconfig-a011-20221205
+mips                             allyesconfig
+x86_64               randconfig-a012-20221205
+x86_64               randconfig-a014-20221205
+x86_64               randconfig-a013-20221205
+x86_64               randconfig-a015-20221205
+s390                                defconfig
+x86_64                           allyesconfig
+s390                             allmodconfig
+x86_64               randconfig-a016-20221205
+ia64                             allmodconfig
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+arm64                            allyesconfig
+x86_64                           rhel-8.3-kvm
+m68k                             allmodconfig
+arm                              allyesconfig
+arc                              allyesconfig
+s390                             allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+alpha                            allyesconfig
+i386                 randconfig-a014-20221205
+m68k                             allyesconfig
+i386                 randconfig-a013-20221205
+i386                 randconfig-a016-20221205
+i386                 randconfig-a012-20221205
+arc                  randconfig-r043-20221205
+i386                             allyesconfig
+arm                  randconfig-r046-20221204
+i386                 randconfig-a015-20221205
+i386                 randconfig-a011-20221205
+s390                 randconfig-r044-20221205
+arc                  randconfig-r043-20221204
+riscv                randconfig-r042-20221205
+
+clang tested configs:
+x86_64               randconfig-a003-20221205
+x86_64               randconfig-a001-20221205
+x86_64               randconfig-a002-20221205
+i386                 randconfig-a001-20221205
+x86_64               randconfig-a004-20221205
+i386                 randconfig-a002-20221205
+i386                 randconfig-a005-20221205
+x86_64               randconfig-a006-20221205
+i386                 randconfig-a004-20221205
+i386                 randconfig-a003-20221205
+x86_64               randconfig-a005-20221205
+i386                 randconfig-a006-20221205
+hexagon              randconfig-r041-20221204
+s390                 randconfig-r044-20221204
+hexagon              randconfig-r045-20221204
+hexagon              randconfig-r045-20221205
+arm                  randconfig-r046-20221205
+hexagon              randconfig-r041-20221205
+riscv                randconfig-r042-20221204
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
