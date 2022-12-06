@@ -2,176 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA7B643BE1
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 04:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF452643BEE
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 04:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbiLFD2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Dec 2022 22:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S232841AbiLFDh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Dec 2022 22:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbiLFD2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Dec 2022 22:28:16 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F5A24F36;
-        Mon,  5 Dec 2022 19:28:15 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id q17-20020a17090aa01100b002194cba32e9so16809564pjp.1;
-        Mon, 05 Dec 2022 19:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tSFBXsQz5kt69BB2/66rOZd+Kc+U9V6VbB9yZ0q0uPw=;
-        b=fHhdCfxAz89x6uZ9ORXRFD5LBzYQKNiWpIGLL4/A1a1ClBbLGs/q0kSlbhpziQl82N
-         gCSvKtIrBxqt6VrYbW6PpBahkUehWugn1qpNIczVgCcQK4soCPiCwPKey280gZEm1Uad
-         iknAC5TAVJZlQyhaCpU3Z1NBJ6dGGMTpHgIbCnkQqDr28XOjfiJLkzvU1xE2zh2MadPD
-         1qdM83CedGsvd6iidYsCnxtomQVVInYD5nb3XIuu+CIBmwOpxs0GJdFatK9009d//Thd
-         VDak0DGsMmXYwD2agD5Y1ixtQvvAWbF4KJgPp3E0HkLJ6ExYxmaco2pQ/GvO4ZPI/3mQ
-         Ha9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tSFBXsQz5kt69BB2/66rOZd+Kc+U9V6VbB9yZ0q0uPw=;
-        b=T2JPwPOJ6GaIw0yv2fCtAQceKsani019E8q4fmrg+rHh+72D/q9xuu1U3ndylyfS2z
-         +cUO6Ar0qgw3bFxhaIdcSF28oezD/lW36Kd7YQw5SJwPsb/ioNLyC2f9segb3DXud7xk
-         1ro6L+zF+htgg24ryZW5n4aHmo3v3t6RlsUsUcbvZN2gMGezBOjxhDTeYrQQftpsAz0x
-         eTDiXF0FtkIilpbhDydrA/W9BVdyfeBZh2jYiJjBz16ujKofW5YIa2AjXmb6Ch5mCAAn
-         ZZHF02v0Q2E5i+T9edwGP5EnutPHFzjHVOm+1/9QEHRyel/pkRavmJZkaLhK6GbbMppk
-         d0tA==
-X-Gm-Message-State: ANoB5pkKFu2WG48GUUY+7dKL7jCeO8jBGg7/qHfqMry3rT2LDbvpO9If
-        P4D2ylnYJk/tCz52ol/CVg97wwdxl49hsDqfGNHq6m/IRA==
-X-Google-Smtp-Source: AA0mqf5wt9lTBk/Odwy+o9i6yDxX4NyK7Vx8uFEOvTbZ3nAnIK0tz2YBJ3NkjWe/QE3peABZdMdeZTuE46395iAqVYc=
-X-Received: by 2002:a17:902:bb10:b0:189:6292:827e with SMTP id
- im16-20020a170902bb1000b001896292827emr55812042plb.97.1670297294708; Mon, 05
- Dec 2022 19:28:14 -0800 (PST)
+        with ESMTP id S230036AbiLFDhz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Dec 2022 22:37:55 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E45D1CB1B;
+        Mon,  5 Dec 2022 19:37:53 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NR5hq3Tbxz4f3p0S;
+        Tue,  6 Dec 2022 11:37:47 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+        by APP4 (Coremail) with SMTP id gCh0CgDX+tcNuY5jyn7xBg--.3634S2;
+        Tue, 06 Dec 2022 11:37:50 +0800 (CST)
+Message-ID: <0ade59ea-6863-4d68-607c-22e4b9405a0d@huaweicloud.com>
+Date:   Tue, 6 Dec 2022 11:37:49 +0800
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 6 Dec 2022 11:28:03 +0800
-Message-ID: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
-Subject: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-To:     bpf <bpf@vger.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf v2] riscv, bpf: Emit fixed-length instructions for
+ BPF_PSEUDO_FUNC
+Content-Language: en-US
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>
+References: <20221202094837.3872444-1-pulehui@huaweicloud.com>
+ <87y1rq848x.fsf@all.your.base.are.belong.to.us>
+From:   Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87y1rq848x.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDX+tcNuY5jyn7xBg--.3634S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw15ZF4ftw15Zw17WrW3ZFb_yoW5WF48pr
+        W5KFy3CayvqrnrGF12yr4jvr1aqF4vqayxKr1UK34Yk3W2gF4IkF1DG390k3Z5ZFW8Gw13
+        JF4j9rsxCa4DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-The following crash can be triggered with the BPF prog provided.
-It seems the verifier passed some invalid progs. I will try to simplify
-the C reproducer, for now, the following can reproduce this:
 
-HEAD commit: ab0350c743d5 selftests/bpf: Fix conflicts with built-in
-functions in bpf_iter_ksym
-git tree: bpf-next
-console log: https://pastebin.com/raw/87RCSnCs
-kernel config: https://pastebin.com/raw/rZdWLcgK
-Syz reproducer: https://pastebin.com/raw/4kbwhdEv
-C reproducer: https://pastebin.com/raw/GFfDn2Gk
+On 2022/12/2 18:54, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
+> 
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> For BPF_PSEUDO_FUNC instruction, verifier will refill imm with
+>> correct addresses of bpf_calls and then run last pass of JIT.
+>> Since the emit_imm of RV64 is variable-length, which will emit
+>> appropriate length instructions accorroding to the imm, it may
+>> broke ctx->offset, and lead to unpredictable problem, such as
+>> inaccurate jump. So let's fix it with fixed-length instructions.
+>>
+>> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> Suggested-by: Björn Töpel <bjorn@rivosinc.com>
+>> ---
+>>   arch/riscv/net/bpf_jit_comp64.c | 20 +++++++++++++++++++-
+>>   1 file changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+>> index eb99df41fa33..9723f34f7a06 100644
+>> --- a/arch/riscv/net/bpf_jit_comp64.c
+>> +++ b/arch/riscv/net/bpf_jit_comp64.c
+>> @@ -139,6 +139,19 @@ static bool in_auipc_jalr_range(s64 val)
+>>   		val < ((1L << 31) - (1L << 11));
+>>   }
+>>   
+>> +/* Emit fixed-length instructions for address */
+>> +static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
+>> +{
+>> +	u64 ip = (u64)(ctx->insns + ctx->ninsns);
+>> +	s64 off = addr - ip;
+>> +	s64 upper = (off + (1 << 11)) >> 12;
+>> +	s64 lower = ((off & 0xfff) << 52) >> 52;
+>> +
+>> +	emit(rv_auipc(rd, upper), ctx);
+>> +	emit(rv_addi(rd, rd, lower), ctx);
+>> +}
+> 
+> Nice! Two instructions are better than 6! :-)
+> 
+> One final thing. Please add a sanity check, that the range is correct,
+> e.g.:
+> 
+>    if (!(addr && in_auipc_addi_range(off)))
+>       return -1;
+> 
 
-wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-BUG: unable to handle page fault for address: 000000000fe0840f
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0002) - not-present page
-PGD 2ebe3067 P4D 2ebe3067 PUD 1dd9b067 PMD 0
-Oops: 0002 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 7536 Comm: a.out Not tainted
-6.1.0-rc7-01489-gab0350c743d5-dirty #118
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux
-1.16.1-1-1 04/01/2014
-RIP: 0010:bpf_dispatcher_xdp+0x24/0x1000
-Code: cc cc cc cc cc cc 48 81 fa e8 55 00 a0 0f 8f 63 00 00 00 48 81
-fa d8 54 00 a0 7f 2a 48 81 fa 4c 53 00 a0 7f 11 48 81 fa 4c 53 <00> a0
-0f 84 e0 0f 00 00 ff e2 66 90 48 81 fa d8 54 00 a0 0f 84 5b
-RSP: 0018:ffffc900029df908 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffffc900028b9000 RCX: 0000000000000000
-RDX: ffffffffa000534c RSI: ffffc900028b9048 RDI: ffffc900029dfb70
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000001 R14: ffffc900028b9030 R15: ffffc900029dfb50
-FS:  00007ff249efc700(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000fe0840f CR3: 000000002e0ba000 CR4: 0000000000750ef0
-PKRU: 55555554
-Call Trace:
- <TASK>
- ? __bpf_prog_run include/linux/filter.h:600 [inline]
- ? bpf_prog_run_xdp include/linux/filter.h:775 [inline]
- ? bpf_test_run+0x2ce/0x990 net/bpf/test_run.c:400
- ? bpf_test_timer_continue+0x3d0/0x3d0 net/bpf/test_run.c:79
- ? bpf_dispatcher_xdp+0x800/0x1000
- ? bpf_dispatcher_xdp+0x800/0x1000
- ? bpf_dispatcher_xdp+0x800/0x1000
- ? _copy_from_user+0x5f/0x180 lib/usercopy.c:21
- ? bpf_test_init.isra.0+0x111/0x150 net/bpf/test_run.c:772
- ? bpf_prog_test_run_xdp+0xbde/0x1400 net/bpf/test_run.c:1389
- ? bpf_prog_test_run_skb+0x1dd0/0x1dd0 include/linux/skbuff.h:2594
- ? rcu_lock_release include/linux/rcupdate.h:321 [inline]
- ? rcu_read_unlock include/linux/rcupdate.h:783 [inline]
- ? __fget_files+0x283/0x3e0 fs/file.c:914
- ? fput+0x30/0x1a0 fs/file_table.c:371
- ? ____bpf_prog_get kernel/bpf/syscall.c:2206 [inline]
- ? __bpf_prog_get+0x9a/0x2e0 kernel/bpf/syscall.c:2270
- ? bpf_prog_test_run_skb+0x1dd0/0x1dd0 include/linux/skbuff.h:2594
- ? bpf_prog_test_run kernel/bpf/syscall.c:3644 [inline]
- ? __sys_bpf+0x1293/0x5840 kernel/bpf/syscall.c:4997
- ? futex_wait_setup+0x230/0x230 kernel/futex/waitwake.c:625
- ? bpf_perf_link_attach+0x520/0x520 kernel/bpf/syscall.c:2720
- ? instrument_atomic_read include/linux/instrumented.h:72 [inline]
- ? atomic_read include/linux/atomic/atomic-instrumented.h:27 [inline]
- ? queued_spin_is_locked include/asm-generic/qspinlock.h:57 [inline]
- ? debug_spin_unlock kernel/locking/spinlock_debug.c:100 [inline]
- ? do_raw_spin_unlock+0x53/0x230 kernel/locking/spinlock_debug.c:140
- ? futex_wake+0x15b/0x4a0 kernel/futex/waitwake.c:161
- ? do_futex+0x130/0x350 kernel/futex/syscalls.c:122
- ? __ia32_sys_get_robust_list+0x3b0/0x3b0 kernel/futex/syscalls.c:72
- ? __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
- ? __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
- ? __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5081
- ? syscall_enter_from_user_mode+0x26/0xb0 kernel/entry/common.c:111
- ? do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- ? do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
- </TASK>
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: 000000000fe0840f
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_dispatcher_xdp+0x24/0x1000
-Code: cc cc cc cc cc cc 48 81 fa e8 55 00 a0 0f 8f 63 00 00 00 48 81
-fa d8 54 00 a0 7f 2a 48 81 fa 4c 53 00 a0 7f 11 48 81 fa 4c 53 <00> a0
-0f 84 e0 0f 00 00 ff e2 66 90 48 81 fa d8 54 00 a0 0f 84 5b
-RSP: 0018:ffffc900029df908 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffffc900028b9000 RCX: 0000000000000000
-RDX: ffffffffa000534c RSI: ffffc900028b9048 RDI: ffffc900029dfb70
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000001 R14: ffffc900028b9030 R15: ffffc900029dfb50
-FS:  00007ff249efc700(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000fe0840f CR3: 000000002e0ba000 CR4: 0000000000750ef0
-PKRU: 55555554
+Hi Björn,
+
+Sorry for replying so late. For BPF_PSEUDO_FUNC instruction, verifier 
+will set insn[0].imm and insn[1].imm to 1 that make addr to 0x100000001 
+before extra pass, and also ctx->insns is NULL in iteration stage, all 
+of these make off out of range of AUIPC-ADDI range, and return failed. 
+We could add some special handling at different stages, but that seems a 
+little weird. By the way, I do not really like emit_addr function with 
+return value.
+
+While a proper address is at least 2B alignment, and the valid address 
+is from 0xffffffff00000000 to 0xffffffffffffffff, we can make address 
+shifed 1 place to right, and addr >> 1 will always in the range of 
+AUIPC-ADDI range. We can get rid of the range detection. The 
+implementation is as follows:
+
+static void emit_addr(u8 rd, u64 addr, struct rv_jit_context *ctx)
+{
+          s64 imm = addr >> 1;
+          s64 upper = (imm + (1 << 11)) >> 12;
+          s64 lower = imm & 0xfff;
+
+          emit(rv_lui(rd, upper), ctx);
+          emit(rv_addi(rd, rd, lower), ctx);
+          emit(rv_slli(rd, rd, 1), ctx);
+}
+
+What do you think?
+
+Regards,
+Lehui
+
+> Have a look at emit_jump_and_link().
+> 
+> 
+> Thanks!
+> Björn
+
