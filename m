@@ -2,114 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682B86443C9
-	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 14:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B27644478
+	for <lists+bpf@lfdr.de>; Tue,  6 Dec 2022 14:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbiLFNAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 08:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        id S233977AbiLFNWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 08:22:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235099AbiLFNAL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 08:00:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333582B62C;
-        Tue,  6 Dec 2022 04:59:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C392B616F9;
-        Tue,  6 Dec 2022 12:59:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF22C433C1;
-        Tue,  6 Dec 2022 12:59:45 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="WzIqeR0x"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1670331584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZNUzYjUW6V3f6PQmilZnZflLBsJyR+1UzQ8srN624zM=;
-        b=WzIqeR0x3SP/rDucMSwPkfclZ+IrtFSGEkcT7IYMUQLS/dJnTsPjU9cSqXp4SdHjy5+vZe
-        PJm3aZGqMl1btR//EPVqf972fnDpKyJOzEntU8Cg+sHrNHUeYzTJwoygLJW+iS8zzf/yAq
-        MxKEEv9+aNgGU0mB2/Z87gKmO72+QmI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 948cecd0 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 6 Dec 2022 12:59:43 +0000 (UTC)
-Received: by mail-yb1-f178.google.com with SMTP id 189so18439769ybe.8;
-        Tue, 06 Dec 2022 04:59:43 -0800 (PST)
-X-Gm-Message-State: ANoB5pnAzmcEJdODEEfYf2+Ud8Krrm2GQB98ClEN9wrslKR4ApFbGvTm
-        MyoZZcPsDQqV8Wsib97BtfU+S19NxcuBgcVelbw=
-X-Google-Smtp-Source: AA0mqf5PgdyHvYKtmLmiy3GxoC+5azt9FTkeTfLeiK3M263s02W0opjgv+CiZzTuRFuYZS931Vca8NSiF6HxoBwggVs=
-X-Received: by 2002:a25:d4f:0:b0:703:8a9c:fd with SMTP id 76-20020a250d4f000000b007038a9c00fdmr1846744ybn.231.1670331582891;
- Tue, 06 Dec 2022 04:59:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20221205181534.612702-1-Jason@zx2c4.com> <730fd355-ad86-a8fa-6583-df23d39e0c23@iogearbox.net>
- <Y451ENAK7BQQDJc/@zx2c4.com> <87lenku265.fsf@toke.dk>
-In-Reply-To: <87lenku265.fsf@toke.dk>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 6 Dec 2022 13:59:31 +0100
-X-Gmail-Original-Message-ID: <CAHmME9poicgpHhXJ1ieWbDTFBu=ApSFaQKShhHezDmA0A5ajKQ@mail.gmail.com>
-Message-ID: <CAHmME9poicgpHhXJ1ieWbDTFBu=ApSFaQKShhHezDmA0A5ajKQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: call get_random_u32() for random integers
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
+        with ESMTP id S231168AbiLFNWW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 08:22:22 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9133AEB8;
+        Tue,  6 Dec 2022 05:22:20 -0800 (PST)
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B6Bxcim024328;
+        Tue, 6 Dec 2022 13:22:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=ebCnlux+96ksM5zPKoRnRob4fbCGJZT59f1yr9KTJIY=;
+ b=coD+XsnSRKBv/y5toP9LJWpqJjyNkcXmxbrKmb0xCYGXlCCO4eneSkTtNYPbsdp0yKOr
+ sNFgcmbHrawzttE27XP00iyX7DdjmjALkb4fBylk1mTnE43PIWWHvkWTYtId+puMm+bW
+ TMo93O4VeSn3Py9bUsrkkP+LSRITxLpN/VB/BAAnLh7E7x25UGfbGwegS6DWgZ2Owk3D
+ oBcJOtgjsv2nsRpUh1k+s1PZK+bXmGx2bfdfzsG+Y4iD0Js54GZ+3lljIciUW40xRqwu
+ 2PmY+eCriZhM4iR9G9CHLE8I0+npzlXyb46xblnKfTyp/l/oKvE0tIMTfVWeDv/ybLwZ +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ma59bt63p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Dec 2022 13:22:00 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2B6CqF99008000;
+        Tue, 6 Dec 2022 13:22:00 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ma59bt62r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Dec 2022 13:21:59 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2B5K5aDY003030;
+        Tue, 6 Dec 2022 13:21:57 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma04fra.de.ibm.com (PPS) with ESMTPS id 3m9kur128b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Dec 2022 13:21:57 +0000
+Received: from d06av26.portsmouth.uk.ibm.com ([9.149.105.62])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2B6DLtoh23790282
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Dec 2022 13:21:55 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C4E6AE04D;
+        Tue,  6 Dec 2022 13:21:55 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9015AE045;
+        Tue,  6 Dec 2022 13:21:54 +0000 (GMT)
+Received: from [9.171.16.157] (unknown [9.171.16.157])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Dec 2022 13:21:54 +0000 (GMT)
+Message-ID: <3b77aa12a864ab2db081e99aec1bfad78e3b9b51.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf] bpf: Proper R0 zero-extension for BPF_CALL
+ instructions
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Brendan Jackman <jackmanb@google.com>
+Date:   Tue, 06 Dec 2022 14:21:54 +0100
+In-Reply-To: <20221202103620.1915679-1-bjorn@kernel.org>
+References: <20221202103620.1915679-1-bjorn@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.1 (3.46.1-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nHeNlSXTIcfStJ5JmGK2XIjWsAqfL1AO
+X-Proofpoint-ORIG-GUID: wGUpdwcrUBBAL4FoXea0jfhBDAxouiox
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-06_09,2022-12-06_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 malwarescore=0 mlxscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=881 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2210170000 definitions=main-2212060107
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Toke,
+On Fri, 2022-12-02 at 11:36 +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>=20
+> A BPF call instruction can be, correctly, marked with zext_dst set to
+> true. An example of this can be found in the BPF selftests
+> progs/bpf_cubic.c:
+>=20
+> =C2=A0 ...
+> =C2=A0 extern __u32 tcp_reno_undo_cwnd(struct sock *sk) __ksym;
+>=20
+> =C2=A0 __u32 BPF_STRUCT_OPS(bpf_cubic_undo_cwnd, struct sock *sk)
+> =C2=A0 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return tcp_reno_un=
+do_cwnd(sk);
+> =C2=A0 }
+> =C2=A0 ...
+>=20
+> which compiles to:
+> =C2=A0 0:=C2=A0 r1 =3D *(u64 *)(r1 + 0x0)
+> =C2=A0 1:=C2=A0 call -0x1
+> =C2=A0 2:=C2=A0 exit
+>=20
+> The call will be marked as zext_dst set to true, and for some
+> backends
+> (bpf_jit_needs_zext() returns true) expanded to:
+> =C2=A0 0:=C2=A0 r1 =3D *(u64 *)(r1 + 0x0)
+> =C2=A0 1:=C2=A0 call -0x1
+> =C2=A0 2:=C2=A0 w0 =3D w0
+> =C2=A0 3:=C2=A0 exit
 
-On Tue, Dec 6, 2022 at 1:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@kerne=
-l.org> wrote:
->
-> "Jason A. Donenfeld" <Jason@zx2c4.com> writes:
->
-> > On Mon, Dec 05, 2022 at 11:21:51PM +0100, Daniel Borkmann wrote:
-> >> On 12/5/22 7:15 PM, Jason A. Donenfeld wrote:
-> >> > Since BPF's bpf_user_rnd_u32() was introduced, there have been three
-> >> > significant developments in the RNG: 1) get_random_u32() returns the
-> >> > same types of bytes as /dev/urandom, eliminating the distinction bet=
-ween
-> >> > "kernel random bytes" and "userspace random bytes", 2) get_random_u3=
-2()
-> >> > operates mostly locklessly over percpu state, 3) get_random_u32() ha=
-s
-> >> > become quite fast.
-> >>
-> >> Wrt "quite fast", do you have a comparison between the two? Asking as =
-its
-> >> often used in networking worst case on per packet basis (e.g. via XDP)=
-, would
-> >> be useful to state concrete numbers for the two on a given machine.
-> >
-> > Median of 25 cycles vs median of 38, on my Tiger Lake machine. So a
-> > little slower, but too small of a difference to matter.
->
-> Assuming a 3Ghz CPU clock (so 3 cycles per nanosecond), that's an
-> additional overhead of ~4.3 ns. When processing 10 Gbps at line rate
-> with small packets, the per-packet processing budget is 67.2 ns, so
-> those extra 4.3 ns will eat up ~6.4% of the budget.
->
-> So in other words, "too small a difference to matter" is definitely not
-> true in general. It really depends on the use case; if someone is using
-> this to, say, draw per-packet random numbers to compute a drop frequency
-> on ingress, that extra processing time will most likely result in a
-> quite measurable drop in performance.
+In the verifier, the marking is done by check_kfunc_call() (added in
+e6ac2450d6de), right? So the problem occurs only for kfuncs?
 
-Huh, neat calculation, I'll keep that method in mind.
+        /* Check return type */
+        t =3D btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
 
-Alright, sorry for the noise here. I'll check back in if I ever manage
-to eliminate that performance gap.
+        ...
 
-Jason
+        if (btf_type_is_scalar(t)) {
+                mark_reg_unknown(env, regs, BPF_REG_0);
+                mark_btf_func_reg_size(env, BPF_REG_0, t->size);
+
+I tried to find some official information whether the eBPF calling
+convention requires sign- or zero- extending return values and
+arguments, but unfortunately [1] doesn't mention this.
+
+LLVM's lib/Target/BPF/BPFCallingConv.td mentions both R* and W*
+registers, but since assigning to W* leads to zero-extension, it seems
+to me that this is the case.
+
+If the above is correct, then shouldn't we rather use sizeof(void *) in
+the mark_btf_func_reg_size() call above?
+
+> The opt_subreg_zext_lo32_rnd_hi32() function which is responsible for
+> the zext patching, relies on insn_def_regno() to fetch the register
+> to
+> zero-extend. However, this function does not handle call instructions
+> correctly, and opt_subreg_zext_lo32_rnd_hi32() fails the
+> verification.
+>=20
+> Make sure that R0 is correctly resolved for (BPF_JMP | BPF_CALL)
+> instructions.
+>=20
+> Fixes: 83a2881903f3 ("bpf: Account for BPF_FETCH in
+> insn_has_def32()")
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> ---
+> I'm not super happy about the additional special case -- first
+> cmpxchg, and now call. :-( A more elegant/generic solution is
+> welcome!
+> ---
+> =C2=A0kernel/bpf/verifier.c | 3 +++
+> =C2=A01 file changed, 3 insertions(+)
+>=20
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 264b3dc714cc..4f9660eafc72 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13386,6 +13386,9 @@ static int
+> opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if (!bpf_jit_needs_zext() && !is_cmpxchg_insn(&insn=
+))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0con=
+tinue;
+> =C2=A0
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0if (insn.code =3D=3D (BPF_JMP | BPF_CALL))
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0load_reg =
+=3D BPF_REG_0;
+> +
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if (WARN_ON(load_reg =3D=3D -1)) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ver=
+bose(env, "verifier bug. zext_dst is set,
+> but no reg is defined\n");
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret=
+urn -EFAULT;
+>=20
+> base-commit: 01f856ae6d0ca5ad0505b79bf2d22d7ca439b2a1
+
+[1]
+https://docs.kernel.org/bpf/instruction-set.html#registers-and-calling-conv=
+ention
