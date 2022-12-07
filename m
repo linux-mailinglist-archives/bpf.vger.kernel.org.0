@@ -2,67 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B0645543
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738FB645557
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbiLGINR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 03:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        id S229560AbiLGISV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 03:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbiLGINP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 03:13:15 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AEF31F94
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 00:13:12 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id o127so21723432yba.5
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 00:13:12 -0800 (PST)
+        with ESMTP id S229452AbiLGISU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 03:18:20 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A546459
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 00:18:18 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id a16so23787738edb.9
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 00:18:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9PwBs2OW6KV67ZD6N5qY5Z5ZOtyNNcvY0UpEdencGE=;
-        b=YvoabhEN5LkAlnAsj7FwPTX3hCLmWY46IgIkXkXbBLJzjwSepXsWfZFLj6pY8g6C63
-         PQsgbo5hbcEG9ffKMMMalFfu70ZsB+x3oAZA1HYrQtSmB/1T6mydnloFZfQvknM99heQ
-         tT2z487cne4nZ5KkxSWi11IWyeJBWFUCF5ZZd3utLKyBMYmhDAn41LLBY8+zWOJh/PL2
-         U0MODsrglmbnb6z1EILfAjO7urtuBzcmupKyIDCHUtph2j3Vv/5/lpAscyf6uXEy8VeJ
-         vQUhXYaOEqg3qnkjnHOzg491BRk9NY92NIzAlfUfeU/Dt5CHUK9iMKiJYhwg/3ubln0c
-         0gSQ==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1QM5txz+DYnNZM0Ct81tkrNg0qe+7/Y9mU+kWI3SlVw=;
+        b=pvRdySiGf8r5OxtxwB7zsMMvCvbc08Hj/UXpsjHYVx8MuKDP2irLm3vfNJXytzHp8m
+         3pQMvj22RkwVbaSoWddtU+xGgviMN8kSkErFpRd/EgsJZ3Xd9fq0ub5uSbBerJW9ZWhg
+         U8bxOzzgImPPQqrsXIgsyGzQxbMBPfB+2I2TiFpFBPejdgn4L2qK9VdzQgVITMssIEJz
+         771urp5x+X2aFTksQq/s3wROcMC49h+gyo55XZFthxMCxRuuQwH3ojQ+qfz7wF3XxXyg
+         KT/X3dsYSYMtqViVGyEJeUggCsSbrRSjZwJs2LZgS9CRL2JyDnrE+ehFH4CqaEtFkI/8
+         zvsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q9PwBs2OW6KV67ZD6N5qY5Z5ZOtyNNcvY0UpEdencGE=;
-        b=ovl8U7QadkLul290pZh35XalDLnS2f25kCpaTZXWsDcR/dgs/lgl9M62LdX2cSEn+X
-         qTB0CFB6JuOMvxh2vtIJWmOUJuzKWAs9gy/RhC4ANtsLdvB/sgG3O/Vyti6iHtgOsCBc
-         TIEKtWzwCMsXzfrBgE285i9RgUNA0WkmPxPaL3JHyYxtrB32VBX99zSYAnzQV3gnS7e6
-         X27NCx5LvIvSboxGoL1NJRjJcPwdCOjXp7fM5IcLrPL1CY0rhFakJMADY92gNZ+SGYkU
-         W+FEvGq4r5WRpHLE4AbZzfWfgrWskhRI5flZkdXStpDTGdDptt/Nam0etQVgPXRxRFkK
-         zBNA==
-X-Gm-Message-State: ANoB5pn9eDt4Z3M6DpW2xeOtQd8CNDQ8SOUy2RGtEEGsRx6R5ZsgvdxC
-        SsgxNsVjY9yYa7km94EVpfF8GYfHc8wwlC9yBQ3/Vdbp/VE8XpzK
-X-Google-Smtp-Source: AA0mqf60uLxT8YTLpBIXQE3IHpdSFumG4AgCRXD/7v6KrWZDTPRMYpjKDtwszvVrwSJB+SiUy1iAwHu+5U4PJc9XZqM=
-X-Received: by 2002:a25:24d:0:b0:6fd:2917:cf60 with SMTP id
- 74-20020a25024d000000b006fd2917cf60mr20430226ybc.427.1670400791161; Wed, 07
- Dec 2022 00:13:11 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1QM5txz+DYnNZM0Ct81tkrNg0qe+7/Y9mU+kWI3SlVw=;
+        b=Gjkq0uyFb2ccn9VMp0V6eVyXWlJMhyB7G+AQYaBVuQ4yEpmx/z9bPtDefP3qWFPkKh
+         +1TWKCcWvpyu6KHKJeHrp+qxHxs+/60VHOCpicWv7rcw8tJkFT8HYH0alHj9uAJAZt9W
+         d6bRvG15/ESG4aYdjeTxr97OGENaXUEah0GkvWnVqwweb9EoWPQyuWEnoVIf8Jr5Fzv5
+         aNGMJ3IeeNGeBOWeG7qiYNTXvbJe9ZXCVegb3QZUcJf2Q97ENtkcft9sIZByjC12U0ab
+         19exNhOBKVZLfYctyG2nj7f8wGs1LZ9AUKbDr3JSgC7lsxWK2A2fbjp7IbOj3u4r9Rk4
+         5eWw==
+X-Gm-Message-State: ANoB5pkWktMx2vDFvwFp9hZREHtpTFBwHf7hoNeGon54Vp0taCS7KMVV
+        ov9atiudZvlbRBFQ2OCGUm4=
+X-Google-Smtp-Source: AA0mqf6QC+DgtOS3t6N+T22cRdDtLD+Bl//1gm145IknchTF3znqKedQL2FCTuRnDamerV9TTO1RJw==
+X-Received: by 2002:aa7:d417:0:b0:46b:203:f389 with SMTP id z23-20020aa7d417000000b0046b0203f389mr41670421edq.303.1670401096999;
+        Wed, 07 Dec 2022 00:18:16 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id g13-20020a170906538d00b007c0d5b181absm5032428ejo.94.2022.12.07.00.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Dec 2022 00:18:16 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 7 Dec 2022 09:18:14 +0100
+To:     Namhyung Kim <namhyung@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
+ tracepoints
+Message-ID: <Y5BMRvsVMQtKvuhu@krava>
+References: <20221121213123.1373229-1-jolsa@kernel.org>
+ <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
+ <Y388m6wOktvZo1d4@krava>
+ <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
+ <Y4CMbTeVud0WfPtK@krava>
+ <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
+ <Y4uOSrXBxVwnxZkX@google.com>
+ <Y43j3IGvLKgshuhR@krava>
+ <CAADnVQLo1JBTg6iquCFj44AEuAhxj-V7a0T1gwejy1oDBDXcbA@mail.gmail.com>
+ <Y4/27g8EHQ9F3bDr@google.com>
 MIME-Version: 1.0
-References: <00000000000073b14905ef2e7401@google.com> <639034dda7f92_bb36208f5@john.notmuch>
-In-Reply-To: <639034dda7f92_bb36208f5@john.notmuch>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 7 Dec 2022 09:12:59 +0100
-Message-ID: <CANn89iK2UN1FmdUcH12fv_xiZkv2G+Nskvmq7fG6aA_6VKRf6g@mail.gmail.com>
-Subject: Re: [syzbot] BUG: stack guard page was hit in inet6_release
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     syzbot <syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, davem@davemloft.net, jakub@cloudflare.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y4/27g8EHQ9F3bDr@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,100 +92,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 7:38 AM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    6a30d3e3491d selftests: net: Use "grep -E" instead of "egr..
-> > git tree:       net
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=1576b11d880000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=cc4b2e0a8e8a8366
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=04c21ed96d861dccc5cd
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e1656b880000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1077da23880000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/bbee3d5fc908/disk-6a30d3e3.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/bf9e258de70e/vmlinux-6a30d3e3.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/afaa6696b9e0/bzImage-6a30d3e3.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com
-> >
-> > BUG: TASK stack guard page was hit at ffffc90003cd7fa8 (stack is ffffc90003cd8000..ffffc90003ce0000)
-> > stack guard page: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 0 PID: 3636 Comm: syz-executor238 Not tainted 6.1.0-rc7-syzkaller-00135-g6a30d3e3491d #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> > RIP: 0010:mark_lock.part.0+0x26/0x1910 kernel/locking/lockdep.c:4593
-> > Code: 00 00 00 00 41 57 41 56 41 55 41 89 d5 48 ba 00 00 00 00 00 fc ff df 41 54 49 89 f4 55 53 48 81 ec 38 01 00 00 48 8d 5c 24 38 <48> 89 3c 24 48 c7 44 24 38 b3 8a b5 41 48 c1 eb 03 48 c7 44 24 40
-> > RSP: 0018:ffffc90003cd7fb8 EFLAGS: 00010096
-> > RAX: 0000000000000004 RBX: ffffc90003cd7ff0 RCX: ffffffff8162a7bf
-> > RDX: dffffc0000000000 RSI: ffff88801f65e238 RDI: ffff88801f65d7c0
-> > RBP: ffff88801f65e25a R08: 0000000000000000 R09: ffffffff910f4aff
-> > R10: fffffbfff221e95f R11: 0000000000000000 R12: ffff88801f65e238
-> > R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000040000
-> > FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: ffffc90003cd7fa8 CR3: 000000000c28e000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <TASK>
-> >  mark_lock kernel/locking/lockdep.c:4598 [inline]
-> >  mark_usage kernel/locking/lockdep.c:4543 [inline]
-> >  __lock_acquire+0x847/0x56d0 kernel/locking/lockdep.c:5009
-> >  lock_acquire kernel/locking/lockdep.c:5668 [inline]
-> >  lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-> >  lock_sock_nested+0x3a/0xf0 net/core/sock.c:3447
-> >  lock_sock include/net/sock.h:1721 [inline]
-> >  sock_map_close+0x75/0x7b0 net/core/sock_map.c:1610
->
-> I'll take a look likely something recent.
+On Tue, Dec 06, 2022 at 06:14:06PM -0800, Namhyung Kim wrote:
 
-Fact that sock_map_close  can call itself seems risky.
-We might issue a one time warning and keep the host alive.
+SNIP
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 81beb16ab1ebfcb166f51f89a029fe1c28a629a4..a79771a6627b9b2f38ae6ce153ceff9e8c0be8d4
-100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1612,17 +1612,25 @@ void sock_map_close(struct sock *sk, long timeout)
-        psock = sk_psock_get(sk);
-        if (unlikely(!psock)) {
-                rcu_read_unlock();
-+               saved_close = sk->sk_prot->close;
-                release_sock(sk);
--               return sk->sk_prot->close(sk, timeout);
-+       } else {
-+               saved_close = psock->saved_close;
-+               sock_map_remove_links(sk, psock);
-+               rcu_read_unlock();
-+               sk_psock_stop(psock);
-+               release_sock(sk);
-+               cancel_work_sync(&psock->work);
-+               sk_psock_put(sk, psock);
-+       }
-+       /* Make sure we do not recurse to us.
-+        * This is a bug, we can leak the socket instead
-+        * of crashing on a stack overflow.
-+        */
-+       if (saved_close == sock_map_close) {
-+               WARN_ON_ONCE(1);
-+               return;
-        }
--
--       saved_close = psock->saved_close;
--       sock_map_remove_links(sk, psock);
--       rcu_read_unlock();
--       sk_psock_stop(psock);
--       release_sock(sk);
--       cancel_work_sync(&psock->work);
--       sk_psock_put(sk, psock);
-        saved_close(sk, timeout);
- }
- EXPORT_SYMBOL_GPL(sock_map_close);
+> -static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> +static void *bpf_trace_norecurse_funcs[12] = {
+> +	(void *)bpf_trace_run_norecurse1,
+> +	(void *)bpf_trace_run_norecurse2,
+> +	(void *)bpf_trace_run_norecurse3,
+> +	(void *)bpf_trace_run_norecurse4,
+> +	(void *)bpf_trace_run_norecurse5,
+> +	(void *)bpf_trace_run_norecurse6,
+> +	(void *)bpf_trace_run_norecurse7,
+> +	(void *)bpf_trace_run_norecurse8,
+> +	(void *)bpf_trace_run_norecurse9,
+> +	(void *)bpf_trace_run_norecurse10,
+> +	(void *)bpf_trace_run_norecurse11,
+> +	(void *)bpf_trace_run_norecurse12,
+> +};
+> +
+> +static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> +				void *func, void *data)
+>  {
+>  	struct tracepoint *tp = btp->tp;
+>  
+> @@ -2325,13 +2354,12 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
+>  	if (prog->aux->max_tp_access > btp->writable_size)
+>  		return -EINVAL;
+>  
+> -	return tracepoint_probe_register_may_exist(tp, (void *)btp->bpf_func,
+> -						   prog);
+> +	return tracepoint_probe_register_may_exist(tp, func, data);
+>  }
+>  
+>  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+>  {
+> -	return __bpf_probe_register(btp, prog);
+> +	return __bpf_probe_register(btp, prog, btp->bpf_func, prog);
+>  }
+>  
+>  int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> @@ -2339,6 +2367,33 @@ int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+>  	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
+>  }
+>  
+> +int bpf_probe_register_norecurse(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> +				 struct bpf_raw_event_data *data)
+> +{
+> +	void *bpf_func;
+> +
+> +	data->active = alloc_percpu_gfp(int, GFP_KERNEL);
+> +	if (!data->active)
+> +		return -ENOMEM;
+> +
+> +	data->prog = prog;
+> +	bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
+> +	return __bpf_probe_register(btp, prog, bpf_func, data);
+
+I don't think we can do that, because it won't do the arg -> u64 conversion
+that __bpf_trace_##call functions are doing:
+
+	__bpf_trace_##call(void *__data, proto)                                 \
+	{                                                                       \
+		struct bpf_prog *prog = __data;                                 \
+		CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+	}
+
+like for 'old_pid' arg in sched_process_exec tracepoint:
+
+	ffffffff811959e0 <__bpf_trace_sched_process_exec>:
+	ffffffff811959e0:       89 d2                   mov    %edx,%edx
+	ffffffff811959e2:       e9 a9 07 14 00          jmp    ffffffff812d6190 <bpf_trace_run3>
+	ffffffff811959e7:       66 0f 1f 84 00 00 00    nopw   0x0(%rax,%rax,1)
+	ffffffff811959ee:       00 00
+
+bpf program could see some trash in args < u64
+
+we'd need to add 'recursion' variant for all __bpf_trace_##call functions
+
+jirka
+
+
+
+> +}
+> +
+> +int bpf_probe_unregister_norecurse(struct bpf_raw_event_map *btp,
+> +				   struct bpf_raw_event_data *data)
+> +{
+> +	int err;
+> +	void *bpf_func;
+> +
+> +	bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
+> +	err = tracepoint_probe_unregister(btp->tp, bpf_func, data);
+> +	free_percpu(data->active);
+> +
+> +	return err;
+> +}
+> +
+>  int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+>  			    u32 *fd_type, const char **buf,
+>  			    u64 *probe_offset, u64 *probe_addr)
+> -- 
+> 2.39.0.rc0.267.gcb52ba06e7-goog
+> 
