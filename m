@@ -2,129 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66657645F8D
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 18:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80474646018
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 18:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbiLGRAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 12:00:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        id S229437AbiLGRZT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 12:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbiLGRAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:00:42 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637EF68C6D
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 09:00:41 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id n9-20020a05600c3b8900b003d0944dba41so1533183wms.4
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 09:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BXesToSWwwnCKV+g1AwRtRU3qfEBkcVEBg6QS+SjDxU=;
-        b=KPDXYZ3duUZaAEdvvywMI9z5Q7Ah5nmdDmWoMbtDIcnjhdbFOj2001pt6dx2i9HBiI
-         WIsFHDZF0EdUsKqoKTZmIXT9iahUvqWD65BZfbKTUXH73lJY+4MGRPSgJGb5ByJzVEK0
-         iXGZ4gWRH/OV56kGeneKC6DzoKTwdwRdhJKeTXZn3H0S2+XQONlr21k27tQ533O1+Yj7
-         MeSPWUXxsF4FnXNm9htMujyhue+JWos9/2r8PgnFHGUl/7zfCuEzfQh7oCcZgVZL5U3g
-         1IgHzPewSxwcR9wCH2Khb50u7jgqj+Z4huhBLnlL31H2Om9m5RYaIlL866IJDKXjq5wz
-         lUNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BXesToSWwwnCKV+g1AwRtRU3qfEBkcVEBg6QS+SjDxU=;
-        b=uiwL44umsmr4P68gmzmwRXdZLZaNkN+1rQK7c1TKUZ93dWKkx998y4HVXm3g8Cadaa
-         atcpMLikh4bUTXjzuGX7xncYHG5aVQr3cHIwxuNNocv7LlDKgGb7KhhjtdeXmm25jJB7
-         UGalKOcyrz5Y8Ey+VwkzUBYB2QFZBuX7xBgeeo4d+/2uDOS1btIbrTXT49Q6TW+n3ZcV
-         Ug6MzjZpnmSAB3VFOp/Q6J5q0Ii5Tn37M2aBWAUqfEcNGhJOjFVLuckdYWUdi9VC0Nd/
-         qPH8nPeXXG2hA4PF0UKPYutP8Hflntr5Finc0kJditoDJu84Ja8pone/O1HCSwjxSkAu
-         D01Q==
-X-Gm-Message-State: ANoB5pl+2+07Hf9sVQJ5lTG7hSRQQa+r0ZHl/hz3uH8m4r7xivxHj0sA
-        Mm4cAC4SxUHQHbv4wrg2KtqlKSjTiZhi3U+cY7JY/Q==
-X-Google-Smtp-Source: AA0mqf7EL9SVPdzmspMbX3uo2aj+Ffe0HMOfPSEBf1yBBX6KBSWuzkXm7BPUhNMirUVS0NsphHZk0Oyhelhb25tR8jw=
-X-Received: by 2002:a05:600c:3d8f:b0:3cf:6a4c:af8b with SMTP id
- bi15-20020a05600c3d8f00b003cf6a4caf8bmr55219737wmb.115.1670432439791; Wed, 07
- Dec 2022 09:00:39 -0800 (PST)
+        with ESMTP id S229720AbiLGRZS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 12:25:18 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9B65B584;
+        Wed,  7 Dec 2022 09:25:16 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4NS3rs5tq6z9xqcC;
+        Thu,  8 Dec 2022 01:18:05 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwD34m9YzJBjc9DJAA--.62662S2;
+        Wed, 07 Dec 2022 18:24:53 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, revest@chromium.org,
+        jackmanb@chromium.org, mykolal@fb.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RFC][PATCH v2 0/7] bpf-lsm: Check return values of security modules
+Date:   Wed,  7 Dec 2022 18:24:27 +0100
+Message-Id: <20221207172434.435893-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <Y49vx0v6Z7EiR8jr@kernel.org> <Y49wxSIK7dJ7iTDg@kernel.org>
- <Y491d1wEW4TfUi5f@kernel.org> <Y4921D+36UGdhK92@kernel.org>
- <Y494TNa0ZyPH9YSD@kernel.org> <Y498YP2N3gvFSr/X@kernel.org>
- <CAP-5=fW2Fdfo9njgXxCVDP0dF3gTsUtaPMh88uSC5bRVjp+1Uw@mail.gmail.com>
- <Y5ChXjt0uv/yDNwV@kernel.org> <Y5Cjylv9dJh796dw@kernel.org>
- <20221207093958.09ae35c2@gandalf.local.home> <Y5C5AZ1YfthY0tx2@kernel.org>
-In-Reply-To: <Y5C5AZ1YfthY0tx2@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 7 Dec 2022 09:00:27 -0800
-Message-ID: <CAP-5=fWBzNP=uDLdyODC8gvT3KT5Kz9rRNouyLn=22_ouD8wEg@mail.gmail.com>
-Subject: Re: [ALMOST ready] Re: [PATCH 2/3] perf build: Use libtraceevent from
- the system
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwD34m9YzJBjc9DJAA--.62662S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF1rCFWrtr4fJrWrZr1UJrb_yoWxGw4fpF
+        4Fka4rKF4vkry8CF1UAa18Zw4SyFs5AFWUJFyDtr10y3WUtr1jqryxKr4YvrnxCr4UKr1x
+        tr12qanYyryUZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+        F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
+        kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+        xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUxo7KDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgATBF1jj4JqngAAsS
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 8:02 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Wed, Dec 07, 2022 at 09:39:58AM -0500, Steven Rostedt escreveu:
-> > On Wed, 7 Dec 2022 11:31:38 -0300
-> > Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > > No distro I tested so far has a package for libtracevent in is default
-> > > repositories:
-> >
-> > Not sure what you mean by "default repository".
-> >
-> > At least on Debian testing, I have libtraceevent-dev available.
->
-> Right, I'm talking about non-bleeding edge, distros that are still
-> supported. I'm still checking, fedora is ok all the way back to 33, wrt
-> having libtraceevent available.
->
-> - Arnaldo
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-I think this is both similar to the python2 issue and different. With
-python we now have a build time dependency on having at least Python
-3.6 if you want json events. With this change you need the system to
-have libtraceevent if you want to have various commands like perf
-sched, perf trace, etc. Losing entire commands with this change is
-more than happened with the Python 3.6 dependency. With the python
-issue, you can fix the build issue by installing Python 3.6 and with
-this issue you can fix it by installing libtraceevent-devel. In both
-cases you can install via a package manager, but given you are likely
-building the perf tool from source, you can also build both python and
-libtraceevent from source. Saying that an old distro is broken by this
-change, or the Python 3.6 change, I think is too strong and we're in
-danger of holding things back for a very small (possibly 0) set of
-people. They'd have to be upset about building from source on an old
-distro, then losing the less commonly used commands of perf sched,
-perf trace, etc. and be unwilling to build libtraceevent from source.
-Given they are building the perf tool from source I just can't imagine
-they'd be too upset about building libtraceevent from source.
+Notes:
+- This patch set addresses the kernel panic described below, and not the
+  more broad issue of accessing kernel objects whose pointer is passed
+  as parameter by LSM hooks
+- Alternative approaches trying to limit return values at run-time either
+  in the security subsystem or in the eBPF JIT are not preferred by the
+  respective maintainers
+- Although all eBPF selftests have been verified to pass, it still might
+  be cumbersome to have an eBPF program being accepted by the eBPF
+  verifier (e.g. ANDing negative numbers causes existing bounds to be lost)
+- The patch to store whether a register state changed due to an ALU64 or an
+  ALU32 operation might not be correct/complete, a review by eBPF
+  maintainers would be needed
+- This patch set requires "lsm: make security_socket_getpeersec_stream()
+  sockptr_t safe", in lsm/next
+- The modification of the LSM infrastructure to define allowed return
+  values for the LSM hooks could be replaced with an eBPF-only fix, with
+  the drawback of having to update the information manually each time a
+  new hook is added; allowing zero or negative values by default could be
+  reasonable, but there are already exceptions of LSM hooks accepting 0 or
+  1 (ismaclabel)
+- The patches to fix the LSM infrastructure documentation are separated
+  from this patch set and available here:
+  https://lore.kernel.org/linux-security-module/20221128144240.210110-1-roberto.sassu@huaweicloud.com/
 
-I think a problem with both changes is that the build time warning
-given isn't loud enough. Perhaps we can make it that at build time we
-$(error for these recommended dependencies, unless NO_JEVENTS=1 or
-NO_LIBTRACEEVENT=1 are added. Losing functionality and just having a
-small $(warning seems error prone and likely to cause functionality to
-be accidentally lost.
+BPF LSM defines attachment points to allows security modules (eBPF programs
+with type LSM) to provide their implementation of the desired LSM hooks.
 
-Thanks,
-Ian
+Unfortunately, BPF LSM does not restrict which values security modules can
+return (for non-void LSM hooks). If they put arbitrary values instead of
+those stated in include/linux/lsm_hooks.h, they could cause big troubles.
+
+For example, this simple eBPF program:
+
+SEC("lsm/inode_permission")
+int BPF_PROG(test_int_hook, struct inode *inode, int mask)
+{
+	return 1;
+}
+
+causes the following kernel panic:
+
+[  181.130807] BUG: kernel NULL pointer dereference, address: 0000000000000079
+[  181.131478] #PF: supervisor read access in kernel mode
+[  181.131942] #PF: error_code(0x0000) - not-present page
+[  181.132407] PGD 0 P4D 0 
+[  181.132650] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[  181.133054] CPU: 5 PID: 857 Comm: systemd-oomd Tainted: G           OE      6.1.0-rc7+ #530
+[  181.133806] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[  181.134601] RIP: 0010:do_sys_openat2+0x235/0x300
+
+[...]
+
+[  181.136682] RSP: 0018:ffffc90001557ee0 EFLAGS: 00010203
+[  181.137154] RAX: 0000000000000001 RBX: ffffc90001557f20 RCX: ffff888112003380
+[  181.137790] RDX: 0000000000000000 RSI: ffffffff8280b026 RDI: ffffc90001557e28
+[  181.138432] RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+[  181.139081] R10: ffffffff835097dc R11: 0000000000000000 R12: ffff888106118000
+[  181.139717] R13: 000000000000000c R14: 0000000000000000 R15: 0000000000000000
+[  181.140149] FS:  00007fa6ceb0bb40(0000) GS:ffff88846fb40000(0000) knlGS:0000000000000000
+[  181.140556] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  181.140865] CR2: 0000000000000079 CR3: 0000000135c50000 CR4: 0000000000350ee0
+[  181.141239] Call Trace:
+[  181.141373]  <TASK>
+[  181.141495]  do_sys_open+0x34/0x60
+[  181.141678]  do_syscall_64+0x3b/0x90
+[  181.141875]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Avoid this situation by statically analyzing the eBPF programs attaching to
+LSM hooks, and ensure that their return values are compatible with the LSM
+infrastructure conventions.
+
+First, add a preliminary patch (patch 1) to fix a small code duplication
+issue.
+
+Extend the eBPF verifier to let BPF LSM determine whether it should check
+estimated 64 bit values or the 32 bit ones (patch 2). Also, extend the LSM
+infrastructure to record more precisely the allowed return values depending
+on the documentation found in include/linux/lsm_hooks.h (patch 3). Add the
+LSM_RET_NEG, LSM_RET_ZERO, LSM_RET_ONE, LSM_RET_GT_ONE flags to an LSM hook
+if that hook allows respectively > 0, 0, 1, > 1 return values.
+
+Then, extend BPF LSM to verify that return values, estimated by the
+verifier by analyzing the eBPF program, fall in the allowed intervals found
+from the return value flags of the LSM hook being attached to (patch 4).
+
+Finally, add new tests to ensure that the verifier enforces return values
+correctly (patch 5), and slightly modify existing tests to make them follow
+the LSM infrastructure conventions (patches 6-7) and are accepted by the
+verifier.
+
+Changelog:
+
+v1:
+- Complete the documentation of return values in lsm_hooks.h
+- Introduce return value flags in the LSM infrastructure
+- Use those flags instead of the scattered logic (suggested by KP)
+- Expose a single verification function to the verifier (suggested by KP)
+- Add new patch to remove duplicated function definition
+- Add new patch to let BPF LSM determine the appropriate register values
+  to use
+
+Roberto Sassu (7):
+  bpf: Remove superfluous btf_id_set_contains() declaration
+  bpf: Mark ALU32 operations in bpf_reg_state structure
+  lsm: Redefine LSM_HOOK() macro to add return value flags as argument
+  bpf-lsm: Enforce return value limitations on security modules
+  selftests/bpf: Check if return values of LSM programs are allowed
+  selftests/bpf: Prevent positive ret values in test_lsm and
+    verify_pkcs7_sig
+  selftests/bpf: Change return value in test_libbpf_get_fd_by_id_opts.c
+
+ include/linux/bpf.h                           |   1 -
+ include/linux/bpf_lsm.h                       |  11 +-
+ include/linux/bpf_verifier.h                  |   1 +
+ include/linux/lsm_hook_defs.h                 | 780 ++++++++++--------
+ include/linux/lsm_hooks.h                     |   9 +-
+ kernel/bpf/bpf_lsm.c                          |  81 +-
+ kernel/bpf/verifier.c                         |  17 +-
+ security/bpf/hooks.c                          |   2 +-
+ security/security.c                           |   4 +-
+ tools/testing/selftests/bpf/progs/lsm.c       |   4 +
+ .../bpf/progs/test_libbpf_get_fd_by_id_opts.c |   7 +-
+ .../bpf/progs/test_verify_pkcs7_sig.c         |  11 +-
+ .../testing/selftests/bpf/verifier/lsm_ret.c  | 148 ++++
+ 13 files changed, 729 insertions(+), 347 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/lsm_ret.c
+
+-- 
+2.25.1
+
