@@ -2,72 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE49764627C
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 21:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC72B646280
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 21:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiLGUlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 15:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        id S229797AbiLGUlq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 15:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiLGUlL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 15:41:11 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAAF30558
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 12:41:09 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 130so18501086pfu.8
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 12:41:09 -0800 (PST)
+        with ESMTP id S229796AbiLGUlp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 15:41:45 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B293AC11
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 12:41:44 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id 3-20020a17090a098300b00219041dcbe9so2864143pjo.3
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 12:41:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JxHt6fD/++AAiJAXeL0+27YLobwQnq8YQypkQOX0UxA=;
-        b=NlPhc1QImETyE3kwyeC/jJeghrs5lorZ3qk6cQdntBJbB8Hub6MBCtAOb4CPvfyX3D
-         JbUlFtutTukAsIqZhaFufpv8LGhdm3Ol8kebx47KXQIQLbCj5UwNxjJ0ozrjxhq8lhX1
-         qTJ+L3Dd5segb7mfjv0lZjA8K67YFL7IGl/vn0HyUzftHMag49AMKguyEL1jWFswdvwq
-         fUZQVdm7l0pJoTBgITkdLInAmgCpEZJLZ91XrH5Mu4iKSGnLsCl7EUM6M8HO6FCbw7ro
-         EjM6Og5dByN6BEc08c5JShL02vZKDudy7kT8rWryigptblnpnFtQelH3CiByJxC3t9QU
-         ffVw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/QRsrGNR0u61CS0OYf1SpBcRIiqlq0WEghReUjrHRg=;
+        b=Ejm42721JvlGwUoDweJKILYV/qgeKL3g1owAhNsVdq6NCBUeR4x2+yaI51n7uaAoB+
+         FZsaQ0rSJcYuz1jj2VLHpSCa1tujdM/K5EttzJmvioQj1mX39rIhpiseAQ7DfMp1A08X
+         lBTooB9Lpxj5WtSrWJhEnjq8dhoAGmIROE3plYdElDlBL8IIb4gu670YSniffDwMxYQx
+         tOS9MCLjq8GD4LqWRjo3wf0M3ud/ALFLwGNwQSFohfajCCjtP0EJk8egSThxPPix8B+S
+         7MSItmgpyIpWtQOes8h3r+7fg6AVWFFh09wJu7xDIj/EqmVVyTme1LrExpNwcNTGBoCr
+         ULVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JxHt6fD/++AAiJAXeL0+27YLobwQnq8YQypkQOX0UxA=;
-        b=pGDTelNvDi4SRv5vYUe2pVgg+62ZU3yWxNRf1KzlxNEUYyFYEB5hbDxObqMB2dBtxF
-         VPODxW6QwX5upT1UjjkovljslyQJh9OA5vmNuKkMBJIH03kp7ZByLBD8mb/FGfRRImt1
-         CKg5s0FvcVZ64iFYE0DMr0hBPOJMjfqEuMJwO+6rBqXbThSZ6B7rKgNU8+Iou1CKRxla
-         Gz7g2shuKdAL8yopMZr7dMVBs1f5zoFAVSPVQT4SA6l38mY/EtPi6foSHHM+M1PPLuPL
-         nIOyGOZ9ddeeIZXqQdAlt8DKMKV1WQx1JbU/Ce3mQgdml2XV7tF964yRNKhEBnr0/L0o
-         T27A==
-X-Gm-Message-State: ANoB5pm9QtRjzNY5VjR04y2TZ2NNdgdgDhpmifZExujjJnV0QFRU1MrZ
-        6PVnZuXSxlWL7CkWDD82vP1GSW3rXrKhkD5t
-X-Google-Smtp-Source: AA0mqf66ivwL16EmF8nMh84SEboJFHbjuN6nMJrTettwdhNbKdSZ/TeNAMipziPZoqVMef7ufauVfQ==
-X-Received: by 2002:a63:5262:0:b0:477:6e5d:4e44 with SMTP id s34-20020a635262000000b004776e5d4e44mr69504382pgl.7.1670445668804;
-        Wed, 07 Dec 2022 12:41:08 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y/QRsrGNR0u61CS0OYf1SpBcRIiqlq0WEghReUjrHRg=;
+        b=l0VE1qs08mLNWx0ApNq3t8Asr+jnjG6tiYESJrFtPaknwLRT+lVzcHyAEkonQQAaCP
+         dm1a9jZqeqNLdR9uGESVGFSuF4D8Sr6b1xxjtScFx0f4RmwjyY22jM8ORyqASnx+nhS2
+         WoGCNK5U7zsOZ5/xssK+CMJnZO8vbBB4DfXPH0+q5/I3qNewH1/y1WRU3Ur6cAsUBkAX
+         ORZPeX2/0drMNsursWCxfmBhiLcyikrHNkQFxQ0OHL6IcoiSiwOu9ee2wrbqLUrg30WQ
+         otiJCLX4tE+icryI66ynhzqmnaFCCKgJVJ9xnP2NvgAMXBzt7+zeM6HuHa3FS8GPW1GA
+         o4+g==
+X-Gm-Message-State: ANoB5pnfncqldb6zHKSfrpoiSky6yNEDCIe7N0PaXYnNlRuVBeiUMZNF
+        zImxkNfn1Anfj1mb1SKoar8wx8yerr4Bhf03
+X-Google-Smtp-Source: AA0mqf7OHFOpjDtxy7soUnXVx5qvV6rUx7DZ7KVlwlxvyXVKbTgSAKXG51snHQ2oL2t6LZ3+3Y9rsw==
+X-Received: by 2002:a17:902:ec8d:b0:188:59d2:33e with SMTP id x13-20020a170902ec8d00b0018859d2033emr73829786plg.142.1670445704128;
+        Wed, 07 Dec 2022 12:41:44 -0800 (PST)
 Received: from localhost ([2405:201:6014:d8bc:6259:1a87:ebdd:30a7])
-        by smtp.gmail.com with ESMTPSA id h13-20020a170902680d00b00189c62eac37sm9090491plk.32.2022.12.07.12.41.07
+        by smtp.gmail.com with ESMTPSA id a20-20020a631a54000000b0046ec7beb53esm5175573pgm.8.2022.12.07.12.41.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 12:41:08 -0800 (PST)
-Date:   Thu, 8 Dec 2022 02:11:05 +0530
+        Wed, 07 Dec 2022 12:41:43 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/7] bpf: Move PTR_TO_STACK alignment check
- to process_dynptr_func
-Message-ID: <20221207204105.emz525gb4qjodipq@apollo>
-References: <20221115000130.1967465-1-memxor@gmail.com>
- <20221115000130.1967465-6-memxor@gmail.com>
- <Y3bIhyOWs1r22R+2@maniforge.lan>
- <20221120191013.plzlna24vwluxebk@apollo>
- <Y3soXvFs4WV7/KXj@maniforge.lan>
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>
+Subject: [PATCH bpf-next v2 0/7] Dynptr refactorings
+Date:   Thu,  8 Dec 2022 02:11:34 +0530
+Message-Id: <20221207204141.308952-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3soXvFs4WV7/KXj@maniforge.lan>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2280; i=memxor@gmail.com; h=from:subject; bh=JjgwGgkEyS84X4UfQSTQHIuwEviQSc7eNfFGT8ES7ng=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjkPOodNGGvT7lHdaNW3y1DmMpun4qGH5nZUedeP+O Wgc3d7qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY5DzqAAKCRBM4MiGSL8RyptGEA CZqprMS+9AouYHHGxSdPlI8llpFE0xR3dKffU8pz3c6k41/UnYgap5rHJ9Pnd+BcC3YjEBw3eDMC6N cT0GbYf+4+JAlBE+djxUai0BoruINJtQFxH/lLZG5fqs0h7BontVE4pBbPkWgqhueTIGLUV3C+MbBf MrrfNk/zLEqDjWUSOJpqL/ydceMDNiseEIeeUxo1R74r4w99FowfNaKQ6Zf382Apx6yTzV5Gzsfdm3 gxO8V20PoaJXnvvxYxgi9bS2F3mooS0qqB4C9w0IGGPI7FEIMuoKhGdFprxfG0uYpqna3/QDsS5i7A rG02w/Qah6JnWyyQUqeMVtiChHg97OEfjrXZxM+JD+vIr5AaSNYScJapxnT+zTd+ZQH49w/vBbS8Gl 6BaQHCiQY/eZ6pHyRiwBCuG7lfVRAxXPyRDdgXgXZT4dkhHCyFyZa8utmryRezePsYS2dZBmCaMkKV RXIGVFQI9w8SWHt8VHtqKLL+Afe3eeWm4crWLvgeHpr7CvhtlAaszIiXW9+pvxYUr5LXS07/KP/68b H8+cFWYNmJXF1qCJc0OlD/9HAnchGEK/Lr851iFxEWLEh60LugkDJ53xtEXE74rVCtJ0LRlGFq993v TCaOL5TVkHoRHuBz3oewNcLhrfnovmxyN2+rY00ensc4VIfgfQaz4lfgtvCg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,137 +74,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 12:57:26PM IST, David Vernet wrote:
-> On Mon, Nov 21, 2022 at 12:40:13AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, Nov 18, 2022 at 05:19:27AM IST, David Vernet wrote:
-> > > On Tue, Nov 15, 2022 at 05:31:28AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > After previous commit, we are minimizing helper specific assumptions
-> > > > from check_func_arg_reg_off, making it generic, and offloading checks
-> > > > for a specific argument type to their respective functions called after
-> > > > check_func_arg_reg_off has been called.
-> > >
-> > > What's the point of check_func_arg_reg_off() if helpers have to check
-> > > offsets after it's been called? Also, in [0], there's now logic in
-> > > check_func_arg_reg_off() which checks for OBJ_RELEASE arg types, so
-> > > there's still a precedent for looking at arg types there. IMO it's
-> > > actually less confusing to just push as much offset checking as possible
-> > > into one place.
-> > >
-> >
-> > I think you need to define 'as much offset checking'.
->
-> We certainly don't want to make check_func_arg_reg_off() a monster
-> function, but I think we can do better in terms of making the verifier
-> consistent and easier to reason about by pushing more logic into it.
->
-> My view (subject to change upon learning new context I may be missing)
-> is that the job of check_func_arg_reg_off() should be to map all
-> (reg_type x arg_type) combinations to checking the correct offset,
-> likely by calling __check_ptr_off_reg() with the correct arguments. The
-> signature / implementation of __check_ptr_off_reg() may need to change
-> for that to happen, and we may need to e.g. also leverage
-> __check_mem_access() to accommodate the mem register types.
->
-> Yes, doing this may cause check_func_arg_reg_off() to have a potentially
-> very large switch statement (though there are other ways to address
-> that), but isn't that preferable to having to read through hundreds or
-> thousands of lines of verifier code to convince yourself that an offset
-> was correctly determined for every possible (register x arg_type)?
-> Having all of that contained in one, well-defined spot seems much
-> simpler. Please let me know if I've grossly misunderstood something, or
-> am missing important / relevant context.
->
-> > Consider process_kptr_func, it requires var_off to be constant. Same for
->
-> IMO that check should certainly go in check_func_arg_reg_off().
-> __check_ptr_off_reg() already checks for tnum_is_const(reg->var_off) in
-> __check_ptr_off_reg(), and check_func_arg_reg_off() has all the
-> information it needs to encapsulate the logic for that check.
->
+This is part 1 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
+This thread also gives some background on why the refactor is being done:
+https://lore.kernel.org/bpf/CAEf4Bzb4beTHgVo+G+jehSj8oCeAjRbRcm6MRe=Gr+cajRBwEw@mail.gmail.com
 
-I think this will be a bigger change that should be probably go in on its own,
-since you've expressed in the reply to patch 4 that you intend to discuss this
-with Daniel, I'm respinning without this for now.
+As requested in patch 6 by Alexei, it only includes patches which
+refactors the code, on top of which further fixes will be made in part
+2. The refactor itself fixes another issue as a side effect. No
+functional change is intended (except a few modified log messages).
 
-> > bpf_timer, bpf_spin_lock, bpf_list_head, bpf_list_node, etc. They take
-> > PTR_TO_MAP_VALUE, PTR_TO_BTF_ID, PTR_TO_BTF_ID | MEM_ALLOC. Should we move all
-> > of that into check_func_arg_reg_off?
-> >
-> > Some argument types like ARG_PTR_TO_MEM are ok with variable offset, should that
-> > exception go in this function as well?
-> >
-> > Where do you draw the line here in terms of what that function does?
->
-> Personally I think "drawing the line" is the wrong way to think about
-> it. We need to decide what role the function plays, and generalize it in
-> a way that's consistent and clear. IMO its role at a high level should
-> be, "The verify arg / register offsets step in the verifier". If you
-> break that encapsulation, it becomes much more difficult to build a
-> consistent mental model of what the verifier is doing. Note that this
-> applies to other verification steps as well, such as e.g. verifying
-> types, verifying proper refcounts, etc. Perhaps I'm grossly naive for
-> thinking this is possible? Please let me know if you think that's the
-> case.
->
-> Anyways, it might not be possible to aggregate all logic for checking
-> reg->off into the function in the codebase as it exists today, but it
-> seems like a desirable end-state, and it feels like a step backwards to
-> start selectively moving reg->off checking out of
-> check_func_arg_reg_off() and into arg / helper specific functions.
->
-> > IMO, there are a certain set of properties that check_func_arg_reg_off provides,
-> > you could say that if each register type was a class, then the checks there
-> > would be what you would do while constructing them on calling:
-> >
-> > PtrToStack(off, var_off /* can be const or variable */)
-> > PtrToMapValue(off, var_off /* can be const or variable */)
-> > PtrToBtfId(off /* must be >= 0 */) /* no var_off */
->
-> Hmmm, but these are all just reg_type, right? Why are we checking
-> OBJ_RELEASE in check_func_arg_reg_off() if that's the case?
->
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20221115000130.1967465-1-memxor@gmail.com
 
-Probably for the same reason we handle meta->release_regno in a unified manner
-for all helpers. Earlier OBJ_RELEASE was not an arg_type, but a list of func_ids
-matched in a function, so in that sense it had nothing to do with the arg type
-until then.
+ * Address feedback from Joanne and David, add acks
 
-> > How they get used by each helper and what further checks each helper needs to do
-> > on them based on the arg_type should be done at a later stage when the specific
-> > argument type is processed.
->
-> I definitely agree that there may be helper-specific verification that
-> needs to be done. We're talking about arg_type and reg_type, though.
-> Those aren't specific to an _individual_ helper (though yes, of course
-> arg_types are specific to whatever _sets_ of helpers take them, such as
-> e.g. dynptrs).
->
-> If we go with the approach of having individual arg types or sets of
-> helpers verify offsets, I think that still needs to be generalized so
-> that it's happening in a single place. This would involve something
-> like:
->
-> 1. Having check_func_arg_reg_off() as it exists today be renamed to
-> check_func_reg_off(), and be solely responsible for checking reg_type.
->
-> 2. Update check_func_arg_reg_off() to contain all the logic which does
-> actual arg type checking, possibly calling out to one of many possible
-> helper functions depending on the arg type.
->
-> My main issue is really just the fact that all of this logic is
-> scattered throughout the verifier.
->
+Fixes v1 -> v1
+Fixes v1: https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com
 
-I think it's a difference of opinion. I guess it's fine to move all offset
-related checks to this function, for every arg_type and every single case as
-well, but then it should be part of a bigger change that it does for all of the
-existing cases, not just limited to ARG_PTR_TO_{DYNPTR, KPTR, SPIN_LOCK, TIMER}
-etc. It will be a bigger refactoring that rearranges and puts all those checks
-in a single place, which I think should be done later as its own set.
+ * Collect acks from Joanne and David
+ * Fix misc nits pointed out by Joanne, David
+ * Split move of reg->off alignment check for dynptr into separate
+   change (Alexei)
 
-Though you might end up duplicating some checks because the verification path
-from insns won't call check_func_arg_reg_off, but those shared functions are
-called from both insns and helpers side, so the checks would need to remain
-there unless this refactored function is called for each insn (in which case it
-would need to check based on insn type as well). So I might be wrong but there
-won't be a lot of code reduction without more involved refactorings.
+Kumar Kartikeya Dwivedi (7):
+  bpf: Refactor ARG_PTR_TO_DYNPTR checks into process_dynptr_func
+  bpf: Propagate errors from process_* checks in check_func_arg
+  bpf: Rework process_dynptr_func
+  bpf: Rework check_func_arg_reg_off
+  bpf: Move PTR_TO_STACK alignment check to process_dynptr_func
+  bpf: Use memmove for bpf_dynptr_{read,write}
+  selftests/bpf: Add test for dynptr reinit in user_ringbuf callback
+
+ include/linux/bpf.h                           |   4 +-
+ include/linux/bpf_verifier.h                  |   8 +-
+ include/uapi/linux/bpf.h                      |   8 +-
+ kernel/bpf/helpers.c                          |  30 +-
+ kernel/bpf/verifier.c                         | 435 ++++++++++++------
+ scripts/bpf_doc.py                            |   1 +
+ tools/include/uapi/linux/bpf.h                |   8 +-
+ .../bpf/prog_tests/kfunc_dynptr_param.c       |   7 +-
+ .../selftests/bpf/prog_tests/user_ringbuf.c   |   6 +-
+ .../bpf/progs/test_kfunc_dynptr_param.c       |  12 -
+ .../selftests/bpf/progs/user_ringbuf_fail.c   |  51 +-
+ tools/testing/selftests/bpf/verifier/calls.c  |   2 +-
+ .../testing/selftests/bpf/verifier/ringbuf.c  |   2 +-
+ 13 files changed, 371 insertions(+), 203 deletions(-)
+
+
+base-commit: e9b4aeed56699b469206d05e706ddf2db95700a9
+-- 
+2.38.1
+
