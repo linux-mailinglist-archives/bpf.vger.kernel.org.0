@@ -2,118 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A416646079
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 18:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF076460DB
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 19:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiLGRnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 12:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S229782AbiLGSGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 13:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiLGRnG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:43:06 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BEF226;
-        Wed,  7 Dec 2022 09:43:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 75D5261B59;
-        Wed,  7 Dec 2022 17:43:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A115C433D6;
-        Wed,  7 Dec 2022 17:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670434983;
-        bh=goeB/rRth2x4b9Asjebd0IlWBnTeqRBWnHgyNNDbMOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OLXE2PusPNeYTsQ53oYgGC1EHAPJiaigWQr8ek8DQSDk+asI29g827Xzmow+7SIg3
-         c4UTnCl5eQYAxKbvrBBPU1ddnUuixrJilSqpqekcgIfevV+IGGiolcYQgW0sHHbGmt
-         6E4H4/twrLbwo9FsVU6KoHJNdedKY7BUjTAHH0Ul2D8qhf2af4J0j+hO9T46ot0tmo
-         OM4l7zs5rF40mVNvPJrk80ryTrnkaTAUbj8QBpl9F6bXWPI/ofA4cDdZpfnHFZX6Kn
-         oZma7XYQoSxalyVzNcqh7bUqUqRcjve7gCUtEfVF+uLrw9Waw7xyaop9VH0gyHiiX0
-         hX6zr/R9oLoTg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 89B8340404; Wed,  7 Dec 2022 14:43:01 -0300 (-03)
-Date:   Wed, 7 Dec 2022 14:43:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 2/3] perf build: Use libtraceevent from the system
-Message-ID: <Y5DQpZmkNsT9vdwg@kernel.org>
-References: <Y49uKfzfCoZ1ok62@kernel.org>
- <Y49vx0v6Z7EiR8jr@kernel.org>
- <Y49wxSIK7dJ7iTDg@kernel.org>
- <Y491d1wEW4TfUi5f@kernel.org>
- <Y4921D+36UGdhK92@kernel.org>
- <Y494TNa0ZyPH9YSD@kernel.org>
- <Y498YP2N3gvFSr/X@kernel.org>
- <C9F248C8-AF8D-40A1-A1AD-BCC39FBA01C7@linux.vnet.ibm.com>
- <Y5DNBZNC5rBBqlJW@kernel.org>
- <Y5DN90m5D0HVOPK8@kernel.org>
+        with ESMTP id S229456AbiLGSGA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 13:06:00 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557D15FB86
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 10:05:59 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id f3so17081215pgc.2
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 10:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=C3DV9l9zsQfHltjnuJ5yMubwGSae2S2bmpGgboE2nP8=;
+        b=Prd6LTqRLZeS8XTw/gvJ8Q2gfHm1a5NPKg+JTD0/GTWchbjrAbYTQ5V9AeyT7EJM9R
+         durRWfVvMEdRtO/jdT33KU3R03JL3vLoNpiAMW4UZu/vbTajASHlSfbQ4Ej5+0vcRAt4
+         5/I6XAxEef25yBisdlJ10CtucOW+YzKoN6SruxL7O/MVe23ShZiOpx0+5x3NdNciP+Gr
+         xLliSHt1QbVRGvJHoWQ4S4wnkse0PQ2cMshCe0J3YqcCx/s3eghN9aZau+g+IKs5r9Ed
+         yVvGeENXNWqYYV45QSNHmyJHJS1HM8YWVezFReXZUxZbkyAYbbNBArGrhHJic5x4u4gs
+         9qbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C3DV9l9zsQfHltjnuJ5yMubwGSae2S2bmpGgboE2nP8=;
+        b=jxzpanIzuZqpII5O02W7Xb6XAjiJV7EzlgrQnUqBldRBX9xBHTaE0i9Ev6QY/vXPU4
+         iapHBgi+M0AtQlRqJRPgq4aS7xEWaBVkE1YbkQvcwdXTclvdnAUupF26ndm9va3jIouU
+         vUfxyaQt9CMuSJmHn5e88gbbCR1kAsc3EaW2rqmZdY1ltcLynW8ixuzHsLO9a0RDwvee
+         JF9LLxStr4FjdFaNoz7LYbn2OrkSN8iMxH7G77BZL7LuhLVJSMXTroswFo88AHJgUXJv
+         geT34IyCCOVN4Rxj3QPW0OL2DdAtcefJHvRBY8kFl5TmuCNZmz1Sv7OXCLw7Yq/d2Y/L
+         01Zw==
+X-Gm-Message-State: ANoB5pmBDC4mXvAObsd2gEAyk/bPxw2OIfte+11hr0K/9A3sMgE6y0YB
+        A1ls3Cc2di7pElFJKURZ6k5hk+0/75W7NEYcwtpcoQ==
+X-Google-Smtp-Source: AA0mqf6V98W1Ea96QHbk4wRxDCKU/FpjbtMSK4RNn96lTbLyo7G5+5AtMHilaQI2eAgDXLqxNz2hHPUDW+FUaLdQDNo=
+X-Received: by 2002:a63:1747:0:b0:478:1391:fd14 with SMTP id
+ 7-20020a631747000000b004781391fd14mr44296746pgx.112.1670436358455; Wed, 07
+ Dec 2022 10:05:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y5DN90m5D0HVOPK8@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
+ <Y5AWkAYVEBqi5jy3@macbook-pro-6.dhcp.thefacebook.com> <CAKH8qBuzJsmOGroS+wfb3vY_y1jksishztsiU2nV7Ts2TJ37bg@mail.gmail.com>
+ <dfcfd47a-808f-ee1c-c04a-dcfedd9a2b23@linux.dev>
+In-Reply-To: <dfcfd47a-808f-ee1c-c04a-dcfedd9a2b23@linux.dev>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 7 Dec 2022 10:05:46 -0800
+Message-ID: <CAKH8qBuNM_A65LEi6G+wyU5sUEsX1AmAr8J3kKd58AFOADnW0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Dec 07, 2022 at 02:31:35PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Dec 07, 2022 at 02:27:33PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Wed, Dec 07, 2022 at 07:08:28PM +0530, Athira Rajeev escreveu:
-> > > > On 06-Dec-2022, at 11:01 PM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Can you try again? tmp.perf/core? That "tmp." part means its a force
-> > pushed branch, so I just force pushed with some arch specific fixes, now
-> > I'm down to (removing the successful builds and unrelated failures, now
-> > related to libbpf's F_DUPFD_CLOEXEC kaboom):
-> > 
-> >   14     8.49 ubuntu:18.04-x-s390           : FAIL gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)
-> >     tests/parse-events.c:1893:12: error: 'test__checkevent_tracepoint' undeclared here (not in a function); did you mean 'test__checkevent_breakpoint'?
-> >        .check = test__checkevent_tracepoint,
-> >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >                 test__checkevent_breakpoint
-> >     /git/perf-6.1.0-rc6/tools/build/Makefile.build:139: recipe for target 'tests' failed
-> >     make[3]: *** [tests] Error 2
-> 
-> This should fix the above:
-> 
-> 
-> ⬢[acme@toolbox perf]$ vim tools/perf/tests/parse-events.c
-> ⬢[acme@toolbox perf]$ git diff
-> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> index dcbfb93287e80e78..bebb677682deff98 100644
-> --- a/tools/perf/tests/parse-events.c
-> +++ b/tools/perf/tests/parse-events.c
-> @@ -1887,7 +1887,7 @@ static const struct evlist_test test__events[] = {
->                 .check = test__checkevent_breakpoint_len_rw_modifier,
->                 /* 4 */
->         },
-> -#if defined(__s390x__)
-> +#if defined(__s390x__) and defined(HAVE_LIBTRACEEVENT)
+On Tue, Dec 6, 2022 at 11:24 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 12/6/22 8:52 PM, Stanislav Fomichev wrote:
+> > On Tue, Dec 6, 2022 at 8:29 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Mon, Dec 05, 2022 at 06:45:45PM -0800, Stanislav Fomichev wrote:
+> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>> index fc4e313a4d2e..00951a59ee26 100644
+> >>> --- a/kernel/bpf/verifier.c
+> >>> +++ b/kernel/bpf/verifier.c
+> >>> @@ -15323,6 +15323,24 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >>>                return -EINVAL;
+> >>>        }
+> >>>
+> >>> +     *cnt = 0;
+> >>> +
+> >>> +     if (resolve_prog_type(env->prog) == BPF_PROG_TYPE_XDP) {
+> >>> +             if (bpf_prog_is_offloaded(env->prog->aux)) {
+> >>> +                     verbose(env, "no metadata kfuncs offload\n");
+> >>> +                     return -EINVAL;
+> >>> +             }
+> >>
+> >> If I'm reading this correctly than this error will trigger
+> >> for any XDP prog trying to use a kfunc?
+> >
+> > bpf_prog_is_offloaded() should return true only when the program is
+> > fully offloaded to the device (like nfp). So here the intent is to
+> > reject kfunc programs because nft should somehow implement them first.
+> > Unless I'm not setting offload_requested somewhere, not sure I see the
+> > problem. LMK if I missed something.
+>
+> It errors out for all kfunc here though. or it meant to error out for the
+> XDP_METADATA_KFUNC_* only?
 
-s/and/&&/g
-
->         {
->                 .name  = "kvm-s390:kvm_s390_create_vm",
->                 .check = test__checkevent_tracepoint,
-> ⬢[acme@toolbox perf]$
-
--- 
-
-- Arnaldo
+Ah, good point, I was somewhat assuming that xdp doesn't use kfuncs
+right now and I can just assume that kfunc == metadata_kfunc.
+Will make this more selective, thanks!
