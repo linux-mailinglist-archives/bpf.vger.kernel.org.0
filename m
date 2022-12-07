@@ -2,63 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052FD646180
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BA5646181
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbiLGTI7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 14:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S229723AbiLGTLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 14:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiLGTI6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 14:08:58 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527B25FC8
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:08:53 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id x11so7419340ilo.13
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:08:53 -0800 (PST)
+        with ESMTP id S229522AbiLGTLI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 14:11:08 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0546054351
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:11:07 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id qk9so16312117ejc.3
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:11:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VvSE48P9uKcEU/ORGe/SfSN7NhFuBjz0ZHMDLzxG63M=;
-        b=IdFEg7ixw7Y+QJHqi1u8pXbNwO6s+xb3YfzaVI8HYtKcaZP/3wGIUE7DQnOS4JglxH
-         FiDRsbl3rtu7pdIJVRSXU00OVFc02vYNoQF0+wvz58Tx93jsASG0fCtPTvjAr0X4MnG3
-         AxXlXYo1crvlkQRy9iWSpaAOO2dIr7QWpzjWyntHAviQibC1kmCO2NpP6U/vqpNz9/mv
-         WFnsroZE+XDmJMxHX1U/fkyepqmlNFozQYi/0Q2WELOIDLMpVXzzDWR1JkFwKxnsLR5x
-         +5vXALz0idCV4c1fDTWcJiyDElnEpa/gfp3hnSW6GjcX+eyeBWWjoOyO0xSNnNa3jgQ1
-         Dr9g==
+        bh=xhWBfJ3UROlAyzetr7niJMuklejkFqO8zZ/u0OkHzXc=;
+        b=bpLdFtXIMJTiZ8fV9Kvgw0Oa8UT5NzlfbhaYGpm9kcn1418gL6hc8WOsl1luz9ZMwF
+         jcgPCInYZdvqDJsRHjnrjSMR9z9Jn7k8h25r2iwKfL/IhZMIVOzp9Xf36nd23ljlYws1
+         1jvRNuaxt+fDz5fDrMejstDYnqZSWPR0riIR0RMesI+AI3i3TgNiM2CWer1Y9SX2eqto
+         vIF8rseo3RcO79J3hmxJm2Q1ScT8wtpklSUvCjqyu8c2wucH8rztrGHnRtyRnQrkU5fh
+         2KugKLJ4wtu24zvF2hgOHVXyFvQkd9D/dhmDpy5hN2qgDGOinAteSnlJNa3ckI85saP0
+         UB1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VvSE48P9uKcEU/ORGe/SfSN7NhFuBjz0ZHMDLzxG63M=;
-        b=JDMEHbMbIkRFgtHhmhDEvz1rzXDrp/N0Ot4Rm+BPeox9DxrqaJhBSLxPhlE8nhbYhz
-         6bLCCt7/WDbekDTKc7j/bFBI4p0Mmrkg0W+013jnSRdQC316LWDv/QvWzLGQRoylYxpA
-         Ob7yvgYLUGIk2QXDV1CA6b+1rWP3pRWHtevpFZfS8FGIzgWaVttougjjcigTZsonZTTw
-         q3eUl4X2rDKAvgko7mCh6TDbRorHw0LYVfgI/d/E5Uu7b7za1VZ3b0X8AUj7CgW1MyFj
-         yIw5TMnMjpW8mPJAJZFsakm8eqDQVQf1cjM6CMMBBEtZkyifRj1VsXWjYvRZkw+JSDKn
-         /Hsw==
-X-Gm-Message-State: ANoB5pk17wsUtrgAVQXTpnN7pNuQgAxNtGf7e1/VEflSAtRmRRgzbUy4
-        Axe2ESVCKG1Id+oBbwExxekjyFbPclE3KIPhACs=
-X-Google-Smtp-Source: AA0mqf7O4WCJX1zrUq5cGBpFV5kPSkqcIxPmSipVrazExmHN49lNOwVI3SJWYM3Na+SpUBF3/i6podSBx3IOK2DfdkM=
-X-Received: by 2002:a92:c542:0:b0:300:e879:8094 with SMTP id
- a2-20020a92c542000000b00300e8798094mr34124585ilj.153.1670440132233; Wed, 07
- Dec 2022 11:08:52 -0800 (PST)
+        bh=xhWBfJ3UROlAyzetr7niJMuklejkFqO8zZ/u0OkHzXc=;
+        b=VAFiW8DETMsLuHEg3bFOlXBz9+zKczEvJJZ+MZiLBmJBo1kurfcxQZ4CIvQnauSHg3
+         a9lVVfCAOtlPRbDHvYu4qpW8SusR9GkjFNScRsrSY0R/rd8MWsaJO3Vm0PZUO8Y52CmJ
+         ech1PsXwnEowm3xoKxfBx2tSpXw21K2SOBj3de2hhLJ6wdlnvui0rmacfa4Ip1sgKH3m
+         fe2xiDQfVQEcb/RM8euJyi2IjQupbI5ZB3Ihu6sRdtwBuAsf2EYABjX+qG1fdNl7sk9R
+         Q/Irgkohy3COGvPaF6Yquy5EEY8gqKKL6GlRpEFD99j+8ypqoD0NAfGBMjC9Vs7NwmOw
+         BW/w==
+X-Gm-Message-State: ANoB5pnvjaxAgUX3sv13Nqmki6kGbLfrXgnp8vSNv2+nBS3eYuGNfMHx
+        2n+HrvPFpX71IObBN/nl8qRulOkhuic0xl7n0GY=
+X-Google-Smtp-Source: AA0mqf7Bi42umHQQug+vxd4cwJUhQX58+W1HrKi92QxsK7FbaGwcN7yXF2r0fBtZoTvkv5sOA8PEBds0BM+slG9coeU=
+X-Received: by 2002:a17:906:2ac3:b0:7ad:f2f9:2b49 with SMTP id
+ m3-20020a1709062ac300b007adf2f92b49mr63452039eje.94.1670440265544; Wed, 07
+ Dec 2022 11:11:05 -0800 (PST)
 MIME-Version: 1.0
 References: <20221121213123.1373229-1-jolsa@kernel.org> <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
  <Y388m6wOktvZo1d4@krava> <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
  <Y4CMbTeVud0WfPtK@krava> <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y4uOSrXBxVwnxZkX@google.com> <Y43j3IGvLKgshuhR@krava> <CAADnVQLo1JBTg6iquCFj44AEuAhxj-V7a0T1gwejy1oDBDXcbA@mail.gmail.com>
- <Y4/27g8EHQ9F3bDr@google.com> <Y5BMRvsVMQtKvuhu@krava>
-In-Reply-To: <Y5BMRvsVMQtKvuhu@krava>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Wed, 7 Dec 2022 11:08:40 -0800
-Message-ID: <CAM9d7cgrgXPdUdL4WJ_MtBrrdJtSVsXF6REPJ9rSNVLms5k6LQ@mail.gmail.com>
+ <Y40U1D2bV+hlS/oi@krava> <Y5CXm+gL0lvdsd9e@krava>
+In-Reply-To: <Y5CXm+gL0lvdsd9e@krava>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Dec 2022 11:10:54 -0800
+Message-ID: <CAADnVQL+2kC5CMM8HsfPK28dpdsuWSZ8cLp_433ow2+h-H1kJg@mail.gmail.com>
 Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some tracepoints
 To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -80,94 +78,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 12:18 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Wed, Dec 7, 2022 at 5:39 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> On Tue, Dec 06, 2022 at 06:14:06PM -0800, Namhyung Kim wrote:
->
-> SNIP
->
-> > -static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> > +static void *bpf_trace_norecurse_funcs[12] = {
-> > +     (void *)bpf_trace_run_norecurse1,
-> > +     (void *)bpf_trace_run_norecurse2,
-> > +     (void *)bpf_trace_run_norecurse3,
-> > +     (void *)bpf_trace_run_norecurse4,
-> > +     (void *)bpf_trace_run_norecurse5,
-> > +     (void *)bpf_trace_run_norecurse6,
-> > +     (void *)bpf_trace_run_norecurse7,
-> > +     (void *)bpf_trace_run_norecurse8,
-> > +     (void *)bpf_trace_run_norecurse9,
-> > +     (void *)bpf_trace_run_norecurse10,
-> > +     (void *)bpf_trace_run_norecurse11,
-> > +     (void *)bpf_trace_run_norecurse12,
-> > +};
-> > +
-> > +static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-> > +                             void *func, void *data)
-> >  {
-> >       struct tracepoint *tp = btp->tp;
-> >
-> > @@ -2325,13 +2354,12 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
-> >       if (prog->aux->max_tp_access > btp->writable_size)
-> >               return -EINVAL;
-> >
-> > -     return tracepoint_probe_register_may_exist(tp, (void *)btp->bpf_func,
-> > -                                                prog);
-> > +     return tracepoint_probe_register_may_exist(tp, func, data);
-> >  }
-> >
-> >  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> >  {
-> > -     return __bpf_probe_register(btp, prog);
-> > +     return __bpf_probe_register(btp, prog, btp->bpf_func, prog);
-> >  }
-> >
-> >  int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> > @@ -2339,6 +2367,33 @@ int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> >       return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
-> >  }
-> >
-> > +int bpf_probe_register_norecurse(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-> > +                              struct bpf_raw_event_data *data)
-> > +{
-> > +     void *bpf_func;
-> > +
-> > +     data->active = alloc_percpu_gfp(int, GFP_KERNEL);
-> > +     if (!data->active)
-> > +             return -ENOMEM;
-> > +
-> > +     data->prog = prog;
-> > +     bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
-> > +     return __bpf_probe_register(btp, prog, bpf_func, data);
->
-> I don't think we can do that, because it won't do the arg -> u64 conversion
-> that __bpf_trace_##call functions are doing:
->
->         __bpf_trace_##call(void *__data, proto)                                 \
->         {                                                                       \
->                 struct bpf_prog *prog = __data;                                 \
->                 CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
->         }
->
-> like for 'old_pid' arg in sched_process_exec tracepoint:
->
->         ffffffff811959e0 <__bpf_trace_sched_process_exec>:
->         ffffffff811959e0:       89 d2                   mov    %edx,%edx
->         ffffffff811959e2:       e9 a9 07 14 00          jmp    ffffffff812d6190 <bpf_trace_run3>
->         ffffffff811959e7:       66 0f 1f 84 00 00 00    nopw   0x0(%rax,%rax,1)
->         ffffffff811959ee:       00 00
->
-> bpf program could see some trash in args < u64
->
-> we'd need to add 'recursion' variant for all __bpf_trace_##call functions
+> looks like we can remove the spinlock completely by using the
+> nested level buffer approach same way as in bpf_bprintf_prepare
 
-Ah, ok.  So 'contention_begin' tracepoint has unsigned int flags.
-perf lock contention BPF program properly uses the lower 4 bytes of flags,
-but others might access the whole 8 bytes then they will see the garbage.
-Is that your concern?
+imo that is a much better path forward.
 
-Hmm.. I think we can use BTF to get the size of each argument then do
-the conversion.  Let me see..
-
-Thanks,
-Namhyung
+> it gets rid of the contention_begin tracepoint, so I'm not being
+> able to trigger the issue in my test
+>
+> jirka
+>
+>
+> ---
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 3bbd3f0c810c..d6afde7311f8 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -369,33 +369,60 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>         return &bpf_probe_write_user_proto;
+>  }
+>
+> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
+> -
+>  #define MAX_TRACE_PRINTK_VARARGS       3
+>  #define BPF_TRACE_PRINTK_SIZE          1024
+> +#define BPF_TRACE_PRINTK_NEST          3
+> +
+> +struct trace_printk_buf {
+> +       char data[BPF_TRACE_PRINTK_NEST][BPF_TRACE_PRINTK_SIZE];
+> +       int nest;
+> +};
+> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
+> +
+> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
+> +{
+> +       this_cpu_dec(buf->nest);
+> +       preempt_enable();
+> +}
+> +
+> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
+> +{
+> +       int nest;
+> +
+> +       preempt_disable();
+> +       nest = this_cpu_inc_return(buf->nest);
+> +       if (nest > BPF_TRACE_PRINTK_NEST) {
+> +               put_printk_buf(buf);
+> +               return false;
+> +       }
+> +       *data = (char *) this_cpu_ptr(&buf->data[nest - 1]);
+> +       return true;
+> +}
+>
+>  BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+>            u64, arg2, u64, arg3)
+>  {
+>         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+>         u32 *bin_args;
+> -       static char buf[BPF_TRACE_PRINTK_SIZE];
+> -       unsigned long flags;
+> +       char *buf;
+>         int ret;
+>
+> +       if (!get_printk_buf(&printk_buf, &buf))
+> +               return -EBUSY;
+> +
+>         ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
+>                                   MAX_TRACE_PRINTK_VARARGS);
+>         if (ret < 0)
+> -               return ret;
+> +               goto out;
+>
+> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
+>
+>         trace_bpf_trace_printk(buf);
+> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>
+>         bpf_bprintf_cleanup();
+>
+> +out:
+> +       put_printk_buf(&printk_buf);
+>         return ret;
+>  }
+>
+> @@ -427,31 +454,35 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>         return &bpf_trace_printk_proto;
+>  }
+>
+> +static DEFINE_PER_CPU(struct trace_printk_buf, vprintk_buf);
+> +
+>  BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, data,
+>            u32, data_len)
+>  {
+> -       static char buf[BPF_TRACE_PRINTK_SIZE];
+> -       unsigned long flags;
+>         int ret, num_args;
+>         u32 *bin_args;
+> +       char *buf;
+>
+>         if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
+>             (data_len && !data))
+>                 return -EINVAL;
+>         num_args = data_len / 8;
+>
+> +       if (!get_printk_buf(&vprintk_buf, &buf))
+> +               return -EBUSY;
+> +
+>         ret = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
+>         if (ret < 0)
+> -               return ret;
+> +               goto out;
+>
+> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
+>
+>         trace_bpf_trace_printk(buf);
+> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>
+>         bpf_bprintf_cleanup();
+>
+> +out:
+> +       put_printk_buf(&vprintk_buf);
+>         return ret;
+>  }
+>
