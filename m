@@ -2,69 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79F7645561
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF46E6455CD
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbiLGIXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 03:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        id S230078AbiLGIxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 03:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiLGIXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 03:23:38 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9FF25EA5;
-        Wed,  7 Dec 2022 00:23:36 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id n21so12119799ejb.9;
-        Wed, 07 Dec 2022 00:23:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1WGjEJwm3dqx8XsjIfiElv6H7t2zrb2ZfkTtnHZN3Ic=;
-        b=WB35YW7+zReBscyKvhxPvnkde2WZ0r40O4cYUkRcLaDHb/WzmDOejw9PbQubSt/IAs
-         7IYdIqebi/Q775bY81uKA31RLYQIJ3po0DLhN3BCfOgtLKPP+f+bfSw8G+82IXfCI+rV
-         Ak56sZkoMwDz8A8VhiL8gA9YvJx6lfR+481ckqRW+PiDnxooK4Zp1CqtvwkAg/bLMTu2
-         So/pw7ErajGqL593rEoOBZ4+HeLY3Sr5YIXjNY/FeKSdLlKSaSCt53FCSEhfu36kQtBw
-         2SrJ4Pt1Zh5tPHExOniA/xWojdfunTl4XAhT9qaB1GKnPX9fOPujQEk2QRmsvef1Swui
-         wtTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1WGjEJwm3dqx8XsjIfiElv6H7t2zrb2ZfkTtnHZN3Ic=;
-        b=EihWpVWE0nGkumqV7u38TrQAn5uFeKTejZdEZIuAorBJvs6KfGBqdphUwMkp8CVdg8
-         5rUo8sCyJ9KQWfiwUoSv/NsYSqkxwHEbBlAMLFfHxmy1oM60ZdF7nUocjVY/rNLhVepc
-         Emn2p25Q9sShZRJ/yElms1uEOOR/Y84zSdjDHD6RiwtYU42pm7v0+QqjYsGgEfxotBLh
-         Pb4vSnhMWpbGMWRpY9spxJqQHOLVYiJbs36xGM9591AAnIPMYmIt+BNAFiKLfs+EKWZv
-         oNO3A+9WWFfH1LSGP6GjrE8buVKqPo5292vnZfvuUu5m2Lq9aBFZ3jfiCWDhClcsm++7
-         Wa5g==
-X-Gm-Message-State: ANoB5pkOLh27WTq0FJLsWR4D1E0+n88uv7qzJgqV2Vyioj4MCKJw4Wio
-        qn46c69kNgqxfiBsVfhQthhdYng58recDaThOco=
-X-Google-Smtp-Source: AA0mqf78s91SIU3ZOFCaTqNG5YIgu6ZyJRasY5vtX8X1yjWD4TcUsy5pIkjAEuPvwpqu27O7YBeoMUyQlGBJoVS1GTM=
-X-Received: by 2002:a17:907:9d04:b0:7c1:1342:61b7 with SMTP id
- kt4-20020a1709079d0400b007c1134261b7mr3903917ejc.524.1670401414979; Wed, 07
- Dec 2022 00:23:34 -0800 (PST)
+        with ESMTP id S229929AbiLGIw1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 03:52:27 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0452613B;
+        Wed,  7 Dec 2022 00:49:40 -0800 (PST)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NRrYD0kp8zmWM7;
+        Wed,  7 Dec 2022 16:48:48 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 7 Dec 2022 16:49:36 +0800
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: Adapt 32-bit return value kfunc for
+ 32-bit ARM when zext extension
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@meta.com>, <bjorn@kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        <colin.i.king@gmail.com>, Artem Savkov <asavkov@redhat.com>,
+        Delyan Kratunov <delyank@fb.com>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20221126094530.226629-1-yangjihong1@huawei.com>
+ <20221126094530.226629-2-yangjihong1@huawei.com>
+ <20221128015758.aekybr3qlahfopwq@MacBook-Pro-5.local>
+ <dc9d1823-80f2-e2d9-39a8-c39b6f52dec5@huawei.com>
+ <CAADnVQJPRCnESmJ92W39bo-btqNbYaNsGQO0is6FD3JLU_mSjQ@mail.gmail.com>
+ <8cb54255-4dce-6d50-d6f0-ac9af0e56f37@huawei.com>
+ <CAADnVQJXr6XxpG2E-AkO7__qg-sujrhyO+JWWa1iwYmAO4S0Pw@mail.gmail.com>
+ <4a2b8cd5-78c4-360a-6eb0-33fcf689d26a@huawei.com>
+Message-ID: <2543b57d-d7a2-19a0-e532-0d5e3b04a45e@huawei.com>
+Date:   Wed, 7 Dec 2022 16:49:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20221206090826.2957-1-magnus.karlsson@gmail.com>
- <20221206090826.2957-8-magnus.karlsson@gmail.com> <3489505c-3e33-880e-6f19-1796ca897553@iogearbox.net>
-In-Reply-To: <3489505c-3e33-880e-6f19-1796ca897553@iogearbox.net>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 7 Dec 2022 09:23:22 +0100
-Message-ID: <CAJ8uoz0=nbs+rgU5kNi161=D5QU+oH383kieZOguBuTsivJYXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 07/15] selftests/xsk: get rid of asm
- store/release implementations
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
-        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, jonathan.lemon@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <4a2b8cd5-78c4-360a-6eb0-33fcf689d26a@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,143 +81,181 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 12:48 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 12/6/22 10:08 AM, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Get rid of our own homegrown assembly store/release and load/acquire
-> > implementations. Use the HW agnositic APIs the compiler offers
-> > instead.
->
-> The description is a bit terse. Could you add a bit more context, discussion
-> or reference on why it's safe to replace them with C11 atomics?
+Hello,
 
-Will do, though I will hold off on a v2 in case there are further comments.
+On 2022/12/5 9:19, Yang Jihong wrote:
+> 
+> 
+> On 2022/12/4 0:40, Alexei Starovoitov wrote:
+>> On Fri, Dec 2, 2022 at 6:58 PM Yang Jihong <yangjihong1@huawei.com> 
+>> wrote:
+>>>
+>>>
+>>>
+>>> On 2022/11/29 0:41, Alexei Starovoitov wrote:
+>>>> On Mon, Nov 28, 2022 at 4:40 AM Yang Jihong <yangjihong1@huawei.com> 
+>>>> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 2022/11/28 9:57, Alexei Starovoitov wrote:
+>>>>>> On Sat, Nov 26, 2022 at 05:45:27PM +0800, Yang Jihong wrote:
+>>>>>>> For ARM32 architecture, if data width of kfunc return value is 32 
+>>>>>>> bits,
+>>>>>>> need to do explicit zero extension for high 32-bit, 
+>>>>>>> insn_def_regno should
+>>>>>>> return dst_reg for BPF_JMP type of BPF_PSEUDO_KFUNC_CALL. Otherwise,
+>>>>>>> opt_subreg_zext_lo32_rnd_hi32 returns -EFAULT, resulting in BPF 
+>>>>>>> failure.
+>>>>>>>
+>>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>>>>> ---
+>>>>>>>     kernel/bpf/verifier.c | 44 
+>>>>>>> ++++++++++++++++++++++++++++++++++++++++---
+>>>>>>>     1 file changed, 41 insertions(+), 3 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>>>>> index 264b3dc714cc..193ea927aa69 100644
+>>>>>>> --- a/kernel/bpf/verifier.c
+>>>>>>> +++ b/kernel/bpf/verifier.c
+>>>>>>> @@ -1927,6 +1927,21 @@ find_kfunc_desc(const struct bpf_prog 
+>>>>>>> *prog, u32 func_id, u16 offset)
+>>>>>>>                       sizeof(tab->descs[0]), 
+>>>>>>> kfunc_desc_cmp_by_id_off);
+>>>>>>>     }
+>>>>>>>
+>>>>>>> +static int kfunc_desc_cmp_by_imm(const void *a, const void *b);
+>>>>>>> +
+>>>>>>> +static const struct bpf_kfunc_desc *
+>>>>>>> +find_kfunc_desc_by_imm(const struct bpf_prog *prog, s32 imm)
+>>>>>>> +{
+>>>>>>> +    struct bpf_kfunc_desc desc = {
+>>>>>>> +            .imm = imm,
+>>>>>>> +    };
+>>>>>>> +    struct bpf_kfunc_desc_tab *tab;
+>>>>>>> +
+>>>>>>> +    tab = prog->aux->kfunc_tab;
+>>>>>>> +    return bsearch(&desc, tab->descs, tab->nr_descs,
+>>>>>>> +                   sizeof(tab->descs[0]), kfunc_desc_cmp_by_imm);
+>>>>>>> +}
+>>>>>>> +
+>>>>>>>     static struct btf *__find_kfunc_desc_btf(struct 
+>>>>>>> bpf_verifier_env *env,
+>>>>>>>                                         s16 offset)
+>>>>>>>     {
+>>>>>>> @@ -2342,6 +2357,13 @@ static bool is_reg64(struct 
+>>>>>>> bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>>>>                         */
+>>>>>>>                        if (insn->src_reg == BPF_PSEUDO_CALL)
+>>>>>>>                                return false;
+>>>>>>> +
+>>>>>>> +                    /* Kfunc call will reach here because of 
+>>>>>>> insn_has_def32,
+>>>>>>> +                     * conservatively return TRUE.
+>>>>>>> +                     */
+>>>>>>> +                    if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL)
+>>>>>>> +                            return true;
+>>>>>>> +
+>>>>>>>                        /* Helper call will reach here because of 
+>>>>>>> arg type
+>>>>>>>                         * check, conservatively return TRUE.
+>>>>>>>                         */
+>>>>>>> @@ -2405,10 +2427,26 @@ static bool is_reg64(struct 
+>>>>>>> bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>>>>     }
+>>>>>>>
+>>>>>>>     /* Return the regno defined by the insn, or -1. */
+>>>>>>> -static int insn_def_regno(const struct bpf_insn *insn)
+>>>>>>> +static int insn_def_regno(struct bpf_verifier_env *env, const 
+>>>>>>> struct bpf_insn *insn)
+>>>>>>>     {
+>>>>>>>        switch (BPF_CLASS(insn->code)) {
+>>>>>>>        case BPF_JMP:
+>>>>>>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>>>>>> +                    const struct bpf_kfunc_desc *desc;
+>>>>>>> +
+>>>>>>> +                    /* The value of desc cannot be NULL */
+>>>>>>> +                    desc = find_kfunc_desc_by_imm(env->prog, 
+>>>>>>> insn->imm);
+>>>>>>> +
+>>>>>>> +                    /* A kfunc can return void.
+>>>>>>> +                     * The btf type of the kfunc's return value 
+>>>>>>> needs
+>>>>>>> +                     * to be checked against "void" first
+>>>>>>> +                     */
+>>>>>>> +                    if (desc->func_model.ret_size == 0)
+>>>>>>> +                            return -1;
+>>>>>>> +                    else
+>>>>>>> +                            return insn->dst_reg;
+>>>>>>> +            }
+>>>>>>> +            fallthrough;
+>>>>>>
+>>>>>> I cannot make any sense of this patch.
+>>>>>> insn->dst_reg above is 0.
+>>>>>> The kfunc call doesn't define a register from insn_def_regno() pov.
+>>>>>>
+>>>>>> Are you hacking insn_def_regno() to return 0 so that
+>>>>>> if (WARN_ON(load_reg == -1)) {
+>>>>>>      verbose(env, "verifier bug. zext_dst is set, but no reg is 
+>>>>>> defined\n");
+>>>>>>      return -EFAULT;
+>>>>>> }
+>>>>>> in opt_subreg_zext_lo32_rnd_hi32() doesn't trigger ?
+>>>>>>
+>>>>>> But this verifier message should have been a hint that you need
+>>>>>> to analyze why zext_dst is set on this kfunc call.
+>>>>>> Maybe it shouldn't ?
+>>>>>> Did you analyze the logic of mark_btf_func_reg_size() ?
+>>>>> make r0 zext is not caused by mark_btf_func_reg_size.
+>>>>>
+>>>>> This problem occurs when running the kfunc_call_test_ref_btf_id test
+>>>>> case in the 32-bit ARM environment.
+>>>>
+>>>> Why is it not failing on x86-32 ?
+>>> Use the latest mainline kernel code to test on the x86_32 machine. The
+>>> test also fails:
+>>>
+>>>     # ./test_progs -t kfunc_call/kfunc_call_test_ref_btf_id
+>>>     Failed to load bpf_testmod.ko into the kernel: -8
+>>>     WARNING! Selftests relying on bpf_testmod.ko will be skipped.
+>>>     libbpf: prog 'kfunc_call_test_ref_btf_id': BPF program load failed:
+>>> Bad address
+>>>     libbpf: prog 'kfunc_call_test_ref_btf_id': -- BEGIN PROG LOAD LOG --
+>>>     processed 25 insns (limit 1000000) max_states_per_insn 0 
+>>> total_states
+>>> 2 peak_states 2 mark_read 1
+>>>     -- END PROG LOAD LOG --
+>>>     libbpf: prog 'kfunc_call_test_ref_btf_id': failed to load: -14
+>>>     libbpf: failed to load object 'kfunc_call_test'
+>>>     libbpf: failed to load BPF skeleton 'kfunc_call_test': -14
+>>>     verify_success:FAIL:skel unexpected error: -14
+>>>
+>>> Therefore, this problem also exists on x86_32:
+>>> "verifier bug. zext_dst is set, but no reg is defined"
+>>
+>> The kernel returns -14 == EFAULT.
+>> That's a completely different issue.
+> It's the same problem. The opt_subreg_zext_lo32_rnd_hi32 function fails 
+> to check here and returns -EFAULT
+> 
+> opt_subreg_zext_lo32_rnd_hi32 {
+>    ...
+>     if (WARN_ON(load_reg == -1)) {
+>             verbose(env, "verifier bug. zext_dst is set, but no reg is 
+> defined\n");
+>             return -EFAULT;
+>     }
+>    ...
+> }
+>> .
+I see that there are emails from the community talking about the same 
+problem, and come up with a solution:
+https://lore.kernel.org/bpf/20221202103620.1915679-1-bjorn@kernel.org/T/
 
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >   tools/testing/selftests/bpf/xsk.h | 80 ++-----------------------------
-> >   1 file changed, 4 insertions(+), 76 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/xsk.h b/tools/testing/selftests/bpf/xsk.h
-> > index 997723b0bfb2..24ee765aded3 100644
-> > --- a/tools/testing/selftests/bpf/xsk.h
-> > +++ b/tools/testing/selftests/bpf/xsk.h
-> > @@ -23,77 +23,6 @@
-> >   extern "C" {
-> >   #endif
-> >
-> > -/* This whole API has been deprecated and moved to libxdp that can be found at
-> > - * https://github.com/xdp-project/xdp-tools. The APIs are exactly the same so
-> > - * it should just be linking with libxdp instead of libbpf for this set of
-> > - * functionality. If not, please submit a bug report on the aforementioned page.
-> > - */
-> > -
-> > -/* Load-Acquire Store-Release barriers used by the XDP socket
-> > - * library. The following macros should *NOT* be considered part of
-> > - * the xsk.h API, and is subject to change anytime.
-> > - *
-> > - * LIBRARY INTERNAL
-> > - */
-> > -
-> > -#define __XSK_READ_ONCE(x) (*(volatile typeof(x) *)&x)
-> > -#define __XSK_WRITE_ONCE(x, v) (*(volatile typeof(x) *)&x) = (v)
-> > -
-> > -#if defined(__i386__) || defined(__x86_64__)
-> > -# define libbpf_smp_store_release(p, v)                                      \
-> > -     do {                                                            \
-> > -             asm volatile("" : : : "memory");                        \
-> > -             __XSK_WRITE_ONCE(*p, v);                                \
-> > -     } while (0)
-> > -# define libbpf_smp_load_acquire(p)                                  \
-> > -     ({                                                              \
-> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
-> > -             asm volatile("" : : : "memory");                        \
-> > -             ___p1;                                                  \
-> > -     })
-> > -#elif defined(__aarch64__)
-> > -# define libbpf_smp_store_release(p, v)                                      \
-> > -             asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
-> > -# define libbpf_smp_load_acquire(p)                                  \
-> > -     ({                                                              \
-> > -             typeof(*p) ___p1;                                       \
-> > -             asm volatile ("ldar %w0, %1"                            \
-> > -                           : "=r" (___p1) : "Q" (*p) : "memory");    \
-> > -             ___p1;                                                  \
-> > -     })
-> > -#elif defined(__riscv)
-> > -# define libbpf_smp_store_release(p, v)                                      \
-> > -     do {                                                            \
-> > -             asm volatile ("fence rw,w" : : : "memory");             \
-> > -             __XSK_WRITE_ONCE(*p, v);                                \
-> > -     } while (0)
-> > -# define libbpf_smp_load_acquire(p)                                  \
-> > -     ({                                                              \
-> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
-> > -             asm volatile ("fence r,rw" : : : "memory");             \
-> > -             ___p1;                                                  \
-> > -     })
-> > -#endif
-> > -
-> > -#ifndef libbpf_smp_store_release
-> > -#define libbpf_smp_store_release(p, v)                                       \
-> > -     do {                                                            \
-> > -             __sync_synchronize();                                   \
-> > -             __XSK_WRITE_ONCE(*p, v);                                \
-> > -     } while (0)
-> > -#endif
-> > -
-> > -#ifndef libbpf_smp_load_acquire
-> > -#define libbpf_smp_load_acquire(p)                                   \
-> > -     ({                                                              \
-> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
-> > -             __sync_synchronize();                                   \
-> > -             ___p1;                                                  \
-> > -     })
-> > -#endif
-> > -
-> > -/* LIBRARY INTERNAL -- END */
-> > -
-> >   /* Do not access these members directly. Use the functions below. */
-> >   #define DEFINE_XSK_RING(name) \
-> >   struct name { \
-> > @@ -168,7 +97,7 @@ static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
-> >        * this function. Without this optimization it whould have been
-> >        * free_entries = r->cached_prod - r->cached_cons + r->size.
-> >        */
-> > -     r->cached_cons = libbpf_smp_load_acquire(r->consumer);
-> > +     r->cached_cons = __atomic_load_n(r->consumer, __ATOMIC_ACQUIRE);
-> >       r->cached_cons += r->size;
-> >
-> >       return r->cached_cons - r->cached_prod;
-> > @@ -179,7 +108,7 @@ static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
-> >       __u32 entries = r->cached_prod - r->cached_cons;
-> >
-> >       if (entries == 0) {
-> > -             r->cached_prod = libbpf_smp_load_acquire(r->producer);
-> > +             r->cached_prod = __atomic_load_n(r->producer, __ATOMIC_ACQUIRE);
-> >               entries = r->cached_prod - r->cached_cons;
-> >       }
-> >
-> > @@ -202,7 +131,7 @@ static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, __u32 nb)
-> >       /* Make sure everything has been written to the ring before indicating
-> >        * this to the kernel by writing the producer pointer.
-> >        */
-> > -     libbpf_smp_store_release(prod->producer, *prod->producer + nb);
-> > +     __atomic_store_n(prod->producer, *prod->producer + nb, __ATOMIC_RELEASE);
-> >   }
-> >
-> >   static inline __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __u32 *idx)
-> > @@ -227,8 +156,7 @@ static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb)
-> >       /* Make sure data has been read before indicating we are done
-> >        * with the entries by updating the consumer pointer.
-> >        */
-> > -     libbpf_smp_store_release(cons->consumer, *cons->consumer + nb);
-> > -
-> > +     __atomic_store_n(cons->consumer, *cons->consumer + nb, __ATOMIC_RELEASE);
-> >   }
-> >
-> >   static inline void *xsk_umem__get_data(void *umem_area, __u64 addr)
-> >
->
+will remove this patch based on that patch.
+
+Thanks,
+Yang
+>>
+> 
+> .
