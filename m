@@ -2,135 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F256C645650
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 10:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9A6645653
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 10:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiLGJSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 04:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
+        id S229497AbiLGJTV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 04:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbiLGJSW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 04:18:22 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B05C00;
-        Wed,  7 Dec 2022 01:18:20 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4NRs3X4pZqz9v7H4;
-        Wed,  7 Dec 2022 17:11:36 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDH+fVBWpBjTaXHAA--.61258S2;
-        Wed, 07 Dec 2022 10:18:01 +0100 (CET)
-Message-ID: <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and
- fix formatting
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     casey@schaufler-ca.com, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 07 Dec 2022 10:17:49 +0100
-In-Reply-To: <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
-References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
-         <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
-         <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
-         <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230108AbiLGJTI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 04:19:08 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38978293;
+        Wed,  7 Dec 2022 01:19:06 -0800 (PST)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D08EF1FDBC;
+        Wed,  7 Dec 2022 09:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1670404744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ijRcVYqPEjBAfgioAlVUgPdPwzo/HNYZ8f5vv1ik9Sk=;
+        b=0aPcXOex+E1M4o5no6RISe8VqofletEFf1ZLxOzclSAm166hTjcp044ed4Rk8MMu10x/ZH
+        znpNvLXbFsWDBTpxbzJ++83/YyeTTFyQgugQNowkuppSWZYwXP+8Zl51tBMActTQWYjsPN
+        roICipK+C606GpImLgg2eO9107E39AI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1670404744;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ijRcVYqPEjBAfgioAlVUgPdPwzo/HNYZ8f5vv1ik9Sk=;
+        b=wXLCuKSsXGXdou8O/5nq6Vbdd4/23AOh0ptXIuoTwKXjGMkUD4Qo0FU5yWrazDnWuGDPxv
+        8nRPcyblUsJPCeAQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 63842136B4;
+        Wed,  7 Dec 2022 09:19:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id EnylF4hakGOjZgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 07 Dec 2022 09:19:04 +0000
+Message-ID: <ef7c0afb-cc93-e171-d439-bf2a7b960db4@suse.cz>
+Date:   Wed, 7 Dec 2022 10:19:04 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] skbuff: Reallocate to ksize() in __build_skb_around()
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        pepsipu <soopthegoop@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
+        KP Singh <kpsingh@kernel.org>, martin.lau@linux.dev,
+        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Menglong Dong <imagedong@tencent.com>,
+        David Ahern <dsahern@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-hardening@vger.kernel.org
+References: <20221206231659.never.929-kees@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20221206231659.never.929-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwDH+fVBWpBjTaXHAA--.61258S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWrZw1UJr47tF4Utw45trb_yoW5Jw4kpF
-        Z5G3WYyF1kZryIkr43A3W7Jw4Sy395KF13XryxWw18Zw1YyrWxKryakF4Y9FWDGrWkCFyj
-        vFWaq3sruFy7AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4ZgCAAAsJ
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-12-07 at 08:58 +0100, Roberto Sassu wrote:
-> On Tue, 2022-12-06 at 19:21 -0500, Paul Moore wrote:
-> > On Mon, Nov 28, 2022 at 9:43 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > Ensure that for non-void LSM hooks there is a description of the return
-> > > values.
-> > > 
-> > > Also, replace spaces with tab for indentation, remove empty lines between
-> > > the hook description and the list of parameters, adjust semicolons and add
-> > > the period at the end of the parameter description.
-> > > 
-> > > Finally, move the description of gfp parameter of the
-> > > xfrm_policy_alloc_security hook together with the others.
-> > > 
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  include/linux/lsm_hooks.h | 221 ++++++++++++++++++++++++--------------
-> > >  1 file changed, 138 insertions(+), 83 deletions(-)
-> > 
-> > Thanks Roberto, I've merged this into lsm/next with one small tweak (below).
-> > 
-> > > diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> > > index c35e260efd8c..6502a1bea93a 100644
-> > > --- a/include/linux/lsm_hooks.h
-> > > +++ b/include/linux/lsm_hooks.h
-> > > @@ -677,7 +695,7 @@
-> > >   *     indicates which of the set*uid system calls invoked this hook.  If
-> > >   *     @new is the set of credentials that will be installed.  Modifications
-> > >   *     should be made to this rather than to @current->cred.
-> > > - *     @old is the set of credentials that are being replaces
-> > > + *     @old is the set of credentials that are being replaces.
-> > 
-> > Might as well change "replaces" to "replaced".  I'll go ahead and fix
-> > that up during the merge.
+On 12/7/22 00:17, Kees Cook wrote:
+> When build_skb() is passed a frag_size of 0, it means the buffer came
+> from kmalloc. In these cases, ksize() is used to find its actual size,
+> but since the allocation may not have been made to that size, actually
+> perform the krealloc() call so that all the associated buffer size
+> checking will be correctly notified. For example, syzkaller reported:
 > 
-> Thanks a lot!
+>   BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
+>   Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
+> 
+> For bpf_prog_test_run_skb(), which uses a kmalloc()ed buffer passed to
+> build_skb().
 
-Ops, I found an issue for fs_context_parse_param. It seems that the
-kernel doc and lsm_hooks.h provide different conventions for it.
+Weren't all such kmalloc() users converted to kmalloc_size_roundup() to
+prevent this?
 
-+ David
+> Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
+> Link: https://groups.google.com/g/syzkaller-bugs/c/UnIKxTtU5-0/m/-wbXinkgAQAJ
+> Fixes: 38931d8989b5 ("mm: Make ksize() a reporting-only function")
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Cc: pepsipu <soopthegoop@gmail.com>
+> Cc: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: kasan-dev <kasan-dev@googlegroups.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: ast@kernel.org
+> Cc: bpf <bpf@vger.kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: jolsa@kernel.org
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: martin.lau@linux.dev
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: song@kernel.org
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: netdev@vger.kernel.org
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  net/core/skbuff.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 1d9719e72f9d..b55d061ed8b4 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -274,7 +274,23 @@ static void __build_skb_around(struct sk_buff *skb, void *data,
+>  			       unsigned int frag_size)
+>  {
+>  	struct skb_shared_info *shinfo;
+> -	unsigned int size = frag_size ? : ksize(data);
+> +	unsigned int size = frag_size;
+> +
+> +	/* When frag_size == 0, the buffer came from kmalloc, so we
+> +	 * must find its true allocation size (and grow it to match).
+> +	 */
+> +	if (unlikely(size == 0)) {
+> +		void *resized;
+> +
+> +		size = ksize(data);
+> +		/* krealloc() will immediate return "data" when
+> +		 * "ksize(data)" is requested: it is the existing upper
+> +		 * bounds. As a result, GFP_ATOMIC will be ignored.
+> +		 */
+> +		resized = krealloc(data, size, GFP_ATOMIC);
+> +		if (WARN_ON(resized != data))
 
-Kernel doc:
+WARN_ON_ONCE() could be sufficient as either this is impossible to hit by
+definition, or something went very wrong (a patch screwed ksize/krealloc?)
+and it can be hit many times?
 
-It should return 0 to indicate that the parameter should be passed on
-to the filesystem, 1 to indicate that the parameter should be discarded
-or an error to indicate that the parameter should be rejected.
+> +			data = resized;
 
-lsm_hooks.h:
+In that "impossible" case, this could also end up as NULL due to GFP_ATOMIC
+allocation failure, but maybe it's really impractical to do anything about it...
 
-The LSM may reject it with an error and may use it for itself, in which
-case it should return 0; otherwise it should return -ENOPARAM to pass
-it on to the filesystem.
-
-Looking at the code, the latter seems the right one. I would send
-another patch to fix the kernel doc.
-
-For this patch, I saw it is already in lsm/next. Paul, should I do an
-incremental patch or change the one in the repo and you force push it?
-I would just remove the three lines after the parameters description.
-
-Thanks
-
-Roberto
+> +	}
+>  
+>  	size -= SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>  
 
