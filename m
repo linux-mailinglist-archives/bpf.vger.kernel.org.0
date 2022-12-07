@@ -2,143 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A2C6460F7
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 19:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07950646121
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 19:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbiLGSZt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 13:25:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        id S229911AbiLGSb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 13:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbiLGSZs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 13:25:48 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90075442ED;
-        Wed,  7 Dec 2022 10:25:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2570861B89;
-        Wed,  7 Dec 2022 18:25:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EB86C433D6;
-        Wed,  7 Dec 2022 18:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670437546;
-        bh=pVyiC7U7r8UYxc6T4j5HNqYUT0HvvdCZ4k71/3ALx4o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UIOfnwtjpYW1kYBTkfi9kZ8PIv+YubUOBq1xjiOFhhiuiXTH73pifqE1WamIFmRdZ
-         lbAs8HDCWhmfda1Q0q1KwTrtnQ2POmWcT7POnRHUAwnLzQfDk7FEn/egDdYysx1ygL
-         rTYXpAB3MRgA+PGOk03tkqfhhhxUXfgkzP7S/LEfQAVpb5h9DqFHoxhNt9FzMyGOEO
-         Kqcl2DW498ayiZQWnRTLf6HBLWmIzhiwNnaYsVlD2nWXEAgWG5ypdPY5pCahgjOhZH
-         QCMcc0OQwgjbZ3fwkW+ciNWFfiLz1DuCe8qItx5VhnJrk0l5IKvu4bUtYA86b12BK8
-         +y8Srr8BipGiQ==
-Date:   Wed, 7 Dec 2022 10:25:44 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com,
-        Bartosz Staszewski <bartoszx.staszewski@intel.com>,
-        netdev@vger.kernel.org, bjorn@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
-Subject: Re: [PATCH net v2 1/1] i40e: Fix the inability to attach XDP program
- on downed interface
-Message-ID: <Y5DaqDKuC4y4icGe@x130>
-References: <20221207180842.1096243-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S229486AbiLGSbt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 13:31:49 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE5A6E567;
+        Wed,  7 Dec 2022 10:31:48 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id n20so16174925ejh.0;
+        Wed, 07 Dec 2022 10:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HNms7Hi4w1RYlFMn8tQ29mfpUPBacg1jiG+VyuPjD8I=;
+        b=Mdm4YR7dpQnvJdWvX0qiSEPorThhnrBexUuWZP88nDlJgrNGQi7wXNMdIMj96niLo8
+         hNqrowKAmOY8/CnyRQPbwIFTRPpq1ekqIQv2tn2Sdpzg67jEW5FqK4QFjNCJNEPA1C6K
+         QtXWnv7wcr4x5p8ToOZDb4PK6k/EDKpCkvIToky9JaOKmOYM55pW0JBMkSDsJLZHs3PM
+         Fu/h/FhxH8Rzf3Y7oAbVtlIOhJT+qJAZQ4WzrUlQlHID5QzrKs1zFO3hF+YGtT7N/IJZ
+         azVRiTdXugfjPUR7QkOQN9ryDwns8HDW5TeAhOopqA1D0NFXfmsa62NnC87mQoXRYIEv
+         Ldyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HNms7Hi4w1RYlFMn8tQ29mfpUPBacg1jiG+VyuPjD8I=;
+        b=RLl/Y6UPgjMxo1oJhBggVsxh0WL1BJJCknIHzLZzVxCrmkbrmwrWBkZ1iqfOcEAH9g
+         /4kEkTO1cyS7lbSD3NRxBhGwZwVwZWyXjyDxwICaij0e48jsBuKcuMTp2TeNW9/IENuQ
+         3DgZbWe8PwlMsdEHsXxcCWiLNUl6uxgky2aHdKbZLnoGDUeRY6B66bHD9dJ1vufMbEp0
+         5iRduR3cew4jXbXDjYxniAfptG9rcVhAWFG9/kYPUa6xyTRdObHM56NVH05/7k+jvvtb
+         YN+yHrrCjPHLaw+Gv9VaobUOcLqiVv61a0nSI34kh9G5/kixScyizYSCEHcuIORdd+aS
+         9X4A==
+X-Gm-Message-State: ANoB5plIlFuwBdopMHK2nBtw9KAscKimRPMZJcW3YNNafrB48zyHe4Ed
+        pETGzygkbMZ8Zc5W64f2hT1KiMNXpwSZWSvqZlY=
+X-Google-Smtp-Source: AA0mqf7PiTvOMdup8c6tLZlJguE1SyMAw51mfWFNj75ihz/N/FvtvIw8f0GxRE8/GS68owj7T/wB73KEcjm1ocZmjlA=
+X-Received: by 2002:a17:906:68a:b0:78d:3188:9116 with SMTP id
+ u10-20020a170906068a00b0078d31889116mr78551225ejb.176.1670437906724; Wed, 07
+ Dec 2022 10:31:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20221207180842.1096243-1-anthony.l.nguyen@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221203093740.218935-1-liuxin350@huawei.com> <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
+ <CAEf4BzaC6hhNzKkzFa+s4bws7APWj-Nk8Uup+3J6avCXnMFziA@mail.gmail.com> <660fd781-2d86-9d99-2851-127d6b4d4595@iogearbox.net>
+In-Reply-To: <660fd781-2d86-9d99-2851-127d6b4d4595@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Dec 2022 10:31:34 -0800
+Message-ID: <CAEf4BzYV=tCDMOO8xYwNgpogyEo6dbfnAHyYKnf59rUeG5TNSw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Optimized return value in
+ libbpf_strerror when errno is libbpf errno
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Xin Liu <liuxin350@huawei.com>, andrii@kernel.org, ast@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yanan@huawei.com,
+        wuchangye@huawei.com, xiesongyang@huawei.com,
+        kongweibin2@huawei.com, zhangmingyi5@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07 Dec 10:08, Tony Nguyen wrote:
->From: Bartosz Staszewski <bartoszx.staszewski@intel.com>
+On Wed, Dec 7, 2022 at 1:09 AM Daniel Borkmann <daniel@iogearbox.net> wrote=
+:
 >
->Whenever trying to load XDP prog on downed interface, function i40e_xdp
->was passing vsi->rx_buf_len field to i40e_xdp_setup() which was equal 0.
->i40e_open() calls i40e_vsi_configure_rx() which configures that field,
->but that only happens when interface is up. When it is down, i40e_open()
->is not being called, thus vsi->rx_buf_len is not set.
+> On 12/7/22 1:00 AM, Andrii Nakryiko wrote:
+> > On Mon, Dec 5, 2022 at 1:11 PM Daniel Borkmann <daniel@iogearbox.net> w=
+rote:
+> >>
+> >> On 12/3/22 10:37 AM, Xin Liu wrote:
+> >>> This is a small improvement in libbpf_strerror. When libbpf_strerror
+> >>> is used to obtain the system error description, if the length of the
+> >>> buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
+> >>> ERANGE.
+> >>>
+> >>> However, this processing is not performed when the error code
+> >>> customized by libbpf is obtained. Make some minor improvements here,
+> >>> return -ERANGE and set errno to ERANGE when buf is not enough for
+> >>> custom description.
+> >>>
+> >>> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> >>> ---
+> >>>    tools/lib/bpf/libbpf_errno.c | 6 ++++++
+> >>>    1 file changed, 6 insertions(+)
+> >>>
+> >>> diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errn=
+o.c
+> >>> index 96f67a772a1b..48ce7d5b5bf9 100644
+> >>> --- a/tools/lib/bpf/libbpf_errno.c
+> >>> +++ b/tools/lib/bpf/libbpf_errno.c
+> >>> @@ -54,10 +54,16 @@ int libbpf_strerror(int err, char *buf, size_t si=
+ze)
+> >>>
+> >>>        if (err < __LIBBPF_ERRNO__END) {
+> >>>                const char *msg;
+> >>> +             size_t msg_size;
+> >>>
+> >>>                msg =3D libbpf_strerror_table[ERRNO_OFFSET(err)];
+> >>>                snprintf(buf, size, "%s", msg);
+> >>>                buf[size - 1] =3D '\0';
+> >>> +
+> >>> +             msg_size =3D strlen(msg);
+> >>> +             if (msg_size >=3D size)
+> >>> +                     return libbpf_err(-ERANGE);
+> >>
+> >> Given this is related to libbpf_strerror_table[] where the error strin=
+gs are known
+> >> lets do compile-time error instead. All callers should pass in a buffe=
+r of STRERR_BUFSIZE
+> >> size in libbpf.
+> >
+> > That sounds a bit too pessimistic?.. If the actual error message fits
+> > in the buffer, why return -ERANGE just because theoretically some
+> > error descriptions might fit?
+> >
+> > But I don't think we need to calculate strlen(). snprintf above
+> > returns the number of bytes required to print a full string, even if
+> > it was truncated. So just comparing snprintf's result to size should
+> > be enough.
 >
->Solution for this is calculate buffer length in newly created
->function - i40e_calculate_vsi_rx_buf_len() that return actual buffer
->length. Buffer length is being calculated based on the same rules
->applied previously in i40e_vsi_configure_rx() function.
+> I meant sth like below. For example if we were to shrink STRERR_BUFSIZE d=
+own
+> to 32 for testing, you'd then get:
+
+Sure, but I'm not sure why do we need to do this? Array of pointers to
+string will overall use less memory, as each string will take as much
+space as needed and no more.
+
+I guess I'm missing which problem you are trying to solve. I believe
+Xin was addressing a concern of extern (to libbpf) callers not getting
+-ERANGE in cases when they provide too small a buffer, which is just a
+simple snprintf() use adjustment to be a proper fix.
+
 >
->Fixes: 613142b0bb88 ("i40e: Log error for oversized MTU on device")
->Fixes: 0c8493d90b6b ("i40e: add XDP support for pass and drop actions")
->Signed-off-by: Bartosz Staszewski <bartoszx.staszewski@intel.com>
->Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
->Tested-by: Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
->Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
->---
->v2:
->- Change title and rework commit message
->- Dropped, previous, patch 1
+> # make libbpf_errno.o
+> gcc -g -O2 -std=3Dgnu89 -Wbad-function-cast -Wdeclaration-after-statement=
+ -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissin=
+g-prototypes -Wnested-externs -Wno-system-headers -Wold-style-definition -W=
+packed -Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wswitch-enum=
+ -Wundef -Wwrite-strings -Wformat -Wno-type-limits -Wstrict-aliasing=3D3 -W=
+shadow -Wno-switch-enum -Werror -Wall -I. -I/home/darkstar/trees/bpf-next/t=
+ools/include -I/home/darkstar/trees/bpf-next/tools/include/uapi -fvisibilit=
+y=3Dhidden -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=3D64    -c -o libbpf_e=
+rrno.o libbpf_errno.c
+> libbpf_errno.c:27:31: error: initializer-string for array of chars is too=
+ long [-Werror]
+>     27 |  [ERRCODE_OFFSET(KVERSION)] =3D "'version' section incorrect or =
+lost",
+>        |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~
+> libbpf_errno.c:27:31: note: (near initialization for =E2=80=98libbpf_stre=
+rror_table[2]=E2=80=99)
+> libbpf_errno.c:31:29: error: initializer-string for array of chars is too=
+ long [-Werror]
+>     31 |  [ERRCODE_OFFSET(VERIFY)] =3D "Kernel verifier blocks program lo=
+ading",
+>        |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~
+> libbpf_errno.c:31:29: note: (near initialization for =E2=80=98libbpf_stre=
+rror_table[7]=E2=80=99)
+> libbpf_errno.c:34:31: error: initializer-string for array of chars is too=
+ long [-Werror]
+>     34 |  [ERRCODE_OFFSET(PROGTYPE)] =3D "Kernel doesn't support this pro=
+gram type",
+>        |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~
+> libbpf_errno.c:34:31: note: (near initialization for =E2=80=98libbpf_stre=
+rror_table[10]=E2=80=99)
+> libbpf_errno.c:37:30: error: initializer-string for array of chars is too=
+ long [-Werror]
+>     37 |  [ERRCODE_OFFSET(NLPARSE)] =3D "Incorrect netlink message parsin=
+g",
+>        |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> libbpf_errno.c:37:30: note: (near initialization for =E2=80=98libbpf_stre=
+rror_table[13]=E2=80=99)
+> cc1: all warnings being treated as errors
+> make: *** [<builtin>: libbpf_errno.o] Error 1
 >
->v1: https://lore.kernel.org/netdev/20221115000324.3040207-1-anthony.l.nguyen@intel.com/
 >
-> drivers/net/ethernet/intel/i40e/i40e_main.c | 42 +++++++++++++++------
-> 1 file changed, 30 insertions(+), 12 deletions(-)
 >
->diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
->index 6416322d7c18..b8a8098110eb 100644
->--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
->+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
->@@ -3693,6 +3693,30 @@ static int i40e_vsi_configure_tx(struct i40e_vsi *vsi)
-> 	return err;
-> }
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 2a82f49ce16f..2e5df1624f79 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -265,8 +265,6 @@ static void pr_perm_msg(int err)
+>                 buf);
+>   }
 >
->+/**
->+ * i40e_calculate_vsi_rx_buf_len - Calculates buffer length
->+ *
->+ * @vsi: VSI to calculate rx_buf_len from
->+ */
->+static u16 i40e_calculate_vsi_rx_buf_len(struct i40e_vsi *vsi)
->+{
->+	u16 ret;
->+
->+	if (!vsi->netdev || (vsi->back->flags & I40E_FLAG_LEGACY_RX)) {
->+		ret = I40E_RXBUFFER_2048;
->+#if (PAGE_SIZE < 8192)
->+	} else if (!I40E_2K_TOO_SMALL_WITH_PADDING &&
->+		   (vsi->netdev->mtu <= ETH_DATA_LEN)) {
->+		ret = I40E_RXBUFFER_1536 - NET_IP_ALIGN;
->+#endif
->+	} else {
->+		ret = (PAGE_SIZE < 8192) ? I40E_RXBUFFER_3072 :
->+					   I40E_RXBUFFER_2048;
->+	}
->+
->+	return ret;
->+}
-
-nit: linux coding style states:
-"Do not unnecessarily use braces where a single statement will do"
-
-I think this applies here.
-
-Also you could simplify this function to do early returns and drop the u16
-ret variable and all the else statements.
-
-if (condition 1)
-     return val1;
-
-if (condition 2)
-     return val2;
-
-return val3;
-
-
-Other than that LGTM.
-
+> -#define STRERR_BUFSIZE  128
+> -
+>   /* Copied from tools/perf/util/util.h */
+>   #ifndef zfree
+>   # define zfree(ptr) ({ free(*ptr); *ptr =3D NULL; })
+> diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
+> index 96f67a772a1b..2f03f861b8b6 100644
+> --- a/tools/lib/bpf/libbpf_errno.c
+> +++ b/tools/lib/bpf/libbpf_errno.c
+> @@ -21,7 +21,7 @@
+>   #define ERRCODE_OFFSET(c)     ERRNO_OFFSET(LIBBPF_ERRNO__##c)
+>   #define NR_ERRNO      (__LIBBPF_ERRNO__END - __LIBBPF_ERRNO__START)
+>
+> -static const char *libbpf_strerror_table[NR_ERRNO] =3D {
+> +static const char libbpf_strerror_table[NR_ERRNO][STRERR_BUFSIZE] =3D {
+>         [ERRCODE_OFFSET(LIBELF)]        =3D "Something wrong in libelf",
+>         [ERRCODE_OFFSET(FORMAT)]        =3D "BPF object format invalid",
+>         [ERRCODE_OFFSET(KVERSION)]      =3D "'version' section incorrect =
+or lost",
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index 377642ff51fc..d4dc4fe945a6 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -57,6 +57,8 @@
+>   #define ELF64_ST_VISIBILITY(o) ((o) & 0x03)
+>   #endif
+>
+> +#define STRERR_BUFSIZE 128
+> +
+>   #define BTF_INFO_ENC(kind, kind_flag, vlen) \
+>         ((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN)=
+)
+>   #define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or=
+_type)
