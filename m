@@ -2,52 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F9C6451D7
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 03:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E936451E3
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 03:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbiLGCQY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 21:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
+        id S229449AbiLGCSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 21:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiLGCQW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 21:16:22 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4477153EF2;
-        Tue,  6 Dec 2022 18:16:21 -0800 (PST)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NRglY5JQyzqSwf;
-        Wed,  7 Dec 2022 10:12:09 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 7 Dec 2022 10:16:18 +0800
-Message-ID: <cb69ed14-6d14-f5c9-21c5-0b725256a5bf@huawei.com>
-Date:   Wed, 7 Dec 2022 10:16:18 +0800
+        with ESMTP id S229475AbiLGCSn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 21:18:43 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ACB50D49
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 18:18:42 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d3so15746298plr.10
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 18:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/srxnEl7ggusR7LUag+eU+rZ+XHpViMqA89xmTvNtlk=;
+        b=dlYdGAI8x5WHr8Z3gsQMJb+njey3KsCwJi8CGrUuTdWvFZg20rjq9Wd2VygvATzmey
+         1Vi2oTV3RZmHmgXsFUFXlodFLV0OMsy8e6cdrvMXT3jhKeqwXctrRFa/iV1UywqneBX8
+         Jy+7NapWuahyT3EfmJkhJOKj3RS6PrqjfbbGav/gZyXjs1OyAihLKWS6deEg7lYpLWbY
+         OOeR5IEclzazQriqVS5/mZxvZ/qXvD7SgnNUoSV93PxapuAKUzZX7xKNpThwtO1TE7fZ
+         sIkND0g8RpSESxD2VXSZuqY69MSDBlZraETeg2rKq6gllC4Wo/2pVPTw48i0+KRZ2FdC
+         tpMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/srxnEl7ggusR7LUag+eU+rZ+XHpViMqA89xmTvNtlk=;
+        b=DsS88YdlbVv0yAxGqaX8mRBNcd6ega25jQPMh2Es9+q01YhoevfiboAE0NiGx8hQ89
+         ZkG1/xTTAGrudyuqgfJPzpgcN3TdhulecPfggx8dhny6D43WGbdHU1c5+FVam2SvagFJ
+         WjAVlKPkyk0OaMdg7b/tFjLxeMPsuDWZ3WWbmjqGxePSH3yxv0KswhbanhG3dcNOj027
+         p4w9HAeuI34AGykMKk04DR+DOTcrKr8gl1Qbslc1M1hhZh+RPnPRpI2HXZgc4R4tMq6y
+         XUwzuEG7sP/pG8GBsiDx7AFlaNPQwoXG1xNRlJWAD8EP0CJ1dIOvxw55Di4+j9jqqpnf
+         lQvA==
+X-Gm-Message-State: ANoB5pkAGi24Ucbyxk70aDuWco9sQABVBe5GXhMJhOmb53q5Ql8h98sM
+        Rx3GojmSSxF0kFSGSs8FHff7xEm6Bb0=
+X-Google-Smtp-Source: AA0mqf4dwQaVkaQlXiylzTnUutHHijx+AMlHkOdHSaLDS+LIlConCPS0yk/gUfXTfpkIeUxcv/3qqA==
+X-Received: by 2002:a17:902:f64d:b0:189:603d:ea71 with SMTP id m13-20020a170902f64d00b00189603dea71mr574323plg.58.1670379521690;
+        Tue, 06 Dec 2022 18:18:41 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id q12-20020a170902dacc00b00185402cfedesm13343173plx.246.2022.12.06.18.18.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 18:18:40 -0800 (PST)
+Date:   Tue, 6 Dec 2022 18:18:37 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next 09/13] bpf: Special verifier handling for
+ bpf_rbtree_{remove, first}
+Message-ID: <Y4/3/Y4gXAapWIzD@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221206231000.3180914-1-davemarchevsky@fb.com>
+ <20221206231000.3180914-10-davemarchevsky@fb.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH bpf-next] bpf, test_run: fix alignment problem in
- bpf_test_init()
-To:     John Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>, <syzkaller-bugs@googlegroups.com>,
-        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
-References: <20221129042644.231816-1-shaozhengchao@huawei.com>
- <638f9efdab7bb_8a9120824@john.notmuch>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <638f9efdab7bb_8a9120824@john.notmuch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221206231000.3180914-10-davemarchevsky@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,111 +76,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2022/12/7 3:58, John Fastabend wrote:
-> Zhengchao Shao wrote:
->> The problem reported by syz is as follows:
->> BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x230/0x330
->> Write of size 32 at addr ffff88807ec6b2c0 by task bpf_repo/6711
->> Call Trace:
->> <TASK>
->> dump_stack_lvl+0x8e/0xd1
->> print_report+0x155/0x454
->> kasan_report+0xba/0x1f0
->> kasan_check_range+0x35/0x1b0
->> memset+0x20/0x40
->> __build_skb_around+0x230/0x330
->> build_skb+0x4c/0x260
->> bpf_prog_test_run_skb+0x2fc/0x1ce0
->> __sys_bpf+0x1798/0x4b60
->> __x64_sys_bpf+0x75/0xb0
->> do_syscall_64+0x35/0x80
->> entry_SYSCALL_64_after_hwframe+0x46/0xb0
->> </TASK>
->>
->> Allocated by task 6711:
->> kasan_save_stack+0x1e/0x40
->> kasan_set_track+0x21/0x30
->> __kasan_kmalloc+0xa1/0xb0
->> __kmalloc+0x4e/0xb0
->> bpf_test_init.isra.0+0x77/0x100
->> bpf_prog_test_run_skb+0x219/0x1ce0
->> __sys_bpf+0x1798/0x4b60
->> __x64_sys_bpf+0x75/0xb0
->> do_syscall_64+0x35/0x80
->> entry_SYSCALL_64_after_hwframe+0x46/0xb0
->>
->> The process is as follows:
->> bpf_prog_test_run_skb()
->> 	bpf_test_init()
->> 		data = kzalloc()	//The length of input is 576.
->> 					//The actual allocated memory
->> 					//size is 1024.
->> 	build_skb()
->> 		__build_skb_around()
->> 			size = ksize(data)//size = 1024
->> 			size -= SKB_DATA_ALIGN(
->> 					sizeof(struct skb_shared_info));
->> 					//size = 704
->> 			skb_set_end_offset(skb, size);
->> 			shinfo = skb_shinfo(skb);//shinfo = data + 704
->> 			memset(shinfo...)	//Write out of bounds
->>
->> In bpf_test_init(), the accessible space allocated to data is 576 bytes,
->> and the memory allocated to data is 1024 bytes. In __build_skb_around(),
->> shinfo indicates the offset of 704 bytes of data, which triggers the issue
->> of writing out of bounds.
->>
->> Fixes: 1cf1cae963c2 ("bpf: introduce BPF_PROG_TEST_RUN command")
->> Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
->> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
->> ---
->>   net/bpf/test_run.c | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index fcb3e6c5e03c..fbd5337b8f68 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -766,6 +766,8 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
->>   			   u32 size, u32 headroom, u32 tailroom)
->>   {
->>   	void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
->> +	unsigned int true_size;
->> +	void *true_data;
->>   	void *data;
->>   
->>   	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
->> @@ -779,6 +781,14 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
->>   	if (!data)
->>   		return ERR_PTR(-ENOMEM);
->>   
->> +	true_size = ksize(data);
->> +	if (size + headroom + tailroom < true_size) {
->> +		true_data = krealloc(data, true_size, GFP_USER | __GFP_ZERO);
+On Tue, Dec 06, 2022 at 03:09:56PM -0800, Dave Marchevsky wrote:
+> Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
+> that require handling in the verifier:
 > 
-> This comes from a kzalloc, should we zero realloc'd memory as well?
+>   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
+>     the bpf_rb_node field, with the offset set to that field's offset,
+>     instead of a struct bpf_rb_node *
+>     * Generalized existing next-gen list verifier handling for this
+>       as mark_reg_datastructure_node helper
 > 
->> +			if (!true_data)
->> +				return ERR_PTR(-ENOMEM);
+>   * Unlike other functions, which set release_on_unlock on one of their
+>     args, bpf_rbtree_first takes no arguments, rather setting
+>     release_on_unlock on its return value
 > 
-> I think its worth fixing the extra tab here.
+>   * bpf_rbtree_remove's node input is a node that's been inserted
+>     in the tree. Only non-owning references (PTR_UNTRUSTED +
+>     release_on_unlock) refer to such nodes, but kfuncs don't take
+>     PTR_UNTRUSTED args
+>     * Added special carveout for bpf_rbtree_remove to take PTR_UNTRUSTED
+>     * Since node input already has release_on_unlock set, don't set
+>       it again
 > 
+> This patch, along with the previous one, complete special verifier
+> handling for all rbtree API functions added in this series.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  kernel/bpf/verifier.c | 89 +++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 73 insertions(+), 16 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9ad8c0b264dc..29983e2c27df 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6122,6 +6122,23 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>  	return 0;
+>  }
+>  
+> +static bool
+> +func_arg_reg_rb_node_offset(const struct bpf_reg_state *reg, s32 off)
+> +{
+> +	struct btf_record *rec;
+> +	struct btf_field *field;
+> +
+> +	rec = reg_btf_record(reg);
+> +	if (!rec)
+> +		return false;
+> +
+> +	field = btf_record_find(rec, off, BPF_RB_NODE);
+> +	if (!field)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  			   const struct bpf_reg_state *reg, int regno,
+>  			   enum bpf_arg_type arg_type)
+> @@ -6176,6 +6193,13 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  		 */
+>  		fixed_off_ok = true;
+>  		break;
+> +	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+> +		/* Currently only bpf_rbtree_remove accepts a PTR_UNTRUSTED
+> +		 * bpf_rb_node. Fixed off of the node type is OK
+> +		 */
+> +		if (reg->off && func_arg_reg_rb_node_offset(reg, reg->off))
+> +			fixed_off_ok = true;
+> +		break;
 
-Hi John:
-	Thank you for your review. Your suggestion looks good to me. And I 
-found Kees Cook also focus on this issue.
-https://patchwork.kernel.org/project/netdevbpf/patch/20221206231659.never.929-kees@kernel.org/
-Perhaps his solution will be more common?
+This doesn't look safe.
+We cannot pass generic PTR_UNTRUSTED to bpf_rbtree_remove.
+bpf_rbtree_remove wouldn't be able to distinguish invalid pointer.
 
-Zhengchao Shao
->> +		data = true_data;
->> +	}
->> +
->>   	if (copy_from_user(data + headroom, data_in, user_size)) {
->>   		kfree(data);
->>   		return ERR_PTR(-EFAULT);
->> -- 
->> 2.17.1
->>
+Considering the cover letter example:
+
+ bpf_spin_lock(&glock);
+ res = bpf_rbtree_first(&groot);
+   // groot and res are both trusted, no?
+ if (!res)
+   /* skip */
+ // res is acquired and !null here
+
+ res = bpf_rbtree_remove(&groot, res); // both args are trusted
+
+ // here old res becomes untrusted because it went through release kfunc
+ // new res is untrusted
+ if (!res)
+   /* skip */
+ bpf_spin_unlock(&glock);
+
+what am I missing?
+
+I thought
+bpf_obj_new -> returns acq obj
+bpf_rbtree_add -> releases that obj
+same way bpf_rbtree_first/next/ -> return acq obj
+that can be passed to both rbtree_add and rbtree_remove.
+The former will be a nop in runtime, but release from the verifier pov.
+Similar with rbtree_remove:
+obj = bpf_obj_new
+bpf_rbtree_remove(root, obj); will be equivalent to bpf_obj_drop at run-time
+and release form the verifier pov.
+
+Are you trying to return untrusted from bpf_rbtree_first?
+But then how we can guarantee safety?
