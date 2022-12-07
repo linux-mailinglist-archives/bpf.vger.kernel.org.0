@@ -2,442 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B176463D9
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 23:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E9B64641C
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 23:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbiLGWGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 17:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        id S229658AbiLGW26 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 17:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbiLGWFa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 17:05:30 -0500
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2802FDE81;
-        Wed,  7 Dec 2022 14:05:04 -0800 (PST)
-Received: by mail-qk1-f174.google.com with SMTP id x18so11024131qki.4;
-        Wed, 07 Dec 2022 14:05:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gI+yHmsKWDV9rDnDoEVF7JHAoXUt+16u+BnTF0vBdnE=;
-        b=ar4zj5H8Zd7aRHGJq+9sgGqWwhSmciLpya0NhJ/BmE8Psrp7lyHdj7+Bmezw4a+b90
-         ezoFwqATvk7Rmloxo0RVT3iaLfeC4LkrbhYTkXQ8n+snacXV0w/Q0PQWmHXtvdtqHjZC
-         Vi9auiWggFHs1Ri2CJMOVxAqZqU66Va1aIKTicE1oNesiEg0wENKAs5e8a8oB60hj5HL
-         Y4o6auto4mYy+JvnyXL+WsX/G+nrn+nbnkoB0dYN29PXosfXkoIrBZX8Nn2ysuEExrOo
-         g8giC4eOBjP6hWoSVZ2SpTL0Z9NwbkCeTw7tNP05swcItOd3kfJXGwhlxIBM3rri4+A7
-         adsg==
-X-Gm-Message-State: ANoB5pkg3RdznWW6USketlW1Z8Gy29nSjLXRn06rVAVtZ0Oe4EK3VMN7
-        O35xkDQRnwEBf4ASzYUpEYI=
-X-Google-Smtp-Source: AA0mqf4wtgNYEt8sOnBeI5GbBXrjj3tXgfr3yoUlv7MDAo75tTRhdG2iByWHaVmaWvbRqb1339vVuA==
-X-Received: by 2002:a05:620a:159c:b0:6fe:efbe:7b9d with SMTP id d28-20020a05620a159c00b006feefbe7b9dmr2339284qkk.133.1670450702848;
-        Wed, 07 Dec 2022 14:05:02 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:629d])
-        by smtp.gmail.com with ESMTPSA id dt2-20020a05620a478200b006fbf88667bcsm8554839qkb.77.2022.12.07.14.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 14:05:02 -0800 (PST)
-Date:   Wed, 7 Dec 2022 16:04:59 -0600
-From:   David Vernet <void@manifault.com>
-To:     mtahhan@redhat.com
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, jbrouer@redhat.com,
-        thoiland@redhat.com, donhunte@redhat.com, john.fastabend@gmail.com,
-        bagasdotme@gmail.com
-Subject: Re: [PATCH bpf-next v3 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
-Message-ID: <Y5EOC7HjtaRFAVfq@maniforge.lan>
-References: <20221202114010.22477-1-mtahhan@redhat.com>
+        with ESMTP id S229576AbiLGW25 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 17:28:57 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDEB8138A
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 14:28:55 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B7Knp4U030442;
+        Wed, 7 Dec 2022 14:28:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=ZhmaQWEyyvdmpqkPaI8zL0o96vUlzue+FVX/74ad6aY=;
+ b=dkZ+MPeh+GLGI2s3de1AFyKmzDn4R4vGU/0hnhEEKSQZqejVoozbIH9OyH+jofmjZsBg
+ 80LnlpWhYXhmmWBaWKtSzEnp8WgRJMDRy6B8iMAoz6Z1H6SCRfZ1b0i/PKXi2HkqsJfa
+ BlzLNTySL4JhP1LStuIXVa5/Ap6mpSSyMgZnPLFZfp5ZpC1nrKK/4ta0aHT8Q6dL2F3w
+ pJMeHjBVmiOH/ytR+RjofabJBX6xZXx7fqwi+F6oR7H3DDmrvlCUDlNpHA48/uosC2/q
+ oTCTMo96OPxrcxafx9gGcakg7lNbj1ekuYTAIddoZ7B8mS+ykL00HOFyX4AQQfTn16Zp JQ== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3man55e6ac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Dec 2022 14:28:39 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nCkz+6gkNtO39oOH0vHPeYrxP/Q0CBC46y1VAOXUxr53CRBXggjJ60hfaEoYzh23s2JYGRGjKOFtw0DVUC1aOecI3wSvurlL7twKE+NS/31jCSbyChm5ywebGPuTYw+hmsmwNZ4gzx2X9tDn2YIasXQ9crcZPBkdmbzfDSsFDtPmGsCTPZ58mYqKv8B9bvLCbSHe2N9e0Y/5Qg+vtPV3Kl67fxTxHgHNo0NtIv5SljWSVOuHv5hJQfgJTVnEdqfdXxzE6d/qaO7tVV/2vW306ulglhVyOX6Y0FRiyN4zAESgjX6dFvTnjjz2sdAo7kfOPlc7Ewy5Mm53eBgZM8s2Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZhmaQWEyyvdmpqkPaI8zL0o96vUlzue+FVX/74ad6aY=;
+ b=m3KWwfzv+wxtukLds7sQEapu7wHq+KSzmEL+73fUdRaNhX8Cpk9NeI85zVNmF/IoAC80QS+tGE4Mc+S3wVxnS4NLvxoEs5LFLZz+VbLR0HCzz6Fg/TZgYdel9EtglO6o+AwZhCLqFEJWRVgXD6fy5UoC+bxtaNwrCjTol72amMx/Oe2kO/4l11jqZmCTPu+u4wC/3MQdIJV3er51TZDjyT38c4u7Pj4/w0gtqUc6qtTCMimkUH4oZybGGWATnFgGGYvXtWqt04hAptrm7cY8FWlXw4+66v5jEx+d5IkcyEOF5Rt0U3ndTRq+8qmfLRgHK8UoDVNb/1xgQeCGu/sWLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from MW4PR15MB4442.namprd15.prod.outlook.com (2603:10b6:303:103::13)
+ by SA1PR15MB4904.namprd15.prod.outlook.com (2603:10b6:806:1d3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.13; Wed, 7 Dec
+ 2022 22:28:36 +0000
+Received: from MW4PR15MB4442.namprd15.prod.outlook.com
+ ([fe80::5054:64cb:7c18:2993]) by MW4PR15MB4442.namprd15.prod.outlook.com
+ ([fe80::5054:64cb:7c18:2993%9]) with mapi id 15.20.5880.014; Wed, 7 Dec 2022
+ 22:28:36 +0000
+Message-ID: <5756f37f-c61a-71e1-5559-e6e009b606d6@meta.com>
+Date:   Wed, 7 Dec 2022 17:28:34 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.1
+Subject: Re: [PATCH bpf-next 00/13] BPF rbtree next-gen datastructure
+Content-Language: en-US
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+References: <20221206231000.3180914-1-davemarchevsky@fb.com>
+ <20221207193616.y7n4lmufztjsq6tr@apollo>
+From:   Dave Marchevsky <davemarchevsky@meta.com>
+In-Reply-To: <20221207193616.y7n4lmufztjsq6tr@apollo>
+Content-Type: text/plain; charset=UTF-8
+X-ClientProxiedBy: MN2PR10CA0035.namprd10.prod.outlook.com
+ (2603:10b6:208:120::48) To MW4PR15MB4442.namprd15.prod.outlook.com
+ (2603:10b6:303:103::13)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR15MB4442:EE_|SA1PR15MB4904:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4737b794-2c61-4705-d7f6-08dad8a261ee
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rrn1Dy57Gr3K6oy0rymp9ekpdVxnNDMPId8bel2uROZ8n+e2XO5O3yVVUCRWaMEcNpO8tMjgzq0s39IBkk9yCpjM0xGqUAGyt20DaYCHVZm3JkBxk1piv/ulwi9zGQyqCDa+tOT7dtWGAc463GERDvsBqFb0QnFn2e/W7e68UoDI3W2ce6MLaj8TN4ij05ShwGmJA7t/iWtfstIXkk71jDysZb/xkOpBF8LcyapZOIGxuCT74cbWri2hiAfzcTWvxqB0mtqFjSf5nnjIJSopY6uLLejSsPa/Q4dxIc+GLGvXnCJdGhwdylCfpswvfKgeso7668i1WBLRStD+ruEgTkbQNnFc+8SodbB+O/i3tfvHr3GUNMPBEoRj9IcEYe/tgjAlCv1KbNbvAJoEQVPO8XwJMrJw11PthU+T4gnCPWun0SW3WDQpOiQpmITFeYg0aJXsg8AE0i9BDnmrmX0FOshKy8cbQY27xMWaluDeBbYGoFyKMz3JWkUUPhHq4d6QdDuHNeiZgv9xvyRSUL+JVXrPWuEbrwvykn0qdtJDGuf56+/MSYQmoyodfHI+XeMKJSWy3QrGu+NQTgnzP99PoBOL8TToq9FFc0Um5AurJOb8TtAJviPdTvR6kEJMhqnen/gM7ryrWMfqGtAYwNZMVonUieCBkweB/kIMuy90SvLWU0YAWtrNfvIYrDgDD9qYgwZFDtBL1sjMvSmcCr1W138EaL2dbTUhS+PomulMPqEvl+uCHEigirQrwYwV9/2A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4442.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(136003)(396003)(346002)(39860400002)(376002)(451199015)(2616005)(83380400001)(186003)(6512007)(31686004)(478600001)(6506007)(53546011)(66899015)(4326008)(6486002)(54906003)(2906002)(110136005)(38100700002)(316002)(8936002)(41300700001)(66476007)(66946007)(8676002)(66556008)(31696002)(5660300002)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T2FIVjBCYjE1VkR2Y2psZC93cm8wQ3JBaWQyWXdtRGcwNmlQY0ZJRk9VY083?=
+ =?utf-8?B?Mi9rK0xJT2J3Q1NqRmc2dUJDMTRKdWFqQ0lHT3h3eEZDTDJNakhQZ2x0ZlhL?=
+ =?utf-8?B?WXNxV1NZdG5iVkxtaFl3dDhRdFFzRk5MaUlrUGxaZW12dm9JRlBHY3NEZlBQ?=
+ =?utf-8?B?NlB4Zzl4WUhlVytobmNpaUxiSlBvdng3TVpoQTJNb0IxdmMrakYwM09GOHRH?=
+ =?utf-8?B?aTFsczM4OUNjL21vKzFUQzlwczcwZldDNExWZkh5alRKRk14TzFkeUI5WGFl?=
+ =?utf-8?B?VVVxSlFQZnFORTdtSnFWbWJoT2ZpcDhnTHZ6c2FPWWpJbzgrV0w3WFIrRytS?=
+ =?utf-8?B?cWpkU3ZqZlc3Tk1CS2RDdENuVGg2Zk5YREpBYlk3Q3hNRmFaYmpxQ0Fzd1V5?=
+ =?utf-8?B?eSt5K3R3cHp1N05nSTB6b0ZEbW9lbFZueW9XYTR4RktWUmRvczBsSVE5WDk0?=
+ =?utf-8?B?NWkvK0VSdTBQOXQxQk01cCtRUXdHUlpkbkU0QzVzR1dQWTQzMjhVbzBLVjRH?=
+ =?utf-8?B?dFBEMUNMdzZqeklpVDBOc240cFduRzZvZGRnVmJEeCtRY2pNYjJZb0lTVHhV?=
+ =?utf-8?B?cE8rYStjSG5pUWZJUGMzQmFUR3VWVVhJR01qQk5MQi9ITXJCYnNpdWl5S2J0?=
+ =?utf-8?B?SFhSU2ZNWVdXNjNFRWNxZHhzaGIrMFhzZFBMejE2ODROT2xCdy9WVGFtK0Z6?=
+ =?utf-8?B?VDE5MlZqdGdpNE1zWFFaQXk0K3VFZm5SOHdqcmVqRjRDU1V1TTRIOGdiUHEv?=
+ =?utf-8?B?UHg0RFRmZnFIWFYvZ3hvSElvSEJNMnFBdm9PTndSQm5MbHlFK1pCQ3VtWmVS?=
+ =?utf-8?B?TmV2dFRWRWsvUExTWUpNU200U1VsSndKUHhoR1B0dGovbFoyVWZKWXVnY2p2?=
+ =?utf-8?B?b0ZjZWxKRUxhT0d3WkpnNW9TbnNPWGc0ZkJ4MnlQV3NRVStxaEw5eDFOQjI3?=
+ =?utf-8?B?KzlXSkVEN3BqLyt0WWtnQzVMeFYrNFJXT0VNYzlBZWxiVzhoSXFOOHpVWEtY?=
+ =?utf-8?B?M0lPbmkrdzlRL1ZvemVpQkhQNksyeThuTHlmdUk5eFVYdjAwWnp5dm55Z3NQ?=
+ =?utf-8?B?TmZBWE03bmlTTS9UMlo1dnRKaGFCKytnV291N0lENGcxaHRDdi9IaDlyQWUr?=
+ =?utf-8?B?UkpKQ1FOYXlNekZiWHhndHBDaU44MFpNcTRubWZHRDdBNElzc3owYWRxNUR6?=
+ =?utf-8?B?SHMya1lLeG0rWTlTTWUzMFdva3NsVU0xTUZNSVdPUGJxNHhqNE5WMWptRWVv?=
+ =?utf-8?B?ZlhyWGoxaGErbzlod0RWYlhrbjBMemF3WnNkcDJhSGNvN051UzhZd05pbmxs?=
+ =?utf-8?B?QzRZcmtHaXJGaUhZZi9uSXVHWEpuTUQzenJzZzR5SzBCM1ZNbFlDYS8vbFl3?=
+ =?utf-8?B?c3ZPa3BKajUwNHk4ZGx6ZDBaM0tLTFJJMjRaWVE3RGVIMk1lLzNqL3YrUXlz?=
+ =?utf-8?B?M0VucDFlVjc4OUFLWVhyK2tqMnVMMXpEQjd6RGtTU3NYVDUwS2prWExRTW13?=
+ =?utf-8?B?a0RERldXWVdoNGc0bGhldkFpS2hSQlc3VVNSWTBWNit4OEptejl5NGNnUXBk?=
+ =?utf-8?B?WG55USt3a0orWkpPQXBrSXZYVUNuSzNLQWV1akNrbEt2Uk5jVENVOCsveEJX?=
+ =?utf-8?B?NEdIUGgwLzlTb1NFa1dIdVNQaUxzNWQ3Y3pPUzRZNXVKaGJxcHphTktKQ2ll?=
+ =?utf-8?B?cGRCeUVOdU5RNm91QjZvTUlMN3lkZHM2OWxQNlRZOGRtOU1GSThLck5JTGlq?=
+ =?utf-8?B?Yjk5QmNOeXFYV3lrbkY1UGRNOHIyc09lbWFrVCtZUjhZT25reXUreEJxK1hF?=
+ =?utf-8?B?VG5PU1gwWW9PelVOMTB1dkd0NVQrMHhnVEgxNTZTeWNaN0VtdndNeTlvOXM4?=
+ =?utf-8?B?dW1SN0hMSHNDMTY4eHQrdFZ0VXVhWEVrc1dqNCtkZjhXcGFLZ2Nrd3BxZHFm?=
+ =?utf-8?B?NEZkWHFqZm1HajRqU0E1ak8veWRLSVBtK285ZituRnRoanBWWW15bnZhelVO?=
+ =?utf-8?B?K3lzNFJtZXZkcDJBeEtyM01pNDl1VWdDYU9adkxCY1gvUDFNdkwrbEgrUy9y?=
+ =?utf-8?B?WUhGT2xid1ZaT0VvUU5WOUpkM3RKUzRQR0Z1MS93MTNsUHh2Tks2VHJxeCtT?=
+ =?utf-8?B?a0ZVL1cxczhtZHhsSVBTL3dKcmJENWU5Wjc1L1BpZmZKMW9Mbk82SUZQWUFU?=
+ =?utf-8?Q?k885lkG/+Sn76JY33fNmBRQ=3D?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4737b794-2c61-4705-d7f6-08dad8a261ee
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4442.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 22:28:36.7721
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cJy/rLw+c5UJsI3XP9mBR6rubq010INurGGYEVMEgvDKKYUt2ADxwfWPVw5bOhgmwsNwaQG7KeW+2WTPzMb4gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4904
+X-Proofpoint-ORIG-GUID: T2eyacknRHeqzNLClDEHLuuoKuTZt5wj
+X-Proofpoint-GUID: T2eyacknRHeqzNLClDEHLuuoKuTZt5wj
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221202114010.22477-1-mtahhan@redhat.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-07_11,2022-12-07_01,2022-06-22_01
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 11:40:10AM +0000, mtahhan@redhat.com wrote:
-> From: Maryam Tahhan <mtahhan@redhat.com>
+On 12/7/22 2:36 PM, Kumar Kartikeya Dwivedi wrote:
+> On Wed, Dec 07, 2022 at 04:39:47AM IST, Dave Marchevsky wrote:
+>> This series adds a rbtree datastructure following the "next-gen
+>> datastructure" precedent set by recently-added linked-list [0]. This is
+>> a reimplementation of previous rbtree RFC [1] to use kfunc + kptr
+>> instead of adding a new map type. This series adds a smaller set of API
+>> functions than that RFC - just the minimum needed to support current
+>> cgfifo example scheduler in ongoing sched_ext effort [2], namely:
+>>
+>>   bpf_rbtree_add
+>>   bpf_rbtree_remove
+>>   bpf_rbtree_first
+>>
+>> [...]
+>>
+>> Future work:
+>>   Enabling writes to release_on_unlock refs should be done before the
+>>   functionality of BPF rbtree can truly be considered complete.
+>>   Implementing this proved more complex than expected so it's been
+>>   pushed off to a future patch.
+>>
+
 > 
-> Add documentation for BPF_MAP_TYPE_SOCK[MAP|HASH]
-> including kernel versions introduced, usage
-> and examples.
+> TBH, I think we need to revisit whether there's a strong need for this. I would
+> even argue that we should simply make the release semantics of rbtree_add,
+> list_push helpers stronger and remove release_on_unlock logic entirely,
+> releasing the node immediately. I don't see why it is so critical to have read,
+> and more importantly, write access to nodes after losing their ownership. And
+> that too is only available until the lock is unlocked.
 > 
-> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
 
-Hi Maryam,
+Moved the next paragraph here to ease reply, it was the last paragraph
+in your response.
 
-Thanks a lot for adding these extensive docs. Overall this is looking
-great, but I think readers who aren't yet familiar with these concepts
-(and are here to try to better understand them) are potentially going to
-struggle a bit to understand some of this without adding a bit more
-explanation to a few things.
-
-See suggestions below.
-
-> ---
-> v3:
-> - Call out that the user attaches the BPF programs to
->   the sock[map|hash] maps explicitly.
-> - Rephrase the note that references the TCP and UDP
->   functions that get replaced.
-> - Update simple example to attach verdict and parser
->   progs to a map.
 > 
-> v2:
-> - Fixed typos and user space references to BPF helpers.
-> - Added update, lookup and delete BPF helpers.
-> ---
-> ---
->  Documentation/bpf/map_sockmap.rst | 493 ++++++++++++++++++++++++++++++
->  1 file changed, 493 insertions(+)
->  create mode 100644 Documentation/bpf/map_sockmap.rst
+> Can you elaborate on actual use cases where immediate release or not having
+> write support makes it hard or impossible to support a certain use case, so that
+> it is easier to understand the requirements and design things accordingly?
+>
+
+Sure, the main usecase and impetus behind this for me is the sched_ext work
+Tejun and others are doing (https://lwn.net/Articles/916291/). One of the
+things they'd like to be able to do is implement a CFS-like scheduler using
+rbtree entirely in BPF. This would prove that sched_ext + BPF can be used to
+implement complicated scheduling logic.
+
+If we can implement such complicated scheduling logic, but it has so much
+BPF-specific twisting of program logic that it's incomprehensible to scheduler
+folks, that's not great. The overlap between "BPF experts" and "scheduler
+experts" is small, and we want the latter group to be able to read BPF
+scheduling logic without too much struggle. Lower learning curve makes folks
+more likely to experiment with sched_ext.
+
+When 'rbtree map' was in brainstorming / prototyping, non-owning reference
+semantics were called out as moving BPF datastructures closer to their kernel
+equivalents from a UX perspective.
+
+If the "it makes BPF code better resemble normal kernel code" argumentwas the
+only reason to do this I wouldn't feel so strongly, but there are practical
+concerns as well:
+
+If we could only read / write from rbtree node if it isn't in a tree, the common
+operation of "find this node and update its data" would require removing and
+re-adding it. For rbtree, these unnecessary remove and add operations could
+result in unnecessary rebalancing. Going back to the sched_ext usecase,
+if we have a rbtree with task or cgroup stats that need to be updated often,
+unnecessary rebalancing would make this update slower than if non-owning refs
+allowed in-place read/write of node data.
+
+Also, we eventually want to be able to have a node that's part of both a
+list and rbtree. Likely adding such a node to both would require calling
+kfunc for adding to list, and separate kfunc call for adding to rbtree.
+Once the node has been added to list, we need some way to represent a reference
+to that node so that we can pass it to rbtree add kfunc. Sounds like a
+non-owning reference to me, albeit with different semantics than current
+release_on_unlock.
+
+> I think this relaxed release logic and write support is the wrong direction to
+> take, as it has a direct bearing on what can be done with a node inside the
+> critical section. There's already the problem with not being able to do
+> bpf_obj_drop easily inside the critical section with this. That might be useful
+> for draining operations while holding the lock.
 > 
-> diff --git a/Documentation/bpf/map_sockmap.rst b/Documentation/bpf/map_sockmap.rst
-> new file mode 100644
-> index 000000000000..e2ef3054fe09
-> --- /dev/null
-> +++ b/Documentation/bpf/map_sockmap.rst
-> @@ -0,0 +1,493 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright Red Hat
-> +
-> +==============================================
-> +BPF_MAP_TYPE_SOCKMAP and BPF_MAP_TYPE_SOCKHASH
-> +==============================================
-> +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_SOCKMAP`` was introduced in kernel version 4.14
-> +   - ``BPF_MAP_TYPE_SOCKHASH`` was introduced in kernel version 4.18
-> +
-> +``BPF_MAP_TYPE_SOCKMAP`` is backed by an array that uses an integer key as the
-> +index to lookup a reference to a sock struct. The map values are sockets.
-> +Similarly, ``BPF_MAP_TYPE_SOCKHASH`` is a hash backed BPF map that holds
-> +references to sockets.
 
-I think it may confuse / throw some readers off for their first
-introduction to BPF_MAP_TYPE_SOCKMAP to be an implementation detail.
-Can you "introduce" the map type by first explaining what it's used for
-at a high level, and only _then_ going into more detail as to how it's
-implemented? Consider the fact that someone trying to use
-BPF_MAP_TYPE_SOCKMAP doesn't really need to know the fact that it's
-backed by an array.
+The bpf_obj_drop case is similar to your "can't pass non-owning reference
+to bpf_rbtree_remove" concern from patch 1's thread. If we have:
 
-> +
-> +.. note::
-> +    - The value type must be __u32 or __u64.
-> +    - The value type of __u64 is to support socket cookies.
+  n = bpf_obj_new(...); // n is owning ref
+  bpf_rbtree_add(&tree, &n->node); // n is non-owning ref
 
-I think this may also confuse some readers. Above you say that the
-"value" is a socket, but here you're saying that its value type is __u32
-or __u64. IMO describing the connection between the two would be useful.
+  res = bpf_rbtree_first(&tree);
+  if (!res) {...}
+  m = container_of(res, struct node_data, node); // m is non-owning ref
 
-> +
-> +When a user creates these types of maps, they typically attach BPF programs to
-> +them. The allowed programs are:
-> +
-> +.. code-block:: c
-> +
-> +	struct sk_psock_progs {
-> +		struct bpf_prog *msg_parser;
-> +		struct bpf_prog *stream_parser;
-> +		struct bpf_prog *stream_verdict;
-> +		struct bpf_prog	*skb_verdict;
-> +	};
-> +
-> +.. note::
-> +    Users are not allowed to attach ``stream_verdict`` and ``skb_verdict``
-> +    programs to the same map.
+  res = bpf_rbtree_remove(&tree, &n->node);
+  n = container_of(res, struct node_data, node); // n is owning ref, m points to same memory
 
-I think this note should maybe be moved a bit lower down in the doc. We
-have to explain what these prog types are before we start to tell
-readers how they're not allowed to use them.
+  bpf_obj_drop(n);
+  // Not safe to use m anymore
 
-> +
-> +The parser programs determine how much data needs to be queued to come to a
-> +verdict. The verdict programs return a verdict ``__SK_DROP``, ``__SK_PASS``, or
-> +``__SK_REDIRECT``.
+Datastructures which support bpf_obj_drop in the critical section can
+do same as my bpf_rbtree_remove suggestion: just invalidate all non-owning
+references after bpf_obj_drop. Then there's no potential use-after-free.
+(For the above example, pretend bpf_rbtree_remove didn't already invalidate
+'m', or that there's some other way to obtain non-owning ref to 'n''s node
+after rbtree_remove)
 
-Can you provide a slightly higher level overview of parser programs and
-verdicts? This would include defining "parser" and "verdict", and
-explaining their purposes in the larger skb-processing pipeline. No need
-to go too crazy here, but I think that at least giving a high level
-overview in a few sentences would go a long way.
+I think that, in practice, operations where the BPF program wants to remove
+/ delete nodes will be distinct from operations where program just wants to 
+obtain some non-owning refs and do read / write. At least for sched_ext usecase
+this is true. So all the additional clobbers won't require program writer
+to do special workarounds to deal with verifier in the common case.
 
-> +
-> +The attach types for the map programs are:
-> +
-> +- ``msg_parser`` program - ``BPF_SK_MSG_VERDICT``.
-> +- ``stream_parser`` program - ``BPF_SK_SKB_STREAM_PARSER``.
-> +- ``stream_verdict`` program - ``BPF_SK_SKB_STREAM_VERDICT``.
-> +- ``skb_verdict`` program - ``BPF_SK_SKB_VERDICT``.
-> +
-> +These maps can be used to redirect skbs between sockets or to apply policy at
-> +the socket level based on the result of a verdict program with the help of the
-> +BPF helpers ``bpf_sk_redirect_map()``, ``bpf_sk_redirect_hash()``,
-> +``bpf_msg_redirect_map()`` and ``bpf_msg_redirect_hash()``.
+> Semantically in other languages, once you move an object, accessing it is
+> usually a bug, and in most of the cases it is sufficient to prepare it before
+> insertion. We are certainly in the same territory here with these APIs.
 
-Can you add a short sentence informing readers that these helpers (and
-the ones below) are described in more details below?
+Sure, but 'add'/'remove' for these intrusive linked datastructures is
+_not_ a 'move'. Obscuring this from the user and forcing them to use
+less performant patterns for the sake of some verifier complexity, or desire
+to mimic semantics of languages w/o reference stability, doesn't make sense to
+me.
 
-> +
-> +When a socket is inserted into one of these maps, its socket callbacks are
-> +replaced and a ``struct sk_psock`` is attached to it. Additionally, this
-> +``sk_psock`` inherits the programs that are attached to the map.
-> +
-> +.. note::
-> +	For more details of the socket callbacks that get replaced please see
-> +	``net/ipv4/tcp_bpf.c`` and ``net/ipv4/udp_bpf.c`` for TCP and UDP
-> +	functions, respectively.
-> +
-> +There are additional helpers available to use with the parser and verdict
-> +programs: ``bpf_msg_apply_bytes()`` and ``bpf_msg_cork_bytes()``. With
-> +``bpf_msg_apply_bytes()`` BPF programs can tell the infrastructure how many
-> +bytes the given verdict should apply to. The helper ``bpf_msg_cork_bytes()``
-> +handles a different case where a BPF program can not reach a verdict on a msg
-> +until it receives more bytes AND the program doesn't want to forward the packet
-> +until it is known to be good.
-> +
-> +Finally, the helpers ``bpf_msg_pull_data()`` and ``bpf_msg_push_data()`` are
-> +available to ``BPF_PROG_TYPE_SK_MSG`` BPF programs to pull in data and set the
-> +start and end pointer to given values or to add metadata to the ``struct
-> +sk_msg_buff *msg``.
-> +
-> +Usage
-> +=====
-> +Kernel BPF
-> +----------
-> +bpf_msg_redirect_map()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +	long bpf_msg_redirect_map(struct sk_msg_buff *msg, struct bpf_map *map, u32 key, u64 flags)
-> +
-> +This helper is used in programs implementing policies at the socket level. If
-> +the message ``msg`` is allowed to pass (i.e. if the verdict BPF program
-> +returns ``SK_PASS``), redirect it to the socket referenced by ``map`` (of type
-> +``BPF_MAP_TYPE_SOCKMAP``) at index ``key``. Both ingress and egress interfaces
-> +can be used for redirection. The ``BPF_F_INGRESS`` value in ``flags`` is used
-> +to select the ingress path otherwise the egress path is selected. This is the
-> +only flag supported for now.
-> +
-> +Returns ``SK_PASS`` on success, or ``SK_DROP`` on error.
-> +
-> +bpf_sk_redirect_map()
-> +^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key u64 flags)
-> +
-> +Redirect the packet to the socket referenced by ``map`` (of type
-> +``BPF_MAP_TYPE_SOCKMAP``) at index ``key``. Both ingress and egress interfaces
-> +can be used for redirection. The ``BPF_F_INGRESS`` value in ``flags`` is used
-> +to select the ingress path otherwise the egress path is selected. This is the
-> +only flag supported for now.
-> +
-> +Returns ``SK_PASS`` on success, or ``SK_DROP`` on error.
-> +
-> +bpf_map_lookup_elem()
-> +^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +socket entries of type ``struct sock *`` can be retrieved using the
-> +``bpf_map_lookup_elem()`` helper.
-> +
-> +bpf_sock_map_update()
-> +^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_sock_map_update(struct bpf_sock_ops *skops, struct bpf_map *map, void *key, u64 flags)
-> +
-> +Add an entry to, or update a ``map`` referencing sockets. The ``skops`` is used
-> +as a new value for the entry associated to ``key``. The ``flags`` argument can
-> +be one of the following:
-> +
-> +- ``BPF_ANY``: Create a new element or update an existing element.
-> +- ``BPF_NOEXIST``: Create a new element only if it did not exist.
-> +- ``BPF_EXIST``: Update an existing element.
-> +
-> +If the ``map`` has BPF programs (parser and verdict), those will be inherited
-> +by the socket being added. If the socket is already attached to BPF programs,
-> +this results in an error.
-> +
-> +Returns 0 on success, or a negative error in case of failure.
-> +
-> +bpf_sock_hash_update()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_sock_hash_update(struct bpf_sock_ops *skops, struct bpf_map *map, void *key, u64 flags)
-> +
-> +Add an entry to, or update a sockhash ``map`` referencing sockets. The ``skops``
-> +is used as a new value for the entry associated to ``key``.
-> +
-> +The ``flags`` argument can be one of the following:
-> +
-> +- ``BPF_ANY``: Create a new element or update an existing element.
-> +- ``BPF_NOEXIST``: Create a new element only if it did not exist.
-> +- ``BPF_EXIST``: Update an existing element.
-> +
-> +If the ``map`` has BPF programs (parser and verdict), those will be inherited
-> +by the socket being added. If the socket is already attached to BPF programs,
-> +this results in an error.
-> +
-> +Returns 0 on success, or a negative error in case of failure.
-> +
-> +bpf_msg_redirect_hash()
-> +^^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_msg_redirect_hash(struct sk_msg_buff *msg, struct bpf_map *map, void *key, u64 flags)
-> +
-> +This helper is used in programs implementing policies at the socket level. If
-> +the message ``msg`` is allowed to pass (i.e. if the verdict BPF program returns
-> +``SK_PASS``), redirect it to the socket referenced by ``map`` (of type
-> +``BPF_MAP_TYPE_SOCKHASH``) using hash ``key``. Both ingress and egress
-> +interfaces can be used for redirection. The ``BPF_F_INGRESS`` value in
-> +``flags`` is used to select the ingress path otherwise the egress path is
-> +selected. This is the only flag supported for now.
-> +
-> +Returns ``SK_PASS`` on success, or ``SK_DROP`` on error.
-> +
-> +bpf_sk_redirect_hash()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_sk_redirect_hash(struct sk_buff *skb, struct bpf_map *map, void *key, u64 flags)
-> +
-> +This helper is used in programs implementing policies at the skb socket level.
-> +If the sk_buff ``skb`` is allowed to pass (i.e. if the verdict BPF program
-> +returns ``SK_PASS``), redirect it to the socket referenced by ``map`` (of type
-> +``BPF_MAP_TYPE_SOCKHASH``) using hash ``key``. Both ingress and egress
-> +interfaces can be used for redirection. The ``BPF_F_INGRESS`` value in
-> +``flags`` is used to select the ingress path otherwise the egress path is
-> +selected. This is the only flag supported for now.
-> +
-> +Returns ``SK_PASS`` on success, or ``SK_DROP`` on error.
-> +
-> +bpf_msg_apply_bytes()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_msg_apply_bytes(struct sk_msg_buff *msg, u32 bytes)
-> +
-> +For socket policies, apply the verdict of the BPF program to the next (number
-> +of ``bytes``) of message ``msg``. For example, this helper can be used in the
-> +following cases:
-> +
-> +- A single ``sendmsg()`` or ``sendfile()`` system call contains multiple
-> +  logical messages that the BPF program is supposed to read and for which it
-> +  should apply a verdict.
-> +- A BPF program only cares to read the first ``bytes`` of a ``msg``. If the
-> +  message has a large payload, then setting up and calling the BPF program
-> +  repeatedly for all bytes, even though the verdict is already known, would
-> +  create unnecessary overhead.
-> +
-> +Returns 0
-> +
-> +bpf_msg_cork_bytes()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_msg_cork_bytes(struct sk_msg_buff *msg, u32 bytes)
-> +
-> +For socket policies, prevent the execution of the verdict BPF program for
-> +message ``msg`` until the number of ``bytes`` have been accumulated.
-> +
-> +This can be used when one needs a specific number of bytes before a verdict can
-> +be assigned, even if the data spans multiple ``sendmsg()`` or ``sendfile()``
-> +calls.
-> +
-> +Returns 0
-> +
-> +bpf_msg_pull_data()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_msg_pull_data(struct sk_msg_buff *msg, u32 start, u32 end, u64 flags)
-> +
-> +For socket policies, pull in non-linear data from user space for ``msg`` and set
-> +pointers ``msg->data`` and ``msg->data_end`` to ``start`` and ``end`` bytes
-> +offsets into ``msg``, respectively.
-> +
-> +If a program of type ``BPF_PROG_TYPE_SK_MSG`` is run on a ``msg`` it can only
-> +parse data that the (``data``, ``data_end``) pointers have already consumed.
-> +For ``sendmsg()`` hooks this is likely the first scatterlist element. But for
-> +calls relying on the ``sendpage`` handler (e.g. ``sendfile()``) this will be
-> +the range (**0**, **0**) because the data is shared with user space and by
-> +default the objective is to avoid allowing user space to modify data while (or
-> +after) BPF verdict is being decided. This helper can be used to pull in data
-
-s/BPF verdict/a BPF verdict
-
-> +and to set the start and end pointer to given values. Data will be copied if
-> +necessary (i.e. if data was not linear and if start and end pointers do not
-> +point to the same chunk).
-
-If the scenario in parens is just one of several possible examples of
-when the data will be copied, I think "e.g." is correct rather than
-"i.e.".
-
-> +
-> +A call to this helper is susceptible to change the underlying packet buffer.
-> +Therefore, at load time, all checks on pointers previously done by the verifier
-> +are invalidated and must be performed again, if the helper is used in
-> +combination with direct packet access.
-> +
-> +All values for ``flags`` are reserved for future usage, and must be left at
-> +zero.
-> +
-> +Returns 0 on success, or a negative error in case of failure.
-> +
-> +bpf_map_lookup_elem()
-> +^^^^^^^^^^^^^^^^^^^^^
-> +
-> +.. code-block:: c
-> +
-> +	void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +Lookup a socket entry in the sockmap or sockhash map.
-> +
-> +Returns the socket entry associated to ``key``, or NULL if no entry was found.
-> +
-> +bpf_map_update_elem()
-> +^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +	long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
-> +
-> +Add or update a socket entry in a sockmap or sockhash.
-> +
-> +The flags argument can be one of the following:
-> +
-> +- BPF_ANY: Create a new element or update an existing element.
-> +- BPF_NOEXIST: Create a new element only if it did not exist.
-> +- BPF_EXIST: Update an existing element.
-> +
-> +Returns 0 on success, or a negative error in case of failure.
-> +
-> +bpf_map_delete_elem()
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +.. code-block:: c
-> +
-> +    long bpf_map_delete_elem(struct bpf_map *map, const void *key)
-> +
-> +Delete a socket entry from a sockmap or a sockhash.
-> +
-> +Returns	0 on success, or a negative error in case of failure.
-
-Can you make this tab a space to make it uniform with the rest of the
-doc?
-
-Otherwise everything looks great. Thanks again for writing these docs.
-
-- David
+If we were to add some datastructures without reference stability, sure, let's
+not do non-owning references for those. So let's make this non-owning reference
+stuff easy to turn on/off, perhaps via KF_RELEASE_NON_OWN or similar flags,
+which will coincidentally make it very easy to remove if we later decide that
+the complexity isn't worth it. 
