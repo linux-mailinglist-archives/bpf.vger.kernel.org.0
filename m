@@ -2,208 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BA5646181
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45FB6461B4
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbiLGTLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 14:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S229628AbiLGT1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 14:27:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbiLGTLI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 14:11:08 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0546054351
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:11:07 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id qk9so16312117ejc.3
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:11:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xhWBfJ3UROlAyzetr7niJMuklejkFqO8zZ/u0OkHzXc=;
-        b=bpLdFtXIMJTiZ8fV9Kvgw0Oa8UT5NzlfbhaYGpm9kcn1418gL6hc8WOsl1luz9ZMwF
-         jcgPCInYZdvqDJsRHjnrjSMR9z9Jn7k8h25r2iwKfL/IhZMIVOzp9Xf36nd23ljlYws1
-         1jvRNuaxt+fDz5fDrMejstDYnqZSWPR0riIR0RMesI+AI3i3TgNiM2CWer1Y9SX2eqto
-         vIF8rseo3RcO79J3hmxJm2Q1ScT8wtpklSUvCjqyu8c2wucH8rztrGHnRtyRnQrkU5fh
-         2KugKLJ4wtu24zvF2hgOHVXyFvQkd9D/dhmDpy5hN2qgDGOinAteSnlJNa3ckI85saP0
-         UB1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xhWBfJ3UROlAyzetr7niJMuklejkFqO8zZ/u0OkHzXc=;
-        b=VAFiW8DETMsLuHEg3bFOlXBz9+zKczEvJJZ+MZiLBmJBo1kurfcxQZ4CIvQnauSHg3
-         a9lVVfCAOtlPRbDHvYu4qpW8SusR9GkjFNScRsrSY0R/rd8MWsaJO3Vm0PZUO8Y52CmJ
-         ech1PsXwnEowm3xoKxfBx2tSpXw21K2SOBj3de2hhLJ6wdlnvui0rmacfa4Ip1sgKH3m
-         fe2xiDQfVQEcb/RM8euJyi2IjQupbI5ZB3Ihu6sRdtwBuAsf2EYABjX+qG1fdNl7sk9R
-         Q/Irgkohy3COGvPaF6Yquy5EEY8gqKKL6GlRpEFD99j+8ypqoD0NAfGBMjC9Vs7NwmOw
-         BW/w==
-X-Gm-Message-State: ANoB5pnvjaxAgUX3sv13Nqmki6kGbLfrXgnp8vSNv2+nBS3eYuGNfMHx
-        2n+HrvPFpX71IObBN/nl8qRulOkhuic0xl7n0GY=
-X-Google-Smtp-Source: AA0mqf7Bi42umHQQug+vxd4cwJUhQX58+W1HrKi92QxsK7FbaGwcN7yXF2r0fBtZoTvkv5sOA8PEBds0BM+slG9coeU=
-X-Received: by 2002:a17:906:2ac3:b0:7ad:f2f9:2b49 with SMTP id
- m3-20020a1709062ac300b007adf2f92b49mr63452039eje.94.1670440265544; Wed, 07
- Dec 2022 11:11:05 -0800 (PST)
+        with ESMTP id S229475AbiLGT1M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 14:27:12 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3691F663CE
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:27:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE2A661BDD
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 19:27:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B81BC43146
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 19:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670441231;
+        bh=5FkmKMcgD621lYtSY9QcdA9W2/ZLeGsK+iiW5+lfbKk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dUGdL7xnr5ubERiyhjNyzE40gYFVdDe741GFRufq4sPsTHLmB7na1t0ZX0wp/kQI0
+         fQyOslMGHy1nNVqFp8vxejmO38urzA+hrxMBnPdOSzjxnFA7xQovojkLjJqTgEPruw
+         T202vzwpe7D/E1zL9iVMMi2oGEqKtpqFB8IpUS05IPxQ7qXB+HLe89jOK60pxIs6Q/
+         V4k+Ruz94wqP8paAzNtV+x1AhuEMtDHowQ5JMOSmsXwRkP76+tgrBvqNe3YDHliBHx
+         DdeJQlLod08CMdNt7eQSz2yLl1XIn69REzXnI//a9UESIe2DaT8PW75+kdCSUpS1ox
+         fw5DsPWoM21cg==
+Received: by mail-ej1-f44.google.com with SMTP id n21so16323326ejb.9
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:27:11 -0800 (PST)
+X-Gm-Message-State: ANoB5pnnLA4VdNyvvnLhNbOiXTFV5UzQlOL4J93XRRsf2fx4i0XyQ/+4
+        rsDnt5zM0WVkwv3EkOXEHwBFd0BaiBpteoBczbY=
+X-Google-Smtp-Source: AA0mqf4D7uENP5j+VoEifnebjfv7JhZ4uwh8K+Lw1iyWJW9ee9FSiBI8qcd7cvWmmBoqwiIuQ76VE1Tegt/i0WRZYzk=
+X-Received: by 2002:a17:907:7e86:b0:7af:bc9:5e8d with SMTP id
+ qb6-20020a1709077e8600b007af0bc95e8dmr1072278ejc.3.1670441229415; Wed, 07 Dec
+ 2022 11:27:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20221121213123.1373229-1-jolsa@kernel.org> <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
- <Y388m6wOktvZo1d4@krava> <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
- <Y4CMbTeVud0WfPtK@krava> <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y40U1D2bV+hlS/oi@krava> <Y5CXm+gL0lvdsd9e@krava>
-In-Reply-To: <Y5CXm+gL0lvdsd9e@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 7 Dec 2022 11:10:54 -0800
-Message-ID: <CAADnVQL+2kC5CMM8HsfPK28dpdsuWSZ8cLp_433ow2+h-H1kJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some tracepoints
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
+References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
+ <87v8mvsd8d.ffs@tglx> <CAPhsuW5g45D+CFHBYR53nR17zG3dJ=3UJem-GCJwT0v6YCsxwg@mail.gmail.com>
+ <87k03ar3e3.ffs@tglx> <CAPhsuW592J1+Z1e_g_1YPn9KcyX65WFfbbBx6hjyuj0wgN4_XQ@mail.gmail.com>
+ <878rjqqhxf.ffs@tglx> <CAPhsuW65K5TBbT_noTMnAEQ58rNGe-MfnjHF-arG8SZV9nfhzg@mail.gmail.com>
+ <87v8mndy3y.ffs@tglx>
+In-Reply-To: <87v8mndy3y.ffs@tglx>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 7 Dec 2022 11:26:56 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7tv3MwKJZeEib_4mFUx-DJL3aZO05CjFkvH0U+EFQyrg@mail.gmail.com>
+Message-ID: <CAPhsuW7tv3MwKJZeEib_4mFUx-DJL3aZO05CjFkvH0U+EFQyrg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, peterz@infradead.org,
+        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
+        rick.p.edgecombe@intel.com, aaron.lu@intel.com, rppt@kernel.org,
+        mcgrof@kernel.org, Dinh Nguyen <dinguyen@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 5:39 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> looks like we can remove the spinlock completely by using the
-> nested level buffer approach same way as in bpf_bprintf_prepare
+Hi Thomas,
 
-imo that is a much better path forward.
+On Wed, Dec 7, 2022 at 7:36 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+[...]
+> > Survey of the 11 architecture specific module_alloc(). They basically do
+> > the following magic:
+> >
+> > 1. Modify MODULES_VADDR and/or MODULES_END. There are multiple
+> >   reasons behind this, some arch does this for KASLR, some other archs
+> >   have different MODULES_[VADDR|END] for different processors (32b vs.
+> >   64b for example), some archs use some module address space for other
+> >   things (i.e. _exiprom on arm).
+> >
+> > Archs need 1: x86, arm64, arm, mips, ppc, riscv, s390, loongarch,
+> > sparc
+>
+> All of this is pretty much a boot time init decision, right?
 
-> it gets rid of the contention_begin tracepoint, so I'm not being
-> able to trigger the issue in my test
+Yeah, all of these are boot time or compile time decisions.
+
 >
-> jirka
+> > 2. Use kasan_alloc_module_shadow()
+> >
+> > Archs need 2: x86, arm64, s390
 >
+> There is nothing really architecture specific, so that can be part of
+> the core code, right?
+
+Right, kasan_free_module_shadow() is called from vmalloc.c, so the
+alloc one can do the same.
+
 >
-> ---
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 3bbd3f0c810c..d6afde7311f8 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -369,33 +369,60 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
->         return &bpf_probe_write_user_proto;
->  }
+> > 3. A secondary module address space. There is a smaller preferred
+> >   address space for modules. Once the preferred space runs out, allocate
+> >   memory from a secondary address space.
+[...]
 >
-> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
-> -
->  #define MAX_TRACE_PRINTK_VARARGS       3
->  #define BPF_TRACE_PRINTK_SIZE          1024
-> +#define BPF_TRACE_PRINTK_NEST          3
-> +
-> +struct trace_printk_buf {
-> +       char data[BPF_TRACE_PRINTK_NEST][BPF_TRACE_PRINTK_SIZE];
-> +       int nest;
-> +};
-> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
-> +
-> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
-> +{
-> +       this_cpu_dec(buf->nest);
-> +       preempt_enable();
-> +}
-> +
-> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
-> +{
-> +       int nest;
-> +
-> +       preempt_disable();
-> +       nest = this_cpu_inc_return(buf->nest);
-> +       if (nest > BPF_TRACE_PRINTK_NEST) {
-> +               put_printk_buf(buf);
-> +               return false;
-> +       }
-> +       *data = (char *) this_cpu_ptr(&buf->data[nest - 1]);
-> +       return true;
-> +}
+> > 6. nios2 uses kmalloc() for modules. Based on the comment, this is
+> >   probably only because it needs different MODULES_[VADDR|END].
 >
->  BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
->            u64, arg2, u64, arg3)
->  {
->         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
->         u32 *bin_args;
-> -       static char buf[BPF_TRACE_PRINTK_SIZE];
-> -       unsigned long flags;
-> +       char *buf;
->         int ret;
+> It's a horrible hack because they decided to have their layout:
 >
-> +       if (!get_printk_buf(&printk_buf, &buf))
-> +               return -EBUSY;
-> +
->         ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
->                                   MAX_TRACE_PRINTK_VARARGS);
->         if (ret < 0)
-> -               return ret;
-> +               goto out;
+>      VMALLOC_SPACE   0x80000000
+>      KERNEL_SPACE    0xC0000000
 >
-> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
+> and they use kmalloc because CALL26/PCREL26 cannot reach from 0x80000000
+> to 0xC0000000. That's true, but broken beyond repair.
 >
->         trace_bpf_trace_printk(buf);
-> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+> Making the layout:
 >
->         bpf_bprintf_cleanup();
+>      VMALLOC_SPACE   0x80000000
+>      MODULE_SPACE    0xBE000000         == 0xC0000000 - (1 << 24) (32M)
+> or
+>      MODULE_SPACE    0xBF000000         == 0xC0000000 - (1 << 24) (16M)
+>      KERNEL_SPACE    0xC0000000
 >
-> +out:
-> +       put_printk_buf(&printk_buf);
->         return ret;
->  }
+> would have been too obvious...
+
+Yeah, I was thinking about something like this.
+
 >
-> @@ -427,31 +454,35 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
->         return &bpf_trace_printk_proto;
->  }
+> > I think we can handle all these with a single module_alloc() and a few
+> > module_arch_* functions().
+
+[...]
+
 >
-> +static DEFINE_PER_CPU(struct trace_printk_buf, vprintk_buf);
-> +
->  BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, data,
->            u32, data_len)
->  {
-> -       static char buf[BPF_TRACE_PRINTK_SIZE];
-> -       unsigned long flags;
->         int ret, num_args;
->         u32 *bin_args;
-> +       char *buf;
->
->         if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
->             (data_len && !data))
->                 return -EINVAL;
->         num_args = data_len / 8;
->
-> +       if (!get_printk_buf(&vprintk_buf, &buf))
-> +               return -EBUSY;
-> +
->         ret = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
->         if (ret < 0)
-> -               return ret;
-> +               goto out;
->
-> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
->
->         trace_bpf_trace_printk(buf);
-> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
->
->         bpf_bprintf_cleanup();
->
-> +out:
-> +       put_printk_buf(&vprintk_buf);
->         return ret;
->  }
->
+> /**
+>  * struct mod_alloc_type - Parameters for module allocation type
+>  * @mapto_type:         The type to merge this type into, if different
+>  *                      from the actual type which is configured here.
+>  * @flags:              Properties
+>  * @granularity:        The allocation granularity (PTE/PMD)
+>  * @alignment:          The allocation alignment requirement
+>  * @start:              Array of address space range start (inclusive)
+>  * @end:                Array of address space range end (inclusive)
+>  * @pgprot:             The page protection for this type
+>  * @fill:               Function to fill allocated space. If NULL, use memcpy()
+>  * @invalidate:         Function to invalidate allocated space. If NULL, use memset()
+>  *
+>  * If @granularity > @alignment the allocation can reuse free space in
+>  * previously allocated pages. If they are the same, then fresh pages
+>  * have to be allocated.
+>  */
+> struct mod_alloc_type {
+>         unsigned int    mapto_type;
+>         unsigned int    flags;
+>         unsigned int    granularity;
+>         unsigned int    alignment;
+>         unsigned long   start[MOD_MAX_ADDR_SPACES];
+>         unsigned long   end[MOD_MAX_ADDR_SPACES];
+>         pgprot_t        pgprot;
+>         void            (*fill)(void *dst, void *src, unsigned int size);
+>         void            (*invalidate)(void *dst, unsigned int size);
+> };
+
+Yeah, this is a lot better than arch_ functions.
+
+We probably want two more function pointers here:
+
+int (*protect)(unsigned long addr, int numpages);
+int (*unprotect)(unsigned long addr, int numpages);
+
+These two functions will be NULL for archs that support text_poke;
+while legacy archs use them for set_memory_[ro|x|rw|nx]. Then, I
+think we can get rid of VM_FLUSH_RESET_PERMS.
+
+[...]
+
+Everything else makes perfect sense. Thanks!
+
+I think I am ready to dive into the code and prepare the first RFC/PATCH.
+Please let me know if there is anything we should discuss/clarify before that.
+
+Best,
+Song
