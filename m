@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4989564576C
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 11:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0156457BE
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 11:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbiLGKTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 05:19:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S229689AbiLGK0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 05:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbiLGKTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 05:19:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35B41C11A
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 02:18:20 -0800 (PST)
+        with ESMTP id S229769AbiLGK0Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 05:26:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA75429C90
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 02:24:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670408300;
+        s=mimecast20190719; t=1670408666;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9XN+oYBwg/FzBMOO+a8ZKj9oWdJbSN9hLcGMA4//8H8=;
-        b=IQ/GSLHTRpVW69+SxvDBz4uJEdpSXnCNGgDHTArz92EKzIKrmmTdpf0sbjMUX+f0/YLU84
-        4FLHiVGI6L/F/5J70Y4C9UYVXPzTSe8qYwfTOcwIlMI9G8uDC3J3xLX6JGDhy0EGlGqxsQ
-        nWHB/Zoi/Q3Em+itnsQ5zkPZakpsPWE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=fmvXrECUWDpk6CjKs72LNRaUpi6UQ7pNxjEBABaDBAw=;
+        b=FV3tEec480EvesqpY/doiTvWnRUKpkY3wP5pAIPLcO1KzpUzqf5ASqmUh9jucRSgDCud/l
+        3X7/j44IgR3VURgrCgpAVLCoWyGeKREzrsKb7ejQsUO9SB/LdNEyCCeRqIngK4r3xb35YT
+        vkUxn2kZ02CISHDc1UwNYilXU+GROWQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-646-jN_WPJPnN1KKwv0pL-n8rA-1; Wed, 07 Dec 2022 05:18:18 -0500
-X-MC-Unique: jN_WPJPnN1KKwv0pL-n8rA-1
-Received: by mail-wr1-f72.google.com with SMTP id v14-20020adf8b4e000000b0024174021277so4076941wra.13
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 02:18:18 -0800 (PST)
+ us-mta-45-2aLBhrxpNV6FrOqH8N4aCg-1; Wed, 07 Dec 2022 05:24:24 -0500
+X-MC-Unique: 2aLBhrxpNV6FrOqH8N4aCg-1
+Received: by mail-wr1-f70.google.com with SMTP id o10-20020adfa10a000000b00241f603af8dso4100911wro.11
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 02:24:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9XN+oYBwg/FzBMOO+a8ZKj9oWdJbSN9hLcGMA4//8H8=;
-        b=TFIpPHDZj+PvR2NaQGQdGd1WpLnG9kcHIj/mtYuszSD6Tw7g+uS8+WEF4uCbnndsZe
-         /ziuTuOYIDfRh+5KuqI2DgHnnl7X2Zb2mATlLK5BtSRpPRC5whTmdaxzpSTgYkAmw8cm
-         kB7oKQzwF2PuLPSNI1mxF1qqgXTDFVvawVGTvksgKnxizDUqpdVpccKN1YlDn/avEwIR
-         yPvFrmKRiKpoHhpWIvtKFq562a9CkdyGdmXDaOrkjSrGwZFVojzTLG1ZbH9zqOk8gNCr
-         pvJrd19cEzPGput4MifpWgf8k9o6kHiE41rcCeFV2Tkb0Cua8n+BB1rrkOFOt9GRY/br
-         D4yw==
-X-Gm-Message-State: ANoB5plda3vVtHsJCOWx19aAhu8IYXVUVa6/lU6kXspIdWCmGTgIOm+W
-        WVg42HdeL/FoFKz080csFyPelSOTN0wqoj1hjVwKULyl9Sf8UB2B7T7eKvuuCDd8BFv85s/vktr
-        Lfs6UGN1yKqe6
-X-Received: by 2002:a7b:c011:0:b0:3cf:633e:bf6a with SMTP id c17-20020a7bc011000000b003cf633ebf6amr53494653wmb.63.1670408297579;
-        Wed, 07 Dec 2022 02:18:17 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6uytFf4a3LcfdsXtFVT3dWZv2Xsu0MR3+X+lq5orXO9nyT7Wph3RgtwIYprNzcrs9muELhzQ==
-X-Received: by 2002:a7b:c011:0:b0:3cf:633e:bf6a with SMTP id c17-20020a7bc011000000b003cf633ebf6amr53494633wmb.63.1670408297327;
-        Wed, 07 Dec 2022 02:18:17 -0800 (PST)
+        bh=fmvXrECUWDpk6CjKs72LNRaUpi6UQ7pNxjEBABaDBAw=;
+        b=qHFbz/+klWeuLZdKHfwrmVlnJ+DB7oSZF+/wrX0+7jiyvMrJ1pTVnztRMva3pn8gZ1
+         FHYUu1yr7c2UCzuTPuAakwf/qrqmVFsm8fanzxmu6S8Eba/GC8CMg7DErZicDzx5nwVi
+         mlz0ZwYku5B6CxymUByoXdfsXVw2pIb7t/VMlCJ7xNMhSrFmoB6edo1s4hqRvPgtgDHv
+         e3urQEm/BdUSwvJHpScZWvWinm7Zc3Rj9iFsjyl2W017cs6KRZRqwoqGEkV818TJYEyY
+         Ua8rl14K18J+gwYEZDaVraDDx5pGYtkVbI07vxp8X0JRfPIvID86RQ5fYn4JRa4U5Xe+
+         z/jw==
+X-Gm-Message-State: ANoB5plNmtST6XdNYjqH5rTvEN0DvAdER8oCLev/cCOM0oTL57NFCAIu
+        TWjhvTKt9uqxj+Vygi17A2NfYmzkh1ObuG1cRun5oNfwKCJiIzk1bTZe2GXjGb2pTPsiySz3TtH
+        ti0RAKn4n+A7V
+X-Received: by 2002:a05:6000:81a:b0:242:6a15:e257 with SMTP id bt26-20020a056000081a00b002426a15e257mr6351930wrb.624.1670408663411;
+        Wed, 07 Dec 2022 02:24:23 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7yuMyB4HeLgRx4qKqSu2DdpE8gVi8YNKTm3Lh1BRToR9uSlG3n+rU2LpoAoGJwem9ysaJsow==
+X-Received: by 2002:a05:6000:81a:b0:242:6a15:e257 with SMTP id bt26-20020a056000081a00b002426a15e257mr6351917wrb.624.1670408663189;
+        Wed, 07 Dec 2022 02:24:23 -0800 (PST)
 Received: from gerbillo.redhat.com (146-241-106-100.dyn.eolo.it. [146.241.106.100])
-        by smtp.gmail.com with ESMTPSA id t25-20020a1c7719000000b003cfd58409desm1201000wmi.13.2022.12.07.02.18.16
+        by smtp.gmail.com with ESMTPSA id z8-20020adfdf88000000b002258235bda3sm19041944wrl.61.2022.12.07.02.24.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 02:18:16 -0800 (PST)
-Message-ID: <989e6b10fb188b015b040f6df2b19c4ecfb8bb91.camel@redhat.com>
-Subject: Re: [PATCH net-next 6/6] tsnep: Add XDP RX support
+        Wed, 07 Dec 2022 02:24:22 -0800 (PST)
+Message-ID: <db3d16ff19ee4558bf96e585e56661eb626163df.camel@redhat.com>
+Subject: Re: [PATCH net-next 2/6] tsnep: Add XDP TX support
 From:   Paolo Abeni <pabeni@redhat.com>
 To:     Gerhard Engleder <gerhard@engleder-embedded.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
         ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
         john.fastabend@gmail.com
-Date:   Wed, 07 Dec 2022 11:18:15 +0100
-In-Reply-To: <20221203215416.13465-7-gerhard@engleder-embedded.com>
+Date:   Wed, 07 Dec 2022 11:24:21 +0100
+In-Reply-To: <20221203215416.13465-3-gerhard@engleder-embedded.com>
 References: <20221203215416.13465-1-gerhard@engleder-embedded.com>
-         <20221203215416.13465-7-gerhard@engleder-embedded.com>
+         <20221203215416.13465-3-gerhard@engleder-embedded.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
@@ -82,182 +82,29 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, 2022-12-03 at 22:54 +0100, Gerhard Engleder wrote:
-> If BPF program is set up, then run BPF program for every received frame
-> and execute the selected action.
-> 
-> Test results with A53 1.2GHz:
-> 
-> XDP_DROP (samples/bpf/xdp1)
-> proto 17:     865683 pkt/s
-> 
-> XDP_TX (samples/bpf/xdp2)
-> proto 17:     253594 pkt/s
-> 
-> XDP_REDIRECT (samples/bpf/xdpsock)
->  sock0@eth2:0 rxdrop xdp-drv
->                    pps            pkts           1.00
-> rx                 862,258        4,514,166
-> tx                 0              0
-> 
-> XDP_REDIRECT (samples/bpf/xdp_redirect)
-> eth2->eth1         608,895 rx/s   0 err,drop/s   608,895 xmit/s
-> 
-> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-> ---
->  drivers/net/ethernet/engleder/tsnep_main.c | 100 +++++++++++++++++++++
->  1 file changed, 100 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-> index 725b2a1e7be4..4e3c6bd3dc9f 100644
-> --- a/drivers/net/ethernet/engleder/tsnep_main.c
-> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
-> @@ -27,6 +27,7 @@
->  #include <linux/phy.h>
->  #include <linux/iopoll.h>
->  #include <linux/bpf.h>
-> +#include <linux/bpf_trace.h>
->  
->  #define TSNEP_SKB_PAD (NET_SKB_PAD + NET_IP_ALIGN)
->  #define TSNEP_HEADROOM ALIGN(max(TSNEP_SKB_PAD, XDP_PACKET_HEADROOM), 4)
-> @@ -44,6 +45,11 @@
->  #define TSNEP_COALESCE_USECS_MAX     ((ECM_INT_DELAY_MASK >> ECM_INT_DELAY_SHIFT) * \
->  				      ECM_INT_DELAY_BASE_US + ECM_INT_DELAY_BASE_US - 1)
->  
-> +#define TSNEP_XDP_PASS		0
-> +#define TSNEP_XDP_CONSUMED	BIT(0)
-> +#define TSNEP_XDP_TX		BIT(1)
-> +#define TSNEP_XDP_REDIRECT	BIT(2)
-> +
->  enum {
->  	__TSNEP_DOWN,
->  };
-> @@ -819,6 +825,11 @@ static inline unsigned int tsnep_rx_offset(struct tsnep_rx *rx)
->  	return TSNEP_SKB_PAD;
->  }
->  
-> +static inline unsigned int tsnep_rx_offset_xdp(void)
-
-Please, no 'inline' in c files, the complier will do a better job
-without.
-
+[...]
+> +/* This function requires __netif_tx_lock is held by the caller. */
+> +static int tsnep_xdp_xmit_frame_ring(struct xdp_frame *xdpf,
+> +				     struct tsnep_tx *tx, bool dma_map)
 > +{
-> +	return XDP_PACKET_HEADROOM;
-> +}
-> +
->  static void tsnep_rx_ring_cleanup(struct tsnep_rx *rx)
->  {
->  	struct device *dmadev = rx->adapter->dmadev;
-> @@ -1024,6 +1035,65 @@ static int tsnep_rx_refill(struct tsnep_rx *rx, int count, bool reuse)
->  	return i;
->  }
->  
-> +static int tsnep_xdp_run_prog(struct tsnep_rx *rx, struct bpf_prog *prog,
-> +			      struct xdp_buff *xdp)
-> +{
-> +	unsigned int length;
-> +	unsigned int sync;
-> +	u32 act;
-> +
-> +	length = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
-> +
-> +	act = bpf_prog_run_xdp(prog, xdp);
-> +
-> +	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-> +	sync = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
-> +	sync = max(sync, length);
-> +
-> +	switch (act) {
-> +	case XDP_PASS:
-> +		return TSNEP_XDP_PASS;
-> +	case XDP_TX:
-> +		if (tsnep_xdp_xmit_back(rx->adapter, xdp) < 0)
-> +			goto out_failure;
-> +		return TSNEP_XDP_TX;
-> +	case XDP_REDIRECT:
-> +		if (xdp_do_redirect(rx->adapter->netdev, xdp, prog) < 0)
-> +			goto out_failure;
-> +		return TSNEP_XDP_REDIRECT;
-> +	default:
-> +		bpf_warn_invalid_xdp_action(rx->adapter->netdev, prog, act);
-> +		fallthrough;
-> +	case XDP_ABORTED:
-> +out_failure:
-> +		trace_xdp_exception(rx->adapter->netdev, prog, act);
-> +		fallthrough;
-> +	case XDP_DROP:
-> +		page_pool_put_page(rx->page_pool, virt_to_head_page(xdp->data),
-> +				   sync, true);
-> +		return TSNEP_XDP_CONSUMED;
-> +	}
-> +}
-> +
-> +static void tsnep_finalize_xdp(struct tsnep_adapter *adapter, int status)
-> +{
-> +	int cpu = smp_processor_id();
-> +	int queue;
-> +	struct netdev_queue *nq;
-> +
-> +	if (status & TSNEP_XDP_TX) {
-> +		queue = cpu % adapter->num_tx_queues;
-> +		nq = netdev_get_tx_queue(adapter->netdev, queue);
-> +
-> +		__netif_tx_lock(nq, cpu);
-> +		tsnep_xdp_xmit_flush(&adapter->tx[queue]);
-> +		__netif_tx_unlock(nq);
-> +	}
-> +
-> +	if (status & TSNEP_XDP_REDIRECT)
-> +		xdp_do_flush();
-> +}
-> +
->  static struct sk_buff *tsnep_build_skb(struct tsnep_rx *rx, struct page *page,
->  				       int length)
->  {
-> @@ -1062,12 +1132,17 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->  	int desc_available;
->  	int done = 0;
->  	enum dma_data_direction dma_dir;
-> +	struct bpf_prog *prog;
->  	struct tsnep_rx_entry *entry;
-> +	struct xdp_buff xdp;
-> +	int xdp_status = 0;
->  	struct sk_buff *skb;
->  	int length;
+> +	struct skb_shared_info *shinfo = xdp_get_shared_info_from_frame(xdpf);
+> +	unsigned long flags;
+> +	int count = 1;
+> +	struct tsnep_tx_entry *entry;
+> +	int length;
+> +	int i;
 > +	int retval;
->  
->  	desc_available = tsnep_rx_desc_available(rx);
->  	dma_dir = page_pool_get_dma_dir(rx->page_pool);
-> +	prog = READ_ONCE(rx->adapter->xdp_prog);
->  
->  	while (likely(done < budget) && (rx->read != rx->write)) {
->  		entry = &rx->entry[rx->read];
-> @@ -1111,6 +1186,28 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->  		rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
->  		desc_available++;
->  
-> +		if (prog) {
-> +			xdp_init_buff(&xdp, PAGE_SIZE, &rx->xdp_rxq);
-> +			xdp_prepare_buff(&xdp, page_address(entry->page),
-> +					 tsnep_rx_offset_xdp() + TSNEP_RX_INLINE_METADATA_SIZE,
-> +					 length - TSNEP_RX_INLINE_METADATA_SIZE,
-> +					 false);
-> +			retval = tsnep_xdp_run_prog(rx, prog, &xdp);
-> +		} else {
-> +			retval = TSNEP_XDP_PASS;
-> +		}
-> +		if (retval) {
-> +			if (retval & (TSNEP_XDP_TX | TSNEP_XDP_REDIRECT))
-> +				xdp_status |= retval;
+> +
+> +	if (unlikely(xdp_frame_has_frags(xdpf)))
+> +		count += shinfo->nr_frags;
+> +
+> +	spin_lock_irqsave(&tx->lock, flags);
 
-Here you could avoid a couple of conditionals passing xdp_status as an
-additional tsnep_xdp_run_prog() argument, let the latter update it
-under the existing switch, returning a single consumed/pass up bool and
-testing such value just after tsnep_xdp_run_prog().
+Not strictily related to this patch, but why are you using the _irqsafe
+variant? it looks like all the locak users are either in process or BH
+context.
 
-Mostly a matter of personal tasted I guess.
-
-
-Cheers,
+Thanks!
 
 Paolo
 
