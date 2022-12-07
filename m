@@ -2,196 +2,503 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DC0645D9F
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 16:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B383645DBD
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 16:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiLGP3F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 10:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        id S229849AbiLGPhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 10:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbiLGP3F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 10:29:05 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2058.outbound.protection.outlook.com [40.92.89.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A17101CB;
-        Wed,  7 Dec 2022 07:29:03 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NFJOTpYa8cMif8UoVobmNuRp1btEwACqSbqz5DMOhDxzwjMGQRY5omogfXmUlJAy9nznoew0dzMtTcA0gss9h9ZQ+3QjvjSHllr17bkz1em7U+gu6z3BeyPdsWOnBjLyn9Xdd1oKl4oLf8rvRv55oH8x81lI4PsoyxF1qgC87hkjC81hv0y4KdvwC5VHvo2kKuPkzBGxJmPf4YpLO2emIoZ7T0Up9vbMdVemNxOPP5r3ecL6moVyR//2bjtWIB7jqOic4rqZz5LPYNWe2bSqKHr3yYTascpvk0tY2XBsmrEi/5+8QdvO6EmlOBnq1jc10e2m2wk7uOAoAGpdm/adOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AuZ21kH4NGW4q33dGSpTBj49Xh/eRujGvaiqZPQ/trM=;
- b=ab4capwCmFuKzo3jCbnKDJ9pmyHb4dIiC0EXnDiL5YTFk8dM+EPdSd/2odCy1QgxmRPZ1DCflnR5r2BxDaSi0zzcNaDHLy5z+1YMDUSFz41HcNjGePYEArEzJKc5X3h3RGLAH3RzTC5syaaLjlBf1a2upVoxeLKHXFhvuhdUQmvz+z9SYcNo26WqMaqYZWGeynY5VXIJ4t1LswgUMa979K0ZeBQ3k3mExsScElMKsH+4+1nWdijuMk/AwfNmwz8uCVsDBDMk/nj09G6Jn1hAl1GTq32GrQfEnk+bXeE903IjJaMwAWzkv94Qw9wRJjsyjtqLVfen4YZMagDJZvl6kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AuZ21kH4NGW4q33dGSpTBj49Xh/eRujGvaiqZPQ/trM=;
- b=ZPjSjkTlq1eWtm0Q4O6mjKvssakCOi96xjie/j+fMiQgEuY4/g8RUBys+GRd5TES7pnFZonks1GpnG4X4FGqNaTWW0fwS9LaT4chIyVlqLMVX5qj4JU73OotPXI4uX/eIhaY7R4FD06gF/2eTNSpNx/jXs1pC4Pzown+uVc1L7hbZem2DeDquKyBAsk7lxgHF3aSp6BNwEjTMKjMiu3Vqn1z7EQQ2r6lIN6xDqEpJ6FTOfkFSSS/1Lmx4oso9GDAAGUGaktE/Nh2Mi0fmPwLthgJMRpRC1av/CFWSHSctVJpnMcMYg/R7AO0xjn/gOh2zrL0NJyv1kKezjOmFWDgIA==
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
- by PRAP192MB1458.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:29c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Wed, 7 Dec
- 2022 15:29:01 +0000
-Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- ([fe80::a67b:5da2:88f8:f28b%9]) with mapi id 15.20.5880.014; Wed, 7 Dec 2022
- 15:29:01 +0000
-Message-ID: <DU0P192MB15479DE3A186319F999748E3D61A9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
-Date:   Wed, 7 Dec 2022 23:28:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH bpf-next v2] bpf: Upgrade bpf_{g,s}etsockopt return values
-Content-Language: en-US
-From:   Ji Rongfeng <SikoJobs@outlook.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
- <deb77161-3091-a134-4b82-78fef06efe85@linux.dev>
- <7901fd2a-e6d5-8176-73bd-b910f8abee33@outlook.com>
-In-Reply-To: <7901fd2a-e6d5-8176-73bd-b910f8abee33@outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [xmLTBxQN79R/Mzxphkbf3KP9t61C69Mz]
-X-ClientProxiedBy: SJ0PR05CA0053.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::28) To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:10:34b::15)
-X-Microsoft-Original-Message-ID: <291c6431-05b7-3709-68eb-3aa92ea80913@outlook.com>
+        with ESMTP id S229804AbiLGPg4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 10:36:56 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD60E5E9D0
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 07:36:52 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1670427410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KCh61LjppO0ipjg7odH/HImdPvBRb5T3+ecF0/1jgdU=;
+        b=xk01Cyg/qekF+R980jXdeFv1Jni8PzBNsYmiL32UcXftQwPQy1JZhMSNHMJHAEO4rgdPXV
+        58encetXmFvihKyoCWgWnZKAemyLW5feEXqxSymoO1X1spCQn1vt2kKNtYgoPCwFPh11qQ
+        kF5/7BeNQJwG0VLKlU0jxB3EJxK1llqpqz2FuN/NNieuIX2hwKIV586FM8hf2tYPVI3tXX
+        wRJacBnuP0R3cBQVBtdthIhC4qcD6gNwfGQXy+kEPYxjdRmsc3MqVJcsffzLdTCFEaC7I9
+        MbDUX3w/DmvzbOVv8l6CDhjGdVDbNCK7mvlaeMdKEkur0L15wBozRyYC89FB0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1670427410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KCh61LjppO0ipjg7odH/HImdPvBRb5T3+ecF0/1jgdU=;
+        b=XykrjWnX4ppkALVqJeY7VOYxFLgwA12Y8nLjbMSQGBhW/VgqRS0CQDwIdexrMT3KZxDEsQ
+        cvxDtQ7FXvHPtPAA==
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org, peterz@infradead.org,
+        akpm@linux-foundation.org, x86@kernel.org, hch@lst.de,
+        rick.p.edgecombe@intel.com, aaron.lu@intel.com, rppt@kernel.org,
+        mcgrof@kernel.org, Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/5] execmem_alloc for BPF programs
+In-Reply-To: <CAPhsuW65K5TBbT_noTMnAEQ58rNGe-MfnjHF-arG8SZV9nfhzg@mail.gmail.com>
+References: <CAPhsuW4Fy4kdTqK0rHXrPprUqiab4LgcTUG6YhDQaPrWkgZjwQ@mail.gmail.com>
+ <87v8mvsd8d.ffs@tglx>
+ <CAPhsuW5g45D+CFHBYR53nR17zG3dJ=3UJem-GCJwT0v6YCsxwg@mail.gmail.com>
+ <87k03ar3e3.ffs@tglx>
+ <CAPhsuW592J1+Z1e_g_1YPn9KcyX65WFfbbBx6hjyuj0wgN4_XQ@mail.gmail.com>
+ <878rjqqhxf.ffs@tglx>
+ <CAPhsuW65K5TBbT_noTMnAEQ58rNGe-MfnjHF-arG8SZV9nfhzg@mail.gmail.com>
+Date:   Wed, 07 Dec 2022 16:36:49 +0100
+Message-ID: <87v8mndy3y.ffs@tglx>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|PRAP192MB1458:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd84bd63-9dd3-42b8-34c4-08dad867c460
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kfavVOOpeqPlyMqUN7M3FTgZ8xfyDYHZZ70dDC8ZmKx45Jy75M8ue8CnX0CZ6ecsZ36R84S+UBJ/oUWtnOhNOhh8OnmImK+5cyLTll5XpmU0k1zX896LY0uvl9YfH2uAOWnP88wI/Ymu36heJWMtJxrcl75zvGjFSixE/oqYKPjuAjztJVhcAe79apaVwMUagv3nc6PL4rIGe48tIJLZft++X+IvfZHQsDvnEL8OvcvJaouln60/9JZbgMBrt8xoeniGj+YU4/sa7R60S8QlsobHkig2mXkt5BbAiab/9q57OkbiD1CB95ZRUBwTUI3qkhMwAeLp5t9k8KYeKgZakPwguzJmmWwHLJ50tvatH7nyjCSF4Yjl4AlCicR+SHwRs+Q0Rvx26AOLt/K7CRW9pqMdqz78jMoyCi4iIiO1BoCr+HY/lQTpy8Kid9luSw7mLRZNFZLuKQBqUN1BWHE5NsMDD/mAKLkejkXskJf3zJAmZ39/Ki4wlkA/a7vQePYJKF/CYtRantEB8+qtJmUwtG3EaKtI/E/RBuNoRYS+CLL0B68uJ34vwOjdoYJK4iNU1W074qRAmDsFbebnm0Ht3spYoqYYAGftaYQYMpae24OrBwbcOaa8IZ5NDRIfPAwPW9973xzbEb0FpPmSFEp5+w==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZExIOFEyeUpDTlE4SzZzL1IrOGJlOEhSYTFndVhnQytaTS8zMU5zcFNzTVRl?=
- =?utf-8?B?RHFNM1ZZZERNdTJ5UFRKSUVKV20rWSt3ZjI3MDk2a3dFRWx4NmpETmRZeWxB?=
- =?utf-8?B?dXBPU2YweFZxc2ZyN0tjY1FVVGFRMEJYdUFNazZ6bGJ6YkVTTWJhQVpENWp1?=
- =?utf-8?B?SmhNcytXdXU2ZzNoRElHM3BsOFBPbUFQVjlXL1RTb1p2a0gya2M3WmJ1akFv?=
- =?utf-8?B?WXFsUmFjYlVtMlFDUEh2NTg1cCtaVWl0ZmxrbFNMb0lSNUQ0c29WaTJFTldj?=
- =?utf-8?B?SEZ3ZDhZZDlzZ2hKOWphYjRzTFRyanRscDFLdENmUU1JVHhtR3ZUdTdjTXA3?=
- =?utf-8?B?YTFSVElLdkdGQWR4V1U1M1dudnZZdmJpejJCdFlYWURKQWtVR0IwS1E3bnYy?=
- =?utf-8?B?eXM3cWx1OWc1eDJKTkt2UkRCRUg2amt4b1VxY05LMGZkYk9vNXJGWFN5d210?=
- =?utf-8?B?cEhnb0NQVndkQ1BDbnZlalRzWGFpN0NsOVg0TVc0S2lNbHV6OUlCa3lwNG5r?=
- =?utf-8?B?OWdncTVLbmNXQ0g0U0VhQkREM3kwR1N1dmUrU2czaElUejRSREZ3Yk42SWFi?=
- =?utf-8?B?RkZzb1o3WThFMmJNWnVqRU45bXJ3WVp3NUxnTTJNM3ovQXMyMTg5Z0lITEJX?=
- =?utf-8?B?L0IzT1dLcUsxL1YzR0piY3R4NVBjSUFweEplWVRJOHU4S2hyU3k2WFRPY0hS?=
- =?utf-8?B?Vy9xeDRLTUJrajlOV0kxYmFkbDlick1oOXdzb0l1UWFaTnVIakc4REZVVXp0?=
- =?utf-8?B?cHVnV0pBQkVETW9UY3M4Y2lCeXVuWDQ5ZHpKMmpGWGx0ZzZvN2hxd0pWek5B?=
- =?utf-8?B?Zk1VdTRuSDJxdEJ3TmlnajhaV0twOHVidDJmSkROaHAraTFaV3JUT1dMbk9L?=
- =?utf-8?B?N2JYZmZpQU1JS1FNakJzV1E5RWdUeUtUOVJ5WGUvQnB3VHZFaFlxL1NMWHhL?=
- =?utf-8?B?QWlWRXc5S0toMGJ2MmNHS1RXNlZ1bU9kZ29Cc054RkFqK3RHZWVpMmdnOXpL?=
- =?utf-8?B?NE5uWjNmVUpiVUZPT283b3gzYkxSZ0hUelZCZHdtdWNTNVBpTW5pK1hXM2Fp?=
- =?utf-8?B?VlU1d0NiamdGWmdLVTZQeklIZkwrOFd4a0RWRU1XdVoyVG1MUFovQlFsVEpu?=
- =?utf-8?B?Y3dHWDZSdUR6UHNnWTdnM1d3MG1IY2trL1I0OEhXeW5KYkU2MTQ5ZFBhMVBM?=
- =?utf-8?B?OWdpY0szV1pYRzRkUjNmMjhzT2xxVTdjaWhoZG1aOVBMcnM2bXRwZE9YQzNS?=
- =?utf-8?B?UzVGcHd4WmVvTGNHVWRSTTQ0eERJUS8rUFdHOTRPRGtxbFhZRG45Y1VUdmtW?=
- =?utf-8?B?SEFyTnNPUURUU1FEN2JFVTA1cHBUU3N0UDVMdlg0TWtFZG8zV2FSNGc1WEpm?=
- =?utf-8?B?bjNWWE13RDBudVhRTmY5M3hTZ3BFTksxMWZXOGpMcDNGSG1uVTI5elcva2lS?=
- =?utf-8?B?SmY0UUd1RVJXd1FCakJxWnk5UnYwU2k4S3plczlYaWEwTUxjZ0dPUW9HaTFh?=
- =?utf-8?B?Qy80bkRYcTkzd3pzRDV2VTViZzRYc2ZJTWtaZ2pXSTk5dVE3TVBmUjZjTHNF?=
- =?utf-8?B?SUtYZUFGRzAyakRweCtwWmxIZW4rN2M0T2psWTFkdS9ReWxMN2ZFTjFVYzMr?=
- =?utf-8?B?VGZTdU84SDNiNWxvOGlhZW4rUkpId3pNWER3Qlc3YW0zYlVCSjFtTm83NjJB?=
- =?utf-8?B?ZHJheFZYMmJiVDljOXlmL2ozbTBTRjQvUVc1QjdWbmI4VWQreHlzbWt3PT0=?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd84bd63-9dd3-42b8-34c4-08dad867c460
-X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 15:29:01.7809
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PRAP192MB1458
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/12/7 19:19, Ji Rongfeng wrote:
-> On 2022/12/7 2:36, Martin KaFai Lau wrote:
->> On 12/2/22 9:39 AM, Ji Rongfeng wrote:
->>> Returning -EINVAL almost all the time when error occurs is not very
->>> helpful for the bpf prog to figure out what is wrong. This patch
->>> upgrades some return values so that they will be much more helpful.
->>>
->>> * return -ENOPROTOOPT when optname is unsupported
->>>
->>>    The same as {g,s}etsockopt() syscall does. Before this patch,
->>>    bpf_setsockopt(TCP_SAVED_SYN) already returns -ENOPROTOOPT, which
->>>    may confuse the user, as -EINVAL is returned on other unsupported
->>>    optnames. This patch also rejects TCP_SAVED_SYN right in
->>>    sol_tcp_sockopt() when getopt is false, since do_tcp_setsockopt()
->>>    is just the executor and it's not its duty to discover such error
->>>    in bpf. We should maintain a precise allowlist to control whether
->>>    an optname is supported and allowed to enter the executor or not.
->>>    Functions like do_tcp_setsockopt(), their behaviour are not fully
->>>    controllable by bpf. Imagine we let an optname pass, expecting
->>>    -ENOPROTOOPT will be returned, but someday that optname is
->>>    actually processed and unfortunately causes deadlock when calling
->>>    from bpf. Thus, precise access control is essential.
->>
->> Please leave the current -EINVAL to distinguish between optnames 
->> rejected by bpf and optnames rejected by the do_*_{get,set}sockopt().
-> 
-> To reach that goal, it would be better for us to pick a value other than 
-> -ENOPROTOOPT or -EINVAL. This patch actually makes sk-related errors, 
-> level-reletad errors, optname-related errors and opt{val,len}-related 
-> errors distinguishable, as they should be, by leaving -EINVAL to 
-> opt{val,len}-related errors only. man setsockopt:
-> 
->  > EINVAL optlen invalid in setsockopt().  In some cases this error
->  >        can also occur for an invalid value in optval (e.g., for
->  >        the IP_ADD_MEMBERSHIP option described in ip(7)).
-> 
-> With an unique return value, the bpf prog developer will be able to know 
-> that the error is "unsupported or unknown optname" for sure, saving time 
-> on figuring the actual cause of the error. In production environment, 
-> the bpf prog will be able to test whether an optname is available in 
-> current bpf env and decide what to do next also, which is very useful.
-> 
->>
->>>
->>> * return -EOPNOTSUPP on level-related errors
->>>
->>>    In do_ip_getsockopt(), -EOPNOTSUPP will be returned if level !=
->>>    SOL_IP. In ipv6_getsockopt(), -ENOPROTOOPT will be returned if
->>>    level != SOL_IPV6. To be distinguishable, the former is chosen.
->>
->> I would leave this one as is also.  Are you sure the do_ip_*sockopt 
->> cannot handle sk_family == AF_INET6?  afaict, bpf is rejecting those 
->> optnames instead.
-> 
-> -EOPNOTSUPP is just picked here as an unique return value representing 
-> "unknown level or unsupported sk_family or mismatched protocol in 
-> bpf_{g,s}etsockopt()". I'm ok if you want to pick another unique value 
-> for them or pick three unique values for each type of error : )
+Song!
 
-Sorry, I meant "three unique values for three types of error", which is 
-growing more and more sensible in my mind as I'm thinking about it.
+On Tue, Dec 06 2022 at 12:25, Song Liu wrote:
+> On Fri, Dec 2, 2022 at 1:22 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> Correct. Please have a close look at the 11 architecture specific
+>> module_alloc() variants so you can see what kind of tweaks and magic
+>> they need, which lets you better specify the needs for the
+>> initialization parameter set required.
+>
+> Survey of the 11 architecture specific module_alloc(). They basically do
+> the following magic:
+>
+> 1. Modify MODULES_VADDR and/or MODULES_END. There are multiple
+>   reasons behind this, some arch does this for KASLR, some other archs
+>   have different MODULES_[VADDR|END] for different processors (32b vs.
+>   64b for example), some archs use some module address space for other
+>   things (i.e. _exiprom on arm).
+>
+> Archs need 1: x86, arm64, arm, mips, ppc, riscv, s390, loongarch,
+> sparc
 
-> 
->>
->>>
->>> * return -EBADFD when sk is not a full socket
->>>
->>>    -EPERM or -EBUSY was an option, but in many cases one of them
->>>    will be returned, especially under level SOL_TCP. -EBADFD is the
->>>    better choice, since it is hardly returned in all cases. The bpf
->>>    prog will be able to recognize it and decide what to do next.
->>
->> This one makes sense and is useful.
->>
-> 
+All of this is pretty much a boot time init decision, right?
 
+> 2. Use kasan_alloc_module_shadow()
+>
+> Archs need 2: x86, arm64, s390
+
+There is nothing really architecture specific, so that can be part of
+the core code, right?
+
+> 3. A secondary module address space. There is a smaller preferred
+>   address space for modules. Once the preferred space runs out, allocate
+>   memory from a secondary address space.
+>
+> Archs need 3: some ppc, arm, arm64 (PLTS on arm and arm64)
+
+Right.
+
+> 4. User different pgprot_t (PAGE_KERNEL, PAGE_KERNEL_EXEC, etc.)
+>
+> 5. sparc does memset(ptr, 0, size) in module_alloc()
+
+which is pointless if you do a GPF_ZERO allocation, but sure.
+
+> 6. nios2 uses kmalloc() for modules. Based on the comment, this is
+>   probably only because it needs different MODULES_[VADDR|END].
+
+It's a horrible hack because they decided to have their layout:
+
+     VMALLOC_SPACE   0x80000000
+     KERNEL_SPACE    0xC0000000
+
+and they use kmalloc because CALL26/PCREL26 cannot reach from 0x80000000
+to 0xC0000000. That's true, but broken beyond repair.
+
+Making the layout:
+
+     VMALLOC_SPACE   0x80000000
+     MODULE_SPACE    0xBE000000         == 0xC0000000 - (1 << 24) (32M)
+or     
+     MODULE_SPACE    0xBF000000         == 0xC0000000 - (1 << 24) (16M)
+     KERNEL_SPACE    0xC0000000
+
+would have been too obvious...
+
+> I think we can handle all these with a single module_alloc() and a few
+> module_arch_* functions().
+>
+> unsigned long module_arch_vaddr(void);
+> unsigned long module_arch_end(void);
+> unsigned long module_arch_secondary_vaddr(void);
+> unsigned long module_arch_secondary_end(void);
+> pgprot_t module_arch_pgprot(alloc_type type);
+> void *module_arch_initialize(void *s, size_t n);
+> bool module_arch_do_kasan_shadow(void);
+
+Why? None of these functions is required at all.
+
+Go back to one of my previous replies:
+
+>> +     select CONFIG_MODULE_ALLOC_NEWFANGLED
+>> 
+>> +     module_alloc_newfangled_init(&type_parameters);
+
+/**
+ * struct mod_alloc_type - Parameters for module allocation type
+ * @mapto_type:		The type to merge this type into, if different
+ *			from the actual type which is configured here.
+ * @flags:		Properties
+ * @granularity:	The allocation granularity (PTE/PMD)
+ * @alignment:		The allocation alignment requirement
+ * @start:		Array of address space range start (inclusive)
+ * @end:		Array of address space range end (inclusive)
+ * @pgprot:		The page protection for this type
+ * @fill:		Function to fill allocated space. If NULL, use memcpy()
+ * @invalidate:		Function to invalidate allocated space. If NULL, use memset()
+ *
+ * If @granularity > @alignment the allocation can reuse free space in
+ * previously allocated pages. If they are the same, then fresh pages
+ * have to be allocated.
+ */
+struct mod_alloc_type {
+	unsigned int	mapto_type;
+        unsigned int	flags;
+	unsigned int	granularity;
+        unsigned int    alignment;
+	unsigned long	start[MOD_MAX_ADDR_SPACES];
+	unsigned long	end[MOD_MAX_ADDR_SPACES];
+        pgprot_t	pgprot;
+        void		(*fill)(void *dst, void *src, unsigned int size);
+        void		(*invalidate)(void *dst, unsigned int size);
+};
+
+struct mod_alloc_type_params {
+       struct mod_alloc_type	types[MOD_MAX_TYPES];
+};
+
+or something like that.
+
+> So module_alloc() would look like:
+
+<SNIP>horror</SNIP>
+
+No. It would not contain a single arch_foo() function at all. Everything
+can be expressed with the type descriptors above.
+
+> For the allocation type, there are technically 5 of them:
+>
+> ALLOC_TYPE_RX,   /* text */
+> ALLOC_TYPE_RW,    /* rw data */
+> ALLOC_TYPE_RO,    /* ro data */
+> ALLOC_TYPE_RO_AFTER_INIT,
+> ALLOC_TYPE_RWX,   /* legacy, existing module_alloc behavior */
+
+You are mixing page protections and section types as seen from the
+module core code. We need exactly four abstract allocation types:
+
+   MOD_ALLOC_TYPE_TEXT
+   MOD_ALLOC_TYPE_DATA
+   MOD_ALLOC_TYPE_RODATA
+   MOD_ALLOC_TYPE_RODATA_AFTER_INIT
+
+These allocation types represent the section types and are mapped to
+module_alloc_type->pgprot by the allocator. Those protections can be
+different or identical, e.g. all RWX.
+
+The module core does neither care about the resulting page protection
+nor about the question whether the allocation can reuse free space or
+needs to allocate fresh pages nor about the question whether an
+allocation type maps to some other type.
+
+> Given RO and RO_AFTER_INIT require PAGE alignment and are
+> relatively small. I think we can merge them with RWX.
+
+There is no RWX, really. See above.
+
+> We also need to redesign module_layout. Right now, we have
+> up to 3 layouts: core, init, and data. We will need 6 allocations:
+>   core text,
+>   core rw data,
+>   core ro and ro_after_init data (one allocation)
+>   init text,
+>   init rw data,
+>   init ro data.
+>
+> PS: how much do we benefit with separate core and init.
+> Maybe it is time to merge the two? (keep init part around until
+> the module unloads).
+
+That needs some investigation into how much memory is really made
+available.
+
+OTOH, if you look at the above then we can just have:
+
+   MOD_ALLOC_TYPE_INITTEXT
+   MOD_ALLOC_TYPE_INITDATA
+   MOD_ALLOC_TYPE_INITRODATA
+
+as extra allocation types. All it does is add some initconst memory and
+a slightly larger static datastructure in the allocator itself. See
+below.
+
+> For data structures, I propose we use two extra trees for RX
+> and RW allocation (similar to 1/6 of current version, but 2x
+> trees).
+
+The number of trees does not matter. You can make them part of the type
+scheme and then the number of active trees depends on the number of
+types and the properties of the types. Which is the right thing to do
+because then you can e.g. trivially split RODATA and RODATA_AFTER_INIT.
+
+> For RWX, we keep current module_alloc() behavior, so no new data
+> structure is needed.
+
+Seriously no. We switch the whole logic over to the new scheme for
+consistency, simplicity and mental sanity reasons.
+
+Again: Module code cares about section types, not about the resulting
+page protections. The page protections are a matter of the underlying
+allocator and architecture specific properties.
+
+> The new module_layout will be something like:
+>
+> struct module_layout {
+>     void *ptr;
+>     unsigned int size;  /* text size, rw data size, ro + ro_after_init size */
+>     unsigned int ro_size;    /* ro_size for ro + ro_after_init allocation */
+> };
+
+*SHUDDER*
+
+struct module_layout {
+        unsigned int	type;
+        unsigned int	size;
+	void 		*ptr;
+};
+
+or
+
+struct module_layout {
+        unsigned int	size;
+	void 		*ptr;
+};
+
+struct module {
+	...
+	struct module_layout	layouts[MOD_ALLOC_TYPE_MAX];
+        ...
+};
+
+> One more question: shall we make module sections page
+> aligned without STRICT_MODULE_RWX? It appears to be
+> a good way to simplify the logic. But it may cause too much
+> memory waste for smaller processors?
+
+Yes, we want that again for simplicity. That wastes some space on
+architectures which do not support large pages, but that's not the end
+of the world. Deep embedded is not really module heavy.
+
+So lets look at some examples under the assumption that we have the init
+sections separate:
+
+Legacy default (All RWX):
+
+struct mod_alloc_type_params {
+   	[MOD_ALLOC_TYPE_TEXT ... MOD_ALLOC_TYPE_RODATA_AFTER_INIT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+                .granularity	= PAGE_SIZE,
+                .alignment	= PAGE_SIZE,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_EXEC,
+	},
+   	[MOD_ALLOC_TYPE_INITTEXT ... MOD_ALLOC_TYPE_INITRODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_INITTEXT,
+                .granularity	= PAGE_SIZE,
+                .alignment	= PAGE_SIZE,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_EXEC,
+	},
+   };
+
+So this is the waste space version, but we can also do:
+
+struct mod_alloc_type_params {
+   	[MOD_ALLOC_TYPE_TEXT ... MOD_ALLOC_TYPE_INITRODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+                .granularity	= PAGE_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_EXEC,
+	},
+   };
+
+The "use free space in existing mappings" mechanism is not required to
+be PMD_SIZE based, right?
+
+Large page size, strict separation:
+
+struct mod_alloc_type_params {
+   	[MOD_ALLOC_TYPE_TEXT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+                .flags		= FLAG_SHARED_PMD | FLAG_SECOND_ADDRESS_SPACE,
+                .granularity	= PMD_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .start[1]	= MODULES_VADDR_2ND,
+                .end[1]		= MODULES_END_2ND,
+                .pgprot		= PAGE_KERNEL_EXEC,
+                .fill		= text_poke,
+                .invalidate	= text_poke_invalidate,
+	},
+   	[MOD_ALLOC_TYPE_DATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_DATA,
+                .flags		= FLAG_SHARED_PMD,
+                .granularity	= PMD_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL,
+	},
+   	[MOD_ALLOC_TYPE_RODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA,
+                .granularity	= PAGE_SIZE,
+                .alignment	= PAGE_SIZE,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_RO,
+	},
+   	[MOD_ALLOC_TYPE_RODATA_AFTER_INIT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA_AFTER_INIT,
+		.flags		= FLAG_SET_RO_AFTER_INIT,                                                          
+                .granularity	= PAGE_SIZE,
+                .alignment	= PAGE_SIZE,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL,
+	},
+   	[MOD_ALLOC_TYPE_INITTEXT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+        },
+   	[MOD_ALLOC_TYPE_INITDATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_DATA,
+        },
+   	[MOD_ALLOC_TYPE_INITRODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA,
+        },
+   };
+
+Large page size, strict separation and RODATA uses PMD:
+
+struct mod_alloc_type_params {
+   	[MOD_ALLOC_TYPE_TEXT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+                .flags		= FLAG_SHARED_PMD,
+                .granularity	= PMD_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_EXEC,
+                .fill		= text_poke,
+                .invalidate	= text_poke_invalidate,
+	},
+   	[MOD_ALLOC_TYPE_DATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_DATA,
+                .flags		= FLAG_SHARED_PMD,
+                .granularity	= PMD_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL,
+	},
+   	[MOD_ALLOC_TYPE_RODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA,
+                .flags		= FLAG_SHARED_PMD,
+                .granularity	= PMD_SIZE,
+                .alignment	= MOD_ARCH_ALIGNMENT,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL_RO,
+                .fill		= rodata_poke,
+                .invalidate	= rodata_poke_invalidate,
+	},
+   	[MOD_ALLOC_TYPE_RODATA_AFTER_INIT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA_AFTER_INIT,
+		.flags		= FLAG_SET_RO_AFTER_INIT,                                                          
+                .granularity	= PAGE_SIZE,
+                .alignment	= PAGE_SIZE,
+                .start[0]	= MODULES_VADDR,
+                .end[0]		= MODULES_END,
+                .pgprot		= PAGE_KERNEL,
+	},
+   	[MOD_ALLOC_TYPE_INITTEXT] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_TEXT,
+        },
+   	[MOD_ALLOC_TYPE_INITDATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_DATA,
+        },
+   	[MOD_ALLOC_TYPE_INITRODATA] = {
+        	.mapto_type	= MOD_ALLOC_TYPE_RODATA,
+        },
+   };
+
+Then this data structure is handed to the module allocation init
+function, which in turn sets up the resulting type magic.
+
+struct mod_type_allocator {
+	struct mutex		mutex;
+	struct mod_alloc_type	params;
+	struct rb_root		free_area;
+        struct list_head	list;
+        struct vm_struct	*vm;
+};
+
+struct mod_allocator {
+	struct mod_type_allocator	base_types[MAX_TYPES];
+        struct mod_type_allocator	*real_types[MAX_TYPES];
+};
+
+static struct mod_allocator mod_allocator;
+
+So the init function does:
+
+mod_alloc_init(struct mod_alloc_type_params *params)
+{
+	for (i = 0; i < MAX_TYPES; i++)
+        	mod_alloc_init_type(i, &params->types[i]);
+}
+
+mod_alloc_init_type(int i, struct mod_alloc_type *params)
+{
+	struct mod_type_allocator = *ta;
+
+	mutex_init(&ta->mutex);
+        memcpy(&ta->params, params, sizeof(params);
+        ta->free_area = RB_ROOT;
+        LIST_HEAD_INIT(&ta->list);
+
+      	mod_allocator.real_types[i] = &mod_allocator.base_types[params->mapto_type];
+}
+
+and then you have:
+
+module_alloc_type(size, type)
+{
+	return __module_alloc_type(mod_allocator.real_types[type], size);
+}
+
+and everything just works and operates from the relevant allocator.
+
+See: No question about how many trees are required, no question about
+     legacy RWX, ...
+
+Hmm?
+
+Thanks,
+
+        tglx
