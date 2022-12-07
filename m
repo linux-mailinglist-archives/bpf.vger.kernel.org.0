@@ -2,53 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B96CB644FCE
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 00:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F40F644FE5
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 01:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbiLFXst (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 18:48:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S229780AbiLGABG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 19:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbiLFXst (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 18:48:49 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AD827DDD;
-        Tue,  6 Dec 2022 15:48:42 -0800 (PST)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1p2hfp-000Fvc-La; Wed, 07 Dec 2022 00:48:29 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1p2hfp-000Hk8-45; Wed, 07 Dec 2022 00:48:29 +0100
-Subject: Re: [PATCH bpf-next 07/15] selftests/xsk: get rid of asm
- store/release implementations
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
-        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org
-Cc:     jonathan.lemon@gmail.com
-References: <20221206090826.2957-1-magnus.karlsson@gmail.com>
- <20221206090826.2957-8-magnus.karlsson@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3489505c-3e33-880e-6f19-1796ca897553@iogearbox.net>
-Date:   Wed, 7 Dec 2022 00:48:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229755AbiLGABC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 19:01:02 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C64B742;
+        Tue,  6 Dec 2022 16:00:59 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id m18so8656953eji.5;
+        Tue, 06 Dec 2022 16:00:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jas4TSAtuN6LWbtIF+nPUMnpUZPrF2EDu/+wlEL6xKY=;
+        b=TrwcaV6uea9EW0PMoloiHKU/VSG8RGuKCGSV5hMfvnxtYoszOgUEiH17o2x69cfIDi
+         8jD8YuqOsLSwUreU6OftZ57y2nhckiGwC7ijw3ZgMNgf9ax4w4v1gLubxtC/zMQQC+0C
+         yVAhKTJzt0PekNBrT4o2WNyJAdnKcSlei37WeaKQUylUM3p4pTfisqMfzM/qGvGQj3Pt
+         5zxz/Nij1OD3/f1atp0xegdXG9VMRPvH+2UZwh2mSEebSlrc18YF5MHajEqdMJUww/o8
+         xABO8HVOq9ksyM1pRieUM1TLoVgsGg+I1mxLu+Wl00WZxn+EXr6tEXTThGAerwOa8XBo
+         dx+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jas4TSAtuN6LWbtIF+nPUMnpUZPrF2EDu/+wlEL6xKY=;
+        b=idgx4/5MmJOLKaHgCFngdQayfduGD4hm1AYxcWoqXhXSB9mbSUuXxzL4iJgeGlcPqp
+         O1R6kVaiht6ruzCo/Vg6M25OHHlC4EK3Jimdcz6rGf3Z2KnAKWcbmxjk48uQLuwvx5BA
+         A4RXXa/E8OijZsgw+Ok18Gm7rB+9G1/sZckKvy7RaqJ1gqbKdqBt6t51Cw8fS9qMTiTB
+         /lp5BaWT5j6sJ/8oXZfMqMOxH/hZPI2qiL2yC1APNdOMwUVKSuSxer25VXpXxk9hJC8/
+         ROJVBjriS5m60ugW3aSmL6wqrqApyCmOFinD8WArTs4qwPSHoGArcpCVVrccPIJKTzQK
+         DAfw==
+X-Gm-Message-State: ANoB5pkxyGS/95VPpwNmSGeDA3ZpV6mA6sved0QYu69Idma0pTW14hT6
+        jbLgBg6PqQfzIzWeBQE3ugpO8KnKEKfnUEx3QEk=
+X-Google-Smtp-Source: AA0mqf7WomRPJaUkDEFCYGS12V6R+ykI+I6TTA8rn6zM7gA50KeoFNowe0qEZCK3K29/FkK6wzS4bZW7+9+PyyAqESg=
+X-Received: by 2002:a17:906:3e53:b0:7c1:1f2b:945f with SMTP id
+ t19-20020a1709063e5300b007c11f2b945fmr275331eji.302.1670371257785; Tue, 06
+ Dec 2022 16:00:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20221206090826.2957-8-magnus.karlsson@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26742/Tue Dec  6 09:18:20 2022)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20221203093740.218935-1-liuxin350@huawei.com> <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
+In-Reply-To: <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 6 Dec 2022 16:00:45 -0800
+Message-ID: <CAEf4BzaC6hhNzKkzFa+s4bws7APWj-Nk8Uup+3J6avCXnMFziA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Optimized return value in
+ libbpf_strerror when errno is libbpf errno
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Xin Liu <liuxin350@huawei.com>, andrii@kernel.org, ast@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yanan@huawei.com,
+        wuchangye@huawei.com, xiesongyang@huawei.com,
+        kongweibin2@huawei.com, zhangmingyi5@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,139 +72,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/6/22 10:08 AM, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Get rid of our own homegrown assembly store/release and load/acquire
-> implementations. Use the HW agnositic APIs the compiler offers
-> instead.
+On Mon, Dec 5, 2022 at 1:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 12/3/22 10:37 AM, Xin Liu wrote:
+> > This is a small improvement in libbpf_strerror. When libbpf_strerror
+> > is used to obtain the system error description, if the length of the
+> > buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
+> > ERANGE.
+> >
+> > However, this processing is not performed when the error code
+> > customized by libbpf is obtained. Make some minor improvements here,
+> > return -ERANGE and set errno to ERANGE when buf is not enough for
+> > custom description.
+> >
+> > Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> > ---
+> >   tools/lib/bpf/libbpf_errno.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
+> > index 96f67a772a1b..48ce7d5b5bf9 100644
+> > --- a/tools/lib/bpf/libbpf_errno.c
+> > +++ b/tools/lib/bpf/libbpf_errno.c
+> > @@ -54,10 +54,16 @@ int libbpf_strerror(int err, char *buf, size_t size)
+> >
+> >       if (err < __LIBBPF_ERRNO__END) {
+> >               const char *msg;
+> > +             size_t msg_size;
+> >
+> >               msg = libbpf_strerror_table[ERRNO_OFFSET(err)];
+> >               snprintf(buf, size, "%s", msg);
+> >               buf[size - 1] = '\0';
+> > +
+> > +             msg_size = strlen(msg);
+> > +             if (msg_size >= size)
+> > +                     return libbpf_err(-ERANGE);
+>
+> Given this is related to libbpf_strerror_table[] where the error strings are known
+> lets do compile-time error instead. All callers should pass in a buffer of STRERR_BUFSIZE
+> size in libbpf.
 
-The description is a bit terse. Could you add a bit more context, discussion
-or reference on why it's safe to replace them with C11 atomics?
+That sounds a bit too pessimistic?.. If the actual error message fits
+in the buffer, why return -ERANGE just because theoretically some
+error descriptions might fit?
 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->   tools/testing/selftests/bpf/xsk.h | 80 ++-----------------------------
->   1 file changed, 4 insertions(+), 76 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xsk.h b/tools/testing/selftests/bpf/xsk.h
-> index 997723b0bfb2..24ee765aded3 100644
-> --- a/tools/testing/selftests/bpf/xsk.h
-> +++ b/tools/testing/selftests/bpf/xsk.h
-> @@ -23,77 +23,6 @@
->   extern "C" {
->   #endif
->   
-> -/* This whole API has been deprecated and moved to libxdp that can be found at
-> - * https://github.com/xdp-project/xdp-tools. The APIs are exactly the same so
-> - * it should just be linking with libxdp instead of libbpf for this set of
-> - * functionality. If not, please submit a bug report on the aforementioned page.
-> - */
-> -
-> -/* Load-Acquire Store-Release barriers used by the XDP socket
-> - * library. The following macros should *NOT* be considered part of
-> - * the xsk.h API, and is subject to change anytime.
-> - *
-> - * LIBRARY INTERNAL
-> - */
-> -
-> -#define __XSK_READ_ONCE(x) (*(volatile typeof(x) *)&x)
-> -#define __XSK_WRITE_ONCE(x, v) (*(volatile typeof(x) *)&x) = (v)
-> -
-> -#if defined(__i386__) || defined(__x86_64__)
-> -# define libbpf_smp_store_release(p, v)					\
-> -	do {								\
-> -		asm volatile("" : : : "memory");			\
-> -		__XSK_WRITE_ONCE(*p, v);				\
-> -	} while (0)
-> -# define libbpf_smp_load_acquire(p)					\
-> -	({								\
-> -		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-> -		asm volatile("" : : : "memory");			\
-> -		___p1;							\
-> -	})
-> -#elif defined(__aarch64__)
-> -# define libbpf_smp_store_release(p, v)					\
-> -		asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
-> -# define libbpf_smp_load_acquire(p)					\
-> -	({								\
-> -		typeof(*p) ___p1;					\
-> -		asm volatile ("ldar %w0, %1"				\
-> -			      : "=r" (___p1) : "Q" (*p) : "memory");	\
-> -		___p1;							\
-> -	})
-> -#elif defined(__riscv)
-> -# define libbpf_smp_store_release(p, v)					\
-> -	do {								\
-> -		asm volatile ("fence rw,w" : : : "memory");		\
-> -		__XSK_WRITE_ONCE(*p, v);				\
-> -	} while (0)
-> -# define libbpf_smp_load_acquire(p)					\
-> -	({								\
-> -		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-> -		asm volatile ("fence r,rw" : : : "memory");		\
-> -		___p1;							\
-> -	})
-> -#endif
-> -
-> -#ifndef libbpf_smp_store_release
-> -#define libbpf_smp_store_release(p, v)					\
-> -	do {								\
-> -		__sync_synchronize();					\
-> -		__XSK_WRITE_ONCE(*p, v);				\
-> -	} while (0)
-> -#endif
-> -
-> -#ifndef libbpf_smp_load_acquire
-> -#define libbpf_smp_load_acquire(p)					\
-> -	({								\
-> -		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-> -		__sync_synchronize();					\
-> -		___p1;							\
-> -	})
-> -#endif
-> -
-> -/* LIBRARY INTERNAL -- END */
-> -
->   /* Do not access these members directly. Use the functions below. */
->   #define DEFINE_XSK_RING(name) \
->   struct name { \
-> @@ -168,7 +97,7 @@ static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
->   	 * this function. Without this optimization it whould have been
->   	 * free_entries = r->cached_prod - r->cached_cons + r->size.
->   	 */
-> -	r->cached_cons = libbpf_smp_load_acquire(r->consumer);
-> +	r->cached_cons = __atomic_load_n(r->consumer, __ATOMIC_ACQUIRE);
->   	r->cached_cons += r->size;
->   
->   	return r->cached_cons - r->cached_prod;
-> @@ -179,7 +108,7 @@ static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
->   	__u32 entries = r->cached_prod - r->cached_cons;
->   
->   	if (entries == 0) {
-> -		r->cached_prod = libbpf_smp_load_acquire(r->producer);
-> +		r->cached_prod = __atomic_load_n(r->producer, __ATOMIC_ACQUIRE);
->   		entries = r->cached_prod - r->cached_cons;
->   	}
->   
-> @@ -202,7 +131,7 @@ static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, __u32 nb)
->   	/* Make sure everything has been written to the ring before indicating
->   	 * this to the kernel by writing the producer pointer.
->   	 */
-> -	libbpf_smp_store_release(prod->producer, *prod->producer + nb);
-> +	__atomic_store_n(prod->producer, *prod->producer + nb, __ATOMIC_RELEASE);
->   }
->   
->   static inline __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __u32 *idx)
-> @@ -227,8 +156,7 @@ static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb)
->   	/* Make sure data has been read before indicating we are done
->   	 * with the entries by updating the consumer pointer.
->   	 */
-> -	libbpf_smp_store_release(cons->consumer, *cons->consumer + nb);
-> -
-> +	__atomic_store_n(cons->consumer, *cons->consumer + nb, __ATOMIC_RELEASE);
->   }
->   
->   static inline void *xsk_umem__get_data(void *umem_area, __u64 addr)
-> 
+But I don't think we need to calculate strlen(). snprintf above
+returns the number of bytes required to print a full string, even if
+it was truncated. So just comparing snprintf's result to size should
+be enough.
 
+>
+> >               return 0;
+> >       }
+> >
+> >
+>
