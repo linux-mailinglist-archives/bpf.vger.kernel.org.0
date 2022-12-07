@@ -2,86 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738FB645557
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79F7645561
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 09:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbiLGISV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 03:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
+        id S229741AbiLGIXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 03:23:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiLGISU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 03:18:20 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A546459
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 00:18:18 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id a16so23787738edb.9
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 00:18:18 -0800 (PST)
+        with ESMTP id S229565AbiLGIXi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 03:23:38 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9FF25EA5;
+        Wed,  7 Dec 2022 00:23:36 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id n21so12119799ejb.9;
+        Wed, 07 Dec 2022 00:23:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1QM5txz+DYnNZM0Ct81tkrNg0qe+7/Y9mU+kWI3SlVw=;
-        b=pvRdySiGf8r5OxtxwB7zsMMvCvbc08Hj/UXpsjHYVx8MuKDP2irLm3vfNJXytzHp8m
-         3pQMvj22RkwVbaSoWddtU+xGgviMN8kSkErFpRd/EgsJZ3Xd9fq0ub5uSbBerJW9ZWhg
-         U8bxOzzgImPPQqrsXIgsyGzQxbMBPfB+2I2TiFpFBPejdgn4L2qK9VdzQgVITMssIEJz
-         771urp5x+X2aFTksQq/s3wROcMC49h+gyo55XZFthxMCxRuuQwH3ojQ+qfz7wF3XxXyg
-         KT/X3dsYSYMtqViVGyEJeUggCsSbrRSjZwJs2LZgS9CRL2JyDnrE+ehFH4CqaEtFkI/8
-         zvsQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1WGjEJwm3dqx8XsjIfiElv6H7t2zrb2ZfkTtnHZN3Ic=;
+        b=WB35YW7+zReBscyKvhxPvnkde2WZ0r40O4cYUkRcLaDHb/WzmDOejw9PbQubSt/IAs
+         7IYdIqebi/Q775bY81uKA31RLYQIJ3po0DLhN3BCfOgtLKPP+f+bfSw8G+82IXfCI+rV
+         Ak56sZkoMwDz8A8VhiL8gA9YvJx6lfR+481ckqRW+PiDnxooK4Zp1CqtvwkAg/bLMTu2
+         So/pw7ErajGqL593rEoOBZ4+HeLY3Sr5YIXjNY/FeKSdLlKSaSCt53FCSEhfu36kQtBw
+         2SrJ4Pt1Zh5tPHExOniA/xWojdfunTl4XAhT9qaB1GKnPX9fOPujQEk2QRmsvef1Swui
+         wtTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1QM5txz+DYnNZM0Ct81tkrNg0qe+7/Y9mU+kWI3SlVw=;
-        b=Gjkq0uyFb2ccn9VMp0V6eVyXWlJMhyB7G+AQYaBVuQ4yEpmx/z9bPtDefP3qWFPkKh
-         +1TWKCcWvpyu6KHKJeHrp+qxHxs+/60VHOCpicWv7rcw8tJkFT8HYH0alHj9uAJAZt9W
-         d6bRvG15/ESG4aYdjeTxr97OGENaXUEah0GkvWnVqwweb9EoWPQyuWEnoVIf8Jr5Fzv5
-         aNGMJ3IeeNGeBOWeG7qiYNTXvbJe9ZXCVegb3QZUcJf2Q97ENtkcft9sIZByjC12U0ab
-         19exNhOBKVZLfYctyG2nj7f8wGs1LZ9AUKbDr3JSgC7lsxWK2A2fbjp7IbOj3u4r9Rk4
-         5eWw==
-X-Gm-Message-State: ANoB5pkWktMx2vDFvwFp9hZREHtpTFBwHf7hoNeGon54Vp0taCS7KMVV
-        ov9atiudZvlbRBFQ2OCGUm4=
-X-Google-Smtp-Source: AA0mqf6QC+DgtOS3t6N+T22cRdDtLD+Bl//1gm145IknchTF3znqKedQL2FCTuRnDamerV9TTO1RJw==
-X-Received: by 2002:aa7:d417:0:b0:46b:203:f389 with SMTP id z23-20020aa7d417000000b0046b0203f389mr41670421edq.303.1670401096999;
-        Wed, 07 Dec 2022 00:18:16 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id g13-20020a170906538d00b007c0d5b181absm5032428ejo.94.2022.12.07.00.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 00:18:16 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 7 Dec 2022 09:18:14 +0100
-To:     Namhyung Kim <namhyung@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
- tracepoints
-Message-ID: <Y5BMRvsVMQtKvuhu@krava>
-References: <20221121213123.1373229-1-jolsa@kernel.org>
- <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net>
- <Y388m6wOktvZo1d4@krava>
- <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
- <Y4CMbTeVud0WfPtK@krava>
- <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y4uOSrXBxVwnxZkX@google.com>
- <Y43j3IGvLKgshuhR@krava>
- <CAADnVQLo1JBTg6iquCFj44AEuAhxj-V7a0T1gwejy1oDBDXcbA@mail.gmail.com>
- <Y4/27g8EHQ9F3bDr@google.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1WGjEJwm3dqx8XsjIfiElv6H7t2zrb2ZfkTtnHZN3Ic=;
+        b=EihWpVWE0nGkumqV7u38TrQAn5uFeKTejZdEZIuAorBJvs6KfGBqdphUwMkp8CVdg8
+         5rUo8sCyJ9KQWfiwUoSv/NsYSqkxwHEbBlAMLFfHxmy1oM60ZdF7nUocjVY/rNLhVepc
+         Emn2p25Q9sShZRJ/yElms1uEOOR/Y84zSdjDHD6RiwtYU42pm7v0+QqjYsGgEfxotBLh
+         Pb4vSnhMWpbGMWRpY9spxJqQHOLVYiJbs36xGM9591AAnIPMYmIt+BNAFiKLfs+EKWZv
+         oNO3A+9WWFfH1LSGP6GjrE8buVKqPo5292vnZfvuUu5m2Lq9aBFZ3jfiCWDhClcsm++7
+         Wa5g==
+X-Gm-Message-State: ANoB5pkOLh27WTq0FJLsWR4D1E0+n88uv7qzJgqV2Vyioj4MCKJw4Wio
+        qn46c69kNgqxfiBsVfhQthhdYng58recDaThOco=
+X-Google-Smtp-Source: AA0mqf78s91SIU3ZOFCaTqNG5YIgu6ZyJRasY5vtX8X1yjWD4TcUsy5pIkjAEuPvwpqu27O7YBeoMUyQlGBJoVS1GTM=
+X-Received: by 2002:a17:907:9d04:b0:7c1:1342:61b7 with SMTP id
+ kt4-20020a1709079d0400b007c1134261b7mr3903917ejc.524.1670401414979; Wed, 07
+ Dec 2022 00:23:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y4/27g8EHQ9F3bDr@google.com>
+References: <20221206090826.2957-1-magnus.karlsson@gmail.com>
+ <20221206090826.2957-8-magnus.karlsson@gmail.com> <3489505c-3e33-880e-6f19-1796ca897553@iogearbox.net>
+In-Reply-To: <3489505c-3e33-880e-6f19-1796ca897553@iogearbox.net>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 7 Dec 2022 09:23:22 +0100
+Message-ID: <CAJ8uoz0=nbs+rgU5kNi161=D5QU+oH383kieZOguBuTsivJYXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 07/15] selftests/xsk: get rid of asm
+ store/release implementations
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
+        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, jonathan.lemon@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,107 +72,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 06, 2022 at 06:14:06PM -0800, Namhyung Kim wrote:
+On Wed, Dec 7, 2022 at 12:48 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 12/6/22 10:08 AM, Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Get rid of our own homegrown assembly store/release and load/acquire
+> > implementations. Use the HW agnositic APIs the compiler offers
+> > instead.
+>
+> The description is a bit terse. Could you add a bit more context, discussion
+> or reference on why it's safe to replace them with C11 atomics?
 
-SNIP
+Will do, though I will hold off on a v2 in case there are further comments.
 
-> -static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> +static void *bpf_trace_norecurse_funcs[12] = {
-> +	(void *)bpf_trace_run_norecurse1,
-> +	(void *)bpf_trace_run_norecurse2,
-> +	(void *)bpf_trace_run_norecurse3,
-> +	(void *)bpf_trace_run_norecurse4,
-> +	(void *)bpf_trace_run_norecurse5,
-> +	(void *)bpf_trace_run_norecurse6,
-> +	(void *)bpf_trace_run_norecurse7,
-> +	(void *)bpf_trace_run_norecurse8,
-> +	(void *)bpf_trace_run_norecurse9,
-> +	(void *)bpf_trace_run_norecurse10,
-> +	(void *)bpf_trace_run_norecurse11,
-> +	(void *)bpf_trace_run_norecurse12,
-> +};
-> +
-> +static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-> +				void *func, void *data)
->  {
->  	struct tracepoint *tp = btp->tp;
->  
-> @@ -2325,13 +2354,12 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
->  	if (prog->aux->max_tp_access > btp->writable_size)
->  		return -EINVAL;
->  
-> -	return tracepoint_probe_register_may_exist(tp, (void *)btp->bpf_func,
-> -						   prog);
-> +	return tracepoint_probe_register_may_exist(tp, func, data);
->  }
->  
->  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
->  {
-> -	return __bpf_probe_register(btp, prog);
-> +	return __bpf_probe_register(btp, prog, btp->bpf_func, prog);
->  }
->  
->  int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-> @@ -2339,6 +2367,33 @@ int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
->  	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
->  }
->  
-> +int bpf_probe_register_norecurse(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-> +				 struct bpf_raw_event_data *data)
-> +{
-> +	void *bpf_func;
-> +
-> +	data->active = alloc_percpu_gfp(int, GFP_KERNEL);
-> +	if (!data->active)
-> +		return -ENOMEM;
-> +
-> +	data->prog = prog;
-> +	bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
-> +	return __bpf_probe_register(btp, prog, bpf_func, data);
-
-I don't think we can do that, because it won't do the arg -> u64 conversion
-that __bpf_trace_##call functions are doing:
-
-	__bpf_trace_##call(void *__data, proto)                                 \
-	{                                                                       \
-		struct bpf_prog *prog = __data;                                 \
-		CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
-	}
-
-like for 'old_pid' arg in sched_process_exec tracepoint:
-
-	ffffffff811959e0 <__bpf_trace_sched_process_exec>:
-	ffffffff811959e0:       89 d2                   mov    %edx,%edx
-	ffffffff811959e2:       e9 a9 07 14 00          jmp    ffffffff812d6190 <bpf_trace_run3>
-	ffffffff811959e7:       66 0f 1f 84 00 00 00    nopw   0x0(%rax,%rax,1)
-	ffffffff811959ee:       00 00
-
-bpf program could see some trash in args < u64
-
-we'd need to add 'recursion' variant for all __bpf_trace_##call functions
-
-jirka
-
-
-
-> +}
-> +
-> +int bpf_probe_unregister_norecurse(struct bpf_raw_event_map *btp,
-> +				   struct bpf_raw_event_data *data)
-> +{
-> +	int err;
-> +	void *bpf_func;
-> +
-> +	bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
-> +	err = tracepoint_probe_unregister(btp->tp, bpf_func, data);
-> +	free_percpu(data->active);
-> +
-> +	return err;
-> +}
-> +
->  int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
->  			    u32 *fd_type, const char **buf,
->  			    u64 *probe_offset, u64 *probe_addr)
-> -- 
-> 2.39.0.rc0.267.gcb52ba06e7-goog
-> 
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >   tools/testing/selftests/bpf/xsk.h | 80 ++-----------------------------
+> >   1 file changed, 4 insertions(+), 76 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/xsk.h b/tools/testing/selftests/bpf/xsk.h
+> > index 997723b0bfb2..24ee765aded3 100644
+> > --- a/tools/testing/selftests/bpf/xsk.h
+> > +++ b/tools/testing/selftests/bpf/xsk.h
+> > @@ -23,77 +23,6 @@
+> >   extern "C" {
+> >   #endif
+> >
+> > -/* This whole API has been deprecated and moved to libxdp that can be found at
+> > - * https://github.com/xdp-project/xdp-tools. The APIs are exactly the same so
+> > - * it should just be linking with libxdp instead of libbpf for this set of
+> > - * functionality. If not, please submit a bug report on the aforementioned page.
+> > - */
+> > -
+> > -/* Load-Acquire Store-Release barriers used by the XDP socket
+> > - * library. The following macros should *NOT* be considered part of
+> > - * the xsk.h API, and is subject to change anytime.
+> > - *
+> > - * LIBRARY INTERNAL
+> > - */
+> > -
+> > -#define __XSK_READ_ONCE(x) (*(volatile typeof(x) *)&x)
+> > -#define __XSK_WRITE_ONCE(x, v) (*(volatile typeof(x) *)&x) = (v)
+> > -
+> > -#if defined(__i386__) || defined(__x86_64__)
+> > -# define libbpf_smp_store_release(p, v)                                      \
+> > -     do {                                                            \
+> > -             asm volatile("" : : : "memory");                        \
+> > -             __XSK_WRITE_ONCE(*p, v);                                \
+> > -     } while (0)
+> > -# define libbpf_smp_load_acquire(p)                                  \
+> > -     ({                                                              \
+> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
+> > -             asm volatile("" : : : "memory");                        \
+> > -             ___p1;                                                  \
+> > -     })
+> > -#elif defined(__aarch64__)
+> > -# define libbpf_smp_store_release(p, v)                                      \
+> > -             asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
+> > -# define libbpf_smp_load_acquire(p)                                  \
+> > -     ({                                                              \
+> > -             typeof(*p) ___p1;                                       \
+> > -             asm volatile ("ldar %w0, %1"                            \
+> > -                           : "=r" (___p1) : "Q" (*p) : "memory");    \
+> > -             ___p1;                                                  \
+> > -     })
+> > -#elif defined(__riscv)
+> > -# define libbpf_smp_store_release(p, v)                                      \
+> > -     do {                                                            \
+> > -             asm volatile ("fence rw,w" : : : "memory");             \
+> > -             __XSK_WRITE_ONCE(*p, v);                                \
+> > -     } while (0)
+> > -# define libbpf_smp_load_acquire(p)                                  \
+> > -     ({                                                              \
+> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
+> > -             asm volatile ("fence r,rw" : : : "memory");             \
+> > -             ___p1;                                                  \
+> > -     })
+> > -#endif
+> > -
+> > -#ifndef libbpf_smp_store_release
+> > -#define libbpf_smp_store_release(p, v)                                       \
+> > -     do {                                                            \
+> > -             __sync_synchronize();                                   \
+> > -             __XSK_WRITE_ONCE(*p, v);                                \
+> > -     } while (0)
+> > -#endif
+> > -
+> > -#ifndef libbpf_smp_load_acquire
+> > -#define libbpf_smp_load_acquire(p)                                   \
+> > -     ({                                                              \
+> > -             typeof(*p) ___p1 = __XSK_READ_ONCE(*p);                 \
+> > -             __sync_synchronize();                                   \
+> > -             ___p1;                                                  \
+> > -     })
+> > -#endif
+> > -
+> > -/* LIBRARY INTERNAL -- END */
+> > -
+> >   /* Do not access these members directly. Use the functions below. */
+> >   #define DEFINE_XSK_RING(name) \
+> >   struct name { \
+> > @@ -168,7 +97,7 @@ static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
+> >        * this function. Without this optimization it whould have been
+> >        * free_entries = r->cached_prod - r->cached_cons + r->size.
+> >        */
+> > -     r->cached_cons = libbpf_smp_load_acquire(r->consumer);
+> > +     r->cached_cons = __atomic_load_n(r->consumer, __ATOMIC_ACQUIRE);
+> >       r->cached_cons += r->size;
+> >
+> >       return r->cached_cons - r->cached_prod;
+> > @@ -179,7 +108,7 @@ static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
+> >       __u32 entries = r->cached_prod - r->cached_cons;
+> >
+> >       if (entries == 0) {
+> > -             r->cached_prod = libbpf_smp_load_acquire(r->producer);
+> > +             r->cached_prod = __atomic_load_n(r->producer, __ATOMIC_ACQUIRE);
+> >               entries = r->cached_prod - r->cached_cons;
+> >       }
+> >
+> > @@ -202,7 +131,7 @@ static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, __u32 nb)
+> >       /* Make sure everything has been written to the ring before indicating
+> >        * this to the kernel by writing the producer pointer.
+> >        */
+> > -     libbpf_smp_store_release(prod->producer, *prod->producer + nb);
+> > +     __atomic_store_n(prod->producer, *prod->producer + nb, __ATOMIC_RELEASE);
+> >   }
+> >
+> >   static inline __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __u32 *idx)
+> > @@ -227,8 +156,7 @@ static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb)
+> >       /* Make sure data has been read before indicating we are done
+> >        * with the entries by updating the consumer pointer.
+> >        */
+> > -     libbpf_smp_store_release(cons->consumer, *cons->consumer + nb);
+> > -
+> > +     __atomic_store_n(cons->consumer, *cons->consumer + nb, __ATOMIC_RELEASE);
+> >   }
+> >
+> >   static inline void *xsk_umem__get_data(void *umem_area, __u64 addr)
+> >
+>
