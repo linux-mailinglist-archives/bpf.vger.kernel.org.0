@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB776458C8
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 12:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899BB645932
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 12:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbiLGLTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 06:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33470 "EHLO
+        id S229973AbiLGLrf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 06:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbiLGLTS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 06:19:18 -0500
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01olkn2106.outbound.protection.outlook.com [40.92.65.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBED2B240;
-        Wed,  7 Dec 2022 03:19:14 -0800 (PST)
+        with ESMTP id S229878AbiLGLre (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 06:47:34 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2087.outbound.protection.outlook.com [40.92.75.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227DD25E90;
+        Wed,  7 Dec 2022 03:47:30 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cTZ30kMzq1mxrRDw0p94coAdTyfHiyK5frEiMdpXPgE0ElxK484MndvG7fTF85791Bm/ueFXwtSAwp1hlh3THuAO9tLqKiKfDOBfZbtmVbc3BcXUaXIMqJRSEEUhkennxUrEMO+ATpat57UZtXbMv5PbHo1czDrf7rgNXuuDTVLbFVLKMnWVQGjjoL6txQJ8gcF0uS1fZlgE4nmtQCow8BISfQ1gZRTdSpmBlbr3NtX5yOjhQ9OHsiMNVb2QCB2pqapbPZkCw89Pe2x9+SkujFFpm3NA8u5n4FAqQos5NVMmwuVR8SxgOU4subk2JIB12+H/Rj4QqtII0FIr5hbduA==
+ b=QnUpseeFN7jdqjE9guJIbn7eS1qDVP11tLPTXvezaYn0Tw3JdAEfmR1HKaRYMwVt9h3KYVPBU3qtVskaKapanpg9RdeuaeXqiPgbXcWiWxoKOYuEXjEh7RbShYAVRO+mgaG/xQI1RFJym7/SfVrqWUaPPT7posk67fMjPNlzWzFeee5oV5VNt8PCDrb8RzbM7VP2ih7pw13A7fbUX4jkR07V+ZkWQV6NJgdVQjakjHb9iQyKqCNIjd3kieP1zr96ejfSXgR7RvgnnH5xY8oKkJiXjbPrVGsVdRWXULoo3MP6Y+ky7Ei/KrapIkkZDjIKj7wZsyz2yXPRyoF3C5fm5g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wBfAqGEhZXwQ6K6DDESveyOex8gfR/VhSQjdPa6Uuak=;
- b=PdEkv8Yl60z0xPM2cZt4j9Detd4wzu3DyA/Zz4Y8C6+r7NR9Fef5B+HcEtPKFgyMcD+i1KnYPxEE8vwM5cieGRuTmJPQDDsezRLYL5AhEkBUMo2zq47BD9GuO6lqZS9je4sveGF5uEl4UtRPYeOvJ1C2KxQqHJdjVz50Igx7gZO02WSbFWDe9r3g3k4b8sGrl3TnlGx3Ycr6mdn74LyUgQSgXb/omGJiN9X6kGNmiV0Ubw6J2xhn8RqURv2E7bVV/ZwCEa5YERMbsgm1UP6E3K8sC4Ht2ZSfeKAqNFORNY2bg+uFXgo3/qizibx9j2J3XhQW7h0gbhJs11tnj3SL5A==
+ bh=fZ2BJ4IQwzf+6jFnNjpBnGcsekbhsTyI1VhHD+JqKPA=;
+ b=YADaH9gSeCU7aoHyi8Duqc5uuD/L2EDcp5M/Qgp3C424V8e0c1ljdEd3kpwQFeq9NBwI9Gu4XJEal9fkCGJ4BIihnFOQPHZUf5Nl2V2EHrRdDjwqNJMJBct+mt0F0Oe2RoLeZFskUw46XfQ1UVgpDZIumrphx54C49Mr6c9c5ZBe33zQ4wNUP6FXbvbtAnvTaRKZ9CaEVjh8Y9TpbNfQF1rVpWSyKtlFcNp41p6sqGsR6HV3bKj/ap7oefDIy8FuBvlDew4vq5HB2xhC4PvENe23r1MwnJOpKWHazaB7uoP1prZuxY8b4E69EH/Kyomz4h5T1ShMI6ohG0yji+C6Sw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wBfAqGEhZXwQ6K6DDESveyOex8gfR/VhSQjdPa6Uuak=;
- b=aWgOQF6v4gxDWXeHSgHVrgIPpXlPXB/8hZR0XuSgqCiY+N+ybVEVzSAe/8a6DZI5GBIIgXN9ADT6XdbXHP6MmZZlA5DNaR/eUsHWiOxjCWOvp5tqDsZZzkF8CFQvJAGbpjwShKk8oBlFO99yQrNGe6a6zTgfqVHuhLZyFB58pCmvMWyapN5GFWNARlhHYImiCnURmarEbH64LIqcOcwGizuklkJv9T0fKe/n3MRKPFGXCTWUZ0vcFEyNVm+TIAG2sT4Kyg3MFo3FhD2XfdLm522KOVglVRCDyWIQVqMj9NS4yja+E02fhrUaWBOB05mDiJIS31LrTWnQoFdvXJsqYg==
+ bh=fZ2BJ4IQwzf+6jFnNjpBnGcsekbhsTyI1VhHD+JqKPA=;
+ b=htHcvyR66JRMt4Xw1BaULMcLteqPCO0PzCY7fqID3B/UfmQyK2heEUw5gEBYvTxf5MW+pUUPIMqwxnVAm8yYq6MbOLFwRzdg2T25kGaMZmim97WFZZ1SxZTQICrrbPhXXfqWtUOxVgOJHTlu3K3eIT/zb0aI4IW/XgxZjqWr+N9cReboKVGUHLk7UeC2buiB44R+IrI9aW3JgmWvZaS+iFqiPO2FLxKx1R/2p1JB+nqHO/Rs1f2X0sVJoZUKf4khNN1Oa9os6sE8ARzkyL6mOLywhuw/KmJXfpwHhIQHJEyD8V/dYXGzRfBk4pSOig+HpjspLlyRDQBcxXC9foT2XA==
 Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:34b::15)
- by DB8P192MB0823.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:165::12) with
+ by PR3P192MB0668.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:4a::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Wed, 7 Dec
- 2022 11:19:12 +0000
+ 2022 11:47:27 +0000
 Received: from DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
  ([fe80::a67b:5da2:88f8:f28b]) by DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
  ([fe80::a67b:5da2:88f8:f28b%9]) with mapi id 15.20.5880.014; Wed, 7 Dec 2022
- 11:19:12 +0000
-Message-ID: <DU0P192MB1547DA9F22139A0B09FF5877D61A9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
-Date:   Wed, 7 Dec 2022 19:19:00 +0800
+ 11:47:27 +0000
+Message-ID: <DU0P192MB1547BAB562FED0D6401DF5B1D61A9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+Date:   Wed, 7 Dec 2022 19:47:15 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-From:   Ji Rongfeng <SikoJobs@outlook.com>
 Subject: Re: [PATCH bpf-next v2] bpf: Upgrade bpf_{g,s}etsockopt return values
+Content-Language: en-US
 To:     Martin KaFai Lau <martin.lau@linux.dev>
 Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
         andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
@@ -51,140 +51,83 @@ Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
         pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <DU0P192MB1547FE6F35CC1A3EEA1AFDECD6179@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
- <deb77161-3091-a134-4b82-78fef06efe85@linux.dev>
-Content-Language: en-US
-In-Reply-To: <deb77161-3091-a134-4b82-78fef06efe85@linux.dev>
+ <DU0P192MB154719A31758750149418C73D61B9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+ <2118324c-a6e6-775d-77c2-75587e69e7ff@linux.dev>
+From:   Ji Rongfeng <SikoJobs@outlook.com>
+In-Reply-To: <2118324c-a6e6-775d-77c2-75587e69e7ff@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [4Sq5dvk9ZC5vE6KKvSddkVjXqSVKAXff]
-X-ClientProxiedBy: SJ0PR03CA0351.namprd03.prod.outlook.com
- (2603:10b6:a03:39c::26) To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
+Content-Transfer-Encoding: 7bit
+X-TMN:  [WnwgTHvMWlEyJQpAplBnQ2ff5ZxZstH9]
+X-ClientProxiedBy: BYAPR05CA0102.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::43) To DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
  (2603:10a6:10:34b::15)
-X-Microsoft-Original-Message-ID: <7901fd2a-e6d5-8176-73bd-b910f8abee33@outlook.com>
+X-Microsoft-Original-Message-ID: <adc2b8ed-fd65-19ad-33d2-b968d8b160ae@outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|DB8P192MB0823:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3020054a-df48-4339-7839-08dad844de09
+X-MS-TrafficTypeDiagnostic: DU0P192MB1547:EE_|PR3P192MB0668:EE_
+X-MS-Office365-Filtering-Correlation-Id: 848f6368-db80-4d5a-702a-08dad848d08a
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dzjwEWQ54CvsIk8PtIQrvt10RnM0vExkm7AkFUTyZRdVESSCTOGwrohPyLw433pvcPJ8/Q0ahbOLN5MmcJ64g37rMgTkm+QS+hNKISRIyI6rjbKIzPLPvW+XHqmRJ1EWITK8LJ3wa3Bw2eRQjLW+lUnHlZMuvMxQLw5/BPDU+lFdGDOMCtm6ojR8ol0Rhph2Rl/yYif5NTiEhY75FXk+9Yhh3l9r7i5zF8pP7T6WtVDtQFvH2F71GLag/uSzF/cr8p14PN1WtSBG/8kxZXOgbDO2pLx6+1CLIlcbIBh0dFzukx1zLxLRX/8NmVCS5SeQFHULzRrU8OgS72Umcs+c8yPf+QJeXKbgbXbJ99pCmkf1HqKrf+7j4PcF4ghrcENDncfnlDsLAsgjdtAIiM+E5xnnIW9OXVPbcme1MeG8tWy9oYdUBJ1B8tsTQb258CPNoAl8jAes/SVbL0U7jTaOc8vKf3UypeIyDO8kDIgB3JlVRgigvxGWJ9wFnvyjus3c9RJCyst61rf4ctEaKdGGeMyAA6oef/8B35G7+EpKq8ajJsjGqnH6clgWFSUlFPDhUWkzpg2+uB4XnU192BBVPtshMpZBaLtoumu4DKtk10IAzA7w/GCzBX7JTROZiQc9Up3xIZ4+27e55Y52KiqeSg==
+X-Microsoft-Antispam-Message-Info: JykCh2teTsuK89jBGKFsOOamQIqq7qb+mtG7Jhq+JtZeor+tb+XWcTvgz07A4XFz18esX2At1wYkygMNfMW5JV8lcmudpYK0DE/5PqHgyxNK+AkCll1JcmbqluSwb0GnMElMLYx+7MIJinjGiqwOYF0FubB8+V137vuinvueb9C0RbKLrAzZN3acBAcIhj91c23bTJ0MLIzLBTHad0KKQzNs+pt0dCeyTSvU54IQKY5njRoW4EXb0MZeFdBXrcva3sGMxFj7E7ATAPa4gB/BPxBGzj6HhxXSartsmxIGHhBgy0WRlfXbXnCf3Pnk2KeCm4kk2+LXua5XNE4bnhKClreJwpYv7b9zYki+pPt6WT7fPubeCm+NzBnqkvvjKqVAg4OW4bnXShvADCctQCC2Khc9Dsx/oTD0J6tcRXv87WxNWKMMhbGu2Vna17+eH/s7bqFIwGAkgqXD0JIeJ85mrSvP3KX6qYUAGjgQ6OikyYcruz9B3bcmUIAaqGVf91nLh12W8THbQfkYdD8+1x5Zk41fSzByrxd08cX4BiDHjLSCXG0D2pFMyAVF2dOQqBDEfXjQ5E3DLLsndTEa6MTFfV1kvzB97gcGYtdh5JZr3ItpFcEE/6tpEFGRHNGgreVV8nl8A52E7zfewVUpfkWs3A==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c25sQUlxNVN1WnZ5b0E0NEl6SGZGVm93N2dScVBlcWlqS1Q2NHNsZ2dKT2pp?=
- =?utf-8?B?ZGVZMGtJejN6cmpRS2dEOGJoODh5NHB3YllDMWRFNm1hSGdTU1pjbVRuUmdZ?=
- =?utf-8?B?cHQxRzVxbjRpTlNQVU52R3U5TnVYcDR6TVFucGxiWXZmRFNaYVlzMXIydUt6?=
- =?utf-8?B?ZFhjYWQ3NlcrMFBoRGJnQnFFVGhCOFdodGJaUzNtYVl3RElpUHZrcnJSTk1n?=
- =?utf-8?B?VFZHV3ZRYkU5NVhqZnZsVDlMMnZkUXB3MkZ6aDU5UGdrRGFRSWJ5YWJoT09K?=
- =?utf-8?B?aFJYQ01xQWZkR2lPQnlLb3ZnWXdubWtRNEFrenlxL3RpR2RxUWlhNCt3dXJm?=
- =?utf-8?B?QmxZMmNZV20rTFNLOE9jSWZSQW1Pa08wNXJxRmR4NzNkSFk3YzVPeGhIWFli?=
- =?utf-8?B?M3kzRnh0WUtvTWNOd3RwWnB6Mng1eG1JdWZZeEgyRWZaNEdoMnhhQTk2czdq?=
- =?utf-8?B?YnhjaFVPc2dvRkt6TzNTd1ViY29jRDFET2tHWjRpQ0FidmxpNFhTUVhFSjlS?=
- =?utf-8?B?UmFNSDAydjFBeE05WS8xRGpHNGZYenJoalRIckl5cWQxTkdPQzdzbE1CUVBt?=
- =?utf-8?B?QkU1OTFJeUdMbk9QTVVRVnUzYUx2YWJ6VDJ6QmVqa2ZZRDN5bGpSdG5qeHJR?=
- =?utf-8?B?aFEybFpnRXE3T1Q3Nzc3Q29FUmtBNnJaMEs0cExJajh4KzVDeGxWTzR3NjZx?=
- =?utf-8?B?R0NOQ3hGTmt4Wk1DWGgwY3lVcktMalJwWkFEMDdzeGVQeXc0T0NZVkpKNjdD?=
- =?utf-8?B?YllnZFNZUWZWQ2JyRlZoMXUwbnd5OUJDamNvZ2M3bHNvY1dBbGdIMGVwWmRQ?=
- =?utf-8?B?M1N6bm1HbU5QeFM5YjdIRXBGUUI3dW9zcEF0ZitnTUFTT0ZISENGTk5DTncw?=
- =?utf-8?B?SU5UZ0ZSdmhKczVuUFRoekg2cXRqcS9ZTnpBWjVhUktKVDloWnBqbDI0RzVP?=
- =?utf-8?B?cUovWk9MZUJuMi9RK2NUNlk0R213dG9adENQWkFjV1M3SU1Fbmk4V3ZHY3d1?=
- =?utf-8?B?OUdQQ1dtS3N0bjNGL3M2MFhQLzVORitjTlJUSWc3ODk1dHQrWVU1Zkw1NGht?=
- =?utf-8?B?bTkvUVNSK1BIbC9HaTZKYXZ5NFNBeVg4MU05eGZSSDV0R1B3MFBBSVArdnR6?=
- =?utf-8?B?K2Npa1BCMW5uamtGdmQ4bGdVUllxckJJMjZxTUJYS2lzUWRFdDBtdXJ2RHJy?=
- =?utf-8?B?RDc1WmpDMDRlN2RWN2FrTU5iOU0xNHRycjRJSG9YZEhQUStLblM3MzFPQkFE?=
- =?utf-8?B?eGQxSyt6TGlaL2crTzZ5OFZITmhWS1R5SFRQZ2hYdU5tOTRhNXNmcHRtQTZH?=
- =?utf-8?B?WjZ0RXZBVnlKazNpenBGci84NkwvMUluVmk0MFdqb2w1WXZ0Y1QzTFNaNmNh?=
- =?utf-8?B?UzNhNVlBZVBTaEJ1VUxrWnV5cnlSQklXVzZnZlM1VERmcUxiaVZNelBRbkx1?=
- =?utf-8?B?b2d5YUhwTVpBS0JSZVhuUGJoVG5QZ1dvVDFZNjI5Rlo3UFZlZGJUMENiL3cw?=
- =?utf-8?B?bkkwdnBGeXlwNnRFRkdNVEhvb1c2dWI5NE1rZW5FVVc5bHlac1F2enh4NkVt?=
- =?utf-8?B?eFB5UHJvVVpZNHMrSWg5TXdrMHFlV29wbG5rbmczWEFMV2hqN21INFpDV1FI?=
- =?utf-8?B?U0xxaStUK3d3YnNuQnlxTHZLWVAvOWRBbUxLYlM1UjAyUDhuUWlFUm9kRGR4?=
- =?utf-8?B?STJYb0JqTzV3UlNlVWczUFEwdGdOaWhtc1JVNjQ3djRkVHBqSmlOTlNnPT0=?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ymg3allpV2k5WFk3Ymp5aU05TlNGNXAyRWtqL3dveXpJL0U1QUdWTElYdXBH?=
+ =?utf-8?B?eUwremRMdVM4U1J4NlFHamYvMVFSeUFjeGNNOFpTdHdZUzZtNHhwVW85Q2ov?=
+ =?utf-8?B?cnBuT1BFUkxxSHFqQ2JRRk1JbXdoYUpqMlJXdncvOWJKbW1YYkJqWTZpSWgv?=
+ =?utf-8?B?aUw0YVRGdkF6ZVA5bHJ1MEd2Uzl3YjdVcG1LNUszVXVMbk1FVW04WDRnYlpj?=
+ =?utf-8?B?bk5KZDJNVWk0Q2g1S0hOZEZLMGdqbEJ5N0NEb2xiVzBIRWszeFQ3dkZZSmp5?=
+ =?utf-8?B?NzZUdTluV2N3Q2RUSFlzOEZWNy9WVVl1UWdla1grcjV5ZC9yQk5zd1MrdkNB?=
+ =?utf-8?B?Q1ovdTNFMyt5QlczR1N2UnlmZEFBU2NzWVV3L2VhZFRwZTk2ZUttWTVEK1ps?=
+ =?utf-8?B?dGtMeitNcXA4NmtLeGpDbHpBbTlLOHgydWxHR2tsMUQxVWg3em5vbFU5eCtW?=
+ =?utf-8?B?UktvUW1xVVFzYmVUTUs5WXF5clZuODR0ZnNZNGRwMWlCYW40NHhVcnk0MHVt?=
+ =?utf-8?B?WFFRRzNzc0w2MlJVQVRIR0todkExY2ZTK3pWYWFiNk96Y3A1TGN0VU56TWx1?=
+ =?utf-8?B?Q3JvVzI2aDRuMTVSaWxRek04SlJSYVN0dEcrWVFkd1NNY1dxQUUzWW9ONWg1?=
+ =?utf-8?B?ck93NEZmTUozcU05aVVBMVNNbnByWmhwK2JXa0pmazJFdkwvd1BFWlVTNE9S?=
+ =?utf-8?B?TEk3ZDZrd28ySVl2WHUva3RNR1k3VjRuRjhUTjNURzk3MjZOalJ6WmdJQ0x5?=
+ =?utf-8?B?UHRsMEZ5Q2UvYXBqUVZiSFVBZGhtUUk4UndxeURqbXptUWFXSnh1ZUVEbVBV?=
+ =?utf-8?B?UmZTZTFvajJMY2RwckMvR2RaYlBXZDErK1pnZC9FUUNMMnVqbGtuNkVSWUlX?=
+ =?utf-8?B?T3BZL2RXaEpxY1E1SkJ0eHMrbzdoazQzWGkxdDl5aHM1ZUdwRVJONXVRcmVP?=
+ =?utf-8?B?Z0xScEJuQm15VDBxeTF4ekNtTWJ5andndlBpSGV1d1Z0bDBnY2Fmc2NzOXVn?=
+ =?utf-8?B?aFlWQjl5SXRpb3JUaVo5V0pIZit4Y1RvQ3BxNTdhUnlmSThqZTdmY1Y0dFk5?=
+ =?utf-8?B?VWg1V0F1RkhDWU9pamtteDU0QjBpL1Noc1o5NC92VGdrbXpSTG5rRzBHdWps?=
+ =?utf-8?B?S1M1YkxEUGhkQWZ4b2U4Z1M5Y2pqdXlWd0dTSjZjeGo3VWN1WjRVSkVVTkE4?=
+ =?utf-8?B?MUREeVgwUzBuOGZHQmY1d3lFUUM1aHA1SjVaMC8yT1JYOTJSVkIzNGxtMGRR?=
+ =?utf-8?B?TURXZlI5dXRpYWZGa3ozODFxbXIrVDJ5VEJ6cE9QQVE1bzBLYXorU3JXdloy?=
+ =?utf-8?B?eGpBb1Q2TGdpSXMrdFN6d0MvU3lHMkwvNmkxUEZXTEtNMkZBUDFQZ3poK0pj?=
+ =?utf-8?B?VFlXc3RhV1ZmVnA5cXloamxIcEFUT0xPaE83SDZ3b3FWVDhVY1RXWEk1Wnd3?=
+ =?utf-8?B?RjVlSTBZQmZRbUgyUXRMckNUc0xqcmw3ZXlmZTJDbjVNcFJEK1l5TUgreWhE?=
+ =?utf-8?B?K2p1SkU1TVV0YjQ2VFRlREpxOVVVd1VqRnRRUmZLa0IrOEc1MVA3RmtrQm56?=
+ =?utf-8?B?elVWbGx1aUx2VEx1bXlnb3ZhaWJjbzArTnlWRzMyYzgxcGdtSUFidVgxdVVO?=
+ =?utf-8?B?ME5mSzh1dUlQWUpsVDV0anN2SURDNk4vak0rOWFuRHBJZzBrL3hxZ0w4Q1JY?=
+ =?utf-8?B?TVZsVG1KRmFNUG1OeVU4aGVOdjZsazVlTlB3andpbDY4UkJmeHg2SW9RPT0=?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3020054a-df48-4339-7839-08dad844de09
+X-MS-Exchange-CrossTenant-Network-Message-Id: 848f6368-db80-4d5a-702a-08dad848d08a
 X-MS-Exchange-CrossTenant-AuthSource: DU0P192MB1547.EURP192.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 11:19:12.3071
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 11:47:27.6668
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P192MB0823
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P192MB0668
 X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/12/7 2:36, Martin KaFai Lau wrote:
-> On 12/2/22 9:39 AM, Ji Rongfeng wrote:
->> Returning -EINVAL almost all the time when error occurs is not very
->> helpful for the bpf prog to figure out what is wrong. This patch
->> upgrades some return values so that they will be much more helpful.
->>
->> * return -ENOPROTOOPT when optname is unsupported
->>
->>    The same as {g,s}etsockopt() syscall does. Before this patch,
->>    bpf_setsockopt(TCP_SAVED_SYN) already returns -ENOPROTOOPT, which
->>    may confuse the user, as -EINVAL is returned on other unsupported
->>    optnames. This patch also rejects TCP_SAVED_SYN right in
->>    sol_tcp_sockopt() when getopt is false, since do_tcp_setsockopt()
->>    is just the executor and it's not its duty to discover such error
->>    in bpf. We should maintain a precise allowlist to control whether
->>    an optname is supported and allowed to enter the executor or not.
->>    Functions like do_tcp_setsockopt(), their behaviour are not fully
->>    controllable by bpf. Imagine we let an optname pass, expecting
->>    -ENOPROTOOPT will be returned, but someday that optname is
->>    actually processed and unfortunately causes deadlock when calling
->>    from bpf. Thus, precise access control is essential.
+On 2022/12/7 2:37, Martin KaFai Lau wrote:
+> On 12/6/22 8:35 AM, Ji Rongfeng wrote:
+>> I have noticed that this patch has been marked as "Changes Requested" 
+>> for a few days, but there's no comment so far, which is abnormal and 
+>> confusing.
 > 
-> Please leave the current -EINVAL to distinguish between optnames 
-> rejected by bpf and optnames rejected by the do_*_{get,set}sockopt().
-
-To reach that goal, it would be better for us to pick a value other than 
--ENOPROTOOPT or -EINVAL. This patch actually makes sk-related errors, 
-level-reletad errors, optname-related errors and opt{val,len}-related 
-errors distinguishable, as they should be, by leaving -EINVAL to 
-opt{val,len}-related errors only. man setsockopt:
-
- > EINVAL optlen invalid in setsockopt().  In some cases this error
- >        can also occur for an invalid value in optval (e.g., for
- >        the IP_ADD_MEMBERSHIP option described in ip(7)).
-
-With an unique return value, the bpf prog developer will be able to know 
-that the error is "unsupported or unknown optname" for sure, saving time 
-on figuring the actual cause of the error. In production environment, 
-the bpf prog will be able to test whether an optname is available in 
-current bpf env and decide what to do next also, which is very useful.
-
-> 
->>
->> * return -EOPNOTSUPP on level-related errors
->>
->>    In do_ip_getsockopt(), -EOPNOTSUPP will be returned if level !=
->>    SOL_IP. In ipv6_getsockopt(), -ENOPROTOOPT will be returned if
->>    level != SOL_IPV6. To be distinguishable, the former is chosen.
-> 
-> I would leave this one as is also.  Are you sure the do_ip_*sockopt 
-> cannot handle sk_family == AF_INET6?  afaict, bpf is rejecting those 
-> optnames instead.
-
--EOPNOTSUPP is just picked here as an unique return value representing 
-"unknown level or unsupported sk_family or mismatched protocol in 
-bpf_{g,s}etsockopt()". I'm ok if you want to pick another unique value 
-for them or pick three unique values for each type of error : )
-
-> 
->>
->> * return -EBADFD when sk is not a full socket
->>
->>    -EPERM or -EBUSY was an option, but in many cases one of them
->>    will be returned, especially under level SOL_TCP. -EBADFD is the
->>    better choice, since it is hardly returned in all cases. The bpf
->>    prog will be able to recognize it and decide what to do next.
-> 
-> This one makes sense and is useful.
+> It is obvious that a test is needed for this change.
 > 
 
+Sure. These unique return values will be written into documentation and 
+widely used in production environment. So I will add some tests, to make 
+sure that they won't be changed accidentally in the future.
