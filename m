@@ -2,87 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9FB6452E8
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 05:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFF0645300
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 05:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbiLGELB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 23:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
+        id S229632AbiLGE3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 23:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbiLGEKc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 23:10:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8003C56553;
-        Tue,  6 Dec 2022 20:10:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2FF261628;
-        Wed,  7 Dec 2022 04:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F86DC433C1;
-        Wed,  7 Dec 2022 04:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670386216;
-        bh=u43Wrj7LqwbZbNTe/wgV3/vOTBju22GcWv2aBAMaLHU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bUVRywHrluPHy+gxWr0IG/U2cJVyVcjJ0YYGTfegZUMxh7E+OJ61Ftldlza9AgR2J
-         k/BH8buZostw9sL2873ZpA6fnN02OzeedG7TFY7nZlNKazQVU5G+SovbHAFrpgK4Nj
-         X2XiqhkUMPlmMbkTyQbGXVIS1ck/kwQDwBIFn480VOodkO3pU4f0VZ204T+VNb/1b8
-         47j+QHCvrPse80WCuxEmbYfqEUDgta5ICPWq/iVcWYntwQ8toKCcCIFehbUX5sjY19
-         IipbVI5oBxnUH7uVh1d2lnFj3Cr04nqyxCQ9/sy8JU6aq6J6r9Sef8oq49t3wVH3WO
-         2maieB8+dVFCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 11A7AE49BBD;
-        Wed,  7 Dec 2022 04:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229606AbiLGE3L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 23:29:11 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833CC31DEC;
+        Tue,  6 Dec 2022 20:29:10 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id y17so15966729plp.3;
+        Tue, 06 Dec 2022 20:29:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=knx8DaVvtyDcuxnveWkSC62UfBFfV/ZPUHXvqeSZbhk=;
+        b=qKSRoOkKZvSi03MYpIH21wqK4csKSh7stYYVO+HWa3D5z8nInC/dnzgsX7p3dfdkUZ
+         XlgO69svgZECoUEGDv5+u18HKvKvapjaSyrXh+TF7g+2Qq4mwFPlAxjwXBMTtjIEFYcm
+         QZSlomcksXTcPzIl52gu3kue++XLSaAr/NZpv5CPnfLWrgi2eRjMRP3AcrjfcqYK4UQ2
+         0HjVAp5ica1eQi+UNvmAWz5AySZxVqNLmB57I5Zz+TXKrnvdQONisAyVHFm959F0NhhV
+         iUC/fSe80E6lvYRMdPYpl7nyZHDOjzkr8Hf/VaV5YrrMHBMXCsOCQ+14E7gp8yJG1xt0
+         HZVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=knx8DaVvtyDcuxnveWkSC62UfBFfV/ZPUHXvqeSZbhk=;
+        b=OIFhi7/wGmGTXKMYGxz2CPzxtgeECJqO9hPGWhs2WkCOZn2iC6fYylYTzfNF3oFrFw
+         cQTOT9Yo9niVpN+vQ93h3pvcyhfnHYsJKDoY0gp6Uw64LT63uegyQDP3oJttwwwggPOk
+         7idlZrimnbkE9SreY04UWscBCGh9hPRPcVltkPA6/ne4BfquUvKEgWPe4q09hjJNMgfx
+         1FyyCF3ZExO0Mbz37oMeCvTbYoYLvklfJA69qcOGLeSZ2AEuQpBv7likDQ5a7toyw0QN
+         45vNRL0oRZSiiPOrGejHpEX6o0U8YXZOlPwxIQPoLS6UtRy89m7xvvBHvUP2MVONS/+L
+         DylQ==
+X-Gm-Message-State: ANoB5pljyRciwSnBW4Cit0lp6kvd5BYniEI2GmgtvUAMggsWfgkdOncf
+        2Rp7/pNN0+oRz8HAFDS3jv8=
+X-Google-Smtp-Source: AA0mqf5JPVFdrLMv51rSvIAapBM/PfRj7vwMyIVEmO8Jl0DmI+bSZurPBn++JyBej4o9IFJ9a7pxyw==
+X-Received: by 2002:a05:6a20:9f43:b0:a9:d06b:ef2 with SMTP id ml3-20020a056a209f4300b000a9d06b0ef2mr678003pzb.36.1670387349972;
+        Tue, 06 Dec 2022 20:29:09 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa79ad1000000b005736209dc01sm12424279pfp.47.2022.12.06.20.29.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 20:29:09 -0800 (PST)
+Date:   Tue, 6 Dec 2022 20:29:04 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
+Message-ID: <Y5AWkAYVEBqi5jy3@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-4-sdf@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: xsk: Don't include <linux/rculist.h>
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167038621606.4717.104553106066207739.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Dec 2022 04:10:16 +0000
-References: <88d6a1d88764cca328610854f890a9ca1f4b029e.1670086246.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <88d6a1d88764cca328610854f890a9ca1f4b029e.1670086246.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221206024554.3826186-4-sdf@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Dec 05, 2022 at 06:45:45PM -0800, Stanislav Fomichev wrote:
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fc4e313a4d2e..00951a59ee26 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -15323,6 +15323,24 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  		return -EINVAL;
+>  	}
+>  
+> +	*cnt = 0;
+> +
+> +	if (resolve_prog_type(env->prog) == BPF_PROG_TYPE_XDP) {
+> +		if (bpf_prog_is_offloaded(env->prog->aux)) {
+> +			verbose(env, "no metadata kfuncs offload\n");
+> +			return -EINVAL;
+> +		}
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+If I'm reading this correctly than this error will trigger
+for any XDP prog trying to use a kfunc?
 
-On Sat,  3 Dec 2022 17:51:04 +0100 you wrote:
-> There is no need to include <linux/rculist.h> here.
-> 
-> Prefer the less invasive <linux/types.h> which is needed for 'hlist_head'.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Let see if build-bots agree with me!
-> 
-> [...]
-
-Here is the summary with links:
-  - net: xsk: Don't include <linux/rculist.h>
-    https://git.kernel.org/bpf/bpf-next/c/e9b4aeed5669
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I was hoping that BPF CI can prove my point, but it failed to
+build your newly added xdp_hw_metadata.c test.
