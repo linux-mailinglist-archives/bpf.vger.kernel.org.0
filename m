@@ -2,174 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC8E645616
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 10:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F256C645650
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 10:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiLGJJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 04:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        id S229782AbiLGJSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 04:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbiLGJJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 04:09:27 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB11A818;
-        Wed,  7 Dec 2022 01:09:26 -0800 (PST)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1p2qQO-000K1N-K3; Wed, 07 Dec 2022 10:09:08 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1p2qQO-0009Hc-0Y; Wed, 07 Dec 2022 10:09:08 +0100
-Subject: Re: [PATCH bpf-next] libbpf: Optimized return value in
- libbpf_strerror when errno is libbpf errno
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Xin Liu <liuxin350@huawei.com>, andrii@kernel.org, ast@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com,
-        kongweibin2@huawei.com, zhangmingyi5@huawei.com
-References: <20221203093740.218935-1-liuxin350@huawei.com>
- <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
- <CAEf4BzaC6hhNzKkzFa+s4bws7APWj-Nk8Uup+3J6avCXnMFziA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <660fd781-2d86-9d99-2851-127d6b4d4595@iogearbox.net>
-Date:   Wed, 7 Dec 2022 10:09:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229742AbiLGJSW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 04:18:22 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B05C00;
+        Wed,  7 Dec 2022 01:18:20 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4NRs3X4pZqz9v7H4;
+        Wed,  7 Dec 2022 17:11:36 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDH+fVBWpBjTaXHAA--.61258S2;
+        Wed, 07 Dec 2022 10:18:01 +0100 (CET)
+Message-ID: <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and
+ fix formatting
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     casey@schaufler-ca.com, omosnace@redhat.com,
+        john.johansen@canonical.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 07 Dec 2022 10:17:49 +0100
+In-Reply-To: <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
+References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
+         <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
+         <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
+         <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaC6hhNzKkzFa+s4bws7APWj-Nk8Uup+3J6avCXnMFziA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26743/Wed Dec  7 09:17:04 2022)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwDH+fVBWpBjTaXHAA--.61258S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZrWrZw1UJr47tF4Utw45trb_yoW5Jw4kpF
+        Z5G3WYyF1kZryIkr43A3W7Jw4Sy395KF13XryxWw18Zw1YyrWxKryakF4Y9FWDGrWkCFyj
+        vFWaq3sruFy7AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4ZgCAAAsJ
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/7/22 1:00 AM, Andrii Nakryiko wrote:
-> On Mon, Dec 5, 2022 at 1:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> On 12/3/22 10:37 AM, Xin Liu wrote:
->>> This is a small improvement in libbpf_strerror. When libbpf_strerror
->>> is used to obtain the system error description, if the length of the
->>> buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
->>> ERANGE.
->>>
->>> However, this processing is not performed when the error code
->>> customized by libbpf is obtained. Make some minor improvements here,
->>> return -ERANGE and set errno to ERANGE when buf is not enough for
->>> custom description.
->>>
->>> Signed-off-by: Xin Liu <liuxin350@huawei.com>
->>> ---
->>>    tools/lib/bpf/libbpf_errno.c | 6 ++++++
->>>    1 file changed, 6 insertions(+)
->>>
->>> diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
->>> index 96f67a772a1b..48ce7d5b5bf9 100644
->>> --- a/tools/lib/bpf/libbpf_errno.c
->>> +++ b/tools/lib/bpf/libbpf_errno.c
->>> @@ -54,10 +54,16 @@ int libbpf_strerror(int err, char *buf, size_t size)
->>>
->>>        if (err < __LIBBPF_ERRNO__END) {
->>>                const char *msg;
->>> +             size_t msg_size;
->>>
->>>                msg = libbpf_strerror_table[ERRNO_OFFSET(err)];
->>>                snprintf(buf, size, "%s", msg);
->>>                buf[size - 1] = '\0';
->>> +
->>> +             msg_size = strlen(msg);
->>> +             if (msg_size >= size)
->>> +                     return libbpf_err(-ERANGE);
->>
->> Given this is related to libbpf_strerror_table[] where the error strings are known
->> lets do compile-time error instead. All callers should pass in a buffer of STRERR_BUFSIZE
->> size in libbpf.
+On Wed, 2022-12-07 at 08:58 +0100, Roberto Sassu wrote:
+> On Tue, 2022-12-06 at 19:21 -0500, Paul Moore wrote:
+> > On Mon, Nov 28, 2022 at 9:43 AM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > 
+> > > Ensure that for non-void LSM hooks there is a description of the return
+> > > values.
+> > > 
+> > > Also, replace spaces with tab for indentation, remove empty lines between
+> > > the hook description and the list of parameters, adjust semicolons and add
+> > > the period at the end of the parameter description.
+> > > 
+> > > Finally, move the description of gfp parameter of the
+> > > xfrm_policy_alloc_security hook together with the others.
+> > > 
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  include/linux/lsm_hooks.h | 221 ++++++++++++++++++++++++--------------
+> > >  1 file changed, 138 insertions(+), 83 deletions(-)
+> > 
+> > Thanks Roberto, I've merged this into lsm/next with one small tweak (below).
+> > 
+> > > diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> > > index c35e260efd8c..6502a1bea93a 100644
+> > > --- a/include/linux/lsm_hooks.h
+> > > +++ b/include/linux/lsm_hooks.h
+> > > @@ -677,7 +695,7 @@
+> > >   *     indicates which of the set*uid system calls invoked this hook.  If
+> > >   *     @new is the set of credentials that will be installed.  Modifications
+> > >   *     should be made to this rather than to @current->cred.
+> > > - *     @old is the set of credentials that are being replaces
+> > > + *     @old is the set of credentials that are being replaces.
+> > 
+> > Might as well change "replaces" to "replaced".  I'll go ahead and fix
+> > that up during the merge.
 > 
-> That sounds a bit too pessimistic?.. If the actual error message fits
-> in the buffer, why return -ERANGE just because theoretically some
-> error descriptions might fit?
-> 
-> But I don't think we need to calculate strlen(). snprintf above
-> returns the number of bytes required to print a full string, even if
-> it was truncated. So just comparing snprintf's result to size should
-> be enough.
+> Thanks a lot!
 
-I meant sth like below. For example if we were to shrink STRERR_BUFSIZE down
-to 32 for testing, you'd then get:
+Ops, I found an issue for fs_context_parse_param. It seems that the
+kernel doc and lsm_hooks.h provide different conventions for it.
 
-# make libbpf_errno.o
-gcc -g -O2 -std=gnu89 -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-system-headers -Wold-style-definition -Wpacked -Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wwrite-strings -Wformat -Wno-type-limits -Wstrict-aliasing=3 -Wshadow -Wno-switch-enum -Werror -Wall -I. -I/home/darkstar/trees/bpf-next/tools/include -I/home/darkstar/trees/bpf-next/tools/include/uapi -fvisibility=hidden -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c -o libbpf_errno.o libbpf_errno.c
-libbpf_errno.c:27:31: error: initializer-string for array of chars is too long [-Werror]
-    27 |  [ERRCODE_OFFSET(KVERSION)] = "'version' section incorrect or lost",
-       |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-libbpf_errno.c:27:31: note: (near initialization for ‘libbpf_strerror_table[2]’)
-libbpf_errno.c:31:29: error: initializer-string for array of chars is too long [-Werror]
-    31 |  [ERRCODE_OFFSET(VERIFY)] = "Kernel verifier blocks program loading",
-       |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-libbpf_errno.c:31:29: note: (near initialization for ‘libbpf_strerror_table[7]’)
-libbpf_errno.c:34:31: error: initializer-string for array of chars is too long [-Werror]
-    34 |  [ERRCODE_OFFSET(PROGTYPE)] = "Kernel doesn't support this program type",
-       |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-libbpf_errno.c:34:31: note: (near initialization for ‘libbpf_strerror_table[10]’)
-libbpf_errno.c:37:30: error: initializer-string for array of chars is too long [-Werror]
-    37 |  [ERRCODE_OFFSET(NLPARSE)] = "Incorrect netlink message parsing",
-       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-libbpf_errno.c:37:30: note: (near initialization for ‘libbpf_strerror_table[13]’)
-cc1: all warnings being treated as errors
-make: *** [<builtin>: libbpf_errno.o] Error 1
++ David
 
+Kernel doc:
 
+It should return 0 to indicate that the parameter should be passed on
+to the filesystem, 1 to indicate that the parameter should be discarded
+or an error to indicate that the parameter should be rejected.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2a82f49ce16f..2e5df1624f79 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -265,8 +265,6 @@ static void pr_perm_msg(int err)
-  		buf);
-  }
+lsm_hooks.h:
 
--#define STRERR_BUFSIZE  128
--
-  /* Copied from tools/perf/util/util.h */
-  #ifndef zfree
-  # define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
-index 96f67a772a1b..2f03f861b8b6 100644
---- a/tools/lib/bpf/libbpf_errno.c
-+++ b/tools/lib/bpf/libbpf_errno.c
-@@ -21,7 +21,7 @@
-  #define ERRCODE_OFFSET(c)	ERRNO_OFFSET(LIBBPF_ERRNO__##c)
-  #define NR_ERRNO	(__LIBBPF_ERRNO__END - __LIBBPF_ERRNO__START)
+The LSM may reject it with an error and may use it for itself, in which
+case it should return 0; otherwise it should return -ENOPARAM to pass
+it on to the filesystem.
 
--static const char *libbpf_strerror_table[NR_ERRNO] = {
-+static const char libbpf_strerror_table[NR_ERRNO][STRERR_BUFSIZE] = {
-  	[ERRCODE_OFFSET(LIBELF)]	= "Something wrong in libelf",
-  	[ERRCODE_OFFSET(FORMAT)]	= "BPF object format invalid",
-  	[ERRCODE_OFFSET(KVERSION)]	= "'version' section incorrect or lost",
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 377642ff51fc..d4dc4fe945a6 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -57,6 +57,8 @@
-  #define ELF64_ST_VISIBILITY(o) ((o) & 0x03)
-  #endif
+Looking at the code, the latter seems the right one. I would send
+another patch to fix the kernel doc.
 
-+#define STRERR_BUFSIZE	128
-+
-  #define BTF_INFO_ENC(kind, kind_flag, vlen) \
-  	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
-  #define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
+For this patch, I saw it is already in lsm/next. Paul, should I do an
+incremental patch or change the one in the repo and you force push it?
+I would just remove the three lines after the parameters description.
+
+Thanks
+
+Roberto
+
