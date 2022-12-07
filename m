@@ -2,183 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E936451E3
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 03:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283F06451ED
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 03:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiLGCSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 21:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        id S229448AbiLGCUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 21:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiLGCSn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 21:18:43 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ACB50D49
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 18:18:42 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d3so15746298plr.10
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 18:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/srxnEl7ggusR7LUag+eU+rZ+XHpViMqA89xmTvNtlk=;
-        b=dlYdGAI8x5WHr8Z3gsQMJb+njey3KsCwJi8CGrUuTdWvFZg20rjq9Wd2VygvATzmey
-         1Vi2oTV3RZmHmgXsFUFXlodFLV0OMsy8e6cdrvMXT3jhKeqwXctrRFa/iV1UywqneBX8
-         Jy+7NapWuahyT3EfmJkhJOKj3RS6PrqjfbbGav/gZyXjs1OyAihLKWS6deEg7lYpLWbY
-         OOeR5IEclzazQriqVS5/mZxvZ/qXvD7SgnNUoSV93PxapuAKUzZX7xKNpThwtO1TE7fZ
-         sIkND0g8RpSESxD2VXSZuqY69MSDBlZraETeg2rKq6gllC4Wo/2pVPTw48i0+KRZ2FdC
-         tpMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/srxnEl7ggusR7LUag+eU+rZ+XHpViMqA89xmTvNtlk=;
-        b=DsS88YdlbVv0yAxGqaX8mRBNcd6ega25jQPMh2Es9+q01YhoevfiboAE0NiGx8hQ89
-         ZkG1/xTTAGrudyuqgfJPzpgcN3TdhulecPfggx8dhny6D43WGbdHU1c5+FVam2SvagFJ
-         WjAVlKPkyk0OaMdg7b/tFjLxeMPsuDWZ3WWbmjqGxePSH3yxv0KswhbanhG3dcNOj027
-         p4w9HAeuI34AGykMKk04DR+DOTcrKr8gl1Qbslc1M1hhZh+RPnPRpI2HXZgc4R4tMq6y
-         XUwzuEG7sP/pG8GBsiDx7AFlaNPQwoXG1xNRlJWAD8EP0CJ1dIOvxw55Di4+j9jqqpnf
-         lQvA==
-X-Gm-Message-State: ANoB5pkAGi24Ucbyxk70aDuWco9sQABVBe5GXhMJhOmb53q5Ql8h98sM
-        Rx3GojmSSxF0kFSGSs8FHff7xEm6Bb0=
-X-Google-Smtp-Source: AA0mqf4dwQaVkaQlXiylzTnUutHHijx+AMlHkOdHSaLDS+LIlConCPS0yk/gUfXTfpkIeUxcv/3qqA==
-X-Received: by 2002:a17:902:f64d:b0:189:603d:ea71 with SMTP id m13-20020a170902f64d00b00189603dea71mr574323plg.58.1670379521690;
-        Tue, 06 Dec 2022 18:18:41 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
-        by smtp.gmail.com with ESMTPSA id q12-20020a170902dacc00b00185402cfedesm13343173plx.246.2022.12.06.18.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 18:18:40 -0800 (PST)
-Date:   Tue, 6 Dec 2022 18:18:37 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229722AbiLGCUd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 21:20:33 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8A354376
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 18:20:28 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NRgx23nMJz4f3v5L
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 10:20:22 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgC32tdl+I9jB5coBw--.43022S2;
+        Wed, 07 Dec 2022 10:20:25 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/2] bpf: Reuse freed element in free_by_rcu
+ during allocation
+To:     Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next 09/13] bpf: Special verifier handling for
- bpf_rbtree_{remove, first}
-Message-ID: <Y4/3/Y4gXAapWIzD@macbook-pro-6.dhcp.thefacebook.com>
-References: <20221206231000.3180914-1-davemarchevsky@fb.com>
- <20221206231000.3180914-10-davemarchevsky@fb.com>
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+References: <20221206042946.686847-1-houtao@huaweicloud.com>
+ <20221206042946.686847-2-houtao@huaweicloud.com>
+ <05d1f326-55cc-d327-9e0a-e93add2a29cf@meta.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <86fd4485-a016-d6f6-c31b-3aa76c261e91@huaweicloud.com>
+Date:   Wed, 7 Dec 2022 10:20:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221206231000.3180914-10-davemarchevsky@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <05d1f326-55cc-d327-9e0a-e93add2a29cf@meta.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgC32tdl+I9jB5coBw--.43022S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw47WF1rJFW3ZF15tFy7ZFb_yoWrXFyUpr
+        s5Gry5GFWUAF1fA3WUJr18Gry3uw48JwnrJFy8XF1Utr43Xr1jgr1F9r1qgFy5Ar48A3WU
+        Jr1qqrnrZr45XFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 06, 2022 at 03:09:56PM -0800, Dave Marchevsky wrote:
-> Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
-> that require handling in the verifier:
-> 
->   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
->     the bpf_rb_node field, with the offset set to that field's offset,
->     instead of a struct bpf_rb_node *
->     * Generalized existing next-gen list verifier handling for this
->       as mark_reg_datastructure_node helper
-> 
->   * Unlike other functions, which set release_on_unlock on one of their
->     args, bpf_rbtree_first takes no arguments, rather setting
->     release_on_unlock on its return value
-> 
->   * bpf_rbtree_remove's node input is a node that's been inserted
->     in the tree. Only non-owning references (PTR_UNTRUSTED +
->     release_on_unlock) refer to such nodes, but kfuncs don't take
->     PTR_UNTRUSTED args
->     * Added special carveout for bpf_rbtree_remove to take PTR_UNTRUSTED
->     * Since node input already has release_on_unlock set, don't set
->       it again
-> 
-> This patch, along with the previous one, complete special verifier
-> handling for all rbtree API functions added in this series.
-> 
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  kernel/bpf/verifier.c | 89 +++++++++++++++++++++++++++++++++++--------
->  1 file changed, 73 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9ad8c0b264dc..29983e2c27df 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6122,6 +6122,23 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
->  	return 0;
->  }
->  
-> +static bool
-> +func_arg_reg_rb_node_offset(const struct bpf_reg_state *reg, s32 off)
-> +{
-> +	struct btf_record *rec;
-> +	struct btf_field *field;
-> +
-> +	rec = reg_btf_record(reg);
-> +	if (!rec)
-> +		return false;
-> +
-> +	field = btf_record_find(rec, off, BPF_RB_NODE);
-> +	if (!field)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  int check_func_arg_reg_off(struct bpf_verifier_env *env,
->  			   const struct bpf_reg_state *reg, int regno,
->  			   enum bpf_arg_type arg_type)
-> @@ -6176,6 +6193,13 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->  		 */
->  		fixed_off_ok = true;
->  		break;
-> +	case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
-> +		/* Currently only bpf_rbtree_remove accepts a PTR_UNTRUSTED
-> +		 * bpf_rb_node. Fixed off of the node type is OK
-> +		 */
-> +		if (reg->off && func_arg_reg_rb_node_offset(reg, reg->off))
-> +			fixed_off_ok = true;
-> +		break;
+Hi,
 
-This doesn't look safe.
-We cannot pass generic PTR_UNTRUSTED to bpf_rbtree_remove.
-bpf_rbtree_remove wouldn't be able to distinguish invalid pointer.
+On 12/7/2022 9:52 AM, Yonghong Song wrote:
+>
+>
+> On 12/5/22 8:29 PM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> When there are batched freeing operations on a specific CPU, part of
+>> the freed elements ((high_watermark - lower_watermark) / 2 + 1) will
+>> be moved to waiting_for_gp list and the remaining part will be left in
+>> free_by_rcu list and waits for the expiration of RCU-tasks-trace grace
+>> period and the next invocation of free_bulk().
+>
+> The change below LGTM. However, the above description seems not precise.
+> IIUC, free_by_rcu list => waiting_for_gp is controlled by whether
+> call_rcu_in_progress is true or not. If it is true, free_by_rcu list
+> will remain intact and not moving into waiting_for_gp list.
+> So it is not 'the remaining part will be left in free_by_rcu'.
+> It is all elements in free_by_rcu to waiting_for_gp or none.
+Thanks for the review and the suggestions. I tried to say that moving from
+free_by_rcu to waiting_for_gp is slow, and there can be many free elements being
+stacked on free_by_rcu list. So how about the following rephrasing or do you
+still prefer "It is all elements in free_by_rcu to waiting_for_gp or none."  ?
 
-Considering the cover letter example:
+When there are batched freeing operations on a specific CPU, part of the freed
+elements ((high_watermark - lower_watermark) / 2 + 1) will be moved to
+waiting_for_gp list  and the remaining part will be left in free_by_rcu list.
+These elements in free_by_rcu list will be moved into waiting_for_gp list after
+one RCU-tasks-trace grace period and another invocation of free_bulk(), so there
+may be many free elements being stacked on free_by_rcu_list.
 
- bpf_spin_lock(&glock);
- res = bpf_rbtree_first(&groot);
-   // groot and res are both trusted, no?
- if (!res)
-   /* skip */
- // res is acquired and !null here
+>>
+>> So instead of invoking __alloc_percpu_gfp() or kmalloc_node() to
+>> allocate a new object, in alloc_bulk() just check whether or not there
+>> is freed element in free_by_rcu and reuse it if available.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>
+> LGTM except the above suggestions.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+>> ---
+>>   kernel/bpf/memalloc.c | 21 ++++++++++++++++++---
+>>   1 file changed, 18 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index 8f0d65f2474a..7daf147bc8f6 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -171,9 +171,24 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt,
+>> int node)
+>>       memcg = get_memcg(c);
+>>       old_memcg = set_active_memcg(memcg);
+>>       for (i = 0; i < cnt; i++) {
+>> -        obj = __alloc(c, node);
+>> -        if (!obj)
+>> -            break;
+>> +        /*
+>> +         * free_by_rcu is only manipulated by irq work refill_work().
+>> +         * IRQ works on the same CPU are called sequentially, so it is
+>> +         * safe to use __llist_del_first() here. If alloc_bulk() is
+>> +         * invoked by the initial prefill, there will be no running
+>> +         * irq work, so __llist_del_first() is fine as well.
+>> +         *
+>> +         * In most cases, objects on free_by_rcu are from the same CPU.
+>> +         * If some objects come from other CPUs, it doesn't incur any
+>> +         * harm because NUMA_NO_NODE means the preference for current
+>> +         * numa node and it is not a guarantee.
+>> +         */
+>> +        obj = __llist_del_first(&c->free_by_rcu);
+>> +        if (!obj) {
+>> +            obj = __alloc(c, node);
+>> +            if (!obj)
+>> +                break;
+>> +        }
+>>           if (IS_ENABLED(CONFIG_PREEMPT_RT))
+>>               /* In RT irq_work runs in per-cpu kthread, so disable
+>>                * interrupts to avoid preemption and interrupts and
+>
+> .
 
- res = bpf_rbtree_remove(&groot, res); // both args are trusted
-
- // here old res becomes untrusted because it went through release kfunc
- // new res is untrusted
- if (!res)
-   /* skip */
- bpf_spin_unlock(&glock);
-
-what am I missing?
-
-I thought
-bpf_obj_new -> returns acq obj
-bpf_rbtree_add -> releases that obj
-same way bpf_rbtree_first/next/ -> return acq obj
-that can be passed to both rbtree_add and rbtree_remove.
-The former will be a nop in runtime, but release from the verifier pov.
-Similar with rbtree_remove:
-obj = bpf_obj_new
-bpf_rbtree_remove(root, obj); will be equivalent to bpf_obj_drop at run-time
-and release form the verifier pov.
-
-Are you trying to return untrusted from bpf_rbtree_first?
-But then how we can guarantee safety?
