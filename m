@@ -2,64 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194016461D8
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF5B6461E6
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 20:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbiLGTqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 14:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
+        id S229470AbiLGTzt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 7 Dec 2022 14:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiLGTqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 14:46:16 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32910716D3
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:46:15 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id t17so16529372eju.1
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cPNsp3wZavW5a7i9rOyiN1uHHd+20LTSuQwM+kR0bys=;
-        b=BmVJlZwzQ3FMtlLyE8uBnZadwWgjd/l/bN1TyNsa17jGL6aSQ6HNEM/Xicf6C1eH/H
-         A/n4uGNgHP6W+2XGni8umOWHU09/JmzhLyTRNtQ2jyZJcXybfAr3rArvlnG01nxWzmIh
-         jKJEZMhIY6wyTXQGTUk5iSW73Dp9aIashR6GYne5rM64HbVRgT1TQ8fuXrfn/6qvbmST
-         fkO2Ltk73Dw80vbDoEoVBu4Pu+O5JTVuO7Co5/iIRlEGuslZ09HDNdNLJbY6FAXvnDWL
-         MRD6zmGPeopMDsvgJGkrfbm8b8ElKCOITNVK5qFbHnEF3AUgv8BKL1mhJ/8QL09dhnxf
-         c9Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cPNsp3wZavW5a7i9rOyiN1uHHd+20LTSuQwM+kR0bys=;
-        b=b2MRV5INekHpIwyq2bLgmuVjK4Hdq8A4WC4EFTdFTNFR6SfZHnQ5fa1nCGHfzQ6l6Z
-         fH0G01E/pFDkT127iy4VEOqgkLjd0e54VTnopUtpGmOT9VS4xy+9EJSxXFcyHp47m3Ec
-         De5JkhG41KPOasqSpO/fAX0iuFyHXVk6b9yz9/5vGa42KBeqHTw8mCX+MqyPodmB866z
-         GZEnMoej2MG7O3pHQWtOda0NKRt9mIadI7itRAWuR1eTzQNaHlmP0TaSxRNf2+evHoUT
-         gOcEUM8nE2H2ppoLRJwuyY9XVa22Xg7i87ZkJj+6dUrZHFjboWYi4nGMuJpvNqPRRM+k
-         jKkQ==
-X-Gm-Message-State: ANoB5pnJ5dMN0iI9bOWIW2CXzIWsQihn6Dl2yQ8xHUQxkOG1hXHnR188
-        buUr6I6utlFhu5eZVH1C4FX2ttFqm40mETm3cj8KFP5Y
-X-Google-Smtp-Source: AA0mqf5T4sDtC7SiFLxOeXnvURd/GsIy8+dnhtr9SBu24/VLgbV3k7ZFc4470agSIpzfG4Y9Lq5cpgMA8QIlZ/oIetk=
-X-Received: by 2002:a17:906:180e:b0:7a2:6d38:1085 with SMTP id
- v14-20020a170906180e00b007a26d381085mr61516303eje.114.1670442373467; Wed, 07
- Dec 2022 11:46:13 -0800 (PST)
+        with ESMTP id S229437AbiLGTzs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 14:55:48 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E8E5E3CD
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 11:55:46 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B7JSmSj027187
+        for <bpf@vger.kernel.org>; Wed, 7 Dec 2022 11:55:46 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mb118g7y6-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 11:55:46 -0800
+Received: from twshared24130.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 7 Dec 2022 11:55:43 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 6CF1D23106E7C; Wed,  7 Dec 2022 11:55:35 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] bpf: remove unused insn_cnt argument from visit_[func_call_]insn()
+Date:   Wed, 7 Dec 2022 11:55:34 -0800
+Message-ID: <20221207195534.2866030-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20221206011159.1208452-1-andrii@kernel.org> <Y5AZ5hpE/66KJzUS@macbook-pro-6.dhcp.thefacebook.com>
-In-Reply-To: <Y5AZ5hpE/66KJzUS@macbook-pro-6.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Dec 2022 11:46:01 -0800
-Message-ID: <CAEf4BzaucaD7VuKknxWK0QXh94urjEJsoihDVBi5UTX9O-8OCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: add generic BPF program
- verification tester
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 5Qi7qpdwiUMmRhNUeHANftOs3dwlJcRK
+X-Proofpoint-ORIG-GUID: 5Qi7qpdwiUMmRhNUeHANftOs3dwlJcRK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-07_09,2022-12-07_01,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,71 +53,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 6, 2022 at 8:43 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Dec 05, 2022 at 05:11:58PM -0800, Andrii Nakryiko wrote:
-> > +
-> > +
-> > +typedef const void *(*skel_elf_bytes_fn)(size_t *sz);
-> > +
-> > +extern void verification_tester__run_subtests(struct verification_tester *tester,
-> > +                                           const char *skel_name,
-> > +                                           skel_elf_bytes_fn elf_bytes_factory);
-> > +
-> > +extern void tester_fini(struct verification_tester *tester);
-> > +
-> > +#define RUN_VERIFICATION_TESTS(skel) ({                                             \
-> > +     struct verification_tester tester = {};                                \
-> > +                                                                            \
-> > +     verification_tester__run_subtests(&tester, #skel, skel##__elf_bytes);  \
-> > +     tester_fini(&tester);                                                  \
-> > +})
->
-> Looking great, but couldn't resist to bikeshed a bit here.
-> It looks like generic testing facility. Maybe called RUN_TESTS ?
+Number of total instructions in BPF program (including subprogs) can and
+is accessed from env->prog->len. visit_func_call_insn() doesn't do any
+checks against insn_cnt anymore, relying on push_insn() to do this check
+internally. So remove unnecessary insn_cnt input argument from
+visit_func_call_insn() and visit_insn() functions.
 
-Sure, I will rename it to RUN_TESTS.
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/verifier.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
->
-> > +
-> > +#endif /* __TEST_PROGS_H */
-> > diff --git a/tools/testing/selftests/bpf/verifier_tester.c b/tools/testing/selftests/bpf/verifier_tester.c
->
-> verifier_tester name also doesn't quite fit imo.
-> These tests not necessarily trying to test just the verifier.
-> They test BTF, kfuncs and everything that kernel has to check during the loading.
->
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8c5f0adbbde3..9ecfdc06b5d5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12222,8 +12222,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+ 	return DONE_EXPLORING;
+ }
+ 
+-static int visit_func_call_insn(int t, int insn_cnt,
+-				struct bpf_insn *insns,
++static int visit_func_call_insn(int t, struct bpf_insn *insns,
+ 				struct bpf_verifier_env *env,
+ 				bool visit_callee)
+ {
+@@ -12254,13 +12253,13 @@ static int visit_func_call_insn(int t, int insn_cnt,
+  *  DONE_EXPLORING - the instruction was fully explored
+  *  KEEP_EXPLORING - there is still work to be done before it is fully explored
+  */
+-static int visit_insn(int t, int insn_cnt, struct bpf_verifier_env *env)
++static int visit_insn(int t, struct bpf_verifier_env *env)
+ {
+ 	struct bpf_insn *insns = env->prog->insnsi;
+ 	int ret;
+ 
+ 	if (bpf_pseudo_func(insns + t))
+-		return visit_func_call_insn(t, insn_cnt, insns, env, true);
++		return visit_func_call_insn(t, insns, env, true);
+ 
+ 	/* All non-branch instructions have a single fall-through edge. */
+ 	if (BPF_CLASS(insns[t].code) != BPF_JMP &&
+@@ -12279,7 +12278,7 @@ static int visit_insn(int t, int insn_cnt, struct bpf_verifier_env *env)
+ 			 * async state will be pushed for further exploration.
+ 			 */
+ 			mark_prune_point(env, t);
+-		return visit_func_call_insn(t, insn_cnt, insns, env,
++		return visit_func_call_insn(t, insns, env,
+ 					    insns[t].src_reg == BPF_PSEUDO_CALL);
+ 
+ 	case BPF_JA:
+@@ -12336,7 +12335,7 @@ static int check_cfg(struct bpf_verifier_env *env)
+ 	while (env->cfg.cur_stack > 0) {
+ 		int t = insn_stack[env->cfg.cur_stack - 1];
+ 
+-		ret = visit_insn(t, insn_cnt, env);
++		ret = visit_insn(t, env);
+ 		switch (ret) {
+ 		case DONE_EXPLORING:
+ 			insn_state[t] = EXPLORED;
+-- 
+2.30.2
 
-verifier_tester is bad name, I was intending it as
-verification_testing, because it's testing BPF program loading
-(verification). But you are right, we most probably will extend it to
-allow doing attach/prog_test_run for successful cases (I just didn't
-have time to implement that yet).
-
-> In other words they test this:
-> > +             err = bpf_object__load(tobj);
-> > +             if (spec.expect_failure) {
-> > +                     if (!ASSERT_ERR(err, "unexpected_load_success")) {
-> > +                             emit_verifier_log(tester->log_buf, false /*force*/);
-> > +                             goto tobj_cleanup;
-> > +                     }
-> > +             } else {
-> > +                     if (!ASSERT_OK(err, "unexpected_load_failure")) {
-> > +                             emit_verifier_log(tester->log_buf, true /*force*/);
-> > +                             goto tobj_cleanup;
-> > +                     }
-> > +             }
->
-> maybe call it
->  +struct test_loader {
->  +      char *log_buf;
->  +      size_t log_buf_sz;
->  +
->  +      struct bpf_object *obj;
->  +};
-> ?
-> and the file test_loader.c ?
-> Nicely shorter than verification_tester__ prefix...
-
-sure, test_loader sounds fine to me, will rename
