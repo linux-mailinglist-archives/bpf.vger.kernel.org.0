@@ -2,73 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8AD645258
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 03:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C7864527F
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 04:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiLGC6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 21:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        id S229448AbiLGDRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 22:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiLGC6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 21:58:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C560652142
-        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 18:58:39 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id e13so23029650edj.7
-        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 18:58:39 -0800 (PST)
+        with ESMTP id S229769AbiLGDRo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 22:17:44 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B8C6596
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 19:17:43 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id b11so16349159pjp.2
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 19:17:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Clygi83A8MpV1rkWNOF1P0l9GPbU5ZoZ1SBbS/oeot8=;
-        b=WB5ULzyCren5nfhW1fe0Xvl5vSVX4j+E3RYYtyqBLP3UOXUoDeSYR8l+H/NWZqa+0s
-         FnvzRWyLeVhabeHvEmAdt1hciZoHCWI5MJlWOjrwttT2lbLnhhp+GSglfZdmFzCocp4q
-         lMFKXZgTi15ZyJnLqNS0Bpp65O0hJukgcKGQCEkJiTEooIUE4dGEazYAI9BzWTbum/15
-         0I2zQE0dd4Xl+JG9OtIm3V5AAn0DfjFuniDbsf68KweO1GISJmxpDHpe5vb87BCXWhHx
-         Knxxa5QZFFKRZnD/DjtaMGcFbtbq7AzdnIsjByRS2o8bXgssKM+svqQPU3K/OaWXqJLR
-         JIdg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t4+L+oXCtVc2YgwORlo2pBJ9wNuBGn9p10kyjoJ6DMY=;
+        b=bUSfyinEYQvaPbkK4ZVbV78Cj08RvpcgLWQ7n9v3juzUBEADuw3m2lBUHyLSRHvmhn
+         oH0MdGfKYLfjUxpCd9NkjKN0lvA94LBwTIUd4PfruDZpeSi1IiExtdkoFvnkdAMIcqbU
+         Ab+g94LTpcp9QG1AsRcM5HFUOuiy2uqo41DaliziZPYEhcT9IrVp5nFKhzGVxj+nbQmu
+         a3hlLLr5SCgh/rpvFmBRyhnnvHGTy6GP6yw8A35UPrnRtOMF8waO4+1eqvg5NzZeJEw2
+         Hi0TDQGvSMnS1dMntdU5U1PqQkLPvfFyLbNdSzqJR6hdRnlYZosxFA1o0nHPKDXjsXX7
+         KsnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Clygi83A8MpV1rkWNOF1P0l9GPbU5ZoZ1SBbS/oeot8=;
-        b=ebl5ELb+WC952Cl+lBz+ay4X0nkpWJuwGrjDnZLUd6BIKhhVmIeCO5eIjNbBp1uBSD
-         Sc8fcFo/qJuBUA5QqH41Q/HGsRNifLSODjZYg0frNte22dTaGE9Q1Vswnl/EDqxt+DCJ
-         YYWFoF5EAtmjZqYIOZxxKv0mFlljxAPMd5nONyAKAM72H6twBNpguE2zEGKAQ1b/mtfn
-         X1N4kZ8G0Zu1i3NcHywnLA0ImHnmxVnrsQ8VncE4c9aHR1sj/tR8PQP6Rm74cOEd7/dk
-         DSF/2P6KzSWFHtO4tam5ImC4NlxH5VDCbI0QLYzhfRKrJQQ3d+LzUSF5qfTEp1TKhYLX
-         viCQ==
-X-Gm-Message-State: ANoB5pnvnWkv5AifDvjIOL6kZhizIcLBCN7Lnr07nVGHJclHxBGf/6Rr
-        +wh08B27B2uU54GpumVdYqlmTQ5gYuXfMUh2AUc=
-X-Google-Smtp-Source: AA0mqf6TCgWvqIIBX8B97lUI4nN4miglj6llUFq5CT3/cjMGcyL4AYw1YdeeAVhHbQcpc93PaTPJr0plAP5eSW0n4Ls=
-X-Received: by 2002:a50:ed90:0:b0:46a:e6e3:b3cf with SMTP id
- h16-20020a50ed90000000b0046ae6e3b3cfmr43378648edr.333.1670381918094; Tue, 06
- Dec 2022 18:58:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20221206042946.686847-1-houtao@huaweicloud.com>
- <20221206042946.686847-2-houtao@huaweicloud.com> <05d1f326-55cc-d327-9e0a-e93add2a29cf@meta.com>
- <86fd4485-a016-d6f6-c31b-3aa76c261e91@huaweicloud.com>
-In-Reply-To: <86fd4485-a016-d6f6-c31b-3aa76c261e91@huaweicloud.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t4+L+oXCtVc2YgwORlo2pBJ9wNuBGn9p10kyjoJ6DMY=;
+        b=wlhJI9NpiuCU0tbW93iPY1U7ZlsoatgvsJUDmrBULFvjsVAOjvq9CM6PDcqp8rE/Hc
+         l0Rz73tDwzboBLzsog33kVtMVh5J5uwUKr+v7SPr/NowUOnqUz4kKh03V+icmYqBPJHe
+         zCcSE5hDOfElKuT1xsiLUStLOxkrSD+3N03Fh2CRK34CNR+eRUFU1gSCpMxDDAL7t7C2
+         4kUHGLC024/y9chRm0+9BjZAIxbs5VDcPerbWYhFo4WgA7XdHvpRRLeulaG+aHKlrGFK
+         i93jHiwDEjTYjMNnVozvFcPLrL6w2NOvJiD+SR5r24tlLulZ0tJpnzRPOkBNcB4giDA2
+         oMUg==
+X-Gm-Message-State: ANoB5pk3t+4pJqfBBYySszKBzMsEZMVjLVfmJBr4VbCAT8F5HPZwajgG
+        0CT/ieKXc9MMBG/Woc+jVy4O3BiyYHs=
+X-Google-Smtp-Source: AA0mqf5oM7hcXxFlKh0KJa2egWHZf28DtwjwSrAn33C/y5IxYyX7W5WsnUcAkAryl+BSkjscWH3Lbw==
+X-Received: by 2002:a17:903:515:b0:189:bcf7:1ec0 with SMTP id jn21-20020a170903051500b00189bcf71ec0mr503242plb.30.1670383062453;
+        Tue, 06 Dec 2022 19:17:42 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id f13-20020a170902f38d00b001868bf6a7b8sm13302010ple.146.2022.12.06.19.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 19:17:41 -0800 (PST)
+Date:   Tue, 6 Dec 2022 19:17:39 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 6 Dec 2022 18:58:26 -0800
-Message-ID: <CAADnVQ+zWyP9Hy--RLyZ6-VUEr-D6kXoFmV2L1Y4b0H=RHQbCQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Reuse freed element in free_by_rcu
- during allocation
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 3/3] bpf: remove unnecessary prune and jump
+ points
+Message-ID: <20221207031739.nvxsahedtr2ogv6j@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221206233345.438540-1-andrii@kernel.org>
+ <20221206233345.438540-4-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221206233345.438540-4-andrii@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,41 +72,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 6, 2022 at 6:20 PM Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Hi,
->
-> On 12/7/2022 9:52 AM, Yonghong Song wrote:
-> >
-> >
-> > On 12/5/22 8:29 PM, Hou Tao wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> When there are batched freeing operations on a specific CPU, part of
-> >> the freed elements ((high_watermark - lower_watermark) / 2 + 1) will
-> >> be moved to waiting_for_gp list and the remaining part will be left in
-> >> free_by_rcu list and waits for the expiration of RCU-tasks-trace grace
-> >> period and the next invocation of free_bulk().
-> >
-> > The change below LGTM. However, the above description seems not precise.
-> > IIUC, free_by_rcu list => waiting_for_gp is controlled by whether
-> > call_rcu_in_progress is true or not. If it is true, free_by_rcu list
-> > will remain intact and not moving into waiting_for_gp list.
-> > So it is not 'the remaining part will be left in free_by_rcu'.
-> > It is all elements in free_by_rcu to waiting_for_gp or none.
-> Thanks for the review and the suggestions. I tried to say that moving from
-> free_by_rcu to waiting_for_gp is slow, and there can be many free elements being
-> stacked on free_by_rcu list. So how about the following rephrasing or do you
-> still prefer "It is all elements in free_by_rcu to waiting_for_gp or none."  ?
->
-> When there are batched freeing operations on a specific CPU, part of the freed
-> elements ((high_watermark - lower_watermark) / 2 + 1) will be moved to
-> waiting_for_gp list  and the remaining part will be left in free_by_rcu list.
+On Tue, Dec 06, 2022 at 03:33:45PM -0800, Andrii Nakryiko wrote:
+> Don't mark some instructions as jump points when there are actually no
+> jumps and instructions are just processed sequentially. Such case is
+> handled naturally by precision backtracking logic without the need to
+> update jump history. See get_prev_insn_idx(). It goes back linearly by
+> one instruction, unless current top of jmp_history is pointing to
+> current instruction. In such case we use `st->jmp_history[cnt - 1].prev_idx`
+> to find instruction from which we jumped to the current instruction
+> non-linearly.
+> 
+> Also remove both jump and prune point marking for instruction right
+> after unconditional jumps, as program flow can get to the instruction
+> right after unconditional jump instruction only if there is a jump to
+> that instruction from somewhere else in the program. In such case we'll
+> mark such instruction as prune/jump point because it's a destination of
+> a jump.
+> 
+> This change has no changes in terms of number of instructions or states
+> processes across Cilium and selftests programs.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 34 ++++++++++------------------------
+>  1 file changed, 10 insertions(+), 24 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b1feb8d3c42e..4f163a28ab59 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -12228,13 +12228,12 @@ static int visit_func_call_insn(int t, int insn_cnt,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (t + 1 < insn_cnt) {
+> -		mark_prune_point(env, t + 1);
+> -		mark_jmp_point(env, t + 1);
+> -	}
+> +	mark_prune_point(env, t + 1);
+> +	/* when we exit from subprog, we need to record non-linear history */
+> +	mark_jmp_point(env, t + 1);
+> +
 
-I agree with Yonghong.
-The above sentence is not just not precise.
-'elements moved to waiting_for_gp list' part is not correct.
-The elements never moved into it directly.
-Only via free_by_rcu list.
-
-All or none also matters.
+With this we probably should remove 'insn_cnt' from visit_func_call_insn().
+and in-turn from visit_insn() as well.
+Pls consider as a follow up.
