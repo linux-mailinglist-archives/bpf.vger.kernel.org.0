@@ -2,141 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B552D64653A
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 00:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB390646546
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 00:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbiLGXkJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 18:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
+        id S229441AbiLGXmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 18:42:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbiLGXkD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 18:40:03 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4157F8AAEE
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 15:40:01 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B7KmvTH025302;
-        Wed, 7 Dec 2022 15:39:45 -0800
+        with ESMTP id S229507AbiLGXmx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 18:42:53 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A541EEED
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 15:42:51 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2B7KlSeu010411;
+        Wed, 7 Dec 2022 15:42:35 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=PO6q9YXQQxsVue59wY27Rk+lsy6iIsT2S7+bCHhtwFA=;
- b=ltztFhQmcit3IE7NKC/jeJZbMiE5cT3zOoyXHdq3MMlgFb3wvasUgS9u5nfME/hDmoYz
- i585IHpJnfwYSBmjdjKb4xFpdEN8TKwwPTzaMsFJoquU6Aqfw9rg+w1WfVZ446gU+GGn
- Ni1Dxu45mU41LB5QJ4WAmlG7G1HGHwQy9Ybgz08bxOaivQeOs5XzVCuNTYearvq7Nu/b
- T0N8i6f/oRKTtG+TmFj2rvoxkVG38pKDLYve1TFm2/AzOwf0O3Ppgg2JQlKUWy6IgNNh
- 1HftX5LGW/XFIRM1T8e2qnEfycaVuv4QlRkgfxyykklqQapBFQia7F7b2DRwaLYNtdD2 xg== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mavtemdpf-1
+ bh=PFpeJfihsitkdf3WxYmEyk9zmiMn73ULD4wrw2Di/J4=;
+ b=aqnJuJlIBRGeu8La1Iyyg51h3Oqe06gC/kn+htbfKEdS6mxoLr94k98qnOfLEUYc/7pT
+ XBDsmvFepEV3uz2RZxwMcGinFUkW/vZ4UCT4gM7yr+Q46yNw2rjJSKkad9LHGIfMwCbw
+ +VGA58EnUkrp2Ky0UWnxgGQXizMYOG1toZeCwToGTrNUzDQXv/r/NAaz+QYBQs6W5ahm
+ YpPfDGV3yB/JVRc1hhCU/lwZ9obL+4t9iAHgtt2qy2YyF46iRbl/NwE+Yc5dfqluJcPN
+ 8gDMEm0UrYBHKzCQBR80zvvcqPxBZgG3wtf60jS0f7hlShzoYkQZ9pUdtV1o3lsUllKu 9Q== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3man8vpnfh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Dec 2022 15:39:44 -0800
+        Wed, 07 Dec 2022 15:42:35 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ccdp/MF/LQ505RzI7SEKsuRNPeqJIT54D5TpPetpTtBRLUI7rYkcHPmxRisaqgAglEM8AIn7ao2BGD+xrzOJv6/xzNJXBSHNAt4YG7tbmxEOeZBMjU9aDBi+ShTHQFG3K6tAN7wPqq5Py43/o2RF0jl0pGVYE0iwT79ktxK7Fvx3NFLX67ILyb/Uha9/wMLe3TLQXAqW5WVYzG+x9O4VDV1gfoxQsTqC2Sdh2WYwUiHuauOiudqPf3f1ib5tGmq6mR7jn7MdvtBH1BFYCssb66hH78TtTgrn3e/HHDFZroTl96PksWXYh8bBxzqW3znWKo/L7Buc/jNDsENHvfns/w==
+ b=NyxyVgoditLCd8AFBQnmwi9nrMuREU/OVlUrOs/0+2th8PbctDeSW/Q6WDMFg+YfBeZm4S8+KRTaG24lmBoSQ03lb8Cd4SLvP5WTw8Fg7jLSO9CRpySnv+WIVxdR/lQXuWgElaIJ8PEXtbil3y9X8k8ImomBNJpWHnPAoJkV5YomxKyoo7aqSRbsU3GqYog4AQ4Xh8d5mOOwUCu1sGl/xvAW3LvBI7gCGenh9nQloz6clX0lbo3dywyTi3lvKV4ibtYW20n+ss0iyIGjC/3rcfH5fZ9BA/xGrLjMwZe4rSTyBER8prrm8MQpHGOJya1vzsN/I8AQLEzzxKy4w+kZdw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PO6q9YXQQxsVue59wY27Rk+lsy6iIsT2S7+bCHhtwFA=;
- b=CA2I4Gbj6IM7Y4iaUyrotqfxfMu8khdWAv+pxSy/LkljU9Vn7rxttnJIYmBaJ6prXEJDex81vm22oG5s8mFEk2noNiMlZLouKERCsMYJOEYHY5xAtDRElNBKP2GC0uJERQQwVfJztlukGY0NhQjksh+zylni47/oUPOaR1ksIHb1PuJGYxbIKv6jLkV96DEMewUvKHmn2GGo/y28R3ke0tz/cBVNoqNIlhK2CqvGIeGGtIrcVv8n6LmFimWA7JDNWj8bDUxerk1D0TGfn5lHRYOVbSaA/b20sqrrcl0AB0TBcc6DMCEGcVnDr9aO0BMntVxrUgW+/g6N5umn7VBGfw==
+ bh=PFpeJfihsitkdf3WxYmEyk9zmiMn73ULD4wrw2Di/J4=;
+ b=fU+dheYweN+gE0xLPCPqJ7Qfl6UQUxfT39E6t2fUgOW6xZzcdrLd0nQF2PlrMEfOjjI+hMGT3zkeiYzRorgOc7ti7fjSHHT1Y/5KWm7b8t3XzICW4iRhEAu+tmAMtDaubhYVYWzNTIq3hLf0ZUiNW+U7JXy/XcR4z0Cc8k8JGLRL543EqljuTpFVBcPqX3kfpaMT4RanY/d6jz0FCs2tXfxO1Ce3PR8pk124f+ig1jB3sGMc6gujVrxBHxrtXSdtRs9iEZpR4AlmNkW4h4+TyF0oETLbVeBa2DrnL27pnKOU9vDB/ZzNV0iFzdvatfIcCkmXNjeRlL1SlSNRLgkYbQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from MW4PR15MB4442.namprd15.prod.outlook.com (2603:10b6:303:103::13)
- by DM6PR15MB3163.namprd15.prod.outlook.com (2603:10b6:5:167::10) with
+ by DM5PR1501MB1990.namprd15.prod.outlook.com (2603:10b6:4:a8::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Wed, 7 Dec
- 2022 23:39:41 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.8; Wed, 7 Dec
+ 2022 23:42:31 +0000
 Received: from MW4PR15MB4442.namprd15.prod.outlook.com
  ([fe80::5054:64cb:7c18:2993]) by MW4PR15MB4442.namprd15.prod.outlook.com
  ([fe80::5054:64cb:7c18:2993%9]) with mapi id 15.20.5880.014; Wed, 7 Dec 2022
- 23:39:41 +0000
-Message-ID: <ea0259d9-2f29-bfbc-011f-810d3e2654a8@meta.com>
-Date:   Wed, 7 Dec 2022 18:39:38 -0500
+ 23:42:31 +0000
+Message-ID: <c8dc13ff-1a6c-31aa-78fc-9c4abe0136e6@meta.com>
+Date:   Wed, 7 Dec 2022 18:42:27 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.5.1
-Subject: Re: [PATCH bpf-next 10/13] bpf, x86: BPF_PROBE_MEM handling for
- insn->off < 0
+Subject: Re: [PATCH bpf-next 01/13] bpf: Loosen alloc obj test in verifier's
+ reg_btf_record
 Content-Language: en-US
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
 References: <20221206231000.3180914-1-davemarchevsky@fb.com>
- <20221206231000.3180914-11-davemarchevsky@fb.com>
- <Y4/8zScubw9uEeCx@macbook-pro-6.dhcp.thefacebook.com>
- <b4e644f8-dc55-a9fa-3fe6-8df0df82efb2@meta.com>
- <20221207180621.zkuztvz7hx4niout@macbook-pro-6.dhcp.thefacebook.com>
+ <20221206231000.3180914-2-davemarchevsky@fb.com>
+ <20221207164121.h6wm5crfhhvekqvd@apollo>
+ <a8079b93-15d5-147d-226b-13bbebfda75e@meta.com>
+ <20221207185931.hvte3vutd4y4qfh4@macbook-pro-6.dhcp.thefacebook.com>
+ <c6e5fb34-3dc5-de80-2e45-c0502be1c3ca@meta.com>
+ <20221207224628.zwgxlurf2vdpc6gm@macbook-pro-6.dhcp.thefacebook.com>
 From:   Dave Marchevsky <davemarchevsky@meta.com>
-In-Reply-To: <20221207180621.zkuztvz7hx4niout@macbook-pro-6.dhcp.thefacebook.com>
+In-Reply-To: <20221207224628.zwgxlurf2vdpc6gm@macbook-pro-6.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0203.namprd13.prod.outlook.com
- (2603:10b6:208:2be::28) To MW4PR15MB4442.namprd15.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0441.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::26) To MW4PR15MB4442.namprd15.prod.outlook.com
  (2603:10b6:303:103::13)
-MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4442:EE_|DM6PR15MB3163:EE_
-X-MS-Office365-Filtering-Correlation-Id: 78565edc-5cff-44ca-bf37-08dad8ac4fd8
+X-MS-TrafficTypeDiagnostic: MW4PR15MB4442:EE_|DM5PR1501MB1990:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7952402a-5291-437a-5ef5-08dad8acb515
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xAg2hmNrlGdKjWZODcutYj4AMLcuhi6UDg4GwseSZVzXqUsHXe8HjQYtMrUzpnDOzmKmHFjQJZze9Do0kQLLUWRxmdGiCxCaTfLynlTKv2GSt7To68wlioHS6wzCeTIsYkumzkhoGe6lyOk9PmWSLzGRlBg2lsoOJklO/2uDPgpx+8qfMxKnzIx0JQRT7DLvZzd273u53Kj7dYvxCLwEW1ZPtpkbgu0Noqbd+VAV1Ii+fRazZdymIO93zcbftA4jNbpqLxMLnm4FxqXPnovgQLaYDfwPO9KUcYYAw1V16g3IHioTls23lsOvdQlI+JrtotZ8v321esCh7pJWMMK9b0uOuUwrDvdslnScvvz4JvHizaOmyL66bpwUUeTPlJsJATWH/Fo9CtKzK9wUKTFOIfBdGfKbtQWAOge8Qa1E+d/yia7zkPg7tso7r0GyfsJyj6SAfXygc0/AbeF2J4XAuukrNe+DIDtiWhp5X2eqXzk/0XgIhNXu8WikwBrHVU6ApFHl3XgbMpwyx8v8wja3M98A1t7Igs3xf/bk6BuJszlF9/UOYVRwc6z2SN2pYfNH2kZLOfMeIK8yQwx/dvcpMH6wFdd452Q5c7Dt/IxiEOfRpJxzW9OfnlUJBJ9wpWG+MJfNU2LyCIu+VjgrPjDsLgAU9rOPOxDqeMixp5de6I+yP+p2DAGUSnwGaAdQ8QWzLIeW+SGdI1g6d+FLhLzR2RuZ0vz8fhX5AUehbkghNl4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4442.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(366004)(396003)(376002)(346002)(39860400002)(451199015)(6916009)(2616005)(186003)(6506007)(53546011)(316002)(38100700002)(83380400001)(6666004)(4326008)(8676002)(41300700001)(30864003)(6486002)(2906002)(66476007)(478600001)(66946007)(31686004)(66899015)(36756003)(54906003)(6512007)(66556008)(5660300002)(86362001)(31696002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: yqqRQaUDXEy9Cua/mRzegYFzlfMRXQBpovN1WGS4CqmvyOsMm2baLiR1gsdAB2vdaeOtXRSalZnCUh/ohH1Q2Fvws1S4bigg6JoRbat5oBpvCBQk1JDkoNUkZ23kUlCW7d7waw+Cb6uMYIMha5tQSvS+Z8xl3s3ld8doOYT2o7JnPTDXHC6qb8hcdr/dUE6KVFijZd/x6tNAWMoTt8n2adE1xG+0OUhzLV7xHEcQwHXbMSf3lWXjg/TbAvCZP//jqfikTPPbQLsgaxlMysnLUSPNBhIjgbB+VxPGvOwbtLRjiLlr15wSumjpsWquTfm++qe9GdtuUagSSGqREB06evXG1yULSerHOeBuS1mp4UqufLUyBQAqe7YWSfyqjjn+gNc5UvuA4KH2CQL+qXn7+glqntieiplLTmUhGlFUb6nxtCJECwtJtGGvwFE+tkOZrakXsZ2CV5YI011OiXG2wFz+Cki4ZqVikYhj3evSRMWaDWPXeSel87SkuRURI+Ae4WJKnHBSFPC2mtIRm88GggA3ln10I9aT2pPI9TNz1unaGKfye0PcyxxugpBF995n0tDhTNOGY7QhOM8HnVDX872K12houuc7rqBf82IXrhmqCoAEiXGIkbyVPdhCJuWWQajD2fz4QyYet3fKQ32QyQ2Bgvnsk02uwE0ov7PNb2IqUW87zrLUKJ8/Jrj4kqGARvL5mB/4xNNm50p2Gtskp6qvWh+DPZ3l6dB31zbISRMB+Q7uocP5iKN4lf3/GPuZgMUgDSZj4yZwx1cyyfeC8rFIKgjzB2OY4ctT0oFIEXc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4442.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(396003)(366004)(136003)(39860400002)(451199015)(2616005)(186003)(316002)(31686004)(478600001)(6916009)(54906003)(6486002)(86362001)(31696002)(53546011)(36756003)(2906002)(83380400001)(6666004)(6506007)(6512007)(966005)(30864003)(38100700002)(66556008)(8936002)(5660300002)(41300700001)(4326008)(8676002)(66946007)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UGhHeWNqTlk3VDU4akNEaWhGY0U4Rkt2U2VmOEVHYkxGUzBWVFg5R29pTVI1?=
- =?utf-8?B?aVlPK0Vncy9PdG1QdEdFMWxOdXZqYk1pbnhHQURDV1FqTTREYXVQK0QzeFh6?=
- =?utf-8?B?cS9aMlpWNXdWNTBLWUNrVVJ5dU5rSWpqZ1J5c2NSd1hpbEZkK1FEU0JjdS9Z?=
- =?utf-8?B?VUUzczhzRExQdUNPWlhrRWJJYkV3QkZWZWkvMlZ3Zk9uMG5tMXQwM090dVF0?=
- =?utf-8?B?ZkNUY0FvZ2NSWEtReEV2bTJYT3FaazVrK29iZHJJSE9KckVFcnQ5Um5sM01n?=
- =?utf-8?B?SFlkU21zZ0ZobHhlTFRuU0ZaL0cxMjlvTTdIY0FuWHNSbkxicElaT1NjL0V4?=
- =?utf-8?B?R1FvbkRsNWxaRlc3SHJheTQ2bURtYk5ZbEl0WGdyejcvdktabFJxdGx2cEdP?=
- =?utf-8?B?VnRtY3FYYit4QTk3Nkc3eG5iSmI5VitZSEpRNGRDTUhVTHozN0tYZ21taWtD?=
- =?utf-8?B?SlJaRVUyMVRSbnNSTmx0clVCYUhCb0pCV2hhWmFWVGplVHkreUhZWFJ1Yi9X?=
- =?utf-8?B?V0ZPcTBuM1RwZFhnREE5U05FT01HQ1FsdTQ0QkZFblRVcjN3d2huOUUzSmFk?=
- =?utf-8?B?bVRQalQ3TDd1Lzl2OFYrL2ZoT2p2aEN4Q01KQ0VQRHhqbVZpWnNic284SUE1?=
- =?utf-8?B?VGZhUDdMeGw3Qi9JMUt2U3NFVi9YVWRDN3VwRDRXOURMK1hFSnRDNFRxREY1?=
- =?utf-8?B?YXdyR2o3N2UxNjI1dFBwOFZVNTFNeHlTa3M5c1pta0hKd3RRSzBEOHpnV3lC?=
- =?utf-8?B?ZkF2Rkg0Z2szWnVMN29remw0bEJGUmtPZXBnY3pybHcrL2NueW1qSjBLaitn?=
- =?utf-8?B?NlBTZ0dTSi9Sc1pFY1MyVlVmaUZRZVB4WkZSRkdBY3dkelpGR2Q2amszazMw?=
- =?utf-8?B?aDVtQWFQQTNwNXZoTTl0YzM4RDBOL3Z1c005ajloOFBaUG9GdE5tVWFMeWNN?=
- =?utf-8?B?dEhXRzJwam82T2N0alcyQkJvcnpneVdaejRVK0ZPTEVQSW92eXZ4elI2TnFK?=
- =?utf-8?B?T1FhZHphWGVZWldUelhlZ2xCUWhvc0p5YUNhRVVhV1JHQVRXR1RnQ3J5Wmps?=
- =?utf-8?B?RG1OUitSMnU1ZWtYeWdyeCtXbnU5Z0pYNm9oTzFGYmExaUpRdWdQSlByanpJ?=
- =?utf-8?B?SDJlQi9wRHZZOVlyTi80dzNxeG9aQXI0SEFWSDBmd0RaQ2xMekNHV0FobTNt?=
- =?utf-8?B?UEVUOU5zOS9uM0VmdXB4ai9XdHltS21ydjhsUk5meS85RlE2UXlEcUUwQWRy?=
- =?utf-8?B?MkVWUURLSFptOThCMDRQTFRaQVh1bklGa0tKdUw3QWVLdlgxbnhuVDE5N2VU?=
- =?utf-8?B?NDE5SVUrUUNKbVRZcm5GQitLdmVYS09VdkUxdzFWdmdsYzloTVcrYVoyc0lz?=
- =?utf-8?B?dW90eEl0U3p2Q2s3MCtuakM3aW43M3FVOVY2R2V0eEtTN0tidTlyZUpIU1J4?=
- =?utf-8?B?enI1ckd0WEUrUERCdDgvem9PbTZ5dFN4TmFETjBiMDAySXlSTlBsaXJGY2J1?=
- =?utf-8?B?eE83a21Qd1dIMURIQ3l5YjJMcmNzQ3VjRXduTS9nZ2RzTnF6RStuem91RENi?=
- =?utf-8?B?UldMN2x4a0RVOFZnRUpsOXpLWUtCOU4zV3J2YWtndWhhTGxUdGx6N1hDOCtM?=
- =?utf-8?B?NXBvR25YNUhFS0hYa2IwcW9yOWpxcE9jSXFlT0poVERHVXlVbi9vVGlLcjcr?=
- =?utf-8?B?RlJFSDFqVVBNZU1PZ1J2c3dPa3lvQ2dqemwwaFVkYUVYY3FSZzdWTVNNSDd6?=
- =?utf-8?B?dnBRYmVrRndFSlcwRTUyM0RLS0VMUlJtaXhBWEd5YnZlK3o1QWozSlF4em1W?=
- =?utf-8?B?Z0k1dTFHWDZRM0FuS25BNExobWlvRXJaODhOcXR2ZnpUeVZaVThvVS80dmVk?=
- =?utf-8?B?YVRVZlBhcFdJMGNFemxJK1p5WVVvZXBSZmJQMnVGUlFXL1VENFErS3l3eWhJ?=
- =?utf-8?B?QUloYkZrQlJncXVZeHRDSkxGeEh3d3dIdk1VcDYxcVBwZUVGOVQ1MnZ2cnF2?=
- =?utf-8?B?TWxmMUlyZzdFa1FuRHVsUElGd1RFNVNZRU9rSWJRSElvNEpiamJaTm5XT0FT?=
- =?utf-8?B?NmR6QVM4dS91d3BqeGpBU1ZUM0JxTDlEZ25LalB5ZU1aZmhVOUdyNnNWcS9N?=
- =?utf-8?B?QVpjQVhmZWZLcXFscjRxckx0YTRXSERZYW9tdi9nbHF3SDhJWWI5ZW1WOWZI?=
- =?utf-8?Q?rKqZZo/cbRo9n5ulD8Bc/4U=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ai96bmlVRGpiVjhQYTB4T1FrQXlIQk1EaGQ4a2JWckdrVFhNazNLVnJBSjFv?=
+ =?utf-8?B?eXVJSjNROG5PRG5qZHNZcHNPY3d1Qm5GNmdCWTRuM2srcVZXNHJYSFFvL0VX?=
+ =?utf-8?B?bFRQdnI4dWM0cjBDNk05akJYNitremZjUUpRMnZHUTdVcFZZbjBzZ3R6Q29C?=
+ =?utf-8?B?ODVxMkZJK3lZaHBCWVBGWXRyVXVHTzJYUXZTWVZ0WEs2eml5L0pZSnMwdmRP?=
+ =?utf-8?B?SjJEUU5CZktSa2RzK1diUkFZNWVVL3AyeW1kTCsrZkZRbG93QXIyQXpYaFBh?=
+ =?utf-8?B?RmlubUxzeklJNm85ZVpjWjEwNHB4TitZdWN3bzZpNFN6MTBRQ2JjV1dqM0Ex?=
+ =?utf-8?B?M1QrYi9rR3hMT29pNktKTXBWNzFHUVZNTGhTUC9td0dlaGc0K3B1bkxlejds?=
+ =?utf-8?B?dk9ZWE9ZMTd5Q0tSWWNvdTJJcjlzMXhRNzNuM0FJRTQydC9iQjJxb0c3M0xa?=
+ =?utf-8?B?N29qWXpVMXJFbXd4RExRMUxodXRiUVIzMTlrMnJ0eldGaHRvaGZrTDFHcDdM?=
+ =?utf-8?B?Q3FQRzljVW4vY2hOR3pmbEVOTWEva0QrTGM5VEg0Z2xQR0Jlc3lsM3E4QUJt?=
+ =?utf-8?B?KzNOUFN0RHJQTUprZXBkVExVWU5VWUs1SUNqSk40TDYxajhLVG5NZ29xd0NC?=
+ =?utf-8?B?KzBkZTdmN1RKaXRwLy9wWE9kYnNxMFZpK285VTBhZnl4MCtwbjVWeHhZSWdH?=
+ =?utf-8?B?eHpjeWZaU0RqSENTK0hsYllBeDBnK2NjeElBbWVsVjlQaEhaSzFXU0kwSWZv?=
+ =?utf-8?B?aitwclBlVlJKWXJEYnk0SVYvZ1cxV016Vm40ZVEvaVE1MGFJS0RQZy93Q1pz?=
+ =?utf-8?B?U1IrZ0xBM0VhdnlkZlUxamRVSDJtZlpwNERqTDU3V0RkN0haUTFGb3daZXEr?=
+ =?utf-8?B?dC93c0ZLOWJGM0l1RHh1TVFnZ3B6aVQzQXVTZzZ0TXlDYkJ2K0xKSW1aQlY0?=
+ =?utf-8?B?NHJMbnQwKzBXdVZ3K1FEeVlWM2twRjczdFZOOThPQkNMRXhlNGRpZkNXamd6?=
+ =?utf-8?B?SVhZUG43N21FNDRGVVdPWkJuMHRwUHlaTUZsRCt0V2QxZ1QwTC85TVFNUVk1?=
+ =?utf-8?B?bGpQMzFhSGVNSWFrT3MxdWozWWxadGFkVW1Wd0xYcmJEczRPRGx1NVdZNi90?=
+ =?utf-8?B?bHlYdGNTYmJ0SVFTK2IwUG0xQTZsc3BjWXVtckhGMjhpeU1BbzUzOWQ2Um1k?=
+ =?utf-8?B?Qlc4ckF6RitYemxCYUlDWFJUNmNWSlVyOTBNb1BFTEowdTFPUEpVSEJWaXhu?=
+ =?utf-8?B?K2RENnZZSGh4bEcycGswL2Z6MXp5Z3Z4OTR1NHNqR2FadEFScXZyNHBENjIv?=
+ =?utf-8?B?UjVzTDNsYUhWVXN3MTcyd21BQnlNUE9nZkFSY3ZER0tMTjV5ZG1CWkJxaDBQ?=
+ =?utf-8?B?RDBFSStPcTJ6Wmw4MVpSUHI1OEJkdVU2QTBsUkJGamtkVHFoSHc4RzFYeVNZ?=
+ =?utf-8?B?WS90OHFERUp3TkFoV1JleksxSDNUL1FuNlpiUmJtVzRxVVNzaGVnMFBLYWZw?=
+ =?utf-8?B?eDVYK0JMVWlnR0ZFREYwVFJBYkxndnEveUhiYzgzbXpydm5DUHVFUllKeXpT?=
+ =?utf-8?B?VEMrUVNIVDRCTTBuYzhDQlh6dTlDVHl2K3liTGJienJBbml3SmNRUUREdEQ2?=
+ =?utf-8?B?UDBGSU1LRVphSHl5b2tBUTErZFZmUmphV25jeENEb3VRSWNLMXkxc2s1QTc3?=
+ =?utf-8?B?WWw5SzFBL2xVRmRrMEVyZkluS2lDMmF3Nnh4WFlFR21BNUliaStYamtVT285?=
+ =?utf-8?B?Yzc1NWxSd2dQdnJ3UExMamM3TlUzVmp0aEpwUjQzRjN6UGoyVEw4bVRodGZs?=
+ =?utf-8?B?aWlUOEdNMWFTVyt4SVZ0ZkNHMkptZGdqcHo2Q3RyTUlVOGJBenVzVzNXckxI?=
+ =?utf-8?B?bGxySzErdzFHRTFIVlRBZnM1WmVKV2xYdkdvR1R0TDBkTVFuNFEzS1FNbGg5?=
+ =?utf-8?B?UE1BdVRYaGxYbVFkZEVIenRlYVZIWFFwSFZEbHUxQmUydksvQWdPTXQrL0h2?=
+ =?utf-8?B?YUJ4ck1aOXVOUTJjVnEwZG5lMjkrMEhzQnlUS2hSUFNOcEFXTmJ1MTlrQ0k4?=
+ =?utf-8?B?ZWRJMFNpdnozWUlnNWJPMWNkT0QzeXlDd2xPNE0wdWlSZzZnVUNEbnluYlhT?=
+ =?utf-8?B?T1luOHpJa1lXQjBncmgyVTBkbXNKd0hFcnJXS0U4NERLbUZma0xlaXMyMncz?=
+ =?utf-8?Q?rRtp/y0IfRPpZlCHr6ms4hk=3D?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78565edc-5cff-44ca-bf37-08dad8ac4fd8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7952402a-5291-437a-5ef5-08dad8acb515
 X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4442.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 23:39:41.3956
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2022 23:42:31.2756
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5J1BNF/aI1ESot83/Ddh+cNs+cNBpaqNy7kbf8GlL0LtwcBp+imf7vUHCGnxEqYe1lg+xe6SSbciK6McP67+iQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3163
-X-Proofpoint-GUID: BCOn1CVYXG4e31ZJyG2WaTotwl2bCm16
-X-Proofpoint-ORIG-GUID: BCOn1CVYXG4e31ZJyG2WaTotwl2bCm16
+X-MS-Exchange-CrossTenant-UserPrincipalName: qnQ5b4CoRVpcXhbucCjoWxp8amAjIEhoFQG4BuNS06mm9LUHd1GR8yyM7YWufNhyxqTgc7LEWeHUnQ6RqabU6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1501MB1990
+X-Proofpoint-GUID: vY4vPh2rP5naQ95lak0eRv8Xh0MCGDm7
+X-Proofpoint-ORIG-GUID: vY4vPh2rP5naQ95lak0eRv8Xh0MCGDm7
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-07_11,2022-12-07_01,2022-06-22_01
@@ -150,309 +152,270 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/7/22 1:06 PM, Alexei Starovoitov wrote:
-> On Wed, Dec 07, 2022 at 01:46:56AM -0500, Dave Marchevsky wrote:
->> On 12/6/22 9:39 PM, Alexei Starovoitov wrote:
->>> On Tue, Dec 06, 2022 at 03:09:57PM -0800, Dave Marchevsky wrote:
->>>> Current comment in BPF_PROBE_MEM jit code claims that verifier prevents
->>>> insn->off < 0, but this appears to not be true irrespective of changes
->>>> in this series. Regardless, changes in this series will result in an
->>>> example like:
+On 12/7/22 5:46 PM, Alexei Starovoitov wrote:
+> On Wed, Dec 07, 2022 at 03:38:55PM -0500, Dave Marchevsky wrote:
+>> On 12/7/22 1:59 PM, Alexei Starovoitov wrote:
+>>> On Wed, Dec 07, 2022 at 01:34:44PM -0500, Dave Marchevsky wrote:
+>>>> On 12/7/22 11:41 AM, Kumar Kartikeya Dwivedi wrote:
+>>>>> On Wed, Dec 07, 2022 at 04:39:48AM IST, Dave Marchevsky wrote:
+>>>>>> btf->struct_meta_tab is populated by btf_parse_struct_metas in btf.c.
+>>>>>> There, a BTF record is created for any type containing a spin_lock or
+>>>>>> any next-gen datastructure node/head.
+>>>>>>
+>>>>>> Currently, for non-MAP_VALUE types, reg_btf_record will only search for
+>>>>>> a record using struct_meta_tab if the reg->type exactly matches
+>>>>>> (PTR_TO_BTF_ID | MEM_ALLOC). This exact match is too strict: an
+>>>>>> "allocated obj" type - returned from bpf_obj_new - might pick up other
+>>>>>> flags while working its way through the program.
+>>>>>>
+>>>>>
+>>>>> Not following. Only PTR_TO_BTF_ID | MEM_ALLOC is the valid reg->type that can be
+>>>>> passed to helpers. reg_btf_record is used in helpers to inspect the btf_record.
+>>>>> Any other flag combination (the only one possible is PTR_UNTRUSTED right now)
+>>>>> cannot be passed to helpers in the first place. The reason to set PTR_UNTRUSTED
+>>>>> is to make then unpassable to helpers.
+>>>>>
 >>>>
->>>>   struct example_node {
->>>>     long key;
->>>>     long val;
->>>>     struct bpf_rb_node node;
->>>>   }
+>>>> I see what you mean. If reg_btf_record is only used on regs which are args,
+>>>> then the exact match helps enforce PTR_UNTRUSTED not being an acceptable
+>>>> type flag for an arg. Most uses of reg_btf_record seem to be on arg regs,
+>>>> but then we have its use in reg_may_point_to_spin_lock, which is itself
+>>>> used in mark_ptr_or_null_reg and on BPF_REG_0 in check_kfunc_call. So I'm not
+>>>> sure that it's only used on arg regs currently.
 >>>>
->>>>   /* In BPF prog, assume root contains example_node nodes */
->>>>   struct bpf_rb_node res = bpf_rbtree_first(&root);
->>>>   if (!res)
->>>>     return 1;
+>>>> Regardless, if the intended use is on arg regs only, it should be renamed to
+>>>> arg_reg_btf_record or similar to make that clear, as current name sounds like
+>>>> it should be applicable to any reg, and thus not enforce constraints particular
+>>>> to arg regs.
 >>>>
->>>>   struct example_node n = container_of(res, struct example_node, node);
->>>>   long key = n->key;
+>>>> But I think it's better to leave it general and enforce those constraints
+>>>> elsewhere. For kfuncs this is already happening in check_kfunc_args, where the
+>>>> big switch statements for KF_ARG_* are doing exact type matching.
 >>>>
->>>> Resulting in a load with off = -16, as bpf_rbtree_first's return is
->>>
->>> Looks like the bug in the previous patch:
->>> +                       } else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
->>> +                                  meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
->>> +                               struct btf_field *field = meta.arg_rbtree_root.field;
->>> +
->>> +                               mark_reg_datastructure_node(regs, BPF_REG_0,
->>> +                                                           &field->datastructure_head);
->>>
->>> The R0 .off should have been:
->>>  regs[BPF_REG_0].off = field->rb_node.node_offset;
->>>
->>> node, not root.
->>>
->>> PTR_TO_BTF_ID should have been returned with approriate 'off',
->>> so that container_of() would it bring back to zero offset.
->>>
->>
->> The root's btf_field is used to hold information about the node type. Of
->> specific interest to us are value_btf_id and node_offset, which
->> mark_reg_datastructure_node uses to set REG_0's type and offset correctly.
->>
->> This "use head type to keep info about node type" strategy felt strange to me
->> initially too: all PTR_TO_BTF_ID regs are passing around their type info, so
->> why not use that to lookup bpf_rb_node field info? But consider that
->> bpf_rbtree_first (and bpf_list_pop_{front,back}) doesn't take a node as
->> input arg, so there's no opportunity to get btf_field info from input
->> reg type. 
->>
->> So we'll need to keep this info in rbtree_root's btf_field
->> regardless, and since any rbtree API function that operates on a node
->> also operates on a root and expects its node arg to match the node
->> type expected by the root, might as well use root's field as the main
->> lookup for this info and not even have &field->rb_node for now.
->> All __process_kf_arg_ptr_to_datastructure_node calls (added earlier
->> in the series) use the &meta->arg_{list_head,rbtree_root}.field for same
->> reason.
->>
->> So it's setting the reg offset correctly.
-> 
-> Ok. Got it. Than the commit log is incorrectly describing the failing scenario.
-> It's a container_of() inside bool less() that is generating negative offsets.
-> 
-
-I noticed this happening with container_of() both inside less() and in the
-example in patch summary. Specifically in the rbtree_first_and_remove 'success'
-selftest added in patch 13. There, operations like this:
-
-  bpf_spin_lock(&glock);
-  res = bpf_rbtree_first(&groot);
-  if (!res) {...}
-
-  o = container_of(res, struct node_data, node);
-  first_data[1] = o->data;
-  bpf_spin_unlock(&glock);
-
-Would fail to set first_data[1] to the expected value, instead setting
-it to 0. 
-
->>> All PTR_TO_BTF_ID need to have positive offset.
->>> I'm not sure btf_struct_walk() and other PTR_TO_BTF_ID accessors
->>> can deal with negative offsets.
->>> There could be all kinds of things to fix.
->>
->> I think you may be conflating reg offset and insn offset here. None of the
->> changes in this series result in a PTR_TO_BTF_ID reg w/ negative offset
->> being returned. But LLVM may generate load insns with a negative offset,
->> and since we're passing around pointers to bpf_rb_node that may come
->> after useful data fields in a type, this will happen more often.
->>
->> Consider this small example from selftests in this series:
->>
->> struct node_data {
->>   long key;
->>   long data;
->>   struct bpf_rb_node node;
->> };
->>
->> static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
->> {
->>         struct node_data *node_a;
->>         struct node_data *node_b;
->>
->>         node_a = container_of(a, struct node_data, node);
->>         node_b = container_of(b, struct node_data, node);
->>
->>         return node_a->key < node_b->key;
->> }
->>
->> llvm-objdump shows this bpf bytecode for 'less':
->>
->> 0000000000000000 <less>:
->> ;       return node_a->key < node_b->key;
->>        0:       79 22 f0 ff 00 00 00 00 r2 = *(u64 *)(r2 - 0x10)
->>        1:       79 11 f0 ff 00 00 00 00 r1 = *(u64 *)(r1 - 0x10)
->>        2:       b4 00 00 00 01 00 00 00 w0 = 0x1
->> ;       return node_a->key < node_b->key;
-> 
-> I see. That's the same bug.
-> The args to callback should have been PTR_TO_BTF_ID | PTR_TRUSTED with 
-> correct positive offset.
-> Then node_a = container_of(a, struct node_data, node);
-> would have produced correct offset into proper btf_id.
-> 
-> The verifier should be passing into less() the btf_id
-> of struct node_data instead of btf_id of struct bpf_rb_node.
-> 
-
-The verifier is already passing the struct node_data type, not bpf_rb_node.
-For less() args, and rbtree_{first,remove} retval, mark_reg_datastructure_node
-- added in patch 8 - is doing as you describe.
-
-Verifier sees less' arg regs as R=ptr_to_node_data(off=16). If it was
-instead passing R=ptr_to_bpf_rb_node(off=0), attempting to access *(reg - 0x10)
-would cause verifier err.
-
->>        3:       cd 21 01 00 00 00 00 00 if r1 s< r2 goto +0x1 <LBB2_2>
->>        4:       b4 00 00 00 00 00 00 00 w0 = 0x0
->>
->> 0000000000000028 <LBB2_2>:
->> ;       return node_a->key < node_b->key;
->>        5:       95 00 00 00 00 00 00 00 exit
->>
->> Insns 0 and 1 are loading node_b->key and node_a->key, respectively, using
->> negative insn->off. Verifier's view or R1 and R2 before insn 0 is
->> untrusted_ptr_node_data(off=16). If there were some intermediate insns
->> storing result of container_of() before dereferencing:
->>
->>   r3 = (r2 - 0x10)
->>   r2 = *(u64 *)(r3)
->>
->> Verifier would see R3 as untrusted_ptr_node_data(off=0), and load for
->> r2 would have insn->off = 0. But LLVM decides to just do a load-with-offset
->> using original arg ptrs to less() instead of storing container_of() ptr
->> adjustments.
->>
->> Since the container_of usage and code pattern in above example's less()
->> isn't particularly specific to this series, I think there are other scenarios
->> where such code would be generated and considered this a general bugfix in
->> cover letter.
-> 
-> imo the negative offset looks specific to two misuses of PTR_UNTRUSTED in this set.
-> 
-
-If I used PTR_TRUSTED here, the JITted instructions would still do a load like
-r2 = *(u64 *)(r2 - 0x10). There would just be no BPF_PROBE_MEM runtime checking
-insns generated, avoiding negative insn issue there. But the negative insn->off
-load being generated is not specific to PTR_UNTRUSTED.
-
->>
->> [ below paragraph was moved here, it originally preceded "All PTR_TO_BTF_ID"
->>   paragraph ]
->>
->>> The apporach of returning untrusted from bpf_rbtree_first is questionable.
->>> Without doing that this issue would not have surfaced.
->>>
->>
->> I agree re: PTR_UNTRUSTED, but note that my earlier example doesn't involve
->> bpf_rbtree_first. Regardless, I think the issue is that PTR_UNTRUSTED is
->> used to denote a few separate traits of a PTR_TO_BTF_ID reg:
->>
->>   * "I have no ownership over the thing I'm pointing to"
->>   * "My backing memory may go away at any time"
->>   * "Access to my fields might result in page fault"
->>   * "Kfuncs shouldn't accept me as an arg"
->>
->> Seems like original PTR_UNTRUSTED usage really wanted to denote the first
->> point and the others were just naturally implied from the first. But
->> as you've noted there are some things using PTR_UNTRUSTED that really
->> want to make more granular statements:
-> 
-> I think PTR_UNTRUSTED implies all of the above. All 4 statements are connected.
-> 
->> ref_set_release_on_unlock logic sets release_on_unlock = true and adds
->> PTR_UNTRUSTED to the reg type. In this case PTR_UNTRUSTED is trying to say:
->>
->>   * "I have no ownership over the thing I'm pointing to"
->>   * "My backing memory may go away at any time _after_ bpf_spin_unlock"
->>     * Before spin_unlock it's guaranteed to be valid
->>   * "Kfuncs shouldn't accept me as an arg"
->>     * We don't want arbitrary kfunc saving and accessing release_on_unlock
->>       reg after bpf_spin_unlock, as its backing memory can go away any time
->>       after spin_unlock.
->>
->> The "backing memory" statement PTR_UNTRUSTED is making is a blunt superset
->> of what release_on_unlock really needs.
->>
->> For less() callback we just want
->>
->>   * "I have no ownership over the thing I'm pointing to"
->>   * "Kfuncs shouldn't accept me as an arg"
->>
->> There is probably a way to decompose PTR_UNTRUSTED into a few flags such that
->> it's possible to denote these things separately and avoid unwanted additional
->> behavior. But after talking to David Vernet about current complexity of
->> PTR_TRUSTED and PTR_UNTRUSTED logic and his desire to refactor, it seemed
->> better to continue with PTR_UNTRUSTED blunt instrument with a bit of
->> special casing for now, instead of piling on more flags.
-> 
-> Exactly. More flags will only increase the confusion.
-> Please try to make callback args as proper PTR_TRUSTED and disallow calling specific
-> rbtree kfuncs while inside this particular callback to prevent recursion.
-> That would solve all these issues, no?
-> Writing into such PTR_TRUSTED should be still allowed inside cb though it's bogus.
-> 
-> Consider less() receiving btf_id ptr_trusted of struct node_data and it contains
-> both link list and rbtree.
-> It should still be safe to operate on link list part of that node from less()
-> though it's not something we would ever recommend.
-
-I definitely want to allow writes on non-owning references. In order to properly
-support this, there needs to be a way to designate a field as a "key":
-
-struct node_data {
-  long key __key;
-  long data;
-  struct bpf_rb_node node;
-};
-
-or perhaps on the rb_root via __contains or separate tag:
-
-struct bpf_rb_root groot __contains(struct node_data, node, key);
-
-This is necessary because rbtree's less() uses key field to determine order, so
-we don't want to allow write to the key field when the node is in a rbtree. If
-such a write were possible the rbtree could easily be placed in an invalid state
-since the new key may mean that the rbtree is no longer sorted. Subsequent add()
-operations would compare less() using the new key, so other nodes will be placed
-in wrong spot as well.
-
-Since PTR_UNTRUSTED currently allows read but not write, and prevents use of
-non-owning ref as kfunc arg, it seemed to be reasonable tag for less() args.
-
-I was planning on adding __key / non-owning-ref write support as a followup, but
-adding it as part of this series will probably save a lot of back-and-forth.
-Will try to add it.
-
-> The kfunc call on rb tree part of struct node_data is problematic because
-> of recursion, right? No other safety concerns ?
-> 
->>>
->>>> modified by verifier to be PTR_TO_BTF_ID of example_node w/ offset =
->>>> offsetof(struct example_node, node), instead of PTR_TO_BTF_ID of
->>>> bpf_rb_node. So it's necessary to support negative insn->off when
->>>> jitting BPF_PROBE_MEM.
->>>
->>> I'm not convinced it's necessary.
->>> container_of() seems to be the only case where bpf prog can convert
->>> PTR_TO_BTF_ID with off >= 0 to negative off.
->>> Normal pointer walking will not make it negative.
->>>
->>
->> I see what you mean - if some non-container_of case resulted in load generation
->> with negative insn->off, this probably would've been noticed already. But
->> hopefully my replies above explain why it should be addressed now.
-> 
-> Even with container_of() usage we should be passing proper btf_id of container
-> struct, so that callbacks and non-callbacks can properly container_of() it
-> and still get offset >= 0.
-> 
-
-This was addressed earlier in my response.
-
+>>>>>> Loosen the check to be exact for base_type and just use MEM_ALLOC mask
+>>>>>> for type_flag.
+>>>>>>
+>>>>>> This patch is marked Fixes as the original intent of reg_btf_record was
+>>>>>> unlikely to have been to fail finding btf_record for valid alloc obj
+>>>>>> types with additional flags, some of which (e.g. PTR_UNTRUSTED)
+>>>>>> are valid register type states for alloc obj independent of this series.
+>>>>>
+>>>>> That was the actual intent, same as how check_ptr_to_btf_access uses the exact
+>>>>> reg->type to allow the BPF_WRITE case.
+>>>>>
+>>>>> I think this series is the one introducing this case, passing bpf_rbtree_first's
+>>>>> result to bpf_rbtree_remove, which I think is not possible to make safe in the
+>>>>> first place. We decided to do bpf_list_pop_front instead of bpf_list_entry ->
+>>>>> bpf_list_del due to this exact issue. More in [0].
+>>>>>
+>>>>>  [0]: https://lore.kernel.org/bpf/CAADnVQKifhUk_HE+8qQ=AOhAssH6w9LZ082Oo53rwaS+tAGtOw@mail.gmail.com
+>>>>>
 >>>>
->>>> A few instructions are saved for negative insn->offs as a result. Using
->>>> the struct example_node / off = -16 example from before, code looks
->>>> like:
+>>>> Thanks for the link, I better understand what Alexei meant in his comment on
+>>>> patch 9 of this series. For the helpers added in this series, we can make
+>>>> bpf_rbtree_first -> bpf_rbtree_remove safe by invalidating all release_on_unlock
+>>>> refs after the rbtree_remove in same manner as they're invalidated after
+>>>> spin_unlock currently.
+>>>>
+>>>> Logic for why this is safe:
+>>>>
+>>>>   * If we have two non-owning refs to nodes in a tree, e.g. from
+>>>>     bpf_rbtree_add(node) and calling bpf_rbtree_first() immediately after,
+>>>>     we have no way of knowing if they're aliases of same node.
+>>>>
+>>>>   * If bpf_rbtree_remove takes arbitrary non-owning ref to node in the tree,
+>>>>     it might be removing a node that's already been removed, e.g.:
+>>>>
+>>>>         n = bpf_obj_new(...);
+>>>>         bpf_spin_lock(&lock);
+>>>>
+>>>>         bpf_rbtree_add(&tree, &n->node);
+>>>>         // n is now non-owning ref to node which was added
+>>>>         res = bpf_rbtree_first();
+>>>>         if (!m) {}
+>>>>         m = container_of(res, struct node_data, node);
+>>>>         // m is now non-owning ref to the same node
+>>>>         bpf_rbtree_remove(&tree, &n->node);
+>>>>         bpf_rbtree_remove(&tree, &m->node); // BAD
 >>>
->>> This is quite complex to review. I couldn't convince myself
->>> that droping 2nd check is safe, but don't have an argument to
->>> prove that it's not safe.
->>> Let's get to these details when there is need to support negative off.
+>>> Let me clarify my previous email:
+>>>
+>>> Above doesn't have to be 'BAD'.
+>>> Instead of
+>>> if (WARN_ON_ONCE(RB_EMPTY_NODE(n)))
+>>>
+>>> we can drop WARN and simply return.
+>>> If node is not part of the tree -> nop.
+>>>
+>>> Same for bpf_rbtree_add.
+>>> If it's already added -> nop.
 >>>
 >>
->> Hopefully above explanation shows that there's need to support it now.
->> I will try to simplify and rephrase the summary to make it easier to follow,
->> but will prioritize addressing feedback in less complex patches, so this
->> patch may not change for a few respins.
+>> These runtime checks can certainly be done, but if we can guarantee via
+>> verifier type system that a particular ptr-to-node is guaranteed to be in /
+>> not be in a tree, that's better, no?
+>>
+>> Feels like a similar train of thought to "fail verification when correct rbtree
+>> lock isn't held" vs "just check if lock is held in every rbtree API kfunc".
+>>
+>>> Then we can have bpf_rbtree_first() returning PTR_TRUSTED with acquire semantics.
+>>> We do all these checks under the same rbtree root lock, so it's safe.
+>>>
+>>
+>> I'll comment on PTR_TRUSTED in our discussion on patch 10.
+>>
+>>>>         bpf_spin_unlock(&lock);
+>>>>
+>>>>   * bpf_rbtree_remove is the only "pop()" currently. Non-owning refs are at risk
+>>>>     of pointing to something that was already removed _only_ after a
+>>>>     rbtree_remove, so if we invalidate them all after rbtree_remove they can't
+>>>>     be inputs to subsequent remove()s
+>>>
+>>> With above proposed run-time checks both bpf_rbtree_remove and bpf_rbtree_add
+>>> can have release semantics.
+>>> No need for special release_on_unlock hacks.
+>>>
+>>
+>> If we want to be able to interact w/ nodes after they've been added to the
+>> rbtree, but before critical section ends, we need to support non-owning refs,
+>> which are currently implemented using special release_on_unlock logic.
+>>
+>> If we go with the runtime check suggestion from above, we'd need to implement
+>> 'conditional release' similarly to earlier "rbtree map" attempt:
+>> https://lore.kernel.org/bpf/20220830172759.4069786-14-davemarchevsky@fb.com/ .
+>>
+>> If rbtree_add has release semantics for its node arg, but the node is already
+>> in some tree and runtime check fails, the reference should not be released as
+>> rbtree_add() was a nop.
 > 
-> I'm not saying that this patch will never be needed.
-> Supporting negative offsets here is a good thing.
-> I'm arguing that it's not necessary to enable bpf_rbtree.
+> Got it.
+> The conditional release is tricky. We should probably avoid it for now.
+> 
+> I think we can either go with Kumar's proposal and do
+> bpf_rbtree_pop_front() instead of bpf_rbtree_first()
+> that avoids all these issues...
+> 
+> but considering that we'll have inline iterators soon and should be able to do:
+> 
+> struct bpf_rbtree_iter it;
+> struct bpf_rb_node * node;
+> 
+> bpf_rbtree_iter_init(&it, rb_root); // locks the rbtree
+> while ((node = bpf_rbtree_iter_next(&it)) {
+>   if (node->field == condition) {
+>     struct bpf_rb_node *n;
+> 
+>     n = bpf_rbtree_remove(rb_root, node);
+>     bpf_spin_lock(another_rb_root);
+>     bpf_rbtree_add(another_rb_root, n);
+>     bpf_spin_unlock(another_rb_root);
+>     break;
+>   }
+> }
+> bpf_rbtree_iter_destroy(&it);
+> 
+> We can treat the 'node' returned from bpf_rbtree_iter_next() the same way
+> as return from bpf_rbtree_first() ->  PTR_TRUSTED | MAYBE_NULL,
+> but not acquired (ref_obj_id == 0).
+> 
+> bpf_rbtree_add -> KF_RELEASE
+> so we cannot pass not acquired pointers into it.
+> 
+> We should probably remove release_on_unlock logic as Kumar suggesting and
+> make bpf_list_push_front/back to be KF_RELEASE.
+> 
+> Then
+> bpf_list_pop_front/back stay KF_ACQUIRE | KF_RET_NULL
+> and
+> bpf_rbtree_remove is also KF_ACQUIRE | KF_RET_NULL.
+> 
+> The difference is bpf_list_pop has only 'head'
+> while bpf_rbtree_remove has 'root' and 'node' where 'node' has to be PTR_TRUSTED
+> (but not acquired).
+> 
+> bpf_rbtree_add will always succeed.
+> bpf_rbtree_remove will conditionally fail if 'node' is not linked.
+> 
+> Similarly we can extend link list with
+> n = bpf_list_remove(node)
+> which will have KF_ACQUIRE | KF_RET_NULL semantics.
+> 
+> Then everything is nicely uniform.
+> We'll be able to iterate rbtree and iterate link lists.
+> 
+> There are downsides, of course.
+> Like the following from your test case:
+> +       bpf_spin_lock(&glock);
+> +       bpf_rbtree_add(&groot, &n->node, less);
+> +       bpf_rbtree_add(&groot, &m->node, less);
+> +       res = bpf_rbtree_remove(&groot, &n->node);
+> +       bpf_spin_unlock(&glock);
+> will not work.
+> Since bpf_rbtree_add() releases 'n' and it becomes UNTRUSTED.
+> (assuming release_on_unlock is removed).
+> 
+> I think it's fine for now. I have to agree with Kumar that it's hard to come up
+> with realistic use case where 'n' should be accessed after it was added to link
+> list or rbtree. Above test case doesn't look real.
+> 
+> This part of your test case:
+> +       bpf_spin_lock(&glock);
+> +       bpf_rbtree_add(&groot, &n->node, less);
+> +       bpf_rbtree_add(&groot, &m->node, less);
+> +       bpf_rbtree_add(&groot, &o->node, less);
+> +
+> +       res = bpf_rbtree_first(&groot);
+> +       if (!res) {
+> +               bpf_spin_unlock(&glock);
+> +               return 2;
+> +       }
+> +
+> +       o = container_of(res, struct node_data, node);
+> +       res = bpf_rbtree_remove(&groot, &o->node);
+> +       bpf_spin_unlock(&glock);
+> 
+> will work, because bpf_rbtree_first returns PTR_TRUSTED | MAYBE_NULL.
+> 
+>> Similarly, if rbtree_remove has release semantics for its node arg and acquire
+>> semantics for its return value, runtime check failing should result in the
+>> node arg not being released. Acquire semantics for the retval are already
+>> conditional - if retval == NULL, mark_ptr_or_null regs will release the
+>> acquired ref before it can be used. So no issue with failing rbtree_remove
+>> messing up acquire.
+>>
+>> For this reason rbtree_remove and rbtree_first are tagged
+>> KF_ACQUIRE | KF_RET_NULL. "special release_on_unlock hacks" can likely be
+>> refactored into a similar flag, KF_RELEASE_NON_OWN or similar.
+> 
+> I guess what I'm propsing above is sort-of KF_RELEASE_NON_OWN idea,
+> but from a different angle.
+> I'd like to avoid introducing new flags.
+> I think PTR_TRUSTED is enough.
+> 
+>>> I'm not sure what's an idea to return 'n' from remove...
+>>> Maybe it should be simple bool ?
+>>>
+>>
+>> I agree that returning node from rbtree_remove is not strictly necessary, since
+>> rbtree_remove can be thought of turning its non-owning ref argument into an
+>> owning ref, instead of taking non-owning ref and returning owning ref. But such
+>> an operation isn't really an 'acquire' by current verifier logic, since only
+>> retvals can be 'acquired'. So we'd need to add some logic to enable acquire
+>> semantics for args. Furthermore it's not really 'acquiring' a new ref, rather
+>> changing properties of node arg ref.
+>>
+>> However, if rbtree_remove can fail, such a "turn non-owning into owning"
+>> operation will need to be able to fail as well, and the program will need to
+>> be able to check for failure. Returning 'acquire' result in retval makes
+>> this simple - just check for NULL. For your "return bool" proposal, we'd have
+>> to add verifier logic which turns the 'acquired' owning ref back into non-owning
+>> based on check of the bool, which will add some verifier complexity.
+>>
+>> IIRC when doing experimentation with "rbtree map" implementation, I did
+>> something like this and decided that the additional complexity wasn't worth
+>> it when retval can just be used. 
+> 
+> Agree. Forget 'bool' idea.
+
+We will merge this convo w/ similar one in the cover letter's thread, and
+continue w/ replies there.
