@@ -2,66 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40F644FE5
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 01:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6593645008
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 01:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbiLGABG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 19:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        id S229761AbiLGAKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 19:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbiLGABC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 19:01:02 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C64B742;
-        Tue,  6 Dec 2022 16:00:59 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id m18so8656953eji.5;
-        Tue, 06 Dec 2022 16:00:59 -0800 (PST)
+        with ESMTP id S229638AbiLGAKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 19:10:36 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D3965C8
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 16:10:35 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id b21so15528949plc.9
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 16:10:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jas4TSAtuN6LWbtIF+nPUMnpUZPrF2EDu/+wlEL6xKY=;
-        b=TrwcaV6uea9EW0PMoloiHKU/VSG8RGuKCGSV5hMfvnxtYoszOgUEiH17o2x69cfIDi
-         8jD8YuqOsLSwUreU6OftZ57y2nhckiGwC7ijw3ZgMNgf9ax4w4v1gLubxtC/zMQQC+0C
-         yVAhKTJzt0PekNBrT4o2WNyJAdnKcSlei37WeaKQUylUM3p4pTfisqMfzM/qGvGQj3Pt
-         5zxz/Nij1OD3/f1atp0xegdXG9VMRPvH+2UZwh2mSEebSlrc18YF5MHajEqdMJUww/o8
-         xABO8HVOq9ksyM1pRieUM1TLoVgsGg+I1mxLu+Wl00WZxn+EXr6tEXTThGAerwOa8XBo
-         dx+w==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=upOw4s5DkkMLkXQKBwflnE5JhO+xxsKJLqppZopin2k=;
+        b=k29qWDhrLxn3JKlMc+RJeWDYJUpla+/9LXToSCcR7w7WTwwum5t1sNTLWpcHyF66yt
+         953NkvhbQnu1Fz6u9VnQSLk+4rJmdGkNM+OiXyv2nu11bWwEHOxn4j8GL9EFu1l/5pOr
+         PP2lVqvu2Yo0/hjVLnOl7FLT3rXwX7xdK9YJbxloJvG94176VUlZllKcFwCmF8i0y51v
+         JX7Inz0qy37jSZvHLRlVNCgybIM8VFSUDzmanFrPhEgbBks/AWqXGlgA2tJcieFsgrVD
+         Pf4a3IgzmJL40yFksR85bzdWgFi1FeY3bBJaqs2C6sUPf3BaFqykMWOdn0Y0RLNeoXx+
+         CmpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jas4TSAtuN6LWbtIF+nPUMnpUZPrF2EDu/+wlEL6xKY=;
-        b=idgx4/5MmJOLKaHgCFngdQayfduGD4hm1AYxcWoqXhXSB9mbSUuXxzL4iJgeGlcPqp
-         O1R6kVaiht6ruzCo/Vg6M25OHHlC4EK3Jimdcz6rGf3Z2KnAKWcbmxjk48uQLuwvx5BA
-         A4RXXa/E8OijZsgw+Ok18Gm7rB+9G1/sZckKvy7RaqJ1gqbKdqBt6t51Cw8fS9qMTiTB
-         /lp5BaWT5j6sJ/8oXZfMqMOxH/hZPI2qiL2yC1APNdOMwUVKSuSxer25VXpXxk9hJC8/
-         ROJVBjriS5m60ugW3aSmL6wqrqApyCmOFinD8WArTs4qwPSHoGArcpCVVrccPIJKTzQK
-         DAfw==
-X-Gm-Message-State: ANoB5pkxyGS/95VPpwNmSGeDA3ZpV6mA6sved0QYu69Idma0pTW14hT6
-        jbLgBg6PqQfzIzWeBQE3ugpO8KnKEKfnUEx3QEk=
-X-Google-Smtp-Source: AA0mqf7WomRPJaUkDEFCYGS12V6R+ykI+I6TTA8rn6zM7gA50KeoFNowe0qEZCK3K29/FkK6wzS4bZW7+9+PyyAqESg=
-X-Received: by 2002:a17:906:3e53:b0:7c1:1f2b:945f with SMTP id
- t19-20020a1709063e5300b007c11f2b945fmr275331eji.302.1670371257785; Tue, 06
- Dec 2022 16:00:57 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=upOw4s5DkkMLkXQKBwflnE5JhO+xxsKJLqppZopin2k=;
+        b=jJhtLdKy1WnEfg/+i9/VyHdtyS4Ap8KmeLHsGTOQEXGFWHNOjHURjpPa1fFeEolGhZ
+         ZMQgj72+OHwcSXzKtb5I2eYf/WeH0OCKgvQylHvwSuOTt2+CtXZCX9VcEDC28z8AKM2Z
+         1P33qGXTGZN5LHfpX6GSx+6oiEqZ1p3pIHw3IERqiJjrrzwyEbHkDDRm6vVKMzi2Xam7
+         WfBH8qrf41URa0imWD7pqaQOESLSejDZr8ncvJKpKdNJz27YZQiH0dG0uFFF+nE7+lUN
+         Y2Z4CHYqQ82Q9ZlW60aQfZFfXSey6Z96m5tm9Qno2ogdAYvRik5ztG5+K1xjgMv4Dyef
+         0aVQ==
+X-Gm-Message-State: ANoB5plzWOinMiCkrEmJFFs/Bqo5wnuQRvXFRfdZmdZ6CQuborZelP6f
+        P0WVQDp9rZDCe6aI+/ZFRrA=
+X-Google-Smtp-Source: AA0mqf7kiue6/Fe6olrUaYbVkvF1Vj+Q6nLB/PcVfxMpD6O5RXjPkp2ZvId4y/fEkAcXGxBKLzjRFg==
+X-Received: by 2002:a17:90a:304b:b0:218:f8a6:7bda with SMTP id q11-20020a17090a304b00b00218f8a67bdamr477361pjl.48.1670371834848;
+        Tue, 06 Dec 2022 16:10:34 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id gc17-20020a17090b311100b002192db1f8e8sm11406795pjb.23.2022.12.06.16.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 16:10:34 -0800 (PST)
+Date:   Tue, 6 Dec 2022 16:10:29 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Viktor Malik <vmalik@redhat.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/3] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+Message-ID: <Y4/Z9dq4EqH76ke5@macbook-pro-6.dhcp.thefacebook.com>
+References: <cover.1670249590.git.vmalik@redhat.com>
+ <c4f71d66eff216097b63d8a73ac203cb689567b4.1670249590.git.vmalik@redhat.com>
 MIME-Version: 1.0
-References: <20221203093740.218935-1-liuxin350@huawei.com> <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
-In-Reply-To: <6ac9f767-e7f5-6603-6234-97126ea22005@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 6 Dec 2022 16:00:45 -0800
-Message-ID: <CAEf4BzaC6hhNzKkzFa+s4bws7APWj-Nk8Uup+3J6avCXnMFziA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Optimized return value in
- libbpf_strerror when errno is libbpf errno
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Xin Liu <liuxin350@huawei.com>, andrii@kernel.org, ast@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com,
-        kongweibin2@huawei.com, zhangmingyi5@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4f71d66eff216097b63d8a73ac203cb689567b4.1670249590.git.vmalik@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,58 +79,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 5, 2022 at 1:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 12/3/22 10:37 AM, Xin Liu wrote:
-> > This is a small improvement in libbpf_strerror. When libbpf_strerror
-> > is used to obtain the system error description, if the length of the
-> > buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
-> > ERANGE.
-> >
-> > However, this processing is not performed when the error code
-> > customized by libbpf is obtained. Make some minor improvements here,
-> > return -ERANGE and set errno to ERANGE when buf is not enough for
-> > custom description.
-> >
-> > Signed-off-by: Xin Liu <liuxin350@huawei.com>
-> > ---
-> >   tools/lib/bpf/libbpf_errno.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
-> > index 96f67a772a1b..48ce7d5b5bf9 100644
-> > --- a/tools/lib/bpf/libbpf_errno.c
-> > +++ b/tools/lib/bpf/libbpf_errno.c
-> > @@ -54,10 +54,16 @@ int libbpf_strerror(int err, char *buf, size_t size)
-> >
-> >       if (err < __LIBBPF_ERRNO__END) {
-> >               const char *msg;
-> > +             size_t msg_size;
-> >
-> >               msg = libbpf_strerror_table[ERRNO_OFFSET(err)];
-> >               snprintf(buf, size, "%s", msg);
-> >               buf[size - 1] = '\0';
-> > +
-> > +             msg_size = strlen(msg);
-> > +             if (msg_size >= size)
-> > +                     return libbpf_err(-ERANGE);
->
-> Given this is related to libbpf_strerror_table[] where the error strings are known
-> lets do compile-time error instead. All callers should pass in a buffer of STRERR_BUFSIZE
-> size in libbpf.
+On Mon, Dec 05, 2022 at 04:26:05PM +0100, Viktor Malik wrote:
+> When attaching fentry/fexit/fmod_ret/lsm to a function located in a
+> module without specifying the target program, the verifier tries to find
+> the address to attach to in kallsyms. This is always done by searching
+> the entire kallsyms, not respecting the module in which the function is
+> located.
+> 
+> This approach causes an incorrect attachment address to be computed if
+> the function to attach to is shadowed by a function of the same name
+> located earlier in kallsyms.
+> 
+> Since the attachment must contain the BTF of the program to attach to,
+> we may extract the module name from it (if the attach target is a
+> module) and search for the function address in the correct module.
+> 
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> Acked-by: Hao Luo <haoluo@google.com>
+> ---
+>  include/linux/btf.h   | 1 +
+>  kernel/bpf/btf.c      | 5 +++++
+>  kernel/bpf/verifier.c | 5 ++++-
+>  3 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index cbd6e4096f8c..b7b791d1f3d6 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -188,6 +188,7 @@ u32 btf_obj_id(const struct btf *btf);
+>  bool btf_is_kernel(const struct btf *btf);
+>  bool btf_is_module(const struct btf *btf);
+>  struct module *btf_try_get_module(const struct btf *btf);
+> +const char *btf_module_name(const struct btf *btf);
+>  u32 btf_nr_types(const struct btf *btf);
+>  bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+>  			   const struct btf_member *m,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index c80bd8709e69..f78e8060efa6 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7208,6 +7208,11 @@ bool btf_is_module(const struct btf *btf)
+>  	return btf->kernel_btf && strcmp(btf->name, "vmlinux") != 0;
+>  }
+>  
+> +const char *btf_module_name(const struct btf *btf)
+> +{
+> +	return btf->name;
+> +}
 
-That sounds a bit too pessimistic?.. If the actual error message fits
-in the buffer, why return -ERANGE just because theoretically some
-error descriptions might fit?
+It feels that btf->name is leaking a bit of implementation detail.
+How about doing:
 
-But I don't think we need to calculate strlen(). snprintf above
-returns the number of bytes required to print a full string, even if
-it was truncated. So just comparing snprintf's result to size should
-be enough.
+struct module *btf_find_module(const struct btf *btf)
+{
+        reutrn find_module(btf->name);
+}
 
->
-> >               return 0;
-> >       }
-> >
-> >
->
+> +
+>  enum {
+>  	BTF_MODULE_F_LIVE = (1 << 0),
+>  };
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1d51bd9596da..0c533db51f92 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16483,7 +16483,10 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			else
+>  				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
+>  		} else {
+> -			addr = kallsyms_lookup_name(tname);
+> +			if (btf_is_module(btf))
+> +				addr = kallsyms_lookup_name_in_module(btf_module_name(btf), tname);
+
+and use find_kallsyms_symbol_value() here
+(with preempt_disable dance).
+There won't be a need for patch 1 too.
+
+wdyt?
+
+> +			else
+> +				addr = kallsyms_lookup_name(tname);
+>  			if (!addr) {
+>  				bpf_log(log,
+>  					"The address of function %s cannot be found\n",
+> -- 
+> 2.38.1
+> 
