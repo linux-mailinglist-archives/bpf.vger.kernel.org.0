@@ -2,86 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4323A645056
-	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 01:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C9F645061
+	for <lists+bpf@lfdr.de>; Wed,  7 Dec 2022 01:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiLGAaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Dec 2022 19:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        id S229605AbiLGAem (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Dec 2022 19:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiLGAaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Dec 2022 19:30:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA3F2E6A8;
-        Tue,  6 Dec 2022 16:30:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E84986198B;
-        Wed,  7 Dec 2022 00:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 39F65C433D7;
-        Wed,  7 Dec 2022 00:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670373016;
-        bh=HgE6BX1D7tm8rWksxQy/cMvN2G3MEa2fHGwjEINKc1c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=buEs1TSYTwMxo1iRHRTVzmfPXcrFMUOxo9dwgpkshqkPdbM1UyEYWH1JXxqNoiuMc
-         YPqMctS/xk0PhLGlR+0x8sDsvT1k1w9bPTc+/026phgRK90d1GVzX7ls7p+dxun1ex
-         k46bJ8UAvq+LYfm40HNdHMjUzqdmMx8sTgig3dba9U9LwxXv9wGvY5NtF5qcFxevnm
-         r1PDtFq9kohnKdD9zUtS/G6thK01t40F4wpxl4Di9LU5hwMrGgOOnV+24Np06+N8ZK
-         MY4Z+b4lm3x8Yr2rjnutLPdlI23iQdrk5TTv7ogxz2cZHJaK25FaesdPe5ycywWJ1B
-         iDMtzFHMVK8HA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C53DE56AA3;
-        Wed,  7 Dec 2022 00:30:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229576AbiLGAel (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Dec 2022 19:34:41 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F76A479
+        for <bpf@vger.kernel.org>; Tue,  6 Dec 2022 16:34:40 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id d14so17793786edj.11
+        for <bpf@vger.kernel.org>; Tue, 06 Dec 2022 16:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5WMMPlY1VguVJm7GA8zMJIbuh985N5KujVU6QfaRpvU=;
+        b=IN4LMHw7iEwiKnuATmmHUzGNrJJQRhzX45L1I5liHueHI798fYg4d+TIXAMkKgXqR5
+         p6gIY0/3gxWIttYTPNHRUwiLSNOiOo+smnm7ocUxwoYuJ4P6FIjq8auuDUV2usvy2G48
+         oJ1tte1WgA9u7bCwSUhI0n7bkiYcMUamsME71+F1UT1/moE5/YvKJWpobDei3OgQlB6b
+         T8aQLaIaELf+2uXFN9JyJUNZiSbrs5kMC0A44LvT0tfkVgEZPlpjprrFXcO14f7Q/JwF
+         a5Eq2myqyOIkl4Kg9a2gkI3eaptdjiLrphcyMa2SC/DqD+oXv2B62WYckx3ewmlV98wr
+         3gOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5WMMPlY1VguVJm7GA8zMJIbuh985N5KujVU6QfaRpvU=;
+        b=r0kuiIR2fi03klD6p8UXWOJSascLv5+2kHJe+pC2lTUt20oFtbJRZsFEonm/QW4TLu
+         EY9SgUh+TYC1b20zhhqZo0YbK7XdA14U0PM35cv+LMpWmfVmBPnePxb863S8uVOBrszW
+         4d5oLL+bTNAx6A2tT5cxP73z6cpA0nE0P69twGXoatPsf5bVGV/P/IBcUUp/SR9YhmO2
+         4qwgKC951H7n2ZuGErN0yp8ZgdlDx2PSs5AfYfMx3/uDqrw5znZPDPaKmyCmQq/Hex59
+         eVZdUEgIhEwrumnNDQYr9KvTRXPqFW6JO5XX3VTmCE3TVDcWc/tvXaiif2m2a4X7g4SC
+         hHgg==
+X-Gm-Message-State: ANoB5pmqmsGybdHbsW5JiMl3sWEaaJFFRbP7tpkrBW4j2Xbpcb3jiKjn
+        LxL3t419Zdz/na+vWd0IRts6jWBqYA6z1ZloYdQ=
+X-Google-Smtp-Source: AA0mqf6uUKMKD4kMD3HuGNl0aWyK3//N3TtSWrPistXkJb5sEeb1cDJ7F2dFJ5q6WaSJMhRiY7BAPTcYjNVzmnK5isQ=
+X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id
+ t33-20020a056402242100b00461524fa8f4mr79886667eda.260.1670373278903; Tue, 06
+ Dec 2022 16:34:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] libbpf: parse usdt args without offset on x86
- (e.g. 8@(%rsp))
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167037301611.10094.8319593461568888275.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Dec 2022 00:30:16 +0000
-References: <20221203123746.2160-1-timo.hunziker@eclipso.ch>
-In-Reply-To: <20221203123746.2160-1-timo.hunziker@eclipso.ch>
-To:     None <timo.hunziker@eclipso.ch>
-Cc:     andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com,
-        song@kernel.org, timo.hunziker@gmx.ch, yhs@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221205131618.1524337-1-daan.j.demeyer@gmail.com>
+ <20221205131618.1524337-2-daan.j.demeyer@gmail.com> <CAEf4BzYgFUS+Tqq72r5RgrMF6nHEp-zk7sc3jY1x19eS4wWXSQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYgFUS+Tqq72r5RgrMF6nHEp-zk7sc3jY1x19eS4wWXSQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 6 Dec 2022 16:34:26 -0800
+Message-ID: <CAEf4Bzaw4jZFG8Bv-9oNNnKmMsCPyom5atN5Mq=P7BZ4hYzawA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Install all required files to
+ run selftests
+To:     Daan De Meyer <daan.j.demeyer@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Dec 6, 2022 at 4:29 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Dec 5, 2022 at 5:25 AM Daan De Meyer <daan.j.demeyer@gmail.com> wrote:
+> >
+> > When installing the selftests using
+> > "make -C tools/testing/selftests install", we need to make sure
+> > all the required files to run the selftests are installed. Let's
+> > make sure this is the case.
+> >
+> > Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 6a0f043dc410..f6b8ffdde16f 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -532,8 +532,10 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko     \
+> >                        $(OUTPUT)/liburandom_read.so                     \
+> >                        $(OUTPUT)/xdp_synproxy                           \
+> >                        $(OUTPUT)/sign-file                              \
+> > -                      ima_setup.sh verify_sig_setup.sh                 \
+> > -                      $(wildcard progs/btf_dump_test_case_*.c)
+> > +                      $(realpath ima_setup.sh)                         \
+> > +                      $(realpath verify_sig_setup.sh)                  \
+>
+> why do we need realpath for these scripts, but it's ok to not do that
+> for *.bpf.o and btf_dump_test_case_*.c below?
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I dropped the $(realpath) change for now and applied the series.
+Please let me know if I'm missing something.
 
-On Sat,  3 Dec 2022 12:37:46 +0000 you wrote:
-> From: Timo Hunziker <timo.hunziker@gmx.ch>
-> 
-> Parse USDT arguments like "8@(%rsp)" on x86. These are emmited by
-> SystemTap. The argument syntax is similar to the existing "memory
-> dereference case" but the offset left out as it's zero (i.e. read
-> the value from the address in the register). We treat it the same
-> as the the "memory dereference case", but set the offset to 0.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2] libbpf: parse usdt args without offset on x86 (e.g. 8@(%rsp))
-    https://git.kernel.org/bpf/bpf-next/c/c21dc529baba
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> > +                      $(wildcard progs/btf_dump_test_case_*.c)         \
+> > +                      $(wildcard progs/*.bpf.o)
+> >  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+> >  TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_TESTS
+> >  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+> > --
+> > 2.38.1
+> >
