@@ -2,145 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974A26478B9
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 23:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5707D6478CE
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 23:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbiLHWSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 17:18:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S229468AbiLHWaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 17:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbiLHWSN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 17:18:13 -0500
-Received: from sonic307-16.consmr.mail.ne1.yahoo.com (sonic307-16.consmr.mail.ne1.yahoo.com [66.163.190.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204EB70B9A
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 14:18:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1670537891; bh=2dAILjLP69OS9FOb9YU5vIxnb/ja4jQMKeNfFXNX264=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=PRG2/oNnpGADGD83EeZtPq/kQrBymL9eocf9L0cafJvVP1JXHAZ43YtO0WAU79SFi+c5jCMCbtnjjqyQ4C3elOn/GLvcPzbp+cOkPhFClj0GlKIX15BRHFg96OP6IvRKlMLGkEmT5KnZxKDQ/ST8AjfIIDxnQGA1jFxI8HBdZEyxcXuhJ1mxbCC+RvxlyEoLToW3a6yE1n1eUgFKplpZMTCFla217dTohtfo+VkZJ2RbusnLV6zOeSFHWEXsF9915vzDH3An/ZvFWJ2m7mhp1saagrYiUHysW3IYn6RZatCW2gPARY/RrKF7ZVntHlKtSURn4uNB8ICaDF/3uP5DtQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1670537891; bh=5lRHWOPF5z14iBE75M6AOstxXbLwGCgN+49brGsVQ7j=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=tEfHCtNTBi1uMFSLdThHmzrkDfWfL/7qqnWQysCRr32DQy3BHYfZPYXsFXTUd0+y2pQQ+ARoqDJIV2/jCJYcRkiHt59uNdUz683mJl/3hWCpGu/clzSTCfpRNG+lfda4Lpk8l/ifFra9sVQlCbIs8q/smpP06Ffr1wSOaxM/cwYWFVUtb9MGmj8Rr4R7bDcl6PQW452GHRTy/DdT7+4nWq/qkAsApfp6JiKWm5Jv870Zzpjvaegw1uc6rKSo86P594ExgPXwVdxHxl4sRAraXMm95yMbKQkhOQghvbskHwtCmFeZePrdfTcG5oC3GaR02CZ3mqZZwfpyFxfNUh0M1Q==
-X-YMail-OSG: O2RLWIEVM1kX0tTMjEkN_jNRv0FV8dAQtxZr6H8HYUI60J6CjCv37XMKD2CQwWN
- Ddfed.mH_vcnWG2nUNEqsnOreN7jUQTZS8PGx_1jTM9guhW2iIWje_2y7go.FqRYRsFY3ALFMukh
- a9fZgv_7UgWlKoxViHs2jAfPxFD4qOY_CFmX.RipjeQbbCv_PJumVHQZDLPhDqQK..FEBlgK83Dv
- AbCLZswRq46xiuYJgNLgSus6GY_nbYVlvPAVHnLV4yl5N_amkbYyGQBFPjABwfKDag9jJrKsStdS
- h3QkWoehd0UyuvjeEI5DcOo6LmgXjgMH5Bd8m6hQsaRyLeQ4j1pgOy.eTcwgN5oYkR.wDujEcRXB
- qUI9H5XrplDcZQI_jKkWNF131TepZFlvhW__88GDFZsRaaqkzbQWOzQ6SMdB8QyPEwYuRxWPWXHX
- xOR1Df3G4e9g9GE.7hXxnikp3oEImNX.woH4PRXUppDnSS2jmmG9sTxUIDV.yYG0Xmidc7JJGNvD
- IbxlJMkNAywH.GXUVlqxWBdt4nvki3HO8TX3egWbQqOY3i8Iag2V0c66UeQPuGaRQt4sMiCiGNLb
- o0nmGKZVeFKdM4Wl9UGBUFo63OO.dmAgpxFXgfjVWbIDIn_UK2PhjKzkMA1VyVpP6AgUVI0WVFhJ
- 6BHe354D50k2fHcrJd90t7hILF1Ipy3Xii5yAYbsMF8viZNx.SgnJ2MHYU2CkB6xNlWQF1gJi.bj
- Vt6Uungp4S3T4ocKujUlhH4uFqT.SLxvTib5q6X5a.l9Jv5R.3teQh27uOTs34fd4kosf7cWUBVx
- 82Eye6jsvatVpodREn9DIP1NqqaMWRkVmI7RLr67acpm3uLKrDPYrfIat6hFDyugpbTyEvnyVcLn
- OKCRKTXHavjiVVIkltCons.VnituJj6tSa6MECu..JCDZVvaMytU3JkRnTFs6dlefFTjb8ATp0Rz
- CYqYBGonBNLn3nnMLl2ZDI1l8Xd0WaFvh6JyuPl982QByrPHXFt6dUzR2sQeyhWQEglxIRElDKvU
- N8Ybe.ctuIfMcymEWpGWK0AAZWcWJqLXGsLeam02_C3sIPufZJByE2cUhpHs9CZropstg98r0jrm
- o93Zn910CuVR7CrxKvX5LvZswqEjil_23rBgc6IvzBNALYMhMCvRKPskZ4LGWo3HVpq7Q.S9e768
- zqIjFOiV5YBlII2OJ5_khv32rhg0jIsuM16asnWksK_75TtAFLMF.nzGMYtcl.7dhuGOxJXEErp1
- XXG5ucvON7T5lO9PZ7s0YqCOFxlAnYjy9_01G5Geo9OgeBbEuL0kCS8B4.F65I4I0RgboxYghWFa
- YtpkPIqkykPBGMhHFC3cgb8VZGFJrlosCfufPwnb2J.SCLZ6Va4xyWl4BKsBHvoULYLYAdJ_YGOk
- e1XUc1oVudyPcd_8vA9ngXAc.8gmvVHFybXZEFuEbhSOtyr21kry8Fv4wvmlhLKU704duD4TjAQP
- roYswyak9xhl7kHoaUHGZTPrGT21gMerg732sAspOtWXCIPyc6M6kXh4PmbgEmgn6Vo1XK9u.OBm
- Rujl2YaBeJU1KN1tpPDD9470OclWeuo66lc6ru.Q2hmjrVCLTv.fwjFBsdyZzAc26I4dxMC5F.eo
- qUakh_GR0UTa0r9p8WkVOPqEtlsgJWVV38V1KsdkeFBtJb.dNDLzCiNsl4glbFe.qwV2F2pdSsiD
- pBN08wNBpk7xAm5uW2nzHybDO8AxWwrf20K8PPbGZ3QrQNn25J4fcCOhSuTQGzlC8puv42yMH8Ia
- b8Z9ZZNU91ovq.g77l4kgCVKg2LCSlnhaONutWcF_m9qcGsbbGsSbrNSvRQFlbwu1_HSpy70rue7
- xnUtScSindofW98pEsvan.3HSln27hhuAauxvzwpI6rj.2kx_oQFrLg7a4WctSXA4ZIrLc97D61H
- GBw6IJWDaXASSSyskHvT52sJ_EM.V14upipGr2OVGxCpJiDBC89ViRgX5XFAnxXY2R2d8.exVEdm
- 5N35uUNjYgt1Rzx24TlKnngNBC6TKJiHaG2o.HDobZKbprGhafgYqt.LoNa_fBQ9bZsBpBFYmXNN
- fVCDRYe6jAXUzuzvKnGRjVhOY902iVmsF5mvRJ4SErdLUNMNzPmvMFpAh0aJiCvanm1eg5T7CrOJ
- TpPIEt1zu2st9oeVZF_R9Yzv0Vwj2KuRJ_FDgDTWSEszmZUG9kqTeJVz6kkE4ABX9GohLtoC0Ck6
- YyrpH9x8kRTzlp4R1v9BTfOiJa50F1TIKlEGNWu7RiQ8cEatc2aLxGeccs6yIn3pItrV3ep.Q0op
- DpcXlYSw9SbSmNn0-
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Thu, 8 Dec 2022 22:18:11 +0000
-Received: by hermes--production-gq1-d898c4779-66ldg (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID e4990e6f66164b6f2d176bcbbed58160;
-          Thu, 08 Dec 2022 22:18:07 +0000 (UTC)
-Message-ID: <8d14fcbe-baab-4678-beb1-4f8ff6171eec@schaufler-ca.com>
-Date:   Thu, 8 Dec 2022 14:18:06 -0800
+        with ESMTP id S230150AbiLHW36 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 17:29:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392C725D7
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 14:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670538539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhK6lrzIgiH8hbaudfNms9E+O1KaqKAcAcJvqf0/xmc=;
+        b=V0iO9MoHwsi7a1KHPvj8dVl8wyIx8/Cxpdoo2PczZjYnpySJuctxVAvEy4ffTjhdw0hmOy
+        xgw2mBQGCNvTnObQzBWta7LTm9meNKi6AQ+YDo6dNntxScOsgqazTlh3ph6tAGauycT/xz
+        aQ4JNFucNxKwtzJ6MGTkOz1ivALlxy8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-604-jYSQ73rSNw2w7-WWQfVbMg-1; Thu, 08 Dec 2022 17:28:58 -0500
+X-MC-Unique: jYSQ73rSNw2w7-WWQfVbMg-1
+Received: by mail-ej1-f72.google.com with SMTP id nc4-20020a1709071c0400b0078a5ceb571bso1903186ejc.4
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 14:28:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FhK6lrzIgiH8hbaudfNms9E+O1KaqKAcAcJvqf0/xmc=;
+        b=LqpS59xYbWRukY2qCqf7HEM7YOZQ1Wv7iSNYWzfZ/Z/H6uSqoina/qJEbmCBX6XGqY
+         PPqwrgR9F2YWrkRH+EMepy8wBitODcdDpyWtO9PIvSlGvoUcB03MdsRRrjuR3oZ8YVcd
+         Nt1F2Dtox3urn7Z+YGleiydKLzMM2fFCbGzTqoTsbU6UIn5S/i5qc5Glsvm8Q0+HZNe+
+         uWi9hWTrpHHfeSqYQVNnuC/2tyIL8b2ja9gmXCp/y/6lGvQ3spC+aCo6B7W/b7U5dfo7
+         dsZb/zds63NLS+65Hi/VrFFZ5UNlpFbf9jWd/Nt2Nnie+fdwlkiErmYQPgba9500+hME
+         HIwQ==
+X-Gm-Message-State: ANoB5pllWBYezp565JhFI8xvIZ4dKwenLtzUkCC0VpKROcJ4egtZFVrF
+        EeQzxYIYfDihCUSXjCGWoBWg+cR3ToSmYho8fKCDt9knXywOBS8RBVv3LpUU7GJ/PRugf8XwY3p
+        0NGBYR7CfOQtZ
+X-Received: by 2002:aa7:d28d:0:b0:46c:aa7a:bd3f with SMTP id w13-20020aa7d28d000000b0046caa7abd3fmr3062346edq.23.1670538535917;
+        Thu, 08 Dec 2022 14:28:55 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf61+M9kU7f1HY4zoOSSRmxCiOeNg/H19gc1OBddIV6EKQL/UgDZtPf2Y2XuLzrt4Ph0Ux4V5A==
+X-Received: by 2002:aa7:d28d:0:b0:46c:aa7a:bd3f with SMTP id w13-20020aa7d28d000000b0046caa7abd3fmr3062303edq.23.1670538534700;
+        Thu, 08 Dec 2022 14:28:54 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id n19-20020a05640205d300b0046bf4935323sm3914802edx.30.2022.12.08.14.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 14:28:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 541DC82E99F; Thu,  8 Dec 2022 23:28:53 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [xdp-hints] [PATCH bpf-next v3 00/12] xdp: hints via kfuncs
+In-Reply-To: <20221206024554.3826186-1-sdf@google.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 08 Dec 2022 23:28:53 +0100
+Message-ID: <87bkodleca.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and fix
- formatting
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     David Howells <dhowells@redhat.com>, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        casey@schaufler-ca.com
-References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
- <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
- <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
- <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
- <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
- <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
- <b989b278a16c48e104b32ba7243e4298491a6056.camel@huaweicloud.com>
- <CAHC9VhSdcyOd01VYtqhJGrgKyG3oZmE_1d0RQymxKv1=ErhduQ@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAHC9VhSdcyOd01VYtqhJGrgKyG3oZmE_1d0RQymxKv1=ErhduQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.20926 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/8/2022 1:59 PM, Paul Moore wrote:
-> On Thu, Dec 8, 2022 at 4:29 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
->> On Wed, 2022-12-07 at 14:34 -0500, Paul Moore wrote:
->>> On Wed, Dec 7, 2022 at 4:18 AM Roberto Sassu
->>> <roberto.sassu@huaweicloud.com> wrote:
->>>> For this patch, I saw it is already in lsm/next. Paul, should I do an
->>>> incremental patch or change the one in the repo and you force push it?
->>>> I would just remove the three lines after the parameters description.
->>> Just send a patch against the current lsm/next branch to remove those
->>> lines, and please do it ASAP as the merge window opens this
->>> weekend/Monday.
->> Ok, was about to send but I would need a clarification first.
->>
->> In mount_api.rst, there is for security_fs_context_parse_param():
->>
->>      The value pointed to by param may be modified (if a string) or stolen
->>      (provided the value pointer is NULL'd out).  If it is stolen, 0 must be
->>      returned to prevent it being passed to the filesystem.
->>
->> Looking at security.c:
->>
->>         hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
->>                              list) {
->>                 trc = hp->hook.fs_context_parse_param(fc, param);
->>                 if (trc == 0)
->>                         rc = 0;
->>                 else if (trc != -ENOPARAM)
->>                         return trc;
->>         }
->>
->> If, as mount_api.rst says, the value is modified by an LSM or stolen,
->> should it be passed to other LSMs too?
-> All of the LSMs should be using fs_parse() in their
-> fs_context_parse_param() hook to identify the mount options that they
-> own, skipping those they do not (fs_parse() would return -ENOPARAM in
-> those cases).  I don't believe we currently have any mount options
-> that are shared across the different LSMs, so I believe this is a
-> non-issue.
+Stanislav Fomichev <sdf@google.com> writes:
 
-There aren't any today. SELinux and Smack are the only LSMs with
-mount options. Smack mount options all begin with "smack", so it's
-unlikely there is going to be a future overlap. I'd hate to do the
-/proc/self/attr/current battle over again, so I recommend that any
-new LSM that uses mount options be required to use an identifying
-prefix. I don't see any way that using the same option name for
-mounts, even if the use is the same, won't end in tears.
+> Please see the first patch in the series for the overall
+> design and use-cases.
+>
+> Changes since v3:
+>
+> - Rework prog->bound_netdev refcounting (Jakub/Marin)
+>
+>   Now it's based on the offload.c framework. It mostly fits, except
+>   I had to automatically insert a HT entry for the netdev. In the
+>   offloaded case, the netdev is added via a call to
+>   bpf_offload_dev_netdev_register from the driver init path; with
+>   a dev-bound programs, we have to manually add (and remove) the entry.
+>
+>   As suggested by Toke, I'm also prohibiting putting dev-bound programs
+>   into prog-array map; essentially prohibiting tail calling into it.
+>   I'm also disabling freplace of the dev-bound programs. Both of those
+>   restrictions can be loosened up eventually.
 
->
-> In the future if we ever find the need to share mount options across
-> different LSMs we will need some additional work to ensure it is
-> handled properly, but I don't think we need to worry too much about
-> that now.
->
+I thought it would be a shame that we don't support at least freplace
+programs from the get-go (as that would exclude libxdp from taking
+advantage of this). So see below for a patch implementing this :)
+
+-Toke
+
+
+
+
+commit 3abb333e5fd2e8a0920b77013499bdae0ee3db43
+Author: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Date:   Thu Dec 8 23:10:54 2022 +0100
+
+    bpf: Support consuming XDP HW metadata from fext programs
+=20=20=20=20
+    Instead of rejecting the attaching of PROG_TYPE_EXT programs to XDP
+    programs that consume HW metadata, implement support for propagating the
+    offload information. The extension program doesn't need to set a flag or
+    ifindex, it these will just be propagated from the target by the verifi=
+er.
+    We need to create a separate offload object for the extension program,
+    though, since it can be reattached to a different program later (which
+    means we can't just inhering the offload information from the target).
+=20=20=20=20
+    An additional check is added on attach that the new target is compatible
+    with the offload information in the extension prog.
+=20=20=20=20
+    Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b46b60f4eae1..cfa5c847cf2c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2482,6 +2482,7 @@ void *bpf_offload_resolve_kfunc(struct bpf_prog *prog=
+, u32 func_id);
+ void unpriv_ebpf_notify(int new_state);
+=20
+ #if defined(CONFIG_NET) && defined(CONFIG_BPF_SYSCALL)
++int __bpf_prog_offload_init(struct bpf_prog *prog, struct net_device *netd=
+ev);
+ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr);
+ void bpf_offload_bound_netdev_unregister(struct net_device *dev);
+=20
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index bad8bab916eb..b059a7b53457 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -83,36 +83,25 @@ bpf_offload_find_netdev(struct net_device *netdev)
+ 	return rhashtable_lookup_fast(&offdevs, &netdev, offdevs_params);
+ }
+=20
+-int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
++int __bpf_prog_offload_init(struct bpf_prog *prog, struct net_device *netd=
+ev)
+ {
+ 	struct bpf_offload_netdev *ondev;
+ 	struct bpf_prog_offload *offload;
+ 	int err;
+=20
+-	if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
+-	    attr->prog_type !=3D BPF_PROG_TYPE_XDP)
++	if (!netdev)
+ 		return -EINVAL;
+=20
+-	if (attr->prog_flags & ~BPF_F_XDP_HAS_METADATA)
+-		return -EINVAL;
++	err =3D __bpf_offload_init();
++	if (err)
++		return err;
+=20
+ 	offload =3D kzalloc(sizeof(*offload), GFP_USER);
+ 	if (!offload)
+ 		return -ENOMEM;
+=20
+-	err =3D __bpf_offload_init();
+-	if (err)
+-		return err;
+-
+ 	offload->prog =3D prog;
+-
+-	offload->netdev =3D dev_get_by_index(current->nsproxy->net_ns,
+-					   attr->prog_ifindex);
+-	err =3D bpf_dev_offload_check(offload->netdev);
+-	if (err)
+-		goto err_maybe_put;
+-
+-	prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_HAS_METAD=
+ATA);
++	offload->netdev =3D netdev;
+=20
+ 	down_write(&bpf_devs_lock);
+ 	ondev =3D bpf_offload_find_netdev(offload->netdev);
+@@ -135,19 +124,46 @@ int bpf_prog_offload_init(struct bpf_prog *prog, unio=
+n bpf_attr *attr)
+ 	offload->offdev =3D ondev->offdev;
+ 	prog->aux->offload =3D offload;
+ 	list_add_tail(&offload->offloads, &ondev->progs);
+-	dev_put(offload->netdev);
+ 	up_write(&bpf_devs_lock);
+=20
+ 	return 0;
+ err_unlock:
+ 	up_write(&bpf_devs_lock);
+-err_maybe_put:
+-	if (offload->netdev)
+-		dev_put(offload->netdev);
+ 	kfree(offload);
+ 	return err;
+ }
+=20
++int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
++{
++	struct net_device *netdev;
++	int err;
++
++	if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
++	    attr->prog_type !=3D BPF_PROG_TYPE_XDP)
++		return -EINVAL;
++
++	if (attr->prog_flags & ~BPF_F_XDP_HAS_METADATA)
++		return -EINVAL;
++
++	netdev =3D dev_get_by_index(current->nsproxy->net_ns, attr->prog_ifindex);
++	if (!netdev)
++		return -EINVAL;
++
++	err =3D bpf_dev_offload_check(netdev);
++	if (err)
++		goto out;
++
++	prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_HAS_METAD=
+ATA);
++
++	err =3D __bpf_prog_offload_init(prog, netdev);
++	if (err)
++		goto out;
++
++out:
++	dev_put(netdev);
++	return err;
++}
++
+ int bpf_prog_offload_verifier_prep(struct bpf_prog *prog)
+ {
+ 	struct bpf_prog_offload *offload;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index b345a273f7d0..606e6de5f716 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3021,6 +3021,14 @@ static int bpf_tracing_prog_attach(struct bpf_prog *=
+prog,
+ 			goto out_put_prog;
+ 		}
+=20
++		if (bpf_prog_is_dev_bound(tgt_prog->aux) &&
++		    (bpf_prog_is_offloaded(tgt_prog->aux) ||
++		     !bpf_prog_is_dev_bound(prog->aux) ||
++		     !bpf_offload_dev_match(prog, tgt_prog->aux->offload->netdev))) {
++			err =3D -EINVAL;
++			goto out_put_prog;
++		}
++
+ 		key =3D bpf_trampoline_compute_key(tgt_prog, NULL, btf_id);
+ 	}
+=20
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bc8d9b8d4f47..d92e28dd220e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16379,11 +16379,6 @@ int bpf_check_attach_target(struct bpf_verifier_lo=
+g *log,
+ 	if (tgt_prog) {
+ 		struct bpf_prog_aux *aux =3D tgt_prog->aux;
+=20
+-		if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
+-			bpf_log(log, "Replacing device-bound programs not supported\n");
+-			return -EINVAL;
+-		}
+-
+ 		for (i =3D 0; i < aux->func_info_cnt; i++)
+ 			if (aux->func_info[i].type_id =3D=3D btf_id) {
+ 				subprog =3D i;
+@@ -16644,10 +16639,22 @@ static int check_attach_btf_id(struct bpf_verifie=
+r_env *env)
+ 	if (tgt_prog && prog->type =3D=3D BPF_PROG_TYPE_EXT) {
+ 		/* to make freplace equivalent to their targets, they need to
+ 		 * inherit env->ops and expected_attach_type for the rest of the
+-		 * verification
++		 * verification; we also need to propagate the prog offload data
++		 * for resolving kfuncs.
+ 		 */
+ 		env->ops =3D bpf_verifier_ops[tgt_prog->type];
+ 		prog->expected_attach_type =3D tgt_prog->expected_attach_type;
++
++		if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
++			if (bpf_prog_is_offloaded(tgt_prog->aux))
++				return -EINVAL;
++
++			prog->aux->dev_bound =3D true;
++			ret =3D __bpf_prog_offload_init(prog,
++						      tgt_prog->aux->offload->netdev);
++			if (ret)
++				return ret;
++		}
+ 	}
+=20
+ 	/* store info about the attachment target that will be used later */
+
