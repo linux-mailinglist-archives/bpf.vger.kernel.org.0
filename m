@@ -2,64 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 874FF647A4B
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 00:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A72647A4E
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 00:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbiLHXqO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 18:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        id S229796AbiLHXrL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 18:47:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiLHXqL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 18:46:11 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671E160C4
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 15:46:10 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 82so2460274pgc.0
-        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 15:46:10 -0800 (PST)
+        with ESMTP id S229731AbiLHXrI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 18:47:08 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68C8193F7
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 15:47:07 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d3so3096614plr.10
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 15:47:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p6eq3qVqvQa6a4DnGmG8Wa/pErkcr+JiA2KWwUdGIB4=;
-        b=Dof5R32NxDjfCPkvDtsQsnwcDGtJEcCtLAO/d+sZEmis0wCMh6WLMP3oE6yLqiY3L1
-         3Yuz9C7Yy7Fq6Ue2NfarLL7dW2yMx4bY93tfDOeYRSzONeaAqfprST6gcM/K6t9cmLiu
-         YBJOFL1EsyxwNDjC2RzH9VorQipA1J7qyNcqSBuHWE1O1SpU6KtfgfV86CABddx1bwQq
-         87Ib1OgpKRWg6892EJbb4XOCw7pMSCAc6HGk80MJHws+x+bfj/svI5KyqN0ZhZt/zmQj
-         j/hA1j1ImRlIcVCnqv3CPcAB7uBiI8qE6Rqd2cIqW3fMnEM8Ab0ik5YV8DkW+PN/gyDo
-         sTEA==
+        bh=qsiZ9s0yp8OUDlVyAwoSvSCb5GsD3AVTDpcvuxldQfs=;
+        b=nXOiiX+VU152FyXbI9HbjdFrabUKjr2ExBALOa4KD1qpYheo3s//ZXaiKEj2spZ7oB
+         lDyFoINq111EyQnfb1ZOg9mX4je9hOTWtixoDjmCXnD//x6Byj5YmhwTOuYzmYSV03q2
+         0GmIN8X/Mt7wB8A4cCNZCibWQ93HqiWHuUN+nyUNASQW/GAawMOEARYd7QnDDkgIvkZh
+         Zl7qi82uPc0rzMpHvHEtx9YSzi5x1WN0M/rdzCDO1tyAmSyN1+1flttrLi6Uv7W/dIt1
+         uxs4SeoMgcFgq9w3U9a4O+i6Q/XtZHNe/u4gum9pb8dT9TZ/ygpKNGIEZpA3pJy+uwrm
+         OtQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p6eq3qVqvQa6a4DnGmG8Wa/pErkcr+JiA2KWwUdGIB4=;
-        b=OE60FRb05tBP5duaaCDumGXhoa/PvvUDKftJduX2VV1PuYyYNikAHqBUQ6V3aZL/ok
-         T94z/JHaEfHTwKV4pNPu9SFBkfhtsKHeIpQhjzDzwlxqg8S1MUJl0DhZwAPkDZKCweAg
-         /Ngc7CHXQI5YriETKaaMIWBEPf7uolAQ8PivByXOlIsQERg0LAiEMKtvU418EWhJwlJQ
-         dKVBM1qaTJaRvHLNS02aaD53UZtig76Ewcxl3wqt8iwHG0t14I5D9T2cv8Y80Hp2inEz
-         kZ/ElJpRk7PQ30FntUrUKTyKOUS8S6H3hnVQWcJ37AhckALugA1uDN90VmVvZWhsGSUV
-         MwFg==
-X-Gm-Message-State: ANoB5pnwoJX/MCZlbBT7TGox+Ood09BacU1NF/83XExW0aBobfbrPDaF
-        cYcSCS5wxCi3qp+vOCG0hHtk9CeBN+dc1VPQlDiNIQ==
-X-Google-Smtp-Source: AA0mqf68EfiXKzh4Qqsn45VAM2KqCRu9H5SQS0jk5yiyZhZc9LribcXnYNomw9PrYLODWclkAlvlqykAQZgVL7MVIGk=
-X-Received: by 2002:a63:2160:0:b0:46f:f26e:e8ba with SMTP id
- s32-20020a632160000000b0046ff26ee8bamr71514626pgm.250.1670543169691; Thu, 08
- Dec 2022 15:46:09 -0800 (PST)
+        bh=qsiZ9s0yp8OUDlVyAwoSvSCb5GsD3AVTDpcvuxldQfs=;
+        b=vN+B8cB6p13696KZ5iSVaGMgxTrALlnEEIt/F260KfHz/33pYh5+h2sSSw7YqQj2oI
+         HXxolFe2zYsQLbOy2zvxvC8n8DzbupsZ95p7UZmVLFY3yydXMIPJDqIrAnoMqipYhXzn
+         7YHTVdnsCQOR9bM81Cuz2mrs0x7b+0gsmPDQN5KZGVW25ozPiOiplATPAhcrRPKmb/eU
+         MMw6cXmKKzJmwkCuq1aVPY1MTuW6S4xPehAX2G0dgxuyHWjs2H62cjvWuwKeKRN+vv/Y
+         hsY4sgq+WT5YIOZoQrzsXTaCWY+AFQlXoWmLTejLovfkgvU9JJ2C4ApX1Slnkukspmsg
+         AVDg==
+X-Gm-Message-State: ANoB5pmM78UDWcfJ2P05PL36UByCqNc8NAtZiliI7mr6pPokI1oPUqfe
+        s/S7/8xR5PocK7hDBr+kydmPILPv3zmAkGcpE5rL9A==
+X-Google-Smtp-Source: AA0mqf53HTVaefPFy0V6y2L9HDcjm12+3TUzV47rrKRIHbnH5Tk9Q+Y9tu1d7g1+iMNJKIsJtvsc9Q2rd4XXLT+X+c0=
+X-Received: by 2002:a17:90a:6382:b0:219:fbc:a088 with SMTP id
+ f2-20020a17090a638200b002190fbca088mr65066280pjj.162.1670543227082; Thu, 08
+ Dec 2022 15:47:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-12-sdf@google.com>
- <875yellcx6.fsf@toke.dk>
-In-Reply-To: <875yellcx6.fsf@toke.dk>
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
+ <878rjhldv0.fsf@toke.dk>
+In-Reply-To: <878rjhldv0.fsf@toke.dk>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 8 Dec 2022 15:45:58 -0800
-Message-ID: <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP metadata
+Date:   Thu, 8 Dec 2022 15:46:55 -0800
+Message-ID: <CAKH8qBvgkTXFEhd9hOa+SFtqKAXuD=WM_h1TZYdQA0d70_drEA@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         haoluo@google.com, jolsa@kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
         David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
@@ -74,7 +73,7 @@ Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,49 +81,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 2:59 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+On Thu, Dec 8, 2022 at 2:39 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
 t.com> wrote:
 >
 > Stanislav Fomichev <sdf@google.com> writes:
 >
-> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > There is an ndo handler per kfunc, the verifier replaces a call to the
+> > generic kfunc with a call to the per-device one.
 > >
-> > Support RX hash and timestamp metadata kfuncs. We need to pass in the c=
-qe
-> > pointer to the mlx5e_skb_from* functions so it can be retrieved from th=
-e
-> > XDP ctx to do this.
+> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+> > implements all possible metatada kfuncs. Not all devices have to
+> > implement them. If kfunc is not supported by the target device,
+> > the default implementation is called instead.
 >
-> So I finally managed to get enough ducks in row to actually benchmark
-> this. With the caveat that I suddenly can't get the timestamp support to
-> work (it was working in an earlier version, but now
-> timestamp_supported() just returns false). I'm not sure if this is an
-> issue with the enablement patch, or if I just haven't gotten the
-> hardware configured properly. I'll investigate some more, but figured
-> I'd post these results now:
+> So one unfortunate consequence of this "fallback to the default
+> implementation" is that it's really easy to get a step wrong and end up
+> with something that doesn't work. Specifically, if you load an XDP
+> program that calls the metadata kfuncs, but don't set the ifindex and
+> flag on load, the kfunc resolution will work just fine, but you'll end
+> up calling the default kfunc implementations (and get no data). I ran
+> into this multiple times just now when playing around with it and
+> implementing the freplace support.
 >
-> Baseline XDP_DROP:         25,678,262 pps / 38.94 ns/pkt
-> XDP_DROP + read metadata:  23,924,109 pps / 41.80 ns/pkt
-> Overhead:                   1,754,153 pps /  2.86 ns/pkt
+> So I really think it would be a better user experience if we completely
+> block (with a nice error message!) the calling of the metadata kfuncs if
+> the program is not device-bound...
+
+Oh, right, that's a good point. Having defaults for dev-bound only
+makes total sense.
+
+> Another UX thing I ran into is that libbpf will bail out if it can't
+> find the kfunc in the kernel vmlinux, even if the code calling the
+> function is behind an always-false if statement (which would be
+> eliminated as dead code from the verifier). This makes it a bit hard to
+> conditionally use them. Should libbpf just allow the load without
+> performing the relocation (and let the verifier worry about it), or
+> should we have a bpf_core_kfunc_exists() macro to use for checking?
+> Maybe both?
+
+I'm not sure how libbpf can allow the load without performing the
+relocation; maybe I'm missing something.
+IIUC, libbpf uses the kfunc name (from the relocation?) and replaces
+it with the kfunc id, right?
+
+Having bpf_core_kfunc_exists would help, but this probably needs
+compiler work first to preserve some of the kfunc traces in vmlinux.h?
+
+So yeah, I don't have any good ideas/suggestions here on how to make
+it all magically work :-(
+
+> > Upon loading, if BPF_F_XDP_HAS_METADATA is passed via prog_flags,
+> > we treat prog_index as target device for kfunc resolution.
 >
-> As per the above, this is with calling three kfuncs/pkt
-> (metadata_supported(), rx_hash_supported() and rx_hash()). So that's
-> ~0.95 ns per function call, which is a bit less, but not far off from
-> the ~1.2 ns that I'm used to. The tests where I accidentally called the
-> default kfuncs cut off ~1.3 ns for one less kfunc call, so it's
-> definitely in that ballpark.
+> [...]
 >
-> I'm not doing anything with the data, just reading it into an on-stack
-> buffer, so this is the smallest possible delta from just getting the
-> data out of the driver. I did confirm that the call instructions are
-> still in the BPF program bytecode when it's dumped back out from the
-> kernel.
+> > -     if (!bpf_prog_map_compatible(map, prog)) {
+> > -             bpf_prog_put(prog);
+> > -             return ERR_PTR(-EINVAL);
+> > -     }
+> > +     /* When tail-calling from a non-dev-bound program to a dev-bound =
+one,
+> > +      * XDP metadata helpers should be disabled. Until it's implemente=
+d,
+> > +      * prohibit adding dev-bound programs to tail-call maps.
+> > +      */
+> > +     if (bpf_prog_is_dev_bound(prog->aux))
+> > +             goto err;
+> > +
+> > +     if (!bpf_prog_map_compatible(map, prog))
+> > +             goto err;
 >
+> I think it's better to move the new check into bpf_prog_map_compatible()
+> itself; that way it'll cover cpumaps and devmaps as well :)
+
+Will do, thanks!
+
 > -Toke
 >
-
-Oh, that's great, thanks for running the numbers! Will definitely
-reference them in v4!
-Presumably, we should be able to at least unroll most of the
-_supported callbacks if we want, they should be relatively easy; but
-the numbers look fine as is?
