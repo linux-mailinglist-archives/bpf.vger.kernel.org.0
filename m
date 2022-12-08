@@ -2,107 +2,361 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB6B646BF0
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 10:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5D3646C61
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 11:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbiLHJ3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 04:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        id S229601AbiLHKFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 05:05:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiLHJ3v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 04:29:51 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE3D1D306;
-        Thu,  8 Dec 2022 01:29:49 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSTFp12fyz9xFPw;
-        Thu,  8 Dec 2022 17:22:38 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCXfflzrpFj0QvMAA--.21566S2;
-        Thu, 08 Dec 2022 10:29:31 +0100 (CET)
-Message-ID: <b989b278a16c48e104b32ba7243e4298491a6056.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and
- fix formatting
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     David Howells <dhowells@redhat.com>, casey@schaufler-ca.com,
-        omosnace@redhat.com, john.johansen@canonical.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 08 Dec 2022 10:29:20 +0100
-In-Reply-To: <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
-References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
-         <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
-         <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
-         <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
-         <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
-         <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S229462AbiLHKFl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 05:05:41 -0500
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5814B537C9
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 02:05:37 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id s1-20020a056e021a0100b003026adad6a9so762652ild.18
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 02:05:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+KY4L7jare/peb7fKPYRZZs5P6RCWx1etCzqw0D7xFg=;
+        b=nHXVuF2NJmQI/iE422e5lQ9PGZHYjfYVEEjTwyhvuP/X5j39ZaHYiHUrsOrJD3yJXn
+         EMjX8Y+5liVoUTlczExluoOV9RC/GCD1BR6KQYRjRRkwX+5nyQiX75BhAOYM8tpfVy2h
+         H5GJ76ydkAPtIzxloV4OrI2qCD9LVzCI4Lh4X82M6DFOWTigtWXHJ1d1htGXVvnOUcuV
+         gmfuMiq92slpaoPWPpMs+GPXCTnNCEv69w8CO0ocvXxgcpOeyAhakKaIUdADPx+vj+ni
+         5913ccLV826eYHGxtiGIu5+c1ZKIzLfP6KLFWjiiaemruqVxh88s2akNyepLrTQsDJie
+         IIlQ==
+X-Gm-Message-State: ANoB5pkJjJd3Q1NECATQM63Ow/n7Dnv64MLcPZ7Dw81gGkGDG/mXmCzW
+        Eee/x0mkskBBgJbDFzKW0o+j7c9k8/3/k0qxVAEEyEo/m5h0
+X-Google-Smtp-Source: AA0mqf7587W62Cne3SRqk+4gFLegZDSjh4Ddc2iDIzQoQ1vtWpZ53J6TQzWERbzO+yZsFAjDdr/2hz53kl3MvzLxj11nAlFDEa8O
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwCXfflzrpFj0QvMAA--.21566S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8Jr45tryxJFW7XF4fKrg_yoWkuwbEkr
-        Z8Ar48Jw45Crn7Cw12ka1F9r92g3srZw1rZ3WDXr1UWa48GrW5JF40kr93Xrs3CrW8Jrnr
-        WFyDAFZ2kasIvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
-        AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj4ZsWgACsG
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:9c81:0:b0:6de:c78b:6fd7 with SMTP id
+ p1-20020a5d9c81000000b006dec78b6fd7mr35575760iop.159.1670493936731; Thu, 08
+ Dec 2022 02:05:36 -0800 (PST)
+Date:   Thu, 08 Dec 2022 02:05:36 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b2d33705ef4e2d70@google.com>
+Subject: [syzbot] kernel stack overflow in sock_close
+From:   syzbot <syzbot+09329bd987ebca21bced@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-12-07 at 14:34 -0500, Paul Moore wrote:
-> On Wed, Dec 7, 2022 at 4:18 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > For this patch, I saw it is already in lsm/next. Paul, should I do an
-> > incremental patch or change the one in the repo and you force push it?
-> > I would just remove the three lines after the parameters description.
-> 
-> Just send a patch against the current lsm/next branch to remove those
-> lines, and please do it ASAP as the merge window opens this
-> weekend/Monday.
+Hello,
 
-Ok, was about to send but I would need a clarification first.
+syzbot found the following issue on:
 
-In mount_api.rst, there is for security_fs_context_parse_param():
+HEAD commit:    e3cb714fb489 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=13d5c11d880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ec7118319bfb771e
+dashboard link: https://syzkaller.appspot.com/bug?extid=09329bd987ebca21bced
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145daef3880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1313d497880000
 
-     The value pointed to by param may be modified (if a string) or stolen
-     (provided the value pointer is NULL'd out).  If it is stolen, 0 must be
-     returned to prevent it being passed to the filesystem.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/832eb1866f2c/disk-e3cb714f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5fd572b7d96d/vmlinux-e3cb714f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/34c82908beda/Image-e3cb714f.gz.xz
 
-Looking at security.c:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+09329bd987ebca21bced@syzkaller.appspotmail.com
 
-	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
-			     list) {
-		trc = hp->hook.fs_context_parse_param(fc, param);
-		if (trc == 0)
-			rc = 0;
-		else if (trc != -ENOPARAM)
-			return trc;
-	}
+x8 : 0000000000040574 x7 : ffff80000b22f58c x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000002 x1 : ffff0000c60f3eb8 x0 : ffff0000c60f3480
+Kernel panic - not syncing: kernel stack overflow
+CPU: 1 PID: 3074 Comm: syz-executor169 Not tainted 6.1.0-rc7-syzkaller-33097-ge3cb714fb489 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
+Call trace:
+ dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
+ show_stack+0x2c/0x54 arch/arm64/kernel/stacktrace.c:163
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
+ dump_stack+0x1c/0x58 lib/dump_stack.c:113
+ panic+0x218/0x508 kernel/panic.c:274
+ nmi_panic+0xbc/0xf0 kernel/panic.c:169
+ panic_bad_stack+0x134/0x154 arch/arm64/kernel/traps.c:886
+ handle_bad_stack+0x34/0x48 arch/arm64/kernel/entry-common.c:849
+ __bad_stack+0x78/0x7c arch/arm64/kernel/entry.S:552
+ mark_lock+0x4/0x1b4 kernel/locking/lockdep.c:4595
+ lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x54/0x6c kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:355 [inline]
+ lock_sock_nested+0x88/0xd8 net/core/sock.c:3450
+ lock_sock include/net/sock.h:1721 [inline]
+ sock_map_close+0x30/0x4bc net/core/sock_map.c:1610
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ sock_map_close+0x400/0x4bc
+ inet_release+0xc8/0xe4 net/ipv4/af_inet.c:428
+ inet6_release+0x3c/0x58 net/ipv6/af_inet6.c:488
+ __sock_release net/socket.c:650 [inline]
+ sock_close+0x50/0xf0 net/socket.c:1365
+ __fput+0x198/0x3e4 fs/file_table.c:320
+ ____fput+0x20/0x30 fs/file_table.c:348
+ task_work_run+0x100/0x148 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x2dc/0xcac kernel/exit.c:820
+ do_group_exit+0x98/0xcc kernel/exit.c:950
+ get_signal+0xabc/0xb2c kernel/signal.c:2858
+ do_signal+0x128/0x438 arch/arm64/kernel/signal.c:1076
+ do_notify_resume+0xc0/0x1f0 arch/arm64/kernel/signal.c:1129
+ prepare_exit_to_user_mode arch/arm64/kernel/entry-common.c:137 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:142 [inline]
+ el0_svc+0x9c/0x150 arch/arm64/kernel/entry-common.c:638
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
+SMP: stopping secondary CPUs
+Kernel Offset: disabled
+CPU features: 0x00000,040e0108,4c017203
+Memory Limit: none
 
-If, as mount_api.rst says, the value is modified by an LSM or stolen,
-should it be passed to other LSMs too?
 
-Thanks
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Roberto
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
