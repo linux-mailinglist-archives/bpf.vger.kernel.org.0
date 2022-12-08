@@ -2,273 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76104646E1D
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 12:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2545C646F3B
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 13:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiLHLKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 06:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S229719AbiLHME4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 07:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiLHLKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 06:10:18 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FA52ED5D;
-        Thu,  8 Dec 2022 03:08:40 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4F1E6337A9;
-        Thu,  8 Dec 2022 11:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670497719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qYJKBANfv55V7w+9coBcBtTUfxC6BQ0fclSJzAtAWiI=;
-        b=0aZG2rmPhJi+ZUnkWLy2hmVnsXRF3BS3OIgmPB62/qguiSbK2UThzGaLRjXFtJye5LPwBw
-        yvBwYpOx9SlgVh3m44yBvk1npac4nSYJAycp6h1xveTTyhwAG5k/aoIimmPmb7xeqHTZ1h
-        IlpTvlCh0Eo8oTMsFzHOSaRJ+5GVeyU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670497719;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qYJKBANfv55V7w+9coBcBtTUfxC6BQ0fclSJzAtAWiI=;
-        b=U5cc74rBlLySYcca/tIU4gLWUdml6W7BYz2LDSr0kzHBXgPeTjCCnBb8BjLspNeE78Mx7V
-        YpDadxDbqGcdtTAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA511138E0;
-        Thu,  8 Dec 2022 11:08:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DWbCLLbFkWPXHgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 08 Dec 2022 11:08:38 +0000
-Message-ID: <332c3841-54c2-4777-be90-32d7cef90668@suse.cz>
-Date:   Thu, 8 Dec 2022 12:08:38 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH net-next v3] skbuff: Introduce slab_build_skb()
-Content-Language: en-US
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        pepsipu <soopthegoop@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
-        bpf <bpf@vger.kernel.org>,
+        with ESMTP id S229692AbiLHMEx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 07:04:53 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9290887C93
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 04:04:51 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id n20so3408976ejh.0
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 04:04:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cpIrTw4BCFr2z6bPPXKbdPA+I5qboDkOeMgVRRrspVc=;
+        b=jyTasroAUVnJ37Nuybc4DhX+gSqr/J8mKrDGCFYOnfxZ8qJ0TDvAgXdpE23s/5MGrq
+         QGxQxAWYa2EPKHO/CUZfHEs6LLd4TqnpGtM1S+rkoS+ysgov4fPShrgx2EWUGWIfbTeF
+         tSKBZRb76EfyQaFHwbNdBByfxbe0IrUrN1IY/ogofJs8u7yZXWIfQrAII4L2DBI3/p9L
+         q8u8vgUC2gpvbqeUkX4wKLZWcfnol16FDgwiG7NRwczVO/y/OSRI/Art4/02H/+VsZ8t
+         rH3WHRftJ+itI6oyN+xFPjqNLPhHIbQzoGFYufqc60HhI2kqBtrhSDrYsUvrml5Wh8sH
+         GnGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cpIrTw4BCFr2z6bPPXKbdPA+I5qboDkOeMgVRRrspVc=;
+        b=NvVgOqe+XBphHVeWM3Ih567W92IGD69WY8fwM6bK78vWj86sTIIhnj3fRYxD+qX2Kh
+         //ZYY7VtsjUCsqK7ZUdtPcJOe8Pph9gaGWSeqsPqGYMimmy3Sju6H0AL5j5tk0Xeb3rk
+         89D0BmkoAYbwWIU5zpA9nWq8z0C0TBcIPWattHgJ3u0qgEeq+KdYu/Y4ZvSfp5ZR0cMC
+         fuCL5E/ezXOEX9su0wONSj71DP6HVTjyJ4xP/MBSeHGzRi6NVMRfjPzslfR8J0MO4eQM
+         k5sLiBB64ilNEI3SZ94k+m5Q6Jt1MVpltnfWnqHXcG/7DUEB1uhX7P9HJU8ns2RLgQ37
+         48Ug==
+X-Gm-Message-State: ANoB5plKL5eC/ijnphCJYDXPM/ylrhMtZV9CKLePqKkeFEkOJM23ypiQ
+        WuJOSVA7NQBRHR0it49NTnA=
+X-Google-Smtp-Source: AA0mqf7c2I3KrRzcpZf06VRGoFuXsMqZz+huQsoQPqSbzL1TRCoGq70F18eTpN/BpCmAB3sZo/HSZA==
+X-Received: by 2002:a17:906:3008:b0:7b5:73aa:9984 with SMTP id 8-20020a170906300800b007b573aa9984mr1782894ejz.14.1670501089641;
+        Thu, 08 Dec 2022 04:04:49 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id lb26-20020a170907785a00b00781e7d364ebsm9768917ejc.144.2022.12.08.04.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 04:04:48 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 8 Dec 2022 13:04:46 +0100
+To:     Namhyung Kim <namhyung@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        KP Singh <kpsingh@kernel.org>, martin.lau@linux.dev,
-        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rasesh Mody <rmody@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        David Ahern <dsahern@kernel.org>,
-        Richard Gobert <richardbgobert@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        GR-Linux-NIC-Dev@marvell.com, linux-hardening@vger.kernel.org
-References: <20221208060256.give.994-kees@kernel.org>
- <6923d6a9-7728-fc71-f963-3617e5361732@suse.cz> <Y5G6RnoyZC78UO4q@feng-clx>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Y5G6RnoyZC78UO4q@feng-clx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Sun <sunhao.th@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
+ tracepoints
+Message-ID: <Y5HS3nmjARpe+Mef@krava>
+References: <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
+ <Y4CMbTeVud0WfPtK@krava>
+ <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
+ <Y4uOSrXBxVwnxZkX@google.com>
+ <Y43j3IGvLKgshuhR@krava>
+ <CAADnVQLo1JBTg6iquCFj44AEuAhxj-V7a0T1gwejy1oDBDXcbA@mail.gmail.com>
+ <Y4/27g8EHQ9F3bDr@google.com>
+ <Y5BMRvsVMQtKvuhu@krava>
+ <CAM9d7cgrgXPdUdL4WJ_MtBrrdJtSVsXF6REPJ9rSNVLms5k6LQ@mail.gmail.com>
+ <Y5GA8LjlB1BDQ/TO@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y5GA8LjlB1BDQ/TO@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/8/22 11:19, Feng Tang wrote:
-> On Thu, Dec 08, 2022 at 09:13:41AM +0100, Vlastimil Babka wrote:
->> On 12/8/22 07:02, Kees Cook wrote:
->> > syzkaller reported:
->> > 
->> >   BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
->> >   Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
->> > 
->> > For bpf_prog_test_run_skb(), which uses a kmalloc()ed buffer passed to
->> > build_skb().
->> > 
->> > When build_skb() is passed a frag_size of 0, it means the buffer came
->> > from kmalloc. In these cases, ksize() is used to find its actual size,
->> > but since the allocation may not have been made to that size, actually
->> > perform the krealloc() call so that all the associated buffer size
->> > checking will be correctly notified (and use the "new" pointer so that
->> > compiler hinting works correctly). Split this logic out into a new
->> > interface, slab_build_skb(), but leave the original 0 checking for now
->> > to catch any stragglers.
->> > 
->> > Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
->> > Link: https://groups.google.com/g/syzkaller-bugs/c/UnIKxTtU5-0/m/-wbXinkgAQAJ
->> > Fixes: 38931d8989b5 ("mm: Make ksize() a reporting-only function")
->> > Cc: Jakub Kicinski <kuba@kernel.org>
->> > Cc: Eric Dumazet <edumazet@google.com>
->> > Cc: "David S. Miller" <davem@davemloft.net>
->> > Cc: Paolo Abeni <pabeni@redhat.com>
->> > Cc: Pavel Begunkov <asml.silence@gmail.com>
->> > Cc: pepsipu <soopthegoop@gmail.com>
->> > Cc: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
->> > Cc: Vlastimil Babka <vbabka@suse.cz>
->> > Cc: kasan-dev <kasan-dev@googlegroups.com>
->> > Cc: Andrii Nakryiko <andrii@kernel.org>
->> > Cc: ast@kernel.org
->> > Cc: bpf <bpf@vger.kernel.org>
->> > Cc: Daniel Borkmann <daniel@iogearbox.net>
->> > Cc: Hao Luo <haoluo@google.com>
->> > Cc: Jesper Dangaard Brouer <hawk@kernel.org>
->> > Cc: John Fastabend <john.fastabend@gmail.com>
->> > Cc: jolsa@kernel.org
->> > Cc: KP Singh <kpsingh@kernel.org>
->> > Cc: martin.lau@linux.dev
->> > Cc: Stanislav Fomichev <sdf@google.com>
->> > Cc: song@kernel.org
->> > Cc: Yonghong Song <yhs@fb.com>
->> > Cc: netdev@vger.kernel.org
->> > Cc: LKML <linux-kernel@vger.kernel.org>
->> > Signed-off-by: Kees Cook <keescook@chromium.org>
->> > ---
->> > v3:
->> > - make sure "resized" is passed back so compiler hints survive
->> > - update kerndoc (kuba)
->> > v2: https://lore.kernel.org/lkml/20221208000209.gonna.368-kees@kernel.org
->> > v1: https://lore.kernel.org/netdev/20221206231659.never.929-kees@kernel.org/
->> > ---
->> >  drivers/net/ethernet/broadcom/bnx2.c      |  2 +-
->> >  drivers/net/ethernet/qlogic/qed/qed_ll2.c |  2 +-
->> >  include/linux/skbuff.h                    |  1 +
->> >  net/bpf/test_run.c                        |  2 +-
->> >  net/core/skbuff.c                         | 70 ++++++++++++++++++++---
->> >  5 files changed, 66 insertions(+), 11 deletions(-)
->> > 
->> > diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
->> > index fec57f1982c8..b2230a4a2086 100644
->> > --- a/drivers/net/ethernet/broadcom/bnx2.c
->> > +++ b/drivers/net/ethernet/broadcom/bnx2.c
->> > @@ -3045,7 +3045,7 @@ bnx2_rx_skb(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u8 *data,
->> >  
->> >  	dma_unmap_single(&bp->pdev->dev, dma_addr, bp->rx_buf_use_size,
->> >  			 DMA_FROM_DEVICE);
->> > -	skb = build_skb(data, 0);
->> > +	skb = slab_build_skb(data);
->> >  	if (!skb) {
->> >  		kfree(data);
->> >  		goto error;
->> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
->> > index ed274f033626..e5116a86cfbc 100644
->> > --- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
->> > +++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
->> > @@ -200,7 +200,7 @@ static void qed_ll2b_complete_rx_packet(void *cxt,
->> >  	dma_unmap_single(&cdev->pdev->dev, buffer->phys_addr,
->> >  			 cdev->ll2->rx_size, DMA_FROM_DEVICE);
->> >  
->> > -	skb = build_skb(buffer->data, 0);
->> > +	skb = slab_build_skb(buffer->data);
->> >  	if (!skb) {
->> >  		DP_INFO(cdev, "Failed to build SKB\n");
->> >  		kfree(buffer->data);
->> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
->> > index 7be5bb4c94b6..0b391b635430 100644
->> > --- a/include/linux/skbuff.h
->> > +++ b/include/linux/skbuff.h
->> > @@ -1253,6 +1253,7 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
->> >  void skb_attempt_defer_free(struct sk_buff *skb);
->> >  
->> >  struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
->> > +struct sk_buff *slab_build_skb(void *data);
->> >  
->> >  /**
->> >   * alloc_skb - allocate a network buffer
->> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> > index 13d578ce2a09..611b1f4082cf 100644
->> > --- a/net/bpf/test_run.c
->> > +++ b/net/bpf/test_run.c
->> > @@ -1130,7 +1130,7 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->> >  	}
->> >  	sock_init_data(NULL, sk);
->> >  
->> > -	skb = build_skb(data, 0);
->> > +	skb = slab_build_skb(data);
->> >  	if (!skb) {
->> >  		kfree(data);
->> >  		kfree(ctx);
->> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->> > index 1d9719e72f9d..ae5a6f7db37b 100644
->> > --- a/net/core/skbuff.c
->> > +++ b/net/core/skbuff.c
->> > @@ -269,12 +269,10 @@ static struct sk_buff *napi_skb_cache_get(void)
->> >  	return skb;
->> >  }
->> >  
->> > -/* Caller must provide SKB that is memset cleared */
->> > -static void __build_skb_around(struct sk_buff *skb, void *data,
->> > -			       unsigned int frag_size)
->> > +static inline void __finalize_skb_around(struct sk_buff *skb, void *data,
->> > +					 unsigned int size)
->> >  {
->> >  	struct skb_shared_info *shinfo;
->> > -	unsigned int size = frag_size ? : ksize(data);
->> >  
->> >  	size -= SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
->> >  
->> > @@ -296,15 +294,71 @@ static void __build_skb_around(struct sk_buff *skb, void *data,
->> >  	skb_set_kcov_handle(skb, kcov_common_handle());
->> >  }
->> >  
->> > +static inline void *__slab_build_skb(struct sk_buff *skb, void *data,
->> > +				     unsigned int *size)
->> > +{
->> > +	void *resized;
->> > +
->> > +	/* Must find the allocation size (and grow it to match). */
->> > +	*size = ksize(data);
->> > +	/* krealloc() will immediately return "data" when
->> > +	 * "ksize(data)" is requested: it is the existing upper
->> > +	 * bounds. As a result, GFP_ATOMIC will be ignored. Note
->> > +	 * that this "new" pointer needs to be passed back to the
->> > +	 * caller for use so the __alloc_size hinting will be
->> > +	 * tracked correctly.
->> > +	 */
->> > +	resized = krealloc(data, *size, GFP_ATOMIC);
->> 
->> Hmm, I just realized, this trick will probably break the new kmalloc size
->> tracking from Feng Tang (CC'd)? We need to make krealloc() update the stored
->> size, right? And even worse if slab_debug redzoning is enabled and after
->> commit 946fa0dbf2d8 ("mm/slub: extend redzone check to extra allocated
->> kmalloc space than requested") where the lack of update will result in
->> redzone check failures.
+On Wed, Dec 07, 2022 at 10:15:12PM -0800, Namhyung Kim wrote:
+> On Wed, Dec 07, 2022 at 11:08:40AM -0800, Namhyung Kim wrote:
+> > On Wed, Dec 7, 2022 at 12:18 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > >
+> > > On Tue, Dec 06, 2022 at 06:14:06PM -0800, Namhyung Kim wrote:
+> > >
+> > > SNIP
+> > >
+> > > > -static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> > > > +static void *bpf_trace_norecurse_funcs[12] = {
+> > > > +     (void *)bpf_trace_run_norecurse1,
+> > > > +     (void *)bpf_trace_run_norecurse2,
+> > > > +     (void *)bpf_trace_run_norecurse3,
+> > > > +     (void *)bpf_trace_run_norecurse4,
+> > > > +     (void *)bpf_trace_run_norecurse5,
+> > > > +     (void *)bpf_trace_run_norecurse6,
+> > > > +     (void *)bpf_trace_run_norecurse7,
+> > > > +     (void *)bpf_trace_run_norecurse8,
+> > > > +     (void *)bpf_trace_run_norecurse9,
+> > > > +     (void *)bpf_trace_run_norecurse10,
+> > > > +     (void *)bpf_trace_run_norecurse11,
+> > > > +     (void *)bpf_trace_run_norecurse12,
+> > > > +};
+> > > > +
+> > > > +static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> > > > +                             void *func, void *data)
+> > > >  {
+> > > >       struct tracepoint *tp = btp->tp;
+> > > >
+> > > > @@ -2325,13 +2354,12 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
+> > > >       if (prog->aux->max_tp_access > btp->writable_size)
+> > > >               return -EINVAL;
+> > > >
+> > > > -     return tracepoint_probe_register_may_exist(tp, (void *)btp->bpf_func,
+> > > > -                                                prog);
+> > > > +     return tracepoint_probe_register_may_exist(tp, func, data);
+> > > >  }
+> > > >
+> > > >  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> > > >  {
+> > > > -     return __bpf_probe_register(btp, prog);
+> > > > +     return __bpf_probe_register(btp, prog, btp->bpf_func, prog);
+> > > >  }
+> > > >
+> > > >  int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> > > > @@ -2339,6 +2367,33 @@ int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> > > >       return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
+> > > >  }
+> > > >
+> > > > +int bpf_probe_register_norecurse(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> > > > +                              struct bpf_raw_event_data *data)
+> > > > +{
+> > > > +     void *bpf_func;
+> > > > +
+> > > > +     data->active = alloc_percpu_gfp(int, GFP_KERNEL);
+> > > > +     if (!data->active)
+> > > > +             return -ENOMEM;
+> > > > +
+> > > > +     data->prog = prog;
+> > > > +     bpf_func = bpf_trace_norecurse_funcs[btp->num_args];
+> > > > +     return __bpf_probe_register(btp, prog, bpf_func, data);
+> > >
+> > > I don't think we can do that, because it won't do the arg -> u64 conversion
+> > > that __bpf_trace_##call functions are doing:
+> > >
+> > >         __bpf_trace_##call(void *__data, proto)                                 \
+> > >         {                                                                       \
+> > >                 struct bpf_prog *prog = __data;                                 \
+> > >                 CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > >         }
+> > >
+> > > like for 'old_pid' arg in sched_process_exec tracepoint:
+> > >
+> > >         ffffffff811959e0 <__bpf_trace_sched_process_exec>:
+> > >         ffffffff811959e0:       89 d2                   mov    %edx,%edx
+> > >         ffffffff811959e2:       e9 a9 07 14 00          jmp    ffffffff812d6190 <bpf_trace_run3>
+> > >         ffffffff811959e7:       66 0f 1f 84 00 00 00    nopw   0x0(%rax,%rax,1)
+> > >         ffffffff811959ee:       00 00
+> > >
+> > > bpf program could see some trash in args < u64
+> > >
+> > > we'd need to add 'recursion' variant for all __bpf_trace_##call functions
+> > 
+> > Ah, ok.  So 'contention_begin' tracepoint has unsigned int flags.
+> > perf lock contention BPF program properly uses the lower 4 bytes of flags,
+> > but others might access the whole 8 bytes then they will see the garbage.
+> > Is that your concern?
+> > 
+> > Hmm.. I think we can use BTF to get the size of each argument then do
+> > the conversion.  Let me see..
 > 
-> I think it's still safe, as currently we skip the kmalloc redzone check
-> by calling skip_orig_size_check() inside __ksize(). But as we have plan
+> Maybe something like this?  But I'm not sure if I did cast_to_u64() right.
 
-Ah, right, I forgot. So that's good.
+I guess that would work, but now I like the idea of fixing the original
+issue by removing the spinlock from printk helpers completely
 
-> to remove this skip_orig_size_check() after all ksize() usage has been
-> sanitized, we need to cover this krealloc() case.
+we might need to come back to something like this in future if we hit
+similar issue and won't have better way to fix it
 
-Yeah, can be done as part of the removal then, thanks.
-
-> Thanks,
-> Feng
-
+jirka
