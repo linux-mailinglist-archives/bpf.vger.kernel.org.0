@@ -2,62 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6170647A49
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 00:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874FF647A4B
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 00:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbiLHXqI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 18:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        id S229501AbiLHXqO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 18:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiLHXqH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 18:46:07 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC25625C1
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 15:46:01 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id fy4so2779897pjb.0
-        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 15:46:01 -0800 (PST)
+        with ESMTP id S229683AbiLHXqL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 18:46:11 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671E160C4
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 15:46:10 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 82so2460274pgc.0
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 15:46:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sm8OWFrvWQaS6H9xrHvPh1htLWtKmKkj+nrb35AKVrk=;
-        b=D2e2V1iieBFHio2OsHZaVCyOeG45+/qZ+cdKD5J5/yOJB0c6+ZSxMEKPyTaPR+wPAO
-         mbuHXoYELeSjFhP6JKrA61pthNzve46uS3LCf9ZRQDzAIA5Cn693fwk+6aTTdeChQbMp
-         vTKC2AhdN8pKe/PqqVaAoyagMC6xqBTxKR19PmoFA52gXfIMXiMC4BN+yMhy0uDWmlU5
-         Qnv1dc8n9aK1oxw8wQPuSolhIdpRQnPb5DF5tLuQTwGsi2dT8T83MyFcTH0DCN7VlZz4
-         uCZYi5AMyK6kw+ulRH0Jw+fuIH41Dr6IlSU++BM/yiYKXFmVVwPZzEwZPW8sMAfacI6s
-         856Q==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p6eq3qVqvQa6a4DnGmG8Wa/pErkcr+JiA2KWwUdGIB4=;
+        b=Dof5R32NxDjfCPkvDtsQsnwcDGtJEcCtLAO/d+sZEmis0wCMh6WLMP3oE6yLqiY3L1
+         3Yuz9C7Yy7Fq6Ue2NfarLL7dW2yMx4bY93tfDOeYRSzONeaAqfprST6gcM/K6t9cmLiu
+         YBJOFL1EsyxwNDjC2RzH9VorQipA1J7qyNcqSBuHWE1O1SpU6KtfgfV86CABddx1bwQq
+         87Ib1OgpKRWg6892EJbb4XOCw7pMSCAc6HGk80MJHws+x+bfj/svI5KyqN0ZhZt/zmQj
+         j/hA1j1ImRlIcVCnqv3CPcAB7uBiI8qE6Rqd2cIqW3fMnEM8Ab0ik5YV8DkW+PN/gyDo
+         sTEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Sm8OWFrvWQaS6H9xrHvPh1htLWtKmKkj+nrb35AKVrk=;
-        b=Xm83/9Sa0Ihzm2SLn19Mgov+CeIL+odCdGou8WN9Fhp/4m9P1oZXRxRl4sOrCOSukc
-         65NJlqabBCKJti0UzaKuIsvpASEARYv9+Kys7CFyx7tQuz3lITTScjxwP4t3L0eg/rFq
-         VrlEGQQxclzxTUQp+1HXwYLjTY0MeA2r2EzJoca8A4oET4/VlMbt1UK6wspVLh3SIjtg
-         N0QUn6cxT9I2SOu+nKn9B7aVOJdcqtS+gyboEW7tk2khpOCUMi3YNojM/vPc3+HxFDAo
-         vgARDqUcrsSVTUL4VaHxclBqxkG3zz5d5H6vQQ3TI0nnM3VKmSZBO/NV+cbEI5pSBuBU
-         IAzA==
-X-Gm-Message-State: ANoB5pmlY8QnQ7Uvkrhw2lhBTsVQq1HEVFF62WH9MuhnQxwUGTbQ8o+S
-        ZNLwdIxF0LzXEC281j9yL2tjU0YNCUcXJLqKtUxCTw==
-X-Google-Smtp-Source: AA0mqf71LHOqUi6G/gW4y3OPGyoVlC3ndfi32vjtlQwBVRcYyxG4dYg5Jw7MX9r9cKx78860x1sOK0N7h6XkWTZbkq0=
-X-Received: by 2002:a17:90a:930f:b0:218:9107:381b with SMTP id
- p15-20020a17090a930f00b002189107381bmr97468563pjo.75.1670543161020; Thu, 08
- Dec 2022 15:46:01 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p6eq3qVqvQa6a4DnGmG8Wa/pErkcr+JiA2KWwUdGIB4=;
+        b=OE60FRb05tBP5duaaCDumGXhoa/PvvUDKftJduX2VV1PuYyYNikAHqBUQ6V3aZL/ok
+         T94z/JHaEfHTwKV4pNPu9SFBkfhtsKHeIpQhjzDzwlxqg8S1MUJl0DhZwAPkDZKCweAg
+         /Ngc7CHXQI5YriETKaaMIWBEPf7uolAQ8PivByXOlIsQERg0LAiEMKtvU418EWhJwlJQ
+         dKVBM1qaTJaRvHLNS02aaD53UZtig76Ewcxl3wqt8iwHG0t14I5D9T2cv8Y80Hp2inEz
+         kZ/ElJpRk7PQ30FntUrUKTyKOUS8S6H3hnVQWcJ37AhckALugA1uDN90VmVvZWhsGSUV
+         MwFg==
+X-Gm-Message-State: ANoB5pnwoJX/MCZlbBT7TGox+Ood09BacU1NF/83XExW0aBobfbrPDaF
+        cYcSCS5wxCi3qp+vOCG0hHtk9CeBN+dc1VPQlDiNIQ==
+X-Google-Smtp-Source: AA0mqf68EfiXKzh4Qqsn45VAM2KqCRu9H5SQS0jk5yiyZhZc9LribcXnYNomw9PrYLODWclkAlvlqykAQZgVL7MVIGk=
+X-Received: by 2002:a63:2160:0:b0:46f:f26e:e8ba with SMTP id
+ s32-20020a632160000000b0046ff26ee8bamr71514626pgm.250.1670543169691; Thu, 08
+ Dec 2022 15:46:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
- <391b9abf-c53a-623c-055f-60768c716baa@linux.dev> <CAKH8qBvfNDo-+qB-CyvCjQAcTtftWoQJTPwVb4zdAMZs=TzG7w@mail.gmail.com>
- <a5a636cc-5b03-686f-4be0-000383b05cfc@linux.dev>
-In-Reply-To: <a5a636cc-5b03-686f-4be0-000383b05cfc@linux.dev>
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-12-sdf@google.com>
+ <875yellcx6.fsf@toke.dk>
+In-Reply-To: <875yellcx6.fsf@toke.dk>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 8 Dec 2022 15:45:49 -0800
-Message-ID: <CAKH8qBuofrVpd6PkMuZ2aSFna72Mx572ebsOEdTcQFDoHBGFiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+Date:   Thu, 8 Dec 2022 15:45:58 -0800
+Message-ID: <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP metadata
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
         David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
@@ -66,86 +68,63 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 2:53 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Dec 8, 2022 at 2:59 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> On 12/8/22 11:07 AM, Stanislav Fomichev wrote:
-> >>> @@ -102,11 +112,25 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >>>        if (err)
-> >>>                goto err_maybe_put;
-> >>>
-> >>> +     prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_HAS_METADATA);
-> >>> +
-> >>
-> >> If I read the set correctly, bpf prog can either use metadata kfunc or offload
-> >> but not both. It is fine to start with only supporting metadata kfunc when there
-> >> is no offload but will be useful to understand the reason. I assume an offloaded
-> >> bpf prog should still be able to call the bpf helpers like adjust_head/tail and
-> >> the same should go for any kfunc?
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > >
-> > Yes, I'm assuming there should be some work on the offloaded device
-> > drivers to support metadata kfuncs.
-> > Offloaded kfuncs, in general, seem hard (how do we call kernel func
-> > from the device-offloaded prog?); so refusing kfuncs early for the
-> > offloaded case seems fair for now?
+> > Support RX hash and timestamp metadata kfuncs. We need to pass in the c=
+qe
+> > pointer to the mlx5e_skb_from* functions so it can be retrieved from th=
+e
+> > XDP ctx to do this.
 >
-> Ah, ok.  I was actually thinking the HW offloaded prog can just use the software
-> ndo_* kfunc (like other bpf-helpers).  From skimming some
-> bpf_prog_offload_ops:prepare implementation, I think you are right and it seems
-> BPF_PSEUDO_KFUNC_CALL has not been recognized yet.
+> So I finally managed to get enough ducks in row to actually benchmark
+> this. With the caveat that I suddenly can't get the timestamp support to
+> work (it was working in an earlier version, but now
+> timestamp_supported() just returns false). I'm not sure if this is an
+> issue with the enablement patch, or if I just haven't gotten the
+> hardware configured properly. I'll investigate some more, but figured
+> I'd post these results now:
 >
-> [ ... ]
+> Baseline XDP_DROP:         25,678,262 pps / 38.94 ns/pkt
+> XDP_DROP + read metadata:  23,924,109 pps / 41.80 ns/pkt
+> Overhead:                   1,754,153 pps /  2.86 ns/pkt
 >
-> >>> @@ -226,10 +263,17 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
-> >>>
-> >>>    void bpf_prog_offload_destroy(struct bpf_prog *prog)
-> >>>    {
-> >>> +     struct net_device *netdev = NULL;
-> >>> +
-> >>>        down_write(&bpf_devs_lock);
-> >>> -     if (prog->aux->offload)
-> >>> +     if (prog->aux->offload) {
-> >>> +             netdev = prog->aux->offload->netdev;
-> >>>                __bpf_prog_offload_destroy(prog);
-> >>> +     }
-> >>>        up_write(&bpf_devs_lock);
-> >>> +
-> >>> +     if (netdev)
-> >>
-> >> May be I have missed a refcnt or lock somewhere.  Is it possible that netdev may
-> >> have been freed?
-> >
-> > Yeah, with the offload framework, there are no refcnts. We put an
-> > "offloaded" device into a separate hashtable (protected by
-> > rtnl/semaphore).
-> > maybe_remove_bound_netdev will re-grab the locks (due to ordering:
-> > rtnl->bpf_devs_lock) and remove the device from the hashtable if it's
-> > still there.
-> > At least this is how, I think, it should work; LMK if something is
-> > still fishy here...
-> >
-> > Or is the concern here that somebody might allocate new netdev reusing
-> > the same address? I think I have enough checks in
-> > maybe_remove_bound_netdev to guard against that. Or, at least, to make
-> > it safe :-)
+> As per the above, this is with calling three kfuncs/pkt
+> (metadata_supported(), rx_hash_supported() and rx_hash()). So that's
+> ~0.95 ns per function call, which is a bit less, but not far off from
+> the ~1.2 ns that I'm used to. The tests where I accidentally called the
+> default kfuncs cut off ~1.3 ns for one less kfunc call, so it's
+> definitely in that ballpark.
 >
-> Race is ok because ondev needs to be removed anyway when '!ondev->offdev &&
-> list_empty(&ondev->progs)'?  hmmm... tricky, please add a comment. :)
+> I'm not doing anything with the data, just reading it into an on-stack
+> buffer, so this is the smallest possible delta from just getting the
+> data out of the driver. I did confirm that the call instructions are
+> still in the BPF program bytecode when it's dumped back out from the
+> kernel.
 >
-> Why it cannot be done together in the bpf_devs_lock above?  The above cannot
-> take an extra rtnl_lock before bpf_devs_lock?
+> -Toke
+>
 
-Hm, let's take an extra rtln to avoid this complexity, agree. I guess
-I was trying to avoid taking it, but this path is still 'dev_bound ==
-true' protected, so shouldn't affect the rest of the progs.
+Oh, that's great, thanks for running the numbers! Will definitely
+reference them in v4!
+Presumably, we should be able to at least unroll most of the
+_supported callbacks if we want, they should be relatively easy; but
+the numbers look fine as is?
