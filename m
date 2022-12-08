@@ -2,136 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891186466A5
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 02:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC95E6466AD
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 02:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbiLHBta (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 20:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        id S229586AbiLHBym (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 20:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiLHBt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 20:49:29 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CE067207
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 17:49:27 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NSHBn4gS9z4f3lHN
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 09:49:21 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgBn2dagQpFjEqNhBw--.44325S2;
-        Thu, 08 Dec 2022 09:49:24 +0800 (CST)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Reuse freed element in free_by_rcu
- during allocation
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221206042946.686847-1-houtao@huaweicloud.com>
- <20221206042946.686847-2-houtao@huaweicloud.com>
- <05d1f326-55cc-d327-9e0a-e93add2a29cf@meta.com>
- <86fd4485-a016-d6f6-c31b-3aa76c261e91@huaweicloud.com>
- <CAADnVQ+zWyP9Hy--RLyZ6-VUEr-D6kXoFmV2L1Y4b0H=RHQbCQ@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <8a93b9ce-9368-3700-4900-30732c3a4591@huaweicloud.com>
-Date:   Thu, 8 Dec 2022 09:49:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229441AbiLHBym (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 20:54:42 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F113D900C7
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 17:54:39 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d3so123547plr.10
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 17:54:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F820hvEjC8Tln7Ombg3pHE4UXL08XwaY9eNP4pc3pbQ=;
+        b=Ksw6sSb3uQwGAKwB176etNGXiAgR9Ryeax/wQ8dPD2yAk1ro61gFZiYJLciRjY0Ers
+         7HOfkcH9a7YisPNl48wG0e4UEkgXoeVDafgVyvoItJ7VIms08TuKv34QD0wDaPddoQ32
+         OYvL4FQ1Dmu9k8LKUHdwQ4YvaI2/xkDiXLGsvfiuMdJ+Zpr/0bj0kBlVEnRKm+eiCRHi
+         txLvKpgRH+JCuAbYzUhiVM6fnV8gfHAqfiykp7qEb1k7ApUnHkgnPxqPJUOCaEN3TyhA
+         xaICryz0/cTctsq6nydya/939cmg+yUOA0d3eanJWqTGeXmTEb7H12Em8YiLLUVHvdyZ
+         UjJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F820hvEjC8Tln7Ombg3pHE4UXL08XwaY9eNP4pc3pbQ=;
+        b=KNKV+Q7IpzBKJkXe2JddvJ2fTQez6dhQ5n674duQ/8nohjn8yR9fOd67uIpC70r1t5
+         ny1BPuE5ozQzZ2M5+5iLmY6AkNO3+quRXfjUsL24OsBlbqzurGcg2x0njyV4DcymKMRi
+         FakUmWhZ5aZw19ddI40puJFFvogsCrWUdqPeUKmwtqxFGQo6JaQMNM8p7vjwUpfJacIx
+         JuAHUO4tsCdqqUiIAxzROKmWOrDU3ZPahov7RzhX47lEN1saLZ5M2+I198BlzksfPwvy
+         PZTReq0vedBmUoHlQoimH7mVUbQgoPmU/RtN9LGX1UTcPOPbmH/rG4ttgT9LHxjFk768
+         KVLQ==
+X-Gm-Message-State: ANoB5pml0ivH0TEyfW8v5THlTv0gOH8Q+HE0wc+J3C7GYQHfSun6/kxQ
+        pbWn7Nu3rgrDptzRvC39dKU=
+X-Google-Smtp-Source: AA0mqf7s7PLV87O1HHskwu4GDlwaIVyfz3flw3uJZZqgPlrtUMNORUKIGghMiRMovmRTQZM1LEAsgQ==
+X-Received: by 2002:a05:6a20:ce4c:b0:a3:7d0b:5dcb with SMTP id id12-20020a056a20ce4c00b000a37d0b5dcbmr2096983pzb.15.1670464479398;
+        Wed, 07 Dec 2022 17:54:39 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id 36-20020a631864000000b00478ac3c34f3sm6276791pgy.93.2022.12.07.17.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Dec 2022 17:54:37 -0800 (PST)
+Date:   Wed, 7 Dec 2022 17:54:34 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, kernel-team@meta.com,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org
+Subject: Re: [PATCH v2 bpf-next 0/6] Dynptr convenience helpers
+Message-ID: <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+zWyP9Hy--RLyZ6-VUEr-D6kXoFmV2L1Y4b0H=RHQbCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgBn2dagQpFjEqNhBw--.44325S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFWkGF43ZrWxtF1rArW5KFg_yoW5Wr1DpF
-        s5W3W3G3Z5C34Fkw1vy34kG3sruFZ5W39xXa4xZr12yrn8XwnYqrna9w4jyFyfCw1rAa4U
-        Kr1DtwnIy3WFya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221207205537.860248-1-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Wed, Dec 07, 2022 at 12:55:31PM -0800, Joanne Koong wrote:
+> This patchset is the 3rd in the dynptr series. The 1st can be found here [0]
+> and the 2nd can be found here [1].
+> 
+> In this patchset, the following convenience helpers are added for interacting
+> with bpf dynamic pointers:
+> 
+>     * bpf_dynptr_data_rdonly
+>     * bpf_dynptr_trim
+>     * bpf_dynptr_advance
+>     * bpf_dynptr_is_null
+>     * bpf_dynptr_is_rdonly
+>     * bpf_dynptr_get_size
+>     * bpf_dynptr_get_offset
+>     * bpf_dynptr_clone
+>     * bpf_dynptr_iterator
 
-On 12/7/2022 10:58 AM, Alexei Starovoitov wrote:
-> On Tue, Dec 6, 2022 at 6:20 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 12/7/2022 9:52 AM, Yonghong Song wrote:
->>>
->>> On 12/5/22 8:29 PM, Hou Tao wrote:
->>>> From: Hou Tao <houtao1@huawei.com>
->>>>
->>>> When there are batched freeing operations on a specific CPU, part of
->>>> the freed elements ((high_watermark - lower_watermark) / 2 + 1) will
->>>> be moved to waiting_for_gp list and the remaining part will be left in
->>>> free_by_rcu list and waits for the expiration of RCU-tasks-trace grace
->>>> period and the next invocation of free_bulk().
->>> The change below LGTM. However, the above description seems not precise.
->>> IIUC, free_by_rcu list => waiting_for_gp is controlled by whether
->>> call_rcu_in_progress is true or not. If it is true, free_by_rcu list
->>> will remain intact and not moving into waiting_for_gp list.
->>> So it is not 'the remaining part will be left in free_by_rcu'.
->>> It is all elements in free_by_rcu to waiting_for_gp or none.
->> Thanks for the review and the suggestions. I tried to say that moving from
->> free_by_rcu to waiting_for_gp is slow, and there can be many free elements being
->> stacked on free_by_rcu list. So how about the following rephrasing or do you
->> still prefer "It is all elements in free_by_rcu to waiting_for_gp or none."  ?
->>
->> When there are batched freeing operations on a specific CPU, part of the freed
->> elements ((high_watermark - lower_watermark) / 2 + 1) will be moved to
->> waiting_for_gp list  and the remaining part will be left in free_by_rcu list.
-> I agree with Yonghong.
-> The above sentence is not just not precise.
-> 'elements moved to waiting_for_gp list' part is not correct.
-> The elements never moved into it directly.
-> Only via free_by_rcu list.
-Yes.
->
-> All or none also matters.
-I am still confused about the "All or none". Does it mean all elements in
-free_by_list will be moved into waiting_for_gp or none will be moved if
-call_rcu_in_progress is true, right ?
+This is great, but it really stretches uapi limits.
+Please convert the above and those in [1] to kfuncs.
+I know that there can be an argument made for consistency with existing dynptr uapi
+helpers, but we got burned on them once and scrambled to add 'flags' argument.
+kfuncs are unstable and can be adjusted/removed at any time later.
+The verifier now supports dynptr in kfunc verification, so conversion should
+be straightforward.
+Thanks
 
-So How about the following rephrasing ?
-
-When there are batched freeing operations on a specific CPU, part of the freed
-elements ((high_watermark - lower_watermark) / 2 + 1) will be indirectly moved
-into waiting_for_gp list through free_by_rcu list. After call_rcu_in_progress
-becomes false again, the remaining elements in free_by_rcu list will be moved to
-waiting_for_gp list by the next invocation of free_bulk(). However if the
-expiration of RCU tasks trace grace period is relatively slow, none element in
-free_by_rcu list will be moved.
-
-So instead of invoking __alloc_percpu_gfp() or kmalloc_node() to allocate a new
-object, in alloc_bulk() just check whether or not there is freed element in
-free_by_rcu list and reuse it if available.
-
-> .
-
+> 
+> Please note that this patchset will be rebased on top of dynptr refactoring/fixes
+> once that is landed upstream.
+> 
+> [0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gmail.com/
+> [1] https://lore.kernel.org/bpf/20221021011510.1890852-1-joannelkoong@gmail.com/
+> 
