@@ -2,82 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E28647561
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 19:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9DE647583
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbiLHSKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 13:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S229712AbiLHS0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 13:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiLHSKR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 13:10:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D0F52145;
-        Thu,  8 Dec 2022 10:10:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F55A6202D;
-        Thu,  8 Dec 2022 18:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90258C433D2;
-        Thu,  8 Dec 2022 18:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670523015;
-        bh=HMf5psgvdkU17cKci+7/ka5MOFIb0JGThR3ibASYt5g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pJDOzaLzH/gp2hjfRDvlaf0okWJ1qEUGJQRfUL+WaSXj3deB+NYEFE8wz46OtT8x3
-         blg+DqFRUSPaTXpmGf3ApraCZA6tqwQBYZJ5pso3ySW8LT2ZnDxa9VWwS+uWsQUkn5
-         lIMbH2Oxn6qzvlV2O5ThDVyKU9zmG9+FLZa+1b4X5lO/KWNf26aXmZh1lwIBNONd/d
-         nPlyifazHB4RCrNL937HGv/Yo5URMSNWpoipeZ0mjzrcuq4OfSsqIkGi0k44/N4rkp
-         nxTk6Sg+hg94+E2EZSe66DOM9V2qs/vCosbwGzia10sewN7mJdQB9jTOX+F67qczcB
-         oJLJOkoBXh5qw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 75468C41606;
-        Thu,  8 Dec 2022 18:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229824AbiLHS0q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 13:26:46 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A340AD32B;
+        Thu,  8 Dec 2022 10:26:38 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id p24so2339732plw.1;
+        Thu, 08 Dec 2022 10:26:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=ze6sTd98o+g+6IIqM1P3HBE6uRWEE3mJ5ZQRVJK3+kI=;
+        b=ir+BkFOqTEnIwxMwiDi1qxBss3dcDnH4LP4ATiGGOkJHtkbTjaXxCN2LVPi/O94LN5
+         Hw6lfqXHVmjrmFFioKM5dca8WX3ut2gwdqbDo5rj8T2nea5dm9CCgWIVlVmOBPJ0cs8u
+         0H67qvZ1PkYImLRJKpK0Q7Hcq/egl2NPvTYnpH2O0NTkj1jOvFNLFddpUiJVfK82D7ll
+         vcsg2xEtEZWDAIxP2z/Bh+0/U8DNPxxTvVPfHXiN5E0M7NInh28qx46egKMJ6BiHLodb
+         CxGcwO1Yc+FEVn/w/hx55yANIY2vSgWIQVJQiDBzDaKD8OGcALxu9woAg6bOFovVBBt3
+         5aKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ze6sTd98o+g+6IIqM1P3HBE6uRWEE3mJ5ZQRVJK3+kI=;
+        b=urUhWwYE6rKl+UZVfJOIN50U30uqf5E8xcxAe7geJkaYQoxMDN/L2AfvSxVQcTdBs8
+         lPSBjxd8fgYkGsGlupxZesUzmjFOVcQEO3idKBFvtk/os/yGuH2FMsDNOnjFagBVK3HF
+         9cCqqPBoKxuDhr4okJ9mQTGIkAZBUeK4sU0bY34HOxM04DCbtIJZ9MYAzQ4Jhck6nvI0
+         H4T2D22+/ocjmUCFnyEYxHoQcQPtj0HDuNSYnei5xAAJ7Wk+bkhDXzYKSS+tnHH891iQ
+         OpFeJ0uBulZF0Hyeb0AVpNXgQEYlAKNJe3R5rLxU0Pj3iF4KZPOGXwNMQ0uXvsyO5MGt
+         S4Dg==
+X-Gm-Message-State: ANoB5plgBhBdDGmzgesi3XDu1fHcUqpgQNCXqy9cXH4m0Cq4zxGpUDAo
+        65Q+NqZ3U97Wu/5mpBUlvxs=
+X-Google-Smtp-Source: AA0mqf7AFaUGxBh2S1oElEAgW5c2HAmruuZ/tSpzAO7F8OJItjGNTEszfpHSMAtxbYyoRmWNyDMKPQ==
+X-Received: by 2002:a17:90a:2d81:b0:219:9676:fef4 with SMTP id p1-20020a17090a2d8100b002199676fef4mr27870762pjd.89.1670523997544;
+        Thu, 08 Dec 2022 10:26:37 -0800 (PST)
+Received: from balhae.corp.google.com ([2620:15c:2c1:200:e288:d3e1:a97a:4b35])
+        by smtp.gmail.com with ESMTPSA id c133-20020a621c8b000000b00575cdd7c0adsm15606679pfc.80.2022.12.08.10.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 10:26:37 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        bpf@vger.kernel.org
+Subject: [PATCH] perf tools: Fix a typo in BTF tracepoint name
+Date:   Thu,  8 Dec 2022 10:26:36 -0800
+Message-Id: <20221208182636.524139-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: Fix comment error in fixup_kfunc_call function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167052301547.11439.6292070510258498438.git-patchwork-notify@kernel.org>
-Date:   Thu, 08 Dec 2022 18:10:15 +0000
-References: <20221208013724.257848-1-yangjihong1@huawei.com>
-In-Reply-To: <20221208013724.257848-1-yangjihong1@huawei.com>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+In the BTF, tracepoint definitions have the prefix of "btf_trace_".
+The off-cpu profilier needs to check the signature of sched_switch
+event using the definition.  But there's a typo (s/bpf/btf/) so it
+failed always.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_off_cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, 8 Dec 2022 09:37:24 +0800 you wrote:
-> insn->imm for kfunc is the relative address of __bpf_call_base,
-> instead of __bpf_base_call, Fix the comment error.
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - [bpf] bpf: Fix comment error in fixup_kfunc_call function
-    https://git.kernel.org/bpf/bpf-next/c/c2cc0ce72a5e
-
-You are awesome, thank you!
+diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
+index c257813e674e..01f70b8e705a 100644
+--- a/tools/perf/util/bpf_off_cpu.c
++++ b/tools/perf/util/bpf_off_cpu.c
+@@ -102,7 +102,7 @@ static void check_sched_switch_args(void)
+ 	const struct btf_type *t1, *t2, *t3;
+ 	u32 type_id;
+ 
+-	type_id = btf__find_by_name_kind(btf, "bpf_trace_sched_switch",
++	type_id = btf__find_by_name_kind(btf, "btf_trace_sched_switch",
+ 					 BTF_KIND_TYPEDEF);
+ 	if ((s32)type_id < 0)
+ 		return;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.0.rc1.256.g54fd8350bd-goog
 
