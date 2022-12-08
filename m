@@ -2,403 +2,340 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AB8646738
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 03:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC20646739
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 03:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbiLHCrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 21:47:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        id S229514AbiLHCrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 21:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbiLHCrU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 21:47:20 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C787254354
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 18:47:18 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id k7so230609pll.6
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 18:47:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=seZagVm7scg9XMuOKfubxdvmjqDtcHZYetAUJI/+96k=;
-        b=qnnCQcC73WX5FCg04PkDyKIaiEpI7t+u7i+rOWRWajtxB8KZsBJRxSgC07sdn7Mg8x
-         P6tG66MI1C1hyMyM6l+a220bXbOmA4L8W+GhJ1twoM8D0xSBPqAHt14xRrY25U7K4G5T
-         NnqLVAdllodYzA8RLxdDRm1fwg/ZIPQb9/qNWQU/b+EpGEvS7723veZmLoVif1wRxa9u
-         e21LEiKmxUyBLIXNvUIJ8HGXDTIGTUGxkpiBMMeILDXeCGpXH8rKzoxQ/5QFeCxbai7/
-         PoFMGNNU58w+gn7n2X9xp/snarOMIAtsIJMMgH8ewPT+/yojGadTQ35b1Cp2b4aN1zsA
-         9Hcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=seZagVm7scg9XMuOKfubxdvmjqDtcHZYetAUJI/+96k=;
-        b=0qiEHRPbu+1v3NAbOY+2VUFrPuI2K/iBfiFbpykrgJkLNm4H4mALJ2gRCo/3ywRilS
-         mmJKG83g57atGyEEsBToPQsHos4KtntYHG9GKnDFlMn+cq+i5RN82Zaade5y635n3zat
-         a6yRPnn/1gLJElsOyq47tZjC5QHrz65PiXZN04ja8+TPgNKSJVyxFj48WUKTWQ6iUPF7
-         RnuCibeCWMVFNIdv9tuo8p+vCdx2+CZ2rH0khmY+V2PzF6Cy4+bx86yYTgv1H9R9DzmL
-         auhXjWhh84QppEvQ2v/zGKwu4bfxSF7U9oanc1G/BbxaxKuIjyQslZMbsf61bIxshoK4
-         Iq6g==
-X-Gm-Message-State: ANoB5pk+CxfdxgNW//LQzCrZAiUe81In2ekaCexqd4gDQbaK9zGx0boE
-        2DflyqhvFO60Hd4rAmveNw==
-X-Google-Smtp-Source: AA0mqf6e2Ynz9SDonVuEIrys76CfVAPMs/JvNX7XLpH4gfqWQdKTSOkfy6rLYTi6BL5E1auuq2ZTVw==
-X-Received: by 2002:a17:902:ced1:b0:179:ee31:1527 with SMTP id d17-20020a170902ced100b00179ee311527mr46048943plg.138.1670467638128;
-        Wed, 07 Dec 2022 18:47:18 -0800 (PST)
-Received: from smtpclient.apple ([144.214.0.6])
-        by smtp.gmail.com with ESMTPSA id r15-20020a17090a690f00b00219b04cf66asm1775379pjj.36.2022.12.07.18.47.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Dec 2022 18:47:17 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.200.110.1.12\))
-Subject: Re: [PATCH bpf-next] bpf: Restrict attachment of bpf program to some
- tracepoints
-From:   Hao Sun <sunhao.th@gmail.com>
-In-Reply-To: <Y5CXm+gL0lvdsd9e@krava>
-Date:   Thu, 8 Dec 2022 10:47:04 +0800
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5DEB5101-7BCD-46AA-817A-A878CE9469BE@gmail.com>
-References: <20221121213123.1373229-1-jolsa@kernel.org>
- <bcdac077-3043-a648-449d-1b60037388de@iogearbox.net> <Y388m6wOktvZo1d4@krava>
- <CAADnVQJ5knvWaxVa=9_Ag3DU_qewGBbHGv_ZH=K+ETUWM1qAmA@mail.gmail.com>
- <Y4CMbTeVud0WfPtK@krava>
- <CAEf4BzZP9z3kdzn=04EvAprG-Ldrsegy5JkzvoBPvcdMG_vvGg@mail.gmail.com>
- <Y40U1D2bV+hlS/oi@krava> <Y5CXm+gL0lvdsd9e@krava>
-To:     Jiri Olsa <olsajiri@gmail.com>
-X-Mailer: Apple Mail (2.3731.200.110.1.12)
+        with ESMTP id S229522AbiLHCro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 21:47:44 -0500
+Received: from out-223.mta0.migadu.com (out-223.mta0.migadu.com [91.218.175.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C7325D6
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 18:47:41 -0800 (PST)
+Message-ID: <391b9abf-c53a-623c-055f-60768c716baa@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1670467659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IIYKsr4/6Gpoa1mkM2XNv70TpZrSLQlv0FyfF+HDb0Y=;
+        b=DwdUCE8Dwr+/vVfmx0bgkSt3UkhQMhVL9hBKr/+QREzCEszDibyuaCFhpUpVH9m7xCuHcl
+        nB3RwY0Wow3U6ZceiWTtC4bn4X/5MbHokz5BNGXMKkyX/dVicl/QcSUJQo9lhtgvAd8evD
+        NT1BtyVKhMubBmJj5OjjOt0EoH2BJ+M=
+Date:   Wed, 7 Dec 2022 18:47:33 -0800
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-4-sdf@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221206024554.3826186-4-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On 7 Dec 2022, at 9:39 PM, Jiri Olsa <olsajiri@gmail.com> wrote:
->=20
-> On Sun, Dec 04, 2022 at 10:44:52PM +0100, Jiri Olsa wrote:
->> On Wed, Nov 30, 2022 at 03:29:39PM -0800, Andrii Nakryiko wrote:
->>> On Fri, Nov 25, 2022 at 1:35 AM Jiri Olsa <olsajiri@gmail.com> =
-wrote:
->>>>=20
->>>> On Thu, Nov 24, 2022 at 09:17:22AM -0800, Alexei Starovoitov wrote:
->>>>> On Thu, Nov 24, 2022 at 1:42 AM Jiri Olsa <olsajiri@gmail.com> =
-wrote:
->>>>>>=20
->>>>>> On Thu, Nov 24, 2022 at 01:41:23AM +0100, Daniel Borkmann wrote:
->>>>>>> On 11/21/22 10:31 PM, Jiri Olsa wrote:
->>>>>>>> We hit following issues [1] [2] when we attach bpf program that =
-calls
->>>>>>>> bpf_trace_printk helper to the contention_begin tracepoint.
->>>>>>>>=20
->>>>>>>> As described in [3] with multiple bpf programs that call =
-bpf_trace_printk
->>>>>>>> helper attached to the contention_begin might result in =
-exhaustion of
->>>>>>>> printk buffer or cause a deadlock [2].
->>>>>>>>=20
->>>>>>>> There's also another possible deadlock when multiple bpf =
-programs attach
->>>>>>>> to bpf_trace_printk tracepoint and call one of the printk bpf =
-helpers.
->>>>>>>>=20
->>>>>>>> This change denies the attachment of bpf program to =
-contention_begin
->>>>>>>> and bpf_trace_printk tracepoints if the bpf program calls one =
-of the
->>>>>>>> printk bpf helpers.
->>>>>>>>=20
->>>>>>>> Adding also verifier check for tb_btf programs, so this can be =
-cought
->>>>>>>> in program loading time with error message like:
->>>>>>>>=20
->>>>>>>>   Can't attach program with bpf_trace_printk#6 helper to =
-contention_begin tracepoint.
->>>>>>>>=20
->>>>>>>> [1] =
-https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8=
-fdCkw@mail.gmail.com/
->>>>>>>> [2] =
-https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cV=
-NNTrw@mail.gmail.com/
->>>>>>>> [3] https://lore.kernel.org/bpf/Y2j6ivTwFmA0FtvY@krava/
->>>>>>>>=20
->>>>>>>> Reported-by: Hao Sun <sunhao.th@gmail.com>
->>>>>>>> Suggested-by: Alexei Starovoitov <ast@kernel.org>
->>>>>>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->>>>>>>> ---
->>>>>>>>  include/linux/bpf.h          |  1 +
->>>>>>>>  include/linux/bpf_verifier.h |  2 ++
->>>>>>>>  kernel/bpf/syscall.c         |  3 +++
->>>>>>>>  kernel/bpf/verifier.c        | 46 =
-++++++++++++++++++++++++++++++++++++
->>>>>>>>  4 files changed, 52 insertions(+)
->>>>>>>>=20
->>>>>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>>>>>>> index c9eafa67f2a2..3ccabede0f50 100644
->>>>>>>> --- a/include/linux/bpf.h
->>>>>>>> +++ b/include/linux/bpf.h
->>>>>>>> @@ -1319,6 +1319,7 @@ struct bpf_prog {
->>>>>>>>                            enforce_expected_attach_type:1, /* =
-Enforce expected_attach_type checking at attach time */
->>>>>>>>                            call_get_stack:1, /* Do we call =
-bpf_get_stack() or bpf_get_stackid() */
->>>>>>>>                            call_get_func_ip:1, /* Do we call =
-get_func_ip() */
->>>>>>>> +                           call_printk:1, /* Do we call =
-trace_printk/trace_vprintk  */
->>>>>>>>                            tstamp_type_access:1; /* Accessed =
-__sk_buff->tstamp_type */
->>>>>>>>    enum bpf_prog_type      type;           /* Type of BPF =
-program */
->>>>>>>>    enum bpf_attach_type    expected_attach_type; /* For some =
-prog types */
->>>>>>>> diff --git a/include/linux/bpf_verifier.h =
-b/include/linux/bpf_verifier.h
->>>>>>>> index 545152ac136c..7118c2fda59d 100644
->>>>>>>> --- a/include/linux/bpf_verifier.h
->>>>>>>> +++ b/include/linux/bpf_verifier.h
->>>>>>>> @@ -618,6 +618,8 @@ bool is_dynptr_type_expected(struct =
-bpf_verifier_env *env,
->>>>>>>>                         struct bpf_reg_state *reg,
->>>>>>>>                         enum bpf_arg_type arg_type);
->>>>>>>> +int bpf_check_tp_printk_denylist(const char *name, struct =
-bpf_prog *prog);
->>>>>>>> +
->>>>>>>>  /* this lives here instead of in bpf.h because it needs to =
-dereference tgt_prog */
->>>>>>>>  static inline u64 bpf_trampoline_compute_key(const struct =
-bpf_prog *tgt_prog,
->>>>>>>>                                         struct btf *btf, u32 =
-btf_id)
->>>>>>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->>>>>>>> index 35972afb6850..9a69bda7d62b 100644
->>>>>>>> --- a/kernel/bpf/syscall.c
->>>>>>>> +++ b/kernel/bpf/syscall.c
->>>>>>>> @@ -3329,6 +3329,9 @@ static int bpf_raw_tp_link_attach(struct =
-bpf_prog *prog,
->>>>>>>>            return -EINVAL;
->>>>>>>>    }
->>>>>>>> +   if (bpf_check_tp_printk_denylist(tp_name, prog))
->>>>>>>> +           return -EACCES;
->>>>>>>> +
->>>>>>>>    btp =3D bpf_get_raw_tracepoint(tp_name);
->>>>>>>>    if (!btp)
->>>>>>>>            return -ENOENT;
->>>>>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>>>>>> index f07bec227fef..b662bc851e1c 100644
->>>>>>>> --- a/kernel/bpf/verifier.c
->>>>>>>> +++ b/kernel/bpf/verifier.c
->>>>>>>> @@ -7472,6 +7472,47 @@ static void =
-update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
->>>>>>>>                             state->callback_subprogno =3D=3D =
-subprogno);
->>>>>>>>  }
->>>>>>>> +int bpf_check_tp_printk_denylist(const char *name, struct =
-bpf_prog *prog)
->>>>>>>> +{
->>>>>>>> +   static const char * const denylist[] =3D {
->>>>>>>> +           "contention_begin",
->>>>>>>> +           "bpf_trace_printk",
->>>>>>>> +   };
->>>>>>>> +   int i;
->>>>>>>> +
->>>>>>>> +   /* Do not allow attachment to denylist[] tracepoints,
->>>>>>>> +    * if the program calls some of the printk helpers,
->>>>>>>> +    * because there's possibility of deadlock.
->>>>>>>> +    */
->>>>>>>=20
->>>>>>> What if that prog doesn't but tail calls into another one which =
-calls printk helpers?
->>>>>>=20
->>>>>> right, I'll deny that for all BPF_PROG_TYPE_RAW_TRACEPOINT* =
-programs,
->>>>>> because I don't see easy way to check on that
->>>>>>=20
->>>>>> we can leave printk check for tracing BPF_TRACE_RAW_TP programs,
->>>>>> because verifier known the exact tracepoint already
->>>>>=20
->>>>> This is all fragile and merely a stop gap.
->>>>> Doesn't sound that the issue is limited to bpf_trace_printk
->>>>=20
->>>> hm, I don't have a better idea how to fix that.. I can't deny
->>>> contention_begin completely, because we use it in perf via
->>>> tp_btf/contention_begin (perf lock contention) and I don't
->>>> think there's another way for perf to do that
->>>>=20
->>>> fwiw the last version below denies BPF_PROG_TYPE_RAW_TRACEPOINT
->>>> programs completely and tracing BPF_TRACE_RAW_TP with printks
->>>>=20
->>>=20
->>> I think disabling bpf_trace_printk() tracepoint for any BPF program =
-is
->>> totally fine. This tracepoint was never intended to be attached to.
->>>=20
->>> But as for the general bpf_trace_printk() deadlocking. Should we
->>> discuss how to make it not deadlock instead of starting to denylist
->>> things left and right?
->>>=20
->>> Do I understand that we take trace_printk_lock only to protect that
->>> static char buf[]? Can we just make this buf per-CPU and do a =
-trylock
->>> instead? We'll only fail to bpf_trace_printk() something if we have
->>> nested BPF programs (rare) or NMI (also rare).
->>=20
->> ugh, sorry I overlooked your reply :-\
->>=20
->> sounds good.. if it'd be acceptable to use trylock, we'd get rid of =
-the
->> contention_begin tracepoint being triggered, which was the case for =
-deadlock
->=20
-> looks like we can remove the spinlock completely by using the
-> nested level buffer approach same way as in bpf_bprintf_prepare
->=20
-> it gets rid of the contention_begin tracepoint, so I'm not being
-> able to trigger the issue in my test
->=20
-> jirka
->=20
->=20
-> ---
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 3bbd3f0c810c..d6afde7311f8 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -369,33 +369,60 @@ static const struct bpf_func_proto =
-*bpf_get_probe_write_proto(void)
-> return &bpf_probe_write_user_proto;
-> }
->=20
-> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
-> -
-> #define MAX_TRACE_PRINTK_VARARGS 3
-> #define BPF_TRACE_PRINTK_SIZE 1024
-> +#define BPF_TRACE_PRINTK_NEST 3
+On 12/5/22 6:45 PM, Stanislav Fomichev wrote:
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 55dbc68bfffc..c24aba5c363b 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -409,4 +409,33 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+>   
+>   #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+>   
+> +#define XDP_METADATA_KFUNC_xxx	\
+> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED, \
+> +			   bpf_xdp_metadata_rx_timestamp_supported) \
+> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
+> +			   bpf_xdp_metadata_rx_timestamp) \
+> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED, \
+> +			   bpf_xdp_metadata_rx_hash_supported) \
+> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
+> +			   bpf_xdp_metadata_rx_hash) \
 > +
-> +struct trace_printk_buf {
-> + char data[BPF_TRACE_PRINTK_NEST][BPF_TRACE_PRINTK_SIZE];
-> + int nest;
+> +enum {
+> +#define XDP_METADATA_KFUNC(name, str) name,
+> +XDP_METADATA_KFUNC_xxx
+> +#undef XDP_METADATA_KFUNC
+> +MAX_XDP_METADATA_KFUNC,
 > +};
-> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
 > +
-> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
+> +#ifdef CONFIG_NET
+
+I think this is no longer needed because xdp_metadata_kfunc_id() is only used in 
+offload.c which should be CONFIG_NET only.
+
+> +u32 xdp_metadata_kfunc_id(int id);
+> +#else
+> +static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
+> +#endif
+> +
+> +struct xdp_md;
+> +bool bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx);
+> +u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx);
+> +bool bpf_xdp_metadata_rx_hash_supported(const struct xdp_md *ctx);
+> +u32 bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx);
+> +
+>   #endif /* __LINUX_NET_XDP_H__ */
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index f89de51a45db..790650a81f2b 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1156,6 +1156,11 @@ enum bpf_link_type {
+>    */
+>   #define BPF_F_XDP_HAS_FRAGS	(1U << 5)
+>   
+> +/* If BPF_F_XDP_HAS_METADATA is used in BPF_PROG_LOAD command, the loaded
+> + * program becomes device-bound but can access it's XDP metadata.
+> + */
+> +#define BPF_F_XDP_HAS_METADATA	(1U << 6)
+> +
+
+[ ... ]
+
+> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> index f5769a8ecbee..bad8bab916eb 100644
+> --- a/kernel/bpf/offload.c
+> +++ b/kernel/bpf/offload.c
+> @@ -41,7 +41,7 @@ struct bpf_offload_dev {
+>   struct bpf_offload_netdev {
+>   	struct rhash_head l;
+>   	struct net_device *netdev;
+> -	struct bpf_offload_dev *offdev;
+> +	struct bpf_offload_dev *offdev; /* NULL when bound-only */
+>   	struct list_head progs;
+>   	struct list_head maps;
+>   	struct list_head offdev_netdevs;
+> @@ -58,6 +58,12 @@ static const struct rhashtable_params offdevs_params = {
+>   static struct rhashtable offdevs;
+>   static bool offdevs_inited;
+>   
+> +static int __bpf_offload_init(void);
+> +static int __bpf_offload_dev_netdev_register(struct bpf_offload_dev *offdev,
+> +					     struct net_device *netdev);
+> +static void __bpf_offload_dev_netdev_unregister(struct bpf_offload_dev *offdev,
+> +						struct net_device *netdev);
+> +
+>   static int bpf_dev_offload_check(struct net_device *netdev)
+>   {
+>   	if (!netdev)
+> @@ -87,13 +93,17 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+>   	    attr->prog_type != BPF_PROG_TYPE_XDP)
+>   		return -EINVAL;
+>   
+> -	if (attr->prog_flags)
+> +	if (attr->prog_flags & ~BPF_F_XDP_HAS_METADATA)
+>   		return -EINVAL;
+>   
+>   	offload = kzalloc(sizeof(*offload), GFP_USER);
+>   	if (!offload)
+>   		return -ENOMEM;
+>   
+> +	err = __bpf_offload_init();
+> +	if (err)
+> +		return err;
+> +
+>   	offload->prog = prog;
+>   
+>   	offload->netdev = dev_get_by_index(current->nsproxy->net_ns,
+> @@ -102,11 +112,25 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+>   	if (err)
+>   		goto err_maybe_put;
+>   
+> +	prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_HAS_METADATA);
+> +
+
+If I read the set correctly, bpf prog can either use metadata kfunc or offload 
+but not both. It is fine to start with only supporting metadata kfunc when there 
+is no offload but will be useful to understand the reason. I assume an offloaded 
+bpf prog should still be able to call the bpf helpers like adjust_head/tail and 
+the same should go for any kfunc?
+
+Also, the BPF_F_XDP_HAS_METADATA feels like it is acting more like 
+BPF_F_XDP_DEV_BOUND_ONLY.
+
+>   	down_write(&bpf_devs_lock);
+>   	ondev = bpf_offload_find_netdev(offload->netdev);
+>   	if (!ondev) {
+> -		err = -EINVAL;
+> -		goto err_unlock;
+> +		if (!prog->aux->offload_requested) {
+
+nit. bpf_prog_is_offloaded(prog->aux)
+
+> +			/* When only binding to the device, explicitly
+> +			 * create an entry in the hashtable. See related
+> +			 * maybe_remove_bound_netdev.
+> +			 */
+> +			err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
+> +			if (err)
+> +				goto err_unlock;
+> +			ondev = bpf_offload_find_netdev(offload->netdev);
+> +		}
+> +		if (!ondev) {
+> +			err = -EINVAL;
+> +			goto err_unlock;
+> +		}
+>   	}
+>   	offload->offdev = ondev->offdev;
+>   	prog->aux->offload = offload;
+> @@ -209,6 +233,19 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt)
+>   	up_read(&bpf_devs_lock);
+>   }
+>   
+> +static void maybe_remove_bound_netdev(struct net_device *dev)
 > +{
-> + this_cpu_dec(buf->nest);
-> + preempt_enable();
+> +	struct bpf_offload_netdev *ondev;
+> +
+> +	rtnl_lock();
+> +	down_write(&bpf_devs_lock);
+> +	ondev = bpf_offload_find_netdev(dev);
+> +	if (ondev && !ondev->offdev && list_empty(&ondev->progs))
+> +		__bpf_offload_dev_netdev_unregister(NULL, dev);
+> +	up_write(&bpf_devs_lock);
+> +	rtnl_unlock();
 > +}
 > +
-> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, =
-char **data)
+>   static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+>   {
+>   	struct bpf_prog_offload *offload = prog->aux->offload;
+> @@ -226,10 +263,17 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+>   
+>   void bpf_prog_offload_destroy(struct bpf_prog *prog)
+>   {
+> +	struct net_device *netdev = NULL;
+> +
+>   	down_write(&bpf_devs_lock);
+> -	if (prog->aux->offload)
+> +	if (prog->aux->offload) {
+> +		netdev = prog->aux->offload->netdev;
+>   		__bpf_prog_offload_destroy(prog);
+> +	}
+>   	up_write(&bpf_devs_lock);
+> +
+> +	if (netdev)
+
+May be I have missed a refcnt or lock somewhere.  Is it possible that netdev may 
+have been freed?
+
+> +		maybe_remove_bound_netdev(netdev);
+>   }
+>   
+
+[ ... ]
+
+> +void *bpf_offload_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
 > +{
-> + int nest;
+> +	const struct net_device_ops *netdev_ops;
+> +	void *p = NULL;
 > +
-> + preempt_disable();
-> + nest =3D this_cpu_inc_return(buf->nest);
-> + if (nest > BPF_TRACE_PRINTK_NEST) {
-> + put_printk_buf(buf);
-> + return false;
-> + }
-> + *data =3D (char *) this_cpu_ptr(&buf->data[nest - 1]);
-> + return true;
+> +	down_read(&bpf_devs_lock);
+> +	if (!prog->aux->offload || !prog->aux->offload->netdev)
+> +		goto out;
+> +
+> +	netdev_ops = prog->aux->offload->netdev->netdev_ops;
+> +
+> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED))
+> +		p = netdev_ops->ndo_xdp_rx_timestamp_supported;
+> +	else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
+> +		p = netdev_ops->ndo_xdp_rx_timestamp;
+> +	else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED))
+> +		p = netdev_ops->ndo_xdp_rx_hash_supported;
+> +	else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
+> +		p = netdev_ops->ndo_xdp_rx_hash;
+> +	/* fallback to default kfunc when not supported by netdev */
+> +out:
+> +	up_read(&bpf_devs_lock);
+> +
+> +	return p;
 > +}
->=20
-> BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
->    u64, arg2, u64, arg3)
-> {
-> u64 args[MAX_TRACE_PRINTK_VARARGS] =3D { arg1, arg2, arg3 };
-> u32 *bin_args;
-> - static char buf[BPF_TRACE_PRINTK_SIZE];
-> - unsigned long flags;
-> + char *buf;
-> int ret;
->=20
-> + if (!get_printk_buf(&printk_buf, &buf))
-> + return -EBUSY;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 13bc96035116..b345a273f7d0 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2491,7 +2491,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+>   				 BPF_F_TEST_STATE_FREQ |
+>   				 BPF_F_SLEEPABLE |
+>   				 BPF_F_TEST_RND_HI32 |
+> -				 BPF_F_XDP_HAS_FRAGS))
+> +				 BPF_F_XDP_HAS_FRAGS |
+> +				 BPF_F_XDP_HAS_METADATA))
+>   		return -EINVAL;
+>   
+>   	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+> @@ -2575,7 +2576,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+>   	prog->aux->attach_btf = attach_btf;
+>   	prog->aux->attach_btf_id = attr->attach_btf_id;
+>   	prog->aux->dst_prog = dst_prog;
+> -	prog->aux->offload_requested = !!attr->prog_ifindex;
+> +	prog->aux->dev_bound = !!attr->prog_ifindex;
+>   	prog->aux->sleepable = attr->prog_flags & BPF_F_SLEEPABLE;
+>   	prog->aux->xdp_has_frags = attr->prog_flags & BPF_F_XDP_HAS_FRAGS;
+>   
+> @@ -2598,7 +2599,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+>   	atomic64_set(&prog->aux->refcnt, 1);
+>   	prog->gpl_compatible = is_gpl ? 1 : 0;
+>   
+> -	if (bpf_prog_is_offloaded(prog->aux)) {
+> +	if (bpf_prog_is_dev_bound(prog->aux)) {
+>   		err = bpf_prog_offload_init(prog, attr);
+>   		if (err)
+>   			goto free_prog_sec;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fc4e313a4d2e..00951a59ee26 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -15323,6 +15323,24 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>   		return -EINVAL;
+>   	}
+>   
+> +	*cnt = 0;
 > +
-> ret =3D bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
->   MAX_TRACE_PRINTK_VARARGS);
-> if (ret < 0)
-> - return ret;
-> + goto out;
->=20
-> - raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> - ret =3D bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> + ret =3D bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
->=20
-> trace_bpf_trace_printk(buf);
-> - raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
->=20
-> bpf_bprintf_cleanup();
->=20
-> +out:
-> + put_printk_buf(&printk_buf);
-> return ret;
-> }
->=20
-> @@ -427,31 +454,35 @@ const struct bpf_func_proto =
-*bpf_get_trace_printk_proto(void)
-> return &bpf_trace_printk_proto;
-> }
->=20
-> +static DEFINE_PER_CPU(struct trace_printk_buf, vprintk_buf);
-> +
-> BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void =
-*, data,
->    u32, data_len)
-> {
-> - static char buf[BPF_TRACE_PRINTK_SIZE];
-> - unsigned long flags;
-> int ret, num_args;
-> u32 *bin_args;
-> + char *buf;
->=20
-> if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
->     (data_len && !data))
-> return -EINVAL;
-> num_args =3D data_len / 8;
->=20
-> + if (!get_printk_buf(&vprintk_buf, &buf))
-> + return -EBUSY;
-> +
-> ret =3D bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
-> if (ret < 0)
-> - return ret;
-> + goto out;
->=20
-> - raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> - ret =3D bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> + ret =3D bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
->=20
-> trace_bpf_trace_printk(buf);
-> - raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
->=20
-> bpf_bprintf_cleanup();
->=20
-> +out:
-> + put_printk_buf(&vprintk_buf);
-> return ret;
-> }
+> +	if (resolve_prog_type(env->prog) == BPF_PROG_TYPE_XDP) {
 
-Tested on a latest bpf-next build, I can confirm the patch also fixes
-this[1] issue.
+hmmm...does it need BPF_PROG_TYPE_XDP check? Is the below 
+bpf_prog_is_dev_bound() and the eariler 
+'register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata_kfunc_set)' good enough?
 
-[1] =
-https://lore.kernel.org/bpf/CACkBjsb3GRw5aiTT=3DRCUs3H5aum_QN+B0ZqZA=3DMvj=
-spUP6NFMg@mail.gmail.com/T/#u=
+> +		if (bpf_prog_is_offloaded(env->prog->aux)) {
+> +			verbose(env, "no metadata kfuncs offload\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (bpf_prog_is_dev_bound(env->prog->aux)) {
+> +			void *p = bpf_offload_resolve_kfunc(env->prog, insn->imm);
+> +
+> +			if (p) {
+> +				insn->imm = BPF_CALL_IMM(p);
+> +				return 0;
+> +			}
+> +		}
+> +	}
+> +
+
+
