@@ -2,216 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 109F36478AB
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 23:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974A26478B9
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 23:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbiLHWM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 17:12:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
+        id S230089AbiLHWSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 17:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbiLHWMU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 17:12:20 -0500
-Received: from mx18lb.world4you.com (mx18lb.world4you.com [81.19.149.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7A679C0E;
-        Thu,  8 Dec 2022 14:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=z7hlu+o9nBCU9kCxPQROnnbW9gdJlhNarIKiE0m/OO0=; b=fUrCMaTXRrofnBSvsUVUkT8gmc
-        d/y3dwEXLhpWh8y9c4WGnoHTu/d8Ti+UhI4vD4zEGc7GvgxOaNQX6yJzbC5YyLJdRDkBB2zAbz5vd
-        5COGbRaYKre37bhdUu90SV0eT5l9NztM2mzOTwmmG0Jx8UL7nIrPhCGBaWo1jO06A9fE=;
-Received: from [88.117.53.17] (helo=[10.0.0.160])
-        by mx18lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1p3P7n-0002qR-Ar; Thu, 08 Dec 2022 23:12:15 +0100
-Message-ID: <24e5f99e-9785-9792-970c-25b4ea70710d@engleder-embedded.com>
-Date:   Thu, 8 Dec 2022 23:12:14 +0100
+        with ESMTP id S230070AbiLHWSN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 17:18:13 -0500
+Received: from sonic307-16.consmr.mail.ne1.yahoo.com (sonic307-16.consmr.mail.ne1.yahoo.com [66.163.190.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204EB70B9A
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 14:18:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1670537891; bh=2dAILjLP69OS9FOb9YU5vIxnb/ja4jQMKeNfFXNX264=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=PRG2/oNnpGADGD83EeZtPq/kQrBymL9eocf9L0cafJvVP1JXHAZ43YtO0WAU79SFi+c5jCMCbtnjjqyQ4C3elOn/GLvcPzbp+cOkPhFClj0GlKIX15BRHFg96OP6IvRKlMLGkEmT5KnZxKDQ/ST8AjfIIDxnQGA1jFxI8HBdZEyxcXuhJ1mxbCC+RvxlyEoLToW3a6yE1n1eUgFKplpZMTCFla217dTohtfo+VkZJ2RbusnLV6zOeSFHWEXsF9915vzDH3An/ZvFWJ2m7mhp1saagrYiUHysW3IYn6RZatCW2gPARY/RrKF7ZVntHlKtSURn4uNB8ICaDF/3uP5DtQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1670537891; bh=5lRHWOPF5z14iBE75M6AOstxXbLwGCgN+49brGsVQ7j=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=tEfHCtNTBi1uMFSLdThHmzrkDfWfL/7qqnWQysCRr32DQy3BHYfZPYXsFXTUd0+y2pQQ+ARoqDJIV2/jCJYcRkiHt59uNdUz683mJl/3hWCpGu/clzSTCfpRNG+lfda4Lpk8l/ifFra9sVQlCbIs8q/smpP06Ffr1wSOaxM/cwYWFVUtb9MGmj8Rr4R7bDcl6PQW452GHRTy/DdT7+4nWq/qkAsApfp6JiKWm5Jv870Zzpjvaegw1uc6rKSo86P594ExgPXwVdxHxl4sRAraXMm95yMbKQkhOQghvbskHwtCmFeZePrdfTcG5oC3GaR02CZ3mqZZwfpyFxfNUh0M1Q==
+X-YMail-OSG: O2RLWIEVM1kX0tTMjEkN_jNRv0FV8dAQtxZr6H8HYUI60J6CjCv37XMKD2CQwWN
+ Ddfed.mH_vcnWG2nUNEqsnOreN7jUQTZS8PGx_1jTM9guhW2iIWje_2y7go.FqRYRsFY3ALFMukh
+ a9fZgv_7UgWlKoxViHs2jAfPxFD4qOY_CFmX.RipjeQbbCv_PJumVHQZDLPhDqQK..FEBlgK83Dv
+ AbCLZswRq46xiuYJgNLgSus6GY_nbYVlvPAVHnLV4yl5N_amkbYyGQBFPjABwfKDag9jJrKsStdS
+ h3QkWoehd0UyuvjeEI5DcOo6LmgXjgMH5Bd8m6hQsaRyLeQ4j1pgOy.eTcwgN5oYkR.wDujEcRXB
+ qUI9H5XrplDcZQI_jKkWNF131TepZFlvhW__88GDFZsRaaqkzbQWOzQ6SMdB8QyPEwYuRxWPWXHX
+ xOR1Df3G4e9g9GE.7hXxnikp3oEImNX.woH4PRXUppDnSS2jmmG9sTxUIDV.yYG0Xmidc7JJGNvD
+ IbxlJMkNAywH.GXUVlqxWBdt4nvki3HO8TX3egWbQqOY3i8Iag2V0c66UeQPuGaRQt4sMiCiGNLb
+ o0nmGKZVeFKdM4Wl9UGBUFo63OO.dmAgpxFXgfjVWbIDIn_UK2PhjKzkMA1VyVpP6AgUVI0WVFhJ
+ 6BHe354D50k2fHcrJd90t7hILF1Ipy3Xii5yAYbsMF8viZNx.SgnJ2MHYU2CkB6xNlWQF1gJi.bj
+ Vt6Uungp4S3T4ocKujUlhH4uFqT.SLxvTib5q6X5a.l9Jv5R.3teQh27uOTs34fd4kosf7cWUBVx
+ 82Eye6jsvatVpodREn9DIP1NqqaMWRkVmI7RLr67acpm3uLKrDPYrfIat6hFDyugpbTyEvnyVcLn
+ OKCRKTXHavjiVVIkltCons.VnituJj6tSa6MECu..JCDZVvaMytU3JkRnTFs6dlefFTjb8ATp0Rz
+ CYqYBGonBNLn3nnMLl2ZDI1l8Xd0WaFvh6JyuPl982QByrPHXFt6dUzR2sQeyhWQEglxIRElDKvU
+ N8Ybe.ctuIfMcymEWpGWK0AAZWcWJqLXGsLeam02_C3sIPufZJByE2cUhpHs9CZropstg98r0jrm
+ o93Zn910CuVR7CrxKvX5LvZswqEjil_23rBgc6IvzBNALYMhMCvRKPskZ4LGWo3HVpq7Q.S9e768
+ zqIjFOiV5YBlII2OJ5_khv32rhg0jIsuM16asnWksK_75TtAFLMF.nzGMYtcl.7dhuGOxJXEErp1
+ XXG5ucvON7T5lO9PZ7s0YqCOFxlAnYjy9_01G5Geo9OgeBbEuL0kCS8B4.F65I4I0RgboxYghWFa
+ YtpkPIqkykPBGMhHFC3cgb8VZGFJrlosCfufPwnb2J.SCLZ6Va4xyWl4BKsBHvoULYLYAdJ_YGOk
+ e1XUc1oVudyPcd_8vA9ngXAc.8gmvVHFybXZEFuEbhSOtyr21kry8Fv4wvmlhLKU704duD4TjAQP
+ roYswyak9xhl7kHoaUHGZTPrGT21gMerg732sAspOtWXCIPyc6M6kXh4PmbgEmgn6Vo1XK9u.OBm
+ Rujl2YaBeJU1KN1tpPDD9470OclWeuo66lc6ru.Q2hmjrVCLTv.fwjFBsdyZzAc26I4dxMC5F.eo
+ qUakh_GR0UTa0r9p8WkVOPqEtlsgJWVV38V1KsdkeFBtJb.dNDLzCiNsl4glbFe.qwV2F2pdSsiD
+ pBN08wNBpk7xAm5uW2nzHybDO8AxWwrf20K8PPbGZ3QrQNn25J4fcCOhSuTQGzlC8puv42yMH8Ia
+ b8Z9ZZNU91ovq.g77l4kgCVKg2LCSlnhaONutWcF_m9qcGsbbGsSbrNSvRQFlbwu1_HSpy70rue7
+ xnUtScSindofW98pEsvan.3HSln27hhuAauxvzwpI6rj.2kx_oQFrLg7a4WctSXA4ZIrLc97D61H
+ GBw6IJWDaXASSSyskHvT52sJ_EM.V14upipGr2OVGxCpJiDBC89ViRgX5XFAnxXY2R2d8.exVEdm
+ 5N35uUNjYgt1Rzx24TlKnngNBC6TKJiHaG2o.HDobZKbprGhafgYqt.LoNa_fBQ9bZsBpBFYmXNN
+ fVCDRYe6jAXUzuzvKnGRjVhOY902iVmsF5mvRJ4SErdLUNMNzPmvMFpAh0aJiCvanm1eg5T7CrOJ
+ TpPIEt1zu2st9oeVZF_R9Yzv0Vwj2KuRJ_FDgDTWSEszmZUG9kqTeJVz6kkE4ABX9GohLtoC0Ck6
+ YyrpH9x8kRTzlp4R1v9BTfOiJa50F1TIKlEGNWu7RiQ8cEatc2aLxGeccs6yIn3pItrV3ep.Q0op
+ DpcXlYSw9SbSmNn0-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Thu, 8 Dec 2022 22:18:11 +0000
+Received: by hermes--production-gq1-d898c4779-66ldg (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID e4990e6f66164b6f2d176bcbbed58160;
+          Thu, 08 Dec 2022 22:18:07 +0000 (UTC)
+Message-ID: <8d14fcbe-baab-4678-beb1-4f8ff6171eec@schaufler-ca.com>
+Date:   Thu, 8 Dec 2022 14:18:06 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH net-next v2 6/6] tsnep: Add XDP RX support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and fix
+ formatting
 Content-Language: en-US
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com
-References: <20221208054045.3600-1-gerhard@engleder-embedded.com>
- <20221208054045.3600-7-gerhard@engleder-embedded.com>
- <Y5HpWf8XMcCj2k7V@boxer>
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <Y5HpWf8XMcCj2k7V@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Paul Moore <paul@paul-moore.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     David Howells <dhowells@redhat.com>, omosnace@redhat.com,
+        john.johansen@canonical.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        casey@schaufler-ca.com
+References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
+ <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
+ <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
+ <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
+ <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
+ <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
+ <b989b278a16c48e104b32ba7243e4298491a6056.camel@huaweicloud.com>
+ <CAHC9VhSdcyOd01VYtqhJGrgKyG3oZmE_1d0RQymxKv1=ErhduQ@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhSdcyOd01VYtqhJGrgKyG3oZmE_1d0RQymxKv1=ErhduQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: WebService/1.1.20926 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08.12.22 14:40, Maciej Fijalkowski wrote:
->> +static unsigned int tsnep_rx_offset_xdp(void)
->> +{
->> +	return XDP_PACKET_HEADROOM;
->> +}
-> 
-> I don't see much of a value in this func :P
+On 12/8/2022 1:59 PM, Paul Moore wrote:
+> On Thu, Dec 8, 2022 at 4:29 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+>> On Wed, 2022-12-07 at 14:34 -0500, Paul Moore wrote:
+>>> On Wed, Dec 7, 2022 at 4:18 AM Roberto Sassu
+>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>> For this patch, I saw it is already in lsm/next. Paul, should I do an
+>>>> incremental patch or change the one in the repo and you force push it?
+>>>> I would just remove the three lines after the parameters description.
+>>> Just send a patch against the current lsm/next branch to remove those
+>>> lines, and please do it ASAP as the merge window opens this
+>>> weekend/Monday.
+>> Ok, was about to send but I would need a clarification first.
+>>
+>> In mount_api.rst, there is for security_fs_context_parse_param():
+>>
+>>      The value pointed to by param may be modified (if a string) or stolen
+>>      (provided the value pointer is NULL'd out).  If it is stolen, 0 must be
+>>      returned to prevent it being passed to the filesystem.
+>>
+>> Looking at security.c:
+>>
+>>         hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
+>>                              list) {
+>>                 trc = hp->hook.fs_context_parse_param(fc, param);
+>>                 if (trc == 0)
+>>                         rc = 0;
+>>                 else if (trc != -ENOPARAM)
+>>                         return trc;
+>>         }
+>>
+>> If, as mount_api.rst says, the value is modified by an LSM or stolen,
+>> should it be passed to other LSMs too?
+> All of the LSMs should be using fs_parse() in their
+> fs_context_parse_param() hook to identify the mount options that they
+> own, skipping those they do not (fs_parse() would return -ENOPARAM in
+> those cases).  I don't believe we currently have any mount options
+> that are shared across the different LSMs, so I believe this is a
+> non-issue.
 
-It is a variant of tsnep_rx_offset() for the XDP path to prevent
-unneeded calls of tsnep_xdp_is_enabled(). With this function I
-keep the RX offset local. But yes, it provides actually no
-functionality.
+There aren't any today. SELinux and Smack are the only LSMs with
+mount options. Smack mount options all begin with "smack", so it's
+unlikely there is going to be a future overlap. I'd hate to do the
+/proc/self/attr/current battle over again, so I recommend that any
+new LSM that uses mount options be required to use an identifying
+prefix. I don't see any way that using the same option name for
+mounts, even if the use is the same, won't end in tears.
 
->> +
->>   static void tsnep_rx_ring_cleanup(struct tsnep_rx *rx)
->>   {
->>   	struct device *dmadev = rx->adapter->dmadev;
->> @@ -997,6 +1033,67 @@ static int tsnep_rx_refill(struct tsnep_rx *rx, int count, bool reuse)
->>   	return i;
->>   }
->>   
->> +static bool tsnep_xdp_run_prog(struct tsnep_rx *rx, struct bpf_prog *prog,
->> +			       struct xdp_buff *xdp, int *status)
->> +{
->> +	unsigned int length;
->> +	unsigned int sync;
->> +	u32 act;
->> +
->> +	length = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
-> 
-> could this be xdp->data_end - xdp->data - TSNEP_RX_INLINE_METADATA_SIZE ?
-
-xdp->data points to the start of the Ethernet frame after
-TSNEP_RX_INLINE_METADATA_SIZE, so it would be wrong to substract the
-metadata which is not there.
-Actually xdp->data_end - xdp->data + TSNEP_RX_INLINE_METADATA_SIZE would
-be equivalent
-
-TSNEP_RX_INLINE_METADATA_SIZE contains timestamps of received frames. It
-is written by DMA at the beginning of the RX buffer. So it extends the
-DMA length and needs to be considered for DMA sync.
-
-> Can you tell a bit more about that metadata macro that you have to handle
-> by yourself all the time? would be good to tell about the impact on
-> data_meta since you're not configuring it on xdp_prepare_buff().
-
-I will add comments.
-
->> +
->> +	act = bpf_prog_run_xdp(prog, xdp);
->> +
->> +	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
->> +	sync = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
->> +	sync = max(sync, length);
->> +
->> +	switch (act) {
->> +	case XDP_PASS:
->> +		return false;
->> +	case XDP_TX:
->> +		if (tsnep_xdp_xmit_back(rx->adapter, xdp) < 0)
->> +			goto out_failure;
->> +		*status |= TSNEP_XDP_TX;
->> +		return true;
->> +	case XDP_REDIRECT:
->> +		if (xdp_do_redirect(rx->adapter->netdev, xdp, prog) < 0)
->> +			goto out_failure;
->> +		*status |= TSNEP_XDP_REDIRECT;
->> +		return true;
->> +	default:
->> +		bpf_warn_invalid_xdp_action(rx->adapter->netdev, prog, act);
->> +		fallthrough;
->> +	case XDP_ABORTED:
->> +out_failure:
->> +		trace_xdp_exception(rx->adapter->netdev, prog, act);
->> +		fallthrough;
->> +	case XDP_DROP:
->> +		page_pool_put_page(rx->page_pool, virt_to_head_page(xdp->data),
->> +				   sync, true);
->> +		return true;
->> +	}
->> +}
->> +
->> +static void tsnep_finalize_xdp(struct tsnep_adapter *adapter, int status)
->> +{
->> +	int cpu = smp_processor_id();
->> +	int queue;
->> +	struct netdev_queue *nq;
-> 
-> do you care about RCT, or?
-
-Do you mean Redundancy Control Trailer (RCT) of PRP? This is new to me.
-Do I have to take care about it in the driver? There are no plans to use
-redundancy protocols with this device so far.
-
->> +
->> +	if (status & TSNEP_XDP_TX) {
->> +		queue = cpu % adapter->num_tx_queues;
->> +		nq = netdev_get_tx_queue(adapter->netdev, queue);
->> +
->> +		__netif_tx_lock(nq, cpu);
->> +		tsnep_xdp_xmit_flush(&adapter->tx[queue]);
->> +		__netif_tx_unlock(nq);
->> +	}
->> +
->> +	if (status & TSNEP_XDP_REDIRECT)
->> +		xdp_do_flush();
->> +}
->> +finalize_xdp
->>   static struct sk_buff *tsnep_build_skb(struct tsnep_rx *rx, struct page *page,
->>   				       int length)
-> 
-> did you consider making tsnep_build_skb() to work on xdp_buff directly?
-> probably will help you once you'll implement XDP mbuf support here.
-
-I saw it in other drivers. I did not consider it, because in my opinion
-there was no advantage for this driver. Currently xdp_buff is only
-initialized on demand if BPF program is there. So for me there was no
-reason to change tsnep_build_skb().
-
->>   {
->> @@ -1035,12 +1132,16 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->>   	int desc_available;
->>   	int done = 0;
->>   	enum dma_data_direction dma_dir;
->> +	struct bpf_prog *prog;
->>   	struct tsnep_rx_entry *entry;
->> +	struct xdp_buff xdp;
->> +	int xdp_status = 0;
->>   	struct sk_buff *skb;
->>   	int length;
->>   
->>   	desc_available = tsnep_rx_desc_available(rx);
->>   	dma_dir = page_pool_get_dma_dir(rx->page_pool);
->> +	prog = READ_ONCE(rx->adapter->xdp_prog);
->>   
->>   	while (likely(done < budget) && (rx->read != rx->write)) {
->>   		entry = &rx->entry[rx->read];
->> @@ -1084,6 +1185,28 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->>   		rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
->>   		desc_available++;
->>   
->> +		if (prog) {
->> +			bool consume;
->> +
->> +			xdp_init_buff(&xdp, PAGE_SIZE, &rx->xdp_rxq);
->> +			xdp_prepare_buff(&xdp, page_address(entry->page),
->> +					 tsnep_rx_offset_xdp() + TSNEP_RX_INLINE_METADATA_SIZE,
->> +					 length - TSNEP_RX_INLINE_METADATA_SIZE,
-> 
-> Would it make sense to subtract TSNEP_RX_INLINE_METADATA_SIZE from length
-> right after dma_sync_single_range_for_cpu?
-
-Yes, this could make the code simpler and more readable. I will try it.
-
-Thanks for the review!
-
-Gerhard
+>
+> In the future if we ever find the need to share mount options across
+> different LSMs we will need some additional work to ensure it is
+> handled properly, but I don't think we need to worry too much about
+> that now.
+>
