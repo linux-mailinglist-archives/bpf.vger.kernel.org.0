@@ -2,55 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B20E6476DF
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 20:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D1D64772A
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 21:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbiLHT6A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 14:58:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
+        id S229734AbiLHUYE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 15:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiLHT55 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 14:57:57 -0500
-Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60E05F6D0;
-        Thu,  8 Dec 2022 11:57:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SoGtLqalAO9QKDo/Z7/hc5vCiJD9VCisOm/W37RydJw=; b=ugF4reuGi+ChSWdv6zkCPrstfW
-        +nOObzPtUj96q8N/mip+rv9iTsIlven3zYWvzYSy/gVZmkpdvHmGblAWk/8kMKOy45mWHT/l5x5Ar
-        D5i+eW7SXWdlnDiH85kqtXXCK+qjFR9IcL40rR8hYDn7AX7Yw/WYC4cXHRP0dj4d5iww=;
-Received: from [88.117.53.17] (helo=[10.0.0.160])
-        by mx05lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1p3N19-0005O3-Vw; Thu, 08 Dec 2022 20:57:16 +0100
-Message-ID: <8e3c1888-65b1-ee11-a515-3d7a71e9161e@engleder-embedded.com>
-Date:   Thu, 8 Dec 2022 20:57:15 +0100
+        with ESMTP id S229652AbiLHUYD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 15:24:03 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B3D21E3B;
+        Thu,  8 Dec 2022 12:24:02 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id vv4so6735701ejc.2;
+        Thu, 08 Dec 2022 12:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+vXzR938OUovXCt7bgJhdL3De7hYMb/Y+x0vg/+7HEI=;
+        b=QP3aH3jGFDDI23oKUJCA39pAxK035EdzzMwCcrfXTIFFFmJmShY4FMN8HowI1/A5Xy
+         fzFspNXemTAwTAAv6VHsVN8Cg/Y+qVX7tbcf732siMcpHBgRO9KFj6pZUTEKKYSc/5GQ
+         XNKz5VYfnMMjRIJuHChdUQlP0zE86VO8R6KLl23Rzqzodfo3ESQyXu6p3lZVAPuVjqFX
+         3kWvrks4K+NA6Mgl7KL+lUNAFLg1Zw9kUbtCFeTgvr1lbUAAwaQtzzi9yjq+jT0qwROr
+         PEwPX+e8ZFmTB321PqbhMeXemNxeDXiovefyuzqrDFkp7K6vcmqImO4FZo94uSYZa0Zy
+         PTxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+vXzR938OUovXCt7bgJhdL3De7hYMb/Y+x0vg/+7HEI=;
+        b=dZfI+5oiM3Q+aYA24nHdwPVWjP0I2nYtT7DTgYXlFwZMqjzsuQOLpML4d+ZQw8sEde
+         dQ69O3TF582UbKAgl55X4WxneDWfmLzpitLQ9dYJKM0MUIVtvXDbGHDgWqcwq6I71Vm+
+         kHz7NwZLqgPbRqfEATZTtPhMmzzEC/gGF2Z7tj2R0ufNX9k6ffPpzlfxZUeQSdlkIwF+
+         GQmoeGVQRlp+Ra82hGgEpzlw/48UD8Fn/S4hRj+9C56rrf+cXwUxF8PMbbKFIRDh+wjw
+         aa5TQuf6haQPjZaVrWFb0QJNnUBzUtVtaNO07DiRDXIgP98O4Y9DCXhS0cgyHPbl1SWG
+         cCGg==
+X-Gm-Message-State: ANoB5pk1aCFDMjJck+7lgDFqmnM89JPY2J5WotdvIRigQRuhkPP4aYhv
+        fdCIx/Cj81P9IIbG1dbsYUM=
+X-Google-Smtp-Source: AA0mqf5r5OQhu8ML9Gxi1fHYml+nmjRexekKMvh+BiSjR6q4Ff9yFPnnUG+/Z1jle1mfCjgYpfwxGQ==
+X-Received: by 2002:a17:906:3c03:b0:7c1:9c6:aaa1 with SMTP id h3-20020a1709063c0300b007c109c6aaa1mr9300927ejg.583.1670531040982;
+        Thu, 08 Dec 2022 12:24:00 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.19.155])
+        by smtp.gmail.com with ESMTPSA id b11-20020a0564021f0b00b00461816beef9sm3777768edb.14.2022.12.08.12.23.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Dec 2022 12:24:00 -0800 (PST)
+Message-ID: <71718db2-d302-ab24-940b-c785bc7439d1@gmail.com>
+Date:   Thu, 8 Dec 2022 22:23:57 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH net-next v2 2/6] tsnep: Add XDP TX support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH bpf-next v3 08/12] mxl4: Support RX XDP metadata
 Content-Language: en-US
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com
-References: <20221208054045.3600-1-gerhard@engleder-embedded.com>
- <20221208054045.3600-3-gerhard@engleder-embedded.com>
- <Y5HwRZmCv2WYpBtg@boxer>
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <Y5HwRZmCv2WYpBtg@boxer>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Tariq Toukan <tariqt@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-9-sdf@google.com>
+ <d97a9bc2-7d78-44e5-b223-16723a11c021@gmail.com>
+ <CAKH8qBsuNGu_V+Ww7Ci57J4OrGv=dvGRA=ZEP7RsqLL-SMW29A@mail.gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <CAKH8qBsuNGu_V+Ww7Ci57J4OrGv=dvGRA=ZEP7RsqLL-SMW29A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,74 +89,200 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08.12.22 15:10, Maciej Fijalkowski wrote:
->> @@ -65,7 +71,11 @@ struct tsnep_tx_entry {
->>   
->>   	u32 properties;
->>   
->> -	struct sk_buff *skb;
->> +	enum tsnep_tx_type type;
->> +	union {
->> +		struct sk_buff *skb;
->> +		struct xdp_frame *xdpf;
->> +	};
->>   	size_t len;
->>   	DEFINE_DMA_UNMAP_ADDR(dma);
->>   };
->> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
->> index a28fde9fb060..b97cfd5fa1fa 100644
->> --- a/drivers/net/ethernet/engleder/tsnep_main.c
->> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
->> @@ -310,10 +310,11 @@ static void tsnep_tx_activate(struct tsnep_tx *tx, int index, int length,
->>   	struct tsnep_tx_entry *entry = &tx->entry[index];
->>   
->>   	entry->properties = 0;
->> -	if (entry->skb) {
->> +	if (entry->skb || entry->xdpf) {
+
+
+On 12/8/2022 9:07 PM, Stanislav Fomichev wrote:
+> On Wed, Dec 7, 2022 at 10:09 PM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+>>
+>> Typo in title mxl4 -> mlx4.
+>> Preferably: net/mlx4_en.
 > 
-> i think this change is redundant, you could keep a single check as skb and
-> xdpf ptrs share the same memory, but i guess this makes it more obvious
-
-Yes it is actually redundant. I thought it is not a good idea to rely on
-the union in the code.
-
->> +/* This function requires __netif_tx_lock is held by the caller. */
->> +static int tsnep_xdp_xmit_frame_ring(struct xdp_frame *xdpf,
->> +				     struct tsnep_tx *tx, bool dma_map)
->> +{
->> +	struct skb_shared_info *shinfo = xdp_get_shared_info_from_frame(xdpf);
->> +	unsigned long flags;
->> +	int count = 1;
->> +	struct tsnep_tx_entry *entry;
->> +	int length;
->> +	int i;
->> +	int retval;
->> +
->> +	if (unlikely(xdp_frame_has_frags(xdpf)))
->> +		count += shinfo->nr_frags;
->> +
->> +	spin_lock_irqsave(&tx->lock, flags);
->> +
->> +	if (tsnep_tx_desc_available(tx) < (MAX_SKB_FRAGS + 1 + count)) {
+> Oh, I always have to fight with this. Somehow mxl feels more natural
+> :-) Thanks for spotting, will use net/mlx4_en instead. (presumably the
+> same should be for mlx5?)
 > 
-> Wouldn't count + 1 be sufficient to check against the descs available?
-> if there are frags then you have already accounted them under count
-> variable so i feel like MAX_SKB_FRAGS is redundant.
 
-In the standard TX path tsnep_xmit_frame_ring() would stop the queue if
-less than MAX_SKB_FRAGS + 1 descriptors are available. I wanted to keep
-that stop queue logic in tsnep_xmit_frame_ring() by ensuring that XDP
-never exceeds this limit (similar to STMMAC_TX_THRESH of stmmac).
+For the newer mlx5 driver we use a shorter form, net/mlx5e.
 
-So this line checks if enough descriptors are available and that the
-queue would not have been stopped by tsnep_xmit_frame_ring().
-
-I could improve the comment below.
-
->> +		/* prevent full TX ring due to XDP */
->> +		spin_unlock_irqrestore(&tx->lock, flags);
->> +
->> +		return -EBUSY;
->> +	}
-
-Gerhard
+>> On 12/6/2022 4:45 AM, Stanislav Fomichev wrote:
+>>> RX timestamp and hash for now. Tested using the prog from the next
+>>> patch.
+>>>
+>>> Also enabling xdp metadata support; don't see why it's disabled,
+>>> there is enough headroom..
+>>>
+>>> Cc: Tariq Toukan <tariqt@nvidia.com>
+>>> Cc: John Fastabend <john.fastabend@gmail.com>
+>>> Cc: David Ahern <dsahern@gmail.com>
+>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>>> Cc: Jakub Kicinski <kuba@kernel.org>
+>>> Cc: Willem de Bruijn <willemb@google.com>
+>>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+>>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+>>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+>>> Cc: Maryam Tahhan <mtahhan@redhat.com>
+>>> Cc: xdp-hints@xdp-project.net
+>>> Cc: netdev@vger.kernel.org
+>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>>> ---
+>>>    drivers/net/ethernet/mellanox/mlx4/en_clock.c | 13 +++++--
+>>>    .../net/ethernet/mellanox/mlx4/en_netdev.c    | 10 +++++
+>>>    drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 38 ++++++++++++++++++-
+>>>    drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  1 +
+>>>    include/linux/mlx4/device.h                   |  7 ++++
+>>>    5 files changed, 64 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_clock.c b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
+>>> index 98b5ffb4d729..9e3b76182088 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/en_clock.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
+>>> @@ -58,9 +58,7 @@ u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe)
+>>>        return hi | lo;
+>>>    }
+>>>
+>>> -void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
+>>> -                         struct skb_shared_hwtstamps *hwts,
+>>> -                         u64 timestamp)
+>>> +u64 mlx4_en_get_hwtstamp(struct mlx4_en_dev *mdev, u64 timestamp)
+>>>    {
+>>>        unsigned int seq;
+>>>        u64 nsec;
+>>> @@ -70,8 +68,15 @@ void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
+>>>                nsec = timecounter_cyc2time(&mdev->clock, timestamp);
+>>>        } while (read_seqretry(&mdev->clock_lock, seq));
+>>>
+>>> +     return ns_to_ktime(nsec);
+>>> +}
+>>> +
+>>> +void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
+>>> +                         struct skb_shared_hwtstamps *hwts,
+>>> +                         u64 timestamp)
+>>> +{
+>>>        memset(hwts, 0, sizeof(struct skb_shared_hwtstamps));
+>>> -     hwts->hwtstamp = ns_to_ktime(nsec);
+>>> +     hwts->hwtstamp = mlx4_en_get_hwtstamp(mdev, timestamp);
+>>>    }
+>>>
+>>>    /**
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+>>> index 8800d3f1f55c..1cb63746a851 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+>>> @@ -2855,6 +2855,11 @@ static const struct net_device_ops mlx4_netdev_ops = {
+>>>        .ndo_features_check     = mlx4_en_features_check,
+>>>        .ndo_set_tx_maxrate     = mlx4_en_set_tx_maxrate,
+>>>        .ndo_bpf                = mlx4_xdp,
+>>> +
+>>> +     .ndo_xdp_rx_timestamp_supported = mlx4_xdp_rx_timestamp_supported,
+>>> +     .ndo_xdp_rx_timestamp   = mlx4_xdp_rx_timestamp,
+>>> +     .ndo_xdp_rx_hash_supported = mlx4_xdp_rx_hash_supported,
+>>> +     .ndo_xdp_rx_hash        = mlx4_xdp_rx_hash,
+>>>    };
+>>>
+>>>    static const struct net_device_ops mlx4_netdev_ops_master = {
+>>> @@ -2887,6 +2892,11 @@ static const struct net_device_ops mlx4_netdev_ops_master = {
+>>>        .ndo_features_check     = mlx4_en_features_check,
+>>>        .ndo_set_tx_maxrate     = mlx4_en_set_tx_maxrate,
+>>>        .ndo_bpf                = mlx4_xdp,
+>>> +
+>>> +     .ndo_xdp_rx_timestamp_supported = mlx4_xdp_rx_timestamp_supported,
+>>> +     .ndo_xdp_rx_timestamp   = mlx4_xdp_rx_timestamp,
+>>> +     .ndo_xdp_rx_hash_supported = mlx4_xdp_rx_hash_supported,
+>>> +     .ndo_xdp_rx_hash        = mlx4_xdp_rx_hash,
+>>>    };
+>>>
+>>>    struct mlx4_en_bond {
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>>> index 9c114fc723e3..1b8e1b2d8729 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>>> @@ -663,8 +663,40 @@ static int check_csum(struct mlx4_cqe *cqe, struct sk_buff *skb, void *va,
+>>>
+>>>    struct mlx4_xdp_buff {
+>>>        struct xdp_buff xdp;
+>>> +     struct mlx4_cqe *cqe;
+>>> +     struct mlx4_en_dev *mdev;
+>>> +     struct mlx4_en_rx_ring *ring;
+>>> +     struct net_device *dev;
+>>>    };
+>>>
+>>> +bool mlx4_xdp_rx_timestamp_supported(const struct xdp_md *ctx)
+>>> +{
+>>> +     struct mlx4_xdp_buff *_ctx = (void *)ctx;
+>>> +
+>>> +     return _ctx->ring->hwtstamp_rx_filter == HWTSTAMP_FILTER_ALL;
+>>> +}
+>>> +
+>>> +u64 mlx4_xdp_rx_timestamp(const struct xdp_md *ctx)
+>>> +{
+>>> +     struct mlx4_xdp_buff *_ctx = (void *)ctx;
+>>> +
+>>> +     return mlx4_en_get_hwtstamp(_ctx->mdev, mlx4_en_get_cqe_ts(_ctx->cqe));
+>>> +}
+>>> +
+>>> +bool mlx4_xdp_rx_hash_supported(const struct xdp_md *ctx)
+>>> +{
+>>> +     struct mlx4_xdp_buff *_ctx = (void *)ctx;
+>>> +
+>>> +     return _ctx->dev->features & NETIF_F_RXHASH;
+>>> +}
+>>> +
+>>> +u32 mlx4_xdp_rx_hash(const struct xdp_md *ctx)
+>>> +{
+>>> +     struct mlx4_xdp_buff *_ctx = (void *)ctx;
+>>> +
+>>> +     return be32_to_cpu(_ctx->cqe->immed_rss_invalid);
+>>> +}
+>>> +
+>>>    int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int budget)
+>>>    {
+>>>        struct mlx4_en_priv *priv = netdev_priv(dev);
+>>> @@ -781,8 +813,12 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+>>>                                                DMA_FROM_DEVICE);
+>>>
+>>>                        xdp_prepare_buff(&mxbuf.xdp, va - frags[0].page_offset,
+>>> -                                      frags[0].page_offset, length, false);
+>>> +                                      frags[0].page_offset, length, true);
+>>>                        orig_data = mxbuf.xdp.data;
+>>> +                     mxbuf.cqe = cqe;
+>>> +                     mxbuf.mdev = priv->mdev;
+>>> +                     mxbuf.ring = ring;
+>>> +                     mxbuf.dev = dev;
+>>>
+>>>                        act = bpf_prog_run_xdp(xdp_prog, &mxbuf.xdp);
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+>>> index e132ff4c82f2..b7c0d4899ad7 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+>>> @@ -792,6 +792,7 @@ int mlx4_en_netdev_event(struct notifier_block *this,
+>>>     * Functions for time stamping
+>>>     */
+>>>    u64 mlx4_en_get_cqe_ts(struct mlx4_cqe *cqe);
+>>> +u64 mlx4_en_get_hwtstamp(struct mlx4_en_dev *mdev, u64 timestamp);
+>>>    void mlx4_en_fill_hwtstamps(struct mlx4_en_dev *mdev,
+>>>                            struct skb_shared_hwtstamps *hwts,
+>>>                            u64 timestamp);
+>>> diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
+>>> index 6646634a0b9d..d5904da1d490 100644
+>>> --- a/include/linux/mlx4/device.h
+>>> +++ b/include/linux/mlx4/device.h
+>>> @@ -1585,4 +1585,11 @@ static inline int mlx4_get_num_reserved_uar(struct mlx4_dev *dev)
+>>>        /* The first 128 UARs are used for EQ doorbells */
+>>>        return (128 >> (PAGE_SHIFT - dev->uar_page_shift));
+>>>    }
+>>> +
+>>> +struct xdp_md;
+>>> +bool mlx4_xdp_rx_timestamp_supported(const struct xdp_md *ctx);
+>>> +u64 mlx4_xdp_rx_timestamp(const struct xdp_md *ctx);
+>>> +bool mlx4_xdp_rx_hash_supported(const struct xdp_md *ctx);
+>>> +u32 mlx4_xdp_rx_hash(const struct xdp_md *ctx);
+>>> +
+>>
+>> These are ethernet only functions, not known to the mlx4 core driver.
+>> Please move to mlx4_en.h, and use mlx4_en_xdp_*() prefix.
+> 
+> For sure, thanks for the review!
+> 
+>>>    #endif /* MLX4_DEVICE_H */
