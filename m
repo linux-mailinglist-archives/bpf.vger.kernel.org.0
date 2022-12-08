@@ -2,49 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E65646AA2
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 09:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8C6646AD8
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 09:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbiLHIfp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 03:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S229692AbiLHIoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 03:44:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbiLHIfo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 03:35:44 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37F560EB4;
-        Thu,  8 Dec 2022 00:35:42 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hengqi@linux.alibaba.com;NM=0;PH=DS;RN=11;SR=0;TI=SMTPD_---0VWpWRxv_1670488538;
-Received: from 30.221.147.145(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VWpWRxv_1670488538)
-          by smtp.aliyun-inc.com;
-          Thu, 08 Dec 2022 16:35:39 +0800
-Message-ID: <e1f2d723-4810-50c9-409f-d6761600beb8@linux.alibaba.com>
-Date:   Thu, 8 Dec 2022 16:35:35 +0800
+        with ESMTP id S229888AbiLHIoE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 03:44:04 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411FDCDC;
+        Thu,  8 Dec 2022 00:44:03 -0800 (PST)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1p3CVd-0005TO-LV; Thu, 08 Dec 2022 09:44:01 +0100
+Message-ID: <96ee7141-f09c-4df9-015b-6ae8f3588091@leemhuis.info>
+Date:   Thu, 8 Dec 2022 09:44:01 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
- Gecko/20100101 Thunderbird/108.0
-Subject: Re: [RFC PATCH 3/9] virtio_net: update bytes calculation for
- xdp_frame
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-References: <20221122074348.88601-1-hengqi@linux.alibaba.com>
- <20221122074348.88601-4-hengqi@linux.alibaba.com>
- <CACGkMEu_WTLJ4QRJ4_KevGLFAu=L7qgY6zV0McnSsDe2TLRawQ@mail.gmail.com>
-From:   Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <CACGkMEu_WTLJ4QRJ4_KevGLFAu=L7qgY6zV0McnSsDe2TLRawQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
+ #forregzbot
+Content-Language: en-US, de-DE
+To:     bpf <bpf@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+References: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1670489043;d88ccd6f;
+X-HE-SMSGID: 1p3CVd-0005TO-LV
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,49 +45,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+[Note: this mail contains only information for Linux kernel regression
+tracking. Mails like these contain '#forregzbot' in the subject to make
+then easy to spot and filter out. The author also tried to remove most
+or all individuals from the list of recipients to spare them the hassle.]
 
+On 06.12.22 04:28, Hao Sun wrote:
+> 
+> The following crash can be triggered with the BPF prog provided.
+> It seems the verifier passed some invalid progs. I will try to simplify
+> the C reproducer, for now, the following can reproduce this:
 
-在 2022/12/6 下午1:31, Jason Wang 写道:
-> On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
->> Update relative record value for xdp_frame as basis
->> for multi-buffer xdp transmission.
->>
->> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
->> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+Thanks for the report. To be sure below issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, my Linux kernel regression
+tracking bot:
 
-Thanks for your energy, you are awesome.
+#regzbot ^introduced c86df29d11df
+#regzbot title net/bpf: BUG: unable to handle kernel paging request in
+bpf_dispatcher_xdp
+#regzbot ignore-activity
 
->
-> Thanks
->
->> ---
->>   drivers/net/virtio_net.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 8f7d207d58d6..d3e8c63b9c4b 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -658,7 +658,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->>                  if (likely(is_xdp_frame(ptr))) {
->>                          struct xdp_frame *frame = ptr_to_xdp(ptr);
->>
->> -                       bytes += frame->len;
->> +                       bytes += xdp_get_frame_len(frame);
->>                          xdp_return_frame(frame);
->>                  } else {
->>                          struct sk_buff *skb = ptr;
->> @@ -1604,7 +1604,7 @@ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
->>                  } else {
->>                          struct xdp_frame *frame = ptr_to_xdp(ptr);
->>
->> -                       bytes += frame->len;
->> +                       bytes += xdp_get_frame_len(frame);
->>                          xdp_return_frame(frame);
->>                  }
->>                  packets++;
->> --
->> 2.19.1.6.gb485710b
->>
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
